@@ -1,0 +1,77 @@
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AccountService } from 'src/app/services/account-service/account.service';
+import { MatDialog } from '@angular/material';
+import { REGEX_PASSWORD2 } from 'src/shared';
+
+@Component({
+  selector: 'app-change-password',
+  templateUrl: './change-password.page.html',
+  styleUrls: ['./change-password.page.scss']
+})
+export class ChangePasswordPage implements OnInit {
+  actualPwdVisible = false;
+  newPwdVisible = false;
+  confirmNewPwdVisible = false;
+  pwdVisibility = { true: 'text', false: 'password' };
+  form: FormGroup;
+  loading;
+  error = '';
+
+  constructor(
+    private accountService: AccountService,
+    private fb: FormBuilder,
+    public dialog: MatDialog
+  ) {
+    this.form = this.fb.group({
+      oldPassword: [
+        '',
+        [Validators.required, Validators.pattern(REGEX_PASSWORD2)]
+      ],
+      newPassword: [
+        '',
+        [Validators.required, Validators.pattern(REGEX_PASSWORD2)]
+      ],
+      confirmPassword: [
+        '',
+        [Validators.required, Validators.pattern(REGEX_PASSWORD2)]
+      ]
+    });
+  }
+
+  ngOnInit() {
+    this.accountService.changedPasswordEmit().subscribe(res => {
+      this.loading = false;
+      this.error = res;
+    });
+  }
+
+  changeActualpwdVisibility() {
+    this.actualPwdVisible = !this.actualPwdVisible;
+  }
+
+  changeNewPwdVisibility() {
+    this.newPwdVisible = !this.newPwdVisible;
+  }
+
+  changeConfPwdVisibility() {
+    this.confirmNewPwdVisible = !this.confirmNewPwdVisible;
+  }
+
+  getInputType(pwdVisible: boolean) {
+    return pwdVisible ? this.pwdVisibility.true : this.pwdVisibility.false;
+  }
+
+  changePassword() {
+    this.error = '';
+    const currentPassword = this.form.value.oldPassword;
+    const newPassword = this.form.value.newPassword;
+    const confirmPwd = this.form.value.confirmPassword;
+    if (confirmPwd === newPassword) {
+      this.loading = true;
+      this.accountService.changeUserPassword(currentPassword, newPassword);
+    } else {
+      this.error = 'Les mots de passe saisis ne sont pas identiques';
+    }
+  }
+}

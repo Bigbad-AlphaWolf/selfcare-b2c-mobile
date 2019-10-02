@@ -1,0 +1,57 @@
+<div
+  class="buy-pass-illimix-container"
+  [ngClass]="{ 'success-custom-style': step === 4 }"
+>
+  <app-header
+    *ngIf="step <= 3"
+    [title]="title"
+    (goBack)="goToPreviousStep()"
+  ></app-header>
+
+  <div class="buy-pass-body-block">
+    <ng-container *ngIf="step === 0">
+      <app-choose-payment-mod
+        [illimix]="true"
+        (paymentMod)="nextStepOfPaymentMod($event)"
+      ></app-choose-payment-mod>
+    </ng-container>
+
+    <ng-container *ngIf="step === 1">
+      <app-illimix-list
+        [paymentMode]="choosedPaymentMod"
+        (passToStepValidation)="passDataToStepValidation($event)"
+      >
+      </app-illimix-list>
+    </ng-container>
+
+    <ng-container *ngIf="step === 2">
+      <app-operation-validation
+        [operationType]="OPERATION_TYPE_PASS_ILLIMIX"
+        [recipient]="destNumber"
+        [passIllChosen]="passIllimixChosen"
+        [paymentMod]="choosedPaymentMod"
+        [buyForMe]="true"
+        (validate)="passDataToSuccessPage(passIllimixChoosed)"
+      ></app-operation-validation>
+    </ng-container>
+
+    <ng-container *ngIf="step === 3">
+      <app-activation-om
+        [operation]="OPERATION_TYPE_PASS_ILLIMIX"
+        [passToBuy]="passIllimixChoosed"
+        (resultEmit)="payWithOM($event)"
+      ></app-activation-om>
+    </ng-container>
+
+    <ng-container *ngIf="step === 4">
+      <app-operation-success-fail
+        [passInternetBought]="passIllimixDetails"
+        [type]="'illimix'"
+        [failed]="failed"
+        [errorMsg]="errorMsg"
+        [recipient]="recipient"
+        (returnInitialStep)="returnToTheBeginning()"
+      ></app-operation-success-fail>
+    </ng-container>
+  </div>
+</div>

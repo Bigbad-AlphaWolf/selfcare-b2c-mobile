@@ -1,0 +1,42 @@
+.popup-numero-serie {
+  position: relative;
+
+  .icon-leave {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    width: 21px;
+    height: 21px;
+  }
+
+  .img-container {
+    width: 100%;
+    img {
+      width: 100%;
+    }
+  }
+  .details-block {
+    padding-top: 30px;
+    .title {
+      font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      font-size: 18px;
+      text-align: center;
+    }
+    .description {
+      text-align: center;
+      padding: 0 percentage(45/350);
+      span {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 14px;
+      }
+      padding-top: 10px;
+    }
+    .leave {
+      padding-top: 10px;
+      padding-bottom: 30px;
+      text-align: center;
+      font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      font-size: 16px;
+    }
+  }
+}

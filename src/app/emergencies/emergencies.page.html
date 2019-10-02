@@ -1,0 +1,61 @@
+<div class="emergency-home-page">
+  <!-- header -->
+  <div class="help-header">
+    <div class="arrow-left">
+      <img alt="" src="/assets/images/arrow-left.svg" routerLink="/dashboard" />
+    </div>
+    <div class="title"><span>Assistance</span></div>
+  </div>
+
+  <div class="img-container">
+    <img src="/assets/images/background-urgences-depannages.svg" alt="" />
+  </div>
+  <div class="help-block">
+    <div class="sim-block">
+      <div class="title">Mobile</div>
+      <div class="sim-block-operations">
+        <app-help-item
+          [imgName]="'unlock-sim'"
+          [text]="'retrouver mon code PUK'"
+          (click)="goPuk()"
+        ></app-help-item>
+        <app-help-item
+          [imgName]="'retrouver-carte-sim'"
+          [text]="'retrouver le numéro de ma carte'"
+          (click)="goCarteRecharge()"
+        ></app-help-item>
+        <app-help-item
+          [imgName]="'modififer-mot-de-passe'"
+          [text]="'changer mon code Seddo'"
+          (click)="goChangeSeddo()"
+          *ngIf="userProfile && userProfile !== profilePostpaid"
+        ></app-help-item>
+        <app-help-item
+          [imgName]="'parametrage-internet'"
+          [text]="'paramétrer mon mobile à internet'"
+          (click)="goInternet()"
+        ></app-help-item>
+      </div>
+    </div>
+    <div class="om-block">
+      <div class="title">Orange Money</div>
+      <div class="om-block-operations">
+        <app-help-item
+          [imgName]="'deplafonnement'"
+          [text]="'déplafonner mon compte'"
+          (click)="goDeplafonnement()"
+        ></app-help-item>
+        <app-help-item
+          [imgName]="'erreur-orange-money'"
+          [text]="'déclarer une erreur de transaction'"
+          (click)="goReclamation()"
+        ></app-help-item>
+        <app-help-item
+          [imgName]="'ouvrir-compte-orange-money'"
+          [text]="'ouvrir un compte'"
+          (click)="goCreateOMAccount()"
+        ></app-help-item>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+@import 'src/app/app';
+
+.buy-sos-credit-illimix-container {
+  width: 100%;
+  height: calc(100% - 50px);
+  margin-top: 50px;
+  overflow-y: auto;
+  &.success-custom-style {
+    .buy-sos-credit-illimix-body {
+      padding-top: 0px;
+    }
+  }
+  .buy-sos-credit-illimix-body {
+    background-color: $grayDashboard;
+    // padding-top: 50px;
+    height: 100%;
+  }
+}

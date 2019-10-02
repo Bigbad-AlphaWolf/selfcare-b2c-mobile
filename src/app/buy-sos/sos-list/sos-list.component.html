@@ -1,0 +1,59 @@
+<div class="buy-sos-credit-illimix-container">
+  <div class="buy-sos-credit-illimix-body">
+    <div class="buy-sos-credit-illimix-body-select-sos">
+      <div class="buy-sos-credit-illimix-body-top-text">
+        <span class="text">Choisissez le SOS de votre choix</span>
+      </div>
+
+      <div class="buy-sos-credit-illimix-body-btns-filter">
+        <div
+          *ngFor="let filter of sosFilters"
+          (click)="selectSosFilter(filter)"
+          class="filter-btn"
+          [ngClass]="{
+            'filter-btn-selected': filterSelected === filter
+          }"
+        >
+          <span class="text scb-text-full-black"> {{ filter }} </span>
+        </div>
+      </div>
+      <div
+        fxLayout="column"
+        fxLayoutGap="10px"
+        class="buy-sos-credit-illimix-body-list"
+      >
+        <ng-container *ngFor="let sos of sosShown">
+          <div
+            (click)="selectSos(sos)"
+            class="buy-sos-credit-illimix-body-list-item"
+          >
+            <div class="list-sos-item-text-block">
+              <span class="amount-data">
+                {{ sos.typeSOS.nom }} -
+                <span class="scb-text-orange"> {{ sos.montant }}F </span></span
+              >
+              <span class="amount-to-pay scb-text-light-black"
+                >Frais de remboursement :
+                <span class="amount">
+                  <ng-container [ngSwitch]="sos.frais">
+                    <ng-container *ngSwitchCase="0"> Gratuit </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      {{ sos.frais === null ? 'Gratuit' : sos.frais + 'F' }}
+                    </ng-container>
+                  </ng-container>
+                </span>
+              </span>
+            </div>
+            <div class="list-sos-item-icon">
+              <img
+                src="/assets/images/arrow-right.svg"
+                alt="arrow-right"
+                class="arrow-right"
+              />
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

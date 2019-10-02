@@ -1,0 +1,79 @@
+@import 'src/app/app';
+
+.emergency-home-page {
+  background-color: $grayDashboard;
+  height: 100%;
+  overflow: auto;
+  .help-header {
+    position: fixed;
+    top: 0;
+    text-align: center;
+    width: 100%;
+    background-color: $white;
+    height: 50px;
+    padding-top: 17px;
+    padding-left: 10px;
+    .arrow-left {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-top: -15px;
+    }
+    .title {
+      width: 100%;
+      font-size: 18px;
+      text-align: center;
+    }
+  }
+
+  .img-container {
+    width: 100%;
+    margin-top: 50px;
+    img {
+      width: 100%;
+    }
+  }
+
+  .help-block {
+    padding: 0 percentage(10/375);
+    .sim-block {
+      .title {
+        height: 50px;
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 20px;
+        font-weight: normal;
+        padding-top: 12px;
+      }
+      &-operations {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        app-help-item {
+          width: percentage(172/355);
+          margin-bottom: 10px;
+        }
+      }
+    }
+    .om-block {
+      .title {
+        height: 50px;
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 20px;
+        font-weight: normal;
+        padding-top: 10px;
+      }
+      &-operations {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding-bottom: 20px;
+        app-help-item {
+          width: percentage(116/361);
+        }
+      }
+    }
+  }
+}

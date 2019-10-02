@@ -1,0 +1,40 @@
+@import 'src/app/app';
+
+.select-recipient-container {
+  display: block;
+  padding-top: 20px;
+  text-align: center;
+  .image {
+    width: percentage(60/375);
+    margin: 0 auto;
+  }
+  form {
+    margin-top: 50px;
+    mat-form-field {
+      width: percentage(295/375);
+      text-align: center;
+    }
+    button {
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+    }
+  }
+  .contact {
+    padding: 10px 0;
+    width: 58%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px auto 150px;
+    .contact-img {
+      width: 21px;
+    }
+    &-text {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 16px;
+      padding-left: 10px;
+    }
+  }
+}

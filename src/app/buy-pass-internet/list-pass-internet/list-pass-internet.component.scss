@@ -1,0 +1,195 @@
+@import 'src/app/app';
+
+.buy-pass-internet-list-container {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  .buy-pass-top-block {
+    padding: 17px percentage(67px / $baseWidthMobile2) 15px
+      percentage(68px / $baseWidthMobile2);
+    text-align: center;
+    min-height: 50px;
+    height: percentage(50px / 788px);
+
+    &-icon {
+      position: absolute;
+      left: percentage(10px / $baseWidthMobile2);
+    }
+
+    &-text {
+      .title {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 18px;
+      }
+    }
+  }
+
+  .buy-pass-list-body-block {
+    min-height: $baseHeightMobile4 - 50px;
+    background-color: $grayDashboard;
+
+    &-top-text {
+      padding-top: 20px;
+      margin: 0 auto;
+      padding-bottom: 31px;
+      width: percentage(201px / $baseWidthMobile2);
+      text-align: center;
+      background: transparent;
+
+      .text {
+        width: 100%;
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 18px;
+      }
+    }
+
+    &-list {
+      padding-left: percentage(10px / $baseWidthMobile2);
+      padding-right: percentage(10px / $baseWidthMobile2);
+      .list-btns-filter {
+        height: 40px;
+        display: flex;
+        gap: 3.38%;
+        &-item {
+          width: 22.5%;
+          margin-right: 3.38%;
+          height: 100%;
+          border-radius: 20px;
+          border: 1px solid $black;
+          background-color: $grayDashboard;
+          text-align: center;
+          padding: 0 0;
+          .text {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 14px;
+          }
+          &:not(.list-btns-filter-item-selected) {
+            line-height: 38px;
+          }
+        }
+
+        &-item-selected {
+          background-color: $orange;
+          border: none;
+          line-height: 40px;
+          .text {
+            font-family: HelveticaNeueLTStd-Bd, sans-serif;
+            color: $white;
+          }
+        }
+      }
+
+      .list-pass-internet {
+        padding-top: 20px;
+        padding-bottom: 21px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        &-item {
+          border-radius: 10px;
+          box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.05);
+          background-color: $white;
+          min-height: 82px;
+          padding-top: 16px;
+          display: flex;
+          justify-content: space-between;
+          position: relative;
+          margin-bottom: 10px;
+
+          .promo-badge {
+            position: absolute;
+            top: 0;
+            left: 15px;
+            padding: 4.5px 5px;
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 12px;
+            background-color: $fullBlack;
+            border-radius: 0 0 10px 10px;
+            .nom-promo {
+              font-family: HelveticaNeueLTStd-Bd;
+            }
+          }
+
+          &-text-block {
+            display: inline-block;
+            vertical-align: middle;
+            padding-left: percentage(15px / 355px);
+
+            .amount-data {
+              display: block;
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+              font-size: 18px;
+            }
+
+            .max-duration {
+              margin-top: 8px;
+              display: block;
+              font-family: HelveticaNeueLTStd-Roman, sans-serif;
+              font-size: 12px;
+            }
+          }
+
+          &-icon {
+            width: 50px;
+            height: 50px;
+            padding: 12px 17px;
+            display: inline-block;
+            vertical-align: middle;
+
+            .arrow-right {
+              width: 100%;
+              height: 100%;
+            }
+          }
+
+          &-bonus {
+            background-color: $blue;
+            height: 25px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding-left: percentage(15px / 355px);
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+            padding-top: 3px;
+
+            .text {
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+              font-size: 14px;
+            }
+          }
+        }
+
+        .pass-internet-mois {
+          height: 95px;
+        }
+
+        .list-pass-internet-item-promo {
+          height: 92px;
+          padding-top: 32.7px;
+          .list-pass-internet-item-icon {
+            margin-top: -10px;
+          }
+        }
+
+        .bonus-and-promo {
+          height: 110px;
+          padding-top: 32.7px;
+          .list-pass-internet-item-icon {
+            margin-top: -10px;
+          }
+        }
+      }
+    }
+
+    .spinner {
+      position: fixed;
+      top: 40%;
+      left: 40%;
+      .mat-spinner::ng-deep circle {
+        stroke: $orange;
+      }
+    }
+  }
+}

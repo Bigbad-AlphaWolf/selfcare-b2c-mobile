@@ -1,0 +1,93 @@
+<div class="suivi_conso-page">
+  <div class="suivi_conso_label-and-arrow-block">
+    <div class="arrow-left-container" routerLink="/dashboard">
+      <img alt="arrow" src="/assets/images/arrow-left.svg" />
+    </div>
+
+    <div class="suivi_conso_label-container">
+      <span>Suivi consommation</span>
+    </div>
+  </div>
+
+  <!-- loader -->
+  <div class="profil-spinner" *ngIf="!currentProfil">
+    <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+  </div>
+
+  <div
+    class="details-historique-block"
+    *ngIf="currentProfil && currentProfil !== 'POSTPAID'"
+  >
+    <div
+      class="details-onglet-container"
+      [ngClass]="{
+        'details-onglet-container-selected ': details === true
+      }"
+    >
+      <span
+        [ngClass]="{
+          'not-selected': details === false
+        }"
+        (click)="detailsSelected()"
+        >Details</span
+      >
+      <div class="spinner" *ngIf="detailsLoading">
+        <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
+      </div>
+    </div>
+    <div
+      class="historique-onglet-container"
+      [ngClass]="{
+        'historique-onglet-container-selected': historique == true
+      }"
+    >
+      <span
+        [ngClass]="{
+          'not-selected': historique == false
+        }"
+        (click)="historiqueSelected()"
+        >Historique</span
+      >
+      <div class="spinner" *ngIf="histLoading">
+        <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="details-historique-block-postpaid"
+    *ngIf="currentProfil && currentProfil === 'POSTPAID'"
+  >
+    <div class="historique-onglet-postpaid">
+      <span (click)="historiqueSelected()">Historique</span>
+      <div class="spinner" *ngIf="histLoading">
+        <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
+      </div>
+    </div>
+  </div>
+
+  <!-- Historique -->
+
+  <ng-template [ngIf]="historique && currentProfil">
+    <app-historique-conso
+      [chargeTypes]="chargeTypes"
+      [dateFilterItems]="dateFilterItems"
+      [consoshistorique]="consoshistorique"
+      [error]="error"
+      [dataLoaded]="!histLoading"
+      [notdata]="notdata"
+      (getConsoByDay)="getConsoByDay($event)"
+      (selectedFilterButton)="selectedFilterButton($event)"
+      [chargeType]="chargeType"
+      [selectedDate]="selectedDate"
+    >
+    </app-historique-conso>
+  </ng-template>
+
+  <!-- Details -->
+  <ng-template
+    [ngIf]="details && currentProfil && currentProfil !== 'POSTPAID'"
+  >
+    <app-suivi-conso [consoDetails]="consoDetails"></app-suivi-conso>
+  </ng-template>
+</div>

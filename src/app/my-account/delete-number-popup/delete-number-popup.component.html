@@ -1,0 +1,33 @@
+<div class="delete-number-dialog">
+  <div class="dialog-title">
+    Etes-vous sûr de vouloir supprimer
+    {{ phoneNumbersToDelete.length > 1 ? 'ces lignes' : 'cette ligne' }} de
+    votre compte Orange et Moi:
+  </div>
+  <div class="phone-numbers-to-delete">
+    <div
+      class="phone-number-row scb-text-orange"
+      *ngFor="let phoneNumber of phoneNumbersToDelete"
+    >
+      {{ phoneNumber }}
+    </div>
+  </div>
+  <div class="info-text scb-text-dusk">
+    Vous ne pourrez plus gérer les lignes selectionnées depuis votre compte
+    Orange et Moi.
+  </div>
+  <div class="dialog-actions-btns-block">
+    <button
+      (click)="accept()"
+      class="dialog-actions-btn scb-btn scb-btn-white c-pointer"
+    >
+      Oui
+    </button>
+    <button
+      (click)="refused()"
+      class="dialog-actions-btn scb-btn scb-btn-orange c-pointer"
+    >
+      Non
+    </button>
+  </div>
+</div>

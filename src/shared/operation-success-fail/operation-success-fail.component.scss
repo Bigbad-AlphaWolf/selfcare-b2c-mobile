@@ -1,0 +1,157 @@
+@import 'src/app/app';
+
+.buy-pass-internet-succeded-container {
+	padding-top: 70px;
+	overflow-y: auto;
+	width: percentage(300px / 375px);
+	margin: 0 auto;
+	background-color: $white;
+	.buy-pass-internet-succeded-icon {
+		width: 80%;
+		height: 25%;
+		padding-bottom: 18px;
+		margin-top: 20px;
+		margin-left: auto;
+		margin-right: auto;
+
+		img {
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	.buy-pass-internet-succeded-text {
+		&-title {
+			// padding-top: 26px;
+			width: percentage(200px / 300px);
+			text-align: center;
+			margin: 0 auto;
+			.title {
+				font-family: HelveticaNeueLTStd-Bd, sans-serif;
+				font-size: 20px;
+				line-height: 1.1;
+			}
+		}
+		&-content {
+			padding-top: 11px;
+			text-align: center;
+			width: percentage(240px / 300px);
+			margin: 0 auto;
+			.content {
+				font-family: HelveticaNeueLTStd-Roman, sans-serif;
+				font-size: 14px;
+				line-height: 1.43;
+			}
+		}
+		.sargal-operation {
+			text-align: center;
+			margin-bottom: 20px;
+			.title {
+				font-size: 14px;
+			}
+			.price {
+				font-size: 24px;
+			}
+		}
+	}
+	.buy-pass-internet-succeded-redirection {
+		padding-top: 59px;
+		text-align: center;
+		.redirection-home {
+			height: 50px;
+			width: percentage(220px / 300px);
+			margin: 0 auto;
+		}
+		.redirection-buy-another-pass {
+			padding-top: 25px;
+			font-family: HelveticaNeueLTStd-Bd, sans-serif;
+			font-size: 14px;
+			margin-bottom: 25px;
+		}
+	}
+	.point-sargal {
+		margin-top: 10px;
+		font-family: HelveticaNeueLTStd-Bd;
+		font-size: 16px;
+		font-weight: normal;
+		font-style: normal;
+		font-stretch: normal;
+		line-height: 1.38;
+		letter-spacing: normal;
+		text-align: center;
+		color: #000000;
+	}
+
+	.item-title {
+		height: 20px;
+		font-family: HelveticaNeueLTStd-Bd;
+		font-size: 14px;
+		font-weight: normal;
+		font-style: normal;
+		font-stretch: normal;
+		line-height: normal;
+		letter-spacing: normal;
+		text-align: center;
+		color: #8f8f8f;
+	}
+	.item-desc-orange {
+		height: 26px;
+		font-family: HelveticaNeueLTStd-Bd;
+		font-size: 24px;
+		font-weight: normal;
+		font-style: normal;
+		font-stretch: normal;
+		line-height: 0.92;
+		letter-spacing: normal;
+		text-align: center;
+		color: #ff7900;
+	}
+
+	.item-desc-bold {
+		height: 26px;
+		font-family: HelveticaNeueLTStd-Bd;
+		font-size: 24px;
+		font-weight: normal;
+		font-style: normal;
+		font-stretch: normal;
+		line-height: 0.92;
+		letter-spacing: normal;
+		text-align: center;
+		color: #000000;
+	}
+
+	.item-desc-default {
+		height: 26px;
+		font-family: HelveticaNeueLTStd-Bd;
+		font-size: 16px;
+		font-weight: normal;
+		font-style: normal;
+		font-stretch: normal;
+		line-height: 1.38;
+		letter-spacing: normal;
+		text-align: center;
+		color: #000000;
+	}
+	.item-desc-blue {
+		height: 18px;
+		font-family: HelveticaNeueLTStd-Bd;
+		font-size: 16px;
+		font-weight: normal;
+		font-style: normal;
+		font-stretch: normal;
+		line-height: 0.88;
+		letter-spacing: normal;
+		color: white;
+	}
+	.div-desc-blue {
+		height: 30px;
+		border-radius: 6px;
+		background-color: #4bb4e7;
+		padding: 5px;
+	}
+	.info-div {
+		height: 50px;
+		margin-bottom: 15px;
+		display: block;
+	}
+}

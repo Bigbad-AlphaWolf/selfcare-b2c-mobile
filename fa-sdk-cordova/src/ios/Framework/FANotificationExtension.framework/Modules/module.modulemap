@@ -1,0 +1,6 @@
+framework module FANotificationExtension {
+  umbrella header "FANotificationExtension.h"
+
+  export *
+  module * { export * }
+}

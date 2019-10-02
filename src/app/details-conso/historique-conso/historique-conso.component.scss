@@ -1,0 +1,163 @@
+@import 'src/app/app';
+
+.scb-filter-block {
+  position: fixed;
+  top: 98px;
+  background-color: $white;
+  width: 100%;
+
+  overflow-x: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  padding: 20px percentage(10px / $baseWidthMobile2) 5px
+    percentage(10px / $baseWidthMobile2);
+  display: flex;
+  justify-content: space-between;
+
+  .select-counter-filter,
+  .select-date-filter {
+    width: 175px;
+
+    .mat-menu,
+    .mat-menu-2 {
+      border: 1.5px solid black;
+      border-radius: 20px;
+      width: 100%;
+      .btn-class {
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 85%;
+        text-align: left;
+      }
+
+      .up {
+        display: none;
+      }
+      &:hover {
+        background-color: $fullBlack;
+        color: $white;
+        .down {
+          display: none;
+        }
+        .up {
+          display: inline;
+        }
+      }
+    }
+  }
+}
+.conso-rows-container {
+  margin-top: 163px;
+  height: 100%;
+  background-color: $white;
+
+  .spinner {
+    display: flex;
+    justify-content: center;
+    padding-top: 50%;
+  }
+
+  .mat-spinner::ng-deep circle {
+    stroke: $orange;
+  }
+
+  .conso-row-block {
+    background-color: $white;
+    margin-top: 0px;
+    padding-top: 17px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid $silver;
+    width: 100%;
+    padding-left: percentage(10px / $baseWidthMobile2);
+    padding-right: percentage(10px / $baseWidthMobile2);
+
+    display: flex;
+
+    .conso-cell-left-container,
+    .conso-cell-right-container {
+      width: percentage(177.5px / 355px);
+      height: 100%;
+    }
+
+    .conso-cell-left-container {
+      display: flex;
+      .conso-type-icon {
+        margin-left: 0px;
+        vertical-align: top;
+      }
+
+      .conso_type-conso_user_number-conso_call_duration-container {
+        margin-left: 6px;
+
+        .conso_type,
+        .conso_user_number,
+        .conso_call_duration {
+          display: block;
+        }
+
+        .conso_type,
+        .conso_user_number {
+          font-size: 16px;
+          line-height: 1.25;
+        }
+
+        .conso_type {
+          color: $gray;
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        }
+
+        .conso_user_number {
+          color: $fullBlack;
+          font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        }
+
+        .conso_call_duration {
+          font-size: 14px;
+          line-height: 1.43;
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          color: $lightBlack;
+        }
+      }
+
+      .data-displaying {
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .conso-cell-right-container {
+      text-align: right;
+
+      .conso-value,
+      .conso-datetime,
+      .conso-compteur {
+        display: block;
+      }
+
+      .conso-value {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 16px;
+        line-height: 1.25;
+        color: $fullBlack;
+      }
+
+      .conso-compteur,
+      .conso-datetime {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 14px;
+        line-height: 1.43;
+        color: $lightBlack;
+      }
+
+      .conso-datetime {
+      }
+
+      .conso-compteur {
+      }
+    }
+  }
+}

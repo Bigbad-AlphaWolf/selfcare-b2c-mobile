@@ -1,0 +1,71 @@
+@import 'src/app/app';
+
+.phone-number-item {
+  border-radius: 6px;
+  border: 1px solid $silver;
+  height: 60px;
+  padding-top: 7.8px;
+  padding-left: 12px;
+  padding-right: 17px;
+  margin-bottom: 19px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+
+  &:not(&-simple.scb-number-selected) {
+    border: 1px solid $silver;
+  }
+  &.scb-number-selected {
+    border-color: $orange;
+    border-width: 2px;
+  }
+  .phone-number-data-block {
+    img {
+      width: 40px;
+    }
+
+    img,
+    .phone-number-data {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    img {
+      margin-right: 9px;
+    }
+    .phone-number-data {
+      .phone-number {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 16px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: normal;
+        letter-spacing: normal;
+      }
+      .phone-number-profile {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 14px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: normal;
+        letter-spacing: normal;
+      }
+    }
+  }
+  .item-selector-block {
+    display: none;
+  }
+  &.scb-number-selectable {
+    .item-selector-block {
+      display: block;
+    }
+  }
+  &-simple {
+    border: 0;
+    &.scb-number-selected {
+      background-color: $grayDashboard;
+      border-bottom: 3px solid $orange;
+    }
+  }
+}

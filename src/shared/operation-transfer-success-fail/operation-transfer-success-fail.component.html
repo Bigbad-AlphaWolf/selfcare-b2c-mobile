@@ -1,0 +1,33 @@
+<div class="transfer-success-page">
+  <div *ngIf="!failed && type !== 'om'" class="img-container">
+    <img src="/assets/images/transfert-credit.svg" alt="success-img" />
+  </div>
+  <div *ngIf="!failed && type === 'om'" class="img-container">
+    <img src="/assets/images/transfert-om-success.svg" alt="success-img" />
+  </div>
+  <div *ngIf="failed" class="img-container">
+    <img src="/assets/images/transfert-credit-echec.svg" alt="fail-img" />
+  </div>
+  <div class="transfer-performed-text">
+    <span *ngIf="!failed">Votre transfert a bien été effectué</span>
+    <span *ngIf="failed">Votre transfert n'a pas été effectué</span>
+  </div>
+  <div class="transfer-details">
+    <span *ngIf="!failed && type !== 'om'"
+      >Vous avez transféré {{ amount }}F de {{ type }} vers le
+      {{ destinataire }}.</span
+    >
+    <span *ngIf="!failed && type === 'om'"
+      >Vous avez transféré {{ amount }}F au {{ destinataire }}.</span
+    >
+    <span *ngIf="failed">{{ errorMessage }}</span>
+  </div>
+  <div class="btn-container">
+    <button class="scb-btn scb-btn-white" (click)="goBackHome()">
+      Retour à l'accueil
+    </button>
+  </div>
+  <div (click)="newTransfer()" class="new-transfer">
+    <span class="scb-text-orange">Faire un autre transfert</span>
+  </div>
+</div>

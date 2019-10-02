@@ -1,0 +1,62 @@
+@import 'src/app/app';
+
+.help-header {
+  position: fixed;
+  top: 0;
+  text-align: center;
+  width: 100%;
+  background-color: $white;
+  height: 50px;
+  padding-top: 17px;
+  padding-left: 10px;
+  .arrow-left {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: -15px;
+  }
+  .title {
+    width: 100%;
+    font-size: 18px;
+    text-align: center;
+  }
+}
+
+.banner {
+  margin-top: 50px;
+  display: flex;
+  width: 100%;
+  padding-right: percentage(10/375);
+  .img-container {
+    width: percentage(102/365);
+    img {
+      width: percentage(90/102);
+    }
+  }
+  .text-block {
+    width: percentage(263/365);
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 18px;
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+  }
+  &-background-blue {
+    background-color: $lightBlue;
+  }
+  &-background-yellow {
+    background-color: $yellowGage;
+  }
+  &-background-green {
+    background-color: $green;
+  }
+  &-background-violet {
+    background-color: $purple;
+  }
+  &-background-orange {
+    background-color: $orange;
+  }
+}

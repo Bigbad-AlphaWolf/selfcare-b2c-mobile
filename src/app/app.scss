@@ -1,0 +1,341 @@
+// App Styles
+// ----------------------------------------------------------------------------
+// Put style rules here that you want to apply to the entire application. These
+// styles are for the entire app and not just one component. Additionally, this
+// file can hold Sass mixins, functions, and placeholder classes to be imported
+// and used throughout the application.
+
+/* colors */
+$orange: #ff7900;
+$lBlack: #333333;
+$black: #333333;
+$yellow: #fdcc00;
+$green: #50be87;
+$blue: #4bb4e7;
+$gray: #666666;
+$grey: #cccccc;
+$silver: #eeeeee;
+$blueMessageSend: #b5e8f7;
+$checkBoxBorderColor: #979797;
+$softGray: #f5f9f9;
+$greey: #8f8f8f;
+$lBlue: #527edb;
+$lGray: #d8d8d8;
+$lightBlue: #4bb4e6;
+$pink: #ff8ad4;
+
+$prefix: 'scb';
+
+$purple: #a885d8;
+$white: #ffffff;
+$dusk: #5c5478;
+$grayDisable: #cccccc;
+$greenSuccess: #32c832;
+
+$jauge-max: #d6d6d6;
+$jauge-illimix: #ffcc00;
+$redError: #cd3c14;
+
+$grayDashboard: #f3f3f8;
+$blackDashboard: #595959;
+$blueDashboard: #cccccc;
+$grayLoader: #d6d6d6;
+$lightBlack: #999999;
+$yellowGage: #ffb400;
+$fullBlack: #000000;
+$white-hover-menu: #fcfcfc;
+$gray-hover-numbers-list: #e4e4e9;
+
+/* size */
+$baseWidth0: 1280px;
+$baseWidth: 1280px - 100px;
+$baseHeight: 728px;
+$baseHeight2: 755px;
+
+$baseWidthMobile: 320px;
+$baseWidthMobile2: 375px;
+$baseWidthMobile3: 302px;
+
+$baseHeightMobile2: 816px;
+$baseHeightMobile3: 789px;
+$baseHeightMobile4: 788px;
+$baseHeightMobile5: 925px;
+
+/* buttons */
+.#{$prefix}-btn {
+  min-width: 50px;
+  min-height: 50px;
+  border: solid 2px;
+  padding: 7px 14px;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 32px;
+  letter-spacing: normal;
+  text-align: center;
+  border-radius: 0;
+
+  &:hover:not([disabled]) {
+    background-color: $black;
+    color: $white;
+    border-color: $black;
+  }
+
+  &-orange {
+    background-color: $orange;
+    color: $white;
+    border-color: $orange;
+
+    &:disabled {
+      background-color: $grayDisable;
+      border-color: $grayDisable;
+      color: $white;
+    }
+  }
+
+  &-black {
+    background-color: $fullBlack;
+    color: $white;
+    border-color: $fullBlack;
+  }
+
+  &-dusk {
+    background-color: $dusk;
+    color: $white;
+    border-color: $dusk;
+  }
+
+  &-grey {
+    background-color: $grey;
+    color: $white;
+    border-color: $grey;
+  }
+
+  &-green {
+    background-color: $green;
+    color: $white;
+    border-color: $green;
+  }
+
+  &-blue {
+    background-color: $blue;
+    color: $white;
+    border-color: $blue;
+  }
+
+  &-white {
+    background-color: $white;
+    color: $black;
+    border-color: $black;
+  }
+  &-yellow {
+    background-color: #faeb4f;
+    color: $fullBlack;
+    border-color: #faeb4f;
+  }
+  &-red {
+    background-color: #cd3c14;
+    color: $white;
+    border-color: #cd3c14;
+  }
+  &-kirene {
+    background-color: #469751;
+    color: $white;
+    border-color: #469751;
+  }
+  &-purple {
+    background-color: $purple;
+    color: $white;
+    border-color: $purple;
+  }
+  &-transparent {
+    background: none;
+    color: $white;
+    border-color: $white;
+  }
+
+  .mat-button-wrapper {
+    font-size: 16px;
+  }
+
+  &-min-w-198 {
+    min-width: 198px;
+  }
+
+  &-min-w-185 {
+    min-width: 185px;
+  }
+
+  &-min-w-230 {
+    min-width: 230px;
+  }
+
+  &-min-w-220 {
+    min-width: 220px;
+  }
+
+  &-min-w-216 {
+    min-width: 216px;
+  }
+
+  &-min-w-170 {
+    min-width: 170px;
+  }
+
+  &-h-50 {
+    height: 50px;
+  }
+
+  &-min-w-108 {
+    min-width: 108px;
+  }
+
+  &-min-w-280 {
+    min-width: 280px;
+  }
+
+  &-v2 {
+    border: none;
+    padding: 0;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 4px;
+    text-align: center;
+    &:hover:not([disabled]) {
+      background-color: $black;
+      color: $white;
+    }
+    &-orange {
+      @extend .#{$prefix}-btn-orange;
+    }
+  }
+}
+
+.#{$prefix}-btn-full {
+  @extend .#{$prefix}-btn;
+  width: 100%;
+}
+
+/*  */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+}
+
+app-root,
+app-root > div {
+  height: 100%;
+  display: block;
+  position: relative;
+  .container-fluid {
+    height: 100%;
+    display: block;
+    position: relative;
+  }
+}
+
+body * {
+  font-family: HelveticaNeueLTStd-Bd, sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  box-sizing: border-box;
+}
+
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.#{$prefix}-text-orange {
+  color: $orange;
+}
+
+.#{$prefix}-text-yellow {
+  color: $yellow;
+}
+
+.#{$prefix}-text-green {
+  color: $green;
+}
+
+.#{$prefix}-text-purple {
+  color: $purple;
+}
+
+.#{$prefix}-text-blue {
+  color: $blue;
+}
+
+.#{$prefix}-text-gray {
+  color: $gray;
+}
+
+.#{$prefix}-text-white {
+  color: $white;
+}
+
+.#{$prefix}-text-red-error {
+  color: $redError;
+}
+
+.#{$prefix}-text-dusk {
+  color: $dusk;
+}
+
+.#{$prefix}-text-l-black {
+  color: $lBlack;
+}
+
+.#{$prefix}-text-light-black {
+  color: $lightBlack;
+}
+
+.#{$prefix}-text-item-offre-black {
+  color: $blackDashboard;
+}
+
+.#{$prefix}-text-full-black {
+  color: $fullBlack;
+}
+
+.#{$prefix}-text-error {
+  color: $redError;
+}
+
+.#{$prefix}-text-silver {
+  color: $silver;
+}
+
+.#{$prefix}-text-dark-grey {
+  color: $greey;
+}
+
+.c-pointer {
+  cursor: pointer;
+}
+
+$bluePopUp: #085ebd;
+
+.dashboard-img-promo {
+	width: (355px / $baseWidthMobile2) * 100%;
+	//fixe the height this class
+	height: 67px;
+	margin: 10px auto;
+	position: relative;
+	overflow: hidden;
+	img {
+		width: 100%;
+  }
+  margin-top:55px;
+}

@@ -1,0 +1,75 @@
+@import 'src/app/app';
+
+.register-sargal-container {
+	width: 100%;
+	position: relative;
+	padding-bottom: 60px;
+	overflow-y: auto;
+	font-family: HelveticaNeueLTStd-Roman;
+	font-size: 16px;
+	.register-sargal-container-header {
+		width: 100%;
+		padding: 18px 10px;
+		height: 50px;
+		position: fixed;
+		background-color: $white;
+		top: 0;
+		.back {
+			position: absolute;
+			width: 50px;
+			height: 50px;
+			display: flex;
+			justify-content: center;
+			left: 0px;
+			top: 0px;
+		}
+		.texte {
+			width: 100%;
+			text-align: center;
+			font-family: HelveticaNeueLTStd-Bd;
+			font-size: 19px;
+		}
+	}
+	.register-sargal-container-image-header {
+		width: 100%;
+		img {
+			width: 100%;
+		}
+	}
+	.register-sargal-container-body {
+		padding: 20px 10px 30px 10px;
+		.text {
+			font-family: HelveticaNeueLTStd-Roman;
+			font-size: 18px;
+			line-height: 1.25;
+		}
+		.illustrations {
+			padding-top: 40px;
+
+			.image {
+				&:not(:last-child) {
+					padding-bottom: 40px;
+				}
+			}
+		}
+		.scb-btn-v2 {
+			font-family: HelveticaNeueLTStd-Bd;
+			font-size: 18px;
+			position: fixed;
+			bottom: 10px;
+			width: 96%;
+			.mat-spinner {
+				position: absolute;
+				top: 15px;
+				right: 10px;
+			}
+			.mat-spinner::ng-deep circle {
+				stroke: $white;
+			}
+			&.disabled {
+				pointer-events: none;
+				background-color: $grayDisable;
+			}
+		}
+	}
+}

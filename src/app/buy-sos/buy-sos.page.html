@@ -1,0 +1,37 @@
+<div
+  class="buy-sos-credit-illimix-container"
+  [ngClass]="{ 'success-custom-style': step === 2 }"
+>
+  <app-header
+    *ngIf="step < 2"
+    [title]="title"
+    (goBack)="goToPreviousStep()"
+  ></app-header>
+
+  <div class="buy-sos-credit-illimix-body">
+    <ng-container *ngIf="step === 0">
+      <app-sos-list (chooseSos)="nextStepOfChooseSOS($event)"></app-sos-list>
+    </ng-container>
+    <ng-container *ngIf="step === 1">
+      <app-operation-validation
+        [operationType]="selectedSos.typeSOS.nom"
+        [sosChosen]="selectedSos"
+        [loading]="loading"
+        [buyForMe]="true"
+        [recipient]="currentNumber"
+        [paymentMod]="PAYMENT_MOD_NEXT_RECHARGE"
+        (validate)="subscribeSos()"
+      >
+      </app-operation-validation>
+    </ng-container>
+    <ng-container *ngIf="step === 2">
+      <app-operation-success-fail
+        [sosSelected]="selectedSos"
+        (reinitializeStep)="goToFirstStep()"
+        [failed]="failed"
+        [errorMsg]="errorMsg"
+        [type]="'sos'"
+      ></app-operation-success-fail>
+    </ng-container>
+  </div>
+</div>

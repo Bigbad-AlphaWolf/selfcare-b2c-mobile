@@ -1,0 +1,7 @@
+{
+  "name": "selfcare-b2c-mobile-app",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

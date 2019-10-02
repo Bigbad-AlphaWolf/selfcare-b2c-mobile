@@ -1,0 +1,758 @@
+@import 'src/app/app';
+
+.suivi_conso-page {
+    width: 100%;
+    height: 100%;
+    background-color: $grayDashboard;
+    overflow-y: auto;
+
+    .suivi_conso_label-and-arrow-block {
+        width: 100%;
+        height: 50px;
+        background-color: $white;
+
+        position: fixed;
+        top: 0px;
+
+        .arrow-left-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50px;
+            height: 50px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+        }
+
+        .suivi_conso_label-container {
+            position: absolute;
+            top: 17px;
+            right: percentage(88px / $baseWidthMobile2);
+            font-family: HelveticaNeueLTStd-Bd, sans-serif;
+            font-size: 18px;
+            color: $black;
+        }
+    }
+
+    .profil-spinner {
+        padding-top: 65px;
+        mat-spinner {
+            margin: 0 auto;
+        }
+        .mat-spinner::ng-deep circle {
+            stroke: $orange;
+        }
+    }
+
+    .details-historique-block {
+        position: fixed;
+        top: 50px;
+        height: 48px;
+        width: 100%;
+        background-color: $grayDashboard;
+        display: flex;
+        justify-content: space-around;
+
+        .details-onglet-container,
+        .historique-onglet-container {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 18px;
+            color: $gray;
+            width: percentage(170px / $baseWidthMobile2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &-selected {
+                color: $orange;
+                border-bottom: 3px solid $orange;
+            }
+            .not-selected {
+                font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            }
+
+            .spinner {
+                margin-left: 10px;
+                .mat-spinner::ng-deep circle {
+                    stroke: $orange;
+                }
+            }
+        }
+    }
+
+    .details-historique-block-postpaid {
+        position: fixed;
+        top: 50px;
+        height: 48px;
+        width: 100%;
+        background-color: $grayDashboard;
+        display: flex;
+        .historique-onglet-postpaid {
+            width: 100%;
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 18px;
+            color: orange;
+            border-bottom: 3px solid $orange;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .spinner {
+                margin-left: 10px;
+                .mat-spinner::ng-deep circle {
+                    stroke: $orange;
+                }
+            }
+        }
+    }
+
+    .scb-filter-block {
+        position: fixed;
+        top: 98px;
+        background-color: $white;
+        width: 100%;
+
+        overflow-x: auto;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        padding: 20px percentage(10px / $baseWidthMobile2) 5px percentage(10px / $baseWidthMobile2);
+        display: flex;
+        :first-child {
+            margin-right: percentage(14px/355px);
+        }
+
+        .select-counter-filter,
+        .select-date-filter {
+            min-width: percentage(170px/355px);
+
+            .mat-menu,
+            .mat-menu-2 {
+                border: 1.5px solid black;
+                border-radius: 20px;
+                width: 100%;
+                .btn-class {
+                    display: inline-block;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 85%;
+                }
+
+                .up {
+                    display: none;
+                }
+                &:hover {
+                    background-color: $fullBlack;
+                    color: $white;
+                    .down {
+                        display: none;
+                    }
+                    .up {
+                        display: inline;
+                    }
+                }
+            }
+        }
+    }
+
+    .conso-rows-container {
+        margin-top: 163px;
+
+        .spinner {
+            display: flex;
+            justify-content: center;
+            padding-top: 50%;
+            background-color: $white;
+        }
+
+        .mat-spinner::ng-deep circle {
+            stroke: $orange;
+        }
+
+        .conso-row-block {
+            background-color: $white;
+            margin-top: 0px;
+            padding-top: 17px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid $silver;
+            width: 100%;
+            padding-left: percentage(10px / $baseWidthMobile2);
+            padding-right: percentage(10px / $baseWidthMobile2);
+
+            display: flex;
+
+            .conso-cell-left-container,
+            .conso-cell-right-container {
+                width: percentage(177.5px / 355px);
+                height: 100%;
+            }
+
+            .conso-cell-left-container {
+                .conso-type-icon {
+                    margin-left: 0px;
+                    display: inline-block;
+                    vertical-align: top;
+                }
+
+                .conso_type-conso_user_number-conso_call_duration-container {
+                    display: inline-block;
+                    margin-left: 6px;
+
+                    .conso_type,
+                    .conso_user_number,
+                    .conso_call_duration {
+                        display: block;
+                    }
+
+                    .conso_type,
+                    .conso_user_number {
+                        font-size: 16px;
+                        line-height: 1.25;
+                    }
+
+                    .conso_type {
+                        color: $gray;
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                    }
+
+                    .conso_user_number {
+                        color: $fullBlack;
+                        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+                    }
+
+                    .conso_call_duration {
+                        font-size: 14px;
+                        line-height: 1.43;
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                        color: $lightBlack;
+                    }
+                }
+            }
+
+            .conso-cell-right-container {
+                text-align: right;
+
+                .conso-value,
+                .conso-datetime,
+                .conso-compteur {
+                    display: block;
+                }
+
+                .conso-value {
+                    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+                    font-size: 16px;
+                    line-height: 1.25;
+                    color: $fullBlack;
+                }
+
+                .conso-compteur,
+                .conso-datetime {
+                    font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                    font-size: 14px;
+                    line-height: 1.43;
+                    color: $lightBlack;
+                }
+            }
+        }
+    }
+
+    // details block
+    .category-block,
+    .pass-internet-category-block,
+    .pass-illimix-category-block {
+        width: 100%;
+    }
+
+    .pass-internet-category-block,
+    .pass-illimix-category-block {
+        margin-top: 5px;
+    }
+
+    .pass-internet-category-block {
+        margin-top: 5px;
+
+        .scb-categorie-txt {
+            font-size: 16px;
+            color: $fullBlack;
+        }
+
+        .semainelabel-semainevalue-semainejauge-and-expirationsemainedatetime-block {
+            .semainelabel-semainevalue-container,
+            .semainejauge-expirationsemainedatetime-container {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .semainelabel-semainevalue-container {
+                margin-top: 15px;
+
+                .semainelabel-container {
+                    .scb-category-item {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                        font-size: 16px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                        color: $gray;
+                    }
+                }
+
+                .semainevalue-container {
+                    .scb-category-item-value,
+                    .scb-category-item-value-global {
+                        font-size: 16px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                    }
+
+                    .scb-category-item-value-global {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                    }
+                }
+            }
+
+            .semainejauge-expirationsemainedatetime-container {
+                .semainejauge-container {
+                    display: flex;
+                    align-items: flex-end;
+                    flex: 1 1 auto;
+
+                    .semainejauge-maximum-container,
+                    .semainejauge-maximum-container .semainejauge-value-container {
+                        height: 4px;
+                    }
+
+                    .semainejauge-maximum-container {
+                        width: percentage(150px / 177.5px);
+                        background-color: $jauge-max;
+
+                        .semainejauge-value-container {
+                            width: percentage(131px / 177.5px);
+                            background-color: $purple;
+                        }
+                    }
+                }
+
+                .expirationsemainedatetime-container {
+                    .scb-category-item-validity {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                        font-size: 12px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                        text-align: right;
+                        color: $lightBlack;
+                    }
+                }
+            }
+        }
+
+        .internetbonusnuitlabel-internetbonusnuitvalue-internetbonusnuitjauge-and-expirationinternetbonusnuitdatetime-block {
+            .internetbonusnuitlabel-internetbonusnuitvalue-container,
+            .internetbonusnuitjauge-expirationinternetbonusnuitdatetime-container {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .internetbonusnuitlabel-internetbonusnuitvalue-container {
+                margin-top: 15px;
+
+                .internetbonusnuitlabel-container {
+                    .scb-category-item {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                        font-size: 16px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                        color: $gray;
+                    }
+                }
+
+                .internetbonusnuitvalue-container {
+                    .scb-category-item-value,
+                    .scb-category-item-value-global {
+                        font-size: 16px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                    }
+
+                    .scb-category-item-value-global {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                    }
+                }
+            }
+
+            .internetbonusnuitjauge-expirationinternetbonusnuitdatetime-container {
+                .internetbonusnuitjauge-container {
+                    display: flex;
+                    align-items: flex-end;
+                    flex: 1 1 auto;
+
+                    .internetbonusnuitjauge-maximum-container,
+                    .internetbonusnuitjauge-maximum-container .internetbonusnuitjauge-value-container {
+                        height: 4px;
+                    }
+
+                    .internetbonusnuitjauge-maximum-container {
+                        width: percentage(150px / 177.5px);
+                        background-color: $jauge-max;
+
+                        .internetbonusnuitjauge-value-container {
+                            width: percentage(131px / 177.5px);
+                            background-color: $purple;
+                        }
+                    }
+                }
+
+                .expirationinternetbonusnuitdatetime-container {
+                    .scb-category-item-validity {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                        font-size: 12px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                        text-align: right;
+                        color: $lightBlack;
+                    }
+                }
+            }
+        }
+
+        .internetbonusfacebooklabel-internetbonusfacebookvalue-internetbonusfacebookjauge-and-expirationinternetbonusfacebookdatetime-block {
+            .internetbonusfacebooklabel-internetbonusfacebookvalue-container,
+            .internetbonusfacebookjauge-expirationinternetbonusfacebookdatetime-container {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .internetbonusfacebooklabel-internetbonusfacebookvalue-container {
+                margin-top: 15px;
+
+                .internetbonusfacebooklabel-container {
+                    .scb-category-item {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                        font-size: 16px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                        color: $gray;
+                    }
+                }
+
+                .internetbonusfacebookvalue-container {
+                    .scb-category-item-value,
+                    .scb-category-item-value-global {
+                        font-size: 16px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                    }
+
+                    .scb-category-item-value-global {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                    }
+                }
+            }
+
+            .internetbonusfacebookjauge-expirationinternetbonusfacebookdatetime-container {
+                .internetbonusfacebookjauge-container {
+                    display: flex;
+                    align-items: flex-end;
+                    flex: 1 1 auto;
+
+                    .internetbonusfacebookjauge-maximum-container,
+                    .internetbonusfacebookjauge-maximum-container .internetbonusfacebookjauge-value-container {
+                        height: 4px;
+                    }
+
+                    .internetbonusfacebookjauge-maximum-container {
+                        width: percentage(150px / 177.5px);
+                        background-color: $jauge-max;
+
+                        .internetbonusfacebookjauge-value-container {
+                            width: percentage(131px / 177.5px);
+                            background-color: $purple;
+                        }
+                    }
+                }
+
+                .expirationinternetbonusfacebookdatetime-container {
+                    .scb-category-item-validity {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                        font-size: 12px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                        text-align: right;
+                        color: $lightBlack;
+                    }
+                }
+            }
+        }
+    }
+
+    .pass-illimix-category-block {
+        margin-top: 5px;
+
+        .scb-categorie-txt {
+            font-size: 16px;
+            color: $fullBlack;
+        }
+
+        .illimix-appellabel-illimix-appelvalue-illimix-appeljauge-and-expirationillimix-appeldatetime-block {
+            .illimix-appellabel-illimix-appelvalue-container,
+            .illimix-appeljauge-expiration-illimix-appeldatetime-container {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .illimix-appellabel-illimix-appelvalue-container {
+                margin-top: 15px;
+
+                .illimix-appellabel-container {
+                    .scb-category-item {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                        font-size: 16px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                        color: $gray;
+                    }
+                }
+
+                .illimix-appelvalue-container {
+                    .scb-category-item-value,
+                    .scb-category-item-value-global {
+                        font-size: 16px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                    }
+
+                    .scb-category-item-value-global {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                    }
+                }
+            }
+
+            .illimix-appeljauge-expiration-illimix-appeldatetime-container {
+                .illimix-appeljauge-container {
+                    display: flex;
+                    align-items: flex-end;
+                    flex: 1 1 auto;
+
+                    .illimix-appeljauge-maximum-container,
+                    .illimix-appeljauge-maximum-container .illimix-appeljauge-value-container {
+                        height: 4px;
+                    }
+
+                    .illimix-appeljauge-maximum-container {
+                        width: percentage(150px / 177.5px);
+                        background-color: $jauge-max;
+
+                        .illimix-appeljauge-value-container {
+                            width: percentage(100px / 177.5px);
+                            background-color: $jauge-illimix;
+                        }
+                    }
+                }
+
+                .expiration-illimix-appeldatetime-container {
+                    .scb-category-item-validity {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                        font-size: 12px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                        text-align: right;
+                        color: $lightBlack;
+                    }
+                }
+            }
+        }
+
+        .illimix-internetlabel-illimix-internetvalue-illimix-internetjauge-and-expirationillimix-internetdatetime-block {
+            .illimix-internetlabel-illimix-internetvalue-container,
+            .illimix-internetjauge-expiration-illimix-internetdatetime-container {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .illimix-internetlabel-illimix-internetvalue-container {
+                margin-top: 15px;
+
+                .illimix-internetlabel-container {
+                    .scb-category-item {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                        font-size: 16px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                        color: $gray;
+                    }
+                }
+
+                .illimix-internetvalue-container {
+                    .scb-category-item-value,
+                    .scb-category-item-value-global {
+                        font-size: 16px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                    }
+
+                    .scb-category-item-value-global {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                    }
+                }
+            }
+
+            .illimix-internetjauge-expiration-illimix-internetdatetime-container {
+                .illimix-internetjauge-container {
+                    display: flex;
+                    align-items: flex-end;
+                    flex: 1 1 auto;
+
+                    .illimix-internetjauge-maximum-container,
+                    .illimix-internetjauge-maximum-container .illimix-internetjauge-value-container {
+                        height: 4px;
+                    }
+
+                    .illimix-internetjauge-maximum-container {
+                        width: percentage(150px / 177.5px);
+                        background-color: $jauge-max;
+
+                        .illimix-internetjauge-value-container {
+                            width: percentage(100px / 177.5px);
+                            background-color: $jauge-illimix;
+                        }
+                    }
+                }
+
+                .expiration-illimix-internetdatetime-container {
+                    .scb-category-item-validity {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                        font-size: 12px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                        text-align: right;
+                        color: $lightBlack;
+                    }
+                }
+            }
+        }
+
+        .illimix-smslabel-illimix-smsvalue-illimix-smsjauge-and-expiration-illimix-smsdatetime-block {
+            .illimix-smslabel-illimix-smsvalue-container,
+            .illimix-smsjauge-expirationillimix-smsdatetime-container {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .illimix-smslabel-illimix-smsvalue-container {
+                margin-top: 15px;
+
+                .illimix-smslabel-container {
+                    .scb-category-item {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                        font-size: 16px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                        color: $gray;
+                    }
+                }
+
+                .illimix-smsvalue-container {
+                    .scb-category-item-value,
+                    .scb-category-item-value-global {
+                        font-size: 16px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                    }
+
+                    .scb-category-item-value-global {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                    }
+                }
+            }
+
+            .illimix-smsjauge-expirationillimix-smsdatetime-container {
+                .illimix-smsjauge-container {
+                    display: flex;
+                    align-items: flex-end;
+                    flex: 1 1 auto;
+
+                    .illimix-smsjauge-maximum-container,
+                    .illimix-smsjauge-maximum-container .illimix-smsjauge-value-container {
+                        height: 4px;
+                    }
+
+                    .illimix-smsjauge-maximum-container {
+                        width: percentage(150px / 177.5px);
+                        background-color: $jauge-max;
+
+                        .illimix-smsjauge-value-container {
+                            width: percentage(100px / 177.5px);
+                            background-color: $jauge-illimix;
+                        }
+                    }
+                }
+
+                .expiration-illimix-smsdatetime-container {
+                    .scb-category-item-validity {
+                        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                        font-size: 12px;
+                        font-weight: normal;
+                        font-style: normal;
+                        font-stretch: normal;
+                        line-height: normal;
+                        letter-spacing: normal;
+                        text-align: right;
+                        color: $lightBlack;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,86 @@
+<ion-content>
+  <div class="dashboard-container-mobile">
+    <ion-header class="dashboard-top-block">
+      <div class="dashboard-top-block-menu">
+        <!-- <img
+              src="/assets/images/menu@3x.png"
+              alt="menu"
+              class="menu"
+              width="30px"
+              menuToggle
+            /> -->
+        <ion-menu-button></ion-menu-button>
+      </div>
+      <div class="dashboard-top-block-user">
+        <span class="user-hello"
+          >Bienvenue <span class="user-name">{{ firstName }}</span></span
+        >
+      </div>
+    </ion-header>
+    <app-dashboard-prepaid-hybrid
+      [userSubscription]="userSubscription"
+      *ngIf="
+        (currentProfile === PROFILE_TYPE_HYBRID ||
+          currentProfile === PROFILE_TYPE_HYBRID_1 ||
+          currentProfile === PROFILE_TYPE_HYBRID_2 ||
+          currentProfile === PROFILE_TYPE_PREPAID) &&
+        currentFormule !== getkIRENEFormule()
+      "
+    ></app-dashboard-prepaid-hybrid>
+    <app-dashboard-kirene
+      *ngIf="
+        currentProfile === PROFILE_TYPE_PREPAID &&
+        currentFormule === getkIRENEFormule()
+      "
+    >
+    </app-dashboard-kirene>
+    <app-dashboard-postpaid *ngIf="currentProfile === PROFILE_TYPE_POSTPAID">
+    </app-dashboard-postpaid>
+  </div>
+
+  <!-- <ion-fab vertical="bottom" horizontal="end">
+    <ion-fab-button><img class="ibou-icon" src="/assets/images/avatar-ibou-update.svg" alt=""></ion-fab-button>
+  
+    <ion-fab-list side="top">
+      <ion-fab-button> <img src="/assets/images/emergency_help_fab_icon.svg" alt=""> </ion-fab-button>
+      <ion-fab-button><img src="/assets/images/need_help_fab_icon.svg" alt=""></ion-fab-button>
+      <ion-fab-button><img src="/assets/images/share_fab_icon.svg" alt=""></ion-fab-button>
+    </ion-fab-list>
+  
+  </ion-fab> -->
+  <div id="fab-background" *ngIf="fabOpened"></div>
+  <ion-fab
+    vertical="bottom"
+    horizontal="end"
+    slot="fixed"
+    (click)="fabToggled()"
+  >
+    <ion-fab-button>
+      <img
+        class="ibou-icon"
+        src="/assets/images/avatar-ibou-update.svg"
+        alt=""
+        (tap)="fabToggled()"
+      />
+    </ion-fab-button>
+
+    <ion-fab-list side="top">
+      <ion-fab-button class="fab-item" (click)="openSocialNetworkModal()">
+        <img src="/assets/images/share_fab_icon.svg" alt="" />
+      </ion-fab-button>
+      <ion-label (click)="openSocialNetworkModal()">
+        Partager l’application
+      </ion-label>
+
+      <ion-fab-button class="fab-item" routerLink="/">
+        <img src="/assets/images/need_help_fab_icon.svg" alt="" />
+      </ion-fab-button>
+      <ion-label routerLink="/assistance"> Besoin d’aide ? </ion-label>
+
+      <ion-fab-button class="fab-item" routerLink="/control-center">
+        <img src="/assets/images/emergency_help_fab_icon.svg" alt="" />
+      </ion-fab-button>
+      <ion-label routerLink="/control-center">Assistance</ion-label>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>

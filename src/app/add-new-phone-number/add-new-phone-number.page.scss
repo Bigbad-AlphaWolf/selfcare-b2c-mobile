@@ -1,0 +1,114 @@
+@import 'src/app/app';
+
+.newLine-mobile-page {
+  height: 100%;
+  .newLine-mobile-header {
+    position: relative;
+    display: flex;
+    height: 50px;
+    padding-top: 17px;
+    padding-left: 10px;
+    .arrow-left {
+      position: absolute;
+    }
+    .title {
+      width: 100%;
+      font-size: 18px;
+      text-align: center;
+    }
+  }
+  .grey-line {
+    width: 100%;
+    height: 9px;
+    background-color: $silver;
+  }
+  .scb-chat-box {
+    padding: 0 10px;
+    height: calc(100% - 68px);
+    .chat-messages {
+      padding-top: 10px;
+      height: calc(100% - 58px);
+      overflow-y: scroll;
+      border-bottom: solid 1px $silver;
+    }
+    .scb-form-message {
+      height: 58px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      .scb-message-input {
+        width: calc(100% - 103px);
+      }
+      mat-form-field,
+      .scb-btn-send {
+        display: inline-block;
+        vertical-align: middle;
+      }
+      &.hide {
+        display: none;
+      }
+    }
+  }
+
+  .welcome-message {
+    text-align: center;
+    height: calc(100% - 50px);
+    background-color: $grayDashboard;
+    overflow: auto;
+    .content {
+      padding-bottom: 70px;
+      .welcome-message-text {
+        padding: 71px percentage(88px/375px) 17px percentage(88px/375px);
+        span {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 18px;
+        }
+      }
+      .welcome-image {
+        padding: 0 percentage(32px/375px);
+      }
+    }
+    .start-btn-container {
+      .start-button {
+        height: 50px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+      }
+    }
+  }
+}
+
+.success-failed-block {
+  background-color: $grayDashboard;
+  padding-top: 117px;
+  text-align: center;
+  height: 100%;
+  .success-block,
+  .failed-block {
+    .status-block {
+      padding: 0 percentage(87px/375px);
+      span {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 38px;
+      }
+    }
+    .status-text {
+      padding: 14px percentage(68px/375px) 0;
+      span {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 18px;
+        span {
+          font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        }
+      }
+    }
+    .status-img-container {
+      padding: 17px percentage(32px/375px) 0;
+    }
+    .btn-container {
+      padding: 37px percentage(66px/375px) 0;
+    }
+  }
+}

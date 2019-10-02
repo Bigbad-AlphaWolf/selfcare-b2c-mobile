@@ -1,0 +1,71 @@
+@import 'src/app/app';
+
+.delete-phone-number-mobile-wrapper {
+  padding: 10px;
+  height: 100%;
+}
+.header-separator-line {
+  width: percentage(355px / $baseWidthMobile2);
+  height: 1px;
+  background-color: silver;
+  margin-left: auto;
+}
+
+.delete-phone-number-header-mobile {
+  height: 50px;
+  display: flex;
+  align-items: center;
+
+  .arrow-left-delete-phone-number {
+    margin-right: 15px;
+  }
+  .header-label {
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 18px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+  }
+}
+.delete-phone-number-page-content {
+  padding: 0 20px;
+  .action-info-block {
+    margin-top: 29.5px;
+    margin-bottom: 40px;
+    .action-info-text {
+      display: block;
+      width: percentage(206px / ($baseWidthMobile2 - 40px));
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 16px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.25;
+      letter-spacing: normal;
+    }
+  }
+
+  .number-of-selected-item-block {
+    margin-top: 30px;
+    .number-of-selected-item-text {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 16px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.25;
+      letter-spacing: normal;
+    }
+  }
+
+  .bottom-bts-block {
+    position: fixed;
+    display: block;
+    left: 0;
+    bottom: 15px;
+    padding: 0 20px;
+    width: 100%;
+  }
+}

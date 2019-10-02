@@ -1,0 +1,36 @@
+@import 'src/app/app';
+
+.puk-code-page {
+  .puk-code-body {
+    padding: 30.7px percentage(10/375);
+    .title-1,
+    .title-2 {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 16px;
+    }
+    .title-2 {
+      padding-top: 21px;
+      padding-bottom: 10px;
+    }
+    .code-puk {
+      border-radius: 6px;
+      background-color: $lGray;
+      height: 60px;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 15px;
+      .code {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 26px;
+        display: flex;
+        align-items: center;
+      }
+      .clipboard {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+<div class="credit-transfer-mobile-page">
+  <!-- balance : steps amount & phone_number -->
+  <div class="credit-transfer-form">
+    <div class="credit-balance-container">
+      <div class="img-container">
+        <img alt="" src="/assets/images/pass-internet-by-om-mini.svg" />
+      </div>
+      <div class="balance-title">
+        <span class="title">Par</span> <span> Orange Money</span>
+      </div>
+      <div *ngIf="!hideUserSolde" class="amount scb-text-orange">
+        <span>{{ omBalance }} FCFA</span>
+        <mat-icon class="solde-visibility-icon" (click)="hideTheSolde()"
+          >visibility_off</mat-icon
+        >
+      </div>
+      <div *ngIf="hideUserSolde" class="amount scb-text-orange">
+        <span (click)="showOmSolde()">Voir mon solde</span>
+      </div>
+      <div class="input-container">
+        <mat-form-field class="input-amount font-size-30">
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="amount"
+            placeholder="Entrez le montant en CFA"
+            (keyup.enter)="nextStep()"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- send button -->
+    <div class="button-container">
+      <button
+        (click)="nextStep()"
+        [disabled]="
+          !amount || (amount && currentBalance && +amount >= +currentBalance)
+        "
+        class="scb-btn scb-btn-orange"
+      >
+        Suivant
+      </button>
+    </div>
+  </div>
+</div>

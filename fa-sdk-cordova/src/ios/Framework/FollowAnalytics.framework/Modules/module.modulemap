@@ -1,0 +1,12 @@
+framework module FollowAnalytics {
+  umbrella header "FollowAnalytics.h"
+
+  export *
+  module * { export * }
+
+  explicit module Private{
+      header "FALogger.h"
+      header "FollowAnalytics+Private.h"
+      export *
+  }
+}

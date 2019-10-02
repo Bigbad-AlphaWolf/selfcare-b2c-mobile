@@ -1,0 +1,68 @@
+<div
+  class="buy-pass-internet-container"
+  [ngClass]="{ 'custom-style': step == 3 }"
+>
+  <app-header
+    *ngIf="step < 3"
+    [title]="title"
+    (goBack)="goToPreviousStep()"
+  ></app-header>
+
+  <div class="buy-pass-body-block">
+    <ng-container *ngIf="omBalancePinPadDisplayed">
+      <app-activation-om
+        [operation]="operation"
+        (resultEmit)="soldeGot($event)"
+        [creditToBuy]="creditToBuy"
+      >
+      </app-activation-om>
+    </ng-container>
+
+    <ng-container *ngIf="!omBalancePinPadDisplayed">
+      <ng-container *ngIf="step === 0">
+        <app-select-other-recipient
+          (nextStepEmitter)="nextStepOfSelectDest($event)"
+          *ngIf="currentProfil === PROFILE_TYPE_POSTPAID"
+          [type]="'credit'"
+        ></app-select-other-recipient>
+        <app-select-recipient
+          (getDestinataire)="nextStepOfSelectDest($event)"
+          *ngIf="currentProfil !== PROFILE_TYPE_POSTPAID"
+        >
+        </app-select-recipient>
+      </ng-container>
+      <ng-container *ngIf="step === 1">
+        <app-set-operation-amount
+          (showSolde)="showOMBalancePinPad()"
+          [hideUserSolde]="hideUserSolde"
+          [currentBalance]="currentOMBalance"
+          (next)="setAmount($event)"
+          [omBalance]="omBalance"
+        >
+        </app-set-operation-amount>
+      </ng-container>
+
+      <ng-container *ngIf="step === 2">
+        <app-operation-validation
+          [operationType]="OPERATION_TYPE_RECHARGE_CREDIT"
+          [rechargeCreditAmount]="amount"
+          [recipient]="destinatorPhoneNumber"
+          [buyForMe]="isForMyOwnNumber"
+          [paymentMod]="choosedPaymentMod"
+          (validate)="payCredit()"
+        ></app-operation-validation>
+      </ng-container>
+
+      <ng-container *ngIf="step === 3">
+        <app-operation-success-fail
+          [failed]="failed"
+          (returnInitialStep)="initialStep()"
+          [amount]="amount"
+          [recipient]="recipient"
+          [type]="OPERATION_TYPE_RECHARGE_CREDIT"
+        >
+        </app-operation-success-fail>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

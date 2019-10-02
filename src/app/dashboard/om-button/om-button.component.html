@@ -1,0 +1,43 @@
+<div
+  class="scb-btn-orange scb-btn-om"
+  [ngClass]="{ 'btn-om-kirene': isKirene }"
+  (click)="showSoldeOM()"
+>
+  <div class="scb-btn-top-block">
+    <img
+      class="scb-btn-top-block-icon"
+      src="/assets/images/curency-cfa-2-om-mob.svg"
+      alt="curency-cfa-3-mob"
+    />
+    <div class="scb-btn-top-block-text">
+      <span class="text">Orange Money</span>
+    </div>
+  </div>
+  <div class="bottom-block">
+    <span *ngIf="balanceIsAvailable" class="value"
+      >{{ balance }} <span class="text-style-1"> FCFA </span></span
+    >
+    <span *ngIf="!balanceIsAvailable" class="show-solde-info-text"
+      >Voir Mon Solde
+      <img
+        src="/assets/images/keyboard-arrow-right-white-mob.svg"
+        alt="arrow-right"
+        class="arrow-right"
+      />
+    </span>
+  </div>
+  <div class="om-solde-visibility">
+    <img
+      class="refresh-icon"
+      *ngIf="balanceIsAvailable"
+      src="/assets/images/visibility-om-icon.svg"
+      alt="refresh-icon"
+    />
+  </div>
+  <div
+    class="validity-text"
+    *ngIf="balanceIsAvailable && lastUpdateOM && lastTimeUpdateOM"
+  >
+    Mis à jour le {{ lastUpdateOM }} à {{ lastTimeUpdateOM }}
+  </div>
+</div>

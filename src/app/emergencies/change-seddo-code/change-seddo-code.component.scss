@@ -1,0 +1,35 @@
+@import 'src/app/app';
+
+.change-code-page {
+  overflow-y: auto;
+  form {
+    .form-content {
+      padding: 0 percentage(10px/375px);
+      padding-top: 30px;
+      .title {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 16px;
+        margin-bottom: -10px;
+      }
+      .input-field {
+        padding-top: 27.5px;
+      }
+      .error-block {
+        padding: 5px;
+        font-size: 12px;
+      }
+    }
+    button {
+      position: fixed;
+      bottom: 0;
+      mat-spinner {
+        position: absolute;
+        top: 15px;
+        right: 10px;
+      }
+      .mat-spinner::ng-deep circle {
+        stroke: $white;
+      }
+    }
+  }
+}

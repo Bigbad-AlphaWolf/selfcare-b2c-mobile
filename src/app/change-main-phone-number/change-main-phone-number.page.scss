@@ -1,0 +1,47 @@
+@import 'src/app/app';
+
+.change-main-phone-number-mobile-wrapper {
+  padding: 10px;
+  height: 100%;
+}
+.header-separator-line {
+  width: percentage(355px / $baseWidthMobile2);
+  height: 1px;
+  background-color: silver;
+  margin-left: auto;
+}
+
+.change-main-phone-number-header-mobile {
+  height: 50px;
+  display: flex;
+  align-items: center;
+
+  .arrow-left-change-main-phone-number {
+    margin-right: 15px;
+  }
+  .header-label {
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 18px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+  }
+}
+.change-main-phone-number-page-content {
+  padding: 37.5px 20px 0 20px;
+  .bottom-action-btn-block {
+    margin: 30px 0;
+    .rattacher-ligne-btn,
+    .add-phone-number-label {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .add-phone-number-label {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+  }
+}

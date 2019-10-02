@@ -1,0 +1,145 @@
+<div class="scb-filter-block" *ngIf="dataLoaded">
+  <div
+    class="select-counter-filter"
+    *ngIf="currentProfil && currentProfil !== 'POSTPAID'"
+  >
+    <button class="mat-menu" mat-button [matMenuTriggerFor]="counters">
+      <div class="btn-class">{{ chargeType }}</div>
+
+      <mat-icon class="down">keyboard_arrow_down</mat-icon>
+      <mat-icon class="up">keyboard_arrow_up</mat-icon>
+    </button>
+
+    <mat-menu #counters="matMenu" class="left">
+      <button
+        (click)="selectedButton(chargeType)"
+        mat-menu-item
+        *ngFor="let chargeType of chargeTypes"
+      >
+        {{ chargeType }}
+      </button>
+    </mat-menu>
+  </div>
+
+  <div class="select-date-filter">
+    <button class="mat-menu-2" mat-button [matMenuTriggerFor]="dates">
+      <div class="btn-class">{{ selectedDate?.title }}</div>
+
+      <mat-icon class="down">keyboard_arrow_down</mat-icon>
+      <mat-icon class="up">keyboard_arrow_up</mat-icon>
+    </button>
+
+    <mat-menu #dates="matMenu" class="right">
+      <button
+        *ngFor="let date of dateFilterItems; let i = index"
+        (click)="getConso(date?.value)"
+        mat-menu-item
+      >
+        {{ date?.title }}
+      </button>
+    </mat-menu>
+  </div>
+</div>
+
+<div class="conso-rows-container">
+  <div *ngIf="error" class="spinner">
+    <span class="scb-text-full-black">
+      Erreur lors du chargement des données
+    </span>
+  </div>
+  <div *ngIf="notdata" class="spinner">
+    <span class="scb-text-full-black">
+      Vous n'avez pas de communication à cette date
+    </span>
+  </div>
+
+  <div class="conso-row-block" *ngFor="let conso of consoshistorique">
+    <div class="conso-cell-left-container">
+      <div
+        class="conso-type-icon"
+        *ngIf="currentProfil && currentProfil !== 'POSTPAID'"
+      >
+        <img
+          alt=""
+          *ngIf="conso.categorie == getUserConsCategoryCall(); else messageicon"
+          src="/assets/images/appel.svg"
+        />
+        <ng-template #messageicon
+          ><img alt="" src="/assets/images/sms.svg"
+        /></ng-template>
+      </div>
+      <div
+        class="conso-type-icon"
+        *ngIf="currentProfil && currentProfil === 'POSTPAID'"
+      >
+        <img
+          alt=""
+          *ngIf="conso.type === 'voix'"
+          src="/assets/images/appel.svg"
+        />
+        <img alt="" *ngIf="conso.type === 'sms'" src="/assets/images/sms.svg" />
+        <img
+          alt=""
+          *ngIf="conso.type === 'data'"
+          src="/assets/images/internet.svg"
+        />
+      </div>
+      <div
+        class="conso_type-conso_user_number-conso_call_duration-container"
+        *ngIf="currentProfil && currentProfil !== 'POSTPAID'"
+      >
+        <span class="conso_type">{{ conso.categorie }} </span>
+        <span class="conso_user_number"
+          >{{ formatPhoneNumber(conso.calledNumber) }}
+        </span>
+        <span
+          *ngIf="conso.categorie == getUserConsCategoryCall()"
+          class="conso_call_duration"
+          >{{ conso.duration | formatSecondDate }}
+        </span>
+      </div>
+      <div
+        class="conso_type-conso_user_number-conso_call_duration-container"
+        [ngClass]="{ 'data-displaying': conso.type === 'data' }"
+        *ngIf="currentProfil && currentProfil === 'POSTPAID'"
+      >
+        <span [ngSwitch]="conso.type">
+          <span *ngSwitchCase="'voix'">APPEL</span>
+          <span *ngSwitchCase="'sms'">SMS</span>
+          <span *ngSwitchCase="'data'">INTERNET</span>
+        </span>
+        <span class="conso_user_number"
+          >{{ formatPhoneNumber(conso.destination) }}
+        </span>
+        <span
+          class="conso_call_duration"
+          *ngIf="
+            conso.type === 'voix' &&
+            conso.categorie == getUserConsCategoryCall()
+          "
+          >{{ conso.duree | formatSecondDate }}</span
+        >
+      </div>
+    </div>
+    <div
+      class="conso-cell-right-container"
+      *ngIf="currentProfil !== 'POSTPAID'"
+    >
+      <span class="conso-value">{{ conso.charge }} FCFA</span>
+      <span class="conso-datetime"> Le {{ conso.date }} </span>
+      <span class="conso-compteur"> {{ conso.chargeType }}</span>
+    </div>
+    <div
+      class="conso-cell-right-container"
+      *ngIf="currentProfil === 'POSTPAID'"
+    >
+      <span class="conso-value" *ngIf="conso.type !== 'data'"
+        >{{ conso.cout }} FCFA</span
+      >
+      <span class="conso-value" *ngIf="conso.type === 'data'"
+        >{{ formatVolumeData(conso.volume) }} Ko</span
+      >
+      <span class="conso-datetime"> Le {{ conso.dateappel }} </span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<div class="puk-code-page">
+  <app-help-banner
+    [text]="'Je veux retrouver mon code PUK'"
+    [helpType]="'pukCode'"
+  ></app-help-banner>
+  <div class="puk-code-body">
+    <div class="title-1 scb-text-gray">Choisissez le numéro concerné</div>
+    <div class="dropdown-numero">
+      <mat-form-field>
+        <mat-select
+          [ngModel]="numbers[0]"
+          (selectionChange)="getCodePuk($event.value)"
+        >
+          <mat-option
+            *ngFor="let number of numbers; let i = index"
+            [value]="number"
+          >
+            {{ number | phoneNumberDisplay }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="title-2 scb-text-gray">Votre code PUK est</div>
+    <div class="code-puk">
+      <div class="code scb-text-gray" #container>{{ codePUK }}</div>
+      <div
+        class="clipboard scb-text-gray"
+        ngxClipboard
+        [cbContent]="codePUK"
+        (cbOnSuccess)="onCopySuccess()"
+        *ngIf="!copied"
+      >
+        <span>Copier</span> <img src="/assets/images/copier.svg" alt="" />
+      </div>
+      <div class="clipboard scb-text-gray" *ngIf="copied">
+        <span>Copié</span> <img src="/assets/images/copied.svg" alt="" />
+      </div>
+    </div>
+  </div>
+</div>

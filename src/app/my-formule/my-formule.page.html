@@ -1,0 +1,139 @@
+<div class="my-formule-page">
+  <app-header [title]="'Ma formule'" (goBack)="goBack()"></app-header>
+  <ng-container *ngIf="step === 'MA_FORMULE'">
+    <div *ngIf="!error && dataLoaded">
+      <div class="my-formule-details">
+        <div class="my-formule-details-icon-top">
+          <img [src]="getBannerByFormule(currentFormule)" alt="" />
+        </div>
+        <div class="my-formule-label-and-value">
+          <span class="my-formule-label">Ma formule</span>
+          <span class="my-formule-value">{{ currentFormule?.nomFormule }}</span>
+        </div>
+        <div class="my-formule-details-container">
+          <div class="my-formule-details-container-list">
+            <div class="list-header-container">
+              <div class="header-container-icon">
+                <img alt="" src="/assets/images/phone-black.svg" />
+              </div>
+              <span class="title scb-text-full-black">
+                Appels
+              </span>
+            </div>
+            <div class="list-content-container">
+              <div class="list-content-container-item">
+                <div class="scb-text-full-black item-top-block">
+                  {{ currentFormule?.prixAppels }} F / Sec
+                </div>
+                <div class="scb-text-dark-grey item-subtitle">
+                  {{ currentFormule?.nomFormule }}
+                </div>
+              </div>
+              <div
+                class="list-content-container-item"
+                *ngFor="let tarifFormule of currentFormule?.tarifFormules"
+              >
+                <ng-container *ngIf="tarifFormule?.categorie === 'APPEL'">
+                  <div class="scb-text-full-black item-top-block">
+                    {{ tarifFormule?.tarif }} F / Sec
+                  </div>
+                  <div class="scb-text-dark-grey item-subtitle">
+                    {{ tarifFormule?.description }}
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="my-formule-details-container-list">
+            <div class="list-header-container">
+              <div class="header-container-icon">
+                <img alt="" src="/assets/images/message-black.svg" />
+              </div>
+              <span class="title scb-text-full-black">
+                SMS
+              </span>
+            </div>
+            <div class="list-content-container">
+              <div class="list-content-container-item">
+                <div class="scb-text-full-black item-top-block">
+                  {{ currentFormule?.prixSMS }} F
+                </div>
+                <div class="scb-text-dark-grey item-subtitle">
+                  {{ currentFormule?.nomFormule }}
+                </div>
+              </div>
+              <div
+                class="list-content-container-item"
+                *ngFor="let tarifFormule of currentFormule?.tarifFormules"
+              >
+                <ng-container *ngIf="tarifFormule?.categorie === 'SMS'">
+                  <div class="scb-text-full-black item-top-block">
+                    {{ tarifFormule?.tarif }} F
+                  </div>
+                  <div class="scb-text-dark-grey item-subtitle">
+                    {{ tarifFormule?.description }}
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="other-formules-label-and-list"
+        *ngIf="currentFormule?.code !== getKireneFormule()"
+      >
+        <div class="other-formules-label">
+          <span>Je consulte et je change de formule</span>
+        </div>
+        <div class="other-formules-list">
+          <div
+            (click)="seeDetailsFormule(formule)"
+            class="formules-list-item"
+            *ngFor="let formule of otherFormules"
+          >
+            <div class="formules-list-item-icon">
+              <img [src]="getImgByFormule(formule)" alt="" />
+            </div>
+            <div class="formules-list-item-right-content">
+              <div class="formules-list-item-title-rate-and-scope">
+                <div class="formules-list-item-title">
+                  <span>{{ formule.nomFormule }}</span>
+                </div>
+                <div class="formules-list-item-rate-and-scope">
+                  <span class="formules-list-item-rate"
+                    >{{ formule.prixAppels }} F / Sec
+                  </span>
+                  <span class="formules-list-item-scope">{{
+                    formule?.nomFormule
+                  }}</span>
+                </div>
+              </div>
+              <div class="formules-list-item-arrow-right">
+                <img
+                  alt=""
+                  src="/assets/images/keyboard-arrow-right-orange.svg"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="error-management" *ngIf="error || !dataLoaded">
+      <div class="other-formules-label" *ngIf="error">
+        <span>{{ error }}</span>
+      </div>
+      <div *ngIf="!dataLoaded" class="spinner">
+        <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="step === 'DETAILS_FORMULE'">
+    <app-see-details-formule
+      [formule]="detailsFormule"
+      [msisdn]="currentNumber"
+      (goBackToListFormules)="getNewFormuleInfos()"
+    ></app-see-details-formule>
+  </ng-container>
+</div>

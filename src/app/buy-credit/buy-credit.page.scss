@@ -1,0 +1,43 @@
+@import 'src/app/app';
+
+.buy-pass-internet-container {
+  height: 100%;
+  background-color: $grayDashboard;
+  &.custom-style {
+    background-color: $white;
+    .buy-pass-body-block {
+      padding-top: 0;
+    }
+  }
+  .buy-pass-top-block {
+    position: relative;
+    background-color: $white;
+    padding: 17px percentage(67px / $baseWidthMobile2) 15px
+      percentage(67px / $baseWidthMobile2);
+    text-align: center;
+    height: 50px;
+    width: 100%;
+    &-icon {
+      position: absolute;
+      left: percentage(10px / $baseWidthMobile2);
+    }
+    &-text {
+      .title {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 18px;
+      }
+    }
+  }
+  .buy-pass-body-block {
+    height: calc(100% - 50px);
+    overflow-y: auto;
+    margin-top: 50px;
+    &.no-navigation-header {
+      height: 100%;
+      padding-top: 0;
+    }
+    scb-activation-om-mobile {
+      height: calc(100% + 50px);
+    }
+  }
+}

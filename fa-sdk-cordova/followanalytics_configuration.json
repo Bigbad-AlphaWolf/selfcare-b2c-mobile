@@ -1,0 +1,8 @@
+{
+  "android" :
+  {
+    "apiKey" : null,
+    "isVerbose" : false,
+    "maxBackgroundTimeWithinSession" : 120
+  }
+}

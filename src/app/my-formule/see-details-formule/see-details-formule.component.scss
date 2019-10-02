@@ -1,0 +1,114 @@
+@import 'src/app/app';
+
+:host {
+  height: 92%;
+  background-color: $white;
+}
+.my-formule-details {
+  position: relative;
+  .my-formule-details-icon-top {
+    img {
+      width: 100%;
+    }
+  }
+  .my-formule-label-and-value {
+    position: absolute;
+    top: 20px;
+    .my-formule-label {
+      margin-left: 23px;
+      font-size: 14px;
+      color: $orange;
+    }
+    .my-formule-value {
+      margin-left: 19px;
+      font-size: 30px;
+      line-height: 1;
+      color: $white;
+    }
+    span {
+      display: block;
+    }
+  }
+  .my-formule-details-container {
+    background-color: $white;
+    display: flex;
+    padding: 15px percentage(20px / $baseWidthMobile2);
+    height: 100%;
+    &-list {
+      width: 50%;
+      &:first-child {
+        border-right: 2px solid $grayDashboard;
+      }
+      &:nth-child(2) {
+        .list-header-container {
+          padding-left: percentage(14px / $baseWidthMobile2);
+        }
+        .list-content-container {
+          padding-left: percentage(15px / $baseWidthMobile2);
+        }
+      }
+      .list-header-container {
+        padding-bottom: 15px;
+        border-bottom: 2px solid $grayDashboard;
+        .header-container-icon {
+          display: inline-block;
+          vertical-align: top;
+          width: 30px;
+          padding: 0 5px 5px 5px;
+          border-bottom: 3px solid $orange;
+          img {
+            width: 20px;
+            height: auto;
+          }
+        }
+        .title {
+          display: inline-block;
+          vertical-align: top;
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 18px;
+        }
+      }
+      .list-content-container {
+        display: flex;
+        flex-direction: column;
+        padding: 20px 0;
+        &-item {
+          margin-bottom: 20px;
+          .item-top-block {
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 16px;
+          }
+          .item-subtitle {
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+
+  .confirm-btn {
+    position: fixed;
+    bottom: 5px;
+    background-color: $orange;
+    height: 50px;
+    line-height: 50px;
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 18px;
+    color: $white;
+    text-align: center;
+    width: 95%;
+    border-radius: 4px;
+    left: 2.5%;
+    &.disabled {
+      background-color: $grayDisable;
+      border-color: $grayDisable;
+      color: $white;
+    }
+    .spinner {
+      position: absolute;
+      bottom: 12px;
+      right: 20px;
+    }
+  }
+}

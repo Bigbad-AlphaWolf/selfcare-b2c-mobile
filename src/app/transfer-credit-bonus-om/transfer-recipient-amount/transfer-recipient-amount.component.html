@@ -1,0 +1,124 @@
+<div
+  class="credit-transfer-form"
+  *ngIf="step === 'SAISIE_NUMBER' || step === 'SAISIE_MONTANT'"
+>
+  <ng-container *ngIf="!typeOMCode; else pinpadOM">
+    <div class="credit-balance-container">
+      <div class="img-container">
+        <img alt="" src="/assets/images/transfert-de-credit.svg" />
+      </div>
+      <div class="balance-title">
+        <span class="title">Mon </span>
+        <span> solde {{ orangeMoney ? 'Orange Money' : SoldeType }}</span>
+      </div>
+      <div *ngIf="SoldeType === getCredit(); else bonusAndPass" class="credit">
+        <span class="amount scb-text-orange">{{ solderechargement }} FCFA</span>
+      </div>
+      <ng-template #bonusAndPass>
+        <div *ngIf="SoldeType === getBonus(); else om">
+          <div class="bonus">
+            <div class="amount-and-scope">
+              <span class="amount scb-text-orange"
+                >{{ soldebonustoutesdest }} FCFA
+              </span>
+              <span class="scope">(toutes destinations)</span>
+            </div>
+            <div class="amount-and-scope">
+              <span class="amount scb-text-orange"
+                >{{ soldebonusverorange }} FCFA
+              </span>
+              <span class="scope">(vers orange)</span>
+            </div>
+          </div>
+        </div>
+        <ng-template #om>
+          <div class="pass scb-text-orange">
+            <span class="amount scb-text-orange" *ngIf="omBalanceVisible"
+              >{{ omBalance }} FCFA</span
+            >
+            <mat-icon
+              class="solde-visibility-icon"
+              (click)="hideSolde()"
+              *ngIf="omBalanceVisible"
+              >visibility_off</mat-icon
+            >
+            <span
+              class="amount scb-text-orange"
+              *ngIf="!omBalanceVisible"
+              (click)="seeSolde()"
+              >Voir mon solde</span
+            >
+          </div>
+        </ng-template>
+      </ng-template>
+      <form
+        class="input-container"
+        *ngIf="step === 'SAISIE_MONTANT'"
+        [formGroup]="formAmount"
+      >
+        <mat-form-field class="input-amount font-size-30">
+          <input
+            matInput
+            class="font-size-30"
+            type="number"
+            placeholder="Entrez le montant en CFA"
+            formControlName="amount"
+          />
+        </mat-form-field>
+
+        <!-- send button -->
+        <div class="button-container" (click)="suivant()">
+          <button class="scb-btn scb-btn-orange" [disabled]="!formAmount.valid">
+            Suivant
+          </button>
+        </div>
+      </form>
+      <div *ngIf="step === 'SAISIE_NUMBER'">
+        <form class="input-container" [formGroup]="formDest">
+          <mat-form-field class="input-amount font-size-30">
+            <input
+              matInput
+              class=""
+              type="number"
+              placeholder="Entrez le numéro du destinataire"
+              formControlName="phoneNumber"
+              [value]="formDest.value.phoneNumber"
+            />
+          </mat-form-field>
+
+          <div class="contact">
+            <span class="text scb-text-orange" (click)="pickContact()"
+              >Mes contacts</span
+            >
+          </div>
+
+          <!-- send button -->
+          <div class="button-container" (click)="suivant()">
+            <button
+              class="scb-btn scb-btn-orange"
+              [disabled]="!formDest.valid || (orangeMoney && checkingOMAccount)"
+            >
+              <span>Suivant</span>
+              <mat-spinner
+                *ngIf="orangeMoney && checkingOMAccount"
+                mode="indeterminate"
+                [diameter]="20"
+              >
+              </mat-spinner>
+            </button>
+          </div>
+        </form>
+        <div class="error-msg" *ngIf="showErrorMsg">
+          <span>{{ errorMsg }}</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #pinpadOM>
+    <app-activation-om
+      [operation]="'CHECK_SOLDE'"
+      (resultEmit)="soldeGot($event)"
+    >
+    </app-activation-om>
+  </ng-template>
+</div>

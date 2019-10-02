@@ -1,0 +1,76 @@
+@import 'src/app/app';
+
+.scb-btn-om {
+  position: relative;
+  display: inline-block;
+  text-align: left;
+  width: 100%;
+  height: 100%;
+  padding: 8px 0 10px 15px;
+  border-radius: 15px;
+  box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
+  margin-right: percentage(10px / 366px);
+  &.btn-om-kirene {
+    background-color: #d03c34;
+    border-color: #d03c34;
+  }
+  .scb-btn-top-block {
+    &-icon,
+    &-text {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    &-icon {
+      height: 24px;
+      width: 24px;
+      margin-right: 4px;
+    }
+
+    &-text {
+      .text {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 18px;
+      }
+    }
+  }
+
+  .bottom-block {
+    margin-top: 1px;
+    .value {
+      font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      font-size: 26px;
+
+      .text-style-1 {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 18px;
+      }
+    }
+  }
+
+  .validity-text {
+    margin-top: 6px;
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 9px;
+  }
+
+  .show-solde-info-text {
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 16px;
+    line-height: 1.14;
+    display: inline-block;
+    margin-top: 27px;
+  }
+  .om-solde-visibility {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    .refresh-icon {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  .arrow-right {
+    margin-left: 5px;
+  }
+}

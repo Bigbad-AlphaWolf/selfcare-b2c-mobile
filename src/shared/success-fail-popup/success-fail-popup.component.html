@@ -1,0 +1,128 @@
+<div class="success-modal">
+  <div class="img-container">
+    <img
+      src="/assets/images/param-int-success.svg"
+      alt=""
+      *ngIf="data.type === 'parametrage-internet'"
+      class="operation-img"
+    />
+    <img
+      src="/assets/images/code-recharge-success.svg"
+      alt=""
+      *ngIf="data.type === 'carte'"
+      class="operation-img"
+    />
+    <img
+      src="/assets/images/ouverture-om-success.svg"
+      alt=""
+      *ngIf="data.type === 'creation-compte'"
+      class="operation-img"
+    />
+    <img
+      src="/assets/images/code-seddo-success.svg"
+      alt=""
+      *ngIf="data.type === 'seddoCode' || data.type === 'changePassword'"
+      class="operation-img"
+    />
+    <img
+      src="/assets/images/deplafonnement-success.svg"
+      alt=""
+      *ngIf="data.type === 'deplafonnement'"
+      class="operation-img"
+    />
+    <img
+      src="/assets/images/reclamation-om-successful.svg"
+      alt=""
+      *ngIf="data.type === 'reclamation'"
+      class="operation-img"
+    />
+    <img
+      src="/assets/images/bill-not-available.svg"
+      alt=""
+      *ngIf="data.type === 'facture'"
+      class="operation-img"
+    />
+    <img
+      src="/assets/images/bill-not-available.svg"
+      alt=""
+      *ngIf="data.type === 'file'"
+      class="operation-img"
+    />
+    <img
+      src="/assets/images/bill-not-available.svg"
+      alt=""
+      *ngIf="data.type === 'noOMAccount'"
+      class="operation-img"
+    />
+  </div>
+  <div class="title-container scb-text-black">
+    <span class="title" *ngIf="data.type === 'parametrage-internet'">
+      Paramétrage envoyé sur le {{ currentNumber }}
+    </span>
+    <span class="title" *ngIf="data.type === 'carte'">
+      code de recharge envoyé
+    </span>
+    <span class="title" *ngIf="data.type === 'creation-compte'">
+      Votre demande d’ouverture de compte a été envoyée !
+    </span>
+    <span
+      class="title"
+      *ngIf="data.type === 'seddoCode' || data.type === 'changePassword'"
+    >
+      C’est fait!
+    </span>
+    <span class="title" *ngIf="data.type === 'deplafonnement'">
+      Votre demande de déplafonnement a été envoyée !
+    </span>
+    <span class="title" *ngIf="data.type === 'reclamation'">
+      Reclamation d’erreur de transaction envoyée
+    </span>
+    <span class="title" *ngIf="data.type === 'facture'">
+      Facture indisponible
+    </span>
+    <span class="title" *ngIf="data.type === 'file'">
+      {{ data.title }}
+    </span>
+    <span class="title" *ngIf="data.type === 'noOMAccount'">Désolé, </span>
+  </div>
+  <div class="text-container scb-text-light-black">
+    <span class="text" *ngIf="data.type === 'parametrage-internet'">
+      Vous devez les accepter pour que le paramétrage soit effectif
+    </span>
+    <span class="text" *ngIf="data.type === 'carte'">
+      Nous venons de vous envoyer votre code de recharge par SMS au
+      {{ currentNumber }}
+    </span>
+    <span class="text" *ngIf="data.type === 'creation-compte'">
+      Vous recevrez une notification dès que votre compte sera ouvert.
+    </span>
+    <span class="text" *ngIf="data.type === 'seddoCode'">
+      Vous avez modifié votre code Seddo
+    </span>
+    <span class="text" *ngIf="data.type === 'changePassword'">
+      Vous avez modifié votre mot de passe.
+    </span>
+    <span class="text" *ngIf="data.type === 'deplafonnement'">
+      Vous recevrez une notification dès que votre compte sera déplafonné
+    </span>
+    <span class="text" *ngIf="data.type === 'reclamation'">
+      Merci, votre demande a bien été prise en compte, vous serez contacté par
+      le service client
+    </span>
+    <span class="text" *ngIf="data.type === 'facture'">
+      Cette facture est actuellement indisponible, veuillez réessayez plus tard
+    </span>
+    <span class="text" *ngIf="data.type === 'file'">
+      {{ data.text }}
+    </span>
+    <span class="text" *ngIf="data.type === 'noOMAccount'">
+      Ce numéro n'a pas de compte Orange Money et ne peut bénéficier de votre
+      transfert
+    </span>
+  </div>
+  <div class="btn-container">
+    <button class="scb-btn scb-btn-white scb-btn-full" (click)="closeDialog()">
+      Fermer
+    </button>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+.transfer-success-page {
+  text-align: center;
+  .img-container {
+    padding: 111px percentage(40px/375px) 22px percentage(40px/375px);
+  }
+  .transfer-performed-text {
+    padding: 0 percentage(88px/375px) 11px percentage(88px/375px);
+    span {
+      font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      font-size: 20px;
+    }
+  }
+  .transfer-details {
+    padding: 0 percentage(68px/375px) 39px percentage(68px/375px);
+    span {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 14px;
+    }
+  }
+  .btn-container {
+    button {
+      width: percentage(220px/375px);
+    }
+  }
+  .new-transfer {
+    padding-top: 35px;
+    span {
+      font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      font-size: 14px;
+    }
+  }
+}

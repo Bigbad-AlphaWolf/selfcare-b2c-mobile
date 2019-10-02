@@ -1,0 +1,38 @@
+.success-modal {
+  border-radius: 6px;
+  .img-container {
+    width: percentage(160/350);
+    margin: auto;
+    padding-top: 40px;
+    .operation-img {
+      width: 100%;
+    }
+  }
+  .title-container {
+    padding-top: 25px;
+
+    width: percentage(250/350);
+    margin: auto;
+    text-align: center;
+    span {
+      font-size: 18px;
+    }
+  }
+  .text-container {
+    padding-top: 8px;
+    width: percentage(280/350);
+    margin: auto;
+
+    text-align: center;
+    span {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 14px;
+    }
+  }
+  .btn-container {
+    padding-top: 25px;
+    width: percentage(200/350);
+    margin: auto;
+    padding-bottom: 30px;
+  }
+}

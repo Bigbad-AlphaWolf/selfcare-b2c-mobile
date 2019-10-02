@@ -1,0 +1,55 @@
+@import 'src/app/app';
+
+.list-number-modal {
+  // width: 330px;
+  // height: 300px;
+  border-radius: 25px;
+  padding: 0 15px;
+  .title {
+    text-align: center;
+    font-size: 18px;
+    padding: 10px 16% 10px;
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+  }
+  .sub-title {
+    text-align: center;
+    font-size: 14px;
+    padding: 10px 16% 30px;
+    font-family: HelveticaNeueLTStd-Roman, sans-serif;
+  }
+  .item {
+    &-selected {
+      border: solid 2px $orange;
+    }
+    width: 85%;
+    height: 50px;
+    font-size: 24px;
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    display: flex;
+    align-items: center;
+    border: solid 2px $grayDashboard;
+    border-radius: 10px;
+    margin: 0 auto 10px;
+    padding-left: 10px;
+    display: flex;
+    justify-content: space-between;
+    ::ng-deep
+      .mat-radio-button.mat-accent.mat-radio-checked
+      .mat-radio-outer-circle {
+      border-color: $orange;
+    }
+    ::ng-deep .mat-radio-button.mat-accent .mat-radio-inner-circle {
+      background-color: $orange;
+    }
+    input {
+      margin-right: 20px;
+    }
+  }
+  .btn-container {
+    text-align: center;
+    padding: 20px 0 40px 0;
+    button {
+      width: 190px;
+    }
+  }
+}

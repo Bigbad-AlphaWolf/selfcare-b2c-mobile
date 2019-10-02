@@ -1,0 +1,36 @@
+@import 'src/app/app';
+
+.recharge-card-page {
+  form {
+    padding-top: 34px;
+    mat-form-field {
+      padding: 0 percentage(10/375);
+      padding-bottom: 30px;
+      .help-icon {
+        color: $lBlue;
+      }
+    }
+    .error-block {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 12px;
+      padding: 0 percentage(10/375) 20px;
+      margin-top: -10px;
+    }
+    button {
+      position: fixed;
+      bottom: 0;
+      mat-spinner {
+        position: absolute;
+        top: 15px;
+        right: percentage(100/400);
+      }
+      .mat-spinner::ng-deep circle {
+        stroke: $white;
+      }
+    }
+    .spinner {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

@@ -1,0 +1,9 @@
+<div class="phone-number-list">
+  <app-phonenumber-item
+    *ngFor="let phoneNumber of phoneNumbers"
+    [phoneNumber]="phoneNumber"
+    [simple]="true"
+    [selected]="phoneNumber.msisdn == lastSelectedNumber"
+    (select)="updateSelectedPhoneNumbers(phoneNumber.msisdn, $event)"
+  ></app-phonenumber-item>
+</div>

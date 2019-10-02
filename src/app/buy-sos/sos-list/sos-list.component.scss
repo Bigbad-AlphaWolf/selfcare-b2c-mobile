@@ -1,0 +1,126 @@
+@import 'src/app/app';
+
+.buy-sos-credit-illimix-container {
+  width: 100%;
+  height: 100%;
+  .buy-sos-credit-illimix-body {
+    background-color: $grayDashboard;
+    &-select-sos {
+      height: 100%;
+      padding-left: 10px;
+      padding-right: 10px;
+      .buy-sos-credit-illimix-body-top-text {
+        padding-top: 20px;
+        padding-bottom: 31px;
+        width: percentage(201px / ($baseWidthMobile2 - 20px));
+        margin: 0 auto;
+        text-align: center;
+        .text {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 18px;
+          line-height: 1.22;
+        }
+      }
+      .buy-sos-credit-illimix-body-btns-filter {
+        height: 40px;
+        display: flex;
+        justify-content: space-between;
+        .filter-btn {
+          width: percentage(170px / 355px);
+          border-radius: 20px;
+          border: 1px solid $fullBlack;
+          line-height: 38px;
+          text-align: center;
+          &:not(:last-child) {
+            margin-right: 10px;
+          }
+          .text {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 14px;
+          }
+          &-selected {
+            border: none;
+            background-color: $orange;
+            line-height: 40px;
+            .text {
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+              color: $white;
+            }
+          }
+        }
+      }
+      .buy-sos-credit-illimix-body-list {
+        max-height: calc(100% - 204px);
+        margin-top: 20px;
+        padding-bottom: 21px;
+        overflow-y: auto;
+        &-item {
+          border-radius: 10px;
+          box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.05);
+          background-color: $white;
+          min-height: 82px;
+          padding-top: 16px;
+          display: flex;
+          justify-content: space-between;
+          position: relative;
+          margin-bottom: 10px;
+          .list-sos-item-text-block {
+            display: inline-block;
+            vertical-align: middle;
+            padding-left: percentage(15px / 355px);
+
+            .amount-data {
+              display: block;
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+              font-size: 18px;
+            }
+
+            .amount-to-pay {
+              margin-top: 8px;
+              display: block;
+              font-family: HelveticaNeueLTStd-Roman, sans-serif;
+              font-size: 14px;
+              .amount {
+                font-family: HelveticaNeueLTStd-Bd, sans-serif;
+              }
+            }
+          }
+
+          .list-sos-item-icon {
+            width: 50px;
+            height: 50px;
+            padding: 12px 17px;
+            display: inline-block;
+            vertical-align: middle;
+
+            .arrow-right {
+              width: 100%;
+              height: 100%;
+            }
+          }
+
+          &-bonus {
+            background-color: $blue;
+            height: 25px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding-left: percentage(15px / 355px);
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+            padding-top: 3px;
+
+            .text {
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+              font-size: 14px;
+            }
+          }
+        }
+
+        .pass-internet-mois {
+          height: 95px;
+        }
+      }
+    }
+  }
+}

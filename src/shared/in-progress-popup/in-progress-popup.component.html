@@ -1,0 +1,31 @@
+<div class="in-progress-page">
+  <div class="in-progress-page-icon">
+    <img
+      src="/assets/images/group-14.svg"
+      alt=""
+      class="icon-leave c-pointer"
+      (click)="cancelDialog()"
+    />
+    <div class="img-container">
+      <img src="/assets/images/in-progress-image.svg" alt="" />
+    </div>
+  </div>
+  <div class="in-progress-page-text">
+    <div class="in-progress-page-text-title">
+      <span>Page en construction</span>
+    </div>
+    <div class="in-progress-page-text-body">
+      <span
+        >Cette fonctionnalité n’est pas encore prête mais on travaille dessus,
+        vous recevrez une notification dés qu’elle sera fonctionnelle… Keep
+        connect ;)</span
+      >
+    </div>
+    <div
+      class="in-progress-page-text-cancel c-pointer"
+      (click)="cancelDialog()"
+    >
+      <span>Fermer</span>
+    </div>
+  </div>
+</div>

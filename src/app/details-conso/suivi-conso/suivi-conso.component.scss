@@ -1,0 +1,171 @@
+@import 'src/app/app';
+
+.category-block {
+  margin-top: 98px;
+
+  .category-container {
+    background-color: $white;
+    margin-bottom: 5px;
+    padding: 20px percentage(10px / $baseWidthMobile2) 20px
+      percentage(12px / $baseWidthMobile2);
+  }
+
+  .scb-categorie-txt {
+    font-size: 16px;
+    color: $fullBlack;
+  }
+
+  .rechargelabel-rechargevalue-rechargejauge-and-expirationrechargedatetime-block {
+    .rechargelabel-rechargevalue-container,
+    .rechargejauge-expirationrechargedatetime-container {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .rechargelabel-rechargevalue-container {
+      margin-top: 15px;
+
+      .rechargelabel-container {
+        .scb-category-item {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 16px;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: normal;
+          letter-spacing: normal;
+          color: $gray;
+        }
+      }
+
+      .rechargevalue-container {
+        .scb-category-item-value,
+        .scb-category-item-value-global {
+          font-size: 16px;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: normal;
+          letter-spacing: normal;
+        }
+
+        .scb-category-item-value-global {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        }
+      }
+    }
+
+    .rechargejauge-expirationrechargedatetime-container {
+      .rechargejauge-container {
+        display: flex;
+        align-items: flex-end;
+        flex: 1 1 auto;
+
+        .rechargejauge-maximum-container,
+        .rechargejauge-maximum-container .rechargejauge-value-container {
+          height: 4px;
+        }
+
+        .rechargejauge-maximum-container {
+          width: percentage(150px / 177.5px);
+          background-color: $jauge-max;
+
+          .rechargejauge-value-container {
+            width: percentage(100px / 177.5px);
+            background-color: $green;
+          }
+        }
+      }
+
+      .expirationrechargedatetime-container {
+        .scb-category-item-validity {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 12px;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: normal;
+          letter-spacing: normal;
+          text-align: right;
+          color: $lightBlack;
+        }
+      }
+    }
+  }
+
+  .creditbonuslabel-creditbonusvalue-creditbonusjauge-and-expirationcreditbonusdatetime-block {
+    .creditbonuslabel-creditbonusvalue-container,
+    .creditbonusjauge-expirationcreditbonusdatetime-container {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .creditbonuslabel-creditbonusvalue-container {
+      margin-top: 15px;
+
+      .scb-category-item {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 16px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: $gray;
+      }
+
+      .creditbonusvalue-container {
+        .scb-category-item-value,
+        .scb-category-item-value-global {
+          font-size: 16px;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: normal;
+          letter-spacing: normal;
+        }
+
+        .scb-category-item-value-global {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        }
+      }
+    }
+
+    .creditbonusjauge-expirationcreditbonusdatetime-container {
+      .creditbonusjauge-container {
+        display: flex;
+        align-items: flex-end;
+        flex: 1 1 auto;
+
+        .creditbonusjauge-maximum-container,
+        .creditbonusjauge-maximum-container .creditbonusjauge-value-container {
+          height: 4px;
+        }
+
+        .creditbonusjauge-maximum-container {
+          width: percentage(150px / 177.5px);
+          background-color: $jauge-max;
+
+          .creditbonusjauge-value-container {
+            width: percentage(100px / 177.5px);
+            background-color: $green;
+          }
+        }
+      }
+
+      .expirationcreditbonusdatetime-container {
+        .scb-category-item-validity {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 12px;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: normal;
+          letter-spacing: normal;
+          text-align: right;
+          color: $lightBlack;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,182 @@
+@import 'src/app/app';
+
+.validation-block {
+  height: 100%;
+  padding-top: 10px;
+  background-color: $grayDashboard;
+  height: 100%;
+  position: relative;
+  &-infos {
+    height: 100%;
+    padding: 0 25px;
+    padding-bottom: 80px;
+    background-color: $white;
+    overflow-y: auto;
+    .img-container {
+      width: 100%;
+      padding-top: 25px;
+      img {
+        width: percentage(120px/325px);
+        height: auto;
+      }
+    }
+    .item-amount {
+      display: flex;
+      padding-top: 20px;
+      .title,
+      .value {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 26px;
+      }
+      .value {
+        padding-left: 10px;
+      }
+    }
+    .recipient-infos {
+      padding-top: 5px;
+      display: block;
+      .title {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+      }
+      .value {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 26px;
+        padding-top: 5px;
+      }
+    }
+    .validity-and-bonus-infos {
+      padding: 20px 0;
+      margin-top: 20px;
+      border-top: dashed 2px $grayDashboard;
+      border-bottom: dashed 2px $grayDashboard;
+      .validity-block {
+        display: flex;
+        justify-content: space-between;
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+      }
+      .bonus-block {
+        display: flex;
+        justify-content: space-between;
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        justify-content: space-between;
+        padding-top: 15px;
+        .bonus-value {
+          padding: 3px 5px;
+          background-color: $blue;
+          border-radius: 6px;
+        }
+      }
+      .pass-details-block {
+        padding-top: 5px;
+        .voice-block,
+        .sms-block,
+        .data-block {
+          display: flex;
+          justify-content: space-between;
+          padding-top: 10px;
+          .left-block {
+            display: flex;
+            align-items: center;
+            width: percentage(94/325);
+            img {
+              width: percentage(25/94);
+              margin-right: percentage(10/94);
+            }
+          }
+          .right-block {
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 16px;
+          }
+        }
+      }
+    }
+    .payment-channel {
+      display: flex;
+      justify-content: space-between;
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 16px;
+      padding-top: 20px;
+      .payment-mode-chosen {
+        display: flex;
+        align-items: center;
+        width: percentage(200/325);
+        justify-content: flex-end;
+        img {
+          width: percentage(24/200);
+          margin-left: percentage(10/200);
+        }
+      }
+    }
+    .fees-block {
+      display: flex;
+      justify-content: space-between;
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 16px;
+      padding-top: 20px;
+    }
+    .fees-om {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: dashed 2px $grayDashboard;
+      .toggle-fees,
+      .toggle-code {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .toggle-box {
+          display: flex;
+          align-items: center;
+          .fee {
+            margin-right: 5px;
+          }
+          ::ng-deep
+            .mat-slide-toggle.mat-disabled.mat-checked
+            .mat-slide-toggle-thumb {
+            background-color: $white;
+          }
+          ::ng-deep
+            .mat-slide-toggle.mat-disabled.mat-checked
+            .mat-slide-toggle-bar {
+            background-color: #32c832;
+          }
+        }
+      }
+      .toggle-fees {
+        padding-bottom: 20px;
+      }
+    }
+    .transfer-om-form {
+      padding-top: 30px;
+    }
+    .total-block {
+      display: flex;
+      padding-top: 20px;
+      justify-content: space-between;
+      align-items: center;
+      .total-title {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+      }
+      .total-value {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 30px;
+      }
+    }
+  }
+  &-btns {
+    position: fixed;
+    background-color: $white;
+    bottom: 0;
+    width: 100%;
+    padding: 10px percentage(10/375);
+    display: flex;
+    justify-content: space-between;
+    button {
+      border-radius: 6px;
+      width: percentage(170/355);
+    }
+  }
+}

@@ -1,0 +1,30 @@
+.param-internet-page {
+  .description {
+    padding: 20px percentage(10/375);
+    .title {
+      font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      font-size: 18px;
+    }
+    .text {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 14px;
+      padding-top: 10px;
+    }
+    .form {
+      padding-top: 30.7px;
+      .title-1 {
+        margin-bottom: -20px;
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 16px;
+      }
+    }
+  }
+  .btn-container {
+    width: 100%;
+    button {
+      position: fixed;
+      bottom: 0;
+      display: none;
+    }
+  }
+}

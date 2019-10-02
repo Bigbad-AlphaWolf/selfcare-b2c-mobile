@@ -1,0 +1,184 @@
+@import 'src/app/app';
+
+.scb-menu-mobile-container {
+  position: relative;
+  height: 100%;
+  min-width: $baseWidthMobile2;
+  background: url('/assets/images/background-menu-mobile.svg');
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  .menu-close-icon {
+    width: percentage(35px / $baseWidthMobile2);
+    height: 35px;
+    padding: 1px percentage(3px / $baseWidthMobile2);
+    position: fixed;
+    right: 9px;
+    top: 15px;
+    .close-icon {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .menu-user-infos {
+    padding-top: 40px;
+    padding-left: percentage(20px / $baseWidthMobile2);
+    display: flex;
+    &-icon {
+      width: 120px;
+      height: 120px;
+      margin-right: percentage(10px / $baseWidthMobile2);
+      .profil-icon {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+      }
+    }
+    &-details {
+      margin-top: 14px;
+      width: calc(100% - 130px);
+      .hello-user-block {
+        margin-bottom: 8.5px;
+        border-bottom: 1px solid $silver;
+        .bonjour {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 16px;
+          display: block;
+        }
+        .username {
+          font-family: HelveticaNeueLTStd-Bd, sans-serif;
+          font-size: 18px;
+          display: block;
+        }
+      }
+      .user-number-block {
+        .numberblock {
+          .user-number {
+            font-family: HelveticaNeueLTStd-Bd, sans-serif;
+            font-size: 18px;
+          }
+        }
+        .user-number-profil {
+          font-family: HelveticaNeueLTStd-Bd, sans-serif;
+          font-size: 16px;
+          line-height: 1.38;
+        }
+
+        .changer-ligne-block {
+          .changer-ligne-text {
+            display: inline-block;
+            .change {
+              font-family: HelveticaNeueLTStd-Roman, sans-serif;
+              font-size: 14px;
+            }
+          }
+          .arrow-right-icon {
+            width: 20px;
+            height: 20px;
+            padding: 5px;
+            display: inline-block;
+            .arrow-right {
+              width: 100%;
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+  .menu-list {
+    margin-top: 35px;
+    &-services {
+      &-item-block {
+        height: 50px;
+        padding-top: 13px;
+        padding-left: percentage(20px / $baseWidthMobile2);
+        padding-bottom: 13px;
+        .menu-list-services-item {
+          .services-item-icon {
+            width: 20px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: percentage(20px / $baseWidthMobile2);
+            .item-icon {
+              width: 100%;
+              height: 100%;
+            }
+          }
+          .services-item-text {
+            display: inline-block;
+            vertical-align: middle;
+            .content {
+              font-family: HelveticaNeueLTStd-Roman, sans-serif;
+              font-size: 16px;
+            }
+          }
+        }
+      }
+      &-item-block-selected {
+        border-left: 5px solid $orange;
+        .menu-list-services-item {
+          .services-item-text {
+            .content {
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+              color: $orange;
+            }
+          }
+        }
+      }
+    }
+
+    &-user-assistance {
+      margin-top: 29.5px;
+      border-top: 1px solid $silver;
+
+      padding-top: 33.5px;
+      .user-assistance-account-block {
+        height: 50px;
+        margin-bottom: 24px;
+        padding-left: percentage(20px / $baseWidthMobile2);
+        .assistance-icon {
+          width: 24px;
+          height: 24px;
+          display: inline-block;
+          margin-right: percentage(21px / $baseWidthMobile2);
+          vertical-align: middle;
+          .icon {
+            width: 100%;
+            height: 100%;
+          }
+        }
+        .assistance-text {
+          display: inline-block;
+          vertical-align: middle;
+          .title {
+            display: block;
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 16px;
+          }
+          .subtitle {
+            display: block;
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 14px;
+          }
+        }
+        &-selected {
+          border-left: 5px solid $orange;
+
+          .assistance-text {
+            .title,
+            .subtitle {
+              color: $orange;
+            }
+            .title {
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .list-item-active {
+    border: none;
+  }
+}

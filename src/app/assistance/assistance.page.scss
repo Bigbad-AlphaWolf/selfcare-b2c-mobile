@@ -1,0 +1,128 @@
+@import 'src/app/app';
+
+.assistance-container {
+  &-header {
+    height: 150px;
+    width: 100%;
+    &-title {
+      height: 50px;
+      width: 100%;
+      padding: 17px 20px;
+      position: relative;
+      .text {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 18px;
+      }
+      .close-icon {
+        position: absolute;
+        right: 20px;
+      }
+    }
+    &-search-block {
+      height: calc(100% - 50px);
+      background-image: url('/content/images/background-assistance-mob.svg');
+      background-size: cover;
+      padding: 30px percentage(34px / $baseWidthMobile2);
+      display: flex;
+      flex-direction: column;
+      .search-block-top-text {
+        text-align: center;
+        margin-bottom: 20px;
+        .title {
+          display: block;
+          font-family: HelveticaNeueLTStd-Bd, sans-serif;
+          font-size: 18px;
+          margin-bottom: 2px;
+        }
+        .subtitle {
+          display: block;
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 16px;
+        }
+      }
+      .search-block-bar {
+        height: 54px;
+        width: 100%;
+        position: relative;
+        min-width: 308px;
+        .search-bar {
+          position: absolute;
+          height: 100%;
+          border-radius: 27px;
+          border: none;
+          padding-left: 25px;
+          width: 100%;
+          &::-webkit-input-placeholder {
+            color: $grey;
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 16px;
+          }
+        }
+        .search-btn {
+          position: absolute;
+          right: 5px;
+          top: 4px;
+          border-radius: 50%;
+          background: $orange;
+          width: 44px;
+          height: 44px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+    }
+  }
+  &-body {
+    height: calc(100% - 225px);
+    padding: 10px percentage(20px / $baseWidthMobile2);
+    position: relative;
+    padding-bottom: 160px;
+    &-faq-list {
+      width: 100%;
+      height: 100%;
+      &-item {
+        border-bottom: 0.5px solid $grey;
+        min-height: 55px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        .item-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .title {
+            font-family: HelveticaNeueLTStd-Bd, sans-serif;
+            font-size: 16px;
+            line-height: 1.25;
+          }
+        }
+        .item-content {
+          .text {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 14px;
+            line-height: 1.14;
+          }
+        }
+      }
+      .spinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+      }
+    }
+    &-call-assistance-btn {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: $orange;
+      height: 50px;
+      .assistance-icon {
+        margin-right: 5px;
+      }
+    }
+  }
+}

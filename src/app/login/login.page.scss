@@ -1,0 +1,261 @@
+@import 'src/app/app';
+
+:host {
+	display: block;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	overflow-y: auto;
+}
+
+// Mobile CSS Section
+.login-page-block-mobile {
+	display: flex;
+	margin-top: 16px;
+
+	mat-form-field {
+		display: block;
+	}
+
+	.back-to-home-line-mobile {
+		position: fixed;
+		left: percentage(9px / $baseWidthMobile);
+
+		.arrow-left {
+			width: 15px;
+			height: 15px;
+		}
+	}
+
+	.login-form-container-mobile {
+		display: inline-block;
+		width: percentage(250px / $baseWidthMobile);
+		margin: 0 auto;
+
+		.login-description-image-mobile {
+			display: flex;
+			justify-content: center;
+			margin-top: 55px;
+			margin-bottom: 16px;
+		}
+
+		.login-form-block-mobile {
+			.scb-form-title-mobile {
+				text-align: center;
+				margin-bottom: 15px;
+			}
+
+			.show-hide-text {
+				font-size: 12px;
+			}
+
+			.error-text {
+				padding-bottom: 20px;
+				font-family: HelveticaNeueLTStd-Roman, sans-serif;
+				font-size: 12px;
+			}
+
+			#remember-me-password-forgot-mobile {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-top: 1px;
+				margin-bottom: 17px;
+				font-size: 14px;
+				font-family: HelveticaNeueLTStd-Roman, sans-serif;
+
+				.password-forgotten {
+					font-family: HelveticaNeueLTStd-Bd, sans-serif;
+					font-size: 11px;
+				}
+			}
+
+			.spinner {
+				display: flex;
+				justify-content: center;
+				background-color: $white;
+				padding: 30px 0px;
+			}
+
+			.login-btns-block {
+				.span {
+					font-size: 14px;
+				}
+
+				.scb-btn-dusk {
+					margin-top: 10px;
+				}
+
+				position: relative;
+				mat-spinner {
+					position: absolute;
+					top: 15px;
+					right: 10px;
+				}
+				.mat-spinner::ng-deep circle {
+					stroke: $white;
+				}
+			}
+
+			.Mobile-Connect-est-u {
+				font-family: HelveticaNeueLTStd-Roman, sans-serif;
+				font-size: 14px;
+				font-weight: normal;
+				font-style: normal;
+				font-stretch: normal;
+				line-height: 1.21;
+				letter-spacing: normal;
+				text-align: center;
+				margin-top: 10px;
+				padding: 0 6px;
+
+				span {
+					font-family: HelveticaNeueLTStd-Bd, sans-serif;
+				}
+			}
+		}
+	}
+}
+
+#login-form-container {
+	margin-top: 129px;
+	display: flex;
+	justify-content: center;
+
+	.login-description-image {
+		width: percentage(313px / $baseWidth);
+		margin-right: percentage(35px / $baseWidth);
+		display: block;
+
+		img {
+			width: 100%;
+		}
+	}
+
+	#login-form-block {
+		width: percentage(380px / $baseWidth);
+
+		.scb-form-title {
+			margin-bottom: 23px;
+		}
+
+		.scb-form-block {
+			.hide-show-text {
+				font-size: 12px;
+			}
+			.error-text {
+				padding-bottom: 20px;
+				font-family: HelveticaNeueLTStd-Roman, sans-serif;
+				font-size: 12px;
+			}
+
+			.input-password {
+				font: small-caption;
+				font-size: 25px;
+			}
+
+			#remember-me-password-forgot {
+				margin-top: 10px;
+				margin-bottom: 28px;
+				width: 100%;
+
+				.Se-souvenir-de-moi,
+				.mat-checkbox-label {
+					font-family: HelveticaNeueLTStd-Roman, sans-serif;
+					font-size: 14px;
+				}
+
+				.password-forgotten {
+					font-family: HelveticaNeueLTStd-Bd, sans-serif;
+					font-size: 14px;
+					line-height: 24px;
+				}
+			}
+
+			.spinner {
+				display: flex;
+				justify-content: center;
+				background-color: $white;
+				padding: 30px 0px;
+			}
+
+			.login-btns-block {
+				margin-bottom: 15px;
+				button {
+					position: relative;
+					mat-spinner {
+						position: absolute;
+						top: 15px;
+						right: 10px;
+					}
+					.mat-spinner::ng-deep circle {
+						stroke: $white;
+					}
+				}
+			}
+
+			.Mobile-Connect-est-u {
+				font-family: HelveticaNeueLTStd-Roman, sans-serif;
+				font-size: 14px;
+				font-weight: normal;
+				font-style: normal;
+				font-stretch: normal;
+				line-height: 1.21;
+				letter-spacing: normal;
+			}
+		}
+
+		.input-password {
+			font: small-caption;
+			font-size: 25px;
+		}
+	}
+}
+
+.copyright-line {
+	position: fixed;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 92.8%;
+	bottom: 10px;
+
+	&-left {
+		.left-logo {
+			margin-right: 6px;
+		}
+
+		.left-text {
+			font-family: HelveticaNeueLTStd-Roman, sans-serif;
+			font-size: 12px;
+
+			.orange-Et-Moi-2018 {
+				font-family: HelveticaNeueLTStd-Bd, sans-serif;
+			}
+		}
+
+		.left-logo,
+		.left-text {
+			display: inline-block;
+			vertical-align: middle;
+		}
+	}
+
+	&-right {
+		.ibou-logo {
+			display: inline-block;
+			margin-right: 10px;
+		}
+
+		.text {
+			width: 80px;
+			height: 45px;
+			display: inline-block;
+
+			.pas-encore-de-compte {
+				font-family: HelveticaNeueLTStd-Roman, sans-serif;
+				font-size: 14px;
+			}
+		}
+	}
+}

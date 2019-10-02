@@ -1,0 +1,14 @@
+{
+  "android" :
+  {
+    "apiKey" : "uhIEz_moLxM4nw",
+    "isVerbose" : false,
+    "maxBackgroundTimeWithinSession" : 120
+  },
+  "ios" :
+  {
+    "apiKey" : "QPffEkR8XKf7Yg",
+    "isVerbose" : false,
+    "maxBackgroundTimeWithinSession" : 120
+  }
+}

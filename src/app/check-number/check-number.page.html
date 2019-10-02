@@ -1,0 +1,40 @@
+<div class="login-page-block-mobile">
+	<div class="login-form-container-mobile">
+		<div class="login-description-image-mobile">
+			<img src="/assets/images/new_ibou.svg" alt="ibou-connection_mobile" width="65%" />
+		</div>
+		<div class="login-form-block-mobile">
+			<div class="scb-form-title-mobile">
+				<span class="scb-f-30 scb-text-black">Saisie numéro </span>
+				<span class="scb-f-30 scb-text-black"
+					><br />
+					de téléphone</span
+				>
+			</div>
+			<div>
+				<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate autocomplete="false">
+					<mat-form-field class="scb-input-row" appearance="outline">
+						<mat-label>Entrez votre numéro &nbsp;&nbsp;</mat-label>
+						<input formControlName="username" matInput [(ngModel)]="subscribedNumber" />
+					</mat-form-field>
+
+					<div *ngIf="showErrMessage" class="error-text">
+						<span class="scb-text-red-error"> {{ errorMsg }} </span>
+					</div>
+					<div class="login-btns-block">
+						<button
+							type="submit"
+							[disabled]="!form.valid || loading"
+							class="scb-btn-full scb-btn-orange"
+							mat-stroked-button
+						>
+							<span>Suivant</span>
+							<mat-spinner mode="indeterminate" [diameter]="20" *ngIf="loading"></mat-spinner>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div></div>
+	</div>
+</div>

@@ -1,0 +1,40 @@
+<div class="delete-phone-number-mobile-wrapper">
+  <div class="delete-phone-number-header-mobile">
+    <img
+      routerLink="/my-account"
+      src="/assets/images/arrow-left.svg"
+      class="arrow-left-delete-phone-number"
+      alt="arrow-left-delete-phone-number"
+    />
+    <div class="header-label scb-text-full-black">Supprimer une ligne</div>
+  </div>
+  <div class="header-separator-line"></div>
+  <div class="delete-phone-number-page-content">
+    <div class="action-info-block">
+      <span class="action-info-text"
+        >Sélectionnez les lignes à supprimer de votre compte</span
+      >
+    </div>
+
+    <app-numbers-to-delete-list
+      (updated)="onSelectItemsUpdated($event)"
+      [phoneNumbers]="phoneNumbers"
+    ></app-numbers-to-delete-list>
+    <div class="number-of-selected-item-block" *ngIf="cpt > 0">
+      <span class="number-of-selected-item-text scb-text-orange"
+        >{{ cpt }} ligne{{ cpt > 1 ? 's' : '' }} sélectionnée{{
+          cpt > 1 ? 's' : ''
+        }}</span
+      >
+    </div>
+    <div class="bottom-bts-block">
+      <button
+        (click)="deletePhoneNumbers()"
+        [disabled]="cpt < 1"
+        class="scb-btn scb-btn-orange scb-btn-full"
+      >
+        Supprimer
+      </button>
+    </div>
+  </div>
+</div>

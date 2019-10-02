@@ -1,0 +1,269 @@
+@import 'src/app/app';
+
+.bills-mobile-page {
+  height: 100%;
+  overflow-y: auto;
+  .bills-mobile-header {
+    position: fixed;
+    top: 0;
+    text-align: center;
+    width: 100%;
+    background-color: $white;
+    height: 50px;
+    padding-top: 17px;
+    padding-left: 10px;
+
+    .arrow-left {
+      position: absolute;
+    }
+
+    .title {
+      width: 100%;
+      font-size: 18px;
+      text-align: center;
+    }
+  }
+
+  .spinner {
+    padding-top: 65px;
+    mat-spinner {
+      margin: 0 auto;
+    }
+    .mat-spinner::ng-deep circle {
+      stroke: $orange;
+    }
+  }
+
+  .error {
+    font-family: HelveticaNeueLTStd-Roman, sans-serif;
+    font-size: 14px;
+    padding: 55px 10px;
+
+    span {
+      text-decoration: underline;
+    }
+  }
+
+  .bills-container {
+    padding: 0px 10px;
+    padding-top: 55px;
+    background-color: $grayDashboard;
+
+    .last-bill {
+      &-title {
+        padding-top: 15px;
+        text-align: center;
+        font-size: 14px;
+        height: 51px;
+      }
+
+      &-infos {
+        background-color: $white;
+        padding: 7.5px 15.4px 0px 15.4px;
+
+        &-utils {
+          display: flex;
+          padding-bottom: 10.7px;
+          border-bottom: solid $silver;
+
+          .bill-img-container {
+            width: percentage(50px/310px);
+            height: auto;
+            max-height: 60px;
+
+            img {
+              width: 100%;
+              height: 100%;
+            }
+          }
+
+          .bill-infos-container {
+            width: 100%;
+            padding-left: 16.1px;
+
+            .top-infos,
+            .bottom-infos {
+              display: flex;
+              justify-content: space-between;
+              width: 100%;
+
+              .emiss-text {
+                padding-top: 7px;
+              }
+            }
+          }
+        }
+
+        &-dates {
+          font-size: 14px;
+          padding-top: 7px;
+          padding-bottom: 15px;
+
+          .emission-date {
+          }
+
+          .echeance-date {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding-top: 10px;
+          }
+        }
+
+        .more-infos {
+          padding-top: 17px;
+          border-top: solid $silver;
+          padding-left: percentage(7px/325px);
+          padding-bottom: 2.5px;
+
+          &-item-block {
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            span {
+              font-family: HelveticaNeueLTStd-Roman, sans-serif;
+              font-size: 16px;
+              font-weight: normal;
+              font-style: normal;
+              padding-left: percentage(15px/325px);
+            }
+            .mat-spinner::ng-deep circle {
+              stroke: $orange;
+              margin-left: 20px;
+            }
+          }
+
+          .btn-container {
+            width: 100%;
+            padding-bottom: 15px;
+            .button {
+              text-align: center;
+              line-height: 40px;
+              height: 40px;
+              background-color: $orange;
+              border-radius: 30px;
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+
+    .bills-history {
+      &-title {
+        padding-top: 15px;
+        text-align: center;
+        font-size: 14px;
+        height: 55px;
+      }
+
+      &-infos {
+        overflow-y: scroll;
+
+        &-item {
+          padding: 0 15px;
+          margin-bottom: 10px;
+          background-color: $white;
+
+          .more-infos {
+            padding-top: 17px;
+            border-top: solid $silver;
+            padding-left: percentage(7px/325px);
+            padding-bottom: 2.5px;
+
+            &-item-block {
+              padding-bottom: 20px;
+              display: flex;
+              align-items: center;
+              span {
+                font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                font-size: 16px;
+                font-weight: normal;
+                font-style: normal;
+                padding-left: percentage(15px/325px);
+              }
+              .mat-spinner::ng-deep circle {
+                stroke: $orange;
+                margin-left: 20px;
+              }
+            }
+            .btn-container {
+              width: 100%;
+              padding-bottom: 15px;
+              .button {
+                text-align: center;
+                line-height: 40px;
+                height: 40px;
+                background-color: $orange;
+                border-radius: 30px;
+                width: 100%;
+              }
+            }
+          }
+
+          .item-bill-infos {
+            .bill-status {
+              display: flex;
+              justify-content: space-between;
+              padding-top: 16px;
+            }
+
+            .bill-id {
+              display: flex;
+              justify-content: space-between;
+              padding-top: 10px;
+            }
+
+            .bill-emission {
+              display: flex;
+              justify-content: space-between;
+              padding-top: 1px;
+              padding-bottom: 20px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .paid-status {
+    color: $greenSuccess;
+    font-size: 14px;
+  }
+
+  .unpaid-status {
+    color: $redError;
+    font-size: 14px;
+  }
+
+  .price {
+    font-size: 22px;
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+  }
+
+  .emiss-text {
+    font-size: 14px;
+    font-family: HelveticaNeueLTStd-Roman, sans-serif;
+  }
+
+  .bills-history-text {
+    font-family: HelveticaNeueLTStd-Roman, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.43;
+    letter-spacing: normal;
+    text-align: center;
+  }
+
+  .img-icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .amount {
+    font-size: 22px;
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+  }
+}

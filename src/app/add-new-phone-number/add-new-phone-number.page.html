@@ -1,0 +1,116 @@
+<div
+  class="newLine-mobile-page"
+  *ngIf="currentStep !== 'SUCCESS' && currentStep !== 'FAILED'"
+>
+  <div class="newLine-mobile-header">
+    <div class="arrow-left">
+      <img alt="" src="/assets/images/arrow-left.svg" (click)="goBack()" />
+    </div>
+    <div class="title"><span>Rattachement d'une ligne</span></div>
+  </div>
+  <div class="grey-line" *ngIf="welcome == false"></div>
+  <div class="scb-chat-box" *ngIf="welcome == false">
+    <div #scrollMe class="chat-messages">
+      <app-chat-msg-line
+        *ngFor="let message of messages"
+        [title]="message.title"
+        [content]="message.content"
+        [origin]="message.origin"
+        [type]="message.type"
+        [editable]="message.editable"
+        [editType]="message.editType"
+        [step]="message.step"
+        (editInput)="onEditValue($event)"
+        (line)="onChooseLine($event)"
+      ></app-chat-msg-line>
+    </div>
+    <div
+      [ngClass]="{
+        hide:
+          currentStep === CHOOSE_LINE_STEP ||
+          currentStep === CHOOSE_IDEN_OR_BILL_STEP ||
+          currentStep === CHOOSE_PASS_OR_CARD_STEP
+      }"
+      class="scb-form-message"
+    >
+      <mat-form-field class="scb-input-row scb-message-input">
+        <input
+          placeholder="Tapez votre réponse ici"
+          matInput
+          [(ngModel)]="inputValue"
+        />
+      </mat-form-field>
+      <button
+        mat-stroked-button
+        [disabled]="inputValue && !inputValue.trim()"
+        class="scb-btn scb-btn-orange scb-btn-send"
+        (click)="send()"
+      >
+        Envoyer
+      </button>
+    </div>
+  </div>
+  <div class="welcome-message" *ngIf="welcome">
+    <div class="content">
+      <div class="welcome-message-text">
+        <span
+          >Bonjour, je suis Ibou votre conseiller. Je vais vous aider à
+          rattacher une nouvelle ligne.</span
+        >
+      </div>
+      <div class="welcome-image">
+        <img
+          src="/assets/images/new_ibou-rattachement-ligne-mobile.svg"
+          alt=""
+        />
+      </div>
+    </div>
+    <div class="start-btn-container">
+      <button
+        class="scb-btn scb-btn-orange scb-btn-full start-button"
+        (click)="startChat()"
+      >
+        Commencer
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  class="success-failed-block"
+  *ngIf="currentStep == 'SUCCESS' || currentStep == 'FAILED'"
+>
+  <div class="success-block" *ngIf="currentStep == 'SUCCESS'">
+    <div class="status-block"><span>C’est fait!</span></div>
+    <div class="status-text">
+      <span>Cette ligne a bien été rajoutée à votre compte.</span>
+    </div>
+    <div class="status-img-container">
+      <img
+        src="/assets/images/new_ibou-rattachement-ligne-mobile-success.svg"
+        alt=""
+      />
+    </div>
+    <div class="btn-container">
+      <button class="scb-btn" (click)="goBackHome()">Retour à l'accueil</button>
+    </div>
+  </div>
+  <div class="failed-block" *ngIf="currentStep == 'FAILED'">
+    <div class="status-block"><span>Aïe!</span></div>
+    <div class="status-text">
+      <span
+        >Les informations que vous avez fournies ne correspondent pas à celles
+        du propriétaire de la ligne.</span
+      >
+    </div>
+    <div class="status-img-container">
+      <img
+        src="/assets/images/new_ibou-rattachement-ligne-mobile-echec.svg"
+        alt=""
+      />
+    </div>
+    <div class="btn-container">
+      <button class="scb-btn" (click)="goBackHome()">Retour à l'accueil</button>
+    </div>
+  </div>
+</div>

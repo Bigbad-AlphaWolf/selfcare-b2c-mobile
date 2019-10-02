@@ -1,0 +1,35 @@
+<div class="register-sargal-container">
+	<div class="register-sargal-container-header">
+		<div (click)="goBack()" class="back">
+			<img src="/assets/images/arrow-left.svg" alt="arrow-left" class="arrow" />
+		</div>
+		<div class="texte scb-text-black">Inscriptions Orange Sargal</div>
+	</div>
+	<div class="register-sargal-container-image-header">
+		<img src="/assets/images/sargal-inscription.svg" alt="" class="image-header" />
+	</div>
+	<div class="register-sargal-container-body">
+		<div class="text scb-text-gray">
+			Le programme de fidélité <span class="scb-text-full-black"> Orange Sargal </span> est un programme gratuit, ouvert
+			à tous les clients du mobile prépayé ayant une ligne active. Que vous soyez Jamono New S’cool, Jamono Allo ou
+			Jamono Max, à chaque fois que vous rechargez du crédit, Orange vous offre des points sur votre numéro de mobile
+			prépayé.
+		</div>
+		<div class="illustrations">
+			<img src="/assets/images/sargal-inscription-image-1.svg" alt="sargal-image" class="image" />
+			<img src="/assets/images/sargal-inscription-image-2.svg" alt="sargal-image" class="image" />
+			<img src="/assets/images/sargal-inscription-image-3.jpg" alt="sargal-image" class="image" />
+		</div>
+		<div
+			(click)="goToRegisterSargal()"
+			class="scb-btn-v2 scb-btn-orange c-pointer"
+			[ngClass]="{ disabled: isProcessing }"
+		>
+			M'inscrire au programme
+			<mat-spinner mode="indeterminate" [diameter]="20" *ngIf="isProcessing"></mat-spinner>
+		</div>
+		<div *ngIf="hasError" class="scb-text-red-error">
+			Une erreur s'est produite. Veuillez réessayer plus tard.
+		</div>
+	</div>
+</div>

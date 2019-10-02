@@ -1,0 +1,137 @@
+@import 'src/app/app';
+
+.scb-my-account-mobile-wrapper {
+	overflow: auto;
+	.scb-my-account-header-mobile {
+		height: 50px;
+		padding: 0 10px;
+		display: flex;
+		align-items: center;
+		img,
+		.scb-my-account-header-label {
+			display: inline-block;
+			vertical-align: middle;
+		}
+		.scb-my-account-header-label {
+			margin-left: 15px;
+		}
+	}
+	.scb-my-account-infos-block {
+		height: 305px;
+		padding-top: 39px;
+		padding-left: 19.5px;
+		padding-right: 19.5px;
+		background-image: url('/assets/images/background-mon-compte.svg');
+		background-size: cover;
+		.user-avatar-container {
+			display: inline-block;
+			margin-bottom: 15px;
+			position: relative;
+			.upload-avatar {
+				display: none;
+			}
+			.user-avatar {
+				display: block;
+				width: 160px;
+				height: 160px;
+				border-radius: 50%;
+			}
+
+			.input-icon {
+				position: absolute;
+				bottom: 8px;
+				right: 0;
+				width: 40px;
+				.user-avatar-chooser {
+					width: 100%;
+					height: auto;
+					box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.05);
+					border-radius: 50%;
+				}
+			}
+		}
+		.error-field {
+			margin-bottom: 10px;
+			.user-img-error {
+				font-family: HelveticaNeueLTStd-Roman, sans-serif;
+				width: 100%;
+				display: block;
+			}
+		}
+		.user-name-light {
+			font-family: HelveticaNeueLTStd-Roman, sans-serif;
+			font-size: 16px;
+			font-weight: normal;
+			font-style: normal;
+			font-stretch: normal;
+			line-height: normal;
+			letter-spacing: normal;
+			color: $gray;
+			margin-bottom: 7px;
+		}
+		.user-name-bold {
+			font-family: HelveticaNeueLTStd-Bd, sans-serif;
+			font-size: 18px;
+			font-weight: normal;
+			font-style: normal;
+			font-stretch: normal;
+			line-height: normal;
+			letter-spacing: normal;
+			color: $black;
+		}
+	}
+	.my-account-menu-block {
+		margin-top: 36px;
+		padding: 0 20px 20px 20px;
+		#my-account-menu {
+			.my-account-menu-item {
+				display: flex;
+				justify-content: space-between;
+				flex-wrap: wrap;
+				padding: 18.5px 0 14.5px 0;
+				border-bottom: 1px solid $silver;
+				span {
+					font-family: HelveticaNeueLTStd-Roman, sans-serif;
+					font-size: 16px;
+					font-weight: normal;
+					font-style: normal;
+					font-stretch: normal;
+					line-height: normal;
+					letter-spacing: normal;
+					color: $fullBlack;
+				}
+				&-icon {
+					width: percentage(9px/340px);
+					height: 15px;
+					img {
+						width: 100%;
+						height: 100%;
+					}
+				}
+				.email-state-container {
+					span {
+						font-family: HelveticaNeueLTStd-Roman, sans-serif;
+						font-size: 16px;
+						color: #000000;
+					}
+					.link {
+						color: blue;
+					}
+				}
+			}
+			.logout-menu-item {
+				margin-top: 50px;
+				span {
+					font-family: HelveticaNeueLTStd-Bd, sans-serif;
+					font-size: 16px;
+					font-weight: normal;
+					font-style: normal;
+					font-stretch: normal;
+					line-height: normal;
+					letter-spacing: normal;
+					color: $orange;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,91 @@
+<div class="my-formule-details">
+  <div class="my-formule-details-icon-top">
+    <img [src]="getImgByFormule(formule)" alt="" />
+  </div>
+  <div class="my-formule-label-and-value">
+    <span class="my-formule-label">Ma formule</span>
+    <span class="my-formule-value">{{ formule?.nomFormule }}</span>
+  </div>
+  <div class="my-formule-details-container">
+    <div class="my-formule-details-container-list">
+      <div class="list-header-container">
+        <div class="header-container-icon">
+          <img alt="" src="/assets/images/phone-black.svg" />
+        </div>
+        <span class="title scb-text-full-black">
+          Appels
+        </span>
+      </div>
+      <div class="list-content-container">
+        <div class="list-content-container-item">
+          <div class="scb-text-full-black item-top-block">
+            {{ formule?.prixAppels }} F / Sec
+          </div>
+          <div class="scb-text-dark-grey item-subtitle">
+            {{ formule?.nomFormule }}
+          </div>
+        </div>
+        <div
+          class="list-content-container-item"
+          *ngFor="let tarifFormule of formule?.tarifFormules"
+        >
+          <ng-container *ngIf="tarifFormule.categorie === 'APPEL'">
+            <div class="scb-text-full-black item-top-block">
+              {{ tarifFormule?.tarif }} F / Sec
+            </div>
+            <div class="scb-text-dark-grey item-subtitle">
+              {{ tarifFormule?.description }}
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="my-formule-details-container-list">
+      <div class="list-header-container">
+        <div class="header-container-icon">
+          <img alt="" src="/assets/images/message-black.svg" />
+        </div>
+        <span class="title scb-text-full-black">
+          SMS
+        </span>
+      </div>
+      <div class="list-content-container">
+        <div class="list-content-container-item">
+          <div class="scb-text-full-black item-top-block">
+            {{ formule?.prixSMS }} F
+          </div>
+          <div class="scb-text-dark-grey item-subtitle">
+            {{ formule?.nomFormule }}
+          </div>
+        </div>
+        <div
+          class="list-content-container-item"
+          *ngFor="let tarifFormule of formule?.tarifFormules"
+        >
+          <ng-container *ngIf="tarifFormule.categorie === 'SMS'">
+            <div class="scb-text-full-black item-top-block">
+              {{ tarifFormule?.tarif }} F
+            </div>
+            <div class="scb-text-dark-grey item-subtitle">
+              {{ tarifFormule?.description }}
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    (click)="confirmChangeFormule()"
+    class="confirm-btn"
+    [ngClass]="{ disabled: changeFormuleProcessing }"
+  >
+    Changer de formule
+    <div *ngIf="changeFormuleProcessing" class="spinner">
+      <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
+    </div>
+  </div>
+  <div *ngIf="hasError" class="scb-text-red-error">
+    {{ error }}
+  </div>
+</div>

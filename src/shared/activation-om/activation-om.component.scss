@@ -1,0 +1,132 @@
+@import 'src/app/app';
+
+.activationOM-mobile-container {
+  height: 100%;
+  .activationOM-mobile-container-header {
+    height: 50px;
+    text-align: center;
+    line-height: 55px;
+    position: relative;
+    .back-btn {
+      position: absolute;
+      left: 10px;
+      top: 18px;
+    }
+
+    .header-text {
+      font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      font-size: 18px;
+    }
+  }
+
+  .checking-token-block {
+    width: 100%;
+    padding-top: 100px;
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    .mat-spinner::ng-deep circle {
+      stroke: $orange;
+    }
+  }
+
+  .activationOM-mobile-container-body,
+  .activationOM-mobile-container-body-with-op {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    .codeOTP-content {
+      width: 100%;
+      &.onPipadshown {
+        position: absolute;
+        display: none;
+        filter: blur(2px);
+        -webkit-filter: blur(2px);
+        -moz-filter: blur(2px);
+        -o-filter: blur(2px);
+        -ms-filter: blur(2px);
+      }
+      .image-activationOM {
+        width: 100%;
+        .image-header {
+          width: 100%;
+          height: auto;
+        }
+      }
+
+      .activationOM-mobile-container-body-content {
+        padding: 20px percentage(10px / $baseWidthMobile2);
+        .text {
+          display: block;
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 16px;
+          line-height: 1.25;
+        }
+        .otp-input {
+          margin-top: 50px;
+          position: relative;
+          .material-input {
+            width: 100%;
+          }
+          .btn-info {
+            position: absolute;
+            right: 0;
+            top: 18px;
+            border-radius: 50%;
+            background-color: $lBlue;
+            width: 20px;
+            height: 20px;
+            line-height: 25px;
+            text-align: center;
+          }
+        }
+        .confirm-btn {
+          position: fixed;
+          bottom: 0px;
+          left: 0;
+          mat-spinner {
+            position: absolute;
+            top: 15px;
+            right: 10px;
+          }
+          .mat-spinner::ng-deep circle {
+            stroke: $white;
+          }
+        }
+        .resend-code {
+          margin-top: 30px;
+          position: relative;
+          mat-spinner {
+            position: absolute;
+            top: 15px;
+            right: 10px;
+          }
+        }
+        .otp-error-msg {
+          font-size: 14px;
+        }
+      }
+      .error-message {
+        padding-bottom: 1.25em;
+        margin-top: 50px;
+        padding-left: 10px;
+        span {
+          color: red;
+        }
+      }
+    }
+    .pinPad-content {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+    }
+  }
+
+  .activationOM-mobile-container-body {
+    height: calc(100% - 50px);
+  }
+  .activationOM-mobile-container-body-with-op {
+    height: 100%;
+  }
+}

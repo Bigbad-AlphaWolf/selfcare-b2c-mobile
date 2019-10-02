@@ -1,0 +1,53 @@
+@import 'src/app/app';
+
+.deplafonnement-page {
+  position: relative;
+  .form-deplafonnement {
+    padding: 35px percentage(10/375) 60px;
+    .download-block {
+      &-link {
+        padding-top: 8.3px;
+        display: flex;
+        span {
+          padding-right: 5px;
+        }
+      }
+    }
+    .upload-file {
+      padding-top: 40px;
+      &-input {
+        border: solid 1px $black;
+        margin-top: 10px;
+        padding: 8px;
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+      }
+      &-description {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 10px;
+        width: percentage(258/355);
+        padding-top: 10px;
+      }
+      .error {
+        font-size: 12px;
+        padding-top: 8px;
+      }
+    }
+  }
+  button {
+    position: fixed;
+    bottom: 0px;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  mat-spinner {
+    position: absolute;
+    left: 10%;
+  }
+  .filename {
+    overflow-x: hidden;
+  }
+}

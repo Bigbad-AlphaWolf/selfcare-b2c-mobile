@@ -1,0 +1,45 @@
+:host {
+  padding: 40px 58px;
+  display: block;
+}
+
+.dialog-title {
+  font-family: HelveticaNeueLTStd-Bd, sans-serif;
+  font-size: 20px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.1;
+  letter-spacing: normal;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.phone-numbers-to-delete {
+  margin-bottom: 40px;
+  .phone-number-row {
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 19px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+}
+.dialog-actions-btns-block {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  .dialog-actions-btn {
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 16px;
+    width: 48%;
+    border-radius: 4px;
+    &:not(:last-child) {
+      margin-right: percentage(20px / 178px);
+    }
+    min-width: 50px;
+  }
+}

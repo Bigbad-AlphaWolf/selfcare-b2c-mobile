@@ -1,0 +1,37 @@
+<div class="share-social-network-container">
+  <div (click)="close()" class="icon-close">
+    <img src="/assets/images/group-14.svg" alt="" />
+  </div>
+  <div class="title">
+    <span class="text">Partazé lenko !!!</span>
+  </div>
+  <div class="ibou-block">
+    <div class="ibou-block-text">
+      <span class="text">
+        Dites à vos amis <br />
+        qu’<span class="scb-text-orange"> OrangeEtMoi </span> ça marche :)</span
+      >
+    </div>
+    <div class="ibou-block-img">
+      <img src="/assets/images/ibou-share-icon.svg" alt="" />
+    </div>
+  </div>
+  <div class="share-social-network-list">
+    <ng-container *ngFor="let elt of socialNetworkList">
+      <div
+        class="share-social-network-list-item scb-btn-full"
+        [ngClass]="{ 'item-selected': elt.selected }"
+        (click)="selectItem(elt)"
+      >
+        <div class="social-network-block">
+          <div class="icon">
+            <img [src]="elt.icon" alt="" />
+          </div>
+          <span class="scb-share-label-orange text">
+            {{ elt.label }}
+          </span>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

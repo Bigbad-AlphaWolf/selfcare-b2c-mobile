@@ -1,0 +1,11 @@
+repositories {
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url 'http://nexus.follow-apps.com/nexus/content/repositories/releases/'
+    }
+}
+dependencies {
+    implementation "com.followapps.android:sdk:6.3.3"
+}

@@ -1,0 +1,30 @@
+<div class="param-internet-page">
+  <app-help-banner
+    [helpType]="'internet-parametrage'"
+    [text]="'Je veux paramétrer mon mobile à internet'"
+  ></app-help-banner>
+  <div class="description">
+    <div class="title">Comment paramétrer mon mobile à l'internet mobile ?</div>
+    <div class="text scb-text-light-black">
+      Pour paramétrer votre téléphone ou tablette à l'internet mobile, tapez
+      #120# et choisissez l'option 1. Vous recevrez les parametres par sms. Il
+      suffit de les installer et c'est parti! OU Vous pouvez aussi paramétrer
+      vous-même votre téléphone ou tablette, rien de plus simple. Commencez par
+      accéder au menu « Paramètres » puis « Réseaux mobiles » (parfois caché
+      dans le menu « Plus ») afin d’accéder aux « Noms des points d’accès ». En
+      cliquant sur la touche menu de votre téléphone, sélectionnez « Nouvel APN
+      » Les paramètres internet Orange sont: Nom : Orange Internet APN :
+      internet Laisser tous les autres options en l’état puis sauvegarder
+    </div>
+  </div>
+  <div class="btn-container">
+    <button
+      class="scb-btn scb-btn-orange scb-btn-full"
+      mat-stroked-button
+      [disabled]="!numbers"
+      (click)="sendSMS()"
+    >
+      ENVOYER LE PARAMETRAGE SUR CE NUMERO
+    </button>
+  </div>
+</div>

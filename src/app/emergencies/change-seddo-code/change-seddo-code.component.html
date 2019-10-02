@@ -1,0 +1,66 @@
+<div class="change-code-page">
+  <app-help-banner
+    [helpType]="'seddoCode'"
+    [text]="'Je veux changer mon code de Seddo'"
+  ></app-help-banner>
+  <form
+    [formGroup]="form"
+    novalidate
+    autocomplete="false"
+    (submit)="onSubmit()"
+  >
+    <div class="form-content">
+      <div class="title scb-text-gray">Choisissez le numéro concerné</div>
+      <mat-form-field class="scb-input-row scb-required dropdown-number-2">
+        <mat-select formControlName="phoneNumber">
+          <mat-option
+            *ngFor="let number of numbers; let i = index"
+            [value]="number"
+          >
+            {{ number | phoneNumberDisplay }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="scb-input-row scb-required input-field">
+        <input
+          formControlName="actualCode"
+          matInput
+          type="password"
+          placeholder="Entrez votre code actuel"
+        />
+      </mat-form-field>
+      <mat-form-field class="scb-input-row scb-required input-field">
+        <input
+          formControlName="newCode"
+          matInput
+          type="password"
+          placeholder="Entrez votre nouveau code"
+        />
+      </mat-form-field>
+      <mat-form-field class="scb-input-row scb-required input-field">
+        <input
+          formControlName="confirmNewCode"
+          matInput
+          type="password"
+          placeholder="Confirmez votre nouveau code"
+        />
+      </mat-form-field>
+      <div class="error-block" *ngIf="errorMsg !== ''">
+        <span class="scb-text-red-error">{{ errorMsg }}</span>
+      </div>
+    </div>
+    <button
+      type="submit"
+      class="scb-btn scb-btn-orange scb-btn-full"
+      mat-stroked-button
+      [disabled]="!form.valid || loading"
+    >
+      <span>Confirmer</span>
+      <mat-spinner
+        mode="indeterminate"
+        [diameter]="20"
+        *ngIf="loading"
+      ></mat-spinner>
+    </button>
+  </form>
+</div>

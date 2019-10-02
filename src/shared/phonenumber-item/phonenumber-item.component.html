@@ -1,0 +1,26 @@
+<div
+  [ngClass]="{
+    'scb-number-selectable': selectable,
+    'scb-number-selected': selected,
+    'phone-number-item-simple': simple
+  }"
+  class="phone-number-item"
+  (click)="toggleSelection()"
+>
+  <div class="phone-number-data-block">
+    <img [src]="profile?.icon" alt="" class="" />
+    <div class="phone-number-data">
+      <div class="phone-number">{{ number }}</div>
+      <div class="phone-number-profile scb-text-light-black">
+        {{ profile?.name }}
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!simple" class="item-selector-block">
+    <mat-checkbox
+      #checkbox
+      (change)="syncWithSelectionState($event)"
+      [checked]="selected"
+    ></mat-checkbox>
+  </div>
+</div>

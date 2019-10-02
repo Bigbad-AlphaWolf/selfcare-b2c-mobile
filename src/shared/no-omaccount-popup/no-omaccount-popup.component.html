@@ -1,0 +1,58 @@
+<div class="no-OM-account-container">
+  <img
+    class="hide-banniere-promo"
+    (click)="close()"
+    src="/assets/images/group-14.svg"
+    alt="hide-banniere-promo"
+  />
+  <div class="image-illustrative">
+    <img
+      *ngIf="!data?.otherDestinataire"
+      src="/assets/images/no-om-account-Mob.svg"
+      alt="icon"
+      class="image-top"
+    />
+    <img
+      *ngIf="data?.otherDestinataire"
+      src="/assets/images/noOMAccount.svg"
+      alt="icon"
+      class="image-top"
+    />
+  </div>
+  <ng-container *ngIf="!data?.otherDestinataire">
+    <span class="title scb-text-full-black">
+      Vous n’avez pas de compte Orange Money
+    </span>
+    <span class="text scb-text-light-black">
+      Pour activer Orange Money sur Orange et Moi, vous devez ouvrir un compte.
+    </span>
+  </ng-container>
+  <ng-container *ngIf="data?.otherDestinataire">
+    <span class="title scb-text-full-black">
+      Ce destinaire ne possède pas de compte Orange Money
+    </span>
+    <span class="text scb-text-light-black">
+      Vous voulez faire un transfert avec code ? (Les frais de retrait seront à
+      votre charge)
+    </span>
+  </ng-container>
+  <div *ngIf="!data?.otherDestinataire" class="btn-block">
+    <div
+      (click)="goToPageOpenAccount()"
+      class="btn-confirm scb-text-white c-pointer"
+    >
+      Oui, ouvrir
+    </div>
+    <div (click)="close()" class="btn-no c-pointer">
+      Non, merci
+    </div>
+  </div>
+  <div *ngIf="data?.otherDestinataire" class="btn-block">
+    <div (click)="close(true)" class="btn-confirm scb-text-white c-pointer">
+      Oui, continuer
+    </div>
+    <div (click)="close(false)" class="btn-no c-pointer">
+      Non, annuler
+    </div>
+  </div>
+</div>

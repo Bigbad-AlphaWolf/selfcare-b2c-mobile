@@ -1,0 +1,37 @@
+@import 'src/app/app';
+
+.item {
+  height: 100%;
+  padding: 15px 0;
+  background: $white;
+  border-radius: 10px;
+  border: solid 2px $silver;
+  .help-img-container {
+    width: percentage(76/170);
+    min-width: 76px;
+    margin: auto;
+    img {
+      width: 100%;
+    }
+  }
+
+  .description {
+    text-align: center;
+    width: percentage(150/170);
+    margin: auto;
+    .help-title {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 14px;
+      font-weight: normal;
+    }
+    .help-text {
+      font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      font-size: 14px;
+      font-weight: normal;
+    }
+  }
+}
+
+.item:hover {
+  border: solid 1px $orange;
+}

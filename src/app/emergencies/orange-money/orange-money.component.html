@@ -1,0 +1,169 @@
+<div class="deplafonnement-page">
+  <app-help-banner
+    [text]="'Je veux déplafonner mon compte Orange Money'"
+    [helpType]="'deplafonnement'"
+    *ngIf="type === 'deplafonnement'"
+  ></app-help-banner>
+  <app-help-banner
+    [text]="'Je veux ouvrir un compte'"
+    [helpType]="'compteOM'"
+    *ngIf="type === 'creation-compte'"
+  >
+  </app-help-banner>
+  <app-help-banner
+    [text]="'Je veux déclarer une erreur de transaction Orange Money'"
+    [helpType]="'reclamation'"
+    *ngIf="type === 'reclamation'"
+  ></app-help-banner>
+  <form
+    class="form-deplafonnement"
+    [formGroup]="form"
+    enctype="multipart/form-data"
+  >
+    <div class="download-block">
+      <div *ngIf="type !== 'reclamation'" class="download-block-title">
+        1. Téléchargez le formulaire de souscription
+      </div>
+      <div *ngIf="type === 'reclamation'" class="download-block-title">
+        1. Téléchargez le formulaire de réclamation
+      </div>
+      <div (click)="downloadFile()" class="download-block-link scb-text-orange">
+        <span>Cliquez-ici pour le télécharger </span>
+        <img src="/assets/images/keyboard-arrow-down-black.svg" alt="" />
+      </div>
+    </div>
+    <div class="upload-file">
+      <div class="upload-file-title">
+        2. Veuillez renseigner votre mail:
+      </div>
+      <mat-form-field class="scb-input-row scb-required">
+        <input
+          formControlName="mail"
+          type="email"
+          matInput
+          placeholder="Votre E-mail"
+          autocomplete="off"
+        />
+      </mat-form-field>
+      <div
+        class="error scb-text-red-error"
+        *ngIf="
+          form.get('mail').invalid &&
+          (form.get('mail').touched || form.get('mail').dirty)
+        "
+      >
+        Renseignez un email valide.
+      </div>
+    </div>
+    <div class="upload-file">
+      <div class="upload-file-title">
+        3. Téléchargez le formulaire rempli et signé.
+      </div>
+      <input
+        type="file"
+        hidden
+        #formInput
+        (change)="checkFile($event.srcElement.files, 'form')"
+        formControlName="form"
+      />
+      <div class="upload-file-input" (click)="formInput.click()">
+        <span
+          class="placeholder scb-text-dark-grey"
+          *ngIf="!uploadedFormName || formSizeError || formExtError"
+        >
+          Choisissez ou photographiez le fichier</span
+        >
+        <span
+          class="filename scb-text-blue"
+          *ngIf="uploadedFormName && !formSizeError && !formExtError"
+          >{{ uploadedFormName }}</span
+        >
+        <img src="/assets/images/f.svg" alt="" />
+      </div>
+      <div class="error scb-text-red-error" *ngIf="formSizeError">
+        La taille du fichier excède 5Mo
+      </div>
+      <div class="error scb-text-red-error" *ngIf="formExtError">
+        Extensions autorisées sont: .jpg .jpeg .png .pdf .doc .docx
+      </div>
+      <div class="upload-file-description scb-text-gray">
+        Les fichiers doivent peser moins de 5Mo. Extensions autorisées : .jpg
+        .jpeg .png .pdf .doc .docx
+      </div>
+    </div>
+    <div class="upload-file">
+      <div class="upload-file-title">
+        4. Téléchargez votre pièce d’identité (Recto/Verso). Photographiez et
+        rattachez la pièce
+      </div>
+      <input
+        type="file"
+        hidden
+        #cniFrontInput
+        (change)="checkFile($event.srcElement.files, 'cni1')"
+        formControlName="recto"
+      />
+      <div class="upload-file-input" (click)="cniFrontInput.click()">
+        <span
+          class="placeholder scb-text-dark-grey"
+          *ngIf="!uploadedCNIFrontName"
+          >Choisissez ou photographiez le fichier</span
+        >
+        <span class="filename scb-text-blue" *ngIf="uploadedCNIFrontName">{{
+          uploadedCNIFrontName
+        }}</span>
+        <img src="/assets/images/f.svg" alt="" />
+      </div>
+      <div class="error scb-text-red-error" *ngIf="cniFrontSizeError">
+        La taille du fichier excède 5Mo
+      </div>
+      <div class="error scb-text-red-error" *ngIf="cniFrontExtError">
+        Extensions autorisées sont: .jpg .jpeg .png .pdf .doc .docx
+      </div>
+      <input
+        type="file"
+        hidden
+        #cniBackInput
+        (change)="checkFile($event.srcElement.files, 'cni2')"
+        formControlName="verso"
+      />
+      <div class="upload-file-input" (click)="cniBackInput.click()">
+        <span
+          class="placeholder scb-text-dark-grey"
+          *ngIf="!uploadedCNIBackName"
+        >
+          Choisissez ou photographiez le fichier</span
+        >
+        <span class="filename scb-text-blue" *ngIf="uploadedCNIBackName">{{
+          uploadedCNIBackName
+        }}</span>
+        <img src="/assets/images/f.svg" alt="" />
+      </div>
+      <div class="error scb-text-red-error" *ngIf="cniBackSizeError">
+        La taille du fichier excède 5Mo
+      </div>
+      <div class="error scb-text-red-error" *ngIf="cniBackExtError">
+        Extensions autorisées sont: .jpg .jpeg .png .pdf .doc .docx
+      </div>
+      <div class="upload-file-description scb-text-gray">
+        Pièces d’identité acceptées : Carte d’identité nationale ou Passeport<br />
+        Les fichiers doivent peser moins de 5Mo. Extensions autorisées : .jpg
+        .jpeg .png .pdf .doc .docx
+      </div>
+    </div>
+  </form>
+  <button
+    class="scb-btn scb-btn-orange scb-btn-full"
+    mat-stroked-button
+    [disabled]="!formValid() || error || loader"
+    (click)="send()"
+  >
+    Envoyez
+    <mat-spinner
+      class="spinner"
+      mode="indeterminate"
+      [diameter]="20"
+      *ngIf="loader"
+    ></mat-spinner>
+  </button>
+</div>

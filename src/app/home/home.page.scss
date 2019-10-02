@@ -1,0 +1,58 @@
+@import 'src/app/app';
+
+.home-page {
+  // height: 100%;
+  overflow-y: auto;
+  .slider-container {
+    width: 100%;
+    ion-slides {
+      width: 100%;
+      padding-bottom: 20px;
+      ion-slide {
+        width: 100% !important;
+        display: block;
+        .text-container {
+          padding: 73px percentage(88/375) 31px;
+          font-size:24px;
+        }
+        .img-container {
+          width: 100%;
+          display: flex;
+          justify-content: space-around;
+          img {
+            width: 80%;
+          }
+        }
+      }
+    }
+  }
+  .action-btn-container {
+    height: 220px;
+    padding-top: 40px;
+    .btn-container {
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 15px;
+      button {
+        width: percentage(248/375);
+      }
+    }
+  }
+  .go-home-block {
+    background-color: $white;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 25px;
+    padding-top: 10px;
+    // position: fixed;
+    // bottom: 0;
+    // left: 0;
+    .text {
+      font-size: 12px;
+      margin-left: 10px;
+    }
+  }
+}

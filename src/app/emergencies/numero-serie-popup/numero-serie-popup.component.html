@@ -1,0 +1,39 @@
+<div class="popup-numero-serie">
+  <img
+    src="/assets/images/group-14.svg"
+    alt=""
+    class="icon-leave"
+    (click)="closeDialog()"
+  />
+  <div class="img-container">
+    <img
+      src="/assets/images/NumeroSerie.svg"
+      alt=""
+      *ngIf="data === 'numero'"
+    />
+    <img
+      src="/assets/images/5ChiffresConsecutifs.svg"
+      alt=""
+      *ngIf="data === 'consecutive'"
+    />
+  </div>
+  <div class="details-block">
+    <div class="title scb-text-black">
+      <span *ngIf="data === 'numero'">Numéro de série</span>
+      <span *ngIf="data === 'consecutive'">5 chiffres consécutifs</span>
+    </div>
+    <div class="description scb-text-light-black">
+      <span *ngIf="data === 'numero'">
+        Le numéro série de la carte de recharge se trouve en bas, juste au
+        dessus des logos Orange et Sonatel
+      </span>
+      <span *ngIf="data === 'consecutive'">
+        Le décompte des 5 chiffres peut commencer à n’importe quel chiffre mais
+        l’enchainement doit être consécutif, aucune séparation n’est possible
+      </span>
+    </div>
+    <div class="leave scb-text-orange">
+      <span (click)="closeDialog()">Fermer</span>
+    </div>
+  </div>
+</div>

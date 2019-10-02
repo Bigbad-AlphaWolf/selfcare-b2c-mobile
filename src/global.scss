@@ -1,0 +1,353 @@
+@import 'src/app/app.scss'; // http://ionicframework.com/docs/theming/
+@import '~@ionic/angular/css/core.css';
+@import '~@ionic/angular/css/normalize.css';
+@import '~@ionic/angular/css/structure.css';
+@import '~@ionic/angular/css/typography.css';
+@import '~@ionic/angular/css/display.css';
+@import '~@ionic/angular/css/padding.css';
+@import '~@ionic/angular/css/float-elements.css';
+@import '~@ionic/angular/css/text-alignment.css';
+@import '~@ionic/angular/css/text-transformation.css';
+@import '~@ionic/angular/css/flex-utils.css';
+@font-face {
+  font-family: 'HelveticaNeueLTStd-Bd';
+  src: url('theme/HelveticaNeueLTStd-Bd.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'HelveticaNeueLTStd-Roman';
+  src: url('theme/HelveticaNeueLTStd-Roman.otf') format('opentype');
+}
+
+ion-menu {
+  --width: 100%;
+}
+
+//*********************************************************************************//
+//                                                                                 //
+//                                  global                                         //
+//                                                                                 //
+//*********************************************************************************//
+
+@mixin arrowRight($size: 10px, $color: $blue) {
+  display: inline-block;
+  width: 0px;
+  height: 0px;
+  border-top: $size solid transparent;
+  border-bottom: $size solid transparent;
+  border-left: $size solid $color;
+}
+
+@mixin arrowLeft($size: 10px, $color: $gray) {
+  display: inline-block;
+  width: 0px;
+  height: 0px;
+  border-top: $size solid transparent;
+  border-bottom: $size solid transparent;
+  border-right: $size solid $color;
+}
+
+.scb-f-20 {
+  font-size: 20px;
+}
+
+.scb-f-24 {
+  font-size: 24px;
+}
+
+.scb-f-30 {
+  font-size: 30px;
+}
+
+.scb-input-row.mat-form-field {
+  display: block;
+}
+
+.font-size-30 {
+  input {
+    font-size: 30px;
+    text-align: center;
+  }
+}
+
+/*  Add asterisk (*) to required field */
+.scb-required {
+  .mat-form-field-infix {
+    .mat-form-field-label-wrapper {
+      label.mat-form-field-label {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 16px;
+        color: $grey;
+        &::after {
+          content: ' *';
+          color: red;
+        }
+      }
+    }
+  }
+}
+
+mat-form-field.mat-focused {
+  .mat-form-field-wrapper {
+    .mat-form-field-underline {
+      .mat-form-field-ripple {
+        background-color: $orange;
+      }
+    }
+  }
+}
+
+/* Add custom color to label input on focus */
+mat-form-field.mat-focused {
+  .mat-form-field-infix {
+    .mat-form-field-label-wrapper {
+      label.mat-form-field-label {
+        color: $gray;
+      }
+    }
+  }
+}
+
+/* Add Custom color to checkbox material */
+
+.mat-checkbox-checked.mat-accent .mat-checkbox-background,
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color: $orange;
+}
+
+mat-dialog-container.mat-dialog-container {
+  padding: 0;
+}
+
+.mat-checkbox-frame {
+  border-color: $checkBoxBorderColor;
+}
+
+// Allow the eligibility Overlay to take more than 80% of the total width
+#cdk-overlay-0 {
+  max-width: 100%;
+  overflow-y: auto;
+}
+
+/* Decrease  */
+
+.#{$prefix}-arrow-left {
+  @include arrowLeft(8px, $silver);
+}
+
+.#{$prefix}-arrow-right {
+  @include arrowRight(8px, $blueMessageSend);
+}
+
+// Customize the scrollbar displaying
+.custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    background-color: $white;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $grey;
+  }
+}
+.custom-scrollbar-2 {
+  &::-webkit-scrollbar {
+    width: 6px;
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $grey;
+  }
+}
+.custom-scrollbar-3 {
+  &::-webkit-scrollbar {
+    width: 6px;
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $white;
+  }
+}
+
+// CSS for customize mat menu on sargal page mobile catalogue
+// Debut CSS
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+  opacity: 0.35 !important;
+}
+.cdk-overlay-pane-custom {
+  width: 100%;
+  background-color: $fullBlack;
+}
+.customize-mat-menu {
+  .mat-menu-panel.leftSargal {
+    width: 100%;
+    margin-top: 10px;
+    border: none;
+  }
+  .mat-menu-panel.rightSargal {
+    width: 100%;
+    margin-left: 20%;
+    margin-top: 10px;
+    border: none;
+  }
+}
+.mat-menu-panel.left,
+.mat-menu-panel.right {
+  border: 1.5px solid black;
+  border-radius: 20px;
+  margin-top: 5px;
+  width: 175px;
+}
+
+.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+  background-color: #32c832;
+}
+
+.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+  background-color: $white;
+}
+.mat-slide-toggle-content {
+  font-family: HelveticaNeueLTStd-Roman, sans-serif;
+  font-size: 10px;
+  line-height: 1.8;
+}
+// Remove default padding of material expansion panel
+.mat-expansion-panel {
+  .mat-expansion-panel-body {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
+
+// forms in emergencies and help
+.dropdown-numero {
+  padding-top: 10px;
+  .mat-form-field {
+    width: 100%;
+    .mat-select-value-text {
+      span {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 26px;
+        font-weight: normal;
+      }
+    }
+  }
+  .mat-select-arrow {
+    width: 18px;
+    height: 14px;
+    background-size: cover;
+    border-left: 0px solid transparent;
+    border-right: 0px solid transparent;
+    border-top: 0px solid;
+    background-image: url(/src/assets/images/arrow-down.svg); //('../images/arrow-down.svg');
+  }
+}
+
+form {
+  .dropdown-number-2 {
+    .mat-select-value-text {
+      span {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 26px;
+        font-weight: normal;
+      }
+    }
+    .mat-select-arrow {
+      width: 18px;
+      height: 14px;
+      background-size: cover;
+      border-left: 0px solid transparent;
+      border-right: 0px solid transparent;
+      border-top: 0px solid;
+      background-image: url(/src/assets/images/arrow-down.svg);
+    }
+  }
+}
+
+.main-content-offres-services-list {
+  .mat-tab-header {
+    border-bottom: none;
+  }
+}
+
+// Integration offers et services mobile: change toggle button color to green
+.item-state {
+  .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+    background-color: $greenSuccess;
+  }
+  .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+    background-color: $white;
+  }
+}
+
+// align input & btn on chat
+.scb-form-message {
+  .mat-form-field-flex {
+    margin-bottom: 9.7px;
+  }
+}
+
+//delete shadow on popup
+.mat-dialog-container {
+  box-shadow: none;
+}
+
+//Disable IOS callouts
+body {
+  -webkit-touch-callout: none;
+}
+
+//hide captcha badge
+.grecaptcha-badge {
+  visibility: hidden;
+}
+
+.mat-drawer-backdrop::ng-deep {
+  opacity: 0 !important;
+}
+
+@media (-ms-high-contrast: active) {
+  .mat-drawer-backdrop::ng-deep {
+    opacity: 0 !important;
+  }
+}
+
+.mat-drawer-transition .mat-drawer-backdrop {
+  transition: none !important;
+}
+
+.mat-drawer-backdrop.mat-drawer-shown {
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.mat-drawer-transition .mat-drawer-content {
+  transition-duration: 0.4s !important;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-property: transform, margin-left, margin-right;
+  will-change: transform;
+}
+
+// custom css applied on pagination ion-slides to set the pagination position
+.on-boarding {
+  .swiper-container-horizontal {
+    .swiper-pagination-bullets {
+      position: relative;
+      padding-left: percentage(30/375);
+      text-align: left;
+    }
+  }
+}
+
+.mat-form-field-appearance-outline.mat-focused {
+  color: $orange;
+}
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-label {
+  color: $orange !important;
+}
+
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: $orange;
+}
+
+.scroll-content {
+  padding-bottom: 0 !important;
+}

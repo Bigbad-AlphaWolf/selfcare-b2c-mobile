@@ -1,0 +1,14 @@
+<div class="previsualize-avatar-container">
+  <div class="img-selected">
+    <img [src]="imgSrc" alt="avatar" class="avatar" *ngIf="imgSrc" />
+  </div>
+
+  <div class="button-container">
+    <div (click)="confirm()" class="scb-btn scb-btn-orange confirm c-pointer">
+      Valider
+    </div>
+    <div (click)="cancel()" class="scb-btn scb-btn-orange cancel c-pointer">
+      Annuler
+    </div>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+<!-- header -->
+<div class="help-header">
+  <div class="arrow-left" routerLink="/control-center">
+    <img alt="" src="/assets/images/arrow-left.svg" />
+  </div>
+  <div class="title"><span>Assistance</span></div>
+</div>
+
+<!-- banner -->
+<div
+  class="banner"
+  [ngClass]="{
+    'banner-background-blue': helpType === 'pukCode',
+    'banner-background-yellow':
+      helpType === 'compteOM' || helpType === 'internet-parametrage',
+    'banner-background-green': helpType === 'seddoCode',
+    'banner-background-orange': helpType === 'reclamation',
+    'banner-background-violet':
+      helpType === 'carte' || helpType === 'deplafonnement'
+  }"
+>
+  <div class="img-container">
+    <img
+      alt=""
+      [src]="'/assets/images/unlock-sim-ban.svg'"
+      *ngIf="helpType === 'pukCode'"
+    />
+    <img
+      alt=""
+      [src]="'/assets/images/group-131.svg'"
+      *ngIf="helpType === 'compteOM'"
+    />
+    <img
+      alt=""
+      [src]="'/assets/images/group-177.svg'"
+      *ngIf="helpType === 'seddoCode'"
+    />
+    <img
+      alt=""
+      [src]="'/assets/images/group-113.svg'"
+      *ngIf="helpType === 'carte'"
+    />
+    <img
+      alt=""
+      [src]="'/assets/images/group-93.svg'"
+      *ngIf="helpType === 'deplafonnement'"
+    />
+    <img
+      alt=""
+      [src]="'/assets/images/reclamation-om.svg'"
+      *ngIf="helpType === 'reclamation'"
+    />
+    <img
+      alt=""
+      [src]="'/assets/images/param-net.svg'"
+      *ngIf="helpType === 'internet-parametrage'"
+    />
+  </div>
+  <div class="text-block scb-text-white">
+    {{ text }}
+  </div>
+</div>
