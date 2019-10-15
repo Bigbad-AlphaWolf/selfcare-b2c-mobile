@@ -1,123 +1,152 @@
 @import 'src/app/app';
 
+.dashboard-top-block {
+  background-color: $white;
+  position: relative;
+  height: 50px;
+  width: 100%;
+  padding: 17px percentage(40px / $baseWidthMobile2) 15px percentage(40px / $baseWidthMobile2);
+  text-align: center;
+  &-menu {
+    position: absolute;
+    left: 10px;
+    top: 14px;
+  }
+
+  &-user {
+    .user-hello {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 18px;
+
+      .user-name {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      }
+    }
+  }
+
+  &-notifs {
+    position: absolute;
+    right: 10px;
+    top: 16px;
+  }
+}
 .dashboard-container-mobile {
-	overflow-y: auto;
-	background-color: $grayDashboard;
-	min-height: 788px;
-	position: relative;
-	padding-bottom: 97px;
+  overflow-y: auto;
+  background-color: $grayDashboard;
+  min-height: 788px;
+  position: relative;
+  padding-bottom: 97px;
 
-	.dashboard-top-block {
-		background-color: $white;
-		height: 50px;
-		width: 100%;
-		position: absolute;
-		padding: 17px percentage(40px / $baseWidthMobile2) 15px
-			percentage(40px / $baseWidthMobile2);
-		text-align: center;
-		top: 0;
-		&-menu {
-			position: absolute;
-			left: 10px;
-			top: 14px;
-		}
+  .dashboard-top-block {
+    background-color: $white;
+    height: 50px;
+    width: 100%;
+    position: absolute;
+    padding: 17px percentage(40px / $baseWidthMobile2) 15px percentage(40px / $baseWidthMobile2);
+    text-align: center;
+    top: 0;
+    &-menu {
+      position: absolute;
+      left: 10px;
+      top: 14px;
+    }
 
-		&-user {
-			.user-hello {
-				font-family: HelveticaNeueLTStd-Roman, sans-serif;
-				font-size: 18px;
+    &-user {
+      .user-hello {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 18px;
 
-				.user-name {
-					font-family: HelveticaNeueLTStd-Bd, sans-serif;
-				}
-			}
-		}
+        .user-name {
+          font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        }
+      }
+    }
 
-		&-notifs {
-			position: absolute;
-			right: 10px;
-			top: 16px;
-		}
-	}
+    &-notifs {
+      position: absolute;
+      right: 10px;
+      top: 16px;
+    }
+  }
 
-	.spinner {
-		padding-top: 30px;
-		mat-spinner {
-			margin: 0 auto;
-		}
-		.mat-spinner::ng-deep circle {
-			stroke: $orange;
-		}
-	}
+  .spinner {
+    padding-top: 30px;
+    mat-spinner {
+      margin: 0 auto;
+    }
+    .mat-spinner::ng-deep circle {
+      stroke: $orange;
+    }
+  }
 }
 
 .cookies-block {
-	position: fixed;
-	width: 100%;
-	bottom: 0px;
-	opacity: 0.85;
-	background-color: $fullBlack;
-	padding: 40px 25px 50px;
-	.title {
-		font-family: HelveticaNeueLTStd-Bd, sans-serif;
-		font-size: 20px;
-		padding-bottom: 10px;
-	}
-	.text {
-		padding-bottom: 20px;
-		font-family: HelveticaNeueLTStd-Roman, sans-serif;
-		font-size: 14px;
-		line-height: 1.43;
-	}
-	.btns-block {
-		display: flex;
-		button {
-			width: 155px;
-			margin-right: 15px;
-		}
-	}
+  position: fixed;
+  width: 100%;
+  bottom: 0px;
+  opacity: 0.85;
+  background-color: $fullBlack;
+  padding: 40px 25px 50px;
+  .title {
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 20px;
+    padding-bottom: 10px;
+  }
+  .text {
+    padding-bottom: 20px;
+    font-family: HelveticaNeueLTStd-Roman, sans-serif;
+    font-size: 14px;
+    line-height: 1.43;
+  }
+  .btns-block {
+    display: flex;
+    button {
+      width: 155px;
+      margin-right: 15px;
+    }
+  }
 }
 
 .ibou-icon {
-	width: 60px;
-	height: auto;
+  width: 60px;
+  height: auto;
 }
 
 ion-fab-button {
-	margin-left: 140px;
-	overflow: visible;
-	position: relative;
+  margin-left: 140px;
+  overflow: visible;
+  position: relative;
 }
 ion-fab-list {
-	ion-label {
-		position: relative;
-		top: 45px;
-		right: 45px;
-		color: white;
-		line-height: 24px;
-		padding: 4px 8px;
-		border-radius: 4px;
-	}
+  ion-label {
+    position: relative;
+    top: 45px;
+    right: 45px;
+    color: white;
+    line-height: 24px;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
 }
 ion-fab {
-	ion-badge {
-		position: relative;
-		top: 10px;
-		left: 140px;
-	}
+  ion-badge {
+    position: relative;
+    top: 10px;
+    left: 140px;
+  }
 }
 
 #fab-background {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 99;
-	background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .fab-item {
-	width: 50px;
-	height: 50px;
+  width: 50px;
+  height: 50px;
 }

@@ -3,10 +3,15 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 
 import { MatDialog } from '@angular/material';
-import { Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { MAIL_URL } from 'src/shared';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { File } from '@ionic-native/file/ngx';
+import * as SecureLS from 'secure-ls';
+import { Platform } from '@ionic/angular';
+const ls = new SecureLS({ encodingType: 'aes' });
 const { BILL_SERVICE, SERVER_API_URL } = environment;
 const downloadBillEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/download-facture-mobile`;
 const billsEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/facture-mobile`;
@@ -28,7 +33,10 @@ export class BillsService {
   constructor(
     private http: HttpClient,
     private dashboardService: DashboardService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private file: File,
+    private fileOpener: FileOpener,
+    private platform: Platform
   ) {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
   }
@@ -106,43 +114,58 @@ export class BillsService {
     const numeroFacture = bill.numeroFacture;
     const mois = bill.mois;
     const annee = bill.annee;
-    return this.http.get(
-      `${downloadBillEndpoint}/${numeroFacture}?months=${mois}&year=${annee}`
-    );
-  }
-
-  downloadUserBill(bill: any) {
-    bill.downloading = true;
-    this.downloadBill(bill).subscribe(
-      (res: any) => {
+    const url = `${downloadBillEndpoint}/${numeroFacture}?months=${mois}&year=${annee}`;
+    const token = ls.get('token');
+    const headers = { Authorization: `Bearer ${token}` };
+    let path = this.file.dataDirectory;
+    if (this.platform.is('ios')) {
+      path = this.file.documentsDirectory;
+    }
+    this.http.get(url).subscribe((x: any) => {
         bill.downloading = false;
+        const fileName = bill.numeroFacture + '.pdf';
+        this.file.writeFile(path, fileName, this.convertBase64ToBlob(x.file, 'application/pdf'), {replace: true})
+        .then(() => {
+          this.fileOpener.open(path + fileName, 'application/pdf')
+              .catch(() => {
+                  // log error console.log('Error opening pdf file');
+              });
+      })
+      .catch(() => {
+          // log error console.error('Error writing pdf file');
+      });
 
-        const base64 = res.file;
-        if (navigator.userAgent.match(/crios|CriOS/i)) {
-          // Only for chrome on IOS
-          const pdfWindow = window.open('');
-          pdfWindow.document.write(
-            '<iframe width=\'100%\' height=\'100%\' src=\'data:application/pdf;base64, ' +
-              encodeURI(base64) +
-              '\'></iframe>'
-          );
-        } else {
-          const linkSource = `data:application/pdf;base64,${base64}`;
-          const downloadLink = document.createElement('a');
-          const fileName = `FACTURE_${bill.numeroFacture}`;
-          downloadLink.href = linkSource;
-          downloadLink.download = fileName;
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
-          document.body.removeChild(downloadLink);
-        }
       },
       err => {
         bill.downloading = false;
         this.openNotAvailableDialog();
       }
-    );
+      );
   }
+
+  downloadUserBill(bill: any) {
+    bill.downloading = true;
+    this.downloadBill(bill);
+  }
+
+  convertBase64ToBlob(b64Data, contentType): Blob {
+    contentType = contentType || '';
+    const sliceSize = 512;
+    b64Data = b64Data.replace(/^[^,]+,/, '');
+    b64Data = b64Data.replace(/\s/g, '');
+    const byteCharacters = window.atob(b64Data);
+    const byteArrays = [];
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+         const slice = byteCharacters.slice(offset, offset + sliceSize);
+         const byteNumbers = new Array(slice.length);
+         for (let i = 0; i < slice.length; i++) {
+             byteNumbers[i] = slice.charCodeAt(i);
+         }
+         const byteArray = new Uint8Array(byteNumbers);
+         byteArrays.push(byteArray);
+    }
+    return new Blob(byteArrays, {type: contentType});
+}
 
   getBillsEmit() {
     return this.getBillsSubject.asObservable();

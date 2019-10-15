@@ -18,19 +18,18 @@ import { AuthInterceptorService } from './services/auth-interceptor-service/auth
 import { ChangeAvatarPopupComponent } from './my-account/change-avatar-popup/change-avatar-popup.component';
 import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
 import { SharedModule } from 'src/shared/shared.module';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import { File } from '@ionic-native/file/ngx';
+import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 @NgModule({
-  declarations: [
-    AppComponent,
-    SidemenuComponent,
-    ChangeAvatarPopupComponent,
-    InProgressPopupComponent
-  ],
+  declarations: [AppComponent, SidemenuComponent, ChangeAvatarPopupComponent, InProgressPopupComponent],
   entryComponents: [ChangeAvatarPopupComponent, InProgressPopupComponent],
   imports: [
     HttpClientModule,
     MatDialogModule,
     BrowserModule,
-    IonicModule.forRoot({animated: false}),
+    IonicModule.forRoot({animated: true}),
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule
@@ -45,8 +44,13 @@ import { SharedModule } from 'src/shared/shared.module';
       useClass: AuthInterceptorService,
       multi: true
     },
-    HTTP
+    HTTP,
+    FileTransfer,
+    FileTransferObject,
+    File,
+    FileOpener,
+    AppMinimize
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

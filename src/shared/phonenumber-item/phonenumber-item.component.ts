@@ -70,7 +70,7 @@ export class PhonenumberItemComponent implements OnInit, OnChanges {
           icon: `${this.iconBaseUrl}jamono-premium.svg`
         };
       } else {
-        this.profile = this.profiles.find((element) => {
+        this.profile = this.profiles.find(element => {
           return element.name === thePhoneNumber.formule;
         });
       }

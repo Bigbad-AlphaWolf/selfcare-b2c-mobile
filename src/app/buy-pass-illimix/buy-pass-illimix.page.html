@@ -44,14 +44,15 @@
     </ng-container>
 
     <ng-container *ngIf="step === 4">
-      <app-operation-success-fail
-        [passInternetBought]="passIllimixDetails"
-        [type]="'illimix'"
-        [failed]="failed"
-        [errorMsg]="errorMsg"
+      <app-operation-success-or-fail
+        [operationType]="OPERATION_TYPE_PASS_ILLIMIX"
+        [errorMessage]="errorMsg"
         [recipient]="recipient"
-        (returnInitialStep)="returnToTheBeginning()"
-      ></app-operation-success-fail>
+        [failed]="failed"
+        [passIntChosen]="passIllimixDetails"
+        (newOperation)="returnToTheBeginning()"
+      >
+      </app-operation-success-or-fail>
     </ng-container>
   </div>
 </div>

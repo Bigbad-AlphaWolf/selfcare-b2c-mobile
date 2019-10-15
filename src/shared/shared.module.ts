@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivationOmComponent } from './activation-om/activation-om.component';
 import { ChoosePaymentModComponent } from './choose-payment-mod/choose-payment-mod.component';
-import { OperationSuccessFailComponent } from './operation-success-fail/operation-success-fail.component';
 import { OperationValidationComponent } from './operation-validation/operation-validation.component';
 import { PinPadComponent } from './pin-pad/pin-pad.component';
 import { SelectRecipientComponent } from './select-recipient/select-recipient.component';
@@ -33,18 +32,20 @@ import { HeaderComponent } from './header/header.component';
 import { FormatSecondDatePipe } from './pipes/format-second-date.pipe';
 import { SuccessFailPopupComponent } from './success-fail-popup/success-fail-popup.component';
 import { PhonenumberItemComponent } from './phonenumber-item/phonenumber-item.component';
-import { OperationTransferSuccessFailComponent } from './operation-transfer-success-fail/operation-transfer-success-fail.component';
 import { SelectNumberPopupComponent } from './select-number-popup/select-number-popup.component';
 import { SelectOtherRecipientComponent } from './select-other-recipient/select-other-recipient.component';
 import { GetLabelLigneBillBordereauPipe } from './pipes/get-label-ligne-bill-bordereau.pipe';
 import { ShareSocialNetworkComponent } from './share-social-network/share-social-network.component';
 import { AvantagePopupComponent } from './avantage-popup/avantage-popup.component';
+import { DeleteNumberPopupComponent } from 'src/app/my-account/delete-number-popup/delete-number-popup.component';
+import { CguPopupComponent } from './cgu-popup/cgu-popup.component';
+import { OperationSuccessOrFailComponent } from './operation-success-or-fail/operation-success-or-fail.component';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 @NgModule({
   declarations: [
     ActivationOmComponent,
     ChoosePaymentModComponent,
-    OperationSuccessFailComponent,
     OperationValidationComponent,
     PinPadComponent,
     ModalSuccessComponent,
@@ -61,12 +62,14 @@ import { AvantagePopupComponent } from './avantage-popup/avantage-popup.componen
     FormatSecondDatePipe,
     SuccessFailPopupComponent,
     PhonenumberItemComponent,
-    OperationTransferSuccessFailComponent,
     SelectNumberPopupComponent,
     SelectOtherRecipientComponent,
     GetLabelLigneBillBordereauPipe,
     ShareSocialNetworkComponent,
-    AvantagePopupComponent
+    AvantagePopupComponent,
+    CguPopupComponent,
+    OperationSuccessOrFailComponent,
+    DeleteNumberPopupComponent
   ],
   imports: [
     CommonModule,
@@ -88,7 +91,10 @@ import { AvantagePopupComponent } from './avantage-popup/avantage-popup.componen
     CancelOperationPopupComponent,
     SelectNumberPopupComponent,
     ShareSocialNetworkComponent,
-AvantagePopupComponent
+    AvantagePopupComponent,
+    DeleteNumberPopupComponent,
+    CguPopupComponent,
+    SuccessFailPopupComponent
   ],
   exports: [
     MatInputModule,
@@ -102,7 +108,6 @@ AvantagePopupComponent
     ReactiveFormsModule,
     ActivationOmComponent,
     ChoosePaymentModComponent,
-    OperationSuccessFailComponent,
     OperationValidationComponent,
     PinPadComponent,
     ModalSuccessComponent,
@@ -119,12 +124,12 @@ AvantagePopupComponent
     FormatSecondDatePipe,
     SuccessFailPopupComponent,
     PhonenumberItemComponent,
-    OperationTransferSuccessFailComponent,
     SelectNumberPopupComponent,
     SelectOtherRecipientComponent,
     ShareSocialNetworkComponent,
-AvantagePopupComponent
+    AvantagePopupComponent,
+    OperationSuccessOrFailComponent
   ],
-  providers: [Contacts]
+  providers: [Contacts, SocialSharing]
 })
 export class SharedModule {}

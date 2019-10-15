@@ -159,7 +159,8 @@ export function validateName(name: string) {
 }
 
 export function isOTPValid(code: string) {
-  return code.length === 6;
+  console.log(code);
+  return String(code).length === 6;
 }
 
 export const captchaSiteKey = '6Lee1KAUAAAAAIwaBjYgxXgKgiAauUO3mQcyuVh6';

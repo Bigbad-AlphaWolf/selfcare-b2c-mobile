@@ -19,6 +19,7 @@
       <app-select-recipient
         *ngIf="currentProfil !== PROFILE_TYPE_POSTPAID"
         (getDestinataire)="nextStepOfSelectDest($event)"
+        (getContact)="contactGot($event)"
       ></app-select-recipient>
       <app-select-other-recipient
         (nextStepEmitter)="nextStepOfSelectDest($event)"
@@ -44,6 +45,8 @@
           [buyForMe]="destinataire === currentUserNumber"
           [passIntChosen]="passInternetChoosen"
           [paymentMod]="choosedPaymentMod"
+          [omRecipientFirstName]="recipientFirstName"
+          [omRecipientLastName]="recipientLastName"
           (validate)="passInternetPurchase()"
         >
         </app-operation-validation>
@@ -67,15 +70,17 @@
     </ng-container>
 
     <ng-container *ngIf="step === 5">
-      <app-operation-success-fail
-        [type]="'internet'"
+      <app-operation-success-or-fail
+        [operationType]="OPERATION_TYPE_PASS_INTERNET"
         [failed]="failed"
-        [errorMsg]="errorMsg"
-        (returnInitialStep)="initialStep()"
-        [passInternetBought]="purchasePass"
+        [passIntChosen]="purchasePass"
         [recipient]="destinataire"
-      >
-      </app-operation-success-fail>
+        [errorMessage]="errorMsg"
+        [buyForMe]="destinataire === currentUserNumber"
+        [recipientFirstName]="recipientLastName"
+        [recipientLastName]="recipientFirstName"
+        (newOperation)="initialStep()"
+      ></app-operation-success-or-fail>
     </ng-container>
   </div>
 </div>

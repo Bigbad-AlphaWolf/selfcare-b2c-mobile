@@ -4,6 +4,11 @@ import { BillsService } from '../services/bill-service/bills.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { REGEX_FIX_NUMBER } from 'src/shared';
 import { BillModel } from '../dashboard';
+import {
+  FileTransfer,
+  FileTransferObject
+} from '@ionic-native/file-transfer/ngx';
+import { File } from '@ionic-native/file/ngx';
 
 @Component({
   selector: 'app-bills',

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+declare var FollowAnalytics: any;
+
 interface SocialNetworkApp {
   icon: string;
   label: string;
@@ -24,11 +27,11 @@ export class ShareSocialNetworkComponent implements OnInit {
       label: 'Twitter',
       selected: false
     },
-    {
-      icon: '/assets/images/linkedin_fab_icon.svg',
-      label: 'Linkedin',
-      selected: false
-    },
+    // {
+    //   icon: '/assets/images/linkedin_fab_icon.svg',
+    //   label: 'Linkedin',
+    //   selected: false
+    // },
     {
       icon: '/assets/images/whatsapp.svg',
       label: 'Whatsapp',
@@ -37,7 +40,8 @@ export class ShareSocialNetworkComponent implements OnInit {
   ];
   constructor(
     private dialogRef: MatDialogRef<ShareSocialNetworkComponent>,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private socialSharing: SocialSharing
   ) {}
 
   ngOnInit() {}
@@ -56,64 +60,62 @@ export class ShareSocialNetworkComponent implements OnInit {
       'Orange et moi c’est tout Orange en UN clic.';
     const hashtag = 'orangeetmoisn';
 
-    //text to use
+    // text to use
     /* Crée ton compte gratuitement sur www.orangeetmoi.sn pour gérer tous tes services Orange de façon simple, pratique et rapide.
     Orange et moi c’est tout orange en UN clic. */
-    //https://twitter.com/share?url=[post-url]&text=[post-title]&via=[via]&hashtags=[hashtags]
-    //https://www.linkedin.com/shareArticle?url=[post-url]&title=[post-title]
-    //https://wa.me/?text=[post-title] [post-url]
+    // https://twitter.com/share?url=[post-url]&text=[post-title]&via=[via]&hashtags=[hashtags]
+    // https://www.linkedin.com/shareArticle?url=[post-url]&title=[post-title]
+    // https://wa.me/?text=[post-title] [post-url]
 
-    let popupWindow;
     const logModel = {
       msisdn: currentPhoneNumber,
       network: ''
     };
-    if (elt.label === 'Facebook') {
-      popupWindow = window.open(
-        'https://www.facebook.com/sharer.php?u=https://orangeetmoi.orange.sn/',
-        'facebook-popup',
-        'height=350,width=600'
-      );
-      logModel.network = elt.label;
-      // FollowAnalytics.logEvent('ShareApp', logModel);
+    this.shareToSocialNetwork(elt.label, elt.label === 'Twitter' ? postTitle + '&hashtags=' + hashtag : postTitle, url);
+    logModel.network = elt.label;
+    if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.logEvent('ShareApp', logModel);
     }
-    if (elt.label === 'Twitter') {
-      popupWindow = window.open(
-        'https://twitter.com/share?url=' +
-          url +
-          '&text=' +
-          postTitle +
-          '&hashtags=' +
-          hashtag,
-        'twitter-popup',
-        'height=350,width=600'
-      );
-      logModel.network = elt.label;
-      // FollowAnalytics.logEvent('ShareApp', logModel);
+  }
+
+  shareToSocialNetwork(socialNetwork: string, postTitle: string, url: string) {
+    switch (socialNetwork) {
+      case 'Whatsapp':
+        this.socialSharing
+          .shareViaWhatsApp(postTitle, null, url)
+          .then()
+          .catch((err: any) => {
+            this.defaulSharingSheet(postTitle, url);
+          });
+        break;
+      case 'Twitter':
+        this.socialSharing
+          .shareViaTwitter(postTitle, null, url)
+          .then()
+          .catch((err: any) => {
+            this.defaulSharingSheet(postTitle, url);
+          });
+        break;
+      case 'Facebook':
+        this.socialSharing
+          .shareViaFacebook(postTitle, null, url)
+          .then()
+          .catch((err: any) => {
+            this.defaulSharingSheet(postTitle, url);
+          });
+        break;
+      default:
+        this.defaulSharingSheet(postTitle, url);
+        break;
     }
-    if (elt.label === 'Linkedin') {
-      popupWindow = window.open(
-        'https://www.linkedin.com/shareArticle?url=' +
-          url +
-          '&title=' +
-          postTitle,
-        'linkdin-popup',
-        'height=350,width=600'
-      );
-      logModel.network = elt.label;
-      // FollowAnalytics.logEvent('ShareApp', logModel);
-    }
-    if (elt.label === 'Whatsapp') {
-      popupWindow = window.open(
-        'https://wa.me/?text=' + postTitle + ' ' + url,
-        'wa-popup',
-        'height=350,width=600'
-      );
-      logModel.network = elt.label;
-      // FollowAnalytics.logEvent('ShareApp', logModel);
-    }
-    if (popupWindow.focus) {
-      popupWindow.focus();
-    }
+  }
+
+  defaulSharingSheet(post: string, url: string) {
+    this.socialSharing
+      .share(post, null, null, url)
+      .then()
+      .catch((err: any) => {
+        console.log('Cannot open default sharing sheet' + err);
+      });
   }
 }

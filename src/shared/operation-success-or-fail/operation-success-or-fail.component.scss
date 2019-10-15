@@ -1,0 +1,65 @@
+@import 'src/app/app';
+
+:host {
+  height: 100%;
+}
+
+.success-page-block {
+  text-align: center;
+  padding-top: 95px;
+  background-color: $white;
+  .img-container {
+    width: percentage(288/375);
+    margin: 0 auto 25px;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+  .operation-title {
+    width: percentage(200/375);
+    margin: 0 auto 11px;
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
+  }
+  .pass-details {
+    .title {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 14px;
+      margin: 0 auto 5px;
+    }
+    .value {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 24px;
+      margin: 0 auto 15px;
+    }
+    .bonus {
+      background-color: $blue;
+      border-radius: 6px;
+      margin: 0 auto;
+      width: fit-content;
+      padding: 2px 5px;
+      margin-bottom: 15px;
+    }
+  }
+  .operation-description {
+    width: percentage(240/375);
+    margin: 0 auto 40px;
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 14px;
+    .pt-sargal {
+      margin-top: 10px;
+      font-size: 14px;
+      font-family: HelveticaNeueLTStd-Bd;
+    }
+  }
+
+  button {
+    margin-bottom: 35px;
+  }
+  .new-operation {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+}

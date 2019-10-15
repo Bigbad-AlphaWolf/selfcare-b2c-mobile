@@ -9,7 +9,6 @@ import { DeleteLinkedNumbersPage } from './delete-linked-numbers.page';
 import { MyAccountPageModule } from '../my-account.module';
 import { NumbersToDeleteListComponent } from './numbers-to-delete-list/numbers-to-delete-list.component';
 import { SharedModule } from 'src/shared/shared.module';
-import { PhonenumberItemModule } from 'src/shared/phonenumber-item/phonenumber-item.module';
 
 const routes: Routes = [
 	{
@@ -23,9 +22,8 @@ const routes: Routes = [
 		CommonModule,
 		FormsModule,
 		IonicModule,
-		MyAccountPageModule,
-		RouterModule.forChild(routes),
-		PhonenumberItemModule
+		SharedModule,
+		RouterModule.forChild(routes)
 	],
 	declarations: [DeleteLinkedNumbersPage, NumbersToDeleteListComponent]
 })

@@ -1,267 +1,262 @@
 @import 'src/app/app';
 
 :host {
-	flex-grow: 1;
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-	background-color: $grayDashboard;
-	min-height: 788px;
-	position: relative;
-	padding-bottom: 97px;
+  height: 100%;
+  overflow-y: auto;
+  background-color: $grayDashboard;
 }
 
 .sargal-dashboard-container {
-	.dashboard-block-footer-container {
-		position: fixed;
-		right: 10px;
-		bottom: 10px;
-	}
+  .dashboard-block-footer-container {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+  }
 
-	.sargal-mobile-header {
-		height: 60px;
-		padding-top: 17px;
-		padding-bottom: 13px;
-		position: relative;
-		.arrow-left {
-			position: absolute;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			top: 0;
-			width: 50px;
-			height: 50px;
-		}
-		.assets {
-			text-align: center;
-			.title {
-				display: block;
-				height: 18px;
-				font-family: HelveticaNeueLTStd-Bd, sans-serif;
-				font-size: 18px;
-				color: $lBlack;
-			}
-			.description {
-				width: 240px;
-				height: 14px;
-				font-family: HelveticaNeueLTStd-Roman, sans-serif;
-				font-size: 14px;
-				color: $lBlack;
-			}
-		}
-	}
-	.sargal-mobile-summary {
-		width: 100%;
-		height: 155px;
-		min-height: 155px;
-		background-image: url(/assets/images/background-dashboard-sargal.svg);
-		background-repeat: no-repeat;
-		background-size: cover;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		.profile-img-container {
-			width: 30%;
-			height: 74%;
-			margin-right: 10px;
-			.profile-img {
-				width: 100%;
-				height: 100%;
-				border-radius: 50%;
-				border: 2px solid #bfc0c1;
-			}
-		}
-		.summary-assets {
-			.summary-text {
-				width: 154px;
-				height: 20px;
-				font-family: HelveticaNeueLTStd-Roman, sans-serif;
-				font-size: 18px;
-				font-weight: normal;
-				font-style: normal;
-				font-stretch: normal;
-				line-height: normal;
-				letter-spacing: normal;
-				color: $white;
-			}
-			.summary-points {
-				width: 199px;
-				height: 30px;
-				font-family: HelveticaNeueLTStd-Bd, sans-serif;
-				font-size: 40px;
-				font-weight: normal;
-				font-style: normal;
-				font-stretch: normal;
-				line-height: 0.4;
-				letter-spacing: normal;
-				color: $white;
-				.points {
-					font-family: HelveticaNeueLTStd-Roman, sans-serif;
-					font-size: 24px;
-				}
-			}
-			.validity-text {
-				width: 159px;
-				height: 10px;
-				font-family: HelveticaNeueLTStd-Roman, sans-serif;
-				font-size: 10px;
-				font-weight: bold;
-				font-style: normal;
-				font-stretch: normal;
-				line-height: normal;
-				letter-spacing: normal;
-				text-align: center;
-				color: $white;
-				margin-top: 6px;
-			}
-		}
-	}
+  .sargal-mobile-header {
+    height: 60px;
+    padding-top: 17px;
+    padding-bottom: 13px;
+    position: relative;
+    .arrow-left {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      top: 0;
+      width: 50px;
+      height: 50px;
+    }
+    .assets {
+      text-align: center;
+      .title {
+        display: block;
+        height: 18px;
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 18px;
+        color: $lBlack;
+      }
+      .description {
+        width: 240px;
+        height: 14px;
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 14px;
+        color: $lBlack;
+      }
+    }
+  }
+  .sargal-mobile-summary {
+    width: 100%;
+    height: 155px;
+    min-height: 155px;
+    background-image: url(/assets/images/background-dashboard-sargal.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .profile-img-container {
+      width: 30%;
+      height: 74%;
+      margin-right: 10px;
+      .profile-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 2px solid #bfc0c1;
+      }
+    }
+    .summary-assets {
+      .summary-text {
+        width: 154px;
+        height: 20px;
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 18px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: $white;
+      }
+      .summary-points {
+        width: 199px;
+        height: 30px;
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 40px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: 0.4;
+        letter-spacing: normal;
+        color: $white;
+        .points {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 24px;
+        }
+      }
+      .validity-text {
+        width: 159px;
+        height: 10px;
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 10px;
+        font-weight: bold;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        text-align: center;
+        color: $white;
+        margin-top: 6px;
+      }
+    }
+  }
 
-	.sargal-mobile-offers {
-		padding: 0 10px 10px 10px;
-		.spinner {
-			position: fixed;
-			top: 50%;
-			left: 50%;
-		}
-		.error {
-			text-align: center;
-		}
-		&-top3 {
-			min-height: 154px;
-			margin-top: 11px;
-			display: flex;
-			flex-wrap: wrap;
-			justify-content: space-between;
-			&-item {
-				background-color: $white;
-				border-radius: 4px;
-				margin-bottom: 18px;
-				width: 30%;
-				min-height: 150px;
-				&.disabled-block {
-					background-color: $grayDashboard;
-					opacity: 0.4;
-				}
-				.item-text {
-					margin-left: (12px / 111px) * 100%;
-					margin-right: (12px / 111px) * 100%;
-					font-family: HelveticaNeueLTStd-Bd, sans-serif;
-					font-size: 14px;
-					text-align: center;
+  .sargal-mobile-offers {
+    padding: 0 10px 10px 10px;
+    .spinner {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+    }
+    .error {
+      text-align: center;
+    }
+    &-top3 {
+      min-height: 154px;
+      margin-top: 11px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      &-item {
+        background-color: $white;
+        border-radius: 4px;
+        margin-bottom: 18px;
+        width: 30%;
+        min-height: 150px;
+        &.disabled-block {
+          background-color: $grayDashboard;
+          opacity: 0.4;
+        }
+        .item-text {
+          margin-left: (12px / 111px) * 100%;
+          margin-right: (12px / 111px) * 100%;
+          font-family: HelveticaNeueLTStd-Bd, sans-serif;
+          font-size: 14px;
+          text-align: center;
 
-					.text-style-1 {
-						font-family: HelveticaNeueLTStd-Roman, sans-serif;
-					}
-				}
+          .text-style-1 {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          }
+        }
 
-				.item-icon {
-					width: percentage(81px / 111px);
-					margin: 8px auto;
-					img {
-						display: block;
-						margin: 0 auto;
-						width: 100%;
-						height: auto;
-					}
-				}
-			}
-		}
-		&-header {
-			margin-top: 17px;
-			margin-left: 10px;
-			margin-right: 10px;
-			margin-bottom: 20px;
-			display: flex;
-			justify-content: space-between;
-			.title {
-				height: 20px;
-				font-family: HelveticaNeueLTStd-Bd, sans-serif;
-				font-size: 20px;
-				font-weight: normal;
-				font-style: normal;
-				font-stretch: normal;
-				line-height: normal;
-				letter-spacing: normal;
-				color: $lBlack;
-			}
-			.show-catalog {
-				height: 16px;
-				font-family: HelveticaNeueLTStd-Bd, sans-serif;
-				font-size: 16px;
-				font-weight: normal;
-				font-style: normal;
-				font-stretch: normal;
-				line-height: normal;
-				letter-spacing: normal;
-				text-align: right;
-				margin-top: 5px;
-			}
-		}
-	}
+        .item-icon {
+          width: percentage(81px / 111px);
+          margin: 8px auto;
+          img {
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+            height: auto;
+          }
+        }
+      }
+    }
+    &-header {
+      margin-top: 17px;
+      margin-left: 10px;
+      margin-right: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      .title {
+        height: 20px;
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 20px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: $lBlack;
+      }
+      .show-catalog {
+        height: 16px;
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 16px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        text-align: right;
+        margin-top: 5px;
+      }
+    }
+  }
 
-	.PointsSargalV2 {
-		width: 30px;
-		height: 30px;
-		object-fit: contain;
-		position: absolute;
-		right: 10px;
-	}
-	.gift {
-		display: flex;
-		align-items: center;
-	}
-	.content {
-		text-align: center;
-	}
+  .PointsSargalV2 {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    position: absolute;
+    right: 10px;
+  }
+  .gift {
+    display: flex;
+    align-items: center;
+  }
+  .content {
+    text-align: center;
+  }
 
-	.summary-content {
-		color: $white;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-	}
+  .summary-content {
+    color: $white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 
-	.sargal-mobile-listItem {
-		background: $white;
-		padding: 10px;
-		margin: 10px;
-		height: 56px;
-		border-radius: 10px;
-		align-items: center;
-		&-star {
-			font-size: 26px;
-			padding-top: 5px;
-			margin-left: 8px;
-		}
-		&-text {
-			justify-content: left;
-			display: flex;
-		}
-	}
+  .sargal-mobile-listItem {
+    background: $white;
+    padding: 10px;
+    margin: 10px;
+    height: 56px;
+    border-radius: 10px;
+    align-items: center;
+    &-star {
+      font-size: 26px;
+      padding-top: 5px;
+      margin-left: 8px;
+    }
+    &-text {
+      justify-content: left;
+      display: flex;
+    }
+  }
 
-	.sargal-mobile-listItem .arrow-right {
-		display: flex;
-		flex-direction: row-reverse;
-	}
-	.sargal-mobile-listItem .arrow-right-icon {
-		width: 12px;
-	}
-	.sargal-mobile-offers-header .arrow-right-icon-small {
-		width: 9px;
-		vertical-align: middle;
-	}
+  .sargal-mobile-listItem .arrow-right {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+  .sargal-mobile-listItem .arrow-right-icon {
+    width: 12px;
+  }
+  .sargal-mobile-offers-header .arrow-right-icon-small {
+    width: 9px;
+    vertical-align: middle;
+  }
 
-	.sargal-mobile-listItem .title {
-		height: 15px;
-		font-family: HelveticaNeueLTStd-Bd, sans-serif;
-		font-size: 15px;
-		font-weight: normal;
-		font-style: normal;
-		font-stretch: normal;
-		line-height: normal;
-		letter-spacing: normal;
-		text-align: center;
-		color: $lBlack;
-	}
+  .sargal-mobile-listItem .title {
+    height: 15px;
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 15px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: $lBlack;
+  }
 }

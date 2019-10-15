@@ -27,11 +27,13 @@ export class DeleteLinkedNumbersPage implements OnInit, OnDestroy {
     this.accountService.deletedPhoneNumbersEmit().subscribe(res => {
       this.cpt = 0;
       this.getUserAttachedPhoneNumber();
+      this.changeCurrentPhoneNumber();
     });
   }
 
   deletePhoneNumbers() {
     this.accountService.deleteUserLinkedPhoneNumbers(this.phoneNumbersToDelete);
+
   }
 
   onSelectItemsUpdated(phoneNumbers: string[]) {

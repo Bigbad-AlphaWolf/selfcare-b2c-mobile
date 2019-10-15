@@ -100,6 +100,6 @@ export class BuySosPage implements OnInit {
   }
 
   goToFirstStep() {
-    this.step = 0;
+    this.router.navigate(['/buy-credit']);
   }
 }

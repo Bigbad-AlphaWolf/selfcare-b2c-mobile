@@ -1,0 +1,32 @@
+<div class="cgu-popup-container">
+  <div class="header-block">
+    <div class="img-container">
+      <img src="/assets/images/cgu.svg" alt="cgu-img" />
+    </div>
+    <div class="title-block">
+      <div class="title">Conditions générales d’utilisation</div>
+      <div class="last-update">Dernière mise à jour Avril 2019</div>
+    </div>
+  </div>
+  <div class="body-block">
+    <div class="text-block">
+      <div class="article" *ngFor="let article of CGU_ARTICLES; let i = index">
+        <div class="article-title">{{ i + 1 }}. {{ article?.title }}</div>
+        <div
+          class="content"
+          *ngFor="let item of article?.content; let j = index"
+        >
+          <div class="subtitle" *ngIf="item?.subtitle">
+            {{ i + 1 }}.{{ j + 1 }} {{ item?.subtitle }}
+          </div>
+          <div class="text scb-text-gray" [innerHTML]="item?.text"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-container">
+    <div class="button scb-text-white" (click)="acceptCgu()">
+      J'accepte les conditions
+    </div>
+  </div>
+</div>

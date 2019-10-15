@@ -27,6 +27,7 @@
         ></app-select-other-recipient>
         <app-select-recipient
           (getDestinataire)="nextStepOfSelectDest($event)"
+          (getContact)="contactGot($event)"
           *ngIf="currentProfil !== PROFILE_TYPE_POSTPAID"
         >
         </app-select-recipient>
@@ -49,19 +50,23 @@
           [recipient]="destinatorPhoneNumber"
           [buyForMe]="isForMyOwnNumber"
           [paymentMod]="choosedPaymentMod"
+          [omRecipientLastName]="recipientLastName"
+          [omRecipientFirstName]="recipientFirstName"
           (validate)="payCredit()"
         ></app-operation-validation>
       </ng-container>
 
       <ng-container *ngIf="step === 3">
-        <app-operation-success-fail
+        <app-operation-success-or-fail
           [failed]="failed"
-          (returnInitialStep)="initialStep()"
-          [amount]="amount"
+          [amountRecharged]="amount"
+          [operationType]="OPERATION_TYPE_RECHARGE_CREDIT"
+          [buyForMe]="isForMyOwnNumber"
           [recipient]="recipient"
-          [type]="OPERATION_TYPE_RECHARGE_CREDIT"
-        >
-        </app-operation-success-fail>
+          (newOperation)="initialStep()"
+          [recipientFirstName]="recipientLastName"
+          [recipientLastName]="recipientFirstName"
+        ></app-operation-success-or-fail>
       </ng-container>
     </ng-container>
   </div>

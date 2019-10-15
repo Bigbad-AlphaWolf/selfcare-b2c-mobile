@@ -8,6 +8,8 @@ import {
 } from '../services/authentication-service/authentication.service';
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
+import { NavController } from '@ionic/angular';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-create-password',
@@ -23,12 +25,15 @@ export class CreatePasswordPage implements OnInit {
   loading = false;
   errorMsg: string;
   userInfo: RegistrationData;
+  registrationSuccess = false;
+  isLoging = false;
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private authServ: AuthenticationService,
-    private dashbServ: DashboardService,
-    public dialog: MatDialog
+    private dashboardService: DashboardService,
+    public dialog: MatDialog,
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {
@@ -36,13 +41,12 @@ export class CreatePasswordPage implements OnInit {
     this.form = this.fb.group({
       pwd: ['', [Validators.required]],
       confirmPwd: ['', [Validators.required]],
-      rememberMe: [this.rememberMe]
+      acceptCGU: [false, [Validators.requiredTrue]]
     });
   }
 
   getUserInfo() {
     this.userInfo = ls.get('u');
-    console.log(this.userInfo);
   }
 
   onSubmit() {
@@ -51,6 +55,9 @@ export class CreatePasswordPage implements OnInit {
     const confirmPwd = this.form.value.confirmPwd;
     if (pwd === confirmPwd) {
       this.goSuccess(pwd);
+    } else {
+      this.showErrMessage = true;
+      this.errorMsg = 'les mots de passe ne sont pas identiques';
     }
   }
 
@@ -68,6 +75,7 @@ export class CreatePasswordPage implements OnInit {
       () => {
         // Show success popup
         // Login automatically
+        this.registrationSuccess = true;
       },
       (err: any) => {
         const { status, error } = err;
@@ -85,5 +93,47 @@ export class CreatePasswordPage implements OnInit {
         }
       }
     );
+  }
+
+  openCguDialog() {
+    const dialogRef = this.dialog.open(CguPopupComponent, {
+      data: { login: '' }
+    });
+    dialogRef.afterClosed().subscribe(confirmresult => {
+      const pwd = this.form.value.pwd;
+      const confirmPwd = this.form.value.confirmPwd;
+      this.form.setValue({ pwd, confirmPwd, acceptCGU: true });
+    });
+  }
+
+  goLogin() {
+    this.isLoging = true;
+    const userCredential = {
+      username: this.userInfo.login,
+      password: this.form.value.pwd,
+      rememberMe: true
+    };
+    this.authServ.login(userCredential).subscribe(
+      res => {
+        // FollowAnalytics.logEvent('Authentication_Successful', userCredential.username);
+        this.dashboardService.getAccountInfo(userCredential.username).subscribe(
+          (resp: any) => {
+            this.isLoging = false;
+            ls.set('user', resp);
+            this.router.navigate(['/dashboard']);
+          },
+          () => {
+            this.isLoging = false;
+          }
+        );
+      },
+      err => {
+        this.router.navigate(['/login']);
+      }
+    );
+  }
+
+  goBack() {
+    this.navCtrl.pop();
   }
 }

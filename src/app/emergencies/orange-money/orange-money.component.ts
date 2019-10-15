@@ -7,7 +7,6 @@ import {
   DashboardService,
   downloadEndpoint
 } from 'src/app/services/dashboard-service/dashboard.service';
-import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import {
   REGEX_EMAIL,
   MAX_USER_FILE_UPLOAD_SIZE,
@@ -16,8 +15,6 @@ import {
   FILENAME_DEPLAFONNEMENT_OM_ACCOUNT,
   FILENAME_ERROR_TRANSACTION_OM
 } from 'src/shared';
-import { tap, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { LogModel } from 'src/app/services/orange-money-service';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
@@ -31,6 +28,8 @@ import {
   FileTransferObject
 } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
+import { FileOpener} from '@ionic-native/file-opener/ngx';
+import { Platform } from '@ionic/angular';
 const ls = new SecureLS({ encodingType: 'aes' });
 const logEndpoint = `${SERVER_API_URL}/management/selfcare-logs-file`;
 
@@ -64,10 +63,11 @@ export class OrangeMoneyComponent implements OnInit {
     private route: ActivatedRoute,
     private emerg: EmergencyService,
     private dashb: DashboardService,
-    private authServ: AuthenticationService,
     private httpClient: HttpClient,
     private transfer: FileTransfer,
-    private file: File
+    private file: File,
+    private fileOpener: FileOpener,
+    private platform: Platform,
   ) {}
 
   ngOnInit() {
@@ -209,12 +209,23 @@ export class OrangeMoneyComponent implements OnInit {
     const url = downloadEndpoint + fileName;
     const token = ls.get('token');
     const headers = { Authorization: `Bearer ${token}` };
-    let options = { headers };
+    const options = { headers };
+    let path = this.file.dataDirectory;
+    if (this.platform.is('ios')) {
+      path = this.file.documentsDirectory;
+    }
     fileTransfer
-      .download(url, this.file.dataDirectory + fileName, true, options)
+      .download(url, path + fileName, true, options)
       .then(
         entry => {
-          console.log('downloaded : ', entry);
+          const fileurl = entry.toURL();
+          this.fileOpener.open(fileurl, 'application/pdf')
+  .then(() => {
+    // log file opened successfully
+  })
+  .catch(e => {
+    // log file opened successfully console.log('Error opening file', e)
+  });
         },
         error => {
           console.log(error);

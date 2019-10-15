@@ -177,6 +177,15 @@
     button {
       border-radius: 6px;
       width: percentage(170/355);
+      position: relative;
+      mat-spinner {
+        position: absolute;
+        top: 15px;
+        right: 10px;
+      }
+      .mat-spinner::ng-deep circle {
+        stroke: $white;
+      }
     }
   }
 }

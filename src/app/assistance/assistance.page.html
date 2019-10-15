@@ -2,12 +2,7 @@
   <div class="assistance-container-header">
     <div class="assistance-container-header-title">
       <span class="text scb-text-l-black">Besoin d’aide ?</span>
-      <img
-        routerLink="/dashboard"
-        src="/assets/images/close.svg"
-        alt="close-icon"
-        class="close-icon"
-      />
+      <img routerLink="/dashboard" src="/assets/images/close.svg" alt="close-icon" class="close-icon" />
     </div>
     <div class="assistance-container-header-search-block">
       <div class="search-block-top-text">
@@ -15,70 +10,34 @@
         <span class="subtitle scb-text-white">Pouvons-nous vous aider ?</span>
       </div>
       <div *ngIf="0" class="search-block-bar">
-        <input
-          class="search-bar"
-          placeholder="Posez votre question ici"
-          type="text"
-        />
+        <input class="search-bar" placeholder="Posez votre question ici" type="text" />
         <div class="search-btn">
-          <img
-            src="/assets/images/nav-search-icon.svg"
-            alt="search-icon"
-            class="sarch-btn-icon"
-          />
+          <img src="/assets/images/nav-search-icon.svg" alt="search-icon" class="sarch-btn-icon" />
         </div>
       </div>
     </div>
   </div>
   <div class="assistance-container-body">
     <div class="assistance-container-body-faq-list custom-scrollbar">
-      <mat-spinner
-        class="spinner"
-        mode="indeterminate"
-        [diameter]="20"
-        *ngIf="!isLoaded"
-      ></mat-spinner>
+      <mat-spinner class="spinner" mode="indeterminate" [diameter]="20" *ngIf="!isLoaded"></mat-spinner>
       <ng-container *ngFor="let faqItem of listQuestions">
         <div class="assistance-container-body-faq-list-item">
-          <div
-            (click)="display.show = !display.show"
-            #display
-            class="item-header"
-          >
-            <span class="title scb-text-full-black">{{
-              faqItem?.question
-            }}</span>
+          <div (click)="display.show = !display.show" #display class="item-header">
+            <span class="title scb-text-full-black">{{ faqItem?.question }}</span>
             <div class="icon">
-              <img
-                *ngIf="!display.show"
-                src="/assets/images/open-orange.svg"
-                alt="icon open-icon"
-              />
-              <img
-                *ngIf="display.show"
-                src="/assets/images/close-orange.svg"
-                alt="icon close-icon"
-              />
+              <img *ngIf="!display.show" src="/assets/images/open-orange.svg" alt="icon open-icon" />
+              <img *ngIf="display.show" src="/assets/images/close-orange.svg" alt="icon close-icon" />
             </div>
           </div>
           <div *ngIf="display.show" class="item-content">
-            <span [innerHTML]="faqItem?.reponse" class="text scb-text-gray">
-            </span>
+            <span [innerHTML]="faqItem?.reponse" class="text scb-text-gray"> </span>
           </div>
         </div>
       </ng-container>
     </div>
-    <div
-      routerLink="/contact-us"
-      mat-stroked-buton
-      class="assistance-container-body-call-assistance-btn"
-    >
+    <div routerLink="/contact-us" mat-stroked-buton class="assistance-container-body-call-assistance-btn">
       <div class="assistance-icon">
-        <img
-          src="/assets/images/control-centre-assistance.svg"
-          alt="call-assistance"
-          class="assitance-icon"
-        />
+        <img src="/assets/images/control-centre-assistance.svg" alt="call-assistance" class="assitance-icon" />
       </div>
       <span class="text scb-text-white"> Contacter l’assistance </span>
     </div>

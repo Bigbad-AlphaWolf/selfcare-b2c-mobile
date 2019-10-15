@@ -6,7 +6,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { RegisterPage } from './register.page';
-import { CguPopupComponent } from './cgu-popup/cgu-popup.component';
 import { NgxCaptchaModule } from 'ngx-captcha';
 import { SharedModule } from 'src/shared/shared.module';
 
@@ -26,7 +25,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [RegisterPage, CguPopupComponent],
-  entryComponents: [CguPopupComponent]
+  declarations: [RegisterPage]
 })
 export class RegisterPageModule {}

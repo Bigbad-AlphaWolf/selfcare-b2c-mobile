@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { ReCaptchaV3Service } from 'ngx-captcha';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { captchaSiteKey } from '../register';
+import * as SecureLS from 'secure-ls';
+const ls = new SecureLS({ encodingType: 'aes' });
 export interface Description {
   text: string;
 }
@@ -61,6 +63,13 @@ export class ForgottenPasswordPage implements OnInit {
     });
   }
 
+  ionViewWillEnter() {
+    this.identifier = ls.get('subscribedNumber');
+    this.formIdentifier.patchValue({
+      inputValue: this.identifier
+    });
+  }
+
   userSendIdentifier() {
     this.loading = true;
     //check recaaptcha
@@ -111,7 +120,7 @@ export class ForgottenPasswordPage implements OnInit {
         err => {
           this.loading = false;
           if (err.status === 400) {
-            if (err.msg === 'invalidotp') {
+            if (err.error && err.error.msg === 'invalidotp') {
               this.error_message = 'Le code saisi est incorrect';
             } else {
               this.error_message =

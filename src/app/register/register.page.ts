@@ -22,8 +22,8 @@ import {
   validateEmail,
   validatePassword
 } from '.';
-import { CguPopupComponent } from './cgu-popup/cgu-popup.component';
 import * as SecureLS from 'secure-ls';
+import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -447,7 +447,7 @@ export class RegisterPage implements OnInit, OnDestroy, OnChanges {
     this.ibouSendMessage(
       `Une erreur s'est produite. Veuillez réessayer ultérieurement`
     );
-  }
+  };
 
   goStepWrongCode() {
     if (this.checkOTPSubscription) {
@@ -623,9 +623,7 @@ export class RegisterPage implements OnInit, OnDestroy, OnChanges {
     this.ibouTalk('PASSWORD');
     this.updateStepInputType();
     this.ibouSendMessage(
-      `Merci ${this.lastName} ${this.firstName}. ${
-        registrationSteps.PASSWORD.messages[0]
-      }`,
+      `Merci ${this.lastName} ${this.firstName}. ${registrationSteps.PASSWORD.messages[0]}`,
       undefined,
       true,
       true

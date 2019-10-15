@@ -38,6 +38,8 @@ export class BuyCreditPage implements OnInit {
   title = 'Recharger du crédit';
   currentProfil;
   currentNumber;
+  recipientFirstName: string = '';
+  recipientLastName: string = '';
 
   constructor(
     private router: Router,
@@ -142,5 +144,15 @@ export class BuyCreditPage implements OnInit {
 
   goToDashboardPage() {
     this.router.navigate(['/dashboard']);
+  }
+
+  contactGot(contact) {
+    this.recipientFirstName = contact.name.givenName;
+    this.recipientLastName = contact.name.familyName
+      ? contact.name.familyName
+      : '';
+    this.recipientFirstName += contact.name.middleName
+      ? ` ${contact.name.middleName}`
+      : '';
   }
 }

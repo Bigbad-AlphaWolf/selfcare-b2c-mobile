@@ -7,6 +7,7 @@ import { AuthenticationService } from 'src/app/services/authentication-service/a
 import { BillsService } from 'src/app/services/bill-service/bills.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import { formatDataVolume, MAIL_URL, months } from 'src/shared';
+import { dashboardOpened } from '..';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -16,7 +17,7 @@ const ls = new SecureLS({ encodingType: 'aes' });
 })
 export class DashboardPostpaidComponent implements OnInit {
   months = months;
-  showPromoBarner = ls.get('banner');
+  showPromoBarner = true;
   userConsoSummary: any = {};
   userCallConsoSummary: {
     globalCredit: number;
@@ -40,10 +41,7 @@ export class DashboardPostpaidComponent implements OnInit {
   lastUpdateOM;
   lastTimeUpdateOM;
   lastUpdateConso;
-  pictures = [
-    { image: '/assets/images/banniere-promo-mob.png' },
-    { image: '/assets/images/banniere-promo-fibre.png' }
-  ];
+  pictures = [{ image: '/assets/images/banniere-promo-mob.png' }, { image: '/assets/images/banniere-promo-fibre.png' }];
   sosEligible = true;
   listBanniere: BannierePubModel[] = [];
   isBanniereLoaded: boolean;
@@ -72,14 +70,17 @@ export class DashboardPostpaidComponent implements OnInit {
       }
     });
     this.banniereServ.setListBanniereByFormule();
-    this.banniereServ
-      .getStatusLoadingBanniere()
-      .subscribe((status: boolean) => {
-        this.isBanniereLoaded = status;
-        if (this.isBanniereLoaded) {
-          this.listBanniere = this.banniereServ.getListBanniereByFormule();
-        }
-      });
+    this.banniereServ.getStatusLoadingBanniere().subscribe((status: boolean) => {
+      this.isBanniereLoaded = status;
+      if (this.isBanniereLoaded) {
+        this.listBanniere = this.banniereServ.getListBanniereByFormule();
+      }
+    });
+
+    dashboardOpened.subscribe(x => {
+      this.getConsoPostpaid();
+      this.getBills();
+    });
   }
 
   getConsoPostpaid() {
@@ -128,7 +129,6 @@ export class DashboardPostpaidComponent implements OnInit {
         total: totalData,
         dataFinished: consoInt < 0
       });
-      console.log(conso);
       return conso;
     }
   }
@@ -139,7 +139,6 @@ export class DashboardPostpaidComponent implements OnInit {
   }
 
   hidePromoBarner() {
-    ls.set('banner', false);
     this.showPromoBarner = false;
   }
 
@@ -156,14 +155,10 @@ export class DashboardPostpaidComponent implements OnInit {
 
   getLastConsoUpdate() {
     const date = new Date();
-    const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
-      '0' +
-      (date.getMonth() + 1)
-    ).slice(-2)}/${date.getFullYear()}`;
-    const lastDateTime =
-      `${date.getHours()}h` +
-      (date.getMinutes() < 10 ? '0' : '') +
-      date.getMinutes();
+    const lastDate = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(
+      -2
+    )}/${date.getFullYear()}`;
+    const lastDateTime = `${date.getHours()}h` + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
     this.lastUpdateConso = `${lastDate} à ${lastDateTime}`;
   }
 
@@ -174,5 +169,10 @@ export class DashboardPostpaidComponent implements OnInit {
 
   goToTransfertOM() {
     this.router.navigate(['/transfer/orange-money']);
+  }
+  onError(input: { el: HTMLElement; display: boolean }[]) {
+    input.forEach((item: { el: HTMLElement; display: boolean }) => {
+      item.el.style.display = item.display ? 'block' : 'none';
+    });
   }
 }

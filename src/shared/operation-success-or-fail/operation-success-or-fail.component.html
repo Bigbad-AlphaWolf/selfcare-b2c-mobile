@@ -1,0 +1,255 @@
+<div class="success-page-block">
+  <div class="img-container">
+    <span [ngSwitch]="operationType">
+      <span *ngSwitchCase="OPERATION_TYPE_RECHARGE_CREDIT">
+        <img *ngIf="!failed" src="/assets/images/achat-credit-success.svg" alt="" class="operation-image" />
+        <img *ngIf="failed" src="/assets/images/achat-credit-echec.svg" alt="" class="operation-image" />
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_PASS_INTERNET">
+        <img *ngIf="!failed" src="/assets/images/achat-pass-success.svg" alt="" />
+        <img *ngIf="failed" src="/assets/images/achat-pass-echec.svg" alt="" />
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_PASS_ILLIMIX">
+        <img *ngIf="!failed" src="/assets/images/achat-illimix-success.svg" alt="achat-pass-success" />
+        <img *ngIf="failed" src="/assets/images/achat-illimix-echec.svg" alt="achat-pass-failed" />
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SEDDO_CREDIT">
+        <img *ngIf="!failed" src="/assets/images/transfert-credit.svg" alt="achat-pass-success" />
+        <img *ngIf="failed" src="/assets/images/transfert-credit-echec.svg" alt="achat-pass-failed" />
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SEDDO_BONUS">
+        <img *ngIf="!failed" src="/assets/images/transfert-credit.svg" alt="achat-pass-success" />
+        <img *ngIf="failed" src="/assets/images/transfert-credit-echec.svg" alt="achat-pass-failed" />
+      </span>
+      <span *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">
+        <img *ngIf="!failed" src="/assets/images/transfert-om-success.svg" alt="achat-pass-success" />
+        <img *ngIf="failed" src="/assets/images/transfert-credit-echec.svg" alt="achat-pass-failed" />
+      </span>
+      <span *ngSwitchCase="OPERATION_TRANSFER_OM">
+        <img *ngIf="!failed" src="/assets/images/transfert-om-success.svg" alt="achat-pass-success" />
+        <img *ngIf="failed" src="/assets/images/transfert-credit-echec.svg" alt="achat-pass-failed" />
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SARGAL_CONVERSION">
+        <img *ngIf="!failed" src="/assets/images/sargal-success.svg" alt="achat-pass-success" />
+        <img *ngIf="failed" src="/assets/images/achat-illimix-echec.svg" alt="achat-pass-success" />
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SOS">
+        <img *ngIf="!failed" src="/assets/images/sos-success.svg" alt="" />
+        <img *ngIf="failed" src="/assets/images/sos-echec.svg" alt="" />
+      </span>
+    </span>
+  </div>
+  <div class="operation-title scb-text-black">
+    <span [ngSwitch]="operationType">
+      <span *ngSwitchCase="OPERATION_TYPE_RECHARGE_CREDIT">
+        <span *ngIf="failed">Votre recharge n'a pas été effectuée</span>
+        <span *ngIf="!failed">Votre recharge a bien été effectuée</span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_PASS_INTERNET">
+        <span *ngIf="failed">Votre achat n'a pas été effectué</span>
+        <span *ngIf="!failed">Votre achat a bien été effectué</span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_PASS_ILLIMIX">
+        <span *ngIf="failed">Votre achat n'a pas été effectué</span>
+        <span *ngIf="!failed">Votre achat a bien été effectué</span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SEDDO_CREDIT">
+        <span *ngIf="failed">Votre transfert n'a pas été effectué</span>
+        <span *ngIf="!failed">Votre transfert a bien été effectué</span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SEDDO_BONUS">
+        <span *ngIf="failed">Votre transfert n'a pas été effectué</span>
+        <span *ngIf="!failed">Votre transfert a bien été effectué</span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TRANSFER_OM">
+        <span *ngIf="failed">Votre transfert n'a pas été effectué</span>
+        <span *ngIf="!failed">Votre transfert a bien été effectué</span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">
+        <span *ngIf="failed">Votre transfert n'a pas été effectué</span>
+        <span *ngIf="!failed">Votre transfert a bien été effectué</span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SARGAL_CONVERSION">
+        <span *ngIf="failed">Conversion en {{ giftSargal.categorieGift.nom }} non effectuée</span>
+        <span *ngIf="!failed">Conversion en {{ giftSargal.categorieGift.nom }} effectuée</span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SOS">
+        <span *ngIf="failed">Votre souscription SOS n'a pas été effectuée</span>
+        <span *ngIf="!failed">Votre souscription SOS a bien été effectuée</span>
+      </span>
+    </span>
+  </div>
+  <div class="pass-details" *ngIf="
+      (operationType === OPERATION_TYPE_PASS_INTERNET ||
+        operationType === OPERATION_TYPE_PASS_ILLIMIX) &&
+      !failed
+    ">
+    <div class="title scb-text-dark-grey">Montant</div>
+    <div class="value scb-text-orange">
+      {{ passIntChosen?.pass?.tarif }} FCFA
+    </div>
+    <div class="title scb-text-dark-grey">
+      <span [ngSwitch]="operationType">
+        <span *ngSwitchCase="OPERATION_TYPE_PASS_ILLIMIX">Pass Illimix</span>
+        <span *ngSwitchCase="OPERATION_TYPE_PASS_INTERNET">Pass Internet</span>
+      </span>
+    </div>
+    <div class="value scb-text-black">
+      <span [ngSwitch]="operationType">
+        <span *ngSwitchCase="OPERATION_TYPE_PASS_ILLIMIX">Illimix {{passIntChosen?.pass?.categoriePass?.libelle}}
+          {{passIntChosen?.pass?.tarif}} F</span>
+        <span *ngSwitchCase="OPERATION_TYPE_PASS_INTERNET">{{
+                passIntChosen?.pass?.categoriePass?.libelle +
+                  ' ' +
+                  passIntChosen?.pass?.volumeInternet
+              }}</span>
+      </span>
+    </div>
+    <div class="title scb-text-dark-grey" *ngIf="operationType !== OPERATION_TYPE_PASS_ILLIMIX">
+      Destinataire
+    </div>
+    <div class="value scb-text-black" *ngIf="operationType !== OPERATION_TYPE_PASS_ILLIMIX">
+      {{
+        recipientFirstName !== '' || recipientLastName !== ''
+          ? recipientFirstName + recipientLastName
+          : recipient
+      }}
+    </div>
+    <div class="title scb-text-dark-grey" *ngIf="passIntChosen?.pass?.bonusNuit">
+      Bonus
+    </div>
+    <div class="bonus scb-text-white" *ngIf="passIntChosen?.pass?.bonusNuit">
+      {{ passIntChosen?.pass?.bonusNuit }}
+    </div>
+  </div>
+  <div class="pass-details for-transfer-om" *ngIf="
+      (operationType === OPERATION_TRANSFER_OM_WITH_CODE ||
+        operationType === OPERATION_TRANSFER_OM) &&
+      !failed
+    ">
+    <div class="title scb-text-dark-grey">Montant transaction</div>
+    <div class="value scb-text-orange">{{ amountTransfered }} FCFA</div>
+    <div class="title scb-text-dark-grey">Destinataire</div>
+    <div class="value scb-text-black">
+      {{
+        recipientFirstName !== '' || recipientLastName !== ''
+          ? recipientFirstName + recipientLastName
+          : recipient
+      }}
+    </div>
+    <div class="title scb-text-dark-grey" *ngIf="operationType === OPERATION_TRANSFER_OM_WITH_CODE">
+      Code de la transaction
+    </div>
+    <div class="value scb-text-orange" *ngIf="operationType === OPERATION_TRANSFER_OM_WITH_CODE">
+      {{ '28 73 38 94' }}
+    </div>
+  </div>
+  <div class="pass-details for-sargal-om" *ngIf="operationType === OPERATION_TYPE_SARGAL_CONVERSION && !failed">
+    <div class="title scb-text-dark-grey">Points convertis</div>
+    <div class="value scb-text-orange">{{ giftSargal?.prix }} Pts</div>
+    <div class="title scb-text-dark-grey">
+      {{ giftSargal?.categorieGift?.nom }}
+    </div>
+    <div class="value scb-text-black">
+      {{ giftSargal?.nom }}
+    </div>
+  </div>
+
+  <div class="operation-description scb-text-light-black">
+    <span [ngSwitch]="operationType">
+      <span *ngSwitchCase="OPERATION_TYPE_RECHARGE_CREDIT">
+        <span *ngIf="!failed">
+          Vous avez rechargé {{ amountRecharged }} F de crédit pour
+          {{ buyForMe ? ' votre numéro' : (recipientFirstName !== '' || recipientLastName !== '') ? recipientFirstName + ' ' + recipientLastName : recipient }}
+        </span>
+        <div class="scb-text-black pt-sargal" *ngIf="buyForMe && hasSargal && sargalPoints"> + {{sargalPoints}} {{sargalPoints > 1 ? 'Pts' : 'Pt'}} sargal</div>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_PASS_INTERNET">
+        <span *ngIf="failed" class="scb-text-red-error">
+          {{ errorMessage }}
+        </span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_PASS_ILLIMIX">
+        <span *ngIf="failed" class="scb-text-red-error">
+          {{ errorMessage }}
+        </span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SEDDO_CREDIT">
+        <span *ngIf="!failed">
+          Vous avez transféré {{ amountTransfered }} F de crédit
+          {{
+            recipientFirstName !== '' || recipientLastName !== ''
+              ? 'à ' + recipientFirstName + recipientLastName
+              : 'au ' + recipient
+          }}
+        </span>
+        <span *ngIf="failed" class="scb-text-red-error">{{
+          errorMessage
+        }}</span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SEDDO_BONUS">
+        <span *ngIf="!failed">
+          Vous avez transféré {{ amountTransfered }} F de bonus
+          {{
+            recipientFirstName !== '' || recipientLastName !== ''
+              ? 'à ' + recipientFirstName + recipientLastName
+              : 'au ' + recipient
+          }}
+        </span>
+        <span *ngIf="failed" class="scb-text-red-error">{{
+          errorMessage
+        }}</span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SARGAL_CONVERSION">
+        <span *ngIf="failed" class="scb-text-red-error">{{
+          errorMessage
+        }}</span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SOS">
+        <span *ngIf="!failed">
+          Vous avez souscrit au {{ sosChosen?.typeSOS?.nom }} de {{sosChosen?.montant}} F CFA.
+          Vous serez débité de {{sosChosen?.frais ? sosChosen?.frais+sosChosen?.montant : sosChosen?.montant}} F CFA
+          {{sosChosen?.frais ? '(+'+sosChosen?.frais+' F de frais)': ''}} lors de votre prochain rechargement.
+        </span>
+        <span *ngIf="failed">{{errorMessage}}</span>
+      </span>
+    </span>
+  </div>
+  <button class="scb-btn scb-btn-white" (click)="goDashboard()">
+    Retour à l'accueil
+  </button>
+  <div class="new-operation scb-text-orange">
+    <span [ngSwitch]="operationType">
+      <span *ngSwitchCase="OPERATION_TYPE_RECHARGE_CREDIT">
+        <span *ngIf="!failed" (click)="goNewOperation()">
+          Faire un autre achat de crédit
+        </span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_PASS_INTERNET">
+        <span *ngIf="!failed" (click)="goNewOperation()">
+          Faire un autre achat de pass
+        </span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_PASS_ILLIMIX">
+        <span *ngIf="!failed" (click)="goNewOperation()">
+          Faire un autre achat de pass
+        </span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SEDDO_CREDIT">
+        <span *ngIf="!failed" (click)="goNewOperation()">
+          Faire un autre transfert
+        </span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SEDDO_BONUS">
+        <span *ngIf="!failed" (click)="goNewOperation()">
+          Faire un autre transfert
+        </span>
+      </span>
+      <span *ngSwitchCase="OPERATION_TYPE_SOS">
+        <span (click)="goNewOperation()">
+          Recharger du crédit
+        </span>
+      </span>
+    </span>
+  </div>
+</div>

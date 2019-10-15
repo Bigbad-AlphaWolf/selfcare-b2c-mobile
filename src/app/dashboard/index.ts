@@ -1,3 +1,5 @@
+import { Subject } from 'rxjs';
+
 // differents profiles
 export const PROFILE_TYPE_PREPAID = 'PREPAID';
 export const PROFILE_TYPE_HYBRID = 'HYBRID';
@@ -15,6 +17,8 @@ export const OPERATION_TYPE_SARGAL_CONVERSION = 'SARGAL_CONVERSION';
 export const PAYMENT_MOD_SARGAL = 'SARGAL';
 export const SARGAL_NOT_SUBSCRIBED = 'NOT_SUBSCRIBED';
 export const SARGAL_UNSUBSCRIPTION_ONGOING = 'UNSUBSCRIPTION_ONGOING';
+
+export const dashboardOpened = new Subject<string>();
 
 export interface UserConsommation {
 	id: string;
