@@ -1,5 +1,5 @@
 import { OnInit, EventEmitter, Output, Component } from '@angular/core';
-import { REGEX_NUMBER } from '..';
+import { REGEX_NUMBER, formatPhoneNumber } from '..';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { Contacts, Contact } from '@ionic-native/contacts';
@@ -17,7 +17,9 @@ export class SelectRecipientComponent implements OnInit {
   destNumber = this.userNumber;
   destNumberValid = false;
   @Output() getDestinataire = new EventEmitter();
+  @Output() getContact = new EventEmitter();
   showErrorMsg;
+  contactInfos: any;
 
   constructor(
     private dashServ: DashboardService,
@@ -34,12 +36,15 @@ export class SelectRecipientComponent implements OnInit {
     this.contacts
       .pickContact()
       .then((contact: Contact) => {
+        this.contactInfos = contact;
         if (contact.phoneNumbers.length > 1) {
           this.openPickRecipientModal(contact.phoneNumbers);
         } else {
-          this.destNumber = contact.phoneNumbers[0].value;
+          this.destNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
+          console.log(this.destNumber);
           if (this.validateNumber(this.destNumber)) {
-            this.getDestinataire.emit(this.destNumber);
+            // this.getDestinataire.emit(this.destNumber);
+            this.goToListPassStep();
           } else {
             this.destNumber = '';
             this.showErrorMsg = true;
@@ -54,9 +59,10 @@ export class SelectRecipientComponent implements OnInit {
       data: { phoneNumbers }
     });
     dialogRef.afterClosed().subscribe(selectedNumber => {
-      this.destNumber = selectedNumber;
+      this.destNumber = formatPhoneNumber(selectedNumber);
       if (this.validateNumber(this.destNumber)) {
-        this.getDestinataire.emit(this.destNumber);
+        // this.getDestinataire.emit(this.destNumber);
+        this.goToListPassStep();
       } else {
         this.destNumber = '';
         this.showErrorMsg = true;
@@ -86,13 +92,14 @@ export class SelectRecipientComponent implements OnInit {
   enableNextBtn(destNumberEntered: string) {
     if (this.validateNumber(destNumberEntered)) {
       this.destNumberValid = true;
-      this.destNumber = destNumberEntered;
+      this.destNumber = formatPhoneNumber(destNumberEntered);
     } else {
       this.destNumberValid = false;
     }
   }
 
   goToListPassStep() {
+    this.destNumber = formatPhoneNumber(this.destNumber);
     this.authenticationService
       .isPostpaid(this.destNumber)
       .subscribe((isPostpaid: boolean) => {
@@ -100,6 +107,7 @@ export class SelectRecipientComponent implements OnInit {
           this.showErrorMsg = true;
         } else {
           this.getDestinataire.emit(this.destNumber);
+          this.getContact.emit(this.contactInfos);
         }
       });
   }

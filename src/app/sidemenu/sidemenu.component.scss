@@ -1,5 +1,8 @@
 @import 'src/app/app';
 
+:host {
+  overflow-y: auto;
+}
 .scb-menu-mobile-container {
   position: relative;
   height: 100%;

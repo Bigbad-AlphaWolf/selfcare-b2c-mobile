@@ -1,31 +1,12 @@
 <div class="select-recipient-container">
-  <img
-    class="image"
-    src="/assets/images/transfert-de-credit.svg"
-    alt=""
-    *ngIf="type === 'credit'"
-  />
-  <img
-    class="image"
-    src="/assets/images/pass-internet-by-om.svg"
-    alt=""
-    *ngIf="type !== 'credit'"
-  />
+  <img class="image" src="/assets/images/transfert-de-credit.svg" alt="" *ngIf="type === 'credit'" />
+  <img class="image" src="/assets/images/pass-internet-by-om.svg" alt="" *ngIf="type !== 'credit'" />
   <form [formGroup]="formDest">
     <mat-form-field class="input-amount font-size-30">
-      <input
-        matInput
-        type="number"
-        placeholder="Entrez le numéro du destinataire"
-        formControlName="phoneNumber"
-      />
+      <input matInput type="tel" placeholder="Entrez le numéro du destinataire" formControlName="phoneNumber" />
     </mat-form-field>
     <div class="button-container">
-      <button
-        class="scb-btn scb-btn-orange"
-        [disabled]="!formDest.valid"
-        (click)="suivant()"
-      >
+      <button class="scb-btn scb-btn-orange" [disabled]="!formDest.valid" (click)="suivant()">
         Suivant
       </button>
     </div>
@@ -34,11 +15,7 @@
     </div>
   </form>
   <div class="contact" (click)="pickContact()">
-    <img
-      class="contact-img"
-      src="/assets/images/contact.svg"
-      alt="contact-icon"
-    />
+    <img class="contact-img" src="/assets/images/contact.svg" alt="contact-icon" />
     <span class="scb-text-orange contact-text">Mes contacts</span>
   </div>
 </div>

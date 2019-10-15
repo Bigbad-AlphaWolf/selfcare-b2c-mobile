@@ -1,4 +1,3 @@
-import { Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import {
   PROFILE_TYPE_PREPAID,
@@ -6,7 +5,8 @@ import {
   PROFILE_TYPE_POSTPAID,
   PROFILE_TYPE_HYBRID_1,
   KIRENE_Formule,
-  PROFILE_TYPE_HYBRID_2
+  PROFILE_TYPE_HYBRID_2,
+  dashboardOpened
 } from '.';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
@@ -14,6 +14,7 @@ import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
+import { delay } from 'rxjs/operators';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -38,7 +39,6 @@ export class DashboardPage implements OnInit {
   acceptCookie;
   hideCookie = true;
   fabOpened = false;
-  dashboardOpened: Subscription;
 
   constructor(
     private dashboardServ: DashboardService,
@@ -51,6 +51,13 @@ export class DashboardPage implements OnInit {
     const user = ls.get('user');
     this.firstName = user.firstName;
     this.lastName = user.lastName;
+  }
+
+  ionViewWillEnter() {
+    const user = ls.get('user');
+    this.firstName = user.firstName;
+    this.lastName = user.lastName;
+    this.currentPhoneNumber = this.dashboardServ.getCurrentPhoneNumber();
     this.authServ
       .getSubscription(this.currentPhoneNumber)
       .subscribe((userSubscription: any) => {
@@ -58,10 +65,7 @@ export class DashboardPage implements OnInit {
         this.currentProfile = userSubscription.profil;
         this.currentFormule = userSubscription.nomOffre;
       });
-  }
-
-  ionViewDidEnter() {
-    console.log('entered');
+    dashboardOpened.next();
   }
 
   getkIRENEFormule() {

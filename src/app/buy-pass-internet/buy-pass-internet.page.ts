@@ -40,6 +40,8 @@ export class BuyPassInternetPage implements OnInit {
   recipient;
   title = 'Acheter pass internet';
   currentProfil;
+  recipientFirstName: string = '';
+  recipientLastName: string = '';
 
   constructor(
     private router: Router,
@@ -75,6 +77,16 @@ export class BuyPassInternetPage implements OnInit {
           this.choosedPaymentMod = PAYMENT_MOD_OM;
         }
       });
+  }
+
+  contactGot(contact) {
+    this.recipientFirstName = contact.name.givenName;
+    this.recipientLastName = contact.name.familyName
+      ? contact.name.familyName
+      : '';
+    this.recipientFirstName += contact.name.middleName
+      ? ` ${contact.name.middleName}`
+      : '';
   }
 
   nextStepOfPaymentMod(paymentMod: string) {

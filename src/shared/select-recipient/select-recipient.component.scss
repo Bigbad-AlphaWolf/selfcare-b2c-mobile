@@ -1,109 +1,108 @@
 @import 'src/app/app';
 
 .buy-pass-internet-dest-container {
-  width: 100%;
-  height: 100%;
-  background-color: $grayDashboard;
-  .buy-pass-top-block {
-    position: relative;
-    padding: 17px percentage(67px / $baseWidthMobile2) 15px
-      percentage(68px / $baseWidthMobile2);
-    text-align: center;
-    min-height: 50px;
-    height: percentage(50px / 788px);
-    &-icon {
-      position: absolute;
-      left: percentage(10px / $baseWidthMobile2);
-    }
-    &-text {
-      .title {
-        font-family: HelveticaNeueLTStd-Bd, sans-serif;
-        font-size: 18px;
-      }
-    }
-  }
+	width: 100%;
+	height: 100%;
+	background-color: $grayDashboard;
+	.buy-pass-top-block {
+		position: relative;
+		padding: 17px percentage(67px / $baseWidthMobile2) 15px percentage(68px / $baseWidthMobile2);
+		text-align: center;
+		min-height: 50px;
+		height: percentage(50px / 788px);
+		&-icon {
+			position: absolute;
+			left: percentage(10px / $baseWidthMobile2);
+		}
+		&-text {
+			.title {
+				font-family: HelveticaNeueLTStd-Bd, sans-serif;
+				font-size: 18px;
+			}
+		}
+	}
 
-  .buy-pass-dest-body-block {
-    height: 100%;
-    &-top-text {
-      padding: 40px percentage(73px / $baseWidthMobile2);
-      text-align: center;
-      background: transparent;
-      .text {
-        font-family: HelveticaNeueLTStd-Roman, sans-serif;
-        font-size: 18px;
-      }
-    }
-    &-select-block {
-      padding-left: percentage(40px / $baseWidthMobile2);
-      padding-right: percentage(40px / $baseWidthMobile2);
-      margin-bottom: 50px;
-      width: 100%;
-      .buy-pass-dest-body-block-select {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        .choice-dest {
-          width: 47.4%;
-          background-color: $white;
-          border-radius: 4px;
-          min-height: 130px;
-          padding-top: 13px;
-          .dest-label {
-            text-align: center;
-            padding: 0 percentage(15px / 140px);
-            .text {
-              font-family: HelveticaNeueLTStd-Roman, sans-serif;
-              font-size: 16px;
-            }
-          }
-          .icon {
-            margin: 0 auto;
-            height: 60px;
-            margin-top: 6px;
-            img {
-              width: 100%;
-              height: 100%;
-            }
-          }
-        }
-        .selected-dest {
-          border: 2px solid $orange;
-        }
-      }
-      .buy-pass-dest-body-block-input {
-        width: 100%;
-        margin-top: 60px;
-        .dest-number-input {
-          width: 100%;
-        }
-        .contact {
-          padding: 10px 0;
-          width: 58%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin: 15px auto 150px;
-          img {
-            width: 21px;
-          }
-          &-text {
-            font-family: HelveticaNeueLTStd-Bd;
-            font-size: 16px;
-            padding-left: 10px;
-          }
-        }
-      }
-      // text-align: center;
-      .err {
-        font-size: 12px;
-        font-family: HelveticaNeueLTStd-Bd, sans-serif;
-      }
-    }
-    .next-btn {
-      width: 100%;
-      position: fixed;
-      bottom: 0px;
-    }
-  }
+	.buy-pass-dest-body-block {
+		height: 100%;
+		&-top-text {
+			padding: 40px percentage(73px / $baseWidthMobile2);
+			text-align: center;
+			background: transparent;
+			.text {
+				font-family: HelveticaNeueLTStd-Roman, sans-serif;
+				font-size: 18px;
+			}
+		}
+		&-select-block {
+			padding-left: percentage(40px / $baseWidthMobile2);
+			padding-right: percentage(40px / $baseWidthMobile2);
+			margin-bottom: 50px;
+			width: 100%;
+			.buy-pass-dest-body-block-select {
+				display: flex;
+				justify-content: space-between;
+				width: 100%;
+				.choice-dest {
+					width: 47.4%;
+					background-color: $white;
+					border-radius: 4px;
+					min-height: 130px;
+					padding-top: 13px;
+					.dest-label {
+						text-align: center;
+						padding: 0 percentage(15px / 140px);
+						.text {
+							font-family: HelveticaNeueLTStd-Roman, sans-serif;
+							font-size: 16px;
+						}
+					}
+					.icon {
+						margin: 0 auto;
+						height: 60px;
+						margin-top: 6px;
+						img {
+							width: 100%;
+							height: 100%;
+						}
+					}
+				}
+				.selected-dest {
+					border: 2px solid $orange;
+				}
+			}
+			.buy-pass-dest-body-block-input {
+				width: 100%;
+				margin-top: 60px;
+				.dest-number-input {
+					width: 100%;
+				}
+				.contact {
+					padding: 10px 0;
+					width: 58%;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					margin: 15px auto 15px;
+					img {
+						width: 21px;
+					}
+					&-text {
+						font-family: HelveticaNeueLTStd-Bd;
+						font-size: 16px;
+						padding-left: 10px;
+					}
+				}
+			}
+			// text-align: center;
+			.err {
+				font-size: 12px;
+				font-family: HelveticaNeueLTStd-Bd, sans-serif;
+			}
+		}
+		.next-btn {
+			width: 100%;
+			position: fixed;
+			bottom: 0px;
+		}
+	}
 }

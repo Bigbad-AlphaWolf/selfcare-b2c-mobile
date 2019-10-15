@@ -5,6 +5,11 @@
   width: 100%;
   padding: 0;
   margin: 0;
+  overflow-y: auto;
+}
+
+ion-page {
+  overflow-y: auto !important;
 }
 
 // Mobile CSS Section
@@ -83,6 +88,10 @@
 
         .scb-btn-dusk {
           margin-top: 10px;
+        }
+
+        button {
+          margin-bottom: 20px;
         }
 
         position: relative;
@@ -258,4 +267,3 @@
     }
   }
 }
-

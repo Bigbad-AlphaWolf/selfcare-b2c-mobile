@@ -46,7 +46,6 @@ export class LoginPage implements OnInit {
 
   getRegistrationInformation() {
     this.subscribedNumber = ls.get('subscribedNumber');
-    console.log(this.subscribedNumber);
     if (ls.get('rememberMe')) {
       this.rememberMe = true;
       ls.remove('rememberMe');

@@ -25,13 +25,13 @@
       </app-operation-validation>
     </ng-container>
     <ng-container *ngIf="step === 2">
-      <app-operation-success-fail
-        [sosSelected]="selectedSos"
-        (reinitializeStep)="goToFirstStep()"
-        [failed]="failed"
-        [errorMsg]="errorMsg"
-        [type]="'sos'"
-      ></app-operation-success-fail>
+      <app-operation-success-or-fail
+      [sosChosen]="selectedSos"
+      [failed]="failed"
+      [operationType]="OPERATION_TYPE_SOS"
+      [errorMessage]="errorMsg"
+      (newOperation)="goToFirstStep()"
+      ></app-operation-success-or-fail>
     </ng-container>
   </div>
 </div>

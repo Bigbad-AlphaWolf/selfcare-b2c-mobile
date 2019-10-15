@@ -2,6 +2,7 @@
 
 .deplafonnement-page {
   position: relative;
+  overflow-y: auto;
   .form-deplafonnement {
     padding: 35px percentage(10/375) 60px;
     .download-block {

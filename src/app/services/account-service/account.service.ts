@@ -5,21 +5,13 @@ import { environment } from 'src/environments/environment';
 import { Subject, Subscription } from 'rxjs';
 import * as SecureLS from 'secure-ls';
 import { AuthenticationService } from '../authentication-service/authentication.service';
-import {
-  DashboardService,
-  downloadAvatarEndpoint
-} from '../dashboard-service/dashboard.service';
+import { DashboardService, downloadAvatarEndpoint } from '../dashboard-service/dashboard.service';
 import { DeleteNumberPopupComponent } from 'src/app/my-account/delete-number-popup/delete-number-popup.component';
 import { ChangeAvatarPopupComponent } from 'src/app/my-account/change-avatar-popup/change-avatar-popup.component';
 import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
 import { SuccessFailPopupComponent } from 'src/shared/success-fail-popup/success-fail-popup.component';
 import { generateUUID } from 'src/shared';
-const {
-  FILE_SERVICE,
-  ACCOUNT_MNGT_SERVICE,
-  SERVER_API_URL,
-  UAA_SERVICE
-} = environment;
+const { FILE_SERVICE, ACCOUNT_MNGT_SERVICE, SERVER_API_URL, UAA_SERVICE } = environment;
 const uploadAvatarEndpoint = `${SERVER_API_URL}/${FILE_SERVICE}/api/upload`;
 const accountManagementEndPoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/account-b-2-cs`;
 const changePasswordEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/change-password`;
@@ -33,18 +25,11 @@ export class AccountService {
   changePasswordSubject: Subject<any> = new Subject<any>();
   deleteLinkedPhoneNumberSubject: Subject<any> = new Subject<any>();
   userUrlAvatarSubject: Subject<any> = new Subject<any>();
-
   dialogRef: MatDialogRef<DeleteNumberPopupComponent, any>;
   dialogImgRef: MatDialogRef<ChangeAvatarPopupComponent, any>;
   dialogSub: Subscription;
-
   userImgName;
-  constructor(
-    private http: HttpClient,
-    private dialog: MatDialog,
-    private authService: AuthenticationService,
-    private dashboardservice: DashboardService
-  ) {}
+  constructor(private http: HttpClient, private dialog: MatDialog, private authService: AuthenticationService) {}
 
   changePassword(payload: { currentPassword: string; newPassword: string }) {
     return this.http.post(changePasswordEndpoint, payload);
@@ -60,19 +45,13 @@ export class AccountService {
         if (err.status === 400) {
           if (err.error.msg === 'invalidcurrentpassword') {
             // this.error = 'L actuel mot de passe saisi est incorrect';
-            this.changePasswordSubject.next(
-              'L actuel mot de passe saisi est incorrect'
-            );
+            this.changePasswordSubject.next('L actuel mot de passe saisi est incorrect');
           } else {
             // this.error = 'Le nouveau mot de passe saisi n est pas autorisé';
-            this.changePasswordSubject.next(
-              'Le nouveau mot de passe saisi n\'est pas autorisé'
-            );
+            this.changePasswordSubject.next("Le nouveau mot de passe saisi n'est pas autorisé");
           }
         } else {
-          this.changePasswordSubject.next(
-            'Une erreur est survenue. Veuillez réessayer plus tard'
-          );
+          this.changePasswordSubject.next('Une erreur est survenue. Veuillez réessayer plus tard');
         }
       }
     );

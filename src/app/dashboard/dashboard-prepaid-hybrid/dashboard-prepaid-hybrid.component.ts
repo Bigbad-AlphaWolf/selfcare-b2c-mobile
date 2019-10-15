@@ -1,16 +1,17 @@
 import { Component, OnInit, Input, OnDestroy, AfterViewInit } from '@angular/core';
 import {
-	PROFILE_TYPE_PREPAID,
-	getConsoByCategory,
-	UserConsommations,
-	USER_CONS_CATEGORY_CALL,
-	SargalSubscriptionModel,
-	formatCurrency,
-	CODE_COMPTEUR_VOLUME_NUIT_1,
-	CODE_COMPTEUR_VOLUME_NUIT_2,
-	CODE_COMPTEUR_VOLUME_NUIT_3,
-	SARGAL_NOT_SUBSCRIBED,
-	SARGAL_UNSUBSCRIPTION_ONGOING
+  PROFILE_TYPE_PREPAID,
+  getConsoByCategory,
+  UserConsommations,
+  USER_CONS_CATEGORY_CALL,
+  SargalSubscriptionModel,
+  formatCurrency,
+  CODE_COMPTEUR_VOLUME_NUIT_1,
+  CODE_COMPTEUR_VOLUME_NUIT_2,
+  CODE_COMPTEUR_VOLUME_NUIT_3,
+  SARGAL_NOT_SUBSCRIBED,
+  SARGAL_UNSUBSCRIPTION_ONGOING,
+  dashboardOpened
 } from '..';
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -23,14 +24,14 @@ import { getLastUpdatedDateTimeText, arrangeCompteurByOrdre, getTrioConsoUser } 
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
-	selector: 'app-dashboard-prepaid-hybrid',
-	templateUrl: './dashboard-prepaid-hybrid.component.html',
-	styleUrls: ['./dashboard-prepaid-hybrid.component.scss']
+  selector: 'app-dashboard-prepaid-hybrid',
+  templateUrl: './dashboard-prepaid-hybrid.component.html',
+  styleUrls: ['./dashboard-prepaid-hybrid.component.scss']
 })
-export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
   @Input() userSubscription;
   opened = true;
-  showPromoBarner = ls.get('banner');
+  showPromoBarner = true;
   userConsoSummary: any = {};
   userCallConsoSummary: {
     globalCredit: number;
@@ -46,10 +47,7 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy, After
   creditRechargement = 0;
   canDoSOS = false;
   showHelbBtn = false;
-  pictures = [
-    { image: '/assets/images/banniere-promo-mob.png' },
-    { image: '/assets/images/banniere-promo-fibre.png' }
-  ];
+  pictures = [{ image: '/assets/images/banniere-promo-mob.png' }, { image: '/assets/images/banniere-promo-fibre.png' }];
   listBanniere: BannierePubModel[] = [];
   PROFILE_TYPE_PREPAID = PROFILE_TYPE_PREPAID;
   currentProfil: string;
@@ -78,30 +76,31 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy, After
     private sargalServ: SargalService
   ) {}
 
-	ngOnInit() {
-		if (this.userSubscription) {
-			this.currentProfil = this.userSubscription.profil;
-		}
-		this.banniereServ.setListBanniereByFormule();
-		this.banniereServ.getStatusLoadingBanniere().subscribe((status: boolean) => {
-			this.isBanniereLoaded = status;
-			if (this.isBanniereLoaded) {
-				this.listBanniere = this.banniereServ.getListBanniereByFormule();
-			}
-		});
-		this.getUserConsommations();
-		this.getSargalPoints();
-	}
+  ngOnInit() {
+    if (this.userSubscription) {
+      this.currentProfil = this.userSubscription.profil;
+    }
+    this.banniereServ.setListBanniereByFormule();
+    this.banniereServ.getStatusLoadingBanniere().subscribe((status: boolean) => {
+      this.isBanniereLoaded = status;
+      if (this.isBanniereLoaded) {
+        this.listBanniere = this.banniereServ.getListBanniereByFormule();
+      }
+    });
+    this.getUserConsommations();
+    this.getSargalPoints();
 
-ionViewWillEnter() {
- console.log('is entering view');
- this.getUserConsommations();
- this.getSargalPoints();
-  }
-  ngAfterViewInit(){
-	console.log('is entering view');
- this.getUserConsommations();
- this.getSargalPoints();  
+    dashboardOpened.subscribe(x => {
+      this.getUserConsommations();
+      this.getSargalPoints();
+      this.banniereServ.setListBanniereByFormule();
+      this.banniereServ.getStatusLoadingBanniere().subscribe((status: boolean) => {
+        this.isBanniereLoaded = status;
+        if (this.isBanniereLoaded) {
+          this.listBanniere = this.banniereServ.getListBanniereByFormule();
+        }
+      });
+    });
   }
 
   getUserConsommations() {
@@ -112,18 +111,13 @@ ionViewWillEnter() {
       (res: any[]) => {
         if (res.length) {
           res = arrangeCompteurByOrdre(res);
-          const appelConso = res.length
-            ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL)
-                .consommations
-            : null;
+          const appelConso = res.length ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL).consommations : null;
           if (appelConso) {
             this.getValidityDates(appelConso);
           }
           this.userConsoSummary = getConsoByCategory(res);
           this.userConsommationsCategories = getTrioConsoUser(res);
-          this.userCallConsoSummary = this.computeUserConsoSummary(
-            this.userConsoSummary
-          );
+          this.userCallConsoSummary = this.computeUserConsoSummary(this.userConsoSummary);
         } else {
           this.error = true;
         }
@@ -163,15 +157,11 @@ ionViewWillEnter() {
   }
 
   makeSargalAction() {
-    if (
-      this.userSargalData &&
-      this.userSargalData.status === SARGAL_NOT_SUBSCRIBED
-    ) {
+    if (this.userSargalData && this.userSargalData.status === SARGAL_NOT_SUBSCRIBED && this.sargalDataLoaded) {
       this.router.navigate(['/sargal-registration']);
     } else if (
-      (this.userSargalData &&
-        this.userSargalData.status !== SARGAL_UNSUBSCRIPTION_ONGOING) ||
-      !this.sargalUnavailable
+      (this.userSargalData && this.userSargalData.status !== SARGAL_UNSUBSCRIPTION_ONGOING) ||
+      (!this.sargalUnavailable && this.sargalDataLoaded)
     ) {
       this.goToSargalDashboard();
     }
@@ -184,11 +174,7 @@ ionViewWillEnter() {
   // process validity date of balance & credit to compare them
   processDateDMY(date: string) {
     const tab = date.split('/');
-    const newDate = new Date(
-      Number(tab[2]),
-      Number(tab[1]) - 1,
-      Number(tab[0])
-    );
+    const newDate = new Date(Number(tab[2]), Number(tab[1]) - 1, Number(tab[0]));
     return newDate.getTime();
   }
 
@@ -253,8 +239,7 @@ ionViewWillEnter() {
       // Check if eligible for SOS
       this.canDoSOS = +this.creditRechargement < 489;
       // Check if eligible for bonus transfer
-      this.canTransferBonus =
-        this.creditRechargement > 20 && this.soldebonus > 1;
+      this.canTransferBonus = this.creditRechargement > 20 && this.soldebonus > 1;
     }
     return {
       globalCredit: formatCurrency(globalCredit),
@@ -264,9 +249,9 @@ ionViewWillEnter() {
   }
 
   transferCreditOrPass() {
-    if (!this.canDoSOS || this.canTransferBonus) {
-      this.router.navigate(['/transfer/credit-bonus']);
-    }
+    // if (!this.canDoSOS || this.canTransferBonus) {
+    this.router.navigate(['/transfer/credit-bonus']);
+    // }
   }
 
   showSoldeOM() {
@@ -290,5 +275,13 @@ ionViewWillEnter() {
   goDetailsCom(phoneNumber?: number) {
     phoneNumber = phoneNumber;
     this.router.navigate(['/details-conso']);
+  }
+  hidePromoBarner() {
+    this.showPromoBarner = false;
+  }
+  onError(input: { el: HTMLElement; display: boolean }[]) {
+    input.forEach((item: { el: HTMLElement; display: boolean }) => {
+      item.el.style.display = item.display ? 'block' : 'none';
+    });
   }
 }

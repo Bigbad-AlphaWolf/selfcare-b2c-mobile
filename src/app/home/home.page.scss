@@ -1,5 +1,8 @@
 @import 'src/app/app';
 
+:host {
+  overflow-y: auto;
+}
 .home-page {
   // height: 100%;
   overflow-y: auto;
@@ -13,7 +16,7 @@
         display: block;
         .text-container {
           padding: 73px percentage(88/375) 31px;
-          font-size:24px;
+          font-size: 24px;
         }
         .img-container {
           width: 100%;
@@ -55,4 +58,8 @@
       margin-left: 10px;
     }
   }
+}
+
+.on-boarding-container {
+  height: 100%;
 }

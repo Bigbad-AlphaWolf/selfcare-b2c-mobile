@@ -1,23 +1,30 @@
-<div class="login-page-block-mobile">
+<ion-content>
+  <div class="login-page-block-mobile">
+      <app-header (goBack)="goToHomePage()"></app-header>
   <div class="login-form-container-mobile">
     <div class="login-description-image-mobile">
-      <img src="/assets/images/codeotp.svg" alt="ibou-connection_mobile" width="65%"/>
+      <img
+        src="/assets/images/codeotp.svg"
+        alt="ibou-connection_mobile"
+        width="65%"
+      />
     </div>
     <div class="login-form-block-mobile">
       <div class="scb-form-title-mobile">
-        <span class="scb-f-30 scb-text-black">Saisie du code 
-         </span>
+        <span class="scb-f-30 scb-text-black">Saisie du code </span>
         <span class="scb-f-30 scb-text-black"
           ><br />
           de sécurité</span
         >
-        
       </div>
       <div>
-          <div *ngIf="showAlertAvantages" class="pass-illimix-list-alert-avantages">
-              <scb-avantage-popup (close)="hideAlert()"></scb-avantage-popup>
-          </div>
-          <br />
+        <div
+          *ngIf="showAlertAvantages"
+          class="pass-illimix-list-alert-avantages"
+        >
+          <scb-avantage-popup (close)="hideAlert()"></scb-avantage-popup>
+        </div>
+        <br />
         <form
           [formGroup]="form"
           (ngSubmit)="onSubmit()"
@@ -26,11 +33,7 @@
         >
           <mat-form-field class="scb-input-row" appearance="outline">
             <mat-label>Entrez le code de sécurité &nbsp;&nbsp;</mat-label>
-            <input
-              formControlName="codeotp"
-              matInput
-              [(ngModel)]="codeOtp"
-            />
+            <input formControlName="codeotp" matInput [(ngModel)]="codeOtp" type="number"/>
           </mat-form-field>
 
           <div *ngIf="showErrMessage" class="error-text">
@@ -50,22 +53,13 @@
                 *ngIf="loading"
               ></mat-spinner>
             </button>
-            <br/>
-            <button (click)="sendOtp()"
-              [disabled]="loading"
-              class="scb-btn-full scb-btn-orange"
-              mat-stroked-button
-            >
-              <span>Renvoyer le code</span>
-              <mat-spinner
-                mode="indeterminate"
-                [diameter]="20"
-                *ngIf="loading"
-              ></mat-spinner>
-            </button>
+            <br />
           </div>
           <div class="Mobile-Connect-est-u scb-text-dusk">
-            Déjà un compte ? <span routerLink="/login" class="scb-text-orange">Je me connecte</span>
+            Pas reçu de code ?
+            <span (click)="sendOtp()" class="scb-text-orange"
+              >Renvoyer le code</span
+            >
           </div>
         </form>
       </div>
@@ -73,3 +67,4 @@
     <div></div>
   </div>
 </div>
+</ion-content>

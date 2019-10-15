@@ -9,9 +9,9 @@
                 *ngIf="operationType === OPERATION_TYPE_PASS_ILLIMIX" />
             <img src="/assets/images/icon-transfer-credit.svg" alt="credit-img"
                 *ngIf="operationType === OPERATION_TYPE_SEDDO_CREDIT" />
-            <img src="/assets/images/achat-credit-success.svg" alt="credit-img"
-                *ngIf="operationType === OPERATION_TYPE_SEDDO_BONUS" />
             <img src="/assets/images/icon-transfer-credit.svg" alt="credit-img"
+                *ngIf="operationType === OPERATION_TYPE_SEDDO_BONUS" />
+            <img src="/assets/images/transfer-om-icon.svg" alt="credit-img"
                 *ngIf="operationType === OPERATION_TRANSFER_OM" />
             <img src="/assets/images/icon-sos.svg" alt="credit-img"
                 *ngIf="operationType === OPERATION_TYPE_SOS_CREDIT || operationType === OPERATION_TYPE_SOS_PASS" />
@@ -52,14 +52,13 @@
                 <span class="value scb-text-orange">{{sosChosen.nom}}</span>
             </ng-container>
             <ng-container *ngIf="operationType === OPERATION_TYPE_SARGAL_CONVERSION">
-                <span class="title scb-text-black" [ngSwitch]="sargalGift.categorieGift.hashId">
-                    <span *ngSwitchCase="'GE'">Credit appels</span>
-                    <span *ngSwitchCase="'DM'">Pass Internet</span>
-                    <span *ngSwitchCase="'Jp'">SMS</span>
-                    <span *ngSwitchCase="'zn'">Pass Illimix</span>
-                    <span *ngSwitchCase="'3v'">Numéro Illimité</span>
-                    <span *ngSwitchCase="'mE'">Bon d'achat</span>
-                    <span *ngSwitchCase="'5G'">Cadeau bounia</span>
+                <span class="title scb-text-black">
+                    <span *ngIf="sargalGift.categorieGift.nom.toLowerCase().includes('minutes')">Minutes d'appels</span>
+                    <span *ngIf="sargalGift.categorieGift.nom.toLowerCase().includes('internet')">Pass Internet</span>
+                    <span *ngIf="sargalGift.categorieGift.nom.toLowerCase().includes('sms')">SMS</span>
+                    <span *ngIf="sargalGift.categorieGift.nom.toLowerCase().includes('illimix')">Pass Illimix</span>
+                    <span *ngIf="sargalGift.categorieGift.nom.toLowerCase().includes('illimité')">Numéro Illimité</span>
+                    <span *ngIf="sargalGift.categorieGift.nom.toLowerCase().includes('bons')">Bon d'achat</span>
                 </span>
                 <span class="value scb-text-orange">{{ sargalGift.nom }}</span>
             </ng-container>
@@ -69,9 +68,11 @@
                 <div class="title scb-text-dark-grey">Mon numéro</div>
             </ng-container>
             <ng-container *ngIf="!buyForMe">
-                <div class="title scb-text-dark-grey">Numéro du destinataire</div>
+                <div class="title scb-text-dark-grey">Destinataire</div>
             </ng-container>
-            <div class="value scb-text-black">{{ recipient | phoneNumberDisplay }}</div>
+            <div class="value scb-text-black">
+                {{(omRecipientFirstName !== '' || omRecipientLastName !== '') ? omRecipientFirstName + ' ' + omRecipientLastName : recipient | phoneNumberDisplay}}
+            </div>
         </div>
         <div class="validity-and-bonus-infos"
             *ngIf="operationType === OPERATION_TYPE_PASS_ILLIMIX || operationType === OPERATION_TYPE_PASS_INTERNET || operationType === OPERATION_TYPE_SARGAL_CONVERSION">
@@ -168,7 +169,7 @@
                     <img *ngIf="paymentMod === PAYMENT_MOD_BONUS" src="/assets/images/appel-icon.svg" alt="icon" />
                     <img *ngIf="paymentMod === PAYMENT_MOD_NEXT_RECHARGE" src="/assets/images/appel-icon.svg"
                         alt="icon" />
-                        <img *ngIf="paymentMod === PAYMENT_MOD_SARGAL" src="/assets/images/sargal-icon-pay.svg"
+                    <img *ngIf="paymentMod === PAYMENT_MOD_SARGAL" src="/assets/images/sargal-icon-pay.svg"
                         alt="icon" />
                 </ng-container>
             </div>
@@ -187,7 +188,8 @@
             <div class="toggle-fees">
                 <div class="title scb-text-dark-grey">Frais à ma charge</div>
                 <div class="toggle-box">
-                    <span class="fee scb-text-orange" *ngIf="feesOnMyCharge">+ {{ transferWithCode? feeWithCode : feeWithoutCode }} FCFA</span>
+                    <span class="fee scb-text-orange" *ngIf="feesOnMyCharge">+
+                        {{ transferWithCode? feeWithCode : feeWithoutCode }} FCFA</span>
                     <mat-slide-toggle (change)="toggleFees($event)" [(ngModel)]="feesOnMyCharge"
                         [disabled]="!recipientHasOmAccount || transferWithCode">
                     </mat-slide-toggle>
@@ -248,8 +250,9 @@
         </div>
     </div>
     <div class="validation-block-btns">
-        <button class="scb-btn scb-btn-white scb-btn-min-w-170 validation-btn-cancel">
-            <span class="text" (click)="openConfirmationDialog()">Annuler</span>
+        <button class="scb-btn scb-btn-white scb-btn-min-w-170 validation-btn-cancel"
+            (click)="openConfirmationDialog()">
+            <span class="text">Annuler</span>
         </button>
         <!-- <button class="scb-btn scb-btn-min-w-170 scb-btn-orange validation-btn-pay" (click)="validateOperation()" [disabled]="transferWithCode && !form.valid"> -->
         <button class="scb-btn scb-btn-min-w-170 scb-btn-orange validation-btn-pay" (click)="validateOperation()"

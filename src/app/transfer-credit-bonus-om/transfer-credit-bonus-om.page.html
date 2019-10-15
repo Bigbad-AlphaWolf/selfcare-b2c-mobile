@@ -40,6 +40,7 @@
         [soldebonusverorange]="soldebonusverorange"
         [soldebonustoutesdest]="soldebonustoutesdest"
         [errorMsg]="errorMsg"
+        [showErrorMsg]="errorMsg ? true : false"
         [orangeMoney]="operationType === 'orange-money'"
       ></app-transfer-recipient-amount>
 
@@ -79,15 +80,21 @@
       ></app-activation-om>
 
       <!-- When transfer successful -->
-      <app-operation-transfer-success-fail
+      <app-operation-success-or-fail
         *ngIf="step === 'SUCCESS'"
-        [amount]="amount"
-        [destinataire]="numberDestinatary"
+        [operationType]="
+          transferType === OPERATION_TYPE_TRANSFER_OM
+            ? transferOMType
+            : transferType
+        "
+        [amountTransfered]="amount"
+        [recipient]="numberDestinatary"
         [failed]="failed"
-        [type]="type"
         [errorMessage]="errorMsg"
-        (redirectTo)="goToPage($event)"
-      ></app-operation-transfer-success-fail>
+        [recipientFirstName]="firstName"
+        [recipientLastName]="lastName"
+        (newOperation)="initialStep()"
+      ></app-operation-success-or-fail>
     </ng-container>
     <ng-container>
       <div class="spinner" *ngIf="!isLoaded">

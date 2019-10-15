@@ -14,8 +14,8 @@
 			</div>
 			<div class="text scb-text-white" *ngIf="userSargalPoints">
 				Vous avez
-				<span class="scb-text-orange">{{ userSargalPoints | formatCurrency }} points</span>
 			</div>
+			<div class="scb-text-orange">{{ userSargalPoints | formatCurrency }} points</div>
 			<div class="text text1 scb-text-white">Mis à jour le {{ sargalLastUpdate }}</div>
 		</div>
 		<ng-container *ngIf="dataLoaded">
@@ -154,12 +154,9 @@
 		>
 		</app-operation-validation>
 	</div>
-	<app-operation-success-fail
-		*ngIf="step === 'SUCCESS'"
-		[type]="'sargal'"
-		[failed]="failed"
-		[errorMsg]="errorMsg"
-		[giftSargal]="giftSargalSelected"
-	>
-	</app-operation-success-fail>
+	<app-operation-success-or-fail *ngIf="step === 'SUCCESS'"
+	[operationType]="OPERATION_TYPE_SARGAL_CONVERSION"
+	[failed]="failed"
+	[errorMessage]="errorMsg"
+	[giftSargal]="giftSargalSelected"></app-operation-success-or-fail>
 </div>

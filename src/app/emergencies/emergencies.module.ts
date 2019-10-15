@@ -19,6 +19,7 @@ import { SharedModule } from 'src/shared/shared.module';
 import { EmergenciesRoutingModule } from './emergencies-routing.module';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
 
 const routes: Routes = [
   {
@@ -47,6 +48,6 @@ const routes: Routes = [
     ParametrageInternetComponent,
     RechargeCardNumberComponent
   ],
-  providers: [FileTransfer, File]
+  providers: [FileTransfer, File, FileOpener]
 })
 export class EmergenciesPageModule {}

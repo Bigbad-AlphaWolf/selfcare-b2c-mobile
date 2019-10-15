@@ -18,7 +18,7 @@ export class CancelOperationPopupComponent implements OnInit {
 
   accept() {
     this.dialogRef.close(true);
-    if (!this.data && this.data.canceldialogPageFormule) {
+    if (!this.data) {
       this.router.navigate(['/dashboard']);
     }
   }

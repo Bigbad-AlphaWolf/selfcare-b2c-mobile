@@ -581,7 +581,10 @@ export class ActivationOmComponent implements OnInit {
   processResult(res: any, db: any) {
     // check response status
     this.loading = false;
-    if (res && res.status_code !== null && res.status_code.match('Success')) {
+    if (
+      (res && res.status_code !== null && res.status_code.match('Success')) ||
+      (res && res.content.data.status_code === '200')
+    ) {
       // valid pin
       db.pinFailed = 0; // reset the pinfailed
       this.omService.logWithFollowAnalytics(res, 'event', this.dataToLog);
@@ -590,7 +593,7 @@ export class ActivationOmComponent implements OnInit {
       this.pinPadHasError = true;
       this.omService.logWithFollowAnalytics(res, 'error', this.dataToLog);
       if (res === null || res.status_code === null) {
-        this.pinErrorMsg = 'Une erreur s\'est produite.';
+        this.pinErrorMsg = "Une erreur s'est produite.";
         this.recurrentOperation = true;
         this.resultEmit.emit('erreur');
       } else if (res.status_code.match('Erreur-045')) {

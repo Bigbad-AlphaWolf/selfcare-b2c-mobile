@@ -38,6 +38,7 @@ export class TransferCreditBonusOmPage implements OnInit {
   compteur;
   OPERATION_TYPE_SEDDO_CREDIT = OPERATION_TYPE_SEDDO_CREDIT;
   OPERATION_TYPE_SEDDO_PASS = OPERATION_TYPE_SEDDO_PASS;
+  OPERATION_TYPE_TRANSFER_OM = OPERATION_TYPE_TRANSFER_OM;
   solderechargement = 0;
   soldebonusverorange = 0;
   soldebonustoutesdest = 0;
@@ -48,8 +49,8 @@ export class TransferCreditBonusOmPage implements OnInit {
   transferOMWithCode: boolean;
   fees: { feeValue: number; payFee: boolean };
   omTransferPayload = { amount: 0, msisdn2: '', firstName: '', lastName: '' };
-  firstName;
-  lastName;
+  firstName = '';
+  lastName = '';
   payFee = false;
   isLoaded = false;
   recipientHasOMAccount: boolean;
@@ -103,6 +104,7 @@ export class TransferCreditBonusOmPage implements OnInit {
   }
 
   suivant(event) {
+    this.errorMsg = null;
     switch (this.step) {
       case 'SAISIE_NUMBER':
         this.numberDestinatary = event.phoneNumber;
@@ -118,7 +120,7 @@ export class TransferCreditBonusOmPage implements OnInit {
             },
             (err: any) => {
               this.loading = false;
-              this.errorMsg = ' Une erreur est survenue, veuillez reessayer';
+              this.errorMsg = 'Une erreur est survenue, veuillez reessayer';
             }
           );
         } else {
@@ -135,14 +137,12 @@ export class TransferCreditBonusOmPage implements OnInit {
   }
 
   contactGot(contact: Contact) {
-    this.numberDestinatary = contact.phoneNumbers[0].value;
+    // this.numberDestinatary = contact.phoneNumbers[0].value;
     this.firstName = contact.name.givenName;
-    if (contact.name.familyName) {
-      this.lastName = contact.name.familyName;
-    }
-    if (contact.name.middleName) {
-      this.firstName += ` ${contact.name.middleName}`;
-    }
+    this.lastName = contact.name.familyName ? contact.name.familyName : '';
+    this.firstName += contact.name.middleName
+      ? ` ${contact.name.middleName}`
+      : '';
     this.omTransferPayload.firstName = this.firstName;
     this.omTransferPayload.lastName = this.lastName;
     this.step = 'SAISIE_MONTANT';
@@ -319,6 +319,14 @@ export class TransferCreditBonusOmPage implements OnInit {
       this.step = 'SAISIE_MONTANT';
     } else {
       this.router.navigate([route]);
+    }
+  }
+
+  initialStep() {
+    if (this.operationType === OPERATION_TYPE_TRANSFER_OM) {
+      this.step = 'SAISIE_NUMBER';
+    } else {
+      this.step = 'CHOOSE_TRANSFER';
     }
   }
 }

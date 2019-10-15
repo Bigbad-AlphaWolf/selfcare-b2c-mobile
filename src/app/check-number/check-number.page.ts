@@ -8,6 +8,7 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import { ReCaptchaV3Service } from 'ngx-captcha';
 import { captchaSiteKey } from '../register';
 import { Subscription } from 'rxjs';
+import { REGEX_NUMBER } from 'src/shared';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-check-number',
@@ -33,7 +34,10 @@ export class CheckNumberPage implements OnInit {
     private reCaptchaV3Service: ReCaptchaV3Service
   ) {
     this.form = this.fb.group({
-      username: [this.subscribedNumber, [Validators.required]]
+      username: [
+        this.subscribedNumber,
+        [Validators.required, Validators.pattern(REGEX_NUMBER)]
+      ]
     });
   }
 
@@ -86,5 +90,9 @@ export class CheckNumberPage implements OnInit {
         useGlobalDomain: false
       }
     );
+  }
+
+  goBack() {
+    this.router.navigate(['/home']);
   }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { REGEX_NUMBER } from '..';
+import { REGEX_NUMBER, formatPhoneNumber } from '..';
 import { MatDialog } from '@angular/material';
 import { SelectNumberPopupComponent } from '../select-number-popup/select-number-popup.component';
 import { Contacts, Contact } from '@ionic-native/contacts';
@@ -33,7 +33,7 @@ export class SelectOtherRecipientComponent implements OnInit {
 
   suivant() {
     this.showErrorMsg = false;
-    this.destNumber = this.formDest.value.phoneNumber;
+    this.destNumber = formatPhoneNumber(this.formDest.value.phoneNumber);
     this.authServ.isPostpaid(this.destNumber).subscribe((isPostpaid: any) => {
       if (isPostpaid) {
         this.showErrorMsg = true;
@@ -50,7 +50,7 @@ export class SelectOtherRecipientComponent implements OnInit {
         if (contact.phoneNumbers.length > 1) {
           this.openPickRecipientModal(contact.phoneNumbers);
         } else {
-          this.destNumber = contact.phoneNumbers[0].value;
+          this.destNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
           if (this.validateNumber(this.destNumber)) {
             this.nextStepEmitter.emit(this.destNumber);
           } else {
@@ -67,7 +67,7 @@ export class SelectOtherRecipientComponent implements OnInit {
       data: { phoneNumbers }
     });
     dialogRef.afterClosed().subscribe(selectedNumber => {
-      this.destNumber = selectedNumber;
+      this.destNumber = formatPhoneNumber(selectedNumber);
       if (this.validateNumber(this.destNumber)) {
         this.nextStepEmitter.emit(this.destNumber);
       } else {

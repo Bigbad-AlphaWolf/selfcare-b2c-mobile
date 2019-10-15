@@ -3,7 +3,13 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { NoOMAccountPopupComponent } from 'src/shared/no-omaccount-popup/no-omaccount-popup.component';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
-import { REGEX_NUMBER, CREDIT, BONUS, REGEX_NUMBER_OM } from 'src/shared';
+import {
+  REGEX_NUMBER,
+  CREDIT,
+  BONUS,
+  REGEX_NUMBER_OM,
+  formatPhoneNumber
+} from 'src/shared';
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
@@ -26,12 +32,12 @@ export class TransferRecipientAmountComponent implements OnInit {
   @Input() soldebonustoutesdest = 0;
   @Input() errorMsg = '';
   @Input() orangeMoney: boolean;
+  @Input() showErrorMsg: boolean;
   omBalanceVisible = false;
   omBalance;
   typeOMCode = false;
   operationOM: 'CHECK_SOLDE' | 'RESET_TOKEN' = 'CHECK_SOLDE';
   noOMAccountModal: MatDialogRef<NoOMAccountPopupComponent, any>;
-  showErrorMsg: boolean;
   checkingOMAccount = false;
   recipientInfos = { phoneNumber: '', hasOMAccount: false };
   contactInfos: any;
@@ -45,10 +51,13 @@ export class TransferRecipientAmountComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.formAmount = this.formBuilder.group({
-      amount: ['', [Validators.required, Validators.min(100)]]
-    });
     if (this.orangeMoney) {
+      this.formAmount = this.formBuilder.group({
+        amount: [
+          '',
+          [Validators.required, Validators.min(1), Validators.max(2000000)]
+        ]
+      });
       this.formDest = this.formBuilder.group({
         phoneNumber: [
           '',
@@ -57,6 +66,9 @@ export class TransferRecipientAmountComponent implements OnInit {
       });
       this.checkOMToken();
     } else {
+      this.formAmount = this.formBuilder.group({
+        amount: ['', [Validators.required, Validators.min(100)]]
+      });
       this.formDest = this.formBuilder.group({
         phoneNumber: [
           '',
@@ -88,7 +100,7 @@ export class TransferRecipientAmountComponent implements OnInit {
     }
     if (this.step === 'SAISIE_NUMBER') {
       const recipient = {
-        phoneNumber: this.formDest.value.phoneNumber,
+        phoneNumber: formatPhoneNumber(this.formDest.value.phoneNumber),
         hasOMAccount: false
       };
       this.errorMsg = '';
@@ -140,7 +152,7 @@ export class TransferRecipientAmountComponent implements OnInit {
         if (contact.phoneNumbers.length > 1) {
           this.openPickRecipientModal(contact.phoneNumbers);
         } else {
-          const destNumber = contact.phoneNumbers[0].value.replace(/\s/g, '');
+          const destNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
           this.recipientInfos.phoneNumber = destNumber;
           this.formDest.setValue({ phoneNumber: destNumber });
           if (this.orangeMoney) {
@@ -152,7 +164,8 @@ export class TransferRecipientAmountComponent implements OnInit {
             }
           } else {
             if (this.validateNumber(destNumber)) {
-              this.nextStepEmitter.emit(destNumber);
+              this.nextStepEmitter.emit(this.recipientInfos);
+              this.contactEmitter.emit(contact);
             } else {
               this.badNumberStep();
             }
@@ -168,10 +181,15 @@ export class TransferRecipientAmountComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((selectedNumber: string) => {
       if (selectedNumber) {
-        selectedNumber = selectedNumber.replace(/\s/g, '');
+        selectedNumber = formatPhoneNumber(selectedNumber);
         this.recipientInfos.phoneNumber = selectedNumber;
         this.formDest.setValue({ phoneNumber: selectedNumber });
-        this.checkRecipientHasOMAccount();
+        if (this.orangeMoney) {
+          this.checkRecipientHasOMAccount();
+        } else {
+          this.nextStepEmitter.emit(this.recipientInfos);
+          this.contactEmitter.emit(this.contactInfos);
+        }
       }
     });
   }
@@ -203,7 +221,7 @@ export class TransferRecipientAmountComponent implements OnInit {
 
   checkRecipientHasOMAccount() {
     this.checkingOMAccount = true;
-    const phoneNumber = this.formDest.value.phoneNumber;
+    const phoneNumber = formatPhoneNumber(this.formDest.value.phoneNumber);
     this.recipientInfos = {
       phoneNumber,
       hasOMAccount: false
@@ -214,8 +232,6 @@ export class TransferRecipientAmountComponent implements OnInit {
         res => {
           this.checkingOMAccount = false;
           if (res) {
-            console.log(this.recipientInfos);
-            console.log(this.formDest.value.phoneNumber);
             if (res.status_code.match('Success')) {
               this.recipientInfos.hasOMAccount = true;
               this.nextStepEmitter.emit(this.recipientInfos);

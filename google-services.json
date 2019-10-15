@@ -8,6 +8,64 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:1054886976215:android:bb808a8a70ed8fe113ae92",
+        "android_client_info": {
+          "package_name": "com.orange.mobile.myorangesn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1054886976215-mc5ej571h3m0t4hgsom4nqr2j64k5skb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDB4PALuNnFZn05lRjAAiC7UA6ue1omK80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1054886976215-mc5ej571h3m0t4hgsom4nqr2j64k5skb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1054886976215:android:5f6329e196bd280d13ae92",
+        "android_client_info": {
+          "package_name": "com.orange.myorange.osn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1054886976215-mc5ej571h3m0t4hgsom4nqr2j64k5skb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDB4PALuNnFZn05lRjAAiC7UA6ue1omK80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1054886976215-mc5ej571h3m0t4hgsom4nqr2j64k5skb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:1054886976215:android:d8368c1b3d2184d013ae92",
         "android_client_info": {
           "package_name": "sn.sonatel.dsi.dif.selfcare"

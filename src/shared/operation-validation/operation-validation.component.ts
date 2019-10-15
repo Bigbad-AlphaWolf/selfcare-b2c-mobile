@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnDestroy
+} from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
@@ -54,8 +61,8 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
   @Input() passIllChosen: any; // PassIllimModel | PromoPassIllimModel;
   @Input() rechargeCreditAmount: number;
   @Input() amountToTransfer: number;
-  @Input() omRecipientFirstName: string;
-  @Input() omRecipientLastName: string;
+  @Input() omRecipientFirstName: string = '';
+  @Input() omRecipientLastName: string = '';
   @Input() recipientHasOmAccount: boolean;
   @Input() sargalGift: any; // GiftSargalItem;
   @Output() validate = new EventEmitter();

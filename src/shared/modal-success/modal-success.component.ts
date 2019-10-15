@@ -31,7 +31,7 @@ export class ModalSuccessComponent implements OnInit {
     } else if (this.data.type === 'noOMAccount') {
       this.dialogRef.close();
     } else if (this.data.type !== 'facture') {
-      this.router.navigate(['/dashboard/emergencies']);
+      this.router.navigate(['/control-center']);
     }
   }
 }

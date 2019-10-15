@@ -35,7 +35,6 @@ export class CodeOtpPage implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private authServ: AuthenticationService,
-    private dashbServ: DashboardService,
     public dialog: MatDialog,
     private reCaptchaV3Service: ReCaptchaV3Service
   ) {}
@@ -107,10 +106,13 @@ export class CodeOtpPage implements OnInit {
               const { nomAbonne, prenomAbonne } = resp;
               this.firstName = prenomAbonne;
               this.lastName = nomAbonne;
+              this.codeOtp = '';
               this.router.navigate(['/create-password']);
             } else {
               this.firstName = '';
               this.lastName = '';
+              this.codeOtp = '';
+              this.router.navigate(['/create-password']);
             }
             const userInfo: RegistrationData = {
               firstName: this.firstName,
@@ -137,10 +139,15 @@ export class CodeOtpPage implements OnInit {
     } else {
       this.showErrMessage = true;
       this.errorMsg = registrationSteps['WRONG_VALIDATION_CODE'].messages[0];
+      this.loading = false;
     }
   }
 
   hideAlert() {
     this.showAlertAvantages = false;
+  }
+
+  goToHomePage() {
+    this.router.navigate(['/']);
   }
 }

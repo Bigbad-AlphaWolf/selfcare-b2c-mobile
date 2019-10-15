@@ -1,0 +1,53 @@
+<ion-header>
+  <div class="contact-container-header">
+    <div routerLink="/assistance" class="arrow-icon">
+      <img src="/assets/images/arrow-left.svg" alt="icon" class="arrow-left" />
+    </div>
+    <span class="text scb-text-l-black">Nous contacter</span>
+  </div>
+</ion-header>
+
+<ion-content>
+  <div class="contact-container">
+    <div class="contact-container-body">
+      <div class="contact-container-body-block">
+        <div id="dimelo_chat_item_markup_f44d42108d59e7f81fe2e086" class="dimelo_chat_item_markup"></div>
+        <div class="contact-container-body-block-list-channel">
+          <div (click)="goToPage('facebook')" class="list-channel-item-container">
+            <div class="list-channel-item facebook">
+              <div class="channel-icon">
+                <img src="/assets/images/facebook.svg" alt="contact-by-facebook" class="icon" />
+              </div>
+              <div class="channel-text">
+                <span class="title">Via facebook</span>
+                <span class="text">N’hésitez pas à nous contacter sur Facebook, Ñu ngi leen di xaar 😉.</span>
+              </div>
+            </div>
+          </div>
+          <div (click)="goToPage('twitter')" class="list-channel-item-container">
+            <div class="list-channel-item tel">
+              <div class="channel-icon">
+                <img src="/assets/images/twitter.svg" alt="contact-by-facebook" class="icon" />
+              </div>
+              <div class="channel-text">
+                <span class="title">Via twitter</span>
+                <span class="text">N’hésitez pas à nous contacter sur Twitter, Ñu ngi leen di xaar 😉.</span>
+              </div>
+            </div>
+          </div>
+          <div (click)="goToPage('mail')" class="list-channel-item-container">
+            <div class="list-channel-item mail">
+              <div class="channel-icon">
+                <img src="/assets/images/gmail.svg" alt="contact-by-facebook" class="icon" />
+              </div>
+              <div class="channel-text">
+                <span class="title">Via mail</span>
+                <span class="text">Vous pouvez écrire à mes autres collègues du service client par email</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
