@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.orange.myorange.osn" version="5.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<!-- com.orange.myorange.osn for android-->
+<widget id="com.orange.mobile.myorangesn" version="5.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Orange Et Moi</name>
     <description>Tout Orange En Un Click</description>
     <author email="serviceclient@orange-sonatel.com" href="https://orange.sn/">Orange Sonatel Team</author>
