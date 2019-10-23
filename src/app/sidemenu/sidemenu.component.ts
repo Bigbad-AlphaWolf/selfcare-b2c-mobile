@@ -152,4 +152,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 	closeMenu() {
 		this.close.emit();
 	}
+	goToAbout(){
+		this.router.navigate(['/apropos']);
+	}
 }

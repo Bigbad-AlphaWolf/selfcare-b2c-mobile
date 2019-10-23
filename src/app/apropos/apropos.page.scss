@@ -1,0 +1,21 @@
+.apropos-img{
+width: 50%;
+margin: auto;
+}
+.apropos-head{
+text-align: center;
+}
+.img-container
+{
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 50px;
+}
+.arrow-left {
+    position: absolute;
+  }
