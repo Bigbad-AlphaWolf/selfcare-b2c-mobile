@@ -1,0 +1,99 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>A propos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <img src="/assets/images/08.svg" class="apropos-img" />
+    <ion-card-header class="apropos-head">
+      <ion-card-title>Orange Et Moi</ion-card-title>
+      <ion-card-subtitle>Version: 5.0.0</ion-card-subtitle>
+      <ion-card-subtitle
+        >Propriete de la Sonatel. Tous droits reserves.</ion-card-subtitle
+      >
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-button expand="full" (click)="presentAlert()">Informations legales</ion-button>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Vos donnees</ion-card-title>
+      <ion-card-subtitle
+        >Quelles sont les donnees utilisees par votre
+        application?</ion-card-subtitle
+      >
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label>Votre identite</ion-label>
+          <ion-badge slot="end">Oui</ion-badge>
+        </ion-item>
+        <ion-item>
+          <ion-label>Donnees d'usage</ion-label>
+          <ion-badge slot="end">Oui</ion-badge>
+        </ion-item>
+        <ion-item>
+          <ion-label>Contacts</ion-label>
+          <ion-badge slot="end">Oui</ion-badge>
+        </ion-item>
+        <ion-item>
+          <ion-label>Localisation</ion-label>
+          <ion-badge color="dark" slot="end">Non</ion-badge>
+        </ion-item>
+        <ion-item>
+          <ion-label>Photos, media et fichiers</ion-label>
+          <ion-badge slot="end">Oui</ion-badge>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Contenus et fonctionnalites</ion-card-title>
+      <ion-card-subtitle
+        >Quels sont les contenus et les fonctionnalites en lien avec votre vie privee proposes par votre
+        application?</ion-card-subtitle
+      >
+    </ion-card-header>
+
+    <ion-card-content> 
+        <ion-list>
+            <ion-item>
+              <ion-label>Age recommende</ion-label>
+              <ion-badge color="success" slot="end">3</ion-badge>
+            </ion-item>
+            <ion-item>
+              <ion-label>Achats integres</ion-label>
+              <ion-badge slot="end">Oui</ion-badge>
+            </ion-item>
+            <ion-item>
+              <ion-label>Publicites</ion-label>
+              <ion-badge slot="end">Oui</ion-badge>
+            </ion-item>
+            <ion-item>
+              <ion-label>Reseaux Sociaux</ion-label>
+              <ion-badge color="dark" slot="end">Non</ion-badge>
+            </ion-item>
+          </ion-list>
+
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>L'engagement Orange</ion-card-title>
+      <ion-card-subtitle
+        >Orange vous accompagne pour proteger votre vie numerique et vos donnees
+        personnelles</ion-card-subtitle
+      >
+    </ion-card-header>
+  </ion-card>
+</ion-content>

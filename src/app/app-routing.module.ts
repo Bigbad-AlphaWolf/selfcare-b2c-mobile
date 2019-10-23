@@ -98,7 +98,9 @@ const routes: Routes = [
     path: 'sargal-registration',
     loadChildren: './sargal/components/sargal-registration/sargal-registration.module#SargalRegistrationPageModule'
   },
-  { path: 'contact-us', loadChildren: './assistance/containers/contact-us/contact-us.module#ContactUsPageModule' }
+  { path: 'contact-us', loadChildren: './assistance/containers/contact-us/contact-us.module#ContactUsPageModule' },  { path: 'apropos', loadChildren: './apropos/apropos.module#AproposPageModule' },
+  { path: 'infolegales', loadChildren: './infolegales/infolegales.module#InfolegalesPageModule' }
+
 
 ];
 
