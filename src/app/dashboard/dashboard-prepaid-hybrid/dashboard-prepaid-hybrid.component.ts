@@ -21,6 +21,7 @@ import { BanniereService } from 'src/app/services/banniere-service/banniere.serv
 import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import { getLastUpdatedDateTimeText, arrangeCompteurByOrdre, getTrioConsoUser } from 'src/shared';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -73,7 +74,8 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
     private router: Router,
     private authServ: AuthenticationService,
     private banniereServ: BanniereService,
-    private sargalServ: SargalService
+    private sargalServ: SargalService,
+    private followService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -158,11 +160,13 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
 
   makeSargalAction() {
     if (this.userSargalData && this.userSargalData.status === SARGAL_NOT_SUBSCRIBED && this.sargalDataLoaded) {
+      this.followService.registerEventFollow('Sargal-registration-page', 'success', 'clicked');
       this.router.navigate(['/sargal-registration']);
     } else if (
       (this.userSargalData && this.userSargalData.status !== SARGAL_UNSUBSCRIPTION_ONGOING) ||
       (!this.sargalUnavailable && this.sargalDataLoaded)
     ) {
+      this.followService.registerEventFollow('Sargal-dashboard', 'success', 'clicked');
       this.goToSargalDashboard();
     }
   }
