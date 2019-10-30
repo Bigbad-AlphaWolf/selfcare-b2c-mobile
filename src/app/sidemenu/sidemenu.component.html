@@ -256,6 +256,27 @@
             >
           </div>
         </div>
+        <div
+          routerLinkActive="user-assistance-account-block-selected"
+          #centerRLActive="routerLinkActive"
+          (click)="goToAbout()"
+          class="user-assistance-account-block"
+        >
+          <div class="assistance-icon">
+            <img
+              src="/assets/images/ios-information-circle.svg"
+              alt="info"
+              class="icon"
+            />
+           
+          </div>
+          <div class="assistance-text">
+            <span class="title">A propos d'Orange et moi</span>
+            <span class="subtitle scb-text-light-black"
+              >Informations generales sur Orange et moi</span
+            >
+          </div>
+        </div>
       </ion-menu-toggle>
     </div>
   </div>

@@ -1,0 +1,116 @@
+<div class="parrainage-page">
+  <div class="parrainage-page-header">
+    <div class="img-container" (click)="goBack()">
+      <img src="/assets/images/arrow-left.svg" alt="arrow" />
+    </div>
+    <span>Parrainage</span>
+  </div>
+  <div class="parrainage-page-body">
+    <div class="banner-container">
+      <img src="/assets/images/parrainage-banner.png" alt="banniere" />
+    </div>
+    <div class="description">
+      Le <span class="bold">Parrainnage</span> vous permet dolor sit amet,
+      consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+      dolore.
+    </div>
+    <div class="title">Mes parrainages</div>
+    <div class="filters">
+      <div
+        (click)="filterBy('INSCRITS')"
+        class="filter"
+        [ngClass]="{ 'filter-active': selectedFilter === 'INSCRITS' }"
+      >
+        <span>Inscrits</span>
+        <img
+          *ngIf="selectedFilter === 'INSCRITS'"
+          src="/assets/images/close-white.svg"
+          alt="close"
+        />
+      </div>
+
+      <div
+        (click)="filterBy('NON_INSCRITS')"
+        class="filter"
+        [ngClass]="{ 'filter-active': selectedFilter === 'NON_INSCRITS' }"
+      >
+        <span>Non inscrits</span>
+        <img
+          *ngIf="selectedFilter === 'NON_INSCRITS'"
+          src="/assets/images/close-white.svg"
+          alt="close"
+        />
+      </div>
+    </div>
+    <div class="sponsees">
+      <!-- loader -->
+      <div class="spinner" *ngIf="loadingSponsees">
+        <mat-spinner mode="indeterminate" [diameter]="50"></mat-spinner>
+      </div>
+      <!-- list-sponsee -->
+      <div
+        class="list-sponsees"
+        *ngIf="listSponseeShown && listSponseeShown?.length"
+      >
+        <div class="sponsee" *ngFor="let sponsee of listSponseeShown">
+          <div class="top-block">
+            <div class="sponsee-infos">
+              <div class="name scb-text-orange">
+                {{ sponsee?.firstname }} {{ sponsee?.lastname }}
+              </div>
+              <div class="msisdn scb-text-dark-grey">
+                (+221) {{ sponsee?.msisdn }}
+              </div>
+            </div>
+            <div class="sponsee-status">
+              <img
+                src="/assets/images/statut-inscrit.svg"
+                alt="registered"
+                *ngIf="sponsee?.effectif"
+              />
+              <img
+                src="/assets/images/statut-non-inscrit.svg"
+                alt="not-registered"
+                *ngIf="!sponsee?.effectif"
+              />
+            </div>
+          </div>
+          <div class="rappel-block scb-text-orange" *ngIf="!sponsee?.effectif">
+            <span (click)="sendCallback(sponsee)">Envoyer un rappel</span>
+            <mat-spinner
+              mode="indeterminate"
+              [diameter]="20"
+              *ngIf="sponsee?.sendingCallback"
+            ></mat-spinner>
+          </div>
+        </div>
+      </div>
+      <!-- error -->
+      <div class="error scb-text-red-error" *ngIf="hasLoadingError">
+        Erreur lors du chargement. <span>Cliquez pour recharger</span>
+      </div>
+      <!-- empty list -->
+      <div class="empty" *ngIf="!listSponseeShown?.length">
+        <span [ngSwitch]="selectedFilter">
+          <span *ngSwitchCase="'INSCRITS'">
+            Vous n'avez aucun <span class="bold">filleul</span> avec le statut
+            <span class="bold">"inscrit".</span>
+          </span>
+          <span *ngSwitchCase="'NON_INSCRITS'">
+            Vous n'avez aucun <span class="bold">filleul</span> avec le statut
+            <span class="bold">"non inscrit".</span>
+          </span>
+          <span *ngSwitchCase="'NONE'">
+            Vous n'avez pas de filleul actuellement.
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <button
+    class="scb-btn scb-btn-orange scb-btn-full"
+    (click)="openModalNewSponsee()"
+  >
+    Parrainer un nouveau contact
+  </button>
+</div>
