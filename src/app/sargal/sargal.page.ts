@@ -6,6 +6,7 @@ import { DashboardService, downloadAvatarEndpoint } from '../services/dashboard-
 import { SargalService } from '../services/sargal-service/sargal.service';
 import { SargalSubscriptionModel } from '../dashboard';
 import * as SecureLS from 'secure-ls';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-sargal',
@@ -27,11 +28,13 @@ export class SargalPage implements OnInit {
   userSargalPoints: number;
   dataLoaded: boolean;
   hasError: boolean;
+  currentNumber: string;
   constructor(
     private router: Router,
     private authService: AuthenticationService,
     private dashbordServ: DashboardService,
-    private sargalServ: SargalService
+    private sargalServ: SargalService,
+    private followService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -43,8 +46,8 @@ export class SargalPage implements OnInit {
     } else {
       this.avatarUrl = NO_AVATAR_ICON_URL;
     }
-    const currentNumber = this.dashbordServ.getCurrentPhoneNumber();
-    this.sargalServ.getSargalBalance(currentNumber).subscribe(
+    this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
+    this.sargalServ.getSargalBalance(this.currentNumber).subscribe(
       (res: SargalSubscriptionModel) => {
         this.sargalDataLoaded = true;
         if (res.status === 'SUBSCRIBED' || res.status === 'SUBSCRIPTION_ONGOING') {
@@ -72,7 +75,11 @@ export class SargalPage implements OnInit {
     this.router.navigate(['/sargal-catalogue', 'all']);
   }
 
-  goToCategorySargal(codeCategory: number) {
+  goToCategorySargal(codeCategory: number, pageTitle?: string) {
+    this.followService.registerEventFollow('sargal-gift-page-clicked', 'success', {
+      page: pageTitle,
+      msisdn: this.currentNumber
+    });
     this.router.navigate(['/sargal-catalogue', codeCategory]);
   }
 
