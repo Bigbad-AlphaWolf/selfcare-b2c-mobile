@@ -543,3 +543,13 @@ export function formatPhoneNumber(phoneNumber: string) {
   );
   return res;
 }
+
+export interface SponseeModel {
+  id: number;
+  msisdn: string;
+  firstName: string;
+  lastName: string;
+  effective: boolean;
+  createdDate: string;
+  enabled: boolean;
+}
