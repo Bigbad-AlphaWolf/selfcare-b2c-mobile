@@ -4,8 +4,6 @@ const { SERVER_API_URL, ACCOUNT_MNGT_SERVICE } = environment;
 import { HttpClient } from '@angular/common/http';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { SponseeModel } from 'src/shared';
-import { of } from 'rxjs';
-import { delay } from 'rxjs/operators';
 const isSponsorEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/sponsors`;
 const createSponsorEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/sponsees`;
 const sendSMSRappelEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/sponsees/send-sms`;
@@ -73,7 +71,7 @@ export class ParrainageService {
   createSponsor(msisdn: string) {
     const msisdnSponsor = this.dashboardService.getCurrentPhoneNumber();
     const payload = { msisdn, msisdnSponsor };
-    return of('').pipe(delay(2000));
+    // return of('').pipe(delay(2000));
     return this.http.post(`${createSponsorEndpoint}`, payload);
   }
 
