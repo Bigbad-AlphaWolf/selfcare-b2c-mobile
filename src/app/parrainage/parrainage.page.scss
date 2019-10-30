@@ -119,8 +119,10 @@
             border-top: dashed 2px $greey;
             padding-top: 15px;
             display: flex;
-            span {
-              margin-right: 10px;
+            justify-content: space-between;
+            .sms-status {
+              font-family: HelveticaNeueLTStd-Bd;
+              font-size: 16px;
             }
             .mat-spinner::ng-deep circle {
               stroke: $orange;

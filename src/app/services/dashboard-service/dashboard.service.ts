@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Subject, Subscription, Observable, of } from 'rxjs';
 import * as SecureLS from 'secure-ls';
 import { DOCUMENT } from '@angular/platform-browser';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import {
@@ -35,6 +35,7 @@ const attachMobileNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/ap
 const checkFixNumber = `${attachMobileNumberEndpoint}/check_number_fixe`;
 const saveFixNumber = `${attachMobileNumberEndpoint}/ligne-fixe/register`;
 const userLinkedPhoneNumberEndpoint = `${attachMobileNumberEndpoint}/get-all-number`;
+const isSponsorEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/sponsor`;
 
 // avatar endpoints
 export const downloadAvatarEndpoint = `${SERVER_API_URL}/${FILE_SERVICE}/`;
@@ -69,6 +70,7 @@ export class DashboardService {
   currentPhoneNumberChangeSubject: Subject<string> = new Subject<string>();
   scrollToBottomSubject: Subject<string> = new Subject<string>();
   balanceAvailableSubject: Subject<any> = new Subject<any>();
+  isSponsorSubject: Subject<any> = new Subject<boolean>();
   user: any;
   private renderer: Renderer2;
   msisdn: string;
@@ -318,5 +320,14 @@ export class DashboardService {
       });
 
     return res;
+  }
+
+  isSponsor() {
+    const msisdn = this.getCurrentPhoneNumber();
+    return this.http.get(`${isSponsorEndpoint}/${msisdn}`).pipe(
+      map((isSponsor: boolean) => {
+        this.isSponsorSubject.next(isSponsor);
+      })
+    );
   }
 }
