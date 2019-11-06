@@ -103,7 +103,7 @@
             </ng-container>
           </div>
 
-          <div *ngIf="!noSargalAccount" (click)="getSargalPoints()" class="scb-data-reload">
+          <div *ngIf="userSargalData?.status !== getSargalStatusNotSubscribed()" (click)="getSargalPoints()" class="scb-data-reload">
             <img src="/assets/images/reload.png" alt="reload-icon" />
           </div>
         </div>

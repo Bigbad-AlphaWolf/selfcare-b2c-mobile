@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ModalController } from '@ionic/angular';
 import { CreateSponsorFormComponent } from './create-sponsor-form/create-sponsor-form.component';
+import { SponseeModel } from 'src/shared';
+import { ParrainageService } from '../services/parrainage-service/parrainage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-parrainage',
@@ -10,45 +13,62 @@ import { CreateSponsorFormComponent } from './create-sponsor-form/create-sponsor
 })
 export class ParrainagePage implements OnInit {
   listSponseeShown: any[];
-  listSponsee: any[];
+  listSponsee: SponseeModel[];
   loadingSponsees = false;
   hasLoadingError = false;
   selectedFilter: 'NONE' | 'NON_INSCRITS' | 'INSCRITS' = 'NONE';
-  mockData: any[] = [
+  mockData: SponseeModel[] = [
     {
-      msisdn: '77 589 62 87',
-      firstname: 'Pape Abdoulaye',
-      lastname: 'KEBE',
-      effectif: true
+      id: 1,
+      msisdn: '775896287',
+      firstName: 'Pape Abdoulaye',
+      lastName: 'KEBE',
+      effective: true,
+      createdDate: '',
+      enabled: true
     },
     {
-      msisdn: '77 133 12 25',
-      firstname: 'Momar',
-      lastname: 'KEBE',
-      effectif: false
+      id: 2,
+      msisdn: '771331225',
+      firstName: 'Momar',
+      lastName: 'KEBE',
+      effective: false,
+      createdDate: '',
+      enabled: true
     },
     {
-      msisdn: '77 510 90 27',
-      firstname: 'Mor Talla',
-      lastname: 'KEBE',
-      effectif: true
+      id: 3,
+      msisdn: '775109027',
+      firstName: 'Mor Talla',
+      lastName: 'KEBE',
+      effective: true,
+      createdDate: '',
+      enabled: true
     },
     {
-      msisdn: '77 102 28 35',
-      firstname: 'Fatou Bintou',
-      lastname: 'KEBE',
-      effectif: false
+      id: 4,
+      msisdn: '771022835',
+      firstName: 'Fatou Bintou',
+      lastName: 'KEBE',
+      effective: false,
+      createdDate: '',
+      enabled: true
     },
     {
-      msisdn: '77 755 91 55',
-      firstname: 'Ndeye Astou',
-      lastname: 'KEBE',
-      effectif: true
+      id: 5,
+      msisdn: '777559155',
+      firstName: 'Ndeye Astou',
+      lastName: 'KEBE',
+      effective: true,
+      createdDate: '',
+      enabled: true
     }
   ];
   constructor(
     public dialog: MatDialog,
-    public modalController: ModalController
+    public modalController: ModalController,
+    private parrainageService: ParrainageService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -56,13 +76,27 @@ export class ParrainagePage implements OnInit {
   }
 
   getAllSponsees() {
-    this.listSponsee = this.mockData;
-    this.listSponseeShown = this.mockData;
+    this.loadingSponsees = true;
+    this.hasLoadingError = false;
+    this.parrainageService.getCurrentMsisdnSponsees().subscribe(
+      (sponsees: [any]) => {
+        this.loadingSponsees = false;
+        this.listSponsee = sponsees;
+        this.listSponseeShown = sponsees;
+      },
+      err => {
+        this.loadingSponsees = false;
+        this.hasLoadingError = true;
+      }
+    );
   }
 
   async presentModal() {
     const modal = await this.modalController.create({
       component: CreateSponsorFormComponent
+    });
+    modal.onDidDismiss().then(() => {
+      this.getAllSponsees();
     });
     return await modal.present();
   }
@@ -78,11 +112,11 @@ export class ParrainagePage implements OnInit {
       this.selectedFilter = sponseeStatus;
       if (sponseeStatus === 'INSCRITS') {
         this.listSponseeShown = this.listSponsee.filter(sponsee => {
-          return sponsee.effectif;
+          return sponsee.effective;
         });
       } else {
         this.listSponseeShown = this.listSponsee.filter(sponsee => {
-          return !sponsee.effectif;
+          return !sponsee.effective;
         });
       }
     }
@@ -91,13 +125,28 @@ export class ParrainagePage implements OnInit {
   sendCallback(sponsee: any) {
     if (!sponsee.sendingCallback) {
       sponsee.sendingCallback = true;
-      setTimeout(() => {
-        sponsee.sendingCallback = false;
-      }, 2000);
+      this.parrainageService.sendSMSRappel(sponsee.msisdn).subscribe(
+        res => {
+          sponsee.sendingCallback = false;
+          sponsee.CallbackSent = true;
+          setTimeout(() => {
+            sponsee.CallbackSent = false;
+          }, 2000);
+        },
+        err => {
+          sponsee.sendingCallback = false;
+          sponsee.CallbackNotSent = true;
+          setTimeout(() => {
+            sponsee.CallbackNotSent = false;
+          }, 2000);
+        }
+      );
     }
   }
 
-  goBack() {}
+  goBack() {
+    this.router.navigate(['/dashboard']);
+  }
 
   openModalNewSponsee() {
     this.presentModal();

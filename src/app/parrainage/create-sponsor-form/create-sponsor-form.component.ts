@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { REGEX_NUMBER } from 'src/shared';
 import { ModalController } from '@ionic/angular';
+import { ParrainageService } from 'src/app/services/parrainage-service/parrainage.service';
 
 @Component({
   selector: 'app-create-sponsor-form',
@@ -12,10 +13,12 @@ export class CreateSponsorFormComponent implements OnInit {
   form: FormGroup;
   creatingSponsee = false;
   showErrMessage = false;
+  showSuccessMessage = false;
   errorMsg: string;
   constructor(
     private fb: FormBuilder,
-    public modalController: ModalController
+    public modalController: ModalController,
+    private parrainageService: ParrainageService
   ) {}
 
   ngOnInit() {
@@ -30,7 +33,26 @@ export class CreateSponsorFormComponent implements OnInit {
   }
 
   createSponsee() {
+    this.showErrMessage = false;
+    this.showSuccessMessage = false;
     this.creatingSponsee = true;
+    const msisdn = this.form.value.sponseeMsisdn;
+    this.parrainageService.createSponsor(msisdn).subscribe(
+      (res: any) => {
+        this.creatingSponsee = false;
+        this.showSuccessMessage = true;
+        this.form.reset();
+      },
+      (err: any) => {
+        this.creatingSponsee = false;
+        this.showErrMessage = true;
+        if (err && err.status === 400 && err.defaultMessage) {
+          this.errorMsg = err.defaultMessage;
+        } else {
+          this.errorMsg = 'Une erreur est survenue';
+        }
+      }
+    );
   }
 
   closeModal() {
