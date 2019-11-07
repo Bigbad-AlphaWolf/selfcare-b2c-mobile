@@ -19,6 +19,7 @@ import {
   getNOAvatartUrlImage,
   ASSISTANCE_URL
 } from 'src/shared';
+import { ParrainageService } from '../services/parrainage-service/parrainage.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 declare var FollowAnalytics: any;
 @Component({
@@ -36,13 +37,15 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   currentFormule;
   msisdn = this.dashboardServ.getCurrentPhoneNumber();
   avatarUrl: string;
+  isSponsor: boolean;
 
   constructor(
     private router: Router,
     private authServ: AuthenticationService,
     private dashboardServ: DashboardService,
     public dialog: MatDialog,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private parrainageService: ParrainageService
   ) {}
 
   ngOnInit() {
@@ -54,6 +57,9 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     });
     this.accountService.userUrlAvatarSubject.subscribe(() => {
       this.extractData();
+    });
+    this.parrainageService.isSponsorEvent.subscribe(res => {
+      this.isSponsor = true;
     });
   }
 
@@ -127,6 +133,13 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.router.navigate(['/my-account']);
     if (typeof FollowAnalytics !== 'undefined') {
       FollowAnalytics.logEvent('Sidemenu_Mon_Compte', 'clicked');
+    }
+  }
+
+  goParrainage() {
+    this.router.navigate(['/parrainage']);
+    if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.logEvent('Sidemenu_Mes_Parrainages', 'clicked');
     }
   }
 

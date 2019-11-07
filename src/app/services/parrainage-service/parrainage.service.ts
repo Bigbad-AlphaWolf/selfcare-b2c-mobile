@@ -4,9 +4,12 @@ const { SERVER_API_URL, ACCOUNT_MNGT_SERVICE } = environment;
 import { HttpClient } from '@angular/common/http';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { SponseeModel } from 'src/shared';
-const isSponsorEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/sponsors`;
-const createSponsorEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/sponsees`;
-const sendSMSRappelEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/sponsees/send-sms`;
+import { Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+const isSponsorEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/sponsors`;
+const createSponseeEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/sponsees`;
+const getSponseesByMsisdnEndpoint = `${createSponseeEndpoint}/by-account`;
+const sendSMSRappelEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/sponsees/send-sms`;
 const mockSponsees: SponseeModel[] = [
   {
     id: 1,
@@ -58,33 +61,46 @@ const mockSponsees: SponseeModel[] = [
   providedIn: 'root'
 })
 export class ParrainageService {
+  isSponsorSubject: Subject<string> = new Subject<string>();
+
   constructor(
     private http: HttpClient,
     private dashboardService: DashboardService
   ) {}
 
-  isSponsor() {
-    const msisdn = this.dashboardService.getCurrentPhoneNumber();
-    return this.http.get(`${isSponsorEndpoint}/${msisdn}/check`);
+  get isSponsorEvent() {
+    return this.isSponsorSubject.asObservable();
   }
 
-  createSponsor(msisdn: string) {
+  isSponsor() {
+    const msisdn = this.dashboardService.getCurrentPhoneNumber();
+    return this.http.get(`${isSponsorEndpoint}/${msisdn}/check`).pipe(
+      map(res => {
+        if (res) {
+          this.isSponsorSubject.next();
+        }
+      })
+    );
+  }
+
+  createSponsee(params: { msisdn: string; firstName: string }) {
     const msisdnSponsor = this.dashboardService.getCurrentPhoneNumber();
-    const payload = { msisdn, msisdnSponsor };
+    const payload = Object.assign({}, params, { msisdnSponsor });
     // return of('').pipe(delay(2000));
-    return this.http.post(`${createSponsorEndpoint}`, payload);
+    return this.http.post(`${createSponseeEndpoint}`, payload);
   }
 
   sendSMSRappel(dMsisdn: string) {
     const sMsisdn = this.dashboardService.getCurrentPhoneNumber();
-    const payload = { sMsisdn, dMsisdn };
-    // return of('').pipe(delay(2000));
-    return this.http.post(`${sendSMSRappelEndpoint}`, payload);
+    return this.http.post(
+      `${sendSMSRappelEndpoint}?sMsisdn=${sMsisdn}&dMsisdn=${dMsisdn}`,
+      {}
+    );
   }
 
   getCurrentMsisdnSponsees() {
     const currentMsisdn = this.dashboardService.getCurrentPhoneNumber();
+    return this.http.get(`${getSponseesByMsisdnEndpoint}/${currentMsisdn}`);
     // return of(mockSponsees);
-    return this.http.get(`${createSponsorEndpoint}/${currentMsisdn}`);
   }
 }

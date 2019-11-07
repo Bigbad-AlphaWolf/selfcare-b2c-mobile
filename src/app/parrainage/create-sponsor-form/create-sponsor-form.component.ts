@@ -27,8 +27,7 @@ export class CreateSponsorFormComponent implements OnInit {
         '',
         [Validators.required, Validators.pattern(REGEX_NUMBER)]
       ],
-      firstname: ['', [Validators.pattern('[a-zA-Z ]*')]],
-      lastname: ['', [Validators.pattern('[a-zA-Z ]*')]]
+      firstname: ['', [Validators.pattern('[a-zA-Z ]*')]]
     });
   }
 
@@ -37,17 +36,19 @@ export class CreateSponsorFormComponent implements OnInit {
     this.showSuccessMessage = false;
     this.creatingSponsee = true;
     const msisdn = this.form.value.sponseeMsisdn;
-    this.parrainageService.createSponsor(msisdn).subscribe(
+    const firstName = this.form.value.firstname;
+    this.parrainageService.createSponsee({ msisdn, firstName }).subscribe(
       (res: any) => {
         this.creatingSponsee = false;
         this.showSuccessMessage = true;
         this.form.reset();
+        this.closeModal();
       },
       (err: any) => {
         this.creatingSponsee = false;
         this.showErrMessage = true;
-        if (err && err.status === 400 && err.defaultMessage) {
-          this.errorMsg = err.defaultMessage;
+        if (err && err.status === 400 && err.error.title) {
+          this.errorMsg = err.error.title;
         } else {
           this.errorMsg = 'Une erreur est survenue';
         }

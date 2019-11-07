@@ -178,6 +178,35 @@
           </div>
         </div>
       </ion-menu-toggle>
+      <ion-menu-toggle>
+        <div
+          routerLinkActive="menu-list-services-item-block-selected"
+          #sponsorRLActive="routerLinkActive"
+          class="menu-list-services-item-block c-pointer"
+          (click)="goParrainage()"
+          *ngIf="isSponsor"
+        >
+          <div class="menu-list-services-item">
+            <div class="services-item-icon">
+              <img
+                *ngIf="!sponsorRLActive.isActive"
+                src="/assets/images/bill_menu_icon.svg"
+                alt="factures"
+                class="item-icon"
+              />
+              <img
+                *ngIf="sponsorRLActive.isActive"
+                src="/assets/images/bill_menu_icon_on.svg"
+                alt="factures"
+                class="item-icon"
+              />
+            </div>
+            <div class="services-item-text">
+              <span class="content">Mes parrainages</span>
+            </div>
+          </div>
+        </div>
+      </ion-menu-toggle>
     </div>
     <div class="menu-list-user-assistance">
       <ion-menu-toggle>

@@ -63,6 +63,7 @@ const buyPassInternetForSomeoneByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SER
 
 // Endpoint to get sargal balance
 const sargalBalanceEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/`;
+const welcomeStatusEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters`;
 @Injectable({
   providedIn: 'root'
 })
@@ -322,12 +323,10 @@ export class DashboardService {
     return res;
   }
 
-  isSponsor() {
-    const msisdn = this.getCurrentPhoneNumber();
-    return this.http.get(`${isSponsorEndpoint}/${msisdn}`).pipe(
-      map((isSponsor: boolean) => {
-        this.isSponsorSubject.next(isSponsor);
-      })
+  getWelcomeStatus() {
+    const currentPhoneNumber = this.getCurrentPhoneNumber();
+    return this.http.get(
+      `${welcomeStatusEndpoint}/${currentPhoneNumber}/welcome-status`
     );
   }
 }
