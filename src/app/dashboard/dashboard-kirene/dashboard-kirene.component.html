@@ -192,14 +192,7 @@
         <span class="transfert text">Transfert <span class="text-style-1">crédit et bonus</span> </span>
       </div>
     </div>
-    <div (click)="goToTransfertOM()" class="dashboard-block-offres-top3-item">
-      <div class="item-icon">
-        <img src="/assets/images/orange-money_kirene.png" alt="group-6" />
-      </div>
-      <div class="item-text scb-text-item-offre-black">
-        <span class="text-style-1">Transfert <span> d’argent OM</span></span>
-      </div>
-    </div>
+    
     <div [ngClass]="{ 'disabled-block': !canDoSOS }" (click)="goToSOSPage()" class="dashboard-block-offres-top3-item">
       <div class="item-icon">
         <img src="/assets/images/new_sos-credit-et-pass_mob.svg" alt="group-55" />
@@ -209,6 +202,14 @@
           >SOS <br />
           <span class="text-style-1">crédit et pass</span>
         </span>
+      </div>
+    </div>
+    <div (click)="goToTransfertOM()" class="dashboard-block-offres-top3-item" style="visibility: hidden;">
+      <div class="item-icon">
+        <img src="/assets/images/orange-money_kirene.png" alt="group-6" />
+      </div>
+      <div class="item-text scb-text-item-offre-black">
+        <span class="text-style-1">Transfert <span> d’argent OM</span></span>
       </div>
     </div>
   </div>
