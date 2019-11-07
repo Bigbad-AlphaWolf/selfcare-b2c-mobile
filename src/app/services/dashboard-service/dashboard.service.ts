@@ -6,12 +6,7 @@ import { DOCUMENT } from '@angular/platform-browser';
 import { tap, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AuthenticationService } from '../authentication-service/authentication.service';
-import {
-  BuyPassModel,
-  BuyPassInternetModel,
-  TransfertBonnus,
-  TransferCreditModel
-} from '.';
+import { BuyPassModel, BuyPassInternetModel, TransfertBonnus, TransferCreditModel } from '.';
 import { SubscriptionUserModel, JAMONO_ALLO_CODE_FORMULE } from 'src/shared';
 
 const {
@@ -106,11 +101,7 @@ export class DashboardService {
     return this.http.post(initOTPReinitializeEndpoint, { login, token });
   }
 
-  reinitializePassword(payload: {
-    otp: string;
-    newPassword: string;
-    login: string;
-  }) {
+  reinitializePassword(payload: { otp: string; newPassword: string; login: string }) {
     return this.http.post(reinitializeEndpoint, payload);
   }
 
@@ -126,9 +117,7 @@ export class DashboardService {
 
   getPostpaidConsoHistory(day) {
     this.msisdn = this.getCurrentPhoneNumber();
-    return this.http.get(
-      `${postpaidUserHistoryEndpoint}/${this.msisdn}/${day}`
-    );
+    return this.http.get(`${postpaidUserHistoryEndpoint}/${this.msisdn}/${day}`);
   }
 
   getMainPhoneNumberProfil() {
@@ -159,16 +148,9 @@ export class DashboardService {
   }
 
   // attach new mobile phone number
-  registerNumberToAttach(detailsToCheck: {
-    login: string;
-    numero: string;
-    typeNumero: 'MOBILE' | 'FIX';
-  }) {
+  registerNumberToAttach(detailsToCheck: { login: string; numero: string; typeNumero: 'MOBILE' | 'FIX' }) {
     detailsToCheck.login = this.authService.getUserMainPhoneNumber();
-    return this.http.post(
-      `${attachMobileNumberEndpoint}/register`,
-      detailsToCheck
-    );
+    return this.http.post(`${attachMobileNumberEndpoint}/register`, detailsToCheck);
   }
 
   // check if fix number is already linked to an account
@@ -177,11 +159,7 @@ export class DashboardService {
   }
 
   // attach fix number
-  attachFixNumber(payload: {
-    login: string;
-    idClient: string;
-    numero: string;
-  }) {
+  attachFixNumber(payload: { login: string; idClient: string; numero: string }) {
     payload = Object.assign({}, payload, { typeNumero: 'FIXE' });
     return this.http.post(saveFixNumber, payload);
   }
@@ -228,9 +206,7 @@ export class DashboardService {
   }
 
   getAccountInfo(userLogin: string) {
-    return this.http
-      .get(`${userAccountInfos}/${userLogin}`)
-      .pipe(tap((res: any) => {}));
+    return this.http.get(`${userAccountInfos}/${userLogin}`).pipe(tap((res: any) => {}));
   }
 
   getUserConsoInfosByCode(consoCodes?: number[]) {
@@ -241,9 +217,7 @@ export class DashboardService {
       const params = consoCodes.map(code => `code=${code}`).join('&');
       queryParams = `?${params}`;
     }
-    return this.http.get(
-      `${userConsoByCodeEndpoint}/${this.msisdn}${queryParams}`
-    );
+    return this.http.get(`${userConsoByCodeEndpoint}/${this.msisdn}${queryParams}`);
   }
 
   getUserConso(day) {
@@ -282,10 +256,7 @@ export class DashboardService {
   }
 
   buyPassByCreditForSomeone(objectParam: BuyPassInternetModel) {
-    return this.http.post(
-      buyPassInternetForSomeoneByCreditEndpoint,
-      objectParam
-    );
+    return this.http.post(buyPassInternetForSomeoneByCreditEndpoint, objectParam);
   }
 
   transferBonus(transfertbonnus: TransfertBonnus) {
@@ -310,15 +281,11 @@ export class DashboardService {
 
   getCodeFormuleOfMsisdn(msisdn: string) {
     let res: any;
-    this.authService
-      .getSubscription(msisdn)
-      .subscribe((souscription: SubscriptionUserModel) => {
-        const codeFormule =
-          souscription.profil === 'HYBRID' || souscription.profil === 'ND'
-            ? JAMONO_ALLO_CODE_FORMULE
-            : souscription.code;
-        res = of(codeFormule);
-      });
+    this.authService.getSubscription(msisdn).subscribe((souscription: SubscriptionUserModel) => {
+      const codeFormule =
+        souscription.profil === 'HYBRID' || souscription.profil === 'ND' ? JAMONO_ALLO_CODE_FORMULE : souscription.code;
+      res = of(codeFormule);
+    });
 
     return res;
   }

@@ -29,7 +29,7 @@ import { AppMinimize } from '@ionic-native/app-minimize/ngx';
     HttpClientModule,
     MatDialogModule,
     BrowserModule,
-    IonicModule.forRoot({animated: true}),
+    IonicModule.forRoot({animated: false}),
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule
