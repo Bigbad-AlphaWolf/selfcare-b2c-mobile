@@ -1,12 +1,5 @@
-<div
-  class="buy-pass-internet-container"
-  [ngClass]="{ 'success-custom-style': step === 5 }"
->
-  <app-header
-    *ngIf="step <= 4"
-    [title]="title"
-    (goBack)="goToPreviousStep()"
-  ></app-header>
+<div class="buy-pass-internet-container" [ngClass]="{ 'success-custom-style': step === 5 }">
+  <app-header *ngIf="step <= 4" [title]="title" (goBack)="goToPreviousStep()"></app-header>
   <div class="buy-pass-body-block">
     <ng-container *ngIf="step === 0">
       <app-choose-payment-mod
@@ -29,12 +22,12 @@
     </ng-container>
 
     <ng-container *ngIf="step === 2">
-      <app-list-pass-internet
+      <app-list-pass-internet-v2
         [destinataire]="destinataire"
         [paymentMode]="choosedPaymentMod"
         (getSelectedPassInternet)="nextStepOfChoosePassInternet($event)"
       >
-      </app-list-pass-internet>
+      </app-list-pass-internet-v2>
     </ng-container>
 
     <ng-container *ngIf="step === 3">

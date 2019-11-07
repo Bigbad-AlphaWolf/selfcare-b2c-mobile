@@ -19,18 +19,15 @@ export class HomePage {
   slides = [
     {
       imageSrc: '/assets/images/1.png',
-      text:
-        '<span>Dalal ak Jam <br/> Ci </span> <span class="scb-text-orange">Orange</span>'
+      text: '<span>Dalal ak Jam <br/> Ci </span> <span class="scb-text-orange">Orange</span>'
     },
     {
       imageSrc: '/assets/images/2.png',
-      text:
-        '<span>Suivre ma </span> <br /><span class="scb-text-blue">conso</span>'
+      text: '<span>Suivre ma </span> <br /><span class="scb-text-blue">conso</span>'
     },
     {
       imageSrc: '/assets/images/3.png',
-      text:
-        '<span>Contacter </span> <br /> <span class="scb-text-green">l’assistance</span>'
+      text: '<span>Contacter </span> <br /> <span class="scb-text-green">l’assistance</span>'
     },
     {
       imageSrc: '/assets/images/4.png',
@@ -39,8 +36,7 @@ export class HomePage {
     },
     {
       imageSrc: '/assets/images/5.png',
-      text:
-        '<span>Gérer mes </span> <br /><span class="scb-text-yellow">offres</span>'
+      text: '<span>Gérer mes </span> <br /><span class="scb-text-yellow">offres</span>'
     }
   ];
 
@@ -52,17 +48,17 @@ export class HomePage {
     }
   }
 
-goToLoginPage() {
+  goToLoginPage() {
     this.nativePageTransition.fade(null);
     this.router.navigate(['/login']);
   }
 
-goToRegistrationPage() {
+  goToRegistrationPage() {
     this.nativePageTransition.fade(null);
     this.router.navigate(['/register']);
   }
 
-goToOrangeHomePage() {
+  goToOrangeHomePage() {
     window.location.href = ORANGE_HOME_PAGE_URL;
   }
 }

@@ -57,10 +57,7 @@ let value = {};
   providedIn: 'root'
 })
 export class OrangeMoneyService {
-  constructor(
-    private http: HttpClient,
-    private dashbordServ: DashboardService
-  ) {}
+  constructor(private http: HttpClient, private dashbordServ: DashboardService) {}
   pinPadDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b'];
   gotPinPadSubject = new BehaviorSubject<string[]>([]);
   loginResponseSubject = new BehaviorSubject<any>({});
@@ -151,44 +148,21 @@ export class OrangeMoneyService {
   }
 
   RegisterClient(registerClientData: OmRegisterClientModel) {
-    this.LogAction(
-      registerClientData.msisdn,
-      'debut Register API OM\n',
-      'info',
-      JSON.stringify(registerClientData)
-    );
+    this.LogAction(registerClientData.msisdn, 'debut Register API OM\n', 'info', JSON.stringify(registerClientData));
     return this.http.post(registerClientEndpoint, registerClientData).pipe(
       tap((res: any) => {
-        this.LogAction(
-          registerClientData.msisdn,
-          'fin Register API OM',
-          'info',
-          JSON.stringify(res)
-        );
+        this.LogAction(registerClientData.msisdn, 'fin Register API OM', 'info', JSON.stringify(res));
       })
     );
   }
 
   GetPinPad(pinPadData: OmPinPadModel) {
-    this.LogAction(
-      pinPadData.msisdn,
-      'debut Demande pinpad OM \n',
-      'info',
-      JSON.stringify(pinPadData)
-    );
+    this.LogAction(pinPadData.msisdn, 'debut Demande pinpad OM \n', 'info', JSON.stringify(pinPadData));
     return this.http.post(pinpadEndpoint, pinPadData).pipe(
       tap((res: any) => {
-        const sequence = res.content.data.sequence.replace(
-          new RegExp('-', 'g'),
-          ' '
-        );
+        const sequence = res.content.data.sequence.replace(new RegExp('-', 'g'), ' ');
         this.gotPinPadSubject.next(sequence.split(''));
-        this.LogAction(
-          pinPadData.msisdn,
-          'fin Demande pinpad OM',
-          'info',
-          JSON.stringify(res)
-        );
+        this.LogAction(pinPadData.msisdn, 'fin Demande pinpad OM', 'info', JSON.stringify(res));
       })
     );
   }
@@ -202,21 +176,11 @@ export class OrangeMoneyService {
       msisdn: loginClientData.msisdn,
       user_type: loginClientData.user_type
     };
-    this.LogAction(
-      loginClientData.msisdn,
-      'debut login endpoint\n',
-      'info',
-      JSON.stringify(logData)
-    );
+    this.LogAction(loginClientData.msisdn, 'debut login endpoint\n', 'info', JSON.stringify(logData));
 
     return this.http.post(loginClientEndpoint, loginClientData).pipe(
       tap((res: any) => {
-        this.LogAction(
-          loginClientData.msisdn,
-          'fin login endpoint',
-          'info',
-          JSON.stringify(res)
-        );
+        this.LogAction(loginClientData.msisdn, 'fin login endpoint', 'info', JSON.stringify(res));
       })
     );
   }
@@ -230,21 +194,11 @@ export class OrangeMoneyService {
       msisdn: getBalanceData.msisdn,
       user_type: getBalanceData.user_type
     };
-    this.LogAction(
-      getBalanceData.msisdn,
-      'debut Voir Solde OM',
-      'info',
-      JSON.stringify(logData)
-    );
+    this.LogAction(getBalanceData.msisdn, 'debut Voir Solde OM', 'info', JSON.stringify(logData));
 
     return this.http.post(getBalanceEndpoint, getBalanceData).pipe(
       tap((res: any) => {
-        this.LogAction(
-          getBalanceData.msisdn,
-          'fin Voir Solde OM',
-          'info',
-          JSON.stringify(res)
-        );
+        this.LogAction(getBalanceData.msisdn, 'fin Voir Solde OM', 'info', JSON.stringify(res));
       })
     );
   }
@@ -260,21 +214,11 @@ export class OrangeMoneyService {
       amount: achatCreditData.amount,
       user_type: achatCreditData.user_type
     };
-    this.LogAction(
-      achatCreditData.msisdn,
-      'debut achat de credit par OM',
-      'info',
-      JSON.stringify(logData)
-    );
+    this.LogAction(achatCreditData.msisdn, 'debut achat de credit par OM', 'info', JSON.stringify(logData));
 
     return this.http.post(achatCreditEndpoint, achatCreditData).pipe(
       tap((res: any) => {
-        this.LogAction(
-          achatCreditData.msisdn,
-          'fin achat de credit par OM',
-          'info',
-          JSON.stringify(res)
-        );
+        this.LogAction(achatCreditData.msisdn, 'fin achat de credit par OM', 'info', JSON.stringify(res));
       })
     );
   }
@@ -289,21 +233,11 @@ export class OrangeMoneyService {
       price_plan_index: achatPassData.price_plan_index,
       user_type: achatPassData.user_type
     };
-    this.LogAction(
-      achatPassData.msisdn,
-      'debut achat de pass internet par OM',
-      'info',
-      JSON.stringify(logData)
-    );
+    this.LogAction(achatPassData.msisdn, 'debut achat de pass internet par OM', 'info', JSON.stringify(logData));
 
     return this.http.post(achatPassEndpoint, achatPassData).pipe(
       tap((res: any) => {
-        this.LogAction(
-          achatPassData.msisdn,
-          'fin achat de pass internet par OM',
-          'info',
-          JSON.stringify(res)
-        );
+        this.LogAction(achatPassData.msisdn, 'fin achat de pass internet par OM', 'info', JSON.stringify(res));
       })
     );
   }
@@ -319,21 +253,11 @@ export class OrangeMoneyService {
       price_plan_index: achatIllimixData.price_plan_index,
       user_type: achatIllimixData.user_type
     };
-    this.LogAction(
-      achatIllimixData.msisdn,
-      'debut achat illimix endpoint par OM',
-      'info',
-      JSON.stringify(logData)
-    );
+    this.LogAction(achatIllimixData.msisdn, 'debut achat illimix endpoint par OM', 'info', JSON.stringify(logData));
 
     return this.http.post(achatIllimixEndpoint, achatIllimixData).pipe(
       tap((res: any) => {
-        this.LogAction(
-          achatIllimixEndpoint,
-          'fin achat illimix endpoint par OM',
-          'info',
-          JSON.stringify(res)
-        );
+        this.LogAction(achatIllimixEndpoint, 'fin achat illimix endpoint par OM', 'info', JSON.stringify(res));
       })
     );
   }
@@ -348,21 +272,11 @@ export class OrangeMoneyService {
       msisdn2: transferOMData.msisdn_receiver,
       user_type: transferOMData.user_type
     };
-    this.LogAction(
-      transferOMData.msisdn_sender,
-      'debut transfert OM endpoint',
-      'info',
-      JSON.stringify(logData)
-    );
+    this.LogAction(transferOMData.msisdn_sender, 'debut transfert OM endpoint', 'info', JSON.stringify(logData));
 
     return this.http.post(transferOMEndpoint, transferOMData).pipe(
       tap((res: any) => {
-        this.LogAction(
-          transferOMEndpoint,
-          'fin transfert OM endpoint',
-          'info',
-          JSON.stringify(res)
-        );
+        this.LogAction(transferOMEndpoint, 'fin transfert OM endpoint', 'info', JSON.stringify(res));
       })
     );
   }
@@ -379,21 +293,11 @@ export class OrangeMoneyService {
       nom: transferOMData.nom,
       prenom: transferOMData.prenom
     };
-    this.LogAction(
-      transferOMData.msisdn,
-      'debut transfert avec code OM endpoint',
-      'info',
-      JSON.stringify(logData)
-    );
+    this.LogAction(transferOMData.msisdn, 'debut transfert avec code OM endpoint', 'info', JSON.stringify(logData));
 
     return this.http.post(transferOMWithCodeEndpoint, transferOMData).pipe(
       tap((res: any) => {
-        this.LogAction(
-          transferOMWithCodeEndpoint,
-          'fin transfert avec code OM endpoint',
-          'info',
-          JSON.stringify(res)
-        );
+        this.LogAction(transferOMWithCodeEndpoint, 'fin transfert avec code OM endpoint', 'info', JSON.stringify(res));
       })
     );
   }
@@ -421,10 +325,7 @@ export class OrangeMoneyService {
       APIKey: omAccount.apiKey
     });
     const options = { headers };
-    return this.http.get(
-      `${getListIllimixEndpoint}/${omAccount.msisdn}`,
-      options
-    );
+    return this.http.get(`${getListIllimixEndpoint}/${omAccount.msisdn}`, options);
   }
 
   GetListPassInternet(omAccount: OmUserInfo) {
@@ -532,12 +433,12 @@ export class OrangeMoneyService {
     }
     if (type === 'event') {
       if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent(eventKey, value);
+        FollowAnalytics.logEvent(eventKey, value);
       }
     } else {
       value = { error_code: res.status_code };
       if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logError(errorKey, value);
+        FollowAnalytics.logError(errorKey, value);
       }
     }
   }

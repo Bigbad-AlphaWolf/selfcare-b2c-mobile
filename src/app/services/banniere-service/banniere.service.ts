@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { DashboardService, downloadEndpoint } from '../dashboard-service/dashboard.service';
+import { DashboardService, downloadEndpoint, downloadAvatarEndpoint } from '../dashboard-service/dashboard.service';
 import { BannierePubModel } from '../dashboard-service';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { SubscriptionModel } from 'src/app/dashboard';
@@ -27,7 +27,7 @@ export class BanniereService {
           this.listBanniereUserFormule = res;
           if (res.length) {
             res.map((item: BannierePubModel) => {
-              item.image = downloadEndpoint + item.image;
+              item.image = downloadAvatarEndpoint + item.image;
             });
           }
           this.isLoadedSubject.next(true);
