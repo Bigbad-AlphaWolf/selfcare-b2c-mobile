@@ -4,8 +4,8 @@
       <span (click)="changeCategorie(0)" class="btn" [ngClass]="{ selected: activeTabIndex === 0 }">
         Catégories
       </span>
-      <span (click)="changeCategorie(1)" class="btn" [ngClass]="{ selected: activeTabIndex === 1 }">
-        Favories
+      <span *ngIf="0" class="btn" [ngClass]="{ selected: activeTabIndex === 1 }">
+        Favoris
       </span>
     </div>
     <div class="buy-pass-list-body-block-list">
@@ -82,7 +82,6 @@
             </ng-container>
           </div>
         </ion-slide>
-        <ion-slide></ion-slide>
       </ion-slides>
     </div>
     <div class="spinner" *ngIf="!isLoaded">

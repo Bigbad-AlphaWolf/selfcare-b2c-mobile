@@ -51,10 +51,10 @@
 
         &-selected {
           border-bottom: 2px solid $orange;
-
           .text {
             font-size: 14px;
             font-family: HelveticaNeueLTStd-Bd, sans-serif;
+            color: $orange;
           }
         }
       }
