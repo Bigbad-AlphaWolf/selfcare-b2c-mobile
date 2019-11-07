@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { BuyPassInternetPage } from './buy-pass-internet.page';
 import { SharedModule } from 'src/shared/shared.module';
 import { ListPassInternetComponent } from './list-pass-internet/list-pass-internet.component';
+import { ListPassInternetV2Component } from './list-pass-internet-v2/list-pass-internet-v2.component';
 
 const routes: Routes = [
   {
@@ -17,13 +18,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SharedModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [BuyPassInternetPage, ListPassInternetComponent]
+  imports: [CommonModule, FormsModule, IonicModule, SharedModule, RouterModule.forChild(routes)],
+  declarations: [BuyPassInternetPage, ListPassInternetV2Component]
 })
 export class BuyPassInternetPageModule {}

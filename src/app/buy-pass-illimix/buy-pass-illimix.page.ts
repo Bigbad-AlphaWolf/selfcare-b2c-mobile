@@ -144,7 +144,7 @@ export class BuyPassIllimixPage implements OnInit {
     const currentNumber = this.dashServ.getCurrentPhoneNumber();
     this.authServ.getSubscription(currentNumber).subscribe((res: any) => {
       if (res.code === CODE_KIRENE_Formule) {
-        this.title = 'Acheter un  Konec’Tel';
+        this.title = 'Acheter un  Mixel';
       }
     });
   }

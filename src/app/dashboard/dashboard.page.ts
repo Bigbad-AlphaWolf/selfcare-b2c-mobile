@@ -14,7 +14,6 @@ import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
-import { delay } from 'rxjs/operators';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -58,13 +57,11 @@ export class DashboardPage implements OnInit {
     this.firstName = user.firstName;
     this.lastName = user.lastName;
     this.currentPhoneNumber = this.dashboardServ.getCurrentPhoneNumber();
-    this.authServ
-      .getSubscription(this.currentPhoneNumber)
-      .subscribe((userSubscription: any) => {
-        this.userSubscription = userSubscription;
-        this.currentProfile = userSubscription.profil;
-        this.currentFormule = userSubscription.nomOffre;
-      });
+    this.authServ.getSubscription(this.currentPhoneNumber).subscribe((userSubscription: any) => {
+      this.userSubscription = userSubscription;
+      this.currentProfile = userSubscription.profil;
+      this.currentFormule = userSubscription.nomOffre;
+    });
     dashboardOpened.next();
   }
 

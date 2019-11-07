@@ -1,0 +1,239 @@
+@import 'src/app/app';
+
+.buy-pass-illimix-list-v2-container {
+  min-width: $baseWidthMobile2;
+  background-color: $grayDashboard;
+  width: 100%;
+  height: 100%;
+  .buy-pass-top-block {
+    position: relative;
+    padding: 17px percentage(67px / $baseWidthMobile2) 15px percentage(68px / $baseWidthMobile2);
+    text-align: center;
+    min-height: 50px;
+    height: percentage(50px / 788px);
+    background-color: $white;
+
+    &-icon {
+      position: absolute;
+      left: percentage(10px / $baseWidthMobile2);
+    }
+
+    &-text {
+      .title {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 18px;
+      }
+    }
+  }
+
+  .buy-pass-illimix-v2-list-body-block {
+    .spinner {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      .mat-spinner::ng-deep circle {
+        stroke: $orange;
+      }
+    }
+    &-top-text {
+      padding-top: 20px;
+      background-color: $white;
+      display: flex;
+      .list-filter-btn {
+        height: 40px;
+        min-width: percentage(90px / 365px);
+        text-align: center;
+        .text {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 14px;
+          margin: 0 14px;
+        }
+
+        &-selected {
+          border-bottom: 2px solid $orange;
+          .text {
+            font-size: 14px;
+            font-family: HelveticaNeueLTStd-Bd, sans-serif;
+            color: $orange;
+          }
+        }
+      }
+    }
+
+    &-btns-filter {
+      margin-bottom: 20px;
+      padding-left: percentage(10px / $baseWidthMobile2);
+      overflow-x: auto;
+      white-space: nowrap;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .list-filter-btn {
+        height: 40px;
+        border-radius: 19.5px;
+        border: 1px solid $black;
+        background: transparent;
+        text-align: center;
+        display: inline-block;
+        min-width: percentage(90px / 365px);
+        margin-right: percentage(12px / $baseWidthMobile2);
+        background-color: $grayDashboard;
+        .text {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 14px;
+          margin: 0 14px;
+        }
+
+        &-selected {
+          border: none;
+          background-color: $orange;
+
+          .text {
+            font-size: 14px;
+            color: $white;
+          }
+        }
+      }
+    }
+
+    &-list-pass {
+      padding: 16px percentage(10px / $baseWidthMobile2) 46px percentage(10px / $baseWidthMobile2);
+      margin-bottom: 25px;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .list-pass-item {
+        border-radius: 10px;
+        position: relative;
+        &:not(:last-child) {
+          margin-bottom: 10px;
+        }
+
+        min-height: 120px;
+        background-color: $white;
+        padding: 19px percentage(15px / ($baseWidthMobile2 - 20px)) 21px percentage(15px / ($baseWidthMobile2 - 20px));
+        .promo-badge {
+          position: absolute;
+          top: 0;
+          left: 15px;
+          padding: 4.5px 5px;
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 12px;
+          background-color: $fullBlack;
+          border-radius: 0 0 10px 10px;
+          .nom-promo {
+            font-family: HelveticaNeueLTStd-Bd, sans-serif;
+          }
+        }
+        &.pass-with-promo {
+          padding-top: 30px;
+        }
+        &-top-block {
+          display: flex;
+          justify-content: space-between;
+          align-content: center;
+          padding-bottom: 7px;
+
+          .pass-name-duration {
+            .pass-name {
+              display: block;
+              font-family: HelveticaNeueLTStd-Bd;
+              font-size: 18px;
+              padding-bottom: 6px;
+            }
+
+            .pass-duration {
+              display: block;
+              font-family: HelveticaNeueLTStd-Roman;
+              font-size: 12px;
+            }
+          }
+
+          .item-icon {
+            width: 33px;
+            height: 50px;
+            padding: 13px 0 12px 18px;
+
+            img {
+              width: 100%;
+              height: 100%;
+            }
+          }
+        }
+
+        &-bottom-block {
+          padding-top: 12px;
+          border-top: 1px solid $grey;
+          display: flex;
+          flex-wrap: wrap;
+
+          .details-item {
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            &-icon {
+              width: 14px;
+              height: 14px;
+              margin-right: 5px;
+
+              img {
+                width: 100%;
+                height: 100%;
+              }
+            }
+
+            &-text {
+              padding-left: 1px;
+              display: inline-block;
+              vertical-align: middle;
+
+              .text {
+                font-family: HelveticaNeueLTStd-Roman;
+                font-size: 14px;
+              }
+            }
+          }
+        }
+      }
+    }
+    &-bottom-text {
+      padding-top: 20px;
+
+      .text {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 14px;
+        line-height: 1.57;
+      }
+    }
+  }
+
+  .error-text {
+    font-size: 16px;
+    font-family: HelveticaNeueLTStd-Roman, sans-serif;
+    padding: 20px 5px;
+    .reload-text {
+      text-decoration: underline;
+      font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    }
+  }
+
+  .no-pass-block {
+    font-size: 16px;
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    padding: 20px 5px;
+  }
+
+  .spinner {
+    padding-top: 30px;
+    mat-spinner {
+      margin: 0 auto;
+    }
+    .mat-spinner::ng-deep circle {
+      stroke: $orange;
+    }
+  }
+}

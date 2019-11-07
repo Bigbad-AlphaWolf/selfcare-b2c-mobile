@@ -1,19 +1,19 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IllimixListComponent } from './illimix-list.component';
+import { IllimixListV2Component } from './illimix-list-v2.component';
 import { PassIllimixService } from 'src/app/services/pass-illimix-service/pass-illimix.service';
+import { of } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
 
-describe('IllimixListComponent', () => {
-  let component: IllimixListComponent;
-  let fixture: ComponentFixture<IllimixListComponent>;
+describe('IllimixListV2Component', () => {
+  let component: IllimixListV2Component;
+  let fixture: ComponentFixture<IllimixListV2Component>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [IllimixListComponent],
+      declarations: [IllimixListV2Component],
       providers: [
         {
           provide: PassIllimixService,
@@ -44,7 +44,7 @@ describe('IllimixListComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(IllimixListComponent);
+    fixture = TestBed.createComponent(IllimixListV2Component);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
