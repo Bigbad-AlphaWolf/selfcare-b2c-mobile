@@ -93,6 +93,7 @@ export class BuyPassInternetPage implements OnInit {
     this.passsFavorisChoosen = false;
     this.choosedPaymentMod = paymentMod;
     this.goToNextStep();
+    this.destinataire = this.currentUserNumber;
   }
 
   nextStepOfSelectDest(destNumber: string) {
@@ -174,6 +175,8 @@ export class BuyPassInternetPage implements OnInit {
 
   goToNextStep() {
     this.step++;
+    // Avoid recipint choice step
+    if (this.step === 1) {this.step++; }
   }
 
   goToFinalStep() {
@@ -187,6 +190,9 @@ export class BuyPassInternetPage implements OnInit {
       (this.currentProfil === PROFILE_TYPE_POSTPAID && previousStep === 0)
     ) {
       this.goToDashboardPage();
+    } else if (this.step === 2) {
+      // Avoid recipint choice step
+      this.step = 0;
     } else if (
       (this.choosedPaymentMod === PAYMENT_MOD_CREDIT && this.step === 2) ||
       this.passsFavorisChoosen

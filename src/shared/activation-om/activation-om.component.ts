@@ -174,7 +174,6 @@ export class ActivationOmComponent implements OnInit {
       this.pinPadData = {
         msisdn: this.phoneNumber,
         os: 'Android',
-        channel: 'selfcare-b2c',
         app_version: 'v1.0',
         app_conf_version: 'v1.0',
         service_version: OM_SERVICE_VERSION
@@ -206,7 +205,6 @@ export class ActivationOmComponent implements OnInit {
       code_otp: this.form.value.codeOTP,
       uuid: this.phoneNumber, // user unique id in selfcare b2c backend
       os: 'Android',
-      channel: 'selfcare-b2c',
       firebase_id: this.phoneNumber,
       app_version: 'v1.0',
       conf_version: 'v1.0',
@@ -241,7 +239,6 @@ export class ActivationOmComponent implements OnInit {
           this.pinPadData = {
             msisdn: this.phoneNumber,
             os: 'Android',
-            channel: 'selfcare-b2c',
             app_version: 'v1.0',
             app_conf_version: 'v1.0',
             service_version: OM_SERVICE_VERSION
@@ -321,7 +318,6 @@ export class ActivationOmComponent implements OnInit {
           app_version: 'v1.0',
           app_conf_version: 'v1.0',
           user_type: 'user',
-          channel: 'mobile',
           service_version: OM_SERVICE_VERSION
         };
         this.omService.LoginClient(loginPayload).subscribe(
@@ -446,7 +442,6 @@ export class ActivationOmComponent implements OnInit {
       app_version: 'v1.0',
       app_conf_version: 'v1.0',
       user_type: 'user',
-      channel: 'mobile',
       service_version: OM_SERVICE_VERSION
     };
 
@@ -505,7 +500,6 @@ export class ActivationOmComponent implements OnInit {
       app_version: 'v1.0',
       app_conf_version: 'v1.0',
       user_type: 'user',
-      channel: 'mobile',
       service_version: OM_SERVICE_VERSION
     };
     this.omService.AchatCredit(buyCreditPayload).subscribe(
@@ -531,7 +525,6 @@ export class ActivationOmComponent implements OnInit {
       app_version: 'v1.0',
       app_conf_version: 'v1.0',
       user_type: 'user',
-      channel: 'mobile',
       service_version: OM_SERVICE_VERSION,
       amount: params.amount
     };
@@ -561,7 +554,6 @@ export class ActivationOmComponent implements OnInit {
       app_version: 'v1.0',
       app_conf_version: 'v1.0',
       user_type: 'user',
-      channel: 'mobile',
       service_version: OM_SERVICE_VERSION,
       amount: params.amount
     };
@@ -641,7 +633,6 @@ export class ActivationOmComponent implements OnInit {
       app_version: 'v1.0',
       app_conf_version: 'v1.0',
       user_type: 'user',
-      channel: 'mobile',
       service_version: OM_SERVICE_VERSION
     };
     console.log(transferOMPayload);
@@ -675,7 +666,6 @@ export class ActivationOmComponent implements OnInit {
       app_version: 'v1.0',
       app_conf_version: 'v1.0',
       user_type: 'user',
-      channel: 'mobile',
       service_version: OM_SERVICE_VERSION,
       nom: params.nom,
       prenom: params.prenom

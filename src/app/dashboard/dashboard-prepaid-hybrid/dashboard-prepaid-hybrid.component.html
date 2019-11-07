@@ -191,14 +191,7 @@
         <span class="transfert text">Transfert <span class="text-style-1">crédit et bonus</span> </span>
       </div>
     </div>
-    <div (click)="goToTransfertOM()" fxFlex="29%" class="dashboard-block-offres-top3-item">
-      <div class="item-icon">
-        <img src="/assets/images/new_orange-money.svg" alt="group-6" />
-      </div>
-      <div class="item-text scb-text-item-offre-black">
-        <span class="text-style-1">Transfert <span> d’argent OM</span></span>
-      </div>
-    </div>
+    
     <div
       [ngClass]="{ 'disabled-block': !canDoSOS }"
       (click)="goToSOSPage()"
@@ -215,6 +208,17 @@
         </span>
       </div>
     </div>
+    <div (click)="goToTransfertOM()" fxFlex="29%" class="dashboard-block-offres-top3-item" style="visibility: hidden;">
+        <div *ngIf="0">
+            <div class="item-icon">
+                <img src="/assets/images/new_orange-money.svg" alt="group-6" />
+              </div>
+              <div class="item-text scb-text-item-offre-black">
+                <span class="text-style-1">Transfert <span> d’argent OM</span></span>
+              </div>
+        </div>
+        
+      </div>
   </div>
   <div *ngIf="0" class="dashboard-block-offres-top1">
     <div class="item-icon">

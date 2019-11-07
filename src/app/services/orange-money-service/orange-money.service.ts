@@ -197,7 +197,6 @@ export class OrangeMoneyService {
     const logData = {
       app_conf_version: loginClientData.app_conf_version,
       app_version: loginClientData.app_version,
-      channel: loginClientData.channel,
       em: loginClientData.em,
       pin: 'removed',
       msisdn: loginClientData.msisdn,
@@ -226,7 +225,6 @@ export class OrangeMoneyService {
     const logData = {
       app_conf_version: getBalanceData.app_conf_version,
       app_version: getBalanceData.app_version,
-      channel: getBalanceData.channel,
       em: getBalanceData.em,
       pin: 'removed',
       msisdn: getBalanceData.msisdn,
@@ -255,7 +253,6 @@ export class OrangeMoneyService {
     const logData = {
       app_conf_version: achatCreditData.app_conf_version,
       app_version: achatCreditData.app_version,
-      channel: achatCreditData.channel,
       em: achatCreditData.em,
       pin: 'removed',
       msisdn: achatCreditData.msisdn,
@@ -285,7 +282,6 @@ export class OrangeMoneyService {
     const logData = {
       app_conf_version: achatPassData.app_conf_version,
       app_version: achatPassData.app_version,
-      channel: achatPassData.channel,
       em: achatPassData.em,
       pin: 'removed',
       msisdn: achatPassData.msisdn,
@@ -316,7 +312,6 @@ export class OrangeMoneyService {
     const logData = {
       app_conf_version: achatIllimixData.app_conf_version,
       app_version: achatIllimixData.app_version,
-      channel: achatIllimixData.channel,
       em: achatIllimixData.em,
       pin: 'removed',
       msisdn: achatIllimixData.msisdn,
@@ -347,7 +342,6 @@ export class OrangeMoneyService {
     const logData = {
       app_conf_version: transferOMData.app_conf_version,
       app_version: transferOMData.app_version,
-      channel: transferOMData.channel,
       em: transferOMData.em,
       pin: 'removed',
       msisdn: transferOMData.msisdn_sender,
@@ -377,7 +371,6 @@ export class OrangeMoneyService {
     const logData = {
       app_conf_version: transferOMData.app_conf_version,
       app_version: transferOMData.app_version,
-      channel: transferOMData.channel,
       em: transferOMData.em,
       pin: 'removed',
       msisdn: transferOMData.msisdn,
