@@ -1,21 +1,26 @@
-import { Component, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Output,
+  OnDestroy
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import { DashboardService, downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
+import {
+  DashboardService,
+  downloadAvatarEndpoint
+} from '../services/dashboard-service/dashboard.service';
 import { MatDialog } from '@angular/material';
 import { AccountService } from '../services/account-service/account.service';
 import * as SecureLS from 'secure-ls';
-<<<<<<< HEAD
 import {
   NO_AVATAR_ICON_URL,
   getNOAvatartUrlImage,
   ASSISTANCE_URL
 } from 'src/shared';
 import { ParrainageService } from '../services/parrainage-service/parrainage.service';
-=======
-import { NO_AVATAR_ICON_URL, getNOAvatartUrlImage, ASSISTANCE_URL } from 'src/shared';
 import { dashboardOpened } from '../dashboard';
->>>>>>> 8a1b4fd59e37baab639df4c5229308c02608b79b
 const ls = new SecureLS({ encodingType: 'aes' });
 declare var FollowAnalytics: any;
 @Component({
@@ -56,6 +61,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     });
     this.parrainageService.isSponsorEvent.subscribe(res => {
       this.isSponsor = true;
+    });
     dashboardOpened.subscribe(x => {
       this.getSouscription();
     });
