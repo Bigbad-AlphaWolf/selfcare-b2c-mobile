@@ -32,7 +32,7 @@
         <div class="sponsee" *ngFor="let sponsee of listSponseeShown">
           <div class="top-block">
             <div class="sponsee-infos">
-              <div class="name scb-text-orange">{{sponsee?.firstName}} {{sponsee?.lastName}}</div>
+              <div class="name scb-text-orange">{{(sponsee?.firstName && sponsee?.firstName !== '') ? sponsee?.firstName : 'Inconnu'}}</div>
               <div class="msisdn scb-text-dark-grey">(+221) {{sponsee?.msisdn}}</div>
             </div>
             <div class="sponsee-status">

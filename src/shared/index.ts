@@ -553,3 +553,12 @@ export interface SponseeModel {
   createdDate: string;
   enabled: boolean;
 }
+
+export interface WelcomeStatusModel {
+  status: string;
+  type: string; // 'RECHARGE' or 'PASS'
+  value: {
+      amount: number;
+      unit: string;
+  };
+}

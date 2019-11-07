@@ -18,12 +18,8 @@
         <input formControlName="sponseeMsisdn" matInput />
       </mat-form-field>
       <mat-form-field class="scb-input-row scb-required" appearance="outline">
-        <mat-label>prénom du parrainé &nbsp;&nbsp;</mat-label>
+        <mat-label>Nom du parrainé &nbsp;&nbsp;</mat-label>
         <input formControlName="firstname" matInput />
-      </mat-form-field>
-      <mat-form-field class="scb-input-row scb-required" appearance="outline">
-        <mat-label>nom du parrainé &nbsp;&nbsp;</mat-label>
-        <input formControlName="lastname" matInput />
       </mat-form-field>
       <div *ngIf="showErrMessage" class="error-text">
         <span class="scb-text-red-error"> {{ errorMsg }} </span>
