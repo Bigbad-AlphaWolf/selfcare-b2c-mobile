@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material';
 import { AccountService } from '../services/account-service/account.service';
 import * as SecureLS from 'secure-ls';
 import { NO_AVATAR_ICON_URL, getNOAvatartUrlImage, ASSISTANCE_URL } from 'src/shared';
-import { dashboardMenuOpened, dashboardOpened } from '../dashboard';
+import { dashboardOpened } from '../dashboard';
 const ls = new SecureLS({ encodingType: 'aes' });
 declare var FollowAnalytics: any;
 @Component({
