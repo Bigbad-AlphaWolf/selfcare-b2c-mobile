@@ -1,0 +1,46 @@
+@import 'src/app/app';
+
+:host {
+  margin-top: 150px;
+}
+
+.welcome-popup {
+  position: relative;
+  width: 330px;
+  text-align: center;
+  background-color: $white;
+  border-radius: 6px;
+  .img-container {
+    margin-top: 113px;
+    position: relative;
+    img {
+      width: 294px;
+      position: absolute;
+      top: -113px;
+      left: 18px;
+    }
+  }
+  .title {
+    width: 210px;
+    padding-top: 122px;
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 30px;
+    margin: 0 auto;
+  }
+  .description {
+    width: 220px;
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 16px;
+    margin: 15px auto 0;
+    .gift {
+      font-family: HelveticaNeueLTStd-Bd;
+      color: $black;
+    }
+  }
+  .thanks {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
+    padding: 30px 0;
+    margin: 0 auto;
+  }
+}

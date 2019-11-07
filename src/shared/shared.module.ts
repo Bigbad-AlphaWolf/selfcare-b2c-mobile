@@ -41,6 +41,7 @@ import { DeleteNumberPopupComponent } from 'src/app/my-account/delete-number-pop
 import { CguPopupComponent } from './cgu-popup/cgu-popup.component';
 import { OperationSuccessOrFailComponent } from './operation-success-or-fail/operation-success-or-fail.component';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { WelcomePopupComponent } from './welcome-popup/welcome-popup.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
     AvantagePopupComponent,
     CguPopupComponent,
     OperationSuccessOrFailComponent,
-    DeleteNumberPopupComponent
+    DeleteNumberPopupComponent,
+    WelcomePopupComponent
   ],
   imports: [
     CommonModule,
@@ -94,7 +96,8 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
     AvantagePopupComponent,
     DeleteNumberPopupComponent,
     CguPopupComponent,
-    SuccessFailPopupComponent
+    SuccessFailPopupComponent,
+    WelcomePopupComponent
   ],
   exports: [
     MatInputModule,
@@ -128,7 +131,8 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
     SelectOtherRecipientComponent,
     ShareSocialNetworkComponent,
     AvantagePopupComponent,
-    OperationSuccessOrFailComponent
+    OperationSuccessOrFailComponent,
+    WelcomePopupComponent
   ],
   providers: [Contacts, SocialSharing]
 })

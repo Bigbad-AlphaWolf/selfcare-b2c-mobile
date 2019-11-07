@@ -1,0 +1,20 @@
+<div class="welcome-popup">
+  <div class="img-container">
+    <img src="/assets/images/gift-image.svg" alt="image-gift" />
+  </div>
+  <div class="title">
+    Cadeau <br />
+    de bienvenue
+  </div>
+  <div class="description scb-text-dark-grey">
+    Bienvenue sur Orange & Moi. Nous vous offrons
+    <span class="gift scb-text-black">
+      {{ data?.value?.amount + ' ' + data?.value?.unit }}
+      {{
+        data?.type === 'RECHARGE' ? 'de crédit recharge' : 'de pass internet'
+      }}</span
+    >
+    pour vous souhaiter la bienvenue.
+  </div>
+  <div class="thanks scb-text-orange"><span (click)="close()">Merci</span></div>
+</div>
