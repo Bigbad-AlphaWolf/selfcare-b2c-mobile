@@ -7,7 +7,6 @@ import { IonicModule } from '@ionic/angular';
 
 import { BuyPassInternetPage } from './buy-pass-internet.page';
 import { SharedModule } from 'src/shared/shared.module';
-import { ListPassInternetComponent } from './list-pass-internet/list-pass-internet.component';
 import { ListPassInternetV2Component } from './list-pass-internet-v2/list-pass-internet-v2.component';
 
 const routes: Routes = [
