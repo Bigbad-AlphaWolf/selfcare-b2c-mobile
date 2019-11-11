@@ -20,7 +20,6 @@ export interface OmRegisterClientModel {
   code_otp: string;
   uuid: string; // user unique id in selfcare b2c backend
   os: string;
-  channel: string;
   firebase_id: string;
   app_version: string;
   conf_version: string;
@@ -34,14 +33,12 @@ export interface OmLoginClientModel {
   app_version: string;
   app_conf_version: string;
   user_type: string;
-  channel: string;
   service_version: string;
 }
 export interface OmPinPadModel {
   msisdn: string;
   os: string;
   app_version: string;
-  channel: string;
   app_conf_version: string;
   service_version: string;
 }
@@ -52,7 +49,6 @@ export interface OmBalanceModel {
   msisdn: string;
   pin: string;
   em: string;
-  channel: string;
   app_version: string;
   app_conf_version: string;
   user_type: string;
@@ -65,7 +61,6 @@ export interface OmBuyPassModel {
   pin: string;
   em: string;
   price_plan_index: string;
-  channel: string;
   app_version: string;
   app_conf_version: string;
   user_type: string;
@@ -80,7 +75,6 @@ export interface OmBuyCreditModel {
   pin: string;
   em: string;
   amount: number;
-  channel: string;
   app_version: string;
   app_conf_version: string;
   user_type: string;
@@ -93,7 +87,6 @@ export interface OmBuyIllimixModel {
   pin: string;
   em: string;
   price_plan_index: string;
-  channel: string;
   app_version: string;
   app_conf_version: string;
   user_type: string;
@@ -113,7 +106,6 @@ export interface TransferOrangeMoneyModel {
   app_version: string;
   app_conf_version: string;
   user_type: string;
-  channel: string;
   service_version: string;
 }
 
@@ -128,7 +120,6 @@ export interface TransferOMWithCodeModel {
   app_version: string;
   app_conf_version: string;
   user_type: string;
-  channel: string;
   service_version: string;
   nom: string;
   prenom: string;

@@ -1,158 +1,174 @@
 import {
-	Component,
-	OnInit,
-	EventEmitter,
-	Input,
-	Output,
-	OnDestroy
+  Component,
+  OnInit,
+  EventEmitter,
+  Output,
+  OnDestroy
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import {
-	DashboardService,
-	downloadAvatarEndpoint
+  DashboardService,
+  downloadAvatarEndpoint
 } from '../services/dashboard-service/dashboard.service';
 import { MatDialog } from '@angular/material';
 import { AccountService } from '../services/account-service/account.service';
 import * as SecureLS from 'secure-ls';
 import {
-	NO_AVATAR_ICON_URL,
-	getNOAvatartUrlImage,
-	ASSISTANCE_URL
+  NO_AVATAR_ICON_URL,
+  getNOAvatartUrlImage,
+  ASSISTANCE_URL
 } from 'src/shared';
+import { ParrainageService } from '../services/parrainage-service/parrainage.service';
+import { dashboardOpened } from '../dashboard';
 const ls = new SecureLS({ encodingType: 'aes' });
 declare var FollowAnalytics: any;
 @Component({
-	selector: 'app-sidemenu',
-	templateUrl: './sidemenu.component.html',
-	styleUrls: ['./sidemenu.component.scss']
+  selector: 'app-sidemenu',
+  templateUrl: './sidemenu.component.html',
+  styleUrls: ['./sidemenu.component.scss']
 })
 export class SidemenuComponent implements OnInit, OnDestroy {
-	userSubscription;
-	userInfos;
-	@Output() close = new EventEmitter();
-	firstName;
-	lastName;
-	currentProfile;
-	currentFormule;
-	msisdn = this.dashboardServ.getCurrentPhoneNumber();
-	avatarUrl: string;
+  userSubscription;
+  userInfos;
+  @Output() close = new EventEmitter();
+  firstName;
+  lastName;
+  currentProfile;
+  currentFormule;
+  msisdn = this.dashboardServ.getCurrentPhoneNumber();
+  avatarUrl: string;
+  isSponsor: boolean;
 
-	constructor(
-		private router: Router,
-		private authServ: AuthenticationService,
-		private dashboardServ: DashboardService,
-		public dialog: MatDialog,
-		private accountService: AccountService
-	) {}
+  constructor(
+    private router: Router,
+    private authServ: AuthenticationService,
+    private dashboardServ: DashboardService,
+    public dialog: MatDialog,
+    private accountService: AccountService,
+    private parrainageService: ParrainageService
+  ) {}
 
-	ngOnInit() {
-		this.getSouscription();
-		this.extractData();
-		this.dashboardServ.currentPhoneNumberChange.subscribe(() => {
-			this.getSouscription();
-			this.extractData();
-		});
-		this.accountService.userUrlAvatarSubject.subscribe(() => {
-			this.extractData();
-		});
-	}
+  ngOnInit() {
+    this.getSouscription();
+    this.extractData();
+    this.dashboardServ.currentPhoneNumberChange.subscribe(() => {
+      this.getSouscription();
+      this.extractData();
+    });
+    this.accountService.userUrlAvatarSubject.subscribe(() => {
+      this.extractData();
+    });
+    this.parrainageService.isSponsorEvent.subscribe(res => {
+      this.isSponsor = true;
+    });
+    dashboardOpened.subscribe(x => {
+      this.getSouscription();
+    });
+  }
 
-	getSouscription() {
-		this.msisdn = this.dashboardServ.getCurrentPhoneNumber();
-		const userHasLogin = !!this.authServ.getToken();
-		if (userHasLogin) {
-			this.authServ.getSubscription(this.msisdn).subscribe(souscription => {
-				this.userSubscription = souscription;
-				this.currentProfile = souscription.profil;
-				this.currentFormule = souscription.nomOffre;
-			});
-		}
-	}
+  getSouscription() {
+    this.msisdn = this.dashboardServ.getCurrentPhoneNumber();
+    const userHasLogin = !!this.authServ.getToken();
+    if (userHasLogin) {
+      this.authServ.getSubscription(this.msisdn).subscribe(souscription => {
+        this.userSubscription = souscription;
+        this.currentProfile = souscription.profil;
+        this.currentFormule = souscription.nomOffre;
+      });
+    }
+  }
 
-	extractData() {
-		this.userInfos = ls.get('user');
-		if (this.userInfos.imageProfil) {
-			this.avatarUrl = downloadAvatarEndpoint + this.userInfos.imageProfil;
-		} else {
-			this.avatarUrl = NO_AVATAR_ICON_URL;
-		}
-		if (this.userSubscription) {
-			this.currentProfile = this.userSubscription.profil;
-			this.currentFormule = this.userSubscription.nomOffre;
-		}
-		this.getUserNames();
-	}
+  extractData() {
+    this.userInfos = ls.get('user');
+    if (this.userInfos.imageProfil) {
+      this.avatarUrl = downloadAvatarEndpoint + this.userInfos.imageProfil;
+    } else {
+      this.avatarUrl = NO_AVATAR_ICON_URL;
+    }
+    if (this.userSubscription) {
+      this.currentProfile = this.userSubscription.profil;
+      this.currentFormule = this.userSubscription.nomOffre;
+    }
+    this.getUserNames();
+  }
 
-	getUserNames() {
-		const user = ls.get('user');
-		this.firstName = user.firstName;
-		this.lastName = user.lastName;
-	}
+  getUserNames() {
+    const user = ls.get('user');
+    this.firstName = user.firstName;
+    this.lastName = user.lastName;
+  }
 
-	goToAssistancePage() {
-		window.open(ASSISTANCE_URL);
-		if (typeof FollowAnalytics !== 'undefined') {
-			FollowAnalytics.logEvent('Sidemenu_Assistance', 'clicked');
-		}
-	}
+  goToAssistancePage() {
+    window.open(ASSISTANCE_URL);
+    if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.logEvent('Sidemenu_Assistance', 'clicked');
+    }
+  }
 
-	ngOnDestroy() {}
+  ngOnDestroy() {}
 
-	launchInProgressPage() {
-		this.accountService.launchInProgressPage();
-	}
+  launchInProgressPage() {
+    this.accountService.launchInProgressPage();
+  }
 
-	goDashboard() {
-		this.closeMenu();
-		if (typeof FollowAnalytics !== 'undefined') {
-			FollowAnalytics.logEvent('Sidemenu_Suivi_conso', 'clicked');
-		}
-	}
+  goDashboard() {
+    this.closeMenu();
+    if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.logEvent('Sidemenu_Suivi_conso', 'clicked');
+    }
+  }
 
-	goFormule() {
-		this.router.navigate(['/my-formule']);
-		if (typeof FollowAnalytics !== 'undefined') {
-			FollowAnalytics.logEvent('Sidemenu_MaFormule', 'clicked');
-		}
-	}
+  goFormule() {
+    this.router.navigate(['/my-formule']);
+    if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.logEvent('Sidemenu_MaFormule', 'clicked');
+    }
+  }
 
-	goFacture() {
-		this.router.navigate(['/bills']);
-		if (typeof FollowAnalytics !== 'undefined') {
-			FollowAnalytics.logEvent('Sidemenu_Factures_Fixe_Mobile', 'clicked');
-		}
-	}
+  goFacture() {
+    this.router.navigate(['/bills']);
+    if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.logEvent('Sidemenu_Factures_Fixe_Mobile', 'clicked');
+    }
+  }
 
-	goMyAccount() {
-		this.router.navigate(['/my-account']);
-		if (typeof FollowAnalytics !== 'undefined') {
-			FollowAnalytics.logEvent('Sidemenu_Mon_Compte', 'clicked');
-		}
-	}
+  goMyAccount() {
+    this.router.navigate(['/my-account']);
+    if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.logEvent('Sidemenu_Mon_Compte', 'clicked');
+    }
+  }
 
-	goEmergencies() {
-		this.router.navigate(['/control-center']);
-		if (typeof FollowAnalytics !== 'undefined') {
-			FollowAnalytics.logEvent('Sidemenu_urgences_depannages', 'clicked');
-		}
-	}
+  goParrainage() {
+    this.router.navigate(['/parrainage']);
+    if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.logEvent('Sidemenu_Mes_Parrainages', 'clicked');
+    }
+  }
 
-	changeCurrentNumber() {
-		this.router.navigate(['/change-main-phone-number']);
-		if (typeof FollowAnalytics !== 'undefined') {
-			FollowAnalytics.logEvent('Sidemenu_urgences_depannages', 'clicked');
-		}
-	}
+  goEmergencies() {
+    this.router.navigate(['/control-center']);
+    if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.logEvent('Sidemenu_urgences_depannages', 'clicked');
+    }
+  }
 
-	setImgAvatarToDefault() {
-		this.avatarUrl = getNOAvatartUrlImage();
-	}
+  changeCurrentNumber() {
+    this.router.navigate(['/change-main-phone-number']);
+    if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.logEvent('Sidemenu_urgences_depannages', 'clicked');
+    }
+  }
 
-	closeMenu() {
-		this.close.emit();
-	}
-	goToAbout(){
-		this.router.navigate(['/apropos']);
-	}
+  setImgAvatarToDefault() {
+    this.avatarUrl = getNOAvatartUrlImage();
+  }
+
+  closeMenu() {
+    this.close.emit();
+  }
+  goToAbout() {
+    this.router.navigate(['/apropos']);
+  }
 }

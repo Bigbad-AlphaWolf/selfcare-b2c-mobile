@@ -8,48 +8,48 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 
 describe('IllimixListComponent', () => {
-	let component: IllimixListComponent;
-	let fixture: ComponentFixture<IllimixListComponent>;
+  let component: IllimixListComponent;
+  let fixture: ComponentFixture<IllimixListComponent>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
-			declarations: [IllimixListComponent],
-			providers: [
-				{
-					provide: PassIllimixService,
-					useValue: {
-						setPhoneNumber: () => {},
-						setPaymentMod: () => {},
-						setListPassIllimix: () => {},
-						getStatusLoadingPass: () => {
-							return of();
-						},
-						getListPassIllimix: () => {},
-						getListPassIllimixShown: () => {},
-						getCategoryListPassIllimix: () => {}
-					}
-				},
-				{
-					provide: DashboardService,
-					useValue: {
-						getCurrentPhoneNumber: () => {}
-					}
-				},
-				{
-					provide: Router
-				}
-			],
-			schemas: [CUSTOM_ELEMENTS_SCHEMA]
-		}).compileComponents();
-	}));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [IllimixListComponent],
+      providers: [
+        {
+          provide: PassIllimixService,
+          useValue: {
+            setPhoneNumber: () => {},
+            setPaymentMod: () => {},
+            setListPassIllimix: () => {},
+            getStatusLoadingPass: () => {
+              return of();
+            },
+            getListPassIllimix: () => {},
+            getListPassIllimixShown: () => {},
+            getCategoryListPassIllimix: () => {}
+          }
+        },
+        {
+          provide: DashboardService,
+          useValue: {
+            getCurrentPhoneNumber: () => {}
+          }
+        },
+        {
+          provide: Router
+        }
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    }).compileComponents();
+  }));
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(IllimixListComponent);
-		component = fixture.componentInstance;
-		fixture.detectChanges();
-	});
+  beforeEach(() => {
+    fixture = TestBed.createComponent(IllimixListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

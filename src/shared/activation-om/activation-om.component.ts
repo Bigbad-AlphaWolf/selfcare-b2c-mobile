@@ -174,7 +174,6 @@ export class ActivationOmComponent implements OnInit {
       this.pinPadData = {
         msisdn: this.phoneNumber,
         os: 'Android',
-        channel: 'selfcare-b2c',
         app_version: 'v1.0',
         app_conf_version: 'v1.0',
         service_version: OM_SERVICE_VERSION
@@ -206,7 +205,6 @@ export class ActivationOmComponent implements OnInit {
       code_otp: this.form.value.codeOTP,
       uuid: this.phoneNumber, // user unique id in selfcare b2c backend
       os: 'Android',
-      channel: 'selfcare-b2c',
       firebase_id: this.phoneNumber,
       app_version: 'v1.0',
       conf_version: 'v1.0',
@@ -241,21 +239,16 @@ export class ActivationOmComponent implements OnInit {
           this.pinPadData = {
             msisdn: this.phoneNumber,
             os: 'Android',
-            channel: 'selfcare-b2c',
             app_version: 'v1.0',
             app_conf_version: 'v1.0',
             service_version: OM_SERVICE_VERSION
           };
-          this.omService
-            .GetPinPad(this.pinPadData)
-            .subscribe((response: any) => {
-              const omUser1 = this.omService.GetOrangeMoneyUser(
-                this.phoneNumber
-              );
-              omUser1.sequence = response.content.data.sequence;
-              omUser1.em = response.content.data.em;
-              this.omService.SaveOrangeMoneyUser(omUser1);
-            });
+          this.omService.GetPinPad(this.pinPadData).subscribe((response: any) => {
+            const omUser1 = this.omService.GetOrangeMoneyUser(this.phoneNumber);
+            omUser1.sequence = response.content.data.sequence;
+            omUser1.em = response.content.data.em;
+            this.omService.SaveOrangeMoneyUser(omUser1);
+          });
         } else {
           this.pinPadHasError = true;
           this.pinErrorMsg = res.status_wording;
@@ -300,11 +293,7 @@ export class ActivationOmComponent implements OnInit {
     this.loading = true;
     const userPhoneNumber = this.phoneNumber;
     let canalPromotion;
-    if (
-      this.passToBuy &&
-      this.passToBuy.pass &&
-      this.passToBuy.pass.canalPromotion
-    ) {
+    if (this.passToBuy && this.passToBuy.pass && this.passToBuy.pass.canalPromotion) {
       canalPromotion = this.passToBuy.pass.canalPromotion;
     }
     // make request to server to check the OM pin
@@ -321,7 +310,6 @@ export class ActivationOmComponent implements OnInit {
           app_version: 'v1.0',
           app_conf_version: 'v1.0',
           user_type: 'user',
-          channel: 'mobile',
           service_version: OM_SERVICE_VERSION
         };
         this.omService.LoginClient(loginPayload).subscribe(
@@ -362,53 +350,36 @@ export class ActivationOmComponent implements OnInit {
               } else if (this.operation === 'CHECK_SOLDE' || !this.operation) {
                 this.seeSolde(pin);
               } else if (this.operation === OPERATION_TRANSFER_OM) {
-                const transferMoneyPayload = Object.assign(
-                  {},
-                  this.amountToTransfer,
-                  {
-                    pin
-                  }
-                );
+                const transferMoneyPayload = Object.assign({}, this.amountToTransfer, {
+                  pin
+                });
                 this.transferMoney(transferMoneyPayload);
               } else if (this.operation === OPERATION_TRANSFER_OM_WITH_CODE) {
-                const transferPayload = Object.assign(
-                  {},
-                  this.transferWithCodePayload,
-                  { pin }
-                );
+                const transferPayload = Object.assign({}, this.transferWithCodePayload, { pin });
                 this.transferMoneyWithCode(transferPayload);
               }
             } else {
               if (this.activationOM) {
                 const followDetails = { error_code: loginRes.status_code };
               }
-              this.omService
-                .GetPinPad(this.pinPadData)
-                .subscribe((res: any) => {
-                  const omUser = this.omService.GetOrangeMoneyUser(
-                    this.phoneNumber
-                  );
-                  omUser.sequence = res.content.data.sequence;
-                  omUser.em = res.content.data.em;
-                  this.omService.SaveOrangeMoneyUser(omUser);
-                  this.getToken = true;
-                });
+              this.omService.GetPinPad(this.pinPadData).subscribe((res: any) => {
+                const omUser = this.omService.GetOrangeMoneyUser(this.phoneNumber);
+                omUser.sequence = res.content.data.sequence;
+                omUser.em = res.content.data.em;
+                this.omService.SaveOrangeMoneyUser(omUser);
+                this.getToken = true;
+              });
               db.pinFailed++;
               // lock account when number of failed pin is >= 3
               if (db.pinFailed >= 3) {
                 db.active = false;
                 this.pinErrorMsg = `Code secret est invalide. Vous venez de bloquer votre compte Orange Money. Veuillez passer dans une de nos agences pour le reactiver!`;
               } else {
-                this.pinErrorMsg = `Code secret est invalide. Il vous reste ${3 -
-                  db.pinFailed} tentatives!`;
+                this.pinErrorMsg = `Code secret est invalide. Il vous reste ${3 - db.pinFailed} tentatives!`;
               }
               this.omService.SaveOrangeMoneyUser(db);
               this.pinPadHasError = true;
-              this.omService.logWithFollowAnalytics(
-                loginRes,
-                'error',
-                this.dataToLog
-              );
+              this.omService.logWithFollowAnalytics(loginRes, 'error', this.dataToLog);
             }
           },
           () => {
@@ -446,7 +417,6 @@ export class ActivationOmComponent implements OnInit {
       app_version: 'v1.0',
       app_conf_version: 'v1.0',
       user_type: 'user',
-      channel: 'mobile',
       service_version: OM_SERVICE_VERSION
     };
 
@@ -459,14 +429,10 @@ export class ActivationOmComponent implements OnInit {
           db.pinFailed = 0; // reset the pinfailed
           db.solde = res.content.data.balance;
           const date = new Date();
-          const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
-            '0' +
-            (date.getMonth() + 1)
-          ).slice(-2)}/${date.getFullYear()}`;
-          const lastDateTime =
-            `${date.getHours()}h` +
-            (date.getMinutes() < 10 ? '0' : '') +
-            date.getMinutes();
+          const lastDate = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(
+            -2
+          )}/${date.getFullYear()}`;
+          const lastDateTime = `${date.getHours()}h` + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
           db.lastUpdate = lastDate;
           db.lastUpdateTime = lastDateTime;
           this.omService.SaveOrangeMoneyUser(db);
@@ -505,7 +471,6 @@ export class ActivationOmComponent implements OnInit {
       app_version: 'v1.0',
       app_conf_version: 'v1.0',
       user_type: 'user',
-      channel: 'mobile',
       service_version: OM_SERVICE_VERSION
     };
     this.omService.AchatCredit(buyCreditPayload).subscribe(
@@ -531,7 +496,6 @@ export class ActivationOmComponent implements OnInit {
       app_version: 'v1.0',
       app_conf_version: 'v1.0',
       user_type: 'user',
-      channel: 'mobile',
       service_version: OM_SERVICE_VERSION,
       amount: params.amount
     };
@@ -561,7 +525,6 @@ export class ActivationOmComponent implements OnInit {
       app_version: 'v1.0',
       app_conf_version: 'v1.0',
       user_type: 'user',
-      channel: 'mobile',
       service_version: OM_SERVICE_VERSION,
       amount: params.amount
     };
@@ -597,8 +560,7 @@ export class ActivationOmComponent implements OnInit {
         this.recurrentOperation = true;
         this.resultEmit.emit('erreur');
       } else if (res.status_code.match('Erreur-045')) {
-        this.pinErrorMsg =
-          'Vous avez effectué la même transaction il y a quelques instants.';
+        this.pinErrorMsg = 'Vous avez effectué la même transaction il y a quelques instants.';
         this.recurrentOperation = true;
         this.resultEmit.emit('erreur');
       } else if (
@@ -606,9 +568,7 @@ export class ActivationOmComponent implements OnInit {
         res.status_code.match('Erreur-602') ||
         res.status_code.match('Erreur-55')
       ) {
-        this.pinErrorMsg = res.status_code.match('Erreur-55')
-          ? res.content.data.message
-          : res.status_wording;
+        this.pinErrorMsg = res.status_code.match('Erreur-55') ? res.content.data.message : res.status_wording;
         this.recurrentOperation = true;
         this.resultEmit.emit('erreur');
       } else {
@@ -641,7 +601,6 @@ export class ActivationOmComponent implements OnInit {
       app_version: 'v1.0',
       app_conf_version: 'v1.0',
       user_type: 'user',
-      channel: 'mobile',
       service_version: OM_SERVICE_VERSION
     };
     console.log(transferOMPayload);
@@ -655,13 +614,7 @@ export class ActivationOmComponent implements OnInit {
     );
   }
 
-  transferMoneyWithCode(params: {
-    msisdn2: string;
-    pin: any;
-    amount: number;
-    nom: string;
-    prenom: string;
-  }) {
+  transferMoneyWithCode(params: { msisdn2: string; pin: any; amount: number; nom: string; prenom: string }) {
     this.loading = true;
     const omUser = this.omService.GetOrangeMoneyUser(this.phoneNumber);
     const transferOMPayload: TransferOMWithCodeModel = {
@@ -675,7 +628,6 @@ export class ActivationOmComponent implements OnInit {
       app_version: 'v1.0',
       app_conf_version: 'v1.0',
       user_type: 'user',
-      channel: 'mobile',
       service_version: OM_SERVICE_VERSION,
       nom: params.nom,
       prenom: params.prenom

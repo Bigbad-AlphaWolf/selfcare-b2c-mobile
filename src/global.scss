@@ -351,3 +351,10 @@ body {
 .scroll-content {
   padding-bottom: 0 !important;
 }
+
+.gift-popup-class {
+  mat-dialog-container {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}

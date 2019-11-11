@@ -1,27 +1,14 @@
-<div
-  class="buy-pass-illimix-container"
-  [ngClass]="{ 'success-custom-style': step === 4 }"
->
-  <app-header
-    *ngIf="step <= 3"
-    [title]="title"
-    (goBack)="goToPreviousStep()"
-  ></app-header>
+<div class="buy-pass-illimix-container" [ngClass]="{ 'success-custom-style': step === 4 }">
+  <app-header *ngIf="step <= 3" [title]="title" (goBack)="goToPreviousStep()"></app-header>
 
   <div class="buy-pass-body-block">
     <ng-container *ngIf="step === 0">
-      <app-choose-payment-mod
-        [illimix]="true"
-        (paymentMod)="nextStepOfPaymentMod($event)"
-      ></app-choose-payment-mod>
+      <app-choose-payment-mod [illimix]="true" (paymentMod)="nextStepOfPaymentMod($event)"></app-choose-payment-mod>
     </ng-container>
 
     <ng-container *ngIf="step === 1">
-      <app-illimix-list
-        [paymentMode]="choosedPaymentMod"
-        (passToStepValidation)="passDataToStepValidation($event)"
-      >
-      </app-illimix-list>
+      <app-illimix-list-v2 [paymentMode]="choosedPaymentMod" (passToStepValidation)="passDataToStepValidation($event)">
+      </app-illimix-list-v2>
     </ng-container>
 
     <ng-container *ngIf="step === 2">

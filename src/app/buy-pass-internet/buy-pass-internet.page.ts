@@ -40,8 +40,8 @@ export class BuyPassInternetPage implements OnInit {
   recipient;
   title = 'Acheter pass internet';
   currentProfil;
-  recipientFirstName: string = '';
-  recipientLastName: string = '';
+  recipientFirstName = '';
+  recipientLastName = '';
 
   constructor(
     private router: Router,
@@ -68,31 +68,26 @@ export class BuyPassInternetPage implements OnInit {
   // TODO Pensez à l'internationalisation
 
   checkUserIsPostPaid() {
-    this.authService
-      .getSubscription(this.currentUserNumber)
-      .subscribe((souscription: any) => {
-        this.currentProfil = souscription.profil;
-        if (this.currentProfil === PROFILE_TYPE_POSTPAID) {
-          this.step = 1;
-          this.choosedPaymentMod = PAYMENT_MOD_OM;
-        }
-      });
+    this.authService.getSubscription(this.currentUserNumber).subscribe((souscription: any) => {
+      this.currentProfil = souscription.profil;
+      if (this.currentProfil === PROFILE_TYPE_POSTPAID) {
+        this.step = 1;
+        this.choosedPaymentMod = PAYMENT_MOD_OM;
+      }
+    });
   }
 
   contactGot(contact) {
     this.recipientFirstName = contact.name.givenName;
-    this.recipientLastName = contact.name.familyName
-      ? contact.name.familyName
-      : '';
-    this.recipientFirstName += contact.name.middleName
-      ? ` ${contact.name.middleName}`
-      : '';
+    this.recipientLastName = contact.name.familyName ? contact.name.familyName : '';
+    this.recipientFirstName += contact.name.middleName ? ` ${contact.name.middleName}` : '';
   }
 
   nextStepOfPaymentMod(paymentMod: string) {
     this.passsFavorisChoosen = false;
     this.choosedPaymentMod = paymentMod;
     this.goToNextStep();
+    this.destinataire = this.currentUserNumber;
   }
 
   nextStepOfSelectDest(destNumber: string) {
@@ -174,6 +169,10 @@ export class BuyPassInternetPage implements OnInit {
 
   goToNextStep() {
     this.step++;
+    // Avoid recipint choice step
+    if (this.step === 1) {
+      this.step++;
+    }
   }
 
   goToFinalStep() {
@@ -182,15 +181,12 @@ export class BuyPassInternetPage implements OnInit {
 
   goToPreviousStep() {
     const previousStep = this.step - 1;
-    if (
-      previousStep < 0 ||
-      (this.currentProfil === PROFILE_TYPE_POSTPAID && previousStep === 0)
-    ) {
+    if (previousStep < 0 || (this.currentProfil === PROFILE_TYPE_POSTPAID && previousStep === 0)) {
       this.goToDashboardPage();
-    } else if (
-      (this.choosedPaymentMod === PAYMENT_MOD_CREDIT && this.step === 2) ||
-      this.passsFavorisChoosen
-    ) {
+    } else if (this.step === 2) {
+      // Avoid recipint choice step
+      this.step = 0;
+    } else if ((this.choosedPaymentMod === PAYMENT_MOD_CREDIT && this.step === 2) || this.passsFavorisChoosen) {
       this.step = 0;
     } else {
       this.step = previousStep;
@@ -238,10 +234,7 @@ export class BuyPassInternetPage implements OnInit {
       this.errorMsg = res.message;
       const followDetails = { error_code: res.code };
       if (typeof FollowAnalytics !== 'undefined') {
-        FollowAnalytics.logError(
-          'Credit_Buy_Pass_Internet_Error',
-          followDetails
-        );
+        FollowAnalytics.logError('Credit_Buy_Pass_Internet_Error', followDetails);
       }
     } else {
       const followDetails = {
@@ -250,10 +243,7 @@ export class BuyPassInternetPage implements OnInit {
         plan: this.purchasePass.pass.price_plan_index
       };
       if (typeof FollowAnalytics !== 'undefined') {
-        FollowAnalytics.logEvent(
-          'Credit_Buy_Pass_Internet_Success',
-          followDetails
-        );
+        FollowAnalytics.logEvent('Credit_Buy_Pass_Internet_Success', followDetails);
       }
     }
     this.goToFinalStep();

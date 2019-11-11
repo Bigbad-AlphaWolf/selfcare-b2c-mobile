@@ -1,0 +1,159 @@
+@import 'src/app/app';
+
+:host {
+  height: 100%;
+  width: 100%;
+}
+
+.parrainage-page {
+  height: 100%;
+  background-color: $grayDashboard;
+  &-header {
+    height: 50px;
+    width: 100%;
+    background-color: $white;
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 18px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    .img-container {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+  }
+  &-body {
+    height: calc(100% - 50px);
+    overflow-y: auto;
+    padding-bottom: 50px;
+    .banner-container {
+      width: 100%;
+      height: auto;
+      img {
+        width: 100%;
+      }
+    }
+    .description {
+      width: 100%;
+      background-color: $white;
+      padding: 20px percentage(10/375);
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 16px;
+      .bold {
+        font-family: HelveticaNeueLTStd-Bd;
+      }
+    }
+    .title {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 20px;
+      height: 50px;
+      padding-left: percentage(10/375);
+      display: flex;
+      align-items: center;
+    }
+    .filters {
+      width: 100%;
+      padding: 5px percentage(10/375);
+      display: flex;
+      justify-content: space-between;
+      .filter {
+        width: 45%;
+        border-radius: 20px;
+        border: solid 2px $black;
+        height: 40px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        &-active {
+          justify-content: space-between;
+          color: $white;
+          background-color: $black;
+          padding: 0 7%;
+        }
+      }
+    }
+    .sponsees {
+      .spinner {
+        display: flex;
+        justify-content: space-around;
+        padding-top: 20px;
+        .mat-spinner::ng-deep circle {
+          stroke: $orange;
+        }
+      }
+      .list-sponsees {
+        .sponsee {
+          width: percentage(355/375);
+          margin: 10px auto;
+          background-color: $white;
+          padding: 16px;
+          border-radius: 10px;
+          .top-block {
+            display: flex;
+            justify-content: space-between;
+            .sponsee-infos {
+              display: flex;
+              flex-direction: column;
+              justify-content: space-around;
+              .name {
+                font-family: HelveticaNeueLTStd-Bd;
+                font-size: 16px;
+              }
+              .msisdn {
+                font-family: HelveticaNeueLTStd-Roman;
+                font-size: 14px;
+              }
+            }
+            .sponsee-status {
+            }
+          }
+          .rappel-block {
+            margin-top: 15px;
+            border-top: dashed 2px $greey;
+            padding-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            .sms-status {
+              font-family: HelveticaNeueLTStd-Bd;
+              font-size: 16px;
+            }
+            .mat-spinner::ng-deep circle {
+              stroke: $orange;
+            }
+          }
+        }
+      }
+      .error {
+        padding: 10px percentage(10/375);
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 14px;
+        span {
+          font-size: 16px;
+          font-family: HelveticaNeueLTStd-Bd;
+          text-decoration: underline;
+        }
+      }
+      .empty {
+        padding: 10px percentage(10/375);
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 14px;
+        .bold {
+          font-size: 16px;
+          font-family: HelveticaNeueLTStd-Bd;
+        }
+      }
+    }
+  }
+  button {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
+}

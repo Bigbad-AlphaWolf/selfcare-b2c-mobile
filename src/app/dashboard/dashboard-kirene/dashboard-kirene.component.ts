@@ -3,7 +3,6 @@ import * as SecureLS from 'secure-ls';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { MatDialog } from '@angular/material';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import {
   getConsoByCategory,
@@ -18,6 +17,7 @@ import {
 import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import { getLastUpdatedDateTimeText } from 'src/shared';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -66,7 +66,8 @@ export class DashboardKireneComponent implements OnInit {
     private router: Router,
     private authServ: AuthenticationService,
     private banniereServ: BanniereService,
-    private sargalServ: SargalService
+    private sargalServ: SargalService,
+    private followsAnalytics: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -142,11 +143,13 @@ export class DashboardKireneComponent implements OnInit {
 
   makeSargalAction() {
     if (this.userSargalData && this.userSargalData.status === SARGAL_NOT_SUBSCRIBED && this.sargalDataLoaded) {
+      this.followsAnalytics.registerEventFollow('Sargal-registration-page', 'success', 'clicked');
       this.router.navigate(['/sargal-registration']);
     } else if (
       (this.userSargalData && this.userSargalData.status !== SARGAL_UNSUBSCRIPTION_ONGOING) ||
       (!this.sargalUnavailable && this.sargalDataLoaded)
     ) {
+      this.followsAnalytics.registerEventFollow('Sargal-dashboard', 'success', 'clicked');
       this.goToSargalDashboard();
     }
   }

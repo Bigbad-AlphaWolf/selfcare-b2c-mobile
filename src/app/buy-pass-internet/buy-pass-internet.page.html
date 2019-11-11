@@ -1,12 +1,5 @@
-<div
-  class="buy-pass-internet-container"
-  [ngClass]="{ 'success-custom-style': step === 5 }"
->
-  <app-header
-    *ngIf="step <= 4"
-    [title]="title"
-    (goBack)="goToPreviousStep()"
-  ></app-header>
+<div class="buy-pass-internet-container" [ngClass]="{ 'success-custom-style': step === 5 }">
+  <app-header *ngIf="step <= 4" [title]="title" (goBack)="goToPreviousStep()"></app-header>
   <div class="buy-pass-body-block">
     <ng-container *ngIf="step === 0">
       <app-choose-payment-mod
@@ -15,7 +8,7 @@
       ></app-choose-payment-mod>
     </ng-container>
 
-    <ng-container *ngIf="step === 1">
+    <ng-container *ngIf="step === 10000">
       <app-select-recipient
         *ngIf="currentProfil !== PROFILE_TYPE_POSTPAID"
         (getDestinataire)="nextStepOfSelectDest($event)"
@@ -29,12 +22,12 @@
     </ng-container>
 
     <ng-container *ngIf="step === 2">
-      <app-list-pass-internet
+      <app-list-pass-internet-v2
         [destinataire]="destinataire"
         [paymentMode]="choosedPaymentMod"
         (getSelectedPassInternet)="nextStepOfChoosePassInternet($event)"
       >
-      </app-list-pass-internet>
+      </app-list-pass-internet-v2>
     </ng-container>
 
     <ng-container *ngIf="step === 3">

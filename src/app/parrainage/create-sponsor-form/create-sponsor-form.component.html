@@ -1,0 +1,45 @@
+<div class="sponsor-popup">
+  <img
+    *ngIf="!creatingSponsee"
+    (click)="closeModal()"
+    src="/assets/images/group-14.svg"
+    alt="close-icon"
+  />
+  <div class="title">Parrainer un contact</div>
+  <div class="form">
+    <form
+      [formGroup]="form"
+      (ngSubmit)="createSponsee()"
+      novalidate
+      autocomplete="false"
+    >
+      <mat-form-field class="scb-input-row scb-required" appearance="outline">
+        <mat-label>Numéro du parrainé &nbsp;&nbsp;</mat-label>
+        <input formControlName="sponseeMsisdn" matInput />
+      </mat-form-field>
+      <mat-form-field class="scb-input-row scb-required" appearance="outline">
+        <mat-label>Nom du parrainé &nbsp;&nbsp;</mat-label>
+        <input formControlName="firstname" matInput />
+      </mat-form-field>
+      <div *ngIf="showErrMessage" class="error-text">
+        <span class="scb-text-red-error"> {{ errorMsg }} </span>
+      </div>
+      <div *ngIf="showSuccessMessage" class="error-text">
+        <span class="scb-text-green"> Parrainage effectué avec succès. </span>
+      </div>
+      <button
+        type="submit"
+        [disabled]="!form.valid || creatingSponsee"
+        class="scb-btn-full scb-btn-orange"
+        mat-stroked-button
+      >
+        <span>Parrainer ce contact</span>
+        <mat-spinner
+          mode="indeterminate"
+          [diameter]="20"
+          *ngIf="creatingSponsee"
+        ></mat-spinner>
+      </button>
+    </form>
+  </div>
+</div>
