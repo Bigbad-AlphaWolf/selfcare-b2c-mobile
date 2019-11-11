@@ -26,7 +26,7 @@
           class="list-pass-item c-pointer"
           [ngClass]="{ 'pass-with-promo': pass?.passPromo }"
         >
-          <div class="promo-badge scb-text-white" *ngIf="pass.passPromo">
+          <div class="promo-badge scb-text-white" *ngIf="pass?.passPromo">
             <span class="nom-promo">{{ pass?.description }}</span> jusqu'au
             {{ pass?.dateFin | date: 'dd MMM' }}
           </div>
@@ -58,7 +58,7 @@
                 <img src="/assets/images/internet.png" alt="internet-usage" class="icon" />
               </div>
               <div class="details-item-text">
-                <div class="text">{{ !pass?.passPromo ? pass?.volumeInternet : !pass?.passPromo.volumeInternet }}</div>
+                <div class="text">{{ !pass?.passPromo ? pass?.volumeInternet : !pass?.passPromo?.volumeInternet }}</div>
                 <div class="category scb-text-dark-grey">
                   Internet
                 </div>
@@ -69,7 +69,7 @@
                 <img src="/assets/images/appel.png" alt="internet-usage" class="icon" />
               </div>
               <div class="details-item-text">
-                <div class="text">{{ !pass?.passPromo ? pass?.dureeAppel : !pass?.passPromo.dureeAppel }}</div>
+                <div class="text">{{ !pass?.passPromo ? pass?.dureeAppel : !pass?.passPromo?.dureeAppel }}</div>
                 <div class="category scb-text-dark-grey">
                   Appel
                 </div>
@@ -80,7 +80,7 @@
                 <img src="/assets/images/messenger.png" alt="internet-usage" class="icon" />
               </div>
               <div class="details-item-text">
-                <div class="text">{{ !pass?.passPromo ? pass?.nombreSms : !pass?.passPromo.nombreSms }}</div>
+                <div class="text">{{ !pass?.passPromo ? pass?.nombreSms : !pass?.passPromo?.nombreSms }}</div>
                 <div class="category scb-text-dark-grey">
                   SMS
                 </div>
