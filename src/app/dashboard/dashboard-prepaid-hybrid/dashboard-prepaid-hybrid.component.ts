@@ -1,4 +1,10 @@
-import { Component, OnInit, Input, OnDestroy, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnDestroy,
+  AfterViewInit
+} from '@angular/core';
 import {
   PROFILE_TYPE_PREPAID,
   getConsoByCategory,
@@ -20,7 +26,11 @@ import { AuthenticationService } from 'src/app/services/authentication-service/a
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
-import { getLastUpdatedDateTimeText, arrangeCompteurByOrdre, getTrioConsoUser } from 'src/shared';
+import {
+  getLastUpdatedDateTimeText,
+  arrangeCompteurByOrdre,
+  getTrioConsoUser
+} from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -48,7 +58,10 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
   creditRechargement = 0;
   canDoSOS = false;
   showHelbBtn = false;
-  pictures = [{ image: '/assets/images/banniere-promo-mob.png' }, { image: '/assets/images/banniere-promo-fibre.png' }];
+  pictures = [
+    { image: '/assets/images/banniere-promo-mob.png' },
+    { image: '/assets/images/banniere-promo-fibre.png' }
+  ];
   listBanniere: BannierePubModel[] = [];
   PROFILE_TYPE_PREPAID = PROFILE_TYPE_PREPAID;
   currentProfil: string;
@@ -83,12 +96,14 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
       this.currentProfil = this.userSubscription.profil;
     }
     this.banniereServ.setListBanniereByFormule();
-    this.banniereServ.getStatusLoadingBanniere().subscribe((status: boolean) => {
-      this.isBanniereLoaded = status;
-      if (this.isBanniereLoaded) {
-        this.listBanniere = this.banniereServ.getListBanniereByFormule();
-      }
-    });
+    this.banniereServ
+      .getStatusLoadingBanniere()
+      .subscribe((status: boolean) => {
+        this.isBanniereLoaded = status;
+        if (this.isBanniereLoaded) {
+          this.listBanniere = this.banniereServ.getListBanniereByFormule();
+        }
+      });
     this.getUserConsommations();
     this.getSargalPoints();
 
@@ -96,12 +111,14 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
       this.getUserConsommations();
       this.getSargalPoints();
       this.banniereServ.setListBanniereByFormule();
-      this.banniereServ.getStatusLoadingBanniere().subscribe((status: boolean) => {
-        this.isBanniereLoaded = status;
-        if (this.isBanniereLoaded) {
-          this.listBanniere = this.banniereServ.getListBanniereByFormule();
-        }
-      });
+      this.banniereServ
+        .getStatusLoadingBanniere()
+        .subscribe((status: boolean) => {
+          this.isBanniereLoaded = status;
+          if (this.isBanniereLoaded) {
+            this.listBanniere = this.banniereServ.getListBanniereByFormule();
+          }
+        });
     });
   }
 
@@ -113,13 +130,18 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
       (res: any[]) => {
         if (res.length) {
           res = arrangeCompteurByOrdre(res);
-          const appelConso = res.length ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL).consommations : null;
+          const appelConso = res.length
+            ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL)
+                .consommations
+            : null;
           if (appelConso) {
             this.getValidityDates(appelConso);
           }
           this.userConsoSummary = getConsoByCategory(res);
           this.userConsommationsCategories = getTrioConsoUser(res);
-          this.userCallConsoSummary = this.computeUserConsoSummary(this.userConsoSummary);
+          this.userCallConsoSummary = this.computeUserConsoSummary(
+            this.userConsoSummary
+          );
         } else {
           this.error = true;
         }
@@ -159,14 +181,19 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
   }
 
   makeSargalAction() {
-    if (this.userSargalData && this.userSargalData.status === SARGAL_NOT_SUBSCRIBED && this.sargalDataLoaded) {
-      this.followService.registerEventFollow('Sargal-registration-page', 'success', 'clicked');
+    if (
+      this.userSargalData &&
+      this.userSargalData.status === SARGAL_NOT_SUBSCRIBED &&
+      this.sargalDataLoaded
+    ) {
+      // this.followService.registerEventFollow('Sargal-registration-page', 'success', 'clicked');
       this.router.navigate(['/sargal-registration']);
     } else if (
-      (this.userSargalData && this.userSargalData.status !== SARGAL_UNSUBSCRIPTION_ONGOING) ||
+      (this.userSargalData &&
+        this.userSargalData.status !== SARGAL_UNSUBSCRIPTION_ONGOING) ||
       (!this.sargalUnavailable && this.sargalDataLoaded)
     ) {
-      this.followService.registerEventFollow('Sargal-dashboard', 'success', 'clicked');
+      // this.followService.registerEventFollow('Sargal-dashboard', 'success', 'clicked');
       this.goToSargalDashboard();
     }
   }
@@ -178,7 +205,11 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
   // process validity date of balance & credit to compare them
   processDateDMY(date: string) {
     const tab = date.split('/');
-    const newDate = new Date(Number(tab[2]), Number(tab[1]) - 1, Number(tab[0]));
+    const newDate = new Date(
+      Number(tab[2]),
+      Number(tab[1]) - 1,
+      Number(tab[0])
+    );
     return newDate.getTime();
   }
 
@@ -243,7 +274,8 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
       // Check if eligible for SOS
       this.canDoSOS = +this.creditRechargement < 489;
       // Check if eligible for bonus transfer
-      this.canTransferBonus = this.creditRechargement > 20 && this.soldebonus > 1;
+      this.canTransferBonus =
+        this.creditRechargement > 20 && this.soldebonus > 1;
     }
     return {
       globalCredit: formatCurrency(globalCredit),

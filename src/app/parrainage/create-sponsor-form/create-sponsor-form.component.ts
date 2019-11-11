@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { REGEX_NUMBER } from 'src/shared';
+import { REGEX_NUMBER, formatPhoneNumber } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { ParrainageService } from 'src/app/services/parrainage-service/parrainage.service';
+import { Contacts, Contact } from '@ionic-native/contacts';
+import { MatDialog } from '@angular/material';
+import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
 
 @Component({
   selector: 'app-create-sponsor-form',
@@ -15,10 +18,14 @@ export class CreateSponsorFormComponent implements OnInit {
   showErrMessage = false;
   showSuccessMessage = false;
   errorMsg: string;
+  destNumber: string;
+  contact: Contact;
   constructor(
     private fb: FormBuilder,
     public modalController: ModalController,
-    private parrainageService: ParrainageService
+    private parrainageService: ParrainageService,
+    private contacts: Contacts,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -29,6 +36,61 @@ export class CreateSponsorFormComponent implements OnInit {
       ],
       firstname: ['', [Validators.pattern('[a-zA-Z ]*')]]
     });
+  }
+
+  pickContact() {
+    this.showErrMessage = false;
+    this.contacts
+      .pickContact()
+      .then((contact: Contact) => {
+        this.contact = contact;
+        if (contact.phoneNumbers.length > 1) {
+          this.openPickRecipientModal(contact.phoneNumbers);
+        } else {
+          this.destNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
+          if (this.validateNumber(this.destNumber)) {
+            this.contactGot();
+          } else {
+            this.destNumber = '';
+            this.showErrMessage = true;
+            this.errorMsg = 'Le numéro choisi n’est pas correct';
+          }
+        }
+      })
+      .catch(err => {});
+  }
+
+  openPickRecipientModal(phoneNumbers: any[]) {
+    this.showErrMessage = false;
+    const dialogRef = this.dialog.open(SelectNumberPopupComponent, {
+      data: { phoneNumbers }
+    });
+    dialogRef.afterClosed().subscribe(selectedNumber => {
+      this.destNumber = formatPhoneNumber(selectedNumber);
+      if (this.validateNumber(this.destNumber)) {
+        this.contactGot();
+      } else {
+        this.destNumber = '';
+        this.showErrMessage = true;
+        this.errorMsg = 'Le numéro choisi n’est pas correct';
+      }
+    });
+  }
+
+  contactGot() {
+    let recipientFirstName = this.contact.name.givenName;
+    const recipientLastName = this.contact.name.familyName
+      ? this.contact.name.familyName
+      : '';
+    recipientFirstName += this.contact.name.middleName
+      ? ` ${this.contact.name.middleName}`
+      : '';
+    const name = `${recipientFirstName} ${recipientLastName}`;
+    this.form.setValue({ sponseeMsisdn: this.destNumber, firstname: name });
+  }
+
+  validateNumber(phoneNumber: string) {
+    return REGEX_NUMBER.test(phoneNumber);
   }
 
   createSponsee() {

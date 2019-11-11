@@ -4,20 +4,20 @@
     <span (click)="getListPassIllimix()" class="reload-text">cliquer pour recharger</span>
   </div>
   <div class="buy-pass-illimix-v2-list-body-block" *ngIf="!error && isLoaded">
-    <div class="buy-pass-illimix-v2-list-body-block-top-text">
+    <div class="buy-pass-illimix-v2-list-body-block-btns-filter">
       <ng-container *ngFor="let label of listCategory">
-        <div
+        <button
           (click)="filterPassBy(label)"
           [ngClass]="{
             'list-filter-btn-selected': selectedCategory === label
           }"
           class="list-filter-btn"
+          mat-stroked-button
         >
           <span class="text scb-text-full-black">{{ label }}</span>
-        </div>
+        </button>
       </ng-container>
     </div>
-
     <div class="buy-pass-illimix-v2-list-body-block-list-pass">
       <!-- LIST PASS ILLIMIX TO SHOW -->
       <ng-container *ngFor="let pass of listPassIllimixShown">
@@ -26,16 +26,15 @@
           class="list-pass-item c-pointer"
           [ngClass]="{ 'pass-with-promo': pass?.passPromo }"
         >
-          <div class="promo-badge scb-text-white" *ngIf="pass.passPromo">
+          <div class="promo-badge scb-text-white" *ngIf="pass?.passPromo">
             <span class="nom-promo">{{ pass?.description }}</span> jusqu'au
             {{ pass?.dateFin | date: 'dd MMM' }}
           </div>
           <div class="list-pass-item-top-block">
             <div class="pass-name-duration">
-              <span class="pass-name"
-                >{{ selectedCategory }} -
-                <span class="scb-text-orange">{{ !pass?.passPromo ? pass?.nom : pass?.passPromo.nom }} </span></span
-              >
+              <span class="pass-name scb-text-orange">
+                {{ !pass?.passPromo ? pass?.tarif : pass?.passPromo?.tarif }} F
+              </span>
               <span class="pass-duration scb-text-light-black"
                 >Valable
                 <ng-container
@@ -54,34 +53,37 @@
             </div>
           </div>
           <div class="list-pass-item-bottom-block">
-            <div *ngIf="pass?.dureeAppel" class="details-item">
+            <div *ngIf="pass?.volumeInternet" class="details-item">
               <div class="details-item-icon">
-                <img src="/assets/images/call.svg" alt="internet-usage" class="icon" />
+                <img src="/assets/images/internet.png" alt="internet-usage" class="icon" />
               </div>
               <div class="details-item-text">
-                <span class="text scb-text-full-black">{{
-                  !pass?.passPromo ? pass?.dureeAppel : !pass?.passPromo.dureeAppel
-                }}</span>
+                <div class="text">{{ !pass?.passPromo ? pass?.volumeInternet : !pass?.passPromo?.volumeInternet }}</div>
+                <div class="category scb-text-dark-grey">
+                  Internet
+                </div>
+              </div>
+            </div>
+            <div *ngIf="pass?.dureeAppel" class="details-item">
+              <div class="details-item-icon">
+                <img src="/assets/images/appel.png" alt="internet-usage" class="icon" />
+              </div>
+              <div class="details-item-text">
+                <div class="text">{{ !pass?.passPromo ? pass?.dureeAppel : !pass?.passPromo?.dureeAppel }}</div>
+                <div class="category scb-text-dark-grey">
+                  Appel
+                </div>
               </div>
             </div>
             <div *ngIf="pass?.nombreSms" class="details-item">
               <div class="details-item-icon">
-                <img src="/assets/images/orange-messenger.svg" alt="internet-usage" class="icon" />
+                <img src="/assets/images/messenger.png" alt="internet-usage" class="icon" />
               </div>
               <div class="details-item-text">
-                <span class="text scb-text-full-black">{{
-                  !pass?.passPromo ? pass?.nombreSms : !pass?.passPromo.nombreSms
-                }}</span>
-              </div>
-            </div>
-            <div *ngIf="pass?.volumeInternet" class="details-item">
-              <div class="details-item-icon">
-                <img src="/assets/images/internet-usage.svg" alt="internet-usage" class="icon" />
-              </div>
-              <div class="details-item-text">
-                <span class="text scb-text-full-black">{{
-                  !pass?.passPromo ? pass?.volumeInternet : !pass?.passPromo.volumeInternet
-                }}</span>
+                <div class="text">{{ !pass?.passPromo ? pass?.nombreSms : !pass?.passPromo?.nombreSms }}</div>
+                <div class="category scb-text-dark-grey">
+                  SMS
+                </div>
               </div>
             </div>
           </div>
