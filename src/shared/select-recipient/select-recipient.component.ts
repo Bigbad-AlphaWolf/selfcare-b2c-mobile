@@ -41,7 +41,6 @@ export class SelectRecipientComponent implements OnInit {
           this.openPickRecipientModal(contact.phoneNumbers);
         } else {
           this.destNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
-          console.log(this.destNumber);
           if (this.validateNumber(this.destNumber)) {
             // this.getDestinataire.emit(this.destNumber);
             this.goToListPassStep();

@@ -16,11 +16,17 @@
       <mat-form-field class="scb-input-row scb-required" appearance="outline">
         <mat-label>Numéro du parrainé &nbsp;&nbsp;</mat-label>
         <input formControlName="sponseeMsisdn" matInput />
+        <mat-icon class="c-pointer" (click)="pickContact()" matSuffix>
+          account_circle
+        </mat-icon>
       </mat-form-field>
       <mat-form-field class="scb-input-row scb-required" appearance="outline">
         <mat-label>Nom du parrainé &nbsp;&nbsp;</mat-label>
         <input formControlName="firstname" matInput />
       </mat-form-field>
+      <div (click)="pickContact()" class="contact scb-text-orange">
+        Choisir un contact
+      </div>
       <div *ngIf="showErrMessage" class="error-text">
         <span class="scb-text-red-error"> {{ errorMsg }} </span>
       </div>
