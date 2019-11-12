@@ -6,14 +6,9 @@
   <div class="buy-pass-illimix-v2-list-body-block" *ngIf="!error && isLoaded">
     <div class="buy-pass-illimix-v2-list-body-block-btns-filter">
       <ng-container *ngFor="let label of listCategory">
-        <button
-          (click)="filterPassBy(label)"
-          [ngClass]="{
+        <button (click)="filterPassBy(label)" [ngClass]="{
             'list-filter-btn-selected': selectedCategory === label
-          }"
-          class="list-filter-btn"
-          mat-stroked-button
-        >
+          }" class="list-filter-btn" mat-stroked-button>
           <span class="text scb-text-full-black">{{ label }}</span>
         </button>
       </ng-container>
@@ -21,11 +16,8 @@
     <div class="buy-pass-illimix-v2-list-body-block-list-pass">
       <!-- LIST PASS ILLIMIX TO SHOW -->
       <ng-container *ngFor="let pass of listPassIllimixShown">
-        <div
-          (click)="selectPassIllimix(pass)"
-          class="list-pass-item c-pointer"
-          [ngClass]="{ 'pass-with-promo': pass?.passPromo }"
-        >
+        <div (click)="selectPassIllimix(pass)" class="list-pass-item c-pointer"
+          [ngClass]="{ 'pass-with-promo': pass?.passPromo }">
           <div class="promo-badge scb-text-white" *ngIf="pass?.passPromo">
             <span class="nom-promo">{{ pass?.description }}</span> jusqu'au
             {{ pass?.dateFin | date: 'dd MMM' }}
@@ -35,18 +27,15 @@
               <span class="pass-name scb-text-orange">
                 {{ !pass?.passPromo ? pass?.tarif : pass?.passPromo?.tarif }} F
               </span>
-              <span class="pass-duration scb-text-light-black"
-                >Valable
+              <span class="pass-duration scb-text-light-black">Valable
                 <ng-container
-                  [ngSwitch]="!pass?.passPromo ? pass?.categoriePass?.libelle : pass?.passPromo?.categoriePass?.libelle"
-                >
+                  [ngSwitch]="!pass?.passPromo ? pass?.categoriePass?.libelle : pass?.passPromo?.categoriePass?.libelle">
                   <span *ngSwitchCase="'Jour'">24 heures.</span>
                   <span *ngSwitchCase="'Semaine'">7 jours.</span>
                   <span *ngSwitchCase="'Mois'">1 mois.</span>
                   <span *ngSwitchDefault>3 jours.</span>
                 </ng-container>
-                , 24h/24</span
-              >
+                , 24h/24</span>
             </div>
             <div class="item-icon">
               <img src="/assets/images/arrow-right.svg" alt="arrow-right" class="arrow-right" />
