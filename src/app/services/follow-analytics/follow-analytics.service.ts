@@ -10,12 +10,14 @@ export class FollowAnalyticsService {
   constructor() {}
 
   registerEventFollow(event: string, type: string, params?: any) {
-    if (type === 'error') {
-      FollowAnalytics.logError(event, params);
-      this.logErrorState = true;
-    } else {
-      this.logState = true;
-      FollowAnalytics.logEvent(event, params);
+    if (typeof FollowAnalytics !== 'undefined') {
+      if (type === 'error') {
+        FollowAnalytics.logError(event, params);
+        this.logErrorState = true;
+      } else {
+        this.logState = true;
+        FollowAnalytics.logEvent(event, params);
+      }
     }
   }
 
