@@ -1,162 +1,165 @@
 <div class="sargal-catalogue-container" [ngClass]="{ 'sargal-catalogue-container-white': step === 'SUCCESS' }">
-	<div class="sargal-catalogue-container-header" *ngIf="step !== 'SUCCESS'">
-		<div class="arrow" (click)="goBack()">
-			<img src="/assets/images/arrow-left.svg" alt="" />
-		</div>
-		<div class="text scb-text-black">
-			Catalogue des cadeaux
-		</div>
-	</div>
-	<div class="sargal-catalogue-container-body" *ngIf="step === 'CHOOSE_GIFT'">
-		<div class="sargal-catalogue-header">
-			<div class="image-header">
-				<img src="/assets/images/sargal-catalog-img-header.svg" alt="" />
-			</div>
-			<div class="text scb-text-white" *ngIf="userSargalPoints">
-				Vous avez
-			</div>
-			<div class="scb-text-orange">{{ userSargalPoints | formatCurrency }} points</div>
-			<div class="text text1 scb-text-white">Mis à jour le {{ sargalLastUpdate }}</div>
-		</div>
-		<ng-container *ngIf="dataLoaded">
-			<div class="sargal-catalogue-content">
-				<div class="sargal-catalogue-content-filters">
-					<div class="sargal-content-filter">
-						<button
-							class="filter-container"
-							[ngClass]="{ selected: matMenuTrig.menuOpen }"
-							mat-button
-							#matMenuTrig="matMenuTrigger"
-							[matMenuTriggerFor]="categoriesGift"
-						>
-							<div [ngClass]="{ 'scb-text-white': matMenuTrig.menuOpen }" class="btn-filter">
-								{{ categoryGiftSargal ? categoryGiftSargal?.nom : 'Choisir une catégorie' }}
-							</div>
-							<div class="arrows">
-								<mat-icon *ngIf="!matMenuTrig.menuOpen" class="arrow-down">keyboard_arrow_down</mat-icon>
-								<mat-icon *ngIf="matMenuTrig.menuOpen" class="arrow-up">keyboard_arrow_up</mat-icon>
-							</div>
-						</button>
+  <div class="sargal-catalogue-container-header" *ngIf="step !== 'SUCCESS'">
+    <div class="arrow" (click)="goBack()">
+      <img src="/assets/images/arrow-left.svg" alt="" />
+    </div>
+    <div class="text scb-text-black">
+      Catalogue des cadeaux
+    </div>
+  </div>
+  <div class="sargal-catalogue-container-body" *ngIf="step === 'CHOOSE_GIFT'">
+    <div class="sargal-catalogue-header">
+      <div class="image-header">
+        <img src="/assets/images/sargal-catalog-img-header.svg" alt="" />
+      </div>
+      <div class="text scb-text-white" *ngIf="userSargalPoints">
+        Vous avez <span class="scb-text-orange"> {{ userSargalPoints | formatCurrency }} points</span><br />
+        <span class="last-update">
+          Mise à jour {{ sargalLastUpdate}}
+        </span>
+      </div>
+    </div>
+    <ng-container *ngIf="dataLoaded">
+      <div class="sargal-catalogue-content">
+        <div class="sargal-catalogue-content-filters">
+          <div class="sargal-content-filter">
+            <button
+              class="filter-container"
+              [ngClass]="{ selected: matMenuTrig.menuOpen }"
+              mat-button
+              #matMenuTrig="matMenuTrigger"
+              [matMenuTriggerFor]="categoriesGift"
+            >
+              <div [ngClass]="{ 'scb-text-white': matMenuTrig.menuOpen }" class="btn-filter">
+                {{ categoryGiftSargal ? categoryGiftSargal?.nom : 'Choisir une catégorie' }}
+              </div>
+              <div class="arrows">
+                <mat-icon *ngIf="!matMenuTrig.menuOpen" class="arrow-down">keyboard_arrow_down</mat-icon>
+                <mat-icon *ngIf="matMenuTrig.menuOpen" class="arrow-up">keyboard_arrow_up</mat-icon>
+              </div>
+            </button>
 
-						<mat-menu
-							[class]="'customize-mat-menu'"
-							[backdropClass]="'cdk-overlay-pane-custom'"
-							#categoriesGift="matMenu"
-							class="leftSargal"
-						>
-							<ng-template matMenuContent>
-								<ng-container *ngFor="let categorie of categoriesGiftSargal">
-									<button (click)="filterByCategory(categorie)" class="categorie-label" mat-menu-item>
-										{{ categorie?.nom }}
-									</button>
-								</ng-container>
-							</ng-template>
-						</mat-menu>
-					</div>
-					<div [matMenuTriggerFor]="orderGift" class="sargal-content-order">
-						<img src="/assets/images/sort-down.svg" alt="" />
-					</div>
-					<mat-menu
-						[backdropClass]="'cdk-overlay-pane-custom'"
-						[class]="'customize-mat-menu'"
-						#orderGift="matMenu"
-						class="rightSargal"
-					>
-						<ng-template matMenuContent>
-							<button (click)="reverseList('asc')" class="categorie-label" mat-menu-item>
-								Nombre de points croissant
-							</button>
-							<button (click)="reverseList('desc')" class="categorie-label" mat-menu-item>
-								Nombre de points décroissant
-							</button>
-						</ng-template>
-					</mat-menu>
-				</div>
-				<div class="sargal-catalogue-content-gifts">
-					<ng-container *ngIf="listShownGiftSargal?.length">
-						<ng-container *ngFor="let item of listShownGiftSargal">
-							<div
-								(click)="selectGiftSargal(item)"
-								class="sargal-catalogue-content-gifts-item"
-								[ngClass]="{ 'item-disabled': userSargalPoints < +item.prix }"
-							>
-								<div class="item-content">
-									<div class="item-content-top">
-										<div class="item-content">
-											<div class="item-content-title scb-text-full-black">
-												<span class="scb-text-orange"> {{ item.prix }} Pts </span>
-												- {{ item.nom }}
-											</div>
-											<div *ngIf="item.validite" class="item-content-subtitle scb-text-light-black">
-												{{ item.validite }}
-											</div>
-										</div>
-										<div class="item-icon">
-											<img src="/assets/images/keyboard-arrow-right-orange.svg" alt="" />
-										</div>
-									</div>
-									<div *ngIf="0" class="item-content-bottom">
-										<div class="details">
-											<div class="details-icon">
-												<img src="/assets/images/call.svg" alt="" />
-											</div>
-											<div class="details-text scb-text-full-black">
-												25 min
-											</div>
-										</div>
-										<div class="details">
-											<div class="details-icon">
-												<img src="/assets/images/call.svg" alt="" />
-											</div>
-											<div class="details-text scb-text-full-black">
-												25 min
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</ng-container>
-					</ng-container>
-					<ng-container *ngIf="!listShownGiftSargal?.length">
-						<div>
-							Aucun contenu trouvé pour cette catégorie
-						</div>
-					</ng-container>
-					<div *ngIf="0" (click)="goToPartnerSargal()" class="content-partner-sargal">
-						<div class="icon">
-							<img src="/assets/images/nos-partenaires.png" alt="" />
-						</div>
-						<div class="content">
-							<span class="text">Liste des partenaires</span>
-							<div class="arrow-right">
-								<img src="/assets/images/keyboard-arrow-right-black.svg" alt="" />
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</ng-container>
-		<ng-container *ngIf="!dataLoaded">
-			<div class="spinner">
-				<mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
-			</div>
-		</ng-container>
-	</div>
-	<div class="sargal-catalogue-container-body" *ngIf="step === 'VALIDATION'">
-		<app-operation-validation
-			[buyForMe]="true"
-			[recipient]="currentNumber"
-			[operationType]="OPERATION_TYPE_SARGAL_CONVERSION"
-			[sargalGift]="giftSargalSelected"
-			[paymentMod]="PAYMENT_MOD_SARGAL"
-			[loading]="conversionLoading"
-			(validate)="convertPointsToGift($event)"
-		>
-		</app-operation-validation>
-	</div>
-	<app-operation-success-or-fail *ngIf="step === 'SUCCESS'"
-	[operationType]="OPERATION_TYPE_SARGAL_CONVERSION"
-	[failed]="failed"
-	[errorMessage]="errorMsg"
-	[giftSargal]="giftSargalSelected"></app-operation-success-or-fail>
+            <mat-menu
+              [class]="'customize-mat-menu'"
+              [backdropClass]="'cdk-overlay-pane-custom'"
+              #categoriesGift="matMenu"
+              class="leftSargal"
+            >
+              <ng-template matMenuContent>
+                <ng-container *ngFor="let categorie of categoriesGiftSargal">
+                  <button (click)="filterByCategory(categorie)" class="categorie-label" mat-menu-item>
+                    {{ categorie?.nom }}
+                  </button>
+                </ng-container>
+              </ng-template>
+            </mat-menu>
+          </div>
+          <div [matMenuTriggerFor]="orderGift" class="sargal-content-order">
+            <img src="/assets/images/sort-down.svg" alt="" />
+          </div>
+          <mat-menu
+            [backdropClass]="'cdk-overlay-pane-custom'"
+            [class]="'customize-mat-menu'"
+            #orderGift="matMenu"
+            class="rightSargal"
+          >
+            <ng-template matMenuContent>
+              <button (click)="reverseList('asc')" class="categorie-label" mat-menu-item>
+                Nombre de points croissant
+              </button>
+              <button (click)="reverseList('desc')" class="categorie-label" mat-menu-item>
+                Nombre de points décroissant
+              </button>
+            </ng-template>
+          </mat-menu>
+        </div>
+        <div class="sargal-catalogue-content-gifts">
+          <ng-container *ngIf="listShownGiftSargal?.length">
+            <ng-container *ngFor="let item of listShownGiftSargal">
+              <div
+                (click)="selectGiftSargal(item)"
+                class="sargal-catalogue-content-gifts-item"
+                [ngClass]="{ 'item-disabled': userSargalPoints < +item.prix }"
+              >
+                <div class="item-content">
+                  <div class="item-content-top">
+                    <div class="item-content">
+                      <div class="item-content-title scb-text-full-black">
+                        <span class="scb-text-orange"> {{ item.prix }} Pts </span>
+                        - {{ item.nom }}
+                      </div>
+                      <div *ngIf="item.validite" class="item-content-subtitle scb-text-light-black">
+                        {{ item.validite }}
+                      </div>
+                    </div>
+                    <div class="item-icon">
+                      <img src="/assets/images/keyboard-arrow-right-orange.svg" alt="" />
+                    </div>
+                  </div>
+                  <div *ngIf="0" class="item-content-bottom">
+                    <div class="details">
+                      <div class="details-icon">
+                        <img src="/assets/images/call.svg" alt="" />
+                      </div>
+                      <div class="details-text scb-text-full-black">
+                        25 min
+                      </div>
+                    </div>
+                    <div class="details">
+                      <div class="details-icon">
+                        <img src="/assets/images/call.svg" alt="" />
+                      </div>
+                      <div class="details-text scb-text-full-black">
+                        25 min
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="!listShownGiftSargal?.length">
+            <div>
+              Aucun contenu trouvé pour cette catégorie
+            </div>
+          </ng-container>
+          <div *ngIf="0" (click)="goToPartnerSargal()" class="content-partner-sargal">
+            <div class="icon">
+              <img src="/assets/images/nos-partenaires.png" alt="" />
+            </div>
+            <div class="content">
+              <span class="text">Liste des partenaires</span>
+              <div class="arrow-right">
+                <img src="/assets/images/keyboard-arrow-right-black.svg" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!dataLoaded">
+      <div class="spinner">
+        <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
+      </div>
+    </ng-container>
+  </div>
+  <div class="sargal-catalogue-container-body" *ngIf="step === 'VALIDATION'">
+    <app-operation-validation
+      [buyForMe]="true"
+      [recipient]="currentNumber"
+      [operationType]="OPERATION_TYPE_SARGAL_CONVERSION"
+      [sargalGift]="giftSargalSelected"
+      [paymentMod]="PAYMENT_MOD_SARGAL"
+      [loading]="conversionLoading"
+      (validate)="convertPointsToGift($event)"
+    >
+    </app-operation-validation>
+  </div>
+  <app-operation-success-or-fail
+    *ngIf="step === 'SUCCESS'"
+    [operationType]="OPERATION_TYPE_SARGAL_CONVERSION"
+    [failed]="failed"
+    [errorMessage]="errorMsg"
+    [giftSargal]="giftSargalSelected"
+  ></app-operation-success-or-fail>
 </div>

@@ -3,10 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { EmergencyService } from 'src/app/services/emergency-service/emergency.service';
-import {
-  DashboardService,
-  downloadEndpoint
-} from 'src/app/services/dashboard-service/dashboard.service';
+import { DashboardService, downloadEndpoint } from 'src/app/services/dashboard-service/dashboard.service';
 import {
   REGEX_EMAIL,
   MAX_USER_FILE_UPLOAD_SIZE,
@@ -23,12 +20,9 @@ const { SERVER_API_URL } = environment;
 import * as SecureLS from 'secure-ls';
 
 import { HttpClient } from '@angular/common/http';
-import {
-  FileTransfer,
-  FileTransferObject
-} from '@ionic-native/file-transfer/ngx';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
-import { FileOpener} from '@ionic-native/file-opener/ngx';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { Platform } from '@ionic/angular';
 const ls = new SecureLS({ encodingType: 'aes' });
 const logEndpoint = `${SERVER_API_URL}/management/selfcare-logs-file`;
@@ -67,16 +61,14 @@ export class OrangeMoneyComponent implements OnInit {
     private transfer: FileTransfer,
     private file: File,
     private fileOpener: FileOpener,
-    private platform: Platform,
+    private platform: Platform
   ) {}
 
   ngOnInit() {
     this.userInfos = ls.get('user');
     this.form = this.fb.group({
       mail: [
-        this.userInfos.email && !this.invalideEmail(this.userInfos.email)
-          ? this.userInfos.email
-          : null,
+        this.userInfos.email && !this.invalideEmail(this.userInfos.email) ? this.userInfos.email : null,
         [Validators.required, Validators.pattern(REGEX_EMAIL)]
       ],
       form: [null, [Validators.required]],
@@ -121,6 +113,35 @@ export class OrangeMoneyComponent implements OnInit {
       }
     }
   }
+  checkExtension2(filename: string, step: string) {
+    const regExtension = /(png|jpg|jpeg)$/;
+    if (filename.toLowerCase().match(regExtension)) {
+      switch (step) {
+        case 'cni1':
+          this.cniFrontExtError = false;
+          break;
+        case 'cni2':
+          this.cniBackExtError = false;
+          break;
+        case 'form':
+          this.formExtError = false;
+          break;
+      }
+      return true;
+    } else {
+      switch (step) {
+        case 'cni1':
+          this.cniFrontExtError = true;
+          break;
+        case 'cni2':
+          this.cniBackExtError = true;
+          break;
+        case 'form':
+          this.formExtError = true;
+          break;
+      }
+    }
+  }
 
   checkFile(file: any, step: string) {
     if (file[0]) {
@@ -128,7 +149,7 @@ export class OrangeMoneyComponent implements OnInit {
       const fileName = file[0].name;
       switch (step) {
         case 'cni1':
-          if (this.checkExtension(fileName, 'cni1')) {
+          if (this.checkExtension2(fileName, 'cni1')) {
             this.cniFrontSizeError = false;
             this.uploadedCNIFrontName = fileName;
             this.cn1ToUpload = file[0];
@@ -138,7 +159,7 @@ export class OrangeMoneyComponent implements OnInit {
           }
           break;
         case 'cni2':
-          if (this.checkExtension(fileName, 'cni2')) {
+          if (this.checkExtension2(fileName, 'cni2')) {
             this.cniBackSizeError = false;
             this.uploadedCNIBackName = fileName;
             this.cn2ToUpload = file[0];
@@ -214,23 +235,22 @@ export class OrangeMoneyComponent implements OnInit {
     if (this.platform.is('ios')) {
       path = this.file.documentsDirectory;
     }
-    fileTransfer
-      .download(url, path + fileName, true, options)
-      .then(
-        entry => {
-          const fileurl = entry.toURL();
-          this.fileOpener.open(fileurl, 'application/pdf')
-  .then(() => {
-    // log file opened successfully
-  })
-  .catch(e => {
-    // log file opened successfully console.log('Error opening file', e)
-  });
-        },
-        error => {
-          console.log(error);
-        }
-      );
+    fileTransfer.download(url, path + fileName, true, options).then(
+      entry => {
+        const fileurl = entry.toURL();
+        this.fileOpener
+          .open(fileurl, 'application/pdf')
+          .then(() => {
+            // log file opened successfully
+          })
+          .catch(e => {
+            // log file opened successfully console.log('Error opening file', e)
+          });
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   sendMail() {
@@ -263,10 +283,7 @@ export class OrangeMoneyComponent implements OnInit {
       },
       (err: any) => {
         this.loader = false;
-        this.openErrorDialog(
-          'errorUpload',
-          `Une erreur est survenue lors de l'envoi du mail`
-        );
+        this.openErrorDialog('errorUpload', `Une erreur est survenue lors de l'envoi du mail`);
         switch (this.type) {
           case 'creation-compte':
             break;
