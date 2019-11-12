@@ -15,18 +15,14 @@
       (phoneNumberChanged)="(0)"
       *ngIf="numbers"
     ></app-phone-numbers-list>
-    <div class="bottom-action-btn-block">
+    <div *ngIf="0" class="bottom-action-btn-block">
       <img
         src="/assets/images/rattacher-ligne-v-2.svg"
         class="rattacher-ligne-btn"
         alt="Rattacher_LigneV1"
         (click)="attachLine()"
       />
-      <span
-        class="add-phone-number-label scb-text-full-black"
-        (click)="attachLine()"
-        >Rattacher une ligne</span
-      >
+      <span class="add-phone-number-label scb-text-full-black" (click)="attachLine()">Rattacher une ligne</span>
     </div>
   </div>
 </div>

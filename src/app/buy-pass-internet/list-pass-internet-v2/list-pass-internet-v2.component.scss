@@ -126,6 +126,8 @@
 
           &-text-block {
             padding-left: percentage(15px / 355px);
+            width: 80%;
+            text-align: left;
 
             .amount-data {
               display: block;
