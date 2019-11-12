@@ -131,7 +131,7 @@ export class MyFormulePage implements OnInit {
     const img = this.images.find(image => {
       return image.codeFormule === formule.code;
     });
-    return img.icon ? img.icon : '/assets/images/4-2-g.png';
+    return img && img.icon ? img.icon : '/assets/images/4-2-g.png';
   }
 
   getBannerByFormule(formule: FormuleMobileModel) {
