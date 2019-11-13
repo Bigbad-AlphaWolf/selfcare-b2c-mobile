@@ -166,10 +166,10 @@
       <div class="item-icon">
         <img src="/assets/images/recharge-credit-om-unique.svg" alt="credit-mob" />
       </div>
-      <div *ngIf="!hasPromoBooster.isPromoRechargeActive" class="item-text scb-text-item-offre-black">
+      <div *ngIf="!hasPromoBooster?.isPromoRechargeActive" class="item-text scb-text-item-offre-black">
         <span class="recharger">Recharger <span class="text-style-1">du crédit</span> </span>
       </div>
-      <div *ngIf="hasPromoBooster.isPromoRechargeActive" class="item-text scb-text-item-offre-black">
+      <div *ngIf="hasPromoBooster?.isPromoRechargeActive" class="item-text scb-text-item-offre-black">
         <img src="/assets/images/badge-promo.png" alt="badge-promo" class="badge-promo" />
         <span class="recharger">Recharge</span>
       </div>
