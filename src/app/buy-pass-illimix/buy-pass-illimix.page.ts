@@ -91,8 +91,9 @@ export class BuyPassIllimixPage implements OnInit {
 
   payWithCredit() {
     const codeIN = this.passIllimixChoosed.pass.price_plan_index;
+    const amount = +this.passIllimixChoosed.pass.tarif;
     const type = 'illimix';
-    const payload = { type, codeIN };
+    const payload = { type, codeIN, amount };
     this.dashServ.buyPassByCredit(payload).subscribe(
       (res: any) => {
         if (res.code !== '0') {
