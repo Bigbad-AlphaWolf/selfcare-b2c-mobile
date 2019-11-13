@@ -13,6 +13,7 @@ export interface TransferCreditModel {
 export interface BuyPassModel {
   codeIN: string;
   type: string;
+  amount: number;
 }
 
 export interface BuyPassInternetModel {

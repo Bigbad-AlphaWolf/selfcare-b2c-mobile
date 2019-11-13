@@ -126,8 +126,9 @@ export class BuyPassInternetPage implements OnInit {
 
   buyPassByCreditForMyself() {
     const codeIN = this.purchasePass.pass.price_plan_index;
+    const amount = +this.purchasePass.pass.tarif;
     const type = 'internet';
-    const payload = { type, codeIN };
+    const payload = { type, codeIN, amount };
     this.dashServ.buyPassByCredit(payload).subscribe(
       (res: any) => {
         this.transactionSuccessful(res);
