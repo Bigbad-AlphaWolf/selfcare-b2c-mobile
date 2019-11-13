@@ -21,84 +21,89 @@ export const SARGAL_UNSUBSCRIPTION_ONGOING = 'UNSUBSCRIPTION_ONGOING';
 export const dashboardOpened = new Subject<string>();
 
 export interface UserConsommation {
-	id: string;
-	code: number;
-	compteur: string;
-	montant: number;
-	msisdn: string;
-	categorie: any;
-	dateEffet: string;
-	dateExpiration: string;
-	unite: string;
-	montantFormat: string;
-	ordre: number;
+  id: string;
+  code: number;
+  compteur: string;
+  montant: number;
+  msisdn: string;
+  categorie: any;
+  dateEffet: string;
+  dateExpiration: string;
+  unite: string;
+  montantFormat: string;
+  ordre: number;
 }
 
 export interface SargalSubscriptionModel {
-	status: string;
-	totalPoints: number;
-	lastUpdate: string;
-	lastUpdateFormatted: string;
-	msisdn?: string;
+  status: string;
+  totalPoints: number;
+  lastUpdate: string;
+  lastUpdateFormatted: string;
+  msisdn?: string;
 }
 
 export const getConsoByCategory /* : { [k: string]: Array<UserConsommation> }  */ = (
-	userConsos: Array<{
-		categorie: string;
-		consommations: Array<UserConsommation>;
-	}>
+  userConsos: Array<{
+    categorie: string;
+    consommations: Array<UserConsommation>;
+  }>
 ) => {
-	const consoByCategory = {};
-	userConsos.forEach(x => {
-		consoByCategory[x.categorie] = x.consommations;
-	});
-	return consoByCategory;
+  const consoByCategory = {};
+  userConsos.forEach(x => {
+    consoByCategory[x.categorie] = x.consommations;
+  });
+  return consoByCategory;
 };
 
 export interface ItemUserConso {
-	categorie: string;
-	consommations: UserConsommation[];
+  categorie: string;
+  consommations: UserConsommation[];
 }
 
 export type UserConsommations = Array<{
-	categorie: string;
-	consommations: Array<UserConsommation>;
+  categorie: string;
+  consommations: Array<UserConsommation>;
 }>;
 
 export function formatCurrency(num) {
-	if (num) {
-		return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
-	}
-	return '0';
+  if (num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+  }
+  return '0';
 }
 
 export interface BillModel {
-	annee: number;
-	compteClient: string;
-	dateEcheance: string;
-	dateFacture: string;
-	mois: number;
-	montantFacture: number;
-	montantTVA: number;
-	numeroClient: string;
-	numeroFacture: string;
-	numeroTelephone: string;
-	statutFacture: string;
-	downloading?: boolean;
-	ncli?: string;
-	groupage?: string;
-	moisfact?: string;
-	annefact?: string;
-	total?: string;
-	dateEchenace?: string;
-	referencefacture?: string;
-	nfact?: string;
-	dateEmissionfacture: string;
-	groupeFact: string;
+  annee: number;
+  compteClient: string;
+  dateEcheance: string;
+  dateFacture: string;
+  mois: number;
+  montantFacture: number;
+  montantTVA: number;
+  numeroClient: string;
+  numeroFacture: string;
+  numeroTelephone: string;
+  statutFacture: string;
+  downloading?: boolean;
+  ncli?: string;
+  groupage?: string;
+  moisfact?: string;
+  annefact?: string;
+  total?: string;
+  dateEchenace?: string;
+  referencefacture?: string;
+  nfact?: string;
+  dateEmissionfacture: string;
+  groupeFact: string;
 }
 
 export interface SubscriptionModel {
-	nomOffre: string;
-	profil: string;
-	code: string;
+  nomOffre: string;
+  profil: string;
+  code: string;
+}
+
+export interface PromoBoosterActive {
+  isPromoPassActive: boolean;
+  isPromoRechargeActive: boolean;
 }

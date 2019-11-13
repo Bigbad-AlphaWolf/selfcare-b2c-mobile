@@ -59,6 +59,10 @@ const buyPassInternetForSomeoneByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SER
 // Endpoint to get sargal balance
 const sargalBalanceEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/`;
 const welcomeStatusEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters`;
+
+// Endpoint promoBooster active
+const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/`;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -292,8 +296,11 @@ export class DashboardService {
 
   getWelcomeStatus() {
     const currentPhoneNumber = this.getCurrentPhoneNumber();
-    return this.http.get(
-      `${welcomeStatusEndpoint}/${currentPhoneNumber}/welcome-status`
-    );
+    return this.http.get(`${welcomeStatusEndpoint}/${currentPhoneNumber}/welcome-status`);
+  }
+
+  getActivePromoBooster() {
+    // return this.http.get(`${promoBoosterActiveEndpoint}`);
+    return of({ isPromoPassActive: false, isPromoRechargeActive: false });
   }
 }
