@@ -240,9 +240,9 @@ export class DashboardService {
   }
 
   buyPassByCredit(payload: BuyPassModel) {
-    const { codeIN, type } = payload;
+    const { codeIN, type, amount } = payload;
     const msisdn = this.getCurrentPhoneNumber();
-    const reqPayload = { msisdn, codeIN };
+    const reqPayload = { msisdn, codeIN, amount };
     switch (type) {
       case 'illimix':
         return this.http.post(buyPassIllimixByCreditEndpoint, reqPayload);
