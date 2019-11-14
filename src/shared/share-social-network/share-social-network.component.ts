@@ -55,10 +55,10 @@ export class ShareSocialNetworkComponent implements OnInit {
     this.socialNetworkList[index] = elt;
     const url = 'http://bit.ly/2NHn5aS';
     const postTitle =
-      'Crée ton compte gratuitement sur www.orangeetmoi.sn pour' +
-      ' gérer tous tes services Orange de façon simple, pratique et rapide.' +
-      'Orange et moi c’est tout Orange en UN clic.';
-    const hashtag = 'orangeetmoisn';
+    'Comme moi télécharge et connecte toi gratuitement sur l\'application ' +
+    'Orange et Moi Fi rek la http://bit.ly/2NHn5aS ou sur www.orangeetmoi.sn ' +
+    'Bu ande ak simplicité ak réseau mo gën #WaawKay';
+    const hashtag = '#WaawKay';
 
     // text to use
     /* Crée ton compte gratuitement sur www.orangeetmoi.sn pour gérer tous tes services Orange de façon simple, pratique et rapide.
@@ -71,7 +71,11 @@ export class ShareSocialNetworkComponent implements OnInit {
       msisdn: currentPhoneNumber,
       network: ''
     };
-    this.shareToSocialNetwork(elt.label, elt.label === 'Twitter' ? postTitle + '&hashtags=' + hashtag : postTitle, url);
+    this.shareToSocialNetwork(
+      elt.label,
+      elt.label === 'Twitter' ? postTitle + '&hashtags=' + hashtag : postTitle,
+      url
+    );
     logModel.network = elt.label;
     if (typeof FollowAnalytics !== 'undefined') {
       FollowAnalytics.logEvent('ShareApp', logModel);
