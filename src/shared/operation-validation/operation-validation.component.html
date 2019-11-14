@@ -153,10 +153,18 @@
                 <mat-form-field class="scb-input-row scb-required">
                     <input formControlName="illimite1" type="tel" matInput
                         [placeholder]="sargalGift?.nombreNumeroIllimtes === 2 ?'Numero illimité 1':'Numero illimité'" />
+                    <mat-icon class="c-pointer" (click)="pickContact(1)" matSuffix>
+                        account_circle
+                    </mat-icon>
                 </mat-form-field>
+                <div class="error scb-text-red-error" *ngIf="showErrorMsg1">Le numéro choisi n’est pas correct.</div>
                 <mat-form-field class="scb-input-row scb-required" *ngIf="sargalGift?.nombreNumeroIllimtes === 2">
                     <input formControlName="illimite2" type="tel" matInput placeholder="Numero illimité 2" />
+                    <mat-icon class="c-pointer" (click)="pickContact(2)" matSuffix>
+                        account_circle
+                    </mat-icon>
                 </mat-form-field>
+                <div class="error scb-text-red-error" *ngIf="showErrorMsg2">Le numéro choisi n’est pas correct.</div>
             </form>
         </div>
         <div class="payment-channel" *ngIf="operationType !== OPERATION_TRANSFER_OM">
