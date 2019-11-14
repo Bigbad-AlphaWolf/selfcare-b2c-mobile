@@ -1,4 +1,4 @@
-@import 'src/app/app';
+@import "src/app/app";
 
 .validation-block {
   height: 100%;
@@ -150,6 +150,11 @@
     }
     .transfer-om-form {
       padding-top: 30px;
+      .error {
+        margin-bottom: 15px;
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 14px;
+      }
     }
     .total-block {
       display: flex;
