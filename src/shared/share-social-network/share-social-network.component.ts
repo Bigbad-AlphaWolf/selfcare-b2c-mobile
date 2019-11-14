@@ -53,7 +53,7 @@ export class ShareSocialNetworkComponent implements OnInit {
     const currentPhoneNumber = this.dashboardService.getCurrentPhoneNumber();
     const index = this.socialNetworkList.indexOf(elt);
     this.socialNetworkList[index] = elt;
-    const url = 'https://orangeetmoi.orange.sn';
+    const url = 'http://bit.ly/2NHn5aS';
     const postTitle =
       'Crée ton compte gratuitement sur www.orangeetmoi.sn pour' +
       ' gérer tous tes services Orange de façon simple, pratique et rapide.' +

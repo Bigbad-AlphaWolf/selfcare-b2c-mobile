@@ -59,9 +59,10 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.accountService.userUrlAvatarSubject.subscribe(() => {
       this.extractData();
     });
-    this.parrainageService.isSponsorEvent.subscribe(res => {
-      this.isSponsor = true;
-    });
+    this.isSponsor = true;
+    // this.parrainageService.isSponsorEvent.subscribe(res => {
+    //   this.isSponsor = true;
+    // });
     dashboardOpened.subscribe(x => {
       this.getSouscription();
     });
