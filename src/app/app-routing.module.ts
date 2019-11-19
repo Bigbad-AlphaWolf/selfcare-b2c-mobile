@@ -100,7 +100,8 @@ const routes: Routes = [
   },
   { path: 'contact-us', loadChildren: './assistance/containers/contact-us/contact-us.module#ContactUsPageModule' },  { path: 'apropos', loadChildren: './apropos/apropos.module#AproposPageModule' },
   { path: 'infolegales', loadChildren: './infolegales/infolegales.module#InfolegalesPageModule' },
-  { path: 'parrainage', loadChildren: './parrainage/parrainage.module#ParrainagePageModule' }
+  { path: 'parrainage', loadChildren: './parrainage/parrainage.module#ParrainagePageModule' },
+  { path: 'sargal-status-card', loadChildren: './sargal-status-card/sargal-status-card.module#SargalStatusCardPageModule' }
 
 
 ];
