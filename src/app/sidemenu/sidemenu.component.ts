@@ -4,29 +4,29 @@ import {
   EventEmitter,
   Output,
   OnDestroy
-} from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthenticationService } from '../services/authentication-service/authentication.service';
+} from "@angular/core";
+import { Router } from "@angular/router";
+import { AuthenticationService } from "../services/authentication-service/authentication.service";
 import {
   DashboardService,
   downloadAvatarEndpoint
-} from '../services/dashboard-service/dashboard.service';
-import { MatDialog } from '@angular/material';
-import { AccountService } from '../services/account-service/account.service';
-import * as SecureLS from 'secure-ls';
+} from "../services/dashboard-service/dashboard.service";
+import { MatDialog } from "@angular/material";
+import { AccountService } from "../services/account-service/account.service";
+import * as SecureLS from "secure-ls";
 import {
   NO_AVATAR_ICON_URL,
   getNOAvatartUrlImage,
   ASSISTANCE_URL
-} from 'src/shared';
-import { ParrainageService } from '../services/parrainage-service/parrainage.service';
-import { dashboardOpened } from '../dashboard';
-const ls = new SecureLS({ encodingType: 'aes' });
+} from "src/shared";
+import { ParrainageService } from "../services/parrainage-service/parrainage.service";
+import { dashboardOpened } from "../dashboard";
+const ls = new SecureLS({ encodingType: "aes" });
 declare var FollowAnalytics: any;
 @Component({
-  selector: 'app-sidemenu',
-  templateUrl: './sidemenu.component.html',
-  styleUrls: ['./sidemenu.component.scss']
+  selector: "app-sidemenu",
+  templateUrl: "./sidemenu.component.html",
+  styleUrls: ["./sidemenu.component.scss"]
 })
 export class SidemenuComponent implements OnInit, OnDestroy {
   userSubscription;
@@ -38,15 +38,13 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   currentFormule;
   msisdn = this.dashboardServ.getCurrentPhoneNumber();
   avatarUrl: string;
-  isSponsor: boolean;
 
   constructor(
     private router: Router,
     private authServ: AuthenticationService,
     private dashboardServ: DashboardService,
     public dialog: MatDialog,
-    private accountService: AccountService,
-    private parrainageService: ParrainageService
+    private accountService: AccountService
   ) {}
 
   ngOnInit() {
@@ -58,9 +56,6 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     });
     this.accountService.userUrlAvatarSubject.subscribe(() => {
       this.extractData();
-    });
-    this.parrainageService.isSponsorEvent.subscribe(res => {
-      this.isSponsor = true;
     });
     dashboardOpened.subscribe(x => {
       this.getSouscription();
@@ -80,7 +75,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   extractData() {
-    this.userInfos = ls.get('user');
+    this.userInfos = ls.get("user");
     if (this.userInfos.imageProfil) {
       this.avatarUrl = downloadAvatarEndpoint + this.userInfos.imageProfil;
     } else {
@@ -94,15 +89,15 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   getUserNames() {
-    const user = ls.get('user');
+    const user = ls.get("user");
     this.firstName = user.firstName;
     this.lastName = user.lastName;
   }
 
   goToAssistancePage() {
     window.open(ASSISTANCE_URL);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_Assistance', 'clicked');
+    if (typeof FollowAnalytics !== "undefined") {
+      FollowAnalytics.logEvent("Sidemenu_Assistance", "clicked");
     }
   }
 
@@ -114,50 +109,50 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   goDashboard() {
     this.closeMenu();
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_Suivi_conso', 'clicked');
+    if (typeof FollowAnalytics !== "undefined") {
+      FollowAnalytics.logEvent("Sidemenu_Suivi_conso", "clicked");
     }
   }
 
   goFormule() {
-    this.router.navigate(['/my-formule']);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_MaFormule', 'clicked');
+    this.router.navigate(["/my-formule"]);
+    if (typeof FollowAnalytics !== "undefined") {
+      FollowAnalytics.logEvent("Sidemenu_MaFormule", "clicked");
     }
   }
 
   goFacture() {
-    this.router.navigate(['/bills']);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_Factures_Fixe_Mobile', 'clicked');
+    this.router.navigate(["/bills"]);
+    if (typeof FollowAnalytics !== "undefined") {
+      FollowAnalytics.logEvent("Sidemenu_Factures_Fixe_Mobile", "clicked");
     }
   }
 
   goMyAccount() {
-    this.router.navigate(['/my-account']);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_Mon_Compte', 'clicked');
+    this.router.navigate(["/my-account"]);
+    if (typeof FollowAnalytics !== "undefined") {
+      FollowAnalytics.logEvent("Sidemenu_Mon_Compte", "clicked");
     }
   }
 
   goParrainage() {
-    this.router.navigate(['/parrainage']);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_Mes_Parrainages', 'clicked');
+    this.router.navigate(["/parrainage"]);
+    if (typeof FollowAnalytics !== "undefined") {
+      FollowAnalytics.logEvent("Sidemenu_Mes_Parrainages", "clicked");
     }
   }
 
   goEmergencies() {
-    this.router.navigate(['/control-center']);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_urgences_depannages', 'clicked');
+    this.router.navigate(["/control-center"]);
+    if (typeof FollowAnalytics !== "undefined") {
+      FollowAnalytics.logEvent("Sidemenu_urgences_depannages", "clicked");
     }
   }
 
   changeCurrentNumber() {
-    this.router.navigate(['/change-main-phone-number']);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_urgences_depannages', 'clicked');
+    this.router.navigate(["/change-main-phone-number"]);
+    if (typeof FollowAnalytics !== "undefined") {
+      FollowAnalytics.logEvent("Sidemenu_urgences_depannages", "clicked");
     }
   }
 
@@ -169,6 +164,6 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.close.emit();
   }
   goToAbout() {
-    this.router.navigate(['/apropos']);
+    this.router.navigate(["/apropos"]);
   }
 }

@@ -6,7 +6,7 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./sargal-status-card.page.scss"]
 })
 export class SargalStatusCardPage implements OnInit {
-  sargalStatus: string;
+  sargalStatus: string = "gold";
 
   constructor() {}
 
