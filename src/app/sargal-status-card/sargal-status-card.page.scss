@@ -7,70 +7,90 @@
     background-color: $grayDashboard;
     margin-top: 50px;
     overflow-y: auto;
-    .arc-div {
-      position: relative;
-      height: 250px;
-      .img-gold {
-        width: 100%;
-        height: 172px;
+    .spinner {
+      padding-top: 15px;
+      mat-spinner {
+        margin: 0 auto;
       }
-      .card-container {
-        width: 100%;
-        position: absolute;
-        top: 0;
-        display: flex;
-        justify-content: space-around;
-        .img-container {
-          width: 325px;
-          position: relative;
-          .infos {
-            position: absolute;
-            bottom: 50px;
-            left: 60px;
-            &-platinum {
-              bottom: 58px;
-              left: 100px;
-            }
-            .name {
-              font-family: HelveticaNeueLTStd-Roman;
-              font-size: 14px;
-            }
-            .tel {
-              font-family: HelveticaNeueLTStd-Roman;
-              font-size: 12px;
+      .mat-spinner::ng-deep circle {
+        stroke: $orange;
+      }
+    }
+    .error {
+      width: 100%;
+      padding: 10px percentage(15/375);
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 16px;
+      span {
+        text-decoration: underline;
+      }
+    }
+    .data-informations {
+      .arc-div {
+        position: relative;
+        height: 250px;
+        .img-gold {
+          width: 100%;
+          height: 172px;
+        }
+        .card-container {
+          width: 100%;
+          position: absolute;
+          top: 0;
+          display: flex;
+          justify-content: space-around;
+          .img-container {
+            width: 325px;
+            position: relative;
+            .infos {
+              position: absolute;
+              bottom: 50px;
+              left: 60px;
+              &-platinum {
+                bottom: 58px;
+                left: 100px;
+              }
+              .name {
+                font-family: HelveticaNeueLTStd-Roman;
+                font-size: 14px;
+              }
+              .tel {
+                font-family: HelveticaNeueLTStd-Roman;
+                font-size: 12px;
+              }
             }
           }
         }
       }
-    }
-    .informations {
-      padding: 0 percentage(25/375);
-      .title {
-        font-family: HelveticaNeueLTStd-Bd;
-        font-size: 24px;
-      }
-      .text {
-        font-family: HelveticaNeueLTStd-Bd;
-        font-size: 16px;
-        ul {
-          list-style: none; /* Remove default bullets */
-          padding-inline-start: 0px;
-          margin-left: 15px;
+      .informations {
+        padding: 0 percentage(25/375);
+        .title {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 24px;
         }
-        ul li::before {
-          content: "\2022"; /* Add content: \2022 is the CSS Code/unicode for a bullet */
-          color: $gold-status-sargal; /* Change the color */
-          font-weight: bold; /* If you want it to be bold */
-          display: inline-block; /* Needed to add space between the bullet and the text */
-          width: 1em; /* Also needed for space (tweak if needed) */
-          margin-left: -1em; /* Also needed for space (tweak if needed) */
+        .text {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 16px;
+          ul {
+            list-style: none; /* Remove default bullets */
+            padding-inline-start: 0px;
+            margin-left: 15px;
+          }
+          ul li::before {
+            content: "\2022"; /* Add content: \2022 is the CSS Code/unicode for a bullet */
+            color: $gold-status-sargal; /* Change the color */
+            font-weight: bold; /* If you want it to be bold */
+            display: inline-block; /* Needed to add space between the bullet and the text */
+            width: 1em; /* Also needed for space (tweak if needed) */
+            margin-left: -1em; /* Also needed for space (tweak if needed) */
+          }
         }
-      }
-      .description {
-        width: percentage(232/325);
-        font-family: HelveticaNeueLTStd-Roman;
-        font-size: 10px;
-        margin-top: 25px;
+        .description {
+          width: percentage(232/325);
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 10px;
+          margin-top: 25px;
+        }
       }
     }
   }
