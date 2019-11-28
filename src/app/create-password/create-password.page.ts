@@ -70,14 +70,15 @@ export class CreatePasswordPage implements OnInit {
   }
 
   goSuccess(pwd: string) {
+    this.loading = true;
     this.userInfo.password = pwd;
     this.authServ.registerUser(this.userInfo).subscribe(
       () => {
-        // Show success popup
-        // Login automatically
         this.registrationSuccess = true;
+        this.loading = false;
       },
       (err: any) => {
+        this.loading = false;
         const { status, error } = err;
         this.showErrMessage = true;
         if (status === 400 && error.title) {
