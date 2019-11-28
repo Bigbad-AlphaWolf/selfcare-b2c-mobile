@@ -1,20 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import {
   OPERATION_TYPE_PASS_ILLIMIX,
   PassIllimModel,
   PromoPassIllimModel,
   PAYMENT_MOD_CREDIT,
   CODE_KIRENE_Formule
-} from 'src/shared';
-import { MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { AuthenticationService } from '../services/authentication-service/authentication.service';
+} from "src/shared";
+import { MatDialog } from "@angular/material";
+import { Router } from "@angular/router";
+import { DashboardService } from "../services/dashboard-service/dashboard.service";
+import { AuthenticationService } from "../services/authentication-service/authentication.service";
 
 @Component({
-  selector: 'app-buy-pass-illimix',
-  templateUrl: './buy-pass-illimix.page.html',
-  styleUrls: ['./buy-pass-illimix.page.scss']
+  selector: "app-buy-pass-illimix",
+  templateUrl: "./buy-pass-illimix.page.html",
+  styleUrls: ["./buy-pass-illimix.page.scss"]
 })
 export class BuyPassIllimixPage implements OnInit {
   OPERATION_TYPE_PASS_ILLIMIX = OPERATION_TYPE_PASS_ILLIMIX;
@@ -23,14 +23,15 @@ export class BuyPassIllimixPage implements OnInit {
   // For now we consider that the recepient is the connected user
   destNumber = this.dashServ.getCurrentPhoneNumber();
   passIllimixDetails: any;
-  pinErrorMsg = '';
+  pinErrorMsg = "";
   pinPadHasError = false;
   errorMsg;
   failed;
   recipient;
-  title = 'Achat de pass illimix';
+  title = "Achat de pass illimix";
   choosedPaymentMod: string;
   passIllimixChosen: PassIllimModel | PromoPassIllimModel;
+  buyingPass: boolean;
 
   constructor(
     private router: Router,
@@ -80,26 +81,27 @@ export class BuyPassIllimixPage implements OnInit {
   }
 
   goToDashboardPage() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(["/dashboard"]);
   }
 
   payWithOM(status) {
-    if (status !== 'erreur') {
+    if (status !== "erreur") {
       this.goToNextStep();
     }
   }
 
   payWithCredit() {
+    this.buyingPass = true;
     const codeIN = this.passIllimixChoosed.pass.price_plan_index;
     const amount = +this.passIllimixChoosed.pass.tarif;
-    const type = 'illimix';
+    const type = "illimix";
     const payload = { type, codeIN, amount };
     this.dashServ.buyPassByCredit(payload).subscribe(
       (res: any) => {
-        if (res.code !== '0') {
+        this.buyingPass = false;
+        if (res.code !== "0") {
           this.failed = true;
           this.errorMsg = res.message;
-          console.log(this.errorMsg);
           const followDetails = { error_code: res.code };
         } else {
           const followDetails = {
@@ -111,12 +113,14 @@ export class BuyPassIllimixPage implements OnInit {
         this.goToSuccessStep();
       },
       (err: any) => {
+        this.buyingPass = false;
         this.failed = true;
         if (err.message) {
           if (err.error.status === 500) {
-            this.errorMsg = 'Erreur réseau. Veuillez réessayer ultérieurement';
+            this.errorMsg = "Erreur réseau. Veuillez réessayer ultérieurement";
           } else {
-            this.errorMsg = 'Service indisponible. Veuillez réessayer ultérieurement';
+            this.errorMsg =
+              "Service indisponible. Veuillez réessayer ultérieurement";
           }
         }
         this.goToSuccessStep();
@@ -145,7 +149,7 @@ export class BuyPassIllimixPage implements OnInit {
     const currentNumber = this.dashServ.getCurrentPhoneNumber();
     this.authServ.getSubscription(currentNumber).subscribe((res: any) => {
       if (res.code === CODE_KIRENE_Formule) {
-        this.title = 'Acheter un  Mixel';
+        this.title = "Acheter un  Mixel";
       }
     });
   }

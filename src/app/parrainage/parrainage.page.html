@@ -12,13 +12,13 @@
     <div class="description">
       Invite tes proches à télécharger et créer un compte sur l’appli Orange et Moi.
     </div>
-    <div class="title">Mes parrainages</div>
+    <div class="title">Mes parrainages ({{listSponsee?.length}})</div>
     <div class="filters" *ngIf="!loadingSponsees && !hasLoadingError">
       <div (click)="filterBy('INSCRITS')" class="filter" [ngClass]="{'filter-active': selectedFilter === 'INSCRITS'}">
-        <span>Inscrits</span>
+        <span>Inscrits ({{effectiveNumber}})</span>
         <img *ngIf="selectedFilter === 'INSCRITS'" src="/assets/images/close-white.svg" alt="close"></div>
       <div (click)="filterBy('NON_INSCRITS')" class="filter"
-        [ngClass]="{'filter-active': selectedFilter === 'NON_INSCRITS'}"><span>Non inscrits</span>
+        [ngClass]="{'filter-active': selectedFilter === 'NON_INSCRITS'}"><span>Non inscrits ({{notEffectiveNumber}})</span>
         <img *ngIf="selectedFilter === 'NON_INSCRITS'" src="/assets/images/close-white.svg" alt="close">
       </div>
     </div>

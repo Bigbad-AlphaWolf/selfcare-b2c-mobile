@@ -1,22 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { SoSModel } from '../services/sos-service';
+import { Component, OnInit } from "@angular/core";
+import { SoSModel } from "../services/sos-service";
 import {
   OPERATION_TYPE_SOS,
   PAY_WITH_CREDIT,
   PAYMENT_MOD_NEXT_RECHARGE
-} from 'src/shared';
-import { MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { SosService } from '../services/sos-service/sos.service';
+} from "src/shared";
+import { MatDialog } from "@angular/material";
+import { Router } from "@angular/router";
+import { DashboardService } from "../services/dashboard-service/dashboard.service";
+import { SosService } from "../services/sos-service/sos.service";
 
 @Component({
-  selector: 'app-buy-sos',
-  templateUrl: './buy-sos.page.html',
-  styleUrls: ['./buy-sos.page.scss']
+  selector: "app-buy-sos",
+  templateUrl: "./buy-sos.page.html",
+  styleUrls: ["./buy-sos.page.scss"]
 })
 export class BuySosPage implements OnInit {
-  title = 'Sos Crédit et Pass';
+  title = "Sos Crédit et Pass";
   step = 0;
   selectedSos: SoSModel;
   OPERATION_TYPE_SOS = OPERATION_TYPE_SOS;
@@ -52,7 +52,7 @@ export class BuySosPage implements OnInit {
   }
 
   goToDashboardPage() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(["/dashboard"]);
   }
 
   nextStepOfChooseSOS(sos: SoSModel) {
@@ -63,8 +63,8 @@ export class BuySosPage implements OnInit {
   subscribeSos() {
     this.loading = true;
     const msisdn = this.currentNumber;
-    const typeCredit: 'data' | 'credit' =
-      this.selectedSos.typeSOS.nom === 'SOS CREDIT' ? 'credit' : 'data';
+    const typeCredit: "data" | "credit" =
+      this.selectedSos.typeSOS.nom === "SOS CREDIT" ? "credit" : "data";
     const amount = this.selectedSos.montant;
     const sosPayload = { msisdn, typeCredit, amount };
     this.sosService.subscribeToSos(sosPayload).subscribe(
@@ -72,8 +72,7 @@ export class BuySosPage implements OnInit {
         this.loading = false;
         const response_msg = res.message;
         const response_code = res.code;
-        console.log(res.code);
-        if (response_code === '0') {
+        if (response_code === "0") {
           const followDetails = {
             amount: `${amount} FCFA`,
             fees: `${this.selectedSos.frais} FCFA`
@@ -94,12 +93,12 @@ export class BuySosPage implements OnInit {
         // FollowAnalytics.logError('EmergencyCredit_Error', followDetails);
         this.failed = true;
         this.step = 2;
-        this.errorMsg = err.message ? err.message : 'Une erreur est survenue';
+        this.errorMsg = err.message ? err.message : "Une erreur est survenue";
       }
     );
   }
 
   goToFirstStep() {
-    this.router.navigate(['/buy-credit']);
+    this.router.navigate(["/buy-credit"]);
   }
 }

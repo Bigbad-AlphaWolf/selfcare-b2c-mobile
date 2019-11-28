@@ -57,4 +57,8 @@ export class SargalStatusCardPage implements OnInit {
       }
     );
   }
+
+  goBack() {
+    this.router.navigate(["/sargal-dashboard"]);
+  }
 }

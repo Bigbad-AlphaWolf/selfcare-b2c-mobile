@@ -1,5 +1,5 @@
 <div class="sargal-status-card-page">
-  <app-header (goBack)="(0)" [title]="title"> </app-header>
+  <app-header (goBack)="goBack()" [title]="title"> </app-header>
   <div class="body">
     <div class="spinner" *ngIf="loadingStatus">
       <mat-spinner mode="indeterminate" [diameter]="50"></mat-spinner>

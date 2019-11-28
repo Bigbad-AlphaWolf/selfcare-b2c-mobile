@@ -20,7 +20,7 @@ const listSargalGiftsByCategoryEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/a
 const listAllSargalGiftsEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/gift-sargals-by-formule`;
 const convertGiftEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/loyaltypoints-gift`;
 const registerSargalEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/suscribe`;
-const customerSargalStatusEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/`;
+const customerSargalStatusEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/client-sargals-profile`;
 @Injectable({
   providedIn: "root"
 })
@@ -157,7 +157,7 @@ export class SargalService {
   }
   getCustomerSargalStatus() {
     const msisdn = this.dashbService.getCurrentPhoneNumber();
-    return of({ valid: true, status: "GOLD" }).pipe(delay(10000));
+    // return of({ valid: true, status: "PLATINUM" }).pipe(delay(10000));
     return this.http.get(`${customerSargalStatusEndpoint}/${msisdn}`);
   }
 }

@@ -1,4 +1,4 @@
-@import 'src/app/app';
+@import "src/app/app";
 
 :host {
   height: 100%;
@@ -14,100 +14,138 @@
   }
 
   .sargal-mobile-header {
-    height: 60px;
+    height: 70px;
     padding-top: 17px;
     padding-bottom: 13px;
     position: relative;
+    display: flex;
+    align-items: center;
+    &-white {
+      background-color: $white;
+    }
     .arrow-left {
       position: absolute;
       display: flex;
       align-items: center;
       justify-content: center;
-      top: 0;
       width: 50px;
       height: 50px;
     }
     .assets {
       text-align: center;
+      width: 100%;
       .title {
         display: block;
-        height: 18px;
         font-family: HelveticaNeueLTStd-Bd, sans-serif;
         font-size: 18px;
         color: $lBlack;
       }
       .description {
         width: 240px;
-        height: 14px;
         font-family: HelveticaNeueLTStd-Roman, sans-serif;
         font-size: 14px;
         color: $lBlack;
+        .status {
+          .orange {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          }
+        }
       }
     }
   }
   .sargal-mobile-summary {
     width: 100%;
     height: 155px;
-    min-height: 155px;
+    padding: 20px percentage(10/375) 15px;
+    &-with-status {
+      height: 230px;
+    }
     background-image: url(/assets/images/background-dashboard-sargal.svg);
     background-repeat: no-repeat;
     background-size: cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    .profile-img-container {
-      width: 30%;
-      height: 74%;
-      margin-right: 10px;
-      .profile-img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        border: 2px solid #bfc0c1;
-      }
-    }
-    .summary-assets {
-      .summary-text {
-        width: 154px;
-        height: 20px;
-        font-family: HelveticaNeueLTStd-Roman, sans-serif;
-        font-size: 18px;
-        font-weight: normal;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: normal;
-        letter-spacing: normal;
-        color: $white;
-      }
-      .summary-points {
-        width: 199px;
-        height: 30px;
-        font-family: HelveticaNeueLTStd-Bd, sans-serif;
-        font-size: 40px;
-        font-weight: normal;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: 0.4;
-        letter-spacing: normal;
-        color: $white;
-        .points {
-          font-family: HelveticaNeueLTStd-Roman, sans-serif;
-          font-size: 24px;
+    // justify-content: center;
+    .informations {
+      display: flex;
+      align-items: center;
+      .profile-img-container {
+        width: 115px;
+        height: 115px;
+        margin-right: percentage(10/375);
+        .profile-img {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          border: 2px solid #bfc0c1;
         }
       }
-      .validity-text {
-        width: 159px;
-        height: 10px;
-        font-family: HelveticaNeueLTStd-Roman, sans-serif;
-        font-size: 10px;
-        font-weight: bold;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: normal;
-        letter-spacing: normal;
-        text-align: center;
-        color: $white;
-        margin-top: 6px;
+      .summary-assets {
+        height: 85px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        .summary-text {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 18px;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: normal;
+          letter-spacing: normal;
+          color: $white;
+        }
+        .summary-points {
+          font-family: HelveticaNeueLTStd-Bd, sans-serif;
+          font-size: 40px;
+          font-weight: normal;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: 0.4;
+          letter-spacing: normal;
+          color: $white;
+          .points {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 24px;
+          }
+        }
+        .validity-text {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 10px;
+          font-weight: bold;
+          font-style: normal;
+          font-stretch: normal;
+          line-height: normal;
+          letter-spacing: normal;
+          text-align: center;
+          color: $white;
+        }
+      }
+    }
+    .card-informations {
+      background-color: $white;
+      width: 100%;
+      height: 60px;
+      border-radius: 4px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      .card-container {
+        width: 65px;
+        height: 40px;
+        margin: 0 15px;
+        border-radius: 4px;
+        background-color: $fullBlack;
+      }
+      .title-card {
+      }
+      .arrow-container {
+        position: absolute;
+        right: 10px;
+        width: 14px;
+        height: 20px;
+        img {
+          width: 100%;
+        }
       }
     }
   }
