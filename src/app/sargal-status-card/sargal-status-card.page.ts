@@ -1,21 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { SargalService } from "../services/sargal-service/sargal.service";
-import { SargalStatusModel } from "src/shared";
-import { Router } from "@angular/router";
-import { DashboardService } from "../services/dashboard-service/dashboard.service";
-import * as SecureLS from "secure-ls";
-const ls = new SecureLS({ encodingType: "aes" });
+import { Component, OnInit } from '@angular/core';
+import { SargalService } from '../services/sargal-service/sargal.service';
+import { SargalStatusModel } from 'src/shared';
+import { Router } from '@angular/router';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import * as SecureLS from 'secure-ls';
+const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
-  selector: "app-sargal-status-card",
-  templateUrl: "./sargal-status-card.page.html",
-  styleUrls: ["./sargal-status-card.page.scss"]
+  selector: 'app-sargal-status-card',
+  templateUrl: './sargal-status-card.page.html',
+  styleUrls: ['./sargal-status-card.page.scss']
 })
 export class SargalStatusCardPage implements OnInit {
   sargalStatus: string;
   loadingStatus: boolean;
   hasError: boolean;
-  title = "Ma carte ";
+  title = 'Ma carte ';
   expiredStatus: boolean;
   currentNumber: string;
   name: string;
@@ -29,8 +29,8 @@ export class SargalStatusCardPage implements OnInit {
   ngOnInit() {
     this.getCustomerSargalStatus();
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
-    const user = ls.get("user");
-    this.name = user.firstName + " " + user.lastName;
+    const user = ls.get('user');
+    this.name = user.firstName + ' ' + user.lastName;
   }
 
   getCustomerSargalStatus() {
@@ -50,7 +50,7 @@ export class SargalStatusCardPage implements OnInit {
       (err: any) => {
         this.loadingStatus = false;
         if (err.status && err.status === 400) {
-          this.router.navigate(["/dashboard"]);
+          this.router.navigate(['/dashboard']);
         } else {
           this.hasError = true;
         }
@@ -59,6 +59,6 @@ export class SargalStatusCardPage implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(["/sargal-dashboard"]);
+    this.router.navigate(['/sargal-dashboard']);
   }
 }

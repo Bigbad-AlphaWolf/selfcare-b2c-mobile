@@ -1,15 +1,15 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Subject, of, Observable } from "rxjs";
-import { DashboardService } from "../dashboard-service/dashboard.service";
-import { environment } from "src/environments/environment";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Subject, of, Observable } from 'rxjs';
+import { DashboardService } from '../dashboard-service/dashboard.service';
+import { environment } from 'src/environments/environment';
 import {
   GiftSargalItem,
   GiftSargalCategoryItem,
   SubscriptionModel
-} from "src/shared";
-import { AuthenticationService } from "../authentication-service/authentication.service";
-import { delay } from "rxjs/operators";
+} from 'src/shared';
+import { AuthenticationService } from '../authentication-service/authentication.service';
+import { delay } from 'rxjs/operators';
 
 const { SARGAL_SERVICE, SERVER_API_URL } = environment;
 
@@ -22,7 +22,7 @@ const convertGiftEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/l
 const registerSargalEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/suscribe`;
 const customerSargalStatusEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/client-sargals-profile`;
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class SargalService {
   private userPhoneNumber: string;

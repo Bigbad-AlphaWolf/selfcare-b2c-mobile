@@ -1,21 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material";
-import { DashboardService } from "../services/dashboard-service/dashboard.service";
-import { Router } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { Router } from '@angular/router';
 import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
   PassInternetModel,
   PAYMENT_MOD_CREDIT,
   PAYMENT_MOD_OM
-} from "src/shared";
-import { AuthenticationService } from "../services/authentication-service/authentication.service";
-import { PROFILE_TYPE_POSTPAID } from "../dashboard";
+} from 'src/shared';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 declare var FollowAnalytics: any;
 @Component({
-  selector: "app-buy-pass-internet",
-  templateUrl: "./buy-pass-internet.page.html",
-  styleUrls: ["./buy-pass-internet.page.scss"]
+  selector: 'app-buy-pass-internet',
+  templateUrl: './buy-pass-internet.page.html',
+  styleUrls: ['./buy-pass-internet.page.scss']
 })
 export class BuyPassInternetPage implements OnInit {
   OPERATION_TYPE_PASS_INTERNET = OPERATION_TYPE_PASS_INTERNET;
@@ -32,15 +32,15 @@ export class BuyPassInternetPage implements OnInit {
   PROFILE_TYPE_POSTPAID = PROFILE_TYPE_POSTPAID;
   passFavorisSelected: any;
   passsFavorisChoosen = false;
-  pinErrorMsg = "";
+  pinErrorMsg = '';
   pinPadHasError = false;
   failed;
   errorMsg;
   recipient;
-  title = "Acheter pass internet";
+  title = 'Acheter pass internet';
   currentProfil;
-  recipientFirstName = "";
-  recipientLastName = "";
+  recipientFirstName = '';
+  recipientLastName = '';
   buyingPass: boolean;
 
   constructor(
@@ -83,10 +83,10 @@ export class BuyPassInternetPage implements OnInit {
     this.recipientFirstName = contact.name.givenName;
     this.recipientLastName = contact.name.familyName
       ? contact.name.familyName
-      : "";
+      : '';
     this.recipientFirstName += contact.name.middleName
       ? ` ${contact.name.middleName}`
-      : "";
+      : '';
   }
 
   nextStepOfPaymentMod(paymentMod: string) {
@@ -99,11 +99,11 @@ export class BuyPassInternetPage implements OnInit {
   nextStepOfSelectDest(destNumber: string) {
     this.goToNextStep();
     this.destinataire = destNumber;
-    if (typeof FollowAnalytics !== "undefined") {
+    if (typeof FollowAnalytics !== 'undefined') {
       if (destNumber !== this.currentUserNumber) {
-        FollowAnalytics.logEvent("Pass_Internet_ChoixDestinataire", destNumber);
+        FollowAnalytics.logEvent('Pass_Internet_ChoixDestinataire', destNumber);
       } else {
-        FollowAnalytics.logEvent("Pass_Internet_Destinataire_Moi", destNumber);
+        FollowAnalytics.logEvent('Pass_Internet_Destinataire_Moi', destNumber);
       }
     }
   }
@@ -134,7 +134,7 @@ export class BuyPassInternetPage implements OnInit {
     this.buyingPass = true;
     const codeIN = this.purchasePass.pass.price_plan_index;
     const amount = +this.purchasePass.pass.tarif;
-    const type = "internet";
+    const type = 'internet';
     const payload = { type, codeIN, amount };
     this.dashServ.buyPassByCredit(payload).subscribe(
       (res: any) => {
@@ -234,24 +234,24 @@ export class BuyPassInternetPage implements OnInit {
   }
 
   omResultGot(result) {
-    if (result !== "erreur") {
+    if (result !== 'erreur') {
       this.goToFinalStep();
     }
   }
 
   goToDashboardPage() {
-    this.router.navigate(["/dashboard"]);
+    this.router.navigate(['/dashboard']);
   }
 
   transactionSuccessful(res: any) {
     this.buyingPass = false;
-    if (res.code !== "0") {
+    if (res.code !== '0') {
       this.failed = true;
       this.errorMsg = res.message;
       const followDetails = { error_code: res.code };
-      if (typeof FollowAnalytics !== "undefined") {
+      if (typeof FollowAnalytics !== 'undefined') {
         FollowAnalytics.logError(
-          "Credit_Buy_Pass_Internet_Error",
+          'Credit_Buy_Pass_Internet_Error',
           followDetails
         );
       }
@@ -261,9 +261,9 @@ export class BuyPassInternetPage implements OnInit {
         amount: this.purchasePass.pass.tarif,
         plan: this.purchasePass.pass.price_plan_index
       };
-      if (typeof FollowAnalytics !== "undefined") {
+      if (typeof FollowAnalytics !== 'undefined') {
         FollowAnalytics.logEvent(
-          "Credit_Buy_Pass_Internet_Success",
+          'Credit_Buy_Pass_Internet_Success',
           followDetails
         );
       }
@@ -275,6 +275,6 @@ export class BuyPassInternetPage implements OnInit {
     this.buyingPass = false;
     this.failed = true;
     this.goToFinalStep();
-    this.errorMsg = "Service indisponible. Veuillez réessayer ultérieurement";
+    this.errorMsg = 'Service indisponible. Veuillez réessayer ultérieurement';
   }
 }
