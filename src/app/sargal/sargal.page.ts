@@ -1,8 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { GiftSargalCategoryItem, NO_AVATAR_ICON_URL, getLastUpdatedDateTimeText } from 'src/shared';
+import {
+  GiftSargalCategoryItem,
+  NO_AVATAR_ICON_URL,
+  getLastUpdatedDateTimeText,
+  SargalStatusModel
+} from 'src/shared';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import { DashboardService, downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
+import {
+  DashboardService,
+  downloadAvatarEndpoint
+} from '../services/dashboard-service/dashboard.service';
 import { SargalService } from '../services/sargal-service/sargal.service';
 import { SargalSubscriptionModel } from '../dashboard';
 import * as SecureLS from 'secure-ls';
@@ -29,6 +37,8 @@ export class SargalPage implements OnInit {
   dataLoaded: boolean;
   hasError: boolean;
   currentNumber: string;
+  loadingStatus: boolean;
+  sargalStatus: string;
   constructor(
     private router: Router,
     private authService: AuthenticationService,
@@ -50,11 +60,17 @@ export class SargalPage implements OnInit {
     this.sargalServ.getSargalBalance(this.currentNumber).subscribe(
       (res: SargalSubscriptionModel) => {
         this.sargalDataLoaded = true;
-        if (res.status === 'SUBSCRIBED' || res.status === 'SUBSCRIPTION_ONGOING') {
+        if (
+          res.status === 'SUBSCRIBED' ||
+          res.status === 'SUBSCRIPTION_ONGOING'
+        ) {
           this.userSargalPoints = res.totalPoints;
           this.sargalLastUpdate = getLastUpdatedDateTimeText();
 
-          const sargal = { sargalPts: this.userSargalPoints, lastUpdate: this.sargalLastUpdate };
+          const sargal = {
+            sargalPts: this.userSargalPoints,
+            lastUpdate: this.sargalLastUpdate
+          };
           ls.set('sargalPoints', sargal);
         }
       },
@@ -68,6 +84,7 @@ export class SargalPage implements OnInit {
       }
     );
     this.getCategories();
+    this.getCustomerSargalStatus();
   }
   goToPreviousStep() {}
 
@@ -76,10 +93,14 @@ export class SargalPage implements OnInit {
   }
 
   goToCategorySargal(codeCategory: number, pageTitle?: string) {
-    this.followService.registerEventFollow('sargal-gift-page-clicked', 'success', {
-      page: pageTitle,
-      msisdn: this.currentNumber
-    });
+    this.followService.registerEventFollow(
+      'sargal-gift-page-clicked',
+      'success',
+      {
+        page: pageTitle,
+        msisdn: this.currentNumber
+      }
+    );
     this.router.navigate(['/sargal-catalogue', codeCategory]);
   }
 
@@ -96,5 +117,24 @@ export class SargalPage implements OnInit {
         this.dataLoaded = true;
       }
     );
+  }
+
+  getCustomerSargalStatus() {
+    this.loadingStatus = true;
+    this.sargalServ.getCustomerSargalStatus().subscribe(
+      (sargalStatus: SargalStatusModel) => {
+        if (sargalStatus.valid) {
+          this.sargalStatus = sargalStatus.status;
+        }
+        this.loadingStatus = false;
+      },
+      (err: any) => {
+        this.loadingStatus = false;
+      }
+    );
+  }
+
+  goStatusSargal() {
+    this.router.navigate(['/sargal-status-card']);
   }
 }

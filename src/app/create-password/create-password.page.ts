@@ -1,24 +1,24 @@
-import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { MatDialog } from "@angular/material";
-import { Router } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material';
+import { Router } from '@angular/router';
 import {
   AuthenticationService,
   RegistrationData
-} from "../services/authentication-service/authentication.service";
-import * as SecureLS from "secure-ls";
-import { DashboardService } from "../services/dashboard-service/dashboard.service";
-import { CguPopupComponent } from "src/shared/cgu-popup/cgu-popup.component";
-import { NavController } from "@ionic/angular";
-const ls = new SecureLS({ encodingType: "aes" });
+} from '../services/authentication-service/authentication.service';
+import * as SecureLS from 'secure-ls';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
+import { NavController } from '@ionic/angular';
+const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
-  selector: "app-create-password",
-  templateUrl: "./create-password.page.html",
-  styleUrls: ["./create-password.page.scss"]
+  selector: 'app-create-password',
+  templateUrl: './create-password.page.html',
+  styleUrls: ['./create-password.page.scss']
 })
 export class CreatePasswordPage implements OnInit {
   showErrMessage = false;
-  pFieldType = "password";
+  pFieldType = 'password';
   subscribedNumber: string;
   rememberMe = false;
   form: FormGroup;
@@ -39,14 +39,14 @@ export class CreatePasswordPage implements OnInit {
   ngOnInit() {
     this.getUserInfo();
     this.form = this.fb.group({
-      pwd: ["", [Validators.required]],
-      confirmPwd: ["", [Validators.required]],
+      pwd: ['', [Validators.required]],
+      confirmPwd: ['', [Validators.required]],
       acceptCGU: [false, [Validators.requiredTrue]]
     });
   }
 
   getUserInfo() {
-    this.userInfo = ls.get("u");
+    this.userInfo = ls.get('u');
   }
 
   onSubmit() {
@@ -57,34 +57,35 @@ export class CreatePasswordPage implements OnInit {
       this.goSuccess(pwd);
     } else {
       this.showErrMessage = true;
-      this.errorMsg = "les mots de passe ne sont pas identiques";
+      this.errorMsg = 'les mots de passe ne sont pas identiques';
     }
   }
 
   changePasswordVisibility() {
-    if (this.pFieldType === "text") {
-      this.pFieldType = "password";
+    if (this.pFieldType === 'text') {
+      this.pFieldType = 'password';
     } else {
-      this.pFieldType = "text";
+      this.pFieldType = 'text';
     }
   }
 
   goSuccess(pwd: string) {
+    this.loading = true;
     this.userInfo.password = pwd;
     this.authServ.registerUser(this.userInfo).subscribe(
       () => {
-        // Show success popup
-        // Login automatically
         this.registrationSuccess = true;
+        this.loading = false;
       },
       (err: any) => {
+        this.loading = false;
         const { status, error } = err;
         this.showErrMessage = true;
         if (status === 400 && error.title) {
           // bad input
           this.errorMsg = error.title;
         } else {
-          this.errorMsg = "Une erreur est survenue";
+          this.errorMsg = 'Une erreur est survenue';
         }
       }
     );
@@ -92,7 +93,7 @@ export class CreatePasswordPage implements OnInit {
 
   openCguDialog() {
     const dialogRef = this.dialog.open(CguPopupComponent, {
-      data: { login: "" }
+      data: { login: '' }
     });
     dialogRef.afterClosed().subscribe(confirmresult => {
       const pwd = this.form.value.pwd;
@@ -114,8 +115,8 @@ export class CreatePasswordPage implements OnInit {
         this.dashboardService.getAccountInfo(userCredential.username).subscribe(
           (resp: any) => {
             this.isLoging = false;
-            ls.set("user", resp);
-            this.router.navigate(["/dashboard"]);
+            ls.set('user', resp);
+            this.router.navigate(['/dashboard']);
           },
           () => {
             this.isLoging = false;
@@ -123,7 +124,7 @@ export class CreatePasswordPage implements OnInit {
         );
       },
       err => {
-        this.router.navigate(["/login"]);
+        this.router.navigate(['/login']);
       }
     );
   }

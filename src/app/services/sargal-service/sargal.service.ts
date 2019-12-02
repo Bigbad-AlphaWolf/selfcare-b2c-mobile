@@ -1,15 +1,15 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Subject, of, Observable } from "rxjs";
-import { DashboardService } from "../dashboard-service/dashboard.service";
-import { environment } from "src/environments/environment";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Subject, of, Observable } from 'rxjs';
+import { DashboardService } from '../dashboard-service/dashboard.service';
+import { environment } from 'src/environments/environment';
 import {
   GiftSargalItem,
   GiftSargalCategoryItem,
   SubscriptionModel
-} from "src/shared";
-import { AuthenticationService } from "../authentication-service/authentication.service";
-import { delay } from "rxjs/operators";
+} from 'src/shared';
+import { AuthenticationService } from '../authentication-service/authentication.service';
+import { delay } from 'rxjs/operators';
 
 const { SARGAL_SERVICE, SERVER_API_URL } = environment;
 
@@ -20,9 +20,9 @@ const listSargalGiftsByCategoryEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/a
 const listAllSargalGiftsEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/gift-sargals-by-formule`;
 const convertGiftEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/loyaltypoints-gift`;
 const registerSargalEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/suscribe`;
-const customerSargalStatusEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/`;
+const customerSargalStatusEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/client-sargals-profile`;
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class SargalService {
   private userPhoneNumber: string;
@@ -157,7 +157,7 @@ export class SargalService {
   }
   getCustomerSargalStatus() {
     const msisdn = this.dashbService.getCurrentPhoneNumber();
-    return of({ valid: true, status: "GOLD" }).pipe(delay(10000));
+    // return of({ valid: true, status: "PLATINUM" }).pipe(delay(10000));
     return this.http.get(`${customerSargalStatusEndpoint}/${msisdn}`);
   }
 }

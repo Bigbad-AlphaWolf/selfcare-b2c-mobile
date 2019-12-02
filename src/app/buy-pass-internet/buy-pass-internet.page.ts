@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { Router } from '@angular/router';
 import {
@@ -42,6 +41,7 @@ export class BuyPassInternetPage implements OnInit {
   currentProfil;
   recipientFirstName = '';
   recipientLastName = '';
+  buyingPass: boolean;
 
   constructor(
     private router: Router,
@@ -68,19 +68,25 @@ export class BuyPassInternetPage implements OnInit {
   // TODO Pensez à l'internationalisation
 
   checkUserIsPostPaid() {
-    this.authService.getSubscription(this.currentUserNumber).subscribe((souscription: any) => {
-      this.currentProfil = souscription.profil;
-      if (this.currentProfil === PROFILE_TYPE_POSTPAID) {
-        this.step = 1;
-        this.choosedPaymentMod = PAYMENT_MOD_OM;
-      }
-    });
+    this.authService
+      .getSubscription(this.currentUserNumber)
+      .subscribe((souscription: any) => {
+        this.currentProfil = souscription.profil;
+        if (this.currentProfil === PROFILE_TYPE_POSTPAID) {
+          this.step = 1;
+          this.choosedPaymentMod = PAYMENT_MOD_OM;
+        }
+      });
   }
 
   contactGot(contact) {
     this.recipientFirstName = contact.name.givenName;
-    this.recipientLastName = contact.name.familyName ? contact.name.familyName : '';
-    this.recipientFirstName += contact.name.middleName ? ` ${contact.name.middleName}` : '';
+    this.recipientLastName = contact.name.familyName
+      ? contact.name.familyName
+      : '';
+    this.recipientFirstName += contact.name.middleName
+      ? ` ${contact.name.middleName}`
+      : '';
   }
 
   nextStepOfPaymentMod(paymentMod: string) {
@@ -125,6 +131,7 @@ export class BuyPassInternetPage implements OnInit {
   }
 
   buyPassByCreditForMyself() {
+    this.buyingPass = true;
     const codeIN = this.purchasePass.pass.price_plan_index;
     const amount = +this.purchasePass.pass.tarif;
     const type = 'internet';
@@ -139,6 +146,7 @@ export class BuyPassInternetPage implements OnInit {
     );
   }
   buyPassByCreditForSomeone() {
+    this.buyingPass = true;
     const pricePlanIndex = this.purchasePass.pass.price_plan_index;
     const paymentDN = this.currentUserNumber;
     const receiveDN = this.destinataire;
@@ -182,12 +190,18 @@ export class BuyPassInternetPage implements OnInit {
 
   goToPreviousStep() {
     const previousStep = this.step - 1;
-    if (previousStep < 0 || (this.currentProfil === PROFILE_TYPE_POSTPAID && previousStep === 0)) {
+    if (
+      previousStep < 0 ||
+      (this.currentProfil === PROFILE_TYPE_POSTPAID && previousStep === 0)
+    ) {
       this.goToDashboardPage();
     } else if (this.step === 2) {
       // Avoid recipint choice step
       this.step = 0;
-    } else if ((this.choosedPaymentMod === PAYMENT_MOD_CREDIT && this.step === 2) || this.passsFavorisChoosen) {
+    } else if (
+      (this.choosedPaymentMod === PAYMENT_MOD_CREDIT && this.step === 2) ||
+      this.passsFavorisChoosen
+    ) {
       this.step = 0;
     } else {
       this.step = previousStep;
@@ -230,12 +244,16 @@ export class BuyPassInternetPage implements OnInit {
   }
 
   transactionSuccessful(res: any) {
+    this.buyingPass = false;
     if (res.code !== '0') {
       this.failed = true;
       this.errorMsg = res.message;
       const followDetails = { error_code: res.code };
       if (typeof FollowAnalytics !== 'undefined') {
-        FollowAnalytics.logError('Credit_Buy_Pass_Internet_Error', followDetails);
+        FollowAnalytics.logError(
+          'Credit_Buy_Pass_Internet_Error',
+          followDetails
+        );
       }
     } else {
       const followDetails = {
@@ -244,13 +262,17 @@ export class BuyPassInternetPage implements OnInit {
         plan: this.purchasePass.pass.price_plan_index
       };
       if (typeof FollowAnalytics !== 'undefined') {
-        FollowAnalytics.logEvent('Credit_Buy_Pass_Internet_Success', followDetails);
+        FollowAnalytics.logEvent(
+          'Credit_Buy_Pass_Internet_Success',
+          followDetails
+        );
       }
     }
     this.goToFinalStep();
   }
 
   transactionFailure() {
+    this.buyingPass = false;
     this.failed = true;
     this.goToFinalStep();
     this.errorMsg = 'Service indisponible. Veuillez réessayer ultérieurement';
