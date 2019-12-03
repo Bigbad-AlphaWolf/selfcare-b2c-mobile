@@ -1,4 +1,9 @@
-import { formatCurrency, UserConsommations, UserConsommation, ItemUserConso } from 'src/app/dashboard';
+import {
+  formatCurrency,
+  UserConsommations,
+  UserConsommation,
+  ItemUserConso
+} from 'src/app/dashboard';
 import * as SecureLS from 'secure-ls';
 import { HTTP } from '@ionic-native/http/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
@@ -52,7 +57,8 @@ export const MAIL_URL = 'mailto:serviceclient@orange-sonatel.com';
 export const NO_AVATAR_ICON_URL = '/assets/images/profil-mob.png';
 export const ASSISTANCE_URL = 'https://assistance.orange.sn';
 export const FACEBOOK_URL = 'https://m.me/165622776799685';
-export const TWITTER_URL = 'https://twitter.com/messages/compose?recipient_id=733327435299729408';
+export const TWITTER_URL =
+  'https://twitter.com/messages/compose?recipient_id=733327435299729408';
 
 export const VALID_IMG_EXTENSIONS = ['jpg', 'jpeg', 'png'];
 
@@ -257,9 +263,14 @@ export interface SubscriptionUserModel {
   code: string;
 }
 
-export function getOrderedListCategory(unorderedList: CategoryPassInternet[]): CategoryPassInternet[] {
+export function getOrderedListCategory(
+  unorderedList: CategoryPassInternet[]
+): CategoryPassInternet[] {
   let listCategoryFiltered = [];
-  unorderedList.sort((elt1: CategoryPassInternet, elt2: CategoryPassInternet) => elt1.ordre - elt2.ordre);
+  unorderedList.sort(
+    (elt1: CategoryPassInternet, elt2: CategoryPassInternet) =>
+      elt1.ordre - elt2.ordre
+  );
   listCategoryFiltered = [...new Set(unorderedList.map(x => x.libelle))];
   return listCategoryFiltered;
 }
@@ -279,21 +290,26 @@ export function getTrioConsoUser(consoSummary: UserConsommations) {
 
 export function arrangeCompteurByOrdre(listConso: UserConsommations) {
   listConso.forEach((detailConso: ItemUserConso) => {
-    detailConso.consommations.sort((conso1: UserConsommation, conso2: UserConsommation) => {
-      if (conso1 && conso2 && conso1.ordre && conso2.ordre) {
-        return conso1.ordre - conso2.ordre;
-      } else if (conso1 && conso2 && conso1.ordre === null && conso2.ordre) {
-        return +conso2.ordre;
-      } else if (conso1 && conso2 && conso2.ordre === null && conso1.ordre) {
-        return -conso1.ordre;
+    detailConso.consommations.sort(
+      (conso1: UserConsommation, conso2: UserConsommation) => {
+        if (conso1 && conso2 && conso1.ordre && conso2.ordre) {
+          return conso1.ordre - conso2.ordre;
+        } else if (conso1 && conso2 && conso1.ordre === null && conso2.ordre) {
+          return +conso2.ordre;
+        } else if (conso1 && conso2 && conso2.ordre === null && conso1.ordre) {
+          return -conso1.ordre;
+        }
       }
-    });
+    );
   });
   return listConso;
 }
 export function getListPassFilteredByLabelAndPaymentMod(
   selectedLabel: string,
-  listPass: ((PassInfoModel | PromoPassModel) | (PassIllimModel | PromoPassIllimModel))[],
+  listPass: (
+    | (PassInfoModel | PromoPassModel)
+    | (PassIllimModel | PromoPassIllimModel)
+  )[],
   paymentMod: string
 ) {
   let listPassFiltered = [];
@@ -301,17 +317,29 @@ export function getListPassFilteredByLabelAndPaymentMod(
   if (paymentMod === PAYMENT_MOD_OM) {
     listPassFiltered = listPass.filter((pass: any) => {
       if (!pass.passPromo) {
-        return pass.categoriePass.libelle === selectedLabel && pass.price_plan_index_om > 0;
+        return (
+          pass.categoriePass.libelle === selectedLabel &&
+          pass.price_plan_index_om > 0
+        );
       } else {
-        return pass.passPromo.categoriePass.libelle === selectedLabel && pass.passPromo.price_plan_index_om > 0;
+        return (
+          pass.passPromo.categoriePass.libelle === selectedLabel &&
+          pass.passPromo.price_plan_index_om > 0
+        );
       }
     });
   } else {
     listPassFiltered = listPass.filter((pass: any) => {
       if (!pass.passPromo) {
-        return pass.categoriePass.libelle === selectedLabel && pass.price_plan_index > 0;
+        return (
+          pass.categoriePass.libelle === selectedLabel &&
+          pass.price_plan_index > 0
+        );
       } else {
-        return pass.passPromo.categoriePass.libelle === selectedLabel && pass.passPromo.price_plan_index > 0;
+        return (
+          pass.passPromo.categoriePass.libelle === selectedLabel &&
+          pass.passPromo.price_plan_index > 0
+        );
       }
     });
   }
@@ -323,7 +351,16 @@ export function computeConsoHistory(consos) {
   const result = [];
 
   consos.forEach(x => {
-    const { date, categorie, calledNumber, duration, charge1, charge2, chargeType1, chargeType2 } = x;
+    const {
+      date,
+      categorie,
+      calledNumber,
+      duration,
+      charge1,
+      charge2,
+      chargeType1,
+      chargeType2
+    } = x;
     let conso1, conso2;
 
     if (charge1) {
@@ -355,7 +392,10 @@ export function computeConsoHistory(consos) {
 
 export function generateUUID() {
   let d = new Date().getTime();
-  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+  if (
+    typeof performance !== 'undefined' &&
+    typeof performance.now === 'function'
+  ) {
     d += performance.now(); // use high-precision timer if available
   }
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -374,16 +414,21 @@ export const listLibelleCodeOperationOM = [
 ];
 
 export function getOperationCodeActionOM(libelle: string) {
-  const itemFound = listLibelleCodeOperationOM.find((item: { operationCode: string; operationLibelle: string }) => {
-    return item.operationLibelle === libelle;
-  });
+  const itemFound = listLibelleCodeOperationOM.find(
+    (item: { operationCode: string; operationLibelle: string }) => {
+      return item.operationLibelle === libelle;
+    }
+  );
 
   return itemFound ? itemFound.operationCode : null;
 }
 
-export const FILENAME_OPEN_OM_ACCOUNT = 'formulaire_inscription_om_original.pdf';
-export const FILENAME_DEPLAFONNEMENT_OM_ACCOUNT = 'formulaire_deplafonnement_original.pdf';
-export const FILENAME_ERROR_TRANSACTION_OM = 'formulaire_erreur_transaction_original.pdf';
+export const FILENAME_OPEN_OM_ACCOUNT =
+  'formulaire_inscription_om_original.pdf';
+export const FILENAME_DEPLAFONNEMENT_OM_ACCOUNT =
+  'formulaire_deplafonnement_original.pdf';
+export const FILENAME_ERROR_TRANSACTION_OM =
+  'formulaire_erreur_transaction_original.pdf';
 
 export interface GiftSargalCategoryItem {
   id: number;
@@ -436,10 +481,14 @@ export interface ProfilModel {
 
 export function getLastUpdatedDateTimeText() {
   const date = new Date();
-  const lastDate = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(
-    -2
-  )}/${date.getFullYear()}`;
-  const lastDateTime = `${date.getHours()}h` + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+  const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
+    '0' +
+    (date.getMonth() + 1)
+  ).slice(-2)}/${date.getFullYear()}`;
+  const lastDateTime =
+    `${date.getHours()}h` +
+    (date.getMinutes() < 10 ? '0' : '') +
+    date.getMinutes();
   return `${lastDate} à ${lastDateTime}`;
 }
 
@@ -489,7 +538,10 @@ export interface ItemBesoinAide {
 // this method removes prefix 221 +221 00221
 export function formatPhoneNumber(phoneNumber: string) {
   const phoneNumberWithoutSpaces = phoneNumber.replace(/\s/g, '');
-  const res = phoneNumberWithoutSpaces.slice(phoneNumberWithoutSpaces.length - 9, phoneNumberWithoutSpaces.length);
+  const res = phoneNumberWithoutSpaces.slice(
+    phoneNumberWithoutSpaces.length - 9,
+    phoneNumberWithoutSpaces.length
+  );
   return res;
 }
 
@@ -514,5 +566,5 @@ export interface WelcomeStatusModel {
 
 export interface SargalStatusModel {
   valid: boolean;
-  status: string;
+  profilClient: string;
 }

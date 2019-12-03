@@ -124,7 +124,7 @@ export class SargalPage implements OnInit {
     this.sargalServ.getCustomerSargalStatus().subscribe(
       (sargalStatus: SargalStatusModel) => {
         if (sargalStatus.valid) {
-          this.sargalStatus = sargalStatus.status;
+          this.sargalStatus = sargalStatus.profilClient;
         }
         this.loadingStatus = false;
       },

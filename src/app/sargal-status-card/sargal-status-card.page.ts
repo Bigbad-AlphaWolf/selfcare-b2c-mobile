@@ -40,8 +40,8 @@ export class SargalStatusCardPage implements OnInit {
     this.sargalService.getCustomerSargalStatus().subscribe(
       (sargalStatus: SargalStatusModel) => {
         if (sargalStatus.valid) {
-          this.sargalStatus = sargalStatus.status;
-          this.title += sargalStatus.status;
+          this.sargalStatus = sargalStatus.profilClient;
+          this.title += sargalStatus.profilClient;
         } else {
           this.expiredStatus = true;
         }
