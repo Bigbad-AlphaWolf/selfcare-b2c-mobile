@@ -34,7 +34,7 @@ export class CreateSponsorFormComponent implements OnInit {
         '',
         [Validators.required, Validators.pattern(REGEX_NUMBER)]
       ],
-      firstname: ['', [Validators.pattern('[a-zA-Z ]*')]]
+      firstname: ['']
     });
   }
 

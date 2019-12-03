@@ -1,5 +1,8 @@
 <div class="sargal-dashboard-container">
-  <div class="sargal-mobile-header" [ngClass]="{'sargal-mobile-header-white': sargalStatus}">
+  <div
+    class="sargal-mobile-header"
+    [ngClass]="{'sargal-mobile-header-white': sargalStatus}"
+  >
     <div class="arrow-left">
       <img
         routerLink="/dashboard"
@@ -24,7 +27,10 @@
     </div>
   </div>
 
-  <div class="sargal-mobile-summary" [ngClass]="{'sargal-mobile-summary-with-status': sargalStatus}">
+  <div
+    class="sargal-mobile-summary"
+    [ngClass]="{'sargal-mobile-summary-with-status': sargalStatus}"
+  >
     <div class="informations">
       <div class="profile-img-container">
         <img
@@ -49,10 +55,29 @@
         >
       </div>
     </div>
-    <div class="card-informations" *ngIf="sargalStatus" (click)="goStatusSargal()">
-      <div class="card-container"></div>
-      <div class="title-card scb-text-l-black">Voir ma carte {{sargalStatus}}</div>
-      <div class="arrow-container"><img src="/assets/images/arrow-right.svg" alt="arrow-left"></div>
+    <div
+      class="card-informations"
+      *ngIf="sargalStatus"
+      (click)="goStatusSargal()"
+    >
+      <div class="card-container">
+        <img
+          src="/assets/images/carte-gold.png"
+          alt="card"
+          *ngIf="sargalStatus==='GOLD'"
+        />
+        <img
+          src="/assets/images/carte-platinum.png"
+          alt="card"
+          *ngIf="sargalStatus==='PLATINUM'"
+        />
+      </div>
+      <div class="title-card scb-text-l-black">
+        Voir ma carte {{sargalStatus}}
+      </div>
+      <div class="arrow-container">
+        <img src="/assets/images/arrow-right.svg" alt="arrow-left" />
+      </div>
     </div>
   </div>
   <div class="sargal-mobile-offers-header">

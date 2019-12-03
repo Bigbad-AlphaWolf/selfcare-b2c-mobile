@@ -157,7 +157,7 @@ export class SargalService {
   }
   getCustomerSargalStatus() {
     const msisdn = this.dashbService.getCurrentPhoneNumber();
-    // return of({ valid: true, status: "PLATINUM" }).pipe(delay(10000));
+    // return of({ valid: true, profilClient: 'GOLD' }).pipe(delay(5000));
     return this.http.get(`${customerSargalStatusEndpoint}/${msisdn}`);
   }
 }
