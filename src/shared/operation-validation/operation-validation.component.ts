@@ -69,6 +69,7 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
   @Input() omRecipientLastName: string = "";
   @Input() recipientHasOmAccount: boolean;
   @Input() sargalGift: any; // GiftSargalItem;
+  @Input() kirene: boolean;
   @Output() validate = new EventEmitter();
 
   OPERATION_TYPE_PASS_INTERNET = OPERATION_TYPE_PASS_INTERNET;

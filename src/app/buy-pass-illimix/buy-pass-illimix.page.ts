@@ -32,6 +32,7 @@ export class BuyPassIllimixPage implements OnInit {
   choosedPaymentMod: string;
   passIllimixChosen: PassIllimModel | PromoPassIllimModel;
   buyingPass: boolean;
+  isKirene: boolean;
 
   constructor(
     private router: Router,
@@ -150,6 +151,7 @@ export class BuyPassIllimixPage implements OnInit {
     this.authServ.getSubscription(currentNumber).subscribe((res: any) => {
       if (res.code === CODE_KIRENE_Formule) {
         this.title = 'Acheter un  Mixel';
+        this.isKirene = true;
       }
     });
   }
