@@ -79,7 +79,11 @@
       </ng-container>
     </div>
   </div>
+<<<<<<< HEAD
+  <div *ngIf="0" class="dashboard-block-operation">
+=======
   <div class="dashboard-block-operation" *ngIf="0">
+>>>>>>> 18c972bf8ef0adf90842e96bcc18276f8118b261
     <div class="operation-block" routerLink="/buy-credit">
       <div class="operation-img-container">
         <img src="/assets/images/recharge-credit-om-unique.svg" alt="credit-icon" />

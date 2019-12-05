@@ -23,8 +23,9 @@ import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import { getLastUpdatedDateTimeText, arrangeCompteurByOrdre, getTrioConsoUser } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 const ls = new SecureLS({ encodingType: 'aes' });
-
+@AutoUnsubscribe()
 @Component({
   selector: 'app-dashboard-prepaid-hybrid',
   templateUrl: './dashboard-prepaid-hybrid.component.html',
