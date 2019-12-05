@@ -73,7 +73,7 @@ export class ParrainageService {
   }
 
   isSponsor() {
-    const msisdn = this.dashboardService.getCurrentPhoneNumber();
+    const msisdn = this.dashboardService.getMainPhoneNumber();
     return this.http.get(`${isSponsorEndpoint}/${msisdn}/check`).pipe(
       map(res => {
         if (res) {
@@ -84,14 +84,14 @@ export class ParrainageService {
   }
 
   createSponsee(params: { msisdn: string; firstName: string }) {
-    const msisdnSponsor = this.dashboardService.getCurrentPhoneNumber();
+    const msisdnSponsor = this.dashboardService.getMainPhoneNumber();
     const payload = Object.assign({}, params, { msisdnSponsor });
     // return of('').pipe(delay(2000));
     return this.http.post(`${createSponseeEndpoint}`, payload);
   }
 
   sendSMSRappel(dMsisdn: string) {
-    const sMsisdn = this.dashboardService.getCurrentPhoneNumber();
+    const sMsisdn = this.dashboardService.getMainPhoneNumber();
     return this.http.post(
       `${sendSMSRappelEndpoint}?sMsisdn=${sMsisdn}&dMsisdn=${dMsisdn}`,
       {}
@@ -99,7 +99,7 @@ export class ParrainageService {
   }
 
   getCurrentMsisdnSponsees() {
-    const currentMsisdn = this.dashboardService.getCurrentPhoneNumber();
+    const currentMsisdn = this.dashboardService.getMainPhoneNumber();
     return this.http.get(`${getSponseesByMsisdnEndpoint}/${currentMsisdn}`);
     // return of(mockSponsees);
   }
