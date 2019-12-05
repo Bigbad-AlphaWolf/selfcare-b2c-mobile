@@ -31,6 +31,8 @@ export class BuyPassIllimixPage implements OnInit {
   title = 'Achat de pass illimix';
   choosedPaymentMod: string;
   passIllimixChosen: PassIllimModel | PromoPassIllimModel;
+  buyingPass: boolean;
+  isKirene: boolean;
 
   constructor(
     private router: Router,
@@ -90,15 +92,17 @@ export class BuyPassIllimixPage implements OnInit {
   }
 
   payWithCredit() {
+    this.buyingPass = true;
     const codeIN = this.passIllimixChoosed.pass.price_plan_index;
+    const amount = +this.passIllimixChoosed.pass.tarif;
     const type = 'illimix';
-    const payload = { type, codeIN };
+    const payload = { type, codeIN, amount };
     this.dashServ.buyPassByCredit(payload).subscribe(
       (res: any) => {
+        this.buyingPass = false;
         if (res.code !== '0') {
           this.failed = true;
           this.errorMsg = res.message;
-          console.log(this.errorMsg);
           const followDetails = { error_code: res.code };
         } else {
           const followDetails = {
@@ -110,12 +114,14 @@ export class BuyPassIllimixPage implements OnInit {
         this.goToSuccessStep();
       },
       (err: any) => {
+        this.buyingPass = false;
         this.failed = true;
         if (err.message) {
           if (err.error.status === 500) {
             this.errorMsg = 'Erreur réseau. Veuillez réessayer ultérieurement';
           } else {
-            this.errorMsg = 'Service indisponible. Veuillez réessayer ultérieurement';
+            this.errorMsg =
+              'Service indisponible. Veuillez réessayer ultérieurement';
           }
         }
         this.goToSuccessStep();
@@ -145,6 +151,7 @@ export class BuyPassIllimixPage implements OnInit {
     this.authServ.getSubscription(currentNumber).subscribe((res: any) => {
       if (res.code === CODE_KIRENE_Formule) {
         this.title = 'Acheter un  Mixel';
+        this.isKirene = true;
       }
     });
   }

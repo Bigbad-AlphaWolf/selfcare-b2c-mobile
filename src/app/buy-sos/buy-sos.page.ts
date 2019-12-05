@@ -72,7 +72,6 @@ export class BuySosPage implements OnInit {
         this.loading = false;
         const response_msg = res.message;
         const response_code = res.code;
-        console.log(res.code);
         if (response_code === '0') {
           const followDetails = {
             amount: `${amount} FCFA`,

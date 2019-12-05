@@ -1,5 +1,12 @@
-<div class="buy-pass-internet-container" [ngClass]="{ 'success-custom-style': step === 5 }">
-  <app-header *ngIf="step <= 4" [title]="title" (goBack)="goToPreviousStep()"></app-header>
+<div
+  class="buy-pass-internet-container"
+  [ngClass]="{ 'success-custom-style': step === 5 }"
+>
+  <app-header
+    *ngIf="step <= 4"
+    [title]="title"
+    (goBack)="goToPreviousStep()"
+  ></app-header>
   <div class="buy-pass-body-block">
     <ng-container *ngIf="step === 0">
       <app-choose-payment-mod
@@ -40,6 +47,7 @@
           [paymentMod]="choosedPaymentMod"
           [omRecipientFirstName]="recipientFirstName"
           [omRecipientLastName]="recipientLastName"
+          [loading]="buyingPass"
           (validate)="passInternetPurchase()"
         >
         </app-operation-validation>

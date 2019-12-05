@@ -1,144 +1,219 @@
 <div class="sargal-dashboard-container">
-	<div class="sargal-mobile-header">
-		<div class="arrow-left">
-			<img routerLink="/dashboard" src="/assets/images/arrow-left.svg" (click)="goToPreviousStep()" alt="" />
-		</div>
-		<div class="assets">
-			<span class="title">Mon Univers Sargal</span>
-			<span class="description">Vous n’avez pas encore de statut</span>
-		</div>
-	</div>
+  <div
+    class="sargal-mobile-header"
+    [ngClass]="{'sargal-mobile-header-white': sargalStatus}"
+  >
+    <div class="arrow-left">
+      <img
+        routerLink="/dashboard"
+        src="/assets/images/arrow-left.svg"
+        (click)="goToPreviousStep()"
+        alt=""
+      />
+    </div>
+    <div class="assets">
+      <span class="title">Mon Univers Sargal</span>
+      <span class="description" [ngSwitch]="sargalStatus">
+        <span *ngSwitchDefault>Vous n’avez pas encore de statut</span>
+        <span *ngSwitchCase="'GOLD'" class="status">
+          <span class="orange scb-text-orange">Orange &nbsp;</span>
+          <span class="scb-text-yellow-gold">GOLD</span>
+        </span>
+        <span *ngSwitchCase="'PLATINUM'" class="status">
+          <span class="orange scb-text-orange">Orange &nbsp;</span>
+          <span class="scb-text-grey-platinum">PLATINUM</span>
+        </span>
+      </span>
+    </div>
+  </div>
 
-	<div class="sargal-mobile-summary">
-		<div class="profile-img-container">
-			<img class="profile-img" routerLink="/login" [src]="avatarUrl" (click)="goToPreviousStep()" alt="" />
-		</div>
-		<div class="summary-assets">
-			<span class="summary-text" style="display:block;margin-bottom: 10px">Mes Points Sargal</span>
-			<div class="summary-points" style="display:block;margin-bottom: 15px" *ngIf="!sargalUnavailable">
-				<span>{{ userSargalPoints | formatCurrency }}</span>
-				<span class="points">Pts</span>
-			</div>
-			<span *ngIf="userSargalPoints" class="validity-text">Mis à jour le {{ sargalLastUpdate }}</span>
-			<span *ngIf="sargalUnavailable" class="show-solde-info-text">Service indisponible</span>
-		</div>
-	</div>
-	<div class="sargal-mobile-offers-header">
-		<div>
-			<span class="title">Je convertis</span>
-		</div>
-		<div (click)="goToCataloguePage()" class="show-catalog">
-			<span class="voir-details scb-text-orange">Voir tous les cadeaux </span>
-			<img src="/assets/images/arrow-right.svg" alt="keyboard-arrow-right-orange-mob" class="arrow-right-icon-small" />
-		</div>
-	</div>
+  <div
+    class="sargal-mobile-summary"
+    [ngClass]="{'sargal-mobile-summary-with-status': sargalStatus}"
+  >
+    <div class="informations">
+      <div class="profile-img-container">
+        <img
+          class="profile-img"
+          routerLink="/login"
+          [src]="avatarUrl"
+          (click)="goToPreviousStep()"
+          alt=""
+        />
+      </div>
+      <div class="summary-assets">
+        <span class="summary-text">Mes Points Sargal</span>
+        <div class="summary-points" *ngIf="!sargalUnavailable">
+          <span>{{ userSargalPoints | formatCurrency }} &nbsp;</span>
+          <span class="points">Pts</span>
+        </div>
+        <span *ngIf="userSargalPoints" class="validity-text"
+          >Mis à jour le {{ sargalLastUpdate }}</span
+        >
+        <span *ngIf="sargalUnavailable" class="show-solde-info-text"
+          >Service indisponible</span
+        >
+      </div>
+    </div>
+    <div
+      class="card-informations"
+      *ngIf="sargalStatus"
+      (click)="goStatusSargal()"
+    >
+      <div class="card-container">
+        <img
+          src="/assets/images/carte-gold.png"
+          alt="card"
+          *ngIf="sargalStatus==='GOLD'"
+        />
+        <img
+          src="/assets/images/carte-platinum.png"
+          alt="card"
+          *ngIf="sargalStatus==='PLATINUM'"
+        />
+      </div>
+      <div class="title-card scb-text-l-black">
+        Voir ma carte {{sargalStatus}}
+      </div>
+      <div class="arrow-container">
+        <img src="/assets/images/arrow-right.svg" alt="arrow-left" />
+      </div>
+    </div>
+  </div>
+  <div class="sargal-mobile-offers-header">
+    <div>
+      <span class="title">Je convertis</span>
+    </div>
+    <div (click)="goToCataloguePage()" class="show-catalog">
+      <span class="voir-details scb-text-orange">Voir tous les cadeaux </span>
+      <img
+        src="/assets/images/arrow-right.svg"
+        alt="keyboard-arrow-right-orange-mob"
+        class="arrow-right-icon-small"
+      />
+    </div>
+  </div>
 
-	<div class="sargal-mobile-offers">
-		<ng-container *ngIf="!dataLoaded">
-			<div class="spinner">
-				<mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
-			</div>
-		</ng-container>
-		<ng-container *ngIf="dataLoaded && !hasError">
-			<div class="sargal-mobile-offers-top3">
-				<div
-					*ngFor="let item of sargalCategories"
-					class="sargal-mobile-offers-top3-item"
-					(click)="goToCategorySargal(item.id)"
-				>
-					<div class="item-icon">
-						<img
-							src="/assets/images/recharge-credit-om-unique.svg"
-							alt="credit-mob"
-							*ngIf="item.nom.toLowerCase().includes('minutes')"
-						/>
-						<img
-							src="/assets/images/new_achat-pass-internet_mob.svg"
-							alt="credit-mob"
-							*ngIf="item.nom.toLowerCase().includes('internet')"
-						/>
-						<img
-							src="/assets/images/new_achat-pass-illimix_mob.svg"
-							alt="credit-mob"
-							*ngIf="item.nom.toLowerCase().includes('illimix')"
-						/>
-						<img
-							src="/assets/images/new_achat-de-credit_mob.svg"
-							alt="credit-mob"
-							*ngIf="item.nom.toLowerCase().includes('sms') || item.nom.toLowerCase().includes('illimité')"
-						/>
-						<img
-							src="/assets/images/bons-dachat.svg"
-							alt="credit-mob"
-							*ngIf="item.nom.toLowerCase().includes('bons')"
-						/>
-					</div>
-					<div class="item-text scb-text-item-offre-black">
-						<!-- <span class="recharger"><span class="text-style-1">En</span> minutes d'appel </span> -->
-						<span class="recharger"><span class="text-style-1">En</span> {{ item.nom }} </span>
-					</div>
-				</div>
-				<div fxFlex="29%" class="sargal-mobile-offers-top3-item disabled-block">
-					<div class="item-icon">
-						<img src="/assets/images/bons-dachat.svg" alt="bons d'achat" />
-					</div>
-					<div class="item-text scb-text-item-offre-black">
-						<span><span class="text-style-1">En</span> bons d’achat </span>
-					</div>
-				</div>
-			</div>
-			<div class="sargal-mobile-list" *ngIf="showPartners">
-				<div class="sargal-mobile-listItem">
-					<div class="sargal-mobile-listItem-star">
-						<img class="arrow-right-icon" src="/assets/images/nos-partenaires.png" alt="nos partenaires" />
-					</div>
-					<div class="sargal-mobile-favoris-text">
-						<span class="title">Liste des partenaires</span>
-					</div>
-					<div class="arrow-right">
-						<img
-							class="arrow-right-icon"
-							src="/assets/images/keyboard-arrow-right-black.svg"
-							alt="keyboard-arrow-right-orange-mob"
-						/>
-					</div>
-				</div>
-				<div class="sargal-mobile-listItem">
-					<div class="sargal-mobile-listItem-star">
-						<img class="arrow-right-icon" src="/assets/images/avantage-gold-platinum.png" alt="avantages gold icon" />
-					</div>
-					<div class="sargal-mobile-listItem-text">
-						<span class="title">Avantage gold et platinum</span>
-					</div>
-					<div class="arrow-right">
-						<img
-							class="arrow-right-icon"
-							src="/assets/images/keyboard-arrow-right-black.svg"
-							alt="keyboard-arrow-right-orange-mob"
-						/>
-					</div>
-				</div>
-				<div class="sargal-mobile-listItem">
-					<div class="sargal-mobile-listItem-star">
-						<img class="arrow-right-icon" src="/assets/images/supprimer.png" alt="keyboard-arrow-right-orange-mob" />
-					</div>
-					<div class="sargal-mobile-listItem-text">
-						<span class="title">Me désinscrire</span>
-					</div>
-					<div class="arrow-right">
-						<img
-							class="arrow-right-icon"
-							src="/assets/images/keyboard-arrow-right-black.svg"
-							alt="keyboard-arrow-right-orange-mob"
-						/>
-					</div>
-				</div>
-			</div>
-		</ng-container>
-		<ng-container *ngIf="dataLoaded && hasError">
-			<div class="error" (click)="getCategories()">
-				Une erreur s'est produite. Actualiser
-			</div>
-		</ng-container>
-	</div>
+  <div class="sargal-mobile-offers">
+    <ng-container *ngIf="!dataLoaded">
+      <div class="spinner">
+        <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="dataLoaded && !hasError">
+      <div class="sargal-mobile-offers-top3">
+        <div
+          *ngFor="let item of sargalCategories"
+          class="sargal-mobile-offers-top3-item"
+          (click)="goToCategorySargal(item.id)"
+        >
+          <div class="item-icon">
+            <img
+              src="/assets/images/recharge-credit-om-unique.svg"
+              alt="credit-mob"
+              *ngIf="item.nom.toLowerCase().includes('minutes')"
+            />
+            <img
+              src="/assets/images/new_achat-pass-internet_mob.svg"
+              alt="credit-mob"
+              *ngIf="item.nom.toLowerCase().includes('internet')"
+            />
+            <img
+              src="/assets/images/new_achat-pass-illimix_mob.svg"
+              alt="credit-mob"
+              *ngIf="item.nom.toLowerCase().includes('illimix')"
+            />
+            <img
+              src="/assets/images/new_achat-de-credit_mob.svg"
+              alt="credit-mob"
+              *ngIf="item.nom.toLowerCase().includes('sms') || item.nom.toLowerCase().includes('illimité')"
+            />
+            <img
+              src="/assets/images/bons-dachat.svg"
+              alt="credit-mob"
+              *ngIf="item.nom.toLowerCase().includes('bons')"
+            />
+          </div>
+          <div class="item-text scb-text-item-offre-black">
+            <!-- <span class="recharger"><span class="text-style-1">En</span> minutes d'appel </span> -->
+            <span class="recharger"
+              ><span class="text-style-1">En</span> {{ item.nom }}
+            </span>
+          </div>
+        </div>
+        <div fxFlex="29%" class="sargal-mobile-offers-top3-item disabled-block">
+          <div class="item-icon">
+            <img src="/assets/images/bons-dachat.svg" alt="bons d'achat" />
+          </div>
+          <div class="item-text scb-text-item-offre-black">
+            <span><span class="text-style-1">En</span> bons d’achat </span>
+          </div>
+        </div>
+      </div>
+      <div class="sargal-mobile-list" *ngIf="showPartners">
+        <div class="sargal-mobile-listItem">
+          <div class="sargal-mobile-listItem-star">
+            <img
+              class="arrow-right-icon"
+              src="/assets/images/nos-partenaires.png"
+              alt="nos partenaires"
+            />
+          </div>
+          <div class="sargal-mobile-favoris-text">
+            <span class="title">Liste des partenaires</span>
+          </div>
+          <div class="arrow-right">
+            <img
+              class="arrow-right-icon"
+              src="/assets/images/keyboard-arrow-right-black.svg"
+              alt="keyboard-arrow-right-orange-mob"
+            />
+          </div>
+        </div>
+        <div class="sargal-mobile-listItem">
+          <div class="sargal-mobile-listItem-star">
+            <img
+              class="arrow-right-icon"
+              src="/assets/images/avantage-gold-platinum.png"
+              alt="avantages gold icon"
+            />
+          </div>
+          <div class="sargal-mobile-listItem-text">
+            <span class="title">Avantage gold et platinum</span>
+          </div>
+          <div class="arrow-right">
+            <img
+              class="arrow-right-icon"
+              src="/assets/images/keyboard-arrow-right-black.svg"
+              alt="keyboard-arrow-right-orange-mob"
+            />
+          </div>
+        </div>
+        <div class="sargal-mobile-listItem">
+          <div class="sargal-mobile-listItem-star">
+            <img
+              class="arrow-right-icon"
+              src="/assets/images/supprimer.png"
+              alt="keyboard-arrow-right-orange-mob"
+            />
+          </div>
+          <div class="sargal-mobile-listItem-text">
+            <span class="title">Me désinscrire</span>
+          </div>
+          <div class="arrow-right">
+            <img
+              class="arrow-right-icon"
+              src="/assets/images/keyboard-arrow-right-black.svg"
+              alt="keyboard-arrow-right-orange-mob"
+            />
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="dataLoaded && hasError">
+      <div class="error" (click)="getCategories()">
+        Une erreur s'est produite. Actualiser
+      </div>
+    </ng-container>
+  </div>
 </div>

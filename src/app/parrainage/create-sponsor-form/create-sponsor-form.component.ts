@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { REGEX_NUMBER, formatPhoneNumber } from 'src/shared';
+import { REGEX_NUMBER, formatPhoneNumber, REGEX_NAME } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { ParrainageService } from 'src/app/services/parrainage-service/parrainage.service';
 import { Contacts, Contact } from '@ionic-native/contacts';
@@ -34,7 +34,7 @@ export class CreateSponsorFormComponent implements OnInit {
         '',
         [Validators.required, Validators.pattern(REGEX_NUMBER)]
       ],
-      firstname: ['', [Validators.pattern('[a-zA-Z ]*')]]
+      firstname: ['', [Validators.pattern(REGEX_NAME)]]
     });
   }
 

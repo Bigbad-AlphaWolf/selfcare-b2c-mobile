@@ -30,14 +30,10 @@ export class CheckNumberPage implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private authServ: AuthenticationService,
-    private dashbServ: DashboardService,
     private reCaptchaV3Service: ReCaptchaV3Service
   ) {
     this.form = this.fb.group({
-      username: [
-        this.subscribedNumber,
-        [Validators.required, Validators.pattern(REGEX_NUMBER)]
-      ]
+      username: [this.subscribedNumber, [Validators.required, Validators.pattern(REGEX_NUMBER)]]
     });
   }
 
@@ -63,28 +59,25 @@ export class CheckNumberPage implements OnInit {
         this.token = tokenResp;
         // call backend to check phone number
         this.setRegistrationInformation(phoneNumber);
-        this.checkNumberSubscription = this.authServ
-          .checkUserStatus(phoneNumber, this.token)
-          .subscribe(
-            (resp: any) => {
-              // Go to registration page
-              this.loading = false;
-              this.router.navigate(['/code-otp']);
-            },
-            (err: any) => {
-              console.log(err);
-              this.loading = false;
-              //  && err.error && err.error.errorKey === 'userexists'
-              if (err.status === 400) {
-                // Go to login page
-                this.router.navigate(['/login']);
-              } else {
-                this.showErrMessage = true;
-                this.errorMsg =
-                  'Oups!!! Une erreur est survenue, veuillez réessayer plus tard. Merci';
-              }
+        this.checkNumberSubscription = this.authServ.checkUserStatus(phoneNumber, this.token).subscribe(
+          (resp: any) => {
+            // Go to registration page
+            this.loading = false;
+            this.router.navigate(['/code-otp']);
+          },
+          (err: any) => {
+            console.log(err);
+            this.loading = false;
+            //  && err.error && err.error.errorKey === 'userexists'
+            if (err.status === 400) {
+              // Go to login page
+              this.router.navigate(['/login']);
+            } else {
+              this.showErrMessage = true;
+              this.errorMsg = 'Oups!!! Une erreur est survenue, veuillez réessayer plus tard. Merci';
             }
-          );
+          }
+        );
       },
       {
         useGlobalDomain: false

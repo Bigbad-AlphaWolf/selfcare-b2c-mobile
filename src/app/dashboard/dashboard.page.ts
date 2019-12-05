@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   PROFILE_TYPE_PREPAID,
   PROFILE_TYPE_HYBRID,
@@ -19,14 +19,16 @@ import { ParrainageService } from '../services/parrainage-service/parrainage.ser
 import { WelcomeStatusModel } from 'src/shared';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 const ls = new SecureLS({ encodingType: 'aes' });
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss']
 })
-export class DashboardPage implements OnInit {
+export class DashboardPage implements OnInit, OnDestroy {
   userSubscription;
   opened = false;
   userInfos: any = {};
@@ -121,5 +123,9 @@ export class DashboardPage implements OnInit {
       width: '330px',
       maxWidth: '100%'
     });
+  }
+
+  ngOnDestroy() {
+
   }
 }

@@ -38,6 +38,7 @@
     "@ionic-native/status-bar": "^5.0.0",
     "@ionic/angular": "^4.1.0",
     "com.telerik.plugins.nativepagetransitions": "^0.6.5",
+    "cordova-android": "7.0.0",
     "cordova-android-firebase-gradle-release": "^4.0.0",
     "cordova-plugin-advanced-http": "^2.2.0",
     "cordova-plugin-appminimize": "^1.0.1",
@@ -56,6 +57,7 @@
     "core-js": "^2.5.4",
     "es6-promise-plugin": "^4.2.2",
     "jwt-decode": "^2.2.0",
+    "ngx-auto-unsubscribe": "^3.0.1",
     "ngx-captcha": "^7.0.0",
     "ngx-clipboard": "^12.2.0",
     "rxjs": "~6.5.1",
@@ -145,6 +147,8 @@
       "cordova-plugin-x-socialsharing": {},
       "cordova-plugin-appminimize": {}
     },
-    "platforms": []
+    "platforms": [
+      "android"
+    ]
   }
 }

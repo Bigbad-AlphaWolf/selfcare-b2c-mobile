@@ -1,0 +1,68 @@
+<div class="sargal-status-card-page">
+  <app-header (goBack)="goBack()" [title]="title"> </app-header>
+  <div class="body">
+    <div class="spinner" *ngIf="loadingStatus">
+      <mat-spinner mode="indeterminate" [diameter]="50"></mat-spinner>
+    </div>
+    <div class="error scb-text-red-error" *ngIf="hasError">
+      N'a pas pu charger le statut sargal.
+      <span (click)="getCustomerSargalStatus()">Cliquez pour recharger</span>
+    </div>
+    <div class="data-informations" *ngIf="sargalStatus">
+      <div class="arc-div">
+        <img
+          class="img-gold"
+          src="/assets/images/img-gold.png"
+          alt=""
+          *ngIf="sargalStatus === 'GOLD'"
+        />
+        <img
+          class="img-gold"
+          src="/assets/images/img-platinum.png"
+          alt=""
+          *ngIf="sargalStatus !== 'GOLD'"
+        />
+        <div class="card-container">
+          <div class="img-container">
+            <img
+              src="/assets/images/carte-gold.png"
+              alt=""
+              *ngIf="sargalStatus === 'GOLD'"
+            />
+            <img
+              src="/assets/images/carte-platinum.png"
+              alt=""
+              *ngIf="sargalStatus !== 'GOLD'"
+            />
+            <div
+              class="infos"
+              [ngClass]="{'infos-platinum': sargalStatus !== 'GOLD'}"
+            >
+              <div class="name scb-text-orange">{{name}}</div>
+              <div class="tel scb-text-white">
+                {{currentNumber | phoneNumberDisplay}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="informations">
+        <div class="title">Accédez à un monde de privilèges</div>
+        <div class="text scb-text-dark-grey">
+          <ul>
+            <li>Accès prioritaire 1441</li>
+            <li>
+              Réduction et avantages chez plus de 70 partenaires à Dakar et en
+              régions.
+            </li>
+          </ul>
+        </div>
+        <div class="description">
+          Carte valable jusqu’au 31 décembre 2019 Cette carte est la propriété
+          d’Orange. Scanner le QR code ci dessous pour vérifier son
+          authenticité.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

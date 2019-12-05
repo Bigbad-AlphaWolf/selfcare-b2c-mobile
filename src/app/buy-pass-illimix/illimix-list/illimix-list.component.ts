@@ -1,15 +1,19 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { Router } from '@angular/router';
 import { PassIllimixService } from 'src/app/services/pass-illimix-service/pass-illimix.service';
 import { getListPassFilteredByLabelAndPaymentMod } from 'src/shared';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-illimix-list',
   templateUrl: './illimix-list.component.html',
   styleUrls: ['./illimix-list.component.scss']
 })
-export class IllimixListComponent implements OnInit {
+export class IllimixListComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
   @Input() paymentMode: string;
   @Output() passToStepValidation = new EventEmitter();
   selectedCategory: string;
@@ -36,6 +40,7 @@ export class IllimixListComponent implements OnInit {
 
   getListPassIllimix() {
     this.passIllimixService.setListPassIllimix();
+    this.subscriptions.push(
     this.passIllimixService
       .getStatusLoadingPass()
       .subscribe((status: boolean) => {
@@ -46,7 +51,8 @@ export class IllimixListComponent implements OnInit {
           this.listCategory = this.passIllimixService.getCategoryListPassIllimix();
           this.selectedCategory = this.listCategory[0];
         }
-      });
+      })
+      );
   }
 
   goToActivationPage() {
@@ -72,4 +78,8 @@ export class IllimixListComponent implements OnInit {
     }
     this.passToStepValidation.emit(data);
   }
+
+ngOnDestroy() {
 }
+}
+

@@ -7,7 +7,7 @@ import {
 import * as SecureLS from 'secure-ls';
 import { HTTP } from '@ionic-native/http/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
-export const REGEX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(7[7-8]{1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
+export const REGEX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
 export const REGEX_NUMBER_OM: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
 export const REGEX_FIX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(33) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
 export const REGEX_PASSWORD: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$/;
@@ -308,7 +308,8 @@ export function getListPassFilteredByLabelAndPaymentMod(
   selectedLabel: string,
   listPass: (
     | (PassInfoModel | PromoPassModel)
-    | (PassIllimModel | PromoPassIllimModel))[],
+    | (PassIllimModel | PromoPassIllimModel)
+  )[],
   paymentMod: string
 ) {
   let listPassFiltered = [];
@@ -558,7 +559,12 @@ export interface WelcomeStatusModel {
   status: string;
   type: string; // 'RECHARGE' or 'PASS'
   value: {
-      amount: number;
-      unit: string;
+    amount: number;
+    unit: string;
   };
+}
+
+export interface SargalStatusModel {
+  valid: boolean;
+  profilClient: string;
 }

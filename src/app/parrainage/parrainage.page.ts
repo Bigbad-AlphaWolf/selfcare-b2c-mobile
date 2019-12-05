@@ -64,6 +64,8 @@ export class ParrainagePage implements OnInit {
       enabled: true
     }
   ];
+  effectiveNumber = 0;
+  notEffectiveNumber = 0;
   constructor(
     public dialog: MatDialog,
     public modalController: ModalController,
@@ -83,12 +85,21 @@ export class ParrainagePage implements OnInit {
         this.loadingSponsees = false;
         this.listSponsee = sponsees;
         this.listSponseeShown = sponsees;
+        this.getEffectiveNumber();
       },
       err => {
         this.loadingSponsees = false;
         this.hasLoadingError = true;
       }
     );
+  }
+
+  getEffectiveNumber() {
+    this.effectiveNumber = 0;
+    this.notEffectiveNumber = 0;
+    this.listSponsee.forEach((sponsee: SponseeModel) => {
+      sponsee.effective ? this.effectiveNumber++ : this.notEffectiveNumber++;
+    });
   }
 
   async presentModal() {

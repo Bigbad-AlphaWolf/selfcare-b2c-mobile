@@ -3,8 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Subject, of, Observable } from 'rxjs';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { environment } from 'src/environments/environment';
-import { GiftSargalItem, GiftSargalCategoryItem, SubscriptionModel } from 'src/shared';
+import {
+  GiftSargalItem,
+  GiftSargalCategoryItem,
+  SubscriptionModel
+} from 'src/shared';
 import { AuthenticationService } from '../authentication-service/authentication.service';
+import { delay } from 'rxjs/operators';
 
 const { SARGAL_SERVICE, SERVER_API_URL } = environment;
 
@@ -15,6 +20,7 @@ const listSargalGiftsByCategoryEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/a
 const listAllSargalGiftsEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/gift-sargals-by-formule`;
 const convertGiftEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/loyaltypoints-gift`;
 const registerSargalEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/suscribe`;
+const customerSargalStatusEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/client-sargals-profile`;
 @Injectable({
   providedIn: 'root'
 })
@@ -84,33 +90,41 @@ export class SargalService {
     this.dataLoadedSubject.next(false);
     this.listGiftSargal = [];
     this.listCategoryGiftSargal = [];
-    this.authServ.getSubscription(this.userPhoneNumber).subscribe((res: SubscriptionModel) => {
-      if (res && res.code && res.profil) {
-        this.getAllGiftSargalUser(res.code).subscribe(
-          (resp: any[]) => {
-            this.listGiftSargal = resp.filter((item: GiftSargalItem) => {
-              if (item) {
-                return item;
-              }
-            });
-            // Order by asc price giftSargal by default
-            this.listGiftSargal.sort((item1: GiftSargalItem, item2: GiftSargalItem) => +item1.prix - +item2.prix);
-            this.querySargalGiftCategories().subscribe(
-              (listCategory: GiftSargalCategoryItem[]) => {
-                this.listCategoryGiftSargal = listCategory;
-                this.dataLoadedSubject.next(true);
-              },
-              (err: any) => {}
-            );
-          },
-          () => {
-            this.dataLoadedSubject.next(true);
-          }
-        );
-      }
-    });
+    this.authServ
+      .getSubscription(this.userPhoneNumber)
+      .subscribe((res: SubscriptionModel) => {
+        if (res && res.code && res.profil) {
+          this.getAllGiftSargalUser(res.code).subscribe(
+            (resp: any[]) => {
+              this.listGiftSargal = resp.filter((item: GiftSargalItem) => {
+                if (item) {
+                  return item;
+                }
+              });
+              // Order by asc price giftSargal by default
+              this.listGiftSargal.sort(
+                (item1: GiftSargalItem, item2: GiftSargalItem) =>
+                  +item1.prix - +item2.prix
+              );
+              this.querySargalGiftCategories().subscribe(
+                (listCategory: GiftSargalCategoryItem[]) => {
+                  this.listCategoryGiftSargal = listCategory;
+                  this.dataLoadedSubject.next(true);
+                },
+                (err: any) => {}
+              );
+            },
+            () => {
+              this.dataLoadedSubject.next(true);
+            }
+          );
+        }
+      });
   }
-  filterGiftItemByCategory(category: GiftSargalCategoryItem, listGiftSargal: GiftSargalItem[]) {
+  filterGiftItemByCategory(
+    category: GiftSargalCategoryItem,
+    listGiftSargal: GiftSargalItem[]
+  ) {
     let res;
     if (category) {
       res = listGiftSargal.filter((item: GiftSargalItem) => {
@@ -120,7 +134,11 @@ export class SargalService {
     return res ? res : listGiftSargal;
   }
 
-  getGiftSargalItemsByCategory(codeCategory: any, codeFormule: string, ordre: string) {
+  getGiftSargalItemsByCategory(
+    codeCategory: any,
+    codeFormule: string,
+    ordre: string
+  ) {
     return this.http.get(
       `${listSargalGiftsByCategoryEndpoint}/formule/${codeFormule}/categorie/${codeCategory}?ordre=${ordre}`
     );
@@ -136,5 +154,10 @@ export class SargalService {
   }
   registerToSargal(msisdn: string) {
     return this.http.post(`${registerSargalEndpoint}/${msisdn}`, null);
+  }
+  getCustomerSargalStatus() {
+    const msisdn = this.dashbService.getCurrentPhoneNumber();
+    // return of({ valid: true, profilClient: 'GOLD' }).pipe(delay(5000));
+    return this.http.get(`${customerSargalStatusEndpoint}/${msisdn}`);
   }
 }

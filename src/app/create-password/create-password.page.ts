@@ -70,26 +70,22 @@ export class CreatePasswordPage implements OnInit {
   }
 
   goSuccess(pwd: string) {
+    this.loading = true;
     this.userInfo.password = pwd;
     this.authServ.registerUser(this.userInfo).subscribe(
       () => {
-        // Show success popup
-        // Login automatically
         this.registrationSuccess = true;
+        this.loading = false;
       },
       (err: any) => {
+        this.loading = false;
         const { status, error } = err;
         this.showErrMessage = true;
-        if (status === 400) {
+        if (status === 400 && error.title) {
           // bad input
-          if (error.fieldErrors) {
-            const errorsMsgs = error.fieldErrors.map((x: any) => x.message);
-            this.errorMsg = errorsMsgs.join(' ');
-          } else if (error.message === 'error.userexists') {
-            this.errorMsg = error.title;
-          } else {
-            this.errorMsg = err;
-          }
+          this.errorMsg = error.title;
+        } else {
+          this.errorMsg = 'Une erreur est survenue';
         }
       }
     );

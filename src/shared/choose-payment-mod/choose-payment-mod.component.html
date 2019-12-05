@@ -5,24 +5,36 @@
       <div (click)="setCreditPaymentMod()" class="pay-mode pay-mode-credit">
         <div class="pay-mode-container">
           <div class="pay-mode-container-icon">
-            <img src="/assets/images/pass-internet-by-credit.svg" class="icon" alt="pass-internet-by-credit" />
+            <img
+              src="/assets/images/pass-internet-by-credit.svg"
+              class="icon"
+              alt="pass-internet-by-credit"
+            />
           </div>
           <div class="pay-mode-container-text">
-            <span class="text">Avec mon <span class="text-style-1"> crédit </span> </span>
+            <span class="text"
+              >Avec mon <span class="text-style-1"> crédit </span>
+            </span>
           </div>
         </div>
       </div>
       <div (click)="setOMPaymentMod()" class="pay-mode pay-mode-om">
         <div class="pay-mode-container">
           <div class="pay-mode-container-icon">
-            <img src="/assets/images/pass-internet-by-om.svg" class="icon" alt="pass-internet-by-credit" />
+            <img
+              src="/assets/images/pass-internet-by-om.svg"
+              class="icon"
+              alt="pass-internet-by-credit"
+            />
           </div>
           <div class="pay-mode-container-text">
-            <span class="text">Par <span class="text-style-1"> Orange Money </span></span>
+            <span class="text"
+              >Par <span class="text-style-1"> Orange Money </span></span
+            >
           </div>
         </div>
 
-        <div class="pay-mode-bonus" *ngIf="!illimix">
+        <div class="pay-mode-bonus" *ngIf="0">
           <span class="text scb-text-white">+ 25% de Bonus Internet </span>
         </div>
       </div>
