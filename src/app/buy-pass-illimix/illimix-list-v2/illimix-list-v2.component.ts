@@ -11,6 +11,7 @@ import { getListPassFilteredByLabelAndPaymentMod } from 'src/shared';
 })
 export class IllimixListV2Component implements OnInit {
   @Input() paymentMode: string;
+  @Input() destinataire: string;
   @Output() passToStepValidation = new EventEmitter();
   selectedCategory: string;
   listCategory = [];
@@ -28,7 +29,7 @@ export class IllimixListV2Component implements OnInit {
 
   ngOnInit() {
     // this.getListPassIllimix();
-    const userPhoneNumber = this.dashbServ.getCurrentPhoneNumber();
+    const userPhoneNumber = this.destinataire ? this.destinataire : this.dashbServ.getCurrentPhoneNumber();
     this.passIllimixService.setPhoneNumber(userPhoneNumber);
     this.passIllimixService.setPaymentMod(this.paymentMode);
     this.getListPassIllimix();

@@ -244,24 +244,22 @@ export class DashboardService {
   }
 
   buyPassByCredit(payload: BuyPassModel) {
-    const { codeIN, type, amount } = payload;
-    const msisdn = this.getCurrentPhoneNumber();
-    const reqPayload = { msisdn, codeIN, amount };
-    switch (type) {
-      case 'illimix':
-        return this.http.post(buyPassIllimixByCreditEndpoint, reqPayload);
-        break;
-      case 'internet':
-        return this.http.post(buyPassInternetByCreditEndpoint, reqPayload);
-        break;
-      default:
-        break;
+    const { msisdn, receiver, codeIN, amount } = payload;
+    const params = { msisdn, receiver, codeIN, amount };
+    switch (payload.type) {
+        case 'internet':
+            if (msisdn === receiver) {
+                return this.http.post(buyPassInternetByCreditEndpoint, params);
+            } else {
+                return this.http.post(buyPassInternetForSomeoneByCreditEndpoint, params);
+            }
+        case 'illimix':
+            return this.http.post(buyPassIllimixByCreditEndpoint, params);
+        default:
+            break;
     }
-  }
+}
 
-  buyPassByCreditForSomeone(objectParam: BuyPassInternetModel) {
-    return this.http.post(buyPassInternetForSomeoneByCreditEndpoint, objectParam);
-  }
 
   transferBonus(transfertbonnus: TransfertBonnus) {
     return this.http.post(`${transferbonusEndpoint}`, transfertbonnus);

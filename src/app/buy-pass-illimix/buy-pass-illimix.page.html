@@ -15,16 +15,28 @@
         (paymentMod)="nextStepOfPaymentMod($event)"
       ></app-choose-payment-mod>
     </ng-container>
-
     <ng-container *ngIf="step === 1">
+      <app-select-recipient
+        *ngIf="currentProfil !== PROFILE_TYPE_POSTPAID"
+        (getDestinataire)="nextStepOfSelectDest($event)"
+        (getContact)="contactGot($event)"
+      ></app-select-recipient>
+      <app-select-other-recipient
+        (nextStepEmitter)="nextStepOfSelectDest($event)"
+        *ngIf="currentProfil === PROFILE_TYPE_POSTPAID"
+        [type]="'pass'"
+      ></app-select-other-recipient>
+    </ng-container>
+    <ng-container *ngIf="step === 2">
       <app-illimix-list-v2
+        [destinataire]="destNumber"
         [paymentMode]="choosedPaymentMod"
         (passToStepValidation)="passDataToStepValidation($event)"
       >
       </app-illimix-list-v2>
     </ng-container>
 
-    <ng-container *ngIf="step === 2">
+    <ng-container *ngIf="step === 3">
       <app-operation-validation
         [operationType]="OPERATION_TYPE_PASS_ILLIMIX"
         [recipient]="destNumber"
@@ -37,7 +49,7 @@
       ></app-operation-validation>
     </ng-container>
 
-    <ng-container *ngIf="step === 3">
+    <ng-container *ngIf="step === 4">
       <app-activation-om
         [operation]="OPERATION_TYPE_PASS_ILLIMIX"
         [passToBuy]="passIllimixChoosed"
@@ -45,14 +57,17 @@
       ></app-activation-om>
     </ng-container>
 
-    <ng-container *ngIf="step === 4">
+    <ng-container *ngIf="step === 5">
       <app-operation-success-or-fail
         [operationType]="OPERATION_TYPE_PASS_ILLIMIX"
         [errorMessage]="errorMsg"
-        [recipient]="recipient"
+        [recipient]="destNumber"
         [failed]="failed"
         [passIntChosen]="passIllimixDetails"
         (newOperation)="returnToTheBeginning()"
+        [buyForMe]="destNumber === currentUserNumber"
+        [recipientFirstName]="recipientLastName"
+        [recipientLastName]="recipientFirstName"
       >
       </app-operation-success-or-fail>
     </ng-container>

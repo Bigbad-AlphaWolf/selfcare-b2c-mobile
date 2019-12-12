@@ -11,6 +11,7 @@ import {
 } from 'src/shared';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
+import { BuyPassModel } from '../services/dashboard-service';
 declare var FollowAnalytics: any;
 @Component({
   selector: 'app-buy-pass-internet',
@@ -97,8 +98,8 @@ export class BuyPassInternetPage implements OnInit {
   }
 
   nextStepOfSelectDest(destNumber: string) {
+    this.destinataire = destNumber;    
     this.goToNextStep();
-    this.destinataire = destNumber;
     if (typeof FollowAnalytics !== 'undefined') {
       if (destNumber !== this.currentUserNumber) {
         FollowAnalytics.logEvent('Pass_Internet_ChoixDestinataire', destNumber);
@@ -122,36 +123,14 @@ export class BuyPassInternetPage implements OnInit {
     this.goToNextStep();
   }
 
-  payWithCredit() {
-    if (this.destinataire !== this.currentUserNumber) {
-      this.buyPassByCreditForSomeone();
-    } else {
-      this.buyPassByCreditForMyself();
-    }
-  }
-
-  buyPassByCreditForMyself() {
+  buyPassByCredit() {
     this.buyingPass = true;
     const codeIN = this.purchasePass.pass.price_plan_index;
     const amount = +this.purchasePass.pass.tarif;
-    const type = 'internet';
-    const payload = { type, codeIN, amount };
+    const msisdn = this.currentUserNumber;
+    const receiver = this.destinataire;
+    const payload: BuyPassModel = { type: 'internet', codeIN, amount, msisdn, receiver };
     this.dashServ.buyPassByCredit(payload).subscribe(
-      (res: any) => {
-        this.transactionSuccessful(res);
-      },
-      err => {
-        this.transactionFailure();
-      }
-    );
-  }
-  buyPassByCreditForSomeone() {
-    this.buyingPass = true;
-    const pricePlanIndex = this.purchasePass.pass.price_plan_index;
-    const paymentDN = this.currentUserNumber;
-    const receiveDN = this.destinataire;
-    const param = { paymentDN, receiveDN, pricePlanIndex };
-    this.dashServ.buyPassByCreditForSomeone(param).subscribe(
       (res: any) => {
         this.transactionSuccessful(res);
       },
@@ -164,7 +143,7 @@ export class BuyPassInternetPage implements OnInit {
   passInternetPurchase() {
     if (this.choosedPaymentMod === PAYMENT_MOD_CREDIT) {
       // Make request for buying pass with credit
-      this.payWithCredit();
+      this.buyPassByCredit();
     } else {
       this.goToNextStep();
     }
@@ -178,10 +157,6 @@ export class BuyPassInternetPage implements OnInit {
 
   goToNextStep() {
     this.step++;
-    // Avoid recipint choice step
-    if (this.step === 1) {
-      this.step++;
-    }
   }
 
   goToFinalStep() {
@@ -195,15 +170,7 @@ export class BuyPassInternetPage implements OnInit {
       (this.currentProfil === PROFILE_TYPE_POSTPAID && previousStep === 0)
     ) {
       this.goToDashboardPage();
-    } else if (this.step === 2) {
-      // Avoid recipint choice step
-      this.step = 0;
-    } else if (
-      (this.choosedPaymentMod === PAYMENT_MOD_CREDIT && this.step === 2) ||
-      this.passsFavorisChoosen
-    ) {
-      this.step = 0;
-    } else {
+    }else {
       this.step = previousStep;
     }
   }
