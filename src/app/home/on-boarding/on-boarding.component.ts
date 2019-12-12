@@ -63,6 +63,6 @@ export class OnBoardingComponent implements OnInit {
     this.sliders.slideNext();
   }
   goToCheckNumberPage() {
-    this.router.navigate(['/check-number']);
+    this.router.navigate(['/new-registration']);
   }
 }

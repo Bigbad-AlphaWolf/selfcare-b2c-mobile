@@ -158,4 +158,5 @@
     <plugin name="cordova-plugin-advanced-http" spec="^2.2.0">
         <variable name="OKHTTP_VERSION" value="3.10.0" />
     </plugin>
+    <engine name="android" spec="7.0.0" />
 </widget>

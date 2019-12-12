@@ -16,7 +16,9 @@ const {
   SERVER_API_URL,
   ACCOUNT_MNGT_SERVICE,
   CODE_OTP_SERVICE,
-  CONSO_SERVICE
+  CONSO_SERVICE,
+  GET_MSISDN_BY_NETWORK_URL,
+  CONFIRM_MSISDN_BY_NETWORK_URL
 } = environment;
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -38,6 +40,11 @@ const captchaEndpoint = `${SERVER_API_URL}/auth/captcha`;
 const otpBaseUrl = `${SERVER_API_URL}/${CODE_OTP_SERVICE}/api/code-otp-infos`;
 const generateCodeOtpEndpoint = `${otpBaseUrl}/generate`;
 const checkCodeOtpEndpoint = `${otpBaseUrl}/check`;
+
+// new registrations endpoint
+const checkNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/check_number`;
+const registerEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/register`;
+const resetPwdEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account/b2c/reset-password`;
 
 @Injectable({
   providedIn: 'root'
@@ -256,6 +263,28 @@ export class AuthenticationService {
       return null;
     }
   }
+
+  getMsisdnByNetwork() {
+    // return of({ msisdn: '775896287' }).pipe(delay(2000));
+    return this.http.get(GET_MSISDN_BY_NETWORK_URL);
+  }
+
+  confirmMsisdnByNetwork(msisdn: string) {
+    // return of({ msisdn: '775896287', status: true, hmac: '' }).pipe(delay(2000));
+    return this.http.get(`${CONFIRM_MSISDN_BY_NETWORK_URL}/${msisdn}`);
+  }
+
+  checkNumber(checkNumberPayload: { msisdn: string; hmac: string }) {
+    return this.http.post(checkNumberEndpoint, checkNumberPayload);
+  }
+
+  register(registerPayload: RegistrationModel) {
+    return this.http.post(registerEndpoint, registerPayload);
+  }
+
+  resetPassword(resetPwdPayload: ResetPwdModel) {
+    return this.http.post(resetPwdEndpoint, resetPwdPayload);
+  }
 }
 
 export interface RegistrationData {
@@ -264,4 +293,25 @@ export interface RegistrationData {
   lastName: string;
   login: string;
   password: string;
+}
+
+export interface RegistrationModel {
+  email: string;
+  firstName: string;
+  lastName: string;
+  login: string;
+  password: string;
+  hmac: string;
+}
+
+export interface ConfirmMsisdnModel {
+  hmac: string;
+  msisdn: string;
+  status: boolean;
+}
+
+export interface ResetPwdModel {
+  newPassword: string;
+  hmac: string;
+  login: string;
 }

@@ -42,6 +42,7 @@ export class OperationSuccessOrFailComponent implements OnInit {
   @Input() recipientLastName: string;
   @Input() errorMessage: string;
   @Input() giftSargal: GiftSargalItem;
+  @Input() isKirene: boolean;
 
   @Output() newOperation = new EventEmitter();
   OPERATION_TYPE_PASS_INTERNET = OPERATION_TYPE_PASS_INTERNET;
