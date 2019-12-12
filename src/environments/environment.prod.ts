@@ -18,5 +18,9 @@ export const environment = {
   GA_CONFIG: {
     trackingId: 'UA-92621294-1',
     trackPageviews: true
-  }
+  },
+  GET_MSISDN_BY_NETWORK_URL:
+    'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
+  CONFIRM_MSISDN_BY_NETWORK_URL:
+    'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn'
 };
