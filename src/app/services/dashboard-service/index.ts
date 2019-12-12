@@ -14,6 +14,8 @@ export interface BuyPassModel {
   codeIN: string;
   type: string;
   amount: number;
+  msisdn: string;
+  receiver: string;
 }
 
 export interface BuyPassInternetModel {

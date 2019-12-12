@@ -15,7 +15,7 @@
       ></app-choose-payment-mod>
     </ng-container>
 
-    <ng-container *ngIf="step === 10000">
+    <ng-container *ngIf="step === 1">
       <app-select-recipient
         *ngIf="currentProfil !== PROFILE_TYPE_POSTPAID"
         (getDestinataire)="nextStepOfSelectDest($event)"

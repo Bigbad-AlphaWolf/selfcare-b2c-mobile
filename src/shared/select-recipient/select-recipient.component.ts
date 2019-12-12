@@ -106,7 +106,9 @@ export class SelectRecipientComponent implements OnInit {
           this.showErrorMsg = true;
         } else {
           this.getDestinataire.emit(this.destNumber);
-          this.getContact.emit(this.contactInfos);
+          if(this.contactInfos){
+            this.getContact.emit(this.contactInfos);
+          }
         }
       });
   }
