@@ -152,7 +152,8 @@ export class AccountService {
   launchInProgressPage() {
     this.dialog.open(InProgressPopupComponent, {
       width: '330px',
-      maxWidth: '100%'
+      maxWidth: '100%',
+      hasBackdrop: true
     });
   }
 }
