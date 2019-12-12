@@ -56,6 +56,7 @@
     "cordova.plugin.followanalytics": "file:fa-sdk-cordova",
     "core-js": "^2.5.4",
     "es6-promise-plugin": "^4.2.2",
+    "fingerprintjs2": "^2.1.0",
     "jwt-decode": "^2.2.0",
     "ngx-auto-unsubscribe": "^3.0.1",
     "ngx-captcha": "^7.0.0",

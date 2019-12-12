@@ -26,7 +26,8 @@ const routes: Routes = [
   },
   {
     path: 'buy-pass-internet',
-    loadChildren: './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
+    loadChildren:
+      './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
     canActivate: [AuthGuard]
   },
   {
@@ -44,7 +45,8 @@ const routes: Routes = [
   },
   {
     path: 'buy-pass-illimix',
-    loadChildren: './buy-pass-illimix/buy-pass-illimix.module#BuyPassIllimixPageModule'
+    loadChildren:
+      './buy-pass-illimix/buy-pass-illimix.module#BuyPassIllimixPageModule'
   },
   {
     path: 'buy-sos',
@@ -52,7 +54,8 @@ const routes: Routes = [
   },
   {
     path: 'transfer/:type',
-    loadChildren: './transfer-credit-bonus-om/transfer-credit-bonus-om.module#TransferCreditBonusOmPageModule'
+    loadChildren:
+      './transfer-credit-bonus-om/transfer-credit-bonus-om.module#TransferCreditBonusOmPageModule'
   },
   {
     path: 'control-center',
@@ -64,11 +67,13 @@ const routes: Routes = [
   },
   {
     path: 'change-main-phone-number',
-    loadChildren: './change-main-phone-number/change-main-phone-number.module#ChangeMainPhoneNumberPageModule'
+    loadChildren:
+      './change-main-phone-number/change-main-phone-number.module#ChangeMainPhoneNumberPageModule'
   },
   {
     path: 'new-number',
-    loadChildren: './add-new-phone-number/add-new-phone-number.module#AddNewPhoneNumberPageModule'
+    loadChildren:
+      './add-new-phone-number/add-new-phone-number.module#AddNewPhoneNumberPageModule'
   },
   {
     path: 'my-formule',
@@ -80,34 +85,70 @@ const routes: Routes = [
   },
   {
     path: 'sargal-catalogue',
-    loadChildren: './sargal/components/sargal-catalogue/sargal-catalogue.module#SargalCataloguePageModule'
+    loadChildren:
+      './sargal/components/sargal-catalogue/sargal-catalogue.module#SargalCataloguePageModule'
   },
   { path: 'bills', loadChildren: './bills/bills.module#BillsPageModule' },
   {
     path: 'check-number',
     loadChildren: './check-number/check-number.module#CheckNumberPageModule'
   },
-  { path: 'code-otp', loadChildren: './code-otp/code-otp.module#CodeOtpPageModule' },
-  { path: 'create-password', loadChildren: './create-password/create-password.module#CreatePasswordPageModule' },
-  { path: 'assistance', loadChildren: './assistance/assistance.module#AssistancePageModule' },
+  {
+    path: 'code-otp',
+    loadChildren: './code-otp/code-otp.module#CodeOtpPageModule'
+  },
+  {
+    path: 'create-password',
+    loadChildren:
+      './create-password/create-password.module#CreatePasswordPageModule'
+  },
+  {
+    path: 'assistance',
+    loadChildren: './assistance/assistance.module#AssistancePageModule'
+  },
   {
     path: 'forgotten-password',
-    loadChildren: './forgotten-password/forgotten-password.module#ForgottenPasswordPageModule'
+    loadChildren:
+      './forgotten-password/forgotten-password.module#ForgottenPasswordPageModule'
   },
   {
     path: 'sargal-registration',
-    loadChildren: './sargal/components/sargal-registration/sargal-registration.module#SargalRegistrationPageModule'
+    loadChildren:
+      './sargal/components/sargal-registration/sargal-registration.module#SargalRegistrationPageModule'
   },
-  { path: 'contact-us', loadChildren: './assistance/containers/contact-us/contact-us.module#ContactUsPageModule' },  { path: 'apropos', loadChildren: './apropos/apropos.module#AproposPageModule' },
-  { path: 'infolegales', loadChildren: './infolegales/infolegales.module#InfolegalesPageModule' },
-  { path: 'parrainage', loadChildren: './parrainage/parrainage.module#ParrainagePageModule' },
-  { path: 'sargal-status-card', loadChildren: './sargal-status-card/sargal-status-card.module#SargalStatusCardPageModule' }
-
-
+  {
+    path: 'contact-us',
+    loadChildren:
+      './assistance/containers/contact-us/contact-us.module#ContactUsPageModule'
+  },
+  {
+    path: 'apropos',
+    loadChildren: './apropos/apropos.module#AproposPageModule'
+  },
+  {
+    path: 'infolegales',
+    loadChildren: './infolegales/infolegales.module#InfolegalesPageModule'
+  },
+  {
+    path: 'parrainage',
+    loadChildren: './parrainage/parrainage.module#ParrainagePageModule'
+  },
+  {
+    path: 'sargal-status-card',
+    loadChildren:
+      './sargal-status-card/sargal-status-card.module#SargalStatusCardPageModule'
+  },
+  {
+    path: 'new-registration',
+    loadChildren:
+      './new-registration/new-registration.module#NewRegistrationPageModule'
+  }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
+  imports: [
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
