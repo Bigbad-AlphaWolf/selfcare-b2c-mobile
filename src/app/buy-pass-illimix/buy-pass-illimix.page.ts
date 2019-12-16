@@ -180,7 +180,7 @@ export class BuyPassIllimixPage implements OnInit {
   }
 
   goToSuccessStep() {
-    this.step = 4;
+    this.step = 5;
   }
 
   passDataToSuccessPage(passBought: any) {
