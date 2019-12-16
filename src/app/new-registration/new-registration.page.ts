@@ -121,7 +121,11 @@ export class NewRegistrationPage implements OnInit {
         //  && err.error && err.error.errorKey === 'userexists'
         if (err.status === 400) {
           // Go to login page
-          ls.set('subscribedNumber', this.phoneNumber);
+          let login: string;
+          this.phoneNumber.startsWith('221')
+            ? (login = this.phoneNumber.substring(3))
+            : (login = this.phoneNumber);
+          ls.set('subscribedNumber', login);
           this.router.navigate(['/login']);
         } else {
           this.showErrMessage = true;
@@ -200,8 +204,12 @@ export class NewRegistrationPage implements OnInit {
 
   goLogin() {
     this.isLogging = true;
+    let login: string;
+    this.phoneNumber.startsWith('221')
+      ? (login = this.phoneNumber.substring(3))
+      : (login = this.phoneNumber);
     const userCredential = {
-      username: this.phoneNumber,
+      username: login,
       password: this.formPassword.value.password,
       rememberMe: true
     };

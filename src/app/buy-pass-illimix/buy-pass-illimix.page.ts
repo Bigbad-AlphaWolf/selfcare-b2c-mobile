@@ -25,7 +25,7 @@ export class BuyPassIllimixPage implements OnInit {
   step = 0;
   passIllimixChoosed: any;
   // For now we consider that the recepient is the connected user
-  destNumber: string; 
+  destNumber: string;
   passIllimixDetails: any;
   pinErrorMsg = '';
   pinPadHasError = false;
@@ -36,10 +36,10 @@ export class BuyPassIllimixPage implements OnInit {
   passIllimixChosen: PassIllimModel | PromoPassIllimModel;
   buyingPass: boolean;
   isKirene: boolean;
-  currentUserNumber = this.dashServ.getCurrentPhoneNumber();;
+  currentUserNumber = this.dashServ.getCurrentPhoneNumber();
   currentProfil: string;
   recipientFirstName: string;
-recipientLastName: string;
+  recipientLastName: string;
 
   constructor(
     private router: Router,
@@ -76,7 +76,7 @@ recipientLastName: string;
     this.goToNextStep();
     this.destNumber = destNumber;
     console.log('destinataire', destNumber);
-    
+
     /* if (typeof FollowAnalytics !== 'undefined') {
       if (destNumber !== this.currentUserNumber) {
         FollowAnalytics.logEvent('Pass_Internet_ChoixDestinataire', destNumber);
@@ -85,7 +85,6 @@ recipientLastName: string;
       }
     } */
   }
-
 
   contactGot(contact) {
     this.recipientFirstName = contact ? contact.name.givenName : '';
@@ -141,7 +140,13 @@ recipientLastName: string;
     const amount = +this.passIllimixChoosed.pass.tarif;
     const msisdn = this.dashServ.getCurrentPhoneNumber();
     const receiver = this.destNumber;
-    const payload: BuyPassModel = { type: 'illimix', codeIN, amount, msisdn, receiver };
+    const payload: BuyPassModel = {
+      type: 'illimix',
+      codeIN,
+      amount,
+      msisdn,
+      receiver
+    };
     this.dashServ.buyPassByCredit(payload).subscribe(
       (res: any) => {
         this.buyingPass = false;
