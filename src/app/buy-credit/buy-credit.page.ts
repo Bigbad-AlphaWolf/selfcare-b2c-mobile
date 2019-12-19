@@ -14,8 +14,7 @@ export class BuyCreditPage implements OnInit {
   OPERATION_TYPE_RECHARGE_CREDIT = OPERATION_TYPE_RECHARGE_CREDIT;
   operation;
   typeOMCode;
-  // initial step should be 1 to avoid choosing recipient
-  step = 1;
+  step = 0;
   isForMyOwnNumber = true;
   destinatorPhoneNumber = '';
   choosedPaymentMod = PAYMENT_MOD_OM;
@@ -94,9 +93,6 @@ export class BuyCreditPage implements OnInit {
     this.isForMyOwnNumber =
       this.dashbordServ.getCurrentPhoneNumber() === destNumber;
     this.destinatorPhoneNumber = destNumber;
-    if (!this.isForMyOwnNumber) {
-      this.recipient = destNumber;
-    }
   }
 
   setAmount(amount: number) {
@@ -124,16 +120,12 @@ export class BuyCreditPage implements OnInit {
     const previousStep = this.step - 1;
     if (previousStep < 0) {
       this.goToDashboardPage();
-    } else if (this.step === 1) {
-      this.goToDashboardPage();
     } else {
       this.step = previousStep;
     }
   }
 
   initialStep() {
-    this.step = 1;
-    this.destinatorPhoneNumber = this.currentNumber;
     this.choosedPaymentMod = PAYMENT_MOD_OM;
     this.amount = 0;
     this.isForMyOwnNumber = false;

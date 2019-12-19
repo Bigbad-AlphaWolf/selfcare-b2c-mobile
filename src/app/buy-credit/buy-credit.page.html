@@ -19,7 +19,7 @@
     </ng-container>
 
     <ng-container *ngIf="!omBalancePinPadDisplayed">
-      <ng-container *ngIf="step === 010000">
+      <ng-container *ngIf="step === 0">
         <app-select-other-recipient
           (nextStepEmitter)="nextStepOfSelectDest($event)"
           *ngIf="currentProfil === PROFILE_TYPE_POSTPAID"
