@@ -176,7 +176,7 @@
     </div>
   </div>
 
-  <div class="dashboard-block-offres" style="visibility: hidden;">
+  <div class="dashboard-block-offres" >
     <div (click)="goToTransfertOM()" class="dashboard-block-offres-top1">
       <div class="item-icon">
         <img src="/assets/images/group-6.svg" alt="group-6" />
