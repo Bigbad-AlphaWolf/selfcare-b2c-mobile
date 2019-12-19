@@ -3,10 +3,10 @@
   <img class="image" src="/assets/images/pass-internet-by-om.svg" alt="" *ngIf="type !== 'credit'" />
   <form [formGroup]="formDest">
     <mat-form-field class="input-amount font-size-30">
-      <input matInput type="tel" placeholder="Entrez le numéro du destinataire" formControlName="phoneNumber" />
+      <input matInput type="tel" #input (input)="enableBtn(input.value)" placeholder="Entrez le numéro du destinataire" formControlName="phoneNumber" />
     </mat-form-field>
     <div class="button-container">
-      <button class="scb-btn scb-btn-orange" [disabled]="!formDest.valid" (click)="suivant()">
+      <button class="scb-btn scb-btn-orange" [disabled]="!isValidNumber" (click)="suivant()">
         Suivant
       </button>
     </div>
