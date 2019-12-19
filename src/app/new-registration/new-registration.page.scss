@@ -31,11 +31,40 @@
         font-style: italic;
         font-family: HelveticaNeueLTStd-Roman;
         font-size: 14px;
+        padding: 15px;
+        border: solid 2px $grey;
+        border-radius: 7px;
       }
       .numero-container {
-        padding: 15px;
-        border: solid 2px $gray;
+        padding: 15px 0;
+        border: solid 2px $grey;
         border-radius: 7px;
+        display: flex;
+        align-items: center;
+        .phonenumber {
+          width: percentage(186/300);
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 24px;
+          border-right: solid 2px $grey;
+          text-align: center;
+        }
+        .refresh {
+          width: percentage(114/300);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          span {
+            font-size: 14px;
+          }
+          img {
+            margin-left: 5px;
+          }
+        }
+      }
+      .description {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        margin-top: 10px;
       }
       .error-text {
         padding-bottom: 20px;
@@ -53,6 +82,20 @@
         }
         .mat-spinner::ng-deep circle {
           stroke: $white;
+        }
+      }
+      .je-me-connecte {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 35px;
+        .text-1 {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 14px;
+        }
+        .text-2 {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 18px;
         }
       }
     }

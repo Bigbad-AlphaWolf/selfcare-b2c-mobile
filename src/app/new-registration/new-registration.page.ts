@@ -8,11 +8,13 @@ import {
   RegistrationModel
 } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import * as SecureLS from 'secure-ls';
 import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
 import * as Fingerprint2 from 'fingerprintjs2';
 const ls = new SecureLS({ encodingType: 'aes' });
+import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
+import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
 
 @Component({
   selector: 'app-new-registration',
@@ -20,6 +22,8 @@ const ls = new SecureLS({ encodingType: 'aes' });
   styleUrls: ['./new-registration.page.scss']
 })
 export class NewRegistrationPage implements OnInit {
+  dialogRef: MatDialogRef<SettingsPopupComponent, any>;
+  dialogSub: Subscription;
   phoneNumber: string;
   firstName: string;
   lastName: string;
@@ -45,7 +49,8 @@ export class NewRegistrationPage implements OnInit {
     private authServ: AuthenticationService,
     private dashbServ: DashboardService,
     public dialog: MatDialog,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private openNativeSettings: OpenNativeSettings
   ) {}
 
   goIntro() {
@@ -60,6 +65,22 @@ export class NewRegistrationPage implements OnInit {
       acceptCGU: [false, [Validators.requiredTrue]]
     });
     this.getNumber();
+  }
+
+  openDialogGoSettings() {
+    this.dialogRef = this.dialog.open(SettingsPopupComponent);
+    this.dialogSub = this.dialogRef.afterClosed().subscribe(settings => {
+      if (settings) {
+        this.goSettings();
+      }
+    });
+  }
+
+  goSettings() {
+    this.openNativeSettings
+      .open('settings')
+      .then(res => {})
+      .catch(err => {});
   }
 
   getNumber() {
@@ -85,6 +106,7 @@ export class NewRegistrationPage implements OnInit {
               } else {
                 this.showErrMessage = true;
                 this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
+                this.openDialogGoSettings();
               }
               this.ref.detectChanges();
             },
@@ -92,6 +114,7 @@ export class NewRegistrationPage implements OnInit {
               this.gettingNumber = false;
               this.showErrMessage = true;
               this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
+              this.openDialogGoSettings();
               this.ref.detectChanges();
             }
           );
@@ -100,6 +123,7 @@ export class NewRegistrationPage implements OnInit {
           this.gettingNumber = false;
           this.showErrMessage = true;
           this.errorMsg = `La récupération ne s'est pas bien passée. Assurez d'activer vos données mobiles Orange puis réessayez`;
+          this.openDialogGoSettings();
           this.ref.detectChanges();
         }
       );
@@ -121,12 +145,7 @@ export class NewRegistrationPage implements OnInit {
         //  && err.error && err.error.errorKey === 'userexists'
         if (err.status === 400) {
           // Go to login page
-          let login: string;
-          this.phoneNumber.startsWith('221')
-            ? (login = this.phoneNumber.substring(3))
-            : (login = this.phoneNumber);
-          ls.set('subscribedNumber', login);
-          this.router.navigate(['/login']);
+          this.goLoginPage();
         } else {
           this.showErrMessage = true;
           this.errorMsg =
@@ -200,6 +219,15 @@ export class NewRegistrationPage implements OnInit {
         acceptCGU: true
       });
     });
+  }
+
+  goLoginPage() {
+    let login: string;
+    this.phoneNumber.startsWith('221')
+      ? (login = this.phoneNumber.substring(3))
+      : (login = this.phoneNumber);
+    ls.set('subscribedNumber', login);
+    this.router.navigate(['/login']);
   }
 
   goLogin() {

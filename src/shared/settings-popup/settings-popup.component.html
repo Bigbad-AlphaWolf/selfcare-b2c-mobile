@@ -1,0 +1,23 @@
+<div class="dialog">
+  <div class="dialog-title scb-text-white">
+    Erreur lors de la récupération du numéro
+  </div>
+  <div class="dialog-text scb-text-white">
+    Une erreur s'est produite lors de la récupération du numéro. Assurez-vous
+    d'avoir activé vos données mobiles Orange puis réessayer.
+  </div>
+  <div class="dialog-actions-btns-block">
+    <div
+      (click)="goSettings()"
+      class="dialog-actions-btn dialog-actions-btn-left scb-text-white c-pointer"
+    >
+      Réglages
+    </div>
+    <div
+      (click)="close()"
+      class="dialog-actions-btn dialog-actions-btn-right scb-text-white c-pointer"
+    >
+      Ok
+    </div>
+  </div>
+</div>
