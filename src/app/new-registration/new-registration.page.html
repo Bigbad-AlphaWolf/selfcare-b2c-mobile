@@ -12,9 +12,7 @@
     />
   </div>
   <div class="title">
-    <span *ngIf="step === 'CHECK_NUMBER'"
-      >Récupération numéro de téléphone</span
-    >
+    <span *ngIf="step === 'CHECK_NUMBER'">Numéro de téléphone</span>
     <span *ngIf="step === 'PASSWORD'">Création mot de passe</span>
   </div>
   <div class="form-container">
@@ -22,8 +20,19 @@
       <div *ngIf="gettingNumber" class="scb-text-gray get-number">
         Récupération du numéro en cours...
       </div>
-      <div *ngIf="numberGot" class="scb-text-gray numero-container">
-        {{ phoneNumber }}
+      <div
+        *ngIf="numberGot && !gettingNumber"
+        class="scb-text-gray numero-container"
+      >
+        <div class="phonenumber scb-text-full-black">{{ phoneNumber }}</div>
+        <div class="refresh" (click)="getNumber()">
+          <span class="scb-text-orange">Rafraichir</span>
+          <img src="/assets/images/r.svg" alt="refresh-icon" />
+        </div>
+      </div>
+      <div class="description scb-text-gray">
+        Le numéro affiché doit être celui de la carte SIM sur ce device. Si tel
+        n’est pas le cas cliquer sur «Rafraichir»
       </div>
       <div *ngIf="showErrMessage" class="error-text">
         <span class="scb-text-red-error" (click)="getNumber()">
@@ -35,7 +44,7 @@
         (click)="checkNumber()"
         class="scb-btn scb-btn-full scb-btn-orange"
         type="submit"
-        [disabled]="!numberGot || checkingNumber"
+        [disabled]="!numberGot || checkingNumber || gettingNumber"
       >
         <span>Suivant</span>
         <mat-spinner
@@ -44,6 +53,10 @@
           *ngIf="checkingNumber"
         ></mat-spinner>
       </button>
+      <div class="je-me-connecte" (click)="goLoginPage()">
+        <span class="scb-text-gray text-1">Déjà un compte ?</span>
+        <span class="scb-text-orange text-2">&nbsp;Je me connecte</span>
+      </div>
     </div>
     <form
       [formGroup]="formPassword"
