@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { REGEX_NUMBER, REGEX_EMAIL, REGEX_PASSWORD2 } from 'src/shared';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ReCaptchaV3Service } from 'ngx-captcha';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { captchaSiteKey } from '../register';
 import * as SecureLS from 'secure-ls';
+import {
+  AuthenticationService,
+  ConfirmMsisdnModel
+} from '../services/authentication-service/authentication.service';
+import * as Fingerprint2 from 'fingerprintjs2';
 const ls = new SecureLS({ encodingType: 'aes' });
 export interface Description {
   text: string;
@@ -17,8 +19,7 @@ export interface Description {
   styleUrls: ['./forgotten-password.page.scss']
 })
 export class ForgottenPasswordPage implements OnInit {
-  resetPasswordPayload = { login: null, otp: null, newPassword: null };
-  formIdentifier: FormGroup;
+  resetPasswordPayload = { login: null, hmac: null, newPassword: null };
   formPassword: FormGroup;
   currentStep = 1;
   error_message = '';
@@ -27,23 +28,70 @@ export class ForgottenPasswordPage implements OnInit {
   action = 'reinitializeMobile';
   token?: string;
   recaptchaScore = 0;
-  loading = false;
   fields = {
     password: { fieldType: 'password', visibilityIcon: 'visibility' },
     confirmPassword: { fieldType: 'password', visibilityIcon: 'visibility' }
   };
+  gettingNumber: boolean;
+  checkingNumber: boolean;
+  numberGot: boolean;
+  phoneNumber: string;
+  hmac: string;
+  resetingPwd: boolean;
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private dahbServ: DashboardService,
-    private reCaptchaV3Service: ReCaptchaV3Service
-  ) {
-    this.formIdentifier = this.fb.group({
-      inputValue: ['', [Validators.required, Validators.pattern(REGEX_NUMBER)]]
-    });
+    private authServ: AuthenticationService,
+    private ref: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+    this.getNumber();
   }
 
-  ngOnInit() {}
+  ionViewDidEnter() {
+    this.getNumber();
+  }
+
+  getNumber() {
+    this.error_message = '';
+    this.gettingNumber = true;
+    this.ref.detectChanges();
+    Fingerprint2.get(components => {
+      const values = components.map(component => {
+        return component.value;
+      });
+      const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
+      ls.set('X-UUID', x_uuid);
+      this.authServ.getMsisdnByNetwork().subscribe(
+        (res: { msisdn: string }) => {
+          const msisdn = res.msisdn;
+          this.authServ.confirmMsisdnByNetwork(msisdn).subscribe(
+            (response: ConfirmMsisdnModel) => {
+              this.gettingNumber = false;
+              if (response.status) {
+                this.numberGot = true;
+                this.phoneNumber = response.msisdn;
+                this.hmac = response.hmac;
+              } else {
+                this.error_message = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
+              }
+              this.ref.detectChanges();
+            },
+            err => {
+              this.error_message = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
+              this.ref.detectChanges();
+            }
+          );
+        },
+        err => {
+          this.gettingNumber = false;
+          this.error_message = `La récupération ne s'est pas bien passée. Assurez d'activer vos données mobiles Orange puis réessayez`;
+          this.ref.detectChanges();
+        }
+      );
+    });
+  }
 
   goStepNewPassword() {
     this.currentStep = 2;
@@ -55,72 +103,52 @@ export class ForgottenPasswordPage implements OnInit {
       passwordConfirmation: [
         '',
         [Validators.required, Validators.pattern(REGEX_PASSWORD2)]
-      ],
-      otp: [
-        '',
-        [Validators.required, Validators.minLength(6), Validators.maxLength(6)]
       ]
     });
   }
 
-  ionViewWillEnter() {
-    this.identifier = ls.get('subscribedNumber');
-    this.formIdentifier.patchValue({
-      inputValue: this.identifier
-    });
-  }
-
-  userSendIdentifier() {
-    this.loading = true;
-    //check recaaptcha
-    this.reCaptchaV3Service.execute(captchaSiteKey, this.action, tokenResp => {
-      this.token = tokenResp;
-      // make request to send OTP
-      this.identifier = this.formIdentifier.value.inputValue;
-      if (REGEX_NUMBER.test(this.identifier)) {
-        this.identifierType = 'number';
-        // send otp to client
-        this.dahbServ
-          .generateOtpForResetPwd(this.identifier, this.token)
-          .subscribe(
-            (res: any) => {
-              this.loading = false;
-              this.resetPasswordPayload.login = this.identifier;
-              this.goStepNewPassword();
-            },
-            err => {
-              this.loading = false;
-              if (err.status === 404) {
-                this.error_message = 'Ce numéro n a pas de compte';
-              } else {
-                this.error_message =
-                  'Une erreur est survenue. Veuillez réessayer';
-              }
-            }
-          );
-      } else if (REGEX_EMAIL.test(this.identifier)) {
-        this.identifierType = 'email';
+  checkNumber() {
+    this.checkingNumber = true;
+    const payload = { msisdn: this.phoneNumber, hmac: this.hmac };
+    this.authServ.checkNumber(payload).subscribe(
+      (resp: any) => {
+        // Go to registration page
+        this.checkingNumber = false;
+        this.error_message = 'Ce numéro ne possède pas de compte';
+      },
+      (err: any) => {
+        console.log(err);
+        this.checkingNumber = false;
+        //  && err.error && err.error.errorKey === 'userexists'
+        if (err.status === 400) {
+          // Go to login page
+          this.goStepNewPassword();
+        } else {
+          this.error_message =
+            'Oups!!! Une erreur est survenue, veuillez réessayer plus tard. Merci';
+        }
       }
-    });
+    );
   }
 
   onSubmitPassword() {
     this.error_message = '';
     const password = this.formPassword.value.password;
     const passwordConfirm = this.formPassword.value.passwordConfirmation;
-    const otp = this.formPassword.value.otp;
     if (password === passwordConfirm) {
+      this.resetingPwd = true;
       this.resetPasswordPayload.newPassword = password;
-      this.resetPasswordPayload.otp = otp;
-      this.loading = true;
-      this.dahbServ.reinitializePassword(this.resetPasswordPayload).subscribe(
+      this.resetPasswordPayload.hmac = this.hmac;
+      this.resetPasswordPayload.login = this.phoneNumber;
+      this.authServ.resetPassword(this.resetPasswordPayload).subscribe(
         res => {
+          this.resetingPwd = false;
           this.router.navigate(['/login']);
         },
         err => {
-          this.loading = false;
+          this.resetingPwd = false;
           if (err.status === 400) {
-            if (err.error && err.error.msg === 'invalidotp') {
+            if (err.msg === 'invalidotp') {
               this.error_message = 'Le code saisi est incorrect';
             } else {
               this.error_message =

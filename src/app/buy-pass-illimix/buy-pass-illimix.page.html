@@ -42,7 +42,7 @@
         [recipient]="destNumber"
         [passIllChosen]="passIllimixChosen"
         [paymentMod]="choosedPaymentMod"
-        [buyForMe]="true"
+        [buyForMe]="destNumber===currentUserNumber"
         [kirene]="isKirene"
         [loading]="buyingPass"
         (validate)="passDataToSuccessPage(passIllimixChoosed)"
