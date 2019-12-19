@@ -23,6 +23,29 @@ export class AuthInterceptorService implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     const that = this;
     const token = ls.get('token');
+    const x_uuid = ls.get('X-UUID');
+    if (isReqWaitinForUIDandMSISDN(req.url)) {
+      let headers = req.headers;
+      headers = headers.set('uuid', x_uuid);
+      headers = headers.set('X-MSISDN', '221781040956');
+      req = req.clone({
+        headers
+      });
+    }
+    if (isReqWaitinForUID(req.url)) {
+      let headers = req.headers;
+      headers = headers.set('uuid', x_uuid);
+      req = req.clone({
+        headers
+      });
+    }
+    if (isReqWaitinForXUID(req.url)) {
+      let headers = req.headers;
+      headers = headers.set('X-UUID', x_uuid);
+      req = req.clone({
+        headers
+      });
+    }
     if (req.headers.has(OmRequest)) {
       req.headers.set('service_version', OM_SERVICE_VERSION);
       return next.handle(req);
@@ -34,7 +57,6 @@ export class AuthInterceptorService implements HttpInterceptor {
       req.url.match('auth/login')
     ) {
       req.headers.set('X-SELFCARE-SOURCE', 'mobile');
-      console.log(req.headers);
       return next.handle(req);
     }
     if (token) {
@@ -72,4 +94,31 @@ export class AuthInterceptorService implements HttpInterceptor {
       )
     );
   }
+}
+
+function isReqWaitinForUID(url: string) {
+  const urlGetMsisdn =
+    'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn';
+  const urlConfirmMsisdn =
+    'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn';
+  return url.match(urlGetMsisdn) || url.match(urlConfirmMsisdn);
+}
+
+function isReqWaitinForXUID(url: string) {
+  const urlCheckNumber =
+    'selfcare-b2c-account-management/api/account-management/v2/check_number';
+  const urlRegister =
+    'selfcare-b2c-account-management/api/account-management/v2/register';
+  const urlResetPwd = 'selfcare-uaa/api/account/b2c/reset-password';
+  return (
+    url.match(urlCheckNumber) ||
+    url.match(urlRegister) ||
+    url.match(urlResetPwd)
+  );
+}
+
+function isReqWaitinForUIDandMSISDN(url: string) {
+  const urlDevGetMsisdn = 'http://10.100.99.116:1494/api/v1/get-msisdn';
+  const urlDevConfMsisdn = `http://10.100.99.116:1494/api/v1/confirm-msisdn`;
+  return url.match(urlDevGetMsisdn) || url.match(urlDevConfMsisdn);
 }

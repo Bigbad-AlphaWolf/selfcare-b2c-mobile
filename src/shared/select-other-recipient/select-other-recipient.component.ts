@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { REGEX_NUMBER, formatPhoneNumber } from '..';
+import { REGEX_NUMBER, formatPhoneNumber, REGEX_FIX_NUMBER } from '..';
 import { MatDialog } from '@angular/material';
 import { SelectNumberPopupComponent } from '../select-number-popup/select-number-popup.component';
 import { Contacts, Contact } from '@ionic-native/contacts';
@@ -17,6 +17,7 @@ export class SelectOtherRecipientComponent implements OnInit {
   @Output() nextStepEmitter = new EventEmitter();
   showErrorMsg;
   destNumber: string;
+  isValidNumber: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -27,6 +28,11 @@ export class SelectOtherRecipientComponent implements OnInit {
     this.formDest = this.formBuilder.group({
       phoneNumber: ['', [Validators.required, Validators.pattern(REGEX_NUMBER)]]
     });
+  }
+  enableBtn(msisdn: string){
+    this.isValidNumber = this.validateNumber(msisdn);
+    console.log(this.isValidNumber);
+    
   }
 
   ngOnInit() {}
@@ -78,6 +84,6 @@ export class SelectOtherRecipientComponent implements OnInit {
   }
 
   validateNumber(phoneNumber: string) {
-    return REGEX_NUMBER.test(phoneNumber);
+    return REGEX_NUMBER.test(phoneNumber) || REGEX_FIX_NUMBER.test(phoneNumber);
   }
 }

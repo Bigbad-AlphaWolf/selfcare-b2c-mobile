@@ -1,5 +1,5 @@
 import { OnInit, EventEmitter, Output, Component } from '@angular/core';
-import { REGEX_NUMBER, formatPhoneNumber } from '..';
+import { REGEX_NUMBER, formatPhoneNumber, REGEX_FIX_NUMBER } from '..';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { Contacts, Contact } from '@ionic-native/contacts';
@@ -85,7 +85,7 @@ export class SelectRecipientComponent implements OnInit {
   }
 
   validateNumber(phoneNumber: string) {
-    return REGEX_NUMBER.test(phoneNumber);
+    return REGEX_NUMBER.test(phoneNumber) || REGEX_FIX_NUMBER.test(phoneNumber);
   }
 
   enableNextBtn(destNumberEntered: string) {
@@ -106,7 +106,9 @@ export class SelectRecipientComponent implements OnInit {
           this.showErrorMsg = true;
         } else {
           this.getDestinataire.emit(this.destNumber);
-          this.getContact.emit(this.contactInfos);
+          if(this.contactInfos){
+            this.getContact.emit(this.contactInfos);
+          }
         }
       });
   }

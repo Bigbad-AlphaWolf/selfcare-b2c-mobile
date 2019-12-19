@@ -4,12 +4,15 @@ import {
   PassIllimModel,
   PromoPassIllimModel,
   PAYMENT_MOD_CREDIT,
-  CODE_KIRENE_Formule
+  CODE_KIRENE_Formule,
+  PAYMENT_MOD_OM
 } from 'src/shared';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { BuyPassModel } from '../services/dashboard-service';
+import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 
 @Component({
   selector: 'app-buy-pass-illimix',
@@ -18,21 +21,25 @@ import { AuthenticationService } from '../services/authentication-service/authen
 })
 export class BuyPassIllimixPage implements OnInit {
   OPERATION_TYPE_PASS_ILLIMIX = OPERATION_TYPE_PASS_ILLIMIX;
+  PROFILE_TYPE_POSTPAID = PROFILE_TYPE_POSTPAID;
   step = 0;
   passIllimixChoosed: any;
   // For now we consider that the recepient is the connected user
-  destNumber = this.dashServ.getCurrentPhoneNumber();
+  destNumber: string;
   passIllimixDetails: any;
   pinErrorMsg = '';
   pinPadHasError = false;
-  errorMsg;
-  failed;
-  recipient;
+  errorMsg: string;
+  failed: boolean;
   title = 'Achat de pass illimix';
   choosedPaymentMod: string;
   passIllimixChosen: PassIllimModel | PromoPassIllimModel;
   buyingPass: boolean;
   isKirene: boolean;
+  currentUserNumber = this.dashServ.getCurrentPhoneNumber();
+  currentProfil: string;
+  recipientFirstName: string;
+  recipientLastName: string;
 
   constructor(
     private router: Router,
@@ -51,6 +58,42 @@ export class BuyPassIllimixPage implements OnInit {
 
   ngOnInit() {
     this.getCurrentSubscription();
+    this.checkUserIsPostPaid();
+  }
+
+  checkUserIsPostPaid() {
+    this.authServ
+      .getSubscription(this.currentUserNumber)
+      .subscribe((souscription: any) => {
+        this.currentProfil = souscription.profil;
+        if (this.currentProfil === PROFILE_TYPE_POSTPAID) {
+          this.step = 1;
+          this.choosedPaymentMod = PAYMENT_MOD_OM;
+        }
+      });
+  }
+  nextStepOfSelectDest(destNumber: string) {
+    this.goToNextStep();
+    this.destNumber = destNumber;
+    console.log('destinataire', destNumber);
+
+    /* if (typeof FollowAnalytics !== 'undefined') {
+      if (destNumber !== this.currentUserNumber) {
+        FollowAnalytics.logEvent('Pass_Internet_ChoixDestinataire', destNumber);
+      } else {
+        FollowAnalytics.logEvent('Pass_Internet_Destinataire_Moi', destNumber);
+      }
+    } */
+  }
+
+  contactGot(contact) {
+    this.recipientFirstName = contact ? contact.name.givenName : '';
+    this.recipientLastName = contact.name.familyName
+      ? contact.name.familyName
+      : '';
+    this.recipientFirstName += contact.name.middleName
+      ? ` ${contact.name.middleName}`
+      : '';
   }
 
   nextStepOfPaymentMod(paymentMod: string) {
@@ -95,8 +138,15 @@ export class BuyPassIllimixPage implements OnInit {
     this.buyingPass = true;
     const codeIN = this.passIllimixChoosed.pass.price_plan_index;
     const amount = +this.passIllimixChoosed.pass.tarif;
-    const type = 'illimix';
-    const payload = { type, codeIN, amount };
+    const msisdn = this.dashServ.getCurrentPhoneNumber();
+    const receiver = this.destNumber;
+    const payload: BuyPassModel = {
+      type: 'illimix',
+      codeIN,
+      amount,
+      msisdn,
+      receiver
+    };
     this.dashServ.buyPassByCredit(payload).subscribe(
       (res: any) => {
         this.buyingPass = false;
@@ -130,7 +180,7 @@ export class BuyPassIllimixPage implements OnInit {
   }
 
   goToSuccessStep() {
-    this.step = 4;
+    this.step = 5;
   }
 
   passDataToSuccessPage(passBought: any) {

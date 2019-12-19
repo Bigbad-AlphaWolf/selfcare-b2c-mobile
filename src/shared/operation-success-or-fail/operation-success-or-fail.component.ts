@@ -8,7 +8,6 @@ import {
   OPERATION_TYPE_SEDDO_CREDIT,
   OPERATION_TYPE_SEDDO_PASS,
   OPERATION_TYPE_SEDDO_BONUS,
-  OPERATION_TYPE_TRANSFER_OM,
   OPERATION_TYPE_SOS_PASS,
   OPERATION_TYPE_SOS_CREDIT,
   OPERATION_TRANSFER_OM_WITH_CODE,
@@ -43,6 +42,7 @@ export class OperationSuccessOrFailComponent implements OnInit {
   @Input() recipientLastName: string;
   @Input() errorMessage: string;
   @Input() giftSargal: GiftSargalItem;
+  @Input() isKirene: boolean;
 
   @Output() newOperation = new EventEmitter();
   OPERATION_TYPE_PASS_INTERNET = OPERATION_TYPE_PASS_INTERNET;

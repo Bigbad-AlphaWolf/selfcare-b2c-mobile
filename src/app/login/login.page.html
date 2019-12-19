@@ -23,10 +23,20 @@
         >
       </div>
       <div>
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate autocomplete="false">
+        <form
+          [formGroup]="form"
+          (ngSubmit)="onSubmit()"
+          novalidate
+          autocomplete="false"
+        >
           <mat-form-field class="scb-input-row" appearance="outline">
             <mat-label>Entrez votre numéro &nbsp;&nbsp;</mat-label>
-            <input formControlName="username" matInput [(ngModel)]="subscribedNumber" type="tel" />
+            <input
+              formControlName="username"
+              matInput
+              [(ngModel)]="subscribedNumber"
+              type="tel"
+            />
           </mat-form-field>
           <mat-form-field class="scb-input-row" appearance="outline">
             <mat-label>Mot de passe &nbsp;&nbsp;</mat-label>
@@ -53,11 +63,22 @@
             <span class="scb-text-red-error"> {{ errorMsg }} </span>
           </div>
 
-          <div id="remember-me-password-forgot-mobile" fxLayout="row" fxLayoutAlign="space-between center">
-            <mat-checkbox *ngIf="0" formControlName="rememberMe" class="se-souvenir scb-text-gray"
+          <div
+            id="remember-me-password-forgot-mobile"
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+          >
+            <mat-checkbox
+              *ngIf="0"
+              formControlName="rememberMe"
+              class="se-souvenir scb-text-gray"
               >Rester connecté(e)</mat-checkbox
             >
-            <span routerLink="/forgotten-password" class="password-forgotten scb-text-gray">Mot de passe oublié ?</span>
+            <span
+              routerLink="/forgotten-password"
+              class="password-forgotten scb-text-gray"
+              >Mot de passe oublié ?</span
+            >
           </div>
           <div class="login-btns-block">
             <button
@@ -67,7 +88,11 @@
               mat-stroked-button
             >
               <span>Je me connecte</span>
-              <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="loading"></mat-spinner>
+              <mat-spinner
+                mode="indeterminate"
+                [diameter]="20"
+                *ngIf="loading"
+              ></mat-spinner>
             </button>
             <button
               *ngIf="0"
@@ -78,7 +103,10 @@
             ></button>
           </div>
           <div class="Mobile-Connect-est-u scb-text-dusk">
-            Pas encore inscrit ? <span routerLink="/check-number" class="scb-text-orange">M'inscrire</span>
+            Pas encore inscrit ?
+            <span routerLink="/new-registration" class="scb-text-orange"
+              >M'inscrire</span
+            >
           </div>
         </form>
       </div>

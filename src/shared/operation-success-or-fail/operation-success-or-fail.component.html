@@ -90,13 +90,13 @@
     </div>
     <div class="title scb-text-dark-grey">
       <span [ngSwitch]="operationType">
-        <span *ngSwitchCase="OPERATION_TYPE_PASS_ILLIMIX">Pass Illimix</span>
+        <span *ngSwitchCase="OPERATION_TYPE_PASS_ILLIMIX">{{isKirene ? 'Mixel' : 'Pass Illimix'}}</span>
         <span *ngSwitchCase="OPERATION_TYPE_PASS_INTERNET">Pass Internet</span>
       </span>
     </div>
     <div class="value scb-text-black">
       <span [ngSwitch]="operationType">
-        <span *ngSwitchCase="OPERATION_TYPE_PASS_ILLIMIX">Illimix {{passIntChosen?.pass?.categoriePass?.libelle}}
+        <span *ngSwitchCase="OPERATION_TYPE_PASS_ILLIMIX">{{isKirene ? 'Mixel' : 'Illimix'}} {{passIntChosen?.pass?.categoriePass?.libelle}}
           {{passIntChosen?.pass?.tarif}} F</span>
         <span *ngSwitchCase="OPERATION_TYPE_PASS_INTERNET">{{
                 passIntChosen?.pass?.categoriePass?.libelle +
