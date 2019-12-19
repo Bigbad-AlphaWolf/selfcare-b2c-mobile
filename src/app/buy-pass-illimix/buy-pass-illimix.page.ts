@@ -167,7 +167,7 @@ export class BuyPassIllimixPage implements OnInit {
         this.buyingPass = false;
         this.failed = true;
         if (err.message) {
-          if (err.error.status === 500) {
+          if (err.status === 500) {
             this.errorMsg = 'Erreur réseau. Veuillez réessayer ultérieurement';
           } else {
             this.errorMsg =

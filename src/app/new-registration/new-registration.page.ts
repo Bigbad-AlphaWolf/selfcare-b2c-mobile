@@ -61,8 +61,7 @@ export class NewRegistrationPage implements OnInit {
     this.step = 'CHECK_NUMBER';
     this.formPassword = this.fb.group({
       password: ['', [Validators.required, Validators.minLength(5)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(5)]],
-      acceptCGU: [false, [Validators.requiredTrue]]
+      confirmPassword: ['', [Validators.required, Validators.minLength(5)]]
     });
     this.getNumber();
   }

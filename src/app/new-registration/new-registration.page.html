@@ -104,12 +104,12 @@
       <div *ngIf="showErrMessage" class="error-text">
         <span class="scb-text-red-error"> {{ errorMsg }} </span>
       </div>
-      <mat-checkbox formControlName="acceptCGU" class="accept-cgu scb-text-gray"
-        >Accepter
+      <div class="accept-cgu scb-text-gray">
+        En cliquant sur le bouton confirmer, vous acceptez
         <span class="scb-text-orange bold" (click)="openCguDialog()"
           >les conditions générales d'utilisation</span
         >
-      </mat-checkbox>
+      </div>
       <button
         class="scb-btn scb-btn-full scb-btn-orange"
         type="submit"

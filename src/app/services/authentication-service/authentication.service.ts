@@ -18,7 +18,8 @@ const {
   CODE_OTP_SERVICE,
   CONSO_SERVICE,
   GET_MSISDN_BY_NETWORK_URL,
-  CONFIRM_MSISDN_BY_NETWORK_URL
+  CONFIRM_MSISDN_BY_NETWORK_URL,
+  UAA_SERVICE
 } = environment;
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -44,7 +45,7 @@ const checkCodeOtpEndpoint = `${otpBaseUrl}/check`;
 // new registrations endpoint
 const checkNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/check_number`;
 const registerEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/register`;
-const resetPwdEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account/b2c/reset-password`;
+const resetPwdEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password`;
 
 @Injectable({
   providedIn: 'root'
