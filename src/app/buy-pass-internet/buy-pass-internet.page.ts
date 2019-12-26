@@ -43,7 +43,7 @@ export class BuyPassInternetPage implements OnInit {
   recipientFirstName = '';
   recipientLastName = '';
   buyingPass: boolean;
-
+  destCodeFormule: string;
   constructor(
     private router: Router,
     private dashServ: DashboardService,
@@ -97,14 +97,15 @@ export class BuyPassInternetPage implements OnInit {
     this.destinataire = this.currentUserNumber;
   }
 
-  nextStepOfSelectDest(destNumber: string) {
-    this.destinataire = destNumber;    
+  nextStepOfSelectDest(destNumberInfos: {destinataire: string, code: string}) {    
+    this.destinataire = destNumberInfos.destinataire;
+    this.destCodeFormule = destNumberInfos.code;    
     this.goToNextStep();
     if (typeof FollowAnalytics !== 'undefined') {
-      if (destNumber !== this.currentUserNumber) {
-        FollowAnalytics.logEvent('Pass_Internet_ChoixDestinataire', destNumber);
+      if (destNumberInfos !== this.currentUserNumber) {
+        FollowAnalytics.logEvent('Pass_Internet_ChoixDestinataire', destNumberInfos.destinataire);
       } else {
-        FollowAnalytics.logEvent('Pass_Internet_Destinataire_Moi', destNumber);
+        FollowAnalytics.logEvent('Pass_Internet_Destinataire_Moi', destNumberInfos.destinataire);
       }
     }
   }

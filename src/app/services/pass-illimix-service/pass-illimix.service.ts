@@ -15,7 +15,7 @@ import { SubscriptionModel } from 'src/app/dashboard';
   providedIn: 'root'
 })
 export class PassIllimixService {
-  private phoneNumber: string;
+  private userCodeFormule: string;
   private listPassIllimix: (PassIllimModel | PromoPassIllimModel)[] = [];
   private listPassIllimixShown: (PassIllimModel | PromoPassIllimModel)[];
   private listCategoryPass: any;
@@ -29,47 +29,42 @@ export class PassIllimixService {
   setPaymentMod(paymentMod: string) {
     this.paymentMod = paymentMod;
   }
-  setPhoneNumber(msisdn: string) {
-    this.phoneNumber = msisdn;
+  setUserCodeFormule(msisdn: string) {
+    this.userCodeFormule = msisdn;
   }
 
   setListPassIllimix() {
     this.listPassIllimix = [];
-    this.authServ
-      .getSubscription(this.phoneNumber)
-      .subscribe((res: SubscriptionModel) => {
-        if (res && res.code && res.profil) {
-          this.dashbService.getListPassIllimix(res.code).subscribe(
-            (res: PassIllimixModel[]) => {
-              res.forEach(x => {
-                if (x.pass && x.pass.actif) {
-                  this.listPassIllimix.push(x.pass);
-                } else if (x.promoPass && x.promoPass.passPromo.actif) {
-                  this.listPassIllimix.push(x.promoPass);
-                }
-              });
-              // get from all pass the different categories
-              const list = res.map(x => {
-                if (x.pass) {
-                  return x.pass.categoriePass;
-                } else if (x.promoPass) {
-                  return x.promoPass.passPromo.categoriePass;
-                }
-              });
-              this.listCategoryPass = getOrderedListCategory(list);
-              this.listPassIllimixShown = getListPassFilteredByLabelAndPaymentMod(
-                this.listCategoryPass[0],
-                this.listPassIllimix,
-                this.paymentMod
-              );
-              this.passLoadedSubject.next(true);
-            },
-            (err: any) => {
-              this.passLoadedSubject.next(true);
-            }
-          );
-        }
-      });
+    this.dashbService.getListPassIllimix(this.userCodeFormule).subscribe(
+      (res: PassIllimixModel[]) => {
+        res.forEach(x => {
+          if (x.pass && x.pass.actif) {
+            this.listPassIllimix.push(x.pass);
+          } else if (x.promoPass && x.promoPass.passPromo.actif) {
+            this.listPassIllimix.push(x.promoPass);
+          }
+        });
+        // get from all pass the different categories
+        const list = res.map(x => {
+          if (x.pass) {
+            return x.pass.categoriePass;
+          } else if (x.promoPass) {
+            return x.promoPass.passPromo.categoriePass;
+          }
+        });
+        this.listCategoryPass = getOrderedListCategory(list);
+        this.listPassIllimixShown = getListPassFilteredByLabelAndPaymentMod(
+          this.listCategoryPass[0],
+          this.listPassIllimix,
+          this.paymentMod
+        );
+        this.passLoadedSubject.next(true);
+      },
+      (err: any) => {
+        this.passLoadedSubject.next(true);
+      }
+    );
+       
   }
 
   getCategoryListPassIllimix() {

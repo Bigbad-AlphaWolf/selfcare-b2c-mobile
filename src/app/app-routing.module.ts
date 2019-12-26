@@ -20,11 +20,6 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'register',
-    loadChildren: './register/register.module#RegisterPageModule',
-    canActivate: [AuthGuard]
-  },
-  {
     path: 'buy-pass-internet',
     loadChildren:
       './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
@@ -89,19 +84,6 @@ const routes: Routes = [
       './sargal/components/sargal-catalogue/sargal-catalogue.module#SargalCataloguePageModule'
   },
   { path: 'bills', loadChildren: './bills/bills.module#BillsPageModule' },
-  {
-    path: 'check-number',
-    loadChildren: './check-number/check-number.module#CheckNumberPageModule'
-  },
-  {
-    path: 'code-otp',
-    loadChildren: './code-otp/code-otp.module#CodeOtpPageModule'
-  },
-  {
-    path: 'create-password',
-    loadChildren:
-      './create-password/create-password.module#CreatePasswordPageModule'
-  },
   {
     path: 'assistance',
     loadChildren: './assistance/assistance.module#AssistancePageModule'

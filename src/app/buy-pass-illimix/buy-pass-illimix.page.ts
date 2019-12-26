@@ -40,6 +40,7 @@ export class BuyPassIllimixPage implements OnInit {
   currentProfil: string;
   recipientFirstName: string;
   recipientLastName: string;
+  destCodeFormule: string;
 
   constructor(
     private router: Router,
@@ -72,11 +73,10 @@ export class BuyPassIllimixPage implements OnInit {
         }
       });
   }
-  nextStepOfSelectDest(destNumber: string) {
+  nextStepOfSelectDest(destNumberInfos: {destinataire: string, code: string}) {
     this.goToNextStep();
-    this.destNumber = destNumber;
-    console.log('destinataire', destNumber);
-
+    this.destNumber = destNumberInfos.destinataire;
+    this.destCodeFormule = destNumberInfos.code;
     /* if (typeof FollowAnalytics !== 'undefined') {
       if (destNumber !== this.currentUserNumber) {
         FollowAnalytics.logEvent('Pass_Internet_ChoixDestinataire', destNumber);
