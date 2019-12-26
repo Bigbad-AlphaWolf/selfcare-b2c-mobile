@@ -1,5 +1,5 @@
 import { OnInit, EventEmitter, Output, Component } from '@angular/core';
-import { REGEX_NUMBER, formatPhoneNumber, REGEX_FIX_NUMBER } from '..';
+import { REGEX_NUMBER, formatPhoneNumber, REGEX_FIX_NUMBER, SubscriptionModel } from '..';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { Contacts, Contact } from '@ionic-native/contacts';
@@ -20,6 +20,7 @@ export class SelectRecipientComponent implements OnInit {
   @Output() getContact = new EventEmitter();
   showErrorMsg;
   contactInfos: any;
+  isProcessing: boolean;
 
   constructor(
     private dashServ: DashboardService,
@@ -74,7 +75,11 @@ export class SelectRecipientComponent implements OnInit {
     this.destNumber = this.userNumber;
     // variable used for applying css and show or hide next btn
     this.otherDestinataire = false;
-    this.getDestinataire.emit(this.destNumber);
+    this.authenticationService.getSubscription(this.destNumber).subscribe((res: SubscriptionModel)=>{
+      if(res.code !== '0'){
+        this.getDestinataire.emit({destinataire: this.destNumber, code: res.code });
+      }
+    })
   }
 
   setOtherDestinataire() {
@@ -98,6 +103,8 @@ export class SelectRecipientComponent implements OnInit {
   }
 
   goToListPassStep() {
+    this.showErrorMsg = false;
+    this.isProcessing = true;
     this.destNumber = formatPhoneNumber(this.destNumber);
     this.authenticationService
       .isPostpaid(this.destNumber)
@@ -105,11 +112,22 @@ export class SelectRecipientComponent implements OnInit {
         if (isPostpaid) {
           this.showErrorMsg = true;
         } else {
-          this.getDestinataire.emit(this.destNumber);
-          if(this.contactInfos){
-            this.getContact.emit(this.contactInfos);
-          }
+          this.authenticationService.getSubscription(this.destNumber).subscribe((res: SubscriptionModel)=>{
+            this.isProcessing = false;
+            if(res.code !== '0'){              
+              this.getDestinataire.emit({destinataire: this.destNumber, code: res.code });
+              if(this.contactInfos){
+                this.getContact.emit(this.contactInfos);
+              }
+            }else {
+              this.showErrorMsg = true;
+            }
+          }, ()=>{
+            this.isProcessing = false;
+          })
         }
+      }, ()=>{
+        this.isProcessing = false;
       });
   }
 }

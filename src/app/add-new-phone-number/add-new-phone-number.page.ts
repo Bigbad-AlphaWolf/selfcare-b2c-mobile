@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { ReCaptchaV3Service } from 'ngx-captcha';
-import { captchaSiteKey } from '../register';
 import { REGEX_NUMBER, REGEX_FIX_NUMBER } from 'src/shared';
 
 @Component({
@@ -154,7 +153,7 @@ export class AddNewPhoneNumberPage implements OnInit, AfterViewChecked {
 
     sendOTPCode(msisdn: string) {
         // todo captcha
-        this.reCaptchaV3Service.execute(captchaSiteKey, this.action, tokenResp => {
+        /* this.reCaptchaV3Service.execute(captchaSiteKey, this.action, tokenResp => {
             this.authServ.generateUserOtp(msisdn, tokenResp).subscribe(
                 (res: any) => {
                     this.newNumber = msisdn;
@@ -169,11 +168,11 @@ export class AddNewPhoneNumberPage implements OnInit, AfterViewChecked {
                     }
                 }
             );
-        });
+        }); */
     }
 
     ValidateMobileNumber(msisdnRattache: string) {
-        if (REGEX_NUMBER.test(msisdnRattache)) {
+        /* if (REGEX_NUMBER.test(msisdnRattache)) {
             this.reCaptchaV3Service.execute(
                 captchaSiteKey,
                 this.action,
@@ -196,7 +195,7 @@ export class AddNewPhoneNumberPage implements OnInit, AfterViewChecked {
         } else {
             const infosFollow = { number_to_attach: msisdnRattache, login: this.msisdnLogin, error: 'Numéro invalide' };
             this.ibouSendMessage('Veuillez saisir un numéro mobile correct', `Ce numéro n'est pas valide`);
-        }
+        } */
     }
 
     userSendValidationCode(code: string) {
@@ -277,7 +276,7 @@ export class AddNewPhoneNumberPage implements OnInit, AfterViewChecked {
     }
 
     ValidateHomeNumber(homeNumber: string) {
-        if (REGEX_FIX_NUMBER.test(homeNumber)) {
+       /*  if (REGEX_FIX_NUMBER.test(homeNumber)) {
             this.reCaptchaV3Service.execute(
                 captchaSiteKey,
                 this.action,
@@ -300,7 +299,7 @@ export class AddNewPhoneNumberPage implements OnInit, AfterViewChecked {
         } else {
             const infosFollow = { number_to_attach: homeNumber, login: this.msisdnLogin, error: 'Numéro fixe invalide' };
             this.ibouSendMessage('Veuillez saisir un numéro fixe correct', `Ce numéro n'est pas valide`);
-        }
+        } */
     }
 
     goStepClientId() {

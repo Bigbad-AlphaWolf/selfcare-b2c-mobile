@@ -30,7 +30,7 @@
 
     <ng-container *ngIf="step === 2">
       <app-list-pass-internet-v2
-        [destinataire]="destinataire"
+        [destCodeFormule]="destCodeFormule"
         [paymentMode]="choosedPaymentMod"
         (getSelectedPassInternet)="nextStepOfChoosePassInternet($event)"
       >
