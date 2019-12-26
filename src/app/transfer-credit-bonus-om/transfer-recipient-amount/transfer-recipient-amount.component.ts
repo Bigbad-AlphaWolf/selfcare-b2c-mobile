@@ -210,7 +210,7 @@ export class TransferRecipientAmountComponent implements OnInit {
 
   checkOMToken() {
     const phoneNumber = this.dashService.getCurrentPhoneNumber();
-    this.omService.GetUserAuthInfo(phoneNumber).subscribe(omUser => {
+    this.omService.GetUserAuthInfo(phoneNumber).subscribe((omUser: any) => {
       // If user already connected open pinpad
       if (!omUser.hasApiKey || omUser.loginExpired || !omUser.accessToken) {
         this.operationOM = 'RESET_TOKEN';
@@ -229,7 +229,7 @@ export class TransferRecipientAmountComponent implements OnInit {
     this.omService
       .checkUserHasAccount(this.recipientInfos.phoneNumber)
       .subscribe(
-        res => {
+        (res: any) => {
           this.checkingOMAccount = false;
           if (res) {
             if (res.status_code.match('Success')) {

@@ -321,17 +321,6 @@ export class OrangeMoneyComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(confirmresult => {});
   }
-  LogAction(msisdn: string, content: string, typeLog: string, param: string) {
-    const logModel: LogModel = {
-      userId: msisdn,
-      message: content,
-      type: typeLog,
-      contexte: 'OrangeMoney',
-      params: param,
-      dateLog: new Date().toISOString()
-    };
-    return this.httpClient.post(logEndpoint, logModel).subscribe();
-  }
 
   formValid() {
     if (this.formulaireToUpload && this.cn1ToUpload && this.checkValidMail()) {
