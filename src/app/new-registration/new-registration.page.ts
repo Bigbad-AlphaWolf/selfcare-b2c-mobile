@@ -206,17 +206,8 @@ export class NewRegistrationPage implements OnInit {
   }
 
   openCguDialog() {
-    const dialogRef = this.dialog.open(CguPopupComponent, {
+    this.dialog.open(CguPopupComponent, {
       data: { login: '' }
-    });
-    dialogRef.afterClosed().subscribe(confirmresult => {
-      const password = this.formPassword.value.password;
-      const confirmPassword = this.formPassword.value.confirmPassword;
-      this.formPassword.setValue({
-        password,
-        confirmPassword,
-        acceptCGU: true
-      });
     });
   }
 
