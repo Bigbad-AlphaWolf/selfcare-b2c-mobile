@@ -6,6 +6,8 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 const ls = new SecureLS({ encodingType: 'aes' });
+import * as Fingerprint2 from 'fingerprintjs2';
+
 
 @Component({
   selector: 'app-login',
@@ -38,6 +40,16 @@ export class LoginPage implements OnInit {
       password: ['', [Validators.required]],
       rememberMe: [this.rememberMe]
     });
+    const uuid = ls.get('X-UUID');
+    if (!uuid) {
+      Fingerprint2.get(components => {
+          const values = components.map(component => {
+              return component.value;
+          });
+          const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
+          ls.set('X-UUID', x_uuid);
+      });
+  }
   }
 
   ionViewWillEnter() {

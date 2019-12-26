@@ -52,7 +52,8 @@ const logEndpoint = `${SERVER_API_URL}/management/selfcare-logs-file`;
 let eventKey = '';
 let errorKey = '';
 let value = {};
-
+const REGEX_IOS_SYSTEM = /iPhone|iPad|iPod|crios|CriOS/i;
+let isIOS = false;
 @Injectable({
   providedIn: 'root'
 })
@@ -133,10 +134,19 @@ export class OrangeMoneyService {
   }
 
   RegisterClient(registerClientData: OmRegisterClientModel) {
+    isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
+    const uuid = ls.get('X-UUID');
+    const os = isIOS ? 'iOS' : 'Android';
+    registerClientData.uuid = uuid;
+    registerClientData.os = os;
     return this.http.post(registerClientEndpoint, registerClientData);
   }
 
   GetPinPad(pinPadData: OmPinPadModel) {
+    isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
+    const uuid = ls.get('X-UUID');
+    const os = isIOS ? 'iOS' : 'Android';
+    pinPadData.os = os;
     return this.http.post(pinpadEndpoint, pinPadData).pipe(
       tap((res: any) => {
         const sequence = res.content.data.sequence.replace(new RegExp('-', 'g'), ' ');
@@ -165,10 +175,20 @@ export class OrangeMoneyService {
   }
 
   transferOM(transferOMData: TransferOrangeMoneyModel) {
+    isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
+    const uuid = ls.get('X-UUID');
+    const os = isIOS ? 'iOS' : 'Android';
+    transferOMData.uuid = uuid;
+    transferOMData.os = os;
     return this.http.post(transferOMEndpoint, transferOMData);
   }
 
   transferOMWithCode(transferOMData: TransferOMWithCodeModel) {
+    isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
+    const uuid = ls.get('X-UUID');
+    const os = isIOS ? 'iOS' : 'Android';
+    transferOMData.uuid = uuid;
+    transferOMData.os = os;
     return this.http.post(transferOMWithCodeEndpoint, transferOMData);
   }
 
