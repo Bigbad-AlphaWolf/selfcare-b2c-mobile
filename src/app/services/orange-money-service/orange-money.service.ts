@@ -91,12 +91,7 @@ export class OrangeMoneyService {
   }
 
   checkUserHasAccount(msisdn) {
-    const currentNumber = this.dashbordServ.getCurrentPhoneNumber();
-    return this.http.get(`${checkOMAccountEndpoint}/${msisdn}`).pipe(
-      tap((res: any) => {
-        this.LogAction(currentNumber, 'Verification beneficiaire', msisdn, '');
-      })
-    );
+    return this.http.get(`${checkOMAccountEndpoint}/${msisdn}`);
   }
 
   updateAccount(phoneNumber: any, accountInfos: OmUserInfo) {
@@ -122,12 +117,7 @@ export class OrangeMoneyService {
   }
 
   InitOtp(msisdn) {
-    this.LogAction(msisdn, 'debut Envoie OTP OM', 'info', '');
-    return this.http.get(`${otpEndpoint}/${msisdn}`).pipe(
-      tap((res: any) => {
-        this.LogAction(msisdn, 'fin Envoie OTP OM', 'info', '');
-      })
-    );
+    return this.http.get(`${otpEndpoint}/${msisdn}`);
   }
 
   getOMFeeWithoutCode() {
@@ -139,183 +129,51 @@ export class OrangeMoneyService {
   }
 
   GetUserAuthInfo(msisdn) {
-    this.LogAction(msisdn, 'debut demande auth info OM', 'info', '');
-    return this.http.get(`${UserAccessInfoEndpoint}/${msisdn}`).pipe(
-      tap((res: any) => {
-        this.LogAction(msisdn, 'fin demande auth info OM', 'info', '');
-      })
-    );
+    return this.http.get(`${UserAccessInfoEndpoint}/${msisdn}`);
   }
 
   RegisterClient(registerClientData: OmRegisterClientModel) {
-    this.LogAction(registerClientData.msisdn, 'debut Register API OM\n', 'info', JSON.stringify(registerClientData));
-    return this.http.post(registerClientEndpoint, registerClientData).pipe(
-      tap((res: any) => {
-        this.LogAction(registerClientData.msisdn, 'fin Register API OM', 'info', JSON.stringify(res));
-      })
-    );
+    return this.http.post(registerClientEndpoint, registerClientData);
   }
 
   GetPinPad(pinPadData: OmPinPadModel) {
-    this.LogAction(pinPadData.msisdn, 'debut Demande pinpad OM \n', 'info', JSON.stringify(pinPadData));
     return this.http.post(pinpadEndpoint, pinPadData).pipe(
       tap((res: any) => {
         const sequence = res.content.data.sequence.replace(new RegExp('-', 'g'), ' ');
         this.gotPinPadSubject.next(sequence.split(''));
-        this.LogAction(pinPadData.msisdn, 'fin Demande pinpad OM', 'info', JSON.stringify(res));
       })
     );
   }
 
   LoginClient(loginClientData: OmLoginClientModel) {
-    const logData = {
-      app_conf_version: loginClientData.app_conf_version,
-      app_version: loginClientData.app_version,
-      em: loginClientData.em,
-      pin: 'removed',
-      msisdn: loginClientData.msisdn,
-      user_type: loginClientData.user_type
-    };
-    this.LogAction(loginClientData.msisdn, 'debut login endpoint\n', 'info', JSON.stringify(logData));
-
-    return this.http.post(loginClientEndpoint, loginClientData).pipe(
-      tap((res: any) => {
-        this.LogAction(loginClientData.msisdn, 'fin login endpoint', 'info', JSON.stringify(res));
-      })
-    );
+    return this.http.post(loginClientEndpoint, loginClientData);
   }
 
   GetBalance(getBalanceData: OmBalanceModel) {
-    const logData = {
-      app_conf_version: getBalanceData.app_conf_version,
-      app_version: getBalanceData.app_version,
-      em: getBalanceData.em,
-      pin: 'removed',
-      msisdn: getBalanceData.msisdn,
-      user_type: getBalanceData.user_type
-    };
-    this.LogAction(getBalanceData.msisdn, 'debut Voir Solde OM', 'info', JSON.stringify(logData));
-
-    return this.http.post(getBalanceEndpoint, getBalanceData).pipe(
-      tap((res: any) => {
-        this.LogAction(getBalanceData.msisdn, 'fin Voir Solde OM', 'info', JSON.stringify(res));
-      })
-    );
+    return this.http.post(getBalanceEndpoint, getBalanceData);
   }
 
   AchatCredit(achatCreditData: OmBuyCreditModel) {
-    const logData = {
-      app_conf_version: achatCreditData.app_conf_version,
-      app_version: achatCreditData.app_version,
-      em: achatCreditData.em,
-      pin: 'removed',
-      msisdn: achatCreditData.msisdn,
-      msisdn2: achatCreditData.msisdn2,
-      amount: achatCreditData.amount,
-      user_type: achatCreditData.user_type
-    };
-    this.LogAction(achatCreditData.msisdn, 'debut achat de credit par OM', 'info', JSON.stringify(logData));
-
-    return this.http.post(achatCreditEndpoint, achatCreditData).pipe(
-      tap((res: any) => {
-        this.LogAction(achatCreditData.msisdn, 'fin achat de credit par OM', 'info', JSON.stringify(res));
-      })
-    );
+    return this.http.post(achatCreditEndpoint, achatCreditData);
   }
   AchatPassInternet(achatPassData: OmBuyPassModel) {
-    const logData = {
-      app_conf_version: achatPassData.app_conf_version,
-      app_version: achatPassData.app_version,
-      em: achatPassData.em,
-      pin: 'removed',
-      msisdn: achatPassData.msisdn,
-      msisdn2: achatPassData.msisdn2,
-      price_plan_index: achatPassData.price_plan_index,
-      user_type: achatPassData.user_type
-    };
-    this.LogAction(achatPassData.msisdn, 'debut achat de pass internet par OM', 'info', JSON.stringify(logData));
-
-    return this.http.post(achatPassEndpoint, achatPassData).pipe(
-      tap((res: any) => {
-        this.LogAction(achatPassData.msisdn, 'fin achat de pass internet par OM', 'info', JSON.stringify(res));
-      })
-    );
+    return this.http.post(achatPassEndpoint, achatPassData);
   }
 
   AchatIllimix(achatIllimixData: OmBuyIllimixModel) {
-    const logData = {
-      app_conf_version: achatIllimixData.app_conf_version,
-      app_version: achatIllimixData.app_version,
-      em: achatIllimixData.em,
-      pin: 'removed',
-      msisdn: achatIllimixData.msisdn,
-      msisdn2: achatIllimixData.msisdn2,
-      price_plan_index: achatIllimixData.price_plan_index,
-      user_type: achatIllimixData.user_type
-    };
-    this.LogAction(achatIllimixData.msisdn, 'debut achat illimix endpoint par OM', 'info', JSON.stringify(logData));
-
-    return this.http.post(achatIllimixEndpoint, achatIllimixData).pipe(
-      tap((res: any) => {
-        this.LogAction(achatIllimixEndpoint, 'fin achat illimix endpoint par OM', 'info', JSON.stringify(res));
-      })
-    );
+    return this.http.post(achatIllimixEndpoint, achatIllimixData);
   }
 
   transferOM(transferOMData: TransferOrangeMoneyModel) {
-    const logData = {
-      app_conf_version: transferOMData.app_conf_version,
-      app_version: transferOMData.app_version,
-      em: transferOMData.em,
-      pin: 'removed',
-      msisdn: transferOMData.msisdn_sender,
-      msisdn2: transferOMData.msisdn_receiver,
-      user_type: transferOMData.user_type
-    };
-    this.LogAction(transferOMData.msisdn_sender, 'debut transfert OM endpoint', 'info', JSON.stringify(logData));
-
-    return this.http.post(transferOMEndpoint, transferOMData).pipe(
-      tap((res: any) => {
-        this.LogAction(transferOMEndpoint, 'fin transfert OM endpoint', 'info', JSON.stringify(res));
-      })
-    );
+    return this.http.post(transferOMEndpoint, transferOMData);
   }
 
   transferOMWithCode(transferOMData: TransferOMWithCodeModel) {
-    const logData = {
-      app_conf_version: transferOMData.app_conf_version,
-      app_version: transferOMData.app_version,
-      em: transferOMData.em,
-      pin: 'removed',
-      msisdn: transferOMData.msisdn,
-      msisdn2: transferOMData.msisdn2,
-      user_type: transferOMData.user_type,
-      nom: transferOMData.nom,
-      prenom: transferOMData.prenom
-    };
-    this.LogAction(transferOMData.msisdn, 'debut transfert avec code OM endpoint', 'info', JSON.stringify(logData));
-
-    return this.http.post(transferOMWithCodeEndpoint, transferOMData).pipe(
-      tap((res: any) => {
-        this.LogAction(transferOMWithCodeEndpoint, 'fin transfert avec code OM endpoint', 'info', JSON.stringify(res));
-      })
-    );
+    return this.http.post(transferOMWithCodeEndpoint, transferOMData);
   }
 
   getTransferFees() {
     return this.http.get(getFeesEndpoint);
-  }
-
-  LogAction(msisdn: string, content: string, typeLog: string, params: string) {
-    const logModel: LogModel = {
-      userId: msisdn,
-      message: content,
-      type: typeLog,
-      contexte: 'OrangeMoney',
-      params,
-      dateLog: new Date().toISOString()
-    };
-    return this.http.post(logEndpoint, logModel).subscribe();
   }
 
   GetListIllimix(omAccount: OmUserInfo) {
