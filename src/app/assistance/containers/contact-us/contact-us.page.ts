@@ -27,7 +27,7 @@ export class ContactUsPage implements OnInit {
         src = TWITTER_URL;
         break;
     }
-    const browser = this.iab.create(src, '_system');
+    this.iab.create(src, '_system');
     // window.open(src);
   }
 

@@ -22,6 +22,7 @@ import {
 import { ParrainageService } from '../services/parrainage-service/parrainage.service';
 import { dashboardOpened } from '../dashboard';
 const ls = new SecureLS({ encodingType: 'aes' });
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 declare var FollowAnalytics: any;
 @Component({
   selector: 'app-sidemenu',
@@ -46,7 +47,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     private dashboardServ: DashboardService,
     public dialog: MatDialog,
     private accountService: AccountService,
-    private parrainageService: ParrainageService
+    private iab: InAppBrowser
   ) {}
 
   ngOnInit() {
@@ -101,7 +102,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goToAssistancePage() {
-    window.open(ASSISTANCE_URL);
+    this.iab.create(ASSISTANCE_URL, '_system');
     if (typeof FollowAnalytics !== 'undefined') {
       FollowAnalytics.logEvent('Sidemenu_Assistance', 'clicked');
     }
