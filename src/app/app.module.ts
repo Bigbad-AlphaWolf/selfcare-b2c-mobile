@@ -22,6 +22,8 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+
 @NgModule({
   declarations: [AppComponent, SidemenuComponent, ChangeAvatarPopupComponent, InProgressPopupComponent],
   entryComponents: [ChangeAvatarPopupComponent, InProgressPopupComponent],
@@ -49,7 +51,8 @@ import { AppMinimize } from '@ionic-native/app-minimize/ngx';
     FileTransferObject,
     File,
     FileOpener,
-    AppMinimize
+    AppMinimize,
+    InAppBrowser
   ],
   bootstrap: [AppComponent]
 })
