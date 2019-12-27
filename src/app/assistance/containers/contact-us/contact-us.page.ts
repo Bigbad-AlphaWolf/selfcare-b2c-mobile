@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FACEBOOK_URL, MAIL_URL, TWITTER_URL } from 'src/shared';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+
 
 @Component({
   selector: 'app-contact-us',
@@ -8,7 +10,7 @@ import { FACEBOOK_URL, MAIL_URL, TWITTER_URL } from 'src/shared';
   styleUrls: ['./contact-us.page.scss']
 })
 export class ContactUsPage implements OnInit {
-  constructor(private dashboardService: DashboardService) {
+  constructor(private dashboardService: DashboardService, private iab: InAppBrowser) {
     this.dashboardService.addDimeloScript();
   }
 
@@ -25,7 +27,8 @@ export class ContactUsPage implements OnInit {
         src = TWITTER_URL;
         break;
     }
-    window.open(src);
+    const browser = this.iab.create(src, '_system');
+    // window.open(src);
   }
 
   ngOnInit() {}
