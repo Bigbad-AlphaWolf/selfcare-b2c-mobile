@@ -144,7 +144,6 @@ export class OrangeMoneyService {
 
   GetPinPad(pinPadData: OmPinPadModel) {
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
-    const uuid = ls.get('X-UUID');
     const os = isIOS ? 'iOS' : 'Android';
     pinPadData.os = os;
     return this.http.post(pinpadEndpoint, pinPadData).pipe(
