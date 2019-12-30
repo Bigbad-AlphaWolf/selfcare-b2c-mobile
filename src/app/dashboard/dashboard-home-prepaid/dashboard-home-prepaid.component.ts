@@ -178,10 +178,8 @@ export class DashboardHomePrepaidComponent implements OnInit {
           this.passIntService
             .getStatusPassLoaded()
             .subscribe((result: { status: boolean; error: boolean }) => {
-              console.log(result);
               if (result.status) {
                 if (!result.error) {
-                  console.log(this.passIntService.getListPassInternetOfUser());
                   this.listPass = this.passIntService.getListPassInternetOfUser();
                 }
               }
