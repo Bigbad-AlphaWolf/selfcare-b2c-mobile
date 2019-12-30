@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DashboardService } from '../dashboard-service/dashboard.service';
-import { AuthenticationService } from '../authentication-service/authentication.service';
 import {
   PassInfoModel,
   PromoPassModel,
@@ -9,8 +8,10 @@ import {
   getOrderedListCategory,
   getListPassFilteredByLabelAndPaymentMod
 } from 'src/shared';
-import { SubscriptionModel } from 'src/app/dashboard';
-
+import { environment } from 'src/environments/environment';
+const { SERVER_API_URL, CONSO_SERVICE } = environment;
+import { HttpClient } from '@angular/common/http';
+const passByIdEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-internets`;
 @Injectable({
   providedIn: 'root'
 })
@@ -26,7 +27,7 @@ export class PassInternetService {
   hasErrorSubject: Subject<any> = new Subject<any>();
   constructor(
     private dashbService: DashboardService,
-    private authService: AuthenticationService
+    private http: HttpClient
   ) {}
 
   setPaymentMod(paymentMod: string) {
@@ -66,13 +67,12 @@ export class PassInternetService {
           this.listPassInternet,
           this.paymentMod
         );
-        this.passLoadedSubject.next(true);
+        this.passLoadedSubject.next({ status: true, error: null });
       },
       () => {
-        this.passLoadedSubject.next(true);
+        this.passLoadedSubject.next({ status: true, error: true });
       }
     );
-  
   }
 
   getListPassInternetShown() {
@@ -96,5 +96,9 @@ export class PassInternetService {
 
   getStatusPassLoaded() {
     return this.passLoadedSubject.asObservable();
+  }
+
+  getPassById(id: number) {
+    return this.http.get(`${passByIdEndpoint}/${id}`);
   }
 }

@@ -93,11 +93,7 @@ export class DashboardHomePrepaidComponent implements OnInit {
   globalCredit = '';
   creditValidity;
   internetValidity;
-  consoLoaded: boolean;
-  lastSlip;
   error = false;
-  errorFlyboxPrepaid;
-  message = '';
   src;
   slideOpts = {
     speed: 400,
@@ -111,6 +107,8 @@ export class DashboardHomePrepaidComponent implements OnInit {
   showPromoBanner = ls.get('banner');
   listBanniere: BannierePubModel[] = [];
   listPass: any[] = [];
+  loadingConso;
+  errorOnLoadingConso;
 
   constructor(
     private passIntService: PassInternetService,
@@ -131,9 +129,12 @@ export class DashboardHomePrepaidComponent implements OnInit {
   }
 
   getConso() {
+    this.loadingConso = true;
+    this.errorOnLoadingConso = false;
+    this.userCallConsoSummary = null;
+    this.userConsommationsCategories = [];
     this.dashbdSrv.getUserConsoInfosByCode().subscribe(
       (res: any[]) => {
-        this.consoLoaded = true;
         // res = arrangeCompteurByOrdre(res);
         const orderedConso = arrangeCompteurByOrdre(mockConso);
         const appelConso = orderedConso.length
@@ -158,10 +159,11 @@ export class DashboardHomePrepaidComponent implements OnInit {
         this.userCallConsoSummary = this.computeUserConsoSummary(
           this.userConsoSummary
         );
+        this.loadingConso = false;
       },
       err => {
-        this.consoLoaded = true;
-        this.errorFlyboxPrepaid = true;
+        this.loadingConso = false;
+        this.errorOnLoadingConso = true;
       }
     );
   }
@@ -251,7 +253,7 @@ export class DashboardHomePrepaidComponent implements OnInit {
   }
 
   goDetailsCom(number?: number) {
-    this.router.navigate(['/dashboard/dashboard-suivi']);
+    this.router.navigate(['/details-conso']);
     number
       ? this.followsAnalytics.registerEventFollow(
           'Voirs_details_dashboard',

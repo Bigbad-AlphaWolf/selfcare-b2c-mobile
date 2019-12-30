@@ -54,7 +54,10 @@
               <span class="text-style-1"></span
             ></span>
           </div>
-          <div class="validity-text" *ngIf="internetValidity">
+          <div
+            class="validity-text"
+            *ngIf="internetValidity && userCallConsoSummary?.consoData"
+          >
             valable jusqu'au {{ internetValidity }}
           </div>
         </div>
@@ -77,7 +80,10 @@
               }}<span class="text-style-1"> FCFA </span>
             </span>
           </div>
-          <div class="validity-text" *ngIf="creditValidity">
+          <div
+            class="validity-text"
+            *ngIf="creditValidity && userCallConsoSummary?.globalCredit"
+          >
             valable jusqu'au {{ creditValidity }}
           </div>
         </div>
@@ -85,19 +91,20 @@
     </ion-slides>
   </div>
   <div class="dashboard-block-conso-details">
-    <div *ngIf="0" class="dashboard-block-spinner">
+    <div *ngIf="loadingConso" class="dashboard-block-spinner">
       <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
     </div>
     <div
-      *ngIf="errorFlyboxPrepaid"
+      *ngIf="errorOnLoadingConso"
       class="dashboard-block-conso-details-spinner"
+      (click)="getConso()"
     >
       <span class="scb-text-full-black">
-        Erreur lors du chargement des données
+        Erreur lors du chargement des données. Réactualiser
       </span>
     </div>
     <ng-container *ngFor="let conso of userConsommationsCategories">
-      <div class="dashboard-block-conso-details-item">
+      <div class="dashboard-block-conso-details-item" *ngIf="!loadingConso">
         <div class="conso-name-value-line">
           <span class="conso-name scb-text-gray">{{ conso.compteur }}</span>
           <span class="conso-value scb-text-full-black"
