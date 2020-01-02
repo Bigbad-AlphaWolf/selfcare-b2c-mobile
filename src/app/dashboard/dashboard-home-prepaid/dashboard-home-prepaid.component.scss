@@ -1,0 +1,634 @@
+@import 'src/app/app';
+
+.dashboard-img-promo {
+  width: (355px / $baseWidthMobile2) * 100%;
+  //fixe the height this class
+  height: 67px;
+  margin: 10px auto;
+  position: relative;
+
+  .banniere-promo-img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .hide-banniere-promo {
+    position: absolute;
+    right: 14px;
+    top: 22px;
+    width: 21px;
+    height: 21px;
+  }
+}
+
+.dashboard-block-offres {
+  padding-left: 10px;
+  padding-right: 10px;
+  &-top3 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    &-item {
+      background-color: $white;
+      border-radius: 4px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      padding: 5px 10px 5px 10px;
+      .item-text {
+        margin-left: (10px / 172px) * 100%;
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 14px;
+
+        .text-style-1 {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        }
+      }
+
+      .item-icon {
+        width: percentage(60px/335px);
+        max-width: 60px;
+        height: 60px;
+        img {
+          display: block;
+          margin: 0 auto;
+          width: 100%;
+          height: auto;
+        }
+      }
+    }
+  }
+
+  &-top2 {
+    margin-top: 11px;
+    min-height: 70px;
+    border-radius: 3px;
+
+    &-item {
+      background-color: $white;
+      display: flex;
+      align-items: center;
+      padding-right: percentage(6px / $baseWidthMobile2);
+
+      &.disabled-block {
+        background-color: $grayDashboard;
+        opacity: 0.4;
+      }
+      .item-icon {
+        width: percentage(60px / 172px);
+        margin-left: 10px;
+        img {
+          display: block;
+          margin: 0 auto;
+          width: 100%;
+          height: auto;
+        }
+      }
+
+      .item-text {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 14px;
+        line-height: 1.14;
+        margin-left: 9px;
+        flex: 1 1 auto;
+
+        .text-style-1 {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        }
+      }
+
+      .item-icon,
+      .item-text {
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  &-top1 {
+    display: flex;
+    background-color: $white;
+    align-items: center;
+    width: (358px / $baseWidthMobile2) * 100%;
+    height: 50px;
+    border-radius: 3px;
+    margin-top: 9px;
+    margin-left: auto;
+    margin-right: auto;
+
+    .item-icon {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 12px percentage(11px / 358px);
+    }
+
+    .item-text {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 14px;
+      display: inline-block;
+      vertical-align: middle;
+
+      .text-style-1 {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      }
+    }
+  }
+}
+
+.pass-container {
+  background-color: $white;
+  padding: 10px percentage(10/375);
+  max-height: 300px;
+  overflow-y: hidden;
+  .title {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
+  }
+  .list-pass {
+    overflow-y: auto;
+    max-height: 236px;
+    margin-top: 10px;
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 95%;
+      border-radius: 10px;
+      border: solid 2px $silver;
+      padding: 10px 16px;
+      margin-bottom: 10px;
+      .pass-infos {
+        .price {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 18px;
+        }
+        .validity {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 12px;
+        }
+      }
+      .img-container {
+        width: percentage(14/233);
+        img {
+          width: 100%;
+          height: auto;
+        }
+      }
+    }
+  }
+}
+
+// FOR KEURGUIBOX FORMULE
+.dashboard-block-conso {
+  background-color: $white;
+  padding: 15px 0 10px 0;
+  margin-bottom: 10px;
+  margin-top: 10px;
+
+  &-top-texts {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 percentage(10px / $baseWidthMobile2);
+    .suivi-conso {
+      font-size: 20px;
+    }
+  }
+
+  &-btns {
+    height: 130px;
+    margin-top: -5px;
+    overflow-x: scroll;
+    white-space: nowrap;
+    display: flex;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    ion-slides {
+      ion-slide {
+        padding-left: 10px;
+        display: flex;
+        align-items: flex-start;
+        margin-top: 12px;
+      }
+    }
+
+    .scb-btn-credit,
+    .scb-btn-pass {
+      text-align: left;
+      min-width: 63%;
+      width: 100%;
+      height: 90px;
+      display: inline-block;
+      padding: 8px 0 10px 15px;
+      border-radius: 15px;
+      box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
+      margin-right: percentage(10px / 366px);
+      .scb-btn-top-block {
+        &-icon,
+        &-text {
+          display: inline-block;
+          vertical-align: middle;
+        }
+
+        &-icon {
+          height: 24px;
+          width: 24px;
+          margin-right: 4px;
+        }
+
+        &-text {
+          .text {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 18px;
+          }
+        }
+      }
+
+      .bottom-block {
+        margin-top: 1px;
+        .value {
+          font-family: HelveticaNeueLTStd-Bd, sans-serif;
+          font-size: 26px;
+
+          .text-style-1 {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 18px;
+          }
+        }
+      }
+
+      .validity-text {
+        margin-top: 6px;
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 9px;
+      }
+
+      .show-solde-info-text {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 16px;
+        line-height: 1.14;
+        display: inline-block;
+        margin-top: 27px;
+      }
+    }
+  }
+
+  &-details {
+    margin: -15px 0 0 0;
+    border-radius: 4px;
+    padding: 5px percentage(10px / $baseWidthMobile2);
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .dashboard-block-spinner {
+      display: flex;
+      justify-content: center;
+      padding-top: 10%;
+    }
+
+    .mat-spinner::ng-deep circle {
+      stroke: $orange;
+    }
+
+    &-item {
+      width: 100%;
+
+      &:not(:last-child) {
+        margin-bottom: 7px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid $silver;
+      }
+
+      .conso-name-value-line {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        .conso-name {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 18px;
+        }
+
+        .conso-value {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 18px;
+        }
+      }
+
+      .conso-expiration-line {
+        text-align: right;
+
+        .conso-expiration-date {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+////////////////////////////////
+
+// FOR HOME FORMULE
+.dashboard-block-conso-home {
+  background-color: $white;
+  padding: 15px 10px 20px 10px;
+  margin-bottom: 23px;
+  margin-top: 10px;
+
+  &-top-texts {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 percentage(10px / $baseWidthMobile2);
+    .suivi-conso {
+      font-size: 20px;
+    }
+  }
+
+  &-btns {
+    margin-top: 17px;
+    overflow-x: scroll;
+    white-space: nowrap;
+    border-radius: 15px;
+    display: flex;
+    box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scb-btn-forfait {
+      width: 100%;
+      height: 80px;
+      display: inline-block;
+      padding: 10px 0px 5px 15px;
+      .scb-btn-top-block {
+        &-icon,
+        &-text {
+          display: inline-block;
+          vertical-align: middle;
+        }
+
+        &-icon {
+          height: 24px;
+          width: 24px;
+          margin-right: 4px;
+        }
+
+        &-text {
+          .text {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 18px;
+          }
+        }
+      }
+
+      .bottom-block {
+        margin-top: 1px;
+        .value {
+          font-family: HelveticaNeueLTStd-Bd, sans-serif;
+          font-size: 23px;
+
+          .text-style-1 {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 18px;
+          }
+        }
+      }
+
+      .validity-text {
+        margin-top: 6px;
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 9px;
+      }
+
+      .show-solde-info-text {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 16px;
+        line-height: 1.14;
+        display: inline-block;
+        margin-top: 27px;
+      }
+    }
+  }
+}
+.dashboard-block-bill {
+  padding-left: percentage(10px / 375px);
+  padding-right: percentage(10px / 375px);
+  .last-bill {
+    &-title {
+      padding-top: 15px;
+      font-size: 20px;
+      height: 51px;
+      display: flex;
+      justify-content: space-between;
+      .more-bills {
+        span {
+          font-size: 16px;
+        }
+      }
+    }
+
+    &-infos {
+      background-color: $white;
+      padding: 7.5px 15.4px 0px 15.4px;
+      .emiss-text {
+        font-size: 14px;
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        padding-top: 7px;
+      }
+
+      &-utils {
+        display: flex;
+        padding-bottom: 10.7px;
+        border-bottom: solid $silver;
+
+        .bill-img-container {
+          width: percentage(43px/325px);
+          height: auto;
+          height: 43px;
+
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        .bill-infos-container {
+          width: 100%;
+          padding-left: 16.1px;
+
+          .top-infos,
+          .bottom-infos {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+
+            .price {
+              font-size: 22px;
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+            }
+
+            .paid-status {
+              color: $greenSuccess;
+              font-size: 14px;
+            }
+
+            .unpaid-status {
+              color: $redError;
+              font-size: 14px;
+            }
+          }
+        }
+      }
+
+      &-dates {
+        font-size: 14px;
+        padding-top: 7px;
+        padding-bottom: 15px;
+
+        .echeance-date {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          padding-top: 10px;
+        }
+      }
+
+      .more-infos {
+        padding-top: 17px;
+        border-top: solid #eeeeee;
+        padding-left: percentage(7px/325px);
+        padding-bottom: 2.5px;
+
+        &-item-block {
+          padding-bottom: 20px;
+
+          span {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 16px;
+            font-weight: normal;
+            font-style: normal;
+            padding-left: percentage(15px/325px);
+          }
+          .mat-spinner::ng-deep circle {
+            stroke: $orange;
+          }
+        }
+      }
+    }
+  }
+  .error {
+    height: 100%;
+    background-color: $white;
+    width: 100%;
+    text-align: center;
+
+    .error-message {
+      margin: 0 auto;
+      span {
+        color: red;
+      }
+    }
+  }
+}
+.dashboard-favorite-numbers-and-reduction-block {
+  padding-left: percentage(10px / 375px);
+  padding-right: percentage(10px / 375px);
+  margin-top: 20px;
+  .dashboard-favorite-numbers-block {
+    &-title {
+      span {
+        font-size: 20px;
+      }
+    }
+    .dashboard-favorite-numbers {
+      display: flex;
+      background-color: $white;
+      padding: 15px percentage(20px / 355px) 15px percentage(20px / 355px);
+      margin-top: 10px;
+      overflow-x: scroll;
+      &-item {
+        display: flex;
+        width: percentage(119px / 315px);
+        min-width: percentage(119px / 315px);
+        &:not(:last-of-type) {
+          margin-right: percentage(41px / 315px);
+        }
+        &-icon {
+          width: percentage(20px / 119px);
+          height: 21px;
+          margin-right: percentage(5px / 119px);
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+        &-text {
+          span {
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 16px;
+            color: #595959;
+          }
+        }
+      }
+    }
+  }
+  .dashboard-reduction-block {
+    padding: 10px percentage(15px / 355px) 10px percentage(20px / 355px);
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    background-color: $white;
+    &-icon {
+      width: percentage(60px / 319px);
+      height: 60px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    &-text {
+      width: percentage(249px / 320px);
+      align-self: center;
+      span {
+        font-size: 16px;
+      }
+      .text-style-2 {
+        font-family: HelveticaNeueLTStd-Roman;
+      }
+    }
+  }
+}
+/////////////////////////////
+
+.dashboard-block-footer-container {
+  position: fixed;
+  width: 201px;
+  right: 10px;
+  bottom: 30px;
+  &-content {
+    position: relative;
+    padding-left: 14px;
+    width: 100%;
+    border-radius: 31px;
+    box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.1);
+    height: 39px;
+    line-height: 36px;
+    background-color: $orange;
+    .footer-text {
+      font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      font-size: 16px;
+      line-height: 0.94;
+    }
+  }
+  .footer-ibou-icon {
+    width: percentage(60px/380px);
+    height: 60px;
+    position: fixed;
+    bottom: 4vh;
+    right: 10px;
+  }
+}

@@ -13,7 +13,6 @@ import * as SecureLS from 'secure-ls';
 import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
 import * as Fingerprint2 from 'fingerprintjs2';
 const ls = new SecureLS({ encodingType: 'aes' });
-import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
 
 @Component({
@@ -49,8 +48,7 @@ export class NewRegistrationPage implements OnInit {
     private authServ: AuthenticationService,
     private dashbServ: DashboardService,
     public dialog: MatDialog,
-    private ref: ChangeDetectorRef,
-    private openNativeSettings: OpenNativeSettings
+    private ref: ChangeDetectorRef
   ) {}
 
   goIntro() {
@@ -68,18 +66,6 @@ export class NewRegistrationPage implements OnInit {
 
   openDialogGoSettings() {
     this.dialogRef = this.dialog.open(SettingsPopupComponent);
-    this.dialogSub = this.dialogRef.afterClosed().subscribe(settings => {
-      if (settings) {
-        this.goSettings();
-      }
-    });
-  }
-
-  goSettings() {
-    this.openNativeSettings
-      .open('settings')
-      .then(res => {})
-      .catch(err => {});
   }
 
   getNumber() {
@@ -213,7 +199,7 @@ export class NewRegistrationPage implements OnInit {
 
   goLoginPage() {
     let login: string;
-    this.phoneNumber.startsWith('221')
+    this.phoneNumber && this.phoneNumber.startsWith('221')
       ? (login = this.phoneNumber.substring(3))
       : (login = this.phoneNumber);
     ls.set('subscribedNumber', login);

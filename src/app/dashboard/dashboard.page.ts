@@ -6,7 +6,8 @@ import {
   PROFILE_TYPE_HYBRID_1,
   KIRENE_Formule,
   PROFILE_TYPE_HYBRID_2,
-  dashboardOpened
+  dashboardOpened,
+  HOME_PREPAID_FORMULE
 } from '.';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
@@ -42,6 +43,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   PROFILE_TYPE_POSTPAID = PROFILE_TYPE_POSTPAID;
   PROFILE_TYPE_HYBRID_1 = PROFILE_TYPE_HYBRID_1;
   PROFILE_TYPE_HYBRID_2 = PROFILE_TYPE_HYBRID_2;
+  HOME_PREPAID_FORMULE = HOME_PREPAID_FORMULE;
   acceptCookie;
   hideCookie = true;
   fabOpened = false;
@@ -104,7 +106,10 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.currentFormule = userSubscription.nomOffre;
       });
     dashboardOpened.next();
-    this.parrainageService.isSponsor().subscribe(res => {}, err => {});
+    this.parrainageService.isSponsor().subscribe(
+      res => {},
+      err => {}
+    );
     this.getWelcomeStatus();
   }
 
@@ -125,7 +130,5 @@ export class DashboardPage implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-
-  }
+  ngOnDestroy() {}
 }

@@ -12,6 +12,7 @@ import { DashboardKireneComponent } from './dashboard-kirene/dashboard-kirene.co
 import { OmButtonComponent } from './om-button/om-button.component';
 import { MatProgressSpinnerModule } from '@angular/material';
 import { SharedModule } from 'src/shared/shared.module';
+import { DashboardHomePrepaidComponent } from './dashboard-home-prepaid/dashboard-home-prepaid.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,7 @@ const routes: Routes = [
     DashboardPrepaidHybridComponent,
     DashboardPostpaidComponent,
     DashboardKireneComponent,
+    DashboardHomePrepaidComponent,
     OmButtonComponent
   ]
 })
