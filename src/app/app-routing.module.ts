@@ -26,6 +26,12 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'buy-pass-internet/:id',
+    loadChildren:
+      './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'buy-credit',
     loadChildren: './buy-credit/buy-credit.module#BuyCreditPageModule',
     canActivate: [AuthGuard]
