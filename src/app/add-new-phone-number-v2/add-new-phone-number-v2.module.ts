@@ -5,14 +5,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AddNewPhoneNumberPage } from './add-new-phone-number.page';
+import { AddNewPhoneNumberV2Page } from './add-new-phone-number-v2.page';
 import { SharedModule } from 'src/shared/shared.module';
-import { NgxCaptchaModule } from 'ngx-captcha';
 
 const routes: Routes = [
   {
     path: '',
-    component: AddNewPhoneNumberPage
+    component: AddNewPhoneNumberV2Page
   }
 ];
 
@@ -22,9 +21,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
-    NgxCaptchaModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [AddNewPhoneNumberPage]
+  declarations: [AddNewPhoneNumberV2Page]
 })
-export class AddNewPhoneNumberPageModule {}
+export class AddNewPhoneNumberV2PageModule {}

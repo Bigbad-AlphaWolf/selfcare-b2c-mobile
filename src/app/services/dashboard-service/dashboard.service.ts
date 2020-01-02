@@ -158,11 +158,7 @@ export class DashboardService {
   }
 
   // attach new mobile phone number
-  registerNumberToAttach(detailsToCheck: {
-    login: string;
-    numero: string;
-    typeNumero: 'MOBILE' | 'FIX';
-  }) {
+  registerNumberToAttach(detailsToCheck: { login: string; numero: string; typeNumero: 'MOBILE' | 'FIXE' }) {
     detailsToCheck.login = this.authService.getUserMainPhoneNumber();
     return this.http.post(
       `${attachMobileNumberEndpoint}/register`,

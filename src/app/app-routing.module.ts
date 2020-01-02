@@ -72,11 +72,6 @@ const routes: Routes = [
       './change-main-phone-number/change-main-phone-number.module#ChangeMainPhoneNumberPageModule'
   },
   {
-    path: 'new-number',
-    loadChildren:
-      './add-new-phone-number/add-new-phone-number.module#AddNewPhoneNumberPageModule'
-  },
-  {
     path: 'my-formule',
     loadChildren: './my-formule/my-formule.module#MyFormulePageModule'
   },
@@ -130,7 +125,8 @@ const routes: Routes = [
     path: 'new-registration',
     loadChildren:
       './new-registration/new-registration.module#NewRegistrationPageModule'
-  }
+  },
+  { path: 'new-number', loadChildren: './add-new-phone-number-v2/add-new-phone-number-v2.module#AddNewPhoneNumberV2PageModule' }
 ];
 
 @NgModule({
