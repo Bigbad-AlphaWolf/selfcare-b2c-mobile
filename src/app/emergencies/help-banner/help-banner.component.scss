@@ -32,6 +32,7 @@
   padding-right: percentage(10/375);
   .img-container {
     width: percentage(102/365);
+    display: flex;
     img {
       width: percentage(90/102);
     }

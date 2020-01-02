@@ -41,7 +41,6 @@ const routes: Routes = [
     EmergenciesPage,
     ChangeSeddoCodeComponent,
     GetPukCodeComponent,
-    HelpBannerComponent,
     HelpItemComponent,
     NumeroSeriePopupComponent,
     OrangeMoneyComponent,

@@ -26,7 +26,7 @@ export class ModalSuccessComponent implements OnInit {
 
   closeDialog() {
     this.dialogRef.close(false);
-    if (this.data.type === 'changePassword') {
+    if (this.data.type === 'changePassword' || this.data.type === 'rattachment-success' || this.data.type === 'rattachment-failed') {
       this.router.navigate(['/dashboard']);
     } else if (this.data.type === 'noOMAccount') {
       this.dialogRef.close();
