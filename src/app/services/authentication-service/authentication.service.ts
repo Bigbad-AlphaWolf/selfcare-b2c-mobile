@@ -103,17 +103,6 @@ export class AuthenticationService {
 
   // get msisdn subscription
   getSubscription(msisdn: string) {
-    if (msisdn === '776713165') {
-      return of({
-        msisdn: '776713165',
-        imsi: null,
-        profil: 'PREPAID',
-        nomOffre: 'BOX BI',
-        codeOffre: 'BOX BI',
-        code: '9131',
-        message: null
-      });
-    }
     const lsKey = 'sub' + msisdn;
     const savedData = ls.get(lsKey);
     if (savedData) {
