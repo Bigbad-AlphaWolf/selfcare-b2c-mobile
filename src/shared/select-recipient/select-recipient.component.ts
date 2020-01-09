@@ -1,5 +1,10 @@
 import { OnInit, EventEmitter, Output, Component } from '@angular/core';
-import { REGEX_NUMBER, formatPhoneNumber, REGEX_FIX_NUMBER, SubscriptionModel } from '..';
+import {
+  REGEX_NUMBER,
+  formatPhoneNumber,
+  REGEX_FIX_NUMBER,
+  SubscriptionModel
+} from '..';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { Contacts, Contact } from '@ionic-native/contacts';
@@ -75,11 +80,16 @@ export class SelectRecipientComponent implements OnInit {
     this.destNumber = this.userNumber;
     // variable used for applying css and show or hide next btn
     this.otherDestinataire = false;
-    this.authenticationService.getSubscription(this.destNumber).subscribe((res: SubscriptionModel)=>{
-      if(res.code !== '0'){
-        this.getDestinataire.emit({destinataire: this.destNumber, code: res.code });
-      }
-    })
+    this.authenticationService
+      .getSubscription(this.destNumber)
+      .subscribe((res: SubscriptionModel) => {
+        if (res.code !== '0') {
+          this.getDestinataire.emit({
+            destinataire: this.destNumber,
+            code: res.code
+          });
+        }
+      });
   }
 
   setOtherDestinataire() {
@@ -106,28 +116,36 @@ export class SelectRecipientComponent implements OnInit {
     this.showErrorMsg = false;
     this.isProcessing = true;
     this.destNumber = formatPhoneNumber(this.destNumber);
-    this.authenticationService
-      .isPostpaid(this.destNumber)
-      .subscribe((isPostpaid: boolean) => {
+    this.authenticationService.isPostpaid(this.destNumber).subscribe(
+      (isPostpaid: boolean) => {
         if (isPostpaid) {
           this.showErrorMsg = true;
+          this.isProcessing = false;
         } else {
-          this.authenticationService.getSubscription(this.destNumber).subscribe((res: SubscriptionModel)=>{
-            this.isProcessing = false;
-            if(res.code !== '0'){              
-              this.getDestinataire.emit({destinataire: this.destNumber, code: res.code });
-              if(this.contactInfos){
-                this.getContact.emit(this.contactInfos);
+          this.authenticationService.getSubscription(this.destNumber).subscribe(
+            (res: SubscriptionModel) => {
+              this.isProcessing = false;
+              if (res.code !== '0') {
+                this.getDestinataire.emit({
+                  destinataire: this.destNumber,
+                  code: res.code
+                });
+                if (this.contactInfos) {
+                  this.getContact.emit(this.contactInfos);
+                }
+              } else {
+                this.showErrorMsg = true;
               }
-            }else {
-              this.showErrorMsg = true;
+            },
+            () => {
+              this.isProcessing = false;
             }
-          }, ()=>{
-            this.isProcessing = false;
-          })
+          );
         }
-      }, ()=>{
+      },
+      () => {
         this.isProcessing = false;
-      });
+      }
+    );
   }
 }

@@ -57,7 +57,6 @@ export class LoginPage implements OnInit {
 
   getRegistrationInformation() {
     this.subscribedNumber = ls.get('subscribedNumber');
-    this.rememberMe = true;
   }
 
   goToHomePage() {
@@ -67,6 +66,7 @@ export class LoginPage implements OnInit {
   onSubmit() {
     this.showErrMessage = false;
     const value = this.form.value;
+    this.rememberMe = true;
     this.UserLogin(value);
   }
 
