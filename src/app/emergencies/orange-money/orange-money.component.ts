@@ -12,7 +12,6 @@ import {
   FILENAME_DEPLAFONNEMENT_OM_ACCOUNT,
   FILENAME_ERROR_TRANSACTION_OM
 } from 'src/shared';
-import { LogModel } from 'src/app/services/orange-money-service';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
 import { environment } from 'src/environments/environment';
