@@ -95,10 +95,10 @@
     <span class="title" *ngIf="data.type === 'file'">
       {{ data.title }}
     </span>
-    <span class="title" *ngIf="data.type === 'rattachment-success'">
+    <span class="title" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-success'}"  *ngIf="data.type === 'rattachment-success'">
       Bravo !
     </span>
-    <span class="title" *ngIf="data.type === 'rattachment-failed'">
+    <span class="title" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-failed'}"  *ngIf="data.type === 'rattachment-failed'">
       Echec rattachement !
     </span>
     <span class="title" *ngIf="data.type === 'noOMAccount'">Désolé, </span>
@@ -137,16 +137,16 @@
       Ce numéro n'a pas de compte Orange Money et ne peut bénéficier de votre
       transfert
     </span>
-    <span class="text scb-text-gray" *ngIf="data.type === 'rattachment-success'">
+    <span class="text scb-text-light-black" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-success'}" *ngIf="data.type === 'rattachment-success'">
       Votre nouvelle ligne a bien était rajoutée à votre compte
     </span>
-    <span class="text" *ngIf="data.type === 'rattachment-failed'">
+    <span class="text scb-text-light-black" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-failed'}" *ngIf="data.type === 'rattachment-failed'">
       Veuillez contacter le service client
     </span>
   </div>
   <div class="btn-container">
     <button class="scb-btn scb-btn-white scb-btn-full" (click)="closeDialog()">
-      Fermer
+      {{ data && data.type === 'rattachment-success' || data && data.type === 'rattachment-failed' ? 'Terminer' : 'Fermer' }}
     </button>
   </div>
 </div>
