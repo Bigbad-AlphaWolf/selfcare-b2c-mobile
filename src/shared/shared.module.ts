@@ -45,6 +45,7 @@ import { WelcomePopupComponent } from './welcome-popup/welcome-popup.component';
 import { SettingsPopupComponent } from './settings-popup/settings-popup.component';
 import { HelpBannerComponent } from 'src/app/emergencies/help-banner/help-banner.component';
 import { RouterModule } from '@angular/router';
+import { PassVolumeDisplayPipe } from './pipes/pass-volume-display.pipe';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,8 @@ import { RouterModule } from '@angular/router';
     DeleteNumberPopupComponent,
     WelcomePopupComponent,
     SettingsPopupComponent,
-    HelpBannerComponent
+    HelpBannerComponent,
+    PassVolumeDisplayPipe
   ],
   imports: [
     CommonModule,
@@ -141,7 +143,8 @@ import { RouterModule } from '@angular/router';
     OperationSuccessOrFailComponent,
     WelcomePopupComponent,
     SettingsPopupComponent,
-    HelpBannerComponent
+    HelpBannerComponent,
+    PassVolumeDisplayPipe
   ],
   providers: [Contacts, SocialSharing]
 })

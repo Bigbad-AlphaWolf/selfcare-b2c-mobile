@@ -28,6 +28,7 @@
     "@ionic-native/app-minimize": "^5.15.0",
     "@ionic-native/contacts": "^5.10.0",
     "@ionic-native/core": "^5.0.0",
+    "@ionic-native/deeplinks": "^5.19.1",
     "@ionic-native/file": "^5.14.0",
     "@ionic-native/file-opener": "^5.15.0",
     "@ionic-native/file-transfer": "^5.14.0",
@@ -60,6 +61,7 @@
     "core-js": "^2.5.4",
     "es6-promise-plugin": "^4.2.2",
     "fingerprintjs2": "^2.1.0",
+    "ionic-plugin-deeplinks": "^1.0.20",
     "jwt-decode": "^2.2.0",
     "ngx-auto-unsubscribe": "^3.0.1",
     "ngx-captcha": "^7.0.0",
@@ -100,7 +102,6 @@
   "cordova": {
     "plugins": {
       "cordova-plugin-contacts": {},
-      "cordova-plugin-whitelist": {},
       "cordova-plugin-statusbar": {},
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
@@ -151,7 +152,26 @@
       "cordova-plugin-x-socialsharing": {},
       "cordova-plugin-appminimize": {},
       "cordova-open-native-settings": {},
-      "cordova-plugin-inappbrowser": {}
+      "cordova-plugin-inappbrowser": {},
+      "ionic-plugin-deeplinks": {
+        "URL_SCHEME": "orangeetmoi",
+        "DEEPLINK_SCHEME": "https",
+        "DEEPLINK_HOST": "orangeetmoi.sn",
+        "ANDROID_PATH_PREFIX": "/",
+        "ANDROID_2_PATH_PREFIX": "/",
+        "ANDROID_3_PATH_PREFIX": "/",
+        "ANDROID_4_PATH_PREFIX": "/",
+        "ANDROID_5_PATH_PREFIX": "/",
+        "DEEPLINK_2_SCHEME": " ",
+        "DEEPLINK_2_HOST": " ",
+        "DEEPLINK_3_SCHEME": " ",
+        "DEEPLINK_3_HOST": " ",
+        "DEEPLINK_4_SCHEME": " ",
+        "DEEPLINK_4_HOST": " ",
+        "DEEPLINK_5_SCHEME": " ",
+        "DEEPLINK_5_HOST": " "
+      },
+      "cordova-plugin-whitelist": {}
     },
     "platforms": [
       "android"

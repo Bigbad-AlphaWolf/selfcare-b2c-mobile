@@ -50,7 +50,7 @@
           </div>
           <div class="bottom-block">
             <span class="value"
-              >{{ userCallConsoSummary?.consoData }}
+              >{{ userCallConsoSummary?.consoData | passVolumeDisplay}}
               <span class="text-style-1"></span
             ></span>
           </div>
@@ -87,6 +87,9 @@
             valable jusqu'au {{ creditValidity }}
           </div>
         </div>
+      </ion-slide>
+      <ion-slide>
+        <app-om-button></app-om-button>
       </ion-slide>
     </ion-slides>
   </div>
