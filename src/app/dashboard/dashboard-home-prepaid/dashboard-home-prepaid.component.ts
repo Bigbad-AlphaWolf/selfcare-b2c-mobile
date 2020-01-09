@@ -136,7 +136,9 @@ export class DashboardHomePrepaidComponent implements OnInit {
     this.dashbdSrv.getUserConsoInfosByCode().subscribe(
       (res: any[]) => {
         // res = arrangeCompteurByOrdre(res);
-        const orderedConso = arrangeCompteurByOrdre(mockConso);
+        const orderedConso = res.length
+          ? arrangeCompteurByOrdre(res)
+          : arrangeCompteurByOrdre(mockConso);
         const appelConso = orderedConso.length
           ? orderedConso.find(x => x.categorie === USER_CONS_CATEGORY_CALL)
               .consommations

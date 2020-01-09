@@ -1,9 +1,11 @@
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { Component, QueryList, ViewChildren } from '@angular/core';
+import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
+import { LoginPage } from './login/login.page';
+
 declare var FollowAnalytics: any;
 
 @Component({
@@ -15,7 +17,8 @@ export class AppComponent {
     private platform: Platform,
     private statusBar: StatusBar,
     private splash: SplashScreen,
-    private appMinimize: AppMinimize
+    private appMinimize: AppMinimize,
+    private deeplinks: Deeplinks
   ) {
     this.initializeApp();
     // Initialize BackButton Eevent.
@@ -44,6 +47,19 @@ export class AppComponent {
           FollowAnalytics.registerForPush();
         }
       }
+    });
+  }
+
+  ionViewDidEnter() {
+    this.platform.ready().then(() => {
+      this.deeplinks.route({ '/login': LoginPage }).subscribe(
+        matched => {
+          console.log('deeplink matched');
+        },
+        notMatched => {
+          console.log('deeplink not matched');
+        }
+      );
     });
   }
 }

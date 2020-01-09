@@ -8,7 +8,7 @@ import { REGEX_FIX_NUMBER, REGEX_NUMBER } from 'src/shared';
 @Component({
   selector: 'app-add-new-phone-number-v2',
   templateUrl: './add-new-phone-number-v2.page.html',
-  styleUrls: ['./add-new-phone-number-v2.page.scss'],
+  styleUrls: ['./add-new-phone-number-v2.page.scss']
 })
 export class AddNewPhoneNumberV2Page implements OnInit {
   isValidNumber: boolean;
@@ -17,62 +17,83 @@ export class AddNewPhoneNumberV2Page implements OnInit {
   hasError: boolean;
   errorMsg: string;
   isProcessing: boolean;
-  constructor(private dashboardServ: DashboardService, private dialog: MatDialog, private followServ: FollowAnalyticsService) {}
+  constructor(
+    private dashboardServ: DashboardService,
+    private dialog: MatDialog,
+    private followServ: FollowAnalyticsService
+  ) {}
 
   ngOnInit() {
-      this.currentUserNumber = this.dashboardServ.getCurrentPhoneNumber();
+    this.currentUserNumber = this.dashboardServ.getCurrentPhoneNumber();
   }
   validNumber(msisdn: string) {
-      return REGEX_FIX_NUMBER.test(msisdn) || REGEX_NUMBER.test(msisdn);
+    return REGEX_FIX_NUMBER.test(msisdn) || REGEX_NUMBER.test(msisdn);
   }
 
   getNumberType(msisdn: string) {
-      let type: 'MOBILE' | 'FIXE' = 'MOBILE';
-      if (REGEX_FIX_NUMBER.test(msisdn)) {
-          type = 'FIXE';
-      }
-      return type;
+    let type: 'MOBILE' | 'FIXE' = 'MOBILE';
+    if (REGEX_FIX_NUMBER.test(msisdn)) {
+      type = 'FIXE';
+    }
+    return type;
   }
   enableNextBtn(msisdn: string) {
-      this.isValidNumber = this.validNumber(msisdn);
+    this.isValidNumber = this.validNumber(msisdn);
   }
   saveRattachmentNumber(msisdn: string) {
-      this.hasError = false;
-      this.errorMsg = null;
-      this.isProcessing = true;
-      const payload = { login: this.currentUserNumber, numero: msisdn, typeNumero: this.getNumberType(msisdn) };
-      this.dashboardServ.registerNumberToAttach(payload).subscribe(
-          (res: any) => {
-              this.isProcessing = false;
-              this.followAttachmentIssues(payload, 'success');
-              this.successDialog = this.dialog.open(ModalSuccessComponent, {
-                  data: { type: 'rattachment-success' },
-                  maxWidth: '100%'
-              });
-          },
-          (err: any) => {
-              this.isProcessing = false;
-              this.hasError = true;
-              this.successDialog = this.dialog.open(ModalSuccessComponent, {
-                data: { type: 'rattachment-failed' },
-                maxWidth: '100%'
-            });
-              this.errorMsg = err.error.title;
-              this.followAttachmentIssues(payload, 'error');
-          }
-      );
+    this.hasError = false;
+    this.errorMsg = null;
+    this.isProcessing = true;
+    const payload = {
+      login: this.currentUserNumber,
+      numero: msisdn,
+      typeNumero: this.getNumberType(msisdn)
+    };
+    this.dashboardServ.registerNumberToAttach(payload).subscribe(
+      (res: any) => {
+        this.isProcessing = false;
+        this.followAttachmentIssues(payload, 'success');
+        this.successDialog = this.dialog.open(ModalSuccessComponent, {
+          data: { type: 'rattachment-success' },
+          width: '300px'
+        });
+      },
+      (err: any) => {
+        this.isProcessing = false;
+        this.hasError = true;
+        this.successDialog = this.dialog.open(ModalSuccessComponent, {
+          data: { type: 'rattachment-failed' },
+          width: '300px'
+        });
+        this.errorMsg = err.error.title;
+        this.followAttachmentIssues(payload, 'error');
+      }
+    );
   }
 
-  followAttachmentIssues(payload: { login: string; numero: string; typeNumero: string }, eventType: string) {
-      if (eventType === 'success') {
-          const infosFollow = { attached_number: payload.numero, login: payload.login };
-          const eventName = `rattachment_${payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'}_success`;
-          this.followServ.registerEventFollow(eventName, eventType, infosFollow);
-      } else {
-          const infosFollow = { number_to_attach: payload.numero, login: payload.login };
-          const errorName = `rattachment_${payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'}_failed`;
-          this.followServ.registerEventFollow(errorName, eventType, infosFollow);
-          console.log(errorName, infosFollow);
-      }
+  followAttachmentIssues(
+    payload: { login: string; numero: string; typeNumero: string },
+    eventType: string
+  ) {
+    if (eventType === 'success') {
+      const infosFollow = {
+        attached_number: payload.numero,
+        login: payload.login
+      };
+      const eventName = `rattachment_${
+        payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'
+      }_success`;
+      this.followServ.registerEventFollow(eventName, eventType, infosFollow);
+    } else {
+      const infosFollow = {
+        number_to_attach: payload.numero,
+        login: payload.login
+      };
+      const errorName = `rattachment_${
+        payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'
+      }_failed`;
+      this.followServ.registerEventFollow(errorName, eventType, infosFollow);
+      console.log(errorName, infosFollow);
+    }
   }
 }

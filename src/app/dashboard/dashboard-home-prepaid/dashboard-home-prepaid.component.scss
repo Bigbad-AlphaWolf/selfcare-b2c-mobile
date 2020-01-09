@@ -139,7 +139,7 @@
 .pass-container {
   background-color: $white;
   padding: 10px percentage(10/375);
-  max-height: 300px;
+  max-height: 420px;
   overflow-y: hidden;
   .title {
     font-family: HelveticaNeueLTStd-Bd;
@@ -147,7 +147,7 @@
   }
   .list-pass {
     overflow-y: auto;
-    max-height: 236px;
+    max-height: 356px;
     margin-top: 10px;
     .item {
       display: flex;
@@ -158,10 +158,12 @@
       border: solid 2px $silver;
       padding: 10px 16px;
       margin-bottom: 10px;
+      min-height: 82px;
       .pass-infos {
         .price {
           font-family: HelveticaNeueLTStd-Bd;
           font-size: 18px;
+          margin-bottom: 10px;
         }
         .validity {
           font-family: HelveticaNeueLTStd-Roman;
@@ -212,6 +214,13 @@
         align-items: flex-start;
         margin-top: 12px;
       }
+    }
+
+    app-om-button {
+      min-width: 63%;
+      width: 100%;
+      height: 90px;
+      margin-right: percentage(10px / 366px);
     }
 
     .scb-btn-credit,

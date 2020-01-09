@@ -121,7 +121,9 @@ export class AuthenticationService {
       map((subscription: any) => {
         const result = {
           nomOffre: subscription.nomOffre,
-          profil: subscription.profil ? subscription.profil.toString().toUpperCase() : subscription.profil,
+          profil: subscription.profil
+            ? subscription.profil.toString().toUpperCase()
+            : subscription.profil,
           code: subscription.code
         };
         if (

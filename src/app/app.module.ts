@@ -19,19 +19,28 @@ import { ChangeAvatarPopupComponent } from './my-account/change-avatar-popup/cha
 import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
 import { SharedModule } from 'src/shared/shared.module';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
-import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import {
+  FileTransfer,
+  FileTransferObject
+} from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 
 @NgModule({
-  declarations: [AppComponent, SidemenuComponent, ChangeAvatarPopupComponent, InProgressPopupComponent],
+  declarations: [
+    AppComponent,
+    SidemenuComponent,
+    ChangeAvatarPopupComponent,
+    InProgressPopupComponent
+  ],
   entryComponents: [ChangeAvatarPopupComponent, InProgressPopupComponent],
   imports: [
     HttpClientModule,
     MatDialogModule,
     BrowserModule,
-    IonicModule.forRoot({animated: false}),
+    IonicModule.forRoot({ animated: false }),
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule
@@ -52,7 +61,8 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
     File,
     FileOpener,
     AppMinimize,
-    InAppBrowser
+    InAppBrowser,
+    Deeplinks
   ],
   bootstrap: [AppComponent]
 })
