@@ -306,7 +306,7 @@ export class OrangeMoneyComponent implements OnInit {
 
   openConfirmDialog() {
     const dialogRef = this.dialog.open(CancelOperationPopupComponent, {
-      data: { type: 'confirmationOperationDepannage' }
+      data: { confirmationOperationDepannage: true }
     });
     dialogRef.afterClosed().subscribe((res: any) => {
       if (res) {

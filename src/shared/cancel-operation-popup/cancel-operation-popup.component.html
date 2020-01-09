@@ -4,7 +4,7 @@
 			? 'Etes-vous sûr de vouloir basculer vers la formule ' + data?.canceldialogPageFormule
 			: data?.cancelDialogRegister
 			? 'Êtes vous sur de vouloir vous inscrire au programme de fidélité Orange Sargal ?'
-			: 'Etes-vous sûr de vouloir annuler votre achat ?'
+			: data?.confirmationOperationDepannage ? "Etes-vous sûr d'avoir téléchargé toutes les infos nécessaires ?" : 'Etes-vous sûr de vouloir annuler votre achat ?'
 	}}
 </div>
 
