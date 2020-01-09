@@ -55,7 +55,8 @@ export class AddNewPhoneNumberV2Page implements OnInit {
         this.followAttachmentIssues(payload, 'success');
         this.successDialog = this.dialog.open(ModalSuccessComponent, {
           data: { type: 'rattachment-success' },
-          width: '300px'
+          width: '95%',
+          maxWidth: '375px'
         });
       },
       (err: any) => {
@@ -63,7 +64,8 @@ export class AddNewPhoneNumberV2Page implements OnInit {
         this.hasError = true;
         this.successDialog = this.dialog.open(ModalSuccessComponent, {
           data: { type: 'rattachment-failed' },
-          width: '300px'
+          width: '95%',
+          maxWidth: '375px'
         });
         this.errorMsg = err.error.title;
         this.followAttachmentIssues(payload, 'error');
