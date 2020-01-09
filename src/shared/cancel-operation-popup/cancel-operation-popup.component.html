@@ -1,18 +1,27 @@
 <div class="dialog-title">
-	{{
-		data?.canceldialogPageFormule
-			? 'Etes-vous sûr de vouloir basculer vers la formule ' + data?.canceldialogPageFormule
-			: data?.cancelDialogRegister
-			? 'Êtes vous sur de vouloir vous inscrire au programme de fidélité Orange Sargal ?'
-			: data?.confirmationOperationDepannage ? "Etes-vous sûr d'avoir téléchargé toutes les infos nécessaires ?" : 'Etes-vous sûr de vouloir annuler votre achat ?'
-	}}
+  {{
+    data?.canceldialogPageFormule
+      ? 'Etes-vous sûr de vouloir basculer vers la formule ' +
+        data?.canceldialogPageFormule
+      : data?.cancelDialogRegister
+      ? 'Êtes vous sur de vouloir vous inscrire au programme de fidélité Orange Sargal ?'
+      : data?.confirmationOperationDepannage
+      ? "Etes-vous sûr d'avoir téléchargé toutes les infos nécessaires"
+      : 'Etes-vous sûr de vouloir annuler votre achat ?'
+  }}
 </div>
 
 <div class="dialog-actions-btns-block">
-	<div (click)="accept()" class="dialog-actions-btn scb-btn scb-btn-white c-pointer">
-		Oui
-	</div>
-	<div (click)="refused()" class="dialog-actions-btn scb-btn scb-btn-orange c-pointer">
-		Non
-	</div>
+  <div
+    (click)="accept()"
+    class="dialog-actions-btn scb-btn scb-btn-white c-pointer"
+  >
+    Oui
+  </div>
+  <div
+    (click)="refused()"
+    class="dialog-actions-btn scb-btn scb-btn-orange c-pointer"
+  >
+    Non
+  </div>
 </div>

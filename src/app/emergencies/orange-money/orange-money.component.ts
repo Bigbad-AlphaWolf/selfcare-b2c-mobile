@@ -3,7 +3,10 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { EmergencyService } from 'src/app/services/emergency-service/emergency.service';
-import { DashboardService, downloadEndpoint } from 'src/app/services/dashboard-service/dashboard.service';
+import {
+  DashboardService,
+  downloadEndpoint
+} from 'src/app/services/dashboard-service/dashboard.service';
 import {
   REGEX_EMAIL,
   MAX_USER_FILE_UPLOAD_SIZE,
@@ -19,7 +22,10 @@ const { SERVER_API_URL } = environment;
 import * as SecureLS from 'secure-ls';
 
 import { HttpClient } from '@angular/common/http';
-import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import {
+  FileTransfer,
+  FileTransferObject
+} from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { Platform } from '@ionic/angular';
@@ -67,7 +73,9 @@ export class OrangeMoneyComponent implements OnInit {
     this.userInfos = ls.get('user');
     this.form = this.fb.group({
       mail: [
-        this.userInfos.email && !this.invalideEmail(this.userInfos.email) ? this.userInfos.email : null,
+        this.userInfos.email && !this.invalideEmail(this.userInfos.email)
+          ? this.userInfos.email
+          : null,
         [Validators.required, Validators.pattern(REGEX_EMAIL)]
       ],
       form: [null, [Validators.required]],
@@ -282,7 +290,10 @@ export class OrangeMoneyComponent implements OnInit {
       },
       (err: any) => {
         this.loader = false;
-        this.openErrorDialog('errorUpload', `Une erreur est survenue lors de l'envoi du mail`);
+        this.openErrorDialog(
+          'errorUpload',
+          `Une erreur est survenue lors de l'envoi du mail`
+        );
         switch (this.type) {
           case 'creation-compte':
             break;

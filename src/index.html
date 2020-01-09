@@ -1,39 +1,46 @@
 <!DOCTYPE html>
 <html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Orange Et Moi</title>
 
-<head>
-  <meta charset="utf-8" />
-  <title>Orange Et Moi</title>
+    <base href="/" />
 
-  <base href="/" />
+    <meta
+      name="viewport"
+      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
 
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="format-detection" content="telephone=no" />
-  <meta name="msapplication-tap-highlight" content="no" />
+    <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
 
-  <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
-
-  <!-- add to homescreen for ios -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script>
-    (function(d) {
+    <!-- add to homescreen for ios -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <script>
+      (function(d) {
         var cm = d.createElement('scr' + 'ipt');
         cm.type = 'text/javascript';
         cm.async = true;
         cm.src =
-            ('https:' == d.location.protocol ? 'https://' : 'http://') +
-            'sonatel.dimelochat.com/chat/406100a8fe1d5ecae45bf7d8/loader.js';
+          ('https:' == d.location.protocol ? 'https://' : 'http://') +
+          'sonatel.dimelochat.com/chat/406100a8fe1d5ecae45bf7d8/loader.js';
         var s = d.getElementsByTagName('scr' + 'ipt')[0];
         s.parentNode.insertBefore(cm, s);
-    })(document);
-</script>
-</head>
+      })(document);
+    </script>
+  </head>
 
-<body>
-  <app-root></app-root>
-</body>
-
+  <body>
+    <app-root></app-root>
+  </body>
 </html>

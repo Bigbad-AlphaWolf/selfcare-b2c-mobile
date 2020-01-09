@@ -77,7 +77,7 @@ export class OmButtonComponent implements OnInit, OnDestroy {
     this.omServ.showBalance(true);
     const balance = solde;
     this.balance = balance ? formatCurrency(balance) : balance;
-    const phoneNumber = this.dashbordServ.getCurrentPhoneNumber();
+    const phoneNumber = ls.get('nOrMo');
     const omuser = this.omServ.GetOrangeMoneyUser(phoneNumber);
     if (omuser) {
       this.lastUpdateOM = omuser.lastUpdate;
