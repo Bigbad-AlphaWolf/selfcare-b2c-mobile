@@ -139,7 +139,6 @@
 .pass-container {
   background-color: $white;
   padding: 10px percentage(10/375);
-  max-height: 420px;
   overflow-y: hidden;
   .title {
     font-family: HelveticaNeueLTStd-Bd;
@@ -147,7 +146,6 @@
   }
   .list-pass {
     overflow-y: auto;
-    max-height: 356px;
     margin-top: 10px;
     .item {
       display: flex;
