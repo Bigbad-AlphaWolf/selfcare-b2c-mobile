@@ -58,8 +58,8 @@ export class NewRegistrationPage implements OnInit {
   ngOnInit() {
     this.step = 'CHECK_NUMBER';
     this.formPassword = this.fb.group({
-      password: ['', [Validators.required, Validators.minLength(5)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(5)]]
+      password: ['', [Validators.required]],
+      confirmPassword: ['', [Validators.required]]
     });
     this.getNumber();
   }
@@ -184,7 +184,12 @@ export class NewRegistrationPage implements OnInit {
     const pwd = this.formPassword.value.password;
     const confirmPwd = this.formPassword.value.confirmPassword;
     if (pwd === confirmPwd) {
-      this.goSuccess();
+      if (pwd.length > 4) {
+        this.goSuccess();
+      } else {
+        this.showErrMessage = true;
+        this.errorMsg = 'le mot de passe doit avoir au minumum 5 caractères';
+      }
     } else {
       this.showErrMessage = true;
       this.errorMsg = 'les mots de passe ne sont pas identiques';
