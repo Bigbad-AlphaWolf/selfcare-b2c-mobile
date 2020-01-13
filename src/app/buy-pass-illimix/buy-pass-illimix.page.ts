@@ -13,6 +13,7 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { BuyPassModel } from '../services/dashboard-service';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
+declare var FollowAnalytics: any;
 
 @Component({
   selector: 'app-buy-pass-illimix',
@@ -73,7 +74,10 @@ export class BuyPassIllimixPage implements OnInit {
         }
       });
   }
-  nextStepOfSelectDest(destNumberInfos: {destinataire: string, code: string}) {
+  nextStepOfSelectDest(destNumberInfos: {
+    destinataire: string;
+    code: string;
+  }) {
     this.goToNextStep();
     this.destNumber = destNumberInfos.destinataire;
     this.destCodeFormule = destNumberInfos.code;
@@ -154,12 +158,24 @@ export class BuyPassIllimixPage implements OnInit {
           this.failed = true;
           this.errorMsg = res.message;
           const followDetails = { error_code: res.code };
+          if (typeof FollowAnalytics !== 'undefined') {
+            FollowAnalytics.logError(
+              'Credit_Buy_Pass_Illimix_Error',
+              followDetails
+            );
+          }
         } else {
           const followDetails = {
             option_name: this.passIllimixChoosed.pass.nom,
             amount: this.passIllimixChoosed.pass.tarif,
             plan: this.passIllimixChoosed.pass.price_plan_index
           };
+          if (typeof FollowAnalytics !== 'undefined') {
+            FollowAnalytics.logEvent(
+              'Credit_Buy_Pass_Illimix_Success',
+              followDetails
+            );
+          }
         }
         this.goToSuccessStep();
       },
