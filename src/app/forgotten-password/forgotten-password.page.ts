@@ -98,11 +98,11 @@ export class ForgottenPasswordPage implements OnInit {
     this.formPassword = this.fb.group({
       password: [
         '',
-        [Validators.required, Validators.pattern(REGEX_PASSWORD2)]
+        [Validators.required]
       ],
       passwordConfirmation: [
         '',
-        [Validators.required, Validators.pattern(REGEX_PASSWORD2)]
+        [Validators.required]
       ]
     });
   }
@@ -136,31 +136,36 @@ export class ForgottenPasswordPage implements OnInit {
     const password = this.formPassword.value.password;
     const passwordConfirm = this.formPassword.value.passwordConfirmation;
     if (password === passwordConfirm) {
-      this.resetingPwd = true;
-      this.resetPasswordPayload.newPassword = password;
-      this.resetPasswordPayload.hmac = this.hmac;
-      this.resetPasswordPayload.login = this.phoneNumber;
-      this.authServ.resetPassword(this.resetPasswordPayload).subscribe(
-        res => {
-          this.resetingPwd = false;
-          this.router.navigate(['/login']);
-        },
-        err => {
-          this.resetingPwd = false;
-          if (err.status === 400) {
-            if (err.msg === 'invalidotp') {
-              this.error_message = 'Le code saisi est incorrect';
+      if(password.length < 5){
+        this.error_message = "le mot de passe doit avoir au minumum 5 caractères";
+      }else {
+
+        this.resetingPwd = true;
+        this.resetPasswordPayload.newPassword = password;
+        this.resetPasswordPayload.hmac = this.hmac;
+        this.resetPasswordPayload.login = this.phoneNumber;
+        this.authServ.resetPassword(this.resetPasswordPayload).subscribe(
+          res => {
+            this.resetingPwd = false;
+            this.router.navigate(['/login']);
+          },
+          err => {
+            this.resetingPwd = false;
+            if (err.status === 400) {
+              if (err.msg === 'invalidotp') {
+                this.error_message = 'Le code saisi est incorrect';
+              } else {
+                this.error_message =
+                  "Le nouveau mot de passe saisi n'est pas autorisé";
+              }
+            } else if (err.status === 503) {
+              this.error_message = 'Service momentanément indisponible';
             } else {
-              this.error_message =
-                "Le nouveau mot de passe saisi n'est pas autorisé";
+              this.error_message = 'Une erreur est survenue. Veuillez réessayer';
             }
-          } else if (err.status === 503) {
-            this.error_message = 'Service momentanément indisponible';
-          } else {
-            this.error_message = 'Une erreur est survenue. Veuillez réessayer';
           }
-        }
-      );
+        );
+      }
     } else {
       this.error_message = 'Les deux mots de passe ne sont pas identiques';
     }
