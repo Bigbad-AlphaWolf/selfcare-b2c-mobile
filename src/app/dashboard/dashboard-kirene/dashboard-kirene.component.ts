@@ -45,7 +45,10 @@ export class DashboardKireneComponent implements OnInit {
   canDoSOS = false;
   creditValidity;
 
-  pictures = [{ image: '/assets/images/banniere-promo-mob.png' }, { image: '/assets/images/banniere-promo-fibre.png' }];
+  pictures = [
+    { image: '/assets/images/banniere-promo-mob.png' },
+    { image: '/assets/images/banniere-promo-fibre.png' }
+  ];
 
   soldebonus: number;
   canTransferBonus: boolean;
@@ -76,12 +79,14 @@ export class DashboardKireneComponent implements OnInit {
     this.getUserConsommations();
     this.getSargalPoints();
     this.banniereServ.setListBanniereByFormule();
-    this.banniereServ.getStatusLoadingBanniere().subscribe((status: boolean) => {
-      this.isBanniereLoaded = status;
-      if (this.isBanniereLoaded) {
-        this.listBanniere = this.banniereServ.getListBanniereByFormule();
-      }
-    });
+    this.banniereServ
+      .getStatusLoadingBanniere()
+      .subscribe((status: boolean) => {
+        this.isBanniereLoaded = status;
+        if (this.isBanniereLoaded) {
+          this.listBanniere = this.banniereServ.getListBanniereByFormule();
+        }
+      });
     dashboardOpened.subscribe(x => {
       this.getUserConsommations();
       this.getSargalPoints();
@@ -94,13 +99,16 @@ export class DashboardKireneComponent implements OnInit {
     this.dashbordServ.getUserConsoInfosByCode().subscribe(
       (res: any[]) => {
         if (res.length) {
-          const appelConso = res.find(x => x.categorie === 'APPEL').consommations;
+          const appelConso = res.find(x => x.categorie === 'APPEL')
+            .consommations;
           if (appelConso) {
             this.getValidityDates(appelConso);
           }
           this.userConsoSummary = getConsoByCategory(res);
           this.userConsommationsCategories = this.getTrioConsoUser(res);
-          this.userCallConsoSummary = this.computeUserConsoSummary(this.userConsoSummary);
+          this.userCallConsoSummary = this.computeUserConsoSummary(
+            this.userConsoSummary
+          );
         } else {
           this.error = true;
         }
@@ -142,14 +150,27 @@ export class DashboardKireneComponent implements OnInit {
   }
 
   makeSargalAction() {
-    if (this.userSargalData && this.userSargalData.status === SARGAL_NOT_SUBSCRIBED && this.sargalDataLoaded) {
-      this.followsAnalytics.registerEventFollow('Sargal-registration-page', 'success', 'clicked');
+    if (
+      this.userSargalData &&
+      this.userSargalData.status === SARGAL_NOT_SUBSCRIBED &&
+      this.sargalDataLoaded
+    ) {
+      this.followsAnalytics.registerEventFollow(
+        'Sargal-registration-page',
+        'event',
+        'clicked'
+      );
       this.router.navigate(['/sargal-registration']);
     } else if (
-      (this.userSargalData && this.userSargalData.status !== SARGAL_UNSUBSCRIPTION_ONGOING) ||
+      (this.userSargalData &&
+        this.userSargalData.status !== SARGAL_UNSUBSCRIPTION_ONGOING) ||
       (!this.sargalUnavailable && this.sargalDataLoaded)
     ) {
-      this.followsAnalytics.registerEventFollow('Sargal-dashboard', 'success', 'clicked');
+      this.followsAnalytics.registerEventFollow(
+        'Sargal-dashboard',
+        'event',
+        'clicked'
+      );
       this.goToSargalDashboard();
     }
   }
@@ -174,6 +195,11 @@ export class DashboardKireneComponent implements OnInit {
   hidePromoBarner() {
     ls.set('banner', false);
     this.showPromoBarner = false;
+    this.followsAnalytics.registerEventFollow(
+      'Banner_close_dashboard',
+      'event',
+      'Mobile'
+    );
   }
 
   computeUserConsoSummary(consoSummary: UserConsommations) {
@@ -199,7 +225,8 @@ export class DashboardKireneComponent implements OnInit {
       // Check if eligible for SOS
       this.canDoSOS = +this.creditRechargement < 489;
       // Check if eligible for bonus transfer
-      this.canTransferBonus = this.creditRechargement > 20 && this.soldebonus > 1;
+      this.canTransferBonus =
+        this.creditRechargement > 20 && this.soldebonus > 1;
     }
 
     return {
@@ -210,13 +237,23 @@ export class DashboardKireneComponent implements OnInit {
   }
 
   showSoldeOM() {
+    this.followsAnalytics.registerEventFollow(
+      'Click_Voir_solde_OM_dashboard',
+      'event',
+      'clicked'
+    );
     this.router.navigate(['activate-om']);
   }
 
   openSosCreditPage() {
     this.canDoSOS = this.creditRechargement < 489;
     if (this.canDoSOS) {
-      this.goToSOSPage();
+      this.router.navigate(['/buy-sos-credit-illimix']);
+      this.followsAnalytics.registerEventFollow(
+        'Recharge_dashboard',
+        'event',
+        'clicked'
+      );
     }
   }
 
@@ -235,7 +272,11 @@ export class DashboardKireneComponent implements OnInit {
   // process validity date of balance & credit to compare them
   processDateDMY(date: string) {
     const tab = date.split('/');
-    const newDate = new Date(Number(tab[2]), Number(tab[1]) - 1, Number(tab[0]));
+    const newDate = new Date(
+      Number(tab[2]),
+      Number(tab[1]) - 1,
+      Number(tab[0])
+    );
     return newDate.getTime();
   }
 
@@ -246,23 +287,37 @@ export class DashboardKireneComponent implements OnInit {
   transferCreditOrPass() {
     if (!this.canDoSOS || this.canTransferBonus) {
       this.router.navigate(['/transfer/credit-bonus']);
-    }
-  }
-
-  goToSOSPage() {
-    if (this.canDoSOS) {
-      this.router.navigate(['/buy-sos-credit-illimix']);
+      this.followsAnalytics.registerEventFollow(
+        'Transfert_dashboard',
+        'event',
+        'clicked'
+      );
     }
   }
 
   goToTransfertOM() {
     this.router.navigate(['/transfer/orange-money']);
+    this.followsAnalytics.registerEventFollow(
+      'Transfert_OM_dashboard',
+      'event',
+      'clicked'
+    );
   }
 
   goBuyCredit() {
     this.router.navigate(['/buy-credit']);
+    this.followsAnalytics.registerEventFollow(
+      'Recharge_dashboard',
+      'event',
+      'clicked'
+    );
   }
   goBuyPassInternet() {
+    this.followsAnalytics.registerEventFollow(
+      'Pass_internet_dashboard',
+      'event',
+      'clicked'
+    );
     this.router.navigate(['/buy-pass-internet']);
   }
 

@@ -29,6 +29,7 @@ import {
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { Platform } from '@ionic/angular';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 const logEndpoint = `${SERVER_API_URL}/management/selfcare-logs-file`;
 
@@ -62,11 +63,11 @@ export class OrangeMoneyComponent implements OnInit {
     private route: ActivatedRoute,
     private emerg: EmergencyService,
     private dashb: DashboardService,
-    private httpClient: HttpClient,
     private transfer: FileTransfer,
     private file: File,
     private fileOpener: FileOpener,
-    private platform: Platform
+    private platform: Platform,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -280,10 +281,25 @@ export class OrangeMoneyComponent implements OnInit {
         this.loader = false;
         switch (this.type) {
           case 'creation-compte':
+            this.followAnalyticsService.registerEventFollow(
+              'Demande_Ouverture_Compte_OM',
+              'event',
+              'success'
+            );
             break;
           case 'deplafonnement':
+            this.followAnalyticsService.registerEventFollow(
+              'Demande_Deplafonnement_OM',
+              'event',
+              'success'
+            );
             break;
           default:
+            this.followAnalyticsService.registerEventFollow(
+              'Declaration_Erreur',
+              'event',
+              'success'
+            );
             break;
         }
         this.openSuccessDialog(this.type);
@@ -296,10 +312,25 @@ export class OrangeMoneyComponent implements OnInit {
         );
         switch (this.type) {
           case 'creation-compte':
+            this.followAnalyticsService.registerEventFollow(
+              'Demande_Ouverture_Compte_OM_error',
+              'error',
+              'error while sending mail'
+            );
             break;
           case 'deplafonnement':
+            this.followAnalyticsService.registerEventFollow(
+              'Demande_Deplafonnement_OM_error',
+              'error',
+              'error while sending mail'
+            );
             break;
           default:
+            this.followAnalyticsService.registerEventFollow(
+              'Declaration_Erreur_error',
+              'error',
+              'error while sending mail'
+            );
             break;
         }
       }
@@ -355,6 +386,11 @@ export class OrangeMoneyComponent implements OnInit {
   manageUploadError() {
     this.loader = false;
     this.openErrorDialog('errorUpload', 'Désolé, une erreur est survenue');
+    this.followAnalyticsService.registerEventFollow(
+      'Upload_File_Error',
+      'error',
+      'error on uploading files'
+    );
   }
 
   openErrorDialog(type: string, msg: string) {

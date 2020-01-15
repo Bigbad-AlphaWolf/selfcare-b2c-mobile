@@ -5,6 +5,7 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { EmergencyService } from 'src/app/services/emergency-service/emergency.service';
 import { MatDialog } from '@angular/material';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-change-seddo-code',
@@ -22,7 +23,8 @@ export class ChangeSeddoCodeComponent implements OnInit {
     private dashboardService: DashboardService,
     private emergencyService: EmergencyService,
     private dialog: MatDialog,
-    private authServ: AuthenticationService
+    private authServ: AuthenticationService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -89,12 +91,27 @@ export class ChangeSeddoCodeComponent implements OnInit {
         (res: any) => {
           this.loading = false;
           if (res.status === '200') {
+            this.followAnalyticsService.registerEventFollow(
+              'Change_Seddo_Code_Success',
+              'event',
+              msisdn
+            );
             this.openSuccessDialog('seddoCode');
           } else {
             this.errorMsg = res.message;
+            this.followAnalyticsService.registerEventFollow(
+              'Change_Seddo_Code_Error',
+              'error',
+              this.errorMsg
+            );
           }
         },
         (err: any) => {
+          this.followAnalyticsService.registerEventFollow(
+            'Change_Seddo_Code_Error',
+            'error',
+            `Error while changing pin ${msisdn}`
+          );
           this.loading = false;
           this.errorMsg = 'Erreur';
         }

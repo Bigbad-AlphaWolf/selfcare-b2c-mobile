@@ -13,6 +13,7 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { BuyPassModel } from '../services/dashboard-service';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 declare var FollowAnalytics: any;
 
 @Component({
@@ -47,7 +48,8 @@ export class BuyPassIllimixPage implements OnInit {
     private router: Router,
     private dashServ: DashboardService,
     public dialog: MatDialog,
-    private authServ: AuthenticationService
+    private authServ: AuthenticationService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   /** les etapes
@@ -81,13 +83,19 @@ export class BuyPassIllimixPage implements OnInit {
     this.goToNextStep();
     this.destNumber = destNumberInfos.destinataire;
     this.destCodeFormule = destNumberInfos.code;
-    /* if (typeof FollowAnalytics !== 'undefined') {
-      if (destNumber !== this.currentUserNumber) {
-        FollowAnalytics.logEvent('Pass_Internet_ChoixDestinataire', destNumber);
-      } else {
-        FollowAnalytics.logEvent('Pass_Internet_Destinataire_Moi', destNumber);
-      }
-    } */
+    if (destNumberInfos !== this.currentUserNumber) {
+      this.followAnalyticsService.registerEventFollow(
+        'Pass_Internet_ChoixDestinataire',
+        'event',
+        destNumberInfos.destinataire
+      );
+    } else {
+      this.followAnalyticsService.registerEventFollow(
+        'Pass_Internet_ChoixDestinataire',
+        'event',
+        destNumberInfos.destinataire
+      );
+    }
   }
 
   contactGot(contact) {
@@ -158,24 +166,22 @@ export class BuyPassIllimixPage implements OnInit {
           this.failed = true;
           this.errorMsg = res.message;
           const followDetails = { error_code: res.code };
-          if (typeof FollowAnalytics !== 'undefined') {
-            FollowAnalytics.logError(
-              'Credit_Buy_Pass_Illimix_Error',
-              followDetails
-            );
-          }
+          this.followAnalyticsService.registerEventFollow(
+            'Credit_Buy_Pass_Illimix_Error',
+            'error',
+            followDetails
+          );
         } else {
           const followDetails = {
             option_name: this.passIllimixChoosed.pass.nom,
             amount: this.passIllimixChoosed.pass.tarif,
             plan: this.passIllimixChoosed.pass.price_plan_index
           };
-          if (typeof FollowAnalytics !== 'undefined') {
-            FollowAnalytics.logEvent(
-              'Credit_Buy_Pass_Illimix_Success',
-              followDetails
-            );
-          }
+          this.followAnalyticsService.registerEventFollow(
+            'Credit_Buy_Pass_Illimix_Success',
+            'event',
+            followDetails
+          );
         }
         this.goToSuccessStep();
       },
@@ -190,6 +196,15 @@ export class BuyPassIllimixPage implements OnInit {
               'Service indisponible. Veuillez réessayer ultérieurement';
           }
         }
+        this.followAnalyticsService.registerEventFollow(
+          'Credit_Buy_Pass_Illimix_Error',
+          'error',
+          {
+            msisdn1: this.currentUserNumber,
+            msisdn2: this.destNumber,
+            message: 'Service indisponible'
+          }
+        );
         this.goToSuccessStep();
       }
     );
