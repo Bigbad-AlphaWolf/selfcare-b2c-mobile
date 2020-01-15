@@ -20,7 +20,7 @@ export class AddNewPhoneNumberV2Page implements OnInit {
   constructor(
     private dashboardServ: DashboardService,
     private dialog: MatDialog,
-    private followServ: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -52,7 +52,7 @@ export class AddNewPhoneNumberV2Page implements OnInit {
     this.dashboardServ.registerNumberToAttach(payload).subscribe(
       (res: any) => {
         this.isProcessing = false;
-        this.followAttachmentIssues(payload, 'success');
+        this.followAttachmentIssues(payload, 'event');
         this.successDialog = this.dialog.open(ModalSuccessComponent, {
           data: { type: 'rattachment-success' },
           width: '95%',
@@ -75,9 +75,9 @@ export class AddNewPhoneNumberV2Page implements OnInit {
 
   followAttachmentIssues(
     payload: { login: string; numero: string; typeNumero: string },
-    eventType: string
+    eventType: 'error' | 'event'
   ) {
-    if (eventType === 'success') {
+    if (eventType === 'event') {
       const infosFollow = {
         attached_number: payload.numero,
         login: payload.login
@@ -85,7 +85,11 @@ export class AddNewPhoneNumberV2Page implements OnInit {
       const eventName = `rattachment_${
         payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'
       }_success`;
-      this.followServ.registerEventFollow(eventName, eventType, infosFollow);
+      this.followAnalyticsService.registerEventFollow(
+        eventName,
+        eventType,
+        infosFollow
+      );
     } else {
       const infosFollow = {
         number_to_attach: payload.numero,
@@ -94,7 +98,11 @@ export class AddNewPhoneNumberV2Page implements OnInit {
       const errorName = `rattachment_${
         payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'
       }_failed`;
-      this.followServ.registerEventFollow(errorName, eventType, infosFollow);
+      this.followAnalyticsService.registerEventFollow(
+        errorName,
+        eventType,
+        infosFollow
+      );
       console.log(errorName, infosFollow);
     }
   }

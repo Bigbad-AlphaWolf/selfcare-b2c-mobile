@@ -9,7 +9,7 @@ export class FollowAnalyticsService {
   logErrorState = false;
   constructor() {}
 
-  registerEventFollow(event: string, type: string, params?: any) {
+  registerEventFollow(event: string, type: 'error' | 'event', params?: any) {
     if (typeof FollowAnalytics !== 'undefined') {
       if (type === 'error') {
         FollowAnalytics.logError(event, params);
@@ -22,6 +22,24 @@ export class FollowAnalyticsService {
   }
 
   registerId(hashUserName: string) {
-    FollowAnalytics.setUserId(hashUserName);
+    if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.setUserId(hashUserName);
+    }
+  }
+
+  setFirstName(firstName: string) {
+    if (typeof FollowAnalytics !== 'undefined') {
+    }
+  }
+
+  setLastName(lastName: string) {
+    if (typeof FollowAnalytics !== 'undefined') {
+    }
+  }
+
+  setString(key: string, value: string) {
+    if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.UserAttributes.setString(key, value);
+    }
   }
 }

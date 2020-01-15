@@ -95,7 +95,7 @@ export class SargalPage implements OnInit {
   goToCategorySargal(codeCategory: number, pageTitle?: string) {
     this.followService.registerEventFollow(
       'sargal-gift-page-clicked',
-      'success',
+      'event',
       {
         page: pageTitle,
         msisdn: this.currentNumber
