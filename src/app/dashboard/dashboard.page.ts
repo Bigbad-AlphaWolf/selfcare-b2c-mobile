@@ -110,22 +110,13 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.currentFormule = userSubscription.nomOffre;
       });
     dashboardOpened.next();
-    this.parrainageService.isSponsor().subscribe(
-      res => {},
-      err => {}
-    );
     this.getWelcomeStatus();
     this.deeplinks.route({ '/buy-pass-internet': BuyPassInternetPage, '/assistance': AssistancePage }).subscribe(
       matched => {
-        alert(matched);
-        console.log('deeplink matched');
-        console.log(matched.$link);
-        console.log(matched);
         this.router.navigate([matched.$link.path]);
         
       },
       notMatched => {
-        alert(notMatched);
         console.log(notMatched);
         console.log('deeplink not matched');
       }
