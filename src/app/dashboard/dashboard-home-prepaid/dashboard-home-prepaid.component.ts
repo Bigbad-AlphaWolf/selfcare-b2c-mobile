@@ -24,59 +24,7 @@ import {
   formatCurrency,
   dashboardOpened
 } from '..';
-declare var FollowAnalytics: any;
 const ls = new SecureLS({ encodingType: 'aes' });
-const mockConso = [
-  {
-    categorie: 'APPEL',
-    consommations: [
-      {
-        id: null,
-        code: 2,
-        compteur: 'Bonus vers Orange',
-        montant: 0,
-        msisdn: null,
-        categorie: 'APPEL',
-        unite: 'FCFA',
-        ordre: 99,
-        dateEffet: '25/03/2017 - 00h00',
-        dateExpiration: '19/12/2020 - 12h18',
-        montantFormat: '0 FCFA'
-      },
-      {
-        id: null,
-        code: 1,
-        compteur: 'Rechargement',
-        montant: 0,
-        msisdn: null,
-        categorie: 'APPEL',
-        unite: 'FCFA',
-        ordre: 1,
-        dateEffet: '17/12/2012 - 00h00',
-        dateExpiration: '22/12/2020 - 00h00',
-        montantFormat: '0 FCFA'
-      }
-    ]
-  },
-  {
-    categorie: 'INTERNET',
-    consommations: [
-      {
-        id: null,
-        code: 24,
-        compteur: 'Pass Volume Facebook0',
-        montant: 1137526,
-        msisdn: null,
-        categorie: 'INTERNET',
-        unite: 'DATA',
-        ordre: 99,
-        dateEffet: '15/03/2017 - 15h20',
-        dateExpiration: '05/01/2020 - 03h18',
-        montantFormat: '1 Go 86 Mo 886 Ko'
-      }
-    ]
-  }
-];
 @Component({
   selector: 'app-dashboard-home-prepaid',
   templateUrl: './dashboard-home-prepaid.component.html',
@@ -136,9 +84,11 @@ export class DashboardHomePrepaidComponent implements OnInit {
     this.dashbdSrv.getUserConsoInfosByCode().subscribe(
       (res: any[]) => {
         // res = arrangeCompteurByOrdre(res);
-        const orderedConso = res.length
-          ? arrangeCompteurByOrdre(res)
-          : arrangeCompteurByOrdre(mockConso);
+        this.followsAnalytics.registerEventFollow(
+          'dashboard_conso_fixe_prepaid',
+          'event'
+        );
+        const orderedConso = arrangeCompteurByOrdre(res);
         const appelConso = orderedConso.length
           ? orderedConso.find(x => x.categorie === USER_CONS_CATEGORY_CALL)
               .consommations
@@ -249,7 +199,11 @@ export class DashboardHomePrepaidComponent implements OnInit {
   }
 
   hidePromoBarner() {
-    FollowAnalytics.logEvent('Banner_close_dashboard', 'Mobile');
+    this.followsAnalytics.registerEventFollow(
+      'Banner_close_dashboard',
+      'event',
+      'Mobile'
+    );
     ls.set('banner', false);
     this.showPromoBanner = false;
   }
@@ -259,17 +213,22 @@ export class DashboardHomePrepaidComponent implements OnInit {
     number
       ? this.followsAnalytics.registerEventFollow(
           'Voirs_details_dashboard',
-          'success',
+          'event',
           'clicked'
         )
       : this.followsAnalytics.registerEventFollow(
           'Voirs_details_card_dashboard',
-          'success',
+          'event',
           'clicked'
         );
   }
 
   selectPass(id: number) {
+    this.followsAnalytics.registerEventFollow(
+      'Pass_internet_dashboard_fix',
+      'event',
+      'clicked'
+    );
     this.router.navigate([`/buy-pass-internet/${id}`]);
   }
 

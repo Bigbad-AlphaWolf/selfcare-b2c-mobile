@@ -7,7 +7,9 @@ import {
   KIRENE_Formule,
   PROFILE_TYPE_HYBRID_2,
   dashboardOpened,
-  HOME_PREPAID_FORMULE
+  HOME_PREPAID_FORMULE,
+  SubscriptionModel,
+  hash53
 } from '.';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
@@ -15,15 +17,14 @@ import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
-import { ParrainageService } from '../services/parrainage-service/parrainage.service';
-import { WelcomeStatusModel } from 'src/shared';
+import { WelcomeStatusModel, getCurrentDate } from 'src/shared';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { BuyPassInternetPage } from '../buy-pass-internet/buy-pass-internet.page';
-import { NavController } from '@ionic/angular';
 import { AssistancePage } from '../assistance/assistance.page';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()
@@ -38,8 +39,9 @@ export class DashboardPage implements OnInit, OnDestroy {
   userInfos: any = {};
   firstName;
   lastName;
-  currentProfile;
-  currentFormule;
+  currentProfile: string;
+  currentFormule: string;
+  currentCodeFormule;
   currentPhoneNumber = this.dashboardServ.getCurrentPhoneNumber();
   PROFILE_TYPE_PREPAID = PROFILE_TYPE_PREPAID;
   PROFILE_TYPE_HYBRID = PROFILE_TYPE_HYBRID;
@@ -54,10 +56,10 @@ export class DashboardPage implements OnInit, OnDestroy {
   constructor(
     private dashboardServ: DashboardService,
     private authServ: AuthenticationService,
-    private parrainageService: ParrainageService,
     private assistanceService: AssistanceService,
     private router: Router,
     private shareDialog: MatDialog,
+    private followAnalyticsService: FollowAnalyticsService,
     private deeplinks: Deeplinks
   ) {}
 
@@ -102,13 +104,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.firstName = user.firstName;
     this.lastName = user.lastName;
     this.currentPhoneNumber = this.dashboardServ.getCurrentPhoneNumber();
-    this.authServ
-      .getSubscription(this.currentPhoneNumber)
-      .subscribe((userSubscription: any) => {
-        this.userSubscription = userSubscription;
-        this.currentProfile = userSubscription.profil;
-        this.currentFormule = userSubscription.nomOffre;
-      });
+    this.getCurrentSubscription();
     dashboardOpened.next();
     this.getWelcomeStatus();
     this.deeplinks.route({ '/buy-pass-internet': BuyPassInternetPage, '/assistance': AssistancePage }).subscribe(
@@ -121,6 +117,42 @@ export class DashboardPage implements OnInit, OnDestroy {
         console.log('deeplink not matched');
       }
     );
+  }
+
+  getCurrentSubscription() {
+    const currentNumber = this.dashboardServ.getCurrentPhoneNumber();
+    const date = getCurrentDate();
+    this.authServ
+      .getSubscription(currentNumber)
+      .subscribe((res: SubscriptionModel) => {
+        this.userSubscription = res;
+        this.currentProfile = res.profil;
+        this.currentFormule = res.nomOffre;
+        this.currentCodeFormule = res.code;
+        this.followAnalyticsService.registerEventFollow('dashboard', 'event', {
+          msisdn: currentNumber,
+          profil: this.currentProfile,
+          formule: this.currentFormule,
+          date
+        });
+        this.followAnalyticsService.setString('profil', this.currentProfile);
+        this.followAnalyticsService.setString('formule', this.currentFormule);
+        const user = ls.get('user');
+        this.followAnalyticsService.setFirstName(user.firstName);
+        this.followAnalyticsService.setLastName(user.lastName);
+        const msisdn = this.authServ.getUserMainPhoneNumber();
+        const hashedNumber = hash53(msisdn).toString();
+        try {
+          this.followAnalyticsService.registerId(hashedNumber);
+        } catch (error) {
+          this.followAnalyticsService.registerId(hashedNumber);
+          this.followAnalyticsService.registerEventFollow(
+            'hash_error',
+            'error',
+            error
+          );
+        }
+      });
   }
 
   getkIRENEFormule() {

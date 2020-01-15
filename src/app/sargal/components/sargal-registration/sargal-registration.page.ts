@@ -43,16 +43,27 @@ export class SargalRegistrationPage implements OnInit {
         this.sargalServ.registerToSargal(this.currentPhoneNumber).subscribe(
           (res: any) => {
             this.isProcessing = false;
-            this.followService.registerEventFollow('Registration_Sargal_Success', 'success', {
-              msisdn: this.currentPhoneNumber
-            });
+            this.followService.registerEventFollow(
+              'Registration_Sargal_Success',
+              'event',
+              {
+                msisdn: this.currentPhoneNumber
+              }
+            );
             this.goBack();
           },
           (err: any) => {
-            this.followService.registerEventFollow('Registration_Sargal_Error', 'error', {
-              msisdn: this.currentPhoneNumber,
-              error: err && err.status ? err.status : 'Une erreur est survenue durant le traitement de la requête'
-            });
+            this.followService.registerEventFollow(
+              'Registration_Sargal_Error',
+              'error',
+              {
+                msisdn: this.currentPhoneNumber,
+                error:
+                  err && err.status
+                    ? err.status
+                    : 'Une erreur est survenue durant le traitement de la requête'
+              }
+            );
             this.isProcessing = false;
             this.hasError = true;
           }
