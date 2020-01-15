@@ -167,7 +167,7 @@ export class ForgottenPasswordPage implements OnInit {
         );
       }
     } else {
-      this.error_message = 'Les deux mots de passe ne sont pas identiques';
+      this.error_message = 'Les mots de passe saisis ne sont pas identiques';
     }
   }
 
