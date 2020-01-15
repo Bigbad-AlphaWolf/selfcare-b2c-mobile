@@ -15,12 +15,15 @@ import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
-import { delay } from 'rxjs/operators';
 import { ParrainageService } from '../services/parrainage-service/parrainage.service';
 import { WelcomeStatusModel } from 'src/shared';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+import { BuyPassInternetPage } from '../buy-pass-internet/buy-pass-internet.page';
+import { NavController } from '@ionic/angular';
+import { AssistancePage } from '../assistance/assistance.page';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()
@@ -54,7 +57,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     private parrainageService: ParrainageService,
     private assistanceService: AssistanceService,
     private router: Router,
-    private shareDialog: MatDialog
+    private shareDialog: MatDialog,
+    private deeplinks: Deeplinks
   ) {}
 
   ngOnInit() {
@@ -111,6 +115,21 @@ export class DashboardPage implements OnInit, OnDestroy {
       err => {}
     );
     this.getWelcomeStatus();
+    this.deeplinks.route({ '/buy-pass-internet': BuyPassInternetPage, '/assistance': AssistancePage }).subscribe(
+      matched => {
+        alert(matched);
+        console.log('deeplink matched');
+        console.log(matched.$link);
+        console.log(matched);
+        this.router.navigate([matched.$link.path]);
+        
+      },
+      notMatched => {
+        alert(notMatched);
+        console.log(notMatched);
+        console.log('deeplink not matched');
+      }
+    );
   }
 
   getkIRENEFormule() {

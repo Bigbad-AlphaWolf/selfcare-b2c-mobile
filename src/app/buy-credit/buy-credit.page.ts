@@ -144,7 +144,7 @@ export class BuyCreditPage implements OnInit {
   }
 
   contactGot(contact) {
-    this.recipientFirstName = contact.name.givenName;
+    this.recipientFirstName = contact.name.givenName ? contact.name.givenName : '' ;
     this.recipientLastName = contact.name.familyName
       ? contact.name.familyName
       : '';
