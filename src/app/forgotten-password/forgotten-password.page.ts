@@ -182,6 +182,7 @@ export class ForgottenPasswordPage implements OnInit {
   }
 
   goToPreviousStep() {
+    this.error_message = '';
     if (this.currentStep === 1) {
       this.router.navigate(['/login']);
     } else {
