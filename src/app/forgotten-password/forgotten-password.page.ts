@@ -167,7 +167,7 @@ export class ForgottenPasswordPage implements OnInit {
         );
       }
     } else {
-      this.error_message = 'Les deux mots de passe ne sont pas identiques';
+      this.error_message = 'Les mots de passe saisis ne sont pas identiques';
     }
   }
 
@@ -182,6 +182,7 @@ export class ForgottenPasswordPage implements OnInit {
   }
 
   goToPreviousStep() {
+    this.error_message = '';
     if (this.currentStep === 1) {
       this.router.navigate(['/login']);
     } else {
