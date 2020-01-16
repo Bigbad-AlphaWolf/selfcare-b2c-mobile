@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { formatCurrency, PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-buy-credit',
@@ -19,13 +20,10 @@ export class BuyCreditPage implements OnInit {
   destinatorPhoneNumber = '';
   choosedPaymentMod = PAYMENT_MOD_OM;
   amount;
-  // isForMyOwnNumber = false;
   creditToBuy;
-
   pinErrorMsg = '';
   pinPadHasError = false;
   PROFILE_TYPE_POSTPAID = PROFILE_TYPE_POSTPAID;
-
   balancePinErrorMsg;
   balancePinPadHasError;
   omBalancePinPadDisplayed = false;
@@ -45,7 +43,8 @@ export class BuyCreditPage implements OnInit {
   constructor(
     private router: Router,
     private dashbordServ: DashboardService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -93,6 +92,17 @@ export class BuyCreditPage implements OnInit {
     this.isForMyOwnNumber =
       this.dashbordServ.getCurrentPhoneNumber() === destNumber;
     this.destinatorPhoneNumber = destNumber;
+    this.isForMyOwnNumber
+      ? this.followAnalyticsService.registerEventFollow(
+          'Recharge_OM_ChoixDestinataire',
+          'event',
+          destNumber
+        )
+      : this.followAnalyticsService.registerEventFollow(
+          'Recharge_OM_Destinataire_Moi',
+          'event',
+          destNumber
+        );
   }
 
   setAmount(amount: number) {
@@ -144,7 +154,7 @@ export class BuyCreditPage implements OnInit {
   }
 
   contactGot(contact) {
-    this.recipientFirstName = contact.name.givenName;
+    this.recipientFirstName = contact.name.givenName ? contact.name.givenName : '' ;
     this.recipientLastName = contact.name.familyName
       ? contact.name.familyName
       : '';

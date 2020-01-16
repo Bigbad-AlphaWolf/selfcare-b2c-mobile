@@ -13,7 +13,7 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import { PROFILE_TYPE_POSTPAID, HOME_PREPAID_FORMULE } from '../dashboard';
 import { BuyPassModel } from '../services/dashboard-service';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
-declare var FollowAnalytics: any;
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 @Component({
   selector: 'app-buy-pass-internet',
   templateUrl: './buy-pass-internet.page.html',
@@ -55,7 +55,8 @@ export class BuyPassInternetPage implements OnInit {
     private authService: AuthenticationService,
     public dialog: MatDialog,
     private route: ActivatedRoute,
-    private passService: PassInternetService
+    private passService: PassInternetService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -138,18 +139,18 @@ export class BuyPassInternetPage implements OnInit {
     this.destinataire = destNumberInfos.destinataire;
     this.destCodeFormule = destNumberInfos.code;
     this.goToNextStep();
-    if (typeof FollowAnalytics !== 'undefined') {
-      if (destNumberInfos !== this.currentUserNumber) {
-        FollowAnalytics.logEvent(
-          'Pass_Internet_ChoixDestinataire',
-          destNumberInfos.destinataire
-        );
-      } else {
-        FollowAnalytics.logEvent(
-          'Pass_Internet_Destinataire_Moi',
-          destNumberInfos.destinataire
-        );
-      }
+    if (destNumberInfos !== this.currentUserNumber) {
+      this.followAnalyticsService.registerEventFollow(
+        'Pass_Internet_ChoixDestinataire',
+        'event',
+        destNumberInfos.destinataire
+      );
+    } else {
+      this.followAnalyticsService.registerEventFollow(
+        'Pass_Internet_ChoixDestinataire',
+        'event',
+        destNumberInfos.destinataire
+      );
     }
   }
 
@@ -264,24 +265,22 @@ export class BuyPassInternetPage implements OnInit {
       this.failed = true;
       this.errorMsg = res.message;
       const followDetails = { error_code: res.code };
-      if (typeof FollowAnalytics !== 'undefined') {
-        FollowAnalytics.logError(
-          'Credit_Buy_Pass_Internet_Error',
-          followDetails
-        );
-      }
+      this.followAnalyticsService.registerEventFollow(
+        'Credit_Buy_Pass_Internet_Error',
+        'error',
+        followDetails
+      );
     } else {
       const followDetails = {
         option_name: this.purchasePass.pass.nom,
         amount: this.purchasePass.pass.tarif,
         plan: this.purchasePass.pass.price_plan_index
       };
-      if (typeof FollowAnalytics !== 'undefined') {
-        FollowAnalytics.logEvent(
-          'Credit_Buy_Pass_Internet_Success',
-          followDetails
-        );
-      }
+      this.followAnalyticsService.registerEventFollow(
+        'Credit_Buy_Pass_Internet_Success',
+        'event',
+        followDetails
+      );
     }
     this.goToFinalStep();
   }
@@ -291,5 +290,14 @@ export class BuyPassInternetPage implements OnInit {
     this.failed = true;
     this.goToFinalStep();
     this.errorMsg = 'Service indisponible. Veuillez réessayer ultérieurement';
+    this.followAnalyticsService.registerEventFollow(
+      'Credit_Buy_Pass_Internet_Error',
+      'error',
+      {
+        msisdn1: this.currentUserNumber,
+        msisdn2: this.destinataire,
+        message: 'Service indisponible'
+      }
+    );
   }
 }

@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import * as SecureLS from 'secure-ls';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { DashboardService } from '../dashboard-service/dashboard.service';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {
   OmUserInfo,
@@ -15,14 +14,12 @@ import {
   OmBuyPassModel,
   OmBuyIllimixModel,
   TransferOrangeMoneyModel,
-  LogModel,
   TransferOMWithCodeModel
 } from '.';
-
-declare var FollowAnalytics: any;
+import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
-const { OM_URL, OM_SERVICE, SERVER_API_URL } = environment;
+const { OM_SERVICE, SERVER_API_URL } = environment;
 const otpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/init-otp`;
 const registerClientEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/register-client`;
 const loginClientEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/login-client`;
@@ -42,13 +39,6 @@ const transferOMWithCodeEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfer
 const omFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-without-code`;
 const omFeesEndpoint2 = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-with-code`;
 const ls = new SecureLS({ encodingType: 'aes' });
-
-const getListPassEndpoint = `${OM_URL}/api/v1/get-list-pass`;
-const getListIllimixEndpoint = `${OM_URL}/api/v1/get-list-illimix`;
-// const achatIllimixEndpoint = `${OM_URL}/api/v1/buy-illimix`;
-// const achatPassEndpoint = `${OM_URL}/api/v1/buy-pass`;
-// const achatCreditEndpoint = `${OM_URL}/api/v1/buy-credit`;
-const logEndpoint = `${SERVER_API_URL}/management/selfcare-logs-file`;
 let eventKey = '';
 let errorKey = '';
 let value = {};
@@ -58,14 +48,17 @@ let isIOS = false;
   providedIn: 'root'
 })
 export class OrangeMoneyService {
-  constructor(private http: HttpClient, private dashbordServ: DashboardService) {}
+  constructor(
+    private http: HttpClient,
+    private followAnalyticsService: FollowAnalyticsService
+  ) {}
   pinPadDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b'];
   gotPinPadSubject = new BehaviorSubject<string[]>([]);
   loginResponseSubject = new BehaviorSubject<any>({});
   balanceVisibilitySubject = new Subject<any>();
   randomPinPadDigits = [];
   // get main phone number ls.get('mainPhoneNumber');
-  handleOrangeMoneyResponse(res: any, db: any) {}
+
   pay(phoneNumber: any, pin: string, amont: number) {
     const db = this.getAccountInfos(phoneNumber);
     // invalid pin or account locked
@@ -148,7 +141,10 @@ export class OrangeMoneyService {
     pinPadData.os = os;
     return this.http.post(pinpadEndpoint, pinPadData).pipe(
       tap((res: any) => {
-        const sequence = res.content.data.sequence.replace(new RegExp('-', 'g'), ' ');
+        const sequence = res.content.data.sequence.replace(
+          new RegExp('-', 'g'),
+          ' '
+        );
         this.gotPinPadSubject.next(sequence.split(''));
       })
     );
@@ -193,26 +189,6 @@ export class OrangeMoneyService {
 
   getTransferFees() {
     return this.http.get(getFeesEndpoint);
-  }
-
-  GetListIllimix(omAccount: OmUserInfo) {
-    const headers = new HttpHeaders({
-      Authorization: 'Bearer ' + omAccount.loginToken,
-      OrangeMoney: 'true',
-      APIKey: omAccount.apiKey
-    });
-    const options = { headers };
-    return this.http.get(`${getListIllimixEndpoint}/${omAccount.msisdn}`, options);
-  }
-
-  GetListPassInternet(omAccount: OmUserInfo) {
-    const headers = new HttpHeaders({
-      Authorization: 'Bearer ' + omAccount.loginToken,
-      OrangeMoney: 'true',
-      APIKey: omAccount.apiKey
-    });
-    const options = { headers };
-    return this.http.get(`${getListPassEndpoint}/${omAccount.msisdn}`, options);
   }
 
   GetPin(pinPadResponse: any[], pin) {
@@ -276,7 +252,6 @@ export class OrangeMoneyService {
         eventKey = 'Recharge_Voir_Solde_OM_Success';
         errorKey = 'Recharge_Voir_Solde_OM_Error';
         break;
-
       case 'BUY_CREDIT':
         eventKey = 'Recharge_OM_Success';
         errorKey = 'Recharge_OM_Error';
@@ -309,14 +284,10 @@ export class OrangeMoneyService {
         break;
     }
     if (type === 'event') {
-      if (typeof FollowAnalytics !== 'undefined') {
-        FollowAnalytics.logEvent(eventKey, value);
-      }
+      this.followAnalyticsService.registerEventFollow(eventKey, 'event', value);
     } else {
-      value = { error_code: res.status_code };
-      if (typeof FollowAnalytics !== 'undefined') {
-        FollowAnalytics.logError(errorKey, value);
-      }
+      value = Object.assign({}, value, { error_code: res.status_code });
+      this.followAnalyticsService.registerEventFollow(errorKey, 'error', value);
     }
   }
 }

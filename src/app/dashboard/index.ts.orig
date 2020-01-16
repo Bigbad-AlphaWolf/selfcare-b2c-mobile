@@ -111,6 +111,7 @@ export interface PromoBoosterActive {
   isPromoRechargeActive: boolean;
 }
 
+<<<<<<< HEAD
 export function isFixPostpaid(codeFormule: string) {
   return REGEX_POSTPAID_FIXE.test(codeFormule);
 }
@@ -118,6 +119,7 @@ export function isFixPostpaid(codeFormule: string) {
 export function isFixPrepaid(codeFormule: string) {
   return REGEX_PREPAID_FIXE.test(codeFormule);
 }
+=======
 export const hash53 = function(str, seed = 0) {
   // tslint:disable-next-line: no-bitwise
   let h1 = 0xdeadbeef ^ seed,
@@ -141,3 +143,4 @@ export const hash53 = function(str, seed = 0) {
   // tslint:disable-next-line: no-bitwise
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
+>>>>>>> dd3f1a7385d57b17d74164e92fd9386deaa0dbe0

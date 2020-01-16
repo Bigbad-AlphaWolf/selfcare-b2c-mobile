@@ -8,10 +8,13 @@ import {
   PROFILE_TYPE_HYBRID_2,
   dashboardOpened,
   HOME_PREPAID_FORMULE,
-  SubscriptionModel,
-  hash53,
-isFixPostpaid,
+<<<<<<< HEAD
+  isFixPostpaid,
   isFixPrepaid
+=======
+  SubscriptionModel,
+  hash53
+>>>>>>> dd3f1a7385d57b17d74164e92fd9386deaa0dbe0
 } from '.';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
@@ -19,8 +22,6 @@ import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
-import { delay } from 'rxjs/operators';
-import { ParrainageService } from '../services/parrainage-service/parrainage.service';
 import { WelcomeStatusModel, getCurrentDate } from 'src/shared';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
@@ -62,7 +63,6 @@ export class DashboardPage implements OnInit, OnDestroy {
   constructor(
     private dashboardServ: DashboardService,
     private authServ: AuthenticationService,
-    private parrainageService: ParrainageService,
     private assistanceService: AssistanceService,
     private router: Router,
     private shareDialog: MatDialog,
@@ -138,8 +138,6 @@ export class DashboardPage implements OnInit, OnDestroy {
       .getSubscription(currentNumber)
       .subscribe((res: SubscriptionModel) => {
         this.userSubscription = res;
-this.currentProfile = userSubscription.profil;
-        this.currentFormule = userSubscription.nomOffre;
         this.currentProfile = res.profil;
         this.currentFormule = res.nomOffre;
         this.currentCodeFormule = res.code;
@@ -167,12 +165,6 @@ this.currentProfile = userSubscription.profil;
           );
         }
       });
-    dashboardOpened.next();
-    this.parrainageService.isSponsor().subscribe(
-      res => {},
-      err => {}
-    );
-    this.getWelcomeStatus();
   }
 
   getkIRENEFormule() {

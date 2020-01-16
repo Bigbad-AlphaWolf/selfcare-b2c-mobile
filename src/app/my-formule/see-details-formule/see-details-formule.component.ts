@@ -9,6 +9,7 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { FormuleService } from 'src/app/services/formule-service/formule.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-see-details-formule',
@@ -41,7 +42,8 @@ export class SeeDetailsFormuleComponent implements OnInit {
   constructor(
     private matDialog: MatDialog,
     private formuleServ: FormuleService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {}
@@ -76,10 +78,20 @@ export class SeeDetailsFormuleComponent implements OnInit {
                 this.authService.deleteSubFromStorage(this.msisdn);
                 this.changeFormuleProcessing = false;
                 this.goBackToListFormules.emit();
+                this.followAnalyticsService.registerEventFollow(
+                  'change_formule_success',
+                  'event',
+                  { msisdn: this.msisdn, formule: this.formule }
+                );
               },
               (error: any) => {
                 this.changeFormuleProcessing = false;
                 this.hasError = true;
+                this.followAnalyticsService.registerEventFollow(
+                  'change_formule_error',
+                  'error',
+                  { msisdn: this.msisdn, formule: this.formule }
+                );
               }
             );
         }

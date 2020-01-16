@@ -570,3 +570,16 @@ export interface SargalStatusModel {
   valid: boolean;
   profilClient: string;
 }
+
+export function getCurrentDate() {
+  const date = new Date();
+  let month = '' + (date.getMonth() + 1);
+  let day = '' + date.getDate();
+  const year = '' + date.getFullYear();
+  const hour = '' + date.getHours();
+  const minutes = '' + date.getMinutes();
+  if (month.length < 2) month = '0' + month;
+  if (day.length < 2) day = '0' + day;
+  const result = [day, month, year].join('-') + ' ' + [hour, minutes].join(':');
+  return result;
+}

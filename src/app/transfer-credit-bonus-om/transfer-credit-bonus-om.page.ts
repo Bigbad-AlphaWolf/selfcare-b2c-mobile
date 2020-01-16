@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   OPERATION_TYPE_SEDDO_CREDIT,
   OPERATION_TYPE_SEDDO_PASS,
@@ -18,6 +18,7 @@ import { MatDialog } from '@angular/material';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { TransfertBonnus } from '../services/dashboard-service';
 import { Contact } from '@ionic-native/contacts';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-transfer-credit-bonus-om',
@@ -58,9 +59,9 @@ export class TransferCreditBonusOmPage implements OnInit {
   constructor(
     private router: Router,
     private dashboardService: DashboardService,
-    private dialog: MatDialog,
     private authServ: AuthenticationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -193,11 +194,21 @@ export class TransferCreditBonusOmPage implements OnInit {
               amount: `${transfertbonnusInfo.amount} FCFA`,
               fees: `20 FCFA`
             };
+            this.followAnalyticsService.registerEventFollow(
+              'Transfer_Bonus_Success',
+              'event',
+              followDetails
+            );
           } else {
             this.failed = true;
             this.errorMsg = res.message;
             this.step = 'SUCCESS';
             const followDetails = { error_code: `${res.code}` };
+            this.followAnalyticsService.registerEventFollow(
+              'Transfer_Bonus_Error',
+              'error',
+              followDetails
+            );
           }
         },
         (error: any) => {
@@ -206,6 +217,11 @@ export class TransferCreditBonusOmPage implements OnInit {
           if (error.status === 503) {
             this.errorMsg = 'Ce service est momentanément indisponible';
           }
+          this.followAnalyticsService.registerEventFollow(
+            'Transfer_Bonus_Error',
+            'error',
+            'Service indisponible'
+          );
           this.step = 'SUCCESS';
         }
       );
@@ -231,16 +247,38 @@ export class TransferCreditBonusOmPage implements OnInit {
           if (res.status === '200') {
             const followDetails = {
               amount: `${this.amount} FCFA`,
-              fees: '20 FCFA'
+              fees: '20 FCFA',
+              msisdn,
+              msisdn2
             };
+            this.followAnalyticsService.registerEventFollow(
+              'Transfer_Credit_Success',
+              'event',
+              followDetails
+            );
             this.step = 'SUCCESS';
           } else {
-            const followDetails = { code_error: res.status };
-            this.pinHasError = true;
             this.pinErrMsg = res.message;
+            const followDetails = {
+              code_error: res.status,
+              msisdn,
+              msisdn2,
+              message: this.pinErrMsg
+            };
+            this.followAnalyticsService.registerEventFollow(
+              'Transfer_Credit_Error',
+              'error',
+              followDetails
+            );
+            this.pinHasError = true;
           }
         },
         err => {
+          this.followAnalyticsService.registerEventFollow(
+            'Transfer_Credit_Error',
+            'error',
+            'Service indisponible'
+          );
           this.loading = false;
           this.pinHasError = true;
           this.pinErrMsg =
