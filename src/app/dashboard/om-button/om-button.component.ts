@@ -5,7 +5,7 @@ import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
-import { formatCurrency } from '..';
+import { formatCurrency } from 'src/shared';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({

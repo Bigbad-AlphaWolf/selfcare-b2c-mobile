@@ -47,15 +47,38 @@ export class BillsService {
     return this.http.get(`${billsEndpoint}/${login}`);
   }
 
-getBillsAPI(numClient: string) {
-    return this.http.get(`${billsEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`);
-}
-getBillsPackageAPI(numClient: string) {
-  return this.http.get(`${billsEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=LANDLINE&size=20&page=0`);
-}
+  getBillsAPI(numClient: string) {
+    return this.http.get(
+      `${billsEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`
+    );
+  }
+  getBillsPackageAPI(numClient: string) {
+    return this.http.get(
+      `${billsEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=LANDLINE&size=20&page=0`
+    );
+  }
 
   getUserBills() {
     this.getBills().subscribe(
+      (res: any[]) => {
+        res.sort((x, y) => {
+          if (x.annee === y.annee) {
+            return y.mois - x.mois;
+          } else {
+            return y.annee - x.annee;
+          }
+        });
+
+        this.getBillsSubject.next(res);
+      },
+      err => {
+        this.getBillsSubject.next('error');
+      }
+    );
+  }
+
+  getUserBillsAPI(idClient: string) {
+    this.getBillsAPI(idClient).subscribe(
       (res: any[]) => {
         res.sort((x, y) => {
           if (x.annee === y.annee) {
@@ -89,7 +112,7 @@ getBillsPackageAPI(numClient: string) {
   }
 
   getUserBillsPackageAPI(numClient: string) {
-    this.getBillsPackage(numClient).subscribe(
+    this.getBillsPackageAPI(numClient).subscribe(
       (res: any[]) => {
         this.getBillsPackageSubject.next(res);
       },
@@ -99,18 +122,23 @@ getBillsPackageAPI(numClient: string) {
     );
   }
 
-  getBillsDetailAPI(payload: { numClient: string; groupage: string; mois: number; annee: number }) {
+  getBillsDetailAPI(payload: {
+    numClient: string;
+    groupage: string;
+    mois: number;
+    annee: number;
+  }) {
     //api/v1/facture/365915?type=MOBILE&search=year:2019,month:11
     if (this.currentNumber.startsWith('33')) {
-        return this.http.get(
-            `${billsDetailEndpointAPI}/${payload.numClient}?type=LANDLINE&search=year:${payload.annee},month:${payload.mois}`
-        );
+      return this.http.get(
+        `${billsDetailEndpointAPI}/${payload.numClient}?type=LANDLINE&search=year:${payload.annee},month:${payload.mois}`
+      );
     } else {
-        return this.http.get(
-            `${billsDetailEndpointAPI}/${payload.numClient}?type=MOBILE&search=year:${payload.annee},month:${payload.mois}`
-        );
+      return this.http.get(
+        `${billsDetailEndpointAPI}/${payload.numClient}?type=MOBILE&search=year:${payload.annee},month:${payload.mois}`
+      );
     }
-}
+  }
 
   getBillsDetail(payload: {
     numClient: string;
@@ -119,9 +147,7 @@ getBillsPackageAPI(numClient: string) {
     annee: number;
   }) {
     return this.http.get(
-      `${billsDetailEndpoint}/${payload.numClient}/${payload.groupage}/${
-        payload.mois
-      }/${payload.annee}/0/500`
+      `${billsDetailEndpoint}/${payload.numClient}/${payload.groupage}/${payload.mois}/${payload.annee}/0/500`
     );
   }
 
@@ -153,26 +179,33 @@ getBillsPackageAPI(numClient: string) {
     if (this.platform.is('ios')) {
       path = this.file.documentsDirectory;
     }
-    this.http.get(url).subscribe((x: any) => {
+    this.http.get(url).subscribe(
+      (x: any) => {
         bill.downloading = false;
         const fileName = bill.numeroFacture + '.pdf';
-        this.file.writeFile(path, fileName, this.convertBase64ToBlob(x.file, 'application/pdf'), {replace: true})
-        .then(() => {
-          this.fileOpener.open(path + fileName, 'application/pdf')
+        this.file
+          .writeFile(
+            path,
+            fileName,
+            this.convertBase64ToBlob(x.file, 'application/pdf'),
+            { replace: true }
+          )
+          .then(() => {
+            this.fileOpener
+              .open(path + fileName, 'application/pdf')
               .catch(() => {
-                  // log error console.log('Error opening pdf file');
+                // log error console.log('Error opening pdf file');
               });
-      })
-      .catch(() => {
-          // log error console.error('Error writing pdf file');
-      });
-
+          })
+          .catch(() => {
+            // log error console.error('Error writing pdf file');
+          });
       },
       err => {
         bill.downloading = false;
         this.openNotAvailableDialog();
       }
-      );
+    );
   }
 
   downloadUserBill(bill: any) {
@@ -184,9 +217,11 @@ getBillsPackageAPI(numClient: string) {
     bill.downloading = true;
 
     const pdfWindow = window.open('');
-    pdfWindow.document.write("<iframe width='100%' height='100%' src='" + bill.url + "'></iframe>");
+    pdfWindow.document.write(
+      "<iframe width='100%' height='100%' src='" + bill.url + "'></iframe>"
+    );
     bill.downloading = false;
-}
+  }
   convertBase64ToBlob(b64Data, contentType): Blob {
     contentType = contentType || '';
     const sliceSize = 512;
@@ -195,16 +230,16 @@ getBillsPackageAPI(numClient: string) {
     const byteCharacters = window.atob(b64Data);
     const byteArrays = [];
     for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-         const slice = byteCharacters.slice(offset, offset + sliceSize);
-         const byteNumbers = new Array(slice.length);
-         for (let i = 0; i < slice.length; i++) {
-             byteNumbers[i] = slice.charCodeAt(i);
-         }
-         const byteArray = new Uint8Array(byteNumbers);
-         byteArrays.push(byteArray);
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
     }
-    return new Blob(byteArrays, {type: contentType});
-}
+    return new Blob(byteArrays, { type: contentType });
+  }
 
   getBillsEmit() {
     return this.getBillsSubject.asObservable();
@@ -246,9 +281,11 @@ getBillsPackageAPI(numClient: string) {
     billPack.downloading = true;
 
     const pdfWindow = window.open('');
-    pdfWindow.document.write("<iframe width='100%' height='100%' src='" + billPack.url + "'></iframe>");
+    pdfWindow.document.write(
+      "<iframe width='100%' height='100%' src='" + billPack.url + "'></iframe>"
+    );
     billPack.downloading = false;
-}
+  }
 
   downloadUserBillPackage(billPack: any) {
     billPack.downloading = true;
@@ -260,9 +297,9 @@ getBillsPackageAPI(numClient: string) {
           // Only for chrome on IOS
           const pdfWindow = window.open('');
           pdfWindow.document.write(
-            '<iframe width=\'100%\' height=\'100%\' src=\'data:application/pdf;base64, ' +
+            "<iframe width='100%' height='100%' src='data:application/pdf;base64, " +
               encodeURI(base64) +
-              '\'></iframe>'
+              "'></iframe>"
           );
         } else {
           const linkSource = `data:application/pdf;base64,${base64}`;
@@ -283,8 +320,7 @@ getBillsPackageAPI(numClient: string) {
   }
 
   getIdClient() {
-    const msisdn = this.dashboardService.getCurrentPhoneNumber();
-    return this.http.get(`${idClientEndpoint}/${msisdn}`);
+    return this.dashboardService.getIdClient();
   }
 
   getLastSlip(idClient: any) {

@@ -10,18 +10,18 @@ import {
   arrangeCompteurByOrdre,
   getTrioConsoUser,
   PAYMENT_MOD_CREDIT,
-  formatDataVolume
+  formatDataVolume,
+  UserConsommations,
+  formatCurrency
 } from 'src/shared';
 import {
   USER_CONS_CATEGORY_CALL,
   USER_CONS_CATEGORY_INTERNET,
   getConsoByCategory,
   SubscriptionModel,
-  UserConsommations,
   CODE_COMPTEUR_VOLUME_NUIT_1,
   CODE_COMPTEUR_VOLUME_NUIT_2,
   CODE_COMPTEUR_VOLUME_NUIT_3,
-  formatCurrency,
   dashboardOpened
 } from '..';
 const ls = new SecureLS({ encodingType: 'aes' });

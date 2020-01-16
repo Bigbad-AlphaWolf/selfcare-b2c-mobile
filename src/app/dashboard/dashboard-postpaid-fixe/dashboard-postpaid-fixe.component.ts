@@ -6,7 +6,13 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { BillsService } from 'src/app/services/bill-service/bills.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
-import { formatDataVolume, MAIL_URL, months } from 'src/shared';
+import {
+  formatDataVolume,
+  MAIL_URL,
+  months,
+  arrangeCompteurByOrdre,
+  USER_CONS_CATEGORY_CALL
+} from 'src/shared';
 import { dashboardOpened } from '..';
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -41,6 +47,7 @@ export class DashboardPostpaidFixeComponent implements OnInit {
   lastUpdateOM;
   lastTimeUpdateOM;
   lastUpdateConso;
+  creditMensuelle: number;
   pictures = [
     { image: '/assets/images/banniere-promo-mob.png' },
     { image: '/assets/images/banniere-promo-fibre.png' }
@@ -54,7 +61,6 @@ export class DashboardPostpaidFixeComponent implements OnInit {
     slideShadows: true
   };
   lastSlip;
-  creditMensuelle: number;
   bordereau;
   currentNumber: string;
   clientId: string;
@@ -67,16 +73,21 @@ export class DashboardPostpaidFixeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getConsoPostpaid();
+    this.getConso();
     this.getBills();
-    this.billsService.getBillsEmit().subscribe(res => {
-      // this.loading = false;
-      if (res === 'error') {
+    this.bordereau = true;
+    this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
+    this.dashbordServ.getIdClient().subscribe(
+      (clientId: string) => {
+        console.log(clientId);
+        this.clientId = clientId;
+        this.errorBill = false;
+        this.subscribeBillServices(this.clientId);
+      },
+      err => {
         this.errorBill = true;
-      } else {
-        this.bills = res;
       }
-    });
+    );
     this.banniereServ.setListBanniereByFormule();
     this.banniereServ
       .getStatusLoadingBanniere()
@@ -88,12 +99,14 @@ export class DashboardPostpaidFixeComponent implements OnInit {
       });
 
     dashboardOpened.subscribe(x => {
-      this.getConsoPostpaid();
+      console.log('I have been called ****************************************************');
+      this.getConso();
       this.getBills();
       this.bordereau = true;
       this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
       this.dashbordServ.getIdClient().subscribe(
         (clientId: string) => {
+          console.log(clientId);
           this.clientId = clientId;
           this.errorBill = false;
           this.subscribeBillServices(this.clientId);
@@ -104,25 +117,31 @@ export class DashboardPostpaidFixeComponent implements OnInit {
       );
     });
   }
+
   subscribeBillServices(clientId: string) {
-    //lastSlip
+    // lastSlip
     this.billsService.getBillPackageEmit().subscribe(res => {
       // this.loading = false;
+      console.log('getBillPackageEmit ************************');
       res === 'error' ? (this.errorBill = true) : (this.bills = res);
       this.lastSlip = this.bills.length > 0 ? this.bills[0] : null;
       console.log(this.lastSlip);
     });
-    this.billsService.getUserBillsPackageAPI(clientId);
+    this.getBills();
   }
-  getConsoPostpaid() {
-    this.errorConso = false;
-    this.dashbordServ.getPostpaidUserConsoInfos().subscribe(
-      (res: any) => {
+  getConso() {
+    this.dashbordServ.getUserConsoInfosByCode().subscribe(
+      (res: any[]) => {
         this.dataLoaded = true;
-        this.userConsommations = this.computeUserConso(res);
-        this.getLastConsoUpdate();
+        res = arrangeCompteurByOrdre(res);
+        const appelConso = res.length
+          ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL).consommations
+          : null;
+        console.log(appelConso);
+        this.creditMensuelle =
+          appelConso.length > 0 ? appelConso[0].montant : 0;
       },
-      () => {
+      err => {
         this.dataLoaded = true;
         this.errorConso = true;
       }
@@ -174,11 +193,16 @@ export class DashboardPostpaidFixeComponent implements OnInit {
   }
 
   getBills() {
-    this.billsService.getUserBills();
+    this.billsService.getBillsPackageAPI(this.clientId).subscribe((res:any)=>{
+      console.log('getBillPackageEmit ************************');
+      res === 'error' ? (this.errorBill = true) : (this.bills = res);
+      this.lastSlip = this.bills.length > 0 ? this.bills[0] : null;
+      console.log(this.lastSlip);
+    });
   }
 
   downloadBill(bill: any) {
-    this.billsService.downloadUserBill(bill);
+    this.billsService.downloadUserBillAPI(bill);
   }
   mailToCustomerService() {
     window.open(MAIL_URL);

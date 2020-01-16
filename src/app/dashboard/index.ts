@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { REGEX_POSTPAID_FIXE, REGEX_PREPAID_FIXE } from 'src/shared';
+import { REGEX_POSTPAID_FIXE, REGEX_PREPAID_FIXE, UserConsommation } from 'src/shared';
 
 // differents profiles
 export const PROFILE_TYPE_PREPAID = 'PREPAID';
@@ -23,19 +23,7 @@ export const SARGAL_UNSUBSCRIPTION_ONGOING = 'UNSUBSCRIPTION_ONGOING';
 
 export const dashboardOpened = new Subject<string>();
 
-export interface UserConsommation {
-  id: string;
-  code: number;
-  compteur: string;
-  montant: number;
-  msisdn: string;
-  categorie: any;
-  dateEffet: string;
-  dateExpiration: string;
-  unite: string;
-  montantFormat: string;
-  ordre: number;
-}
+
 
 export interface SargalSubscriptionModel {
   status: string;
@@ -58,22 +46,6 @@ export const getConsoByCategory /* : { [k: string]: Array<UserConsommation> }  *
   return consoByCategory;
 };
 
-export interface ItemUserConso {
-  categorie: string;
-  consommations: UserConsommation[];
-}
-
-export type UserConsommations = Array<{
-  categorie: string;
-  consommations: Array<UserConsommation>;
-}>;
-
-export function formatCurrency(num) {
-  if (num) {
-    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
-  }
-  return '0';
-}
 
 export interface BillModel {
   annee: number;
@@ -118,6 +90,8 @@ export function isFixPostpaid(codeFormule: string) {
 export function isFixPrepaid(codeFormule: string) {
   return REGEX_PREPAID_FIXE.test(codeFormule);
 }
+
+// tslint:disable-next-line: only-arrow-functions
 export const hash53 = function(str, seed = 0) {
   // tslint:disable-next-line: no-bitwise
   let h1 = 0xdeadbeef ^ seed,
@@ -131,12 +105,12 @@ export const hash53 = function(str, seed = 0) {
     h2 = Math.imul(h2 ^ ch, 1597334677);
   }
   // tslint:disable-next-line: no-bitwise
-  h1 =
-    Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^
+    // tslint:disable-next-line: no-bitwise
     Math.imul(h2 ^ (h2 >>> 13), 3266489909);
   // tslint:disable-next-line: no-bitwise
-  h2 =
-    Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
+    // tslint:disable-next-line: no-bitwise
     Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   // tslint:disable-next-line: no-bitwise
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);

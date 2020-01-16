@@ -8,10 +8,8 @@ import {
 import {
   PROFILE_TYPE_PREPAID,
   getConsoByCategory,
-  UserConsommations,
   USER_CONS_CATEGORY_CALL,
   SargalSubscriptionModel,
-  formatCurrency,
   CODE_COMPTEUR_VOLUME_NUIT_1,
   CODE_COMPTEUR_VOLUME_NUIT_2,
   CODE_COMPTEUR_VOLUME_NUIT_3,
@@ -30,7 +28,9 @@ import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import {
   getLastUpdatedDateTimeText,
   arrangeCompteurByOrdre,
-  getTrioConsoUser
+  getTrioConsoUser,
+  UserConsommations,
+  formatCurrency
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';

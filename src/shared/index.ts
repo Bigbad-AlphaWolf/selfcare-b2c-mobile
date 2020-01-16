@@ -1,9 +1,3 @@
-import {
-  formatCurrency,
-  UserConsommations,
-  UserConsommation,
-  ItemUserConso
-} from 'src/app/dashboard';
 import * as SecureLS from 'secure-ls';
 import { HTTP } from '@ionic-native/http/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
@@ -578,8 +572,40 @@ export function getCurrentDate() {
   const year = '' + date.getFullYear();
   const hour = '' + date.getHours();
   const minutes = '' + date.getMinutes();
-  if (month.length < 2) month = '0' + month;
-  if (day.length < 2) day = '0' + day;
+  if (month.length < 2) { month = '0' + month; }
+  if (day.length < 2) { day = '0' + day; }
   const result = [day, month, year].join('-') + ' ' + [hour, minutes].join(':');
   return result;
+}
+
+
+export type UserConsommations = Array<{
+  categorie: string;
+  consommations: Array<UserConsommation>;
+}>;
+
+export function formatCurrency(num) {
+  if (num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+  }
+  return '0';
+}
+
+export interface ItemUserConso {
+  categorie: string;
+  consommations: UserConsommation[];
+}
+
+export interface UserConsommation {
+  id: string;
+  code: number;
+  compteur: string;
+  montant: number;
+  msisdn: string;
+  categorie: any;
+  dateEffet: string;
+  dateExpiration: string;
+  unite: string;
+  montantFormat: string;
+  ordre: number;
 }

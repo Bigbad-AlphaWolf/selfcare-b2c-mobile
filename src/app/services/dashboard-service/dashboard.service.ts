@@ -1,14 +1,13 @@
 import { Injectable, Renderer2, Inject, RendererFactory2 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject, Subscription, of } from 'rxjs';
+import { BehaviorSubject, Subject, Observable, interval, throwError, Subscription, of } from 'rxjs';
+import { tap, delay, map, shareReplay, retryWhen, flatMap } from 'rxjs/operators';
 import * as SecureLS from 'secure-ls';
 import { DOCUMENT } from '@angular/platform-browser';
-import { tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { BuyPassModel, TransfertBonnus, TransferCreditModel } from '.';
 import { SubscriptionUserModel, JAMONO_ALLO_CODE_FORMULE } from 'src/shared';
-
 const {
   SERVER_API_URL,
   SEDDO_SERVICE,
@@ -54,6 +53,7 @@ const reinitializeEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/r
 
 // Endpoint to get fixe number Identity
 const idClientEndpoint = `${SERVER_API_URL}/${GATEWAY_SERVICE}/api/numero-client`;
+const idClientEndpointAPI = `${SERVER_API_URL}/${GATEWAY_SERVICE}/api/numero-client`;
 const buyPassInternetForSomeoneByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/achat/internet-for-other`;
 
 // Endpoint to get sargal balance
@@ -297,8 +297,8 @@ export class DashboardService {
 
   getIdClient() {
     const phoneNumber = this.getCurrentPhoneNumber();
-    return this.http.get(`${idClientEndpoint}/${phoneNumber}`);
-  }
+    return this.authService.getSubscriptionCustomerOffer(phoneNumber).pipe(map((response: any) => response.clientCode));
+}
 
   getCodeFormuleOfMsisdn(msisdn: string) {
     let res: any;

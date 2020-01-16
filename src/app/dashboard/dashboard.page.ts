@@ -10,7 +10,7 @@ import {
   HOME_PREPAID_FORMULE,
   SubscriptionModel,
   hash53,
-isFixPostpaid,
+  isFixPostpaid,
   isFixPrepaid
 } from '.';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
@@ -76,8 +76,12 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.lastName = user.lastName;
 
     dashboardOpened.subscribe(x => {
+      console.log('I have been called **************************');
       this.isFormuleFixPostpaid = isFixPostpaid(this.currentFormule);
       this.isFormuleFixPrepaid = isFixPrepaid(this.currentFormule);
+      console.log('current formule' + this.currentFormule);
+      console.log('isFormuleFixPostpaid:' + this.isFormuleFixPostpaid);
+      console.log('isFormuleFixPrepaid:' + this.isFormuleFixPrepaid);
     });
   }
 
@@ -119,16 +123,20 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.getCurrentSubscription();
     dashboardOpened.next();
     this.getWelcomeStatus();
-    this.deeplinks.route({ '/buy-pass-internet': BuyPassInternetPage, '/assistance': AssistancePage }).subscribe(
-      matched => {
-        this.router.navigate([matched.$link.path]);
-        
-      },
-      notMatched => {
-        console.log(notMatched);
-        console.log('deeplink not matched');
-      }
-    );
+    this.deeplinks
+      .route({
+        '/buy-pass-internet': BuyPassInternetPage,
+        '/assistance': AssistancePage
+      })
+      .subscribe(
+        matched => {
+          this.router.navigate([matched.$link.path]);
+        },
+        notMatched => {
+          console.log(notMatched);
+          console.log('deeplink not matched');
+        }
+      );
   }
 
   getCurrentSubscription() {
@@ -138,8 +146,8 @@ export class DashboardPage implements OnInit, OnDestroy {
       .getSubscription(currentNumber)
       .subscribe((res: SubscriptionModel) => {
         this.userSubscription = res;
-this.currentProfile = userSubscription.profil;
-        this.currentFormule = userSubscription.nomOffre;
+        this.currentProfile = this.userSubscription.profil;
+        this.currentFormule = this.userSubscription.nomOffre;
         this.currentProfile = res.profil;
         this.currentFormule = res.nomOffre;
         this.currentCodeFormule = res.code;
@@ -168,6 +176,7 @@ this.currentProfile = userSubscription.profil;
         }
       });
     dashboardOpened.next();
+    console.log('call dashboard opened next **************************');
     this.parrainageService.isSponsor().subscribe(
       res => {},
       err => {}

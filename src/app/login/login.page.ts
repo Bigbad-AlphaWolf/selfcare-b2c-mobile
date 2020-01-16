@@ -17,7 +17,7 @@ export class LoginPage implements OnInit {
   showErrMessage = false;
   pFieldType = 'password';
   subscribedNumber: string;
-  rememberMe = false;
+  rememberMe = true;
   form: FormGroup;
   loading = false;
   errorMsg: string;
