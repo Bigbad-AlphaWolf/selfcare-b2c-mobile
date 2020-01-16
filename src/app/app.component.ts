@@ -17,9 +17,8 @@ export class AppComponent {
     private platform: Platform,
     private statusBar: StatusBar,
     private splash: SplashScreen,
-    private appMinimize: AppMinimize,
-    private deeplinks: Deeplinks
-  ) {
+    private appMinimize: AppMinimize
+      ) {
     this.initializeApp();
     // Initialize BackButton Eevent.
     this.platform.backButton.subscribe(() => {
@@ -47,19 +46,6 @@ export class AppComponent {
           FollowAnalytics.registerForPush();
         }
       }
-    });
-  }
-
-  ionViewDidEnter() {
-    this.platform.ready().then(() => {
-      this.deeplinks.route({ '/login': LoginPage }).subscribe(
-        matched => {
-          console.log('deeplink matched');
-        },
-        notMatched => {
-          console.log('deeplink not matched');
-        }
-      );
     });
   }
 }

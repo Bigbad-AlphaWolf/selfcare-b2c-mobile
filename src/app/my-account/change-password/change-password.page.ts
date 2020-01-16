@@ -26,15 +26,15 @@ export class ChangePasswordPage implements OnInit {
     this.form = this.fb.group({
       oldPassword: [
         '',
-        [Validators.required, Validators.pattern(REGEX_PASSWORD2)]
+        [Validators.required]
       ],
       newPassword: [
         '',
-        [Validators.required, Validators.pattern(REGEX_PASSWORD2)]
+        [Validators.required]
       ],
       confirmPassword: [
         '',
-        [Validators.required, Validators.pattern(REGEX_PASSWORD2)]
+        [Validators.required]
       ]
     });
   }
@@ -68,8 +68,12 @@ export class ChangePasswordPage implements OnInit {
     const newPassword = this.form.value.newPassword;
     const confirmPwd = this.form.value.confirmPassword;
     if (confirmPwd === newPassword) {
-      this.loading = true;
-      this.accountService.changeUserPassword(currentPassword, newPassword);
+      if(confirmPwd.length < 5){
+        this.error = 'le mot de passe doit avoir au minumum 5 caractères';
+      }else {
+        this.loading = true;
+        this.accountService.changeUserPassword(currentPassword, newPassword);
+      }
     } else {
       this.error = 'Les mots de passe saisis ne sont pas identiques';
     }

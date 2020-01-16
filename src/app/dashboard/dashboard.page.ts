@@ -17,12 +17,14 @@ import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
-import { ParrainageService } from '../services/parrainage-service/parrainage.service';
 import { WelcomeStatusModel, getCurrentDate } from 'src/shared';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { BuyPassInternetPage } from '../buy-pass-internet/buy-pass-internet.page';
+import { AssistancePage } from '../assistance/assistance.page';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()
@@ -54,11 +56,11 @@ export class DashboardPage implements OnInit, OnDestroy {
   constructor(
     private dashboardServ: DashboardService,
     private authServ: AuthenticationService,
-    private parrainageService: ParrainageService,
     private assistanceService: AssistanceService,
     private router: Router,
     private shareDialog: MatDialog,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private deeplinks: Deeplinks
   ) {}
 
   ngOnInit() {
@@ -104,11 +106,17 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.currentPhoneNumber = this.dashboardServ.getCurrentPhoneNumber();
     this.getCurrentSubscription();
     dashboardOpened.next();
-    this.parrainageService.isSponsor().subscribe(
-      res => {},
-      err => {}
-    );
     this.getWelcomeStatus();
+    this.deeplinks.route({ '/buy-pass-internet': BuyPassInternetPage, '/assistance': AssistancePage }).subscribe(
+      matched => {
+        this.router.navigate([matched.$link.path]);
+        
+      },
+      notMatched => {
+        console.log(notMatched);
+        console.log('deeplink not matched');
+      }
+    );
   }
 
   getCurrentSubscription() {
