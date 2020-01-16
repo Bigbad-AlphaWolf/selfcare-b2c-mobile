@@ -56,7 +56,7 @@ export class DashboardKireneComponent implements OnInit {
   isBanniereLoaded: boolean;
   slideOpts = {
     speed: 400,
-    slidesPerView: 1.5,
+    // slidesPerView: 1.5,
     slideShadows: true
   };
   userSargalData: SargalSubscriptionModel;

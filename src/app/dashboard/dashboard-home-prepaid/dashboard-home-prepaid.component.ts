@@ -45,7 +45,7 @@ export class DashboardHomePrepaidComponent implements OnInit {
   src;
   slideOpts = {
     speed: 400,
-    slidesPerView: 1.5,
+    // slidesPerView: 1.5,
     slideShadows: true
   };
   pictures = [
