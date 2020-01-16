@@ -41,7 +41,10 @@ export class DashboardPostpaidFixeComponent implements OnInit {
   lastUpdateOM;
   lastTimeUpdateOM;
   lastUpdateConso;
-  pictures = [{ image: '/assets/images/banniere-promo-mob.png' }, { image: '/assets/images/banniere-promo-fibre.png' }];
+  pictures = [
+    { image: '/assets/images/banniere-promo-mob.png' },
+    { image: '/assets/images/banniere-promo-fibre.png' }
+  ];
   sosEligible = true;
   listBanniere: BannierePubModel[] = [];
   isBanniereLoaded: boolean;
@@ -50,6 +53,11 @@ export class DashboardPostpaidFixeComponent implements OnInit {
     slidesPerView: 1.5,
     slideShadows: true
   };
+  lastSlip;
+  creditMensuelle: number;
+  bordereau;
+  currentNumber: string;
+  clientId: string;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -70,19 +78,42 @@ export class DashboardPostpaidFixeComponent implements OnInit {
       }
     });
     this.banniereServ.setListBanniereByFormule();
-    this.banniereServ.getStatusLoadingBanniere().subscribe((status: boolean) => {
-      this.isBanniereLoaded = status;
-      if (this.isBanniereLoaded) {
-        this.listBanniere = this.banniereServ.getListBanniereByFormule();
-      }
-    });
+    this.banniereServ
+      .getStatusLoadingBanniere()
+      .subscribe((status: boolean) => {
+        this.isBanniereLoaded = status;
+        if (this.isBanniereLoaded) {
+          this.listBanniere = this.banniereServ.getListBanniereByFormule();
+        }
+      });
 
     dashboardOpened.subscribe(x => {
       this.getConsoPostpaid();
       this.getBills();
+      this.bordereau = true;
+      this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
+      this.dashbordServ.getIdClient().subscribe(
+        (clientId: string) => {
+          this.clientId = clientId;
+          this.errorBill = false;
+          this.subscribeBillServices(this.clientId);
+        },
+        err => {
+          this.errorBill = true;
+        }
+      );
     });
   }
-
+  subscribeBillServices(clientId: string) {
+    //lastSlip
+    this.billsService.getBillPackageEmit().subscribe(res => {
+      // this.loading = false;
+      res === 'error' ? (this.errorBill = true) : (this.bills = res);
+      this.lastSlip = this.bills.length > 0 ? this.bills[0] : null;
+      console.log(this.lastSlip);
+    });
+    this.billsService.getUserBillsPackageAPI(clientId);
+  }
   getConsoPostpaid() {
     this.errorConso = false;
     this.dashbordServ.getPostpaidUserConsoInfos().subscribe(
@@ -155,10 +186,14 @@ export class DashboardPostpaidFixeComponent implements OnInit {
 
   getLastConsoUpdate() {
     const date = new Date();
-    const lastDate = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(
-      -2
-    )}/${date.getFullYear()}`;
-    const lastDateTime = `${date.getHours()}h` + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+    const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
+      '0' +
+      (date.getMonth() + 1)
+    ).slice(-2)}/${date.getFullYear()}`;
+    const lastDateTime =
+      `${date.getHours()}h` +
+      (date.getMinutes() < 10 ? '0' : '') +
+      date.getMinutes();
     this.lastUpdateConso = `${lastDate} à ${lastDateTime}`;
   }
 

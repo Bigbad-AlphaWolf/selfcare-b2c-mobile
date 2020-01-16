@@ -1,4 +1,5 @@
 import { Subject } from 'rxjs';
+import { REGEX_POSTPAID_FIXE, REGEX_PREPAID_FIXE } from 'src/shared';
 
 // differents profiles
 export const PROFILE_TYPE_PREPAID = 'PREPAID';
@@ -108,4 +109,12 @@ export interface SubscriptionModel {
 export interface PromoBoosterActive {
   isPromoPassActive: boolean;
   isPromoRechargeActive: boolean;
+}
+
+export function isFixPostpaid(codeFormule: string) {
+  return REGEX_POSTPAID_FIXE.test(codeFormule);
+}
+
+export function isFixPrepaid(codeFormule: string) {
+  return REGEX_PREPAID_FIXE.test(codeFormule);
 }

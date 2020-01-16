@@ -13,6 +13,7 @@ import { OmButtonComponent } from './om-button/om-button.component';
 import { MatProgressSpinnerModule } from '@angular/material';
 import { SharedModule } from 'src/shared/shared.module';
 import { DashboardHomePrepaidComponent } from './dashboard-home-prepaid/dashboard-home-prepaid.component';
+import { DashboardPostpaidFixeComponent } from './dashboard-postpaid-fixe/dashboard-postpaid-fixe.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,7 @@ const routes: Routes = [
     DashboardPage,
     DashboardPrepaidHybridComponent,
     DashboardPostpaidComponent,
+    DashboardPostpaidFixeComponent,
     DashboardKireneComponent,
     DashboardHomePrepaidComponent,
     OmButtonComponent

@@ -20,7 +20,8 @@ const billsDetailEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/facture-fixe`
 const billsPackageDownloadEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/download-bordereau-fixe`;
 const idClientEndpoint = `${SERVER_API_URL}/selfcare-gateway/api/numero-client`;
 const lastSlipEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/last-bordereau`;
-
+const billsEndpointAPI = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bordereau`;
+const billsDetailEndpointAPI = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
 @Injectable({
   providedIn: 'root'
 })
@@ -45,6 +46,13 @@ export class BillsService {
     const login = this.dashboardService.getCurrentPhoneNumber();
     return this.http.get(`${billsEndpoint}/${login}`);
   }
+
+getBillsAPI(numClient: string) {
+    return this.http.get(`${billsEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`);
+}
+getBillsPackageAPI(numClient: string) {
+  return this.http.get(`${billsEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=LANDLINE&size=20&page=0`);
+}
 
   getUserBills() {
     this.getBills().subscribe(
@@ -79,6 +87,30 @@ export class BillsService {
       }
     );
   }
+
+  getUserBillsPackageAPI(numClient: string) {
+    this.getBillsPackage(numClient).subscribe(
+      (res: any[]) => {
+        this.getBillsPackageSubject.next(res);
+      },
+      err => {
+        this.getBillsPackageSubject.next('error');
+      }
+    );
+  }
+
+  getBillsDetailAPI(payload: { numClient: string; groupage: string; mois: number; annee: number }) {
+    //api/v1/facture/365915?type=MOBILE&search=year:2019,month:11
+    if (this.currentNumber.startsWith('33')) {
+        return this.http.get(
+            `${billsDetailEndpointAPI}/${payload.numClient}?type=LANDLINE&search=year:${payload.annee},month:${payload.mois}`
+        );
+    } else {
+        return this.http.get(
+            `${billsDetailEndpointAPI}/${payload.numClient}?type=MOBILE&search=year:${payload.annee},month:${payload.mois}`
+        );
+    }
+}
 
   getBillsDetail(payload: {
     numClient: string;
@@ -147,7 +179,14 @@ export class BillsService {
     bill.downloading = true;
     this.downloadBill(bill);
   }
+  downloadUserBillAPI(bill: any) {
+    // FollowAnalytics.logEvent('download_bill', this.currentNumber);
+    bill.downloading = true;
 
+    const pdfWindow = window.open('');
+    pdfWindow.document.write("<iframe width='100%' height='100%' src='" + bill.url + "'></iframe>");
+    bill.downloading = false;
+}
   convertBase64ToBlob(b64Data, contentType): Blob {
     contentType = contentType || '';
     const sliceSize = 512;
@@ -201,6 +240,15 @@ export class BillsService {
       `${billsPackageDownloadEndpoint}/pdf/${numeroClient}/${mois}/${annee}/${tranche}/${groupage}`
     );
   }
+
+  downloadUserBillPackageAPI(billPack: any) {
+    // FollowAnalytics.logEvent('download_bill', this.currentNumber);
+    billPack.downloading = true;
+
+    const pdfWindow = window.open('');
+    pdfWindow.document.write("<iframe width='100%' height='100%' src='" + billPack.url + "'></iframe>");
+    billPack.downloading = false;
+}
 
   downloadUserBillPackage(billPack: any) {
     billPack.downloading = true;

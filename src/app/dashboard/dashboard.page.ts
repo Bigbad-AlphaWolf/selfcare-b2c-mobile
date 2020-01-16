@@ -7,7 +7,9 @@ import {
   KIRENE_Formule,
   PROFILE_TYPE_HYBRID_2,
   dashboardOpened,
-  HOME_PREPAID_FORMULE
+  HOME_PREPAID_FORMULE,
+  isFixPostpaid,
+  isFixPrepaid
 } from '.';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
@@ -47,6 +49,8 @@ export class DashboardPage implements OnInit, OnDestroy {
   acceptCookie;
   hideCookie = true;
   fabOpened = false;
+  isFormuleFixPrepaid = false;
+  isFormuleFixPostpaid = false;
 
   constructor(
     private dashboardServ: DashboardService,
@@ -61,6 +65,11 @@ export class DashboardPage implements OnInit, OnDestroy {
     const user = ls.get('user');
     this.firstName = user.firstName;
     this.lastName = user.lastName;
+
+    dashboardOpened.subscribe(x => {
+      this.isFormuleFixPostpaid = isFixPostpaid(this.currentFormule);
+      this.isFormuleFixPrepaid = isFixPrepaid(this.currentFormule);
+    });
   }
 
   showWelcomePopup(data: WelcomeStatusModel) {
@@ -131,4 +140,12 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {}
+
+  isFixPostpaid() {
+    return isFixPostpaid(this.currentFormule);
+  }
+
+  isFixPrepaid() {
+    return isFixPrepaid(this.currentFormule);
+  }
 }
