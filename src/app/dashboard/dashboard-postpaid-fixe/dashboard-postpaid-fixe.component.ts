@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import * as SecureLS from 'secure-ls';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -71,7 +71,6 @@ export class DashboardPostpaidFixeComponent implements OnInit {
     private billsService: BillsService,
     private banniereServ: BanniereService
   ) {}
-
   ngOnInit() {
     this.getConso();
     this.getBills();
@@ -79,7 +78,6 @@ export class DashboardPostpaidFixeComponent implements OnInit {
     this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
     this.dashbordServ.getIdClient().subscribe(
       (clientId: string) => {
-        console.log(clientId);
         this.clientId = clientId;
         this.errorBill = false;
         this.subscribeBillServices(this.clientId);
@@ -99,14 +97,12 @@ export class DashboardPostpaidFixeComponent implements OnInit {
       });
 
     dashboardOpened.subscribe(x => {
-      console.log('I have been called ****************************************************');
       this.getConso();
       this.getBills();
       this.bordereau = true;
       this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
       this.dashbordServ.getIdClient().subscribe(
         (clientId: string) => {
-          console.log(clientId);
           this.clientId = clientId;
           this.errorBill = false;
           this.subscribeBillServices(this.clientId);
@@ -122,10 +118,8 @@ export class DashboardPostpaidFixeComponent implements OnInit {
     // lastSlip
     this.billsService.getBillPackageEmit().subscribe(res => {
       // this.loading = false;
-      console.log('getBillPackageEmit ************************');
       res === 'error' ? (this.errorBill = true) : (this.bills = res);
       this.lastSlip = this.bills.length > 0 ? this.bills[0] : null;
-      console.log(this.lastSlip);
     });
     this.getBills();
   }
@@ -137,9 +131,8 @@ export class DashboardPostpaidFixeComponent implements OnInit {
         const appelConso = res.length
           ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL).consommations
           : null;
-        console.log(appelConso);
         this.creditMensuelle =
-          appelConso.length > 0 ? appelConso[0].montant : 0;
+          (appelConso && appelConso.length > 0) ? appelConso[0].montant : 0;
       },
       err => {
         this.dataLoaded = true;
@@ -193,8 +186,7 @@ export class DashboardPostpaidFixeComponent implements OnInit {
   }
 
   getBills() {
-    this.billsService.getBillsPackageAPI(this.clientId).subscribe((res:any)=>{
-      console.log('getBillPackageEmit ************************');
+    this.billsService.getBillsPackageAPI(this.clientId).subscribe((res: any) => {
       res === 'error' ? (this.errorBill = true) : (this.bills = res);
       this.lastSlip = this.bills.length > 0 ? this.bills[0] : null;
       console.log(this.lastSlip);

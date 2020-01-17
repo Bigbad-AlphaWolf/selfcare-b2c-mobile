@@ -125,8 +125,6 @@ export class AuthenticationService {
     const lsKey = 'subapi' + msisdn;
     const savedData = ls.get(lsKey);
     if (savedData && savedData.clientCode) {
-      console.log('customerOffer');
-      console.log(savedData);
       return of(savedData);
     } else {
       return this.http.get(`${userSubscriptionEndpoint2}/${msisdn}`).pipe(
@@ -151,8 +149,6 @@ export class AuthenticationService {
     const lsKey = 'sub' + msisdn;
     const savedData = ls.get(lsKey);
     if (savedData) {
-      console.log('normal:');
-      console.log(savedData);
       return of(savedData);
     }
     if (!this.SubscriptionHttpCache.has(msisdn)) {

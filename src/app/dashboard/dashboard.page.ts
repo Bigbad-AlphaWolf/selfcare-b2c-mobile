@@ -58,7 +58,6 @@ export class DashboardPage implements OnInit, OnDestroy {
   fabOpened = false;
   isFormuleFixPrepaid = false;
   isFormuleFixPostpaid = false;
-
   constructor(
     private dashboardServ: DashboardService,
     private authServ: AuthenticationService,
@@ -76,12 +75,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.lastName = user.lastName;
 
     dashboardOpened.subscribe(x => {
-      console.log('I have been called **************************');
       this.isFormuleFixPostpaid = isFixPostpaid(this.currentFormule);
       this.isFormuleFixPrepaid = isFixPrepaid(this.currentFormule);
-      console.log('current formule' + this.currentFormule);
-      console.log('isFormuleFixPostpaid:' + this.isFormuleFixPostpaid);
-      console.log('isFormuleFixPrepaid:' + this.isFormuleFixPrepaid);
     });
   }
 
@@ -116,12 +111,10 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    this.getCurrentSubscription();
     const user = ls.get('user');
     this.firstName = user.firstName;
     this.lastName = user.lastName;
-    this.currentPhoneNumber = this.dashboardServ.getCurrentPhoneNumber();
-    this.getCurrentSubscription();
-    dashboardOpened.next();
     this.getWelcomeStatus();
     this.deeplinks
       .route({
@@ -151,6 +144,7 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.currentProfile = res.profil;
         this.currentFormule = res.nomOffre;
         this.currentCodeFormule = res.code;
+        dashboardOpened.next();
         this.followAnalyticsService.registerEventFollow('dashboard', 'event', {
           msisdn: currentNumber,
           profil: this.currentProfile,
