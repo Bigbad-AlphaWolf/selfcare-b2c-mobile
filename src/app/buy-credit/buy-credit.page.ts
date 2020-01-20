@@ -87,28 +87,31 @@ export class BuyCreditPage implements OnInit {
     return formatCurrency(data);
   }
 
-  nextStepOfSelectDest(destNumber: string) {
-    this.goToNextStep();
+  nextStepOfSelectDest(destinfos: {
+    destinataire: string,
+    code: string
+  }) {
     this.isForMyOwnNumber =
-      this.dashbordServ.getCurrentPhoneNumber() === destNumber;
-    this.destinatorPhoneNumber = destNumber;
+      this.dashbordServ.getCurrentPhoneNumber() === destinfos.destinataire;
+    this.destinatorPhoneNumber = destinfos.destinataire;
     this.isForMyOwnNumber
       ? this.followAnalyticsService.registerEventFollow(
           'Recharge_OM_ChoixDestinataire',
           'event',
-          destNumber
+          destinfos.destinataire
         )
       : this.followAnalyticsService.registerEventFollow(
           'Recharge_OM_Destinataire_Moi',
           'event',
-          destNumber
-        );
+          destinfos.destinataire
+        );        
+        this.goToNextStep();
+
   }
 
   setAmount(amount: number) {
     this.amount = amount;
     this.goToNextStep();
-    this.destinatorPhoneNumber = this.currentNumber;
   }
 
   payCredit() {
