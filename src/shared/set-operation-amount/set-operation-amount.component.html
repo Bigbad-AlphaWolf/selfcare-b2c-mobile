@@ -28,6 +28,9 @@
           />
         </mat-form-field>
       </div>
+      <div class="error scb-text-red-error" *ngIf="hasError">
+        Le montant que vous essayez de recharger est supérieur à votre solde.
+      </div>
     </div>
 
     <!-- send button -->
@@ -40,6 +43,11 @@
         class="scb-btn scb-btn-orange"
       >
         Suivant
+        <mat-spinner
+          mode="indeterminate"
+          [diameter]="20"
+          *ngIf="checkingBalance"
+        ></mat-spinner>
       </button>
     </div>
   </div>

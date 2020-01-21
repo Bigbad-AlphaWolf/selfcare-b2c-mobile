@@ -1,4 +1,5 @@
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 
 @Component({
   selector: 'app-set-operation-amount',
@@ -12,14 +13,33 @@ export class SetOperationAmountComponent implements OnInit {
   @Input() currentBalance;
   @Input() hideUserSolde = true;
   @Input() omBalance;
+  hasError: boolean;
+  checkingBalance: boolean;
 
-  constructor() {}
+  constructor(private orangeMoneyService: OrangeMoneyService) {}
 
   ngOnInit() {}
 
   nextStep() {
-    if (+this.amount > 0) {
-      this.next.emit(+this.amount);
+    this.hasError = false;
+    const amount = +this.amount;
+    if (amount > 0) {
+      const msisdn = this.orangeMoneyService.getOrangeMoneyNumber();
+      const checkBalanceSufficiencyPayload = { amount, msisdn };
+      this.orangeMoneyService
+        .checkBalanceSufficiency(checkBalanceSufficiencyPayload)
+        .subscribe(
+          (hasEnoughBalance: boolean) => {
+            if (hasEnoughBalance) {
+              this.next.emit(amount);
+            } else {
+              this.hasError = true;
+            }
+          },
+          err => {
+            this.next.emit(amount);
+          }
+        );
     } else {
       alert('Montant doit être supérieur à 0');
     }

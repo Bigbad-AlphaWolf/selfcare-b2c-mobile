@@ -43,17 +43,10 @@
           width: 100%;
         }
       }
-      .bonus-block {
-        margin-top: 27.3px;
-        background-color: $blue;
-        padding: 5px;
-        color: $white;
-        display: inline-block;
-        min-width: 149px;
-        .bonus-value {
-          font-family: HelveticaNeueLTStd-Bd, sans-serif;
-          font-size: 14px;
-        }
+      .error {
+        font-size: 12px;
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        margin: 20px;
       }
     }
     .button-container {

@@ -173,7 +173,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   changeCurrentNumber() {
     this.router.navigate(['/change-main-phone-number']);
     this.followAnalyticsService.registerEventFollow(
-      'chenger_de_ligne',
+      'changer_de_ligne',
       'event',
       'clicked'
     );
