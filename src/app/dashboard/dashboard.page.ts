@@ -65,8 +65,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     private assistanceService: AssistanceService,
     private router: Router,
     private shareDialog: MatDialog,
-    private followAnalyticsService: FollowAnalyticsService,
-    private deeplinks: Deeplinks
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -116,20 +115,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.firstName = user.firstName;
     this.lastName = user.lastName;
     this.getWelcomeStatus();
-    this.deeplinks
-      .route({
-        '/buy-pass-internet': BuyPassInternetPage,
-        '/assistance': AssistancePage
-      })
-      .subscribe(
-        matched => {
-          this.router.navigate([matched.$link.path]);
-        },
-        notMatched => {
-          console.log(notMatched);
-          console.log('deeplink not matched');
-        }
-      );
   }
 
   getCurrentSubscription() {

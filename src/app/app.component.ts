@@ -5,6 +5,9 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { LoginPage } from './login/login.page';
+import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
+import { AssistancePage } from './assistance/assistance.page';
+import { Router } from '@angular/router';
 
 declare var FollowAnalytics: any;
 
@@ -17,7 +20,9 @@ export class AppComponent {
     private platform: Platform,
     private statusBar: StatusBar,
     private splash: SplashScreen,
-    private appMinimize: AppMinimize
+    private appMinimize: AppMinimize,
+    private router: Router,
+    private deeplinks: Deeplinks
       ) {
     this.initializeApp();
     // Initialize BackButton Eevent.
@@ -46,6 +51,24 @@ export class AppComponent {
           FollowAnalytics.registerForPush();
         }
       }
+      this.checkDeeplinks();
     });
+  }
+
+  checkDeeplinks() {
+    this.deeplinks
+      .route({
+        '/buy-pass-internet': BuyPassInternetPage,
+        '/assistance': AssistancePage
+      })
+      .subscribe(
+        matched => {
+          this.router.navigate([matched.$link.path]);
+        },
+        notMatched => {
+          console.log(notMatched);
+          console.log('deeplink not matched');
+        }
+      );
   }
 }
