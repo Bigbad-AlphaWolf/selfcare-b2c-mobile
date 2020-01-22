@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as SecureLS from 'secure-ls';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, Subject, of } from 'rxjs';
+import { tap, delay } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {
@@ -38,6 +38,7 @@ const transferOMEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transf
 const transferOMWithCodeEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transfer-avec-code`;
 const omFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-without-code`;
 const omFeesEndpoint2 = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-with-code`;
+const checkBalanceSufficiencyEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/user-enquiry`;
 const ls = new SecureLS({ encodingType: 'aes' });
 let eventKey = '';
 let errorKey = '';
@@ -289,5 +290,12 @@ export class OrangeMoneyService {
       value = Object.assign({}, value, { error_code: res.status_code });
       this.followAnalyticsService.registerEventFollow(errorKey, 'error', value);
     }
+  }
+
+  checkBalanceSufficiency(payload: { msisdn: string; amount: number }) {
+    // return of(true).pipe(delay(2000));
+    return this.http.get(
+      `${checkBalanceSufficiencyEndpoint}/${payload.msisdn}/${payload.amount}`
+    );
   }
 }

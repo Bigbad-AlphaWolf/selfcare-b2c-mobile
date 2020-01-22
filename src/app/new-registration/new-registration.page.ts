@@ -126,6 +126,14 @@ export class NewRegistrationPage implements OnInit {
           this.showErrMessage = true;
           this.errorMsg = `La récupération ne s'est pas bien passée. Assurez d'activer vos données mobiles Orange puis réessayez`;
           this.openDialogGoSettings();
+          this.followAnalyticsService.registerEventFollow(
+            'User_msisdn_recuperation_failed',
+            'error',
+            {
+              msisdn: this.phoneNumber,
+              error: this.errorMsg
+            }
+          );
           this.ref.detectChanges();
         }
       );

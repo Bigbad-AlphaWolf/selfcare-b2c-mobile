@@ -41,6 +41,8 @@ export class TransferRecipientAmountComponent implements OnInit {
   checkingOMAccount = false;
   recipientInfos = { phoneNumber: '', hasOMAccount: false };
   contactInfos: any;
+  showErrorAmount: boolean;
+  checkingOMAmountToTransfer: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -96,7 +98,29 @@ export class TransferRecipientAmountComponent implements OnInit {
 
   suivant() {
     if (this.step === 'SAISIE_MONTANT') {
-      this.nextStepEmitter.emit(this.formAmount.value.amount);
+      const amount = this.formAmount.value.amount;
+      if (this.orangeMoney) {
+        this.checkingOMAmountToTransfer = true;
+        this.showErrorAmount = false;
+        const msisdn = this.omService.getOrangeMoneyNumber();
+        const payload = { amount, msisdn };
+        this.omService.checkBalanceSufficiency(payload).subscribe(
+          hasEnoughBalance => {
+            this.checkingOMAmountToTransfer = false;
+            if (hasEnoughBalance) {
+              this.nextStepEmitter.emit(amount);
+            } else {
+              this.showErrorAmount = true;
+            }
+          },
+          err => {
+            this.checkingOMAmountToTransfer = false;
+            this.nextStepEmitter.emit(amount);
+          }
+        );
+      } else {
+        this.nextStepEmitter.emit(amount);
+      }
     }
     if (this.step === 'SAISIE_NUMBER') {
       const recipient = {
