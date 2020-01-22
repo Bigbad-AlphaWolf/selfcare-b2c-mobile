@@ -38,7 +38,9 @@
       <button
         (click)="nextStep()"
         [disabled]="
-          !amount || (amount && currentBalance && +amount >= +currentBalance)
+          checkingBalance ||
+          !amount ||
+          (amount && currentBalance && +amount >= +currentBalance)
         "
         class="scb-btn scb-btn-orange"
       >

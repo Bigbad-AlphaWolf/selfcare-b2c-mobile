@@ -27,7 +27,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221775109027');
+      headers = headers.set('X-MSISDN', '221778676984');
       req = req.clone({
         headers
       });

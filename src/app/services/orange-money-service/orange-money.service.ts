@@ -293,7 +293,7 @@ export class OrangeMoneyService {
   }
 
   checkBalanceSufficiency(payload: { msisdn: string; amount: number }) {
-    // return of(false).pipe(delay(2000));
+    // return of(true).pipe(delay(2000));
     return this.http.get(
       `${checkBalanceSufficiencyEndpoint}/${payload.msisdn}/${payload.amount}`
     );

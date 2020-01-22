@@ -24,12 +24,14 @@ export class SetOperationAmountComponent implements OnInit {
     this.hasError = false;
     const amount = +this.amount;
     if (amount > 0) {
+      this.checkingBalance = true;
       const msisdn = this.orangeMoneyService.getOrangeMoneyNumber();
       const checkBalanceSufficiencyPayload = { amount, msisdn };
       this.orangeMoneyService
         .checkBalanceSufficiency(checkBalanceSufficiencyPayload)
         .subscribe(
           (hasEnoughBalance: boolean) => {
+            this.checkingBalance = false;
             if (hasEnoughBalance) {
               this.next.emit(amount);
             } else {
@@ -37,6 +39,7 @@ export class SetOperationAmountComponent implements OnInit {
             }
           },
           err => {
+            this.checkingBalance = false;
             this.next.emit(amount);
           }
         );
