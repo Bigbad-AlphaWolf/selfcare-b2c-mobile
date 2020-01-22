@@ -63,16 +63,18 @@
         margin-right: percentage(10px / 366px);
       }
       .scb-btn-balance,
-      .scb-btn-credit {
+      .scb-btn-credit-fix {
+        margin-top: 17px;
         text-align: left;
         width: 100%;
         min-width: 63%;
-        height: 90px;
+        height: 85px;
         display: inline-block;
         padding: 8px 0 10px 15px;
         border-radius: 15px;
         box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
-        margin-right: percentage(10px / 366px);
+        margin-right: percentage(15px / 366px);
+        margin-left: percentage(15px / 366px);
         .scb-btn-top-block {
           &-icon,
           &-text {

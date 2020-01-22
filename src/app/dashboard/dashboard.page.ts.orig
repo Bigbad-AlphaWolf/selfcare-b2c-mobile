@@ -8,10 +8,13 @@ import {
   PROFILE_TYPE_HYBRID_2,
   dashboardOpened,
   HOME_PREPAID_FORMULE,
-  SubscriptionModel,
-  hash53,
+<<<<<<< HEAD
   isFixPostpaid,
   isFixPrepaid
+=======
+  SubscriptionModel,
+  hash53
+>>>>>>> dd3f1a7385d57b17d74164e92fd9386deaa0dbe0
 } from '.';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
@@ -19,8 +22,6 @@ import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
-import { delay } from 'rxjs/operators';
-import { ParrainageService } from '../services/parrainage-service/parrainage.service';
 import { WelcomeStatusModel, getCurrentDate } from 'src/shared';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
@@ -58,14 +59,15 @@ export class DashboardPage implements OnInit, OnDestroy {
   fabOpened = false;
   isFormuleFixPrepaid = false;
   isFormuleFixPostpaid = false;
+
   constructor(
     private dashboardServ: DashboardService,
     private authServ: AuthenticationService,
-    private parrainageService: ParrainageService,
     private assistanceService: AssistanceService,
     private router: Router,
     private shareDialog: MatDialog,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private deeplinks: Deeplinks
   ) {}
 
   ngOnInit() {
@@ -110,11 +112,23 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-    this.getCurrentSubscription();
     const user = ls.get('user');
     this.firstName = user.firstName;
     this.lastName = user.lastName;
+    this.currentPhoneNumber = this.dashboardServ.getCurrentPhoneNumber();
+    this.getCurrentSubscription();
+    dashboardOpened.next();
     this.getWelcomeStatus();
+    this.deeplinks.route({ '/buy-pass-internet': BuyPassInternetPage, '/assistance': AssistancePage }).subscribe(
+      matched => {
+        this.router.navigate([matched.$link.path]);
+        
+      },
+      notMatched => {
+        console.log(notMatched);
+        console.log('deeplink not matched');
+      }
+    );
   }
 
   getCurrentSubscription() {
@@ -124,12 +138,9 @@ export class DashboardPage implements OnInit, OnDestroy {
       .getSubscription(currentNumber)
       .subscribe((res: SubscriptionModel) => {
         this.userSubscription = res;
-        this.currentProfile = this.userSubscription.profil;
-        this.currentFormule = this.userSubscription.nomOffre;
         this.currentProfile = res.profil;
         this.currentFormule = res.nomOffre;
         this.currentCodeFormule = res.code;
-        dashboardOpened.next();
         this.followAnalyticsService.registerEventFollow('dashboard', 'event', {
           msisdn: currentNumber,
           profil: this.currentProfile,
@@ -154,13 +165,6 @@ export class DashboardPage implements OnInit, OnDestroy {
           );
         }
       });
-    dashboardOpened.next();
-    console.log('call dashboard opened next **************************');
-    this.parrainageService.isSponsor().subscribe(
-      res => {},
-      err => {}
-    );
-    this.getWelcomeStatus();
   }
 
   getkIRENEFormule() {

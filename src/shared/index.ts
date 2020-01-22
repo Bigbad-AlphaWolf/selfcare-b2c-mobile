@@ -1,9 +1,3 @@
-import {
-  formatCurrency,
-  UserConsommations,
-  UserConsommation,
-  ItemUserConso
-} from 'src/app/dashboard';
 import * as SecureLS from 'secure-ls';
 import { HTTP } from '@ionic-native/http/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
@@ -15,6 +9,8 @@ export const REGEX_PASSWORD2: RegExp = /^.{5,19}$/;
 export const REGEX_NAME = /^([^0-9_!¡?÷?¿/+=,.@#$%ˆ&*(){}|~<>;:\]\[-]){1,}$/;
 export const REGEX_EMAIL = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export const REGEX_DIGIT = /\d/;
+export const REGEX_POSTPAID_FIXE = /(Keurgui).*|(Fibre).*|(LFB).*/i;
+export const REGEX_PREPAID_FIXE = /(BOX).*/i;
 
 export const USER_CONS_CATEGORY_CALL = 'APPEL';
 export const USER_CONS_CATEGORY_INTERNET = 'INTERNET';
@@ -576,8 +572,40 @@ export function getCurrentDate() {
   const year = '' + date.getFullYear();
   const hour = '' + date.getHours();
   const minutes = '' + date.getMinutes();
-  if (month.length < 2) month = '0' + month;
-  if (day.length < 2) day = '0' + day;
+  if (month.length < 2) { month = '0' + month; }
+  if (day.length < 2) { day = '0' + day; }
   const result = [day, month, year].join('-') + ' ' + [hour, minutes].join(':');
   return result;
+}
+
+
+export type UserConsommations = Array<{
+  categorie: string;
+  consommations: Array<UserConsommation>;
+}>;
+
+export function formatCurrency(num) {
+  if (num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+  }
+  return '0';
+}
+
+export interface ItemUserConso {
+  categorie: string;
+  consommations: UserConsommation[];
+}
+
+export interface UserConsommation {
+  id: string;
+  code: number;
+  compteur: string;
+  montant: number;
+  msisdn: string;
+  categorie: any;
+  dateEffet: string;
+  dateExpiration: string;
+  unite: string;
+  montantFormat: string;
+  ordre: number;
 }

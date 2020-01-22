@@ -32,8 +32,10 @@
       *ngIf="currentProfile === PROFILE_TYPE_PREPAID && currentFormule === getkIRENEFormule()"
     >
     </app-dashboard-kirene>
-    <app-dashboard-postpaid *ngIf="currentProfile === PROFILE_TYPE_POSTPAID">
+    <app-dashboard-postpaid *ngIf="currentProfile === PROFILE_TYPE_POSTPAID && !isFormuleFixPostpaid && !isFormuleFixPrepaid">
     </app-dashboard-postpaid>
+    <app-dashboard-postpaid-fixe  *ngIf="currentProfile === PROFILE_TYPE_POSTPAID && isFormuleFixPostpaid">
+    </app-dashboard-postpaid-fixe>
     <app-dashboard-home-prepaid
       *ngIf="currentProfile === PROFILE_TYPE_PREPAID && currentFormule === HOME_PREPAID_FORMULE"
     ></app-dashboard-home-prepaid>

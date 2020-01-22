@@ -6,9 +6,7 @@ import { AuthenticationService } from 'src/app/services/authentication-service/a
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import {
   getConsoByCategory,
-  UserConsommations,
   USER_CONS_CATEGORY_CALL,
-  formatCurrency,
   SargalSubscriptionModel,
   SARGAL_NOT_SUBSCRIBED,
   SARGAL_UNSUBSCRIPTION_ONGOING,
@@ -16,7 +14,7 @@ import {
 } from '..';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
-import { getLastUpdatedDateTimeText } from 'src/shared';
+import { getLastUpdatedDateTimeText, UserConsommations, formatCurrency } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 

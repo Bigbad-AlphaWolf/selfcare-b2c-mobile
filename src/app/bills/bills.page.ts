@@ -4,11 +4,6 @@ import { BillsService } from '../services/bill-service/bills.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { REGEX_FIX_NUMBER } from 'src/shared';
 import { BillModel } from '../dashboard';
-import {
-  FileTransfer,
-  FileTransferObject
-} from '@ionic-native/file-transfer/ngx';
-import { File } from '@ionic-native/file/ngx';
 
 @Component({
   selector: 'app-bills',
@@ -53,12 +48,11 @@ export class BillsPage implements OnInit {
   subscribeBillServices() {
     if (REGEX_FIX_NUMBER.test(this.currentNumber)) {
       this.bordereau = true;
-      this.billsService.getBillPackageEmit().subscribe(res => {
-        this.loading = false;
-        res === 'error' ? (this.error = true) : (this.bills = res);
-      });
       this.billsService.getIdClient().subscribe((idClient: string) => {
-        this.billsService.getUserBillsPackage(idClient);
+        this.billsService.getBillsPackageAPI(idClient).subscribe(res => {
+          this.loading = false;
+          res === 'error' ? (this.error = true) : (this.bills = res);
+        });
       });
     } else {
       this.billsService.getUserBills();

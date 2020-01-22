@@ -1,6 +1,6 @@
 import { HTTP } from '@ionic-native/http/ngx';
 import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -27,7 +27,9 @@ import { File } from '@ionic-native/file/ngx';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
-
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+registerLocaleData(localeFr);
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,6 +51,7 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
     StatusBar,
     SplashScreen,
     NativePageTransitions,
+    { provide: LOCALE_ID, useValue: 'fr-FR'},
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {
       provide: HTTP_INTERCEPTORS,

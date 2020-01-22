@@ -1,6 +1,20 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject, of, Observable } from 'rxjs';
-import { tap, shareReplay, map } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  Subject,
+  Observable,
+  of,
+  interval,
+  throwError
+} from 'rxjs';
+import {
+  tap,
+  shareReplay,
+  map,
+  delay,
+  retryWhen,
+  flatMap
+} from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import * as jwt_decode from 'jwt-decode';
@@ -99,6 +113,35 @@ export class AuthenticationService {
   // register user
   registerUser(userInfos: RegistrationData) {
     return this.http.post(`${registerUserEndpoint}`, userInfos);
+  }
+
+  // get msisdn subscription
+  getSubscriptionCustomerOffer(msisdn: string) {
+    // step 1 check if data exists in localstorage
+    // step 2 if exists return data from localstorage
+    // else call server to get data
+    // what to save? 'subXXXXXXXX"
+    delay(50);
+    const lsKey = 'subapi' + msisdn;
+    const savedData = ls.get(lsKey);
+    if (savedData && savedData.clientCode) {
+      return of(savedData);
+    } else {
+      return this.http.get(`${userSubscriptionEndpoint2}/${msisdn}`).pipe(
+        http_retry(),
+        map((res: any) => {
+          const subscription = {
+            clientCode: res.clientCode,
+            nomOffre: res.offerName,
+            profil: res.offerType,
+            code: res.offerCode
+          };
+          ls.set(lsKey, subscription);
+          return subscription;
+        }),
+        shareReplay(1)
+      );
+    }
   }
 
   // get msisdn subscription
@@ -317,4 +360,18 @@ export interface ResetPwdModel {
   newPassword: string;
   hmac: string;
   login: string;
+}
+
+export function http_retry(maxRetry = 10, delayMs = 10000) {
+  return (src: Observable<any>) => {
+    return src.pipe(
+      retryWhen(_ => {
+        return interval(delayMs).pipe(
+          flatMap(count =>
+            count === maxRetry ? throwError('Giving up') : of(count)
+          )
+        );
+      })
+    );
+  };
 }
