@@ -124,15 +124,21 @@ export class DashboardPostpaidFixeComponent implements OnInit {
     this.getBills();
   }
   getConso() {
+    this.errorConso = false;
+    this.dataLoaded = false;
     this.dashbordServ.getUserConsoInfosByCode().subscribe(
       (res: any[]) => {
         this.dataLoaded = true;
-        res = arrangeCompteurByOrdre(res);
-        const appelConso = res.length
-          ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL).consommations
-          : null;
-        this.creditMensuelle =
-          (appelConso && appelConso.length > 0) ? appelConso[0].montant : 0;
+        if(res.length){
+          res = arrangeCompteurByOrdre(res);
+          const appelConso = res.length
+            ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL).consommations
+            : null;
+          this.creditMensuelle =
+            (appelConso && appelConso.length > 0) ? appelConso[0].montant : 0;
+        }else {
+          this.errorConso = true;
+        }
       },
       err => {
         this.dataLoaded = true;

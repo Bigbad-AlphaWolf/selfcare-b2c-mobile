@@ -10,19 +10,32 @@
   </div>
   <div class="header-separator-line"></div>
   <div class="change-main-phone-number-page-content">
-    <app-phone-numbers-list
-      [phoneNumbers]="numbers"
-      (phoneNumberChanged)="(0)"
-      *ngIf="numbers"
-    ></app-phone-numbers-list>
-    <div class="bottom-action-btn-block">
-      <img
-        src="/assets/images/rattacher-ligne-v-2.svg"
-        class="rattacher-ligne-btn"
-        alt="Rattacher_LigneV1"
-        (click)="attachLine()"
-      />
-      <span class="add-phone-number-label scb-text-full-black" (click)="attachLine()">Rattacher une ligne</span>
+    <div *ngIf="!isLoaded" class="loader">
+        <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
     </div>
+    <ng-container *ngIf="isLoaded && !hasError">
+      <app-phone-numbers-list
+        [phoneNumbers]="numbers"
+        (phoneNumberChanged)="(0)"
+        *ngIf="numbers"
+      ></app-phone-numbers-list>
+      <div class="bottom-action-btn-block">
+        <img
+          src="/assets/images/rattacher-ligne-v-2.svg"
+          class="rattacher-ligne-btn"
+          alt="Rattacher_LigneV1"
+          (click)="attachLine()"
+        />
+        <span class="add-phone-number-label scb-text-full-black" (click)="attachLine()">Rattacher une ligne</span>
+      </div>
+
+    </ng-container>
+    <ng-container *ngIf="isLoaded && hasError">
+      <div class="scb-text-full-black">
+        <span (click)="getAllAttachedNumbers()">
+          Veuillez cliquer pour actualiser la page
+        </span>
+      </div>
+    </ng-container>
   </div>
 </div>

@@ -20,7 +20,6 @@ export class SeeDetailsFormuleComponent implements OnInit {
   @Input() formule: FormuleMobileModel;
   @Input() msisdn: string;
   @Output() goBackToListFormules = new EventEmitter();
-  currentPhoneNumber: string;
   cancelDialog: MatDialogRef<CancelOperationPopupComponent>;
   error = "Une erreur est survenue durant l'opération";
   hasError: boolean;
@@ -39,6 +38,7 @@ export class SeeDetailsFormuleComponent implements OnInit {
       icon: '/assets/images/background-header-jamono-allo.jpg'
     }
   ];
+  userSubscription: any;
   constructor(
     private matDialog: MatDialog,
     private formuleServ: FormuleService,
@@ -46,7 +46,11 @@ export class SeeDetailsFormuleComponent implements OnInit {
     private followAnalyticsService: FollowAnalyticsService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.authService.getSubscription(this.msisdn).subscribe((subscription: any)=>{
+      this.userSubscription = subscription;
+    });
+  }
 
   getImgByFormule(formule: FormuleMobileModel) {
     let img;
@@ -75,14 +79,14 @@ export class SeeDetailsFormuleComponent implements OnInit {
             .changerFormuleJamono(this.msisdn, this.formule)
             .subscribe(
               () => {
-                this.authService.deleteSubFromStorage(this.msisdn);
-                this.changeFormuleProcessing = false;
-                this.goBackToListFormules.emit();
                 this.followAnalyticsService.registerEventFollow(
                   'change_formule_success',
                   'event',
-                  { msisdn: this.msisdn, formule: this.formule }
+                  { msisdn: this.msisdn, previous_code_formule: this.userSubscription.code ,next_code_formule: this.formule.code }
                 );
+                this.authService.deleteSubFromStorage(this.msisdn);
+                this.changeFormuleProcessing = false;
+                this.goBackToListFormules.emit();
               },
               (error: any) => {
                 this.changeFormuleProcessing = false;
@@ -90,7 +94,7 @@ export class SeeDetailsFormuleComponent implements OnInit {
                 this.followAnalyticsService.registerEventFollow(
                   'change_formule_error',
                   'error',
-                  { msisdn: this.msisdn, formule: this.formule }
+                  { msisdn: this.msisdn, current_code_formule: this.userSubscription.code ,next_code_formule: this.formule.code, error_status: error.status }
                 );
               }
             );

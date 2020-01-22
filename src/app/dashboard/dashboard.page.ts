@@ -155,11 +155,6 @@ export class DashboardPage implements OnInit, OnDestroy {
         }
       });
     dashboardOpened.next();
-    console.log('call dashboard opened next **************************');
-    this.parrainageService.isSponsor().subscribe(
-      res => {},
-      err => {}
-    );
     this.getWelcomeStatus();
   }
 
