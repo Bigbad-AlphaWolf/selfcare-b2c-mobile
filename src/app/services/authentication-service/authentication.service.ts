@@ -22,7 +22,9 @@ import * as SecureLS from 'secure-ls';
 import {
   PROFILE_TYPE_HYBRID,
   PROFILE_TYPE_HYBRID_1,
-  PROFILE_TYPE_HYBRID_2
+  PROFILE_TYPE_HYBRID_2,
+  isFixPostpaid,
+  PROFILE_TYPE_POSTPAID
 } from 'src/app/dashboard';
 import { JAMONO_ALLO_CODE_FORMULE } from 'src/shared';
 
@@ -121,12 +123,7 @@ export class AuthenticationService {
     // step 2 if exists return data from localstorage
     // else call server to get data
     // what to save? 'subXXXXXXXX"
-    delay(50);
-    const lsKey = 'subapi' + msisdn;
-    const savedData = ls.get(lsKey);
-    if (savedData && savedData.clientCode) {
-      return of(savedData);
-    } else {
+    
       return this.http.get(`${userSubscriptionEndpoint2}/${msisdn}`).pipe(
         http_retry(),
         map((res: any) => {
@@ -134,14 +131,25 @@ export class AuthenticationService {
             clientCode: res.clientCode,
             nomOffre: res.offerName,
             profil: res.offerType,
-            code: res.offerCode
+            code: res.offerId
           };
+          if (
+            subscription.profil === PROFILE_TYPE_HYBRID ||
+            subscription.profil === PROFILE_TYPE_HYBRID_1 ||
+            subscription.profil === PROFILE_TYPE_HYBRID_2
+          ) {
+            subscription.code = JAMONO_ALLO_CODE_FORMULE;
+          }
+          if(isFixPostpaid(subscription.nomOffre)){
+            subscription.profil = PROFILE_TYPE_POSTPAID
+          }
+          const lsKey = 'sub' + msisdn;
           ls.set(lsKey, subscription);
           return subscription;
         }),
         shareReplay(1)
       );
-    }
+    
   }
 
   // get msisdn subscription
@@ -152,7 +160,7 @@ export class AuthenticationService {
       return of(savedData);
     }
     if (!this.SubscriptionHttpCache.has(msisdn)) {
-      this.SubscriptionHttpCache[msisdn] = this.getSubscriptionData(
+      this.SubscriptionHttpCache[msisdn] = this.getSubscriptionCustomerOffer(
         msisdn
       ).pipe(shareReplay(1));
     }

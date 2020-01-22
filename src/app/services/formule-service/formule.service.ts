@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormuleMobileModel } from 'src/shared';
 const { CONSO_SERVICE, SERVICES_SERVICE, SERVER_API_URL } = environment;
 const formuleEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/formule-mobiles-by-profil`;
-const changerFormuleJamonoEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/formule/change-formule`;
+const changerFormuleJamonoEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/v1/change-formule`;
 @Injectable({
   providedIn: 'root'
 })
@@ -17,7 +17,7 @@ export class FormuleService {
 
   changerFormuleJamono(msisdn: string, formule: FormuleMobileModel) {
     return this.http.put(
-      `${changerFormuleJamonoEndpoint}/${msisdn}?productCode=${formule.code}`,
+      `${changerFormuleJamonoEndpoint}/${msisdn}/${formule.code}`,
       null
     );
   }

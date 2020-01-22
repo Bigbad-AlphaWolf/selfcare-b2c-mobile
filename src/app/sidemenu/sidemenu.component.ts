@@ -38,7 +38,6 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   currentFormule;
   msisdn = this.dashboardServ.getCurrentPhoneNumber();
   avatarUrl: string;
-  isSponsor: boolean;
 
   constructor(
     private router: Router,
@@ -60,10 +59,6 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.accountService.userUrlAvatarSubject.subscribe(() => {
       this.extractData();
     });
-    this.isSponsor = true;
-    // this.parrainageService.isSponsorEvent.subscribe(res => {
-    //   this.isSponsor = true;
-    // });
     dashboardOpened.subscribe(x => {
       this.getSouscription();
     });

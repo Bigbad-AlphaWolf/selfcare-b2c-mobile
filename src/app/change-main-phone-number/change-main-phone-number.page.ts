@@ -11,7 +11,8 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 export class ChangeMainPhoneNumberPage implements OnInit {
   numbers: any;
   activeNumber;
-
+  isLoaded: boolean;
+  hasError: boolean;
   constructor(
     private router: Router,
     private authServ: AuthenticationService,
@@ -41,11 +42,22 @@ export class ChangeMainPhoneNumberPage implements OnInit {
       },
       err => {}
     );
+    this.getAllAttachedNumbers();
+  }
+
+  getAllAttachedNumbers(){
+    this.isLoaded = false;
+    this.hasError = false;
     this.dashboardServ.getAttachedNumbers().subscribe(
       (numbers: any) => {
+        this.isLoaded = true;
+        this.hasError = false;
         this.numbers = this.numbers.concat(numbers);
       },
-      (err: any) => {}
+      (err: any) => {
+        this.isLoaded = true;
+        this.hasError = true;
+      }
     );
   }
 

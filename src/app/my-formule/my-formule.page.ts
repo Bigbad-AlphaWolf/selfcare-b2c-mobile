@@ -68,7 +68,9 @@ export class MyFormulePage implements OnInit {
         );
         this.formuleService.getformules(res.profil).subscribe(
           (resp: FormuleMobileModel[]) => {
-            this.formulesArray = resp;
+            this.formulesArray = resp.filter((val: FormuleMobileModel)=>{
+              return val.type === 'MOBILE'
+            });
             if (this.formulesArray.length === 0) {
               this.dataLoaded = true;
               this.error = 'Problème de chargement';
