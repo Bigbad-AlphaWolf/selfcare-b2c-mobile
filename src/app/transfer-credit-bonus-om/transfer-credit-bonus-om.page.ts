@@ -110,8 +110,11 @@ export class TransferCreditBonusOmPage implements OnInit {
       case 'SAISIE_NUMBER':
         this.numberDestinatary = event.phoneNumber;
         if (this.operationType !== OPERATION_TYPE_TRANSFER_OM) {
+          this.loading = true;
           this.authServ.isPostpaid(this.numberDestinatary).subscribe(
             (isPostpaid: any) => {
+              this.loading = false;
+
               if (isPostpaid) {
                 this.errorMsg = 'Ce numero ne peut pas recevoir de transfert.';
               } else {
@@ -186,8 +189,10 @@ export class TransferCreditBonusOmPage implements OnInit {
         'Votre solde est insuffisant pour effectuer cette transaction';
       this.step = 'SUCCESS';
     } else {
+      this.loading = true;
       this.dashboardService.transferBonus(transfertbonnusInfo).subscribe(
         (res: any) => {
+          this.loading = false;
           if (res.code === '0') {
             this.step = 'SUCCESS';
             const followDetails = {
@@ -212,6 +217,7 @@ export class TransferCreditBonusOmPage implements OnInit {
           }
         },
         (error: any) => {
+          this.loading = false;
           this.failed = true;
           this.errorMsg = error.message;
           if (error.status === 503) {
