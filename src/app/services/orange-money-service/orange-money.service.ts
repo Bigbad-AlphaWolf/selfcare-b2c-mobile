@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as SecureLS from 'secure-ls';
-import { BehaviorSubject, Subject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of, Observable, forkJoin } from 'rxjs';
 import { tap, delay } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -17,6 +17,7 @@ import {
   TransferOMWithCodeModel
 } from '.';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
+import { DashboardService } from '../dashboard-service/dashboard.service';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL } = environment;
@@ -38,7 +39,7 @@ const transferOMEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transf
 const transferOMWithCodeEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transfer-avec-code`;
 const omFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-without-code`;
 const omFeesEndpoint2 = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-with-code`;
-const checkBalanceSufficiencyEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/user-enquiry`;
+const checkBalanceSufficiencyEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/check-balance`;
 const ls = new SecureLS({ encodingType: 'aes' });
 let eventKey = '';
 let errorKey = '';
@@ -51,7 +52,8 @@ let isIOS = false;
 export class OrangeMoneyService {
   constructor(
     private http: HttpClient,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private dashboardService: DashboardService
   ) {}
   pinPadDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b'];
   gotPinPadSubject = new BehaviorSubject<string[]>([]);
@@ -295,7 +297,57 @@ export class OrangeMoneyService {
   checkBalanceSufficiency(payload: { msisdn: string; amount: number }) {
     // return of(true).pipe(delay(2000));
     return this.http.get(
-      `${checkBalanceSufficiencyEndpoint}/${payload.msisdn}/${payload.amount}`
+      `${checkBalanceSufficiencyEndpoint}/${payload.msisdn}?amount=${payload.amount}`
     );
+  }
+
+  getOmMsisdn(): Observable<string> {
+    const omNumberOnLS = ls.get('nOrMo');
+    if (omNumberOnLS) {
+      return of(omNumberOnLS);
+    } else {
+      let OrangeMoneyMsisdn: string;
+      const allNumbers = [];
+      const mainPhoneNumber = this.dashboardService.getMainPhoneNumber();
+      allNumbers.push(mainPhoneNumber);
+      return new Observable(obs => {
+        this.dashboardService.getAttachedNumbers().subscribe(
+          (resp: any) => {
+            resp.forEach(element => {
+              const msisdn = '' + element.msisdn;
+              //Avoid fix numbers
+              if (!msisdn.startsWith('33', 0)) {
+                allNumbers.push(element.msisdn);
+              }
+            });
+            //request orange money info for every number
+            const httpCalls = [];
+            allNumbers.forEach(number => {
+              httpCalls.push(this.GetUserAuthInfo(number));
+            });
+            forkJoin(httpCalls).subscribe(
+              data => {
+                for (const [index, element] of data.entries()) {
+                  // if the number is linked with OM, keep it and break out of the for loop
+                  if (element['hasApiKey'] && element['hasApiKey'] != null) {
+                    //set the orange Money number in localstorage and the key is nOrMo (numero Orange Money)
+                    OrangeMoneyMsisdn = allNumbers[index];
+                    ls.set('nOrMo', OrangeMoneyMsisdn);
+                    obs.next(OrangeMoneyMsisdn);
+                  }
+                }
+              },
+              err => {
+                obs.next('error');
+                console.error(err);
+              }
+            );
+          },
+          err => {
+            obs.next('error');
+          }
+        );
+      });
+    }
   }
 }
