@@ -15,17 +15,26 @@ export class SetOperationAmountComponent implements OnInit {
   @Input() omBalance;
   hasError: boolean;
   checkingBalance: boolean;
+  omPhoneNumber: string;
 
   constructor(private orangeMoneyService: OrangeMoneyService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getOmPhoneNumber();
+  }
+
+  getOmPhoneNumber() {
+    this.orangeMoneyService.getOmMsisdn().subscribe(msisdn => {
+      this.omPhoneNumber = msisdn;
+    });
+  }
 
   nextStep() {
     this.hasError = false;
     const amount = +this.amount;
     if (amount > 0) {
       this.checkingBalance = true;
-      const msisdn = this.orangeMoneyService.getOrangeMoneyNumber();
+      const msisdn = this.omPhoneNumber;
       const checkBalanceSufficiencyPayload = { amount, msisdn };
       this.orangeMoneyService
         .checkBalanceSufficiency(checkBalanceSufficiencyPayload)
