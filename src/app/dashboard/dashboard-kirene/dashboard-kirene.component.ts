@@ -10,7 +10,8 @@ import {
   SargalSubscriptionModel,
   SARGAL_NOT_SUBSCRIBED,
   SARGAL_UNSUBSCRIPTION_ONGOING,
-  dashboardOpened
+  dashboardOpened,
+  dashboardMobilePrepaidKireneOpened
 } from '..';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
@@ -85,7 +86,7 @@ export class DashboardKireneComponent implements OnInit {
           this.listBanniere = this.banniereServ.getListBanniereByFormule();
         }
       });
-    dashboardOpened.subscribe(x => {
+    dashboardMobilePrepaidKireneOpened.subscribe(x => {
       this.getUserConsommations();
       this.getSargalPoints();
     });

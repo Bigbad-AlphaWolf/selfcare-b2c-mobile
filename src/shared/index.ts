@@ -48,7 +48,7 @@ export const CODE_KIRENE_Formule = '9134';
 export const JAMONO_NEW_SCOOL_CODE_FORMULE = '9131';
 export const JAMONO_ALLO_CODE_FORMULE = '9132';
 export const JAMONO_MAX_CODE_FORMULE = '9133';
-
+export const CODE_COMPTEUR_CREDIT_MENSUEL_OFFERT = 8;
 export const MAIL_URL = 'mailto:serviceclient@orange-sonatel.com';
 export const NO_AVATAR_ICON_URL = '/assets/images/profil-mob.png';
 export const ASSISTANCE_URL = 'https://assistance.orange.sn';
@@ -517,6 +517,7 @@ export interface SubscriptionModel {
   nomOffre: string;
   profil: string;
   code: string;
+  clientCode?: string;
 }
 
 export interface ItemBesoinAide {

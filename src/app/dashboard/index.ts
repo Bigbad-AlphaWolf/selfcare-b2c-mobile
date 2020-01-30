@@ -22,6 +22,11 @@ export const SARGAL_NOT_SUBSCRIBED = 'NOT_SUBSCRIBED';
 export const SARGAL_UNSUBSCRIPTION_ONGOING = 'UNSUBSCRIPTION_ONGOING';
 
 export const dashboardOpened = new Subject<string>();
+export const dashboardFixePrepaidOpened = new Subject<string>();
+export const dashboardFixePostpaidOpened = new Subject<string>();
+export const dashboardMobilePrepaidOpened = new Subject<string>();
+export const dashboardMobilePrepaidKireneOpened = new Subject<string>();
+export const dashboardMobilePostpaidOpened= new Subject<string>();
 
 
 
@@ -76,6 +81,7 @@ export interface SubscriptionModel {
   nomOffre: string;
   profil: string;
   code: string;
+  clientCode?: string;
 }
 
 export interface PromoBoosterActive {

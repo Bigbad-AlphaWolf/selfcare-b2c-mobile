@@ -6,8 +6,8 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { BillsService } from 'src/app/services/bill-service/bills.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
-import { formatDataVolume, MAIL_URL, months } from 'src/shared';
-import { dashboardOpened } from '..';
+import { formatDataVolume, MAIL_URL, months, SubscriptionModel } from 'src/shared';
+import { dashboardOpened, dashboardMobilePostpaidOpened } from '..';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -54,6 +54,7 @@ export class DashboardPostpaidComponent implements OnInit {
     // slidesPerView: 1.5,
     slideShadows: true
   };
+  userPhoneNumber: string;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -64,6 +65,7 @@ export class DashboardPostpaidComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.userPhoneNumber = this.dashbordServ.getCurrentPhoneNumber();
     this.getConsoPostpaid();
     this.getBills();
     this.billsService.getBillsEmit().subscribe(res => {
@@ -74,7 +76,7 @@ export class DashboardPostpaidComponent implements OnInit {
         this.bills = res;
       }
     });
-    this.banniereServ.setListBanniereByFormule();
+    /* this.banniereServ.setListBanniereByFormule();
     this.banniereServ
       .getStatusLoadingBanniere()
       .subscribe((status: boolean) => {
@@ -83,8 +85,8 @@ export class DashboardPostpaidComponent implements OnInit {
           this.listBanniere = this.banniereServ.getListBanniereByFormule();
         }
       });
-
-    dashboardOpened.subscribe(x => {
+ */
+    dashboardMobilePostpaidOpened.subscribe(x => {
       this.getConsoPostpaid();
       this.getBills();
     });
@@ -155,11 +157,20 @@ export class DashboardPostpaidComponent implements OnInit {
   }
 
   getBills() {
-    this.billsService.getUserBills();
-  }
+    this.authServ.getSubscription(this.userPhoneNumber).subscribe((res: SubscriptionModel) => {
+        this.billsService.getBills(res.clientCode).subscribe(
+            res => {
+                this.bills = res;
+            },
+            error => {
+                this.errorBill = true;
+            }
+        );
+    });
+}
 
   downloadBill(bill: any) {
-    this.billsService.downloadUserBill(bill);
+    this.billsService.downloadBill(bill);
   }
   mailToCustomerService() {
     window.open(MAIL_URL);
