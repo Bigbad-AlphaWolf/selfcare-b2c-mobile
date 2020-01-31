@@ -123,9 +123,12 @@ export class AuthenticationService {
     // step 2 if exists return data from localstorage
     // else call server to get data
     // what to save? 'subXXXXXXXX"
-    
+    const lsKey = 'sub' + msisdn;
+    const savedData = ls.get(lsKey);
+    if (savedData) {
+      return of(savedData);
+    } else {
       return this.http.get(`${userSubscriptionEndpoint2}/${msisdn}`).pipe(
-        http_retry(),
         map((res: any) => {
           const subscription = {
             clientCode: res.clientCode,
@@ -146,9 +149,10 @@ export class AuthenticationService {
           const lsKey = 'sub' + msisdn;
           ls.set(lsKey, subscription);
           return subscription;
-        }),
-        shareReplay(1)
+        })
       );
+
+    }
     
   }
 

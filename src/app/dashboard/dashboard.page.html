@@ -17,28 +17,46 @@
 </ion-header>
 <ion-content>
   <div class="dashboard-container-mobile">
-    <app-dashboard-prepaid-hybrid
-      [userSubscription]="userSubscription"
-      *ngIf="
-        (currentProfile === PROFILE_TYPE_HYBRID ||
-          currentProfile === PROFILE_TYPE_HYBRID_1 ||
-          currentProfile === PROFILE_TYPE_HYBRID_2 ||
-          currentProfile === PROFILE_TYPE_PREPAID) &&
-        currentFormule !== getkIRENEFormule() &&
-        currentFormule !== HOME_PREPAID_FORMULE
-      "
-    ></app-dashboard-prepaid-hybrid>
-    <app-dashboard-kirene
-      *ngIf="currentProfile === PROFILE_TYPE_PREPAID && currentFormule === getkIRENEFormule()"
-    >
-    </app-dashboard-kirene>
-    <app-dashboard-postpaid *ngIf="currentProfile === PROFILE_TYPE_POSTPAID && !isFormuleFixPostpaid && !isFormuleFixPrepaid">
-    </app-dashboard-postpaid>
-    <app-dashboard-postpaid-fixe  *ngIf="currentProfile === PROFILE_TYPE_POSTPAID && isFormuleFixPostpaid">
-    </app-dashboard-postpaid-fixe>
-    <app-dashboard-home-prepaid
-      *ngIf="currentProfile === PROFILE_TYPE_PREPAID && currentFormule === HOME_PREPAID_FORMULE"
-    ></app-dashboard-home-prepaid>
+    <ng-container *ngIf="!isLoading && !hasErrorSubscription">
+
+      <app-dashboard-prepaid-hybrid
+        [userSubscription]="userSubscription"
+        *ngIf="
+          (currentProfile === PROFILE_TYPE_HYBRID ||
+            currentProfile === PROFILE_TYPE_HYBRID_1 ||
+            currentProfile === PROFILE_TYPE_HYBRID_2 ||
+            currentProfile === PROFILE_TYPE_PREPAID) &&
+          currentFormule !== getkIRENEFormule() &&
+          currentFormule !== HOME_PREPAID_FORMULE
+        "
+      ></app-dashboard-prepaid-hybrid>
+      <app-dashboard-kirene
+        *ngIf="currentProfile === PROFILE_TYPE_PREPAID && currentFormule === getkIRENEFormule()"
+      >
+      </app-dashboard-kirene>
+      <app-dashboard-postpaid *ngIf="currentProfile === PROFILE_TYPE_POSTPAID && !isFormuleFixPostpaid && !isFormuleFixPrepaid">
+      </app-dashboard-postpaid>
+      <app-dashboard-postpaid-fixe  *ngIf="currentProfile === PROFILE_TYPE_POSTPAID && isFormuleFixPostpaid">
+      </app-dashboard-postpaid-fixe>
+      <app-dashboard-home-prepaid
+        *ngIf="currentProfile === PROFILE_TYPE_PREPAID && currentFormule === HOME_PREPAID_FORMULE"
+      ></app-dashboard-home-prepaid>
+    </ng-container>
+    <ng-container *ngIf="!isLoading && hasErrorSubscription">
+      <div class="scb-text-error">
+        Une erreur est survenue lors de la recupération de vos informations.
+      </div>
+      <div (click)="getCurrentSubscription()" class="text">
+        <span class="reload">
+          Actualiser ici
+        </span> 
+      </div>
+    </ng-container>
+    <ng-container *ngIf="isLoading">
+      <div class="spinner">
+        <mat-spinner mode="indeterminate" *ngIf="isLoading" [diameter]="30"></mat-spinner>
+      </div>
+    </ng-container>
   </div>
 </ion-content>
 <div id="fab-background" *ngIf="fabOpened"></div>

@@ -11,6 +11,7 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { File } from '@ionic-native/file/ngx';
 import * as SecureLS from 'secure-ls';
 import { Platform } from '@ionic/angular';
+import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 const { BILL_SERVICE, SERVER_API_URL } = environment;
 const downloadBillEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/download-facture-mobile`;
@@ -22,6 +23,8 @@ const idClientEndpoint = `${SERVER_API_URL}/selfcare-gateway/api/numero-client`;
 const lastSlipEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/last-bordereau`;
 const billsEndpointAPI = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bordereau`;
 const billsDetailEndpointAPI = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
+declare var FollowAnalytics: any;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -37,16 +40,22 @@ export class BillsService {
     private dialog: MatDialog,
     private file: File,
     private fileOpener: FileOpener,
-    private platform: Platform
+    private platform: Platform,
+    private followServ: FollowAnalyticsService
   ) {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
   }
 
-  getBills() {
+  /* getBills() {
     const login = this.dashboardService.getCurrentPhoneNumber();
     return this.http.get(`${billsEndpoint}/${login}`);
+  } */
+  getBills(numClient: string) {
+    return this.http.get(`${billsEndpoint}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`);
+}
+  getBillsPackage(numClient: string) {
+    return this.http.get(`${billsEndpoint}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=LANDLINE&size=20&page=0`);
   }
-
   getBillsAPI(numClient: string) {
     return this.http.get(
       `${billsEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`
@@ -58,7 +67,20 @@ export class BillsService {
     );
   }
 
-  getUserBills() {
+  getUserBillsPackage(numClient: string) {
+    this.getBillsPackage(numClient).subscribe(
+        (res: any[]) => {
+          this.followServ.registerEventFollow('Factures_Bordereaux_Fixe_Success','event', this.currentNumber);
+            this.getBillsPackageSubject.next(res);
+        },
+        err => {
+          this.followServ.registerEventFollow('Factures_Bordereaux_Fixe_Error', 'error',this.currentNumber);
+            this.getBillsPackageSubject.next('error');
+        }
+    );
+}
+
+  /* getUserBills() {
     this.getBills().subscribe(
       (res: any[]) => {
         res.sort((x, y) => {
@@ -75,7 +97,26 @@ export class BillsService {
         this.getBillsSubject.next('error');
       }
     );
-  }
+  } */
+  getUserBills(numClient: string) {
+    this.getBills(numClient).subscribe(
+        (res: any[]) => {
+            res.sort((x, y) => {
+                if (x.annee === y.annee) {
+                    return y.mois - x.mois;
+                } else {
+                    return y.annee - x.annee;
+                }
+            });
+            FollowAnalytics.logEvent('Factures_Bordereaux_Mobile_Success', this.currentNumber);
+            this.getBillsSubject.next(res);
+        },
+        err => {
+            FollowAnalytics.logEvent('Factures_Bordereaux_Mobile_Error', this.currentNumber);
+            this.getBillsSubject.next('error');
+        }
+    );
+}
 
   getUserBillsAPI(idClient: string) {
     this.getBillsAPI(idClient).subscribe(
@@ -95,12 +136,12 @@ export class BillsService {
       }
     );
   }
-
+/* 
   getBillsPackage(numClient: string) {
     return this.http.get(`${billsPackageEndpoint}/${numClient}/0/500`);
   }
-
-  getUserBillsPackage(numClient: string) {
+ */
+  /* getUserBillsPackage(numClient: string) {
     this.getBillsPackage(numClient).subscribe(
       (res: any[]) => {
         this.getBillsPackageSubject.next(res);
@@ -109,7 +150,7 @@ export class BillsService {
         this.getBillsPackageSubject.next('error');
       }
     );
-  }
+  } */
 
   getUserBillsPackageAPI(numClient: string) {
     this.getBillsPackageAPI(numClient).subscribe(

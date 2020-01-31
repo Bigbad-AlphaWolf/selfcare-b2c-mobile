@@ -58,10 +58,11 @@ export class DashboardPage implements OnInit, OnDestroy {
   fabOpened = false;
   isFormuleFixPrepaid = false;
   isFormuleFixPostpaid = false;
+  hasErrorSubscription: boolean;
+  isLoading: boolean;
   constructor(
     private dashboardServ: DashboardService,
     private authServ: AuthenticationService,
-    private parrainageService: ParrainageService,
     private assistanceService: AssistanceService,
     private router: Router,
     private shareDialog: MatDialog,
@@ -120,9 +121,13 @@ export class DashboardPage implements OnInit, OnDestroy {
   getCurrentSubscription() {
     const currentNumber = this.dashboardServ.getCurrentPhoneNumber();
     const date = getCurrentDate();
+    this.hasErrorSubscription = false;
+    this.isLoading = true;
     this.authServ
       .getSubscription(currentNumber)
       .subscribe((res: SubscriptionModel) => {
+        this.isLoading = false;
+        this.hasErrorSubscription = false;
         this.userSubscription = res;
         this.currentProfile = this.userSubscription.profil;
         this.currentFormule = this.userSubscription.nomOffre;
@@ -153,6 +158,10 @@ export class DashboardPage implements OnInit, OnDestroy {
             error
           );
         }
+      },
+      (err:any)=>{
+        this.isLoading = false;
+        this.hasErrorSubscription = true;        
       });
     dashboardOpened.next();
     this.getWelcomeStatus();

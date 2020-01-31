@@ -4,6 +4,7 @@ import { BillsService } from '../services/bill-service/bills.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { REGEX_FIX_NUMBER } from 'src/shared';
 import { BillModel } from '../dashboard';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
 
 @Component({
   selector: 'app-bills',
@@ -33,39 +34,76 @@ export class BillsPage implements OnInit {
   bordereau;
   detail;
   detailParams;
+  clientId;
 
   constructor(
     private router: Router,
     private billsService: BillsService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit() {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
-    this.subscribeBillServices();
+    this.authService.getSubscription(this.currentNumber).subscribe(
+      (res: any) => {
+          this.clientId = res.clientCode;
+          this.error = false;
+          this.subscribeBillServices(this.clientId);
+      },
+      err => {
+          this.error = true;
+      }
+  );
   }
 
-  subscribeBillServices() {
+  // subscribeBillServices() {
+  //   if (REGEX_FIX_NUMBER.test(this.currentNumber)) {
+  //     this.bordereau = true;
+  //     this.billsService.getIdClient().subscribe((idClient: string) => {
+  //       this.billsService.getBillsPackageAPI(idClient).subscribe(res => {
+  //         this.loading = false;
+  //         res === 'error' ? (this.error = true) : (this.bills = res);
+  //       });
+  //     });
+  //   } else {
+  //     this.billsService.getUserBills();
+  //     this.billsService.getBillsEmit().subscribe(res => {
+  //       this.loading = false;
+  //       res === 'error' ? (this.error = true) : (this.bills = res);
+  //     });
+  //   }
+  // }
+
+  subscribeBillServices(clientId: string) {
     if (REGEX_FIX_NUMBER.test(this.currentNumber)) {
-      this.bordereau = true;
-      this.billsService.getIdClient().subscribe((idClient: string) => {
-        this.billsService.getBillsPackageAPI(idClient).subscribe(res => {
-          this.loading = false;
-          res === 'error' ? (this.error = true) : (this.bills = res);
-        });
-      });
+        this.bordereau = true;
+        this.billsService.getBillsPackage(clientId).subscribe(
+            res => {
+                this.loading = false;
+                this.bills = res;
+            },
+            error => {
+                this.loading = false;
+                this.error = true;
+            }
+        );
+        this.billsService.getUserBillsPackage(clientId);
     } else {
-      this.billsService.getUserBills();
-      this.billsService.getBillsEmit().subscribe(res => {
-        this.loading = false;
-        res === 'error' ? (this.error = true) : (this.bills = res);
-      });
+        this.billsService.getUserBills(this.clientId);
+        this.billsService.getBills(this.clientId).subscribe(res => {
+            this.loading = false;
+            res === 'error' ? (this.error = true) : (this.bills = res);
+        });
     }
-  }
+}
 
-  getBills() {
+  /* getBills() {
     this.billsService.getUserBills();
-  }
+  } */
+  getBills() {
+    this.billsService.getUserBills(this.clientId);
+}
 
   mailToCustomerService() {
     this.billsService.mailToCustomerService();

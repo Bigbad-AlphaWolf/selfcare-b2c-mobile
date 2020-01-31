@@ -22,7 +22,8 @@ import {
   CODE_COMPTEUR_VOLUME_NUIT_1,
   CODE_COMPTEUR_VOLUME_NUIT_2,
   CODE_COMPTEUR_VOLUME_NUIT_3,
-  dashboardOpened
+  dashboardOpened,
+  dashboardFixePrepaidOpened
 } from '..';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
@@ -70,7 +71,7 @@ export class DashboardHomePrepaidComponent implements OnInit {
     this.src = this.pictures[0];
     this.getConso();
     this.getPassInternetFixe();
-    dashboardOpened.subscribe(x => {
+    dashboardFixePrepaidOpened.subscribe(x => {
       this.getConso();
       this.getPassInternetFixe();
     });

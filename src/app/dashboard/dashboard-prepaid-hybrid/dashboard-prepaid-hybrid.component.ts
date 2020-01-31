@@ -16,7 +16,8 @@ import {
   SARGAL_NOT_SUBSCRIBED,
   SARGAL_UNSUBSCRIPTION_ONGOING,
   dashboardOpened,
-  PromoBoosterActive
+  PromoBoosterActive,
+  dashboardMobilePrepaidOpened
 } from '..';
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -110,7 +111,7 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
     this.getUserConsommations();
     this.getSargalPoints();
     this.getActivePromoBooster();
-    dashboardOpened.subscribe(x => {
+    dashboardMobilePrepaidOpened.subscribe(x => {
       this.getUserConsommations();
       this.getActivePromoBooster();
       this.getSargalPoints();
