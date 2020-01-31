@@ -27,10 +27,11 @@
     <div *ngIf="details.length" class="details-container">
       <div class="single-detail" *ngFor="let detail of details">
         <div class="title-status">
-          <span class="title">{{
-            detail.numeroTelephone | getLabelLigneBillBordereau
-          }}</span>
-          <span class="scb-text-red-error status">Impayée</span>
+          <span class="title">{{ detail.numeroTelephone | getLabelLigneBillBordereau }}</span>
+           <span [ngClass]="{
+            'scb-text-red-error status':detail.statutFacture==='unpaid',
+            'scb-text-green status':detail.statutFacture==='paid'
+          }" >{{ detail.statutFacture==='paid'? 'Payée' : 'Impayée'}}</span>
         </div>
         <div class="scb-text-item-offre-black designation">
           Désignation {{ detail.numeroTelephone }}

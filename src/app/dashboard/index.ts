@@ -27,7 +27,9 @@ export const dashboardFixePostpaidOpened = new Subject<string>();
 export const dashboardMobilePrepaidOpened = new Subject<string>();
 export const dashboardMobilePrepaidKireneOpened = new Subject<string>();
 export const dashboardMobilePostpaidOpened= new Subject<string>();
-
+export const billsMobilePostpaidOpened = new Subject<string>();
+export const billsFixePostpaidOpened = new Subject<string>();
+export const billsDetailFixePostpaidOpened = new Subject<string>();
 
 
 export interface SargalSubscriptionModel {

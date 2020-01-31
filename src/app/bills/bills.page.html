@@ -36,22 +36,22 @@
                       <div class="bill-infos-container">
                           <div class="top-infos">
                               <span
-                                  >{{ bordereau ? months[bills[0].moisfact - 1] : months[bills[0].mois - 1] }}
-                                  {{ bordereau ? bills[0].annefact + 2000 : bills[0].annee + 2000 }}</span
+                                  >{{months[bills[0].moisfact - 1] }}
+                                  {{ bills[0].annefact }}</span
                               >
                               <span
                                   *ngIf="!bordereau"
                                   [ngClass]="{
-                                      'paid-status': bills[0].statutFacture === 'PAYEE',
-                                      'unpaid-status': bills[0].statutFacture === 'ND'
+                                      'paid-status': bills[0].statutFacture === 'paid',
+                                        'unpaid-status': bills[0].statutFacture === 'unpaid'
                                   }"
                                   >{{ bills[0].statutFacture }}</span
                               >
                               <span *ngIf="bordereau" class="amount scb-text-orange">{{ bills[0].total }} F</span>
                           </div>
                           <div class="bottom-infos" *ngIf="!bordereau">
-                              <span class="scb-text-item-offre-black emiss-text">N° {{ bills[0].numeroFacture | formatBillNum }}</span>
-                              <span class="price">{{ bills[0].montantFacture | formatCurrency }} F</span>
+                              <span class="scb-text-item-offre-black emiss-text">N° {{ bills[0].nfact | formatBillNum }}</span>
+                              <span class="price">{{ bills[0].total | formatCurrency }} F</span>
                           </div>
                       </div>
                   </div>
@@ -63,7 +63,7 @@
                       </div>
                       <div class="echeance-date" #detail>
                           <span class="scb-text-item-offre-black emiss-text">
-                              Echéance {{ (bordereau ? bills[0].dateEchenace : bills[0].dateEcheance) | formatBillDate }}</span
+                              Echéance {{ (bordereau ? bills[0].dateEcheance : bills[0].dateEcheance) | formatBillDate }}</span
                           >
                           <img
                               alt=""
@@ -109,26 +109,26 @@
                           <div class="item-bill-infos">
                               <div class="bill-status">
                                   <span
-                                      >{{ bordereau ? months[bill?.moisfact - 1] : months[bill?.mois - 1] }}
-                                      {{ bordereau ? bill?.annefact + 2000 : bill?.annee + 2000 }}</span
+                                      >{{ months[bill?.moisfact - 1] }}
+                                      {{ bill?.annefact }}</span
                                   >
                                   <span
                                       *ngIf="!bordereau"
                                       [ngClass]="{
-                                          'paid-status': bill?.statutFacture === 'PAYEE',
-                                          'unpaid-status': bill?.statutFacture === 'ND'
-                                      }"
+                                        'paid-status': bill?.statutFacture === 'PAYEE',
+                                        'unpaid-status': bill?.statutFacture === 'ND'
+                                    }"
                                       >{{ bill?.statutFacture }}</span
                                   >
                                   <span *ngIf="bordereau" class="scb-text-orange amount">{{ bill?.total }} F</span>
                               </div>
                               <div class="bill-id" *ngIf="!bordereau">
-                                  <span class="scb-text-item-offre-black emiss-text">N° {{ bill?.numeroFacture | formatBillNum }}</span>
-                                  <span class="price">{{ bill?.montantFacture | formatCurrency }} F</span>
+                                  <span class="scb-text-item-offre-black emiss-text">N° {{ bill?.nfact | formatBillNum }}</span>
+                                  <span class="price">{{ bill?.total | formatCurrency }} F</span>
                               </div>
                               <div class="bill-emission" #details>
                                   <span class="scb-text-item-offre-black emiss-text"
-                                      >Date d’échéance {{ (bordereau ? bill?.dateEchenace : bill?.dateEcheance) | formatBillDate }}</span
+                                      >Date d’échéance {{ (bordereau ? bill?.dateEcheance : bill?.dateEcheance) | formatBillDate }}</span
                                   >
                                   <img
                                       alt=""

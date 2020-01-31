@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { BillsService } from '../services/bill-service/bills.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { REGEX_FIX_NUMBER } from 'src/shared';
-import { BillModel } from '../dashboard';
+import { BillModel, billsFixePostpaidOpened } from '../dashboard';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 
 @Component({
@@ -55,6 +55,21 @@ export class BillsPage implements OnInit {
           this.error = true;
       }
   );
+
+  billsFixePostpaidOpened.subscribe(x => {
+    console.log('getIN');
+    
+    this.authService.getSubscription(this.currentNumber).subscribe(
+      (res: any) => {
+          this.clientId = res.clientCode;
+          this.error = false;
+          this.subscribeBillServices(this.clientId);
+      },
+      err => {
+          this.error = true;
+      }
+  );
+  } )
   }
 
   // subscribeBillServices() {
@@ -90,6 +105,8 @@ export class BillsPage implements OnInit {
         );
         this.billsService.getUserBillsPackage(clientId);
     } else {
+      console.log('ici');
+      
         this.billsService.getUserBills(this.clientId);
         this.billsService.getBills(this.clientId).subscribe(res => {
             this.loading = false;
@@ -110,25 +127,21 @@ export class BillsPage implements OnInit {
   }
 
   downloadBill(bill: any) {
-    if (this.bordereau) {
-      this.billsService.downloadUserBillPackage(bill);
-    } else {
-      this.billsService.downloadUserBill(bill);
-    }
-  }
+    this.billsService.downloadBill(bill);
+}
 
   goToMenu() {
     this.router.navigate(['/dashboard']);
   }
 
   goBillsDetails(bill: BillModel) {
-    const numClient = bill.ncli;
+    const numClient = this.clientId;
     const groupage = bill.groupage;
     const mois = bill.moisfact;
     const annee = bill.annefact;
     this.detailParams = { numClient, groupage, mois, annee };
     this.detail = true;
-  }
+}
 
   hideDetails() {
     this.detail = false;
