@@ -77,16 +77,9 @@
           <div class="bill-infos-container">
             <div class="top-infos">
               <span>{{ months[lastSlip?.moisfact - 1] }} {{ lastSlip?.annefact }}</span>
-              <span
-                [ngClass]="{
-                  'paid-status': lastSlip?.statutFacture === 'PAYEE',
-                  'unpaid-status': lastSlip?.statutFacture === 'ND'
-                }"
-                >{{ lastSlip?.statutFacture }}</span
-              >
             </div>
             <div class="bottom-infos">
-              <span class="scb-text-item-offre-black emiss-text">N° {{ lastSlip?.ncli | formatBillNum }}</span>
+              <span class="scb-text-item-offre-black emiss-text">N° {{lastSlip?.nfact}}</span>
               <span class="price">{{ lastSlip?.total | formatCurrency }} F</span>
             </div>
           </div>
@@ -94,7 +87,7 @@
         <div class="last-bill-infos-dates">
           <div class="echeance-date" #detail>
             <span class="scb-text-item-offre-black emiss-text">
-              Echéance {{ lastSlip?.dateEchenace | formatBillDate }}</span
+              Echéance {{ lastSlip?.dateEcheance | formatBillDate }}</span
             >
             <img
               alt=""

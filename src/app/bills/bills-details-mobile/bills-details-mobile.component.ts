@@ -31,29 +31,24 @@ export class BillsDetailsMobileComponent implements OnInit {
 
   constructor(private billsService: BillsService) {}
 
-  ngOnInit() {
+  ngOnInit() {    
     this.getBills();
-    this.subscribeToBillsDetails();
   }
 
-  getBills() {
+  getBills(){
     if (this.detailsParams) {
       this.mois = this.months[this.detailsParams.mois - 1];
-      this.annee = this.detailsParams.annee + 2000;
-    }
-    this.billsService.getUserBillsDetail(this.detailsParams);
+      this.annee = this.detailsParams.annee;
+  }
+  this.billsService.getBillsDetail(this.detailsParams).subscribe(res => {
+      this.details = res;
+      this.loading = false;
+  });
   }
 
-  subscribeToBillsDetails() {
-    this.billsService.getBillDetailEmit().subscribe(res => {
-      if (res === 'error') {
-        this.error = true;
-      } else {
-        this.details = res;
-      }
-      this.loading = false;
-    });
-  }
+  downloadBill(bill: any) {
+    this.billsService.downloadBill(bill);
+}
 
   goBack() {
     this.goback.emit();
