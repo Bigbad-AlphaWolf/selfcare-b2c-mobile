@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { REGEX_NUMBER, formatPhoneNumber, REGEX_FIX_NUMBER } from '..';
+import { REGEX_NUMBER, formatPhoneNumber, REGEX_FIX_NUMBER, SubscriptionModel } from '..';
 import { MatDialog } from '@angular/material';
 import { SelectNumberPopupComponent } from '../select-number-popup/select-number-popup.component';
 import { Contacts, Contact } from '@ionic-native/contacts';
@@ -18,6 +18,7 @@ export class SelectOtherRecipientComponent implements OnInit {
   showErrorMsg;
   destNumber: string;
   isValidNumber: boolean;
+  isProcessing: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,13 +40,25 @@ export class SelectOtherRecipientComponent implements OnInit {
 
   suivant() {
     this.showErrorMsg = false;
+    this.isProcessing = true;
     this.destNumber = formatPhoneNumber(this.formDest.value.phoneNumber);
     this.authServ.isPostpaid(this.destNumber).subscribe((isPostpaid: any) => {
       if (isPostpaid) {
         this.showErrorMsg = true;
       } else {
-        this.nextStepEmitter.emit(this.destNumber);
+        this.authServ.getSubscription(this.destNumber).subscribe((res: SubscriptionModel)=>{
+          this.isProcessing = false;
+          if(res.code !== '0'){
+            this.nextStepEmitter.emit({destinataire: this.destNumber, code: res.code });
+          }else{
+            this.showErrorMsg = true;
+          }
+        }, ()=>{
+          this.isProcessing = false;
+        })
       }
+    }, ()=>{
+      this.isValidNumber = false;
     });
   }
 
@@ -58,7 +71,19 @@ export class SelectOtherRecipientComponent implements OnInit {
         } else {
           this.destNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
           if (this.validateNumber(this.destNumber)) {
-            this.nextStepEmitter.emit(this.destNumber);
+            this.authServ.isPostpaid(this.destNumber).subscribe((isPostpaid: boolean)=>{
+              if(isPostpaid){
+                this.showErrorMsg = true;
+              }else{
+                this.authServ.getSubscription(this.destNumber).subscribe((res: SubscriptionModel)=>{
+                  if(res.code !== '0'){
+                    this.nextStepEmitter.emit({destinataire: this.destNumber, code: res.code});
+                  }else{
+                    this.showErrorMsg = true;
+                  }
+                })
+              }
+            });
           } else {
             this.destNumber = '';
             this.showErrorMsg = true;
@@ -69,13 +94,26 @@ export class SelectOtherRecipientComponent implements OnInit {
   }
 
   openPickRecipientModal(phoneNumbers: any[]) {
+    this.showErrorMsg = false;
     const dialogRef = this.dialog.open(SelectNumberPopupComponent, {
       data: { phoneNumbers }
     });
     dialogRef.afterClosed().subscribe(selectedNumber => {
       this.destNumber = formatPhoneNumber(selectedNumber);
       if (this.validateNumber(this.destNumber)) {
-        this.nextStepEmitter.emit(this.destNumber);
+        this.authServ.isPostpaid(this.destNumber).subscribe((isPostpaid: boolean)=>{
+          if(isPostpaid){
+            this.showErrorMsg = true;
+          }else{
+            this.authServ.getSubscription(this.destNumber).subscribe((res: SubscriptionModel)=>{
+              if(res.code !== '0'){
+                this.nextStepEmitter.emit({destinataire: this.destNumber, code: res.code});
+              }else{
+                this.showErrorMsg = true;
+              }
+            })
+          }
+        });
       } else {
         this.destNumber = '';
         this.showErrorMsg = true;

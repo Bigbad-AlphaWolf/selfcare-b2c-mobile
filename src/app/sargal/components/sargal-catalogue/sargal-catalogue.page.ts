@@ -1,6 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { GiftSargalItem, GiftSargalCategoryItem, getLastUpdatedDateTimeText } from 'src/shared';
-import { SargalSubscriptionModel, OPERATION_TYPE_SARGAL_CONVERSION, PAYMENT_MOD_SARGAL } from 'src/app/dashboard';
+import {
+  GiftSargalItem,
+  GiftSargalCategoryItem,
+  getLastUpdatedDateTimeText
+} from 'src/shared';
+import {
+  SargalSubscriptionModel,
+  OPERATION_TYPE_SARGAL_CONVERSION,
+  PAYMENT_MOD_SARGAL
+} from 'src/app/dashboard';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -50,11 +58,15 @@ export class SargalCataloguePage implements OnInit {
 
         this.listGiftSargal = this.sargalServ.getListGiftSargalOfUser();
         this.activatedRoute.paramMap.subscribe(params => {
-          const codeCategory = params.has('categoryGift') ? params.get('categoryGift') : null;
+          const codeCategory = params.has('categoryGift')
+            ? params.get('categoryGift')
+            : null;
           if (this.dataLoaded) {
-            const categorie = this.categoriesGiftSargal.find((item: GiftSargalCategoryItem) => {
-              return item.id === +codeCategory;
-            });
+            const categorie = this.categoriesGiftSargal.find(
+              (item: GiftSargalCategoryItem) => {
+                return item.id === +codeCategory;
+              }
+            );
             this.filterByCategory(categorie);
           }
         });
@@ -67,11 +79,17 @@ export class SargalCataloguePage implements OnInit {
     this.sargalServ.getSargalBalance(this.currentNumber).subscribe(
       (res: SargalSubscriptionModel) => {
         this.sargalBalanceLoaded = true;
-        if (res.status === 'SUBSCRIBED' || res.status === 'SUBSCRIPTION_ONGOING') {
+        if (
+          res.status === 'SUBSCRIBED' ||
+          res.status === 'SUBSCRIPTION_ONGOING'
+        ) {
           this.userSargalPoints = res.totalPoints;
           this.sargalLastUpdate = getLastUpdatedDateTimeText();
 
-          const sargal = { sargalPts: this.userSargalPoints, lastUpdate: this.sargalLastUpdate };
+          const sargal = {
+            sargalPts: this.userSargalPoints,
+            lastUpdate: this.sargalLastUpdate
+          };
           ls.set('sargalPoints', sargal);
         }
       },
@@ -97,7 +115,10 @@ export class SargalCataloguePage implements OnInit {
   filterByCategory(category: GiftSargalCategoryItem) {
     if (category) {
       this.categoryGiftSargal = category;
-      this.listShownGiftSargal = this.sargalServ.filterGiftItemByCategory(this.categoryGiftSargal, this.listGiftSargal);
+      this.listShownGiftSargal = this.sargalServ.filterGiftItemByCategory(
+        this.categoryGiftSargal,
+        this.listGiftSargal
+      );
     } else {
       this.listShownGiftSargal = this.listGiftSargal;
       this.categoryGiftSargal = null;
@@ -106,9 +127,15 @@ export class SargalCataloguePage implements OnInit {
 
   reverseList(ordre: string) {
     if (ordre === 'asc') {
-      this.listShownGiftSargal.sort((item1: GiftSargalItem, item2: GiftSargalItem) => +item1.prix - +item2.prix);
+      this.listShownGiftSargal.sort(
+        (item1: GiftSargalItem, item2: GiftSargalItem) =>
+          +item1.prix - +item2.prix
+      );
     } else {
-      this.listShownGiftSargal.sort((item1: GiftSargalItem, item2: GiftSargalItem) => +item2.prix - +item1.prix);
+      this.listShownGiftSargal.sort(
+        (item1: GiftSargalItem, item2: GiftSargalItem) =>
+          +item2.prix - +item1.prix
+      );
     }
   }
 
@@ -119,43 +146,60 @@ export class SargalCataloguePage implements OnInit {
 
   convertPointsToGift(numeroIllimite?: string[]) {
     this.conversionLoading = true;
-    this.sargalServ.convertToGift(this.giftSargalSelected, numeroIllimite).subscribe(
-      (res: any) => {
-        this.conversionLoading = true;
-        this.step = 'SUCCESS';
-        if (res.status === 204) {
-          this.failed = false;
-        } else if (res.status === 202) {
+    this.sargalServ
+      .convertToGift(this.giftSargalSelected, numeroIllimite)
+      .subscribe(
+        (res: any) => {
+          this.conversionLoading = true;
+          this.step = 'SUCCESS';
+          if (res.status === 204) {
+            this.failed = false;
+          } else if (res.status === 202) {
+            this.failed = true;
+            this.errorMsg = 'Votre demande est en cours...';
+          }
+          this.followService.registerEventFollow(
+            'Convert_Gift_Sargal_Success',
+            'event',
+            {
+              giftID: this.giftSargalSelected.giftId,
+              numeroIllimites: numeroIllimite,
+              giftName: this.giftSargalSelected.nom,
+              giftSargalPts: this.giftSargalSelected.prix,
+              msisdn: this.currentNumber
+            }
+          );
+        },
+        err => {
+          this.conversionLoading = true;
+          this.errorMsg = 'Une erreur est survenue';
+          this.step = 'SUCCESS';
           this.failed = true;
-          this.errorMsg = 'Votre demande est en cours...';
+          this.followService.registerEventFollow(
+            'Convert_Gift_Sargal_Error',
+            'error',
+            {
+              giftID: this.giftSargalSelected.giftId,
+              numeroIllimites: numeroIllimite,
+              giftName: this.giftSargalSelected.nom,
+              giftSargalPts: this.giftSargalSelected.prix,
+              msisdn: this.currentNumber,
+              error:
+                err && err.status
+                  ? err.status
+                  : 'Erreur durant le traitement de la requête'
+            }
+          );
         }
-        this.followService.registerEventFollow('Convert_Gift_Sargal_Success', 'success', {
-          giftID: this.giftSargalSelected.giftId,
-          numeroIllimites: numeroIllimite,
-          giftName: this.giftSargalSelected.nom,
-          giftSargalPts: this.giftSargalSelected.prix,
-          msisdn: this.currentNumber
-        });
-      },
-      err => {
-        this.conversionLoading = true;
-        this.errorMsg = 'Une erreur est survenue';
-        this.step = 'SUCCESS';
-        this.failed = true;
-        this.followService.registerEventFollow('Convert_Gift_Sargal_Error', 'error', {
-          giftID: this.giftSargalSelected.giftId,
-          numeroIllimites: numeroIllimite,
-          giftName: this.giftSargalSelected.nom,
-          giftSargalPts: this.giftSargalSelected.prix,
-          msisdn: this.currentNumber,
-          error: err && err.status ? err.status : 'Erreur durant le traitement de la requête'
-        });
-      }
-    );
+      );
   }
 
   goToPartnerSargal() {
-    this.followService.registerEventFollow('Partenaire-Sargal-Dashboard', 'success', 'clicked');
+    this.followService.registerEventFollow(
+      'Partenaire-Sargal-Dashboard',
+      'event',
+      'clicked'
+    );
     // this.router.navigate(['/sargal-partenaire']);
   }
 }

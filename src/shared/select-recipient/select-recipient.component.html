@@ -60,11 +60,12 @@
 		<div class="next-btn">
 			<button
 				(click)="goToListPassStep()"
-				[disabled]="otherDestinataire && !destNumberValid"
+				[disabled]="otherDestinataire && !destNumberValid || isProcessing"
 				class="scb-btn-full c-pointer scb-btn-orange"
 				mat-stroked-button
 			>
 				Suivant
+				<mat-spinner mode="indeterminate" [diameter]="20" *ngIf="isProcessing"></mat-spinner>
 			</button>
 		</div>
 	</div>

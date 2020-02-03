@@ -20,12 +20,13 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'register',
-    loadChildren: './register/register.module#RegisterPageModule',
+    path: 'buy-pass-internet',
+    loadChildren:
+      './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
     canActivate: [AuthGuard]
   },
   {
-    path: 'buy-pass-internet',
+    path: 'buy-pass-internet/:id',
     loadChildren:
       './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
     canActivate: [AuthGuard]
@@ -71,11 +72,6 @@ const routes: Routes = [
       './change-main-phone-number/change-main-phone-number.module#ChangeMainPhoneNumberPageModule'
   },
   {
-    path: 'new-number',
-    loadChildren:
-      './add-new-phone-number/add-new-phone-number.module#AddNewPhoneNumberPageModule'
-  },
-  {
     path: 'my-formule',
     loadChildren: './my-formule/my-formule.module#MyFormulePageModule'
   },
@@ -89,19 +85,6 @@ const routes: Routes = [
       './sargal/components/sargal-catalogue/sargal-catalogue.module#SargalCataloguePageModule'
   },
   { path: 'bills', loadChildren: './bills/bills.module#BillsPageModule' },
-  {
-    path: 'check-number',
-    loadChildren: './check-number/check-number.module#CheckNumberPageModule'
-  },
-  {
-    path: 'code-otp',
-    loadChildren: './code-otp/code-otp.module#CodeOtpPageModule'
-  },
-  {
-    path: 'create-password',
-    loadChildren:
-      './create-password/create-password.module#CreatePasswordPageModule'
-  },
   {
     path: 'assistance',
     loadChildren: './assistance/assistance.module#AssistancePageModule'
@@ -142,7 +125,8 @@ const routes: Routes = [
     path: 'new-registration',
     loadChildren:
       './new-registration/new-registration.module#NewRegistrationPageModule'
-  }
+  },
+  { path: 'new-number', loadChildren: './add-new-phone-number-v2/add-new-phone-number-v2.module#AddNewPhoneNumberV2PageModule' }
 ];
 
 @NgModule({

@@ -17,6 +17,15 @@
     span {
       font-size: 18px;
     }
+    .title {
+      &.custom-rattach {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 24px;
+          line-height: 1.08;
+          display: inline-block;
+          width: 70%;
+      }
+  }
   }
   .text-container {
     padding-top: 8px;
@@ -28,6 +37,13 @@
       font-family: HelveticaNeueLTStd-Roman, sans-serif;
       font-size: 14px;
     }
+    .text {
+      &.custom-rattach {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
+          line-height: 1.13;
+      }
+  }
   }
   .btn-container {
     padding-top: 25px;

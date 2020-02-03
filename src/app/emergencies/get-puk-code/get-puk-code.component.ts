@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { EmergencyService } from 'src/app/services/emergency-service/emergency.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-get-puk-code',
@@ -16,7 +17,8 @@ export class GetPukCodeComponent implements OnInit {
   constructor(
     private dashboardService: DashboardService,
     private emergencyService: EmergencyService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -46,6 +48,11 @@ export class GetPukCodeComponent implements OnInit {
     this.codePUK = '';
     this.emergencyService.getCodePuk(phoneNumber).subscribe((code: any) => {
       this.codePUK = code.puk;
+      this.followAnalyticsService.registerEventFollow(
+        'PUK_Code_Success',
+        'event',
+        phoneNumber
+      );
     });
   }
 }

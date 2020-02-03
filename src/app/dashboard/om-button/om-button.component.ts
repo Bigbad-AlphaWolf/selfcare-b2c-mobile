@@ -5,7 +5,7 @@ import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
-import { formatCurrency } from '..';
+import { formatCurrency } from 'src/shared';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -77,7 +77,7 @@ export class OmButtonComponent implements OnInit, OnDestroy {
     this.omServ.showBalance(true);
     const balance = solde;
     this.balance = balance ? formatCurrency(balance) : balance;
-    const phoneNumber = this.dashbordServ.getCurrentPhoneNumber();
+    const phoneNumber = ls.get('nOrMo');
     const omuser = this.omServ.GetOrangeMoneyUser(phoneNumber);
     if (omuser) {
       this.lastUpdateOM = omuser.lastUpdate;

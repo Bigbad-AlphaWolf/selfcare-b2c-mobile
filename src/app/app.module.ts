@@ -1,6 +1,6 @@
 import { HTTP } from '@ionic-native/http/ngx';
 import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -19,17 +19,30 @@ import { ChangeAvatarPopupComponent } from './my-account/change-avatar-popup/cha
 import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
 import { SharedModule } from 'src/shared/shared.module';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
-import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import {
+  FileTransfer,
+  FileTransferObject
+} from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+registerLocaleData(localeFr);
 @NgModule({
-  declarations: [AppComponent, SidemenuComponent, ChangeAvatarPopupComponent, InProgressPopupComponent],
+  declarations: [
+    AppComponent,
+    SidemenuComponent,
+    ChangeAvatarPopupComponent,
+    InProgressPopupComponent
+  ],
   entryComponents: [ChangeAvatarPopupComponent, InProgressPopupComponent],
   imports: [
     HttpClientModule,
     MatDialogModule,
     BrowserModule,
-    IonicModule.forRoot({animated: false}),
+    IonicModule.forRoot({ animated: false }),
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule
@@ -38,6 +51,7 @@ import { AppMinimize } from '@ionic-native/app-minimize/ngx';
     StatusBar,
     SplashScreen,
     NativePageTransitions,
+    { provide: LOCALE_ID, useValue: 'fr-FR'},
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {
       provide: HTTP_INTERCEPTORS,
@@ -49,7 +63,9 @@ import { AppMinimize } from '@ionic-native/app-minimize/ngx';
     FileTransferObject,
     File,
     FileOpener,
-    AppMinimize
+    AppMinimize,
+    InAppBrowser,
+    Deeplinks
   ],
   bootstrap: [AppComponent]
 })

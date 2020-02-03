@@ -13,8 +13,8 @@ import * as SecureLS from 'secure-ls';
 import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
 import * as Fingerprint2 from 'fingerprintjs2';
 const ls = new SecureLS({ encodingType: 'aes' });
-import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-new-registration',
@@ -50,7 +50,7 @@ export class NewRegistrationPage implements OnInit {
     private dashbServ: DashboardService,
     public dialog: MatDialog,
     private ref: ChangeDetectorRef,
-    private openNativeSettings: OpenNativeSettings
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   goIntro() {
@@ -60,27 +60,14 @@ export class NewRegistrationPage implements OnInit {
   ngOnInit() {
     this.step = 'CHECK_NUMBER';
     this.formPassword = this.fb.group({
-      password: ['', [Validators.required, Validators.minLength(5)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(5)]],
-      acceptCGU: [false, [Validators.requiredTrue]]
+      password: ['', [Validators.required]],
+      confirmPassword: ['', [Validators.required]]
     });
     this.getNumber();
   }
 
   openDialogGoSettings() {
     this.dialogRef = this.dialog.open(SettingsPopupComponent);
-    this.dialogSub = this.dialogRef.afterClosed().subscribe(settings => {
-      if (settings) {
-        this.goSettings();
-      }
-    });
-  }
-
-  goSettings() {
-    this.openNativeSettings
-      .open('settings')
-      .then(res => {})
-      .catch(err => {});
   }
 
   getNumber() {
@@ -103,10 +90,20 @@ export class NewRegistrationPage implements OnInit {
                 this.numberGot = true;
                 this.phoneNumber = response.msisdn;
                 this.hmac = response.hmac;
+                this.followAnalyticsService.registerEventFollow(
+                  'User_msisdn_recuperation_succes',
+                  'event',
+                  this.phoneNumber
+                );
               } else {
                 this.showErrMessage = true;
                 this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
                 this.openDialogGoSettings();
+                this.followAnalyticsService.registerEventFollow(
+                  'User_msisdn_recuperation_failed',
+                  'error',
+                  this.phoneNumber
+                );
               }
               this.ref.detectChanges();
             },
@@ -115,6 +112,11 @@ export class NewRegistrationPage implements OnInit {
               this.showErrMessage = true;
               this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
               this.openDialogGoSettings();
+              this.followAnalyticsService.registerEventFollow(
+                'User_msisdn_recuperation_failed',
+                'error',
+                { msisdn: this.phoneNumber, error: this.errorMsg }
+              );
               this.ref.detectChanges();
             }
           );
@@ -124,6 +126,14 @@ export class NewRegistrationPage implements OnInit {
           this.showErrMessage = true;
           this.errorMsg = `La récupération ne s'est pas bien passée. Assurez d'activer vos données mobiles Orange puis réessayez`;
           this.openDialogGoSettings();
+          this.followAnalyticsService.registerEventFollow(
+            'User_msisdn_recuperation_failed',
+            'error',
+            {
+              msisdn: this.phoneNumber,
+              error: this.errorMsg
+            }
+          );
           this.ref.detectChanges();
         }
       );
@@ -140,7 +150,6 @@ export class NewRegistrationPage implements OnInit {
         this.step = 'PASSWORD';
       },
       (err: any) => {
-        console.log(err);
         this.checkingNumber = false;
         //  && err.error && err.error.errorKey === 'userexists'
         if (err.status === 400) {
@@ -177,6 +186,11 @@ export class NewRegistrationPage implements OnInit {
     };
     this.authServ.register(userInfo).subscribe(
       () => {
+        this.followAnalyticsService.registerEventFollow(
+          'User_register_succes',
+          'event',
+          userInfo.login
+        );
         this.step = 'SUCCESS';
         this.creatingAccount = false;
       },
@@ -184,6 +198,11 @@ export class NewRegistrationPage implements OnInit {
         this.creatingAccount = false;
         const { status, error } = err;
         this.showErrMessage = true;
+        this.followAnalyticsService.registerEventFollow(
+          'User_register_failed',
+          'error',
+          userInfo.login
+        );
         if (status === 400) {
           // bad input
           this.errorMsg = error.title;
@@ -199,7 +218,12 @@ export class NewRegistrationPage implements OnInit {
     const pwd = this.formPassword.value.password;
     const confirmPwd = this.formPassword.value.confirmPassword;
     if (pwd === confirmPwd) {
-      this.goSuccess();
+      if (pwd.length > 4) {
+        this.goSuccess();
+      } else {
+        this.showErrMessage = true;
+        this.errorMsg = 'le mot de passe doit avoir au minumum 5 caractères';
+      }
     } else {
       this.showErrMessage = true;
       this.errorMsg = 'les mots de passe ne sont pas identiques';
@@ -207,23 +231,14 @@ export class NewRegistrationPage implements OnInit {
   }
 
   openCguDialog() {
-    const dialogRef = this.dialog.open(CguPopupComponent, {
+    this.dialog.open(CguPopupComponent, {
       data: { login: '' }
-    });
-    dialogRef.afterClosed().subscribe(confirmresult => {
-      const password = this.formPassword.value.password;
-      const confirmPassword = this.formPassword.value.confirmPassword;
-      this.formPassword.setValue({
-        password,
-        confirmPassword,
-        acceptCGU: true
-      });
     });
   }
 
   goLoginPage() {
     let login: string;
-    this.phoneNumber.startsWith('221')
+    this.phoneNumber && this.phoneNumber.startsWith('221')
       ? (login = this.phoneNumber.substring(3))
       : (login = this.phoneNumber);
     ls.set('subscribedNumber', login);
@@ -243,19 +258,33 @@ export class NewRegistrationPage implements OnInit {
     };
     this.authServ.login(userCredential).subscribe(
       res => {
-        // FollowAnalytics.logEvent('Authentication_Successful', userCredential.username);
         this.dashbServ.getAccountInfo(userCredential.username).subscribe(
           (resp: any) => {
             this.isLogging = false;
             ls.set('user', resp);
             this.router.navigate(['/dashboard']);
+            this.followAnalyticsService.registerEventFollow(
+              'Authentication_Successful',
+              'event',
+              this.phoneNumber
+            );
           },
           () => {
             this.isLogging = false;
+            this.followAnalyticsService.registerEventFollow(
+              'Authentication_Failed',
+              'error',
+              this.phoneNumber
+            );
           }
         );
       },
       err => {
+        this.followAnalyticsService.registerEventFollow(
+          'Authentication_Failed',
+          'error',
+          this.phoneNumber
+        );
         this.router.navigate(['/login']);
       }
     );

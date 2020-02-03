@@ -3,7 +3,10 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { EmergencyService } from 'src/app/services/emergency-service/emergency.service';
-import { DashboardService, downloadEndpoint } from 'src/app/services/dashboard-service/dashboard.service';
+import {
+  DashboardService,
+  downloadEndpoint
+} from 'src/app/services/dashboard-service/dashboard.service';
 import {
   REGEX_EMAIL,
   MAX_USER_FILE_UPLOAD_SIZE,
@@ -12,7 +15,6 @@ import {
   FILENAME_DEPLAFONNEMENT_OM_ACCOUNT,
   FILENAME_ERROR_TRANSACTION_OM
 } from 'src/shared';
-import { LogModel } from 'src/app/services/orange-money-service';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
 import { environment } from 'src/environments/environment';
@@ -20,10 +22,14 @@ const { SERVER_API_URL } = environment;
 import * as SecureLS from 'secure-ls';
 
 import { HttpClient } from '@angular/common/http';
-import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import {
+  FileTransfer,
+  FileTransferObject
+} from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { Platform } from '@ionic/angular';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 const logEndpoint = `${SERVER_API_URL}/management/selfcare-logs-file`;
 
@@ -57,18 +63,20 @@ export class OrangeMoneyComponent implements OnInit {
     private route: ActivatedRoute,
     private emerg: EmergencyService,
     private dashb: DashboardService,
-    private httpClient: HttpClient,
     private transfer: FileTransfer,
     private file: File,
     private fileOpener: FileOpener,
-    private platform: Platform
+    private platform: Platform,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
     this.userInfos = ls.get('user');
     this.form = this.fb.group({
       mail: [
-        this.userInfos.email && !this.invalideEmail(this.userInfos.email) ? this.userInfos.email : null,
+        this.userInfos.email && !this.invalideEmail(this.userInfos.email)
+          ? this.userInfos.email
+          : null,
         [Validators.required, Validators.pattern(REGEX_EMAIL)]
       ],
       form: [null, [Validators.required]],
@@ -273,23 +281,56 @@ export class OrangeMoneyComponent implements OnInit {
         this.loader = false;
         switch (this.type) {
           case 'creation-compte':
+            this.followAnalyticsService.registerEventFollow(
+              'Demande_Ouverture_Compte_OM',
+              'event',
+              'success'
+            );
             break;
           case 'deplafonnement':
+            this.followAnalyticsService.registerEventFollow(
+              'Demande_Deplafonnement_OM',
+              'event',
+              'success'
+            );
             break;
           default:
+            this.followAnalyticsService.registerEventFollow(
+              'Declaration_Erreur',
+              'event',
+              'success'
+            );
             break;
         }
         this.openSuccessDialog(this.type);
       },
       (err: any) => {
         this.loader = false;
-        this.openErrorDialog('errorUpload', `Une erreur est survenue lors de l'envoi du mail`);
+        this.openErrorDialog(
+          'errorUpload',
+          `Une erreur est survenue lors de l'envoi du mail`
+        );
         switch (this.type) {
           case 'creation-compte':
+            this.followAnalyticsService.registerEventFollow(
+              'Demande_Ouverture_Compte_OM_error',
+              'error',
+              'error while sending mail'
+            );
             break;
           case 'deplafonnement':
+            this.followAnalyticsService.registerEventFollow(
+              'Demande_Deplafonnement_OM_error',
+              'error',
+              'error while sending mail'
+            );
             break;
           default:
+            this.followAnalyticsService.registerEventFollow(
+              'Declaration_Erreur_error',
+              'error',
+              'error while sending mail'
+            );
             break;
         }
       }
@@ -306,7 +347,7 @@ export class OrangeMoneyComponent implements OnInit {
 
   openConfirmDialog() {
     const dialogRef = this.dialog.open(CancelOperationPopupComponent, {
-      data: { type: 'confirmationOperationDepannage' }
+      data: { confirmationOperationDepannage: true }
     });
     dialogRef.afterClosed().subscribe((res: any) => {
       if (res) {
@@ -320,17 +361,6 @@ export class OrangeMoneyComponent implements OnInit {
       data: { type }
     });
     dialogRef.afterClosed().subscribe(confirmresult => {});
-  }
-  LogAction(msisdn: string, content: string, typeLog: string, param: string) {
-    const logModel: LogModel = {
-      userId: msisdn,
-      message: content,
-      type: typeLog,
-      contexte: 'OrangeMoney',
-      params: param,
-      dateLog: new Date().toISOString()
-    };
-    return this.httpClient.post(logEndpoint, logModel).subscribe();
   }
 
   formValid() {
@@ -356,6 +386,11 @@ export class OrangeMoneyComponent implements OnInit {
   manageUploadError() {
     this.loader = false;
     this.openErrorDialog('errorUpload', 'Désolé, une erreur est survenue');
+    this.followAnalyticsService.registerEventFollow(
+      'Upload_File_Error',
+      'error',
+      'error on uploading files'
+    );
   }
 
   openErrorDialog(type: string, msg: string) {

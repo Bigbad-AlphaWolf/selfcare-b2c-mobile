@@ -19,10 +19,10 @@ import {
   getNOAvatartUrlImage,
   ASSISTANCE_URL
 } from 'src/shared';
-import { ParrainageService } from '../services/parrainage-service/parrainage.service';
 import { dashboardOpened } from '../dashboard';
 const ls = new SecureLS({ encodingType: 'aes' });
-declare var FollowAnalytics: any;
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -38,7 +38,6 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   currentFormule;
   msisdn = this.dashboardServ.getCurrentPhoneNumber();
   avatarUrl: string;
-  isSponsor: boolean;
 
   constructor(
     private router: Router,
@@ -46,7 +45,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     private dashboardServ: DashboardService,
     public dialog: MatDialog,
     private accountService: AccountService,
-    private parrainageService: ParrainageService
+    private iab: InAppBrowser,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -59,10 +59,6 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.accountService.userUrlAvatarSubject.subscribe(() => {
       this.extractData();
     });
-    this.isSponsor = true;
-    // this.parrainageService.isSponsorEvent.subscribe(res => {
-    //   this.isSponsor = true;
-    // });
     dashboardOpened.subscribe(x => {
       this.getSouscription();
     });
@@ -101,10 +97,12 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goToAssistancePage() {
-    window.open(ASSISTANCE_URL);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_Assistance', 'clicked');
-    }
+    this.iab.create(ASSISTANCE_URL, '_system');
+    this.followAnalyticsService.registerEventFollow(
+      'Sidemenu_Assistance',
+      'event',
+      'clicked'
+    );
   }
 
   ngOnDestroy() {}
@@ -115,51 +113,65 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   goDashboard() {
     this.closeMenu();
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_Suivi_conso', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'Sidemenu_Suivi_conso',
+      'event',
+      'clicked'
+    );
   }
 
   goFormule() {
     this.router.navigate(['/my-formule']);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_MaFormule', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'Sidemenu_MaFormule',
+      'event',
+      'clicked'
+    );
   }
 
   goFacture() {
     this.router.navigate(['/bills']);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_Factures_Fixe_Mobile', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'Sidemenu_Factures_Fixe_Mobile',
+      'event',
+      'clicked'
+    );
   }
 
   goMyAccount() {
     this.router.navigate(['/my-account']);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_Mon_Compte', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'Sidemenu_Mon_Compte',
+      'event',
+      'clicked'
+    );
   }
 
   goParrainage() {
     this.router.navigate(['/parrainage']);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_Mes_Parrainages', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'Sidemenu_Mes_Parrainages',
+      'event',
+      'clicked'
+    );
   }
 
   goEmergencies() {
     this.router.navigate(['/control-center']);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_urgences_depannages', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'Sidemenu_urgences_depannages',
+      'event',
+      'clicked'
+    );
   }
 
   changeCurrentNumber() {
     this.router.navigate(['/change-main-phone-number']);
-    if (typeof FollowAnalytics !== 'undefined') {
-      FollowAnalytics.logEvent('Sidemenu_urgences_depannages', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'changer_de_ligne',
+      'event',
+      'clicked'
+    );
   }
 
   setImgAvatarToDefault() {

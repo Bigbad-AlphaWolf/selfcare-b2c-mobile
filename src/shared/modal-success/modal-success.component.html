@@ -54,6 +54,18 @@
       *ngIf="data.type === 'noOMAccount'"
       class="operation-img"
     />
+    <img
+    src="/assets/images/rattachment-failed.png"
+    alt=""
+    *ngIf="data.type === 'rattachment-failed'"
+    class="operation-img"
+  />
+  <img
+    src="/assets/images/rattachment-success.png"
+    alt=""
+    *ngIf="data.type === 'rattachment-success'"
+    class="operation-img"
+  />
   </div>
   <div class="title-container scb-text-black">
     <span class="title" *ngIf="data.type === 'parametrage-internet'">
@@ -82,6 +94,12 @@
     </span>
     <span class="title" *ngIf="data.type === 'file'">
       {{ data.title }}
+    </span>
+    <span class="title" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-success'}"  *ngIf="data.type === 'rattachment-success'">
+      Bravo !
+    </span>
+    <span class="title" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-failed'}"  *ngIf="data.type === 'rattachment-failed'">
+      Echec rattachement !
     </span>
     <span class="title" *ngIf="data.type === 'noOMAccount'">Désolé, </span>
   </div>
@@ -119,10 +137,16 @@
       Ce numéro n'a pas de compte Orange Money et ne peut bénéficier de votre
       transfert
     </span>
+    <span class="text scb-text-light-black" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-success'}" *ngIf="data.type === 'rattachment-success'">
+      Votre nouvelle ligne a bien était rajoutée à votre compte
+    </span>
+    <span class="text scb-text-light-black" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-failed'}" *ngIf="data.type === 'rattachment-failed'">
+      Veuillez contacter le service client
+    </span>
   </div>
   <div class="btn-container">
     <button class="scb-btn scb-btn-white scb-btn-full" (click)="closeDialog()">
-      Fermer
+      {{ data && data.type === 'rattachment-success' || data && data.type === 'rattachment-failed' ? 'Terminer' : 'Fermer' }}
     </button>
   </div>
 </div>

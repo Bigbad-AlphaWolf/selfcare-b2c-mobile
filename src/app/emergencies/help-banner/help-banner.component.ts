@@ -8,8 +8,14 @@ import { Component, OnInit, Input } from '@angular/core';
 export class HelpBannerComponent implements OnInit {
   @Input() text;
   @Input() helpType;
-
+  redirectTo: string;
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    if(this.helpType === 'rattachment'){
+      this.redirectTo = "/dashboard";
+    }else {
+      this.redirectTo = "/control-center"
+    }    
+  }
 }

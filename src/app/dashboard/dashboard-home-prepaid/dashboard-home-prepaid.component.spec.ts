@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreatePasswordPage } from './create-password.page';
+import { DashboardHomePrepaidComponent } from './dashboard-home-prepaid.component';
 
-describe('CreatePasswordPage', () => {
-  let component: CreatePasswordPage;
-  let fixture: ComponentFixture<CreatePasswordPage>;
+describe('DashboardHomePrepaidComponent', () => {
+  let component: DashboardHomePrepaidComponent;
+  let fixture: ComponentFixture<DashboardHomePrepaidComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CreatePasswordPage ],
+      declarations: [ DashboardHomePrepaidComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CreatePasswordPage);
+    fixture = TestBed.createComponent(DashboardHomePrepaidComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

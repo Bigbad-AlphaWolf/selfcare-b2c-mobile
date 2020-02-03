@@ -13,6 +13,7 @@ import {
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-transfer-recipient-amount',
@@ -41,16 +42,22 @@ export class TransferRecipientAmountComponent implements OnInit {
   checkingOMAccount = false;
   recipientInfos = { phoneNumber: '', hasOMAccount: false };
   contactInfos: any;
+  showErrorAmount: boolean;
+  checkingOMAmountToTransfer: boolean;
+  userCurrentNumber: string;
+  omPhoneNumber: string;
 
   constructor(
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
     private omService: OrangeMoneyService,
     private contacts: Contacts,
-    private dashService: DashboardService
+    private dashService: DashboardService,
+    private followAnalytics: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
+    this.userCurrentNumber = this.dashService.getCurrentPhoneNumber();
     if (this.orangeMoney) {
       this.formAmount = this.formBuilder.group({
         amount: [
@@ -94,9 +101,37 @@ export class TransferRecipientAmountComponent implements OnInit {
     });
   }
 
+  getOmPhoneNumber() {
+    this.omService.getOmMsisdn().subscribe(msisdn => {
+      this.omPhoneNumber = msisdn;
+    });
+  }
+
   suivant() {
     if (this.step === 'SAISIE_MONTANT') {
-      this.nextStepEmitter.emit(this.formAmount.value.amount);
+      const amount = this.formAmount.value.amount;
+      if (this.orangeMoney) {
+        this.checkingOMAmountToTransfer = true;
+        this.showErrorAmount = false;
+        const msisdn = this.omPhoneNumber;
+        const payload = { amount, msisdn };
+        this.omService.checkBalanceSufficiency(payload).subscribe(
+          hasEnoughBalance => {
+            this.checkingOMAmountToTransfer = false;
+            if (hasEnoughBalance) {
+              this.nextStepEmitter.emit(amount);
+            } else {
+              this.showErrorAmount = true;
+            }
+          },
+          err => {
+            this.checkingOMAmountToTransfer = false;
+            this.nextStepEmitter.emit(amount);
+          }
+        );
+      } else {
+        this.nextStepEmitter.emit(amount);
+      }
     }
     if (this.step === 'SAISIE_NUMBER') {
       const recipient = {
@@ -210,7 +245,7 @@ export class TransferRecipientAmountComponent implements OnInit {
 
   checkOMToken() {
     const phoneNumber = this.dashService.getCurrentPhoneNumber();
-    this.omService.GetUserAuthInfo(phoneNumber).subscribe(omUser => {
+    this.omService.GetUserAuthInfo(phoneNumber).subscribe((omUser: any) => {
       // If user already connected open pinpad
       if (!omUser.hasApiKey || omUser.loginExpired || !omUser.accessToken) {
         this.operationOM = 'RESET_TOKEN';
@@ -229,7 +264,7 @@ export class TransferRecipientAmountComponent implements OnInit {
     this.omService
       .checkUserHasAccount(this.recipientInfos.phoneNumber)
       .subscribe(
-        res => {
+        (res: any) => {
           this.checkingOMAccount = false;
           if (res) {
             if (res.status_code.match('Success')) {
@@ -238,7 +273,25 @@ export class TransferRecipientAmountComponent implements OnInit {
               if (this.contactInfos) {
                 this.contactEmitter.emit(this.contactInfos);
               }
+              this.followAnalytics.registerEventFollow(
+                'destinataire_transfert_has_om_account_success',
+                'event',
+                {
+                  transfert_om_numero_sender: this.userCurrentNumber,
+                  transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
+                  has_om: 'true'
+                }
+              );
             } else {
+              this.followAnalytics.registerEventFollow(
+                'destinataire_transfert_has_om_account_success',
+                'event',
+                {
+                  transfert_om_numero_sender: this.userCurrentNumber,
+                  transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
+                  has_om: 'false'
+                }
+              );
               this.openModalNoOMAccount(this.recipientInfos);
             }
           } else {
@@ -250,7 +303,25 @@ export class TransferRecipientAmountComponent implements OnInit {
           this.checkingOMAccount = false;
           if (err.status === 400) {
             this.openModalNoOMAccount(this.recipientInfos);
+            this.followAnalytics.registerEventFollow(
+              'destinataire_transfert_has_om_account',
+              'event',
+              {
+                transfert_om_numero_destinataire: this.recipientInfos
+                  .phoneNumber,
+                has_om: 'false'
+              }
+            );
           } else {
+            this.followAnalytics.registerEventFollow(
+              'destinataire_transfert_has_om_account_error',
+              'error',
+              {
+                transfert_om_numero_sender: this.userCurrentNumber,
+                transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
+                error: 'Une error ' + err.status + ' est survenue'
+              }
+            );
             this.errorMsg = 'Une erreur est survenue, veuillez reessayer';
           }
         }

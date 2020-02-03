@@ -5,7 +5,6 @@
   overflow: auto;
   height: 100%;
   .dashboard-img-promo {
-    
     .hide-banniere-promo {
       position: absolute;
       right: 14px;
@@ -53,6 +52,8 @@
           display: flex;
           align-items: flex-start;
           margin-top: 12px;
+          // width: 66% !important;
+          // min-width: 300px;
         }
       }
       app-om-button {

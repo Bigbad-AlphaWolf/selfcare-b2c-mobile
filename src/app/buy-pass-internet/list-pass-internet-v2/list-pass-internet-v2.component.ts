@@ -12,7 +12,7 @@ import { IonSlides } from '@ionic/angular';
   styleUrls: ['./list-pass-internet-v2.component.scss']
 })
 export class ListPassInternetV2Component implements OnInit, OnDestroy {
-  @Input() destinataire: string;
+  @Input() destCodeFormule: string;
   @Input() paymentMode: string;
   @Output() getSelectedPassInternet = new EventEmitter();
   @ViewChild('sliders') sliders: IonSlides;
@@ -38,8 +38,7 @@ export class ListPassInternetV2Component implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    const userPhoneNumber = this.destinataire ? this.destinataire : this.dashbServ.getCurrentPhoneNumber();
-    this.passIntService.setUserPhoneNumber(userPhoneNumber);
+    this.passIntService.setUserCodeFormule(this.destCodeFormule);
     this.passIntService.setPaymentMod(this.paymentMode);
     this.passIntService.setListPassInternetOfUserByQuery();
     this.fromSubscription = this.passIntService.getStatusPassLoaded().subscribe((status: boolean) => {

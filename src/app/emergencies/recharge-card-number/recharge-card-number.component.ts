@@ -5,6 +5,7 @@ import { EmergencyService } from 'src/app/services/emergency-service/emergency.s
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import { NumeroSeriePopupComponent } from '../numero-serie-popup/numero-serie-popup.component';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-recharge-card-number',
@@ -21,7 +22,8 @@ export class RechargeCardNumberComponent implements OnInit {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private emergencyService: EmergencyService,
-    private autheServ: AuthenticationService
+    private autheServ: AuthenticationService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -68,13 +70,33 @@ export class RechargeCardNumberComponent implements OnInit {
         if (res === 'consecutif') {
           this.errorFiveConsecutiveNumbers =
             'Les 5 chiffres consécutifs saisis sont incorrects';
+          this.followAnalyticsService.registerEventFollow(
+            'Code_Carte_Recharge_Error',
+            'error',
+            this.errorFiveConsecutiveNumbers
+          );
         } else if (res === 'NumeroSerie') {
           this.errorNumSerie = 'Le numéro de série saisi est incorrect';
+          this.followAnalyticsService.registerEventFollow(
+            'Code_Carte_Recharge_Error',
+            'error',
+            this.errorNumSerie
+          );
         } else if (res === 'OK') {
           this.openSuccessDialog('carte');
+          this.followAnalyticsService.registerEventFollow(
+            'Code_Carte_Recharge_Success',
+            'event',
+            msisdn
+          );
         } else {
           this.errorFiveConsecutiveNumbers =
             'Ce service est momentanément indisponible.';
+          this.followAnalyticsService.registerEventFollow(
+            'Code_Carte_Recharge_Error',
+            'error',
+            this.errorFiveConsecutiveNumbers
+          );
         }
       },
       err => {

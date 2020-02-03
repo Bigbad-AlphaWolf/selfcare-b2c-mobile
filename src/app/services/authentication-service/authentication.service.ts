@@ -1,6 +1,20 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject, of, Observable } from 'rxjs';
-import { tap, shareReplay, map } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  Subject,
+  Observable,
+  of,
+  interval,
+  throwError
+} from 'rxjs';
+import {
+  tap,
+  shareReplay,
+  map,
+  delay,
+  retryWhen,
+  flatMap
+} from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import * as jwt_decode from 'jwt-decode';
@@ -8,7 +22,9 @@ import * as SecureLS from 'secure-ls';
 import {
   PROFILE_TYPE_HYBRID,
   PROFILE_TYPE_HYBRID_1,
-  PROFILE_TYPE_HYBRID_2
+  PROFILE_TYPE_HYBRID_2,
+  isFixPostpaid,
+  PROFILE_TYPE_POSTPAID
 } from 'src/app/dashboard';
 import { JAMONO_ALLO_CODE_FORMULE } from 'src/shared';
 
@@ -18,7 +34,8 @@ const {
   CODE_OTP_SERVICE,
   CONSO_SERVICE,
   GET_MSISDN_BY_NETWORK_URL,
-  CONFIRM_MSISDN_BY_NETWORK_URL
+  CONFIRM_MSISDN_BY_NETWORK_URL,
+  UAA_SERVICE
 } = environment;
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -44,7 +61,7 @@ const checkCodeOtpEndpoint = `${otpBaseUrl}/check`;
 // new registrations endpoint
 const checkNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/check_number`;
 const registerEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/register`;
-const resetPwdEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account/b2c/reset-password`;
+const resetPwdEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password`;
 
 @Injectable({
   providedIn: 'root'
@@ -101,6 +118,45 @@ export class AuthenticationService {
   }
 
   // get msisdn subscription
+  getSubscriptionCustomerOffer(msisdn: string) {
+    // step 1 check if data exists in localstorage
+    // step 2 if exists return data from localstorage
+    // else call server to get data
+    // what to save? 'subXXXXXXXX"
+    const lsKey = 'sub' + msisdn;
+    const savedData = ls.get(lsKey);
+    if (savedData) {
+      return of(savedData);
+    } else {
+      return this.http.get(`${userSubscriptionEndpoint2}/${msisdn}`).pipe(
+        map((res: any) => {
+          const subscription = {
+            clientCode: res.clientCode,
+            nomOffre: res.offerName,
+            profil: res.offerType,
+            code: res.offerId
+          };
+          if (
+            subscription.profil === PROFILE_TYPE_HYBRID ||
+            subscription.profil === PROFILE_TYPE_HYBRID_1 ||
+            subscription.profil === PROFILE_TYPE_HYBRID_2
+          ) {
+            subscription.code = JAMONO_ALLO_CODE_FORMULE;
+          }
+          if(isFixPostpaid(subscription.nomOffre)){
+            subscription.profil = PROFILE_TYPE_POSTPAID
+          }
+          const lsKey = 'sub' + msisdn;
+          ls.set(lsKey, subscription);
+          return subscription;
+        })
+      );
+
+    }
+    
+  }
+
+  // get msisdn subscription
   getSubscription(msisdn: string) {
     const lsKey = 'sub' + msisdn;
     const savedData = ls.get(lsKey);
@@ -108,7 +164,7 @@ export class AuthenticationService {
       return of(savedData);
     }
     if (!this.SubscriptionHttpCache.has(msisdn)) {
-      this.SubscriptionHttpCache[msisdn] = this.getSubscriptionData(
+      this.SubscriptionHttpCache[msisdn] = this.getSubscriptionCustomerOffer(
         msisdn
       ).pipe(shareReplay(1));
     }
@@ -120,7 +176,9 @@ export class AuthenticationService {
       map((subscription: any) => {
         const result = {
           nomOffre: subscription.nomOffre,
-          profil: subscription.profil.toString().toUpperCase(),
+          profil: subscription.profil
+            ? subscription.profil.toString().toUpperCase()
+            : subscription.profil,
           code: subscription.code
         };
         if (
@@ -314,4 +372,18 @@ export interface ResetPwdModel {
   newPassword: string;
   hmac: string;
   login: string;
+}
+
+export function http_retry(maxRetry = 10, delayMs = 10000) {
+  return (src: Observable<any>) => {
+    return src.pipe(
+      retryWhen(_ => {
+        return interval(delayMs).pipe(
+          flatMap(count =>
+            count === maxRetry ? throwError('Giving up') : of(count)
+          )
+        );
+      })
+    );
+  };
 }

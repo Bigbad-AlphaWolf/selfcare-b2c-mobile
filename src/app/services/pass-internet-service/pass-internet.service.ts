@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DashboardService } from '../dashboard-service/dashboard.service';
-import { AuthenticationService } from '../authentication-service/authentication.service';
 import {
   PassInfoModel,
   PromoPassModel,
@@ -9,13 +8,15 @@ import {
   getOrderedListCategory,
   getListPassFilteredByLabelAndPaymentMod
 } from 'src/shared';
-import { SubscriptionModel } from 'src/app/dashboard';
-
+import { environment } from 'src/environments/environment';
+const { SERVER_API_URL, CONSO_SERVICE } = environment;
+import { HttpClient } from '@angular/common/http';
+const passByIdEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-internets`;
 @Injectable({
   providedIn: 'root'
 })
 export class PassInternetService {
-  private userPhoneNumber: string;
+  private userCodeFormule: string;
   private paymentMod: string;
   private listPassInternet: (PassInfoModel | PromoPassModel)[] = [];
   private listCategoryPassInternet: any;
@@ -26,58 +27,52 @@ export class PassInternetService {
   hasErrorSubject: Subject<any> = new Subject<any>();
   constructor(
     private dashbService: DashboardService,
-    private authService: AuthenticationService
+    private http: HttpClient
   ) {}
 
   setPaymentMod(paymentMod: string) {
     this.paymentMod = paymentMod;
   }
-  setUserPhoneNumber(msisdn: string) {
-    this.userPhoneNumber = msisdn;
+  setUserCodeFormule(msisdn: string) {
+    this.userCodeFormule = msisdn;
   }
 
-  getUserPhoneNumber() {
-    return this.userPhoneNumber;
+  getUserCodeFormule() {
+    return this.userCodeFormule;
   }
 
   setListPassInternetOfUserByQuery() {
     this.setListPassInternetOfUser([]);
-    this.authService
-      .getSubscription(this.userPhoneNumber)
-      .subscribe((res: SubscriptionModel) => {
-        if (res && res.code && res.profil) {
-          this.dashbService.getListPassInternet(res.code).subscribe(
-            (resp: any) => {
-              resp.forEach((x: PassInternetModel) => {
-                if (x.pass && x.pass.actif) {
-                  this.listPassInternet.push(x.pass);
-                } else if (x.promoPass && x.promoPass.passPromo.actif) {
-                  this.listPassInternet.push(x.promoPass);
-                }
-              });
-              // this.listUserPassInternet.sort((a, b) => (+a.tarif > +b.tarif ? 1 : +b.tarif > +a.tarif ? -1 : 0));
-              // get from all pass the diffent categories
-              const list = resp.map(x => {
-                if (x.pass) {
-                  return x.pass.categoriePass;
-                } else if (x.promoPass) {
-                  return x.promoPass.passPromo.categoriePass;
-                }
-              });
-              this.listCategoryPassInternet = getOrderedListCategory(list);
-              this.listPassInternetShown = getListPassFilteredByLabelAndPaymentMod(
-                this.listCategoryPassInternet[0],
-                this.listPassInternet,
-                this.paymentMod
-              );
-              this.passLoadedSubject.next(true);
-            },
-            () => {
-              this.passLoadedSubject.next(true);
-            }
-          );
-        }
-      });
+    this.dashbService.getListPassInternet(this.userCodeFormule).subscribe(
+      (resp: any) => {
+        resp.forEach((x: PassInternetModel) => {
+          if (x.pass && x.pass.actif) {
+            this.listPassInternet.push(x.pass);
+          } else if (x.promoPass && x.promoPass.passPromo.actif) {
+            this.listPassInternet.push(x.promoPass);
+          }
+        });
+        // this.listUserPassInternet.sort((a, b) => (+a.tarif > +b.tarif ? 1 : +b.tarif > +a.tarif ? -1 : 0));
+        // get from all pass the diffent categories
+        const list = resp.map(x => {
+          if (x.pass) {
+            return x.pass.categoriePass;
+          } else if (x.promoPass) {
+            return x.promoPass.passPromo.categoriePass;
+          }
+        });
+        this.listCategoryPassInternet = getOrderedListCategory(list);
+        this.listPassInternetShown = getListPassFilteredByLabelAndPaymentMod(
+          this.listCategoryPassInternet[0],
+          this.listPassInternet,
+          this.paymentMod
+        );
+        this.passLoadedSubject.next({ status: true, error: null });
+      },
+      () => {
+        this.passLoadedSubject.next({ status: true, error: true });
+      }
+    );
   }
 
   getListPassInternetShown() {
@@ -101,5 +96,9 @@ export class PassInternetService {
 
   getStatusPassLoaded() {
     return this.passLoadedSubject.asObservable();
+  }
+
+  getPassById(id: number) {
+    return this.http.get(`${passByIdEndpoint}/${id}`);
   }
 }

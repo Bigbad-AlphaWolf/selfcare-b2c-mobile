@@ -384,6 +384,8 @@ export class ActivationOmComponent implements OnInit {
           },
           () => {
             this.loading = false;
+            this.pinPadHasError = true;
+            this.pinErrorMsg = "Une erreur s'est produite. Veuillez réessayer plus tard."
           }
         );
       } else {

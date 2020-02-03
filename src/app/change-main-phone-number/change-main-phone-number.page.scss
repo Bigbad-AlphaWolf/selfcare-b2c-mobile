@@ -44,4 +44,12 @@
       margin-left: 10px;
     }
   }
+  .loader{
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    .mat-spinner::ng-deep circle {
+      stroke: $orange;
+    }
+  }
 }

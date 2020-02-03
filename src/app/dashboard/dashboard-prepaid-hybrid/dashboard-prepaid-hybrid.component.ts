@@ -1,18 +1,23 @@
-import { Component, OnInit, Input, OnDestroy, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnDestroy,
+  AfterViewInit
+} from '@angular/core';
 import {
   PROFILE_TYPE_PREPAID,
   getConsoByCategory,
-  UserConsommations,
   USER_CONS_CATEGORY_CALL,
   SargalSubscriptionModel,
-  formatCurrency,
   CODE_COMPTEUR_VOLUME_NUIT_1,
   CODE_COMPTEUR_VOLUME_NUIT_2,
   CODE_COMPTEUR_VOLUME_NUIT_3,
   SARGAL_NOT_SUBSCRIBED,
   SARGAL_UNSUBSCRIPTION_ONGOING,
   dashboardOpened,
-  PromoBoosterActive
+  PromoBoosterActive,
+  dashboardMobilePrepaidOpened
 } from '..';
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -21,7 +26,13 @@ import { AuthenticationService } from 'src/app/services/authentication-service/a
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
-import { getLastUpdatedDateTimeText, arrangeCompteurByOrdre, getTrioConsoUser } from 'src/shared';
+import {
+  getLastUpdatedDateTimeText,
+  arrangeCompteurByOrdre,
+  getTrioConsoUser,
+  UserConsommations,
+  formatCurrency
+} from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 const ls = new SecureLS({ encodingType: 'aes' });
@@ -50,7 +61,10 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
   creditRechargement = 0;
   canDoSOS = false;
   showHelbBtn = false;
-  pictures = [{ image: '/assets/images/banniere-promo-mob.png' }, { image: '/assets/images/banniere-promo-fibre.png' }];
+  pictures = [
+    { image: '/assets/images/banniere-promo-mob.png' },
+    { image: '/assets/images/banniere-promo-fibre.png' }
+  ];
   listBanniere: BannierePubModel[] = [];
   PROFILE_TYPE_PREPAID = PROFILE_TYPE_PREPAID;
   currentProfil: string;
@@ -78,7 +92,7 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
     private authServ: AuthenticationService,
     private banniereServ: BanniereService,
     private sargalServ: SargalService,
-    private followService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -86,26 +100,30 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
       this.currentProfil = this.userSubscription.profil;
     }
     this.banniereServ.setListBanniereByFormule();
-    this.banniereServ.getStatusLoadingBanniere().subscribe((status: boolean) => {
-      this.isBanniereLoaded = status;
-      if (this.isBanniereLoaded) {
-        this.listBanniere = this.banniereServ.getListBanniereByFormule();
-      }
-    });
-    this.getUserConsommations();
-    this.getSargalPoints();
-    this.getActivePromoBooster();
-    dashboardOpened.subscribe(x => {
-      this.getUserConsommations();
-      this.getActivePromoBooster();
-      this.getSargalPoints();
-      this.banniereServ.setListBanniereByFormule();
-      this.banniereServ.getStatusLoadingBanniere().subscribe((status: boolean) => {
+    this.banniereServ
+      .getStatusLoadingBanniere()
+      .subscribe((status: boolean) => {
         this.isBanniereLoaded = status;
         if (this.isBanniereLoaded) {
           this.listBanniere = this.banniereServ.getListBanniereByFormule();
         }
       });
+    this.getUserConsommations();
+    this.getSargalPoints();
+    this.getActivePromoBooster();
+    dashboardMobilePrepaidOpened.subscribe(x => {
+      this.getUserConsommations();
+      this.getActivePromoBooster();
+      this.getSargalPoints();
+      this.banniereServ.setListBanniereByFormule();
+      this.banniereServ
+        .getStatusLoadingBanniere()
+        .subscribe((status: boolean) => {
+          this.isBanniereLoaded = status;
+          if (this.isBanniereLoaded) {
+            this.listBanniere = this.banniereServ.getListBanniereByFormule();
+          }
+        });
     });
   }
 
@@ -117,13 +135,18 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
       (res: any[]) => {
         if (res.length) {
           res = arrangeCompteurByOrdre(res);
-          const appelConso = res.length ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL).consommations : null;
+          const appelConso = res.length
+            ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL)
+                .consommations
+            : null;
           if (appelConso) {
             this.getValidityDates(appelConso);
           }
           this.userConsoSummary = getConsoByCategory(res);
           this.userConsommationsCategories = getTrioConsoUser(res);
-          this.userCallConsoSummary = this.computeUserConsoSummary(this.userConsoSummary);
+          this.userCallConsoSummary = this.computeUserConsoSummary(
+            this.userConsoSummary
+          );
         } else {
           this.error = true;
         }
@@ -163,14 +186,27 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
   }
 
   makeSargalAction() {
-    if (this.userSargalData && this.userSargalData.status === SARGAL_NOT_SUBSCRIBED && this.sargalDataLoaded) {
-      // this.followService.registerEventFollow('Sargal-registration-page', 'success', 'clicked');
+    if (
+      this.userSargalData &&
+      this.userSargalData.status === SARGAL_NOT_SUBSCRIBED &&
+      this.sargalDataLoaded
+    ) {
+      this.followAnalyticsService.registerEventFollow(
+        'Sargal-registration-page',
+        'event',
+        'clicked'
+      );
       this.router.navigate(['/sargal-registration']);
     } else if (
-      (this.userSargalData && this.userSargalData.status !== SARGAL_UNSUBSCRIPTION_ONGOING) ||
+      (this.userSargalData &&
+        this.userSargalData.status !== SARGAL_UNSUBSCRIPTION_ONGOING) ||
       (!this.sargalUnavailable && this.sargalDataLoaded)
     ) {
-      // this.followService.registerEventFollow('Sargal-dashboard', 'success', 'clicked');
+      this.followAnalyticsService.registerEventFollow(
+        'Sargal-dashboard',
+        'event',
+        'clicked'
+      );
       this.goToSargalDashboard();
     }
   }
@@ -182,7 +218,11 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
   // process validity date of balance & credit to compare them
   processDateDMY(date: string) {
     const tab = date.split('/');
-    const newDate = new Date(Number(tab[2]), Number(tab[1]) - 1, Number(tab[0]));
+    const newDate = new Date(
+      Number(tab[2]),
+      Number(tab[1]) - 1,
+      Number(tab[0])
+    );
     return newDate.getTime();
   }
 
@@ -204,10 +244,20 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
   }
 
   goToIllimixPage() {
+    this.followAnalyticsService.registerEventFollow(
+      'Pass_illimix_dashboard',
+      'event',
+      'clicked'
+    );
     this.router.navigate(['/buy-pass-illimix']);
   }
 
   goToTransfertOM() {
+    this.followAnalyticsService.registerEventFollow(
+      'Transfert_OM_dashboard',
+      'event',
+      'clicked'
+    );
     this.router.navigate(['/transfer/orange-money']);
   }
 
@@ -247,7 +297,8 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
       // Check if eligible for SOS
       this.canDoSOS = +this.creditRechargement < 489;
       // Check if eligible for bonus transfer
-      this.canTransferBonus = this.creditRechargement > 20 && this.soldebonus > 1;
+      this.canTransferBonus =
+        this.creditRechargement > 20 && this.soldebonus > 1;
     }
     return {
       globalCredit: formatCurrency(globalCredit),
@@ -258,33 +309,73 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
 
   transferCreditOrPass() {
     // if (!this.canDoSOS || this.canTransferBonus) {
+    this.followAnalyticsService.registerEventFollow(
+      'Transfert_dashboard',
+      'event',
+      'clicked'
+    );
     this.router.navigate(['/transfer/credit-bonus']);
     // }
   }
 
   showSoldeOM() {
     this.router.navigate(['activate-om']);
+    this.followAnalyticsService.registerEventFollow(
+      'Click_Voir_solde_OM_dashboard',
+      'event',
+      'clicked'
+    );
   }
 
   goToSOSPage() {
     if (this.canDoSOS) {
+      this.followAnalyticsService.registerEventFollow(
+        'Recharge_dashboard',
+        'event',
+        'clicked'
+      );
       this.router.navigate(['/buy-sos']);
     }
   }
 
   goBuyCredit() {
+    this.followAnalyticsService.registerEventFollow(
+      'Recharge_dashboard',
+      'event',
+      'clicked'
+    );
     this.router.navigate(['/buy-credit']);
   }
 
   goBuyPassInternet() {
+    this.followAnalyticsService.registerEventFollow(
+      'Pass_internet_dashboard',
+      'event',
+      'clicked'
+    );
     this.router.navigate(['/buy-pass-internet']);
   }
 
-  goDetailsCom(phoneNumber?: number) {
-    phoneNumber = phoneNumber;
+  goDetailsCom(number?: number) {
     this.router.navigate(['/details-conso']);
+    number
+      ? this.followAnalyticsService.registerEventFollow(
+          'Voirs_details_dashboard',
+          'event',
+          'clicked'
+        )
+      : this.followAnalyticsService.registerEventFollow(
+          'Voirs_details_card_dashboard',
+          'event',
+          'clicked'
+        );
   }
   hidePromoBarner() {
+    this.followAnalyticsService.registerEventFollow(
+      'Banner_close_dashboard',
+      'event',
+      'Mobile'
+    );
     this.showPromoBarner = false;
   }
   onError(input: { el: HTMLElement; display: boolean }[]) {

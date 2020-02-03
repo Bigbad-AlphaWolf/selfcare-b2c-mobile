@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { computeConsoHistory, arrangeCompteurByOrdre } from 'src/shared';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-details-conso',
@@ -33,12 +34,18 @@ export class DetailsConsoPage implements OnInit {
 
   constructor(
     private dashboardservice: DashboardService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
     const msisdn = this.dashboardservice.getCurrentPhoneNumber();
     this.authService.getSubscription(msisdn).subscribe((res: any) => {
+      this.followAnalyticsService.registerEventFollow(
+        'Voir_details_dashboard',
+        'event',
+        'Opened'
+      );
       this.currentProfil = res.profil;
       if (this.currentProfil === 'POSTPAID') {
         this.historique = true;

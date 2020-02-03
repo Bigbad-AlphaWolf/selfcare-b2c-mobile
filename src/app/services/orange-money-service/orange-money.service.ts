@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as SecureLS from 'secure-ls';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { DashboardService } from '../dashboard-service/dashboard.service';
+import { BehaviorSubject, Subject, of, Observable, forkJoin } from 'rxjs';
+import { tap, delay } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {
   OmUserInfo,
@@ -15,14 +14,13 @@ import {
   OmBuyPassModel,
   OmBuyIllimixModel,
   TransferOrangeMoneyModel,
-  LogModel,
   TransferOMWithCodeModel
 } from '.';
-
-declare var FollowAnalytics: any;
+import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
+import { DashboardService } from '../dashboard-service/dashboard.service';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
-const { OM_URL, OM_SERVICE, SERVER_API_URL } = environment;
+const { OM_SERVICE, SERVER_API_URL } = environment;
 const otpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/init-otp`;
 const registerClientEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/register-client`;
 const loginClientEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/login-client`;
@@ -41,30 +39,29 @@ const transferOMEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transf
 const transferOMWithCodeEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transfer-avec-code`;
 const omFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-without-code`;
 const omFeesEndpoint2 = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-with-code`;
+const checkBalanceSufficiencyEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/check-balance`;
 const ls = new SecureLS({ encodingType: 'aes' });
-
-const getListPassEndpoint = `${OM_URL}/api/v1/get-list-pass`;
-const getListIllimixEndpoint = `${OM_URL}/api/v1/get-list-illimix`;
-// const achatIllimixEndpoint = `${OM_URL}/api/v1/buy-illimix`;
-// const achatPassEndpoint = `${OM_URL}/api/v1/buy-pass`;
-// const achatCreditEndpoint = `${OM_URL}/api/v1/buy-credit`;
-const logEndpoint = `${SERVER_API_URL}/management/selfcare-logs-file`;
 let eventKey = '';
 let errorKey = '';
 let value = {};
-
+const REGEX_IOS_SYSTEM = /iPhone|iPad|iPod|crios|CriOS/i;
+let isIOS = false;
 @Injectable({
   providedIn: 'root'
 })
 export class OrangeMoneyService {
-  constructor(private http: HttpClient, private dashbordServ: DashboardService) {}
+  constructor(
+    private http: HttpClient,
+    private followAnalyticsService: FollowAnalyticsService,
+    private dashboardService: DashboardService
+  ) {}
   pinPadDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b'];
   gotPinPadSubject = new BehaviorSubject<string[]>([]);
   loginResponseSubject = new BehaviorSubject<any>({});
   balanceVisibilitySubject = new Subject<any>();
   randomPinPadDigits = [];
   // get main phone number ls.get('mainPhoneNumber');
-  handleOrangeMoneyResponse(res: any, db: any) {}
+
   pay(phoneNumber: any, pin: string, amont: number) {
     const db = this.getAccountInfos(phoneNumber);
     // invalid pin or account locked
@@ -91,12 +88,7 @@ export class OrangeMoneyService {
   }
 
   checkUserHasAccount(msisdn) {
-    const currentNumber = this.dashbordServ.getCurrentPhoneNumber();
-    return this.http.get(`${checkOMAccountEndpoint}/${msisdn}`).pipe(
-      tap((res: any) => {
-        this.LogAction(currentNumber, 'Verification beneficiaire', msisdn, '');
-      })
-    );
+    return this.http.get(`${checkOMAccountEndpoint}/${msisdn}`);
   }
 
   updateAccount(phoneNumber: any, accountInfos: OmUserInfo) {
@@ -122,12 +114,7 @@ export class OrangeMoneyService {
   }
 
   InitOtp(msisdn) {
-    this.LogAction(msisdn, 'debut Envoie OTP OM', 'info', '');
-    return this.http.get(`${otpEndpoint}/${msisdn}`).pipe(
-      tap((res: any) => {
-        this.LogAction(msisdn, 'fin Envoie OTP OM', 'info', '');
-      })
-    );
+    return this.http.get(`${otpEndpoint}/${msisdn}`);
   }
 
   getOMFeeWithoutCode() {
@@ -139,203 +126,72 @@ export class OrangeMoneyService {
   }
 
   GetUserAuthInfo(msisdn) {
-    this.LogAction(msisdn, 'debut demande auth info OM', 'info', '');
-    return this.http.get(`${UserAccessInfoEndpoint}/${msisdn}`).pipe(
-      tap((res: any) => {
-        this.LogAction(msisdn, 'fin demande auth info OM', 'info', '');
-      })
-    );
+    return this.http.get(`${UserAccessInfoEndpoint}/${msisdn}`);
   }
 
   RegisterClient(registerClientData: OmRegisterClientModel) {
-    this.LogAction(registerClientData.msisdn, 'debut Register API OM\n', 'info', JSON.stringify(registerClientData));
-    return this.http.post(registerClientEndpoint, registerClientData).pipe(
-      tap((res: any) => {
-        this.LogAction(registerClientData.msisdn, 'fin Register API OM', 'info', JSON.stringify(res));
-      })
-    );
+    isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
+    const uuid = ls.get('X-UUID');
+    const os = isIOS ? 'iOS' : 'Android';
+    registerClientData.uuid = uuid;
+    registerClientData.os = os;
+    return this.http.post(registerClientEndpoint, registerClientData);
   }
 
   GetPinPad(pinPadData: OmPinPadModel) {
-    this.LogAction(pinPadData.msisdn, 'debut Demande pinpad OM \n', 'info', JSON.stringify(pinPadData));
+    isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
+    const os = isIOS ? 'iOS' : 'Android';
+    pinPadData.os = os;
     return this.http.post(pinpadEndpoint, pinPadData).pipe(
       tap((res: any) => {
-        const sequence = res.content.data.sequence.replace(new RegExp('-', 'g'), ' ');
+        const sequence = res.content.data.sequence.replace(
+          new RegExp('-', 'g'),
+          ' '
+        );
         this.gotPinPadSubject.next(sequence.split(''));
-        this.LogAction(pinPadData.msisdn, 'fin Demande pinpad OM', 'info', JSON.stringify(res));
       })
     );
   }
 
   LoginClient(loginClientData: OmLoginClientModel) {
-    const logData = {
-      app_conf_version: loginClientData.app_conf_version,
-      app_version: loginClientData.app_version,
-      em: loginClientData.em,
-      pin: 'removed',
-      msisdn: loginClientData.msisdn,
-      user_type: loginClientData.user_type
-    };
-    this.LogAction(loginClientData.msisdn, 'debut login endpoint\n', 'info', JSON.stringify(logData));
-
-    return this.http.post(loginClientEndpoint, loginClientData).pipe(
-      tap((res: any) => {
-        this.LogAction(loginClientData.msisdn, 'fin login endpoint', 'info', JSON.stringify(res));
-      })
-    );
+    return this.http.post(loginClientEndpoint, loginClientData);
   }
 
   GetBalance(getBalanceData: OmBalanceModel) {
-    const logData = {
-      app_conf_version: getBalanceData.app_conf_version,
-      app_version: getBalanceData.app_version,
-      em: getBalanceData.em,
-      pin: 'removed',
-      msisdn: getBalanceData.msisdn,
-      user_type: getBalanceData.user_type
-    };
-    this.LogAction(getBalanceData.msisdn, 'debut Voir Solde OM', 'info', JSON.stringify(logData));
-
-    return this.http.post(getBalanceEndpoint, getBalanceData).pipe(
-      tap((res: any) => {
-        this.LogAction(getBalanceData.msisdn, 'fin Voir Solde OM', 'info', JSON.stringify(res));
-      })
-    );
+    return this.http.post(getBalanceEndpoint, getBalanceData);
   }
 
   AchatCredit(achatCreditData: OmBuyCreditModel) {
-    const logData = {
-      app_conf_version: achatCreditData.app_conf_version,
-      app_version: achatCreditData.app_version,
-      em: achatCreditData.em,
-      pin: 'removed',
-      msisdn: achatCreditData.msisdn,
-      msisdn2: achatCreditData.msisdn2,
-      amount: achatCreditData.amount,
-      user_type: achatCreditData.user_type
-    };
-    this.LogAction(achatCreditData.msisdn, 'debut achat de credit par OM', 'info', JSON.stringify(logData));
-
-    return this.http.post(achatCreditEndpoint, achatCreditData).pipe(
-      tap((res: any) => {
-        this.LogAction(achatCreditData.msisdn, 'fin achat de credit par OM', 'info', JSON.stringify(res));
-      })
-    );
+    return this.http.post(achatCreditEndpoint, achatCreditData);
   }
   AchatPassInternet(achatPassData: OmBuyPassModel) {
-    const logData = {
-      app_conf_version: achatPassData.app_conf_version,
-      app_version: achatPassData.app_version,
-      em: achatPassData.em,
-      pin: 'removed',
-      msisdn: achatPassData.msisdn,
-      msisdn2: achatPassData.msisdn2,
-      price_plan_index: achatPassData.price_plan_index,
-      user_type: achatPassData.user_type
-    };
-    this.LogAction(achatPassData.msisdn, 'debut achat de pass internet par OM', 'info', JSON.stringify(logData));
-
-    return this.http.post(achatPassEndpoint, achatPassData).pipe(
-      tap((res: any) => {
-        this.LogAction(achatPassData.msisdn, 'fin achat de pass internet par OM', 'info', JSON.stringify(res));
-      })
-    );
+    return this.http.post(achatPassEndpoint, achatPassData);
   }
 
   AchatIllimix(achatIllimixData: OmBuyIllimixModel) {
-    const logData = {
-      app_conf_version: achatIllimixData.app_conf_version,
-      app_version: achatIllimixData.app_version,
-      em: achatIllimixData.em,
-      pin: 'removed',
-      msisdn: achatIllimixData.msisdn,
-      msisdn2: achatIllimixData.msisdn2,
-      price_plan_index: achatIllimixData.price_plan_index,
-      user_type: achatIllimixData.user_type
-    };
-    this.LogAction(achatIllimixData.msisdn, 'debut achat illimix endpoint par OM', 'info', JSON.stringify(logData));
-
-    return this.http.post(achatIllimixEndpoint, achatIllimixData).pipe(
-      tap((res: any) => {
-        this.LogAction(achatIllimixEndpoint, 'fin achat illimix endpoint par OM', 'info', JSON.stringify(res));
-      })
-    );
+    return this.http.post(achatIllimixEndpoint, achatIllimixData);
   }
 
   transferOM(transferOMData: TransferOrangeMoneyModel) {
-    const logData = {
-      app_conf_version: transferOMData.app_conf_version,
-      app_version: transferOMData.app_version,
-      em: transferOMData.em,
-      pin: 'removed',
-      msisdn: transferOMData.msisdn_sender,
-      msisdn2: transferOMData.msisdn_receiver,
-      user_type: transferOMData.user_type
-    };
-    this.LogAction(transferOMData.msisdn_sender, 'debut transfert OM endpoint', 'info', JSON.stringify(logData));
-
-    return this.http.post(transferOMEndpoint, transferOMData).pipe(
-      tap((res: any) => {
-        this.LogAction(transferOMEndpoint, 'fin transfert OM endpoint', 'info', JSON.stringify(res));
-      })
-    );
+    isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
+    const uuid = ls.get('X-UUID');
+    const os = isIOS ? 'iOS' : 'Android';
+    transferOMData.uuid = uuid;
+    transferOMData.os = os;
+    return this.http.post(transferOMEndpoint, transferOMData);
   }
 
   transferOMWithCode(transferOMData: TransferOMWithCodeModel) {
-    const logData = {
-      app_conf_version: transferOMData.app_conf_version,
-      app_version: transferOMData.app_version,
-      em: transferOMData.em,
-      pin: 'removed',
-      msisdn: transferOMData.msisdn,
-      msisdn2: transferOMData.msisdn2,
-      user_type: transferOMData.user_type,
-      nom: transferOMData.nom,
-      prenom: transferOMData.prenom
-    };
-    this.LogAction(transferOMData.msisdn, 'debut transfert avec code OM endpoint', 'info', JSON.stringify(logData));
-
-    return this.http.post(transferOMWithCodeEndpoint, transferOMData).pipe(
-      tap((res: any) => {
-        this.LogAction(transferOMWithCodeEndpoint, 'fin transfert avec code OM endpoint', 'info', JSON.stringify(res));
-      })
-    );
+    isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
+    const uuid = ls.get('X-UUID');
+    const os = isIOS ? 'iOS' : 'Android';
+    transferOMData.uuid = uuid;
+    transferOMData.os = os;
+    return this.http.post(transferOMWithCodeEndpoint, transferOMData);
   }
 
   getTransferFees() {
     return this.http.get(getFeesEndpoint);
-  }
-
-  LogAction(msisdn: string, content: string, typeLog: string, params: string) {
-    const logModel: LogModel = {
-      userId: msisdn,
-      message: content,
-      type: typeLog,
-      contexte: 'OrangeMoney',
-      params,
-      dateLog: new Date().toISOString()
-    };
-    return this.http.post(logEndpoint, logModel).subscribe();
-  }
-
-  GetListIllimix(omAccount: OmUserInfo) {
-    const headers = new HttpHeaders({
-      Authorization: 'Bearer ' + omAccount.loginToken,
-      OrangeMoney: 'true',
-      APIKey: omAccount.apiKey
-    });
-    const options = { headers };
-    return this.http.get(`${getListIllimixEndpoint}/${omAccount.msisdn}`, options);
-  }
-
-  GetListPassInternet(omAccount: OmUserInfo) {
-    const headers = new HttpHeaders({
-      Authorization: 'Bearer ' + omAccount.loginToken,
-      OrangeMoney: 'true',
-      APIKey: omAccount.apiKey
-    });
-    const options = { headers };
-    return this.http.get(`${getListPassEndpoint}/${omAccount.msisdn}`, options);
   }
 
   GetPin(pinPadResponse: any[], pin) {
@@ -399,7 +255,6 @@ export class OrangeMoneyService {
         eventKey = 'Recharge_Voir_Solde_OM_Success';
         errorKey = 'Recharge_Voir_Solde_OM_Error';
         break;
-
       case 'BUY_CREDIT':
         eventKey = 'Recharge_OM_Success';
         errorKey = 'Recharge_OM_Error';
@@ -432,14 +287,67 @@ export class OrangeMoneyService {
         break;
     }
     if (type === 'event') {
-      if (typeof FollowAnalytics !== 'undefined') {
-        FollowAnalytics.logEvent(eventKey, value);
-      }
+      this.followAnalyticsService.registerEventFollow(eventKey, 'event', value);
     } else {
-      value = { error_code: res.status_code };
-      if (typeof FollowAnalytics !== 'undefined') {
-        FollowAnalytics.logError(errorKey, value);
-      }
+      value = Object.assign({}, value, { error_code: res.status_code });
+      this.followAnalyticsService.registerEventFollow(errorKey, 'error', value);
+    }
+  }
+
+  checkBalanceSufficiency(payload: { msisdn: string; amount: number }) {
+    // return of(true).pipe(delay(2000));
+    return this.http.get(
+      `${checkBalanceSufficiencyEndpoint}/${payload.msisdn}?amount=${payload.amount}`
+    );
+  }
+
+  getOmMsisdn(): Observable<string> {
+    const omNumberOnLS = ls.get('nOrMo');
+    if (omNumberOnLS) {
+      return of(omNumberOnLS);
+    } else {
+      let OrangeMoneyMsisdn: string;
+      const allNumbers = [];
+      const mainPhoneNumber = this.dashboardService.getMainPhoneNumber();
+      allNumbers.push(mainPhoneNumber);
+      return new Observable(obs => {
+        this.dashboardService.getAttachedNumbers().subscribe(
+          (resp: any) => {
+            resp.forEach(element => {
+              const msisdn = '' + element.msisdn;
+              //Avoid fix numbers
+              if (!msisdn.startsWith('33', 0)) {
+                allNumbers.push(element.msisdn);
+              }
+            });
+            //request orange money info for every number
+            const httpCalls = [];
+            allNumbers.forEach(number => {
+              httpCalls.push(this.GetUserAuthInfo(number));
+            });
+            forkJoin(httpCalls).subscribe(
+              data => {
+                for (const [index, element] of data.entries()) {
+                  // if the number is linked with OM, keep it and break out of the for loop
+                  if (element['hasApiKey'] && element['hasApiKey'] != null) {
+                    //set the orange Money number in localstorage and the key is nOrMo (numero Orange Money)
+                    OrangeMoneyMsisdn = allNumbers[index];
+                    ls.set('nOrMo', OrangeMoneyMsisdn);
+                    obs.next(OrangeMoneyMsisdn);
+                  }
+                }
+              },
+              err => {
+                obs.next('error');
+                console.error(err);
+              }
+            );
+          },
+          err => {
+            obs.next('error');
+          }
+        );
+      });
     }
   }
 }

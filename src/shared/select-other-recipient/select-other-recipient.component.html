@@ -6,8 +6,9 @@
       <input matInput type="tel" #input (input)="enableBtn(input.value)" placeholder="Entrez le numéro du destinataire" formControlName="phoneNumber" />
     </mat-form-field>
     <div class="button-container">
-      <button class="scb-btn scb-btn-orange" [disabled]="!isValidNumber" (click)="suivant()">
+      <button class="scb-btn scb-btn-orange" [disabled]="!isValidNumber || isProcessing" (click)="suivant()">
         Suivant
+        <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="isProcessing"></mat-spinner>
       </button>
     </div>
     <div class="error-block scb-text-red-error" *ngIf="showErrorMsg">

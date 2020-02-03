@@ -5,6 +5,7 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import { CODE_KIRENE_Formule, FormuleMobileModel } from 'src/shared';
 import { FormuleService } from '../services/formule-service/formule.service';
 import { SubscriptionModel, dashboardOpened } from '../dashboard';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-my-formule',
@@ -45,7 +46,8 @@ export class MyFormulePage implements OnInit {
     private router: Router,
     private formuleService: FormuleService,
     private authServ: AuthenticationService,
-    private dashbdServ: DashboardService
+    private dashbdServ: DashboardService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -59,10 +61,16 @@ export class MyFormulePage implements OnInit {
   processInfosFormules() {
     this.authServ.getSubscription(this.currentNumber).subscribe(
       (res: SubscriptionModel) => {
-        // FollowAnalytics.logEvent('MaFormule_sidemenu', 'Opened');
+        this.followAnalyticsService.registerEventFollow(
+          'MaFormule_sidemenu',
+          'event',
+          'opened'
+        );
         this.formuleService.getformules(res.profil).subscribe(
           (resp: FormuleMobileModel[]) => {
-            this.formulesArray = resp;
+            this.formulesArray = resp.filter((val: FormuleMobileModel)=>{
+              return val.type === 'MOBILE'
+            });
             if (this.formulesArray.length === 0) {
               this.dataLoaded = true;
               this.error = 'Problème de chargement';

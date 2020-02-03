@@ -19,6 +19,13 @@
       width: 100%;
       bottom: 0;
       left: 0;
+      .scb-btn-full{
+				display: flex;
+				justify-content: center;
+			.mat-spinner {
+				margin-left: 15px;
+			}
+				}
     }
   }
   .contact {

@@ -43,6 +43,9 @@ import { OperationSuccessOrFailComponent } from './operation-success-or-fail/ope
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { WelcomePopupComponent } from './welcome-popup/welcome-popup.component';
 import { SettingsPopupComponent } from './settings-popup/settings-popup.component';
+import { HelpBannerComponent } from 'src/app/emergencies/help-banner/help-banner.component';
+import { RouterModule } from '@angular/router';
+import { PassVolumeDisplayPipe } from './pipes/pass-volume-display.pipe';
 
 @NgModule({
   declarations: [
@@ -73,7 +76,9 @@ import { SettingsPopupComponent } from './settings-popup/settings-popup.componen
     OperationSuccessOrFailComponent,
     DeleteNumberPopupComponent,
     WelcomePopupComponent,
-    SettingsPopupComponent
+    SettingsPopupComponent,
+    HelpBannerComponent,
+    PassVolumeDisplayPipe
   ],
   imports: [
     CommonModule,
@@ -87,7 +92,8 @@ import { SettingsPopupComponent } from './settings-popup/settings-popup.componen
     ReactiveFormsModule,
     MatIconModule,
     MatRadioModule,
-    MatMenuModule
+    MatMenuModule,
+    RouterModule
   ],
   entryComponents: [
     ModalSuccessComponent,
@@ -136,7 +142,9 @@ import { SettingsPopupComponent } from './settings-popup/settings-popup.componen
     AvantagePopupComponent,
     OperationSuccessOrFailComponent,
     WelcomePopupComponent,
-    SettingsPopupComponent
+    SettingsPopupComponent,
+    HelpBannerComponent,
+    PassVolumeDisplayPipe
   ],
   providers: [Contacts, SocialSharing]
 })

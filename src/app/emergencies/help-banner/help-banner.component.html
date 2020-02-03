@@ -1,9 +1,10 @@
 <!-- header -->
 <div class="help-header">
-  <div class="arrow-left" routerLink="/control-center">
-    <img alt="" src="/assets/images/arrow-left.svg" />
-  </div>
-  <div class="title"><span>Assistance</span></div>
+    <div class="arrow-left" routerLink="{{redirectTo}}">
+        <img alt="" src="/assets/images/arrow-left.svg" />
+    </div>
+  <div *ngIf="helpType !== 'rattachment'" class="title"><span>Assistance</span></div>
+  <div *ngIf="helpType === 'rattachment'" class="title"><span>Rattachement de ligne</span></div>
 </div>
 
 <!-- banner -->
@@ -14,7 +15,7 @@
     'banner-background-yellow':
       helpType === 'compteOM' || helpType === 'internet-parametrage',
     'banner-background-green': helpType === 'seddoCode',
-    'banner-background-orange': helpType === 'reclamation',
+    'banner-background-orange': helpType === 'reclamation' || helpType === 'rattachment',
     'banner-background-violet':
       helpType === 'carte' || helpType === 'deplafonnement'
   }"
@@ -54,6 +55,11 @@
       alt=""
       [src]="'/assets/images/param-net.svg'"
       *ngIf="helpType === 'internet-parametrage'"
+    />
+    <img
+      alt=""
+      [src]="'/assets/images/sim-card-solid.svg'"
+      *ngIf="helpType === 'rattachment'"
     />
   </div>
   <div class="text-block scb-text-white">

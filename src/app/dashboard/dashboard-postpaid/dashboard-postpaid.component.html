@@ -38,7 +38,7 @@
               <span class="scb-btn-top-block-text">Consommation</span>
             </div>
             <div class="bottom-block">
-              <span *ngIf="consumedAmount" class="value"
+              <span class="value"
                 >{{ consumedAmount }} <span class="text-style-1"> FCFA </span></span
               >
             </div>
@@ -116,18 +116,18 @@
           </div>
           <div class="bill-infos-container">
             <div class="top-infos">
-              <span>{{ months[bills[0]?.mois - 1] }} {{ bills[0]?.annee + 2000 }}</span>
+              <span>{{ months[bills[0]?.moisfact - 1] }} {{ bills[0]?.annefact }}</span>
               <span
                 [ngClass]="{
-                  'paid-status': bills[0]?.statutFacture === 'PAYEE',
-                  'unpaid-status': bills[0]?.statutFacture === 'ND'
+                  'paid-status': bills[0]?.statutFacture ==='paid',
+                  'unpaid-status': bills[0]?.statutFacture ==='unpaid'
                 }"
-                >{{ bills[0]?.statutFacture }}</span
+                >{{ bills[0]?.statutFacture ==='paid'? 'Payée' : 'Impayée' }}</span
               >
             </div>
             <div class="bottom-infos">
-              <span class="scb-text-item-offre-black emiss-text">N° {{ bills[0]?.numeroFacture | formatBillNum }}</span>
-              <span class="price">{{ bills[0]?.montantFacture | formatCurrency }} F</span>
+              <span class="scb-text-item-offre-black emiss-text">N° {{ bills[0]?.nfact | formatBillNum }}</span>
+              <span class="price">{{ bills[0]?.total | formatCurrency }} F</span>
             </div>
           </div>
         </div>

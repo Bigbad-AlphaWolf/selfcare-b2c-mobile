@@ -70,12 +70,24 @@
   }
 
   .spinner {
-    padding-top: 30px;
+    position: absolute;
+    top: 25px;
+    right: 45%;
     mat-spinner {
       margin: 0 auto;
     }
     .mat-spinner::ng-deep circle {
       stroke: $orange;
+    }
+  }
+  .scb-text-error{
+    margin-top: 20px;
+    text-align: center;
+  }
+  .text{
+    text-align: center;
+    .reload{
+      text-decoration: underline;
     }
   }
 }

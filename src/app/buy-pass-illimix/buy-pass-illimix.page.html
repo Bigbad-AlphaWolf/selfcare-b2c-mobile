@@ -29,7 +29,7 @@
     </ng-container>
     <ng-container *ngIf="step === 2">
       <app-illimix-list-v2
-        [destinataire]="destNumber"
+        [destCodeFormule]="destCodeFormule"
         [paymentMode]="choosedPaymentMod"
         (passToStepValidation)="passDataToStepValidation($event)"
       >
@@ -42,7 +42,7 @@
         [recipient]="destNumber"
         [passIllChosen]="passIllimixChosen"
         [paymentMod]="choosedPaymentMod"
-        [buyForMe]="true"
+        [buyForMe]="destNumber===currentUserNumber"
         [kirene]="isKirene"
         [loading]="buyingPass"
         (validate)="passDataToSuccessPage(passIllimixChoosed)"

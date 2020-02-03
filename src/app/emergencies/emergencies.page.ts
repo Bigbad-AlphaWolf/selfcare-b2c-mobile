@@ -3,7 +3,7 @@ import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
-declare var FollowAnalytics: any;
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 @Component({
   selector: 'app-emergencies',
   templateUrl: './emergencies.page.html',
@@ -15,7 +15,8 @@ export class EmergenciesPage implements OnInit {
   constructor(
     private router: Router,
     private dashbordServ: DashboardService,
-    private authServ: AuthenticationService
+    private authServ: AuthenticationService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -24,51 +25,65 @@ export class EmergenciesPage implements OnInit {
 
   goPuk() {
     this.router.navigate(['/control-center/puk']);
-    if (typeof FollowAnalytics !== 'undefined') {
-    FollowAnalytics.logEvent('Find_PUK', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'Find_PUK',
+      'event',
+      'clicked'
+    );
   }
 
   goChangeSeddo() {
     this.router.navigate(['/control-center/change-seddo-code']);
-    if (typeof FollowAnalytics !== 'undefined') {
-    FollowAnalytics.logEvent('Seddo_PIN', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'Seddo_PIN',
+      'event',
+      'clicked'
+    );
   }
 
   goInternet() {
     this.router.navigate(['/control-center/internet-mobile']);
-    if (typeof FollowAnalytics !== 'undefined') {
-    FollowAnalytics.logEvent('Parametrage_Internet_Mobile', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'Parametrage_Internet_Mobile',
+      'event',
+      'clicked'
+    );
   }
 
   goCarteRecharge() {
     this.router.navigate(['/control-center/carte-recharge']);
-    if (typeof FollowAnalytics !== 'undefined') {
-    FollowAnalytics.logEvent('Carte_Recharge', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'Carte_Recharge',
+      'event',
+      'clicked'
+    );
   }
 
   goCreateOMAccount() {
     this.router.navigate(['/control-center/operation-om/creation-compte']);
-    if (typeof FollowAnalytics !== 'undefined') {
-    FollowAnalytics.logEvent('Creation_Compte_OM', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'Creation_Compte_OM',
+      'event',
+      'clicked'
+    );
   }
 
   goDeplafonnement() {
     this.router.navigate(['/control-center/operation-om/deplafonnement']);
-    if (typeof FollowAnalytics !== 'undefined') {
-    FollowAnalytics.logEvent('Deplafonnement_OM', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'Deplafonnement_OM',
+      'event',
+      'clicked'
+    );
   }
 
   goReclamation() {
     this.router.navigate(['/control-center/operation-om/reclamation']);
-    if (typeof FollowAnalytics !== 'undefined') {
-    FollowAnalytics.logEvent('Reclamation_OM', 'clicked');
-    }
+    this.followAnalyticsService.registerEventFollow(
+      'Reclamation_OM',
+      'event',
+      'clicked'
+    );
   }
 
   getCurrentProfile() {
