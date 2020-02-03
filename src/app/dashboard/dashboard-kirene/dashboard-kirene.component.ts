@@ -15,7 +15,11 @@ import {
 } from '..';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
-import { getLastUpdatedDateTimeText, UserConsommations, formatCurrency } from 'src/shared';
+import {
+  getLastUpdatedDateTimeText,
+  UserConsommations,
+  formatCurrency
+} from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -55,7 +59,7 @@ export class DashboardKireneComponent implements OnInit {
   isBanniereLoaded: boolean;
   slideOpts = {
     speed: 400,
-    // slidesPerView: 1.5,
+    slidesPerView: 1.5,
     slideShadows: true
   };
   userSargalData: SargalSubscriptionModel;

@@ -80,7 +80,7 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
   hasPromoBooster: PromoBoosterActive = null;
   slideOpts = {
     speed: 400,
-    // slidesPerView: 1.5,
+    slidesPerView: 1.5,
     slideShadows: true
   };
   CODE_COMPTEUR_VOLUME_NUIT_1 = CODE_COMPTEUR_VOLUME_NUIT_1;
