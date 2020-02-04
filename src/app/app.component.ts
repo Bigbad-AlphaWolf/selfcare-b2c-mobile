@@ -59,10 +59,14 @@ export class AppComponent {
     this.deeplinks
       .route({
         '/buy-pass-internet': BuyPassInternetPage,
+        '/buy-pass-internet/:id': BuyPassInternetPage,
+        '/buy-pass-internet-by-credit': BuyPassInternetPage,
+        '/buy-pass-internet-by-om': BuyPassInternetPage,
         '/assistance': AssistancePage
       })
       .subscribe(
         matched => {
+          console.log(matched);
           this.router.navigate([matched.$link.path]);
         },
         notMatched => {
