@@ -48,6 +48,7 @@ export class BuyPassInternetPage implements OnInit {
   idPassSelected: number;
   buyForFixPrepaid: boolean;
   destCodeFormule: string;
+  pageAccessUrl: string;
 
   constructor(
     private router: Router,
@@ -62,6 +63,7 @@ export class BuyPassInternetPage implements OnInit {
   ngOnInit() {
     this.currentUserNumber = this.dashServ.getCurrentPhoneNumber();
     this.checkUserIsPostPaid();
+    this.pageAccessUrl = this.router.url;
   }
 
   ionViewDidEnter() {
@@ -85,28 +87,40 @@ export class BuyPassInternetPage implements OnInit {
     this.authService
       .getSubscription(this.currentUserNumber)
       .subscribe((souscription: any) => {
+        this.idPassSelected = +this.route.snapshot.paramMap.get('id');
         this.currentProfil = souscription.profil;
         this.currentFormule = souscription.nomOffre;
+        console.log(souscription);
+
         if (this.currentProfil === PROFILE_TYPE_POSTPAID) {
           this.step = 1;
           this.choosedPaymentMod = PAYMENT_MOD_OM;
-        } else if (this.currentFormule === HOME_PREPAID_FORMULE) {
+        } else if (this.idPassSelected) {
           this.destinataire = this.currentUserNumber;
           // this.choosedPaymentMod = PAYMENT_MOD_CREDIT;
-          this.idPassSelected = +this.route.snapshot.paramMap.get('id');
-          if (this.idPassSelected) {
-            this.buyForFixPrepaid = true;
-            this.passService
-              .getPassById(this.idPassSelected)
-              .subscribe((pass: any) => {
-                this.passInternetChoosen = pass;
-                this.purchasePass = {
-                  destinataire: this.destinataire,
-                  pass,
-                  paymentMod: this.choosedPaymentMod
-                };
-                this.step = 0;
-              });
+          // if (this.currentFormule === HOME_PREPAID_FORMULE) {
+          this.buyForFixPrepaid = true;
+          this.passService
+            .getPassById(this.idPassSelected)
+            .subscribe((pass: any) => {
+              this.passInternetChoosen = pass;
+              this.purchasePass = {
+                destinataire: this.destinataire,
+                pass,
+                paymentMod: this.choosedPaymentMod
+              };
+              this.step = 0;
+            });
+          // }
+        } else {
+          this.destCodeFormule = souscription.code;
+          this.destinataire = this.currentUserNumber;
+          if (this.router.url.match('buy-pass-internet-by-om')) {
+            this.choosedPaymentMod = 'ORANGE_MONEY';
+            this.step = 2;
+          } else if (this.router.url.match('buy-pass-internet-by-credit')) {
+            this.choosedPaymentMod = 'CREDIT';
+            this.step = 2;
           }
         }
       });
