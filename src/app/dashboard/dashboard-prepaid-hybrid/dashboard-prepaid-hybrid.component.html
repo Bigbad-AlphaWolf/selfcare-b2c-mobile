@@ -36,20 +36,23 @@
   </div>
   <div class="dashboard-block-conso-btns">
     <ion-slides [options]="slideOpts">
-      <ion-slide *ngIf="userCallConsoSummary && userCallConsoSummary?.isHybrid">
-        <div (click)="goDetailsCom()" class="scb-btn-blue scb-btn-balance">
-          <div class="scb-btn-top-block">
-            <img class="scb-btn-top-block-icon" src="/assets/images/orange-dialler-white.svg" alt="curency-cfa-2-mob" />
-            <div class="scb-btn-top-block-text">
-              <span class="text">Balance</span>
+      <ng-container *ngIf="userCallConsoSummary && userCallConsoSummary?.isHybrid">
+        <ion-slide>
+          <div (click)="goDetailsCom()" class="scb-btn-blue scb-btn-balance">
+            <div class="scb-btn-top-block">
+              <img class="scb-btn-top-block-icon" src="/assets/images/orange-dialler-white.svg" alt="curency-cfa-2-mob" />
+              <div class="scb-btn-top-block-text">
+                <span class="text">Balance</span>
+              </div>
             </div>
+            <div class="bottom-block">
+              <span class="value">{{ userCallConsoSummary?.balance }} <span class="text-style-1"> FCFA </span></span>
+            </div>
+            <div class="validity-text" *ngIf="balanceValidity">valable jusqu'au {{ balanceValidity }}</div>
           </div>
-          <div class="bottom-block">
-            <span class="value">{{ userCallConsoSummary?.balance }} <span class="text-style-1"> FCFA </span></span>
-          </div>
-          <div class="validity-text" *ngIf="balanceValidity">valable jusqu'au {{ balanceValidity }}</div>
-        </div>
-      </ion-slide>
+        </ion-slide>
+
+      </ng-container>
       <ion-slide>
         <div (click)="goDetailsCom()" class="scb-btn-green scb-btn-credit">
           <div class="scb-btn-top-block">
