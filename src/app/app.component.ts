@@ -66,7 +66,7 @@ export class AppComponent {
       })
       .subscribe(
         matched => {
-          console.log(matched);
+          console.log('route is ' + matched.$link.path);
           this.router.navigate([matched.$link.path]);
         },
         notMatched => {
