@@ -1,9 +1,27 @@
 <div class="recharge-card-page">
-  <app-help-banner [text]="'Je veux retrouver le numéro de ma carte recharge'" [helpType]="'carte'"></app-help-banner>
-  <form [formGroup]="form" novalidate autocomplete="false" (submit)="getCodeCarte()">
+  <app-help-banner
+    [text]="'Je veux retrouver le numéro de ma carte recharge'"
+    [helpType]="'carte'"
+  ></app-help-banner>
+  <form
+    [formGroup]="form"
+    novalidate
+    autocomplete="false"
+    (submit)="getCodeCarte()"
+  >
     <mat-form-field class="scb-input-row scb-required">
-      <input formControlName="numSerie" matInput placeholder="Entrez le numéro de série de la carte" type="number" />
-      <mat-icon class="c-pointer help-icon" matSuffix (click)="getMoreInfos('numero')">help</mat-icon>
+      <input
+        formControlName="numSerie"
+        matInput
+        placeholder="Entrez le numéro de série de la carte"
+        type="text"
+      />
+      <mat-icon
+        class="c-pointer help-icon"
+        matSuffix
+        (click)="getMoreInfos('numero')"
+        >help</mat-icon
+      >
     </mat-form-field>
     <div class="error-block" *ngIf="errorNumSerie !== ''">
       <span class="scb-text-red-error">{{ errorNumSerie }}</span>
@@ -13,9 +31,14 @@
         formControlName="fiveConsecutiveNumbers"
         matInput
         placeholder="Entrez 5 chiffres consécutifs visibles"
-        type="number"
+        type="text"
       />
-      <mat-icon class="c-pointer help-icon" matSuffix (click)="getMoreInfos('consecutive')">help</mat-icon>
+      <mat-icon
+        class="c-pointer help-icon"
+        matSuffix
+        (click)="getMoreInfos('consecutive')"
+        >help</mat-icon
+      >
     </mat-form-field>
     <div class="error-block" *ngIf="errorFiveConsecutiveNumbers !== ''">
       <span class="scb-text-red-error">{{ errorFiveConsecutiveNumbers }}</span>
@@ -27,7 +50,11 @@
       [disabled]="!form.valid || loading"
     >
       Confirmer
-      <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="loading"></mat-spinner>
+      <mat-spinner
+        mode="indeterminate"
+        [diameter]="20"
+        *ngIf="loading"
+      ></mat-spinner>
     </button>
   </form>
 </div>
