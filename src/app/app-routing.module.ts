@@ -26,6 +26,18 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'buy-pass-internet-by-credit',
+    loadChildren:
+      './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'buy-pass-internet-by-om',
+    loadChildren:
+      './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'buy-pass-internet/:id',
     loadChildren:
       './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
@@ -126,7 +138,11 @@ const routes: Routes = [
     loadChildren:
       './new-registration/new-registration.module#NewRegistrationPageModule'
   },
-  { path: 'new-number', loadChildren: './add-new-phone-number-v2/add-new-phone-number-v2.module#AddNewPhoneNumberV2PageModule' }
+  {
+    path: 'new-number',
+    loadChildren:
+      './add-new-phone-number-v2/add-new-phone-number-v2.module#AddNewPhoneNumberV2PageModule'
+  }
 ];
 
 @NgModule({

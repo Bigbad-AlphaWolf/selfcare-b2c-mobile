@@ -143,11 +143,13 @@
       display: none;
     }
     ion-slides {
+      width: 100%;
       ion-slide {
         padding-left: 10px;
         display: flex;
         align-items: flex-start;
         margin-top: 12px;
+        width: 75%;
         // width: 66% !important;
         // min-width: 300px;
       }

@@ -248,7 +248,7 @@ export class NewRegistrationPage implements OnInit {
   goLogin() {
     this.isLogging = true;
     let login: string;
-    this.phoneNumber.startsWith('221')
+    this.phoneNumber && this.phoneNumber.startsWith('221')
       ? (login = this.phoneNumber.substring(3))
       : (login = this.phoneNumber);
     const userCredential = {
