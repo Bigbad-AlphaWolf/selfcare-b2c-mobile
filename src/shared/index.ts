@@ -573,12 +573,15 @@ export function getCurrentDate() {
   const year = '' + date.getFullYear();
   const hour = '' + date.getHours();
   const minutes = '' + date.getMinutes();
-  if (month.length < 2) { month = '0' + month; }
-  if (day.length < 2) { day = '0' + day; }
+  if (month.length < 2) {
+    month = '0' + month;
+  }
+  if (day.length < 2) {
+    day = '0' + day;
+  }
   const result = [day, month, year].join('-') + ' ' + [hour, minutes].join(':');
   return result;
 }
-
 
 export type UserConsommations = Array<{
   categorie: string;
@@ -610,3 +613,5 @@ export interface UserConsommation {
   montantFormat: string;
   ordre: number;
 }
+
+export const CGU_FILE_NAME = 'cgu_orangeetmoi.pdf';
