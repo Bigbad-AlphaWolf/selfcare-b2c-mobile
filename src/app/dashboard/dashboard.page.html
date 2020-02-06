@@ -26,12 +26,12 @@
             currentProfile === PROFILE_TYPE_HYBRID_1 ||
             currentProfile === PROFILE_TYPE_HYBRID_2 ||
             currentProfile === PROFILE_TYPE_PREPAID) &&
-          currentFormule !== getkIRENEFormule() &&
+            currentCodeFormule !== getkIRENEFormule() &&
           currentFormule !== HOME_PREPAID_FORMULE
         "
       ></app-dashboard-prepaid-hybrid>
       <app-dashboard-kirene
-        *ngIf="currentProfile === PROFILE_TYPE_PREPAID && currentFormule === getkIRENEFormule()"
+        *ngIf="currentProfile === PROFILE_TYPE_PREPAID && currentCodeFormule === getkIRENEFormule()"
       >
       </app-dashboard-kirene>
       <app-dashboard-postpaid *ngIf="currentProfile === PROFILE_TYPE_POSTPAID && !isFormuleFixPostpaid && !isFormuleFixPrepaid">
