@@ -175,38 +175,10 @@ export class BillsService {
   }
 
   downloadBill(bill: any) {
-    console.log(bill.contentNotNull);
     if (bill.contentNotNull) {
       if (this.platform.is('ios')) {
       }
       this.inAppBrowser.create(bill.url, '_system');
-      /* this.http.get(bill.url).subscribe(
-      (x: any) => {
-        bill.downloading = false;
-        const fileName = bill.numeroFacture + '.pdf';
-        this.file
-          .writeFile(
-            path,
-            fileName,
-            this.convertBase64ToBlob(x.file, 'application/pdf'),
-            { replace: true }
-          )
-          .then(() => {
-            this.fileOpener
-              .open(path + fileName, 'application/pdf')
-              .catch(() => {
-                // log error console.log('Error opening pdf file');
-              });
-          })
-          .catch(() => {
-            // log error console.error('Error writing pdf file');
-          });
-      },
-      () => {
-        bill.downloading = false;
-        this.openNotAvailableDialog();
-      }
-    ); */
     } else {
       this.openNotAvailableDialog();
     }

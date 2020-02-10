@@ -50,12 +50,8 @@ export class AproposPage implements OnInit {
         const fileurl = entry.toURL();
         this.fileOpener
           .open(fileurl, 'application/pdf')
-          .then(() => {
-            // log file opened successfully
-          })
-          .catch(e => {
-            // log file opened successfully console.log('Error opening file', e)
-          });
+          .then(() => {})
+          .catch(e => {});
       },
       error => {
         console.log(error);

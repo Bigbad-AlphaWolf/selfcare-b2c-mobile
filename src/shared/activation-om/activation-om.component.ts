@@ -641,7 +641,6 @@ export class ActivationOmComponent implements OnInit {
       user_type: 'user',
       service_version: OM_SERVICE_VERSION
     };
-    console.log(transferOMPayload);
     this.omService.transferOM(transferOMPayload).subscribe(
       (res: any) => {
         this.processResult(res, omUser);
