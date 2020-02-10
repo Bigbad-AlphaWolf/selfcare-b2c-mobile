@@ -58,6 +58,7 @@ export class TransferRecipientAmountComponent implements OnInit {
 
   ngOnInit() {
     this.userCurrentNumber = this.dashService.getCurrentPhoneNumber();
+    this.getOmPhoneNumber();
     if (this.orangeMoney) {
       this.formAmount = this.formBuilder.group({
         amount: [
