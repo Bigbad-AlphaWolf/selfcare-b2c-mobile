@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -9,7 +9,6 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { EmergenciesPage } from './emergencies.page';
 import { ChangeSeddoCodeComponent } from './change-seddo-code/change-seddo-code.component';
 import { GetPukCodeComponent } from './get-puk-code/get-puk-code.component';
-import { HelpBannerComponent } from './help-banner/help-banner.component';
 import { HelpItemComponent } from './help-item/help-item.component';
 import { NumeroSeriePopupComponent } from './numero-serie-popup/numero-serie-popup.component';
 import { OrangeMoneyComponent } from './orange-money/orange-money.component';
