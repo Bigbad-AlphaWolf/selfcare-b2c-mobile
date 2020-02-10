@@ -157,8 +157,8 @@ export class DashboardPostpaidComponent implements OnInit {
   }
 
   getBills() {
-    this.authServ.getSubscription(this.userPhoneNumber).subscribe((res: SubscriptionModel) => {
-        this.billsService.getBills(res.clientCode).subscribe(
+    this.authServ.getSubscription(this.userPhoneNumber).subscribe((client: SubscriptionModel) => {
+        this.billsService.getFactureMobile(client.clientCode).subscribe(
             res => {
                 this.bills = res;
             },

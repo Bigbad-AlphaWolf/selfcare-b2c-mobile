@@ -10,7 +10,6 @@ export class FormatBillDatePipe implements PipeTransform {
       const locale = 'fr-FR';
       if (billDate) {
           billDate = formatDate(billDate, format, locale);
-          console.log(billDate);
           return billDate;
       }
   }
