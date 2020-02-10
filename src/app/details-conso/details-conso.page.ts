@@ -18,7 +18,7 @@ export class DetailsConsoPage implements OnInit {
   error;
   notdata = false;
   appels: any;
-  consoDetails: any;
+  consoDetails: any = [];
   consoshistorique: any;
   chargeTypes: any = [];
   chargeType = 'Compteurs';
@@ -39,6 +39,10 @@ export class DetailsConsoPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    
+  }
+
+  ionViewWillEnter(){
     const msisdn = this.dashboardservice.getCurrentPhoneNumber();
     this.authService.getSubscription(msisdn).subscribe((res: any) => {
       this.followAnalyticsService.registerEventFollow(
