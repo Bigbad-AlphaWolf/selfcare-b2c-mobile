@@ -89,8 +89,6 @@ export class BuyPassInternetPage implements OnInit {
         this.idPassSelected = +this.route.snapshot.paramMap.get('id');
         this.currentProfil = souscription.profil;
         this.currentFormule = souscription.nomOffre;
-        console.log(souscription);
-
         if (this.currentProfil === PROFILE_TYPE_POSTPAID) {
           this.step = 1;
           this.choosedPaymentMod = PAYMENT_MOD_OM;

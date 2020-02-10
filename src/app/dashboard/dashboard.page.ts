@@ -21,7 +21,7 @@ import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/sha
 import { MatDialog } from '@angular/material';
 import { delay } from 'rxjs/operators';
 import { ParrainageService } from '../services/parrainage-service/parrainage.service';
-import { WelcomeStatusModel, getCurrentDate } from 'src/shared';
+import { WelcomeStatusModel, getCurrentDate, CODE_KIRENE_Formule } from 'src/shared';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -168,7 +168,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   getkIRENEFormule() {
-    return KIRENE_Formule;
+    return CODE_KIRENE_Formule;
   }
   fabToggled() {
     this.fabOpened = !this.fabOpened;

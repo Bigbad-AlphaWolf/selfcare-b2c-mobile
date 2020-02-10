@@ -20,8 +20,6 @@ import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup
 import { environment } from 'src/environments/environment';
 const { SERVER_API_URL } = environment;
 import * as SecureLS from 'secure-ls';
-
-import { HttpClient } from '@angular/common/http';
 import {
   FileTransfer,
   FileTransferObject
