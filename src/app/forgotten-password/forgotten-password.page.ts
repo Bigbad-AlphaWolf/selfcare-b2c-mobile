@@ -117,7 +117,6 @@ export class ForgottenPasswordPage implements OnInit {
         this.error_message = 'Ce numéro ne possède pas de compte';
       },
       (err: any) => {
-        console.log(err);
         this.checkingNumber = false;
         //  && err.error && err.error.errorKey === 'userexists'
         if (err.status === 400) {
