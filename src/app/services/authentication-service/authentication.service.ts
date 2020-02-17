@@ -263,7 +263,6 @@ export class AuthenticationService {
     this.isLoginSubject.next(false);
     ls.removeAll();
     window.localStorage.clear();
-    console.log(ls.get('currentPhoneNumber'));
   }
   get isLoggedIn() {
     return this.isLoginSubject.asObservable();

@@ -44,6 +44,7 @@ export class BillsService {
   }
 
   getBillsMobile(numClient: string) {
+    this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
     return this.http.get(
       `${billsDetailEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`
     ).pipe(
@@ -64,6 +65,7 @@ export class BillsService {
     );
   }
   getBillsPackage(numClient: string) {
+    this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
     return this.http.get(
       `${billsEndpoint}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=LANDLINE&size=20&page=0`
     ).pipe(
@@ -86,6 +88,7 @@ export class BillsService {
 
   getFactureMobile(numClient: string) {
     // api/v1/facture/365915?type=MOBILE&search=year:2019,month:11
+    this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
     return this.http
       .get(`${billsDetailEndpointAPI}/${numClient}?type=MOBILE&search=phoneNumber:${this.currentNumber}&sort=year,desc&sort=month,desc`)
       .pipe(
