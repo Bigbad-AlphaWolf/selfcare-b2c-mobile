@@ -11,7 +11,12 @@ import {
   SubscriptionModel,
   hash53,
   isFixPostpaid,
-  isFixPrepaid
+  isFixPrepaid,
+  dashboardFixePostpaidOpened,
+  dashboardFixePrepaidOpened,
+  dashboardMobilePostpaidOpened,
+  dashboardMobilePrepaidKireneOpened,
+  dashboardMobilePrepaidOpened
 } from '.';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
@@ -135,6 +140,23 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.currentFormule = res.nomOffre;
         this.currentCodeFormule = res.code;
         dashboardOpened.next();
+        if(currentNumber.startsWith('33')){
+          if(isFixPostpaid(this.currentFormule)){
+            dashboardFixePostpaidOpened.next();
+          }else if(isFixPrepaid(this.currentFormule)){
+            dashboardFixePrepaidOpened.next();
+          }
+        }else {          
+          if(this.currentProfile === 'POSTPAID'){
+            dashboardMobilePostpaidOpened.next();
+          }else{
+            if(this.currentCodeFormule === CODE_KIRENE_Formule){
+              dashboardMobilePrepaidKireneOpened.next()
+            }else {
+              dashboardMobilePrepaidOpened.next();
+            }
+          }
+        }
         this.followAnalyticsService.registerEventFollow('dashboard', 'event', {
           msisdn: currentNumber,
           profil: this.currentProfile,
@@ -164,7 +186,6 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.hasErrorSubscription = true;        
       });
     dashboardOpened.next();
-    this.getWelcomeStatus();
   }
 
   getkIRENEFormule() {
