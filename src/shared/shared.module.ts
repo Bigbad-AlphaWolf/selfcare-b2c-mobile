@@ -146,6 +146,6 @@ import { PassVolumeDisplayPipe } from './pipes/pass-volume-display.pipe';
     HelpBannerComponent,
     PassVolumeDisplayPipe
   ],
-  providers: [Contacts, SocialSharing]
+  providers: [Contacts, SocialSharing, PassVolumeDisplayPipe]
 })
 export class SharedModule {}
