@@ -8,8 +8,9 @@ import { IonicModule } from '@ionic/angular';
 import { DetailsConsoPage } from './details-conso.page';
 import { HistoriqueConsoComponent } from './historique-conso/historique-conso.component';
 import { SuiviConsoComponent } from './suivi-conso/suivi-conso.component';
-import { MatIconModule, MatButtonModule } from '@angular/material';
+import { MatIconModule, MatButtonModule, MatTabsModule } from '@angular/material';
 import { SharedModule } from 'src/shared/shared.module';
+import { HistoriqueAchatComponent } from './historique-achat/historique-achat.component';
 
 const routes: Routes = [
   {
@@ -25,9 +26,10 @@ const routes: Routes = [
     IonicModule,
     MatIconModule,
     MatButtonModule,
+    MatTabsModule,
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [DetailsConsoPage, HistoriqueConsoComponent, SuiviConsoComponent]
+  declarations: [DetailsConsoPage, HistoriqueConsoComponent, SuiviConsoComponent, HistoriqueAchatComponent]
 })
 export class DetailsConsoPageModule {}
