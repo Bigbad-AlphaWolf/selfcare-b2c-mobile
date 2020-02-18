@@ -142,6 +142,31 @@ const routes: Routes = [
     path: 'new-number',
     loadChildren:
       './add-new-phone-number-v2/add-new-phone-number-v2.module#AddNewPhoneNumberV2PageModule'
+  },
+  {
+    path: 'dashboard-home-prepaid',
+    loadChildren:
+      './dashboard-home-prepaid/dashboard-home-prepaid.module#DashboardHomePrepaidPageModule'
+  },
+  {
+    path: 'dashboard-postpaid',
+    loadChildren:
+      './dashboard-postpaid/dashboard-postpaid.module#DashboardPostpaidPageModule'
+  },
+  {
+    path: 'dashboard-kirene',
+    loadChildren:
+      './dashboard-kirene/dashboard-kirene.module#DashboardKirenePageModule'
+  },
+  {
+    path: 'dashboard-postpaid-fixe',
+    loadChildren:
+      './dashboard-postpaid-fixe/dashboard-postpaid-fixe.module#DashboardPostpaidFixePageModule'
+  },
+  {
+    path: 'dashboard-prepaid-hybrid',
+    loadChildren:
+      './dashboard-prepaid-hybrid/dashboard-prepaid-hybrid.module#DashboardPrepaidHybridPageModule'
   }
 ];
 
