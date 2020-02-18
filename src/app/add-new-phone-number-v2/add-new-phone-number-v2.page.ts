@@ -103,7 +103,6 @@ export class AddNewPhoneNumberV2Page implements OnInit {
         eventType,
         infosFollow
       );
-      console.log(errorName, infosFollow);
     }
   }
 }

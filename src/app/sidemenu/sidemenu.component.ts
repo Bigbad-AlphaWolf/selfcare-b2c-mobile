@@ -111,6 +111,10 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.accountService.launchInProgressPage();
   }
 
+  goToMyOfferPlans() {
+    this.router.navigate(['/my-offer-plans']);
+  }
+
   goDashboard() {
     this.closeMenu();
     this.followAnalyticsService.registerEventFollow(

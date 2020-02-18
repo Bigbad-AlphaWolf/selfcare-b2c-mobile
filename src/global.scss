@@ -139,6 +139,14 @@ mat-dialog-container.mat-dialog-container {
   @include arrowRight(8px, $blueMessageSend);
 }
 
+.#{$prefix}-arrow-left-gray {
+  @include arrowLeft(10px, $grayDashboard);
+}
+
+.#{$prefix}-arrow-right-gray {
+  @include arrowRight(10px, $grayDashboard);
+}
+
 // Customize the scrollbar displaying
 .custom-scrollbar {
   &::-webkit-scrollbar {

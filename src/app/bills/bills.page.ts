@@ -44,83 +44,78 @@ export class BillsPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
-    this.authService.getSubscription(this.currentNumber).subscribe(
-      (res: any) => {
-          this.clientId = res.clientCode;
-          this.error = false;
-          this.subscribeBillServices(this.clientId);
-      },
-      err => {
-          this.error = true;
-      }
-  );
-
-  billsFixePostpaidOpened.subscribe(x => {
-    console.log('getIN');
-    
-    this.authService.getSubscription(this.currentNumber).subscribe(
-      (res: any) => {
-          this.clientId = res.clientCode;
-          this.error = false;
-          this.subscribeBillServices(this.clientId);
-      },
-      err => {
-          this.error = true;
-      }
-  );
-  } )
   }
 
-  // subscribeBillServices() {
-  //   if (REGEX_FIX_NUMBER.test(this.currentNumber)) {
-  //     this.bordereau = true;
-  //     this.billsService.getIdClient().subscribe((idClient: string) => {
-  //       this.billsService.getBillsPackageAPI(idClient).subscribe(res => {
-  //         this.loading = false;
-  //         res === 'error' ? (this.error = true) : (this.bills = res);
-  //       });
-  //     });
-  //   } else {
-  //     this.billsService.getUserBills();
-  //     this.billsService.getBillsEmit().subscribe(res => {
-  //       this.loading = false;
-  //       res === 'error' ? (this.error = true) : (this.bills = res);
-  //     });
-  //   }
-  // }
+  ionViewWillEnter() {
+    this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
+    console.log('page opening for ' + this.currentNumber);
+    this.authService.getSubscription(this.currentNumber).subscribe(
+      (res: any) => {
+        this.clientId = res.clientCode;
+        this.error = false;
+        this.getBills();
+      },
+      err => {
+        this.error = true;
+      }
+    );
+
+    billsFixePostpaidOpened.subscribe(x => {
+      this.authService.getSubscription(this.currentNumber).subscribe(
+        (res: any) => {
+          this.clientId = res.clientCode;
+          this.error = false;
+          this.subscribeBillServices(this.clientId);
+        },
+        err => {
+          this.error = true;
+        }
+      );
+    });
+
+  }
 
   subscribeBillServices(clientId: string) {
     if (REGEX_FIX_NUMBER.test(this.currentNumber)) {
-        this.bordereau = true;
-        this.billsService.getBillsPackage(clientId).subscribe(
-            res => {
-                this.loading = false;
-                this.bills = res;
-            },
-            error => {
-                this.loading = false;
-                this.error = true;
-            }
-        );
-        this.billsService.getUserBillsPackage(clientId);
+      this.bordereau = true;
+      this.billsService.getBillsPackage(clientId).subscribe(
+        res => {
+          this.loading = false;
+          this.bills = res;
+        },
+        error => {
+          this.loading = false;
+          this.error = true;
+        }
+      );
     } else {
-      console.log('ici');
-      
-        this.billsService.getUserBills(this.clientId);
-        this.billsService.getBills(this.clientId).subscribe(res => {
-            this.loading = false;
-            res === 'error' ? (this.error = true) : (this.bills = res);
-        });
+      this.billsService.getFactureMobile(this.clientId).subscribe(res => {
+        this.loading = false;
+        res === 'error' ? (this.error = true) : (this.bills = res);
+      });
     }
-}
+  }
 
-  /* getBills() {
-    this.billsService.getUserBills();
-  } */
   getBills() {
-    this.billsService.getUserBills(this.clientId);
-}
+    if (REGEX_FIX_NUMBER.test(this.currentNumber)) {
+      this.bordereau = true;
+      this.billsService.getBillsPackage(this.clientId).subscribe(
+        res => {
+          this.loading = false;
+          this.bills = res;
+        },
+        error => {
+          this.loading = false;
+          this.error = true;
+        }
+      );
+    } else {
+      this.billsService.getFactureMobile(this.clientId).subscribe(res => {
+        this.loading = false;
+        res === 'error' ? (this.error = true) : (this.bills = res);
+      });
+    }
+  }
 
   mailToCustomerService() {
     this.billsService.mailToCustomerService();
@@ -128,7 +123,7 @@ export class BillsPage implements OnInit {
 
   downloadBill(bill: any) {
     this.billsService.downloadBill(bill);
-}
+  }
 
   goToMenu() {
     this.router.navigate(['/dashboard']);
@@ -141,7 +136,7 @@ export class BillsPage implements OnInit {
     const annee = bill.annefact;
     this.detailParams = { numClient, groupage, mois, annee };
     this.detail = true;
-}
+  }
 
   hideDetails() {
     this.detail = false;

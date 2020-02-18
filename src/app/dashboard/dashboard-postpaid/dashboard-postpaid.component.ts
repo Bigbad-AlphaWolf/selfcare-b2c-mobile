@@ -6,9 +6,15 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { BillsService } from 'src/app/services/bill-service/bills.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
-import { formatDataVolume, MAIL_URL, months, SubscriptionModel } from 'src/shared';
+import {
+  formatDataVolume,
+  MAIL_URL,
+  months,
+  SubscriptionModel
+} from 'src/shared';
 import { dashboardOpened, dashboardMobilePostpaidOpened } from '..';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { PassVolumeDisplayPipe } from 'src/shared/pipes/pass-volume-display.pipe';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -30,6 +36,7 @@ export class DashboardPostpaidComponent implements OnInit {
   userConsommationsCategories = [];
   balance = 0;
   consumedAmount;
+  consumedDataVolume;
   balanceIsAvailable = false;
   isHyBride = false;
   errorConso;
@@ -61,7 +68,8 @@ export class DashboardPostpaidComponent implements OnInit {
     private authServ: AuthenticationService,
     private billsService: BillsService,
     private banniereServ: BanniereService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private passVolumeDisplayPipe: PassVolumeDisplayPipe
   ) {}
 
   ngOnInit() {
@@ -109,21 +117,23 @@ export class DashboardPostpaidComponent implements OnInit {
 
   computeUserConso(userconsommations: any) {
     if (userconsommations) {
-      const totalVoix = userconsommations.iinitalAmount;
-      let totalData = userconsommations.ivolumeInitialGprs;
+      const totalVoix =
+        userconsommations.iinitalAmount + userconsommations.iusedAmount;
+      let totalData =
+        userconsommations.ivolumeInitialGprs + userconsommations.iusedvolume;
       this.consumedAmount = userconsommations.iusedAmount;
+      this.consumedDataVolume = formatDataVolume(userconsommations.iusedvolume);
       const conso = [];
-      const consoVoix = userconsommations.iremainingAmount;
-      const consoInt = totalData - userconsommations.iusedvolume;
+      const consoVoix = userconsommations.iinitalAmount;
+      const consoInt = userconsommations.ivolumeInitialGprs;
       const percentConsoVoix = Math.round((consoVoix * 100) / totalVoix);
       const percentConsoInt = Math.round((consoInt * 100) / totalData);
-      let formatConsoInt = formatDataVolume(consoInt);
-      totalData = formatDataVolume(totalData).substring(0, 5);
-      let consoDataTitle = 'Restant Conso Internet';
-      if (consoInt < 0) {
-        formatConsoInt = formatDataVolume(userconsommations.iusedvolume);
-        consoDataTitle = 'Conso Internet';
-      }
+      let formatConsoInt = this.passVolumeDisplayPipe.transform(
+        formatDataVolume(consoInt)
+      );
+      totalData = this.passVolumeDisplayPipe.transform(
+        formatDataVolume(totalData)
+      );
       conso.push({
         compteur: 'Solde Restant Voix',
         amount: consoVoix,
@@ -132,7 +142,7 @@ export class DashboardPostpaidComponent implements OnInit {
         unit: 'F'
       });
       conso.push({
-        compteur: consoDataTitle,
+        compteur: 'Restant Conso Internet',
         amount: formatConsoInt,
         percent: percentConsoInt,
         total: totalData,
@@ -157,17 +167,19 @@ export class DashboardPostpaidComponent implements OnInit {
   }
 
   getBills() {
-    this.authServ.getSubscription(this.userPhoneNumber).subscribe((res: SubscriptionModel) => {
-        this.billsService.getBills(res.clientCode).subscribe(
-            res => {
-                this.bills = res;
-            },
-            error => {
-                this.errorBill = true;
-            }
+    this.authServ
+      .getSubscription(this.userPhoneNumber)
+      .subscribe((client: SubscriptionModel) => {
+        this.billsService.getFactureMobile(client.clientCode).subscribe(
+          res => {
+            this.bills = res;
+          },
+          error => {
+            this.errorBill = true;
+          }
         );
-    });
-}
+      });
+  }
 
   downloadBill(bill: any) {
     this.billsService.downloadBill(bill);

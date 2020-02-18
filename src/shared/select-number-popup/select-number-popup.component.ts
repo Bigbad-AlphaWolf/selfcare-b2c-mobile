@@ -18,7 +18,6 @@ export class SelectNumberPopupComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.data);
     this.form = this.fb.group({
       gender: ['', [Validators.required]]
     });

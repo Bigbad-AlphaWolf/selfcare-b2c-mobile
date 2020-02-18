@@ -13,7 +13,11 @@ import {
   arrangeCompteurByOrdre,
   USER_CONS_CATEGORY_CALL
 } from 'src/shared';
-import { dashboardOpened, SubscriptionModel, dashboardFixePostpaidOpened } from '..';
+import {
+  dashboardOpened,
+  SubscriptionModel,
+  dashboardFixePostpaidOpened
+} from '..';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -95,62 +99,55 @@ export class DashboardPostpaidFixeComponent implements OnInit {
         }
       });
 
-    dashboardFixePostpaidOpened.subscribe(x => { 
+    dashboardFixePostpaidOpened.subscribe(x => {
       this.bordereau = true;
       this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
-      this.authServ.getSubscription(this.currentNumber).subscribe(
-        (res: SubscriptionModel) => {
+      this.authServ
+        .getSubscription(this.currentNumber)
+        .subscribe((res: SubscriptionModel) => {
           this.getConso();
           this.getBills();
           this.clientId = res.clientCode;
           this.errorBill = false;
           this.subscribeBillServices(this.clientId);
-        }
-      );
+        });
     });
   }
-
-  /* subscribeBillServices(clientId: string) {
-    // lastSlip
-    this.billsService.getBillPackageEmit().subscribe(res => {
-      // this.loading = false;
-      res === 'error' ? (this.errorBill = true) : (this.bills = res);
-      this.lastSlip = this.bills.length > 0 ? this.bills[0] : null;
-    });
-    this.getBills();
-  } */
 
   subscribeBillServices(clientId: string) {
     this.errorBill = false;
     this.billsService.getBillsPackage(clientId).subscribe(
-        res => {
-            // this.loading = false;
-            this.errorBill = false;
-            this.bills = res;
-            this.lastSlip = this.bills && this.bills.length > 0 ? this.bills[0] : null;
-        },
-        error => {
-            this.errorBill = true;
-        }
+      res => {
+        // this.loading = false;
+        this.errorBill = false;
+        this.bills = res;
+        this.lastSlip =
+          this.bills && this.bills.length > 0 ? this.bills[0] : null;
+      },
+      error => {
+        this.errorBill = true;
+      }
     );
-    this.billsService.getUserBillsPackage(clientId);
-}
+  }
   getConso() {
     this.errorConso = false;
     this.dataLoaded = false;
     this.dashbordServ.getUserConsoInfosByCode().subscribe(
       (res: any[]) => {
         this.dataLoaded = true;
-        if(res.length){
+        if (res.length) {
           res = arrangeCompteurByOrdre(res);
           const appelConso = res.length
-            ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL).consommations
-            : null;            
+            ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL)
+                .consommations
+            : null;
           this.creditMensuelle =
-            (appelConso && appelConso.length > 0) ? appelConso.find((x:any)=>{
-              return x.code === 8
-            }).montant : 0;
-        }else {
+            appelConso && appelConso.length > 0
+              ? appelConso.find((x: any) => {
+                  return x.code === 8;
+                }).montant
+              : 0;
+        } else {
           this.errorConso = true;
         }
       },
@@ -206,14 +203,14 @@ export class DashboardPostpaidFixeComponent implements OnInit {
   }
 
   getBills() {
-    this.billsService.getBillsPackageAPI(this.clientId).subscribe((res: any) => {
+    this.billsService.getBillsPackage(this.clientId).subscribe((res: any) => {
       res === 'error' ? (this.errorBill = true) : (this.bills = res);
       this.lastSlip = this.bills.length > 0 ? this.bills[0] : null;
     });
   }
 
   downloadBill(bill: any) {
-    this.billsService.downloadUserBillAPI(bill);
+    this.billsService.downloadBill(bill);
   }
   mailToCustomerService() {
     window.open(MAIL_URL);
