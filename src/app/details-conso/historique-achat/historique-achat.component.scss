@@ -1,0 +1,59 @@
+@import 'src/app/app';
+
+.purchase-history-container {
+    height: 100%;
+    &-filter {
+        height: 70px;
+        background-color: $grayDashboard;
+    }
+    &-body {
+        height: calc(100% - 70px);
+        .list-purchase {
+            height: 100%;
+            overflow-y: auto;
+            padding: 0 10px;
+            &-item {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                margin-top: 20px;
+                border-bottom: 1px solid $silver;
+                padding-bottom: 10px;
+                &:last-child {
+                    margin-bottom: 20px;
+                }
+                .left-block,
+                .right-block {
+                    span {
+                        display: block;
+                        &:last-child {
+                            margin-top: 5px;
+                        }
+                    }
+                }
+                .left-block {
+                    //  width: 65%;
+                    .purchase-category {
+                        font-family: HelveticaNeueLTStd-Bd;
+                        font-size: 16px;
+                    }
+                    .purchase-channel {
+                        font-family: HelveticaNeueLTStd-Roman;
+                        font-size: 12px;
+                    }
+                }
+                .right-block {
+                    text-align: end;
+                    .purchase-amount {
+                        font-family: HelveticaNeueLTStd-Roman;
+                        font-size: 16px;
+                    }
+                    .purchase-date {
+                        font-family: HelveticaNeueLTStd-Roman;
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+    }
+}
