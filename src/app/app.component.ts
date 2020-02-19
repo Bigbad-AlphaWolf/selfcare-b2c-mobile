@@ -20,22 +20,19 @@ export class AppComponent {
     private platform: Platform,
     private statusBar: StatusBar,
     private splash: SplashScreen,
-    private appMinimize: AppMinimize,
     private router: Router,
     private deeplinks: Deeplinks
       ) {
     this.initializeApp();
-    // Initialize BackButton Eevent.
-    this.platform.backButton.subscribe(() => {
-      this.appMinimize.minimize();
-    });
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.overlaysWebView(false);
       // #AARRGGBB where AA is an alpha value RR is red, GG is green and BB is blue
-      this.statusBar.backgroundColorByHexString('#FFFFFF');
+      if (this.platform.is('android')) {
+        this.statusBar.backgroundColorByHexString('#FFFFFF');
+      }
       this.statusBar.styleDefault();
 
       this.splash.hide();

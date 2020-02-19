@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   PROFILE_TYPE_PREPAID,
@@ -34,6 +36,7 @@ import { FollowAnalyticsService } from '../services/follow-analytics/follow-anal
 import { BuyPassInternetPage } from '../buy-pass-internet/buy-pass-internet.page';
 import { AssistancePage } from '../assistance/assistance.page';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+import { Platform } from '@ionic/angular';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()
@@ -65,13 +68,16 @@ export class DashboardPage implements OnInit, OnDestroy {
   isFormuleFixPostpaid = false;
   hasErrorSubscription: boolean;
   isLoading: boolean;
+  backButtonSubscription: Subscription;
   constructor(
     private dashboardServ: DashboardService,
     private authServ: AuthenticationService,
     private assistanceService: AssistanceService,
     private router: Router,
     private shareDialog: MatDialog,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private platform: Platform,
+    private appMinimize: AppMinimize
   ) {}
 
   ngOnInit() {
@@ -84,6 +90,14 @@ export class DashboardPage implements OnInit, OnDestroy {
       this.isFormuleFixPrepaid = isFixPrepaid(this.currentFormule);
     });
   }
+  ionViewDidEnter() {
+    // Initialize BackButton Eevent.
+    this.backButtonSubscription = this.platform.backButton.subscribe(() => {
+      this.appMinimize.minimize();
+    });
+  }
+
+  ionViewWillLeave() { this.backButtonSubscription.unsubscribe(); }
 
   showWelcomePopup(data: WelcomeStatusModel) {
     const dialog = this.shareDialog.open(WelcomePopupComponent, {
@@ -140,19 +154,19 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.currentFormule = res.nomOffre;
         this.currentCodeFormule = res.code;
         dashboardOpened.next();
-        if(currentNumber.startsWith('33')){
-          if(isFixPostpaid(this.currentFormule)){
+        if (currentNumber.startsWith('33')) {
+          if (isFixPostpaid(this.currentFormule)) {
             dashboardFixePostpaidOpened.next();
-          }else if(isFixPrepaid(this.currentFormule)){
+          } else if (isFixPrepaid(this.currentFormule)) {
             dashboardFixePrepaidOpened.next();
           }
-        }else {          
-          if(this.currentProfile === 'POSTPAID'){
+        } else {
+          if (this.currentProfile === 'POSTPAID') {
             dashboardMobilePostpaidOpened.next();
-          }else{
-            if(this.currentCodeFormule === CODE_KIRENE_Formule){
-              dashboardMobilePrepaidKireneOpened.next()
-            }else {
+          } else {
+            if (this.currentCodeFormule === CODE_KIRENE_Formule) {
+              dashboardMobilePrepaidKireneOpened.next();
+            } else {
               dashboardMobilePrepaidOpened.next();
             }
           }
@@ -181,9 +195,9 @@ export class DashboardPage implements OnInit, OnDestroy {
           );
         }
       },
-      (err:any)=>{
+      (err: any) => {
         this.isLoading = false;
-        this.hasErrorSubscription = true;        
+        this.hasErrorSubscription = true;
       });
     dashboardOpened.next();
   }
