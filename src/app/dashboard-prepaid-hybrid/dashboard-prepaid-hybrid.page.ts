@@ -1,24 +1,5 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  OnDestroy,
-  AfterViewInit
-} from '@angular/core';
-import {
-  PROFILE_TYPE_PREPAID,
-  getConsoByCategory,
-  USER_CONS_CATEGORY_CALL,
-  SargalSubscriptionModel,
-  CODE_COMPTEUR_VOLUME_NUIT_1,
-  CODE_COMPTEUR_VOLUME_NUIT_2,
-  CODE_COMPTEUR_VOLUME_NUIT_3,
-  SARGAL_NOT_SUBSCRIBED,
-  SARGAL_UNSUBSCRIPTION_ONGOING,
-  dashboardOpened,
-  PromoBoosterActive,
-  dashboardMobilePrepaidOpened
-} from '..';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { Router } from '@angular/router';
@@ -31,19 +12,36 @@ import {
   arrangeCompteurByOrdre,
   getTrioConsoUser,
   UserConsommations,
-  formatCurrency
+  formatCurrency,
+  USER_CONS_CATEGORY_CALL,
+  WelcomeStatusModel
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import {
+  PROFILE_TYPE_PREPAID,
+  SargalSubscriptionModel,
+  PromoBoosterActive,
+  CODE_COMPTEUR_VOLUME_NUIT_1,
+  CODE_COMPTEUR_VOLUME_NUIT_2,
+  CODE_COMPTEUR_VOLUME_NUIT_3,
+  getConsoByCategory,
+  SARGAL_NOT_SUBSCRIBED,
+  SARGAL_UNSUBSCRIPTION_ONGOING,
+  SubscriptionModel
+} from '../dashboard';
+import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
+import { MatDialog } from '@angular/material';
+import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
+import { AssistanceService } from '../services/assistance.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
   selector: 'app-dashboard-prepaid-hybrid',
-  templateUrl: './dashboard-prepaid-hybrid.component.html',
-  styleUrls: ['./dashboard-prepaid-hybrid.component.scss']
+  templateUrl: './dashboard-prepaid-hybrid.page.html',
+  styleUrls: ['./dashboard-prepaid-hybrid.page.scss']
 })
-export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
-  @Input() userSubscription;
+export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   opened = true;
   showPromoBarner = true;
   userConsoSummary: any = {};
@@ -86,19 +84,39 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
   CODE_COMPTEUR_VOLUME_NUIT_1 = CODE_COMPTEUR_VOLUME_NUIT_1;
   CODE_COMPTEUR_VOLUME_NUIT_2 = CODE_COMPTEUR_VOLUME_NUIT_2;
   CODE_COMPTEUR_VOLUME_NUIT_3 = CODE_COMPTEUR_VOLUME_NUIT_3;
+  firstName: string;
+  lastName: string;
+  fabOpened = false;
+
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
     private authServ: AuthenticationService,
     private banniereServ: BanniereService,
     private sargalServ: SargalService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private shareDialog: MatDialog,
+    private assistanceService: AssistanceService
   ) {}
 
   ngOnInit() {
-    if (this.userSubscription) {
-      this.currentProfil = this.userSubscription.profil;
-    }
+    this.getUserInfos();
+    this.getWelcomeStatus();
+  }
+
+  getUserInfos() {
+    const user = ls.get('user');
+    this.firstName = user.firstName;
+    this.lastName = user.lastName;
+  }
+
+  ngOnDestroy() {}
+
+  ionViewWillEnter() {
+    this.getCurrentSubscription();
+    this.getUserConsommations();
+    this.getActivePromoBooster();
+    this.getSargalPoints();
     this.banniereServ.setListBanniereByFormule();
     this.banniereServ
       .getStatusLoadingBanniere()
@@ -108,29 +126,27 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
           this.listBanniere = this.banniereServ.getListBanniereByFormule();
         }
       });
-    this.getUserConsommations();
-    this.getSargalPoints();
-    this.getActivePromoBooster();
-    dashboardMobilePrepaidOpened.subscribe(x => {
-      this.getUserConsommations();
-      this.getActivePromoBooster();
-      this.getSargalPoints();
-      this.banniereServ.setListBanniereByFormule();
-      this.banniereServ
-        .getStatusLoadingBanniere()
-        .subscribe((status: boolean) => {
-          this.isBanniereLoaded = status;
-          if (this.isBanniereLoaded) {
-            this.listBanniere = this.banniereServ.getListBanniereByFormule();
-          }
-        });
+  }
+
+  getCurrentSubscription() {
+    const currentNumber = this.dashbordServ.getCurrentPhoneNumber();
+    this.authServ.getSubscription(currentNumber).subscribe(
+      (res: SubscriptionModel) => {
+        this.currentProfil = res.profil;
+      },
+      (err: any) => {}
+    );
+  }
+
+  getActivePromoBooster() {
+    this.dashbordServ.getActivePromoBooster().subscribe((res: any) => {
+      this.hasPromoBooster = res;
     });
   }
 
   getUserConsommations() {
     this.dataLoaded = false;
     this.error = false;
-
     this.dashbordServ.getUserConsoInfosByCode().subscribe(
       (res: any[]) => {
         if (res.length) {
@@ -150,7 +166,6 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
         } else {
           this.error = true;
         }
-
         this.dataLoaded = true;
       },
       err => {
@@ -270,8 +285,6 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
     this.router.navigate(['/']);
   }
 
-  ngOnDestroy() {}
-
   computeUserConsoSummary(consoSummary: UserConsommations) {
     const callConsos = consoSummary[USER_CONS_CATEGORY_CALL];
     let globalCredit = 0;
@@ -370,6 +383,7 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
           'clicked'
         );
   }
+
   hidePromoBarner() {
     this.followAnalyticsService.registerEventFollow(
       'Banner_close_dashboard',
@@ -378,15 +392,52 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
     );
     this.showPromoBarner = false;
   }
+
+  fabToggled() {
+    this.fabOpened = !this.fabOpened;
+  }
+
+  openSocialNetworkModal() {
+    this.shareDialog.open(ShareSocialNetworkComponent, {
+      height: '530px',
+      width: '330px',
+      maxWidth: '100%'
+    });
+  }
+
   onError(input: { el: HTMLElement; display: boolean }[]) {
     input.forEach((item: { el: HTMLElement; display: boolean }) => {
       item.el.style.display = item.display ? 'block' : 'none';
     });
   }
 
-  getActivePromoBooster() {
-    this.dashbordServ.getActivePromoBooster().subscribe((res: any) => {
-      this.hasPromoBooster = res;
+  showWelcomePopup(data: WelcomeStatusModel) {
+    const dialog = this.shareDialog.open(WelcomePopupComponent, {
+      data,
+      panelClass: 'gift-popup-class'
     });
+    dialog.afterClosed().subscribe(() => {
+      this.assistanceService.tutoViewed().subscribe(() => {});
+    });
+  }
+
+  getWelcomeStatus() {
+    const number = this.dashbordServ.getMainPhoneNumber();
+    this.dashbordServ.getAccountInfo(number).subscribe(
+      (resp: any) => {
+        ls.set('user', resp);
+        if (!resp.tutoViewed) {
+          this.dashbordServ.getWelcomeStatus().subscribe(
+            (res: WelcomeStatusModel) => {
+              if (res.status === 'SUCCESS') {
+                this.showWelcomePopup(res);
+              }
+            },
+            err => {}
+          );
+        }
+      },
+      () => {}
+    );
   }
 }

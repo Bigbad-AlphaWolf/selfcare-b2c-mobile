@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DashboardKireneComponent } from './dashboard-kirene.component';
+import { DashboardKirenePage } from './dashboard-kirene.page';
 
-describe('DashboardKireneComponent', () => {
-  let component: DashboardKireneComponent;
-  let fixture: ComponentFixture<DashboardKireneComponent>;
+describe('DashboardKirenePage', () => {
+  let component: DashboardKirenePage;
+  let fixture: ComponentFixture<DashboardKirenePage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashboardKireneComponent ],
+      declarations: [ DashboardKirenePage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardKireneComponent);
+    fixture = TestBed.createComponent(DashboardKirenePage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

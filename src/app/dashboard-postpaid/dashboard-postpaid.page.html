@@ -1,0 +1,207 @@
+<app-dashboard-header [firstName]="firstName"></app-dashboard-header>
+<ion-content>
+  <div class="dashboard-container-mobile">
+    <div class="postpaid-dashboard-container">
+      <div *ngIf="showPromoBarner || listBanniere.length" class="dashboard-img-promo">
+        <ion-slides>
+          <ng-container *ngFor="let banniere of listBanniere">
+            <ion-slide>
+              <span #error class="error-slide scb-text-full-black">
+                Erreur lors du chargement de l'image</span>
+              <img #img (error)="
+                onError([
+                  { el: error, display: true },
+                  { el: img, display: false }
+                ])
+              " [src]="banniere.image" alt="ban" />
+            </ion-slide>
+          </ng-container>
+        </ion-slides>
+        <div class="close-icon" (click)="hidePromoBarner()">
+          <img src="/assets/images/group-14.svg" alt="hide-banniere-promo" />
+        </div>
+      </div>
+      <div class="dashboard-block-conso">
+        <div class="dashboard-block-conso-top-texts">
+          <div><span class="suivi-conso">Suivi conso</span></div>
+          <div (click)="goDetailsCom(1)">
+            <span class="voir-details scb-text-orange">Voir details </span>
+            <img src="/assets/images/arrow-right.svg" alt="keyboard-arrow-right-orange-mob" />
+          </div>
+        </div>
+        <div class="dashboard-block-conso-btns">
+          <ion-slides [options]="slideOpts">
+            <ion-slide>
+              <div (click)="goDetailsCom()" class="scb-btn-blue scb-btn-credit">
+                <div class="scb-btn-top-block">
+                  <img class="scb-btn-top-block-icon" src="/assets/images/orange-dialler-white.svg"
+                    alt="curency-cfa-3-mob" />
+                  <div class="scb-btn-top-block-text">
+                    <span class="text">Conso appel</span>
+                  </div>
+                </div>
+                <div class="bottom-block">
+                  <span class="value">{{ consumedAmount }}
+                    <span class="text-style-1"> FCFA </span></span>
+                </div>
+                <div class="validity-text" *ngIf="lastUpdateConso">
+                  Mis à jour le {{ lastUpdateConso }}
+                </div>
+              </div>
+            </ion-slide>
+            <ion-slide>
+              <div (click)="goDetailsCom()" class="scb-btn-purple scb-btn-pass">
+                <div class="scb-btn-top-block">
+                  <img class="scb-btn-top-block-icon" src="/assets/images/data-services.svg" alt="curency-cfa-3-mob" />
+                  <div class="scb-btn-top-block-text">
+                    <span class="text">Conso internet</span>
+                  </div>
+                </div>
+                <div class="bottom-block">
+                  <span class="value">{{ consumedDataVolume | passVolumeDisplay }}
+                    <span class="text-style-1"></span></span>
+                </div>
+                <div class="validity-text" *ngIf="lastUpdateConso && consumedDataVolume">
+                  mis à jour le {{ lastUpdateConso }}
+                </div>
+              </div>
+            </ion-slide>
+            <ion-slide>
+              <app-om-button></app-om-button>
+            </ion-slide>
+          </ion-slides>
+        </div>
+        <div class="dashboard-block-conso-details">
+          <div *ngIf="!dataLoaded" class="dashboard-block-spinner">
+            <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+          </div>
+          <div *ngIf="errorConso" class="scb-text-red-error error">
+            <span (click)="getConsoPostpaid()">
+              Erreur Chargement Conso. Cliquer ici pour recharger
+            </span>
+          </div>
+          <ng-container *ngFor="let conso of userConsommations">
+            <div class="dashboard-block-conso-details-item">
+              <div class="conso-name-value-line">
+                <span class="conso-name scb-text-gray">{{ conso.compteur }}</span>
+                <span class="conso-value">
+                  <span>{{ conso.amount }} {{ conso?.unit }} </span>
+                  <span class="text-style-1" *ngIf="!conso?.dataFinished">
+                    / {{ conso.total }} {{ conso?.unit }}
+                  </span>
+                </span>
+              </div>
+              <div class="conso-expiration-line" *ngIf="!conso?.dataFinished">
+                <span class="conso-expiration-date scb-text-light-black">{{ conso.percent }}% de ma conso</span>
+              </div>
+              <div class="gauge" *ngIf="!conso?.dataFinished">
+                <div class="left" [style.width.%]="conso.percent" [ngClass]="{ 'left-data': !conso.unit }"></div>
+                <div class="consumed" [style.width.%]="100 - conso.percent"></div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="dashboard-block-operation">
+        <div class="operation-block" routerLink="/buy-credit">
+          <div class="operation-img-container">
+            <img src="/assets/images/recharge-credit-om-unique.svg" alt="credit-icon" />
+          </div>
+
+          <div class="operation-title">
+            <span>Recharger </span><span class="light">du crédit pour un autre</span>
+          </div>
+        </div>
+        <div class="operation-block" routerLink="/buy-pass-internet">
+          <div class="operation-img-container">
+            <img src="/assets/images/new_achat-pass-internet_mob.svg" alt="pass-icon" />
+          </div>
+
+          <div class="operation-title">
+            <span>Acheter </span><span class="light">un pass internet pour un autre</span>
+          </div>
+        </div>
+      </div>
+      <div class="dashboard-block-bill">
+        <div *ngIf="errorBill" class="scb-text-red-error error">
+          <span (click)="getBills()">
+            Erreur Chargement Facture. Cliquer ici pour recharger
+          </span>
+        </div>
+        <div class="last-bill" *ngIf="bills?.length > 0">
+          <div class="last-bill-title">
+            <div class="scb-text-l-black">Mes factures</div>
+            <div class="more-bills">
+              <span class="scb-text-orange" routerLink="/bills">Voir tout </span>
+              <img src="/assets/images/arrow-right.svg" alt="keyboard-arrow-right-orange-mob" />
+            </div>
+          </div>
+          <div class="last-bill-infos">
+            <div class="last-bill-infos-utils">
+              <div class="bill-img-container">
+                <img alt="" src="/assets/images/group-39.svg" />
+              </div>
+              <div class="bill-infos-container">
+                <div class="top-infos">
+                  <span>{{ months[bills[0]?.moisfact - 1] }}
+                    {{ bills[0]?.annefact }}</span>
+                  <span [ngClass]="{
+                    'paid-status': bills[0]?.statutFacture === 'paid',
+                    'unpaid-status': bills[0]?.statutFacture === 'unpaid'
+                  }">{{
+                    bills[0]?.statutFacture === 'paid' ? 'Payée' : 'Impayée'
+                  }}</span>
+                </div>
+                <div class="bottom-infos">
+                  <span class="scb-text-item-offre-black emiss-text">N° {{ bills[0]?.nfact | formatBillNum }}</span>
+                  <span class="price">{{ bills[0]?.total | formatCurrency }} F</span>
+                </div>
+              </div>
+            </div>
+            <div class="last-bill-infos-dates">
+              <div class="emission-date">
+                <span class="scb-text-item-offre-black emiss-text">Date d’emission
+                  {{ bills[0]?.dateFacture | formatBillDate }}</span>
+              </div>
+              <div class="echeance-date" #detail>
+                <span class="scb-text-item-offre-black emiss-text">
+                  Echéance {{ bills[0]?.dateEcheance | formatBillDate }}</span>
+                <img alt="" src="/assets/images/keyboard-arrow-up-black.svg" *ngIf="detail.show"
+                  (click)="detail.show = !detail.show" />
+                <img alt="" src="/assets/images/arrow-down.svg" *ngIf="!detail.show"
+                  (click)="detail.show = !detail.show" />
+              </div>
+            </div>
+            <div class="more-infos" *ngIf="detail.show">
+              <div class="more-infos-item-block" (click)="downloadBill(bills[0])">
+                <img alt="" src="/assets/images/pdf-file-2.svg" class="img-icon" /><span
+                  class="scb-text-orange">Télécharger en PDF</span>
+                <mat-spinner mode="indeterminate" *ngIf="bills[0]?.downloading" [diameter]="17"></mat-spinner>
+              </div>
+              <div (click)="mailToCustomerService()" class="more-infos-item-block" *ngIf="0">
+                <img alt="" src="/assets/images/pdf-file-copy-4.svg" class="img-icon" /><span
+                  class="scb-text-orange">Faire une réclamation</span>
+              </div>
+              <div *ngIf="0" class="more-infos-item-block">
+                <img alt="" src="/assets/images/pdf-file-copy-5.svg" class="img-icon" /><span
+                  class="scb-text-orange">Payer par Orange Money</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dashboard-block-offres">
+        <div (click)="goToTransfertOM()" class="dashboard-block-offres-top1">
+          <div class="item-icon">
+            <img src="/assets/images/group-6.svg" alt="group-6" />
+          </div>
+          <div class="item-text scb-text-item-offre-black">
+            <span class="text-style-1">Faire une transaction avec <span> Orange Money </span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</ion-content>

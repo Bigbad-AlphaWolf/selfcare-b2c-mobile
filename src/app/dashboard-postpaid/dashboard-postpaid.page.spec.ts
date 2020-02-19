@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DashboardHomePrepaidComponent } from './dashboard-home-prepaid.component';
+import { DashboardPostpaidPage } from './dashboard-postpaid.page';
 
-describe('DashboardHomePrepaidComponent', () => {
-  let component: DashboardHomePrepaidComponent;
-  let fixture: ComponentFixture<DashboardHomePrepaidComponent>;
+describe('DashboardPostpaidPage', () => {
+  let component: DashboardPostpaidPage;
+  let fixture: ComponentFixture<DashboardPostpaidPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashboardHomePrepaidComponent ],
+      declarations: [ DashboardPostpaidPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardHomePrepaidComponent);
+    fixture = TestBed.createComponent(DashboardPostpaidPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

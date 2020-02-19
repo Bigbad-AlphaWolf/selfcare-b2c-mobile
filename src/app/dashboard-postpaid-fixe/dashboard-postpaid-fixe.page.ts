@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as SecureLS from 'secure-ls';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -11,21 +11,26 @@ import {
   MAIL_URL,
   months,
   arrangeCompteurByOrdre,
-  USER_CONS_CATEGORY_CALL
-} from 'src/shared';
-import {
-  dashboardOpened,
+  USER_CONS_CATEGORY_CALL,
   SubscriptionModel,
-  dashboardFixePostpaidOpened
-} from '..';
-const ls = new SecureLS({ encodingType: 'aes' });
+  WelcomeStatusModel
+} from 'src/shared';
+import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
+import { MatDialog } from '@angular/material';
+import { AssistanceService } from '../services/assistance.service';
+import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 
+const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid-fixe',
-  templateUrl: './dashboard-postpaid-fixe.component.html',
-  styleUrls: ['./dashboard-postpaid-fixe.component.scss']
+  templateUrl: './dashboard-postpaid-fixe.page.html',
+  styleUrls: ['./dashboard-postpaid-fixe.page.scss']
 })
-export class DashboardPostpaidFixeComponent implements OnInit {
+export class DashboardPostpaidFixePage implements OnInit {
+  opened = false;
+  userInfos: any = {};
+  firstName;
+  fabOpened = false;
   months = months;
   showPromoBarner = true;
   userConsoSummary: any = {};
@@ -73,12 +78,38 @@ export class DashboardPostpaidFixeComponent implements OnInit {
     private router: Router,
     private authServ: AuthenticationService,
     private billsService: BillsService,
-    private banniereServ: BanniereService
+    private banniereServ: BanniereService,
+    private shareDialog: MatDialog,
+    private assistanceService: AssistanceService
   ) {}
+
   ngOnInit() {
+    this.getUserInfos();
+    this.getWelcomeStatus();
+    this.banniereServ.setListBanniereByFormule();
+    this.banniereServ
+      .getStatusLoadingBanniere()
+      .subscribe((status: boolean) => {
+        this.isBanniereLoaded = status;
+        if (this.isBanniereLoaded) {
+          this.listBanniere = this.banniereServ.getListBanniereByFormule();
+        }
+      });
+  }
+
+  getUserInfos() {
+    const user = ls.get('user');
+    this.firstName = user.firstName;
+  }
+
+  ionViewWillEnter() {
     this.getConso();
     this.bordereau = true;
     this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
+    this.getSubscription();
+  }
+
+  getSubscription() {
     this.authServ.getSubscription(this.currentNumber).subscribe(
       (res: SubscriptionModel) => {
         this.clientId = res.clientCode;
@@ -89,29 +120,6 @@ export class DashboardPostpaidFixeComponent implements OnInit {
         this.errorBill = true;
       }
     );
-    this.banniereServ.setListBanniereByFormule();
-    this.banniereServ
-      .getStatusLoadingBanniere()
-      .subscribe((status: boolean) => {
-        this.isBanniereLoaded = status;
-        if (this.isBanniereLoaded) {
-          this.listBanniere = this.banniereServ.getListBanniereByFormule();
-        }
-      });
-
-    dashboardFixePostpaidOpened.subscribe(x => {
-      this.bordereau = true;
-      this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
-      this.authServ
-        .getSubscription(this.currentNumber)
-        .subscribe((res: SubscriptionModel) => {
-          this.getConso();
-          this.getBills();
-          this.clientId = res.clientCode;
-          this.errorBill = false;
-          this.subscribeBillServices(this.clientId);
-        });
-    });
   }
 
   subscribeBillServices(clientId: string) {
@@ -129,6 +137,7 @@ export class DashboardPostpaidFixeComponent implements OnInit {
       }
     );
   }
+
   getConso() {
     this.errorConso = false;
     this.dataLoaded = false;
@@ -212,6 +221,7 @@ export class DashboardPostpaidFixeComponent implements OnInit {
   downloadBill(bill: any) {
     this.billsService.downloadBill(bill);
   }
+
   mailToCustomerService() {
     window.open(MAIL_URL);
   }
@@ -237,9 +247,52 @@ export class DashboardPostpaidFixeComponent implements OnInit {
   goToTransfertOM() {
     this.router.navigate(['/transfer/orange-money']);
   }
+
   onError(input: { el: HTMLElement; display: boolean }[]) {
     input.forEach((item: { el: HTMLElement; display: boolean }) => {
       item.el.style.display = item.display ? 'block' : 'none';
     });
+  }
+
+  fabToggled() {
+    this.fabOpened = !this.fabOpened;
+  }
+
+  openSocialNetworkModal() {
+    this.shareDialog.open(ShareSocialNetworkComponent, {
+      height: '530px',
+      width: '330px',
+      maxWidth: '100%'
+    });
+  }
+
+  showWelcomePopup(data: WelcomeStatusModel) {
+    const dialog = this.shareDialog.open(WelcomePopupComponent, {
+      data,
+      panelClass: 'gift-popup-class'
+    });
+    dialog.afterClosed().subscribe(() => {
+      this.assistanceService.tutoViewed().subscribe(() => {});
+    });
+  }
+
+  getWelcomeStatus() {
+    const number = this.dashbordServ.getMainPhoneNumber();
+    this.dashbordServ.getAccountInfo(number).subscribe(
+      (resp: any) => {
+        ls.set('user', resp);
+        if (!resp.tutoViewed) {
+          this.dashbordServ.getWelcomeStatus().subscribe(
+            (res: WelcomeStatusModel) => {
+              if (res.status === 'SUCCESS') {
+                this.showWelcomePopup(res);
+              }
+            },
+            err => {}
+          );
+        }
+      },
+      () => {}
+    );
   }
 }

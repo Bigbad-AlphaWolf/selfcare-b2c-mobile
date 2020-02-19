@@ -2,14 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
+
 import { IonicModule } from '@ionic/angular';
-import { DashboardPage } from './dashboard.page';
-import { MatProgressSpinnerModule } from '@angular/material';
+
+import { DashboardHomePrepaidPage } from './dashboard-home-prepaid.page';
 import { SharedModule } from 'src/shared/shared.module';
+
 const routes: Routes = [
   {
     path: '',
-    component: DashboardPage
+    component: DashboardHomePrepaidPage
   }
 ];
 
@@ -18,10 +20,9 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    MatProgressSpinnerModule,
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [DashboardPage]
+  declarations: [DashboardHomePrepaidPage]
 })
-export class DashboardPageModule {}
+export class DashboardHomePrepaidPageModule {}

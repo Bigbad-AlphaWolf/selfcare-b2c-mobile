@@ -4,31 +4,33 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
-import {
-  getConsoByCategory,
-  USER_CONS_CATEGORY_CALL,
-  SargalSubscriptionModel,
-  SARGAL_NOT_SUBSCRIBED,
-  SARGAL_UNSUBSCRIPTION_ONGOING,
-  dashboardOpened,
-  dashboardMobilePrepaidKireneOpened
-} from '..';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import {
   getLastUpdatedDateTimeText,
   UserConsommations,
-  formatCurrency
+  formatCurrency,
+  USER_CONS_CATEGORY_CALL,
+  WelcomeStatusModel
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import {
+  SargalSubscriptionModel,
+  SARGAL_NOT_SUBSCRIBED,
+  getConsoByCategory,
+  SARGAL_UNSUBSCRIPTION_ONGOING
+} from '../dashboard';
+import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
+import { MatDialog } from '@angular/material';
+import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
+import { AssistanceService } from '../services/assistance.service';
 const ls = new SecureLS({ encodingType: 'aes' });
-
 @Component({
   selector: 'app-dashboard-kirene',
-  templateUrl: './dashboard-kirene.component.html',
-  styleUrls: ['./dashboard-kirene.component.scss']
+  templateUrl: './dashboard-kirene.page.html',
+  styleUrls: ['./dashboard-kirene.page.scss']
 })
-export class DashboardKireneComponent implements OnInit {
+export class DashboardKirenePage implements OnInit {
   showPromoBarner = ls.get('banner');
   userConsoSummary: any = {};
   userCallConsoSummary: {
@@ -67,20 +69,23 @@ export class DashboardKireneComponent implements OnInit {
   sargalUnavailable: boolean;
   sargalLastUpdate: string;
   SARGAL_NOT_SUBSCRIBED = SARGAL_NOT_SUBSCRIBED;
+  firstName: string;
+  lastName: string;
+  fabOpened = false;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
     private authServ: AuthenticationService,
     private banniereServ: BanniereService,
     private sargalServ: SargalService,
-    private followsAnalytics: FollowAnalyticsService
+    private followsAnalytics: FollowAnalyticsService,
+    private shareDialog: MatDialog,
+    private assistanceService: AssistanceService
   ) {}
 
   ngOnInit() {
-    // GET conso summary
-    // GET call conso summary (1+6+9)
-    this.getUserConsommations();
-    this.getSargalPoints();
+    this.getWelcomeStatus();
+    this.getUserInfos();
     this.banniereServ.setListBanniereByFormule();
     this.banniereServ
       .getStatusLoadingBanniere()
@@ -90,10 +95,17 @@ export class DashboardKireneComponent implements OnInit {
           this.listBanniere = this.banniereServ.getListBanniereByFormule();
         }
       });
-    dashboardMobilePrepaidKireneOpened.subscribe(x => {
-      this.getUserConsommations();
-      this.getSargalPoints();
-    });
+  }
+
+  ionViewWillEnter() {
+    this.getUserConsommations();
+    this.getSargalPoints();
+  }
+
+  getUserInfos() {
+    const user = ls.get('user');
+    this.firstName = user.firstName;
+    this.lastName = user.lastName;
   }
 
   getUserConsommations() {
@@ -123,6 +135,7 @@ export class DashboardKireneComponent implements OnInit {
       }
     );
   }
+
   getSargalPoints() {
     this.sargalDataLoaded = false;
     this.sargalUnavailable = false;
@@ -315,6 +328,7 @@ export class DashboardKireneComponent implements OnInit {
       'clicked'
     );
   }
+
   goBuyPassInternet() {
     this.followsAnalytics.registerEventFollow(
       'Pass_internet_dashboard',
@@ -324,9 +338,51 @@ export class DashboardKireneComponent implements OnInit {
     this.router.navigate(['/buy-pass-internet']);
   }
 
+  fabToggled() {
+    this.fabOpened = !this.fabOpened;
+  }
+
+  openSocialNetworkModal() {
+    this.shareDialog.open(ShareSocialNetworkComponent, {
+      height: '530px',
+      width: '330px',
+      maxWidth: '100%'
+    });
+  }
+
   onError(input: { el: HTMLElement; display: boolean }[]) {
     input.forEach((item: { el: HTMLElement; display: boolean }) => {
       item.el.style.display = item.display ? 'block' : 'none';
     });
+  }
+
+  showWelcomePopup(data: WelcomeStatusModel) {
+    const dialog = this.shareDialog.open(WelcomePopupComponent, {
+      data,
+      panelClass: 'gift-popup-class'
+    });
+    dialog.afterClosed().subscribe(() => {
+      this.assistanceService.tutoViewed().subscribe(() => {});
+    });
+  }
+
+  getWelcomeStatus() {
+    const number = this.dashbordServ.getMainPhoneNumber();
+    this.dashbordServ.getAccountInfo(number).subscribe(
+      (resp: any) => {
+        ls.set('user', resp);
+        if (!resp.tutoViewed) {
+          this.dashbordServ.getWelcomeStatus().subscribe(
+            (res: WelcomeStatusModel) => {
+              if (res.status === 'SUCCESS') {
+                this.showWelcomePopup(res);
+              }
+            },
+            err => {}
+          );
+        }
+      },
+      () => {}
+    );
   }
 }
