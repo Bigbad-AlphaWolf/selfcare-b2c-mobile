@@ -12,10 +12,13 @@ import {
   months,
   arrangeCompteurByOrdre,
   USER_CONS_CATEGORY_CALL,
-  SubscriptionModel
+  SubscriptionModel,
+  WelcomeStatusModel
 } from 'src/shared';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
+import { AssistanceService } from '../services/assistance.service';
+import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
@@ -76,11 +79,13 @@ export class DashboardPostpaidFixePage implements OnInit {
     private authServ: AuthenticationService,
     private billsService: BillsService,
     private banniereServ: BanniereService,
-    private shareDialog: MatDialog
+    private shareDialog: MatDialog,
+    private assistanceService: AssistanceService
   ) {}
 
   ngOnInit() {
     this.getUserInfos();
+    this.getWelcomeStatus();
     this.banniereServ.setListBanniereByFormule();
     this.banniereServ
       .getStatusLoadingBanniere()
@@ -259,5 +264,35 @@ export class DashboardPostpaidFixePage implements OnInit {
       width: '330px',
       maxWidth: '100%'
     });
+  }
+
+  showWelcomePopup(data: WelcomeStatusModel) {
+    const dialog = this.shareDialog.open(WelcomePopupComponent, {
+      data,
+      panelClass: 'gift-popup-class'
+    });
+    dialog.afterClosed().subscribe(() => {
+      this.assistanceService.tutoViewed().subscribe(() => {});
+    });
+  }
+
+  getWelcomeStatus() {
+    const number = this.dashbordServ.getMainPhoneNumber();
+    this.dashbordServ.getAccountInfo(number).subscribe(
+      (resp: any) => {
+        ls.set('user', resp);
+        if (!resp.tutoViewed) {
+          this.dashbordServ.getWelcomeStatus().subscribe(
+            (res: WelcomeStatusModel) => {
+              if (res.status === 'SUCCESS') {
+                this.showWelcomePopup(res);
+              }
+            },
+            err => {}
+          );
+        }
+      },
+      () => {}
+    );
   }
 }

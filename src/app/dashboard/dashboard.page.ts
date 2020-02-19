@@ -45,9 +45,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     private followAnalyticsService: FollowAnalyticsService
   ) {}
 
-  ngOnInit() {
-    this.getWelcomeStatus();
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {}
 
@@ -114,37 +112,6 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.isLoading = false;
         this.hasErrorSubscription = true;
       }
-    );
-    this.getWelcomeStatus();
-  }
-
-  showWelcomePopup(data: WelcomeStatusModel) {
-    const dialog = this.shareDialog.open(WelcomePopupComponent, {
-      data,
-      panelClass: 'gift-popup-class'
-    });
-    dialog.afterClosed().subscribe(() => {
-      this.assistanceService.tutoViewed().subscribe(() => {});
-    });
-  }
-
-  getWelcomeStatus() {
-    const number = this.dashboardServ.getMainPhoneNumber();
-    this.dashboardServ.getAccountInfo(number).subscribe(
-      (resp: any) => {
-        ls.set('user', resp);
-        if (!resp.tutoViewed) {
-          this.dashboardServ.getWelcomeStatus().subscribe(
-            (res: WelcomeStatusModel) => {
-              if (res.status === 'SUCCESS') {
-                this.showWelcomePopup(res);
-              }
-            },
-            err => {}
-          );
-        }
-      },
-      () => {}
     );
   }
 }

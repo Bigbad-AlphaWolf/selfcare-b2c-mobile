@@ -15,7 +15,8 @@ import {
   formatCurrency,
   USER_CONS_CATEGORY_CALL,
   USER_CONS_CATEGORY_INTERNET,
-  SubscriptionModel
+  SubscriptionModel,
+  WelcomeStatusModel
 } from 'src/shared';
 import {
   getConsoByCategory,
@@ -25,6 +26,8 @@ import {
 } from '../dashboard';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
+import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
+import { AssistanceService } from '../services/assistance.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-home-prepaid',
@@ -67,7 +70,8 @@ export class DashboardHomePrepaidPage implements OnInit {
     private router: Router,
     private followsAnalytics: FollowAnalyticsService,
     private authServ: AuthenticationService,
-    private shareDialog: MatDialog
+    private shareDialog: MatDialog,
+    private assistanceService: AssistanceService
   ) {}
 
   ngOnInit() {
@@ -75,6 +79,7 @@ export class DashboardHomePrepaidPage implements OnInit {
     this.getConso();
     this.getPassInternetFixe();
     this.getUserInfos();
+    this.getWelcomeStatus();
   }
 
   getUserInfos() {
@@ -255,5 +260,35 @@ export class DashboardHomePrepaidPage implements OnInit {
       width: '330px',
       maxWidth: '100%'
     });
+  }
+
+  showWelcomePopup(data: WelcomeStatusModel) {
+    const dialog = this.shareDialog.open(WelcomePopupComponent, {
+      data,
+      panelClass: 'gift-popup-class'
+    });
+    dialog.afterClosed().subscribe(() => {
+      this.assistanceService.tutoViewed().subscribe(() => {});
+    });
+  }
+
+  getWelcomeStatus() {
+    const number = this.dashbdSrv.getMainPhoneNumber();
+    this.dashbdSrv.getAccountInfo(number).subscribe(
+      (resp: any) => {
+        ls.set('user', resp);
+        if (!resp.tutoViewed) {
+          this.dashbdSrv.getWelcomeStatus().subscribe(
+            (res: WelcomeStatusModel) => {
+              if (res.status === 'SUCCESS') {
+                this.showWelcomePopup(res);
+              }
+            },
+            err => {}
+          );
+        }
+      },
+      () => {}
+    );
   }
 }

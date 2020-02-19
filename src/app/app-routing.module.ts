@@ -167,6 +167,11 @@ const routes: Routes = [
     path: 'dashboard-prepaid-hybrid',
     loadChildren:
       './dashboard-prepaid-hybrid/dashboard-prepaid-hybrid.module#DashboardPrepaidHybridPageModule'
+  },
+  {
+    path: 'my-offer-plans',
+    loadChildren:
+      './my-offer-plans/my-offer-plans.module#MyOfferPlansPageModule'
   }
 ];
 

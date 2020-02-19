@@ -10,12 +10,15 @@ import {
   formatDataVolume,
   MAIL_URL,
   months,
-  SubscriptionModel
+  SubscriptionModel,
+  WelcomeStatusModel
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { PassVolumeDisplayPipe } from 'src/shared/pipes/pass-volume-display.pipe';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
+import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
+import { AssistanceService } from '../services/assistance.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid',
@@ -72,11 +75,13 @@ export class DashboardPostpaidPage implements OnInit {
     private banniereServ: BanniereService,
     private followAnalyticsService: FollowAnalyticsService,
     private passVolumeDisplayPipe: PassVolumeDisplayPipe,
-    private shareDialog: MatDialog
+    private shareDialog: MatDialog,
+    private assistanceService: AssistanceService
   ) {}
 
   ngOnInit() {
     this.getUserInfos();
+    this.getWelcomeStatus();
     this.userPhoneNumber = this.dashbordServ.getCurrentPhoneNumber();
     this.billsService.getBillsEmit().subscribe(res => {
       // this.loading = false;
@@ -249,5 +254,35 @@ export class DashboardPostpaidPage implements OnInit {
     input.forEach((item: { el: HTMLElement; display: boolean }) => {
       item.el.style.display = item.display ? 'block' : 'none';
     });
+  }
+
+  showWelcomePopup(data: WelcomeStatusModel) {
+    const dialog = this.shareDialog.open(WelcomePopupComponent, {
+      data,
+      panelClass: 'gift-popup-class'
+    });
+    dialog.afterClosed().subscribe(() => {
+      this.assistanceService.tutoViewed().subscribe(() => {});
+    });
+  }
+
+  getWelcomeStatus() {
+    const number = this.dashbordServ.getMainPhoneNumber();
+    this.dashbordServ.getAccountInfo(number).subscribe(
+      (resp: any) => {
+        ls.set('user', resp);
+        if (!resp.tutoViewed) {
+          this.dashbordServ.getWelcomeStatus().subscribe(
+            (res: WelcomeStatusModel) => {
+              if (res.status === 'SUCCESS') {
+                this.showWelcomePopup(res);
+              }
+            },
+            err => {}
+          );
+        }
+      },
+      () => {}
+    );
   }
 }
