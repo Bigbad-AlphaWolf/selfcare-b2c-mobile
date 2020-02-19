@@ -96,8 +96,11 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    let currentNumber = this.dashbordServ.getCurrentPhoneNumber();
+    let code = '';
     if (this.userSubscription) {
       this.currentProfil = this.userSubscription.profil;
+      code = this.userSubscription.code;
     }
     this.banniereServ.setListBanniereByFormule();
     this.banniereServ
@@ -110,10 +113,12 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
       });
     this.getUserConsommations();
     this.getSargalPoints();
-    this.getActivePromoBooster();
+    this.getActivePromoBooster(currentNumber, code);
     dashboardMobilePrepaidOpened.subscribe(x => {
       this.getUserConsommations();
-      this.getActivePromoBooster();
+      currentNumber = this.dashbordServ.getCurrentPhoneNumber();
+      code = this.userSubscription.code;
+      this.getActivePromoBooster(currentNumber, code);
       this.getSargalPoints();
       this.banniereServ.setListBanniereByFormule();
       this.banniereServ
@@ -384,9 +389,11 @@ export class DashboardPrepaidHybridComponent implements OnInit, OnDestroy {
     });
   }
 
-  getActivePromoBooster() {
-    this.dashbordServ.getActivePromoBooster().subscribe((res: any) => {
-      this.hasPromoBooster = res;
-    });
+  getActivePromoBooster(msisdn: string, code: string) {
+    this.dashbordServ
+      .getActivePromoBooster(msisdn, code)
+      .subscribe((res: any) => {
+        this.hasPromoBooster = res;
+      });
   }
 }
