@@ -262,6 +262,7 @@ export class AuthenticationService {
     this.removeUserInfos();
     this.isLoginSubject.next(false);
     ls.removeAll();
+    window.localStorage.clear();
   }
   get isLoggedIn() {
     return this.isLoginSubject.asObservable();
