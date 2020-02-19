@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { computeConsoHistory, arrangeCompteurByOrdre } from 'src/shared';
+import { computeConsoHistory, arrangeCompteurByOrdre, PurchaseModel } from 'src/shared';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { PurchaseService } from '../services/purchase-service/purchase.service';
 
 @Component({
   selector: 'app-details-conso',
@@ -31,11 +32,17 @@ export class DetailsConsoPage implements OnInit {
   ];
   day = 0;
   selectedDate = this.dateFilterItems[0];
-
+  histPurchaseLoading: boolean;
+  histPurchaseHasError: boolean;
+  listPurchase: PurchaseModel[] = [];
+  purchaseDateFilterSelected = 2;
+  purchaseTypeFilterSelected: {nom: string, value: string} = {nom: "Tous", value: undefined};
+  userPhoneNumber: string;
   constructor(
     private dashboardservice: DashboardService,
     private authService: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private purchaseServ: PurchaseService
   ) {}
 
   ngOnInit() {
@@ -43,8 +50,8 @@ export class DetailsConsoPage implements OnInit {
   }
 
   ionViewWillEnter(){
-    const msisdn = this.dashboardservice.getCurrentPhoneNumber();
-    this.authService.getSubscription(msisdn).subscribe((res: any) => {
+    this.userPhoneNumber = this.dashboardservice.getCurrentPhoneNumber();
+    this.authService.getSubscription(this.userPhoneNumber).subscribe((res: any) => {
       this.followAnalyticsService.registerEventFollow(
         'Voir_details_dashboard',
         'event',
@@ -58,9 +65,32 @@ export class DetailsConsoPage implements OnInit {
       } else {
         this.getPrepaidUserHistory(2);
         this.getUserConsoInfos();
+        if(this.currentProfil === 'PREPAID'){
+          this.getTransactionsByDay(this.purchaseDateFilterSelected);
+        }
       }
     });
   }
+
+  getTransactionsByDay(day: number, filterType?: {nom: string, value: string}) {
+    this.histPurchaseLoading = true;
+    this.histPurchaseHasError = false;
+    this.purchaseDateFilterSelected = day;
+    if(filterType){
+      this.purchaseTypeFilterSelected = filterType;
+    }
+    this.purchaseServ.getAllTransactionByDay(this.userPhoneNumber, day, this.purchaseTypeFilterSelected ? this.purchaseTypeFilterSelected.value : null ).subscribe(
+        (res: PurchaseModel[]) => {
+            this.histPurchaseLoading = false;
+            this.histPurchaseHasError = false;
+            this.listPurchase = res;
+        },
+        (err: any) => {
+            this.histPurchaseLoading = false;
+            this.histPurchaseHasError = true;
+        }
+    );
+}
 
   getUserConsoInfos() {
     this.detailsLoading = true;

@@ -5,6 +5,46 @@
     &-filter {
         height: 70px;
         background-color: $grayDashboard;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 15px;
+        .purchase-content-filter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 48%;
+            .filter-container {
+                display: flex;
+                width: 100%;
+                line-height: 40px;
+                border-radius: 20px;
+                border: solid 2px $black;
+                height: 40px;
+                text-align: start;
+                font-family: HelveticaNeueLTStd-Roman;
+                font-size: 17px;
+                min-width: 170px;
+                .mat-button-wrapper {
+                    width: 100%;
+                    display: flex;
+                }
+                .btn-filter {
+                    display: inline-block;
+                }
+                .arrows {
+                    justify-content: flex-end;
+                    width: 25px;
+                    height: 25px;
+                    // margin-left: 15%;
+                    .arrow-up {
+                        color: $white;
+                    }
+                }
+                &.selected {
+                    background-color: $fullBlack;
+                }
+            }
+        }
     }
     &-body {
         height: calc(100% - 70px);
@@ -54,6 +94,22 @@
                     }
                 }
             }
+        }
+        .no-transactions {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .error {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .spinner{
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            .mat-spinner::ng-deep circle {
+                stroke: $orange;
+              }
         }
     }
 }

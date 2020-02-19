@@ -81,17 +81,17 @@
             </app-historique-conso>
         </ng-container>
         </mat-tab>
-        <mat-tab #historikAchat>
+        <mat-tab #historikAchat  *ngIf="currentProfil && currentProfil === 'PREPAID'">
             <ng-template mat-tab-label>
                     <div class="conso-tab-category" [ngClass]="{ 'selected': historikAchat.isActive} ">
                         <span class="scb-text-gray">Historique achats</span>
-                        <div class="spinner" *ngIf="histLoading">
+                        <div class="spinner" *ngIf="histPurchaseLoading">
                             <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
                         </div>
                     </div>
             </ng-template>
             <ng-container>
-                <app-historique-achat></app-historique-achat>
+                <app-historique-achat  [listTransactions]="listPurchase" [isLoading]="histPurchaseLoading" [hasError]="histPurchaseHasError" (getTransactionsByDay)="getTransactionsByDay($event)" (getTransactionsByFilter) ="getTransactionsByDay(purchaseDateFilterSelected,$event)"></app-historique-achat>
             </ng-container>
         </mat-tab>
       </mat-tab-group>

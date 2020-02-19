@@ -47,10 +47,8 @@
       Erreur lors du chargement des données
     </span>
   </div>
-  <div *ngIf="notdata" class="spinner">
-    <span class="scb-text-full-black">
-      Vous n'avez pas de communication à cette date
-    </span>
+  <div *ngIf="notdata" class="empty-img">
+      <img src="/assets/images/history-call-empty.png" alt="" />
   </div>
 
   <div class="conso-row-block" *ngFor="let conso of consoshistorique">

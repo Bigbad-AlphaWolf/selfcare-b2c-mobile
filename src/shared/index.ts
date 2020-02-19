@@ -615,3 +615,12 @@ export interface UserConsommation {
 }
 
 export const CGU_FILE_NAME = 'cgu_orangeetmoi.pdf';
+
+export interface PurchaseModel {
+  amount: number;
+  name: string;
+  channel: string;
+  operationDate: string;
+  operationType: 'DEBIT' | 'CREDIT';
+  details: any[];
+}

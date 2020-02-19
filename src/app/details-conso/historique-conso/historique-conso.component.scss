@@ -60,6 +60,10 @@
     justify-content: center;
     padding-top: 50%;
   }
+  .empty-img{
+    margin-top: 15px;
+    text-align: center;
+  }
 
   .mat-spinner::ng-deep circle {
     stroke: $orange;

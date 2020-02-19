@@ -20,7 +20,7 @@ export class SuiviConsoComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(changes.consoDetails.currentValue){
+    if(changes.consoDetails && changes.consoDetails.currentValue){
       this.consoDetails = changes.consoDetails.currentValue;
       this.hasItError();
     }

@@ -391,3 +391,12 @@ body {
     box-shadow: none;
   }
 }
+
+// customize css for historique achat component
+
+.purchase-history-container {
+  .mat-button-wrapper{
+    display: flex;
+    align-items: center;
+  }
+}
