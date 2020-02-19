@@ -115,7 +115,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   ionViewWillEnter() {
     this.getCurrentSubscription();
     this.getUserConsommations();
-    this.getActivePromoBooster();
     this.getSargalPoints();
     this.banniereServ.setListBanniereByFormule();
     this.banniereServ
@@ -133,15 +132,18 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.authServ.getSubscription(currentNumber).subscribe(
       (res: SubscriptionModel) => {
         this.currentProfil = res.profil;
+        this.getActivePromoBooster(currentNumber, res.code);
       },
       (err: any) => {}
     );
   }
 
-  getActivePromoBooster() {
-    this.dashbordServ.getActivePromoBooster().subscribe((res: any) => {
-      this.hasPromoBooster = res;
-    });
+  getActivePromoBooster(msisdn: string, code: string) {
+    this.dashbordServ
+      .getActivePromoBooster(msisdn, code)
+      .subscribe((res: any) => {
+        this.hasPromoBooster = res;
+      });
   }
 
   getUserConsommations() {
