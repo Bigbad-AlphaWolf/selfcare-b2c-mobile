@@ -79,7 +79,7 @@ export class DetailsConsoPage implements OnInit {
     if(filterType){
       this.purchaseTypeFilterSelected = filterType;
     }
-    this.purchaseServ.getAllTransactionByDay(this.userPhoneNumber, day, this.purchaseTypeFilterSelected ? this.purchaseTypeFilterSelected.value : null ).subscribe(
+    this.purchaseServ.getAllTransactionByDay(this.userPhoneNumber, day, this.purchaseTypeFilterSelected.value).subscribe(
         (res: PurchaseModel[]) => {
             this.histPurchaseLoading = false;
             this.histPurchaseHasError = false;
