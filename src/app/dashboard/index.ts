@@ -1,5 +1,9 @@
 import { Subject } from 'rxjs';
-import { REGEX_POSTPAID_FIXE, REGEX_PREPAID_FIXE, UserConsommation } from 'src/shared';
+import {
+  REGEX_POSTPAID_FIXE,
+  REGEX_PREPAID_FIXE,
+  UserConsommation
+} from 'src/shared';
 
 // differents profiles
 export const PROFILE_TYPE_PREPAID = 'PREPAID';
@@ -26,11 +30,10 @@ export const dashboardFixePrepaidOpened = new Subject<string>();
 export const dashboardFixePostpaidOpened = new Subject<string>();
 export const dashboardMobilePrepaidOpened = new Subject<string>();
 export const dashboardMobilePrepaidKireneOpened = new Subject<string>();
-export const dashboardMobilePostpaidOpened= new Subject<string>();
+export const dashboardMobilePostpaidOpened = new Subject<string>();
 export const billsMobilePostpaidOpened = new Subject<string>();
 export const billsFixePostpaidOpened = new Subject<string>();
 export const billsDetailFixePostpaidOpened = new Subject<string>();
-
 
 export interface SargalSubscriptionModel {
   status: string;
@@ -52,7 +55,6 @@ export const getConsoByCategory /* : { [k: string]: Array<UserConsommation> }  *
   });
   return consoByCategory;
 };
-
 
 export interface BillModel {
   annee: number;
@@ -87,8 +89,8 @@ export interface SubscriptionModel {
 }
 
 export interface PromoBoosterActive {
-  isPromoPassActive: boolean;
-  isPromoRechargeActive: boolean;
+  promoPass: boolean;
+  promoRecharge: boolean;
 }
 
 export function isFixPostpaid(codeFormule: string) {
@@ -113,11 +115,13 @@ export const hash53 = function(str, seed = 0) {
     h2 = Math.imul(h2 ^ ch, 1597334677);
   }
   // tslint:disable-next-line: no-bitwise
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^
+  h1 =
+    Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^
     // tslint:disable-next-line: no-bitwise
     Math.imul(h2 ^ (h2 >>> 13), 3266489909);
   // tslint:disable-next-line: no-bitwise
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
+  h2 =
+    Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
     // tslint:disable-next-line: no-bitwise
     Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   // tslint:disable-next-line: no-bitwise
