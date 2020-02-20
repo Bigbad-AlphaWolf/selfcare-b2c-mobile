@@ -142,6 +142,12 @@ const routes: Routes = [
     path: 'new-number',
     loadChildren:
       './add-new-phone-number-v2/add-new-phone-number-v2.module#AddNewPhoneNumberV2PageModule'
+  },
+  {
+    path: 'new-number',
+    loadChildren:
+      './add-new-phone-number-v2/add-new-phone-number-v2.module#AddNewPhoneNumberV2PageModule',
+    canActivate: [AuthGuard]
   }
 ];
 

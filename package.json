@@ -26,6 +26,7 @@
     "@angular/platform-browser-dynamic": "^7.2.2",
     "@angular/router": "^7.2.2",
     "@ionic-native/app-minimize": "^5.15.0",
+    "@ionic-native/app-version": "^5.21.5",
     "@ionic-native/contacts": "^5.10.0",
     "@ionic-native/core": "^5.0.0",
     "@ionic-native/deeplinks": "^5.19.1",
@@ -45,6 +46,7 @@
     "cordova-android-firebase-gradle-release": "^4.0.0",
     "cordova-open-native-settings": "^1.5.2",
     "cordova-plugin-advanced-http": "^2.2.0",
+    "cordova-plugin-app-version": "^0.1.9",
     "cordova-plugin-appminimize": "^1.0.1",
     "cordova-plugin-contacts": "^3.0.1",
     "cordova-plugin-device": "^2.0.3",
@@ -174,7 +176,8 @@
         "DEEPLINK_5_SCHEME": " ",
         "DEEPLINK_5_HOST": " "
       },
-      "cordova-plugin-whitelist": {}
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-app-version": {}
     },
     "platforms": [
       "android"
