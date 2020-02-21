@@ -617,6 +617,7 @@ export interface UserConsommation {
 export const CGU_FILE_NAME = 'cgu_orangeetmoi.pdf';
 
 export interface PurchaseModel {
+  typeAchat: string;
   amount: number;
   name: string;
   channel: string;
