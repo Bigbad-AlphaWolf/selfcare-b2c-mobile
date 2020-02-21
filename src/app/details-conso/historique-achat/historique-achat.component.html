@@ -1,99 +1,88 @@
 <div class="purchase-history-container">
   <div class="purchase-history-container-filter">
+    <div class="purchase-content-filter sargal-content-filter">
+      <button class="filter-container" [ngClass]="{ selected: menuTrigType.menuOpen }" mat-button
+          #menuTrigType="matMenuTrigger" [matMenuTriggerFor]="categoriesAchats">
+          <div [ngClass]="{ 'scb-text-white': menuTrigType.menuOpen }" class="btn-filter">
+              {{ typePurchaseFilterSelected ? typePurchaseFilterSelected.nom : "Type d'achat" }}
+          </div>
+          <div class="arrows">
+              <mat-icon *ngIf="!menuTrigType.menuOpen" class="arrow-down">keyboard_arrow_down</mat-icon>
+              <mat-icon *ngIf="menuTrigType.menuOpen" class="arrow-up">keyboard_arrow_up</mat-icon>
+          </div>
+      </button>
 
+      <mat-menu [class]="'customize-mat-menu'" [backdropClass]="'cdk-overlay-pane-custom'"
+          #categoriesAchats="matMenu" class="leftSargal">
+          <ng-template matMenuContent>
+              <ng-container *ngFor="let categorie of listTypePurchaseFilter ">
+                  <button (click)="getTransactionByType(categorie)" class="categorie-label" mat-menu-item>
+                      {{ categorie.nom }}
+                  </button>
+              </ng-container>
+          </ng-template>
+      </mat-menu>
   </div>
+  <div class="purchase-content-filter sargal-content-filter">
+    <button class="filter-container" [ngClass]="{ selected: menuTrigDate.menuOpen }" mat-button
+        #menuTrigDate="matMenuTrigger" [matMenuTriggerFor]="dateInterval">
+        <div [ngClass]="{ 'scb-text-white': menuTrigDate.menuOpen }" class="btn-filter">
+            {{ dateFilterSelected ? dateFilterSelected + ' derniers jours' : 'Date' }}
+        </div>
+        <div class="arrows">
+            <mat-icon *ngIf="!menuTrigDate.menuOpen" class="arrow-down">keyboard_arrow_down</mat-icon>
+            <mat-icon *ngIf="menuTrigDate.menuOpen" class="arrow-up">keyboard_arrow_up</mat-icon>
+        </div>
+    </button>
+
+    <mat-menu [class]="'customize-mat-menu'" [backdropClass]="'cdk-overlay-pane-custom'"
+        #dateInterval="matMenu" class="leftSargal">
+        <ng-template matMenuContent>
+            <ng-container *ngFor="let day of listDateFilter">
+                <button (click)="getTransactionByDay(day)" class="categorie-label" mat-menu-item>
+                    {{ day + ' derniers jours' }}
+                </button>
+            </ng-container>
+        </ng-template>
+    </mat-menu>
+</div>
+
+ </div>
   <div class="purchase-history-container-body">
-    <div class="list-purchase">
-       <div class="list-purchase-item">
-         <div class="left-block">
-           <span class="purchase-category">
-               Achat de pass internet
-           </span>
-           <span class="purchase-channel">
-             Orange & Moi
-           </span>
+    <ng-container *ngIf="!isLoading && !hasError">
+      <div class="list-purchase" *ngIf="listTransactions.length">
+         <div *ngFor="let transaction of listTransactions" class="list-purchase-item">
+           <div class="left-block">
+             <span class="purchase-category">
+                 {{transaction.name}}
+             </span>
+             <span class="purchase-channel">
+               {{transaction.channel}}
+             </span>
+           </div>
+           <div class="right-block">
+              <span class="purchase-amount scb-text-orange">
+                  {{transaction.amount}} FCFA
+              </span>
+              <span class="purchase-date">
+                 {{transaction.operationDate | date: 'short'}}
+              </span>
+           </div>
          </div>
-         <div class="right-block">
-            <span class="purchase-amount scb-text-orange">
-                - 5 000 FCFA
-            </span>
-            <span class="purchase-date">
-               Samedi 10 Février 2020 à 10:30
-            </span>
-         </div>
-       </div>
-       <div class="list-purchase-item">
-         <div class="left-block">
-           <span class="purchase-category">
-               Achat de pass internet
-           </span>
-           <span class="purchase-channel">
-             Orange & Moi
-           </span>
-         </div>
-         <div class="right-block">
-            <span class="purchase-amount scb-text-orange">
-                - 5 000 FCFA
-            </span>
-            <span class="purchase-date">
-               Samedi 10 Février 2020 à 10:30
-            </span>
-         </div>
-       </div>
-       <div class="list-purchase-item">
-         <div class="left-block">
-           <span class="purchase-category">
-               Achat de pass internet
-           </span>
-           <span class="purchase-channel">
-             Orange & Moi
-           </span>
-         </div>
-         <div class="right-block">
-            <span class="purchase-amount scb-text-orange">
-                - 5 000 FCFA
-            </span>
-            <span class="purchase-date">
-               Samedi 10 Février 2020 à 10:30
-            </span>
-         </div>
-       </div>
-       <div class="list-purchase-item">
-         <div class="left-block">
-           <span class="purchase-category">
-               Achat de pass internet
-           </span>
-           <span class="purchase-channel">
-             Orange & Moi
-           </span>
-         </div>
-         <div class="right-block">
-            <span class="purchase-amount scb-text-orange">
-                - 5 000 FCFA
-            </span>
-            <span class="purchase-date">
-               Samedi 10 Février 2020 à 10:30
-            </span>
-         </div>
-       </div>
-       <div class="list-purchase-item">
-         <div class="left-block">
-           <span class="purchase-category">
-               Achat de pass internet
-           </span>
-           <span class="purchase-channel">
-             Orange & Moi
-           </span>
-         </div>
-         <div class="right-block">
-            <span class="purchase-amount scb-text-orange">
-                - 5 000 FCFA
-            </span>
-            <span class="purchase-date">
-               Samedi 10 Février 2020 à 10:30
-            </span>
-         </div>
-       </div>
-    </div>
+      </div>
+      <div class="no-transactions" *ngIf="!listTransactions.length">
+        Aucune transaction trouvée dans cette période
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!isLoading && hasError">
+        <div (click)="getTransactionByDay(dateFilterSelected)" class="error">
+            Veuillez cliquer ici pour recharger les infos;
+        </div>
+    </ng-container>
+    <ng-container *ngIf="isLoading && !hasError">
+        <div class="spinner">
+            <mat-spinner mode="indeterminate" [diameter]="40"></mat-spinner>
+        </div>
+    </ng-container>
   </div>
 </div>
