@@ -66,7 +66,7 @@ export class BuyPassInternetPage implements OnInit {
     this.pageAccessUrl = this.router.url;
   }
 
-  ionViewDidEnter() {
+  ionViewWillEnter() {
     this.currentUserNumber = this.dashServ.getCurrentPhoneNumber();
     this.checkUserIsPostPaid();
   }
