@@ -34,7 +34,8 @@ export class DetailsConsoPage implements OnInit {
   selectedDate = this.dateFilterItems[0];
   histPurchaseLoading: boolean;
   histPurchaseHasError: boolean;
-  listPurchase: PurchaseModel[] = [];
+  listPurchaseForDays: PurchaseModel[] = [];
+  listPurchaseForDayByType: PurchaseModel[] = [];
   purchaseDateFilterSelected = 2;
   purchaseTypeFilterSelected: {nom: string, value: string} = {nom: "Tous", value: undefined};
   userPhoneNumber: string;
@@ -73,24 +74,32 @@ export class DetailsConsoPage implements OnInit {
   }
 
   getTransactionsByDay(day: number, filterType?: {nom: string, value: string}) {
-    this.histPurchaseLoading = true;
-    this.histPurchaseHasError = false;
     this.purchaseDateFilterSelected = day;
     if(filterType){
-      this.purchaseTypeFilterSelected = filterType;
+      this.getTransactionByDaysByType(filterType);
+    }else{
+      this.histPurchaseLoading = true;
+      this.histPurchaseHasError = false;
+      this.purchaseServ.getAllTransactionByDay(this.userPhoneNumber, day).subscribe(
+          (res: PurchaseModel[]) => {
+              this.histPurchaseLoading = false;
+              this.histPurchaseHasError = false;
+              this.listPurchaseForDays = res;
+              this.listPurchaseForDayByType = this.purchaseServ.filterPurchaseByType(this.listPurchaseForDays, this.purchaseTypeFilterSelected);
+            },
+          (err: any) => {
+              this.histPurchaseLoading = false;
+              this.histPurchaseHasError = true;
+          }
+      );
+      
     }
-    this.purchaseServ.getAllTransactionByDay(this.userPhoneNumber, day, this.purchaseTypeFilterSelected.value).subscribe(
-        (res: PurchaseModel[]) => {
-            this.histPurchaseLoading = false;
-            this.histPurchaseHasError = false;
-            this.listPurchase = res;
-        },
-        (err: any) => {
-            this.histPurchaseLoading = false;
-            this.histPurchaseHasError = true;
-        }
-    );
-}
+
+  }
+      getTransactionByDaysByType(filter: {nom: string, value: string}){
+        this.purchaseTypeFilterSelected = filter;
+        this.listPurchaseForDayByType = this.purchaseServ.filterPurchaseByType(this.listPurchaseForDays, filter);
+      }
 
   getUserConsoInfos() {
     this.detailsLoading = true;
