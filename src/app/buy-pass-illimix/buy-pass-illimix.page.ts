@@ -179,6 +179,7 @@ export class BuyPassIllimixPage implements OnInit {
             followDetails
           );
         } else {
+          this.failed = false;
           const followDetails = {
             option_name: this.passIllimixChoosed.pass.nom,
             amount: this.passIllimixChoosed.pass.tarif,

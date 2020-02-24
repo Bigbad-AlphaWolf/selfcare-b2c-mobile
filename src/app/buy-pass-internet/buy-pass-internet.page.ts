@@ -151,7 +151,7 @@ export class BuyPassInternetPage implements OnInit {
     this.destinataire = destNumberInfos.destinataire;
     this.destCodeFormule = destNumberInfos.code;
     this.goToNextStep();
-    if (destNumberInfos !== this.currentUserNumber) {
+    if (destNumberInfos.destinataire !== this.currentUserNumber) {
       this.followAnalyticsService.registerEventFollow(
         'Pass_Internet_ChoixDestinataire',
         'event',
@@ -283,6 +283,7 @@ export class BuyPassInternetPage implements OnInit {
         followDetails
       );
     } else {
+      this.failed = false;
       const followDetails = {
         option_name: this.purchasePass.pass.nom,
         amount: this.purchasePass.pass.tarif,
