@@ -11,7 +11,8 @@
     "test:ci": "ng test --no-watch --browsers=ChromeHeadless",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "fixlint": "ng lint --fix"
+    "fixlint": "ng lint --fix",
+    "ci-e2e": "protractor --capabilities.chromeOptions.args=--headless --capabilities.chromeOptions.args=--no-sandbox protractor.conf.js"
   },
   "private": true,
   "dependencies": {
@@ -96,7 +97,7 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "protractor": "~5.4.0",
+    "protractor": "~5.4.3",
     "ts-node": "~8.3.0",
     "tslint": "~5.17.0",
     "typescript": "~3.1.6"
