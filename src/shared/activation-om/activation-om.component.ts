@@ -41,8 +41,8 @@ export class ActivationOmComponent implements OnInit {
   @Input() transferWithCodePayload: {
     msisdn2: string;
     amount: number;
-    nom: string;
-    prenom: string;
+    lastName: string;
+    firstName: string;
   };
   @Output() resultEmit = new EventEmitter();
   checkingToken = true;
@@ -655,8 +655,8 @@ export class ActivationOmComponent implements OnInit {
     msisdn2: string;
     pin: any;
     amount: number;
-    nom: string;
-    prenom: string;
+    lastName: string;
+    firstName: string;
   }) {
     this.loading = true;
     const omUser = this.omService.GetOrangeMoneyUser(this.phoneNumber);
@@ -672,8 +672,8 @@ export class ActivationOmComponent implements OnInit {
       app_conf_version: 'v1.0',
       user_type: 'user',
       service_version: OM_SERVICE_VERSION,
-      nom: params.nom,
-      prenom: params.prenom
+      nom: params.lastName,
+      prenom: params.firstName
     };
     this.omService.transferOMWithCode(transferOMPayload).subscribe(
       (res: any) => {

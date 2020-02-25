@@ -27,7 +27,7 @@ const loginClientEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/
 const UserAccessInfoEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/user-access-infos`;
 const pinpadEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/get-pin-pad`;
 const checkOMAccountEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/check-client`;
-const getFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api`;
+const getFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/fees`;
 // const getBalanceEndpoint = `${OM_URL}/api/v1/balance`;
 
 // api/purchases/balance
