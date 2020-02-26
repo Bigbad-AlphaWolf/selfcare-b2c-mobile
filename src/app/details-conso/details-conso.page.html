@@ -14,80 +14,86 @@
     <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
   </div>
 
-  <div
-    class="details-historique-block"
-    *ngIf="currentProfil && currentProfil !== 'POSTPAID'"
-  >
-    <div
-      class="details-onglet-container"
-      [ngClass]="{
-        'details-onglet-container-selected ': details === true
-      }"
-    >
-      <span
-        [ngClass]="{
-          'not-selected': details === false
-        }"
-        (click)="detailsSelected()"
-        >Details</span
-      >
-      <div class="spinner" *ngIf="detailsLoading">
-        <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
-      </div>
-    </div>
-    <div
-      class="historique-onglet-container"
-      [ngClass]="{
-        'historique-onglet-container-selected': historique == true
-      }"
-    >
-      <span
-        [ngClass]="{
-          'not-selected': historique == false
-        }"
-        (click)="historiqueSelected()"
-        >Historique</span
-      >
-      <div class="spinner" *ngIf="histLoading">
-        <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="details-historique-block-postpaid"
-    *ngIf="currentProfil && currentProfil === 'POSTPAID'"
-  >
-    <div class="historique-onglet-postpaid">
-      <span (click)="historiqueSelected()">Historique</span>
-      <div class="spinner" *ngIf="histLoading">
-        <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
-      </div>
-    </div>
-  </div>
-
-  <!-- Historique -->
-
-  <ng-template [ngIf]="historique && currentProfil">
-    <app-historique-conso
-      [chargeTypes]="chargeTypes"
-      [dateFilterItems]="dateFilterItems"
-      [consoshistorique]="consoshistorique"
-      [error]="error"
-      [dataLoaded]="!histLoading"
-      [notdata]="notdata"
-      (getConsoByDay)="getConsoByDay($event)"
-      (selectedFilterButton)="selectedFilterButton($event)"
-      [chargeType]="chargeType"
-      [selectedDate]="selectedDate"
-    >
-    </app-historique-conso>
-  </ng-template>
-
-  <!-- Details -->
-  <ng-template
-    [ngIf]="details && currentProfil && currentProfil !== 'POSTPAID'"
-  >
-    <app-suivi-conso [consoDetails]="consoDetails"></app-suivi-conso>
-  </ng-template>
+  <div class="suivi-conso-page-body">
+    <mat-tab-group #consoTab class="pass-internet" mat-stretch-tabs>
+        <mat-tab #conso *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
+          <ng-template mat-tab-label>
+                <div class="conso-tab-category" [ngClass]="{  'selected' :conso.isActive} ">
+                    <span class="scb-text-gray">Suivi conso</span>
+                    <div class="spinner" *ngIf="detailsLoading">
+                        <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
+                    </div>
+                </div>
+          </ng-template>
+          <ng-container>
+            <app-suivi-conso [isLoading]="detailsLoading" (reloadConso)="getUserConsoInfos($event)" [consoDetails]="consoDetails"></app-suivi-conso>
+        </ng-container>
+        </mat-tab>
+        <mat-tab #historik>
+          <ng-template mat-tab-label>
+                <div class="conso-tab-category" [ngClass]="{ 'selected': historik.isActive} ">
+                    <span class="scb-text-gray">Historique</span>
+                    <div class="spinner" *ngIf="histLoading">
+                        <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
+                    </div>
+                </div>
+          </ng-template>
+          <ng-container>
+            <app-historique-conso
+                [chargeTypes]="chargeTypes"
+                [dateFilterItems]="dateFilterItems"
+                [consoshistorique]="consoshistorique"
+                [error]="error"
+                [dataLoaded]="!histLoading"
+                [notdata]="notdata"
+                (getConsoByDay)="getConsoByDay($event)"
+                (selectedFilterButton)="selectedFilterButton($event)"
+                [chargeType]="chargeType"
+                [selectedDate]="selectedDate"
+            >
+            </app-historique-conso>
+        </ng-container>
+        </mat-tab>
+        <mat-tab *ngIf="currentProfil && currentProfil === 'POSTPAID'">
+          <ng-template mat-tab-label>
+            <div class="details-historique-block-postpaid" >
+                <div class="historique-onglet-postpaid">
+                    <span (click)="historiqueSelected()">Historique</span>
+                    <div class="spinner" *ngIf="histLoading">
+                        <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
+                    </div>
+                </div>
+            </div>
+          </ng-template>
+          <ng-container>
+            <app-historique-conso
+                [chargeTypes]="chargeTypes"
+                [dateFilterItems]="dateFilterItems"
+                [consoshistorique]="consoshistorique"
+                [error]="error"
+                [dataLoaded]="!histLoading"
+                [notdata]="notdata"
+                (getConsoByDay)="getConsoByDay($event)"
+                (selectedFilterButton)="selectedFilterButton($event)"
+                [chargeType]="chargeType"
+                [selectedDate]="selectedDate"
+            >
+            </app-historique-conso>
+        </ng-container>
+        </mat-tab>
+        <mat-tab #historikAchat  *ngIf="currentProfil && currentProfil === 'PREPAID'">
+            <ng-template mat-tab-label>
+                    <div class="conso-tab-category" [ngClass]="{ 'selected': historikAchat.isActive} ">
+                        <span class="scb-text-gray">Historique achats</span>
+                        <div class="spinner" *ngIf="histPurchaseLoading">
+                            <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
+                        </div>
+                    </div>
+            </ng-template>
+            <ng-container>
+                <app-historique-achat  [listTransactions]="listPurchaseForDayByType" [isLoading]="histPurchaseLoading" [hasError]="histPurchaseHasError" (getTransactionsByDay)="getTransactionsByDay($event)" (getTransactionsByFilter) ="getTransactionsByDay(purchaseDateFilterSelected,$event)"></app-historique-achat>
+            </ng-container>
+        </mat-tab>
+      </mat-tab-group>
+</div>
 </div>

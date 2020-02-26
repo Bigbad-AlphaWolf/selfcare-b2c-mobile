@@ -2,7 +2,8 @@ import { Subject } from 'rxjs';
 import {
   REGEX_POSTPAID_FIXE,
   REGEX_PREPAID_FIXE,
-  UserConsommation
+  UserConsommation,
+  CODE_KIRENE_Formule
 } from 'src/shared';
 
 // differents profiles
@@ -99,6 +100,54 @@ export function isFixPostpaid(codeFormule: string) {
 
 export function isFixPrepaid(codeFormule: string) {
   return REGEX_PREPAID_FIXE.test(codeFormule);
+}
+
+export const CODE_FORMULE_FIX_PREPAID = '9419';
+
+export interface ModelOfSouscription {
+  profil?: string;
+  formule?: string;
+  codeFormule?: string;
+}
+
+export function isPrepaidOrHybrid(souscription: ModelOfSouscription): boolean {
+  return (
+    (souscription.profil === PROFILE_TYPE_PREPAID ||
+      souscription.profil === PROFILE_TYPE_HYBRID ||
+      souscription.profil === PROFILE_TYPE_HYBRID_1 ||
+      souscription.profil === PROFILE_TYPE_HYBRID_2) &&
+    souscription.codeFormule !== CODE_KIRENE_Formule &&
+    souscription.formule !== HOME_PREPAID_FORMULE
+  );
+}
+export function isPostpaidMobile(souscription: ModelOfSouscription): boolean {
+  return (
+    souscription.profil === PROFILE_TYPE_POSTPAID &&
+    !REGEX_POSTPAID_FIXE.test(souscription.formule) &&
+    !REGEX_PREPAID_FIXE.test(souscription.formule)
+  );
+}
+
+export function isKirene(souscription: ModelOfSouscription): boolean {
+  return (
+    souscription.profil === PROFILE_TYPE_PREPAID &&
+    souscription.codeFormule === CODE_KIRENE_Formule
+  );
+}
+
+export function isPostpaidFix(souscription: ModelOfSouscription): boolean {
+  return (
+    souscription.profil === PROFILE_TYPE_POSTPAID &&
+    REGEX_POSTPAID_FIXE.test(souscription.formule)
+  );
+}
+
+export function isPrepaidFix(souscription: ModelOfSouscription): boolean {
+  return (
+    souscription.profil === PROFILE_TYPE_PREPAID &&
+    (REGEX_PREPAID_FIXE.test(souscription.formule) ||
+      souscription.codeFormule === CODE_FORMULE_FIX_PREPAID)
+  );
 }
 
 // tslint:disable-next-line: only-arrow-functions
