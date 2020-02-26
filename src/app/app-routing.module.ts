@@ -144,10 +144,34 @@ const routes: Routes = [
       './add-new-phone-number-v2/add-new-phone-number-v2.module#AddNewPhoneNumberV2PageModule'
   },
   {
-    path: 'new-number',
+    path: 'dashboard-home-prepaid',
     loadChildren:
-      './add-new-phone-number-v2/add-new-phone-number-v2.module#AddNewPhoneNumberV2PageModule',
-    canActivate: [AuthGuard]
+      './dashboard-home-prepaid/dashboard-home-prepaid.module#DashboardHomePrepaidPageModule'
+  },
+  {
+    path: 'dashboard-postpaid',
+    loadChildren:
+      './dashboard-postpaid/dashboard-postpaid.module#DashboardPostpaidPageModule'
+  },
+  {
+    path: 'dashboard-kirene',
+    loadChildren:
+      './dashboard-kirene/dashboard-kirene.module#DashboardKirenePageModule'
+  },
+  {
+    path: 'dashboard-postpaid-fixe',
+    loadChildren:
+      './dashboard-postpaid-fixe/dashboard-postpaid-fixe.module#DashboardPostpaidFixePageModule'
+  },
+  {
+    path: 'dashboard-prepaid-hybrid',
+    loadChildren:
+      './dashboard-prepaid-hybrid/dashboard-prepaid-hybrid.module#DashboardPrepaidHybridPageModule'
+  },
+  {
+    path: 'my-offer-plans',
+    loadChildren:
+      './my-offer-plans/my-offer-plans.module#MyOfferPlansPageModule'
   }
 ];
 
