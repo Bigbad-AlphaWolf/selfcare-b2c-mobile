@@ -8,6 +8,8 @@ import { LoginPage } from './login/login.page';
 import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
 import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
+import { FirebaseX } from '@ionic-native/firebase-x/ngx';
+
 
 declare var FollowAnalytics: any;
 
@@ -21,7 +23,8 @@ export class AppComponent {
     private statusBar: StatusBar,
     private splash: SplashScreen,
     private router: Router,
-    private deeplinks: Deeplinks
+    private deeplinks: Deeplinks,
+    private firebaseX: FirebaseX
       ) {
     this.initializeApp();
   }
@@ -49,6 +52,21 @@ export class AppComponent {
         }
       }
       this.checkDeeplinks();
+
+      this.firebaseX.getToken().then(token => console.log('PUSH_TOKEN: GET_TOKEN: ', token))
+.catch(err => console.log(err));
+
+      if (this.platform.is('ios')) {
+    this.firebaseX.grantPermission().then(hasPermission => console.log(hasPermission ? 'granted' : 'denied'));
+
+    this.firebaseX.onApnsTokenReceived().subscribe(token => console.log('PUSH_TOKEN: IOS_TOKEN: ' + token));
+}
+
+      this.firebaseX.onMessageReceived().subscribe(message => console.log(message));
+
+      this.firebaseX.onTokenRefresh().subscribe(fcmToken => {
+        console.log(fcmToken);
+      });
     });
   }
 
