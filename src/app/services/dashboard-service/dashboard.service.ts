@@ -133,9 +133,40 @@ export class DashboardService {
     return this.http.get(`${userConsoEndpoint}/${this.msisdn}`);
   }
 
+  getCurrentDate() {
+    const date = new Date();
+    const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
+      '0' +
+      (date.getMonth() + 1)
+    ).slice(-2)}/${date.getFullYear()}`;
+    const lastDateTime =
+      `${date.getHours()}h` +
+      (date.getMinutes() < 10 ? '0' : '') +
+      date.getMinutes();
+    return `${lastDate} à ${lastDateTime}`;
+  }
+
   getPostpaidUserConsoInfos() {
     this.msisdn = this.getCurrentPhoneNumber();
-    return this.http.get(`${postpaidUserConsoEndpoint}/${this.msisdn}`);
+    return this.http.get(`${postpaidUserConsoEndpoint}/${this.msisdn}`).pipe(
+      map(
+        (res: any) => {
+          if (res && res.length) {
+            const lastUpdateConsoDate = this.getCurrentDate();
+            ls.set(`lastConso_${this.msisdn}`, res);
+            ls.set(`lastUpdateConsoDate_${this.msisdn}`, lastUpdateConsoDate);
+            return res;
+          } else {
+            const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
+            return lastLoadedConso;
+          }
+        },
+        error => {
+          const lastLoadedConso = ls.get('lastConso');
+          return lastLoadedConso;
+        }
+      )
+    );
   }
 
   getPostpaidConsoHistory(day) {
@@ -255,9 +286,27 @@ export class DashboardService {
       const params = consoCodes.map(code => `code=${code}`).join('&');
       queryParams = `?${params}`;
     }
-    return this.http.get(
-      `${userConsoByCodeEndpoint}/${this.msisdn}${queryParams}`
-    );
+    return this.http
+      .get(`${userConsoByCodeEndpoint}/${this.msisdn}${queryParams}`)
+      .pipe(
+        map(
+          (res: any) => {
+            if (res && res.length) {
+              const lastUpdateConsoDate = this.getCurrentDate();
+              ls.set(`lastConso_${this.msisdn}`, res);
+              ls.set(`lastUpdateConsoDate_${this.msisdn}`, lastUpdateConsoDate);
+              return res;
+            } else {
+              const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
+              return lastLoadedConso;
+            }
+          },
+          error => {
+            const lastLoadedConso = ls.get('lastConso');
+            return lastLoadedConso;
+          }
+        )
+      );
   }
 
   getUserConso(day) {
