@@ -263,7 +263,7 @@ export class TransferRecipientAmountComponent implements OnInit {
       hasOMAccount: false
     };
     this.omService
-      .checkUserHasAccount(this.recipientInfos.phoneNumber)
+      .checkUserHasAccount(this.omPhoneNumber, this.recipientInfos.phoneNumber)
       .subscribe(
         (res: any) => {
           this.checkingOMAccount = false;
