@@ -8,6 +8,8 @@ import { LoginPage } from './login/login.page';
 import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
 import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
+import { FirebaseX } from '@ionic-native/firebase-x/ngx';
+
 
 declare var FollowAnalytics: any;
 
@@ -20,22 +22,20 @@ export class AppComponent {
     private platform: Platform,
     private statusBar: StatusBar,
     private splash: SplashScreen,
-    private appMinimize: AppMinimize,
     private router: Router,
-    private deeplinks: Deeplinks
+    private deeplinks: Deeplinks,
+    private firebaseX: FirebaseX
       ) {
     this.initializeApp();
-    // Initialize BackButton Eevent.
-    this.platform.backButton.subscribe(() => {
-      this.appMinimize.minimize();
-    });
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.overlaysWebView(false);
       // #AARRGGBB where AA is an alpha value RR is red, GG is green and BB is blue
-      this.statusBar.backgroundColorByHexString('#FFFFFF');
+      if (this.platform.is('android')) {
+        this.statusBar.backgroundColorByHexString('#FFFFFF');
+      }
       this.statusBar.styleDefault();
 
       this.splash.hide();
@@ -52,6 +52,21 @@ export class AppComponent {
         }
       }
       this.checkDeeplinks();
+
+      this.firebaseX.getToken().then(token => console.log('PUSH_TOKEN: GET_TOKEN: ', token))
+.catch(err => console.log(err));
+
+      if (this.platform.is('ios')) {
+    this.firebaseX.grantPermission().then(hasPermission => console.log(hasPermission ? 'granted' : 'denied'));
+
+    this.firebaseX.onApnsTokenReceived().subscribe(token => console.log('PUSH_TOKEN: IOS_TOKEN: ' + token));
+}
+
+      this.firebaseX.onMessageReceived().subscribe(message => console.log(message));
+
+      this.firebaseX.onTokenRefresh().subscribe(fcmToken => {
+        console.log(fcmToken);
+      });
     });
   }
 
@@ -59,15 +74,18 @@ export class AppComponent {
     this.deeplinks
       .route({
         '/buy-pass-internet': BuyPassInternetPage,
+        '/buy-pass-internet/:id': BuyPassInternetPage,
         '/assistance': AssistancePage
       })
       .subscribe(
         matched => {
           this.router.navigate([matched.$link.path]);
+          // console.log('deeplink matched');
+          // console.log(matched);
         },
         notMatched => {
-          console.log(notMatched);
-          console.log('deeplink not matched');
+          // console.log(notMatched);
+          // console.log('deeplink not matched');
         }
       );
   }

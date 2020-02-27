@@ -48,7 +48,6 @@ export class BillsPage implements OnInit {
 
   ionViewWillEnter() {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
-    console.log('page opening for ' + this.currentNumber);
     this.authService.getSubscription(this.currentNumber).subscribe(
       (res: any) => {
         this.clientId = res.clientCode;

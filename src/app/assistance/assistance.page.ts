@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AssistanceService } from '../services/assistance.service';
 import { ItemBesoinAide } from 'src/shared';
@@ -13,10 +13,19 @@ export class AssistancePage implements OnInit {
   isLoaded = false;
   constructor(
     private assistService: AssistanceService,
-    private dashbServ: DashboardService
+    private dashbServ: DashboardService,
+    private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
+    // Google Analytics Events
+    // this.gtag.event('click_button', {
+    //     event_category: 'Dashboard',
+    //     event_action: 'click_button',
+    //     event_label: 'Besoin d’aides?'
+    // });
+  }
+  ionViewWillEnter() {
     const userPhoneNumber = this.dashbServ.getCurrentPhoneNumber();
     this.assistService.setUserNumber(userPhoneNumber);
     this.assistService.setListItemBesoinAide();
@@ -27,12 +36,7 @@ export class AssistancePage implements OnInit {
         if (this.isLoaded) {
           this.listQuestions = this.assistService.getListItemBesoinAide();
         }
+        this.ref.detectChanges();
       });
-    // Google Analytics Events
-    // this.gtag.event('click_button', {
-    //     event_category: 'Dashboard',
-    //     event_action: 'click_button',
-    //     event_label: 'Besoin d’aides?'
-    // });
   }
 }

@@ -56,8 +56,8 @@ const transferCreditEndpoint = `${SERVER_API_URL}/${SEDDO_SERVICE}/api/seddo/tra
 const transferbonusEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/transfert-bonus`;
 
 // buy pass by credit endpoints
-const buyPassInternetByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/internet`;
-const buyPassIllimixByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/illimix`;
+const buyPassInternetByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/v1/internet`;
+const buyPassIllimixByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/v1/illimix`;
 const listPassIllimixEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-illimix-by-formule`;
 const listPassInternetEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-internets-by-formule`;
 const listFormulesEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/formule-mobiles`;
@@ -92,12 +92,12 @@ export class DashboardService {
   screenWatcher: Subscription;
   isMobile = true;
   constructor(
-    rendererFactory: RendererFactory2,
-    @Inject(DOCUMENT) private _document,
+    // rendererFactory: RendererFactory2,
+    // @Inject(DOCUMENT) private _document,
     private http: HttpClient,
     private authService: AuthenticationService
   ) {
-    this.renderer = rendererFactory.createRenderer(null, null);
+    // this.renderer = rendererFactory.createRenderer(null, null);
     authService.currentPhoneNumberSetSubject.subscribe(value => {
       if (value) {
         this.user = this.authService.getLocalUserInfos();
@@ -211,35 +211,35 @@ export class DashboardService {
     return this.authService.getUserMainPhoneNumber();
   }
 
-  addDimeloScript() {
-    // Dimelo user information
-    const userInfos = ls.get('user');
-    const fullName = userInfos.firstName + ' ' + userInfos.lastName;
-    const s = this.renderer.createElement('script');
-    s.type = 'text/javascript';
-    s.text =
-      'var _chatq = _chatq || [];' +
-      '_chatq.push(["_setIdentity", {' +
-      '"screenname": "' +
-      fullName +
-      '",' + // full name
-      '"avatar_url": "https://orangeetmoi.orange.sn/content/icons/icon-72x72.png",' + // ibou image
-      '"firstname": "' +
-      userInfos.firstName +
-      '",' +
-      '"lastname": "' +
-      userInfos.lastName +
-      '",' +
-      '"email": "",' +
-      '"uuid": "' +
-      userInfos.numero +
-      '",' +
-      '"extra_values": {' +
-      '"customer_id": "' +
-      userInfos.numero +
-      '"}}]);';
-    this.renderer.appendChild(this._document.body, s);
-  }
+  // addDimeloScript() {
+  //   // Dimelo user information
+  //   const userInfos = ls.get('user');
+  //   const fullName = userInfos.firstName + ' ' + userInfos.lastName;
+  //   const s = this.renderer.createElement('script');
+  //   s.type = 'text/javascript';
+  //   s.text =
+  //     'var _chatq = _chatq || [];' +
+  //     '_chatq.push(["_setIdentity", {' +
+  //     '"screenname": "' +
+  //     fullName +
+  //     '",' + // full name
+  //     '"avatar_url": "https://orangeetmoi.orange.sn/content/icons/icon-72x72.png",' + // ibou image
+  //     '"firstname": "' +
+  //     userInfos.firstName +
+  //     '",' +
+  //     '"lastname": "' +
+  //     userInfos.lastName +
+  //     '",' +
+  //     '"email": "",' +
+  //     '"uuid": "' +
+  //     userInfos.numero +
+  //     '",' +
+  //     '"extra_values": {' +
+  //     '"customer_id": "' +
+  //     userInfos.numero +
+  //     '"}}]);';
+  //   this.renderer.appendChild(this._document.body, s);
+  // }
 
   getAccountInfo(userLogin: string) {
     return this.http

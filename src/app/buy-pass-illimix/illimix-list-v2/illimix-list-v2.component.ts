@@ -20,6 +20,7 @@ export class IllimixListV2Component implements OnInit {
   isLoaded: boolean;
   error;
   noPass;
+  showAlertAvantages = true;
 
   constructor(
     private dashbServ: DashboardService,
@@ -70,4 +71,7 @@ export class IllimixListV2Component implements OnInit {
     }
     this.passToStepValidation.emit(data);
   }
+  hideAlert() {
+    this.showAlertAvantages = false;
+}
 }

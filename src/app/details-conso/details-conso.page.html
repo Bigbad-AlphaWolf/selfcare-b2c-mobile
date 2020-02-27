@@ -29,7 +29,7 @@
             <app-suivi-conso [isLoading]="detailsLoading" (reloadConso)="getUserConsoInfos($event)" [consoDetails]="consoDetails"></app-suivi-conso>
         </ng-container>
         </mat-tab>
-        <mat-tab #historik>
+        <mat-tab *ngIf="currentProfil && currentProfil !== 'POSTPAID'" #historik>
           <ng-template mat-tab-label>
                 <div class="conso-tab-category" [ngClass]="{ 'selected': historik.isActive} ">
                     <span class="scb-text-gray">Historique</span>
@@ -81,7 +81,7 @@
             </app-historique-conso>
         </ng-container>
         </mat-tab>
-        <mat-tab #historikAchat  *ngIf="currentProfil && currentProfil === 'PREPAID'">
+        <mat-tab #historikAchat  *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
             <ng-template mat-tab-label>
                     <div class="conso-tab-category" [ngClass]="{ 'selected': historikAchat.isActive} ">
                         <span class="scb-text-gray">Historique achats</span>

@@ -10,6 +10,7 @@ import { downloadEndpoint } from '../services/dashboard-service/dashboard.servic
 import { CGU_FILE_NAME } from 'src/shared';
 import * as SecureLS from 'secure-ls';
 import { Platform } from '@ionic/angular';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -18,15 +19,24 @@ const ls = new SecureLS({ encodingType: 'aes' });
   styleUrls: ['./apropos.page.scss']
 })
 export class AproposPage implements OnInit {
+  AppVersionNumber: string;
   constructor(
     private router: Router,
     private file: File,
     private fileOpener: FileOpener,
     private transfer: FileTransfer,
-    private platform: Platform
-  ) {}
+    private platform: Platform,
+    private appVersion: AppVersion
+  ) {
+    this.appVersion.getVersionNumber().then(value => {
+      this.AppVersionNumber = value;
+    }).catch(error => {
+      console.log(error);
+    });
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   presentAlert() {
     this.router.navigate(['/infolegales']);

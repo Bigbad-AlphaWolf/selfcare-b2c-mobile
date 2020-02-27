@@ -48,7 +48,12 @@ export class BuyCreditPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    
+  }
+
+  ionViewWillEnter(){
     this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
+    this.step = 0;
     this.authService
       .getSubscription(this.currentNumber)
       .subscribe((souscription: any) => {
