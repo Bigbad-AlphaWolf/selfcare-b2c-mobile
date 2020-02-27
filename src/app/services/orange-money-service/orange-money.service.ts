@@ -27,6 +27,7 @@ const loginClientEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/
 const UserAccessInfoEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/user-access-infos`;
 const pinpadEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/get-pin-pad`;
 const checkOMAccountEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/check-client`;
+const checkOMAccountEndpoint2 = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/v2/check-client`;
 const getFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api`;
 // const getBalanceEndpoint = `${OM_URL}/api/v1/balance`;
 
@@ -87,8 +88,10 @@ export class OrangeMoneyService {
     }
   }
 
-  checkUserHasAccount(msisdn) {
-    return this.http.get(`${checkOMAccountEndpoint}/${msisdn}`);
+  checkUserHasAccount(msisdn1: string, msisdn2: string) {
+    return this.http.get(
+      `${checkOMAccountEndpoint2}?principal=${msisdn1}&client=${msisdn2}`
+    );
   }
 
   updateAccount(phoneNumber: any, accountInfos: OmUserInfo) {

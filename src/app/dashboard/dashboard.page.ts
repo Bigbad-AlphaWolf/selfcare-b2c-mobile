@@ -39,9 +39,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   constructor(
     private dashboardServ: DashboardService,
     private authServ: AuthenticationService,
-    private assistanceService: AssistanceService,
     private router: Router,
-    private shareDialog: MatDialog,
     private followAnalyticsService: FollowAnalyticsService
   ) {}
 
