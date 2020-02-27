@@ -1,0 +1,33 @@
+@import 'src/app/app';
+
+.dashboard-top-block {
+  background-color: $white;
+  position: relative;
+  height: 50px;
+  width: 100%;
+  padding: 17px percentage(40px / $baseWidthMobile2) 15px
+    percentage(40px / $baseWidthMobile2);
+  text-align: center;
+  &-menu {
+    position: absolute;
+    left: 10px;
+    top: 14px;
+  }
+
+  &-user {
+    .user-hello {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 18px;
+
+      .user-name {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      }
+    }
+  }
+
+  &-notifs {
+    position: absolute;
+    right: 10px;
+    top: 16px;
+  }
+}

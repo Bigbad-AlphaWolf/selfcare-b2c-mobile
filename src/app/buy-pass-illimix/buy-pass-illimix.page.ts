@@ -38,12 +38,12 @@ export class BuyPassIllimixPage implements OnInit {
   passIllimixChosen: PassIllimModel | PromoPassIllimModel;
   buyingPass: boolean;
   isKirene: boolean;
-  currentUserNumber = this.dashServ.getCurrentPhoneNumber();
+  currentUserNumber: string;
   currentProfil: string;
   recipientFirstName: string;
   recipientLastName: string;
   destCodeFormule: string;
-
+  pageAccessUrl: string;
   constructor(
     private router: Router,
     private dashServ: DashboardService,
@@ -61,9 +61,16 @@ export class BuyPassIllimixPage implements OnInit {
    */
 
   ngOnInit() {
+  }
+
+  ionViewWillEnter(){
+    this.currentUserNumber = this.dashServ.getCurrentPhoneNumber();
+    this.step = 0;
     this.getCurrentSubscription();
     this.checkUserIsPostPaid();
+    this.pageAccessUrl = this.router.url;
   }
+
 
   checkUserIsPostPaid() {
     this.authServ
@@ -83,7 +90,7 @@ export class BuyPassIllimixPage implements OnInit {
     this.goToNextStep();
     this.destNumber = destNumberInfos.destinataire;
     this.destCodeFormule = destNumberInfos.code;
-    if (destNumberInfos !== this.currentUserNumber) {
+    if (destNumberInfos.destinataire !== this.currentUserNumber) {
       this.followAnalyticsService.registerEventFollow(
         'Pass_Internet_ChoixDestinataire',
         'event',
@@ -172,6 +179,7 @@ export class BuyPassIllimixPage implements OnInit {
             followDetails
           );
         } else {
+          this.failed = false;
           const followDetails = {
             option_name: this.passIllimixChoosed.pass.nom,
             amount: this.passIllimixChoosed.pass.tarif,
@@ -228,8 +236,7 @@ export class BuyPassIllimixPage implements OnInit {
   }
 
   getCurrentSubscription() {
-    const currentNumber = this.dashServ.getCurrentPhoneNumber();
-    this.authServ.getSubscription(currentNumber).subscribe((res: any) => {
+    this.authServ.getSubscription(this.currentUserNumber).subscribe((res: any) => {
       if (res.code === CODE_KIRENE_Formule) {
         this.title = 'Acheter un  Mixel';
         this.isKirene = true;

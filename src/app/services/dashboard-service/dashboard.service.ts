@@ -1,7 +1,22 @@
 import { Injectable, Renderer2, Inject, RendererFactory2 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Subject, Observable, interval, throwError, Subscription, of } from 'rxjs';
-import { tap, delay, map, shareReplay, retryWhen, flatMap } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  Subject,
+  Observable,
+  interval,
+  throwError,
+  Subscription,
+  of
+} from 'rxjs';
+import {
+  tap,
+  delay,
+  map,
+  shareReplay,
+  retryWhen,
+  flatMap
+} from 'rxjs/operators';
 import * as SecureLS from 'secure-ls';
 import { DOCUMENT } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
@@ -41,8 +56,8 @@ const transferCreditEndpoint = `${SERVER_API_URL}/${SEDDO_SERVICE}/api/seddo/tra
 const transferbonusEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/transfert-bonus`;
 
 // buy pass by credit endpoints
-const buyPassInternetByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/internet`;
-const buyPassIllimixByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/illimix`;
+const buyPassInternetByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/v1/internet`;
+const buyPassIllimixByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/v1/illimix`;
 const listPassIllimixEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-illimix-by-formule`;
 const listPassInternetEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-internets-by-formule`;
 const listFormulesEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/formule-mobiles`;
@@ -61,7 +76,7 @@ const sargalBalanceEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/`;
 const welcomeStatusEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters`;
 
 // Endpoint promoBooster active
-const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/`;
+const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters/active-boosters`;
 
 @Injectable({
   providedIn: 'root'
@@ -158,7 +173,11 @@ export class DashboardService {
   }
 
   // attach new mobile phone number
-  registerNumberToAttach(detailsToCheck: { login: string; numero: string; typeNumero: 'MOBILE' | 'FIXE' }) {
+  registerNumberToAttach(detailsToCheck: {
+    login: string;
+    numero: string;
+    typeNumero: 'MOBILE' | 'FIXE';
+  }) {
     detailsToCheck.login = this.authService.getUserMainPhoneNumber();
     return this.http.post(
       `${attachMobileNumberEndpoint}/register`,
@@ -297,8 +316,10 @@ export class DashboardService {
 
   getIdClient() {
     const phoneNumber = this.getCurrentPhoneNumber();
-    return this.authService.getSubscriptionCustomerOffer(phoneNumber).pipe(map((response: any) => response.clientCode));
-}
+    return this.authService
+      .getSubscriptionCustomerOffer(phoneNumber)
+      .pipe(map((response: any) => response.clientCode));
+  }
 
   getCodeFormuleOfMsisdn(msisdn: string) {
     let res: any;
@@ -322,8 +343,10 @@ export class DashboardService {
     );
   }
 
-  getActivePromoBooster() {
-    // return this.http.get(`${promoBoosterActiveEndpoint}`);
-    return of({ isPromoPassActive: false, isPromoRechargeActive: false });
+  getActivePromoBooster(msisdn: string, code: string) {
+    return this.http.get(
+      `${promoBoosterActiveEndpoint}?msisdn=${msisdn}&code=${code}`
+    );
+    // return of({ isPromoPassActive: false, isPromoRechargeActive: false });
   }
 }

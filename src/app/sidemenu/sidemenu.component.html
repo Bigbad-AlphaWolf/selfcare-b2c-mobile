@@ -151,6 +151,26 @@
       </ion-menu-toggle>
       <ion-menu-toggle>
         <div
+          (click)="goToMyOfferPlans()"
+          class="menu-list-services-item-block c-pointer"
+          *ngIf="currentProfile === 'PREPAID' && 0"
+        >
+          <div class="menu-list-services-item">
+            <div class="services-item-icon">
+              <img
+                src="/assets/images/buzz.png"
+                alt="mes-bons-plans"
+                class="item-icon"
+              />
+            </div>
+            <div class="services-item-text">
+              <span class="content">Mes Bons Plans</span>
+            </div>
+          </div>
+        </div>
+      </ion-menu-toggle>
+      <ion-menu-toggle>
+        <div
           routerLinkActive="menu-list-services-item-block-selected"
           #billRLActive="routerLinkActive"
           class="menu-list-services-item-block c-pointer"

@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 
 @Component({
     selector: 'scb-avantage-popup',
@@ -7,6 +7,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 })
 export class AvantagePopupComponent implements OnInit {
     @Output() close = new EventEmitter();
+    @Input() type: string;
     constructor() {}
 
     ngOnInit() {}

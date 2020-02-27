@@ -1,8 +1,12 @@
 @import 'src/app/app';
 
 .category-block {
-  margin-top: 98px;
+  // margin-top: 98px;
 
+  .error{
+    margin-top: 20px;
+    text-align: center;
+  }
   .category-container {
     background-color: $white;
     margin-bottom: 5px;

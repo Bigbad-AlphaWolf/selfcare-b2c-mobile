@@ -3,6 +3,9 @@
     <span>N'a pas pu charger les pass</span>
     <span (click)="getListPassIllimix()" class="reload-text">cliquer pour recharger</span>
   </div>
+  <div *ngIf="showAlertAvantages" class="buy-pass-illimix-v2-list-body-block-alert">
+      <scb-avantage-popup (close)="hideAlert()" [type]="'illimix'"> </scb-avantage-popup>
+    </div>
   <div class="buy-pass-illimix-v2-list-body-block" *ngIf="!error && isLoaded">
     <div class="buy-pass-illimix-v2-list-body-block-btns-filter">
       <ng-container *ngFor="let label of listCategory">
