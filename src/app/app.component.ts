@@ -9,6 +9,9 @@ import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page'
 import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
 
+import { BuyCreditPage } from './buy-credit/buy-credit.page';
+import { BuyPassIllimixPage } from './buy-pass-illimix/buy-pass-illimix.page';
+
 declare var FollowAnalytics: any;
 
 @Component({
@@ -57,7 +60,10 @@ export class AppComponent {
       .route({
         '/buy-pass-internet': BuyPassInternetPage,
         '/buy-pass-internet/:id': BuyPassInternetPage,
-        '/assistance': AssistancePage
+        '/assistance': AssistancePage,
+        '/buy-pass-illimix': BuyPassIllimixPage,
+        '/buy-pass-illimix/:id': BuyPassIllimixPage,
+        '/buy-credit': BuyCreditPage
       })
       .subscribe(
         matched => {

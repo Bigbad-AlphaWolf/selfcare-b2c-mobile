@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import {
@@ -11,6 +12,9 @@ import { DashboardService } from '../dashboard-service/dashboard.service';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { SubscriptionModel } from 'src/app/dashboard';
 
+import { environment } from 'src/environments/environment';
+const { SERVER_API_URL, CONSO_SERVICE } = environment;
+const passByIdEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-illimixes`;
 @Injectable({
   providedIn: 'root'
 })
@@ -23,7 +27,8 @@ export class PassIllimixService {
   private passLoadedSubject: Subject<any> = new Subject<any>();
   constructor(
     private dashbService: DashboardService,
-    private authServ: AuthenticationService
+    private authServ: AuthenticationService,
+    private http: HttpClient
   ) {}
 
   setPaymentMod(paymentMod: string) {
@@ -64,7 +69,6 @@ export class PassIllimixService {
         this.passLoadedSubject.next(true);
       }
     );
-       
   }
 
   getCategoryListPassIllimix() {
@@ -79,5 +83,9 @@ export class PassIllimixService {
   }
   getStatusLoadingPass() {
     return this.passLoadedSubject.asObservable();
+  }
+
+  getPassById(id: number) {
+    return this.http.get(`${passByIdEndpoint}/${id}`);
   }
 }
