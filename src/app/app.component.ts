@@ -1,10 +1,10 @@
+import { BuyCreditPage } from './buy-credit/buy-credit.page';
+import { BuyPassIllimixPage } from './buy-pass-illimix/buy-pass-illimix.page';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
-import { AppMinimize } from '@ionic-native/app-minimize/ngx';
-import { LoginPage } from './login/login.page';
 import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
 import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
@@ -65,8 +65,7 @@ export class AppComponent {
       this.firebaseX.onMessageReceived().subscribe(message => console.log(message));
 
       this.firebaseX.onTokenRefresh().subscribe(fcmToken => {
-        console.log(fcmToken);
-      });
+        console.log(fcmToken); });
     });
   }
 
@@ -75,7 +74,10 @@ export class AppComponent {
       .route({
         '/buy-pass-internet': BuyPassInternetPage,
         '/buy-pass-internet/:id': BuyPassInternetPage,
-        '/assistance': AssistancePage
+        '/assistance': AssistancePage,
+        '/buy-pass-illimix': BuyPassIllimixPage,
+        '/buy-pass-illimix/:id': BuyPassIllimixPage,
+        '/buy-credit': BuyCreditPage
       })
       .subscribe(
         matched => {

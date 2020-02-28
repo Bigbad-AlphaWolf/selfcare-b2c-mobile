@@ -18,6 +18,9 @@ import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.co
 import { AssistanceService } from '../services/assistance.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { Subscription } from 'rxjs';
+import { Platform } from '@ionic/angular';
+import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()

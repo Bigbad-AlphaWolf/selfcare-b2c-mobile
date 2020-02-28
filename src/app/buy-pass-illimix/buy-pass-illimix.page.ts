@@ -1,3 +1,4 @@
+import { PassIllimixService } from './../services/pass-illimix-service/pass-illimix.service';
 import { Component, OnInit } from '@angular/core';
 import {
   OPERATION_TYPE_PASS_ILLIMIX,
@@ -5,10 +6,11 @@ import {
   PromoPassIllimModel,
   PAYMENT_MOD_CREDIT,
   CODE_KIRENE_Formule,
-  PAYMENT_MOD_OM
+  PAYMENT_MOD_OM,
+  PassIllimixModel
 } from 'src/shared';
 import { MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { BuyPassModel } from '../services/dashboard-service';
@@ -44,26 +46,33 @@ export class BuyPassIllimixPage implements OnInit {
   recipientLastName: string;
   destCodeFormule: string;
   pageAccessUrl: string;
+
+  idPassSelected: number;
+  buyFromLink: boolean;
+  currentFormule: string;
+
   constructor(
     private router: Router,
     private dashServ: DashboardService,
     public dialog: MatDialog,
     private authServ: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private route: ActivatedRoute,
+    private passService: PassIllimixService
   ) {}
 
   /** les etapes
    * step 0 choix du mode de paiement
-   * step 1 choix du pass
-   * step 2 confirmation ou validation puis achat par credit
-   * step 3 effectuer la transaction par OM
-   * step 4 message
+   * step 1 choix du destinataire
+   * step 2 list des pass
+   * step 3 confirmation ou validation puis achat par credit
+   * step 4 effectuer la transaction par OM
+   * step 5 message
    */
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.currentUserNumber = this.dashServ.getCurrentPhoneNumber();
     this.step = 0;
     this.getCurrentSubscription();
@@ -71,15 +80,31 @@ export class BuyPassIllimixPage implements OnInit {
     this.pageAccessUrl = this.router.url;
   }
 
-
   checkUserIsPostPaid() {
     this.authServ
       .getSubscription(this.currentUserNumber)
       .subscribe((souscription: any) => {
         this.currentProfil = souscription.profil;
+        this.currentFormule = souscription.nomOffre;
         if (this.currentProfil === PROFILE_TYPE_POSTPAID) {
           this.step = 1;
           this.choosedPaymentMod = PAYMENT_MOD_OM;
+        }
+        this.idPassSelected = +this.route.snapshot.paramMap.get('id');
+        if (this.idPassSelected) {
+          this.destNumber = this.currentUserNumber;
+          this.buyFromLink = true;
+          this.passService
+            .getPassById(this.idPassSelected)
+            .subscribe((pass: any) => {
+              this.passIllimixChosen = pass;
+              this.passIllimixChoosed = {
+                destinataire: this.destNumber,
+                pass,
+                paymentMod: this.choosedPaymentMod
+              };
+              this.step = 0;
+            });
         }
       });
   }
@@ -117,7 +142,12 @@ export class BuyPassIllimixPage implements OnInit {
 
   nextStepOfPaymentMod(paymentMod: string) {
     this.choosedPaymentMod = paymentMod;
-    this.goToNextStep();
+    console.log('from link? ' + this.buyFromLink);
+    if (this.buyFromLink) {
+      this.step = 3;
+    } else {
+      this.goToNextStep();
+    }
   }
 
   goToNextStep() {
@@ -138,6 +168,8 @@ export class BuyPassIllimixPage implements OnInit {
     const previousStep = this.step - 1;
     if (previousStep < 0) {
       this.goToDashboardPage();
+    } else if (this.buyFromLink && this.step === 3) {
+      this.step = 0;
     } else {
       this.step = previousStep;
     }
@@ -236,11 +268,13 @@ export class BuyPassIllimixPage implements OnInit {
   }
 
   getCurrentSubscription() {
-    this.authServ.getSubscription(this.currentUserNumber).subscribe((res: any) => {
-      if (res.code === CODE_KIRENE_Formule) {
-        this.title = 'Acheter un  Mixel';
-        this.isKirene = true;
-      }
-    });
+    this.authServ
+      .getSubscription(this.currentUserNumber)
+      .subscribe((res: any) => {
+        if (res.code === CODE_KIRENE_Formule) {
+          this.title = 'Acheter un  Mixel';
+          this.isKirene = true;
+        }
+      });
   }
 }
