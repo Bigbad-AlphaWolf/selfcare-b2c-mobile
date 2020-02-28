@@ -9,7 +9,9 @@ import {
   SubscriptionModel
 } from 'src/shared';
 import { AuthenticationService } from '../authentication-service/authentication.service';
-import { delay } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
+import * as SecureLS from 'secure-ls';
+const ls = new SecureLS({ encodingType: 'aes' });
 
 const { SARGAL_SERVICE, SERVER_API_URL } = environment;
 
@@ -47,7 +49,18 @@ export class SargalService {
   ) {}
 
   getSargalBalance(msisdn: string) {
-    return this.http.get(`${sargalBalanceEndpoint}/${msisdn}`);
+    return this.http.get(`${sargalBalanceEndpoint}/${msisdn}`).pipe(
+      map(
+        sargalStatus => {
+          ls.set(`lastSargalData_${msisdn}`, sargalStatus);
+          return sargalStatus;
+        },
+        err => {
+          const sargalData = ls.get(`lastSargalData_${msisdn}`);
+          return sargalData;
+        }
+      )
+    );
   }
 
   querySargalGiftCategories() {
