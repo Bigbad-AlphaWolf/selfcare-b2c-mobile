@@ -59,7 +59,14 @@ const routes: Routes = [
   {
     path: 'buy-pass-illimix',
     loadChildren:
-      './buy-pass-illimix/buy-pass-illimix.module#BuyPassIllimixPageModule'
+      './buy-pass-illimix/buy-pass-illimix.module#BuyPassIllimixPageModule',
+      canActivate: [AuthGuard]
+  },
+  {
+    path: 'buy-pass-illimix/:id',
+    loadChildren:
+    './buy-pass-illimix/buy-pass-illimix.module#BuyPassIllimixPageModule',
+    canActivate: [AuthGuard]
   },
   {
     path: 'buy-sos',
