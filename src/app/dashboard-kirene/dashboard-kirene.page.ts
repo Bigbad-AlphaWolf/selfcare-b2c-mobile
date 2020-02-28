@@ -112,7 +112,7 @@ export class DashboardKirenePage implements OnInit {
     this.dataLoaded = false;
     this.error = false;
     this.dashbordServ.getUserConsoInfosByCode().subscribe(
-      (res: any[]) => {
+      (res: any) => {
         if (res.length) {
           const appelConso = res.find(x => x.categorie === 'APPEL')
             .consommations;

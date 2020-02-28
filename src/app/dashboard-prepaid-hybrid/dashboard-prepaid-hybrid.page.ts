@@ -150,7 +150,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.dataLoaded = false;
     this.error = false;
     this.dashbordServ.getUserConsoInfosByCode().subscribe(
-      (res: any[]) => {
+      (res: any) => {
         if (res.length) {
           res = arrangeCompteurByOrdre(res);
           const appelConso = res.length

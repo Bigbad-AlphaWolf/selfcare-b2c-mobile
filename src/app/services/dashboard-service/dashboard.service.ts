@@ -151,18 +151,10 @@ export class DashboardService {
     return this.http.get(`${postpaidUserConsoEndpoint}/${this.msisdn}`).pipe(
       map(
         (res: any) => {
-          if (res && res.length) {
-            const lastUpdateConsoDate = this.getCurrentDate();
-            ls.set(`lastConso_${this.msisdn}`, res);
-            ls.set(`lastUpdateConsoDate_${this.msisdn}`, lastUpdateConsoDate);
-            return res;
-          } else {
-            const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
-            return lastLoadedConso;
-          }
+          return this.processConso(res);
         },
         error => {
-          const lastLoadedConso = ls.get('lastConso');
+          const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
           return lastLoadedConso;
         }
       )
@@ -291,22 +283,26 @@ export class DashboardService {
       .pipe(
         map(
           (res: any) => {
-            if (res && res.length) {
-              const lastUpdateConsoDate = this.getCurrentDate();
-              ls.set(`lastConso_${this.msisdn}`, res);
-              ls.set(`lastUpdateConsoDate_${this.msisdn}`, lastUpdateConsoDate);
-              return res;
-            } else {
-              const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
-              return lastLoadedConso;
-            }
+            return this.processConso(res);
           },
           error => {
-            const lastLoadedConso = ls.get('lastConso');
+            const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
             return lastLoadedConso;
           }
         )
       );
+  }
+
+  processConso(conso: any) {
+    if (conso && conso.length) {
+      const lastUpdateConsoDate = this.getCurrentDate();
+      ls.set(`lastConso_${this.msisdn}`, conso);
+      ls.set(`lastUpdateConsoDate_${this.msisdn}`, lastUpdateConsoDate);
+      return conso;
+    } else {
+      const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
+      return lastLoadedConso;
+    }
   }
 
   getUserConso(day) {

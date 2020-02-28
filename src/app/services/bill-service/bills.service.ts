@@ -13,7 +13,8 @@ import * as SecureLS from 'secure-ls';
 import { Platform } from '@ionic/angular';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
+const ls = new SecureLS({ encodingType: 'aes' });
 const { BILL_SERVICE, SERVER_API_URL } = environment;
 const billsPackageDownloadEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/download-bordereau-fixe`;
 const lastSlipEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/last-bordereau`;
@@ -45,66 +46,92 @@ export class BillsService {
 
   getBillsMobile(numClient: string) {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
-    return this.http.get(
-      `${billsDetailEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`
-    ).pipe(
-      tap(
-        el =>
-          this.followServ.registerEventFollow(
-            'Bordereaux_Mobile_Success',
-            'event',
-            this.currentNumber
-          ),
-        err =>
-          this.followServ.registerEventFollow(
-            'Bordereaux_Mobile_Error',
-            'error',
-            this.currentNumber
-          )
+    return this.http
+      .get(
+        `${billsDetailEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`
       )
-    );
+      .pipe(
+        tap(
+          el =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Success',
+              'event',
+              this.currentNumber
+            ),
+          err =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Error',
+              'error',
+              this.currentNumber
+            )
+        )
+      );
   }
   getBillsPackage(numClient: string) {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
-    return this.http.get(
-      `${billsEndpoint}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=LANDLINE&size=20&page=0`
-    ).pipe(
-      tap(
-        el =>
-          this.followServ.registerEventFollow(
-            'Bordereaux_Fixe_Success',
-            'event',
-            this.currentNumber
-          ),
-        err =>
-          this.followServ.registerEventFollow(
-            'Birdereaux_Fixe_Error',
-            'error',
-            this.currentNumber
-          )
+    return this.http
+      .get(
+        `${billsEndpoint}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=LANDLINE&size=20&page=0`
       )
-    );
+      .pipe(
+        tap(
+          (billsPackage: any) => {
+            if (billsPackage && billsPackage.length) {
+              this.followServ.registerEventFollow(
+                'Bordereaux_Fixe_Success',
+                'event',
+                this.currentNumber
+              );
+              ls.set(`lastBillsPackage_${this.currentNumber}`, billsPackage);
+              return billsPackage;
+            } else {
+              const lastLoadedBillsPackage = ls.get(
+                `lastBillsPackage_${this.currentNumber}`
+              );
+              return lastLoadedBillsPackage;
+            }
+          },
+          err => {
+            this.followServ.registerEventFollow(
+              'Birdereaux_Fixe_Error',
+              'error',
+              this.currentNumber
+            );
+          }
+        )
+      );
   }
 
   getFactureMobile(numClient: string) {
     // api/v1/facture/365915?type=MOBILE&search=year:2019,month:11
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
     return this.http
-      .get(`${billsDetailEndpointAPI}/${numClient}?type=MOBILE&search=phoneNumber:${this.currentNumber}&sort=year,desc&sort=month,desc`)
+      .get(
+        `${billsDetailEndpointAPI}/${numClient}?type=MOBILE&search=phoneNumber:${this.currentNumber}&sort=year,desc&sort=month,desc`
+      )
       .pipe(
-        tap(
-          el =>
-            this.followServ.registerEventFollow(
-              'Factures_Mobile_Success',
-              'event',
-              this.currentNumber
-            ),
-          err =>
+        map(
+          (bills: any) => {
+            if (bills && bills.length) {
+              this.followServ.registerEventFollow(
+                'Factures_Mobile_Success',
+                'event',
+                this.currentNumber
+              );
+              ls.set(`lastBills_${this.currentNumber}`, bills);
+              return bills;
+            } else {
+              const lastLoadedBills = ls.get(`lastBills_${this.currentNumber}`);
+              return lastLoadedBills;
+            }
+          },
+          err => {
             this.followServ.registerEventFollow(
               'Factures_Mobile_Error',
               'error',
               this.currentNumber
-            )
+            );
+          }
         )
       );
   }
