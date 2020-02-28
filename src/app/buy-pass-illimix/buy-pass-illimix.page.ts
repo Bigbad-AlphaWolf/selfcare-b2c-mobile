@@ -168,7 +168,7 @@ export class BuyPassIllimixPage implements OnInit {
     const previousStep = this.step - 1;
     if (previousStep < 0) {
       this.goToDashboardPage();
-    } else if (this.buyFromLink && this.step === 2) {
+    } else if (this.buyFromLink && this.step === 3) {
       this.step = 0;
     } else {
       this.step = previousStep;
