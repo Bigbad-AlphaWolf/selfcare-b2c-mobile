@@ -81,7 +81,7 @@
             </app-historique-conso>
         </ng-container>
         </mat-tab>
-        <mat-tab #historikAchat  *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
+        <!-- <mat-tab #historikAchat  *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
             <ng-template mat-tab-label>
                     <div class="conso-tab-category" [ngClass]="{ 'selected': historikAchat.isActive} ">
                         <span class="scb-text-gray">Historique achats</span>
@@ -93,7 +93,7 @@
             <ng-container>
                 <app-historique-achat  [listTransactions]="listPurchaseForDayByType" [isLoading]="histPurchaseLoading" [hasError]="histPurchaseHasError" (getTransactionsByDay)="getTransactionsByDay($event)" (getTransactionsByFilter) ="getTransactionsByDay(purchaseDateFilterSelected,$event)"></app-historique-achat>
             </ng-container>
-        </mat-tab>
+        </mat-tab> -->
       </mat-tab-group>
 </div>
 </div>
