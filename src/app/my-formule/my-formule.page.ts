@@ -72,7 +72,7 @@ export class MyFormulePage implements OnInit {
   }
 
   queryAllTarifs(){
-    this.formuleService.getAllTarifs().subscribe((res: TarifZoningByCountryModel[])=>{
+    this.formuleService.getAllCountriesWithTarifs().subscribe((res: TarifZoningByCountryModel[])=>{
       this.listTarifsInternationaux = res;
     })
   }

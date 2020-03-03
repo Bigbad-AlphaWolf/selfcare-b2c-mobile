@@ -23,7 +23,7 @@ export class FormuleService {
     );
   }
 
-  getAllTarifs(){
-    return this.http.get(`${zoningTarifsEndpoint}?size=1000`)
+  getAllCountriesWithTarifs(){
+    return this.http.get(`${zoningTarifsEndpoint}?size=400`)
   }
 }
