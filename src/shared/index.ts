@@ -625,3 +625,9 @@ export interface PurchaseModel {
   operationType: 'DEBIT' | 'CREDIT';
   details: any[];
 }
+
+export interface TarifZoningByCountryModel{
+  name?: string;
+  indicatif?: string;
+  zone?: { name: string, tarifs: { tarifAppel: any, tarifSms: any}};
+}
