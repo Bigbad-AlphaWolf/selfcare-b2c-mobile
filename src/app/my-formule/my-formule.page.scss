@@ -51,61 +51,81 @@
 				display: block;
 			}
 		}
-		.my-formule-details-container {
+		.my-formule-details-infos{
 			background-color: $white;
-			display: flex;
 			padding: 15px percentage(20px / $baseWidthMobile2);
-			&-list {
-				width: 50%;
-				&:first-child {
-					border-right: 2px solid $grayDashboard;
-				}
-				&:nth-child(2) {
+			&-title{
+				text-align: center;
+				margin-bottom: 5px;
+			}
+			&-container {
+				display: flex;
+				&-list {
+					width: 50%;
+					&:first-child {
+						border-right: 2px solid $grayDashboard;
+					}
+					&:nth-child(2) {
+						.list-header-container {
+							padding-left: percentage(14px / $baseWidthMobile2);
+						}
+						.list-content-container {
+							padding-left: percentage(15px / $baseWidthMobile2);
+						}
+					}
 					.list-header-container {
-						padding-left: percentage(14px / $baseWidthMobile2);
+						padding-bottom: 15px;
+						border-bottom: 2px solid $grayDashboard;
+						.header-container-icon {
+							display: inline-block;
+							vertical-align: top;
+							width: 30px;
+							padding: 0 5px 5px 5px;
+							border-bottom: 3px solid $orange;
+							img {
+								width: 20px;
+								height: auto;
+							}
+						}
+						.title {
+							display: inline-block;
+							vertical-align: top;
+							font-family: HelveticaNeueLTStd-Bd;
+							font-size: 18px;
+						}
 					}
 					.list-content-container {
-						padding-left: percentage(15px / $baseWidthMobile2);
-					}
-				}
-				.list-header-container {
-					padding-bottom: 15px;
-					border-bottom: 2px solid $grayDashboard;
-					.header-container-icon {
-						display: inline-block;
-						vertical-align: top;
-						width: 30px;
-						padding: 0 5px 5px 5px;
-						border-bottom: 3px solid $orange;
-						img {
-							width: 20px;
-							height: auto;
-						}
-					}
-					.title {
-						display: inline-block;
-						vertical-align: top;
-						font-family: HelveticaNeueLTStd-Bd;
-						font-size: 18px;
-					}
-				}
-				.list-content-container {
-					display: flex;
-					flex-direction: column;
-					padding: 20px 0;
-					&-item {
-						margin-bottom: 20px;
-						.item-top-block {
-							font-family: HelveticaNeueLTStd-Bd;
-							font-size: 16px;
-						}
-						.item-subtitle {
-							font-family: HelveticaNeueLTStd-Roman;
-							font-size: 14px;
+						display: flex;
+						flex-direction: column;
+						padding: 10px 0;
+						&-item {
+							margin-bottom: 20px;
+							.item-top-block {
+								font-family: HelveticaNeueLTStd-Bd;
+								font-size: 16px;
+							}
+							.item-subtitle {
+								font-family: HelveticaNeueLTStd-Roman;
+								font-size: 14px;
+							}
 						}
 					}
 				}
 			}
+
+			.infos-international{
+				margin-top: 10px;
+			}
+			.select-country{
+				.select{
+					background-color: #f7f7f7;
+					border: 1px solid $fullBlack;
+					border-radius: 4px;
+					margin-top: 5px;
+					margin-bottom: 15px;
+				}
+			}
+
 		}
 	}
 	.other-formules-label-and-list {
