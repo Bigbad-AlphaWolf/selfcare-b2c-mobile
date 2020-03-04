@@ -48,17 +48,9 @@ export class MyFormulePage implements OnInit {
   ];
   scr;
 
-  listTarifsInternationaux: TarifZoningByCountryModel[] = 
-  [
-    {name: 'France',zone: {name:'',tarifs: {tarifAppel: 10.2, tarifSms: 100}}},
-    {name: 'Bruxelles',zone: {name:'',tarifs: {tarifAppel: 100.2, tarifSms: 100}}},
-    {name: 'Londres',zone: {name:'',tarifs: {tarifAppel: 180.2, tarifSms: 400}}},
-    {name: 'Belgiques',zone: {name:'',tarifs: {tarifAppel: 190.2, tarifSms: 100}}},
-    {name: 'Angleterre',zone: {name:'',tarifs: {tarifAppel: 10.2, tarifSms: 30}}},
-    {name: 'Singapore',zone: {name:'',tarifs: {tarifAppel: 101.2, tarifSms: 1.4}}}
-  ];
+  listTarifsInternationaux: TarifZoningByCountryModel[] = [];
 
-  tarifsByCountry: {tarifAppel: any, tarifSms: any} = {tarifAppel: this.listTarifsInternationaux[0].zone.tarifs.tarifAppel, tarifSms:this.listTarifsInternationaux[0].zone.tarifs.tarifSms}
+  tarifsByCountry: {tarifAppel: any, tarifSms: any};
   constructor(
     private router: Router,
     private formuleService: FormuleService,
@@ -74,13 +66,16 @@ export class MyFormulePage implements OnInit {
   queryAllTarifs(){
     this.formuleService.getAllCountriesWithTarifs().subscribe((res: TarifZoningByCountryModel[])=>{
       this.listTarifsInternationaux = res;
+      if(this.listTarifsInternationaux.length){
+        this.tarifsByCountry = {tarifAppel: this.listTarifsInternationaux[0].zone.tarifs ? this.listTarifsInternationaux[0].zone.tarifs.tarifAppel : '', tarifSms: this.listTarifsInternationaux[0].zone.tarifs ? this.listTarifsInternationaux[0].zone.tarifs.tarifSms : ''};
+      }
     })
   }
 
   ionViewWillEnter(){
     this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
     this.processInfosFormules();
-    // this.queryAllTarifs();
+    this.queryAllTarifs();
   }
 
   getTarifs(event: any){
