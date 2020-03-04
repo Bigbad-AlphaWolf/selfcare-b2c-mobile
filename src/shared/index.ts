@@ -67,6 +67,8 @@ export const MAX_USER_AVATAR_UPLOAD_SIZE = 3072;
 // Maximum size of avatar image allowed in bytes : 5 Mo ou 5 * 1024Ko
 export const MAX_USER_FILE_UPLOAD_SIZE = 5120;
 
+export const CATEGORY_PURCHASE_HISTORY = [{nom:"Tous", value:undefined},{nom:"Rechargement",value:"RECHARGEMENT"}, {nom: "Transfert Bonus", value: "TRANSFERT_BONUS"},{nom:"Pass Illimix",value:"ILLIMIX"},{nom:"Pass Internet", value:"INTERNET"},{nom:"Dalal Tones",value:"DALALTONE"},{nom:"Achat pour tiers",value:"PASSFOROTHER"},{nom:"Transfert Credit", value:"SEDDO"}, {nom:"SOS", value:"SOS"}];
+
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
 }

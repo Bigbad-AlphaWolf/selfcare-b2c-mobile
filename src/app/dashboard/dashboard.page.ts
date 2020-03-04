@@ -101,9 +101,7 @@ export class DashboardPage implements OnInit, OnDestroy {
           formule: this.currentFormule,
           codeFormule: this.currentCodeFormule
         };
-        if (isPrepaidOrHybrid(souscription)) {
-          console.log('OK');
-          
+        if (isPrepaidOrHybrid(souscription)) {          
           this.router.navigate(['/dashboard-prepaid-hybrid']);
         } else if (isKirene(souscription)) {
           this.router.navigate(['/dashboard-kirene']);
