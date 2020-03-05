@@ -30,8 +30,11 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+<<<<<<< HEAD
 import { Market } from '@ionic-native/market/ngx';
+=======
 import { FirebaseX } from '@ionic-native/firebase-x/ngx';
+>>>>>>> 846302873a19a014da470f82cee0896fd49a80e6
 registerLocaleData(localeFr);
 @NgModule({
   declarations: [
@@ -70,8 +73,11 @@ registerLocaleData(localeFr);
     AppMinimize,
     InAppBrowser,
     Deeplinks,
-    FirebaseX,
+<<<<<<< HEAD
     Market
+=======
+    FirebaseX
+>>>>>>> 846302873a19a014da470f82cee0896fd49a80e6
   ],
   bootstrap: [AppComponent]
 })

@@ -93,8 +93,6 @@ export class BuyPassInternetPage implements OnInit {
           this.choosedPaymentMod = PAYMENT_MOD_OM;
         } else if (this.idPassSelected) {
           this.destinataire = this.currentUserNumber;
-          // this.choosedPaymentMod = PAYMENT_MOD_CREDIT;
-          // if (this.currentFormule === HOME_PREPAID_FORMULE) {
           this.buyForFixPrepaid = true;
           this.passService
             .getPassById(this.idPassSelected)
@@ -107,7 +105,6 @@ export class BuyPassInternetPage implements OnInit {
               };
               this.step = 0;
             });
-          // }
         } else {
           this.destCodeFormule = souscription.code;
           this.destinataire = this.currentUserNumber;

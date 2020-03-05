@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   SubscriptionModel,
@@ -6,21 +8,21 @@ import {
   isPostpaidMobile,
   isPostpaidFix,
   isPrepaidFix,
-  isKirene
+  isKirene,
+  dashboardOpened,
+  isFixPostpaid,
+  isFixPrepaid
 } from '.';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
-import { WelcomeStatusModel, getCurrentDate } from 'src/shared';
-import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
+import { getCurrentDate } from 'src/shared';
 import { AssistanceService } from '../services/assistance.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { Subscription } from 'rxjs';
 import { Platform } from '@ionic/angular';
-import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()
@@ -47,19 +49,26 @@ export class DashboardPage implements OnInit, OnDestroy {
   constructor(
     private dashboardServ: DashboardService,
     private authServ: AuthenticationService,
-    private assistanceService: AssistanceService,
     private router: Router,
+<<<<<<< HEAD
     private followAnalyticsService: FollowAnalyticsService,
     private platform: Platform,
     private appMinimize: AppMinimize
+=======
+    private followAnalyticsService: FollowAnalyticsService
+>>>>>>> e2c1f306a10c55842d7a7395a86595700cf87a86
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    const user = ls.get('user');
+    this.firstName = user.firstName;
+    this.lastName = user.lastName;
 
-  ngOnDestroy() {}
+    dashboardOpened.subscribe(x => {
+      this.isFormuleFixPostpaid = isFixPostpaid(this.currentFormule);
+      this.isFormuleFixPrepaid = isFixPrepaid(this.currentFormule);
+    });
 
-  ionViewWillEnter() {
-    this.getCurrentSubscription();
   }
   ionViewDidEnter() {
     // Initialize BackButton Eevent.
@@ -68,9 +77,14 @@ export class DashboardPage implements OnInit, OnDestroy {
     });
   }
 
-  ionViewWillLeave() {
-    this.backButtonSubscription.unsubscribe();
+  ionViewWillLeave() { this.backButtonSubscription.unsubscribe(); }
+
+  ngOnDestroy() {}
+
+  ionViewWillEnter() {
+    this.getCurrentSubscription();
   }
+
   getCurrentSubscription() {
     const currentNumber = this.dashboardServ.getCurrentPhoneNumber();
     const date = getCurrentDate();
@@ -92,6 +106,8 @@ export class DashboardPage implements OnInit, OnDestroy {
           codeFormule: this.currentCodeFormule
         };
         if (isPrepaidOrHybrid(souscription)) {
+          console.log('OK');
+          
           this.router.navigate(['/dashboard-prepaid-hybrid']);
         } else if (isKirene(souscription)) {
           this.router.navigate(['/dashboard-kirene']);

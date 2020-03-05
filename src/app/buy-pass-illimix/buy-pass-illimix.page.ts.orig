@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { PassIllimixService } from 'src/app/services/pass-illimix-service/pass-illimix.service';
+=======
+import { PassIllimixService } from './../services/pass-illimix-service/pass-illimix.service';
+>>>>>>> 846302873a19a014da470f82cee0896fd49a80e6
 import { Component, OnInit } from '@angular/core';
 import {
   OPERATION_TYPE_PASS_ILLIMIX,
@@ -62,7 +66,10 @@ export class BuyPassIllimixPage implements OnInit {
   ) {}
 
   /** les etapes
+<<<<<<< HEAD
+=======
    * step 0 choix du mode de paiement
+>>>>>>> 846302873a19a014da470f82cee0896fd49a80e6
    * step 1 choix du destinataire
    * step 2 list des pass
    * step 3 confirmation ou validation puis achat par credit
@@ -70,17 +77,15 @@ export class BuyPassIllimixPage implements OnInit {
    * step 5 message
    */
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.currentUserNumber = this.dashServ.getCurrentPhoneNumber();
     this.step = 0;
     this.getCurrentSubscription();
     this.checkUserIsPostPaid();
     this.pageAccessUrl = this.router.url;
   }
-
 
   checkUserIsPostPaid() {
     this.authServ
@@ -144,6 +149,10 @@ export class BuyPassIllimixPage implements OnInit {
 
   nextStepOfPaymentMod(paymentMod: string) {
     this.choosedPaymentMod = paymentMod;
+<<<<<<< HEAD
+=======
+    console.log('from link? ' + this.buyFromLink);
+>>>>>>> 846302873a19a014da470f82cee0896fd49a80e6
     if (this.buyFromLink) {
       this.step = 3;
     } else {
@@ -269,11 +278,13 @@ export class BuyPassIllimixPage implements OnInit {
   }
 
   getCurrentSubscription() {
-    this.authServ.getSubscription(this.currentUserNumber).subscribe((res: any) => {
-      if (res.code === CODE_KIRENE_Formule) {
-        this.title = 'Acheter un  Mixel';
-        this.isKirene = true;
-      }
-    });
+    this.authServ
+      .getSubscription(this.currentUserNumber)
+      .subscribe((res: any) => {
+        if (res.code === CODE_KIRENE_Formule) {
+          this.title = 'Acheter un  Mixel';
+          this.isKirene = true;
+        }
+      });
   }
 }

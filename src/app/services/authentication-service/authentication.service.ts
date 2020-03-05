@@ -143,17 +143,15 @@ export class AuthenticationService {
           ) {
             subscription.code = JAMONO_ALLO_CODE_FORMULE;
           }
-          if(isFixPostpaid(subscription.nomOffre)){
-            subscription.profil = PROFILE_TYPE_POSTPAID
+          if (isFixPostpaid(subscription.nomOffre)) {
+            subscription.profil = PROFILE_TYPE_POSTPAID;
           }
           const lsKey = 'sub' + msisdn;
           ls.set(lsKey, subscription);
           return subscription;
         })
       );
-
     }
-    
   }
 
   // get msisdn subscription

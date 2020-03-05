@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { CODE_KIRENE_Formule, FormuleMobileModel } from 'src/shared';
+import { CODE_KIRENE_Formule, FormuleMobileModel, TarifZoningByCountryModel } from 'src/shared';
 import { FormuleService } from '../services/formule-service/formule.service';
 import { SubscriptionModel, dashboardOpened } from '../dashboard';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
@@ -23,6 +23,11 @@ export class MyFormulePage implements OnInit {
   step = 'MA_FORMULE';
   detailsFormule: FormuleMobileModel;
   currentNumber: string;
+  customAlertOptions: any = {
+    header: 'Liste de pays',
+    subHeader: 'Choisir un pays',
+    translucent: true
+  };
 
   images = [
     {
@@ -42,20 +47,43 @@ export class MyFormulePage implements OnInit {
     }
   ];
   scr;
+
+  listTarifsInternationaux: TarifZoningByCountryModel[] = [];
+
+  tarifsByCountry: {tarifAppel: any, tarifSms: any};
   constructor(
     private router: Router,
     private formuleService: FormuleService,
     private authServ: AuthenticationService,
     private dashbdServ: DashboardService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
   ) {}
 
   ngOnInit() {
+        
+  }
+
+  queryAllTarifs(){
+    this.formuleService.getAllCountriesWithTarifs().subscribe((res: TarifZoningByCountryModel[])=>{
+      this.listTarifsInternationaux = res;
+      if(this.listTarifsInternationaux.length){
+        this.tarifsByCountry = {tarifAppel: this.listTarifsInternationaux[0].zone.tarifs ? this.listTarifsInternationaux[0].zone.tarifs.tarifAppel : '', tarifSms: this.listTarifsInternationaux[0].zone.tarifs ? this.listTarifsInternationaux[0].zone.tarifs.tarifSms : ''};
+      }
+    })
+  }
+
+  ionViewWillEnter(){
     this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
     this.processInfosFormules();
-    dashboardOpened.subscribe(x => {
-      this.processInfosFormules();
-    });
+    this.queryAllTarifs();
+  }
+
+  getTarifs(event: any){
+    const selectCountry = event.detail.value;
+    const selectedTarifs = this.listTarifsInternationaux.find((value: TarifZoningByCountryModel)=>{
+      return value.name === selectCountry;
+    })
+    this.tarifsByCountry = selectedTarifs.zone.tarifs;    
   }
 
   processInfosFormules() {

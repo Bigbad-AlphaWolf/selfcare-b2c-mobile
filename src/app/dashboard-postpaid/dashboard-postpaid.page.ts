@@ -83,14 +83,14 @@ export class DashboardPostpaidPage implements OnInit {
     this.getUserInfos();
     this.getWelcomeStatus();
     this.userPhoneNumber = this.dashbordServ.getCurrentPhoneNumber();
-    this.billsService.getBillsEmit().subscribe(res => {
-      // this.loading = false;
-      if (res === 'error') {
-        this.errorBill = true;
-      } else {
-        this.bills = res;
-      }
-    });
+    // this.billsService.getBillsEmit().subscribe(res => {
+    //   // this.loading = false;
+    //   if (res === 'error') {
+    //     this.errorBill = true;
+    //   } else {
+    //     this.bills = res;
+    //   }
+    // });
     /* this.banniereServ.setListBanniereByFormule();
     this.banniereServ
       .getStatusLoadingBanniere()

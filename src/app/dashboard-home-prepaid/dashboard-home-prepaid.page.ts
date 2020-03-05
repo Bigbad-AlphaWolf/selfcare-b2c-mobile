@@ -94,7 +94,7 @@ export class DashboardHomePrepaidPage implements OnInit {
     this.userCallConsoSummary = null;
     this.userConsommationsCategories = [];
     this.dashbdSrv.getUserConsoInfosByCode().subscribe(
-      (res: any[]) => {
+      (res: any) => {
         // res = arrangeCompteurByOrdre(res);
         this.followsAnalytics.registerEventFollow(
           'dashboard_conso_fixe_prepaid',
