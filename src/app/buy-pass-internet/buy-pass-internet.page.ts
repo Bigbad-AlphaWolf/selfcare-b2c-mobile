@@ -111,6 +111,7 @@ export class BuyPassInternetPage implements OnInit {
         } else {
           this.destCodeFormule = souscription.code;
           this.destinataire = this.currentUserNumber;
+          // remove check on urls for deeplinks
           if (this.router.url.match('buy-pass-internet-by-om')) {
             this.choosedPaymentMod = 'ORANGE_MONEY';
             this.step = 2;

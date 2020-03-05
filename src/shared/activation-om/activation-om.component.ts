@@ -68,6 +68,7 @@ export class ActivationOmComponent implements OnInit {
   firstTimeOM: boolean;
   stepOtp: boolean;
   dataToLog: any;
+  //TODO send device imei in headers
 
   constructor(
     private fb: FormBuilder,
@@ -82,6 +83,7 @@ export class ActivationOmComponent implements OnInit {
       codeOTP: ['', [Validators.required]]
     });
     this.getOmPhoneNumber();
+    //TODO externaliser les textes
     switch (this.operation) {
       case 'BUY_CREDIT':
         this.infosText =
@@ -268,6 +270,7 @@ export class ActivationOmComponent implements OnInit {
   }
 
   sendOTPCode() {
+    //TODO use specific error code to handle message => 012
     this.sendOTPLoader = true;
     this.omService.InitOtp(this.phoneNumber).subscribe((res: any) => {
       this.checkingToken = false;
@@ -414,7 +417,7 @@ export class ActivationOmComponent implements OnInit {
             this.loading = false;
             this.pinPadHasError = true;
             this.pinErrorMsg =
-              "Une erreur s'est produite. Veuillez réessayer plus tard.";
+              'Une erreur s\'est produite. Veuillez réessayer plus tard.';
           }
         );
       } else {
@@ -591,7 +594,7 @@ export class ActivationOmComponent implements OnInit {
       this.pinPadHasError = true;
       this.omService.logWithFollowAnalytics(res, 'error', this.dataToLog);
       if (res === null || res.status_code === null) {
-        this.pinErrorMsg = "Une erreur s'est produite.";
+        this.pinErrorMsg = 'Une erreur s\'est produite.';
         this.recurrentOperation = true;
         this.resultEmit.emit('erreur');
       } else if (res.status_code.match('Erreur-045')) {

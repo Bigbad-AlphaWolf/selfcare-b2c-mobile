@@ -30,6 +30,7 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { Market } from '@ionic-native/market/ngx';
 registerLocaleData(localeFr);
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ registerLocaleData(localeFr);
     FileOpener,
     AppMinimize,
     InAppBrowser,
-    Deeplinks
+    Deeplinks,
+    Market
   ],
   bootstrap: [AppComponent]
 })

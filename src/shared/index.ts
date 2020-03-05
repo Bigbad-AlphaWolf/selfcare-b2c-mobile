@@ -625,3 +625,22 @@ export interface PurchaseModel {
   operationType: 'DEBIT' | 'CREDIT';
   details: any[];
 }
+
+/**
+ * Compare two semver versions. Returns true if version A is greater than
+ * version B.
+ * Version A is the version from the server.
+ * Version B is the installed version.
+ */
+export function isNewVersion(versionA, versionB) {
+  const versionsA = versionA.split(/\./g),
+    versionsB = versionB.split(/\./g);
+  while (versionsA.length || versionsB.length) {
+    const a = Number(versionsA.shift()), b = Number(versionsB.shift());
+    if (a === b) {
+      continue;
+    }
+    return (a > b || isNaN(b));
+  }
+  return false;
+}

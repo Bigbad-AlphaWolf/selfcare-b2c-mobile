@@ -7,8 +7,11 @@
       ? 'Êtes vous sur de vouloir vous inscrire au programme de fidélité Orange Sargal ?'
       : data?.confirmationOperationDepannage
       ? "Etes-vous sûr d'avoir téléchargé toutes les infos nécessaires"
+      : data?.updateApp 
+      ? 'Votre application n\'est pas à jour. Mettre à jour votre application pour beneficier des dernieres mise a jour ?'
       : 'Etes-vous sûr de vouloir annuler votre achat ?'
   }}
+
 </div>
 
 <div class="dialog-actions-btns-block">
