@@ -116,6 +116,11 @@ export class BuyPassIllimixPage implements OnInit {
     this.goToNextStep();
     this.destNumber = destNumberInfos.destinataire;
     this.destCodeFormule = destNumberInfos.code;
+    if(this.destCodeFormule === CODE_KIRENE_Formule){
+      this.isKirene = true
+    }else{
+      this.isKirene = false
+    }
     if (destNumberInfos.destinataire !== this.currentUserNumber) {
       this.followAnalyticsService.registerEventFollow(
         'Pass_Internet_ChoixDestinataire',
@@ -271,7 +276,6 @@ export class BuyPassIllimixPage implements OnInit {
     this.authServ.getSubscription(this.currentUserNumber).subscribe((res: any) => {
       if (res.code === CODE_KIRENE_Formule) {
         this.title = 'Acheter un  Mixel';
-        this.isKirene = true;
       }
     });
   }
