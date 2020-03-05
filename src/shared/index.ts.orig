@@ -626,6 +626,7 @@ export interface PurchaseModel {
   details: any[];
 }
 
+<<<<<<< HEAD
 /**
  * Compare two semver versions. Returns true if version A is greater than
  * version B.
@@ -644,8 +645,10 @@ export function isNewVersion(versionA, versionB) {
   }
   return false;
 }
+=======
 export interface TarifZoningByCountryModel{
   name?: string;
   indicatif?: string;
   zone?: { name: string, tarifs: { tarifAppel: any, tarifSms: any}};
 }
+>>>>>>> 846302873a19a014da470f82cee0896fd49a80e6
