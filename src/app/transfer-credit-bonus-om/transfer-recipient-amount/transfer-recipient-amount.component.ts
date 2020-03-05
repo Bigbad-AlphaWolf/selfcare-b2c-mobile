@@ -14,6 +14,7 @@ import { Contacts, Contact } from '@ionic-native/contacts';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-transfer-recipient-amount',
@@ -53,7 +54,8 @@ export class TransferRecipientAmountComponent implements OnInit {
     private omService: OrangeMoneyService,
     private contacts: Contacts,
     private dashService: DashboardService,
-    private followAnalytics: FollowAnalyticsService
+    private followAnalytics: FollowAnalyticsService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -72,7 +74,6 @@ export class TransferRecipientAmountComponent implements OnInit {
           [Validators.required, Validators.pattern(REGEX_NUMBER_OM)]
         ]
       });
-      this.checkOMToken();
     } else {
       this.formAmount = this.formBuilder.group({
         amount: ['', [Validators.required, Validators.min(100)]]
@@ -104,7 +105,12 @@ export class TransferRecipientAmountComponent implements OnInit {
 
   getOmPhoneNumber() {
     this.omService.getOmMsisdn().subscribe(msisdn => {
-      this.omPhoneNumber = msisdn;
+      if(msisdn !== 'error'){
+        this.omPhoneNumber = msisdn;
+        this.checkOMToken(msisdn);
+      }else{        
+        this.router.navigate(['/see-solde-om'])
+      }
     });
   }
 
@@ -244,8 +250,7 @@ export class TransferRecipientAmountComponent implements OnInit {
     return REGEX_NUMBER_OM.test(phoneNumber);
   }
 
-  checkOMToken() {
-    const phoneNumber = this.dashService.getCurrentPhoneNumber();
+  checkOMToken(phoneNumber: string) {
     this.omService.GetUserAuthInfo(phoneNumber).subscribe((omUser: any) => {
       // If user already connected open pinpad
       if (!omUser.hasApiKey || omUser.loginExpired || !omUser.accessToken) {
@@ -255,7 +260,7 @@ export class TransferRecipientAmountComponent implements OnInit {
     });
   }
 
-  checkRecipientHasOMAccount() {
+  checkRecipientHasOMAccount() {    
     this.checkingOMAccount = true;
     const phoneNumber = formatPhoneNumber(this.formDest.value.phoneNumber);
     this.recipientInfos = {
