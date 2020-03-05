@@ -60,7 +60,6 @@ export class MyFormulePage implements OnInit {
   ) {}
 
   ngOnInit() {
-        
   }
 
   queryAllTarifs(){
@@ -76,6 +75,7 @@ export class MyFormulePage implements OnInit {
     this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
     this.processInfosFormules();
     this.queryAllTarifs();
+    this.authServ.UpdateNotificationInfo();
   }
 
   getTarifs(event: any){

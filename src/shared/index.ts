@@ -649,3 +649,10 @@ export interface TarifZoningByCountryModel{
   indicatif?: string;
   zone?: { name: string, tarifs: { tarifAppel: any, tarifSms: any}};
 }
+
+export interface NotificationInfoModel {
+  codeFormule: string;
+  firebaseId: string;
+  msisdn: string;
+}
+
