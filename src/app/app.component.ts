@@ -1,3 +1,4 @@
+import { AuthenticationService } from './services/authentication-service/authentication.service';
 import { MatDialog } from '@angular/material';
 import { BuyCreditPage } from './buy-credit/buy-credit.page';
 import { BuyPassIllimixPage } from './buy-pass-illimix/buy-pass-illimix.page';
@@ -13,14 +14,15 @@ import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
 import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
-import { BuyCreditPage } from './buy-credit/buy-credit.page';
-import { BuyPassIllimixPage } from './buy-pass-illimix/buy-pass-illimix.page';
+
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { isNewVersion } from 'src/shared';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 const { SERVICES_SERVICE, SERVER_API_URL } = environment;
 const versionEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/v1/app-version`;
+import * as SecureLS from 'secure-ls';
+const ls = new SecureLS({ encodingType: 'aes' });
 
 declare var FollowAnalytics: any;
 
@@ -73,9 +75,37 @@ export class AppComponent {
       }
       this.checkDeeplinks();
 
+      // Get app version
+      this.appVersion
+        .getVersionNumber()
+        .then(value => {
+          this.AppVersionNumber = value;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      // Call server for app version
+      this.http.get(`${versionEndpoint}`).subscribe((version: any) => {
+        const versionAndroid = version.android;
+        const versionIos = version.ios;
+        if (version && version.length >= 5) {
+          if (
+            isNewVersion(
+              this.isIOS ? versionIos : versionAndroid,
+              this.AppVersionNumber
+            )
+          ) {
+            const dialogRef = this.dialog.open(CancelOperationPopupComponent, {
+              data: { updateApp: this.appId }
+            });
+          }
+        }
+      });
+
+      // Get firebase id for notifications
       this.firebaseX
         .getToken()
-        .then(token => console.log('PUSH_TOKEN: GET_TOKEN: ', token))
+        .then(token => ls.set('firebaseId', token))
         .catch(err => console.log(err));
 
       if (this.platform.is('ios')) {
@@ -87,7 +117,7 @@ export class AppComponent {
 
         this.firebaseX
           .onApnsTokenReceived()
-          .subscribe(token => console.log('PUSH_TOKEN: IOS_TOKEN: ' + token));
+          .subscribe(token => ls.set('firebaseId', token));
       }
 
       this.firebaseX
