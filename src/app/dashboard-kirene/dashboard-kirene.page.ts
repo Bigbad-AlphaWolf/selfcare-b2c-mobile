@@ -11,14 +11,16 @@ import {
   UserConsommations,
   formatCurrency,
   USER_CONS_CATEGORY_CALL,
-  WelcomeStatusModel
+  WelcomeStatusModel,
+  SubscriptionModel
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import {
   SargalSubscriptionModel,
   SARGAL_NOT_SUBSCRIBED,
   getConsoByCategory,
-  SARGAL_UNSUBSCRIPTION_ONGOING
+  SARGAL_UNSUBSCRIPTION_ONGOING,
+  PromoBoosterActive
 } from '../dashboard';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
@@ -72,6 +74,8 @@ export class DashboardKirenePage implements OnInit {
   firstName: string;
   lastName: string;
   fabOpened = false;
+  hasPromoBooster: PromoBoosterActive = null;
+  currentProfil: string;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -100,6 +104,26 @@ export class DashboardKirenePage implements OnInit {
   ionViewWillEnter() {
     this.getUserConsommations();
     this.getSargalPoints();
+    this.getCurrentSubscription();
+  }
+
+  getCurrentSubscription() {
+    const currentNumber = this.dashbordServ.getCurrentPhoneNumber();
+    this.authServ.getSubscription(currentNumber).subscribe(
+      (res: SubscriptionModel) => {
+        this.currentProfil = res.profil;
+        this.getActivePromoBooster(currentNumber, res.code);
+      },
+      (err: any) => {}
+    );
+  }
+
+  getActivePromoBooster(msisdn: string, code: string) {
+    this.dashbordServ
+      .getActivePromoBooster(msisdn, code)
+      .subscribe((res: any) => {
+        this.hasPromoBooster = res;
+      });
   }
 
   getUserInfos() {

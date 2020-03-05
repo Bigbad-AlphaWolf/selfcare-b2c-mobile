@@ -61,14 +61,16 @@ export class DashboardPage implements OnInit, OnDestroy {
   ionViewWillEnter() {
     this.getCurrentSubscription();
   }
-ionViewDidEnter() {
+  ionViewDidEnter() {
     // Initialize BackButton Eevent.
     this.backButtonSubscription = this.platform.backButton.subscribe(() => {
       this.appMinimize.minimize();
     });
   }
 
-  ionViewWillLeave() { this.backButtonSubscription.unsubscribe(); }
+  ionViewWillLeave() {
+    this.backButtonSubscription.unsubscribe();
+  }
   getCurrentSubscription() {
     const currentNumber = this.dashboardServ.getCurrentPhoneNumber();
     const date = getCurrentDate();
