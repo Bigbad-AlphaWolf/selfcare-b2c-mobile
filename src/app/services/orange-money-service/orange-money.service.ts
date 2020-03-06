@@ -340,7 +340,7 @@ export class OrangeMoneyService {
                   }
                 }
                 if (!numberOMFound) {
-                    obs.next('NoOMFound');
+                    obs.next('error');
                 }
               },
               err => {
