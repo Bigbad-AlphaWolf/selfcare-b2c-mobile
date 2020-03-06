@@ -69,7 +69,7 @@ export class PassIllimixService {
         this.passLoadedSubject.next(true);
       }
     );
-       
+
   }
 
   getCategoryListPassIllimix() {

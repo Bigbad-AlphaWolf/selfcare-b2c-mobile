@@ -5,10 +5,10 @@ import {
   Output,
   EventEmitter,
   OnDestroy
-} from "@angular/core";
-import { DashboardService } from "src/app/services/dashboard-service/dashboard.service";
-import { MatDialog, MatDialogRef } from "@angular/material";
-import { Subscription } from "rxjs";
+} from '@angular/core';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { Subscription } from 'rxjs';
 import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
@@ -33,23 +33,23 @@ import {
   PAYMENT_MOD_SARGAL,
   PAY_WITH_SARGAL,
   formatPhoneNumber
-} from "..";
-import { CancelOperationPopupComponent } from "../cancel-operation-popup/cancel-operation-popup.component";
-import { SoSModel } from "src/app/services/sos-service";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { OrangeMoneyService } from "src/app/services/orange-money-service/orange-money.service";
+} from '..';
+import { CancelOperationPopupComponent } from '../cancel-operation-popup/cancel-operation-popup.component';
+import { SoSModel } from 'src/app/services/sos-service';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import {
   FeeModel,
   ORANGE_MONEY_TRANSFER_FEES
-} from "src/app/services/orange-money-service";
-import { Contacts, Contact } from "@ionic-native/contacts";
-import { validateNumber } from "src/app/register";
-import { SelectNumberPopupComponent } from "../select-number-popup/select-number-popup.component";
+} from 'src/app/services/orange-money-service';
+import { Contacts, Contact } from '@ionic-native/contacts';
+import { validateNumber } from 'src/app/register';
+import { SelectNumberPopupComponent } from '../select-number-popup/select-number-popup.component';
 
 @Component({
-  selector: "app-operation-validation",
-  templateUrl: "./operation-validation.component.html",
-  styleUrls: ["./operation-validation.component.scss"]
+  selector: 'app-operation-validation',
+  templateUrl: './operation-validation.component.html',
+  styleUrls: ['./operation-validation.component.scss']
 })
 export class OperationValidationComponent implements OnInit, OnDestroy {
   dialogRef: MatDialogRef<CancelOperationPopupComponent, any>;
@@ -65,8 +65,8 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
   @Input() passIllChosen: any; // PassIllimModel | PromoPassIllimModel;
   @Input() rechargeCreditAmount: number;
   @Input() amountToTransfer: number;
-  @Input() omRecipientFirstName: string = "";
-  @Input() omRecipientLastName: string = "";
+  @Input() omRecipientFirstName = '';
+  @Input() omRecipientLastName = '';
   @Input() recipientHasOmAccount: boolean;
   @Input() sargalGift: any; // GiftSargalItem;
   @Input() kirene: boolean;
@@ -136,18 +136,18 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
       if (this.sargalGift.nombreNumeroIllimtes > 1) {
         this.formNumeroIllimite = this.fb.group({
           illimite1: [
-            "",
+            '',
             [Validators.required, Validators.pattern(REGEX_NUMBER)]
           ],
           illimite2: [
-            "",
+            '',
             [Validators.required, Validators.pattern(REGEX_NUMBER)]
           ]
         });
       } else if (this.sargalGift.nombreNumeroIllimtes === 1) {
         this.formNumeroIllimite = this.fb.group({
           illimite1: [
-            "",
+            '',
             [Validators.required, Validators.pattern(REGEX_NUMBER)]
           ]
         });
@@ -182,8 +182,8 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
 
   openConfirmationDialog() {
     this.dialogRef = this.dialog.open(CancelOperationPopupComponent, {
-      width: "294px",
-      height: "232px"
+      width: '294px',
+      height: '232px'
     });
     this.dialogSub = this.dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -198,19 +198,19 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
   formatFollowMsg(typeOperation: string): string {
     switch (typeOperation) {
       case OPERATION_TYPE_PASS_INTERNET:
-        return "Buy_Pass_Internet_Cancel_confirmation";
+        return 'Buy_Pass_Internet_Cancel_confirmation';
       case OPERATION_TYPE_RECHARGE_CREDIT:
-        return "Recharge_OM_Cancel_confirmation";
+        return 'Recharge_OM_Cancel_confirmation';
       case OPERATION_TYPE_SOS:
-        return "Sos_Cancel_confirmation";
+        return 'Sos_Cancel_confirmation';
       case OPERATION_TYPE_SOS_CREDIT:
-        return "Sos_Credit_Cancel_confirmation";
+        return 'Sos_Credit_Cancel_confirmation';
       case OPERATION_TYPE_SEDDO_CREDIT:
-        return "Seddo_Credit_Cancel_confirmation";
+        return 'Seddo_Credit_Cancel_confirmation';
       case OPERATION_TYPE_SEDDO_PASS:
-        return "Seddo_Pass_Cancel_confirmation";
+        return 'Seddo_Pass_Cancel_confirmation';
       case OPERATION_TYPE_SEDDO_BONUS:
-        return "Seddo_Bonus_Cancel_confirmation";
+        return 'Seddo_Bonus_Cancel_confirmation';
       default:
         break;
     }
@@ -284,16 +284,16 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
       ? pass.passPromo.categoriePass.libelle
       : pass.categoriePass.libelle;
     switch (category) {
-      case "Jour":
-        return "Valable 24 heures";
-      case "3 Jours":
-        return "Valable 3 jours";
-      case "Semaine":
-        return "Valable 7 jours";
-      case "Mois":
-        return "Valable 1 mois";
+      case 'Jour':
+        return 'Valable 24 heures';
+      case '3 Jours':
+        return 'Valable 3 jours';
+      case 'Semaine':
+        return 'Valable 7 jours';
+      case 'Mois':
+        return 'Valable 1 mois';
       default:
-        return "";
+        return '';
     }
   }
 

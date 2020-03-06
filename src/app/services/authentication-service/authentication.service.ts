@@ -64,7 +64,7 @@ const checkNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/accou
 const registerEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/register`;
 const resetPwdEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password`;
 
-const notificationInfoEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/notification-information`;
+const notificationInfoEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/notification-information`;
 
 @Injectable({
   providedIn: 'root'
@@ -349,14 +349,14 @@ export class AuthenticationService {
   // Update Notification Info for user
 UpdateNotificationInfo() {
   delay(10000);
-  let info: NotificationInfoModel;
+  const info =  {} as NotificationInfoModel;
   info.firebaseId = ls.get('firebaseId');
   info.msisdn = this.getUserMainPhoneNumber();
   const lsKey = 'sub' + info.msisdn;
   const savedData = ls.get(lsKey);
   info.codeFormule = savedData.code;
-  if(info.msisdn && info.codeFormule){
-    this.http.put(notificationInfoEndpoint, info);
+  if (info.msisdn && info.codeFormule) {
+    this.http.put(notificationInfoEndpoint, info).subscribe();
   }
 }
 

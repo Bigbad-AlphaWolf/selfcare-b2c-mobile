@@ -67,7 +67,7 @@ export class TransferCreditBonusOmPage implements OnInit {
   ngOnInit() {
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     if (this.route.snapshot) {
       this.operationType = this.route.snapshot.paramMap.get('type');
     }

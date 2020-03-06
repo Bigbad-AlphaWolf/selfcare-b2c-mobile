@@ -68,7 +68,7 @@ export class ActivationOmComponent implements OnInit {
   firstTimeOM: boolean;
   stepOtp: boolean;
   dataToLog: any;
-  //TODO send device imei in headers
+  // TODO send device imei in headers
 
   constructor(
     private fb: FormBuilder,
@@ -83,7 +83,7 @@ export class ActivationOmComponent implements OnInit {
       codeOTP: ['', [Validators.required]]
     });
     this.getOmPhoneNumber();
-    //TODO externaliser les textes
+    // TODO externaliser les textes
     switch (this.operation) {
       case 'BUY_CREDIT':
         this.infosText =
@@ -270,7 +270,7 @@ export class ActivationOmComponent implements OnInit {
   }
 
   sendOTPCode() {
-    //TODO use specific error code to handle message => 012
+    // TODO use specific error code to handle message => 012
     this.sendOTPLoader = true;
     this.omService.InitOtp(this.phoneNumber).subscribe((res: any) => {
       this.checkingToken = false;

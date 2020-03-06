@@ -62,28 +62,28 @@ export class MyFormulePage implements OnInit {
   ngOnInit() {
   }
 
-  queryAllTarifs(){
-    this.formuleService.getAllCountriesWithTarifs().subscribe((res: TarifZoningByCountryModel[])=>{
+  queryAllTarifs() {
+    this.formuleService.getAllCountriesWithTarifs().subscribe((res: TarifZoningByCountryModel[]) => {
       this.listTarifsInternationaux = res;
-      if(this.listTarifsInternationaux.length){
+      if (this.listTarifsInternationaux.length) {
         this.tarifsByCountry = {tarifAppel: this.listTarifsInternationaux[0].zone.tarifs ? this.listTarifsInternationaux[0].zone.tarifs.tarifAppel : '', tarifSms: this.listTarifsInternationaux[0].zone.tarifs ? this.listTarifsInternationaux[0].zone.tarifs.tarifSms : ''};
       }
-    })
+    });
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
     this.processInfosFormules();
     this.queryAllTarifs();
     this.authServ.UpdateNotificationInfo();
   }
 
-  getTarifs(event: any){
+  getTarifs(event: any) {
     const selectCountry = event.detail.value;
-    const selectedTarifs = this.listTarifsInternationaux.find((value: TarifZoningByCountryModel)=>{
+    const selectedTarifs = this.listTarifsInternationaux.find((value: TarifZoningByCountryModel) => {
       return value.name === selectCountry;
-    })
-    this.tarifsByCountry = selectedTarifs.zone.tarifs;    
+    });
+    this.tarifsByCountry = selectedTarifs.zone.tarifs;
   }
 
   processInfosFormules() {
@@ -96,8 +96,8 @@ export class MyFormulePage implements OnInit {
         );
         this.formuleService.getformules(res.profil).subscribe(
           (resp: FormuleMobileModel[]) => {
-            this.formulesArray = resp.filter((val: FormuleMobileModel)=>{
-              return val.type === 'MOBILE'
+            this.formulesArray = resp.filter((val: FormuleMobileModel) => {
+              return val.type === 'MOBILE';
             });
             if (this.formulesArray.length === 0) {
               this.dataLoaded = true;
@@ -144,14 +144,14 @@ export class MyFormulePage implements OnInit {
           }
         } else {
           this.error =
-            "Erreur, Votre formule n'est peut etre pas encore prise en compte ";
+            'Erreur, Votre formule n\'est peut etre pas encore prise en compte ';
         }
         this.dataLoaded = true;
       },
       (err: any) => {
         this.dataLoaded = true;
         this.error =
-          "Erreur, Votre formule n'est peut etre pas encore prise en compte ";
+          'Erreur, Votre formule n\'est peut etre pas encore prise en compte ';
       }
     );
   }

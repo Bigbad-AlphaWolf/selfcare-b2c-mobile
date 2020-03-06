@@ -73,7 +73,7 @@ export class BuyPassIllimixPage implements OnInit {
   ngOnInit() {
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.currentUserNumber = this.dashServ.getCurrentPhoneNumber();
     this.step = 0;
     this.getCurrentSubscription();

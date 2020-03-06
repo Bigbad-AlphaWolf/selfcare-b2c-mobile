@@ -21,7 +21,7 @@ export class SeeDetailsFormuleComponent implements OnInit {
   @Input() msisdn: string;
   @Output() goBackToListFormules = new EventEmitter();
   cancelDialog: MatDialogRef<CancelOperationPopupComponent>;
-  error = "Une erreur est survenue durant l'opération";
+  error = 'Une erreur est survenue durant l\'opération';
   hasError: boolean;
   changeFormuleProcessing: boolean;
   images = [
@@ -47,7 +47,7 @@ export class SeeDetailsFormuleComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.getSubscription(this.msisdn).subscribe((subscription: any)=>{
+    this.authService.getSubscription(this.msisdn).subscribe((subscription: any) => {
       this.userSubscription = subscription;
     });
   }
@@ -82,7 +82,7 @@ export class SeeDetailsFormuleComponent implements OnInit {
                 this.followAnalyticsService.registerEventFollow(
                   'change_formule_success',
                   'event',
-                  { msisdn: this.msisdn, previous_code_formule: this.userSubscription.code ,next_code_formule: this.formule.code }
+                  { msisdn: this.msisdn, previous_code_formule: this.userSubscription.code , next_code_formule: this.formule.code }
                 );
                 this.authService.deleteSubFromStorage(this.msisdn);
                 this.changeFormuleProcessing = false;
@@ -95,7 +95,7 @@ export class SeeDetailsFormuleComponent implements OnInit {
                 this.followAnalyticsService.registerEventFollow(
                   'change_formule_error',
                   'error',
-                  { msisdn: this.msisdn, current_code_formule: this.userSubscription.code ,next_code_formule: this.formule.code, error_status: error.status }
+                  { msisdn: this.msisdn, current_code_formule: this.userSubscription.code , next_code_formule: this.formule.code, error_status: error.status }
                 );
               }
             );
