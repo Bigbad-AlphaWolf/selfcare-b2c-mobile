@@ -647,7 +647,7 @@ export function isNewVersion(versionA, versionB) {
 export interface TarifZoningByCountryModel {
   name?: string;
   indicatif?: string;
-  zone?: { name: string, tarifs: { tarifAppel: any, tarifSms: any}};
+  zone?: { name: string, tarifFormule: { tarifAppel: any, tarifSms: any}};
 }
 
 export interface NotificationInfoModel {
