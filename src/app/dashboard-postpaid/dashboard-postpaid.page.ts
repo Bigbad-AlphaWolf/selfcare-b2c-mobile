@@ -141,7 +141,7 @@ export class DashboardPostpaidPage implements OnInit {
       const consoInt = userconsommations.ivolumeInitialGprs;
       const percentConsoVoix = Math.round((consoVoix * 100) / totalVoix);
       const percentConsoInt = Math.round((consoInt * 100) / totalData);
-      let formatConsoInt = this.passVolumeDisplayPipe.transform(
+      const formatConsoInt = this.passVolumeDisplayPipe.transform(
         formatDataVolume(consoInt)
       );
       totalData = this.passVolumeDisplayPipe.transform(

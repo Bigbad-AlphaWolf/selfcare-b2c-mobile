@@ -13,7 +13,7 @@ export class MyOfferPlansPage implements OnInit {
   ngOnInit() {
   }
 
-  goBack(){
-    this.router.navigate(['/dashboard'])
+  goBack() {
+    this.router.navigate(['/dashboard']);
   }
 }

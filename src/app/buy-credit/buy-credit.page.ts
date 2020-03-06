@@ -37,8 +37,8 @@ export class BuyCreditPage implements OnInit {
   title = 'Recharger du crédit';
   currentProfil;
   currentNumber;
-  recipientFirstName: string = '';
-  recipientLastName: string = '';
+  recipientFirstName = '';
+  recipientLastName = '';
 
   constructor(
     private router: Router,
@@ -48,10 +48,10 @@ export class BuyCreditPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    
+
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
     this.step = 0;
     this.authService
@@ -109,8 +109,8 @@ export class BuyCreditPage implements OnInit {
           'Recharge_OM_Destinataire_Moi',
           'event',
           destinfos.destinataire
-        );        
-        this.goToNextStep();
+        );
+    this.goToNextStep();
 
   }
 

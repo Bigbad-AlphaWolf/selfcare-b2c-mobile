@@ -105,7 +105,10 @@ export class AppComponent {
       // Get firebase id for notifications
       this.firebaseX
         .getToken()
-        .then(token => ls.set('firebaseId', token))
+        .then(token => {
+          ls.set('firebaseId', token);
+          console.log(token);
+        })
         .catch(err => console.log(err));
 
       if (this.platform.is('ios')) {
@@ -126,6 +129,7 @@ export class AppComponent {
 
       this.firebaseX.onTokenRefresh().subscribe(fcmToken => {
         console.log(fcmToken);
+        ls.set('firebaseId', fcmToken);
       });
     });
   }

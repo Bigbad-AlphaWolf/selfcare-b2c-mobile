@@ -62,28 +62,38 @@ export class MyFormulePage implements OnInit {
   ngOnInit() {
   }
 
-  queryAllTarifs(){
-    this.formuleService.getAllCountriesWithTarifs().subscribe((res: TarifZoningByCountryModel[])=>{
+  queryAllTarifs() {
+    this.formuleService.getAllCountriesWithTarifs().subscribe((res: TarifZoningByCountryModel[]) => {
       this.listTarifsInternationaux = res;
+<<<<<<< HEAD
+      if (this.listTarifsInternationaux.length) {
+        this.tarifsByCountry = {tarifAppel: this.listTarifsInternationaux[0].zone.tarifs ? this.listTarifsInternationaux[0].zone.tarifs.tarifAppel : '', tarifSms: this.listTarifsInternationaux[0].zone.tarifs ? this.listTarifsInternationaux[0].zone.tarifs.tarifSms : ''};
+=======
       if(this.listTarifsInternationaux.length){
         this.tarifsByCountry = {tarifAppel: this.listTarifsInternationaux[0].zone.tarifFormule ? this.listTarifsInternationaux[0].zone.tarifFormule.tarifAppel : '', tarifSms: this.listTarifsInternationaux[0].zone.tarifFormule ? this.listTarifsInternationaux[0].zone.tarifFormule.tarifSms : ''};
+>>>>>>> 9216450fc57823f90c2194d7bf5d02dd53e5ac5f
       }
-    })
+    });
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
     this.processInfosFormules();
     this.queryAllTarifs();
     this.authServ.UpdateNotificationInfo();
   }
 
-  getTarifs(event: any){
+  getTarifs(event: any) {
     const selectCountry = event.detail.value;
-    const selectedTarifs = this.listTarifsInternationaux.find((value: TarifZoningByCountryModel)=>{
+    const selectedTarifs = this.listTarifsInternationaux.find((value: TarifZoningByCountryModel) => {
       return value.name === selectCountry;
+<<<<<<< HEAD
+    });
+    this.tarifsByCountry = selectedTarifs.zone.tarifs;
+=======
     })
     this.tarifsByCountry = selectedTarifs.zone.tarifFormule;    
+>>>>>>> 9216450fc57823f90c2194d7bf5d02dd53e5ac5f
   }
 
   processInfosFormules() {
@@ -96,7 +106,7 @@ export class MyFormulePage implements OnInit {
         );
         this.formuleService.getformules(res.profil).subscribe(
           (resp: FormuleMobileModel[]) => {
-            this.formulesArray = resp.filter((val: FormuleMobileModel)=>{
+            this.formulesArray = resp.filter((val: FormuleMobileModel) => {
               return val.type === 'MOBILE';
             });
             if (this.formulesArray.length === 0) {
