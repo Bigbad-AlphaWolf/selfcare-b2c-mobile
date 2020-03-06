@@ -84,7 +84,7 @@ export class AuthInterceptorService implements HttpInterceptor {
                 that.authServ.cleanCache();
                 that.router.navigate(['login']);
               } else {
-                this.router.navigate(['dashboard']);
+                // this.router.navigate(['dashboard']);
               }
             }
             if (err.status === 500) {

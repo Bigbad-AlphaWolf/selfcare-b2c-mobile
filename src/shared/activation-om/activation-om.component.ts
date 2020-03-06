@@ -165,8 +165,13 @@ export class ActivationOmComponent implements OnInit {
           }
           this.checkingToken = false;
         },
-        err => console.error(err)
+        err => {
+          this.checkingToken = false;
+          console.error(err)}
       );
+    }, (_)=>{
+      this.checkingToken = false;
+
     });
   }
   checkOrangeMoneyToken() {

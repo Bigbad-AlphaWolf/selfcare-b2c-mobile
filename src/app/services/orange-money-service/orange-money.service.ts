@@ -303,7 +303,7 @@ export class OrangeMoneyService {
 
   getOmMsisdn(): Observable<string> {
     const omNumberOnLS = ls.get('nOrMo');
-    if (omNumberOnLS) {
+    if (omNumberOnLS) {      
       return of(omNumberOnLS);
     } else {
       let OrangeMoneyMsisdn: string;
@@ -327,14 +327,20 @@ export class OrangeMoneyService {
             });
             forkJoin(httpCalls).subscribe(
               data => {
+                let numberOMFound = false;
                 for (const [index, element] of data.entries()) {
                   // if the number is linked with OM, keep it and break out of the for loop
                   if (element['hasApiKey'] && element['hasApiKey'] != null) {
                     //set the orange Money number in localstorage and the key is nOrMo (numero Orange Money)
                     OrangeMoneyMsisdn = allNumbers[index];
                     ls.set('nOrMo', OrangeMoneyMsisdn);
+                    numberOMFound = true;
                     obs.next(OrangeMoneyMsisdn);
+                    break;
                   }
+                }
+                if (!numberOMFound) {
+                    obs.next('NoOMFound');
                 }
               },
               err => {
