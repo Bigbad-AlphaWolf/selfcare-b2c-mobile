@@ -66,7 +66,7 @@ export class MyFormulePage implements OnInit {
     this.formuleService.getAllCountriesWithTarifs().subscribe((res: TarifZoningByCountryModel[])=>{
       this.listTarifsInternationaux = res;
       if(this.listTarifsInternationaux.length){
-        this.tarifsByCountry = {tarifAppel: this.listTarifsInternationaux[0].zone.tarifs ? this.listTarifsInternationaux[0].zone.tarifs.tarifAppel : '', tarifSms: this.listTarifsInternationaux[0].zone.tarifs ? this.listTarifsInternationaux[0].zone.tarifs.tarifSms : ''};
+        this.tarifsByCountry = {tarifAppel: this.listTarifsInternationaux[0].zone.tarifFormule ? this.listTarifsInternationaux[0].zone.tarifFormule.tarifAppel : '', tarifSms: this.listTarifsInternationaux[0].zone.tarifFormule ? this.listTarifsInternationaux[0].zone.tarifFormule.tarifSms : ''};
       }
     })
   }
@@ -83,7 +83,7 @@ export class MyFormulePage implements OnInit {
     const selectedTarifs = this.listTarifsInternationaux.find((value: TarifZoningByCountryModel)=>{
       return value.name === selectCountry;
     })
-    this.tarifsByCountry = selectedTarifs.zone.tarifs;    
+    this.tarifsByCountry = selectedTarifs.zone.tarifFormule;    
   }
 
   processInfosFormules() {
