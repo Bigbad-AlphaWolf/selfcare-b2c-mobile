@@ -67,7 +67,7 @@ export class TransferCreditBonusOmPage implements OnInit {
   ngOnInit() {
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter(){    
     if (this.route.snapshot) {
       this.operationType = this.route.snapshot.paramMap.get('type');
     }
@@ -80,6 +80,8 @@ export class TransferCreditBonusOmPage implements OnInit {
       this.step = 'CHOOSE_TRANSFER';
       this.getSoldeRechargementAndBonus();
     }
+    console.log(this.operationType,': operation;',this.step,' :step');
+    
   }
 
   setChoice(choice) {
