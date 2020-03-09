@@ -89,7 +89,6 @@ export class ListPassInternetV2Component implements OnInit, OnDestroy {
   slideChanged() {
     this.sliders.getActiveIndex().then(index => {
       this.activeTabIndex = index;
-      console.log('index', index);
     });
   }
 

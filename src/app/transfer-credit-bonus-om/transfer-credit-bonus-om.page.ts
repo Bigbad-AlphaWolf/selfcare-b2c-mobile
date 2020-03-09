@@ -79,9 +79,7 @@ export class TransferCreditBonusOmPage implements OnInit {
     } else {
       this.step = 'CHOOSE_TRANSFER';
       this.getSoldeRechargementAndBonus();
-    }
-    console.log(this.operationType,': operation;',this.step,' :step');
-    
+    }    
   }
 
   setChoice(choice) {

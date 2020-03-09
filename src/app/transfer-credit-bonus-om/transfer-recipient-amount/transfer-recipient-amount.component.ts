@@ -140,9 +140,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
   }
 
   getOmPhoneNumber() {
-    this.omService.getOmMsisdn().subscribe(msisdn => {
-      console.log(msisdn,'msisdn');
-      
+    this.omService.getOmMsisdn().subscribe(msisdn => {      
       if(msisdn !== 'error'){
         this.omPhoneNumber = msisdn;
         this.checkOMToken(msisdn);
