@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { NoOMAccountPopupComponent } from 'src/shared/no-omaccount-popup/no-omaccount-popup.component';
@@ -21,9 +21,9 @@ import { Router } from '@angular/router';
   templateUrl: './transfer-recipient-amount.component.html',
   styleUrls: ['./transfer-recipient-amount.component.scss']
 })
-export class TransferRecipientAmountComponent implements OnInit {
-  formAmount: FormGroup;
-  formDest: FormGroup;
+export class TransferRecipientAmountComponent implements OnInit, OnChanges {
+  formAmount: FormGroup = null;
+  formDest: FormGroup = null;
   @Input() step = 'SAISIE_MONTANT';
   @Input() type;
   @Output() nextStepEmitter = new EventEmitter();
@@ -60,7 +60,6 @@ export class TransferRecipientAmountComponent implements OnInit {
 
   ngOnInit() {
     this.userCurrentNumber = this.dashService.getCurrentPhoneNumber();
-    this.getOmPhoneNumber();
     if (this.orangeMoney) {
       this.formAmount = this.formBuilder.group({
         amount: [
@@ -74,7 +73,9 @@ export class TransferRecipientAmountComponent implements OnInit {
           [Validators.required, Validators.pattern(REGEX_NUMBER_OM)]
         ]
       });
-    } else {
+      this.getOmPhoneNumber();
+
+    } else {      
       this.formAmount = this.formBuilder.group({
         amount: ['', [Validators.required, Validators.min(100)]]
       });
@@ -84,8 +85,43 @@ export class TransferRecipientAmountComponent implements OnInit {
           [Validators.required, Validators.pattern(REGEX_NUMBER)]
         ]
       });
+
     }
   }
+
+  ngOnChanges(changes: SimpleChanges){    
+    if(changes.consoDetails && changes.consoDetails.currentValue){      
+      if (this.orangeMoney) {
+        this.formAmount = this.formBuilder.group({
+          amount: [
+            '',
+            [Validators.required, Validators.min(1), Validators.max(2000000)]
+          ]
+        });
+        this.formDest = this.formBuilder.group({
+          phoneNumber: [
+            '',
+            [Validators.required, Validators.pattern(REGEX_NUMBER_OM)]
+          ]
+        });
+        this.getOmPhoneNumber();
+  
+      } else {      
+        this.formAmount = this.formBuilder.group({
+          amount: ['', [Validators.required, Validators.min(100)]]
+        });
+        this.formDest = this.formBuilder.group({
+          phoneNumber: [
+            '',
+            [Validators.required, Validators.pattern(REGEX_NUMBER)]
+          ]
+        });
+  
+      }
+    }
+  }
+
+
 
   openModalNoOMAccount(recipientInfos: {
     phoneNumber: string;
@@ -104,14 +140,15 @@ export class TransferRecipientAmountComponent implements OnInit {
   }
 
   getOmPhoneNumber() {
-    this.omService.getOmMsisdn().subscribe(msisdn => {
+    this.omService.getOmMsisdn().subscribe(msisdn => {      
       if(msisdn !== 'error'){
         this.omPhoneNumber = msisdn;
         this.checkOMToken(msisdn);
       }else{        
         this.router.navigate(['/see-solde-om'])
       }
-    });
+    }
+    );
   }
 
   suivant() {

@@ -286,6 +286,11 @@ export class ActivationOmComponent implements OnInit {
         this.resendCode = false;
         this.showResendCodeBtn(30);
       }
+    }, (__)=>{
+      this.checkingToken = false;
+      this.sendOTPLoader = false;
+      this.resendCode = false;
+      this.showResendCodeBtn(2);
     });
   }
 
