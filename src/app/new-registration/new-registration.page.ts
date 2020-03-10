@@ -86,7 +86,7 @@ export class NewRegistrationPage implements OnInit {
           this.authServ.confirmMsisdnByNetwork(msisdn).subscribe(
             (response: ConfirmMsisdnModel) => {
               this.gettingNumber = false;
-              if (response.status) {
+              if (response !== undefined && response && response.status) {
                 this.numberGot = true;
                 this.phoneNumber = response.msisdn;
                 this.hmac = response.hmac;

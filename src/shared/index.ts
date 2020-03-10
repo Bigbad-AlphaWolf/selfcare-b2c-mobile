@@ -615,3 +615,44 @@ export interface UserConsommation {
 }
 
 export const CGU_FILE_NAME = 'cgu_orangeetmoi.pdf';
+
+export interface PurchaseModel {
+  typeAchat: string;
+  amount: number;
+  name: string;
+  channel: string;
+  operationDate: string;
+  operationType: 'DEBIT' | 'CREDIT';
+  details: any[];
+}
+
+/**
+ * Compare two semver versions. Returns true if version A is greater than
+ * version B.
+ * Version A is the version from the server.
+ * Version B is the installed version.
+ */
+export function isNewVersion(versionA, versionB) {
+  const versionsA = versionA.split(/\./g),
+    versionsB = versionB.split(/\./g);
+  while (versionsA.length || versionsB.length) {
+    const a = Number(versionsA.shift()), b = Number(versionsB.shift());
+    if (a === b) {
+      continue;
+    }
+    return (a > b || isNaN(b));
+  }
+  return false;
+}
+export interface TarifZoningByCountryModel {
+  name?: string;
+  indicatif?: string;
+  zone?: { name: string, tarifFormule: { tarifAppel: any, tarifSms: any}};
+}
+
+export interface NotificationInfoModel {
+  codeFormule: string;
+  firebaseId: string;
+  msisdn: string;
+}
+

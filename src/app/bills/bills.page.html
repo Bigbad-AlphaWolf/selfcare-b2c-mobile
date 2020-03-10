@@ -36,17 +36,19 @@
                       <div class="bill-infos-container">
                           <div class="top-infos">
                               <span
-                                  >{{months[bills[0].moisfact - 1] }}
-                                  {{ bills[0].annefact }}</span
+                              *ngIf=" bills[0]?.moisfact">{{months[bills[0]?.moisfact - 1] }}
+                                  {{ bills[0]?.annefact }}</span
                               >
+                              <span
+                                  *ngIf=" bills[0]?.mois">{{ months[ bills[0]?.mois - 1] }}
+                                      {{  bills[0]?.annee }}</span
+                                  >
                               <span
                                   *ngIf="!bordereau"
                                   [ngClass]="{
-                                      'paid-status': bills[0].statutFacture === 'paid',
-                                        'unpaid-status': bills[0].statutFacture === 'unpaid'
-                                  }"
-                                  >{{ bills[0].statutFacture }}</span
-                              >
+                                      'paid-status': bills[0]?.statutFacture ==='paid',
+                                    'unpaid-status': bills[0]?.statutFacture ==='unpaid'
+                                }">{{ bills[0]?.statutFacture ==='paid'? 'Payée' : 'Impayée' }}</span>
                               <span *ngIf="bordereau" class="amount scb-text-orange">{{ bills[0].total }} F</span>
                           </div>
                           <div class="bottom-infos" *ngIf="!bordereau">
@@ -109,16 +111,20 @@
                           <div class="item-bill-infos">
                               <div class="bill-status">
                                   <span
-                                      >{{ months[bill?.moisfact - 1] }}
+                                  *ngIf="bill?.moisfact">{{ months[bill?.moisfact - 1] }}
                                       {{ bill?.annefact }}</span
+                                  >
+                                  <span
+                                  *ngIf="bill?.mois">{{ months[bill?.mois - 1] }}
+                                      {{ bill?.annee }}</span
                                   >
                                   <span
                                       *ngIf="!bordereau"
                                       [ngClass]="{
-                                        'paid-status': bill?.statutFacture === 'PAYEE',
-                                        'unpaid-status': bill?.statutFacture === 'ND'
+                                        'paid-status': bill?.statutFacture === 'paid',
+                                        'unpaid-status': bill?.statutFacture === 'unpaid'
                                     }"
-                                      >{{ bill?.statutFacture }}</span
+                                      >{{ bill?.statutFacture ==='paid'? 'Payée' : 'Impayée' }}</span
                                   >
                                   <span *ngIf="bordereau" class="scb-text-orange amount">{{ bill?.total }} F</span>
                               </div>

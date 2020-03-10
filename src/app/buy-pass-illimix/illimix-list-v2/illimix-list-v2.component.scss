@@ -35,6 +35,10 @@
         stroke: $orange;
       }
     }
+    &-alert {
+      width: 96%;
+      margin: 10px auto;
+  }
     &-top-text {
       padding-top: 20px;
       background-color: $white;

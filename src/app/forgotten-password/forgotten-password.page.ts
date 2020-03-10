@@ -117,7 +117,6 @@ export class ForgottenPasswordPage implements OnInit {
         this.error_message = 'Ce numéro ne possède pas de compte';
       },
       (err: any) => {
-        console.log(err);
         this.checkingNumber = false;
         //  && err.error && err.error.errorKey === 'userexists'
         if (err.status === 400) {
@@ -136,9 +135,9 @@ export class ForgottenPasswordPage implements OnInit {
     const password = this.formPassword.value.password;
     const passwordConfirm = this.formPassword.value.passwordConfirmation;
     if (password === passwordConfirm) {
-      if(password.length < 5){
-        this.error_message = "le mot de passe doit avoir au minumum 5 caractères";
-      }else {
+      if (password.length < 5) {
+        this.error_message = 'le mot de passe doit avoir au minumum 5 caractères';
+      } else {
 
         this.resetingPwd = true;
         this.resetPasswordPayload.newPassword = password;
@@ -156,7 +155,7 @@ export class ForgottenPasswordPage implements OnInit {
                 this.error_message = 'Le code saisi est incorrect';
               } else {
                 this.error_message =
-                  "Le nouveau mot de passe saisi n'est pas autorisé";
+                  'Le nouveau mot de passe saisi n\'est pas autorisé';
               }
             } else if (err.status === 503) {
               this.error_message = 'Service momentanément indisponible';

@@ -3,15 +3,14 @@
 .suivi_conso-page {
     width: 100%;
     height: 100%;
-    background-color: $grayDashboard;
+    // background-color: $grayDashboard;
     overflow-y: auto;
 
     .suivi_conso_label-and-arrow-block {
         width: 100%;
         height: 50px;
         background-color: $white;
-
-        position: fixed;
+        // position: fixed;
         top: 0px;
 
         .arrow-left-container {
@@ -34,6 +33,31 @@
             color: $black;
         }
     }
+
+    .suivi-conso-page-body {
+        // margin-top: 70px;
+        width: 100%;
+        height: calc(100% - 70px);
+        .conso-tab-category {
+            display: flex;
+            span {
+                font-family: HelveticaNeueLTStd-Roman;
+                font-size: 18px;
+            }
+            .spinner {
+                .mat-spinner::ng-deep circle {
+                    stroke: $orange;
+                }
+            }
+            &.selected {
+                span {
+                    font-family: HelveticaNeueLTStd-Bd;
+                    color: $orange;
+                }
+            }
+        }
+    }
+
 
     .profil-spinner {
         padding-top: 65px;

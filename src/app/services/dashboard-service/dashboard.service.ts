@@ -1,7 +1,22 @@
 import { Injectable, Renderer2, Inject, RendererFactory2 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Subject, Observable, interval, throwError, Subscription, of } from 'rxjs';
-import { tap, delay, map, shareReplay, retryWhen, flatMap } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  Subject,
+  Observable,
+  interval,
+  throwError,
+  Subscription,
+  of
+} from 'rxjs';
+import {
+  tap,
+  delay,
+  map,
+  shareReplay,
+  retryWhen,
+  flatMap
+} from 'rxjs/operators';
 import * as SecureLS from 'secure-ls';
 import { DOCUMENT } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
@@ -41,8 +56,8 @@ const transferCreditEndpoint = `${SERVER_API_URL}/${SEDDO_SERVICE}/api/seddo/tra
 const transferbonusEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/transfert-bonus`;
 
 // buy pass by credit endpoints
-const buyPassInternetByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/internet`;
-const buyPassIllimixByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/illimix`;
+const buyPassInternetByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/v1/internet`;
+const buyPassIllimixByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/v1/illimix`;
 const listPassIllimixEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-illimix-by-formule`;
 const listPassInternetEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-internets-by-formule`;
 const listFormulesEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/formule-mobiles`;
@@ -61,7 +76,7 @@ const sargalBalanceEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/`;
 const welcomeStatusEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters`;
 
 // Endpoint promoBooster active
-const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/`;
+const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters/active-boosters`;
 
 @Injectable({
   providedIn: 'root'
@@ -77,12 +92,12 @@ export class DashboardService {
   screenWatcher: Subscription;
   isMobile = true;
   constructor(
-    rendererFactory: RendererFactory2,
-    @Inject(DOCUMENT) private _document,
+    // rendererFactory: RendererFactory2,
+    // @Inject(DOCUMENT) private _document,
     private http: HttpClient,
     private authService: AuthenticationService
   ) {
-    this.renderer = rendererFactory.createRenderer(null, null);
+    // this.renderer = rendererFactory.createRenderer(null, null);
     authService.currentPhoneNumberSetSubject.subscribe(value => {
       if (value) {
         this.user = this.authService.getLocalUserInfos();
@@ -118,9 +133,32 @@ export class DashboardService {
     return this.http.get(`${userConsoEndpoint}/${this.msisdn}`);
   }
 
+  getCurrentDate() {
+    const date = new Date();
+    const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
+      '0' +
+      (date.getMonth() + 1)
+    ).slice(-2)}/${date.getFullYear()}`;
+    const lastDateTime =
+      `${date.getHours()}h` +
+      (date.getMinutes() < 10 ? '0' : '') +
+      date.getMinutes();
+    return `${lastDate} à ${lastDateTime}`;
+  }
+
   getPostpaidUserConsoInfos() {
     this.msisdn = this.getCurrentPhoneNumber();
-    return this.http.get(`${postpaidUserConsoEndpoint}/${this.msisdn}`);
+    return this.http.get(`${postpaidUserConsoEndpoint}/${this.msisdn}`).pipe(
+      map(
+        (res: any) => {
+          return this.processConso(res);
+        },
+        error => {
+          const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
+          return lastLoadedConso;
+        }
+      )
+    );
   }
 
   getPostpaidConsoHistory(day) {
@@ -158,7 +196,11 @@ export class DashboardService {
   }
 
   // attach new mobile phone number
-  registerNumberToAttach(detailsToCheck: { login: string; numero: string; typeNumero: 'MOBILE' | 'FIXE' }) {
+  registerNumberToAttach(detailsToCheck: {
+    login: string;
+    numero: string;
+    typeNumero: 'MOBILE' | 'FIXE';
+  }) {
     detailsToCheck.login = this.authService.getUserMainPhoneNumber();
     return this.http.post(
       `${attachMobileNumberEndpoint}/register`,
@@ -192,35 +234,35 @@ export class DashboardService {
     return this.authService.getUserMainPhoneNumber();
   }
 
-  addDimeloScript() {
-    // Dimelo user information
-    const userInfos = ls.get('user');
-    const fullName = userInfos.firstName + ' ' + userInfos.lastName;
-    const s = this.renderer.createElement('script');
-    s.type = 'text/javascript';
-    s.text =
-      'var _chatq = _chatq || [];' +
-      '_chatq.push(["_setIdentity", {' +
-      '"screenname": "' +
-      fullName +
-      '",' + // full name
-      '"avatar_url": "https://orangeetmoi.orange.sn/content/icons/icon-72x72.png",' + // ibou image
-      '"firstname": "' +
-      userInfos.firstName +
-      '",' +
-      '"lastname": "' +
-      userInfos.lastName +
-      '",' +
-      '"email": "",' +
-      '"uuid": "' +
-      userInfos.numero +
-      '",' +
-      '"extra_values": {' +
-      '"customer_id": "' +
-      userInfos.numero +
-      '"}}]);';
-    this.renderer.appendChild(this._document.body, s);
-  }
+  // addDimeloScript() {
+  //   // Dimelo user information
+  //   const userInfos = ls.get('user');
+  //   const fullName = userInfos.firstName + ' ' + userInfos.lastName;
+  //   const s = this.renderer.createElement('script');
+  //   s.type = 'text/javascript';
+  //   s.text =
+  //     'var _chatq = _chatq || [];' +
+  //     '_chatq.push(["_setIdentity", {' +
+  //     '"screenname": "' +
+  //     fullName +
+  //     '",' + // full name
+  //     '"avatar_url": "https://orangeetmoi.orange.sn/content/icons/icon-72x72.png",' + // ibou image
+  //     '"firstname": "' +
+  //     userInfos.firstName +
+  //     '",' +
+  //     '"lastname": "' +
+  //     userInfos.lastName +
+  //     '",' +
+  //     '"email": "",' +
+  //     '"uuid": "' +
+  //     userInfos.numero +
+  //     '",' +
+  //     '"extra_values": {' +
+  //     '"customer_id": "' +
+  //     userInfos.numero +
+  //     '"}}]);';
+  //   this.renderer.appendChild(this._document.body, s);
+  // }
 
   getAccountInfo(userLogin: string) {
     return this.http
@@ -236,9 +278,31 @@ export class DashboardService {
       const params = consoCodes.map(code => `code=${code}`).join('&');
       queryParams = `?${params}`;
     }
-    return this.http.get(
-      `${userConsoByCodeEndpoint}/${this.msisdn}${queryParams}`
-    );
+    return this.http
+      .get(`${userConsoByCodeEndpoint}/${this.msisdn}${queryParams}`)
+      .pipe(
+        map(
+          (res: any) => {
+            return this.processConso(res);
+          },
+          error => {
+            const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
+            return lastLoadedConso;
+          }
+        )
+      );
+  }
+
+  processConso(conso: any) {
+    if (conso && conso.length) {
+      const lastUpdateConsoDate = this.getCurrentDate();
+      ls.set(`lastConso_${this.msisdn}`, conso);
+      ls.set(`lastUpdateConsoDate_${this.msisdn}`, lastUpdateConsoDate);
+      return conso;
+    } else {
+      const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
+      return lastLoadedConso;
+    }
   }
 
   getUserConso(day) {
@@ -297,8 +361,10 @@ export class DashboardService {
 
   getIdClient() {
     const phoneNumber = this.getCurrentPhoneNumber();
-    return this.authService.getSubscriptionCustomerOffer(phoneNumber).pipe(map((response: any) => response.clientCode));
-}
+    return this.authService
+      .getSubscriptionCustomerOffer(phoneNumber)
+      .pipe(map((response: any) => response.clientCode));
+  }
 
   getCodeFormuleOfMsisdn(msisdn: string) {
     let res: any;
@@ -322,8 +388,10 @@ export class DashboardService {
     );
   }
 
-  getActivePromoBooster() {
-    // return this.http.get(`${promoBoosterActiveEndpoint}`);
-    return of({ isPromoPassActive: false, isPromoRechargeActive: false });
+  getActivePromoBooster(msisdn: string, code: string) {
+    return this.http.get(
+      `${promoBoosterActiveEndpoint}?msisdn=${msisdn}&code=${code}`
+    );
+    // return of({ isPromoPassActive: false, isPromoRechargeActive: false });
   }
 }

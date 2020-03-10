@@ -63,10 +63,12 @@ export class BuyPassInternetPage implements OnInit {
   ngOnInit() {
     this.currentUserNumber = this.dashServ.getCurrentPhoneNumber();
     this.checkUserIsPostPaid();
+    this.pageAccessUrl = this.router.url;
   }
 
-  ionViewDidEnter() {
+  ionViewWillEnter() {
     this.currentUserNumber = this.dashServ.getCurrentPhoneNumber();
+    this.step = 0;
     this.checkUserIsPostPaid();
   }
 
@@ -93,7 +95,6 @@ export class BuyPassInternetPage implements OnInit {
           this.step = 1;
           this.choosedPaymentMod = PAYMENT_MOD_OM;
         } else if (this.idPassSelected) {
-          console.log(this.idPassSelected);
           this.destinataire = this.currentUserNumber;
           // this.choosedPaymentMod = PAYMENT_MOD_CREDIT;
           // if (this.currentFormule === HOME_PREPAID_FORMULE) {
@@ -113,12 +114,11 @@ export class BuyPassInternetPage implements OnInit {
         } else {
           this.destCodeFormule = souscription.code;
           this.destinataire = this.currentUserNumber;
-          this.pageAccessUrl = this.router.url;
-          console.log('pageAccessUrl:' + this.pageAccessUrl);
-          if (this.pageAccessUrl.match('buy-pass-internet-by-om')) {
+          // remove check on urls for deeplinks
+          if (this.router.url.match('buy-pass-internet-by-om')) {
             this.choosedPaymentMod = 'ORANGE_MONEY';
             this.step = 2;
-          } else if (this.pageAccessUrl.match('buy-pass-internet-by-credit')) {
+          } else if (this.router.url.match('buy-pass-internet-by-credit')) {
             this.choosedPaymentMod = 'CREDIT';
             this.step = 2;
           }
@@ -153,7 +153,7 @@ export class BuyPassInternetPage implements OnInit {
     this.destinataire = destNumberInfos.destinataire;
     this.destCodeFormule = destNumberInfos.code;
     this.goToNextStep();
-    if (destNumberInfos !== this.currentUserNumber) {
+    if (destNumberInfos.destinataire !== this.currentUserNumber) {
       this.followAnalyticsService.registerEventFollow(
         'Pass_Internet_ChoixDestinataire',
         'event',
@@ -285,6 +285,7 @@ export class BuyPassInternetPage implements OnInit {
         followDetails
       );
     } else {
+      this.failed = false;
       const followDetails = {
         option_name: this.purchasePass.pass.nom,
         amount: this.purchasePass.pass.tarif,

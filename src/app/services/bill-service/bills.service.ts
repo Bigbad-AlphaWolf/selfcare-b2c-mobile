@@ -13,6 +13,8 @@ import * as SecureLS from 'secure-ls';
 import { Platform } from '@ionic/angular';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { tap, map } from 'rxjs/operators';
+const ls = new SecureLS({ encodingType: 'aes' });
 const { BILL_SERVICE, SERVER_API_URL } = environment;
 const billsPackageDownloadEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/download-bordereau-fixe`;
 const lastSlipEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/last-bordereau`;
@@ -42,156 +44,149 @@ export class BillsService {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
   }
 
-  /* getBills() {
-    const login = this.dashboardService.getCurrentPhoneNumber();
-    return this.http.get(`${billsEndpoint}/${login}`);
-  } */
-  getBills(numClient: string) {
-    return this.http.get(`${billsEndpoint}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`);
-}
+  getBillsMobile(numClient: string) {
+    this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
+    return this.http
+      .get(
+        `${billsDetailEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`
+      )
+      .pipe(
+        tap(
+          el =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Success',
+              'event',
+              this.currentNumber
+            ),
+          err =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Error',
+              'error',
+              this.currentNumber
+            )
+        )
+      );
+  }
   getBillsPackage(numClient: string) {
-    return this.http.get(`${billsEndpoint}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=LANDLINE&size=20&page=0`);
-  }
-  getBillsAPI(numClient: string) {
-    return this.http.get(
-      `${billsEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`
-    );
-  }
-  getBillsPackageAPI(numClient: string) {
-    return this.http.get(
-      `${billsEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=LANDLINE&size=20&page=0`
-    );
-  }
-
-  getUserBillsPackage(numClient: string) {
-    this.getBillsPackage(numClient).subscribe(
-        (res: any[]) => {
-          this.followServ.registerEventFollow('Factures_Bordereaux_Fixe_Success','event', this.currentNumber);
-            this.getBillsPackageSubject.next(res);
-        },
-        () => {
-          this.followServ.registerEventFollow('Factures_Bordereaux_Fixe_Error', 'error',this.currentNumber);
-            this.getBillsPackageSubject.next('error');
-        }
-    );
-}
-
-  /* getUserBills() {
-    this.getBills().subscribe(
-      (res: any[]) => {
-        res.sort((x, y) => {
-          if (x.annee === y.annee) {
-            return y.mois - x.mois;
-          } else {
-            return y.annee - x.annee;
+    this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
+    return this.http
+      .get(
+        `${billsEndpoint}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=LANDLINE&size=20&page=0`
+      )
+      .pipe(
+        tap(
+          (billsPackage: any) => {
+            if (billsPackage && billsPackage.length) {
+              this.followServ.registerEventFollow(
+                'Bordereaux_Fixe_Success',
+                'event',
+                this.currentNumber
+              );
+              ls.set(`lastBillsPackage_${this.currentNumber}`, billsPackage);
+              return billsPackage;
+            } else {
+              const lastLoadedBillsPackage = ls.get(
+                `lastBillsPackage_${this.currentNumber}`
+              );
+              return lastLoadedBillsPackage;
+            }
+          },
+          err => {
+            this.followServ.registerEventFollow(
+              'Birdereaux_Fixe_Error',
+              'error',
+              this.currentNumber
+            );
           }
-        });
+        )
+      );
+  }
 
-        this.getBillsSubject.next(res);
-      },
-      err => {
-        this.getBillsSubject.next('error');
-      }
-    );
-  } */
-  getUserBills(numClient: string) {
-    this.getBills(numClient).subscribe(
-        (res: any[]) => {
-            res.sort((x, y) => {
-                if (x.annee === y.annee) {
-                    return y.mois - x.mois;
-                } else {
-                    return y.annee - x.annee;
-                }
-            });
-            this.followServ.registerEventFollow('Factures_Bordereaux_Mobile_Success', 'event', this.currentNumber)
-            // FollowAnalytics.logEvent('Factures_Bordereaux_Mobile_Success', this.currentNumber);
-            this.getBillsSubject.next(res);
-        },
-        () => {
-          this.followServ.registerEventFollow('Factures_Bordereaux_Mobile_Error', 'error', this.currentNumber)
-            // FollowAnalytics.logEvent('Factures_Bordereaux_Mobile_Error', this.currentNumber);
-            this.getBillsSubject.next('error');
-        }
-    );
-}
-
-  getUserBillsAPI(idClient: string) {
-    this.getBillsAPI(idClient).subscribe(
-      (res: any[]) => {
-        res.sort((x, y) => {
-          if (x.annee === y.annee) {
-            return y.mois - x.mois;
-          } else {
-            return y.annee - x.annee;
+  getFactureMobile(numClient: string) {
+    // api/v1/facture/365915?type=MOBILE&search=year:2019,month:11
+    this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
+    return this.http
+      .get(
+        `${billsDetailEndpointAPI}/${numClient}?type=MOBILE&search=phoneNumber:${this.currentNumber}&sort=year,desc&sort=month,desc`
+      )
+      .pipe(
+        map(
+          (bills: any) => {
+            if (bills && bills.length) {
+              this.followServ.registerEventFollow(
+                'Factures_Mobile_Success',
+                'event',
+                this.currentNumber
+              );
+              ls.set(`lastBills_${this.currentNumber}`, bills);
+              return bills;
+            } else {
+              const lastLoadedBills = ls.get(`lastBills_${this.currentNumber}`);
+              return lastLoadedBills;
+            }
+          },
+          err => {
+            this.followServ.registerEventFollow(
+              'Factures_Mobile_Error',
+              'error',
+              this.currentNumber
+            );
           }
-        });
-
-        this.getBillsSubject.next(res);
-      },
-      () => {
-        this.getBillsSubject.next('error');
-      }
-    );
-  }
-/* 
-  getBillsPackage(numClient: string) {
-    return this.http.get(`${billsPackageEndpoint}/${numClient}/0/500`);
-  }
- */
-  /* getUserBillsPackage(numClient: string) {
-    this.getBillsPackage(numClient).subscribe(
-      (res: any[]) => {
-        this.getBillsPackageSubject.next(res);
-      },
-      err => {
-        this.getBillsPackageSubject.next('error');
-      }
-    );
-  } */
-
-  getUserBillsPackageAPI(numClient: string) {
-    this.getBillsPackageAPI(numClient).subscribe(
-      (res: any[]) => {
-        this.getBillsPackageSubject.next(res);
-      },
-      () => {
-        this.getBillsPackageSubject.next('error');
-      }
-    );
+        )
+      );
   }
 
-  getBillsDetailAPI(payload: {
+  getBillsDetail(payload: {
     numClient: string;
     groupage: string;
     mois: number;
     annee: number;
   }) {
-    //api/v1/facture/365915?type=MOBILE&search=year:2019,month:11
+    // api/v1/facture/365915?type=MOBILE&search=year:2019,month:11
     if (this.currentNumber.startsWith('33')) {
-      return this.http.get(
-        `${billsDetailEndpointAPI}/${payload.numClient}?type=LANDLINE&search=year:${payload.annee},month:${payload.mois}`
-      );
+      return this.http
+        .get(
+          `${billsDetailEndpoint}/${payload.numClient}?type=LANDLINE&search=year:${payload.annee},month:${payload.mois}`
+        )
+        .pipe(
+          tap(
+            el =>
+              this.followServ.registerEventFollow(
+                'Factures_Fixe_Success',
+                'event',
+                this.currentNumber
+              ),
+            err =>
+              this.followServ.registerEventFollow(
+                'Factures_Fixe_Error',
+                'error',
+                this.currentNumber
+              )
+          )
+        );
     } else {
-      return this.http.get(
-        `${billsDetailEndpointAPI}/${payload.numClient}?type=MOBILE&search=year:${payload.annee},month:${payload.mois}`
-      );
+      return this.http
+        .get(
+          `${billsDetailEndpoint}/${payload.numClient}?type=MOBILE&search=year:${payload.annee},month:${payload.mois}`
+        )
+        .pipe(
+          tap(
+            el =>
+              this.followServ.registerEventFollow(
+                'Factures_Mobile_Success',
+                'event',
+                this.currentNumber
+              ),
+            err =>
+              this.followServ.registerEventFollow(
+                'Factures_Mobile_Error',
+                'error',
+                this.currentNumber
+              )
+          )
+        );
     }
   }
-
-  getBillsDetail(payload: { numClient: string; groupage: string; mois: number; annee: number }) {
-    //api/v1/facture/365915?type=MOBILE&search=year:2019,month:11
-    if (this.currentNumber.startsWith('33')) {
-        return this.http.get(
-            `${billsDetailEndpoint}/${payload.numClient}?type=LANDLINE&search=year:${payload.annee},month:${payload.mois}`
-        );
-    } else {
-        return this.http.get(
-            `${billsDetailEndpoint}/${payload.numClient}?type=MOBILE&search=year:${payload.annee},month:${payload.mois}`
-        );
-    }
-}
-
 
   getUserBillsDetail(payload: {
     numClient: string;
@@ -211,37 +206,10 @@ export class BillsService {
 
   downloadBill(bill: any) {
     if (bill.contentNotNull) {
-    if (this.platform.is('ios')) {
-    }
-    this.inAppBrowser.create(bill.url, '_system');
-    /* this.http.get(bill.url).subscribe(
-      (x: any) => {
-        bill.downloading = false;
-        const fileName = bill.numeroFacture + '.pdf';
-        this.file
-          .writeFile(
-            path,
-            fileName,
-            this.convertBase64ToBlob(x.file, 'application/pdf'),
-            { replace: true }
-          )
-          .then(() => {
-            this.fileOpener
-              .open(path + fileName, 'application/pdf')
-              .catch(() => {
-                // log error console.log('Error opening pdf file');
-              });
-          })
-          .catch(() => {
-            // log error console.error('Error writing pdf file');
-          });
-      },
-      () => {
-        bill.downloading = false;
-        this.openNotAvailableDialog();
+      if (this.platform.is('ios')) {
       }
-    ); */
-  } else{
+      this.inAppBrowser.create(bill.url, '_system');
+    } else {
       this.openNotAvailableDialog();
     }
   }
@@ -249,17 +217,19 @@ export class BillsService {
   downloadUserBill(bill: any) {
     bill.downloading = true;
     this.downloadBill(bill);
-  }
-  downloadUserBillAPI(bill: any) {
-    // FollowAnalytics.logEvent('download_bill', this.currentNumber);
-    bill.downloading = true;
-
-    const pdfWindow = window.open('');
-    pdfWindow.document.write(
-      "<iframe width='100%' height='100%' src='" + bill.url + "'></iframe>"
-    );
     bill.downloading = false;
   }
+  // downloadUserBillAPI(bill: any) {
+  //   // FollowAnalytics.logEvent('download_bill', this.currentNumber);
+  //   bill.downloading = true;
+
+  //   const pdfWindow = window.open('');
+  //   pdfWindow.document.write(
+  //     // tslint:disable-next-line: quotemark
+  //     "<iframe width='100%' height='100%' src='" + bill.url + "'></iframe>"
+  //   );
+  //   bill.downloading = false;
+  // }
   convertBase64ToBlob(b64Data, contentType): Blob {
     contentType = contentType || '';
     const sliceSize = 512;
@@ -303,16 +273,16 @@ export class BillsService {
     window.location.href = MAIL_URL;
   }
 
-  downloadBillPackage(billPack: any) {
-    const numeroClient = billPack.ncli;
-    const mois = billPack.moisfact;
-    const annee = billPack.annefact;
-    const tranche = billPack.tranche;
-    const groupage = billPack.groupage;
-    return this.http.get(
-      `${billsPackageDownloadEndpoint}/pdf/${numeroClient}/${mois}/${annee}/${tranche}/${groupage}`
-    );
-  }
+  // downloadBillPackage(billPack: any) {
+  //   const numeroClient = billPack.ncli;
+  //   const mois = billPack.moisfact;
+  //   const annee = billPack.annefact;
+  //   const tranche = billPack.tranche;
+  //   const groupage = billPack.groupage;
+  //   return this.http.get(
+  //     `${billsPackageDownloadEndpoint}/pdf/${numeroClient}/${mois}/${annee}/${tranche}/${groupage}`
+  //   );
+  // }
 
   downloadUserBillPackageAPI(billPack: any) {
     // FollowAnalytics.logEvent('download_bill', this.currentNumber);
@@ -320,42 +290,45 @@ export class BillsService {
 
     const pdfWindow = window.open('');
     pdfWindow.document.write(
+      // tslint:disable-next-line: quotemark
       "<iframe width='100%' height='100%' src='" + billPack.url + "'></iframe>"
     );
     billPack.downloading = false;
   }
 
-  downloadUserBillPackage(billPack: any) {
-    billPack.downloading = true;
-    this.downloadBillPackage(billPack).subscribe(
-      (res: any) => {
-        billPack.downloading = false;
-        const base64 = res.file;
-        if (navigator.userAgent.match(/crios|CriOS/i)) {
-          // Only for chrome on IOS
-          const pdfWindow = window.open('');
-          pdfWindow.document.write(
-            "<iframe width='100%' height='100%' src='data:application/pdf;base64, " +
-              encodeURI(base64) +
-              "'></iframe>"
-          );
-        } else {
-          const linkSource = `data:application/pdf;base64,${base64}`;
-          const downloadLink = document.createElement('a');
-          const fileName = `FACTURE_${billPack.ncli}`;
-          downloadLink.href = linkSource;
-          downloadLink.download = fileName;
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
-          document.body.removeChild(downloadLink);
-        }
-      },
-      () => {
-        billPack.downloading = false;
-        this.openNotAvailableDialog();
-      }
-    );
-  }
+  // downloadUserBillPackage(billPack: any) {
+  //   billPack.downloading = true;
+  //   this.downloadBillPackage(billPack).subscribe(
+  //     (res: any) => {
+  //       billPack.downloading = false;
+  //       const base64 = res.file;
+  //       if (navigator.userAgent.match(/crios|CriOS/i)) {
+  //         // Only for chrome on IOS
+  //         const pdfWindow = window.open('');
+  //         pdfWindow.document.write(
+  //           // tslint:disable-next-line: quotemark
+  //           "<iframe width='100%' height='100%' src='data:application/pdf;base64, " +
+  //             encodeURI(base64) +
+  //             // tslint:disable-next-line: quotemark
+  //             "'></iframe>"
+  //         );
+  //       } else {
+  //         const linkSource = `data:application/pdf;base64,${base64}`;
+  //         const downloadLink = document.createElement('a');
+  //         const fileName = `FACTURE_${billPack.ncli}`;
+  //         downloadLink.href = linkSource;
+  //         downloadLink.download = fileName;
+  //         document.body.appendChild(downloadLink);
+  //         downloadLink.click();
+  //         document.body.removeChild(downloadLink);
+  //       }
+  //     },
+  //     () => {
+  //       billPack.downloading = false;
+  //       this.openNotAvailableDialog();
+  //     }
+  //   );
+  // }
 
   getIdClient() {
     return this.dashboardService.getIdClient();

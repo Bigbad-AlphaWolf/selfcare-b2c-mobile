@@ -58,6 +58,7 @@ export class TransferRecipientAmountComponent implements OnInit {
 
   ngOnInit() {
     this.userCurrentNumber = this.dashService.getCurrentPhoneNumber();
+    this.getOmPhoneNumber();
     if (this.orangeMoney) {
       this.formAmount = this.formBuilder.group({
         amount: [
@@ -262,7 +263,7 @@ export class TransferRecipientAmountComponent implements OnInit {
       hasOMAccount: false
     };
     this.omService
-      .checkUserHasAccount(this.recipientInfos.phoneNumber)
+      .checkUserHasAccount(this.omPhoneNumber, this.recipientInfos.phoneNumber)
       .subscribe(
         (res: any) => {
           this.checkingOMAccount = false;

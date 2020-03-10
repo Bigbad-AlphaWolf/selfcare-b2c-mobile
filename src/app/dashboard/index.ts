@@ -1,5 +1,10 @@
 import { Subject } from 'rxjs';
-import { REGEX_POSTPAID_FIXE, REGEX_PREPAID_FIXE, UserConsommation } from 'src/shared';
+import {
+  REGEX_POSTPAID_FIXE,
+  REGEX_PREPAID_FIXE,
+  UserConsommation,
+  CODE_KIRENE_Formule
+} from 'src/shared';
 
 // differents profiles
 export const PROFILE_TYPE_PREPAID = 'PREPAID';
@@ -26,11 +31,10 @@ export const dashboardFixePrepaidOpened = new Subject<string>();
 export const dashboardFixePostpaidOpened = new Subject<string>();
 export const dashboardMobilePrepaidOpened = new Subject<string>();
 export const dashboardMobilePrepaidKireneOpened = new Subject<string>();
-export const dashboardMobilePostpaidOpened= new Subject<string>();
+export const dashboardMobilePostpaidOpened = new Subject<string>();
 export const billsMobilePostpaidOpened = new Subject<string>();
 export const billsFixePostpaidOpened = new Subject<string>();
 export const billsDetailFixePostpaidOpened = new Subject<string>();
-
 
 export interface SargalSubscriptionModel {
   status: string;
@@ -52,7 +56,6 @@ export const getConsoByCategory /* : { [k: string]: Array<UserConsommation> }  *
   });
   return consoByCategory;
 };
-
 
 export interface BillModel {
   annee: number;
@@ -87,8 +90,8 @@ export interface SubscriptionModel {
 }
 
 export interface PromoBoosterActive {
-  isPromoPassActive: boolean;
-  isPromoRechargeActive: boolean;
+  promoPass: boolean;
+  promoRecharge: boolean;
 }
 
 export function isFixPostpaid(codeFormule: string) {
@@ -97,6 +100,54 @@ export function isFixPostpaid(codeFormule: string) {
 
 export function isFixPrepaid(codeFormule: string) {
   return REGEX_PREPAID_FIXE.test(codeFormule);
+}
+
+export const CODE_FORMULE_FIX_PREPAID = '9419';
+
+export interface ModelOfSouscription {
+  profil?: string;
+  formule?: string;
+  codeFormule?: string;
+}
+
+export function isPrepaidOrHybrid(souscription: ModelOfSouscription): boolean {
+  return (
+    (souscription.profil === PROFILE_TYPE_PREPAID ||
+      souscription.profil === PROFILE_TYPE_HYBRID ||
+      souscription.profil === PROFILE_TYPE_HYBRID_1 ||
+      souscription.profil === PROFILE_TYPE_HYBRID_2) &&
+    souscription.codeFormule !== CODE_KIRENE_Formule &&
+    souscription.formule !== HOME_PREPAID_FORMULE
+  );
+}
+export function isPostpaidMobile(souscription: ModelOfSouscription): boolean {
+  return (
+    souscription.profil === PROFILE_TYPE_POSTPAID &&
+    !REGEX_POSTPAID_FIXE.test(souscription.formule) &&
+    !REGEX_PREPAID_FIXE.test(souscription.formule)
+  );
+}
+
+export function isKirene(souscription: ModelOfSouscription): boolean {
+  return (
+    souscription.profil === PROFILE_TYPE_PREPAID &&
+    souscription.codeFormule === CODE_KIRENE_Formule
+  );
+}
+
+export function isPostpaidFix(souscription: ModelOfSouscription): boolean {
+  return (
+    souscription.profil === PROFILE_TYPE_POSTPAID &&
+    REGEX_POSTPAID_FIXE.test(souscription.formule)
+  );
+}
+
+export function isPrepaidFix(souscription: ModelOfSouscription): boolean {
+  return (
+    souscription.profil === PROFILE_TYPE_PREPAID &&
+    (REGEX_PREPAID_FIXE.test(souscription.formule) ||
+      souscription.codeFormule === CODE_FORMULE_FIX_PREPAID)
+  );
 }
 
 // tslint:disable-next-line: only-arrow-functions
@@ -113,11 +164,13 @@ export const hash53 = function(str, seed = 0) {
     h2 = Math.imul(h2 ^ ch, 1597334677);
   }
   // tslint:disable-next-line: no-bitwise
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^
+  h1 =
+    Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^
     // tslint:disable-next-line: no-bitwise
     Math.imul(h2 ^ (h2 >>> 13), 3266489909);
   // tslint:disable-next-line: no-bitwise
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
+  h2 =
+    Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
     // tslint:disable-next-line: no-bitwise
     Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   // tslint:disable-next-line: no-bitwise

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivationOmComponent } from './activation-om/activation-om.component';
 import { ChoosePaymentModComponent } from './choose-payment-mod/choose-payment-mod.component';
@@ -46,6 +46,8 @@ import { SettingsPopupComponent } from './settings-popup/settings-popup.componen
 import { HelpBannerComponent } from 'src/app/emergencies/help-banner/help-banner.component';
 import { RouterModule } from '@angular/router';
 import { PassVolumeDisplayPipe } from './pipes/pass-volume-display.pipe';
+import { OmButtonComponent } from './om-button/om-button.component';
+import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +80,9 @@ import { PassVolumeDisplayPipe } from './pipes/pass-volume-display.pipe';
     WelcomePopupComponent,
     SettingsPopupComponent,
     HelpBannerComponent,
-    PassVolumeDisplayPipe
+    PassVolumeDisplayPipe,
+    OmButtonComponent,
+    DashboardHeaderComponent
   ],
   imports: [
     CommonModule,
@@ -144,8 +148,11 @@ import { PassVolumeDisplayPipe } from './pipes/pass-volume-display.pipe';
     WelcomePopupComponent,
     SettingsPopupComponent,
     HelpBannerComponent,
-    PassVolumeDisplayPipe
+    PassVolumeDisplayPipe,
+    OmButtonComponent,
+    DashboardHeaderComponent
   ],
-  providers: [Contacts, SocialSharing]
+  providers: [Contacts, SocialSharing, PassVolumeDisplayPipe],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule {}

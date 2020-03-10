@@ -12,10 +12,10 @@ export class HelpBannerComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    if(this.helpType === 'rattachment'){
-      this.redirectTo = "/dashboard";
-    }else {
-      this.redirectTo = "/control-center"
-    }    
+    if (this.helpType === 'rattachment') {
+      this.redirectTo = '/dashboard';
+    } else {
+      this.redirectTo = '/control-center';
+    }
   }
 }

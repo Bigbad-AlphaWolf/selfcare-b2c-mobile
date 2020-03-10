@@ -11,7 +11,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 })
 export class ContactUsPage implements OnInit {
   constructor(private dashboardService: DashboardService, private iab: InAppBrowser) {
-    this.dashboardService.addDimeloScript();
+    // this.dashboardService.addDimeloScript();
   }
 
   goToPage(page: string) {

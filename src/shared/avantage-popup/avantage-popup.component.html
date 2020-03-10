@@ -6,11 +6,21 @@
     <img src="/assets/images/close-icon-blue.svg" alt="" />
   </div>
   <div class="container-text-avantages-body">
-    <div class="scb-text-blue-popup title">
-        Attention aux arnaqueurs !
+      <div class="scb-text-blue-popup title">
+        <div *ngIf="type ==='illimix'">Nouveaux avantages</div>
+        <div *ngIf="type ==='otp'">Attention aux arnaqueurs</div>
+      </div>
+      <div>
+        <div *ngIf="type ==='illimix'" class="scb-text-blue-popup text">
+            J’achète un illimix pendant que j’en ai un qui est valide,les contenus mn,sms,internet s’ajouteront. La
+            validité sera celle de l’illimix qui a la plus longue durée. <br> Mon illimix a expiré depuis moins de 24h, j’en
+            achète
+            un nouveau, les
+            minutes restantes seront ajoutées au nouveau. La durée de validité sera celle du nouvel illimix.
+        </div>
+        <div *ngIf="type ==='otp'" class="scb-text-blue-popup text">
+          Vous allez recevoir un code par SMS. Ne communiquez ce code à personne, il est confidentiel.
+        </div>
+      </div>
     </div>
-    <div class="scb-text-blue-popup text">
-        Vous allez recevoir un code par SMS. Ne communiquez ce code à personne, il est confidentiel.
-    </div>
-  </div>
 </div>

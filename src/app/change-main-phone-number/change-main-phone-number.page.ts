@@ -45,7 +45,7 @@ export class ChangeMainPhoneNumberPage implements OnInit {
     this.getAllAttachedNumbers();
   }
 
-  getAllAttachedNumbers(){
+  getAllAttachedNumbers() {
     this.isLoaded = false;
     this.hasError = false;
     this.dashboardServ.getAttachedNumbers().subscribe(

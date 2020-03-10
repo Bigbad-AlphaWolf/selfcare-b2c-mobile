@@ -34,8 +34,11 @@ export class BuySosPage implements OnInit {
     private sosService: SosService
   ) {}
 
-  ngOnInit() {
+  ngOnInit() {  }
+
+  ionViewWillEnter() {
     this.currentNumber = this.dashServ.getCurrentPhoneNumber();
+    this.step = 0;
   }
 
   goToNextStep() {

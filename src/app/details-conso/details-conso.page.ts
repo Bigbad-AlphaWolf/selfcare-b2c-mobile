@@ -1,8 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { computeConsoHistory, arrangeCompteurByOrdre } from 'src/shared';
+import {
+  computeConsoHistory,
+  arrangeCompteurByOrdre,
+  PurchaseModel
+} from 'src/shared';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { PurchaseService } from '../services/purchase-service/purchase.service';
 
 @Component({
   selector: 'app-details-conso',
@@ -18,7 +23,7 @@ export class DetailsConsoPage implements OnInit {
   error;
   notdata = false;
   appels: any;
-  consoDetails: any;
+  consoDetails: any = [];
   consoshistorique: any;
   chargeTypes: any = [];
   chargeType = 'Compteurs';
@@ -31,37 +36,91 @@ export class DetailsConsoPage implements OnInit {
   ];
   day = 0;
   selectedDate = this.dateFilterItems[0];
-
+  histPurchaseLoading: boolean;
+  histPurchaseHasError: boolean;
+  listPurchaseForDays: PurchaseModel[] = [];
+  listPurchaseForDayByType: PurchaseModel[] = [];
+  purchaseDateFilterSelected = 2;
+  purchaseTypeFilterSelected: { nom: string; value: string } = {
+    nom: 'Tous',
+    value: undefined
+  };
+  userPhoneNumber: string;
   constructor(
     private dashboardservice: DashboardService,
     private authService: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private purchaseServ: PurchaseService
   ) {}
 
-  ngOnInit() {
-    const msisdn = this.dashboardservice.getCurrentPhoneNumber();
-    this.authService.getSubscription(msisdn).subscribe((res: any) => {
-      this.followAnalyticsService.registerEventFollow(
-        'Voir_details_dashboard',
-        'event',
-        'Opened'
-      );
-      this.currentProfil = res.profil;
-      if (this.currentProfil === 'POSTPAID') {
-        this.historique = true;
-        this.details = false;
-        this.getPostpaidUserHistory(2);
-      } else {
-        this.getPrepaidUserHistory(2);
-        this.getUserConsoInfos();
-      }
-    });
+  ngOnInit() {}
+
+  ionViewWillEnter() {
+    this.userPhoneNumber = this.dashboardservice.getCurrentPhoneNumber();
+    this.authService
+      .getSubscription(this.userPhoneNumber)
+      .subscribe((res: any) => {
+        this.followAnalyticsService.registerEventFollow(
+          'Voir_details_dashboard',
+          'event',
+          'Opened'
+        );
+        this.currentProfil = res.profil;
+        if (this.currentProfil === 'POSTPAID') {
+          this.historique = true;
+          this.details = false;
+          this.getPostpaidUserHistory(2);
+        } else {
+          this.getPrepaidUserHistory(2);
+          this.getUserConsoInfos();
+          if (this.currentProfil === 'PREPAID') {
+            this.getTransactionsByDay(this.purchaseDateFilterSelected);
+          }
+        }
+      });
+  }
+
+  getTransactionsByDay(
+    day: number,
+    filterType?: { nom: string; value: string }
+  ) {
+    this.purchaseDateFilterSelected = day;
+    if (filterType) {
+      this.getTransactionByDaysByType(filterType);
+    } else {
+      this.histPurchaseLoading = true;
+      this.histPurchaseHasError = false;
+      this.purchaseServ
+        .getAllTransactionByDay(this.userPhoneNumber, day)
+        .subscribe(
+          (res: PurchaseModel[]) => {
+            this.histPurchaseLoading = false;
+            this.histPurchaseHasError = false;
+            this.listPurchaseForDays = res;
+            this.listPurchaseForDayByType = this.purchaseServ.filterPurchaseByType(
+              this.listPurchaseForDays,
+              this.purchaseTypeFilterSelected
+            );
+          },
+          (err: any) => {
+            this.histPurchaseLoading = false;
+            this.histPurchaseHasError = true;
+          }
+        );
+    }
+  }
+  getTransactionByDaysByType(filter: { nom: string; value: string }) {
+    this.purchaseTypeFilterSelected = filter;
+    this.listPurchaseForDayByType = this.purchaseServ.filterPurchaseByType(
+      this.listPurchaseForDays,
+      filter
+    );
   }
 
   getUserConsoInfos() {
     this.detailsLoading = true;
     this.dashboardservice.getUserConsoInfosByCode().subscribe(
-      (res: any[]) => {
+      (res: any) => {
         if (res.length) {
           res = arrangeCompteurByOrdre(res);
         }

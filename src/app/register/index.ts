@@ -159,7 +159,6 @@ export function validateName(name: string) {
 }
 
 export function isOTPValid(code: string) {
-  console.log(code);
   return String(code).length === 6;
 }
 
