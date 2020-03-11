@@ -49,7 +49,7 @@ export class TransferCreditBonusOmPage implements OnInit {
   operationType;
   transferOMWithCode: boolean;
   fees: { feeValue: number; payFee: boolean };
-  omTransferPayload = { amount: 0, msisdn2: '', firstName: '', lastName: '' };
+  omTransferPayload = { amount: 0, msisdn2: '', prenom_receiver: '', nom_receiver: '' };
   firstName = '';
   lastName = '';
   payFee = false;
@@ -151,8 +151,8 @@ export class TransferCreditBonusOmPage implements OnInit {
     this.firstName += contact.name.middleName
       ? ` ${contact.name.middleName}`
       : '';
-    this.omTransferPayload.firstName = this.firstName;
-    this.omTransferPayload.lastName = this.lastName;
+    this.omTransferPayload.prenom_receiver = this.firstName;
+    this.omTransferPayload.nom_receiver = this.lastName;
     this.step = 'SAISIE_MONTANT';
   }
 
@@ -161,8 +161,8 @@ export class TransferCreditBonusOmPage implements OnInit {
       this.transferOMWithCode = omTransferInfos.transferWithCode;
       if (this.transferOMWithCode) {
         this.transferOMType = OPERATION_TRANSFER_OM_WITH_CODE;
-        this.omTransferPayload.firstName = omTransferInfos.firstName;
-        this.omTransferPayload.lastName = omTransferInfos.lastName;
+        this.omTransferPayload.prenom_receiver = omTransferInfos.firstName;
+        this.omTransferPayload.nom_receiver = omTransferInfos.lastName;
         this.omTransferPayload.amount = omTransferInfos.amountToTransfer;
       } else {
         this.transferOMType = OPERATION_TRANSFER_OM;
