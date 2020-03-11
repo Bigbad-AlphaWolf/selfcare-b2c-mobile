@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  // SERVER_API_URL: 'https://orangeetmoi.orange.sn',
-  SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
+  SERVER_API_URL: 'https://orangeetmoi.orange.sn',
+  // SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
   OM_URL: 'https://appom.orange-sonatel.com',
   SEDDO_SERVICE: 'selfcare-b2c-seddo',
   CONSO_SERVICE: 'selfcare-b2c-conso',

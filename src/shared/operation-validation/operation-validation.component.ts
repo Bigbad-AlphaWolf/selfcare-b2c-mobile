@@ -123,7 +123,7 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
         ],
         prenom: [
           this.omRecipientFirstName,
-          [Validators.required, Validators.minLength(4)]
+          [Validators.required]
         ]
       });
       this.getFees();
