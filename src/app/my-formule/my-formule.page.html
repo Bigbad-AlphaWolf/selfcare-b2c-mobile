@@ -10,70 +10,120 @@
           <span class="my-formule-label">Ma formule</span>
           <span class="my-formule-value">{{ currentFormule?.nomFormule }}</span>
         </div>
-        <div class="my-formule-details-container">
-          <div class="my-formule-details-container-list">
-            <div class="list-header-container">
-              <div class="header-container-icon">
-                <img alt="" src="/assets/images/phone-black.svg" />
-              </div>
-              <span class="title scb-text-full-black">
-                Appels
-              </span>
-            </div>
-            <div class="list-content-container">
-              <div class="list-content-container-item">
-                <div class="scb-text-full-black item-top-block">
-                  {{ currentFormule?.prixAppels }} F / Sec
+        <div class="my-formule-details-infos">
+          <div class="my-formule-details-infos-title">
+            Tarifs Locaux
+          </div>
+          <div class="my-formule-details-infos-container">
+            <div class="my-formule-details-infos-container-list">
+              <div class="list-header-container">
+                <div class="header-container-icon">
+                  <img alt="" src="/assets/images/phone-black.svg" />
                 </div>
-                <div class="scb-text-dark-grey item-subtitle">
-                  {{ currentFormule?.nomFormule }}
-                </div>
+                <span class="title scb-text-full-black">
+                  Appels
+                </span>
               </div>
-              <div
-                class="list-content-container-item"
-                *ngFor="let tarifFormule of currentFormule?.tarifFormules"
-              >
-                <ng-container *ngIf="tarifFormule?.categorie === 'APPEL'">
+              <div class="list-content-container">
+                <div class="list-content-container-item">
                   <div class="scb-text-full-black item-top-block">
-                    {{ tarifFormule?.tarif }} F / Sec
+                    {{ currentFormule?.prixAppels }} F / Sec
                   </div>
                   <div class="scb-text-dark-grey item-subtitle">
-                    {{ tarifFormule?.description }}
+                    {{ currentFormule?.nomFormule }}
                   </div>
-                </ng-container>
+                </div>
+                <div
+                  class="list-content-container-item"
+                  *ngFor="let tarifFormule of currentFormule?.tarifFormules"
+                >
+                  <ng-container *ngIf="tarifFormule?.categorie === 'APPEL'">
+                    <div class="scb-text-full-black item-top-block">
+                      {{ tarifFormule?.tarif }} F / Sec
+                    </div>
+                    <div class="scb-text-dark-grey item-subtitle">
+                      {{ tarifFormule?.description }}
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+            <div class="my-formule-details-infos-container-list">
+              <div class="list-header-container">
+                <div class="header-container-icon">
+                  <img alt="" src="/assets/images/message-black.svg" />
+                </div>
+                <span class="title scb-text-full-black">
+                  SMS
+                </span>
+              </div>
+              <div class="list-content-container">
+                <div class="list-content-container-item">
+                  <div class="scb-text-full-black item-top-block">
+                    {{ currentFormule?.prixSMS }} F
+                  </div>
+                  <div class="scb-text-dark-grey item-subtitle">
+                    {{ currentFormule?.nomFormule }}
+                  </div>
+                </div>
+                <div
+                  class="list-content-container-item"
+                  *ngFor="let tarifFormule of currentFormule?.tarifFormules"
+                >
+                  <ng-container *ngIf="tarifFormule?.categorie === 'SMS'">
+                    <div class="scb-text-full-black item-top-block">
+                      {{ tarifFormule?.tarif }} F
+                    </div>
+                    <div class="scb-text-dark-grey item-subtitle">
+                      {{ tarifFormule?.description }}
+                    </div>
+                  </ng-container>
+                </div>
               </div>
             </div>
           </div>
-          <div class="my-formule-details-container-list">
-            <div class="list-header-container">
-              <div class="header-container-icon">
-                <img alt="" src="/assets/images/message-black.svg" />
+          <div class="my-formule-details-infos-title infos-international">
+            Tarifs Internationaux
+          </div>
+          <div class="select-country">
+              <ion-label class="content">Pays</ion-label>
+              <ion-select mode="ios" (ionChange)="getTarifs($event)" [interfaceOptions]="customAlertOptions" [value]="listTarifsInternationaux[0].name" interface="alert" class="select" okText="OK" cancelText="Annuler" placeholder="Choisir un pays">
+                <ion-select-option *ngFor="let item of listTarifsInternationaux" [value]="item.name">{{ item.name }} </ion-select-option>
+              </ion-select>
+          </div>
+          <div class="my-formule-details-infos-container" *ngIf="tarifsByCountry">
+            <div class="my-formule-details-infos-container-list">
+              <div class="list-header-container">
+                <div class="header-container-icon">
+                  <img alt="" src="/assets/images/phone-black.svg" />
+                </div>
+                <span class="title scb-text-full-black">
+                  Appels
+                </span>
               </div>
-              <span class="title scb-text-full-black">
-                SMS
-              </span>
+              <div class="list-content-container">
+                <div class="list-content-container-item">
+                  <div class="scb-text-orange item-top-block">
+                    {{ tarifsByCountry?.tarifAppel }} F / Sec
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="list-content-container">
-              <div class="list-content-container-item">
-                <div class="scb-text-full-black item-top-block">
-                  {{ currentFormule?.prixSMS }} F
+            <div class="my-formule-details-infos-container-list">
+              <div class="list-header-container">
+                <div class="header-container-icon">
+                  <img alt="" src="/assets/images/message-black.svg" />
                 </div>
-                <div class="scb-text-dark-grey item-subtitle">
-                  {{ currentFormule?.nomFormule }}
-                </div>
+                <span class="title scb-text-full-black">
+                  SMS
+                </span>
               </div>
-              <div
-                class="list-content-container-item"
-                *ngFor="let tarifFormule of currentFormule?.tarifFormules"
-              >
-                <ng-container *ngIf="tarifFormule?.categorie === 'SMS'">
-                  <div class="scb-text-full-black item-top-block">
-                    {{ tarifFormule?.tarif }} F
+              <div class="list-content-container">
+                <div class="list-content-container-item">
+                  <div class="scb-text-orange item-top-block">
+                    {{ tarifsByCountry?.tarifSms }} F
                   </div>
-                  <div class="scb-text-dark-grey item-subtitle">
-                    {{ tarifFormule?.description }}
-                  </div>
-                </ng-container>
+                </div>
               </div>
             </div>
           </div>

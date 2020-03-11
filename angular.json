@@ -136,7 +136,8 @@
             ],
             "exclude": [
               "**/node_modules/**"
-            ]
+            ],
+            "fix": true
           }
         },
         "ionic-cordova-build": {

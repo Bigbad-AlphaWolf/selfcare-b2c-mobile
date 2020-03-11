@@ -67,8 +67,6 @@ export const MAX_USER_AVATAR_UPLOAD_SIZE = 3072;
 // Maximum size of avatar image allowed in bytes : 5 Mo ou 5 * 1024Ko
 export const MAX_USER_FILE_UPLOAD_SIZE = 5120;
 
-export const CATEGORY_PURCHASE_HISTORY = [{nom:"Tous", value:undefined},{nom:"Rechargement",value:"RECHARGEMENT"}, {nom: "Transfert Bonus", value: "TRANSFERT_BONUS"},{nom:"Pass Illimix",value:"ILLIMIX"},{nom:"Pass Internet", value:"INTERNET"},{nom:"Dalal Tones",value:"DALALTONE"},{nom:"Achat pour tiers",value:"PASSFOROTHER"},{nom:"Transfert Credit", value:"SEDDO"}, {nom:"SOS", value:"SOS"}];
-
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
 }
@@ -628,6 +626,7 @@ export interface PurchaseModel {
   details: any[];
 }
 
+<<<<<<< HEAD
 /**
  * Compare two semver versions. Returns true if version A is greater than
  * version B.
@@ -646,15 +645,10 @@ export function isNewVersion(versionA, versionB) {
   }
   return false;
 }
-export interface TarifZoningByCountryModel {
+=======
+export interface TarifZoningByCountryModel{
   name?: string;
   indicatif?: string;
-  zone?: { name: string, tarifFormule: { tarifAppel: any, tarifSms: any}};
+  zone?: { name: string, tarifs: { tarifAppel: any, tarifSms: any}};
 }
-
-export interface NotificationInfoModel {
-  codeFormule: string;
-  firebaseId: string;
-  msisdn: string;
-}
-
+>>>>>>> 846302873a19a014da470f82cee0896fd49a80e6

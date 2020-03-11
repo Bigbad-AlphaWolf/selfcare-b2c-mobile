@@ -107,6 +107,7 @@ export class DashboardPostpaidFixePage implements OnInit {
     this.bordereau = true;
     this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
     this.getSubscription();
+    this.getBills();
   }
 
   getSubscription() {
@@ -142,7 +143,7 @@ export class DashboardPostpaidFixePage implements OnInit {
     this.errorConso = false;
     this.dataLoaded = false;
     this.dashbordServ.getUserConsoInfosByCode().subscribe(
-      (res: any[]) => {
+      (res: any) => {
         this.dataLoaded = true;
         if (res.length) {
           res = arrangeCompteurByOrdre(res);

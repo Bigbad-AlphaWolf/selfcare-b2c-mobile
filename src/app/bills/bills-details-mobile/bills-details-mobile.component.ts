@@ -31,16 +31,16 @@ export class BillsDetailsMobileComponent implements OnInit {
 
   constructor(private billsService: BillsService) {}
 
-  ngOnInit() {    
+  ngOnInit() {
     this.getBills();
   }
 
-  getBills(){
+  getBills() {
     if (this.detailsParams) {
       this.mois = this.months[this.detailsParams.mois - 1];
       this.annee = this.detailsParams.annee;
   }
-  this.billsService.getBillsDetail(this.detailsParams).subscribe(res => {
+    this.billsService.getBillsDetail(this.detailsParams).subscribe(res => {
       this.details = res;
       this.loading = false;
   });

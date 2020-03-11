@@ -74,7 +74,8 @@ export class DashboardKirenePage implements OnInit {
   firstName: string;
   lastName: string;
   fabOpened = false;
-  hasPromoBooster: PromoBoosterActive;
+  hasPromoBooster: PromoBoosterActive = null;
+  currentProfil: string;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -99,12 +100,18 @@ export class DashboardKirenePage implements OnInit {
         }
       });
   }
-  
+
+  ionViewWillEnter() {
+    this.getUserConsommations();
+    this.getSargalPoints();
+    this.getCurrentSubscription();
+  }
 
   getCurrentSubscription() {
     const currentNumber = this.dashbordServ.getCurrentPhoneNumber();
     this.authServ.getSubscription(currentNumber).subscribe(
       (res: SubscriptionModel) => {
+        this.currentProfil = res.profil;
         this.getActivePromoBooster(currentNumber, res.code);
       },
       (err: any) => {}

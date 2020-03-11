@@ -8,10 +8,7 @@ import {
   isPostpaidMobile,
   isPostpaidFix,
   isPrepaidFix,
-  isKirene,
-  dashboardOpened,
-  isFixPostpaid,
-  isFixPrepaid
+  isKirene
 } from '.';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
@@ -19,10 +16,14 @@ import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { getCurrentDate } from 'src/shared';
+import { WelcomeStatusModel, getCurrentDate } from 'src/shared';
+import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { Subscription } from 'rxjs';
 import { Platform } from '@ionic/angular';
+import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()
@@ -49,22 +50,19 @@ export class DashboardPage implements OnInit, OnDestroy {
   constructor(
     private dashboardServ: DashboardService,
     private authServ: AuthenticationService,
+    private assistanceService: AssistanceService,
     private router: Router,
     private followAnalyticsService: FollowAnalyticsService,
     private platform: Platform,
     private appMinimize: AppMinimize
   ) {}
 
-  ngOnInit() {
-    const user = ls.get('user');
-    this.firstName = user.firstName;
-    this.lastName = user.lastName;
+  ngOnInit() {}
 
-    dashboardOpened.subscribe(x => {
-      this.isFormuleFixPostpaid = isFixPostpaid(this.currentFormule);
-      this.isFormuleFixPrepaid = isFixPrepaid(this.currentFormule);
-    });
+  ngOnDestroy() {}
 
+  ionViewWillEnter() {
+    this.getCurrentSubscription();
   }
   ionViewDidEnter() {
     // Initialize BackButton Eevent.
@@ -73,12 +71,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     });
   }
 
-  ionViewWillLeave() { this.backButtonSubscription.unsubscribe(); }
-
-  ngOnDestroy() {}
-
-  ionViewWillEnter() {
-    this.getCurrentSubscription();
+  ionViewWillLeave() {
+    this.backButtonSubscription.unsubscribe();
   }
 
   getCurrentSubscription() {
@@ -101,7 +95,7 @@ export class DashboardPage implements OnInit, OnDestroy {
           formule: this.currentFormule,
           codeFormule: this.currentCodeFormule
         };
-        if (isPrepaidOrHybrid(souscription)) {          
+        if (isPrepaidOrHybrid(souscription)) {
           this.router.navigate(['/dashboard-prepaid-hybrid']);
         } else if (isKirene(souscription)) {
           this.router.navigate(['/dashboard-kirene']);

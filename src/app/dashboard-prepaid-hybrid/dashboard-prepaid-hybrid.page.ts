@@ -28,7 +28,10 @@ import {
   getConsoByCategory,
   SARGAL_NOT_SUBSCRIBED,
   SARGAL_UNSUBSCRIPTION_ONGOING,
-  SubscriptionModel
+  SubscriptionModel,
+  PROFILE_TYPE_HYBRID,
+  PROFILE_TYPE_HYBRID_1,
+  PROFILE_TYPE_HYBRID_2
 } from '../dashboard';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
@@ -133,6 +136,10 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       (res: SubscriptionModel) => {
         this.currentProfil = res.profil;
         this.getActivePromoBooster(currentNumber, res.code);
+        this.isHyBride =
+          this.currentProfil === PROFILE_TYPE_HYBRID ||
+          this.currentProfil === PROFILE_TYPE_HYBRID_1 ||
+          this.currentProfil === PROFILE_TYPE_HYBRID_2;
       },
       (err: any) => {}
     );
@@ -150,7 +157,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.dataLoaded = false;
     this.error = false;
     this.dashbordServ.getUserConsoInfosByCode().subscribe(
-      (res: any[]) => {
+      (res: any) => {
         if (res.length) {
           res = arrangeCompteurByOrdre(res);
           const appelConso = res.length
