@@ -62,6 +62,7 @@ export class BuyPassIllimixPage implements OnInit {
   ) {}
 
   /** les etapes
+   * step 0 choix du mode de paiement
    * step 1 choix du destinataire
    * step 2 list des pass
    * step 3 confirmation ou validation puis achat par credit
@@ -72,7 +73,7 @@ export class BuyPassIllimixPage implements OnInit {
   ngOnInit() {
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.currentUserNumber = this.dashServ.getCurrentPhoneNumber();
     this.step = 0;
     this.getCurrentSubscription();

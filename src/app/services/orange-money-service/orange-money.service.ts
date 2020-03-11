@@ -27,6 +27,7 @@ const loginClientEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/
 const UserAccessInfoEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/user-access-infos`;
 const pinpadEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/get-pin-pad`;
 const checkOMAccountEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/check-client`;
+const checkOMAccountEndpoint2 = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/v2/check-client`;
 const getFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/fees`;
 // const getBalanceEndpoint = `${OM_URL}/api/v1/balance`;
 
@@ -87,8 +88,10 @@ export class OrangeMoneyService {
     }
   }
 
-  checkUserHasAccount(msisdn) {
-    return this.http.get(`${checkOMAccountEndpoint}/${msisdn}`);
+  checkUserHasAccount(msisdn1: string, msisdn2: string) {
+    return this.http.get(
+      `${checkOMAccountEndpoint2}?principal=${msisdn1}&client=${msisdn2}`
+    );
   }
 
   updateAccount(phoneNumber: any, accountInfos: OmUserInfo) {
@@ -315,12 +318,12 @@ export class OrangeMoneyService {
           (resp: any) => {
             resp.forEach(element => {
               const msisdn = '' + element.msisdn;
-              //Avoid fix numbers
+              // Avoid fix numbers
               if (!msisdn.startsWith('33', 0)) {
                 allNumbers.push(element.msisdn);
               }
             });
-            //request orange money info for every number
+            // request orange money info for every number
             const httpCalls = [];
             allNumbers.forEach(number => {
               httpCalls.push(this.GetUserAuthInfo(number));
@@ -331,7 +334,7 @@ export class OrangeMoneyService {
                 for (const [index, element] of data.entries()) {
                   // if the number is linked with OM, keep it and break out of the for loop
                   if (element['hasApiKey'] && element['hasApiKey'] != null) {
-                    //set the orange Money number in localstorage and the key is nOrMo (numero Orange Money)
+                    // set the orange Money number in localstorage and the key is nOrMo (numero Orange Money)
                     OrangeMoneyMsisdn = allNumbers[index];
                     ls.set('nOrMo', OrangeMoneyMsisdn);
                     numberOMFound = true;

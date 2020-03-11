@@ -48,7 +48,7 @@ export class AccountService {
             this.changePasswordSubject.next('L actuel mot de passe saisi est incorrect');
           } else {
             // this.error = 'Le nouveau mot de passe saisi n est pas autorisé';
-            this.changePasswordSubject.next("Le nouveau mot de passe saisi n'est pas autorisé");
+            this.changePasswordSubject.next('Le nouveau mot de passe saisi n\'est pas autorisé');
           }
         } else {
           this.changePasswordSubject.next('Une erreur est survenue. Veuillez réessayer plus tard');

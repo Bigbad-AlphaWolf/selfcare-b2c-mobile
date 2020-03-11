@@ -50,6 +50,7 @@
     "directive-class-suffix": true,
     "prefer-for-of": false,
     "no-string-literal": false,
-    "variable-name": false
+    "variable-name": false,
+    "semicolon": [true, "always"]
   }
 }

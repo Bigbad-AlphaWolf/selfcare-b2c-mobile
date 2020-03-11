@@ -68,9 +68,9 @@ export class ChangePasswordPage implements OnInit {
     const newPassword = this.form.value.newPassword;
     const confirmPwd = this.form.value.confirmPassword;
     if (confirmPwd === newPassword) {
-      if(confirmPwd.length < 5){
+      if (confirmPwd.length < 5) {
         this.error = 'le mot de passe doit avoir au minumum 5 caractères';
-      }else {
+      } else {
         this.loading = true;
         this.accountService.changeUserPassword(currentPassword, newPassword);
       }

@@ -26,7 +26,7 @@ import {
   isFixPostpaid,
   PROFILE_TYPE_POSTPAID
 } from 'src/app/dashboard';
-import { JAMONO_ALLO_CODE_FORMULE } from 'src/shared';
+import { JAMONO_ALLO_CODE_FORMULE, NotificationInfoModel } from 'src/shared';
 
 const {
   SERVER_API_URL,
@@ -35,7 +35,8 @@ const {
   CONSO_SERVICE,
   GET_MSISDN_BY_NETWORK_URL,
   CONFIRM_MSISDN_BY_NETWORK_URL,
-  UAA_SERVICE
+  UAA_SERVICE,
+  SERVICES_SERVICE
 } = environment;
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -62,6 +63,8 @@ const checkCodeOtpEndpoint = `${otpBaseUrl}/check`;
 const checkNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/check_number`;
 const registerEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/register`;
 const resetPwdEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password`;
+
+const notificationInfoEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/notification-information`;
 
 @Injectable({
   providedIn: 'root'
@@ -143,17 +146,15 @@ export class AuthenticationService {
           ) {
             subscription.code = JAMONO_ALLO_CODE_FORMULE;
           }
-          if(isFixPostpaid(subscription.nomOffre)){
-            subscription.profil = PROFILE_TYPE_POSTPAID
+          if (isFixPostpaid(subscription.nomOffre)) {
+            subscription.profil = PROFILE_TYPE_POSTPAID;
           }
           const lsKey = 'sub' + msisdn;
           ls.set(lsKey, subscription);
           return subscription;
         })
       );
-
     }
-    
   }
 
   // get msisdn subscription
@@ -344,6 +345,21 @@ export class AuthenticationService {
   resetPassword(resetPwdPayload: ResetPwdModel) {
     return this.http.post(resetPwdEndpoint, resetPwdPayload);
   }
+
+  // Update Notification Info for user
+UpdateNotificationInfo() {
+  delay(10000);
+  const info =  {} as NotificationInfoModel;
+  info.firebaseId = ls.get('firebaseId');
+  info.msisdn = this.getUserMainPhoneNumber();
+  const lsKey = 'sub' + info.msisdn;
+  const savedData = ls.get(lsKey);
+  info.codeFormule = savedData.code;
+  if (info.msisdn && info.codeFormule) {
+    this.http.put(notificationInfoEndpoint, info).subscribe();
+  }
+}
+
 }
 
 export interface RegistrationData {
