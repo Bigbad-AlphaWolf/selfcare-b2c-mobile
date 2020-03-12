@@ -11,7 +11,8 @@ import {
   MAIL_URL,
   months,
   SubscriptionModel,
-  WelcomeStatusModel
+  WelcomeStatusModel,
+  SargalStatusModel
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { PassVolumeDisplayPipe } from 'src/shared/pipes/pass-volume-display.pipe';
@@ -19,6 +20,7 @@ import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/sha
 import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
+import { SargalService } from '../services/sargal-service/sargal.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid',
@@ -67,45 +69,52 @@ export class DashboardPostpaidPage implements OnInit {
   userPhoneNumber: string;
   firstName: string;
   fabOpened = false;
+  loadingStatus: boolean;
+  sargalStatusAvailable:boolean;
+  hasError:boolean;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
     private authServ: AuthenticationService,
     private billsService: BillsService,
-    private banniereServ: BanniereService,
     private followAnalyticsService: FollowAnalyticsService,
     private passVolumeDisplayPipe: PassVolumeDisplayPipe,
     private shareDialog: MatDialog,
-    private assistanceService: AssistanceService
+    private assistanceService: AssistanceService,
+    private sargalServ: SargalService
   ) {}
 
   ngOnInit() {
     this.getUserInfos();
     this.getWelcomeStatus();
     this.userPhoneNumber = this.dashbordServ.getCurrentPhoneNumber();
-    // this.billsService.getBillsEmit().subscribe(res => {
-    //   // this.loading = false;
-    //   if (res === 'error') {
-    //     this.errorBill = true;
-    //   } else {
-    //     this.bills = res;
-    //   }
-    // });
-    /* this.banniereServ.setListBanniereByFormule();
-    this.banniereServ
-      .getStatusLoadingBanniere()
-      .subscribe((status: boolean) => {
-        this.isBanniereLoaded = status;
-        if (this.isBanniereLoaded) {
-          this.listBanniere = this.banniereServ.getListBanniereByFormule();
-        }
-      });
- */
   }
 
   ionViewWillEnter() {
     this.getConsoPostpaid();
     this.getBills();
+    this.getCustomerSargalStatus();
+  }
+
+  getCustomerSargalStatus() {
+    this.loadingStatus = false;
+    this.sargalServ.getCustomerSargalStatus().subscribe(
+      (sargalStatus: SargalStatusModel) => {
+        if (sargalStatus.valid) {
+          this.sargalStatusAvailable = true;
+        }
+        this.loadingStatus = true;
+        this.hasError = false;
+      },
+      (err: any) => {
+        this.loadingStatus = true;
+        this.hasError = true;
+      }
+    );
+  }
+
+  makeSargalAction(){
+    this.router.navigate(['/sargal-status-card']);
   }
 
   getUserInfos() {
