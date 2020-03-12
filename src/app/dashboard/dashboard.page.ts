@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   SubscriptionModel,
@@ -13,6 +15,7 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
+import { getCurrentDate } from 'src/shared';
 import { WelcomeStatusModel, getCurrentDate } from 'src/shared';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
@@ -71,6 +74,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   ionViewWillLeave() {
     this.backButtonSubscription.unsubscribe();
   }
+
   getCurrentSubscription() {
     const currentNumber = this.dashboardServ.getCurrentPhoneNumber();
     const date = getCurrentDate();
