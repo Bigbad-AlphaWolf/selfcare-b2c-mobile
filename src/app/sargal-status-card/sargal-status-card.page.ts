@@ -19,7 +19,7 @@ export class SargalStatusCardPage implements OnInit {
   expiredStatus: boolean;
   currentNumber: string;
   name: string;
-
+  currentYear = new Date().getFullYear();
   constructor(
     private sargalService: SargalService,
     private router: Router,
@@ -41,7 +41,7 @@ export class SargalStatusCardPage implements OnInit {
       (sargalStatus: SargalStatusModel) => {
         if (sargalStatus.valid) {
           this.sargalStatus = sargalStatus.profilClient;
-          this.title += sargalStatus.profilClient;
+          this.title += this.sargalStatus === 'PLATINUM' ? 'PLATINIUM' : sargalStatus ;
         } else {
           this.expiredStatus = true;
         }

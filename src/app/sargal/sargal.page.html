@@ -21,7 +21,7 @@
         </span>
         <span *ngSwitchCase="'PLATINUM'" class="status">
           <span class="orange scb-text-orange">Orange &nbsp;</span>
-          <span class="scb-text-grey-platinum">PLATINUM</span>
+          <span class="scb-text-grey-platinum">PLATINIUM</span>
         </span>
       </span>
     </div>
@@ -73,7 +73,7 @@
         />
       </div>
       <div class="title-card scb-text-l-black">
-        Voir ma carte {{sargalStatus}}
+        Voir ma carte {{sargalStatus === 'PLATINUM' ? 'PLATINIUM' : sargalStatus }}
       </div>
       <div class="arrow-container">
         <img src="/assets/images/arrow-right.svg" alt="arrow-left" />

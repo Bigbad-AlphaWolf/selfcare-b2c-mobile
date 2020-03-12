@@ -12,7 +12,7 @@
         </div>
         <div class="my-formule-details-infos">
           <div class="my-formule-details-infos-title">
-            Tarifs Locaux
+            Tarifs Nationaux
           </div>
           <div class="my-formule-details-infos-container">
             <div class="my-formule-details-infos-container-list">
@@ -87,11 +87,28 @@
           </div>
           <div class="select-country">
               <ion-label class="content">Pays</ion-label>
-              <ion-select mode="ios" (ionChange)="getTarifs($event)" [interfaceOptions]="customAlertOptions" [value]="listTarifsInternationaux[0].name" interface="alert" class="select" okText="OK" cancelText="Annuler" placeholder="Choisir un pays">
-                <ion-select-option *ngFor="let item of listTarifsInternationaux" [value]="item.name">{{ item.name }} </ion-select-option>
+              <ion-select [mode]="isIOS ? 'ios' : 'md'" #pays [interfaceOptions]="customAlertOptions" [value]="listTarifsInternationaux[0]" interface="alert" class="select" okText="OK" cancelText="Annuler" placeholder="Choisir un pays">
+                <ion-select-option *ngFor="let item of listTarifsInternationaux" [value]="item">{{ item?.name }} </ion-select-option>
               </ion-select>
           </div>
-          <div class="my-formule-details-infos-container" *ngIf="tarifsByCountry">
+          <div class="my-formule-details-infos-container international">
+            <div class="my-formule-details-infos-container-list">
+              <div class="list-header-container">
+                <div class="header-container-icon">
+                  <img alt="" src="/assets/images/phone-black.svg" />
+                </div>
+                <span class="title scb-text-full-black">
+                  Zone
+                </span>
+              </div>
+              <div class="list-content-container">
+                <div class="list-content-container-item">
+                  <div class="scb-text-orange item-top-block">
+                    {{ pays?.value?.zone?.name }}
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="my-formule-details-infos-container-list">
               <div class="list-header-container">
                 <div class="header-container-icon">
@@ -104,7 +121,7 @@
               <div class="list-content-container">
                 <div class="list-content-container-item">
                   <div class="scb-text-orange item-top-block">
-                    {{ tarifsByCountry?.tarifAppel }} F / Sec
+                    {{ pays?.value?.zone?.tarifFormule?.tarifAppel }} F / Sec
                   </div>
                 </div>
               </div>
@@ -121,7 +138,7 @@
               <div class="list-content-container">
                 <div class="list-content-container-item">
                   <div class="scb-text-orange item-top-block">
-                    {{ tarifsByCountry?.tarifSms }} F
+                    {{ pays?.value?.zone?.tarifFormule?.tarifSms }} F
                   </div>
                 </div>
               </div>
