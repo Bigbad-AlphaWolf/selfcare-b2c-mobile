@@ -103,7 +103,7 @@ export class AppComponent {
       });
 
       // Get firebase id for notifications
-      this.firebaseX
+      /* this.firebaseX
         .getToken()
         .then(token => {
           ls.set('firebaseId', token);
@@ -130,7 +130,7 @@ export class AppComponent {
       this.firebaseX.onTokenRefresh().subscribe(fcmToken => {
         console.log(fcmToken);
         ls.set('firebaseId', fcmToken);
-      });
+      }); */
     });
   }
 

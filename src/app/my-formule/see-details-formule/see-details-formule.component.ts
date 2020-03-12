@@ -86,7 +86,7 @@ export class SeeDetailsFormuleComponent implements OnInit {
                 );
                 this.authService.deleteSubFromStorage(this.msisdn);
                 this.changeFormuleProcessing = false;
-                this.authService.UpdateNotificationInfo();
+                // this.authService.UpdateNotificationInfo();
                 this.goBackToListFormules.emit();
               },
               (error: any) => {

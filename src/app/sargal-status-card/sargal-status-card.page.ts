@@ -41,7 +41,7 @@ export class SargalStatusCardPage implements OnInit {
       (sargalStatus: SargalStatusModel) => {
         if (sargalStatus.valid) {
           this.sargalStatus = sargalStatus.profilClient;
-          this.title += this.sargalStatus === 'PLATINUM' ? 'PLATINIUM' : sargalStatus ;
+          this.title += this.sargalStatus === 'PLATINUM' ? 'PLATINIUM' : this.sargalStatus ;
         } else {
           this.expiredStatus = true;
         }
