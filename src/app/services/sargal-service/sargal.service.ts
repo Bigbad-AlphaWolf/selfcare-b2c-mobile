@@ -100,7 +100,7 @@ export class SargalService {
   }
 
   setListGiftSargalAndCategoryOfUserByQuery() {
-    this.dataLoadedSubject.next(false);
+    this.dataLoadedSubject.next({status: false, error: false});
     this.listGiftSargal = [];
     this.listCategoryGiftSargal = [];
     this.authServ
@@ -122,16 +122,18 @@ export class SargalService {
               this.querySargalGiftCategories().subscribe(
                 (listCategory: GiftSargalCategoryItem[]) => {
                   this.listCategoryGiftSargal = listCategory;
-                  this.dataLoadedSubject.next(true);
+                  this.dataLoadedSubject.next({status: true, error: false});
                 },
                 (err: any) => {}
               );
             },
             () => {
-              this.dataLoadedSubject.next(true);
+              this.dataLoadedSubject.next({status: true, error: true});
             }
           );
         }
+      },(err:any)=>{
+        this.dataLoadedSubject.next({status: true, error: true});
       });
   }
   filterGiftItemByCategory(

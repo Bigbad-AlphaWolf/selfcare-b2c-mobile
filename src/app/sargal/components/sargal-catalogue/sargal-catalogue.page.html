@@ -19,7 +19,7 @@
         </span>
       </div>
     </div>
-    <ng-container *ngIf="dataLoaded">
+    <ng-container *ngIf="dataLoaded && !hasError">
       <div class="sargal-catalogue-content">
         <div class="sargal-catalogue-content-filters">
           <div class="sargal-content-filter">
@@ -137,7 +137,13 @@
         </div>
       </div>
     </ng-container>
-    <ng-container *ngIf="!dataLoaded">
+    <ng-container *ngIf="dataLoaded && hasError">
+      <div (click)="reloadData()" class="sargal-catalogue-content error">
+        Une erreur s'est produite lors de la recupération des données.
+        Actualiser la page en cliquant sur ce texte.
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!dataLoaded && !hasError">
       <div class="spinner">
         <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
       </div>
