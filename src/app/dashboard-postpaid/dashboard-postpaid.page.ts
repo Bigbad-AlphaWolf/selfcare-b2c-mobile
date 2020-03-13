@@ -126,7 +126,7 @@ export class DashboardPostpaidPage implements OnInit {
     this.errorConso = false;
     this.dashbordServ.getPostpaidUserConsoInfos().subscribe(
       (res: any) => {
-        this.dataLoaded = true;
+        this.dataLoaded = true;        
         this.userConsommations = this.computeUserConso(res);
         this.getLastConsoUpdate();
       },
@@ -169,7 +169,7 @@ export class DashboardPostpaidPage implements OnInit {
         percent: percentConsoInt,
         total: totalData,
         dataFinished: consoInt < 0
-      });
+      });      
       return conso;
     }
   }

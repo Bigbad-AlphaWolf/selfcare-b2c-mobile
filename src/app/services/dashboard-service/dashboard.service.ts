@@ -150,8 +150,8 @@ export class DashboardService {
     this.msisdn = this.getCurrentPhoneNumber();
     return this.http.get(`${postpaidUserConsoEndpoint}/${this.msisdn}`).pipe(
       map(
-        (res: any) => {
-          return this.processConso(res);
+        (res: any) => {        
+          return this.processConso(res, true);
         },
         error => {
           const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
@@ -282,7 +282,7 @@ export class DashboardService {
       .get(`${userConsoByCodeEndpoint}/${this.msisdn}${queryParams}`)
       .pipe(
         map(
-          (res: any) => {
+          (res: any) => {            
             return this.processConso(res);
           },
           error => {
@@ -293,8 +293,8 @@ export class DashboardService {
       );
   }
 
-  processConso(conso: any) {
-    if (conso && conso.length) {
+  processConso(conso: any, consoPostPaid?:boolean) {
+    if (conso && conso.length || consoPostPaid ) {
       const lastUpdateConsoDate = this.getCurrentDate();
       ls.set(`lastConso_${this.msisdn}`, conso);
       ls.set(`lastUpdateConsoDate_${this.msisdn}`, lastUpdateConsoDate);
