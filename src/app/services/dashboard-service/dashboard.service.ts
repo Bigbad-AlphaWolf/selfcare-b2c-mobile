@@ -151,7 +151,7 @@ export class DashboardService {
     return this.http.get(`${postpaidUserConsoEndpoint}/${this.msisdn}`).pipe(
       map(
         (res: any) => {
-          return this.processConso(res,true);
+          return this.processConso(res, true);
         },
         error => {
           const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
@@ -200,7 +200,9 @@ export class DashboardService {
     numero: string;
     typeNumero: 'MOBILE' | 'FIXE';
   }) {
-    detailsToCheck = Object.assign(detailsToCheck, {login: this.authService.getUserMainPhoneNumber()});
+    detailsToCheck = Object.assign(detailsToCheck, {
+      login: this.authService.getUserMainPhoneNumber()
+    });
     return this.http.post(
       `${attachMobileNumberEndpoint}/register`,
       detailsToCheck
@@ -209,10 +211,12 @@ export class DashboardService {
 
   registerNumberByIdClient(payload: {
     numero: string;
-    idClient: string,
+    idClient: string;
     typeNumero: 'MOBILE' | 'FIXE';
-  }){
-    payload = Object.assign(payload, {login: this.authService.getUserMainPhoneNumber()});
+  }) {
+    payload = Object.assign(payload, {
+      login: this.authService.getUserMainPhoneNumber()
+    });
     return this.http.post(
       `${attachMobileNumberEndpoint}/fixe-register`,
       payload
@@ -293,7 +297,7 @@ export class DashboardService {
       .get(`${userConsoByCodeEndpoint}/${this.msisdn}${queryParams}`)
       .pipe(
         map(
-          (res: any) => {            
+          (res: any) => {
             return this.processConso(res);
           },
           error => {
@@ -304,8 +308,8 @@ export class DashboardService {
       );
   }
 
-  processConso(conso: any, consoPostpaid?:boolean) {
-    if (conso && conso.length || consoPostpaid) {
+  processConso(conso: any, consoPostpaid?: boolean) {
+    if ((conso && conso.length) || consoPostpaid) {
       const lastUpdateConsoDate = this.getCurrentDate();
       ls.set(`lastConso_${this.msisdn}`, conso);
       ls.set(`lastUpdateConsoDate_${this.msisdn}`, lastUpdateConsoDate);

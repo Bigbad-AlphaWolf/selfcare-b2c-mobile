@@ -10,7 +10,11 @@ import {
   PAYMENT_MOD_OM
 } from 'src/shared';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import { PROFILE_TYPE_POSTPAID, HOME_PREPAID_FORMULE } from '../dashboard';
+import {
+  PROFILE_TYPE_POSTPAID,
+  HOME_PREPAID_FORMULE,
+  CODE_FORMULE_KILIMANJARO
+} from '../dashboard';
 import { BuyPassModel } from '../services/dashboard-service';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
@@ -32,6 +36,7 @@ export class BuyPassInternetPage implements OnInit {
   PAYMENT_MOD_CREDIT = PAYMENT_MOD_CREDIT;
   PAYMENT_MOD_OM = PAYMENT_MOD_OM;
   PROFILE_TYPE_POSTPAID = PROFILE_TYPE_POSTPAID;
+  CODE_FORMULE_KILIMANJARO = CODE_FORMULE_KILIMANJARO;
   passFavorisSelected: any;
   passsFavorisChoosen = false;
   pinErrorMsg = '';
@@ -42,6 +47,7 @@ export class BuyPassInternetPage implements OnInit {
   title = 'Acheter pass internet';
   currentProfil: string;
   currentFormule: string;
+  currentCodeFormule: string;
   recipientFirstName = '';
   recipientLastName = '';
   buyingPass: boolean;
@@ -60,8 +66,7 @@ export class BuyPassInternetPage implements OnInit {
     private followAnalyticsService: FollowAnalyticsService
   ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ionViewWillEnter() {
     this.currentUserNumber = this.dashServ.getCurrentPhoneNumber();
@@ -88,6 +93,7 @@ export class BuyPassInternetPage implements OnInit {
         this.idPassSelected = +this.route.snapshot.paramMap.get('id');
         this.currentProfil = souscription.profil;
         this.currentFormule = souscription.nomOffre;
+        this.currentCodeFormule = souscription.code;
         if (this.currentProfil === PROFILE_TYPE_POSTPAID) {
           this.step = 1;
           this.choosedPaymentMod = PAYMENT_MOD_OM;

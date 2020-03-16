@@ -17,13 +17,13 @@
 
     <ng-container *ngIf="step === 1">
       <app-select-recipient
-        *ngIf="currentProfil !== PROFILE_TYPE_POSTPAID"
+        *ngIf="currentProfil !== PROFILE_TYPE_POSTPAID || currentCodeFormule === CODE_FORMULE_KILIMANJARO"
         (getDestinataire)="nextStepOfSelectDest($event)"
         (getContact)="contactGot($event)"
       ></app-select-recipient>
       <app-select-other-recipient
         (nextStepEmitter)="nextStepOfSelectDest($event)"
-        *ngIf="currentProfil === PROFILE_TYPE_POSTPAID"
+        *ngIf="currentProfil === PROFILE_TYPE_POSTPAID && currentCodeFormule !== CODE_FORMULE_KILIMANJARO"
         [type]="'pass'"
       ></app-select-other-recipient>
     </ng-container>

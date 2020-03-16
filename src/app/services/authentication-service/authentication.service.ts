@@ -24,7 +24,9 @@ import {
   PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
   isFixPostpaid,
-  PROFILE_TYPE_POSTPAID
+  PROFILE_TYPE_POSTPAID,
+  KILIMANJARO_FORMULE,
+  CODE_FORMULE_KILIMANJARO
 } from 'src/app/dashboard';
 import { JAMONO_ALLO_CODE_FORMULE, NotificationInfoModel } from 'src/shared';
 
@@ -139,6 +141,9 @@ export class AuthenticationService {
             profil: res.offerType,
             code: res.offerId
           };
+          if (subscription.code === KILIMANJARO_FORMULE) {
+            subscription.code = CODE_FORMULE_KILIMANJARO;
+          }
           if (
             subscription.profil === PROFILE_TYPE_HYBRID ||
             subscription.profil === PROFILE_TYPE_HYBRID_1 ||
@@ -347,19 +352,18 @@ export class AuthenticationService {
   }
 
   // Update Notification Info for user
-UpdateNotificationInfo() {
-  delay(10000);
-  const info =  {} as NotificationInfoModel;
-  info.firebaseId = ls.get('firebaseId');
-  info.msisdn = this.getUserMainPhoneNumber();
-  const lsKey = 'sub' + info.msisdn;
-  const savedData = ls.get(lsKey);
-  info.codeFormule = savedData.code;
-  if (info.msisdn && info.codeFormule) {
-    this.http.put(notificationInfoEndpoint, info).subscribe();
+  UpdateNotificationInfo() {
+    delay(10000);
+    const info = {} as NotificationInfoModel;
+    info.firebaseId = ls.get('firebaseId');
+    info.msisdn = this.getUserMainPhoneNumber();
+    const lsKey = 'sub' + info.msisdn;
+    const savedData = ls.get(lsKey);
+    info.codeFormule = savedData.code;
+    if (info.msisdn && info.codeFormule) {
+      this.http.put(notificationInfoEndpoint, info).subscribe();
+    }
   }
-}
-
 }
 
 export interface RegistrationData {
