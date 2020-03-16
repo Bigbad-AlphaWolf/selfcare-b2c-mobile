@@ -7,6 +7,8 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { formatCurrency } from 'src/shared';
 const ls = new SecureLS({ encodingType: 'aes' });
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+
 
 @Component({
   selector: 'app-om-button',
@@ -25,7 +27,8 @@ export class OmButtonComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private dashbordServ: DashboardService,
-    private omServ: OrangeMoneyService
+    private omServ: OrangeMoneyService,
+    private followsServ: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -65,11 +68,11 @@ export class OmButtonComponent implements OnInit, OnDestroy {
 
   showSoldeOM() {
     if (this.balanceIsAvailable) {
-      // FollowAnalytics.logEvent('Click_cacher_solde_OM_dashboard', 'clicked');
+      this.followsServ.registerEventFollow('Click_cacher_solde_OM_dashboard',"event", 'clicked')
       this.hideSolde();
     } else {
       this.router.navigate(['see-solde-om']);
-      // FollowAnalytics.logEvent('Click_Voir_solde_OM_dashboard', 'clicked');
+      this.followsServ.registerEventFollow('Click_Voir_solde_OM_dashboard',"event", 'clicked')
     }
   }
 

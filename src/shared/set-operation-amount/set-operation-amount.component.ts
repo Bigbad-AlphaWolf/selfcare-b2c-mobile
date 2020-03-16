@@ -1,5 +1,6 @@
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-set-operation-amount',
@@ -17,7 +18,7 @@ export class SetOperationAmountComponent implements OnInit {
   checkingBalance: boolean;
   omPhoneNumber: string;
 
-  constructor(private orangeMoneyService: OrangeMoneyService) {}
+  constructor(private orangeMoneyService: OrangeMoneyService, private router: Router) {}
 
   ngOnInit() {
     this.getOmPhoneNumber();
@@ -25,7 +26,11 @@ export class SetOperationAmountComponent implements OnInit {
 
   getOmPhoneNumber() {
     this.orangeMoneyService.getOmMsisdn().subscribe(msisdn => {
-      this.omPhoneNumber = msisdn;
+      if(msisdn !== 'error'){
+        this.omPhoneNumber = msisdn;
+      }else{
+        this.router.navigate(['/see-solde-om'])
+      }
     });
   }
 
