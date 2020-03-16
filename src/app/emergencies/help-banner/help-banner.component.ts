@@ -14,6 +14,8 @@ export class HelpBannerComponent implements OnInit {
   ngOnInit() {
     if (this.helpType === 'rattachment') {
       this.redirectTo = '/dashboard';
+    } else if(this.helpType === 'rattachment-by-id'){
+      this.redirectTo = '/new-number'
     } else {
       this.redirectTo = '/control-center';
     }

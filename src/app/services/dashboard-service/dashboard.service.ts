@@ -197,14 +197,25 @@ export class DashboardService {
 
   // attach new mobile phone number
   registerNumberToAttach(detailsToCheck: {
-    login: string;
     numero: string;
     typeNumero: 'MOBILE' | 'FIXE';
   }) {
-    detailsToCheck.login = this.authService.getUserMainPhoneNumber();
+    detailsToCheck = Object.assign(detailsToCheck, {login: this.authService.getUserMainPhoneNumber()});
     return this.http.post(
       `${attachMobileNumberEndpoint}/register`,
       detailsToCheck
+    );
+  }
+
+  registerNumberByIdClient(payload: {
+    numero: string;
+    idClient: string,
+    typeNumero: 'MOBILE' | 'FIXE';
+  }){
+    payload = Object.assign(payload, {login: this.authService.getUserMainPhoneNumber()});
+    return this.http.post(
+      `${attachMobileNumberEndpoint}/fixe-register`,
+      payload
     );
   }
 
