@@ -28,7 +28,7 @@ export class AddNumberByIdClientPage implements OnInit {
   }
 
   ionViewWillEnter(){
-    this.activatedRoute.queryParams.subscribe((params: {login: string, numero: string, typeNumero: "FIXE"})=>{
+    this.activatedRoute.queryParams.subscribe((params: {numero: string, typeNumero: "FIXE"})=>{
       if(params && params.numero){
         this.payload.numero = params.numero;
         
