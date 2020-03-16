@@ -84,7 +84,7 @@
         <mat-tab #historikAchat  *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
             <ng-template mat-tab-label>
                     <div class="conso-tab-category" [ngClass]="{ 'selected': historikAchat.isActive} ">
-                        <span class="scb-text-gray">Historique achats</span>
+                        <span class="scb-text-gray">Historique des Souscriptions</span>
                         <div class="spinner" *ngIf="histPurchaseLoading">
                             <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
                         </div>
