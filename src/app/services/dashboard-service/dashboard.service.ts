@@ -197,14 +197,29 @@ export class DashboardService {
 
   // attach new mobile phone number
   registerNumberToAttach(detailsToCheck: {
-    login: string;
     numero: string;
     typeNumero: 'MOBILE' | 'FIXE';
   }) {
-    detailsToCheck.login = this.authService.getUserMainPhoneNumber();
+    detailsToCheck = Object.assign(detailsToCheck, {
+      login: this.authService.getUserMainPhoneNumber()
+    });
     return this.http.post(
       `${attachMobileNumberEndpoint}/register`,
       detailsToCheck
+    );
+  }
+
+  registerNumberByIdClient(payload: {
+    numero: string;
+    idClient: string;
+    typeNumero: 'MOBILE' | 'FIXE';
+  }) {
+    payload = Object.assign(payload, {
+      login: this.authService.getUserMainPhoneNumber()
+    });
+    return this.http.post(
+      `${attachMobileNumberEndpoint}/fixe-register`,
+      payload
     );
   }
 
@@ -293,8 +308,8 @@ export class DashboardService {
       );
   }
 
-  processConso(conso: any, postpaid?: boolean) {
-    if ((conso && conso.length) || postpaid) {
+  processConso(conso: any, consoPostpaid?: boolean) {
+    if ((conso && conso.length) || consoPostpaid) {
       const lastUpdateConsoDate = this.getCurrentDate();
       ls.set(`lastConso_${this.msisdn}`, conso);
       ls.set(`lastUpdateConsoDate_${this.msisdn}`, lastUpdateConsoDate);

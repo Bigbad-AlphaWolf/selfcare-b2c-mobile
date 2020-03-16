@@ -121,8 +121,8 @@ export interface TransferOMWithCodeModel {
   app_conf_version: string;
   user_type: string;
   service_version: string;
-  nom: string;
-  prenom: string;
+  nom_receiver: string;
+  prenom_receiver: string;
 }
 export interface BuyPassPayload {
   msisdn2: string;

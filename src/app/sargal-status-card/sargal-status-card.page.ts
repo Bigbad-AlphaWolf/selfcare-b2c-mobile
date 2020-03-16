@@ -4,6 +4,8 @@ import { SargalStatusModel } from 'src/shared';
 import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import * as SecureLS from 'secure-ls';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { SubscriptionModel, PROFILE_TYPE_POSTPAID } from '../dashboard';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -20,10 +22,12 @@ export class SargalStatusCardPage implements OnInit {
   currentNumber: string;
   name: string;
   currentYear = new Date().getFullYear();
+  isPostpaid;
   constructor(
     private sargalService: SargalService,
     private router: Router,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private authServ :AuthenticationService
   ) {}
 
   ngOnInit() {
@@ -31,6 +35,9 @@ export class SargalStatusCardPage implements OnInit {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
     const user = ls.get('user');
     this.name = user.firstName + ' ' + user.lastName;
+    this.authServ.getSubscription(this.currentNumber).subscribe((res:SubscriptionModel)=>{
+      this.isPostpaid = res.profil === PROFILE_TYPE_POSTPAID;
+    })
   }
 
   getCustomerSargalStatus() {
@@ -41,7 +48,7 @@ export class SargalStatusCardPage implements OnInit {
       (sargalStatus: SargalStatusModel) => {
         if (sargalStatus.valid) {
           this.sargalStatus = sargalStatus.profilClient;
-          this.title += this.sargalStatus === 'PLATINUM' ? 'PLATINIUM' : sargalStatus ;
+          this.title += this.sargalStatus === 'PLATINUM' ? 'PLATINIUM' : this.sargalStatus ;
         } else {
           this.expiredStatus = true;
         }
@@ -59,6 +66,10 @@ export class SargalStatusCardPage implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/sargal-dashboard']);
+    if(this.isPostpaid){
+      this.router.navigate(['/dashboard']);
+    }else{
+      this.router.navigate(['/sargal-dashboard']);
+    }
   }
 }

@@ -31,7 +31,7 @@ export class NoOMAccountPopupComponent implements OnInit {
       this.router.navigate(['/dashboard/orange-money-desktop/creation-compte']);
     } else {
       this.close();
-      this.router.navigate(['/operation-om/creation-compte']);
+      this.router.navigate(['/control-center/operation-om/creation-compte']);
     }
   }
 }

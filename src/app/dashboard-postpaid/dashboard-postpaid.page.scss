@@ -71,7 +71,8 @@
         }
         .scb-btn-balance,
         .scb-btn-credit,
-        .scb-btn-pass {
+        .scb-btn-pass,
+        .scb-btn-sargal  {
           text-align: left;
           width: 100%;
           min-width: 63%;
@@ -121,6 +122,72 @@
             font-size: 9px;
           }
 
+          .show-solde-info-text {
+            font-family: HelveticaNeueLTStd-Bd, sans-serif;
+            font-size: 16px;
+            line-height: 1.14;
+            display: inline-block;
+            margin-top: 27px;
+          }
+        }
+
+        .scb-btn-sargal {
+          background-image: url(/assets/images/background-sargal.svg);
+          .btn-container {
+            width: 100%;
+            background: transparent;
+          }
+          .scb-data-reload {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+          }
+          &.btn-disabled {
+            background-color: $gray;
+            .btn-no-action {
+              pointer-events: none;
+            }
+          }
+          .scb-btn-top-block {
+            &-icon,
+            &-text {
+              display: inline-block;
+              vertical-align: middle;
+            }
+        
+            &-icon {
+              height: 24px;
+              width: 24px;
+              margin-right: 4px;
+            }
+        
+            &-text {
+              .text {
+                font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                font-size: 18px;
+              }
+            }
+          }
+        
+          .bottom-block {
+            margin-top: 1px;
+            .value {
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+              font-size: 26px;
+        
+              .text-style-1 {
+                font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                font-size: 18px;
+              }
+            }
+          }
+        
+          .validity-text {
+            margin-top: 6px;
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 9px;
+          }
+        
           .show-solde-info-text {
             font-family: HelveticaNeueLTStd-Bd, sans-serif;
             font-size: 16px;
