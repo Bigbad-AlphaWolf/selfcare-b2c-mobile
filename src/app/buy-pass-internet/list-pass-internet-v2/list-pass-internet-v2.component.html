@@ -46,10 +46,10 @@
                 </div>
                 <div class="list-pass-internet-item-text-block">
                   <span class="amount-data">
-                    {{ !pass.description ? pass?.volumeInternet : pass?.passPromo?.volumeInternet }}
+                    {{ !pass.passPromo ? pass?.volumeInternet : pass?.passPromo?.volumeInternet }}
                     -
                     <span class="scb-text-orange">
-                      {{ !pass.description ? pass?.tarif : pass?.passPromo?.tarif }}F
+                      {{ !pass.passPromo ? pass?.tarif : pass?.passPromo?.tarif }}F
                     </span></span
                   >
                   <span class="max-duration scb-text-light-black"
@@ -75,7 +75,7 @@
                   class="list-pass-internet-item-bonus"
                 >
                   <span class="text scb-text-white">{{
-                    !pass.description ? pass?.bonusNuit : pass?.passPromo?.bonusNuit
+                    !pass.passPromo ? pass?.bonusNuit : pass?.passPromo?.bonusNuit
                   }}</span>
                 </div>
               </div>
