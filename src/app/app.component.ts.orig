@@ -38,7 +38,6 @@ export class AppComponent {
     private platform: Platform,
     private statusBar: StatusBar,
     private splash: SplashScreen,
-    private appMinimize: AppMinimize,
     private router: Router,
     private http: HttpClient,
     private deeplinks: Deeplinks,
@@ -51,10 +50,6 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      // Initialize BackButton Eevent.
-      this.platform.backButton.subscribe(() => {
-        this.appMinimize.minimize();
-      });
       this.statusBar.overlaysWebView(false);
       // #AARRGGBB where AA is an alpha value RR is red, GG is green and BB is blue
       if (this.platform.is('android')) {
@@ -144,14 +139,23 @@ export class AppComponent {
       .route({
         '/buy-pass-internet': BuyPassInternetPage,
         '/buy-pass-internet/:id': BuyPassInternetPage,
+<<<<<<< HEAD
+        '/buy-pass-internet-by-credit': BuyPassInternetPage,
+        '/buy-pass-internet-by-om': BuyPassInternetPage,
+        '/assistance': AssistancePage
+=======
         '/assistance': AssistancePage,
         '/buy-pass-illimix': BuyPassIllimixPage,
         '/buy-pass-illimix/:id': BuyPassIllimixPage,
         '/buy-credit': BuyCreditPage
+>>>>>>> 9f2bcc30dd4cf18661a0d5801a64261f0c82fca0
       })
       .subscribe(
         matched => {
+          console.log('route is ' + matched.$link.path);
           this.router.navigate([matched.$link.path]);
+          // console.log('deeplink matched');
+          // console.log(matched);
         },
         notMatched => {
           // console.log(notMatched);

@@ -81,7 +81,7 @@ export class MyFormulePage implements OnInit {
     this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
     this.processInfosFormules();
     // this.queryAllTarifs();
-    // this.authServ.UpdateNotificationInfo();
+    this.authServ.UpdateNotificationInfo();
   }
 
   getTarifs(event: any){
@@ -90,8 +90,6 @@ export class MyFormulePage implements OnInit {
     //   return value.name === selectCountry;
     // })
     // this.selectedCountry = selectedTarifs.zone;
-    console.log(selectCountry,'input',selectCountry);
-        
   }
 
   processInfosFormules() {
