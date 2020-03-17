@@ -1,5 +1,9 @@
 import * as SecureLS from 'secure-ls';
 import { HTTP } from '@ionic-native/http/ngx';
+import { Platform } from '@ionic/angular';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
+
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
 export const REGEX_NUMBER_OM: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
@@ -66,6 +70,8 @@ export const MAX_USER_AVATAR_UPLOAD_SIZE = 3072;
 
 // Maximum size of avatar image allowed in bytes : 5 Mo ou 5 * 1024Ko
 export const MAX_USER_FILE_UPLOAD_SIZE = 5120;
+
+export const CATEGORY_PURCHASE_HISTORY = [{nom:"Tous", value:undefined},{nom:"Rechargement",value:"RECHARGEMENT"}, {nom: "Transfert Bonus", value: "TRANSFERT_BONUS"},{nom:"Pass Illimix",value:"ILLIMIX"},{nom:"Pass Internet", value:"INTERNET"},{nom:"Dalal Tones",value:"DALALTONE"},{nom:"Achat pour tiers",value:"PASSFOROTHER"},{nom:"Transfert Credit", value:"SEDDO"}, {nom:"SOS", value:"SOS"}];
 
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
@@ -656,3 +662,83 @@ export interface NotificationInfoModel {
   msisdn: string;
 }
 
+export class PlatformMock {
+  public ready(): Promise<string> {
+    return new Promise(resolve => {
+      resolve('READY');
+    });
+  }
+
+  public getQueryParam() {
+    return true;
+  }
+
+  public registerBackButtonAction(fn: Function, priority?: number): Function {
+    return () => true;
+  }
+
+  public hasFocus(ele: HTMLElement): boolean {
+    return true;
+  }
+
+  public doc(): HTMLDocument {
+    return document;
+  }
+
+  public is(): boolean {
+    return true;
+  }
+
+  public getElementComputedStyle(container: any): any {
+    return {
+      paddingLeft: '10',
+      paddingTop: '10',
+      paddingRight: '10',
+      paddingBottom: '10'
+    };
+  }
+
+  public onResize(callback: any) {
+    return callback;
+  }
+
+  public registerListener(
+    ele: any,
+    eventName: string,
+    callback: any
+  ): Function {
+    return () => true;
+  }
+
+  public win(): Window {
+    return window;
+  }
+
+  public raf(callback: any): number {
+    return 1;
+  }
+
+  public timeout(callback: any, timer: number): any {
+    return setTimeout(callback, timer);
+  }
+
+  public cancelTimeout(id: any) {
+    // do nothing
+  }
+
+  public getActiveElement(): any {
+    return document['activeElement'];
+  }
+}
+
+export class StatusBarMock extends StatusBar {
+  styleDefault() {
+    return;
+  }
+}
+
+export class SplashScreenMock extends SplashScreen {
+  hide() {
+    return;
+  }
+}

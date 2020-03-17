@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   //  SERVER_API_URL: 'https://orangeetmoi.orange.sn',
-  SERVER_API_URL: 'http://10.137.52.32:8712',
+  SERVER_API_URL: 'http://10.137.52.31:8712',
   // SERVER_API_URL: "https://espaceclientv2.orangebusiness.sn",
   // SERVER_API_URL: 'http://10.137.52.31:8712',
   OM_URL: 'https://appom.orange-sonatel.com',
@@ -26,13 +26,13 @@ export const environment = {
     trackingId: 'UA-92621294-1',
     trackPageviews: true
   },
-  //   GET_MSISDN_BY_NETWORK_URL:
-  //   'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
-  // CONFIRM_MSISDN_BY_NETWORK_URL:
-  //   'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
-  GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
+    GET_MSISDN_BY_NETWORK_URL:
+    'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
   CONFIRM_MSISDN_BY_NETWORK_URL:
-    'http://10.100.99.116:1494/api/v1/confirm-msisdn'
+    'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
+  // GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
+  // CONFIRM_MSISDN_BY_NETWORK_URL:
+  //   'http://10.100.99.116:1494/api/v1/confirm-msisdn'
 };
 
 /*

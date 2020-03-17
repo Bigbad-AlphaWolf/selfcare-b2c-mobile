@@ -5,11 +5,6 @@
       *ngIf="showPromoBarner || (listBanniere.length && showPromoBarner)"
       class="dashboard-img-promo slide-container"
     >
-      <!-- <scb-slides-images
-      [slides]="listBanniere"
-      [device]="'MOBILE'"
-      (close)="hidePromoBarner($event)"
-    ></scb-slides-images> -->
       <ion-slides>
         <ng-container *ngFor="let banniere of listBanniere">
           <ion-slide>

@@ -47,14 +47,14 @@ export class AppComponent {
     private firebaseX: FirebaseX
   ) {
     this.initializeApp();
-    // Initialize BackButton Eevent.
-    this.platform.backButton.subscribe(() => {
-      this.appMinimize.minimize();
-    });
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
+      // Initialize BackButton Eevent.
+      this.platform.backButton.subscribe(() => {
+        this.appMinimize.minimize();
+      });
       this.statusBar.overlaysWebView(false);
       // #AARRGGBB where AA is an alpha value RR is red, GG is green and BB is blue
       if (this.platform.is('android')) {

@@ -118,6 +118,7 @@ export class DashboardKirenePage implements OnInit {
     );
   }
 
+
   getActivePromoBooster(msisdn: string, code: string) {
     this.dashbordServ
       .getActivePromoBooster(msisdn, code)
@@ -136,7 +137,7 @@ export class DashboardKirenePage implements OnInit {
     this.dataLoaded = false;
     this.error = false;
     this.dashbordServ.getUserConsoInfosByCode().subscribe(
-      (res: any) => {
+      (res: any[]) => {
         if (res.length) {
           const appelConso = res.find(x => x.categorie === 'APPEL')
             .consommations;
