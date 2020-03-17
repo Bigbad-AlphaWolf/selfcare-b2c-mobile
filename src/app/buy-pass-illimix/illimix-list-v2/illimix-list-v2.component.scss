@@ -176,6 +176,8 @@
           .details-item {
             display: inline-block;
             margin-right: 7px;
+            white-space: nowrap;
+            margin-bottom: 5px;
 
             &-icon {
               display: inline-block;

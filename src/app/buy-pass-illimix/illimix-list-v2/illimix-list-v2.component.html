@@ -45,34 +45,34 @@
             </div>
           </div>
           <div class="list-pass-item-bottom-block">
-            <div *ngIf="pass?.volumeInternet" class="details-item">
+            <div *ngIf="pass?.volumeInternet || pass?.passPromo?.volumeInternet " class="details-item">
               <div class="details-item-icon">
                 <img src="/assets/images/internet.png" alt="internet-usage" class="icon" />
               </div>
               <div class="details-item-text">
-                <div class="text">{{ !pass?.passPromo ? pass?.volumeInternet : !pass?.passPromo?.volumeInternet }}</div>
+                <div class="text">{{ !pass?.passPromo ? pass?.volumeInternet : pass?.passPromo?.volumeInternet }}</div>
                 <div class="category scb-text-dark-grey">
                   Internet
                 </div>
               </div>
             </div>
-            <div *ngIf="pass?.dureeAppel" class="details-item">
+            <div *ngIf="pass?.dureeAppel || pass?.passPromo?.dureeAppel" class="details-item">
               <div class="details-item-icon">
                 <img src="/assets/images/appel.png" alt="internet-usage" class="icon" />
               </div>
               <div class="details-item-text">
-                <div class="text">{{ !pass?.passPromo ? pass?.dureeAppel : !pass?.passPromo?.dureeAppel }}</div>
+                <div class="text">{{ !pass?.passPromo ? pass?.dureeAppel : pass?.passPromo?.dureeAppel }}</div>
                 <div class="category scb-text-dark-grey">
                   Appel
                 </div>
               </div>
             </div>
-            <div *ngIf="pass?.nombreSms" class="details-item">
+            <div *ngIf="pass?.nombreSms || pass?.passPromo?.nombreSms" class="details-item">
               <div class="details-item-icon">
                 <img src="/assets/images/messenger.png" alt="internet-usage" class="icon" />
               </div>
               <div class="details-item-text">
-                <div class="text">{{ !pass?.passPromo ? pass?.nombreSms : !pass?.passPromo?.nombreSms }}</div>
+                <div class="text">{{ !pass?.passPromo ? pass?.nombreSms : pass?.passPromo?.nombreSms }}</div>
                 <div class="category scb-text-dark-grey">
                   SMS
                 </div>
