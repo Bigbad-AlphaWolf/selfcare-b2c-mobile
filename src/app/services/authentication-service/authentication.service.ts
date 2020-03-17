@@ -81,8 +81,13 @@ export class AuthenticationService {
     string,
     Observable<any>
   >();
+  subscriptionUpdatedSubject: Subject<any> = new Subject<any>();
 
   constructor(private http: HttpClient) {}
+
+  get currentPhoneNumbersubscriptionUpdated() {
+    return this.subscriptionUpdatedSubject.asObservable();
+  }
 
   // accept cookies
   acceptCookies() {
@@ -156,6 +161,7 @@ export class AuthenticationService {
           }
           const lsKey = 'sub' + msisdn;
           ls.set(lsKey, subscription);
+          this.subscriptionUpdatedSubject.next(subscription);
           return subscription;
         })
       );
