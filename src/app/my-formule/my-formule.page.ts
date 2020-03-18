@@ -80,17 +80,10 @@ export class MyFormulePage implements OnInit {
   ionViewWillEnter(){
     this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
     this.processInfosFormules();
-    // this.queryAllTarifs();
+    this.queryAllTarifs();
     this.authServ.UpdateNotificationInfo();
   }
 
-  getTarifs(event: any){
-    const selectCountry = event.detail.value;
-    // const selectedTarifs = this.listTarifsInternationaux.find((value: TarifZoningByCountryModel)=>{
-    //   return value.name === selectCountry;
-    // })
-    // this.selectedCountry = selectedTarifs.zone;
-  }
 
   processInfosFormules() {
     this.authServ.getSubscription(this.currentNumber).subscribe(
