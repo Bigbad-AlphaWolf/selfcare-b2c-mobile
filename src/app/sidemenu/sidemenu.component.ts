@@ -99,7 +99,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goToAssistancePage() {
-    this.iab.create(ASSISTANCE_URL, '_system');
+    this.iab.create(ASSISTANCE_URL, '_self');
     this.followAnalyticsService.registerEventFollow(
       'Sidemenu_Assistance',
       'event',
