@@ -69,16 +69,16 @@
             <ion-slide>
               <app-om-button></app-om-button>
             </ion-slide>
-            <ion-slide>
+            <ion-slide *ngIf="!hasError">
               <div
                 class="scb-btn-black scb-btn-sargal"
                 [ngClass]="{
-                'btn-disabled': hasError || !sargalStatusAvailable }"
+                'btn-disabled': !sargalStatusAvailable }"
               >
                 <div
                   (click)="makeSargalAction()"
                   [ngClass]="{
-                  'btn-no-action': hasError || !sargalStatusAvailable
+                  'btn-no-action': !sargalStatusAvailable
                 }"
                   class="btn-container"
                 >
@@ -98,13 +98,13 @@
                       [diameter]="30"
                     ></mat-spinner>
                   </div>
-                  <ng-container *ngIf="loadingStatus && !hasError">
+                  <ng-container *ngIf="loadingStatus">
                     <div class="bottom-block">
                       <span class="show-solde-info-text">Voir ma carte</span
                       >
                     </div>
                   </ng-container>
-                  <ng-container *ngIf="loadingStatus && hasError">
+                  <ng-container *ngIf="loadingStatus">
                     <div class="bottom-block">
                       <span class="show-solde-info-text">Service Indisponible</span
                       >

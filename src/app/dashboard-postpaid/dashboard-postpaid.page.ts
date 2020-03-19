@@ -98,6 +98,8 @@ export class DashboardPostpaidPage implements OnInit {
 
   getCustomerSargalStatus() {
     this.loadingStatus = false;
+    this.hasError = false;
+    this.sargalStatusAvailable = false;
     this.sargalServ.getCustomerSargalStatus().subscribe(
       (sargalStatus: SargalStatusModel) => {
         if (sargalStatus.valid) {
@@ -108,7 +110,9 @@ export class DashboardPostpaidPage implements OnInit {
       },
       (err: any) => {
         this.loadingStatus = true;
-        this.hasError = true;
+        if(err.status !== 500){
+          this.hasError = true;
+        }
       }
     );
   }
