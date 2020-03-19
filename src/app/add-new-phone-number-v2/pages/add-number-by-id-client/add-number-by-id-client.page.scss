@@ -22,12 +22,16 @@
             font-size: 14px;
             line-height: 1.14;
             text-align: center;
+            margin-bottom: 10px;
             &.error {
                 margin-top: 20px;
             }
         }
         .img-illustrative{
-            width: 95%
+            display: flex;
+            img{
+                width: 100%;
+            }
         }
         .confirm-btn {
             position: fixed;
