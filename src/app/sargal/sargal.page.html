@@ -35,7 +35,6 @@
       <div class="profile-img-container">
         <img
           class="profile-img"
-          routerLink="/login"
           [src]="avatarUrl"
           (click)="goToPreviousStep()"
           alt=""
@@ -62,12 +61,12 @@
     >
       <div class="card-container">
         <img
-          src="/assets/images/carte-gold.png"
+          src="/assets/images/cartes-recto-gold.png"
           alt="card"
           *ngIf="sargalStatus==='GOLD'"
         />
         <img
-          src="/assets/images/carte-platinum.png"
+          src="/assets/images/cartes-platinum-recto.png"
           alt="card"
           *ngIf="sargalStatus==='PLATINUM'"
         />

@@ -16,13 +16,12 @@
               />
           </mat-form-field>
       </form>
+      <div class="text-infos scb-text-full-black">
+        Comment retrouver son numéro client ?
+      </div>
       <div class="img-illustrative">
-
+          <img src="/assets/images/numero-client.png" alt="">
       </div>
-      <div class="text-infos scb-text-gray">
-        
-      </div>
-
       <div class="confirm-btn">
         <button [disabled]=" !idClient.value || isProcessing" (click)="saveRattachmentFixNumber(idClient.value)" class="scb-btn-full scb-btn-orange" mat-stroked-button>
           Confirmer
