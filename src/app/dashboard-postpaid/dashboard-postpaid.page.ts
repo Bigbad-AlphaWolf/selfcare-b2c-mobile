@@ -118,7 +118,7 @@ export class DashboardPostpaidPage implements OnInit {
     this.noSargalProfil = false;
     this.sargalServ.getCustomerSargalStatus().subscribe(
       (sargalStatus: SargalStatusModel) => {
-        if (sargalStatus.valid) {
+        if (!sargalStatus.valid) {
           this.sargalStatusUnavailable = true;
         }
         this.loadingStatus = true;
