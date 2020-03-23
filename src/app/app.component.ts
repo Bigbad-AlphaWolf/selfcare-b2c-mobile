@@ -85,22 +85,22 @@ export class AppComponent {
           console.log(error);
         });
       // Call server for app version
-      this.http.get(`${versionEndpoint}`).subscribe((version: any) => {
-        const versionAndroid = version.android;
-        const versionIos = version.ios;
-        if (version && version.length >= 5) {
-          if (
-            isNewVersion(
-              this.isIOS ? versionIos : versionAndroid,
-              this.AppVersionNumber
-            )
-          ) {
-            const dialogRef = this.dialog.open(CancelOperationPopupComponent, {
-              data: { updateApp: this.appId }
-            });
-          }
-        }
-      });
+      // this.http.get(`${versionEndpoint}`).subscribe((version: any) => {
+      //   const versionAndroid = version.android;
+      //   const versionIos = version.ios;
+      //   if (version && version.length >= 5) {
+      //     if (
+      //       isNewVersion(
+      //         this.isIOS ? versionIos : versionAndroid,
+      //         this.AppVersionNumber
+      //       )
+      //     ) {
+      //       const dialogRef = this.dialog.open(CancelOperationPopupComponent, {
+      //         data: { updateApp: this.appId }
+      //       });
+      //     }
+      //   }
+      // });
 
       // Get firebase id for notifications
       /* this.firebaseX
