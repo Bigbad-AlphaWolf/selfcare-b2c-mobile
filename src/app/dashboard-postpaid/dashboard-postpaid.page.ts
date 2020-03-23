@@ -21,6 +21,7 @@ import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
 import { SargalService } from '../services/sargal-service/sargal.service';
+import { CODE_FORMULE_KILIMANJARO } from '../dashboard';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid',
@@ -70,9 +71,11 @@ export class DashboardPostpaidPage implements OnInit {
   firstName: string;
   fabOpened = false;
   loadingStatus: boolean;
-  sargalStatusUnavailable:boolean;
-  noSargalProfil:boolean;
-  hasError:boolean;
+  sargalStatusUnavailable: boolean;
+  noSargalProfil: boolean;
+  hasError: boolean;
+  isKilimanjaroPostpaid: boolean;
+
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -95,6 +98,17 @@ export class DashboardPostpaidPage implements OnInit {
     this.getConsoPostpaid();
     this.getBills();
     this.getCustomerSargalStatus();
+    this.getCurrentSubscription();
+  }
+
+  getCurrentSubscription() {
+    this.userPhoneNumber = this.dashbordServ.getCurrentPhoneNumber();
+    this.authServ
+      .getSubscription(this.userPhoneNumber)
+      .subscribe((subscription: any) => {
+        this.isKilimanjaroPostpaid =
+          subscription.code === CODE_FORMULE_KILIMANJARO;
+      });
   }
 
   getCustomerSargalStatus() {
@@ -112,16 +126,16 @@ export class DashboardPostpaidPage implements OnInit {
       },
       (err: any) => {
         this.loadingStatus = true;
-        if(err.status === 400){
+        if (err.status === 400) {
           this.noSargalProfil = true;
-        }else{
+        } else {
           this.sargalStatusUnavailable = true;
         }
       }
     );
   }
 
-  makeSargalAction(){
+  makeSargalAction() {
     this.router.navigate(['/sargal-status-card']);
   }
 
@@ -134,7 +148,7 @@ export class DashboardPostpaidPage implements OnInit {
     this.errorConso = false;
     this.dashbordServ.getPostpaidUserConsoInfos().subscribe(
       (res: any) => {
-        this.dataLoaded = true;        
+        this.dataLoaded = true;
         this.userConsommations = this.computeUserConso(res);
         this.getLastConsoUpdate();
       },
@@ -177,7 +191,7 @@ export class DashboardPostpaidPage implements OnInit {
         percent: percentConsoInt,
         total: totalData,
         dataFinished: consoInt < 0
-      });      
+      });
       return conso;
     }
   }
