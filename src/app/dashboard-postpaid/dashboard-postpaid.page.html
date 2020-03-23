@@ -95,16 +95,16 @@
             <ion-slide>
               <app-om-button></app-om-button>
             </ion-slide>
-            <ion-slide *ngIf="!hasError">
+            <ion-slide *ngIf="!noSargalProfil">
               <div
                 class="scb-btn-black scb-btn-sargal"
                 [ngClass]="{
-                'btn-disabled': !sargalStatusAvailable }"
+                'btn-disabled': sargalStatusUnavailable }"
               >
                 <div
                   (click)="makeSargalAction()"
                   [ngClass]="{
-                  'btn-no-action': !sargalStatusAvailable
+                  'btn-no-action': sargalStatusUnavailable
                 }"
                   class="btn-container"
                 >

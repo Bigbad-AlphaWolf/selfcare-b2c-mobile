@@ -71,7 +71,8 @@ export class DashboardPostpaidPage implements OnInit {
   firstName: string;
   fabOpened = false;
   loadingStatus: boolean;
-  sargalStatusAvailable: boolean;
+  sargalStatusUnavailable: boolean;
+  noSargalProfil: boolean;
   hasError: boolean;
   isKilimanjaroPostpaid: boolean;
 
@@ -113,19 +114,22 @@ export class DashboardPostpaidPage implements OnInit {
   getCustomerSargalStatus() {
     this.loadingStatus = false;
     this.hasError = false;
-    this.sargalStatusAvailable = false;
+    this.sargalStatusUnavailable = false;
+    this.noSargalProfil = false;
     this.sargalServ.getCustomerSargalStatus().subscribe(
       (sargalStatus: SargalStatusModel) => {
         if (sargalStatus.valid) {
-          this.sargalStatusAvailable = true;
+          this.sargalStatusUnavailable = true;
         }
         this.loadingStatus = true;
         this.hasError = false;
       },
       (err: any) => {
         this.loadingStatus = true;
-        if (err.status !== 500) {
-          this.hasError = true;
+        if (err.status === 400) {
+          this.noSargalProfil = true;
+        } else {
+          this.sargalStatusUnavailable = true;
         }
       }
     );
