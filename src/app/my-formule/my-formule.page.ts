@@ -74,8 +74,8 @@ export class MyFormulePage implements OnInit {
   ionViewWillEnter(){
     this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
     this.processInfosFormules();
-    this.queryAllTarifs();
-    this.authServ.UpdateNotificationInfo();
+    // this.queryAllTarifs();
+    // this.authServ.UpdateNotificationInfo();
   }
 
   getTarifs(event: any){

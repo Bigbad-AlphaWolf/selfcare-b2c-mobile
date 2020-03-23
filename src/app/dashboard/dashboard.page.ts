@@ -14,16 +14,11 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material';
 import { getCurrentDate } from 'src/shared';
-import { WelcomeStatusModel, getCurrentDate } from 'src/shared';
-import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { Subscription } from 'rxjs';
 import { Platform } from '@ionic/angular';
-import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()

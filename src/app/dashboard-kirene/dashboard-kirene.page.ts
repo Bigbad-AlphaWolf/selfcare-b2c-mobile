@@ -127,12 +127,6 @@ export class DashboardKirenePage implements OnInit {
       });
   }
 
-  ionViewWillEnter() {
-    this.getUserConsommations();
-    this.getSargalPoints();
-    this.getCurrentSubscription();
-  }
-
   getUserInfos() {
     const user = ls.get('user');
     this.firstName = user.firstName;
