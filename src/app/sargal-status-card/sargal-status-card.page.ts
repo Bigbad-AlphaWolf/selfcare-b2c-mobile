@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import * as SecureLS from 'secure-ls';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import { SubscriptionModel, PROFILE_TYPE_POSTPAID } from '../dashboard';
+import { SubscriptionModel, PROFILE_TYPE_POSTPAID, PROFILE_TYPE_PREPAID } from '../dashboard';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -22,7 +22,7 @@ export class SargalStatusCardPage implements OnInit {
   currentNumber: string;
   name: string;
   currentYear = new Date().getFullYear();
-  isPostpaid;
+  userProfil: string;
   constructor(
     private sargalService: SargalService,
     private router: Router,
@@ -36,7 +36,7 @@ export class SargalStatusCardPage implements OnInit {
     const user = ls.get('user');
     this.name = user.firstName + ' ' + user.lastName;
     this.authServ.getSubscription(this.currentNumber).subscribe((res:SubscriptionModel)=>{
-      this.isPostpaid = res.profil === PROFILE_TYPE_POSTPAID;
+      this.userProfil = res.profil;
     })
   }
 
@@ -66,7 +66,7 @@ export class SargalStatusCardPage implements OnInit {
   }
 
   goBack() {
-    if(this.isPostpaid){
+    if(this.userProfil !== PROFILE_TYPE_PREPAID){
       this.router.navigate(['/dashboard']);
     }else{
       this.router.navigate(['/sargal-dashboard']);

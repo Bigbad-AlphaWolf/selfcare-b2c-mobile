@@ -98,13 +98,13 @@
                       [diameter]="30"
                     ></mat-spinner>
                   </div>
-                  <ng-container *ngIf="loadingStatus">
+                  <ng-container *ngIf="loadingStatus  && !sargalStatusUnavailable">
                     <div class="bottom-block">
                       <span class="show-solde-info-text">Voir ma carte</span
                       >
                     </div>
                   </ng-container>
-                  <ng-container *ngIf="loadingStatus">
+                  <ng-container *ngIf="loadingStatus  && sargalStatusUnavailable">
                     <div class="bottom-block">
                       <span class="show-solde-info-text">Service Indisponible</span
                       >
