@@ -24,7 +24,6 @@ export class PhoneNumbersListComponent implements OnInit, OnDestroy {
 
   constructor(
     private dashboardService: DashboardService,
-    private authenticationService: AuthenticationService,
     private router: Router
   ) {}
 

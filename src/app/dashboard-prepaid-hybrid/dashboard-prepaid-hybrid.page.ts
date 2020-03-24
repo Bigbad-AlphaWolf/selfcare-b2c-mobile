@@ -14,7 +14,8 @@ import {
   UserConsommations,
   formatCurrency,
   USER_CONS_CATEGORY_CALL,
-  WelcomeStatusModel
+  WelcomeStatusModel,
+  SargalStatusModel
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -90,7 +91,10 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   firstName: string;
   lastName: string;
   fabOpened = false;
-
+  isLoading: boolean;
+  hasError: boolean;
+  sargalStatusUnavailable: boolean;
+  noSargalProfil: boolean;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -130,6 +134,30 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       });
   }
 
+  getCustomerSargalStatus() {
+    this.isLoading = true;
+    this.hasError = false;
+    this.sargalStatusUnavailable = false;
+    this.noSargalProfil = false;
+    this.sargalServ.getCustomerSargalStatus().subscribe(
+      (sargalStatus: SargalStatusModel) => {
+        if (!sargalStatus.valid) {
+          this.sargalStatusUnavailable = true;
+        }
+        this.isLoading = false;
+        this.hasError = false;
+      },
+      (err: any) => {
+        this.isLoading = false;
+        if(err.status === 400){
+          this.noSargalProfil = true;
+        }else{
+          this.sargalStatusUnavailable = true;
+        }
+      }
+    );
+  }
+
   getCurrentSubscription() {
     const currentNumber = this.dashbordServ.getCurrentPhoneNumber();
     this.authServ.getSubscription(currentNumber).subscribe(
@@ -140,6 +168,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
           this.currentProfil === PROFILE_TYPE_HYBRID ||
           this.currentProfil === PROFILE_TYPE_HYBRID_1 ||
           this.currentProfil === PROFILE_TYPE_HYBRID_2;
+          if(this.isHyBride){
+            this.getCustomerSargalStatus();
+          }
       },
       (err: any) => {}
     );
@@ -233,6 +264,10 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       );
       this.goToSargalDashboard();
     }
+  }
+
+  seeSargalCard(){
+    this.router.navigate(['/sargal-status-card']);
   }
 
   goToSargalDashboard() {

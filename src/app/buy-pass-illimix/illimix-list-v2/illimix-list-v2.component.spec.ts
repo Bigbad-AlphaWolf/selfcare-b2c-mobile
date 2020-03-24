@@ -18,6 +18,7 @@ describe('IllimixListV2Component', () => {
         {
           provide: PassIllimixService,
           useValue: {
+            setUserCodeFormule: () => {},
             setPhoneNumber: () => {},
             setPaymentMod: () => {},
             setListPassIllimix: () => {},

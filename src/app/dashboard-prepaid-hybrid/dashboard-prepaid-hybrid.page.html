@@ -5,11 +5,6 @@
       *ngIf="showPromoBarner || (listBanniere.length && showPromoBarner)"
       class="dashboard-img-promo slide-container"
     >
-      <!-- <scb-slides-images
-      [slides]="listBanniere"
-      [device]="'MOBILE'"
-      (close)="hidePromoBarner($event)"
-    ></scb-slides-images> -->
       <ion-slides>
         <ng-container *ngFor="let banniere of listBanniere">
           <ion-slide>
@@ -160,6 +155,57 @@
               <div
                 *ngIf="userSargalData?.status !== getSargalStatusNotSubscribed()"
                 (click)="getSargalPoints()"
+                class="scb-data-reload"
+              >
+                <img src="/assets/images/reload.png" alt="reload-icon" />
+              </div>
+            </div>
+          </ion-slide>
+          <ion-slide *ngIf=" currentProfil && isHyBride && !noSargalProfil">
+            <div
+              class="scb-btn-black scb-btn-sargal"
+              [ngClass]="{
+              'btn-disabled': sargalStatusUnavailable }"
+            >
+              <div
+                (click)="seeSargalCard()"
+                [ngClass]="{
+                'btn-no-action': sargalStatusUnavailable
+              }"
+                class="btn-container"
+              >
+                <div class="scb-btn-top-block">
+                  <img
+                    class="scb-btn-top-block-icon"
+                    src="/assets/images/points-sargal.svg"
+                    alt="sargal-cfa-3-mob"
+                  />
+                  <div class="scb-btn-top-block-text">
+                    <span class="text">Sargal</span>
+                  </div>
+                </div>
+                <div *ngIf="isLoading" class="scb-block-spinner">
+                  <mat-spinner
+                    mode="indeterminate"
+                    [diameter]="30"
+                  ></mat-spinner>
+                </div>
+                <ng-container *ngIf="!isLoading && !sargalStatusUnavailable">
+                  <div class="bottom-block">
+                    <span class="show-solde-info-text">Voir ma carte</span
+                    >
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="!isLoading && sargalStatusUnavailable">
+                  <div class="bottom-block">
+                    <span class="show-solde-info-text">Service Indisponible</span
+                    >
+                  </div>
+                </ng-container>
+              </div>
+
+              <div
+                (click)="getCustomerSargalStatus()"
                 class="scb-data-reload"
               >
                 <img src="/assets/images/reload.png" alt="reload-icon" />

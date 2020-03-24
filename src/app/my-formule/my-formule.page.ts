@@ -6,6 +6,7 @@ import { CODE_KIRENE_Formule, FormuleMobileModel, TarifZoningByCountryModel } fr
 import { FormuleService } from '../services/formule-service/formule.service';
 import { SubscriptionModel, dashboardOpened } from '../dashboard';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-my-formule',
@@ -47,19 +48,24 @@ export class MyFormulePage implements OnInit {
     }
   ];
   scr;
-
   listTarifsInternationaux: TarifZoningByCountryModel[] = [];
-
   tarifsByCountry: {tarifAppel: any, tarifSms: any};
+  isIOS:boolean;
+  selectedCountry: any;
   constructor(
     private router: Router,
     private formuleService: FormuleService,
     private authServ: AuthenticationService,
     private dashbdServ: DashboardService,
     private followAnalyticsService: FollowAnalyticsService,
+    private platform: Platform
   ) {}
 
   ngOnInit() {
+    if(this.platform.is("ios")){
+      this.isIOS = true;
+    }      
+
   }
 
   queryAllTarifs(){
@@ -74,17 +80,10 @@ export class MyFormulePage implements OnInit {
   ionViewWillEnter(){
     this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
     this.processInfosFormules();
-    // this.queryAllTarifs();
-    // this.authServ.UpdateNotificationInfo();
+    this.queryAllTarifs();
+    this.authServ.UpdateNotificationInfo();
   }
 
-  getTarifs(event: any){
-    const selectCountry = event.detail.value;
-    const selectedTarifs = this.listTarifsInternationaux.find((value: TarifZoningByCountryModel)=>{
-      return value.name === selectCountry;
-    })
-    this.tarifsByCountry = selectedTarifs.zone.tarifFormule;    
-  }
 
   processInfosFormules() {
     this.authServ.getSubscription(this.currentNumber).subscribe(

@@ -66,7 +66,15 @@ export class BuyPassInternetPage implements OnInit {
     private followAnalyticsService: FollowAnalyticsService
   ) {}
 
+<<<<<<< HEAD
+  ngOnInit() {
+    this.currentUserNumber = this.dashServ.getCurrentPhoneNumber();
+    this.checkUserIsPostPaid();
+    this.pageAccessUrl = this.router.url;
+  }
+=======
   ngOnInit() {}
+>>>>>>> d70c10c6a820d6db7c28c79fc84b750339eeeb89
 
   ionViewWillEnter() {
     this.currentUserNumber = this.dashServ.getCurrentPhoneNumber();
@@ -99,6 +107,8 @@ export class BuyPassInternetPage implements OnInit {
           this.choosedPaymentMod = PAYMENT_MOD_OM;
         } else if (this.idPassSelected) {
           this.destinataire = this.currentUserNumber;
+          // this.choosedPaymentMod = PAYMENT_MOD_CREDIT;
+          // if (this.currentFormule === HOME_PREPAID_FORMULE) {
           this.buyForFixPrepaid = true;
           this.passService
             .getPassById(this.idPassSelected)
@@ -111,6 +121,7 @@ export class BuyPassInternetPage implements OnInit {
               };
               this.step = 0;
             });
+          // }
         } else {
           this.destCodeFormule = souscription.code;
           this.destinataire = this.currentUserNumber;

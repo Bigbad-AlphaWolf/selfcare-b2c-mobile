@@ -38,6 +38,7 @@ export class SargalCataloguePage implements OnInit {
   failed: boolean;
   conversionLoading: boolean;
   sargalLastUpdate: string;
+  hasError: boolean;
   constructor(
     private router: Router,
     private sargalServ: SargalService,
@@ -47,13 +48,23 @@ export class SargalCataloguePage implements OnInit {
   ) {}
 
   ngOnInit() {
+  }
+
+  ionViewWillEnter(){
     this.step = 'CHOOSE_GIFT';
+    this.reloadData();
+    this.getSargalBalance();
+  }
+
+  reloadData(){
     this.currentNumber = this.dashServ.getCurrentPhoneNumber();
     this.sargalServ.setUserPhoneNumber(this.currentNumber);
     this.sargalServ.setListGiftSargalAndCategoryOfUserByQuery();
-    this.sargalServ.getStatusDataLoaded().subscribe((status: boolean) => {
-      this.dataLoaded = status;
-      if (this.dataLoaded && this.activatedRoute) {
+    this.sargalServ.getStatusDataLoaded().subscribe((res: any) => {
+      const detail = res;
+      this.dataLoaded = res.status;
+      this.hasError = res.error;
+      if (this.dataLoaded && this.activatedRoute && !this.hasError) {
         this.categoriesGiftSargal = this.sargalServ.getListCategoryGiftSargal();
 
         this.listGiftSargal = this.sargalServ.getListGiftSargalOfUser();
@@ -72,7 +83,6 @@ export class SargalCataloguePage implements OnInit {
         });
       }
     });
-    this.getSargalBalance();
   }
 
   getSargalBalance() {

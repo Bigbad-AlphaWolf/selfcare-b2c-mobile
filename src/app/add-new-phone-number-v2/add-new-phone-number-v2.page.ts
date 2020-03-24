@@ -4,6 +4,7 @@ import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.co
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { REGEX_FIX_NUMBER, REGEX_NUMBER } from 'src/shared';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-new-phone-number-v2',
@@ -20,10 +21,14 @@ export class AddNewPhoneNumberV2Page implements OnInit {
   constructor(
     private dashboardServ: DashboardService,
     private dialog: MatDialog,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private router: Router
   ) {}
 
   ngOnInit() {
+  }
+
+  ionViewWillEnter(){
     this.currentUserNumber = this.dashboardServ.getCurrentPhoneNumber();
   }
   validNumber(msisdn: string) {
@@ -62,12 +67,16 @@ export class AddNewPhoneNumberV2Page implements OnInit {
       (err: any) => {
         this.isProcessing = false;
         this.hasError = true;
-        this.successDialog = this.dialog.open(ModalSuccessComponent, {
-          data: { type: 'rattachment-failed' },
-          width: '95%',
-          maxWidth: '375px'
-        });
-        this.errorMsg = err.error.title;
+        if(payload.typeNumero === 'FIXE'){
+          this.router.navigate(['/new-number/id-client'],  { queryParams: { numero: payload.numero } })
+        }else{
+          this.successDialog = this.dialog.open(ModalSuccessComponent, {
+            data: { type: 'rattachment-failed' },
+            width: '95%',
+            maxWidth: '375px'
+          });
+          this.errorMsg = err.error.title;
+        }
         this.followAttachmentIssues(payload, 'error');
       }
     );

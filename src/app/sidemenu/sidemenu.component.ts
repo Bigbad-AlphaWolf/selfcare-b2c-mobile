@@ -23,6 +23,7 @@ import { dashboardOpened } from '../dashboard';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { FormuleService } from '../services/formule-service/formule.service';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -56,11 +57,12 @@ export class SidemenuComponent implements OnInit, OnDestroy {
       this.getSouscription();
       this.extractData();
     });
+    this.authServ.currentPhoneNumbersubscriptionUpdated.subscribe(formule => {
+      console.log(formule);
+      this.getSouscription();
+    });
     this.accountService.userUrlAvatarSubject.subscribe(() => {
       this.extractData();
-    });
-    dashboardOpened.subscribe(x => {
-      this.getSouscription();
     });
   }
 
@@ -97,7 +99,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goToAssistancePage() {
-    this.iab.create(ASSISTANCE_URL, '_system');
+    this.iab.create(ASSISTANCE_URL, '_self');
     this.followAnalyticsService.registerEventFollow(
       'Sidemenu_Assistance',
       'event',

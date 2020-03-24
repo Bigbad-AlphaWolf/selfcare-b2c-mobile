@@ -120,8 +120,8 @@
         <div class="item" *ngFor="let pass of listPass" (click)="selectPass(pass?.id)">
           <div class="pass-infos">
             <div class="price">
-              <span class="scb-text-black">{{ pass.volumeInternet }} - </span>
-              <span class="scb-text-orange">{{ pass.tarif }} F</span>
+              <span class="scb-text-black">{{ !pass.passPromo ? pass?.volumeInternet : pass?.passPromo?.volumeInternet }} - </span>
+              <span class="scb-text-orange">{{ !pass.passPromo ? pass?.tarif : pass?.passPromo?.tarif }} F</span>
             </div>
             <div class="validity scb-text-light-black">
               Valable

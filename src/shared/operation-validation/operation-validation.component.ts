@@ -45,6 +45,7 @@ import {
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { validateNumber } from 'src/app/register';
 import { SelectNumberPopupComponent } from '../select-number-popup/select-number-popup.component';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-operation-validation',
@@ -111,7 +112,8 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
     private dashServ: DashboardService,
     public dialog: MatDialog,
     private contacts: Contacts,
-    private omService: OrangeMoneyService
+    private omService: OrangeMoneyService,
+    private followsServ: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -180,17 +182,21 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
     }
   }
 
-  openConfirmationDialog() {
-    this.dialogRef = this.dialog.open(CancelOperationPopupComponent, {
-      width: '294px',
-      height: '232px'
-    });
+  openConfirmationDialog(confirmSargalIllimite?:boolean, sargalPayload?:any) {
+    let options = { width: '294px',height: '232px'};
+    if(confirmSargalIllimite){
+      options = Object.assign(options, {data : {confirmSargalIllimite : true}})
+    }
+    this.dialogRef = this.dialog.open(CancelOperationPopupComponent, options);
     this.dialogSub = this.dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const msg = this.formatFollowMsg(this.operationType);
-        // if (msg) {
-        //   FollowAnalytics.logEvent(msg, 'clicked');
-        // }
+        if (msg) {
+          this.followsServ.registerEventFollow("clicked","event")
+        }
+        if(confirmSargalIllimite){
+          this.validate.emit(sargalPayload);
+        }
       }
     });
   }
@@ -238,7 +244,8 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
         const num2 = this.formNumeroIllimite.value.illimite2;
         numeroIllimiteArray.push(num2);
       }
-      this.validate.emit(numeroIllimiteArray);
+      const confirmSargalIllimite = true;
+      this.openConfirmationDialog(confirmSargalIllimite, numeroIllimiteArray);
     } else {
       this.validate.emit();
     }

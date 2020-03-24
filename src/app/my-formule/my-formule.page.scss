@@ -60,6 +60,24 @@
 			}
 			&-container {
 				display: flex;
+				&.international{
+					.my-formule-details-infos-container-list {
+						&:first-child {
+							border-right: none;
+						}
+						.list-header-container {
+							border-bottom: none;
+						}
+						.list-content-container {
+							&-item {
+								.item-top-block {
+									font-family: HelveticaNeueLTStd-Bd;
+									font-size: 20px;
+								}
+							}
+						}
+					}
+				}
 				&-list {
 					width: 50%;
 					&:first-child {

@@ -28,14 +28,17 @@ export class AproposPage implements OnInit {
     private platform: Platform,
     private appVersion: AppVersion
   ) {
+  }
+
+  ngOnInit() {
+  }
+
+  ionViewWillEnter() {
     this.appVersion.getVersionNumber().then(value => {
       this.AppVersionNumber = value;
     }).catch(error => {
       console.log(error);
     });
-  }
-
-  ngOnInit() {
   }
 
   presentAlert() {
