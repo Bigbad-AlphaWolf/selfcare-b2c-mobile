@@ -14,11 +14,14 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import * as SecureLS from 'secure-ls';
 import { Router } from '@angular/router';
-import { getCurrentDate } from 'src/shared';
+import { getCurrentDate, isNewVersion } from 'src/shared';
 import { AssistanceService } from '../services/assistance.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { Platform } from '@ionic/angular';
+import { AppVersion } from '@ionic-native/app-version/ngx';
+import { MatDialog } from '@angular/material';
+import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()
@@ -42,6 +45,9 @@ export class DashboardPage implements OnInit, OnDestroy {
   lastName: any;
   isFormuleFixPostpaid: any;
   isFormuleFixPrepaid: any;
+  isIOS:boolean;
+  appId:string;
+  AppVersionNumber:any;
   constructor(
     private dashboardServ: DashboardService,
     private authServ: AuthenticationService,
@@ -49,15 +55,49 @@ export class DashboardPage implements OnInit, OnDestroy {
     private router: Router,
     private followAnalyticsService: FollowAnalyticsService,
     private platform: Platform,
-    private appMinimize: AppMinimize
+    private appMinimize: AppMinimize,
+    private appVersion: AppVersion,
+    private dialog: MatDialog,
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.platform.is('ios')) {
+      this.isIOS = true;
+      this.appId = 'orange-et-moi-sénégal/id1039327980';
+    } else if (this.platform.is('android')) {
+      this.appId = 'com.orange.myorange.osn';
+    }
+  }
 
   ngOnDestroy() {}
 
   ionViewWillEnter() {
     this.getCurrentSubscription();
+
+     // Get app version
+     this.appVersion
+     .getVersionNumber()
+     .then(value => {
+       this.AppVersionNumber = value;
+     })
+     .catch(error => {
+       console.log(error);
+     });
+   // Call server for app version
+   this.assistanceService.getAppVersionPublished().subscribe((version: any) => {
+     const versionAndroid = version.android;
+     const versionIos = version.ios;
+       if (
+         isNewVersion(
+           this.isIOS ? versionIos : versionAndroid,
+           this.AppVersionNumber
+         )
+       ) {
+         const dialogRef = this.dialog.open(CancelOperationPopupComponent, {
+           data: { updateApp: this.appId }
+         });
+       }
+   });
   }
   ionViewDidEnter() {
     // Initialize BackButton Eevent.
