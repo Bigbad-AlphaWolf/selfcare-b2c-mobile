@@ -17,13 +17,16 @@
 <div class="dialog-actions-btns-block">
   <div
     (click)="accept()"
-    class="dialog-actions-btn scb-btn scb-btn-white c-pointer"
+    class="dialog-actions-btn scb-btn c-pointer"
+    [ngClass]="{ 'scb-btn-white': !data?.updateApp, 'scb-btn-orange' : data?.updateApp} " 
   >
     Oui
   </div>
   <div
     (click)="refused()"
-    class="dialog-actions-btn scb-btn scb-btn-orange c-pointer"
+    class="dialog-actions-btn scb-btn c-pointer"
+    [ngClass]="{ 'scb-btn-white': data?.updateApp, 'scb-btn-orange' : !data?.updateApp} " 
+
   >
     Non
   </div>
