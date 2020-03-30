@@ -17,8 +17,6 @@ import { PurchaseService } from '../services/purchase-service/purchase.service';
 export class DetailsConsoPage implements OnInit {
   detailsLoading;
   histLoading;
-  details = true;
-  historique = false;
   consommations = [];
   error;
   notdata = false;
@@ -67,8 +65,6 @@ export class DetailsConsoPage implements OnInit {
         );
         this.currentProfil = res.profil;
         if (this.currentProfil === 'POSTPAID') {
-          this.historique = true;
-          this.details = false;
           this.getPostpaidUserHistory(2);
         } else {
           this.getPrepaidUserHistory(2);
@@ -221,15 +217,4 @@ export class DetailsConsoPage implements OnInit {
     return this.consoshistorique;
   }
 
-  historiqueSelected() {
-    window.scroll(0, 0);
-    this.historique = true;
-    this.details = false;
-  }
-
-  detailsSelected() {
-    window.scroll(0, 0);
-    this.details = true;
-    this.historique = false;
-  }
 }
