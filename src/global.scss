@@ -347,24 +347,7 @@ body {
 
 // customize css mat-tab for integration historique achat
 .suivi-conso-page-body {
-  .mat-tab-header-pagination {
-    display: none !important;
-  }
-  .mat-tab-list {
-    padding-left: 5px;
-    overflow-x: auto;
-    transform: none !important;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-  .mat-tab-label {
-    min-width: 160px !important;
-  }
-  .mat-tab-label-active {
-    border-bottom: 2px solid $orange;
-  }
-  .mat-ink-bar {
+  .mat-tab-header {
     display: none;
   }
 }
@@ -394,9 +377,17 @@ body {
 // customize css for historique achat component
 
 .purchase-history-container {
-  .mat-button-wrapper {
+  /*  .mat-button-wrapper{
     display: flex;
     align-items: center;
+  } */
+}
+
+// Customize css for suivi conso
+
+.suivi-conso-page-body {
+  .mat-tab-body-wrapper {
+    height: 100%;
   }
 }
 

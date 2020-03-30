@@ -37,7 +37,8 @@
     .suivi-conso-page-body {
         // margin-top: 70px;
         width: 100%;
-        height: calc(100% - 70px);
+        height: calc(100% - 50px);
+        margin-top: 20px;
         .conso-tab-category {
             display: flex;
             span {
@@ -53,6 +54,35 @@
                 span {
                     font-family: HelveticaNeueLTStd-Bd;
                     color: $orange;
+                }
+            }
+        }
+        mat-tab-group{
+            height: 100%;
+        }
+        .tab-header{
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            height: 35px;
+            overflow-x: auto;
+            padding-left: 10px;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+            &-item{
+                padding: 5px 5px;
+                white-space: nowrap;
+                &.selected {
+                    color: $orange;
+                    border-bottom: 3px solid $orange;
+                }
+                &:only-child{
+                    width: 100%;
+                    text-align: center;
+                }
+                span{
+                    width: 100%;
                 }
             }
         }
