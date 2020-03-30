@@ -5,16 +5,14 @@
   </ng-container>
   <ng-container *ngIf="!isLoading && !hasError">
     <div *ngFor="let consoDetail of consoDetails" class="category-container">
-      <div>
+      <div class="title-conso">
         <span class="scb-categorie-txt">{{
-          consoDetail.categorie == USER_CONS_CATEGORY_CALL
-            ? CREDIT_APPEL_CATEGORY
-            : consoDetail.categorie
+          consoDetail.categorie | formatSuiviConsoCategoryTitle
         }}</span>
       </div>
   
       <div
-        class="rechargelabel-rechargevalue-rechargejauge-and-expirationrechargedatetime-block"
+        class="rechargelabel-rechargevalue-rechargejauge-and-expirationrechargedatetime-block item-conso-list"
         *ngFor="let cosodetailconsommations of consoDetail.consommations"
       >
         <div class="rechargelabel-rechargevalue-container">
