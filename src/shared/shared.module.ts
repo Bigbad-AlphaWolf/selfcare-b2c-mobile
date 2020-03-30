@@ -48,6 +48,7 @@ import { RouterModule } from '@angular/router';
 import { PassVolumeDisplayPipe } from './pipes/pass-volume-display.pipe';
 import { OmButtonComponent } from './om-button/om-button.component';
 import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.component';
+import { FormatSuiviConsoCategoryTitlePipe } from './pipes/format-suivi-conso-category-title.pipe';
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.co
     HelpBannerComponent,
     PassVolumeDisplayPipe,
     OmButtonComponent,
-    DashboardHeaderComponent
+    DashboardHeaderComponent,
+    FormatSuiviConsoCategoryTitlePipe
   ],
   imports: [
     CommonModule,
@@ -132,6 +134,7 @@ import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.co
     FormatBillDatePipe,
     FormatCurrencyPipe,
     GetLabelLigneBillBordereauPipe,
+    FormatSuiviConsoCategoryTitlePipe,
     ChatMsgLineComponent,
     CancelOperationPopupComponent,
     PhoneNumberDisplayPipe,
