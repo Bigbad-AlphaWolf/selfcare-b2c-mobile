@@ -7,27 +7,6 @@
   position: relative;
   padding-bottom: 97px;
 
-  .dashboard-img-promo {
-    width: (355px / $baseWidthMobile2) * 100%;
-    //fixe the height this class
-    height: 67px;
-    margin: 10px auto;
-    position: relative;
-
-    .banniere-promo-img {
-      width: 100%;
-      height: 100%;
-    }
-
-    .hide-banniere-promo {
-      position: absolute;
-      right: 14px;
-      top: 22px;
-      width: 21px;
-      height: 21px;
-    }
-  }
-
   .dashboard-block-offres {
     padding-left: 10px;
     padding-right: 10px;
@@ -189,7 +168,7 @@
   // FOR KEURGUIBOX FORMULE
   .dashboard-block-conso {
     background-color: $white;
-    padding: 15px 0 10px 0;
+    padding: 20px 0;
     margin-bottom: 10px;
     margin-top: 10px;
 
@@ -198,13 +177,20 @@
       justify-content: space-between;
       padding: 0 percentage(10px / $baseWidthMobile2);
       .suivi-conso {
-        font-size: 20px;
+        font-size: 24px;
+      }
+      .voir-details-text {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
       }
     }
 
     &-btns {
-      height: 130px;
-      margin-top: -5px;
+      height: 110px;
+      margin: 20px 0;
       overflow-x: scroll;
       white-space: nowrap;
       display: flex;
@@ -213,11 +199,12 @@
       }
 
       ion-slides {
+        width: 100%;
         ion-slide {
           padding-left: 10px;
           display: flex;
           align-items: flex-start;
-          margin-top: 12px;
+          // margin-top: 12px;
           // width: 66% !important;
         }
       }
@@ -225,56 +212,48 @@
       app-om-button {
         // min-width: 63%;
         width: 100%;
-        height: 90px;
-        margin-right: percentage(10px / 366px);
+        // height: 90px;
+        // margin-right: percentage(10px / 366px);
       }
 
       .scb-btn-credit,
       .scb-btn-pass {
-        text-align: left;
-        min-width: 63%;
+        position: relative;
         width: 100%;
-        height: 90px;
+        height: 110px;
         display: inline-block;
-        padding: 8px 0 10px 15px;
-        border-radius: 15px;
-        box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
-        margin-right: percentage(10px / 366px);
+        padding: 15px 0 15px 15px;
+        border-radius: 20px;
+        // box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
+        // margin-right: percentage(10px / 366px);
         .scb-btn-top-block {
-          &-icon,
-          &-text {
-            display: inline-block;
-            vertical-align: middle;
-          }
-
+          display: flex;
+          align-items: center;
           &-icon {
             height: 24px;
             width: 24px;
-            margin-right: 4px;
+            margin-right: 5px;
           }
 
           &-text {
             .text {
-              font-family: HelveticaNeueLTStd-Roman, sans-serif;
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
               font-size: 18px;
             }
           }
         }
 
         .bottom-block {
-          margin-top: 1px;
+          margin-top: 6px;
+          text-align: left;
           .value {
             font-family: HelveticaNeueLTStd-Bd, sans-serif;
-            font-size: 26px;
-
-            .text-style-1 {
-              font-family: HelveticaNeueLTStd-Roman, sans-serif;
-              font-size: 18px;
-            }
+            font-size: 24px;
           }
         }
 
         .validity-text {
+          text-align: left;
           margin-top: 6px;
           font-family: HelveticaNeueLTStd-Roman;
           font-size: 9px;
@@ -291,7 +270,7 @@
     }
 
     &-details {
-      margin: -15px 0 0 0;
+      // margin: -15px 0 0 0;
       border-radius: 4px;
       padding: 5px percentage(10px / $baseWidthMobile2);
 

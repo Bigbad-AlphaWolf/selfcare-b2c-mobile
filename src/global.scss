@@ -349,9 +349,8 @@ body {
 .suivi-conso-page-body {
   .mat-tab-header {
     display: none;
-    }
+  }
 }
-
 
 .mat-form-field-appearance-outline.mat-focused {
   color: $orange;
@@ -378,17 +377,31 @@ body {
 // customize css for historique achat component
 
 .purchase-history-container {
- /*  .mat-button-wrapper{
+  /*  .mat-button-wrapper{
     display: flex;
     align-items: center;
   } */
 }
 
-
 // Customize css for suivi conso
 
-.suivi-conso-page-body{
-    .mat-tab-body-wrapper{
-      height: 100%;
+.suivi-conso-page-body {
+  .mat-tab-body-wrapper {
+    height: 100%;
+  }
+}
+
+.dashboard-img-promo {
+  .swiper-pagination {
+    text-align: left;
+    padding-left: 15px;
+    .swiper-pagination-bullet {
+      border: 0.5px solid $white !important;
+      opacity: 1 !important;
+      background-color: $fullBlack;
+      &-active {
+        background-color: $white;
+      }
+    }
   }
 }

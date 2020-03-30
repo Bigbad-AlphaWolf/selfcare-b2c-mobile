@@ -57,7 +57,36 @@ export class DashboardHomePrepaidPage implements OnInit {
     '/assets/images/banniere-promo-fibre.png'
   ];
   showPromoBanner = ls.get('banner');
-  listBanniere: BannierePubModel[] = [];
+  listBanniere: BannierePubModel[] = [
+    {
+      callToAction: true,
+      dateDebut: 'string',
+      dateFin: 'string',
+      description: 'Iphone 11',
+      formuleMobiles: [],
+      id: 1,
+      image: '/assets/images/banniere2.png',
+      imageWeb: 'string',
+      priorite: 1,
+      profil: [],
+      type: 'PUBLICITAIRE',
+      zoneAffichage: 'string'
+    },
+    {
+      callToAction: true,
+      dateDebut: 'string',
+      dateFin: 'string',
+      description: 'Iphone 11',
+      formuleMobiles: [],
+      id: 1,
+      image: '/assets/images/banniere2.png',
+      imageWeb: 'string',
+      priorite: 1,
+      profil: [],
+      type: 'PUBLICITAIRE',
+      zoneAffichage: 'string'
+    }
+  ];
   listPass: any[] = [];
   loadingConso;
   errorOnLoadingConso;
@@ -95,34 +124,39 @@ export class DashboardHomePrepaidPage implements OnInit {
     this.userConsommationsCategories = [];
     this.dashbdSrv.getUserConsoInfosByCode().subscribe(
       (res: any) => {
-        // res = arrangeCompteurByOrdre(res);
-        this.followsAnalytics.registerEventFollow(
-          'dashboard_conso_fixe_prepaid',
-          'event'
-        );
-        const orderedConso = arrangeCompteurByOrdre(res);
-        const appelConso = orderedConso.length
-          ? orderedConso.find(x => x.categorie === USER_CONS_CATEGORY_CALL)
-              .consommations
-          : null;
-        const internetConso = orderedConso.length
-          ? orderedConso.find(x => x.categorie === USER_CONS_CATEGORY_INTERNET)
+        if (res.length) {
+          this.followsAnalytics.registerEventFollow(
+            'dashboard_conso_fixe_prepaid',
+            'event'
+          );
+          const orderedConso = arrangeCompteurByOrdre(res);
+          const appelConso = orderedConso.length
+            ? orderedConso.find(x => x.categorie === USER_CONS_CATEGORY_CALL)
+                .consommations
+            : null;
+          const internetConso = orderedConso.length
             ? orderedConso.find(
                 x => x.categorie === USER_CONS_CATEGORY_INTERNET
-              ).consommations
-            : null
-          : null;
-        if (appelConso) {
-          this.creditValidity = this.getValidityDates(appelConso);
+              )
+              ? orderedConso.find(
+                  x => x.categorie === USER_CONS_CATEGORY_INTERNET
+                ).consommations
+              : null
+            : null;
+          if (appelConso) {
+            this.creditValidity = this.getValidityDates(appelConso);
+          }
+          if (internetConso) {
+            this.internetValidity = this.getValidityDates(internetConso);
+          }
+          this.userConsoSummary = getConsoByCategory(orderedConso);
+          this.userConsommationsCategories = getTrioConsoUser(orderedConso);
+          this.userCallConsoSummary = this.computeUserConsoSummary(
+            this.userConsoSummary
+          );
+        } else {
+          this.errorOnLoadingConso = true;
         }
-        if (internetConso) {
-          this.internetValidity = this.getValidityDates(internetConso);
-        }
-        this.userConsoSummary = getConsoByCategory(orderedConso);
-        this.userConsommationsCategories = getTrioConsoUser(orderedConso);
-        this.userCallConsoSummary = this.computeUserConsoSummary(
-          this.userConsoSummary
-        );
         this.loadingConso = false;
       },
       err => {

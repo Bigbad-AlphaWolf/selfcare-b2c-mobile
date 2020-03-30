@@ -67,7 +67,36 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     { image: '/assets/images/banniere-promo-mob.png' },
     { image: '/assets/images/banniere-promo-fibre.png' }
   ];
-  listBanniere: BannierePubModel[] = [];
+  listBanniere: BannierePubModel[] = [
+    {
+      callToAction: true,
+      dateDebut: 'string',
+      dateFin: 'string',
+      description: 'Iphone 11',
+      formuleMobiles: [],
+      id: 1,
+      image: '/assets/images/banniere2.png',
+      imageWeb: 'string',
+      priorite: 1,
+      profil: [],
+      type: 'PUBLICITAIRE',
+      zoneAffichage: 'string'
+    },
+    {
+      callToAction: true,
+      dateDebut: 'string',
+      dateFin: 'string',
+      description: 'Iphone 11',
+      formuleMobiles: [],
+      id: 1,
+      image: '/assets/images/banniere2.png',
+      imageWeb: 'string',
+      priorite: 1,
+      profil: [],
+      type: 'PUBLICITAIRE',
+      zoneAffichage: 'string'
+    }
+  ];
   PROFILE_TYPE_PREPAID = PROFILE_TYPE_PREPAID;
   currentProfil: string;
   balanceValidity;
@@ -82,7 +111,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   hasPromoBooster: PromoBoosterActive = null;
   slideOpts = {
     speed: 400,
-    slidesPerView: 1.5,
+    slidesPerView: 1.7,
     slideShadows: true
   };
   CODE_COMPTEUR_VOLUME_NUIT_1 = CODE_COMPTEUR_VOLUME_NUIT_1;
@@ -124,14 +153,14 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.getUserConsommations();
     this.getSargalPoints();
     this.banniereServ.setListBanniereByFormule();
-    this.banniereServ
-      .getStatusLoadingBanniere()
-      .subscribe((status: boolean) => {
-        this.isBanniereLoaded = status;
-        if (this.isBanniereLoaded) {
-          this.listBanniere = this.banniereServ.getListBanniereByFormule();
-        }
-      });
+    // this.banniereServ
+    //   .getStatusLoadingBanniere()
+    //   .subscribe((status: boolean) => {
+    //     this.isBanniereLoaded = status;
+    //     if (this.isBanniereLoaded) {
+    //       this.listBanniere = this.banniereServ.getListBanniereByFormule();
+    //     }
+    //   });
   }
 
   getCustomerSargalStatus() {

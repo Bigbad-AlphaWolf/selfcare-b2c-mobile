@@ -1,43 +1,14 @@
 <app-dashboard-header [firstName]="firstName"></app-dashboard-header>
 <ion-content>
   <div class="dashboard-container-mobile">
-    <div
-      *ngIf="showPromoBarner || (listBanniere.length && showPromoBarner)"
-      class="dashboard-img-promo slide-container"
-    >
-      <ion-slides>
-        <ng-container *ngFor="let banniere of listBanniere">
-          <ion-slide>
-            <span #error class="error-slide scb-text-full-black">
-              Erreur lors du chargement de l'image</span
-            >
-            <img
-              #img
-              (error)="
-              onError([
-                { el: error, display: true },
-                { el: img, display: false }
-              ])
-            "
-              [src]="banniere.image"
-              alt="ban"
-            />
-          </ion-slide>
-        </ng-container>
-      </ion-slides>
-      <div class="close-icon" (click)="hidePromoBarner()">
-        <img src="/assets/images/group-14.svg" alt="hide-banniere-promo" />
-      </div>
-    </div>
     <div class="dashboard-block-conso">
       <div class="dashboard-block-conso-top-texts">
-        <div><span class="suivi-conso">Suivi conso</span></div>
-        <div (click)="goDetailsCom(1)">
-          <span class="voir-details scb-text-orange">Voir details </span>
-          <img
-            src="/assets/images/arrow-right.svg"
-            alt="keyboard-arrow-right-orange-mob"
-          />
+        <div class="suivi-conso">Suivi conso</div>
+        <div
+          class="voir-details-text scb-text-orange"
+          (click)="goDetailsCom(1)"
+        >
+          Voir details
         </div>
       </div>
       <div class="dashboard-block-conso-btns">
@@ -60,9 +31,8 @@
                 </div>
                 <div class="bottom-block">
                   <span class="value"
-                    >{{ userCallConsoSummary?.balance }}
-                    <span class="text-style-1"> FCFA </span></span
-                  >
+                    >{{ userCallConsoSummary?.balance }} FCFA
+                  </span>
                 </div>
                 <div class="validity-text" *ngIf="balanceValidity">
                   valable jusqu'au {{ balanceValidity }}
@@ -84,12 +54,11 @@
               </div>
               <div class="bottom-block">
                 <span class="value"
-                  >{{ userCallConsoSummary?.globalCredit }}
-                  <span class="text-style-1"> FCFA </span></span
+                  >{{ userCallConsoSummary?.globalCredit }} FCFA</span
                 >
               </div>
               <div class="validity-text" *ngIf="creditValidity">
-                valable jusqu'au {{ creditValidity }}
+                Expire le {{ creditValidity }}
               </div>
             </div>
           </ion-slide>
@@ -414,6 +383,40 @@
             >Faire une transaction avec <span> Orange Money </span></span
           >
         </div>
+      </div>
+    </div>
+    <div
+      *ngIf="showPromoBarner || (listBanniere.length && showPromoBarner)"
+      class="dashboard-img-promo slide-container"
+    >
+      <ion-slides pager [options]="{loop: true}">
+        <ng-container *ngFor="let banniere of listBanniere">
+          <ion-slide>
+            <span #error class="error-slide scb-text-full-black">
+              Erreur lors du chargement de l'image</span
+            >
+            <div class="description">
+              <div class="title">{{banniere.description}}</div>
+              <div class="text">La sortie pour bientôt</div>
+            </div>
+            <div class="img-container">
+              <img
+                #img
+                (error)="
+              onError([
+                { el: error, display: true },
+                { el: img, display: false }
+              ])
+            "
+                [src]="banniere.image"
+                alt="ban"
+              />
+            </div>
+          </ion-slide>
+        </ng-container>
+      </ion-slides>
+      <div class="close-icon" (click)="hidePromoBarner()" *ngIf="0">
+        <img src="/assets/images/group-14.svg" alt="hide-banniere-promo" />
       </div>
     </div>
   </div>
