@@ -17,6 +17,7 @@ export class SuiviConsoComponent implements OnInit, OnChanges {
   constructor(private changeRef: ChangeDetectorRef) {}
 
   ngOnInit() {
+    this.hasItError();
   }
 
   ngOnChanges(changes: SimpleChanges) {

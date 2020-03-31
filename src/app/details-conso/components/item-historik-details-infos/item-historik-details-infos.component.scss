@@ -1,0 +1,37 @@
+@import 'src/app/app';
+
+.item-container{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
+    &-left-block{
+        .icon-category{
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 8px;
+        }
+        .left-block-text{
+            display: inline-block;
+            vertical-align: top;
+            .item-title{
+                font-family: HelveticaNeueLTStd-Roman;
+                font-size: 18px;
+            }
+        }
+    }
+    &-right-block{
+        text-align: end;
+        .item-value{
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 18px;
+            color: $orange;
+        }
+    }
+    .subtitle-1, .subtitle-2{
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        color: $gray;
+    }
+}

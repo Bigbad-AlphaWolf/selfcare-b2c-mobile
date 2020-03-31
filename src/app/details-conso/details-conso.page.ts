@@ -72,9 +72,8 @@ export class DetailsConsoPage implements OnInit {
         } else {
           this.getPrepaidUserHistory(2);
           this.getUserConsoInfos();
-          if (this.currentProfil === 'PREPAID') {
-            this.getTransactionsByDay(this.purchaseDateFilterSelected);
-          }
+          this.getTransactionsByDay(this.purchaseDateFilterSelected);
+          
         }
       });
   }
