@@ -33,8 +33,7 @@ export const environment = {
   // CONFIRM_MSISDN_BY_NETWORK_URL:
   //   'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
   GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
-  CONFIRM_MSISDN_BY_NETWORK_URL:
-    'http://10.100.99.116:1494/api/v1/confirm-msisdn'
+  CONFIRM_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/confirm-msisdn'
 };
 
 /*

@@ -11,10 +11,9 @@ import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
 import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
-import { FirebaseX } from '@ionic-native/firebase-x/ngx';
-import { HttpClient } from '@angular/common/http';
-import { AppVersion } from '@ionic-native/app-version/ngx';
 import * as SecureLS from 'secure-ls';
+import { DetailsConsoPage } from './details-conso/details-conso.page';
+import { FCM } from '@ionic-native/fcm/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 declare var FollowAnalytics: any;
@@ -34,7 +33,7 @@ export class AppComponent {
     private appMinimize: AppMinimize,
     private router: Router,
     private deeplinks: Deeplinks,
-    private firebaseX: FirebaseX
+    private fcm: FCM
   ) {
     this.initializeApp();
   }
@@ -68,32 +67,35 @@ export class AppComponent {
       this.checkDeeplinks();
 
       // Get firebase id for notifications
-      this.firebaseX
+      this.fcm
         .getToken()
         .then(token => {
           ls.set('firebaseId', token);
-          console.log(token);
+          // console.log(token);
         })
         .catch(err => console.log(err));
 
       if (this.platform.is('ios')) {
-        this.firebaseX
-          .grantPermission()
+        this.fcm
+          .hasPermission()
           .then(hasPermission =>
-            console.log(hasPermission ? 'granted' : 'denied')
+            console.log(hasPermission ? 'notification permission granted' : 'notification permission denied')
           );
-
-        this.firebaseX
-          .onApnsTokenReceived()
-          .subscribe(token => ls.set('firebaseId', token));
       }
 
-      this.firebaseX
-        .onMessageReceived()
-        .subscribe(message => console.log(message));
+      this.fcm
+        .onNotification()
+        .subscribe(data => {
+          // console.log(data);
+          if (data.wasTapped) {
+            console.log('Notification received in background');
+          } else {
+            console.log('Notification received in foreground');
+          }
+        });      
 
-      this.firebaseX.onTokenRefresh().subscribe(fcmToken => {
-        console.log(fcmToken);
+      this.fcm.onTokenRefresh().subscribe(fcmToken => {
+        //console.log(fcmToken);
         ls.set('firebaseId', fcmToken);
       });
     });
@@ -107,11 +109,13 @@ export class AppComponent {
         '/assistance': AssistancePage,
         '/buy-pass-illimix': BuyPassIllimixPage,
         '/buy-pass-illimix/:id': BuyPassIllimixPage,
-        '/buy-credit': BuyCreditPage
+        '/buy-credit': BuyCreditPage,
+        '/details-conso': DetailsConsoPage
       })
       .subscribe(
         matched => {
           this.router.navigate([matched.$link.path]);
+          console.log(matched);
         },
         notMatched => {
           // console.log(notMatched);
