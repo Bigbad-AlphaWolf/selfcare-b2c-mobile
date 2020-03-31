@@ -51,13 +51,13 @@
         </ng-container>
       </div>
       <mat-tab-group #consoTab class="conso-page-tabs" >
-        <ng-container>
-          <mat-tab #conso *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
+        <ng-container *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
+          <mat-tab>
             <ng-container *ngIf="!detailsLoading">
               <app-suivi-conso [isLoading]="detailsLoading" (reloadConso)="getUserConsoInfos($event)" [consoDetails]="consoDetails"></app-suivi-conso>
           </ng-container>
           </mat-tab>
-          <mat-tab *ngIf="currentProfil && currentProfil !== 'POSTPAID'">        
+          <mat-tab>        
             <ng-container *ngIf="!histLoading">
               <app-historique-conso
                   [chargeTypes]="chargeTypes"
@@ -74,7 +74,7 @@
               </app-historique-conso>
           </ng-container>
           </mat-tab>
-          <mat-tab #historikAchat  *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
+          <mat-tab>
               <ng-container *ngIf="!histPurchaseLoading">
                   <app-historique-achat  [listTransactions]="listPurchaseForDayByType" [isLoading]="histPurchaseLoading" [hasError]="histPurchaseHasError" (getTransactionsByDay)="getTransactionsByDay($event)" (getTransactionsByFilter) ="getTransactionsByDay(purchaseDateFilterSelected,$event)"></app-historique-achat>
               </ng-container>
