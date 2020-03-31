@@ -21,19 +21,19 @@
     <div class="suivi-conso-page-body">
       <div class="tab-header">
         <ng-container *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
-          <div (click)="consoTab.selectedIndex = 0" class="conso-tab-category tab-header-item" [ngClass]="{  'selected' :consoTab.selectedIndex === 0} ">
+          <div (click)="seeTab(0)" class="conso-tab-category tab-header-item" [ngClass]="{  'selected' :tabSelected === 0} ">
               <span class="scb-text-gray">Suivi conso </span>
               <div class="spinner" *ngIf="detailsLoading">
                   <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
               </div>
           </div>
-          <div (click)="consoTab.selectedIndex = 1" class="conso-tab-category tab-header-item" [ngClass]="{ 'selected': consoTab.selectedIndex === 1 || currentProfil === 'POSTPAID'} ">
+          <div (click)="seeTab(1)" class="conso-tab-category tab-header-item" [ngClass]="{ 'selected': tabSelected === 1 } ">
               <span class="scb-text-gray">Historique communication</span>
               <div class="spinner" *ngIf="histLoading">
                   <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
               </div>
           </div>
-          <div (click)="consoTab.selectedIndex = 2" class="conso-tab-category tab-header-item" [ngClass]="{ 'selected': consoTab.selectedIndex === 2} ">
+          <div (click)="seeTab(2)" class="conso-tab-category tab-header-item" [ngClass]="{ 'selected': tabSelected === 2} ">
               <span class="scb-text-gray">Historique Souscriptions</span>
               <div class="spinner" *ngIf="histPurchaseLoading">
                   <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
@@ -42,7 +42,7 @@
         </ng-container>
         
         <ng-container *ngIf="currentProfil && currentProfil === 'POSTPAID'">
-            <div  (click)="consoTab.selectedIndex = 0" class="conso-tab-category tab-header-item" [ngClass]="{ 'selected': consoTab.selectedIndex === 0} ">
+            <div class="conso-tab-category tab-header-item selected" >
                 <span class="scb-text-gray">Historique communication</span>
                 <div class="spinner" *ngIf="histLoading">
                     <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
@@ -53,12 +53,12 @@
       <mat-tab-group #consoTab class="conso-page-tabs" >
         <ng-container>
           <mat-tab #conso *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
-            <ng-container>
+            <ng-container *ngIf="!detailsLoading">
               <app-suivi-conso [isLoading]="detailsLoading" (reloadConso)="getUserConsoInfos($event)" [consoDetails]="consoDetails"></app-suivi-conso>
           </ng-container>
           </mat-tab>
           <mat-tab *ngIf="currentProfil && currentProfil !== 'POSTPAID'">        
-            <ng-container>
+            <ng-container *ngIf="!histLoading">
               <app-historique-conso
                   [chargeTypes]="chargeTypes"
                   [dateFilterItems]="dateFilterItems"
@@ -75,14 +75,14 @@
           </ng-container>
           </mat-tab>
           <mat-tab #historikAchat  *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
-              <ng-container>
+              <ng-container *ngIf="!histPurchaseLoading">
                   <app-historique-achat  [listTransactions]="listPurchaseForDayByType" [isLoading]="histPurchaseLoading" [hasError]="histPurchaseHasError" (getTransactionsByDay)="getTransactionsByDay($event)" (getTransactionsByFilter) ="getTransactionsByDay(purchaseDateFilterSelected,$event)"></app-historique-achat>
               </ng-container>
           </mat-tab>
         </ng-container>
         <ng-container *ngIf="currentProfil && currentProfil === 'POSTPAID'">
             <mat-tab>        
-                <ng-container>
+                <ng-container *ngIf="!histLoading">
                   <app-historique-conso
                       [chargeTypes]="chargeTypes"
                       [dateFilterItems]="dateFilterItems"

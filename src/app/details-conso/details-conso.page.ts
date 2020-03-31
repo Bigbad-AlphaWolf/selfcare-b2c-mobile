@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import {
@@ -8,6 +8,7 @@ import {
 } from 'src/shared';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { PurchaseService } from '../services/purchase-service/purchase.service';
+import { MatTabGroup } from '@angular/material';
 
 @Component({
   selector: 'app-details-conso',
@@ -44,6 +45,8 @@ export class DetailsConsoPage implements OnInit {
     value: undefined
   };
   userPhoneNumber: string;
+  @ViewChild('consoTab') tabGroup: MatTabGroup;
+  tabSelected = 0;
   constructor(
     private dashboardservice: DashboardService,
     private authService: AuthenticationService,
@@ -74,6 +77,11 @@ export class DetailsConsoPage implements OnInit {
           }
         }
       });
+  }
+
+  seeTab(tabIndex:number){
+    this.tabGroup.selectedIndex = tabIndex;
+    this.tabSelected = tabIndex;
   }
 
   getTransactionsByDay(
@@ -117,7 +125,7 @@ export class DetailsConsoPage implements OnInit {
     this.detailsLoading = true;
     this.dashboardservice.getUserConsoInfosByCode().subscribe(
       (res: any) => {
-        if (res.length) {
+        if (res && res.length) {
           res = arrangeCompteurByOrdre(res);
         }
         this.consoDetails = res;
