@@ -30,6 +30,7 @@ import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/sha
 import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
+import { BanniereService } from '../services/banniere-service/banniere.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-home-prepaid',
@@ -66,6 +67,7 @@ export class DashboardHomePrepaidPage implements OnInit {
   firstName: string;
   lastName: string;
   fabOpened = false;
+  isBanniereLoaded: boolean;
   constructor(
     private passIntService: PassInternetService,
     private dashbdSrv: DashboardService,
@@ -73,7 +75,8 @@ export class DashboardHomePrepaidPage implements OnInit {
     private followsAnalytics: FollowAnalyticsService,
     private authServ: AuthenticationService,
     private shareDialog: MatDialog,
-    private assistanceService: AssistanceService
+    private assistanceService: AssistanceService,
+    private banniereServ: BanniereService
   ) {}
 
   ngOnInit() {
@@ -82,6 +85,15 @@ export class DashboardHomePrepaidPage implements OnInit {
     this.getPassInternetFixe();
     this.getUserInfos();
     this.getWelcomeStatus();
+    this.banniereServ.setListBanniereByFormule();
+    this.banniereServ
+      .getStatusLoadingBanniere()
+      .subscribe((status: boolean) => {
+        this.isBanniereLoaded = status;
+        if (this.isBanniereLoaded) {
+          this.listBanniere = this.banniereServ.getListBanniereByFormule();
+        }
+      });
   }
 
   getUserInfos() {

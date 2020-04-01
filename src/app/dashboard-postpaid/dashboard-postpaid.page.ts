@@ -87,7 +87,8 @@ export class DashboardPostpaidPage implements OnInit {
     private passVolumeDisplayPipe: PassVolumeDisplayPipe,
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
-    private sargalServ: SargalService
+    private sargalServ: SargalService,
+    private banniereServ: BanniereService
   ) {}
 
   ngOnInit() {
@@ -101,6 +102,15 @@ export class DashboardPostpaidPage implements OnInit {
     this.getBills();
     this.getCustomerSargalStatus();
     this.getCurrentSubscription();
+    this.banniereServ.setListBanniereByFormule();
+    this.banniereServ
+      .getStatusLoadingBanniere()
+      .subscribe((status: boolean) => {
+        this.isBanniereLoaded = status;
+        if (this.isBanniereLoaded) {
+          this.listBanniere = this.banniereServ.getListBanniereByFormule();
+        }
+      });
   }
 
   getCurrentSubscription() {
