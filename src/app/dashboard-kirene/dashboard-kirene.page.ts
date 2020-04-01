@@ -59,7 +59,36 @@ export class DashboardKirenePage implements OnInit {
 
   soldebonus: number;
   canTransferBonus: boolean;
-  listBanniere: BannierePubModel[] = [];
+  listBanniere: BannierePubModel[] = [
+    {
+      callToAction: true,
+      dateDebut: 'string',
+      dateFin: 'string',
+      description: 'Iphone 11',
+      formuleMobiles: [],
+      id: 1,
+      image: '/assets/images/banniere2.png',
+      imageWeb: 'string',
+      priorite: 1,
+      profil: [],
+      type: 'PUBLICITAIRE',
+      zoneAffichage: 'string'
+    },
+    {
+      callToAction: true,
+      dateDebut: 'string',
+      dateFin: 'string',
+      description: 'Iphone 11',
+      formuleMobiles: [],
+      id: 1,
+      image: '/assets/images/banniere2.png',
+      imageWeb: 'string',
+      priorite: 1,
+      profil: [],
+      type: 'PUBLICITAIRE',
+      zoneAffichage: 'string'
+    }
+  ];
   isBanniereLoaded: boolean;
   slideOpts = {
     speed: 400,
@@ -96,7 +125,7 @@ export class DashboardKirenePage implements OnInit {
       .subscribe((status: boolean) => {
         this.isBanniereLoaded = status;
         if (this.isBanniereLoaded) {
-          this.listBanniere = this.banniereServ.getListBanniereByFormule();
+          // this.listBanniere = this.banniereServ.getListBanniereByFormule();
         }
       });
   }
@@ -117,7 +146,6 @@ export class DashboardKirenePage implements OnInit {
       (err: any) => {}
     );
   }
-
 
   getActivePromoBooster(msisdn: string, code: string) {
     this.dashbordServ

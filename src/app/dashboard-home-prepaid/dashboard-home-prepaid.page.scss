@@ -168,7 +168,7 @@
   // FOR KEURGUIBOX FORMULE
   .dashboard-block-conso {
     background-color: $white;
-    padding: 20px 0;
+    padding: 15px 0 10px 0;
     margin-bottom: 10px;
     margin-top: 10px;
 
@@ -189,8 +189,8 @@
     }
 
     &-btns {
-      height: 110px;
-      margin: 20px 0;
+      height: 130px;
+      margin-top: -5px;
       overflow-x: scroll;
       white-space: nowrap;
       display: flex;
@@ -199,12 +199,11 @@
       }
 
       ion-slides {
-        width: 100%;
         ion-slide {
           padding-left: 10px;
           display: flex;
           align-items: flex-start;
-          // margin-top: 12px;
+          margin-top: 12px;
           // width: 66% !important;
         }
       }
@@ -212,48 +211,56 @@
       app-om-button {
         // min-width: 63%;
         width: 100%;
-        // height: 90px;
-        // margin-right: percentage(10px / 366px);
+        height: 90px;
+        margin-right: percentage(10px / 366px);
       }
 
       .scb-btn-credit,
       .scb-btn-pass {
-        position: relative;
+        text-align: left;
+        min-width: 63%;
         width: 100%;
-        height: 110px;
+        height: 90px;
         display: inline-block;
-        padding: 15px 0 15px 15px;
-        border-radius: 20px;
-        // box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
-        // margin-right: percentage(10px / 366px);
+        padding: 8px 0 10px 15px;
+        border-radius: 15px;
+        box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
+        margin-right: percentage(10px / 366px);
         .scb-btn-top-block {
-          display: flex;
-          align-items: center;
+          &-icon,
+          &-text {
+            display: inline-block;
+            vertical-align: middle;
+          }
+
           &-icon {
             height: 24px;
             width: 24px;
-            margin-right: 5px;
+            margin-right: 4px;
           }
 
           &-text {
             .text {
-              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+              font-family: HelveticaNeueLTStd-Roman, sans-serif;
               font-size: 18px;
             }
           }
         }
 
         .bottom-block {
-          margin-top: 6px;
-          text-align: left;
+          margin-top: 1px;
           .value {
             font-family: HelveticaNeueLTStd-Bd, sans-serif;
-            font-size: 24px;
+            font-size: 26px;
+
+            .text-style-1 {
+              font-family: HelveticaNeueLTStd-Roman, sans-serif;
+              font-size: 18px;
+            }
           }
         }
 
         .validity-text {
-          text-align: left;
           margin-top: 6px;
           font-family: HelveticaNeueLTStd-Roman;
           font-size: 9px;
@@ -270,7 +277,7 @@
     }
 
     &-details {
-      // margin: -15px 0 0 0;
+      margin: -15px 0 0 0;
       border-radius: 4px;
       padding: 5px percentage(10px / $baseWidthMobile2);
 
