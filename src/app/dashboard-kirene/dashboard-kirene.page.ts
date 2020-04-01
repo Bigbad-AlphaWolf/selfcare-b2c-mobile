@@ -12,7 +12,9 @@ import {
   formatCurrency,
   USER_CONS_CATEGORY_CALL,
   WelcomeStatusModel,
-  SubscriptionModel
+  SubscriptionModel,
+  getBanniereTitle,
+  getBanniereDescription
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import {
@@ -59,36 +61,7 @@ export class DashboardKirenePage implements OnInit {
 
   soldebonus: number;
   canTransferBonus: boolean;
-  listBanniere: BannierePubModel[] = [
-    {
-      callToAction: true,
-      dateDebut: 'string',
-      dateFin: 'string',
-      description: 'Iphone 11',
-      formuleMobiles: [],
-      id: 1,
-      image: '/assets/images/banniere2.png',
-      imageWeb: 'string',
-      priorite: 1,
-      profil: [],
-      type: 'PUBLICITAIRE',
-      zoneAffichage: 'string'
-    },
-    {
-      callToAction: true,
-      dateDebut: 'string',
-      dateFin: 'string',
-      description: 'Iphone 11',
-      formuleMobiles: [],
-      id: 1,
-      image: '/assets/images/banniere2.png',
-      imageWeb: 'string',
-      priorite: 1,
-      profil: [],
-      type: 'PUBLICITAIRE',
-      zoneAffichage: 'string'
-    }
-  ];
+  listBanniere: BannierePubModel[] = [];
   isBanniereLoaded: boolean;
   slideOpts = {
     speed: 400,
@@ -125,7 +98,7 @@ export class DashboardKirenePage implements OnInit {
       .subscribe((status: boolean) => {
         this.isBanniereLoaded = status;
         if (this.isBanniereLoaded) {
-          // this.listBanniere = this.banniereServ.getListBanniereByFormule();
+          this.listBanniere = this.banniereServ.getListBanniereByFormule();
         }
       });
   }
@@ -437,5 +410,13 @@ export class DashboardKirenePage implements OnInit {
       },
       () => {}
     );
+  }
+
+  getBanniereTitle(description: string) {
+    return getBanniereTitle(description);
+  }
+
+  getBanniereDescription(description: string) {
+    return getBanniereDescription(description);
   }
 }

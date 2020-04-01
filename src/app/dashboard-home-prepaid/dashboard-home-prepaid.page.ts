@@ -16,7 +16,9 @@ import {
   USER_CONS_CATEGORY_CALL,
   USER_CONS_CATEGORY_INTERNET,
   SubscriptionModel,
-  WelcomeStatusModel
+  WelcomeStatusModel,
+  getBanniereTitle,
+  getBanniereDescription
 } from 'src/shared';
 import {
   getConsoByCategory,
@@ -57,36 +59,7 @@ export class DashboardHomePrepaidPage implements OnInit {
     '/assets/images/banniere-promo-fibre.png'
   ];
   showPromoBanner = ls.get('banner');
-  listBanniere: BannierePubModel[] = [
-    {
-      callToAction: true,
-      dateDebut: 'string',
-      dateFin: 'string',
-      description: 'Iphone 11',
-      formuleMobiles: [],
-      id: 1,
-      image: '/assets/images/banniere2.png',
-      imageWeb: 'string',
-      priorite: 1,
-      profil: [],
-      type: 'PUBLICITAIRE',
-      zoneAffichage: 'string'
-    },
-    {
-      callToAction: true,
-      dateDebut: 'string',
-      dateFin: 'string',
-      description: 'Iphone 11',
-      formuleMobiles: [],
-      id: 1,
-      image: '/assets/images/banniere2.png',
-      imageWeb: 'string',
-      priorite: 1,
-      profil: [],
-      type: 'PUBLICITAIRE',
-      zoneAffichage: 'string'
-    }
-  ];
+  listBanniere: BannierePubModel[] = [];
   listPass: any[] = [];
   loadingConso;
   errorOnLoadingConso;
@@ -324,5 +297,13 @@ export class DashboardHomePrepaidPage implements OnInit {
       },
       () => {}
     );
+  }
+
+  getBanniereTitle(description: string) {
+    return getBanniereTitle(description);
+  }
+
+  getBanniereDescription(description: string) {
+    return getBanniereDescription(description);
   }
 }

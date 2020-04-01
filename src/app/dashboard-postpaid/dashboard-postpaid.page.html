@@ -95,12 +95,16 @@
                       [diameter]="30"
                     ></mat-spinner>
                   </div>
-                  <ng-container *ngIf="loadingStatus  && !sargalStatusUnavailable">
+                  <ng-container
+                    *ngIf="loadingStatus  && !sargalStatusUnavailable"
+                  >
                     <div class="bottom-block">
                       <span class="show-solde-info-text">Voir ma carte</span>
                     </div>
                   </ng-container>
-                  <ng-container *ngIf="loadingStatus  && sargalStatusUnavailable">
+                  <ng-container
+                    *ngIf="loadingStatus  && sargalStatusUnavailable"
+                  >
                     <div class="bottom-block">
                       <span class="show-solde-info-text"
                         >Service Indisponible</span
@@ -329,8 +333,12 @@
                 Erreur lors du chargement de l'image</span
               >
               <div class="description">
-                <div class="title">{{banniere.description}}</div>
-                <div class="text">La sortie pour bientôt</div>
+                <div class="title">
+                  {{getBanniereTitle(banniere.description)}}
+                </div>
+                <div class="text">
+                  {{getBanniereDescription(banniere.description)}}
+                </div>
               </div>
               <div class="img-container">
                 <img
