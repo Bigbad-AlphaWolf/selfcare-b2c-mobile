@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { HttpClient } from '@angular/common/http';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import {
