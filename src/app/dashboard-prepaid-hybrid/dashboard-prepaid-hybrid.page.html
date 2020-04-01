@@ -346,7 +346,7 @@
             <span #error class="error-slide scb-text-full-black">
               Erreur lors du chargement de l'image</span
             >
-            <div class="description">
+            <div class="description" #description>
               <div class="title">
                 {{getBanniereTitle(banniere.description)}}
               </div>
@@ -354,13 +354,21 @@
                 {{getBanniereDescription(banniere.description)}}
               </div>
             </div>
-            <div class="img-container">
+            <div class="img-container" #imageContainer>
               <img
                 #img
+                (load)="onError([
+                { el: error, display: false },
+                { el: img, display: true },
+                { el: description, display: true },
+                { el: imageContainer, display: true }
+              ])"
                 (error)="
               onError([
                 { el: error, display: true },
-                { el: img, display: false }
+                { el: img, display: false },
+                { el: description, display: false },
+                { el: imageContainer, display: false }
               ])
             "
                 [src]="banniere.image"
