@@ -3,10 +3,10 @@
   <div class="dashboard-container-mobile">
     <div class="dashboard-block-conso">
       <div class="dashboard-block-conso-top-texts">
-        <div class="suivi-conso">Suivi conso</div>
+        <div><span class="suivi-conso">Suivi conso</span></div>
         <div
+          (click)="goDetailsCom(0)"
           class="voir-details-text scb-text-orange"
-          (click)="goDetailsCom(1)"
         >
           Voir details
         </div>
@@ -31,8 +31,9 @@
                 </div>
                 <div class="bottom-block">
                   <span class="value"
-                    >{{ userCallConsoSummary?.balance }} FCFA
-                  </span>
+                    >{{ userCallConsoSummary?.balance }}
+                    <span class="text-style-1"> FCFA </span></span
+                  >
                 </div>
                 <div class="validity-text" *ngIf="balanceValidity">
                   valable jusqu'au {{ balanceValidity }}
@@ -54,11 +55,12 @@
               </div>
               <div class="bottom-block">
                 <span class="value"
-                  >{{ userCallConsoSummary?.globalCredit }} FCFA</span
+                  >{{ userCallConsoSummary?.globalCredit }}
+                  <span class="text-style-1"> FCFA </span></span
                 >
               </div>
               <div class="validity-text" *ngIf="creditValidity">
-                Expire le {{ creditValidity }}
+                valable jusqu'au {{ creditValidity }}
               </div>
             </div>
           </ion-slide>
@@ -124,57 +126,6 @@
               <div
                 *ngIf="userSargalData?.status !== getSargalStatusNotSubscribed()"
                 (click)="getSargalPoints()"
-                class="scb-data-reload"
-              >
-                <img src="/assets/images/reload.png" alt="reload-icon" />
-              </div>
-            </div>
-          </ion-slide>
-          <ion-slide *ngIf=" currentProfil && isHyBride && !noSargalProfil">
-            <div
-              class="scb-btn-black scb-btn-sargal"
-              [ngClass]="{
-              'btn-disabled': sargalStatusUnavailable }"
-            >
-              <div
-                (click)="seeSargalCard()"
-                [ngClass]="{
-                'btn-no-action': sargalStatusUnavailable
-              }"
-                class="btn-container"
-              >
-                <div class="scb-btn-top-block">
-                  <img
-                    class="scb-btn-top-block-icon"
-                    src="/assets/images/points-sargal.svg"
-                    alt="sargal-cfa-3-mob"
-                  />
-                  <div class="scb-btn-top-block-text">
-                    <span class="text">Sargal</span>
-                  </div>
-                </div>
-                <div *ngIf="isLoading" class="scb-block-spinner">
-                  <mat-spinner
-                    mode="indeterminate"
-                    [diameter]="30"
-                  ></mat-spinner>
-                </div>
-                <ng-container *ngIf="!isLoading && !sargalStatusUnavailable">
-                  <div class="bottom-block">
-                    <span class="show-solde-info-text">Voir ma carte</span
-                    >
-                  </div>
-                </ng-container>
-                <ng-container *ngIf="!isLoading && sargalStatusUnavailable">
-                  <div class="bottom-block">
-                    <span class="show-solde-info-text">Service Indisponible</span
-                    >
-                  </div>
-                </ng-container>
-              </div>
-
-              <div
-                (click)="getCustomerSargalStatus()"
                 class="scb-data-reload"
               >
                 <img src="/assets/images/reload.png" alt="reload-icon" />
@@ -396,8 +347,12 @@
               Erreur lors du chargement de l'image</span
             >
             <div class="description">
-              <div class="title">{{banniere.description}}</div>
-              <div class="text">La sortie pour bientôt</div>
+              <div class="title">
+                {{getBanniereTitle(banniere.description)}}
+              </div>
+              <div class="text">
+                {{getBanniereDescription(banniere.description)}}
+              </div>
             </div>
             <div class="img-container">
               <img

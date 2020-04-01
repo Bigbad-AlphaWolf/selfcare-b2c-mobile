@@ -369,6 +369,7 @@ $bluePopUp: #085ebd;
     height: 100%;
     border-right: 1px solid $fullBlack;
     color: $white;
+    border-radius: 10px 0 0 10px;
     .title {
       font-family: HelveticaNeueLTStd-Bd;
       font-size: 20px;
@@ -382,6 +383,7 @@ $bluePopUp: #085ebd;
     }
   }
   .img-container {
+    border-radius: 0 10px 10px 0;
     width: percentage(192/355);
     height: 100%;
     img {

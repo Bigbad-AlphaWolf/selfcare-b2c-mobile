@@ -12,7 +12,9 @@ import {
   formatCurrency,
   USER_CONS_CATEGORY_CALL,
   WelcomeStatusModel,
-  SubscriptionModel
+  SubscriptionModel,
+  getBanniereTitle,
+  getBanniereDescription
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import {
@@ -117,7 +119,6 @@ export class DashboardKirenePage implements OnInit {
       (err: any) => {}
     );
   }
-
 
   getActivePromoBooster(msisdn: string, code: string) {
     this.dashbordServ
@@ -409,5 +410,13 @@ export class DashboardKirenePage implements OnInit {
       },
       () => {}
     );
+  }
+
+  getBanniereTitle(description: string) {
+    return getBanniereTitle(description);
+  }
+
+  getBanniereDescription(description: string) {
+    return getBanniereDescription(description);
   }
 }

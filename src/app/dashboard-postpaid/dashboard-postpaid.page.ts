@@ -12,7 +12,9 @@ import {
   months,
   SubscriptionModel,
   WelcomeStatusModel,
-  SargalStatusModel
+  SargalStatusModel,
+  getBanniereTitle,
+  getBanniereDescription
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { PassVolumeDisplayPipe } from 'src/shared/pipes/pass-volume-display.pipe';
@@ -315,5 +317,12 @@ export class DashboardPostpaidPage implements OnInit {
       },
       () => {}
     );
+  }
+
+  getBanniereTitle(description: string) {
+    return getBanniereTitle(description);
+  }
+  getBanniereDescription(description: string) {
+    return getBanniereDescription(description);
   }
 }
