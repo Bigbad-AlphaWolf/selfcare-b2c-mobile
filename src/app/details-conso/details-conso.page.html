@@ -1,11 +1,11 @@
 <ion-header>
   <div class="suivi_conso_label-and-arrow-block">
     <div class="arrow-left-container" routerLink="/dashboard">
-      <img alt="arrow" src="/assets/images/arrow-left.svg" />
+      <img alt="arrow" src="/assets/images/arrow-left.png" />
     </div>
   
     <div class="suivi_conso_label-container">
-      <span>Suivi consommation</span>
+      <span>Détails consommations</span>
     </div>
   </div>
 </ion-header>
@@ -22,19 +22,19 @@
       <div class="tab-header">
         <ng-container *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
           <div (click)="seeTab(0)" class="conso-tab-category tab-header-item" [ngClass]="{  'selected' :tabSelected === 0} ">
-              <span class="scb-text-gray">Suivi conso </span>
+              <span class="scb-text-gray">Ma conso </span>
               <div class="spinner" *ngIf="detailsLoading">
                   <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
               </div>
           </div>
           <div (click)="seeTab(1)" class="conso-tab-category tab-header-item" [ngClass]="{ 'selected': tabSelected === 1 } ">
-              <span class="scb-text-gray">Historique communication</span>
+              <span class="scb-text-gray">Mes communications</span>
               <div class="spinner" *ngIf="histLoading">
                   <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
               </div>
           </div>
           <div (click)="seeTab(2)" class="conso-tab-category tab-header-item" [ngClass]="{ 'selected': tabSelected === 2} ">
-              <span class="scb-text-gray">Historique Souscriptions</span>
+              <span class="scb-text-gray">Mes souscriptions</span>
               <div class="spinner" *ngIf="histPurchaseLoading">
                   <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
               </div>
@@ -43,7 +43,7 @@
         
         <ng-container *ngIf="currentProfil && currentProfil === 'POSTPAID'">
             <div class="conso-tab-category tab-header-item selected" >
-                <span class="scb-text-gray">Historique communication</span>
+                <span class="scb-text-gray">Mes communications</span>
                 <div class="spinner" *ngIf="histLoading">
                     <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
                 </div>
