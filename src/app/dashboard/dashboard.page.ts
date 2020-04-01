@@ -48,6 +48,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   isIOS:boolean;
   appId:string;
   AppVersionNumber:any;
+  isFirebaseTokenSent = false;
   constructor(
     private dashboardServ: DashboardService,
     private authServ: AuthenticationService,
@@ -98,6 +99,12 @@ export class DashboardPage implements OnInit, OnDestroy {
          });
        }
    });
+   if(!this.isFirebaseTokenSent){
+    this.authServ.UpdateNotificationInfo();
+    this.isFirebaseTokenSent = true;
+    console.log(this.isFirebaseTokenSent);
+   }
+
   }
   ionViewDidEnter() {
     // Initialize BackButton Eevent.
