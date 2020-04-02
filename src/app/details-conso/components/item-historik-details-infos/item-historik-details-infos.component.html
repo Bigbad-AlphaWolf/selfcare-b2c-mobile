@@ -1,5 +1,5 @@
 <div class="item-container">
-  <ng-container *ngIf="userProfil !== 'POSTPAID' ">
+  <ng-container *ngIf="userProfil !== 'POSTPAID' && historikInfos ">
     <div class="item-container-left-block">
       <div class="icon-category">
         <img *ngIf="historikInfos.categorie === 'APPEL'" src="/assets/images/ic-call.svg" alt="" class="icon">
@@ -33,7 +33,7 @@
         </div>
       </div>
   </ng-container>
-  <ng-container *ngIf="userProfil === 'POSTPAID' ">
+  <ng-container *ngIf="userProfil === 'POSTPAID' && historikInfos ">
     <div class="item-container-left-block">
       <div class="icon-category">
         <img *ngIf="historikInfos.type === 'voix'" src="/assets/images/ic-call.svg" alt="" class="icon">
@@ -69,6 +69,45 @@
         </div>
         <div class="subtitle-2 compteur-debit">
             
+        </div>
+      </div>
+  </ng-container>
+  <ng-container *ngIf="userProfil !== 'POSTPAID' && purchaseInfos ">
+    <div class="item-container-left-block">
+      <div class="icon-category">
+          <ng-container [ngSwitch]="purchaseInfos.typeAchat">
+              <img *ngSwitchCase="'INTERNET'" src="/assets/images/ic-africa.svg" alt="" class="icon">
+              <img *ngSwitchCase="'ILLIMIX'" src="/assets/images/ic-unlimited-calls.svg" alt="" class="icon">
+              <img *ngSwitchCase="'RECHARGEMENT'" src="/assets/images/ic-orange-phone.svg" alt="" class="icon">
+              <img *ngSwitchCase="'TRANSFERT_BONUS'" src="/assets/images/ic-orange-phone.svg" alt="" class="icon">
+              <img *ngSwitchCase="'SEDDO'" src="/assets/images/ic-orange-phone.svg" alt="" class="icon">
+              <img *ngSwitchCase="'PASSFOROTHER'" src="/assets/images/ic-africa.svg" alt="" class="icon">
+              <img *ngSwitchCase="'DALALTONE'" src="/assets/images/ic-africa.svg" alt="" class="icon">
+              <img *ngSwitchCase="'SOS'" src="/assets/images/ic-africa.svg" alt="" class="icon">
+          </ng-container>
+        <!-- <img *ngIf="historikInfos.categorie === 'APPEL'" src="/assets/images/ic-call.svg" alt="" class="icon">
+        <img *ngIf="historikInfos.categorie === 'SMS'" src="/assets/images/ic-sms-message.svg" alt="" class="icon">
+        <img *ngIf="historikInfos.categorie !== 'APPEL' && historikInfos.categorie !== 'SMS'" src="/assets/images/ic-africa.svg" alt="" class="icon"> -->
+      </div>
+      <div class="left-block-text">
+        <div class="item-title">
+            {{purchaseInfos.name}}
+        </div>
+        <div class="subtitle-1">
+        </div>
+        <div class="subtitle-2 channel">
+        </div>
+      </div>
+    </div>
+    <div class="item-container-right-block">
+        <div class="item-value">
+            {{ purchaseInfos?.amount }} FCFA
+        </div>
+        <div class="subtitle-1 datetime">
+            {{ purchaseInfos?.operationDate | date: 'short' }}
+        </div>
+        <div class="subtitle-2 compteur-debit">
+            {{ purchaseInfos?.channel }}
         </div>
       </div>
   </ng-container>
