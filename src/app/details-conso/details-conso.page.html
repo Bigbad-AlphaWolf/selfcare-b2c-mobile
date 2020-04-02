@@ -22,31 +22,31 @@
       <div class="tab-header">
         <ng-container *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
           <div (click)="seeTab(0)" class="conso-tab-category tab-header-item" [ngClass]="{  'selected' :tabSelected === 0} ">
-              <span class="scb-text-gray">Ma conso </span>
               <div class="spinner" *ngIf="detailsLoading">
                   <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
               </div>
+              <span class="scb-text-gray">Ma conso </span>
           </div>
           <div (click)="seeTab(1)" class="conso-tab-category tab-header-item" [ngClass]="{ 'selected': tabSelected === 1 } ">
-              <span class="scb-text-gray">Mes communications</span>
               <div class="spinner" *ngIf="histLoading">
                   <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
               </div>
+              <span class="scb-text-gray">Mes communications</span>
           </div>
           <div (click)="seeTab(2)" class="conso-tab-category tab-header-item" [ngClass]="{ 'selected': tabSelected === 2} ">
-              <span class="scb-text-gray">Mes souscriptions</span>
               <div class="spinner" *ngIf="histPurchaseLoading">
                   <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
               </div>
+              <span class="scb-text-gray">Mes souscriptions</span>
           </div>
         </ng-container>
         
         <ng-container *ngIf="currentProfil && currentProfil === 'POSTPAID'">
             <div class="conso-tab-category tab-header-item selected" >
-                <span class="scb-text-gray">Mes communications</span>
                 <div class="spinner" *ngIf="histLoading">
                     <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
                 </div>
+                <span class="scb-text-gray">Mes communications</span>
             </div>
         </ng-container>
       </div>
@@ -76,7 +76,7 @@
           </mat-tab>
           <mat-tab>
               <ng-container *ngIf="!histPurchaseLoading">
-                  <app-historique-achat  [listTransactions]="listPurchaseForDayByType" [isLoading]="histPurchaseLoading" [hasError]="histPurchaseHasError" (getTransactionsByDay)="getTransactionsByDay($event)" (getTransactionsByFilter) ="getTransactionsByDay(purchaseDateFilterSelected,$event)"></app-historique-achat>
+                  <app-historique-achat  [listTransactions]="listPurchaseForDayByType" [dateFilterSelected]="purchaseDateFilterSelected" [userProfil]="currentProfil" [isLoading]="histPurchaseLoading" [hasError]="histPurchaseHasError" (getTransactionsByDay)="getTransactionsByDay($event)" (getTransactionsByFilter) ="getTransactionsByDay(purchaseDateFilterSelected,$event)"></app-historique-achat>
               </ng-container>
           </mat-tab>
         </ng-container>

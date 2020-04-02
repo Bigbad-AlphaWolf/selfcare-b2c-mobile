@@ -94,6 +94,9 @@ ion-header{
                 &:first-child:not(:only-child){
                     margin-left: 10px;
                 }
+                &:last-child:not(:only-child){
+                    margin-right: 10px;
+                }
                 span{
                     width: 100%;
                 }
