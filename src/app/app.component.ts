@@ -13,7 +13,6 @@ import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
 import * as SecureLS from 'secure-ls';
 import { DetailsConsoPage } from './details-conso/details-conso.page';
-import { FCM } from '@ionic-native/fcm/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
 declare var FollowAnalytics: any;
 @Component({
@@ -30,8 +29,7 @@ export class AppComponent {
     private splash: SplashScreen,
     private appMinimize: AppMinimize,
     private router: Router,
-    private deeplinks: Deeplinks,
-    private fcm: FCM
+    private deeplinks: Deeplinks
   ) {
     this.initializeApp();
   }
@@ -65,37 +63,37 @@ export class AppComponent {
       this.checkDeeplinks();
 
       // Get firebase id for notifications
-      this.fcm
-        .getToken()
-        .then(token => {
-          ls.set('firebaseId', token);
-          // console.log(token);
-        })
-        .catch(err => console.log(err));
+      // this.fcm
+      //   .getToken()
+      //   .then(token => {
+      //     ls.set('firebaseId', token);
+      //     // console.log(token);
+      //   })
+      //   .catch(err => console.log(err));
 
-      if (this.platform.is('ios')) {
-        this.fcm
-          .hasPermission()
-          .then(hasPermission =>
-            console.log(hasPermission ? 'notification permission granted' : 'notification permission denied')
-          );
-      }
+      // if (this.platform.is('ios')) {
+      //   this.fcm
+      //     .hasPermission()
+      //     .then(hasPermission =>
+      //       console.log(hasPermission ? 'notification permission granted' : 'notification permission denied')
+      //     );
+      // }
 
-      this.fcm
-        .onNotification()
-        .subscribe(data => {
-          // console.log(data);
-          if (data.wasTapped) {
-            console.log('Notification received in background');
-          } else {
-            console.log('Notification received in foreground');
-          }
-        });      
+      // this.fcm
+      //   .onNotification()
+      //   .subscribe(data => {
+      //     // console.log(data);
+      //     if (data.wasTapped) {
+      //       console.log('Notification received in background');
+      //     } else {
+      //       console.log('Notification received in foreground');
+      //     }
+      //   });      
 
-      this.fcm.onTokenRefresh().subscribe(fcmToken => {
-        //console.log(fcmToken);
-        ls.set('firebaseId', fcmToken);
-      });
+      // this.fcm.onTokenRefresh().subscribe(fcmToken => {
+      //   //console.log(fcmToken);
+      //   ls.set('firebaseId', fcmToken);
+      // });
     });
   }
 
