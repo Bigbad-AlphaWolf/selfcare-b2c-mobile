@@ -113,7 +113,6 @@
         <splash height="1792" src="resources/ios/splash/Default-1792h~iphone.png" width="828" />
         <splash height="828" src="resources/ios/splash/Default-Landscape-1792h~iphone.png" width="1792" />
     </platform>
-    <plugin name="cordova.plugin.followanalytics" spec="file:fa-sdk-cordova" />
     <plugin name="cordova-android-firebase-gradle-release" spec="^4.0.0">
         <variable name="FIREBASE-CORE" value="17.0.0" />
         <variable name="FIREBASE-ADS" value="18.0.0" />

@@ -31,7 +31,6 @@ import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Market } from '@ionic-native/market/ngx';
-import { FCM } from '@ionic-native/fcm/ngx';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -71,8 +70,7 @@ registerLocaleData(localeFr);
     AppMinimize,
     InAppBrowser,
     Deeplinks,
-    Market,
-    FCM
+    Market
   ],
   bootstrap: [AppComponent]
 })
