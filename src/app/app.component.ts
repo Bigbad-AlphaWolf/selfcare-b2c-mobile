@@ -14,9 +14,7 @@ import { Router } from '@angular/router';
 import * as SecureLS from 'secure-ls';
 import { DetailsConsoPage } from './details-conso/details-conso.page';
 const ls = new SecureLS({ encodingType: 'aes' });
-
 declare var FollowAnalytics: any;
-
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'

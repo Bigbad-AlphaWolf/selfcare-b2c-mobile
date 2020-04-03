@@ -29,13 +29,13 @@
                     display: flex;
                 }
                 .btn-filter {
-                    display: inline-block;
+                    display: flex;
                 }
                 .arrows {
                     justify-content: flex-end;
                     width: 25px;
                     height: 25px;
-                    // margin-left: 15%;
+                    margin-left: 5px;
                     .arrow-up {
                         color: $white;
                     }

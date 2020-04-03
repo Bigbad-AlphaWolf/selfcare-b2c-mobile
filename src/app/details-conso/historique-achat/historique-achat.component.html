@@ -5,10 +5,10 @@
           #menuTrigType="matMenuTrigger" [matMenuTriggerFor]="categoriesAchats">
           <div [ngClass]="{ 'scb-text-white': menuTrigType.menuOpen }" class="btn-filter">
               {{ typePurchaseFilterSelected ? typePurchaseFilterSelected.nom : "Type d'achat" }}
-          </div>
-          <div class="arrows">
-              <mat-icon *ngIf="!menuTrigType.menuOpen" class="arrow-down">keyboard_arrow_down</mat-icon>
-              <mat-icon *ngIf="menuTrigType.menuOpen" class="arrow-up">keyboard_arrow_up</mat-icon>
+              <div class="arrows">
+                  <img *ngIf="!menuTrigType.menuOpen" src="/assets/images/arrow-down.svg" class="arrow-down" alt="">
+                  <img *ngIf="menuTrigType.menuOpen" src="/assets/images/keyboard-arrow-up-black.svg" class="arrow-up" alt="">
+              </div>
           </div>
       </button>
 
@@ -28,10 +28,10 @@
         #menuTrigDate="matMenuTrigger" [matMenuTriggerFor]="dateInterval">
         <div [ngClass]="{ 'scb-text-white': menuTrigDate.menuOpen }" class="btn-filter">
             {{ dateFilterSelected ? dateFilterSelected + ' derniers jours' : 'Date' }}
-        </div>
-        <div class="arrows">
-            <mat-icon *ngIf="!menuTrigDate.menuOpen" class="arrow-down">keyboard_arrow_down</mat-icon>
-            <mat-icon *ngIf="menuTrigDate.menuOpen" class="arrow-up">keyboard_arrow_up</mat-icon>
+            <div class="arrows">
+                    <img *ngIf="!menuTrigDate.menuOpen" src="/assets/images/arrow-down.svg" class="arrow-down" alt="">
+                    <img *ngIf="menuTrigDate.menuOpen" src="/assets/images/keyboard-arrow-up-black.svg" class="arrow-up" alt="">
+                </div>
         </div>
     </button>
 

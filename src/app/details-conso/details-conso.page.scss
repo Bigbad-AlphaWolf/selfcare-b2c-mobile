@@ -9,11 +9,11 @@ ion-header{
     width: 100%;
     height: 50px;
     background-color: $white;
-    // position: fixed;
+    padding: 15px 0px;
     top: 0px;
 
     .arrow-left-container {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
         width: 50px;
@@ -24,11 +24,13 @@ ion-header{
     }
 
     .suivi_conso_label-container {
-        position: absolute;
+        width: 100%;
+        text-align: center;
         top: 17px;
         right: percentage(88px / $baseWidthMobile2);
         font-family: HelveticaNeueLTStd-Bd, sans-serif;
-        font-size: 18px;
+        font-size: 20px;
+        font-weight: bold;
         color: $black;
     }
 }
@@ -91,6 +93,9 @@ ion-header{
                 }
                 &:first-child:not(:only-child){
                     margin-left: 10px;
+                }
+                &:last-child:not(:only-child){
+                    margin-right: 10px;
                 }
                 span{
                     width: 100%;
