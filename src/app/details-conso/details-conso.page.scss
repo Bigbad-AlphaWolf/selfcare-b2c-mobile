@@ -102,6 +102,15 @@ ion-header{
                 }
             }
         }
+        .main-content{
+            height: 100%;
+            ion-slides{
+                height: 100%;
+                ion-slide{
+                    overflow-y: auto;
+                }
+            }
+        }
     }
 
 

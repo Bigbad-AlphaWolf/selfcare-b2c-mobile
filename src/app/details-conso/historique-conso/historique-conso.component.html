@@ -52,7 +52,7 @@
   </div>
 
   
-  <ng-container *ngIf="consoshistorique.length">
+  <ng-container *ngIf="consoshistorique?.length">
         <app-item-historik-details-infos *ngFor="let historik of consoshistorique" [historikInfos]="historik" [userProfil]="currentProfil">
           </app-item-historik-details-infos>
   </ng-container>

@@ -1,5 +1,11 @@
 @import 'src/app/app';
 
+:host{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+  }
 .purchase-history-container {
     height: 100%;
     &-filter {

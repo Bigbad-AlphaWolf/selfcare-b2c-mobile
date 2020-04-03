@@ -5,6 +5,7 @@
   flex-direction: column;
   height: 100%;
   background: $grayDashboard;
+  width: 100%;
 }
 
 .category-block {
@@ -22,6 +23,7 @@
       margin-top: 10px;
       .title-conso{
         margin-bottom: 30px;
+        text-align: start;
       }
       .item-conso-list{
         &:not(:last-child){
