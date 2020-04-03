@@ -8,7 +8,7 @@ import {
 } from 'src/shared';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { PurchaseService } from '../services/purchase-service/purchase.service';
-import { MatTabGroup } from '@angular/material';
+import { IonSlides } from '@ionic/angular';
 
 @Component({
   selector: 'app-details-conso',
@@ -45,8 +45,13 @@ export class DetailsConsoPage implements OnInit {
     value: undefined
   };
   userPhoneNumber: string;
-  @ViewChild('consoTab') tabGroup: MatTabGroup;
-  tabSelected = 0;
+  @ViewChild('consoTab') slideGroup: IonSlides;
+  slideSelected = 0;
+  slideOpts = {
+    speed: 400,
+    slidesPerView: 1,
+    slideShadows: true
+  };
   constructor(
     private dashboardservice: DashboardService,
     private authService: AuthenticationService,
@@ -78,9 +83,15 @@ export class DetailsConsoPage implements OnInit {
       });
   }
 
-  seeTab(tabIndex:number){
-    this.tabGroup.selectedIndex = tabIndex;
-    this.tabSelected = tabIndex;
+  goNext(tabIndex?:number){    
+    this.slideGroup.getActiveIndex().then(index => {
+      this.seeSlide(index);
+    });
+  }
+
+  seeSlide(tabIndex: number){
+    this.slideGroup.slideTo(tabIndex);
+    this.slideSelected = tabIndex;
   }
 
   getTransactionsByDay(

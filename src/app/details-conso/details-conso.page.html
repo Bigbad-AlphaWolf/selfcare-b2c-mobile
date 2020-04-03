@@ -21,19 +21,19 @@
     <div class="suivi-conso-page-body">
       <div class="tab-header">
         <ng-container *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
-          <div (click)="seeTab(0)" class="conso-tab-category tab-header-item" [ngClass]="{  'selected' :tabSelected === 0} ">
+          <div (click)="seeSlide(0)" class="conso-tab-category tab-header-item" [ngClass]="{  'selected' :slideSelected === 0} ">
               <div class="spinner" *ngIf="detailsLoading">
                   <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
               </div>
               <span class="scb-text-gray">Ma conso </span>
           </div>
-          <div (click)="seeTab(1)" class="conso-tab-category tab-header-item" [ngClass]="{ 'selected': tabSelected === 1 } ">
+          <div (click)="seeSlide(1)" class="conso-tab-category tab-header-item" [ngClass]="{ 'selected': slideSelected === 1 } ">
               <div class="spinner" *ngIf="histLoading">
                   <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
               </div>
               <span class="scb-text-gray">Mes communications</span>
           </div>
-          <div (click)="seeTab(2)" class="conso-tab-category tab-header-item" [ngClass]="{ 'selected': tabSelected === 2} ">
+          <div (click)="seeSlide(2)" class="conso-tab-category tab-header-item" [ngClass]="{ 'selected': slideSelected === 2} ">
               <div class="spinner" *ngIf="histPurchaseLoading">
                   <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
               </div>
@@ -50,38 +50,15 @@
             </div>
         </ng-container>
       </div>
-      <mat-tab-group #consoTab class="conso-page-tabs" >
-        <ng-container *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
-          <mat-tab>
-            <ng-container *ngIf="!detailsLoading">
-              <app-suivi-conso [isLoading]="detailsLoading" (reloadConso)="getUserConsoInfos($event)" [consoDetails]="consoDetails"></app-suivi-conso>
-          </ng-container>
-          </mat-tab>
-          <mat-tab>        
-            <ng-container *ngIf="!histLoading">
-              <app-historique-conso
-                  [chargeTypes]="chargeTypes"
-                  [dateFilterItems]="dateFilterItems"
-                  [consoshistorique]="consoshistorique"
-                  [error]="error"
-                  [dataLoaded]="!histLoading"
-                  [notdata]="notdata"
-                  (getConsoByDay)="getConsoByDay($event)"
-                  (selectedFilterButton)="selectedFilterButton($event)"
-                  [chargeType]="chargeType"
-                  [selectedDate]="selectedDate"
-              >
-              </app-historique-conso>
-          </ng-container>
-          </mat-tab>
-          <mat-tab>
-              <ng-container *ngIf="!histPurchaseLoading">
-                  <app-historique-achat  [listTransactions]="listPurchaseForDayByType" [dateFilterSelected]="purchaseDateFilterSelected" [userProfil]="currentProfil" [isLoading]="histPurchaseLoading" [hasError]="histPurchaseHasError" (getTransactionsByDay)="getTransactionsByDay($event)" (getTransactionsByFilter) ="getTransactionsByDay(purchaseDateFilterSelected,$event)"></app-historique-achat>
+      <div class="main-content">
+        <ion-slides #consoTab (ionSlideDidChange)="goNext()">
+            <ng-container *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
+              <ion-slide>
+                <ng-container *ngIf="!detailsLoading">
+                  <app-suivi-conso [isLoading]="detailsLoading" (reloadConso)="getUserConsoInfos($event)" [consoDetails]="consoDetails"></app-suivi-conso>
               </ng-container>
-          </mat-tab>
-        </ng-container>
-        <ng-container *ngIf="currentProfil && currentProfil === 'POSTPAID'">
-            <mat-tab>        
+            </ion-slide>
+            <ion-slide>
                 <ng-container *ngIf="!histLoading">
                   <app-historique-conso
                       [chargeTypes]="chargeTypes"
@@ -97,9 +74,36 @@
                   >
                   </app-historique-conso>
               </ng-container>
-              </mat-tab>
-        </ng-container>
-        </mat-tab-group>
+            </ion-slide>
+            <ion-slide>
+                  <ng-container *ngIf="!histPurchaseLoading">
+                      <app-historique-achat  [listTransactions]="listPurchaseForDayByType" [dateFilterSelected]="purchaseDateFilterSelected" [userProfil]="currentProfil" [isLoading]="histPurchaseLoading" [hasError]="histPurchaseHasError" (getTransactionsByDay)="getTransactionsByDay($event)" (getTransactionsByFilter) ="getTransactionsByDay(purchaseDateFilterSelected,$event)"></app-historique-achat>
+                  </ng-container>
+            </ion-slide>
+            </ng-container>
+            <ng-container *ngIf="currentProfil && currentProfil === 'POSTPAID'">
+                <ion-slide>  
+                    <ng-container *ngIf="!histLoading">
+                      <app-historique-conso
+                          [chargeTypes]="chargeTypes"
+                          [dateFilterItems]="dateFilterItems"
+                          [consoshistorique]="consoshistorique"
+                          [error]="error"
+                          [dataLoaded]="!histLoading"
+                          [notdata]="notdata"
+                          (getConsoByDay)="getConsoByDay($event)"
+                          (selectedFilterButton)="selectedFilterButton($event)"
+                          [chargeType]="chargeType"
+                          [selectedDate]="selectedDate"
+                      >
+                      </app-historique-conso>
+                  </ng-container>
+                  
+                </ion-slide>
+            </ng-container>
+          </ion-slides>
+      </div>
+
   </div>
   </div>
 </ion-content>
