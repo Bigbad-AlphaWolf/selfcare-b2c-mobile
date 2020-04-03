@@ -143,6 +143,7 @@
         <variable name="FIREBASE-DATABASE" value="18.0.0" />
         <variable name="FIREBASE-CONFIG" value="18.0.0" />
     </plugin>
+    <plugin name="cordova.plugin.followanalytics" spec="file:fa-sdk-cordova" />
     <plugin name="cordova-plugin-file" spec="^6.0.2" />
     <plugin name="cordova-plugin-x-socialsharing" spec="^5.6.0" />
     <plugin name="cordova-plugin-appminimize" spec="^1.0.1" />
