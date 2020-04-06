@@ -51,24 +51,7 @@
   <div class="purchase-history-container-body">
     <ng-container *ngIf="!isLoading && !hasError">
       <div class="list-purchase" *ngIf="listTransactions.length">
-         <div *ngFor="let transaction of listTransactions" class="list-purchase-item">
-           <div class="left-block">
-             <span class="purchase-category">
-                 {{transaction.name}}
-             </span>
-             <span class="purchase-channel">
-               {{transaction.channel}}
-             </span>
-           </div>
-           <div class="right-block">
-              <span class="purchase-amount scb-text-orange">
-                  {{transaction.amount}} FCFA
-              </span>
-              <span class="purchase-date">
-                 {{transaction.operationDate | date: 'short'}}
-              </span>
-           </div>
-         </div>
+         <app-item-historik-details-infos *ngFor="let transaction of listTransactions" [purchaseInfos]="transaction" [userProfil]="userProfil" ></app-item-historik-details-infos>
       </div>
       <div class="no-transactions" *ngIf="!listTransactions.length">
         Aucune transaction trouvée dans cette période

@@ -4,7 +4,7 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    // align-items: center;
     padding: 15px 10px;
     &-left-block{
         .icon-category{
@@ -12,22 +12,33 @@
             vertical-align: top;
             margin-right: 8px;
         }
+        
+    }
+    &-right-block{
+        width: 92%;
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 15px;
+        border-bottom: 2px solid $grayDashboard;
+
         .left-block-text{
-            display: inline-block;
-            vertical-align: top;
             text-align: start;
+            &.purchase-style{
+                margin-top: 3px;
+            }
             .item-title{
                 font-family: HelveticaNeueLTStd-Roman;
                 font-size: 18px;
             }
         }
-    }
-    &-right-block{
-        text-align: end;
-        .item-value{
-            font-family: HelveticaNeueLTStd-Roman;
-            font-size: 18px;
-            color: $orange;
+        .right-block-text{
+            text-align: end;
+            .item-value{
+                font-family: HelveticaNeueLTStd-Roman;
+                font-size: 18px;
+                color: $orange;
+            }
+
         }
     }
     .subtitle-1, .subtitle-2{
