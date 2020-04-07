@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,22 @@ export class ApplicationRoutingService {
   }
 
   goToSelectRecepientPassInternet(){
-    this.route.navigate(['/select-pass-recipient'], {queryParams : { action: 'internet'}})
+    const navigationExtras: NavigationExtras = {
+      state: {
+        user: {test: 'data'}
+      }
+    };
+    this.route.navigate(['/select-pass-recipient'], navigationExtras)
+  }
+
+  goToListPassInternet(data: any){
+    let navigationExtras: NavigationExtras = {
+      state: {
+        payload: data
+      }
+    };
+    this.route.navigate(['/list-pass-internet-v3'], navigationExtras)
+
   }
 
   goToSelectRecepientPassIllimix(){

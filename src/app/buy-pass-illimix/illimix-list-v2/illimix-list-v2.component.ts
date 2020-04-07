@@ -31,7 +31,6 @@ export class IllimixListV2Component implements OnInit {
   ngOnInit() {
     // this.getListPassIllimix();
     this.passIllimixService.setUserCodeFormule(this.destCodeFormule);
-    this.passIllimixService.setPaymentMod(this.paymentMode);
     this.getListPassIllimix();
   }
 
@@ -56,8 +55,7 @@ export class IllimixListV2Component implements OnInit {
     // filter according to payment mode
     this.listPassIllimixShown = getListPassFilteredByLabelAndPaymentMod(
       label,
-      this.listUserPassIllimix,
-      this.paymentMode
+      this.listUserPassIllimix
     );
   }
 

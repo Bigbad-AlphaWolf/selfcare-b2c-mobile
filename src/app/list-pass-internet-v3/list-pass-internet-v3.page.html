@@ -1,9 +1,40 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>list-pass-internet-v3</ion-title>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content>
+  <ion-content fullscreen>
+      <ion-header mode="ios" translucent collapse="condense">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+                <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+            </ion-buttons>
+            <ion-title>Achat pass internet</ion-title>
+          </ion-toolbar>
+        </ion-header>
 
-</ion-content>
+    <div class="list-pass-body">
+      <div class="header-image">
+        <img src="/assets/images/pass-internet-page-header.svg" alt="">
+      </div>
+      <div class="list-pass-body-main-content">
+  
+          <!-- loader -->
+         <!--  <div class="profil-spinner">
+            <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+          </div> -->
+        
+          <div class="list-pass-body">
+            <div class="tab-header">
+                <div *ngFor="let label of list; let i = index" class="tab-header-item" [ngClass]="{  'selected' :i === 0} ">
+                    <span class="scb-text-light-black"> {{ label }} </span>
+                </div>
+            </div>
+            <div class="main-content">
+              <ion-slides>
+                    <ion-slide>
+                      <app-item-pass-internet></app-item-pass-internet>
+                  </ion-slide>
+                </ion-slides>
+            </div>
+      
+        </div>
+        </div>
+    </div>
+  </ion-content>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-select-pass-recipient',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SelectPassRecipientPage implements OnInit {
 
-  constructor() { }
+  constructor(private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (this.router.getCurrentNavigation().extras.state) {
+        console.log(this.router.getCurrentNavigation().extras.state.user.test);
+      }
+    });
   }
 
 }

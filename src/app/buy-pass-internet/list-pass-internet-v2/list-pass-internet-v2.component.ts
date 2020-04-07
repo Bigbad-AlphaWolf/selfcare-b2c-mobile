@@ -39,7 +39,6 @@ export class ListPassInternetV2Component implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.passIntService.setUserCodeFormule(this.destCodeFormule);
-    this.passIntService.setPaymentMod(this.paymentMode);
     this.passIntService.setListPassInternetOfUserByQuery();
     this.fromSubscription = this.passIntService.getStatusPassLoaded().subscribe((status: boolean) => {
       this.isLoaded = status;
@@ -64,8 +63,7 @@ export class ListPassInternetV2Component implements OnInit, OnDestroy {
     this.selectedCategory = label;
     this.listPassInternetShown = getListPassFilteredByLabelAndPaymentMod(
       label,
-      this.listPassInternet,
-      this.paymentMode
+      this.listPassInternet
     );
   }
 

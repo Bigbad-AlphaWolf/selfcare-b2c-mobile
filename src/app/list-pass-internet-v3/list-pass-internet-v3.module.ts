@@ -6,6 +6,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { ListPassInternetV3Page } from './list-pass-internet-v3.page';
+import { SharedModule } from 'src/shared/shared.module';
+import { ItemPassInternetComponent } from './component/item-pass-internet/item-pass-internet.component';
 
 const routes: Routes = [
   {
@@ -19,8 +21,9 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ListPassInternetV3Page]
+  declarations: [ListPassInternetV3Page, ItemPassInternetComponent]
 })
 export class ListPassInternetV3PageModule {}

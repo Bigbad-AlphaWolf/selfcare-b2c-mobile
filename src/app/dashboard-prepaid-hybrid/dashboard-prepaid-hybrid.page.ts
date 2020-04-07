@@ -40,6 +40,7 @@ import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/sha
 import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -105,7 +106,8 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     private sargalServ: SargalService,
     private followAnalyticsService: FollowAnalyticsService,
     private shareDialog: MatDialog,
-    private assistanceService: AssistanceService
+    private assistanceService: AssistanceService,
+    private appliRouting: ApplicationRoutingService
   ) {}
 
   ngOnInit() {
@@ -412,6 +414,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       'event',
       'clicked'
     );
+    // this.appliRouting.goToSelectRecepientPassInternet();
     this.router.navigate(['/buy-pass-internet']);
   }
 
