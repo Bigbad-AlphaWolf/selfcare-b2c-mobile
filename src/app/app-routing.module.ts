@@ -179,7 +179,9 @@ const routes: Routes = [
     path: 'my-offer-plans',
     loadChildren:
       './my-offer-plans/my-offer-plans.module#MyOfferPlansPageModule'
-  }
+  },
+  { path: 'list-pass-internet-v3', loadChildren: './list-pass-internet-v3/list-pass-internet-v3.module#ListPassInternetV3PageModule' },
+  { path: 'select-pass-recipient', loadChildren: './select-pass-recipient/select-pass-recipient.module#SelectPassRecipientPageModule' }
 ];
 
 @NgModule({
