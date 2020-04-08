@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { PassInternetModel } from 'src/shared';
 
 @Component({
   selector: 'app-item-pass-internet',
@@ -6,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./item-pass-internet.component.scss'],
 })
 export class ItemPassInternetComponent implements OnInit {
-
+  @Input() passInternet: any;
+  @Output() selectPass = new EventEmitter();
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {    
+  }
+
+  choosePass(pass: any){
+    this.selectPass.emit(pass);
+  }
 
 }

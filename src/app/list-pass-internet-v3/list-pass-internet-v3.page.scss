@@ -47,7 +47,10 @@
                 background-color: $grayDashboard;
                 padding: 10px 0px;
                 ion-slides{
-                    padding: 0 15px;
+                    min-height: 100%;
+                }
+                .filtered-list-pass{
+                    width: 100%;
                 }
             }
         }

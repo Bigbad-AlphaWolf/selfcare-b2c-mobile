@@ -168,7 +168,7 @@ export class BuyPassInternetPage implements OnInit {
       );
     }
     this.appliRouting.goToListPassInternet(destNumberInfos)
-    this.goToNextStep();
+    this.step = 0;
 
   }
 

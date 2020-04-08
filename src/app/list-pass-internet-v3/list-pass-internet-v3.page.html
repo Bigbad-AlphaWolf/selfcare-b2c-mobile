@@ -1,11 +1,16 @@
 
-  <ion-content fullscreen>
-      <ion-header mode="ios" translucent collapse="condense">
+ <ion-header mode="ios">   
+  <ion-toolbar>
+      <ion-buttons (click)="goToRecepientPassInternetPage()" class="ion-padding-start" slot="start">
+          <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+      </ion-buttons>
+    <ion-title>Achat pass internet</ion-title>
+  </ion-toolbar>
+</ion-header>
+ <ion-content fullscreen="true">
+      <ion-header class="ion-padding-start" mode="ios" collapse="condense">
           <ion-toolbar>
-            <ion-buttons slot="start">
-                <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
-            </ion-buttons>
-            <ion-title>Achat pass internet</ion-title>
+            Achat pass internet
           </ion-toolbar>
         </ion-header>
 
@@ -22,14 +27,16 @@
         
           <div class="list-pass-body">
             <div class="tab-header">
-                <div *ngFor="let label of list; let i = index" class="tab-header-item" [ngClass]="{  'selected' :i === 0} ">
-                    <span class="scb-text-light-black"> {{ label }} </span>
+                <div *ngFor="let slide of fullListPass; let i=index" (click)="changeCategory(i)" class="tab-header-item" [ngClass]="{  'selected' : i === activeTabIndex} ">
+                    <span class="scb-text-light-black"> {{ slide.label }} </span>
                 </div>
             </div>
             <div class="main-content">
-              <ion-slides>
-                    <ion-slide>
-                      <app-item-pass-internet></app-item-pass-internet>
+              <ion-slides #sliders (ionSlideDidChange)="slideChanged()" [options]="slideOpts" >
+                    <ion-slide *ngFor="let slide of fullListPass">
+                      <div class="filtered-list-pass">
+                        <app-item-pass-internet *ngFor="let pass of slide.pass" [passInternet]="pass" (selectPass)="choosePass($event)"></app-item-pass-internet>
+                      </div>
                   </ion-slide>
                 </ion-slides>
             </div>

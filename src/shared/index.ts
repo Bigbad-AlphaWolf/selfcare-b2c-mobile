@@ -341,6 +341,26 @@ export function getListPassFilteredByLabelAndPaymentMod(
   return listPassFiltered;
 }
 
+export function arrangePassByCategory(listPass: (PassInfoModel | PromoPassModel | PassIllimModel | PromoPassIllimModel)[], listCategory: string[]){
+  const result : {label: string, pass: any[]}[] = [];
+  listCategory.forEach((label: string)=>{
+    result.push({label, pass: []});
+  });
+  listPass.forEach((pass: any)=>{
+    if (!pass.passPromo) {
+      result.find((item: {label: string, pass: any[]})=>{
+        return item.label === pass.categoriePass.libelle
+      }).pass.push(pass);
+    } else {
+      result.find((item: {label: string, pass: any[]})=>{
+        return item.label === pass.passPromo.categoriePass.libelle
+      }).pass.push(pass);
+    }
+  })
+
+  return result;
+}
+
 export function computeConsoHistory(consos) {
   const result = [];
 
