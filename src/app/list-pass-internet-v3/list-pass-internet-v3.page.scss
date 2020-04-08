@@ -1,5 +1,17 @@
 @import 'src/app/app';
 
+
+.title{
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: -0.28px;
+}
+.title1{
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
+}
+
 .list-pass-body{
     height: 100%;
     .header-image{
@@ -53,6 +65,14 @@
                     width: 100%;
                 }
             }
+        };
+        .profil-spinner{
+            position: fixed;
+            top: 5px;
+            right: 10px;
+            .mat-spinner::ng-deep circle {
+                stroke: $orange;
+              }
         }
     }
 }

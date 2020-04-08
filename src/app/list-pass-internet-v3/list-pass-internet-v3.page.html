@@ -4,13 +4,19 @@
       <ion-buttons (click)="goToRecepientPassInternetPage()" class="ion-padding-start" slot="start">
           <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
       </ion-buttons>
-    <ion-title>Achat pass internet</ion-title>
+    <ion-title>
+      <span class="title1">
+        Achat pass internet
+      </span>
+     </ion-title>
   </ion-toolbar>
 </ion-header>
  <ion-content fullscreen="true">
       <ion-header class="ion-padding-start" collapse="condense">
           <ion-toolbar>
-            Achat pass internet
+            <span class="title">
+              Achat pass internet
+            </span>
           </ion-toolbar>
         </ion-header>
 
@@ -21,11 +27,11 @@
       <div class="list-pass-body-main-content">
   
           <!-- loader -->
-         <!--  <div class="profil-spinner">
-            <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
-          </div> -->
+          <div *ngIf="!isLoaded" class="profil-spinner">
+            <mat-spinner mode="indeterminate" [diameter]="25"></mat-spinner>
+          </div>
         
-          <div class="list-pass-body">
+          <div *ngIf="isLoaded" class="list-pass-body">
             <div class="tab-header">
                 <div *ngFor="let slide of fullListPass; let i=index" (click)="changeCategory(i)" class="tab-header-item" [ngClass]="{  'selected' : i === activeTabIndex} ">
                     <span class="scb-text-light-black"> {{ slide.label }} </span>
