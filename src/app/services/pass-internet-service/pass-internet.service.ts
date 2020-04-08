@@ -17,7 +17,6 @@ const passByIdEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-internets`
 })
 export class PassInternetService {
   private userCodeFormule: string;
-  private paymentMod: string;
   private listPassInternet: (PassInfoModel | PromoPassModel)[] = [];
   private listCategoryPassInternet: any;
   private listPassInternetShown: any;
@@ -30,9 +29,7 @@ export class PassInternetService {
     private http: HttpClient
   ) {}
 
-  setPaymentMod(paymentMod: string) {
-    this.paymentMod = paymentMod;
-  }
+
   setUserCodeFormule(msisdn: string) {
     this.userCodeFormule = msisdn;
   }
@@ -64,8 +61,7 @@ export class PassInternetService {
         this.listCategoryPassInternet = getOrderedListCategory(list);
         this.listPassInternetShown = getListPassFilteredByLabelAndPaymentMod(
           this.listCategoryPassInternet[0],
-          this.listPassInternet,
-          this.paymentMod
+          this.listPassInternet
         );
         this.passLoadedSubject.next({ status: true, error: null });
       },

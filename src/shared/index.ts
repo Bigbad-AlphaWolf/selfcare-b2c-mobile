@@ -323,42 +323,42 @@ export function getListPassFilteredByLabelAndPaymentMod(
   listPass: (
     | (PassInfoModel | PromoPassModel)
     | (PassIllimModel | PromoPassIllimModel)
-  )[],
-  paymentMod: string
+  )[]
 ) {
   let listPassFiltered = [];
-  // filter according to payment mode and categorie label
-  if (paymentMod === PAYMENT_MOD_OM) {
     listPassFiltered = listPass.filter((pass: any) => {
       if (!pass.passPromo) {
         return (
-          pass.categoriePass.libelle === selectedLabel &&
-          pass.price_plan_index_om > 0
+          pass.categoriePass.libelle === selectedLabel
         );
       } else {
         return (
-          pass.passPromo.categoriePass.libelle === selectedLabel &&
-          pass.passPromo.price_plan_index_om > 0
+          pass.passPromo.categoriePass.libelle === selectedLabel
         );
       }
     });
-  } else {
-    listPassFiltered = listPass.filter((pass: any) => {
-      if (!pass.passPromo) {
-        return (
-          pass.categoriePass.libelle === selectedLabel &&
-          pass.price_plan_index > 0
-        );
-      } else {
-        return (
-          pass.passPromo.categoriePass.libelle === selectedLabel &&
-          pass.passPromo.price_plan_index > 0
-        );
-      }
-    });
-  }
 
   return listPassFiltered;
+}
+
+export function arrangePassByCategory(listPass: (PassInfoModel | PromoPassModel | PassIllimModel | PromoPassIllimModel)[], listCategory: string[]){
+  const result : {label: string, pass: any[]}[] = [];
+  listCategory.forEach((label: string)=>{
+    result.push({label, pass: []});
+  });
+  listPass.forEach((pass: any)=>{
+    if (!pass.passPromo) {
+      result.find((item: {label: string, pass: any[]})=>{
+        return item.label === pass.categoriePass.libelle
+      }).pass.push(pass);
+    } else {
+      result.find((item: {label: string, pass: any[]})=>{
+        return item.label === pass.passPromo.categoriePass.libelle
+      }).pass.push(pass);
+    }
+  })
+
+  return result;
 }
 
 export function computeConsoHistory(consos) {

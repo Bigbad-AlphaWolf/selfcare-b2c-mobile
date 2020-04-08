@@ -1,0 +1,47 @@
+
+ <ion-header>   
+  <ion-toolbar>
+      <ion-buttons (click)="goToRecepientPassInternetPage()" class="ion-padding-start" slot="start">
+          <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+      </ion-buttons>
+    <ion-title>Achat pass internet</ion-title>
+  </ion-toolbar>
+</ion-header>
+ <ion-content fullscreen="true">
+      <ion-header class="ion-padding-start" collapse="condense">
+          <ion-toolbar>
+            Achat pass internet
+          </ion-toolbar>
+        </ion-header>
+
+    <div class="list-pass-body">
+      <div class="header-image">
+        <img src="/assets/images/pass-internet-page-header.svg" alt="">
+      </div>
+      <div class="list-pass-body-main-content">
+  
+          <!-- loader -->
+         <!--  <div class="profil-spinner">
+            <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+          </div> -->
+        
+          <div class="list-pass-body">
+            <div class="tab-header">
+                <div *ngFor="let slide of fullListPass; let i=index" (click)="changeCategory(i)" class="tab-header-item" [ngClass]="{  'selected' : i === activeTabIndex} ">
+                    <span class="scb-text-light-black"> {{ slide.label }} </span>
+                </div>
+            </div>
+            <div class="main-content">
+              <ion-slides #sliders (ionSlideDidChange)="slideChanged()" [options]="slideOpts" >
+                    <ion-slide *ngFor="let slide of fullListPass">
+                      <div class="filtered-list-pass">
+                        <app-item-pass-internet *ngFor="let pass of slide.pass" [passInternet]="pass" (selectPass)="choosePass($event)"></app-item-pass-internet>
+                      </div>
+                  </ion-slide>
+                </ion-slides>
+            </div>
+      
+        </div>
+        </div>
+    </div>
+  </ion-content>

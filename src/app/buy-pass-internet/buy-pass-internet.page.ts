@@ -18,6 +18,7 @@ import {
 import { BuyPassModel } from '../services/dashboard-service';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 @Component({
   selector: 'app-buy-pass-internet',
   templateUrl: './buy-pass-internet.page.html',
@@ -63,7 +64,8 @@ export class BuyPassInternetPage implements OnInit {
     public dialog: MatDialog,
     private route: ActivatedRoute,
     private passService: PassInternetService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private appliRouting: ApplicationRoutingService
   ) {}
 
   ngOnInit() {}
@@ -152,7 +154,6 @@ export class BuyPassInternetPage implements OnInit {
   }) {
     this.destinataire = destNumberInfos.destinataire;
     this.destCodeFormule = destNumberInfos.code;
-    this.goToNextStep();
     if (destNumberInfos.destinataire !== this.currentUserNumber) {
       this.followAnalyticsService.registerEventFollow(
         'Pass_Internet_ChoixDestinataire',
@@ -166,6 +167,9 @@ export class BuyPassInternetPage implements OnInit {
         destNumberInfos.destinataire
       );
     }
+    this.appliRouting.goToListPassInternet(destNumberInfos)
+    this.step = 0;
+
   }
 
   nextStepOfChoosePassInternet(passInternet: any) {
