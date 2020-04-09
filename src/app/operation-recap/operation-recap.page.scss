@@ -1,0 +1,163 @@
+@import 'src/app/app';
+
+.init-header {
+  .arrow-container {
+    height: 40px;
+    margin-bottom: 7px;
+    img {
+      position: fixed;
+      top: 13px;
+      left: 15px;
+    }
+  }
+  .text-container {
+    height: 40px;
+    transition: linear 0.2s;
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 24px;
+    padding-left: 15px;
+  }
+}
+
+.show-toolbar {
+  .arrow-container {
+    height: 40px;
+  }
+  .text-container {
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 24px;
+  }
+  .banniere {
+    // height: auto;
+  }
+}
+
+.hide-toolbar {
+  .arrow-container {
+    height: 40px;
+  }
+  .text-container {
+    font-size: 20px;
+    min-height: 0px;
+    height: 0px;
+    opacity: 0px;
+    padding: 0px;
+    span {
+      position: fixed;
+      top: 10px;
+      width: 100%;
+      text-align: center;
+    }
+  }
+  .banniere {
+    // height: 0;
+  }
+}
+
+.buy-pass-information {
+  width: 100%;
+  height: 100%;
+  background-color: $grayDashboard;
+  padding: 15px;
+  .title {
+    font-size: 20px;
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+  }
+  .pass-selected {
+    position: relative;
+    width: 100%;
+    margin: 15px 0;
+    padding: 20px 15px;
+    background-color: $white;
+    border-radius: 5px;
+    box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    .badge-promo {
+      position: absolute;
+      top: 20px;
+      right: -5px;
+      .text {
+        height: 22px;
+        min-width: 100px;
+        padding: 5px 8px;
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 10px;
+        background-color: $lightBlue;
+      }
+      .triangle {
+        width: 0;
+        height: 0;
+        border-top: 5px solid $bluePopUp;
+        border-right: 5px solid transparent;
+        float: right;
+      }
+    }
+    .block-left {
+      .price {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 20px;
+        line-height: 1.1;
+        margin-bottom: 10px;
+      }
+      .volume {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 16px;
+        line-height: 1.38;
+      }
+      .type {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 12px;
+        line-height: 1.33;
+      }
+    }
+    .block-right {
+      margin-top: 38px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .validity,
+      .bonus {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        line-height: 1.33;
+        text-align: right;
+      }
+    }
+  }
+  .recipient-information {
+    border-radius: 10px;
+    width: 100%;
+    padding: 15px 15px 20px;
+    background-color: $white;
+    .top-block {
+      display: flex;
+      justify-content: space-between;
+      .title {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 20px;
+        line-height: 1.5;
+      }
+      .recipient {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        line-height: 1.38;
+      }
+    }
+    .bottom-block {
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 12px;
+      line-height: 1.33;
+      text-align: right;
+    }
+  }
+  button {
+    width: calc(100% - 30px);
+    height: 50px;
+    font-size: 16px;
+    position: absolute;
+    left: 15px;
+    bottom: 30px;
+    border-radius: 10px;
+  }
+}
