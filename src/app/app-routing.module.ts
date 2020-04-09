@@ -181,7 +181,7 @@ const routes: Routes = [
       './my-offer-plans/my-offer-plans.module#MyOfferPlansPageModule'
   },
   { path: 'list-pass-internet-v3', loadChildren: './list-pass-internet-v3/list-pass-internet-v3.module#ListPassInternetV3PageModule' },
-  { path: 'select-pass-recipient', loadChildren: './select-pass-recipient/select-pass-recipient.module#SelectPassRecipientPageModule' }
+  { path: 'select-beneficiary-v2', loadChildren: './select-beneficiary-v2/select-beneficiary-v2.module#SelectBeneficiaryV2PageModule' },
 ];
 
 @NgModule({

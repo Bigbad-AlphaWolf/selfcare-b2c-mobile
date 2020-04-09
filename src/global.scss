@@ -405,3 +405,11 @@ body {
     }
   }
 }
+
+// Customize ion-select
+
+.beneficiary-number{
+  .select-icon{
+    display: none;
+  }
+}

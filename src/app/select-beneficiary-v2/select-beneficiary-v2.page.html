@@ -1,0 +1,60 @@
+
+ <ion-header>   
+    <ion-toolbar>
+        <ion-buttons class="ion-padding-start" slot="start">
+            <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+        </ion-buttons>
+      <ion-title class="ion-no-padding">
+        <span class="title1">
+            Choix du bénéficiaire
+        </span>
+       </ion-title>
+    </ion-toolbar>
+  </ion-header>
+   <ion-content fullscreen="true">
+        <ion-header class="ion-padding-start" collapse="condense">
+            <ion-toolbar>
+              <span class="title">
+                  Choix du bénéficiaire
+              </span>
+            </ion-toolbar>
+          </ion-header>
+  
+          <div class="select-beneficiary-container">
+            <div class="choose-beneficiaries-button">
+                <ion-radio-group  #radio class="radio-group" [value]="isUserRecipient">
+                      <ion-item lines="none" (click)="isUserRecipient = 1" class="beneficiary me" [ngClass]="{ 'selected': isUserRecipient } ">
+                          <ion-label>  
+                            <div class="icon">
+                              <img src="/assets/images/ic-device-smartphone.png" alt="">
+                            </div>
+                            <div class="label scb-text-gray">
+                                Pour moi
+                            </div>
+                          </ion-label>
+                            <ion-radio mode="md" class="radio-btn" slot="end" [value]="1"></ion-radio>
+                        </ion-item>
+                      <ion-item lines="none" (click)="isUserRecipient = 0" class="beneficiary other" [ngClass]="{ 'selected': !isUserRecipient } ">
+                          <ion-label>
+                              <div class="icon">
+                                <img src="/assets/images/ic-transfer-data.png" alt="">
+                              </div>
+                              <div class="label scb-text-gray">
+                                    Pour un autre
+                              </div>
+                            </ion-label>
+                          <ion-radio mode="md" class="radio-btn" slot="end" [value]="0"></ion-radio>
+                        </ion-item>
+                </ion-radio-group>
+
+            </div>
+            
+            <div *ngIf="isUserRecipient && isLoaded && !hasError" class="beneficiary-number">
+                <ion-label class="scb-text-gray">Sur mon numéro</ion-label>
+                <ion-select [interfaceOptions]="customAlertOptions" interface="alert" placeholder="Sur mon numéro" okText="OK" cancelText="Annuler" [value]="currentUserNumber">
+                  <ion-select-option [value]="mainPhoneNumber"> {{ mainPhoneNumber | phoneNumberDisplay }} </ion-select-option>
+                  <ion-select-option *ngFor="let number of listUserNumber" [value]="number.msisdn"> {{ number.msisdn | phoneNumberDisplay }} </ion-select-option>
+                </ion-select>
+            </div>
+          </div>
+    </ion-content>

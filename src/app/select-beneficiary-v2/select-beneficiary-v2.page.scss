@@ -1,0 +1,68 @@
+@import 'src/app/app';
+
+.title{
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: -0.28px;
+}
+
+.title1{
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
+}
+
+.select-beneficiary-container{
+    height: 100%;
+    background-color: $grayDashboard;
+    padding: 15px 15px;
+    .choose-beneficiaries-button{
+        width: 100%;
+        .radio-group{
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            .beneficiary{
+                width: 48%;
+                background-color: $white;
+                border-radius: 10px;
+                box-shadow: 5px 5px 5px 0 rgba(255, 121, 0, 0.05);
+                font-size: 16px;
+                .label{
+                    font-family: HelveticaNeueLTStd-Roman;
+                }
+                ion-label{
+                    text-align: center;
+                    padding-bottom: 5px
+                }
+                &.selected{
+                    border: solid 1px $orange;
+                    .label{
+                        font-family: HelveticaNeueLTStd-Bd;
+                        font-size: 16px;
+                        color: $fullBlack
+                    }
+                }
+                .radio-btn{
+                    position: absolute;
+                    top: 5px;
+                    right: 6px;
+                }
+            }
+        }
+    }
+    .beneficiary-number{
+        display: flex;
+        height: 54px;
+        justify-content: space-around;
+        align-items: center;
+        margin-top: 15px;
+        background-color: $white;
+        border-radius: 10px;
+        border: solid 2px $silver;
+        ion-label{
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 16px;
+        }
+    }
+}
