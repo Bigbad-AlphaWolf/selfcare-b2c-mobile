@@ -1,0 +1,34 @@
+<div class="select-payment-modal">
+  <div class="title">Payer par :</div>
+  <div class="choice-block">
+    <div class="item" (click)="setPaymentChannel('credit')">
+      <mat-radio-button [checked]="selectedPaymentChannel === 'credit'">
+      </mat-radio-button>
+      <div class="payment-mod-detail">
+        <div
+          class="payment-mod"
+          [ngClass]="{'scb-text-orange': selectedPaymentChannel === 'credit'}"
+        >
+          Crédit recharge
+        </div>
+        <div class="balance-information">
+          <span class="balance-value">2 250 FCFA</span>
+          <span class="balance-title scb-text-gray">Solde crédit restant</span>
+        </div>
+      </div>
+    </div>
+    <div class="item" (click)="setPaymentChannel('om')">
+      <mat-radio-button [checked]="selectedPaymentChannel === 'om'">
+      </mat-radio-button>
+      <div class="payment-mod-detail">
+        <div
+          class="payment-mod"
+          [ngClass]="{'scb-text-orange': selectedPaymentChannel === 'om'}"
+        >
+          Orange Money
+        </div>
+        <div class="balance-information"></div>
+      </div>
+    </div>
+  </div>
+</div>
