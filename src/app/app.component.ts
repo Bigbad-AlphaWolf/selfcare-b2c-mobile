@@ -1,3 +1,4 @@
+import { DeviceInfoModel } from './../shared/index';
 import { AuthenticationService } from './services/authentication-service/authentication.service';
 import { MatDialog } from '@angular/material';
 import { BuyCreditPage } from './buy-credit/buy-credit.page';
@@ -15,9 +16,11 @@ import * as SecureLS from 'secure-ls';
 import { DetailsConsoPage } from './details-conso/details-conso.page';
 const ls = new SecureLS({ encodingType: 'aes' });
 declare var FollowAnalytics: any;
+import { Device } from '@ionic-native/device/ngx';
+
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html'
+  templateUrl: 'app.component.html',
 })
 export class AppComponent {
   AppVersionNumber: any;
@@ -29,7 +32,8 @@ export class AppComponent {
     private splash: SplashScreen,
     private appMinimize: AppMinimize,
     private router: Router,
-    private deeplinks: Deeplinks
+    private deeplinks: Deeplinks,
+    private device: Device
   ) {
     this.initializeApp();
   }
@@ -88,12 +92,23 @@ export class AppComponent {
       //     } else {
       //       console.log('Notification received in foreground');
       //     }
-      //   });      
+      //   });
 
       // this.fcm.onTokenRefresh().subscribe(fcmToken => {
       //   //console.log(fcmToken);
       //   ls.set('firebaseId', fcmToken);
       // });
+
+      let deviceInfo: DeviceInfoModel;
+      deviceInfo.cordova_version = this.device.cordova;
+      deviceInfo.model = this.device.model;
+      deviceInfo.platform = this.device.platform;
+      deviceInfo.uuid = this.device.uuid;
+      deviceInfo.version = this.device.version;
+      deviceInfo.manufacturer = this.device.manufacturer;
+      deviceInfo.serial = this.device.serial;
+      deviceInfo.isVirtual = this.device.isVirtual;
+      ls.set('deviceInfo', deviceInfo);
     });
   }
 
@@ -106,14 +121,14 @@ export class AppComponent {
         '/buy-pass-illimix': BuyPassIllimixPage,
         '/buy-pass-illimix/:id': BuyPassIllimixPage,
         '/buy-credit': BuyCreditPage,
-        '/details-conso': DetailsConsoPage
+        '/details-conso': DetailsConsoPage,
       })
       .subscribe(
-        matched => {
+        (matched) => {
           this.router.navigate([matched.$link.path]);
           console.log(matched);
         },
-        notMatched => {
+        (notMatched) => {
           // console.log(notMatched);
           // console.log('deeplink not matched');
         }

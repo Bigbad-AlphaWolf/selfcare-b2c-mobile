@@ -78,6 +78,7 @@ export class LoginPage implements OnInit {
           (resp: any) => {
             this.loading = false;
             ls.set('user', resp);
+            console.log(user);
             this.dashbServ.setCurrentPhoneNumber(user.username);
             // Update notification info
             this.authServ.UpdateNotificationInfo();

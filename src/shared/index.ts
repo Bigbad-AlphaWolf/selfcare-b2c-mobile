@@ -763,3 +763,14 @@ export function getBanniereTitle(banniereDescription: string) {
 export function getBanniereDescription(banniereDescription: string) {
   return banniereDescription.substring(banniereDescription.indexOf(';') + 1);
 }
+
+export interface DeviceInfoModel {
+  cordova_version: string;
+  model: string;
+  platform: string;
+  uuid: string;
+  version: string;
+  manufacturer: string;
+  isVirtual: boolean;
+  serial: string;
+}

@@ -24,6 +24,13 @@ export class AuthInterceptorService implements HttpInterceptor {
     const that = this;
     const token = ls.get('token');
     const x_uuid = ls.get('X-UUID');
+    const deviceInfo = ls.get('deviceInfo');
+    // let infoheaders = req.headers;
+    // infoheaders = infoheaders.set('uuid', x_uuid);
+    // infoheaders = infoheaders.set('X-MSISDN', '221770167323');
+    //   req = req.clone({
+    //     infoheaders
+    //   });
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
