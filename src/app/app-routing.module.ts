@@ -194,8 +194,7 @@ const routes: Routes = [
     path: 'operation-recap',
     loadChildren:
       './operation-recap/operation-recap.module#OperationRecapPageModule',
-  },  { path: 'test-modal', loadChildren: './test-modal/test-modal.module#TestModalPageModule' },
-
+  },
 ];
 
 @NgModule({
