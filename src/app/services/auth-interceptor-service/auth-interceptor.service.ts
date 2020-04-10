@@ -4,16 +4,17 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
-  HttpErrorResponse
+  HttpErrorResponse,
 } from '@angular/common/http';
 import * as SecureLS from 'secure-ls';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 export const OmRequest = 'OrangeMoney';
-const ls = new SecureLS({ encodingType: 'aes' });
 import * as jwt_decode from 'jwt-decode';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { OM_SERVICE_VERSION } from '../orange-money-service';
+
+const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
   constructor(
@@ -24,26 +25,27 @@ export class AuthInterceptorService implements HttpInterceptor {
     const that = this;
     const token = ls.get('token');
     const x_uuid = ls.get('X-UUID');
+
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
       headers = headers.set('X-MSISDN', '221770167323');
       req = req.clone({
-        headers
+        headers,
       });
     }
     if (isReqWaitinForUID(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
       req = req.clone({
-        headers
+        headers,
       });
     }
     if (isReqWaitinForXUID(req.url)) {
       let headers = req.headers;
       headers = headers.set('X-UUID', x_uuid);
       req = req.clone({
-        headers
+        headers,
       });
     }
     if (req.headers.has(OmRequest)) {
@@ -56,17 +58,39 @@ export class AuthInterceptorService implements HttpInterceptor {
       req.url.match('selfcare-b2c-account/api/account-management/account') ||
       req.url.match('auth/login')
     ) {
-      req.headers.set('X-SELFCARE-SOURCE', 'mobile');
       return next.handle(req);
     }
     if (token) {
       let headers = req.headers;
       headers = headers.set('X-SELFCARE-SOURCE', 'mobile');
       headers = headers.set('Authorization', `Bearer ${token}`);
+
       req = req.clone({
-        headers
+        headers,
       });
     }
+
+    let deviceInfo = window['device'];
+
+    if (deviceInfo) {
+      let headers = req.headers;
+      headers = headers.set('X-SELFCARE-PLATFORM', deviceInfo.platform);
+      headers = headers.set('X-SELFCARE-CORDOVA', deviceInfo.cordova);
+      headers = headers.set('X-SELFCARE-MODEL', deviceInfo.model);
+      headers = headers.set('X-SELFCARE-UUID', deviceInfo.uuid);
+      headers = headers.set('X-SELFCARE-VERSION', deviceInfo.version);
+      headers = headers.set('X-SELFCARE-MANUFACTURER', deviceInfo.manufacturer);
+      headers = headers.set('X-SELFCARE-SERIAL', deviceInfo.serial);
+      headers = headers.set(
+        'X-SELFCARE-ISVIRTUAL',
+        String(deviceInfo.isVirtual)
+      );
+
+      req = req.clone({
+        headers,
+      });
+    }
+
     return next.handle(req).pipe(
       tap(
         (event: HttpEvent<any>) => {},
