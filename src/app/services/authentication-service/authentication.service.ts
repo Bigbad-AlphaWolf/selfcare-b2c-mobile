@@ -305,6 +305,7 @@ export class AuthenticationService {
 
   removeUserInfos() {
     ls.remove('user');
+    ls.remove('deviceInfo');
   }
 
   private storeAuthenticationData(authenticationData: any, user: any) {

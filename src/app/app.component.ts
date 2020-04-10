@@ -1,4 +1,3 @@
-import { DeviceInfoModel } from './../shared/index';
 import { AuthenticationService } from './services/authentication-service/authentication.service';
 import { MatDialog } from '@angular/material';
 import { BuyCreditPage } from './buy-credit/buy-credit.page';
@@ -18,6 +17,10 @@ const ls = new SecureLS({ encodingType: 'aes' });
 declare var FollowAnalytics: any;
 import { Device } from '@ionic-native/device/ngx';
 
+import { Uid } from '@ionic-native/uid/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -32,8 +35,7 @@ export class AppComponent {
     private splash: SplashScreen,
     private appMinimize: AppMinimize,
     private router: Router,
-    private deeplinks: Deeplinks,
-    private device: Device
+    private deeplinks: Deeplinks
   ) {
     this.initializeApp();
   }
@@ -99,16 +101,6 @@ export class AppComponent {
       //   ls.set('firebaseId', fcmToken);
       // });
 
-      let deviceInfo: DeviceInfoModel;
-      deviceInfo.cordova_version = this.device.cordova;
-      deviceInfo.model = this.device.model;
-      deviceInfo.platform = this.device.platform;
-      deviceInfo.uuid = this.device.uuid;
-      deviceInfo.version = this.device.version;
-      deviceInfo.manufacturer = this.device.manufacturer;
-      deviceInfo.serial = this.device.serial;
-      deviceInfo.isVirtual = this.device.isVirtual;
-      ls.set('deviceInfo', deviceInfo);
     });
   }
 

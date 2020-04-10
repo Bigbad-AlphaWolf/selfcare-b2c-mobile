@@ -32,6 +32,8 @@ import localeFr from '@angular/common/locales/fr';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Market } from '@ionic-native/market/ngx';
 import { Device } from '@ionic-native/device/ngx';
+import { Uid } from '@ionic-native/uid/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -72,7 +74,9 @@ registerLocaleData(localeFr);
     InAppBrowser,
     Deeplinks,
     Market,
-    Device
+    Device,
+    Uid,
+    AndroidPermissions
   ],
   bootstrap: [AppComponent]
 })
