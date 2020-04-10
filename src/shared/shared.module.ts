@@ -15,7 +15,7 @@ import {
   MatDialogModule,
   MatCheckboxModule,
   MatRadioModule,
-  MatMenuModule
+  MatMenuModule,
 } from '@angular/material';
 import { ModalSuccessComponent } from './modal-success/modal-success.component';
 import { ChatMsgLineComponent } from './chat-msg-line/chat-msg-line.component';
@@ -50,6 +50,8 @@ import { OmButtonComponent } from './om-button/om-button.component';
 import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.component';
 import { FormatSuiviConsoCategoryTitlePipe } from './pipes/format-suivi-conso-category-title.pipe';
 import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
+import { HeaderScrollEffectDirective } from './directives/header-scroll-effect.directive';
+import { PassInternetCardComponent } from './pass-internet-card/pass-internet-card.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +88,9 @@ import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
     OmButtonComponent,
     DashboardHeaderComponent,
     FormatSuiviConsoCategoryTitlePipe,
-    FormatCalledNumberPipe
+    FormatCalledNumberPipe,
+    HeaderScrollEffectDirective,
+    PassInternetCardComponent,
   ],
   imports: [
     CommonModule,
@@ -101,7 +105,7 @@ import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
     MatIconModule,
     MatRadioModule,
     MatMenuModule,
-    RouterModule
+    RouterModule,
   ],
   entryComponents: [
     ModalSuccessComponent,
@@ -114,7 +118,7 @@ import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
     CguPopupComponent,
     SuccessFailPopupComponent,
     WelcomePopupComponent,
-    SettingsPopupComponent
+    SettingsPopupComponent,
   ],
   exports: [
     MatInputModule,
@@ -124,6 +128,7 @@ import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
     MatCheckboxModule,
     MatSelectModule,
     MatOptionModule,
+    MatRadioModule,
     MatMenuModule,
     ReactiveFormsModule,
     ActivationOmComponent,
@@ -156,9 +161,11 @@ import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
     PassVolumeDisplayPipe,
     OmButtonComponent,
     DashboardHeaderComponent,
-    FormatCalledNumberPipe
+    FormatCalledNumberPipe,
+    HeaderScrollEffectDirective,
+    PassInternetCardComponent,
   ],
   providers: [Contacts, SocialSharing, PassVolumeDisplayPipe],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class SharedModule {}

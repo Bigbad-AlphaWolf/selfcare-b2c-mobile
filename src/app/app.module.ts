@@ -21,7 +21,7 @@ import { SharedModule } from 'src/shared/shared.module';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import {
   FileTransfer,
-  FileTransferObject
+  FileTransferObject,
 } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
@@ -31,6 +31,7 @@ import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Market } from '@ionic-native/market/ngx';
+import { SetPaymentChannelModalPageModule } from './set-payment-channel-modal/set-payment-channel-modal.module';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -38,7 +39,7 @@ registerLocaleData(localeFr);
     AppComponent,
     SidemenuComponent,
     ChangeAvatarPopupComponent,
-    InProgressPopupComponent
+    InProgressPopupComponent,
   ],
   entryComponents: [ChangeAvatarPopupComponent, InProgressPopupComponent],
   imports: [
@@ -48,19 +49,20 @@ registerLocaleData(localeFr);
     IonicModule.forRoot({ animated: false }),
     AppRoutingModule,
     BrowserAnimationsModule,
-    SharedModule
+    SharedModule,
+    SetPaymentChannelModalPageModule,
   ],
   providers: [
     AppVersion,
     StatusBar,
     SplashScreen,
     NativePageTransitions,
-    { provide: LOCALE_ID, useValue: 'fr-FR'},
+    { provide: LOCALE_ID, useValue: 'fr-FR' },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
-      multi: true
+      multi: true,
     },
     HTTP,
     FileTransfer,
@@ -70,8 +72,8 @@ registerLocaleData(localeFr);
     AppMinimize,
     InAppBrowser,
     Deeplinks,
-    Market
+    Market,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
