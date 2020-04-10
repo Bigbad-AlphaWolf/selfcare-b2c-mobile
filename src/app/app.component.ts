@@ -19,7 +19,7 @@ import { Device } from '@ionic-native/device/ngx';
 
 import { Uid } from '@ionic-native/uid/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
-
+import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
 
 @Component({
   selector: 'app-root',
@@ -35,7 +35,8 @@ export class AppComponent {
     private splash: SplashScreen,
     private appMinimize: AppMinimize,
     private router: Router,
-    private deeplinks: Deeplinks
+    private deeplinks: Deeplinks,
+    private uid: Uid,
   ) {
     this.initializeApp();
   }
@@ -50,6 +51,43 @@ export class AppComponent {
       // #AARRGGBB where AA is an alpha value RR is red, GG is green and BB is blue
       if (this.platform.is('android')) {
         this.statusBar.backgroundColorByHexString('#FFFFFF');
+        //getPermission is for getting the IMEI
+        //this.getPermission();getPermission() {  
+  //   this.androidPermissions
+  //     .checkPermission(this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE)
+  //     .then((res) => {
+  //       if (res.hasPermission) {
+  //       } else {
+  //         this.androidPermissions
+  //           .requestPermission(
+  //             this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE
+  //           )
+  //           .then((res) => {
+  //             // console.log('Persmission Granted!');
+  //           })
+  //           .catch((error) => {
+  //             // console.log('Error! ' + error);
+  //           });
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log('Error! ' + error);
+  //     });
+  // }
+
+  // getID_UID(type) {
+  //   if (type === 'IMEI') {
+  //     return this.uid.IMEI;
+  //   } else if (type === 'ICCID') {
+  //     return this.uid.ICCID;
+  //   } else if (type === 'IMSI') {
+  //     return this.uid.IMSI;
+  //   } else if (type === 'MAC') {
+  //     return this.uid.MAC;
+  //   } else if (type === 'UUID') {
+  //     return this.uid.UUID;
+  //   }
+  // }
       }
       this.statusBar.styleDefault();
 
@@ -100,7 +138,6 @@ export class AppComponent {
       //   //console.log(fcmToken);
       //   ls.set('firebaseId', fcmToken);
       // });
-
     });
   }
 
@@ -126,4 +163,41 @@ export class AppComponent {
         }
       );
   }
+
+  // getPermission() {
+  //   this.androidPermissions
+  //     .checkPermission(this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE)
+  //     .then((res) => {
+  //       if (res.hasPermission) {
+  //       } else {
+  //         this.androidPermissions
+  //           .requestPermission(
+  //             this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE
+  //           )
+  //           .then((res) => {
+  //             // console.log('Persmission Granted!');
+  //           })
+  //           .catch((error) => {
+  //             // console.log('Error! ' + error);
+  //           });
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log('Error! ' + error);
+  //     });
+  // }
+
+  // getID_UID(type) {
+  //   if (type === 'IMEI') {
+  //     return this.uid.IMEI;
+  //   } else if (type === 'ICCID') {
+  //     return this.uid.ICCID;
+  //   } else if (type === 'IMSI') {
+  //     return this.uid.IMSI;
+  //   } else if (type === 'MAC') {
+  //     return this.uid.MAC;
+  //   } else if (type === 'UUID') {
+  //     return this.uid.UUID;
+  //   }
+  // }
 }

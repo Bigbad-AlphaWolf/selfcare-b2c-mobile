@@ -34,6 +34,7 @@ import { Market } from '@ionic-native/market/ngx';
 import { Device } from '@ionic-native/device/ngx';
 import { Uid } from '@ionic-native/uid/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -76,7 +77,8 @@ registerLocaleData(localeFr);
     Market,
     Device,
     Uid,
-    AndroidPermissions
+    AndroidPermissions,
+    UniqueDeviceID
   ],
   bootstrap: [AppComponent]
 })
