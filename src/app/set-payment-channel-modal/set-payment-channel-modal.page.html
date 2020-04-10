@@ -1,13 +1,13 @@
 <div class="select-payment-modal">
   <div class="title">Payer par :</div>
   <div class="choice-block">
-    <div class="item" (click)="setPaymentChannel('credit')">
-      <mat-radio-button [checked]="selectedPaymentChannel === 'credit'">
+    <div class="item" (click)="setPaymentChannel('CREDIT')">
+      <mat-radio-button [checked]="selectedPaymentChannel === 'CREDIT'">
       </mat-radio-button>
       <div class="payment-mod-detail">
         <div
           class="payment-mod"
-          [ngClass]="{'scb-text-orange': selectedPaymentChannel === 'credit'}"
+          [ngClass]="{'scb-text-orange': selectedPaymentChannel === 'CREDIT'}"
         >
           Crédit recharge
         </div>
@@ -17,13 +17,13 @@
         </div>
       </div>
     </div>
-    <div class="item" (click)="setPaymentChannel('om')">
-      <mat-radio-button [checked]="selectedPaymentChannel === 'om'">
+    <div class="item" (click)="setPaymentChannel('ORANGE_MONEY')">
+      <mat-radio-button [checked]="selectedPaymentChannel === 'ORANGE_MONEY'">
       </mat-radio-button>
       <div class="payment-mod-detail">
         <div
           class="payment-mod"
-          [ngClass]="{'scb-text-orange': selectedPaymentChannel === 'om'}"
+          [ngClass]="{'scb-text-orange': selectedPaymentChannel === 'ORANGE_MONEY'}"
         >
           Orange Money
         </div>
@@ -31,4 +31,11 @@
       </div>
     </div>
   </div>
+  <button
+    class="scb-btn scb-btn-orange"
+    (click)="validateChannel()"
+    [disabled]="false"
+  >
+    <span class="text">Valider ({{price}} FCFA)</span>
+  </button>
 </div>

@@ -194,7 +194,8 @@ const routes: Routes = [
     path: 'operation-recap',
     loadChildren:
       './operation-recap/operation-recap.module#OperationRecapPageModule',
-  },
+  },  { path: 'new-pinpad-modal', loadChildren: './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule' },
+
 ];
 
 @NgModule({
