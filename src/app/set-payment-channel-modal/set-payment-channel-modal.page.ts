@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'set-payment-channel-modal',
@@ -6,13 +7,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./set-payment-channel-modal.page.scss'],
 })
 export class SetPaymentChannelModalPage implements OnInit {
-  selectedPaymentChannel: 'credit' | 'om';
+  @Input() price;
+  selectedPaymentChannel: 'CREDIT' | 'ORANGE_MONEY';
 
-  constructor() {}
+  constructor(public modalController: ModalController) {}
 
   ngOnInit() {}
 
-  setPaymentChannel(channel: 'credit' | 'om') {
+  setPaymentChannel(channel: 'CREDIT' | 'ORANGE_MONEY') {
     this.selectedPaymentChannel = channel;
+  }
+
+  validateChannel() {
+    this.modalController.dismiss({
+      paymentMod: this.selectedPaymentChannel,
+    });
   }
 }

@@ -51,6 +51,7 @@ import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.co
 import { FormatSuiviConsoCategoryTitlePipe } from './pipes/format-suivi-conso-category-title.pipe';
 import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
 import { HeaderScrollEffectDirective } from './directives/header-scroll-effect.directive';
+import { PassInternetCardComponent } from './pass-internet-card/pass-internet-card.component';
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import { HeaderScrollEffectDirective } from './directives/header-scroll-effect.d
     FormatSuiviConsoCategoryTitlePipe,
     FormatCalledNumberPipe,
     HeaderScrollEffectDirective,
+    PassInternetCardComponent,
   ],
   imports: [
     CommonModule,
@@ -161,6 +163,7 @@ import { HeaderScrollEffectDirective } from './directives/header-scroll-effect.d
     DashboardHeaderComponent,
     FormatCalledNumberPipe,
     HeaderScrollEffectDirective,
+    PassInternetCardComponent,
   ],
   providers: [Contacts, SocialSharing, PassVolumeDisplayPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
