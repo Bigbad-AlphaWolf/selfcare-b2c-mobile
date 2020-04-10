@@ -31,11 +31,14 @@ import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Market } from '@ionic-native/market/ngx';
+<<<<<<< HEAD
 import { Device } from '@ionic-native/device/ngx';
 import { Uid } from '@ionic-native/uid/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
+=======
 import { SetPaymentChannelModalPageModule } from './set-payment-channel-modal/set-payment-channel-modal.module';
+>>>>>>> eb12f4fb5a37ab30129f38f03d8df7369f7ddd94
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -77,10 +80,13 @@ registerLocaleData(localeFr);
     InAppBrowser,
     Deeplinks,
     Market,
+<<<<<<< HEAD
     Device,
     Uid,
     AndroidPermissions,
     UniqueDeviceID
+=======
+>>>>>>> eb12f4fb5a37ab30129f38f03d8df7369f7ddd94
   ],
   bootstrap: [AppComponent],
 })
