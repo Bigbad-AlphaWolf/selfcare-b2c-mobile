@@ -45,9 +45,7 @@ export class ListPassInternetV3Page implements OnInit {
         });
 
       }else{
-        this.router.navigate(['/buy-pass-internet']);
-
-        // this.appRouting.goToSelectRecepientPassInternet();
+        this.appRouting.goToSelectRecepientPassInternet();
       }
     });
   }

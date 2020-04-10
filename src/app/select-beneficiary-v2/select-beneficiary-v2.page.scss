@@ -10,6 +10,7 @@
 .title1{
     font-family: HelveticaNeueLTStd-Bd;
     font-size: 20px;
+    padding: 0 10px;
 }
 
 .select-beneficiary-container{
@@ -60,9 +61,32 @@
         background-color: $white;
         border-radius: 10px;
         border: solid 2px $silver;
+        &.other{
+            padding: 0 15px;
+            display: flex;
+            .btn-contact{
+                padding-left: 15px;
+            }
+            ion-input{
+                --font-size: 26px;
+                font-family: HelveticaNeueLTStd-Bd;
+            }
+        }
         ion-label{
             font-family: HelveticaNeueLTStd-Roman;
             font-size: 16px;
+        }
+    }
+    .error-msg{
+        margin-top: 20px;
+    }
+    .confirm-btn{
+        position: absolute;
+        width: 92%;
+        bottom: 30px;
+        ion-button{
+            --border-radius: 5px;
+            --background-activated : $orange;
         }
     }
 }
