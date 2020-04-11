@@ -5,12 +5,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { SelectPassRecipientPage } from './select-pass-recipient.page';
+import { SelectBeneficiaryV2Page } from './select-beneficiary-v2.page';
+import { SharedModule } from 'src/shared/shared.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: SelectPassRecipientPage
+    component: SelectBeneficiaryV2Page
   }
 ];
 
@@ -19,8 +20,9 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [SelectPassRecipientPage]
+  declarations: [SelectBeneficiaryV2Page]
 })
-export class SelectPassRecipientPageModule {}
+export class SelectBeneficiaryV2PageModule {}

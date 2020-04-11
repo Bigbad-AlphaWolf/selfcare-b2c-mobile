@@ -414,8 +414,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       'event',
       'clicked'
     );
-    // this.appliRouting.goToSelectRecepientPassInternet();
-    this.router.navigate(['/buy-pass-internet']);
+    this.appliRouting.goToSelectRecepientPassInternet();
   }
 
   goDetailsCom(number?: number) {

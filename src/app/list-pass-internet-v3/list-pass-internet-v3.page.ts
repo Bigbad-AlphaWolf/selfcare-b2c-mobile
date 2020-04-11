@@ -25,6 +25,7 @@ export class ListPassInternetV3Page implements OnInit {
     slideShadows: true,
   };
   fullListPass: any[];
+  recipientName:string;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -40,26 +41,20 @@ export class ListPassInternetV3Page implements OnInit {
       ) {
         this.userNumber = this.router.getCurrentNavigation().extras.state.payload.destinataire;
         this.userCodeFormule = this.router.getCurrentNavigation().extras.state.payload.code;
-
+        this.recipientName = this.router.getCurrentNavigation().extras.state.payload.recipientName;
         this.passIntService.setUserCodeFormule(this.userCodeFormule);
         this.passIntService.setListPassInternetOfUserByQuery();
-        this.passIntService
-          .getStatusPassLoaded()
-          .subscribe((status: boolean) => {
-            this.isLoaded = status;
-            if (this.isLoaded) {
-              this.listCategory = this.passIntService.getListCategoryPassInternet();
-              this.listPassInternet = this.passIntService.getListPassInternetOfUser();
-              this.fullListPass = arrangePassByCategory(
-                this.listPassInternet,
-                this.listCategory
-              );
-            }
-          });
-      } else {
-        this.router.navigate(['/buy-pass-internet']);
+        this.passIntService.getStatusPassLoaded().subscribe((status: boolean) => {
+          this.isLoaded = status;
+          if (this.isLoaded) {
+            this.listCategory = this.passIntService.getListCategoryPassInternet();
+            this.listPassInternet = this.passIntService.getListPassInternetOfUser();
+            this.fullListPass = arrangePassByCategory(this.listPassInternet,this.listCategory);
+          }
+        });
 
-        // this.appRouting.goToSelectRecepientPassInternet();
+      }else{
+        this.appRouting.goToSelectRecepientPassInternet();
       }
     });
   }
@@ -85,7 +80,7 @@ export class ListPassInternetV3Page implements OnInit {
         pass,
         recipientMsisdn: this.userNumber,
         recipientCodeFormule: this.userCodeFormule,
-        recipientName: 'Papa Abdoulaye KEBE',
+        recipientName: this.recipientName,
       },
     };
     this.router.navigate(['/operation-recap'], navigationExtras);
