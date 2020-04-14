@@ -13,14 +13,7 @@ export class ApplicationRoutingService {
   }
 
   goToSelectRecepientPassInternet(){
-    // const navigationExtras: NavigationExtras = {
-    //   state: {
-    //     user: {test: 'data'}
-    //   }
-    // };
-    // this.route.navigate(['/select-pass-recipient'], navigationExtras)
-    this.route.navigate(['/buy-pass-internet']);
-
+    this.route.navigate(['/select-beneficiary-v2'])
   }
 
   goToListPassInternet(data: any){

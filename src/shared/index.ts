@@ -341,7 +341,9 @@ export function getListPassFilteredByLabelAndPaymentMod(
   return listPassFiltered;
 }
 
-export function arrangePassByCategory(listPass: (PassInfoModel | PromoPassModel | PassIllimModel | PromoPassIllimModel)[], listCategory: string[]){
+export function arrangePassByCategory(listPass: any[], listCategory: string[]){
+  // arrange pass by category label
+
   const result : {label: string, pass: any[]}[] = [];
   listCategory.forEach((label: string)=>{
     result.push({label, pass: []});
@@ -358,6 +360,20 @@ export function arrangePassByCategory(listPass: (PassInfoModel | PromoPassModel 
     }
   })
 
+  //order pass by tarif
+  result.forEach((itemPassCategory: {label: string, pass: any[]}, index: number)=>{
+    result[index].pass = result[index].pass.sort((pass1: any, pass2: any)=>{
+      if(!pass1.passPromo && !pass2.passPromo){
+        return +pass1.tarif - +pass2.tarif
+      }else if(!pass1.passPromo && pass2.passPromo){
+        return +pass1.tarif - +pass2.passPromo.tarif
+      }else if(pass1.passPromo && !pass2.passPromo){
+        return +pass1.passPromo.tarif - +pass2.tarif
+      }else{
+        return +pass1.passPromo.tarif - +pass2.passPromo.tarif
+      }
+    })
+  })
   return result;
 }
 

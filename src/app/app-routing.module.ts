@@ -185,16 +185,13 @@ const routes: Routes = [
     loadChildren:
       './list-pass-internet-v3/list-pass-internet-v3.module#ListPassInternetV3PageModule',
   },
-  {
-    path: 'select-pass-recipient',
-    loadChildren:
-      './select-pass-recipient/select-pass-recipient.module#SelectPassRecipientPageModule',
-  },
+  { path: 'select-beneficiary-v2', loadChildren: './select-beneficiary-v2/select-beneficiary-v2.module#SelectBeneficiaryV2PageModule' },
   {
     path: 'operation-recap',
     loadChildren:
       './operation-recap/operation-recap.module#OperationRecapPageModule',
-  },  { path: 'new-pinpad-modal', loadChildren: './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule' },
+  },
+  { path: 'new-pinpad-modal', loadChildren: './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule' },
 
 ];
 

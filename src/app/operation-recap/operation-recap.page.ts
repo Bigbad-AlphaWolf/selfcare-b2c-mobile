@@ -7,6 +7,7 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OPERATION_TYPE_PASS_INTERNET } from 'src/shared';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 
 @Component({
   selector: 'app-operation-recap',
@@ -45,13 +46,13 @@ export class OperationRecapPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private dashboardService: DashboardService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private appRouting: ApplicationRoutingService
   ) {}
 
   ngOnInit() {
     this.currentUserNumber = this.dashboardService.getCurrentPhoneNumber();
     this.route.queryParams.subscribe((params) => {
-      console.log(this.router.getCurrentNavigation());
       if (
         this.router.getCurrentNavigation() &&
         this.router.getCurrentNavigation().extras.state &&
@@ -61,6 +62,8 @@ export class OperationRecapPage implements OnInit {
         this.recipientMsisdn = this.router.getCurrentNavigation().extras.state.recipientMsisdn;
         this.recipientCodeFormule = this.router.getCurrentNavigation().extras.state.recipientCodeFormule;
         this.recipientName = this.router.getCurrentNavigation().extras.state.recipientName;
+      } else {
+        this.appRouting.goToSelectRecepientPassInternet();
       }
     });
     this.buyPassPayload = {

@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SelectPassRecipientPage } from './select-pass-recipient.page';
+import { SelectBeneficiaryV2Page } from './select-beneficiary-v2.page';
 
-describe('SelectPassRecipientPage', () => {
-  let component: SelectPassRecipientPage;
-  let fixture: ComponentFixture<SelectPassRecipientPage>;
+describe('SelectBeneficiaryV2Page', () => {
+  let component: SelectBeneficiaryV2Page;
+  let fixture: ComponentFixture<SelectBeneficiaryV2Page>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SelectPassRecipientPage ],
+      declarations: [ SelectBeneficiaryV2Page ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SelectPassRecipientPage);
+    fixture = TestBed.createComponent(SelectBeneficiaryV2Page);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
