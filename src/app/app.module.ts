@@ -36,6 +36,7 @@ import { Uid } from '@ionic-native/uid/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
 import { SetPaymentChannelModalPageModule } from './set-payment-channel-modal/set-payment-channel-modal.module';
+import { NewPinpadModalPageModule } from './new-pinpad-modal/new-pinpad-modal.module';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -55,6 +56,7 @@ registerLocaleData(localeFr);
     BrowserAnimationsModule,
     SharedModule,
     SetPaymentChannelModalPageModule,
+    NewPinpadModalPageModule,
   ],
   providers: [
     AppVersion,

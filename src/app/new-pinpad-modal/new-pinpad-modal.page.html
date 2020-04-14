@@ -1,9 +1,86 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>new-pinpad-modal</ion-title>
-  </ion-toolbar>
-</ion-header>
+<div *ngIf="checkingToken" class="checking-token-block">
+  <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+</div>
+<div *ngIf="userNotRegisteredInOm" class="codeOTP-content">
+  <div class="image-activationOM">
+    <img src="/assets/images/activation-orange-money.png" alt="image-OM" class="image-header" />
+  </div>
+  <div class="activationOM-mobile-container-body-content">
+    <span class="text scb-text-light-black">Pour votre première utilisation de Orange Money dans Orange et Moi
+      vous devez être identifié.</span>
+    <div class="title-1 scb-text-gray">Choisir Le Numéro Orange Money</div>
+    <div class="dropdown-numero">
+      <mat-form-field>
+        <mat-select [(ngModel)]="omPhoneNumber">
+          <mat-option *ngFor="let number of allNumbers; let i = index" [value]="number">
+            {{ number }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-<ion-content>
+    <button [disabled]="sendingOtp" class="confirm-btn scb-btn-full scb-btn-orange" (click)="sendOTPCode()">
+      <span>Confirmer</span>
+      <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="sendingOtp"></mat-spinner>
+    </button>
+  </div>
+</div>
+<div class="codeOTP-content" *ngIf="otpValidation">
+  <div class="image-activationOM">
+    <img src="/assets/images/activation-orange-money.png" alt="image-OM" class="image-header" />
+  </div>
+  <div class="activationOM-mobile-container-body-content">
+    <span class="text scb-text-light-black">Pour votre première utilisation de Orange Money dans Orange et Moi
+      vous devez être identifié. Vous avez reçu un code par SMS, merci de le
+      renseigner</span>
+    <form [formGroup]="form" (ngSubmit)="userRegisterOM()" novalidate autocomplete="false">
+      <div class="otp-input">
+        <mat-form-field class="material-input">
+          <input formControlName="codeOTP" type="text" matInput placeholder="Entrez le code reçu" required />
+        </mat-form-field>
+        <div class="btn-info scb-text-white">
+          ?
+        </div>
+      </div>
 
-</ion-content>
+      <button *ngIf="!userHasOmToken" [disabled]="!form.valid || registering"
+        class="confirm-btn scb-btn-full scb-btn-orange">
+        <span>Confirmer</span>
+        <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="registering"></mat-spinner>
+      </button>
+      <button (click)="sendOTPCode()" [disabled]="sendingOtp" *ngIf="resendCode"
+        class="scb-btn scb-btn-orange resend-code">
+        Renvoyer le code
+        <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="sendingOtp"></mat-spinner>
+      </button>
+    </form>
+  </div>
+  <div class="error-message" *ngIf="errorOnOtp">
+    <span>{{ errorOnOtp }}</span>
+  </div>
+</div>
+<div class="pinpad-v3" *ngIf="userHasOmToken">
+  <img src="/assets/images/password.png" alt="lock">
+  <div class="title">
+    <span class="title-1">Mot de passe</span>
+    <span class="subtitle scb-text-gray">Veuillez entrer votre code de sécurité Orange Money</span>
+  </div>
+  <div class="bullet-container">
+    <div class="bullets">
+      <span class="bullet" *ngFor="let bullet of bullets, let i = index"
+        [ngClass]="{'bullet-filled': codePin.length >= i+1, 'bullet-error': errorBulletActive}"></span>
+    </div>
+    <div class="error-block scb-text-red-error" *ngIf="pinHasError">{{pinError}}</div>
+  </div>
+  <div class="numbers-table" *ngIf="!processingPin && !recurrentOperation">
+    <div class="number scb-text-black" *ngFor="let number of randomDigits, let i = index" (click)="type(number)">
+      <span *ngIf="i !== 9 && i !== 11" class="c-pointer">{{ digitPadIsActive ? number : '' }}</span>
+      <img *ngIf="i === 9" src="/assets/images/backspace@2x.png" alt="refresh" (click)="delete()">
+      <img *ngIf="i === 11" src="/assets/images/redo@2x.png" alt="clear" (click)="reintializePinpad()">
+    </div>
+  </div>
+  <div class="loading" *ngIf="processingPin">
+    <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+  </div>
+  
+</div>

@@ -406,7 +406,7 @@ body {
   }
 }
 
-ion-modal {
+.set-channel-payment-modal {
   align-items: flex-end !important;
   .modal-wrapper {
     height: 375px !important;
@@ -415,6 +415,11 @@ ion-modal {
   }
 }
 
-.payment-mod-modal {
-  height: 375px;
+.pin-pad-modal {
+  align-items: flex-end !important;
+  .modal-wrapper {
+    height: 672px !important;
+    width: 100% !important;
+    border-radius: 10px 10px 0 0 !important;
+  }
 }
