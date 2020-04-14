@@ -60,6 +60,9 @@
                 padding: 10px 0px;
                 ion-slides{
                     min-height: 100%;
+                    ion-slide{
+                        background-color: $grayDashboard;
+                    }
                 }
                 .filtered-list-pass{
                     width: 100%;

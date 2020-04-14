@@ -9,6 +9,10 @@
             Choix du bénéficiaire
         </span>
        </ion-title>
+       <!-- loader -->
+       <div *ngIf="!isLoaded" class="profil-spinner">
+        <mat-spinner mode="indeterminate" [diameter]="25"></mat-spinner>
+      </div>
     </ion-toolbar>
   </ion-header>
    <ion-content fullscreen="true">
@@ -48,18 +52,16 @@
                 </ion-radio-group>
 
             </div>
-            <ng-container *ngIf="isUserRecipient && isLoaded && !hasError">
-              <div class="beneficiary-number">
+              <div class="beneficiary-number" [ngClass]="{'hide': !isUserRecipient || !isLoaded || hasError } ">
                   <ion-label class="scb-text-gray">Sur mon numéro</ion-label>
                   <ion-select #selectNumbers [interfaceOptions]="customPopOverOptions" interface="popover" placeholder="Sur mon numéro" okText="OK" cancelText="Annuler" [value]="recipientNumber">
                     <ion-select-option [value]="mainPhoneNumber"> {{ mainPhoneNumber | phoneNumberDisplay }} </ion-select-option>
                     <ion-select-option *ngFor="let number of listUserNumber" [value]="number.msisdn"> {{ number.msisdn | phoneNumberDisplay }} </ion-select-option>
                   </ion-select>
               </div>
-            </ng-container>
             <ng-container *ngIf="!isUserRecipient">
               <div class="beneficiary-number other">
-                <ion-input maxlength="20" #inputTel inputmode="tel" clearInput placeholder="Numéro du bénéficiaire" [value]="recipientContactInfos"></ion-input>
+                <ion-input maxlength="20" #inputTel inputmode="tel" clearInput placeholder="Numéro du bénéficiaire" [value]="recipientContactInfos ? recipientContactInfos : otherBeneficiaryNumber"></ion-input>
                 <span (click)="pickContact()" class="btn-contact scb-text-orange">Contact</span>
               </div>
               <div *ngIf="hasErrorGetContact" class="error-msg scb-text-text-error">

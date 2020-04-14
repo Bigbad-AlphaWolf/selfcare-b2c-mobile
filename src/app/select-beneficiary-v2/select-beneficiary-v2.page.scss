@@ -13,6 +13,16 @@
     padding: 0 10px;
 }
 
+.profil-spinner{
+    position: fixed;
+    top: 10px;
+    right: 15px;
+    .mat-spinner::ng-deep circle {
+        stroke: $orange;
+      }
+}
+    
+
 .select-beneficiary-container{
     height: 100%;
     background-color: $grayDashboard;
@@ -76,6 +86,9 @@
             font-family: HelveticaNeueLTStd-Roman;
             font-size: 16px;
         }
+        &.hide{
+            display: none;
+        }
     }
     .error-msg{
         margin-top: 20px;
@@ -85,6 +98,7 @@
         width: 92%;
         bottom: 30px;
         ion-button{
+            height: 50px;
             --border-radius: 5px;
             --background-activated : $orange;
         }
