@@ -5,6 +5,8 @@ import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { BuyPassModel } from '../services/dashboard-service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
+import { OPERATION_TYPE_PASS_INTERNET } from 'src/shared';
 
 @Component({
   selector: 'app-operation-recap',
@@ -12,14 +14,31 @@ import { FollowAnalyticsService } from '../services/follow-analytics/follow-anal
   styleUrls: ['./operation-recap.page.scss'],
 })
 export class OperationRecapPage implements OnInit {
-  passChoosen: any;
-  recipientMsisdn: string;
+  passChoosen: any = {
+    type: 'pass_internet',
+    id: 29,
+    nom: '7 Go',
+    volumeInternet: '7 Go',
+    tarif: '5000',
+    bonus: null,
+    description: null,
+    actif: true,
+    validitePass: 'MOIS',
+    promos: null,
+    duree: null,
+    bonusNuit: '1 Go offert et utilisable entre 00h et 08h',
+    compteurCredite: null,
+    price_plan_index: 8488,
+    price_plan_index_om: 55009,
+  };
+  recipientMsisdn: string = '775896287';
   recipientName: string;
   recipientCodeFormule;
   buyingPass: boolean;
   currentUserNumber: string;
   buyPassFailed: boolean;
   buyPassErrorMsg: string;
+  buyPassPayload: any;
 
   constructor(
     public modalController: ModalController,
@@ -44,11 +63,16 @@ export class OperationRecapPage implements OnInit {
         this.recipientName = this.router.getCurrentNavigation().extras.state.recipientName;
       }
     });
+    this.buyPassPayload = {
+      destinataire: this.recipientMsisdn,
+      pass: this.passChoosen,
+    };
   }
 
   async presentModal() {
     const modal = await this.modalController.create({
       component: SetPaymentChannelModalPage,
+      cssClass: 'set-channel-payment-modal',
     });
     modal.onDidDismiss().then((response) => {
       if (response.data.paymentMod === 'CREDIT') {
@@ -58,6 +82,19 @@ export class OperationRecapPage implements OnInit {
         this.payWithOm();
       }
     });
+    return await modal.present();
+  }
+
+  async openPinpad() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+      componentProps: {
+        operationType: OPERATION_TYPE_PASS_INTERNET,
+        buyPassPayload: this.buyPassPayload,
+      },
+    });
+    modal.onDidDismiss().then((response) => {});
     return await modal.present();
   }
 
@@ -96,7 +133,9 @@ export class OperationRecapPage implements OnInit {
     );
   }
 
-  payWithOm() {}
+  payWithOm() {
+    this.openPinpad();
+  }
 
   transactionSuccessful(res: any) {
     this.buyingPass = false;

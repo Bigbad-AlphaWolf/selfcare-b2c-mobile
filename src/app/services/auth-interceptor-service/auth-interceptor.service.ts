@@ -4,7 +4,7 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
-  HttpErrorResponse
+  HttpErrorResponse,
 } from '@angular/common/http';
 import * as SecureLS from 'secure-ls';
 import { tap } from 'rxjs/operators';
@@ -27,23 +27,23 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221770167323');
+      headers = headers.set('X-MSISDN', '221775896287');
       req = req.clone({
-        headers
+        headers,
       });
     }
     if (isReqWaitinForUID(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
       req = req.clone({
-        headers
+        headers,
       });
     }
     if (isReqWaitinForXUID(req.url)) {
       let headers = req.headers;
       headers = headers.set('X-UUID', x_uuid);
       req = req.clone({
-        headers
+        headers,
       });
     }
     if (req.headers.has(OmRequest)) {
@@ -64,7 +64,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       headers = headers.set('X-SELFCARE-SOURCE', 'mobile');
       headers = headers.set('Authorization', `Bearer ${token}`);
       req = req.clone({
-        headers
+        headers,
       });
     }
     return next.handle(req).pipe(

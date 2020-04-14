@@ -32,6 +32,7 @@ import localeFr from '@angular/common/locales/fr';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Market } from '@ionic-native/market/ngx';
 import { SetPaymentChannelModalPageModule } from './set-payment-channel-modal/set-payment-channel-modal.module';
+import { NewPinpadModalPageModule } from './new-pinpad-modal/new-pinpad-modal.module';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -51,6 +52,7 @@ registerLocaleData(localeFr);
     BrowserAnimationsModule,
     SharedModule,
     SetPaymentChannelModalPageModule,
+    NewPinpadModalPageModule,
   ],
   providers: [
     AppVersion,
