@@ -51,7 +51,8 @@ export class SelectBeneficiaryV2Page implements OnInit {
   selectUserAsBeneficiary(){
     this.isUserRecipient = true;
     this.recipientNumber = this.ionicSelect.value;
-    this.validatePhoneNumberProfil();
+    this.recipientContactInfos = null;
+    this.otherBeneficiaryNumber = null;
   }
 
   selectOtherAsBeneficiary(){
@@ -109,7 +110,7 @@ export class SelectBeneficiaryV2Page implements OnInit {
   processGetContactInfos(contact: any){
     const phoneNumberRecipient = formatPhoneNumber(contact.phoneNumbers[0].value);
     if (this.validateNumber(phoneNumberRecipient)) {
-      this.recipientNumber = phoneNumberRecipient;
+      this.otherBeneficiaryNumber = phoneNumberRecipient;
       this.getContactFormattedName(contact);
 
     } else {
@@ -142,7 +143,8 @@ export class SelectBeneficiaryV2Page implements OnInit {
       if(this.ionicInput && this.ionicInput.value && this.validateNumber(this.ionicInput.value)){
         this.recipientNumber = formatPhoneNumber(this.ionicInput.value);
         this.validatePhoneNumberProfil()
-      }else if(this.recipientNumber && this.recipientContactInfos){
+      }else if(this.otherBeneficiaryNumber && this.recipientContactInfos){
+        this.recipientNumber = this.otherBeneficiaryNumber;
         this.validatePhoneNumberProfil()
       } else{
         this.hasErrorProcessing = true;

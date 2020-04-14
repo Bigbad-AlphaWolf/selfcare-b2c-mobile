@@ -192,13 +192,12 @@
       "cordova-plugin-app-version": {},
       "cordova-plugin-market": {},
       "cordova.plugin.followanalytics": {},
-      "cordova-plugin-dreamover-uid": {},
       "cordova-plugin-android-permissions": {},
       "cordova-plugin-unique-device-id2": {}
     },
     "platforms": [
-      "android",
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }

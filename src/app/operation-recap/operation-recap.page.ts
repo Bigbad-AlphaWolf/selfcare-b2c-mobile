@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { BuyPassModel } from '../services/dashboard-service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 
 @Component({
   selector: 'app-operation-recap',
@@ -26,7 +27,8 @@ export class OperationRecapPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private dashboardService: DashboardService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private appRouting: ApplicationRoutingService
   ) {}
 
   ngOnInit() {
@@ -42,6 +44,8 @@ export class OperationRecapPage implements OnInit {
         this.recipientMsisdn = this.router.getCurrentNavigation().extras.state.recipientMsisdn;
         this.recipientCodeFormule = this.router.getCurrentNavigation().extras.state.recipientCodeFormule;
         this.recipientName = this.router.getCurrentNavigation().extras.state.recipientName;
+      }else{
+        this.appRouting.goToSelectRecepientPassInternet();
       }
     });
   }
