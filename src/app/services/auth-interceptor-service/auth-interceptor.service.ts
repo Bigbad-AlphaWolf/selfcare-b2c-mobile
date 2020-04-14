@@ -13,14 +13,25 @@ export const OmRequest = 'OrangeMoney';
 import * as jwt_decode from 'jwt-decode';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { OM_SERVICE_VERSION } from '../orange-money-service';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
+
+  appVersionNumber: string;
   constructor(
     private authServ: AuthenticationService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private appVersion: AppVersion
+  ) {
+    this.appVersion.getVersionNumber().then(value => {
+      this.appVersionNumber = value;
+    }).catch(error => {
+      console.log(error);
+    });
+  }
+
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     const that = this;
     const token = ls.get('token');
@@ -29,7 +40,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221775896287');
+      headers = headers.set('X-MSISDN', '221770167323');
       req = req.clone({
         headers,
       });
@@ -62,7 +73,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     }
     if (token) {
       let headers = req.headers;
-      headers = headers.set('X-SELFCARE-SOURCE', 'mobile');
+      headers = headers.set('X-Selfcare-Source', 'mobile');
       headers = headers.set('Authorization', `Bearer ${token}`);
 
       req = req.clone({
@@ -74,18 +85,18 @@ export class AuthInterceptorService implements HttpInterceptor {
 
     if (deviceInfo) {
       let headers = req.headers;
-      headers = headers.set('X-SELFCARE-PLATFORM', deviceInfo.platform);
-      headers = headers.set('X-SELFCARE-CORDOVA', deviceInfo.cordova);
-      headers = headers.set('X-SELFCARE-MODEL', deviceInfo.model);
-      headers = headers.set('X-SELFCARE-UUID', deviceInfo.uuid);
-      headers = headers.set('X-SELFCARE-VERSION', deviceInfo.version);
-      headers = headers.set('X-SELFCARE-MANUFACTURER', deviceInfo.manufacturer);
-      headers = headers.set('X-SELFCARE-SERIAL', deviceInfo.serial);
+      headers = headers.set('X-Selfcare-Platform', deviceInfo.platform);
+      headers = headers.set('X-Selfcare-Cordova', deviceInfo.cordova);
+      headers = headers.set('X-Selfcare-Model', deviceInfo.model);
+      headers = headers.set('X-Selfcare-Uuid', deviceInfo.uuid);
+      headers = headers.set('X-Selfcare-Os-Version', deviceInfo.version);
+      headers = headers.set('X-Selfcare-Manufacturer', deviceInfo.manufacturer);
+      headers = headers.set('X-Selfcare-Serial', deviceInfo.serial);
       headers = headers.set(
-        'X-SELFCARE-ISVIRTUAL',
+        'X-Selfcare-Isvirtual',
         String(deviceInfo.isVirtual)
       );
-
+      headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
       req = req.clone({
         headers,
       });
