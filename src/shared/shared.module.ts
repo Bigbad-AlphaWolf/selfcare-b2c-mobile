@@ -48,6 +48,8 @@ import { RouterModule } from '@angular/router';
 import { PassVolumeDisplayPipe } from './pipes/pass-volume-display.pipe';
 import { OmButtonComponent } from './om-button/om-button.component';
 import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.component';
+import { FormatSuiviConsoCategoryTitlePipe } from './pipes/format-suivi-conso-category-title.pipe';
+import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
 
 @NgModule({
   declarations: [
@@ -82,7 +84,9 @@ import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.co
     HelpBannerComponent,
     PassVolumeDisplayPipe,
     OmButtonComponent,
-    DashboardHeaderComponent
+    DashboardHeaderComponent,
+    FormatSuiviConsoCategoryTitlePipe,
+    FormatCalledNumberPipe
   ],
   imports: [
     CommonModule,
@@ -132,6 +136,7 @@ import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.co
     FormatBillDatePipe,
     FormatCurrencyPipe,
     GetLabelLigneBillBordereauPipe,
+    FormatSuiviConsoCategoryTitlePipe,
     ChatMsgLineComponent,
     CancelOperationPopupComponent,
     PhoneNumberDisplayPipe,
@@ -150,7 +155,8 @@ import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.co
     HelpBannerComponent,
     PassVolumeDisplayPipe,
     OmButtonComponent,
-    DashboardHeaderComponent
+    DashboardHeaderComponent,
+    FormatCalledNumberPipe
   ],
   providers: [Contacts, SocialSharing, PassVolumeDisplayPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

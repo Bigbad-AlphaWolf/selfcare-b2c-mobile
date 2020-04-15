@@ -1,5 +1,4 @@
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
-import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 import { MatDialogModule } from '@angular/material';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -13,6 +12,7 @@ import { AppComponent } from './app.component';
 import { Router } from '@angular/router';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { HttpClient } from '@angular/common/http';
+import { FCM } from '@ionic-native/fcm/ngx';
 
 describe('AppComponent', () => {
   let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
@@ -42,7 +42,7 @@ describe('AppComponent', () => {
           useValue: {}
         },
         {
-          provide: FirebaseX,
+          provide: FCM,
           useValue: {}
         },
         {

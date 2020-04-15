@@ -1,5 +1,3 @@
-import { AuthenticationService } from './services/authentication-service/authentication.service';
-import { MatDialog } from '@angular/material';
 import { BuyCreditPage } from './buy-credit/buy-credit.page';
 import { BuyPassIllimixPage } from './buy-pass-illimix/buy-pass-illimix.page';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -8,27 +6,18 @@ import { Platform } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
-import { LoginPage } from './login/login.page';
 import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
 import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
-import { FirebaseX } from '@ionic-native/firebase-x/ngx';
-import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
-
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { isNewVersion } from 'src/shared';
-import { AppVersion } from '@ionic-native/app-version/ngx';
-const { SERVICES_SERVICE, SERVER_API_URL } = environment;
-const versionEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/v1/app-version`;
 import * as SecureLS from 'secure-ls';
+import { DetailsConsoPage } from './details-conso/details-conso.page';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 declare var FollowAnalytics: any;
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html'
+  templateUrl: 'app.component.html',
 })
 export class AppComponent {
   AppVersionNumber: any;
@@ -40,11 +29,7 @@ export class AppComponent {
     private splash: SplashScreen,
     private appMinimize: AppMinimize,
     private router: Router,
-    private http: HttpClient,
-    private deeplinks: Deeplinks,
-    private appVersion: AppVersion,
-    private dialog: MatDialog,
-    private firebaseX: FirebaseX
+    private deeplinks: Deeplinks
   ) {
     this.initializeApp();
   }
@@ -80,62 +65,38 @@ export class AppComponent {
       }
       this.checkDeeplinks();
 
-      // Get app version
-      this.appVersion
-        .getVersionNumber()
-        .then(value => {
-          this.AppVersionNumber = value;
-        })
-        .catch(error => {
-          console.log(error);
-        });
-      // Call server for app version
-      // this.http.get(`${versionEndpoint}`).subscribe((version: any) => {
-      //   const versionAndroid = version.android;
-      //   const versionIos = version.ios;
-      //   if (version && version.length >= 5) {
-      //     if (
-      //       isNewVersion(
-      //         this.isIOS ? versionIos : versionAndroid,
-      //         this.AppVersionNumber
-      //       )
-      //     ) {
-      //       const dialogRef = this.dialog.open(CancelOperationPopupComponent, {
-      //         data: { updateApp: this.appId }
-      //       });
-      //     }
-      //   }
-      // });
-
       // Get firebase id for notifications
-      this.firebaseX
-        .getToken()
-        .then(token => {
-          ls.set('firebaseId', token);
-          console.log(token);
-        })
-        .catch(err => console.log(err));
+      // this.fcm
+      //   .getToken()
+      //   .then(token => {
+      //     ls.set('firebaseId', token);
+      //     // console.log(token);
+      //   })
+      //   .catch(err => console.log(err));
 
-      if (this.platform.is('ios')) {
-        this.firebaseX
-          .grantPermission()
-          .then(hasPermission =>
-            console.log(hasPermission ? 'granted' : 'denied')
-          );
+      // if (this.platform.is('ios')) {
+      //   this.fcm
+      //     .hasPermission()
+      //     .then(hasPermission =>
+      //       console.log(hasPermission ? 'notification permission granted' : 'notification permission denied')
+      //     );
+      // }
 
-        this.firebaseX
-          .onApnsTokenReceived()
-          .subscribe(token => ls.set('firebaseId', token));
-      }
+      // this.fcm
+      //   .onNotification()
+      //   .subscribe(data => {
+      //     // console.log(data);
+      //     if (data.wasTapped) {
+      //       console.log('Notification received in background');
+      //     } else {
+      //       console.log('Notification received in foreground');
+      //     }
+      //   });
 
-      this.firebaseX
-        .onMessageReceived()
-        .subscribe(message => console.log(message));
-
-      this.firebaseX.onTokenRefresh().subscribe(fcmToken => {
-        console.log(fcmToken);
-        ls.set('firebaseId', fcmToken);
-      });
+      // this.fcm.onTokenRefresh().subscribe(fcmToken => {
+      //   //console.log(fcmToken);
+      //   ls.set('firebaseId', fcmToken);
+      // });
     });
   }
 
@@ -147,13 +108,14 @@ export class AppComponent {
         '/assistance': AssistancePage,
         '/buy-pass-illimix': BuyPassIllimixPage,
         '/buy-pass-illimix/:id': BuyPassIllimixPage,
-        '/buy-credit': BuyCreditPage
+        '/buy-credit': BuyCreditPage,
+        '/details-conso': DetailsConsoPage,
       })
       .subscribe(
-        matched => {
+        (matched) => {
           this.router.navigate([matched.$link.path]);
         },
-        notMatched => {
+        (notMatched) => {
           // console.log(notMatched);
           // console.log('deeplink not matched');
         }

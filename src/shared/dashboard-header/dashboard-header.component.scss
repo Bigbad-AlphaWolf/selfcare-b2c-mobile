@@ -5,19 +5,23 @@
   position: relative;
   height: 50px;
   width: 100%;
-  padding: 17px percentage(40px / $baseWidthMobile2) 15px
+  padding: 15px percentage(40px / $baseWidthMobile2) 15px
     percentage(40px / $baseWidthMobile2);
   text-align: center;
   &-menu {
     position: absolute;
     left: 10px;
-    top: 14px;
+    top: 14.5px;
+    .icon-menu {
+      width: 24px;
+      height: 21px;
+    }
   }
 
   &-user {
     .user-hello {
       font-family: HelveticaNeueLTStd-Roman, sans-serif;
-      font-size: 18px;
+      font-size: 20px;
 
       .user-name {
         font-family: HelveticaNeueLTStd-Bd, sans-serif;
@@ -25,9 +29,9 @@
     }
   }
 
-  &-notifs {
+  .icon-notif {
     position: absolute;
     right: 10px;
-    top: 16px;
+    top: 15px;
   }
 }

@@ -1,7 +1,7 @@
 <div class="sargal-catalogue-container" [ngClass]="{ 'sargal-catalogue-container-white': step === 'SUCCESS' }">
   <div class="sargal-catalogue-container-header" *ngIf="step !== 'SUCCESS'">
     <div class="arrow" (click)="goBack()">
-      <img src="/assets/images/arrow-left.svg" alt="" />
+      <img src="/assets/images/arrow-left.png" alt="" />
     </div>
     <div class="text scb-text-black">
       Catalogue des cadeaux
@@ -34,8 +34,8 @@
                 {{ categoryGiftSargal ? categoryGiftSargal?.nom : 'Choisir une catégorie' }}
               </div>
               <div class="arrows">
-                <mat-icon *ngIf="!matMenuTrig.menuOpen" class="arrow-down">keyboard_arrow_down</mat-icon>
-                <mat-icon *ngIf="matMenuTrig.menuOpen" class="arrow-up">keyboard_arrow_up</mat-icon>
+                  <img *ngIf="!matMenuTrig.menuOpen" src="/content/images/arrow-down.svg" class="arrow-down down" alt="">
+                  <img *ngIf="matMenuTrig.menuOpen" src="/content/images/keyboard-arrow-right-white.svg" class="arrow-up up" alt="">
               </div>
             </button>
 

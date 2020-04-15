@@ -99,8 +99,8 @@
               justify-content: flex-end;
               width: 25px;
               height: 25px;
-              // margin-left: 15%;
               .arrow-up {
+                transform: rotate(-90deg);
                 color: $white;
               }
             }

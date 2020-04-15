@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { PurchaseModel, CATEGORY_PURCHASE_HISTORY } from 'src/shared';
 
 @Component({
@@ -10,16 +10,16 @@ export class HistoriqueAchatComponent implements OnInit {
   @Input() listTransactions: PurchaseModel[] = [];
   listDateFilter = [2, 3, 4, 5, 6, 7];
   listTypePurchaseFilter: {nom: string, value: string}[] = CATEGORY_PURCHASE_HISTORY;
-  dateFilterSelected: number;
+  @Input() dateFilterSelected = 2;
   typePurchaseFilterSelected: {nom: string, value: string} = {nom: "Tous", value: undefined};
   @Input() isLoading: boolean;
   @Input() hasError: boolean;
   @Output() getTransactionsByDay = new EventEmitter();
   @Output() getTransactionsByFilter = new EventEmitter();
+  @Input() userProfil: string;
   constructor() {}
 
   ngOnInit() {
-      this.dateFilterSelected = 2;
   }
 
   getTransactionByDay(day: number) {

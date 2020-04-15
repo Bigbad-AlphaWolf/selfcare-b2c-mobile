@@ -8,13 +8,14 @@
   padding-bottom: 97px;
 
   .dashboard-block-offres {
+    padding: 0 15px;
     &-top3 {
-      min-height: 154px;
+      min-height: 117px;
       margin-top: 11px;
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
       &-item {
-        width: 30%;
+        width: percentage(105/345);
         background-color: $white;
         border-radius: 15px;
         &.disabled-block {
@@ -22,13 +23,14 @@
           opacity: 0.4;
         }
         .item-text {
-          margin-left: (12px / 111px) * 100%;
-          margin-right: (12px / 111px) * 100%;
+          // margin-left: (12px / 111px) * 100%;
+          // margin-right: (12px / 111px) * 100%;
           font-family: HelveticaNeueLTStd-Bd, sans-serif;
-          font-size: 14px;
+          font-size: 16px;
           text-align: center;
 
           .text-style-1 {
+            font-size: 14px;
             font-family: HelveticaNeueLTStd-Roman, sans-serif;
           }
           .badge-promo {
@@ -37,8 +39,8 @@
         }
 
         .item-icon {
-          width: percentage(81px / 111px);
-          margin: 8px auto;
+          width: percentage(47pommes / 105pommes);
+          margin: 15px auto 5px;
           img {
             display: block;
             margin: 0 auto;
@@ -136,7 +138,14 @@
       justify-content: space-between;
       padding: 0 percentage(10px / $baseWidthMobile2);
       .suivi-conso {
-        font-size: 20px;
+        font-size: 24px;
+      }
+      .voir-details-text {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
       }
     }
 

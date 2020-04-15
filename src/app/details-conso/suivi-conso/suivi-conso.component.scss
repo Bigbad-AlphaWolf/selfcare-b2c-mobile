@@ -1,5 +1,13 @@
 @import 'src/app/app';
 
+:host{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: $grayDashboard;
+  width: 100%;
+}
+
 .category-block {
   // margin-top: 98px;
 
@@ -10,12 +18,23 @@
   .category-container {
     background-color: $white;
     margin-bottom: 5px;
-    padding: 20px percentage(10px / $baseWidthMobile2) 20px
+    padding: 30px percentage(10px / $baseWidthMobile2) 20px
       percentage(12px / $baseWidthMobile2);
+      margin-top: 10px;
+      .title-conso{
+        margin-bottom: 30px;
+        text-align: start;
+      }
+      .item-conso-list{
+        &:not(:last-child){
+          border-bottom: 2px solid $grayDashboard;
+        }
+      }
   }
 
   .scb-categorie-txt {
-    font-size: 16px;
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
     color: $fullBlack;
   }
 
@@ -31,8 +50,8 @@
 
       .rechargelabel-container {
         .scb-category-item {
-          font-family: HelveticaNeueLTStd-Roman, sans-serif;
-          font-size: 16px;
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 18px;
           font-weight: normal;
           font-style: normal;
           font-stretch: normal;
@@ -45,7 +64,8 @@
       .rechargevalue-container {
         .scb-category-item-value,
         .scb-category-item-value-global {
-          font-size: 16px;
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 18px;
           font-weight: normal;
           font-style: normal;
           font-stretch: normal;

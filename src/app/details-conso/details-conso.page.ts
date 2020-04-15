@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import {
@@ -8,6 +8,7 @@ import {
 } from 'src/shared';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { PurchaseService } from '../services/purchase-service/purchase.service';
+import { IonSlides } from '@ionic/angular';
 
 @Component({
   selector: 'app-details-conso',
@@ -17,8 +18,6 @@ import { PurchaseService } from '../services/purchase-service/purchase.service';
 export class DetailsConsoPage implements OnInit {
   detailsLoading;
   histLoading;
-  details = true;
-  historique = false;
   consommations = [];
   error;
   notdata = false;
@@ -46,6 +45,13 @@ export class DetailsConsoPage implements OnInit {
     value: undefined
   };
   userPhoneNumber: string;
+  @ViewChild('consoTab') slideGroup: IonSlides;
+  slideSelected = 0;
+  slideOpts = {
+    speed: 400,
+    slidesPerView: 1,
+    slideShadows: true
+  };
   constructor(
     private dashboardservice: DashboardService,
     private authService: AuthenticationService,
@@ -67,17 +73,25 @@ export class DetailsConsoPage implements OnInit {
         );
         this.currentProfil = res.profil;
         if (this.currentProfil === 'POSTPAID') {
-          this.historique = true;
-          this.details = false;
           this.getPostpaidUserHistory(2);
         } else {
           this.getPrepaidUserHistory(2);
           this.getUserConsoInfos();
-          if (this.currentProfil === 'PREPAID') {
-            this.getTransactionsByDay(this.purchaseDateFilterSelected);
-          }
+          this.getTransactionsByDay(this.purchaseDateFilterSelected);
+          
         }
       });
+  }
+
+  goNext(tabIndex?:number){    
+    this.slideGroup.getActiveIndex().then(index => {
+      this.seeSlide(index);
+    });
+  }
+
+  seeSlide(tabIndex: number){
+    this.slideGroup.slideTo(tabIndex);
+    this.slideSelected = tabIndex;
   }
 
   getTransactionsByDay(
@@ -121,7 +135,7 @@ export class DetailsConsoPage implements OnInit {
     this.detailsLoading = true;
     this.dashboardservice.getUserConsoInfosByCode().subscribe(
       (res: any) => {
-        if (res.length) {
+        if (res && res.length) {
           res = arrangeCompteurByOrdre(res);
         }
         this.consoDetails = res;
@@ -221,15 +235,4 @@ export class DetailsConsoPage implements OnInit {
     return this.consoshistorique;
   }
 
-  historiqueSelected() {
-    window.scroll(0, 0);
-    this.historique = true;
-    this.details = false;
-  }
-
-  detailsSelected() {
-    window.scroll(0, 0);
-    this.details = true;
-    this.historique = false;
-  }
 }

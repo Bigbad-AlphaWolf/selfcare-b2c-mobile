@@ -1,43 +1,53 @@
 @import 'src/app/app';
 
+ion-header{
+    &::after{
+        display: none;
+    }
+}
+.suivi_conso_label-and-arrow-block {
+    width: 100%;
+    height: 50px;
+    background-color: $white;
+    padding: 15px 0px;
+    top: 0px;
+
+    .arrow-left-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
+    }
+
+    .suivi_conso_label-container {
+        width: 100%;
+        text-align: center;
+        top: 17px;
+        right: percentage(88px / $baseWidthMobile2);
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 20px;
+        font-weight: bold;
+        color: $black;
+    }
+}
+
 .suivi_conso-page {
     width: 100%;
     height: 100%;
     // background-color: $grayDashboard;
     overflow-y: auto;
 
-    .suivi_conso_label-and-arrow-block {
-        width: 100%;
-        height: 50px;
-        background-color: $white;
-        // position: fixed;
-        top: 0px;
-
-        .arrow-left-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 50px;
-            height: 50px;
-    display: flex;
-    align-items: center;
-    padding-left: 10px;
-        }
-
-        .suivi_conso_label-container {
-            position: absolute;
-            top: 17px;
-            right: percentage(88px / $baseWidthMobile2);
-            font-family: HelveticaNeueLTStd-Bd, sans-serif;
-            font-size: 18px;
-            color: $black;
-        }
-    }
+    
 
     .suivi-conso-page-body {
         // margin-top: 70px;
         width: 100%;
-        height: calc(100% - 70px);
+        height: calc(100% - 50px);
+        margin-top: 20px;
         .conso-tab-category {
             display: flex;
             span {
@@ -53,6 +63,51 @@
                 span {
                     font-family: HelveticaNeueLTStd-Bd;
                     color: $orange;
+                }
+            }
+        }
+        mat-tab-group{
+            height: 100%;
+        }
+        .tab-header{
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            height: 35px;
+            overflow-x: auto;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+            &-item{
+                padding: 5px 5px;
+                white-space: nowrap;
+                &.selected {
+                    color: $orange;
+                    border-bottom: 3px solid $orange;
+                }
+                &:only-child{
+                    padding: 0;
+                    margin-left: 0px;
+                    width: 100%;
+                    text-align: center;
+                }
+                &:first-child:not(:only-child){
+                    margin-left: 10px;
+                }
+                &:last-child:not(:only-child){
+                    margin-right: 10px;
+                }
+                span{
+                    width: 100%;
+                }
+            }
+        }
+        .main-content{
+            height: 100%;
+            ion-slides{
+                height: 100%;
+                ion-slide{
+                    overflow-y: auto;
                 }
             }
         }

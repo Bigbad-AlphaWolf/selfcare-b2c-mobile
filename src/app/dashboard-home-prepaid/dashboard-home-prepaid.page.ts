@@ -16,7 +16,9 @@ import {
   USER_CONS_CATEGORY_CALL,
   USER_CONS_CATEGORY_INTERNET,
   SubscriptionModel,
-  WelcomeStatusModel
+  WelcomeStatusModel,
+  getBanniereTitle,
+  getBanniereDescription
 } from 'src/shared';
 import {
   getConsoByCategory,
@@ -28,6 +30,7 @@ import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/sha
 import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
+import { BanniereService } from '../services/banniere-service/banniere.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-home-prepaid',
@@ -64,6 +67,7 @@ export class DashboardHomePrepaidPage implements OnInit {
   firstName: string;
   lastName: string;
   fabOpened = false;
+  isBanniereLoaded: boolean;
   constructor(
     private passIntService: PassInternetService,
     private dashbdSrv: DashboardService,
@@ -71,7 +75,8 @@ export class DashboardHomePrepaidPage implements OnInit {
     private followsAnalytics: FollowAnalyticsService,
     private authServ: AuthenticationService,
     private shareDialog: MatDialog,
-    private assistanceService: AssistanceService
+    private assistanceService: AssistanceService,
+    private banniereServ: BanniereService
   ) {}
 
   ngOnInit() {
@@ -80,6 +85,15 @@ export class DashboardHomePrepaidPage implements OnInit {
     this.getPassInternetFixe();
     this.getUserInfos();
     this.getWelcomeStatus();
+    this.banniereServ.setListBanniereByFormule();
+    this.banniereServ
+      .getStatusLoadingBanniere()
+      .subscribe((status: boolean) => {
+        this.isBanniereLoaded = status;
+        if (this.isBanniereLoaded) {
+          this.listBanniere = this.banniereServ.getListBanniereByFormule();
+        }
+      });
   }
 
   getUserInfos() {
@@ -95,34 +109,39 @@ export class DashboardHomePrepaidPage implements OnInit {
     this.userConsommationsCategories = [];
     this.dashbdSrv.getUserConsoInfosByCode().subscribe(
       (res: any) => {
-        // res = arrangeCompteurByOrdre(res);
-        this.followsAnalytics.registerEventFollow(
-          'dashboard_conso_fixe_prepaid',
-          'event'
-        );
-        const orderedConso = arrangeCompteurByOrdre(res);
-        const appelConso = orderedConso.length
-          ? orderedConso.find(x => x.categorie === USER_CONS_CATEGORY_CALL)
-              .consommations
-          : null;
-        const internetConso = orderedConso.length
-          ? orderedConso.find(x => x.categorie === USER_CONS_CATEGORY_INTERNET)
+        if (res.length) {
+          this.followsAnalytics.registerEventFollow(
+            'dashboard_conso_fixe_prepaid',
+            'event'
+          );
+          const orderedConso = arrangeCompteurByOrdre(res);
+          const appelConso = orderedConso.length
+            ? orderedConso.find(x => x.categorie === USER_CONS_CATEGORY_CALL)
+                .consommations
+            : null;
+          const internetConso = orderedConso.length
             ? orderedConso.find(
                 x => x.categorie === USER_CONS_CATEGORY_INTERNET
-              ).consommations
-            : null
-          : null;
-        if (appelConso) {
-          this.creditValidity = this.getValidityDates(appelConso);
+              )
+              ? orderedConso.find(
+                  x => x.categorie === USER_CONS_CATEGORY_INTERNET
+                ).consommations
+              : null
+            : null;
+          if (appelConso) {
+            this.creditValidity = this.getValidityDates(appelConso);
+          }
+          if (internetConso) {
+            this.internetValidity = this.getValidityDates(internetConso);
+          }
+          this.userConsoSummary = getConsoByCategory(orderedConso);
+          this.userConsommationsCategories = getTrioConsoUser(orderedConso);
+          this.userCallConsoSummary = this.computeUserConsoSummary(
+            this.userConsoSummary
+          );
+        } else {
+          this.errorOnLoadingConso = true;
         }
-        if (internetConso) {
-          this.internetValidity = this.getValidityDates(internetConso);
-        }
-        this.userConsoSummary = getConsoByCategory(orderedConso);
-        this.userConsommationsCategories = getTrioConsoUser(orderedConso);
-        this.userCallConsoSummary = this.computeUserConsoSummary(
-          this.userConsoSummary
-        );
         this.loadingConso = false;
       },
       err => {
@@ -290,5 +309,13 @@ export class DashboardHomePrepaidPage implements OnInit {
       },
       () => {}
     );
+  }
+
+  getBanniereTitle(description: string) {
+    return getBanniereTitle(description);
+  }
+
+  getBanniereDescription(description: string) {
+    return getBanniereDescription(description);
   }
 }

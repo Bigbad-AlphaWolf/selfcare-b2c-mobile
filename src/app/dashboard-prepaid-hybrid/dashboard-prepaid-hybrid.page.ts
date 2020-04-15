@@ -15,7 +15,9 @@ import {
   formatCurrency,
   USER_CONS_CATEGORY_CALL,
   WelcomeStatusModel,
-  SargalStatusModel
+  SargalStatusModel,
+  getBanniereTitle,
+  getBanniereDescription
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -82,7 +84,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   hasPromoBooster: PromoBoosterActive = null;
   slideOpts = {
     speed: 400,
-    slidesPerView: 1.5,
+    slidesPerView: 1.7,
     slideShadows: true
   };
   CODE_COMPTEUR_VOLUME_NUIT_1 = CODE_COMPTEUR_VOLUME_NUIT_1;
@@ -149,9 +151,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       },
       (err: any) => {
         this.isLoading = false;
-        if(err.status === 400){
+        if (err.status === 400) {
           this.noSargalProfil = true;
-        }else{
+        } else {
           this.sargalStatusUnavailable = true;
         }
       }
@@ -168,9 +170,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
           this.currentProfil === PROFILE_TYPE_HYBRID ||
           this.currentProfil === PROFILE_TYPE_HYBRID_1 ||
           this.currentProfil === PROFILE_TYPE_HYBRID_2;
-          if(this.isHyBride){
-            this.getCustomerSargalStatus();
-          }
+        if (this.isHyBride) {
+          this.getCustomerSargalStatus();
+        }
       },
       (err: any) => {}
     );
@@ -266,7 +268,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     }
   }
 
-  seeSargalCard(){
+  seeSargalCard() {
     this.router.navigate(['/sargal-status-card']);
   }
 
@@ -483,5 +485,13 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       },
       () => {}
     );
+  }
+
+  getBanniereTitle(description: string) {
+    return getBanniereTitle(description);
+  }
+
+  getBanniereDescription(description: string) {
+    return getBanniereDescription(description);
   }
 }

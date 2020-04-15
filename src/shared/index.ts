@@ -41,6 +41,8 @@ export const PAYMENT_MOD_BONUS = 'BONUS';
 export const PAYMENT_MOD_NEXT_RECHARGE = 'NEXT_RECHARGE';
 export const PAYMENT_MOD_SARGAL = 'SARGAL';
 export const CREDIT_APPEL_CATEGORY = 'Crédit Appel';
+export const INTERNET_LABEL_CATEGORY = 'Internet';
+export const SMS_LABEL_CATEGORY = 'Sms';
 export const PAY_WITH_CREDIT = 'Crédit Recharge';
 export const PAY_WITH_OM = 'Orange Money';
 export const PAY_WITH_BONUS = 'Bonus vers Orange';
@@ -71,7 +73,17 @@ export const MAX_USER_AVATAR_UPLOAD_SIZE = 3072;
 // Maximum size of avatar image allowed in bytes : 5 Mo ou 5 * 1024Ko
 export const MAX_USER_FILE_UPLOAD_SIZE = 5120;
 
-export const CATEGORY_PURCHASE_HISTORY = [{nom:"Tous", value:undefined},{nom:"Rechargement",value:"RECHARGEMENT"}, {nom: "Transfert Bonus", value: "TRANSFERT_BONUS"},{nom:"Pass Illimix",value:"ILLIMIX"},{nom:"Pass Internet", value:"INTERNET"},{nom:"Dalal Tones",value:"DALALTONE"},{nom:"Achat pour tiers",value:"PASSFOROTHER"},{nom:"Transfert Credit", value:"SEDDO"}, {nom:"SOS", value:"SOS"}];
+export const CATEGORY_PURCHASE_HISTORY = [
+  { nom: 'Tous', value: undefined },
+  { nom: 'Rechargement', value: 'RECHARGEMENT' },
+  { nom: 'Transfert Bonus', value: 'TRANSFERT_BONUS' },
+  { nom: 'Pass Illimix', value: 'ILLIMIX' },
+  { nom: 'Pass Internet', value: 'INTERNET' },
+  { nom: 'Dalal Tones', value: 'DALALTONE' },
+  { nom: 'Achat pour tiers', value: 'PASSFOROTHER' },
+  { nom: 'Transfert Credit', value: 'SEDDO' },
+  { nom: 'SOS', value: 'SOS' }
+];
 
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
@@ -642,18 +654,19 @@ export function isNewVersion(versionA, versionB) {
   const versionsA = versionA.split(/\./g),
     versionsB = versionB.split(/\./g);
   while (versionsA.length || versionsB.length) {
-    const a = Number(versionsA.shift()), b = Number(versionsB.shift());
+    const a = Number(versionsA.shift()),
+      b = Number(versionsB.shift());
     if (a === b) {
       continue;
     }
-    return (a > b || isNaN(b));
+    return a > b || isNaN(b);
   }
   return false;
 }
 export interface TarifZoningByCountryModel {
   name?: string;
   indicatif?: string;
-  zone?: { name: string, tarifFormule: { tarifAppel: any, tarifSms: any}};
+  zone?: { name: string; tarifFormule: { tarifAppel: any; tarifSms: any } };
 }
 
 export interface NotificationInfoModel {
@@ -741,4 +754,12 @@ export class SplashScreenMock extends SplashScreen {
   hide() {
     return;
   }
+}
+
+export function getBanniereTitle(banniereDescription: string) {
+  return banniereDescription.substring(0, banniereDescription.indexOf(';'));
+}
+
+export function getBanniereDescription(banniereDescription: string) {
+  return banniereDescription.substring(banniereDescription.indexOf(';') + 1);
 }

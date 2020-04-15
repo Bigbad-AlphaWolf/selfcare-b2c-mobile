@@ -1,43 +1,14 @@
 <app-dashboard-header [firstName]="firstName"></app-dashboard-header>
 <ion-content>
   <div class="dashboard-container-mobile">
-    <div
-      *ngIf="showPromoBarner || (listBanniere.length && showPromoBarner)"
-      class="dashboard-img-promo slide-container"
-    >
-      <ion-slides>
-        <ng-container *ngFor="let banniere of listBanniere">
-          <ion-slide>
-            <span #error class="error-slide scb-text-full-black">
-              Erreur lors du chargement de l'image</span
-            >
-            <img
-              #img
-              (error)="
-              onError([
-                { el: error, display: true },
-                { el: img, display: false }
-              ])
-            "
-              [src]="banniere.image"
-              alt="ban"
-            />
-          </ion-slide>
-        </ng-container>
-      </ion-slides>
-      <div class="close-icon" (click)="hidePromoBarner()">
-        <img src="/assets/images/group-14.svg" alt="hide-banniere-promo" />
-      </div>
-    </div>
     <div class="dashboard-block-conso">
       <div class="dashboard-block-conso-top-texts">
         <div><span class="suivi-conso">Suivi conso</span></div>
-        <div (click)="goDetailsCom(1)">
-          <span class="voir-details scb-text-orange">Voir details </span>
-          <img
-            src="/assets/images/arrow-right.svg"
-            alt="keyboard-arrow-right-orange-mob"
-          />
+        <div
+          (click)="goDetailsCom(0)"
+          class="voir-details-text scb-text-orange"
+        >
+          Voir details
         </div>
       </div>
       <div class="dashboard-block-conso-btns">
@@ -161,57 +132,6 @@
               </div>
             </div>
           </ion-slide>
-          <ion-slide *ngIf=" currentProfil && isHyBride && !noSargalProfil">
-            <div
-              class="scb-btn-black scb-btn-sargal"
-              [ngClass]="{
-              'btn-disabled': sargalStatusUnavailable }"
-            >
-              <div
-                (click)="seeSargalCard()"
-                [ngClass]="{
-                'btn-no-action': sargalStatusUnavailable
-              }"
-                class="btn-container"
-              >
-                <div class="scb-btn-top-block">
-                  <img
-                    class="scb-btn-top-block-icon"
-                    src="/assets/images/points-sargal.svg"
-                    alt="sargal-cfa-3-mob"
-                  />
-                  <div class="scb-btn-top-block-text">
-                    <span class="text">Sargal</span>
-                  </div>
-                </div>
-                <div *ngIf="isLoading" class="scb-block-spinner">
-                  <mat-spinner
-                    mode="indeterminate"
-                    [diameter]="30"
-                  ></mat-spinner>
-                </div>
-                <ng-container *ngIf="!isLoading && !sargalStatusUnavailable">
-                  <div class="bottom-block">
-                    <span class="show-solde-info-text">Voir ma carte</span
-                    >
-                  </div>
-                </ng-container>
-                <ng-container *ngIf="!isLoading && sargalStatusUnavailable">
-                  <div class="bottom-block">
-                    <span class="show-solde-info-text">Service Indisponible</span
-                    >
-                  </div>
-                </ng-container>
-              </div>
-
-              <div
-                (click)="getCustomerSargalStatus()"
-                class="scb-data-reload"
-              >
-                <img src="/assets/images/reload.png" alt="reload-icon" />
-              </div>
-            </div>
-          </ion-slide>
         </ion-slides>
       </div>
       <div class="dashboard-block-conso-details">
@@ -277,16 +197,19 @@
         >
           <div class="item-icon">
             <img
-              src="/assets/images/recharge-credit-om-unique.svg"
+              src="/assets/images/ic-top-up-mobile@2x.png"
               alt="credit-mob"
             />
           </div>
           <div
             *ngIf="!hasPromoBooster?.promoRecharge"
-            class="item-text scb-text-item-offre-black"
+            class="item-text scb-text-black"
           >
             <span class="recharger"
-              >Recharger <span class="text-style-1">du crédit</span>
+              >Recharger <br />
+              <span class="text-style-1 scb-text-item-offre-black"
+                >du crédit</span
+              >
             </span>
           </div>
           <div
@@ -308,16 +231,19 @@
         >
           <div class="item-icon">
             <img
-              src="/assets/images/new_achat-pass-internet_mob.svg"
+              src="/assets/images/ic-internet-usage@2x.png"
               alt="pass-internet-mob"
             />
           </div>
           <div
             *ngIf="!hasPromoBooster?.promoPass"
-            class="item-text scb-text-item-offre-black"
+            class="item-text scb-text-black"
           >
             <span
-              >Acheter <span class="text-style-1">pass internet</span>
+              >Acheter <br />
+              <span class="text-style-1 scb-text-item-offre-black"
+                >pass internet</span
+              >
             </span>
           </div>
           <div
@@ -339,12 +265,17 @@
         >
           <div class="item-icon">
             <img
-              src="/assets/images/new_achat-pass-illimix_mob.svg"
+              src="/assets/images/ic-package-services@2x.png"
               alt="credit-mob.svg"
             />
           </div>
-          <div class="item-text scb-text-item-offre-black">
-            <span>Acheter <span class="text-style-1">pass illimix</span> </span>
+          <div class="item-text scb-text-black">
+            <span
+              >Acheter <br />
+              <span class="text-style-1 scb-text-item-offre-black"
+                >pass illimix</span
+              >
+            </span>
           </div>
         </div>
       </div>
@@ -359,14 +290,14 @@
           class="dashboard-block-offres-top3-item"
         >
           <div class="item-icon">
-            <img
-              src="/assets/images/new_achat-de-credit_mob.svg"
-              alt="group-56"
-            />
+            <img src="/assets/images/ic-transfer-data@2x.png" alt="group-56" />
           </div>
-          <div class="item-text scb-text-item-offre-black">
+          <div class="item-text scb-text-black">
             <span class="transfert text"
-              >Transfert <span class="text-style-1">crédit et bonus</span>
+              >Transfert <br />
+              <span class="text-style-1 scb-text-item-offre-black"
+                >(crédit, bonus)</span
+              >
             </span>
           </div>
         </div>
@@ -378,15 +309,14 @@
           class="dashboard-block-offres-top3-item"
         >
           <div class="item-icon">
-            <img
-              src="/assets/images/new_sos-credit-et-pass_mob.svg"
-              alt="group-55"
-            />
+            <img src="/assets/images/ic-emergency-sos@2x.png" alt="group-55" />
           </div>
-          <div class="item-text scb-text-item-offre-black">
+          <div class="item-text scb-text-black">
             <span class="sos text"
               >SOS <br />
-              <span class="text-style-1">crédit et pass</span>
+              <span class="text-style-1 scb-text-item-offre-black"
+                >(crédit, pass)</span
+              >
             </span>
           </div>
         </div>
@@ -396,11 +326,17 @@
           class="dashboard-block-offres-top3-item"
         >
           <div class="item-icon">
-            <img src="/assets/images/new_orange-money.svg" alt="group-6" />
+            <img
+              src="/assets/images/ic-orange-money-nfc@2x.png"
+              alt="group-6"
+            />
           </div>
-          <div class="item-text scb-text-item-offre-black">
-            <span class="text-style-1"
-              >Transfert <span> d’argent OM</span></span
+          <div class="item-text scb-text-black">
+            <span
+              >Transfert <br />
+              <span class="text-style-1 scb-text-item-offre-black">
+                d’argent OM</span
+              ></span
             >
           </div>
         </div>
@@ -414,6 +350,52 @@
             >Faire une transaction avec <span> Orange Money </span></span
           >
         </div>
+      </div>
+    </div>
+    <div
+      *ngIf="showPromoBarner || (listBanniere.length && showPromoBarner)"
+      class="dashboard-img-promo slide-container"
+    >
+      <ion-slides pager [options]="{loop: true}">
+        <ng-container *ngFor="let banniere of listBanniere">
+          <ion-slide>
+            <span #error class="error-slide scb-text-full-black">
+              Erreur lors du chargement de l'image</span
+            >
+            <div class="description" #description>
+              <div class="title">
+                {{getBanniereTitle(banniere.description)}}
+              </div>
+              <div class="text">
+                {{getBanniereDescription(banniere.description)}}
+              </div>
+            </div>
+            <div class="img-container" #imageContainer>
+              <img
+                #img
+                (load)="onError([
+                { el: error, display: false },
+                { el: img, display: true },
+                { el: description, display: true },
+                { el: imageContainer, display: true }
+              ])"
+                (error)="
+              onError([
+                { el: error, display: true },
+                { el: img, display: false },
+                { el: description, display: false },
+                { el: imageContainer, display: false }
+              ])
+            "
+                [src]="banniere.image"
+                alt="ban"
+              />
+            </div>
+          </ion-slide>
+        </ng-container>
+      </ion-slides>
+      <div class="close-icon" (click)="hidePromoBarner()" *ngIf="0">
+        <img src="/assets/images/group-14.svg" alt="hide-banniere-promo" />
       </div>
     </div>
   </div>

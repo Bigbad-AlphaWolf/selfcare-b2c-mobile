@@ -9,6 +9,7 @@ import { ItemBesoinAide, SubscriptionModel } from 'src/shared';
 const { SERVICES_SERVICE, SERVER_API_URL, ACCOUNT_MNGT_SERVICE } = environment;
 const questionsAnswersEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/besoin-aides/by-profil-formule`;
 const tutoViewedEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/view-tutorial`;
+const versionEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/v1/app-version`;
 
 @Injectable({
   providedIn: 'root'
@@ -72,5 +73,9 @@ export class AssistanceService {
 
   getStatusLoadingBesoinAideItems() {
     return this.isLoadedSubject.asObservable();
+  }
+
+  getAppVersionPublished(){
+    return this.http.get(`${versionEndpoint}`);
   }
 }

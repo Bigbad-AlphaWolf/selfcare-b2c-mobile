@@ -24,7 +24,7 @@ $lGray: #d8d8d8;
 $lightBlue: #4bb4e6;
 $pink: #ff8ad4;
 
-$prefix: "scb";
+$prefix: 'scb';
 
 $purple: #a885d8;
 $white: #ffffff;
@@ -341,11 +341,12 @@ $bluePopUp: #085ebd;
 .dashboard-img-promo {
   width: (355px / $baseWidthMobile2) * 100%;
   //fixe the height this class
-  max-height: 67px;
-  margin: 10px auto;
+  height: 100px;
+  margin: 10px;
   overflow: hidden;
-  margin-top: 5px;
   position: relative;
+  border-radius: 10px;
+  display: flex;
   .close-icon {
     position: absolute;
     top: 10px;
@@ -361,8 +362,35 @@ $bluePopUp: #085ebd;
       height: 20px;
     }
   }
-  img {
-    width: 100%;
+  .description {
+    width: percentage(163/355);
+    background-color: $fullBlack;
+    padding: 20px 15px;
+    height: 100%;
+    border-right: 1px solid $fullBlack;
+    color: $white;
+    border-radius: 10px 0 0 10px;
+    .title {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 20px;
+      text-align: left;
+      margin-bottom: 4px;
+    }
+    .text {
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 12px;
+      text-align: left;
+    }
+  }
+  .img-container {
+    border-radius: 0 10px 10px 0;
+    width: percentage(192/355);
+    height: 100%;
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 0 10px 10px 0;
+    }
   }
   .error-slide {
     display: none;
