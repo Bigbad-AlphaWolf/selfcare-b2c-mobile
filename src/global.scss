@@ -418,7 +418,7 @@ body {
 .pin-pad-modal {
   align-items: flex-end !important;
   .modal-wrapper {
-    height: 672px !important;
+    height: percentage(672/812) !important;
     width: 100% !important;
     border-radius: 10px 10px 0 0 !important;
   }
@@ -429,7 +429,7 @@ body {
     width: percentage(345/375) !important;
     max-width: 400px;
     border-radius: 10px !important;
-    height: 80%;
+    height: 90%;
   }
 }
 

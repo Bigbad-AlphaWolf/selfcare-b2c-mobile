@@ -67,7 +67,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
     width: 335px;
-    height: 260px;
+    height: percentage(260/612);
     margin: 0 auto;
     .number {
       width: percentage(105/335);
