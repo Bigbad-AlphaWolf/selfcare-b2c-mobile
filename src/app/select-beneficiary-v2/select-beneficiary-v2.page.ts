@@ -50,9 +50,12 @@ export class SelectBeneficiaryV2Page implements OnInit {
 
   selectUserAsBeneficiary(){
     this.isUserRecipient = true;
-    this.recipientNumber = this.ionicSelect.value;
+    this.recipientNumber = this.currentUserNumber;
     this.recipientContactInfos = null;
     this.otherBeneficiaryNumber = null;
+    if(this.listUserNumber.length === 0){
+      this.validatePhoneNumberProfil();
+    }
   }
 
   selectOtherAsBeneficiary(){
@@ -85,7 +88,6 @@ export class SelectBeneficiaryV2Page implements OnInit {
       this.contacts
         .pickContact()
         .then((contact: Contact) => {
-          this.recipientContactInfos = contact;
           if (contact.phoneNumbers.length > 1) {
             this.openPickRecipientModal(contact);
           } else {
@@ -187,7 +189,6 @@ export class SelectBeneficiaryV2Page implements OnInit {
   }
 
   goToListPassInternet(data: any){
-    console.log(data);
     this.appRouting.goToListPassInternet(data)
   }
 
