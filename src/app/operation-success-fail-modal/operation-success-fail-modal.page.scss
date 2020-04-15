@@ -1,0 +1,57 @@
+@import 'src/app/app';
+
+.success-page {
+  overflow-y: auto;
+  .top-block {
+    padding: 30px 10px 20px;
+    text-align: center;
+    .title {
+      display: block;
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 20px;
+      line-height: 1.5;
+      margin: 20px 0 10px;
+    }
+    .subtitle {
+      display: block;
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 14px;
+    }
+  }
+  .pass-block {
+    background-color: $grayDashboard;
+    padding: 10px 15px;
+    app-pass-internet-card {
+      margin: 0 !important;
+    }
+  }
+  .bottom-block {
+    padding: 25px 30px 0px;
+    .details {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0 10px;
+      border-bottom: 2px solid $silver;
+      &-date {
+        border-bottom: none;
+      }
+      .left-block {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+      }
+      .right-block {
+        text-align: right;
+        span {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 14px;
+          margin-bottom: 3px;
+          display: block;
+        }
+      }
+    }
+  }
+  .terminer {
+    text-align: center;
+    padding: 20px 0;
+  }
+}

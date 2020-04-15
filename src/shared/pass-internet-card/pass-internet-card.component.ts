@@ -10,7 +10,5 @@ export class PassInternetCardComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {
-    console.log(this.passInternet);
-  }
+  ngOnInit() {}
 }

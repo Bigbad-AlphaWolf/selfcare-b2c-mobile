@@ -23,6 +23,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { NoOMAccountPopupComponent } from 'src/shared/no-omaccount-popup/no-omaccount-popup.component';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -63,12 +64,14 @@ export class NewPinpadModalPage implements OnInit {
   mainPhoneNumber: string = this.dashboardService.getMainPhoneNumber();
   userNotRegisteredInOm: boolean;
   errorBulletActive: boolean;
+  gettingPinpad: boolean;
 
   constructor(
     private orangeMoneyService: OrangeMoneyService,
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    public modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -88,6 +91,7 @@ export class NewPinpadModalPage implements OnInit {
         this.randomDigits = this.orderPinpadArray(value);
         this.orangeMoneyService.randomPinPadDigits = value;
         this.reintializePinpad();
+        this.gettingPinpad = false;
       }
     });
   }
@@ -155,6 +159,7 @@ export class NewPinpadModalPage implements OnInit {
         if (omUser['hasApiKey']) {
           this.userHasOmToken = true;
           this.checkingToken = false;
+          this.gettingPinpad = true;
           this.orangeMoneyService
             .GetPinPad(this.pinpadData)
             .subscribe((res: any) => {
@@ -248,6 +253,7 @@ export class NewPinpadModalPage implements OnInit {
             showSolde: true,
           };
           this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
+          this.gettingPinpad = true;
           this.orangeMoneyService
             .GetPinPad(this.pinpadData)
             .subscribe((response: any) => {
@@ -361,6 +367,7 @@ export class NewPinpadModalPage implements OnInit {
                   break;
               }
             } else {
+              this.gettingPinpad = true;
               this.orangeMoneyService
                 .GetPinPad(this.pinpadData)
                 .subscribe((res: any) => {
@@ -641,7 +648,9 @@ export class NewPinpadModalPage implements OnInit {
         'event',
         this.dataToLog
       );
-      // this.resultEmit.emit(db.solde);
+      this.modalController.dismiss({
+        success: true
+      })
     } else {
       this.pinHasError = true;
       this.orangeMoneyService.logWithFollowAnalytics(
@@ -676,6 +685,7 @@ export class NewPinpadModalPage implements OnInit {
   }
 
   saveEm() {
+    this.gettingPinpad = true;
     this.orangeMoneyService.GetPinPad(this.pinpadData).subscribe((res: any) => {
       const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
         this.omPhoneNumber
@@ -697,18 +707,11 @@ export class NewPinpadModalPage implements OnInit {
 
   type(digit: string) {
     if (this.digitPadIsActive) {
-      console.log(this.codePin);
       this.errorBulletActive = false;
       if (this.codePin.length < 4 && digit !== ' ') {
         this.codePin.push(digit);
         if (this.codePin.length === 4) {
           const pin = this.codePin.join('');
-          // this.pin.emit(pin);
-          // if (!this.notOrangeMoney) {
-          //   this.disableDigitPad();
-          // } else {
-          //   this.resetPad();
-          // }
           this.processPin(pin);
         }
       }

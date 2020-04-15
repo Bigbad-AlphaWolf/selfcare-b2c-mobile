@@ -8,6 +8,8 @@ import { FollowAnalyticsService } from '../services/follow-analytics/follow-anal
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OPERATION_TYPE_PASS_INTERNET } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 
 @Component({
   selector: 'app-operation-recap',
@@ -15,24 +17,8 @@ import { ApplicationRoutingService } from '../services/application-routing/appli
   styleUrls: ['./operation-recap.page.scss'],
 })
 export class OperationRecapPage implements OnInit {
-  passChoosen: any = {
-    type: 'pass_internet',
-    id: 29,
-    nom: '7 Go',
-    volumeInternet: '7 Go',
-    tarif: '5000',
-    bonus: null,
-    description: null,
-    actif: true,
-    validitePass: 'MOIS',
-    promos: null,
-    duree: null,
-    bonusNuit: '1 Go offert et utilisable entre 00h et 08h',
-    compteurCredite: null,
-    price_plan_index: 8488,
-    price_plan_index_om: 55009,
-  };
-  recipientMsisdn: string = '775896287';
+  passChoosen: any;
+  recipientMsisdn: string;
   recipientName: string;
   recipientCodeFormule;
   buyingPass: boolean;
@@ -40,6 +26,7 @@ export class OperationRecapPage implements OnInit {
   buyPassFailed: boolean;
   buyPassErrorMsg: string;
   buyPassPayload: any;
+  paymentMod: string;
 
   constructor(
     public modalController: ModalController,
@@ -47,7 +34,8 @@ export class OperationRecapPage implements OnInit {
     private router: Router,
     private dashboardService: DashboardService,
     private followAnalyticsService: FollowAnalyticsService,
-    private appRouting: ApplicationRoutingService
+    private appRouting: ApplicationRoutingService,
+    private orangeMoneyService: OrangeMoneyService
   ) {}
 
   ngOnInit() {
@@ -76,13 +64,18 @@ export class OperationRecapPage implements OnInit {
     const modal = await this.modalController.create({
       component: SetPaymentChannelModalPage,
       cssClass: 'set-channel-payment-modal',
+      componentProps: {
+        pass: this.passChoosen,
+      },
     });
     modal.onDidDismiss().then((response) => {
-      if (response.data.paymentMod === 'CREDIT') {
+      if (response.data && response.data.paymentMod === 'CREDIT') {
+        this.paymentMod = 'CREDIT';
         this.payWithCredit();
       }
-      if (response.data.paymentMod === 'ORANGE_MONEY') {
-        this.payWithOm();
+      if (response.data && response.data.paymentMod === 'ORANGE_MONEY') {
+        this.paymentMod = 'ORANGE_MONEY';
+        this.openPinpad();
       }
     });
     return await modal.present();
@@ -96,6 +89,31 @@ export class OperationRecapPage implements OnInit {
         operationType: OPERATION_TYPE_PASS_INTERNET,
         buyPassPayload: this.buyPassPayload,
       },
+    });
+    modal.onDidDismiss().then((response) => {
+      if (response.data && response.data.success) {
+        this.openSuccessFailModal({
+          success: true,
+          msisdnBuyer: this.orangeMoneyService.getOrangeMoneyNumber(),
+          buyForMe:
+            this.recipientMsisdn ===
+            this.orangeMoneyService.getOrangeMoneyNumber(),
+        });
+      }
+    });
+    return await modal.present();
+  }
+
+  async openSuccessFailModal(params: ModalSuccessModel) {
+    params.passBought = this.passChoosen;
+    params.paymentMod = this.paymentMod;
+    params.recipientMsisdn = this.recipientMsisdn;
+    params.recipientName = this.recipientName;
+    const modal = await this.modalController.create({
+      component: OperationSuccessFailModalPage,
+      cssClass: params.success ? 'success-modal' : 'failed-modal',
+      componentProps: params,
+      backdropDismiss: false,
     });
     modal.onDidDismiss().then((response) => {});
     return await modal.present();
@@ -164,13 +182,19 @@ export class OperationRecapPage implements OnInit {
         followDetails
       );
     }
-    this.openSuccessModal();
+    this.openSuccessFailModal({
+      success: !this.buyPassFailed,
+      msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
+      buyForMe:
+        this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
+      errorMsg: this.buyPassErrorMsg,
+    });
   }
 
   transactionFailure() {
     this.buyingPass = false;
     this.buyPassFailed = true;
-    this.openSuccessModal();
+    this.openSuccessFailModal({ success: false });
     this.buyPassErrorMsg =
       'Service indisponible. Veuillez réessayer ultérieurement';
     this.followAnalyticsService.registerEventFollow(
@@ -182,7 +206,23 @@ export class OperationRecapPage implements OnInit {
         message: 'Service indisponible',
       }
     );
+    this.openSuccessFailModal({
+      success: false,
+      msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
+      buyForMe:
+        this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
+      errorMsg: this.buyPassErrorMsg,
+    });
   }
+}
 
-  openSuccessModal() {}
+interface ModalSuccessModel {
+  passBought?: any;
+  success?: boolean;
+  recipientMsisdn?: string;
+  recipientName?: string;
+  buyForMe?: boolean;
+  paymentMod?: string;
+  msisdnBuyer?: string;
+  errorMsg?: string;
 }
