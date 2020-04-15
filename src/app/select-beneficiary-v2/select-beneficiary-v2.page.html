@@ -72,7 +72,8 @@
                 {{ errorMsg }}
              </div>
             <div class="confirm-btn">
-              <ion-button shape="round" [disabled]="isProcessing" (click)="processInfoUser()" routerDirection="forward" class="btn" expand="full" >Continuer</ion-button>
+              <ion-button shape="round" [disabled]="isProcessing" (click)="processInfoUser()" class="btn" expand="full" >Continuer</ion-button>
+              <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
             </div>
           </div>
     </ion-content>
