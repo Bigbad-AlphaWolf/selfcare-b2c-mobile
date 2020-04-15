@@ -20,7 +20,7 @@
       <div class="bottom-block scb-text-gray">{{recipientName}}</div>
     </div>
     <button class="scb-btn scb-btn-orange" (click)="presentModal()" [disabled]="buyingPass">
-      <span class="text">Payer ({{!passChoosen.passPromo ? passChoosen?.tarif : passChoosen?.passPromo?.tarif}}
+      <span class="text">Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif : passChoosen?.passPromo?.tarif}}
         FCFA)</span>
       <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="buyingPass"></mat-spinner>
     </button>

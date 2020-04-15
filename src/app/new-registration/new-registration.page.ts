@@ -54,7 +54,7 @@ export class NewRegistrationPage implements OnInit {
   ) {}
 
   goIntro() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/home']);
   }
 
   ngOnInit() {

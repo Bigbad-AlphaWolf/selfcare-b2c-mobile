@@ -3,7 +3,12 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './services/auth-guard/auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: '', redirectTo: 'new-registration', pathMatch: 'full', canActivate: [AuthGuard] },
+  {
+    path: 'new-registration',
+    loadChildren:
+      './new-registration/new-registration.module#NewRegistrationPageModule',
+  },
   {
     path: 'home',
     loadChildren: './home/home.module#HomePageModule',
@@ -139,11 +144,6 @@ const routes: Routes = [
     path: 'sargal-status-card',
     loadChildren:
       './sargal-status-card/sargal-status-card.module#SargalStatusCardPageModule',
-  },
-  {
-    path: 'new-registration',
-    loadChildren:
-      './new-registration/new-registration.module#NewRegistrationPageModule',
   },
   {
     path: 'new-number',
