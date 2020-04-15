@@ -18,18 +18,20 @@ import { AppVersion } from '@ionic-native/app-version/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
-
   appVersionNumber: string;
   constructor(
     private authServ: AuthenticationService,
     private router: Router,
     private appVersion: AppVersion
   ) {
-    this.appVersion.getVersionNumber().then(value => {
-      this.appVersionNumber = value;
-    }).catch(error => {
-      console.log(error);
-    });
+    this.appVersion
+      .getVersionNumber()
+      .then((value) => {
+        this.appVersionNumber = value;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
@@ -40,7 +42,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221770167323');
+      headers = headers.set('X-MSISDN', '221775896287');
       req = req.clone({
         headers,
       });
