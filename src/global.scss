@@ -404,6 +404,14 @@ body {
       }
     }
   }
+  ion-slides {
+    width: 100% !important;
+    .swiper-wrapper {
+      ion-slide {
+        width: 100% !important;
+      }
+    }
+  }
 }
 
 .set-channel-payment-modal {
