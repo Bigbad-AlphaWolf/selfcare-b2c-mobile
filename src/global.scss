@@ -423,3 +423,21 @@ body {
     border-radius: 10px 10px 0 0 !important;
   }
 }
+
+.success-modal {
+  .modal-wrapper {
+    width: percentage(345/375) !important;
+    max-width: 400px;
+    border-radius: 10px !important;
+    height: 80%;
+  }
+}
+
+.failed-modal {
+  .modal-wrapper {
+    width: percentage(345/375) !important;
+    max-width: 400px;
+    border-radius: 10px !important;
+    height: 317px;
+  }
+}

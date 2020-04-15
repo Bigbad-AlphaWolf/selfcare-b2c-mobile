@@ -2,14 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
+
 import { IonicModule } from '@ionic/angular';
-import { SetPaymentChannelModalPage } from './set-payment-channel-modal.page';
+
+import { OperationSuccessFailModalPage } from './operation-success-fail-modal.page';
 import { SharedModule } from 'src/shared/shared.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: SetPaymentChannelModalPage,
+    component: OperationSuccessFailModalPage,
   },
 ];
 
@@ -18,11 +20,11 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes),
     SharedModule,
+    RouterModule.forChild(routes),
   ],
-  declarations: [SetPaymentChannelModalPage],
-  entryComponents: [SetPaymentChannelModalPage],
-  exports: [SetPaymentChannelModalPage],
+  declarations: [OperationSuccessFailModalPage],
+  exports: [OperationSuccessFailModalPage],
+  entryComponents: [OperationSuccessFailModalPage],
 })
-export class SetPaymentChannelModalPageModule {}
+export class OperationSuccessFailModalPageModule {}

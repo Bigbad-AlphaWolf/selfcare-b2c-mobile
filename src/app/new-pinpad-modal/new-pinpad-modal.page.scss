@@ -1,5 +1,15 @@
 @import 'src/app/app';
 
+.checking-token-block {
+  padding-top: 50px;
+  mat-spinner {
+    margin: 0 auto;
+  }
+  .mat-spinner::ng-deep circle {
+    stroke: $orange;
+  }
+}
+
 .pinpad-v3 {
   text-align: center;
   padding: 30px 20px 0;
@@ -70,6 +80,15 @@
         width: 30px;
         height: auto;
       }
+    }
+  }
+  .loading {
+    padding-top: 50px;
+    mat-spinner {
+      margin: 0 auto;
+    }
+    .mat-spinner::ng-deep circle {
+      stroke: $orange;
     }
   }
 }

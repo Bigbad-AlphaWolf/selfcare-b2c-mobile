@@ -191,7 +191,8 @@ const routes: Routes = [
     loadChildren:
       './operation-recap/operation-recap.module#OperationRecapPageModule',
   },
-  { path: 'new-pinpad-modal', loadChildren: './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule' },
+  { path: 'new-pinpad-modal', loadChildren: './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule' },  { path: 'operation-success-fail-modal', loadChildren: './operation-success-fail-modal/operation-success-fail-modal.module#OperationSuccessFailModalPageModule' },
+
 
 ];
 
