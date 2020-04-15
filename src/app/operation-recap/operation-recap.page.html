@@ -1,17 +1,29 @@
 <ion-header [myScrollVanish]="scrollArea">
   <div class="arrow-container">
-    <img src="assets/images/long-arrow-left.png" alt="" (click)="goBackToListPass()"/>
+    <img
+      src="assets/images/long-arrow-left.png"
+      alt=""
+      (click)="goBackToListPass()"
+    />
   </div>
   <div class="text-container">
     <span>Achat Pass Internet</span>
   </div>
-  <img src="assets/images/pass-internet-banniere.png" alt="banniere" class="banniere" />
+  <img
+    src="assets/images/pass-internet-banniere.png"
+    alt="banniere"
+    class="banniere"
+  />
 </ion-header>
 
 <ion-content #scrollArea [scrollEvents]="true">
   <div class="buy-pass-information">
     <div class="title">Pass sélectionné</div>
-    <app-pass-internet-card [passInternet]="passChoosen"></app-pass-internet-card>
+    <div class="card-container">
+      <app-pass-internet-card
+        [passInternet]="passChoosen"
+      ></app-pass-internet-card>
+    </div>
     <div class="recipient-information">
       <div class="top-block">
         <div class="title">Bénéficiaire</div>
@@ -19,10 +31,20 @@
       </div>
       <div class="bottom-block scb-text-gray">{{recipientName}}</div>
     </div>
-    <button class="scb-btn scb-btn-orange" (click)="presentModal()" [disabled]="buyingPass">
-      <span class="text">Payer ({{!passChoosen.passPromo ? passChoosen?.tarif : passChoosen?.passPromo?.tarif}}
-        FCFA)</span>
-      <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="buyingPass"></mat-spinner>
+    <button
+      class="scb-btn scb-btn-orange"
+      (click)="presentModal()"
+      [disabled]="buyingPass"
+    >
+      <span class="text"
+        >Payer ({{!passChoosen.passPromo ? passChoosen?.tarif :
+        passChoosen?.passPromo?.tarif}} FCFA)</span
+      >
+      <mat-spinner
+        mode="indeterminate"
+        [diameter]="20"
+        *ngIf="buyingPass"
+      ></mat-spinner>
     </button>
   </div>
 </ion-content>

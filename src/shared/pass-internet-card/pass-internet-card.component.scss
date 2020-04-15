@@ -7,7 +7,7 @@
 .pass-selected {
   position: relative;
   width: 100%;
-  margin: 15px 0;
+  // margin: 15px 0;
   padding: 20px 15px;
   background-color: $white;
   border-radius: 5px;
@@ -43,6 +43,7 @@
       font-size: 20px;
       line-height: 1.1;
       margin-bottom: 10px;
+      min-width: max-content;
     }
     .volume {
       font-family: HelveticaNeueLTStd-Bd, sans-serif;

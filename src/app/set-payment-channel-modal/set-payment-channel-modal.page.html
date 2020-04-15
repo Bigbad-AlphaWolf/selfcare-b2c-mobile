@@ -11,8 +11,8 @@
         >
           Crédit recharge
         </div>
-        <div class="balance-information">
-          <span class="balance-value">2 250 FCFA</span>
+        <div class="balance-information" *ngIf="soldeCredit">
+          <span class="balance-value">{{soldeCredit}} FCFA</span>
           <span class="balance-title scb-text-gray">Solde crédit restant</span>
         </div>
       </div>
@@ -36,6 +36,9 @@
     (click)="validateChannel()"
     [disabled]="false"
   >
-    <span class="text">Valider ({{price}} FCFA)</span>
+    <span class="text"
+      >Valider ({{!pass.passPromo ? pass?.tarif : pass?.passPromo?.tarif}}
+      FCFA)</span
+    >
   </button>
 </div>

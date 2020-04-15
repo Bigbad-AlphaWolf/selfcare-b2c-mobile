@@ -1,0 +1,44 @@
+<div class="success-page">
+  <div class="top-block">
+    <img *ngIf="success" src="/assets/images/confirmation.png" alt="checked" />
+    <img *ngIf="!success" src="/assets/images/echec.png" alt="checked" />
+    <span class="title">{{success ? 'Achat effectué' : 'Echec Achat'}}</span>
+    <span class="subtitle scb-text-gray">
+      {{success ? 'Vous avez acheté le pass internet' : errorMsg}}
+    </span>
+  </div>
+  <div class="pass-block" *ngIf="success">
+    <app-pass-internet-card
+      [passInternet]="passBought"
+    ></app-pass-internet-card>
+  </div>
+  <div class="bottom-block" *ngIf="success">
+    <div class="details">
+      <div class="left-block">Bénéficiaire</div>
+      <div class="right-block scb-text-gray">
+        <span class="numero">{{recipientMsisdn}}</span>
+        <span class="name">
+          {{buyForMe ? 'Moi même' : recipientName ? recipientName : 'autre'}}
+        </span>
+      </div>
+    </div>
+    <div class="details">
+      <div class="left-block">Paiement par</div>
+      <div class="right-block scb-text-gray">
+        <span class="numero">
+          {{paymentMod === 'ORANGE_MONEY' ?'Orange Money' : 'Crédit Recharge'}}
+        </span>
+        <span class="name">{{msisdnBuyer}}</span>
+      </div>
+    </div>
+    <div class="details details-date">
+      <div class="left-block">Date d'achat</div>
+      <div class="right-block scb-text-gray">
+        <span class="numero">{{dateAchat}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="terminer scb-text-orange" (click)="terminer()">
+    {{success?'Terminer': 'Retour à l\'accueil'}}
+  </div>
+</div>

@@ -1,6 +1,5 @@
 <div class="pass-selected">
-  <div class="badge-promo"
-    *ngIf="passInternet?.passPromo">
+  <div class="badge-promo" *ngIf="passInternet?.passPromo">
     <div class="text scb-text-white">
       {{ passInternet.description }}
     </div>
@@ -8,18 +7,31 @@
   </div>
   <div class="block-left">
     <div class="price scb-text-orange">
-      {{ !passInternet.passPromo ? passInternet?.tarif : passInternet?.passPromo?.tarif }} FCFA</div>
-    <span
-      class="volume scb-text-full-black">{{ !passInternet.passPromo ? passInternet?.volumeInternet : passInternet?.passPromo?.volumeInternet }}</span>
+      {{
+        !passInternet.passPromo
+          ? passInternet?.tarif
+          : passInternet?.passPromo?.tarif
+      }}
+      FCFA
+    </div>
+    <span class="volume scb-text-full-black">{{
+      !passInternet.passPromo
+        ? passInternet?.volumeInternet
+        : passInternet?.passPromo?.volumeInternet
+    }}</span>
     <br />
     <span class="type scb-text-gray">Internet</span>
   </div>
   <div class="block-right scb-text-gray">
     <div class="validity">
       Valable
-      <ng-container [ngSwitch]="
-      !passInternet?.passPromo ? passInternet?.categoriePass?.libelle : passInternet?.passPromo?.categoriePass?.libelle
-      ">
+      <ng-container
+        [ngSwitch]="
+          !passInternet?.passPromo
+            ? passInternet?.categoriePass?.libelle
+            : passInternet?.passPromo?.categoriePass?.libelle
+        "
+      >
         <ng-container *ngSwitchCase="'Jour'"> 24 heures </ng-container>
         <ng-container *ngSwitchCase="'Semaine'"> 7 jours </ng-container>
         <ng-container *ngSwitchCase="'Mois'"> 1 mois </ng-container>
@@ -28,7 +40,15 @@
       </ng-container>
       24h/24
     </div>
-    <div class="bonus" *ngIf="(passInternet?.bonusNuit)||(passInternet?.passPromo?.bonusNuit)">
-      {{!passInternet.passPromo ? passInternet?.bonusNuit : passInternet?.passPromo?.bonusNuit}}</div>
+    <div
+      class="bonus"
+      *ngIf="passInternet?.bonusNuit || passInternet?.passPromo?.bonusNuit"
+    >
+      {{
+        !passInternet.passPromo
+          ? passInternet?.bonusNuit
+          : passInternet?.passPromo?.bonusNuit
+      }}
+    </div>
   </div>
 </div>
