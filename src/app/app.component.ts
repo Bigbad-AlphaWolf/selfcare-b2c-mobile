@@ -1,5 +1,3 @@
-import { AuthenticationService } from './services/authentication-service/authentication.service';
-import { MatDialog } from '@angular/material';
 import { BuyCreditPage } from './buy-credit/buy-credit.page';
 import { BuyPassIllimixPage } from './buy-pass-illimix/buy-pass-illimix.page';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -14,10 +12,12 @@ import { Router } from '@angular/router';
 import * as SecureLS from 'secure-ls';
 import { DetailsConsoPage } from './details-conso/details-conso.page';
 const ls = new SecureLS({ encodingType: 'aes' });
+
 declare var FollowAnalytics: any;
+
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html'
+  templateUrl: 'app.component.html',
 })
 export class AppComponent {
   AppVersionNumber: any;
@@ -50,11 +50,14 @@ export class AppComponent {
       this.splash.hide();
 
       if (this.platform.is('ios')) {
+        this.isIOS = true;
+        this.appId = 'orange-et-moi-sénégal/id1039327980';
         if (typeof FollowAnalytics !== 'undefined') {
           FollowAnalytics.initialize('LV4mrGLUK4o2zQ');
           FollowAnalytics.registerForPush();
         }
       } else if (this.platform.is('android')) {
+        this.appId = 'com.orange.myorange.osn';
         if (typeof FollowAnalytics !== 'undefined') {
           FollowAnalytics.initialize('DgD85nBBSi5wtw');
           FollowAnalytics.registerForPush();
@@ -88,7 +91,7 @@ export class AppComponent {
       //     } else {
       //       console.log('Notification received in foreground');
       //     }
-      //   });      
+      //   });
 
       // this.fcm.onTokenRefresh().subscribe(fcmToken => {
       //   //console.log(fcmToken);
@@ -106,14 +109,13 @@ export class AppComponent {
         '/buy-pass-illimix': BuyPassIllimixPage,
         '/buy-pass-illimix/:id': BuyPassIllimixPage,
         '/buy-credit': BuyCreditPage,
-        '/details-conso': DetailsConsoPage
+        '/details-conso': DetailsConsoPage,
       })
       .subscribe(
-        matched => {
+        (matched) => {
           this.router.navigate([matched.$link.path]);
-          console.log(matched);
         },
-        notMatched => {
+        (notMatched) => {
           // console.log(notMatched);
           // console.log('deeplink not matched');
         }
