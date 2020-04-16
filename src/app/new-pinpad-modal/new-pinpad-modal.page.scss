@@ -12,13 +12,15 @@
 
 .pinpad-v3 {
   text-align: center;
-  padding: 30px 20px 0;
+  padding: percentage(30px/612px) 20px 0;
+  height: 100%;
   img {
-    width: 99px;
-    height: auto;
+    width: auto;
+    height: percentage(99/612);
+    max-height: 99px;
   }
   .title {
-    padding: 20px 70px 30px;
+    padding: percentage(20px/612px) 65px percentage(38px/612px);
     .title-1,
     .subtitle {
       display: block;
@@ -40,7 +42,7 @@
     .bullets {
       display: flex;
       justify-content: space-between;
-      padding: 0 80px 20px;
+      padding: 0 80px percentage(30px/612px);
       .bullet {
         width: 16px;
         height: 16px;
