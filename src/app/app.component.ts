@@ -1,5 +1,3 @@
-import { AuthenticationService } from './services/authentication-service/authentication.service';
-import { MatDialog } from '@angular/material';
 import { BuyCreditPage } from './buy-credit/buy-credit.page';
 import { BuyPassIllimixPage } from './buy-pass-illimix/buy-pass-illimix.page';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -7,15 +5,9 @@ import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
-import { AppMinimize } from '@ionic-native/app-minimize/ngx';
-import { LoginPage } from './login/login.page';
 import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
 import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
-import { FirebaseX } from '@ionic-native/firebase-x/ngx';
-import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
-
-import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { isNewVersion } from 'src/shared';
 import { AppVersion } from '@ionic-native/app-version/ngx';
@@ -39,11 +31,8 @@ export class AppComponent {
     private statusBar: StatusBar,
     private splash: SplashScreen,
     private router: Router,
-    private http: HttpClient,
     private deeplinks: Deeplinks,
-    private appVersion: AppVersion,
-    private dialog: MatDialog,
-    private firebaseX: FirebaseX
+    private appVersion: AppVersion
   ) {
     this.initializeApp();
   }

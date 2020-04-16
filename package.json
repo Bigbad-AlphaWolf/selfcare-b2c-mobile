@@ -34,7 +34,6 @@
     "@ionic-native/file": "^5.14.0",
     "@ionic-native/file-opener": "^5.15.0",
     "@ionic-native/file-transfer": "^5.14.0",
-    "@ionic-native/firebase-x": "^5.21.6",
     "@ionic-native/http": "^5.14.0",
     "@ionic-native/in-app-browser": "^5.18.0",
     "@ionic-native/market": "^5.22.0",
