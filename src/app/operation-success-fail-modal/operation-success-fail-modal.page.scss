@@ -2,15 +2,16 @@
 
 .success-page {
   overflow-y: auto;
+  height: 100%;
   .top-block {
-    padding: 30px 10px 20px;
+    padding: 35px 10px 15px;
     text-align: center;
     .title {
       display: block;
       font-family: HelveticaNeueLTStd-Bd;
       font-size: 20px;
       line-height: 1.5;
-      margin: 20px 0 10px;
+      margin: 15px 0 7px;
     }
     .subtitle {
       display: block;
@@ -26,11 +27,11 @@
     }
   }
   .bottom-block {
-    padding: 25px 30px 0px;
+    padding: 15px 30px 0px;
     .details {
       display: flex;
       justify-content: space-between;
-      padding: 5px 0 10px;
+      padding: 4px 0 8px;
       border-bottom: 2px solid $silver;
       &-date {
         border-bottom: none;
