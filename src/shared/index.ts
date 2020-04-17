@@ -82,7 +82,7 @@ export const CATEGORY_PURCHASE_HISTORY = [
   { nom: 'Dalal Tones', value: 'DALALTONE' },
   { nom: 'Achat pour tiers', value: 'PASSFOROTHER' },
   { nom: 'Transfert Credit', value: 'SEDDO' },
-  { nom: 'SOS', value: 'SOS' }
+  { nom: 'SOS', value: 'SOS' },
 ];
 
 export function getNOAvatartUrlImage() {
@@ -90,7 +90,7 @@ export function getNOAvatartUrlImage() {
 }
 
 export function isExtensionImageValid(fileType: string) {
-  const result = VALID_IMG_EXTENSIONS.filter(x => {
+  const result = VALID_IMG_EXTENSIONS.filter((x) => {
     return x === fileType;
   });
 
@@ -183,7 +183,7 @@ export const months = [
   'Septembre',
   'Octobre',
   'Novembre',
-  'Décembre'
+  'Décembre',
 ];
 
 export interface PassInfoModel {
@@ -285,7 +285,7 @@ export function getOrderedListCategory(
     (elt1: CategoryPassInternet, elt2: CategoryPassInternet) =>
       elt1.ordre - elt2.ordre
   );
-  listCategoryFiltered = [...new Set(unorderedList.map(x => x.libelle))];
+  listCategoryFiltered = [...new Set(unorderedList.map((x) => x.libelle))];
   return listCategoryFiltered;
 }
 
@@ -364,7 +364,7 @@ export function getListPassFilteredByLabelAndPaymentMod(
 export function computeConsoHistory(consos) {
   const result = [];
 
-  consos.forEach(x => {
+  consos.forEach((x) => {
     const {
       date,
       categorie,
@@ -373,7 +373,7 @@ export function computeConsoHistory(consos) {
       charge1,
       charge2,
       chargeType1,
-      chargeType2
+      chargeType2,
     } = x;
     let conso1, conso2;
 
@@ -384,7 +384,7 @@ export function computeConsoHistory(consos) {
         calledNumber,
         duration,
         charge: formatCurrency(charge1),
-        chargeType: chargeType1
+        chargeType: chargeType1,
       };
       result.push(conso1);
     }
@@ -395,7 +395,7 @@ export function computeConsoHistory(consos) {
         calledNumber,
         duration,
         charge: formatCurrency(charge2),
-        chargeType: chargeType2
+        chargeType: chargeType2,
       };
       result.push(conso2);
     }
@@ -412,7 +412,7 @@ export function generateUUID() {
   ) {
     d += performance.now(); // use high-precision timer if available
   }
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     // tslint:disable-next-line: no-bitwise
     const r = (d + Math.random() * 16) % 16 | 0;
     d = Math.floor(d / 16);
@@ -424,7 +424,7 @@ export function generateUUID() {
 export const listLibelleCodeOperationOM = [
   { operationCode: 'operation-100', operationLibelle: 'deplafonnement' },
   { operationCode: 'operation-200', operationLibelle: 'creation-compte' },
-  { operationCode: 'operation-300', operationLibelle: 'reclamation' }
+  { operationCode: 'operation-300', operationLibelle: 'reclamation' },
 ];
 
 export function getOperationCodeActionOM(libelle: string) {
@@ -677,7 +677,7 @@ export interface NotificationInfoModel {
 
 export class PlatformMock {
   public ready(): Promise<string> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       resolve('READY');
     });
   }
@@ -707,7 +707,7 @@ export class PlatformMock {
       paddingLeft: '10',
       paddingTop: '10',
       paddingRight: '10',
-      paddingBottom: '10'
+      paddingBottom: '10',
     };
   }
 
@@ -757,9 +757,13 @@ export class SplashScreenMock extends SplashScreen {
 }
 
 export function getBanniereTitle(banniereDescription: string) {
-  return banniereDescription.substring(0, banniereDescription.indexOf(';'));
+  return banniereDescription
+    ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
+    : '';
 }
 
 export function getBanniereDescription(banniereDescription: string) {
-  return banniereDescription.substring(banniereDescription.indexOf(';') + 1);
+  return banniereDescription
+    ? banniereDescription.substring(banniereDescription.indexOf(';') + 1)
+    : '';
 }
