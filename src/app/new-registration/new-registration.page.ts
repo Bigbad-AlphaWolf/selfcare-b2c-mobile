@@ -54,6 +54,7 @@ export class NewRegistrationPage implements OnInit {
   ) {}
 
   goIntro() {
+    this.followAnalyticsService.registerEventFollow("Voir_Intro", "event","clic")
     this.router.navigate(['/home']);
   }
 

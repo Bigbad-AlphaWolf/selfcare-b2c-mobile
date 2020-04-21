@@ -9,6 +9,7 @@ import {
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { PurchaseService } from '../services/purchase-service/purchase.service';
 import { IonSlides } from '@ionic/angular';
+import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 
 @Component({
   selector: 'app-details-conso',
@@ -92,6 +93,13 @@ export class DetailsConsoPage implements OnInit {
   seeSlide(tabIndex: number){
     this.slideGroup.slideTo(tabIndex);
     this.slideSelected = tabIndex;
+    if(this.currentProfil !== PROFILE_TYPE_POSTPAID){
+      if(tabIndex === 1){
+        this.followAnalyticsService.registerEventFollow("Historique_Appels","event","clic")
+      }else if(tabIndex === 2){
+        this.followAnalyticsService.registerEventFollow("Historique_Souscriptions","event","clic")
+      }
+    }
   }
 
   getTransactionsByDay(
