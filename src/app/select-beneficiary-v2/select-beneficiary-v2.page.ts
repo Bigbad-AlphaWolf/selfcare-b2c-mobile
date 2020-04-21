@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material';
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { IonInput, IonSelect } from '@ionic/angular';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-select-beneficiary-v2',
@@ -36,7 +37,7 @@ export class SelectBeneficiaryV2Page implements OnInit {
   errorMsg: string;
   hasErrorProcessing: boolean;
   constructor(private dashbbServ: DashboardService, private appRouting: ApplicationRoutingService, private dialog: MatDialog,private contacts: Contacts,
-    private authServ: AuthenticationService) { }
+    private authServ: AuthenticationService, private followAnalyticsService: FollowAnalyticsService) { }
 
   ngOnInit() {
   }
@@ -189,6 +190,11 @@ export class SelectBeneficiaryV2Page implements OnInit {
   }
 
   goToListPassInternet(data: any){
+    this.followAnalyticsService.registerEventFollow(
+      'Pass_Internet_ChoixDestinataire',
+      'event',
+      data.destinataire
+    );
     this.appRouting.goToListPassInternet(data)
   }
 
