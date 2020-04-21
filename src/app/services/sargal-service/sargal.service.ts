@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 import {
   GiftSargalItem,
   GiftSargalCategoryItem,
-  SubscriptionModel
+  SubscriptionModel,
 } from 'src/shared';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { delay, map } from 'rxjs/operators';
@@ -24,7 +24,7 @@ const convertGiftEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/l
 const registerSargalEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/suscribe`;
 const customerSargalStatusEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/client-sargals-profile`;
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SargalService {
   private userPhoneNumber: string;
@@ -51,11 +51,11 @@ export class SargalService {
   getSargalBalance(msisdn: string) {
     return this.http.get(`${sargalBalanceEndpoint}/${msisdn}`).pipe(
       map(
-        sargalStatus => {
+        (sargalStatus) => {
           ls.set(`lastSargalData_${msisdn}`, sargalStatus);
           return sargalStatus;
         },
-        err => {
+        (err) => {
           const sargalData = ls.get(`lastSargalData_${msisdn}`);
           return sargalData;
         }
@@ -70,6 +70,7 @@ export class SargalService {
   setUserPhoneNumber(msisdn: string) {
     this.userPhoneNumber = msisdn;
   }
+
   getAllSargalCategories(listSargalGift: GiftSargalItem[]) {
     let listCategory = [];
 
@@ -79,7 +80,7 @@ export class SargalService {
           listSargalGift.map((item: GiftSargalItem) => {
             return item.categorieGift.nom;
           })
-        )
+        ),
       ];
     }
 
@@ -89,23 +90,25 @@ export class SargalService {
   getAllGiftSargalUser(codeFormule: string) {
     return this.http.get(`${listAllSargalGiftsEndpoint}/${codeFormule}`);
   }
+
   getListCategoryGiftSargal() {
     return this.listCategoryGiftSargal;
   }
+
   getListGiftSargalOfUser() {
     return this.listGiftSargal;
   }
+
   getStatusDataLoaded() {
     return this.dataLoadedSubject.asObservable();
   }
 
   setListGiftSargalAndCategoryOfUserByQuery() {
-    this.dataLoadedSubject.next({status: false, error: false});
+    this.dataLoadedSubject.next({ status: false, error: false });
     this.listGiftSargal = [];
     this.listCategoryGiftSargal = [];
-    this.authServ
-      .getSubscription(this.userPhoneNumber)
-      .subscribe((res: SubscriptionModel) => {
+    this.authServ.getSubscription(this.userPhoneNumber).subscribe(
+      (res: SubscriptionModel) => {
         if (res && res.code && res.profil) {
           this.getAllGiftSargalUser(res.code).subscribe(
             (resp: any[]) => {
@@ -122,20 +125,23 @@ export class SargalService {
               this.querySargalGiftCategories().subscribe(
                 (listCategory: GiftSargalCategoryItem[]) => {
                   this.listCategoryGiftSargal = listCategory;
-                  this.dataLoadedSubject.next({status: true, error: false});
+                  this.dataLoadedSubject.next({ status: true, error: false });
                 },
                 (err: any) => {}
               );
             },
             () => {
-              this.dataLoadedSubject.next({status: true, error: true});
+              this.dataLoadedSubject.next({ status: true, error: true });
             }
           );
         }
-      },(err:any)=>{
-        this.dataLoadedSubject.next({status: true, error: true});
-      });
+      },
+      (err: any) => {
+        this.dataLoadedSubject.next({ status: true, error: true });
+      }
+    );
   }
+
   filterGiftItemByCategory(
     category: GiftSargalCategoryItem,
     listGiftSargal: GiftSargalItem[]
@@ -163,13 +169,15 @@ export class SargalService {
     const msisdn = this.dashbService.getCurrentPhoneNumber();
     const numeros = numerosIllimite ? numerosIllimite.join() : null;
     return this.http.post(
-      `${convertGiftEndpoint}/${msisdn}?giftId=${gift.giftId}&fellowType=${gift.fellowType}&fellowNumbers=${numeros}`,
+      `${convertGiftEndpoint}/${msisdn}?giftId=${gift.giftId}&fellowType=${gift.fellowType}&fellowNumbers=${numeros}&serviceId=${gift.serviceId}`,
       null
     );
   }
+
   registerToSargal(msisdn: string) {
     return this.http.post(`${registerSargalEndpoint}/${msisdn}`, null);
   }
+
   getCustomerSargalStatus() {
     const msisdn = this.dashbService.getCurrentPhoneNumber();
     // return of({ valid: true, profilClient: 'GOLD' }).pipe(delay(5000));
