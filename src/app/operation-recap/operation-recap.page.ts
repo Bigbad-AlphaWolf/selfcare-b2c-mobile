@@ -6,7 +6,10 @@ import { BuyPassModel } from '../services/dashboard-service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
-import { OPERATION_TYPE_PASS_INTERNET } from 'src/shared';
+import {
+  OPERATION_TYPE_PASS_INTERNET,
+  OPERATION_TYPE_PASS_ILLIMIX,
+} from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
@@ -17,6 +20,8 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
   styleUrls: ['./operation-recap.page.scss'],
 })
 export class OperationRecapPage implements OnInit {
+  OPERATION_TYPE_PASS_INTERNET = OPERATION_TYPE_PASS_INTERNET;
+  OPERATION_TYPE_PASS_ILLIMIX = OPERATION_TYPE_PASS_ILLIMIX;
   passChoosen: any;
   recipientMsisdn: string;
   recipientName: string;
@@ -27,6 +32,7 @@ export class OperationRecapPage implements OnInit {
   buyPassErrorMsg: string;
   buyPassPayload: any;
   paymentMod: string;
+  operationType: string; // tells if recharge or internet or illimix or anything else
 
   constructor(
     public modalController: ModalController,
@@ -50,6 +56,7 @@ export class OperationRecapPage implements OnInit {
         this.recipientMsisdn = this.router.getCurrentNavigation().extras.state.recipientMsisdn;
         this.recipientCodeFormule = this.router.getCurrentNavigation().extras.state.recipientCodeFormule;
         this.recipientName = this.router.getCurrentNavigation().extras.state.recipientName;
+        this.operationType = this.router.getCurrentNavigation().extras.state.operationType;
       } else {
         this.appRouting.goToSelectRecepientPassInternet();
       }

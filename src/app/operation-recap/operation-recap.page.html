@@ -7,13 +7,29 @@
     />
   </div>
   <div class="text-container">
-    <span>Achat Pass Internet</span>
+    <ng-container [ngSwitch]="operationType">
+      <span *ngSwitchCase="OPERATION_TYPE_PASS_INTERNET"
+        >Achat Pass Internet</span
+      >
+      <span *ngSwitchCase="OPERATION_TYPE_PASS_ILLIMIX"
+        >Achat Pass Illimix</span
+      >
+    </ng-container>
   </div>
-  <img
-    src="assets/images/pass-internet-banniere.png"
-    alt="banniere"
-    class="banniere"
-  />
+  <div class="banner-container">
+    <img
+      *ngIf="operationType === OPERATION_TYPE_PASS_INTERNET"
+      src="assets/images/pass-internet-banniere.png"
+      alt="banniere"
+      class="banniere"
+    />
+    <img
+      *ngIf="operationType === OPERATION_TYPE_PASS_ILLIMIX"
+      src="assets/images/banniere-illimix.png"
+      alt="banniere"
+      class="banniere"
+    />
+  </div>
 </ion-header>
 
 <ion-content #scrollArea [scrollEvents]="true">
@@ -31,10 +47,20 @@
       </div>
       <div class="bottom-block scb-text-gray">{{recipientName}}</div>
     </div>
-    <button class="scb-btn scb-btn-orange" (click)="presentModal()" [disabled]="buyingPass">
-      <span class="text">Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif : passChoosen?.passPromo?.tarif}}
-        FCFA)</span>
-      <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="buyingPass"></mat-spinner>
+    <button
+      class="scb-btn scb-btn-orange"
+      (click)="presentModal()"
+      [disabled]="buyingPass"
+    >
+      <span class="text"
+        >Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
+        passChoosen?.passPromo?.tarif}} FCFA)</span
+      >
+      <mat-spinner
+        mode="indeterminate"
+        [diameter]="20"
+        *ngIf="buyingPass"
+      ></mat-spinner>
     </button>
   </div>
 </ion-content>

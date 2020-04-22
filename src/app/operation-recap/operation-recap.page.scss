@@ -21,6 +21,12 @@ ion-content {
     font-size: 24px;
     padding-left: 15px;
   }
+  .banner-container {
+    width: 100%;
+    .banniere {
+      width: 100%;
+    }
+  }
 }
 
 .show-toolbar {
@@ -30,9 +36,6 @@ ion-content {
   .text-container {
     font-family: HelveticaNeueLTStd-Bd, sans-serif;
     font-size: 24px;
-  }
-  .banniere {
-    // height: auto;
   }
 }
 
@@ -52,9 +55,6 @@ ion-content {
       width: 100%;
       text-align: center;
     }
-  }
-  .banniere {
-    // height: 0;
   }
 }
 
