@@ -6,7 +6,7 @@ import { BuyPassModel } from '../services/dashboard-service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
-import { OPERATION_TYPE_PASS_INTERNET } from 'src/shared';
+import { OPERATION_TYPE_PASS_INTERNET, OPERATION_TYPE_PASS_ILLIMIX } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
@@ -27,7 +27,9 @@ export class OperationRecapPage implements OnInit {
   buyPassErrorMsg: string;
   buyPassPayload: any;
   paymentMod: string;
-
+  purchaseType: string;
+  OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
+  OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -44,14 +46,16 @@ export class OperationRecapPage implements OnInit {
       if (
         this.router.getCurrentNavigation() &&
         this.router.getCurrentNavigation().extras.state &&
-        this.router.getCurrentNavigation().extras.state.pass
+        this.router.getCurrentNavigation().extras.state.pass &&
+        this.router.getCurrentNavigation().extras.state.purchaseType
       ) {
         this.passChoosen = this.router.getCurrentNavigation().extras.state.pass;
         this.recipientMsisdn = this.router.getCurrentNavigation().extras.state.recipientMsisdn;
         this.recipientCodeFormule = this.router.getCurrentNavigation().extras.state.recipientCodeFormule;
         this.recipientName = this.router.getCurrentNavigation().extras.state.recipientName;
+        this.purchaseType = this.router.getCurrentNavigation().extras.state.purchaseType;
       } else {
-        this.appRouting.goToSelectRecepientPassInternet();
+        this.appRouting.goToDashboard();
       }
     });
     this.buyPassPayload = {
@@ -125,10 +129,12 @@ export class OperationRecapPage implements OnInit {
         payload: {
           destinataire: this.recipientMsisdn,
           code: this.recipientCodeFormule,
+          purchaseType: this.purchaseType,
+          recipientName: this.recipientName
         },
       },
     };
-    this.router.navigate(['/list-pass-internet-v3'], navigationExtras);
+    this.router.navigate(['/list-pass'], navigationExtras);
   }
 
   payWithCredit() {

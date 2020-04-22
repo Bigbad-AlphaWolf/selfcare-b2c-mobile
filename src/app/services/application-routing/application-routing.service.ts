@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
+import { OPERATION_TYPE_PASS_INTERNET, OPERATION_TYPE_PASS_ILLIMIX } from 'src/shared';
 
 @Injectable({
   providedIn: 'root'
@@ -13,20 +14,42 @@ export class ApplicationRoutingService {
   }
 
   goToSelectRecepientPassInternet(){
-    this.route.navigate(['/select-beneficiary-v2'])
+    let navigationExtras: NavigationExtras = {
+      state: {
+        payload: OPERATION_TYPE_PASS_INTERNET
+      }
+    };
+    this.route.navigate(['/select-beneficiary-v2'], navigationExtras)
   }
 
   goToListPassInternet(data: any){
+    const payload = Object.assign(data, {purchaseType: OPERATION_TYPE_PASS_INTERNET});
     let navigationExtras: NavigationExtras = {
       state: {
-        payload: data
+        payload
       }
     };
-    this.route.navigate(['/list-pass-internet-v3'], navigationExtras)
+    this.route.navigate(['/list-pass'], navigationExtras)
+
+  }
+
+  goToListPassIllimix(data: any){
+    const payload = Object.assign(data, {purchaseType: OPERATION_TYPE_PASS_ILLIMIX});
+    let navigationExtras: NavigationExtras = {
+      state: {
+        payload
+      }
+    };
+    this.route.navigate(['/list-pass'], navigationExtras)
 
   }
 
   goToSelectRecepientPassIllimix(){
-    this.route.navigate(['/select-pass-recipient'], {queryParams : { action: 'illimix'}})
+    let navigationExtras: NavigationExtras = {
+      state: {
+        payload: OPERATION_TYPE_PASS_ILLIMIX
+      }
+    };
+    this.route.navigate(['/select-beneficiary-v2'], navigationExtras);
   }
 }

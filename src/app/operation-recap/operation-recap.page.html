@@ -6,8 +6,11 @@
       (click)="goBackToListPass()"
     />
   </div>
-  <div class="text-container">
+  <div *ngIf="purchaseType === OPERATION_INTERNET_TYPE" class="text-container">
     <span>Achat Pass Internet</span>
+  </div>
+  <div *ngIf="purchaseType === OPERATION_ILLIMIX_TYPE" class="text-container">
+    <span>Achat Pass Illimix</span>
   </div>
   <img
     src="assets/images/pass-internet-banniere.png"

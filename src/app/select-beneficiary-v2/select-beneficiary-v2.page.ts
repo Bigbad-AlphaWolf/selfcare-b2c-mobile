@@ -1,13 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
-import { formatPhoneNumber, REGEX_NUMBER, REGEX_FIX_NUMBER, SubscriptionModel } from 'src/shared';
+import { formatPhoneNumber, REGEX_NUMBER, REGEX_FIX_NUMBER, SubscriptionModel, OPERATION_TYPE_PASS_INTERNET, OPERATION_TYPE_PASS_ILLIMIX, OPERATION_TYPE_RECHARGE_CREDIT } from 'src/shared';
 import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
 import { MatDialog } from '@angular/material';
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { IonInput, IonSelect } from '@ionic/angular';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { PROFILE_TYPE_POSTPAID, isPrepaidFix } from '../dashboard';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-select-beneficiary-v2',
@@ -36,10 +38,22 @@ export class SelectBeneficiaryV2Page implements OnInit {
   @ViewChild('selectNumbers') ionicSelect: IonSelect;
   errorMsg: string;
   hasErrorProcessing: boolean;
+  purchaseType: string;
   constructor(private dashbbServ: DashboardService, private appRouting: ApplicationRoutingService, private dialog: MatDialog,private contacts: Contacts,
-    private authServ: AuthenticationService, private followAnalyticsService: FollowAnalyticsService) { }
+    private authServ: AuthenticationService, private followAnalyticsService: FollowAnalyticsService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
+    this.route.queryParams.subscribe((params) => {
+      if (
+        this.router.getCurrentNavigation().extras.state &&
+        this.router.getCurrentNavigation().extras.state.payload
+      ) {
+        this.purchaseType = this.router.getCurrentNavigation().extras.state.payload;
+
+      }else{
+        this.appRouting.goToDashboard();
+      }
+    });
   }
 
   ionViewWillEnter(){
@@ -165,27 +179,37 @@ export class SelectBeneficiaryV2Page implements OnInit {
     this.errorGetContact = null;
     if(this.recipientNumber){
       this.authServ.getSubscription(this.recipientNumber).subscribe((res: SubscriptionModel)=>{
+        this.isProcessing = false;
         const codeFormule = res.code;
-        this.authServ.isPostpaid(this.recipientNumber).subscribe((isPostpaid: boolean)=>{
-          this.isProcessing = false;
-          if(isPostpaid){
+        const profil = res.profil;
+          if(profil === PROFILE_TYPE_POSTPAID || isPrepaidFix(res) && this.purchaseType === OPERATION_TYPE_PASS_ILLIMIX){
             this.hasErrorGetContact = true;
             this.errorGetContact = "Ce destinataire ne peux pas bénéficier de ce service.";
           }else{
             const data = { destinataire: this.recipientNumber, code: codeFormule, recipientName: this.recipientContactInfos };
-            this.goToListPassInternet(data);
+            this.redirection(data);
           }
-        }, (err: any)=>{
-          this.isProcessing = false;
-          const data = { destinataire: this.recipientNumber, code: codeFormule, recipientName: this.recipientContactInfos };
-          this.goToListPassInternet(data);
-        });
 
       },(err: any)=>{
         this.isProcessing = false;
         this.hasErrorGetContact = true;
         this.errorGetContact = "Une erreur est survenue. Veuillez réessayer"
       })
+    }
+  }
+
+  redirection(data: any){
+    switch (this.purchaseType) {
+      case OPERATION_TYPE_PASS_INTERNET:
+        this.goToListPassInternet(data)
+        break;
+      case OPERATION_TYPE_PASS_ILLIMIX:
+        this.goToListPassIllimix(data);
+        break;
+      case OPERATION_TYPE_RECHARGE_CREDIT:
+        break;
+      default:
+        break;
     }
   }
 
@@ -198,4 +222,12 @@ export class SelectBeneficiaryV2Page implements OnInit {
     this.appRouting.goToListPassInternet(data)
   }
 
+  goToListPassIllimix(data: any){
+    this.followAnalyticsService.registerEventFollow(
+      'Pass_Illimix_ChoixDestinataire',
+      'event',
+      data.destinataire
+    );
+    this.appRouting.goToListPassIllimix(data)
+  }
 }
