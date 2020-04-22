@@ -7,24 +7,20 @@
     />
   </div>
   <div class="text-container">
-    <ng-container [ngSwitch]="operationType">
-      <span *ngSwitchCase="OPERATION_TYPE_PASS_INTERNET"
-        >Achat Pass Internet</span
-      >
-      <span *ngSwitchCase="OPERATION_TYPE_PASS_ILLIMIX"
-        >Achat Pass Illimix</span
-      >
+    <ng-container [ngSwitch]="purchaseType">
+      <span *ngSwitchCase="OPERATION_INTERNET_TYPE">Achat Pass Internet</span>
+      <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE">Achat Pass Illimix</span>
     </ng-container>
   </div>
   <div class="banner-container">
     <img
-      *ngIf="operationType === OPERATION_TYPE_PASS_INTERNET"
+      *ngIf="purchaseType === OPERATION_INTERNET_TYPE"
       src="assets/images/pass-internet-banniere.png"
       alt="banniere"
       class="banniere"
     />
     <img
-      *ngIf="operationType === OPERATION_TYPE_PASS_ILLIMIX"
+      *ngIf="purchaseType === OPERATION_ILLIMIX_TYPE"
       src="assets/images/banniere-illimix.png"
       alt="banniere"
       class="banniere"

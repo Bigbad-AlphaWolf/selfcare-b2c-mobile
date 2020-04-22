@@ -20,8 +20,6 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
   styleUrls: ['./operation-recap.page.scss'],
 })
 export class OperationRecapPage implements OnInit {
-  OPERATION_TYPE_PASS_INTERNET = OPERATION_TYPE_PASS_INTERNET;
-  OPERATION_TYPE_PASS_ILLIMIX = OPERATION_TYPE_PASS_ILLIMIX;
   passChoosen: any;
   recipientMsisdn: string;
   recipientName: string;
@@ -32,8 +30,9 @@ export class OperationRecapPage implements OnInit {
   buyPassErrorMsg: string;
   buyPassPayload: any;
   paymentMod: string;
-  operationType: string; // tells if recharge or internet or illimix or anything else
-
+  purchaseType: string;
+  OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
+  OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -50,15 +49,16 @@ export class OperationRecapPage implements OnInit {
       if (
         this.router.getCurrentNavigation() &&
         this.router.getCurrentNavigation().extras.state &&
-        this.router.getCurrentNavigation().extras.state.pass
+        this.router.getCurrentNavigation().extras.state.pass &&
+        this.router.getCurrentNavigation().extras.state.purchaseType
       ) {
         this.passChoosen = this.router.getCurrentNavigation().extras.state.pass;
         this.recipientMsisdn = this.router.getCurrentNavigation().extras.state.recipientMsisdn;
         this.recipientCodeFormule = this.router.getCurrentNavigation().extras.state.recipientCodeFormule;
         this.recipientName = this.router.getCurrentNavigation().extras.state.recipientName;
-        this.operationType = this.router.getCurrentNavigation().extras.state.operationType;
+        this.purchaseType = this.router.getCurrentNavigation().extras.state.purchaseType;
       } else {
-        this.appRouting.goToSelectRecepientPassInternet();
+        this.appRouting.goToDashboard();
       }
     });
     this.buyPassPayload = {
@@ -142,10 +142,12 @@ export class OperationRecapPage implements OnInit {
         payload: {
           destinataire: this.recipientMsisdn,
           code: this.recipientCodeFormule,
+          purchaseType: this.purchaseType,
+          recipientName: this.recipientName,
         },
       },
     };
-    this.router.navigate(['/list-pass-internet-v3'], navigationExtras);
+    this.router.navigate(['/list-pass'], navigationExtras);
   }
 
   payWithCredit() {

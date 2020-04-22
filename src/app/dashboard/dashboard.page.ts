@@ -88,6 +88,7 @@ export class DashboardPage implements OnInit, OnDestroy {
    this.assistanceService.getAppVersionPublished().subscribe((version: any) => {
      const versionAndroid = version.android;
      const versionIos = version.ios;
+     if(versionAndroid || versionIos){
        if (
          isNewVersion(
            this.isIOS ? versionIos : versionAndroid,
@@ -98,6 +99,7 @@ export class DashboardPage implements OnInit, OnDestroy {
            data: { updateApp: this.appId }
          });
        }
+     }
    });
    if(!this.isFirebaseTokenSent){
     this.authServ.UpdateNotificationInfo();

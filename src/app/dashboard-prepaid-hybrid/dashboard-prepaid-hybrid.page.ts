@@ -312,7 +312,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       'event',
       'clicked'
     );
-    this.router.navigate(['/buy-pass-illimix']);
+    this.appliRouting.goToSelectRecepientPassIllimix();
   }
 
   goToTransfertOM() {
