@@ -5,14 +5,15 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ListPassInternetV3Page } from './list-pass-internet-v3.page';
+import { ListePassPage } from './liste-pass.page';
 import { SharedModule } from 'src/shared/shared.module';
 import { ItemPassInternetComponent } from './component/item-pass-internet/item-pass-internet.component';
+import { ItemPassIllimixComponent } from './component/item-pass-illimix/item-pass-illimix.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: ListPassInternetV3Page
+    component: ListePassPage
   }
 ];
 
@@ -24,6 +25,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ListPassInternetV3Page, ItemPassInternetComponent]
+  declarations: [ListePassPage, ItemPassInternetComponent, ItemPassIllimixComponent]
 })
-export class ListPassInternetV3PageModule {}
+export class ListePassPageModule {}

@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListPassInternetV3Page } from './list-pass-internet-v3.page';
+import { ItemPassIllimixComponent } from './item-pass-illimix.component';
 
-describe('ListPassInternetV3Page', () => {
-  let component: ListPassInternetV3Page;
-  let fixture: ComponentFixture<ListPassInternetV3Page>;
+describe('ItemPassIllimixComponent', () => {
+  let component: ItemPassIllimixComponent;
+  let fixture: ComponentFixture<ItemPassIllimixComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ListPassInternetV3Page ],
+      declarations: [ ItemPassIllimixComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ListPassInternetV3Page);
+    fixture = TestBed.createComponent(ItemPassIllimixComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

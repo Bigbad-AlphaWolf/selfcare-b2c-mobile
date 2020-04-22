@@ -180,18 +180,15 @@ const routes: Routes = [
     loadChildren:
       './my-offer-plans/my-offer-plans.module#MyOfferPlansPageModule',
   },
-  {
-    path: 'list-pass-internet-v3',
-    loadChildren:
-      './list-pass-internet-v3/list-pass-internet-v3.module#ListPassInternetV3PageModule',
-  },
   { path: 'select-beneficiary-v2', loadChildren: './select-beneficiary-v2/select-beneficiary-v2.module#SelectBeneficiaryV2PageModule' },
   {
     path: 'operation-recap',
     loadChildren:
       './operation-recap/operation-recap.module#OperationRecapPageModule',
   },
-  { path: 'new-pinpad-modal', loadChildren: './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule' },  { path: 'operation-success-fail-modal', loadChildren: './operation-success-fail-modal/operation-success-fail-modal.module#OperationSuccessFailModalPageModule' },
+  { path: 'new-pinpad-modal', loadChildren: './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule' },
+  { path: 'operation-success-fail-modal', loadChildren: './operation-success-fail-modal/operation-success-fail-modal.module#OperationSuccessFailModalPageModule' },
+  { path: 'list-pass', loadChildren: './liste-pass/liste-pass.module#ListePassPageModule' },
 
 
 ];
