@@ -72,10 +72,20 @@ export class OperationRecapPage implements OnInit {
       if (response.data && response.data.paymentMod === 'CREDIT') {
         this.paymentMod = 'CREDIT';
         this.payWithCredit();
+        this.followAnalyticsService.registerEventFollow(
+          'Buy_pass_payment_mod',
+          'event',
+          'CREDIT'
+        );
       }
       if (response.data && response.data.paymentMod === 'ORANGE_MONEY') {
         this.paymentMod = 'ORANGE_MONEY';
         this.openPinpad();
+        this.followAnalyticsService.registerEventFollow(
+          'Buy_pass_payment_mod',
+          'event',
+          'ORANGE_MONEY'
+        );
       }
     });
     return await modal.present();
