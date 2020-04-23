@@ -24,6 +24,7 @@
         background-position-y: -185%;
         border-radius: 5px;
         padding: 20px 15px;
+        padding-bottom: 15px;
         margin-bottom: 10px;
         .top-block{
             text-align: start;
@@ -49,6 +50,7 @@
                     white-space: nowrap;
                     &:not(:last-child){
                         border-right: 1px solid $grayDashboard;
+                        margin-right: none;
                     } 
                     /* &:not(:first-child){
                         padding-left: 20px;
@@ -78,8 +80,9 @@
                 margin-top: 5px;
                 display: flex;
                 justify-content: space-between;
-                align-items: center;
+                align-items: flex-end;
                 .left-side{
+                    width: 70%;
                     span{
                         text-align: start;
                     }
