@@ -33,9 +33,12 @@
         </div>
         <div class="item-sub-details">
           <div class="left-side">
-            <span class="item-validity scb-text-gray">
-                *Appel tous réseaux
-            </span>
+            <!-- Illimix Subtitle descriptions -->
+            <ng-container *ngFor="let desc of passIllimix?.description?.split(';')">
+              <span *ngIf="desc" class="item-validity scb-text-gray">
+                {{ "*"+desc }}
+              </span>
+            </ng-container> 
           </div>
           <div class="right-side">
             <span *ngIf="!passIllimix?.passPromo" class="item-validity scb-text-gray">
