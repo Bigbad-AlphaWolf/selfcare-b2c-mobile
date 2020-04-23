@@ -6,7 +6,10 @@ import { BuyPassModel } from '../services/dashboard-service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
-import { OPERATION_TYPE_PASS_INTERNET, OPERATION_TYPE_PASS_ILLIMIX } from 'src/shared';
+import {
+  OPERATION_TYPE_PASS_INTERNET,
+  OPERATION_TYPE_PASS_ILLIMIX,
+} from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
@@ -76,10 +79,20 @@ export class OperationRecapPage implements OnInit {
       if (response.data && response.data.paymentMod === 'CREDIT') {
         this.paymentMod = 'CREDIT';
         this.payWithCredit();
+        this.followAnalyticsService.registerEventFollow(
+          'Buy_pass_payment_mod',
+          'event',
+          'CREDIT'
+        );
       }
       if (response.data && response.data.paymentMod === 'ORANGE_MONEY') {
         this.paymentMod = 'ORANGE_MONEY';
         this.openPinpad();
+        this.followAnalyticsService.registerEventFollow(
+          'Buy_pass_payment_mod',
+          'event',
+          'ORANGE_MONEY'
+        );
       }
     });
     return await modal.present();
@@ -130,7 +143,7 @@ export class OperationRecapPage implements OnInit {
           destinataire: this.recipientMsisdn,
           code: this.recipientCodeFormule,
           purchaseType: this.purchaseType,
-          recipientName: this.recipientName
+          recipientName: this.recipientName,
         },
       },
     };
