@@ -46,6 +46,13 @@ export class OperationRecapPage implements OnInit {
   ngOnInit() {
     this.currentUserNumber = this.dashboardService.getCurrentPhoneNumber();
     this.route.queryParams.subscribe((params) => {
+      console.log(
+        this.router.getCurrentNavigation(),
+        this.router.getCurrentNavigation().extras.state,
+        this.router.getCurrentNavigation().extras.state.pass,
+        this.router.getCurrentNavigation().extras.state.purchaseType
+      );
+
       if (
         this.router.getCurrentNavigation() &&
         this.router.getCurrentNavigation().extras.state &&
@@ -103,7 +110,7 @@ export class OperationRecapPage implements OnInit {
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
-        operationType: OPERATION_TYPE_PASS_INTERNET,
+        operationType: this.purchaseType,
         buyPassPayload: this.buyPassPayload,
       },
     });
@@ -126,6 +133,7 @@ export class OperationRecapPage implements OnInit {
     params.paymentMod = this.paymentMod;
     params.recipientMsisdn = this.recipientMsisdn;
     params.recipientName = this.recipientName;
+    params.purchaseType = this.purchaseType;
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
       cssClass: params.success ? 'success-modal' : 'failed-modal',
@@ -156,8 +164,12 @@ export class OperationRecapPage implements OnInit {
     const amount = +this.passChoosen.tarif;
     const msisdn = this.currentUserNumber;
     const receiver = this.recipientMsisdn;
+    const type =
+      this.purchaseType === OPERATION_TYPE_PASS_INTERNET
+        ? 'internet'
+        : 'illimix';
     const payload: BuyPassModel = {
-      type: 'internet',
+      type,
       codeIN,
       amount,
       msisdn,
@@ -212,7 +224,6 @@ export class OperationRecapPage implements OnInit {
 
   transactionFailure() {
     this.buyingPass = false;
-    this.buyPassFailed = true;
     this.openSuccessFailModal({ success: false });
     this.buyPassErrorMsg =
       'Service indisponible. Veuillez réessayer ultérieurement';
@@ -236,6 +247,7 @@ export class OperationRecapPage implements OnInit {
 }
 
 interface ModalSuccessModel {
+  purchaseType?: string;
   passBought?: any;
   success?: boolean;
   recipientMsisdn?: string;
