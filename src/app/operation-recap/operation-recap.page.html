@@ -13,18 +13,20 @@
     </ng-container>
   </div>
   <div class="banner-container">
-    <img
-      *ngIf="purchaseType === OPERATION_INTERNET_TYPE"
-      src="assets/images/pass-internet-banniere.png"
-      alt="banniere"
-      class="banniere"
-    />
-    <img
-      *ngIf="purchaseType === OPERATION_ILLIMIX_TYPE"
-      src="assets/images/banniere-illimix.png"
-      alt="banniere"
-      class="banniere"
-    />
+    <ng-container [ngSwitch]="purchaseType">
+      <img
+        *ngSwitchCase="OPERATION_INTERNET_TYPE"
+        src="assets/images/pass-internet-banniere.png"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+        *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
+        src="assets/images/banniere-illimix.png"
+        alt="banniere"
+        class="banniere"
+      />
+    </ng-container>
   </div>
 </ion-header>
 
@@ -32,9 +34,18 @@
   <div class="buy-pass-information">
     <div class="title">Pass sélectionné</div>
     <div class="card-container">
-      <app-pass-internet-card
-        [passInternet]="passChoosen"
-      ></app-pass-internet-card>
+      <ng-container [ngSwitch]="purchaseType">
+        <app-item-pass-internet
+          [passInternet]="passChoosen"
+          *ngSwitchCase="OPERATION_INTERNET_TYPE"
+        >
+        </app-item-pass-internet>
+        <app-item-pass-illimix
+          [passIllimix]="passChoosen"
+          *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
+        >
+        </app-item-pass-illimix>
+      </ng-container>
     </div>
     <div class="recipient-information">
       <div class="top-block">
