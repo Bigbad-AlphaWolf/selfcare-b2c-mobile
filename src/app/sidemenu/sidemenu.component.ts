@@ -3,13 +3,13 @@ import {
   OnInit,
   EventEmitter,
   Output,
-  OnDestroy
+  OnDestroy,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import {
   DashboardService,
-  downloadAvatarEndpoint
+  downloadAvatarEndpoint,
 } from '../services/dashboard-service/dashboard.service';
 import { MatDialog } from '@angular/material';
 import { AccountService } from '../services/account-service/account.service';
@@ -17,7 +17,7 @@ import * as SecureLS from 'secure-ls';
 import {
   NO_AVATAR_ICON_URL,
   getNOAvatartUrlImage,
-  ASSISTANCE_URL
+  ASSISTANCE_URL,
 } from 'src/shared';
 import { dashboardOpened } from '../dashboard';
 const ls = new SecureLS({ encodingType: 'aes' });
@@ -27,7 +27,7 @@ import { FormuleService } from '../services/formule-service/formule.service';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
-  styleUrls: ['./sidemenu.component.scss']
+  styleUrls: ['./sidemenu.component.scss'],
 })
 export class SidemenuComponent implements OnInit, OnDestroy {
   userSubscription;
@@ -57,7 +57,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
       this.getSouscription();
       this.extractData();
     });
-    this.authServ.currentPhoneNumbersubscriptionUpdated.subscribe(formule => {
+    this.authServ.currentPhoneNumbersubscriptionUpdated.subscribe((formule) => {
       console.log(formule);
       this.getSouscription();
     });
@@ -70,7 +70,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.msisdn = this.dashboardServ.getCurrentPhoneNumber();
     const userHasLogin = !!this.authServ.getToken();
     if (userHasLogin) {
-      this.authServ.getSubscription(this.msisdn).subscribe(souscription => {
+      this.authServ.getSubscription(this.msisdn).subscribe((souscription) => {
         this.userSubscription = souscription;
         this.currentProfile = souscription.profil;
         this.currentFormule = souscription.nomOffre;
@@ -185,6 +185,11 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   closeMenu() {
+    this.followAnalyticsService.registerEventFollow(
+      'closed_menu',
+      'event',
+      'closed'
+    );
     this.close.emit();
   }
   goToAbout() {
