@@ -24,7 +24,7 @@ const billsEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bordereau`;
 const billsDetailEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BillsService {
   getBillsSubject: Subject<any> = new Subject<any>();
@@ -52,13 +52,13 @@ export class BillsService {
       )
       .pipe(
         tap(
-          el =>
+          (el) =>
             this.followServ.registerEventFollow(
               'Bordereaux_Mobile_Success',
               'event',
               this.currentNumber
             ),
-          err =>
+          (err) =>
             this.followServ.registerEventFollow(
               'Bordereaux_Mobile_Error',
               'error',
@@ -91,7 +91,7 @@ export class BillsService {
               return lastLoadedBillsPackage;
             }
           },
-          err => {
+          (err) => {
             this.followServ.registerEventFollow(
               'Birdereaux_Fixe_Error',
               'error',
@@ -125,7 +125,7 @@ export class BillsService {
               return lastLoadedBills;
             }
           },
-          err => {
+          (err) => {
             this.followServ.registerEventFollow(
               'Factures_Mobile_Error',
               'error',
@@ -150,13 +150,13 @@ export class BillsService {
         )
         .pipe(
           tap(
-            el =>
+            (el) =>
               this.followServ.registerEventFollow(
                 'Factures_Fixe_Success',
                 'event',
                 this.currentNumber
               ),
-            err =>
+            (err) =>
               this.followServ.registerEventFollow(
                 'Factures_Fixe_Error',
                 'error',
@@ -171,13 +171,13 @@ export class BillsService {
         )
         .pipe(
           tap(
-            el =>
+            (el) =>
               this.followServ.registerEventFollow(
                 'Factures_Mobile_Success',
                 'event',
                 this.currentNumber
               ),
-            err =>
+            (err) =>
               this.followServ.registerEventFollow(
                 'Factures_Mobile_Error',
                 'error',
@@ -195,7 +195,7 @@ export class BillsService {
     annee: number;
   }) {
     this.getBillsDetail(payload).subscribe(
-      res => {
+      (res) => {
         this.getBillsDetailSubject.next(res);
       },
       () => {
@@ -209,7 +209,17 @@ export class BillsService {
       if (this.platform.is('ios')) {
       }
       this.inAppBrowser.create(bill.url, '_system');
+      this.followServ.registerEventFollow(
+        'download_bill_success',
+        'event',
+        'success'
+      );
     } else {
+      this.followServ.registerEventFollow(
+        'download_bill_error',
+        'error',
+        'error'
+      );
       this.openNotAvailableDialog();
     }
   }
@@ -264,7 +274,7 @@ export class BillsService {
   openNotAvailableDialog() {
     const type = 'facture';
     const dialogRef = this.dialog.open(ModalSuccessComponent, {
-      data: { type }
+      data: { type },
     });
     dialogRef.afterClosed().subscribe(() => {});
   }

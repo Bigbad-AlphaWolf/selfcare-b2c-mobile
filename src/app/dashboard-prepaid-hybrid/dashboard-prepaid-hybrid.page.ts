@@ -17,7 +17,7 @@ import {
   WelcomeStatusModel,
   SargalStatusModel,
   getBanniereTitle,
-  getBanniereDescription
+  getBanniereDescription,
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -34,7 +34,7 @@ import {
   SubscriptionModel,
   PROFILE_TYPE_HYBRID,
   PROFILE_TYPE_HYBRID_1,
-  PROFILE_TYPE_HYBRID_2
+  PROFILE_TYPE_HYBRID_2,
 } from '../dashboard';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
@@ -46,7 +46,7 @@ const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-prepaid-hybrid',
   templateUrl: './dashboard-prepaid-hybrid.page.html',
-  styleUrls: ['./dashboard-prepaid-hybrid.page.scss']
+  styleUrls: ['./dashboard-prepaid-hybrid.page.scss'],
 })
 export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   opened = true;
@@ -68,7 +68,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   showHelbBtn = false;
   pictures = [
     { image: '/assets/images/banniere-promo-mob.png' },
-    { image: '/assets/images/banniere-promo-fibre.png' }
+    { image: '/assets/images/banniere-promo-fibre.png' },
   ];
   listBanniere: BannierePubModel[] = [];
   PROFILE_TYPE_PREPAID = PROFILE_TYPE_PREPAID;
@@ -86,7 +86,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   slideOpts = {
     speed: 400,
     slidesPerView: 1.7,
-    slideShadows: true
+    slideShadows: true,
   };
   CODE_COMPTEUR_VOLUME_NUIT_1 = CODE_COMPTEUR_VOLUME_NUIT_1;
   CODE_COMPTEUR_VOLUME_NUIT_2 = CODE_COMPTEUR_VOLUME_NUIT_2;
@@ -196,7 +196,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         if (res.length) {
           res = arrangeCompteurByOrdre(res);
           const appelConso = res.length
-            ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL)
+            ? res.find((x) => x.categorie === USER_CONS_CATEGORY_CALL)
                 .consommations
             : null;
           if (appelConso) {
@@ -212,7 +212,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         }
         this.dataLoaded = true;
       },
-      err => {
+      (err) => {
         this.error = true;
         this.dataLoaded = true;
       }
@@ -291,12 +291,12 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
 
   // extract dates limit of balance & credit
   getValidityDates(appelConso: any[]) {
-    const forfaitBalance = appelConso.find(x => x.code === 9);
+    const forfaitBalance = appelConso.find((x) => x.code === 9);
     if (forfaitBalance) {
       this.balanceValidity = forfaitBalance.dateExpiration.substring(0, 10);
     }
     let longestDate = 0;
-    appelConso.forEach(conso => {
+    appelConso.forEach((conso) => {
       const dateDMY = conso.dateExpiration.substring(0, 10);
       const date = this.processDateDMY(dateDMY);
       if (date > longestDate) {
@@ -341,7 +341,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.soldebonus = 0;
     this.creditRechargement = 0;
     if (callConsos) {
-      callConsos.forEach(x => {
+      callConsos.forEach((x) => {
         // goblal conso = Amout of code 1 + code 6
         if (x.code === 1 || x.code === 6 || x.code === 2) {
           if (x.code === 1) {
@@ -364,7 +364,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     return {
       globalCredit: formatCurrency(globalCredit),
       balance: formatCurrency(balance),
-      isHybrid
+      isHybrid,
     };
   }
 
@@ -449,7 +449,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.shareDialog.open(ShareSocialNetworkComponent, {
       height: '530px',
       width: '330px',
-      maxWidth: '100%'
+      maxWidth: '100%',
     });
   }
 
@@ -462,7 +462,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   showWelcomePopup(data: WelcomeStatusModel) {
     const dialog = this.shareDialog.open(WelcomePopupComponent, {
       data,
-      panelClass: 'gift-popup-class'
+      panelClass: 'gift-popup-class',
     });
     dialog.afterClosed().subscribe(() => {
       this.assistanceService.tutoViewed().subscribe(() => {});
@@ -481,7 +481,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
                 this.showWelcomePopup(res);
               }
             },
-            err => {}
+            (err) => {}
           );
         }
       },
@@ -495,5 +495,14 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
 
   getBanniereDescription(description: string) {
     return getBanniereDescription(description);
+  }
+
+  goAssistance() {
+    this.router.navigate(['/control-center']);
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_via_Ibou',
+      'event',
+      'clicked'
+    );
   }
 }

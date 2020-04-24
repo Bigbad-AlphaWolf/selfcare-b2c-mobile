@@ -9,11 +9,10 @@ import { formatCurrency } from 'src/shared';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
-
 @Component({
   selector: 'app-om-button',
   templateUrl: './om-button.component.html',
-  styleUrls: ['./om-button.component.scss']
+  styleUrls: ['./om-button.component.scss'],
 })
 export class OmButtonComponent implements OnInit, OnDestroy {
   balanceAvailableSub: Subscription;
@@ -39,7 +38,7 @@ export class OmButtonComponent implements OnInit, OnDestroy {
     );
     this.balanceStateSubscription = this.omServ
       .balanceVisibilityEMitted()
-      .subscribe(showSolde => {
+      .subscribe((showSolde) => {
         this.balanceIsAvailable = showSolde;
       });
 
@@ -68,11 +67,19 @@ export class OmButtonComponent implements OnInit, OnDestroy {
 
   showSoldeOM() {
     if (this.balanceIsAvailable) {
-      this.followsServ.registerEventFollow('Click_cacher_solde_OM_dashboard',"event", 'clicked')
+      this.followsServ.registerEventFollow(
+        'Click_cacher_solde_OM_dashboard',
+        'event',
+        'clicked'
+      );
       this.hideSolde();
     } else {
       this.router.navigate(['see-solde-om']);
-      this.followsServ.registerEventFollow('Click_Voir_solde_OM_dashboard',"event", 'clicked')
+      this.followsServ.registerEventFollow(
+        'Click_Voir_solde_OM_dashboard',
+        'event',
+        'clicked'
+      );
     }
   }
 

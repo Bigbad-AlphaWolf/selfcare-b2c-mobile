@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { EmergencyService } from 'src/app/services/emergency-service/emergency.service';
 import {
   DashboardService,
-  downloadEndpoint
+  downloadEndpoint,
 } from 'src/app/services/dashboard-service/dashboard.service';
 import {
   REGEX_EMAIL,
@@ -13,7 +13,7 @@ import {
   getOperationCodeActionOM,
   FILENAME_OPEN_OM_ACCOUNT,
   FILENAME_DEPLAFONNEMENT_OM_ACCOUNT,
-  FILENAME_ERROR_TRANSACTION_OM
+  FILENAME_ERROR_TRANSACTION_OM,
 } from 'src/shared';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
@@ -22,7 +22,7 @@ const { SERVER_API_URL } = environment;
 import * as SecureLS from 'secure-ls';
 import {
   FileTransfer,
-  FileTransferObject
+  FileTransferObject,
 } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
@@ -34,7 +34,7 @@ const logEndpoint = `${SERVER_API_URL}/management/selfcare-logs-file`;
 @Component({
   selector: 'app-orange-money',
   templateUrl: './orange-money.component.html',
-  styleUrls: ['./orange-money.component.scss']
+  styleUrls: ['./orange-money.component.scss'],
 })
 export class OrangeMoneyComponent implements OnInit {
   form: FormGroup;
@@ -75,11 +75,11 @@ export class OrangeMoneyComponent implements OnInit {
         this.userInfos.email && !this.invalideEmail(this.userInfos.email)
           ? this.userInfos.email
           : null,
-        [Validators.required, Validators.pattern(REGEX_EMAIL)]
+        [Validators.required, Validators.pattern(REGEX_EMAIL)],
       ],
       form: [null, [Validators.required]],
       recto: [null, [Validators.required]],
-      verso: [null]
+      verso: [null],
     });
     this.userNumber = this.dashb.getCurrentPhoneNumber();
     this.type = this.route.snapshot.paramMap.get('type');
@@ -163,6 +163,7 @@ export class OrangeMoneyComponent implements OnInit {
               this.cniFrontSizeError = true;
             }
           }
+          this.followUploadFile('cni');
           break;
         case 'cni2':
           if (this.checkExtension2(fileName, 'cni2')) {
@@ -173,6 +174,7 @@ export class OrangeMoneyComponent implements OnInit {
               this.cniBackSizeError = true;
             }
           }
+          this.followUploadFile('cni');
           break;
         case 'form':
           if (this.checkExtension(fileName, 'form')) {
@@ -183,6 +185,7 @@ export class OrangeMoneyComponent implements OnInit {
               this.formSizeError = true;
             }
           }
+          this.followUploadFile('form');
           break;
       }
     } else {
@@ -207,6 +210,37 @@ export class OrangeMoneyComponent implements OnInit {
       this.formExtError;
   }
 
+  followUploadFile(cniOrForm: 'cni' | 'form') {
+    let eventName = '';
+    switch (this.type) {
+      case 'deplafonnement':
+        eventName =
+          cniOrForm === 'cni'
+            ? 'upload_cni_deplafonnement'
+            : 'upload_formulaire_deplafonnement';
+        break;
+      case 'creation-compte':
+        eventName =
+          cniOrForm === 'cni'
+            ? 'upload_cni_creation'
+            : 'upload_formulaire_creation';
+        break;
+      case 'reclamation':
+        eventName =
+          cniOrForm === 'cni'
+            ? 'upload_cni_reclamation'
+            : 'upload_formulaire_reclamation';
+        break;
+      default:
+        break;
+    }
+    this.followAnalyticsService.registerEventFollow(
+      eventName,
+      'event',
+      'clicked'
+    );
+  }
+
   downloadFile() {
     let srcFile = downloadEndpoint;
     let logMsg = '';
@@ -216,16 +250,27 @@ export class OrangeMoneyComponent implements OnInit {
         filename = FILENAME_OPEN_OM_ACCOUNT;
         srcFile += FILENAME_OPEN_OM_ACCOUNT;
         logMsg = 'Telechargement formulaire Ouverture compte OM';
+        this.followAnalyticsService.registerEventFollow(
+          'Download_formulaire_creation',
+          'event',
+          'clicked'
+        );
         break;
       case 'deplafonnement':
         filename = FILENAME_DEPLAFONNEMENT_OM_ACCOUNT;
         srcFile += FILENAME_DEPLAFONNEMENT_OM_ACCOUNT;
         logMsg = 'Telechargement formulaire deplafonnement compte OM';
+        this.followAnalyticsService.registerEventFollow(
+          'Download_formulaire_deplafonnement',
+          'event',
+          'clicked'
+        );
         break;
       default:
         filename = FILENAME_ERROR_TRANSACTION_OM;
         srcFile += FILENAME_ERROR_TRANSACTION_OM;
         logMsg = 'Telechargement formulaire declaration erreur transaction OM';
+        this.followAnalyticsService.registerEventFollow('', 'event', 'clicked');
         break;
     }
     this.download(filename);
@@ -242,18 +287,18 @@ export class OrangeMoneyComponent implements OnInit {
       path = this.file.documentsDirectory;
     }
     fileTransfer.download(url, path + fileName, true, options).then(
-      entry => {
+      (entry) => {
         const fileurl = entry.toURL();
         this.fileOpener
           .open(fileurl, 'application/pdf')
           .then(() => {
             // log file opened successfully
           })
-          .catch(e => {
+          .catch((e) => {
             // log file opened successfully console.log('Error opening file', e)
           });
       },
-      error => {
+      (error) => {
         console.log(error);
       }
     );
@@ -268,7 +313,7 @@ export class OrangeMoneyComponent implements OnInit {
       firstName: this.userInfos.firstName,
       lastName: this.userInfos.lastName,
       numero: this.userNumber,
-      email: this.form.get('mail').value
+      email: this.form.get('mail').value,
     };
     emailFormDataModel.append('operationDTO', JSON.stringify(operation));
     emailFormDataModel.append('formulaire', this.formulaireToUpload);
@@ -294,7 +339,7 @@ export class OrangeMoneyComponent implements OnInit {
             break;
           default:
             this.followAnalyticsService.registerEventFollow(
-              'Declaration_Erreur',
+              'Declaration_Erreur_Success',
               'event',
               'success'
             );
@@ -345,7 +390,7 @@ export class OrangeMoneyComponent implements OnInit {
 
   openConfirmDialog() {
     const dialogRef = this.dialog.open(CancelOperationPopupComponent, {
-      data: { confirmationOperationDepannage: true }
+      data: { confirmationOperationDepannage: true },
     });
     dialogRef.afterClosed().subscribe((res: any) => {
       if (res) {
@@ -356,9 +401,9 @@ export class OrangeMoneyComponent implements OnInit {
 
   openSuccessDialog(type: string) {
     const dialogRef = this.dialog.open(ModalSuccessComponent, {
-      data: { type }
+      data: { type },
     });
-    dialogRef.afterClosed().subscribe(confirmresult => {});
+    dialogRef.afterClosed().subscribe((confirmresult) => {});
   }
 
   formValid() {
@@ -376,9 +421,9 @@ export class OrangeMoneyComponent implements OnInit {
   openNotAvailableDialog(title: string, text: string) {
     const type = 'file';
     const dialogRef = this.dialog.open(ModalSuccessComponent, {
-      data: { type, title, text }
+      data: { type, title, text },
     });
-    dialogRef.afterClosed().subscribe(confirmresult => {});
+    dialogRef.afterClosed().subscribe((confirmresult) => {});
   }
 
   manageUploadError() {
