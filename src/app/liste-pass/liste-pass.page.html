@@ -44,7 +44,7 @@
         <mat-spinner mode="indeterminate" [diameter]="25"></mat-spinner>
       </div>
 
-      <div *ngIf="isLoaded" class="list-pass-body">
+      <div *ngIf="isLoaded && listPass.length" class="list-pass-body">
         <div class="tab-header">
           <div
             *ngFor="let slide of fullListPass; let i=index"
