@@ -58,7 +58,6 @@ export class SelectBeneficiaryV2Page implements OnInit {
 
   ionViewWillEnter(){
     this.currentUserNumber = this.dashbbServ.getCurrentPhoneNumber();
-    this.recipientNumber = this.currentUserNumber;
     this.mainPhoneNumber = this.dashbbServ.getMainPhoneNumber();
     this.getListeRattachedNumber();
   }
@@ -86,9 +85,11 @@ export class SelectBeneficiaryV2Page implements OnInit {
       if(res.length){        
         this.listUserNumber.push(...res);
       }
+      this.recipientNumber = this.currentUserNumber;
     },(err: any)=>{
       this.isLoaded = true;
       this.hasError = true;
+      this.recipientNumber = this.currentUserNumber;
     });
   }
 

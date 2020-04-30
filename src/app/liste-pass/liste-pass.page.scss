@@ -56,12 +56,13 @@
       .main-content {
         height: 100%;
         background-color: $grayDashboard;
-        padding: 10px 15px;
+        padding: 10px 0px;
         ion-slides {
           min-height: 100%;
           width: 100%;
           background-color: $grayDashboard;
           ion-slide {
+            padding: 0 15px;
             background-color: $grayDashboard;
             width: 100%;
           }

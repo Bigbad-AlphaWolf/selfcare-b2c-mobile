@@ -16,7 +16,7 @@ export class ListePassPage implements OnInit {
   userNumber: string;
   userCodeFormule: string;
   listCategory = [];
-  listPassInternet: any;
+  listPass: any;
   isLoaded: boolean;
   activeTabIndex = 0;
   @ViewChild('sliders') sliders: IonSlides;
@@ -48,7 +48,9 @@ export class ListePassPage implements OnInit {
         this.userCodeFormule = this.router.getCurrentNavigation().extras.state.payload.code;
         this.recipientName = this.router.getCurrentNavigation().extras.state.payload.recipientName;
         this.purchaseType = this.router.getCurrentNavigation().extras.state.payload.purchaseType;
-        
+        this.listCategory = [];
+        this.listPass = [];
+        this.activeTabIndex = 0;
         if(this.purchaseType === OPERATION_TYPE_PASS_INTERNET){
           this.passIntService.setUserCodeFormule(this.userCodeFormule);
           this.passIntService.setListPassInternetOfUserByQuery();
@@ -56,8 +58,8 @@ export class ListePassPage implements OnInit {
             this.isLoaded = status;
             if (this.isLoaded) {
               this.listCategory = this.passIntService.getListCategoryPassInternet();
-              this.listPassInternet = this.passIntService.getListPassInternetOfUser();
-              this.fullListPass = arrangePassByCategory(this.listPassInternet,this.listCategory);
+              this.listPass = this.passIntService.getListPassInternetOfUser();
+              this.fullListPass = arrangePassByCategory(this.listPass,this.listCategory);
             }
           });
         }else {
@@ -67,8 +69,8 @@ export class ListePassPage implements OnInit {
             this.isLoaded = status;
             if (this.isLoaded) {
               this.listCategory = this.passIllimixServ.getCategoryListPassIllimix();
-              this.listPassInternet = this.passIllimixServ.getListPassIllimix();
-              this.fullListPass = arrangePassByCategory(this.listPassInternet,this.listCategory);
+              this.listPass = this.passIllimixServ.getListPassIllimix();
+              this.fullListPass = arrangePassByCategory(this.listPass,this.listCategory);
             }
           });
         }
