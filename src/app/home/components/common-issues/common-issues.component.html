@@ -1,0 +1,27 @@
+<div class="check-firstly-container">
+  <div class="title">
+    Quel soucis rencontrez-vous ?
+  </div>
+  <div class="check-otions-list">
+    <div *ngFor="let opt of options" class="check-item">
+      <div class="item-text">
+        <div class="item-icon">
+        </div>
+        <div class="text-content">
+          <span class="titre">
+              {{ opt.title }}
+          </span>
+          <span class="subtitle scb-text-gray">
+              {{ opt.subtitle }} 
+          </span>
+        </div>
+      </div>
+      <div class="arrow">
+        <img src="/content/images/arrow-left.png" class="icon" alt="">
+      </div>
+    </div>
+  </div>
+  <div (click)="close()" mat-raised-button class="btn scb-btn-full scb-btn-orange">
+      C’est fait, continuer
+  </div>
+</div>

@@ -1,6 +1,8 @@
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatBottomSheet } from '@angular/material';
+import { CommonIssuesComponent } from './components/common-issues/common-issues.component';
 const ORANGE_HOME_PAGE_URL = 'http://orange.sn';
 declare var FollowAnalytics: any;
 @Component({
@@ -8,7 +10,7 @@ declare var FollowAnalytics: any;
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss']
 })
-export class HomePage {
+export class HomePage implements OnInit {
   slideOpts = {
     initialSlide: 1,
     speed: 400,
@@ -42,10 +44,14 @@ export class HomePage {
 
   currentIndex;
 
-  constructor(private router: Router, private nativePageTransition: NativePageTransitions) {
+  constructor(private router: Router, private nativePageTransition: NativePageTransitions, private bottomSheet: MatBottomSheet) {
     if (typeof FollowAnalytics !== 'undefined') {
       FollowAnalytics.logEvent('Home', 'success');
     }
+  }
+
+  ngOnInit() {
+    //  this.open();
   }
 
   goToLoginPage() {
@@ -60,5 +66,14 @@ export class HomePage {
 
   goToOrangeHomePage() {
     window.location.href = ORANGE_HOME_PAGE_URL;
+  }
+
+  open(){
+    setTimeout(() => {
+      this.bottomSheet.open(CommonIssuesComponent,
+        {
+          panelClass: 'custom-css-common-issues'
+        });
+  }, 1000);
   }
 }
