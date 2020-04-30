@@ -2,7 +2,6 @@ import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/na
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatBottomSheet } from '@angular/material';
-import { CommonIssuesComponent } from './components/common-issues/common-issues.component';
 const ORANGE_HOME_PAGE_URL = 'http://orange.sn';
 declare var FollowAnalytics: any;
 @Component({
@@ -66,14 +65,5 @@ export class HomePage implements OnInit {
 
   goToOrangeHomePage() {
     window.location.href = ORANGE_HOME_PAGE_URL;
-  }
-
-  open(){
-    setTimeout(() => {
-      this.bottomSheet.open(CommonIssuesComponent,
-        {
-          panelClass: 'custom-css-common-issues'
-        });
-  }, 1000);
   }
 }

@@ -5,21 +5,22 @@ import { Router } from '@angular/router';
 import {
   AuthenticationService,
   ConfirmMsisdnModel,
-  RegistrationModel
+  RegistrationModel,
 } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef, MatBottomSheet } from '@angular/material';
 import * as SecureLS from 'secure-ls';
 import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
 import * as Fingerprint2 from 'fingerprintjs2';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { CommonIssuesComponent } from './common-issues/common-issues.component';
 
 @Component({
   selector: 'app-new-registration',
   templateUrl: './new-registration.page.html',
-  styleUrls: ['./new-registration.page.scss']
+  styleUrls: ['./new-registration.page.scss'],
 })
 export class NewRegistrationPage implements OnInit {
   dialogRef: MatDialogRef<SettingsPopupComponent, any>;
@@ -40,8 +41,20 @@ export class NewRegistrationPage implements OnInit {
   step: 'CHECK_NUMBER' | 'PASSWORD' | 'SUCCESS';
   fields = {
     password: { fieldType: 'password', visibilityIcon: 'visibility' },
-    confirmPassword: { fieldType: 'password', visibilityIcon: 'visibility' }
+    confirmPassword: { fieldType: 'password', visibilityIcon: 'visibility' },
   };
+  navItems: { title: string; subTitle: string; action: 'help' | 'login' }[] = [
+    {
+      title: 'Je me connecte',
+      subTitle: 'J’ai déjà un compte',
+      action: 'login',
+    },
+    {
+      title: 'J’ai besoin d’aide',
+      subTitle: 'J’éprouve des difficultés pour me connecter',
+      action: 'help',
+    },
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -50,11 +63,16 @@ export class NewRegistrationPage implements OnInit {
     private dashbServ: DashboardService,
     public dialog: MatDialog,
     private ref: ChangeDetectorRef,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private bottomSheet: MatBottomSheet
   ) {}
 
   goIntro() {
-    this.followAnalyticsService.registerEventFollow("Voir_Intro", "event","clic")
+    this.followAnalyticsService.registerEventFollow(
+      'Voir_Intro',
+      'event',
+      'clic'
+    );
     this.router.navigate(['/home']);
   }
 
@@ -62,7 +80,7 @@ export class NewRegistrationPage implements OnInit {
     this.step = 'CHECK_NUMBER';
     this.formPassword = this.fb.group({
       password: ['', [Validators.required]],
-      confirmPassword: ['', [Validators.required]]
+      confirmPassword: ['', [Validators.required]],
     });
     this.getNumber();
   }
@@ -75,8 +93,8 @@ export class NewRegistrationPage implements OnInit {
     this.gettingNumber = true;
     this.showErrMessage = false;
     this.ref.detectChanges();
-    Fingerprint2.get(components => {
-      const values = components.map(component => {
+    Fingerprint2.get((components) => {
+      const values = components.map((component) => {
         return component.value;
       });
       const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
@@ -108,7 +126,7 @@ export class NewRegistrationPage implements OnInit {
               }
               this.ref.detectChanges();
             },
-            err => {
+            (err) => {
               this.gettingNumber = false;
               this.showErrMessage = true;
               this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
@@ -122,7 +140,7 @@ export class NewRegistrationPage implements OnInit {
             }
           );
         },
-        err => {
+        (err) => {
           this.gettingNumber = false;
           this.showErrMessage = true;
           this.errorMsg = `La récupération ne s'est pas bien passée. Assurez d'activer vos données mobiles Orange puis réessayez`;
@@ -132,7 +150,7 @@ export class NewRegistrationPage implements OnInit {
             'error',
             {
               msisdn: this.phoneNumber,
-              error: this.errorMsg
+              error: this.errorMsg,
             }
           );
           this.ref.detectChanges();
@@ -183,7 +201,7 @@ export class NewRegistrationPage implements OnInit {
       firstName: '',
       lastName: '',
       email: null,
-      hmac: this.hmac
+      hmac: this.hmac,
     };
     this.authServ.register(userInfo).subscribe(
       () => {
@@ -233,7 +251,7 @@ export class NewRegistrationPage implements OnInit {
 
   openCguDialog() {
     this.dialog.open(CguPopupComponent, {
-      data: { login: '' }
+      data: { login: '' },
     });
   }
 
@@ -255,10 +273,10 @@ export class NewRegistrationPage implements OnInit {
     const userCredential = {
       username: login,
       password: this.formPassword.value.password,
-      rememberMe: true
+      rememberMe: true,
     };
     this.authServ.login(userCredential).subscribe(
-      res => {
+      (res) => {
         this.dashbServ.getAccountInfo(userCredential.username).subscribe(
           (resp: any) => {
             this.isLogging = false;
@@ -280,7 +298,7 @@ export class NewRegistrationPage implements OnInit {
           }
         );
       },
-      err => {
+      (err) => {
         this.followAnalyticsService.registerEventFollow(
           'Authentication_Failed',
           'error',
@@ -289,5 +307,22 @@ export class NewRegistrationPage implements OnInit {
         this.router.navigate(['/login']);
       }
     );
+  }
+
+  doAction(action: 'login' | 'help') {
+    if (action === 'login') {
+      this.goLoginPage();
+    }
+    if (action === 'help') {
+      this.openHelpModal();
+    }
+  }
+
+  openHelpModal() {
+    // setTimeout(() => {
+    this.bottomSheet.open(CommonIssuesComponent, {
+      panelClass: 'custom-css-common-issues',
+    });
+    // }, 1000);
   }
 }

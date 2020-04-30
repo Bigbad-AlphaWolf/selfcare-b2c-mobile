@@ -1,6 +1,14 @@
 @import 'src/app/app';
 
 .creation-steps {
+  &-sim {
+    padding: 0 15px;
+  }
+  .voir-intro {
+    text-align: right;
+    padding-top: 15px;
+    font-size: 18px;
+  }
   width: 100%;
   height: 100%;
   background: url('/assets/images/background_login_page.png');
@@ -11,19 +19,38 @@
   .img-container {
     width: percentage(195/375);
     margin: 76px auto 20px;
+    &-sim {
+      width: percentage(118/365);
+      margin: 25px 0 20px;
+      text-align: left;
+    }
     img {
       width: 100%;
       height: auto;
     }
   }
   .title {
+    &-sim {
+      margin: 30px 0 10px;
+      text-align: left;
+    }
     width: percentage(248/375);
     margin: 0 auto 20px;
     text-align: center;
     font-family: HelveticaNeueLTStd-Bd;
-    font-size: 30px;
+    font-size: 34px;
+  }
+  .sub-title {
+    padding: 10px 0 20px;
+    span {
+      font-size: 16px;
+      font-family: HelveticaNeueLTStd-Roman;
+    }
   }
   .form-container {
+    &-sim {
+      width: 100%;
+    }
     width: percentage(300/375);
     margin: 0 auto;
     .form-get-number {
@@ -36,28 +63,19 @@
         border-radius: 7px;
       }
       .numero-container {
-        padding: 15px 0;
+        padding: 15px;
         border: solid 2px $grey;
         border-radius: 7px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         .phonenumber {
-          width: percentage(186/300);
           font-family: HelveticaNeueLTStd-Bd;
           font-size: 24px;
-          border-right: solid 2px $grey;
-          text-align: center;
         }
         .refresh {
-          width: percentage(114/300);
-          display: flex;
-          justify-content: center;
-          align-items: center;
           span {
             font-size: 14px;
-          }
-          img {
-            margin-left: 5px;
           }
         }
       }
@@ -82,6 +100,28 @@
         }
         .mat-spinner::ng-deep circle {
           stroke: $white;
+        }
+      }
+      .bottom-block {
+        margin-top: 50px;
+        .nav-item {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 15px;
+          .left-block {
+            .titre {
+              font-size: 16px;
+              line-height: 1.25;
+            }
+            .sous-titre {
+              font-family: HelveticaNeueLTStd-Roman, sans-serif;
+              font-size: 12px;
+              line-height: 1.33;
+              margin-top: 5px;
+            }
+          }
+          .right-block {
+          }
         }
       }
       .je-me-connecte {

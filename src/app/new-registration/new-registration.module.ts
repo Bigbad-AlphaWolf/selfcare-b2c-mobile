@@ -8,12 +8,14 @@ import { IonicModule } from '@ionic/angular';
 import { NewRegistrationPage } from './new-registration.page';
 import { SharedModule } from 'src/shared/shared.module';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
+import { CommonIssuesComponent } from './common-issues/common-issues.component';
+import { MatBottomSheetModule } from '@angular/material';
 
 const routes: Routes = [
   {
     path: '',
-    component: NewRegistrationPage
-  }
+    component: NewRegistrationPage,
+  },
 ];
 
 @NgModule({
@@ -22,9 +24,11 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
-    RouterModule.forChild(routes)
+    MatBottomSheetModule,
+    RouterModule.forChild(routes),
   ],
-  declarations: [NewRegistrationPage],
-  providers: [OpenNativeSettings]
+  declarations: [NewRegistrationPage, CommonIssuesComponent],
+  entryComponents: [CommonIssuesComponent],
+  providers: [OpenNativeSettings],
 })
 export class NewRegistrationPageModule {}
