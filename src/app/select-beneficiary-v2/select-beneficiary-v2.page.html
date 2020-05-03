@@ -71,7 +71,7 @@
             <div *ngIf="hasErrorProcessing" class="error-msg scb-text-text-error">
                 {{ errorMsg }}
              </div>
-            <div class="confirm-btn">
+            <div *ngIf="isLoaded" class="confirm-btn">
               <ion-button shape="round" [disabled]="isProcessing" (click)="processInfoUser()" class="btn" expand="full" >Continuer</ion-button>
               <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
             </div>

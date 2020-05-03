@@ -78,14 +78,14 @@
         margin-top: 5px;
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-end;
         .left-side {
-          width: 72%;
           span {
             text-align: start;
           }
         }
         .right-side {
+          width: 50%;
           text-align: end;
         }
         .item-validity {
