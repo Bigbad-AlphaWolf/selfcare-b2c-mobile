@@ -6,23 +6,19 @@ import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
 import { OnBoardingComponent } from './on-boarding/on-boarding.component';
-import { CommonIssuesComponent } from './components/common-issues/common-issues.component';
-import { MatBottomSheetModule } from '@angular/material';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    MatBottomSheetModule,
     RouterModule.forChild([
       {
         path: '',
-        component: HomePage
-      }
-    ])
+        component: HomePage,
+      },
+    ]),
   ],
-  entryComponents: [CommonIssuesComponent],
-  declarations: [HomePage, OnBoardingComponent, CommonIssuesComponent]
+  declarations: [HomePage, OnBoardingComponent],
 })
 export class HomePageModule {}
