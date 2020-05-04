@@ -81,7 +81,7 @@ export class LoginPage implements OnInit {
             console.log(user);
             this.dashbServ.setCurrentPhoneNumber(user.username);
             // Update notification info
-            this.authServ.UpdateNotificationInfo();
+            // this.authServ.UpdateNotificationInfo();
             this.router.navigate(['/dashboard']);
           },
           () => {
