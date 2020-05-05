@@ -325,10 +325,13 @@ export class NewPinpadModalPage implements OnInit {
                   const dataPassOM = {
                     msisdn2: this.buyPassPayload.destinataire,
                     pin,
-                    price_plan_index: this.buyPassPayload.pass
-                      .price_plan_index_om,
+                    price_plan_index: this.buyPassPayload.pass.passPromo
+                      ? this.buyPassPayload.pass.passPromo.price_plan_index_om
+                      : this.buyPassPayload.pass.price_plan_index_om,
                     canalPromotion,
-                    amount: this.buyPassPayload.pass.tarif,
+                    amount: this.buyPassPayload.passPromo
+                      ? this.buyPassPayload.pass.passPromo.tarif
+                      : this.buyPassPayload.pass.tarif,
                   };
                   this.buyPass(dataPassOM);
                   break;
@@ -336,10 +339,13 @@ export class NewPinpadModalPage implements OnInit {
                   const dataIllimixOM = {
                     msisdn2: this.buyPassPayload.destinataire,
                     pin,
-                    price_plan_index: this.buyPassPayload.pass
-                      .price_plan_index_om,
+                    price_plan_index: this.buyPassPayload.pass.passPromo
+                      ? this.buyPassPayload.pass.passPromo.price_plan_index_om
+                      : this.buyPassPayload.pass.price_plan_index_om,
                     canalPromotion,
-                    amount: this.buyPassPayload.pass.tarif,
+                    amount: this.buyPassPayload.pass.passPromo
+                      ? this.buyPassPayload.pass.passPromo.tarif
+                      : this.buyPassPayload.pass.tarif,
                   };
 
                   this.buyIllimix(dataIllimixOM);
@@ -649,8 +655,8 @@ export class NewPinpadModalPage implements OnInit {
         this.dataToLog
       );
       this.modalController.dismiss({
-        success: true
-      })
+        success: true,
+      });
     } else {
       this.pinHasError = true;
       this.orangeMoneyService.logWithFollowAnalytics(
