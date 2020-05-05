@@ -4,7 +4,7 @@
     <div
       class="item"
       (click)="setPaymentChannel('CREDIT')"
-      *ngIf="pass?.price_plan_index"
+      *ngIf="!pass?.passPromo ? pass?.price_plan_index : pass?.passPromo?.price_plan_index"
     >
       <mat-radio-button [checked]="selectedPaymentChannel === 'CREDIT'">
       </mat-radio-button>
@@ -24,7 +24,7 @@
     <div
       class="item"
       (click)="setPaymentChannel('ORANGE_MONEY')"
-      *ngIf="pass?.price_plan_index_om"
+      *ngIf="!pass?.passPromo ? pass?.price_plan_index_om : pass?.passPromo?.price_plan_index_om"
     >
       <mat-radio-button [checked]="selectedPaymentChannel === 'ORANGE_MONEY'">
       </mat-radio-button>

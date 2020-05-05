@@ -46,13 +46,6 @@ export class OperationRecapPage implements OnInit {
   ngOnInit() {
     this.currentUserNumber = this.dashboardService.getCurrentPhoneNumber();
     this.route.queryParams.subscribe((params) => {
-      console.log(
-        this.router.getCurrentNavigation(),
-        this.router.getCurrentNavigation().extras.state,
-        this.router.getCurrentNavigation().extras.state.pass,
-        this.router.getCurrentNavigation().extras.state.purchaseType
-      );
-
       if (
         this.router.getCurrentNavigation() &&
         this.router.getCurrentNavigation().extras.state &&
@@ -64,14 +57,15 @@ export class OperationRecapPage implements OnInit {
         this.recipientCodeFormule = this.router.getCurrentNavigation().extras.state.recipientCodeFormule;
         this.recipientName = this.router.getCurrentNavigation().extras.state.recipientName;
         this.purchaseType = this.router.getCurrentNavigation().extras.state.purchaseType;
+        this.buyPassPayload = {
+          destinataire: this.recipientMsisdn,
+          pass: this.passChoosen,
+        };
+        console.log(this.buyPassPayload);
       } else {
         this.appRouting.goToDashboard();
       }
     });
-    this.buyPassPayload = {
-      destinataire: this.recipientMsisdn,
-      pass: this.passChoosen,
-    };
   }
 
   async presentModal() {
@@ -160,8 +154,12 @@ export class OperationRecapPage implements OnInit {
 
   payWithCredit() {
     this.buyingPass = true;
-    const codeIN = this.passChoosen.price_plan_index;
-    const amount = +this.passChoosen.tarif;
+    const codeIN = this.passChoosen.passPromo
+      ? this.passChoosen.passPromo.price_plan_index
+      : this.passChoosen.price_plan_index;
+    const amount = this.passChoosen.passPromo
+      ? +this.passChoosen.passPromo.tarif
+      : +this.passChoosen.tarif;
     const msisdn = this.currentUserNumber;
     const receiver = this.recipientMsisdn;
     const type =
