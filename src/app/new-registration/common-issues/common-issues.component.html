@@ -3,7 +3,7 @@
     Quel soucis rencontrez-vous ?
   </div>
   <div class="check-otions-list">
-    <div *ngFor="let opt of options" class="check-item">
+    <div (click)="makeAction(opt)" *ngFor="let opt of options" class="check-item">
       <div class="item-text">
         <div class="item-icon">
         </div>
@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="arrow">
-        <img src="/content/images/arrow-left.png" class="icon" alt="">
+        <img src="/assets/images/arrow-left.png" class="icon" alt="">
       </div>
     </div>
   </div>
