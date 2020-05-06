@@ -1,5 +1,3 @@
-import { AuthenticationService } from './services/authentication-service/authentication.service';
-import { MatDialog } from '@angular/material';
 import { BuyCreditPage } from './buy-credit/buy-credit.page';
 import { BuyPassIllimixPage } from './buy-pass-illimix/buy-pass-illimix.page';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -15,11 +13,8 @@ import * as SecureLS from 'secure-ls';
 import { DetailsConsoPage } from './details-conso/details-conso.page';
 const ls = new SecureLS({ encodingType: 'aes' });
 declare var FollowAnalytics: any;
-import { Device } from '@ionic-native/device/ngx';
 
 import { Uid } from '@ionic-native/uid/ngx';
-import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
-import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
 
 @Component({
   selector: 'app-root',

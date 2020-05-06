@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Subscription, of, timer } from 'rxjs';
+import { Subscription, of, timer, Observable, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -17,6 +17,7 @@ import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { CommonIssuesComponent } from './common-issues/common-issues.component';
 import { takeUntil, finalize } from 'rxjs/operators';
+import { HelpModalDefaultContent, HelpModalAuthErrorContent, HelpModalAPNContent, HelpModalConfigApnContent } from 'src/shared';
 
 @Component({
   selector: 'app-new-registration',
@@ -57,8 +58,10 @@ export class NewRegistrationPage implements OnInit {
     },
   ];
   //Temps d'attente pour la recuperation automatique du numero -> 10 secondes
-  msisdnTimeout= 10000;
-firstCallMsisdn: string;
+  msisdnTimeout = 10000;
+  authErrorDetected = new Subject<any>();
+  helpNeeded = new Subject<any>();
+  firstCallMsisdn: string;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -68,7 +71,19 @@ firstCallMsisdn: string;
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
     private bottomSheet: MatBottomSheet
-  ) {}
+  ) {
+    this.authErrorDetected.subscribe({
+      next: (data) => {
+        this.openHelpModal(data);
+      }
+    }
+    );
+    this.helpNeeded.subscribe({
+      next: (data) => {
+        this.openHelpModal(data);
+      }
+    });
+  }
 
   goIntro() {
     this.followAnalyticsService.registerEventFollow(
@@ -103,54 +118,20 @@ firstCallMsisdn: string;
       const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
       ls.set('X-UUID', x_uuid);
       this.authServ.getMsisdnByNetwork()
-      //if after msisdnTimeout milliseconds the call does not complete, stop it.
-      .pipe(takeUntil(timer(this.msisdnTimeout).pipe(
-      )), 
-      // finalize to detect whenever call is complete or terminated
-      finalize(() => {
-        if(!this.firstCallMsisdn && !this.showErrMessage)
-            //this.displayMsisdnError();
+        //if after msisdnTimeout milliseconds the call does not complete, stop it.
+        .pipe(takeUntil(timer(this.msisdnTimeout)),
+          // finalize to detect whenever call is complete or terminated
+          finalize(() => {
+            if (!this.firstCallMsisdn && !this.showErrMessage || !this.firstCallMsisdn && this.showErrMessage)
             {
-              let popupTitle = 'Assurez-vous :';
-            let options: {
-              title: string;
-              subtitle: string;
-              type: 'ERROR_AUTH_IMP' | 'REGISTER' | 'LOGIN' | 'FORGOT_PWD';
-              url?: string;
-              action?: 'REDIRECT' | 'POPUP';
-            }[] = [
-                {
-                  title: 'De désactiver le WIFI',
-                  subtitle: 'Regarder le tutoriel',
-                  type: 'ERROR_AUTH_IMP',
-                  url: '',
-                  action: 'POPUP'
-                },
-                {
-                  title: 'D\'être sur le le bon APN',
-                  subtitle: 'Regarder le tutoriel',
-                  type: 'ERROR_AUTH_IMP',
-                  url: '',
-                  action: 'POPUP'
-                },
-                {
-                  title: 'D\'activer les données mobiles',
-                  subtitle: 'Regarder le tutoriel',
-                  type: 'ERROR_AUTH_IMP',
-                  url: '',
-                  action: 'POPUP'
-                }
-              ];
-              let sheetData:any={};
-              sheetData.options=options;
-              sheetData.popupTitle=popupTitle;
-              this.openHelpModal(sheetData);
-            console.log('http call failed or got cancelled');
-          }
-      }))
-      .subscribe(
-        (res: { msisdn: string}) => {
-          console.log('inside subscribe');
+              
+              this.displayMsisdnError();
+              this.authErrorDetected.next(HelpModalAuthErrorContent)
+              console.log('http call is not successful');
+            }
+          }))
+        .subscribe(
+          (res: { msisdn: string }) => {
             this.firstCallMsisdn = res.msisdn;
             this.authServ.confirmMsisdnByNetwork(res.msisdn).subscribe(
               (response: ConfirmMsisdnModel) => {
@@ -174,13 +155,12 @@ firstCallMsisdn: string;
                 this.displayMsisdnError();
               }
             );
-          
-        },
-        (err) => {
-          console.log('inside error handler');
-          this.displayMsisdnError();
-        }
-      );
+
+          },
+          (err) => {
+            this.displayMsisdnError();
+          }
+        );
     });
   }
 
@@ -339,30 +319,39 @@ firstCallMsisdn: string;
       this.goLoginPage();
     }
     if (action === 'help') {
-      this.openHelpModal();
+      
+      this.openHelpModal(HelpModalDefaultContent);
     }
   }
 
-  openHelpModal(sheetData?:any) {
-    // setTimeout(() => {
-        this.bottomSheet.open(CommonIssuesComponent, {
-          panelClass: 'custom-css-common-issues',
-          data: sheetData
-        });
-      
-    // }, 1000);
+  openHelpModal(sheetData?: any) {
+    this.bottomSheet.open(CommonIssuesComponent, {
+      panelClass: 'custom-css-common-issues',
+      data: sheetData
+    })
+    .afterDismissed().subscribe((message:string) => {
+      if(message==='ERROR_AUTH_IMP'){
+        this.openHelpModal(HelpModalAuthErrorContent);
+      }
+      if(message==='APN_AUTH_IMP'){
+        this.openHelpModal(HelpModalAPNContent);
+      }
+      if(message==='CONFIG_APN_AUTH_IMP'){
+        this.openHelpModal(HelpModalConfigApnContent);
+      }
+    });    
   }
 
-  displayMsisdnError(){
+  displayMsisdnError() {
     this.gettingNumber = false;
     this.showErrMessage = true;
     this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
-    this.openDialogGoSettings();
-                  this.followAnalyticsService.registerEventFollow(
-                    'User_msisdn_recuperation_failed',
-                    'error',
-                    this.phoneNumber
-                  );
-                  this.ref.detectChanges();
+    //this.openDialogGoSettings();
+    this.followAnalyticsService.registerEventFollow(
+      'User_msisdn_recuperation_failed',
+      'error',
+      this.phoneNumber
+    );
+    this.ref.detectChanges();
   }
 }

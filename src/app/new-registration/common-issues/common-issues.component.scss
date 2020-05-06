@@ -1,6 +1,6 @@
 @import 'src/app/app';
 
-.check-firstly-container {
+.check-firstly-container {    
     padding: 15px 15px;
     padding-top: 38px;
     .title {
@@ -13,6 +13,19 @@
         margin-bottom: 30px;
         width: 70%;
     }
+    .title-content{
+        display: block;
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 16px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.25;
+  letter-spacing: normal;
+  color: #666666;
+  margin-top:10px;
+  width: 130%;
+    }
     .check-otions-list {
         margin-bottom: 30px;
         .check-item {
@@ -24,7 +37,10 @@
                 display: flex;
                 align-items: flex-start;
                 .item-icon {
-                    margin-right: 3px;
+                    margin-right: 10px;
+                    width: 20px;
+                    height: 20px;
+                    object-fit: contain;
                 }
                 .text-content {
                     .titre {
