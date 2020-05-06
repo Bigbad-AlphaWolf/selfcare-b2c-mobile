@@ -883,6 +883,24 @@ export const HelpModalConfigApnContent={
               type: '',
               url: '',
               action: 'POPUP'
+            },
+            {
+              title: '4) Allez sur Noms des points d’accès (APN)',
+              subtitle: 'Accéder au menu « Réseaux mobiles »'+
+              '( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+              type: '',
+              url: '',
+              action: 'POPUP'
+            },
+            {
+              title: '5) Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
+              subtitle: 'Les paramètres internet Orange sont: \n'+
+              'Nom : Orange Internet\n'+
+              ' APN : internet\n'+
+              'Laisser tous les autres options en l’état puis sauvegarder',
+              type: '',
+              url: '',
+              action: 'POPUP'
             }
           ],
           showChecks:false
