@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Inject } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material';
-
+import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
 @Component({
   selector: 'app-common-issues',
   templateUrl: './common-issues.component.html',
   styleUrls: ['./common-issues.component.scss'],
 })
 export class CommonIssuesComponent implements OnInit {
-
+    popupTitle='Quel soucis rencontrez-vous ?';
   options: {
     title: string;
     subtitle: string;
@@ -38,12 +38,21 @@ export class CommonIssuesComponent implements OnInit {
         action: 'REDIRECT'
     }
 ];
-constructor(private bottomSheetRef: MatBottomSheetRef<CommonIssuesComponent>) {}
+constructor(private bottomSheetRef: MatBottomSheetRef<CommonIssuesComponent>, @Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {
+    if(data){
+
+        this.options=data.options;
+        this.popupTitle = data.popupTitle;
+    }
+}
 
 ngOnInit() {}
 
 close() {
+    console.log('clicked on close');
+    console.log(this.bottomSheetRef);
     this.bottomSheetRef.dismiss();
+    console.log('after closed');
 }
 
 }

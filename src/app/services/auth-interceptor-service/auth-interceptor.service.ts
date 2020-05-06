@@ -7,7 +7,7 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import * as SecureLS from 'secure-ls';
-import { tap } from 'rxjs/operators';
+import { tap, delay } from 'rxjs/operators';
 import { Router } from '@angular/router';
 export const OmRequest = 'OrangeMoney';
 import * as jwt_decode from 'jwt-decode';
@@ -43,6 +43,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
       headers = headers.set('X-MSISDN', '221771181198');
+      //delay to test slowness of network
       req = req.clone({
         headers,
       });
