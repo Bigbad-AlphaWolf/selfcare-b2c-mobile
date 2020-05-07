@@ -28,11 +28,13 @@
         }
         .confirm-btn {
             position: fixed;
-            bottom: 10px;
+            bottom: 0px;
             width: 95%;
-            display: flex;
-            .scb-btn-full {
-                border-radius: 4px;
+            // display: flex;
+            .scb-btn-ion {
+                height: 50px;;
+                --border-radius: 4px;
+                --background-activated: $orange;
             }
             mat-spinner {
                 position: absolute;
