@@ -10,15 +10,16 @@ import { LoginPage } from './login.page';
 import {
   MatCheckboxModule,
   MatProgressSpinnerModule,
-  MatInputModule
+  MatInputModule,
+  MatBottomSheetModule,
 } from '@angular/material';
 import { SharedModule } from 'src/shared/shared.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: LoginPage
-  }
+    component: LoginPage,
+  },
 ];
 
 @NgModule({
@@ -31,8 +32,9 @@ const routes: Routes = [
     MatInputModule,
     IonicModule,
     SharedModule,
-    RouterModule.forChild(routes)
+    MatBottomSheetModule,
+    RouterModule.forChild(routes),
   ],
-  declarations: [LoginPage]
+  declarations: [LoginPage],
 })
 export class LoginPageModule {}

@@ -1,17 +1,24 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatBottomSheet } from '@angular/material';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 import * as Fingerprint2 from 'fingerprintjs2';
+import {
+  HelpModalAuthErrorContent,
+  HelpModalAPNContent,
+  HelpModalConfigApnContent,
+  HelpModalDefaultContent,
+} from 'src/shared';
+import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss']
+  styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
   showErrMessage = false;
@@ -23,26 +30,41 @@ export class LoginPage implements OnInit {
   errorMsg: string;
   USER_ERROR_MSG_BLOCKED =
     'Votre Compte Orange et Moi a été bloqué. Cliquez sur mot de passe oublié et suivez les instructions.';
-  // dialogRef: MatDialogRef<RememberMeModalComponent, any>;
-
+  navItems: {
+    title: string;
+    subTitle: string;
+    action: 'help' | 'register';
+  }[] = [
+    {
+      title: 'Je m’inscris',
+      subTitle: 'Pas encore de compte',
+      action: 'register',
+    },
+    {
+      title: 'J’ai besoin d’aide',
+      subTitle: 'J’éprouve des difficultés pour me connecter',
+      action: 'help',
+    },
+  ];
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private authServ: AuthenticationService,
     private dashbServ: DashboardService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private bottomSheet: MatBottomSheet
   ) {}
 
   ngOnInit() {
     this.form = this.fb.group({
       username: [this.subscribedNumber, [Validators.required]],
       password: ['', [Validators.required]],
-      rememberMe: [this.rememberMe]
+      rememberMe: [this.rememberMe],
     });
     const uuid = ls.get('X-UUID');
     if (!uuid) {
-      Fingerprint2.get(components => {
-        const values = components.map(component => {
+      Fingerprint2.get((components) => {
+        const values = components.map((component) => {
           return component.value;
         });
         const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
@@ -73,15 +95,13 @@ export class LoginPage implements OnInit {
   UserLogin(user: any) {
     this.loading = true;
     this.authServ.login(user).subscribe(
-      res => {
+      (res) => {
         this.dashbServ.getAccountInfo(user.username).subscribe(
           (resp: any) => {
             this.loading = false;
             ls.set('user', resp);
             console.log(user);
             this.dashbServ.setCurrentPhoneNumber(user.username);
-            // Update notification info
-            // this.authServ.UpdateNotificationInfo();
             this.router.navigate(['/dashboard']);
           },
           () => {
@@ -89,7 +109,7 @@ export class LoginPage implements OnInit {
           }
         );
       },
-      err => {
+      (err) => {
         this.loading = false;
         this.showErrMessage = true;
         if (err && err.error.status === 400) {
@@ -112,22 +132,6 @@ export class LoginPage implements OnInit {
     );
   }
 
-  launchRemembermeModal(user: any) {
-    // if (!user.rememberMe) {
-    //   this.dialogRef = this.dialog.open(RememberMeModalComponent, {
-    //     maxWidth: '100%'
-    //   });
-    //   this.dialogRef.afterClosed().subscribe(result => {
-    //     if (result) {
-    //       user.rememberMe = result;
-    //     }
-    //     this.UserLogin(user);
-    //   });
-    // } else {
-    //   this.UserLogin(user);
-    // }
-  }
-
   changePasswordVisibility() {
     if (this.pFieldType === 'text') {
       this.pFieldType = 'password';
@@ -136,7 +140,36 @@ export class LoginPage implements OnInit {
     }
   }
 
-  forgetPassword() {
-    this.router.navigate(['/reinitialize-password']);
+  doAction(action: 'register' | 'help') {
+    if (action === 'register') {
+      this.goRegisterPage();
+    }
+    if (action === 'help') {
+      this.openHelpModal(HelpModalDefaultContent);
+    }
+  }
+
+  openHelpModal(sheetData?: any) {
+    this.bottomSheet
+      .open(CommonIssuesComponent, {
+        panelClass: 'custom-css-common-issues',
+        data: sheetData,
+      })
+      .afterDismissed()
+      .subscribe((message: string) => {
+        if (message === 'ERROR_AUTH_IMP') {
+          this.openHelpModal(HelpModalAuthErrorContent);
+        }
+        if (message === 'APN_AUTH_IMP') {
+          this.openHelpModal(HelpModalAPNContent);
+        }
+        if (message === 'CONFIG_APN_AUTH_IMP') {
+          this.openHelpModal(HelpModalConfigApnContent);
+        }
+      });
+  }
+
+  goRegisterPage() {
+    this.router.navigate(['new-registration']);
   }
 }

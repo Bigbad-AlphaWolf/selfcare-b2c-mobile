@@ -54,6 +54,7 @@ import { HeaderScrollEffectDirective } from './directives/header-scroll-effect.d
 import { PassInternetCardComponent } from './pass-internet-card/pass-internet-card.component';
 import { ItemPassIllimixComponent } from './item-pass-illimix/item-pass-illimix.component';
 import { ItemPassInternetComponent } from './item-pass-internet/item-pass-internet.component';
+import { CommonIssuesComponent } from './common-issues/common-issues.component';
 
 @NgModule({
   declarations: [
@@ -95,6 +96,7 @@ import { ItemPassInternetComponent } from './item-pass-internet/item-pass-intern
     PassInternetCardComponent,
     ItemPassIllimixComponent,
     ItemPassInternetComponent,
+    CommonIssuesComponent,
   ],
   imports: [
     CommonModule,
@@ -123,6 +125,7 @@ import { ItemPassInternetComponent } from './item-pass-internet/item-pass-intern
     SuccessFailPopupComponent,
     WelcomePopupComponent,
     SettingsPopupComponent,
+    CommonIssuesComponent,
   ],
   exports: [
     MatInputModule,
@@ -170,6 +173,7 @@ import { ItemPassInternetComponent } from './item-pass-internet/item-pass-intern
     PassInternetCardComponent,
     ItemPassIllimixComponent,
     ItemPassInternetComponent,
+    CommonIssuesComponent,
   ],
   providers: [Contacts, SocialSharing, PassVolumeDisplayPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
