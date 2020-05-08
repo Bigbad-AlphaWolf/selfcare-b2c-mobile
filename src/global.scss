@@ -458,3 +458,18 @@ body {
 .cdk-overlay-pane{
   bottom: 0px !important;
 }
+
+.transferts-page{
+  .card{
+    -webkit-margin-start: 0px;
+    margin-inline-start: 0px;
+    -webkit-margin-end: 0px;
+    margin-inline-end: 0px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+      .sc-ion-card-ios-s img {
+        display: block;
+        width: unset;
+    }
+  }
+}

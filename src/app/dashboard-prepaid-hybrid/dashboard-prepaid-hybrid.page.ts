@@ -505,4 +505,8 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       'clicked'
     );
   }
+
+  goToTransfertsPage(){
+    this.appliRouting.goToTransfertHubServicesPage();
+  }
 }
