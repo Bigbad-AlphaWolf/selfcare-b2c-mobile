@@ -1,4 +1,4 @@
-<div class="assistance-container">
+<ion-header>
   <div class="assistance-container-header">
     <div class="assistance-container-header-title">
       <span class="text scb-text-l-black">Besoin d’aide ?</span>
@@ -9,14 +9,15 @@
         <span class="title scb-text-orange">Bienvenue sur l’assistance</span>
         <span class="subtitle scb-text-white">Pouvons-nous vous aider ?</span>
       </div>
-      <div *ngIf="0" class="search-block-bar">
-        <input class="search-bar" placeholder="Posez votre question ici" type="text" />
-        <div class="search-btn">
-          <img src="/assets/images/nav-search-icon.svg" alt="search-icon" class="sarch-btn-icon" />
-        </div>
+      <div class="search-block-bar">
+        <ion-button (click)="goToCommunityExternalPage()" class="btn-link" shape="round" expand="block" >Posez votre question ici</ion-button>
       </div>
     </div>
   </div>
+</ion-header>
+
+<ion-content>
+<div class="assistance-container">
   <div class="assistance-container-body">
     <div class="assistance-container-body-faq-list custom-scrollbar">
       <mat-spinner class="spinner" mode="indeterminate" [diameter]="20" *ngIf="!isLoaded"></mat-spinner>
@@ -43,3 +44,4 @@
     </div>
   </div>
 </div>
+</ion-content>
