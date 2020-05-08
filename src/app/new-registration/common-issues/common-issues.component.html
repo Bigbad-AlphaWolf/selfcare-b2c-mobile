@@ -1,11 +1,16 @@
 <div class="check-firstly-container">
   <div class="title">
-    Quel soucis rencontrez-vous ?
+    {{popupTitle}}
+    <span class="title-content scb-text-gray">
+     {{popupSubtitle}}
+  </span>
   </div>
+  
   <div class="check-otions-list">
     <div (click)="makeAction(opt)" *ngFor="let opt of options" class="check-item">
       <div class="item-text">
-        <div class="item-icon">
+        <div class="item-icon" *ngIf="showChecks">
+          <img src="/assets/images/ic-le-vote.svg" >
         </div>
         <div class="text-content">
           <span class="titre">

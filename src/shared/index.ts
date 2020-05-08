@@ -782,3 +782,126 @@ export function getBanniereTitle(banniereDescription: string) {
 export function getBanniereDescription(banniereDescription: string) {
   return banniereDescription.substring(banniereDescription.indexOf(';') + 1);
 }
+
+export const HelpModalDefaultContent={
+  popupTitle :'Quel soucis rencontrez-vous ?',
+  popupSubtitle:'',
+      options: [
+          {
+            title: 'Mon numéro ne s’affiche pas',
+            subtitle: 'Regarder le tutoriel',
+            type: 'ERROR_AUTH_IMP',
+            url: '',
+            action: 'POPUP'
+          },
+          {
+            title: 'C’est ma première connexion',
+            subtitle: 'Je veux créer un compte',
+            type: 'REGISTER',
+            url: '',
+            action: 'REDIRECT'
+          },
+          { title: 'J’ai déjà un compte', subtitle: 'Je veux me connecter', type: 'LOGIN', url: '', action: 'REDIRECT' },
+          {
+            title: 'J’ai oublié mon mot de passe',
+            subtitle: 'Je veux le récupérer',
+            type: 'FORGOT_PWD',
+            url: '',
+            action: 'REDIRECT'
+          }
+        ],
+        showChecks:false
+}
+
+export const HelpModalAuthErrorContent={
+  popupTitle :'Assurez-vous :',
+  popupSubtitle:'',
+  options: [
+            {
+              title: 'De désactiver le WIFI',
+              subtitle: 'Voir le tutoriel',
+              type: 'WIFI_AUTH_IMP',
+              url: '',
+              action: 'POPUP'
+            },
+            {
+              title: 'D\'être sur le bon APN',
+              subtitle: '(orange, internet)',
+              type: 'APN_AUTH_IMP',
+              url: '',
+              action: 'POPUP'
+            },
+            {
+              title: 'D\'activer les données mobiles',
+              subtitle: 'Voir le tutoriel',
+              type: 'DATA_AUTH_IMP',
+              url: '',
+              action: 'POPUP'
+            }
+          ],
+          showChecks:true
+}
+
+export const HelpModalAPNContent={
+  popupTitle :'Êtes-vous sur le  bon APN ?',
+  popupSubtitle:' APN, pour Access Point Name, correspond aux paramètres réseau de votre opérateur.'+ 
+  'Grâce à ces informations, vous allez pouvoir accéder au réseau de votre fournisseur, '+
+  'et ainsi pouvoir envoyer des MMS ou surfer sur internet.',
+  options: [
+            {
+              title: 'Comment configurer l\'APN ?',
+              subtitle: 'Voir le tutoriel',
+              type: 'CONFIG_APN_AUTH_IMP',
+              url: '',
+              action: 'POPUP'
+            }
+          ],
+          showChecks:false
+}
+
+export const HelpModalConfigApnContent={
+  popupTitle :'Comment configurer  mon APN',
+  popupSubtitle:'',
+  options: [
+            {
+              title: '1) Accéder aux Paramètres',
+              subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+              type: '',
+              url: '',
+              action: 'POPUP'
+            },
+            {
+              title: '2) Sélectionner la partie Sans fil et réseau',
+              subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+              type: '',
+              url: '',
+              action: 'POPUP'
+            },
+            {
+              title: '3) Choisissez ensuite Réseau mobile ou Réseau de données mobiles',
+              subtitle: 'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+              type: '',
+              url: '',
+              action: 'POPUP'
+            },
+            {
+              title: '4) Allez sur Noms des points d’accès (APN)',
+              subtitle: 'Accéder au menu « Réseaux mobiles »'+
+              '( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+              type: '',
+              url: '',
+              action: 'POPUP'
+            },
+            {
+              title: '5) Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
+              subtitle: 'Les paramètres internet Orange sont: \n'+
+              'Nom : Orange Internet\n'+
+              ' APN : internet\n'+
+              'Laisser tous les autres options en l’état puis sauvegarder',
+              type: '',
+              url: '',
+              action: 'POPUP'
+            }
+          ],
+          showChecks:false
+}

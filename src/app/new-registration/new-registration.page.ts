@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, of, timer, Observable, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -16,6 +16,8 @@ const ls = new SecureLS({ encodingType: 'aes' });
 import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { CommonIssuesComponent } from './common-issues/common-issues.component';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { HelpModalDefaultContent, HelpModalAuthErrorContent, HelpModalAPNContent, HelpModalConfigApnContent } from 'src/shared';
 
 @Component({
   selector: 'app-new-registration',
@@ -55,7 +57,11 @@ export class NewRegistrationPage implements OnInit {
       action: 'help',
     },
   ];
-
+  //Temps d'attente pour la recuperation automatique du numero -> 10 secondes
+  msisdnTimeout = 10000;
+  authErrorDetected = new Subject<any>();
+  helpNeeded = new Subject<any>();
+  firstCallMsisdn: string;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -65,7 +71,19 @@ export class NewRegistrationPage implements OnInit {
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
     private bottomSheet: MatBottomSheet
-  ) {}
+  ) {
+    this.authErrorDetected.subscribe({
+      next: (data) => {
+        this.openHelpModal(data);
+      }
+    }
+    );
+    this.helpNeeded.subscribe({
+      next: (data) => {
+        this.openHelpModal(data);
+      }
+    });
+  }
 
   goIntro() {
     this.followAnalyticsService.registerEventFollow(
@@ -99,63 +117,50 @@ export class NewRegistrationPage implements OnInit {
       });
       const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
       ls.set('X-UUID', x_uuid);
-      this.authServ.getMsisdnByNetwork().subscribe(
-        (res: { msisdn: string }) => {
-          const msisdn = res.msisdn;
-          this.authServ.confirmMsisdnByNetwork(msisdn).subscribe(
-            (response: ConfirmMsisdnModel) => {
-              this.gettingNumber = false;
-              if (response !== undefined && response && response.status) {
-                this.numberGot = true;
-                this.phoneNumber = response.msisdn;
-                this.hmac = response.hmac;
-                this.followAnalyticsService.registerEventFollow(
-                  'User_msisdn_recuperation_succes',
-                  'event',
-                  this.phoneNumber
-                );
-              } else {
-                this.showErrMessage = true;
-                this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
-                this.openDialogGoSettings();
-                this.followAnalyticsService.registerEventFollow(
-                  'User_msisdn_recuperation_failed',
-                  'error',
-                  this.phoneNumber
-                );
-              }
-              this.ref.detectChanges();
-            },
-            (err) => {
-              this.gettingNumber = false;
-              this.showErrMessage = true;
-              this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
-              this.openDialogGoSettings();
-              this.followAnalyticsService.registerEventFollow(
-                'User_msisdn_recuperation_failed',
-                'error',
-                { msisdn: this.phoneNumber, error: this.errorMsg }
-              );
-              this.ref.detectChanges();
-            }
-          );
-        },
-        (err) => {
-          this.gettingNumber = false;
-          this.showErrMessage = true;
-          this.errorMsg = `La récupération ne s'est pas bien passée. Assurez d'activer vos données mobiles Orange puis réessayez`;
-          this.openDialogGoSettings();
-          this.followAnalyticsService.registerEventFollow(
-            'User_msisdn_recuperation_failed',
-            'error',
+      this.authServ.getMsisdnByNetwork()
+        //if after msisdnTimeout milliseconds the call does not complete, stop it.
+        .pipe(takeUntil(timer(this.msisdnTimeout)),
+          // finalize to detect whenever call is complete or terminated
+          finalize(() => {
+            if (!this.firstCallMsisdn && !this.showErrMessage || !this.firstCallMsisdn && this.showErrMessage)
             {
-              msisdn: this.phoneNumber,
-              error: this.errorMsg,
+              
+              this.displayMsisdnError();
+              this.authErrorDetected.next(HelpModalAuthErrorContent)
+              console.log('http call is not successful');
             }
-          );
-          this.ref.detectChanges();
-        }
-      );
+          }))
+        .subscribe(
+          (res: { msisdn: string }) => {
+            this.firstCallMsisdn = res.msisdn;
+            this.authServ.confirmMsisdnByNetwork(res.msisdn).subscribe(
+              (response: ConfirmMsisdnModel) => {
+                this.gettingNumber = false;
+                if (response !== undefined && response && response.status) {
+                  this.numberGot = true;
+                  this.phoneNumber = response.msisdn;
+                  console.log(this.phoneNumber);
+                  this.hmac = response.hmac;
+                  this.followAnalyticsService.registerEventFollow(
+                    'User_msisdn_recuperation_succes',
+                    'event',
+                    this.phoneNumber
+                  );
+                } else {
+                  this.displayMsisdnError();
+                }
+                this.ref.detectChanges();
+              },
+              (err) => {
+                this.displayMsisdnError();
+              }
+            );
+
+          },
+          (err) => {
+            this.displayMsisdnError();
+          }
+        );
     });
   }
 
@@ -314,15 +319,39 @@ export class NewRegistrationPage implements OnInit {
       this.goLoginPage();
     }
     if (action === 'help') {
-      this.openHelpModal();
+      
+      this.openHelpModal(HelpModalDefaultContent);
     }
   }
 
-  openHelpModal() {
-    // setTimeout(() => {
+  openHelpModal(sheetData?: any) {
     this.bottomSheet.open(CommonIssuesComponent, {
       panelClass: 'custom-css-common-issues',
-    });
-    // }, 1000);
+      data: sheetData
+    })
+    .afterDismissed().subscribe((message:string) => {
+      if(message==='ERROR_AUTH_IMP'){
+        this.openHelpModal(HelpModalAuthErrorContent);
+      }
+      if(message==='APN_AUTH_IMP'){
+        this.openHelpModal(HelpModalAPNContent);
+      }
+      if(message==='CONFIG_APN_AUTH_IMP'){
+        this.openHelpModal(HelpModalConfigApnContent);
+      }
+    });    
+  }
+
+  displayMsisdnError() {
+    this.gettingNumber = false;
+    this.showErrMessage = true;
+    this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
+    //this.openDialogGoSettings();
+    this.followAnalyticsService.registerEventFollow(
+      'User_msisdn_recuperation_failed',
+      'error',
+      this.phoneNumber
+    );
+    this.ref.detectChanges();
   }
 }
