@@ -139,7 +139,6 @@ export class NewRegistrationPage implements OnInit {
                 if (response !== undefined && response && response.status) {
                   this.numberGot = true;
                   this.phoneNumber = response.msisdn;
-                  console.log(this.phoneNumber);
                   this.hmac = response.hmac;
                   this.followAnalyticsService.registerEventFollow(
                     'User_msisdn_recuperation_succes',
