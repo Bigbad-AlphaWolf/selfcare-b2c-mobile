@@ -1,9 +1,7 @@
 @import 'src/app/app';
 
 .creation-steps {
-  &-sim {
-    padding: 0 15px;
-  }
+  padding: 0 15px;
   .voir-intro {
     text-align: right;
     padding-top: 15px;
@@ -17,26 +15,18 @@
   background-size: cover;
   overflow-y: auto;
   .img-container {
-    width: percentage(195/375);
-    margin: 76px auto 20px;
-    &-sim {
-      width: percentage(118/365);
-      margin: 25px 0 20px;
-      text-align: left;
-    }
+    width: percentage(118/365);
+    margin: 25px 0 20px;
+    text-align: left;
     img {
       width: 100%;
       height: auto;
     }
   }
   .title {
-    &-sim {
-      margin: 30px 0 10px;
-      text-align: left;
-    }
     width: percentage(248/375);
-    margin: 0 auto 20px;
-    text-align: center;
+    margin: 30px 0 10px;
+    text-align: left;
     font-family: HelveticaNeueLTStd-Bd;
     font-size: 34px;
   }
@@ -48,10 +38,7 @@
     }
   }
   .form-container {
-    &-sim {
-      width: 100%;
-    }
-    width: percentage(300/375);
+    width: 100%;
     margin: 0 auto;
     .form-get-number {
       .get-number {
@@ -100,28 +87,6 @@
         }
         .mat-spinner::ng-deep circle {
           stroke: $white;
-        }
-      }
-      .bottom-block {
-        margin-top: 50px;
-        .nav-item {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 15px;
-          .left-block {
-            .titre {
-              font-size: 16px;
-              line-height: 1.25;
-            }
-            .sous-titre {
-              font-family: HelveticaNeueLTStd-Roman, sans-serif;
-              font-size: 12px;
-              line-height: 1.33;
-              margin-top: 5px;
-            }
-          }
-          .right-block {
-          }
         }
       }
       .je-me-connecte {
@@ -174,6 +139,28 @@
       }
       .resend-code {
         margin: 25px 0;
+      }
+    }
+    .bottom-block {
+      margin-top: 50px;
+      .nav-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        .left-block {
+          .titre {
+            font-size: 16px;
+            line-height: 1.25;
+          }
+          .sous-titre {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 12px;
+            line-height: 1.33;
+            margin-top: 5px;
+          }
+        }
+        .right-block {
+        }
       }
     }
   }
