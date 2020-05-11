@@ -450,11 +450,20 @@ body {
   }
 }
 
-.custom-css-common-issues{
+.registration-success-modal {
+  .modal-wrapper {
+    width: percentage(345/375) !important;
+    max-width: 345px;
+    border-radius: 10px !important;
+    height: 395px;
+  }
+}
+
+.custom-css-common-issues {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
 
-.cdk-overlay-pane{
+.cdk-overlay-pane {
   bottom: 0px !important;
 }

@@ -23,6 +23,8 @@ import {
   HelpModalConfigApnContent,
 } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
+import { ModalController } from '@ionic/angular';
+import { RegistrationSuccessModalPage } from '../registration-success-modal/registration-success-modal.page';
 
 @Component({
   selector: 'app-new-registration',
@@ -45,7 +47,7 @@ export class NewRegistrationPage implements OnInit {
   showErrMessage: boolean;
   errorMsg: string;
   hmac: string;
-  step: 'CHECK_NUMBER' | 'PASSWORD' | 'SUCCESS';
+  step: 'CHECK_NUMBER' | 'PASSWORD';
   fields = {
     password: { fieldType: 'password', visibilityIcon: 'visibility' },
     confirmPassword: { fieldType: 'password', visibilityIcon: 'visibility' },
@@ -75,7 +77,8 @@ export class NewRegistrationPage implements OnInit {
     public dialog: MatDialog,
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private modalController: ModalController
   ) {
     this.authErrorDetected.subscribe({
       next: (data) => {
@@ -221,7 +224,7 @@ export class NewRegistrationPage implements OnInit {
           'event',
           userInfo.login
         );
-        this.step = 'SUCCESS';
+        this.openSuccessModal();
         this.creatingAccount = false;
       },
       (err: any) => {
@@ -360,5 +363,30 @@ export class NewRegistrationPage implements OnInit {
       this.phoneNumber
     );
     this.ref.detectChanges();
+  }
+
+  async openSuccessModal() {
+    let login: string;
+    this.phoneNumber && this.phoneNumber.startsWith('221')
+      ? (login = this.phoneNumber.substring(3))
+      : (login = this.phoneNumber);
+    const userCredential = {
+      username: login,
+      password: this.formPassword.value.password,
+      rememberMe: true,
+    };
+    const modal = await this.modalController.create({
+      component: RegistrationSuccessModalPage,
+      cssClass: 'registration-success-modal',
+      backdropDismiss: true,
+      componentProps: { userCredential },
+    });
+    modal.onDidDismiss().then((response) => {
+      console.log(response);
+      if (!response.data) {
+        this.goLoginPage();
+      }
+    });
+    return await modal.present();
   }
 }
