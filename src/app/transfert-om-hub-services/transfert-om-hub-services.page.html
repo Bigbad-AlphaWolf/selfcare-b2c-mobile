@@ -1,0 +1,48 @@
+
+ <ion-header>   
+  <ion-toolbar>
+      <ion-buttons (click)="goToTransfertHubServicesPage()" class="ion-padding-start" slot="start">
+          <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+      </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">
+          Transfert d’argent
+      </span>
+     </ion-title>
+  </ion-toolbar>
+</ion-header>
+ <ion-content fullscreen="true">
+      <ion-header class="ion-padding-start" collapse="condense">
+          <ion-toolbar>
+            <span class="title">
+                Transfert d’argent
+            </span>
+          </ion-toolbar>
+        </ion-header>
+        <div class="transferts-page">
+          <div class="transferts-page-header-img">
+            <img src="/assets/images/achat-de-credit.png" alt="">
+          </div>
+          <div class="transferts-page-title">
+            <span class="text">Choix type de transfert</span>
+          </div>
+          <div class="transferts-page-content">
+            <ion-card (click)="goTo(opt)" *ngFor="let opt of options" class="card" button="true">
+              <ion-card-content>
+                <div class="icon">
+                  <img [src]="opt.icon" alt="">
+                </div>
+                <div class="text">
+                  <span class="title">
+                    {{opt.title}}
+                  </span>
+                  <span class="subtitle">
+                      {{opt.subtitle}}
+                  </span>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </div>
+
+        </div>
+  </ion-content>

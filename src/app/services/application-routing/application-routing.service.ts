@@ -52,4 +52,18 @@ export class ApplicationRoutingService {
     };
     this.route.navigate(['/select-beneficiary-v2'], navigationExtras);
   }
+
+  goToTransfertHubServicesPage(){
+    this.route.navigate(['/transfert-hub-services']);
+  }
+
+  goToTransfertMoneyPage(){
+    this.route.navigate(['/transfert-om-hub-services'])
+  }
+  goToTransfertCreditPage(){
+    // this.route.navigate(['/'])
+  }
+  goToTransfertBonusPage(){
+    // this.route.navigate(['/'])
+  }
 }
