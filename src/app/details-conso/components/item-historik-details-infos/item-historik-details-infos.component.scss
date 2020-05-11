@@ -37,6 +37,7 @@
                 font-family: HelveticaNeueLTStd-Roman;
                 font-size: 18px;
                 color: $orange;
+                white-space: nowrap;
             }
 
         }
@@ -45,5 +46,6 @@
         font-family: HelveticaNeueLTStd-Roman;
         font-size: 12px;
         color: $gray;
+        white-space: nowrap;
     }
 }
