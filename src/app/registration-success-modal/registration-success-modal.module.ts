@@ -5,15 +5,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { NewRegistrationPage } from './new-registration.page';
+import { RegistrationSuccessModalPage } from './registration-success-modal.page';
 import { SharedModule } from 'src/shared/shared.module';
-import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
-import { MatBottomSheetModule, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 
 const routes: Routes = [
   {
     path: '',
-    component: NewRegistrationPage,
+    component: RegistrationSuccessModalPage,
   },
 ];
 
@@ -23,10 +21,10 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
-    MatBottomSheetModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [NewRegistrationPage],
-  providers: [OpenNativeSettings],
+  declarations: [RegistrationSuccessModalPage],
+  entryComponents: [RegistrationSuccessModalPage],
+  exports: [RegistrationSuccessModalPage],
 })
-export class NewRegistrationPageModule {}
+export class RegistrationSuccessModalPageModule {}

@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Subscription, of, timer, Observable, Subject } from 'rxjs';
+import { Subscription, timer, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -15,9 +15,16 @@ import * as Fingerprint2 from 'fingerprintjs2';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { CommonIssuesComponent } from './common-issues/common-issues.component';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { HelpModalDefaultContent, HelpModalAuthErrorContent, HelpModalAPNContent, HelpModalConfigApnContent } from 'src/shared';
+import {
+  HelpModalDefaultContent,
+  HelpModalAuthErrorContent,
+  HelpModalAPNContent,
+  HelpModalConfigApnContent,
+} from 'src/shared';
+import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
+import { ModalController } from '@ionic/angular';
+import { RegistrationSuccessModalPage } from '../registration-success-modal/registration-success-modal.page';
 
 @Component({
   selector: 'app-new-registration',
@@ -40,7 +47,7 @@ export class NewRegistrationPage implements OnInit {
   showErrMessage: boolean;
   errorMsg: string;
   hmac: string;
-  step: 'CHECK_NUMBER' | 'PASSWORD' | 'SUCCESS';
+  step: 'CHECK_NUMBER' | 'PASSWORD';
   fields = {
     password: { fieldType: 'password', visibilityIcon: 'visibility' },
     confirmPassword: { fieldType: 'password', visibilityIcon: 'visibility' },
@@ -70,18 +77,18 @@ export class NewRegistrationPage implements OnInit {
     public dialog: MatDialog,
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private modalController: ModalController
   ) {
     this.authErrorDetected.subscribe({
       next: (data) => {
         this.openHelpModal(data);
-      }
-    }
-    );
+      },
+    });
     this.helpNeeded.subscribe({
       next: (data) => {
         this.openHelpModal(data);
-      }
+      },
     });
   }
 
@@ -117,19 +124,23 @@ export class NewRegistrationPage implements OnInit {
       });
       const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
       ls.set('X-UUID', x_uuid);
-      this.authServ.getMsisdnByNetwork()
+      this.authServ
+        .getMsisdnByNetwork()
         //if after msisdnTimeout milliseconds the call does not complete, stop it.
-        .pipe(takeUntil(timer(this.msisdnTimeout)),
+        .pipe(
+          takeUntil(timer(this.msisdnTimeout)),
           // finalize to detect whenever call is complete or terminated
           finalize(() => {
-            if (!this.firstCallMsisdn && !this.showErrMessage || !this.firstCallMsisdn && this.showErrMessage)
-            {
-              
+            if (
+              (!this.firstCallMsisdn && !this.showErrMessage) ||
+              (!this.firstCallMsisdn && this.showErrMessage)
+            ) {
               this.displayMsisdnError();
-              this.authErrorDetected.next(HelpModalAuthErrorContent)
+              this.authErrorDetected.next(HelpModalAuthErrorContent);
               console.log('http call is not successful');
             }
-          }))
+          })
+        )
         .subscribe(
           (res: { msisdn: string }) => {
             this.firstCallMsisdn = res.msisdn;
@@ -154,7 +165,6 @@ export class NewRegistrationPage implements OnInit {
                 this.displayMsisdnError();
               }
             );
-
           },
           (err) => {
             this.displayMsisdnError();
@@ -214,7 +224,7 @@ export class NewRegistrationPage implements OnInit {
           'event',
           userInfo.login
         );
-        this.step = 'SUCCESS';
+        this.openSuccessModal();
         this.creatingAccount = false;
       },
       (err: any) => {
@@ -318,27 +328,28 @@ export class NewRegistrationPage implements OnInit {
       this.goLoginPage();
     }
     if (action === 'help') {
-      
       this.openHelpModal(HelpModalDefaultContent);
     }
   }
 
   openHelpModal(sheetData?: any) {
-    this.bottomSheet.open(CommonIssuesComponent, {
-      panelClass: 'custom-css-common-issues',
-      data: sheetData
-    })
-    .afterDismissed().subscribe((message:string) => {
-      if(message==='ERROR_AUTH_IMP'){
-        this.openHelpModal(HelpModalAuthErrorContent);
-      }
-      if(message==='APN_AUTH_IMP'){
-        this.openHelpModal(HelpModalAPNContent);
-      }
-      if(message==='CONFIG_APN_AUTH_IMP'){
-        this.openHelpModal(HelpModalConfigApnContent);
-      }
-    });    
+    this.bottomSheet
+      .open(CommonIssuesComponent, {
+        panelClass: 'custom-css-common-issues',
+        data: sheetData,
+      })
+      .afterDismissed()
+      .subscribe((message: string) => {
+        if (message === 'ERROR_AUTH_IMP') {
+          this.openHelpModal(HelpModalAuthErrorContent);
+        }
+        if (message === 'APN_AUTH_IMP') {
+          this.openHelpModal(HelpModalAPNContent);
+        }
+        if (message === 'CONFIG_APN_AUTH_IMP') {
+          this.openHelpModal(HelpModalConfigApnContent);
+        }
+      });
   }
 
   displayMsisdnError() {
@@ -352,5 +363,30 @@ export class NewRegistrationPage implements OnInit {
       this.phoneNumber
     );
     this.ref.detectChanges();
+  }
+
+  async openSuccessModal() {
+    let login: string;
+    this.phoneNumber && this.phoneNumber.startsWith('221')
+      ? (login = this.phoneNumber.substring(3))
+      : (login = this.phoneNumber);
+    const userCredential = {
+      username: login,
+      password: this.formPassword.value.password,
+      rememberMe: true,
+    };
+    const modal = await this.modalController.create({
+      component: RegistrationSuccessModalPage,
+      cssClass: 'registration-success-modal',
+      backdropDismiss: true,
+      componentProps: { userCredential },
+    });
+    modal.onDidDismiss().then((response) => {
+      console.log(response);
+      if (!response.data) {
+        this.goLoginPage();
+      }
+    });
+    return await modal.present();
   }
 }

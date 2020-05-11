@@ -1,25 +1,23 @@
-<div class="creation-steps" [ngClass]="{'creation-steps-sim': step === 'CHECK_NUMBER'}" *ngIf="step !== 'SUCCESS'">
-  <div class="scb-text-orange voir-intro" *ngIf="step === 'CHECK_NUMBER'"><span (click)="goIntro()">Voir l'intro</span></div>
-  <div class="img-container" [ngClass]="{'img-container-sim': step === 'CHECK_NUMBER'}">
-    <img
-      src="/assets/images/sim-icon.svg"
-      alt=""
-      *ngIf="step === 'CHECK_NUMBER'"
-    />
-    <img
-      src="/assets/images/motdepasse.svg"
-      alt=""
-      *ngIf="step === 'PASSWORD'"
-    />
+<div class="creation-steps" *ngIf="step !== 'SUCCESS'">
+  <div class="scb-text-orange voir-intro" *ngIf="step === 'CHECK_NUMBER'">
+    <span (click)="goIntro()">Voir l'intro</span>
   </div>
-  <div class="title" [ngClass]="{'title-sim': step === 'CHECK_NUMBER'}">
+  <div class="img-container">
+    <img src="/assets/images/sim-icon.svg" alt="" />
+  </div>
+  <div class="title">
     <span *ngIf="step === 'CHECK_NUMBER'">Numéro de téléphone</span>
-    <span *ngIf="step === 'PASSWORD'">Création mot de passe</span>
+    <span *ngIf="step === 'PASSWORD'">Je m'inscris</span>
   </div>
-  <div class="sub-title" *ngIf="step === 'CHECK_NUMBER'">
-    <span class="scb-text-gray">Merci de patienter pendant que nous récupérons votre numéro </span>
+  <div class="sub-title">
+    <span class="scb-text-gray" *ngIf="step === 'CHECK_NUMBER'"
+      >Merci de patienter pendant que nous récupérons votre numéro
+    </span>
+    <span class="scb-text-gray" *ngIf="step === 'PASSWORD'"
+      >Créer un nouveau mot de passe
+    </span>
   </div>
-  <div class="form-container" [ngClass]="{'form-container-sim': step === 'CHECK_NUMBER'}">
+  <div class="form-container">
     <div *ngIf="step === 'CHECK_NUMBER'" class="form-get-number">
       <div *ngIf="gettingNumber" class="scb-text-gray get-number">
         Récupération en cours...
@@ -52,26 +50,14 @@
           *ngIf="checkingNumber"
         ></mat-spinner>
       </button>
-      <div class="bottom-block">
-        <div class="nav-item" *ngFor="let item of navItems" (click)="doAction(item.action)">
-          <div class="left-block">
-            <div class="titre">{{item.title}}</div>
-            <div class="sous-titre scb-text-gray">{{item.subTitle}}</div>
-          </div>
-          <div class="right-block"><img src="/assets/images/long-arrow-right.png" alt="arrow-right"></div>
-        </div>
-      </div>
     </div>
     <form
       [formGroup]="formPassword"
       (submit)="createAccount()"
       *ngIf="step === 'PASSWORD'"
     >
-      <div class="text-info scb-text-gray">
-        Un mot de passe doit comporter au minimum 5 caractères.
-      </div>
       <mat-form-field class="scb-input-row" appearance="outline">
-        <mat-label>Entrez un mot de passe &nbsp;&nbsp;</mat-label>
+        <mat-label>Créez mot de passe &nbsp;&nbsp;</mat-label>
         <input
           formControlName="password"
           matInput
@@ -109,7 +95,7 @@
         <span class="scb-text-red-error"> {{ errorMsg }} </span>
       </div>
       <div class="accept-cgu scb-text-gray">
-        En cliquant sur le bouton confirmer, vous acceptez
+        En cliquant sur le bouton M'inscrire, vous acceptez
         <span class="scb-text-orange bold" (click)="openCguDialog()"
           >les conditions générales d'utilisation</span
         >
@@ -119,7 +105,7 @@
         type="submit"
         [disabled]="creatingAccount || !formPassword.valid"
       >
-        <span>Confirmer</span>
+        <span>M'inscrire</span>
         <mat-spinner
           mode="indeterminate"
           [diameter]="20"
@@ -127,6 +113,21 @@
         ></mat-spinner>
       </button>
     </form>
+    <div class="bottom-block">
+      <div
+        class="nav-item"
+        *ngFor="let item of navItems"
+        (click)="doAction(item.action)"
+      >
+        <div class="left-block">
+          <div class="titre">{{item.title}}</div>
+          <div class="sous-titre scb-text-gray">{{item.subTitle}}</div>
+        </div>
+        <div class="right-block">
+          <img src="/assets/images/long-arrow-right.png" alt="arrow-right" />
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
