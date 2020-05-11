@@ -33,7 +33,6 @@ export class ListPassInternetV2Component implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private dashbServ: DashboardService,
     private passIntService: PassInternetService
   ) {}
 

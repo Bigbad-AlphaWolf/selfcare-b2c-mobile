@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import {
   PassInfoModel,
@@ -40,7 +40,8 @@ export class PassInternetService {
 
   setListPassInternetOfUserByQuery() {
     this.setListPassInternetOfUser([]);
-    this.dashbService.getListPassInternet(this.userCodeFormule).subscribe(
+     this.dashbService.getListPassInternet(this.userCodeFormule)
+    .subscribe(
       (resp: any) => {
         resp.forEach((x: PassInternetModel) => {
           if (x.pass && x.pass.actif) {
