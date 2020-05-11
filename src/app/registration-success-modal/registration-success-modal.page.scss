@@ -1,0 +1,40 @@
+@import 'src/app/app';
+
+.registration-success {
+  padding: 50px 23px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  .image-container {
+    width: 99px;
+    height: auto;
+    margin-bottom: 30px;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+  .title {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 34px;
+    margin-bottom: 20px;
+  }
+  .subtitle {
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 16px;
+    margin-bottom: 30px;
+  }
+  button {
+    border-radius: 10px;
+    position: relative;
+    mat-spinner {
+      position: absolute;
+      top: 15px;
+      right: 10px;
+    }
+    .mat-spinner::ng-deep circle {
+      stroke: $white;
+    }
+  }
+}

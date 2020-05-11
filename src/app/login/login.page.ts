@@ -14,6 +14,7 @@ import {
   HelpModalDefaultContent,
 } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-login',
@@ -52,7 +53,8 @@ export class LoginPage implements OnInit {
     private authServ: AuthenticationService,
     private dashbServ: DashboardService,
     public dialog: MatDialog,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -96,11 +98,15 @@ export class LoginPage implements OnInit {
     this.loading = true;
     this.authServ.login(user).subscribe(
       (res) => {
+        this.followAnalyticsService.registerEventFollow(
+          'login_success',
+          'event',
+          user.username
+        );
         this.dashbServ.getAccountInfo(user.username).subscribe(
           (resp: any) => {
             this.loading = false;
             ls.set('user', resp);
-            console.log(user);
             this.dashbServ.setCurrentPhoneNumber(user.username);
             this.router.navigate(['/dashboard']);
           },
@@ -110,6 +116,11 @@ export class LoginPage implements OnInit {
         );
       },
       (err) => {
+        this.followAnalyticsService.registerEventFollow(
+          'login_failed',
+          'error',
+          user.username
+        );
         this.loading = false;
         this.showErrMessage = true;
         if (err && err.error.status === 400) {
@@ -171,5 +182,14 @@ export class LoginPage implements OnInit {
 
   goRegisterPage() {
     this.router.navigate(['new-registration']);
+  }
+
+  goIntro() {
+    this.followAnalyticsService.registerEventFollow(
+      'Voir_Intro_from_login',
+      'event',
+      'clic'
+    );
+    this.router.navigate(['/home']);
   }
 }
