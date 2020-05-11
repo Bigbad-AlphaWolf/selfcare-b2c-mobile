@@ -58,7 +58,6 @@ export class SidemenuComponent implements OnInit, OnDestroy {
       this.extractData();
     });
     this.authServ.currentPhoneNumbersubscriptionUpdated.subscribe((formule) => {
-      console.log(formule);
       this.getSouscription();
     });
     this.accountService.userUrlAvatarSubject.subscribe(() => {

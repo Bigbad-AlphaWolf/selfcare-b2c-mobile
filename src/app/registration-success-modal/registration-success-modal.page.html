@@ -1,0 +1,21 @@
+<div class="registration-success">
+  <div class="image-container">
+    <img src="/assets/images/green-checbox.png" alt="checkbox" />
+  </div>
+  <div class="title">Bravo</div>
+  <div class="subtitle scb-text-gray">
+    Vous venez de créer votre compte sur l’application Orange et moi
+  </div>
+  <button
+    class="scb-btn scb-btn-orange scb-btn-full"
+    [disabled]="logging"
+    (click)="login()"
+  >
+    <span>Accéder à mon tableau de bord</span>
+    <mat-spinner
+      mode="indeterminate"
+      [diameter]="20"
+      *ngIf="logging"
+    ></mat-spinner>
+  </button>
+</div>
