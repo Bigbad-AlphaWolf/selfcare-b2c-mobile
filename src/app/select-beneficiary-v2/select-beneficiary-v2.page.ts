@@ -107,7 +107,8 @@ export class SelectBeneficiaryV2Page implements OnInit {
           if (contact.phoneNumbers.length > 1) {
             this.openPickRecipientModal(contact);
           } else {
-            this.processGetContactInfos(contact)
+            const selectedNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
+            this.processGetContactInfos(contact, selectedNumber);
           }
         })
         .catch(err => {
@@ -121,14 +122,14 @@ export class SelectBeneficiaryV2Page implements OnInit {
       data: { phoneNumbers: contact.phoneNumbers }
     });
     dialogRef.afterClosed().subscribe(selectedNumber => {
-      this.processGetContactInfos(contact)
+      const choosedNumber = formatPhoneNumber(selectedNumber);
+      this.processGetContactInfos(contact, choosedNumber);
     });
   }
 
-  processGetContactInfos(contact: any){
-    const phoneNumberRecipient = formatPhoneNumber(contact.phoneNumbers[0].value);
-    if (this.validateNumber(phoneNumberRecipient)) {
-      this.otherBeneficiaryNumber = phoneNumberRecipient;
+  processGetContactInfos(contact: any, selectedNumber: any){
+    if (this.validateNumber(selectedNumber)) {
+      this.otherBeneficiaryNumber = selectedNumber;
       this.getContactFormattedName(contact);
 
     } else {

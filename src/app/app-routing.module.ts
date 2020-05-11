@@ -189,6 +189,7 @@ const routes: Routes = [
   { path: 'new-pinpad-modal', loadChildren: './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule' },
   { path: 'operation-success-fail-modal', loadChildren: './operation-success-fail-modal/operation-success-fail-modal.module#OperationSuccessFailModalPageModule' },
   { path: 'list-pass', loadChildren: './liste-pass/liste-pass.module#ListePassPageModule' },  { path: 'transfert-hub-services', loadChildren: './transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule' },
+  { path: 'transfert-om-hub-services', loadChildren: './transfert-om-hub-services/transfert-om-hub-services.module#TransfertOmHubServicesPageModule' },
 
 
 

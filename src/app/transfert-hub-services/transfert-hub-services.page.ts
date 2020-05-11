@@ -34,7 +34,7 @@ export class TransfertHubServicesPage implements OnInit {
   {
     title: 'Transfert',
     subtitle: "de bonus",
-    icon: "/assets/images/",
+    icon: "/assets/images/ic-reward.png",
     action: "REDIRECT",
     type: "TRANSFERT_BONUS",
     url:""

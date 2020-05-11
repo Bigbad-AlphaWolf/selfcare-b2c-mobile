@@ -58,7 +58,7 @@ export class ApplicationRoutingService {
   }
 
   goToTransfertMoneyPage(){
-    // this.route.navigate(['/'])
+    this.route.navigate(['/transfert-om-hub-services'])
   }
   goToTransfertCreditPage(){
     // this.route.navigate(['/'])

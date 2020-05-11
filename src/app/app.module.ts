@@ -52,7 +52,7 @@ registerLocaleData(localeFr);
     HttpClientModule,
     MatDialogModule,
     BrowserModule,
-    IonicModule.forRoot({ animated: false }),
+    IonicModule.forRoot(),
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule,
