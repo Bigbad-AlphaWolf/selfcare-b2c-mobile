@@ -59,11 +59,11 @@
                         !pass?.passPromo ? pass?.categoriePass?.libelle : pass?.passPromo?.categoriePass?.libelle
                       "
                     >
-                      <span *ngSwitchCase="'Jour'"> 24 heures.</span>
-                      <span *ngSwitchCase="'Semaine'"> 7 jours.</span>
-                      <span *ngSwitchCase="'Mois'"> 1 mois.</span>
-                      <span *ngSwitchCase="'Nuit'"> de 00h à 08h.</span>
-                      <span *ngSwitchDefault> 3 jours.</span>
+                    <ng-container *ngSwitchCase="'Jour'">&nbsp; {{(!pass?.passPromo && pass?.validitePass) ? pass?.validitePass : ' 1 jour.' }} </ng-container>
+                    <ng-container *ngSwitchCase="'Semaine'">&nbsp; {{(!pass?.passPromo && pass?.validitePass) ? pass?.validitePass : ' 7 jours.' }} </ng-container>
+                    <ng-container *ngSwitchCase="'Mois'"> &nbsp;{{(!pass?.passPromo && pass?.validitePass) ? pass?.validitePass : ' 30 jours.' }}</ng-container>
+                    <ng-container *ngSwitchCase="'Nuit'">&nbsp; {{(!pass?.passPromo && pass?.validitePass) ? pass?.validitePass : ' de 00h à 08h.' }}</ng-container>
+                    <ng-container *ngSwitchDefault>&nbsp; {{(!pass?.passPromo && pass?.validitePass) ? pass?.validitePass : ' 3 jours.' }} </ng-container>
                     </span>
                   </span>
                 </div>
