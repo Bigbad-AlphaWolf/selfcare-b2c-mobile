@@ -1,0 +1,72 @@
+
+ <ion-header>   
+  <ion-toolbar>
+      <ion-buttons (click)="goToTransfertMoneyHubServicesPage()" class="ion-padding-start" slot="start">
+          <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+      </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">
+          Transfert d’argent
+      </span>
+     </ion-title>
+  </ion-toolbar>
+</ion-header>
+ <ion-content fullscreen="true">
+      <ion-header class="ion-padding-start" collapse="condense">
+          <ion-toolbar>
+            <span class="title">
+                Transfert d’argent
+            </span>
+          </ion-toolbar>
+        </ion-header>
+        <div *ngIf="hasLoadedFees" class="transferts-page">
+          <div class="transferts-page-header-img">
+            <img src="/assets/images/achat-de-credit.png" alt="">
+          </div>
+          <div class="transferts-page-title">
+            <span class="text">Montant à transférer</span>
+          </div>
+          <div class="transferts-page-content">
+            <div class="transfert-amount-nofees">
+              <form novalidate autocomplete="false">
+                <mat-form-field class="scb-input-row" appearance="outline">
+                    <mat-label>Saisir le montant &nbsp;&nbsp;</mat-label>
+                    <input
+                      #inputAmount
+                      matInput
+                      type="number"
+                      max="2000000"
+                      min="1"
+                      (input)="computeSummaryTransfertAmount($event)"
+                    />
+                  </mat-form-field>
+              </form>
+              <span class="amount-currency scb-text-gray">FCFA</span>
+            </div>
+            <div class="transfert-fees">
+              <ion-list>
+                <ion-item lines="none">
+                  <ion-label class="label">
+                      Frais de retrait
+                  </ion-label>
+                  <ion-label class="fees-value" slot="end">
+                      {{transfertOMFees}} FCFA
+                  </ion-label>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-label class="label">Frais à ma charge</ion-label>
+                  <ion-toggle (ionChange)="updateAmountTransfert($event, inputAmount)" [value]="includeFees" slot="end"></ion-toggle>
+                </ion-item>
+              </ion-list>
+            </div>
+            <div class="transfert-summary">
+                Le bénéficiaire reçoit {{summaryTransfertAmount}} FCFA
+            </div>
+
+            <div class="confirm-btn">
+                <ion-button (click)="confirmAmountTrannsfertOM()" [disabled]="!isTransfertAmountValid" shape="round" [ngClass]="{'btn': !isTransfertAmountValid}" expand="block" >Continuer</ion-button>
+            </div>
+          </div>
+
+        </div>
+  </ion-content>

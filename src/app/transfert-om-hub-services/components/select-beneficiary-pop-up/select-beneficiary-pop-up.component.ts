@@ -3,7 +3,7 @@ import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/selec
 import { formatPhoneNumber, REGEX_NUMBER_OM } from 'src/shared';
 import { MatDialog, MatInput, MatFormField } from '@angular/material';
 import { Contacts, Contact } from '@ionic-native/contacts';
-import { IonInput } from '@ionic/angular';
+import { IonInput, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-select-beneficiary-pop-up',
@@ -11,15 +11,17 @@ import { IonInput } from '@ionic/angular';
   styleUrls: ['./select-beneficiary-pop-up.component.scss'],
 })
 export class SelectBeneficiaryPopUpComponent implements OnInit {
-  @Input() operationType: string;
+  @Input() transfertOMType: string;
   hasErrorGetContact: boolean;
   errorGetContact: string;
   recipientNumber = '';
   recipientContactInfos: any;
   otherBeneficiaryNumber = '';
+  firstName: string;
+  lastName; string;
   @ViewChild('inputTel') htmlInput: ElementRef;
 
-  constructor(private dialog: MatDialog,private contacts: Contacts) { }
+  constructor(private dialog: MatDialog,private contacts: Contacts, private modalController: ModalController) { }
 
   ngOnInit() {}
 
@@ -74,6 +76,9 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     const middleName = contact.name.middleName ? ` ${contact.name.middleName}` : '';
     this.recipientContactInfos = contact.name && contact.name.formatted ? contact.name.formatted : givenName + " " + familyName;
 
+    console.log('givenName', givenName, 'familyName', familyName);
+    
+
   }
 
   validateBeneficiary(){
@@ -83,11 +88,21 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     if(this.htmlInput && this.htmlInput.nativeElement.value && this.validateNumber(this.htmlInput.nativeElement.value)){
       this.recipientNumber = formatPhoneNumber(this.htmlInput.nativeElement.value);
       console.log('OK', this.recipientNumber);
-      
+      this.modalController.dismiss({
+        'recipientMsisdn': this.recipientNumber,
+        'recipientFirstname': this.firstName,
+        'recipientLastname': this.lastName,
+        'transfertOMType': this.transfertOMType
+      });
     }else if(this.otherBeneficiaryNumber && this.recipientContactInfos){
       this.recipientNumber = this.otherBeneficiaryNumber;
       console.log('OK', this.recipientNumber, this.recipientContactInfos);
-      
+      this.modalController.dismiss({
+        'recipientMsisdn': this.recipientNumber,
+        'recipientFirstname': this.firstName,
+        'recipientLastname': this.lastName,
+        'transfertOMType': this.transfertOMType
+      });
     } else{
       this.hasErrorGetContact = true;
       this.errorGetContact = "Veuillez choisir un numéro de destinataire valide pour continuer"

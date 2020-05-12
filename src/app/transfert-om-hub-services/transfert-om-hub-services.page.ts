@@ -60,14 +60,25 @@ goToTransfertHubServicesPage(){
   this.appRouting.goToTransfertHubServicesPage();
 }
 
-async showBeneficiaryModal(operationType: string) {
+async showBeneficiaryModal(transfertOMType: string) {
   const modal = await this.modalController.create({
     component: SelectBeneficiaryPopUpComponent,
     cssClass: 'customModalCssTrasnfertOMWithoutCode',
     componentProps: {
-      'operationType' : operationType
+      'transfertOMType' : transfertOMType
     }
   });
+  modal.onWillDismiss().then((response: any)=>{
+    if( response && response.data && response.data.recipientMsisdn && response.data.transfertOMType){
+      const payload = {
+        transfertOMType: response.data.transfertOMType,
+        recipientMsisdn: response.data.recipientMsisdn,
+        recipientFirstname: response.data.recipientFirstname,
+        recipientLastname: response.data.recipientLastname
+      };      
+      this.appRouting.goToTransfertMoneySetAmountPage(payload);
+    }    
+  })
   return await modal.present();
 }
 
