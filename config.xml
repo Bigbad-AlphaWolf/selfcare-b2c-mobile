@@ -62,6 +62,12 @@
         <edit-config file="*-Info.plist" mode="merge" target="NSContactsUsageDescription">
             <string>need contacts access to search friends</string>
         </edit-config>
+        <config-file parent="NSCameraUsageDescription" target="*-Info.plist">
+            <string>needs camera access to take profile picture</string>
+        </config-file>
+        <config-file parent="NSPhotoLibraryUsageDescription" target="*-Info.plist">
+            <string>needs photo library access to choose profile picture</string>
+        </config-file>
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
         <icon height="114" src="resources/ios/icon/icon@2x.png" width="114" />
         <icon height="29" src="resources/ios/icon/icon-small.png" width="29" />
