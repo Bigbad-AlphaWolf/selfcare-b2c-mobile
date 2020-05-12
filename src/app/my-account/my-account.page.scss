@@ -1,21 +1,29 @@
 @import 'src/app/app';
 
+.scb-my-account-header-mobile {
+	height: 50px;
+	padding: 0 10px;
+	display: flex;
+	align-items: center;
+	img,
+	.scb-my-account-header-label {
+		display: inline-block;
+		vertical-align: middle;
+	}
+	.scb-my-account-header-label {
+		margin-left: 15px;
+	}
+}
+
+.load-avatar{
+	position: fixed;
+	top: 15px;
+	right: 25px;
+}
+
 .scb-my-account-mobile-wrapper {
 	overflow: auto;
-	.scb-my-account-header-mobile {
-		height: 50px;
-		padding: 0 10px;
-		display: flex;
-		align-items: center;
-		img,
-		.scb-my-account-header-label {
-			display: inline-block;
-			vertical-align: middle;
-		}
-		.scb-my-account-header-label {
-			margin-left: 15px;
-		}
-	}
+	
 	.scb-my-account-infos-block {
 		height: 305px;
 		padding-top: 39px;
