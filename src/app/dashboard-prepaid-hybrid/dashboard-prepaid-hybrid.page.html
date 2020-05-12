@@ -4,10 +4,7 @@
     <div class="dashboard-block-conso">
       <div class="dashboard-block-conso-top-texts">
         <div><span class="suivi-conso">Suivi conso</span></div>
-        <div
-          (click)="goDetailsCom(0)"
-          class="voir-details-text scb-text-orange"
-        >
+        <div (click)="goDetailsCom(0)" class="voir-details-text scb-text-orange">
           Voir details
         </div>
       </div>
@@ -15,25 +12,17 @@
         <ion-slides [options]="slideOpts">
           <ng-container *ngIf="isHyBride">
             <ion-slide>
-              <div
-                (click)="goDetailsCom()"
-                class="scb-btn-blue scb-btn-balance"
-              >
+              <div (click)="goDetailsCom()" class="scb-btn-blue scb-btn-balance">
                 <div class="scb-btn-top-block">
-                  <img
-                    class="scb-btn-top-block-icon"
-                    src="/assets/images/orange-dialler-white.svg"
-                    alt="curency-cfa-2-mob"
-                  />
+                  <img class="scb-btn-top-block-icon" src="/assets/images/orange-dialler-white.svg"
+                    alt="curency-cfa-2-mob" />
                   <div class="scb-btn-top-block-text">
                     <span class="text">Balance</span>
                   </div>
                 </div>
                 <div class="bottom-block">
-                  <span class="value"
-                    >{{ userCallConsoSummary?.balance }}
-                    <span class="text-style-1"> FCFA </span></span
-                  >
+                  <span class="value">{{ userCallConsoSummary?.balance }}
+                    <span class="text-style-1"> FCFA </span></span>
                 </div>
                 <div class="validity-text" *ngIf="balanceValidity">
                   valable jusqu'au {{ balanceValidity }}
@@ -44,20 +33,14 @@
           <ion-slide>
             <div (click)="goDetailsCom()" class="scb-btn-green scb-btn-credit">
               <div class="scb-btn-top-block">
-                <img
-                  class="scb-btn-top-block-icon"
-                  src="/assets/images/orange-dialler-white.svg"
-                  alt="curency-cfa-3-mob"
-                />
+                <img class="scb-btn-top-block-icon" src="/assets/images/icon-call.svg" alt="curency-cfa-3-mob" />
                 <div class="scb-btn-top-block-text">
                   <span class="text">Crédit global</span>
                 </div>
               </div>
               <div class="bottom-block">
-                <span class="value"
-                  >{{ userCallConsoSummary?.globalCredit }}
-                  <span class="text-style-1"> FCFA </span></span
-                >
+                <span class="value">{{ userCallConsoSummary?.globalCredit }}
+                  <span class="text-style-1"> FCFA </span></span>
               </div>
               <div class="validity-text" *ngIf="creditValidity">
                 valable jusqu'au {{ creditValidity }}
@@ -68,66 +51,39 @@
             <app-om-button></app-om-button>
           </ion-slide>
           <ion-slide *ngIf="currentProfil && !isHyBride">
-            <div
-              class="scb-btn-black scb-btn-sargal"
-              [ngClass]="{
+            <div class="scb-btn-black scb-btn-sargal" [ngClass]="{
               'btn-disabled': sargalUnavailable || userSargalData?.status === getSargalStatusUnsubscriptionOnGoing()
-            }"
-            >
-              <div
-                (click)="makeSargalAction()"
-                [ngClass]="{
+            }">
+              <div (click)="makeSargalAction()" [ngClass]="{
                 'btn-no-action': sargalUnavailable || userSargalData?.status === getSargalStatusUnsubscriptionOnGoing()
-              }"
-                class="btn-container"
-              >
+              }" class="btn-container">
                 <div class="scb-btn-top-block">
-                  <img
-                    class="scb-btn-top-block-icon"
-                    src="/assets/images/points-sargal.svg"
-                    alt="sargal-cfa-3-mob"
-                  />
+                  <img class="scb-btn-top-block-icon" src="/assets/images/gift-sargal.svg" alt="sargal-cfa-3-mob" />
                   <div class="scb-btn-top-block-text">
                     <span class="text">Sargal</span>
                   </div>
                 </div>
                 <div *ngIf="!sargalDataLoaded" class="scb-block-spinner">
-                  <mat-spinner
-                    mode="indeterminate"
-                    [diameter]="30"
-                  ></mat-spinner>
+                  <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
                 </div>
                 <ng-container *ngIf="sargalDataLoaded">
                   <div class="bottom-block">
-                    <span class="value" *ngIf="userSargalData?.totalPoints"
-                      >{{ userSargalData.totalPoints | formatCurrency }}
-                      <span class="text-style-1"> Pts </span></span
-                    >
-                    <span
-                      *ngIf="userSargalData?.status === getSargalStatusNotSubscribed()"
-                      class="show-solde-info-text"
-                      >M'inscrire</span
-                    >
-                    <span
-                      *ngIf="sargalUnavailable || userSargalData?.status === getSargalStatusUnsubscriptionOnGoing()"
-                      class="show-solde-info-text"
-                      >Service indisponible</span
-                    >
+                    <span class="value"
+                      *ngIf="userSargalData?.totalPoints">{{ userSargalData.totalPoints | formatCurrency }}
+                      <span class="text-style-1"> Pts </span></span>
+                    <span *ngIf="userSargalData?.status === getSargalStatusNotSubscribed()"
+                      class="show-solde-info-text">M'inscrire</span>
+                    <span *ngIf="sargalUnavailable || userSargalData?.status === getSargalStatusUnsubscriptionOnGoing()"
+                      class="show-solde-info-text">Service indisponible</span>
                   </div>
-                  <div
-                    class="validity-text"
-                    *ngIf="userSargalData?.totalPoints"
-                  >
+                  <div class="validity-text" *ngIf="userSargalData?.totalPoints">
                     Mis à jour le {{ sargalLastUpdate }}
                   </div>
                 </ng-container>
               </div>
 
-              <div
-                *ngIf="userSargalData?.status !== getSargalStatusNotSubscribed()"
-                (click)="getSargalPoints()"
-                class="scb-data-reload"
-              >
+              <div *ngIf="userSargalData?.status !== getSargalStatusNotSubscribed()" (click)="getSargalPoints()"
+                class="scb-data-reload">
                 <img src="/assets/images/reload.png" alt="reload-icon" />
               </div>
             </div>
@@ -138,11 +94,7 @@
         <div *ngIf="!dataLoaded" class="dashboard-block-spinner">
           <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
         </div>
-        <div
-          *ngIf="dataLoaded && error"
-          (click)="getUserConsommations()"
-          class="dashboard-block-conso-details-spinner"
-        >
+        <div *ngIf="dataLoaded && error" (click)="getUserConsommations()" class="dashboard-block-conso-details-spinner">
           <span class="scb-text-full-black">
             Erreur lors du chargement des données. Réactualiser
           </span>
@@ -151,32 +103,23 @@
           <ng-container *ngFor="let conso of userConsommationsCategories">
             <div class="dashboard-block-conso-details-item">
               <div class="conso-name-value-line">
-                <span class="conso-name scb-text-gray"
-                  >{{ conso.compteur }}</span
-                >
-                <span class="conso-value scb-text-full-black"
-                  >{{ conso.montantFormat }}<span class="text-style-1"></span
-                ></span>
+                <span class="conso-name scb-text-gray">{{ conso.compteur }}</span>
+                <span class="conso-value scb-text-full-black">{{ conso.montantFormat }}<span
+                    class="text-style-1"></span></span>
               </div>
-              <ng-container
-                *ngIf="
+              <ng-container *ngIf="
                 conso.code !== CODE_COMPTEUR_VOLUME_NUIT_1 &&
                   conso.code !== CODE_COMPTEUR_VOLUME_NUIT_2 &&
                   conso.code !== CODE_COMPTEUR_VOLUME_NUIT_3;
                 else compteurNuit
-              "
-              >
+              ">
                 <div class="conso-expiration-line">
-                  <span class="conso-expiration-date scb-text-light-black"
-                    >Expire le {{ conso.dateExpiration }}</span
-                  >
+                  <span class="conso-expiration-date scb-text-light-black">Expire le {{ conso.dateExpiration }}</span>
                 </div>
               </ng-container>
               <ng-template #compteurNuit>
                 <div class="conso-expiration-line">
-                  <span class="conso-expiration-date scb-text-light-black"
-                    >Utilisable de 00h à 08h</span
-                  >
+                  <span class="conso-expiration-date scb-text-light-black">Utilisable de 00h à 08h</span>
                 </div>
               </ng-template>
             </div>
@@ -185,183 +128,90 @@
       </div>
     </div>
     <div class="dashboard-block-offres">
-      <div
-        fxLayout="row"
-        fxLayoutAlign="space-around"
-        class="dashboard-block-offres-top3"
-      >
-        <div
-          (click)="goBuyCredit()"
-          fxFlex="29%"
-          class="dashboard-block-offres-top3-item"
-        >
+      <div class="title">Je souhaite</div>
+      <div class="dashboard-block-offres-top3">
+        <div (click)="goToBuyPage()" class="dashboard-block-offres-top3-item">
+          <div class="badge-promo" *ngIf="hasPromoBooster?.promoPass || hasPromoBooster?.promoRecharge">
+            <div class="icon-container">
+              <img src="/assets/images/gift-sargal.svg" alt="gift-icon">
+            </div>
+            <div class="triangle"></div>
+          </div>
           <div class="item-icon">
-            <img
-              src="/assets/images/ic-top-up-mobile@2x.png"
-              alt="credit-mob"
-            />
-          </div>
-          <div
-            *ngIf="!hasPromoBooster?.promoRecharge"
-            class="item-text scb-text-black"
-          >
-            <span class="recharger"
-              >Recharger <br />
-              <span class="text-style-1 scb-text-item-offre-black"
-                >du crédit</span
-              >
-            </span>
-          </div>
-          <div
-            *ngIf="hasPromoBooster?.promoRecharge"
-            class="item-text scb-text-item-offre-black"
-          >
-            <img
-              src="/assets/images/badge-promo.png"
-              alt="badge-promo"
-              class="badge-promo"
-            />
-            <span class="recharger">Recharge</span>
-          </div>
-        </div>
-        <div
-          (click)="goBuyPassInternet()"
-          fxFlex="29%"
-          class="dashboard-block-offres-top3-item"
-        >
-          <div class="item-icon">
-            <img
-              src="/assets/images/ic-internet-usage@2x.png"
-              alt="pass-internet-mob"
-            />
-          </div>
-          <div
-            *ngIf="!hasPromoBooster?.promoPass"
-            class="item-text scb-text-black"
-          >
-            <span
-              >Acheter <br />
-              <span class="text-style-1 scb-text-item-offre-black"
-                >pass internet</span
-              >
-            </span>
-          </div>
-          <div
-            *ngIf="hasPromoBooster?.promoPass"
-            class="item-text scb-text-item-offre-black"
-          >
-            <img
-              src="/assets/images/badge-promo.png"
-              alt="badge-promo"
-              class="badge-promo"
-            />
-            <span>Pass Internet</span>
-          </div>
-        </div>
-        <div
-          (click)="goToIllimixPage()"
-          fxFlex="29%"
-          class="dashboard-block-offres-top3-item"
-        >
-          <div class="item-icon">
-            <img
-              src="/assets/images/ic-package-services@2x.png"
-              alt="credit-mob.svg"
-            />
+            <img src="/assets/images/ic-package-services@2x.png" alt="credit-mob" />
           </div>
           <div class="item-text scb-text-black">
-            <span
-              >Acheter <br />
-              <span class="text-style-1 scb-text-item-offre-black"
-                >pass illimix</span
-              >
+            <span class="recharger">Acheter <br />
+              <span class="text-style-1 scb-text-item-offre-black">Crédit, pass</span>
+            </span>
+          </div>
+        </div>
+        <div (click)="goToTransfertsPage()" class="dashboard-block-offres-top3-item">
+          <div class="item-icon">
+            <img src="/assets/images/ic-transfer-data.svg" alt="pass-internet-mob" />
+          </div>
+          <div class="item-text scb-text-black">
+            <span>Transférer <br />
+              <span class="text-style-1 scb-text-item-offre-black">Argent, crédit</span>
+            </span>
+          </div>
+        </div>
+        <div (click)="goToIllimixPage()" class="dashboard-block-offres-top3-item">
+          <div class="item-icon">
+            <img src="/assets/images/ic-orange-money.svg" alt="credit-mob.svg" />
+          </div>
+          <div class="item-text scb-text-black">
+            <span>Payer <br />
+              <span class="text-style-1 scb-text-item-offre-black">Ma facture</span>
             </span>
           </div>
         </div>
       </div>
-      <div
-        fxLayout="row"
-        fxLayoutAlign="space-around"
-        class="dashboard-block-offres-top3"
-      >
-        <div
-          (click)="goToTransfertsPage()"
-          fxFlex="29%"
-          class="dashboard-block-offres-top3-item"
-        >
+      <div class="dashboard-block-offres-top3">
+        <div (click)="goToTransfertsPage()" class="dashboard-block-offres-top3-item">
           <div class="item-icon">
-            <img src="/assets/images/ic-transfer-data@2x.png" alt="group-56" />
+            <img src="/assets/images/ic-scan-ticket.svg" alt="group-56" />
           </div>
           <div class="item-text scb-text-black">
-            <span class="transfert text"
-              >Transfert <br />
-              <span class="text-style-1 scb-text-item-offre-black"
-                >(crédit, bonus)</span
-              >
+            <span class="transfert text">Payer <br />
+              <span class="text-style-1 scb-text-item-offre-black">un marchand</span>
             </span>
           </div>
         </div>
 
-        <div
-          [ngClass]="{ 'disabled-block': !canDoSOS }"
-          (click)="goToSOSPage()"
-          fxFlex="29%"
-          class="dashboard-block-offres-top3-item"
-        >
+        <div (click)="goToTransfertOM()" class="dashboard-block-offres-top3-item">
+          <div class="item-icon">
+            <img src="/assets/images/ic-reward.svg" alt="group-6" />
+          </div>
+          <div class="item-text scb-text-black">
+            <span>Convertir <br />
+              <span class="text-style-1 scb-text-item-offre-black">
+                Points Sargal</span></span>
+          </div>
+        </div>
+
+        <div [ngClass]="{ 'disabled-block': !canDoSOS }" (click)="goToSOSPage()"
+          class="dashboard-block-offres-top3-item">
           <div class="item-icon">
             <img src="/assets/images/ic-emergency-sos@2x.png" alt="group-55" />
           </div>
           <div class="item-text scb-text-black">
-            <span class="sos text"
-              >SOS <br />
-              <span class="text-style-1 scb-text-item-offre-black"
-                >(crédit, pass)</span
-              >
+            <span class="sos text">Demander <br />
+              <span class="text-style-1 scb-text-item-offre-black">un SOS</span>
             </span>
           </div>
         </div>
-        <div
-          (click)="goToTransfertOM()"
-          fxFlex="29%"
-          class="dashboard-block-offres-top3-item"
-        >
-          <div class="item-icon">
-            <img
-              src="/assets/images/ic-orange-money-nfc@2x.png"
-              alt="group-6"
-            />
-          </div>
-          <div class="item-text scb-text-black">
-            <span
-              >Transfert <br />
-              <span class="text-style-1 scb-text-item-offre-black">
-                d’argent OM</span
-              ></span
-            >
-          </div>
-        </div>
-      </div>
-      <div *ngIf="0" class="dashboard-block-offres-top1">
-        <div class="item-icon">
-          <img src="/assets/images/orange-money_kirene.png" alt="group-6" />
-        </div>
-        <div class="item-text scb-text-item-offre-black">
-          <span class="text-style-1"
-            >Faire une transaction avec <span> Orange Money </span></span
-          >
-        </div>
+
       </div>
     </div>
-    <div
-      *ngIf="showPromoBarner || (listBanniere.length && showPromoBarner)"
-      class="dashboard-img-promo slide-container"
-    >
+    <div class="bons-plans" *ngIf="listBanniere && listBanniere.length">Bons Plans</div>
+    <div *ngIf="showPromoBarner || (listBanniere.length && showPromoBarner)"
+      class="dashboard-img-promo slide-container">
       <ion-slides pager [options]="{loop: true}">
         <ng-container *ngFor="let banniere of listBanniere">
           <ion-slide>
             <span #error class="error-slide scb-text-full-black">
-              Erreur lors du chargement de l'image</span
-            >
+              Erreur lors du chargement de l'image</span>
             <div class="description" #description>
               <div class="title">
                 {{getBanniereTitle(banniere.description)}}
@@ -371,25 +221,19 @@
               </div>
             </div>
             <div class="img-container" #imageContainer>
-              <img
-                #img
-                (load)="onError([
+              <img #img (load)="onError([
                 { el: error, display: false },
                 { el: img, display: true },
                 { el: description, display: true },
                 { el: imageContainer, display: true }
-              ])"
-                (error)="
+              ])" (error)="
               onError([
                 { el: error, display: true },
                 { el: img, display: false },
                 { el: description, display: false },
                 { el: imageContainer, display: false }
               ])
-            "
-                [src]="banniere.image"
-                alt="ban"
-              />
+            " [src]="banniere.image" alt="ban" />
             </div>
           </ion-slide>
         </ng-container>
@@ -403,12 +247,7 @@
 <div id="fab-background" *ngIf="fabOpened"></div>
 <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)="fabToggled()">
   <ion-fab-button>
-    <img
-      class="ibou-icon"
-      src="/assets/images/avatar-ibou-update.svg"
-      alt=""
-      (tap)="fabToggled()"
-    />
+    <img class="ibou-icon" src="/assets/images/avatar-ibou-update.svg" alt="" (tap)="fabToggled()" />
   </ion-fab-button>
 
   <ion-fab-list side="top">
@@ -427,8 +266,6 @@
     <ion-fab-button class="fab-item" routerLink="/control-center">
       <img src="/assets/images/emergency_help_fab_icon.svg" alt="" />
     </ion-fab-button>
-    <ion-label routerLink="/control-center" (click)="goAssistance()"
-      >Assistance</ion-label
-    >
+    <ion-label routerLink="/control-center" (click)="goAssistance()">Assistance</ion-label>
   </ion-fab-list>
 </ion-fab>
