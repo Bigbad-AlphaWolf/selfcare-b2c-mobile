@@ -90,7 +90,6 @@ export class TransfertOmSetAmountPage implements OnInit {
         }else{
           this.summaryTransfertAmount = amount;
         }
-       
         
       }else{
         this.transfertOMFees = with_code;
@@ -100,9 +99,7 @@ export class TransfertOmSetAmountPage implements OnInit {
 
         }else{
           this.summaryTransfertAmount = amount;
-
         }
-       
       }
     }else{
       this.isTransfertAmountValid = false;

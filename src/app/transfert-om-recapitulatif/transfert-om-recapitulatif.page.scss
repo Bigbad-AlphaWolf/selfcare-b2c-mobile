@@ -23,16 +23,102 @@
         }
     }
     &-title{
+        margin-bottom: 20px;
+        padding-left: 15px;
         .text{
+            display: block;
             font-family: HelveticaNeueLTStd-Bd;
             font-size: 20px;
             line-height: 1.5;
             color: $fullBlack;
-            margin-bottom: 20px;
-            margin-left: 15px;
+        }
+        .subtitle{
+            display: block;
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 16px;
+            line-height: 1.25;
+            color: $gray;
+            margin-top: 10px;
         }
     }
     &-content{
-       
+        position: relative;
+       .transferts-amount-summary{
+           height: 82px;
+           background-color: $grayDashboard;
+           padding: 10px 15px;
+           display: flex;
+           align-items: center;
+           justify-content: space-between;
+        .amount{
+            background-color: $white;
+            background-image: url("/assets/images/ic-orange-money.png");
+            background-repeat: no-repeat;
+            background-position-x: 108%;
+            background-position-y: 108%;
+            height: 62px;
+            width: 75%;
+            border-radius: 5px;
+            box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+            .value{
+                font-family: HelveticaNeueLTStd-Bd;
+                font-size: 20px;
+                line-height: 1.1;
+                color: $orange;
+            }
+        }
+        .update{
+
+        }
+       }
+       .transferts-beneficiary-info{
+           margin-top: 22px;
+           display: flex;
+           .infos-block{
+            width: 75%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 15px;
+            .infos{
+                text-align: right;
+                .number, .other-infos{
+                    display: block;
+                    font-family: HelveticaNeueLTStd-Roman;
+                    font-size: 12px;
+                    font-weight: normal;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.67;
+                }
+                .label{
+                    font-family: HelveticaNeueLTStd-Roman;
+                    line-height: 1.67;
+                    font-size: 16px;
+                }
+            }
+           }
+           .update{
+              margin-left: 15px; 
+           }
+       }
+      
     }
+    .confirm-btn{
+        position: fixed;
+        bottom: 20px;
+        width: 95%;
+        right: 10px;
+        ion-button{
+            height: 50px;
+            --border-radius: 10px;
+            --background-activated : #ff7900;
+            &.btn{
+                --background: #cccccc;
+            }
+        }
+     }
 }
+
