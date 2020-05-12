@@ -19,11 +19,11 @@
             </span>
           </ion-toolbar>
         </ion-header>
-        <div class="transferts-page">
+        <div class="transferts-page" *ngIf="options.length">
           <ion-card (click)="goTo(opt)" *ngFor="let opt of options" class="card" button="true">
             <ion-card-content>
               <div class="icon">
-                <img [src]="opt.icon" alt="">
+                <img [src]="opt?.icon" alt="">
               </div>
               <div class="text">
                 <span class="title">
