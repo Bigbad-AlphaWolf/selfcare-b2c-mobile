@@ -6,21 +6,17 @@
   text-align: left;
   width: 100%;
   height: 100%;
-  padding: 8px 0 10px 15px;
+  padding: 12px 0 20px 15px;
   border-radius: 15px;
-  box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
-  margin-right: percentage(10px / 366px);
+  // box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
+  // margin-right: percentage(10px / 366px);
   &.btn-om-kirene {
     background-color: #d03c34;
     border-color: #d03c34;
   }
   .scb-btn-top-block {
-    &-icon,
-    &-text {
-      display: inline-block;
-      vertical-align: middle;
-    }
-
+    display: flex;
+    align-items: center;
     &-icon {
       height: 24px;
       width: 24px;
@@ -36,7 +32,7 @@
   }
 
   .bottom-block {
-    margin-top: 1px;
+    margin-top: 4px;
     .value {
       font-family: HelveticaNeueLTStd-Bd, sans-serif;
       font-size: 26px;
@@ -49,7 +45,7 @@
   }
 
   .validity-text {
-    margin-top: 6px;
+    margin-top: 5px;
     font-family: HelveticaNeueLTStd-Roman;
     font-size: 9px;
   }

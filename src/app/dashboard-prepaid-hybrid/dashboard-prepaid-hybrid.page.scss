@@ -9,15 +9,49 @@
 
   .dashboard-block-offres {
     padding: 0 15px;
+    .title {
+      padding: 10px 0;
+      font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      font-size: 24px;
+    }
     &-top3 {
       min-height: 117px;
-      margin-top: 11px;
+      margin-top: 10px;
       display: flex;
       justify-content: space-between;
       &-item {
         width: percentage(105/345);
         background-color: $white;
         border-radius: 15px;
+        position: relative;
+        .badge-promo {
+          position: absolute;
+          top: 10px;
+          right: -5px;
+          width: 18%;
+          min-width: 25px;
+          .icon-container {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 10px;
+            background-color: $lightBlue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10%;
+            width: 100%;
+            border-radius: 5% 5% 0 5%;
+            img {
+              width: 80%;
+            }
+          }
+          .triangle {
+            width: 0;
+            height: 0;
+            border-top: 5px solid $bluePopUp;
+            border-right: 5px solid transparent;
+            float: right;
+          }
+        }
         &.disabled-block {
           background-color: $grayDashboard;
           opacity: 0.4;
@@ -129,14 +163,12 @@
 
   .dashboard-block-conso {
     background-color: $white;
-    padding: 15px 0 10px 0;
-    margin-bottom: 10px;
-    margin-top: 10px;
+    margin: 10px 0;
 
     &-top-texts {
       display: flex;
       justify-content: space-between;
-      padding: 0 percentage(10px / $baseWidthMobile2);
+      padding: 20px percentage(15px / $baseWidthMobile2);
       .suivi-conso {
         font-size: 24px;
       }
@@ -150,8 +182,8 @@
     }
 
     &-btns {
-      height: 130px;
-      margin-top: -5px; // margin-top: 15px; // old value commented because of slides with native margin
+      // height: 130px;
+      // margin-top: -5px; // margin-top: 15px; // old value commented because of slides with native margin
       overflow-x: scroll;
       white-space: nowrap;
       display: flex;
@@ -161,11 +193,11 @@
       ion-slides {
         width: 100%;
         ion-slide {
-          padding-left: 10px;
+          padding-left: 15px;
           display: flex;
           align-items: flex-start;
-          margin-top: 12px;
-          width: 75%;
+          // margin-top: 12px;
+          // width: percentage(255/375) !important;
           // width: 66% !important;
           // min-width: 300px;
         }
@@ -173,35 +205,30 @@
       app-om-button {
         // min-width: 63%;
         width: 100%;
-        height: 90px;
-        margin-right: percentage(10px / 366px);
+        height: 110px;
+        // margin-right: percentage(10px / 366px);
       }
 
       .scb-btn-balance,
       .scb-btn-credit,
       .scb-btn-sargal {
         text-align: left;
-        min-width: 63%;
+        // min-width: 63%;
         width: 100%;
-        height: 90px;
+        height: 110px;
         display: inline-block;
-        padding: 8px 0 10px 15px;
+        padding: 12px 0 20px 15px;
         border-radius: 15px;
-        box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
-        margin-right: percentage(10px / 366px);
+        // box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
+        // margin-right: percentage(10px / 366px);
         .scb-btn-top-block {
-          &-icon,
-          &-text {
-            display: inline-block;
-            vertical-align: middle;
-          }
-
+          display: flex;
+          align-items: center;
           &-icon {
             height: 24px;
             width: 24px;
             margin-right: 4px;
           }
-
           &-text {
             .text {
               font-family: HelveticaNeueLTStd-Roman, sans-serif;
@@ -211,7 +238,7 @@
         }
 
         .bottom-block {
-          margin-top: 1px;
+          margin-top: 4px;
           .value {
             font-family: HelveticaNeueLTStd-Bd, sans-serif;
             font-size: 26px;
@@ -224,7 +251,7 @@
         }
 
         .validity-text {
-          margin-top: 6px;
+          margin-top: 5px;
           font-family: HelveticaNeueLTStd-Roman;
           font-size: 9px;
         }
@@ -261,9 +288,9 @@
     }
 
     &-details {
-      margin: -15px 0 0 0;
+      // margin: -15px 0 0 0;
       border-radius: 4px;
-      padding: 5px percentage(10px / $baseWidthMobile2);
+      padding: 25px percentage(15px / $baseWidthMobile2);
 
       &::-webkit-scrollbar {
         display: none;
@@ -314,6 +341,12 @@
         }
       }
     }
+  }
+
+  .bons-plans {
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 24px;
+    padding: 20px 0 10px 15px;
   }
 
   .dashboard-block-footer-container {
