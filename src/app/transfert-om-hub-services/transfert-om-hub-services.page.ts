@@ -9,7 +9,6 @@ import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary
   styleUrls: ['./transfert-om-hub-services.page.scss'],
 })
 export class TransfertOmHubServicesPage implements OnInit {
-
   options: {
     title: string;
     subtitle: string;
@@ -17,30 +16,32 @@ export class TransfertOmHubServicesPage implements OnInit {
     type: 'TRANSFERT_OM_WITH_CODE' | 'TRANSFERT_OM_WITHOUT_CODE';
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
-}[] = [
-  {
-    title: 'Sans code',
-    subtitle: "Retrait avec numéro de téléphone",
-    icon: "/assets/images/ic-transfer-data.png",
-    action: "POPUP",
-    type: "TRANSFERT_OM_WITHOUT_CODE",
-    url:""
-  },
-  {
-    title: 'Avec code',
-    subtitle: "Retrait avec pièce d’identité",
-    icon: "/assets/images/ic-barcode-reader.png",
-    action: "POPUP",
-    type: "TRANSFERT_OM_WITH_CODE",
-    url:""
-  }
-];
-  constructor(private appRouting: ApplicationRoutingService, private modalController: ModalController) { }
+  }[] = [
+    {
+      title: 'Sans code',
+      subtitle: 'Retrait avec numéro de téléphone',
+      icon: '/assets/images/ic-transfer-data.png',
+      action: 'POPUP',
+      type: 'TRANSFERT_OM_WITHOUT_CODE',
+      url: '',
+    },
+    {
+      title: 'Avec code',
+      subtitle: 'Retrait avec pièce d’identité',
+      icon: '/assets/images/ic-barcode-reader.png',
+      action: 'POPUP',
+      type: 'TRANSFERT_OM_WITH_CODE',
+      url: '',
+    },
+  ];
+  constructor(
+    private appRouting: ApplicationRoutingService,
+    private modalController: ModalController
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  goToDashboard(){
+  goToDashboard() {
     this.appRouting.goToDashboard();
   }
 
@@ -51,24 +52,22 @@ export class TransfertOmHubServicesPage implements OnInit {
     type: 'TRANSFERT_OM_WITH_CODE' | 'TRANSFERT_OM_WITHOUT_CODE';
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
-} ){
+  }) {
+    this.showBeneficiaryModal(opt.type);
+  }
 
-  this.showBeneficiaryModal(opt.type);
-}
+  goToTransfertHubServicesPage() {
+    this.appRouting.goToTransfertHubServicesPage('TRANSFER');
+  }
 
-goToTransfertHubServicesPage(){
-  this.appRouting.goToTransfertHubServicesPage();
-}
-
-async showBeneficiaryModal(operationType: string) {
-  const modal = await this.modalController.create({
-    component: SelectBeneficiaryPopUpComponent,
-    cssClass: 'customModalCssTrasnfertOMWithoutCode',
-    componentProps: {
-      'operationType' : operationType
-    }
-  });
-  return await modal.present();
-}
-
+  async showBeneficiaryModal(operationType: string) {
+    const modal = await this.modalController.create({
+      component: SelectBeneficiaryPopUpComponent,
+      cssClass: 'customModalCssTrasnfertOMWithoutCode',
+      componentProps: {
+        operationType: operationType,
+      },
+    });
+    return await modal.present();
+  }
 }

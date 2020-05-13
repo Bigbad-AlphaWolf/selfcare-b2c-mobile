@@ -6,7 +6,7 @@
       </ion-buttons>
     <ion-title class="ion-no-padding">
       <span class="title1">
-          Transférer argent ou crédit
+          {{pageTitle}}
       </span>
      </ion-title>
   </ion-toolbar>
@@ -15,26 +15,27 @@
       <ion-header class="ion-padding-start" collapse="condense">
           <ion-toolbar>
             <span class="title">
-                Transférer argent ou crédit
+                {{pageTitle}}
             </span>
           </ion-toolbar>
         </ion-header>
-        <div class="transferts-page" *ngIf="options.length">
-          <ion-card (click)="goTo(opt)" *ngFor="let opt of options" class="card" button="true">
-            <ion-card-content>
-              <div class="icon">
-                <img [src]="opt?.icon" alt="">
-              </div>
-              <div class="text">
-                <span class="title">
-                  {{opt.title}}
-                </span>
-                <span class="subtitle">
-                    {{opt.subtitle}}
-                </span>
-              </div>
-            </ion-card-content>
-          </ion-card>
-
+        <div class="transferts-page">
+          <div class="ion-cards-container" *ngIf="options.length">
+            <ion-card (click)="goTo(opt)" *ngFor="let opt of options" class="card" button="true">
+              <ion-card-content>
+                <div class="icon">
+                  <img [src]="opt?.icon" alt="">
+                </div>
+                <div class="text">
+                  <span class="title">
+                    {{opt.title}}
+                  </span>
+                  <span class="subtitle">
+                      {{opt.subtitle}}
+                  </span>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </div>
         </div>
   </ion-content>

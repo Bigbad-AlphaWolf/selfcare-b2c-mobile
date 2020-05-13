@@ -75,4 +75,8 @@ export class ApplicationRoutingService {
   goToTransfertBonusPage() {
     // this.route.navigate(['/'])
   }
+
+  goBuyCredit() {
+    this.route.navigate(['/buy-credit']);
+  }
 }

@@ -8,6 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./transfert-hub-services.page.scss'],
 })
 export class TransfertHubServicesPage implements OnInit {
+  pageTitle: string;
   transferOptions: {
     title: string;
     subtitle: string;
@@ -55,43 +56,41 @@ export class TransfertHubServicesPage implements OnInit {
     action?: 'REDIRECT' | 'POPUP';
   }[] = [
     {
-      title: 'Transfert',
-      subtitle: "d'argent",
+      title: 'Crédit',
+      subtitle: 'recharge',
       icon: '/assets/images/ic-top-up-mobile@2x.png',
       action: 'REDIRECT',
       type: 'CREDIT',
       url: '',
     },
     {
-      title: 'Transfert',
-      subtitle: 'de crédit',
+      title: 'Pass',
+      subtitle: 'internet',
       icon: '/assets/images/ic-internet-usage@2x.png',
       action: 'REDIRECT',
       type: 'PASS',
       url: '',
     },
     {
-      title: 'Transfert',
-      subtitle: 'de bonus',
+      title: 'Pass',
+      subtitle: 'illimix',
       icon: '/assets/images/ic-package-services@2x.png',
       action: 'REDIRECT',
       type: 'PASS_ILLIMIX',
       url: '',
     },
-    ,
     {
-      title: 'Transfert',
-      subtitle: 'de bonus',
-      icon: '/assets/images/ic-reward.png',
+      title: 'Pass',
+      subtitle: 'voyage',
+      icon: '/assets/images/ic-aeroplane.png',
       action: 'REDIRECT',
       type: 'PASS_VOYAGE',
       url: '',
     },
-    ,
     {
-      title: 'Transfert',
-      subtitle: 'de bonus',
-      icon: '/assets/images/ic-reward.png',
+      title: 'Pass',
+      subtitle: 'international',
+      icon: '/assets/images/ic-international.png',
       action: 'REDIRECT',
       type: 'PASS_INTERNATIONAL',
       url: '',
@@ -113,9 +112,13 @@ export class TransfertHubServicesPage implements OnInit {
       ) {
         const purchaseType = this.router.getCurrentNavigation().extras.state
           .purchaseType;
-        purchaseType === 'TRANSFER'
-          ? (this.options = this.transferOptions)
-          : (this.options = this.buyOptions);
+        if (purchaseType === 'TRANSFER') {
+          this.options = this.transferOptions;
+          this.pageTitle = 'Transférer argent ou crédit';
+        } else {
+          this.options = this.buyOptions;
+          this.pageTitle = 'Acheter crédit ou pass';
+        }
       } else {
         this.appRouting.goToDashboard();
       }
@@ -130,7 +133,7 @@ export class TransfertHubServicesPage implements OnInit {
     title: string;
     subtitle: string;
     icon: string;
-    type: 'TRANSFERT_MONEY' | 'TRANSFERT_CREDIT' | 'TRANSFERT_BONUS';
+    type: string;
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
   }) {
@@ -148,6 +151,21 @@ export class TransfertHubServicesPage implements OnInit {
       case 'TRANSFERT_BONUS':
         if (opt.action === 'REDIRECT') {
           this.appRouting.goToTransfertBonusPage();
+        }
+        break;
+      case 'CREDIT':
+        if (opt.action === 'REDIRECT') {
+          this.appRouting.goBuyCredit();
+        }
+        break;
+      case 'PASS':
+        if (opt.action === 'REDIRECT') {
+          this.appRouting.goToSelectRecepientPassInternet();
+        }
+        break;
+      case 'PASS_ILLIMIX':
+        if (opt.action === 'REDIRECT') {
+          this.appRouting.goToSelectRecepientPassIllimix();
         }
         break;
       default:
