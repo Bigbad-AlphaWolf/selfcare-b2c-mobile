@@ -1,15 +1,14 @@
 <ion-header [myScrollVanish]="scrollArea">
   <div class="arrow-container">
-    <img
-      src="assets/images/long-arrow-left.png"
-      alt=""
-      (click)="goBackToListPass()"
-    />
+    <img src="assets/images/long-arrow-left.png" alt="" (click)="goBack()" />
   </div>
   <div class="text-container">
     <ng-container [ngSwitch]="purchaseType">
       <span *ngSwitchCase="OPERATION_INTERNET_TYPE">Achat Pass Internet</span>
       <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE">Achat Pass Illimix</span>
+      <span *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+        >Paiement Marchand</span
+      >
     </ng-container>
   </div>
   <div class="banner-container">
@@ -26,13 +25,22 @@
         alt="banniere"
         class="banniere"
       />
+      <img
+        *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+        src="assets/images/banniere-payment.png"
+        alt="banniere"
+        class="banniere"
+      />
     </ng-container>
   </div>
 </ion-header>
 
 <ion-content #scrollArea [scrollEvents]="true">
+  <div class="recap-title">
+    <span class="text-1">Récapitulatif</span>
+    <span class="text-2 scb-text-gray">Vous allez recharger</span>
+  </div>
   <div class="buy-pass-information">
-    <div class="title">Pass sélectionné</div>
     <div class="card-container">
       <ng-container [ngSwitch]="purchaseType">
         <app-item-pass-internet

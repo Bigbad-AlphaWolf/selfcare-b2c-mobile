@@ -37,10 +37,11 @@ import {
   PROFILE_TYPE_HYBRID_2,
 } from '../dashboard';
 import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatBottomSheet } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -107,7 +108,8 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     private followAnalyticsService: FollowAnalyticsService,
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
-    private appliRouting: ApplicationRoutingService
+    private appliRouting: ApplicationRoutingService,
+    private bottomSheet: MatBottomSheet
   ) {}
 
   ngOnInit() {
@@ -512,5 +514,14 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
 
   goToBuyPage() {
     this.appliRouting.goToTransfertHubServicesPage('BUY');
+  }
+
+  goMerchantPayment() {
+    this.bottomSheet
+      .open(MerchantPaymentCodeComponent, {
+        panelClass: 'merchant-code-modal',
+      })
+      .afterDismissed()
+      .subscribe((message: string) => {});
   }
 }

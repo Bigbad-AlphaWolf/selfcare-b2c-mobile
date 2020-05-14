@@ -1,41 +1,49 @@
-
- <ion-header>   
+<ion-header>
   <ion-toolbar>
-      <ion-buttons (click)="goToDashboard()" class="ion-padding-start" slot="start">
-          <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
-      </ion-buttons>
+    <ion-buttons
+      (click)="goToDashboard()"
+      class="ion-padding-start"
+      slot="start"
+    >
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
     <ion-title class="ion-no-padding">
       <span class="title1">
-          {{pageTitle}}
+        {{pageTitle}}
       </span>
-     </ion-title>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
- <ion-content fullscreen="true">
-      <ion-header class="ion-padding-start" collapse="condense">
-          <ion-toolbar>
-            <span class="title">
-                {{pageTitle}}
-            </span>
-          </ion-toolbar>
-        </ion-header>
-        <div class="transferts-page">
-          <div class="ion-cards-container" *ngIf="options.length">
-            <ion-card (click)="goTo(opt)" *ngFor="let opt of options" class="card" button="true">
-              <ion-card-content>
-                <div class="icon">
-                  <img [src]="opt?.icon" alt="">
-                </div>
-                <div class="text">
-                  <span class="title">
-                    {{opt.title}}
-                  </span>
-                  <span class="subtitle">
-                      {{opt.subtitle}}
-                  </span>
-                </div>
-              </ion-card-content>
-            </ion-card>
+<ion-content fullscreen="true">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">
+        {{pageTitle}}
+      </span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="transferts-page">
+    <div class="ion-cards-container" *ngIf="options.length">
+      <ion-card
+        (click)="goTo(opt)"
+        *ngFor="let opt of options"
+        class="card"
+        button="true"
+      >
+        <ion-card-content>
+          <div class="icon">
+            <img [src]="opt?.icon" alt="" />
           </div>
-        </div>
-  </ion-content>
+          <div class="text">
+            <span class="title">
+              {{opt.title}}
+            </span>
+            <span class="subtitle">
+              {{opt.subtitle}}
+            </span>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>

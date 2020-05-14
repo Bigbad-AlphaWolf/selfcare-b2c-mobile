@@ -14,10 +14,11 @@ import {
   OmBuyPassModel,
   OmBuyIllimixModel,
   TransferOrangeMoneyModel,
-  TransferOMWithCodeModel
+  TransferOMWithCodeModel,
 } from '.';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
+import { MatBottomSheet } from '@angular/material';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL } = environment;
@@ -48,7 +49,7 @@ let value = {};
 const REGEX_IOS_SYSTEM = /iPhone|iPad|iPod|crios|CriOS/i;
 let isIOS = false;
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrangeMoneyService {
   constructor(
@@ -78,7 +79,7 @@ export class OrangeMoneyService {
         const operationDetails = {
           newSolde: soldeAfterPay,
           soldeBefore: db.solde,
-          amountWithDrawn: amont
+          amountWithDrawn: amont,
         };
         db.solde = soldeAfterPay;
         db.history = [...db.history, operationDetails];
@@ -269,7 +270,7 @@ export class OrangeMoneyService {
         value = {
           option_name: passToBuy.pass.nom,
           amount: passToBuy.pass.tarif,
-          plan: passToBuy.pass.price_plan_index
+          plan: passToBuy.pass.price_plan_index,
         };
         break;
       case 'PASS_ILLIMIX':
@@ -278,7 +279,7 @@ export class OrangeMoneyService {
         value = {
           option_name: passToBuy.pass.nom,
           amount: passToBuy.pass.tarif,
-          plan: passToBuy.pass.price_plan_index
+          plan: passToBuy.pass.price_plan_index,
         };
         break;
       case 'TRANSFER_MONEY':
@@ -306,17 +307,17 @@ export class OrangeMoneyService {
 
   getOmMsisdn(): Observable<string> {
     const omNumberOnLS = ls.get('nOrMo');
-    if (omNumberOnLS) {      
+    if (omNumberOnLS) {
       return of(omNumberOnLS);
     } else {
       let OrangeMoneyMsisdn: string;
       const allNumbers = [];
       const mainPhoneNumber = this.dashboardService.getMainPhoneNumber();
       allNumbers.push(mainPhoneNumber);
-      return new Observable(obs => {
+      return new Observable((obs) => {
         this.dashboardService.getAttachedNumbers().subscribe(
           (resp: any) => {
-            resp.forEach(element => {
+            resp.forEach((element) => {
               const msisdn = '' + element.msisdn;
               // Avoid fix numbers
               if (!msisdn.startsWith('33', 0)) {
@@ -325,11 +326,11 @@ export class OrangeMoneyService {
             });
             // request orange money info for every number
             const httpCalls = [];
-            allNumbers.forEach(number => {
+            allNumbers.forEach((number) => {
               httpCalls.push(this.GetUserAuthInfo(number));
             });
             forkJoin(httpCalls).subscribe(
-              data => {
+              (data) => {
                 let numberOMFound = false;
                 for (const [index, element] of data.entries()) {
                   // if the number is linked with OM, keep it and break out of the for loop
@@ -343,20 +344,24 @@ export class OrangeMoneyService {
                   }
                 }
                 if (!numberOMFound) {
-                    obs.next('error');
+                  obs.next('error');
                 }
               },
-              err => {
+              (err) => {
                 obs.next('error');
                 console.error(err);
               }
             );
           },
-          err => {
+          (err) => {
             obs.next('error');
           }
         );
       });
     }
+  }
+
+  checkMerchantCode(code: number) {
+    return this.http.get(`/${code}`);
   }
 }

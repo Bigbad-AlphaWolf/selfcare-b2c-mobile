@@ -9,6 +9,7 @@ import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
+  OPERATION_TYPE_MERCHANT_PAYMENT,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -31,8 +32,10 @@ export class OperationRecapPage implements OnInit {
   buyPassPayload: any;
   paymentMod: string;
   purchaseType: string;
+  amount;
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
+  OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -49,18 +52,27 @@ export class OperationRecapPage implements OnInit {
       if (
         this.router.getCurrentNavigation() &&
         this.router.getCurrentNavigation().extras.state &&
-        this.router.getCurrentNavigation().extras.state.pass &&
         this.router.getCurrentNavigation().extras.state.purchaseType
       ) {
-        this.passChoosen = this.router.getCurrentNavigation().extras.state.pass;
-        this.recipientMsisdn = this.router.getCurrentNavigation().extras.state.recipientMsisdn;
-        this.recipientCodeFormule = this.router.getCurrentNavigation().extras.state.recipientCodeFormule;
         this.recipientName = this.router.getCurrentNavigation().extras.state.recipientName;
         this.purchaseType = this.router.getCurrentNavigation().extras.state.purchaseType;
-        this.buyPassPayload = {
-          destinataire: this.recipientMsisdn,
-          pass: this.passChoosen,
-        };
+        switch (this.purchaseType) {
+          case OPERATION_TYPE_PASS_INTERNET:
+          case OPERATION_TYPE_PASS_ILLIMIX:
+            this.passChoosen = this.router.getCurrentNavigation().extras.state.pass;
+            this.recipientMsisdn = this.router.getCurrentNavigation().extras.state.recipientMsisdn;
+            this.recipientCodeFormule = this.router.getCurrentNavigation().extras.state.recipientCodeFormule;
+            this.buyPassPayload = {
+              destinataire: this.recipientMsisdn,
+              pass: this.passChoosen,
+            };
+            break;
+          case OPERATION_TYPE_MERCHANT_PAYMENT:
+            this.amount = this.router.getCurrentNavigation().extras.state.amountToPay;
+            break;
+          default:
+            break;
+        }
       } else {
         this.appRouting.goToDashboard();
       }
@@ -137,7 +149,7 @@ export class OperationRecapPage implements OnInit {
     return await modal.present();
   }
 
-  goBackToListPass() {
+  goBack() {
     let navigationExtras: NavigationExtras = {
       state: {
         payload: {

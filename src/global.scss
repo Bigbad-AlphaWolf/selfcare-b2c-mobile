@@ -468,24 +468,37 @@ body {
   bottom: 0px !important;
 }
 
-.transferts-page{
-  .card{
+.transferts-page {
+  .card {
     -webkit-margin-start: 0px;
     margin-inline-start: 0px;
     -webkit-margin-end: 0px;
     margin-inline-end: 0px;
     // -webkit-box-shadow: none;
     box-shadow: none;
-      .sc-ion-card-ios-s img {
-        display: block;
-        width: unset;
+    .sc-ion-card-ios-s img {
+      display: block;
+      width: unset;
     }
   }
 }
 
-.customModalCssTrasnfertOMWithoutCode{
+.customModalCssTrasnfertOMWithoutCode {
   --height: 300px;
   --max-height: 400px;
   display: flex;
   align-items: flex-end;
+}
+
+// css for popup set merchant code on merchant payment
+.merchant-code-modal {
+  border-radius: 10px 10px 0 0;
+  .mat-form-field-suffix {
+    bottom: 5px !important;
+    top: unset !important;
+  }
+}
+
+ion-fab-button {
+  margin-left: none !important;
 }

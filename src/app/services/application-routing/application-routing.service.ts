@@ -3,6 +3,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
+  OPERATION_TYPE_MERCHANT_PAYMENT,
 } from 'src/shared';
 
 @Injectable({
@@ -78,5 +79,14 @@ export class ApplicationRoutingService {
 
   goBuyCredit() {
     this.route.navigate(['/buy-credit']);
+  }
+
+  goSetAmountPage(purchaseType: 'MERCHANT_PAYMENT' | any) {
+    let navigationExtras: NavigationExtras = {
+      state: {
+        purchaseType,
+      },
+    };
+    this.route.navigate(['/amount'], navigationExtras);
   }
 }
