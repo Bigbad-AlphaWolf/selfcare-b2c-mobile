@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { FeeModel, ORANGE_MONEY_TRANSFER_FEES } from '../services/orange-money-service';
+import { IonToggle } from '@ionic/angular';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-transfert-om-set-amount',
@@ -10,7 +12,7 @@ import { FeeModel, ORANGE_MONEY_TRANSFER_FEES } from '../services/orange-money-s
   styleUrls: ['./transfert-om-set-amount.page.scss'],
 })
 export class TransfertOmSetAmountPage implements OnInit {
-  transfertOMType = 'TRANSFERT_OM_WITHOUT_CODE';
+  transfertOMType: string;
   recipientMsisdn: string;
   recipientFirstname: string;
   recipientLastname: string;
@@ -21,7 +23,11 @@ export class TransfertOmSetAmountPage implements OnInit {
   includeFees: boolean;
   isTransfertAmountValid: boolean;
   maxAmountTransfertOM: number;
-  constructor(private route: ActivatedRoute, private router: Router, private appRouting: ApplicationRoutingService, private omService: OrangeMoneyService) { }
+  amountTransfert_Form: FormGroup;
+  beneficiaryTransfert_Form: FormGroup;
+  recipientHasNoOMAccount:boolean;
+  errorMsg: string;
+  constructor(private route: ActivatedRoute, private router: Router, private appRouting: ApplicationRoutingService, private omService: OrangeMoneyService, private fb: FormBuilder, private formb: FormBuilder) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
@@ -34,19 +40,54 @@ export class TransfertOmSetAmountPage implements OnInit {
         this.recipientMsisdn = this.router.getCurrentNavigation().extras.state.recipientMsisdn;
         this.recipientFirstname = this.router.getCurrentNavigation().extras.state.recipientFirstname;
         this.recipientLastname = this.router.getCurrentNavigation().extras.state.recipientLastname;
-
+        this.amountTransfert_Form = this.fb.group({
+          amountTransfert: [
+            '',
+            [
+              Validators.required,
+              Validators.pattern(/^-?(0|[1-9]\d*)?$/),
+              Validators.minLength(1)
+            ]
+          ]
+        });
+        this.beneficiaryTransfert_Form = this.fb.group({
+          prenom: [
+            '',
+            [
+              Validators.required,
+              Validators.pattern('[a-zA-Z ]*'),
+              Validators.minLength(3)
+            ]
+          ],
+          nom: [
+            '',
+            [
+              Validators.required,
+              Validators.pattern('[a-zA-Z ]*'),
+              Validators.minLength(3)
+            ]
+          ]
+        })
+        
       }else{
-        this.appRouting.goToTransfertMoneyPage();
+        this.appRouting.goToTransfertHubServicesPage();
       }
     });
   }
 
   ionViewWillEnter(){
     this.getFees();
+    
+    if(this.transfertOMType === 'TRANSFERT_OM_WITH_CODE'){
+      this.recipientHasNoOMAccount = true;
+    }else{
+      this.recipientHasNoOMAccount = false;
+    }
+
   }
 
-  goToTransfertMoneyHubServicesPage(){
-    this.appRouting.goToTransfertMoneyPage();
+  goToTransfertHubServicesPage(){
+    this.appRouting.goToTransfertHubServicesPage();
   }
 
   getFees() {
@@ -77,8 +118,9 @@ export class TransfertOmSetAmountPage implements OnInit {
     }
   }
 
-  computeSummaryTransfertAmount(input: any){
-    const amount = input.target.valueAsNumber;
+  computeSummaryTransfertAmount(inputHtml?: number){
+    
+    const amount = inputHtml;
     if(amount && amount <= this.maxAmountTransfertOM && amount > 0){
       this.isTransfertAmountValid = true;
       const {without_code, with_code } = this.extractFees(this.allTransfertFees, amount);
@@ -123,15 +165,47 @@ export class TransfertOmSetAmountPage implements OnInit {
       }
   }
 
+  updateTransfertOMType(event: any, input: any){
+    const with_code = event.detail.checked;
+    this.errorMsg = null;
+
+    if(with_code){
+      this.transfertOMType = 'TRANSFERT_OM_WITH_CODE';
+    }else{      
+      this.transfertOMType = 'TRANSFERT_OM_WITHOUT_CODE'
+    }
+    this.computeSummaryTransfertAmount(input)
+  }
+
 
   confirmAmountTrannsfertOM(){
-    const payload = {
-      transfertOMType: this.transfertOMType,
-      recipientMsisdn: this.recipientMsisdn,
-      recipientFirstname: this.recipientFirstname,
-      recipientLastname: this.recipientLastname,
-      transfertOMAmount: this.summaryTransfertAmount
+    this.errorMsg = null;
+    if(this.transfertOMType === 'TRANSFERT_OM_WITHOUT_CODE'){
+        const payload = {
+          transfertOMType: this.transfertOMType,
+          recipientMsisdn: this.recipientMsisdn,
+          recipientFirstname: this.recipientFirstname,
+          recipientLastname: this.recipientLastname,
+          transfertOMAmount: this.summaryTransfertAmount
+        }
+        // this.appRouting.goToTransfertMoneyRecapPage(payload);
+
+      } else if(this.transfertOMType === 'TRANSFERT_OM_WITH_CODE'){
+        if(this.beneficiaryTransfert_Form.invalid){
+          this.errorMsg = " Veuillez renseigner le prénom et le nom du destinataire"
+        }else {
+          const payload = {
+            transfertOMType: this.transfertOMType,
+            recipientMsisdn: this.recipientMsisdn,
+            recipientFirstname: this.recipientFirstname,
+            recipientLastname: this.recipientLastname,
+            transfertOMAmount: this.summaryTransfertAmount
+          }
+
+          // this.appRouting.goToTransfertMoneyRecapPage(payload);
+        }
+     
     }
-    this.appRouting.goToTransfertMoneyRecapPage(payload);
+   
   }
 }

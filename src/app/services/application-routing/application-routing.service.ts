@@ -61,10 +61,11 @@ export class ApplicationRoutingService {
     this.route.navigate(['/transfert-om-hub-services'])
   }
 
-  goToTransfertMoneySetAmountPage(payload : {transfertOMType: string, recipientMsisdn: string, recipientFirstname: string, recipientLastname: string}){
+  goToTransfertMoneySetAmountPage(payload : {transfertOMType: string, senderMsisdn: string, recipientMsisdn: string, recipientFirstname: string, recipientLastname: string}){
     let navigationExtras: NavigationExtras = {
       state: {
         transfertOMType: payload.transfertOMType,
+        senderMsisdn: payload.senderMsisdn,
         recipientMsisdn: payload.recipientMsisdn,
         recipientFirstname: payload.recipientFirstname,
         recipientLastname: payload.recipientLastname

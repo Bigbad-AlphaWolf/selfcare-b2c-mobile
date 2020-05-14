@@ -112,7 +112,7 @@ export class AuthInterceptorService implements HttpInterceptor {
         (event: HttpEvent<any>) => {},
         (err: any) => {
           if (err instanceof HttpErrorResponse) {
-            if (err.status === 401) {
+            if (err.status === 401 && !err.url.match("v2/check-client")) {
               that.authServ.cleanCache();
               that.router.navigate(['login']);
             }

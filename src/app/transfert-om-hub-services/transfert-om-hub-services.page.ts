@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { ModalController } from '@ionic/angular';
-import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 
 @Component({
   selector: 'app-transfert-om-hub-services',
@@ -53,14 +52,14 @@ export class TransfertOmHubServicesPage implements OnInit {
     action?: 'REDIRECT' | 'POPUP';
 } ){
 
-  this.showBeneficiaryModal(opt.type);
+  // this.showBeneficiaryModal(opt.type);
 }
 
 goToTransfertHubServicesPage(){
   this.appRouting.goToTransfertHubServicesPage();
 }
 
-async showBeneficiaryModal(transfertOMType: string) {
+/* async showBeneficiaryModal(transfertOMType: string) {
   const modal = await this.modalController.create({
     component: SelectBeneficiaryPopUpComponent,
     cssClass: 'customModalCssTrasnfertOMWithoutCode',
@@ -80,6 +79,6 @@ async showBeneficiaryModal(transfertOMType: string) {
     }    
   })
   return await modal.present();
-}
+} */
 
 }

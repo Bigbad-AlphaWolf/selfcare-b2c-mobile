@@ -469,7 +469,9 @@ export class NewPinpadModalPage implements OnInit {
           this.orangeMoneyService.SaveOrangeMoneyUser(db);
           // this.dashService.balanceAvailableSubject.next(db.solde);
           if (!this.operationType) {
-            // this.goToDashboard();
+            this.modalController.dismiss({
+              'success': true
+            });
           } else {
             // this.resultEmit.emit(db.solde);
           }

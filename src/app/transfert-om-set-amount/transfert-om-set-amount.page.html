@@ -1,7 +1,7 @@
 
  <ion-header>   
   <ion-toolbar>
-      <ion-buttons (click)="goToTransfertMoneyHubServicesPage()" class="ion-padding-start" slot="start">
+      <ion-buttons (click)="goToTransfertHubServicesPage()" class="ion-padding-start" slot="start">
           <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
       </ion-buttons>
     <ion-title class="ion-no-padding">
@@ -28,16 +28,15 @@
           </div>
           <div class="transferts-page-content">
             <div class="transfert-amount-nofees">
-              <form novalidate autocomplete="false">
+              <form [formGroup]="amountTransfert_Form" novalidate autocomplete="false">
                 <mat-form-field class="scb-input-row" appearance="outline">
                     <mat-label>Saisir le montant &nbsp;&nbsp;</mat-label>
                     <input
                       #inputAmount
                       matInput
+                      formControlName="amountTransfert"
                       type="number"
-                      max="2000000"
-                      min="1"
-                      (input)="computeSummaryTransfertAmount($event)"
+                      (input)="computeSummaryTransfertAmount(inputAmount.value)"
                     />
                   </mat-form-field>
               </form>
@@ -57,13 +56,43 @@
                   <ion-label class="label">Frais à ma charge</ion-label>
                   <ion-toggle (ionChange)="updateAmountTransfert($event, inputAmount)" [value]="includeFees" slot="end"></ion-toggle>
                 </ion-item>
+                <ion-item lines="none">
+                  <ion-label class="label">Transfert avec code </ion-label>
+                  <ion-toggle #transfertOMTypeToggle [disabled]="recipientHasNoOMAccount" (ionChange)="updateTransfertOMType($event, inputAmount.value)" [checked]="recipientHasNoOMAccount" slot="end"></ion-toggle>
+                </ion-item>
               </ion-list>
+            </div>
+            <div *ngIf="transfertOMType === 'TRANSFERT_OM_WITH_CODE'" class="beneficiary-infos">
+              <form [formGroup]="beneficiaryTransfert_Form" novalidate autocomplete="false">
+                <mat-form-field class="scb-input-row" appearance="outline">
+                  <mat-label>Prénom du bénéficiaire &nbsp;&nbsp;</mat-label>
+                  <input
+                  matInput
+                  formControlName="prenom"
+                  type="text"
+                  />
+                </mat-form-field>
+                <mat-form-field class="scb-input-row" appearance="outline">
+                  <mat-label>Nom du bénéficiaire &nbsp;&nbsp;</mat-label>
+                  <input
+                  matInput
+                  formControlName="nom"
+                  type="text"
+                  />
+                </mat-form-field>
+              </form>
+            </div>
+
+            <div class="errorMsg" *ngIf="errorMsg">
+              {{errorMsg}}
             </div>
             <div class="transfert-summary">
                 Le bénéficiaire reçoit {{summaryTransfertAmount}} FCFA
             </div>
 
             <div class="confirm-btn">
+              {{amountTransfert_Form.valid}}
+              {{beneficiaryTransfert_Form.valid}}
                 <ion-button (click)="confirmAmountTrannsfertOM()" [disabled]="!isTransfertAmountValid" shape="round" [ngClass]="{'btn': !isTransfertAmountValid}" expand="block" >Continuer</ion-button>
             </div>
           </div>

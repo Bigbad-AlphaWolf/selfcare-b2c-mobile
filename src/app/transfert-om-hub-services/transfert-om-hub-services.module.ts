@@ -6,8 +6,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { TransfertOmHubServicesPage } from './transfert-om-hub-services.page';
-import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
-import { MatFormFieldModule } from '@angular/material';
 import { SharedModule } from 'src/shared/shared.module';
 
 const routes: Routes = [
@@ -22,10 +20,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes),
-    SharedModule
+    RouterModule.forChild(routes)
   ],
-  declarations: [TransfertOmHubServicesPage, SelectBeneficiaryPopUpComponent],
-  entryComponents: [SelectBeneficiaryPopUpComponent]
+  declarations: [TransfertOmHubServicesPage],
 })
 export class TransfertOmHubServicesPageModule {}

@@ -11,7 +11,6 @@ import { IonInput, ModalController } from '@ionic/angular';
   styleUrls: ['./select-beneficiary-pop-up.component.scss'],
 })
 export class SelectBeneficiaryPopUpComponent implements OnInit {
-  @Input() transfertOMType: string;
   hasErrorGetContact: boolean;
   errorGetContact: string;
   recipientNumber = '';
@@ -91,8 +90,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       this.modalController.dismiss({
         'recipientMsisdn': this.recipientNumber,
         'recipientFirstname': this.firstName,
-        'recipientLastname': this.lastName,
-        'transfertOMType': this.transfertOMType
+        'recipientLastname': this.lastName
       });
     }else if(this.otherBeneficiaryNumber && this.recipientContactInfos){
       this.recipientNumber = this.otherBeneficiaryNumber;
@@ -100,8 +98,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       this.modalController.dismiss({
         'recipientMsisdn': this.recipientNumber,
         'recipientFirstname': this.firstName,
-        'recipientLastname': this.lastName,
-        'transfertOMType': this.transfertOMType
+        'recipientLastname': this.lastName
       });
     } else{
       this.hasErrorGetContact = true;
