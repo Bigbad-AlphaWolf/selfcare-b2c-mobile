@@ -241,11 +241,11 @@
           margin-top: 4px;
           .value {
             font-family: HelveticaNeueLTStd-Bd, sans-serif;
-            font-size: 26px;
+            font-size: 32px;
 
             .text-style-1 {
-              font-family: HelveticaNeueLTStd-Roman, sans-serif;
-              font-size: 18px;
+              // font-family: HelveticaNeueLTStd-Roman, sans-serif;
+              font-size: 24px;
             }
           }
         }
@@ -266,9 +266,14 @@
       }
 
       .scb-btn-sargal {
-        background-image: url(/assets/images/background-sargal.svg);
-        background-size: cover;
-        position: relative;
+        // background-image: url(/assets/images/background-sargal.svg);
+        // background-size: cover;
+        // position: relative;
+        background-image: radial-gradient(
+          circle at 77% 36%,
+          #72e4ab,
+          #3fad75 113%
+        );
         .btn-container {
           width: 100%;
           background: transparent;
@@ -284,6 +289,17 @@
             pointer-events: none;
           }
         }
+      }
+
+      .scb-btn-balance {
+      }
+
+      .scb-btn-credit {
+        background-image: radial-gradient(
+          circle at 77% 36%,
+          #b1a8f0,
+          #4c77d7 113%
+        );
       }
     }
 

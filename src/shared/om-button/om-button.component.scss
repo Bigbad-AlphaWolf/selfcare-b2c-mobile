@@ -1,6 +1,7 @@
 @import 'src/app/app';
 
 .scb-btn-om {
+  background-image: radial-gradient(circle at 75% -20%, #ffac62, #ff7900 114%);
   position: relative;
   display: inline-block;
   text-align: left;
@@ -35,11 +36,11 @@
     margin-top: 4px;
     .value {
       font-family: HelveticaNeueLTStd-Bd, sans-serif;
-      font-size: 26px;
+      font-size: 32px;
 
       .text-style-1 {
-        font-family: HelveticaNeueLTStd-Roman, sans-serif;
-        font-size: 18px;
+        // font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 24px;
       }
     }
   }
