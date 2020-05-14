@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
@@ -85,7 +85,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   hasPromoBooster: PromoBoosterActive = null;
   slideOpts = {
     speed: 400,
-    slidesPerView: 1.7,
+    slidesPerView: 1.38,
     slideShadows: true,
   };
   CODE_COMPTEUR_VOLUME_NUIT_1 = CODE_COMPTEUR_VOLUME_NUIT_1;
@@ -506,7 +506,11 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     );
   }
 
-  goToTransfertsPage(){
-    this.appliRouting.goToTransfertHubServicesPage();
+  goToTransfertsPage() {
+    this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
+  }
+
+  goToBuyPage() {
+    this.appliRouting.goToTransfertHubServicesPage('BUY');
   }
 }

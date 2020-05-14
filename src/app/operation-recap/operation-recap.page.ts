@@ -61,7 +61,6 @@ export class OperationRecapPage implements OnInit {
           destinataire: this.recipientMsisdn,
           pass: this.passChoosen,
         };
-        console.log(this.buyPassPayload);
       } else {
         this.appRouting.goToDashboard();
       }

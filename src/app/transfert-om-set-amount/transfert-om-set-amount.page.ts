@@ -70,7 +70,7 @@ export class TransfertOmSetAmountPage implements OnInit {
         })
         
       }else{
-        this.appRouting.goToTransfertHubServicesPage();
+        this.appRouting.goToTransfertHubServicesPage("TRANSFER");
       }
     });
   }

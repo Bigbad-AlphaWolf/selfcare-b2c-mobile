@@ -21,11 +21,11 @@
               !passInternet?.passPromo ? passInternet?.categoriePass?.libelle : passInternet?.passPromo?.categoriePass?.libelle
             "
           >
-            <ng-container *ngSwitchCase="'Jour'"> 1 jour.</ng-container>
-            <ng-container *ngSwitchCase="'Semaine'"> 7 jours.</ng-container>
-            <ng-container *ngSwitchCase="'Mois'"> 30 jours.</ng-container>
-            <ng-container *ngSwitchCase="'Nuit'"> de 00h à 08h.</ng-container>
-            <ng-container *ngSwitchDefault> 3 jours.</ng-container>
+            <ng-container *ngSwitchCase="'Jour'">{{(!passInternet?.passPromo && passInternet?.validitePass) ? passInternet?.validitePass : '1 jour.' }} </ng-container>
+            <ng-container *ngSwitchCase="'Semaine'">{{(!passInternet?.passPromo && passInternet?.validitePass) ? passInternet?.validitePass : '7 jours.' }} </ng-container>
+            <ng-container *ngSwitchCase="'Mois'"> {{(!passInternet?.passPromo && passInternet?.validitePass) ? passInternet?.validitePass : '30 jours.' }}</ng-container>
+            <ng-container *ngSwitchCase="'Nuit'"> {{(!passInternet?.passPromo && passInternet?.validitePass) ? passInternet?.validitePass : 'de 00h à 08h.' }}</ng-container>
+            <ng-container *ngSwitchDefault>{{(!passInternet?.passPromo && passInternet?.validitePass) ? passInternet?.validitePass : '3 jours.' }} </ng-container>
         </ng-container>
         </span>
         <span *ngIf="passInternet?.passPromo" class="item-validity scb-text-gray">

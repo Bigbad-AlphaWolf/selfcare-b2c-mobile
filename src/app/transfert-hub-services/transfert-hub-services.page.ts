@@ -3,7 +3,7 @@ import { ApplicationRoutingService } from '../services/application-routing/appli
 import { ModalController } from '@ionic/angular';
 import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -16,7 +16,8 @@ import { NoOmAccountModalComponent } from 'src/shared/no-om-account-modal/no-om-
   styleUrls: ['./transfert-hub-services.page.scss'],
 })
 export class TransfertHubServicesPage implements OnInit {
-  options: {
+  pageTitle: string;
+  transferOptions: {
     title: string;
     subtitle: string;
     icon: string;
@@ -49,14 +50,88 @@ export class TransfertHubServicesPage implements OnInit {
     url:""
   }
 ];
+buyOptions: {
+  title: string;
+  subtitle: string;
+  icon: string;
+  type:
+    | 'CREDIT'
+    | 'PASS'
+    | 'PASS_ILLIMIX'
+    | 'PASS_VOYAGE'
+    | 'PASS_INTERNATIONAL';
+  url?: string;
+  action?: 'REDIRECT' | 'POPUP';
+}[] = [
+  {
+    title: 'Crédit',
+    subtitle: 'recharge',
+    icon: '/assets/images/ic-top-up-mobile@2x.png',
+    action: 'REDIRECT',
+    type: 'CREDIT',
+    url: '',
+  },
+  {
+    title: 'Pass',
+    subtitle: 'internet',
+    icon: '/assets/images/ic-internet-usage@2x.png',
+    action: 'REDIRECT',
+    type: 'PASS',
+    url: '',
+  },
+  {
+    title: 'Pass',
+    subtitle: 'illimix',
+    icon: '/assets/images/ic-package-services@2x.png',
+    action: 'REDIRECT',
+    type: 'PASS_ILLIMIX',
+    url: '',
+  },
+  {
+    title: 'Pass',
+    subtitle: 'voyage',
+    icon: '/assets/images/ic-aeroplane.png',
+    action: 'REDIRECT',
+    type: 'PASS_VOYAGE',
+    url: '',
+  },
+  {
+    title: 'Pass',
+    subtitle: 'international',
+    icon: '/assets/images/ic-international.png',
+    action: 'REDIRECT',
+    type: 'PASS_INTERNATIONAL',
+    url: '',
+  },
+];
+options = [];
   omPhoneNumber: string;
   isProcessing: boolean;
   errorMsg: string;
   senderMsisdn: string;
   dataPayload: any;
-  constructor(private appRouting: ApplicationRoutingService, private modalController: ModalController, private omService: OrangeMoneyService, private router: Router, private followAnalytics: FollowAnalyticsService, private dashbServ: DashboardService) { }
+  constructor(private appRouting: ApplicationRoutingService, private modalController: ModalController, private omService: OrangeMoneyService, private router: Router, private followAnalytics: FollowAnalyticsService, private dashbServ: DashboardService,private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.route.queryParams.subscribe((params) => {
+      if (
+        this.router.getCurrentNavigation() &&
+        this.router.getCurrentNavigation().extras.state &&
+        this.router.getCurrentNavigation().extras.state.purchaseType
+      ) {
+        const purchaseType = this.router.getCurrentNavigation().extras.state
+          .purchaseType;
+        if (purchaseType === 'TRANSFER') {
+          this.options = this.transferOptions;
+          this.pageTitle = 'Transférer argent ou crédit';
+        } else {
+          this.options = this.buyOptions;
+          this.pageTitle = 'Acheter crédit ou pass';
+        }
+      } else {
+        this.appRouting.goToDashboard();
+      }
+    });
   }
 
   ionViewWillEnter(){
@@ -71,10 +146,10 @@ export class TransfertHubServicesPage implements OnInit {
     title: string;
     subtitle: string;
     icon: string;
-    type: 'TRANSFERT_MONEY' | 'TRANSFERT_CREDIT' | 'TRANSFERT_BONUS';
+    type: string;
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
-} ){
+  }) {
     switch (opt.type) {
       case 'TRANSFERT_MONEY':
         if(opt.action === 'REDIRECT'){
@@ -82,13 +157,28 @@ export class TransfertHubServicesPage implements OnInit {
         }
         break;
       case 'TRANSFERT_CREDIT':
-        if(opt.action === 'REDIRECT'){
+        if (opt.action === 'REDIRECT') {
           this.appRouting.goToTransfertCreditPage();
         }
         break;
       case 'TRANSFERT_BONUS':
-        if(opt.action === 'REDIRECT'){
+        if (opt.action === 'REDIRECT') {
           this.appRouting.goToTransfertBonusPage();
+        }
+        break;
+      case 'CREDIT':
+        if (opt.action === 'REDIRECT') {
+          this.appRouting.goBuyCredit();
+        }
+        break;
+      case 'PASS':
+        if (opt.action === 'REDIRECT') {
+          this.appRouting.goToSelectRecepientPassInternet();
+        }
+        break;
+      case 'PASS_ILLIMIX':
+        if (opt.action === 'REDIRECT') {
+          this.appRouting.goToSelectRecepientPassIllimix();
         }
         break;
       default:
@@ -114,10 +204,6 @@ export class TransfertHubServicesPage implements OnInit {
       }    
     })
     return await modal.present();
-  }
-
-  checkUserHasOMAccount(){
-
   }
 
   getOmPhoneNumberAndCheckrecipientHasOMAccount(payload: {

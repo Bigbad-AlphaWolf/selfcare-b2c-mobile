@@ -46,7 +46,7 @@
               <div class="scb-btn-top-block">
                 <img
                   class="scb-btn-top-block-icon"
-                  src="/assets/images/orange-dialler-white.svg"
+                  src="/assets/images/icon-call.svg"
                   alt="curency-cfa-3-mob"
                 />
                 <div class="scb-btn-top-block-text">
@@ -84,7 +84,7 @@
                 <div class="scb-btn-top-block">
                   <img
                     class="scb-btn-top-block-icon"
-                    src="/assets/images/points-sargal.svg"
+                    src="/assets/images/gift-sargal.svg"
                     alt="sargal-cfa-3-mob"
                   />
                   <div class="scb-btn-top-block-text">
@@ -185,127 +185,104 @@
       </div>
     </div>
     <div class="dashboard-block-offres">
-      <div
-        fxLayout="row"
-        fxLayoutAlign="space-around"
-        class="dashboard-block-offres-top3"
-      >
-        <div
-          (click)="goBuyCredit()"
-          fxFlex="29%"
-          class="dashboard-block-offres-top3-item"
-        >
-          <div class="item-icon">
-            <img
-              src="/assets/images/ic-top-up-mobile@2x.png"
-              alt="credit-mob"
-            />
-          </div>
+      <div class="title">Je souhaite</div>
+      <div class="dashboard-block-offres-top3">
+        <div (click)="goToBuyPage()" class="dashboard-block-offres-top3-item">
           <div
-            *ngIf="!hasPromoBooster?.promoRecharge"
-            class="item-text scb-text-black"
+            class="badge-promo"
+            *ngIf="hasPromoBooster?.promoPass || hasPromoBooster?.promoRecharge"
           >
-            <span class="recharger"
-              >Recharger <br />
-              <span class="text-style-1 scb-text-item-offre-black"
-                >du crédit</span
-              >
-            </span>
+            <div class="icon-container">
+              <img src="/assets/images/gift-sargal.svg" alt="gift-icon" />
+            </div>
+            <div class="triangle"></div>
           </div>
-          <div
-            *ngIf="hasPromoBooster?.promoRecharge"
-            class="item-text scb-text-item-offre-black"
-          >
-            <img
-              src="/assets/images/badge-promo.png"
-              alt="badge-promo"
-              class="badge-promo"
-            />
-            <span class="recharger">Recharge</span>
-          </div>
-        </div>
-        <div
-          (click)="goBuyPassInternet()"
-          fxFlex="29%"
-          class="dashboard-block-offres-top3-item"
-        >
-          <div class="item-icon">
-            <img
-              src="/assets/images/ic-internet-usage@2x.png"
-              alt="pass-internet-mob"
-            />
-          </div>
-          <div
-            *ngIf="!hasPromoBooster?.promoPass"
-            class="item-text scb-text-black"
-          >
-            <span
-              >Acheter <br />
-              <span class="text-style-1 scb-text-item-offre-black"
-                >pass internet</span
-              >
-            </span>
-          </div>
-          <div
-            *ngIf="hasPromoBooster?.promoPass"
-            class="item-text scb-text-item-offre-black"
-          >
-            <img
-              src="/assets/images/badge-promo.png"
-              alt="badge-promo"
-              class="badge-promo"
-            />
-            <span>Pass Internet</span>
-          </div>
-        </div>
-        <div
-          (click)="goToIllimixPage()"
-          fxFlex="29%"
-          class="dashboard-block-offres-top3-item"
-        >
           <div class="item-icon">
             <img
               src="/assets/images/ic-package-services@2x.png"
+              alt="credit-mob"
+            />
+          </div>
+          <div class="item-text scb-text-black">
+            <span class="recharger"
+              >Acheter <br />
+              <span class="text-style-1 scb-text-item-offre-black"
+                >Crédit, pass</span
+              >
+            </span>
+          </div>
+        </div>
+        <div
+          (click)="goToTransfertsPage()"
+          class="dashboard-block-offres-top3-item"
+        >
+          <div class="item-icon">
+            <img
+              src="/assets/images/ic-transfer-data.svg"
+              alt="pass-internet-mob"
+            />
+          </div>
+          <div class="item-text scb-text-black">
+            <span
+              >Transférer <br />
+              <span class="text-style-1 scb-text-item-offre-black"
+                >Argent, crédit</span
+              >
+            </span>
+          </div>
+        </div>
+        <div (click)="(0)" class="dashboard-block-offres-top3-item">
+          <div class="item-icon">
+            <img
+              src="/assets/images/ic-orange-money.svg"
               alt="credit-mob.svg"
             />
           </div>
           <div class="item-text scb-text-black">
             <span
-              >Acheter <br />
+              >Payer <br />
               <span class="text-style-1 scb-text-item-offre-black"
-                >pass illimix</span
+                >Ma facture</span
               >
             </span>
           </div>
         </div>
       </div>
-      <div
-        fxLayout="row"
-        fxLayoutAlign="space-around"
-        class="dashboard-block-offres-top3"
-      >
-        <div
-          (click)="goToTransfertsPage()"
-          fxFlex="29%"
-          class="dashboard-block-offres-top3-item"
-        >
+      <div class="dashboard-block-offres-top3">
+        <div (click)="(0)" class="dashboard-block-offres-top3-item">
           <div class="item-icon">
-            <img src="/assets/images/ic-transfer-data@2x.png" alt="group-56" />
+            <img src="/assets/images/ic-scan-ticket.svg" alt="group-56" />
           </div>
           <div class="item-text scb-text-black">
             <span class="transfert text"
-              >Transfert <br />
+              >Payer <br />
               <span class="text-style-1 scb-text-item-offre-black"
-                >(crédit, bonus)</span
+                >un marchand</span
               >
             </span>
           </div>
         </div>
 
         <div
+          (click)="makeSargalAction()"
+          class="dashboard-block-offres-top3-item"
+        >
+          <div class="item-icon">
+            <img src="/assets/images/ic-reward.svg" alt="group-6" />
+          </div>
+          <div class="item-text scb-text-black">
+            <span
+              >Convertir <br />
+              <span class="text-style-1 scb-text-item-offre-black">
+                Points Sargal</span
+              ></span
+            >
+          </div>
+        </div>
+
+        <div
           [ngClass]="{ 'disabled-block': !canDoSOS }"
           (click)="goToSOSPage()"
-          fxFlex="29%"
           class="dashboard-block-offres-top3-item"
         >
           <div class="item-icon">
@@ -313,44 +290,15 @@
           </div>
           <div class="item-text scb-text-black">
             <span class="sos text"
-              >SOS <br />
-              <span class="text-style-1 scb-text-item-offre-black"
-                >(crédit, pass)</span
-              >
+              >Demander <br />
+              <span class="text-style-1 scb-text-item-offre-black">un SOS</span>
             </span>
           </div>
         </div>
-        <div
-          (click)="goToTransfertOM()"
-          fxFlex="29%"
-          class="dashboard-block-offres-top3-item"
-        >
-          <div class="item-icon">
-            <img
-              src="/assets/images/ic-orange-money-nfc@2x.png"
-              alt="group-6"
-            />
-          </div>
-          <div class="item-text scb-text-black">
-            <span
-              >Transfert <br />
-              <span class="text-style-1 scb-text-item-offre-black">
-                d’argent OM</span
-              ></span
-            >
-          </div>
-        </div>
       </div>
-      <div *ngIf="0" class="dashboard-block-offres-top1">
-        <div class="item-icon">
-          <img src="/assets/images/orange-money_kirene.png" alt="group-6" />
-        </div>
-        <div class="item-text scb-text-item-offre-black">
-          <span class="text-style-1"
-            >Faire une transaction avec <span> Orange Money </span></span
-          >
-        </div>
-      </div>
+    </div>
+    <div class="bons-plans" *ngIf="listBanniere && listBanniere.length">
+      Bons Plans
     </div>
     <div
       *ngIf="showPromoBarner || (listBanniere.length && showPromoBarner)"
