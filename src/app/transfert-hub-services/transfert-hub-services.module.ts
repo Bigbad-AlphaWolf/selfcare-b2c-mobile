@@ -6,6 +6,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { TransfertHubServicesPage } from './transfert-hub-services.page';
+import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
+import { SharedModule } from 'src/shared/shared.module';
 
 const routes: Routes = [
   {
@@ -19,8 +21,10 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [TransfertHubServicesPage]
+  declarations: [TransfertHubServicesPage, SelectBeneficiaryPopUpComponent],
+  entryComponents: [SelectBeneficiaryPopUpComponent]
 })
 export class TransfertHubServicesPageModule {}

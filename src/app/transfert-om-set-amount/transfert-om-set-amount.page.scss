@@ -1,0 +1,100 @@
+@import 'src/app/app';
+
+.title{
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: -0.28px;
+}
+
+.title1{
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
+    padding: 0 10px;
+}
+
+.transferts-page{
+    height: 100%;
+    background-color: $white;
+    &-header-img{
+        margin-bottom: 20px;
+        img{
+            width: 100%;
+        }
+    }
+    &-title{
+        margin-bottom: 30px;
+        .text{
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 20px;
+            line-height: 1.5;
+            color: $fullBlack;
+            margin-bottom: 20px;
+            margin-left: 15px;
+        }
+    }
+    &-content{
+        padding: 0px 15px;
+        position: relative;
+        margin-bottom: 100px;
+        .transfert-amount-nofees{
+            position: relative;
+            margin-top: 10px;
+            .amount-currency{
+                    position: absolute;
+                    right: 15px;
+                    bottom: 40px;
+                    background-color: $white;
+            }
+        }
+        .transfert-fees{
+            ion-item{
+                // margin-bottom: 15px;
+                padding: 8px 0px;
+                border-bottom: 1px solid $grayDashboard;
+                .label{
+                    font-family: HelveticaNeueLTStd-Bd;
+                    font-size: 14px;
+                    line-height: 1.14;
+                    font-weight: normal;
+                    font-stretch: normal;
+                    font-style: normal;
+                    color: $fullBlack;
+                }
+                .fees-value{
+                    text-align: right;
+                    color: $gray;
+                    font-family: HelveticaNeueLTStd-Roman;
+                    font-size: 12px;
+                    line-height: 1.33;
+                }
+            }
+        }
+        .transfert-summary{
+            text-align: right;
+            color: $gray;
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 12px;
+            line-height: 1.33;
+        }
+        .errorMsg{
+            margin-top: 10px;
+            color: red;
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 14px;
+        }
+        .confirm-btn{
+            position: fixed;
+            bottom: 20px;
+            width: 92%;
+            ion-button{
+                height: 50px;
+                --border-radius: 10px;
+                --background-activated : #ff7900;
+                &.btn{
+                    --background: #cccccc;
+                }
+            }
+        }
+    }
+}

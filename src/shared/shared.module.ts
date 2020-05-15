@@ -56,6 +56,7 @@ import { ItemPassIllimixComponent } from './item-pass-illimix/item-pass-illimix.
 import { ItemPassInternetComponent } from './item-pass-internet/item-pass-internet.component';
 import { CommonIssuesComponent } from './common-issues/common-issues.component';
 import { MerchantPaymentCodeComponent } from './merchant-payment-code/merchant-payment-code.component';
+import { NoOmAccountModalComponent } from './no-om-account-modal/no-om-account-modal.component';
 
 @NgModule({
   declarations: [
@@ -99,6 +100,7 @@ import { MerchantPaymentCodeComponent } from './merchant-payment-code/merchant-p
     ItemPassInternetComponent,
     CommonIssuesComponent,
     MerchantPaymentCodeComponent,
+    NoOmAccountModalComponent,
   ],
   imports: [
     CommonModule,
@@ -129,6 +131,7 @@ import { MerchantPaymentCodeComponent } from './merchant-payment-code/merchant-p
     SettingsPopupComponent,
     CommonIssuesComponent,
     MerchantPaymentCodeComponent,
+    NoOmAccountModalComponent,
   ],
   exports: [
     MatInputModule,
@@ -178,6 +181,7 @@ import { MerchantPaymentCodeComponent } from './merchant-payment-code/merchant-p
     ItemPassInternetComponent,
     CommonIssuesComponent,
     MerchantPaymentCodeComponent,
+    NoOmAccountModalComponent,
   ],
   providers: [Contacts, SocialSharing, PassVolumeDisplayPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

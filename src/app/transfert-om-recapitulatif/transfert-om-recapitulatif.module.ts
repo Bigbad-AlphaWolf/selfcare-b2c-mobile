@@ -5,13 +5,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { TransfertOmHubServicesPage } from './transfert-om-hub-services.page';
-import { SharedModule } from 'src/shared/shared.module';
+import { TransfertOmRecapitulatifPage } from './transfert-om-recapitulatif.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: TransfertOmHubServicesPage
+    component: TransfertOmRecapitulatifPage
   }
 ];
 
@@ -22,6 +21,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [TransfertOmHubServicesPage],
+  declarations: [TransfertOmRecapitulatifPage]
 })
-export class TransfertOmHubServicesPageModule {}
+export class TransfertOmRecapitulatifPageModule {}

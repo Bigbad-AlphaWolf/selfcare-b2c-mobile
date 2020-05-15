@@ -8,6 +8,7 @@ const routes: Routes = [
     path: 'new-registration',
     loadChildren:
       './new-registration/new-registration.module#NewRegistrationPageModule',
+      canActivate: [AuthGuard]
   },
   {
     path: 'home',
@@ -191,6 +192,10 @@ const routes: Routes = [
   { path: 'list-pass', loadChildren: './liste-pass/liste-pass.module#ListePassPageModule' },
   { path: 'registration-success-modal', loadChildren: './registration-success-modal/registration-success-modal.module#RegistrationSuccessModalPageModule' },
   { path: 'transfert-hub-services', loadChildren: './transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule' },
+  { path: 'transfert-om-hub-services', loadChildren: './transfert-om-hub-services/transfert-om-hub-services.module#TransfertOmHubServicesPageModule' },
+  { path: 'transfert-om-set-amount', loadChildren: './transfert-om-set-amount/transfert-om-set-amount.module#TransfertOmSetAmountPageModule' },
+  { path: 'transfert-om-recapitulatif', loadChildren: './transfert-om-recapitulatif/transfert-om-recapitulatif.module#TransfertOmRecapitulatifPageModule' },
+
 
 
 
