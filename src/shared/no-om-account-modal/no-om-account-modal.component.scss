@@ -1,0 +1,37 @@
+@import 'src/app/app';
+
+.select-beneficiary-container{
+    padding: 30px 15px;
+    .title{
+        font-size: 24px;
+        font-family: HelveticaNeueLTStd-Bd;
+        line-height: 1.25;
+        color: $fullBlack;
+        margin-bottom: 10px;
+    }
+    .description{
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 16px;
+        line-height: 1.25;
+        color: $gray;
+    }
+    
+    .confirm-btn{
+        margin-top: 40px;
+        ion-button{
+            height: 50px;
+            --border-radius: 10px;
+            &.btn-confirm{
+                --background-activated : #ff7900;
+            }
+            &.btn-cancel{
+                margin-top: 20px;
+                --background: white;
+                --color: black;
+                --border-style: solid;
+                --background-activated : black;;
+
+            }
+        }
+    }
+}

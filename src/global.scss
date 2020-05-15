@@ -376,12 +376,6 @@ body {
 
 // customize css for historique achat component
 
-.purchase-history-container {
-  /*  .mat-button-wrapper{
-    display: flex;
-    align-items: center;
-  } */
-}
 
 // Customize css for suivi conso
 
@@ -474,7 +468,7 @@ body {
     margin-inline-start: 0px;
     -webkit-margin-end: 0px;
     margin-inline-end: 0px;
-    // -webkit-box-shadow: none;
+    -webkit-box-shadow: none;
     box-shadow: none;
       .sc-ion-card-ios-s img {
         display: block;
@@ -485,6 +479,13 @@ body {
 
 .customModalCssTrasnfertOMWithoutCode{
   --height: 300px;
+  --max-height: 400px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.customModalNoOMAccountModal{
+  --height: 330px;
   --max-height: 400px;
   display: flex;
   align-items: flex-end;

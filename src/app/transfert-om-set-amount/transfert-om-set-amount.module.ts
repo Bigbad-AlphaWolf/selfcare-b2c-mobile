@@ -5,13 +5,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { TransfertOmHubServicesPage } from './transfert-om-hub-services.page';
+import { TransfertOmSetAmountPage } from './transfert-om-set-amount.page';
 import { SharedModule } from 'src/shared/shared.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: TransfertOmHubServicesPage
+    component: TransfertOmSetAmountPage
   }
 ];
 
@@ -20,8 +20,9 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    SharedModule
   ],
-  declarations: [TransfertOmHubServicesPage],
+  declarations: [TransfertOmSetAmountPage]
 })
-export class TransfertOmHubServicesPageModule {}
+export class TransfertOmSetAmountPageModule {}
