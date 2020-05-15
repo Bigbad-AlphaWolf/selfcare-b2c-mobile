@@ -40,6 +40,7 @@ export class TransfertOmSetAmountPage implements OnInit {
         this.recipientMsisdn = this.router.getCurrentNavigation().extras.state.recipientMsisdn;
         this.recipientFirstname = this.router.getCurrentNavigation().extras.state.recipientFirstname;
         this.recipientLastname = this.router.getCurrentNavigation().extras.state.recipientLastname;
+        
         this.amountTransfert_Form = this.fb.group({
           amountTransfert: [
             '',
@@ -97,6 +98,7 @@ export class TransfertOmSetAmountPage implements OnInit {
         this.hasLoadedFees = true;
         this.allTransfertFees = fees;
         this.maxAmountTransfertOM = fees[fees.length - 1].maximum;
+        
       },
       err => {
         this.hasLoadedFees = true;
@@ -109,10 +111,10 @@ export class TransfertOmSetAmountPage implements OnInit {
   extractFees(fees: FeeModel[], amount: number){
     const result: { without_code: number, with_code: number } = {without_code: null, with_code: null};
     for (let fee of fees){
-      if(amount >= fee.minimum && amount <= fee.maximum){
+      if(amount >= +fee.minimum && amount <= +fee.maximum){
         result.without_code = fee.withoutCode;
         result.with_code = fee.withCode;
-        
+
         return result;
       }
     }
@@ -120,7 +122,7 @@ export class TransfertOmSetAmountPage implements OnInit {
 
   computeSummaryTransfertAmount(inputHtml?: number){
     
-    const amount = inputHtml;
+    const amount = +inputHtml;
     if(amount && amount <= this.maxAmountTransfertOM && amount > 0){
       this.isTransfertAmountValid = true;
       const {without_code, with_code } = this.extractFees(this.allTransfertFees, amount);
@@ -133,7 +135,7 @@ export class TransfertOmSetAmountPage implements OnInit {
           this.summaryTransfertAmount = amount;
         }
         
-      }else{
+      }else if(this.transfertOMType === 'TRANSFERT_OM_WITH_CODE'){
         this.transfertOMFees = with_code;
         
         if(this.includeFees){
@@ -153,15 +155,18 @@ export class TransfertOmSetAmountPage implements OnInit {
   updateAmountTransfert(event: any, inputAmountEntered: any){    
     const includeFees = event.detail.checked;
     const amountEntered = inputAmountEntered.valueAsNumber;
-
+    
     if(amountEntered <= this.maxAmountTransfertOM && amountEntered > 0){
       if(includeFees){
           this.summaryTransfertAmount = amountEntered + this.transfertOMFees;
           
         }else{
-          this.summaryTransfertAmount = amountEntered ? amountEntered : 0 ;
+          this.summaryTransfertAmount = amountEntered
           
         }
+      }else{
+        this.summaryTransfertAmount = 0;
+        this.transfertOMFees = 0;
       }
   }
 
@@ -188,7 +193,6 @@ export class TransfertOmSetAmountPage implements OnInit {
           recipientLastname: this.recipientLastname,
           transfertOMAmount: this.summaryTransfertAmount
         }
-        console.log(payload);
         
         // this.appRouting.goToTransfertMoneyRecapPage(payload);
 
@@ -203,7 +207,6 @@ export class TransfertOmSetAmountPage implements OnInit {
             recipientLastname: this.beneficiaryTransfert_Form.value.nom,
             transfertOMAmount: this.summaryTransfertAmount
           }
-          console.log(payload);
           
           // this.appRouting.goToTransfertMoneyRecapPage(payload);
         }

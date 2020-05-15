@@ -3,12 +3,12 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './services/auth-guard/auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'new-registration', pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full', canActivate: [AuthGuard] },
   {
     path: 'new-registration',
     loadChildren:
       './new-registration/new-registration.module#NewRegistrationPageModule',
-      canActivate: [AuthGuard]
+      // canActivate: [AuthGuard]
   },
   {
     path: 'home',
