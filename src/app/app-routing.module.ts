@@ -8,7 +8,7 @@ const routes: Routes = [
     path: 'new-registration',
     loadChildren:
       './new-registration/new-registration.module#NewRegistrationPageModule',
-      canActivate: [AuthGuard]
+      // canActivate: [AuthGuard]
   },
   {
     path: 'home',
