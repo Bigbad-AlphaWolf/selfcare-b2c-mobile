@@ -52,7 +52,7 @@ export class TransfertOmSetAmountPage implements OnInit {
         });
         this.beneficiaryTransfert_Form = this.fb.group({
           prenom: [
-            '',
+            this.recipientFirstname,
             [
               Validators.required,
               Validators.pattern('[a-zA-Z ]*'),
@@ -60,7 +60,7 @@ export class TransfertOmSetAmountPage implements OnInit {
             ]
           ],
           nom: [
-            '',
+            this.recipientLastname,
             [
               Validators.required,
               Validators.pattern('[a-zA-Z ]*'),
@@ -188,6 +188,8 @@ export class TransfertOmSetAmountPage implements OnInit {
           recipientLastname: this.recipientLastname,
           transfertOMAmount: this.summaryTransfertAmount
         }
+        console.log(payload);
+        
         // this.appRouting.goToTransfertMoneyRecapPage(payload);
 
       } else if(this.transfertOMType === 'TRANSFERT_OM_WITH_CODE'){
@@ -197,11 +199,12 @@ export class TransfertOmSetAmountPage implements OnInit {
           const payload = {
             transfertOMType: this.transfertOMType,
             recipientMsisdn: this.recipientMsisdn,
-            recipientFirstname: this.recipientFirstname,
-            recipientLastname: this.recipientLastname,
+            recipientFirstname: this.beneficiaryTransfert_Form.value.prenom,
+            recipientLastname: this.beneficiaryTransfert_Form.value.nom,
             transfertOMAmount: this.summaryTransfertAmount
           }
-
+          console.log(payload);
+          
           // this.appRouting.goToTransfertMoneyRecapPage(payload);
         }
      
