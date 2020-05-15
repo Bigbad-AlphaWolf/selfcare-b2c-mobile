@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
+import { MatBottomSheet } from '@angular/material';
+import { OPERATION_TYPE_MERCHANT_PAYMENT } from '..';
 
 @Component({
   selector: 'app-merchant-payment-code',
@@ -17,7 +19,8 @@ export class MerchantPaymentCodeComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private orangeMoneyService: OrangeMoneyService,
-    private applicationRoutingService: ApplicationRoutingService
+    private applicationRoutingService: ApplicationRoutingService,
+    private bottomSheet: MatBottomSheet
   ) {}
 
   ngOnInit() {
@@ -33,9 +36,24 @@ export class MerchantPaymentCodeComponent implements OnInit {
     this.orangeMoneyService.checkMerchantCode(code).subscribe(
       (merchant) => {
         this.chekingMerchant = false;
-        this.applicationRoutingService.goSetAmountPage('MERCHANT_PAYMENT');
+        const payload = {
+          transfertOMType: 'string',
+          senderMsisdn: 'string',
+          merchantCode: code,
+        };
+        this.applicationRoutingService.goSetAmountPage(payload);
+        this.bottomSheet.dismiss();
       },
       (err) => {
+        // remove from here
+        const payload = {
+          purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
+          merchantCode: code,
+          merchantName: 'Auchan',
+        };
+        this.applicationRoutingService.goSetAmountPage(payload);
+        this.bottomSheet.dismiss();
+        // to here
         this.chekingMerchant = false;
         this.hasErrorOnCheckMerchant = true;
         this.errorMsg = err.msg ? err.msg : 'Une erreur est survenue';

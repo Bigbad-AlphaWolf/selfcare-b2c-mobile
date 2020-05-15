@@ -18,6 +18,7 @@ import {
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
+  OPERATION_TYPE_MERCHANT_PAYMENT,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -36,6 +37,7 @@ export class NewPinpadModalPage implements OnInit {
   @Input() buyCreditPayload: any;
   @Input() transferMoneyPayload: any;
   @Input() transferMoneyWithCodePayload: any;
+  @Input() merchantPaymentPayload: any;
   bullets = [0, 1, 2, 3];
   codePin = [];
   digitPadIsActive = true;
@@ -368,6 +370,14 @@ export class NewPinpadModalPage implements OnInit {
                   );
                   this.transferMoneyWithCode(transferPayload);
                   break;
+                case OPERATION_TYPE_MERCHANT_PAYMENT:
+                  const merchantPaymentPayload = Object.assign(
+                    {},
+                    this.merchantPaymentPayload,
+                    { pin }
+                  );
+                  this.payMerchant(merchantPaymentPayload);
+                  break;
                 default:
                   this.seeSolde(pin);
                   break;
@@ -470,7 +480,7 @@ export class NewPinpadModalPage implements OnInit {
           // this.dashService.balanceAvailableSubject.next(db.solde);
           if (!this.operationType) {
             this.modalController.dismiss({
-              'success': true
+              success: true,
             });
           } else {
             // this.resultEmit.emit(db.solde);
@@ -633,6 +643,34 @@ export class NewPinpadModalPage implements OnInit {
       prenom_receiver: params.prenom_receiver,
     };
     this.orangeMoneyService.transferOMWithCode(transferOMPayload).subscribe(
+      (res: any) => {
+        this.processResult(res, omUser);
+      },
+      (err) => {
+        this.processingPin = false;
+      }
+    );
+  }
+
+  payMerchant(params: { merchantCode: string; pin: any; amount: number }) {
+    this.processingPin = true;
+    const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
+      this.omPhoneNumber
+    );
+    const payMerchantPayload = {
+      msisdn: omUser.msisdn,
+      code: params.merchantCode,
+      amount: params.amount,
+      uuid: 'uuid',
+      os: 'mobile',
+      pin: params.pin,
+      em: omUser.em,
+      app_version: 'v1.0',
+      app_conf_version: 'v1.0',
+      user_type: 'user',
+      service_version: OM_SERVICE_VERSION,
+    };
+    this.orangeMoneyService.payMerchantOM(payMerchantPayload).subscribe(
       (res: any) => {
         this.processResult(res, omUser);
       },

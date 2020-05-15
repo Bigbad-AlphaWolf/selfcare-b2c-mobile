@@ -1,0 +1,113 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">
+        {{title}}
+      </span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">
+        {{title}}
+      </span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="transferts-page">
+    <div class="banniere-container">
+      <img src="/assets/images/achat-de-credit.png" alt="header-transfer" />
+    </div>
+    <div class="sub-title">{{subtitle}}</div>
+    <div class="form">
+      <form
+        [formGroup]="setAmountForm"
+        novalidate
+        autocomplete="false"
+        (submit)="goNext()"
+      >
+        <mat-form-field class="scb-input-row amount-input" appearance="outline">
+          <mat-label>Saisir le montant &nbsp;&nbsp;</mat-label>
+          <input matInput formControlName="amount" type="number" />
+          <span matSuffix class="scb-text-gray suffix">FCFA</span>
+        </mat-form-field>
+        <div
+          class="transfer-options"
+          *ngIf="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE || purchaseType === OPERATION_TRANSFER_OM"
+        >
+          <ion-list>
+            <ion-item class="ion-no-padding">
+              <ion-label class="label">
+                Frais de retrait
+              </ion-label>
+              <ion-label class="fees-value" slot="end">
+                {{'0'}} FCFA
+              </ion-label>
+            </ion-item>
+            <ion-item class="ion-no-padding">
+              <ion-label class="label">Frais à ma charge</ion-label>
+              <ion-toggle
+                (ionChange)="0"
+                [value]="includeFees"
+                slot="end"
+              ></ion-toggle>
+            </ion-item>
+            <ion-item class="ion-no-padding">
+              <ion-label class="label">Transfert avec code </ion-label>
+              <ion-toggle
+                #transfertOMTypeToggle
+                [disabled]="recipientHasNoOM"
+                (ionChange)="0"
+                [checked]="recipientHasNoOM"
+                slot="end"
+              ></ion-toggle>
+            </ion-item>
+          </ion-list>
+          <div class="amount-fees">Le bénéficiaire reçoit 30 000 FCFA</div>
+        </div>
+        <div
+          class="recipient-info-block"
+          *ngIf="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE"
+        >
+          <mat-form-field class="scb-input-row scb-required">
+            <input
+              formControlName="recipientFirstname"
+              type="text"
+              matInput
+              placeholder="Prénom du destinataire"
+            />
+          </mat-form-field>
+          <mat-form-field class="scb-input-row scb-required">
+            <input
+              formControlName="recipientLastname"
+              type="text"
+              matInput
+              placeholder="Nom du destinataire"
+            />
+          </mat-form-field>
+        </div>
+        <div class="error-display scb-text-red-error" *ngIf="hasError">
+          {{error}}
+        </div>
+        <div class="btn-container">
+          <button
+            type="submit"
+            class="scb-btn scb-btn-orange scb-btn-full"
+            [disabled]="!setAmountForm.valid || checkingAmount"
+          >
+            <span>Continuer</span>
+            <mat-spinner
+              mode="indeterminate"
+              [diameter]="20"
+              *ngIf="checkingAmount"
+            ></mat-spinner>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>

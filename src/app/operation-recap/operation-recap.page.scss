@@ -79,7 +79,7 @@ ion-content {
   width: 100%;
   height: calc(100% - 100px);
   background-color: $grayDashboard;
-  padding: 15px;
+  padding: 10px;
   :host {
     height: 100%;
   }
@@ -88,11 +88,11 @@ ion-content {
     font-family: HelveticaNeueLTStd-Bd, sans-serif;
     width: percentage(345/375);
   }
-  .card-container {
-    margin: 15px 0;
-  }
+  // .card-container {
+  //   // margin: 15px 0;
+  // }
   .recipient-information {
-    border-radius: 10px;
+    border-radius: 5px;
     width: 100%;
     padding: 15px 15px 20px;
     background-color: $white;

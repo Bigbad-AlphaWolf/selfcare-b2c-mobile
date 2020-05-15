@@ -32,7 +32,10 @@ export class OperationRecapPage implements OnInit {
   buyPassPayload: any;
   paymentMod: string;
   purchaseType: string;
+  merchantCode: number;
+  merchantName: string;
   amount;
+  merchantPaymentPayload: any;
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
@@ -68,7 +71,9 @@ export class OperationRecapPage implements OnInit {
             };
             break;
           case OPERATION_TYPE_MERCHANT_PAYMENT:
-            this.amount = this.router.getCurrentNavigation().extras.state.amountToPay;
+            this.amount = this.router.getCurrentNavigation().extras.state.amount;
+            this.merchantCode = this.router.getCurrentNavigation().extras.state.merchantCode;
+            this.merchantName = this.router.getCurrentNavigation().extras.state.merchantName;
             break;
           default:
             break;
@@ -77,6 +82,18 @@ export class OperationRecapPage implements OnInit {
         this.appRouting.goToDashboard();
       }
     });
+  }
+
+  pay() {
+    switch (this.purchaseType) {
+      case OPERATION_TYPE_PASS_INTERNET:
+      case OPERATION_TYPE_PASS_ILLIMIX:
+        this.presentModal();
+        break;
+      case OPERATION_TYPE_MERCHANT_PAYMENT:
+        this.openPinpad();
+        break;
+    }
   }
 
   async presentModal() {
@@ -117,6 +134,7 @@ export class OperationRecapPage implements OnInit {
       componentProps: {
         operationType: this.purchaseType,
         buyPassPayload: this.buyPassPayload,
+        merchantPaymentPayload: this.merchantPaymentPayload,
       },
     });
     modal.onDidDismiss().then((response) => {

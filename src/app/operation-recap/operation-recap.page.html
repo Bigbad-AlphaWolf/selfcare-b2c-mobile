@@ -38,11 +38,26 @@
 <ion-content #scrollArea [scrollEvents]="true">
   <div class="recap-title">
     <span class="text-1">Récapitulatif</span>
-    <span class="text-2 scb-text-gray">Vous allez recharger</span>
+    <ng-container [ngSwitch]="purchaseType">
+      <span
+        *ngSwitchCase="OPERATION_INTERNET_TYPE || OPERATION_ILLIMIX_TYPE"
+        class="text-2 scb-text-gray"
+        >Vous allez recharger</span
+      >
+      <span
+        *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+        class="text-2 scb-text-gray"
+        >Vous allez transférer</span
+      >
+    </ng-container>
   </div>
   <div class="buy-pass-information">
     <div class="card-container">
       <ng-container [ngSwitch]="purchaseType">
+        <app-item-recharge-credit
+          [amount]="amount"
+          *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+        ></app-item-recharge-credit>
         <app-item-pass-internet
           [passInternet]="passChoosen"
           *ngSwitchCase="OPERATION_INTERNET_TYPE"
@@ -55,22 +70,44 @@
         </app-item-pass-illimix>
       </ng-container>
     </div>
-    <div class="recipient-information">
-      <div class="top-block">
-        <div class="title">Bénéficiaire</div>
-        <div class="recipient">{{recipientMsisdn}}</div>
+    <ng-container [ngSwitch]="purchaseType">
+      <div
+        *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+        class="recipient-information"
+      >
+        <div class="top-block">
+          <div class="title">Marchand</div>
+          <div class="recipient">{{merchantCode}}</div>
+        </div>
+        <div class="bottom-block scb-text-gray">{{merchantName}}</div>
       </div>
-      <div class="bottom-block scb-text-gray">{{recipientName}}</div>
-    </div>
+      <div class="recipient-information" *ngSwitchDefault>
+        <div class="top-block">
+          <div class="title">Bénéficiaire</div>
+          <div class="recipient">{{recipientMsisdn}}</div>
+        </div>
+        <div class="bottom-block scb-text-gray">{{recipientName}}</div>
+      </div>
+    </ng-container>
+
     <button
       class="scb-btn scb-btn-orange"
-      (click)="presentModal()"
+      (click)="pay()"
       [disabled]="buyingPass"
     >
-      <span class="text"
-        >Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
-        passChoosen?.passPromo?.tarif}} FCFA)</span
-      >
+      <ng-container [ngSwitch]="purchaseType">
+        <span class="text" *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
+          >Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
+          passChoosen?.passPromo?.tarif}} FCFA)</span
+        >
+        <span class="text" *ngSwitchCase="OPERATION_INTERNET_TYPE"
+          >Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
+          passChoosen?.passPromo?.tarif}} FCFA)</span
+        >
+        <span class="text" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+          >Payer ({{amount}} FCFA)</span
+        >
+      </ng-container>
       <mat-spinner
         mode="indeterminate"
         [diameter]="20"

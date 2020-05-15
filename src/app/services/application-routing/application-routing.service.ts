@@ -71,32 +71,44 @@ export class ApplicationRoutingService {
     this.route.navigate(['/transfert-om-hub-services']);
   }
 
-  goToTransfertMoneySetAmountPage(payload : {transfertOMType: string, senderMsisdn: string, recipientMsisdn: string, recipientFirstname: string, recipientLastname: string}){
+  goToTransfertMoneySetAmountPage(payload: {
+    transfertOMType: string;
+    senderMsisdn: string;
+    recipientMsisdn: string;
+    recipientFirstname: string;
+    recipientLastname: string;
+  }) {
     let navigationExtras: NavigationExtras = {
       state: {
         transfertOMType: payload.transfertOMType,
         senderMsisdn: payload.senderMsisdn,
         recipientMsisdn: payload.recipientMsisdn,
         recipientFirstname: payload.recipientFirstname,
-        recipientLastname: payload.recipientLastname
-      }
+        recipientLastname: payload.recipientLastname,
+      },
     };
     this.route.navigate(['/transfert-om-set-amount'], navigationExtras);
   }
 
-  goToTransfertMoneyRecapPage(payload : {transfertOMType: string, recipientMsisdn: string, recipientFirstname: string, recipientLastname: string, transfertOMAmount: number}){
+  goToTransfertMoneyRecapPage(payload: {
+    transfertOMType: string;
+    recipientMsisdn: string;
+    recipientFirstname: string;
+    recipientLastname: string;
+    transfertOMAmount: number;
+  }) {
     let navigationExtras: NavigationExtras = {
       state: {
         transfertOMType: payload.transfertOMType,
         recipientMsisdn: payload.recipientMsisdn,
         recipientFirstname: payload.recipientFirstname,
         recipientLastname: payload.recipientLastname,
-        transfertOMAmount: payload.transfertOMAmount
-      }
+        transfertOMAmount: payload.transfertOMAmount,
+      },
     };
     this.route.navigate(['/transfert-om-recapitulatif'], navigationExtras);
   }
-  goToTransfertCreditPage(){
+  goToTransfertCreditPage() {
     // this.route.navigate(['/'])
   }
   goToTransfertBonusPage() {
@@ -107,12 +119,10 @@ export class ApplicationRoutingService {
     this.route.navigate(['/buy-credit']);
   }
 
-  goSetAmountPage(purchaseType: 'MERCHANT_PAYMENT' | any) {
+  goSetAmountPage(purchaseInformation: any) {
     let navigationExtras: NavigationExtras = {
-      state: {
-        purchaseType,
-      },
+      state: purchaseInformation,
     };
-    this.route.navigate(['/amount'], navigationExtras);
+    this.route.navigate(['/purchase-set-amount'], navigationExtras);
   }
 }

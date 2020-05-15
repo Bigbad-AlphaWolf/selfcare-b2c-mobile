@@ -57,6 +57,7 @@ import { ItemPassInternetComponent } from './item-pass-internet/item-pass-intern
 import { CommonIssuesComponent } from './common-issues/common-issues.component';
 import { MerchantPaymentCodeComponent } from './merchant-payment-code/merchant-payment-code.component';
 import { NoOmAccountModalComponent } from './no-om-account-modal/no-om-account-modal.component';
+import { ItemRechargeCreditComponent } from './item-recharge-credit/item-recharge-credit.component';
 
 @NgModule({
   declarations: [
@@ -101,6 +102,7 @@ import { NoOmAccountModalComponent } from './no-om-account-modal/no-om-account-m
     CommonIssuesComponent,
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
+    ItemRechargeCreditComponent,
   ],
   imports: [
     CommonModule,
@@ -182,6 +184,7 @@ import { NoOmAccountModalComponent } from './no-om-account-modal/no-om-account-m
     CommonIssuesComponent,
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
+    ItemRechargeCreditComponent,
   ],
   providers: [Contacts, SocialSharing, PassVolumeDisplayPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
