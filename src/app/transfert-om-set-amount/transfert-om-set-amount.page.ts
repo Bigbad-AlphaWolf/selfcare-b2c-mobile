@@ -87,7 +87,7 @@ export class TransfertOmSetAmountPage implements OnInit {
   }
 
   goToTransfertHubServicesPage(){
-    this.appRouting.goToTransfertHubServicesPage();
+    this.appRouting.goToTransfertHubServicesPage('TRANSFER');
   }
 
   getFees() {
