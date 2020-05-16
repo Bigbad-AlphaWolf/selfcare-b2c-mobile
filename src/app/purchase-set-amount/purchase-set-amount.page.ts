@@ -9,6 +9,11 @@ import {
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
 } from 'src/shared';
+import {
+  FeeModel,
+  ORANGE_MONEY_TRANSFER_FEES,
+} from '../services/orange-money-service';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 
 @Component({
   selector: 'app-purchase-set-amount',
@@ -28,6 +33,9 @@ export class PurchaseSetAmountPage implements OnInit {
   purchasePayload: any;
   hasError: boolean;
   error: string;
+  fee: number;
+  totalAmount: number;
+  transferFeesArray: FeeModel[];
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
   OPERATION_TYPE_SEDDO_CREDIT = OPERATION_TYPE_SEDDO_CREDIT;
   OPERATION_TYPE_SEDDO_BONUS = OPERATION_TYPE_SEDDO_BONUS;
@@ -38,30 +46,38 @@ export class PurchaseSetAmountPage implements OnInit {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private omService: OrangeMoneyService
   ) {}
 
   ngOnInit() {
     this.getPurchaseType();
-    this.title = 'Paiement Marchand';
   }
 
-  initForm(minValue: number) {
+  initForm(minValue: number, initialValue?: number) {
     this.setAmountForm = this.fb.group({
-      amount: ['', [Validators.required, Validators.min(minValue)]],
+      amount: [initialValue, [Validators.required, Validators.min(minValue)]],
     });
   }
 
-  initTransferWithCodeForm() {
+  initTransferWithCodeForm(initialValue?: number) {
     this.setAmountForm = this.fb.group({
-      amount: ['', [Validators.required, Validators.min(1)]],
+      amount: [initialValue, [Validators.required, Validators.min(1)]],
       recipientFirstname: [
         this.recipientFirstname,
-        [Validators.required, Validators.minLength(3), Validators.pattern(/ /)],
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern('[a-zA-Z ]*'),
+        ],
       ],
       recipientLastname: [
         this.recipientLastname,
-        [Validators.required, Validators.minLength(2), Validators.pattern(/ /)],
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern('[a-zA-Z ]*'),
+        ],
       ],
     });
   }
@@ -85,6 +101,7 @@ export class PurchaseSetAmountPage implements OnInit {
       case OPERATION_TRANSFER_OM:
       case OPERATION_TRANSFER_OM_WITH_CODE:
         this.title = "Transfert d'argent";
+        this.getOMTransferFees();
         break;
       default:
         break;
@@ -94,9 +111,10 @@ export class PurchaseSetAmountPage implements OnInit {
   getPurchaseType() {
     this.route.queryParams.subscribe(() => {
       this.purchasePayload = this.router.getCurrentNavigation().extras.state;
+      console.log(this.router.getCurrentNavigation().extras.state);
       if (this.purchasePayload && this.purchasePayload.purchaseType) {
-        this.getPageTitle();
         this.purchaseType = this.purchasePayload.purchaseType;
+        this.getPageTitle();
         switch (this.purchaseType) {
           case OPERATION_TYPE_SEDDO_CREDIT:
           case OPERATION_TYPE_SEDDO_BONUS:
@@ -157,5 +175,85 @@ export class PurchaseSetAmountPage implements OnInit {
     this.purchasePayload.amount = amount;
     const navExtras: NavigationExtras = { state: this.purchasePayload };
     this.router.navigate(['/operation-recap'], navExtras);
+  }
+
+  getOMTransferFees() {
+    this.omService.getTransferFees().subscribe(
+      (fees: FeeModel[]) => {
+        this.transferFeesArray = fees;
+      },
+      (err) => {
+        this.transferFeesArray = ORANGE_MONEY_TRANSFER_FEES;
+      }
+    );
+  }
+
+  extractFees(
+    fees: FeeModel[],
+    amount: number
+  ): { without_code: number; with_code: number } {
+    const result: { without_code: number; with_code: number } = {
+      without_code: null,
+      with_code: null,
+    };
+    for (let fee of fees) {
+      if (amount >= +fee.minimum && amount <= +fee.maximum) {
+        result.without_code = fee.withoutCode;
+        result.with_code = fee.withCode;
+        return result;
+      }
+    }
+  }
+
+  toggleTransferWithCode(event, amountInputValue) {
+    const checked = event.detail.checked;
+    const amount = +amountInputValue;
+    if (checked) {
+      this.initTransferWithCodeForm(amount);
+      this.purchaseType = OPERATION_TRANSFER_OM_WITH_CODE;
+      this.getCurrentFee(amount);
+    } else {
+      this.initForm(1, amount);
+      this.purchaseType = OPERATION_TRANSFER_OM;
+      this.getCurrentFee(amount);
+    }
+  }
+
+  handleFees(event) {
+    this.includeFees = event.detail.checked;
+    this.includeFees
+      ? (this.totalAmount = +this.totalAmount + this.fee)
+      : (this.totalAmount = +this.totalAmount - this.fee);
+  }
+
+  getCurrentFee(amount) {
+    if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
+      const fee = this.extractFees(this.transferFeesArray, amount);
+      this.fee = fee.with_code;
+      this.totalAmount = +amount + this.fee;
+    }
+    if (this.purchaseType === OPERATION_TRANSFER_OM) {
+      const fee = this.extractFees(this.transferFeesArray, amount);
+      this.fee = fee.without_code;
+      this.includeFees
+        ? (this.totalAmount = +amount + this.fee)
+        : (this.totalAmount = +amount);
+    }
+  }
+
+  onAmountChanged(amount) {
+    this.totalAmount = +amount;
+    if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
+      const fee = this.extractFees(this.transferFeesArray, amount);
+      this.fee = fee.with_code;
+      this.totalAmount += this.fee;
+    }
+    if (this.purchaseType === OPERATION_TRANSFER_OM) {
+      const fee = this.extractFees(this.transferFeesArray, amount);
+      this.fee = fee.without_code;
+      this.includeFees
+        ? (this.totalAmount += this.fee)
+        : (this.totalAmount = amount);
+    }
   }
 }

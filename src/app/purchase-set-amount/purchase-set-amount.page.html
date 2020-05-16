@@ -32,7 +32,13 @@
       >
         <mat-form-field class="scb-input-row amount-input" appearance="outline">
           <mat-label>Saisir le montant &nbsp;&nbsp;</mat-label>
-          <input matInput formControlName="amount" type="number" />
+          <input
+            #amountInput
+            matInput
+            formControlName="amount"
+            type="number"
+            (input)="onAmountChanged(amountInput.value)"
+          />
           <span matSuffix class="scb-text-gray suffix">FCFA</span>
         </mat-form-field>
         <div
@@ -45,15 +51,16 @@
                 Frais de retrait
               </ion-label>
               <ion-label class="fees-value" slot="end">
-                {{'0'}} FCFA
+                {{fee}} FCFA
               </ion-label>
             </ion-item>
             <ion-item class="ion-no-padding">
               <ion-label class="label">Frais à ma charge</ion-label>
               <ion-toggle
-                (ionChange)="0"
-                [value]="includeFees"
+                (ionChange)="handleFees($event)"
                 slot="end"
+                [disabled]="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE"
+                [checked]="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE"
               ></ion-toggle>
             </ion-item>
             <ion-item class="ion-no-padding">
@@ -61,13 +68,15 @@
               <ion-toggle
                 #transfertOMTypeToggle
                 [disabled]="recipientHasNoOM"
-                (ionChange)="0"
+                (ionChange)="toggleTransferWithCode($event, amountInput.value)"
                 [checked]="recipientHasNoOM"
                 slot="end"
               ></ion-toggle>
             </ion-item>
           </ion-list>
-          <div class="amount-fees">Le bénéficiaire reçoit 30 000 FCFA</div>
+          <div class="amount-fees">
+            Le bénéficiaire reçoit {{totalAmount}} FCFA
+          </div>
         </div>
         <div
           class="recipient-info-block"
