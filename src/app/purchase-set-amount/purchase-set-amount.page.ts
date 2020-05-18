@@ -14,6 +14,7 @@ import {
   ORANGE_MONEY_TRANSFER_FEES,
 } from '../services/orange-money-service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 
 @Component({
   selector: 'app-purchase-set-amount',
@@ -47,7 +48,8 @@ export class PurchaseSetAmountPage implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private omService: OrangeMoneyService
+    private omService: OrangeMoneyService,
+    private appliRouting: ApplicationRoutingService
   ) {}
 
   ngOnInit() {
@@ -111,7 +113,6 @@ export class PurchaseSetAmountPage implements OnInit {
   getPurchaseType() {
     this.route.queryParams.subscribe(() => {
       this.purchasePayload = this.router.getCurrentNavigation().extras.state;
-      console.log(this.router.getCurrentNavigation().extras.state);
       if (this.purchasePayload && this.purchasePayload.purchaseType) {
         this.purchaseType = this.purchasePayload.purchaseType;
         this.getPageTitle();
@@ -162,6 +163,7 @@ export class PurchaseSetAmountPage implements OnInit {
       case OPERATION_TYPE_SEDDO_BONUS:
       case OPERATION_TRANSFER_OM:
       case OPERATION_TRANSFER_OM_WITH_CODE:
+        this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
       default:
@@ -173,6 +175,17 @@ export class PurchaseSetAmountPage implements OnInit {
   goNext() {
     const amount = this.setAmountForm.value['amount'];
     this.purchasePayload.amount = amount;
+    this.purchasePayload.includeFee = this.includeFees;
+    this.purchasePayload.fee = this.fee;
+    this.purchasePayload.purchaseType = this.purchaseType;
+    if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
+      this.purchasePayload.recipientFirstname = this.setAmountForm.value[
+        'recipientFirstname'
+      ];
+      this.purchasePayload.recipientLastname = this.setAmountForm.value[
+        'recipientLastname'
+      ];
+    }
     const navExtras: NavigationExtras = { state: this.purchasePayload };
     this.router.navigate(['/operation-recap'], navExtras);
   }

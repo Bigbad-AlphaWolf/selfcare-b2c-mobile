@@ -83,6 +83,14 @@
           [amount]="amount"
           *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
         ></app-item-recharge-credit>
+        <app-item-recharge-credit
+          [amount]="amount"
+          *ngSwitchCase="OPERATION_TRANSFER_OM"
+        ></app-item-recharge-credit>
+        <app-item-recharge-credit
+          [amount]="amount"
+          *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
+        ></app-item-recharge-credit>
         <app-item-pass-internet
           [passInternet]="passChoosen"
           *ngSwitchCase="OPERATION_INTERNET_TYPE"
@@ -105,6 +113,13 @@
           <div class="recipient">{{merchantCode}}</div>
         </div>
         <div class="bottom-block scb-text-gray">{{merchantName}}</div>
+      </div>
+      <div class="recipient-information" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">
+        <div class="top-block">
+          <div class="title">Bénéficiaire</div>
+          <div class="recipient">{{recipientMsisdn}}</div>
+        </div>
+        <div class="bottom-block scb-text-gray">{{recipientFirstName + ' ' + recipientLastName}}</div>
       </div>
       <div class="recipient-information" *ngSwitchDefault>
         <div class="top-block">
@@ -130,6 +145,12 @@
           passChoosen?.passPromo?.tarif}} FCFA)</span
         >
         <span class="text" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+          >Payer ({{amount}} FCFA)</span
+        >
+        <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM"
+          >Payer ({{amount}} FCFA)</span
+        >
+        <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
           >Payer ({{amount}} FCFA)</span
         >
       </ng-container>

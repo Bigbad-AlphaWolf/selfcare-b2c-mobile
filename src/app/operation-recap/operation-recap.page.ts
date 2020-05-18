@@ -40,11 +40,27 @@ export class OperationRecapPage implements OnInit {
   merchantName: string;
   amount;
   merchantPaymentPayload: any;
+  transferOMPayload: { amount: number; msisdn2: string } = {
+    amount: null,
+    msisdn2: null,
+  };
+  transferOMWithCodePayload: {
+    amount: number;
+    msisdn2: string;
+    nom_receiver: string;
+    prenom_receiver: string;
+  } = {
+    amount: null,
+    msisdn2: null,
+    nom_receiver: null,
+    prenom_receiver: null,
+  };
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
+  state: any;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -64,6 +80,7 @@ export class OperationRecapPage implements OnInit {
         this.router.getCurrentNavigation().extras.state.purchaseType
       ) {
         const state = this.router.getCurrentNavigation().extras.state;
+        this.state = state;
         console.log(state);
         this.purchaseType = state.purchaseType;
         switch (this.purchaseType) {
@@ -79,8 +96,24 @@ export class OperationRecapPage implements OnInit {
             };
             break;
           case OPERATION_TRANSFER_OM_WITH_CODE:
+            this.recipientMsisdn = state.recipientMsisdn;
+            this.amount = state.amount;
+            this.transferOMWithCodePayload.amount = state.amount + state.fee;
+            this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
+            this.transferOMWithCodePayload.prenom_receiver =
+              state.recipientFirstname;
+            this.transferOMWithCodePayload.nom_receiver =
+              state.recipientLastname;
+            this.recipientFirstName = state.recipientFirstname;
+            this.recipientLastName = state.recipientLastname;
+            break;
           case OPERATION_TRANSFER_OM:
             this.recipientMsisdn = state.recipientMsisdn;
+            this.amount = state.amount;
+            this.transferOMPayload.amount = state.includeFee
+              ? state.amount + state.fee
+              : state.amount;
+            this.transferOMPayload.msisdn2 = this.recipientMsisdn;
             break;
           case OPERATION_TYPE_MERCHANT_PAYMENT:
             this.amount = state.amount;
@@ -103,6 +136,8 @@ export class OperationRecapPage implements OnInit {
         this.presentModal();
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
+      case OPERATION_TRANSFER_OM:
+      case OPERATION_TRANSFER_OM_WITH_CODE:
         this.openPinpad();
         break;
     }
@@ -147,6 +182,8 @@ export class OperationRecapPage implements OnInit {
         operationType: this.purchaseType,
         buyPassPayload: this.buyPassPayload,
         merchantPaymentPayload: this.merchantPaymentPayload,
+        transferMoneyPayload: this.transferOMPayload,
+        transferMoneyWithCodePayload: this.transferOMWithCodePayload,
       },
     });
     modal.onDidDismiss().then((response) => {
@@ -180,17 +217,29 @@ export class OperationRecapPage implements OnInit {
   }
 
   goBack() {
-    let navigationExtras: NavigationExtras = {
-      state: {
-        payload: {
-          destinataire: this.recipientMsisdn,
-          code: this.recipientCodeFormule,
-          purchaseType: this.purchaseType,
-          recipientName: this.recipientName,
-        },
-      },
-    };
-    this.router.navigate(['/list-pass'], navigationExtras);
+    switch (this.purchaseType) {
+      case OPERATION_TYPE_PASS_ILLIMIX:
+      case OPERATION_TYPE_PASS_INTERNET:
+        let navigationExtras: NavigationExtras = {
+          state: {
+            payload: {
+              destinataire: this.recipientMsisdn,
+              code: this.recipientCodeFormule,
+              purchaseType: this.purchaseType,
+              recipientName: this.recipientName,
+            },
+          },
+        };
+        this.router.navigate(['/list-pass'], navigationExtras);
+        break;
+      case OPERATION_TYPE_MERCHANT_PAYMENT:
+        this.appRouting.goSetAmountPage(this.state);
+        break;
+      case OPERATION_TRANSFER_OM:
+      case OPERATION_TRANSFER_OM_WITH_CODE:
+        this.appRouting.goSetAmountPage(this.state);
+        break;
+    }
   }
 
   payWithCredit() {
