@@ -257,7 +257,7 @@ export class AuthenticationService {
         })
       )
       .subscribe();
-    this.cleanCache();
+      this.cleanCache();
   }
 
   captcha(token: string, ip: string) {

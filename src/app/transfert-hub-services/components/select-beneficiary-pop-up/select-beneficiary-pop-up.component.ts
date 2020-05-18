@@ -74,9 +74,8 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     const familyName = contact.name.familyName ? contact.name.familyName : '';
     const middleName = contact.name.middleName ? ` ${contact.name.middleName}` : '';
     this.recipientContactInfos = contact.name && contact.name.formatted ? contact.name.formatted : givenName + " " + familyName;
-
-    console.log('givenName', givenName, 'familyName', familyName);
-    
+    this.firstName = givenName;
+    this.lastName = familyName;    
 
   }
 
