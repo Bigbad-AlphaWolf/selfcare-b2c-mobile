@@ -10,6 +10,8 @@ import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_TRANSFER_OM_WITH_CODE,
+  OPERATION_TRANSFER_OM,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -24,6 +26,8 @@ export class OperationRecapPage implements OnInit {
   passChoosen: any;
   recipientMsisdn: string;
   recipientName: string;
+  recipientFirstName: string; // required for OM transfer with code
+  recipientLastName: string; // required for OM transfer with code
   recipientCodeFormule;
   buyingPass: boolean;
   currentUserNumber: string;
@@ -39,6 +43,8 @@ export class OperationRecapPage implements OnInit {
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
+  OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
+  OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -57,23 +63,29 @@ export class OperationRecapPage implements OnInit {
         this.router.getCurrentNavigation().extras.state &&
         this.router.getCurrentNavigation().extras.state.purchaseType
       ) {
-        this.recipientName = this.router.getCurrentNavigation().extras.state.recipientName;
-        this.purchaseType = this.router.getCurrentNavigation().extras.state.purchaseType;
+        const state = this.router.getCurrentNavigation().extras.state;
+        console.log(state);
+        this.purchaseType = state.purchaseType;
         switch (this.purchaseType) {
           case OPERATION_TYPE_PASS_INTERNET:
           case OPERATION_TYPE_PASS_ILLIMIX:
-            this.passChoosen = this.router.getCurrentNavigation().extras.state.pass;
-            this.recipientMsisdn = this.router.getCurrentNavigation().extras.state.recipientMsisdn;
-            this.recipientCodeFormule = this.router.getCurrentNavigation().extras.state.recipientCodeFormule;
+            this.recipientName = state.recipientName;
+            this.passChoosen = state.pass;
+            this.recipientMsisdn = state.recipientMsisdn;
+            this.recipientCodeFormule = state.recipientCodeFormule;
             this.buyPassPayload = {
               destinataire: this.recipientMsisdn,
               pass: this.passChoosen,
             };
             break;
+          case OPERATION_TRANSFER_OM_WITH_CODE:
+          case OPERATION_TRANSFER_OM:
+            this.recipientMsisdn = state.recipientMsisdn;
+            break;
           case OPERATION_TYPE_MERCHANT_PAYMENT:
-            this.amount = this.router.getCurrentNavigation().extras.state.amount;
-            this.merchantCode = this.router.getCurrentNavigation().extras.state.merchantCode;
-            this.merchantName = this.router.getCurrentNavigation().extras.state.merchantName;
+            this.amount = state.amount;
+            this.merchantCode = state.merchantCode;
+            this.merchantName = state.merchantName;
             break;
           default:
             break;

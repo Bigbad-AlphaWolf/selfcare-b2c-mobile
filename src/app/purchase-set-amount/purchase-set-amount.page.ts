@@ -211,34 +211,36 @@ export class PurchaseSetAmountPage implements OnInit {
     if (checked) {
       this.initTransferWithCodeForm(amount);
       this.purchaseType = OPERATION_TRANSFER_OM_WITH_CODE;
-      this.getCurrentFee(amount);
     } else {
       this.initForm(1, amount);
       this.purchaseType = OPERATION_TRANSFER_OM;
-      this.getCurrentFee(amount);
     }
+    this.getCurrentFee(amount);
   }
 
-  handleFees(event) {
+  handleFees(event, amountInputValue) {
+    console.log('in toggle fees', this.fee);
+    const amount = +amountInputValue;
     this.includeFees = event.detail.checked;
     this.includeFees
-      ? (this.totalAmount = +this.totalAmount + this.fee)
-      : (this.totalAmount = +this.totalAmount - this.fee);
+      ? (this.totalAmount = amount + this.fee)
+      : (this.totalAmount = amount);
   }
 
   getCurrentFee(amount) {
     if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
       const fee = this.extractFees(this.transferFeesArray, amount);
       this.fee = fee.with_code;
-      this.totalAmount = +amount + this.fee;
+      // this.totalAmount = +amount + this.fee;
     }
     if (this.purchaseType === OPERATION_TRANSFER_OM) {
       const fee = this.extractFees(this.transferFeesArray, amount);
       this.fee = fee.without_code;
-      this.includeFees
-        ? (this.totalAmount = +amount + this.fee)
-        : (this.totalAmount = +amount);
+      // this.includeFees
+      //   ? (this.totalAmount = +amount + this.fee)
+      //   : (this.totalAmount = +amount);
     }
+    console.log('in get fees', this.fee);
   }
 
   onAmountChanged(amount) {

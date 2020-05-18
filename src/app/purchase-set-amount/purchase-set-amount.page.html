@@ -57,7 +57,7 @@
             <ion-item class="ion-no-padding">
               <ion-label class="label">Frais à ma charge</ion-label>
               <ion-toggle
-                (ionChange)="handleFees($event)"
+                (ionChange)="handleFees($event, amountInput.value)"
                 slot="end"
                 [disabled]="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE"
                 [checked]="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE"
