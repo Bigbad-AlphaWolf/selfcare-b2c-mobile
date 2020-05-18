@@ -355,6 +355,7 @@ export class TransfertHubServicesPage implements OnInit {
     modal.onDidDismiss().then((response) => {
       if (response && response.data && response.data.continue) {
         const pageData = Object.assign(payload, {
+          userHasNoOmAccount: true,
           purchaseType: 'TRANSFER_MONEY_WITH_CODE',
         });
         this.appRouting.goSetAmountPage(pageData);

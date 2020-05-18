@@ -28,7 +28,6 @@ export class PurchaseSetAmountPage implements OnInit {
   includeFees: boolean;
   purchaseType: string;
   checkingAmount: boolean;
-  recipientHasNoOM: boolean;
   recipientFirstname: string;
   recipientLastname: string;
   purchasePayload: any;
@@ -37,6 +36,7 @@ export class PurchaseSetAmountPage implements OnInit {
   fee: number;
   totalAmount: number;
   transferFeesArray: FeeModel[];
+  userHasNoOmAccount: boolean; // tell if recipient has OM account or not
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
   OPERATION_TYPE_SEDDO_CREDIT = OPERATION_TYPE_SEDDO_CREDIT;
   OPERATION_TYPE_SEDDO_BONUS = OPERATION_TYPE_SEDDO_BONUS;
@@ -112,9 +112,14 @@ export class PurchaseSetAmountPage implements OnInit {
 
   getPurchaseType() {
     this.route.queryParams.subscribe(() => {
-      this.purchasePayload = this.router.getCurrentNavigation().extras.state;
+      let state = this.router.getCurrentNavigation().extras.state;
+      this.purchasePayload = state ? state : this.purchasePayload;
       if (this.purchasePayload && this.purchasePayload.purchaseType) {
         this.purchaseType = this.purchasePayload.purchaseType;
+        this.userHasNoOmAccount = this.purchasePayload.userHasNoOmAccount;
+        const initialAmount = this.purchasePayload.amount;
+        this.recipientFirstname = this.purchasePayload.recipientFirstname;
+        this.recipientLastname = this.purchasePayload.recipientLastname;
         this.getPageTitle();
         switch (this.purchaseType) {
           case OPERATION_TYPE_SEDDO_CREDIT:
@@ -124,17 +129,14 @@ export class PurchaseSetAmountPage implements OnInit {
           case OPERATION_TYPE_MERCHANT_PAYMENT:
           case OPERATION_TYPE_RECHARGE_CREDIT:
           case OPERATION_TRANSFER_OM:
-            this.initForm(1);
+            this.initForm(1, initialAmount);
             break;
           case OPERATION_TRANSFER_OM_WITH_CODE:
-            this.recipientHasNoOM = true;
-            this.initTransferWithCodeForm();
+            this.initTransferWithCodeForm(initialAmount);
             break;
           default:
             break;
         }
-      } else {
-        this.router.navigate(['/dashboard']);
       }
     });
   }
@@ -241,12 +243,12 @@ export class PurchaseSetAmountPage implements OnInit {
   }
 
   getCurrentFee(amount) {
-    if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
+    if (amount && this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
       const fee = this.extractFees(this.transferFeesArray, amount);
       this.fee = fee.with_code;
       // this.totalAmount = +amount + this.fee;
     }
-    if (this.purchaseType === OPERATION_TRANSFER_OM) {
+    if (amount && this.purchaseType === OPERATION_TRANSFER_OM) {
       const fee = this.extractFees(this.transferFeesArray, amount);
       this.fee = fee.without_code;
       // this.includeFees

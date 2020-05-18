@@ -67,9 +67,9 @@
               <ion-label class="label">Transfert avec code </ion-label>
               <ion-toggle
                 #transfertOMTypeToggle
-                [disabled]="recipientHasNoOM"
+                [disabled]="userHasNoOmAccount"
                 (ionChange)="toggleTransferWithCode($event, amountInput.value)"
-                [checked]="recipientHasNoOM"
+                [checked]="userHasNoOmAccount"
                 slot="end"
               ></ion-toggle>
             </ion-item>

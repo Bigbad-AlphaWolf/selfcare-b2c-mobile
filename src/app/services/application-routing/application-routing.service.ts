@@ -119,7 +119,7 @@ export class ApplicationRoutingService {
     this.route.navigate(['/buy-credit']);
   }
 
-  goSetAmountPage(purchaseInformation: any) {
+  goSetAmountPage(purchaseInformation?: any) {
     let navigationExtras: NavigationExtras = {
       state: purchaseInformation,
     };

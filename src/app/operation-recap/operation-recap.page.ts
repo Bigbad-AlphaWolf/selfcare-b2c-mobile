@@ -108,6 +108,7 @@ export class OperationRecapPage implements OnInit {
             this.recipientLastName = state.recipientLastname;
             this.recipientName =
               this.recipientFirstName + ' ' + this.recipientLastName;
+            this.paymentMod = 'ORANGE_MONEY';
             break;
           case OPERATION_TRANSFER_OM:
             this.recipientMsisdn = state.recipientMsisdn;
@@ -237,11 +238,11 @@ export class OperationRecapPage implements OnInit {
         this.router.navigate(['/list-pass'], navigationExtras);
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
-        this.appRouting.goSetAmountPage(this.state);
+        this.appRouting.goSetAmountPage();
         break;
       case OPERATION_TRANSFER_OM:
       case OPERATION_TRANSFER_OM_WITH_CODE:
-        this.appRouting.goSetAmountPage(this.state);
+        this.appRouting.goSetAmountPage();
         break;
     }
   }
