@@ -1,4 +1,4 @@
 <div class="item-recharge scb-text-orange">
   {{ amount }} FCFA
-  <span class="scb-text-orange modifier" (click)="modifier()">modifier</span>
+  <span class="scb-text-orange modifier" (click)="modifier()" *ngIf="modifiable">modifier</span>
 </div>

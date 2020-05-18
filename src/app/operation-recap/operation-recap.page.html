@@ -114,13 +114,6 @@
         </div>
         <div class="bottom-block scb-text-gray">{{merchantName}}</div>
       </div>
-      <div class="recipient-information" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">
-        <div class="top-block">
-          <div class="title">Bénéficiaire</div>
-          <div class="recipient">{{recipientMsisdn}}</div>
-        </div>
-        <div class="bottom-block scb-text-gray">{{recipientFirstName + ' ' + recipientLastName}}</div>
-      </div>
       <div class="recipient-information" *ngSwitchDefault>
         <div class="top-block">
           <div class="title">Bénéficiaire</div>
@@ -148,10 +141,10 @@
           >Payer ({{amount}} FCFA)</span
         >
         <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM"
-          >Payer ({{amount}} FCFA)</span
+          >Transférer ({{amount}} FCFA)</span
         >
         <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
-          >Payer ({{amount}} FCFA)</span
+          >Transférer ({{amount}} FCFA)</span
         >
       </ng-container>
       <mat-spinner

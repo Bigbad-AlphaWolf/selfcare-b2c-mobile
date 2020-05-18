@@ -7,6 +7,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class ItemRechargeCreditComponent implements OnInit {
   @Input() amount;
+  @Input() modifiable = true;
   @Output() modify = new EventEmitter();
 
   constructor() {}

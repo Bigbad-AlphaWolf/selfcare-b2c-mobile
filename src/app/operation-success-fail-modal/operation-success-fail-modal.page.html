@@ -2,31 +2,27 @@
   <div class="top-block">
     <img *ngIf="success" src="/assets/images/confirmation.png" alt="checked" />
     <img *ngIf="!success" src="/assets/images/echec.png" alt="checked" />
-    <span class="title">{{success ? 'Achat effectué' : 'Echec Achat'}}</span>
+    <ng-container [ngSwitch]="purchaseType">
+      <span class="title" *ngSwitchCase="OPERATION_TRANSFER_OM">{{success ? 'Transfert effectué' : 'Echec Transfert'}}</span>
+      <span class="title" *ngSwitchCase="OPERATION_INTERNET_TYPE">{{success ? 'Achat effectué' : 'Echec Achat'}}</span>
+      <span class="title" *ngSwitchCase="OPERATION_ILLIMIX_TYPE">{{success ? 'Achat effectué' : 'Echec Achat'}}</span>
+    </ng-container>
     <span class="subtitle scb-text-gray">
       <span *ngIf="!success">{{errorMsg}}</span>
       <ng-container *ngIf="success" [ngSwitch]="purchaseType">
-        <span *ngSwitchCase="OPERATION_INTERNET_TYPE"
-          >Vous avez acheté le pass internet</span
-        >
-        <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
-          >Vous avez acheté le pass illimix</span
-        >
+        <span *ngSwitchCase="OPERATION_INTERNET_TYPE">Vous avez acheté le pass internet</span>
+        <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE">Vous avez acheté le pass illimix</span>
+        <span *ngSwitchCase="OPERATION_TRANSFER_OM">Vous avez transféré un montant de </span>
       </ng-container>
     </span>
   </div>
   <div class="pass-block" *ngIf="success">
     <ng-container [ngSwitch]="purchaseType">
-      <app-item-pass-internet
-        [passInternet]="passBought"
-        *ngSwitchCase="OPERATION_INTERNET_TYPE"
-      >
+      <app-item-pass-internet [passInternet]="passBought" *ngSwitchCase="OPERATION_INTERNET_TYPE">
       </app-item-pass-internet>
-      <app-item-pass-illimix
-        [passIllimix]="passBought"
-        *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
-      >
+      <app-item-pass-illimix [passIllimix]="passBought" *ngSwitchCase="OPERATION_ILLIMIX_TYPE">
       </app-item-pass-illimix>
+      <app-item-recharge-credit [modifiable]="false" [amount]="amount" *ngSwitchCase="OPERATION_TRANSFER_OM"></app-item-recharge-credit>
     </ng-container>
   </div>
   <div class="bottom-block" *ngIf="success">

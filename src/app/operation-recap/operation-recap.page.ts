@@ -106,6 +106,8 @@ export class OperationRecapPage implements OnInit {
               state.recipientLastname;
             this.recipientFirstName = state.recipientFirstname;
             this.recipientLastName = state.recipientLastname;
+            this.recipientName =
+              this.recipientFirstName + ' ' + this.recipientLastName;
             break;
           case OPERATION_TRANSFER_OM:
             this.recipientMsisdn = state.recipientMsisdn;
@@ -114,6 +116,7 @@ export class OperationRecapPage implements OnInit {
               ? state.amount + state.fee
               : state.amount;
             this.transferOMPayload.msisdn2 = this.recipientMsisdn;
+            this.paymentMod = 'ORANGE_MONEY';
             break;
           case OPERATION_TYPE_MERCHANT_PAYMENT:
             this.amount = state.amount;
@@ -206,6 +209,7 @@ export class OperationRecapPage implements OnInit {
     params.recipientMsisdn = this.recipientMsisdn;
     params.recipientName = this.recipientName;
     params.purchaseType = this.purchaseType;
+    params.amount = this.amount;
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
       cssClass: params.success ? 'success-modal' : 'failed-modal',
@@ -344,4 +348,5 @@ interface ModalSuccessModel {
   paymentMod?: string;
   msisdnBuyer?: string;
   errorMsg?: string;
+  amount?: number;
 }
