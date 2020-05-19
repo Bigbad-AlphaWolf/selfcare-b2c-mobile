@@ -24,93 +24,101 @@ export class TransfertHubServicesPage implements OnInit {
     type: 'TRANSFERT_MONEY' | 'TRANSFERT_CREDIT' | 'TRANSFERT_BONUS';
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
-}[] = [
-  {
-    title: 'Transfert',
-    subtitle: "d'argent",
-    icon: "/assets/images/icOrangeMoney.png",
-    action: "REDIRECT",
-    type: "TRANSFERT_MONEY",
-    url:""
-  },
-  {
-    title: 'Transfert',
-    subtitle: "de crédit",
-    icon: "/assets/images/ic-top-up-mobile@2x.png",
-    action: "REDIRECT",
-    type: "TRANSFERT_CREDIT",
-    url:""
-  },
-  {
-    title: 'Transfert',
-    subtitle: "de bonus",
-    icon: "/assets/images/ic-reward.png",
-    action: "REDIRECT",
-    type: "TRANSFERT_BONUS",
-    url:""
-  }
-];
-buyOptions: {
-  title: string;
-  subtitle: string;
-  icon: string;
-  type:
-    | 'CREDIT'
-    | 'PASS'
-    | 'PASS_ILLIMIX'
-    | 'PASS_VOYAGE'
-    | 'PASS_INTERNATIONAL';
-  url?: string;
-  action?: 'REDIRECT' | 'POPUP';
-}[] = [
-  {
-    title: 'Crédit',
-    subtitle: 'recharge',
-    icon: '/assets/images/ic-top-up-mobile@2x.png',
-    action: 'REDIRECT',
-    type: 'CREDIT',
-    url: '',
-  },
-  {
-    title: 'Pass',
-    subtitle: 'internet',
-    icon: '/assets/images/ic-internet-usage@2x.png',
-    action: 'REDIRECT',
-    type: 'PASS',
-    url: '',
-  },
-  {
-    title: 'Pass',
-    subtitle: 'illimix',
-    icon: '/assets/images/ic-package-services@2x.png',
-    action: 'REDIRECT',
-    type: 'PASS_ILLIMIX',
-    url: '',
-  },
-  {
-    title: 'Pass',
-    subtitle: 'voyage',
-    icon: '/assets/images/ic-aeroplane.png',
-    action: 'REDIRECT',
-    type: 'PASS_VOYAGE',
-    url: '',
-  },
-  {
-    title: 'Pass',
-    subtitle: 'international',
-    icon: '/assets/images/ic-international.png',
-    action: 'REDIRECT',
-    type: 'PASS_INTERNATIONAL',
-    url: '',
-  },
-];
-options = [];
+  }[] = [
+    {
+      title: 'Transfert',
+      subtitle: "d'argent",
+      icon: '/assets/images/icOrangeMoney.png',
+      action: 'REDIRECT',
+      type: 'TRANSFERT_MONEY',
+      url: '',
+    },
+    {
+      title: 'Transfert',
+      subtitle: 'de crédit',
+      icon: '/assets/images/ic-top-up-mobile@2x.png',
+      action: 'REDIRECT',
+      type: 'TRANSFERT_CREDIT',
+      url: '',
+    },
+    {
+      title: 'Transfert',
+      subtitle: 'de bonus',
+      icon: '/assets/images/ic-reward.png',
+      action: 'REDIRECT',
+      type: 'TRANSFERT_BONUS',
+      url: '',
+    },
+  ];
+  buyOptions: {
+    title: string;
+    subtitle: string;
+    icon: string;
+    type:
+      | 'CREDIT'
+      | 'PASS'
+      | 'PASS_ILLIMIX'
+      | 'PASS_VOYAGE'
+      | 'PASS_INTERNATIONAL';
+    url?: string;
+    action?: 'REDIRECT' | 'POPUP';
+  }[] = [
+    {
+      title: 'Crédit',
+      subtitle: 'recharge',
+      icon: '/assets/images/ic-top-up-mobile@2x.png',
+      action: 'REDIRECT',
+      type: 'CREDIT',
+      url: '',
+    },
+    {
+      title: 'Pass',
+      subtitle: 'internet',
+      icon: '/assets/images/ic-internet-usage@2x.png',
+      action: 'REDIRECT',
+      type: 'PASS',
+      url: '',
+    },
+    {
+      title: 'Pass',
+      subtitle: 'illimix',
+      icon: '/assets/images/ic-package-services@2x.png',
+      action: 'REDIRECT',
+      type: 'PASS_ILLIMIX',
+      url: '',
+    },
+    {
+      title: 'Pass',
+      subtitle: 'voyage',
+      icon: '/assets/images/ic-aeroplane.png',
+      action: 'REDIRECT',
+      type: 'PASS_VOYAGE',
+      url: '',
+    },
+    {
+      title: 'Pass',
+      subtitle: 'international',
+      icon: '/assets/images/ic-international.png',
+      action: 'REDIRECT',
+      type: 'PASS_INTERNATIONAL',
+      url: '',
+    },
+  ];
+  options = [];
   omPhoneNumber: string;
   isProcessing: boolean;
   errorMsg: string;
   senderMsisdn: string;
   dataPayload: any;
-  constructor(private appRouting: ApplicationRoutingService, private modalController: ModalController, private omService: OrangeMoneyService, private router: Router, private followAnalytics: FollowAnalyticsService, private dashbServ: DashboardService,private route: ActivatedRoute) { }
+  constructor(
+    private appRouting: ApplicationRoutingService,
+    private modalController: ModalController,
+    private omService: OrangeMoneyService,
+    private router: Router,
+    private followAnalytics: FollowAnalyticsService,
+    private dashbServ: DashboardService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
@@ -134,11 +142,11 @@ options = [];
     });
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.senderMsisdn = this.dashbServ.getCurrentPhoneNumber();
   }
 
-  goToDashboard(){
+  goToDashboard() {
     this.appRouting.goToDashboard();
   }
 
@@ -152,7 +160,7 @@ options = [];
   }) {
     switch (opt.type) {
       case 'TRANSFERT_MONEY':
-        if(opt.action === 'REDIRECT'){
+        if (opt.action === 'REDIRECT') {
           this.showBeneficiaryModal();
         }
         break;
@@ -183,55 +191,57 @@ options = [];
         break;
       default:
         break;
-      }
+    }
   }
 
   async showBeneficiaryModal() {
     const modal = await this.modalController.create({
       component: SelectBeneficiaryPopUpComponent,
-      cssClass: 'customModalCssTrasnfertOMWithoutCode'
+      cssClass: 'customModalCssTrasnfertOMWithoutCode',
     });
-    modal.onWillDismiss().then((response: any)=>{
-      if( response && response.data && response.data.recipientMsisdn){
+    modal.onWillDismiss().then((response: any) => {
+      if (response && response.data && response.data.recipientMsisdn) {
         const payload = {
           senderMsisdn: this.senderMsisdn,
           recipientMsisdn: response.data.recipientMsisdn,
           recipientFirstname: response.data.recipientFirstname,
-          recipientLastname: response.data.recipientLastname
-        };  
-        this.dataPayload = payload;        
+          recipientLastname: response.data.recipientLastname,
+        };
+        this.dataPayload = payload;
         this.getOmPhoneNumberAndCheckrecipientHasOMAccount(this.dataPayload);
-      }    
-    })
+      }
+    });
     return await modal.present();
   }
 
   getOmPhoneNumberAndCheckrecipientHasOMAccount(payload: {
-    senderMsisdn: string,
-    recipientMsisdn: string,
-    recipientFirstname: string,
-    recipientLastname: string
+    senderMsisdn: string;
+    recipientMsisdn: string;
+    recipientFirstname: string;
+    recipientLastname: string;
   }) {
     this.isProcessing = true;
-    
-    this.omService.getOmMsisdn().subscribe(userMsisdn => {
-      this.isProcessing = false;      
-      if(userMsisdn !== 'error'){
+
+    this.omService.getOmMsisdn().subscribe((userMsisdn) => {
+      this.isProcessing = false;
+      if (userMsisdn !== 'error') {
         this.omPhoneNumber = userMsisdn;
         this.checkOMToken(userMsisdn, payload);
-      }else{
-        this.router.navigate(['/see-solde-om'])
+      } else {
+        this.router.navigate(['/see-solde-om']);
       }
-    }
-    );
+    });
   }
 
-  checkRecipientHasOMAccount(userOMNumber: string, payload: {
-    senderMsisdn: string,
-    recipientMsisdn: string,
-    recipientFirstname: string,
-    recipientLastname: string
-  }) {    
+  checkRecipientHasOMAccount(
+    userOMNumber: string,
+    payload: {
+      senderMsisdn: string;
+      recipientMsisdn: string;
+      recipientFirstname: string;
+      recipientLastname: string;
+    }
+  ) {
     this.isProcessing = true;
     this.errorMsg = null;
     this.omService
@@ -241,18 +251,19 @@ options = [];
           this.isProcessing = false;
           if (res) {
             if (res.status_code.match('Success')) {
-              const pageData = Object.assign(payload, {transfertOMType: "TRANSFERT_OM_WITHOUT_CODE"})
-              this.appRouting.goToTransfertMoneySetAmountPage(pageData)
+              const pageData = Object.assign(payload, {
+                purchaseType: 'TRANSFER_MONEY',
+              });
+              this.appRouting.goSetAmountPage(pageData);
               this.followAnalytics.registerEventFollow(
                 'destinataire_transfert_has_om_account_success',
                 'event',
                 {
                   transfert_om_numero_sender: userOMNumber,
                   transfert_om_numero_receiver: payload.recipientMsisdn,
-                  has_om: 'true'
+                  has_om: 'true',
                 }
               );
-
             } else {
               this.openNoOMAccountModal(payload);
               this.followAnalytics.registerEventFollow(
@@ -261,29 +272,30 @@ options = [];
                 {
                   transfert_om_numero_sender: userOMNumber,
                   transfert_om_numero_receiver: payload.recipientMsisdn,
-                  has_om: 'false'
+                  has_om: 'false',
                 }
               );
               this.errorMsg = 'Recipient has No OM ';
               // this.openModalNoOMAccount(this.recipientInfos);
-
             }
           } else {
             this.router.navigate(['/see-solde-om']);
-
           }
         },
         (err: HttpErrorResponse) => {
           this.isProcessing = false;
           this.errorMsg = 'Recipient has No OM ';
-          let isAccessTokenExpired: boolean;      
-          if(err && err.error.title){
+          let isAccessTokenExpired: boolean;
+          if (err && err.error.title) {
             let error: string = err.error.title;
-            error = error.toLowerCase();            
-            isAccessTokenExpired = error.includes("principal") && error.includes("token") && error.includes("expired")
+            error = error.toLowerCase();
+            isAccessTokenExpired =
+              error.includes('principal') &&
+              error.includes('token') &&
+              error.includes('expired');
           }
-          if(isAccessTokenExpired){
-            this.openPinpad(this.dataPayload)
+          if (isAccessTokenExpired) {
+            this.openPinpad(this.dataPayload);
           }
           if (err.status === 400) {
             this.openNoOMAccountModal(payload);
@@ -292,22 +304,24 @@ options = [];
               'event',
               {
                 transfert_om_numero_destinataire: payload.recipientMsisdn,
-                has_om: 'false'
+                has_om: 'false',
               }
             );
-          }else {
+          } else {
             this.followAnalytics.registerEventFollow(
               'destinataire_transfert_has_om_account_error',
               'error',
               {
                 transfert_om_numero_sender: userOMNumber,
                 transfert_om_numero_receiver: payload.recipientMsisdn,
-                error: 'Une error ' + err.status + ' est survenue' + err && err.error ? err.error.title : ''
+                error:
+                  'Une error ' + err.status + ' est survenue' + err && err.error
+                    ? err.error.title
+                    : '',
               }
             );
             this.errorMsg = 'Une erreur est survenue, veuillez reessayer';
           }
-          
         }
       );
   }
@@ -317,7 +331,7 @@ options = [];
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
-        operationType: null
+        operationType: null,
       },
     });
     modal.onDidDismiss().then((response) => {
@@ -329,47 +343,51 @@ options = [];
   }
 
   async openNoOMAccountModal(payload: {
-    senderMsisdn: string,
-    recipientMsisdn: string,
-    recipientFirstname: string,
-    recipientLastname: string
+    senderMsisdn: string;
+    recipientMsisdn: string;
+    recipientFirstname: string;
+    recipientLastname: string;
   }) {
     const modal = await this.modalController.create({
       component: NoOmAccountModalComponent,
-      cssClass: 'customModalNoOMAccountModal'
+      cssClass: 'customModalNoOMAccountModal',
     });
     modal.onDidDismiss().then((response) => {
       if (response && response.data && response.data.continue) {
-        const pageData = Object.assign(payload,{transfertOMType: "TRANSFERT_OM_WITH_CODE"})
-        if(response.data.continue){
-          this.appRouting.goToTransfertMoneySetAmountPage(pageData)
-        }
+        const pageData = Object.assign(payload, {
+          userHasNoOmAccount: true,
+          purchaseType: 'TRANSFER_MONEY_WITH_CODE',
+        });
+        this.appRouting.goSetAmountPage(pageData);
       }
     });
     return await modal.present();
   }
 
-
-  checkOMToken(userOMMsisdn: string, payload: {
-    senderMsisdn: string,
-    recipientMsisdn: string,
-    recipientFirstname: string,
-    recipientLastname: string
-  }) {
+  checkOMToken(
+    userOMMsisdn: string,
+    payload: {
+      senderMsisdn: string;
+      recipientMsisdn: string;
+      recipientFirstname: string;
+      recipientLastname: string;
+    }
+  ) {
     this.isProcessing = true;
 
-    this.omService.GetUserAuthInfo(userOMMsisdn).subscribe((omUser: any) => {
-      this.isProcessing = false;
-      // If user already connected open pinpad
-      if (!omUser.hasApiKey || omUser.loginExpired || !omUser.accessToken) {
-        this.router.navigate(['/see-solde-om']);
-
-      }else{
-
-        this.checkRecipientHasOMAccount(userOMMsisdn,payload);
+    this.omService.GetUserAuthInfo(userOMMsisdn).subscribe(
+      (omUser: any) => {
+        this.isProcessing = false;
+        // If user already connected open pinpad
+        if (!omUser.hasApiKey || omUser.loginExpired || !omUser.accessToken) {
+          this.router.navigate(['/see-solde-om']);
+        } else {
+          this.checkRecipientHasOMAccount(userOMMsisdn, payload);
+        }
+      },
+      () => {
+        this.isProcessing = false;
       }
-    },()=>{
-      this.isProcessing = false;
-    });
+    );
   }
 }

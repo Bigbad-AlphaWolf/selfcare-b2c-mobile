@@ -55,7 +55,9 @@ import { PassInternetCardComponent } from './pass-internet-card/pass-internet-ca
 import { ItemPassIllimixComponent } from './item-pass-illimix/item-pass-illimix.component';
 import { ItemPassInternetComponent } from './item-pass-internet/item-pass-internet.component';
 import { CommonIssuesComponent } from './common-issues/common-issues.component';
+import { MerchantPaymentCodeComponent } from './merchant-payment-code/merchant-payment-code.component';
 import { NoOmAccountModalComponent } from './no-om-account-modal/no-om-account-modal.component';
+import { ItemRechargeCreditComponent } from './item-recharge-credit/item-recharge-credit.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +100,9 @@ import { NoOmAccountModalComponent } from './no-om-account-modal/no-om-account-m
     ItemPassIllimixComponent,
     ItemPassInternetComponent,
     CommonIssuesComponent,
-    NoOmAccountModalComponent
+    MerchantPaymentCodeComponent,
+    NoOmAccountModalComponent,
+    ItemRechargeCreditComponent,
   ],
   imports: [
     CommonModule,
@@ -128,7 +132,8 @@ import { NoOmAccountModalComponent } from './no-om-account-modal/no-om-account-m
     WelcomePopupComponent,
     SettingsPopupComponent,
     CommonIssuesComponent,
-    NoOmAccountModalComponent
+    MerchantPaymentCodeComponent,
+    NoOmAccountModalComponent,
   ],
   exports: [
     MatInputModule,
@@ -177,7 +182,9 @@ import { NoOmAccountModalComponent } from './no-om-account-modal/no-om-account-m
     ItemPassIllimixComponent,
     ItemPassInternetComponent,
     CommonIssuesComponent,
-    NoOmAccountModalComponent
+    MerchantPaymentCodeComponent,
+    NoOmAccountModalComponent,
+    ItemRechargeCreditComponent,
   ],
   providers: [Contacts, SocialSharing, PassVolumeDisplayPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

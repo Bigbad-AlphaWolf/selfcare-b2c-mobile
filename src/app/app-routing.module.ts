@@ -194,7 +194,8 @@ const routes: Routes = [
   { path: 'transfert-hub-services', loadChildren: './transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule' },
   { path: 'transfert-om-hub-services', loadChildren: './transfert-om-hub-services/transfert-om-hub-services.module#TransfertOmHubServicesPageModule' },
   { path: 'transfert-om-set-amount', loadChildren: './transfert-om-set-amount/transfert-om-set-amount.module#TransfertOmSetAmountPageModule' },
-  { path: 'transfert-om-recapitulatif', loadChildren: './transfert-om-recapitulatif/transfert-om-recapitulatif.module#TransfertOmRecapitulatifPageModule' },
+  { path: 'transfert-om-recapitulatif', loadChildren: './transfert-om-recapitulatif/transfert-om-recapitulatif.module#TransfertOmRecapitulatifPageModule' },  { path: 'purchase-set-amount', loadChildren: './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule' },
+
 
 
 

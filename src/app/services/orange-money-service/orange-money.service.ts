@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as SecureLS from 'secure-ls';
 import { BehaviorSubject, Subject, of, Observable, forkJoin } from 'rxjs';
-import { tap, delay } from 'rxjs/operators';
+import { tap, delay, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {
@@ -14,10 +14,12 @@ import {
   OmBuyPassModel,
   OmBuyIllimixModel,
   TransferOrangeMoneyModel,
-  TransferOMWithCodeModel
+  TransferOMWithCodeModel,
+  MerchantPaymentModel,
 } from '.';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
+import { MatBottomSheet } from '@angular/material';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL } = environment;
@@ -38,6 +40,8 @@ const achatIllimixEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/buy-
 const achatPassEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/buy-pass`;
 const transferOMEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transfer-p2p`;
 const transferOMWithCodeEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transfer-avec-code`;
+const merchantPaymentEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/merchant/payment`;
+const getMerchantEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/merchant/naming`;
 const omFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-without-code`;
 const omFeesEndpoint2 = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-with-code`;
 const checkBalanceSufficiencyEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/check-balance`;
@@ -48,7 +52,7 @@ let value = {};
 const REGEX_IOS_SYSTEM = /iPhone|iPad|iPod|crios|CriOS/i;
 let isIOS = false;
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrangeMoneyService {
   constructor(
@@ -78,7 +82,7 @@ export class OrangeMoneyService {
         const operationDetails = {
           newSolde: soldeAfterPay,
           soldeBefore: db.solde,
-          amountWithDrawn: amont
+          amountWithDrawn: amont,
         };
         db.solde = soldeAfterPay;
         db.history = [...db.history, operationDetails];
@@ -193,6 +197,59 @@ export class OrangeMoneyService {
     return this.http.post(transferOMWithCodeEndpoint, transferOMData);
   }
 
+  getMerchantByCode(code: number) {
+    const response = {
+      act_app_vers: 'string',
+      act_conf_vers: 'string',
+      conf_string: 'string',
+      content: {
+        data: {
+          code: 'string',
+          fees: 'string',
+          mapping_code: 'string',
+          message: 'string',
+          montant: 'string',
+          nom_marchand: 'Auchan',
+          receiver: 'string',
+          service_code: 'string',
+          solde: 'string',
+          status_code: 'string',
+          status_wording: 'string',
+          trid: 'string',
+          txn_id: 'string',
+        },
+      },
+      nb_notif: 0,
+      status_code: '',
+      status_wording: 'string',
+    };
+    return of(response);
+    // return this.getOmMsisdn().pipe(
+    //   switchMap((msisdn) => {
+    //     console.log(msisdn);
+    //     return this.http.get(`${getMerchantEndpoint}/${code}?msisdn=${msisdn}`);
+    //   })
+    // );
+  }
+
+  payMerchantOM(merchantPaymentData: MerchantPaymentModel) {
+    const response = {
+      act_app_vers: 'string',
+      act_conf_vers: 'string',
+      conf_string: 'string',
+      content: {
+        data: {
+          status_code: 'Success',
+        },
+      },
+      nb_notif: 0,
+      status_code: 'Success',
+      status_wording: 'string',
+    };
+    return of(response);
+    return this.http.post(merchantPaymentEndpoint, merchantPaymentData);
+  }
+
   getTransferFees() {
     return this.http.get(getFeesEndpoint);
   }
@@ -269,7 +326,7 @@ export class OrangeMoneyService {
         value = {
           option_name: passToBuy.pass.nom,
           amount: passToBuy.pass.tarif,
-          plan: passToBuy.pass.price_plan_index
+          plan: passToBuy.pass.price_plan_index,
         };
         break;
       case 'PASS_ILLIMIX':
@@ -278,7 +335,7 @@ export class OrangeMoneyService {
         value = {
           option_name: passToBuy.pass.nom,
           amount: passToBuy.pass.tarif,
-          plan: passToBuy.pass.price_plan_index
+          plan: passToBuy.pass.price_plan_index,
         };
         break;
       case 'TRANSFER_MONEY':
@@ -306,17 +363,17 @@ export class OrangeMoneyService {
 
   getOmMsisdn(): Observable<string> {
     const omNumberOnLS = ls.get('nOrMo');
-    if (omNumberOnLS) {      
+    if (omNumberOnLS) {
       return of(omNumberOnLS);
     } else {
       let OrangeMoneyMsisdn: string;
       const allNumbers = [];
       const mainPhoneNumber = this.dashboardService.getMainPhoneNumber();
       allNumbers.push(mainPhoneNumber);
-      return new Observable(obs => {
+      return new Observable((obs) => {
         this.dashboardService.getAttachedNumbers().subscribe(
           (resp: any) => {
-            resp.forEach(element => {
+            resp.forEach((element) => {
               const msisdn = '' + element.msisdn;
               // Avoid fix numbers
               if (!msisdn.startsWith('33', 0)) {
@@ -325,11 +382,11 @@ export class OrangeMoneyService {
             });
             // request orange money info for every number
             const httpCalls = [];
-            allNumbers.forEach(number => {
+            allNumbers.forEach((number) => {
               httpCalls.push(this.GetUserAuthInfo(number));
             });
             forkJoin(httpCalls).subscribe(
-              data => {
+              (data) => {
                 let numberOMFound = false;
                 for (const [index, element] of data.entries()) {
                   // if the number is linked with OM, keep it and break out of the for loop
@@ -343,20 +400,24 @@ export class OrangeMoneyService {
                   }
                 }
                 if (!numberOMFound) {
-                    obs.next('error');
+                  obs.next('error');
                 }
               },
-              err => {
+              (err) => {
                 obs.next('error');
                 console.error(err);
               }
             );
           },
-          err => {
+          (err) => {
             obs.next('error');
           }
         );
       });
     }
+  }
+
+  checkMerchantCode(code: number) {
+    return this.http.get(`/${code}`);
   }
 }

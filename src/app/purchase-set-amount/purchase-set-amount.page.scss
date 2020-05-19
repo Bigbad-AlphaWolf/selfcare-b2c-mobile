@@ -1,0 +1,87 @@
+@import 'src/app/app';
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.28px;
+}
+
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+  padding: 0 10px;
+}
+
+.transferts-page {
+  height: 100%;
+  background-color: $white;
+  .banniere-container {
+    width: 100%;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+  .sub-title {
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 20px;
+    line-height: 1.5;
+    padding: 20px 15px;
+  }
+  .form {
+    padding: 0 15px 70px;
+    .transfer-options {
+      ion-list {
+        margin-top: -20px !important;
+        ion-item {
+          --inner-padding-end: 0px;
+          --padding-start: 0px;
+          margin-top: 10px;
+          .fees-value {
+            text-align: right;
+            font-size: 12px;
+          }
+          .label {
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 14px;
+            line-height: 1.14;
+            color: $fullBlack;
+          }
+        }
+      }
+      .amount-fees {
+        width: 100%;
+        text-align: right;
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        margin-top: 10px;
+      }
+    }
+    .recipient-info-block {
+      padding-top: 20px;
+    }
+    .error-display {
+      font-size: 14px;
+      margin: 7px 0;
+    }
+    .btn-container {
+      width: percentage(345/375);
+      position: fixed;
+      bottom: 20px;
+      left: percentage(15/375);
+      button {
+        border-radius: 10px;
+        position: relative;
+        mat-spinner {
+          position: absolute;
+          top: 15px;
+          right: 10px;
+        }
+        .mat-spinner::ng-deep circle {
+          stroke: $white;
+        }
+      }
+    }
+  }
+}

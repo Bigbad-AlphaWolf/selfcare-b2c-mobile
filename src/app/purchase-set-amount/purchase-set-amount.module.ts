@@ -5,14 +5,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { DashboardPrepaidHybridPage } from './dashboard-prepaid-hybrid.page';
+import { PurchaseSetAmountPage } from './purchase-set-amount.page';
 import { SharedModule } from 'src/shared/shared.module';
-import { MatBottomSheetModule } from '@angular/material';
 
 const routes: Routes = [
   {
     path: '',
-    component: DashboardPrepaidHybridPage,
+    component: PurchaseSetAmountPage,
   },
 ];
 
@@ -22,9 +21,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
-    MatBottomSheetModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [DashboardPrepaidHybridPage],
+  declarations: [PurchaseSetAmountPage],
 })
-export class DashboardPrepaidHybridPageModule {}
+export class PurchaseSetAmountPageModule {}
