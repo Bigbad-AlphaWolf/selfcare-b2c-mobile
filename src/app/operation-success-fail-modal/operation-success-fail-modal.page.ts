@@ -7,6 +7,7 @@ import {
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TRANSFER_OM,
+  OPERATION_TYPE_MERCHANT_PAYMENT,
 } from 'src/shared';
 
 @Component({
@@ -19,6 +20,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
+  OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;
@@ -29,6 +31,8 @@ export class OperationSuccessFailModalPage implements OnInit {
   @Input() errorMsg: string;
   @Input() purchaseType: string;
   @Input() amount: number;
+  @Input() merchantCode: number;
+  @Input() merchantName: string;
   dateAchat = this.dashboardService.getCurrentDate();
 
   constructor(

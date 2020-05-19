@@ -3,7 +3,11 @@ import { IonSlides } from '@ionic/angular';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
-import { arrangePassByCategory, OPERATION_TYPE_PASS_INTERNET, OPERATION_TYPE_PASS_ILLIMIX } from 'src/shared';
+import {
+  arrangePassByCategory,
+  OPERATION_TYPE_PASS_INTERNET,
+  OPERATION_TYPE_PASS_ILLIMIX,
+} from 'src/shared';
 import { PassIllimixService } from '../services/pass-illimix-service/pass-illimix.service';
 
 @Component({
@@ -26,8 +30,8 @@ export class ListePassPage implements OnInit {
     slideShadows: true,
   };
   fullListPass: any[];
-  recipientName:string;
-  purchaseType:string;
+  recipientName: string;
+  purchaseType: string;
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
   constructor(
@@ -39,46 +43,54 @@ export class ListePassPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      if (
-        this.router.getCurrentNavigation().extras.state &&
-        this.router.getCurrentNavigation().extras.state.payload
-      ) {
-        this.userNumber = this.router.getCurrentNavigation().extras.state.payload.destinataire;
-        this.userCodeFormule = this.router.getCurrentNavigation().extras.state.payload.code;
-        this.recipientName = this.router.getCurrentNavigation().extras.state.payload.recipientName;
-        this.purchaseType = this.router.getCurrentNavigation().extras.state.payload.purchaseType;
-        this.listCategory = [];
-        this.listPass = [];
-        this.activeTabIndex = 0;
-        if(this.purchaseType === OPERATION_TYPE_PASS_INTERNET){
-          this.passIntService.setUserCodeFormule(this.userCodeFormule);
-          this.passIntService.setListPassInternetOfUserByQuery();
-          this.passIntService.getStatusPassLoaded().subscribe((status: boolean) => {
-            this.isLoaded = status;
-            if (this.isLoaded) {
-              this.listCategory = this.passIntService.getListCategoryPassInternet();
-              this.listPass = this.passIntService.getListPassInternetOfUser();
-              this.fullListPass = arrangePassByCategory(this.listPass,this.listCategory);
-            }
-          });
-        }else {
-          this.passIllimixServ.setUserCodeFormule(this.userCodeFormule);
-          this.passIllimixServ.setListPassIllimix();
-          this.passIllimixServ.getStatusLoadingPass().subscribe((status: boolean) => {
-            this.isLoaded = status;
-            if (this.isLoaded) {
-              this.listCategory = this.passIllimixServ.getCategoryListPassIllimix();
-              this.listPass = this.passIllimixServ.getListPassIllimix();
-              this.fullListPass = arrangePassByCategory(this.listPass,this.listCategory);
-            }
-          });
+    // this.route.queryParams.subscribe((params) => {
+    // if (
+    //   this.router.getCurrentNavigation().extras.state &&
+    //   this.router.getCurrentNavigation().extras.state.payload
+    // ) {
+    this.userNumber = this.router.getCurrentNavigation().extras.state.payload.destinataire;
+    this.userCodeFormule = this.router.getCurrentNavigation().extras.state.payload.code;
+    this.recipientName = this.router.getCurrentNavigation().extras.state.payload.recipientName;
+    this.purchaseType = this.router.getCurrentNavigation().extras.state.payload.purchaseType;
+    this.listCategory = [];
+    this.listPass = [];
+    this.activeTabIndex = 0;
+    if (this.purchaseType === OPERATION_TYPE_PASS_INTERNET) {
+      this.passIntService.setUserCodeFormule(this.userCodeFormule);
+      this.passIntService.setListPassInternetOfUserByQuery();
+      this.passIntService.getStatusPassLoaded().subscribe((status: boolean) => {
+        this.isLoaded = status;
+        if (this.isLoaded) {
+          this.listCategory = this.passIntService.getListCategoryPassInternet();
+          this.listPass = this.passIntService.getListPassInternetOfUser();
+          this.fullListPass = arrangePassByCategory(
+            this.listPass,
+            this.listCategory
+          );
         }
+      });
+    } else {
+      this.passIllimixServ.setUserCodeFormule(this.userCodeFormule);
+      this.passIllimixServ.setListPassIllimix();
+      this.passIllimixServ
+        .getStatusLoadingPass()
+        .subscribe((status: boolean) => {
+          this.isLoaded = status;
+          if (this.isLoaded) {
+            this.listCategory = this.passIllimixServ.getCategoryListPassIllimix();
+            this.listPass = this.passIllimixServ.getListPassIllimix();
+            this.fullListPass = arrangePassByCategory(
+              this.listPass,
+              this.listCategory
+            );
+          }
+        });
+    }
 
-      }else{
-        this.appRouting.goToDashboard();
-      }
-    });
+    // }else{
+    // this.appRouting.goToDashboard();
+    // }
+    // });
   }
 
   changeCategory(tabIndex: number) {
@@ -92,7 +104,7 @@ export class ListePassPage implements OnInit {
     });
   }
 
-  goBack(){
+  goBack() {
     switch (this.purchaseType) {
       case OPERATION_TYPE_PASS_INTERNET:
         this.goToRecepientPassInternetPage();
@@ -108,7 +120,7 @@ export class ListePassPage implements OnInit {
     this.appRouting.goToSelectRecepientPassInternet();
   }
 
-  goToRecipientPassIllimixPage(){
+  goToRecipientPassIllimixPage() {
     this.appRouting.goToSelectRecepientPassIllimix();
   }
 
@@ -119,7 +131,7 @@ export class ListePassPage implements OnInit {
         recipientMsisdn: this.userNumber,
         recipientCodeFormule: this.userCodeFormule,
         recipientName: this.recipientName,
-        purchaseType: this.purchaseType
+        purchaseType: this.purchaseType,
       },
     };
     this.router.navigate(['/operation-recap'], navigationExtras);

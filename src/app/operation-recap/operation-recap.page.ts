@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { SetPaymentChannelModalPage } from '../set-payment-channel-modal/set-payment-channel-modal.page';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { BuyPassModel } from '../services/dashboard-service';
@@ -39,7 +39,11 @@ export class OperationRecapPage implements OnInit {
   merchantCode: number;
   merchantName: string;
   amount;
-  merchantPaymentPayload: any;
+  merchantPaymentPayload: {
+    amount: number;
+    code_marchand: number;
+    nom_marchand: string;
+  };
   transferOMPayload: { amount: number; msisdn2: string } = {
     amount: null,
     msisdn2: null,
@@ -68,7 +72,8 @@ export class OperationRecapPage implements OnInit {
     private dashboardService: DashboardService,
     private followAnalyticsService: FollowAnalyticsService,
     private appRouting: ApplicationRoutingService,
-    private orangeMoneyService: OrangeMoneyService
+    private orangeMoneyService: OrangeMoneyService,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -123,6 +128,12 @@ export class OperationRecapPage implements OnInit {
             this.amount = state.amount;
             this.merchantCode = state.merchantCode;
             this.merchantName = state.merchantName;
+            this.paymentMod = 'ORANGE_MONEY';
+            this.merchantPaymentPayload = {
+              amount: this.amount,
+              code_marchand: this.merchantCode,
+              nom_marchand: this.merchantName,
+            };
             break;
           default:
             break;
@@ -137,7 +148,7 @@ export class OperationRecapPage implements OnInit {
     switch (this.purchaseType) {
       case OPERATION_TYPE_PASS_INTERNET:
       case OPERATION_TYPE_PASS_ILLIMIX:
-        this.presentModal();
+        this.setPaymentMod();
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
       case OPERATION_TRANSFER_OM:
@@ -147,7 +158,7 @@ export class OperationRecapPage implements OnInit {
     }
   }
 
-  async presentModal() {
+  async setPaymentMod() {
     const modal = await this.modalController.create({
       component: SetPaymentChannelModalPage,
       cssClass: 'set-channel-payment-modal',
@@ -211,6 +222,8 @@ export class OperationRecapPage implements OnInit {
     params.recipientName = this.recipientName;
     params.purchaseType = this.purchaseType;
     params.amount = this.amount;
+    params.merchantCode = this.merchantCode;
+    params.merchantName = this.merchantName;
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
       cssClass: params.success ? 'success-modal' : 'failed-modal',
@@ -222,29 +235,7 @@ export class OperationRecapPage implements OnInit {
   }
 
   goBack() {
-    switch (this.purchaseType) {
-      case OPERATION_TYPE_PASS_ILLIMIX:
-      case OPERATION_TYPE_PASS_INTERNET:
-        let navigationExtras: NavigationExtras = {
-          state: {
-            payload: {
-              destinataire: this.recipientMsisdn,
-              code: this.recipientCodeFormule,
-              purchaseType: this.purchaseType,
-              recipientName: this.recipientName,
-            },
-          },
-        };
-        this.router.navigate(['/list-pass'], navigationExtras);
-        break;
-      case OPERATION_TYPE_MERCHANT_PAYMENT:
-        this.appRouting.goSetAmountPage();
-        break;
-      case OPERATION_TRANSFER_OM:
-      case OPERATION_TRANSFER_OM_WITH_CODE:
-        this.appRouting.goSetAmountPage();
-        break;
-    }
+    this.navController.pop();
   }
 
   payWithCredit() {
@@ -350,4 +341,6 @@ interface ModalSuccessModel {
   msisdnBuyer?: string;
   errorMsg?: string;
   amount?: number;
+  merchantName?: string;
+  merchantCode?: number;
 }

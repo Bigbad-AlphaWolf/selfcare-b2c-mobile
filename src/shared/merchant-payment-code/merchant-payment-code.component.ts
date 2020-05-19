@@ -33,27 +33,18 @@ export class MerchantPaymentCodeComponent implements OnInit {
     this.hasErrorOnCheckMerchant = false;
     this.chekingMerchant = true;
     const code = this.merchantCodeForm.value.merchantCode;
-    this.orangeMoneyService.checkMerchantCode(code).subscribe(
-      (merchant) => {
+    this.orangeMoneyService.getMerchantByCode(code).subscribe(
+      (response: any) => {
         this.chekingMerchant = false;
         const payload = {
-          transfertOMType: 'string',
-          senderMsisdn: 'string',
+          purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
           merchantCode: code,
+          merchantName: response.content.data.nom_marchand,
         };
         this.applicationRoutingService.goSetAmountPage(payload);
         this.bottomSheet.dismiss();
       },
       (err) => {
-        // remove from here
-        const payload = {
-          purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
-          merchantCode: code,
-          merchantName: 'Auchan',
-        };
-        this.applicationRoutingService.goSetAmountPage(payload);
-        this.bottomSheet.dismiss();
-        // to here
         this.chekingMerchant = false;
         this.hasErrorOnCheckMerchant = true;
         this.errorMsg = err.msg ? err.msg : 'Une erreur est survenue';

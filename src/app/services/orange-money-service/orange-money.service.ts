@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as SecureLS from 'secure-ls';
 import { BehaviorSubject, Subject, of, Observable, forkJoin } from 'rxjs';
-import { tap, delay } from 'rxjs/operators';
+import { tap, delay, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {
@@ -15,6 +15,7 @@ import {
   OmBuyIllimixModel,
   TransferOrangeMoneyModel,
   TransferOMWithCodeModel,
+  MerchantPaymentModel,
 } from '.';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
@@ -39,7 +40,8 @@ const achatIllimixEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/buy-
 const achatPassEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/buy-pass`;
 const transferOMEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transfer-p2p`;
 const transferOMWithCodeEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transfer-avec-code`;
-const merchantPaymentEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/`;
+const merchantPaymentEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/merchant/payment`;
+const getMerchantEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/merchant/naming`;
 const omFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-without-code`;
 const omFeesEndpoint2 = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-with-code`;
 const checkBalanceSufficiencyEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/check-balance`;
@@ -195,12 +197,56 @@ export class OrangeMoneyService {
     return this.http.post(transferOMWithCodeEndpoint, transferOMData);
   }
 
-  payMerchantOM(merchantPaymentData) {
-    isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
-    const uuid = ls.get('X-UUID');
-    const os = isIOS ? 'iOS' : 'Android';
-    merchantPaymentData.uuid = uuid;
-    merchantPaymentData.os = os;
+  getMerchantByCode(code: number) {
+    const response = {
+      act_app_vers: 'string',
+      act_conf_vers: 'string',
+      conf_string: 'string',
+      content: {
+        data: {
+          code: 'string',
+          fees: 'string',
+          mapping_code: 'string',
+          message: 'string',
+          montant: 'string',
+          nom_marchand: 'Auchan',
+          receiver: 'string',
+          service_code: 'string',
+          solde: 'string',
+          status_code: 'string',
+          status_wording: 'string',
+          trid: 'string',
+          txn_id: 'string',
+        },
+      },
+      nb_notif: 0,
+      status_code: '',
+      status_wording: 'string',
+    };
+    return of(response);
+    // return this.getOmMsisdn().pipe(
+    //   switchMap((msisdn) => {
+    //     console.log(msisdn);
+    //     return this.http.get(`${getMerchantEndpoint}/${code}?msisdn=${msisdn}`);
+    //   })
+    // );
+  }
+
+  payMerchantOM(merchantPaymentData: MerchantPaymentModel) {
+    const response = {
+      act_app_vers: 'string',
+      act_conf_vers: 'string',
+      conf_string: 'string',
+      content: {
+        data: {
+          status_code: 'Success',
+        },
+      },
+      nb_notif: 0,
+      status_code: 'Success',
+      status_wording: 'string',
+    };
+    return of(response);
     return this.http.post(merchantPaymentEndpoint, merchantPaymentData);
   }
 

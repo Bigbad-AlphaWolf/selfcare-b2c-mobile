@@ -15,6 +15,9 @@
       <span class="title" *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
+      <span class="title" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+        >{{success ? 'Paiement effectué' : 'Echec Paiement'}}</span
+      >
     </ng-container>
     <span class="subtitle scb-text-gray">
       <span *ngIf="!success">{{errorMsg}}</span>
@@ -28,8 +31,8 @@
         <span *ngSwitchCase="OPERATION_TRANSFER_OM"
           >Vous avez transféré un montant de
         </span>
-        <span *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
-          >Vous avez transféré un montant de
+        <span *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+          >Vous avez payé un montant de
         </span>
       </ng-container>
     </span>
@@ -56,17 +59,35 @@
         [amount]="amount"
         *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
       ></app-item-recharge-credit>
+      <app-item-recharge-credit
+        [modifiable]="false"
+        [amount]="amount"
+        *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+      ></app-item-recharge-credit>
     </ng-container>
   </div>
   <div class="bottom-block" *ngIf="success">
     <div class="details">
-      <div class="left-block">Bénéficiaire</div>
-      <div class="right-block scb-text-gray">
-        <span class="numero">{{recipientMsisdn}}</span>
-        <span class="name">
-          {{buyForMe ? 'Moi même' : recipientName ? recipientName : 'autre'}}
-        </span>
-      </div>
+      <ng-container
+        *ngIf="purchaseType !== OPERATION_TYPE_MERCHANT_PAYMENT else merchantBlock"
+      >
+        <div class="left-block">Bénéficiaire</div>
+        <div class="right-block scb-text-gray">
+          <span class="numero">{{recipientMsisdn}}</span>
+          <span class="name">
+            {{buyForMe ? 'Moi même' : recipientName ? recipientName : 'autre'}}
+          </span>
+        </div>
+      </ng-container>
+      <ng-template #merchantBlock>
+        <div class="left-block">Marchand</div>
+        <div class="right-block scb-text-gray">
+          <span class="numero">{{merchantCode}}</span>
+          <span class="name">
+            {{merchantName}}
+          </span>
+        </div>
+      </ng-template>
     </div>
     <div class="details">
       <div class="left-block">Paiement par</div>

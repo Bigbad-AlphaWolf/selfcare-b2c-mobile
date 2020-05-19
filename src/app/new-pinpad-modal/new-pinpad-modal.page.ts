@@ -652,23 +652,23 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  payMerchant(params: { merchantCode: string; pin: any; amount: number }) {
+  payMerchant(params: {
+    amount: number;
+    code_marchand: number;
+    nom_marchand: string;
+    pin: string;
+  }) {
     this.processingPin = true;
     const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
       this.omPhoneNumber
     );
     const payMerchantPayload = {
       msisdn: omUser.msisdn,
-      code: params.merchantCode,
+      code_marchand: params.code_marchand.toString(),
       amount: params.amount,
-      uuid: 'uuid',
-      os: 'mobile',
       pin: params.pin,
+      nom_marchand: params.nom_marchand,
       em: omUser.em,
-      app_version: 'v1.0',
-      app_conf_version: 'v1.0',
-      user_type: 'user',
-      service_version: OM_SERVICE_VERSION,
     };
     this.orangeMoneyService.payMerchantOM(payMerchantPayload).subscribe(
       (res: any) => {

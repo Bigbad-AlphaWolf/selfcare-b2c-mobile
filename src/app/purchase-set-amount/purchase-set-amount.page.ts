@@ -111,34 +111,32 @@ export class PurchaseSetAmountPage implements OnInit {
   }
 
   getPurchaseType() {
-    this.route.queryParams.subscribe(() => {
-      let state = this.router.getCurrentNavigation().extras.state;
-      this.purchasePayload = state ? state : this.purchasePayload;
-      if (this.purchasePayload && this.purchasePayload.purchaseType) {
-        this.purchaseType = this.purchasePayload.purchaseType;
-        this.userHasNoOmAccount = this.purchasePayload.userHasNoOmAccount;
-        const initialAmount = this.purchasePayload.amount;
-        this.recipientFirstname = this.purchasePayload.recipientFirstname;
-        this.recipientLastname = this.purchasePayload.recipientLastname;
-        this.getPageTitle();
-        switch (this.purchaseType) {
-          case OPERATION_TYPE_SEDDO_CREDIT:
-          case OPERATION_TYPE_SEDDO_BONUS:
-            this.initForm(100);
-            break;
-          case OPERATION_TYPE_MERCHANT_PAYMENT:
-          case OPERATION_TYPE_RECHARGE_CREDIT:
-          case OPERATION_TRANSFER_OM:
-            this.initForm(1, initialAmount);
-            break;
-          case OPERATION_TRANSFER_OM_WITH_CODE:
-            this.initTransferWithCodeForm(initialAmount);
-            break;
-          default:
-            break;
-        }
+    // let state = this.router.getCurrentNavigation().extras.state;
+    this.purchasePayload = history.state;
+    if (this.purchasePayload && this.purchasePayload.purchaseType) {
+      this.purchaseType = this.purchasePayload.purchaseType;
+      this.userHasNoOmAccount = this.purchasePayload.userHasNoOmAccount;
+      const initialAmount = this.purchasePayload.amount;
+      this.recipientFirstname = this.purchasePayload.recipientFirstname;
+      this.recipientLastname = this.purchasePayload.recipientLastname;
+      this.getPageTitle();
+      switch (this.purchaseType) {
+        case OPERATION_TYPE_SEDDO_CREDIT:
+        case OPERATION_TYPE_SEDDO_BONUS:
+          this.initForm(100);
+          break;
+        case OPERATION_TYPE_MERCHANT_PAYMENT:
+        case OPERATION_TYPE_RECHARGE_CREDIT:
+        case OPERATION_TRANSFER_OM:
+          this.initForm(1, initialAmount);
+          break;
+        case OPERATION_TRANSFER_OM_WITH_CODE:
+          this.initTransferWithCodeForm(initialAmount);
+          break;
+        default:
+          break;
       }
-    });
+    }
   }
 
   getPurchaseData() {
