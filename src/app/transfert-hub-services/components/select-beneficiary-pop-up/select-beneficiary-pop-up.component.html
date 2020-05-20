@@ -27,6 +27,8 @@
       {{ errorGetContact }}
    </div>
   <div class="confirm-btn">
-      <ion-button shape="round" (click)="validateBeneficiary()" class="btn" expand="block" >Continuer</ion-button>
+      <ion-button [disabled]="isProcessing" shape="round" (click)="validateBeneficiary()" class="btn" expand="block" >Continuer</ion-button>
+      <ion-spinner *ngIf="!isProcessing" name="crescent"></ion-spinner>
+
   </div>
 </div>
