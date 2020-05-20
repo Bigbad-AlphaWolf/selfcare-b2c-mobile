@@ -1,8 +1,24 @@
 <ion-header>
-  <app-header [title]="'Mes bons plans'" (goBack)="goBack()"></app-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">
+        Mes bons plans
+      </span>
+    </ion-title>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content fullscreen="true">
+    <ion-header class="ion-padding-start" collapse="condense">
+        <ion-toolbar>
+          <span class="title">
+              Mes bons plans
+          </span>
+        </ion-toolbar>
+      </ion-header>
   <div class="offer-plans-container">
     <div class="header-image">
       <img src="/assets/images/bons-plan.png" alt="">
@@ -17,68 +33,50 @@
       </div>
       <div class="offer-plans-body-main">
         <div class="offer-plans-list-filter">
-          <div class="filter-item">
-              Recharge
-          </div>
-          <div class="filter-item">
-              Pass Internet
-          </div>
-          <div class="filter-item filter-item-selected">
-              Autres
-          </div>
+          <ion-grid fixed>
+            <ion-row>
+              <ion-col size="12">
+                <ion-segment scrollable>
+                    <ion-button (click)="onCategorySelected(category.value)" *ngFor="let category of listCategories" [ngClass]="{'filter-item-selected': categorySelected === category.value} " class="filter-item" expand="block" shape="round">
+                        {{ category.label }}
+                      </ion-button>
+                </ion-segment>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
         </div>
+        <!-- <div class="offer-plans-list-filter">
+          <ion-button class="filter-item" expand="block" shape="round">
+            Sargal
+          </ion-button>
+          <ion-button expand="block" shape="round" class="filter-item filter-item-selected">
+              Recharge
+          </ion-button>
+          <ion-button expand="block" shape="round" class="filter-item">
+              Pass Internet
+          </ion-button>
+          <ion-button expand="block" shape="round" class="filter-item">
+              Autres
+          </ion-button>
+        </div> -->
         <div class="offer-plans-list-content">
-          <div class="offer-plans-list-content-item">
-            <div class="scb-arrow-right-gray">
-            </div>
-            <div class="item-left-block">
-              <span class="percentage scb-text-orange">200%</span>
-              <span class="duree scb-text-full-black">Valable 30 jours</span>
-            </div>
-            <div class="item-delimitation">
-            </div>
-            <div class="item-right-block">
-              <span class="text">
-                A partir de 500 F par Orange money Compteur bonus
-              </span>
-            </div>
-            <div class="scb-arrow-left-gray">
+            <div *ngFor="let offerPlan of filteredListOfferPlans" class="offer-plans-list-content-item">
+              <div class="scb-arrow-right-gray">
               </div>
-          </div>
-          <div class="offer-plans-list-content-item">
-            <div class="scb-arrow-right-gray">
-            </div>
-            <div class="item-left-block">
-              <span class="percentage scb-text-orange">200%</span>
-              <span class="duree scb-text-full-black">Valable 30 jours</span>
-            </div>
-            <div class="item-delimitation">
-            </div>
-            <div class="item-right-block">
-              <span class="text">
-                A partir de 500 F par Orange money Compteur bonus
-              </span>
-            </div>
-            <div class="scb-arrow-left-gray">
+              <div class="item-left-block">
+                <span class="percentage scb-text-orange">200%</span>
+                <span class="duree scb-text-full-black">Valable 30 jours</span>
               </div>
-          </div>
-          <div class="offer-plans-list-content-item">
-            <div class="scb-arrow-right-gray">
-            </div>
-            <div class="item-left-block">
-              <span class="percentage scb-text-orange">200%</span>
-              <span class="duree scb-text-full-black">Valable 30 jours</span>
-            </div>
-            <div class="item-delimitation">
-            </div>
-            <div class="item-right-block">
-              <span class="text">
-                A partir de 500 F par Orange money Compteur bonus
-              </span>
-            </div>
-            <div class="scb-arrow-left-gray">
+              <div class="item-delimitation">
               </div>
-          </div>
+              <div class="item-right-block">
+                <span class="text">
+                  {{ offerPlan.bpTarget }}
+                </span>
+              </div>
+              <div class="scb-arrow-left-gray">
+                </div>
+            </div>
         </div>
       </div>
     </div>

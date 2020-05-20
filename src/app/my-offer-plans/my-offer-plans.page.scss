@@ -1,18 +1,33 @@
 @import 'src/app/app';
 
 :host {
-    background-color: $grayDashboard;
     display: flex;
     flex-direction: column;
     height: 100%;
 }
+.title {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: -0.28px;
+  }
+  
+  .title1 {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
+    padding: 0 10px;
+  }
+
+  ion-title{
+    padding-top: 4px;
+  }
+
 .offer-plans-container {
     background-color: $grayDashboard;
     height: 100%;
     .header-image {
         width: 100%;
         height: auto;
-        margin-top: 50px;
         display: flex;
         img {
             width: 100%;
@@ -45,7 +60,7 @@
                 display: flex;
                 align-items: center;
                 width: 100%;
-                overflow-x: auto;
+                // overflow-x: auto;
                 &::-webkit-scrollbar {
                     display: none;
                 }
@@ -54,14 +69,18 @@
                     height: 40px;
                     border-radius: 20px;
                     margin-left: 10px;
-                    background-color: transparent;
-                    border: 1px solid $fullBlack;
                     line-height: 40px;
                     text-align: center;
                     font-family: HelveticaNeueLTStd-Bd;
                     font-size: 14px;
+                    --background-activated : black;
+                    --background: transparent;
+                    --border-color: black;
+                    --border-style: solid;
+                    --border-width: 1px;
+                    --color: black;
                     &-selected {
-                        background-color: $fullBlack;
+                        --background: black;
                         color: $white;
                     }
                 }
