@@ -15,6 +15,7 @@ import {
 } from '../services/orange-money-service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-purchase-set-amount',
@@ -49,7 +50,8 @@ export class PurchaseSetAmountPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private omService: OrangeMoneyService,
-    private appliRouting: ApplicationRoutingService
+    private appliRouting: ApplicationRoutingService,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -163,7 +165,7 @@ export class PurchaseSetAmountPage implements OnInit {
       case OPERATION_TYPE_SEDDO_BONUS:
       case OPERATION_TRANSFER_OM:
       case OPERATION_TRANSFER_OM_WITH_CODE:
-        this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
+        this.navController.pop();
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
       default:
@@ -253,7 +255,6 @@ export class PurchaseSetAmountPage implements OnInit {
       //   ? (this.totalAmount = +amount + this.fee)
       //   : (this.totalAmount = +amount);
     }
-    console.log('in get fees', this.fee);
   }
 
   onAmountChanged(amount) {

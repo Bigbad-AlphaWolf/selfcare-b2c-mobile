@@ -121,25 +121,15 @@ export class TransfertHubServicesPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      if (
-        this.router.getCurrentNavigation() &&
-        this.router.getCurrentNavigation().extras.state &&
-        this.router.getCurrentNavigation().extras.state.purchaseType
-      ) {
-        const purchaseType = this.router.getCurrentNavigation().extras.state
-          .purchaseType;
-        if (purchaseType === 'TRANSFER') {
-          this.options = this.transferOptions;
-          this.pageTitle = 'Transférer argent ou crédit';
-        } else {
-          this.options = this.buyOptions;
-          this.pageTitle = 'Acheter crédit ou pass';
-        }
-      } else {
-        this.appRouting.goToDashboard();
-      }
-    });
+    const purchaseType = history.state.purchaseType;
+    this.router.getCurrentNavigation().extras.state.purchaseType;
+    if (purchaseType === 'TRANSFER') {
+      this.options = this.transferOptions;
+      this.pageTitle = 'Transférer argent ou crédit';
+    } else {
+      this.options = this.buyOptions;
+      this.pageTitle = 'Acheter crédit ou pass';
+    }
   }
 
   ionViewWillEnter() {
