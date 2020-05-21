@@ -176,10 +176,10 @@ export class PurchaseSetAmountPage implements OnInit {
 
   goNext() {
     const amount = this.setAmountForm.value['amount'];
-    // this.purchasePayload.amount = amount;
+    this.purchasePayload.amount = amount;
     this.purchasePayload.includeFee = this.includeFees;
     this.purchasePayload.fee = this.fee;
-    if (this.includeFees) this.purchasePayload.amount = amount + this.fee;
+    this.purchasePayload.amount = this.includeFees ? amount + this.fee : amount;
     this.purchasePayload.purchaseType = this.purchaseType;
     if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
       this.purchasePayload.recipientFirstname = this.setAmountForm.value[
