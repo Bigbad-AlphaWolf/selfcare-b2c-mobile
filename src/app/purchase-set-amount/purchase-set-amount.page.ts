@@ -15,6 +15,7 @@ import {
 } from '../services/orange-money-service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-purchase-set-amount',
@@ -49,7 +50,8 @@ export class PurchaseSetAmountPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private omService: OrangeMoneyService,
-    private appliRouting: ApplicationRoutingService
+    private appliRouting: ApplicationRoutingService,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -163,7 +165,7 @@ export class PurchaseSetAmountPage implements OnInit {
       case OPERATION_TYPE_SEDDO_BONUS:
       case OPERATION_TRANSFER_OM:
       case OPERATION_TRANSFER_OM_WITH_CODE:
-        this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
+        this.navController.pop();
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
       default:
@@ -177,6 +179,8 @@ export class PurchaseSetAmountPage implements OnInit {
     this.purchasePayload.amount = amount;
     this.purchasePayload.includeFee = this.includeFees;
     this.purchasePayload.fee = this.fee;
+    this.purchasePayload.amount =
+      this.includeFees || this.userHasNoOmAccount ? amount + this.fee : amount;
     this.purchasePayload.purchaseType = this.purchaseType;
     if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
       this.purchasePayload.recipientFirstname = this.setAmountForm.value[
@@ -244,16 +248,11 @@ export class PurchaseSetAmountPage implements OnInit {
     if (amount && this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
       const fee = this.extractFees(this.transferFeesArray, amount);
       this.fee = fee.with_code;
-      // this.totalAmount = +amount + this.fee;
     }
     if (amount && this.purchaseType === OPERATION_TRANSFER_OM) {
       const fee = this.extractFees(this.transferFeesArray, amount);
       this.fee = fee.without_code;
-      // this.includeFees
-      //   ? (this.totalAmount = +amount + this.fee)
-      //   : (this.totalAmount = +amount);
     }
-    console.log('in get fees', this.fee);
   }
 
   onAmountChanged(amount) {

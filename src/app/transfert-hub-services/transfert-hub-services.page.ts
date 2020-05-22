@@ -105,7 +105,6 @@ export class TransfertHubServicesPage implements OnInit {
   omPhoneNumber: string;
   isProcessing: boolean;
   errorMsg: string;
-  senderMsisdn: string;
   dataPayload: any;
   constructor(
     private appRouting: ApplicationRoutingService,
@@ -118,29 +117,14 @@ export class TransfertHubServicesPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      if (
-        this.router.getCurrentNavigation() &&
-        this.router.getCurrentNavigation().extras.state &&
-        this.router.getCurrentNavigation().extras.state.purchaseType
-      ) {
-        const purchaseType = this.router.getCurrentNavigation().extras.state
-          .purchaseType;
-        if (purchaseType === 'TRANSFER') {
-          this.options = this.transferOptions;
-          this.pageTitle = 'Transférer argent ou crédit';
-        } else {
-          this.options = this.buyOptions;
-          this.pageTitle = 'Acheter crédit ou pass';
-        }
-      } else {
-        this.appRouting.goToDashboard();
-      }
-    });
-  }
-
-  ionViewWillEnter() {
-    this.senderMsisdn = this.dashbServ.getCurrentPhoneNumber();
+    const purchaseType = history.state.purchaseType;
+    if (purchaseType === 'TRANSFER') {
+      this.options = this.transferOptions;
+      this.pageTitle = 'Transférer argent ou crédit';
+    } else {
+      this.options = this.buyOptions;
+      this.pageTitle = 'Acheter crédit ou pass';
+    }
   }
 
   goToDashboard() {
@@ -198,12 +182,11 @@ export class TransfertHubServicesPage implements OnInit {
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data && response.data.recipientMsisdn) {
-        const pageData = response.data
+        const pageData = response.data;
         this.appRouting.goSetAmountPage(pageData);
         // this.getOmPhoneNumberAndCheckrecipientHasOMAccount(this.dataPayload);
       }
     });
     return await modal.present();
   }
-
 }

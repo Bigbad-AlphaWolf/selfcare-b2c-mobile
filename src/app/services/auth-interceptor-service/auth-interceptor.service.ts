@@ -42,7 +42,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221781657500');
+      headers = headers.set('X-MSISDN', '221771040956');
       //delay to test slowness of network
       req = req.clone({
         headers,
@@ -78,7 +78,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       let headers = req.headers;
       headers = headers.set('X-Selfcare-Source', 'mobile');
       headers = headers.set('Authorization', `Bearer ${token}`);
-
+      headers = headers.set('Access-Control-Allow-Origin', '*');
       req = req.clone({
         headers,
       });
@@ -112,7 +112,7 @@ export class AuthInterceptorService implements HttpInterceptor {
         (event: HttpEvent<any>) => {},
         (err: any) => {
           if (err instanceof HttpErrorResponse) {
-            if (err.status === 401 && !err.url.match("v2/check-client")) {
+            if (err.status === 401 && !err.url.match('v2/check-client')) {
               that.authServ.cleanCache();
               that.router.navigate(['login']);
             }

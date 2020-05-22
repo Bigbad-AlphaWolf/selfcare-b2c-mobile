@@ -463,8 +463,9 @@ export class NewPinpadModalPage implements OnInit {
         // check response status
         if (res.status_code.match('Success')) {
           // valid pin
+          const balance = res.content.data.balance;
           db.pinFailed = 0; // reset the pinfailed
-          db.solde = res.content.data.balance;
+          db.solde = balance;
           const date = new Date();
           const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
             '0' +
@@ -481,6 +482,7 @@ export class NewPinpadModalPage implements OnInit {
           if (!this.operationType) {
             this.modalController.dismiss({
               success: true,
+              balance: balance,
             });
           } else {
             // this.resultEmit.emit(db.solde);
