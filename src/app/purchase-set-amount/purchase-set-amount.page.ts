@@ -179,7 +179,8 @@ export class PurchaseSetAmountPage implements OnInit {
     this.purchasePayload.amount = amount;
     this.purchasePayload.includeFee = this.includeFees;
     this.purchasePayload.fee = this.fee;
-    this.purchasePayload.amount = this.includeFees ? amount + this.fee : amount;
+    this.purchasePayload.amount =
+      this.includeFees || this.userHasNoOmAccount ? amount + this.fee : amount;
     this.purchasePayload.purchaseType = this.purchaseType;
     if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
       this.purchasePayload.recipientFirstname = this.setAmountForm.value[
@@ -247,14 +248,10 @@ export class PurchaseSetAmountPage implements OnInit {
     if (amount && this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
       const fee = this.extractFees(this.transferFeesArray, amount);
       this.fee = fee.with_code;
-      // this.totalAmount = +amount + this.fee;
     }
     if (amount && this.purchaseType === OPERATION_TRANSFER_OM) {
       const fee = this.extractFees(this.transferFeesArray, amount);
       this.fee = fee.without_code;
-      // this.includeFees
-      //   ? (this.totalAmount = +amount + this.fee)
-      //   : (this.totalAmount = +amount);
     }
   }
 

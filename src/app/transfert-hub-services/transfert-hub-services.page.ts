@@ -105,7 +105,6 @@ export class TransfertHubServicesPage implements OnInit {
   omPhoneNumber: string;
   isProcessing: boolean;
   errorMsg: string;
-  senderMsisdn: string;
   dataPayload: any;
   constructor(
     private appRouting: ApplicationRoutingService,
@@ -119,7 +118,6 @@ export class TransfertHubServicesPage implements OnInit {
 
   ngOnInit() {
     const purchaseType = history.state.purchaseType;
-    this.router.getCurrentNavigation().extras.state.purchaseType;
     if (purchaseType === 'TRANSFER') {
       this.options = this.transferOptions;
       this.pageTitle = 'Transférer argent ou crédit';
@@ -127,10 +125,6 @@ export class TransfertHubServicesPage implements OnInit {
       this.options = this.buyOptions;
       this.pageTitle = 'Acheter crédit ou pass';
     }
-  }
-
-  ionViewWillEnter() {
-    this.senderMsisdn = this.dashbServ.getCurrentPhoneNumber();
   }
 
   goToDashboard() {
@@ -188,12 +182,11 @@ export class TransfertHubServicesPage implements OnInit {
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data && response.data.recipientMsisdn) {
-        const pageData = response.data
+        const pageData = response.data;
         this.appRouting.goSetAmountPage(pageData);
         // this.getOmPhoneNumberAndCheckrecipientHasOMAccount(this.dataPayload);
       }
     });
     return await modal.present();
   }
-
 }
