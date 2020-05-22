@@ -19,6 +19,11 @@
     .beneficiary-number{
         position: relative;
         margin-top: 10px;
+        .icon{
+            position: absolute;
+            right: 80px;
+            bottom: 43px;
+        }
         .btn-contact{
                 position: absolute;
                 right: 15px;
