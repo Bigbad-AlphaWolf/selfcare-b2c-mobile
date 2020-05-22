@@ -9,7 +9,6 @@ import { OfferPlan } from 'src/shared/models/offer-plan.model';
   styleUrls: ['./my-offer-plans.page.scss'],
 })
 export class MyOfferPlansPage implements OnInit {
-  // defaultListCategories: {label: string, value: string}[] = [{label: "Pass Internet",value:"INTERNET"}, {label: "Pass Illimix",value:"ILLIMIX"}, {label: "Recharge",value:"RECHARGE"},{label: "Autres",value:"AUTRES"},{label: "Sargal",value:"SARGAL"}];
   listCategories = [];
   categories = {illimix: "Pass Illimix", internet: "Pass internet", sargal: "Sargal", autres: "Autres", recharge: "Recharge"}
   listOfferPlans: OfferPlan[] = [];
@@ -24,8 +23,6 @@ export class MyOfferPlansPage implements OnInit {
     
   }
 
-  ionViewWillEnter(){
-  }
 
   goBack() {
     this.router.navigate(['/dashboard']);

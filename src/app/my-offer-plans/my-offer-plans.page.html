@@ -31,7 +31,8 @@
           </span> 
         </span>
       </div>
-      <div class="offer-plans-body-main">
+      <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+      <div *ngIf="!isLoading && !hasError" class="offer-plans-body-main">
         <div class="offer-plans-list-filter">
           <ion-grid fixed>
             <ion-row>
@@ -45,20 +46,6 @@
             </ion-row>
           </ion-grid>
         </div>
-        <!-- <div class="offer-plans-list-filter">
-          <ion-button class="filter-item" expand="block" shape="round">
-            Sargal
-          </ion-button>
-          <ion-button expand="block" shape="round" class="filter-item filter-item-selected">
-              Recharge
-          </ion-button>
-          <ion-button expand="block" shape="round" class="filter-item">
-              Pass Internet
-          </ion-button>
-          <ion-button expand="block" shape="round" class="filter-item">
-              Autres
-          </ion-button>
-        </div> -->
         <div class="offer-plans-list-content">
             <div *ngFor="let offerPlan of filteredListOfferPlans" class="offer-plans-list-content-item">
               <div class="scb-arrow-right-gray">
@@ -78,6 +65,9 @@
                 </div>
             </div>
         </div>
+      </div>
+      <div *ngIf="!isLoading && hasError" (click)="getUserOfferPlans()" class="has-error">
+        Veuillez recharger les données de la page
       </div>
     </div>
   </div>
