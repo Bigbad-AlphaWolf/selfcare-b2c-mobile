@@ -122,6 +122,8 @@ export class OperationRecapPage implements OnInit {
               ? state.amount + state.fee
               : state.amount;
             this.transferOMPayload.msisdn2 = this.recipientMsisdn;
+            this.recipientName =
+              state.recipientFirstname + ' ' + state.recipientLastname;
             this.paymentMod = 'ORANGE_MONEY';
             break;
           case OPERATION_TYPE_MERCHANT_PAYMENT:
