@@ -47,7 +47,7 @@
           </ion-grid>
         </div>
         <div class="offer-plans-list-content">
-            <div *ngFor="let offerPlan of filteredListOfferPlans" class="offer-plans-list-content-item">
+            <div *ngFor="let offerPlan of filteredListOfferPlans" (click)="goToPage(offerPlan.typeMPO.toLowerCase())" class="offer-plans-list-content-item">
               <div class="scb-arrow-right-gray">
               </div>
               <div class="item-left-block">
