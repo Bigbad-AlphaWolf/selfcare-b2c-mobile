@@ -60,6 +60,8 @@
             height: 100%;
             width: 100%;
             .offer-plans-list-filter {
+                --ion-grid-padding: 0 0;
+                --ion-grid-column-padding: 0 0;
                 background-color: transparent;
                 height: 70px;
                 display: flex;
