@@ -34,7 +34,7 @@ export class LoginPage implements OnInit {
   navItems: {
     title: string;
     subTitle: string;
-    action: 'help' | 'register';
+    action: 'help' | 'register' | 'password';
   }[] = [
     {
       title: 'Je m’inscris',
@@ -45,6 +45,11 @@ export class LoginPage implements OnInit {
       title: 'J’ai besoin d’aide',
       subTitle: 'J’éprouve des difficultés pour me connecter',
       action: 'help',
+    },
+    {
+      title: 'J’ai oublié mon mot de passe',
+      subTitle: 'Je veux le récupérer',
+      action: 'password',
     },
   ];
   constructor(
@@ -151,12 +156,15 @@ export class LoginPage implements OnInit {
     }
   }
 
-  doAction(action: 'register' | 'help') {
+  doAction(action: 'register' | 'help' | 'password') {
     if (action === 'register') {
       this.goRegisterPage();
     }
     if (action === 'help') {
       this.openHelpModal(HelpModalDefaultContent);
+    }
+    if (action === 'password') {
+      this.router.navigate(['/forgotten-password']);
     }
   }
 

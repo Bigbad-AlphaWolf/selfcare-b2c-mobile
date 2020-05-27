@@ -52,7 +52,11 @@ export class NewRegistrationPage implements OnInit {
     password: { fieldType: 'password', visibilityIcon: 'visibility' },
     confirmPassword: { fieldType: 'password', visibilityIcon: 'visibility' },
   };
-  navItems: { title: string; subTitle: string; action: 'help' | 'login' }[] = [
+  navItems: {
+    title: string;
+    subTitle: string;
+    action: 'help' | 'login' | 'password';
+  }[] = [
     {
       title: 'Je me connecte',
       subTitle: 'J’ai déjà un compte',
@@ -62,6 +66,11 @@ export class NewRegistrationPage implements OnInit {
       title: 'J’ai besoin d’aide',
       subTitle: 'J’éprouve des difficultés pour me connecter',
       action: 'help',
+    },
+    {
+      title: 'J’ai oublié mon mot de passe',
+      subTitle: 'Je veux le récupérer',
+      action: 'password',
     },
   ];
   //Temps d'attente pour la recuperation automatique du numero -> 10 secondes
@@ -323,12 +332,15 @@ export class NewRegistrationPage implements OnInit {
     );
   }
 
-  doAction(action: 'login' | 'help') {
+  doAction(action: 'login' | 'help' | 'password') {
     if (action === 'login') {
       this.goLoginPage();
     }
     if (action === 'help') {
       this.openHelpModal(HelpModalDefaultContent);
+    }
+    if (action === 'password') {
+      this.router.navigate(['/forgotten-password']);
     }
   }
 
