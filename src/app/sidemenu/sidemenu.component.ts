@@ -118,6 +118,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   goDashboard() {
     this.closeMenu();
+    this.router.navigate(['/dashboard']);
     this.followAnalyticsService.registerEventFollow(
       'Sidemenu_Suivi_conso',
       'event',
