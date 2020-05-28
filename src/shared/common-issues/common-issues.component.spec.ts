@@ -5,7 +5,7 @@ import { CommonIssuesComponent } from './common-issues.component';
 import { MatDialogRef, MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
 import { Router } from '@angular/router';
 
-fdescribe('CommonIssuesComponent', () => {
+describe('CommonIssuesComponent', () => {
   let component: CommonIssuesComponent;
   let fixture: ComponentFixture<CommonIssuesComponent>;
 
