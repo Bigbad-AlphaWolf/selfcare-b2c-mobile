@@ -8,14 +8,14 @@
   <div class="block-left">
     <div class="price scb-text-orange">
       {{
-        !passInternet.passPromo
+        !passInternet?.passPromo
           ? passInternet?.tarif
           : passInternet?.passPromo?.tarif
       }}
       FCFA
     </div>
     <span class="volume scb-text-full-black">{{
-      !passInternet.passPromo
+      !passInternet?.passPromo
         ? passInternet?.volumeInternet
         : passInternet?.passPromo?.volumeInternet
     }}</span>
@@ -45,7 +45,7 @@
       *ngIf="passInternet?.bonusNuit || passInternet?.passPromo?.bonusNuit"
     >
       {{
-        !passInternet.passPromo
+        !passInternet?.passPromo
           ? passInternet?.bonusNuit
           : passInternet?.passPromo?.bonusNuit
       }}

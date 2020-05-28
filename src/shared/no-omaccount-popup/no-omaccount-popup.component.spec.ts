@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NoOMAccountPopupComponent } from './no-omaccount-popup.component';
 
-describe('NoOMAccountPopupComponent', () => {
+fdescribe('NoOMAccountPopupComponent', () => {
   let component: NoOMAccountPopupComponent;
   let fixture: ComponentFixture<NoOMAccountPopupComponent>;
 
