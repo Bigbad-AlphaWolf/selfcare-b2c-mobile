@@ -14,8 +14,6 @@ import { DetailsConsoPage } from './details-conso/details-conso.page';
 const ls = new SecureLS({ encodingType: 'aes' });
 declare var FollowAnalytics: any;
 
-import { Uid } from '@ionic-native/uid/ngx';
-
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -30,8 +28,7 @@ export class AppComponent {
     private splash: SplashScreen,
     private appMinimize: AppMinimize,
     private router: Router,
-    private deeplinks: Deeplinks,
-    private uid: Uid,
+    private deeplinks: Deeplinks
   ) {
     this.initializeApp();
   }
@@ -47,42 +44,42 @@ export class AppComponent {
       if (this.platform.is('android')) {
         this.statusBar.backgroundColorByHexString('#FFFFFF');
         //getPermission is for getting the IMEI
-        //this.getPermission();getPermission() {  
-  //   this.androidPermissions
-  //     .checkPermission(this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE)
-  //     .then((res) => {
-  //       if (res.hasPermission) {
-  //       } else {
-  //         this.androidPermissions
-  //           .requestPermission(
-  //             this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE
-  //           )
-  //           .then((res) => {
-  //             // console.log('Persmission Granted!');
-  //           })
-  //           .catch((error) => {
-  //             // console.log('Error! ' + error);
-  //           });
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log('Error! ' + error);
-  //     });
-  // }
+        //this.getPermission();getPermission() {
+        //   this.androidPermissions
+        //     .checkPermission(this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE)
+        //     .then((res) => {
+        //       if (res.hasPermission) {
+        //       } else {
+        //         this.androidPermissions
+        //           .requestPermission(
+        //             this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE
+        //           )
+        //           .then((res) => {
+        //             // console.log('Persmission Granted!');
+        //           })
+        //           .catch((error) => {
+        //             // console.log('Error! ' + error);
+        //           });
+        //       }
+        //     })
+        //     .catch((error) => {
+        //       console.log('Error! ' + error);
+        //     });
+        // }
 
-  // getID_UID(type) {
-  //   if (type === 'IMEI') {
-  //     return this.uid.IMEI;
-  //   } else if (type === 'ICCID') {
-  //     return this.uid.ICCID;
-  //   } else if (type === 'IMSI') {
-  //     return this.uid.IMSI;
-  //   } else if (type === 'MAC') {
-  //     return this.uid.MAC;
-  //   } else if (type === 'UUID') {
-  //     return this.uid.UUID;
-  //   }
-  // }
+        // getID_UID(type) {
+        //   if (type === 'IMEI') {
+        //     return this.uid.IMEI;
+        //   } else if (type === 'ICCID') {
+        //     return this.uid.ICCID;
+        //   } else if (type === 'IMSI') {
+        //     return this.uid.IMSI;
+        //   } else if (type === 'MAC') {
+        //     return this.uid.MAC;
+        //   } else if (type === 'UUID') {
+        //     return this.uid.UUID;
+        //   }
+        // }
       }
       this.statusBar.styleDefault();
 
