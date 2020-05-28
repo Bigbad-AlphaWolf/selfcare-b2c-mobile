@@ -1,14 +1,14 @@
 <div class="item-container" (click)="choosePass(passIllimix)">
     <div class="item-pass-internet">
       <div class="top-block">
-          <span *ngIf="!passIllimix.passPromo" class="price scb-text-orange"> {{ +passIllimix.tarif ? passIllimix?.tarif + " FCFA" : passIllimix?.tarif }} </span>
-          <span *ngIf="passIllimix.passPromo" class="price scb-text-orange"> {{ +passIllimix?.passPromo?.tarif || +passIllimix?.passPromo?.tarif === 0 ? passIllimix?.passPromo?.tarif + " FCFA" : passIllimix?.passPromo?.tarif }} </span>
+          <span *ngIf="!passIllimix?.passPromo" class="price scb-text-orange"> {{ +passIllimix?.tarif ? passIllimix?.tarif + " FCFA" : passIllimix?.tarif }} </span>
+          <span *ngIf="passIllimix?.passPromo" class="price scb-text-orange"> {{ +passIllimix?.passPromo?.tarif || +passIllimix?.passPromo?.tarif === 0 ? passIllimix?.passPromo?.tarif + " FCFA" : passIllimix?.passPromo?.tarif }} </span>
       </div>
       <div class="bottom-block">
         <div class="item-details">
           <div *ngIf="passIllimix?.volumeInternet || passIllimix?.passPromo?.volumeInternet " class="infos left-side">
             <span class="item-volume">
-                {{ !passIllimix.passPromo ? passIllimix?.volumeInternet : passIllimix?.passPromo?.volumeInternet }}
+                {{ !passIllimix?.passPromo ? passIllimix?.volumeInternet : passIllimix?.passPromo?.volumeInternet }}
             </span>
             <span class="item-type scb-text-gray">
                 Internet
@@ -16,7 +16,7 @@
           </div>
           <div *ngIf="passIllimix?.dureeAppel || passIllimix?.passPromo?.dureeAppel" class="infos left-side">
             <span class="item-volume">
-                {{ !passIllimix.passPromo ? passIllimix?.dureeAppel : passIllimix?.passPromo?.dureeAppel }}
+                {{ !passIllimix?.passPromo ? passIllimix?.dureeAppel : passIllimix?.passPromo?.dureeAppel }}
             </span>
             <span class="item-type scb-text-gray">
                 Appel*
@@ -24,7 +24,7 @@
           </div>
           <div *ngIf="passIllimix?.nombreSms || passIllimix?.passPromo?.nombreSms" class="infos left-side">
             <span class="item-volume">
-                {{ !passIllimix.passPromo ? passIllimix?.nombreSms : passIllimix?.passPromo?.nombreSms }}
+                {{ !passIllimix?.passPromo ? passIllimix?.nombreSms : passIllimix?.passPromo?.nombreSms }}
             </span>
             <span class="item-type scb-text-gray">
                 Messages
@@ -60,14 +60,14 @@
             </span>
             <span class="item-bonus scb-text-gray">
                 {{
-                  !passIllimix.passPromo ? passIllimix?.bonusNuit : passIllimix?.passPromo?.bonusNuit
+                  !passIllimix?.passPromo ? passIllimix?.bonusNuit : passIllimix?.passPromo?.bonusNuit
                 }}
             </span>
           </div>
         </div>
       </div>
       <div *ngIf="passIllimix?.passPromo" class="promo-block">
-        <span class="description scb-text-white"> {{ passIllimix.description }}</span>
+        <span class="description scb-text-white"> {{ passIllimix?.description }}</span>
         <span class="arrow"></span>
       </div>
     </div>

@@ -2,6 +2,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ModalSuccessComponent } from './modal-success.component';
+import { Router } from '@angular/router';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 
 describe('ModalSuccessComponent', () => {
   let component: ModalSuccessComponent;
@@ -11,6 +14,28 @@ describe('ModalSuccessComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ModalSuccessComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: Router,
+          useValue: {}
+        },
+        {
+          provide: MatDialogRef,
+          useValue: {}
+        },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {}
+        },
+        {
+          provide: DashboardService,
+          useValue: {
+            getCurrentPhoneNumber:() => {
+              return ""
+            }
+          }
+        }
+      ]
     })
     .compileComponents();
   }));
