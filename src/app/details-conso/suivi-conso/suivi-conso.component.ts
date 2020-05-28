@@ -1,10 +1,19 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { USER_CONS_CATEGORY_CALL, CREDIT_APPEL_CATEGORY } from 'src/shared';
 
 @Component({
   selector: 'app-suivi-conso',
   templateUrl: './suivi-conso.component.html',
-  styleUrls: ['./suivi-conso.component.scss']
+  styleUrls: ['./suivi-conso.component.scss'],
 })
 export class SuiviConsoComponent implements OnInit, OnChanges {
   @Input() consoDetails;
@@ -28,12 +37,12 @@ export class SuiviConsoComponent implements OnInit, OnChanges {
   }
 
   hasItError() {
-    if (this.consoDetails.length === 0) {
-        this.hasError = true;
+    if (this.consoDetails && this.consoDetails.length === 0) {
+      this.hasError = true;
     } else {
-        this.hasError = false;
+      this.hasError = false;
     }
-}
+  }
 
   getConso() {
     this.reloadConso.emit();

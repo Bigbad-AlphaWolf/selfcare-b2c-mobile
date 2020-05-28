@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material';
 import { File } from '@ionic-native/file/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
-fdescribe('BillsPage', () => {
+describe('BillsPage', () => {
   let component: BillsPage;
   let fixture: ComponentFixture<BillsPage>;
 

@@ -15,20 +15,22 @@ describe('PhoneNumbersListComponent', () => {
       declarations: [PhoneNumbersListComponent],
       providers: [
         {
-          provide: Router
+          provide: Router,
         },
         {
           provide: DashboardService,
           useValue: {
-            getCurrentPhoneNumber: () => {},
-            currentPhoneNumberChange: () => {
-              return of();
+            getCurrentPhoneNumber: () => {
+              return '781210011';
             },
-            setCurrentPhoneNumber: () => {}
-          }
-        }
+            currentPhoneNumberChange: {
+              subscribe: () => {},
+            },
+            setCurrentPhoneNumber: () => {},
+          },
+        },
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
 
