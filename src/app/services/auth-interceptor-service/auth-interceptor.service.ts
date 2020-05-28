@@ -96,7 +96,9 @@ export class AuthInterceptorService implements HttpInterceptor {
         String(deviceInfo.isVirtual)
       );
 
-      headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
+      if(this.appVersionNumber)
+          headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
+
       req = req.clone({
         headers,
       });
