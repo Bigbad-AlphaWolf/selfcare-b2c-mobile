@@ -103,7 +103,7 @@ export class OperationRecapPage implements OnInit {
           case OPERATION_TRANSFER_OM_WITH_CODE:
             this.recipientMsisdn = state.recipientMsisdn;
             this.amount = state.amount;
-            this.transferOMWithCodePayload.amount = state.amount + state.fee;
+            this.transferOMWithCodePayload.amount = state.amount;
             this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
             this.transferOMWithCodePayload.prenom_receiver =
               state.recipientFirstname;
@@ -118,9 +118,7 @@ export class OperationRecapPage implements OnInit {
           case OPERATION_TRANSFER_OM:
             this.recipientMsisdn = state.recipientMsisdn;
             this.amount = state.amount;
-            this.transferOMPayload.amount = state.includeFee
-              ? state.amount + state.fee
-              : state.amount;
+            this.transferOMPayload.amount = state.amount;
             this.transferOMPayload.msisdn2 = this.recipientMsisdn;
             this.recipientName =
               state.recipientFirstname + ' ' + state.recipientLastname;
