@@ -7,7 +7,7 @@ import {
   interval,
   throwError,
   Subscription,
-  of
+  of,
 } from 'rxjs';
 import {
   tap,
@@ -15,7 +15,7 @@ import {
   map,
   shareReplay,
   retryWhen,
-  flatMap
+  flatMap,
 } from 'rxjs/operators';
 import * as SecureLS from 'secure-ls';
 import { DOCUMENT } from '@angular/platform-browser';
@@ -30,7 +30,7 @@ const {
   FILE_SERVICE,
   ACCOUNT_MNGT_SERVICE,
   UAA_SERVICE,
-  GATEWAY_SERVICE
+  GATEWAY_SERVICE,
 } = environment;
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -78,8 +78,11 @@ const welcomeStatusEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters`;
 // Endpoint promoBooster active
 const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters/active-boosters`;
 
+// Endpoint to get the user's birthdate
+const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonné/birthDate`;
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DashboardService {
   currentPhoneNumberChangeSubject: Subject<string> = new Subject<string>();
@@ -98,14 +101,14 @@ export class DashboardService {
     private authService: AuthenticationService
   ) {
     // this.renderer = rendererFactory.createRenderer(null, null);
-    authService.currentPhoneNumberSetSubject.subscribe(value => {
+    authService.currentPhoneNumberSetSubject.subscribe((value) => {
       if (value) {
         this.user = this.authService.getLocalUserInfos();
         this.setCurrentPhoneNumber(this.user.login);
       }
     });
 
-    authService.isLoginSubject.subscribe(value => {
+    authService.isLoginSubject.subscribe((value) => {
       if (value) {
         // do something after login
       }
@@ -153,7 +156,7 @@ export class DashboardService {
         (res: any) => {
           return this.processConso(res, true);
         },
-        error => {
+        (error) => {
           const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
           return lastLoadedConso;
         }
@@ -201,7 +204,7 @@ export class DashboardService {
     typeNumero: 'MOBILE' | 'FIXE';
   }) {
     detailsToCheck = Object.assign(detailsToCheck, {
-      login: this.authService.getUserMainPhoneNumber()
+      login: this.authService.getUserMainPhoneNumber(),
     });
     return this.http.post(
       `${attachMobileNumberEndpoint}/register`,
@@ -215,7 +218,7 @@ export class DashboardService {
     typeNumero: 'MOBILE' | 'FIXE';
   }) {
     payload = Object.assign(payload, {
-      login: this.authService.getUserMainPhoneNumber()
+      login: this.authService.getUserMainPhoneNumber(),
     });
     return this.http.post(
       `${attachMobileNumberEndpoint}/fixe-register`,
@@ -290,7 +293,7 @@ export class DashboardService {
     // filter by code not working on Orange VM so
     let queryParams = '';
     if (consoCodes && Array.isArray(consoCodes) && consoCodes.length) {
-      const params = consoCodes.map(code => `code=${code}`).join('&');
+      const params = consoCodes.map((code) => `code=${code}`).join('&');
       queryParams = `?${params}`;
     }
     return this.http
@@ -300,7 +303,7 @@ export class DashboardService {
           (res: any) => {
             return this.processConso(res);
           },
-          error => {
+          (error) => {
             const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
             return lastLoadedConso;
           }
@@ -408,5 +411,16 @@ export class DashboardService {
       `${promoBoosterActiveEndpoint}?msisdn=${msisdn}&code=${code}`
     );
     // return of({ isPromoPassActive: false, isPromoRechargeActive: false });
+  }
+
+  getUserBirthDate(): Observable<any> {
+    const userBirthDay = ls.get('birthDate');
+    if (userBirthDay) return of();
+    const msisdn = this.getMainPhoneNumber();
+    return this.http.get(`${userBirthDateEndpoint}/${msisdn}`).pipe(
+      map((birthDate) => {
+        ls.set('birthDate', birthDate);
+      })
+    );
   }
 }

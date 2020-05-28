@@ -12,7 +12,6 @@ import { AppComponent } from './app.component';
 import { Router } from '@angular/router';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { HttpClient } from '@angular/common/http';
-import { FCM } from '@ionic-native/fcm/ngx';
 
 describe('AppComponent', () => {
   let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
@@ -35,21 +34,17 @@ describe('AppComponent', () => {
         { provide: Deeplinks },
         {
           provide: HttpClient,
-          useValue: {}
+          useValue: {},
         },
         {
           provide: AppVersion,
-          useValue: {}
-        },
-        {
-          provide: FCM,
-          useValue: {}
+          useValue: {},
         },
         {
           provide: AppMinimize,
-          useValue: {}
-        }
-      ]
+          useValue: {},
+        },
+      ],
     }).compileComponents();
   }));
 
