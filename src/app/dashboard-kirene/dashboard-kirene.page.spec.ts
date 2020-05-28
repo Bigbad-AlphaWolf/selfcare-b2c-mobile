@@ -2,6 +2,11 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardKirenePage } from './dashboard-kirene.page';
+import { FormatCurrencyPipe } from 'src/shared/pipes/format-currency.pipe';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { of } from 'rxjs';
 
 describe('DashboardKirenePage', () => {
   let component: DashboardKirenePage;
@@ -9,10 +14,21 @@ describe('DashboardKirenePage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashboardKirenePage ],
+      declarations: [DashboardKirenePage, FormatCurrencyPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [
+        {
+          provide: HttpClient,
+          useValue: {
+            get: () => {
+              return of({});
+            },
+          },
+        },
+        { provide: Router, useValue: {} },
+        { provide: MatDialog, useValue: {} },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

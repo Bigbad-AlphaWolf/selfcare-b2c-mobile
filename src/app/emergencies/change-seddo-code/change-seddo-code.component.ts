@@ -10,7 +10,7 @@ import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow
 @Component({
   selector: 'app-change-seddo-code',
   templateUrl: './change-seddo-code.component.html',
-  styleUrls: ['./change-seddo-code.component.scss']
+  styleUrls: ['./change-seddo-code.component.scss'],
 })
 export class ChangeSeddoCodeComponent implements OnInit {
   form: FormGroup;
@@ -30,15 +30,15 @@ export class ChangeSeddoCodeComponent implements OnInit {
   ngOnInit() {
     this.getAllNumbers();
     this.form = this.fb.group({
-      phoneNumber: [this.numbers[0], []],
+      phoneNumber: [this.numbers[0]],
       actualCode: [
         '',
         [
           Validators.required,
           Validators.pattern(/\d/g),
           Validators.minLength(4),
-          Validators.maxLength(4)
-        ]
+          Validators.maxLength(4),
+        ],
       ],
       newCode: [
         '',
@@ -46,8 +46,8 @@ export class ChangeSeddoCodeComponent implements OnInit {
           Validators.required,
           Validators.pattern(/\d/g),
           Validators.minLength(4),
-          Validators.maxLength(4)
-        ]
+          Validators.maxLength(4),
+        ],
       ],
       confirmNewCode: [
         '',
@@ -55,9 +55,9 @@ export class ChangeSeddoCodeComponent implements OnInit {
           Validators.required,
           Validators.pattern(/\d/g),
           Validators.minLength(4),
-          Validators.maxLength(4)
-        ]
-      ]
+          Validators.maxLength(4),
+        ],
+      ],
     });
   }
 
@@ -66,7 +66,7 @@ export class ChangeSeddoCodeComponent implements OnInit {
     this.numbers = [];
     this.numbers.push(mainNumber);
     this.dashboardService.getAttachedNumbers().subscribe((res: any[]) => {
-      res.forEach(number => {
+      res.forEach((number) => {
         this.numbers.push(number.msisdn);
       });
     });
@@ -74,7 +74,7 @@ export class ChangeSeddoCodeComponent implements OnInit {
 
   openSuccessDialog(type: string) {
     this.dialog.open(ModalSuccessComponent, {
-      data: { type }
+      data: { type },
     });
   }
 
