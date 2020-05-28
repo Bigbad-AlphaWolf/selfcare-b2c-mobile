@@ -38,7 +38,7 @@ describe('AproposPage', () => {
         { provide: Deeplinks },
         {
           provide: AppVersion,
-          useClass: AppVersionSppy,
+          useValue: AppVersionSppy,
         },
         {
           provide: FileTransfer,
@@ -52,7 +52,6 @@ describe('AproposPage', () => {
           provide: File,
           useValue: {},
         },
-        {},
       ],
     }).compileComponents();
   }));
