@@ -4,7 +4,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { OperationRecapPage } from './operation-recap.page';
 import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
 import { ModalController } from '@ionic/angular';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { of } from 'rxjs';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { Location } from '@angular/common';
 
 describe('OperationRecapPage', () => {
   let component: OperationRecapPage;
@@ -23,6 +27,31 @@ describe('OperationRecapPage', () => {
         },
         {
           provide: Router
+        },
+        {
+          provide: Location
+        },
+        {
+          provide: UrlSerializer
+        },
+        {
+          provide: DashboardService,
+          useValue: {
+            getCurrentPhoneNumber: () => {
+              return ""
+            },
+            buyPassByCredit: () => {
+              return of()
+            }
+          }
+        },
+        {
+          provide: OrangeMoneyService,
+          useValue: {
+            getOrangeMoneyNumber: () => {
+              return of()
+            }
+          }
         }
       ]
     })
