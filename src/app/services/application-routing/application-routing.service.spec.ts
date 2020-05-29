@@ -13,7 +13,9 @@ describe('ApplicationRoutingService', () => {
   }));
 
   it('should be created', () => {
-    const service: ApplicationRoutingService = TestBed.get(ApplicationRoutingService);
+    const service: ApplicationRoutingService = TestBed.get(
+      ApplicationRoutingService
+    );
     expect(service).toBeTruthy();
   });
 });

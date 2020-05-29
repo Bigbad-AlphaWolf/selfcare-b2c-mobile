@@ -2,6 +2,10 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PurchaseSetAmountPage } from './purchase-set-amount.page';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Location } from '@angular/common';
 
 describe('PurchaseSetAmountPage', () => {
   let component: PurchaseSetAmountPage;
@@ -9,10 +13,17 @@ describe('PurchaseSetAmountPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PurchaseSetAmountPage ],
+      declarations: [PurchaseSetAmountPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      imports: [ReactiveFormsModule, FormsModule],
+      providers: [
+        { provide: ActivatedRoute },
+        { provide: Router },
+        { provide: HttpClient },
+        { provide: Location },
+        { provide: UrlSerializer },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
