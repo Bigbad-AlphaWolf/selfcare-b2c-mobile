@@ -43,17 +43,19 @@ export class SelectBeneficiaryV2Page implements OnInit {
     private authServ: AuthenticationService, private followAnalyticsService: FollowAnalyticsService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      if (
-        this.router.getCurrentNavigation().extras.state &&
-        this.router.getCurrentNavigation().extras.state.payload
-      ) {
-        this.purchaseType = this.router.getCurrentNavigation().extras.state.payload;
-
-      }else{
-        this.appRouting.goToDashboard();
-      }
-    });
+    if(this.route && this.route.queryParamMap){
+      this.route.queryParams.subscribe((params) => {
+        if (
+          this.router.getCurrentNavigation().extras.state &&
+          this.router.getCurrentNavigation().extras.state.payload
+        ) {
+          this.purchaseType = this.router.getCurrentNavigation().extras.state.payload;
+  
+        }else{
+          this.appRouting.goToDashboard();
+        }
+      });
+    }
   }
 
   ionViewWillEnter(){

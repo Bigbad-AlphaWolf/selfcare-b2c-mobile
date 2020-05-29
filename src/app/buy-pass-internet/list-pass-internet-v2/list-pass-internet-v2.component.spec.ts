@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { ListPassInternetV2Component } from './list-pass-internet-v2.component';
 
-describe('ListPassInternetComponent', () => {
+describe('ListPassInternetV2Component', () => {
   let component: ListPassInternetV2Component;
   let fixture: ComponentFixture<ListPassInternetV2Component>;
 
@@ -27,6 +27,7 @@ describe('ListPassInternetComponent', () => {
             getStatusPassLoaded: () => {
               return of();
             },
+            setUserCodeFormule:() => {},
             getListCategoryPassInternet: () => {},
             getListPassInternetOfUser: () => {},
             getListPassInternetShown: () => {}

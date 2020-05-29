@@ -23,12 +23,16 @@ export class CguPopupComponent implements OnInit, OnDestroy {
 
   acceptCgu() {
     this.acceptedCGU = true;
-    this.dialogRef.close(true);
+    if(this.dialogRef){
+      this.dialogRef.close(true);
+    }
   }
 
   ngOnDestroy() {
     if (!this.acceptedCGU) {
-      this.dialogRef.close();
+      if(this.dialogRef){
+        this.dialogRef.close();
+      }
     }
   }
 }
