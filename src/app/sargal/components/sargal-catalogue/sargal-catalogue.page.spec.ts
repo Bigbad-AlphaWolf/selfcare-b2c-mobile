@@ -1,7 +1,12 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SargalCataloguePage } from './sargal-catalogue.page';
+import { Router, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
+import { FormatCurrencyPipe } from 'src/shared/pipes/format-currency.pipe';
+import { MatMenuModule } from '@angular/material';
 
 describe('SargalCataloguePage', () => {
   let component: SargalCataloguePage;
@@ -9,10 +14,25 @@ describe('SargalCataloguePage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SargalCataloguePage ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      declarations: [SargalCataloguePage, FormatCurrencyPipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+      imports: [MatMenuModule],
+      providers: [
+        { provide: Router },
+        { provide: ActivatedRoute },
+        {
+          provide: HttpClient,
+          useValue: {
+            get() {
+              return of();
+            },
+            post() {
+              return of();
+            },
+          },
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

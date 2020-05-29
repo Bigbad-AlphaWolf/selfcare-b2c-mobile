@@ -2,6 +2,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OperationSuccessFailModalPage } from './operation-success-fail-modal.page';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 
 describe('OperationSuccessFailModalPage', () => {
   let component: OperationSuccessFailModalPage;
@@ -9,10 +12,14 @@ describe('OperationSuccessFailModalPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OperationSuccessFailModalPage ],
+      declarations: [OperationSuccessFailModalPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [
+        { provide: HttpClient },
+        { provide: Router },
+        { provide: ModalController },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
