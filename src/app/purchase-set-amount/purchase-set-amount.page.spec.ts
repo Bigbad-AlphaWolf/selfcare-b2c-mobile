@@ -15,7 +15,7 @@ describe('PurchaseSetAmountPage', () => {
     TestBed.configureTestingModule({
       declarations: [PurchaseSetAmountPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [ReactiveFormsModule, FormsModule],
+      imports: [ReactiveFormsModule],
       providers: [
         { provide: ActivatedRoute },
         { provide: Router },
