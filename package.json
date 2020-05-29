@@ -12,7 +12,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "fixlint": "ng lint --fix=true",
-    "ci-e2e": "protractor --capabilities.chromeOptions.args=--headless --capabilities.chromeOptions.args=--no-sandbox protractor.conf.js"
+    "ci-e2e": "protractor --capabilities.chromeOptions.args=--headless --capabilities.chromeOptions.args=--no-sandbox protractor.conf.js",
+    "sonar": "sonar-scanner"
   },
   "private": true,
   "dependencies": {
@@ -110,9 +111,10 @@
     "karma-jasmine": "~1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
     "protractor": "~5.4.3",
+    "sonar-scanner": "^3.1.0",
     "ts-node": "~8.3.0",
     "tslint": "^5.17.0",
-    "typescript": "~3.1.6"
+    "typescript": "^3.2.1"
   },
   "description": "An Ionic project",
   "cordova": {
