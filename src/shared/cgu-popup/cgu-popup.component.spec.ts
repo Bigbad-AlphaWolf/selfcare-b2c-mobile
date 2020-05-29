@@ -2,6 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CguPopupComponent } from './cgu-popup.component';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Router } from '@angular/router';
 
 describe('CguPopupComponent', () => {
   let component: CguPopupComponent;
@@ -11,6 +13,17 @@ describe('CguPopupComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ CguPopupComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: MatDialogRef
+        },
+        {
+          provide: MAT_DIALOG_DATA
+        },
+        {
+          provide: Router
+        }
+      ]
     })
     .compileComponents();
   }));
