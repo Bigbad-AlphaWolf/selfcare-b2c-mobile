@@ -27,7 +27,7 @@ describe('AppComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [MatDialogModule],
       providers: [
-        { provide: StatusBar, useValue: statusBarSpy },
+        { provide: StatusBar},
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
         { provide: Router },

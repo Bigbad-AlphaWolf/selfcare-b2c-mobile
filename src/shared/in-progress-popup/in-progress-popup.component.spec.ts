@@ -4,7 +4,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { InProgressPopupComponent } from './in-progress-popup.component';
 import { MatDialogRef } from '@angular/material';
 
-fdescribe('InProgressPopupComponent', () => {
+describe('InProgressPopupComponent', () => {
   let component: InProgressPopupComponent;
   let fixture: ComponentFixture<InProgressPopupComponent>;
 

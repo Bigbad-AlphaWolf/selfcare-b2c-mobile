@@ -36,9 +36,11 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       // Initialize BackButton Eevent.
+      if(this.platform.backButton)
       this.platform.backButton.subscribe(() => {
         this.appMinimize.minimize();
       });
+      if(this.statusBar)  
       this.statusBar.overlaysWebView(false);
       // #AARRGGBB where AA is an alpha value RR is red, GG is green and BB is blue
       if (this.platform.is('android')) {
