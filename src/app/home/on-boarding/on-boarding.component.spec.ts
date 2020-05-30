@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OnBoardingComponent } from './on-boarding.component';
+import { Router } from '@angular/router';
 
 describe('OnBoardingComponent', () => {
   let component: OnBoardingComponent;
@@ -9,10 +10,10 @@ describe('OnBoardingComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OnBoardingComponent ],
+      declarations: [OnBoardingComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [{ provide: Router }],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

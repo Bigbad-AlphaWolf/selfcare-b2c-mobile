@@ -108,16 +108,13 @@ export class TransfertHubServicesPage implements OnInit {
   dataPayload: any;
   constructor(
     private appRouting: ApplicationRoutingService,
-    private modalController: ModalController,
-    private omService: OrangeMoneyService,
-    private router: Router,
-    private followAnalytics: FollowAnalyticsService,
-    private dashbServ: DashboardService,
-    private route: ActivatedRoute
-  ) {}
+    private modalController: ModalController  ) {}
 
   ngOnInit() {
-    const purchaseType = history.state.purchaseType;
+    let purchaseType;
+    if(history && history.state){
+      purchaseType = history.state.purchaseType;
+    }
     if (purchaseType === 'TRANSFER') {
       this.options = this.transferOptions;
       this.pageTitle = 'Transférer argent ou crédit';

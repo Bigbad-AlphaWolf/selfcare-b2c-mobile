@@ -33,8 +33,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   dataPayload: any;
   senderMsisdn: string;
 
-  constructor(private dialog: MatDialog,private contacts: Contacts, private modalController: ModalController, private appRouting: ApplicationRoutingService,
-    private omService: OrangeMoneyService,
+  constructor(private dialog: MatDialog,private contacts: Contacts, private modalController: ModalController, private omService: OrangeMoneyService,
     private router: Router,
     private followAnalytics: FollowAnalyticsService, private dashbServ: DashboardService) { }
 

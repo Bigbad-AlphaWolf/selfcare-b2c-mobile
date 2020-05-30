@@ -14,19 +14,25 @@ export class CguPopupComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<CguPopupComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    dialogRef.disableClose = true;
+    if(dialogRef){
+      dialogRef.disableClose = true;
+    }
   }
 
   ngOnInit() {}
 
   acceptCgu() {
     this.acceptedCGU = true;
-    this.dialogRef.close(true);
+    if(this.dialogRef){
+      this.dialogRef.close(true);
+    }
   }
 
   ngOnDestroy() {
     if (!this.acceptedCGU) {
-      this.dialogRef.close();
+      if(this.dialogRef){
+        this.dialogRef.close();
+      }
     }
   }
 }

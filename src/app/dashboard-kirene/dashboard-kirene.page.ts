@@ -219,13 +219,15 @@ export class DashboardKirenePage implements OnInit {
 
   getTrioConsoUser(consoSummary: UserConsommations) {
     const result = [];
-    consoSummary.forEach(x => {
-      for (const cons of x.consommations) {
-        if (result.length < 3) {
-          result.push(cons);
+    if(consoSummary){
+      consoSummary.forEach(x => {
+        for (const cons of x.consommations) {
+          if (result.length < 3) {
+            result.push(cons);
+          }
         }
-      }
-    });
+      });
+    }
     return result;
   }
 

@@ -48,43 +48,47 @@ export class ListePassPage implements OnInit {
     //   this.router.getCurrentNavigation().extras.state &&
     //   this.router.getCurrentNavigation().extras.state.payload
     // ) {
-    this.userNumber = this.router.getCurrentNavigation().extras.state.payload.destinataire;
-    this.userCodeFormule = this.router.getCurrentNavigation().extras.state.payload.code;
-    this.recipientName = this.router.getCurrentNavigation().extras.state.payload.recipientName;
-    this.purchaseType = this.router.getCurrentNavigation().extras.state.payload.purchaseType;
-    this.listCategory = [];
-    this.listPass = [];
-    this.activeTabIndex = 0;
-    if (this.purchaseType === OPERATION_TYPE_PASS_INTERNET) {
-      this.passIntService.setUserCodeFormule(this.userCodeFormule);
-      this.passIntService.setListPassInternetOfUserByQuery();
-      this.passIntService.getStatusPassLoaded().subscribe((status: boolean) => {
-        this.isLoaded = status;
-        if (this.isLoaded) {
-          this.listCategory = this.passIntService.getListCategoryPassInternet();
-          this.listPass = this.passIntService.getListPassInternetOfUser();
-          this.fullListPass = arrangePassByCategory(
-            this.listPass,
-            this.listCategory
-          );
-        }
-      });
-    } else {
-      this.passIllimixServ.setUserCodeFormule(this.userCodeFormule);
-      this.passIllimixServ.setListPassIllimix();
-      this.passIllimixServ
-        .getStatusLoadingPass()
-        .subscribe((status: boolean) => {
-          this.isLoaded = status;
-          if (this.isLoaded) {
-            this.listCategory = this.passIllimixServ.getCategoryListPassIllimix();
-            this.listPass = this.passIllimixServ.getListPassIllimix();
-            this.fullListPass = arrangePassByCategory(
-              this.listPass,
-              this.listCategory
-            );
-          }
-        });
+    if (this.router) {
+      this.userNumber = this.router.getCurrentNavigation().extras.state.payload.destinataire;
+      this.userCodeFormule = this.router.getCurrentNavigation().extras.state.payload.code;
+      this.recipientName = this.router.getCurrentNavigation().extras.state.payload.recipientName;
+      this.purchaseType = this.router.getCurrentNavigation().extras.state.payload.purchaseType;
+      this.listCategory = [];
+      this.listPass = [];
+      this.activeTabIndex = 0;
+      if (this.purchaseType === OPERATION_TYPE_PASS_INTERNET) {
+        this.passIntService.setUserCodeFormule(this.userCodeFormule);
+        this.passIntService.setListPassInternetOfUserByQuery();
+        this.passIntService
+          .getStatusPassLoaded()
+          .subscribe((status: boolean) => {
+            this.isLoaded = status;
+            if (this.isLoaded) {
+              this.listCategory = this.passIntService.getListCategoryPassInternet();
+              this.listPass = this.passIntService.getListPassInternetOfUser();
+              this.fullListPass = arrangePassByCategory(
+                this.listPass,
+                this.listCategory
+              );
+            }
+          });
+      } else {
+        this.passIllimixServ.setUserCodeFormule(this.userCodeFormule);
+        this.passIllimixServ.setListPassIllimix();
+        this.passIllimixServ
+          .getStatusLoadingPass()
+          .subscribe((status: boolean) => {
+            this.isLoaded = status;
+            if (this.isLoaded) {
+              this.listCategory = this.passIllimixServ.getCategoryListPassIllimix();
+              this.listPass = this.passIllimixServ.getListPassIllimix();
+              this.fullListPass = arrangePassByCategory(
+                this.listPass,
+                this.listCategory
+              );
+            }
+          });
+      }
     }
 
     // }else{

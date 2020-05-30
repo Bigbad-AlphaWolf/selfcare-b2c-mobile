@@ -2,6 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TransfertOmHubServicesPage } from './transfert-om-hub-services.page';
+import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 
 describe('TransfertOmHubServicesPage', () => {
   let component: TransfertOmHubServicesPage;
@@ -11,6 +13,14 @@ describe('TransfertOmHubServicesPage', () => {
     TestBed.configureTestingModule({
       declarations: [ TransfertOmHubServicesPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: Router
+        },
+        {
+          provide: ModalController
+        }
+      ]
     })
     .compileComponents();
   }));

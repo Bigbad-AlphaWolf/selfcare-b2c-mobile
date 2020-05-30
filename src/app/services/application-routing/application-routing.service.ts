@@ -67,9 +67,6 @@ export class ApplicationRoutingService {
     this.route.navigate(['/transfert-hub-services'], navigationExtras);
   }
 
-  goToTransfertMoneyPage() {
-    this.route.navigate(['/transfert-om-hub-services']);
-  }
 
   goToTransfertMoneySetAmountPage(payload: {
     transfertOMType: string;
@@ -90,24 +87,6 @@ export class ApplicationRoutingService {
     this.route.navigate(['/transfert-om-set-amount'], navigationExtras);
   }
 
-  goToTransfertMoneyRecapPage(payload: {
-    transfertOMType: string;
-    recipientMsisdn: string;
-    recipientFirstname: string;
-    recipientLastname: string;
-    transfertOMAmount: number;
-  }) {
-    let navigationExtras: NavigationExtras = {
-      state: {
-        transfertOMType: payload.transfertOMType,
-        recipientMsisdn: payload.recipientMsisdn,
-        recipientFirstname: payload.recipientFirstname,
-        recipientLastname: payload.recipientLastname,
-        transfertOMAmount: payload.transfertOMAmount,
-      },
-    };
-    this.route.navigate(['/transfert-om-recapitulatif'], navigationExtras);
-  }
   goToTransfertCreditPage() {
     // this.route.navigate(['/'])
   }

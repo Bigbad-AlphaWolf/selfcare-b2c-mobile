@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InfolegalesPage } from './infolegales.page';
+import { Router } from '@angular/router';
 
 describe('InfolegalesPage', () => {
   let component: InfolegalesPage;
@@ -9,10 +10,10 @@ describe('InfolegalesPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ InfolegalesPage ],
+      declarations: [InfolegalesPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [{ provide: Router }],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

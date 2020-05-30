@@ -7,6 +7,11 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { of } from 'rxjs';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { BanniereService } from '../services/banniere-service/banniere.service';
+import { AssistanceService } from '../services/assistance.service';
+import { SargalService } from '../services/sargal-service/sargal.service';
 
 describe('DashboardKirenePage', () => {
   let component: DashboardKirenePage;
@@ -18,11 +23,63 @@ describe('DashboardKirenePage', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
-          provide: HttpClient,
+          provide: DashboardService,
           useValue: {
-            get: () => {
+            getUserConsoInfosByCode: () => {
               return of({});
             },
+            getAccountInfo: () => {
+              return of({});
+            },
+            getWelcomeStatus: () => {
+              return of({});
+            },
+            getActivePromoBooster: () => {
+              return of({});
+            },
+            getCurrentPhoneNumber: () => {
+              return "";
+            },
+            getMainPhoneNumber: () => {
+              return "";
+            },
+          },
+        },
+        {
+          provide: AuthenticationService,
+          useValue: {
+            getSubscription: () => {
+              return of({});
+            },
+            logout: () => {}
+          },
+        },
+        {
+          provide: BanniereService,
+          useValue: {
+            getStatusLoadingBanniere: () => {
+              return of({});
+            },
+            setListBanniereByFormule: () => {},
+            getListBanniereByFormule: () => {
+              return {}
+            }
+          },
+        },
+        {
+          provide: AssistanceService,
+          useValue: {
+            tutoViewed: () => {
+              return of({});
+            }
+          },
+        },
+        {
+          provide: SargalService,
+          useValue: {
+            getSargalBalance: () => {
+              return of({});
+            }
           },
         },
         { provide: Router, useValue: {} },

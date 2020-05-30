@@ -7,8 +7,8 @@ import { HttpClient } from '@angular/common/http';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { of } from 'rxjs';
-import { MatDialogRef } from '@angular/material';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { MatDialogRef, MatDialog } from '@angular/material';
+import { FormBuilder, Validators, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 describe('ActivationOmComponent', () => {
   let component: ActivationOmComponent;
@@ -16,6 +16,7 @@ describe('ActivationOmComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule, FormsModule],
       declarations: [ActivationOmComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -32,7 +33,13 @@ describe('ActivationOmComponent', () => {
           provide: DashboardService,
           useValue: {
             buyPassByCredit: () => {},
-            getCurrentPhoneNumber: () => {}
+            getCurrentPhoneNumber: () => {},
+            getMainPhoneNumber: () => { 
+              return ""
+             },
+             getAttachedNumbers: () => { 
+              return of()
+             }
           }
         },
         {
@@ -49,7 +56,8 @@ describe('ActivationOmComponent', () => {
         FormBuilder,
         { provide: Validators, useValue: {} },
         { provide: FormGroup, useValue: {} },
-        { provide: MatDialogRef, useValue: {} }
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MatDialog, useValue: {} }
       ]
     }).compileComponents();
   }));

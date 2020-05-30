@@ -19,30 +19,30 @@ describe('AproposPage', () => {
   let fixture: ComponentFixture<AproposPage>;
   let promiseMock, AppVersionSppy, platformReadySpy, platformSpy;
   beforeEach(async(() => {
-    promiseMock = Promise.resolve();
-    AppVersionSppy = jasmine.createSpyObj('AppVersion', {
-      getVersionNumber: promiseMock,
-    });
-    platformReadySpy = Promise.resolve();
-    platformSpy = jasmine.createSpyObj('Platform', {
-      ready: platformReadySpy,
-      is: platformReadySpy,
-    });
     TestBed.configureTestingModule({
       declarations: [AproposPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [MatDialogModule],
       providers: [
-        { provide: Platform, useValue: platformSpy },
+        { provide: Platform, useValue: {} },
         { provide: Router },
         { provide: Deeplinks },
         {
           provide: AppVersion,
-          useValue: AppVersionSppy,
+          useValue: {
+            getVersionNumber:() => {
+              return Promise.resolve()
+            }
+          },
         },
         {
           provide: FileTransfer,
-          useValue: {},
+          useValue: {
+            create:() => {},
+            download:() => {
+              return Promise.resolve()
+            }
+          },
         },
         {
           provide: FileOpener,
