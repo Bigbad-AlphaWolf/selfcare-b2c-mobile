@@ -1,8 +1,8 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { NewRegistrationPage } from './new-registration.page';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NewRegistrationPage } from "./new-registration.page";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {
   MatInputModule,
   MatSelectModule,
@@ -10,14 +10,15 @@ import {
   MatDialogRef,
   MatDialog,
   MatBottomSheet,
-} from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ModalController } from '@ionic/angular';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
+} from "@angular/material";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ModalController } from "@ionic/angular";
+import { Router } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
+import { of } from "rxjs";
+import * as Fingerprint2 from "fingerprintjs2";
 
-describe('NewRegistrationPage', () => {
+describe("NewRegistrationPage", () => {
   let component: NewRegistrationPage;
   let fixture: ComponentFixture<NewRegistrationPage>;
 
@@ -37,7 +38,14 @@ describe('NewRegistrationPage', () => {
         { provide: MatDialogRef, useValue: {} },
         { provide: ModalController, useValue: {} },
         { provide: MatDialog, useValue: {} },
-        { provide: MatBottomSheet, useValue: {} },
+        {
+          provide: MatBottomSheet,
+          useValue: {
+            open: () => {
+              return { afterDismissed: () => of() };
+            },
+          },
+        },
         { provide: Router, useValue: {} },
         {
           provide: HttpClient,
@@ -50,6 +58,7 @@ describe('NewRegistrationPage', () => {
             },
           },
         },
+        { provide: Fingerprint2, useValue: { get: () => of() } },
       ],
     }).compileComponents();
   }));
@@ -60,7 +69,7 @@ describe('NewRegistrationPage', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
