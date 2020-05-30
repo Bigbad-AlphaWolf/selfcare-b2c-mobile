@@ -142,8 +142,7 @@ export class OperationRecapPage implements OnInit {
               break;
           }
         } else {
-          this.appRouting.goToDashboard();
-        }
+          this.appRouting.goToDashboard();        }
       });
   }
 
