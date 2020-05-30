@@ -82,21 +82,19 @@
           class="recipient-info-block"
           *ngIf="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE"
         >
-          <mat-form-field class="scb-input-row scb-required">
-            <input
-              formControlName="recipientFirstname"
-              type="text"
-              matInput
-              placeholder="Prénom du destinataire"
-            />
+          <mat-form-field
+            class="scb-input-row scb-required"
+            appearance="outline"
+          >
+            <mat-label>Prénom du destinataire &nbsp;&nbsp;</mat-label>
+            <input formControlName="recipientFirstname" type="text" matInput />
           </mat-form-field>
-          <mat-form-field class="scb-input-row scb-required">
-            <input
-              formControlName="recipientLastname"
-              type="text"
-              matInput
-              placeholder="Nom du destinataire"
-            />
+          <mat-form-field
+            class="scb-input-row scb-required"
+            appearance="outline"
+          >
+            <mat-label>Nom du destinataire &nbsp;&nbsp;</mat-label>
+            <input formControlName="recipientLastname" type="text" matInput />
           </mat-form-field>
         </div>
         <div class="error-display scb-text-red-error" *ngIf="hasError">
