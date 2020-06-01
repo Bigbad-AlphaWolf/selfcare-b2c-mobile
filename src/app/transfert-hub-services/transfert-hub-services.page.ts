@@ -6,6 +6,11 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
 import { Router, ActivatedRoute } from '@angular/router';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { MatBottomSheet } from '@angular/material';
+import { NumberSelectionComponent } from '../components/number-selection/number-selection.component';
+import { NumberSelectionOption } from '../models/enums/number-selection-option.enum';
+import { OperationInfos } from '../models/operation-infos.model';
+import { OPERATION_TYPE_RECHARGE_CREDIT } from 'src/shared';
 
 @Component({
   selector: 'app-transfert-hub-services',
@@ -108,7 +113,8 @@ export class TransfertHubServicesPage implements OnInit {
   dataPayload: any;
   constructor(
     private appRouting: ApplicationRoutingService,
-    private modalController: ModalController  ) {}
+    private modalController: ModalController,
+    private matBottomSheet: MatBottomSheet  ) {}
 
   ngOnInit() {
     let purchaseType;
@@ -154,7 +160,8 @@ export class TransfertHubServicesPage implements OnInit {
         break;
       case 'CREDIT':
         if (opt.action === 'REDIRECT') {
-          this.appRouting.goBuyCredit();
+          // this.appRouting.goBuyCredit();
+          this.openNumberSelectionBottomSheet();    
         }
         break;
       case 'PASS':
@@ -185,5 +192,21 @@ export class TransfertHubServicesPage implements OnInit {
       }
     });
     return await modal.present();
+  }
+
+
+  openNumberSelectionBottomSheet(option?: NumberSelectionOption) {
+    this.matBottomSheet
+      .open(NumberSelectionComponent, {
+        data: {option: option},
+      })
+      .afterDismissed()
+      .subscribe((opInfos: OperationInfos) => {
+      //  console.log('opInfos',opInfos);
+      opInfos = {recipientMsisdn:'782363572', purchaseType:OPERATION_TYPE_RECHARGE_CREDIT}
+      this.appRouting.goSetAmountPage(opInfos);
+
+       
+      });
   }
 }

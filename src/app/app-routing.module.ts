@@ -192,7 +192,9 @@ const routes: Routes = [
   { path: 'list-pass', loadChildren: './liste-pass/liste-pass.module#ListePassPageModule' },
   { path: 'registration-success-modal', loadChildren: './registration-success-modal/registration-success-modal.module#RegistrationSuccessModalPageModule' },
   { path: 'transfert-hub-services', loadChildren: './transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule' },
-  { path: 'purchase-set-amount', loadChildren: './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule' },
+  { path: 'purchase-set-amount', loadChildren: './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule' },  { path: 'credit-amount', loadChildren: './pages/credit-amount/credit-amount.module#CreditAmountPageModule' },
+  { path: 'credit-pass-amount', loadChildren: './pages/credit-pass-amount/credit-pass-amount.module#CreditPassAmountPageModule' },
+
 
 
 

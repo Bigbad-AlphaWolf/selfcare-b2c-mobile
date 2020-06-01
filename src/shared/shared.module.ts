@@ -16,6 +16,8 @@ import {
   MatCheckboxModule,
   MatRadioModule,
   MatMenuModule,
+  MatBottomSheetModule,
+  MatButtonToggleModule,
 } from '@angular/material';
 import { ModalSuccessComponent } from './modal-success/modal-success.component';
 import { ChatMsgLineComponent } from './chat-msg-line/chat-msg-line.component';
@@ -57,9 +59,15 @@ import { CommonIssuesComponent } from './common-issues/common-issues.component';
 import { MerchantPaymentCodeComponent } from './merchant-payment-code/merchant-payment-code.component';
 import { NoOmAccountModalComponent } from './no-om-account-modal/no-om-account-modal.component';
 import { ItemRechargeCreditComponent } from './item-recharge-credit/item-recharge-credit.component';
+import { PhoneNumberProviderComponent } from 'src/app/components/phone-number-provider/phone-number-provider.component';
+import { NumberSelectionComponent } from 'src/app/components/number-selection/number-selection.component';
+import { SelectableAmountCardsComponent } from 'src/app/components/selectable-amount-cards/selectable-amount-cards.component';
 
 @NgModule({
   declarations: [
+    PhoneNumberProviderComponent,
+    NumberSelectionComponent,
+    SelectableAmountCardsComponent,
     ActivationOmComponent,
     ChoosePaymentModComponent,
     OperationValidationComponent,
@@ -105,6 +113,7 @@ import { ItemRechargeCreditComponent } from './item-recharge-credit/item-recharg
   imports: [
     CommonModule,
     MatProgressSpinnerModule,
+    MatBottomSheetModule,
     MatInputModule,
     MatSlideToggleModule,
     MatSelectModule,
@@ -118,6 +127,7 @@ import { ItemRechargeCreditComponent } from './item-recharge-credit/item-recharg
     RouterModule,
   ],
   entryComponents: [
+    NumberSelectionComponent,
     ModalSuccessComponent,
     NoOMAccountPopupComponent,
     CancelOperationPopupComponent,
@@ -134,7 +144,11 @@ import { ItemRechargeCreditComponent } from './item-recharge-credit/item-recharg
     NoOmAccountModalComponent,
   ],
   exports: [
+    PhoneNumberProviderComponent,
+    NumberSelectionComponent,
+    SelectableAmountCardsComponent,
     MatInputModule,
+    MatButtonToggleModule,
     MatProgressSpinnerModule,
     MatIconModule,
     MatDialogModule,

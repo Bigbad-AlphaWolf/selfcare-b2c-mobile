@@ -55,7 +55,7 @@ export class PurchaseSetAmountPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.initForm(100);
+    // this.initForm(100);
     this.getPurchaseType();
   }
 
@@ -100,6 +100,8 @@ export class PurchaseSetAmountPage implements OnInit {
         this.title = 'Paiement marchand';
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
+        console.log('credit');
+        
         this.title = 'Achat de Crédit';
         this.subtitle = 'Montant à recharger';
         break;
@@ -116,6 +118,8 @@ export class PurchaseSetAmountPage implements OnInit {
   getPurchaseType() {
     // let state = this.router.getCurrentNavigation().extras.state;
     this.purchasePayload = history.state;
+    console.log(this.purchasePayload);
+
     if (this.purchasePayload && this.purchasePayload.purchaseType) {
       this.purchaseType = this.purchasePayload.purchaseType;
       this.userHasNoOmAccount = this.purchasePayload.userHasNoOmAccount;
@@ -123,6 +127,7 @@ export class PurchaseSetAmountPage implements OnInit {
       this.recipientFirstname = this.purchasePayload.recipientFirstname;
       this.recipientLastname = this.purchasePayload.recipientLastname;
       this.getPageTitle();
+      
       switch (this.purchaseType) {
         case OPERATION_TYPE_SEDDO_CREDIT:
         case OPERATION_TYPE_SEDDO_BONUS:
@@ -130,6 +135,9 @@ export class PurchaseSetAmountPage implements OnInit {
           break;
         case OPERATION_TYPE_MERCHANT_PAYMENT:
         case OPERATION_TYPE_RECHARGE_CREDIT:
+          console.log('recharge credit ');
+          this.initForm(1,1);
+          break;
         case OPERATION_TRANSFER_OM:
           this.initForm(1, initialAmount);
           break;

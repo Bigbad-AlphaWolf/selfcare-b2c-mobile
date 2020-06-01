@@ -17,12 +17,15 @@
         {{title}}
       </span>
     </ion-toolbar>
-  </ion-header>
+  </ion-header> 
   <div class="transferts-page">
     <div class="banniere-container">
       <img src="/assets/images/achat-de-credit.png" alt="header-transfer" />
     </div>
     <div class="sub-title">{{subtitle}}</div>
+    <div class="selectable-amount-cards">
+      <oem-selectable-amount-cards></oem-selectable-amount-cards>
+    </div>
     <div class="form">
       <form
         [formGroup]="setAmountForm"

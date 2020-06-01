@@ -13,7 +13,8 @@ import {
   map,
   delay,
   retryWhen,
-  flatMap
+  flatMap,
+  catchError
 } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -28,7 +29,7 @@ import {
   KILIMANJARO_FORMULE,
   CODE_FORMULE_KILIMANJARO
 } from 'src/app/dashboard';
-import { JAMONO_ALLO_CODE_FORMULE, NotificationInfoModel } from 'src/shared';
+import { JAMONO_ALLO_CODE_FORMULE, NotificationInfoModel, SubscriptionModel } from 'src/shared';
 
 const {
   SERVER_API_URL,
@@ -205,6 +206,16 @@ export class AuthenticationService {
         return result;
       })
     );
+  }
+
+  canRecieveCredit(msisdn: string): Observable<boolean>{
+    return this.getSubscription(msisdn).pipe(
+      map((s:SubscriptionModel)=> s && s.code !== '0'),
+      catchError((er)=>{
+        return of(false);
+      }
+      ),
+    )
   }
 
   deleteSubFromStorage(msisdn: string) {
