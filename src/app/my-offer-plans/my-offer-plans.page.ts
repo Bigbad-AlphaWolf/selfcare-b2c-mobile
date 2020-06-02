@@ -6,6 +6,7 @@ import { ApplicationRoutingService } from '../services/application-routing/appli
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { SubscriptionModel } from 'src/shared';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-my-offer-plans',
@@ -22,6 +23,7 @@ export class MyOfferPlansPage implements OnInit {
   categorySelected: string;
   currentUserCodeFormule: string;
   payloadNavigation: {destinataire: string, code: string } = {destinataire: null, code: null};
+  hasNoOfferPlans: boolean;
   constructor(private router: Router, private offerPlansServ: OfferPlansService, private appliRout: ApplicationRoutingService, private dashbServ: DashboardService, private authServ: AuthenticationService) { }
   
   ngOnInit() {
@@ -39,16 +41,28 @@ export class MyOfferPlansPage implements OnInit {
 
   getUserOfferPlans(){
     this.isLoading = true;
+    this.hasNoOfferPlans = false;
+    this.hasError = false;
     this.offerPlansServ.getCurrentUserOfferPlans().subscribe((response: OfferPlan[])=>{
       this.isLoading = false;
       this.hasError = false;
-      this.listOfferPlans = response;
-      this.initCategoriesOfferPlan();
-      this.onCategorySelected(this.listCategories[0].value);
+      if (response.length === 0) {
+        this.hasNoOfferPlans = true;
+      } else {
+        this.hasNoOfferPlans = false;
+        this.listOfferPlans = response;
+        this.initCategoriesOfferPlan();
+        this.onCategorySelected(this.listCategories[0].value);
+        
+      }
       
-    }, (err:any)=>{
+    }, (err: HttpErrorResponse)=>{
       this.isLoading = false;
-      this.hasError = true;
+      if(err.status === 400){
+        this.hasNoOfferPlans = true
+      }else{
+        this.hasError = true;
+      }
     })
   }
 

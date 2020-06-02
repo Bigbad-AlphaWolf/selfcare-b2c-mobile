@@ -169,6 +169,14 @@
                     }
                 }
             }
+            .has-error{
+                text-align: center;
+                font-family: HelveticaNeueLTStd-Roman;
+                margin-top: 20px;
+                span{
+                    text-decoration: underline;
+                }
+            }
         }
     }
 }
