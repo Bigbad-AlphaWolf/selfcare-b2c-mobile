@@ -3,7 +3,7 @@
   [ngClass]="{ 'success-custom-style': step === 5 }"
 >
   <app-header
-    *ngIf="step <= 4 && step !== 2"
+    *ngIf="step <= 4"
     [title]="title"
     (goBack)="goToPreviousStep()"
   ></app-header>
@@ -29,12 +29,12 @@
     </ng-container>
 
     <ng-container *ngIf="step === 2">
-      <!-- <app-list-pass-internet-v2
+      <app-list-pass-internet-v2
         [destCodeFormule]="destCodeFormule"
         [paymentMode]="choosedPaymentMod"
         (getSelectedPassInternet)="nextStepOfChoosePassInternet($event)"
       >
-      </app-list-pass-internet-v2> -->
+      </app-list-pass-internet-v2>
     </ng-container>
 
     <ng-container *ngIf="step === 3">
