@@ -202,11 +202,6 @@ export class PurchaseSetAmountPage implements OnInit {
     }
    
     const navExtras: NavigationExtras = { state: this.purchasePayload };
-
-    if(this.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT){
-      
-    }
- 
     this.router.navigate(['/operation-recap'], navExtras);
   }
 

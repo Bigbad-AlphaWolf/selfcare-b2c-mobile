@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
   BehaviorSubject,
   Subject,
   Observable,
   of,
   interval,
-  throwError
-} from 'rxjs';
+  throwError,
+} from "rxjs";
 import {
   tap,
   shareReplay,
@@ -14,12 +14,13 @@ import {
   delay,
   retryWhen,
   flatMap,
-  catchError
-} from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import * as jwt_decode from 'jwt-decode';
-import * as SecureLS from 'secure-ls';
+  catchError,
+  switchMap,
+} from "rxjs/operators";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "src/environments/environment";
+import * as jwt_decode from "jwt-decode";
+import * as SecureLS from "secure-ls";
 import {
   PROFILE_TYPE_HYBRID,
   PROFILE_TYPE_HYBRID_1,
@@ -27,9 +28,13 @@ import {
   isFixPostpaid,
   PROFILE_TYPE_POSTPAID,
   KILIMANJARO_FORMULE,
-  CODE_FORMULE_KILIMANJARO
-} from 'src/app/dashboard';
-import { JAMONO_ALLO_CODE_FORMULE, NotificationInfoModel, SubscriptionModel } from 'src/shared';
+  CODE_FORMULE_KILIMANJARO,
+} from "src/app/dashboard";
+import {
+  JAMONO_ALLO_CODE_FORMULE,
+  NotificationInfoModel,
+  SubscriptionModel,
+} from "src/shared";
 
 const {
   SERVER_API_URL,
@@ -39,9 +44,9 @@ const {
   GET_MSISDN_BY_NETWORK_URL,
   CONFIRM_MSISDN_BY_NETWORK_URL,
   UAA_SERVICE,
-  SERVICES_SERVICE
+  SERVICES_SERVICE,
 } = environment;
-const ls = new SecureLS({ encodingType: 'aes' });
+const ls = new SecureLS({ encodingType: "aes" });
 
 // Account & msisdn infos
 const accountBaseUrl = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management`;
@@ -70,7 +75,7 @@ const resetPwdEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset
 const notificationInfoEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/notification-information`;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class AuthenticationService {
   currentPhoneNumberSetSubject = new BehaviorSubject<boolean>(false);
@@ -92,7 +97,7 @@ export class AuthenticationService {
 
   // accept cookies
   acceptCookies() {
-    ls.set('acceptCookies', 'yes');
+    ls.set("acceptCookies", "yes");
     this.acceptCookieSubject.next();
   }
 
@@ -134,7 +139,7 @@ export class AuthenticationService {
     // step 2 if exists return data from localstorage
     // else call server to get data
     // what to save? 'subXXXXXXXX"
-    const lsKey = 'sub' + msisdn;
+    const lsKey = "sub" + msisdn;
     const savedData = ls.get(lsKey);
     if (savedData) {
       return of(savedData);
@@ -145,7 +150,7 @@ export class AuthenticationService {
             clientCode: res.clientCode,
             nomOffre: res.offerName,
             profil: res.offerType,
-            code: res.offerId
+            code: res.offerId,
           };
           if (subscription.code === KILIMANJARO_FORMULE) {
             subscription.code = CODE_FORMULE_KILIMANJARO;
@@ -160,7 +165,7 @@ export class AuthenticationService {
           if (isFixPostpaid(subscription.nomOffre)) {
             subscription.profil = PROFILE_TYPE_POSTPAID;
           }
-          const lsKey = 'sub' + msisdn;
+          const lsKey = "sub" + msisdn;
           ls.set(lsKey, subscription);
           this.subscriptionUpdatedSubject.next(subscription);
           return subscription;
@@ -171,7 +176,7 @@ export class AuthenticationService {
 
   // get msisdn subscription
   getSubscription(msisdn: string) {
-    const lsKey = 'sub' + msisdn;
+    const lsKey = "sub" + msisdn;
     const savedData = ls.get(lsKey);
     if (savedData) {
       return of(savedData);
@@ -192,7 +197,7 @@ export class AuthenticationService {
           profil: subscription.profil
             ? subscription.profil.toString().toUpperCase()
             : subscription.profil,
-          code: subscription.code
+          code: subscription.code,
         };
         if (
           result.profil === PROFILE_TYPE_HYBRID ||
@@ -201,25 +206,33 @@ export class AuthenticationService {
         ) {
           result.code = JAMONO_ALLO_CODE_FORMULE;
         }
-        const lsKey = 'sub' + msisdn;
+        const lsKey = "sub" + msisdn;
         ls.set(lsKey, result);
         return result;
       })
     );
   }
 
-  canRecieveCredit(msisdn: string): Observable<boolean>{
-    return this.getSubscription(msisdn).pipe(
-      map((s:SubscriptionModel)=> s && s.code !== '0'),
-      catchError((er)=>{
+  canRecieveCredit(msisdn: string): Observable<any> {
+    return this.isPostpaid(msisdn).pipe(
+      switchMap((isPostPaid: any) => {
+        if(!isPostPaid)
+        return this.getSubscription(msisdn).pipe(
+          map((s: SubscriptionModel) => s && s.code !== "0"),
+          catchError((er) => {
+            return of(false);
+          })
+        );
         return of(false);
-      }
-      ),
-    )
+      }),
+      catchError((er) => {
+        return of(false);
+      })
+    );
   }
 
   deleteSubFromStorage(msisdn: string) {
-    const lsKey = 'sub' + msisdn;
+    const lsKey = "sub" + msisdn;
     const savedData = ls.get(lsKey);
     if (savedData) {
       ls.remove(lsKey);
@@ -242,7 +255,7 @@ export class AuthenticationService {
   }
 
   getToken() {
-    return ls.get('token');
+    return ls.get("token");
   }
 
   login(credential: {
@@ -261,25 +274,25 @@ export class AuthenticationService {
 
   logout() {
     this.http
-      .post(logoutEndpoint, '')
+      .post(logoutEndpoint, "")
       .pipe(
         tap((res: any) => {
           this.isLoginSubject.next(false);
         })
       )
       .subscribe();
-      this.cleanCache();
+    this.cleanCache();
   }
 
   captcha(token: string, ip: string) {
     return this.http.post(
-      captchaEndpoint + '?token=' + token + '&ip=' + ip,
+      captchaEndpoint + "?token=" + token + "&ip=" + ip,
       null
     );
   }
 
   cleanCache() {
-    ls.remove('currentPhoneNumber');
+    ls.remove("currentPhoneNumber");
     this.currentPhoneNumberSetSubject.next(false);
     this.removeAuthenticationData();
     this.removeUserInfos();
@@ -297,12 +310,12 @@ export class AuthenticationService {
   }
 
   getUserMainPhoneNumber() {
-    return ls.get('mainPhoneNumber');
+    return ls.get("mainPhoneNumber");
   }
 
   getLocalUserInfos() {
     try {
-      const User = ls.get('user');
+      const User = ls.get("user");
       return User;
     } catch (err) {
       return null;
@@ -310,25 +323,25 @@ export class AuthenticationService {
   }
 
   storeUserInfos(userInfos) {
-    ls.set('user', userInfos);
+    ls.set("user", userInfos);
     this.currentPhoneNumberSetSubject.next(true);
   }
 
   removeUserInfos() {
-    ls.remove('user');
-    ls.remove('deviceInfo');
+    ls.remove("user");
+    ls.remove("deviceInfo");
   }
 
   private storeAuthenticationData(authenticationData: any, user: any) {
-    ls.set('token', authenticationData.access_token);
-    ls.set('mainPhoneNumber', user.username);
-    ls.set('currentPhoneNumber', user.username);
-    ls.set('refresh_token', authenticationData.refresh_token);
-    ls.set('banner', true);
+    ls.set("token", authenticationData.access_token);
+    ls.set("mainPhoneNumber", user.username);
+    ls.set("currentPhoneNumber", user.username);
+    ls.set("refresh_token", authenticationData.refresh_token);
+    ls.set("banner", true);
   }
 
   private removeAuthenticationData() {
-    ls.remove('token');
+    ls.remove("token");
   }
 
   scrollChatBox() {
@@ -373,9 +386,9 @@ export class AuthenticationService {
   UpdateNotificationInfo() {
     delay(10000);
     const info = {} as NotificationInfoModel;
-    info.firebaseId = ls.get('firebaseId');
+    info.firebaseId = ls.get("firebaseId");
     info.msisdn = this.getUserMainPhoneNumber();
-    const lsKey = 'sub' + info.msisdn;
+    const lsKey = "sub" + info.msisdn;
     const savedData = ls.get(lsKey);
     info.codeFormule = savedData.code;
     if (info.msisdn && info.codeFormule) {
@@ -416,10 +429,10 @@ export interface ResetPwdModel {
 export function http_retry(maxRetry = 10, delayMs = 10000) {
   return (src: Observable<any>) => {
     return src.pipe(
-      retryWhen(_ => {
+      retryWhen((_) => {
         return interval(delayMs).pipe(
-          flatMap(count =>
-            count === maxRetry ? throwError('Giving up') : of(count)
+          flatMap((count) =>
+            count === maxRetry ? throwError("Giving up") : of(count)
           )
         );
       })

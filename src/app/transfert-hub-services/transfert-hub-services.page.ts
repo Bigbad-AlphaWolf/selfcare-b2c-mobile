@@ -204,8 +204,8 @@ export class TransfertHubServicesPage implements OnInit {
       })
       .afterDismissed()
       .subscribe((opInfos: OperationExtras) => {
-      //  console.log('opInfos',opInfos);
-      opInfos = {recipientMsisdn:'782363572', purchaseType:OPERATION_TYPE_RECHARGE_CREDIT}
+      if(!opInfos || !opInfos.recipientMsisdn) return;
+      opInfos = { purchaseType:OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos}
       this.router.navigate([CreditPassAmountPage.PATH], {state:opInfos});
       });
   }

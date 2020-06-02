@@ -13,6 +13,8 @@
         >Transfert d'argent</span
       >
       <span *ngSwitchCase="OPERATION_TRANSFER_OM">Transfert d'argent</span>
+      <span *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de credit</span>
+
     </ng-container>
   </div>
   <div class="banner-container">
@@ -47,6 +49,12 @@
         alt="banniere"
         class="banniere"
       />
+      <img
+      *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+      src="assets/images/achat-de-credit.png"
+      alt="banniere"
+      class="banniere"
+    />
     </ng-container>
   </div>
 </ion-header>
@@ -74,6 +82,9 @@
       <span *ngSwitchCase="OPERATION_TRANSFER_OM" class="text-2 scb-text-gray"
         >Vous allez transférer</span
       >
+      <span *ngSwitchCase="'RECHARGEMENT_CREDIT'" class="text-2 scb-text-gray"
+      >Vous allez acheter</span
+    >
     </ng-container>
   </div>
   <div class="buy-pass-information">
@@ -94,6 +105,9 @@
       </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_INTERNET_TYPE">
         <span class="pass">Pass sélectionné</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="'RECHARGEMENT_CREDIT'">
+        <span class="pass">Montant à acheter</span>
       </div>
     </ng-container>
     <div class="card-container">
@@ -121,7 +135,14 @@
           [passIllimix]="passChoosen"
           *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >
+        
         </app-item-pass-illimix>
+
+        <app-item-recharge-credit
+        [amount]="amount"
+        *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+      >
+      </app-item-recharge-credit>
       </ng-container>
     </div>
     <div class="amount-to-transfer">
@@ -167,6 +188,9 @@
         <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
           >Transférer ({{amount}} FCFA)</span
         >
+        <span class="text" *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+        >Acheter ({{amount}} FCFA)</span
+      >
       </ng-container>
       <mat-spinner
         mode="indeterminate"

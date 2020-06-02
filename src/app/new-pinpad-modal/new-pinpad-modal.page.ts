@@ -19,6 +19,7 @@ import {
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_TYPE_RECHARGE_CREDIT,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -317,7 +318,7 @@ export class NewPinpadModalPage implements OnInit {
               omUser.loginRefreshToken = loginRes.content.data.refresh_token;
               this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
               switch (this.operationType) {
-                case 'BUY_CREDIT':
+                case OPERATION_TYPE_RECHARGE_CREDIT:
                   const creditToBuy = Object.assign({}, this.buyCreditPayload, {
                     pin,
                   });

@@ -42,7 +42,7 @@
   </ol>
 </div>
   <div class="confirm-btn">
-      <ion-button [disabled]="isProcessing" shape="round" (click)="onContinue()" class="btn" expand="block" >Continuer</ion-button>
+      <ion-button [disabled]="isProcessing || isErrorProcessing" shape="round" (click)="onContinue()" class="btn" expand="block" >Continuer</ion-button>
       <ion-spinner *ngIf="isProcessing && !isErrorProcessing" name="crescent"></ion-spinner>
 
   </div>

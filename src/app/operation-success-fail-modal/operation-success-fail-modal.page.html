@@ -12,6 +12,9 @@
       <span class="title" *ngSwitchCase="OPERATION_INTERNET_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
+      <span class="title" *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+      >{{success ? 'Achat crédit effectué' : 'Echec Achat'}}</span
+    >
       <span class="title" *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
@@ -25,6 +28,9 @@
         <span *ngSwitchCase="OPERATION_INTERNET_TYPE"
           >Vous avez acheté le pass internet</span
         >
+        <span *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+        >Vous avez acheté un montant de</span
+      >
         <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
           >Vous avez acheté le pass illimix</span
         >
@@ -54,6 +60,11 @@
         [amount]="amount"
         *ngSwitchCase="OPERATION_TRANSFER_OM"
       ></app-item-recharge-credit>
+      <app-item-recharge-credit
+      [modifiable]="false"
+      [amount]="amount"
+      *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+    ></app-item-recharge-credit>
       <app-item-recharge-credit
         [modifiable]="false"
         [amount]="amount"

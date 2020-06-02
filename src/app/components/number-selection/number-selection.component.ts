@@ -45,7 +45,7 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-  // this.numbers$ = this.dashbServ.fetchOemNumbers();
+  this.numbers$ = this.dashbServ.fetchOemNumbers();
    this.checkOmAccountSession();
 
   }
@@ -59,11 +59,11 @@ export class NumberSelectionComponent implements OnInit {
     this.opInfos.recipientMsisdn = formatPhoneNumber(this.opInfos.recipientMsisdn);
     this.opInfos.self = !this.showInput ;
 
-    // if(!(await (this.canRecieveCredit()))){
-    //   this.canNotRecieve = true;
-    //   this.changeDetectorRef.detectChanges();      
-    //   return;
-    // }
+    if(!(await (this.canRecieveCredit()))){
+      this.canNotRecieve = true;
+      this.changeDetectorRef.detectChanges();      
+      return;
+    }
     this.disMissBottomSheet();
   }
 
@@ -102,8 +102,8 @@ export class NumberSelectionComponent implements OnInit {
       } 
     },
     (error) => {
-      console.log('response er',error);
-      this.isProcessing = false;
+      // console.log('response er',error);
+      // this.isProcessing = false;
 
       this.isErrorProcessing = true;
     });
