@@ -41,14 +41,29 @@ export class MerchantPaymentCodeComponent implements OnInit {
           merchantCode: code,
           merchantName: response.content.data.nom_marchand,
         };
-        this.applicationRoutingService.goSetAmountPage(payload);
-        this.bottomSheet.dismiss();
+        if (
+          response &&
+          response.status_code &&
+          (response.status_code.match('Success') ||
+            response.status_code.match('Erreur-601'))
+        ) {
+          this.applicationRoutingService.goSetAmountPage(payload);
+          this.bottomSheet.dismiss();
+        } else {
+          this.onCheckingMerchantError(response.status_wording);
+        }
       },
       (err) => {
-        this.chekingMerchant = false;
-        this.hasErrorOnCheckMerchant = true;
-        this.errorMsg = err.msg ? err.msg : 'Une erreur est survenue';
+        err && err.msg
+          ? this.onCheckingMerchantError(err.msg)
+          : this.onCheckingMerchantError();
       }
     );
+  }
+
+  onCheckingMerchantError(msg?: string) {
+    this.chekingMerchant = false;
+    this.hasErrorOnCheckMerchant = true;
+    this.errorMsg = msg ? msg : 'Une erreur est survenue';
   }
 }

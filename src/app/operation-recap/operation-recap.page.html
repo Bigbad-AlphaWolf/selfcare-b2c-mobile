@@ -89,6 +89,13 @@
         <span class="pass">Montant à transférer</span
         ><span class="modifier scb-text-orange">modifier</span>
       </div>
+      <div
+        class="amount-to-transfer"
+        *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+      >
+        <span class="pass">Montant à transférer</span
+        ><span class="modifier scb-text-orange">modifier</span>
+      </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_ILLIMIX_TYPE">
         <span class="pass">Pass sélectionné</span>
       </div>

@@ -198,55 +198,15 @@ export class OrangeMoneyService {
   }
 
   getMerchantByCode(code: number) {
-    const response = {
-      act_app_vers: 'string',
-      act_conf_vers: 'string',
-      conf_string: 'string',
-      content: {
-        data: {
-          code: 'string',
-          fees: 'string',
-          mapping_code: 'string',
-          message: 'string',
-          montant: 'string',
-          nom_marchand: 'Auchan',
-          receiver: 'string',
-          service_code: 'string',
-          solde: 'string',
-          status_code: 'string',
-          status_wording: 'string',
-          trid: 'string',
-          txn_id: 'string',
-        },
-      },
-      nb_notif: 0,
-      status_code: '',
-      status_wording: 'string',
-    };
-    return of(response);
-    // return this.getOmMsisdn().pipe(
-    //   switchMap((msisdn) => {
-    //     console.log(msisdn);
-    //     return this.http.get(`${getMerchantEndpoint}/${code}?msisdn=${msisdn}`);
-    //   })
-    // );
+    return this.getOmMsisdn().pipe(
+      switchMap((msisdn) => {
+        console.log(msisdn);
+        return this.http.get(`${getMerchantEndpoint}/${code}?msisdn=${msisdn}`);
+      })
+    );
   }
 
   payMerchantOM(merchantPaymentData: MerchantPaymentModel) {
-    const response = {
-      act_app_vers: 'string',
-      act_conf_vers: 'string',
-      conf_string: 'string',
-      content: {
-        data: {
-          status_code: 'Success',
-        },
-      },
-      nb_notif: 0,
-      status_code: 'Success',
-      status_wording: 'string',
-    };
-    return of(response);
     return this.http.post(merchantPaymentEndpoint, merchantPaymentData);
   }
 
