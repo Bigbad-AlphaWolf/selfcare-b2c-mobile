@@ -180,8 +180,6 @@ export class PurchaseSetAmountPage implements OnInit {
     this.purchasePayload.amount = amount;
     this.purchasePayload.includeFee = this.includeFees;
     this.purchasePayload.fee = this.fee;
-    this.purchasePayload.amount =
-      this.includeFees || this.userHasNoOmAccount ? amount + this.fee : amount;
     this.purchasePayload.purchaseType = this.purchaseType;
     if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
       this.purchasePayload.recipientFirstname = this.setAmountForm.value[
