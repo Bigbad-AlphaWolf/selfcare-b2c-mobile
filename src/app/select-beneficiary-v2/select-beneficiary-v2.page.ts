@@ -142,7 +142,7 @@ export class SelectBeneficiaryV2Page implements OnInit {
     const givenName = contact.name.givenName;
     const familyName = contact.name.familyName ? contact.name.familyName : '';
     const middleName = contact.name.middleName ? ` ${contact.name.middleName}` : '';
-    this.recipientContactInfos = contact.name && contact.name.formatted ? contact.name.formatted : givenName + " " + familyName;
+    this.recipientContactInfos = contact.name && contact.name.formatted ? contact.name.formatted : givenName + middleName + familyName;
 
   }
 

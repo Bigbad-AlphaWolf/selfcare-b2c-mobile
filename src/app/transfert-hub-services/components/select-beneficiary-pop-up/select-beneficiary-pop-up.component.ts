@@ -90,11 +90,11 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   }
 
   getContactFormattedName(contact: any) {
-    const givenName = contact.name.givenName;
-    const familyName = contact.name.familyName ? contact.name.familyName : '';
-    const middleName = contact.name.middleName ? ` ${contact.name.middleName}` : '';
-    this.recipientContactInfos = contact.name && contact.name.formatted ? contact.name.formatted : givenName + " " + familyName;
-    this.firstName = givenName;
+    const givenName = contact && contact.name.givenName ?  `${contact.name.givenName}` : '' ;
+    const familyName = contact && contact.name.familyName ? ` ${contact.name.familyName}` : '';
+    const middleName = contact && contact.name.middleName ? ` ${contact.name.middleName}` : '';
+    this.recipientContactInfos = contact.name && contact.name.formatted ? contact.name.formatted : givenName + middleName + familyName;
+    this.firstName = givenName + middleName;
     this.lastName = familyName;    
 
   }
