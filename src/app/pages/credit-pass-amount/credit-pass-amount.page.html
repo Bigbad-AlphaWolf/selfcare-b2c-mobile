@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">
+        {{title}}
+      </span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">
+        {{title}}
+      </span>
+    </ion-toolbar>
+  </ion-header> 
+  <div class="transferts-page">
+    <div class="banniere-container">
+      <img src="/assets/images/achat-de-credit.png" alt="header-transfer" />
+    </div>
+    <div class="amount-provider">
+      <oem-amount-provider (onAmountSelected)="onAmountSelected($event)"></oem-amount-provider>
+    </div>
+    <div style="position: relative;">
+
+      <div class="btn-container">
+        <button
+          class="scb-btn scb-btn-orange scb-btn-full"
+          [disabled]="!opXtras.amount || opXtras.amount<=0"
+          (click)="onContinue()"
+        >
+          <span>Continuer</span>
+          <mat-spinner
+            mode="indeterminate"
+            [diameter]="20"
+            *ngIf=""
+          ></mat-spinner>
+        </button>
+      </div>
+    </div>
+  </div>
+</ion-content>

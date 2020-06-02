@@ -9,8 +9,9 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import { MatBottomSheet } from '@angular/material';
 import { NumberSelectionComponent } from '../components/number-selection/number-selection.component';
 import { NumberSelectionOption } from '../models/enums/number-selection-option.enum';
-import { OperationInfos } from '../models/operation-infos.model';
+import { OperationExtras } from '../models/operation-extras.model';
 import { OPERATION_TYPE_RECHARGE_CREDIT } from 'src/shared';
+import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 
 @Component({
   selector: 'app-transfert-hub-services',
@@ -114,7 +115,8 @@ export class TransfertHubServicesPage implements OnInit {
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
-    private matBottomSheet: MatBottomSheet  ) {}
+    private matBottomSheet: MatBottomSheet ,
+    private router:Router ) {}
 
   ngOnInit() {
     let purchaseType;
@@ -201,12 +203,10 @@ export class TransfertHubServicesPage implements OnInit {
         data: {option: option},
       })
       .afterDismissed()
-      .subscribe((opInfos: OperationInfos) => {
+      .subscribe((opInfos: OperationExtras) => {
       //  console.log('opInfos',opInfos);
       opInfos = {recipientMsisdn:'782363572', purchaseType:OPERATION_TYPE_RECHARGE_CREDIT}
-      this.appRouting.goSetAmountPage(opInfos);
-
-       
+      this.router.navigate([CreditPassAmountPage.PATH], {state:opInfos});
       });
   }
 }

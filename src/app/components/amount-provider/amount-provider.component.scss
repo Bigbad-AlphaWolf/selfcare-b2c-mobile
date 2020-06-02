@@ -1,0 +1,82 @@
+@import 'src/app/app';
+
+.title1 {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
+    padding: 0 10px;
+  }
+  .sub-title {
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 20px;
+    line-height: 1.5;
+    padding: 20px 15px;
+  }
+mat-button-toggle-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    mat-button-toggle{
+        margin: 10px;
+        width: 100px;
+        box-shadow: 0 1px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+        padding: 5px;
+        border-radius: 4px;
+        span:first-child{
+           color: #555555; 
+           font-size: 18px;
+           .mat-button-toggle-checked &{
+            color: #000; 
+           }
+        }
+        span:last-child{
+            padding-bottom: 4px;
+            color: #888888;
+            font-size: 12px;
+        }
+    }
+
+    .enter-amount{
+        width: 100%;
+        margin: 15px 15px;
+        padding: 15px 5px;
+    }
+}
+
+.form {
+    margin: 0px 15px;
+    .transfer-options {
+      ion-list {
+        margin-top: -20px !important;
+        ion-item {
+          --inner-padding-end: 0px;
+          --padding-start: 0px;
+          margin-top: 10px;
+          .fees-value {
+            text-align: right;
+            font-size: 12px;
+          }
+          .label {
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 14px;
+            line-height: 1.14;
+            color: $fullBlack;
+          }
+        }
+      }
+      .amount-fees {
+        width: 100%;
+        text-align: right;
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        margin-top: 10px;
+      }
+    }
+    .recipient-info-block {
+      padding-top: 20px;
+    }
+    .error-display {
+      font-size: 14px;
+      margin: 7px 0;
+    }
+
+  }

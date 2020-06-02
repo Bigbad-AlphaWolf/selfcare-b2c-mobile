@@ -545,3 +545,31 @@ body {
     }
   }
 }
+
+.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+  line-height: 48px;
+  padding: 5px 12px 0px 12px !important;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.mat-button-toggle-group-appearance-standard .mat-button-toggle+.mat-button-toggle {
+  border-left: none;
+}
+
+.mat-button-toggle-group-appearance-standard, .mat-button-toggle-standalone.mat-button-toggle-appearance-standard {
+  border: none;
+}
+
+.mat-button-toggle-group-appearance-standard, .mat-button-toggle-standalone.mat-button-toggle-appearance-standard {
+  border-radius: none; 
+}
+.mat-button-toggle-checked {
+  background-color: #fdd8b71c;
+  &.mat-button-toggle-appearance-standard{
+    .amount{
+      color: #ff7900 !important;
+    }
+  }
+}

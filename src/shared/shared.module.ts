@@ -18,6 +18,8 @@ import {
   MatMenuModule,
   MatBottomSheetModule,
   MatButtonToggleModule,
+  MatButtonModule,
+  MatCardModule,
 } from '@angular/material';
 import { ModalSuccessComponent } from './modal-success/modal-success.component';
 import { ChatMsgLineComponent } from './chat-msg-line/chat-msg-line.component';
@@ -61,13 +63,13 @@ import { NoOmAccountModalComponent } from './no-om-account-modal/no-om-account-m
 import { ItemRechargeCreditComponent } from './item-recharge-credit/item-recharge-credit.component';
 import { PhoneNumberProviderComponent } from 'src/app/components/phone-number-provider/phone-number-provider.component';
 import { NumberSelectionComponent } from 'src/app/components/number-selection/number-selection.component';
-import { SelectableAmountCardsComponent } from 'src/app/components/selectable-amount-cards/selectable-amount-cards.component';
+import { AmountProviderComponent } from 'src/app/components/amount-provider/amount-provider.component';
 
 @NgModule({
   declarations: [
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
-    SelectableAmountCardsComponent,
+    AmountProviderComponent,
     ActivationOmComponent,
     ChoosePaymentModComponent,
     OperationValidationComponent,
@@ -114,6 +116,9 @@ import { SelectableAmountCardsComponent } from 'src/app/components/selectable-am
     CommonModule,
     MatProgressSpinnerModule,
     MatBottomSheetModule,
+    MatButtonModule,
+    MatCardModule,
+    MatButtonToggleModule,
     MatInputModule,
     MatSlideToggleModule,
     MatSelectModule,
@@ -146,9 +151,11 @@ import { SelectableAmountCardsComponent } from 'src/app/components/selectable-am
   exports: [
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
-    SelectableAmountCardsComponent,
+    AmountProviderComponent,
     MatInputModule,
     MatButtonToggleModule,
+    MatCardModule,
+    MatButtonModule,
     MatProgressSpinnerModule,
     MatIconModule,
     MatDialogModule,

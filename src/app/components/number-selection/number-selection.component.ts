@@ -11,7 +11,7 @@ import { OmSession } from 'src/app/models/om-session.model';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { NoOmAccountModalComponent } from 'src/shared/no-om-account-modal/no-om-account-modal.component';
 import { of, Observable } from 'rxjs';
-import { OperationInfos } from 'src/app/models/operation-infos.model';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 
 @Component({
@@ -30,7 +30,7 @@ export class NumberSelectionComponent implements OnInit {
   phoneIsNotValid: boolean = false;
 
   omSession:OmSession = {};
-  opInfos: OperationInfos = {};
+  opInfos: OperationExtras = {};
   isErrorProcessing: boolean = false;
   canNotRecieve: boolean;
 
@@ -67,7 +67,7 @@ export class NumberSelectionComponent implements OnInit {
     this.disMissBottomSheet();
   }
 
-  onPhoneSelected(opContacts: OperationInfos) {
+  onPhoneSelected(opContacts: OperationExtras) {
     this.opInfos = opContacts;
     this.numberFromInput = opContacts.recipientMsisdn;
     this.phoneIsNotValid = false;

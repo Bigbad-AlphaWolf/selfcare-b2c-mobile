@@ -1,0 +1,35 @@
+<div>
+
+  <div class="sub-title">Choisir un montant</div>
+  
+  <mat-button-toggle-group name="amount" (change)="onValueChange($event.value)">
+    <mat-button-toggle *ngFor="let amount of amounts" value="{{amount}}">
+      <span class="amount">{{amount}}</span>
+      <span>FCFA</span>
+    </mat-button-toggle>
+    <mat-button-toggle value="ENTER" class="enter-amount" checked>
+      <div class="toggle-enter-amount amount">Ou saisir un autre montant</div>
+    </mat-button-toggle>
+  
+  </mat-button-toggle-group>
+  
+  <div class="form" [hidden]="!showInput" >
+    <form
+      novalidate
+      autocomplete="false"
+    >
+      <mat-form-field class="scb-input-row amount-input" appearance="outline">
+        <mat-label>Saisir le montant &nbsp;&nbsp;</mat-label>
+        <input
+          #amountInput
+          matInput
+          type="number"
+          (input)="onAmountChanged(amountInput.value)"
+        />
+        <span matSuffix class="scb-text-gray suffix">FCFA</span>
+      </mat-form-field>
+   
+    </form>
+  </div>
+</div>
+

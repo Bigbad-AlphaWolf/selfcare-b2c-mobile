@@ -16,6 +16,7 @@ import {
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { NavController } from '@ionic/angular';
+import { OperationExtras } from '../models/operation-extras.model';
 
 @Component({
   selector: 'app-purchase-set-amount',
@@ -31,7 +32,7 @@ export class PurchaseSetAmountPage implements OnInit {
   checkingAmount: boolean;
   recipientFirstname: string;
   recipientLastname: string;
-  purchasePayload: any;
+  purchasePayload: OperationExtras;
   hasError: boolean;
   error: string;
   fee: number;
@@ -57,6 +58,10 @@ export class PurchaseSetAmountPage implements OnInit {
   ngOnInit() {
     // this.initForm(100);
     this.getPurchaseType();
+  }
+
+  amountSelected($event){
+
   }
 
   initForm(minValue: number, initialValue?: number) {
@@ -100,8 +105,6 @@ export class PurchaseSetAmountPage implements OnInit {
         this.title = 'Paiement marchand';
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
-        console.log('credit');
-        
         this.title = 'Achat de Crédit';
         this.subtitle = 'Montant à recharger';
         break;
@@ -118,7 +121,6 @@ export class PurchaseSetAmountPage implements OnInit {
   getPurchaseType() {
     // let state = this.router.getCurrentNavigation().extras.state;
     this.purchasePayload = history.state;
-    console.log(this.purchasePayload);
 
     if (this.purchasePayload && this.purchasePayload.purchaseType) {
       this.purchaseType = this.purchasePayload.purchaseType;
@@ -135,8 +137,6 @@ export class PurchaseSetAmountPage implements OnInit {
           break;
         case OPERATION_TYPE_MERCHANT_PAYMENT:
         case OPERATION_TYPE_RECHARGE_CREDIT:
-          console.log('recharge credit ');
-          this.initForm(1,1);
           break;
         case OPERATION_TRANSFER_OM:
           this.initForm(1, initialAmount);
@@ -184,6 +184,7 @@ export class PurchaseSetAmountPage implements OnInit {
   }
 
   goNext() {
+ 
     const amount = this.setAmountForm.value['amount'];
     this.purchasePayload.amount = amount;
     this.purchasePayload.includeFee = this.includeFees;
@@ -199,7 +200,13 @@ export class PurchaseSetAmountPage implements OnInit {
         'recipientLastname'
       ];
     }
+   
     const navExtras: NavigationExtras = { state: this.purchasePayload };
+
+    if(this.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT){
+      
+    }
+ 
     this.router.navigate(['/operation-recap'], navExtras);
   }
 

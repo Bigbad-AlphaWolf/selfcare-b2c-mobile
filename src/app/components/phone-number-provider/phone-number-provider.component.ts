@@ -8,7 +8,7 @@ import { formatPhoneNumber, REGEX_NUMBER_OM } from "src/shared";
 import { SelectNumberPopupComponent } from "src/shared/select-number-popup/select-number-popup.component";
 import { Contacts, Contact } from "@ionic-native/contacts";
 import { MatDialog } from "@angular/material";
-import { OperationInfos } from 'src/app/models/operation-infos.model';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
 
 @Component({
   selector: "oem-phone-number-provider",
@@ -17,7 +17,7 @@ import { OperationInfos } from 'src/app/models/operation-infos.model';
 })
 export class PhoneNumberProviderComponent implements OnInit {
   @Output("onPhoneSelected") onPhoneSelected: EventEmitter<
-  OperationInfos
+  OperationExtras
   > = new EventEmitter();
 
 
@@ -26,7 +26,7 @@ export class PhoneNumberProviderComponent implements OnInit {
   otherBeneficiaryNumber ='';
   recipientContactInfos = '';
   
-  contactDisplay:OperationInfos={};
+  contactDisplay:OperationExtras={};
   constructor(
     private dialog: MatDialog,
     private contacts: Contacts

@@ -1,0 +1,43 @@
+@import 'src/app/app';
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.28px;
+}
+
+.transferts-page {
+  height: 100%;
+  background-color: $white;
+  .banniere-container {
+    width: 100%;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .amount-provider{
+    margin-bottom: 10px;
+  }
+
+  .btn-container {
+    position: sticky;
+    bottom: 15px;
+    margin: 15px;
+    button {
+      border-radius: 10px;
+      position: relative;
+      mat-spinner {
+        position: absolute;
+        top: 15px;
+        right: 10px;
+      }
+      .mat-spinner::ng-deep circle {
+        stroke: $white;
+      }
+    }
+  }
+
+}
