@@ -415,7 +415,7 @@ export class DashboardService {
 
   getUserBirthDate(): Observable<any> {
     const userBirthDay = ls.get('birthDate');
-    if (userBirthDay) return of();
+    if (userBirthDay) return of(userBirthDay);
     const msisdn = this.getMainPhoneNumber();
     return this.http.get(`${userBirthDateEndpoint}/${msisdn}`).pipe(
       map((birthDate) => {
