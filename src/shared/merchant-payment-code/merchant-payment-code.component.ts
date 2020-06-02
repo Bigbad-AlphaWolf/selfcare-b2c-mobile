@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
@@ -20,7 +20,8 @@ export class MerchantPaymentCodeComponent implements OnInit {
     private fb: FormBuilder,
     private orangeMoneyService: OrangeMoneyService,
     private applicationRoutingService: ApplicationRoutingService,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -65,5 +66,6 @@ export class MerchantPaymentCodeComponent implements OnInit {
     this.chekingMerchant = false;
     this.hasErrorOnCheckMerchant = true;
     this.errorMsg = msg ? msg : 'Une erreur est survenue';
+    this.ref.detectChanges();
   }
 }
