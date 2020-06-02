@@ -2,6 +2,10 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ForgottenPasswordPage } from './forgotten-password.page';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
+import { Router } from '@angular/router';
 
 describe('ForgottenPasswordPage', () => {
   let component: ForgottenPasswordPage;
@@ -9,10 +13,24 @@ describe('ForgottenPasswordPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ForgottenPasswordPage ],
+      declarations: [ForgottenPasswordPage],
+      imports: [ReactiveFormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [
+        { provide: Router },
+        {
+          provide: HttpClient,
+          useValue: {
+            post: () => {
+              return of();
+            },
+            get: () => {
+              return of();
+            },
+          },
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

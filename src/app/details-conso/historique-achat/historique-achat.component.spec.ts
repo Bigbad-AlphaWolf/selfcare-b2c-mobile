@@ -1,7 +1,8 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HistoriqueAchatComponent } from './historique-achat.component';
+import { MatMenuModule } from '@angular/material';
 
 describe('HistoriqueAchatComponent', () => {
   let component: HistoriqueAchatComponent;
@@ -9,10 +10,10 @@ describe('HistoriqueAchatComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HistoriqueAchatComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      declarations: [HistoriqueAchatComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+      imports: [MatMenuModule],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

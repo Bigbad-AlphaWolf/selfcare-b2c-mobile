@@ -2,6 +2,10 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MyAccountPage } from './my-account.page';
+import { MatDialogRef, MatDialog } from '@angular/material';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
 
 describe('MyAccountPage', () => {
   let component: MyAccountPage;
@@ -9,10 +13,25 @@ describe('MyAccountPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MyAccountPage ],
+      declarations: [MyAccountPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MatDialog, useValue: {} },
+        { provide: Router, useValue: {} },
+        {
+          provide: HttpClient,
+          useValue: {
+            post: () => {
+              return of();
+            },
+            get: () => {
+              return of();
+            },
+          },
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

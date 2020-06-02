@@ -26,7 +26,6 @@ export class OmButtonComponent implements OnInit, OnDestroy {
   @Input() isKirene: boolean;
 
   constructor(
-    private router: Router,
     private dashbordServ: DashboardService,
     private omServ: OrangeMoneyService,
     private followsServ: FollowAnalyticsService,

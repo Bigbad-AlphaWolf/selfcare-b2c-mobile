@@ -78,70 +78,72 @@ export class OperationRecapPage implements OnInit {
 
   ngOnInit() {
     this.currentUserNumber = this.dashboardService.getCurrentPhoneNumber();
-    this.route.queryParams.subscribe((params) => {
-      if (
-        this.router.getCurrentNavigation() &&
-        this.router.getCurrentNavigation().extras.state &&
-        this.router.getCurrentNavigation().extras.state.purchaseType
-      ) {
-        const state = this.router.getCurrentNavigation().extras.state;
-        this.state = state;
-        console.log(state);
-        this.purchaseType = state.purchaseType;
-        switch (this.purchaseType) {
-          case OPERATION_TYPE_PASS_INTERNET:
-          case OPERATION_TYPE_PASS_ILLIMIX:
-            this.recipientName = state.recipientName;
-            this.passChoosen = state.pass;
-            this.recipientMsisdn = state.recipientMsisdn;
-            this.recipientCodeFormule = state.recipientCodeFormule;
-            this.buyPassPayload = {
-              destinataire: this.recipientMsisdn,
-              pass: this.passChoosen,
-            };
-            break;
-          case OPERATION_TRANSFER_OM_WITH_CODE:
-            this.recipientMsisdn = state.recipientMsisdn;
-            this.amount = state.amount;
-            this.transferOMWithCodePayload.amount = state.amount;
-            this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
-            this.transferOMWithCodePayload.prenom_receiver =
-              state.recipientFirstname;
-            this.transferOMWithCodePayload.nom_receiver =
-              state.recipientLastname;
-            this.recipientFirstName = state.recipientFirstname;
-            this.recipientLastName = state.recipientLastname;
-            this.recipientName =
-              this.recipientFirstName + ' ' + this.recipientLastName;
-            this.paymentMod = 'ORANGE_MONEY';
-            break;
-          case OPERATION_TRANSFER_OM:
-            this.recipientMsisdn = state.recipientMsisdn;
-            this.amount = state.amount;
-            this.transferOMPayload.amount = state.amount;
-            this.transferOMPayload.msisdn2 = this.recipientMsisdn;
-            this.recipientName =
-              state.recipientFirstname + ' ' + state.recipientLastname;
-            this.paymentMod = 'ORANGE_MONEY';
-            break;
-          case OPERATION_TYPE_MERCHANT_PAYMENT:
-            this.amount = state.amount;
-            this.merchantCode = state.merchantCode;
-            this.merchantName = state.merchantName;
-            this.paymentMod = 'ORANGE_MONEY';
-            this.merchantPaymentPayload = {
-              amount: this.amount,
-              code_marchand: this.merchantCode,
-              nom_marchand: this.merchantName,
-            };
-            break;
-          default:
-            break;
-        }
-      } else {
-        this.appRouting.goToDashboard();
-      }
-    });
+    if (this.route)
+      this.route.queryParams.subscribe((params) => {
+        if (
+          this.router.getCurrentNavigation() &&
+          this.router.getCurrentNavigation().extras.state &&
+          this.router.getCurrentNavigation().extras.state.purchaseType
+        ) {
+          const state = this.router.getCurrentNavigation().extras.state;
+          this.state = state;
+          console.log(state);
+          this.purchaseType = state.purchaseType;
+          switch (this.purchaseType) {
+            case OPERATION_TYPE_PASS_INTERNET:
+            case OPERATION_TYPE_PASS_ILLIMIX:
+              this.recipientName = state.recipientName;
+              this.passChoosen = state.pass;
+              this.recipientMsisdn = state.recipientMsisdn;
+              this.recipientCodeFormule = state.recipientCodeFormule;
+              this.buyPassPayload = {
+                destinataire: this.recipientMsisdn,
+                pass: this.passChoosen,
+              };
+              break;
+            case OPERATION_TRANSFER_OM_WITH_CODE:
+              this.recipientMsisdn = state.recipientMsisdn;
+              this.amount = state.amount;
+              this.transferOMWithCodePayload.amount = state.amount + state.fee;
+              this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
+              this.transferOMWithCodePayload.prenom_receiver =
+                state.recipientFirstname;
+              this.transferOMWithCodePayload.nom_receiver =
+                state.recipientLastname;
+              this.recipientFirstName = state.recipientFirstname;
+              this.recipientLastName = state.recipientLastname;
+              this.recipientName =
+                this.recipientFirstName + ' ' + this.recipientLastName;
+              this.paymentMod = 'ORANGE_MONEY';
+              break;
+            case OPERATION_TRANSFER_OM:
+              this.recipientMsisdn = state.recipientMsisdn;
+              this.amount = state.amount;
+              this.transferOMPayload.amount = state.includeFee
+                ? state.amount + state.fee
+                : state.amount;
+              this.transferOMPayload.msisdn2 = this.recipientMsisdn;
+              this.recipientName =
+                state.recipientFirstname + ' ' + state.recipientLastname;
+              this.paymentMod = 'ORANGE_MONEY';
+              break;
+            case OPERATION_TYPE_MERCHANT_PAYMENT:
+              this.amount = state.amount;
+              this.merchantCode = state.merchantCode;
+              this.merchantName = state.merchantName;
+              this.paymentMod = 'ORANGE_MONEY';
+              this.merchantPaymentPayload = {
+                amount: this.amount,
+                code_marchand: this.merchantCode,
+                nom_marchand: this.merchantName,
+              };
+              break;
+            default:
+              break;
+          }
+        } else {
+          this.appRouting.goToDashboard();        }
+      });
   }
 
   pay() {

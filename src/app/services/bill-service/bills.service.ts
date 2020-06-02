@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 
 import { MatDialog } from '@angular/material';
-import { Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { MAIL_URL } from 'src/shared';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
@@ -143,6 +143,8 @@ export class BillsService {
     annee: number;
   }) {
     // api/v1/facture/365915?type=MOBILE&search=year:2019,month:11
+    if(!payload) return of({})
+    
     if (this.currentNumber.startsWith('33')) {
       return this.http
         .get(

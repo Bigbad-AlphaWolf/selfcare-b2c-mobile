@@ -126,6 +126,7 @@ export class NewRegistrationPage implements OnInit {
   getNumber() {
     this.gettingNumber = true;
     this.showErrMessage = false;
+    if (!this.ref['destroyed']) 
     this.ref.detectChanges();
     Fingerprint2.get((components) => {
       const values = components.map((component) => {
@@ -168,7 +169,8 @@ export class NewRegistrationPage implements OnInit {
                 } else {
                   this.displayMsisdnError();
                 }
-                this.ref.detectChanges();
+                if (!this.ref['destroyed']) 
+    this.ref.detectChanges();
               },
               (err) => {
                 this.displayMsisdnError();
@@ -374,6 +376,7 @@ export class NewRegistrationPage implements OnInit {
       'error',
       this.phoneNumber
     );
+    if (!this.ref['destroyed']) 
     this.ref.detectChanges();
   }
 

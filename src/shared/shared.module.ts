@@ -51,7 +51,6 @@ import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.co
 import { FormatSuiviConsoCategoryTitlePipe } from './pipes/format-suivi-conso-category-title.pipe';
 import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
 import { HeaderScrollEffectDirective } from './directives/header-scroll-effect.directive';
-import { PassInternetCardComponent } from './pass-internet-card/pass-internet-card.component';
 import { ItemPassIllimixComponent } from './item-pass-illimix/item-pass-illimix.component';
 import { ItemPassInternetComponent } from './item-pass-internet/item-pass-internet.component';
 import { CommonIssuesComponent } from './common-issues/common-issues.component';
@@ -96,7 +95,6 @@ import { ItemRechargeCreditComponent } from './item-recharge-credit/item-recharg
     FormatSuiviConsoCategoryTitlePipe,
     FormatCalledNumberPipe,
     HeaderScrollEffectDirective,
-    PassInternetCardComponent,
     ItemPassIllimixComponent,
     ItemPassInternetComponent,
     CommonIssuesComponent,
@@ -178,7 +176,6 @@ import { ItemRechargeCreditComponent } from './item-recharge-credit/item-recharg
     DashboardHeaderComponent,
     FormatCalledNumberPipe,
     HeaderScrollEffectDirective,
-    PassInternetCardComponent,
     ItemPassIllimixComponent,
     ItemPassInternetComponent,
     CommonIssuesComponent,

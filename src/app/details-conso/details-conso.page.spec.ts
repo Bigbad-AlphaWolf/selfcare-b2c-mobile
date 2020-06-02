@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DetailsConsoPage } from './details-conso.page';
+import { HttpClient } from '@angular/common/http';
 
 describe('DetailsConsoPage', () => {
   let component: DetailsConsoPage;
@@ -9,10 +10,10 @@ describe('DetailsConsoPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DetailsConsoPage ],
+      declarations: [DetailsConsoPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [{ provide: HttpClient }],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

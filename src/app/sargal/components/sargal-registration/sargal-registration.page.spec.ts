@@ -2,6 +2,10 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SargalRegistrationPage } from './sargal-registration.page';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
 
 describe('SargalRegistrationPage', () => {
   let component: SargalRegistrationPage;
@@ -9,10 +13,24 @@ describe('SargalRegistrationPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SargalRegistrationPage ],
+      declarations: [SargalRegistrationPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [
+        { provide: Router },
+        { provide: MatDialog },
+        {
+          provide: HttpClient,
+          useValue: {
+            get() {
+              return of();
+            },
+            post() {
+              return of();
+            },
+          },
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

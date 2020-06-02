@@ -55,6 +55,7 @@ export class PurchaseSetAmountPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initForm(100);
     this.getPurchaseType();
   }
 

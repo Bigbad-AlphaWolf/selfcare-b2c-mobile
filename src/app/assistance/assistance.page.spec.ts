@@ -6,6 +6,7 @@ import { MatDialogModule } from '@angular/material';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 describe('AssistancePage', () => {
   let component: AssistancePage;
@@ -13,22 +14,25 @@ describe('AssistancePage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AssistancePage ],
+      declarations: [AssistancePage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [MatDialogModule],
       providers: [
         { provide: Router },
         {
           provide: HttpClient,
-          useValue: {}
+          useValue: {},
         },
         {
           provide: AppVersion,
-          useValue: {}
-        }
-      ]
-    })
-    .compileComponents();
+          useValue: {},
+        },
+        {
+          provide: InAppBrowser,
+          useValue: {},
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
