@@ -2,6 +2,12 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateSponsorFormComponent } from './create-sponsor-form.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
+import { Contacts } from '@ionic-native/contacts';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 describe('CreateSponsorFormComponent', () => {
   let component: CreateSponsorFormComponent;
@@ -9,10 +15,18 @@ describe('CreateSponsorFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CreateSponsorFormComponent ],
+      declarations: [CreateSponsorFormComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      imports: [ReactiveFormsModule],
+      providers: [
+        { provide: HttpClient },
+        { provide: Router },
+        { provide: ModalController },
+        { provide: Contacts },
+        { provide: MatDialog },
+        { provide: MatDialogRef },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

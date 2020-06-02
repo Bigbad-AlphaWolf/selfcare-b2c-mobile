@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NumeroSeriePopupComponent } from './numero-serie-popup.component';
+import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 
 describe('NumeroSeriePopupComponent', () => {
   let component: NumeroSeriePopupComponent;
@@ -9,10 +10,14 @@ describe('NumeroSeriePopupComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NumeroSeriePopupComponent ],
+      declarations: [NumeroSeriePopupComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MatDialog, useValue: {} },
+        { provide: MAT_DIALOG_DATA },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

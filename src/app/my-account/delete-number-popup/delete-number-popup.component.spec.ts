@@ -2,6 +2,10 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeleteNumberPopupComponent } from './delete-number-popup.component';
+import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
 
 describe('DeleteNumberPopupComponent', () => {
   let component: DeleteNumberPopupComponent;
@@ -9,10 +13,26 @@ describe('DeleteNumberPopupComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeleteNumberPopupComponent ],
+      declarations: [DeleteNumberPopupComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MatDialog, useValue: {} },
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: Router, useValue: {} },
+        {
+          provide: HttpClient,
+          useValue: {
+            post: () => {
+              return of();
+            },
+            get: () => {
+              return of();
+            },
+          },
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

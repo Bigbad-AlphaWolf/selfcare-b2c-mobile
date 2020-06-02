@@ -2,6 +2,10 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RegistrationSuccessModalPage } from './registration-success-modal.page';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
+import { ModalController } from '@ionic/angular';
 
 describe('RegistrationSuccessModalPage', () => {
   let component: RegistrationSuccessModalPage;
@@ -9,10 +13,21 @@ describe('RegistrationSuccessModalPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RegistrationSuccessModalPage ],
+      declarations: [RegistrationSuccessModalPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [
+        { provide: Router },
+        { provide: ModalController },
+        {
+          provide: HttpClient,
+          useValue: {
+            post() {
+              return of();
+            },
+          },
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

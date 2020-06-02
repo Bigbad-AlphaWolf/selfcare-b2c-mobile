@@ -2,6 +2,11 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardHomePrepaidPage } from './dashboard-home-prepaid.page';
+import { PassVolumeDisplayPipe } from 'src/shared/pipes/pass-volume-display.pipe';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
 
 describe('DashboardHomePrepaidPage', () => {
   let component: DashboardHomePrepaidPage;
@@ -9,10 +14,21 @@ describe('DashboardHomePrepaidPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashboardHomePrepaidPage ],
+      declarations: [DashboardHomePrepaidPage, PassVolumeDisplayPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [
+        {
+          provide: HttpClient,
+          useValue: {
+            get: () => {
+              return of({});
+            },
+          },
+        },
+        { provide: Router, useValue: {} },
+        { provide: MatDialog, useValue: {} },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

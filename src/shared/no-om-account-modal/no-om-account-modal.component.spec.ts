@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NoOmAccountModalComponent } from './no-om-account-modal.component';
+import { ModalController } from '@ionic/angular';
 
 describe('NoOmAccountModalComponent', () => {
   let component: NoOmAccountModalComponent;
@@ -11,6 +12,12 @@ describe('NoOmAccountModalComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ NoOmAccountModalComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: ModalController,
+          useValue: {}
+        }
+      ]
     })
     .compileComponents();
   }));

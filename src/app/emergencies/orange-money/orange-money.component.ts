@@ -82,7 +82,8 @@ export class OrangeMoneyComponent implements OnInit {
       verso: [null],
     });
     this.userNumber = this.dashb.getCurrentPhoneNumber();
-    this.type = this.route.snapshot.paramMap.get('type');
+    if (this.route.snapshot)
+      this.type = this.route.snapshot.paramMap.get('type');
   }
 
   // Verify if user mail is the default one

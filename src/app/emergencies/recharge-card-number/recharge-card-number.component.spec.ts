@@ -2,6 +2,10 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RechargeCardNumberComponent } from './recharge-card-number.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MatDialog } from '@angular/material';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
 
 describe('RechargeCardNumberComponent', () => {
   let component: RechargeCardNumberComponent;
@@ -9,10 +13,25 @@ describe('RechargeCardNumberComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RechargeCardNumberComponent ],
+      declarations: [RechargeCardNumberComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      imports: [ReactiveFormsModule],
+      providers: [
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MatDialog, useValue: {} },
+        {
+          provide: HttpClient,
+          useValue: {
+            post: () => {
+              return of();
+            },
+            get: () => {
+              return of();
+            },
+          },
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
