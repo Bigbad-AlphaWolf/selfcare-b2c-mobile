@@ -1,12 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { Router, NavigationExtras } from "@angular/router";
 import { NavController } from "@ionic/angular";
-import {
-  OPERATION_TYPE_SEDDO_CREDIT,
-  OPERATION_TYPE_SEDDO_BONUS,
-  OPERATION_TYPE_RECHARGE_CREDIT,
-} from "src/shared";
 import { OperationExtras } from "src/app/models/operation-extras.model";
+import { getPageTitle } from 'src/app/utils/title.util';
 
 @Component({
   selector: "app-credit-pass-amount",
@@ -26,7 +22,7 @@ export class CreditPassAmountPage implements OnInit {
 
   ngOnInit() {
     this.opXtras = history.state;
-    this.changePageTitle();
+    this.title = (getPageTitle(this.opXtras.purchaseType)).title;
   }
 
   onAmountSelected(amount: string) {
@@ -36,23 +32,6 @@ export class CreditPassAmountPage implements OnInit {
   onContinue() {
     const navExtras: NavigationExtras = { state: this.opXtras };
     this.router.navigate(["/operation-recap"], navExtras);
-  }
-
-  changePageTitle() {
-    switch (this.opXtras.purchaseType) {
-      case OPERATION_TYPE_SEDDO_CREDIT:
-        this.title = "Transfert de Crédit";
-        break;
-      case OPERATION_TYPE_SEDDO_BONUS:
-        this.title = "Transfert de Bonus";
-        break;
-      case OPERATION_TYPE_RECHARGE_CREDIT:
-        this.title = "Achat de Crédit";
-        break;
-
-      default:
-        break;
-    }
   }
 
   goBack() {
