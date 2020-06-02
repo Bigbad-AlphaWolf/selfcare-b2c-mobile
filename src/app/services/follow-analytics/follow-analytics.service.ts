@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 declare var FollowAnalytics: any;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FollowAnalyticsService {
   logState = false;
@@ -19,6 +19,11 @@ export class FollowAnalyticsService {
         FollowAnalytics.logEvent(event, params);
       }
     }
+  }
+
+  logUserBirthDate(birthdate: string) {
+    if (typeof FollowAnalytics !== 'undefined')
+      FollowAnalytics.UserAttributes.setDateOfBirth(new Date(birthdate));
   }
 
   registerId(hashUserName: string) {

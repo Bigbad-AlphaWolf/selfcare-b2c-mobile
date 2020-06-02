@@ -8,7 +8,7 @@ import {
   isPostpaidMobile,
   isPostpaidFix,
   isPrepaidFix,
-  isKirene
+  isKirene,
 } from '.';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
@@ -28,7 +28,7 @@ const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
-  styleUrls: ['./dashboard.page.scss']
+  styleUrls: ['./dashboard.page.scss'],
 })
 export class DashboardPage implements OnInit, OnDestroy {
   userSubscription;
@@ -45,10 +45,11 @@ export class DashboardPage implements OnInit, OnDestroy {
   lastName: any;
   isFormuleFixPostpaid: any;
   isFormuleFixPrepaid: any;
-  isIOS:boolean;
-  appId:string;
-  AppVersionNumber:any;
+  isIOS: boolean;
+  appId: string;
+  AppVersionNumber: any;
   isFirebaseTokenSent = false;
+  birthDateSubscription: Subscription;
   constructor(
     private dashboardServ: DashboardService,
     private authServ: AuthenticationService,
@@ -58,7 +59,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     private platform: Platform,
     private appMinimize: AppMinimize,
     private appVersion: AppVersion,
-    private dialog: MatDialog,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -75,38 +76,39 @@ export class DashboardPage implements OnInit, OnDestroy {
   ionViewWillEnter() {
     this.getCurrentSubscription();
 
-     // Get app version
-     this.appVersion
-     .getVersionNumber()
-     .then(value => {
-       this.AppVersionNumber = value;
-     })
-     .catch(error => {
-       console.log(error);
-     });
-   // Call server for app version
-   this.assistanceService.getAppVersionPublished().subscribe((version: any) => {
-     const versionAndroid = version.android;
-     const versionIos = version.ios;
-     if(versionAndroid || versionIos){
-       if (
-         isNewVersion(
-           this.isIOS ? versionIos : versionAndroid,
-           this.AppVersionNumber
-         )
-       ) {
-         const dialogRef = this.dialog.open(CancelOperationPopupComponent, {
-           data: { updateApp: this.appId }
-         });
-       }
-     }
-   });
-   if(!this.isFirebaseTokenSent){
-    this.authServ.UpdateNotificationInfo();
-    this.isFirebaseTokenSent = true;
-    console.log(this.isFirebaseTokenSent);
-   }
-
+    // Get app version
+    this.appVersion
+      .getVersionNumber()
+      .then((value) => {
+        this.AppVersionNumber = value;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    // Call server for app version
+    this.assistanceService
+      .getAppVersionPublished()
+      .subscribe((version: any) => {
+        const versionAndroid = version.android;
+        const versionIos = version.ios;
+        if (versionAndroid || versionIos) {
+          if (
+            isNewVersion(
+              this.isIOS ? versionIos : versionAndroid,
+              this.AppVersionNumber
+            )
+          ) {
+            const dialogRef = this.dialog.open(CancelOperationPopupComponent, {
+              data: { updateApp: this.appId },
+            });
+          }
+        }
+      });
+    if (!this.isFirebaseTokenSent) {
+      this.authServ.UpdateNotificationInfo();
+      this.isFirebaseTokenSent = true;
+      console.log(this.isFirebaseTokenSent);
+    }
   }
   ionViewDidEnter() {
     // Initialize BackButton Eevent.
@@ -137,7 +139,7 @@ export class DashboardPage implements OnInit, OnDestroy {
         const souscription = {
           profil: this.currentProfile,
           formule: this.currentFormule,
-          codeFormule: this.currentCodeFormule
+          codeFormule: this.currentCodeFormule,
         };
         if (isPrepaidOrHybrid(souscription)) {
           this.router.navigate(['/dashboard-prepaid-hybrid']);
@@ -154,10 +156,11 @@ export class DashboardPage implements OnInit, OnDestroy {
           msisdn: currentNumber,
           profil: this.currentProfile,
           formule: this.currentFormule,
-          date
+          date,
         });
         this.followAnalyticsService.setString('profil', this.currentProfile);
         this.followAnalyticsService.setString('formule', this.currentFormule);
+        this.logUserBirthDateOnFollow();
         const user = ls.get('user');
         this.followAnalyticsService.setFirstName(user.firstName);
         this.followAnalyticsService.setLastName(user.lastName);
@@ -179,5 +182,15 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.hasErrorSubscription = true;
       }
     );
+  }
+
+  logUserBirthDateOnFollow() {
+    const userBirthDateAlreadySet = !!ls.get('birthDate');
+    if (!userBirthDateAlreadySet)
+      this.birthDateSubscription = this.dashboardServ
+        .getUserBirthDate()
+        .subscribe((birthDate: string) => {
+          this.followAnalyticsService.logUserBirthDate(birthDate);
+        });
   }
 }
