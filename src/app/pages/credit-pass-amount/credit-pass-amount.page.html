@@ -1,5 +1,18 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header oemIonHeaderParallax>
+  <ion-toolbar >
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard" icon="" class="oem-back-button" >
+        <!-- <ion-button color="primary" > -->
+          <img src="/assets/images/arrow-left.png" alt="icon" />
+        <!-- </ion-button> -->
+      </ion-back-button> 
+    </ion-buttons>
+    <ion-title class="oem-top-title ion-padding-start">
+      <span class="title1">
+      {{title}} 
+    </span></ion-title>
+</ion-toolbar> 
+  <!-- <ion-toolbar>
     <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
       <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
     </ion-buttons>
@@ -8,16 +21,9 @@
         {{title}}
       </span>
     </ion-title>
-  </ion-toolbar>
+  </ion-toolbar> -->
 </ion-header>
-<ion-content fullscreen="true">
-  <ion-header class="ion-padding-start" collapse="condense">
-    <ion-toolbar>
-      <span class="title">
-        {{title}}
-      </span>
-    </ion-toolbar>
-  </ion-header> 
+<ion-content fullscreen="true" [scrollEvents]="true">
   <div class="transferts-page">
     <div class="banniere-container">
       <img src="/assets/images/achat-de-credit.png" alt="header-transfer" />

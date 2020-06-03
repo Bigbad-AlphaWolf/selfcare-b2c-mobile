@@ -64,6 +64,7 @@ import { ItemRechargeCreditComponent } from './item-recharge-credit/item-recharg
 import { PhoneNumberProviderComponent } from 'src/app/components/phone-number-provider/phone-number-provider.component';
 import { NumberSelectionComponent } from 'src/app/components/number-selection/number-selection.component';
 import { AmountProviderComponent } from 'src/app/components/amount-provider/amount-provider.component';
+import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header-parallax.directive';
 
 @NgModule({
   declarations: [
@@ -111,6 +112,8 @@ import { AmountProviderComponent } from 'src/app/components/amount-provider/amou
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
     ItemRechargeCreditComponent,
+    OemIonHeaderParallaxDirective,
+
   ],
   imports: [
     CommonModule,
@@ -149,6 +152,7 @@ import { AmountProviderComponent } from 'src/app/components/amount-provider/amou
     NoOmAccountModalComponent,
   ],
   exports: [
+    OemIonHeaderParallaxDirective,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
     AmountProviderComponent,
