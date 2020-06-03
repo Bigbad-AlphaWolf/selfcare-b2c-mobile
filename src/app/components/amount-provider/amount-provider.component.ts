@@ -6,6 +6,7 @@ import { Component, OnInit, Input, Output,EventEmitter } from '@angular/core';
   styleUrls: ['./amount-provider.component.scss'],
 })
 export class AmountProviderComponent implements OnInit {
+  @Input('value') initValue:number;
   @Input('amounts') amounts :string []= ['500','1000','2000','2500','5000','10000'];
   @Output('onAmountSelected') onAmountSelected:EventEmitter<string>=new EventEmitter();
   @Output('onInputAmount') inputAmountEvent:EventEmitter<string>=new EventEmitter();

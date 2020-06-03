@@ -97,7 +97,7 @@ export class OemIonHeaderParallaxDirective implements AfterViewInit, AfterViewCh
 
   private expandedWrapperTitle(){
     this.renderer.setStyle(this.wrapperTitleEl, 'position', 'absolute');
-    this.renderer.setStyle(this.wrapperTitleEl, 'bottom', '5px');
+    this.renderer.setStyle(this.wrapperTitleEl, 'bottom', '10px');
     this.renderer.setStyle(this.wrapperTitleEl, 'height', 'fit-content');
   }
 
@@ -111,6 +111,7 @@ export class OemIonHeaderParallaxDirective implements AfterViewInit, AfterViewCh
   private normalWrapperTitle() {
     this.renderer.setStyle(this.wrapperTitleEl, 'bottom', '0');
     this.renderer.setStyle(this.wrapperTitleEl, 'position', 'relative');
+
   }
 
   private normalToolbar() {

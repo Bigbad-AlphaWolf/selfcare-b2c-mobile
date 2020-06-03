@@ -12,6 +12,7 @@
             matInput
             type="number"
             (input)="onInputAmount(amountInput.value)"
+            [value]="initValue"
           />
           <span matSuffix class="scb-text-gray suffix">FCFA</span>
         </mat-form-field>

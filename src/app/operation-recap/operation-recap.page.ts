@@ -254,10 +254,11 @@ export class OperationRecapPage implements OnInit {
   }
 
   goBack() {
-    console.log(this.purchaseType);
     
-    if(this.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT)
-    this.navController.navigateBack(CreditPassAmountPage.PATH);
+    // if(this.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT)
+    // console.log(this.purchaseType);
+
+    //   this.navController.navigateBack(CreditPassAmountPage.PATH);
     this.navController.pop();
   }
 

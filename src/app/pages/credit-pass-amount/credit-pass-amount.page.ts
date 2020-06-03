@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { Router, NavigationExtras } from "@angular/router";
 import { NavController } from "@ionic/angular";
 import { OperationExtras } from "src/app/models/operation-extras.model";
@@ -14,20 +14,24 @@ export class CreditPassAmountPage implements OnInit {
 
   title: string;
   opXtras: OperationExtras = {};
+  initialAmount : number ;
 
   constructor(
-    private router: Router,
-    private navController: NavController
+    private navController: NavController,
+    private refChangeDetector : ChangeDetectorRef,
   ) {}
+
 
   ngOnInit() {
     this.opXtras = history.state;
     this.title = (getPageTitle(this.opXtras.purchaseType)).title;
   }
 
+
+
   onAmountSelected(amount: string) {
     this.opXtras.amount = amount;
-    this. onContinue();
+    this.onContinue();
   }
 
   onInputSelected(amount: string) {
@@ -36,7 +40,7 @@ export class CreditPassAmountPage implements OnInit {
 
   onContinue() {
     const navExtras: NavigationExtras = { state: this.opXtras };
-    this.router.navigate(["/operation-recap"], navExtras);
+    this.navController.navigateForward(["/operation-recap"], navExtras);
   }
 
   goBack() {

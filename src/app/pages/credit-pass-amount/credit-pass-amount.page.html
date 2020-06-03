@@ -1,4 +1,4 @@
-<ion-header [oemIonHeaderParallax]="90">
+<ion-header [oemIonHeaderParallax]="100">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
@@ -23,6 +23,7 @@
       <oem-amount-provider
         (onAmountSelected)="onAmountSelected($event)"
         (onInputAmount)="onInputSelected($event)"
+        [value]="initialAmount"
       ></oem-amount-provider>
     </div>
 

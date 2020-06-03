@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -116,24 +116,29 @@ export class TransfertHubServicesPage implements OnInit {
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
     private matBottomSheet: MatBottomSheet ,
+    private navController: NavController,
     private router:Router ) {}
 
   ngOnInit() {
     let purchaseType;
+
     if(history && history.state){
       purchaseType = history.state.purchaseType;
     }
-    if (purchaseType === 'TRANSFER') {
+    if (purchaseType === 'TRANSFER') { 
       this.options = this.transferOptions;
       this.pageTitle = 'Transférer argent ou crédit';
-    } else {
+    } else if(purchaseType === 'BUY') { 
       this.options = this.buyOptions;
       this.pageTitle = 'Acheter crédit ou pass';
+    }else{
+      this.navController.navigateBack('/dashboard');
+
     }
   }
 
   goToDashboard() {
-    this.appRouting.goToDashboard();
+    this.navController.navigateBack('/dashboard');
   }
 
   goTo(opt: {
