@@ -1,7 +1,11 @@
 <div class="item-container" (click)="choosePass(passInternet)">
   <div class="item-pass-internet">
-    <div class="top-block">
+    <div *ngIf="subscription?.code !== KIRENE_SUBSCRIPTION_CODE_FORMULE || !subscription" class="top-block">
         <span *ngIf="!passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.tarif ? passInternet?.tarif + " FCFA" : passInternet?.tarif }} </span>
+        <span *ngIf="passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.passPromo?.tarif || +passInternet?.passPromo?.tarif === 0 ? passInternet?.passPromo?.tarif + " FCFA" : passInternet?.passPromo?.tarif }} </span>
+    </div>
+    <div *ngIf="subscription?.code === KIRENE_SUBSCRIPTION_CODE_FORMULE" class="top-block">
+        <span *ngIf="!passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.tarif ? passInternet?.nom : passInternet?.tarif }} </span>
         <span *ngIf="passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.passPromo?.tarif || +passInternet?.passPromo?.tarif === 0 ? passInternet?.passPromo?.tarif + " FCFA" : passInternet?.passPromo?.tarif }} </span>
     </div>
     <div class="bottom-block">

@@ -12,10 +12,12 @@ import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TRANSFER_OM,
+  SubscriptionModel,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
 
 @Component({
   selector: 'app-operation-recap',
@@ -65,6 +67,7 @@ export class OperationRecapPage implements OnInit {
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   state: any;
+  subscriptionInfos: SubscriptionModel;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -73,7 +76,8 @@ export class OperationRecapPage implements OnInit {
     private followAnalyticsService: FollowAnalyticsService,
     private appRouting: ApplicationRoutingService,
     private orangeMoneyService: OrangeMoneyService,
-    private navController: NavController
+    private navController: NavController,
+    private authServ: AuthenticationService
   ) {}
 
   ngOnInit() {
@@ -145,6 +149,10 @@ export class OperationRecapPage implements OnInit {
           this.appRouting.goToDashboard();
         }
       });
+
+    this.authServ.getSubscription(this.currentUserNumber).subscribe((res: SubscriptionModel)=> {
+      this.subscriptionInfos = res;
+    })
   }
 
   pay() {
