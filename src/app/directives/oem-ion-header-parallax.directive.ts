@@ -37,6 +37,10 @@ export class OemIonHeaderParallaxDirective implements AfterViewInit, AfterViewCh
     this.expandedToolBar();
     this.expandedWrapperTitle();
     this.renderer.setStyle(this.titleEl, 'font-size', '24px');
+    this.renderer.setStyle(this.titleEl,'position', 'sticky');
+    this.renderer.setStyle(this.titleEl,'padding', '5px 15px');
+    this.renderer.setStyle(this.titleEl,'top', '10px');
+
     this.initScrollEvent();
   }
 
@@ -76,7 +80,7 @@ export class OemIonHeaderParallaxDirective implements AfterViewInit, AfterViewCh
     
     let scrollTop = ev.detail.scrollTop /2;
      
-    if( 52 > (this.maxHeight-scrollTop)){//Normal Toolbar
+    if( 78 > (this.maxHeight-scrollTop)){//Normal Toolbar
 
       this.normalToolbar();
 
@@ -92,6 +96,7 @@ export class OemIonHeaderParallaxDirective implements AfterViewInit, AfterViewCh
     this.expandedWrapperTitle();
 
     this.renderer.setStyle(this.titleEl,'font-size', '24px');
+
 
   }
 
