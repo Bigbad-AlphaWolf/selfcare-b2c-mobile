@@ -29,12 +29,14 @@ import {
   PROFILE_TYPE_POSTPAID,
   KILIMANJARO_FORMULE,
   CODE_FORMULE_KILIMANJARO,
+  
 } from "src/app/dashboard";
 import {
   JAMONO_ALLO_CODE_FORMULE,
   NotificationInfoModel,
   SubscriptionModel,
 } from "src/shared";
+
 
 const {
   SERVER_API_URL,
@@ -152,9 +154,6 @@ export class AuthenticationService {
             profil: res.offerType,
             code: res.offerId,
           };
-          if (subscription.code === KILIMANJARO_FORMULE) {
-            subscription.code = CODE_FORMULE_KILIMANJARO;
-          }
           if (
             subscription.profil === PROFILE_TYPE_HYBRID ||
             subscription.profil === PROFILE_TYPE_HYBRID_1 ||

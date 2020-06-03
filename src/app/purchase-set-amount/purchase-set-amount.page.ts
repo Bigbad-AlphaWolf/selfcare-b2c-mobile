@@ -17,6 +17,7 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { NavController } from '@ionic/angular';
 import { OperationExtras } from '../models/operation-extras.model';
+import { of, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-purchase-set-amount',
@@ -189,8 +190,6 @@ export class PurchaseSetAmountPage implements OnInit {
     this.purchasePayload.amount = amount;
     this.purchasePayload.includeFee = this.includeFees;
     this.purchasePayload.fee = this.fee;
-    this.purchasePayload.amount =
-      this.includeFees || this.userHasNoOmAccount ? amount + this.fee : amount;
     this.purchasePayload.purchaseType = this.purchaseType;
     if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
       this.purchasePayload.recipientFirstname = this.setAmountForm.value[
@@ -200,8 +199,10 @@ export class PurchaseSetAmountPage implements OnInit {
         'recipientLastname'
       ];
     }
-   
-    const navExtras: NavigationExtras = { state: this.purchasePayload };
+    this.redirectRecapPage(this.purchasePayload)
+  }
+  redirectRecapPage(payload: any){
+    const navExtras: NavigationExtras = { state: payload };
     this.router.navigate(['/operation-recap'], navExtras);
   }
 
@@ -280,5 +281,50 @@ export class PurchaseSetAmountPage implements OnInit {
         ? (this.totalAmount += this.fee)
         : (this.totalAmount = amount);
     }
+  }
+
+  checkUserOMBalanceIsOKBeforePurchase(amount: number): Observable<boolean> {
+    this.hasError = false;
+    this.error = null;
+    console.log(amount, 'amout', amount);
+    
+    if (amount <= 0){
+      console.log('dehores');
+      return of(false)
+    }
+    
+    this.checkingAmount = true;
+    console.log(amount,'amountEntered');
+    
+    this.omService.getOmMsisdn().subscribe((msisdn) => {
+    if (msisdn !== 'error') {
+      const checkBalanceSufficiencyPayload = { amount, msisdn };
+      console.log(checkBalanceSufficiencyPayload);
+      console.log(msisdn,'omNumber');
+
+      this.omService.checkBalanceSufficiency(checkBalanceSufficiencyPayload)
+        .subscribe(
+          (hasEnoughBalance: boolean) => {
+            this.checkingAmount = false;
+            if (hasEnoughBalance) {
+              this.hasError = false;
+              return of(true)
+            } else {
+              this.hasError = true;
+              this.error = "Votre solde ne vous permet pas de poursuivre cette action"
+              console.log('hasErr', this.hasError, 'error', this.error);
+              
+              return of(false)
+            }
+          },
+          err => {
+            this.checkingAmount = false;
+            return of(true)
+          }
+        );
+    } else {
+      return of(false)
+    }
+  });
   }
 }

@@ -78,6 +78,9 @@ const welcomeStatusEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters`;
 // Endpoint promoBooster active
 const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters/active-boosters`;
 
+// Endpoint to get the user's birthdate
+const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/birthDate`;
+
 @Injectable({
   providedIn: "root",
 })
@@ -424,5 +427,16 @@ export class DashboardService {
       `${promoBoosterActiveEndpoint}?msisdn=${msisdn}&code=${code}`
     );
     // return of({ isPromoPassActive: false, isPromoRechargeActive: false });
+  }
+
+  getUserBirthDate(): Observable<any> {
+    const userBirthDay = ls.get('birthDate');
+    if (userBirthDay) return of(userBirthDay);
+    const msisdn = this.getMainPhoneNumber();
+    return this.http.get(`${userBirthDateEndpoint}/${msisdn}`).pipe(
+      map((birthDate) => {
+        ls.set('birthDate', birthDate);
+      })
+    );
   }
 }

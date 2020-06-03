@@ -106,8 +106,8 @@ export class OperationRecapPage implements OnInit {
               break;
             case OPERATION_TRANSFER_OM_WITH_CODE:
               this.recipientMsisdn = state.recipientMsisdn;
-              this.amount = state.amount;
-              this.transferOMWithCodePayload.amount = state.amount + state.fee;
+              this.amount = state.amount + state.fee;
+              this.transferOMWithCodePayload.amount = state.amount;
               this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
               this.transferOMWithCodePayload.prenom_receiver =
                 state.recipientFirstname;
@@ -121,10 +121,10 @@ export class OperationRecapPage implements OnInit {
               break;
             case OPERATION_TRANSFER_OM:
               this.recipientMsisdn = state.recipientMsisdn;
-              this.amount = state.amount;
-              this.transferOMPayload.amount = state.includeFee
+              this.amount = state.includeFee
                 ? state.amount + state.fee
                 : state.amount;
+              this.transferOMPayload.amount = this.amount;
               this.transferOMPayload.msisdn2 = this.recipientMsisdn;
               this.recipientName =
                 state.recipientFirstname + ' ' + state.recipientLastname;
@@ -150,7 +150,8 @@ export class OperationRecapPage implements OnInit {
               break;
           }
         } else {
-          this.appRouting.goToDashboard();        }
+          this.appRouting.goToDashboard();
+        }
       });
   }
 
@@ -240,6 +241,8 @@ export class OperationRecapPage implements OnInit {
     params.amount = this.amount;
     params.merchantCode = this.merchantCode;
     params.merchantName = this.merchantName;
+    console.log(params,'params');
+    
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
       cssClass: params.success ? 'success-modal' : 'failed-modal',
