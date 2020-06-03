@@ -27,8 +27,6 @@ export class CreditPassAmountPage implements OnInit {
     this.title = (getPageTitle(this.opXtras.purchaseType)).title;
   }
 
-
-
   onAmountSelected(amount: string) {
     this.opXtras.amount = amount;
     this.onContinue();
