@@ -3,8 +3,10 @@ export interface OperationExtras{
     recipientMsisdn?: string;
     recipientFirstname?: string;
     recipientLastname?:string;
+    recipientFromContact?:boolean;
     purchaseType?:string;
-    self?:boolean;
+    forSelf?:boolean;
+    
     userHasNoOmAccount?:boolean;
     amount?:any;
     includeFee?:any;

@@ -30,7 +30,7 @@ export class NumberSelectionComponent implements OnInit {
   phoneIsNotValid: boolean = false;
 
   omSession:OmSession = {};
-  opInfos: OperationExtras = {};
+  opXtras: OperationExtras = {};
   isErrorProcessing: boolean = false;
   canNotRecieve: boolean;
 
@@ -45,45 +45,45 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-  this.numbers$ = this.dashbServ.fetchOemNumbers();
-   this.checkOmAccountSession();
+  // this.numbers$ = this.dashbServ.fetchOemNumbers();
+  //  this.checkOmAccountSession();
 
   }
 
   async onContinue() {
-    if(!REGEX_NUMBER_OM.test(this.opInfos.recipientMsisdn)){
+    if(!REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn)){
       this.phoneIsNotValid = true;
       return;
     }
 
-    this.opInfos.recipientMsisdn = formatPhoneNumber(this.opInfos.recipientMsisdn);
-    this.opInfos.self = !this.showInput ;
+    this.opXtras.recipientMsisdn = formatPhoneNumber(this.opXtras.recipientMsisdn);
+    this.opXtras.forSelf = !this.showInput ;
 
-    if(!(await (this.canRecieveCredit()))){
-      this.canNotRecieve = true;
-      this.changeDetectorRef.detectChanges();      
-      return;
-    }
+    // if(!(await (this.canRecieveCredit()))){
+    //   this.canNotRecieve = true;
+    //   this.changeDetectorRef.detectChanges();      
+    //   return;
+    // }
     this.disMissBottomSheet();
   }
 
   onPhoneSelected(opContacts: OperationExtras) {
-    this.opInfos = opContacts;
+    this.opXtras = opContacts;
     this.numberFromInput = opContacts.recipientMsisdn;
-    this.phoneIsNotValid = false;
-    this.canNotRecieve = false;
+    this.disableErrorMessages();
   }
-
+  
   onOptionChange(value: string) {
     this.showInput = value === 'AUTRE';
-    if(this.showInput) {
-      this.onPhoneSelected({recipientMsisdn:this.numberFromInput});
-      return;
-    }
-
-    this.opInfos = {recipientMsisdn:value};
+    this.opXtras.recipientMsisdn=this.showInput?
+    this.numberFromInput:value;
+    this.disableErrorMessages();
     
   }
+      disableErrorMessages() {
+        this.phoneIsNotValid = false;
+        this.canNotRecieve = false;
+      }
 
   checkOmAccountSession(){
     this.isProcessing = true;
@@ -95,7 +95,7 @@ export class NumberSelectionComponent implements OnInit {
         return
       }
 
-      if(omSession.msisdn !== 'error' ) this.opInfos.senderMsisdn = omSession.msisdn;
+      if(omSession.msisdn !== 'error' ) this.opXtras.senderMsisdn = omSession.msisdn;
       
       if (omSession.loginExpired) {
         this.openPinpad();
@@ -110,9 +110,9 @@ export class NumberSelectionComponent implements OnInit {
   }
 
   async canRecieveCredit(){
-    if(this.opInfos.self) return true;
+    if(this.opXtras.forSelf) return true;
 
-    let canRecieve = (await this.authService.canRecieveCredit(this.opInfos.recipientMsisdn).toPromise()) ;
+    let canRecieve = (await this.authService.canRecieveCredit(this.opXtras.recipientMsisdn).toPromise()) ;
     return canRecieve;
     
   }
@@ -122,12 +122,12 @@ export class NumberSelectionComponent implements OnInit {
       'destinataire_transfert_has_om_account_success',
       'event',
       {
-        transfert_om_numero_sender: this.opInfos.senderMsisdn,
-        transfert_om_numero_receiver: this.opInfos.recipientMsisdn,
+        transfert_om_numero_sender: this.opXtras.senderMsisdn,
+        transfert_om_numero_receiver: this.opXtras.recipientMsisdn,
         has_om: 'true',
       }
     );
-    this.bottomSheetRef.dismiss(this.opInfos);
+    this.bottomSheetRef.dismiss(this.opXtras);
 
   }
 

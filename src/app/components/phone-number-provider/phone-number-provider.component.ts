@@ -26,7 +26,7 @@ export class PhoneNumberProviderComponent implements OnInit {
   otherBeneficiaryNumber ='';
   recipientContactInfos = '';
   
-  contactDisplay:OperationExtras={};
+  opXtras:OperationExtras={};
   constructor(
     private dialog: MatDialog,
     private contacts: Contacts
@@ -73,8 +73,9 @@ export class PhoneNumberProviderComponent implements OnInit {
     if (this.validateNumber(selectedNumber)) {
       this.otherBeneficiaryNumber = selectedNumber;
       this.getContactFormattedName(contact);
-      this.contactDisplay.recipientMsisdn = this.otherBeneficiaryNumber;
-      this.onPhoneSelected.emit(this.contactDisplay);
+      this.opXtras.recipientMsisdn = this.otherBeneficiaryNumber;
+      this.opXtras.recipientFromContact = true;
+      this.onPhoneSelected.emit(this.opXtras);
 
     } else {
       this.hasErrorGetContact = true;
@@ -96,7 +97,7 @@ export class PhoneNumberProviderComponent implements OnInit {
         ? contact.name.formatted
         : givenName + " " + familyName;
     
-        this.contactDisplay.recipientFirstname = givenName;
-        this.contactDisplay.recipientLastname = familyName;
+        this.opXtras.recipientFirstname = givenName;
+        this.opXtras.recipientLastname = familyName;
   }
 }
