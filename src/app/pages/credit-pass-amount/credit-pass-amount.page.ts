@@ -27,6 +27,11 @@ export class CreditPassAmountPage implements OnInit {
 
   onAmountSelected(amount: string) {
     this.opXtras.amount = amount;
+    this. onContinue();
+  }
+
+  onInputSelected(amount: string) {
+    this.opXtras.amount = amount;
   }
 
   onContinue() {

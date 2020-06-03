@@ -1,49 +1,58 @@
-@import 'src/app/app';
-
-.title1 {
-    font-family: HelveticaNeueLTStd-Bd;
+@import "src/app/app";
+.set-amount {
+  padding-top: 30px;
+  .title1 {
     font-size: 20px;
-    padding: 0 10px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    color: #000000;
+    font-family: HelveticaNeue !important;
+    padding: 0px 15px;
   }
   .sub-title {
-    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-family: HelveticaNeue, sans-serif;
     font-size: 20px;
     line-height: 1.5;
     padding: 20px 15px;
   }
-mat-button-toggle-group {
+  mat-button-toggle-group {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    mat-button-toggle{
-        margin: 10px;
-        width: 100px;
-        box-shadow: 0 1px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
-        padding: 5px;
-        border-radius: 4px;
-        span:first-child{
-           color: #555555; 
-           font-size: 18px;
-           .mat-button-toggle-checked &{
-            color: #000; 
-           }
-        }
-        span:last-child{
-            padding-bottom: 4px;
-            color: #888888;
-            font-size: 12px;
-        }
+    padding: 20px 0px;
+
+    mat-button-toggle {
+      width: 105px;
+      height: 60px;
+      border-radius: 10px;
+      border: solid 1px #eeeeee;
+      background-color: #ffffff;
+      margin: 10px;
+      display: flex;
+      span:first-child {
+        color: #000000;
+        font-size: 16px;
+
+      }
+      span:last-child {
+        padding-bottom: 4px;
+        color: #666666;
+        font-size: 12px;
+      }
     }
 
-    .enter-amount{
-        width: 100%;
-        margin: 15px 15px;
-        padding: 15px 5px;
+    .enter-amount {
+      width: 100%;
+      margin: 15px 15px;
+      padding: 15px 5px;
     }
-}
+  }
 
-.form {
-    margin: 0px 15px;
+  .form {
+    margin: 30px 15px 5px 15px;
     .transfer-options {
       ion-list {
         margin-top: -20px !important;
@@ -78,5 +87,5 @@ mat-button-toggle-group {
       font-size: 14px;
       margin: 7px 0;
     }
-
   }
+}

@@ -17,6 +17,7 @@ import {
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 
 @Component({
   selector: 'app-operation-recap',
@@ -250,6 +251,10 @@ export class OperationRecapPage implements OnInit {
   }
 
   goBack() {
+    console.log(this.purchaseType);
+    
+    if(this.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT)
+    this.navController.navigateBack(CreditPassAmountPage.PATH);
     this.navController.pop();
   }
 
