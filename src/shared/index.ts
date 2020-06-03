@@ -671,15 +671,17 @@ export interface PurchaseModel {
  * Version B is the installed version.
  */
 export function isNewVersion(versionA, versionB) {
-  const versionsA = versionA.split(/\./g),
-    versionsB = versionB.split(/\./g);
-  while (versionsA.length || versionsB.length) {
-    const a = Number(versionsA.shift()),
-      b = Number(versionsB.shift());
-    if (a === b) {
-      continue;
+  if(versionA && versionB){
+    const versionsA = versionA.split(/\./g),
+      versionsB = versionB.split(/\./g);
+    while (versionsA.length || versionsB.length) {
+      const a = Number(versionsA.shift()),
+        b = Number(versionsB.shift());
+      if (a === b) {
+        continue;
+      }
+      return a > b || isNaN(b);
     }
-    return a > b || isNaN(b);
   }
   return false;
 }

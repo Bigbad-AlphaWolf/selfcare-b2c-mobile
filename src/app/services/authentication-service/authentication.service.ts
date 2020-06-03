@@ -24,9 +24,7 @@ import {
   PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
   isFixPostpaid,
-  PROFILE_TYPE_POSTPAID,
-  KILIMANJARO_FORMULE,
-  CODE_FORMULE_KILIMANJARO
+  PROFILE_TYPE_POSTPAID
 } from 'src/app/dashboard';
 import { JAMONO_ALLO_CODE_FORMULE, NotificationInfoModel } from 'src/shared';
 
@@ -146,9 +144,6 @@ export class AuthenticationService {
             profil: res.offerType,
             code: res.offerId
           };
-          if (subscription.code === KILIMANJARO_FORMULE) {
-            subscription.code = CODE_FORMULE_KILIMANJARO;
-          }
           if (
             subscription.profil === PROFILE_TYPE_HYBRID ||
             subscription.profil === PROFILE_TYPE_HYBRID_1 ||
