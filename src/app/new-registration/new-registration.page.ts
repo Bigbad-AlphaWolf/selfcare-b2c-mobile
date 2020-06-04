@@ -23,7 +23,7 @@ import {
   HelpModalConfigApnContent,
 } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { RegistrationSuccessModalPage } from '../registration-success-modal/registration-success-modal.page';
 
 @Component({
@@ -87,7 +87,8 @@ export class NewRegistrationPage implements OnInit {
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
     private bottomSheet: MatBottomSheet,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private navController: NavController
   ) {
     this.authErrorDetected.subscribe({
       next: (data) => {
@@ -403,5 +404,9 @@ export class NewRegistrationPage implements OnInit {
       }
     });
     return await modal.present();
+  }
+
+  goBack(){
+    this.navController.navigateBack(['/home-v2'])
   }
 }

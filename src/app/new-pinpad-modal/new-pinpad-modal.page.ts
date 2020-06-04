@@ -196,6 +196,7 @@ export class NewPinpadModalPage implements OnInit {
         this.userNotRegisteredInOm = false;
         if (res.status_code.match('Erreur-046')) {
           this.openModalNoOMAccount();
+          this.modalController.dismiss();
           this.errorOnOtp = res.status_wording;
         } else {
           this.otpValidation = true;

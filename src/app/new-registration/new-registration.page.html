@@ -1,4 +1,7 @@
 <div class="creation-steps">
+  <div class="go-back">
+    <img (click)="goBack()" src="/assets/images/arrow-left.png" class="close-icon" alt="">
+  </div>
   <div class="scb-text-orange voir-intro" *ngIf="step === 'CHECK_NUMBER'">
     <span (click)="goIntro()">Voir l'intro</span>
   </div>

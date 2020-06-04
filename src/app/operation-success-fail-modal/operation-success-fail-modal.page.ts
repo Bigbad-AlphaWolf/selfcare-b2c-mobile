@@ -63,6 +63,9 @@ export class OperationSuccessFailModalPage implements OnInit {
       case this.OPERATION_TYPE_RECHARGE:
        this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
+      case this.OPERATION_TYPE_MERCHANT_PAYMENT:
+       this.appRouting.goToDashboard();
+        break;
       case this.OPERATION_TRANSFER_OM:
       case this.OPERATION_TRANSFER_OM_WITH_CODE:
        this.appRouting.goToTransfertHubServicesPage('TRANSFER');
