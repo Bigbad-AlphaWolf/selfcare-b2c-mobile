@@ -200,7 +200,6 @@ export class OrangeMoneyService {
   getMerchantByCode(code: number) {
     return this.getOmMsisdn().pipe(
       switchMap((msisdn) => {
-        console.log(msisdn);
         return this.http.get(`${getMerchantEndpoint}/${code}?msisdn=${msisdn}`);
       })
     );
@@ -314,10 +313,14 @@ export class OrangeMoneyService {
     }
   }
 
-  checkBalanceSufficiency(payload: { msisdn: string; amount: number }) {
+  checkBalanceSufficiency(amount: number | string) {
     // return of(true).pipe(delay(2000));
-    return this.http.get(
-      `${checkBalanceSufficiencyEndpoint}/${payload.msisdn}?amount=${payload.amount}`
+    return this.getOmMsisdn().pipe(
+      switchMap((msisdn) => {
+        return this.http.get(
+          `${checkBalanceSufficiencyEndpoint}/${msisdn}?amount=${amount}`
+        );
+      })
     );
   }
 

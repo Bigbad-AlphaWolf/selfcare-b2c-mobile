@@ -61,9 +61,7 @@ export class PurchaseSetAmountPage implements OnInit {
     this.getPurchaseType();
   }
 
-  amountSelected($event){
-
-  }
+  amountSelected($event) {}
 
   initForm(minValue: number, initialValue?: number) {
     this.setAmountForm = this.fb.group({
@@ -130,7 +128,7 @@ export class PurchaseSetAmountPage implements OnInit {
       this.recipientFirstname = this.purchasePayload.recipientFirstname;
       this.recipientLastname = this.purchasePayload.recipientLastname;
       this.getPageTitle();
-      
+
       switch (this.purchaseType) {
         case OPERATION_TYPE_SEDDO_CREDIT:
         case OPERATION_TYPE_SEDDO_BONUS:
@@ -185,7 +183,6 @@ export class PurchaseSetAmountPage implements OnInit {
   }
 
   goNext() {
- 
     const amount = this.setAmountForm.value['amount'];
     this.purchasePayload.amount = amount;
     this.purchasePayload.includeFee = this.includeFees;
@@ -199,9 +196,31 @@ export class PurchaseSetAmountPage implements OnInit {
         'recipientLastname'
       ];
     }
-    this.redirectRecapPage(this.purchasePayload)
+    this.checkOMBalanceSuffiency(amount);
   }
-  redirectRecapPage(payload: any){
+
+  checkOMBalanceSuffiency(amount) {
+    this.checkingAmount = true;
+    this.hasError = false;
+    this.omService.checkBalanceSufficiency(amount).subscribe(
+      (hasEnoughBalance) => {
+        this.checkingAmount = false;
+        if (hasEnoughBalance) {
+          this.redirectRecapPage(this.purchasePayload);
+        } else {
+          this.hasError = true;
+          this.error =
+            'Le montant que vous voulez transférer est supérieur à votre solde.';
+        }
+      },
+      (err) => {
+        this.checkingAmount = false;
+        this.redirectRecapPage(this.purchasePayload);
+      }
+    );
+  }
+
+  redirectRecapPage(payload: any) {
     const navExtras: NavigationExtras = { state: payload };
     this.router.navigate(['/operation-recap'], navExtras);
   }
@@ -281,50 +300,5 @@ export class PurchaseSetAmountPage implements OnInit {
         ? (this.totalAmount += this.fee)
         : (this.totalAmount = amount);
     }
-  }
-
-  checkUserOMBalanceIsOKBeforePurchase(amount: number): Observable<boolean> {
-    this.hasError = false;
-    this.error = null;
-    console.log(amount, 'amout', amount);
-    
-    if (amount <= 0){
-      console.log('dehores');
-      return of(false)
-    }
-    
-    this.checkingAmount = true;
-    console.log(amount,'amountEntered');
-    
-    this.omService.getOmMsisdn().subscribe((msisdn) => {
-    if (msisdn !== 'error') {
-      const checkBalanceSufficiencyPayload = { amount, msisdn };
-      console.log(checkBalanceSufficiencyPayload);
-      console.log(msisdn,'omNumber');
-
-      this.omService.checkBalanceSufficiency(checkBalanceSufficiencyPayload)
-        .subscribe(
-          (hasEnoughBalance: boolean) => {
-            this.checkingAmount = false;
-            if (hasEnoughBalance) {
-              this.hasError = false;
-              return of(true)
-            } else {
-              this.hasError = true;
-              this.error = "Votre solde ne vous permet pas de poursuivre cette action"
-              console.log('hasErr', this.hasError, 'error', this.error);
-              
-              return of(false)
-            }
-          },
-          err => {
-            this.checkingAmount = false;
-            return of(true)
-          }
-        );
-    } else {
-      return of(false)
-    }
-  });
   }
 }
