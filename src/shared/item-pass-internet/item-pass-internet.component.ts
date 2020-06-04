@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { PassInternetModel } from 'src/shared';
+import { PassInternetModel, CODE_KIRENE_Formule } from 'src/shared';
+import { SubscriptionModel } from 'src/app/dashboard';
 
 @Component({
   selector: 'app-item-pass-internet',
@@ -9,6 +10,8 @@ import { PassInternetModel } from 'src/shared';
 export class ItemPassInternetComponent implements OnInit {
   @Input() passInternet: any;
   @Output() selectPass = new EventEmitter();
+  @Input() subscription: SubscriptionModel;
+  KIRENE_SUBSCRIPTION_CODE_FORMULE = CODE_KIRENE_Formule
   constructor() { }
 
   ngOnInit() {    

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
@@ -178,7 +178,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
           this.getCustomerSargalStatus();
         }
       },
-      (err: any) => {}
+      () => {}
     );
   }
 
@@ -214,7 +214,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         }
         this.dataLoaded = true;
       },
-      (err) => {
+      () => {
         this.error = true;
         this.dataLoaded = true;
       }
@@ -231,7 +231,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         this.sargalLastUpdate = getLastUpdatedDateTimeText();
         this.sargalDataLoaded = true;
       },
-      (err: any) => {
+      () => {
         this.sargalDataLoaded = true;
         this.sargalUnavailable = true;
       }
@@ -483,7 +483,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
                 this.showWelcomePopup(res);
               }
             },
-            (err) => {}
+            () => {}
           );
         }
       },
@@ -522,6 +522,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         panelClass: 'merchant-code-modal',
       })
       .afterDismissed()
-      .subscribe((message: string) => {});
+      .subscribe(() => {});
   }
 }

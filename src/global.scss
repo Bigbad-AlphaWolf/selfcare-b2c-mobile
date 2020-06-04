@@ -426,20 +426,44 @@ body {
 }
 
 .success-modal {
+  --height: auto;
+  .modal-wrapper{
+    width: 90vw;
+    .ion-page {
+      position: relative;
+      contain: content;
+      max-height: 90vh;
+      .modal-content {
+        overflow: auto;
+      }
+    }
+  }
   .modal-wrapper {
     width: percentage(345/375) !important;
-    max-width: 400px;
+    // max-width: 400px;
     border-radius: 10px !important;
-    height: 90%;
+    // height: 90%;
   }
 }
 
 .failed-modal {
+  --height: auto;
+  .modal-wrapper{
+    width: 90vw;
+    .ion-page {
+      position: relative;
+      contain: content;
+      max-height: 90vh;
+      .modal-content {
+        overflow: auto;
+      }
+    }
+  }
   .modal-wrapper {
     width: percentage(345/375) !important;
-    max-width: 400px;
+    // max-width: 400px;
     border-radius: 10px !important;
-    height: 375px;
+    // height: 375px;
   }
 }
 

@@ -97,7 +97,7 @@ export class MyOfferPlansPage implements OnInit {
         this.appliRout.goToListPassInternet(this.payloadNavigation);
         break;
       case 'recharge':
-        // put the new route for recharge page
+        this.appliRout.goToTransfertHubServicesPage('BUY')
         break;
       default:
         break;
