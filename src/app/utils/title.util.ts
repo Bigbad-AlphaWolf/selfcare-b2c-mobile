@@ -23,7 +23,7 @@ export const titles: PageTitle[] = [
   },
   {
     typeOperation: OPERATION_TYPE_RECHARGE_CREDIT,
-    title: "Achat de Crédit",
+    title: "Achat de crédit",
     subTtile: "Montant à recharger",
   },
   {

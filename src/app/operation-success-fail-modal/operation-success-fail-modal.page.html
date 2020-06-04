@@ -86,7 +86,7 @@
       >
         <div class="left-block">Bénéficiaire</div>
         <div class="right-block scb-text-gray">
-          <span class="numero">{{recipientMsisdn}}</span>
+          <span class="numero">{{recipientMsisdn|phoneNumberDisplay}}</span>
           <span class="name">
             {{buyForMe ? 'Moi même' : recipientName ? recipientName : 'Autre'}}
           </span>
@@ -108,7 +108,7 @@
         <span class="numero">
           {{paymentMod === 'ORANGE_MONEY' ?'Orange Money' : 'Crédit Recharge'}}
         </span>
-        <span class="name">{{msisdnBuyer}}</span>
+        <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
       </div>
     </div>
     <div class="details details-date">
