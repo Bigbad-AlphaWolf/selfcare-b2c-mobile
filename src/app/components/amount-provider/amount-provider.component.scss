@@ -1,0 +1,94 @@
+@import "src/app/app";
+.set-amount {
+  padding-top: 30px;
+  .title1 {
+    font-size: 20px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    color: #000000;
+    font-family: HelveticaNeue !important;
+    padding: 0px 15px;
+  }
+  .sub-title {
+    font-family: HelveticaNeue, sans-serif;
+    font-size: 20px;
+    line-height: 1.5;
+    padding: 20px 15px;
+  }
+  mat-button-toggle-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px 0px;
+
+    mat-button-toggle {
+      width: 105px;
+      height: 60px;
+      border-radius: 10px;
+      border: solid 1px #eeeeee;
+      background-color: #ffffff;
+      margin: 10px;
+      display: flex;
+      span:first-child {
+        color: #000000;
+        font-size: 16px;
+
+      }
+      span:last-child {
+        padding-bottom: 4px;
+        color: #666666;
+        font-size: 12px;
+      }
+      .amount{
+        font-family: HelveticaNeueLTStd-Bd;
+      }
+    }
+
+    .enter-amount {
+      width: 100%;
+      margin: 15px 15px;
+      padding: 15px 5px;
+    }
+  }
+
+  .form {
+    margin: 30px 15px 5px 15px;
+    .transfer-options {
+      ion-list {
+        margin-top: -20px !important;
+        ion-item {
+          --inner-padding-end: 0px;
+          --padding-start: 0px;
+          margin-top: 10px;
+          .fees-value {
+            text-align: right;
+            font-size: 12px;
+          }
+          .label {
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 14px;
+            line-height: 1.14;
+            color: $fullBlack;
+          }
+        }
+      }
+      .amount-fees {
+        width: 100%;
+        text-align: right;
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        margin-top: 10px;
+      }
+    }
+    .recipient-info-block {
+      padding-top: 20px;
+    }
+    .error-display {
+      font-size: 14px;
+      margin: 7px 0;
+    }
+  }
+}

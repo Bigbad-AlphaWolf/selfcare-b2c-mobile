@@ -1,5 +1,5 @@
-import { Injectable, Renderer2, Inject, RendererFactory2 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, Renderer2, Inject, RendererFactory2 } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 import {
   BehaviorSubject,
   Subject,
@@ -8,7 +8,7 @@ import {
   throwError,
   Subscription,
   of,
-} from 'rxjs';
+} from "rxjs";
 import {
   tap,
   delay,
@@ -16,13 +16,13 @@ import {
   shareReplay,
   retryWhen,
   flatMap,
-} from 'rxjs/operators';
-import * as SecureLS from 'secure-ls';
-import { DOCUMENT } from '@angular/platform-browser';
-import { environment } from 'src/environments/environment';
-import { AuthenticationService } from '../authentication-service/authentication.service';
-import { BuyPassModel, TransfertBonnus, TransferCreditModel } from '.';
-import { SubscriptionUserModel, JAMONO_ALLO_CODE_FORMULE } from 'src/shared';
+} from "rxjs/operators";
+import * as SecureLS from "secure-ls";
+import { DOCUMENT } from "@angular/platform-browser";
+import { environment } from "src/environments/environment";
+import { AuthenticationService } from "../authentication-service/authentication.service";
+import { BuyPassModel, TransfertBonnus, TransferCreditModel } from ".";
+import { SubscriptionUserModel, JAMONO_ALLO_CODE_FORMULE } from "src/shared";
 const {
   SERVER_API_URL,
   SEDDO_SERVICE,
@@ -32,7 +32,7 @@ const {
   UAA_SERVICE,
   GATEWAY_SERVICE,
 } = environment;
-const ls = new SecureLS({ encodingType: 'aes' });
+const ls = new SecureLS({ encodingType: "aes" });
 
 // user consumation endpoints
 const userConsoEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/suivi-compteur-consommations`;
@@ -82,7 +82,7 @@ const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boost
 const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/birthDate`;
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class DashboardService {
   currentPhoneNumberChangeSubject: Subject<string> = new Subject<string>();
@@ -138,13 +138,13 @@ export class DashboardService {
 
   getCurrentDate() {
     const date = new Date();
-    const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
-      '0' +
+    const lastDate = `${("0" + date.getDate()).slice(-2)}/${(
+      "0" +
       (date.getMonth() + 1)
     ).slice(-2)}/${date.getFullYear()}`;
     const lastDateTime =
       `${date.getHours()}h` +
-      (date.getMinutes() < 10 ? '0' : '') +
+      (date.getMinutes() < 10 ? "0" : "") +
       date.getMinutes();
     return `${lastDate} à ${lastDateTime}`;
   }
@@ -172,17 +172,17 @@ export class DashboardService {
   }
 
   getMainPhoneNumberProfil() {
-    return ls.get('mainPhoneNumber');
+    return ls.get("mainPhoneNumber");
   }
 
   // return the phone number that is used when getting user balance, conso history etc.
   getCurrentPhoneNumber() {
-    return ls.get('currentPhoneNumber');
+    return ls.get("currentPhoneNumber");
   }
 
   // change the active number
   setCurrentPhoneNumber(msisdn: string) {
-    ls.set('currentPhoneNumber', msisdn);
+    ls.set("currentPhoneNumber", msisdn);
     this.currentPhoneNumberChangeSubject.next(msisdn);
   }
 
@@ -201,7 +201,7 @@ export class DashboardService {
   // attach new mobile phone number
   registerNumberToAttach(detailsToCheck: {
     numero: string;
-    typeNumero: 'MOBILE' | 'FIXE';
+    typeNumero: "MOBILE" | "FIXE";
   }) {
     detailsToCheck = Object.assign(detailsToCheck, {
       login: this.authService.getUserMainPhoneNumber(),
@@ -215,7 +215,7 @@ export class DashboardService {
   registerNumberByIdClient(payload: {
     numero: string;
     idClient: string;
-    typeNumero: 'MOBILE' | 'FIXE';
+    typeNumero: "MOBILE" | "FIXE";
   }) {
     payload = Object.assign(payload, {
       login: this.authService.getUserMainPhoneNumber(),
@@ -237,7 +237,7 @@ export class DashboardService {
     idClient: string;
     numero: string;
   }) {
-    payload = Object.assign({}, payload, { typeNumero: 'FIXE' });
+    payload = Object.assign({}, payload, { typeNumero: "FIXE" });
     return this.http.post(saveFixNumber, payload);
   }
 
@@ -245,6 +245,22 @@ export class DashboardService {
   getAttachedNumbers() {
     const login = this.authService.getUserMainPhoneNumber();
     return this.http.get(`${userLinkedPhoneNumberEndpoint}/${login}`);
+  }
+
+  fetchOemNumbers() {
+    const mainPhone = this.authService.getUserMainPhoneNumber();
+    return this.http.get(`${userLinkedPhoneNumberEndpoint}/${mainPhone}`).pipe(
+      map((elements: any) => {
+        let numbers = [mainPhone];
+        elements.forEach((element:any) => {
+          const msisdn = "" + element.msisdn;
+          if (!msisdn.startsWith("33", 0)) {
+            numbers.push(element.msisdn);
+          }
+        });
+        return numbers;
+      })
+    );
   }
 
   // get main number
@@ -291,9 +307,9 @@ export class DashboardService {
   getUserConsoInfosByCode(consoCodes?: number[]) {
     this.msisdn = this.getCurrentPhoneNumber();
     // filter by code not working on Orange VM so
-    let queryParams = '';
+    let queryParams = "";
     if (consoCodes && Array.isArray(consoCodes) && consoCodes.length) {
-      const params = consoCodes.map((code) => `code=${code}`).join('&');
+      const params = consoCodes.map((code) => `code=${code}`).join("&");
       queryParams = `?${params}`;
     }
     return this.http
@@ -346,7 +362,7 @@ export class DashboardService {
     const { msisdn, receiver, codeIN, amount } = payload;
     const params = { msisdn, receiver, codeIN, amount };
     switch (payload.type) {
-      case 'internet':
+      case "internet":
         if (msisdn === receiver) {
           return this.http.post(buyPassInternetByCreditEndpoint, params);
         } else {
@@ -355,7 +371,7 @@ export class DashboardService {
             params
           );
         }
-      case 'illimix':
+      case "illimix":
         return this.http.post(buyPassIllimixByCreditEndpoint, params);
       default:
         break;
@@ -390,7 +406,7 @@ export class DashboardService {
       .getSubscription(msisdn)
       .subscribe((souscription: SubscriptionUserModel) => {
         const codeFormule =
-          souscription.profil === 'HYBRID' || souscription.profil === 'ND'
+          souscription.profil === "HYBRID" || souscription.profil === "ND"
             ? JAMONO_ALLO_CODE_FORMULE
             : souscription.code;
         res = of(codeFormule);

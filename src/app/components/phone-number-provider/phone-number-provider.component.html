@@ -1,0 +1,23 @@
+<div class="beneficiary-number">
+  <form novalidate autocomplete="false">
+    <mat-form-field class="scb-input-row" appearance="outline">
+        <mat-label>Numéro du bénéficiaire &nbsp;&nbsp;</mat-label>
+        <input
+        [ngModelOptions]="{standalone: true}"
+          #numberInput
+          matInput
+          type="tel" 
+          maxlength=20
+          [(ngModel)]="recipientContactInfos && recipientContactInfos.length > 0 ? recipientContactInfos : otherBeneficiaryNumber"
+          (ngModelChange) = "onValueChange($event)"
+        />
+      </mat-form-field>
+  </form>
+  <div class="contact">
+    <img class="icon" src="/assets/images/address-book.png" alt="">
+    <span (click)="pickContact()" class="btn-contact scb-text-orange">Mes Contact</span>
+  </div>
+  <div *ngIf="hasErrorGetContact" class="error-msg scb-text-red-error">
+    {{ errorGetContact }}
+ </div>
+</div>

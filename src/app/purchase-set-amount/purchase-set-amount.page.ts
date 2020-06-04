@@ -16,6 +16,8 @@ import {
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { NavController } from '@ionic/angular';
+import { OperationExtras } from '../models/operation-extras.model';
+import { of, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-purchase-set-amount',
@@ -31,7 +33,7 @@ export class PurchaseSetAmountPage implements OnInit {
   checkingAmount: boolean;
   recipientFirstname: string;
   recipientLastname: string;
-  purchasePayload: any;
+  purchasePayload: OperationExtras;
   hasError: boolean;
   error: string;
   fee: number;
@@ -55,9 +57,11 @@ export class PurchaseSetAmountPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.initForm(100);
+    // this.initForm(100);
     this.getPurchaseType();
   }
+
+  amountSelected($event) {}
 
   initForm(minValue: number, initialValue?: number) {
     this.setAmountForm = this.fb.group({
@@ -116,6 +120,7 @@ export class PurchaseSetAmountPage implements OnInit {
   getPurchaseType() {
     // let state = this.router.getCurrentNavigation().extras.state;
     this.purchasePayload = history.state;
+
     if (this.purchasePayload && this.purchasePayload.purchaseType) {
       this.purchaseType = this.purchasePayload.purchaseType;
       this.userHasNoOmAccount = this.purchasePayload.userHasNoOmAccount;
@@ -123,6 +128,7 @@ export class PurchaseSetAmountPage implements OnInit {
       this.recipientFirstname = this.purchasePayload.recipientFirstname;
       this.recipientLastname = this.purchasePayload.recipientLastname;
       this.getPageTitle();
+
       switch (this.purchaseType) {
         case OPERATION_TYPE_SEDDO_CREDIT:
         case OPERATION_TYPE_SEDDO_BONUS:
@@ -130,6 +136,7 @@ export class PurchaseSetAmountPage implements OnInit {
           break;
         case OPERATION_TYPE_MERCHANT_PAYMENT:
         case OPERATION_TYPE_RECHARGE_CREDIT:
+          break;
         case OPERATION_TRANSFER_OM:
           this.initForm(1, initialAmount);
           break;
@@ -199,8 +206,7 @@ export class PurchaseSetAmountPage implements OnInit {
       (hasEnoughBalance) => {
         this.checkingAmount = false;
         if (hasEnoughBalance) {
-          const navExtras: NavigationExtras = { state: this.purchasePayload };
-          this.router.navigate(['/operation-recap'], navExtras);
+          this.redirectRecapPage(this.purchasePayload);
         } else {
           this.hasError = true;
           this.error =
@@ -209,10 +215,14 @@ export class PurchaseSetAmountPage implements OnInit {
       },
       (err) => {
         this.checkingAmount = false;
-        const navExtras: NavigationExtras = { state: this.purchasePayload };
-        this.router.navigate(['/operation-recap'], navExtras);
+        this.redirectRecapPage(this.purchasePayload);
       }
     );
+  }
+
+  redirectRecapPage(payload: any) {
+    const navExtras: NavigationExtras = { state: payload };
+    this.router.navigate(['/operation-recap'], navExtras);
   }
 
   getOMTransferFees() {

@@ -19,6 +19,7 @@ import {
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_TYPE_RECHARGE_CREDIT,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -317,7 +318,7 @@ export class NewPinpadModalPage implements OnInit {
               omUser.loginRefreshToken = loginRes.content.data.refresh_token;
               this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
               switch (this.operationType) {
-                case 'BUY_CREDIT':
+                case OPERATION_TYPE_RECHARGE_CREDIT:
                   const creditToBuy = Object.assign({}, this.buyCreditPayload, {
                     pin,
                   });
@@ -699,6 +700,11 @@ export class NewPinpadModalPage implements OnInit {
       this.modalController.dismiss({
         success: true,
       });
+    }else if (res === null || res.status_code === null) {
+      this.pinError = "Une erreur s'est produite. Veuillez ressayer ultérieurement";
+      this.pinHasError = true;
+      this.recurrentOperation = true;
+      // this.resultEmit.emit('erreur');
     } else {
       this.pinHasError = true;
       this.orangeMoneyService.logWithFollowAnalytics(
@@ -706,11 +712,7 @@ export class NewPinpadModalPage implements OnInit {
         'error',
         this.dataToLog
       );
-      if (res === null || res.status_code === null) {
-        this.pinError = "Une erreur s'est produite.";
-        this.recurrentOperation = true;
-        // this.resultEmit.emit('erreur');
-      } else if (res.status_code.match('Erreur-045')) {
+        if (res.status_code.match('Erreur-045')) {
         this.pinError =
           'Vous avez effectué la même transaction il y a quelques instants.';
         this.recurrentOperation = true;
