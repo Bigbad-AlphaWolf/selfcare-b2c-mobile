@@ -129,4 +129,10 @@
   .activationOM-mobile-container-body-with-op {
     height: 100%;
   }
+  ion-button{
+    height: 50px;
+    --border-radius: 5px;
+    --background-activated : $orange;
+  }
+
 }
