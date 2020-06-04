@@ -1,11 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { MatBottomSheet } from '@angular/material';
+import { NumberSelectionComponent } from '../components/number-selection/number-selection.component';
+import { NumberSelectionOption } from '../models/enums/number-selection-option.enum';
+import { OperationExtras } from '../models/operation-extras.model';
+import { OPERATION_TYPE_RECHARGE_CREDIT } from 'src/shared';
+import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 
 @Component({
   selector: 'app-transfert-hub-services',
@@ -108,24 +114,31 @@ export class TransfertHubServicesPage implements OnInit {
   dataPayload: any;
   constructor(
     private appRouting: ApplicationRoutingService,
-    private modalController: ModalController  ) {}
+    private modalController: ModalController,
+    private matBottomSheet: MatBottomSheet ,
+    private navController: NavController,
+    private router:Router ) {}
 
   ngOnInit() {
     let purchaseType;
+
     if(history && history.state){
       purchaseType = history.state.purchaseType;
     }
-    if (purchaseType === 'TRANSFER') {
+    if (purchaseType === 'TRANSFER') { 
       this.options = this.transferOptions;
       this.pageTitle = 'Transférer argent ou crédit';
-    } else {
+    } else if(purchaseType === 'BUY') { 
       this.options = this.buyOptions;
       this.pageTitle = 'Acheter crédit ou pass';
+    }else{
+      this.navController.navigateBack('/dashboard');
+
     }
   }
 
   goToDashboard() {
-    this.appRouting.goToDashboard();
+    this.navController.navigateBack('/dashboard');
   }
 
   goTo(opt: {
@@ -154,7 +167,8 @@ export class TransfertHubServicesPage implements OnInit {
         break;
       case 'CREDIT':
         if (opt.action === 'REDIRECT') {
-          this.appRouting.goBuyCredit();
+          // this.appRouting.goBuyCredit();
+          this.openNumberSelectionBottomSheet();    
         }
         break;
       case 'PASS':
@@ -185,5 +199,19 @@ export class TransfertHubServicesPage implements OnInit {
       }
     });
     return await modal.present();
+  }
+
+
+  openNumberSelectionBottomSheet(option?: NumberSelectionOption) {
+    this.matBottomSheet
+      .open(NumberSelectionComponent, {
+        data: {option: option},
+      })
+      .afterDismissed()
+      .subscribe((opInfos: OperationExtras) => {
+      if(!opInfos || !opInfos.recipientMsisdn) return;
+      opInfos = { purchaseType:OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos}
+      this.router.navigate([CreditPassAmountPage.PATH], {state:opInfos});
+      });
   }
 }

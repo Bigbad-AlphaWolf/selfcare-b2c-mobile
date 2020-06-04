@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { SetPaymentChannelModalPage } from '../set-payment-channel-modal/set-payment-channel-modal.page';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BuyPassModel } from '../services/dashboard-service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
@@ -13,6 +13,7 @@ import {
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TRANSFER_OM,
   SubscriptionModel,
+  OPERATION_TYPE_RECHARGE_CREDIT,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -68,6 +69,7 @@ export class OperationRecapPage implements OnInit {
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   state: any;
   subscriptionInfos: SubscriptionModel;
+  buyCreditPayload: any;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -83,7 +85,7 @@ export class OperationRecapPage implements OnInit {
   ngOnInit() {
     this.currentUserNumber = this.dashboardService.getCurrentPhoneNumber();
     if (this.route)
-      this.route.queryParams.subscribe((params) => {
+      this.route.queryParams.subscribe(() => {
         if (
           this.router.getCurrentNavigation() &&
           this.router.getCurrentNavigation().extras.state &&
@@ -142,6 +144,11 @@ export class OperationRecapPage implements OnInit {
                 nom_marchand: this.merchantName,
               };
               break;
+              case OPERATION_TYPE_RECHARGE_CREDIT:
+                this.amount = state.amount;
+                this.recipientMsisdn = state.recipientMsisdn;
+
+                break;
             default:
               break;
           }
@@ -161,6 +168,9 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_ILLIMIX:
         this.setPaymentMod();
         break;
+        case OPERATION_TYPE_RECHARGE_CREDIT:
+          this.openPinpad();
+          break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
       case OPERATION_TRANSFER_OM:
       case OPERATION_TRANSFER_OM_WITH_CODE:
@@ -207,6 +217,7 @@ export class OperationRecapPage implements OnInit {
       componentProps: {
         operationType: this.purchaseType,
         buyPassPayload: this.buyPassPayload,
+        buyCreditPayload: {msisdn2:this.state.recipientMsisdn, amount:this.state.amount},
         merchantPaymentPayload: this.merchantPaymentPayload,
         transferMoneyPayload: this.transferOMPayload,
         transferMoneyWithCodePayload: this.transferOMWithCodePayload,
@@ -226,6 +237,8 @@ export class OperationRecapPage implements OnInit {
     return await modal.present();
   }
 
+  
+
   async openSuccessFailModal(params: ModalSuccessModel) {
     params.passBought = this.passChoosen;
     params.paymentMod = this.paymentMod;
@@ -243,11 +256,16 @@ export class OperationRecapPage implements OnInit {
       componentProps: params,
       backdropDismiss: false,
     });
-    modal.onDidDismiss().then((response) => {});
+    modal.onDidDismiss().then(() => {});
     return await modal.present();
   }
 
   goBack() {
+    
+    // if(this.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT)
+    // console.log(this.purchaseType);
+
+    //   this.navController.navigateBack(CreditPassAmountPage.PATH);
     this.navController.pop();
   }
 
@@ -276,7 +294,7 @@ export class OperationRecapPage implements OnInit {
       (res: any) => {
         this.transactionSuccessful(res);
       },
-      (err) => {
+      () => {
         this.transactionFailure();
       }
     );
