@@ -90,9 +90,11 @@ export class NumberSelectionComponent implements OnInit {
     this.omService.omAccountSession().subscribe((omSession:any)=> {      
       this.omSession = omSession;
       this.isProcessing = false;
+      this.changeDetectorRef.detectChanges()
+      
       if (omSession.msisdn === 'error' || !omSession.hasApiKey  || !omSession.accessToken) {
-        this.router.navigate(['/see-solde-om']);
-        return
+        this.bottomSheetRef.dismiss()
+        this.openPinpad();
       }
 
       if(omSession.msisdn !== 'error' ) this.opXtras.senderMsisdn = omSession.msisdn;

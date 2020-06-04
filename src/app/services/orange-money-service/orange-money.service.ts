@@ -387,6 +387,7 @@ export class OrangeMoneyService {
   omAccountSession() {
     return this.getOmMsisdn().pipe(
       switchMap((msisdn) => {
+        if(msisdn === 'error') return of({ msisdn: msisdn });
         return this.GetUserAuthInfo(msisdn).pipe(
           map((infos: any) => {
             return { msisdn: msisdn, ...infos };
