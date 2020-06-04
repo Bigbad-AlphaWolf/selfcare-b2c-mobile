@@ -13,12 +13,13 @@
       <span class="title" *ngSwitchCase="OPERATION_INTERNET_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
+      <span class="title" *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+      >{{success ? 'Achat crédit effectué' : 'Echec Achat'}}</span
+    >
       <span class="title" *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
-      <span class="title" *ngSwitchCase="OPERATION_TYPE_RECHARGE"
-        >{{success ? 'Rechargement effectué' : 'Echec de la recharge'}}</span
-      >
+     
       <span class="title" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
         >{{success ? 'Paiement effectué' : 'Echec Paiement'}}</span
       >
@@ -29,6 +30,9 @@
         <span *ngSwitchCase="OPERATION_INTERNET_TYPE"
           >Vous avez acheté le pass internet</span
         >
+        <span *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+        >Vous avez acheté un montant de</span
+      >
         <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
           >Vous avez acheté le pass illimix</span
         >
@@ -59,6 +63,11 @@
         *ngSwitchCase="OPERATION_TRANSFER_OM"
       ></app-item-recharge-credit>
       <app-item-recharge-credit
+      [modifiable]="false"
+      [amount]="amount"
+      *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+    ></app-item-recharge-credit>
+      <app-item-recharge-credit
         [modifiable]="false"
         [amount]="amount"
         *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
@@ -77,7 +86,7 @@
       >
         <div class="left-block">Bénéficiaire</div>
         <div class="right-block scb-text-gray">
-          <span class="numero">{{recipientMsisdn}}</span>
+          <span class="numero">{{recipientMsisdn|phoneNumberDisplay}}</span>
           <span class="name">
             {{buyForMe ? 'Moi même' : recipientName ? recipientName : 'Autre'}}
           </span>
@@ -99,7 +108,7 @@
         <span class="numero">
           {{paymentMod === 'ORANGE_MONEY' ?'Orange Money' : 'Crédit Recharge'}}
         </span>
-        <span class="name">{{msisdnBuyer}}</span>
+        <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
       </div>
     </div>
     <div class="details details-date">

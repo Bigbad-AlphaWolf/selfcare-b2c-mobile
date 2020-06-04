@@ -1,0 +1,21 @@
+@import "src/app/app";
+.beneficiary-number {
+  position: relative;
+  margin-top: 15px;
+  .scb-input-row {
+    padding-bottom: 0px !important;
+  }
+  .contact {
+    display: flex;
+    position: absolute;
+    align-items: center;
+    right: 10px;
+    bottom: 42px;
+
+    .btn-contact {
+      padding-left: 5px;
+      background-color: $white;
+      font-weight: bold;
+    }
+  }
+}
