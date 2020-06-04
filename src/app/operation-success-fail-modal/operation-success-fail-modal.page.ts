@@ -8,7 +8,9 @@ import {
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TRANSFER_OM,
   OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_TYPE_RECHARGE_CREDIT,
 } from 'src/shared';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 
 @Component({
   selector: 'app-operation-success-fail-modal',
@@ -21,6 +23,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
+  OPERATION_TYPE_RECHARGE = OPERATION_TYPE_RECHARGE_CREDIT;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;
@@ -34,11 +37,12 @@ export class OperationSuccessFailModalPage implements OnInit {
   @Input() merchantCode: number;
   @Input() merchantName: string;
   dateAchat = this.dashboardService.getCurrentDate();
-
+  btnText: string;
   constructor(
     private dashboardService: DashboardService,
     private router: Router,
-    public modalController: ModalController
+    public modalController: ModalController,
+    private appRouting: ApplicationRoutingService
   ) {}
 
   ngOnInit() {}
@@ -46,5 +50,26 @@ export class OperationSuccessFailModalPage implements OnInit {
   terminer() {
     this.modalController.dismiss();
     this.router.navigate(['/dashboard']);
+  }
+
+  goToPage(purchaseType: string){
+    switch (purchaseType) {
+      case this.OPERATION_ILLIMIX_TYPE:
+       this.appRouting.goToSelectRecepientPassIllimix();
+        break;
+      case this.OPERATION_INTERNET_TYPE:
+       this.appRouting.goToSelectRecepientPassInternet();
+        break;
+      case this.OPERATION_TYPE_RECHARGE:
+       this.appRouting.goToTransfertHubServicesPage('BUY');
+        break;
+      case this.OPERATION_TRANSFER_OM:
+      case this.OPERATION_TRANSFER_OM_WITH_CODE:
+       this.appRouting.goToTransfertHubServicesPage('TRANSFER');
+        break;
+      default:
+        break;
+    }
+    this.modalController.dismiss();
   }
 }
