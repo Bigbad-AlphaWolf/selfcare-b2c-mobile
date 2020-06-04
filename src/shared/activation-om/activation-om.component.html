@@ -1,137 +1,139 @@
-<div class="activationOM-mobile-container">
-    <div
-      (click)="goToDashboard()"
-      class="activationOM-mobile-container-header"
-      *ngIf="!operation"
-    >
-      <img src="/assets/images/arrow-left.png" alt="icon-back" class="back-btn" />
-      <span class="header-text scb-text-l-black">{{ title }}</span>
-    </div>
-    <div *ngIf="checkingToken" class="checking-token-block">
-      <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
-    </div>
-    <div
-      [ngClass]="{
-        'activationOM-mobile-container-body': !operation,
-        'activationOM-mobile-container-body-with-op': operation
-      }"
-      *ngIf="!checkingToken"
-    >
-      <div *ngIf="firstTimeOM && !stepOtp" class="codeOTP-content">
-        <div class="image-activationOM">
-          <img
-            src="/assets/images/activation-orange-money.png"
-            alt="image-OM"
-            class="image-header"
-          />
-        </div>
-        <div class="activationOM-mobile-container-body-content">
-          <span class="text scb-text-light-black"
-            >Pour votre première utilisation de Orange Money dans Orange et Moi
-            vous devez être identifié.</span
-          >
-          <div class="title-1 scb-text-gray">Choisir Le Numéro Orange Money</div>
-          <div class="dropdown-numero">
-            <mat-form-field>
-              <mat-select [(ngModel)]="phoneNumber">
-                <mat-option
-                  *ngFor="let number of allNumbers; let i = index"
-                  [value]="number"
-                >
-                  {{ number }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-  
-          <button
-            *ngIf="firstTimeOM"
-            [disabled]="phoneNumber && phoneNumber.length < 9"
-            class="confirm-btn scb-btn-full scb-btn-orange"
-            (click)="goToStepOtp()"
-          >
-            <span>Confirmer</span>
-          </button>
-        </div>
+<ion-content>
+  <div class="activationOM-mobile-container">
+      <div
+        (click)="goToDashboard()"
+        class="activationOM-mobile-container-header"
+        *ngIf="!operation"
+      >
+        <img src="/assets/images/arrow-left.png" alt="icon-back" class="back-btn" />
+        <span class="header-text scb-text-l-black">{{ title }}</span>
       </div>
-      <div class="codeOTP-content" *ngIf="firstTimeOM && stepOtp">
-        <div class="image-activationOM">
-          <img
-            src="/assets/images/activation-orange-money.png"
-            alt="image-OM"
-            class="image-header"
-          />
-        </div>
-        <div class="activationOM-mobile-container-body-content">
-          <span class="text scb-text-light-black"
-            >Pour votre première utilisation de Orange Money dans Orange et Moi
-            vous devez être identifié. Vous avez reçu un code par SMS, merci de le
-            renseigner</span
-          >
-          <form
-            [formGroup]="form"
-            (ngSubmit)="onSubmit()"
-            novalidate
-            autocomplete="false"
-          >
-            <div class="otp-input">
-              <mat-form-field class="material-input">
-                <input
-                  formControlName="codeOTP"
-                  type="text"
-                  matInput
-                  placeholder="Entrez le code reçu"
-                  required
-                />
+      <div *ngIf="checkingToken" class="checking-token-block">
+        <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+      </div>
+      <div
+        [ngClass]="{
+          'activationOM-mobile-container-body': !operation,
+          'activationOM-mobile-container-body-with-op': operation
+        }"
+        *ngIf="!checkingToken"
+      >
+        <div *ngIf="firstTimeOM && !stepOtp" class="codeOTP-content">
+          <div class="image-activationOM">
+            <img
+              src="/assets/images/activation-orange-money.png"
+              alt="image-OM"
+              class="image-header"
+            />
+          </div>
+          <div class="activationOM-mobile-container-body-content">
+            <span class="text scb-text-light-black"
+              >Pour votre première utilisation de Orange Money dans Orange et Moi
+              vous devez être identifié.</span
+            >
+            <div class="title-1 scb-text-gray">Choisir Le Numéro Orange Money</div>
+            <div class="dropdown-numero">
+              <mat-form-field>
+                <mat-select [(ngModel)]="phoneNumber">
+                  <mat-option
+                    *ngFor="let number of allNumbers; let i = index"
+                    [value]="number"
+                  >
+                    {{ number }}
+                  </mat-option>
+                </mat-select>
               </mat-form-field>
-              <div class="btn-info scb-text-white">
-                ?
-              </div>
             </div>
-  
-            <button
-              *ngIf="!getToken"
-              [disabled]="!form.valid || otpLoader"
+    
+            <ion-button shape="round" expand="block"
+              *ngIf="firstTimeOM"
+              [disabled]="phoneNumber && phoneNumber.length < 9"
               class="confirm-btn scb-btn-full scb-btn-orange"
+              (click)="goToStepOtp()"
             >
               <span>Confirmer</span>
-              <mat-spinner
-                mode="indeterminate"
-                [diameter]="20"
-                *ngIf="otpLoader"
-              ></mat-spinner>
-            </button>
-            <button
-              (click)="sendOTPCode()"
-              [disabled]="sendOTPLoader"
-              *ngIf="resendCode"
-              class="scb-btn scb-btn-orange resend-code"
+            </ion-button>
+          </div>
+        </div>
+        <div class="codeOTP-content" *ngIf="firstTimeOM && stepOtp">
+          <div class="image-activationOM">
+            <img
+              src="/assets/images/activation-orange-money.png"
+              alt="image-OM"
+              class="image-header"
+            />
+          </div>
+          <div class="activationOM-mobile-container-body-content">
+            <span class="text scb-text-light-black"
+              >Pour votre première utilisation de Orange Money dans Orange et Moi
+              vous devez être identifié. Vous avez reçu un code par SMS, merci de le
+              renseigner</span
             >
-              Renvoyer le code
-              <mat-spinner
-                mode="indeterminate"
-                [diameter]="20"
-                *ngIf="sendOTPLoader"
-              ></mat-spinner>
-            </button>
-          </form>
+            <form
+              [formGroup]="form"
+              (ngSubmit)="onSubmit()"
+              novalidate
+              autocomplete="false"
+            >
+              <div class="otp-input">
+                <mat-form-field class="material-input">
+                  <input
+                    formControlName="codeOTP"
+                    type="text"
+                    matInput
+                    placeholder="Entrez le code reçu"
+                    required
+                  />
+                </mat-form-field>
+                <div class="btn-info scb-text-white">
+                  ?
+                </div>
+              </div>
+    
+              <button
+                *ngIf="!getToken"
+                [disabled]="!form.valid || otpLoader"
+                class="confirm-btn scb-btn-full scb-btn-orange"
+              >
+                <span>Confirmer</span>
+                <mat-spinner
+                  mode="indeterminate"
+                  [diameter]="20"
+                  *ngIf="otpLoader"
+                ></mat-spinner>
+              </button>
+              <button
+                (click)="sendOTPCode()"
+                [disabled]="sendOTPLoader"
+                *ngIf="resendCode"
+                class="scb-btn scb-btn-orange resend-code"
+              >
+                Renvoyer le code
+                <mat-spinner
+                  mode="indeterminate"
+                  [diameter]="20"
+                  *ngIf="sendOTPLoader"
+                ></mat-spinner>
+              </button>
+            </form>
+          </div>
+          <div class="error-message" *ngIf="pinErrorMsg">
+            <span>{{ pinErrorMsg }}</span>
+          </div>
         </div>
-        <div class="error-message" *ngIf="pinErrorMsg">
-          <span>{{ pinErrorMsg }}</span>
+        <div *ngIf="getToken" class="pinPad-content">
+          <div class="overlay"></div>
+          <app-pin-pad
+            [hasError]="pinPadHasError"
+            [infosText]="infosText"
+            [errorMsg]="pinErrorMsg"
+            (pin)="processPin($event)"
+            [loading]="loading"
+            [recurrentOperation]="recurrentOperation"
+          >
+          </app-pin-pad>
         </div>
-      </div>
-      <div *ngIf="getToken" class="pinPad-content">
-        <div class="overlay"></div>
-        <app-pin-pad
-          [hasError]="pinPadHasError"
-          [infosText]="infosText"
-          [errorMsg]="pinErrorMsg"
-          (pin)="processPin($event)"
-          [loading]="loading"
-          [recurrentOperation]="recurrentOperation"
-        >
-        </app-pin-pad>
       </div>
     </div>
-  </div>
+</ion-content>
   

@@ -4,6 +4,7 @@ import { AuthGuard } from './services/auth-guard/auth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'home-v2', loadChildren: './home-v2/home-v2.module#HomeV2PageModule' },
   {
     path: 'new-registration',
     loadChildren:
@@ -194,6 +195,7 @@ const routes: Routes = [
   { path: 'transfert-hub-services', loadChildren: './transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule' },
   { path: 'purchase-set-amount', loadChildren: './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule' },
   { path: 'credit-pass-amount', loadChildren: './pages/credit-pass-amount/credit-pass-amount.module#CreditPassAmountPageModule' },
+
 
 
 

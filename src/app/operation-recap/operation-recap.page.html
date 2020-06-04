@@ -136,11 +136,13 @@
         </app-item-recharge-credit>
         <app-item-pass-internet
           [passInternet]="passChoosen"
+          [subscription]="subscriptionInfos"
           *ngSwitchCase="OPERATION_INTERNET_TYPE"
         >
         </app-item-pass-internet>
         <app-item-pass-illimix
           [passIllimix]="passChoosen"
+          [subscription]="subscriptionInfos"
           *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >
         
