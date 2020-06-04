@@ -189,8 +189,30 @@ export class PurchaseSetAmountPage implements OnInit {
         'recipientLastname'
       ];
     }
-    const navExtras: NavigationExtras = { state: this.purchasePayload };
-    this.router.navigate(['/operation-recap'], navExtras);
+    this.checkOMBalanceSuffiency(amount);
+  }
+
+  checkOMBalanceSuffiency(amount) {
+    this.checkingAmount = true;
+    this.hasError = false;
+    this.omService.checkBalanceSufficiency(amount).subscribe(
+      (hasEnoughBalance) => {
+        this.checkingAmount = false;
+        if (hasEnoughBalance) {
+          const navExtras: NavigationExtras = { state: this.purchasePayload };
+          this.router.navigate(['/operation-recap'], navExtras);
+        } else {
+          this.hasError = true;
+          this.error =
+            'Le montant que vous voulez transférer est supérieur à votre solde.';
+        }
+      },
+      (err) => {
+        this.checkingAmount = false;
+        const navExtras: NavigationExtras = { state: this.purchasePayload };
+        this.router.navigate(['/operation-recap'], navExtras);
+      }
+    );
   }
 
   getOMTransferFees() {
