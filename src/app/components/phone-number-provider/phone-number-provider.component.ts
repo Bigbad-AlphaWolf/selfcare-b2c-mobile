@@ -97,6 +97,7 @@ export class PhoneNumberProviderComponent implements OnInit {
         ? contact.name.formatted
         : givenName + " " + familyName;
     
+        this.opXtras.recipientName = this.recipientContactInfos;
         this.opXtras.recipientFirstname = givenName;
         this.opXtras.recipientLastname = familyName;
   }

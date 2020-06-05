@@ -19,6 +19,7 @@ import { ApplicationRoutingService } from '../services/application-routing/appli
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { OperationExtras } from '../models/operation-extras.model';
 
 @Component({
   selector: 'app-operation-recap',
@@ -145,8 +146,11 @@ export class OperationRecapPage implements OnInit {
               };
               break;
               case OPERATION_TYPE_RECHARGE_CREDIT:
-                this.amount = state.amount;
-                this.recipientMsisdn = state.recipientMsisdn;
+                let xtras:OperationExtras = state;
+                this.amount = xtras.amount;
+                this.recipientMsisdn = xtras.recipientMsisdn;
+                this.recipientName = xtras.recipientFromContact?
+                xtras.recipientFirstname + ' ' + xtras.recipientLastname:'';
 
                 break;
             default:

@@ -45,8 +45,8 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-  this.numbers$ = this.dashbServ.fetchOemNumbers();
-   this.checkOmAccountSession();
+    this.numbers$ = this.dashbServ.fetchOemNumbers();
+    this.checkOmAccountSession();
 
   }
 
@@ -120,15 +120,6 @@ export class NumberSelectionComponent implements OnInit {
   }
 
   disMissBottomSheet(){
-    this.followAnalytics.registerEventFollow(
-      'destinataire_transfert_has_om_account_success',
-      'event',
-      {
-        transfert_om_numero_sender: this.opXtras.senderMsisdn,
-        transfert_om_numero_receiver: this.opXtras.recipientMsisdn,
-        has_om: 'true',
-      }
-    );
     this.bottomSheetRef.dismiss(this.opXtras);
 
   }
