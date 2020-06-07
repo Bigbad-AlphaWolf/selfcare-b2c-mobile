@@ -8,6 +8,8 @@ import { Market } from '@ionic-native/market/ngx';
   styleUrls: ['./cancel-operation-popup.component.scss']
 })
 export class CancelOperationPopupComponent implements OnInit {
+  updateMessage = `Votre application n'est pas à jour.
+                    Pour profiter des dernières fonctionnalités, Mettez la à jour.`;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<CancelOperationPopupComponent>,
