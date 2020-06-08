@@ -15,6 +15,7 @@ export class CreditPassAmountPage implements OnInit {
   title: string;
   opXtras: OperationExtras = {};
   initialAmount : number ;
+  inputAmount : any ;
 
   constructor(
     private navController: NavController,
@@ -27,12 +28,17 @@ export class CreditPassAmountPage implements OnInit {
     this.title = (getPageTitle(this.opXtras.purchaseType)).title;
   }
 
+  ionViewWillEnter(){
+    this.opXtras.amount = this.inputAmount;
+  }
+
   onAmountSelected(amount: string) {
     this.opXtras.amount = amount;
     this.onContinue();
   }
 
   onInputSelected(amount: string) {
+    this.inputAmount = amount;
     this.opXtras.amount = amount;
   }
 

@@ -38,21 +38,18 @@
   <div *ngIf="phoneIsNotValid" class="error-msg scb-text-red-error">
     Veuillez choisir un numéro de destinataire valide pour continuer
   </div>
-  <div *ngIf="isErrorProcessing" class="error-msg scb-text-red-error">
-    Une erreur s'est produite pendant la vérification de votre compte OM.
-    Vérifiez votre internet ou reprenez plus tard
-  </div>
-  <div [hidden]="!canNotRecieve" class="error-msg scb-text-red-error">
+
+  <div [hidden]="!canNotRecieve && !canNotRecieveError" class="error-msg scb-text-red-error">
     Le numéro de votre destinataire ne peut pas recevoir de credit.
   </div>
   <div class="btn-continue">
     <button mat-button
-      [disabled]="isProcessing || isErrorProcessing"
+      [disabled]="isProcessing"
       (click)="onContinue()"
       >Continuer</button
     >
     <ion-spinner
-      *ngIf="isProcessing && !isErrorProcessing"
+      *ngIf="isProcessing"
       name="crescent"
     ></ion-spinner>
   </div>
