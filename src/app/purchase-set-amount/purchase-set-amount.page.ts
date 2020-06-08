@@ -135,7 +135,7 @@ export class PurchaseSetAmountPage implements OnInit {
           this.initForm(100);
           break;
         case OPERATION_TYPE_MERCHANT_PAYMENT:
-        case OPERATION_TYPE_RECHARGE_CREDIT:
+          this.initForm(1, initialAmount);
           break;
         case OPERATION_TRANSFER_OM:
           this.initForm(1, initialAmount);

@@ -17,7 +17,7 @@ import {
   catchError,
   switchMap,
 } from "rxjs/operators";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { environment } from "src/environments/environment";
 import * as jwt_decode from "jwt-decode";
 import * as SecureLS from "secure-ls";
@@ -214,19 +214,15 @@ export class AuthenticationService {
 
   canRecieveCredit(msisdn: string): Observable<any> {
     return this.isPostpaid(msisdn).pipe(
-      switchMap((isPostPaid: any) => {
-        if(!isPostPaid)
-        return this.getSubscription(msisdn).pipe(
-          map((s: SubscriptionModel) => s && s.code !== "0"),
-          catchError((er) => {
-            return of(false);
-          })
-        );
-        return of(false);
-      }),
-      catchError((er) => {
-        return of(false);
-      })
+      map((isPostPaid: any) => {
+        return (!isPostPaid);
+       }),
+      // catchError((er:HttpErrorResponse) => {
+      //   console.log(er);
+        
+      //   if(er.status !== 401)
+      //     return of(false);
+      // })
     );
   }
 

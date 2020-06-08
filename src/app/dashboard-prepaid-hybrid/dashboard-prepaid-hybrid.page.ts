@@ -42,6 +42,9 @@ import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.co
 import { AssistanceService } from '../services/assistance.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { ModalController } from '@ionic/angular';
+import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -109,7 +112,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
     private appliRouting: ApplicationRoutingService,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private omServ: OrangeMoneyService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -517,11 +522,26 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goMerchantPayment() {
-    this.bottomSheet
+    this.omServ.getOmMsisdn().subscribe((msisdn: string)=>{
+      if(msisdn !== 'error'){
+        this.bottomSheet
       .open(MerchantPaymentCodeComponent, {
         panelClass: 'merchant-code-modal',
       })
       .afterDismissed()
       .subscribe(() => {});
+      }else {
+        this.openPinpad()
+      }
+    })
+    
+  }
+
+  async openPinpad() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+    });
+    return await modal.present();
   }
 }

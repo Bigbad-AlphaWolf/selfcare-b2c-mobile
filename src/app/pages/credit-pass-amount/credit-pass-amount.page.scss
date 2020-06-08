@@ -22,6 +22,9 @@
 .transferts-page {
   height: 100%;
   background-color: $white;
+  :host {
+    height: 100%;
+  }
   .banniere-container {
     width: 100%;
     img {
