@@ -779,11 +779,15 @@ export class SplashScreenMock extends SplashScreen {
 }
 
 export function getBanniereTitle(banniereDescription: string) {
-  return banniereDescription.substring(0, banniereDescription.indexOf(';'));
+  return banniereDescription
+    ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
+    : '';
 }
 
 export function getBanniereDescription(banniereDescription: string) {
-  return banniereDescription.substring(banniereDescription.indexOf(';') + 1);
+  return banniereDescription
+    ? banniereDescription.substring(banniereDescription.indexOf(';') + 1)
+    : '';
 }
 
 export const HelpModalDefaultContent = {

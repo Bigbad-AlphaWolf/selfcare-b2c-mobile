@@ -34,7 +34,8 @@ export class MyAccountPage implements OnInit {
   userAvatarUrl: string;
   emailState: number;
   emailTitle: string;
-
+  hasLoadedAvatar = true;
+  hasErrorLoadingAvatar: boolean;
   constructor(
     private authServ: AuthenticationService,
     private router: Router,
@@ -67,6 +68,10 @@ export class MyAccountPage implements OnInit {
 
   changeAvatar(userImg) {
     this.accountService.openPrevizualisationDialog(userImg, this.imgExtension);
+    this.accountService.getStatusAvatarLoaded().subscribe((res:{status: boolean, error: boolean})=>{
+      this.hasLoadedAvatar = res.status;
+      this.hasErrorLoadingAvatar = res.error;
+    })
   }
 
   onAvatarSelected(valueChange: any) {
