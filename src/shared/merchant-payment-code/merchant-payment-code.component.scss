@@ -1,0 +1,42 @@
+@import 'src/app/app';
+
+.set-merchant-code-page {
+  padding: 7px 14px;
+  padding-top: 30px;
+  .text-block {
+    .title {
+      font-size: 24px;
+      display: block;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .sub-title {
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 16px;
+      display: block;
+      line-height: 1.25;
+    }
+  }
+  .form {
+    padding-top: 30px;
+    mat-form-field {
+      margin-bottom: -10px;
+    }
+    .error {
+      font-size: 12px;
+    }
+    button {
+      border-radius: 10px;
+      margin-top: 20px;
+      position: relative;
+      mat-spinner {
+        position: absolute;
+        top: 15px;
+        right: 10px;
+      }
+      .mat-spinner::ng-deep circle {
+        stroke: $white;
+      }
+    }
+  }
+}

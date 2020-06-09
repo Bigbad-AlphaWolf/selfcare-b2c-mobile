@@ -21,7 +21,7 @@ import { SharedModule } from 'src/shared/shared.module';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import {
   FileTransfer,
-  FileTransferObject
+  FileTransferObject,
 } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
@@ -32,6 +32,13 @@ import localeFr from '@angular/common/locales/fr';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Market } from '@ionic-native/market/ngx';
 import { Device } from '@ionic-native/device/ngx';
+import { Uid } from '@ionic-native/uid/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
+import { SetPaymentChannelModalPageModule } from './set-payment-channel-modal/set-payment-channel-modal.module';
+import { NewPinpadModalPageModule } from './new-pinpad-modal/new-pinpad-modal.module';
+import { OperationSuccessFailModalPageModule } from './operation-success-fail-modal/operation-success-fail-modal.module';
+import { RegistrationSuccessModalPageModule } from './registration-success-modal/registration-success-modal.module';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -39,29 +46,33 @@ registerLocaleData(localeFr);
     AppComponent,
     SidemenuComponent,
     ChangeAvatarPopupComponent,
-    InProgressPopupComponent
+    InProgressPopupComponent,
   ],
   entryComponents: [ChangeAvatarPopupComponent, InProgressPopupComponent],
   imports: [
     HttpClientModule,
     MatDialogModule,
     BrowserModule,
-    IonicModule.forRoot({ animated: false }),
+    IonicModule.forRoot(),
     AppRoutingModule,
     BrowserAnimationsModule,
-    SharedModule
+    SharedModule,
+    SetPaymentChannelModalPageModule,
+    NewPinpadModalPageModule,
+    OperationSuccessFailModalPageModule,
+    RegistrationSuccessModalPageModule,
   ],
   providers: [
     AppVersion,
     StatusBar,
     SplashScreen,
     NativePageTransitions,
-    { provide: LOCALE_ID, useValue: 'fr-FR'},
+    { provide: LOCALE_ID, useValue: 'fr-FR' },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
-      multi: true
+      multi: true,
     },
     HTTP,
     FileTransfer,
@@ -72,8 +83,11 @@ registerLocaleData(localeFr);
     InAppBrowser,
     Deeplinks,
     Market,
-    Device
+    Device,
+    Uid,
+    AndroidPermissions,
+    UniqueDeviceID,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

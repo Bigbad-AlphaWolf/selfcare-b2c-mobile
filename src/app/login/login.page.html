@@ -1,116 +1,93 @@
-<div class="login-page-block-mobile">
-  <!-- <div class="back-to-home-line-mobile">
-    <img
-      (click)="goToHomePage()"
-      src="/assets/images/arrow-left.png"
-      alt="arrow-left"
-      class="arrow-left"
-      class="src"
-    />
-  </div> -->
-  <app-header (goBack)="goToHomePage()"></app-header>
-
-  <div class="login-form-container-mobile">
-    <div class="login-description-image-mobile">
-      <img src="/assets/images/08.svg" alt="ibou-connection_mobile" />
-    </div>
-    <div class="login-form-block-mobile">
-      <div class="scb-form-title-mobile">
-        <span class="scb-f-24 scb-text-black">Me connecter</span>
-        <span class="scb-f-24 scb-text-black"
-          ><br />
-          à Orange</span
+<div class="login-page">
+  <div class="go-back">
+    <img (click)="goBack()" src="/assets/images/arrow-left.png" class="close-icon" alt="">
+  </div>
+  <div class="scb-text-orange voir-intro">
+    <span (click)="goIntro()">Revoir l'intro</span>
+  </div>
+  <div class="img-container">
+    <img src="/assets/images/login.svg" alt="" />
+  </div>
+  <div class="title">
+    <span>Je me connecte</span>
+  </div>
+  <div class="sub-title">
+    <span class="scb-text-gray">Saisie de mes identifiants </span>
+  </div>
+  <div class="form-container">
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      novalidate
+      autocomplete="false"
+    >
+      <mat-form-field class="scb-input-row" appearance="outline">
+        <mat-label>Numéro de téléphone &nbsp;&nbsp;</mat-label>
+        <input
+          formControlName="username"
+          matInput
+          [(ngModel)]="subscribedNumber"
+          type="tel"
+        />
+      </mat-form-field>
+      <mat-form-field class="scb-input-row" appearance="outline">
+        <mat-label>Mot de passe &nbsp;&nbsp;</mat-label>
+        <input
+          formControlName="password"
+          [attr.type]="pFieldType"
+          matInput
+          #password
+          value=""
+          autocomplete="off"
+          class="input-password"
+        />
+        <span
+          *ngIf="password.value"
+          (click)="changePasswordVisibility()"
+          matSuffix
+          class="show-hide-text c-pointer"
         >
+          {{ pFieldType === 'text' ? 'Cacher' : 'Afficher' }}
+        </span>
+      </mat-form-field>
+
+      <div *ngIf="showErrMessage" class="error-text">
+        <span class="scb-text-red-error"> {{ errorMsg }} </span>
       </div>
-      <div>
-        <form
-          [formGroup]="form"
-          (ngSubmit)="onSubmit()"
-          novalidate
-          autocomplete="false"
-        >
-          <mat-form-field class="scb-input-row" appearance="outline">
-            <mat-label>Entrez votre numéro &nbsp;&nbsp;</mat-label>
-            <input
-              formControlName="username"
-              matInput
-              [(ngModel)]="subscribedNumber"
-              type="tel"
-            />
-          </mat-form-field>
-          <mat-form-field class="scb-input-row" appearance="outline">
-            <mat-label>Mot de passe &nbsp;&nbsp;</mat-label>
-            <input
-              formControlName="password"
-              [attr.type]="pFieldType"
-              matInput
-              #password
-              value=""
-              autocomplete="off"
-              class="input-password"
-            />
-            <span
-              *ngIf="password.value"
-              (click)="changePasswordVisibility()"
-              matSuffix
-              class="show-hide-text c-pointer"
-            >
-              {{ pFieldType === 'text' ? 'Cacher' : 'Afficher' }}
-            </span>
-          </mat-form-field>
 
-          <div *ngIf="showErrMessage" class="error-text">
-            <span class="scb-text-red-error"> {{ errorMsg }} </span>
-          </div>
-
-          <div
-            id="remember-me-password-forgot-mobile"
-            fxLayout="row"
-            fxLayoutAlign="space-between center"
-          >
-            <mat-checkbox
-              *ngIf="0"
-              formControlName="rememberMe"
-              class="se-souvenir scb-text-gray"
-              >Rester connecté(e)</mat-checkbox
-            >
-            <span
-              routerLink="/forgotten-password"
-              class="password-forgotten scb-text-gray"
-              >Mot de passe oublié ?</span
-            >
-          </div>
-          <div class="login-btns-block">
-            <button
-              type="submit"
-              [disabled]="!form.valid || loading"
-              class="scb-btn-full scb-btn-orange"
-              mat-stroked-button
-            >
-              <span>Je me connecte</span>
-              <mat-spinner
-                mode="indeterminate"
-                [diameter]="20"
-                *ngIf="loading"
-              ></mat-spinner>
-            </button>
-            <button
-              *ngIf="0"
-              type="submit"
-              [disabled]="!form.valid"
-              class="scb-btn-full scb-btn-dusk"
-              mat-stroked-button
-            ></button>
-          </div>
-          <div class="Mobile-Connect-est-u scb-text-dusk">
-            Pas encore inscrit ?
-            <span routerLink="/new-registration" class="scb-text-orange"
-              >M'inscrire</span
-            >
-          </div>
-        </form>
+      <div class="password-forgotten">
+        <span routerLink="/forgotten-password" class="scb-text-gray">
+          Mot de passe oublié ?
+        </span>
+      </div>
+      <button
+        type="submit"
+        [disabled]="!form.valid || loading"
+        class="scb-btn-full scb-btn-orange"
+        mat-stroked-button
+      >
+        <span>Me connecter</span>
+        <mat-spinner
+          mode="indeterminate"
+          [diameter]="20"
+          *ngIf="loading"
+        ></mat-spinner>
+      </button>
+    </form>
+    <div class="bottom-block">
+      <div
+        class="nav-item"
+        *ngFor="let item of navItems"
+        (click)="doAction(item.action)"
+      >
+        <div class="left-block">
+          <div class="titre">{{item.title}}</div>
+          <div class="sous-titre scb-text-gray">{{item.subTitle}}</div>
+        </div>
+        <div class="right-block">
+          <img src="/assets/images/long-arrow-right.png" alt="arrow-right" />
+        </div>
       </div>
     </div>
-    <div></div>
   </div>
 </div>

@@ -5,13 +5,22 @@ import { environment } from 'src/environments/environment';
 import { Subject, Subscription } from 'rxjs';
 import * as SecureLS from 'secure-ls';
 import { AuthenticationService } from '../authentication-service/authentication.service';
-import { DashboardService, downloadAvatarEndpoint } from '../dashboard-service/dashboard.service';
+import {
+  DashboardService,
+  downloadAvatarEndpoint,
+} from '../dashboard-service/dashboard.service';
 import { DeleteNumberPopupComponent } from 'src/app/my-account/delete-number-popup/delete-number-popup.component';
 import { ChangeAvatarPopupComponent } from 'src/app/my-account/change-avatar-popup/change-avatar-popup.component';
 import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
 import { SuccessFailPopupComponent } from 'src/shared/success-fail-popup/success-fail-popup.component';
 import { generateUUID } from 'src/shared';
-const { FILE_SERVICE, ACCOUNT_MNGT_SERVICE, SERVER_API_URL, UAA_SERVICE } = environment;
+import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
+const {
+  FILE_SERVICE,
+  ACCOUNT_MNGT_SERVICE,
+  SERVER_API_URL,
+  UAA_SERVICE,
+} = environment;
 const uploadAvatarEndpoint = `${SERVER_API_URL}/${FILE_SERVICE}/api/upload`;
 const accountManagementEndPoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/account-b-2-cs`;
 const changePasswordEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/change-password`;
@@ -19,7 +28,7 @@ const deleteLinkedPhoneNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVIC
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccountService {
   changePasswordSubject: Subject<any> = new Subject<any>();
@@ -30,7 +39,13 @@ export class AccountService {
   dialogSub: Subscription;
   userImgName;
   updateAvatarSubject: Subject<any> = new Subject<any>();
-  constructor(private http: HttpClient, private dialog: MatDialog, private authService: AuthenticationService) {}
+
+  constructor(
+    private http: HttpClient,
+    private dialog: MatDialog,
+    private authService: AuthenticationService,
+    private followService: FollowAnalyticsService
+  ) {}
 
   changePassword(payload: { currentPassword: string; newPassword: string }) {
     return this.http.post(changePasswordEndpoint, payload);
@@ -39,20 +54,26 @@ export class AccountService {
   changeUserPassword(currentPassword: string, newPassword: string) {
     const changePasswordPayload = { currentPassword, newPassword };
     this.changePassword(changePasswordPayload).subscribe(
-      res => {
+      (res) => {
         this.openSuccessDialog('changePassword');
       },
-      err => {
+      (err) => {
         if (err.status === 400) {
           if (err.error.msg === 'invalidcurrentpassword') {
             // this.error = 'L actuel mot de passe saisi est incorrect';
-            this.changePasswordSubject.next('L actuel mot de passe saisi est incorrect');
+            this.changePasswordSubject.next(
+              'L actuel mot de passe saisi est incorrect'
+            );
           } else {
             // this.error = 'Le nouveau mot de passe saisi n est pas autorisé';
-            this.changePasswordSubject.next('Le nouveau mot de passe saisi n\'est pas autorisé');
+            this.changePasswordSubject.next(
+              "Le nouveau mot de passe saisi n'est pas autorisé"
+            );
           }
         } else {
-          this.changePasswordSubject.next('Une erreur est survenue. Veuillez réessayer plus tard');
+          this.changePasswordSubject.next(
+            'Une erreur est survenue. Veuillez réessayer plus tard'
+          );
         }
       }
     );
@@ -65,29 +86,43 @@ export class AccountService {
   openSuccessDialog(type: string) {
     const dialogRef = this.dialog.open(SuccessFailPopupComponent, {
       width: '400px',
-      data: { type }
+      data: { type },
     });
-    dialogRef.afterClosed().subscribe(confirmresult => {});
+    dialogRef.afterClosed().subscribe((confirmresult) => {});
   }
 
   deleteLinkedPhoneNumbers(listMsisdn: any[]) {
     const login = this.authService.getUserMainPhoneNumber();
     return this.http.post(deleteLinkedPhoneNumberEndpoint, {
       listMsisdn,
-      login
+      login,
     });
   }
 
   deleteUserLinkedPhoneNumbers(phoneNumbersToDelete: any[]) {
     this.dialogRef = this.dialog.open(DeleteNumberPopupComponent, {
       width: '300px',
-      data: { phoneNumbers: phoneNumbersToDelete }
+      data: { phoneNumbers: phoneNumbersToDelete },
     });
-    this.dialogSub = this.dialogRef.afterClosed().subscribe(result => {
+    this.dialogSub = this.dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.deleteLinkedPhoneNumbers(phoneNumbersToDelete).subscribe(() => {
-          this.deleteLinkedPhoneNumberSubject.next();
-        });
+        this.deleteLinkedPhoneNumbers(phoneNumbersToDelete).subscribe(
+          () => {
+            this.deleteLinkedPhoneNumberSubject.next();
+            this.followService.registerEventFollow(
+              'delete_phoneNumber_success',
+              'event',
+              { phoneNumbersToDelete }
+            );
+          },
+          () => {
+            this.followService.registerEventFollow(
+              'delete_phoneNumber_error',
+              'error',
+              { phoneNumbersToDelete }
+            );
+          }
+        );
       }
     });
   }
@@ -99,10 +134,10 @@ export class AccountService {
   openPrevizualisationDialog(fileInput: any, imgExtension: string) {
     this.dialogImgRef = this.dialog.open(ChangeAvatarPopupComponent, {
       width: '300px',
-      data: { selectedImg: fileInput }
+      data: { selectedImg: fileInput },
     });
-    this.dialogSub = this.dialogImgRef.afterClosed().subscribe(res => {
-      if (res) {        
+    this.dialogSub = this.dialogImgRef.afterClosed().subscribe((res) => {
+      if (res) {
         // Uncomment upload method when endpoint will be merged
         // this.upload(file);
         const formData = new FormData();
@@ -117,7 +152,7 @@ export class AccountService {
 
   uploadAvatar(formData: any) {
     return this.http.post(`${uploadAvatarEndpoint}`, formData, {
-      responseType: 'text'
+      responseType: 'text',
     });
   }
 
@@ -164,7 +199,7 @@ export class AccountService {
     this.dialog.open(InProgressPopupComponent, {
       width: '330px',
       maxWidth: '100%',
-      hasBackdrop: true
+      hasBackdrop: true,
     });
   }
 }

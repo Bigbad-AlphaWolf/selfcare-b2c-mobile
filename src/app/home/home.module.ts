@@ -15,10 +15,10 @@ import { OnBoardingComponent } from './on-boarding/on-boarding.component';
     RouterModule.forChild([
       {
         path: '',
-        component: HomePage
-      }
-    ])
+        component: HomePage,
+      },
+    ]),
   ],
-  declarations: [HomePage, OnBoardingComponent]
+  declarations: [HomePage, OnBoardingComponent],
 })
 export class HomePageModule {}

@@ -1,18 +1,38 @@
 @import 'src/app/app';
 
 :host {
-    background-color: $grayDashboard;
     display: flex;
     flex-direction: column;
     height: 100%;
 }
+.title {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: -0.28px;
+  }
+  
+  .title1 {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
+    padding: 0 10px;
+  }
+
+  ion-title{
+    padding-top: 4px;
+  }
+  ion-spinner{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+  }
+
 .offer-plans-container {
     background-color: $grayDashboard;
     height: 100%;
     .header-image {
         width: 100%;
         height: auto;
-        margin-top: 50px;
         display: flex;
         img {
             width: 100%;
@@ -40,12 +60,14 @@
             height: 100%;
             width: 100%;
             .offer-plans-list-filter {
+                --ion-grid-padding: 0 0;
+                --ion-grid-column-padding: 0 0;
                 background-color: transparent;
                 height: 70px;
                 display: flex;
                 align-items: center;
                 width: 100%;
-                overflow-x: auto;
+                // overflow-x: auto;
                 &::-webkit-scrollbar {
                     display: none;
                 }
@@ -54,14 +76,18 @@
                     height: 40px;
                     border-radius: 20px;
                     margin-left: 10px;
-                    background-color: transparent;
-                    border: 1px solid $fullBlack;
                     line-height: 40px;
                     text-align: center;
                     font-family: HelveticaNeueLTStd-Bd;
                     font-size: 14px;
+                    --background-activated : black;
+                    --background: transparent;
+                    --border-color: black;
+                    --border-style: solid;
+                    --border-width: 1px;
+                    --color: black;
                     &-selected {
-                        background-color: $fullBlack;
+                        --background: black;
                         color: $white;
                     }
                 }
@@ -109,12 +135,14 @@
                         }
                         .duree {
                             display: block;
-                            font-family: HelveticaNeueLTStd-Roman;
-                            font-size: 14px;
+                            font-family: HelveticaNeueLTStd-Bd;
                             font-weight: normal;
                             font-stretch: normal;
                             font-style: normal;
                             line-height: 1.29;
+                            font-size: 22px;
+                            color: $orange;
+                            text-align: center;
                         }
                     }
                     .item-delimitation {
@@ -130,14 +158,23 @@
                         flex-direction: column;
                         width: 45%;
                         .text {
-                            font-family: HelveticaNeueLTStd-Roman;
-                            font-size: 14px;
+                            font-family: HelveticaNeueLTStd-Bd;
                             font-weight: normal;
                             font-stretch: normal;
                             font-style: normal;
                             line-height: 1.29;
+                            font-size: 19px;
+                            text-align: center;
                         }
                     }
+                }
+            }
+            .has-error{
+                text-align: center;
+                font-family: HelveticaNeueLTStd-Roman;
+                margin-top: 20px;
+                span{
+                    text-decoration: underline;
                 }
             }
         }

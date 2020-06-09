@@ -5,9 +5,11 @@ import { Router } from '@angular/router';
 import * as SecureLS from 'secure-ls';
 import {
   AuthenticationService,
-  ConfirmMsisdnModel
+  ConfirmMsisdnModel,
 } from '../services/authentication-service/authentication.service';
 import * as Fingerprint2 from 'fingerprintjs2';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { NavController } from '@ionic/angular';
 const ls = new SecureLS({ encodingType: 'aes' });
 export interface Description {
   text: string;
@@ -16,7 +18,7 @@ export interface Description {
 @Component({
   selector: 'app-forgotten-password',
   templateUrl: './forgotten-password.page.html',
-  styleUrls: ['./forgotten-password.page.scss']
+  styleUrls: ['./forgotten-password.page.scss'],
 })
 export class ForgottenPasswordPage implements OnInit {
   resetPasswordPayload = { login: null, hmac: null, newPassword: null };
@@ -30,7 +32,7 @@ export class ForgottenPasswordPage implements OnInit {
   recaptchaScore = 0;
   fields = {
     password: { fieldType: 'password', visibilityIcon: 'visibility' },
-    confirmPassword: { fieldType: 'password', visibilityIcon: 'visibility' }
+    confirmPassword: { fieldType: 'password', visibilityIcon: 'visibility' },
   };
   gettingNumber: boolean;
   checkingNumber: boolean;
@@ -42,7 +44,9 @@ export class ForgottenPasswordPage implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private authServ: AuthenticationService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private followAnalyticsService: FollowAnalyticsService,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -57,8 +61,8 @@ export class ForgottenPasswordPage implements OnInit {
     this.error_message = '';
     this.gettingNumber = true;
     this.ref.detectChanges();
-    Fingerprint2.get(components => {
-      const values = components.map(component => {
+    Fingerprint2.get((components) => {
+      const values = components.map((component) => {
         return component.value;
       });
       const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
@@ -78,13 +82,13 @@ export class ForgottenPasswordPage implements OnInit {
               }
               this.ref.detectChanges();
             },
-            err => {
+            (err) => {
               this.error_message = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
               this.ref.detectChanges();
             }
           );
         },
-        err => {
+        (err) => {
           this.gettingNumber = false;
           this.error_message = `La récupération ne s'est pas bien passée. Assurez d'activer vos données mobiles Orange puis réessayez`;
           this.ref.detectChanges();
@@ -96,14 +100,8 @@ export class ForgottenPasswordPage implements OnInit {
   goStepNewPassword() {
     this.currentStep = 2;
     this.formPassword = this.fb.group({
-      password: [
-        '',
-        [Validators.required]
-      ],
-      passwordConfirmation: [
-        '',
-        [Validators.required]
-      ]
+      password: ['', [Validators.required]],
+      passwordConfirmation: ['', [Validators.required]],
     });
   }
 
@@ -136,31 +134,42 @@ export class ForgottenPasswordPage implements OnInit {
     const passwordConfirm = this.formPassword.value.passwordConfirmation;
     if (password === passwordConfirm) {
       if (password.length < 5) {
-        this.error_message = 'le mot de passe doit avoir au minumum 5 caractères';
+        this.error_message =
+          'le mot de passe doit avoir au minumum 5 caractères';
       } else {
-
         this.resetingPwd = true;
         this.resetPasswordPayload.newPassword = password;
         this.resetPasswordPayload.hmac = this.hmac;
         this.resetPasswordPayload.login = this.phoneNumber;
         this.authServ.resetPassword(this.resetPasswordPayload).subscribe(
-          res => {
+          (res) => {
+            this.followAnalyticsService.registerEventFollow(
+              'Reset_password_success',
+              'event',
+              'success'
+            );
             this.resetingPwd = false;
             this.router.navigate(['/login']);
           },
-          err => {
+          (err) => {
+            this.followAnalyticsService.registerEventFollow(
+              'Reset_password_failed',
+              'error',
+              'error'
+            );
             this.resetingPwd = false;
             if (err.status === 400) {
               if (err.msg === 'invalidotp') {
                 this.error_message = 'Le code saisi est incorrect';
               } else {
                 this.error_message =
-                  'Le nouveau mot de passe saisi n\'est pas autorisé';
+                  "Le nouveau mot de passe saisi n'est pas autorisé";
               }
             } else if (err.status === 503) {
               this.error_message = 'Service momentanément indisponible';
             } else {
-              this.error_message = 'Une erreur est survenue. Veuillez réessayer';
+              this.error_message =
+                'Une erreur est survenue. Veuillez réessayer';
             }
           }
         );
@@ -183,7 +192,7 @@ export class ForgottenPasswordPage implements OnInit {
   goToPreviousStep() {
     this.error_message = '';
     if (this.currentStep === 1) {
-      this.router.navigate(['/login']);
+        this.navController.pop()
     } else {
       this.currentStep = 1;
     }

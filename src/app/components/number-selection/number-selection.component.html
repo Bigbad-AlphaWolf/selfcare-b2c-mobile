@@ -1,0 +1,56 @@
+<div class="select-beneficiary-container">
+  <div class="title">
+    Choix du bénéficiaire
+  </div>
+  <div class="description">
+    Sélecionnez le bénéficiaire
+  </div>
+  <div class="number-options">
+    <mat-radio-group (change)="onOptionChange($event.value)">
+      <mat-radio-button
+        *ngFor="let number of numbers$ | async; index as i; count as size"
+        [value]="number"
+      >
+        <div class="destination-number">
+          <span> Mon numéro {{ size > 1 ? i + 1 : "" }} </span>
+          <span>{{ number | phoneNumberDisplay }}</span>
+        </div>
+      </mat-radio-button>
+      <mat-radio-button [value]="'AUTRE'" checked>
+        <div class="destination-number autre-number">
+          <span>
+            Offrir à un autre
+          </span>
+          <span >
+           <ng-container *ngIf="showInput && opXtras.recipientFromContact">
+             {{ numberFromInput | phoneNumberDisplay }}
+           </ng-container>
+          </span>
+        </div>
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <oem-phone-number-provider
+    [hidden]="!showInput"
+    (onPhoneSelected)="onPhoneSelected($event)"
+  >
+  </oem-phone-number-provider>
+  <div *ngIf="phoneIsNotValid" class="error-msg scb-text-red-error">
+    Veuillez choisir un numéro de destinataire valide pour continuer
+  </div>
+
+  <div [hidden]="!canNotRecieve && !canNotRecieveError" class="error-msg scb-text-red-error">
+    Le numéro de votre destinataire ne peut pas recevoir de credit.
+  </div>
+  <div class="btn-continue">
+    <button mat-button
+      [disabled]="isProcessing"
+      (click)="onContinue()"
+      >Continuer</button
+    >
+    <ion-spinner
+      *ngIf="isProcessing"
+      name="crescent"
+    ></ion-spinner>
+  </div>
+</div>

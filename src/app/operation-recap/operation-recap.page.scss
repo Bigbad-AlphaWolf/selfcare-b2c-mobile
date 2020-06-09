@@ -1,0 +1,172 @@
+@import 'src/app/app';
+
+ion-content {
+  background-color: $grayDashboard;
+}
+
+.init-header {
+  .arrow-container {
+    height: 40px;
+    margin-bottom: 7px;
+    img {
+      position: fixed;
+      top: 13px;
+      left: 15px;
+    }
+  }
+  .text-container {
+    height: 40px;
+    transition: linear 0.2s;
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 24px;
+    padding-left: 15px;
+  }
+  .banner-container {
+    width: 100%;
+    .banniere {
+      width: 100%;
+    }
+  }
+}
+
+.show-toolbar {
+  .arrow-container {
+    height: 40px;
+  }
+  .text-container {
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 24px;
+  }
+}
+
+.hide-toolbar {
+  .arrow-container {
+    height: 40px;
+  }
+  .text-container {
+    font-size: 20px;
+    min-height: 0px;
+    height: 0px;
+    opacity: 0px;
+    padding: 0px;
+    span {
+      position: fixed;
+      top: 10px;
+      width: 100%;
+      text-align: center;
+    }
+  }
+}
+
+.recap-title {
+  height: 100px;
+  width: 100%;
+  padding: 20px 15px;
+  .text-1 {
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 20px;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .text-2 {
+    font-family: HelveticaNeueLTStd-Roman, sans-serif;
+    font-size: 16px;
+    display: block;
+  }
+}
+
+.buy-pass-information {
+  width: 100%;
+  height: 100%;
+  background-color: $grayDashboard;
+  padding: 0 15px;
+  :host {
+    height: 100%;
+  }
+  .amount-to-transfer {
+    padding: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .pass {
+      font-family: HelveticaNeue;
+      font-size: 20px;
+      font-weight: bold;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      color: #000000;
+      display: block;
+    }
+    .modifier {
+      font-size: 16px;
+      line-height: 1.88;
+      display: block;
+    }
+  }
+  .title {
+    font-size: 20px;
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    width: percentage(345/375);
+  }
+  .card-container {
+    margin-bottom: -10px;
+  }
+  .recipient-information {
+    border-radius: 5px;
+    width: 100%;
+    padding: 20px 15px 15px;
+    background-color: $white;
+    margin-bottom: 30px;
+    .top-block {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .title {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        line-height: 1.5;
+        display: block;
+      }
+      .recipient {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        line-height: 1.33;
+        text-align: right;
+        display: block;
+        white-space: nowrap;
+      }
+    }
+  }
+  button {
+    height: 50px;
+    font-size: 16px;
+    position: sticky;
+    margin: 15px 0px;
+    bottom: 15px;
+    border-radius: 10px;
+    width: 100%;
+    mat-spinner {
+      position: absolute;
+      top: 15px;
+      right: 10px;
+    }
+    .mat-spinner::ng-deep circle {
+      stroke: $white;
+    }
+  }
+}
+
+.recap-text {
+  font-family: HelveticaNeue;
+  font-size: 20px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: #000000;
+  padding: 15px 15px 20px 15px;
+
+}

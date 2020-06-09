@@ -2,6 +2,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ParametrageInternetComponent } from './parametrage-internet.component';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
+import { MatDialogRef, MatDialog } from '@angular/material';
 
 describe('ParametrageInternetComponent', () => {
   let component: ParametrageInternetComponent;
@@ -9,10 +12,24 @@ describe('ParametrageInternetComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ParametrageInternetComponent ],
+      declarations: [ParametrageInternetComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MatDialog, useValue: {} },
+        {
+          provide: HttpClient,
+          useValue: {
+            post: () => {
+              return of();
+            },
+            get: () => {
+              return of();
+            },
+          },
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

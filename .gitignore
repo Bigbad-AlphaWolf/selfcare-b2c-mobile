@@ -12,6 +12,8 @@ log.txt
 .vscode/
 npm-debug.log*
 
+.scannerwork/
+.scannerwork/report-task.*
 .idea/
 .ionic/
 .sourcemaps/
@@ -32,3 +34,5 @@ $RECYCLE.BIN/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+
+package-lock.json

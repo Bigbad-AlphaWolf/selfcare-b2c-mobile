@@ -4,58 +4,62 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
-  HttpErrorResponse
+  HttpErrorResponse,
 } from '@angular/common/http';
 import * as SecureLS from 'secure-ls';
-import { tap } from 'rxjs/operators';
+import { tap, delay } from 'rxjs/operators';
 import { Router } from '@angular/router';
 export const OmRequest = 'OrangeMoney';
-const ls = new SecureLS({ encodingType: 'aes' });
 import * as jwt_decode from 'jwt-decode';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { OM_SERVICE_VERSION } from '../orange-money-service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 
+const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
-
   appVersionNumber: string;
-  
   constructor(
     private authServ: AuthenticationService,
     private router: Router,
     private appVersion: AppVersion
   ) {
-    this.appVersion.getVersionNumber().then(value => {
-      this.appVersionNumber = value;
-    }).catch(error => {
-      console.log(error);
-    });
+    this.appVersion
+      .getVersionNumber()
+      .then((value) => {
+        this.appVersionNumber = value;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
+
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     const that = this;
     const token = ls.get('token');
     const x_uuid = ls.get('X-UUID');
+
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221770167323');
+      headers = headers.set('X-MSISDN', '221781040956');
+      //delay to test slowness of network
       req = req.clone({
-        headers
+        headers,
       });
     }
     if (isReqWaitinForUID(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
       req = req.clone({
-        headers
+        headers,
       });
     }
     if (isReqWaitinForXUID(req.url)) {
       let headers = req.headers;
       headers = headers.set('X-UUID', x_uuid);
       req = req.clone({
-        headers
+        headers,
       });
     }
     if (req.headers.has(OmRequest)) {
@@ -75,8 +79,9 @@ export class AuthInterceptorService implements HttpInterceptor {
       let headers = req.headers;
       headers = headers.set('X-Selfcare-Source', 'mobile');
       headers = headers.set('Authorization', `Bearer ${token}`);
+      headers = headers.set('Access-Control-Allow-Origin', '*');
       req = req.clone({
-        headers
+        headers,
       });
     }
 
@@ -108,7 +113,7 @@ export class AuthInterceptorService implements HttpInterceptor {
         (event: HttpEvent<any>) => {},
         (err: any) => {
           if (err instanceof HttpErrorResponse) {
-            if (err.status === 401) {
+            if (err.status === 401 && !err.url.match('v2/check-client')) {
               that.authServ.cleanCache();
               that.router.navigate(['login']);
             }

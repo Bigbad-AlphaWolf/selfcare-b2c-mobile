@@ -23,7 +23,6 @@ export class PassIllimixService {
   private listPassIllimix: (PassIllimModel | PromoPassIllimModel)[] = [];
   private listPassIllimixShown: (PassIllimModel | PromoPassIllimModel)[];
   private listCategoryPass: any;
-  private paymentMod: string;
   private passLoadedSubject: Subject<any> = new Subject<any>();
   constructor(
     private dashbService: DashboardService,
@@ -31,9 +30,6 @@ export class PassIllimixService {
     private http: HttpClient
   ) {}
 
-  setPaymentMod(paymentMod: string) {
-    this.paymentMod = paymentMod;
-  }
   setUserCodeFormule(msisdn: string) {
     this.userCodeFormule = msisdn;
   }
@@ -60,8 +56,7 @@ export class PassIllimixService {
         this.listCategoryPass = getOrderedListCategory(list);
         this.listPassIllimixShown = getListPassFilteredByLabelAndPaymentMod(
           this.listCategoryPass[0],
-          this.listPassIllimix,
-          this.paymentMod
+          this.listPassIllimix
         );
         this.passLoadedSubject.next(true);
       },

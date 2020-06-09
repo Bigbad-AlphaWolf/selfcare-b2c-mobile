@@ -8,12 +8,13 @@ import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange
 import { formatCurrency } from 'src/shared';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
-
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-om-button',
   templateUrl: './om-button.component.html',
-  styleUrls: ['./om-button.component.scss']
+  styleUrls: ['./om-button.component.scss'],
 })
 export class OmButtonComponent implements OnInit, OnDestroy {
   balanceAvailableSub: Subscription;
@@ -25,10 +26,10 @@ export class OmButtonComponent implements OnInit, OnDestroy {
   @Input() isKirene: boolean;
 
   constructor(
-    private router: Router,
     private dashbordServ: DashboardService,
     private omServ: OrangeMoneyService,
-    private followsServ: FollowAnalyticsService
+    private followsServ: FollowAnalyticsService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -39,7 +40,7 @@ export class OmButtonComponent implements OnInit, OnDestroy {
     );
     this.balanceStateSubscription = this.omServ
       .balanceVisibilityEMitted()
-      .subscribe(showSolde => {
+      .subscribe((showSolde) => {
         this.balanceIsAvailable = showSolde;
       });
 
@@ -68,11 +69,19 @@ export class OmButtonComponent implements OnInit, OnDestroy {
 
   showSoldeOM() {
     if (this.balanceIsAvailable) {
-      this.followsServ.registerEventFollow('Click_cacher_solde_OM_dashboard',"event", 'clicked')
+      this.followsServ.registerEventFollow(
+        'Click_cacher_solde_OM_dashboard',
+        'event',
+        'clicked'
+      );
       this.hideSolde();
     } else {
-      this.router.navigate(['see-solde-om']);
-      this.followsServ.registerEventFollow('Click_Voir_solde_OM_dashboard',"event", 'clicked')
+      this.openPinpad();
+      this.followsServ.registerEventFollow(
+        'Click_Voir_solde_OM_dashboard',
+        'event',
+        'clicked'
+      );
     }
   }
 
@@ -90,6 +99,20 @@ export class OmButtonComponent implements OnInit, OnDestroy {
   hideSolde() {
     this.omServ.showBalance(false);
   }
+
+  async openPinpad() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+    });
+    modal.onDidDismiss().then((response) => {
+      if (response.data && response.data.success) {
+        this.showSolde(response.data.balance);
+      }
+    });
+    return await modal.present();
+  }
+
   ngOnDestroy() {
     if (this.balanceStateSubscription) {
       this.balanceStateSubscription.unsubscribe();

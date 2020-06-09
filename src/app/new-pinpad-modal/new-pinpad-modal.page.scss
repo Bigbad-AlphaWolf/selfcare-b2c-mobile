@@ -1,0 +1,177 @@
+@import 'src/app/app';
+
+.checking-token-block {
+  padding-top: 50px;
+  mat-spinner {
+    margin: 0 auto;
+  }
+  .mat-spinner::ng-deep circle {
+    stroke: $orange;
+  }
+}
+
+.pinpad-v3 {
+  text-align: center;
+  padding: percentage(30px/612px) 20px 0;
+  height: 100%;
+  img {
+    width: auto;
+    height: percentage(99/612);
+    max-height: 99px;
+  }
+  .title {
+    padding: percentage(20px/612px) 65px percentage(38px/612px);
+    .title-1,
+    .subtitle {
+      display: block;
+    }
+    .title-1 {
+      font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      font-size: 20px;
+      line-height: 1.5;
+    }
+    .subtitle {
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 14px;
+      line-height: 1.29;
+      margin-top: 5px;
+    }
+  }
+  .bullet-container {
+    position: relative;
+    .bullets {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 80px percentage(30px/612px);
+      .bullet {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: $silver;
+        &-filled {
+          background-color: $orange;
+        }
+        &-error {
+          background-color: $redError;
+        }
+      }
+    }
+    .error-block {
+      padding-bottom: 12px;
+      width: 100%;
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+  }
+  .numbers-table {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 335px;
+    height: percentage(260/612);
+    margin: 0 auto;
+    .number {
+      width: percentage(105/335);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 24px;
+      img {
+        width: 30px;
+        height: auto;
+      }
+    }
+  }
+  .loading {
+    padding-top: 50px;
+    mat-spinner {
+      margin: 0 auto;
+    }
+    .mat-spinner::ng-deep circle {
+      stroke: $orange;
+    }
+  }
+}
+
+.codeOTP-content {
+  width: 100%;
+  &.onPipadshown {
+    position: absolute;
+    display: none;
+    filter: blur(2px);
+    -webkit-filter: blur(2px);
+    -moz-filter: blur(2px);
+    -o-filter: blur(2px);
+    -ms-filter: blur(2px);
+  }
+  .image-activationOM {
+    width: 100%;
+    .image-header {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .activationOM-mobile-container-body-content {
+    padding: 20px percentage(10px / $baseWidthMobile2);
+    .text {
+      display: block;
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+    .otp-input {
+      margin-top: 50px;
+      position: relative;
+      .material-input {
+        width: 100%;
+      }
+      .btn-info {
+        position: absolute;
+        right: 0;
+        top: 18px;
+        border-radius: 50%;
+        background-color: $lBlue;
+        width: 20px;
+        height: 20px;
+        line-height: 25px;
+        text-align: center;
+      }
+    }
+    .confirm-btn {
+      position: fixed;
+      bottom: 0px;
+      left: 0;
+      mat-spinner {
+        position: absolute;
+        top: 15px;
+        right: 10px;
+      }
+      .mat-spinner::ng-deep circle {
+        stroke: $white;
+      }
+    }
+    .resend-code {
+      margin-top: 30px;
+      position: relative;
+      mat-spinner {
+        position: absolute;
+        top: 15px;
+        right: 10px;
+      }
+    }
+    .otp-error-msg {
+      font-size: 14px;
+    }
+  }
+  .error-message {
+    padding-bottom: 1.25em;
+    margin-top: 50px;
+    padding-left: 10px;
+    span {
+      color: red;
+    }
+  }
+}

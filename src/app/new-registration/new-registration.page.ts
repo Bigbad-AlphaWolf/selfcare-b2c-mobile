@@ -1,25 +1,35 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, timer, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   AuthenticationService,
   ConfirmMsisdnModel,
-  RegistrationModel
+  RegistrationModel,
 } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef, MatBottomSheet } from '@angular/material';
 import * as SecureLS from 'secure-ls';
 import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
 import * as Fingerprint2 from 'fingerprintjs2';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { takeUntil, finalize } from 'rxjs/operators';
+import {
+  HelpModalDefaultContent,
+  HelpModalAuthErrorContent,
+  HelpModalAPNContent,
+  HelpModalConfigApnContent,
+} from 'src/shared';
+import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
+import { ModalController, NavController } from '@ionic/angular';
+import { RegistrationSuccessModalPage } from '../registration-success-modal/registration-success-modal.page';
 
 @Component({
   selector: 'app-new-registration',
   templateUrl: './new-registration.page.html',
-  styleUrls: ['./new-registration.page.scss']
+  styleUrls: ['./new-registration.page.scss'],
 })
 export class NewRegistrationPage implements OnInit {
   dialogRef: MatDialogRef<SettingsPopupComponent, any>;
@@ -37,12 +47,37 @@ export class NewRegistrationPage implements OnInit {
   showErrMessage: boolean;
   errorMsg: string;
   hmac: string;
-  step: 'CHECK_NUMBER' | 'PASSWORD' | 'SUCCESS';
+  step: 'CHECK_NUMBER' | 'PASSWORD';
   fields = {
     password: { fieldType: 'password', visibilityIcon: 'visibility' },
-    confirmPassword: { fieldType: 'password', visibilityIcon: 'visibility' }
+    confirmPassword: { fieldType: 'password', visibilityIcon: 'visibility' },
   };
-
+  navItems: {
+    title: string;
+    subTitle: string;
+    action: 'help' | 'login' | 'password';
+  }[] = [
+    {
+      title: 'Je me connecte',
+      subTitle: 'J’ai déjà un compte',
+      action: 'login',
+    },
+    {
+      title: 'J’ai besoin d’aide',
+      subTitle: 'J’éprouve des difficultés pour me connecter',
+      action: 'help',
+    },
+    {
+      title: 'J’ai oublié mon mot de passe',
+      subTitle: 'Je veux le récupérer',
+      action: 'password',
+    },
+  ];
+  //Temps d'attente pour la recuperation automatique du numero -> 10 secondes
+  msisdnTimeout = 10000;
+  authErrorDetected = new Subject<any>();
+  helpNeeded = new Subject<any>();
+  firstCallMsisdn: string;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -50,18 +85,37 @@ export class NewRegistrationPage implements OnInit {
     private dashbServ: DashboardService,
     public dialog: MatDialog,
     private ref: ChangeDetectorRef,
-    private followAnalyticsService: FollowAnalyticsService
-  ) {}
+    private followAnalyticsService: FollowAnalyticsService,
+    private bottomSheet: MatBottomSheet,
+    private modalController: ModalController,
+    private navController: NavController
+  ) {
+    this.authErrorDetected.subscribe({
+      next: (data) => {
+        this.openHelpModal(data);
+      },
+    });
+    this.helpNeeded.subscribe({
+      next: (data) => {
+        this.openHelpModal(data);
+      },
+    });
+  }
 
   goIntro() {
-    this.router.navigate(['/']);
+    this.followAnalyticsService.registerEventFollow(
+      'Voir_Intro',
+      'event',
+      'clic'
+    );
+    this.router.navigate(['/home']);
   }
 
   ngOnInit() {
     this.step = 'CHECK_NUMBER';
     this.formPassword = this.fb.group({
       password: ['', [Validators.required]],
-      confirmPassword: ['', [Validators.required]]
+      confirmPassword: ['', [Validators.required]],
     });
     this.getNumber();
   }
@@ -73,70 +127,61 @@ export class NewRegistrationPage implements OnInit {
   getNumber() {
     this.gettingNumber = true;
     this.showErrMessage = false;
+    if (!this.ref['destroyed']) 
     this.ref.detectChanges();
-    Fingerprint2.get(components => {
-      const values = components.map(component => {
+    Fingerprint2.get((components) => {
+      const values = components.map((component) => {
         return component.value;
       });
       const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
       ls.set('X-UUID', x_uuid);
-      this.authServ.getMsisdnByNetwork().subscribe(
-        (res: { msisdn: string }) => {
-          const msisdn = res.msisdn;
-          this.authServ.confirmMsisdnByNetwork(msisdn).subscribe(
-            (response: ConfirmMsisdnModel) => {
-              this.gettingNumber = false;
-              if (response !== undefined && response && response.status) {
-                this.numberGot = true;
-                this.phoneNumber = response.msisdn;
-                this.hmac = response.hmac;
-                this.followAnalyticsService.registerEventFollow(
-                  'User_msisdn_recuperation_succes',
-                  'event',
-                  this.phoneNumber
-                );
-              } else {
-                this.showErrMessage = true;
-                this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
-                this.openDialogGoSettings();
-                this.followAnalyticsService.registerEventFollow(
-                  'User_msisdn_recuperation_failed',
-                  'error',
-                  this.phoneNumber
-                );
+      this.authServ
+        .getMsisdnByNetwork()
+        //if after msisdnTimeout milliseconds the call does not complete, stop it.
+        .pipe(
+          takeUntil(timer(this.msisdnTimeout)),
+          // finalize to detect whenever call is complete or terminated
+          finalize(() => {
+            if (
+              (!this.firstCallMsisdn && !this.showErrMessage) ||
+              (!this.firstCallMsisdn && this.showErrMessage)
+            ) {
+              this.displayMsisdnError();
+              this.authErrorDetected.next(HelpModalAuthErrorContent);
+              console.log('http call is not successful');
+            }
+          })
+        )
+        .subscribe(
+          (res: { msisdn: string }) => {
+            this.firstCallMsisdn = res.msisdn;
+            this.authServ.confirmMsisdnByNetwork(res.msisdn).subscribe(
+              (response: ConfirmMsisdnModel) => {
+                this.gettingNumber = false;
+                if (response !== undefined && response && response.status) {
+                  this.numberGot = true;
+                  this.phoneNumber = response.msisdn;
+                  this.hmac = response.hmac;
+                  this.followAnalyticsService.registerEventFollow(
+                    'User_msisdn_recuperation_succes',
+                    'event',
+                    this.phoneNumber
+                  );
+                } else {
+                  this.displayMsisdnError();
+                }
+                if (!this.ref['destroyed']) 
+    this.ref.detectChanges();
+              },
+              (err) => {
+                this.displayMsisdnError();
               }
-              this.ref.detectChanges();
-            },
-            err => {
-              this.gettingNumber = false;
-              this.showErrMessage = true;
-              this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
-              this.openDialogGoSettings();
-              this.followAnalyticsService.registerEventFollow(
-                'User_msisdn_recuperation_failed',
-                'error',
-                { msisdn: this.phoneNumber, error: this.errorMsg }
-              );
-              this.ref.detectChanges();
-            }
-          );
-        },
-        err => {
-          this.gettingNumber = false;
-          this.showErrMessage = true;
-          this.errorMsg = `La récupération ne s'est pas bien passée. Assurez d'activer vos données mobiles Orange puis réessayez`;
-          this.openDialogGoSettings();
-          this.followAnalyticsService.registerEventFollow(
-            'User_msisdn_recuperation_failed',
-            'error',
-            {
-              msisdn: this.phoneNumber,
-              error: this.errorMsg
-            }
-          );
-          this.ref.detectChanges();
-        }
-      );
+            );
+          },
+          (err) => {
+            this.displayMsisdnError();
+          }
+        );
     });
   }
 
@@ -182,7 +227,7 @@ export class NewRegistrationPage implements OnInit {
       firstName: '',
       lastName: '',
       email: null,
-      hmac: this.hmac
+      hmac: this.hmac,
     };
     this.authServ.register(userInfo).subscribe(
       () => {
@@ -191,7 +236,7 @@ export class NewRegistrationPage implements OnInit {
           'event',
           userInfo.login
         );
-        this.step = 'SUCCESS';
+        this.openSuccessModal();
         this.creatingAccount = false;
       },
       (err: any) => {
@@ -232,7 +277,7 @@ export class NewRegistrationPage implements OnInit {
 
   openCguDialog() {
     this.dialog.open(CguPopupComponent, {
-      data: { login: '' }
+      data: { login: '' },
     });
   }
 
@@ -254,10 +299,10 @@ export class NewRegistrationPage implements OnInit {
     const userCredential = {
       username: login,
       password: this.formPassword.value.password,
-      rememberMe: true
+      rememberMe: true,
     };
     this.authServ.login(userCredential).subscribe(
-      res => {
+      (res) => {
         this.dashbServ.getAccountInfo(userCredential.username).subscribe(
           (resp: any) => {
             this.isLogging = false;
@@ -279,7 +324,7 @@ export class NewRegistrationPage implements OnInit {
           }
         );
       },
-      err => {
+      (err) => {
         this.followAnalyticsService.registerEventFollow(
           'Authentication_Failed',
           'error',
@@ -288,5 +333,80 @@ export class NewRegistrationPage implements OnInit {
         this.router.navigate(['/login']);
       }
     );
+  }
+
+  doAction(action: 'login' | 'help' | 'password') {
+    if (action === 'login') {
+      this.goLoginPage();
+    }
+    if (action === 'help') {
+      this.openHelpModal(HelpModalDefaultContent);
+    }
+    if (action === 'password') {
+      this.router.navigate(['/forgotten-password']);
+    }
+  }
+
+  openHelpModal(sheetData?: any) {
+    this.bottomSheet
+      .open(CommonIssuesComponent, {
+        panelClass: 'custom-css-common-issues',
+        data: sheetData,
+      })
+      .afterDismissed()
+      .subscribe((message: string) => {
+        if (message === 'ERROR_AUTH_IMP') {
+          this.openHelpModal(HelpModalAuthErrorContent);
+        }
+        if (message === 'APN_AUTH_IMP') {
+          this.openHelpModal(HelpModalAPNContent);
+        }
+        if (message === 'CONFIG_APN_AUTH_IMP') {
+          this.openHelpModal(HelpModalConfigApnContent);
+        }
+      });
+  }
+
+  displayMsisdnError() {
+    this.gettingNumber = false;
+    this.showErrMessage = true;
+    this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
+    //this.openDialogGoSettings();
+    this.followAnalyticsService.registerEventFollow(
+      'User_msisdn_recuperation_failed',
+      'error',
+      this.phoneNumber
+    );
+    if (!this.ref['destroyed']) 
+    this.ref.detectChanges();
+  }
+
+  async openSuccessModal() {
+    let login: string;
+    this.phoneNumber && this.phoneNumber.startsWith('221')
+      ? (login = this.phoneNumber.substring(3))
+      : (login = this.phoneNumber);
+    const userCredential = {
+      username: login,
+      password: this.formPassword.value.password,
+      rememberMe: true,
+    };
+    const modal = await this.modalController.create({
+      component: RegistrationSuccessModalPage,
+      cssClass: 'registration-success-modal',
+      backdropDismiss: true,
+      componentProps: { userCredential },
+    });
+    modal.onDidDismiss().then((response) => {
+      console.log(response);
+      if (!response.data) {
+        this.goLoginPage();
+      }
+    });
+    return await modal.present();
+  }
+
+  goBack(){
+    this.navController.navigateBack(['/home-v2'])
   }
 }

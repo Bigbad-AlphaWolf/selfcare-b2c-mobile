@@ -1,0 +1,33 @@
+<div class="set-merchant-code-page">
+  <div class="text-block">
+    <span class="title">Paiement marchand</span>
+    <span class="sub-title scb-text-gray">Renseigner le code marchand</span>
+  </div>
+  <form
+    action=""
+    [formGroup]="merchantCodeForm"
+    class="form"
+    (submit)="checkMerchant()"
+  >
+    <mat-form-field class="scb-input-row" appearance="outline">
+      <mat-label>Numéro du marchand &nbsp;&nbsp;</mat-label>
+      <input formControlName="merchantCode" matInput type="number" />
+      <span matSuffix class="scb-text-orange suffix">Mes marchands</span>
+    </mat-form-field>
+    <div *ngIf="hasErrorOnCheckMerchant" class="error scb-text-red-error">
+      {{ errorMsg }}
+    </div>
+    <button
+      class="scb-btn scb-btn-orange scb-btn-full"
+      [disabled]="chekingMerchant || !merchantCodeForm.valid"
+      type="submit"
+    >
+      <span>Continuer</span>
+      <mat-spinner
+        mode="indeterminate"
+        [diameter]="20"
+        *ngIf="chekingMerchant"
+      ></mat-spinner>
+    </button>
+  </form>
+</div>

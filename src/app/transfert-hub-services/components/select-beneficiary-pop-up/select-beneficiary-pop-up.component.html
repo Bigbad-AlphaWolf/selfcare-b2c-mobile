@@ -1,0 +1,35 @@
+<div class="select-beneficiary-container">
+  <div class="title">
+      Choix du bénéficiaire
+  </div>
+  <div class="description">
+      Renseigner le numéro du bénéficiaire
+  </div>
+  <div class="beneficiary-number">
+      <form novalidate autocomplete="false">
+        <mat-form-field class="scb-input-row" appearance="outline">
+            <mat-label>Numéro du bénéficiaire &nbsp;&nbsp;</mat-label>
+            <input
+              #inputTel
+              matInput
+              type="tel" [value]="recipientContactInfos ? recipientContactInfos : otherBeneficiaryNumber"
+              maxlength=20
+            />
+          </mat-form-field>
+      </form>
+    <!-- <ion-item lines="full">
+      <ion-label position="floating">Numéro du bénéficiaire</ion-label>
+      <ion-input maxlength="20" #inputTel inputmode="tel" clearInput [value]="recipientContactInfos ? recipientContactInfos : otherBeneficiaryNumber"></ion-input>
+    </ion-item> -->
+    <img class="icon" src="/assets/images/address-book.png" alt="">
+    <span (click)="pickContact()" class="btn-contact scb-text-orange">Contact</span>
+  </div>
+  <div *ngIf="hasErrorGetContact" class="error-msg scb-text-red-error">
+      {{ errorGetContact }}
+   </div>
+  <div class="confirm-btn">
+      <ion-button [disabled]="isProcessing" shape="round" (click)="validateBeneficiary()" class="btn" expand="block" >Continuer</ion-button>
+      <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
+
+  </div>
+</div>

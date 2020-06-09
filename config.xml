@@ -186,4 +186,5 @@
         <variable name="DEEPLINK_5_HOST" value=" " />
     </plugin>
     <plugin name="cordova-plugin-whitelist" spec="^1.3.4" />
+    <allow-navigation href="http://localhost:8101" sessionid="1afeb6e0" />
 </widget>

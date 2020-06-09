@@ -1,7 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AssistanceService } from '../services/assistance.service';
-import { ItemBesoinAide } from 'src/shared';
+import { ItemBesoinAide, ASSISTANCE_URL } from 'src/shared';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @Component({
   selector: 'app-assistance',
@@ -14,7 +15,8 @@ export class AssistancePage implements OnInit {
   constructor(
     private assistService: AssistanceService,
     private dashbServ: DashboardService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private iab: InAppBrowser
   ) {}
 
   ngOnInit() {
@@ -38,5 +40,9 @@ export class AssistancePage implements OnInit {
         }
         this.ref.detectChanges();
       });
+  }
+
+  goToCommunityExternalPage(){
+    this.iab.create(ASSISTANCE_URL, '_self');
   }
 }

@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SuiviConsoComponent } from './suivi-conso.component';
+import { FormatSuiviConsoCategoryTitlePipe } from 'src/shared/pipes/format-suivi-conso-category-title.pipe';
 
 describe('SuiviConsoComponent', () => {
   let component: SuiviConsoComponent;
@@ -9,10 +10,9 @@ describe('SuiviConsoComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SuiviConsoComponent ],
+      declarations: [SuiviConsoComponent, FormatSuiviConsoCategoryTitlePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

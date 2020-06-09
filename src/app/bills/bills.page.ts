@@ -5,11 +5,12 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import { REGEX_FIX_NUMBER } from 'src/shared';
 import { BillModel, billsFixePostpaidOpened } from '../dashboard';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-bills',
   templateUrl: './bills.page.html',
-  styleUrls: ['./bills.page.scss']
+  styleUrls: ['./bills.page.scss'],
 })
 export class BillsPage implements OnInit {
   error;
@@ -26,7 +27,7 @@ export class BillsPage implements OnInit {
     'Septembre',
     'Octobre',
     'Novembre',
-    'Décembre'
+    'Décembre',
   ];
   bills: any;
   currentNumber;
@@ -40,11 +41,11 @@ export class BillsPage implements OnInit {
     private router: Router,
     private billsService: BillsService,
     private dashboardService: DashboardService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ionViewWillEnter() {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
@@ -54,41 +55,40 @@ export class BillsPage implements OnInit {
         this.error = false;
         this.getBills();
       },
-      err => {
+      (err) => {
         this.error = true;
       }
     );
 
-    billsFixePostpaidOpened.subscribe(x => {
+    billsFixePostpaidOpened.subscribe((x) => {
       this.authService.getSubscription(this.currentNumber).subscribe(
         (res: any) => {
           this.clientId = res.clientCode;
           this.error = false;
           this.subscribeBillServices(this.clientId);
         },
-        err => {
+        (err) => {
           this.error = true;
         }
       );
     });
-
   }
 
   subscribeBillServices(clientId: string) {
     if (REGEX_FIX_NUMBER.test(this.currentNumber)) {
       this.bordereau = true;
       this.billsService.getBillsPackage(clientId).subscribe(
-        res => {
+        (res) => {
           this.loading = false;
           this.bills = res;
         },
-        error => {
+        (error) => {
           this.loading = false;
           this.error = true;
         }
       );
     } else {
-      this.billsService.getFactureMobile(this.clientId).subscribe(res => {
+      this.billsService.getFactureMobile(this.clientId).subscribe((res) => {
         this.loading = false;
         res === 'error' ? (this.error = true) : (this.bills = res);
       });
@@ -99,17 +99,17 @@ export class BillsPage implements OnInit {
     if (REGEX_FIX_NUMBER.test(this.currentNumber)) {
       this.bordereau = true;
       this.billsService.getBillsPackage(this.clientId).subscribe(
-        res => {
+        (res) => {
           this.loading = false;
           this.bills = res;
         },
-        error => {
+        (error) => {
           this.loading = false;
           this.error = true;
         }
       );
     } else {
-      this.billsService.getFactureMobile(this.clientId).subscribe(res => {
+      this.billsService.getFactureMobile(this.clientId).subscribe((res) => {
         this.loading = false;
         res === 'error' ? (this.error = true) : (this.bills = res);
       });
@@ -121,6 +121,11 @@ export class BillsPage implements OnInit {
   }
 
   downloadBill(bill: any) {
+    this.followAnalyticsService.registerEventFollow(
+      'click_download_bill',
+      'event',
+      'clicked'
+    );
     this.billsService.downloadBill(bill);
   }
 

@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import {
   GiftSargalItem,
   GiftSargalCategoryItem,
-  getLastUpdatedDateTimeText
+  getLastUpdatedDateTimeText,
 } from 'src/shared';
 import {
   SargalSubscriptionModel,
   OPERATION_TYPE_SARGAL_CONVERSION,
-  PAYMENT_MOD_SARGAL
+  PAYMENT_MOD_SARGAL,
 } from 'src/app/dashboard';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
@@ -19,7 +19,7 @@ const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-sargal-catalogue',
   templateUrl: './sargal-catalogue.page.html',
-  styleUrls: ['./sargal-catalogue.page.scss']
+  styleUrls: ['./sargal-catalogue.page.scss'],
 })
 export class SargalCataloguePage implements OnInit {
   categoriesGiftSargal = [];
@@ -47,16 +47,15 @@ export class SargalCataloguePage implements OnInit {
     private followService: FollowAnalyticsService
   ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.step = 'CHOOSE_GIFT';
     this.reloadData();
     this.getSargalBalance();
   }
 
-  reloadData(){
+  reloadData() {
     this.currentNumber = this.dashServ.getCurrentPhoneNumber();
     this.sargalServ.setUserPhoneNumber(this.currentNumber);
     this.sargalServ.setListGiftSargalAndCategoryOfUserByQuery();
@@ -68,7 +67,7 @@ export class SargalCataloguePage implements OnInit {
         this.categoriesGiftSargal = this.sargalServ.getListCategoryGiftSargal();
 
         this.listGiftSargal = this.sargalServ.getListGiftSargalOfUser();
-        this.activatedRoute.paramMap.subscribe(params => {
+        this.activatedRoute.paramMap.subscribe((params) => {
           const codeCategory = params.has('categoryGift')
             ? params.get('categoryGift')
             : null;
@@ -98,7 +97,7 @@ export class SargalCataloguePage implements OnInit {
 
           const sargal = {
             sargalPts: this.userSargalPoints,
-            lastUpdate: this.sargalLastUpdate
+            lastUpdate: this.sargalLastUpdate,
           };
           ls.set('sargalPoints', sargal);
         }
@@ -162,12 +161,7 @@ export class SargalCataloguePage implements OnInit {
         (res: any) => {
           this.conversionLoading = true;
           this.step = 'SUCCESS';
-          if (res.status === 204) {
-            this.failed = false;
-          } else if (res.status === 202) {
-            this.failed = true;
-            this.errorMsg = 'Votre demande est en cours...';
-          }
+          this.failed = false;
           this.followService.registerEventFollow(
             'Convert_Gift_Sargal_Success',
             'event',
@@ -176,11 +170,11 @@ export class SargalCataloguePage implements OnInit {
               numeroIllimites: numeroIllimite,
               giftName: this.giftSargalSelected.nom,
               giftSargalPts: this.giftSargalSelected.prix,
-              msisdn: this.currentNumber
+              msisdn: this.currentNumber,
             }
           );
         },
-        err => {
+        (err) => {
           this.conversionLoading = true;
           this.errorMsg = 'Une erreur est survenue';
           this.step = 'SUCCESS';
@@ -197,7 +191,7 @@ export class SargalCataloguePage implements OnInit {
               error:
                 err && err.status
                   ? err.status
-                  : 'Erreur durant le traitement de la requête'
+                  : 'Erreur durant le traitement de la requête',
             }
           );
         }

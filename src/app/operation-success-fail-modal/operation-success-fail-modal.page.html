@@ -1,0 +1,138 @@
+<div class="success-page">
+  <img (click)="terminer()" src="/assets/images/close.svg" class="close-icon" alt="">
+  <div class="top-block">
+    <img *ngIf="success" src="/assets/images/confirmation.png" alt="checked" />
+    <img *ngIf="!success" src="/assets/images/echec.png" alt="checked" />
+    <ng-container [ngSwitch]="purchaseType">
+      <span class="title" *ngSwitchCase="OPERATION_TRANSFER_OM"
+        >{{success ? 'Transfert effectué' : 'Echec Transfert'}}</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
+        >{{success ? 'Transfert effectué' : 'Echec Transfert'}}</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_INTERNET_TYPE"
+        >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
+      >
+      <span class="title" *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+      >{{success ? 'Achat crédit effectué' : 'Echec Achat'}}</span
+    >
+      <span class="title" *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
+        >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
+      >
+     
+      <span class="title" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+        >{{success ? 'Paiement effectué' : 'Echec Paiement'}}</span
+      >
+    </ng-container>
+    <span class="subtitle scb-text-gray">
+      <span *ngIf="!success">{{errorMsg}}</span>
+      <ng-container *ngIf="success" [ngSwitch]="purchaseType">
+        <span *ngSwitchCase="OPERATION_INTERNET_TYPE"
+          >Vous avez acheté le pass internet</span
+        >
+        <span *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+        >Vous avez acheté un montant de</span
+      >
+        <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
+          >Vous avez acheté le pass illimix</span
+        >
+        <span *ngSwitchCase="OPERATION_TRANSFER_OM"
+          >Vous avez transféré un montant de
+        </span>
+        <span *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+          >Vous avez payé un montant de
+        </span>
+      </ng-container>
+    </span>
+  </div>
+  <div class="pass-block" *ngIf="success">
+    <ng-container [ngSwitch]="purchaseType">
+      <app-item-pass-internet
+        [passInternet]="passBought"
+        *ngSwitchCase="OPERATION_INTERNET_TYPE"
+      >
+      </app-item-pass-internet>
+      <app-item-pass-illimix
+        [passIllimix]="passBought"
+        *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
+      >
+      </app-item-pass-illimix>
+      <app-item-recharge-credit
+        [modifiable]="false"
+        [amount]="amount"
+        *ngSwitchCase="OPERATION_TRANSFER_OM"
+      ></app-item-recharge-credit>
+      <app-item-recharge-credit
+      [modifiable]="false"
+      [amount]="amount"
+      *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+    ></app-item-recharge-credit>
+      <app-item-recharge-credit
+        [modifiable]="false"
+        [amount]="amount"
+        *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
+      ></app-item-recharge-credit>
+      <app-item-recharge-credit
+        [modifiable]="false"
+        [amount]="amount"
+        *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+      ></app-item-recharge-credit>
+    </ng-container>
+  </div>
+  <div class="bottom-block" *ngIf="success">
+    <div class="details">
+      <ng-container
+        *ngIf="purchaseType !== OPERATION_TYPE_MERCHANT_PAYMENT else merchantBlock"
+      >
+        <div class="left-block">Bénéficiaire</div>
+        <div class="right-block scb-text-gray">
+          <span class="numero">{{recipientMsisdn|phoneNumberDisplay}}</span>
+          <span class="name">
+            {{buyForMe ? 'Moi même' : recipientName ? recipientName : 'Autre'}}
+          </span>
+        </div>
+      </ng-container>
+      <ng-template #merchantBlock>
+        <div class="left-block">Marchand</div>
+        <div class="right-block scb-text-gray">
+          <span class="numero">{{merchantCode}}</span>
+          <span class="name">
+            {{merchantName}}
+          </span>
+        </div>
+      </ng-template>
+    </div>
+    <div class="details">
+      <div class="left-block">Paiement par</div>
+      <div class="right-block scb-text-gray">
+        <span class="numero">
+          {{paymentMod === 'ORANGE_MONEY' ?'Orange Money' : 'Crédit Recharge'}}
+        </span>
+        <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
+      </div>
+    </div>
+    <div class="details details-date">
+      <div class="left-block">Date d'achat</div>
+      <div class="right-block scb-text-gray">
+        <span class="numero">{{dateAchat}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="success" class="confirm-btn">
+    <ion-button (click)="goToPage(purchaseType)" shape="round" class="btn btn-cancel" expand="block" >
+      <ng-container [ngSwitch]="purchaseType">
+          <ng-container *ngSwitchCase="OPERATION_ILLIMIX_TYPE"> Faire un autre achat de pass </ng-container>
+          <ng-container *ngSwitchCase="OPERATION_INTERNET_TYPE"> Faire un autre achat de pass</ng-container>
+          <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM"> Faire un autre transfert </ng-container>
+          <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"> Faire un autre transfert </ng-container>
+          <ng-container *ngSwitchCase="OPERATION_TYPE_RECHARGE"> Faire une autre recharge de credit </ng-container>
+          <ng-container *ngSwitchDefault> Faire une autre operation </ng-container>
+      </ng-container>
+    </ion-button>
+  </div>
+  
+  <div class="terminer scb-text-orange" (click)="terminer()">
+    {{ success ? 'Terminer' : 'Retour à l\'accueil' }}
+  </div>
+</div>

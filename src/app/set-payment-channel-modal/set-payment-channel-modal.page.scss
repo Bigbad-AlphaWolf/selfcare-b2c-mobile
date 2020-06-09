@@ -1,0 +1,64 @@
+@import 'src/app/app';
+
+.select-payment-modal {
+  padding: 30px 15px;
+  .title {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+
+  .choice-block {
+    .item {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      padding-top: 15px;
+      ::ng-deep
+        .mat-radio-button.mat-accent.mat-radio-checked
+        .mat-radio-outer-circle {
+        border-color: $orange;
+      }
+      ::ng-deep .mat-radio-button.mat-accent .mat-radio-inner-circle {
+        background-color: $orange;
+      }
+      .payment-mod-detail {
+        display: flex;
+        justify-content: space-between;
+        width: calc(100% - 28px);
+        padding: 0 0 15px 10px;
+        border-bottom: 2px solid $grayDashboard;
+        .payment-mod {
+          font-family: HelveticaNeueLTStd-Bd, sans-serif;
+          font-size: 18px;
+        }
+        .balance-information {
+          .balance-value,
+          .balance-title {
+            display: block;
+            text-align: right;
+          }
+          .balance-value {
+            font-family: HelveticaNeueLTStd-Bd, sans-serif;
+            font-size: 16px;
+            line-height: 1.38;
+          }
+          .balance-title {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 12px;
+            line-height: 1.33;
+          }
+        }
+      }
+    }
+  }
+
+  button {
+    width: calc(100% - 30px);
+    height: 50px;
+    font-size: 16px;
+    position: absolute;
+    left: 15px;
+    bottom: 30px;
+    border-radius: 10px;
+  }
+}

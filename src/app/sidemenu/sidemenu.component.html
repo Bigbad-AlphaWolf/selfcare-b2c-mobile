@@ -33,10 +33,6 @@
           <div
             routerLink="/change-main-phone-number"
             class="changer-ligne-block"
-            routerLinkActive
-            #routerLinkActiveInstance="routerLinkActive"
-            [attr.tabindex]="routerLinkActiveInstance.isActive ? 0 : -1"
-            [class.list-item-active]="routerLinkActiveInstance.isActive"
           >
             <div class="changer-ligne-text">
               <span class="change scb-text-orange c-pointer"
@@ -59,25 +55,13 @@
     <div class="menu-list-services">
       <ion-menu-toggle>
         <div
-          routerLinkActive="menu-list-services-item-block-selected"
-          #dashRLActive="routerLinkActive"
-          routerLink="/dashboard"
-          [attr.tabindex]="dashRLActive.isActive ? 0 : -1"
-          [class.list-item-active]="dashRLActive.isActive"
           class="menu-list-services-item-block cclose-icon c-pointer"
           (click)="goDashboard()"
         >
           <div class="menu-list-services-item">
             <div class="services-item-icon">
-              <img
-                *ngIf="dashRLActive.isActive"
-                src="/assets/images/suivi-conso.svg"
-                alt="suivi-conso"
-                class="item-icon"
-              />
 
               <img
-                *ngIf="!dashRLActive.isActive"
                 src="/assets/images/suivi-conso-off.svg"
                 alt="suivi-conso"
                 class="item-icon"
@@ -91,8 +75,6 @@
       </ion-menu-toggle>
       <ion-menu-toggle>
         <div
-          routerLinkActive="menu-list-services-item-block-selected"
-          #formuleRLActive="routerLinkActive"
           (click)="goFormule()"
           class="menu-list-services-item-block c-pointer"
           *ngIf="
@@ -102,14 +84,7 @@
           <div class="menu-list-services-item">
             <div class="services-item-icon">
               <img
-                *ngIf="!formuleRLActive.isActive"
                 src="/assets/images/formule.svg"
-                alt="formule"
-                class="item-icon"
-              />
-              <img
-                *ngIf="formuleRLActive.isActive"
-                src="/assets/images/formule-on.svg"
                 alt="formule"
                 class="item-icon"
               />
@@ -122,23 +97,14 @@
       </ion-menu-toggle>
       <ion-menu-toggle>
         <div
-          routerLinkActive="menu-list-services-item-block-selected"
-          #offresRLActive="routerLinkActive"
           (click)="launchInProgressPage()"
           class="menu-list-services-item-block c-pointer"
-          *ngIf="currentProfile !== 'POSTPAID'"
+          *ngIf="currentProfile !== 'POSTPAID' && 0"
         >
           <div class="menu-list-services-item">
             <div class="services-item-icon">
               <img
-                *ngIf="!offresRLActive.isActive"
                 src="/assets/images/offres-services.svg"
-                alt="offres-services"
-                class="item-icon"
-              />
-              <img
-                *ngIf="offresRLActive.isActive"
-                src="/assets/images/offres-services-on.svg"
                 alt="offres-services"
                 class="item-icon"
               />
@@ -153,7 +119,7 @@
         <div
           (click)="goToMyOfferPlans()"
           class="menu-list-services-item-block c-pointer"
-          *ngIf="currentProfile === 'PREPAID' && 0"
+          *ngIf="currentProfile === 'PREPAID'"
         >
           <div class="menu-list-services-item">
             <div class="services-item-icon">
@@ -171,23 +137,14 @@
       </ion-menu-toggle>
       <ion-menu-toggle>
         <div
-          routerLinkActive="menu-list-services-item-block-selected"
-          #billRLActive="routerLinkActive"
           class="menu-list-services-item-block c-pointer"
           (click)="goFacture()"
-          *ngIf="currentProfile !== 'PREPAID'"
+          *ngIf="currentProfile !== 'PREPAID' && currentProfile"
         >
           <div class="menu-list-services-item">
             <div class="services-item-icon">
               <img
-                *ngIf="!billRLActive.isActive"
                 src="/assets/images/bill_menu_icon.svg"
-                alt="factures"
-                class="item-icon"
-              />
-              <img
-                *ngIf="billRLActive.isActive"
-                src="/assets/images/bill_menu_icon_on.svg"
                 alt="factures"
                 class="item-icon"
               />
@@ -200,22 +157,13 @@
       </ion-menu-toggle>
       <ion-menu-toggle>
         <div
-          routerLinkActive="menu-list-services-item-block-selected"
-          #sponsorRLActive="routerLinkActive"
           class="menu-list-services-item-block c-pointer"
           (click)="goParrainage()"
         >
           <div class="menu-list-services-item">
             <div class="services-item-icon">
               <img
-                *ngIf="!sponsorRLActive.isActive"
                 src="/assets/images/bill_menu_icon.svg"
-                alt="factures"
-                class="item-icon"
-              />
-              <img
-                *ngIf="sponsorRLActive.isActive"
-                src="/assets/images/bill_menu_icon_on.svg"
                 alt="factures"
                 class="item-icon"
               />
@@ -231,21 +179,11 @@
       <ion-menu-toggle>
         <div
           (click)="goMyAccount()"
-          #accountRLActive="routerLinkActive"
-          routerLinkActive="user-assistance-account-block-selected"
           class="user-assistance-account-block"
-          routerLink="/my-account"
         >
           <div class="assistance-icon">
             <img
-              *ngIf="!accountRLActive.isActive"
               src="/assets/images/compte.svg"
-              alt="compte"
-              class="icon"
-            />
-            <img
-              *ngIf="accountRLActive.isActive"
-              src="/assets/images/compte-on.svg"
               alt="compte"
               class="icon"
             />
@@ -278,21 +216,12 @@
       </ion-menu-toggle>
       <ion-menu-toggle>
         <div
-          routerLinkActive="user-assistance-account-block-selected"
-          #centerRLActive="routerLinkActive"
           (click)="goEmergencies()"
           class="user-assistance-account-block"
         >
           <div class="assistance-icon">
             <img
-              *ngIf="!centerRLActive.isActive"
               src="/assets/images/control-centre.svg"
-              alt="urgence"
-              class="icon"
-            />
-            <img
-              *ngIf="centerRLActive.isActive"
-              src="/assets/images/control-centre-on.svg"
               alt="urgence"
               class="icon"
             />
@@ -305,8 +234,6 @@
           </div>
         </div>
         <div
-          routerLinkActive="user-assistance-account-block-selected"
-          #centerRLActive="routerLinkActive"
           (click)="goToAbout()"
           class="user-assistance-account-block"
         >

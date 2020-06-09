@@ -22,6 +22,7 @@ export const USER_CONS_CATEGORY_SMS = 'SMS';
 export const USER_CALL_SUMMARY_CONSO_CODES = [1, 6, 9];
 export const OPERATION_TYPE_PASS_INTERNET = 'PASS_INTERNET';
 export const OPERATION_TYPE_PASS_ILLIMIX = 'PASS_ILLIMIX';
+export const OPERATION_TYPE_MERCHANT_PAYMENT = 'MERCHANT_PAYMENT';
 export const OPERATION_TYPE_SOS = 'SOS';
 export const OPERATION_TYPE_SOS_CREDIT = 'SOS CREDIT';
 export const OPERATION_TYPE_SOS_PASS = 'SOS DATA';
@@ -323,42 +324,60 @@ export function getListPassFilteredByLabelAndPaymentMod(
   listPass: (
     | (PassInfoModel | PromoPassModel)
     | (PassIllimModel | PromoPassIllimModel)
-  )[],
-  paymentMod: string
+  )[]
 ) {
   let listPassFiltered = [];
-  // filter according to payment mode and categorie label
-  if (paymentMod === PAYMENT_MOD_OM) {
-    listPassFiltered = listPass.filter((pass: any) => {
-      if (!pass.passPromo) {
-        return (
-          pass.categoriePass.libelle === selectedLabel &&
-          pass.price_plan_index_om > 0
-        );
-      } else {
-        return (
-          pass.passPromo.categoriePass.libelle === selectedLabel &&
-          pass.passPromo.price_plan_index_om > 0
-        );
-      }
-    });
-  } else {
-    listPassFiltered = listPass.filter((pass: any) => {
-      if (!pass.passPromo) {
-        return (
-          pass.categoriePass.libelle === selectedLabel &&
-          pass.price_plan_index > 0
-        );
-      } else {
-        return (
-          pass.passPromo.categoriePass.libelle === selectedLabel &&
-          pass.passPromo.price_plan_index > 0
-        );
-      }
-    });
-  }
+  listPassFiltered = listPass.filter((pass: any) => {
+    if (!pass.passPromo) {
+      return pass.categoriePass.libelle === selectedLabel;
+    } else {
+      return pass.passPromo.categoriePass.libelle === selectedLabel;
+    }
+  });
 
   return listPassFiltered;
+}
+
+export function arrangePassByCategory(listPass: any[], listCategory: string[]) {
+  // arrange pass by category label
+
+  const result: { label: string; pass: any[] }[] = [];
+  listCategory.forEach((label: string) => {
+    result.push({ label, pass: [] });
+  });
+  listPass.forEach((pass: any) => {
+    if (!pass.passPromo) {
+      result
+        .find((item: { label: string; pass: any[] }) => {
+          return item.label === pass.categoriePass.libelle;
+        })
+        .pass.push(pass);
+    } else {
+      result
+        .find((item: { label: string; pass: any[] }) => {
+          return item.label === pass.passPromo.categoriePass.libelle;
+        })
+        .pass.push(pass);
+    }
+  });
+
+  //order pass by tarif
+  result.forEach(
+    (itemPassCategory: { label: string; pass: any[] }, index: number) => {
+      result[index].pass = result[index].pass.sort((pass1: any, pass2: any) => {
+        if (!pass1.passPromo && !pass2.passPromo) {
+          return +pass1.tarif - +pass2.tarif;
+        } else if (!pass1.passPromo && pass2.passPromo) {
+          return +pass1.tarif - +pass2.passPromo.tarif;
+        } else if (pass1.passPromo && !pass2.passPromo) {
+          return +pass1.passPromo.tarif - +pass2.tarif;
+        } else {
+          return +pass1.passPromo.tarif - +pass2.passPromo.tarif;
+        }
+      });
+    }
+  );
+  return result;
 }
 
 export function computeConsoHistory(consos) {
@@ -462,6 +481,7 @@ export interface GiftSargalItem {
   validite: string;
   nombreNumeroIllimtes: number;
   fellowType: number;
+  serviceId?;
 }
 
 export interface FormuleMobileModel {
@@ -651,15 +671,17 @@ export interface PurchaseModel {
  * Version B is the installed version.
  */
 export function isNewVersion(versionA, versionB) {
-  const versionsA = versionA.split(/\./g),
-    versionsB = versionB.split(/\./g);
-  while (versionsA.length || versionsB.length) {
-    const a = Number(versionsA.shift()),
-      b = Number(versionsB.shift());
-    if (a === b) {
-      continue;
+  if(versionA && versionB){
+    const versionsA = versionA.split(/\./g),
+      versionsB = versionB.split(/\./g);
+    while (versionsA.length || versionsB.length) {
+      const a = Number(versionsA.shift()),
+        b = Number(versionsB.shift());
+      if (a === b) {
+        continue;
+      }
+      return a > b || isNaN(b);
     }
-    return a > b || isNaN(b);
   }
   return false;
 }
@@ -767,3 +789,139 @@ export function getBanniereDescription(banniereDescription: string) {
     ? banniereDescription.substring(banniereDescription.indexOf(';') + 1)
     : '';
 }
+
+export const HelpModalDefaultContent = {
+  popupTitle: 'Quel soucis rencontrez-vous ?',
+  popupSubtitle: '',
+  options: [
+    {
+      title: 'Mon numéro ne s’affiche pas',
+      subtitle: 'Regarder le tutoriel',
+      type: 'ERROR_AUTH_IMP',
+      url: '',
+      action: 'POPUP',
+    },
+    {
+      title: 'C’est ma première connexion',
+      subtitle: 'Je veux créer un compte',
+      type: 'REGISTER',
+      url: '',
+      action: 'REDIRECT',
+    },
+    {
+      title: 'J’ai déjà un compte',
+      subtitle: 'Je veux me connecter',
+      type: 'LOGIN',
+      url: '',
+      action: 'REDIRECT',
+    },
+    {
+      title: 'J’ai oublié mon mot de passe',
+      subtitle: 'Je veux le récupérer',
+      type: 'FORGOT_PWD',
+      url: '',
+      action: 'REDIRECT',
+    },
+  ],
+  showChecks: false,
+};
+
+export const HelpModalAuthErrorContent = {
+  popupTitle: 'Assurez-vous :',
+  popupSubtitle: '',
+  options: [
+    {
+      title: 'De désactiver le WIFI',
+      subtitle: 'Voir le tutoriel',
+      type: 'WIFI_AUTH_IMP',
+      url: '',
+      action: 'POPUP',
+    },
+    {
+      title: "D'être sur le bon APN",
+      subtitle: '(orange, internet)',
+      type: 'APN_AUTH_IMP',
+      url: '',
+      action: 'POPUP',
+    },
+    {
+      title: "D'activer les données mobiles",
+      subtitle: 'Voir le tutoriel',
+      type: 'DATA_AUTH_IMP',
+      url: '',
+      action: 'POPUP',
+    },
+  ],
+  showChecks: true,
+};
+
+export const HelpModalAPNContent = {
+  popupTitle: 'Êtes-vous sur le  bon APN ?',
+  popupSubtitle:
+    ' APN, pour Access Point Name, correspond aux paramètres réseau de votre opérateur.' +
+    'Grâce à ces informations, vous allez pouvoir accéder au réseau de votre fournisseur, ' +
+    'et ainsi pouvoir envoyer des MMS ou surfer sur internet.',
+  options: [
+    {
+      title: "Comment configurer l'APN ?",
+      subtitle: 'Voir le tutoriel',
+      type: 'CONFIG_APN_AUTH_IMP',
+      url: '',
+      action: 'POPUP',
+    },
+  ],
+  showChecks: false,
+};
+
+export const HelpModalConfigApnContent = {
+  popupTitle: 'Comment configurer  mon APN',
+  popupSubtitle: '',
+  options: [
+    {
+      title: '1) Accéder aux Paramètres',
+      subtitle:
+        'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+      type: '',
+      url: '',
+      action: 'POPUP',
+    },
+    {
+      title: '2) Sélectionner la partie Sans fil et réseau',
+      subtitle:
+        'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+      type: '',
+      url: '',
+      action: 'POPUP',
+    },
+    {
+      title: '3) Choisissez ensuite Réseau mobile ou Réseau de données mobiles',
+      subtitle:
+        'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+      type: '',
+      url: '',
+      action: 'POPUP',
+    },
+    {
+      title: '4) Allez sur Noms des points d’accès (APN)',
+      subtitle:
+        'Accéder au menu « Réseaux mobiles »' +
+        '( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+      type: '',
+      url: '',
+      action: 'POPUP',
+    },
+    {
+      title:
+        '5) Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
+      subtitle:
+        'Les paramètres internet Orange sont: \n' +
+        'Nom : Orange Internet\n' +
+        ' APN : internet\n' +
+        'Laisser tous les autres options en l’état puis sauvegarder',
+      type: '',
+      url: '',
+      action: 'POPUP',
+    },
+  ],
+  showChecks: false,
+};

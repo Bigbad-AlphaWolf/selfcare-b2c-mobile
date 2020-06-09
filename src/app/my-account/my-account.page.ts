@@ -12,14 +12,14 @@ import {
   isExtensionImageValid,
   isSizeAvatarValid,
   MAX_USER_AVATAR_UPLOAD_SIZE,
-  getNOAvatartUrlImage
+  getNOAvatartUrlImage,
 } from 'src/shared';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-my-account',
   templateUrl: './my-account.page.html',
-  styleUrls: ['./my-account.page.scss']
+  styleUrls: ['./my-account.page.scss'],
 })
 export class MyAccountPage implements OnInit {
   userInfos: any = {};
@@ -51,12 +51,17 @@ export class MyAccountPage implements OnInit {
     } else {
       this.userAvatarUrl = NO_AVATAR_ICON_URL;
     }
-    this.accountService.userAvatarEmit().subscribe(url => {
+    this.accountService.userAvatarEmit().subscribe((url) => {
       this.userAvatarUrl = url;
     });
   }
 
   logOut() {
+    this.followAnalyticsService.registerEventFollow(
+      'Deconnexion',
+      'event',
+      'clicked'
+    );
     this.authServ.logout();
     this.router.navigate(['/']);
   }

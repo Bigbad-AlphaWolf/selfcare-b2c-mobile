@@ -1,0 +1,86 @@
+@import 'src/app/app';
+
+.success-page {
+  overflow-y: auto;
+  height: 100%;
+  position: relative;
+  .close-icon{
+    position: absolute;
+    right: 10px;
+    top: 15px;
+  }
+  .top-block {
+    padding: 35px 10px 15px;
+    text-align: center;
+    .title {
+      display: block;
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 20px;
+      line-height: 1.5;
+      margin: 15px 0 7px;
+    }
+    .subtitle {
+      display: block;
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 14px;
+    }
+  }
+  .pass-block {
+    background-color: $grayDashboard;
+    padding: 10px 15px;
+    app-pass-internet-card {
+      margin: 0 !important;
+    }
+  }
+  .bottom-block {
+    padding: 15px 30px 0px;
+    .details {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0 8px;
+      border-bottom: 2px solid $silver;
+      &-date {
+        border-bottom: none;
+      }
+      .left-block {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+      }
+      .right-block {
+        text-align: right;
+        span {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 14px;
+          margin-bottom: 3px;
+          display: block;
+        }
+      }
+    }
+  }
+  .hide{
+    visibility: hidden;
+  }
+  .confirm-btn{
+    margin: auto;
+    margin-top: 30px;
+    width: 90%;
+    ion-button{
+        height: 50px;
+        --border-radius: 10px;
+        &.btn-confirm{
+            --background-activated : #ff7900;
+        }
+        &.btn-cancel{
+            --background: white;
+            --color: black;
+            --border-style: solid;
+            --background-activated : black;;
+
+        }
+    }
+  }
+  .terminer {
+    text-align: center;
+    padding: 20px 0;
+  }
+}

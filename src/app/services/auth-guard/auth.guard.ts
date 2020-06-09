@@ -31,18 +31,18 @@ export class AuthGuard implements CanActivate {
     if (!userHasLogin) {
       if (
         state.url === '/login' ||
-        state.url === '/home' ||
-        state.url === '/register'
+        state.url === '/home'
       ) {
         return true;
       }
-      this.router.navigate(['/']);
+      this.router.navigate(['/home-v2']);
       return false;
     } else {
       if (
+        state.url === '/' ||
         state.url === '/login' ||
-        state.url === '/home' ||
-        state.url === '/register'
+        state.url === '/home'
+
       ) {
         this.router.navigate(['/dashboard']);
         return false;

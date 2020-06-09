@@ -1,4 +1,12 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -9,7 +17,7 @@ import { IonSlides } from '@ionic/angular';
 @Component({
   selector: 'app-list-pass-internet-v2',
   templateUrl: './list-pass-internet-v2.component.html',
-  styleUrls: ['./list-pass-internet-v2.component.scss']
+  styleUrls: ['./list-pass-internet-v2.component.scss'],
 })
 export class ListPassInternetV2Component implements OnInit, OnDestroy {
   @Input() destCodeFormule: string;
@@ -20,7 +28,7 @@ export class ListPassInternetV2Component implements OnInit, OnDestroy {
     initialSlide: 0,
     speed: 400,
     loop: false,
-    zoom: false
+    zoom: false,
   };
 
   selectedCategory: string;
@@ -33,23 +41,23 @@ export class ListPassInternetV2Component implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private dashbServ: DashboardService,
     private passIntService: PassInternetService
   ) {}
 
   ngOnInit() {
     this.passIntService.setUserCodeFormule(this.destCodeFormule);
-    this.passIntService.setPaymentMod(this.paymentMode);
     this.passIntService.setListPassInternetOfUserByQuery();
-    this.fromSubscription = this.passIntService.getStatusPassLoaded().subscribe((status: boolean) => {
-      this.isLoaded = status;
-      if (this.isLoaded) {
-        this.listCategory = this.passIntService.getListCategoryPassInternet();
-        this.listPassInternet = this.passIntService.getListPassInternetOfUser();
-        this.listPassInternetShown = this.passIntService.getListPassInternetShown();
-        this.selectedCategory = this.listCategory[0];
-      }
-    });
+    this.fromSubscription = this.passIntService
+      .getStatusPassLoaded()
+      .subscribe((status: boolean) => {
+        this.isLoaded = status;
+        if (this.isLoaded) {
+          this.listCategory = this.passIntService.getListCategoryPassInternet();
+          this.listPassInternet = this.passIntService.getListPassInternetOfUser();
+          this.listPassInternetShown = this.passIntService.getListPassInternetShown();
+          this.selectedCategory = this.listCategory[0];
+        }
+      });
   }
 
   goToActivationPage() {
@@ -64,8 +72,7 @@ export class ListPassInternetV2Component implements OnInit, OnDestroy {
     this.selectedCategory = label;
     this.listPassInternetShown = getListPassFilteredByLabelAndPaymentMod(
       label,
-      this.listPassInternet,
-      this.paymentMode
+      this.listPassInternet
     );
   }
 
@@ -87,7 +94,7 @@ export class ListPassInternetV2Component implements OnInit, OnDestroy {
   }
 
   slideChanged() {
-    this.sliders.getActiveIndex().then(index => {
+    this.sliders.getActiveIndex().then((index) => {
       this.activeTabIndex = index;
     });
   }

@@ -158,7 +158,6 @@ export class DashboardHomePrepaidPage implements OnInit {
       .subscribe((res: SubscriptionModel) => {
         if (res.code !== '0') {
           this.passIntService.setUserCodeFormule(res.code);
-          this.passIntService.setPaymentMod(PAYMENT_MOD_CREDIT);
           this.passIntService.setListPassInternetOfUserByQuery();
           this.passIntService
             .getStatusPassLoaded()

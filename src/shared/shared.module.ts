@@ -15,7 +15,11 @@ import {
   MatDialogModule,
   MatCheckboxModule,
   MatRadioModule,
-  MatMenuModule
+  MatMenuModule,
+  MatBottomSheetModule,
+  MatButtonToggleModule,
+  MatButtonModule,
+  MatCardModule,
 } from '@angular/material';
 import { ModalSuccessComponent } from './modal-success/modal-success.component';
 import { ChatMsgLineComponent } from './chat-msg-line/chat-msg-line.component';
@@ -50,9 +54,23 @@ import { OmButtonComponent } from './om-button/om-button.component';
 import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.component';
 import { FormatSuiviConsoCategoryTitlePipe } from './pipes/format-suivi-conso-category-title.pipe';
 import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
+import { HeaderScrollEffectDirective } from './directives/header-scroll-effect.directive';
+import { ItemPassIllimixComponent } from './item-pass-illimix/item-pass-illimix.component';
+import { ItemPassInternetComponent } from './item-pass-internet/item-pass-internet.component';
+import { CommonIssuesComponent } from './common-issues/common-issues.component';
+import { MerchantPaymentCodeComponent } from './merchant-payment-code/merchant-payment-code.component';
+import { NoOmAccountModalComponent } from './no-om-account-modal/no-om-account-modal.component';
+import { ItemRechargeCreditComponent } from './item-recharge-credit/item-recharge-credit.component';
+import { PhoneNumberProviderComponent } from 'src/app/components/phone-number-provider/phone-number-provider.component';
+import { NumberSelectionComponent } from 'src/app/components/number-selection/number-selection.component';
+import { AmountProviderComponent } from 'src/app/components/amount-provider/amount-provider.component';
+import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header-parallax.directive';
 
 @NgModule({
   declarations: [
+    PhoneNumberProviderComponent,
+    NumberSelectionComponent,
+    AmountProviderComponent,
     ActivationOmComponent,
     ChoosePaymentModComponent,
     OperationValidationComponent,
@@ -86,11 +104,24 @@ import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
     OmButtonComponent,
     DashboardHeaderComponent,
     FormatSuiviConsoCategoryTitlePipe,
-    FormatCalledNumberPipe
+    FormatCalledNumberPipe,
+    HeaderScrollEffectDirective,
+    ItemPassIllimixComponent,
+    ItemPassInternetComponent,
+    CommonIssuesComponent,
+    MerchantPaymentCodeComponent,
+    NoOmAccountModalComponent,
+    ItemRechargeCreditComponent,
+    OemIonHeaderParallaxDirective,
+
   ],
   imports: [
     CommonModule,
     MatProgressSpinnerModule,
+    MatBottomSheetModule,
+    MatButtonModule,
+    MatCardModule,
+    MatButtonToggleModule,
     MatInputModule,
     MatSlideToggleModule,
     MatSelectModule,
@@ -101,9 +132,10 @@ import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
     MatIconModule,
     MatRadioModule,
     MatMenuModule,
-    RouterModule
+    RouterModule,
   ],
   entryComponents: [
+    NumberSelectionComponent,
     ModalSuccessComponent,
     NoOMAccountPopupComponent,
     CancelOperationPopupComponent,
@@ -114,16 +146,27 @@ import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
     CguPopupComponent,
     SuccessFailPopupComponent,
     WelcomePopupComponent,
-    SettingsPopupComponent
+    SettingsPopupComponent,
+    CommonIssuesComponent,
+    MerchantPaymentCodeComponent,
+    NoOmAccountModalComponent,
   ],
   exports: [
+    OemIonHeaderParallaxDirective,
+    PhoneNumberProviderComponent,
+    NumberSelectionComponent,
+    AmountProviderComponent,
     MatInputModule,
+    MatButtonToggleModule,
+    MatCardModule,
+    MatButtonModule,
     MatProgressSpinnerModule,
     MatIconModule,
     MatDialogModule,
     MatCheckboxModule,
     MatSelectModule,
     MatOptionModule,
+    MatRadioModule,
     MatMenuModule,
     ReactiveFormsModule,
     ActivationOmComponent,
@@ -156,9 +199,16 @@ import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
     PassVolumeDisplayPipe,
     OmButtonComponent,
     DashboardHeaderComponent,
-    FormatCalledNumberPipe
+    FormatCalledNumberPipe,
+    HeaderScrollEffectDirective,
+    ItemPassIllimixComponent,
+    ItemPassInternetComponent,
+    CommonIssuesComponent,
+    MerchantPaymentCodeComponent,
+    NoOmAccountModalComponent,
+    ItemRechargeCreditComponent,
   ],
   providers: [Contacts, SocialSharing, PassVolumeDisplayPipe],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class SharedModule {}
