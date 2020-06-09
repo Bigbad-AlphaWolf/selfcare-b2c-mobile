@@ -42,7 +42,7 @@ export class TransfertHubServicesPage implements OnInit {
       icon: '/assets/images/ic-top-up-mobile@2x.png',
       action: 'REDIRECT',
       type: 'TRANSFERT_CREDIT',
-      url: '',
+      url: '/transfer/credit-bonus',
     },
     {
       title: 'Transfert',
@@ -50,7 +50,7 @@ export class TransfertHubServicesPage implements OnInit {
       icon: '/assets/images/ic-reward.png',
       action: 'REDIRECT',
       type: 'TRANSFERT_BONUS',
-      url: '',
+      url: '/transfer/credit-bonus',
     },
   ];
   buyOptions: {
@@ -90,22 +90,22 @@ export class TransfertHubServicesPage implements OnInit {
       type: 'PASS_ILLIMIX',
       url: '',
     },
-    {
-      title: 'Pass',
-      subtitle: 'voyage',
-      icon: '/assets/images/ic-aeroplane.png',
-      action: 'REDIRECT',
-      type: 'PASS_VOYAGE',
-      url: '',
-    },
-    {
-      title: 'Pass',
-      subtitle: 'international',
-      icon: '/assets/images/ic-international.png',
-      action: 'REDIRECT',
-      type: 'PASS_INTERNATIONAL',
-      url: '',
-    },
+    // {
+    //   title: 'Pass',
+    //   subtitle: 'voyage',
+    //   icon: '/assets/images/ic-aeroplane.png',
+    //   action: 'REDIRECT',
+    //   type: 'PASS_VOYAGE',
+    //   url: '',
+    // },
+    // {
+    //   title: 'Pass',
+    //   subtitle: 'international',
+    //   icon: '/assets/images/ic-international.png',
+    //   action: 'REDIRECT',
+    //   type: 'PASS_INTERNATIONAL',
+    //   url: '',
+    // },
   ];
   options = [];
   omPhoneNumber: string;

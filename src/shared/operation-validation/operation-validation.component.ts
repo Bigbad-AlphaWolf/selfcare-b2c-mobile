@@ -4,7 +4,7 @@ import {
   Input,
   Output,
   EventEmitter,
-  OnDestroy
+  OnDestroy,
 } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -32,7 +32,7 @@ import {
   OPERATION_TYPE_SARGAL_CONVERSION,
   PAYMENT_MOD_SARGAL,
   PAY_WITH_SARGAL,
-  formatPhoneNumber
+  formatPhoneNumber,
 } from '..';
 import { CancelOperationPopupComponent } from '../cancel-operation-popup/cancel-operation-popup.component';
 import { SoSModel } from 'src/app/services/sos-service';
@@ -40,7 +40,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import {
   FeeModel,
-  ORANGE_MONEY_TRANSFER_FEES
+  ORANGE_MONEY_TRANSFER_FEES,
 } from 'src/app/services/orange-money-service';
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { validateNumber } from 'src/app/register';
@@ -50,7 +50,7 @@ import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow
 @Component({
   selector: 'app-operation-validation',
   templateUrl: './operation-validation.component.html',
-  styleUrls: ['./operation-validation.component.scss']
+  styleUrls: ['./operation-validation.component.scss'],
 })
 export class OperationValidationComponent implements OnInit, OnDestroy {
   dialogRef: MatDialogRef<CancelOperationPopupComponent, any>;
@@ -121,12 +121,9 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
       this.form = this.fb.group({
         nom: [
           this.omRecipientLastName,
-          [Validators.required, Validators.minLength(2)]
+          [Validators.required, Validators.minLength(2)],
         ],
-        prenom: [
-          this.omRecipientFirstName,
-          [Validators.required]
-        ]
+        prenom: [this.omRecipientFirstName, [Validators.required]],
       });
       this.getFees();
       if (!this.recipientHasOmAccount) {
@@ -139,19 +136,19 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
         this.formNumeroIllimite = this.fb.group({
           illimite1: [
             '',
-            [Validators.required, Validators.pattern(REGEX_NUMBER)]
+            [Validators.required, Validators.pattern(REGEX_NUMBER)],
           ],
           illimite2: [
             '',
-            [Validators.required, Validators.pattern(REGEX_NUMBER)]
-          ]
+            [Validators.required, Validators.pattern(REGEX_NUMBER)],
+          ],
         });
       } else if (this.sargalGift.nombreNumeroIllimtes === 1) {
         this.formNumeroIllimite = this.fb.group({
           illimite1: [
             '',
-            [Validators.required, Validators.pattern(REGEX_NUMBER)]
-          ]
+            [Validators.required, Validators.pattern(REGEX_NUMBER)],
+          ],
         });
       }
     }
@@ -162,7 +159,7 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
       (fees: FeeModel[]) => {
         this.extractOMfees(fees);
       },
-      err => {
+      (err) => {
         const fees = ORANGE_MONEY_TRANSFER_FEES;
         this.extractOMfees(fees);
       }
@@ -230,7 +227,7 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
         lastName: this.form.value.nom,
         transferWithCode: this.transferWithCode,
         feesOnMyCharge: this.feesOnMyCharge,
-        amountToTransfer: this.amountToTransfer
+        amountToTransfer: this.amountToTransfer,
       };
       this.validate.emit(omTransferInfos);
     } else if (
@@ -290,15 +287,16 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
     const category = pass.passPromo
       ? pass.passPromo.categoriePass.libelle
       : pass.categoriePass.libelle;
+    const validity = pass.validitePass;
     switch (category) {
       case 'Jour':
-        return 'Valable 24 heures';
+        return validity && !pass.passPromo ? validity : 'Valable 1 jour';
       case '3 Jours':
-        return 'Valable 3 jours';
+        return validity && !pass.passPromo ? validity : 'Valable 3 jours';
       case 'Semaine':
-        return 'Valable 7 jours';
+        return validity && !pass.passPromo ? validity : 'Valable 7 jours';
       case 'Mois':
-        return 'Valable 1 mois';
+        return validity && !pass.passPromo ? validity : 'Valable 30 jours';
       default:
         return '';
     }
@@ -323,14 +321,14 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
           this.fillNumeroIllimiteForm(numeroChampIllimite, number);
         }
       })
-      .catch(err => {});
+      .catch((err) => {});
   }
 
   openPickRecipientModal(phoneNumbers: any[], numeroChampIllimite: number) {
     const dialogRef = this.dialog.open(SelectNumberPopupComponent, {
-      data: { phoneNumbers }
+      data: { phoneNumbers },
     });
-    dialogRef.afterClosed().subscribe(selectedNumber => {
+    dialogRef.afterClosed().subscribe((selectedNumber) => {
       const destNumber = formatPhoneNumber(selectedNumber);
       this.fillNumeroIllimiteForm(numeroChampIllimite, destNumber);
     });
@@ -350,13 +348,13 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
         const number2 = this.formNumeroIllimite.value.illimite2;
         this.formNumeroIllimite.setValue({
           illimite1: phoneNumber,
-          illimite2: number2
+          illimite2: number2,
         });
       } else {
         const number1 = this.formNumeroIllimite.value.illimite1;
         this.formNumeroIllimite.setValue({
           illimite1: number1,
-          illimite2: phoneNumber
+          illimite2: phoneNumber,
         });
       }
     } else {

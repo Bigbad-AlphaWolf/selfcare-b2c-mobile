@@ -88,10 +88,10 @@ export class ApplicationRoutingService {
   }
 
   goToTransfertCreditPage() {
-    // this.route.navigate(['/'])
+     this.route.navigate(['/transfer/credit-bonus'])
   }
   goToTransfertBonusPage() {
-    // this.route.navigate(['/'])
+     this.route.navigate(['/transfer/credit-bonus'])
   }
 
   goBuyCredit() {

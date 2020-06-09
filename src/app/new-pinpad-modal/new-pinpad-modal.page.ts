@@ -26,6 +26,9 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { NoOMAccountPopupComponent } from 'src/shared/no-omaccount-popup/no-omaccount-popup.component';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { ModalController } from '@ionic/angular';
+import { catchError } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -123,7 +126,12 @@ export class NewPinpadModalPage implements OnInit {
   }
 
   getOMPhoneNumber() {
-    this.orangeMoneyService.getOmMsisdn().subscribe(
+    this.orangeMoneyService.getOmMsisdn().pipe(
+      catchError((er: HttpErrorResponse) => {
+        if (er.status === 401) this.modalController.dismiss();        
+        return of('error')
+      }) 
+      ).subscribe(
       (omMsisdn) => {
         if (omMsisdn && omMsisdn !== 'error') {
           this.omPhoneNumber = omMsisdn;
@@ -149,8 +157,12 @@ export class NewPinpadModalPage implements OnInit {
 
   checkUserHasOMToken() {
     this.orangeMoneyService
-      .GetUserAuthInfo(this.omPhoneNumber)
-      .subscribe((omUser) => {
+      .GetUserAuthInfo(this.omPhoneNumber).pipe(
+        catchError((er: HttpErrorResponse) => {          
+          if (er.status === 401) this.modalController.dismiss();        
+          return of(er)
+        }) 
+      ).subscribe((omUser) => {
         this.pinpadData = {
           msisdn: this.omPhoneNumber,
           os: 'Android',

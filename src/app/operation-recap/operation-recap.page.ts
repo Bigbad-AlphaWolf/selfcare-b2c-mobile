@@ -94,7 +94,6 @@ export class OperationRecapPage implements OnInit {
         ) {
           const state = this.router.getCurrentNavigation().extras.state;
           this.state = state;
-          console.log(state);
           this.purchaseType = state.purchaseType;
           switch (this.purchaseType) {
             case OPERATION_TYPE_PASS_INTERNET:
