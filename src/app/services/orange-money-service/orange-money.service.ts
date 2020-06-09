@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as SecureLS from "secure-ls";
 import { BehaviorSubject, Subject, of, Observable, forkJoin } from "rxjs";
-import { tap, delay, switchMap, map } from "rxjs/operators";
+import { tap, switchMap, map } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "src/environments/environment";
 import {
@@ -19,7 +19,6 @@ import {
 } from ".";
 import { FollowAnalyticsService } from "../follow-analytics/follow-analytics.service";
 import { DashboardService } from "../dashboard-service/dashboard.service";
-import { MatBottomSheet } from "@angular/material";
 
 const VIRTUAL_ACCOUNT_PREFIX = "om_";
 const { OM_SERVICE, SERVER_API_URL } = environment;
@@ -28,7 +27,6 @@ const registerClientEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/reg
 const loginClientEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/login-client`;
 const UserAccessInfoEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/user-access-infos`;
 const pinpadEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/get-pin-pad`;
-const checkOMAccountEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/check-client`;
 const checkOMAccountEndpoint2 = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/v2/check-client`;
 const getFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/fees`;
 // const getBalanceEndpoint = `${OM_URL}/api/v1/balance`;
@@ -67,7 +65,7 @@ export class OrangeMoneyService {
   randomPinPadDigits = [];
   // get main phone number ls.get('mainPhoneNumber');
 
-  pay(phoneNumber: any, pin: string, amont: number) {
+  pay(phoneNumber: any, amont: number) {
     const db = this.getAccountInfos(phoneNumber);
     // invalid pin or account locked
     if (!db.active) {
@@ -132,7 +130,7 @@ export class OrangeMoneyService {
     return this.http.get(omFeesEndpoint2);
   }
 
-  GetUserAuthInfo(msisdn) {
+  GetUserAuthInfo(msisdn) {    
     return this.http.get(`${UserAccessInfoEndpoint}/${msisdn}`);
   }
 
@@ -372,7 +370,7 @@ export class OrangeMoneyService {
               }
             );
           },
-          (err) => {
+          () => {
             obs.next("error");
           }
         );
