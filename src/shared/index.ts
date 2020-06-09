@@ -671,7 +671,7 @@ export interface PurchaseModel {
  * Version B is the installed version.
  */
 export function isNewVersion(versionA, versionB) {
-  if(versionA && versionB){
+  if (versionA && versionB) {
     const versionsA = versionA.split(/\./g),
       versionsB = versionB.split(/\./g);
     while (versionsA.length || versionsB.length) {
@@ -790,37 +790,227 @@ export function getBanniereDescription(banniereDescription: string) {
     : '';
 }
 
-export const HelpModalDefaultContent = {
+export const HelpModalDefaultContent: {
+  popupTitle: string;
+  popupSubtitle: string;
+  options: {
+    title: string;
+    subtitle: string;
+    type: string;
+    url: string;
+    action: string;
+    subOptions?: { title: string; subtitle: string }[];
+  }[];
+  showChecks?: boolean;
+} = {
   popupTitle: 'Quel soucis rencontrez-vous ?',
   popupSubtitle: '',
   options: [
     {
       title: 'Mon numéro ne s’affiche pas',
-      subtitle: 'Regarder le tutoriel',
+      subtitle: 'Suivez les instructions du tutoriel',
       type: 'ERROR_AUTH_IMP',
       url: '',
       action: 'POPUP',
-    },
-    {
-      title: 'C’est ma première connexion',
-      subtitle: 'Je veux créer un compte',
-      type: 'REGISTER',
-      url: '',
-      action: 'REDIRECT',
-    },
-    {
-      title: 'J’ai déjà un compte',
-      subtitle: 'Je veux me connecter',
-      type: 'LOGIN',
-      url: '',
-      action: 'REDIRECT',
+      subOptions: [
+        {
+          title: 'Assurez d’avoir activé les données mobiles sur la sim Orange',
+          subtitle:
+            'Assurez d’avoir activé les données mobiles sur la sim Orange',
+        },
+        {
+          title:
+            'Si vous êtes client mobile Orange, assurez vous d’avoir désactivé le Wifi',
+          subtitle:
+            'Si vous êtes client mobile Orange, assurez vous d’avoir désactivé le Wifi',
+        },
+        {
+          title: 'Assurez vous d’être sur le bon APN (Point d’Accès Internet)',
+          subtitle:
+            'Assurez vous d’être sur le bon APN (Point d’Accès Internet)',
+        },
+        {
+          title: 'Redirection vers récupération du numéro de téléphone',
+          subtitle: 'Redirection vers récupération du numéro de téléphone',
+        },
+      ],
     },
     {
       title: 'J’ai oublié mon mot de passe',
-      subtitle: 'Je veux le récupérer',
+      subtitle: 'Je réinitialise mon mot de passe',
       type: 'FORGOT_PWD',
       url: '',
       action: 'REDIRECT',
+      subOptions: [
+        {
+          title:
+            'Pour réinitialiser mon mot de passe et accéder à mon espace, je m’assure d’avoir activé les données mobiles, pas le wifi',
+          subtitle:
+            'Pour réinitialiser mon mot de passe et accéder à mon espace, je m’assure d’avoir activé les données mobiles, pas le wifi',
+        },
+        {
+          title:
+            'Je désactive le wifi avant le premier démarrage de l’application pour que ma SIM se connecte au réseau Orange via l’Internet Mobile. Ainsi je serais identifié automatiquement',
+          subtitle:
+            'Je désactive le wifi avant le premier démarrage de l’application pour que ma SIM se connecte au réseau Orange via l’Internet Mobile. Ainsi je serais identifié automatiquement',
+        },
+        {
+          title: 'Une fois identifié, je clique sur suivant',
+          subtitle: 'Une fois identifié, je clique sur suivant',
+        },
+        {
+          title: 'Je saisi mon nouveau mot de passe et le confirme',
+          subtitle: 'Je saisi mon nouveau mot de passe et le confirme',
+        },
+      ],
+    },
+    {
+      title: 'Je ne sais plus si j’ai un compte',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: '',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title: 'Rendez vous sur la page de création de compte',
+          subtitle: 'Rendez vous sur la page de création de compte',
+        },
+        {
+          title: 'Assurez vous que votre numéro s’affiche',
+          subtitle: 'Assurez vous que votre numéro s’affiche',
+        },
+        {
+          title: 'Cliquez sur suivant',
+          subtitle: 'Cliquez sur suivant',
+        },
+        {
+          title:
+            'Vous serez redirigé vers la page de connexion ou de création de compte suivant si vous avez ou compte ou pas',
+          subtitle:
+            'Vous serez redirigé vers la page de connexion ou de création de compte suivant si vous avez ou compte ou pas',
+        },
+      ],
+    },
+    {
+      title: 'Mon compte est bloqué',
+      subtitle: 'Je réinitialise mon mot de passe',
+      type: '',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title: 'Réinitialisation du mot de passe',
+          subtitle: 'Réinitialisation du mot de passe',
+        },
+      ],
+    },
+    {
+      title: 'Je n’arrive pas à me connecter',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: '',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title:
+            'L’accés à Orange et moi est gratuit en étant sur le réseau Orange, assurez vous d’avoir activé les données mobiles sur la sim Orange',
+          subtitle:
+            'L’accés à Orange et moi est gratuit en étant sur le réseau Orange, assurez vous d’avoir activé les données mobiles sur la sim Orange',
+        },
+        {
+          title:
+            'Si vous êtes sur le Wifi, assurez vous d’avoir une connexion internet',
+          subtitle:
+            'Si vous êtes sur le Wifi, assurez vous d’avoir une connexion internet',
+        },
+      ],
+    },
+    {
+      title: 'Comment configurer le bon APN (Point d’Accès Internet)',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: '',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title: 'Accéder aux Paramètres',
+          subtitle:
+            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+        },
+        {
+          title: 'Sélectionner la partie Sans fil et réseau',
+          subtitle:
+            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+        },
+        {
+          title:
+            'Choisissez ensuite Réseau mobile ou Réseau de données mobiles',
+          subtitle:
+            'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+        },
+        {
+          title: 'Allez sur Noms des points d’accès (APN)',
+          subtitle: 'Je saisi mon nouveau mot de passe et le confirme',
+        },
+        {
+          title:
+            'Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
+          subtitle:
+            'Les paramètres internet Orange sont: \nNom : Orange Internet\nAPN : internet\nLaisser tous les autres options en l’état puis sauvegarder',
+        },
+      ],
+    },
+    {
+      title: 'Je suis client fixe, comment accéder à mon espace ?',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: '',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title: 'Vous devez accéder à Orange et moi, avec un numéro mobile',
+          subtitle: 'Vous devez accéder à Orange et moi, avec un numéro mobile',
+        },
+        {
+          title:
+            'Une fois connecté, cliquez sur le menu de gauche(trois traits), puis cliquez sur l’entrée "Mon compte"',
+          subtitle:
+            'Une fois connecté, cliquez sur le menu de gauche(trois traits), puis cliquez sur l’entrée "Mon compte"',
+        },
+        {
+          title:
+            'Une fois sur "Mon compte", cliquez sur "Rattachez une ligne" et saisissez votre numéro de téléphone fixe',
+          subtitle:
+            'Une fois sur "Mon compte", cliquez sur "Rattachez une ligne" et saisissez votre numéro de téléphone fixe',
+        },
+        {
+          title: 'Et enfin suivez les instructions',
+          subtitle: 'Et enfin suivez les instructions',
+        },
+      ],
+    },
+    {
+      title: 'J’ai besoin d’assistance',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: '',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title: 'Communiquez votre numéro de téléphone',
+          subtitle: 'Communiquez votre numéro de téléphone',
+        },
+        {
+          title:
+            'Décrire brièvement le souci rencontré, si possible y joindre une capture ou le message d’erreur',
+          subtitle:
+            'Décrire brièvement le souci rencontré, si possible y joindre une capture ou le message d’erreur',
+        },
+        // {
+        //   title: 'Cliquez sur le bouton ',
+        //   subtitle: 'Cliquez sur le bouton ',
+        // },
+      ],
     },
   ],
   showChecks: false,
@@ -854,6 +1044,8 @@ export const HelpModalAuthErrorContent = {
   ],
   showChecks: true,
 };
+
+export const HelpModalMsisdnNotDisplayed = {};
 
 export const HelpModalAPNContent = {
   popupTitle: 'Êtes-vous sur le  bon APN ?',

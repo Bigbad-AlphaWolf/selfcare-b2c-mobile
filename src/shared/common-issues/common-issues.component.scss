@@ -1,70 +1,96 @@
 @import 'src/app/app';
 
-.check-firstly-container {    
-    padding: 15px 15px;
-    padding-top: 38px;
-    .title {
-        font-family: HelveticaNeueLTStd-Bd;
-        font-size: 24px;
-        font-weight: bold;
-        font-stretch: normal;
-        font-style: normal;
-        line-height: 1.25;
-        margin-bottom: 30px;
-        width: 70%;
+.issues-bottom-sheet {
+  position: relative;
+  overflow-y: hidden;
+  height: 100%;
+  .check-firstly-container {
+    padding: 38px 15px 50px;
+    height: 100%;
+    overflow-y: scroll;
+    .back-arrow {
+      margin-bottom: 10px;
     }
-    .title-content{
-        display: block;
-        font-family: HelveticaNeueLTStd-Roman;
-        font-size: 16px;
-  font-weight: normal;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: 1.25;
-  letter-spacing: normal;
-  color: #666666;
-  margin-top:10px;
-  width: 130%;
+    .title {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 24px;
+      font-weight: bold;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.25;
+      margin-bottom: 30px;
+      width: 70%;
+    }
+    .title-content {
+      display: block;
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 16px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.25;
+      letter-spacing: normal;
+      color: #666666;
+      margin-top: 10px;
+      width: 130%;
     }
     .check-otions-list {
-        margin-bottom: 30px;
-        .check-item {
+      margin-bottom: 30px;
+      .check-item {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        .index {
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          border: solid 2px $black;
+          border-radius: 50%;
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 20px;
+          margin-bottom: 10px;
+        }
+        .item-text {
+          width: 100%;
+          .text-content {
             display: flex;
-            align-items: flex-start;
             justify-content: space-between;
-            margin-bottom: 20px;
-            .item-text {
-                display: flex;
-                align-items: flex-start;
-                .item-icon {
-                    margin-right: 10px;
-                    width: 20px;
-                    height: 20px;
-                    object-fit: contain;
-                }
-                .text-content {
-                    .titre {
-                        display: block;
-                        font-family: HelveticaNeueLTStd-Bd;
-                        font-size: 16px;
-                        line-height: 1.25;
-                        margin-bottom: 5px;
-                    }
-                    .subtitle {
-                        display: block;
-                        font-family: HelveticaNeueLTStd-Roman;
-                        font-size: 12px;
-                        line-height: 1.33;
-                    }
-                }
+            align-items: center;
+            .titre {
+              display: flex;
+              align-items: center;
+              width: 80%;
+              font-family: HelveticaNeueLTStd-Bd;
+              font-size: 16px;
+              line-height: 1.25;
+              margin-bottom: 5px;
+            }
+            .sous-option-width {
+              width: 100%;
             }
             .arrow {
-                display: flex;
-                transform: rotate(180deg);
+              transform: rotate(180deg);
             }
+          }
+          .subtitle {
+            display: block;
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 12px;
+            line-height: 1.33;
+          }
         }
+      }
     }
-    .btn {
-        border-radius: 10px;
-    }
+  }
+
+  .btn {
+    border-radius: 10px;
+    position: absolute;
+    width: percentage(345/375);
+    left: percentage(15/375);
+    bottom: 0;
+  }
 }
