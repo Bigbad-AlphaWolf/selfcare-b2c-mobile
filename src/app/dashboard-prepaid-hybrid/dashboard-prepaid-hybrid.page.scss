@@ -55,6 +55,7 @@
         &.disabled-block {
           background-color: $grayDashboard;
           opacity: 0.4;
+          pointer-events: none;
         }
         .item-text {
           // margin-left: (12px / 111px) * 100%;
@@ -158,6 +159,9 @@
           font-family: HelveticaNeueLTStd-Roman, sans-serif;
         }
       }
+    }
+    .hide{
+      visibility: hidden;
     }
   }
 
