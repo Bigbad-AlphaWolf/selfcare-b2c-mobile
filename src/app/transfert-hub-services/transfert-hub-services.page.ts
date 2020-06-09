@@ -1,14 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
-import { NoOmAccountModalComponent } from 'src/shared/no-om-account-modal/no-om-account-modal.component';
+import { MatBottomSheet } from '@angular/material';
+import { NumberSelectionComponent } from '../components/number-selection/number-selection.component';
+import { NumberSelectionOption } from '../models/enums/number-selection-option.enum';
+import { OperationExtras } from '../models/operation-extras.model';
+import { OPERATION_TYPE_RECHARGE_CREDIT } from 'src/shared';
+import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 
 @Component({
   selector: 'app-transfert-hub-services',
@@ -39,7 +42,7 @@ export class TransfertHubServicesPage implements OnInit {
       icon: '/assets/images/ic-top-up-mobile@2x.png',
       action: 'REDIRECT',
       type: 'TRANSFERT_CREDIT',
-      url: '',
+      url: '/transfer/credit-bonus',
     },
     {
       title: 'Transfert',
@@ -47,7 +50,7 @@ export class TransfertHubServicesPage implements OnInit {
       icon: '/assets/images/ic-reward.png',
       action: 'REDIRECT',
       type: 'TRANSFERT_BONUS',
-      url: '',
+      url: '/transfer/credit-bonus',
     },
   ];
   buyOptions: {
@@ -87,67 +90,55 @@ export class TransfertHubServicesPage implements OnInit {
       type: 'PASS_ILLIMIX',
       url: '',
     },
-    {
-      title: 'Pass',
-      subtitle: 'voyage',
-      icon: '/assets/images/ic-aeroplane.png',
-      action: 'REDIRECT',
-      type: 'PASS_VOYAGE',
-      url: '',
-    },
-    {
-      title: 'Pass',
-      subtitle: 'international',
-      icon: '/assets/images/ic-international.png',
-      action: 'REDIRECT',
-      type: 'PASS_INTERNATIONAL',
-      url: '',
-    },
+    // {
+    //   title: 'Pass',
+    //   subtitle: 'voyage',
+    //   icon: '/assets/images/ic-aeroplane.png',
+    //   action: 'REDIRECT',
+    //   type: 'PASS_VOYAGE',
+    //   url: '',
+    // },
+    // {
+    //   title: 'Pass',
+    //   subtitle: 'international',
+    //   icon: '/assets/images/ic-international.png',
+    //   action: 'REDIRECT',
+    //   type: 'PASS_INTERNATIONAL',
+    //   url: '',
+    // },
   ];
   options = [];
   omPhoneNumber: string;
   isProcessing: boolean;
   errorMsg: string;
-  senderMsisdn: string;
   dataPayload: any;
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
-    private omService: OrangeMoneyService,
-    private router: Router,
-    private followAnalytics: FollowAnalyticsService,
-    private dashbServ: DashboardService,
-    private route: ActivatedRoute
-  ) {}
+    private matBottomSheet: MatBottomSheet ,
+    private navController: NavController,
+    private router:Router ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      if (
-        this.router.getCurrentNavigation() &&
-        this.router.getCurrentNavigation().extras.state &&
-        this.router.getCurrentNavigation().extras.state.purchaseType
-      ) {
-        const purchaseType = this.router.getCurrentNavigation().extras.state
-          .purchaseType;
-        if (purchaseType === 'TRANSFER') {
-          this.options = this.transferOptions;
-          this.pageTitle = 'Transférer argent ou crédit';
-        } else {
-          this.options = this.buyOptions;
-          this.pageTitle = 'Acheter crédit ou pass';
-        }
-      } else {
-        this.appRouting.goToDashboard();
-      }
-    });
-  }
+    let purchaseType;
 
-  ionViewWillEnter() {
-    this.senderMsisdn = this.dashbServ.getCurrentPhoneNumber();
+    if(history && history.state){
+      purchaseType = history.state.purchaseType;
+    }
+    if (purchaseType === 'TRANSFER') { 
+      this.options = this.transferOptions;
+      this.pageTitle = 'Transférer argent ou crédit';
+    } else if(purchaseType === 'BUY') { 
+      this.options = this.buyOptions;
+      this.pageTitle = 'Acheter crédit ou pass';
+    }else{
+      this.navController.navigateBack('/dashboard');
+
+    }
   }
 
   goToDashboard() {
-    this.appRouting.goToDashboard();
+    this.navController.navigateBack('/dashboard');
   }
 
   goTo(opt: {
@@ -176,7 +167,8 @@ export class TransfertHubServicesPage implements OnInit {
         break;
       case 'CREDIT':
         if (opt.action === 'REDIRECT') {
-          this.appRouting.goBuyCredit();
+          // this.appRouting.goBuyCredit();
+          this.openNumberSelectionBottomSheet();    
         }
         break;
       case 'PASS':
@@ -201,193 +193,25 @@ export class TransfertHubServicesPage implements OnInit {
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data && response.data.recipientMsisdn) {
-        const payload = {
-          senderMsisdn: this.senderMsisdn,
-          recipientMsisdn: response.data.recipientMsisdn,
-          recipientFirstname: response.data.recipientFirstname,
-          recipientLastname: response.data.recipientLastname,
-        };
-        this.dataPayload = payload;
-        this.getOmPhoneNumberAndCheckrecipientHasOMAccount(this.dataPayload);
-      }
-    });
-    return await modal.present();
-  }
-
-  getOmPhoneNumberAndCheckrecipientHasOMAccount(payload: {
-    senderMsisdn: string;
-    recipientMsisdn: string;
-    recipientFirstname: string;
-    recipientLastname: string;
-  }) {
-    this.isProcessing = true;
-
-    this.omService.getOmMsisdn().subscribe((userMsisdn) => {
-      this.isProcessing = false;
-      if (userMsisdn !== 'error') {
-        this.omPhoneNumber = userMsisdn;
-        this.checkOMToken(userMsisdn, payload);
-      } else {
-        this.router.navigate(['/see-solde-om']);
-      }
-    });
-  }
-
-  checkRecipientHasOMAccount(
-    userOMNumber: string,
-    payload: {
-      senderMsisdn: string;
-      recipientMsisdn: string;
-      recipientFirstname: string;
-      recipientLastname: string;
-    }
-  ) {
-    this.isProcessing = true;
-    this.errorMsg = null;
-    this.omService
-      .checkUserHasAccount(this.omPhoneNumber, payload.recipientMsisdn)
-      .subscribe(
-        (res: any) => {
-          this.isProcessing = false;
-          if (res) {
-            if (res.status_code.match('Success')) {
-              const pageData = Object.assign(payload, {
-                purchaseType: 'TRANSFER_MONEY',
-              });
-              this.appRouting.goSetAmountPage(pageData);
-              this.followAnalytics.registerEventFollow(
-                'destinataire_transfert_has_om_account_success',
-                'event',
-                {
-                  transfert_om_numero_sender: userOMNumber,
-                  transfert_om_numero_receiver: payload.recipientMsisdn,
-                  has_om: 'true',
-                }
-              );
-            } else {
-              this.openNoOMAccountModal(payload);
-              this.followAnalytics.registerEventFollow(
-                'destinataire_transfert_has_om_account_success',
-                'event',
-                {
-                  transfert_om_numero_sender: userOMNumber,
-                  transfert_om_numero_receiver: payload.recipientMsisdn,
-                  has_om: 'false',
-                }
-              );
-              this.errorMsg = 'Recipient has No OM ';
-              // this.openModalNoOMAccount(this.recipientInfos);
-            }
-          } else {
-            this.router.navigate(['/see-solde-om']);
-          }
-        },
-        (err: HttpErrorResponse) => {
-          this.isProcessing = false;
-          this.errorMsg = 'Recipient has No OM ';
-          let isAccessTokenExpired: boolean;
-          if (err && err.error.title) {
-            let error: string = err.error.title;
-            error = error.toLowerCase();
-            isAccessTokenExpired =
-              error.includes('principal') &&
-              error.includes('token') &&
-              error.includes('expired');
-          }
-          if (isAccessTokenExpired) {
-            this.openPinpad(this.dataPayload);
-          }
-          if (err.status === 400) {
-            this.openNoOMAccountModal(payload);
-            this.followAnalytics.registerEventFollow(
-              'destinataire_transfert_has_om_account',
-              'event',
-              {
-                transfert_om_numero_destinataire: payload.recipientMsisdn,
-                has_om: 'false',
-              }
-            );
-          } else {
-            this.followAnalytics.registerEventFollow(
-              'destinataire_transfert_has_om_account_error',
-              'error',
-              {
-                transfert_om_numero_sender: userOMNumber,
-                transfert_om_numero_receiver: payload.recipientMsisdn,
-                error:
-                  'Une error ' + err.status + ' est survenue' + err && err.error
-                    ? err.error.title
-                    : '',
-              }
-            );
-            this.errorMsg = 'Une erreur est survenue, veuillez reessayer';
-          }
-        }
-      );
-  }
-
-  async openPinpad(payload: any) {
-    const modal = await this.modalController.create({
-      component: NewPinpadModalPage,
-      cssClass: 'pin-pad-modal',
-      componentProps: {
-        operationType: null,
-      },
-    });
-    modal.onDidDismiss().then((response) => {
-      if (response.data && response.data.success) {
-        this.getOmPhoneNumberAndCheckrecipientHasOMAccount(payload);
-      }
-    });
-    return await modal.present();
-  }
-
-  async openNoOMAccountModal(payload: {
-    senderMsisdn: string;
-    recipientMsisdn: string;
-    recipientFirstname: string;
-    recipientLastname: string;
-  }) {
-    const modal = await this.modalController.create({
-      component: NoOmAccountModalComponent,
-      cssClass: 'customModalNoOMAccountModal',
-    });
-    modal.onDidDismiss().then((response) => {
-      if (response && response.data && response.data.continue) {
-        const pageData = Object.assign(payload, {
-          userHasNoOmAccount: true,
-          purchaseType: 'TRANSFER_MONEY_WITH_CODE',
-        });
+        const pageData = response.data;
         this.appRouting.goSetAmountPage(pageData);
+        // this.getOmPhoneNumberAndCheckrecipientHasOMAccount(this.dataPayload);
       }
     });
     return await modal.present();
   }
 
-  checkOMToken(
-    userOMMsisdn: string,
-    payload: {
-      senderMsisdn: string;
-      recipientMsisdn: string;
-      recipientFirstname: string;
-      recipientLastname: string;
-    }
-  ) {
-    this.isProcessing = true;
 
-    this.omService.GetUserAuthInfo(userOMMsisdn).subscribe(
-      (omUser: any) => {
-        this.isProcessing = false;
-        // If user already connected open pinpad
-        if (!omUser.hasApiKey || omUser.loginExpired || !omUser.accessToken) {
-          this.router.navigate(['/see-solde-om']);
-        } else {
-          this.checkRecipientHasOMAccount(userOMMsisdn, payload);
-        }
-      },
-      () => {
-        this.isProcessing = false;
-      }
-    );
+  openNumberSelectionBottomSheet(option?: NumberSelectionOption) {
+    this.matBottomSheet
+      .open(NumberSelectionComponent, {
+        data: {option: option},
+      })
+      .afterDismissed()
+      .subscribe((opInfos: OperationExtras) => {
+      if(!opInfos || !opInfos.recipientMsisdn) return;
+      opInfos = { purchaseType:OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos}
+      this.router.navigate([CreditPassAmountPage.PATH], {state:opInfos});
+      });
   }
 }

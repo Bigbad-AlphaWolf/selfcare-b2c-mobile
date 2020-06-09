@@ -671,15 +671,17 @@ export interface PurchaseModel {
  * Version B is the installed version.
  */
 export function isNewVersion(versionA, versionB) {
-  const versionsA = versionA.split(/\./g),
-    versionsB = versionB.split(/\./g);
-  while (versionsA.length || versionsB.length) {
-    const a = Number(versionsA.shift()),
-      b = Number(versionsB.shift());
-    if (a === b) {
-      continue;
+  if(versionA && versionB){
+    const versionsA = versionA.split(/\./g),
+      versionsB = versionB.split(/\./g);
+    while (versionsA.length || versionsB.length) {
+      const a = Number(versionsA.shift()),
+        b = Number(versionsB.shift());
+      if (a === b) {
+        continue;
+      }
+      return a > b || isNaN(b);
     }
-    return a > b || isNaN(b);
   }
   return false;
 }
@@ -777,11 +779,15 @@ export class SplashScreenMock extends SplashScreen {
 }
 
 export function getBanniereTitle(banniereDescription: string) {
-  return banniereDescription.substring(0, banniereDescription.indexOf(';'));
+  return banniereDescription
+    ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
+    : '';
 }
 
 export function getBanniereDescription(banniereDescription: string) {
-  return banniereDescription.substring(banniereDescription.indexOf(';') + 1);
+  return banniereDescription
+    ? banniereDescription.substring(banniereDescription.indexOf(';') + 1)
+    : '';
 }
 
 export const HelpModalDefaultContent = {

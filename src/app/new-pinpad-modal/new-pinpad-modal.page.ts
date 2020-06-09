@@ -19,12 +19,16 @@ import {
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_TYPE_RECHARGE_CREDIT,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { NoOMAccountPopupComponent } from 'src/shared/no-omaccount-popup/no-omaccount-popup.component';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { ModalController } from '@ionic/angular';
+import { catchError } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -122,7 +126,12 @@ export class NewPinpadModalPage implements OnInit {
   }
 
   getOMPhoneNumber() {
-    this.orangeMoneyService.getOmMsisdn().subscribe(
+    this.orangeMoneyService.getOmMsisdn().pipe(
+      catchError((er: HttpErrorResponse) => {
+        if (er.status === 401) this.modalController.dismiss();        
+        return of('error')
+      }) 
+      ).subscribe(
       (omMsisdn) => {
         if (omMsisdn && omMsisdn !== 'error') {
           this.omPhoneNumber = omMsisdn;
@@ -148,8 +157,12 @@ export class NewPinpadModalPage implements OnInit {
 
   checkUserHasOMToken() {
     this.orangeMoneyService
-      .GetUserAuthInfo(this.omPhoneNumber)
-      .subscribe((omUser) => {
+      .GetUserAuthInfo(this.omPhoneNumber).pipe(
+        catchError((er: HttpErrorResponse) => {          
+          if (er.status === 401) this.modalController.dismiss();        
+          return of(er)
+        }) 
+      ).subscribe((omUser) => {
         this.pinpadData = {
           msisdn: this.omPhoneNumber,
           os: 'Android',
@@ -195,6 +208,7 @@ export class NewPinpadModalPage implements OnInit {
         this.userNotRegisteredInOm = false;
         if (res.status_code.match('Erreur-046')) {
           this.openModalNoOMAccount();
+          this.modalController.dismiss();
           this.errorOnOtp = res.status_wording;
         } else {
           this.otpValidation = true;
@@ -317,7 +331,7 @@ export class NewPinpadModalPage implements OnInit {
               omUser.loginRefreshToken = loginRes.content.data.refresh_token;
               this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
               switch (this.operationType) {
-                case 'BUY_CREDIT':
+                case OPERATION_TYPE_RECHARGE_CREDIT:
                   const creditToBuy = Object.assign({}, this.buyCreditPayload, {
                     pin,
                   });
@@ -463,8 +477,9 @@ export class NewPinpadModalPage implements OnInit {
         // check response status
         if (res.status_code.match('Success')) {
           // valid pin
+          const balance = res.content.data.balance;
           db.pinFailed = 0; // reset the pinfailed
-          db.solde = res.content.data.balance;
+          db.solde = balance;
           const date = new Date();
           const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
             '0' +
@@ -481,6 +496,7 @@ export class NewPinpadModalPage implements OnInit {
           if (!this.operationType) {
             this.modalController.dismiss({
               success: true,
+              balance: balance,
             });
           } else {
             // this.resultEmit.emit(db.solde);
@@ -697,6 +713,11 @@ export class NewPinpadModalPage implements OnInit {
       this.modalController.dismiss({
         success: true,
       });
+    }else if (res === null || res.status_code === null) {
+      this.pinError = "Une erreur s'est produite. Veuillez ressayer ultérieurement";
+      this.pinHasError = true;
+      this.recurrentOperation = true;
+      // this.resultEmit.emit('erreur');
     } else {
       this.pinHasError = true;
       this.orangeMoneyService.logWithFollowAnalytics(
@@ -704,11 +725,7 @@ export class NewPinpadModalPage implements OnInit {
         'error',
         this.dataToLog
       );
-      if (res === null || res.status_code === null) {
-        this.pinError = "Une erreur s'est produite.";
-        this.recurrentOperation = true;
-        // this.resultEmit.emit('erreur');
-      } else if (res.status_code.match('Erreur-045')) {
+        if (res.status_code.match('Erreur-045')) {
         this.pinError =
           'Vous avez effectué la même transaction il y a quelques instants.';
         this.recurrentOperation = true;

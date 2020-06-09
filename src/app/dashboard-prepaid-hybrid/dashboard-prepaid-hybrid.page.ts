@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
@@ -42,6 +42,9 @@ import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.co
 import { AssistanceService } from '../services/assistance.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { ModalController } from '@ionic/angular';
+import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -109,7 +112,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
     private appliRouting: ApplicationRoutingService,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private omServ: OrangeMoneyService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -178,7 +183,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
           this.getCustomerSargalStatus();
         }
       },
-      (err: any) => {}
+      () => {}
     );
   }
 
@@ -214,7 +219,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         }
         this.dataLoaded = true;
       },
-      (err) => {
+      () => {
         this.error = true;
         this.dataLoaded = true;
       }
@@ -231,7 +236,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         this.sargalLastUpdate = getLastUpdatedDateTimeText();
         this.sargalDataLoaded = true;
       },
-      (err: any) => {
+      () => {
         this.sargalDataLoaded = true;
         this.sargalUnavailable = true;
       }
@@ -483,7 +488,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
                 this.showWelcomePopup(res);
               }
             },
-            (err) => {}
+            () => {}
           );
         }
       },
@@ -517,11 +522,26 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goMerchantPayment() {
-    this.bottomSheet
+    this.omServ.getOmMsisdn().subscribe((msisdn: string)=>{
+      if(msisdn !== 'error'){
+        this.bottomSheet
       .open(MerchantPaymentCodeComponent, {
         panelClass: 'merchant-code-modal',
       })
       .afterDismissed()
-      .subscribe((message: string) => {});
+      .subscribe(() => {});
+      }else {
+        this.openPinpad()
+      }
+    })
+    
+  }
+
+  async openPinpad() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+    });
+    return await modal.present();
   }
 }

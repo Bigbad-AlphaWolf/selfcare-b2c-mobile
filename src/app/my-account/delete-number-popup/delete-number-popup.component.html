@@ -1,8 +1,12 @@
 <div class="delete-number-dialog">
   <div class="dialog-title">
     Etes-vous sûr de vouloir supprimer
-    {{ phoneNumbersToDelete.length > 1 ? 'ces lignes' : 'cette ligne' }} de
-    votre compte Orange et Moi:
+    {{
+      phoneNumbersToDelete && phoneNumbersToDelete.length > 1
+        ? 'ces lignes'
+        : 'cette ligne'
+    }}
+    de votre compte Orange et Moi:
   </div>
   <div class="phone-numbers-to-delete">
     <div

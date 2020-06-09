@@ -15,6 +15,7 @@ import {
 } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -34,7 +35,7 @@ export class LoginPage implements OnInit {
   navItems: {
     title: string;
     subTitle: string;
-    action: 'help' | 'register';
+    action: 'help' | 'register' | 'password';
   }[] = [
     {
       title: 'Je m’inscris',
@@ -46,6 +47,11 @@ export class LoginPage implements OnInit {
       subTitle: 'J’éprouve des difficultés pour me connecter',
       action: 'help',
     },
+    {
+      title: 'J’ai oublié mon mot de passe',
+      subTitle: 'Je veux le récupérer',
+      action: 'password',
+    },
   ];
   constructor(
     private fb: FormBuilder,
@@ -54,7 +60,8 @@ export class LoginPage implements OnInit {
     private dashbServ: DashboardService,
     public dialog: MatDialog,
     private bottomSheet: MatBottomSheet,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -151,12 +158,15 @@ export class LoginPage implements OnInit {
     }
   }
 
-  doAction(action: 'register' | 'help') {
+  doAction(action: 'register' | 'help' | 'password') {
     if (action === 'register') {
       this.goRegisterPage();
     }
     if (action === 'help') {
       this.openHelpModal(HelpModalDefaultContent);
+    }
+    if (action === 'password') {
+      this.router.navigate(['/forgotten-password']);
     }
   }
 
@@ -191,5 +201,8 @@ export class LoginPage implements OnInit {
       'clic'
     );
     this.router.navigate(['/home']);
+  }
+  goBack(){
+    this.navController.navigateBack(['/home-v2'])
   }
 }

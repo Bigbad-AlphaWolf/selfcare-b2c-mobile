@@ -14,7 +14,6 @@ import {
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { getConsoByCategory } from '../dashboard';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { TransfertBonnus } from '../services/dashboard-service';
 import { Contact } from '@ionic-native/contacts';
@@ -126,7 +125,7 @@ export class TransferCreditBonusOmPage implements OnInit {
                 this.step = 'SAISIE_MONTANT';
               }
             },
-            (err: any) => {
+            () => {
               this.loading = false;
               this.errorMsg = 'Une erreur est survenue, veuillez reessayer';
             }
@@ -283,7 +282,7 @@ export class TransferCreditBonusOmPage implements OnInit {
             this.pinHasError = true;
           }
         },
-        err => {
+        () => {
           this.followAnalyticsService.registerEventFollow(
             'Transfer_Credit_Error',
             'error',

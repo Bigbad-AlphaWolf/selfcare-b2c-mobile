@@ -38,6 +38,8 @@ export class AccountService {
   dialogImgRef: MatDialogRef<ChangeAvatarPopupComponent, any>;
   dialogSub: Subscription;
   userImgName;
+  updateAvatarSubject: Subject<any> = new Subject<any>();
+
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
@@ -142,6 +144,7 @@ export class AccountService {
         const imageId = generateUUID();
         this.userImgName = imageId + '.' + imgExtension;
         formData.append('file', fileInput, this.userImgName);
+        this.updateAvatarSubject.next({status: false, error: false})
         this.uploadUserAvatar(formData);
       }
     });
@@ -156,7 +159,13 @@ export class AccountService {
   uploadUserAvatar(formData: any) {
     this.uploadAvatar(formData).subscribe(() => {
       this.saveUserImgProfil(this.userImgName);
+    }, ()=>{
+      this.updateAvatarSubject.next({status: true, error: true})
     });
+  }
+
+  getStatusAvatarLoaded() {
+    return this.updateAvatarSubject.asObservable();
   }
 
   saveImgProfil(userImageProfil) {
@@ -167,10 +176,13 @@ export class AccountService {
 
   saveUserImgProfil(userImageProfil) {
     this.saveImgProfil(userImageProfil).subscribe((response: any) => {
+      this.updateAvatarSubject.next({status: true, error: false})
       if (response && response.imageProfil) {
         ls.set('user', response);
         this.changeUserAvatarUrl(downloadAvatarEndpoint + response.imageProfil);
       }
+    },()=>{
+      this.updateAvatarSubject.next({status: true, error: true})
     });
   }
 

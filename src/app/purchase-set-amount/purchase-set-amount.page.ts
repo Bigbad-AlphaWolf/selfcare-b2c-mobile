@@ -15,6 +15,9 @@ import {
 } from '../services/orange-money-service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { NavController } from '@ionic/angular';
+import { OperationExtras } from '../models/operation-extras.model';
+import { of, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-purchase-set-amount',
@@ -30,7 +33,7 @@ export class PurchaseSetAmountPage implements OnInit {
   checkingAmount: boolean;
   recipientFirstname: string;
   recipientLastname: string;
-  purchasePayload: any;
+  purchasePayload: OperationExtras;
   hasError: boolean;
   error: string;
   fee: number;
@@ -49,12 +52,16 @@ export class PurchaseSetAmountPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private omService: OrangeMoneyService,
-    private appliRouting: ApplicationRoutingService
+    private appliRouting: ApplicationRoutingService,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
+    // this.initForm(100);
     this.getPurchaseType();
   }
+
+  amountSelected($event) {}
 
   initForm(minValue: number, initialValue?: number) {
     this.setAmountForm = this.fb.group({
@@ -113,6 +120,7 @@ export class PurchaseSetAmountPage implements OnInit {
   getPurchaseType() {
     // let state = this.router.getCurrentNavigation().extras.state;
     this.purchasePayload = history.state;
+
     if (this.purchasePayload && this.purchasePayload.purchaseType) {
       this.purchaseType = this.purchasePayload.purchaseType;
       this.userHasNoOmAccount = this.purchasePayload.userHasNoOmAccount;
@@ -120,13 +128,15 @@ export class PurchaseSetAmountPage implements OnInit {
       this.recipientFirstname = this.purchasePayload.recipientFirstname;
       this.recipientLastname = this.purchasePayload.recipientLastname;
       this.getPageTitle();
+
       switch (this.purchaseType) {
         case OPERATION_TYPE_SEDDO_CREDIT:
         case OPERATION_TYPE_SEDDO_BONUS:
           this.initForm(100);
           break;
         case OPERATION_TYPE_MERCHANT_PAYMENT:
-        case OPERATION_TYPE_RECHARGE_CREDIT:
+          this.initForm(1, initialAmount);
+          break;
         case OPERATION_TRANSFER_OM:
           this.initForm(1, initialAmount);
           break;
@@ -163,7 +173,7 @@ export class PurchaseSetAmountPage implements OnInit {
       case OPERATION_TYPE_SEDDO_BONUS:
       case OPERATION_TRANSFER_OM:
       case OPERATION_TRANSFER_OM_WITH_CODE:
-        this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
+        this.navController.pop();
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
       default:
@@ -186,7 +196,32 @@ export class PurchaseSetAmountPage implements OnInit {
         'recipientLastname'
       ];
     }
-    const navExtras: NavigationExtras = { state: this.purchasePayload };
+    this.checkOMBalanceSuffiency(amount);
+  }
+
+  checkOMBalanceSuffiency(amount) {
+    this.checkingAmount = true;
+    this.hasError = false;
+    this.omService.checkBalanceSufficiency(amount).subscribe(
+      (hasEnoughBalance) => {
+        this.checkingAmount = false;
+        if (hasEnoughBalance) {
+          this.redirectRecapPage(this.purchasePayload);
+        } else {
+          this.hasError = true;
+          this.error =
+            'Le montant que vous voulez transférer est supérieur à votre solde.';
+        }
+      },
+      (err) => {
+        this.checkingAmount = false;
+        this.redirectRecapPage(this.purchasePayload);
+      }
+    );
+  }
+
+  redirectRecapPage(payload: any) {
+    const navExtras: NavigationExtras = { state: payload };
     this.router.navigate(['/operation-recap'], navExtras);
   }
 
@@ -244,16 +279,11 @@ export class PurchaseSetAmountPage implements OnInit {
     if (amount && this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
       const fee = this.extractFees(this.transferFeesArray, amount);
       this.fee = fee.with_code;
-      // this.totalAmount = +amount + this.fee;
     }
     if (amount && this.purchaseType === OPERATION_TRANSFER_OM) {
       const fee = this.extractFees(this.transferFeesArray, amount);
       this.fee = fee.without_code;
-      // this.includeFees
-      //   ? (this.totalAmount = +amount + this.fee)
-      //   : (this.totalAmount = +amount);
     }
-    console.log('in get fees', this.fee);
   }
 
   onAmountChanged(amount) {

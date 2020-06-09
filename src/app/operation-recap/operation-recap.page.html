@@ -13,6 +13,8 @@
         >Transfert d'argent</span
       >
       <span *ngSwitchCase="OPERATION_TRANSFER_OM">Transfert d'argent</span>
+      <span *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
+
     </ng-container>
   </div>
   <div class="banner-container">
@@ -47,13 +49,20 @@
         alt="banniere"
         class="banniere"
       />
+      <img
+      *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+      src="assets/images/achat-de-credit.svg"
+      alt="banniere"
+      class="banniere"
+    />
     </ng-container>
   </div>
 </ion-header>
 
 <ion-content #scrollArea [scrollEvents]="true">
-  <div class="recap-title">
-    <span class="text-1">Récapitulatif</span>
+  <div *ngIf="purchaseType==='RECHARGEMENT_CREDIT'" class="recap-text">Récapitulatif</div>
+  <div class="recap-title" *ngIf="purchaseType!=='RECHARGEMENT_CREDIT'" >
+    <span class="text-1" >Récapitulatif</span>
     <ng-container [ngSwitch]="purchaseType">
       <span *ngSwitchCase="OPERATION_INTERNET_TYPE" class="text-2 scb-text-gray"
         >Vous allez recharger</span
@@ -74,15 +83,48 @@
       <span *ngSwitchCase="OPERATION_TRANSFER_OM" class="text-2 scb-text-gray"
         >Vous allez transférer</span
       >
+
     </ng-container>
   </div>
   <div class="buy-pass-information">
+    <ng-container [ngSwitch]="purchaseType">
+      <div
+        class="amount-to-transfer"
+        *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
+      >
+        <span class="pass">Montant à transférer</span
+        ><span *ngIf="0" class="modifier scb-text-orange">modifier</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_TRANSFER_OM">
+        <span class="pass">Montant à transférer</span
+        ><span *ngIf="0" class="modifier scb-text-orange">modifier</span>
+      </div>
+      <div
+        class="amount-to-transfer"
+        *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+      >
+        <span class="pass">Montant à transférer</span
+        ><span *ngIf="0" class="modifier scb-text-orange">modifier</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_ILLIMIX_TYPE">
+        <span class="pass">Pass sélectionné</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_INTERNET_TYPE">
+        <span class="pass">Pass sélectionné</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="'RECHARGEMENT_CREDIT'">
+        <span class="pass">Montant à acheter</span>
+        <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
+
+      </div>
+    </ng-container>
     <div class="card-container">
       <ng-container [ngSwitch]="purchaseType">
         <app-item-recharge-credit
           [amount]="amount"
           *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
-        ></app-item-recharge-credit>
+        >
+        </app-item-recharge-credit>
         <app-item-recharge-credit
           [amount]="amount"
           *ngSwitchCase="OPERATION_TRANSFER_OM"
@@ -90,39 +132,49 @@
         <app-item-recharge-credit
           [amount]="amount"
           *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
-        ></app-item-recharge-credit>
+        >
+        </app-item-recharge-credit>
         <app-item-pass-internet
           [passInternet]="passChoosen"
+          [subscription]="subscriptionInfos"
           *ngSwitchCase="OPERATION_INTERNET_TYPE"
         >
         </app-item-pass-internet>
         <app-item-pass-illimix
           [passIllimix]="passChoosen"
+          [subscription]="subscriptionInfos"
           *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >
+        
         </app-item-pass-illimix>
+
+        <app-item-recharge-credit
+        [amount]="amount"
+        *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+      >
+      </app-item-recharge-credit>
       </ng-container>
     </div>
-    <ng-container [ngSwitch]="purchaseType">
-      <div
-        *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
-        class="recipient-information"
+    <div class="amount-to-transfer">
+      <span class="pass">Bénéficiaire</span>
+      <span
+        class="modifier scb-text-orange"
+        *ngIf="purchaseType !== OPERATION_ILLIMIX_TYPE && purchaseType !== OPERATION_INTERNET_TYPE && 0"
+        >Modifier</span
       >
-        <div class="top-block">
-          <div class="title">Marchand</div>
-          <div class="recipient">{{merchantCode}}</div>
-        </div>
-        <div class="bottom-block scb-text-gray">{{merchantName}}</div>
+    </div>
+    <div class="recipient-information">
+      <div class="top-block">
+        <span class="title"
+          >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT ? merchantCode :
+          recipientMsisdn | phoneNumberDisplay}}</span
+        >
+        <span class="recipient"
+          >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT
+          ?merchantName:recipientName}}</span
+        >
       </div>
-      <div class="recipient-information" *ngSwitchDefault>
-        <div class="top-block">
-          <div class="title">Bénéficiaire</div>
-          <div class="recipient">{{recipientMsisdn}}</div>
-        </div>
-        <div class="bottom-block scb-text-gray">{{recipientName}}</div>
-      </div>
-    </ng-container>
-
+    </div>
     <button
       class="scb-btn scb-btn-orange"
       (click)="pay()"
@@ -146,6 +198,9 @@
         <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
           >Transférer ({{amount}} FCFA)</span
         >
+        <span class="text" *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+        >Confirmer ({{amount}} FCFA)</span
+      >
       </ng-container>
       <mat-spinner
         mode="indeterminate"

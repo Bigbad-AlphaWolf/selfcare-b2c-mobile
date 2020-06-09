@@ -8,7 +8,7 @@ import { AuthenticationService } from 'src/app/services/authentication-service/a
 @Component({
   selector: 'app-delete-linked-numbers',
   templateUrl: './delete-linked-numbers.page.html',
-  styleUrls: ['./delete-linked-numbers.page.scss']
+  styleUrls: ['./delete-linked-numbers.page.scss'],
 })
 export class DeleteLinkedNumbersPage implements OnInit, OnDestroy {
   dialogSub: Subscription;
@@ -24,7 +24,7 @@ export class DeleteLinkedNumbersPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getUserAttachedPhoneNumber();
-    this.accountService.deletedPhoneNumbersEmit().subscribe(res => {
+    this.accountService.deletedPhoneNumbersEmit().subscribe((res) => {
       this.cpt = 0;
       this.getUserAttachedPhoneNumber();
       this.changeCurrentPhoneNumber();
@@ -33,7 +33,6 @@ export class DeleteLinkedNumbersPage implements OnInit, OnDestroy {
 
   deletePhoneNumbers() {
     this.accountService.deleteUserLinkedPhoneNumbers(this.phoneNumbersToDelete);
-
   }
 
   onSelectItemsUpdated(phoneNumbers: string[]) {
@@ -43,7 +42,7 @@ export class DeleteLinkedNumbersPage implements OnInit, OnDestroy {
 
   changeCurrentPhoneNumber() {
     const result = this.phoneNumbersToDelete.find(
-      x => x === this.dashboardservice.getCurrentPhoneNumber()
+      (x) => x === this.dashboardservice.getCurrentPhoneNumber()
     );
     if (result) {
       this.dashboardservice.setCurrentPhoneNumber(

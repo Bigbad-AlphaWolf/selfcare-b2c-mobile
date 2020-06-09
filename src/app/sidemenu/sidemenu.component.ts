@@ -19,11 +19,9 @@ import {
   getNOAvatartUrlImage,
   ASSISTANCE_URL,
 } from 'src/shared';
-import { dashboardOpened } from '../dashboard';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { FormuleService } from '../services/formule-service/formule.service';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -57,7 +55,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
       this.getSouscription();
       this.extractData();
     });
-    this.authServ.currentPhoneNumbersubscriptionUpdated.subscribe((formule) => {
+    this.authServ.currentPhoneNumbersubscriptionUpdated.subscribe(() => {
       this.getSouscription();
     });
     this.accountService.userUrlAvatarSubject.subscribe(() => {
@@ -118,6 +116,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   goDashboard() {
     this.closeMenu();
+    this.router.navigate(['/dashboard']);
     this.followAnalyticsService.registerEventFollow(
       'Sidemenu_Suivi_conso',
       'event',

@@ -9,6 +9,7 @@ import {
 } from '../services/authentication-service/authentication.service';
 import * as Fingerprint2 from 'fingerprintjs2';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { NavController } from '@ionic/angular';
 const ls = new SecureLS({ encodingType: 'aes' });
 export interface Description {
   text: string;
@@ -44,7 +45,8 @@ export class ForgottenPasswordPage implements OnInit {
     private router: Router,
     private authServ: AuthenticationService,
     private ref: ChangeDetectorRef,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -190,7 +192,7 @@ export class ForgottenPasswordPage implements OnInit {
   goToPreviousStep() {
     this.error_message = '';
     if (this.currentStep === 1) {
-      this.router.navigate(['/login']);
+        this.navController.pop()
     } else {
       this.currentStep = 1;
     }

@@ -4,6 +4,7 @@ import { AuthGuard } from './services/auth-guard/auth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full', canActivate: [AuthGuard] },
+  { path: 'home-v2', loadChildren: './home-v2/home-v2.module#HomeV2PageModule' },
   {
     path: 'new-registration',
     loadChildren:
@@ -192,9 +193,10 @@ const routes: Routes = [
   { path: 'list-pass', loadChildren: './liste-pass/liste-pass.module#ListePassPageModule' },
   { path: 'registration-success-modal', loadChildren: './registration-success-modal/registration-success-modal.module#RegistrationSuccessModalPageModule' },
   { path: 'transfert-hub-services', loadChildren: './transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule' },
-  { path: 'transfert-om-hub-services', loadChildren: './transfert-om-hub-services/transfert-om-hub-services.module#TransfertOmHubServicesPageModule' },
-  { path: 'transfert-om-set-amount', loadChildren: './transfert-om-set-amount/transfert-om-set-amount.module#TransfertOmSetAmountPageModule' },
-  { path: 'transfert-om-recapitulatif', loadChildren: './transfert-om-recapitulatif/transfert-om-recapitulatif.module#TransfertOmRecapitulatifPageModule' },  { path: 'purchase-set-amount', loadChildren: './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule' },
+  { path: 'purchase-set-amount', loadChildren: './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule' },
+  { path: 'credit-pass-amount', loadChildren: './pages/credit-pass-amount/credit-pass-amount.module#CreditPassAmountPageModule' },
+
+
 
 
 

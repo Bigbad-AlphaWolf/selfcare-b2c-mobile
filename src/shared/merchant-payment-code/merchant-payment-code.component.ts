@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
@@ -20,7 +20,8 @@ export class MerchantPaymentCodeComponent implements OnInit {
     private fb: FormBuilder,
     private orangeMoneyService: OrangeMoneyService,
     private applicationRoutingService: ApplicationRoutingService,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -41,14 +42,30 @@ export class MerchantPaymentCodeComponent implements OnInit {
           merchantCode: code,
           merchantName: response.content.data.nom_marchand,
         };
-        this.applicationRoutingService.goSetAmountPage(payload);
-        this.bottomSheet.dismiss();
+        if (
+          response &&
+          response.status_code &&
+          (response.status_code.match('Success') ||
+            response.status_code.match('Erreur-601'))
+        ) {
+          this.applicationRoutingService.goSetAmountPage(payload);
+          this.bottomSheet.dismiss();
+        } else {
+          this.onCheckingMerchantError(response.status_wording);
+        }
       },
       (err) => {
-        this.chekingMerchant = false;
-        this.hasErrorOnCheckMerchant = true;
-        this.errorMsg = err.msg ? err.msg : 'Une erreur est survenue';
+        err && err.msg
+          ? this.onCheckingMerchantError(err.msg)
+          : this.onCheckingMerchantError();
       }
     );
+  }
+
+  onCheckingMerchantError(msg?: string) {
+    this.chekingMerchant = false;
+    this.hasErrorOnCheckMerchant = true;
+    this.errorMsg = msg ? msg : 'Une erreur est survenue';
+    this.ref.detectChanges();
   }
 }

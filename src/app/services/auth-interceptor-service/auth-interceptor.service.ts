@@ -42,7 +42,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221771331225');
+      headers = headers.set('X-MSISDN', '221781040956');
       //delay to test slowness of network
       req = req.clone({
         headers,
@@ -72,13 +72,14 @@ export class AuthInterceptorService implements HttpInterceptor {
       req.url.match('selfcare-b2c-account/api/account-management/account') ||
       req.url.match('auth/login')
     ) {
+      req.headers.set('X-Selfcare-Source', 'mobile');
       return next.handle(req);
     }
     if (token) {
       let headers = req.headers;
       headers = headers.set('X-Selfcare-Source', 'mobile');
       headers = headers.set('Authorization', `Bearer ${token}`);
-
+      headers = headers.set('Access-Control-Allow-Origin', '*');
       req = req.clone({
         headers,
       });
@@ -99,20 +100,20 @@ export class AuthInterceptorService implements HttpInterceptor {
         'X-Selfcare-Isvirtual',
         String(deviceInfo.isVirtual)
       );
-      if (this.appVersionNumber) {
-        headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
-      }
+
+      if(this.appVersionNumber)
+          headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
+
       req = req.clone({
         headers,
       });
     }
-
     return next.handle(req).pipe(
       tap(
         (event: HttpEvent<any>) => {},
         (err: any) => {
           if (err instanceof HttpErrorResponse) {
-            if (err.status === 401 && !err.url.match("v2/check-client")) {
+            if (err.status === 401 && !err.url.match('v2/check-client')) {
               that.authServ.cleanCache();
               that.router.navigate(['login']);
             }

@@ -23,7 +23,7 @@ import {
   HelpModalConfigApnContent,
 } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { RegistrationSuccessModalPage } from '../registration-success-modal/registration-success-modal.page';
 
 @Component({
@@ -52,7 +52,11 @@ export class NewRegistrationPage implements OnInit {
     password: { fieldType: 'password', visibilityIcon: 'visibility' },
     confirmPassword: { fieldType: 'password', visibilityIcon: 'visibility' },
   };
-  navItems: { title: string; subTitle: string; action: 'help' | 'login' }[] = [
+  navItems: {
+    title: string;
+    subTitle: string;
+    action: 'help' | 'login' | 'password';
+  }[] = [
     {
       title: 'Je me connecte',
       subTitle: 'J’ai déjà un compte',
@@ -62,6 +66,11 @@ export class NewRegistrationPage implements OnInit {
       title: 'J’ai besoin d’aide',
       subTitle: 'J’éprouve des difficultés pour me connecter',
       action: 'help',
+    },
+    {
+      title: 'J’ai oublié mon mot de passe',
+      subTitle: 'Je veux le récupérer',
+      action: 'password',
     },
   ];
   //Temps d'attente pour la recuperation automatique du numero -> 10 secondes
@@ -78,7 +87,8 @@ export class NewRegistrationPage implements OnInit {
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
     private bottomSheet: MatBottomSheet,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private navController: NavController
   ) {
     this.authErrorDetected.subscribe({
       next: (data) => {
@@ -117,6 +127,7 @@ export class NewRegistrationPage implements OnInit {
   getNumber() {
     this.gettingNumber = true;
     this.showErrMessage = false;
+    if (!this.ref['destroyed']) 
     this.ref.detectChanges();
     Fingerprint2.get((components) => {
       const values = components.map((component) => {
@@ -159,7 +170,8 @@ export class NewRegistrationPage implements OnInit {
                 } else {
                   this.displayMsisdnError();
                 }
-                this.ref.detectChanges();
+                if (!this.ref['destroyed']) 
+    this.ref.detectChanges();
               },
               (err) => {
                 this.displayMsisdnError();
@@ -323,12 +335,15 @@ export class NewRegistrationPage implements OnInit {
     );
   }
 
-  doAction(action: 'login' | 'help') {
+  doAction(action: 'login' | 'help' | 'password') {
     if (action === 'login') {
       this.goLoginPage();
     }
     if (action === 'help') {
       this.openHelpModal(HelpModalDefaultContent);
+    }
+    if (action === 'password') {
+      this.router.navigate(['/forgotten-password']);
     }
   }
 
@@ -362,6 +377,7 @@ export class NewRegistrationPage implements OnInit {
       'error',
       this.phoneNumber
     );
+    if (!this.ref['destroyed']) 
     this.ref.detectChanges();
   }
 
@@ -388,5 +404,9 @@ export class NewRegistrationPage implements OnInit {
       }
     });
     return await modal.present();
+  }
+
+  goBack(){
+    this.navController.navigateBack(['/home-v2'])
   }
 }

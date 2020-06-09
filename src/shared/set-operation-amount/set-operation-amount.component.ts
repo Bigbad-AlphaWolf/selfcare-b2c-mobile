@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-set-operation-amount',
   templateUrl: './set-operation-amount.component.html',
-  styleUrls: ['./set-operation-amount.component.scss']
+  styleUrls: ['./set-operation-amount.component.scss'],
 })
 export class SetOperationAmountComponent implements OnInit {
   @Output() next = new EventEmitter<number>();
@@ -18,18 +18,21 @@ export class SetOperationAmountComponent implements OnInit {
   checkingBalance: boolean;
   omPhoneNumber: string;
 
-  constructor(private orangeMoneyService: OrangeMoneyService, private router: Router) {}
+  constructor(
+    private orangeMoneyService: OrangeMoneyService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.getOmPhoneNumber();
   }
 
   getOmPhoneNumber() {
-    this.orangeMoneyService.getOmMsisdn().subscribe(msisdn => {
-      if(msisdn !== 'error'){
+    this.orangeMoneyService.getOmMsisdn().subscribe((msisdn) => {
+      if (msisdn !== 'error') {
         this.omPhoneNumber = msisdn;
-      }else{
-        this.router.navigate(['/see-solde-om'])
+      } else {
+        this.router.navigate(['/see-solde-om']);
       }
     });
   }
@@ -39,24 +42,20 @@ export class SetOperationAmountComponent implements OnInit {
     const amount = +this.amount;
     if (amount > 0) {
       this.checkingBalance = true;
-      const msisdn = this.omPhoneNumber;
-      const checkBalanceSufficiencyPayload = { amount, msisdn };
-      this.orangeMoneyService
-        .checkBalanceSufficiency(checkBalanceSufficiencyPayload)
-        .subscribe(
-          (hasEnoughBalance: boolean) => {
-            this.checkingBalance = false;
-            if (hasEnoughBalance) {
-              this.next.emit(amount);
-            } else {
-              this.hasError = true;
-            }
-          },
-          err => {
-            this.checkingBalance = false;
+      this.orangeMoneyService.checkBalanceSufficiency(amount).subscribe(
+        (hasEnoughBalance: boolean) => {
+          this.checkingBalance = false;
+          if (hasEnoughBalance) {
             this.next.emit(amount);
+          } else {
+            this.hasError = true;
           }
-        );
+        },
+        (err) => {
+          this.checkingBalance = false;
+          this.next.emit(amount);
+        }
+      );
     } else {
       alert('Montant doit être supérieur à 0');
     }

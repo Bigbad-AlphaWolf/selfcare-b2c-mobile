@@ -5,16 +5,20 @@ import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
-import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
 import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
+import { isNewVersion } from 'src/shared';
+import { AppVersion } from '@ionic-native/app-version/ngx';
+const { SERVICES_SERVICE, SERVER_API_URL } = environment;
+const versionEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/v1/app-version`;
 import * as SecureLS from 'secure-ls';
 import { DetailsConsoPage } from './details-conso/details-conso.page';
+import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
-declare var FollowAnalytics: any;
 
-import { Uid } from '@ionic-native/uid/ngx';
+declare var FollowAnalytics: any;
 
 @Component({
   selector: 'app-root',
@@ -31,7 +35,7 @@ export class AppComponent {
     private appMinimize: AppMinimize,
     private router: Router,
     private deeplinks: Deeplinks,
-    private uid: Uid,
+    private appVersion: AppVersion
   ) {
     this.initializeApp();
   }
@@ -39,66 +43,75 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       // Initialize BackButton Eevent.
-      this.platform.backButton.subscribe(() => {
-        this.appMinimize.minimize();
-      });
-      this.statusBar.overlaysWebView(false);
-      // #AARRGGBB where AA is an alpha value RR is red, GG is green and BB is blue
-      if (this.platform.is('android')) {
-        this.statusBar.backgroundColorByHexString('#FFFFFF');
-        //getPermission is for getting the IMEI
-        //this.getPermission();getPermission() {  
-  //   this.androidPermissions
-  //     .checkPermission(this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE)
-  //     .then((res) => {
-  //       if (res.hasPermission) {
-  //       } else {
-  //         this.androidPermissions
-  //           .requestPermission(
-  //             this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE
-  //           )
-  //           .then((res) => {
-  //             // console.log('Persmission Granted!');
-  //           })
-  //           .catch((error) => {
-  //             // console.log('Error! ' + error);
-  //           });
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log('Error! ' + error);
-  //     });
-  // }
+      if(this.platform && this.platform.backButton){
+        this.platform.backButton.subscribe(() => {
+          this.appMinimize.minimize();
+        });
 
-  // getID_UID(type) {
-  //   if (type === 'IMEI') {
-  //     return this.uid.IMEI;
-  //   } else if (type === 'ICCID') {
-  //     return this.uid.ICCID;
-  //   } else if (type === 'IMSI') {
-  //     return this.uid.IMSI;
-  //   } else if (type === 'MAC') {
-  //     return this.uid.MAC;
-  //   } else if (type === 'UUID') {
-  //     return this.uid.UUID;
-  //   }
-  // }
+        if (this.platform.is('android')) {
+          this.statusBar.backgroundColorByHexString('#FFFFFF');
+          //getPermission is for getting the IMEI
+          //this.getPermission();getPermission() {
+          //   this.androidPermissions
+          //     .checkPermission(this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE)
+          //     .then((res) => {
+          //       if (res.hasPermission) {
+          //       } else {
+          //         this.androidPermissions
+          //           .requestPermission(
+          //             this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE
+          //           )
+          //           .then((res) => {
+          //             // console.log('Persmission Granted!');
+          //           })
+          //           .catch((error) => {
+          //             // console.log('Error! ' + error);
+          //           });
+          //       }
+          //     })
+          //     .catch((error) => {
+          //       console.log('Error! ' + error);
+          //     });
+          // }
+  
+          // getID_UID(type) {
+          //   if (type === 'IMEI') {
+          //     return this.uid.IMEI;
+          //   } else if (type === 'ICCID') {
+          //     return this.uid.ICCID;
+          //   } else if (type === 'IMSI') {
+          //     return this.uid.IMSI;
+          //   } else if (type === 'MAC') {
+          //     return this.uid.MAC;
+          //   } else if (type === 'UUID') {
+          //     return this.uid.UUID;
+          //   }
+          // }
+        }
+        
+        if (this.platform.is('ios')) {
+          if (typeof FollowAnalytics !== 'undefined') {
+            FollowAnalytics.initialize('LV4mrGLUK4o2zQ');
+            FollowAnalytics.registerForPush();
+          }
+        } else if (this.platform.is('android')) {
+          if (typeof FollowAnalytics !== 'undefined') {
+            FollowAnalytics.initialize('DgD85nBBSi5wtw');
+            FollowAnalytics.registerForPush();
+          }
+        }
       }
-      this.statusBar.styleDefault();
-
+      if(this.statusBar){
+        this.statusBar.overlaysWebView(false);
+        this.statusBar.styleDefault();
+       
+      }
+      // #AARRGGBB where AA is an alpha value RR is red, GG is green and BB is blue
+     
+      
       this.splash.hide();
 
-      if (this.platform.is('ios')) {
-        if (typeof FollowAnalytics !== 'undefined') {
-          FollowAnalytics.initialize('LV4mrGLUK4o2zQ');
-          FollowAnalytics.registerForPush();
-        }
-      } else if (this.platform.is('android')) {
-        if (typeof FollowAnalytics !== 'undefined') {
-          FollowAnalytics.initialize('DgD85nBBSi5wtw');
-          FollowAnalytics.registerForPush();
-        }
-      }
+     
       this.checkDeeplinks();
 
       // Get firebase id for notifications
@@ -137,26 +150,28 @@ export class AppComponent {
   }
 
   checkDeeplinks() {
-    this.deeplinks
-      .route({
-        '/buy-pass-internet': BuyPassInternetPage,
-        '/buy-pass-internet/:id': BuyPassInternetPage,
-        '/assistance': AssistancePage,
-        '/buy-pass-illimix': BuyPassIllimixPage,
-        '/buy-pass-illimix/:id': BuyPassIllimixPage,
-        '/buy-credit': BuyCreditPage,
-        '/details-conso': DetailsConsoPage,
-      })
-      .subscribe(
-        (matched) => {
-          this.router.navigate([matched.$link.path]);
-          console.log(matched);
-        },
-        (notMatched) => {
-          // console.log(notMatched);
-          // console.log('deeplink not matched');
-        }
-      );
+    if(this.deeplinks){
+      this.deeplinks
+        .route({
+          '/buy-pass-internet': BuyPassInternetPage,
+          '/buy-pass-internet/:id': BuyPassInternetPage,
+          '/assistance': AssistancePage,
+          '/buy-pass-illimix': BuyPassIllimixPage,
+          '/buy-pass-illimix/:id': BuyPassIllimixPage,
+          '/buy-credit': BuyCreditPage,
+          '/details-conso': DetailsConsoPage,
+        })
+        .subscribe(
+          (matched) => {
+            this.router.navigate([matched.$link.path]);
+            console.log(matched);
+          },
+          (notMatched) => {
+            // console.log(notMatched);
+            // console.log('deeplink not matched');
+          }
+        );
+    }
   }
 
   // getPermission() {

@@ -2,6 +2,11 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardPage } from './dashboard.page';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { AppMinimize } from '@ionic-native/app-minimize/ngx';
+import { AppVersion } from '@ionic-native/app-version/ngx';
+import { MatDialog } from '@angular/material';
 
 describe('DashboardPage', () => {
   let component: DashboardPage;
@@ -9,10 +14,24 @@ describe('DashboardPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashboardPage ],
+      declarations: [DashboardPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [
+        { provide: HttpClient },
+        {
+          provide: Router,
+        },
+        {
+          provide: AppMinimize,
+        },
+        {
+          provide: AppVersion,
+        },
+        {
+          provide: MatDialog,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

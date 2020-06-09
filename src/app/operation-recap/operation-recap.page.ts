@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { SetPaymentChannelModalPage } from '../set-payment-channel-modal/set-payment-channel-modal.page';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BuyPassModel } from '../services/dashboard-service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
@@ -12,10 +12,14 @@ import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TRANSFER_OM,
+  SubscriptionModel,
+  OPERATION_TYPE_RECHARGE_CREDIT,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { OperationExtras } from '../models/operation-extras.model';
 
 @Component({
   selector: 'app-operation-recap',
@@ -65,6 +69,8 @@ export class OperationRecapPage implements OnInit {
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   state: any;
+  subscriptionInfos: SubscriptionModel;
+  buyCreditPayload: any;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -73,75 +79,90 @@ export class OperationRecapPage implements OnInit {
     private followAnalyticsService: FollowAnalyticsService,
     private appRouting: ApplicationRoutingService,
     private orangeMoneyService: OrangeMoneyService,
-    private navController: NavController
+    private navController: NavController,
+    private authServ: AuthenticationService
   ) {}
 
   ngOnInit() {
     this.currentUserNumber = this.dashboardService.getCurrentPhoneNumber();
-    this.route.queryParams.subscribe((params) => {
-      if (
-        this.router.getCurrentNavigation() &&
-        this.router.getCurrentNavigation().extras.state &&
-        this.router.getCurrentNavigation().extras.state.purchaseType
-      ) {
-        const state = this.router.getCurrentNavigation().extras.state;
-        this.state = state;
-        console.log(state);
-        this.purchaseType = state.purchaseType;
-        switch (this.purchaseType) {
-          case OPERATION_TYPE_PASS_INTERNET:
-          case OPERATION_TYPE_PASS_ILLIMIX:
-            this.recipientName = state.recipientName;
-            this.passChoosen = state.pass;
-            this.recipientMsisdn = state.recipientMsisdn;
-            this.recipientCodeFormule = state.recipientCodeFormule;
-            this.buyPassPayload = {
-              destinataire: this.recipientMsisdn,
-              pass: this.passChoosen,
-            };
-            break;
-          case OPERATION_TRANSFER_OM_WITH_CODE:
-            this.recipientMsisdn = state.recipientMsisdn;
-            this.amount = state.amount;
-            this.transferOMWithCodePayload.amount = state.amount + state.fee;
-            this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
-            this.transferOMWithCodePayload.prenom_receiver =
-              state.recipientFirstname;
-            this.transferOMWithCodePayload.nom_receiver =
-              state.recipientLastname;
-            this.recipientFirstName = state.recipientFirstname;
-            this.recipientLastName = state.recipientLastname;
-            this.recipientName =
-              this.recipientFirstName + ' ' + this.recipientLastName;
-            this.paymentMod = 'ORANGE_MONEY';
-            break;
-          case OPERATION_TRANSFER_OM:
-            this.recipientMsisdn = state.recipientMsisdn;
-            this.amount = state.amount;
-            this.transferOMPayload.amount = state.includeFee
-              ? state.amount + state.fee
-              : state.amount;
-            this.transferOMPayload.msisdn2 = this.recipientMsisdn;
-            this.paymentMod = 'ORANGE_MONEY';
-            break;
-          case OPERATION_TYPE_MERCHANT_PAYMENT:
-            this.amount = state.amount;
-            this.merchantCode = state.merchantCode;
-            this.merchantName = state.merchantName;
-            this.paymentMod = 'ORANGE_MONEY';
-            this.merchantPaymentPayload = {
-              amount: this.amount,
-              code_marchand: this.merchantCode,
-              nom_marchand: this.merchantName,
-            };
-            break;
-          default:
-            break;
+    if (this.route)
+      this.route.queryParams.subscribe(() => {
+        if (
+          this.router.getCurrentNavigation() &&
+          this.router.getCurrentNavigation().extras.state &&
+          this.router.getCurrentNavigation().extras.state.purchaseType
+        ) {
+          const state = this.router.getCurrentNavigation().extras.state;
+          this.state = state;
+          this.purchaseType = state.purchaseType;
+          switch (this.purchaseType) {
+            case OPERATION_TYPE_PASS_INTERNET:
+            case OPERATION_TYPE_PASS_ILLIMIX:
+              this.recipientName = state.recipientName;
+              this.passChoosen = state.pass;
+              this.recipientMsisdn = state.recipientMsisdn;
+              this.recipientCodeFormule = state.recipientCodeFormule;
+              this.buyPassPayload = {
+                destinataire: this.recipientMsisdn,
+                pass: this.passChoosen,
+              };
+              break;
+            case OPERATION_TRANSFER_OM_WITH_CODE:
+              this.recipientMsisdn = state.recipientMsisdn;
+              this.amount = state.amount + state.fee;
+              this.transferOMWithCodePayload.amount = state.amount;
+              this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
+              this.transferOMWithCodePayload.prenom_receiver =
+                state.recipientFirstname;
+              this.transferOMWithCodePayload.nom_receiver =
+                state.recipientLastname;
+              this.recipientFirstName = state.recipientFirstname;
+              this.recipientLastName = state.recipientLastname;
+              this.recipientName =
+                this.recipientFirstName + ' ' + this.recipientLastName;
+              this.paymentMod = 'ORANGE_MONEY';
+              break;
+            case OPERATION_TRANSFER_OM:
+              this.recipientMsisdn = state.recipientMsisdn;
+              this.amount = state.includeFee
+                ? state.amount + state.fee
+                : state.amount;
+              this.transferOMPayload.amount = this.amount;
+              this.transferOMPayload.msisdn2 = this.recipientMsisdn;
+              this.recipientName =
+                state.recipientFirstname + ' ' + state.recipientLastname;
+              this.paymentMod = 'ORANGE_MONEY';
+              break;
+            case OPERATION_TYPE_MERCHANT_PAYMENT:
+              this.amount = state.amount;
+              this.merchantCode = state.merchantCode;
+              this.merchantName = state.merchantName;
+              this.paymentMod = 'ORANGE_MONEY';
+              this.merchantPaymentPayload = {
+                amount: this.amount,
+                code_marchand: this.merchantCode,
+                nom_marchand: this.merchantName,
+              };
+              break;
+              case OPERATION_TYPE_RECHARGE_CREDIT:
+                let xtras:OperationExtras = state;
+                this.amount = xtras.amount;
+                this.recipientMsisdn = xtras.recipientMsisdn;
+                this.recipientName = xtras.recipientFromContact?
+                xtras.recipientFirstname + ' ' + xtras.recipientLastname:'';
+
+                break;
+            default:
+              break;
+          }
+        } else {
+          this.appRouting.goToDashboard();
         }
-      } else {
-        this.appRouting.goToDashboard();
-      }
-    });
+      });
+
+    this.authServ.getSubscription(this.currentUserNumber).subscribe((res: SubscriptionModel)=> {
+      this.subscriptionInfos = res;
+    })
   }
 
   pay() {
@@ -150,6 +171,9 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_ILLIMIX:
         this.setPaymentMod();
         break;
+        case OPERATION_TYPE_RECHARGE_CREDIT:
+          this.openPinpad();
+          break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
       case OPERATION_TRANSFER_OM:
       case OPERATION_TRANSFER_OM_WITH_CODE:
@@ -196,6 +220,7 @@ export class OperationRecapPage implements OnInit {
       componentProps: {
         operationType: this.purchaseType,
         buyPassPayload: this.buyPassPayload,
+        buyCreditPayload: {msisdn2:this.state.recipientMsisdn, amount:this.state.amount},
         merchantPaymentPayload: this.merchantPaymentPayload,
         transferMoneyPayload: this.transferOMPayload,
         transferMoneyWithCodePayload: this.transferOMWithCodePayload,
@@ -215,6 +240,8 @@ export class OperationRecapPage implements OnInit {
     return await modal.present();
   }
 
+  
+
   async openSuccessFailModal(params: ModalSuccessModel) {
     params.passBought = this.passChoosen;
     params.paymentMod = this.paymentMod;
@@ -224,17 +251,24 @@ export class OperationRecapPage implements OnInit {
     params.amount = this.amount;
     params.merchantCode = this.merchantCode;
     params.merchantName = this.merchantName;
+    console.log(params,'params');
+    
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
       cssClass: params.success ? 'success-modal' : 'failed-modal',
       componentProps: params,
       backdropDismiss: false,
     });
-    modal.onDidDismiss().then((response) => {});
+    modal.onDidDismiss().then(() => {});
     return await modal.present();
   }
 
   goBack() {
+    
+    // if(this.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT)
+    // console.log(this.purchaseType);
+
+    //   this.navController.navigateBack(CreditPassAmountPage.PATH);
     this.navController.pop();
   }
 
@@ -263,7 +297,7 @@ export class OperationRecapPage implements OnInit {
       (res: any) => {
         this.transactionSuccessful(res);
       },
-      (err) => {
+      () => {
         this.transactionFailure();
       }
     );

@@ -24,9 +24,7 @@
         {{ errorMsg }}
       </div>
       <div class="confirm-btn">
-        <button [disabled]="!isValidNumber || isProcessing" (click)="saveRattachmentNumber(otherDestNumber.value)" class="scb-btn-full scb-btn-orange" mat-stroked-button>
-          Confirmer
-        </button>
+        <ion-button [disabled]="!isValidNumber || isProcessing" (click)="saveRattachmentNumber(otherDestNumber.value)" expand="block" shape="round" class="scb-btn-ion">Confirmer</ion-button>
         <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="isProcessing"></mat-spinner>
       </div>
       </div>

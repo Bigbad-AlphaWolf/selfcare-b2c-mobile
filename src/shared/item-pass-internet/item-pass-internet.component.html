@@ -1,13 +1,17 @@
 <div class="item-container" (click)="choosePass(passInternet)">
   <div class="item-pass-internet">
-    <div class="top-block">
-        <span *ngIf="!passInternet.passPromo" class="price scb-text-orange"> {{ +passInternet.tarif ? passInternet?.tarif + " FCFA" : passInternet?.tarif }} </span>
-        <span *ngIf="passInternet.passPromo" class="price scb-text-orange"> {{ +passInternet?.passPromo?.tarif || +passInternet?.passPromo?.tarif === 0 ? passInternet?.passPromo?.tarif + " FCFA" : passInternet?.passPromo?.tarif }} </span>
+    <div *ngIf="subscription?.code !== KIRENE_SUBSCRIPTION_CODE_FORMULE || !subscription" class="top-block">
+        <span *ngIf="!passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.tarif ? passInternet?.tarif + " FCFA" : passInternet?.tarif }} </span>
+        <span *ngIf="passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.passPromo?.tarif || +passInternet?.passPromo?.tarif === 0 ? passInternet?.passPromo?.tarif + " FCFA" : passInternet?.passPromo?.tarif }} </span>
+    </div>
+    <div *ngIf="subscription?.code === KIRENE_SUBSCRIPTION_CODE_FORMULE" class="top-block">
+        <span *ngIf="!passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.tarif ? passInternet?.nom : passInternet?.tarif }} </span>
+        <span *ngIf="passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.passPromo?.tarif || +passInternet?.passPromo?.tarif === 0 ? passInternet?.passPromo?.tarif + " FCFA" : passInternet?.passPromo?.tarif }} </span>
     </div>
     <div class="bottom-block">
       <div class="left-side">
         <span class="item-volume">
-            {{ !passInternet.passPromo ? passInternet?.volumeInternet : passInternet?.passPromo?.volumeInternet }}
+            {{ !passInternet?.passPromo ? passInternet?.volumeInternet : passInternet?.passPromo?.volumeInternet }}
         </span>
         <span class="item-type scb-text-gray">
             Internet
@@ -33,13 +37,13 @@
         </span>
         <span class="item-bonus scb-text-gray">
             {{
-              !passInternet.passPromo ? passInternet?.bonusNuit : passInternet?.passPromo?.bonusNuit
+              !passInternet?.passPromo ? passInternet?.bonusNuit : passInternet?.passPromo?.bonusNuit
             }}
         </span>
       </div>
     </div>
     <div *ngIf="passInternet?.passPromo" class="promo-block">
-      <span class="description scb-text-white"> {{ passInternet.description }}</span>
+      <span class="description scb-text-white"> {{ passInternet?.description }}</span>
       <span class="arrow"></span>
     </div>
   </div>
