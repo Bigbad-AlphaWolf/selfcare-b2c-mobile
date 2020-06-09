@@ -65,9 +65,11 @@ import { PhoneNumberProviderComponent } from 'src/app/components/phone-number-pr
 import { NumberSelectionComponent } from 'src/app/components/number-selection/number-selection.component';
 import { AmountProviderComponent } from 'src/app/components/amount-provider/amount-provider.component';
 import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header-parallax.directive';
+import { CounterSelectionComponent } from 'src/app/components/counter-selection/counter-selection.component';
 
 @NgModule({
   declarations: [
+    CounterSelectionComponent,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
     AmountProviderComponent,
@@ -136,6 +138,7 @@ import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header
   ],
   entryComponents: [
     NumberSelectionComponent,
+    CounterSelectionComponent,
     ModalSuccessComponent,
     NoOMAccountPopupComponent,
     CancelOperationPopupComponent,
@@ -152,6 +155,7 @@ import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header
     NoOmAccountModalComponent,
   ],
   exports: [
+    CounterSelectionComponent,
     OemIonHeaderParallaxDirective,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,

@@ -1,0 +1,59 @@
+<div class="select-beneficiary-container">
+  <div class="title">
+    Choix du compteur
+  </div>
+  <div class="description">
+    Renseignez le numéro du compteur
+  </div>
+
+  <div class="beneficiary-number">
+    <form novalidate autocomplete="false">
+      <mat-form-field class="scb-input-row" appearance="outline">
+          <mat-label>Numéro du bénéficiaire &nbsp;&nbsp;</mat-label>
+          <input
+            #numberInput
+            matInput
+            type="tel" 
+            maxlength=20
+            (ngModelChange) = "onInputChange($event)"
+          />
+        </mat-form-field>
+    </form>
+    <div class="contact">
+      <img class="icon" src="/assets/images/credit-card-front.png" alt="">
+      <span (click)="onMyFavorites()" class="btn-contact scb-text-orange">Mes compteurs</span>
+    </div>
+
+  </div>
+
+  <div class="description">
+    Renseignez le numéro du compteur
+  </div>
+
+  <div class="number-options">
+    <mat-radio-group (change)="onRecentCounterSlected($event.value)">
+      <mat-radio-button
+        *ngFor="let counter of counters$ | async; index as i; count as size"
+        [value]="counter"
+      >
+        <div class="destination-counter">
+          <span> Mon numéro {{ size > 1 ? i + 1 : "" }} </span>
+          <span>{{ counter }}</span>
+        </div>
+      </mat-radio-button>
+
+    </mat-radio-group>
+  </div>
+
+  <div class="btn-continue">
+    <button mat-button
+      [disabled]="isProcessing"
+      (click)="onContinue()"
+      >Continuer</button
+    >
+    <ion-spinner
+      *ngIf="isProcessing"
+      name="crescent"
+    ></ion-spinner>
+  </div>
+</div>

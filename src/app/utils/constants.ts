@@ -1,3 +1,1 @@
-export abstract class Constants{
-    public static readonly WITH_MY_PHONES:string = ''
-}
+export const IMAGES_DIR_PATH = '/assets/images';

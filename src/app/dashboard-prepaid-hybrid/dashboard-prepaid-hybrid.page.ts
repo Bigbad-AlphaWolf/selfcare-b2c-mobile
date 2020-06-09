@@ -45,6 +45,7 @@ import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/m
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { ModalController } from '@ionic/angular';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
+import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -535,6 +536,10 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       }
     })
     
+  }
+
+  onPayerFacture(){
+    this.router.navigate([BillsHubPage.ROUTE_PATH]);
   }
 
   async openPinpad() {

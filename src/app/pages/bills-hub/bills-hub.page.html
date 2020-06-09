@@ -1,0 +1,43 @@
+<ion-header [oemIonHeaderParallax]="100" >
+  <ion-toolbar >
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/dashboard" icon="" class="oem-back-button" >
+            <img src="/assets/images/arrow-left.png" alt="icon" />
+        </ion-back-button>  
+      </ion-buttons>
+      <ion-title class="oem-top-title ion-padding-start">Payer ma facture</ion-title>
+  </ion-toolbar> 
+</ion-header>
+
+<ion-content [scrollEvents]="true">
+
+  <ion-grid >
+    <ion-row>
+      <div (click)="onCompanySelected(company)" class="oem-bloc-1 ion-activatable ripple-parent" *ngFor="let company of companies">
+          <img [src]="company.logo" class="oem-img"/>
+          <ion-ripple-effect></ion-ripple-effect>
+      </div>
+    </ion-row>
+  </ion-grid>
+  
+    <!-- <div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">ionic g directive directives/ParallaxHeader</code></pre></div>
+    <p>In order to be able to use this directive, we will need to add it to the module for the page we want to use it on. Let’s assume we are going to use this on the home page.</p>
+    <p>Modify <strong>src/app/home/home.module.ts</strong> to reflect the following:</p>
+
+    <p>Ionic provides a range of directives by default that you can drop into your application and get a pretty slick looking interface almost instantly. This includes things like <strong>lists</strong>, <strong>inputs</strong>, <strong>prompts</strong> and so on. These are just a core set of components that provide vanilla functionality, so there’s going to come a time where you need to extend the functionality provided by default.</p>
+    <p>A great way to do this is with <strong>directives</strong>. I think the difference between a <strong>directive</strong> and a <strong>component</strong> is pretty hard to understand conceptually. Perhaps the best way to think of it is that you would use a <strong>directive</strong> when you want to modify the behaviour of an existing DOM (Document Object Model) element, and you would create a <strong>component</strong> when you want a completely new DOM element. Otherwise, a <strong>component</strong> and a <strong>directive</strong> are pretty much the same thing, a <strong>component</strong> is just a <strong>directive</strong> with its own <strong>template</strong>.</p>
+    <p>In this tutorial, I’m going to walk you through how to build and use your own custom directive in Ionic which will allow you to easily add a parallax header to the main content area. Unlike a normal static header image, a parallax header image will scale as you scroll, causing the header and content area to scroll at different speeds which creates the illusion of depth.</p>
+    <h2>Before we Get Started</h2>
+    <p><strong>Last updated for Ionic 4.0.0</strong></p>
+    <p>Before you go through this tutorial, you should have at least a basic understanding of Ionic 2 concepts. You must also already have Ionic 2 set up on your machine.</p>
+    <p>If you’re not familiar with Ionic already, I’d recommend reading my <a href="https://www.joshmorony.com/topics/ionic-tutorials/">beginner Ionic tutorials</a> first to get up and running and understand the basic concepts. If you want a much more detailed guide for learning Ionic, then take a look at <a href="https://joshmorony.com/building-mobile-apps-with-ionic-2/">Building Mobile Apps with Ionic &amp; Angular</a>.</p>
+    <h2>Building a Parallax Effect Directive in Ionic</h2>
+    <p>A reader got in touch with me recently who was trying to recreate a directive he had been using in Ionic 1 which was created by <a href="https://codepen.io/olach/">Ola Christensson</a>. You can take a look at <a href="https://codepen.io/olach/pen/NqrYQL">this Codepen</a> to see it in action.</p>
+    <p>This directive allows you to add a header image to a content area, and when the content area is scrolled the header image will shrink in a way that creates a parallax effect. </p>
+    <p>We are going to create something much in the same spirit with just a few differences (and obviously it is going to be designed to work with the current version of Ionic). In the end, we will be able to use the directive like this:</p>
+    <p>Where we just supply the image we want to use as the header directly to the <code class="language-text">&lt;ion-content&gt;</code> along with the height we want for the parallax header. Here’s what our Ionic directive will look like when we finish it:</p>
+    <p>We’ll start off by generating a new directive and setting it up in our application.</p> -->
+
+   
+
+</ion-content>
