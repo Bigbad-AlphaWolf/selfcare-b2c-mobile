@@ -191,20 +191,13 @@
       "cordova-plugin-app-version": {},
       "cordova-plugin-market": {},
       "cordova.plugin.followanalytics": {},
-<<<<<<< HEAD
+      "cordova-plugin-ionic-webview": {},
+      "cordova-plugin-statusbar": {},
       "cordova-plugin-android-permissions": {},
       "cordova-plugin-unique-device-id2": {}
     },
     "platforms": [
-      "ios",
-      "android"
-=======
-      "cordova-plugin-ionic-webview": {},
-      "cordova-plugin-statusbar": {}
-    },
-    "platforms": [
       "ios"
->>>>>>> 446f504aba4a2bff4b9e2b5a68d0c98e2d7195b0
     ]
   }
 }
