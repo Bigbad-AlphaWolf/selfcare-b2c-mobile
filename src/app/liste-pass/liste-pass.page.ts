@@ -35,7 +35,6 @@ export class ListePassPage implements OnInit {
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
     private appRouting: ApplicationRoutingService,
     private passIntService: PassInternetService,
