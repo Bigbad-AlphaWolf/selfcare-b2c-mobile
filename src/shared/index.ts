@@ -87,6 +87,8 @@ export const CATEGORY_PURCHASE_HISTORY = [
   { nom: 'SOS', value: 'SOS' },
 ];
 
+export const listRegisterSargalBonPlanText = [ 'inscription', 'inscris'];
+
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
 }

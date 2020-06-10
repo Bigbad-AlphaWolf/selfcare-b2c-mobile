@@ -44,6 +44,7 @@
                     <app-item-offer-plan
                     *ngFor="let offer of listOffers.offersPlans"
                      [offerPlan]="offer"
+                     (selectOfferPlans)="goToPage($event)"
                     ></app-item-offer-plan>
                   </div>
                 </ion-slide>
