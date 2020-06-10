@@ -12,4 +12,6 @@ export interface OperationExtras{
     amount?:any;
     includeFee?:any;
     fee?:any;
+
+    billData?:any;
 }

@@ -508,6 +508,8 @@ body {
   align-items: flex-end;
 }
 
+
+
 // css for popup set merchant code on merchant payment
 .merchant-code-modal {
   border-radius: 10px 10px 0 0;
@@ -651,4 +653,10 @@ button{
 .mat-bottom-sheet-container {
   font:unset;
   font-family: unset;
+}
+
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing.oem-ion-bottomsheet{
+  background: rgba(0,0,0,.32);
+  opacity: 1 !important;
+  transition: none ;
 }
