@@ -1,78 +1,62 @@
-<ion-header>
+<ion-header [oemIonHeaderParallax]="100">
   <ion-toolbar>
-    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
-      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    <ion-buttons slot="start">
+      <ion-back-button
+        (click)="goBack()"
+        icon=""
+        class="oem-back-button"
+      >
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
     </ion-buttons>
-    <ion-title class="ion-no-padding">
-      <span class="title1">
-        Mes bons plans
-      </span>
+    <ion-title class="achat-pass-internet">
+        {{ pageTitle }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
-
 <ion-content fullscreen="true">
-    <ion-header class="ion-padding-start" collapse="condense">
-        <ion-toolbar>
-          <span class="title">
-              Mes bons plans
-          </span>
-        </ion-toolbar>
-      </ion-header>
   <div class="offer-plans-container">
     <div class="header-image">
-      <img src="/assets/images/bons-plan.png" alt="">
+      <img src="/assets/images/bon-plan-header.png" alt="">
     </div>
     <div class="offer-plans-body">
-      <div class="offer-plans-body-title">
-        <span class="text scb-text-full-black">
-          Retrouvez ici <span class="custom-style">
-            votre bon plan du jour
-          </span> 
-        </span>
-      </div>
       <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-      <div class="offer-plans-body-main">
-        <ng-container *ngIf="!isLoading && !hasError">
-          <div class="offer-plans-list-filter">
-            <ion-grid fixed>
-              <ion-row>
-                <ion-col size="12">
-                  <ion-segment scrollable>
-                      <ion-button (click)="onCategorySelected(category.value)" *ngFor="let category of listCategories" [ngClass]="{'filter-item-selected': categorySelected === category.value} " class="filter-item" expand="block" shape="round">
-                          {{ category.label }}
-                        </ion-button>
-                  </ion-segment>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
+      <ng-container *ngIf="!isLoading">
+        <div *ngIf="!hasError" class="list-pass-body">
+          <div class="tab-header">
+            <div
+              *ngFor="let slide of fullList; let i=index"
+              (click)="changeCategory(i)"
+              class="tab-header-item"
+              [ngClass]="{  'selected' : i === activeTabIndex} "
+            >
+              <span class="scb-text-light-black"> {{ slide.category.label }}</span>
+            </div>
           </div>
-          <div class="offer-plans-list-content">
-              <div *ngFor="let offerPlan of filteredListOfferPlans" (click)="goToPage(offerPlan.typeMPO.toLowerCase())" class="offer-plans-list-content-item">
-                <div class="scb-arrow-right-gray">
-                </div>
-                <div class="item-left-block">
-                  <span class="duree scb-text-full-black">{{ offerPlan.bpValidityDurability }}</span>
-                </div>
-                <div class="item-delimitation">
-                </div>
-                <div class="item-right-block">
-                  <span class="text">
-                    {{ offerPlan.bpTarget }}
-                  </span>
-                </div>
-                <div class="scb-arrow-left-gray">
+          <div class="main-content">
+              <ion-slides
+                #sliders
+                (ionSlideDidChange)="slideChanged()"
+                [options]="slideOpts"
+              >
+                <ion-slide *ngFor="let listOffers of fullList">
+                  <div class="filtered-list-pass">
+                    <app-item-offer-plan
+                    *ngFor="let offer of listOffers.offersPlans"
+                     [offerPlan]="offer"
+                    ></app-item-offer-plan>
                   </div>
-              </div>
+                </ion-slide>
+              </ion-slides>
           </div>
-        </ng-container>
-        <div *ngIf="!isLoading && hasError" class="has-error">
+        </div>
+        <div *ngIf="hasError" class="has-error">
           Une erreur est survenue, veuillez recharger les données de la page en cliquant <span (click)="getUserOfferPlans()"> ici </span>
         </div>
-        <div *ngIf="!isLoading && hasNoOfferPlans" (click)="getUserOfferPlans()" class="has-error">
+        <div *ngIf="hasNoOfferPlans" (click)="getUserOfferPlans()" class="has-error">
           Vous n’avez pas de bon plan ce jour
         </div>
-      </div>
+      </ng-container>
     </div>
   </div>
 </ion-content>
