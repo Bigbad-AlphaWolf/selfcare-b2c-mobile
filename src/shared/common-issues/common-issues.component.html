@@ -1,4 +1,46 @@
-<div class="issues-bottom-sheet">
+<ion-header [oemIonHeaderParallax]="100">
+  <ion-toolbar>
+    <ion-buttons slot="start" [hidden]="!showSousOption">
+      <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title class="title-achat-pass-internet">
+      {{ popupTitle }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true" [scrollEvents]="true">
+    <div class="check-options-list">
+      <div (click)="goSuboption(opt)" *ngFor="let opt of options; let i = index" class="check-item">
+        <div class="item-text">
+          <div class="index" *ngIf="showSousOption">
+            {{ i + 1 }}
+          </div>
+          <div class="text-content">
+            <div class="titre" [ngClass]="{ 'sous-option-width': showSousOption }" [innerHTML]="opt.title">
+              <!-- {{ opt.title + ' '}} -->
+              <!-- <ion-icon [name]="opt.icon" *ngIf="opt.icon"></ion-icon> -->
+            </div>
+            <div class="arrow" *ngIf="!showSousOption">
+              <img src="/assets/images/arrow-left.png" class="icon" alt="" />
+            </div>
+          </div>
+          <div>
+            <span class="subtitle scb-text-gray">
+              {{ opt.subtitle }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="btn-container">
+      <div (click)="continue()" mat-raised-button class="btn scb-btn scb-btn-orange">
+        C’est fait, continuer
+      </div>
+    </div>
+</ion-content>
+<!-- <div class="issues-bottom-sheet">
   <div class="check-firstly-container">
     <div class="back-arrow" *ngIf="showSousOption">
       <img
@@ -45,4 +87,4 @@
   <div (click)="close()" mat-raised-button class="btn scb-btn scb-btn-orange">
     C’est fait, continuer
   </div>
-</div>
+</div> -->

@@ -799,7 +799,7 @@ export const HelpModalDefaultContent: {
     type: string;
     url: string;
     action: string;
-    subOptions?: { title: string; subtitle: string }[];
+    subOptions?: { title: string; subtitle: string; icon?: string }[];
   }[];
   showChecks?: boolean;
 } = {
@@ -814,149 +814,128 @@ export const HelpModalDefaultContent: {
       action: 'POPUP',
       subOptions: [
         {
-          title: 'Assurez d’avoir activé les données mobiles sur la sim Orange',
-          subtitle:
-            'Assurez d’avoir activé les données mobiles sur la sim Orange',
+          title: 'Activez vos données mobiles',
+          subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
         },
         {
-          title:
-            'Si vous êtes client mobile Orange, assurez vous d’avoir désactivé le Wifi',
+          title: 'Désactivez le Wifi',
           subtitle:
-            'Si vous êtes client mobile Orange, assurez vous d’avoir désactivé le Wifi',
+            'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
         },
         {
           title: 'Assurez vous d’être sur le bon APN (Point d’Accès Internet)',
           subtitle:
-            'Assurez vous d’être sur le bon APN (Point d’Accès Internet)',
-        },
-        {
-          title: 'Redirection vers récupération du numéro de téléphone',
-          subtitle: 'Redirection vers récupération du numéro de téléphone',
+            'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
         },
       ],
     },
     {
-      title: 'J’ai oublié mon mot de passe',
+      title: 'J’ai oublié mon mot de passe ou mon compte est bloqué.',
       subtitle: 'Je réinitialise mon mot de passe',
       type: 'FORGOT_PWD',
       url: '',
       action: 'REDIRECT',
       subOptions: [
         {
-          title:
-            'Pour réinitialiser mon mot de passe et accéder à mon espace, je m’assure d’avoir activé les données mobiles, pas le wifi',
-          subtitle:
-            'Pour réinitialiser mon mot de passe et accéder à mon espace, je m’assure d’avoir activé les données mobiles, pas le wifi',
+          title: 'Activez vos données mobiles',
+          subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
         },
         {
-          title:
-            'Je désactive le wifi avant le premier démarrage de l’application pour que ma SIM se connecte au réseau Orange via l’Internet Mobile. Ainsi je serais identifié automatiquement',
+          title: 'Désactivez le Wifi',
           subtitle:
-            'Je désactive le wifi avant le premier démarrage de l’application pour que ma SIM se connecte au réseau Orange via l’Internet Mobile. Ainsi je serais identifié automatiquement',
+            'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
         },
         {
           title: 'Une fois identifié, je clique sur suivant',
-          subtitle: 'Une fois identifié, je clique sur suivant',
+          subtitle:
+            'Si votre numéro s’affiche, cliquez sur le bouton « Suivant »',
         },
         {
-          title: 'Je saisi mon nouveau mot de passe et le confirme',
-          subtitle: 'Je saisi mon nouveau mot de passe et le confirme',
+          title: 'Saisissez votre nouveau mot de passe',
+          subtitle: 'Je saisis mon nouveau mot de passe et le confirme',
         },
       ],
     },
     {
       title: 'Je ne sais plus si j’ai un compte',
       subtitle: 'Suivez les instructions du tutoriel',
-      type: '',
+      type: 'ERROR_AUTH_IMP',
       url: '',
       action: '',
       subOptions: [
         {
           title: 'Rendez vous sur la page de création de compte',
-          subtitle: 'Rendez vous sur la page de création de compte',
-        },
-        {
-          title: 'Assurez vous que votre numéro s’affiche',
-          subtitle: 'Assurez vous que votre numéro s’affiche',
-        },
-        {
-          title: 'Cliquez sur suivant',
-          subtitle: 'Cliquez sur suivant',
-        },
-        {
-          title:
-            'Vous serez redirigé vers la page de connexion ou de création de compte suivant si vous avez ou compte ou pas',
           subtitle:
-            'Vous serez redirigé vers la page de connexion ou de création de compte suivant si vous avez ou compte ou pas',
+            'A l’ouverture de l’application, cliquez sur la première rubrique « C’est ma première visite »',
         },
-      ],
-    },
-    {
-      title: 'Mon compte est bloqué',
-      subtitle: 'Je réinitialise mon mot de passe',
-      type: '',
-      url: '',
-      action: '',
-      subOptions: [
         {
-          title: 'Réinitialisation du mot de passe',
-          subtitle: 'Réinitialisation du mot de passe',
+          title: 'Une fois identifié, cliquez sur "Suivant"',
+          subtitle:
+            'Si votre numéro s’affiche, cliquez sur le bouton « Suivant »',
+        },
+        {
+          title: 'Vous serez redirigé vers la page adéquate',
+          subtitle:
+            'Vous serez redirigé vers la page de création de mot de passe si vous n’avez pas de compte dans le cas contraire vers la page de connexion',
         },
       ],
     },
     {
       title: 'Je n’arrive pas à me connecter',
       subtitle: 'Suivez les instructions du tutoriel',
-      type: '',
+      type: 'LOGIN',
       url: '',
       action: '',
       subOptions: [
         {
           title:
             'L’accés à Orange et moi est gratuit en étant sur le réseau Orange, assurez vous d’avoir activé les données mobiles sur la sim Orange',
-          subtitle:
-            'L’accés à Orange et moi est gratuit en étant sur le réseau Orange, assurez vous d’avoir activé les données mobiles sur la sim Orange',
+          subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
         },
         {
           title:
             'Si vous êtes sur le Wifi, assurez vous d’avoir une connexion internet',
           subtitle:
-            'Si vous êtes sur le Wifi, assurez vous d’avoir une connexion internet',
+            'Accéder au menu « Wifi » depuis vos « Paramètres » pour vous connecter à un réseau Wifi',
         },
       ],
     },
     {
       title: 'Comment configurer le bon APN (Point d’Accès Internet)',
       subtitle: 'Suivez les instructions du tutoriel',
-      type: '',
+      type: 'APN',
       url: '',
       action: '',
       subOptions: [
         {
-          title: 'Accéder aux Paramètres',
+          title:
+            '<span>Accéder aux Paramètres&nbsp<span class="material-icons">settings</span></span>',
           subtitle:
             'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
-        },
-        {
-          title: 'Sélectionner la partie Sans fil et réseau',
-          subtitle:
-            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+          icon: 'settings',
         },
         {
           title:
-            'Choisissez ensuite Réseau mobile ou Réseau de données mobiles',
+            '<span>Sélectionner la partie Sans fil et réseau &nbsp<span class="material-icons">wifi</span></span>',
+          subtitle:
+            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
+          icon: 'wifi',
+        },
+        {
+          title:
+            '<span>Choisissez ensuite Réseau mobile ou Réseau de données mobiles &nbsp<span class="material-icons">signal_cellular_alt</span></span>',
           subtitle:
             'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
         },
         {
           title: 'Allez sur Noms des points d’accès (APN)',
-          subtitle: 'Je saisi mon nouveau mot de passe et le confirme',
+          subtitle: 'Je saisis mon nouveau mot de passe et le confirme',
         },
         {
           title:
             'Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
           subtitle:
-            'Les paramètres internet Orange sont: \nNom : Orange Internet\nAPN : internet\nLaisser tous les autres options en l’état puis sauvegarder',
+            'Les paramètres internet Orange sont: <br>Nom : Orange Internet\nAPN : internet <br>Laisser tous les autres options en l’état puis sauvegarder',
         },
       ],
     },
@@ -969,23 +948,24 @@ export const HelpModalDefaultContent: {
       subOptions: [
         {
           title: 'Vous devez accéder à Orange et moi, avec un numéro mobile',
-          subtitle: 'Vous devez accéder à Orange et moi, avec un numéro mobile',
+          subtitle: 'Activez vos données mobile sur la Sim Orange',
         },
         {
           title:
             'Une fois connecté, cliquez sur le menu de gauche(trois traits), puis cliquez sur l’entrée "Mon compte"',
           subtitle:
-            'Une fois connecté, cliquez sur le menu de gauche(trois traits), puis cliquez sur l’entrée "Mon compte"',
+            'Cliquez sur le menu en haut à gauche de l’écran puis sur "Mon compte"',
         },
         {
           title:
             'Une fois sur "Mon compte", cliquez sur "Rattachez une ligne" et saisissez votre numéro de téléphone fixe',
           subtitle:
-            'Une fois sur "Mon compte", cliquez sur "Rattachez une ligne" et saisissez votre numéro de téléphone fixe',
+            'Saisissez votre numéro de téléphone fixe pour pouvoir le lier à votre compte et suivre sa consommation',
         },
         {
           title: 'Et enfin suivez les instructions',
-          subtitle: 'Et enfin suivez les instructions',
+          subtitle:
+            'Une fois fait, retournez cliquer sur le menu de gauche puis cliquez sur "Changer de ligne" et choisissez votre numéro fixe',
         },
       ],
     },
@@ -997,19 +977,20 @@ export const HelpModalDefaultContent: {
       action: '',
       subOptions: [
         {
-          title: 'Communiquez votre numéro de téléphone',
-          subtitle: 'Communiquez votre numéro de téléphone',
+          title:
+            'Une fois connecté, cliquez sur le bouton Ibou puis cliquez sur "Besoin d’aide" puis "Contacter l’assistance"',
+          subtitle: 'Suivre ces instructions',
+        },
+        {
+          title: 'Choisissez le canal de communication souhaité',
+          subtitle: 'Cliquez sur le canal de communication qui vous convient',
         },
         {
           title:
             'Décrire brièvement le souci rencontré, si possible y joindre une capture ou le message d’erreur',
           subtitle:
-            'Décrire brièvement le souci rencontré, si possible y joindre une capture ou le message d’erreur',
+            'Bien expliquer son souci pour un meilleur traitement de celui-ci',
         },
-        // {
-        //   title: 'Cliquez sur le bouton ',
-        //   subtitle: 'Cliquez sur le bouton ',
-        // },
       ],
     },
   ],
