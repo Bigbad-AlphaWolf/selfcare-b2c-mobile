@@ -35,6 +35,7 @@ export const OPERATION_TYPE_RECHARGE_CREDIT = 'RECHARGEMENT_CREDIT';
 export const OPERATION_TYPE_SARGAL_CONVERSION = 'SARGAL_CONVERSION';
 export const OPERATION_TRANSFER_OM = 'TRANSFER_MONEY';
 export const OPERATION_TRANSFER_OM_WITH_CODE = 'TRANSFER_MONEY_WITH_CODE';
+export const BONS_PLANS = 'BONS_PLANS';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -85,6 +86,8 @@ export const CATEGORY_PURCHASE_HISTORY = [
   { nom: 'Transfert Credit', value: 'SEDDO' },
   { nom: 'SOS', value: 'SOS' },
 ];
+
+export const listRegisterSargalBonPlanText = [ 'inscription', 'inscris'];
 
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;

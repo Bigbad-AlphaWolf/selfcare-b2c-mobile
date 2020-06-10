@@ -1,3 +1,5 @@
+import { PassInfoModel } from '..';
+
 export interface OfferPlan{
     bpTarget: string,
     bpValidityDurability: string,
@@ -6,5 +8,6 @@ export interface OfferPlan{
     productOfferingId: any,
     canBeSubscribed: boolean,
     description: string,
-    productOfferingName: string
+    productOfferingName: string,
+    pass?: PassInfoModel
 }

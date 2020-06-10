@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
-import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
+import { ApplicationRoutingService } from '../../services/application-routing/application-routing.service';
+import { PassInternetService } from '../../services/pass-internet-service/pass-internet.service';
 import {
   arrangePassByCategory,
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
 } from 'src/shared';
-import { PassIllimixService } from '../services/pass-illimix-service/pass-illimix.service';
+import { PassIllimixService } from '../../services/pass-illimix-service/pass-illimix.service';
 
 @Component({
   selector: 'app-liste-pass',
@@ -35,7 +35,6 @@ export class ListePassPage implements OnInit {
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
     private appRouting: ApplicationRoutingService,
     private passIntService: PassInternetService,

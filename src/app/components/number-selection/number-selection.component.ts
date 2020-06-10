@@ -3,9 +3,7 @@ import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from "@angular/material";
 import {
   formatPhoneNumber,
   REGEX_NUMBER_OM,
-  SubscriptionModel,
 } from "src/shared";
-import { SelectNumberPopupComponent } from "src/shared/select-number-popup/select-number-popup.component";
 import { ModalController } from "@ionic/angular";
 import { OrangeMoneyService } from "src/app/services/orange-money-service/orange-money.service";
 import { Router } from "@angular/router";
@@ -13,7 +11,6 @@ import { FollowAnalyticsService } from "src/app/services/follow-analytics/follow
 import { DashboardService } from "src/app/services/dashboard-service/dashboard.service";
 import { OmSession } from "src/app/models/om-session.model";
 import { NewPinpadModalPage } from "src/app/new-pinpad-modal/new-pinpad-modal.page";
-import { NoOmAccountModalComponent } from "src/shared/no-om-account-modal/no-om-account-modal.component";
 import { of, Observable } from "rxjs";
 import { OperationExtras } from "src/app/models/operation-extras.model";
 import { AuthenticationService } from "src/app/services/authentication-service/authentication.service";
@@ -46,8 +43,6 @@ export class NumberSelectionComponent implements OnInit {
     private bottomSheetRef: MatBottomSheetRef<NumberSelectionComponent>,
     private modalController: ModalController,
     private omService: OrangeMoneyService,
-    private router: Router,
-    private followAnalytics: FollowAnalyticsService,
     private dashbServ: DashboardService,
     private authService: AuthenticationService,
     private changeDetectorRef: ChangeDetectorRef
@@ -116,7 +111,7 @@ export class NumberSelectionComponent implements OnInit {
         if (omSession.msisdn !== "error")
           this.opXtras.senderMsisdn = omSession.msisdn;
       },
-      (error) => {
+      () => {
         this.bottomSheetRef.dismiss();
 
         this.isErrorProcessing = true;

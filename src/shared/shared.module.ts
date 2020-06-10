@@ -65,6 +65,7 @@ import { PhoneNumberProviderComponent } from 'src/app/components/phone-number-pr
 import { NumberSelectionComponent } from 'src/app/components/number-selection/number-selection.component';
 import { AmountProviderComponent } from 'src/app/components/amount-provider/amount-provider.component';
 import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header-parallax.directive';
+import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.component';
 
 @NgModule({
   declarations: [
@@ -113,6 +114,7 @@ import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header
     NoOmAccountModalComponent,
     ItemRechargeCreditComponent,
     OemIonHeaderParallaxDirective,
+    ItemOfferPlanComponent
 
   ],
   imports: [
@@ -207,6 +209,7 @@ import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
     ItemRechargeCreditComponent,
+    ItemOfferPlanComponent
   ],
   providers: [Contacts, SocialSharing, PassVolumeDisplayPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
