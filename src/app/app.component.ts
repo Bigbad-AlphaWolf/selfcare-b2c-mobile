@@ -5,13 +5,19 @@ import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
-import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
 import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
+import { isNewVersion } from 'src/shared';
+import { AppVersion } from '@ionic-native/app-version/ngx';
+const { SERVICES_SERVICE, SERVER_API_URL } = environment;
+const versionEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/v1/app-version`;
 import * as SecureLS from 'secure-ls';
 import { DetailsConsoPage } from './details-conso/details-conso.page';
+import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
+
 declare var FollowAnalytics: any;
 
 @Component({
@@ -28,7 +34,8 @@ export class AppComponent {
     private splash: SplashScreen,
     private appMinimize: AppMinimize,
     private router: Router,
-    private deeplinks: Deeplinks
+    private deeplinks: Deeplinks,
+    private appVersion: AppVersion
   ) {
     this.initializeApp();
   }

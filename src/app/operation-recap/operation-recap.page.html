@@ -93,18 +93,18 @@
         *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
       >
         <span class="pass">Montant à transférer</span
-        ><span class="modifier scb-text-orange">modifier</span>
+        ><span *ngIf="0" class="modifier scb-text-orange">modifier</span>
       </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_TRANSFER_OM">
         <span class="pass">Montant à transférer</span
-        ><span class="modifier scb-text-orange">modifier</span>
+        ><span *ngIf="0" class="modifier scb-text-orange">modifier</span>
       </div>
       <div
         class="amount-to-transfer"
         *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
       >
         <span class="pass">Montant à transférer</span
-        ><span class="modifier scb-text-orange">modifier</span>
+        ><span *ngIf="0" class="modifier scb-text-orange">modifier</span>
       </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_ILLIMIX_TYPE">
         <span class="pass">Pass sélectionné</span>
@@ -114,7 +114,7 @@
       </div>
       <div class="amount-to-transfer" *ngSwitchCase="'RECHARGEMENT_CREDIT'">
         <span class="pass">Montant à acheter</span>
-        <span class="modifier scb-text-orange">Modifier</span>
+        <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
 
       </div>
     </ng-container>
@@ -159,7 +159,7 @@
       <span class="pass">Bénéficiaire</span>
       <span
         class="modifier scb-text-orange"
-        *ngIf="purchaseType !== OPERATION_ILLIMIX_TYPE && purchaseType !== OPERATION_INTERNET_TYPE"
+        *ngIf="purchaseType !== OPERATION_ILLIMIX_TYPE && purchaseType !== OPERATION_INTERNET_TYPE && 0"
         >Modifier</span
       >
     </div>

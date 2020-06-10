@@ -72,6 +72,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       req.url.match('selfcare-b2c-account/api/account-management/account') ||
       req.url.match('auth/login')
     ) {
+      req.headers.set('X-Selfcare-Source', 'mobile');
       return next.handle(req);
     }
     if (token) {
@@ -99,14 +100,14 @@ export class AuthInterceptorService implements HttpInterceptor {
         'X-Selfcare-Isvirtual',
         String(deviceInfo.isVirtual)
       );
-      if (this.appVersionNumber) {
-        headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
-      }
+
+      if(this.appVersionNumber)
+          headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
+
       req = req.clone({
         headers,
       });
     }
-
     return next.handle(req).pipe(
       tap(
         (event: HttpEvent<any>) => {},

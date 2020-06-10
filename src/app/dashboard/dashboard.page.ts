@@ -107,7 +107,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     if (!this.isFirebaseTokenSent) {
       this.authServ.UpdateNotificationInfo();
       this.isFirebaseTokenSent = true;
-      console.log(this.isFirebaseTokenSent);
     }
   }
   ionViewDidEnter() {
