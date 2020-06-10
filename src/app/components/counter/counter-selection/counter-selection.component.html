@@ -13,15 +13,15 @@
         <input
           #numberInput
           matInput
-          type="tel"
+          type="number"
           maxlength="20"
-          (ngModelChange)="onInputChange($event)"
+          (keyup)="onInputChange(numberInput.value)"
         />
       </mat-form-field>
     </form>
-    <div class="card">
+    <div class="card" (click)="onMyFavorites()" >
       <img class="icon" src="/assets/images/credit-card-front.png" alt="" />
-      <span (click)="onMyFavorites()" class="btn-card scb-text-orange"
+      <span class="btn-card scb-text-orange"
         >Mes compteurs</span
       >
     </div>
@@ -32,7 +32,8 @@
       Recents
     </div>
     <div
-      class="recents-item"
+      matRipple
+      class="oem-item"
       (click)="onRecentCounterSlected(counter)"
       *ngFor="let counter of counters$ | async; index as i; count as size"
     >

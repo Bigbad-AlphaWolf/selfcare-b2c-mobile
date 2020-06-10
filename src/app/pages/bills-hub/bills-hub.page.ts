@@ -1,9 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { BILLS_COMPANIES_DATA } from "src/app/utils/bills.util";
 import { BillCompany } from "src/app/models/bill-company.model";
-import { ModalController } from "@ionic/angular";
-import { CounterSelectionComponent } from "src/app/components/counter-selection/counter-selection.component";
-import { MatBottomSheet } from "@angular/material";
+import { BsBillsHubService } from "src/app/services/bottom-sheet/bs-bills-hub.service";
+import { CounterSelectionComponent } from "src/app/components/counter/counter-selection/counter-selection.component";
 
 @Component({
   selector: "app-bills-hub",
@@ -15,30 +14,23 @@ export class BillsHubPage implements OnInit {
   companies: BillCompany[] = [];
   companySelected: BillCompany;
 
-  constructor(
-    private modalCtl: ModalController,
-    private matBottomSheet: MatBottomSheet
-  ) {}
+  constructor(private bottomSheetBillsHub: BsBillsHubService) {}
 
   ngOnInit() {
     this.companies = BILLS_COMPANIES_DATA;
+
+    this.bottomSheetBillsHub.bsRef.subscribe((ref) => {
+      ref.afterDismissed().subscribe((result: any) => {
+        if (result && result.TYPE_BS === "FAVORIES" && result.ACTION === "BACK")
+          this.bottomSheetBillsHub.openBSCounterSelection(
+            CounterSelectionComponent
+          );
+      });
+    });
   }
 
   onCompanySelected(billCompany: BillCompany) {
-    this.openBSCounterSelection();
-  }
-
-  openBSCounterSelection() {
-    this.matBottomSheet
-      .open(CounterSelectionComponent, {
-        data: { billCompany: this.companySelected },
-        backdropClass: "oem-ion-bottomsheet",
-      })
-      .afterDismissed()
-      .subscribe((opXtra: any) => {
-        // if(!opXtra || !opXtra.recipientMsisdn) return;
-        // opXtra = { purchaseType:OPERATION_TYPE_RECHARGE_CREDIT, ...opXtra}
-        // this.router.navigate([CreditPassAmountPage.PATH], {state:opXtra});
-      });
+    this.bottomSheetBillsHub.companySelected = billCompany;
+    this.bottomSheetBillsHub.openBSCounterSelection(CounterSelectionComponent);
   }
 }
