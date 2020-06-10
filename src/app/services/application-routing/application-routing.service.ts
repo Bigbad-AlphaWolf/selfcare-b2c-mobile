@@ -4,7 +4,11 @@ import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_TYPE_RECHARGE_CREDIT,
 } from 'src/shared';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
+import { CreditPassAmountPage } from 'src/app/pages/credit-pass-amount/credit-pass-amount.page';
+import { SargalRegistrationPage } from 'src/app/sargal/components/sargal-registration/sargal-registration.page';
 
 @Injectable({
   providedIn: 'root',
@@ -103,5 +107,21 @@ export class ApplicationRoutingService {
       state: purchaseInformation,
     };
     this.route.navigate(['/purchase-set-amount'], navigationExtras);
+  }
+
+  goToPassRecapPage(purchaseInformation: {pass: any, recipientMsisdn: string, recipientCodeFormule: string, recipientName: string, purchaseType: string }){
+    let navigationExtras: NavigationExtras = {
+      state: purchaseInformation,
+    };
+    this.route.navigate(['/operation-recap'], navigationExtras);
+  }
+
+  goToBuyCreditSetAmount(opInfos: OperationExtras){
+    opInfos = { purchaseType:OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos}
+    this.route.navigate([CreditPassAmountPage.PATH], {state:opInfos});
+  }
+
+  goToRegisterForSargal(){
+    this.route.navigate([SargalRegistrationPage.PATH]);
   }
 }

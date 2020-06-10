@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
+import { OfferPlansService } from '../../services/offer-plans-service/offer-plans.service';
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
-import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import { SubscriptionModel, BONS_PLANS } from 'src/shared';
+import { ApplicationRoutingService } from '../../services/application-routing/application-routing.service';
+import { DashboardService } from '../../services/dashboard-service/dashboard.service';
+import { AuthenticationService } from '../../services/authentication-service/authentication.service';
+import { SubscriptionModel, BONS_PLANS, OPERATION_TYPE_PASS_ILLIMIX, OPERATION_TYPE_PASS_INTERNET, listRegisterSargalBonPlanText } from 'src/shared';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NavController, IonSlides } from '@ionic/angular';
-import { getPageTitle } from '../utils/title.util';
+import { getPageTitle } from '../../utils/title.util';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
 
 @Component({
   selector: 'app-my-offer-plans',
@@ -29,7 +30,7 @@ export class MyOfferPlansPage implements OnInit {
   hasError: boolean;
   categorySelected: string;
   currentUserCodeFormule: string;
-  payloadNavigation: { destinataire: string; code: string } = { destinataire: null, code: null };
+  payloadNavigation: { recipientMsisdn: string; recipientCodeFormule: string } = { recipientMsisdn: null, recipientCodeFormule: null };
   hasNoOfferPlans: boolean;
   fullList: { category: {label: string, value: string} , offersPlans: OfferPlan[] }[];
   @ViewChild('sliders') sliders: IonSlides;
@@ -51,9 +52,9 @@ export class MyOfferPlansPage implements OnInit {
   ngOnInit() {
     this.pageTitle = getPageTitle(BONS_PLANS).title;
     this.getUserOfferPlans();
-    this.payloadNavigation.destinataire = this.dashbServ.getCurrentPhoneNumber();
-    this.authServ.getSubscription(this.payloadNavigation.destinataire).subscribe((res: SubscriptionModel) => {
-      this.payloadNavigation.code = res.code;
+    this.payloadNavigation.recipientMsisdn = this.dashbServ.getCurrentPhoneNumber();
+    this.authServ.getSubscription(this.payloadNavigation.recipientMsisdn).subscribe((res: SubscriptionModel) => {
+      this.payloadNavigation.recipientCodeFormule = res.code;
     });
   }
 
@@ -87,7 +88,7 @@ export class MyOfferPlansPage implements OnInit {
         }
       }
     );
-  }
+  }  
 
   initCategoriesOfferPlan() {
     let cats = [];
@@ -126,17 +127,34 @@ export class MyOfferPlansPage implements OnInit {
     });
   }
 
-  goToPage(category: string) {
-    switch (category) {
+  goToPage(offer: OfferPlan) {
+    switch (offer.typeMPO.toLowerCase()) {
       case 'illimix':
-        this.appliRout.goToListPassIllimix(this.payloadNavigation);
+        if(offer.pass){
+          const payloadPassPageRecap = { pass: offer.pass, recipientName: null , purchaseType: OPERATION_TYPE_PASS_ILLIMIX, ...this.payloadNavigation  }
+          this.appliRout.goToPassRecapPage(payloadPassPageRecap);
+        }
         break;
+        
       case 'internet':
-        this.appliRout.goToListPassInternet(this.payloadNavigation);
+        if(offer.pass){
+          const payloadPassPageRecap = { pass: offer.pass, recipientName: null , purchaseType: OPERATION_TYPE_PASS_INTERNET, ...this.payloadNavigation  }
+          this.appliRout.goToPassRecapPage(payloadPassPageRecap);
+        }
         break;
+
       case 'recharge':
-        this.appliRout.goToTransfertHubServicesPage('BUY');
+        const opBuyCreditSetAmountPayload: OperationExtras = {forSelf: true,recipientFirstname: null,recipientLastname: null,recipientFromContact: false,senderMsisdn: this.payloadNavigation.recipientMsisdn }
+        this.appliRout.goToBuyCreditSetAmount(opBuyCreditSetAmountPayload)
         break;
+
+      case 'sargal':
+        for (const text of listRegisterSargalBonPlanText) {
+          if(offer.bpTarget.toLowerCase().includes(text) ) {
+            this.appliRout.goToRegisterForSargal()
+            break
+          }
+        }     
       default:
         break;
     }
