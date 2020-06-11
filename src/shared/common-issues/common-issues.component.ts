@@ -3,6 +3,7 @@ import { MatBottomSheetRef } from '@angular/material';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { HelpModalDefaultContent } from '..';
 import { Router } from '@angular/router';
+import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 @Component({
   selector: 'app-common-issues',
   templateUrl: './common-issues.component.html',
@@ -25,7 +26,8 @@ export class CommonIssuesComponent implements OnInit {
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private bottomSheetRef: MatBottomSheetRef<CommonIssuesComponent>,
     private ngZone: NgZone,
-    private router: Router
+    private router: Router,
+    private openNativeSettings: OpenNativeSettings
   ) {
     if (data) {
       this.options = data.options;
@@ -76,6 +78,10 @@ export class CommonIssuesComponent implements OnInit {
         this.router.navigate(['/login']);
         break;
       case 'APN':
+        this.openNativeSettings
+          .open('settings')
+          .then((res) => {})
+          .catch((err) => {});
         break;
       default:
         break;

@@ -87,7 +87,7 @@ export const CATEGORY_PURCHASE_HISTORY = [
   { nom: 'SOS', value: 'SOS' },
 ];
 
-export const listRegisterSargalBonPlanText = [ 'inscription', 'inscris'];
+export const listRegisterSargalBonPlanText = ['inscription', 'inscris'];
 
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
@@ -817,11 +817,13 @@ export const HelpModalDefaultContent: {
       action: 'POPUP',
       subOptions: [
         {
-          title: 'Activez vos données mobiles',
+          title:
+            'Activez vos données mobiles &nbsp<span class="material-icons item-icon">signal_cellular_alt</span>',
           subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
         },
         {
-          title: 'Désactivez le Wifi',
+          title:
+            'Désactivez le Wifi &nbsp<span class="material-icons item-icon">wifi</span></span>',
           subtitle:
             'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
         },
@@ -840,11 +842,13 @@ export const HelpModalDefaultContent: {
       action: 'REDIRECT',
       subOptions: [
         {
-          title: 'Activez vos données mobiles',
+          title:
+            'Activez vos données mobiles &nbsp<span class="material-icons item-icon">signal_cellular_alt</span>',
           subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
         },
         {
-          title: 'Désactivez le Wifi',
+          title:
+            'Désactivez le Wifi &nbsp<span class="material-icons item-icon">wifi</span></span>',
           subtitle:
             'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
         },
@@ -912,21 +916,21 @@ export const HelpModalDefaultContent: {
       subOptions: [
         {
           title:
-            '<span>Accéder aux Paramètres&nbsp<span class="material-icons">settings</span></span>',
+            '<span>Accéder aux Paramètres &nbsp<span class="material-icons item-icon">settings</span></span>',
           subtitle:
             'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
           icon: 'settings',
         },
         {
           title:
-            '<span>Sélectionner la partie Sans fil et réseau &nbsp<span class="material-icons">wifi</span></span>',
+            '<span>Sélectionner la partie Sans fil et réseau &nbsp<span class="material-icons item-icon">wifi</span></span>',
           subtitle:
             'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
           icon: 'wifi',
         },
         {
           title:
-            '<span>Choisissez ensuite Réseau mobile ou Réseau de données mobiles &nbsp<span class="material-icons">signal_cellular_alt</span></span>',
+            '<span>Choisissez ensuite Réseau mobile ou Réseau de données mobiles &nbsp<span class="material-icons item-icon">signal_cellular_alt</span></span>',
           subtitle:
             'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
         },
@@ -938,7 +942,7 @@ export const HelpModalDefaultContent: {
           title:
             'Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
           subtitle:
-            'Les paramètres internet Orange sont: <br>Nom : Orange Internet\nAPN : internet <br>Laisser tous les autres options en l’état puis sauvegarder',
+            'Les paramètres internet Orange sont: <br />Nom : Orange Internet <br />APN : internet <br />Laisser tous les autres options en l’état puis sauvegarder',
         },
       ],
     },

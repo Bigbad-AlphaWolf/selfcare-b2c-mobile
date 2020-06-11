@@ -653,4 +653,9 @@ button {
 .mat-bottom-sheet-container {
   font: unset;
   font-family: unset;
+  overflow: hidden !important;
+}
+
+.item-icon {
+  vertical-align: bottom;
 }

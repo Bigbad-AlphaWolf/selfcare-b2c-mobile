@@ -3,6 +3,16 @@
 .back-arrow {
   margin-bottom: 10px;
 }
+
+.title-achat-pass-internet {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1.25;
+  letter-spacing: normal;
+  color: $fullBlack;
+}
+
 .title {
   font-family: HelveticaNeueLTStd-Bd;
   font-size: 24px;
@@ -27,7 +37,7 @@
   width: 130%;
 }
 .check-options-list {
-  padding: 38px percentage(15/375) 50px;
+  padding: 25px percentage(15/375) 50px;
   height: 100%;
   .check-item {
     display: flex;
@@ -77,7 +87,7 @@
     }
   }
   .check-item:last-child {
-    margin-bottom: 350px;
+    margin-bottom: 380px;
   }
 }
 

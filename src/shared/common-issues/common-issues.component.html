@@ -1,4 +1,4 @@
-<ion-header [oemIonHeaderParallax]="100">
+<ion-header [oemIonHeaderParallax]="110">
   <ion-toolbar>
     <ion-buttons slot="start" [hidden]="!showSousOption">
       <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
@@ -6,7 +6,9 @@
       </ion-back-button>
     </ion-buttons>
     <ion-title class="title-achat-pass-internet">
-      {{ popupTitle }}
+      <div style="white-space: normal;">
+        {{ popupTitle }}
+      </div>
     </ion-title>
   </ion-toolbar>
 </ion-header>
