@@ -88,6 +88,7 @@ export const CATEGORY_PURCHASE_HISTORY = [
 ];
 
 export const listRegisterSargalBonPlanText = [ 'inscription', 'inscris'];
+export const LIST_CATEGORY_BONS_PLANS = { internet: "INTERNET", illimix: "ILLIMIX", sargal: "SARGAL", recharge: "RECHARGE", autres: "AUTRES"};
 
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
