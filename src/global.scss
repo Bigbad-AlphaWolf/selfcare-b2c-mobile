@@ -1,22 +1,22 @@
-@import "src/app/app.scss"; // http://ionicframework.com/docs/theming/
-@import "~@ionic/angular/css/core.css";
-@import "~@ionic/angular/css/normalize.css";
-@import "~@ionic/angular/css/structure.css";
-@import "~@ionic/angular/css/typography.css";
-@import "~@ionic/angular/css/display.css";
-@import "~@ionic/angular/css/padding.css";
-@import "~@ionic/angular/css/float-elements.css";
-@import "~@ionic/angular/css/text-alignment.css";
-@import "~@ionic/angular/css/text-transformation.css";
-@import "~@ionic/angular/css/flex-utils.css";
+@import 'src/app/app.scss'; // http://ionicframework.com/docs/theming/
+@import '~@ionic/angular/css/core.css';
+@import '~@ionic/angular/css/normalize.css';
+@import '~@ionic/angular/css/structure.css';
+@import '~@ionic/angular/css/typography.css';
+@import '~@ionic/angular/css/display.css';
+@import '~@ionic/angular/css/padding.css';
+@import '~@ionic/angular/css/float-elements.css';
+@import '~@ionic/angular/css/text-alignment.css';
+@import '~@ionic/angular/css/text-transformation.css';
+@import '~@ionic/angular/css/flex-utils.css';
 @font-face {
-  font-family: "HelveticaNeueLTStd-Bd";
-  src: url("theme/HelveticaNeueLTStd-Bd.otf") format("opentype");
+  font-family: 'HelveticaNeueLTStd-Bd';
+  src: url('theme/HelveticaNeueLTStd-Bd.otf') format('opentype');
 }
 
 @font-face {
-  font-family: "HelveticaNeueLTStd-Roman";
-  src: url("theme/HelveticaNeueLTStd-Roman.otf") format("opentype");
+  font-family: 'HelveticaNeueLTStd-Roman';
+  src: url('theme/HelveticaNeueLTStd-Roman.otf') format('opentype');
 }
 
 ion-menu {
@@ -79,7 +79,7 @@ ion-menu {
         font-size: 16px;
         color: $grey;
         &::after {
-          content: " *";
+          content: ' *';
           color: red;
         }
       }
@@ -427,7 +427,7 @@ body {
 
 .success-modal {
   --height: auto;
-  .modal-wrapper{
+  .modal-wrapper {
     width: 90vw;
     .ion-page {
       position: relative;
@@ -448,7 +448,7 @@ body {
 
 .failed-modal {
   --height: auto;
-  .modal-wrapper{
+  .modal-wrapper {
     width: 90vw;
     .ion-page {
       position: relative;
@@ -479,6 +479,9 @@ body {
 .custom-css-common-issues {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+  height: 75vh;
+  max-height: 600px;
+  padding: unset !important;
 }
 
 .cdk-overlay-pane {
@@ -538,7 +541,7 @@ body {
   .transfer-options {
   }
 }
-button{
+button {
   margin-top: 2px !important;
 }
 .mat-bottom-sheet-container {
@@ -566,14 +569,11 @@ button{
 .mat-radio-label {
   width: 100%;
   display: flex !important;
-    align-items: flex-start !important;
+  align-items: flex-start !important;
   .mat-radio-label-content {
     display: flex;
     flex-direction: column;
     width: 100%;
-
-
-   
   }
 }
 
@@ -582,19 +582,22 @@ button{
   padding: 5px 12px 0px 12px !important;
   display: flex;
   flex-direction: column;
-
 }
 
-.mat-button-toggle-group-appearance-standard .mat-button-toggle+.mat-button-toggle {
+.mat-button-toggle-group-appearance-standard
+  .mat-button-toggle
+  + .mat-button-toggle {
   border-left: none;
 }
 
-.mat-button-toggle-group-appearance-standard, .mat-button-toggle-standalone.mat-button-toggle-appearance-standard {
+.mat-button-toggle-group-appearance-standard,
+.mat-button-toggle-standalone.mat-button-toggle-appearance-standard {
   border: none;
 }
 
-.mat-button-toggle-group-appearance-standard, .mat-button-toggle-standalone.mat-button-toggle-appearance-standard {
-  border-radius: none; 
+.mat-button-toggle-group-appearance-standard,
+.mat-button-toggle-standalone.mat-button-toggle-appearance-standard {
+  border-radius: none;
 }
 // .mat-button-toggle-checked {
 //   background-color: #fdd8b71c;
@@ -605,11 +608,11 @@ button{
 //   }
 // }
 
-.oem-ion-header{
+.oem-ion-header {
   // display: flex;
 }
 .header-md:after {
-  background-image:none;
+  background-image: none;
 }
 .header-ios ion-toolbar:last-child {
   --border-width: 0px;
@@ -619,19 +622,18 @@ button{
   display: flex !important;
   align-items: center;
   justify-content: center;
-  .button-native{
-    display: none;;
+  .button-native {
+    display: none;
   }
 }
-.oem-back-button.md{
- @include oemBackButton();
- padding: 15px;
+.oem-back-button.md {
+  @include oemBackButton();
+  padding: 15px;
 }
 
-.oem-back-button.ios{
+.oem-back-button.ios {
   @include oemBackButton();
   padding: 5px 15px;
- 
 }
 
 @mixin oemTopTile() {
@@ -640,17 +642,22 @@ button{
   padding: 0px 15px;
   margin-top: 4px;
 }
-.oem-top-title.md{
-  @include oemTopTile() ;
+.oem-top-title.md {
+  @include oemTopTile();
 }
 
-.oem-top-title.ios{
-  @include oemTopTile() ;
+.oem-top-title.ios {
+  @include oemTopTile();
   position: relative;
-  text-align: left; 
+  text-align: left;
 }
 
 .mat-bottom-sheet-container {
-  font:unset;
+  font: unset;
   font-family: unset;
+  overflow: hidden !important;
+}
+
+.item-icon {
+  vertical-align: bottom;
 }
