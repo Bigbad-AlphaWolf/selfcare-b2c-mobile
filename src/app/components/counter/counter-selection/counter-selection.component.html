@@ -42,7 +42,7 @@
       </div>
       <div class="labels" [ngClass]="i + 1 == size ? 'last-label' : ''">
         <span class="name"> {{ counter.name }}</span>
-        <span class="number">{{ counter.counterNumber }}</span>
+        <span class="number">{{ counter.counterNumber |codeFormat:2 }}</span>
       </div>
     </div>
   </div>

@@ -1,10 +1,17 @@
 import { Component, OnInit, Inject } from "@angular/core";
-import { Counter } from "src/app/models/counter.model";
+import { CounterOem } from "src/app/models/counter-oem.model";
 import { Observable, of } from "rxjs";
-import { WoyofalService } from "src/app/services/woyofal/woyofal.service";
-import { MAT_BOTTOM_SHEET_DATA } from "@angular/material";
+import { CounterService } from "src/app/services/counter/counter.service";
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from "@angular/material";
 import { BsBillsHubService } from "src/app/services/bottom-sheet/bs-bills-hub.service";
 import { FavoriteCountersComponent } from "../favorite-counters/favorite-counters.component";
+import { NavController } from "@ionic/angular";
+import { PurchaseSetAmountPage } from "src/app/purchase-set-amount/purchase-set-amount.page";
+import { OperationExtras } from "src/app/models/operation-extras.model";
+import { OPERATION_WOYOFAL } from "src/app/utils/constants";
+import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
+import { BillAmountPage } from "src/app/pages/bill-amount/bill-amount.page";
+import { BillCompany } from "src/app/models/bill-company.model";
 
 @Component({
   selector: "app-counter-selection",
@@ -13,30 +20,49 @@ import { FavoriteCountersComponent } from "../favorite-counters/favorite-counter
 })
 export class CounterSelectionComponent implements OnInit {
   isProcessing: boolean = false;
-  counters$: Observable<Counter[]> = of([
-    { name: "Maison Nord-foire", counterNumber: "14 20 69 41 826" },
-    { name: "Audi Q5", counterNumber: "14 20 69 41 826" },
+  inputCounterNumber: any = "";
+  counters$: Observable<CounterOem[]> = of([
+    { name: "Maison Nord-foire", counterNumber: "14206941826" },
+    { name: "Audi Q5", counterNumber: "14206941826" },
   ]);
   constructor(
-    private woyofal: WoyofalService,
+    private woyofal: CounterService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-    private bottomSheetBillsHub: BsBillsHubService
+    private bottomSheetBillsHub: BsBillsHubService,
+    private bsRef: MatBottomSheetRef,
   ) {}
 
   ngOnInit() {
     // this.counters$ = this.woyofal.fetchRecentsCounters();
   }
 
-  onRecentCounterSlected() {}
+  onRecentCounterSlected(counter: CounterOem) {
+    this.bsRef.dismiss({
+      TYPE_BS: "RECENTS",
+      ACTION: "FORWARD",
+      counter: counter,
+    });
+  }
 
-  onContinue() {}
+  onContinue() {
+    if (!this.counterNumberIsValid()) return;
+
+    this.bsRef.dismiss({
+      TYPE_BS: "INPUT",
+      ACTION: "FORWARD",
+      counter: { name: "Autre", counterNumber: this.inputCounterNumber },
+    });
+  }
 
   onMyFavorites() {
     this.bottomSheetBillsHub.openBSFavoriteCounters(FavoriteCountersComponent);
-    // this.openBSFavoriteCounters();
   }
 
-  onInputChange(ev) {
-    console.log(ev);
+  onInputChange(counterNumber) {
+    this.inputCounterNumber = counterNumber;
+  }
+
+  counterNumberIsValid() {
+    return true;
   }
 }

@@ -56,6 +56,39 @@
         }
       }
     }
+    .counter{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 60px;
+      border-radius: 10px;
+      border: solid 1px #4bb4e6;
+      background-color: #dbf0fa;
+      margin-top: 20px;
+      .kw{
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 14px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        text-align: center;
+        color: #666666;
+      }
+      .code{
+        font-family: HelveticaNeue;
+        font-size: 16px;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1;
+        letter-spacing: normal;
+        text-align: center;
+        color: #000000;
+      }
+    }
   }
   .hide{
     visibility: hidden;

@@ -71,6 +71,7 @@ import { OemIonHeaderParallaxDirective } from "src/app/directives/oem-ion-header
 import { CounterSelectionComponent } from "src/app/components/counter/counter-selection/counter-selection.component";
 import { FavoriteCountersComponent } from "src/app/components/counter/favorite-counters/favorite-counters.component";
 import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
+import { CodeFormatPipe } from 'src/app/pipes/code-format.pipe';
 
 @NgModule({
   declarations: [
@@ -121,6 +122,7 @@ import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.se
     NoOmAccountModalComponent,
     ItemRechargeCreditComponent,
     OemIonHeaderParallaxDirective,
+    CodeFormatPipe
   ],
   imports: [
     CommonModule,
@@ -210,6 +212,7 @@ import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.se
     SettingsPopupComponent,
     HelpBannerComponent,
     PassVolumeDisplayPipe,
+    CodeFormatPipe,
     OmButtonComponent,
     DashboardHeaderComponent,
     FormatCalledNumberPipe,

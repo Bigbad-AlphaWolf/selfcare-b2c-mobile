@@ -1,4 +1,4 @@
-export interface Counter{
+export interface CounterOem{
     name?:string;
     counterNumber?:any;
 }

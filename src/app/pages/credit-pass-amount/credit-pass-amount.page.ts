@@ -19,7 +19,6 @@ export class CreditPassAmountPage implements OnInit {
 
   constructor(
     private navController: NavController,
-    private refChangeDetector : ChangeDetectorRef,
   ) {}
 
 

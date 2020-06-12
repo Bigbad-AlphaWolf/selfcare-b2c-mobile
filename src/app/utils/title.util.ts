@@ -7,6 +7,7 @@ import {
   OPERATION_TRANSFER_OM_WITH_CODE,
 } from "src/shared";
 import { PageTitle } from "../models/page-title.model";
+import { OPERATION_WOYOFAL } from './constants';
 
 export const titles: PageTitle[] = [
   {
@@ -29,6 +30,11 @@ export const titles: PageTitle[] = [
   {
     typeOperation: OPERATION_TRANSFER_OM_WITH_CODE,
     title: "Transfert d'argent",
+  },
+
+  {
+    typeOperation: OPERATION_WOYOFAL,
+    title: 'Rechargement Woyofal',
   },
 ];
 

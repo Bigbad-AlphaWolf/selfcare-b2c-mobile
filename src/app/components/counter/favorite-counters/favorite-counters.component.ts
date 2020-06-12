@@ -1,31 +1,52 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Counter } from 'src/app/models/counter.model';
-import { MatBottomSheetRef, MatBottomSheet } from '@angular/material';
-import { BillCompany } from 'src/app/models/bill-company.model';
-import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
+import { Component, OnInit } from "@angular/core";
+import { Observable, of } from "rxjs";
+import { CounterOem } from "src/app/models/counter-oem.model";
+import { MatBottomSheetRef } from "@angular/material";
+import { FavorisService } from "src/app/services/favoris/favoris.service";
+import { map } from "rxjs/operators";
+import { FavorisOem } from "src/app/models/favoris-oem.model";
 
 @Component({
-  selector: 'app-favorite-counters',
-  templateUrl: './favorite-counters.component.html',
-  styleUrls: ['./favorite-counters.component.scss'],
+  selector: "app-favorite-counters",
+  templateUrl: "./favorite-counters.component.html",
+  styleUrls: ["./favorite-counters.component.scss"],
 })
 export class FavoriteCountersComponent implements OnInit {
-  counters$ : Observable<Counter[]> = of([{name:'Maison Nord-foire', counterNumber:'14 20 69 41 826'},{name:'Audi Q5', counterNumber:'14 20 69 41 826'},{name:'Mn Nord-foire', counterNumber:'14 20 69 41 826'}])
+  counters$: Observable<CounterOem[]> = of([
+    { name: "Maison Nord-foire", counterNumber: "14206941826" },
+    { name: "Audi Q5", counterNumber: "14206941826" },
+    { name: "Mn Nord-foire", counterNumber: "14206941826" },
+  ]);
 
-  constructor(    private bottomSheetBillsHub: BsBillsHubService
-,    private bottomSheetRef: MatBottomSheetRef<FavoriteCountersComponent>) { }
+  constructor(
+    private bottomSheetRef: MatBottomSheetRef<FavoriteCountersComponent>,
+    private favoriService: FavorisService
+  ) {}
 
   ngOnInit() {
-    
+    let typeFavoris = "woyofal";
+    this.counters$ = this.favoriService.fetchFavorites(typeFavoris).pipe(
+      map((favoris: FavorisOem[]) => {
+        console.log(favoris);
+        
+        let results = [];
+        favoris.forEach((el) => {
+          results.push({ name: el.ref_label, counterNumber: el.ref_num });
+        });
+        return results;
+      })
+    );
   }
 
-  onFavoriteCounterSlected(){
-    this.bottomSheetRef.dismiss({'TYPE_BS':'FAVORIES'});
+  onFavoriteCounterSlected(counter: CounterOem) {
+    this.bottomSheetRef.dismiss({
+      TYPE_BS: "FAVORIES",
+      ACTION: "FORWARD",
+      counter: counter,
+    });
   }
 
-  navigateBack(){
-    this.bottomSheetRef.dismiss({'TYPE_BS':'FAVORIES','ACTION':'BACK'})
+  navigateBack() {
+    this.bottomSheetRef.dismiss({ TYPE_BS: "FAVORIES", ACTION: "BACK" });
   }
-
 }

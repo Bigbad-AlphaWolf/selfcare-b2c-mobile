@@ -16,6 +16,9 @@
       <span class="title" *ngSwitchCase="'RECHARGEMENT_CREDIT'"
       >{{success ? 'Achat crédit effectué' : 'Echec Achat'}}</span
     >
+    <span class="title" *ngSwitchCase="'OPERATION_WOYOFAL'"
+    style="white-space: pre-line">{{success ? 'Rechargement'+'\n'+'Woyofal effectué' : 'Echec rechargement Woyofal'}}</span
+  >
       <span class="title" *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
@@ -33,6 +36,10 @@
         <span *ngSwitchCase="'RECHARGEMENT_CREDIT'"
         >Vous avez acheté un montant de</span
       >
+
+      <span *ngSwitchCase="'OPERATION_WOYOFAL'"
+      >Vous avez rechargé un montant de</span
+    >
         <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
           >Vous avez acheté le pass illimix</span
         >
@@ -45,7 +52,7 @@
       </ng-container>
     </span>
   </div>
-  <div class="pass-block" *ngIf="success">
+  <div class="pass-block" *ngIf="success" >
     <ng-container [ngSwitch]="purchaseType">
       <app-item-pass-internet
         [passInternet]="passBought"
@@ -67,6 +74,11 @@
       [amount]="amount"
       *ngSwitchCase="'RECHARGEMENT_CREDIT'"
     ></app-item-recharge-credit>
+    <app-item-recharge-credit
+    [modifiable]="false"
+    [amount]="opXtras.amount - opXtras.fee"
+    *ngSwitchCase="'OPERATION_WOYOFAL'"
+  ></app-item-recharge-credit>
       <app-item-recharge-credit
         [modifiable]="false"
         [amount]="amount"
@@ -79,7 +91,7 @@
       ></app-item-recharge-credit>
     </ng-container>
   </div>
-  <div class="bottom-block" *ngIf="success">
+  <div class="bottom-block" *ngIf="success && purchaseType !== 'OPERATION_WOYOFAL'">
     <div class="details">
       <ng-container
         *ngIf="purchaseType !== OPERATION_TYPE_MERCHANT_PAYMENT else merchantBlock"
@@ -117,7 +129,38 @@
         <span class="numero">{{dateAchat}}</span>
       </div>
     </div>
+
   </div>
+  <div class="bottom-block" *ngIf="success && purchaseType === 'OPERATION_WOYOFAL'" >
+        <div class="details">
+          <div class="left-block">Comptuer à recharger</div>
+          <div class="right-block scb-text-gray">
+            <span class="numero">{{opXtras.billData.counter.counterNumber|codeFormat:2}}</span>
+            <span class="name">
+              {{opXtras.billData.counter.name}}
+            </span>
+          </div>
+        </div>
+        <div class="details">
+          <div class="left-block">Transfert avec</div>
+          <div class="right-block scb-text-gray">
+            <span class="numero">
+              Orange Money
+            </span>
+            <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
+          </div>
+        </div>
+        <div class="details details-date">
+          <div class="left-block">Date de recharge</div>
+          <div class="right-block scb-text-gray">
+            <span class="numero">{{dateAchat}}</span>
+          </div>
+        </div>
+        <div class="counter">
+          <div class="kw">{{'Code de recharge ('+opXtras.billData.kw +' Kw)'}}</div>
+          <div class="code">{{opXtras.billData.codeRecharge|codeFormat:3}}</div>
+        </div>
+      </div>
 
   <div *ngIf="success" class="confirm-btn">
     <ion-button (click)="goToPage(purchaseType)" shape="round" class="btn btn-cancel" expand="block" >
@@ -127,6 +170,7 @@
           <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM"> Faire un autre transfert </ng-container>
           <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"> Faire un autre transfert </ng-container>
           <ng-container *ngSwitchCase="OPERATION_TYPE_RECHARGE"> Faire une autre recharge de credit </ng-container>
+          <ng-container *ngSwitchCase="'OPERATION_WOYOFAL'"> Faire une autre recharge </ng-container>
           <ng-container *ngSwitchDefault> Faire une autre operation </ng-container>
       </ng-container>
     </ion-button>

@@ -1,5 +1,5 @@
 <div class="favorite-page oem-bottomsheet-container">
-  <div matRipple class="arrow-left" (click)="navigateBack()">
+  <div  class="arrow-left" (click)="navigateBack()">
     <img alt="" src="/assets/images/arrow-left.png" />
   </div>
   <div class="title">
@@ -8,8 +8,7 @@
   <div class="description">
     Choisissez sur la liste
   </div>
-  <div class="recents content">
-
+  <div class="recents content" *ngIf="(counters$|async)?.length>0 else nofavoris">
     <div 
       matRipple
       class="oem-item"
@@ -21,8 +20,11 @@
       </div>
       <div class="labels" [ngClass]="i + 1 == size ? 'last-label' : ''">
         <span class="name"> {{ counter.name }}</span>
-        <span class="number">{{ counter.counterNumber }}</span>
+        <span class="number">{{ counter.counterNumber |codeFormat:2}}</span>
       </div>
     </div>
   </div>
+  <ng-template #nofavoris>
+    <div>Aucun compteur enregistré</div>
+  </ng-template>
 </div>

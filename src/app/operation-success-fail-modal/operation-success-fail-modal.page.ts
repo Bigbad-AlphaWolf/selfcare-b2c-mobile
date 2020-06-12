@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
@@ -11,6 +11,9 @@ import {
   OPERATION_TYPE_RECHARGE_CREDIT,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { OperationExtras } from '../models/operation-extras.model';
+import { OPERATION_WOYOFAL } from '../utils/constants';
+import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
 
 @Component({
   selector: 'app-operation-success-fail-modal',
@@ -36,13 +39,16 @@ export class OperationSuccessFailModalPage implements OnInit {
   @Input() amount: number;
   @Input() merchantCode: number;
   @Input() merchantName: string;
+  @Input() opXtras: OperationExtras;
   dateAchat = this.dashboardService.getCurrentDate();
   btnText: string;
+
   constructor(
     private dashboardService: DashboardService,
     private router: Router,
     public modalController: ModalController,
-    private appRouting: ApplicationRoutingService
+    private appRouting: ApplicationRoutingService,
+    private navCtrl : NavController
   ) {}
 
   ngOnInit() {}
@@ -70,6 +76,9 @@ export class OperationSuccessFailModalPage implements OnInit {
       case this.OPERATION_TRANSFER_OM_WITH_CODE:
        this.appRouting.goToTransfertHubServicesPage('TRANSFER');
         break;
+        case OPERATION_WOYOFAL:
+          this.navCtrl.navigateBack(BillsHubPage.ROUTE_PATH);
+           break;
       default:
         break;
     }

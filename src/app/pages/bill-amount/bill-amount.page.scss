@@ -1,0 +1,98 @@
+@import "src/app/app";
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.28px;
+}
+
+.title-achat-pass-internet {
+  font-family: HelveticaNeue;
+  font-size: 24px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.25;
+  letter-spacing: normal;
+  color: #000000;
+}
+
+.bill-amount-page {
+  height: 100%;
+  background-color: $white;
+  :host {
+    height: 100%;
+  }
+  .banniere-container {
+    width: 100%;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .amount-provider {
+    margin-bottom: 10px;
+  }
+
+  .details {
+    padding: 0px 15px;
+    ion-list {
+      margin-top: -20px !important;
+      ion-item {
+        --inner-padding-end: 0px;
+        --padding-start: 0px;
+        margin-top: 10px;
+        ion-toggle {
+
+          --background-checked: #32c832;
+        }
+        .fees-value {
+          text-align: right;
+          font-size: 12px;
+        }
+        .label {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 14px;
+          line-height: 1.14;
+          color: $fullBlack;
+        }
+      }
+    }
+    .amount-fees {
+      width: 100%;
+      text-align: right;
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 12px;
+      margin-top: 10px;
+
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 12px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.33;
+      letter-spacing: normal;
+      color: #666666;
+    }
+  }
+
+  .btn-container {
+    position: sticky;
+    bottom: 15px;
+    margin: 15px;
+    button {
+      border-radius: 10px;
+      position: relative;
+      mat-spinner {
+        position: absolute;
+        top: 15px;
+        right: 10px;
+      }
+      .mat-spinner::ng-deep circle {
+        stroke: $white;
+      }
+    }
+  }
+}
