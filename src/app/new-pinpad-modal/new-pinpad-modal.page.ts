@@ -217,6 +217,7 @@ export class NewPinpadModalPage implements OnInit {
         }
       },
       (err) => {
+        this.userNotRegisteredInOm = true;
         this.checkingToken = false;
         this.sendingOtp = false;
         this.resendCode = false;
@@ -249,8 +250,10 @@ export class NewPinpadModalPage implements OnInit {
       (res: any) => {
         this.registering = false;
         this.otpHasError = false;
+
         if (!res.status_code.match('Erreur')) {
           this.userHasOmToken = true;
+          this.otpValidation = false;
           const omUser: OmUserInfo = {
             solde: 0,
             msisdn: this.omPhoneNumber,
@@ -281,11 +284,13 @@ export class NewPinpadModalPage implements OnInit {
               this.orangeMoneyService.SaveOrangeMoneyUser(omUser1);
             });
         } else {
+          this.otpValidation = true;
           this.otpHasError = true;
           this.errorOnOtp = res.status_wording;
         }
       },
       () => {
+        this.otpValidation = true;
         this.registering = false;
       }
     );
