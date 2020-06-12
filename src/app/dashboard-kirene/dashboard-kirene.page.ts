@@ -107,6 +107,7 @@ export class DashboardKirenePage implements OnInit {
     this.getUserConsommations();
     this.getSargalPoints();
     this.getCurrentSubscription();
+    this.getActivePromoBooster();
   }
 
   getCurrentSubscription() {
@@ -114,15 +115,14 @@ export class DashboardKirenePage implements OnInit {
     this.authServ.getSubscription(currentNumber).subscribe(
       (res: SubscriptionModel) => {
         this.currentProfil = res.profil;
-        this.getActivePromoBooster(currentNumber, res.code);
       },
       (err: any) => {}
     );
   }
 
-  getActivePromoBooster(msisdn: string, code: string) {
+  getActivePromoBooster() {
     this.dashbordServ
-      .getActivePromoBooster(msisdn, code)
+      .getActivePromoBooster()
       .subscribe((res: any) => {
         this.hasPromoBooster = res;
       });
