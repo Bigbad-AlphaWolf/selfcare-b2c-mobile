@@ -942,7 +942,7 @@ export const HelpModalDefaultContent: {
           title:
             'Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
           subtitle:
-            'Les paramètres internet Orange sont: <br />Nom : Orange Internet <br />APN : internet <br />Laisser tous les autres options en l’état puis sauvegarder',
+            'Les paramètres internet Orange sont: \nNom : Orange Internet \nAPN : internet \nLaisser tous les autres options en l’état puis sauvegarder',
         },
       ],
     },
