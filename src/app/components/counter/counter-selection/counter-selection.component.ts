@@ -22,15 +22,17 @@ export class CounterSelectionComponent implements OnInit {
   isProcessing: boolean = false;
   inputCounterNumber: any = "";
   counters$: Observable<CounterOem[]> = of([
-    { name: "Maison Nord-foire", counterNumber: "14206941826" },
-    { name: "Audi Q5", counterNumber: "14206941826" },
+    { name: "Maison Nord-foire", counterNumber: "14256266199" },
+    { name: "Audi Q5", counterNumber: "14256266199" },
   ]);
   constructor(
-    private woyofal: CounterService,
+    private counterService: CounterService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private bottomSheetBillsHub: BsBillsHubService,
     private bsRef: MatBottomSheetRef,
-  ) {}
+  ) {
+    this.counterService.initFees();
+  }
 
   ngOnInit() {
     // this.counters$ = this.woyofal.fetchRecentsCounters();

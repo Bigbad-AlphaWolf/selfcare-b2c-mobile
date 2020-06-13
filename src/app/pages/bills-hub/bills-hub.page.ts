@@ -15,15 +15,13 @@ import { NavController } from '@ionic/angular';
 })
 export class BillsHubPage implements OnInit {
   public static ROUTE_PATH = "/bills-hub";
-  companies: BillCompany[] = [];
+  companies: BillCompany[] = BILLS_COMPANIES_DATA;
   companySelected: BillCompany;
   opXtras : OperationExtras={};
 
   constructor(private bottomSheetBillsHub: BsBillsHubService, private navCtl:NavController) {}
 
   ngOnInit() {
-    this.companies = BILLS_COMPANIES_DATA;
-
     this.bottomSheetBillsHub.bsRef.subscribe((ref) => {
       ref.afterDismissed().subscribe((result: any) => {
         if (result && result.TYPE_BS === "FAVORIES" && result.ACTION === "BACK")
@@ -43,6 +41,7 @@ export class BillsHubPage implements OnInit {
   onCompanySelected(billCompany: BillCompany) {
     this.bottomSheetBillsHub.companySelected = billCompany;
     this.opXtras.billData = {company:billCompany};
+    if(billCompany.code === 'WOYOFAL')//this will change
     this.bottomSheetBillsHub.openBSCounterSelection(CounterSelectionComponent);
   }
 }

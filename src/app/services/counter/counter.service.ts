@@ -14,7 +14,7 @@ import { WOYOFAL_DEFAULT_FEES } from "src/app/utils/bills.util";
   providedIn: "root",
 })
 export class CounterService {
-  fees: any[] = [];
+  fees: any[] = WOYOFAL_DEFAULT_FEES;
   constructor(private http: HttpClient) {
     this.initFees();
   }
@@ -23,62 +23,6 @@ export class CounterService {
     return this.http.get<CounterOem[]>(COUNTER_RECENTS_COUNTER_ENDPOINT);
   }
 
-  // fetchFavoritesCounters(typeFavoris:string) {
-  //   let result = {
-  //     content: {
-  //       data: {
-  //         message: "SUCCESS",
-  //         status: "200",
-  //         type_favoris: [
-  //           {
-  //             label: "compteur",
-  //             liste_favoris: [
-               
-  //               {
-  //                 service_code: "WOYOFAL",
-  //                 ref_num: "14254564108",
-  //                 ref_label: "Woyofal Scatt",
-  //                 creation_gen_id: "781210942235046",
-  //               },
-  //               {
-  //                 service_code: "WOYOFAL",
-  //                 ref_num: "14254564108",
-  //                 ref_label: "Kebe Ab",
-  //                 creation_gen_id: "781210942235046",
-  //               },
-               
-  //               {
-  //                 service_code: "WOYOFAL",
-  //                 ref_num: "14254564108",
-  //                 ref_label: "Karim Messi",
-  //                 creation_gen_id: "781210942235046",
-  //               },
-               
-               
-  //             ],
-  //           }
-         
-  //         ],
-  //       },
-  //     },
-  //     act_app_vers: "v1.0",
-  //     act_conf_vers: "v1.0",
-  //     status_code: "Success-001",
-  //     status_wording: "Transaction successfuls",
-  //     conf_string: null,
-  //     nb_notif: 0,
-  //   };
-  //   return this.http.get<CounterOem[]>(`${COUNTER_FAVORITES_COUNTER_ENDPOINT}/${typeFavoris}`).pipe(
-  //     map((r:any)=>{
-  //       if(!(r && (r.status_code === 'Success-001' || r.content.data.status === '200'))) 
-  //         return [];
-
-  //       let typeFavoris :any= r.content.data.type_favoris;
-  //       return typeFavoris.length >0? typeFavoris.liste_favoris[0].liste_favoris : [];
-  //   }),
-  //   catchError(_=>of(result))
-  //   );
-  // }
 
   pay(body: any) {
     let result = {
@@ -115,8 +59,10 @@ export class CounterService {
     this.fees = await this.http
       .get(`${COUNTER_FEES_ENDPOINT}/?msisdn=782363572`)
       .pipe(
-        map((r) => {
-          console.log(r);
+        map((r:any) => {
+          console.log('io', r.paliers[0].woyofal);
+          if(!(r && r.length>0)) return WOYOFAL_DEFAULT_FEES
+           return r.paliers[0].woyofal;
         }),
         catchError((_) => of(WOYOFAL_DEFAULT_FEES))
       )

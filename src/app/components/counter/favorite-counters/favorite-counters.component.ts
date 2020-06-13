@@ -5,6 +5,7 @@ import { MatBottomSheetRef } from "@angular/material";
 import { FavorisService } from "src/app/services/favoris/favoris.service";
 import { map } from "rxjs/operators";
 import { FavorisOem } from "src/app/models/favoris-oem.model";
+import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
 
 @Component({
   selector: "app-favorite-counters",
@@ -20,15 +21,13 @@ export class FavoriteCountersComponent implements OnInit {
 
   constructor(
     private bottomSheetRef: MatBottomSheetRef<FavoriteCountersComponent>,
-    private favoriService: FavorisService
+    private favoriService: FavorisService,
+    private bsBillHubService : BsBillsHubService
   ) {}
 
   ngOnInit() {
-    let typeFavoris = "woyofal";
-    this.counters$ = this.favoriService.fetchFavorites(typeFavoris).pipe(
+    this.counters$ = this.favoriService.fetchFavorites(this.bsBillHubService.companySelected.code).pipe(
       map((favoris: FavorisOem[]) => {
-        console.log(favoris);
-        
         let results = [];
         favoris.forEach((el) => {
           results.push({ name: el.ref_label, counterNumber: el.ref_num });

@@ -185,7 +185,7 @@
       <div class="top-block">
         <span class="title"
           >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT ? merchantCode :
-          recipientMsisdn | phoneNumberDisplay}} {{purchaseType === 'OPERATION_WOYOFAL'?opXtras.billData.counter.counterNumber:''}}</span
+          recipientMsisdn | phoneNumberDisplay}} {{(purchaseType === 'OPERATION_WOYOFAL'?opXtras.billData.counter.counterNumber :'')|codeFormat:2}}</span
         >
         <span class="recipient"
           >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT

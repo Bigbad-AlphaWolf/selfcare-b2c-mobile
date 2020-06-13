@@ -18,11 +18,11 @@ export const BILLS_COMPANIES_DATA: BillCompany[] = [
 ];
 
 export const WOYOFAL_DEFAULT_FEES: any = [
-    {
-        montant_min: 1.0,
-        montant_max: 1000.0,
-        tarif: 100.0,
-      },
+  {
+    montant_min: 1.0,
+    montant_max: 1000.0,
+    tarif: 100.0,
+  },
   {
     montant_min: 1000.0,
     montant_max: 2000.0,

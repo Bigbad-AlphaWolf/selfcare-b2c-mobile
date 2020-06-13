@@ -26,7 +26,7 @@ export class BillAmountPage implements OnInit {
 
   constructor(
     private navController: NavController,
-    private woyofal: CounterService
+    private counterService: CounterService
   ) {}
 
   ngOnInit() {
@@ -71,7 +71,7 @@ export class BillAmountPage implements OnInit {
       return;
     }
     if (this.isFee) {
-      this.fee = this.opXtras.fee = this.woyofal.findAmountFee(amount);
+      this.fee = this.opXtras.fee = this.counterService.findAmountFee(amount);
       this.totalAmount = this.opXtras.amount = amount + this.fee;
       return;
     }
