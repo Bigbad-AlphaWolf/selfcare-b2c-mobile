@@ -1,5 +1,6 @@
 import { BillCompany } from "./bill-company.model";
 import { CounterOem } from "./counter-oem.model";
+import { OmSession } from './om-session.model';
 
 export interface OperationExtras {
   senderMsisdn?: string;
@@ -17,5 +18,5 @@ export interface OperationExtras {
   fee?: any;
 
   billData?: { company?: BillCompany; counter?: CounterOem, codeRecharge?:string, kw?:number };
-  counterNumber?: any;
+  omSession?: OmSession;
 }

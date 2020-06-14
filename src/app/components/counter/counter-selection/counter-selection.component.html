@@ -48,7 +48,7 @@
   </div>
 
   <div class="btn-continue">
-    <button mat-button [disabled]="isProcessing" (click)="onContinue()">
+    <button mat-button [disabled]="isProcessing || !counterNumberIsValid" (click)="onContinue()">
       Continuer
     </button>
     <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>

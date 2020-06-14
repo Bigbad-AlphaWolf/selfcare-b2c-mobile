@@ -8,23 +8,26 @@
   <div class="description">
     Choisissez sur la liste
   </div>
-  <div class="recents content" *ngIf="(counters$|async)?.length>0 else nofavoris">
-    <div 
-      matRipple
-      class="oem-item"
-      (click)="onFavoriteCounterSlected(counter)"
-      *ngFor="let counter of counters$ | async; index as i; count as size"
-    >
-      <div class="logo">
-        <img src="assets/images/woyofal@3x.png" />
-      </div>
-      <div class="labels" [ngClass]="i + 1 == size ? 'last-label' : ''">
-        <span class="name"> {{ counter.name }}</span>
-        <span class="number">{{ counter.counterNumber |codeFormat:2}}</span>
+
+    <div class="recents content" *ngIf="(counters$|async)?.length>0">
+      <div 
+        matRipple
+        class="oem-item"
+        (click)="onFavoriteCounterSlected(counter)"
+        *ngFor="let counter of counters$ | async; index as i; count as size"
+      >
+        <div class="logo">
+          <img src="assets/images/woyofal@3x.png" />
+        </div>
+        <div class="labels" [ngClass]="i + 1 == size ? 'last-label' : ''">
+          <span class="name"> {{ counter.name }}</span>
+          <span class="number">{{ counter.counterNumber |codeFormat:2}}</span>
+        </div>
       </div>
     </div>
-  </div>
-  <ng-template #nofavoris>
-    <div>Aucun compteur enregistré</div>
-  </ng-template>
+    <div *ngIf="(counters$|async)?.length==0" >Aucun compteur enregistré</div>
+    <div *ngIf="!(counters$|async)"  style="width: 100%; display: flex; justify-content: center;">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+
 </div>

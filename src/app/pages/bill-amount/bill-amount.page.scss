@@ -45,8 +45,18 @@
         --padding-start: 0px;
         margin-top: 10px;
         ion-toggle {
-
+            // width: 45px;
+            // height: 26px;
+            border-radius: 13px;
           --background-checked: #32c832;
+          --handle-background-checked: #ffffff;
+          .toggle-icon{
+              .toggle-inner{
+                position: relative;
+                top: 2px;
+                left: 4px;
+              }
+          }
         }
         .fees-value {
           text-align: right;

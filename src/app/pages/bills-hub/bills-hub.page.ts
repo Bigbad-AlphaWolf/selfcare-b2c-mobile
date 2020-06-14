@@ -16,32 +16,30 @@ import { NavController } from '@ionic/angular';
 export class BillsHubPage implements OnInit {
   public static ROUTE_PATH = "/bills-hub";
   companies: BillCompany[] = BILLS_COMPANIES_DATA;
-  companySelected: BillCompany;
-  opXtras : OperationExtras={};
 
-  constructor(private bottomSheetBillsHub: BsBillsHubService, private navCtl:NavController) {}
+  constructor(private bsBillsHubService: BsBillsHubService, private navCtl:NavController) {}
 
   ngOnInit() {
-    this.bottomSheetBillsHub.bsRef.subscribe((ref) => {
+    this.bsBillsHubService.bsRef.subscribe((ref) => {
       ref.afterDismissed().subscribe((result: any) => {
         if (result && result.TYPE_BS === "FAVORIES" && result.ACTION === "BACK")
-          this.bottomSheetBillsHub.openBSCounterSelection(
+          this.bsBillsHubService.openBSCounterSelection(
             CounterSelectionComponent
           );
 
           if (result && result.ACTION === "FORWARD"){
-            this.opXtras.purchaseType = OPERATION_WOYOFAL;
-            this.opXtras.billData.counter =  result.counter ;
-            this.navCtl.navigateForward([BillAmountPage.ROUTE_PATH],{state: this.opXtras});
+            this.bsBillsHubService.opXtras.purchaseType = OPERATION_WOYOFAL;
+            this.bsBillsHubService.opXtras.billData.counter =  result.counter ;
+            this.navCtl.navigateForward([BillAmountPage.ROUTE_PATH],{state: this.bsBillsHubService.opXtras});
           }
       });
     });
   }
 
   onCompanySelected(billCompany: BillCompany) {
-    this.bottomSheetBillsHub.companySelected = billCompany;
-    this.opXtras.billData = {company:billCompany};
+    // this.bsBillsHubService.companySelected = billCompany;
+    this.bsBillsHubService.opXtras.billData = {company:billCompany};
     if(billCompany.code === 'WOYOFAL')//this will change
-    this.bottomSheetBillsHub.openBSCounterSelection(CounterSelectionComponent);
+    this.bsBillsHubService.openBSCounterSelection(CounterSelectionComponent);
   }
 }

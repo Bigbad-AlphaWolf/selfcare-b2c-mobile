@@ -1,17 +1,14 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit, Inject, ChangeDetectorRef } from "@angular/core";
 import { CounterOem } from "src/app/models/counter-oem.model";
 import { Observable, of } from "rxjs";
 import { CounterService } from "src/app/services/counter/counter.service";
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from "@angular/material";
 import { BsBillsHubService } from "src/app/services/bottom-sheet/bs-bills-hub.service";
 import { FavoriteCountersComponent } from "../favorite-counters/favorite-counters.component";
-import { NavController } from "@ionic/angular";
-import { PurchaseSetAmountPage } from "src/app/purchase-set-amount/purchase-set-amount.page";
-import { OperationExtras } from "src/app/models/operation-extras.model";
-import { OPERATION_WOYOFAL } from "src/app/utils/constants";
-import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
-import { BillAmountPage } from "src/app/pages/bill-amount/bill-amount.page";
-import { BillCompany } from "src/app/models/bill-company.model";
+
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: "app-counter-selection",
@@ -20,7 +17,7 @@ import { BillCompany } from "src/app/models/bill-company.model";
 })
 export class CounterSelectionComponent implements OnInit {
   isProcessing: boolean = false;
-  inputCounterNumber: any = "";
+  inputCounterNumber: string = "";
   counters$: Observable<CounterOem[]> = of([
     { name: "Maison Nord-foire", counterNumber: "14256266199" },
     { name: "Audi Q5", counterNumber: "14256266199" },
@@ -28,14 +25,19 @@ export class CounterSelectionComponent implements OnInit {
   constructor(
     private counterService: CounterService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-    private bottomSheetBillsHub: BsBillsHubService,
+    private bsBillsHubService: BsBillsHubService,
     private bsRef: MatBottomSheetRef,
+    private modalController: ModalController,
+    private omService: OrangeMoneyService,
+    private changeDetectorRef: ChangeDetectorRef
+
   ) {
     this.counterService.initFees();
   }
 
   ngOnInit() {
     // this.counters$ = this.woyofal.fetchRecentsCounters();
+    this.checkOmAccountSession();
   }
 
   onRecentCounterSlected(counter: CounterOem) {
@@ -47,7 +49,7 @@ export class CounterSelectionComponent implements OnInit {
   }
 
   onContinue() {
-    if (!this.counterNumberIsValid()) return;
+    if (!this.counterNumberIsValid) return;
 
     this.bsRef.dismiss({
       TYPE_BS: "INPUT",
@@ -57,14 +59,60 @@ export class CounterSelectionComponent implements OnInit {
   }
 
   onMyFavorites() {
-    this.bottomSheetBillsHub.openBSFavoriteCounters(FavoriteCountersComponent);
+    this.bsBillsHubService.openBSFavoriteCounters(FavoriteCountersComponent);
   }
 
   onInputChange(counterNumber) {
     this.inputCounterNumber = counterNumber;
   }
 
-  counterNumberIsValid() {
-    return true;
+  get counterNumberIsValid() {
+    return this.inputCounterNumber && (this.inputCounterNumber.length === 11) && (/^\d+$/.test(this.inputCounterNumber));
+  }
+
+  checkOmAccountSession() {
+    this.isProcessing = true;
+    this.omService.omAccountSession().subscribe(
+      (omSession: any) => {
+        this.bsBillsHubService.opXtras.omSession = omSession;
+        this.isProcessing = false;
+        this.changeDetectorRef.detectChanges();
+
+        if (
+          omSession.msisdn === "error" ||
+          !omSession.hasApiKey ||
+          !omSession.accessToken ||
+          omSession.loginExpired
+        ) {
+          this.bsRef.dismiss();
+          this.openPinpad();
+        }
+
+        if (omSession.msisdn !== "error")
+          this.bsBillsHubService.opXtras.senderMsisdn = omSession.msisdn;
+      },
+      (error) => {
+        this.bsRef.dismiss();
+
+      }
+    );
+  }
+
+
+
+  async openPinpad() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: "pin-pad-modal",
+      componentProps: {
+        operationType: null,
+      },
+    });
+    modal.onDidDismiss().then((response) => {
+      if (response.data && response.data.success) {
+        this.bsBillsHubService.opXtras.omSession.loginExpired = false;
+      }
+    });
+    return await modal.present();
   }
 }

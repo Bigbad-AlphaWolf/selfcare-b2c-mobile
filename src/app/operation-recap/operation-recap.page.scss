@@ -112,6 +112,9 @@ ion-content {
   }
   .card-container {
     margin-bottom: -10px;
+    &.bill{
+      margin-bottom: 0px;
+    }
   }
   .recipient-information {
     border-radius: 5px;
