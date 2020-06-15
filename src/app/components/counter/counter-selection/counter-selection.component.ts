@@ -32,7 +32,6 @@ export class CounterSelectionComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef
 
   ) {
-    this.counterService.initFees();
   }
 
   ngOnInit() {
@@ -88,8 +87,11 @@ export class CounterSelectionComponent implements OnInit {
           this.openPinpad();
         }
 
-        if (omSession.msisdn !== "error")
+        if (omSession.msisdn !== "error"){
           this.bsBillsHubService.opXtras.senderMsisdn = omSession.msisdn;
+          this.counterService.initFees(omSession.msisdn);
+
+        }
       },
       (error) => {
         this.bsRef.dismiss();

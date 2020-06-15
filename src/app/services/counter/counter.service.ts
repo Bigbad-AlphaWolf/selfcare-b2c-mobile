@@ -8,7 +8,10 @@ import {
 } from "../utils/counter.endpoints";
 import { catchError, map } from "rxjs/operators";
 import { of } from "rxjs";
-import { WOYOFAL_DEFAULT_FEES, WOYOFAL_DEFAULT_FEES_INCLUDES } from "src/app/utils/bills.util";
+import {
+  WOYOFAL_DEFAULT_FEES,
+  WOYOFAL_DEFAULT_FEES_INCLUDES,
+} from "src/app/utils/bills.util";
 
 @Injectable({
   providedIn: "root",
@@ -18,7 +21,7 @@ export class CounterService {
   feesIncludes: any[] = WOYOFAL_DEFAULT_FEES_INCLUDES;
 
   constructor(private http: HttpClient) {
-    this.initFees();
+    // this.initFees();
   }
 
   fetchRecentsCounters() {
@@ -51,42 +54,39 @@ export class CounterService {
       status_wording: "string",
     };
     // return of(result);
-    return this.http.post(COUNTER_PAYMENT_ENDPOINT, body).pipe(
-      catchError(_=>of(result)),
-    );
+    return this.http
+      .post(COUNTER_PAYMENT_ENDPOINT, body)
+      .pipe(catchError((_) => of(result)));
   }
 
-  async initFees() {
+  async initFees(msisdn: any) {
     await this.http
-      .get(`${COUNTER_FEES_ENDPOINT}/?msisdn=782363572`)
+      .get(`${COUNTER_FEES_ENDPOINT}/?msisdn=${msisdn}`)
       .pipe(
-        map((r:any) => {
-          // console.log('io', r.paliers[0].woyofal);
-          if(!(r && r.length>0)) return null;
+        map((r: any) => {
+          if (!(r && r.paliers[0].woyofal.length > 0)) return null;
+
           this.fees = r.paliers[0].woyofal;
           this.feesIncludes = this.parseToIncludesFees(r.paliers[0].woyofal);
-        }),
+        })
       )
       .toPromise();
   }
   parseToIncludesFees(fees: any[]): any[] {
-    
     let results = [];
-    let prev:any;
+    let prev: any;
     fees.forEach((el) => {
-      if(prev)
-        el.montant_min = el.montant_min + prev.tarif;
+      if (prev) el.montant_min = el.montant_min + prev.tarif;
       el.montant_max = el.montant_max + el.tarif;
       results.push(el);
       prev = el;
     });
-    console.log(results);
-    
+
     return results;
   }
 
-  findAmountFee(amount: number, includeFee?:boolean) {
-    let fees = includeFee?this.feesIncludes:this.fees;
+  findAmountFee(amount: number, includeFee?: boolean) {
+    let fees = includeFee ? this.feesIncludes : this.fees;
     let fee = fees.find(
       (fee) => amount >= +fee.montant_min && amount <= +fee.montant_max
     );
