@@ -106,7 +106,7 @@
       <div class="left-block">Paiement par</div>
       <div class="right-block scb-text-gray">
         <span class="numero">
-          {{ purchaseType === OPERATION_ILLIMIX_TYPE || purchaseType === OPERATION_INTERNET_TYPE ? paymentMod : 'Orange Money' }}
+          {{paymentMod === 'ORANGE_MONEY' ? 'Orange Money' : 'Crédit Recharge'}}
         </span>
         <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
       </div>

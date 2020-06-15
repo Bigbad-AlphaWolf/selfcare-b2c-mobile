@@ -46,6 +46,7 @@ const routes: Routes = [
     ParametrageInternetComponent,
     RechargeCardNumberComponent
   ],
+  entryComponents: [NumeroSeriePopupComponent],
   providers: [FileTransfer, File, FileOpener]
 })
 export class EmergenciesPageModule {}
