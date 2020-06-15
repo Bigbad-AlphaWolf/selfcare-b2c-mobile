@@ -56,23 +56,22 @@ export class BillAmountPage implements OnInit {
     this.navController.navigateForward(["/operation-recap"], navExtras);
   }
 
-  inputAmountIsValid(amount?: number) {
-    amount = amount ? amount : parseInt(this.inputAmount);
+  inputAmountIsValid(amount: number) {
+    if(!amount) return false;
+    console.log(amount, this.counterService.feesIncludes[0].montant_min);
+    
     let includefeeAmountIsValid =
       amount >= this.counterService.feesIncludes[0].montant_min &&
       amount <= this.counterService.feesIncludes[
           this.counterService.feesIncludes.length - 1
-        ];
+        ].montant_max ;
     let amountIsValid =
       amount >= this.counterService.fees[0].montant_min &&
-      amount <= this.counterService.fees[this.counterService.fees.length - 1];
+      amount <= this.counterService.fees[this.counterService.fees.length - 1].montant_max;
 
     return this.isFee ? amountIsValid : includefeeAmountIsValid;
   }
 
-  get inputValidation(){
-    return this.inputAmountIsValid();
-  }
 
   toogleFee($event) {
     this.isFee = $event.detail.checked;
@@ -87,16 +86,18 @@ export class BillAmountPage implements OnInit {
       return;
     }
 
-    this.amountIsValid = true;
+    this.amountIsValid = true; 
     if (this.isFee) {
       this.fee = this.opXtras.fee = this.counterService.findAmountFee(amount);
-      this.totalAmount = this.opXtras.amount = amount + this.fee;
+      this.opXtras.amount = amount;
+      this.totalAmount = this.opXtras.amount + this.opXtras.fee;
     } else {
       this.fee = this.opXtras.fee = this.counterService.findAmountFee(
         amount,
         true
       );
-      this.totalAmount = this.opXtras.amount = amount - this.fee;
+      this.opXtras.amount = amount  - this.opXtras.fee;
+      this.totalAmount = this.opXtras.amount;
     }
   }
 

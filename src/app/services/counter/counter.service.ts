@@ -8,14 +8,14 @@ import {
 } from "../utils/counter.endpoints";
 import { catchError, map } from "rxjs/operators";
 import { of } from "rxjs";
-import { WOYOFAL_DEFAULT_FEES } from "src/app/utils/bills.util";
+import { WOYOFAL_DEFAULT_FEES, WOYOFAL_DEFAULT_FEES_INCLUDES } from "src/app/utils/bills.util";
 
 @Injectable({
   providedIn: "root",
 })
 export class CounterService {
   fees: any[] = WOYOFAL_DEFAULT_FEES;
-  feesIncludes: any[] = WOYOFAL_DEFAULT_FEES;
+  feesIncludes: any[] = WOYOFAL_DEFAULT_FEES_INCLUDES;
 
   constructor(private http: HttpClient) {
     this.initFees();
