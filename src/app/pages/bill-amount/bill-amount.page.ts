@@ -23,6 +23,7 @@ export class BillAmountPage implements OnInit {
   includeFees: any;
   totalAmount: any;
   isFee: boolean = true;
+  amountIsValid : boolean = false;
 
   constructor(
     private navController: NavController,
@@ -55,8 +56,22 @@ export class BillAmountPage implements OnInit {
     this.navController.navigateForward(["/operation-recap"], navExtras);
   }
 
-  inputAmountIsValid(amount: number) {
-    return amount && amount >= 1000 && amount <= 2000000;
+  inputAmountIsValid(amount?: number) {
+    amount = amount ? amount : parseInt(this.inputAmount);
+    let includefeeAmountIsValid =
+      amount >= this.counterService.feesIncludes[0].montant_min &&
+      amount <= this.counterService.feesIncludes[
+          this.counterService.feesIncludes.length - 1
+        ];
+    let amountIsValid =
+      amount >= this.counterService.fees[0].montant_min &&
+      amount <= this.counterService.fees[this.counterService.fees.length - 1];
+
+    return this.isFee ? amountIsValid : includefeeAmountIsValid;
+  }
+
+  get inputValidation(){
+    return this.inputAmountIsValid();
   }
 
   toogleFee($event) {
@@ -68,15 +83,21 @@ export class BillAmountPage implements OnInit {
     this.fee = this.opXtras.fee = 0;
     if (!this.inputAmountIsValid(amount)) {
       this.totalAmount = this.opXtras.amount = 0;
-      return;
-    }
-    if (this.isFee) {
-      this.fee = this.opXtras.fee = this.counterService.findAmountFee(amount);
-      this.totalAmount = this.opXtras.amount = amount + this.fee;
+      this.amountIsValid = false;
       return;
     }
 
-    if (!this.isFee) this.totalAmount = this.opXtras.amount = amount;
+    this.amountIsValid = true;
+    if (this.isFee) {
+      this.fee = this.opXtras.fee = this.counterService.findAmountFee(amount);
+      this.totalAmount = this.opXtras.amount = amount + this.fee;
+    } else {
+      this.fee = this.opXtras.fee = this.counterService.findAmountFee(
+        amount,
+        true
+      );
+      this.totalAmount = this.opXtras.amount = amount - this.fee;
+    }
   }
 
   goBack() {

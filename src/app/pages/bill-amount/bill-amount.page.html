@@ -54,7 +54,7 @@
     <div class="btn-container">
       <button
         class="scb-btn scb-btn-orange scb-btn-full"
-        [disabled]="!(this.inputAmount >=1000 && this.inputAmount <=2000000)"
+        [disabled]="!amountIsValid"
         (click)="onContinue()"
       >
         <span>Continuer</span>

@@ -18,11 +18,7 @@ export const BILLS_COMPANIES_DATA: BillCompany[] = [
 ];
 
 export const WOYOFAL_DEFAULT_FEES: any = [
-  {
-    montant_min: 1.0,
-    montant_max: 1000.0,
-    tarif: 100.0,
-  },
+
   {
     montant_min: 1000.0,
     montant_max: 2000.0,
@@ -69,3 +65,49 @@ export const WOYOFAL_DEFAULT_FEES: any = [
     tarif: 10900.0,
   },
 ];
+
+
+export const WOYOFAL_DEFAULT_FEES_INCLUDES: any = [
+
+    {
+      montant_min: 1100.0,
+      montant_max: 2100.0,
+      tarif: 100.0,
+    },
+    {
+      montant_min: 2101.0,
+      montant_max: 5250.0,
+      tarif: 250.0,
+    },
+    {
+      montant_min: 5251.0,
+      montant_max: 10400.0,
+      tarif: 400.0,
+    },
+    {
+      montant_min: 10401.0,
+      montant_max: 20500.0,
+      tarif: 500.0,
+    },
+    {
+      montant_min: 20501.0,
+      montant_max: 60800.0,
+      tarif: 800.0,
+    },
+    {
+      montant_min: 60801.0,
+      montant_max: 176900.0,
+      tarif: 1900.0,
+    },
+    {
+      montant_min: 176901.0,
+      montant_max: 403900.0,
+      tarif: 3900.0,
+    },
+    {
+      montant_min: 403901.0,
+      montant_max: 20010900.0,
+      tarif: 10900.0,
+    }
+
+  ];
