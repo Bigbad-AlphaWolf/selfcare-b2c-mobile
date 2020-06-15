@@ -41,7 +41,6 @@ export class PassInternetService {
     this.setListPassInternetOfUser([]);
     this.dashbService.getListPassInternet(this.userCodeFormule).subscribe(
       (resp: any) => {
-        console.log("pass intenet resp", resp);
         if (resp instanceof Array) {
           resp.forEach((x: PassInternetModel) => {
             if (x.pass && x.pass.actif) {
