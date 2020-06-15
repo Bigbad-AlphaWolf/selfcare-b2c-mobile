@@ -652,3 +652,10 @@ button{
   font:unset;
   font-family: unset;
 }
+
+// custom CSS for purchase list filter button
+.purchase-history-container-filter .purchase-content-filter .filter-container{
+  .mat-button-wrapper{
+    width: 100%;
+  }
+}

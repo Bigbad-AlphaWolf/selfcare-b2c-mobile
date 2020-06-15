@@ -14,10 +14,8 @@ import {
   delay,
   retryWhen,
   flatMap,
-  catchError,
-  switchMap,
 } from "rxjs/operators";
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { environment } from "src/environments/environment";
 import * as jwt_decode from "jwt-decode";
 import * as SecureLS from "secure-ls";
@@ -27,14 +25,11 @@ import {
   PROFILE_TYPE_HYBRID_2,
   isFixPostpaid,
   PROFILE_TYPE_POSTPAID,
-  KILIMANJARO_FORMULE,
-  CODE_FORMULE_KILIMANJARO,
   
 } from "src/app/dashboard";
 import {
   JAMONO_ALLO_CODE_FORMULE,
   NotificationInfoModel,
-  SubscriptionModel,
 } from "src/shared";
 
 
@@ -46,7 +41,6 @@ const {
   GET_MSISDN_BY_NETWORK_URL,
   CONFIRM_MSISDN_BY_NETWORK_URL,
   UAA_SERVICE,
-  SERVICES_SERVICE,
 } = environment;
 const ls = new SecureLS({ encodingType: "aes" });
 
@@ -56,7 +50,6 @@ const checkUserExistEndpoint = `${accountBaseUrl}/check_number`;
 const registerUserEndpoint = `${accountBaseUrl}/register`;
 const checkEmailEndpoint = `${accountBaseUrl}/email-already-exist`;
 const userInfosEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/information-abonne`;
-const userSubscriptionEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/souscription`;
 const userSubscriptionInfo = `${SERVER_API_URL}/${CONSO_SERVICE}/api/souscription-infos`;
 const userSubscriptionEndpoint2 = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/v1/customerOffer`;
 const userSubscriptionIsPostpaidEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/is-postpaid`;
@@ -271,7 +264,7 @@ export class AuthenticationService {
     this.http
       .post(logoutEndpoint, "")
       .pipe(
-        tap((res: any) => {
+        tap(() => {
           this.isLoginSubject.next(false);
         })
       )

@@ -22,7 +22,8 @@ import { Contacts, Contact } from '@ionic-native/contacts';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
-import { Router } from '@angular/router';
+import { ModalController, NavController } from '@ionic/angular';
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 
 @Component({
   selector: 'app-transfer-recipient-amount',
@@ -63,7 +64,8 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     private contacts: Contacts,
     private dashService: DashboardService,
     private followAnalytics: FollowAnalyticsService,
-    private router: Router
+    private navControl: NavController,
+    private pinpadOM: ModalController
   ) {}
 
   ngOnInit() {
@@ -147,9 +149,24 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
         this.omPhoneNumber = msisdn;
         this.checkOMToken(msisdn);
       } else {
-        this.router.navigate(['/see-solde-om']);
+        this.openPinpad();
       }
     });
+  }
+
+  async openPinpad() {
+    const modal = await this.pinpadOM.create({
+      component: NewPinpadModalPage,
+      cssClass: "pin-pad-modal",
+      componentProps: {
+        operationType: null,
+      },
+    });
+    modal.onDidDismiss().then(() => {
+      this.navControl.navigateBack(['/dashboard'])
+
+    });
+    return await modal.present();
   }
 
   suivant() {
@@ -167,7 +184,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
               this.showErrorAmount = true;
             }
           },
-          (err) => {
+          () => {
             this.checkingOMAmountToTransfer = false;
             this.nextStepEmitter.emit(amount);
           }
@@ -250,7 +267,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
           }
         }
       })
-      .catch((err) => {});
+      .catch(() => {});
   }
 
   openPickRecipientModal(phoneNumbers: any[]) {
@@ -290,8 +307,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     this.omService.GetUserAuthInfo(phoneNumber).subscribe((omUser: any) => {
       // If user already connected open pinpad
       if (!omUser.hasApiKey || omUser.loginExpired || !omUser.accessToken) {
-        this.operationOM = 'RESET_TOKEN';
-        this.typeOMCode = true;
+        this.openPinpad()
       }
     });
   }
