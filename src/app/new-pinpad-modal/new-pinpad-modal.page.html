@@ -77,10 +77,7 @@
         </div>
       </div>
 
-      <button
-        *ngIf="!userHasOmToken"
-        [disabled]="!form.valid || registering"
-        class="confirm-btn scb-btn-full scb-btn-orange"
+      <ion-button expand="block" *ngIf="!userHasOmToken" [disabled]="!form.valid || registering" class="confirm-btn"
       >
         <span>Confirmer</span>
         <mat-spinner
@@ -88,7 +85,7 @@
           [diameter]="20"
           *ngIf="registering"
         ></mat-spinner>
-      </button>
+      </ion-button>
       <button
         (click)="sendOTPCode()"
         [disabled]="sendingOtp"
