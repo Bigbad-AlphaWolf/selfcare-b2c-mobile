@@ -133,8 +133,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
         this.checkOMToken(userMsisdn, payload);
       } else {
         this.modalController.dismiss();
-        const isRegistrationOM = true;
-        this.openPinpad(null,isRegistrationOM);
+        this.openPinpad();
       }
     });
   }
@@ -236,7 +235,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       );
   }
 
-  async openPinpad(payload?: any, registrationOM?: boolean) {
+  async openPinpad(payload?: any) {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
@@ -245,7 +244,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       },
     });
     modal.onDidDismiss().then((response) => {
-      if (response.data && response.data.success && payload && !registrationOM ) {
+      if (response.data && response.data.success && payload ) {
         this.getOmPhoneNumberAndCheckrecipientHasOMAccount(payload);
       }else{
         this.navController.navigateBack(['/dashboard'])
