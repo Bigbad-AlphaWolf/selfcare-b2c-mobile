@@ -1,0 +1,63 @@
+<ion-header [oemIonHeaderParallax]="100">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button
+        (click)="goBack()"
+        icon=""
+        class="oem-back-button"
+      >
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title class="achat-pass-internet">
+        {{ pageTitle }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true">
+  <div class="offer-plans-container">
+    <div class="header-image">
+      <img src="/assets/images/bon-plan-header.png" alt="">
+    </div>
+    <div class="offer-plans-body">
+      <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+      <ng-container *ngIf="!isLoading">
+        <div *ngIf="!hasError" class="list-pass-body">
+          <div class="tab-header">
+            <div
+              *ngFor="let slide of fullList; let i=index"
+              (click)="changeCategory(i)"
+              class="tab-header-item"
+              [ngClass]="{  'selected' : i === activeTabIndex} "
+            >
+              <span class="scb-text-light-black"> {{ slide.category.label }}</span>
+            </div>
+          </div>
+          <div class="main-content">
+              <ion-slides
+                #sliders
+                (ionSlideDidChange)="slideChanged()"
+                [options]="slideOpts"
+              >
+                <ion-slide *ngFor="let listOffers of fullList">
+                  <div class="filtered-list-pass">
+                    <app-item-offer-plan
+                    *ngFor="let offer of listOffers.offersPlans"
+                     [offerPlan]="offer"
+                     (selectOfferPlans)="goToPage($event)"
+                    ></app-item-offer-plan>
+                  </div>
+                </ion-slide>
+              </ion-slides>
+          </div>
+        </div>
+        <div *ngIf="hasError" class="has-error">
+          Une erreur est survenue, veuillez recharger les données de la page en cliquant <span (click)="getUserOfferPlans()"> ici </span>
+        </div>
+        <div *ngIf="hasNoOfferPlans" (click)="getUserOfferPlans()" class="has-error">
+          Vous n’avez pas de bon plan ce jour
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ion-content>

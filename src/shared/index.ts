@@ -35,6 +35,7 @@ export const OPERATION_TYPE_RECHARGE_CREDIT = 'RECHARGEMENT_CREDIT';
 export const OPERATION_TYPE_SARGAL_CONVERSION = 'SARGAL_CONVERSION';
 export const OPERATION_TRANSFER_OM = 'TRANSFER_MONEY';
 export const OPERATION_TRANSFER_OM_WITH_CODE = 'TRANSFER_MONEY_WITH_CODE';
+export const BONS_PLANS = 'BONS_PLANS';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -85,6 +86,15 @@ export const CATEGORY_PURCHASE_HISTORY = [
   { nom: 'Transfert Credit', value: 'SEDDO' },
   { nom: 'SOS', value: 'SOS' },
 ];
+
+export const listRegisterSargalBonPlanText = ['inscription', 'inscris'];
+export const LIST_CATEGORY_BONS_PLANS = {
+  internet: 'INTERNET',
+  illimix: 'ILLIMIX',
+  sargal: 'SARGAL',
+  recharge: 'RECHARGE',
+  autres: 'AUTRES',
+};
 
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
@@ -671,7 +681,7 @@ export interface PurchaseModel {
  * Version B is the installed version.
  */
 export function isNewVersion(versionA, versionB) {
-  if(versionA && versionB){
+  if (versionA && versionB) {
     const versionsA = versionA.split(/\./g),
       versionsB = versionB.split(/\./g);
     while (versionsA.length || versionsB.length) {
@@ -790,37 +800,212 @@ export function getBanniereDescription(banniereDescription: string) {
     : '';
 }
 
-export const HelpModalDefaultContent = {
+export const HelpModalDefaultContent: {
+  popupTitle: string;
+  popupSubtitle: string;
+  options: {
+    title: string;
+    subtitle: string;
+    type: string;
+    url: string;
+    action: string;
+    subOptions?: { title: string; subtitle: string; icon?: string }[];
+  }[];
+  showChecks?: boolean;
+} = {
   popupTitle: 'Quel soucis rencontrez-vous ?',
   popupSubtitle: '',
   options: [
     {
       title: 'Mon numéro ne s’affiche pas',
-      subtitle: 'Regarder le tutoriel',
+      subtitle: 'Suivez les instructions du tutoriel',
       type: 'ERROR_AUTH_IMP',
       url: '',
       action: 'POPUP',
+      subOptions: [
+        {
+          title:
+            'Activez vos données mobiles &nbsp<span class="material-icons item-icon">signal_cellular_alt</span>',
+          subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
+        },
+        {
+          title:
+            'Désactivez le Wifi &nbsp<span class="material-icons item-icon">wifi</span></span>',
+          subtitle:
+            'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
+        },
+        {
+          title: 'Assurez vous d’être sur le bon APN (Point d’Accès Internet)',
+          subtitle:
+            'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+        },
+      ],
     },
     {
-      title: 'C’est ma première connexion',
-      subtitle: 'Je veux créer un compte',
-      type: 'REGISTER',
-      url: '',
-      action: 'REDIRECT',
-    },
-    {
-      title: 'J’ai déjà un compte',
-      subtitle: 'Je veux me connecter',
-      type: 'LOGIN',
-      url: '',
-      action: 'REDIRECT',
-    },
-    {
-      title: 'J’ai oublié mon mot de passe',
-      subtitle: 'Je veux le récupérer',
+      title: 'J’ai oublié mon mot de passe ou mon compte est bloqué.',
+      subtitle: 'Je réinitialise mon mot de passe',
       type: 'FORGOT_PWD',
       url: '',
       action: 'REDIRECT',
+      subOptions: [
+        {
+          title:
+            'Activez vos données mobiles &nbsp<span class="material-icons item-icon">signal_cellular_alt</span>',
+          subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
+        },
+        {
+          title:
+            'Désactivez le Wifi &nbsp<span class="material-icons item-icon">wifi</span></span>',
+          subtitle:
+            'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
+        },
+        {
+          title: 'Une fois identifié, je clique sur suivant',
+          subtitle:
+            'Si votre numéro s’affiche, cliquez sur le bouton « Suivant »',
+        },
+        {
+          title: 'Saisissez votre nouveau mot de passe',
+          subtitle: 'Je saisis mon nouveau mot de passe et le confirme',
+        },
+      ],
+    },
+    {
+      title: 'Je ne sais plus si j’ai un compte',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: 'ERROR_AUTH_IMP',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title: 'Rendez vous sur la page de création de compte',
+          subtitle:
+            'A l’ouverture de l’application, cliquez sur la première rubrique « C’est ma première visite »',
+        },
+        {
+          title: 'Une fois identifié, cliquez sur "Suivant"',
+          subtitle:
+            'Si votre numéro s’affiche, cliquez sur le bouton « Suivant »',
+        },
+        {
+          title: 'Vous serez redirigé vers la page adéquate',
+          subtitle:
+            'Vous serez redirigé vers la page de création de mot de passe si vous n’avez pas de compte dans le cas contraire vers la page de connexion',
+        },
+      ],
+    },
+    {
+      title: 'Je n’arrive pas à me connecter',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: 'LOGIN',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title:
+            'L’accés à Orange et moi est gratuit en étant sur le réseau Orange, assurez vous d’avoir activé les données mobiles sur la sim Orange',
+          subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
+        },
+        {
+          title:
+            'Si vous êtes sur le Wifi, assurez vous d’avoir une connexion internet',
+          subtitle:
+            'Accéder au menu « Wifi » depuis vos « Paramètres » pour vous connecter à un réseau Wifi',
+        },
+      ],
+    },
+    {
+      title: 'Comment configurer le bon APN (Point d’Accès Internet)',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: 'APN',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title:
+            '<span>Accéder aux Paramètres &nbsp<span class="material-icons item-icon">settings</span></span>',
+          subtitle:
+            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+          icon: 'settings',
+        },
+        {
+          title:
+            '<span>Sélectionner la partie Sans fil et réseau &nbsp<span class="material-icons item-icon">wifi</span></span>',
+          subtitle:
+            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
+          icon: 'wifi',
+        },
+        {
+          title:
+            '<span>Choisissez ensuite Réseau mobile ou Réseau de données mobiles &nbsp<span class="material-icons item-icon">signal_cellular_alt</span></span>',
+          subtitle:
+            'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+        },
+        {
+          title: 'Allez sur Noms des points d’accès (APN)',
+          subtitle: 'Je saisis mon nouveau mot de passe et le confirme',
+        },
+        {
+          title:
+            'Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
+          subtitle:
+            'Les paramètres internet Orange sont: \nNom : Orange Internet \nAPN : internet \nLaisser tous les autres options en l’état puis sauvegarder',
+        },
+      ],
+    },
+    {
+      title: 'Je suis client fixe, comment accéder à mon espace ?',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: '',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title: 'Vous devez accéder à Orange et moi, avec un numéro mobile',
+          subtitle: 'Activez vos données mobile sur la Sim Orange',
+        },
+        {
+          title:
+            'Une fois connecté, cliquez sur le menu de gauche(trois traits), puis cliquez sur l’entrée "Mon compte"',
+          subtitle:
+            'Cliquez sur le menu en haut à gauche de l’écran puis sur "Mon compte"',
+        },
+        {
+          title:
+            'Une fois sur "Mon compte", cliquez sur "Rattachez une ligne" et saisissez votre numéro de téléphone fixe',
+          subtitle:
+            'Saisissez votre numéro de téléphone fixe pour pouvoir le lier à votre compte et suivre sa consommation',
+        },
+        {
+          title: 'Et enfin suivez les instructions',
+          subtitle:
+            'Une fois fait, retournez cliquer sur le menu de gauche puis cliquez sur "Changer de ligne" et choisissez votre numéro fixe',
+        },
+      ],
+    },
+    {
+      title: 'J’ai besoin d’assistance',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: '',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title:
+            'Une fois connecté, cliquez sur le bouton Ibou puis cliquez sur "Besoin d’aide" puis "Contacter l’assistance"',
+          subtitle: 'Suivre ces instructions',
+        },
+        {
+          title: 'Choisissez le canal de communication souhaité',
+          subtitle: 'Cliquez sur le canal de communication qui vous convient',
+        },
+        {
+          title:
+            'Décrire brièvement le souci rencontré, si possible y joindre une capture ou le message d’erreur',
+          subtitle:
+            'Bien expliquer son souci pour un meilleur traitement de celui-ci',
+        },
+      ],
     },
   ],
   showChecks: false,
@@ -854,6 +1039,8 @@ export const HelpModalAuthErrorContent = {
   ],
   showChecks: true,
 };
+
+export const HelpModalMsisdnNotDisplayed = {};
 
 export const HelpModalAPNContent = {
   popupTitle: 'Êtes-vous sur le  bon APN ?',

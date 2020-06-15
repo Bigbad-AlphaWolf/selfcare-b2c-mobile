@@ -46,6 +46,8 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
 import { ModalController } from '@ionic/angular';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
+import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
+import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -88,6 +90,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   sargalDataLoaded: boolean;
   userSargalData: SargalSubscriptionModel;
   hasPromoBooster: PromoBoosterActive = null;
+  hasPromoPlanActive: OfferPlanActive = null;
   slideOpts = {
     speed: 400,
     slidesPerView: 1.38,
@@ -115,7 +118,8 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     private appliRouting: ApplicationRoutingService,
     private bottomSheet: MatBottomSheet,
     private omServ: OrangeMoneyService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private offerPlanServ: OfferPlansService
   ) {}
 
   ngOnInit() {
@@ -135,6 +139,8 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.getCurrentSubscription();
     this.getUserConsommations();
     this.getSargalPoints();
+    this.getUserActiveBonPlans();
+    this.getActivePromoBooster();
     this.banniereServ.setListBanniereByFormule();
     this.banniereServ
       .getStatusLoadingBanniere()
@@ -175,7 +181,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.authServ.getSubscription(currentNumber).subscribe(
       (res: SubscriptionModel) => {
         this.currentProfil = res.profil;
-        this.getActivePromoBooster(currentNumber, res.code);
         this.isHyBride =
           this.currentProfil === PROFILE_TYPE_HYBRID ||
           this.currentProfil === PROFILE_TYPE_HYBRID_1 ||
@@ -188,9 +193,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     );
   }
 
-  getActivePromoBooster(msisdn: string, code: string) {
+  getActivePromoBooster() {
     this.dashbordServ
-      .getActivePromoBooster(msisdn, code)
+      .getActivePromoBooster()
       .subscribe((res: any) => {
         this.hasPromoBooster = res;
       });
@@ -549,4 +554,11 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     });
     return await modal.present();
   }
+
+  getUserActiveBonPlans(){
+    this.offerPlanServ.getUserTypeOfferPlans().subscribe((res: OfferPlanActive)=> {      
+      this.hasPromoPlanActive = res;
+    })
+  }
+  
 }

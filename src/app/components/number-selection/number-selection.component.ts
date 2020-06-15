@@ -109,7 +109,7 @@ export class NumberSelectionComponent implements OnInit {
         if (omSession.msisdn !== "error")
           this.opXtras.senderMsisdn = omSession.msisdn;
       },
-      (error) => {
+      () => {
         this.bottomSheetRef.dismiss();
 
         this.isErrorProcessing = true;

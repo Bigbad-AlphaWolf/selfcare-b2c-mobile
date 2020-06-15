@@ -5,6 +5,7 @@ import {
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
+  BONS_PLANS,
 } from "src/shared";
 import { PageTitle } from "../models/page-title.model";
 import { OPERATION_WOYOFAL } from './constants';
@@ -35,6 +36,10 @@ export const titles: PageTitle[] = [
   {
     typeOperation: OPERATION_WOYOFAL,
     title: 'Rechargement Woyofal',
+  },
+  {
+    typeOperation: BONS_PLANS,
+    title: "Bons plans - Samay Sargal",
   },
 ];
 

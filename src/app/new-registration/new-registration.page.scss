@@ -15,7 +15,7 @@
   background-repeat: no-repeat;
   background-size: cover;
   overflow-y: auto;
-  .go-back{
+  .go-back {
     position: absolute;
     left: 5px;
     display: flex;
@@ -87,7 +87,7 @@
         font-size: 12px;
       }
       button {
-        margin-top: 20px;
+        margin-top: 20px !important;
         border-radius: 6px;
         position: relative;
         mat-spinner {

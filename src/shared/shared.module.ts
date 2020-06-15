@@ -72,6 +72,7 @@ import { CounterSelectionComponent } from "src/app/components/counter/counter-se
 import { FavoriteCountersComponent } from "src/app/components/counter/favorite-counters/favorite-counters.component";
 import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
 import { CodeFormatPipe } from 'src/app/pipes/code-format.pipe';
+import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.component';
 
 @NgModule({
   declarations: [
@@ -122,7 +123,9 @@ import { CodeFormatPipe } from 'src/app/pipes/code-format.pipe';
     NoOmAccountModalComponent,
     ItemRechargeCreditComponent,
     OemIonHeaderParallaxDirective,
-    CodeFormatPipe
+    CodeFormatPipe,
+    ItemOfferPlanComponent
+
   ],
   imports: [
     CommonModule,
@@ -223,6 +226,7 @@ import { CodeFormatPipe } from 'src/app/pipes/code-format.pipe';
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
     ItemRechargeCreditComponent,
+    ItemOfferPlanComponent
   ],
   providers: [
     Contacts,

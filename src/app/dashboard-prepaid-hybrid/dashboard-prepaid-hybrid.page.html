@@ -190,10 +190,10 @@
         <div (click)="goToBuyPage()" class="dashboard-block-offres-top3-item">
           <div
             class="badge-promo"
-            *ngIf="hasPromoBooster?.promoPass || hasPromoBooster?.promoRecharge"
+            *ngIf="hasPromoBooster?.promoPass || hasPromoBooster?.promoRecharge || hasPromoPlanActive?.hasPassIllimix || hasPromoPlanActive?.hasPassInternet || hasPromoPlanActive?.hasRecharge"
           >
             <div class="icon-container">
-              <img src="/assets/images/gift-sargal.svg" alt="gift-icon" />
+              <span class="percent scb-text-white"> % </span>
             </div>
             <div class="triangle"></div>
           </div>
