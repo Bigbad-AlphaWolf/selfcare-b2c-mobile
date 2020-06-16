@@ -3,7 +3,7 @@ import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/selec
 import { formatPhoneNumber, REGEX_NUMBER_OM } from 'src/shared';
 import { MatDialog, MatInput, MatFormField } from '@angular/material';
 import { Contacts, Contact } from '@ionic-native/contacts';
-import { IonInput, ModalController } from '@ionic/angular';
+import { IonInput, ModalController, NavController } from '@ionic/angular';
 import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -34,8 +34,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   senderMsisdn: string;
 
   constructor(private dialog: MatDialog,private contacts: Contacts, private modalController: ModalController, private omService: OrangeMoneyService,
-    private router: Router,
-    private followAnalytics: FollowAnalyticsService, private dashbServ: DashboardService) { }
+    private router: Router, private followAnalytics: FollowAnalyticsService, private dashbServ: DashboardService, private navController: NavController) { }
 
   ngOnInit() {}
   
@@ -133,10 +132,13 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
         this.omPhoneNumber = userMsisdn;
         this.checkOMToken(userMsisdn, payload);
       } else {
-        this.router.navigate(['/see-solde-om']);
+        this.modalController.dismiss();
+        this.openPinpad();
       }
     });
   }
+
+  
 
   checkRecipientHasOMAccount(
     userOMNumber: string,
@@ -233,7 +235,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       );
   }
 
-  async openPinpad(payload: any) {
+  async openPinpad(payload?: any) {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
@@ -242,8 +244,10 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       },
     });
     modal.onDidDismiss().then((response) => {
-      if (response.data && response.data.success) {
+      if (response.data && response.data.success && payload ) {
         this.getOmPhoneNumberAndCheckrecipientHasOMAccount(payload);
+      }else{
+        this.navController.navigateBack(['/dashboard'])
       }
     });
     return await modal.present();

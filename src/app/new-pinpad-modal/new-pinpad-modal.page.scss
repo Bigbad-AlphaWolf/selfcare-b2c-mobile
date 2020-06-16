@@ -97,6 +97,8 @@
 
 .codeOTP-content {
   width: 100%;
+  display: flex;
+  flex-direction: column;
   &.onPipadshown {
     position: absolute;
     display: none;
@@ -116,6 +118,9 @@
 
   .activationOM-mobile-container-body-content {
     padding: 20px percentage(10px / $baseWidthMobile2);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     .text {
       display: block;
       font-family: HelveticaNeueLTStd-Roman, sans-serif;
@@ -141,13 +146,19 @@
       }
     }
     .confirm-btn {
-      position: fixed;
-      bottom: 0px;
-      left: 0;
+      // position: fixed;
+      // bottom: 0px;
+      width: 95%;
+      // display: flex;
+      .scb-btn-ion {
+          height: 50px;;
+          --border-radius: 4px;
+          --background-activated: $orange;
+      }
       mat-spinner {
-        position: absolute;
-        top: 15px;
-        right: 10px;
+          position: absolute;
+          right: 5px;
+          top: 12px;
       }
       .mat-spinner::ng-deep circle {
         stroke: $white;
