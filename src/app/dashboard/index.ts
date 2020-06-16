@@ -94,6 +94,7 @@ export interface SubscriptionModel {
 export interface PromoBoosterActive {
   promoPass: boolean;
   promoRecharge: boolean;
+  promoPassIllimix: boolean;
 }
 
 export function isFixPostpaid(codeFormule: string) {

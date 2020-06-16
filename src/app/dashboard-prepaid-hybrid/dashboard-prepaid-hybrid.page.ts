@@ -45,9 +45,9 @@ import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/m
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { ModalController } from '@ionic/angular';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
-import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
 import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
+import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -194,11 +194,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   getActivePromoBooster() {
-    this.dashbordServ
-      .getActivePromoBooster()
-      .subscribe((res: any) => {
-        this.hasPromoBooster = res;
-      });
+    this.dashbordServ.getActivePromoBooster().subscribe((res: any) => {
+      this.hasPromoBooster = res;
+    });
   }
 
   getUserConsommations() {
@@ -528,22 +526,21 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goMerchantPayment() {
-    this.omServ.getOmMsisdn().subscribe((msisdn: string)=>{
-      if(msisdn !== 'error'){
+    this.omServ.getOmMsisdn().subscribe((msisdn: string) => {
+      if (msisdn !== 'error') {
         this.bottomSheet
-      .open(MerchantPaymentCodeComponent, {
-        panelClass: 'merchant-code-modal',
-      })
-      .afterDismissed()
-      .subscribe(() => {});
-      }else {
-        this.openPinpad()
+          .open(MerchantPaymentCodeComponent, {
+            panelClass: 'merchant-code-modal',
+          })
+          .afterDismissed()
+          .subscribe(() => {});
+      } else {
+        this.openPinpad();
       }
-    })
-    
+    });
   }
 
-  onPayerFacture(){
+  onPayerFacture() {
     this.router.navigate([BillsHubPage.ROUTE_PATH]);
   }
 
@@ -555,10 +552,11 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     return await modal.present();
   }
 
-  getUserActiveBonPlans(){
-    this.offerPlanServ.getUserTypeOfferPlans().subscribe((res: OfferPlanActive)=> {      
-      this.hasPromoPlanActive = res;
-    })
+  getUserActiveBonPlans() {
+    this.offerPlanServ
+      .getUserTypeOfferPlans()
+      .subscribe((res: OfferPlanActive) => {
+        this.hasPromoPlanActive = res;
+      });
   }
-  
 }

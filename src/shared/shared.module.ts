@@ -1,10 +1,10 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { ActivationOmComponent } from "./activation-om/activation-om.component";
-import { ChoosePaymentModComponent } from "./choose-payment-mod/choose-payment-mod.component";
-import { OperationValidationComponent } from "./operation-validation/operation-validation.component";
-import { PinPadComponent } from "./pin-pad/pin-pad.component";
-import { SelectRecipientComponent } from "./select-recipient/select-recipient.component";
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivationOmComponent } from './activation-om/activation-om.component';
+import { ChoosePaymentModComponent } from './choose-payment-mod/choose-payment-mod.component';
+import { OperationValidationComponent } from './operation-validation/operation-validation.component';
+import { PinPadComponent } from './pin-pad/pin-pad.component';
+import { SelectRecipientComponent } from './select-recipient/select-recipient.component';
 import {
   MatProgressSpinnerModule,
   MatInputModule,
@@ -73,6 +73,8 @@ import { FavoriteCountersComponent } from "src/app/components/counter/favorite-c
 import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
 import { CodeFormatPipe } from 'src/app/pipes/code-format.pipe';
 import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.component';
+import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
+import { AcronymPipe } from './pipes/acronym.pipe';
 
 @NgModule({
   declarations: [
@@ -123,9 +125,10 @@ import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.compon
     NoOmAccountModalComponent,
     ItemRechargeCreditComponent,
     OemIonHeaderParallaxDirective,
+    ItemOfferPlanComponent,
     CodeFormatPipe,
-    ItemOfferPlanComponent
-
+    FavoriteMerchantComponent,
+    AcronymPipe,
   ],
   imports: [
     CommonModule,
@@ -165,6 +168,7 @@ import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.compon
     CommonIssuesComponent,
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
+    FavoriteMerchantComponent,
   ],
   exports: [
     CounterSelectionComponent,
@@ -226,7 +230,8 @@ import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.compon
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
     ItemRechargeCreditComponent,
-    ItemOfferPlanComponent
+    ItemOfferPlanComponent,
+    FavoriteMerchantComponent,
   ],
   providers: [
     Contacts,
@@ -234,7 +239,7 @@ import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.compon
     PassVolumeDisplayPipe,
     { provide: MatBottomSheetRef, useValue: {} },
     { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} },
-    BsBillsHubService, 
+    BsBillsHubService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

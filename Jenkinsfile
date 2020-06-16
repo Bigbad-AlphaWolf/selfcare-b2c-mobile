@@ -1,7 +1,7 @@
  devsMail = 'mouhamadoubambambacke.sow@orange-sonatel.com, xx@orange-sonatel.com'
 
 pipeline {
-
+  // agent any
   agent {
     label 'mobile'
   }
@@ -11,8 +11,10 @@ pipeline {
     }
 
   tools {
+    // maven 'Maven_3.3.9'
+    // nodejs 'NodeJs'
     nodejs 'nodejs-11.3.0'
-    maven 'Maven_3.3.9'
+    gradle 'Gradle'
   }
 
 
@@ -46,10 +48,12 @@ pipeline {
         }
     }
 
-    stage("Plugins install ionic") {
+    stage("Plugins install ionic cordova") {
       steps{
-        sh "npm install -g @ionic/cli"
-        sh "yarn install"
+        sh "npm i -g @ionic/cli"
+        sh "npm i -g cordova@9.0.0"
+        sh "npm i -g cordova-res"
+        sh "npm i"
       }
     }
 
@@ -57,19 +61,17 @@ pipeline {
 
     stage('Run unit test') {
       steps {
-             sh 'npm run test'
+        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+          sh 'npm run test:ci'
+        } 
       }
     }
 
     stage('SonarQube Scan') {
-          steps {
-            script {
-              withSonarQubeEnv('SonarQubeServer') {
-                 sh 'npm run sonar'
-              }
-            }
-          }
-     }
+      steps {
+        sh 'npm run sonar'
+      }
+    }
 
     stage("SonarQube Quality Gate") {
           steps {
@@ -85,37 +87,37 @@ pipeline {
           }
         }
 
-    stage("Build ionic project") {
+    stage("Create www && cp google-services") {
       steps{
-         sh "ionic build"
+         sh "mkdir -p www/"
          sh "cp google-services.json www/"
       }
     }
 
-    stage("Prepare build  android") {
+   stage("Prepare build  android") {
       steps{
-         sh "rm -rf android"
-         sh "ionic capacitor add android"
-         sh "ionic capacitor copy android"
+         sh "rm -rf platforms"
+         sh "ionic cordova platform add android"
+         sh "ionic cordova prepare android"
       }
     }
 
     stage('Android Build Unsigned') {
       steps {
         echo "Build Android Unsigned"
-        sh "cd android && ./gradlew assembleDebug"
+        sh "npm run build:android:release"
       }
     }
 
     stage('Android Build Signed') {
       steps {
         echo "Build Android Signed"
-        sh "cd android && ./gradlew assembleRelease && cd app/build/outputs/apk/release && jarsigner -keystore ../../../../../../ovto-key.keystore -storepass 'b:[S_#3R7?nLs*yJd^6<y' app-release-unsigned.apk ovto && mv app-release-unsigned.apk ovto.apk"
+        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -keystore ../../../../../../ovto-key.keystore -storepass 'b:[S_#3R7?nLs*yJd^6<y' app-release-unsigned.apk ovto && mv app-release-unsigned.apk ovto.apk"
       }
       post{
         success {
-          archiveArtifacts artifacts:  'android/app/build/outputs/apk/release/ovto.apk'
-          emailext attachmentsPattern: 'android/app/build/outputs/apk/release/ovto.apk',
+          archiveArtifacts artifacts:  'platforms/android/app/build/outputs/apk/release/ovto.apk'
+          emailext attachmentsPattern: 'platforms/android/app/build/outputs/apk/release/ovto.apk',
             body: 'Apk joint au mail.',
             subject: '[RELEASE] Signed',
             to: devsMail

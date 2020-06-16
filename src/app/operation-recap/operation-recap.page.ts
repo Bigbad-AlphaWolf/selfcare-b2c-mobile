@@ -1,11 +1,11 @@
-import { Component, OnInit } from "@angular/core";
-import { ModalController, NavController } from "@ionic/angular";
-import { SetPaymentChannelModalPage } from "../set-payment-channel-modal/set-payment-channel-modal.page";
-import { ActivatedRoute, Router } from "@angular/router";
-import { BuyPassModel } from "../services/dashboard-service";
-import { DashboardService } from "../services/dashboard-service/dashboard.service";
-import { FollowAnalyticsService } from "../services/follow-analytics/follow-analytics.service";
-import { NewPinpadModalPage } from "../new-pinpad-modal/new-pinpad-modal.page";
+import { Component, OnInit } from '@angular/core';
+import { ModalController, NavController } from '@ionic/angular';
+import { SetPaymentChannelModalPage } from '../set-payment-channel-modal/set-payment-channel-modal.page';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BuyPassModel } from '../services/dashboard-service';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
@@ -14,18 +14,18 @@ import {
   OPERATION_TRANSFER_OM,
   SubscriptionModel,
   OPERATION_TYPE_RECHARGE_CREDIT,
-} from "src/shared";
-import { ApplicationRoutingService } from "../services/application-routing/application-routing.service";
-import { OperationSuccessFailModalPage } from "../operation-success-fail-modal/operation-success-fail-modal.page";
-import { OrangeMoneyService } from "../services/orange-money-service/orange-money.service";
-import { AuthenticationService } from "../services/authentication-service/authentication.service";
-import { OperationExtras } from "../models/operation-extras.model";
+} from 'src/shared';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { OperationExtras } from '../models/operation-extras.model';
 import { OPERATION_WOYOFAL } from '../utils/constants';
 
 @Component({
-  selector: "app-operation-recap",
-  templateUrl: "./operation-recap.page.html",
-  styleUrls: ["./operation-recap.page.scss"],
+  selector: 'app-operation-recap',
+  templateUrl: './operation-recap.page.html',
+  styleUrls: ['./operation-recap.page.scss'],
 })
 export class OperationRecapPage implements OnInit {
   static ROUTE_PATH = '/operation-recap';
@@ -122,8 +122,8 @@ export class OperationRecapPage implements OnInit {
               this.recipientFirstName = state.recipientFirstname;
               this.recipientLastName = state.recipientLastname;
               this.recipientName =
-                this.recipientFirstName + " " + this.recipientLastName;
-              this.paymentMod = "ORANGE_MONEY";
+                this.recipientFirstName + ' ' + this.recipientLastName;
+              this.paymentMod = 'ORANGE_MONEY';
               break;
             case OPERATION_TRANSFER_OM:
               this.recipientMsisdn = state.recipientMsisdn;
@@ -133,14 +133,14 @@ export class OperationRecapPage implements OnInit {
               this.transferOMPayload.amount = this.amount;
               this.transferOMPayload.msisdn2 = this.recipientMsisdn;
               this.recipientName =
-                state.recipientFirstname + " " + state.recipientLastname;
-              this.paymentMod = "ORANGE_MONEY";
+                state.recipientFirstname + ' ' + state.recipientLastname;
+              this.paymentMod = 'ORANGE_MONEY';
               break;
             case OPERATION_TYPE_MERCHANT_PAYMENT:
               this.amount = state.amount;
               this.merchantCode = state.merchantCode;
               this.merchantName = state.merchantName;
-              this.paymentMod = "ORANGE_MONEY";
+              this.paymentMod = 'ORANGE_MONEY';
               this.merchantPaymentPayload = {
                 amount: this.amount,
                 code_marchand: this.merchantCode,
@@ -152,14 +152,16 @@ export class OperationRecapPage implements OnInit {
               this.amount = this.opXtras.amount;
               this.recipientMsisdn = this.opXtras.recipientMsisdn;
               this.recipientName = this.opXtras.recipientFromContact
-                ? this.opXtras.recipientFirstname + " " + this.opXtras.recipientLastname
-                : "";
+                ? this.opXtras.recipientFirstname +
+                  ' ' +
+                  this.opXtras.recipientLastname
+                : '';
 
               break;
             case OPERATION_WOYOFAL:
               this.opXtras = state;
               // this.amount = this.opXtras.amount;
-              
+
               break;
             default:
               break;
@@ -189,8 +191,9 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TRANSFER_OM:
       case OPERATION_TRANSFER_OM_WITH_CODE:
         this.openPinpad();
-        case OPERATION_WOYOFAL:
-          this.openPinpad();
+        break;
+      case OPERATION_WOYOFAL:
+        this.openPinpad();
         break;
     }
   }
@@ -198,28 +201,28 @@ export class OperationRecapPage implements OnInit {
   async setPaymentMod() {
     const modal = await this.modalController.create({
       component: SetPaymentChannelModalPage,
-      cssClass: "set-channel-payment-modal",
+      cssClass: 'set-channel-payment-modal',
       componentProps: {
         pass: this.passChoosen,
       },
     });
     modal.onDidDismiss().then((response) => {
-      if (response.data && response.data.paymentMod === "CREDIT") {
-        this.paymentMod = "CREDIT";
+      if (response.data && response.data.paymentMod === 'CREDIT') {
+        this.paymentMod = 'CREDIT';
         this.payWithCredit();
         this.followAnalyticsService.registerEventFollow(
-          "Buy_pass_payment_mod",
-          "event",
-          "CREDIT"
+          'Buy_pass_payment_mod',
+          'event',
+          'CREDIT'
         );
       }
-      if (response.data && response.data.paymentMod === "ORANGE_MONEY") {
-        this.paymentMod = "ORANGE_MONEY";
+      if (response.data && response.data.paymentMod === 'ORANGE_MONEY') {
+        this.paymentMod = 'ORANGE_MONEY';
         this.openPinpad();
         this.followAnalyticsService.registerEventFollow(
-          "Buy_pass_payment_mod",
-          "event",
-          "ORANGE_MONEY"
+          'Buy_pass_payment_mod',
+          'event',
+          'ORANGE_MONEY'
         );
       }
     });
@@ -229,7 +232,7 @@ export class OperationRecapPage implements OnInit {
   async openPinpad() {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
-      cssClass: "pin-pad-modal",
+      cssClass: 'pin-pad-modal',
       componentProps: {
         operationType: this.purchaseType,
         buyPassPayload: this.buyPassPayload,
@@ -237,7 +240,7 @@ export class OperationRecapPage implements OnInit {
           msisdn2: this.state.recipientMsisdn,
           amount: this.state.amount,
         },
-        opXtras : this.opXtras,
+        opXtras: this.opXtras,
         merchantPaymentPayload: this.merchantPaymentPayload,
         transferMoneyPayload: this.transferOMPayload,
         transferMoneyWithCodePayload: this.transferOMWithCodePayload,
@@ -246,7 +249,7 @@ export class OperationRecapPage implements OnInit {
     modal.onDidDismiss().then((response) => {
       if (response.data && response.data.success) {
         this.openSuccessFailModal({
-          opXtras:response.data.opXtras,
+          opXtras: response.data.opXtras,
           success: true,
           msisdnBuyer: this.orangeMoneyService.getOrangeMoneyNumber(),
           buyForMe:
@@ -267,11 +270,11 @@ export class OperationRecapPage implements OnInit {
     params.amount = this.amount;
     params.merchantCode = this.merchantCode;
     params.merchantName = this.merchantName;
-    console.log(params, "params");
+    console.log(params, 'params');
 
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
-      cssClass: params.success ? "success-modal" : "failed-modal",
+      cssClass: params.success ? 'success-modal' : 'failed-modal',
       componentProps: params,
       backdropDismiss: false,
     });
@@ -299,8 +302,8 @@ export class OperationRecapPage implements OnInit {
     const receiver = this.recipientMsisdn;
     const type =
       this.purchaseType === OPERATION_TYPE_PASS_INTERNET
-        ? "internet"
-        : "illimix";
+        ? 'internet'
+        : 'illimix';
     const payload: BuyPassModel = {
       type,
       codeIN,
@@ -324,13 +327,13 @@ export class OperationRecapPage implements OnInit {
 
   transactionSuccessful(res: any) {
     this.buyingPass = false;
-    if (res.code !== "0") {
+    if (res.code !== '0') {
       this.buyPassFailed = true;
       this.buyPassErrorMsg = res.message;
       const followDetails = { error_code: res.code };
       this.followAnalyticsService.registerEventFollow(
-        "Credit_Buy_Pass_Internet_Error",
-        "error",
+        'Credit_Buy_Pass_Internet_Error',
+        'error',
         followDetails
       );
     } else {
@@ -341,8 +344,8 @@ export class OperationRecapPage implements OnInit {
         plan: this.passChoosen.price_plan_index,
       };
       this.followAnalyticsService.registerEventFollow(
-        "Credit_Buy_Pass_Internet_Success",
-        "event",
+        'Credit_Buy_Pass_Internet_Success',
+        'event',
         followDetails
       );
     }
@@ -359,14 +362,14 @@ export class OperationRecapPage implements OnInit {
     this.buyingPass = false;
     this.openSuccessFailModal({ success: false });
     this.buyPassErrorMsg =
-      "Service indisponible. Veuillez réessayer ultérieurement";
+      'Service indisponible. Veuillez réessayer ultérieurement';
     this.followAnalyticsService.registerEventFollow(
-      "Credit_Buy_Pass_Internet_Error",
-      "error",
+      'Credit_Buy_Pass_Internet_Error',
+      'error',
       {
         msisdn1: this.currentUserNumber,
         msisdn2: this.recipientMsisdn,
-        message: "Service indisponible",
+        message: 'Service indisponible',
       }
     );
     this.openSuccessFailModal({
@@ -378,8 +381,10 @@ export class OperationRecapPage implements OnInit {
     });
   }
 
-  get operationTypeRecap(){
-    return (['RECHARGEMENT_CREDIT','OPERATION_WOYOFAL'].includes(this.purchaseType));
+  get operationTypeRecap() {
+    return ['RECHARGEMENT_CREDIT', 'OPERATION_WOYOFAL'].includes(
+      this.purchaseType
+    );
   }
 }
 
@@ -396,5 +401,5 @@ interface ModalSuccessModel {
   amount?: number;
   merchantName?: string;
   merchantCode?: number;
-  opXtras?:OperationExtras;
+  opXtras?: OperationExtras;
 }
