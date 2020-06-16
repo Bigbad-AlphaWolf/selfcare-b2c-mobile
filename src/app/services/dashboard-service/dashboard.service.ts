@@ -1,4 +1,4 @@
-import { Injectable, Renderer2 } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {
   Subject,
@@ -17,7 +17,6 @@ import { environment } from "src/environments/environment";
 import { AuthenticationService } from "../authentication-service/authentication.service";
 import { BuyPassModel, TransfertBonnus, TransferCreditModel } from ".";
 import { SubscriptionUserModel, JAMONO_ALLO_CODE_FORMULE, SubscriptionModel } from "src/shared";
-import { PromoBoosterActive } from 'src/app/dashboard';
 const {
   SERVER_API_URL,
   SEDDO_SERVICE,
@@ -25,7 +24,6 @@ const {
   FILE_SERVICE,
   ACCOUNT_MNGT_SERVICE,
   UAA_SERVICE,
-  GATEWAY_SERVICE,
 } = environment;
 const ls = new SecureLS({ encodingType: "aes" });
 
@@ -414,7 +412,6 @@ export class DashboardService {
 
   getActivePromoBooster() {
     const currentPhoneNumber = this.getCurrentPhoneNumber();
-    let result: PromoBoosterActive = {promoPass: null, promoRecharge: null}
     return this.authService.getSubscription(currentPhoneNumber).pipe(
       switchMap((res: SubscriptionModel) => {
         return this.http.get(
@@ -422,7 +419,7 @@ export class DashboardService {
         );
       }),
       catchError( _ => {
-        return of(result)
+        return of({promoPass: null, promoRecharge: null,promoPassIllimix: null})
       }
     ))
   }
