@@ -1,0 +1,69 @@
+<ion-header [oemIonHeaderParallax]="100">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title class="title-achat-pass-internet">
+      {{title}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true" [scrollEvents]="true">
+  <div class="bill-amount-page">
+    <div class="banniere-container">
+      <img src="/assets/images/recharge-bill.svg" alt="header-transfer" />
+    </div>
+    <div class="amount-provider">
+      <oem-amount-provider
+        [amounts]="amounts"
+        (onAmountSelected)="onAmountSelected($event)"
+        (onInputAmount)="onInputSelected($event)"
+        [value]="initialAmount"
+      >
+    <!-- <span class="amount-error">Le montant doit etre compris entre 1 000  et 2 000 000 FCFA</span> -->
+    </oem-amount-provider>
+    </div>
+    <div
+    class="details"
+  >
+    <ion-list>
+      <ion-item class="ion-no-padding">
+        <ion-label class="label">
+          Frais de recharge
+        </ion-label>
+        <ion-label class="fees-value" slot="end">
+          {{fee}} FCFA
+        </ion-label>
+      </ion-item>
+      <ion-item class="ion-no-padding">
+        <ion-label class="label">Rajouter les frais</ion-label>
+        <ion-toggle
+          (ionChange)="toogleFee($event)"
+          slot="end"
+          checked
+        ></ion-toggle>
+      </ion-item>
+     
+    </ion-list>
+    <div class="amount-fees">
+      Le montant de la recharge est de {{totalAmount|formatCurrency}} FCFA
+    </div>
+  </div>
+    <div class="btn-container">
+      <button
+        class="scb-btn scb-btn-orange scb-btn-full"
+        [disabled]="!amountIsValid"
+        (click)="onContinue()"
+      >
+        <span>Continuer</span>
+        <mat-spinner
+          mode="indeterminate"
+          [diameter]="20"
+          *ngIf=""
+        ></mat-spinner>
+      </button>
+    </div>
+  </div>
+</ion-content>
