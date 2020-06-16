@@ -20,6 +20,9 @@ import {
   MatButtonToggleModule,
   MatButtonModule,
   MatCardModule,
+  MatRippleModule,
+  MatBottomSheetRef,
+  MAT_BOTTOM_SHEET_DATA,
 } from '@angular/material';
 import { ModalSuccessComponent } from './modal-success/modal-success.component';
 import { ChatMsgLineComponent } from './chat-msg-line/chat-msg-line.component';
@@ -65,10 +68,18 @@ import { PhoneNumberProviderComponent } from 'src/app/components/phone-number-pr
 import { NumberSelectionComponent } from 'src/app/components/number-selection/number-selection.component';
 import { AmountProviderComponent } from 'src/app/components/amount-provider/amount-provider.component';
 import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header-parallax.directive';
+import { CounterSelectionComponent } from 'src/app/components/counter/counter-selection/counter-selection.component';
+import { FavoriteCountersComponent } from 'src/app/components/counter/favorite-counters/favorite-counters.component';
+import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
+import { CodeFormatPipe } from 'src/app/pipes/code-format.pipe';
 import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.component';
+import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
+import { AcronymPipe } from './pipes/acronym.pipe';
 
 @NgModule({
   declarations: [
+    CounterSelectionComponent,
+    FavoriteCountersComponent,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
     AmountProviderComponent,
@@ -114,8 +125,10 @@ import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.compon
     NoOmAccountModalComponent,
     ItemRechargeCreditComponent,
     OemIonHeaderParallaxDirective,
-    ItemOfferPlanComponent
-
+    ItemOfferPlanComponent,
+    CodeFormatPipe,
+    FavoriteMerchantComponent,
+    AcronymPipe,
   ],
   imports: [
     CommonModule,
@@ -123,6 +136,7 @@ import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.compon
     MatBottomSheetModule,
     MatButtonModule,
     MatCardModule,
+    MatRippleModule,
     MatButtonToggleModule,
     MatInputModule,
     MatSlideToggleModule,
@@ -138,6 +152,8 @@ import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.compon
   ],
   entryComponents: [
     NumberSelectionComponent,
+    FavoriteCountersComponent,
+    CounterSelectionComponent,
     ModalSuccessComponent,
     NoOMAccountPopupComponent,
     CancelOperationPopupComponent,
@@ -152,8 +168,11 @@ import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.compon
     CommonIssuesComponent,
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
+    FavoriteMerchantComponent,
   ],
   exports: [
+    CounterSelectionComponent,
+    FavoriteCountersComponent,
     OemIonHeaderParallaxDirective,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
@@ -170,6 +189,7 @@ import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.compon
     MatOptionModule,
     MatRadioModule,
     MatMenuModule,
+    MatRippleModule,
     ReactiveFormsModule,
     ActivationOmComponent,
     ChoosePaymentModComponent,
@@ -199,6 +219,7 @@ import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.compon
     SettingsPopupComponent,
     HelpBannerComponent,
     PassVolumeDisplayPipe,
+    CodeFormatPipe,
     OmButtonComponent,
     DashboardHeaderComponent,
     FormatCalledNumberPipe,
@@ -209,9 +230,17 @@ import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.compon
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
     ItemRechargeCreditComponent,
-    ItemOfferPlanComponent
+    ItemOfferPlanComponent,
+    FavoriteMerchantComponent,
   ],
-  providers: [Contacts, SocialSharing, PassVolumeDisplayPipe],
+  providers: [
+    Contacts,
+    SocialSharing,
+    PassVolumeDisplayPipe,
+    { provide: MatBottomSheetRef, useValue: {} },
+    { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} },
+    BsBillsHubService,
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class SharedModule {}

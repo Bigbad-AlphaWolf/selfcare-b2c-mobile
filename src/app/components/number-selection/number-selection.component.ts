@@ -6,8 +6,6 @@ import {
 } from "src/shared";
 import { ModalController } from "@ionic/angular";
 import { OrangeMoneyService } from "src/app/services/orange-money-service/orange-money.service";
-import { Router } from "@angular/router";
-import { FollowAnalyticsService } from "src/app/services/follow-analytics/follow-analytics.service";
 import { DashboardService } from "src/app/services/dashboard-service/dashboard.service";
 import { OmSession } from "src/app/models/om-session.model";
 import { NewPinpadModalPage } from "src/app/new-pinpad-modal/new-pinpad-modal.page";

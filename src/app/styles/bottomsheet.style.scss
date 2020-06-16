@@ -1,0 +1,86 @@
+
+
+.oem-bottomsheet-container { 
+  padding: 30px 15px;
+  //   --height: 300px;
+  .arrow-left{
+      padding: 0px 0px 25px 0px;
+  }
+  .title {
+    font-size: 24px;
+    font-family: HelveticaNeueLTStd-Bd;
+    line-height: 1.25;
+    color: $fullBlack;
+    margin-bottom: 10px;
+  }
+  .description {
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 16px;
+    line-height: 1.25;
+    color: $gray;
+    padding-bottom: 25px;
+  }
+  .recents,
+  .content {
+    .description {
+      font-family: HelveticaNeue;
+      font-size: 20px;
+      font-weight: bold;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      color: #000000;
+    }
+    .oem-item {
+      display: flex;
+      width: 100%;
+      padding: 5px 0px;
+      .logo {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #eeeeee;
+        img {
+          width: 40px;
+          height: 40px;
+          object-fit: contain;
+        }
+      }
+      .labels {
+        display: flex;
+        flex-direction: column;
+        border-bottom: solid 1px #eeeeee;
+        margin: 5px 0px 0px 10px;
+        flex-grow: 1;
+        &.last-label {
+          border-bottom: unset;
+        }
+        .name {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
+          font-weight: normal;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.38;
+          letter-spacing: normal;
+          color: #000000;
+        }
+        .number {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 12px;
+          font-weight: normal;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.33;
+          letter-spacing: normal;
+          color: #666666;
+          margin-bottom: 15px;
+        }
+      }
+    }
+  }
+}
