@@ -1,19 +1,20 @@
  devsMail = 'mouhamadoubambambacke.sow@orange-sonatel.com, xx@orange-sonatel.com'
 
 pipeline {
-  agent any
-  /*agent {
+  // agent any
+  agent {
     label 'mobile'
-  }*/
+  }
   options {
         /* buildDiscarder(logRotator(numToKeepStr: '3')),*/
         timeout(time: 120, unit: 'MINUTES')
     }
 
   tools {
-    nodejs 'NodeJs'
-    gradle 'Gradle'
     // maven 'Maven_3.3.9'
+    // nodejs 'NodeJs'
+    nodejs 'nodejs-11.3.0'
+    gradle 'Gradle'
   }
 
 
@@ -52,7 +53,7 @@ pipeline {
         sh "npm i -g @ionic/cli"
         sh "npm i -g cordova@9.0.0"
         sh "npm i -g cordova-res"
-        sh "npm install"
+        sh "npm i"
       }
     }
 
@@ -60,23 +61,17 @@ pipeline {
 
     stage('Run unit test') {
       steps {
-        try{
+        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
           sh 'npm run test:ci'
-        } catch (err) {
-          echo "Test ended"
-        }
+        } 
       }
     }
 
     stage('SonarQube Scan') {
-          steps {
-            script {
-              withSonarQubeEnv('SonarQubeServer') {
-                 sh 'npm run sonar'
-              }
-            }
-          }
-     }
+      steps {
+        sh 'npm run sonar'
+      }
+    }
 
     stage("SonarQube Quality Gate") {
           steps {
@@ -114,7 +109,7 @@ pipeline {
       }
     }
 
-    /*stage('Android Build Signed') {
+    stage('Android Build Signed') {
       steps {
         echo "Build Android Signed"
         sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -keystore ../../../../../../ovto-key.keystore -storepass 'b:[S_#3R7?nLs*yJd^6<y' app-release-unsigned.apk ovto && mv app-release-unsigned.apk ovto.apk"
@@ -128,7 +123,7 @@ pipeline {
             to: devsMail
         }
        }
-    }*/
+    }
 
 
     stage("Remove node module") {
