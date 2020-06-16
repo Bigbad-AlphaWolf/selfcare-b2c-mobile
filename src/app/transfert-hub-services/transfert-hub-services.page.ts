@@ -255,7 +255,7 @@ export class TransfertHubServicesPage implements OnInit {
         case "CREDIT":
           return boosterActive.promoRecharge
         case "PASS_ILLIMIX":
-          return boosterActive.promoPass
+          return boosterActive.promoPassIllimix
         case "PASS":
           return boosterActive.promoPass
         default:
