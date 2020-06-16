@@ -10,10 +10,10 @@ pipeline {
         timeout(time: 120, unit: 'MINUTES')
     }
 
-  tools {
+  /*tools {
     nodejs 'nodejs-11.3.0'
     maven 'Maven_3.3.9'
-  }
+  }*/
 
 
 
