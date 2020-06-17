@@ -14,7 +14,7 @@ pipeline {
     // maven 'Maven_3.3.9'
     // nodejs 'NodeJs'
     nodejs 'nodejs-11.3.0'
-    gradle 'Gradle_4.6'
+    gradle 'Gradle_6.5'
   }
 
 
