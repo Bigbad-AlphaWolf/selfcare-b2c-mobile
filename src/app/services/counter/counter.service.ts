@@ -60,6 +60,7 @@ export class CounterService {
   }
 
   async initFees(msisdn: any) {
+    
     await this.http
       .get(`${COUNTER_FEES_ENDPOINT}/?msisdn=${msisdn}`)
       .pipe(
@@ -67,7 +68,7 @@ export class CounterService {
           if (!(r && r.paliers[0].woyofal.length > 0)) return null;
 
           this.fees = r.paliers[0].woyofal;
-          this.feesIncludes = this.parseToIncludesFees(r.paliers[0].woyofal);
+          this.feesIncludes = this.parseToIncludesFees(this.fees);
         })
       )
       .toPromise();
@@ -75,13 +76,14 @@ export class CounterService {
   parseToIncludesFees(fees: any[]): any[] {
     let results = [];
     let prev: any;
-    fees.forEach((el) => {
-      if (prev) el.montant_min = el.montant_min + prev.tarif;
-      el.montant_max = el.montant_max + el.tarif;
+    fees.forEach((ell) => {
+      let el = {...ell};
+      el.montant_min += prev ? prev.tarif : el.tarif;
+      el.montant_max += el.tarif;
       results.push(el);
       prev = el;
     });
-
+    
     return results;
   }
 

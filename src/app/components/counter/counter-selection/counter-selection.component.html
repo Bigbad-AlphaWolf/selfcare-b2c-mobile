@@ -27,7 +27,7 @@
     </div>
   </div>
 
-  <div class="recents">
+  <div class="recents" *ngIf="(counters$|async)?.length>0">
     <div class="description">
       Recents
     </div>
