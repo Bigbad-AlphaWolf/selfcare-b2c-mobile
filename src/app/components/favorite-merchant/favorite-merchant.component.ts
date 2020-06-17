@@ -17,7 +17,7 @@ export class FavoriteMerchantComponent implements OnInit {
     { name: 'Audi Q5', merchantCode: '14206941826' },
     { name: 'Mn Nord-foire', merchantCode: '14206941826' },
   ]);
-  company = 'MARCHAND';
+  company = 'marchand';
 
   constructor(
     private bottomSheetRef: MatBottomSheetRef<FavoriteMerchantComponent>,
