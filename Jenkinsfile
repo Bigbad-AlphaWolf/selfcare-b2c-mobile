@@ -14,7 +14,7 @@ pipeline {
     // maven 'Maven_3.3.9'
     // nodejs 'NodeJs'
     nodejs 'nodejs-11.3.0'
-    gradle 'Gradle'
+    gradle 'Gradle_6.5'
   }
 
 
@@ -73,7 +73,7 @@ pipeline {
       }
     }
 
-    stage("SonarQube Quality Gate") {
+  /*  stage("SonarQube Quality Gate") {
           steps {
             script {
               timeout(time: 10, unit: 'MINUTES') {
@@ -85,7 +85,7 @@ pipeline {
               }
             }
           }
-        }
+        }*/
 
     stage("Create www && cp google-services") {
       steps{
