@@ -12,7 +12,7 @@ import { FavorisOem } from 'src/app/models/favoris-oem.model';
   styleUrls: ['./favorite-merchant.component.scss'],
 })
 export class FavoriteMerchantComponent implements OnInit {
-  merchant$: Observable<MarchandOem[]> = of([
+  merchants$: Observable<MarchandOem[]> = of([
     { name: 'Maison Nord-foire', merchantCode: '14206941826' },
     { name: 'Audi Q5', merchantCode: '14206941826' },
     { name: 'Mn Nord-foire', merchantCode: '14206941826' },
@@ -25,7 +25,7 @@ export class FavoriteMerchantComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.merchant$ = this.favoriService.fetchFavorites(this.company).pipe(
+    this.merchants$ = this.favoriService.fetchFavorites(this.company).pipe(
       map((favoris: FavorisOem[]) => {
         let results = [];
         favoris.forEach((el) => {

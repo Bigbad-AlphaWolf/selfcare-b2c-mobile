@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { OrangeMoneyService } from './orange-money-service/orange-money.service';
-import { COUNTER_RECENT_MERCHANTS_ENDPOINT } from './utils/om.endpoints';
-import { MarchandOem } from '../models/marchand-oem.model';
+import { OrangeMoneyService } from '../orange-money-service/orange-money.service';
+import { OM_RECENTS_ENDPOINT } from '../utils/om.endpoints';
+import { MarchandOem } from '../../models/marchand-oem.model';
 import { map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -77,7 +77,7 @@ export class RecentsService {
     };
     return this.http
       .get<MarchandOem[]>(
-        `${COUNTER_RECENT_MERCHANTS_ENDPOINT}/${omPhonenumber}?service=${service}`
+        `${OM_RECENTS_ENDPOINT}/${omPhonenumber}?service=${service}`
       )
       .pipe(
         map((r: any) => {

@@ -10,7 +10,7 @@ import { Observable, of } from 'rxjs';
 import { MarchandOem } from 'src/app/models/marchand-oem.model';
 import { map } from 'rxjs/operators';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
-import { RecentsService } from 'src/app/services/recents.service';
+import { RecentsService } from 'src/app/services/recents-service/recents.service';
 
 @Component({
   selector: 'app-merchant-payment-code',
