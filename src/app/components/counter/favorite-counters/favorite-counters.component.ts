@@ -26,11 +26,16 @@ export class FavoriteCountersComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.counters$ = this.favoriService.fetchFavorites(this.bsBillHubService.opXtras.billData.company.code).pipe(
+    let type_favoris = 'compteur';
+    let code = this.bsBillHubService.opXtras.billData.company.code;
+    this.counters$ = this.favoriService.fetchFavorites(type_favoris).pipe(
       map((favoris: FavorisOem[]) => {
         let results = [];
+        console.log(favoris);
+
         favoris.forEach((el) => {
-          results.push({ name: el.ref_label, counterNumber: el.ref_num });
+          if(code ===  el.service_code)
+            results.push({ name: el.ref_label, counterNumber: el.ref_num });
         });
         return results;
       })

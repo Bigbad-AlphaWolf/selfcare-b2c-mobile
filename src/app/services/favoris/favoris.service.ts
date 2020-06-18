@@ -95,14 +95,14 @@ export class FavorisService {
             const favoris = typeFavoris.find((favoris) => {
               return favoris.label === service;
             });
-            if (favoris.liste_favoris && favoris.liste_favoris.length)
+            if (favoris && favoris.liste_favoris && favoris.liste_favoris.length)
               return favoris.liste_favoris;
           }
           return [];
         }),
-        catchError((_) => {
-          return of(result.content.data.type_favoris[0].liste_favoris);
-        })
+        // catchError((_) => {
+        //   return of(result.content.data.type_favoris[0].liste_favoris);
+        // })
       );
   }
 }

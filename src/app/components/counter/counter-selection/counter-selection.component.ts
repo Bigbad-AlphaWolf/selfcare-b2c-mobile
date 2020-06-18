@@ -9,6 +9,10 @@ import { FavoriteCountersComponent } from "../favorite-counters/favorite-counter
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { ModalController } from '@ionic/angular';
+import { RecentsService } from 'src/app/services/recents-service/recents.service';
+import { map } from 'rxjs/operators';
+import { RecentsOem } from 'src/app/models/recents-oem.model';
+
 
 @Component({
   selector: "app-counter-selection",
@@ -29,14 +33,26 @@ export class CounterSelectionComponent implements OnInit {
     private bsRef: MatBottomSheetRef,
     private modalController: ModalController,
     private omService: OrangeMoneyService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private recentService: RecentsService
 
   ) {
-    this.counterService.initFees();
   }
 
   ngOnInit() {
-    // this.counters$ = this.woyofal.fetchRecentsCounters();
+    this.counters$ = this.recentService.fetchRecents('paiement_woyofal').pipe(
+      map((recents: RecentsOem[]) => {
+        let results = [];
+        console.log('map recents', recents);
+        recents.forEach((el) => {
+          results.push({
+            name: el.titre,
+            counterNumber: JSON.parse(el.payload).numero_compteur  
+          });
+        });
+        return results;
+      })
+    );
     this.checkOmAccountSession();
   }
 
@@ -88,8 +104,11 @@ export class CounterSelectionComponent implements OnInit {
           this.openPinpad();
         }
 
-        if (omSession.msisdn !== "error")
+        if (omSession.msisdn !== "error"){
           this.bsBillsHubService.opXtras.senderMsisdn = omSession.msisdn;
+          this.counterService.initFees(omSession.msisdn);
+
+        }
       },
       (error) => {
         this.bsRef.dismiss();
