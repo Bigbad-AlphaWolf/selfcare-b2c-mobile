@@ -14,6 +14,7 @@ import {
   MatBottomSheetModule,
 } from '@angular/material';
 import { SharedModule } from 'src/shared/shared.module';
+import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 
 const routes: Routes = [
   {
@@ -36,5 +37,6 @@ const routes: Routes = [
     RouterModule.forChild(routes),
   ],
   declarations: [LoginPage],
+  providers: [OpenNativeSettings],
 })
 export class LoginPageModule {}
