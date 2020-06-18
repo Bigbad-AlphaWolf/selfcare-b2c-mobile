@@ -112,7 +112,7 @@ export class MerchantPaymentCodeComponent implements OnInit {
   }
 
   getRecentMerchants() {
-    const recentType = 'marchand';
+    const recentType = 'paiement_marchand';
     this.recentMerchants$ = this.recentsService.fetchRecents(recentType).pipe(
       map((recents: RecentsOem[]) => {
         let results = [];
