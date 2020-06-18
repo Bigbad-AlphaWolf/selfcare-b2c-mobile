@@ -58,7 +58,6 @@ export class BillAmountPage implements OnInit {
 
   inputAmountIsValid(amount: number) {
     if(!amount) return false;
-    console.log(amount, this.counterService.feesIncludes[0].montant_min);
     
     let includefeeAmountIsValid =
       amount >= this.counterService.feesIncludes[0].montant_min &&
@@ -67,7 +66,7 @@ export class BillAmountPage implements OnInit {
         ].montant_max ;
     let amountIsValid =
       amount >= this.counterService.fees[0].montant_min &&
-      amount <= this.counterService.fees[this.counterService.fees.length - 1].montant_max;
+      amount <= this.counterService.fees[this.counterService.fees.length - 1].montant_max; 
 
     return this.isFee ? amountIsValid : includefeeAmountIsValid;
   }
@@ -88,7 +87,7 @@ export class BillAmountPage implements OnInit {
 
     this.amountIsValid = true; 
     if (this.isFee) {
-      this.fee = this.opXtras.fee = this.counterService.findAmountFee(amount);
+      this.fee = this.opXtras.fee = this.counterService.findAmountFee(amount, false);
       this.opXtras.amount = amount;
       this.totalAmount = this.opXtras.amount + this.opXtras.fee;
     } else {

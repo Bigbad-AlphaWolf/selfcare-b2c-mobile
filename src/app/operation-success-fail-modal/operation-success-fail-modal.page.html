@@ -76,7 +76,7 @@
     ></app-item-recharge-credit>
     <app-item-recharge-credit
     [modifiable]="false"
-    [amount]="opXtras.amount"
+    [amount]="opXtras.amount + opXtras.fee"
     *ngSwitchCase="'OPERATION_WOYOFAL'"
   ></app-item-recharge-credit>
       <app-item-recharge-credit

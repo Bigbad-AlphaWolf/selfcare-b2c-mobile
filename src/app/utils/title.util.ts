@@ -41,6 +41,10 @@ export const titles: PageTitle[] = [
     typeOperation: OPERATION_WOYOFAL,
     title: 'Rechargement Woyofal',
   },
+  {
+    typeOperation: BONS_PLANS,
+    title: "Bons plans - Samay Sargal",
+  },
 ];
 
 export function getPageTitle(typeOp: string) {

@@ -6,11 +6,11 @@ import { MatBottomSheet } from '@angular/material';
 import { OPERATION_TYPE_MERCHANT_PAYMENT } from '..';
 import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
 import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
-import { MerchantPaymentService } from 'src/app/services/merchant-payment-service/merchant-payment.service';
 import { Observable, of } from 'rxjs';
 import { MarchandOem } from 'src/app/models/marchand-oem.model';
 import { map } from 'rxjs/operators';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
+import { RecentsService } from 'src/app/services/recents-service/recents.service';
 
 @Component({
   selector: 'app-merchant-payment-code',
@@ -31,7 +31,7 @@ export class MerchantPaymentCodeComponent implements OnInit {
     private bottomSheet: MatBottomSheet,
     private ref: ChangeDetectorRef,
     private bsBillsHubService: BsBillsHubService,
-    private merchantPaymentService: MerchantPaymentService
+    private recentsService: RecentsService
   ) {}
 
   ngOnInit() {
@@ -112,16 +112,18 @@ export class MerchantPaymentCodeComponent implements OnInit {
   }
 
   getRecentMerchants() {
-    this.recentMerchants$ = this.merchantPaymentService
-      .fetchRecentMerchants()
-      .pipe(
-        map((recents: RecentsOem[]) => {
-          let results = [];
-          recents.forEach((el) => {
-            results.push({ name: 'test', merchantCode: el.destinataire });
+    const recentType = 'marchand';
+    this.recentMerchants$ = this.recentsService.fetchRecents(recentType).pipe(
+      map((recents: RecentsOem[]) => {
+        let results = [];
+        recents.forEach((el) => {
+          results.push({
+            name: JSON.parse(el.payload).nom_marchand,
+            merchantCode: el.destinataire,
           });
-          return results;
-        })
-      );
+        });
+        return results;
+      })
+    );
   }
 }
