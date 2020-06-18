@@ -813,7 +813,7 @@ export const HelpModalDefaultContent: {
   }[];
   showChecks?: boolean;
 } = {
-  popupTitle: 'Quel soucis rencontrez-vous ?',
+  popupTitle: 'Quel souci rencontrez-vous ?',
   popupSubtitle: '',
   options: [
     {
@@ -825,12 +825,12 @@ export const HelpModalDefaultContent: {
       subOptions: [
         {
           title:
-            'Activez vos données mobiles &nbsp<span class="material-icons item-icon">signal_cellular_alt</span>',
+            'Activez vos données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" />',
           subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
         },
         {
           title:
-            'Désactivez le Wifi &nbsp<span class="material-icons item-icon">wifi</span></span>',
+            'Désactivez le Wifi &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
           subtitle:
             'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
         },
@@ -923,21 +923,21 @@ export const HelpModalDefaultContent: {
       subOptions: [
         {
           title:
-            '<span>Accéder aux Paramètres &nbsp<span class="material-icons item-icon">settings</span></span>',
+            '<span>Accéder aux Paramètres &nbsp <img class="item-icon" src="/assets/images/parameters.png" /></span>',
           subtitle:
             'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
           icon: 'settings',
         },
         {
           title:
-            '<span>Sélectionner la partie Sans fil et réseau &nbsp<span class="material-icons item-icon">wifi</span></span>',
+            '<span>Sélectionner la partie Sans fil et réseau &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
           subtitle:
             'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
           icon: 'wifi',
         },
         {
           title:
-            '<span>Choisissez ensuite Réseau mobile ou Réseau de données mobiles &nbsp<span class="material-icons item-icon">signal_cellular_alt</span></span>',
+            '<span>Choisissez ensuite Réseau mobile ou Réseau de données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" /></span>',
           subtitle:
             'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
         },
