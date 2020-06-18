@@ -101,9 +101,9 @@
           {{error}}
         </div>
         <div class="btn-container">
-          <button
+          <ion-button
             type="submit"
-            class="scb-btn scb-btn-orange scb-btn-full"
+            expand="block"
             [disabled]="!setAmountForm.valid || checkingAmount"
           >
             <span>Continuer</span>
@@ -112,7 +112,7 @@
               [diameter]="20"
               *ngIf="checkingAmount"
             ></mat-spinner>
-          </button>
+          </ion-button>
         </div>
       </form>
     </div>

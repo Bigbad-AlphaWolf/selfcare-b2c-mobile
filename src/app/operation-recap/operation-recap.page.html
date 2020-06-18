@@ -103,7 +103,7 @@
         class="amount-to-transfer"
         *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
       >
-        <span class="pass">Montant à transférer</span
+        <span class="pass">Montant à payer</span
         ><span *ngIf="0" class="modifier scb-text-orange">modifier</span>
       </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_ILLIMIX_TYPE">
@@ -175,6 +175,24 @@
         >
       </div>
     </div>
+    <ng-container *ngIf="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE || purchaseType === OPERATION_TRANSFER_OM">
+      <div class="amount-to-transfer">
+        <span class="pass">Type de transfert</span>
+      </div>
+      <div class="recipient-information">
+        <div class="top-block-transfert">
+          <span class="title">
+            Transfert d'argent
+          </span>
+          <span class="title scb-text-orange"
+            >{{purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ? "avec code" : "sans code" }}</span
+          >
+          <span class="recipient"
+            ></span
+          >
+        </div>
+      </div>
+    </ng-container>
     <button
       class="scb-btn scb-btn-orange"
       (click)="pay()"
