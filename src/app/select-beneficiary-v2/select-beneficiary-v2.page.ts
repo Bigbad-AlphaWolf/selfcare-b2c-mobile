@@ -16,7 +16,7 @@ import { Contacts, Contact } from '@ionic-native/contacts';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { IonInput, IonSelect } from '@ionic/angular';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { PROFILE_TYPE_POSTPAID, isPrepaidFix } from '../dashboard';
+import { PROFILE_TYPE_POSTPAID, isPrepaidFix, CODE_FORMULE_KILIMANJARO, KILIMANJARO_FORMULE } from '../dashboard';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -212,7 +212,7 @@ export class SelectBeneficiaryV2Page implements OnInit {
           if (
             profil === PROFILE_TYPE_POSTPAID ||
             (isPrepaidFix(res) &&
-              this.purchaseType === OPERATION_TYPE_PASS_ILLIMIX)
+              this.purchaseType === OPERATION_TYPE_PASS_ILLIMIX) || codeFormule != KILIMANJARO_FORMULE
           ) {
             this.hasErrorGetContact = true;
             this.errorGetContact =
