@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  SERVER_API_URL: 'https://orangeetmoi.orange.sn',
+  // SERVER_API_URL: 'https://orangeetmoi.orange.sn',
   // SERVER_API_URL: 'http://10.137.52.31:8712',
-  // SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
+  SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
   // SERVER_API_URL: 'http://10.137.52.31:8712',
   // SERVER_API_URL:
   //   'http://selfcareb2c-client-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
@@ -23,7 +23,7 @@ export const environment = {
   FACTURE_SERVICE: 'selfcare-b2c-facture',
   GATEWAY_SERVICE: 'selfcare-gateway',
   CODE_OTP_SERVICE: 'selfcare-otp',
-  UAA_SERVICE: 'selfcare-uaa',
+  UAA_SERVICE: 'selfcare-b2c-uaa',
   OM_SERVICE: 'selfcare-b2c-om',
   SARGAL_SERVICE: 'selfcare-b2c-sargal',
   GA_CONFIG: {

@@ -13,7 +13,7 @@ export const environment = {
   FACTURE_SERVICE: 'selfcare-b2c-facture',
   GATEWAY_SERVICE: 'selfcare-gateway',
   CODE_OTP_SERVICE: 'selfcare-otp',
-  UAA_SERVICE: 'selfcare-uaa',
+  UAA_SERVICE: 'selfcare-b2c-uaa',
   OM_SERVICE: 'selfcare-b2c-om',
   SARGAL_SERVICE: 'selfcare-b2c-sargal',
   GA_CONFIG: {
