@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Subscription, timer, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -88,11 +88,14 @@ export class NewRegistrationPage implements OnInit {
     private followAnalyticsService: FollowAnalyticsService,
     private bottomSheet: MatBottomSheet,
     private modalController: ModalController,
-    private navController: NavController
+    private navController: NavController,
+    private ngZone: NgZone
   ) {
     this.authErrorDetected.subscribe({
       next: (data) => {
-        this.openHelpModal(data);
+        this.ngZone.run(() => {
+          this.openHelpModal(HelpModalDefaultContent);
+        });
       },
     });
     this.helpNeeded.subscribe({
@@ -127,8 +130,7 @@ export class NewRegistrationPage implements OnInit {
   getNumber() {
     this.gettingNumber = true;
     this.showErrMessage = false;
-    if (!this.ref['destroyed']) 
-    this.ref.detectChanges();
+    if (!this.ref['destroyed']) this.ref.detectChanges();
     Fingerprint2.get((components) => {
       const values = components.map((component) => {
         return component.value;
@@ -170,8 +172,7 @@ export class NewRegistrationPage implements OnInit {
                 } else {
                   this.displayMsisdnError();
                 }
-                if (!this.ref['destroyed']) 
-    this.ref.detectChanges();
+                if (!this.ref['destroyed']) this.ref.detectChanges();
               },
               (err) => {
                 this.displayMsisdnError();
@@ -377,8 +378,7 @@ export class NewRegistrationPage implements OnInit {
       'error',
       this.phoneNumber
     );
-    if (!this.ref['destroyed']) 
-    this.ref.detectChanges();
+    if (!this.ref['destroyed']) this.ref.detectChanges();
   }
 
   async openSuccessModal() {
@@ -406,7 +406,7 @@ export class NewRegistrationPage implements OnInit {
     return await modal.present();
   }
 
-  goBack(){
-    this.navController.navigateBack(['/home-v2'])
+  goBack() {
+    this.navController.navigateBack(['/home-v2']);
   }
 }
