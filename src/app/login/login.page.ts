@@ -44,12 +44,12 @@ export class LoginPage implements OnInit {
     },
     {
       title: 'J’ai besoin d’aide',
-      subTitle: 'J’éprouve des difficultés pour me connecter',
+      subTitle: "J'ai des difficultés pour me connecter",
       action: 'help',
     },
     {
       title: 'J’ai oublié mon mot de passe',
-      subTitle: 'Je veux le récupérer',
+      subTitle: 'Je le réinitialise',
       action: 'password',
     },
   ];

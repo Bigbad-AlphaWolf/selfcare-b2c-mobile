@@ -210,9 +210,9 @@ export class SelectBeneficiaryV2Page implements OnInit {
           const codeFormule = res.code;
           const profil = res.profil;
           if (
-            profil === PROFILE_TYPE_POSTPAID ||
+            profil === PROFILE_TYPE_POSTPAID && codeFormule != KILIMANJARO_FORMULE ||
             (isPrepaidFix(res) &&
-              this.purchaseType === OPERATION_TYPE_PASS_ILLIMIX) || codeFormule != KILIMANJARO_FORMULE
+              this.purchaseType === OPERATION_TYPE_PASS_ILLIMIX)
           ) {
             this.hasErrorGetContact = true;
             this.errorGetContact =

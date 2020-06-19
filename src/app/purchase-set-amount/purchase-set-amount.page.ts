@@ -102,6 +102,7 @@ export class PurchaseSetAmountPage implements OnInit {
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
         this.title = 'Paiement marchand';
+        this.subtitle = 'Montant à payer';
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
         this.title = 'Achat de Crédit';
