@@ -1,19 +1,19 @@
-import { Component, OnInit } from "@angular/core";
-import { NavigationExtras } from "@angular/router";
-import { getPageTitle } from "src/app/utils/title.util";
-import { NavController } from "@ionic/angular";
-import { OperationExtras } from "src/app/models/operation-extras.model";
-import { FeeModel } from "src/app/services/orange-money-service";
-import { CounterService } from "src/app/services/counter/counter.service";
+import { Component, OnInit } from '@angular/core';
+import { NavigationExtras } from '@angular/router';
+import { getPageTitle } from 'src/app/utils/title.util';
+import { NavController } from '@ionic/angular';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
+import { FeeModel } from 'src/app/services/orange-money-service';
+import { CounterService } from 'src/app/services/counter/counter.service';
 
 @Component({
-  selector: "app-bill-amount",
-  templateUrl: "./bill-amount.page.html",
-  styleUrls: ["./bill-amount.page.scss"],
+  selector: 'app-bill-amount',
+  templateUrl: './bill-amount.page.html',
+  styleUrls: ['./bill-amount.page.scss'],
 })
 export class BillAmountPage implements OnInit {
-  static ROUTE_PATH: string = "/bill-amount";
-  amounts: string[] = ["2000", "5000", "10000", "15000", "20000", "30000"];
+  static ROUTE_PATH: string = '/bill-amount';
+  amounts: string[] = ['2000', '5000', '10000', '15000', '20000', '30000'];
 
   title: string;
   opXtras: OperationExtras = {};
@@ -23,7 +23,8 @@ export class BillAmountPage implements OnInit {
   includeFees: any;
   totalAmount: any;
   isFee: boolean = true;
-  amountIsValid : boolean = false;
+  minimalAmount = 1000;
+  amountIsValid: boolean = false;
 
   constructor(
     private navController: NavController,
@@ -33,6 +34,7 @@ export class BillAmountPage implements OnInit {
   ngOnInit() {
     this.opXtras = history.state;
     this.title = getPageTitle(this.opXtras.purchaseType).title;
+    this.minimalAmount = this.counterService.fees[0].montant_min;
   }
 
   ionViewWillEnter() {
@@ -53,24 +55,26 @@ export class BillAmountPage implements OnInit {
 
   onContinue() {
     const navExtras: NavigationExtras = { state: this.opXtras };
-    this.navController.navigateForward(["/operation-recap"], navExtras);
+    this.navController.navigateForward(['/operation-recap'], navExtras);
   }
 
   inputAmountIsValid(amount: number) {
-    if(!amount) return false;
-    
+    if (!amount) return false;
+
     let includefeeAmountIsValid =
       amount >= this.counterService.feesIncludes[0].montant_min &&
-      amount <= this.counterService.feesIncludes[
+      amount <=
+        this.counterService.feesIncludes[
           this.counterService.feesIncludes.length - 1
-        ].montant_max ;
+        ].montant_max;
     let amountIsValid =
       amount >= this.counterService.fees[0].montant_min &&
-      amount <= this.counterService.fees[this.counterService.fees.length - 1].montant_max; 
+      amount <=
+        this.counterService.fees[this.counterService.fees.length - 1]
+          .montant_max;
 
     return this.isFee ? amountIsValid : includefeeAmountIsValid;
   }
-
 
   toogleFee($event) {
     this.isFee = $event.detail.checked;
@@ -85,9 +89,12 @@ export class BillAmountPage implements OnInit {
       return;
     }
 
-    this.amountIsValid = true; 
+    this.amountIsValid = true;
     if (this.isFee) {
-      this.fee = this.opXtras.fee = this.counterService.findAmountFee(amount, false);
+      this.fee = this.opXtras.fee = this.counterService.findAmountFee(
+        amount,
+        false
+      );
       this.opXtras.amount = amount;
       this.totalAmount = this.opXtras.amount + this.opXtras.fee;
     } else {
@@ -95,7 +102,7 @@ export class BillAmountPage implements OnInit {
         amount,
         true
       );
-      this.opXtras.amount = amount  - this.opXtras.fee;
+      this.opXtras.amount = amount - this.opXtras.fee;
       this.totalAmount = this.opXtras.amount;
     }
   }
