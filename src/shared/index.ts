@@ -850,12 +850,12 @@ export const HelpModalDefaultContent: {
       subOptions: [
         {
           title:
-            'Activez vos données mobiles &nbsp<span class="material-icons item-icon">signal_cellular_alt</span>',
+            'Activez vos données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" />',
           subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
         },
         {
           title:
-            'Désactivez le Wifi &nbsp<span class="material-icons item-icon">wifi</span></span>',
+            'Désactivez le Wifi &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
           subtitle:
             'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
         },

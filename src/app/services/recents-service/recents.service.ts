@@ -90,7 +90,7 @@ export class RecentsService {
 
           const recents: any = r.content.data.historiqueTransactions;
           return recents.length > 0 ? recents : [];
-        }),
+        })
         // catchError((_) => {
         //   return of(result.content.data.historiqueTransactions);
         // })
