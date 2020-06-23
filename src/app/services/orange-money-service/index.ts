@@ -34,6 +34,7 @@ export interface OmLoginClientModel {
   app_conf_version: string;
   user_type: string;
   service_version: string;
+  uuid: string;
 }
 export interface OmPinPadModel {
   msisdn: string;
@@ -41,6 +42,7 @@ export interface OmPinPadModel {
   app_version: string;
   app_conf_version: string;
   service_version: string;
+  uuid: string;
 }
 
 export const OM_SERVICE_VERSION = '1.1';
@@ -53,6 +55,7 @@ export interface OmBalanceModel {
   app_conf_version: string;
   user_type: string;
   service_version: string;
+  uuid: string;
 }
 
 export interface OmBuyPassModel {
@@ -67,6 +70,7 @@ export interface OmBuyPassModel {
   service_version: string;
   canal?: string;
   amount: number;
+  uuid: string;
 }
 
 export interface OmBuyCreditModel {
@@ -79,6 +83,7 @@ export interface OmBuyCreditModel {
   app_conf_version: string;
   user_type: string;
   service_version: string;
+  uuid: string;
 }
 
 export interface OmBuyIllimixModel {
@@ -93,6 +98,7 @@ export interface OmBuyIllimixModel {
   service_version: string;
   canal?: string;
   amount: number;
+  uuid: string;
 }
 
 export interface TransferOrangeMoneyModel {
@@ -139,6 +145,7 @@ export interface MerchantPaymentModel {
   msisdn: string;
   nom_marchand: string;
   pin: string;
+  uuid: string;
 }
 
 export interface LogModel {
