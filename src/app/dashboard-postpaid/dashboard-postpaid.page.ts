@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as SecureLS from 'secure-ls';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
-import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { DashboardService, downloadAvatarEndpoint } from 'src/app/services/dashboard-service/dashboard.service';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { BillsService } from 'src/app/services/bill-service/bills.service';
@@ -14,7 +14,8 @@ import {
   WelcomeStatusModel,
   SargalStatusModel,
   getBanniereTitle,
-  getBanniereDescription
+  getBanniereDescription,
+  NO_AVATAR_ICON_URL
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { PassVolumeDisplayPipe } from 'src/shared/pipes/pass-volume-display.pipe';
@@ -81,6 +82,7 @@ export class DashboardPostpaidPage implements OnInit {
   isKilimanjaroPostpaid: boolean;
 
   operations : OperationOem[] = ACTIONS_RAPIDES_OPERATIONS;
+  avatarUrl : string = NO_AVATAR_ICON_URL;
 
   constructor(
     private dashbordServ: DashboardService,
@@ -158,6 +160,10 @@ export class DashboardPostpaidPage implements OnInit {
   getUserInfos() {
     const user = ls.get('user');
     this.firstName = user.firstName;
+
+    if (user.imageProfil) 
+      this.avatarUrl = downloadAvatarEndpoint + user.imageProfil;
+   
   }
 
   getConsoPostpaid() {
