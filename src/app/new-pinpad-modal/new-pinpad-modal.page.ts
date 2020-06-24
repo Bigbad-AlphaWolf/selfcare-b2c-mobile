@@ -129,36 +129,33 @@ export class NewPinpadModalPage implements OnInit {
   }
 
   getOMPhoneNumber() {
-    this.orangeMoneyService
-      .getOmMsisdn()
-      .pipe(
-        catchError((er: HttpErrorResponse) => {
-          if (er.status === 401) this.modalController.dismiss();
-          return of('error');
-        })
-      )
-      .subscribe(
-        (omMsisdn) => {
-          if (omMsisdn && omMsisdn !== 'error') {
-            this.omPhoneNumber = omMsisdn;
-            this.checkUserHasOMToken();
-          } else {
-            this.userNotRegisteredInOm = true;
-            this.omPhoneNumber = this.mainPhoneNumber;
-            this.allNumbers.push(this.mainPhoneNumber);
-            this.dashboardService.getAttachedNumbers().subscribe((res: any) => {
-              res.forEach((element) => {
-                const msisdn = '' + element.msisdn;
-                if (!msisdn.startsWith('33', 0)) {
-                  this.allNumbers.push(element.msisdn);
-                }
-              });
-              this.checkingToken = false;
+    this.orangeMoneyService.getOmMsisdn().pipe(
+      catchError((er: HttpErrorResponse) => {
+        if (er.status === 401) this.modalController.dismiss();        
+        return of('error')
+      }) 
+      ).subscribe(
+      (omMsisdn) => {
+        if (omMsisdn && omMsisdn !== 'error') {
+          this.omPhoneNumber = omMsisdn;
+          this.checkUserHasOMToken();
+        } else {
+          this.omPhoneNumber = this.mainPhoneNumber;
+          this.allNumbers.push(this.mainPhoneNumber);
+          this.dashboardService.getAttachedNumbers().subscribe((res: any) => {
+            res.forEach((element) => {
+              const msisdn = '' + element.msisdn;
+              if (!msisdn.startsWith('33', 0)) {
+                this.allNumbers.push(element.msisdn);
+              }
             });
-          }
-        },
-        (err) => {}
-      );
+            this.userNotRegisteredInOm = true;
+            this.checkingToken = false;
+          });
+        }
+      },
+      (err) => {}
+    );
   }
 
   checkUserHasOMToken() {

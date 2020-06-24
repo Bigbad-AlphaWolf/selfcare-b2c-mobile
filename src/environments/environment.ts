@@ -17,7 +17,7 @@ export const environment = {
   LOCAL_OM: 'http://localhost:8720',
   SERVICES_SERVICE: 'selfcare-b2c-services',
   ACCOUNT_MNGT_SERVICE: 'selfcare-b2c-account-management',
-  FILE_SERVICE: 'selfcare-file-manager',
+  FILE_SERVICE: 'selfcare-b2c-file-manager',
   BILL_SERVICE: 'selfcare-b2c-facture',
   B2B_BILL_SERVICE: 'selfcare-facture',
   FACTURE_SERVICE: 'selfcare-b2c-facture',
