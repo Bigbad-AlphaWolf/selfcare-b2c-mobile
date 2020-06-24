@@ -14,6 +14,7 @@ import { OperationExtras } from "src/app/models/operation-extras.model";
 import { AuthenticationService } from "src/app/services/authentication-service/authentication.service";
 import { catchError } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
+import { NumberSelectionOption } from 'src/app/models/enums/number-selection-option.enum';
 
 @Component({
   selector: "oem-number-selection",
@@ -35,6 +36,7 @@ export class NumberSelectionComponent implements OnInit {
   isErrorProcessing: boolean = false;
   canNotRecieve: boolean;
   canNotRecieveError: boolean = false;
+  option : NumberSelectionOption = NumberSelectionOption.WITH_MY_PHONES;
 
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
@@ -47,6 +49,9 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log(this.data.option);
+    
+    this.option = this.data.option;
     this.numbers$ = this.dashbServ.fetchOemNumbers();
     this.checkOmAccountSession();
   }

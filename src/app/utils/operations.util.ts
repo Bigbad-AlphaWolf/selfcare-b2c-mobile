@@ -46,7 +46,7 @@ export const ACTIONS_RAPIDES_OPERATIONS : OperationOem[]=[
         title: 'Recharger',
         subtitle: 'Woyofal',
         icon: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
-        action: 'REDIRECT',
+        action: 'openBSCounterSelection',
         type:OPERATION_WOYOFAL,
         url: '',
       },

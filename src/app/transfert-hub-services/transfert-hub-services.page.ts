@@ -13,6 +13,7 @@ import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-am
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
 import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { PromoBoosterActive } from '../dashboard';
+import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 
 @Component({
   selector: 'app-transfert-hub-services',
@@ -129,7 +130,8 @@ export class TransfertHubServicesPage implements OnInit {
     private navController: NavController,
     private router:Router,
     private offerPlanServ: OfferPlansService,
-    private dashbServ: DashboardService    ) {}
+    private dashbServ: DashboardService,
+    private bsService : BottomSheetService    ) {}
 
   ngOnInit() {
     let purchaseType;
@@ -181,8 +183,7 @@ export class TransfertHubServicesPage implements OnInit {
         break;
       case 'CREDIT':
         if (opt.action === 'REDIRECT') {
-          // this.appRouting.goBuyCredit();
-          this.openNumberSelectionBottomSheet();    
+          this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES);   
         }
         break;
       case 'PASS':

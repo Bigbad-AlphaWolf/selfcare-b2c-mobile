@@ -19,20 +19,22 @@ export class BillsHubPage implements OnInit {
   constructor(private bsBillsHubService: BsBillsHubService, private navCtl:NavController) {}
 
   ngOnInit() {
-    this.bsBillsHubService.bsRef.subscribe((ref) => {
-      ref.afterDismissed().subscribe((result: any) => {
-        if (result && result.TYPE_BS === "FAVORIES" && result.ACTION === "BACK")
-          this.bsBillsHubService.openBSCounterSelection(
-            CounterSelectionComponent
-          );
+    // this.bsBillsHubService.bsRef.subscribe((ref) => {
+    //   ref.afterDismissed().subscribe((result: any) => {
+    //     if (result && result.TYPE_BS === "FAVORIES" && result.ACTION === "BACK")
+    //       this.bsBillsHubService.openBSCounterSelection(
+    //         CounterSelectionComponent
+    //       );
 
-          if (result && result.ACTION === "FORWARD"){
-            this.bsBillsHubService.opXtras.purchaseType = OPERATION_WOYOFAL;
-            this.bsBillsHubService.opXtras.billData.counter =  result.counter ;
-            this.navCtl.navigateForward([BillAmountPage.ROUTE_PATH],{state: this.bsBillsHubService.opXtras});
-          }
-      });
-    });
+    //       if (result && result.ACTION === "FORWARD"){
+    //         this.bsBillsHubService.opXtras.purchaseType = OPERATION_WOYOFAL;
+    //         this.bsBillsHubService.opXtras.billData.counter =  result.counter ;
+    //         this.navCtl.navigateForward([BillAmountPage.ROUTE_PATH],{state: this.bsBillsHubService.opXtras});
+    //       }
+    //   });
+    // });
+
+    this.bsBillsHubService.initBs(CounterSelectionComponent).subscribe(_=>{});
   }
 
   onCompanySelected(billCompany: BillCompany) {

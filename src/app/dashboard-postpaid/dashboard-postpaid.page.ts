@@ -1,11 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import * as SecureLS from 'secure-ls';
-import { BannierePubModel } from 'src/app/services/dashboard-service';
-import { DashboardService, downloadAvatarEndpoint } from 'src/app/services/dashboard-service/dashboard.service';
-import { Router } from '@angular/router';
-import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { BillsService } from 'src/app/services/bill-service/bills.service';
-import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
+import { Component, OnInit } from "@angular/core";
+import * as SecureLS from "secure-ls";
+import { BannierePubModel } from "src/app/services/dashboard-service";
+import {
+  DashboardService,
+  downloadAvatarEndpoint,
+} from "src/app/services/dashboard-service/dashboard.service";
+import { Router } from "@angular/router";
+import { AuthenticationService } from "src/app/services/authentication-service/authentication.service";
+import { BillsService } from "src/app/services/bill-service/bills.service";
+import { BanniereService } from "src/app/services/banniere-service/banniere.service";
 import {
   formatDataVolume,
   MAIL_URL,
@@ -15,24 +18,28 @@ import {
   SargalStatusModel,
   getBanniereTitle,
   getBanniereDescription,
-  NO_AVATAR_ICON_URL
-} from 'src/shared';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
-import { PassVolumeDisplayPipe } from 'src/shared/pipes/pass-volume-display.pipe';
-import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
-import { MatDialog } from '@angular/material';
-import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
-import { AssistanceService } from '../services/assistance.service';
-import { SargalService } from '../services/sargal-service/sargal.service';
-import { CODE_FORMULE_KILIMANJARO } from '../dashboard';
-import { OperationOem } from '../models/operation.model';
-import { ACTIONS_RAPIDES_OPERATIONS } from '../utils/operations.util';
-import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
-const ls = new SecureLS({ encodingType: 'aes' });
+  NO_AVATAR_ICON_URL,
+} from "src/shared";
+import { FollowAnalyticsService } from "src/app/services/follow-analytics/follow-analytics.service";
+import { PassVolumeDisplayPipe } from "src/shared/pipes/pass-volume-display.pipe";
+import { ShareSocialNetworkComponent } from "src/shared/share-social-network/share-social-network.component";
+import { MatDialog } from "@angular/material";
+import { WelcomePopupComponent } from "src/shared/welcome-popup/welcome-popup.component";
+import { AssistanceService } from "../services/assistance.service";
+import { SargalService } from "../services/sargal-service/sargal.service";
+import { CODE_FORMULE_KILIMANJARO } from "../dashboard";
+import { OperationOem } from "../models/operation.model";
+import { ACTIONS_RAPIDES_OPERATIONS } from "../utils/operations.util";
+import { BottomSheetService } from "../services/bottom-sheet/bottom-sheet.service";
+import { BsBillsHubService } from "../services/bottom-sheet/bs-bills-hub.service";
+import { CounterSelectionComponent } from "../components/counter/counter-selection/counter-selection.component";
+import { WOYOFAL } from "../utils/bills.util";
+import { IMAGES_DIR_PATH } from "../utils/constants";
+const ls = new SecureLS({ encodingType: "aes" });
 @Component({
-  selector: 'app-dashboard-postpaid',
-  templateUrl: './dashboard-postpaid.page.html',
-  styleUrls: ['./dashboard-postpaid.page.scss']
+  selector: "app-dashboard-postpaid",
+  templateUrl: "./dashboard-postpaid.page.html",
+  styleUrls: ["./dashboard-postpaid.page.scss"],
 })
 export class DashboardPostpaidPage implements OnInit {
   months = months;
@@ -62,8 +69,8 @@ export class DashboardPostpaidPage implements OnInit {
   lastTimeUpdateOM;
   lastUpdateConso;
   pictures = [
-    { image: '/assets/images/banniere-promo-mob.png' },
-    { image: '/assets/images/banniere-promo-fibre.png' }
+    { image: "/assets/images/banniere-promo-mob.png" },
+    { image: "/assets/images/banniere-promo-fibre.png" },
   ];
   sosEligible = true;
   listBanniere: BannierePubModel[] = [];
@@ -71,7 +78,7 @@ export class DashboardPostpaidPage implements OnInit {
   slideOpts = {
     speed: 400,
     slidesPerView: 1.5,
-    slideShadows: true
+    slideShadows: true,
   };
   userPhoneNumber: string;
   firstName: string;
@@ -82,8 +89,8 @@ export class DashboardPostpaidPage implements OnInit {
   hasError: boolean;
   isKilimanjaroPostpaid: boolean;
 
-  operations : OperationOem[] = ACTIONS_RAPIDES_OPERATIONS;
-  avatarUrl : string = NO_AVATAR_ICON_URL;
+  operations: OperationOem[] = ACTIONS_RAPIDES_OPERATIONS;
+  avatarUrl: string = NO_AVATAR_ICON_URL;
 
   constructor(
     private dashbordServ: DashboardService,
@@ -96,7 +103,8 @@ export class DashboardPostpaidPage implements OnInit {
     private assistanceService: AssistanceService,
     private sargalServ: SargalService,
     private banniereServ: BanniereService,
-    private bsService: BottomSheetService
+    private bsService: BottomSheetService,
+    private bsBillService: BsBillsHubService
   ) {}
 
   ngOnInit() {
@@ -156,16 +164,15 @@ export class DashboardPostpaidPage implements OnInit {
   }
 
   makeSargalAction() {
-    this.router.navigate(['/sargal-status-card']);
+    this.router.navigate(["/sargal-status-card"]);
   }
 
   getUserInfos() {
-    const user = ls.get('user');
+    const user = ls.get("user");
     this.firstName = user.firstName;
 
-    if (user.imageProfil) 
+    if (user.imageProfil)
       this.avatarUrl = downloadAvatarEndpoint + user.imageProfil;
-   
   }
 
   getConsoPostpaid() {
@@ -203,18 +210,18 @@ export class DashboardPostpaidPage implements OnInit {
         formatDataVolume(totalData)
       );
       conso.push({
-        compteur: 'Solde Restant Voix',
+        compteur: "Solde Restant Voix",
         amount: consoVoix,
         percent: percentConsoVoix,
         total: totalVoix,
-        unit: 'F'
+        unit: "F",
       });
       conso.push({
-        compteur: 'Restant Conso Internet',
+        compteur: "Restant Conso Internet",
         amount: formatConsoInt,
         percent: percentConsoInt,
         total: totalData,
-        dataFinished: consoInt < 0
+        dataFinished: consoInt < 0,
       });
       return conso;
     }
@@ -222,15 +229,15 @@ export class DashboardPostpaidPage implements OnInit {
 
   logOut() {
     this.authServ.logout();
-    this.router.navigate(['/']);
+    this.router.navigate(["/"]);
   }
 
   hidePromoBarner() {
     this.showPromoBarner = false;
     this.followAnalyticsService.registerEventFollow(
-      'Banner_close_dashboard',
-      'event',
-      'Mobile'
+      "Banner_close_dashboard",
+      "event",
+      "Mobile"
     );
   }
 
@@ -239,10 +246,10 @@ export class DashboardPostpaidPage implements OnInit {
       .getSubscription(this.userPhoneNumber)
       .subscribe((client: SubscriptionModel) => {
         this.billsService.getFactureMobile(client.clientCode).subscribe(
-          res => {
+          (res) => {
             this.bills = res;
           },
-          error => {
+          (error) => {
             this.errorBill = true;
           }
         );
@@ -258,38 +265,38 @@ export class DashboardPostpaidPage implements OnInit {
 
   getLastConsoUpdate() {
     const date = new Date();
-    const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
-      '0' +
+    const lastDate = `${("0" + date.getDate()).slice(-2)}/${(
+      "0" +
       (date.getMonth() + 1)
     ).slice(-2)}/${date.getFullYear()}`;
     const lastDateTime =
       `${date.getHours()}h` +
-      (date.getMinutes() < 10 ? '0' : '') +
+      (date.getMinutes() < 10 ? "0" : "") +
       date.getMinutes();
     this.lastUpdateConso = `${lastDate} à ${lastDateTime}`;
   }
 
   goDetailsCom(number?: number) {
-    this.router.navigate(['/details-conso']);
+    this.router.navigate(["/details-conso"]);
     number
       ? this.followAnalyticsService.registerEventFollow(
-          'Voirs_details_dashboard',
-          'event',
-          'mobile'
+          "Voirs_details_dashboard",
+          "event",
+          "mobile"
         )
       : this.followAnalyticsService.registerEventFollow(
-          'Voirs_details_card_dashboard',
-          'event',
-          'mobile'
+          "Voirs_details_card_dashboard",
+          "event",
+          "mobile"
         );
   }
 
   goToTransfertOM() {
-    this.router.navigate(['/transfer/orange-money']);
+    this.router.navigate(["/transfer/orange-money"]);
     this.followAnalyticsService.registerEventFollow(
-      'Transfert_OM_dashboard',
-      'event',
-      'clicked'
+      "Transfert_OM_dashboard",
+      "event",
+      "clicked"
     );
   }
 
@@ -299,22 +306,22 @@ export class DashboardPostpaidPage implements OnInit {
 
   openSocialNetworkModal() {
     this.shareDialog.open(ShareSocialNetworkComponent, {
-      height: '530px',
-      width: '330px',
-      maxWidth: '100%'
+      height: "530px",
+      width: "330px",
+      maxWidth: "100%",
     });
   }
 
   onError(input: { el: HTMLElement; display: boolean }[]) {
     input.forEach((item: { el: HTMLElement; display: boolean }) => {
-      item.el.style.display = item.display ? 'block' : 'none';
+      item.el.style.display = item.display ? "block" : "none";
     });
   }
 
   showWelcomePopup(data: WelcomeStatusModel) {
     const dialog = this.shareDialog.open(WelcomePopupComponent, {
       data,
-      panelClass: 'gift-popup-class'
+      panelClass: "gift-popup-class",
     });
     dialog.afterClosed().subscribe(() => {
       this.assistanceService.tutoViewed().subscribe(() => {});
@@ -325,15 +332,15 @@ export class DashboardPostpaidPage implements OnInit {
     const number = this.dashbordServ.getMainPhoneNumber();
     this.dashbordServ.getAccountInfo(number).subscribe(
       (resp: any) => {
-        ls.set('user', resp);
+        ls.set("user", resp);
         if (!resp.tutoViewed) {
           this.dashbordServ.getWelcomeStatus().subscribe(
             (res: WelcomeStatusModel) => {
-              if (res.status === 'SUCCESS') {
+              if (res.status === "SUCCESS") {
                 this.showWelcomePopup(res);
               }
             },
-            err => {}
+            (err) => {}
           );
         }
       },
@@ -348,7 +355,19 @@ export class DashboardPostpaidPage implements OnInit {
     return getBanniereDescription(description);
   }
 
-  onOperation(op:OperationOem){
-    this.bsService[op.action]();
+  onOperation(op: OperationOem) {
+    if(this.bsService[op.action]){
+      this.bsService[op.action]();
+      return;
+    }
+    this.bsBillService.opXtras.billData = {
+      company: {
+        name: "Woyofal",
+        code: WOYOFAL,
+        logo: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
+      },
+    };
+    this.bsBillService.initBs(CounterSelectionComponent).subscribe((_) => {});
+    this.bsBillService.openBSCounterSelection(CounterSelectionComponent);
   }
 }
