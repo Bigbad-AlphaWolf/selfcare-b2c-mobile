@@ -25,6 +25,7 @@ import { of, Observable } from 'rxjs';
   styleUrls: ['./purchase-set-amount.page.scss'],
 })
 export class PurchaseSetAmountPage implements OnInit {
+  static ROUTE_PATH : string = '/purchase-set-amount'
   title: string;
   subtitle: string;
   setAmountForm: FormGroup;

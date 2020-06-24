@@ -27,6 +27,7 @@ import { SargalService } from '../services/sargal-service/sargal.service';
 import { CODE_FORMULE_KILIMANJARO } from '../dashboard';
 import { OperationOem } from '../models/operation.model';
 import { ACTIONS_RAPIDES_OPERATIONS } from '../utils/operations.util';
+import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid',
@@ -94,7 +95,8 @@ export class DashboardPostpaidPage implements OnInit {
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
     private sargalServ: SargalService,
-    private banniereServ: BanniereService
+    private banniereServ: BanniereService,
+    private bsService: BottomSheetService
   ) {}
 
   ngOnInit() {
@@ -346,5 +348,7 @@ export class DashboardPostpaidPage implements OnInit {
     return getBanniereDescription(description);
   }
 
-  onOperation(){}
+  onOperation(op:OperationOem){
+    this.bsService[op.action]();
+  }
 }
