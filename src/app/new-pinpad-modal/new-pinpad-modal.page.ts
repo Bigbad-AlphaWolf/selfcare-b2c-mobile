@@ -137,7 +137,6 @@ export class NewPinpadModalPage implements OnInit {
           this.omPhoneNumber = omMsisdn;
           this.checkUserHasOMToken();
         } else {
-          this.userNotRegisteredInOm = true;
           this.omPhoneNumber = this.mainPhoneNumber;
           this.allNumbers.push(this.mainPhoneNumber);
           this.dashboardService.getAttachedNumbers().subscribe((res: any) => {
@@ -147,6 +146,7 @@ export class NewPinpadModalPage implements OnInit {
                 this.allNumbers.push(element.msisdn);
               }
             });
+            this.userNotRegisteredInOm = true;
             this.checkingToken = false;
           });
         }
