@@ -3,9 +3,8 @@ import { BILLS_COMPANIES_DATA } from "src/app/utils/bills.util";
 import { BillCompany } from "src/app/models/bill-company.model";
 import { BsBillsHubService } from "src/app/services/bottom-sheet/bs-bills-hub.service";
 import { CounterSelectionComponent } from "src/app/components/counter/counter-selection/counter-selection.component";
-import { OPERATION_WOYOFAL } from 'src/app/utils/constants';
+import { OPERATION_WOYOFAL } from 'src/app/utils/operations.util';
 import { BillAmountPage } from '../bill-amount/bill-amount.page';
-import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { NavController } from '@ionic/angular';
 
 @Component({

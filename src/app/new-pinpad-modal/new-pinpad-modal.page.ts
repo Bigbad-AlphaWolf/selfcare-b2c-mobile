@@ -29,7 +29,7 @@ import { ModalController } from '@ionic/angular';
 import { catchError, map } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of } from 'rxjs';
-import { OPERATION_WOYOFAL } from '../utils/constants';
+import { OPERATION_WOYOFAL } from '../utils/operations.util';
 import { OperationExtras } from '../models/operation-extras.model';
 import { CounterService } from '../services/counter/counter.service';
 

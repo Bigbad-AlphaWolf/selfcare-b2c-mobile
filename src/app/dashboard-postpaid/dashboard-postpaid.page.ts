@@ -24,6 +24,8 @@ import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.co
 import { AssistanceService } from '../services/assistance.service';
 import { SargalService } from '../services/sargal-service/sargal.service';
 import { CODE_FORMULE_KILIMANJARO } from '../dashboard';
+import { OperationOem } from '../models/operation.model';
+import { ACTIONS_RAPIDES_OPERATIONS } from '../utils/operations.util';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid',
@@ -77,6 +79,8 @@ export class DashboardPostpaidPage implements OnInit {
   noSargalProfil: boolean;
   hasError: boolean;
   isKilimanjaroPostpaid: boolean;
+
+  operations : OperationOem[] = ACTIONS_RAPIDES_OPERATIONS;
 
   constructor(
     private dashbordServ: DashboardService,
@@ -335,4 +339,6 @@ export class DashboardPostpaidPage implements OnInit {
   getBanniereDescription(description: string) {
     return getBanniereDescription(description);
   }
+
+  onOperation(){}
 }

@@ -1,4 +1,4 @@
-@import 'src/app/app';
+@import "src/app/app";
 
 .dashboard-container-mobile {
   overflow-y: auto;
@@ -420,42 +420,83 @@
       }
     }
 
-    .dashboard-block-offres {
-      &-top1 {
+    .operations-rapides {
+      .top {
         display: flex;
-        background-color: $white;
-        align-items: center;
-        width: (358px / $baseWidthMobile2) * 100%;
-        height: 50px;
-        border-radius: 3px;
-        margin-top: 9px;
-        margin-left: auto;
-        margin-right: auto;
-
-        .item-icon {
-          // width: percentage(60px / 172px);
-          display: inline-block;
-          vertical-align: middle;
-          margin: 12px percentage(11px / 358px);
-          img {
-            width: 100%;
-            height: auto;
-          }
+        padding: 15px 20px 10px 20px;
+        .title {
+          font-family: HelveticaNeue;
+          font-size: 24px;
+          font-weight: bold;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.25;
+          letter-spacing: normal;
+          color: #000000;
         }
-
-        .item-text {
-          font-family: HelveticaNeueLTStd-Roman, sans-serif;
-          font-size: 14px;
-          display: inline-block;
-          vertical-align: middle;
-
-          .text-style-1 {
-            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        .more {
+          font-family: HelveticaNeue;
+          font-size: 16px;
+          font-weight: bold;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.88;
+          letter-spacing: normal;
+          text-align: right;
+          color: #ff7900;
+          flex-grow: 1;
+        }
+      }
+      ion-grid {
+        ion-row {
+          justify-content: center;
+          .operation {
+            width: 105px;
+            height: 117px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 7px;
+            .operation-img {
+              width: 47px;
+              height: 47px;
+              object-fit: contain;
+            }
+            .operation-text {
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              .action {
+                font-family: HelveticaNeueLTStd-Bd;
+                font-size: 16px;
+                font-weight: normal;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: normal;
+                letter-spacing: normal;
+                text-align: center;
+                color: #000000;
+              }
+              .target {
+                font-family: HelveticaNeueLTStd-Roman;
+                font-size: 12px;
+                font-weight: normal;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.17;
+                letter-spacing: normal;
+                text-align: center;
+                color: #666666;
+              }
+            }
           }
         }
       }
     }
-
     .dashboard-block-footer-container {
       position: fixed;
       width: 201px;

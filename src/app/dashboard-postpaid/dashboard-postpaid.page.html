@@ -165,39 +165,43 @@
           </ng-container>
         </div>
       </div>
-      <div class="dashboard-block-operation">
-        <div class="operation-block" routerLink="/buy-credit">
-          <div class="operation-img-container">
-            <img
-              src="/assets/images/recharge-credit-om-unique.svg"
-              alt="credit-icon"
-            />
-          </div>
 
-          <div class="operation-title">
-            <span>Recharger </span
-            ><span class="light">du crédit pour un autre</span>
-          </div>
+      <div class="operations-rapides">
+        <div class="top">
+          <div class="title">Je souhaites</div>
+          <div class="more">Voir plus</div>
         </div>
-        <div class="operation-block" routerLink="/buy-pass-internet">
-          <div class="operation-img-container">
-            <img
-              src="/assets/images/new_achat-pass-internet_mob.svg"
-              alt="pass-icon"
-            />
-          </div>
 
-          <div class="operation-title">
-            <span>Acheter </span>
-            <span *ngIf="!isKilimanjaroPostpaid" class="light"
-              >un pass internet pour un autre</span
+        <ion-grid>
+          <ion-row>
+            <div
+              matRipple
+              (click)="onOperation(operation)"
+              class="operation"
+              *ngFor="let operation of operations"
             >
-            <span *ngIf="isKilimanjaroPostpaid" class="light"
-              >un pass internet</span
-            >
-          </div>
-        </div>
+              <img [src]="operation.icon" class="operation-img" />
+              <div class="operation-text">
+                <span class="action">{{operation.title}} </span>
+                <span class="target">{{operation.subtitle}}</span>
+              </div>
+            </div>
+            <div matRipple (click)="onOperation()" class="operation">
+              <img
+                src="assets/images/ic-more-dots@2x.png"
+                class="operation-img"
+              />
+              <div class="operation-text">
+                <span class="action"
+                  >Autres <br />
+                  <span class="target">Services</span>
+                </span>
+              </div>
+            </div>
+          </ion-row>
+        </ion-grid>
       </div>
+
       <div class="dashboard-block-bill">
         <div *ngIf="errorBill" class="scb-text-red-error error">
           <span (click)="getBills()">
@@ -307,18 +311,6 @@
                 /><span class="scb-text-orange">Payer par Orange Money</span>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="dashboard-block-offres">
-        <div (click)="goToTransfertOM()" class="dashboard-block-offres-top1">
-          <div class="item-icon">
-            <img src="/assets/images/group-6.svg" alt="group-6" />
-          </div>
-          <div class="item-text scb-text-item-offre-black">
-            <span class="text-style-1"
-              >Faire une transaction avec <span> Orange Money </span></span
-            >
           </div>
         </div>
       </div>

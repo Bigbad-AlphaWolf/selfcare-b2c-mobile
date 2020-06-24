@@ -12,7 +12,7 @@ import {
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
-import { OPERATION_WOYOFAL } from '../utils/constants';
+import { OPERATION_WOYOFAL } from '../utils/operations.util';
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
 
 @Component({
