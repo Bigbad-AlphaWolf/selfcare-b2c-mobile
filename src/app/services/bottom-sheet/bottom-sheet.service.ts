@@ -35,7 +35,8 @@ export class BottomSheetService {
     return await modal.present();
   }
 
-  public openNumberSelectionBottomSheet(option?: NumberSelectionOption) {
+  public openNumberSelectionBottomSheet(option: NumberSelectionOption, purchaseType:string, routePath:string) {
+    
     this.matBottomSheet
       .open(NumberSelectionComponent, {
         data: { option: option },
@@ -43,8 +44,8 @@ export class BottomSheetService {
       .afterDismissed()
       .subscribe((opInfos: OperationExtras) => {
         if (!opInfos || !opInfos.recipientMsisdn) return;
-        opInfos = { purchaseType: OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos };
-        this.navController.navigateForward([CreditPassAmountPage.PATH], {
+        opInfos = { purchaseType: purchaseType, ...opInfos };
+        this.navController.navigateForward([routePath], {
           state: opInfos,
         });
       });

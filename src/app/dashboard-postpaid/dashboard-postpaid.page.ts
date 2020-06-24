@@ -19,6 +19,7 @@ import {
   getBanniereTitle,
   getBanniereDescription,
   NO_AVATAR_ICON_URL,
+  OPERATION_TYPE_PASS_INTERNET,
 } from "src/shared";
 import { FollowAnalyticsService } from "src/app/services/follow-analytics/follow-analytics.service";
 import { PassVolumeDisplayPipe } from "src/shared/pipes/pass-volume-display.pipe";
@@ -35,6 +36,7 @@ import { BsBillsHubService } from "../services/bottom-sheet/bs-bills-hub.service
 import { CounterSelectionComponent } from "../components/counter/counter-selection/counter-selection.component";
 import { WOYOFAL } from "../utils/bills.util";
 import { IMAGES_DIR_PATH } from "../utils/constants";
+import { NavController } from '@ionic/angular';
 const ls = new SecureLS({ encodingType: "aes" });
 @Component({
   selector: "app-dashboard-postpaid",
@@ -104,7 +106,8 @@ export class DashboardPostpaidPage implements OnInit {
     private sargalServ: SargalService,
     private banniereServ: BanniereService,
     private bsService: BottomSheetService,
-    private bsBillService: BsBillsHubService
+    private bsBillService: BsBillsHubService,
+    private navCtl : NavController
   ) {}
 
   ngOnInit() {
@@ -357,17 +360,27 @@ export class DashboardPostpaidPage implements OnInit {
 
   onOperation(op: OperationOem) {
     if(this.bsService[op.action]){
-      this.bsService[op.action]();
+      this.bsService[op.action](...op.params);
       return;
     }
-    this.bsBillService.opXtras.billData = {
-      company: {
-        name: "Woyofal",
-        code: WOYOFAL,
-        logo: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
-      },
-    };
-    this.bsBillService.initBs(CounterSelectionComponent).subscribe((_) => {});
-    this.bsBillService.openBSCounterSelection(CounterSelectionComponent);
+
+    if(this.bsBillService[op.action]){
+      this.bsBillService.opXtras.billData = {
+        company: {
+          name: "Woyofal",
+          code: WOYOFAL,
+          logo: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
+        },
+      };
+      this.bsBillService.initBs(CounterSelectionComponent).subscribe((_) => {});
+      this.bsBillService.openBSCounterSelection(CounterSelectionComponent);
+      return;
+    }
+
+
+    this.navCtl.navigateForward(['/select-beneficiary-v2'],  {state: {
+      payload: OPERATION_TYPE_PASS_INTERNET,
+    }});
+   
   }
 }

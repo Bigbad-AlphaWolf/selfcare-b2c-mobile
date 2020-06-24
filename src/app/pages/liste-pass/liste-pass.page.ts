@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonSlides } from '@ionic/angular';
+import { IonSlides, NavController } from '@ionic/angular';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { ApplicationRoutingService } from '../../services/application-routing/application-routing.service';
 import { PassInternetService } from '../../services/pass-internet-service/pass-internet.service';
@@ -16,6 +16,7 @@ import { PassIllimixService } from '../../services/pass-illimix-service/pass-ill
   styleUrls: ['./liste-pass.page.scss'],
 })
 export class ListePassPage implements OnInit {
+  static ROUTE_PATH: string = '/list-pass';
   slideSelected = 1;
   userNumber: string;
   userCodeFormule: string;
@@ -38,7 +39,8 @@ export class ListePassPage implements OnInit {
     private router: Router,
     private appRouting: ApplicationRoutingService,
     private passIntService: PassInternetService,
-    private passIllimixServ: PassIllimixService
+    private passIllimixServ: PassIllimixService,
+    private navCtl:NavController
   ) {}
 
   ngOnInit() {
@@ -48,10 +50,12 @@ export class ListePassPage implements OnInit {
     //   this.router.getCurrentNavigation().extras.state.payload
     // ) {
     if (this.router) {
-      this.userNumber = this.router.getCurrentNavigation().extras.state.payload.destinataire;
-      this.userCodeFormule = this.router.getCurrentNavigation().extras.state.payload.code;
-      this.recipientName = this.router.getCurrentNavigation().extras.state.payload.recipientName;
-      this.purchaseType = this.router.getCurrentNavigation().extras.state.payload.purchaseType;
+     let payload = this.router.getCurrentNavigation().extras.state.payload;
+      
+      this.userNumber = payload.destinataire;
+      this.userCodeFormule = payload.code;
+      this.recipientName = payload.recipientName;
+      this.purchaseType = payload.purchaseType;
       this.listCategory = [];
       this.listPass = [];
       this.activeTabIndex = 0;
@@ -108,16 +112,17 @@ export class ListePassPage implements OnInit {
   }
 
   goBack() {
-    switch (this.purchaseType) {
-      case OPERATION_TYPE_PASS_INTERNET:
-        this.goToRecepientPassInternetPage();
-        break;
-      case OPERATION_TYPE_PASS_ILLIMIX:
-        this.goToRecipientPassIllimixPage();
-        break;
-      default:
-        break;
-    }
+    // switch (this.purchaseType) {
+    //   case OPERATION_TYPE_PASS_INTERNET:
+    //     this.goToRecepientPassInternetPage();
+    //     break;
+    //   case OPERATION_TYPE_PASS_ILLIMIX:
+    //     this.goToRecipientPassIllimixPage();
+    //     break;
+    //   default:
+    //     break; 
+    // }
+    this.navCtl.pop();
   }
   goToRecepientPassInternetPage() {
     this.appRouting.goToSelectRecepientPassInternet();

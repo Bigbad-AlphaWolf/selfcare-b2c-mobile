@@ -5,4 +5,5 @@ export interface OperationOem {
   action: string;
   type: string;
   url: string;
+  params?:any[]
 }

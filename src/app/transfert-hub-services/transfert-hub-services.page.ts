@@ -183,7 +183,7 @@ export class TransfertHubServicesPage implements OnInit {
         break;
       case 'CREDIT':
         if (opt.action === 'REDIRECT') {
-          this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES);   
+          this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, OPERATION_TYPE_RECHARGE_CREDIT, CreditPassAmountPage.PATH);   
         }
         break;
       case 'PASS':

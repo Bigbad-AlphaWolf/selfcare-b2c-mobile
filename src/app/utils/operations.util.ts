@@ -1,5 +1,6 @@
 import { OperationOem } from '../models/operation.model';
 import { IMAGES_DIR_PATH } from './constants';
+import { OPERATION_TYPE_RECHARGE_CREDIT, OPERATION_TYPE_PASS_INTERNET, OPERATION_TYPE_PASS_ILLIMIX } from 'src/shared';
 
 export const OPERATION_WOYOFAL = 'OPERATION_WOYOFAL';
 export const OPERATION_RECHARGE_CREDIT = 'OPERATION_RECHARGE_CREDIT';
@@ -14,6 +15,7 @@ export const ACTIONS_RAPIDES_OPERATIONS : OperationOem[]=[
         subtitle: 'de l\'argent',
         icon: `${IMAGES_DIR_PATH}/icOrangeMoney.png`,
         action: 'showBeneficiaryModal',
+        params:[],
         type: OPERATION_TRANSFERT_ARGENT,
         url: '',
       },
@@ -23,6 +25,7 @@ export const ACTIONS_RAPIDES_OPERATIONS : OperationOem[]=[
         subtitle: 'du crédit',
         icon: `${IMAGES_DIR_PATH}/ic-top-up-mobile@2x.png`,
         action: 'openNumberSelectionBottomSheet',
+        params:['NONE', OPERATION_TYPE_RECHARGE_CREDIT, '/credit-pass-amount'],
         type: OPERATION_RECHARGE_CREDIT,
         url: '',
       },
@@ -30,7 +33,8 @@ export const ACTIONS_RAPIDES_OPERATIONS : OperationOem[]=[
         title: 'Acheter',
         subtitle: 'pass internet',
         icon: `${IMAGES_DIR_PATH}/ic-internet-browser@2x.png`,
-        action: 'REDIRECT',
+        action: 'openNumberSelectionBottomSheet',
+        params:['NONE', OPERATION_TYPE_PASS_INTERNET],
         type: OPERATION_ACHAT_PASS,
         url: '',
       },
@@ -38,7 +42,8 @@ export const ACTIONS_RAPIDES_OPERATIONS : OperationOem[]=[
         title: 'Acheter',
         subtitle: 'pass illimix',
         icon: `${IMAGES_DIR_PATH}/ic-package-services@2x.png`,
-        action: 'REDIRECT',
+        action: 'openNumberSelectionBottomSheet',
+        params:['NONE', OPERATION_TYPE_PASS_ILLIMIX],
         type: OPERATION_ACHAT_ILLIMIX,
         url: '',
       },
