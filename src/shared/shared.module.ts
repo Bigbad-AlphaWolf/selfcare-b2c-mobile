@@ -76,9 +76,11 @@ import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.compon
 import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
 import { AcronymPipe } from './pipes/acronym.pipe';
 import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
+import { OemOperationsComponent } from 'src/app/components/oem-operations/oem-operations.component';
 
 @NgModule({
   declarations: [
+    OemOperationsComponent,
     SelectBeneficiaryPopUpComponent,
     CounterSelectionComponent,
     FavoriteCountersComponent,
@@ -174,6 +176,7 @@ import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/
     FavoriteMerchantComponent,
   ],
   exports: [
+    OemOperationsComponent,
     SelectBeneficiaryPopUpComponent,
     CounterSelectionComponent,
     FavoriteCountersComponent,

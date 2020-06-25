@@ -169,37 +169,9 @@
       <div class="operations-rapides">
         <div class="top">
           <div class="title">Je souhaites</div>
-          <div class="more">Voir plus</div>
+          <div class="more" (click)="onVoirPlus()">Voir plus</div>
         </div>
-
-        <ion-grid>
-          <ion-row>
-            <div
-              matRipple
-              (click)="onOperation(operation)"
-              class="operation"
-              *ngFor="let operation of operations"
-            >
-              <img [src]="operation.icon" class="operation-img" />
-              <div class="operation-text">
-                <span class="action">{{operation.title}} </span>
-                <span class="target">{{operation.subtitle}}</span>
-              </div>
-            </div>
-            <div matRipple (click)="onOperation()" class="operation">
-              <img
-                src="assets/images/ic-more-dots@2x.png"
-                class="operation-img"
-              />
-              <div class="operation-text">
-                <span class="action"
-                  >Autres <br />
-                  <span class="target">Services</span>
-                </span>
-              </div>
-            </div>
-          </ion-row>
-        </ion-grid>
+        <oem-operations [operations]="operations"></oem-operations>
       </div>
 
       <div class="dashboard-block-bill">

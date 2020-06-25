@@ -1,18 +1,17 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { DashboardPostpaidPage } from './dashboard-postpaid.page';
+import { OemServicesPage } from './oem-services.page';
 import { SharedModule } from 'src/shared/shared.module';
-import { OemOperationsComponent } from '../components/oem-operations/oem-operations.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: DashboardPostpaidPage
+    component: OemServicesPage
   }
 ];
 
@@ -24,7 +23,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [DashboardPostpaidPage],
-  // schemas:[CUSTOM_ELEMENTS_SCHEMA]
+  declarations: [OemServicesPage]
 })
-export class DashboardPostpaidPageModule {}
+export class OemServicesPageModule {}

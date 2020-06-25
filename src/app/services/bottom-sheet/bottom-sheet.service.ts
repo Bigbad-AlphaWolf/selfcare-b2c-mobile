@@ -8,6 +8,10 @@ import { NumberSelectionComponent } from "src/app/components/number-selection/nu
 import { OperationExtras } from "src/app/models/operation-extras.model";
 import { OPERATION_TYPE_RECHARGE_CREDIT } from "src/shared";
 import { CreditPassAmountPage } from "src/app/pages/credit-pass-amount/credit-pass-amount.page";
+import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { take } from 'rxjs/operators';
+import { OrangeMoneyService } from '../orange-money-service/orange-money.service';
 
 @Injectable({
   providedIn: "root",
@@ -16,7 +20,8 @@ export class BottomSheetService {
   constructor(
     private modalController: ModalController,
     private matBottomSheet: MatBottomSheet,
-    private navController: NavController
+    private navController: NavController,
+    private omService : OrangeMoneyService
   ) {}
 
   public async showBeneficiaryModal() {
@@ -36,10 +41,10 @@ export class BottomSheetService {
   }
 
   public openNumberSelectionBottomSheet(option: NumberSelectionOption, purchaseType:string, routePath:string) {
-    
     this.matBottomSheet
       .open(NumberSelectionComponent, {
         data: { option: option },
+        backdropClass: "oem-ion-bottomsheet",
       })
       .afterDismissed()
       .subscribe((opInfos: OperationExtras) => {
@@ -50,4 +55,31 @@ export class BottomSheetService {
         });
       });
   }
+  public openMerchantPayment() {
+    this.omService.getOmMsisdn()
+    .pipe(take(1))
+    .subscribe((msisdn: string) => {
+      if (msisdn !== 'error') {
+        this.matBottomSheet
+          .open(MerchantPaymentCodeComponent, {
+            panelClass: 'merchant-code-modal',
+          })
+          .afterDismissed()
+          .subscribe(() => {});
+      } else {
+        this.openPinpad();
+      }
+    });
+  }
+
+  async openPinpad() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+    });
+    return await modal.present();
+  }
+
+    
+
 }

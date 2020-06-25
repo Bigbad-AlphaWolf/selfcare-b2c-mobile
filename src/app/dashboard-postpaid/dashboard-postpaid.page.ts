@@ -30,7 +30,7 @@ import { AssistanceService } from "../services/assistance.service";
 import { SargalService } from "../services/sargal-service/sargal.service";
 import { CODE_FORMULE_KILIMANJARO } from "../dashboard";
 import { OperationOem } from "../models/operation.model";
-import { ACTIONS_RAPIDES_OPERATIONS } from "../utils/operations.util";
+import { ACTIONS_RAPIDES_OPERATIONS_DASHBOARD } from "../utils/operations.util";
 import { BottomSheetService } from "../services/bottom-sheet/bottom-sheet.service";
 import { BsBillsHubService } from "../services/bottom-sheet/bs-bills-hub.service";
 import { CounterSelectionComponent } from "../components/counter/counter-selection/counter-selection.component";
@@ -91,8 +91,7 @@ export class DashboardPostpaidPage implements OnInit {
   hasError: boolean;
   isKilimanjaroPostpaid: boolean;
 
-  operations: OperationOem[] = ACTIONS_RAPIDES_OPERATIONS;
-  avatarUrl: string = NO_AVATAR_ICON_URL;
+  operations: OperationOem[] = ACTIONS_RAPIDES_OPERATIONS_DASHBOARD;
 
   constructor(
     private dashbordServ: DashboardService,
@@ -174,8 +173,6 @@ export class DashboardPostpaidPage implements OnInit {
     const user = ls.get("user");
     this.firstName = user.firstName;
 
-    if (user.imageProfil)
-      this.avatarUrl = downloadAvatarEndpoint + user.imageProfil;
   }
 
   getConsoPostpaid() {
@@ -358,29 +355,8 @@ export class DashboardPostpaidPage implements OnInit {
     return getBanniereDescription(description);
   }
 
-  onOperation(op: OperationOem) {
-    if(this.bsService[op.action]){
-      this.bsService[op.action](...op.params);
-      return;
-    }
-
-    if(this.bsBillService[op.action]){
-      this.bsBillService.opXtras.billData = {
-        company: {
-          name: "Woyofal",
-          code: WOYOFAL,
-          logo: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
-        },
-      };
-      this.bsBillService.initBs(CounterSelectionComponent).subscribe((_) => {});
-      this.bsBillService.openBSCounterSelection(CounterSelectionComponent);
-      return;
-    }
-
-
-    this.navCtl.navigateForward(['/select-beneficiary-v2'],  {state: {
-      payload: OPERATION_TYPE_PASS_INTERNET,
-    }});
-   
+  onVoirPlus(){
+    this.navCtl.navigateForward(['/oem-services']);
   }
+
 }

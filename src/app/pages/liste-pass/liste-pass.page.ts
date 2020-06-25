@@ -51,6 +51,7 @@ export class ListePassPage implements OnInit {
     // ) {
     if (this.router) {
      let payload = this.router.getCurrentNavigation().extras.state.payload;
+     payload = payload?payload:history.state
       
       this.userNumber = payload.destinataire;
       this.userCodeFormule = payload.code;
