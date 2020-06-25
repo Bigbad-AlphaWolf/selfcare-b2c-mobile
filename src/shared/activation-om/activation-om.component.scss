@@ -1,5 +1,8 @@
 @import 'src/app/app';
 
+:host{
+  height: 100%;
+}
 .activationOM-mobile-container {
   height: 100%;
   .activationOM-mobile-container-header {
@@ -82,13 +85,16 @@
           }
         }
         .confirm-btn {
-          position: fixed;
-          bottom: 0px;
-          left: 0;
+          width: 95%;
+          .scb-btn-ion {
+              height: 50px;;
+              --border-radius: 4px;
+              --background-activated: $orange;
+          }
           mat-spinner {
-            position: absolute;
-            top: 15px;
-            right: 10px;
+              position: absolute;
+              right: 5px;
+              top: 12px;
           }
           .mat-spinner::ng-deep circle {
             stroke: $white;
