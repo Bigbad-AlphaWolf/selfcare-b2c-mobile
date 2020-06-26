@@ -47,17 +47,17 @@
           <div class="right-side">
             <span *ngIf="!passIllimix?.passPromo" class="item-validity scb-text-gray">
               Valable
-                <ng-container
-                [ngSwitch]="
-                  !passIllimix?.passPromo ? passIllimix?.categoriePass?.libelle : passIllimix?.passPromo?.categoriePass?.libelle
-                "
-              >
-                <ng-container *ngSwitchCase="'Jour'"> 1 jour.</ng-container>
-                <ng-container *ngSwitchCase="'Semaine'"> 7 jours.</ng-container>
-                <ng-container *ngSwitchCase="'Mois'"> 30 jours.</ng-container>
-                <ng-container *ngSwitchCase="'Nuit'"> de 00h à 08h.</ng-container>
-                <ng-container *ngSwitchDefault> 3 jours.</ng-container>
-            </ng-container>
+            <ng-container
+            [ngSwitch]="
+              !passIllimix?.passPromo ? passIllimix?.categoriePass?.libelle : passIllimix?.passPromo?.categoriePass?.libelle
+            "
+          >
+            <ng-container *ngSwitchCase="'Jour'">{{(!passIllimix?.passPromo && passIllimix?.validitePass) ? passIllimix?.validitePass : '1 jour.' }} </ng-container>
+            <ng-container *ngSwitchCase="'Semaine'">{{(!passIllimix?.passPromo && passIllimix?.validitePass) ? passIllimix?.validitePass : '7 jours.' }} </ng-container>
+            <ng-container *ngSwitchCase="'Mois'"> {{(!passIllimix?.passPromo && passIllimix?.validitePass) ? passIllimix?.validitePass : '30 jours.' }}</ng-container>
+            <ng-container *ngSwitchCase="'Nuit'"> {{(!passIllimix?.passPromo && passIllimix?.validitePass) ? passIllimix?.validitePass : 'de 00h à 08h.' }}</ng-container>
+            <ng-container *ngSwitchDefault>{{(!passIllimix?.passPromo && passIllimix?.validitePass) ? passIllimix?.validitePass : '' }} </ng-container>
+        </ng-container>
             </span>
             <span *ngIf="passIllimix?.passPromo" class="item-validity scb-text-gray">
               Valable jusqu'au {{ passIllimix?.dateFin | date: 'dd MMM' }}
