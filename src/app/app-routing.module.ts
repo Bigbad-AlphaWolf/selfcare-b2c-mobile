@@ -196,6 +196,7 @@ const routes: Routes = [
   { path: 'purchase-set-amount', loadChildren: './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule' },
   { path: 'credit-pass-amount', loadChildren: './pages/credit-pass-amount/credit-pass-amount.module#CreditPassAmountPageModule' },  { path: 'bills-hub', loadChildren: './pages/bills-hub/bills-hub.module#BillsHubPageModule' },
   { path: 'bill-amount', loadChildren: './pages/bill-amount/bill-amount.module#BillAmountPageModule' },
+  { path: 'app-update', loadChildren: './pages/app-update/app-update.module#AppUpdatePageModule' },
 
 
 

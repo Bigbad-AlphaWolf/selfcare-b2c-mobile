@@ -74,6 +74,7 @@ const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abo
   providedIn: "root",
 })
 export class DashboardService {
+  static CURRENT_DASHBOARD : string = '/dashboard';
   currentPhoneNumberChangeSubject: Subject<string> = new Subject<string>();
   scrollToBottomSubject: Subject<string> = new Subject<string>();
   balanceAvailableSubject: Subject<any> = new Subject<any>();
