@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { OPERATION_TYPE_RECHARGE_CREDIT, PAYMENT_MOD_OM, formatCurrency } from 'src/shared';
 import { Router } from '@angular/router';
@@ -5,6 +6,9 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
+import { ModalController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-buy-credit',
@@ -39,16 +43,16 @@ export class BuyCreditPage implements OnInit {
   currentNumber;
   recipientFirstName = '';
   recipientLastName = '';
-
+  isProcessing: boolean;
   constructor(
     private router: Router,
     private dashbordServ: DashboardService,
     private authService: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService, private omService: OrangeMoneyService, private modalController: ModalController, private navControl: NavController
+
   ) {}
 
   ngOnInit() {
-
   }
 
   ionViewWillEnter() {
@@ -59,6 +63,43 @@ export class BuyCreditPage implements OnInit {
       .subscribe((souscription: any) => {
         this.currentProfil = souscription.profil;
       });
+      this.checkOmAccountSession()
+  }
+ checkOmAccountSession() {
+    this.isProcessing = true;
+    this.omService.omAccountSession().subscribe(
+      (omSession: any) => {
+        this.isProcessing = false;
+
+        if (
+          omSession.msisdn === "error" ||
+          !omSession.hasApiKey ||
+          !omSession.accessToken ||
+          omSession.loginExpired
+        ) {
+          this.openPinpad();
+        }
+      },
+      () => {
+        this.openPinpad();
+      }
+    );
+  }
+
+  async openPinpad() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: "pin-pad-modal",
+      componentProps: {
+        operationType: null,
+      },
+    });
+    modal.onDidDismiss().then((response) => {
+      if (response && !response.data) 
+        this.navControl.navigateBack(['/dashboard'])
+      
+    });
+    return await modal.present();
   }
 
   showOMBalancePinPad() {

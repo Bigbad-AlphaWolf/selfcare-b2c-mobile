@@ -58,7 +58,6 @@
     >
     <form
       [formGroup]="form"
-      (ngSubmit)="userRegisterOM()"
       novalidate
       autocomplete="false"
     >
@@ -77,7 +76,7 @@
         </div>
       </div>
 
-      <ion-button expand="block" *ngIf="!userHasOmToken" [disabled]="!form.valid || registering" class="confirm-btn"
+      <ion-button expand="block" *ngIf="!userHasOmToken" [disabled]="!form.valid || registering" class="confirm-btn" (click)="userRegisterOM()"
       >
         <span>Confirmer</span>
         <mat-spinner
@@ -101,7 +100,7 @@
       </button>
     </form>
   </div>
-  <div class="error-message" *ngIf="errorOnOtp">
+  <div class="error-message" *ngIf="otpHasError">
     <span>{{ errorOnOtp }}</span>
   </div>
 </div>
