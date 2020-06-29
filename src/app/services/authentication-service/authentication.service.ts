@@ -52,6 +52,7 @@ const checkEmailEndpoint = `${accountBaseUrl}/email-already-exist`;
 const userInfosEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/information-abonne`;
 const userSubscriptionInfo = `${SERVER_API_URL}/${CONSO_SERVICE}/api/souscription-infos`;
 const userSubscriptionEndpoint2 = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/v1/customerOffer`;
+const SUBSCRIPTION_ENDPOINT_FOR_TIER = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/v2/customerOffer`;
 const userSubscriptionIsPostpaidEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/is-postpaid`;
 const abonneInfoWithOTP = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/information-abonne`;
 const loginEndpoint = `${SERVER_API_URL}/auth/login`;
@@ -175,6 +176,52 @@ export class AuthenticationService {
     }
     if (!this.SubscriptionHttpCache.has(msisdn)) {
       this.SubscriptionHttpCache[msisdn] = this.getSubscriptionCustomerOffer(
+        msisdn
+      ).pipe(shareReplay(1));
+    }
+    return this.SubscriptionHttpCache[msisdn];
+  }
+
+  getSubscriptionCustomerOfferForTiers(msisdn: string) {
+    // step 1 check if data exists in localstorage
+    // step 2 if exists return data from localstorage
+    // else call server to get data
+    // what to save? 'subXXXXXXXX"
+      return this.http.get(`${SUBSCRIPTION_ENDPOINT_FOR_TIER}/${msisdn}`).pipe(
+        map((res: any) => {
+          const subscription = {
+            nomOffre: res.offerName,
+            profil: res.offerType,
+            code: res.offerId,
+          };
+          if (
+            subscription.profil === PROFILE_TYPE_HYBRID ||
+            subscription.profil === PROFILE_TYPE_HYBRID_1 ||
+            subscription.profil === PROFILE_TYPE_HYBRID_2
+          ) {
+            subscription.code = JAMONO_ALLO_CODE_FORMULE;
+          }
+          if (isFixPostpaid(subscription.nomOffre)) {
+            subscription.profil = PROFILE_TYPE_POSTPAID;
+          }
+          const lsKey = "subtiers" + msisdn;
+          ls.set(lsKey, subscription);
+          this.subscriptionUpdatedSubject.next(subscription);
+          return subscription;
+        })
+      );
+    
+  }
+
+
+  getSubscriptionForTiers(msisdn: string) {
+    const lsKey = "subtiers" + msisdn;
+    const savedData = ls.get(lsKey);
+    if (savedData) {
+      return of(savedData);
+    }
+    if (!this.SubscriptionHttpCache.has(msisdn)) {
+      this.SubscriptionHttpCache[msisdn] = this.getSubscriptionCustomerOfferForTiers(
         msisdn
       ).pipe(shareReplay(1));
     }

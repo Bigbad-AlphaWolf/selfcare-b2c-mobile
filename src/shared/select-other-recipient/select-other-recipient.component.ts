@@ -51,7 +51,7 @@ export class SelectOtherRecipientComponent implements OnInit {
         if (isPostpaid) {
           this.showErrorMsg = true;
         } else {
-          this.authServ.getSubscription(this.destNumber).subscribe(
+          this.authServ.getSubscriptionForTiers(this.destNumber).subscribe(
             (res: SubscriptionModel) => {
               this.isProcessing = false;
               if (res.code !== '0') {
@@ -85,7 +85,7 @@ export class SelectOtherRecipientComponent implements OnInit {
           this.destNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
           if (this.validateNumber(this.destNumber)) {
               this.authServ
-                .getSubscription(this.destNumber)
+                .getSubscriptionForTiers(this.destNumber)
                 .subscribe((res: SubscriptionModel) => {
                   if( res.profil === PROFILE_TYPE_POSTPAID && res.code !== KILIMANJARO_FORMULE ){
                     this.showErrorMsg = true;
@@ -121,7 +121,7 @@ export class SelectOtherRecipientComponent implements OnInit {
               this.showErrorMsg = true;
             } else {
               this.authServ
-                .getSubscription(this.destNumber)
+                .getSubscriptionForTiers(this.destNumber)
                 .subscribe((res: SubscriptionModel) => {
                   if (res.code !== '0') {
                     this.nextStepEmitter.emit({
