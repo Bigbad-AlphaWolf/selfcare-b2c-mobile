@@ -177,7 +177,7 @@ export class NewPinpadModalPage implements OnInit {
           app_version: 'v1.0',
           app_conf_version: 'v1.0',
           service_version: OM_SERVICE_VERSION,
-        };
+        };        
         // If user already connected open pinpad
         if (omUser['hasApiKey']) {
           this.userHasOmToken = true;
@@ -258,7 +258,13 @@ export class NewPinpadModalPage implements OnInit {
       (res: any) => {
         this.registering = false;
         this.otpHasError = false;
-
+        this.pinpadData = {
+          msisdn: this.omPhoneNumber,
+          os: 'Android',
+          app_version: 'v1.0',
+          app_conf_version: 'v1.0',
+          service_version: OM_SERVICE_VERSION,
+        };
         if (!res.status_code.match('Erreur')) {
           this.userHasOmToken = true;
           this.otpValidation = false;
@@ -280,7 +286,7 @@ export class NewPinpadModalPage implements OnInit {
             showSolde: true,
           };
           this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
-          this.gettingPinpad = true;
+          this.gettingPinpad = true;          
           this.orangeMoneyService
             .GetPinPad(this.pinpadData)
             .subscribe((response: any) => {

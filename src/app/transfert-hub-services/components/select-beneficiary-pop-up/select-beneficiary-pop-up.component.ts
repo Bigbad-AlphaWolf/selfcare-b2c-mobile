@@ -335,16 +335,16 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       (omUser: any) => {
         this.isProcessing = false;
         // If user already connected open pinpad
-        if (!omUser.hasApiKey || !omUser.accessToken) {
-          this.router.navigate(["/see-solde-om"]);
-        } else if (omUser.loginExpired) {
+        if (!omUser.hasApiKey  || !omUser.accessToken || omUser.loginExpired) {
           this.openPinpad(payload);
         } else {
           this.checkRecipientHasOMAccount(userOMMsisdn, payload);
         }
       },
-      () => {
+      (err: HttpErrorResponse) => {
         this.isProcessing = false;
+        if(err.status === 401)
+          this.modalController.dismiss();
       }
     );
   }
