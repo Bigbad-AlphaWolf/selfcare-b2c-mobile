@@ -680,7 +680,8 @@ export interface PurchaseModel {
  * Version A is the version from the server.
  * Version B is the installed version.
  */
-export function isNewVersion(versionA, versionB) {
+export function isNewVersion(versionA:string, versionB:string) {
+  
   if (versionA && versionB) {
     const versionsA = versionA.split(/\./g),
       versionsB = versionB.split(/\./g);
