@@ -199,7 +199,7 @@ export class SelectBeneficiaryV2Page implements OnInit {
     this.isProcessing = true;
     this.hasErrorProcessing = false;
     if (this.recipientNumber) {
-      this.authServ.getSubscription(this.recipientNumber).subscribe(
+      this.authServ.getSubscriptionForTiers(this.recipientNumber).subscribe(
         (res: SubscriptionModel) => {
           this.isProcessing = false;
           const codeFormule = res.code;
