@@ -132,6 +132,57 @@
               </div>
             </div>
           </ion-slide>
+          <ion-slide *ngIf=" currentProfil && isHyBride && !noSargalProfil">
+            <div
+              class="scb-btn-black scb-btn-sargal"
+              [ngClass]="{
+              'btn-disabled': sargalStatusUnavailable }"
+            >
+              <div
+                (click)="seeSargalCard()"
+                [ngClass]="{
+                'btn-no-action': sargalStatusUnavailable
+              }"
+                class="btn-container"
+              >
+                <div class="scb-btn-top-block">
+                  <img
+                    class="scb-btn-top-block-icon"
+                    src="/assets/images/gift-sargal.svg"
+                    alt="sargal-cfa-3-mob"
+                  />
+                  <div class="scb-btn-top-block-text">
+                    <span class="text">Sargal</span>
+                  </div>
+                </div>
+                <div *ngIf="isLoading" class="scb-block-spinner">
+                  <mat-spinner
+                    mode="indeterminate"
+                    [diameter]="30"
+                  ></mat-spinner>
+                </div>
+                <ng-container *ngIf="!isLoading && !sargalStatusUnavailable">
+                  <div class="bottom-block">
+                    <span class="show-solde-info-text">Voir ma carte</span
+                    >
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="!isLoading && sargalStatusUnavailable">
+                  <div class="bottom-block">
+                    <span class="show-solde-info-text">Service Indisponible</span
+                    >
+                  </div>
+                </ng-container>
+              </div>
+
+              <div
+                (click)="getCustomerSargalStatus()"
+                class="scb-data-reload"
+              >
+                <img src="/assets/images/reload.png" alt="reload-icon" />
+              </div>
+            </div>
+          </ion-slide>
         </ion-slides>
       </div>
       <div class="dashboard-block-conso-details">
@@ -282,7 +333,7 @@
           </div>
         </div> -->
 
-        <div
+        <div *ngIf="!isHyBride"
           (click)="makeSargalAction()"
           class="dashboard-block-offres-top3-item"
         >
