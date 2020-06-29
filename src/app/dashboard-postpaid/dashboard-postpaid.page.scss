@@ -9,7 +9,6 @@
 
   .postpaid-dashboard-container {
     background-color: $grayDashboard;
-    // overflow: auto;
     height: 100%;
 
     .dashboard-block-conso {
@@ -50,30 +49,24 @@
             display: flex;
             align-items: flex-start;
             margin-top: 12px;
-            // width: 66% !important;
-            // min-width: 300px;
           }
         }
         app-om-button {
-          min-width: 63%;
           width: 100%;
-          height: 90px;
-          margin-right: percentage(10px / 366px);
+          height: 110px;
         }
         .scb-btn-balance,
         .scb-btn-credit,
         .scb-btn-pass,
-        .scb-btn-sargal {
-          text-align: left;
+        .scb-btn-sargal {text-align: left;
           width: 100%;
-          min-width: 63%;
-          height: 90px;
+          height: 110px;
           display: inline-block;
-          padding: 8px 0 10px 15px;
+          padding: 12px 0 20px 15px;
           border-radius: 15px;
-          box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
-          margin-right: percentage(10px / 366px);
           .scb-btn-top-block {
+            display: flex;
+            align-items: center;
             &-icon,
             &-text {
               display: inline-block;
@@ -95,20 +88,19 @@
           }
 
           .bottom-block {
-            margin-top: 1px;
+            margin-top: 4px;
             .value {
               font-family: HelveticaNeueLTStd-Bd, sans-serif;
-              font-size: 26px;
+              font-size: 32px;
 
               .text-style-1 {
-                font-family: HelveticaNeueLTStd-Roman, sans-serif;
-                font-size: 18px;
+                font-size: 24px;
               }
             }
           }
 
           .validity-text {
-            margin-top: 6px;
+            margin-top: 5px;
             font-family: HelveticaNeueLTStd-Roman;
             font-size: 9px;
           }
@@ -123,7 +115,14 @@
         }
 
         .scb-btn-sargal {
-          background-image: url(/assets/images/background-sargal.svg);
+          // background-image: url(/assets/images/background-sargal.svg);
+          // background-size: cover;
+          // position: relative;
+          background-image: radial-gradient(
+            circle at 77% 36%,
+            #72e4ab,
+            #3fad75 113%
+          );
           .btn-container {
             width: 100%;
             background: transparent;
@@ -139,60 +138,21 @@
               pointer-events: none;
             }
           }
-          .scb-btn-top-block {
-            &-icon,
-            &-text {
-              display: inline-block;
-              vertical-align: middle;
-            }
-
-            &-icon {
-              height: 24px;
-              width: 24px;
-              margin-right: 4px;
-            }
-
-            &-text {
-              .text {
-                font-family: HelveticaNeueLTStd-Roman, sans-serif;
-                font-size: 18px;
-              }
-            }
-          }
-
-          .bottom-block {
-            margin-top: 1px;
-            .value {
-              font-family: HelveticaNeueLTStd-Bd, sans-serif;
-              font-size: 26px;
-
-              .text-style-1 {
-                font-family: HelveticaNeueLTStd-Roman, sans-serif;
-                font-size: 18px;
-              }
-            }
-          }
-
-          .validity-text {
-            margin-top: 6px;
-            font-family: HelveticaNeueLTStd-Roman;
-            font-size: 9px;
-          }
-
-          .show-solde-info-text {
-            font-family: HelveticaNeueLTStd-Bd, sans-serif;
-            font-size: 16px;
-            line-height: 1.14;
-            display: inline-block;
-            margin-top: 27px;
-          }
         }
+
+      .scb-btn-credit {
+        background-image: radial-gradient(
+          circle at 77% 36%,
+          #b1a8f0,
+          #4c77d7 113%
+        );
+       }
       }
 
       &-details {
-        margin: -15px 0 0 0;
+        // margin: -15px 0 0 0;
         border-radius: 4px;
-        padding: 5px percentage(10px / $baseWidthMobile2);
+        padding: 25px percentage(15px / $baseWidthMobile2);
         .error {
           font-family: HelveticaNeueLTStd-Roman, sans-serif;
           font-size: 10px;
