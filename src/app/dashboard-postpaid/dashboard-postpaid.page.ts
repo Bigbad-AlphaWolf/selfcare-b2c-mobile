@@ -3,7 +3,6 @@ import * as SecureLS from "secure-ls";
 import { BannierePubModel } from "src/app/services/dashboard-service";
 import {
   DashboardService,
-  downloadAvatarEndpoint,
 } from "src/app/services/dashboard-service/dashboard.service";
 import { Router } from "@angular/router";
 import { AuthenticationService } from "src/app/services/authentication-service/authentication.service";
@@ -18,8 +17,6 @@ import {
   SargalStatusModel,
   getBanniereTitle,
   getBanniereDescription,
-  NO_AVATAR_ICON_URL,
-  OPERATION_TYPE_PASS_INTERNET,
 } from "src/shared";
 import { FollowAnalyticsService } from "src/app/services/follow-analytics/follow-analytics.service";
 import { PassVolumeDisplayPipe } from "src/shared/pipes/pass-volume-display.pipe";
@@ -33,9 +30,6 @@ import { OperationOem } from "../models/operation.model";
 import { ACTIONS_RAPIDES_OPERATIONS_DASHBOARD } from "../utils/operations.util";
 import { BottomSheetService } from "../services/bottom-sheet/bottom-sheet.service";
 import { BsBillsHubService } from "../services/bottom-sheet/bs-bills-hub.service";
-import { CounterSelectionComponent } from "../components/counter/counter-selection/counter-selection.component";
-import { WOYOFAL } from "../utils/bills.util";
-import { IMAGES_DIR_PATH } from "../utils/constants";
 import { NavController } from '@ionic/angular';
 const ls = new SecureLS({ encodingType: "aes" });
 @Component({
@@ -104,8 +98,6 @@ export class DashboardPostpaidPage implements OnInit {
     private assistanceService: AssistanceService,
     private sargalServ: SargalService,
     private banniereServ: BanniereService,
-    private bsService: BottomSheetService,
-    private bsBillService: BsBillsHubService,
     private navCtl : NavController
   ) {}
 
@@ -242,6 +234,7 @@ export class DashboardPostpaidPage implements OnInit {
   }
 
   getBills() {
+    this.errorBill = false;
     this.authServ
       .getSubscription(this.userPhoneNumber)
       .subscribe((client: SubscriptionModel) => {
@@ -249,7 +242,7 @@ export class DashboardPostpaidPage implements OnInit {
           (res) => {
             this.bills = res;
           },
-          (error) => {
+          () => {
             this.errorBill = true;
           }
         );
@@ -340,7 +333,7 @@ export class DashboardPostpaidPage implements OnInit {
                 this.showWelcomePopup(res);
               }
             },
-            (err) => {}
+            () => {}
           );
         }
       },

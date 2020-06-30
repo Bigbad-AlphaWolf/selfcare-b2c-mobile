@@ -1,5 +1,14 @@
 @import "src/app/app";
-
+.title {
+  font-family: HelveticaNeue;
+  font-size: 24px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.25;
+  letter-spacing: normal;
+  color: #000000;
+}
 .dashboard-container-mobile {
   overflow-y: auto;
   background-color: $grayDashboard;
@@ -424,16 +433,7 @@
       .top {
         display: flex;
         padding: 15px 20px 10px 20px;
-        .title {
-          font-family: HelveticaNeue;
-          font-size: 24px;
-          font-weight: bold;
-          font-stretch: normal;
-          font-style: normal;
-          line-height: 1.25;
-          letter-spacing: normal;
-          color: #000000;
-        }
+
         .more {
           font-family: HelveticaNeue;
           font-size: 16px;
@@ -446,6 +446,13 @@
           color: #ff7900;
           flex-grow: 1;
         }
+      }
+    }
+    .bons-plans{
+      display: flex;
+      flex-direction: column;
+      &>.title{
+        margin: 5px 0px 10px 15px;
       }
     }
     .dashboard-block-footer-container {
@@ -521,3 +528,5 @@ ion-fab {
   width: 50px;
   height: 50px;
 }
+
+

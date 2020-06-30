@@ -286,42 +286,45 @@
           </div>
         </div>
       </div>
-      <div
-        *ngIf="showPromoBarner || (listBanniere.length && showPromoBarner)"
-        class="dashboard-img-promo slide-container"
-      >
-        <ion-slides pager [options]="{loop: true}">
-          <ng-container *ngFor="let banniere of listBanniere">
-            <ion-slide>
-              <span #error class="error-slide scb-text-full-black">
-                Erreur lors du chargement de l'image</span
-              >
-              <div class="description">
-                <div class="title">
-                  {{getBanniereTitle(banniere.description)}}
+      <div class="bons-plans">
+        <div class="title">Bons plans</div>
+        <div
+          *ngIf="showPromoBarner || (listBanniere.length && showPromoBarner)"
+          class="dashboard-img-promo slide-container"
+        >
+          <ion-slides pager [options]="{loop: true}">
+            <ng-container *ngFor="let banniere of listBanniere">
+              <ion-slide>
+                <span #error class="error-slide scb-text-full-black">
+                  Erreur lors du chargement de l'image</span
+                >
+                <div class="description">
+                  <div class="title">
+                    {{getBanniereTitle(banniere.description)}}
+                  </div>
+                  <div class="text">
+                    {{getBanniereDescription(banniere.description)}}
+                  </div>
                 </div>
-                <div class="text">
-                  {{getBanniereDescription(banniere.description)}}
+                <div class="img-container">
+                  <img
+                    #img
+                    (error)="
+                onError([
+                  { el: error, display: true },
+                  { el: img, display: false }
+                ])
+              "
+                    [src]="banniere.image"
+                    alt="ban"
+                  />
                 </div>
-              </div>
-              <div class="img-container">
-                <img
-                  #img
-                  (error)="
-              onError([
-                { el: error, display: true },
-                { el: img, display: false }
-              ])
-            "
-                  [src]="banniere.image"
-                  alt="ban"
-                />
-              </div>
-            </ion-slide>
-          </ng-container>
-        </ion-slides>
-        <div class="close-icon" (click)="hidePromoBarner()" *ngIf="0">
-          <img src="/assets/images/group-14.svg" alt="hide-banniere-promo" />
+              </ion-slide>
+            </ng-container>
+          </ion-slides>
+          <div class="close-icon" (click)="hidePromoBarner()" *ngIf="0">
+            <img src="/assets/images/group-14.svg" alt="hide-banniere-promo" />
+          </div>
         </div>
       </div>
     </div>
