@@ -118,7 +118,7 @@ export class SelectRecipientComponent implements OnInit {
     this.isProcessing = true;
     this.destNumber = formatPhoneNumber(this.destNumber);
     
-    this.authenticationService.getSubscription(this.destNumber).subscribe(
+    this.authenticationService.getSubscriptionForTiers(this.destNumber).subscribe(
       (res: SubscriptionModel) => {
         this.isProcessing = false;
         if( res.profil === PROFILE_TYPE_POSTPAID && res.code !== KILIMANJARO_FORMULE )

@@ -196,10 +196,11 @@ export class BuyCreditPage implements OnInit {
     this.omBalancePinPadDisplayed = false;
     this.currentOMBalance = 0;
     this.hideUserSolde = true;
+    this.step = 0
   }
 
   goToDashboardPage() {
-    this.router.navigate(['/dashboard']);
+    this.navControl.pop();
   }
 
   contactGot(contact) {

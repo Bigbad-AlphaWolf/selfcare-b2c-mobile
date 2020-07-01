@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonSlides } from '@ionic/angular';
+import { IonSlides, NavController } from '@ionic/angular';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
@@ -35,11 +35,11 @@ export class ListePassPage implements OnInit {
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
     private appRouting: ApplicationRoutingService,
     private passIntService: PassInternetService,
-    private passIllimixServ: PassIllimixService
+    private passIllimixServ: PassIllimixService,
+    private navContr: NavController
   ) {}
 
   ngOnInit() {
@@ -109,16 +109,7 @@ export class ListePassPage implements OnInit {
   }
 
   goBack() {
-    switch (this.purchaseType) {
-      case OPERATION_TYPE_PASS_INTERNET:
-        this.goToRecepientPassInternetPage();
-        break;
-      case OPERATION_TYPE_PASS_ILLIMIX:
-        this.goToRecipientPassIllimixPage();
-        break;
-      default:
-        break;
-    }
+    this.navContr.pop()
   }
   goToRecepientPassInternetPage() {
     this.appRouting.goToSelectRecepientPassInternet();
