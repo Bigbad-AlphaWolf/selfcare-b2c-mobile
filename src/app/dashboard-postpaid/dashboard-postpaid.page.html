@@ -182,15 +182,15 @@
         </div>
         <div class="last-bill" *ngIf="bills?.length > 0">
           <div class="last-bill-title">
-            <div class="scb-text-l-black">Mes factures</div>
+            <div class="scb-text-l-black title">Mes factures</div>
             <div class="more-bills">
-              <span class="scb-text-orange" routerLink="/bills"
+              <span class="scb-text-orange more" routerLink="/bills"
                 >Voir tout
               </span>
-              <img
+              <!-- <img
                 src="/assets/images/arrow-right.svg"
                 alt="keyboard-arrow-right-orange-mob"
-              />
+              /> -->
             </div>
           </div>
           <div class="last-bill-infos">
@@ -286,10 +286,10 @@
           </div>
         </div>
       </div>
-      <div class="bons-plans">
+      <div *ngIf="listBanniere.length" class="bons-plans">
         <div class="title">Bons plans</div>
         <div
-          *ngIf="showPromoBarner || (listBanniere.length && showPromoBarner)"
+          
           class="dashboard-img-promo slide-container"
         >
           <ion-slides pager [options]="{loop: true}">

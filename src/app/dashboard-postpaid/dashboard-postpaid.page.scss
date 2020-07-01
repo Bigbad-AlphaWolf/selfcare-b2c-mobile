@@ -310,21 +310,30 @@
     }
 
     .dashboard-block-bill {
-      margin: 0 10px;
+      margin: 0 20px;
       .error {
         font-family: HelveticaNeueLTStd-Roman, sans-serif;
         font-size: 10px;
         padding: 5px 0;
       }
       .last-bill {
+        margin-bottom: 20px;
         &-title {
-          padding-top: 15px;
+          margin-bottom: 20px;
           font-size: 20px;
-          height: 51px;
           display: flex;
           justify-content: space-between;
           .more-bills {
-            font-size: 14px;
+            font-family: HelveticaNeue;
+          font-size: 16px;
+          font-weight: bold;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.88;
+          letter-spacing: normal;
+          text-align: right;
+          color: #ff7900;
+          flex-grow: 1;
           }
         }
 
@@ -432,7 +441,7 @@
     .operations-rapides {
       .top {
         display: flex;
-        padding: 15px 20px 10px 20px;
+        padding: 15px 20px 5px 20px;
 
         .more {
           font-family: HelveticaNeue;
@@ -451,8 +460,12 @@
     .bons-plans{
       display: flex;
       flex-direction: column;
+      margin: 0px 20px 20px 20px;
       &>.title{
-        margin: 5px 0px 10px 15px;
+        margin: 5px 0px 10px 0px;
+      }
+      .dashboard-img-promo{
+        margin:0px;
       }
     }
     .dashboard-block-footer-container {
