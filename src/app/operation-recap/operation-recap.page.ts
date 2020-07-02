@@ -21,6 +21,7 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { OperationExtras } from '../models/operation-extras.model';
 import { OPERATION_WOYOFAL } from '../utils/operations.util';
+import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 
 @Component({
   selector: 'app-operation-recap',
@@ -74,6 +75,7 @@ export class OperationRecapPage implements OnInit {
   state: any;
   subscriptionInfos: SubscriptionModel;
   buyCreditPayload: any;
+  isPostpaid: boolean;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -147,12 +149,16 @@ export class OperationRecapPage implements OnInit {
                 nom_marchand: this.merchantName,
               };
               break;
-              case OPERATION_TYPE_RECHARGE_CREDIT:
-                this.opXtras = state;
-                this.amount = this.opXtras.amount;
-                this.recipientMsisdn = this.opXtras.recipientMsisdn;
-                this.recipientName = this.opXtras.recipientFromContact ? this.opXtras.recipientFirstname + ' ' +  this.opXtras.recipientLastname  : '';
-                this.paymentMod = 'ORANGE_MONEY';
+            case OPERATION_TYPE_RECHARGE_CREDIT:
+              this.opXtras = state;
+              this.amount = this.opXtras.amount;
+              this.recipientMsisdn = this.opXtras.recipientMsisdn;
+              this.recipientName = this.opXtras.recipientFromContact
+                ? this.opXtras.recipientFirstname +
+                  ' ' +
+                  this.opXtras.recipientLastname
+                : '';
+              this.paymentMod = 'ORANGE_MONEY';
               break;
             case OPERATION_WOYOFAL:
               this.opXtras = state;
@@ -171,6 +177,7 @@ export class OperationRecapPage implements OnInit {
       .getSubscription(this.currentUserNumber)
       .subscribe((res: SubscriptionModel) => {
         this.subscriptionInfos = res;
+        this.isPostpaid = res.profil === PROFILE_TYPE_POSTPAID;
       });
   }
 
@@ -178,7 +185,7 @@ export class OperationRecapPage implements OnInit {
     switch (this.purchaseType) {
       case OPERATION_TYPE_PASS_INTERNET:
       case OPERATION_TYPE_PASS_ILLIMIX:
-        this.setPaymentMod();
+        this.isPostpaid ? this.openPinpad() : this.setPaymentMod();
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
         this.openPinpad();

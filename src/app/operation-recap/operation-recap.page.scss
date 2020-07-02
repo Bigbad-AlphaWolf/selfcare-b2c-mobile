@@ -90,7 +90,7 @@ ion-content {
     justify-content: space-between;
     align-items: center;
     .pass {
-      font-family: HelveticaNeue;
+      font-family: HelveticaNeueLTStd-Bd;
       font-size: 20px;
       font-weight: bold;
       font-stretch: normal;
@@ -113,7 +113,7 @@ ion-content {
   }
   .card-container {
     margin-bottom: -10px;
-    &.bill{
+    &.bill {
       margin-bottom: 0px;
     }
   }
@@ -178,7 +178,7 @@ ion-content {
 }
 
 .recap-text {
-  font-family: HelveticaNeue;
+  font-family: HelveticaNeueLTStd-Bd;
   font-size: 20px;
   font-weight: bold;
   font-stretch: normal;
@@ -187,5 +187,4 @@ ion-content {
   letter-spacing: normal;
   color: #000000;
   padding: 15px 15px 20px 15px;
-
 }
