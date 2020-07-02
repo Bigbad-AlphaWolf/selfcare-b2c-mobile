@@ -3,6 +3,7 @@ import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from "@angular/material";
 import {
   formatPhoneNumber,
   REGEX_NUMBER_OM,
+  SubscriptionModel,
 } from "src/shared";
 import { ModalController } from "@ionic/angular";
 import { OrangeMoneyService } from "src/app/services/orange-money-service/orange-money.service";
@@ -14,6 +15,7 @@ import { OperationExtras } from "src/app/models/operation-extras.model";
 import { AuthenticationService } from "src/app/services/authentication-service/authentication.service";
 import { catchError } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
+import { NumberSelectionOption } from 'src/app/models/enums/number-selection-option.enum';
 
 @Component({
   selector: "oem-number-selection",
@@ -35,6 +37,7 @@ export class NumberSelectionComponent implements OnInit {
   isErrorProcessing: boolean = false;
   canNotRecieve: boolean;
   canNotRecieveError: boolean = false;
+  option : NumberSelectionOption = NumberSelectionOption.WITH_MY_PHONES;
 
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
@@ -47,6 +50,9 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log(this.data.option);
+    
+    this.option = this.data.option;
     this.numbers$ = this.dashbServ.fetchOemNumbers();
     this.checkOmAccountSession();
   }
@@ -57,7 +63,7 @@ export class NumberSelectionComponent implements OnInit {
       return;
     }
 
-    this.opXtras.recipientMsisdn = formatPhoneNumber(
+    this.opXtras.destinataire = this.opXtras.recipientMsisdn = formatPhoneNumber(
       this.opXtras.recipientMsisdn
     );
     this.opXtras.forSelf = !this.showInput;
@@ -67,7 +73,25 @@ export class NumberSelectionComponent implements OnInit {
       this.changeDetectorRef.detectChanges();
       return;
     }
-    this.disMissBottomSheet();
+
+    this.dismissBottomSheet();
+  }
+
+  dismissBottomSheet(){
+    this.isProcessing = true;
+    this.authService.getSubscription( this.opXtras.recipientMsisdn ).subscribe(
+      (res: SubscriptionModel) => {
+        this.isProcessing = false;
+        this.opXtras.code = res.code;
+        this.opXtras.profil  = res.profil;
+        this.bottomSheetRef.dismiss(this.opXtras);
+      },
+      (err: any) => {
+        this.isProcessing = false;
+        this.bottomSheetRef.dismiss();
+
+      }
+    );
   }
 
   onPhoneSelected(opContacts: OperationExtras) {
@@ -132,9 +156,6 @@ export class NumberSelectionComponent implements OnInit {
     return canRecieve;
   }
 
-  disMissBottomSheet() {
-    this.bottomSheetRef.dismiss(this.opXtras);
-  }
 
   async openPinpad() {
     const modal = await this.modalController.create({

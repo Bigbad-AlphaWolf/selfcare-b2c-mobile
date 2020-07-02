@@ -8,10 +8,8 @@
     <span class="user-hello"
       >Bienvenue <span class="user-name">{{ firstName }}</span></span
     >
+  </div> 
+  <div class="avatar">
+    <img [src]="avatarUrl" alt="profil-mob" (error)="onErrorImgAvatar()" />
   </div>
-  <img
-    src="/assets/images/notification-bell-mob.svg"
-    class="icon-notif"
-    alt="notification-bell-mob"
-  />
 </ion-header>

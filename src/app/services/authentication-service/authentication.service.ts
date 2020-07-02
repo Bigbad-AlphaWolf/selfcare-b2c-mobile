@@ -217,12 +217,6 @@ export class AuthenticationService {
       map((isPostPaid: any) => {
         return (!isPostPaid);
        }),
-      // catchError((er:HttpErrorResponse) => {
-      //   console.log(er);
-        
-      //   if(er.status !== 401)
-      //     return of(false);
-      // })
     );
   }
 

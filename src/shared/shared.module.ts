@@ -75,9 +75,13 @@ import { CodeFormatPipe } from 'src/app/pipes/code-format.pipe';
 import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.component';
 import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
 import { AcronymPipe } from './pipes/acronym.pipe';
+import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
+import { OemOperationsComponent } from 'src/app/components/oem-operations/oem-operations.component';
 
 @NgModule({
   declarations: [
+    OemOperationsComponent,
+    SelectBeneficiaryPopUpComponent,
     CounterSelectionComponent,
     FavoriteCountersComponent,
     PhoneNumberProviderComponent,
@@ -151,6 +155,7 @@ import { AcronymPipe } from './pipes/acronym.pipe';
     RouterModule,
   ],
   entryComponents: [
+    SelectBeneficiaryPopUpComponent,
     NumberSelectionComponent,
     FavoriteCountersComponent,
     CounterSelectionComponent,
@@ -171,6 +176,8 @@ import { AcronymPipe } from './pipes/acronym.pipe';
     FavoriteMerchantComponent,
   ],
   exports: [
+    OemOperationsComponent,
+    SelectBeneficiaryPopUpComponent,
     CounterSelectionComponent,
     FavoriteCountersComponent,
     OemIonHeaderParallaxDirective,

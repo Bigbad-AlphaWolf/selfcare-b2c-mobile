@@ -165,39 +165,15 @@
           </ng-container>
         </div>
       </div>
-      <div class="dashboard-block-operation">
-        <div class="operation-block" routerLink="/buy-credit">
-          <div class="operation-img-container">
-            <img
-              src="/assets/images/recharge-credit-om-unique.svg"
-              alt="credit-icon"
-            />
-          </div>
 
-          <div class="operation-title">
-            <span>Recharger </span
-            ><span class="light">du crédit pour un autre</span>
-          </div>
+      <div class="operations-rapides">
+        <div class="top">
+          <div class="title">Je souhaites</div>
+          <div class="more" (click)="onVoirPlus()">Voir plus</div>
         </div>
-        <div class="operation-block" routerLink="/buy-pass-internet">
-          <div class="operation-img-container">
-            <img
-              src="/assets/images/new_achat-pass-internet_mob.svg"
-              alt="pass-icon"
-            />
-          </div>
-
-          <div class="operation-title">
-            <span>Acheter </span>
-            <span *ngIf="!isKilimanjaroPostpaid" class="light"
-              >un pass internet pour un autre</span
-            >
-            <span *ngIf="isKilimanjaroPostpaid" class="light"
-              >un pass internet</span
-            >
-          </div>
-        </div>
+        <oem-operations [operations]="operations"></oem-operations>
       </div>
+
       <div class="dashboard-block-bill">
         <div *ngIf="errorBill" class="scb-text-red-error error">
           <span (click)="getBills()">
@@ -206,15 +182,15 @@
         </div>
         <div class="last-bill" *ngIf="bills?.length > 0">
           <div class="last-bill-title">
-            <div class="scb-text-l-black">Mes factures</div>
+            <div class="scb-text-l-black title">Mes factures</div>
             <div class="more-bills">
-              <span class="scb-text-orange" routerLink="/bills"
+              <span class="scb-text-orange more" routerLink="/bills"
                 >Voir tout
               </span>
-              <img
+              <!-- <img
                 src="/assets/images/arrow-right.svg"
                 alt="keyboard-arrow-right-orange-mob"
-              />
+              /> -->
             </div>
           </div>
           <div class="last-bill-infos">
@@ -310,54 +286,45 @@
           </div>
         </div>
       </div>
-      <div class="dashboard-block-offres">
-        <div (click)="goToTransfertOM()" class="dashboard-block-offres-top1">
-          <div class="item-icon">
-            <img src="/assets/images/group-6.svg" alt="group-6" />
-          </div>
-          <div class="item-text scb-text-item-offre-black">
-            <span class="text-style-1"
-              >Faire une transaction avec <span> Orange Money </span></span
-            >
-          </div>
-        </div>
-      </div>
-      <div
-        *ngIf="showPromoBarner || (listBanniere.length && showPromoBarner)"
-        class="dashboard-img-promo slide-container"
-      >
-        <ion-slides pager [options]="{loop: true}">
-          <ng-container *ngFor="let banniere of listBanniere">
-            <ion-slide>
-              <span #error class="error-slide scb-text-full-black">
-                Erreur lors du chargement de l'image</span
-              >
-              <div class="description">
-                <div class="title">
-                  {{getBanniereTitle(banniere.description)}}
+      <div *ngIf="listBanniere.length" class="bons-plans">
+        <div class="title">Bons plans</div>
+        <div
+          
+          class="dashboard-img-promo slide-container"
+        >
+          <ion-slides pager [options]="{loop: true}">
+            <ng-container *ngFor="let banniere of listBanniere">
+              <ion-slide>
+                <span #error class="error-slide scb-text-full-black">
+                  Erreur lors du chargement de l'image</span
+                >
+                <div class="description">
+                  <div class="title">
+                    {{getBanniereTitle(banniere.description)}}
+                  </div>
+                  <div class="text">
+                    {{getBanniereDescription(banniere.description)}}
+                  </div>
                 </div>
-                <div class="text">
-                  {{getBanniereDescription(banniere.description)}}
+                <div class="img-container">
+                  <img
+                    #img
+                    (error)="
+                onError([
+                  { el: error, display: true },
+                  { el: img, display: false }
+                ])
+              "
+                    [src]="banniere.image"
+                    alt="ban"
+                  />
                 </div>
-              </div>
-              <div class="img-container">
-                <img
-                  #img
-                  (error)="
-              onError([
-                { el: error, display: true },
-                { el: img, display: false }
-              ])
-            "
-                  [src]="banniere.image"
-                  alt="ban"
-                />
-              </div>
-            </ion-slide>
-          </ng-container>
-        </ion-slides>
-        <div class="close-icon" (click)="hidePromoBarner()" *ngIf="0">
-          <img src="/assets/images/group-14.svg" alt="hide-banniere-promo" />
+              </ion-slide>
+            </ng-container>
+          </ion-slides>
+          <div class="close-icon" (click)="hidePromoBarner()" *ngIf="0">
+            <img src="/assets/images/group-14.svg" alt="hide-banniere-promo" />
+          </div>
         </div>
       </div>
     </div>

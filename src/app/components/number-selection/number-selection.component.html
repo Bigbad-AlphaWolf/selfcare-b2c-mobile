@@ -5,7 +5,7 @@
   <div class="description">
     Sélecionnez le bénéficiaire
   </div>
-  <div class="number-options">
+  <div *ngIf="option === 'WITH_MY_PHONES'" class="number-options">
     <mat-radio-group (change)="onOptionChange($event.value)">
       <mat-radio-button
         *ngFor="let number of numbers$ | async; index as i; count as size"

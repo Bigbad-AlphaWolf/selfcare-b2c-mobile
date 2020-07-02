@@ -5,6 +5,7 @@ import { OmSession } from './om-session.model';
 export interface OperationExtras {
   senderMsisdn?: string;
   recipientMsisdn?: string;
+  destinataire?:string;
   recipientFirstname?: string;
   recipientLastname?: string;
   recipientName?: string;
@@ -16,6 +17,9 @@ export interface OperationExtras {
   amount?: any;
   includeFee?: any;
   fee?: any;
+
+  code?:any;
+  profil?:any;
 
   billData?: { company?: BillCompany; counter?: CounterOem, codeRecharge?:string, kw?:number };
   omSession?: OmSession;
