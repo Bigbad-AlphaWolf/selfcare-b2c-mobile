@@ -1,6 +1,6 @@
-<ion-header [myScrollVanish]="scrollArea">
-  <div class="arrow-container">
-    <img src="assets/images/long-arrow-left.png" alt="" (click)="goBack()" />
+<!-- <ion-header [myScrollVanish]="scrollArea">
+  <div (click)="goBack()"  class="arrow-container">
+    <img src="assets/images/long-arrow-left.png" alt="" />
   </div>
   <div class="text-container">
     <ng-container [ngSwitch]="purchaseType">
@@ -64,8 +64,82 @@
     />
     </ng-container>
   </div>
+</ion-header> -->
+<ion-header [oemIonHeaderParallax]="100">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button
+        (click)="goBack()"
+        icon=""
+        class="oem-back-button"
+      >
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title class="achat-pass-internet">
+      <ng-container [ngSwitch]="purchaseType">
+        <span *ngSwitchCase="OPERATION_INTERNET_TYPE">Achat Pass Internet</span>
+        <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE">Achat Pass Illimix</span>
+        <span *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+          >Paiement Marchand</span
+        >
+        <span *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
+          >Transfert d'argent</span
+        >
+        <span *ngSwitchCase="OPERATION_TRANSFER_OM">Transfert d'argent</span>
+        <span *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
+        <span *ngSwitchCase="'OPERATION_WOYOFAL'">Rechargement Woyofal</span>
+  
+      </ng-container>
+    </ion-title>
+  </ion-toolbar>
+  <div class="banner-container">
+    <ng-container [ngSwitch]="purchaseType">
+      <img
+        *ngSwitchCase="OPERATION_INTERNET_TYPE"
+        src="assets/images/pass-internet-banniere.png"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+        *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
+        src="assets/images/banniere-illimix.png"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+        *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+        src="assets/images/banniere-payment.png"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+        *ngSwitchCase="OPERATION_TRANSFER_OM"
+        src="assets/images/achat-de-credit.png"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+        *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
+        src="assets/images/achat-de-credit.png"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+        *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+        src="assets/images/achat-de-credit.svg"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+      *ngSwitchCase="'OPERATION_WOYOFAL'"
+      src="assets/images/recharge-bill.svg"
+      alt="banniere"
+      class="banniere"
+    />
+    </ng-container>
+  </div>
 </ion-header>
-
 <ion-content #scrollArea [scrollEvents]="true">
   <div
     *ngIf="operationTypeRecap"

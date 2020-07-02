@@ -224,7 +224,8 @@ export class PurchaseSetAmountPage implements OnInit {
 
   redirectRecapPage(payload: any) {
     const navExtras: NavigationExtras = { state: payload };
-    this.router.navigate(['/operation-recap'], navExtras);
+    this.navController.navigateForward(['/operation-recap'], navExtras);
+    // this.router.navigate(['/operation-recap'], navExtras);
   }
 
   getOMTransferFees() {
