@@ -148,10 +148,10 @@ export class OperationRecapPage implements OnInit {
               };
               break;
               case OPERATION_TYPE_RECHARGE_CREDIT:
-                let xtras:OperationExtras = state;
-                this.amount = xtras.amount;
-                this.recipientMsisdn = xtras.recipientMsisdn;
-                this.recipientName = xtras.recipientFromContact ? xtras.recipientFirstname + ' ' + xtras.recipientLastname:'';
+                this.opXtras = state;
+                this.amount = this.opXtras.amount;
+                this.recipientMsisdn = this.opXtras.recipientMsisdn;
+                this.recipientName = this.opXtras.recipientFromContact ? this.opXtras.recipientFirstname + ' ' +  this.opXtras.recipientLastname  : '';
                 this.paymentMod = 'ORANGE_MONEY';
               break;
             case OPERATION_WOYOFAL:

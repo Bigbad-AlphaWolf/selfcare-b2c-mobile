@@ -13,7 +13,7 @@ import { NewPinpadModalPage } from "src/app/new-pinpad-modal/new-pinpad-modal.pa
 import { of, Observable } from "rxjs";
 import { OperationExtras } from "src/app/models/operation-extras.model";
 import { AuthenticationService } from "src/app/services/authentication-service/authentication.service";
-import { catchError } from "rxjs/operators";
+import { catchError, share } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
 import { NumberSelectionOption } from 'src/app/models/enums/number-selection-option.enum';
 
@@ -53,7 +53,7 @@ export class NumberSelectionComponent implements OnInit {
     console.log(this.data.option);
     
     this.option = this.data.option;
-    this.numbers$ = this.dashbServ.fetchOemNumbers();
+    this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(share());
     this.checkOmAccountSession();
   }
 
