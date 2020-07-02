@@ -146,13 +146,9 @@
                 class="btn-container"
               >
                 <div class="scb-btn-top-block">
-                  <img
-                    class="scb-btn-top-block-icon"
-                    src="/assets/images/gift-sargal.svg"
-                    alt="sargal-cfa-3-mob"
-                  />
                   <div class="scb-btn-top-block-text">
-                    <span class="text">Sargal</span>
+                    <span class="text">Orange</span>
+                    <span [appOemStatusSargalLabel]="sargalStatus" class="status-sargal"> {{ sargalStatus }}</span>
                   </div>
                 </div>
                 <div *ngIf="isLoading" class="scb-block-spinner">

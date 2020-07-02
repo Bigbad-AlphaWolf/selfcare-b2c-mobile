@@ -75,6 +75,7 @@ import { CodeFormatPipe } from 'src/app/pipes/code-format.pipe';
 import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.component';
 import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
 import { AcronymPipe } from './pipes/acronym.pipe';
+import { OemStatusSargalLabelDirective } from 'src/app/directives/oem-status-sargal-label.directive';
 
 @NgModule({
   declarations: [
@@ -129,6 +130,7 @@ import { AcronymPipe } from './pipes/acronym.pipe';
     CodeFormatPipe,
     FavoriteMerchantComponent,
     AcronymPipe,
+    OemStatusSargalLabelDirective
   ],
   imports: [
     CommonModule,
@@ -232,6 +234,7 @@ import { AcronymPipe } from './pipes/acronym.pipe';
     ItemRechargeCreditComponent,
     ItemOfferPlanComponent,
     FavoriteMerchantComponent,
+    OemStatusSargalLabelDirective
   ],
   providers: [
     Contacts,
