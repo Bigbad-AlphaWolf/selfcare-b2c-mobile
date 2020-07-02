@@ -20,20 +20,20 @@ export class HomeV2Page implements OnInit {
 }[] = [
     {
         title: "C'est ma première visite",
-        subtitle: 'Créer un compte Orange et moi, un accès à toutes les fonctionnalités',
+        subtitle: 'Je crée mon compte Orange et moi, pour accéder un accès à mon espace',
         type: 'REGISTER',
         url: '/new-registration',
         action: 'REDIRECT'
     },
     {
         title: "J’ai oublié mon mot de passe",
-        subtitle: 'Je veux le récupérer',
+        subtitle: 'Je le réinitialise pour accéder un accès à mon espace',
         type: 'FORGOT_PWD',
         url: '/forgotten-password',
         action: 'REDIRECT'
     },
     { title: "J'ai déja un compte", subtitle: 'Je me connecte', type: 'LOGIN', url: '/login', action: 'REDIRECT' },
-    { title: 'J’ai besoin d’aide', subtitle: 'J’éprouve des difficultés pour me connecter', type: 'HELP', url: '', action: 'POPUP' }
+    { title: 'J’ai besoin d’aide', subtitle: "J'ai des difficultés pour me connecter", type: 'HELP', url: '', action: 'POPUP' }
 ];
   constructor(private router: Router, private bottomSheet: MatBottomSheet) { }
 

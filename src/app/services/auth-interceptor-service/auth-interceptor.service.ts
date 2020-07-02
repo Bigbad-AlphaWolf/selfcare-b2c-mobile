@@ -150,7 +150,7 @@ function isReqWaitinForXUID(url: string) {
     'selfcare-b2c-account-management/api/account-management/v2/check_number';
   const urlRegister =
     'selfcare-b2c-account-management/api/account-management/v2/register';
-  const urlResetPwd = 'selfcare-uaa/api/account/b2c/reset-password';
+  const urlResetPwd = 'selfcare-b2c-uaa/api/account/b2c/reset-password';
   return (
     url.match(urlCheckNumber) ||
     url.match(urlRegister) ||

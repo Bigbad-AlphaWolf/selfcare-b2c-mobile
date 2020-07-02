@@ -61,11 +61,8 @@
               </div>
             <ng-container *ngIf="!isUserRecipient">
               <div class="beneficiary-number other">
-                <ion-input maxlength="20" #inputTel inputmode="tel" clearInput placeholder="Numéro du bénéficiaire" [value]="recipientContactInfos ? recipientContactInfos : otherBeneficiaryNumber"></ion-input>
-                <span (click)="pickContact()" class="btn-contact scb-text-orange">Contact</span>
-              </div>
-              <div *ngIf="hasErrorGetContact" class="error-msg scb-text-text-error">
-                 {{ errorGetContact }}
+                <ion-input maxlength="20" #inputTel inputmode="tel" clearInput placeholder="N° du bénéficiaire" [value]="recipientContactInfos ? recipientContactInfos : otherBeneficiaryNumber"></ion-input>
+                <span (click)="pickContact()" class="btn-contact scb-text-orange">Mes contacts</span>
               </div>
             </ng-container>
             <div *ngIf="hasErrorProcessing" class="error-msg scb-text-text-error">

@@ -20,17 +20,24 @@
 
     <ng-container *ngIf="!omBalancePinPadDisplayed">
       <ng-container *ngIf="step === 0">
-        <app-select-other-recipient
-          (nextStepEmitter)="nextStepOfSelectDest($event)"
-          *ngIf="currentProfil === PROFILE_TYPE_POSTPAID"
-          [type]="'credit'"
-        ></app-select-other-recipient>
-        <app-select-recipient
-          (getDestinataire)="nextStepOfSelectDest($event)"
-          (getContact)="contactGot($event)"
-          *ngIf="currentProfil !== PROFILE_TYPE_POSTPAID"
-        >
-        </app-select-recipient>
+        <ng-container *ngIf="!isProcessing">
+          <app-select-other-recipient
+            (nextStepEmitter)="nextStepOfSelectDest($event)"
+            *ngIf="currentProfil === PROFILE_TYPE_POSTPAID"
+            [type]="'credit'"
+          ></app-select-other-recipient>
+          <app-select-recipient
+            (getDestinataire)="nextStepOfSelectDest($event)"
+            (getContact)="contactGot($event)"
+            *ngIf="currentProfil !== PROFILE_TYPE_POSTPAID"
+          >
+          </app-select-recipient>
+        </ng-container>
+        <ng-container *ngIf="isProcessing">
+          <div class="loading">
+            <ion-spinner name="crescent"></ion-spinner>
+          </div>
+        </ng-container>
       </ng-container>
       <ng-container *ngIf="step === 1">
         <app-set-operation-amount

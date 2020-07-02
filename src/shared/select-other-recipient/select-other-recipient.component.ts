@@ -10,6 +10,7 @@ import {
 import { MatDialog } from '@angular/material';
 import { SelectNumberPopupComponent } from '../select-number-popup/select-number-popup.component';
 import { Contacts, Contact } from '@ionic-native/contacts';
+import { PROFILE_TYPE_POSTPAID, KILIMANJARO_FORMULE } from 'src/app/dashboard';
 
 @Component({
   selector: 'app-select-other-recipient',
@@ -50,7 +51,7 @@ export class SelectOtherRecipientComponent implements OnInit {
         if (isPostpaid) {
           this.showErrorMsg = true;
         } else {
-          this.authServ.getSubscription(this.destNumber).subscribe(
+          this.authServ.getSubscriptionForTiers(this.destNumber).subscribe(
             (res: SubscriptionModel) => {
               this.isProcessing = false;
               if (res.code !== '0') {
@@ -83,26 +84,19 @@ export class SelectOtherRecipientComponent implements OnInit {
         } else {
           this.destNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
           if (this.validateNumber(this.destNumber)) {
-            this.authServ
-              .isPostpaid(this.destNumber)
-              .subscribe((isPostpaid: boolean) => {
-                if (isPostpaid) {
-                  this.showErrorMsg = true;
-                } else {
-                  this.authServ
-                    .getSubscription(this.destNumber)
-                    .subscribe((res: SubscriptionModel) => {
-                      if (res.code !== '0') {
-                        this.nextStepEmitter.emit({
-                          destinataire: this.destNumber,
-                          code: res.code
-                        });
-                      } else {
-                        this.showErrorMsg = true;
-                      }
+              this.authServ
+                .getSubscriptionForTiers(this.destNumber)
+                .subscribe((res: SubscriptionModel) => {
+                  if( res.profil === PROFILE_TYPE_POSTPAID && res.code !== KILIMANJARO_FORMULE ){
+                    this.showErrorMsg = true;
+                  }else {
+                    this.nextStepEmitter.emit({
+                      destinataire: this.destNumber,
+                      code: res.code
                     });
-                }
-              });
+                  }
+                });
+               
           } else {
             this.destNumber = '';
             this.showErrorMsg = true;
@@ -127,7 +121,7 @@ export class SelectOtherRecipientComponent implements OnInit {
               this.showErrorMsg = true;
             } else {
               this.authServ
-                .getSubscription(this.destNumber)
+                .getSubscriptionForTiers(this.destNumber)
                 .subscribe((res: SubscriptionModel) => {
                   if (res.code !== '0') {
                     this.nextStepEmitter.emit({

@@ -121,7 +121,7 @@ ion-content {
     width: 100%;
     padding: 20px 15px 15px;
     background-color: $white;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     .top-block {
       display: flex;
       justify-content: space-between;
@@ -131,6 +131,21 @@ ion-content {
         font-size: 16px;
         line-height: 1.5;
         display: block;
+      }
+      .recipient {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        line-height: 1.33;
+        text-align: right;
+        display: block;
+        white-space: nowrap;
+      }
+    }
+    .top-block-transfert {
+      .title {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        line-height: 1.5;
       }
       .recipient {
         font-family: HelveticaNeueLTStd-Roman;

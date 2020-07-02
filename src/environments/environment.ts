@@ -17,26 +17,26 @@ export const environment = {
   LOCAL_OM: 'http://localhost:8720',
   SERVICES_SERVICE: 'selfcare-b2c-services',
   ACCOUNT_MNGT_SERVICE: 'selfcare-b2c-account-management',
-  FILE_SERVICE: 'selfcare-file-manager',
+  FILE_SERVICE: 'selfcare-b2c-file-manager',
   BILL_SERVICE: 'selfcare-b2c-facture',
   B2B_BILL_SERVICE: 'selfcare-facture',
   FACTURE_SERVICE: 'selfcare-b2c-facture',
   GATEWAY_SERVICE: 'selfcare-gateway',
   CODE_OTP_SERVICE: 'selfcare-otp',
-  UAA_SERVICE: 'selfcare-uaa',
+  UAA_SERVICE: 'selfcare-b2c-uaa',
   OM_SERVICE: 'selfcare-b2c-om',
   SARGAL_SERVICE: 'selfcare-b2c-sargal',
   GA_CONFIG: {
     trackingId: 'UA-92621294-1',
     trackPageviews: true,
   },
-  // GET_MSISDN_BY_NETWORK_URL:
-  //   'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
-  // CONFIRM_MSISDN_BY_NETWORK_URL:
-  //   'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
-  GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
+  GET_MSISDN_BY_NETWORK_URL:
+    'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
   CONFIRM_MSISDN_BY_NETWORK_URL:
-    'http://10.100.99.116:1494/api/v1/confirm-msisdn',
+    'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
+  // GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
+  // CONFIRM_MSISDN_BY_NETWORK_URL:
+  //   'http://10.100.99.116:1494/api/v1/confirm-msisdn',
 };
 
 /*

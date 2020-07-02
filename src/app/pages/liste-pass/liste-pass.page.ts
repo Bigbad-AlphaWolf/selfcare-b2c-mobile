@@ -40,7 +40,7 @@ export class ListePassPage implements OnInit {
     private appRouting: ApplicationRoutingService,
     private passIntService: PassInternetService,
     private passIllimixServ: PassIllimixService,
-    private navCtl:NavController
+    private navContr: NavController
   ) {}
 
   ngOnInit() {
@@ -113,17 +113,7 @@ export class ListePassPage implements OnInit {
   }
 
   goBack() {
-    // switch (this.purchaseType) {
-    //   case OPERATION_TYPE_PASS_INTERNET:
-    //     this.goToRecepientPassInternetPage();
-    //     break;
-    //   case OPERATION_TYPE_PASS_ILLIMIX:
-    //     this.goToRecipientPassIllimixPage();
-    //     break;
-    //   default:
-    //     break; 
-    // }
-    this.navCtl.pop();
+    this.navContr.pop()
   }
   goToRecepientPassInternetPage() {
     this.appRouting.goToSelectRecepientPassInternet();

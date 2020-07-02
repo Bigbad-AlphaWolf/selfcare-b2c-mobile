@@ -25,7 +25,7 @@ import { MatDialog } from "@angular/material";
 import { WelcomePopupComponent } from "src/shared/welcome-popup/welcome-popup.component";
 import { AssistanceService } from "../services/assistance.service";
 import { SargalService } from "../services/sargal-service/sargal.service";
-import { CODE_FORMULE_KILIMANJARO } from "../dashboard";
+import { CODE_FORMULE_KILIMANJARO, KILIMANJARO_FORMULE } from "../dashboard";
 import { OperationOem } from "../models/operation.model";
 import { ACTIONS_RAPIDES_OPERATIONS_DASHBOARD } from "../utils/operations.util";
 import { BottomSheetService } from "../services/bottom-sheet/bottom-sheet.service";
@@ -127,9 +127,9 @@ export class DashboardPostpaidPage implements OnInit {
     this.userPhoneNumber = this.dashbordServ.getCurrentPhoneNumber();
     this.authServ
       .getSubscription(this.userPhoneNumber)
-      .subscribe((subscription: any) => {
+      .subscribe((subscription: SubscriptionModel) => {
         this.isKilimanjaroPostpaid =
-          subscription.code === CODE_FORMULE_KILIMANJARO;
+          subscription.code === KILIMANJARO_FORMULE;
       });
   }
 

@@ -99,6 +99,7 @@
     width: 90%;
     ion-button{
         height: 50px;
+        text-transform: none;
         --border-radius: 10px;
         &.btn-confirm{
             --background-activated : #ff7900;
