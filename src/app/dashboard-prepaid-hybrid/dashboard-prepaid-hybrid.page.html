@@ -148,7 +148,7 @@
                 <div class="scb-btn-top-block">
                   <div class="scb-btn-top-block-text">
                     <span class="text">Orange</span>
-                    <span [appOemStatusSargalLabel]="sargalStatus" class="status-sargal"> {{ sargalStatus }}</span>
+                    <span [ngStyle]="{'color': sargalStatus === 'GOLD' ? 'gold' :  '#e5e4e2'}" class="status-sargal"> {{ sargalStatus }}</span>
                   </div>
                 </div>
                 <div *ngIf="isLoading" class="scb-block-spinner">

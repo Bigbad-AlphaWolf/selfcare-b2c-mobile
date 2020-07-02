@@ -564,8 +564,4 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         this.hasPromoPlanActive = res;
       });
   }
-
-  isGoldStatus(status: string){
-    return status === SargalStatusCard.GOLD
-  }
 }
