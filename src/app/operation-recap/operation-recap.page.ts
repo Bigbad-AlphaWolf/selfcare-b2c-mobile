@@ -148,8 +148,8 @@ export class OperationRecapPage implements OnInit {
                 let xtras:OperationExtras = state;
                 this.amount = xtras.amount;
                 this.recipientMsisdn = xtras.recipientMsisdn;
-                this.recipientName = xtras.recipientFromContact?
-                xtras.recipientFirstname + ' ' + xtras.recipientLastname:'';
+                this.recipientName = xtras.recipientFromContact ? xtras.recipientFirstname + ' ' + xtras.recipientLastname:'';
+                this.paymentMod = 'ORANGE_MONEY';
 
                 break;
             default:

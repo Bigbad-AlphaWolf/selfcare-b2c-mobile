@@ -17,7 +17,7 @@ import { NoOmAccountModalComponent } from "src/shared/no-om-account-modal/no-om-
 import { of, Observable } from "rxjs";
 import { OperationExtras } from "src/app/models/operation-extras.model";
 import { AuthenticationService } from "src/app/services/authentication-service/authentication.service";
-import { catchError } from "rxjs/operators";
+import { catchError, share } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
@@ -54,7 +54,7 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.numbers$ = this.dashbServ.fetchOemNumbers();
+    this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(share());
     this.checkOmAccountSession();
   }
 
@@ -68,7 +68,7 @@ export class NumberSelectionComponent implements OnInit {
       this.opXtras.recipientMsisdn
     );
     this.opXtras.forSelf = !this.showInput;
-
+      
     if (!(await this.canRecieveCredit())) {
       this.canNotRecieve = true;
       this.changeDetectorRef.detectChanges();
@@ -126,7 +126,7 @@ export class NumberSelectionComponent implements OnInit {
 
   async canRecieveCredit() {
     if (this.opXtras.forSelf) return true;
-
+    this.isProcessing = true;
     let canRecieve = await this.authService
       .canRecieveCredit(this.opXtras.recipientMsisdn)
       .pipe(
@@ -136,6 +136,7 @@ export class NumberSelectionComponent implements OnInit {
         })
       )
       .toPromise();
+      this.isProcessing = false;
     return canRecieve;
   }
 

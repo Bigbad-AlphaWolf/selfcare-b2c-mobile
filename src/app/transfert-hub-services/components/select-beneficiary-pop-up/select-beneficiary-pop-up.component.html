@@ -8,7 +8,7 @@
   <div class="beneficiary-number">
       <form novalidate autocomplete="false">
         <mat-form-field class="scb-input-row" appearance="outline">
-            <mat-label>Numéro du bénéficiaire &nbsp;&nbsp;</mat-label>
+            <mat-label>N° du bénéficiaire&nbsp;&nbsp;</mat-label>
             <input
               #inputTel
               matInput
@@ -22,7 +22,7 @@
       <ion-input maxlength="20" #inputTel inputmode="tel" clearInput [value]="recipientContactInfos ? recipientContactInfos : otherBeneficiaryNumber"></ion-input>
     </ion-item> -->
     <img class="icon" src="/assets/images/address-book.png" alt="">
-    <span (click)="pickContact()" class="btn-contact scb-text-orange">Contact</span>
+    <span (click)="pickContact()" class="btn-contact scb-text-orange">Mes contacts</span>
   </div>
   <div *ngIf="hasErrorGetContact" class="error-msg scb-text-red-error">
       {{ errorGetContact }}

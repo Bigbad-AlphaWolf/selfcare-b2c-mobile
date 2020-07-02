@@ -16,7 +16,7 @@ import { Contacts, Contact } from '@ionic-native/contacts';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { IonInput, IonSelect } from '@ionic/angular';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { PROFILE_TYPE_POSTPAID, isPrepaidFix } from '../dashboard';
+import { PROFILE_TYPE_POSTPAID, isPrepaidFix, CODE_FORMULE_KILIMANJARO, KILIMANJARO_FORMULE } from '../dashboard';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -38,8 +38,6 @@ export class SelectBeneficiaryV2Page implements OnInit {
   isLoaded: boolean;
   mainPhoneNumber: string;
   otherBeneficiaryNumber: string;
-  hasErrorGetContact: boolean;
-  errorGetContact: string;
   recipientContactInfos: any;
   isProcessing = false;
   @ViewChild('inputTel') ionicInput: IonInput;
@@ -119,9 +117,8 @@ export class SelectBeneficiaryV2Page implements OnInit {
   }
 
   pickContact() {
-    this.hasErrorGetContact = false;
+    this.hasErrorProcessing = false;
     this.recipientNumber = null;
-    this.errorGetContact = null;
     this.contacts
       .pickContact()
       .then((contact: Contact) => {
@@ -154,8 +151,8 @@ export class SelectBeneficiaryV2Page implements OnInit {
       this.otherBeneficiaryNumber = selectedNumber;
       this.getContactFormattedName(contact);
     } else {
-      this.hasErrorGetContact = true;
-      this.errorGetContact =
+      this.hasErrorProcessing = true;
+      this.errorMsg =
         'Ce destinataire ne peux pas bénéficier de ce service.';
     }
   }
@@ -173,9 +170,8 @@ export class SelectBeneficiaryV2Page implements OnInit {
   }
 
   processInfoUser() {
-    this.hasErrorGetContact = false;
+    this.hasErrorProcessing = false;
     this.hasError = false;
-    this.errorGetContact = null;
     this.errorMsg = null;
     if (this.isUserRecipient) {
       this.recipientNumber = this.ionicSelect.value;
@@ -201,21 +197,20 @@ export class SelectBeneficiaryV2Page implements OnInit {
 
   validatePhoneNumberProfil() {
     this.isProcessing = true;
-    this.hasErrorGetContact = false;
-    this.errorGetContact = null;
+    this.hasErrorProcessing = false;
     if (this.recipientNumber) {
-      this.authServ.getSubscription(this.recipientNumber).subscribe(
+      this.authServ.getSubscriptionForTiers(this.recipientNumber).subscribe(
         (res: SubscriptionModel) => {
           this.isProcessing = false;
           const codeFormule = res.code;
           const profil = res.profil;
           if (
-            profil === PROFILE_TYPE_POSTPAID ||
+            profil === PROFILE_TYPE_POSTPAID && codeFormule != KILIMANJARO_FORMULE ||
             (isPrepaidFix(res) &&
               this.purchaseType === OPERATION_TYPE_PASS_ILLIMIX)
           ) {
-            this.hasErrorGetContact = true;
-            this.errorGetContact =
+            this.hasErrorProcessing = true;
+            this.errorMsg =
               'Ce destinataire ne peux pas bénéficier de ce service.';
           } else {
             const data = {
@@ -228,8 +223,8 @@ export class SelectBeneficiaryV2Page implements OnInit {
         },
         (err: any) => {
           this.isProcessing = false;
-          this.hasErrorGetContact = true;
-          this.errorGetContact = 'Une erreur est survenue. Veuillez réessayer';
+          this.hasErrorProcessing = true;
+          this.errorMsg = 'Une erreur est survenue. Veuillez réessayer';
         }
       );
     }

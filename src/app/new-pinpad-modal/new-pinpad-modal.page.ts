@@ -12,6 +12,7 @@ import {
   OmBuyIllimixModel,
   TransferOMWithCodeModel,
   TransferOrangeMoneyModel,
+  MerchantPaymentModel,
 } from '../services/orange-money-service';
 import {
   OPERATION_TYPE_PASS_INTERNET,
@@ -44,6 +45,7 @@ export class NewPinpadModalPage implements OnInit {
   @Input() merchantPaymentPayload: any;
   bullets = [0, 1, 2, 3];
   codePin = [];
+  uuid: string;
   digitPadIsActive = true;
   pinHasError: boolean;
   pinError: string;
@@ -85,6 +87,7 @@ export class NewPinpadModalPage implements OnInit {
       codeOTP: ['', [Validators.required]],
     });
     this.getOMPhoneNumber();
+    this.getDeviceUuid();
     this.dataToLog = {
       operation: this.operationType,
       phoneNumber: this.omPhoneNumber,
@@ -126,50 +129,55 @@ export class NewPinpadModalPage implements OnInit {
   }
 
   getOMPhoneNumber() {
-    this.orangeMoneyService.getOmMsisdn().pipe(
-      catchError((er: HttpErrorResponse) => {
-        if (er.status === 401) this.modalController.dismiss();        
-        return of('error')
-      }) 
-      ).subscribe(
-      (omMsisdn) => {
-        if (omMsisdn && omMsisdn !== 'error') {
-          this.omPhoneNumber = omMsisdn;
-          this.checkUserHasOMToken();
-        } else {
-          this.userNotRegisteredInOm = true;
-          this.omPhoneNumber = this.mainPhoneNumber;
-          this.allNumbers.push(this.mainPhoneNumber);
-          this.dashboardService.getAttachedNumbers().subscribe((res: any) => {
-            res.forEach((element) => {
-              const msisdn = '' + element.msisdn;
-              if (!msisdn.startsWith('33', 0)) {
-                this.allNumbers.push(element.msisdn);
-              }
+    this.orangeMoneyService
+      .getOmMsisdn()
+      .pipe(
+        catchError((er: HttpErrorResponse) => {
+          if (er.status === 401) this.modalController.dismiss();
+          return of('error');
+        })
+      )
+      .subscribe(
+        (omMsisdn) => {
+          if (omMsisdn && omMsisdn !== 'error') {
+            this.omPhoneNumber = omMsisdn;
+            this.checkUserHasOMToken();
+          } else {
+            this.omPhoneNumber = this.mainPhoneNumber;
+            this.allNumbers.push(this.mainPhoneNumber);
+            this.dashboardService.getAttachedNumbers().subscribe((res: any) => {
+              res.forEach((element) => {
+                const msisdn = '' + element.msisdn;
+                if (!msisdn.startsWith('33', 0)) {
+                  this.allNumbers.push(element.msisdn);
+                }
+              });
+              this.userNotRegisteredInOm = true;
+              this.checkingToken = false;
             });
-            this.checkingToken = false;
-          });
-        }
-      },
-      (err) => {}
-    );
+          }
+        },
+        (err) => {}
+      );
   }
 
   checkUserHasOMToken() {
     this.orangeMoneyService
-      .GetUserAuthInfo(this.omPhoneNumber).pipe(
-        catchError((er: HttpErrorResponse) => {          
-          if (er.status === 401) this.modalController.dismiss();        
-          return of(er)
-        }) 
-      ).subscribe((omUser) => {
+      .GetUserAuthInfo(this.omPhoneNumber)
+      .pipe(
+        catchError((er: HttpErrorResponse) => {
+          if (er.status === 401) this.modalController.dismiss();
+          return of(er);
+        })
+      )
+      .subscribe((omUser) => {
         this.pinpadData = {
           msisdn: this.omPhoneNumber,
           os: 'Android',
           app_version: 'v1.0',
           app_conf_version: 'v1.0',
           service_version: OM_SERVICE_VERSION,
-        };
+        };        
         // If user already connected open pinpad
         if (omUser['hasApiKey']) {
           this.userHasOmToken = true;
@@ -217,6 +225,7 @@ export class NewPinpadModalPage implements OnInit {
         }
       },
       (err) => {
+        this.userNotRegisteredInOm = true;
         this.checkingToken = false;
         this.sendingOtp = false;
         this.resendCode = false;
@@ -249,8 +258,16 @@ export class NewPinpadModalPage implements OnInit {
       (res: any) => {
         this.registering = false;
         this.otpHasError = false;
+        this.pinpadData = {
+          msisdn: this.omPhoneNumber,
+          os: 'Android',
+          app_version: 'v1.0',
+          app_conf_version: 'v1.0',
+          service_version: OM_SERVICE_VERSION,
+        };
         if (!res.status_code.match('Erreur')) {
           this.userHasOmToken = true;
+          this.otpValidation = false;
           const omUser: OmUserInfo = {
             solde: 0,
             msisdn: this.omPhoneNumber,
@@ -269,7 +286,7 @@ export class NewPinpadModalPage implements OnInit {
             showSolde: true,
           };
           this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
-          this.gettingPinpad = true;
+          this.gettingPinpad = true;          
           this.orangeMoneyService
             .GetPinPad(this.pinpadData)
             .subscribe((response: any) => {
@@ -281,11 +298,13 @@ export class NewPinpadModalPage implements OnInit {
               this.orangeMoneyService.SaveOrangeMoneyUser(omUser1);
             });
         } else {
+          this.otpValidation = true;
           this.otpHasError = true;
           this.errorOnOtp = res.status_wording;
         }
       },
       () => {
+        this.otpValidation = true;
         this.registering = false;
       }
     );
@@ -319,6 +338,7 @@ export class NewPinpadModalPage implements OnInit {
           app_version: 'v1.0',
           app_conf_version: 'v1.0',
           user_type: 'user',
+          uuid: this.uuid,
           service_version: OM_SERVICE_VERSION,
         };
         this.orangeMoneyService.LoginClient(loginPayload).subscribe(
@@ -470,6 +490,7 @@ export class NewPinpadModalPage implements OnInit {
       app_conf_version: 'v1.0',
       user_type: 'user',
       service_version: OM_SERVICE_VERSION,
+      uuid: this.uuid,
     };
     this.orangeMoneyService.GetBalance(balancePayload).subscribe(
       (res: any) => {
@@ -535,6 +556,7 @@ export class NewPinpadModalPage implements OnInit {
       app_conf_version: 'v1.0',
       user_type: 'user',
       service_version: OM_SERVICE_VERSION,
+      uuid: this.uuid,
     };
     this.orangeMoneyService.AchatCredit(buyCreditPayload).subscribe(
       (res: any) => {
@@ -561,6 +583,7 @@ export class NewPinpadModalPage implements OnInit {
       user_type: 'user',
       service_version: OM_SERVICE_VERSION,
       amount: params.amount,
+      uuid: this.uuid,
     };
     if (params.canalPromotion) {
       buyPassPayload.canal = params.canalPromotion;
@@ -590,6 +613,7 @@ export class NewPinpadModalPage implements OnInit {
       user_type: 'user',
       service_version: OM_SERVICE_VERSION,
       amount: params.amount,
+      uuid: this.uuid,
     };
     if (params.canalPromotion) {
       buyPassPayload.canal = params.canalPromotion;
@@ -678,13 +702,14 @@ export class NewPinpadModalPage implements OnInit {
     const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
       this.omPhoneNumber
     );
-    const payMerchantPayload = {
+    const payMerchantPayload: MerchantPaymentModel = {
       msisdn: omUser.msisdn,
       code_marchand: params.code_marchand.toString(),
       amount: params.amount,
       pin: params.pin,
       nom_marchand: params.nom_marchand,
       em: omUser.em,
+      uuid: this.uuid,
     };
     this.orangeMoneyService.payMerchantOM(payMerchantPayload).subscribe(
       (res: any) => {
@@ -713,8 +738,9 @@ export class NewPinpadModalPage implements OnInit {
       this.modalController.dismiss({
         success: true,
       });
-    }else if (res === null || res.status_code === null) {
-      this.pinError = "Une erreur s'est produite. Veuillez ressayer ultérieurement";
+    } else if (res === null || res.status_code === null) {
+      this.pinError =
+        "Une erreur s'est produite. Veuillez ressayer ultérieurement";
       this.pinHasError = true;
       this.recurrentOperation = true;
       // this.resultEmit.emit('erreur');
@@ -725,7 +751,7 @@ export class NewPinpadModalPage implements OnInit {
         'error',
         this.dataToLog
       );
-        if (res.status_code.match('Erreur-045')) {
+      if (res.status_code.match('Erreur-045')) {
         this.pinError =
           'Vous avez effectué la même transaction il y a quelques instants.';
         this.recurrentOperation = true;
@@ -791,5 +817,10 @@ export class NewPinpadModalPage implements OnInit {
 
   enableDigitPad() {
     this.digitPadIsActive = true;
+  }
+
+  getDeviceUuid() {
+    let deviceInfo = window['device'];
+    if (deviceInfo) this.uuid = deviceInfo.uuid;
   }
 }

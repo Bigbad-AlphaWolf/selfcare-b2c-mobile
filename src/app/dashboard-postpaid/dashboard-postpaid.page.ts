@@ -23,7 +23,7 @@ import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
 import { SargalService } from '../services/sargal-service/sargal.service';
-import { CODE_FORMULE_KILIMANJARO } from '../dashboard';
+import { CODE_FORMULE_KILIMANJARO, KILIMANJARO_FORMULE } from '../dashboard';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid',
@@ -117,9 +117,9 @@ export class DashboardPostpaidPage implements OnInit {
     this.userPhoneNumber = this.dashbordServ.getCurrentPhoneNumber();
     this.authServ
       .getSubscription(this.userPhoneNumber)
-      .subscribe((subscription: any) => {
+      .subscribe((subscription: SubscriptionModel) => {
         this.isKilimanjaroPostpaid =
-          subscription.code === CODE_FORMULE_KILIMANJARO;
+          subscription.code === KILIMANJARO_FORMULE;
       });
   }
 
