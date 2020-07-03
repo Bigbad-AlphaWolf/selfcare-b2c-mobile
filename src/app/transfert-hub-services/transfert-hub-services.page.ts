@@ -115,25 +115,25 @@ export class TransfertHubServicesPage implements OnInit {
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
-    private matBottomSheet: MatBottomSheet ,
+    private matBottomSheet: MatBottomSheet,
     private navController: NavController,
-    private router:Router ) {}
+    private router: Router
+  ) {}
 
   ngOnInit() {
     let purchaseType;
 
-    if(history && history.state){
+    if (history && history.state) {
       purchaseType = history.state.purchaseType;
     }
-    if (purchaseType === 'TRANSFER') { 
+    if (purchaseType === 'TRANSFER') {
       this.options = this.transferOptions;
       this.pageTitle = 'Transférer argent ou crédit';
-    } else if(purchaseType === 'BUY') { 
+    } else if (purchaseType === 'BUY') {
       this.options = this.buyOptions;
       this.pageTitle = 'Acheter crédit ou pass';
-    }else{
+    } else {
       this.navController.navigateBack('/dashboard');
-
     }
   }
 
@@ -168,7 +168,7 @@ export class TransfertHubServicesPage implements OnInit {
       case 'CREDIT':
         if (opt.action === 'REDIRECT') {
           // this.appRouting.goBuyCredit();
-          this.openNumberSelectionBottomSheet();    
+          this.openNumberSelectionBottomSheet();
         }
         break;
       case 'PASS':
@@ -201,17 +201,22 @@ export class TransfertHubServicesPage implements OnInit {
     return await modal.present();
   }
 
-
-  openNumberSelectionBottomSheet(option?: NumberSelectionOption) {
-    this.matBottomSheet
-      .open(NumberSelectionComponent, {
-        data: {option: option},
-      })
-      .afterDismissed()
-      .subscribe((opInfos: OperationExtras) => {
-      if(!opInfos || !opInfos.recipientMsisdn) return;
-      opInfos = { purchaseType:OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos}
-      this.router.navigate([CreditPassAmountPage.PATH], {state:opInfos});
-      });
+  async openNumberSelectionBottomSheet(option?: NumberSelectionOption) {
+    const modal = await this.modalController.create({
+      component: NumberSelectionComponent,
+      cssClass: 'modalRecipientSelection',
+      componentProps: { option },
+    });
+    modal.onDidDismiss().then((response: any) => {
+      console.log(response);
+      let opInfos;
+      if (response && response.data) {
+        opInfos = response.data;
+        if (!opInfos || !opInfos.recipientMsisdn) return;
+        opInfos = { purchaseType: OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos };
+        this.router.navigate([CreditPassAmountPage.PATH], { state: opInfos });
+      }
+    });
+    return await modal.present();
   }
 }
