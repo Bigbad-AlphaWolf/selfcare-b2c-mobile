@@ -14,7 +14,7 @@
     "fixlint": "ng lint --fix=true",
     "ci-e2e": "protractor --capabilities.chromeOptions.args=--headless --capabilities.chromeOptions.args=--no-sandbox protractor.conf.js",
     "sonar": "sonar-scanner",
-    "build:android:release" : "ionic cordova build android --release --prod"
+    "build:android:release": "ionic cordova build android --release --prod"
   },
   "private": true,
   "dependencies": {

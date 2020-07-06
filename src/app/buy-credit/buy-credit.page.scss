@@ -39,5 +39,10 @@
     scb-activation-om-mobile {
       height: calc(100% + 50px);
     }
+    .loading{
+      position: fixed;
+      top: 50%;
+      right: 50%;
+    }
   }
 }

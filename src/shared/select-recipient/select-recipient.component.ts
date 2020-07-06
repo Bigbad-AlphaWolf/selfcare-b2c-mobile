@@ -10,6 +10,7 @@ import { AuthenticationService } from 'src/app/services/authentication-service/a
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { MatDialog } from '@angular/material';
 import { SelectNumberPopupComponent } from '../select-number-popup/select-number-popup.component';
+import { PROFILE_TYPE_POSTPAID, CODE_FORMULE_KILIMANJARO, KILIMANJARO_FORMULE } from 'src/app/dashboard';
 
 @Component({
   selector: 'app-select-recipient',
@@ -116,36 +117,29 @@ export class SelectRecipientComponent implements OnInit {
     this.showErrorMsg = false;
     this.isProcessing = true;
     this.destNumber = formatPhoneNumber(this.destNumber);
-    this.authenticationService.isPostpaid(this.destNumber).subscribe(
-      (isPostpaid: boolean) => {
-        if (isPostpaid) {
+    
+    this.authenticationService.getSubscriptionForTiers(this.destNumber).subscribe(
+      (res: SubscriptionModel) => {
+        this.isProcessing = false;
+        if( res.profil === PROFILE_TYPE_POSTPAID && res.code !== KILIMANJARO_FORMULE )
+        {
           this.showErrorMsg = true;
-          this.isProcessing = false;
         } else {
-          this.authenticationService.getSubscription(this.destNumber).subscribe(
-            (res: SubscriptionModel) => {
-              this.isProcessing = false;
-              if (res.code !== '0') {
-                this.getDestinataire.emit({
-                  destinataire: this.destNumber,
-                  code: res.code
-                });
-                if (this.contactInfos) {
-                  this.getContact.emit(this.contactInfos);
-                }
-              } else {
-                this.showErrorMsg = true;
-              }
-            },
-            () => {
-              this.isProcessing = false;
-            }
-          );
+          this.getDestinataire.emit({
+            destinataire: this.destNumber,
+            code: res.code
+          });
+          if (this.contactInfos) {
+            this.getContact.emit(this.contactInfos);
+          }
         }
       },
       () => {
         this.isProcessing = false;
       }
     );
+        
+      
+      
   }
 }

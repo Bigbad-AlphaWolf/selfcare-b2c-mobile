@@ -20,7 +20,7 @@ import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/o
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { OperationExtras } from '../models/operation-extras.model';
-import { OPERATION_WOYOFAL } from '../utils/operations.util';
+import { OPERATION_WOYOFAL } from '../utils/constants';
 
 @Component({
   selector: 'app-operation-recap',

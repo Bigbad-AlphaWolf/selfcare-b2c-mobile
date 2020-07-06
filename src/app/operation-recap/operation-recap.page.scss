@@ -32,6 +32,7 @@ ion-content {
 .show-toolbar {
   .arrow-container {
     height: 40px;
+    width: 50px;
   }
   .text-container {
     font-family: HelveticaNeueLTStd-Bd, sans-serif;
@@ -89,7 +90,7 @@ ion-content {
     justify-content: space-between;
     align-items: center;
     .pass {
-      font-family: HelveticaNeue;
+      font-family: HelveticaNeueLTStd-Bd;
       font-size: 20px;
       font-weight: bold;
       font-stretch: normal;
@@ -112,7 +113,7 @@ ion-content {
   }
   .card-container {
     margin-bottom: -10px;
-    &.bill{
+    &.bill {
       margin-bottom: 0px;
     }
   }
@@ -121,7 +122,7 @@ ion-content {
     width: 100%;
     padding: 20px 15px 15px;
     background-color: $white;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     .top-block {
       display: flex;
       justify-content: space-between;
@@ -131,6 +132,21 @@ ion-content {
         font-size: 16px;
         line-height: 1.5;
         display: block;
+      }
+      .recipient {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        line-height: 1.33;
+        text-align: right;
+        display: block;
+        white-space: nowrap;
+      }
+    }
+    .top-block-transfert {
+      .title {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        line-height: 1.5;
       }
       .recipient {
         font-family: HelveticaNeueLTStd-Roman;
@@ -162,7 +178,7 @@ ion-content {
 }
 
 .recap-text {
-  font-family: HelveticaNeue;
+  font-family: HelveticaNeueLTStd-Bd;
   font-size: 20px;
   font-weight: bold;
   font-stretch: normal;
@@ -171,5 +187,4 @@ ion-content {
   letter-spacing: normal;
   color: #000000;
   padding: 15px 15px 20px 15px;
-
 }

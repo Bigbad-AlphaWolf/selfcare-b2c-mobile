@@ -66,13 +66,13 @@
       margin: 7px 0;
     }
     .btn-container {
-      width: percentage(345/375);
-      position: fixed;
-      bottom: 20px;
-      left: percentage(15/375);
+      // width: percentage(345/375);
+      // position: fixed;
+      // bottom: 20px;
+      // left: percentage(15/375);
       button {
-        border-radius: 10px;
-        position: relative;
+        // border-radius: 10px;
+        // position: relative;
         mat-spinner {
           position: absolute;
           top: 15px;

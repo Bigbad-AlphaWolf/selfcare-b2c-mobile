@@ -20,22 +20,23 @@
             align-items: center;
             width: 48%;
             .filter-container {
-                display: flex;
+                display: block;
                 width: 100%;
                 line-height: 40px;
                 border-radius: 20px;
                 border: solid 2px $black;
-                height: 40px;
                 text-align: start;
                 font-family: HelveticaNeueLTStd-Roman;
                 font-size: 17px;
                 min-width: 170px;
+                padding: 8px 5px 0px 5px;
                 .mat-button-wrapper {
                     width: 100%;
                     display: flex;
                 }
                 .btn-filter {
                     display: flex;
+                    justify-content: space-between;
                 }
                 .arrows {
                     justify-content: flex-end;

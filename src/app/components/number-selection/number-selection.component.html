@@ -49,7 +49,7 @@
       >Continuer</button
     >
     <ion-spinner
-      *ngIf="isProcessing"
+      *ngIf="isProcessing || !((numbers$ | async)?.length)"
       name="crescent"
     ></ion-spinner>
   </div>

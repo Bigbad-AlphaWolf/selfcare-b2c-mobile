@@ -4,7 +4,7 @@
   overflow-y: auto;
   height: 100%;
   position: relative;
-  .close-icon{
+  .close-icon {
     position: absolute;
     right: 10px;
     top: 15px;
@@ -56,7 +56,7 @@
         }
       }
     }
-    .counter{
+    .counter {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -66,7 +66,7 @@
       border: solid 1px #4bb4e6;
       background-color: #dbf0fa;
       margin-top: 20px;
-      .kw{
+      .kw {
         font-family: HelveticaNeueLTStd-Roman;
         font-size: 14px;
         font-weight: normal;
@@ -77,8 +77,8 @@
         text-align: center;
         color: #666666;
       }
-      .code{
-        font-family: HelveticaNeue;
+      .code {
+        font-family: HelveticaNeueLTStd-Bd;
         font-size: 16px;
         font-weight: bold;
         font-stretch: normal;
@@ -90,26 +90,26 @@
       }
     }
   }
-  .hide{
+  .hide {
     visibility: hidden;
   }
-  .confirm-btn{
+  .confirm-btn {
     margin: auto;
     margin-top: 30px;
     width: 90%;
-    ion-button{
-        height: 50px;
-        --border-radius: 10px;
-        &.btn-confirm{
-            --background-activated : #ff7900;
-        }
-        &.btn-cancel{
-            --background: white;
-            --color: black;
-            --border-style: solid;
-            --background-activated : black;;
-
-        }
+    ion-button {
+      height: 50px;
+      text-transform: none;
+      --border-radius: 10px;
+      &.btn-confirm {
+        --background-activated: #ff7900;
+      }
+      &.btn-cancel {
+        --background: white;
+        --color: black;
+        --border-style: solid;
+        --background-activated: black;
+      }
     }
   }
   .terminer {
