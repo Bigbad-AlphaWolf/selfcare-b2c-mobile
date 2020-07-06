@@ -1,35 +1,40 @@
-import { Component, OnInit, Inject, ChangeDetectorRef } from "@angular/core";
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from "@angular/material";
+import {
+  Component,
+  OnInit,
+  Inject,
+  ChangeDetectorRef,
+  Input,
+} from '@angular/core';
 import {
   formatPhoneNumber,
   REGEX_NUMBER_OM,
   SubscriptionModel,
-} from "src/shared";
-import { SelectNumberPopupComponent } from "src/shared/select-number-popup/select-number-popup.component";
-import { ModalController } from "@ionic/angular";
-import { OrangeMoneyService } from "src/app/services/orange-money-service/orange-money.service";
-import { Router } from "@angular/router";
-import { FollowAnalyticsService } from "src/app/services/follow-analytics/follow-analytics.service";
-import { DashboardService } from "src/app/services/dashboard-service/dashboard.service";
-import { OmSession } from "src/app/models/om-session.model";
-import { NewPinpadModalPage } from "src/app/new-pinpad-modal/new-pinpad-modal.page";
-import { NoOmAccountModalComponent } from "src/shared/no-om-account-modal/no-om-account-modal.component";
-import { of, Observable } from "rxjs";
-import { OperationExtras } from "src/app/models/operation-extras.model";
-import { AuthenticationService } from "src/app/services/authentication-service/authentication.service";
-import { catchError, share } from "rxjs/operators";
-import { HttpErrorResponse } from "@angular/common/http";
+} from 'src/shared';
+import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
+import { ModalController } from '@ionic/angular';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { Router } from '@angular/router';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { OmSession } from 'src/app/models/om-session.model';
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { NoOmAccountModalComponent } from 'src/shared/no-om-account-modal/no-om-account-modal.component';
+import { of, Observable } from 'rxjs';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { catchError, share } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: "oem-number-selection",
-  templateUrl: "./number-selection.component.html",
-  styleUrls: ["./number-selection.component.scss"],
+  selector: 'oem-number-selection',
+  templateUrl: './number-selection.component.html',
+  styleUrls: ['./number-selection.component.scss'],
 })
 export class NumberSelectionComponent implements OnInit {
-  numbers$: Observable<string[]> = of(["782363572", "776148081", "776148080"]);
+  numbers$: Observable<string[]> = of(['782363572', '776148081', '776148080']);
 
-  numberSelected: string = "";
-  numberFromInput: string = "";
+  numberSelected: string = '';
+  numberFromInput: string = '';
 
   isProcessing: boolean;
   showInput: boolean = true;
@@ -40,10 +45,8 @@ export class NumberSelectionComponent implements OnInit {
   isErrorProcessing: boolean = false;
   canNotRecieve: boolean;
   canNotRecieveError: boolean = false;
-
+  @Input() data;
   constructor(
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-    private bottomSheetRef: MatBottomSheetRef<NumberSelectionComponent>,
     private modalController: ModalController,
     private omService: OrangeMoneyService,
     private router: Router,
@@ -68,7 +71,7 @@ export class NumberSelectionComponent implements OnInit {
       this.opXtras.recipientMsisdn
     );
     this.opXtras.forSelf = !this.showInput;
-      
+
     if (!(await this.canRecieveCredit())) {
       this.canNotRecieve = true;
       this.changeDetectorRef.detectChanges();
@@ -84,7 +87,7 @@ export class NumberSelectionComponent implements OnInit {
   }
 
   onOptionChange(value: string) {
-    this.showInput = value === "AUTRE";
+    this.showInput = value === 'AUTRE';
     this.opXtras.recipientMsisdn = this.showInput
       ? this.numberFromInput
       : value;
@@ -104,20 +107,20 @@ export class NumberSelectionComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
 
         if (
-          omSession.msisdn === "error" ||
+          omSession.msisdn === 'error' ||
           !omSession.hasApiKey ||
           !omSession.accessToken ||
           omSession.loginExpired
         ) {
-          this.bottomSheetRef.dismiss();
+          this.modalController.dismiss();
           this.openPinpad();
         }
 
-        if (omSession.msisdn !== "error")
+        if (omSession.msisdn !== 'error')
           this.opXtras.senderMsisdn = omSession.msisdn;
       },
       (error) => {
-        this.bottomSheetRef.dismiss();
+        this.modalController.dismiss();
 
         this.isErrorProcessing = true;
       }
@@ -131,23 +134,23 @@ export class NumberSelectionComponent implements OnInit {
       .canRecieveCredit(this.opXtras.recipientMsisdn)
       .pipe(
         catchError((er: HttpErrorResponse) => {
-          if (er.status === 401) this.bottomSheetRef.dismiss();
+          if (er.status === 401) this.modalController.dismiss();
           return of(false);
         })
       )
       .toPromise();
-      this.isProcessing = false;
+    this.isProcessing = false;
     return canRecieve;
   }
 
   disMissBottomSheet() {
-    this.bottomSheetRef.dismiss(this.opXtras);
+    this.modalController.dismiss(this.opXtras);
   }
 
   async openPinpad() {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
-      cssClass: "pin-pad-modal",
+      cssClass: 'pin-pad-modal',
       componentProps: {
         operationType: null,
       },
