@@ -25,6 +25,7 @@ import { of, Observable } from 'rxjs';
   styleUrls: ['./purchase-set-amount.page.scss'],
 })
 export class PurchaseSetAmountPage implements OnInit {
+  static ROUTE_PATH : string = '/purchase-set-amount'
   title: string;
   subtitle: string;
   setAmountForm: FormGroup;
@@ -102,6 +103,7 @@ export class PurchaseSetAmountPage implements OnInit {
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
         this.title = 'Paiement marchand';
+        this.subtitle = 'Montant à payer';
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
         this.title = 'Achat de Crédit';
@@ -222,7 +224,8 @@ export class PurchaseSetAmountPage implements OnInit {
 
   redirectRecapPage(payload: any) {
     const navExtras: NavigationExtras = { state: payload };
-    this.router.navigate(['/operation-recap'], navExtras);
+    this.navController.navigateForward(['/operation-recap'], navExtras);
+    // this.router.navigate(['/operation-recap'], navExtras);
   }
 
   getOMTransferFees() {

@@ -13,7 +13,8 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import {
   PROFILE_TYPE_POSTPAID,
   HOME_PREPAID_FORMULE,
-  CODE_FORMULE_KILIMANJARO
+  CODE_FORMULE_KILIMANJARO,
+  KILIMANJARO_FORMULE
 } from '../dashboard';
 import { BuyPassModel } from '../services/dashboard-service';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
@@ -37,7 +38,7 @@ export class BuyPassInternetPage implements OnInit {
   PAYMENT_MOD_CREDIT = PAYMENT_MOD_CREDIT;
   PAYMENT_MOD_OM = PAYMENT_MOD_OM;
   PROFILE_TYPE_POSTPAID = PROFILE_TYPE_POSTPAID;
-  CODE_FORMULE_KILIMANJARO = CODE_FORMULE_KILIMANJARO;
+  CODE_FORMULE_KILIMANJARO = KILIMANJARO_FORMULE;
   passFavorisSelected: any;
   passsFavorisChoosen = false;
   pinErrorMsg = '';

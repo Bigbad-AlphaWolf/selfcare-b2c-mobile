@@ -14,10 +14,8 @@ import {
   delay,
   retryWhen,
   flatMap,
-  catchError,
-  switchMap,
 } from "rxjs/operators";
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { environment } from "src/environments/environment";
 import * as jwt_decode from "jwt-decode";
 import * as SecureLS from "secure-ls";
@@ -27,14 +25,11 @@ import {
   PROFILE_TYPE_HYBRID_2,
   isFixPostpaid,
   PROFILE_TYPE_POSTPAID,
-  KILIMANJARO_FORMULE,
-  CODE_FORMULE_KILIMANJARO,
   
 } from "src/app/dashboard";
 import {
   JAMONO_ALLO_CODE_FORMULE,
   NotificationInfoModel,
-  SubscriptionModel,
 } from "src/shared";
 
 
@@ -46,7 +41,6 @@ const {
   GET_MSISDN_BY_NETWORK_URL,
   CONFIRM_MSISDN_BY_NETWORK_URL,
   UAA_SERVICE,
-  SERVICES_SERVICE,
 } = environment;
 const ls = new SecureLS({ encodingType: "aes" });
 
@@ -56,9 +50,9 @@ const checkUserExistEndpoint = `${accountBaseUrl}/check_number`;
 const registerUserEndpoint = `${accountBaseUrl}/register`;
 const checkEmailEndpoint = `${accountBaseUrl}/email-already-exist`;
 const userInfosEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/information-abonne`;
-const userSubscriptionEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/souscription`;
 const userSubscriptionInfo = `${SERVER_API_URL}/${CONSO_SERVICE}/api/souscription-infos`;
 const userSubscriptionEndpoint2 = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/v1/customerOffer`;
+const SUBSCRIPTION_ENDPOINT_FOR_TIER = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/v2/customerOffer`;
 const userSubscriptionIsPostpaidEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/is-postpaid`;
 const abonneInfoWithOTP = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/information-abonne`;
 const loginEndpoint = `${SERVER_API_URL}/auth/login`;
@@ -188,6 +182,52 @@ export class AuthenticationService {
     return this.SubscriptionHttpCache[msisdn];
   }
 
+  getSubscriptionCustomerOfferForTiers(msisdn: string) {
+    // step 1 check if data exists in localstorage
+    // step 2 if exists return data from localstorage
+    // else call server to get data
+    // what to save? 'subXXXXXXXX"
+      return this.http.get(`${SUBSCRIPTION_ENDPOINT_FOR_TIER}/${msisdn}`).pipe(
+        map((res: any) => {
+          const subscription = {
+            nomOffre: res.offerName,
+            profil: res.offerType,
+            code: res.offerId,
+          };
+          if (
+            subscription.profil === PROFILE_TYPE_HYBRID ||
+            subscription.profil === PROFILE_TYPE_HYBRID_1 ||
+            subscription.profil === PROFILE_TYPE_HYBRID_2
+          ) {
+            subscription.code = JAMONO_ALLO_CODE_FORMULE;
+          }
+          if (isFixPostpaid(subscription.nomOffre)) {
+            subscription.profil = PROFILE_TYPE_POSTPAID;
+          }
+          const lsKey = "subtiers" + msisdn;
+          ls.set(lsKey, subscription);
+          this.subscriptionUpdatedSubject.next(subscription);
+          return subscription;
+        })
+      );
+    
+  }
+
+
+  getSubscriptionForTiers(msisdn: string) {
+    const lsKey = "subtiers" + msisdn;
+    const savedData = ls.get(lsKey);
+    if (savedData) {
+      return of(savedData);
+    }
+    if (!this.SubscriptionHttpCache.has(msisdn)) {
+      this.SubscriptionHttpCache[msisdn] = this.getSubscriptionCustomerOfferForTiers(
+        msisdn
+      ).pipe(shareReplay(1));
+    }
+    return this.SubscriptionHttpCache[msisdn];
+  }
+
   getSubscriptionData(msisdn) {
     return this.http.get(`${userSubscriptionInfo}/${msisdn}`).pipe(
       map((subscription: any) => {
@@ -217,12 +257,6 @@ export class AuthenticationService {
       map((isPostPaid: any) => {
         return (!isPostPaid);
        }),
-      // catchError((er:HttpErrorResponse) => {
-      //   console.log(er);
-        
-      //   if(er.status !== 401)
-      //     return of(false);
-      // })
     );
   }
 
@@ -271,7 +305,7 @@ export class AuthenticationService {
     this.http
       .post(logoutEndpoint, "")
       .pipe(
-        tap((res: any) => {
+        tap(() => {
           this.isLoginSubject.next(false);
         })
       )

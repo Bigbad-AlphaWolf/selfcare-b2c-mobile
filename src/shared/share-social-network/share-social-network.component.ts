@@ -100,14 +100,6 @@ export class ShareSocialNetworkComponent implements OnInit {
             this.defaulSharingSheet(postTitle, url);
           });
         break;
-      case 'Facebook':
-        this.socialSharing
-          .shareViaFacebook(postTitle, null, url)
-          .then()
-          .catch((err: any) => {
-            this.defaulSharingSheet(postTitle, url);
-          });
-        break;
       default:
         this.defaulSharingSheet(postTitle, url);
         break;

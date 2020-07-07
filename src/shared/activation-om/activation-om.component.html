@@ -1,5 +1,5 @@
 <ion-content>
-  <div class="activationOM-mobile-container">
+   <div class="activationOM-mobile-container">
       <div
         (click)="goToDashboard()"
         class="activationOM-mobile-container-header"
@@ -89,19 +89,15 @@
                   ?
                 </div>
               </div>
-    
-              <button
-                *ngIf="!getToken"
-                [disabled]="!form.valid || otpLoader"
-                class="confirm-btn scb-btn-full scb-btn-orange"
-              >
+              <ion-button expand="block"  *ngIf="!getToken"  [disabled]="!form.valid || otpLoader" class="confirm-btn"
+      >
                 <span>Confirmer</span>
                 <mat-spinner
                   mode="indeterminate"
                   [diameter]="20"
                   *ngIf="otpLoader"
                 ></mat-spinner>
-              </button>
+              </ion-button>
               <button
                 (click)="sendOTPCode()"
                 [disabled]="sendOTPLoader"

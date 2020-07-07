@@ -55,23 +55,24 @@ export class NewRegistrationPage implements OnInit {
   navItems: {
     title: string;
     subTitle: string;
-    action: 'help' | 'login' | 'password';
+    action: 'help' | 'login' | 'password' | 'register';
   }[] = [
     {
-      title: 'Je me connecte',
-      subTitle: 'J’ai déjà un compte',
+      title: "J'ai déja un compte",
+      subTitle: 'Je me connecte',
       action: 'login',
     },
     {
-      title: 'J’ai besoin d’aide',
-      subTitle: 'J’éprouve des difficultés pour me connecter',
-      action: 'help',
-    },
-    {
       title: 'J’ai oublié mon mot de passe',
-      subTitle: 'Je veux le récupérer',
+      subTitle: 'Je le réinitialise',
       action: 'password',
     },
+    {
+      title: 'J’ai besoin d’aide',
+      subTitle: "J'ai des difficultés pour me connecter",
+      action: 'help',
+    }
+    
   ];
   //Temps d'attente pour la recuperation automatique du numero -> 10 secondes
   msisdnTimeout = 10000;

@@ -42,7 +42,7 @@ ion-content {
         margin-bottom: 20px;
       }
       .title {
-        font-family: HelveticaNeue;
+        font-family: HelveticaNeueLTStd-Bd;
         font-size: 34px;
         font-weight: bold;
         font-stretch: normal;
@@ -54,7 +54,7 @@ ion-content {
       }
 
       .update-text {
-        font-family: HelveticaNeue;
+        font-family: HelveticaNeueLTStd-Bd;
         font-size: 20px;
         font-stretch: normal;
         font-style: normal;
@@ -70,10 +70,10 @@ ion-content {
           --background-activated: #ff7900;
           span {
             font-weight: bold;
-            font-family: HelveticaNeue;
+            font-family: HelveticaNeueLTStd-Bd;
             font-size: 16px;
             padding-top: 4px;
-            text-transform: none !important;;
+            text-transform: none !important;
           }
         }
       }

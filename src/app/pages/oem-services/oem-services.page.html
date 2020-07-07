@@ -1,0 +1,18 @@
+<ion-header [oemIonHeaderParallax]="100" >
+  <ion-toolbar >
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/dashboard" icon="" class="oem-back-button" >
+            <img src="/assets/images/arrow-left.png" alt="icon" />
+        </ion-back-button>  
+      </ion-buttons>
+      <ion-title class="oem-top-title ion-padding-start">Tous les services</ion-title>
+  </ion-toolbar> 
+</ion-header>
+
+<ion-content [scrollEvents]="true">
+  <div class="oem-services-page">
+
+    <oem-operations [operations]="operations"></oem-operations>
+  </div>
+</ion-content>
+
