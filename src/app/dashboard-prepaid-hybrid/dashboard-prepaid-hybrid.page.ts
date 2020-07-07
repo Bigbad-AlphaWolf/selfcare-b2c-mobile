@@ -522,19 +522,17 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goMerchantPayment() {
-    this.omServ.getOmMsisdn().subscribe((msisdn: string)=>{
-      if(msisdn !== 'error'){
-        this.bottomSheet
-      .open(MerchantPaymentCodeComponent, {
-        panelClass: 'merchant-code-modal',
-      })
-      .afterDismissed()
-      .subscribe(() => {});
-      }else {
-        this.openPinpad()
+    this.omServ.getOmMsisdn().subscribe(async (msisdn: string) => {
+      if (msisdn !== 'error') {
+        const modal = await this.modalController.create({
+          component: MerchantPaymentCodeComponent,
+          cssClass: 'modalRecipientSelection',
+        });
+        return await modal.present();
+      } else {
+        this.openPinpad();
       }
-    })
-    
+    });
   }
 
   async openPinpad() {

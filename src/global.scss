@@ -532,6 +532,10 @@ body {
       }
     }
   }
+  .mat-form-field-suffix {
+    bottom: 5px !important;
+    top: unset !important;
+  }
 }
 
 .amount-input {
