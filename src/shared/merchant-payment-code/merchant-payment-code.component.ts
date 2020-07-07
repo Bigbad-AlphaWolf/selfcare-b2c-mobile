@@ -4,6 +4,7 @@ import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange
 import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
 import { MatBottomSheet } from '@angular/material';
 import { OPERATION_TYPE_MERCHANT_PAYMENT } from '..';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-merchant-payment-code',
@@ -21,6 +22,7 @@ export class MerchantPaymentCodeComponent implements OnInit {
     private orangeMoneyService: OrangeMoneyService,
     private applicationRoutingService: ApplicationRoutingService,
     private bottomSheet: MatBottomSheet,
+    private modalController: ModalController,
     private ref: ChangeDetectorRef
   ) {}
 
@@ -49,7 +51,7 @@ export class MerchantPaymentCodeComponent implements OnInit {
             response.status_code.match('Erreur-601'))
         ) {
           this.applicationRoutingService.goSetAmountPage(payload);
-          this.bottomSheet.dismiss();
+          this.modalController.dismiss();
         } else {
           this.onCheckingMerchantError(response.status_wording);
         }
