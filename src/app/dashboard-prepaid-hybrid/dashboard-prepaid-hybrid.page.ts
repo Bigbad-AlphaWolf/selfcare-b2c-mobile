@@ -457,18 +457,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.showPromoBarner = false;
   }
 
-  fabToggled() {
-    this.fabOpened = !this.fabOpened;
-  }
-
-  openSocialNetworkModal() {
-    this.shareDialog.open(ShareSocialNetworkComponent, {
-      height: '530px',
-      width: '330px',
-      maxWidth: '100%',
-    });
-  }
-
   onError(input: { el: HTMLElement; display: boolean }[]) {
     input.forEach((item: { el: HTMLElement; display: boolean }) => {
       item.el.style.display = item.display ? 'block' : 'none';
@@ -511,15 +499,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
 
   getBanniereDescription(description: string) {
     return getBanniereDescription(description);
-  }
-
-  goAssistance() {
-    this.router.navigate(['/control-center']);
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_via_Ibou',
-      'event',
-      'clicked'
-    );
   }
 
   goToTransfertsPage() {

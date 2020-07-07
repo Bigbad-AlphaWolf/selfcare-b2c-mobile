@@ -77,6 +77,7 @@ import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/
 import { AcronymPipe } from './pipes/acronym.pipe';
 import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import { OemOperationsComponent } from 'src/app/components/oem-operations/oem-operations.component';
+import { IbouIonFabComponent } from './ibou-ion-fab/ibou-ion-fab.component';
 
 @NgModule({
   declarations: [
@@ -133,6 +134,7 @@ import { OemOperationsComponent } from 'src/app/components/oem-operations/oem-op
     CodeFormatPipe,
     FavoriteMerchantComponent,
     AcronymPipe,
+    IbouIonFabComponent
   ],
   imports: [
     CommonModule,
@@ -239,6 +241,7 @@ import { OemOperationsComponent } from 'src/app/components/oem-operations/oem-op
     ItemRechargeCreditComponent,
     ItemOfferPlanComponent,
     FavoriteMerchantComponent,
+    IbouIonFabComponent
   ],
   providers: [
     Contacts,

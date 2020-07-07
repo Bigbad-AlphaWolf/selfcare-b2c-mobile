@@ -66,7 +66,6 @@ export class DashboardHomePrepaidPage implements OnInit {
   errorOnLoadingConso;
   firstName: string;
   lastName: string;
-  fabOpened = false;
   isBanniereLoaded: boolean;
   constructor(
     private passIntService: PassInternetService,
@@ -265,18 +264,6 @@ export class DashboardHomePrepaidPage implements OnInit {
   onError(input: { el: HTMLElement; display: boolean }[]) {
     input.forEach((item: { el: HTMLElement; display: boolean }) => {
       item.el.style.display = item.display ? 'block' : 'none';
-    });
-  }
-
-  fabToggled() {
-    this.fabOpened = !this.fabOpened;
-  }
-
-  openSocialNetworkModal() {
-    this.shareDialog.open(ShareSocialNetworkComponent, {
-      height: '530px',
-      width: '330px',
-      maxWidth: '100%'
     });
   }
 
