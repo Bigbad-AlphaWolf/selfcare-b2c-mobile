@@ -39,7 +39,6 @@ import { SetPaymentChannelModalPageModule } from './set-payment-channel-modal/se
 import { NewPinpadModalPageModule } from './new-pinpad-modal/new-pinpad-modal.module';
 import { OperationSuccessFailModalPageModule } from './operation-success-fail-modal/operation-success-fail-modal.module';
 import { RegistrationSuccessModalPageModule } from './registration-success-modal/registration-success-modal.module';
-// import { OemStatusSargalLabelDirective } from './directives/oem-status-sargal-label.directive';
 
 registerLocaleData(localeFr);
 @NgModule({
