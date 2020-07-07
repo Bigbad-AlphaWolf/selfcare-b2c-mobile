@@ -34,7 +34,7 @@
           >Vous avez acheté le pass internet</span
         >
         <span *ngSwitchCase="'RECHARGEMENT_CREDIT'"
-        >Vous avez acheté un montant de</span
+        >Vous avez acheté pour un montant de</span
       >
 
       <span *ngSwitchCase="'OPERATION_WOYOFAL'"
@@ -118,7 +118,7 @@
       <div class="left-block">Paiement par</div>
       <div class="right-block scb-text-gray">
         <span class="numero">
-          {{paymentMod === 'ORANGE_MONEY' ?'Orange Money' : 'Crédit Recharge'}}
+          {{paymentMod === 'ORANGE_MONEY' ? 'Orange Money' : 'Crédit Recharge'}}
         </span>
         <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
       </div>

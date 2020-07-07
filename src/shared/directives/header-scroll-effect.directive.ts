@@ -19,7 +19,6 @@ export class HeaderScrollEffectDirective {
     this.initStyles();
     this.scrollArea.ionScroll.subscribe((scrollEvent) => {
       let delta = scrollEvent.detail.deltaY;
-      console.log(this.element.nativeElement);
 
       if (scrollEvent.detail.currentY === 0 && this.hidden) {
         this.show();

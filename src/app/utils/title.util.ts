@@ -8,7 +8,7 @@ import {
   BONS_PLANS,
 } from 'src/shared';
 import { PageTitle } from '../models/page-title.model';
-import { OPERATION_WOYOFAL } from './constants';
+import { OPERATION_WOYOFAL } from './operations.util';
 
 export const titles: PageTitle[] = [
   {
