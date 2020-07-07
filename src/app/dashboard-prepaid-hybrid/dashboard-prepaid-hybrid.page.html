@@ -278,23 +278,7 @@
             </span>
           </div>
         </div>
-        <div
-        (click)="goMerchantPayment()"
-        class="dashboard-block-offres-top3-item"
-      >
-        <div class="item-icon">
-          <img src="/assets/images/ic-scan-ticket.svg" alt="group-56" />
-        </div>
-        <div class="item-text scb-text-black">
-          <span class="transfert text"
-            >Payer <br />
-            <span class="text-style-1 scb-text-item-offre-black"
-              >un marchand</span
-            >
-          </span>
-        </div>
-      </div>
-        <!-- <div (click)="(0)" class="dashboard-block-offres-top3-item disabled-block">
+        <div (click)="onPayerFacture()" class="dashboard-block-offres-top3-item">
           <div class="item-icon">
             <img
               src="/assets/images/ic-orange-money.svg"
@@ -309,10 +293,10 @@
               >
             </span>
           </div>
-        </div> -->
+        </div>
       </div>
       <div class="dashboard-block-offres-top3">
-        <!-- <div
+        <div
           (click)="goMerchantPayment()"
           class="dashboard-block-offres-top3-item"
         >
@@ -327,7 +311,7 @@
               >
             </span>
           </div>
-        </div> -->
+        </div>
 
         <div *ngIf="!isHyBride"
           (click)="makeSargalAction()"
@@ -350,21 +334,6 @@
           [ngClass]="{ 'disabled-block': !canDoSOS }"
           (click)="goToSOSPage()"
           class="dashboard-block-offres-top3-item"
-        >
-          <div class="item-icon">
-            <img src="/assets/images/ic-emergency-sos@2x.png" alt="group-55" />
-          </div>
-          <div class="item-text scb-text-black">
-            <span class="sos text"
-              >Demander <br />
-              <span class="text-style-1 scb-text-item-offre-black">un SOS</span>
-            </span>
-          </div>
-        </div>
-        <div
-          [ngClass]="{ 'disabled-block': !canDoSOS }"
-          (click)="goToSOSPage()"
-          class="dashboard-block-offres-top3-item hide"
         >
           <div class="item-icon">
             <img src="/assets/images/ic-emergency-sos@2x.png" alt="group-55" />
