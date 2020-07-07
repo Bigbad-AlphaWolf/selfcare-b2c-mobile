@@ -31,7 +31,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./number-selection.component.scss'],
 })
 export class NumberSelectionComponent implements OnInit {
-  numbers$: Observable<string[]> = of(['782363572', '776148081', '776148080']);
+  numbers$: Observable<string[]>;
 
   numberSelected: string = '';
   numberFromInput: string = '';

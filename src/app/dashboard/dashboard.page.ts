@@ -77,33 +77,33 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.getCurrentSubscription();
 
     // Get app version
-    this.appVersion
-      .getVersionNumber()
-      .then((value) => {
-        this.AppVersionNumber = value;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // this.appVersion
+    //   .getVersionNumber()
+    //   .then((value) => {
+    //     this.AppVersionNumber = value;
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
     // Call server for app version
-    this.assistanceService
-      .getAppVersionPublished()
-      .subscribe((version: any) => {
-        const versionAndroid = version.android;
-        const versionIos = version.ios;
-        if (versionAndroid || versionIos) {
-          if (
-            isNewVersion(
-              this.isIOS ? versionIos : versionAndroid,
-              this.AppVersionNumber
-            )
-          ) {
-            const dialogRef = this.dialog.open(CancelOperationPopupComponent, {
-              data: { updateApp: this.appId },
-            });
-          }
-        }
-      });
+    // this.assistanceService
+    //   .getAppVersionPublished()
+    //   .subscribe((version: any) => {
+    //     const versionAndroid = version.android;
+    //     const versionIos = version.ios;
+    //     if (versionAndroid || versionIos) {
+    //       if (
+    //         isNewVersion(
+    //           this.isIOS ? versionIos : versionAndroid,
+    //           this.AppVersionNumber
+    //         )
+    //       ) {
+    //         const dialogRef = this.dialog.open(CancelOperationPopupComponent, {
+    //           data: { updateApp: this.appId },
+    //         });
+    //       }
+    //     }
+    //   });
     if (!this.isFirebaseTokenSent) {
       this.authServ.UpdateNotificationInfo();
       this.isFirebaseTokenSent = true;

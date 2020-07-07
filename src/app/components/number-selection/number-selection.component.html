@@ -10,21 +10,22 @@
       <mat-radio-button
         *ngFor="let number of numbers$ | async; index as i; count as size"
         [value]="number"
+        [checked]="i === 0"
       >
         <div class="destination-number">
-          <span> Mon numéro {{ size > 1 ? i + 1 : "" }} </span>
+          <span> Mon numéro {{ size > 1 ? i + 1 : '' }} </span>
           <span>{{ number | phoneNumberDisplay }}</span>
         </div>
       </mat-radio-button>
-      <mat-radio-button [value]="'AUTRE'" checked>
+      <mat-radio-button [value]="'AUTRE'">
         <div class="destination-number autre-number">
           <span>
             Offrir à un autre
           </span>
-          <span >
-           <ng-container *ngIf="showInput && opXtras.recipientFromContact">
-             {{ numberFromInput | phoneNumberDisplay }}
-           </ng-container>
+          <span>
+            <ng-container *ngIf="showInput && opXtras.recipientFromContact">
+              {{ numberFromInput | phoneNumberDisplay }}
+            </ng-container>
           </span>
         </div>
       </mat-radio-button>
@@ -39,17 +40,18 @@
     Veuillez choisir un numéro de destinataire valide pour continuer
   </div>
 
-  <div [hidden]="!canNotRecieve && !canNotRecieveError" class="error-msg scb-text-red-error">
+  <div
+    [hidden]="!canNotRecieve && !canNotRecieveError"
+    class="error-msg scb-text-red-error"
+  >
     Le numéro de votre destinataire ne peut pas recevoir de credit.
   </div>
   <div class="btn-continue">
-    <button mat-button
-      [disabled]="isProcessing"
-      (click)="onContinue()"
-      >Continuer</button
-    >
+    <button mat-button [disabled]="isProcessing" (click)="onContinue()">
+      Continuer
+    </button>
     <ion-spinner
-      *ngIf="isProcessing || !((numbers$ | async)?.length)"
+      *ngIf="isProcessing || !(numbers$ | async)?.length"
       name="crescent"
     ></ion-spinner>
   </div>
