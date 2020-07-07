@@ -84,9 +84,8 @@ export class DashboardPostpaidPage implements OnInit {
   noSargalProfil: boolean;
   hasError: boolean;
   isKilimanjaroPostpaid: boolean;
-
   operations: OperationOem[] = ACTIONS_RAPIDES_OPERATIONS_DASHBOARD;
-
+  sargalStatus:string;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -143,6 +142,7 @@ export class DashboardPostpaidPage implements OnInit {
         if (!sargalStatus.valid) {
           this.sargalStatusUnavailable = true;
         }
+        this.sargalStatus = sargalStatus.profilClient;
         this.loadingStatus = true;
         this.hasError = false;
       },
