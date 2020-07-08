@@ -22,7 +22,7 @@ import { NoOmAccountModalComponent } from 'src/shared/no-om-account-modal/no-om-
 import { of, Observable } from 'rxjs';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { catchError, share } from 'rxjs/operators';
+import { catchError, share, tap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -57,7 +57,13 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(share());
+    this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
+      tap((numbers)=>{
+        if(numbers && numbers.length)
+          this.opXtras.recipientMsisdn = numbers[0];
+      }),
+      share()
+      );
     this.checkOmAccountSession();
   }
 
