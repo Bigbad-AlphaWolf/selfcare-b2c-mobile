@@ -9,7 +9,7 @@
       >Bienvenue <span class="user-name">{{ firstName }}</span></span
     >
   </div> 
-  <div class="avatar">
+  <div (click)="goToMyAccount()" class="avatar">
     <img [src]="avatarUrl" alt="profil-mob" (error)="onErrorImgAvatar()" />
   </div>
 </ion-header>
