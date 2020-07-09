@@ -680,8 +680,7 @@ export interface PurchaseModel {
  * Version A is the version from the server.
  * Version B is the installed version.
  */
-export function isNewVersion(versionA:string, versionB:string) {
-  
+export function isNewVersion(versionA: string, versionB: string) {
   if (versionA && versionB) {
     const versionsA = versionA.split(/\./g),
       versionsB = versionB.split(/\./g);
@@ -868,6 +867,30 @@ export const HelpModalDefaultContent: {
         {
           title: 'Saisissez votre nouveau mot de passe',
           subtitle: 'Je saisis mon nouveau mot de passe et le confirme',
+        },
+      ],
+    },
+    {
+      title: 'Mon numéro est rattaché à un compte',
+      subtitle: 'Je veux le supprimer ?',
+      type: 'ERROR_ATTACHED_NUMBER',
+      url: '',
+      action: 'POPUP',
+      subOptions: [
+        {
+          title: 'Rendez-vous sur la page d’accueil en mode connecté',
+          subtitle:
+            'Accédez à la page de connexion puis connectez-vous avec le compte ayant rattaché votre numéro en question',
+        },
+        {
+          title: 'Accédez au menu « Mon compte »',
+          subtitle:
+            'Depuis l’accueil, cliquez sur le menu de gauche puis sur « Mon compte »',
+        },
+        {
+          title: 'Supprimez le numéro rattaché',
+          subtitle:
+            'Cliquez sur « Supprimer une ligne », choisissez la ligne à supprimer puis confirmer',
         },
       ],
     },
