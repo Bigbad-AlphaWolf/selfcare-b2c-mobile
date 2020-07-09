@@ -358,33 +358,4 @@
     </div>
   </div>
 </ion-content>
-<div id="fab-background" *ngIf="fabOpened"></div>
-<ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)="fabToggled()">
-  <ion-fab-button>
-    <img
-      class="ibou-icon"
-      src="/assets/images/avatar-ibou-update.svg"
-      alt=""
-      (tap)="fabToggled()"
-    />
-  </ion-fab-button>
-
-  <ion-fab-list side="top">
-    <ion-fab-button class="fab-item" (click)="openSocialNetworkModal()">
-      <img src="/assets/images/share_fab_icon.svg" alt="" />
-    </ion-fab-button>
-    <ion-label (click)="openSocialNetworkModal()">
-      Partager l’application
-    </ion-label>
-
-    <ion-fab-button class="fab-item" routerLink="/assistance">
-      <img src="/assets/images/need_help_fab_icon.svg" alt="" />
-    </ion-fab-button>
-    <ion-label routerLink="/assistance"> Besoin d’aide ? </ion-label>
-
-    <ion-fab-button class="fab-item" routerLink="/control-center">
-      <img src="/assets/images/emergency_help_fab_icon.svg" alt="" />
-    </ion-fab-button>
-    <ion-label routerLink="/control-center">Assistance</ion-label>
-  </ion-fab-list>
-</ion-fab>
+<app-ibou-ion-fab></app-ibou-ion-fab>

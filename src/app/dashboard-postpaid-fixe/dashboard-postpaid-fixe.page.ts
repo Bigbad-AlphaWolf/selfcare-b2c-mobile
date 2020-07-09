@@ -30,7 +30,6 @@ export class DashboardPostpaidFixePage implements OnInit {
   opened = false;
   userInfos: any = {};
   firstName;
-  fabOpened = false;
   months = months;
   showPromoBarner = true;
   userConsoSummary: any = {};
@@ -252,18 +251,6 @@ export class DashboardPostpaidFixePage implements OnInit {
   onError(input: { el: HTMLElement; display: boolean }[]) {
     input.forEach((item: { el: HTMLElement; display: boolean }) => {
       item.el.style.display = item.display ? 'block' : 'none';
-    });
-  }
-
-  fabToggled() {
-    this.fabOpened = !this.fabOpened;
-  }
-
-  openSocialNetworkModal() {
-    this.shareDialog.open(ShareSocialNetworkComponent, {
-      height: '530px',
-      width: '330px',
-      maxWidth: '100%'
     });
   }
 

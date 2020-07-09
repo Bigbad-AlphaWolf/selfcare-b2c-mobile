@@ -75,7 +75,6 @@ export class DashboardKirenePage implements OnInit {
   SARGAL_NOT_SUBSCRIBED = SARGAL_NOT_SUBSCRIBED;
   firstName: string;
   lastName: string;
-  fabOpened = false;
   hasPromoBooster: PromoBoosterActive = null;
   currentProfil: string;
   constructor(
@@ -364,18 +363,6 @@ export class DashboardKirenePage implements OnInit {
       'clicked'
     );
     this.router.navigate(['/buy-pass-internet']);
-  }
-
-  fabToggled() {
-    this.fabOpened = !this.fabOpened;
-  }
-
-  openSocialNetworkModal() {
-    this.shareDialog.open(ShareSocialNetworkComponent, {
-      height: '530px',
-      width: '330px',
-      maxWidth: '100%'
-    });
   }
 
   onError(input: { el: HTMLElement; display: boolean }[]) {
