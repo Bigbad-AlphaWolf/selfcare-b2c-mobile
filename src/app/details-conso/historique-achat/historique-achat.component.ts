@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange, SimpleChanges, ChangeDetectorRef } from '@angular/core';
-import { PurchaseModel, CATEGORY_PURCHASE_HISTORY } from 'src/shared';
+import { PurchaseModel, CATEGORY_PURCHASE_HISTORY, DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY } from 'src/shared';
+import { CategoryPurchaseHistory } from 'src/app/models/category-purchase-history.model';
 
 @Component({
   selector: 'app-historique-achat',
@@ -9,9 +10,9 @@ import { PurchaseModel, CATEGORY_PURCHASE_HISTORY } from 'src/shared';
 export class HistoriqueAchatComponent implements OnInit {
   @Input() listTransactions: PurchaseModel[] = [];
   listDateFilter = [2, 3, 4, 5, 6, 7];
-  listTypePurchaseFilter: {nom: string, value: string}[] = CATEGORY_PURCHASE_HISTORY;
+  @Input() listTypePurchaseFilter: CategoryPurchaseHistory[] = []
   @Input() dateFilterSelected = 2;
-  typePurchaseFilterSelected: {nom: string, value: string} = {nom: "Tous", value: undefined};
+  typePurchaseFilterSelected: {label: string, typeAchat: string} = DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
   @Input() isLoading: boolean;
   @Input() hasError: boolean;
   @Output() getTransactionsByDay = new EventEmitter();
@@ -27,7 +28,7 @@ export class HistoriqueAchatComponent implements OnInit {
       this.getTransactionsByDay.emit(day);
   }
 
-  getTransactionByType(filterType: {nom: string, value: string}){
+  getTransactionByType(filterType: {label: string, typeAchat: string}){
     this.typePurchaseFilterSelected = filterType;
     this.getTransactionsByFilter.emit(filterType);
   }
