@@ -18,16 +18,16 @@
       <ion-item mode="ios" lines="none">
         <ion-label mode="ios">Choisir un mois</ion-label>
         <ion-select
-          [value]="months[0]"
+          [value]="months[0].code"
           interface="popover"
           noIonSelectArrow
           mode="ios"
         >
           <ion-select-option
-            [value]="month"
+            [value]="month.code"
             *ngFor="let month of months"
             mode="ios"
-            ><span>{{month}}</span></ion-select-option
+            ><span>{{month.name}} {{month.year}}</span></ion-select-option
           >
         </ion-select>
         <ion-icon name="arrow-down" mode="ios" slot="end"></ion-icon>

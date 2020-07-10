@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { previousMonths } from 'src/app/utils/utils';
+import { MonthOem } from 'src/app/models/month.model';
 
 @Component({
   selector: 'app-orange-bills',
@@ -7,23 +9,12 @@ import { Component, OnInit } from '@angular/core';
  
 })
 export class OrangeBillsPage implements OnInit {
-  months = [
-    'Janvier 2020',
-    'Février',
-    'Mars',
-    'Avril',
-    'Mai',
-    'Juin',
-    'Juillet',
-    'Août',
-    'Septembre',
-    'Octobre',
-    'Novembre',
-    'Décembre',
-  ];
+  months : MonthOem[] = [];
   constructor() { }
-  onChangeLine(){}
+  onChangeLine(){
+  }
   ngOnInit() {
+    this.months = previousMonths(8);
   }
 
 }
