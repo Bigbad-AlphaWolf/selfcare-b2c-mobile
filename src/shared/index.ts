@@ -101,6 +101,23 @@ export const LIST_CATEGORY_BONS_PLANS = {
   autres: 'AUTRES',
 };
 
+export const IMAGES_DIRECTORY = "/assets/images/";
+
+export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
+  INTERNET: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
+  ILLIMIX: `${IMAGES_DIRECTORY}ic-unlimited-calls.png`,
+  RECHARGEMENT: `${IMAGES_DIRECTORY}ic-orange-phone.svg`,
+  TRANSFERT_BONUS: `${IMAGES_DIRECTORY}transfert-icon.png`,
+  SEDDO: `${IMAGES_DIRECTORY}transfert-icon.png`,
+  PASSFOROTHER: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
+  DALALTONE: `${IMAGES_DIRECTORY}ic-device-ringtone.png`,
+  SOS: `${IMAGES_DIRECTORY}ic-emergency-sos.png`,
+  DEPOT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  RETRAIT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  TRANSFERT_ARGENT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  WOYOFAL: `${IMAGES_DIRECTORY}ic-files.png`,
+  PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
+}
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
 }
