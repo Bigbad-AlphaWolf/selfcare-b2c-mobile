@@ -10,7 +10,7 @@
     </ion-title>
   </ion-toolbar>
   <div class="banner-container">
-    <div class="number">{{'774452916'|phoneNumberDisplay}}</div>
+    <div class="number">{{phone|phoneNumberDisplay}}</div>
     <div class="change" (click)="onChangeLine()">Changer</div>
   </div>
   <div class="month-selection">
@@ -18,13 +18,14 @@
       <ion-item mode="ios" lines="none">
         <ion-label mode="ios">Choisir un mois</ion-label>
         <ion-select
-          [value]="months[0].code"
+          [value]="months[0].position"
           interface="popover"
           noIonSelectArrow
           mode="ios"
+          (ionChange)="onChangeLine($event)"
         >
           <ion-select-option
-            [value]="month.code"
+            [value]="month.position"
             *ngFor="let month of months"
             mode="ios"
             ><span>{{month.name}} {{month.year}}</span></ion-select-option
@@ -35,15 +36,17 @@
     </ion-list>
   </div>
 </ion-header>
-<ion-content #scrollArea [scrollEvents]="true" mode="ios" > 
+<ion-content [scrollEvents]="true" mode="ios" > 
   <div class="content">
     <div class="bordereau" *ngIf="(bordereau$|async) as bordereau">
       <div class="title">Bordereau</div>
       <invoice-card [invoice]="bordereau" [title]="'Facture globale'"></invoice-card>
     </div>
     <div class="factures"  *ngIf="(factures$|async) as factures">
-      <div class="title">Factures</div>
-      <invoice-card *ngFor="let facture of factures" [invoice]="facture" ></invoice-card>
+      <ng-container *ngIf="factures.length">
+        <div class="title">Factures</div>
+        <invoice-card *ngFor="let facture of factures" [invoice]="facture" ></invoice-card>
+      </ng-container>
     </div>
   </div>
 </ion-content>

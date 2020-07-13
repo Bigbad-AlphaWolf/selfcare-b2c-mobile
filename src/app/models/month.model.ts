@@ -1,5 +1,5 @@
 export interface MonthOem{
-    position?:number;
+    position?:string;
     code?:string;
     name?:string;
     year?:string;
