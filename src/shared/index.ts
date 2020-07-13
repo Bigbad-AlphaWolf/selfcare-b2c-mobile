@@ -87,6 +87,11 @@ export const CATEGORY_PURCHASE_HISTORY = [
   { nom: 'SOS', value: 'SOS' },
 ];
 
+export const DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY = {
+  label: 'Tous',
+  typeAchat: undefined
+}
+
 export const listRegisterSargalBonPlanText = ['inscription', 'inscris'];
 export const LIST_CATEGORY_BONS_PLANS = {
   internet: 'INTERNET',
@@ -672,6 +677,7 @@ export interface PurchaseModel {
   operationDate: string;
   operationType: 'DEBIT' | 'CREDIT';
   details: any[];
+  label?: string;
 }
 
 /**

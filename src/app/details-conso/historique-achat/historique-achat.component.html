@@ -4,7 +4,7 @@
       <button class="filter-container" [ngClass]="{ selected: menuTrigType.menuOpen }" mat-button
           #menuTrigType="matMenuTrigger" [matMenuTriggerFor]="categoriesAchats">
           <div [ngClass]="{ 'scb-text-white': menuTrigType.menuOpen }" class="btn-filter">
-              <span>{{ typePurchaseFilterSelected ? typePurchaseFilterSelected.nom : "Type d'achat" }} </span>
+              <span>{{  typePurchaseFilterSelected?.label}} </span>
               <div class="arrows">
                   <img *ngIf="!menuTrigType.menuOpen" src="/assets/images/arrow-down.svg" class="arrow-down" alt="">
                   <img *ngIf="menuTrigType.menuOpen" src="/assets/images/keyboard-arrow-up-black.svg" class="arrow-up" alt="">
@@ -17,7 +17,7 @@
           <ng-template matMenuContent>
               <ng-container *ngFor="let categorie of listTypePurchaseFilter ">
                   <button (click)="getTransactionByType(categorie)" class="categorie-label" mat-menu-item>
-                      {{ categorie.nom }}
+                      {{ categorie?.label }}
                   </button>
               </ng-container>
           </ng-template>

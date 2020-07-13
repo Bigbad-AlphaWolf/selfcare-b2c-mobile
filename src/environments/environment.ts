@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  // SERVER_API_URL: 'https://orangeetmoi.orange.sn', 
+  // SERVER_API_URL: 'https://orangeetmoi.orange.sn',
   // SERVER_API_URL: 'http://10.137.52.31:8712',
   // SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
   // SERVER_API_URL: 'http://10.137.52.31:8712',
