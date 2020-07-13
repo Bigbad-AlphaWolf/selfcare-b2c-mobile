@@ -79,10 +79,11 @@ export class NumberSelectionComponent implements OnInit {
         let results = [];
         recents.forEach((el) => {
           results.push({
-            name: JSON.parse(el.payload).nom_marchand,
-            merchantCode: el.destinataire,
+            name: el.destinataire,
+            msisdn: el.destinataire,
           });
         });
+        console.log(results);
         return results;
       })
     );
@@ -90,7 +91,7 @@ export class NumberSelectionComponent implements OnInit {
 
   onRecentSelected(recent) {}
 
-  async onContinue() {
+  async onContinue(recent?: string) {
     if (!REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn)) {
       this.phoneIsNotValid = true;
       return;
@@ -99,6 +100,11 @@ export class NumberSelectionComponent implements OnInit {
     this.opXtras.destinataire = this.opXtras.recipientMsisdn = formatPhoneNumber(
       this.opXtras.recipientMsisdn
     );
+    if (recent) {
+      this.opXtras.destinataire = this.opXtras.recipientMsisdn = formatPhoneNumber(
+        recent
+      );
+    }
     this.opXtras.forSelf = !this.showInput;
 
     if (!(await this.canRecieveCredit())) {
