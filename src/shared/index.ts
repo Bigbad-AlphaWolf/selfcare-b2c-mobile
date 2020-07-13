@@ -101,6 +101,23 @@ export const LIST_CATEGORY_BONS_PLANS = {
   autres: 'AUTRES',
 };
 
+export const IMAGES_DIRECTORY = "/assets/images/";
+
+export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
+  INTERNET: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
+  ILLIMIX: `${IMAGES_DIRECTORY}ic-unlimited-calls.png`,
+  RECHARGEMENT: `${IMAGES_DIRECTORY}ic-orange-phone.svg`,
+  TRANSFERT_BONUS: `${IMAGES_DIRECTORY}transfert-icon.png`,
+  SEDDO: `${IMAGES_DIRECTORY}transfert-icon.png`,
+  PASSFOROTHER: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
+  DALALTONE: `${IMAGES_DIRECTORY}ic-device-ringtone.png`,
+  SOS: `${IMAGES_DIRECTORY}ic-emergency-sos.png`,
+  DEPOT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  RETRAIT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  TRANSFERT_ARGENT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  WOYOFAL: `${IMAGES_DIRECTORY}ic-files.png`,
+  PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
+}
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
 }
@@ -686,8 +703,7 @@ export interface PurchaseModel {
  * Version A is the version from the server.
  * Version B is the installed version.
  */
-export function isNewVersion(versionA:string, versionB:string) {
-  
+export function isNewVersion(versionA: string, versionB: string) {
   if (versionA && versionB) {
     const versionsA = versionA.split(/\./g),
       versionsB = versionB.split(/\./g);
@@ -874,6 +890,30 @@ export const HelpModalDefaultContent: {
         {
           title: 'Saisissez votre nouveau mot de passe',
           subtitle: 'Je saisis mon nouveau mot de passe et le confirme',
+        },
+      ],
+    },
+    {
+      title: 'Mon numéro est rattaché à un compte',
+      subtitle: 'Je veux le supprimer ?',
+      type: 'ERROR_ATTACHED_NUMBER',
+      url: '',
+      action: 'POPUP',
+      subOptions: [
+        {
+          title: 'Rendez-vous sur la page d’accueil en mode connecté',
+          subtitle:
+            'Accédez à la page de connexion puis connectez-vous avec le compte ayant rattaché votre numéro en question',
+        },
+        {
+          title: 'Accédez au menu « Mon compte »',
+          subtitle:
+            'Depuis l’accueil, cliquez sur le menu de gauche puis sur « Mon compte »',
+        },
+        {
+          title: 'Supprimez le numéro rattaché',
+          subtitle:
+            'Cliquez sur « Supprimer une ligne », choisissez la ligne à supprimer puis confirmer',
         },
       ],
     },
