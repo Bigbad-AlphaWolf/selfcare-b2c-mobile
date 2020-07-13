@@ -20,16 +20,13 @@ import {
 } from "src/shared";
 import { FollowAnalyticsService } from "src/app/services/follow-analytics/follow-analytics.service";
 import { PassVolumeDisplayPipe } from "src/shared/pipes/pass-volume-display.pipe";
-import { ShareSocialNetworkComponent } from "src/shared/share-social-network/share-social-network.component";
 import { MatDialog } from "@angular/material";
 import { WelcomePopupComponent } from "src/shared/welcome-popup/welcome-popup.component";
 import { AssistanceService } from "../services/assistance.service";
 import { SargalService } from "../services/sargal-service/sargal.service";
-import { CODE_FORMULE_KILIMANJARO, KILIMANJARO_FORMULE } from "../dashboard";
+import { KILIMANJARO_FORMULE } from "../dashboard";
 import { OperationOem } from "../models/operation.model";
 import { ACTIONS_RAPIDES_OPERATIONS_DASHBOARD } from "../utils/operations.util";
-import { BottomSheetService } from "../services/bottom-sheet/bottom-sheet.service";
-import { BsBillsHubService } from "../services/bottom-sheet/bs-bills-hub.service";
 import { NavController } from '@ionic/angular';
 const ls = new SecureLS({ encodingType: "aes" });
 @Component({
@@ -291,18 +288,6 @@ export class DashboardPostpaidPage implements OnInit {
       "event",
       "clicked"
     );
-  }
-
-  fabToggled() {
-    this.fabOpened = !this.fabOpened;
-  }
-
-  openSocialNetworkModal() {
-    this.shareDialog.open(ShareSocialNetworkComponent, {
-      height: "530px",
-      width: "330px",
-      maxWidth: "100%",
-    });
   }
 
   onError(input: { el: HTMLElement; display: boolean }[]) {

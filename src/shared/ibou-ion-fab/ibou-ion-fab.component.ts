@@ -32,7 +32,7 @@ export class IbouIonFabComponent implements OnInit {
     const url = 'http://bit.ly/2NHn5aS';
     const postTitle =
     'Comme moi télécharge et connecte toi gratuitement sur l\'application ' +
-    'Orange et Moi Fi rek la http://bit.ly/2NHn5aS ou sur www.orangeetmoi.sn ' +
+    'Orange et Moi Fi rek la http://onelink.to/6h78t2 ou sur www.orangeetmoi.sn ' +
     'Bu ande ak simplicité ak réseau mo gën #WaawKay';
     const hashtag = '#WaawKay';
 

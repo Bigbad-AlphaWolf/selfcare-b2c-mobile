@@ -24,7 +24,6 @@ import {
   SARGAL_UNSUBSCRIPTION_ONGOING,
   PromoBoosterActive
 } from '../dashboard';
-import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
@@ -115,7 +114,7 @@ export class DashboardKirenePage implements OnInit {
       (res: SubscriptionModel) => {
         this.currentProfil = res.profil;
       },
-      (err: any) => {}
+      () => {}
     );
   }
 
@@ -171,7 +170,7 @@ export class DashboardKirenePage implements OnInit {
         this.sargalLastUpdate = getLastUpdatedDateTimeText();
         this.sargalDataLoaded = true;
       },
-      (err: any) => {
+      () => {
         this.sargalDataLoaded = true;
         this.sargalUnavailable = true;
       }
@@ -393,7 +392,7 @@ export class DashboardKirenePage implements OnInit {
                 this.showWelcomePopup(res);
               }
             },
-            err => {}
+            () => {}
           );
         }
       },
