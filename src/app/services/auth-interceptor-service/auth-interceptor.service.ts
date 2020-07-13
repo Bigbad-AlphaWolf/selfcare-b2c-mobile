@@ -42,7 +42,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221781040956');
+      headers = headers.set('X-MSISDN', '221771292317');
       //delay to test slowness of network
       req = req.clone({
         headers,
@@ -101,8 +101,8 @@ export class AuthInterceptorService implements HttpInterceptor {
         String(deviceInfo.isVirtual)
       );
 
-      if(this.appVersionNumber)
-          headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
+      if (this.appVersionNumber)
+        headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
 
       req = req.clone({
         headers,

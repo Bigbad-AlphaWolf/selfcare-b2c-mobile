@@ -8,7 +8,11 @@ import { MatBottomSheet } from '@angular/material';
 import { NumberSelectionComponent } from '../components/number-selection/number-selection.component';
 import { NumberSelectionOption } from '../models/enums/number-selection-option.enum';
 import { OperationExtras } from '../models/operation-extras.model';
-import { OPERATION_TYPE_RECHARGE_CREDIT } from 'src/shared';
+import {
+  OPERATION_TYPE_RECHARGE_CREDIT,
+  OPERATION_TYPE_PASS_INTERNET,
+  OPERATION_TYPE_PASS_ILLIMIX,
+} from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
 import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
@@ -113,7 +117,15 @@ export class TransfertHubServicesPage implements OnInit {
     title: string;
     subtitle: string;
     icon: string;
-    type: 'TRANSFERT_MONEY' | 'TRANSFERT_CREDIT' | 'TRANSFERT_BONUS' | 'CREDIT' | 'PASS'  | 'PASS_ILLIMIX'  | 'PASS_VOYAGE'  | 'PASS_INTERNATIONAL';
+    type:
+      | 'TRANSFERT_MONEY'
+      | 'TRANSFERT_CREDIT'
+      | 'TRANSFERT_BONUS'
+      | 'CREDIT'
+      | 'PASS'
+      | 'PASS_ILLIMIX'
+      | 'PASS_VOYAGE'
+      | 'PASS_INTERNATIONAL';
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
   }[] = [];
@@ -126,30 +138,30 @@ export class TransfertHubServicesPage implements OnInit {
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
-    private matBottomSheet: MatBottomSheet ,
+    private matBottomSheet: MatBottomSheet,
     private navController: NavController,
-    private router:Router,
+    private router: Router,
     private offerPlanServ: OfferPlansService,
     private dashbServ: DashboardService,
-    private bsService : BottomSheetService    ) {}
+    private bsService: BottomSheetService
+  ) {}
 
   ngOnInit() {
     let purchaseType;
 
-    if(history && history.state){
+    if (history && history.state) {
       purchaseType = history.state.purchaseType;
     }
-    if (purchaseType === 'TRANSFER') { 
+    if (purchaseType === 'TRANSFER') {
       this.options = this.transferOptions;
       this.pageTitle = 'Transférer argent ou crédit';
-    } else if(purchaseType === 'BUY') { 
+    } else if (purchaseType === 'BUY') {
       this.options = this.buyOptions;
       this.pageTitle = 'Acheter crédit ou pass';
       this.getUserActiveBonPlans();
       this.getUserActiveBoosterPromo();
-    }else{
+    } else {
       this.navController.navigateBack('/dashboard');
-
     }
   }
 
@@ -183,17 +195,31 @@ export class TransfertHubServicesPage implements OnInit {
         break;
       case 'CREDIT':
         if (opt.action === 'REDIRECT') {
-          this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, OPERATION_TYPE_RECHARGE_CREDIT, CreditPassAmountPage.PATH);   
+          this.bsService.openNumberSelectionBottomSheet(
+            NumberSelectionOption.WITH_MY_PHONES,
+            OPERATION_TYPE_RECHARGE_CREDIT,
+            CreditPassAmountPage.PATH
+          );
         }
         break;
       case 'PASS':
         if (opt.action === 'REDIRECT') {
-          this.appRouting.goToSelectRecepientPassInternet();
+          this.bsService.openNumberSelectionBottomSheet(
+            NumberSelectionOption.WITH_MY_PHONES,
+            OPERATION_TYPE_PASS_INTERNET,
+            'list-pass'
+          );
+          // this.appRouting.goToSelectRecepientPassInternet();
         }
         break;
       case 'PASS_ILLIMIX':
         if (opt.action === 'REDIRECT') {
-          this.appRouting.goToSelectRecepientPassIllimix();
+          this.bsService.openNumberSelectionBottomSheet(
+            NumberSelectionOption.WITH_MY_PHONES,
+            OPERATION_TYPE_PASS_ILLIMIX,
+            'list-pass'
+          );
+          // this.appRouting.goToSelectRecepientPassIllimix();
         }
         break;
       default:
@@ -216,71 +242,96 @@ export class TransfertHubServicesPage implements OnInit {
     return await modal.present();
   }
 
-
   openNumberSelectionBottomSheet(option?: NumberSelectionOption) {
     this.matBottomSheet
       .open(NumberSelectionComponent, {
-        data: {option: option},
+        data: { option: option },
       })
       .afterDismissed()
       .subscribe((opInfos: OperationExtras) => {
-      if(!opInfos || !opInfos.recipientMsisdn) return;
-      opInfos = { purchaseType:OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos}
-      this.router.navigate([CreditPassAmountPage.PATH], {state:opInfos});
+        if (!opInfos || !opInfos.recipientMsisdn) return;
+        opInfos = { purchaseType: OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos };
+        this.router.navigate([CreditPassAmountPage.PATH], { state: opInfos });
       });
   }
 
-  getUserActiveBonPlans(){
-    this.offerPlanServ.getUserTypeOfferPlans().subscribe((res: OfferPlanActive)=> {      
-      this.hasPromoPlanActive = res;
-    })
+  getUserActiveBonPlans() {
+    this.offerPlanServ
+      .getUserTypeOfferPlans()
+      .subscribe((res: OfferPlanActive) => {
+        this.hasPromoPlanActive = res;
+      });
   }
 
-  getUserActiveBoosterPromo(){
-    this.dashbServ.getActivePromoBooster().subscribe((res: PromoBoosterActive) => {
-     this.hasBoosterPromoActive = res; 
-    })
+  getUserActiveBoosterPromo() {
+    this.dashbServ
+      .getActivePromoBooster()
+      .subscribe((res: PromoBoosterActive) => {
+        this.hasBoosterPromoActive = res;
+      });
   }
 
-  displayBadgeBoosterPromoInOptionsForCategory(boosterActive: PromoBoosterActive, opt: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type: 'TRANSFERT_MONEY' | 'TRANSFERT_CREDIT' | 'TRANSFERT_BONUS' | 'CREDIT' | 'PASS'  | 'PASS_ILLIMIX'  | 'PASS_VOYAGE'  | 'PASS_INTERNATIONAL';
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-  }): boolean{
+  displayBadgeBoosterPromoInOptionsForCategory(
+    boosterActive: PromoBoosterActive,
+    opt: {
+      title: string;
+      subtitle: string;
+      icon: string;
+      type:
+        | 'TRANSFERT_MONEY'
+        | 'TRANSFERT_CREDIT'
+        | 'TRANSFERT_BONUS'
+        | 'CREDIT'
+        | 'PASS'
+        | 'PASS_ILLIMIX'
+        | 'PASS_VOYAGE'
+        | 'PASS_INTERNATIONAL';
+      url?: string;
+      action?: 'REDIRECT' | 'POPUP';
+    }
+  ): boolean {
     let result: boolean;
     if (boosterActive)
       switch (opt.type) {
-        case "CREDIT":
-          return boosterActive.promoRecharge
-        case "PASS_ILLIMIX":
-          return boosterActive.promoPassIllimix
-        case "PASS":
-          return boosterActive.promoPass
+        case 'CREDIT':
+          return boosterActive.promoRecharge;
+        case 'PASS_ILLIMIX':
+          return boosterActive.promoPassIllimix;
+        case 'PASS':
+          return boosterActive.promoPass;
         default:
           break;
       }
     return result;
   }
-  displayBadgeOfferPlanForInOptionsCategory(offerPlan: OfferPlanActive, opt: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type: 'TRANSFERT_MONEY' | 'TRANSFERT_CREDIT' | 'TRANSFERT_BONUS' | 'CREDIT' | 'PASS'  | 'PASS_ILLIMIX'  | 'PASS_VOYAGE'  | 'PASS_INTERNATIONAL';
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-  }): boolean{
+  displayBadgeOfferPlanForInOptionsCategory(
+    offerPlan: OfferPlanActive,
+    opt: {
+      title: string;
+      subtitle: string;
+      icon: string;
+      type:
+        | 'TRANSFERT_MONEY'
+        | 'TRANSFERT_CREDIT'
+        | 'TRANSFERT_BONUS'
+        | 'CREDIT'
+        | 'PASS'
+        | 'PASS_ILLIMIX'
+        | 'PASS_VOYAGE'
+        | 'PASS_INTERNATIONAL';
+      url?: string;
+      action?: 'REDIRECT' | 'POPUP';
+    }
+  ): boolean {
     let result: boolean;
-    if(offerPlan)
+    if (offerPlan)
       switch (opt.type) {
-        case "CREDIT":
-          return offerPlan.hasRecharge
-        case "PASS_ILLIMIX":
-          return offerPlan.hasPassIllimix
-        case "PASS":
-          return offerPlan.hasPassInternet
+        case 'CREDIT':
+          return offerPlan.hasRecharge;
+        case 'PASS_ILLIMIX':
+          return offerPlan.hasPassIllimix;
+        case 'PASS':
+          return offerPlan.hasPassInternet;
         default:
           break;
       }
