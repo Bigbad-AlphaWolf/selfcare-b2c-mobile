@@ -101,8 +101,8 @@ export class AuthInterceptorService implements HttpInterceptor {
         String(deviceInfo.isVirtual)
       );
 
-      if(this.appVersionNumber)
-          headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
+      if (this.appVersionNumber)
+        headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
 
       req = req.clone({
         headers,
@@ -113,7 +113,11 @@ export class AuthInterceptorService implements HttpInterceptor {
         (event: HttpEvent<any>) => {},
         (err: any) => {
           if (err instanceof HttpErrorResponse) {
-            if (err.status === 401 && !err.url.match('v2/check-client')) {
+            if (
+              err.status === 401 &&
+              (!err.url.match('v2/check-client') ||
+                !err.url.match('merchant/naming'))
+            ) {
               that.authServ.cleanCache();
               that.router.navigate(['login']);
             }
