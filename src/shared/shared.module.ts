@@ -78,9 +78,11 @@ import { AcronymPipe } from './pipes/acronym.pipe';
 import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import { OemOperationsComponent } from 'src/app/components/oem-operations/oem-operations.component';
 import { NoIonSelectArrowDirective } from 'src/app/directives/no-ion-select-arrow/no-ion-select-arrow.directive';
+import { InvoiceCardComponent } from 'src/app/components/invoice-card/invoice-card.component';
 
 @NgModule({
   declarations: [
+    InvoiceCardComponent,
     NoIonSelectArrowDirective,
     OemOperationsComponent,
     SelectBeneficiaryPopUpComponent,
@@ -178,6 +180,7 @@ import { NoIonSelectArrowDirective } from 'src/app/directives/no-ion-select-arro
     FavoriteMerchantComponent,
   ],
   exports: [
+    InvoiceCardComponent,
     NoIonSelectArrowDirective,
     OemOperationsComponent,
     SelectBeneficiaryPopUpComponent,

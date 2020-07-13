@@ -21,6 +21,9 @@ import { FollowAnalyticsService } from "../services/follow-analytics/follow-anal
 import { Platform, NavController } from "@ionic/angular";
 import { AppVersion } from "@ionic-native/app-version/ngx";
 import { AppUpdatePage } from "../pages/app-update/app-update.page";
+import { SessionOem } from '../services/session-oem/session-oem.service';
+import { map } from 'rxjs/operators';
+import { PROFIL, CODE_CLIENT, CODE_FORMULE, FORMULE } from '../utils/constants';
 const ls = new SecureLS({ encodingType: "aes" });
 
 @AutoUnsubscribe()
@@ -58,7 +61,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     private platform: Platform,
     private appMinimize: AppMinimize,
     private appVersion: AppVersion,
-    private navCtl: NavController
+    private navCtl: NavController,
+    private session:SessionOem
   ) {}
 
   ngOnInit() {
@@ -125,7 +129,20 @@ export class DashboardPage implements OnInit, OnDestroy {
     const date = getCurrentDate();
     this.hasErrorSubscription = false;
     this.isLoading = true;
-    this.authServ.getSubscription(currentNumber).subscribe(
+    this.authServ.getSubscription(currentNumber)
+    .pipe(
+      map((rs:any)=>{
+        if(rs && rs.profil){
+          ls.set(PROFIL, rs.profil);
+          ls.set(CODE_CLIENT, rs.clientCode);
+          ls.set(CODE_FORMULE, rs.code);
+          ls.set(FORMULE, rs.nomOffre);
+        }
+        return rs;
+
+      }),
+    )
+    .subscribe(
       (res: SubscriptionModel) => {
         this.isLoading = false;
         this.hasErrorSubscription = false;

@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 
 import { MatDialog } from '@angular/material';
-import { Subject, of } from 'rxjs';
+import { Subject, of, Observable } from 'rxjs';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { MAIL_URL } from 'src/shared';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
@@ -14,6 +14,8 @@ import { Platform } from '@ionic/angular';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { tap, map } from 'rxjs/operators';
+import { SessionOem } from '../session-oem/session-oem.service';
+import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
 const ls = new SecureLS({ encodingType: 'aes' });
 const { BILL_SERVICE, SERVER_API_URL } = environment;
 const billsPackageDownloadEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/download-bordereau-fixe`;
@@ -63,6 +65,55 @@ export class BillsService {
               'Bordereaux_Mobile_Error',
               'error',
               this.currentNumber
+            )
+        )
+      );
+  }
+  bordereau(codeClient: string):Observable<InvoiceOrange> {
+    return this.http
+      .get(
+        `${billsDetailEndpointAPI}/${codeClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`
+      )
+      .pipe(
+        tap(
+          (el) =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Success',
+              'event',
+              'SessionOem.PHONE'
+            ),
+          (err) =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Error',
+              'error',
+              'SessionOem.PHONE'
+            )
+        ),
+        map((rs)=>{
+          return rs[0];
+        })
+
+      );
+  }
+
+  invoices(codeClient: string):Observable<InvoiceOrange[]> {
+    return this.http
+      .get<InvoiceOrange[]>(
+        `${billsDetailEndpointAPI}/${codeClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`
+      )
+      .pipe(
+        tap(
+          (el) =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Success',
+              'event',
+              'SessionOem.PHONE'
+            ),
+          (err) =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Error',
+              'error',
+              'SessionOem.PHONE'
             )
         )
       );

@@ -31,6 +31,8 @@ import {
   JAMONO_ALLO_CODE_FORMULE,
   NotificationInfoModel,
 } from "src/shared";
+import { SessionOem } from '../session-oem/session-oem.service';
+import { PROFIL, CODE_CLIENT, CODE_FORMULE, FORMULE } from 'src/app/utils/constants';
 
 
 const {
@@ -177,7 +179,9 @@ export class AuthenticationService {
     if (!this.SubscriptionHttpCache.has(msisdn)) {
       this.SubscriptionHttpCache[msisdn] = this.getSubscriptionCustomerOffer(
         msisdn
-      ).pipe(shareReplay(1));
+      ).pipe(
+        
+        shareReplay(1));
     }
     return this.SubscriptionHttpCache[msisdn];
   }

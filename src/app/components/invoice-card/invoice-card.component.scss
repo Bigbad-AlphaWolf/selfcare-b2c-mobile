@@ -1,0 +1,78 @@
+.invoice-card{
+    border-radius: 5px;
+    box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+    font-family: HelveticaNeueLTStd-Bd;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    margin: 15px 0px;
+    .section1{
+        display: flex;
+        padding-bottom: 15px;
+        .infos{
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: center;
+            .title{
+                font-family: HelveticaNeueLTStd-Bd;
+                font-size: 16px;
+                font-weight: normal;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.38;
+                letter-spacing: normal;
+                color: #000000;
+            }
+            .facture{
+                font-family: HelveticaNeueLTStd-Roman;
+                font-size: 12px;
+                font-weight: normal;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.33;
+                letter-spacing: normal;
+                color: #666666;
+            }
+            .date{
+                font-family: HelveticaNeueLTStd-Roman;
+                font-size: 12px;
+                font-weight: normal;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.33;
+                letter-spacing: normal;
+                color: #666666;
+            }
+        }
+        .logo{
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border: solid 1px #eeeeee;
+            border-radius: 50%;
+        }
+    }
+    .path{
+        height: 1px;
+        border: solid 1px #eeeeee;
+    }
+    .section2{
+        display: flex;
+        padding-top: 15px;
+        justify-content: space-between;
+        .s2-text{
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 16px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.88;
+            letter-spacing: normal;
+            text-align: right;
+            color: #ff7900;
+        }
+
+    }
+}

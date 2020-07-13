@@ -35,4 +35,15 @@
     </ion-list>
   </div>
 </ion-header>
-<ion-content #scrollArea [scrollEvents]="true" mode="ios"> </ion-content>
+<ion-content #scrollArea [scrollEvents]="true" mode="ios" > 
+  <div class="content">
+    <div class="bordereau" *ngIf="(bordereau$|async) as bordereau">
+      <div class="title">Bordereau</div>
+      <invoice-card [invoice]="bordereau" [title]="'Facture globale'"></invoice-card>
+    </div>
+    <div class="factures"  *ngIf="(factures$|async) as factures">
+      <div class="title">Factures</div>
+      <invoice-card *ngFor="let facture of factures" [invoice]="facture" ></invoice-card>
+    </div>
+  </div>
+</ion-content>
