@@ -1,5 +1,5 @@
-import { MONTHS } from "./constants";
-import { MonthOem } from "../models/month.model";
+import { MONTHS } from './constants';
+import { MonthOem } from '../models/month.model';
 
 export function removeObjectField(obj: any, f: string) {
   const { [f]: propValue, ...rest } = obj;

@@ -11,7 +11,7 @@
   </ion-toolbar>
   <div class="banner-container">
     <div class="number">{{phone|phoneNumberDisplay}}</div>
-    <div class="change" (click)="onChangeLine()">Changer</div>
+    <div class="change" (click)="onChangeLine()" matRipple>Changer</div>
   </div>
   <div class="month-selection">
     <ion-list mode="ios">
@@ -22,7 +22,7 @@
           interface="popover"
           noIonSelectArrow
           mode="ios"
-          (ionChange)="onChangeLine($event)"
+          (ionChange)="onMonthChanged($event)"
         >
           <ion-select-option
             [value]="month.position"
@@ -38,6 +38,7 @@
 </ion-header>
 <ion-content [scrollEvents]="true" mode="ios" > 
   <div class="content">
+    <div class="s2-text" matRipple (click)="mailToCustomerService()">Demande d'assistance</div>
     <div class="bordereau" *ngIf="(bordereau$|async) as bordereau">
       <div class="title">Bordereau</div>
       <invoice-card [invoice]="bordereau" [title]="'Facture globale'"></invoice-card>

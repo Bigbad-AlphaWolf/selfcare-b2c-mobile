@@ -26,4 +26,5 @@ export class InvoiceCardComponent implements OnInit {
     this.billsService.downloadBill(bill);
   }
 
+
 }

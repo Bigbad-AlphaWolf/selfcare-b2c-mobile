@@ -50,8 +50,6 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.data.option);
-    
     this.option = this.data.option;
     this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(share());
     this.checkOmAccountSession();

@@ -79,9 +79,11 @@ import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/
 import { OemOperationsComponent } from 'src/app/components/oem-operations/oem-operations.component';
 import { NoIonSelectArrowDirective } from 'src/app/directives/no-ion-select-arrow/no-ion-select-arrow.directive';
 import { InvoiceCardComponent } from 'src/app/components/invoice-card/invoice-card.component';
+import { LinesComponent } from 'src/app/components/lines/lines.component';
 
 @NgModule({
   declarations: [
+    LinesComponent,
     InvoiceCardComponent,
     NoIonSelectArrowDirective,
     OemOperationsComponent,
@@ -159,6 +161,7 @@ import { InvoiceCardComponent } from 'src/app/components/invoice-card/invoice-ca
     RouterModule,
   ],
   entryComponents: [
+    LinesComponent,
     SelectBeneficiaryPopUpComponent,
     NumberSelectionComponent,
     FavoriteCountersComponent,
@@ -181,6 +184,7 @@ import { InvoiceCardComponent } from 'src/app/components/invoice-card/invoice-ca
   ],
   exports: [
     InvoiceCardComponent,
+    LinesComponent,
     NoIonSelectArrowDirective,
     OemOperationsComponent,
     SelectBeneficiaryPopUpComponent,

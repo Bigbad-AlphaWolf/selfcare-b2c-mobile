@@ -12,6 +12,7 @@ import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/m
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { take } from 'rxjs/operators';
 import { OrangeMoneyService } from '../orange-money-service/orange-money.service';
+import { LinesComponent } from 'src/app/components/lines/lines.component';
 
 @Injectable({
   providedIn: "root",
@@ -78,6 +79,17 @@ export class BottomSheetService {
       cssClass: 'pin-pad-modal',
     });
     return await modal.present();
+  }
+
+  public openLinesBottomSheet() {
+    this.matBottomSheet
+      .open(LinesComponent, {
+        backdropClass: "oem-ion-bottomsheet",
+      })
+      .afterDismissed()
+      .subscribe((opInfos: OperationExtras) => {
+      
+      });
   }
 
     

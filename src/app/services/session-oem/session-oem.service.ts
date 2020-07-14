@@ -9,7 +9,9 @@ const ls = new SecureLS({ encodingType: "aes" });
 export class SessionOem {
 
   constructor() { }
-
+  static get MAIN_PHONE() {
+    return ls.get("mainPhoneNumber");
+  }
   static get PHONE(){
     return ls.get("currentPhoneNumber");
   }
@@ -26,4 +28,6 @@ export class SessionOem {
   static get CODE_FORMULE(){
     return ls.get(CODE_FORMULE);
   }
+
+ 
 }
