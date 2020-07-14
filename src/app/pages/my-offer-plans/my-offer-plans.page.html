@@ -1,20 +1,24 @@
-<ion-header [oemIonHeaderParallax]="100">
+<ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button
-        (click)="goBack()"
-        icon=""
-        class="oem-back-button"
-      >
+    <ion-buttons class="ion-padding-start" slot="start">
+      <ion-button
+        (click)="goBack()"      >
         <img src="/assets/images/arrow-left.png" alt="icon" />
-      </ion-back-button>
+      </ion-button>
     </ion-buttons>
-    <ion-title class="achat-pass-internet">
+    <ion-title class="title1">
         {{ pageTitle }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content fullscreen="true">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">
+        {{ pageTitle }}
+      </span>
+    </ion-toolbar>
+  </ion-header>
   <div class="offer-plans-container">
     <div class="header-image">
       <img src="/assets/images/bon-plan-header.png" alt="">

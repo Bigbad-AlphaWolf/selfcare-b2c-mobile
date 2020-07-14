@@ -285,6 +285,18 @@
         </div>
       </div>
     </ng-container>
+    <ng-container *ngIf="offerPlan">
+      <div class="amount-to-transfer">
+        <span class="pass">Infos additionnelles</span>
+      </div>
+      <div class="recipient-information offer-desc">
+        <div class="top-block-transfert">
+          <span class="title">
+            {{ offerPlan?.description }}
+          </span>
+        </div>
+      </div>
+    </ng-container>
     <button
       class="scb-btn scb-btn-orange"
       (click)="pay()"

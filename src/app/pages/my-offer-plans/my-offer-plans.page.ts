@@ -131,20 +131,20 @@ export class MyOfferPlansPage implements OnInit {
     switch (offer.typeMPO.toLowerCase()) {
       case 'illimix':
         if(offer.pass){
-          const payloadPassPageRecap = { pass: offer.pass, recipientName: null , purchaseType: OPERATION_TYPE_PASS_ILLIMIX, ...this.payloadNavigation  }
+          const payloadPassPageRecap = { pass: offer.pass, recipientName: null , purchaseType: OPERATION_TYPE_PASS_ILLIMIX, ...this.payloadNavigation, offerPlan: offer  }
           this.appliRout.goToPassRecapPage(payloadPassPageRecap);
         }
         break;
         
       case 'internet':
         if(offer.pass){
-          const payloadPassPageRecap = { pass: offer.pass, recipientName: null , purchaseType: OPERATION_TYPE_PASS_INTERNET, ...this.payloadNavigation  }
+          const payloadPassPageRecap = { pass: offer.pass, recipientName: null , purchaseType: OPERATION_TYPE_PASS_INTERNET, ...this.payloadNavigation, offerPlan: offer  }
           this.appliRout.goToPassRecapPage(payloadPassPageRecap);
         }
         break;
 
       case 'recharge':
-        const opBuyCreditSetAmountPayload: OperationExtras = {forSelf: true,recipientFirstname: null,recipientLastname: null,recipientFromContact: false,senderMsisdn: this.payloadNavigation.recipientMsisdn }
+        const opBuyCreditSetAmountPayload: OperationExtras = {forSelf: true,recipientFirstname: null,recipientLastname: null,recipientFromContact: false,senderMsisdn: this.payloadNavigation.recipientMsisdn, offerPlan: offer }
         this.appliRout.goToBuyCreditSetAmount(opBuyCreditSetAmountPayload)
         break;
 
