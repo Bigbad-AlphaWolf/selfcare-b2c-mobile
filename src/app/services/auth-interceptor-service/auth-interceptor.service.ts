@@ -14,6 +14,7 @@ import * as jwt_decode from 'jwt-decode';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { OM_SERVICE_VERSION } from '../orange-money-service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { checkUrlMatchOM } from 'src/app/utils/utils';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable()
@@ -42,7 +43,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221781040956');
+      headers = headers.set('X-MSISDN', '221771331225');
       //delay to test slowness of network
       req = req.clone({
         headers,
@@ -101,8 +102,8 @@ export class AuthInterceptorService implements HttpInterceptor {
         String(deviceInfo.isVirtual)
       );
 
-      if(this.appVersionNumber)
-          headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
+      if (this.appVersionNumber)
+        headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
 
       req = req.clone({
         headers,
@@ -113,7 +114,7 @@ export class AuthInterceptorService implements HttpInterceptor {
         (event: HttpEvent<any>) => {},
         (err: any) => {
           if (err instanceof HttpErrorResponse) {
-            if (err.status === 401 && !err.url.match('v2/check-client')) {
+            if (err.status === 401 && !checkUrlMatchOM(err.url)) {
               that.authServ.cleanCache();
               that.router.navigate(['login']);
             }

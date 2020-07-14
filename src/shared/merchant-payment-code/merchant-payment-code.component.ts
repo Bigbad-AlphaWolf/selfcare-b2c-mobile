@@ -5,6 +5,10 @@ import { ApplicationRoutingService } from 'src/app/services/application-routing/
 import { MatBottomSheet } from '@angular/material';
 import { OPERATION_TYPE_MERCHANT_PAYMENT } from '..';
 import { ModalController } from '@ionic/angular';
+import { retryWhen, switchMap } from 'rxjs/operators';
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { HttpErrorResponse } from '@angular/common/http';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-merchant-payment-code',
@@ -36,36 +40,66 @@ export class MerchantPaymentCodeComponent implements OnInit {
     this.hasErrorOnCheckMerchant = false;
     this.chekingMerchant = true;
     const code = this.merchantCodeForm.value.merchantCode;
-    this.orangeMoneyService.getMerchantByCode(code).subscribe(
-      (response: any) => {
-        this.chekingMerchant = false;
-        const payload = {
-          purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
-          merchantCode: code,
-          merchantName: response.content.data.nom_marchand,
-        };
-        if (
-          response &&
-          response.status_code &&
-          (response.status_code.match('Success') ||
-            response.status_code.match('Erreur-601'))
-        ) {
-          this.applicationRoutingService.goSetAmountPage(payload);
-          this.modalController.dismiss();
-        } else {
-          this.onCheckingMerchantError(response.status_wording);
+    this.orangeMoneyService
+      .getMerchantByCode(code)
+      .pipe(
+        retryWhen((err) => {
+          return err.pipe(
+            switchMap(async (err) => {
+              if (err.status === 401) return await this.resetOmToken(err);
+              throw err;
+            })
+          );
+        })
+      )
+      .subscribe(
+        (response: any) => {
+          this.chekingMerchant = false;
+          const payload = {
+            purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
+            merchantCode: code,
+            merchantName: response.content.data.nom_marchand,
+          };
+          if (
+            response &&
+            response.status_code &&
+            (response.status_code.match('Success') ||
+              response.status_code.match('Erreur-601'))
+          ) {
+            this.applicationRoutingService.goSetAmountPage(payload);
+            this.modalController.dismiss();
+          } else {
+            this.onCheckingMerchantError(response.status_wording);
+          }
+        },
+        (err) => {
+          this.chekingMerchant = false;
+          if (err.error.name) return;
+          err && err.msg
+            ? this.onCheckingMerchantError(err.msg)
+            : this.onCheckingMerchantError();
         }
+      );
+  }
+
+  async resetOmToken(err) {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+      componentProps: {
+        operationType: null,
       },
-      (err) => {
-        err && err.msg
-          ? this.onCheckingMerchantError(err.msg)
-          : this.onCheckingMerchantError();
-      }
-    );
+    });
+    await modal.present();
+    let result = await modal.onDidDismiss();
+    if (result && result.data && result.data.success) return of(err);
+    throw new HttpErrorResponse({
+      error: { title: 'Pinpad cancled', name: 'pinpadDismissed' },
+      status: 401,
+    });
   }
 
   onCheckingMerchantError(msg?: string) {
-    this.chekingMerchant = false;
     this.hasErrorOnCheckMerchant = true;
     this.errorMsg = msg ? msg : 'Une erreur est survenue';
     this.ref.detectChanges();
