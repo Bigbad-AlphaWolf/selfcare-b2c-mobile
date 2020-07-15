@@ -71,8 +71,7 @@ export class NewRegistrationPage implements OnInit {
       title: 'J’ai besoin d’aide',
       subTitle: "J'ai des difficultés pour me connecter",
       action: 'help',
-    }
-    
+    },
   ];
   //Temps d'attente pour la recuperation automatique du numero -> 10 secondes
   msisdnTimeout = 10000;
@@ -87,7 +86,6 @@ export class NewRegistrationPage implements OnInit {
     public dialog: MatDialog,
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
-    private bottomSheet: MatBottomSheet,
     private modalController: ModalController,
     private navController: NavController
   ) {
@@ -128,8 +126,7 @@ export class NewRegistrationPage implements OnInit {
   getNumber() {
     this.gettingNumber = true;
     this.showErrMessage = false;
-    if (!this.ref['destroyed']) 
-    this.ref.detectChanges();
+    if (!this.ref['destroyed']) this.ref.detectChanges();
     Fingerprint2.get((components) => {
       const values = components.map((component) => {
         return component.value;
@@ -171,8 +168,7 @@ export class NewRegistrationPage implements OnInit {
                 } else {
                   this.displayMsisdnError();
                 }
-                if (!this.ref['destroyed']) 
-    this.ref.detectChanges();
+                if (!this.ref['destroyed']) this.ref.detectChanges();
               },
               (err) => {
                 this.displayMsisdnError();
@@ -348,14 +344,15 @@ export class NewRegistrationPage implements OnInit {
     }
   }
 
-  openHelpModal(sheetData?: any) {
-    this.bottomSheet
-      .open(CommonIssuesComponent, {
-        panelClass: 'custom-css-common-issues',
-        data: sheetData,
-      })
-      .afterDismissed()
-      .subscribe((message: string) => {
+  async openHelpModal(sheetData?: any) {
+    const modal = await this.modalController.create({
+      component: CommonIssuesComponent,
+      cssClass: 'modalRecipientSelection',
+      componentProps: { data: sheetData },
+    });
+    modal.onDidDismiss().then((response) => {
+      if (response && response.data) {
+        const message = response.data;
         if (message === 'ERROR_AUTH_IMP') {
           this.openHelpModal(HelpModalAuthErrorContent);
         }
@@ -365,7 +362,9 @@ export class NewRegistrationPage implements OnInit {
         if (message === 'CONFIG_APN_AUTH_IMP') {
           this.openHelpModal(HelpModalConfigApnContent);
         }
-      });
+      }
+    });
+    return await modal.present();
   }
 
   displayMsisdnError() {
@@ -378,8 +377,7 @@ export class NewRegistrationPage implements OnInit {
       'error',
       this.phoneNumber
     );
-    if (!this.ref['destroyed']) 
-    this.ref.detectChanges();
+    if (!this.ref['destroyed']) this.ref.detectChanges();
   }
 
   async openSuccessModal() {
@@ -407,7 +405,7 @@ export class NewRegistrationPage implements OnInit {
     return await modal.present();
   }
 
-  goBack(){
-    this.navController.navigateBack(['/home-v2'])
+  goBack() {
+    this.navController.navigateBack(['/home-v2']);
   }
 }
