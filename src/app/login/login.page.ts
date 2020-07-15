@@ -15,7 +15,7 @@ import {
 } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { NavController } from '@ionic/angular';
+import { NavController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -59,9 +59,9 @@ export class LoginPage implements OnInit {
     private authServ: AuthenticationService,
     private dashbServ: DashboardService,
     public dialog: MatDialog,
-    private bottomSheet: MatBottomSheet,
     private followAnalyticsService: FollowAnalyticsService,
-    private navController: NavController
+    private navController: NavController,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -170,14 +170,15 @@ export class LoginPage implements OnInit {
     }
   }
 
-  openHelpModal(sheetData?: any) {
-    this.bottomSheet
-      .open(CommonIssuesComponent, {
-        panelClass: 'custom-css-common-issues',
-        data: sheetData,
-      })
-      .afterDismissed()
-      .subscribe((message: string) => {
+  async openHelpModal(sheetData?: any) {
+    const modal = await this.modalController.create({
+      component: CommonIssuesComponent,
+      cssClass: 'modalRecipientSelection',
+      componentProps: { data: sheetData },
+    });
+    modal.onDidDismiss().then((response) => {
+      if (response && response.data) {
+        const message = response.data;
         if (message === 'ERROR_AUTH_IMP') {
           this.openHelpModal(HelpModalAuthErrorContent);
         }
@@ -187,7 +188,9 @@ export class LoginPage implements OnInit {
         if (message === 'CONFIG_APN_AUTH_IMP') {
           this.openHelpModal(HelpModalConfigApnContent);
         }
-      });
+      }
+    });
+    return await modal.present();
   }
 
   goRegisterPage() {
@@ -202,7 +205,7 @@ export class LoginPage implements OnInit {
     );
     this.router.navigate(['/home']);
   }
-  goBack(){
-    this.navController.navigateBack(['/home-v2'])
+  goBack() {
+    this.navController.navigateBack(['/home-v2']);
   }
 }
