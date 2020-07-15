@@ -42,7 +42,6 @@ import { PhonenumberItemComponent } from "./phonenumber-item/phonenumber-item.co
 import { SelectNumberPopupComponent } from "./select-number-popup/select-number-popup.component";
 import { SelectOtherRecipientComponent } from "./select-other-recipient/select-other-recipient.component";
 import { GetLabelLigneBillBordereauPipe } from "./pipes/get-label-ligne-bill-bordereau.pipe";
-import { ShareSocialNetworkComponent } from "./share-social-network/share-social-network.component";
 import { AvantagePopupComponent } from "./avantage-popup/avantage-popup.component";
 import { DeleteNumberPopupComponent } from "src/app/my-account/delete-number-popup/delete-number-popup.component";
 import { CguPopupComponent } from "./cgu-popup/cgu-popup.component";
@@ -109,7 +108,6 @@ import { IbouIonFabComponent } from './ibou-ion-fab/ibou-ion-fab.component';
     SelectNumberPopupComponent,
     SelectOtherRecipientComponent,
     GetLabelLigneBillBordereauPipe,
-    ShareSocialNetworkComponent,
     AvantagePopupComponent,
     CguPopupComponent,
     OperationSuccessOrFailComponent,
@@ -165,7 +163,6 @@ import { IbouIonFabComponent } from './ibou-ion-fab/ibou-ion-fab.component';
     NoOMAccountPopupComponent,
     CancelOperationPopupComponent,
     SelectNumberPopupComponent,
-    ShareSocialNetworkComponent,
     AvantagePopupComponent,
     DeleteNumberPopupComponent,
     CguPopupComponent,
@@ -221,7 +218,6 @@ import { IbouIonFabComponent } from './ibou-ion-fab/ibou-ion-fab.component';
     PhonenumberItemComponent,
     SelectNumberPopupComponent,
     SelectOtherRecipientComponent,
-    ShareSocialNetworkComponent,
     AvantagePopupComponent,
     OperationSuccessOrFailComponent,
     WelcomePopupComponent,

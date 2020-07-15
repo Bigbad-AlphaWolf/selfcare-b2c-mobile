@@ -36,7 +36,6 @@ import {
   PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
 } from '../dashboard';
-import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog, MatBottomSheet } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
@@ -48,7 +47,6 @@ import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
-import { SargalStatusCard } from '../models/enums/sargal-status-card.enum';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
