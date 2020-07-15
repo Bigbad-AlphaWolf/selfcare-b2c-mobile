@@ -1,5 +1,16 @@
 @import 'src/app/app';
 
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.28px;
+}
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+}
+
 ion-content {
   background-color: $grayDashboard;
 }
@@ -21,11 +32,12 @@ ion-content {
     font-size: 24px;
     padding-left: 15px;
   }
-  .banner-container {
+}
+.banner-container {
+  width: 100%;
+  display: flex;
+  .banniere {
     width: 100%;
-    .banniere {
-      width: 100%;
-    }
   }
 }
 
