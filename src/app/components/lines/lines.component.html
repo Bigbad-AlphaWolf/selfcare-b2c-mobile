@@ -26,7 +26,7 @@
       > <span style="line-height: 3.4">Confirmer</span> </button
     >
     <ion-spinner
-      *ngIf="isProcessing || !((phones$ | async)?.length)"
+      *ngIf="isProcessing"
       name="crescent"
     ></ion-spinner>
   </div>

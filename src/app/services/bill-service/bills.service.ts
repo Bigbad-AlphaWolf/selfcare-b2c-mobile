@@ -70,7 +70,7 @@ export class BillsService {
         )
       );
   }
-  bordereau(codeClient: string, type:string, month?:MonthOem):Observable<InvoiceOrange> {
+  bordereau(codeClient: string, type:string, phone?:string, month?:MonthOem):Observable<InvoiceOrange> {
     return this.http
       .get(
         `${BORDEREAU_ENDPOINT}/${codeClient}?type=${type}&search=summaryYear:${month.year},summaryMonth:${month.position}`
@@ -81,17 +81,19 @@ export class BillsService {
             this.followServ.registerEventFollow(
               'Bordereaux_Mobile_Success',
               'event',
-              'SessionOem.PHONE'
+              phone
             ),
           (err) =>
             this.followServ.registerEventFollow(
               'Bordereaux_Mobile_Error',
               'error',
-              'SessionOem.PHONE'
+              phone
             )
         ),
-        map((rs)=>{
-          return rs[0];
+        map((rs:any)=>{
+          if(rs.length)
+            return rs[0];
+          return null;
         })
 
       );
@@ -100,21 +102,21 @@ export class BillsService {
   invoices(codeClient: string, type:string, phone?:string, month?:MonthOem):Observable<InvoiceOrange[]> {
     return this.http
       .get<InvoiceOrange[]>(
-        `${INVOICE_ENDPOINT}/${codeClient}?type=${type}&phoneNumber=${phone}&search=year:${month.year},month:${month.position}`
+        `${INVOICE_ENDPOINT}/${codeClient}?type=${type}&search=${type==='MOBILE'?'phoneNumber:'+phone+',':''}year:${month.year},month:${month.position}`
       )
       .pipe(
         tap(
           (el) =>
             this.followServ.registerEventFollow(
-              'Bordereaux_Mobile_Success',
+              'Facture_Mobile_Success',
               'event',
-              'SessionOem.PHONE'
+              phone
             ),
           (err) =>
             this.followServ.registerEventFollow(
-              'Bordereaux_Mobile_Error',
+              'Facture_Mobile_Error',
               'error',
-              'SessionOem.PHONE'
+              phone
             )
         )
       );

@@ -2,6 +2,7 @@
   <div class="section1">
     <div class="infos">
       <div class="title" *ngIf="title">{{ title }}</div>
+      <div class="title" *ngIf="!title">{{invoice.numeroTelephone | getLabelLigneBillBordereau}}</div>
       <div class="facture">N° {{ invoice.nfact  | formatBillNum }}</div>
       <div class="date"> Echéance {{ invoice.dateEcheance | formatBillDate }}</div>
     </div>
