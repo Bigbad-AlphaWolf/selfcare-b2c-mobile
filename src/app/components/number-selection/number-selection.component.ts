@@ -37,7 +37,7 @@ export class NumberSelectionComponent implements OnInit {
   numberFromInput: string = '';
 
   isProcessing: boolean;
-  showInput: boolean = true;
+  showInput: boolean = false;
   phoneIsNotValid: boolean = false;
 
   omSession: OmSession = {};
@@ -45,7 +45,7 @@ export class NumberSelectionComponent implements OnInit {
   isErrorProcessing: boolean = false;
   canNotRecieve: boolean;
   canNotRecieveError: boolean = false;
-  @Input() data;
+  @Input() data: any;
   constructor(
     private modalController: ModalController,
     private omService: OrangeMoneyService,

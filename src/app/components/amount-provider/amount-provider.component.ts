@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output,EventEmitter } from '@angular/core';
+import { REGEX_IS_DIGIT } from 'src/shared';
 
 @Component({
   selector: 'oem-amount-provider',
@@ -22,10 +23,19 @@ export class AmountProviderComponent implements OnInit {
     this.onAmountSelected.emit(amount);   
   }
 
-  onInputAmount(amount: string) {
+  onInputAmount(event: any) {
+    const amount = event.target.value;
+    this.updateInput(event);
     this.amountFromInput = amount;
     this.inputAmountEvent.emit(amount);
+  }
 
+  updateInput(eventInput: any) {        
+    if(!REGEX_IS_DIGIT.test(eventInput.data)){
+      const value = eventInput.target.value;
+      eventInput.target.value = 0;
+      eventInput.target.value = value;
+    }
   }
 
   onOptionChange(value: string) {
