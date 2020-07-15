@@ -2,8 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
-import { MatBottomSheet } from '@angular/material';
-import { OPERATION_TYPE_MERCHANT_PAYMENT } from '..';
+import { OPERATION_TYPE_MERCHANT_PAYMENT, REGEX_IS_DIGIT } from '..';
 import { ModalController } from '@ionic/angular';
 import { retryWhen, switchMap } from 'rxjs/operators';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
@@ -20,12 +19,10 @@ export class MerchantPaymentCodeComponent implements OnInit {
   merchantCodeForm: FormGroup;
   hasErrorOnCheckMerchant: boolean;
   errorMsg: string;
-
   constructor(
     private fb: FormBuilder,
     private orangeMoneyService: OrangeMoneyService,
     private applicationRoutingService: ApplicationRoutingService,
-    private bottomSheet: MatBottomSheet,
     private modalController: ModalController,
     private ref: ChangeDetectorRef
   ) {}
@@ -103,5 +100,13 @@ export class MerchantPaymentCodeComponent implements OnInit {
     this.hasErrorOnCheckMerchant = true;
     this.errorMsg = msg ? msg : 'Une erreur est survenue';
     this.ref.detectChanges();
+  }
+
+  numberOnly(event) {    
+    if(!REGEX_IS_DIGIT.test(event.data)){
+      const value = event.target.value;
+      event.target.value = 0;
+      event.target.value = value;
+    }
   }
 }

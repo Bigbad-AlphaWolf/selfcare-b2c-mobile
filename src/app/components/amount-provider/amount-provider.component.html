@@ -11,7 +11,7 @@
             #amountInput
             matInput
             type="number"
-            (input)="onInputAmount(amountInput.value)"
+            (input)="onInputAmount($event)"
             [value]="initValue"
           />
           <span matSuffix class="scb-text-gray suffix">FCFA</span>

@@ -208,7 +208,6 @@ export class TransfertHubServicesPage implements OnInit {
       componentProps: { option },
     });
     modal.onDidDismiss().then((response: any) => {
-      console.log(response);
       let opInfos;
       if (response && response.data) {
         opInfos = response.data;

@@ -8,6 +8,7 @@ import {
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
+  REGEX_IS_DIGIT,
 } from 'src/shared';
 import {
   FeeModel,
@@ -287,8 +288,10 @@ export class PurchaseSetAmountPage implements OnInit {
     }
   }
 
-  onAmountChanged(amount) {
+  onAmountChanged(event: any) {
+    const amount = event.target.value;
     this.totalAmount = +amount;
+    this.updateInput(event);
     if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
       const fee = this.extractFees(this.transferFeesArray, amount);
       this.fee = fee.with_code;
@@ -300,6 +303,16 @@ export class PurchaseSetAmountPage implements OnInit {
       this.includeFees
         ? (this.totalAmount += this.fee)
         : (this.totalAmount = amount);
+    }
+    
+  }
+
+
+  updateInput(eventInput: any) {        
+    if(!REGEX_IS_DIGIT.test(eventInput.data)){
+      const value = eventInput.target.value;
+      eventInput.target.value = 0;
+      eventInput.target.value = value;
     }
   }
 }

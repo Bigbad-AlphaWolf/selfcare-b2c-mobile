@@ -15,6 +15,7 @@ export const REGEX_EMAIL = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*
 export const REGEX_DIGIT = /\d/;
 export const REGEX_POSTPAID_FIXE = /(Keurgui).*|(Fibre).*|(LFB).*|(HOME).*/i;
 export const REGEX_PREPAID_FIXE = /(BOX).*/i;
+export const REGEX_IS_DIGIT: RegExp = /^[0-9]*$/;
 
 export const USER_CONS_CATEGORY_CALL = 'APPEL';
 export const USER_CONS_CATEGORY_INTERNET = 'INTERNET';
