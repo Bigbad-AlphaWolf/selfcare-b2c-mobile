@@ -14,6 +14,7 @@ import {
   OPERATION_TRANSFER_OM,
   SubscriptionModel,
   OPERATION_TYPE_RECHARGE_CREDIT,
+  OPERATION_TYPE_BONS_PLANS,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -21,6 +22,7 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { OperationExtras } from '../models/operation-extras.model';
 import { OPERATION_WOYOFAL } from '../utils/operations.util';
+import { OfferPlan } from 'src/shared/models/offer-plan.model';
 
 @Component({
   selector: 'app-operation-recap',
@@ -71,9 +73,11 @@ export class OperationRecapPage implements OnInit {
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
+  OPERATION_TYPE_BONS_PLANS = OPERATION_TYPE_BONS_PLANS;
   state: any;
   subscriptionInfos: SubscriptionModel;
   buyCreditPayload: any;
+  offerPlan: OfferPlan;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -109,6 +113,7 @@ export class OperationRecapPage implements OnInit {
                 destinataire: this.recipientMsisdn,
                 pass: this.passChoosen,
               };
+              this.offerPlan = state.offerPlan;
               break;
             case OPERATION_TRANSFER_OM_WITH_CODE:
               this.recipientMsisdn = state.recipientMsisdn;
@@ -156,7 +161,7 @@ export class OperationRecapPage implements OnInit {
                   ' ' +
                   this.opXtras.recipientLastname
                 : '';
-
+              this.offerPlan = state.offerPlan;
               break;
             case OPERATION_WOYOFAL:
               this.opXtras = state;

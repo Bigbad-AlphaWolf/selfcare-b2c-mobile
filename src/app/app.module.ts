@@ -47,7 +47,7 @@ registerLocaleData(localeFr);
     SidemenuComponent,
     ChangeAvatarPopupComponent,
     InProgressPopupComponent,
-    ],
+  ],
   entryComponents: [ChangeAvatarPopupComponent, InProgressPopupComponent],
   imports: [
     HttpClientModule,

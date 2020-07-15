@@ -9,7 +9,6 @@ import { AuthenticationService } from 'src/app/services/authentication-service/a
 import {
   arrangeCompteurByOrdre,
   getTrioConsoUser,
-  PAYMENT_MOD_CREDIT,
   formatDataVolume,
   UserConsommations,
   formatCurrency,
@@ -26,7 +25,6 @@ import {
   CODE_COMPTEUR_VOLUME_NUIT_2,
   CODE_COMPTEUR_VOLUME_NUIT_3
 } from '../dashboard';
-import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
@@ -66,7 +64,6 @@ export class DashboardHomePrepaidPage implements OnInit {
   errorOnLoadingConso;
   firstName: string;
   lastName: string;
-  fabOpened = false;
   isBanniereLoaded: boolean;
   constructor(
     private passIntService: PassInternetService,
@@ -144,7 +141,7 @@ export class DashboardHomePrepaidPage implements OnInit {
         }
         this.loadingConso = false;
       },
-      err => {
+      () => {
         this.loadingConso = false;
         this.errorOnLoadingConso = true;
       }
@@ -268,18 +265,6 @@ export class DashboardHomePrepaidPage implements OnInit {
     });
   }
 
-  fabToggled() {
-    this.fabOpened = !this.fabOpened;
-  }
-
-  openSocialNetworkModal() {
-    this.shareDialog.open(ShareSocialNetworkComponent, {
-      height: '530px',
-      width: '330px',
-      maxWidth: '100%'
-    });
-  }
-
   showWelcomePopup(data: WelcomeStatusModel) {
     const dialog = this.shareDialog.open(WelcomePopupComponent, {
       data,
@@ -302,7 +287,7 @@ export class DashboardHomePrepaidPage implements OnInit {
                 this.showWelcomePopup(res);
               }
             },
-            err => {}
+            () => {}
           );
         }
       },

@@ -42,7 +42,6 @@ import { PhonenumberItemComponent } from "./phonenumber-item/phonenumber-item.co
 import { SelectNumberPopupComponent } from "./select-number-popup/select-number-popup.component";
 import { SelectOtherRecipientComponent } from "./select-other-recipient/select-other-recipient.component";
 import { GetLabelLigneBillBordereauPipe } from "./pipes/get-label-ligne-bill-bordereau.pipe";
-import { ShareSocialNetworkComponent } from "./share-social-network/share-social-network.component";
 import { AvantagePopupComponent } from "./avantage-popup/avantage-popup.component";
 import { DeleteNumberPopupComponent } from "src/app/my-account/delete-number-popup/delete-number-popup.component";
 import { CguPopupComponent } from "./cgu-popup/cgu-popup.component";
@@ -80,6 +79,7 @@ import { OemOperationsComponent } from 'src/app/components/oem-operations/oem-op
 import { NoIonSelectArrowDirective } from 'src/app/directives/no-ion-select-arrow/no-ion-select-arrow.directive';
 import { InvoiceCardComponent } from 'src/app/components/invoice-card/invoice-card.component';
 import { LinesComponent } from 'src/app/components/lines/lines.component';
+import { IbouIonFabComponent } from './ibou-ion-fab/ibou-ion-fab.component';
 
 @NgModule({
   declarations: [
@@ -114,7 +114,6 @@ import { LinesComponent } from 'src/app/components/lines/lines.component';
     SelectNumberPopupComponent,
     SelectOtherRecipientComponent,
     GetLabelLigneBillBordereauPipe,
-    ShareSocialNetworkComponent,
     AvantagePopupComponent,
     CguPopupComponent,
     OperationSuccessOrFailComponent,
@@ -139,6 +138,7 @@ import { LinesComponent } from 'src/app/components/lines/lines.component';
     CodeFormatPipe,
     FavoriteMerchantComponent,
     AcronymPipe,
+    IbouIonFabComponent
   ],
   imports: [
     CommonModule,
@@ -170,7 +170,6 @@ import { LinesComponent } from 'src/app/components/lines/lines.component';
     NoOMAccountPopupComponent,
     CancelOperationPopupComponent,
     SelectNumberPopupComponent,
-    ShareSocialNetworkComponent,
     AvantagePopupComponent,
     DeleteNumberPopupComponent,
     CguPopupComponent,
@@ -229,7 +228,6 @@ import { LinesComponent } from 'src/app/components/lines/lines.component';
     PhonenumberItemComponent,
     SelectNumberPopupComponent,
     SelectOtherRecipientComponent,
-    ShareSocialNetworkComponent,
     AvantagePopupComponent,
     OperationSuccessOrFailComponent,
     WelcomePopupComponent,
@@ -249,6 +247,7 @@ import { LinesComponent } from 'src/app/components/lines/lines.component';
     ItemRechargeCreditComponent,
     ItemOfferPlanComponent,
     FavoriteMerchantComponent,
+    IbouIonFabComponent
   ],
   providers: [
     Contacts,
