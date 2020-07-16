@@ -490,7 +490,7 @@ body {
 
 .transferts-page {
   .card {
-    ion-card{
+    ion-card {
       -webkit-margin-start: 0px;
       margin-inline-start: 0px;
       -webkit-margin-end: 0px;
@@ -513,7 +513,23 @@ body {
   align-items: flex-end;
 }
 
-
+// css for modal select recipient for buy credit, pass internet & illimix
+.select-recipient-modal {
+  align-items: flex-end !important;
+  --height: auto;
+  .modal-wrapper {
+    width: 100% !important;
+    border-radius: 10px 10px 0 0 !important;
+    .ion-page {
+      position: relative;
+      contain: content;
+      max-height: 90vh;
+      .modal-content {
+        overflow: auto;
+      }
+    }
+  }
+}
 
 // css for popup set merchant code on merchant payment
 .merchant-code-modal {
@@ -664,16 +680,15 @@ button {
   vertical-align: bottom;
 }
 
-.cdk-overlay-backdrop.cdk-overlay-backdrop-showing.oem-ion-bottomsheet{
-  background: rgba(0,0,0,.45);
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing.oem-ion-bottomsheet {
+  background: rgba(0, 0, 0, 0.45);
   opacity: 1 !important;
   transition: none;
 }
 
-
 // custom CSS for purchase list filter button
-.purchase-history-container-filter .purchase-content-filter .filter-container{
-  .mat-button-wrapper{
+.purchase-history-container-filter .purchase-content-filter .filter-container {
+  .mat-button-wrapper {
     width: 100%;
   }
 }

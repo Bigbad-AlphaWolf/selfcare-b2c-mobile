@@ -9,12 +9,12 @@
     Choisissez sur la liste
   </div>
 
-    <div class="recents content" *ngIf="(counters$|async)?.length>0">
+    <div class="recents content" *ngIf="(counters$|async) as counters else spinnerBlock">
       <div 
         matRipple
         class="oem-item"
         (click)="onFavoriteCounterSlected(counter)"
-        *ngFor="let counter of counters$ | async; index as i; count as size"
+        *ngFor="let counter of counters; index as i; count as size"
       >
         <div class="logo">
           <img src="assets/images/woyofal@3x.png" />
@@ -24,10 +24,11 @@
           <span class="number">{{ counter.counterNumber |codeFormat:2}}</span>
         </div>
       </div>
+      <div *ngIf="counters.length==0" >Aucun compteur enregistré</div>
     </div>
-    <div *ngIf="(counters$|async)?.length==0" >Aucun compteur enregistré</div>
-    <div *ngIf="!(counters$|async)"  style="width: 100%; display: flex; justify-content: center;">
-      <ion-spinner name="crescent"></ion-spinner>
-    </div>
-
+    <ng-template #spinnerBlock>
+      <div style="width: 100%; display: flex; justify-content: center;">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+    </ng-template>
 </div>
