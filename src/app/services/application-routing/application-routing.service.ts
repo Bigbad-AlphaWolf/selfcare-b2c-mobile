@@ -9,6 +9,7 @@ import {
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { CreditPassAmountPage } from 'src/app/pages/credit-pass-amount/credit-pass-amount.page';
 import { SargalRegistrationPage } from 'src/app/sargal/components/sargal-registration/sargal-registration.page';
+import { OfferPlan } from 'src/shared/models/offer-plan.model';
 
 @Injectable({
   providedIn: 'root',
@@ -109,7 +110,7 @@ export class ApplicationRoutingService {
     this.route.navigate(['/purchase-set-amount'], navigationExtras);
   }
 
-  goToPassRecapPage(purchaseInformation: {pass: any, recipientMsisdn: string, recipientCodeFormule: string, recipientName: string, purchaseType: string }){
+  goToPassRecapPage(purchaseInformation: {pass: any, recipientMsisdn: string, recipientCodeFormule: string, recipientName: string, purchaseType: string, offerPlan ?: OfferPlan }){
     let navigationExtras: NavigationExtras = {
       state: purchaseInformation,
     };
