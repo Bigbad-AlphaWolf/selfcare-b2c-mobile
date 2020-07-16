@@ -63,8 +63,6 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.data);
-
     this.option = this.data.option;
     this.showInput = this.option === NumberSelectionOption.NONE;
     this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
