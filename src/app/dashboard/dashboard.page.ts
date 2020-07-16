@@ -102,7 +102,6 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.getCurrentSubscription();
-    this.checkForUpdate();
 
     if (!this.isFirebaseTokenSent) {
       this.authServ.UpdateNotificationInfo();
@@ -154,7 +153,7 @@ export class DashboardPage implements OnInit, OnDestroy {
         }
         DashboardService.CURRENT_DASHBOARD = currentDashboard;
         this.router.navigate([DashboardService.CURRENT_DASHBOARD]);
-
+        this.checkForUpdate();
         this.followAnalyticsService.registerEventFollow("dashboard", "event", {
           msisdn: currentNumber,
           profil: this.currentProfile,

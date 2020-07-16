@@ -27,7 +27,7 @@ export class BottomSheetService {
   public async showBeneficiaryModal() {
     const modal = await this.modalController.create({
       component: SelectBeneficiaryPopUpComponent,
-      cssClass: 'customModalCssTrasnfertOMWithoutCode',
+      cssClass: 'select-recipient-modal',
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data && response.data.recipientMsisdn) {
@@ -47,7 +47,7 @@ export class BottomSheetService {
   ) {
     const modal = await this.modalController.create({
       component: NumberSelectionComponent,
-      componentProps: { data: { option } },
+      componentProps: { data: { option, purchaseType } },
       cssClass: 'select-recipient-modal',
     });
     modal.onWillDismiss().then((response: any) => {
@@ -63,25 +63,6 @@ export class BottomSheetService {
     return await modal.present();
   }
 
-  public openNumberSelectionBottomSheets(
-    option: NumberSelectionOption,
-    purchaseType: string,
-    routePath: string
-  ) {
-    this.matBottomSheet
-      .open(NumberSelectionComponent, {
-        data: { option: option },
-        backdropClass: 'oem-ion-bottomsheet',
-      })
-      .afterDismissed()
-      .subscribe((opInfos: OperationExtras) => {
-        if (!opInfos || !opInfos.recipientMsisdn) return;
-        opInfos = { purchaseType: purchaseType, ...opInfos };
-        this.navController.navigateForward([routePath], {
-          state: opInfos,
-        });
-      });
-  }
   public openMerchantPayment() {
     this.omService
       .getOmMsisdn()

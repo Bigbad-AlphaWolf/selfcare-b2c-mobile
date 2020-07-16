@@ -46,7 +46,7 @@
   >
     Le numéro de votre destinataire ne peut pas recevoir de credit.
   </div>
-  <div class="recents" *ngIf="(recentsRecipients$ | async)?.length > 0">
+  <div class="recents" *ngIf="(recentsRecipients$ | async) as recents">
     <div class="recent-description scb-text-full-black">
       Récents
     </div>
@@ -54,7 +54,7 @@
       matRipple
       class="oem-item"
       (click)="onContinue(recent.msisdn)"
-      *ngFor="let recent of recentsRecipients$ | async"
+      *ngFor="let recent of recents"
     >
       <div class="logo scb-text-white">
         {{ 'C' }}

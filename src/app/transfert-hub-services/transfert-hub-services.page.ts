@@ -230,7 +230,7 @@ export class TransfertHubServicesPage implements OnInit {
   async showBeneficiaryModal() {
     const modal = await this.modalController.create({
       component: SelectBeneficiaryPopUpComponent,
-      cssClass: 'customModalCssTrasnfertOMWithoutCode',
+      cssClass: 'select-recipient-modal',
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data && response.data.recipientMsisdn) {

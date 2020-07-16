@@ -10,6 +10,9 @@ import {
   formatPhoneNumber,
   REGEX_NUMBER_OM,
   SubscriptionModel,
+  OPERATION_TYPE_RECHARGE_CREDIT,
+  OPERATION_TYPE_PASS_INTERNET,
+  OPERATION_TYPE_PASS_ILLIMIX,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -60,7 +63,10 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log(this.data);
+
     this.option = this.data.option;
+    this.showInput = this.option === NumberSelectionOption.NONE;
     this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
       tap((numbers) => {
         if (numbers && numbers.length)
@@ -73,10 +79,24 @@ export class NumberSelectionComponent implements OnInit {
   }
 
   getRecents() {
-    const recentType = 'achat_credit';
+    let recentType: string;
+    switch (this.data.purchaseType) {
+      case OPERATION_TYPE_RECHARGE_CREDIT:
+        recentType = 'achat_credit';
+        break;
+      case OPERATION_TYPE_PASS_INTERNET:
+        recentType = 'achat_pass_data';
+        break;
+      case OPERATION_TYPE_PASS_ILLIMIX:
+        recentType = 'achat_pass_illimix';
+        break;
+      default:
+        break;
+    }
     this.recentsRecipients$ = this.recentsService.fetchRecents(recentType).pipe(
       map((recents: RecentsOem[]) => {
         let results = [];
+        recents = recents.slice(0, 2);
         recents.forEach((el) => {
           results.push({
             name: el.destinataire,
