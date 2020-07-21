@@ -2,12 +2,10 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
-import { MatBottomSheet } from '@angular/material';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OPERATION_TYPE_MERCHANT_PAYMENT, REGEX_IS_DIGIT } from '..';
 import { ModalController } from '@ionic/angular';
-import { retryWhen, switchMap } from 'rxjs/operators';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MarchandOem } from 'src/app/models/marchand-oem.model';
@@ -66,46 +64,34 @@ export class MerchantPaymentCodeComponent implements OnInit {
     this.hasErrorOnCheckMerchant = false;
     this.chekingMerchant = true;
     const code = this.merchantCodeForm.value.merchantCode;
-    this.orangeMoneyService
-      .getMerchantByCode(code)
-      .pipe(
-        retryWhen((err) => {
-          return err.pipe(
-            switchMap(async (err) => {
-              if (err.status === 401) return await this.resetOmToken(err);
-              throw err;
-            })
-          );
-        })
-      )
-      .subscribe(
-        (response: any) => {
-          this.chekingMerchant = false;
-          const payload = {
-            purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
-            merchantCode: code,
-            merchantName: response.content.data.nom_marchand,
-          };
-          if (
-            response &&
-            response.status_code &&
-            (response.status_code.match('Success') ||
-              response.status_code.match('Erreur-601'))
-          ) {
-            this.applicationRoutingService.goSetAmountPage(payload);
-            this.modalController.dismiss();
-          } else {
-            this.onCheckingMerchantError(response.status_wording);
-          }
-        },
-        (err) => {
-          this.chekingMerchant = false;
-          if (err.error.name) return;
-          err && err.msg
-            ? this.onCheckingMerchantError(err.msg)
-            : this.onCheckingMerchantError();
+    this.orangeMoneyService.getMerchantByCode(code).subscribe(
+      (response: any) => {
+        this.chekingMerchant = false;
+        const payload = {
+          purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
+          merchantCode: code,
+          merchantName: response.content.data.nom_marchand,
+        };
+        if (
+          response &&
+          response.status_code &&
+          (response.status_code.match('Success') ||
+            response.status_code.match('Erreur-601'))
+        ) {
+          this.applicationRoutingService.goSetAmountPage(payload);
+          this.modalController.dismiss();
+        } else {
+          this.onCheckingMerchantError(response.status_wording);
         }
-      );
+      },
+      (err) => {
+        this.chekingMerchant = false;
+        if (err.error.name) return;
+        err && err.msg
+          ? this.onCheckingMerchantError(err.msg)
+          : this.onCheckingMerchantError();
+      }
+    );
   }
 
   async resetOmToken(err) {
