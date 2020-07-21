@@ -155,9 +155,8 @@ export class OrangeMoneyService {
 
   GetPinPad(pinPadData: OmPinPadModel) {
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
-    const os = isIOS ? "iOS" : "Android";
-    if (pinPadData)
-      pinPadData.os = os;
+    const os = isIOS ? 'iOS' : 'Android';
+    if (pinPadData) pinPadData.os = os;
     return this.http.post(pinpadEndpoint, pinPadData).pipe(
       tap((res: any) => {
         const sequence = res.content.data.sequence.replace(

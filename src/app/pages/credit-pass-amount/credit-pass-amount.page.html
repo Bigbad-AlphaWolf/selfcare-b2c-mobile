@@ -1,16 +1,21 @@
 <ion-header [oemIonHeaderParallax]="90">
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
         <img src="/assets/images/arrow-left.png" alt="icon" />
-      </ion-back-button>
     </ion-buttons>
     <ion-title class="title-achat-pass-internet">
       {{title}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content [scrollEvents]="true">
+<ion-content fullscreen="true">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">
+        {{title}}
+    </span>
+    </ion-toolbar>
+  </ion-header>
   <div class="transferts-page">
     <div class="banniere-container">
       <img src="/assets/images/achat-de-credit.svg" alt="header-transfer" />

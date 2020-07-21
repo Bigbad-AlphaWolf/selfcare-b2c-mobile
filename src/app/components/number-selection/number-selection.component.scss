@@ -1,8 +1,9 @@
-@import "src/app/app";
+@import 'src/app/app';
 
 .select-beneficiary-container {
-  padding: 30px 15px;
-  --height: 300px;
+  padding: 30px 15px 70px;
+  // --height: 300px;
+  overflow-y: scroll;
   .title {
     font-size: 24px;
     font-family: HelveticaNeueLTStd-Bd;
@@ -60,9 +61,56 @@
     font-family: HelveticaNeueLTStd-Roman;
     font-size: 12px;
   }
-  .btn-continue {
+  .recents {
     margin-top: 15px;
-    position: relative;
+    .recent-description {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 20px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+    .oem-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+      border-bottom: 1px solid $grayDashboard;
+      padding-bottom: 15px;
+      .logo {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: $grayDashboard;
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 12px;
+        line-height: 1.33;
+      }
+      .labels {
+        width: calc(100% - 24px);
+        margin-left: 10px;
+        span {
+          display: block;
+        }
+        .name {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
+          line-height: 1.38;
+        }
+        .number {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 12px;
+          line-height: 1.33;
+        }
+      }
+    }
+  }
+  .btn-continue {
+    position: absolute;
+    width: percentage(345/375);
+    bottom: 10px;
+    left: percentage(15/375);
     button {
       height: 50px;
       border-radius: 10px;
@@ -74,16 +122,16 @@
       color: white;
       width: 100%;
       font-weight: bold;
-      &[disabled][disabled]{
+      &[disabled][disabled] {
         color: #ffffff;
         background-color: #cccccc;
       }
     }
 
-    ion-button:before{
-        content: 'div';
-        display: block;
-        // height: 20px;
+    ion-button:before {
+      content: 'div';
+      display: block;
+      // height: 20px;
     }
     ion-spinner {
       position: absolute;

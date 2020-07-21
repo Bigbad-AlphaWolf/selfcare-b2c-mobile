@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { OrangeMoneyService } from '../orange-money-service/orange-money.service';
 import { OM_RECENTS_ENDPOINT } from '../utils/om.endpoints';
 import { MarchandOem } from '../../models/marchand-oem.model';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 @Injectable({
@@ -16,23 +16,27 @@ export class RecentsService {
   ) {}
 
   fetchRecents(service: string) {
-    const omPhonenumber = this.omService.getOrangeMoneyNumber();
-    return this.http
-      .get<MarchandOem[]>(
-        `${OM_RECENTS_ENDPOINT}/${omPhonenumber}?service=${service}`
-      )
-      .pipe(
-        map((r: any) => {
-          let error: boolean = !(
-            r &&
-            (r.status_code === 'Success-001' || r.content.data.status === '200')
+    return this.omService.getOmMsisdn().pipe(
+      switchMap((omPhonenumber) => {
+        return this.http
+          .get<MarchandOem[]>(
+            `${OM_RECENTS_ENDPOINT}/${omPhonenumber}?service=${service}`
+          )
+          .pipe(
+            map((r: any) => {
+              let error: boolean = !(
+                r &&
+                (r.status_code === 'Success-001' ||
+                  r.content.data.status === '200')
+              );
+
+              if (error) return [];
+
+              const recents: any = r.content.data.historiqueTransactions;
+              return recents.length > 0 ? recents : [];
+            })
           );
-
-          if (error) return [];
-
-          const recents: any = r.content.data.historiqueTransactions;
-          return recents.length > 0 ? recents : [];
-        })
-      );
+      })
+    );
   }
 }

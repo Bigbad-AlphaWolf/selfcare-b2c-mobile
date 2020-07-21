@@ -110,7 +110,7 @@ const routes: Routes = [
     loadChildren:
       './sargal/components/sargal-catalogue/sargal-catalogue.module#SargalCataloguePageModule',
   },
-  { path: 'bills', loadChildren: './bills/bills.module#BillsPageModule' },
+  // { path: 'bills', loadChildren: './bills/bills.module#BillsPageModule' },
   {
     path: 'assistance',
     loadChildren: './assistance/assistance.module#AssistancePageModule',
@@ -199,6 +199,9 @@ const routes: Routes = [
   { path: 'bill-amount', loadChildren: './pages/bill-amount/bill-amount.module#BillAmountPageModule' },
   { path: 'oem-services', loadChildren: './pages/oem-services/oem-services.module#OemServicesPageModule' },
   { path: 'app-update', loadChildren: './pages/app-update/app-update.module#AppUpdatePageModule' },
+  { path: 'bills', loadChildren: './pages/orange-bills/orange-bills.module#OrangeBillsPageModule' },
+  { path: 'orange-bills', loadChildren: './pages/orange-bills/orange-bills.module#OrangeBillsPageModule' },
+  
 
 
 

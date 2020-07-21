@@ -14,6 +14,7 @@ import * as jwt_decode from 'jwt-decode';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { OM_SERVICE_VERSION } from '../orange-money-service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { checkUrlMatchOM } from 'src/app/utils/utils';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable()
@@ -113,7 +114,7 @@ export class AuthInterceptorService implements HttpInterceptor {
         (event: HttpEvent<any>) => {},
         (err: any) => {
           if (err instanceof HttpErrorResponse) {
-            if (err.status === 401 && !err.url.match('v2/check-client')) {
+            if (err.status === 401 && !checkUrlMatchOM(err.url)) {
               that.authServ.cleanCache();
               that.router.navigate(['login']);
             }

@@ -10,8 +10,13 @@
     (submit)="checkMerchant()"
   >
     <mat-form-field class="scb-input-row" appearance="outline">
-      <mat-label class="input-title">Code marchand &nbsp;&nbsp;</mat-label>
-      <input formControlName="merchantCode" matInput type="number" />
+      <mat-label>Code marchand &nbsp;&nbsp;</mat-label>
+      <input
+        (input)="numberOnly($event)"
+        formControlName="merchantCode"
+        matInput
+        type="number"
+      />
       <span matSuffix class="scb-text-orange suffix" (click)="onMyFavorites()"
         >Mes marchands</span
       >
@@ -19,15 +24,15 @@
     <div *ngIf="hasErrorOnCheckMerchant" class="error scb-text-red-error">
       {{ errorMsg }}
     </div>
-    <div class="recents" *ngIf="(recentMerchants$ | async)?.length > 0">
-      <div class="description">
+    <div class="recents" *ngIf="recentMerchants$ | async as recentMerchants">
+      <div class="description" *ngIf="recentMerchants.length">
         Récents
       </div>
       <div
         matRipple
         class="oem-item"
         (click)="onRecentMerchantSelected(merchant)"
-        *ngFor="let merchant of recentMerchants$ | async"
+        *ngFor="let merchant of recentMerchants"
       >
         <div class="logo scb-text-white">
           {{ merchant.name | acronym }}

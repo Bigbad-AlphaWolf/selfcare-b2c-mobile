@@ -1,0 +1,16 @@
+<div class="invoice-card">
+  <div class="section1">
+    <div class="infos">
+      <div class="title" *ngIf="title">{{ title }}</div>
+      <div class="title" *ngIf="!title">{{invoice.numeroTelephone | getLabelLigneBillBordereau}}</div>
+      <div class="facture">N° {{ invoice.nfact  | formatBillNum }}</div>
+      <div class="date"> Echéance {{ invoice.dateEcheance | formatBillDate }}</div>
+    </div>
+    <img class="logo" src="/assets/images/orange@3x.png" alt="">
+  </div>
+  <div class="path"></div>
+  <div class="section2">
+    <div class="download s2-text" matRipple (click)="downloadBill(invoice) ">Télécharger</div>
+    <!-- <div class="pay s2-text">Payer la facture</div> -->
+  </div>
+</div>
