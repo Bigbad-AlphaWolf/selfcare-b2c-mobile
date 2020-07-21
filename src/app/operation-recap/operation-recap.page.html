@@ -65,7 +65,7 @@
     </ng-container>
   </div>
 </ion-header> -->
-<ion-header [oemIonHeaderParallax]="100">
+<ion-header [oemIonHeaderParallax]="90">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button
@@ -140,7 +140,7 @@
     </ng-container>
   </div>
 </ion-header>
-<ion-content #scrollArea [scrollEvents]="true">
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <div
     *ngIf="operationTypeRecap"
     class="recap-text"

@@ -1,4 +1,4 @@
-<ion-header [oemIonHeaderParallax]="100">
+<ion-header [oemIonHeaderParallax]="90">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button
@@ -14,7 +14,7 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content fullscreen="true" [scrollEvents]="true">
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <div class="transferts-page">
     <div class="ion-cards-container" *ngIf="options.length">
       <ng-container *ngFor="let opt of options">
@@ -47,6 +47,7 @@
               </div>
         </div>
       </ng-container>
+    
     </div>
   </div>
 </ion-content>
