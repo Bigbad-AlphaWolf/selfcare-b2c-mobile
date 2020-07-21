@@ -87,8 +87,8 @@ export class NewRegistrationPage implements OnInit {
     public dialog: MatDialog,
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
-    private bottomSheet: MatBottomSheet,
     private modalController: ModalController,
+    private bottomSheet: MatBottomSheet,
     private navController: NavController,
     private ngZone: NgZone
   ) {

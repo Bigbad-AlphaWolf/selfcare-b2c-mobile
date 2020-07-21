@@ -166,7 +166,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         this.sargalStatus = sargalStatus.profilClient;
         this.isLoading = false;
         this.hasError = false;
-        this.ref.detectChanges()
+        this.ref.detectChanges();
       },
       (err: any) => {
         this.isLoading = false;
@@ -508,14 +508,13 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goMerchantPayment() {
-    this.omServ.getOmMsisdn().subscribe((msisdn: string) => {
+    this.omServ.getOmMsisdn().subscribe(async (msisdn: string) => {
       if (msisdn !== 'error') {
-        this.bottomSheet
-          .open(MerchantPaymentCodeComponent, {
-            panelClass: 'merchant-code-modal',
-          })
-          .afterDismissed()
-          .subscribe(() => {});
+        const modal = await this.modalController.create({
+          component: MerchantPaymentCodeComponent,
+          cssClass: 'modalRecipientSelection',
+        });
+        return await modal.present();
       } else {
         this.openPinpad();
       }

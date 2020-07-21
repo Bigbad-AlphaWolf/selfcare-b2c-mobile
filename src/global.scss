@@ -540,6 +540,27 @@ body {
   }
 }
 
+.modalRecipientSelection {
+  align-items: flex-end !important;
+  --height: auto;
+  .modal-wrapper {
+    width: 100% !important;
+    border-radius: 10px 10px 0 0 !important;
+    .ion-page {
+      position: relative;
+      contain: content;
+      max-height: 90vh;
+      .modal-content {
+        overflow: auto;
+      }
+    }
+  }
+  .mat-form-field-suffix {
+    bottom: 5px !important;
+    top: unset !important;
+  }
+}
+
 .amount-input {
   .mat-form-field-suffix {
     bottom: 5px !important;
@@ -693,9 +714,9 @@ button {
   }
 }
 
-.spinner-wrapper{
-  width: 100%; 
-  display: flex; 
+.spinner-wrapper {
+  width: 100%;
+  display: flex;
   justify-content: center;
   padding: 10px 0px;
 }

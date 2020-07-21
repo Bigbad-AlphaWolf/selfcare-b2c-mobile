@@ -4,7 +4,6 @@ import { ModalController, NavController } from '@ionic/angular';
 import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { MatBottomSheet } from '@angular/material';
 import { NumberSelectionComponent } from '../components/number-selection/number-selection.component';
 import { NumberSelectionOption } from '../models/enums/number-selection-option.enum';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -15,8 +14,8 @@ import {
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
-import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { PromoBoosterActive } from '../dashboard';
+import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 
 @Component({
@@ -138,7 +137,6 @@ export class TransfertHubServicesPage implements OnInit {
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
-    private matBottomSheet: MatBottomSheet,
     private navController: NavController,
     private router: Router,
     private offerPlanServ: OfferPlansService,
@@ -242,17 +240,22 @@ export class TransfertHubServicesPage implements OnInit {
     return await modal.present();
   }
 
-  openNumberSelectionBottomSheet(option?: NumberSelectionOption) {
-    this.matBottomSheet
-      .open(NumberSelectionComponent, {
-        data: { option: option },
-      })
-      .afterDismissed()
-      .subscribe((opInfos: OperationExtras) => {
+  async openNumberSelectionBottomSheet(option?: NumberSelectionOption) {
+    const modal = await this.modalController.create({
+      component: NumberSelectionComponent,
+      cssClass: 'modalRecipientSelection',
+      componentProps: { option },
+    });
+    modal.onDidDismiss().then((response: any) => {
+      let opInfos;
+      if (response && response.data) {
+        opInfos = response.data;
         if (!opInfos || !opInfos.recipientMsisdn) return;
         opInfos = { purchaseType: OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos };
         this.router.navigate([CreditPassAmountPage.PATH], { state: opInfos });
-      });
+      }
+    });
+    return await modal.present();
   }
 
   getUserActiveBonPlans() {
