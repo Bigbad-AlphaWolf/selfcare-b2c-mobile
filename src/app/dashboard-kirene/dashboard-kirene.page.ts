@@ -24,7 +24,6 @@ import {
   SARGAL_UNSUBSCRIPTION_ONGOING,
   PromoBoosterActive
 } from '../dashboard';
-import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
@@ -75,7 +74,6 @@ export class DashboardKirenePage implements OnInit {
   SARGAL_NOT_SUBSCRIBED = SARGAL_NOT_SUBSCRIBED;
   firstName: string;
   lastName: string;
-  fabOpened = false;
   hasPromoBooster: PromoBoosterActive = null;
   currentProfil: string;
   constructor(
@@ -107,6 +105,7 @@ export class DashboardKirenePage implements OnInit {
     this.getUserConsommations();
     this.getSargalPoints();
     this.getCurrentSubscription();
+    this.getActivePromoBooster();
   }
 
   getCurrentSubscription() {
@@ -114,15 +113,14 @@ export class DashboardKirenePage implements OnInit {
     this.authServ.getSubscription(currentNumber).subscribe(
       (res: SubscriptionModel) => {
         this.currentProfil = res.profil;
-        this.getActivePromoBooster(currentNumber, res.code);
       },
-      (err: any) => {}
+      () => {}
     );
   }
 
-  getActivePromoBooster(msisdn: string, code: string) {
+  getActivePromoBooster() {
     this.dashbordServ
-      .getActivePromoBooster(msisdn, code)
+      .getActivePromoBooster()
       .subscribe((res: any) => {
         this.hasPromoBooster = res;
       });
@@ -172,7 +170,7 @@ export class DashboardKirenePage implements OnInit {
         this.sargalLastUpdate = getLastUpdatedDateTimeText();
         this.sargalDataLoaded = true;
       },
-      (err: any) => {
+      () => {
         this.sargalDataLoaded = true;
         this.sargalUnavailable = true;
       }
@@ -366,18 +364,6 @@ export class DashboardKirenePage implements OnInit {
     this.router.navigate(['/buy-pass-internet']);
   }
 
-  fabToggled() {
-    this.fabOpened = !this.fabOpened;
-  }
-
-  openSocialNetworkModal() {
-    this.shareDialog.open(ShareSocialNetworkComponent, {
-      height: '530px',
-      width: '330px',
-      maxWidth: '100%'
-    });
-  }
-
   onError(input: { el: HTMLElement; display: boolean }[]) {
     input.forEach((item: { el: HTMLElement; display: boolean }) => {
       item.el.style.display = item.display ? 'block' : 'none';
@@ -406,7 +392,7 @@ export class DashboardKirenePage implements OnInit {
                 this.showWelcomePopup(res);
               }
             },
-            err => {}
+            () => {}
           );
         }
       },

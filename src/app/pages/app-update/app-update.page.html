@@ -1,0 +1,27 @@
+<ion-content>
+  <div class="page">
+    <div class="top">
+
+      <div class="orange">
+        <div class="rectangle"></div>
+      </div>
+      <div (click)="close()" class="close">Fermer</div>
+    </div>
+    <div class="content">
+      <img src="/assets/images/confirmation.png" class="checked" />
+      <div class="title">Mise à jour</div>
+      <div class="update-text">{{updateMessage}}</div>
+      <div class="update-btn">
+        <ion-button shape="round" (click)="update()" class="btn" expand="block" >
+          <span>
+            Mettre à jour
+          </span>
+          </ion-button>
+  
+    </div>
+    </div>
+   
+
+  </div>
+
+</ion-content>

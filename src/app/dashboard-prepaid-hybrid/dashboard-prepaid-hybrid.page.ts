@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -36,7 +36,6 @@ import {
   PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
 } from '../dashboard';
-import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog, MatBottomSheet } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
@@ -45,6 +44,9 @@ import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/m
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { ModalController } from '@ionic/angular';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
+import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
+import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
+import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -87,6 +89,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   sargalDataLoaded: boolean;
   userSargalData: SargalSubscriptionModel;
   hasPromoBooster: PromoBoosterActive = null;
+  hasPromoPlanActive: OfferPlanActive = null;
   slideOpts = {
     speed: 400,
     slidesPerView: 1.38,
@@ -102,6 +105,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   hasError: boolean;
   sargalStatusUnavailable: boolean;
   noSargalProfil: boolean;
+  sargalStatus: string;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -114,7 +118,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     private appliRouting: ApplicationRoutingService,
     private bottomSheet: MatBottomSheet,
     private omServ: OrangeMoneyService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private offerPlanServ: OfferPlansService,
+    private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -134,6 +140,8 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.getCurrentSubscription();
     this.getUserConsommations();
     this.getSargalPoints();
+    this.getUserActiveBonPlans();
+    this.getActivePromoBooster();
     this.banniereServ.setListBanniereByFormule();
     this.banniereServ
       .getStatusLoadingBanniere()
@@ -155,8 +163,10 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         if (!sargalStatus.valid) {
           this.sargalStatusUnavailable = true;
         }
+        this.sargalStatus = sargalStatus.profilClient;
         this.isLoading = false;
         this.hasError = false;
+        this.ref.detectChanges();
       },
       (err: any) => {
         this.isLoading = false;
@@ -174,7 +184,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.authServ.getSubscription(currentNumber).subscribe(
       (res: SubscriptionModel) => {
         this.currentProfil = res.profil;
-        this.getActivePromoBooster(currentNumber, res.code);
         this.isHyBride =
           this.currentProfil === PROFILE_TYPE_HYBRID ||
           this.currentProfil === PROFILE_TYPE_HYBRID_1 ||
@@ -187,12 +196,10 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     );
   }
 
-  getActivePromoBooster(msisdn: string, code: string) {
-    this.dashbordServ
-      .getActivePromoBooster(msisdn, code)
-      .subscribe((res: any) => {
-        this.hasPromoBooster = res;
-      });
+  getActivePromoBooster() {
+    this.dashbordServ.getActivePromoBooster().subscribe((res: any) => {
+      this.hasPromoBooster = res;
+    });
   }
 
   getUserConsommations() {
@@ -448,18 +455,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.showPromoBarner = false;
   }
 
-  fabToggled() {
-    this.fabOpened = !this.fabOpened;
-  }
-
-  openSocialNetworkModal() {
-    this.shareDialog.open(ShareSocialNetworkComponent, {
-      height: '530px',
-      width: '330px',
-      maxWidth: '100%',
-    });
-  }
-
   onError(input: { el: HTMLElement; display: boolean }[]) {
     input.forEach((item: { el: HTMLElement; display: boolean }) => {
       item.el.style.display = item.display ? 'block' : 'none';
@@ -504,15 +499,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     return getBanniereDescription(description);
   }
 
-  goAssistance() {
-    this.router.navigate(['/control-center']);
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_via_Ibou',
-      'event',
-      'clicked'
-    );
-  }
-
   goToTransfertsPage() {
     this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
   }
@@ -535,11 +521,23 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     });
   }
 
+  onPayerFacture() {
+    this.router.navigate([BillsHubPage.ROUTE_PATH]);
+  }
+
   async openPinpad() {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
     });
     return await modal.present();
+  }
+
+  getUserActiveBonPlans() {
+    this.offerPlanServ
+      .getUserTypeOfferPlans()
+      .subscribe((res: OfferPlanActive) => {
+        this.hasPromoPlanActive = res;
+      });
   }
 }

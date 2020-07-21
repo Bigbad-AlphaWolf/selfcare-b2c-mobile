@@ -40,8 +40,9 @@
             padding: 10%;
             width: 100%;
             border-radius: 5% 5% 0 5%;
-            img {
-              width: 80%;
+            .percent{
+              font-family: HelveticaNeueLTStd-Bd;
+              font-size: 16px;
             }
           }
           .triangle {
@@ -238,6 +239,16 @@
               font-family: HelveticaNeueLTStd-Roman, sans-serif;
               font-size: 18px;
             }
+            .status-sargal{
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+              font-size: 18px;
+              &.gold{
+                color: gold;
+              }
+              &.platinum{
+                color: #e5e4e2;
+              }
+            }
           }
         }
 
@@ -293,9 +304,6 @@
             pointer-events: none;
           }
         }
-      }
-
-      .scb-btn-balance {
       }
 
       .scb-btn-credit {

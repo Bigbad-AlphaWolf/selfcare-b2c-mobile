@@ -15,7 +15,6 @@ import {
   SubscriptionModel,
   WelcomeStatusModel
 } from 'src/shared';
-import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
 import { AssistanceService } from '../services/assistance.service';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
@@ -30,7 +29,6 @@ export class DashboardPostpaidFixePage implements OnInit {
   opened = false;
   userInfos: any = {};
   firstName;
-  fabOpened = false;
   months = months;
   showPromoBarner = true;
   userConsoSummary: any = {};
@@ -117,7 +115,7 @@ export class DashboardPostpaidFixePage implements OnInit {
         this.errorBill = false;
         this.subscribeBillServices(this.clientId);
       },
-      err => {
+      () => {
         this.errorBill = true;
       }
     );
@@ -133,7 +131,7 @@ export class DashboardPostpaidFixePage implements OnInit {
         this.lastSlip =
           this.bills && this.bills.length > 0 ? this.bills[0] : null;
       },
-      error => {
+      () => {
         this.errorBill = true;
       }
     );
@@ -161,7 +159,7 @@ export class DashboardPostpaidFixePage implements OnInit {
           this.errorConso = true;
         }
       },
-      err => {
+      () => {
         this.dataLoaded = true;
         this.errorConso = true;
       }
@@ -255,18 +253,6 @@ export class DashboardPostpaidFixePage implements OnInit {
     });
   }
 
-  fabToggled() {
-    this.fabOpened = !this.fabOpened;
-  }
-
-  openSocialNetworkModal() {
-    this.shareDialog.open(ShareSocialNetworkComponent, {
-      height: '530px',
-      width: '330px',
-      maxWidth: '100%'
-    });
-  }
-
   showWelcomePopup(data: WelcomeStatusModel) {
     const dialog = this.shareDialog.open(WelcomePopupComponent, {
       data,
@@ -289,7 +275,7 @@ export class DashboardPostpaidFixePage implements OnInit {
                 this.showWelcomePopup(res);
               }
             },
-            err => {}
+            () => {}
           );
         }
       },

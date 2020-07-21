@@ -1,0 +1,33 @@
+<div class="select-beneficiary-container">
+  <div class="title">
+    Choisir une ligne
+  </div>
+
+  <div class="number-options">
+    <mat-radio-group (change)="onOptionChange($event.value)">
+      <mat-radio-button
+        *ngFor="let phone of phones$ | async; index as i; count as size"
+        [value]="phone"
+        [checked]=" i===0 "
+      >
+        <div class="destination-number" [ngClass]="i===(size-1)?'last-number':''">
+          <span> Mon numéro {{ size > 1 ? i + 1 : "" }} </span>
+          <span>{{ phone.phone | phoneNumberDisplay }}</span>
+        </div>
+      </mat-radio-button>
+     
+    </mat-radio-group>
+  </div>
+
+  <div class="btn-continue">
+    <button mat-button
+      [disabled]="isProcessing"
+      (click)="onConfirmer()"
+      > <span style="line-height: 3.4">Confirmer</span> </button
+    >
+    <ion-spinner
+      *ngIf="isProcessing"
+      name="crescent"
+    ></ion-spinner>
+  </div>
+</div>

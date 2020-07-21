@@ -61,7 +61,7 @@ export class LoginPage implements OnInit {
     public dialog: MatDialog,
     private followAnalyticsService: FollowAnalyticsService,
     private navController: NavController,
-    private modalController: ModalController
+    private bottomSheet: MatBottomSheet
   ) {}
 
   ngOnInit() {
@@ -170,15 +170,14 @@ export class LoginPage implements OnInit {
     }
   }
 
-  async openHelpModal(sheetData?: any) {
-    const modal = await this.modalController.create({
-      component: CommonIssuesComponent,
-      cssClass: 'modalRecipientSelection',
-      componentProps: { data: sheetData },
-    });
-    modal.onDidDismiss().then((response) => {
-      if (response && response.data) {
-        const message = response.data;
+  openHelpModal(sheetData?: any) {
+    this.bottomSheet
+      .open(CommonIssuesComponent, {
+        panelClass: 'custom-css-common-issues',
+        data: sheetData,
+      })
+      .afterDismissed()
+      .subscribe((message: string) => {
         if (message === 'ERROR_AUTH_IMP') {
           this.openHelpModal(HelpModalAuthErrorContent);
         }
@@ -188,9 +187,7 @@ export class LoginPage implements OnInit {
         if (message === 'CONFIG_APN_AUTH_IMP') {
           this.openHelpModal(HelpModalConfigApnContent);
         }
-      }
-    });
-    return await modal.present();
+      });
   }
 
   goRegisterPage() {

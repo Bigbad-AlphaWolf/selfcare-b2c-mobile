@@ -1,28 +1,22 @@
-import { Injectable, Renderer2, Inject, RendererFactory2 } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {
-  BehaviorSubject,
   Subject,
   Observable,
-  interval,
-  throwError,
   Subscription,
   of,
 } from "rxjs";
 import {
   tap,
-  delay,
   map,
-  shareReplay,
-  retryWhen,
-  flatMap,
+  switchMap,
+  catchError,
 } from "rxjs/operators";
 import * as SecureLS from "secure-ls";
-import { DOCUMENT } from "@angular/platform-browser";
 import { environment } from "src/environments/environment";
 import { AuthenticationService } from "../authentication-service/authentication.service";
 import { BuyPassModel, TransfertBonnus, TransferCreditModel } from ".";
-import { SubscriptionUserModel, JAMONO_ALLO_CODE_FORMULE } from "src/shared";
+import { SubscriptionUserModel, JAMONO_ALLO_CODE_FORMULE, SubscriptionModel } from "src/shared";
 const {
   SERVER_API_URL,
   SEDDO_SERVICE,
@@ -30,7 +24,6 @@ const {
   FILE_SERVICE,
   ACCOUNT_MNGT_SERVICE,
   UAA_SERVICE,
-  GATEWAY_SERVICE,
 } = environment;
 const ls = new SecureLS({ encodingType: "aes" });
 
@@ -44,7 +37,6 @@ const attachMobileNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/ap
 const checkFixNumber = `${attachMobileNumberEndpoint}/check_number_fixe`;
 const saveFixNumber = `${attachMobileNumberEndpoint}/ligne-fixe/register`;
 const userLinkedPhoneNumberEndpoint = `${attachMobileNumberEndpoint}/get-all-number`;
-const isSponsorEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/sponsor`;
 
 // avatar endpoints
 export const downloadAvatarEndpoint = `${SERVER_API_URL}/${FILE_SERVICE}/`;
@@ -66,9 +58,6 @@ const listFormulesEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/formule-mob
 const initOTPReinitializeEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password/init`;
 const reinitializeEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password/finish`;
 
-// Endpoint to get fixe number Identity
-const idClientEndpoint = `${SERVER_API_URL}/${GATEWAY_SERVICE}/api/numero-client`;
-const idClientEndpointAPI = `${SERVER_API_URL}/${GATEWAY_SERVICE}/api/numero-client`;
 const buyPassInternetForSomeoneByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/achat/internet-for-other`;
 
 // Endpoint to get sargal balance
@@ -85,12 +74,12 @@ const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abo
   providedIn: "root",
 })
 export class DashboardService {
+  static CURRENT_DASHBOARD : string = '/dashboard';
   currentPhoneNumberChangeSubject: Subject<string> = new Subject<string>();
   scrollToBottomSubject: Subject<string> = new Subject<string>();
   balanceAvailableSubject: Subject<any> = new Subject<any>();
   isSponsorSubject: Subject<any> = new Subject<boolean>();
   user: any;
-  private renderer: Renderer2;
   msisdn: string;
   screenWatcher: Subscription;
   isMobile = true;
@@ -131,7 +120,7 @@ export class DashboardService {
     return this.http.post(reinitializeEndpoint, payload);
   }
 
-  getUserConsoInfos(consoCodes?: number[]) {
+  getUserConsoInfos() {
     this.msisdn = this.getCurrentPhoneNumber();
     return this.http.get(`${userConsoEndpoint}/${this.msisdn}`);
   }
@@ -156,7 +145,7 @@ export class DashboardService {
         (res: any) => {
           return this.processConso(res, true);
         },
-        (error) => {
+        () => {
           const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
           return lastLoadedConso;
         }
@@ -301,7 +290,7 @@ export class DashboardService {
   getAccountInfo(userLogin: string) {
     return this.http
       .get(`${userAccountInfos}/${userLogin}`)
-      .pipe(tap((res: any) => {}));
+      .pipe(tap(() => {}));
   }
 
   getUserConsoInfosByCode(consoCodes?: number[]) {
@@ -319,7 +308,7 @@ export class DashboardService {
           (res: any) => {
             return this.processConso(res);
           },
-          (error) => {
+          () => {
             const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
             return lastLoadedConso;
           }
@@ -422,11 +411,18 @@ export class DashboardService {
     );
   }
 
-  getActivePromoBooster(msisdn: string, code: string) {
-    return this.http.get(
-      `${promoBoosterActiveEndpoint}?msisdn=${msisdn}&code=${code}`
-    );
-    // return of({ isPromoPassActive: false, isPromoRechargeActive: false });
+  getActivePromoBooster() {
+    const currentPhoneNumber = this.getCurrentPhoneNumber();
+    return this.authService.getSubscription(currentPhoneNumber).pipe(
+      switchMap((res: SubscriptionModel) => {
+        return this.http.get(
+          `${promoBoosterActiveEndpoint}?msisdn=${currentPhoneNumber}&code=${res.code}`
+        );
+      }),
+      catchError( _ => {
+        return of({promoPass: null, promoRecharge: null,promoPassIllimix: null})
+      }
+    ))
   }
 
   getUserBirthDate(): Observable<any> {

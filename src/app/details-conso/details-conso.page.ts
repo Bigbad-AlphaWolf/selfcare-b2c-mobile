@@ -4,13 +4,18 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import {
   computeConsoHistory,
   arrangeCompteurByOrdre,
-  PurchaseModel
+  PurchaseModel,
+  DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY
 } from 'src/shared';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { PurchaseService } from '../services/purchase-service/purchase.service';
 import { IonSlides } from '@ionic/angular';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
+import { tap } from 'rxjs/operators';
+import { CategoryPurchaseHistory } from '../models/category-purchase-history.model';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-details-conso',
   templateUrl: './details-conso.page.html',
@@ -41,11 +46,9 @@ export class DetailsConsoPage implements OnInit {
   listPurchaseForDays: PurchaseModel[] = [];
   listPurchaseForDayByType: PurchaseModel[] = [];
   purchaseDateFilterSelected = 2;
-  purchaseTypeFilterSelected: { nom: string; value: string } = {
-    nom: 'Tous',
-    value: undefined
-  };
+  purchaseTypeFilterSelected: { label: string; typeAchat: string } = DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
   userPhoneNumber: string;
+  listCategoryPurchaseHistory: CategoryPurchaseHistory[] = []
   @ViewChild('consoTab') slideGroup: IonSlides;
   slideSelected = 0;
   slideOpts = {
@@ -104,7 +107,7 @@ export class DetailsConsoPage implements OnInit {
 
   getTransactionsByDay(
     day: number,
-    filterType?: { nom: string; value: string }
+    filterType?: { label: string; typeAchat: string }
   ) {
     this.purchaseDateFilterSelected = day;
     if (filterType) {
@@ -113,16 +116,18 @@ export class DetailsConsoPage implements OnInit {
       this.histPurchaseLoading = true;
       this.histPurchaseHasError = false;
       this.purchaseServ
-        .getAllTransactionByDay(this.userPhoneNumber, day)
-        .subscribe(
-          (res: PurchaseModel[]) => {
-            this.histPurchaseLoading = false;
-            this.histPurchaseHasError = false;
-            this.listPurchaseForDays = res;
-            this.listPurchaseForDayByType = this.purchaseServ.filterPurchaseByType(
+        .getCategoriesAndPurchaseHistory(this.userPhoneNumber, day).pipe((tap((res: {categories: CategoryPurchaseHistory[], listPurchase: PurchaseModel[] }) => {
+          this.listCategoryPurchaseHistory = res.categories;
+          this.listPurchaseForDays = res.listPurchase;
+          this.listPurchaseForDayByType = this.purchaseServ.filterPurchaseByType(
               this.listPurchaseForDays,
               this.purchaseTypeFilterSelected
             );
+        })))
+        .subscribe(
+          (res: any) => {
+            this.histPurchaseLoading = false;
+            this.histPurchaseHasError = false;
           },
           (err: any) => {
             this.histPurchaseLoading = false;
@@ -131,7 +136,7 @@ export class DetailsConsoPage implements OnInit {
         );
     }
   }
-  getTransactionByDaysByType(filter: { nom: string; value: string }) {
+  getTransactionByDaysByType(filter: { label: string; typeAchat: string }) {
     this.purchaseTypeFilterSelected = filter;
     this.listPurchaseForDayByType = this.purchaseServ.filterPurchaseByType(
       this.listPurchaseForDays,
@@ -242,5 +247,7 @@ export class DetailsConsoPage implements OnInit {
     this.chargeType = chargeType;
     return this.consoshistorique;
   }
+
+  ngOnDestroy() {}
 
 }

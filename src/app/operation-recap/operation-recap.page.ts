@@ -14,12 +14,15 @@ import {
   OPERATION_TRANSFER_OM,
   SubscriptionModel,
   OPERATION_TYPE_RECHARGE_CREDIT,
+  OPERATION_TYPE_BONS_PLANS,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { OperationExtras } from '../models/operation-extras.model';
+import { OPERATION_WOYOFAL } from '../utils/operations.util';
+import { OfferPlan } from 'src/shared/models/offer-plan.model';
 
 @Component({
   selector: 'app-operation-recap',
@@ -27,6 +30,8 @@ import { OperationExtras } from '../models/operation-extras.model';
   styleUrls: ['./operation-recap.page.scss'],
 })
 export class OperationRecapPage implements OnInit {
+  static ROUTE_PATH = '/operation-recap';
+  opXtras: OperationExtras = {};
   passChoosen: any;
   recipientMsisdn: string;
   recipientName: string;
@@ -68,9 +73,11 @@ export class OperationRecapPage implements OnInit {
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
+  OPERATION_TYPE_BONS_PLANS = OPERATION_TYPE_BONS_PLANS;
   state: any;
   subscriptionInfos: SubscriptionModel;
   buyCreditPayload: any;
+  offerPlan: OfferPlan;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -106,6 +113,7 @@ export class OperationRecapPage implements OnInit {
                 destinataire: this.recipientMsisdn,
                 pass: this.passChoosen,
               };
+              this.offerPlan = state.offerPlan;
               break;
             case OPERATION_TRANSFER_OM_WITH_CODE:
               this.recipientMsisdn = state.recipientMsisdn;
@@ -144,14 +152,22 @@ export class OperationRecapPage implements OnInit {
                 nom_marchand: this.merchantName,
               };
               break;
-              case OPERATION_TYPE_RECHARGE_CREDIT:
-                let xtras:OperationExtras = state;
-                this.amount = xtras.amount;
-                this.recipientMsisdn = xtras.recipientMsisdn;
-                this.recipientName = xtras.recipientFromContact ? xtras.recipientFirstname + ' ' + xtras.recipientLastname:'';
-                this.paymentMod = 'ORANGE_MONEY';
+            case OPERATION_TYPE_RECHARGE_CREDIT:
+              this.opXtras = state;
+              this.amount = this.opXtras.amount;
+              this.recipientMsisdn = this.opXtras.recipientMsisdn;
+              this.recipientName = this.opXtras.recipientFromContact
+                ? this.opXtras.recipientFirstname +
+                  ' ' +
+                  this.opXtras.recipientLastname
+                : '';
+              this.offerPlan = state.offerPlan;
+              break;
+            case OPERATION_WOYOFAL:
+              this.opXtras = state;
+              // this.amount = this.opXtras.amount;
 
-                break;
+              break;
             default:
               break;
           }
@@ -160,9 +176,11 @@ export class OperationRecapPage implements OnInit {
         }
       });
 
-    this.authServ.getSubscription(this.currentUserNumber).subscribe((res: SubscriptionModel)=> {
-      this.subscriptionInfos = res;
-    })
+    this.authServ
+      .getSubscription(this.currentUserNumber)
+      .subscribe((res: SubscriptionModel) => {
+        this.subscriptionInfos = res;
+      });
   }
 
   pay() {
@@ -171,12 +189,15 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_ILLIMIX:
         this.setPaymentMod();
         break;
-        case OPERATION_TYPE_RECHARGE_CREDIT:
-          this.openPinpad();
-          break;
+      case OPERATION_TYPE_RECHARGE_CREDIT:
+        this.openPinpad();
+        break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
       case OPERATION_TRANSFER_OM:
       case OPERATION_TRANSFER_OM_WITH_CODE:
+        this.openPinpad();
+        break;
+      case OPERATION_WOYOFAL:
         this.openPinpad();
         break;
     }
@@ -220,7 +241,11 @@ export class OperationRecapPage implements OnInit {
       componentProps: {
         operationType: this.purchaseType,
         buyPassPayload: this.buyPassPayload,
-        buyCreditPayload: {msisdn2:this.state.recipientMsisdn, amount:this.state.amount},
+        buyCreditPayload: {
+          msisdn2: this.state.recipientMsisdn,
+          amount: this.state.amount,
+        },
+        opXtras: this.opXtras,
         merchantPaymentPayload: this.merchantPaymentPayload,
         transferMoneyPayload: this.transferOMPayload,
         transferMoneyWithCodePayload: this.transferOMWithCodePayload,
@@ -229,6 +254,7 @@ export class OperationRecapPage implements OnInit {
     modal.onDidDismiss().then((response) => {
       if (response.data && response.data.success) {
         this.openSuccessFailModal({
+          opXtras: response.data.opXtras,
           success: true,
           msisdnBuyer: this.orangeMoneyService.getOrangeMoneyNumber(),
           buyForMe:
@@ -240,8 +266,6 @@ export class OperationRecapPage implements OnInit {
     return await modal.present();
   }
 
-  
-
   async openSuccessFailModal(params: ModalSuccessModel) {
     params.passBought = this.passChoosen;
     params.paymentMod = this.paymentMod;
@@ -251,8 +275,8 @@ export class OperationRecapPage implements OnInit {
     params.amount = this.amount;
     params.merchantCode = this.merchantCode;
     params.merchantName = this.merchantName;
-    console.log(params,'params');
-    
+    console.log(params, 'params');
+
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
       cssClass: params.success ? 'success-modal' : 'failed-modal',
@@ -264,7 +288,6 @@ export class OperationRecapPage implements OnInit {
   }
 
   goBack() {
-    
     // if(this.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT)
     // console.log(this.purchaseType);
 
@@ -362,6 +385,12 @@ export class OperationRecapPage implements OnInit {
       errorMsg: this.buyPassErrorMsg,
     });
   }
+
+  get operationTypeRecap() {
+    return ['RECHARGEMENT_CREDIT', 'OPERATION_WOYOFAL'].includes(
+      this.purchaseType
+    );
+  }
 }
 
 interface ModalSuccessModel {
@@ -377,4 +406,5 @@ interface ModalSuccessModel {
   amount?: number;
   merchantName?: string;
   merchantCode?: number;
+  opXtras?: OperationExtras;
 }

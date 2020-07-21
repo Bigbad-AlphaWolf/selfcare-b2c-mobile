@@ -2,12 +2,19 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
+import { MatBottomSheet } from '@angular/material';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { OPERATION_TYPE_MERCHANT_PAYMENT, REGEX_IS_DIGIT } from '..';
 import { ModalController } from '@ionic/angular';
 import { retryWhen, switchMap } from 'rxjs/operators';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { HttpErrorResponse } from '@angular/common/http';
-import { of } from 'rxjs';
+import { MarchandOem } from 'src/app/models/marchand-oem.model';
+import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
+import { RecentsService } from 'src/app/services/recents-service/recents.service';
+import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
+import { RecentsOem } from 'src/app/models/recents-oem.model';
 
 @Component({
   selector: 'app-merchant-payment-code',
@@ -19,17 +26,39 @@ export class MerchantPaymentCodeComponent implements OnInit {
   merchantCodeForm: FormGroup;
   hasErrorOnCheckMerchant: boolean;
   errorMsg: string;
+  recentMerchants$: Observable<MarchandOem[]>;
+
   constructor(
     private fb: FormBuilder,
     private orangeMoneyService: OrangeMoneyService,
     private applicationRoutingService: ApplicationRoutingService,
-    private modalController: ModalController,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private bsBillsHubService: BsBillsHubService,
+    private recentsService: RecentsService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
+    this.getRecentMerchants();
     this.merchantCodeForm = this.fb.group({
       merchantCode: ['', [Validators.required]],
+    });
+    this.bsBillsHubService.bsRef.subscribe((ref) => {
+      ref.afterDismissed().subscribe((result: any) => {
+        if (result && result.TYPE_BS === 'FAVORIES' && result.ACTION === 'BACK')
+          this.bsBillsHubService.openBSCounterSelection(
+            MerchantPaymentCodeComponent
+          );
+
+        if (result && result.ACTION === 'FORWARD') {
+          const payload = {
+            purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
+            merchantCode: result.merchant.merchantCode,
+            merchantName: result.merchant.name,
+          };
+          this.applicationRoutingService.goSetAmountPage(payload);
+        }
+      });
     });
   }
 
@@ -96,14 +125,44 @@ export class MerchantPaymentCodeComponent implements OnInit {
     });
   }
 
+  onMyFavorites() {
+    this.bsBillsHubService.openBSFavoriteCounters(FavoriteMerchantComponent);
+  }
+
   onCheckingMerchantError(msg?: string) {
     this.hasErrorOnCheckMerchant = true;
     this.errorMsg = msg ? msg : 'Une erreur est survenue';
     this.ref.detectChanges();
   }
 
-  numberOnly(event) {    
-    if(!REGEX_IS_DIGIT.test(event.data)){
+  onRecentMerchantSelected(merchant: any) {
+    const payload = {
+      purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
+      merchantCode: merchant.merchantCode,
+      merchantName: merchant.name,
+    };
+    this.applicationRoutingService.goSetAmountPage(payload);
+    this.modalController.dismiss();
+  }
+
+  getRecentMerchants() {
+    const recentType = 'paiement_marchand';
+    this.recentMerchants$ = this.recentsService.fetchRecents(recentType).pipe(
+      map((recents: RecentsOem[]) => {
+        let results = [];
+        recents.forEach((el) => {
+          results.push({
+            name: JSON.parse(el.payload).nom_marchand,
+            merchantCode: el.destinataire,
+          });
+        });
+        return results;
+      })
+    );
+  }
+
+  numberOnly(event) {
+    if (!REGEX_IS_DIGIT.test(event.data)) {
       const value = event.target.value;
       event.target.value = 0;
       event.target.value = value;

@@ -27,9 +27,12 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { NoOMAccountPopupComponent } from 'src/shared/no-omaccount-popup/no-omaccount-popup.component';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { ModalController } from '@ionic/angular';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of } from 'rxjs';
+import { OPERATION_WOYOFAL } from '../utils/operations.util';
+import { OperationExtras } from '../models/operation-extras.model';
+import { CounterService } from '../services/counter/counter.service';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -43,6 +46,7 @@ export class NewPinpadModalPage implements OnInit {
   @Input() transferMoneyPayload: any;
   @Input() transferMoneyWithCodePayload: any;
   @Input() merchantPaymentPayload: any;
+  @Input() opXtras:OperationExtras;
   bullets = [0, 1, 2, 3];
   codePin = [];
   uuid: string;
@@ -79,7 +83,8 @@ export class NewPinpadModalPage implements OnInit {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private dashboardService: DashboardService,
-    public modalController: ModalController
+    public modalController: ModalController,
+    private woyofal : CounterService
   ) {}
 
   ngOnInit() {
@@ -412,6 +417,10 @@ export class NewPinpadModalPage implements OnInit {
                   );
                   this.payMerchant(merchantPaymentPayload);
                   break;
+                  case OPERATION_WOYOFAL:
+
+                    this.payWoyofal(pin);
+                    break;
                 default:
                   this.seeSolde(pin);
                   break;
@@ -476,6 +485,32 @@ export class NewPinpadModalPage implements OnInit {
       this.pinHasError = false;
       this.pinError = '';
     }
+  }
+  payWoyofal(pin:string) {
+    this.processingPin = true;
+    const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
+    let body = {
+      "amount": this.opXtras.amount,
+      "em": db.em,
+      "fees": this.opXtras.fee,
+      "msisdn": db.msisdn,
+      "numero_compteur": this.opXtras.billData.counter.counterNumber,
+      "pin": pin
+    };
+    console.log(body);
+    
+
+    this.woyofal.pay(body)
+    .subscribe(
+      (res: any) => {  
+        this.opXtras.billData.codeRecharge = res.content.data.code_woyofal;
+        this.opXtras.billData.kw = res.content.data.valeur_recharge;
+        this.processResult(res, db);
+      },
+      () => {
+        this.processingPin = false;
+      }
+    );
   }
 
   seeSolde(pin: string) {
@@ -737,6 +772,7 @@ export class NewPinpadModalPage implements OnInit {
       );
       this.modalController.dismiss({
         success: true,
+        opXtras: this.opXtras,
       });
     } else if (res === null || res.status_code === null) {
       this.pinError =

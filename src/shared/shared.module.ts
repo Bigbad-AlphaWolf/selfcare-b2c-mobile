@@ -20,54 +20,76 @@ import {
   MatButtonToggleModule,
   MatButtonModule,
   MatCardModule,
-} from '@angular/material';
-import { ModalSuccessComponent } from './modal-success/modal-success.component';
-import { ChatMsgLineComponent } from './chat-msg-line/chat-msg-line.component';
-import { FormatBillNumPipe } from './pipes/format-bill-num.pipe';
-import { FormatBillDatePipe } from './pipes/format-bill-date.pipe';
-import { FormatCurrencyPipe } from './pipes/format-currency.pipe';
-import { NoOMAccountPopupComponent } from './no-omaccount-popup/no-omaccount-popup.component';
-import { CancelOperationPopupComponent } from './cancel-operation-popup/cancel-operation-popup.component';
-import { PhoneNumberDisplayPipe } from './pipes/phone-number-display.pipe';
-import { Contacts } from '@ionic-native/contacts';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SetOperationAmountComponent } from './set-operation-amount/set-operation-amount.component';
-import { HeaderComponent } from './header/header.component';
-import { FormatSecondDatePipe } from './pipes/format-second-date.pipe';
-import { SuccessFailPopupComponent } from './success-fail-popup/success-fail-popup.component';
-import { PhonenumberItemComponent } from './phonenumber-item/phonenumber-item.component';
-import { SelectNumberPopupComponent } from './select-number-popup/select-number-popup.component';
-import { SelectOtherRecipientComponent } from './select-other-recipient/select-other-recipient.component';
-import { GetLabelLigneBillBordereauPipe } from './pipes/get-label-ligne-bill-bordereau.pipe';
-import { ShareSocialNetworkComponent } from './share-social-network/share-social-network.component';
-import { AvantagePopupComponent } from './avantage-popup/avantage-popup.component';
-import { DeleteNumberPopupComponent } from 'src/app/my-account/delete-number-popup/delete-number-popup.component';
-import { CguPopupComponent } from './cgu-popup/cgu-popup.component';
-import { OperationSuccessOrFailComponent } from './operation-success-or-fail/operation-success-or-fail.component';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import { WelcomePopupComponent } from './welcome-popup/welcome-popup.component';
-import { SettingsPopupComponent } from './settings-popup/settings-popup.component';
-import { HelpBannerComponent } from 'src/app/emergencies/help-banner/help-banner.component';
-import { RouterModule } from '@angular/router';
-import { PassVolumeDisplayPipe } from './pipes/pass-volume-display.pipe';
-import { OmButtonComponent } from './om-button/om-button.component';
-import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.component';
-import { FormatSuiviConsoCategoryTitlePipe } from './pipes/format-suivi-conso-category-title.pipe';
-import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
-import { HeaderScrollEffectDirective } from './directives/header-scroll-effect.directive';
-import { ItemPassIllimixComponent } from './item-pass-illimix/item-pass-illimix.component';
-import { ItemPassInternetComponent } from './item-pass-internet/item-pass-internet.component';
-import { CommonIssuesComponent } from './common-issues/common-issues.component';
-import { MerchantPaymentCodeComponent } from './merchant-payment-code/merchant-payment-code.component';
-import { NoOmAccountModalComponent } from './no-om-account-modal/no-om-account-modal.component';
-import { ItemRechargeCreditComponent } from './item-recharge-credit/item-recharge-credit.component';
-import { PhoneNumberProviderComponent } from 'src/app/components/phone-number-provider/phone-number-provider.component';
-import { NumberSelectionComponent } from 'src/app/components/number-selection/number-selection.component';
-import { AmountProviderComponent } from 'src/app/components/amount-provider/amount-provider.component';
-import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header-parallax.directive';
+  MatRippleModule,
+  MatBottomSheetRef,
+  MAT_BOTTOM_SHEET_DATA,
+} from "@angular/material";
+import { ModalSuccessComponent } from "./modal-success/modal-success.component";
+import { ChatMsgLineComponent } from "./chat-msg-line/chat-msg-line.component";
+import { FormatBillNumPipe } from "./pipes/format-bill-num.pipe";
+import { FormatBillDatePipe } from "./pipes/format-bill-date.pipe";
+import { FormatCurrencyPipe } from "./pipes/format-currency.pipe";
+import { NoOMAccountPopupComponent } from "./no-omaccount-popup/no-omaccount-popup.component";
+import { CancelOperationPopupComponent } from "./cancel-operation-popup/cancel-operation-popup.component";
+import { PhoneNumberDisplayPipe } from "./pipes/phone-number-display.pipe";
+import { Contacts } from "@ionic-native/contacts";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { SetOperationAmountComponent } from "./set-operation-amount/set-operation-amount.component";
+import { HeaderComponent } from "./header/header.component";
+import { FormatSecondDatePipe } from "./pipes/format-second-date.pipe";
+import { SuccessFailPopupComponent } from "./success-fail-popup/success-fail-popup.component";
+import { PhonenumberItemComponent } from "./phonenumber-item/phonenumber-item.component";
+import { SelectNumberPopupComponent } from "./select-number-popup/select-number-popup.component";
+import { SelectOtherRecipientComponent } from "./select-other-recipient/select-other-recipient.component";
+import { GetLabelLigneBillBordereauPipe } from "./pipes/get-label-ligne-bill-bordereau.pipe";
+import { AvantagePopupComponent } from "./avantage-popup/avantage-popup.component";
+import { DeleteNumberPopupComponent } from "src/app/my-account/delete-number-popup/delete-number-popup.component";
+import { CguPopupComponent } from "./cgu-popup/cgu-popup.component";
+import { OperationSuccessOrFailComponent } from "./operation-success-or-fail/operation-success-or-fail.component";
+import { SocialSharing } from "@ionic-native/social-sharing/ngx";
+import { WelcomePopupComponent } from "./welcome-popup/welcome-popup.component";
+import { SettingsPopupComponent } from "./settings-popup/settings-popup.component";
+import { HelpBannerComponent } from "src/app/emergencies/help-banner/help-banner.component";
+import { RouterModule } from "@angular/router";
+import { PassVolumeDisplayPipe } from "./pipes/pass-volume-display.pipe";
+import { OmButtonComponent } from "./om-button/om-button.component";
+import { DashboardHeaderComponent } from "./dashboard-header/dashboard-header.component";
+import { FormatSuiviConsoCategoryTitlePipe } from "./pipes/format-suivi-conso-category-title.pipe";
+import { FormatCalledNumberPipe } from "./pipes/format-called-number.pipe";
+import { HeaderScrollEffectDirective } from "./directives/header-scroll-effect.directive";
+import { ItemPassIllimixComponent } from "./item-pass-illimix/item-pass-illimix.component";
+import { ItemPassInternetComponent } from "./item-pass-internet/item-pass-internet.component";
+import { CommonIssuesComponent } from "./common-issues/common-issues.component";
+import { MerchantPaymentCodeComponent } from "./merchant-payment-code/merchant-payment-code.component";
+import { NoOmAccountModalComponent } from "./no-om-account-modal/no-om-account-modal.component";
+import { ItemRechargeCreditComponent } from "./item-recharge-credit/item-recharge-credit.component";
+import { PhoneNumberProviderComponent } from "src/app/components/phone-number-provider/phone-number-provider.component";
+import { NumberSelectionComponent } from "src/app/components/number-selection/number-selection.component";
+import { AmountProviderComponent } from "src/app/components/amount-provider/amount-provider.component";
+import { OemIonHeaderParallaxDirective } from "src/app/directives/oem-ion-header-parallax.directive";
+import { CounterSelectionComponent } from "src/app/components/counter/counter-selection/counter-selection.component";
+import { FavoriteCountersComponent } from "src/app/components/counter/favorite-counters/favorite-counters.component";
+import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
+import { CodeFormatPipe } from 'src/app/pipes/code-format.pipe';
+import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.component';
+import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
+import { AcronymPipe } from './pipes/acronym.pipe';
+import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
+import { OemOperationsComponent } from 'src/app/components/oem-operations/oem-operations.component';
+import { NoIonSelectArrowDirective } from 'src/app/directives/no-ion-select-arrow/no-ion-select-arrow.directive';
+import { InvoiceCardComponent } from 'src/app/components/invoice-card/invoice-card.component';
+import { LinesComponent } from 'src/app/components/lines/lines.component';
+import { IbouIonFabComponent } from './ibou-ion-fab/ibou-ion-fab.component';
 
 @NgModule({
   declarations: [
+    LinesComponent,
+    InvoiceCardComponent,
+    NoIonSelectArrowDirective,
+    OemOperationsComponent,
+    SelectBeneficiaryPopUpComponent,
+    CounterSelectionComponent,
+    FavoriteCountersComponent,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
     AmountProviderComponent,
@@ -92,7 +114,6 @@ import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header
     SelectNumberPopupComponent,
     SelectOtherRecipientComponent,
     GetLabelLigneBillBordereauPipe,
-    ShareSocialNetworkComponent,
     AvantagePopupComponent,
     CguPopupComponent,
     OperationSuccessOrFailComponent,
@@ -113,7 +134,11 @@ import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header
     NoOmAccountModalComponent,
     ItemRechargeCreditComponent,
     OemIonHeaderParallaxDirective,
-
+    ItemOfferPlanComponent,
+    CodeFormatPipe,
+    FavoriteMerchantComponent,
+    AcronymPipe,
+    IbouIonFabComponent
   ],
   imports: [
     CommonModule,
@@ -121,6 +146,7 @@ import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header
     MatBottomSheetModule,
     MatButtonModule,
     MatCardModule,
+    MatRippleModule,
     MatButtonToggleModule,
     MatInputModule,
     MatSlideToggleModule,
@@ -135,12 +161,15 @@ import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header
     RouterModule,
   ],
   entryComponents: [
+    LinesComponent,
+    SelectBeneficiaryPopUpComponent,
     NumberSelectionComponent,
+    FavoriteCountersComponent,
+    CounterSelectionComponent,
     ModalSuccessComponent,
     NoOMAccountPopupComponent,
     CancelOperationPopupComponent,
     SelectNumberPopupComponent,
-    ShareSocialNetworkComponent,
     AvantagePopupComponent,
     DeleteNumberPopupComponent,
     CguPopupComponent,
@@ -150,8 +179,16 @@ import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header
     CommonIssuesComponent,
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
+    FavoriteMerchantComponent,
   ],
   exports: [
+    InvoiceCardComponent,
+    LinesComponent,
+    NoIonSelectArrowDirective,
+    OemOperationsComponent,
+    SelectBeneficiaryPopUpComponent,
+    CounterSelectionComponent,
+    FavoriteCountersComponent,
     OemIonHeaderParallaxDirective,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
@@ -168,6 +205,7 @@ import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header
     MatOptionModule,
     MatRadioModule,
     MatMenuModule,
+    MatRippleModule,
     ReactiveFormsModule,
     ActivationOmComponent,
     ChoosePaymentModComponent,
@@ -190,13 +228,13 @@ import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header
     PhonenumberItemComponent,
     SelectNumberPopupComponent,
     SelectOtherRecipientComponent,
-    ShareSocialNetworkComponent,
     AvantagePopupComponent,
     OperationSuccessOrFailComponent,
     WelcomePopupComponent,
     SettingsPopupComponent,
     HelpBannerComponent,
     PassVolumeDisplayPipe,
+    CodeFormatPipe,
     OmButtonComponent,
     DashboardHeaderComponent,
     FormatCalledNumberPipe,
@@ -207,8 +245,18 @@ import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
     ItemRechargeCreditComponent,
+    ItemOfferPlanComponent,
+    FavoriteMerchantComponent,
+    IbouIonFabComponent
   ],
-  providers: [Contacts, SocialSharing, PassVolumeDisplayPipe],
+  providers: [
+    Contacts,
+    SocialSharing,
+    PassVolumeDisplayPipe,
+    { provide: MatBottomSheetRef, useValue: {} },
+    { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} },
+    BsBillsHubService,
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class SharedModule {}

@@ -479,6 +479,9 @@ body {
 .custom-css-common-issues {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+  height: 75vh;
+  max-height: 600px;
+  padding: unset !important;
 }
 
 .cdk-overlay-pane {
@@ -487,15 +490,17 @@ body {
 
 .transferts-page {
   .card {
-    -webkit-margin-start: 0px;
-    margin-inline-start: 0px;
-    -webkit-margin-end: 0px;
-    margin-inline-end: 0px;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    .sc-ion-card-ios-s img {
-      display: block;
-      width: unset;
+    ion-card {
+      -webkit-margin-start: 0px;
+      margin-inline-start: 0px;
+      -webkit-margin-end: 0px;
+      margin-inline-end: 0px;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      .sc-ion-card-ios-s img {
+        display: block;
+        width: unset;
+      }
     }
   }
 }
@@ -506,6 +511,24 @@ body {
   border-radius: 10px 10px 0 0;
   display: flex;
   align-items: flex-end;
+}
+
+// css for modal select recipient for buy credit, pass internet & illimix
+.select-recipient-modal {
+  align-items: flex-end !important;
+  --height: auto;
+  .modal-wrapper {
+    width: 100% !important;
+    border-radius: 10px 10px 0 0 !important;
+    .ion-page {
+      position: relative;
+      contain: content;
+      max-height: 90vh;
+      .modal-content {
+        overflow: auto;
+      }
+    }
+  }
 }
 
 // css for popup set merchant code on merchant payment
@@ -671,6 +694,17 @@ button {
 .mat-bottom-sheet-container {
   font: unset;
   font-family: unset;
+  overflow: hidden !important;
+}
+
+.item-icon {
+  vertical-align: bottom;
+}
+
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing.oem-ion-bottomsheet {
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 1 !important;
+  transition: none;
 }
 
 // custom CSS for purchase list filter button
@@ -678,4 +712,11 @@ button {
   .mat-button-wrapper {
     width: 100%;
   }
+}
+
+.spinner-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0px;
 }

@@ -18,10 +18,12 @@ import { getCurrentDate, isNewVersion } from 'src/shared';
 import { AssistanceService } from '../services/assistance.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { Platform } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import { MatDialog } from '@angular/material';
-import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
+import { AppUpdatePage } from '../pages/app-update/app-update.page';
+import { SessionOem } from '../services/session-oem/session-oem.service';
+import { map } from 'rxjs/operators';
+import { PROFIL, CODE_CLIENT, CODE_FORMULE, FORMULE } from '../utils/constants';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()
@@ -47,7 +49,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   isFormuleFixPrepaid: any;
   isIOS: boolean;
   appId: string;
-  AppVersionNumber: any;
+  currentAppVersion: string;
   isFirebaseTokenSent = false;
   birthDateSubscription: Subscription;
   constructor(
@@ -59,7 +61,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     private platform: Platform,
     private appMinimize: AppMinimize,
     private appVersion: AppVersion,
-    private dialog: MatDialog
+    private navCtl: NavController,
+    private session: SessionOem
   ) {}
 
   ngOnInit() {
@@ -71,39 +74,34 @@ export class DashboardPage implements OnInit, OnDestroy {
     }
   }
 
+  async checkForUpdate() {
+    this.currentAppVersion = await this.appVersion.getVersionNumber();
+
+    if (this.appId && this.currentAppVersion)
+      this.assistanceService
+        .getAppVersionPublished()
+        .subscribe((version: any) => {
+          const versionAndroid = version.android;
+          const versionIos = version.ios;
+          if (versionAndroid || versionIos) {
+            if (
+              isNewVersion(
+                this.isIOS ? versionIos : versionAndroid,
+                this.currentAppVersion
+              )
+            ) {
+              this.navCtl.navigateForward([AppUpdatePage.ROUTE_PATH], {
+                state: { appId: this.appId },
+              });
+            }
+          }
+        });
+  }
+
   ngOnDestroy() {}
 
   ionViewWillEnter() {
     this.getCurrentSubscription();
-
-    // Get app version
-    // this.appVersion
-    //   .getVersionNumber()
-    //   .then((value) => {
-    //     this.AppVersionNumber = value;
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-    // Call server for app version
-    // this.assistanceService
-    //   .getAppVersionPublished()
-    //   .subscribe((version: any) => {
-    //     const versionAndroid = version.android;
-    //     const versionIos = version.ios;
-    //     if (versionAndroid || versionIos) {
-    //       if (
-    //         isNewVersion(
-    //           this.isIOS ? versionIos : versionAndroid,
-    //           this.AppVersionNumber
-    //         )
-    //       ) {
-    //         const dialogRef = this.dialog.open(CancelOperationPopupComponent, {
-    //           data: { updateApp: this.appId },
-    //         });
-    //       }
-    //     }
-    //   });
     if (!this.isFirebaseTokenSent) {
       this.authServ.UpdateNotificationInfo();
       this.isFirebaseTokenSent = true;
@@ -125,62 +123,83 @@ export class DashboardPage implements OnInit, OnDestroy {
     const date = getCurrentDate();
     this.hasErrorSubscription = false;
     this.isLoading = true;
-    this.authServ.getSubscription(currentNumber).subscribe(
-      (res: SubscriptionModel) => {
-        this.isLoading = false;
-        this.hasErrorSubscription = false;
-        this.userSubscription = res;
-        this.currentProfile = this.userSubscription.profil;
-        this.currentFormule = this.userSubscription.nomOffre;
-        this.currentProfile = res.profil;
-        this.currentFormule = res.nomOffre;
-        this.currentCodeFormule = res.code;
-        const souscription = {
-          profil: this.currentProfile,
-          formule: this.currentFormule,
-          codeFormule: this.currentCodeFormule,
-        };
-        if (isPrepaidOrHybrid(souscription)) {
-          this.router.navigate(['/dashboard-prepaid-hybrid']);
-        } else if (isKirene(souscription)) {
-          this.router.navigate(['/dashboard-kirene']);
-        } else if (isPostpaidMobile(souscription)) {
-          this.router.navigate(['/dashboard-postpaid']);
-        } else if (isPostpaidFix(souscription)) {
-          this.router.navigate(['/dashboard-postpaid-fixe']);
-        } else if (isPrepaidFix(souscription)) {
-          this.router.navigate(['/dashboard-home-prepaid']);
-        }
-        this.followAnalyticsService.registerEventFollow('dashboard', 'event', {
-          msisdn: currentNumber,
-          profil: this.currentProfile,
-          formule: this.currentFormule,
-          date,
-        });
-        this.followAnalyticsService.setString('profil', this.currentProfile);
-        this.followAnalyticsService.setString('formule', this.currentFormule);
-        this.logUserBirthDateOnFollow();
-        const user = ls.get('user');
-        this.followAnalyticsService.setFirstName(user.firstName);
-        this.followAnalyticsService.setLastName(user.lastName);
-        const msisdn = this.authServ.getUserMainPhoneNumber();
-        const hashedNumber = hash53(msisdn).toString();
-        try {
-          this.followAnalyticsService.registerId(hashedNumber);
-        } catch (error) {
-          this.followAnalyticsService.registerId(hashedNumber);
+    this.authServ
+      .getSubscription(currentNumber)
+      .pipe(
+        map((rs: any) => {
+          if (rs && rs.profil) {
+            ls.set(PROFIL, rs.profil);
+            ls.set(CODE_CLIENT, rs.clientCode);
+            ls.set(CODE_FORMULE, rs.code);
+            ls.set(FORMULE, rs.nomOffre);
+          }
+          return rs;
+        })
+      )
+      .subscribe(
+        (res: SubscriptionModel) => {
+          this.isLoading = false;
+          this.hasErrorSubscription = false;
+          this.userSubscription = res;
+          this.currentProfile = this.userSubscription.profil;
+          this.currentFormule = this.userSubscription.nomOffre;
+          this.currentProfile = res.profil;
+          this.currentFormule = res.nomOffre;
+          this.currentCodeFormule = res.code;
+          const souscription = {
+            profil: this.currentProfile,
+            formule: this.currentFormule,
+            codeFormule: this.currentCodeFormule,
+          };
+          let currentDashboard = '/dashboard';
+          if (isPrepaidOrHybrid(souscription)) {
+            currentDashboard = '/dashboard-prepaid-hybrid';
+          } else if (isKirene(souscription)) {
+            currentDashboard = '/dashboard-kirene';
+          } else if (isPostpaidMobile(souscription)) {
+            currentDashboard = '/dashboard-postpaid';
+          } else if (isPostpaidFix(souscription)) {
+            currentDashboard = '/dashboard-postpaid-fixe';
+          } else if (isPrepaidFix(souscription)) {
+            currentDashboard = '/dashboard-home-prepaid';
+          }
+          DashboardService.CURRENT_DASHBOARD = currentDashboard;
+          this.router.navigate([DashboardService.CURRENT_DASHBOARD]);
+          this.checkForUpdate();
           this.followAnalyticsService.registerEventFollow(
-            'hash_error',
-            'error',
-            error
+            'dashboard',
+            'event',
+            {
+              msisdn: currentNumber,
+              profil: this.currentProfile,
+              formule: this.currentFormule,
+              date,
+            }
           );
+          this.followAnalyticsService.setString('profil', this.currentProfile);
+          this.followAnalyticsService.setString('formule', this.currentFormule);
+          this.logUserBirthDateOnFollow();
+          const user = ls.get('user');
+          this.followAnalyticsService.setFirstName(user.firstName);
+          this.followAnalyticsService.setLastName(user.lastName);
+          const msisdn = this.authServ.getUserMainPhoneNumber();
+          const hashedNumber = hash53(msisdn).toString();
+          try {
+            this.followAnalyticsService.registerId(hashedNumber);
+          } catch (error) {
+            this.followAnalyticsService.registerId(hashedNumber);
+            this.followAnalyticsService.registerEventFollow(
+              'hash_error',
+              'error',
+              error
+            );
+          }
+        },
+        (err: any) => {
+          this.isLoading = false;
+          this.hasErrorSubscription = true;
         }
-      },
-      (err: any) => {
-        this.isLoading = false;
-        this.hasErrorSubscription = true;
-      }
-    );
+      );
   }
 
   logUserBirthDateOnFollow() {

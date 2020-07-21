@@ -77,7 +77,7 @@
             </ion-slide>
             <ion-slide>
                   <ng-container *ngIf="!histPurchaseLoading">
-                      <app-historique-achat  [listTransactions]="listPurchaseForDayByType" [dateFilterSelected]="purchaseDateFilterSelected" [userProfil]="currentProfil" [isLoading]="histPurchaseLoading" [hasError]="histPurchaseHasError" (getTransactionsByDay)="getTransactionsByDay($event)" (getTransactionsByFilter) ="getTransactionsByDay(purchaseDateFilterSelected,$event)"></app-historique-achat>
+                      <app-historique-achat [listTypePurchaseFilter]="listCategoryPurchaseHistory"  [listTransactions]="listPurchaseForDayByType" [dateFilterSelected]="purchaseDateFilterSelected" [userProfil]="currentProfil" [isLoading]="histPurchaseLoading" [hasError]="histPurchaseHasError" (getTransactionsByDay)="getTransactionsByDay($event)" (getTransactionsByFilter) ="getTransactionsByDay(purchaseDateFilterSelected,$event)"></app-historique-achat>
                   </ng-container>
             </ion-slide>
             </ng-container>

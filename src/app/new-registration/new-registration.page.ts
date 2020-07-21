@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Subscription, timer, Subject } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -78,6 +78,7 @@ export class NewRegistrationPage implements OnInit {
   authErrorDetected = new Subject<any>();
   helpNeeded = new Subject<any>();
   firstCallMsisdn: string;
+  isNumberAttachedError: boolean;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -87,11 +88,15 @@ export class NewRegistrationPage implements OnInit {
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
     private modalController: ModalController,
-    private navController: NavController
+    private bottomSheet: MatBottomSheet,
+    private navController: NavController,
+    private ngZone: NgZone
   ) {
     this.authErrorDetected.subscribe({
       next: (data) => {
-        this.openHelpModal(data);
+        this.ngZone.run(() => {
+          this.openHelpModal(HelpModalDefaultContent);
+        });
       },
     });
     this.helpNeeded.subscribe({
@@ -126,6 +131,7 @@ export class NewRegistrationPage implements OnInit {
   getNumber() {
     this.gettingNumber = true;
     this.showErrMessage = false;
+    this.isNumberAttachedError = false;
     if (!this.ref['destroyed']) this.ref.detectChanges();
     Fingerprint2.get((components) => {
       const values = components.map((component) => {
@@ -193,10 +199,16 @@ export class NewRegistrationPage implements OnInit {
       },
       (err: any) => {
         this.checkingNumber = false;
-        //  && err.error && err.error.errorKey === 'userexists'
         if (err.status === 400) {
-          // Go to login page
-          this.goLoginPage();
+          if (err.error.errorKey === 'userRattached') {
+            // this.showErrMessage = true;
+            this.errorMsg = err.error.title;
+            this.isNumberAttachedError = true;
+          } else {
+            // err.error.errorKey === 'userexists'
+            // Go to login page
+            this.goLoginPage();
+          }
         } else {
           this.showErrMessage = true;
           this.errorMsg =
@@ -344,15 +356,14 @@ export class NewRegistrationPage implements OnInit {
     }
   }
 
-  async openHelpModal(sheetData?: any) {
-    const modal = await this.modalController.create({
-      component: CommonIssuesComponent,
-      cssClass: 'modalRecipientSelection',
-      componentProps: { data: sheetData },
-    });
-    modal.onDidDismiss().then((response) => {
-      if (response && response.data) {
-        const message = response.data;
+  openHelpModal(sheetData?: any) {
+    this.bottomSheet
+      .open(CommonIssuesComponent, {
+        panelClass: 'custom-css-common-issues',
+        data: sheetData,
+      })
+      .afterDismissed()
+      .subscribe((message: string) => {
         if (message === 'ERROR_AUTH_IMP') {
           this.openHelpModal(HelpModalAuthErrorContent);
         }
@@ -362,9 +373,7 @@ export class NewRegistrationPage implements OnInit {
         if (message === 'CONFIG_APN_AUTH_IMP') {
           this.openHelpModal(HelpModalConfigApnContent);
         }
-      }
-    });
-    return await modal.present();
+      });
   }
 
   displayMsisdnError() {

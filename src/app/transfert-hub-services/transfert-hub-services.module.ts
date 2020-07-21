@@ -25,8 +25,8 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [TransfertHubServicesPage, SelectBeneficiaryPopUpComponent],
-  entryComponents: [SelectBeneficiaryPopUpComponent],
+  declarations: [TransfertHubServicesPage],
+  entryComponents: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class TransfertHubServicesPageModule {}

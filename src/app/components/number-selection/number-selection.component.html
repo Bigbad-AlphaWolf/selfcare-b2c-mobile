@@ -5,7 +5,7 @@
   <div class="description">
     Sélecionnez le bénéficiaire
   </div>
-  <div class="number-options">
+  <div *ngIf="option === 'WITH_MY_PHONES'" class="number-options">
     <mat-radio-group (change)="onOptionChange($event.value)">
       <mat-radio-button
         *ngFor="let number of numbers$ | async; index as i; count as size"
@@ -45,6 +45,25 @@
     class="error-msg scb-text-red-error"
   >
     Le numéro de votre destinataire ne peut pas recevoir de credit.
+  </div>
+  <div class="recents" *ngIf="recentsRecipients$ | async as recents">
+    <div class="recent-description scb-text-full-black">
+      Récents
+    </div>
+    <div
+      matRipple
+      class="oem-item"
+      (click)="onContinue(recent.msisdn)"
+      *ngFor="let recent of recents"
+    >
+      <div class="logo scb-text-white">
+        {{ 'C' }}
+      </div>
+      <div class="labels">
+        <span class="name"> {{ recent.msisdn | phoneNumberDisplay }}</span>
+        <!-- <span class="number scb-text-gray">{{ recent.msisdn }}</span> -->
+      </div>
+    </div>
   </div>
   <div class="btn-continue">
     <button mat-button [disabled]="isProcessing" (click)="onContinue()">

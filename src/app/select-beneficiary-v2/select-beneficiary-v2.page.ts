@@ -14,7 +14,7 @@ import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/selec
 import { MatDialog } from '@angular/material';
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import { IonInput, IonSelect } from '@ionic/angular';
+import { IonInput, IonSelect, NavController } from '@ionic/angular';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { PROFILE_TYPE_POSTPAID, isPrepaidFix, CODE_FORMULE_KILIMANJARO, KILIMANJARO_FORMULE } from '../dashboard';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -53,12 +53,12 @@ export class SelectBeneficiaryV2Page implements OnInit {
     private authServ: AuthenticationService,
     private followAnalyticsService: FollowAnalyticsService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private navContr: NavController
   ) {}
 
   ngOnInit() {
     if(this.route && this.route.queryParamMap){
-      this.route.queryParams.subscribe((params) => {
         if (
           this.router.getCurrentNavigation().extras.state &&
           this.router.getCurrentNavigation().extras.state.payload
@@ -68,7 +68,6 @@ export class SelectBeneficiaryV2Page implements OnInit {
         }else{
           this.appRouting.goToDashboard();
         }
-      });
     }
   }
 
@@ -113,7 +112,7 @@ export class SelectBeneficiaryV2Page implements OnInit {
   }
 
   goToDashboard() {
-    this.appRouting.goToDashboard();
+    this.navContr.pop();
   }
 
   pickContact() {

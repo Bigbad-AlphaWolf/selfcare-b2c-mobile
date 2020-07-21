@@ -8,7 +8,6 @@ import {
   HelpModalConfigApnContent,
   HelpModalDefaultContent,
 } from 'src/shared';
-import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home-v2',
@@ -53,11 +52,7 @@ export class HomeV2Page implements OnInit {
       action: 'POPUP',
     },
   ];
-  constructor(
-    private router: Router,
-    private bottomSheet: MatBottomSheet,
-    private modalController: ModalController
-  ) {}
+  constructor(private router: Router, private bottomSheet: MatBottomSheet) {}
 
   ngOnInit() {}
 
@@ -77,15 +72,14 @@ export class HomeV2Page implements OnInit {
     }
   }
 
-  async openHelpModal(sheetData?: any) {
-    const modal = await this.modalController.create({
-      component: CommonIssuesComponent,
-      cssClass: 'modalRecipientSelection',
-      componentProps: { data: sheetData },
-    });
-    modal.onDidDismiss().then((response) => {
-      if (response && response.data) {
-        const message = response.data;
+  openHelpModal(sheetData?: any) {
+    this.bottomSheet
+      .open(CommonIssuesComponent, {
+        panelClass: 'custom-css-common-issues',
+        data: sheetData,
+      })
+      .afterDismissed()
+      .subscribe((message: string) => {
         if (message === 'ERROR_AUTH_IMP') {
           this.openHelpModal(HelpModalAuthErrorContent);
         }
@@ -95,8 +89,6 @@ export class HomeV2Page implements OnInit {
         if (message === 'CONFIG_APN_AUTH_IMP') {
           this.openHelpModal(HelpModalConfigApnContent);
         }
-      }
-    });
-    return await modal.present();
+      });
   }
 }

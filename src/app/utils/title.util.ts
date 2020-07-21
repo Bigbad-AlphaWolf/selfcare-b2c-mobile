@@ -5,30 +5,45 @@ import {
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
-} from "src/shared";
-import { PageTitle } from "../models/page-title.model";
+  BONS_PLANS,
+} from 'src/shared';
+import { PageTitle } from '../models/page-title.model';
+import { OPERATION_WOYOFAL } from './operations.util';
 
 export const titles: PageTitle[] = [
   {
     typeOperation: OPERATION_TYPE_SEDDO_CREDIT,
-    title: "Transfert de Crédit",
+    title: 'Transfert de Crédit',
   },
   {
     typeOperation: OPERATION_TYPE_SEDDO_BONUS,
-    title: "Transfert de Bonus",
+    title: 'Transfert de Bonus',
   },
   {
     typeOperation: OPERATION_TYPE_MERCHANT_PAYMENT,
-    title: "Paiement marchand",
+    title: 'Paiement marchand',
   },
   {
     typeOperation: OPERATION_TYPE_RECHARGE_CREDIT,
-    title: "Achat de crédit",
-    subTtile: "Montant à recharger",
+    title: 'Achat de crédit',
+    subTtile: 'Montant à recharger',
   },
   {
     typeOperation: OPERATION_TRANSFER_OM_WITH_CODE,
     title: "Transfert d'argent",
+  },
+  {
+    typeOperation: BONS_PLANS,
+    title: 'Bons plans - Samay Sargal',
+  },
+
+  {
+    typeOperation: OPERATION_WOYOFAL,
+    title: 'Rechargement Woyofal',
+  },
+  {
+    typeOperation: BONS_PLANS,
+    title: "Bons plans - Samay Sargal",
   },
 ];
 

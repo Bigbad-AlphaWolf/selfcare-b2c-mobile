@@ -1,6 +1,11 @@
 <div class="creation-steps">
   <div class="go-back">
-    <img (click)="goBack()" src="/assets/images/arrow-left.png" class="close-icon" alt="">
+    <img
+      (click)="goBack()"
+      src="/assets/images/arrow-left.png"
+      class="close-icon"
+      alt=""
+    />
   </div>
   <div class="scb-text-orange voir-intro" *ngIf="step === 'CHECK_NUMBER'">
     <span (click)="goIntro()">Voir l'intro</span>
@@ -36,6 +41,11 @@
       </div>
       <div *ngIf="showErrMessage" class="error-text">
         <span class="scb-text-red-error" (click)="getNumber()">
+          {{ errorMsg }}
+        </span>
+      </div>
+      <div *ngIf="isNumberAttachedError" class="error-text">
+        <span class="scb-text-red-error">
           {{ errorMsg }}
         </span>
       </div>
