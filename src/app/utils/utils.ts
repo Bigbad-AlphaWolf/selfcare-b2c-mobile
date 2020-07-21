@@ -1,4 +1,4 @@
-import { MONTHS } from './constants';
+import { MONTHS, OM_URLS } from './constants';
 import { MonthOem } from '../models/month.model';
 
 export function removeObjectField(obj: any, f: string) {
@@ -13,7 +13,7 @@ export function previousMonths(n: number) {
     date.setMonth(date.getMonth() - 1);
     let m = date.getMonth() + 1;
     r.push({
-      position: m < 10 ? '0'+m:m+'',
+      position: m < 10 ? '0' + m : m + '',
       code: MONTHS[date.getMonth()].toLowerCase(),
       name: MONTHS[date.getMonth()],
       year: date.getFullYear().toString(),
@@ -22,4 +22,9 @@ export function previousMonths(n: number) {
   return r;
 }
 
-
+export function checkUrlMatchOM(url: string) {
+  for (let i = 0; i < OM_URLS.length; i++) {
+    if (url.match(OM_URLS[i])) return true;
+  }
+  return false;
+}

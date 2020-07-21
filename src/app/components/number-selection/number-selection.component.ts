@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Inject,
-  ChangeDetectorRef,
-  Input,
-} from '@angular/core';
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
+import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
 import {
   formatPhoneNumber,
   REGEX_NUMBER_OM,
@@ -34,7 +27,7 @@ import { RecentsOem } from 'src/app/models/recents-oem.model';
   styleUrls: ['./number-selection.component.scss'],
 })
 export class NumberSelectionComponent implements OnInit {
-  numbers$: Observable<string[]> = of(['782363572', '776148081', '776148080']);
+  numbers$: Observable<string[]>;
   recentsRecipients$: Observable<any[]>;
 
   numberSelected: string = '';
@@ -193,7 +186,6 @@ export class NumberSelectionComponent implements OnInit {
       },
       () => {
         this.modalController.dismiss();
-
         this.isErrorProcessing = true;
       }
     );
@@ -201,7 +193,7 @@ export class NumberSelectionComponent implements OnInit {
 
   async canRecieveCredit() {
     if (this.opXtras.forSelf) return true;
-
+    this.isProcessing = true;
     let canRecieve = await this.authService
       .canRecieveCredit(this.opXtras.recipientMsisdn)
       .pipe(
@@ -211,6 +203,7 @@ export class NumberSelectionComponent implements OnInit {
         })
       )
       .toPromise();
+    this.isProcessing = false;
     return canRecieve;
   }
 

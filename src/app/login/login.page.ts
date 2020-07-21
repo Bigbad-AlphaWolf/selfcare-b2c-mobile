@@ -15,7 +15,7 @@ import {
 } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { NavController } from '@ionic/angular';
+import { NavController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -59,9 +59,9 @@ export class LoginPage implements OnInit {
     private authServ: AuthenticationService,
     private dashbServ: DashboardService,
     public dialog: MatDialog,
-    private bottomSheet: MatBottomSheet,
     private followAnalyticsService: FollowAnalyticsService,
-    private navController: NavController
+    private navController: NavController,
+    private bottomSheet: MatBottomSheet
   ) {}
 
   ngOnInit() {
@@ -202,7 +202,7 @@ export class LoginPage implements OnInit {
     );
     this.router.navigate(['/home']);
   }
-  goBack(){
-    this.navController.navigateBack(['/home-v2'])
+  goBack() {
+    this.navController.navigateBack(['/home-v2']);
   }
 }

@@ -16,9 +16,25 @@
       <span *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
       <span *ngSwitchCase="'OPERATION_WOYOFAL'">Rechargement Woyofal</span>
 
-    </ng-container>
-  </div>
-  <div class="banner-container">
+<ion-content fullscreen="true">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+        <ng-container [ngSwitch]="purchaseType">
+          <span class="title" *ngSwitchCase="OPERATION_INTERNET_TYPE">Achat Pass Internet</span>
+          <span class="title" *ngSwitchCase="OPERATION_ILLIMIX_TYPE">Achat Pass Illimix</span>
+          <span class="title" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
+            >Paiement Marchand</span
+          >
+          <span class="title" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
+            >Transfert d'argent</span
+          >
+          <span class="title" *ngSwitchCase="OPERATION_TRANSFER_OM">Transfert d'argent</span>
+          <span class="title" *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
+    
+        </ng-container>
+    </ion-toolbar>
+  </ion-header>
+  <div fullscreen="true" class="banner-container">
     <ng-container [ngSwitch]="purchaseType">
       <img
         *ngSwitchCase="OPERATION_INTERNET_TYPE"
@@ -68,11 +84,7 @@
 <ion-header [oemIonHeaderParallax]="100">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button
-        (click)="goBack()"
-        icon=""
-        class="oem-back-button"
-      >
+      <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
@@ -89,7 +101,6 @@
         <span *ngSwitchCase="OPERATION_TRANSFER_OM">Transfert d'argent</span>
         <span *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
         <span *ngSwitchCase="'OPERATION_WOYOFAL'">Rechargement Woyofal</span>
-  
       </ng-container>
     </ion-title>
   </ion-toolbar>
@@ -132,19 +143,16 @@
         class="banniere"
       />
       <img
-      *ngSwitchCase="'OPERATION_WOYOFAL'"
-      src="assets/images/recharge-bill.svg"
-      alt="banniere"
-      class="banniere"
-    />
+        *ngSwitchCase="'OPERATION_WOYOFAL'"
+        src="assets/images/recharge-bill.svg"
+        alt="banniere"
+        class="banniere"
+      />
     </ng-container>
   </div>
 </ion-header>
 <ion-content #scrollArea [scrollEvents]="true">
-  <div
-    *ngIf="operationTypeRecap"
-    class="recap-text"
-  >
+  <div *ngIf="operationTypeRecap" class="recap-text">
     Récapitulatif
   </div>
   <div class="recap-title" *ngIf="!operationTypeRecap">
@@ -241,10 +249,10 @@
         >
         </app-item-recharge-credit>
         <app-item-recharge-credit
-        [amount]="opXtras.amount + opXtras.fee"
-        *ngSwitchCase="'OPERATION_WOYOFAL'"
-      >
-      </app-item-recharge-credit>
+          [amount]="opXtras.amount + opXtras.fee"
+          *ngSwitchCase="'OPERATION_WOYOFAL'"
+        >
+        </app-item-recharge-credit>
       </ng-container>
     </div>
     <div class="amount-to-transfer">
@@ -259,15 +267,20 @@
       <div class="top-block">
         <span class="title"
           >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT ? merchantCode :
-          recipientMsisdn | phoneNumberDisplay}} {{(purchaseType === 'OPERATION_WOYOFAL'?opXtras.billData.counter.counterNumber :'')|codeFormat:2}}</span
+          recipientMsisdn | phoneNumberDisplay}} {{(purchaseType ===
+          'OPERATION_WOYOFAL'?opXtras.billData.counter.counterNumber
+          :'')|codeFormat:2}}</span
         >
         <span class="recipient"
           >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT
-          ?merchantName:recipientName}}{{purchaseType === 'OPERATION_WOYOFAL'?opXtras.billData.counter.name:''}}</span
+          ?merchantName:recipientName}}{{purchaseType ===
+          'OPERATION_WOYOFAL'?opXtras.billData.counter.name:''}}</span
         >
       </div>
     </div>
-    <ng-container *ngIf="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE || purchaseType === OPERATION_TRANSFER_OM">
+    <ng-container
+      *ngIf="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE || purchaseType === OPERATION_TRANSFER_OM"
+    >
       <div class="amount-to-transfer">
         <span class="pass">Type de transfert</span>
       </div>
@@ -277,11 +290,10 @@
             Transfert d'argent
           </span>
           <span class="title scb-text-orange"
-            >{{purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ? "avec code" : "sans code" }}</span
+            >{{purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ? "avec code" :
+            "sans code" }}</span
           >
-          <span class="recipient"
-            ></span
-          >
+          <span class="recipient"></span>
         </div>
       </div>
     </ng-container>
@@ -325,8 +337,8 @@
         >
 
         <span class="text" *ngSwitchCase="'OPERATION_WOYOFAL'"
-        >Confirmer ({{opXtras.amount|formatCurrency}} FCFA)</span
-      >
+          >Confirmer ({{opXtras.amount|formatCurrency}} FCFA)</span
+        >
       </ng-container>
       <mat-spinner
         mode="indeterminate"

@@ -1,20 +1,23 @@
-<ion-header [oemIonHeaderParallax]="100">
+<ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button
+    <ion-buttons slot="start"
         (click)="goToDashboard()"
-        icon=""
-        class="oem-back-button"
-      >
+        class="ion-padding-start" slot="start">
         <img src="/assets/images/arrow-left.png" alt="icon" />
-      </ion-back-button>
     </ion-buttons>
-    <ion-title class="achat-pass-internet">
+    <ion-title class="title1">
         {{pageTitle}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content fullscreen="true" [scrollEvents]="true">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">
+        {{pageTitle}}
+    </span>
+    </ion-toolbar>
+  </ion-header>
   <div class="transferts-page">
     <div class="ion-cards-container" *ngIf="options.length">
       <ng-container *ngFor="let opt of options">
