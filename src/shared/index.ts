@@ -91,8 +91,8 @@ export const CATEGORY_PURCHASE_HISTORY = [
 
 export const DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY = {
   label: 'Tous',
-  typeAchat: undefined
-}
+  typeAchat: undefined,
+};
 
 export const listRegisterSargalBonPlanText = ['inscription', 'inscris'];
 export const LIST_CATEGORY_BONS_PLANS = {
@@ -103,7 +103,7 @@ export const LIST_CATEGORY_BONS_PLANS = {
   autres: 'AUTRES',
 };
 
-export const IMAGES_DIRECTORY = "/assets/images/";
+export const IMAGES_DIRECTORY = '/assets/images/';
 
 export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   INTERNET: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
@@ -119,7 +119,7 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   TRANSFERT_ARGENT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   WOYOFAL: `${IMAGES_DIRECTORY}ic-files.png`,
   PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
-}
+};
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
 }
@@ -1161,3 +1161,5 @@ export const HelpModalConfigApnContent = {
   ],
   showChecks: false,
 };
+
+export const TRANSFER_BONUS_CREDIT_FEE = 20;

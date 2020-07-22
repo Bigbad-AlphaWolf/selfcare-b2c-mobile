@@ -33,6 +33,7 @@ import {
   PAYMENT_MOD_SARGAL,
   PAY_WITH_SARGAL,
   formatPhoneNumber,
+  TRANSFER_BONUS_CREDIT_FEE,
 } from '..';
 import { CancelOperationPopupComponent } from '../cancel-operation-popup/cancel-operation-popup.component';
 import { SoSModel } from 'src/app/services/sos-service';
@@ -117,6 +118,12 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    if (
+      this.operationType === OPERATION_TYPE_SEDDO_BONUS ||
+      this.operationType === OPERATION_TYPE_SEDDO_CREDIT
+    ) {
+      this.fees = TRANSFER_BONUS_CREDIT_FEE;
+    }
     if (this.operationType === OPERATION_TYPE_TRANSFER_OM) {
       this.form = this.fb.group({
         nom: [
@@ -179,19 +186,21 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
     }
   }
 
-  openConfirmationDialog(confirmSargalIllimite?:boolean, sargalPayload?:any) {
-    let options = { width: '294px',height: '232px'};
-    if(confirmSargalIllimite){
-      options = Object.assign(options, {data : {confirmSargalIllimite : true}})
+  openConfirmationDialog(confirmSargalIllimite?: boolean, sargalPayload?: any) {
+    let options = { width: '294px', height: '232px' };
+    if (confirmSargalIllimite) {
+      options = Object.assign(options, {
+        data: { confirmSargalIllimite: true },
+      });
     }
     this.dialogRef = this.dialog.open(CancelOperationPopupComponent, options);
-    this.dialogSub = this.dialogRef.afterClosed().subscribe(result => {
+    this.dialogSub = this.dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         const msg = this.formatFollowMsg(this.operationType);
         if (msg) {
-          this.followsServ.registerEventFollow("clicked","event")
+          this.followsServ.registerEventFollow('clicked', 'event');
         }
-        if(confirmSargalIllimite){
+        if (confirmSargalIllimite) {
           this.validate.emit(sargalPayload);
         }
       }
