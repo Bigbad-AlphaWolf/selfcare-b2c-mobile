@@ -4,13 +4,13 @@
 
 export const environment = {
   production: false,
-  // SERVER_API_URL: 'https://orangeetmoi.orange.sn',
+  SERVER_API_URL: 'https://orangeetmoi.orange.sn',
   // SERVER_API_URL: 'http://10.137.52.31:8712',
   // SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
   // SERVER_API_URL: 'http://10.137.52.31:8712',
   // SERVER_API_URL:
   //   'http://selfcareb2c-client-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
-  SERVER_API_URL: 'http://10.100.97.175:8712',
+  // SERVER_API_URL: 'http://10.100.97.175:8712',
   OM_URL: 'https://appom.orange-sonatel.com',
   SEDDO_SERVICE: 'selfcare-b2c-seddo',
   CONSO_SERVICE: 'selfcare-b2c-conso',
