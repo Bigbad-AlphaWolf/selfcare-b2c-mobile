@@ -531,6 +531,15 @@ body {
   }
 }
 
+// css for besoin d'aide modal
+.besoin-daide-modal {
+  align-items: flex-end !important;
+  .modal-wrapper {
+    height: 80vh;
+    width: 100% !important;
+    border-radius: 10px 10px 0 0 !important;
+  }
+}
 // css for popup set merchant code on merchant payment
 .merchant-code-modal {
   border-radius: 10px 10px 0 0;

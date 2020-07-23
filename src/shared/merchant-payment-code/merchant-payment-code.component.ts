@@ -2,7 +2,6 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
-import { MatBottomSheet } from '@angular/material';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OPERATION_TYPE_MERCHANT_PAYMENT, REGEX_IS_DIGIT } from '..';

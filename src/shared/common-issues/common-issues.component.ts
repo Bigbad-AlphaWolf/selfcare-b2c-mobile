@@ -1,9 +1,10 @@
-import { Component, OnInit, Inject, NgZone } from '@angular/core';
+import { Component, OnInit, Inject, NgZone, Input } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { HelpModalDefaultContent } from '..';
 import { Router } from '@angular/router';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
+import { ModalController } from '@ionic/angular';
 @Component({
   selector: 'app-common-issues',
   templateUrl: './common-issues.component.html',
@@ -22,24 +23,19 @@ export class CommonIssuesComponent implements OnInit {
   }[];
   showSousOption: boolean;
   type: string;
+  @Input() data;
   constructor(
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-    private bottomSheetRef: MatBottomSheetRef<CommonIssuesComponent>,
+    private modalController: ModalController,
     private ngZone: NgZone,
     private router: Router,
     private openNativeSettings: OpenNativeSettings
-  ) {
-    if (data) {
-      this.options = data.options;
-      this.popupTitle = data.popupTitle;
+  ) {}
+  ngOnInit() {
+    console.log(this.data);
+    if (this.data) {
+      this.options = this.data.options;
+      this.popupTitle = this.data.popupTitle;
     }
-  }
-  ngOnInit() {}
-
-  close(message?: string) {
-    this.ngZone.run(() => {
-      this.bottomSheetRef.dismiss(message);
-    });
   }
 
   goSuboption(option: {
@@ -66,7 +62,7 @@ export class CommonIssuesComponent implements OnInit {
   }
 
   continue() {
-    this.bottomSheetRef.dismiss();
+    this.modalController.dismiss();
     switch (this.type) {
       case 'ERROR_AUTH_IMP':
         this.router.navigate(['/new-registration']);

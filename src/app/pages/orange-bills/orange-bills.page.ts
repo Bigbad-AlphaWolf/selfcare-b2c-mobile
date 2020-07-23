@@ -1,20 +1,19 @@
-import { Component, OnInit } from "@angular/core";
-import { previousMonths } from "src/app/utils/utils";
-import { MonthOem } from "src/app/models/month.model";
-import { BillsService } from "src/app/services/bill-service/bills.service";
-import { InvoiceOrange } from "src/app/models/invoice-orange.model";
-import { Observable } from "rxjs";
-import { SessionOem } from "src/app/services/session-oem/session-oem.service";
-import { REGEX_FIX_NUMBER } from "src/shared";
-import { MatBottomSheet } from "@angular/material";
-import { LinesComponent } from "src/app/components/lines/lines.component";
-import { NavController } from "@ionic/angular";
-import { tap } from "rxjs/operators";
+import { Component, OnInit } from '@angular/core';
+import { previousMonths } from 'src/app/utils/utils';
+import { MonthOem } from 'src/app/models/month.model';
+import { BillsService } from 'src/app/services/bill-service/bills.service';
+import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
+import { Observable } from 'rxjs';
+import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
+import { REGEX_FIX_NUMBER } from 'src/shared';
+import { LinesComponent } from 'src/app/components/lines/lines.component';
+import { NavController, ModalController } from '@ionic/angular';
+import { tap } from 'rxjs/operators';
 
 @Component({
-  selector: "app-orange-bills",
-  templateUrl: "./orange-bills.page.html",
-  styleUrls: ["./orange-bills.page.scss"],
+  selector: 'app-orange-bills',
+  templateUrl: './orange-bills.page.html',
+  styleUrls: ['./orange-bills.page.scss'],
 })
 export class OrangeBillsPage implements OnInit {
   months: MonthOem[] = [];
@@ -30,10 +29,10 @@ export class OrangeBillsPage implements OnInit {
   constructor(
     private billsService: BillsService,
     private navCtl: NavController,
-    private matBottomSheet: MatBottomSheet
+    private modalController: ModalController
   ) {}
   onChangeLine() {
-    this.openLinesBottomSheet();
+    this.openLinesModal();
   }
   onMonthChanged($evt: CustomEvent) {
     this.month = this.months.find((m) => m.position == $evt.detail.value);
@@ -51,12 +50,12 @@ export class OrangeBillsPage implements OnInit {
 
   updatePhoneType() {
     REGEX_FIX_NUMBER.test(this.phone)
-      ? (this.invoiceType = "LANDLINE")
-      : (this.invoiceType = "MOBILE");
+      ? (this.invoiceType = 'LANDLINE')
+      : (this.invoiceType = 'MOBILE');
   }
 
   initData() {
-    this.isBordereauLoading = this.invoiceType === "LANDLINE";
+    this.isBordereauLoading = this.invoiceType === 'LANDLINE';
     this.isFactureLoading = true;
 
     this.bordereau$ = this.billsService
@@ -72,19 +71,20 @@ export class OrangeBillsPage implements OnInit {
     this.billsService.mailToCustomerService();
   }
 
-  public openLinesBottomSheet() {
-    this.matBottomSheet
-      .open(LinesComponent, {
-        backdropClass: "oem-ion-bottomsheet",
-      })
-      .afterDismissed()
-      .subscribe((result: any) => {
-        this.phone = result.phone;
-        this.codeClient = result.codeClient;
+  async openLinesModal() {
+    const modal = await this.modalController.create({
+      component: LinesComponent,
+      cssClass: 'select-recipient-modal',
+    });
+    modal.onDidDismiss().then((response) => {
+      if (response && response.data) {
+        this.phone = response.data.phone;
+        this.codeClient = response.data.codeClient;
         this.updatePhoneType();
-
         this.initData();
-      });
+      }
+    });
+    return await modal.present();
   }
 
   goBack() {
