@@ -670,18 +670,19 @@ button {
   display: flex !important;
   align-items: center;
   justify-content: center;
+  margin-bottom: 5px;
+  padding: 10px 15px;
   .button-native {
     display: none;
   }
 }
 .oem-back-button.md {
   @include oemBackButton();
-  padding: 15px;
+  padding: 20px 15px;
 }
 
 .oem-back-button.ios {
   @include oemBackButton();
-  padding: 5px 15px;
 }
 
 @mixin oemTopTile() {
