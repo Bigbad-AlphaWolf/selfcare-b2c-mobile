@@ -1,9 +1,7 @@
 import {
   Directive,
-  HostListener,
   ElementRef,
   AfterViewInit,
-  AfterContentInit,
   AfterViewChecked,
   OnInit,
   Renderer2,
@@ -64,8 +62,8 @@ export class OemIonHeaderParallaxDirective
     this.renderer.setStyle(this.titleEl, 'align-self', 'flex-end');
     this.renderer.setStyle(this.titleEl, 'height', 'fit-content');
 
-    this.renderer.setStyle(this.toolBarTitleEl, 'position', 'relative');
-    this.renderer.setStyle(this.toolBarTitleEl, 'top', '2px');
+    // this.renderer.setStyle(this.toolBarTitleEl, 'position', 'relative');
+    // this.renderer.setStyle(this.toolBarTitleEl, 'top', '2px');
 
 
     this.initScrollEvent();
@@ -75,7 +73,6 @@ export class OemIonHeaderParallaxDirective
     this.parallaxEl = this.elRef.nativeElement;
     let parentEl = this.parallaxEl.parentElement;
     this.scrollEl = parentEl.querySelector('ion-content');
-    this.renderer.setStyle(this.scrollEl, 'height', '120%');
 
     this.buttonsEl = this.parallaxEl.querySelector('ion-buttons');
     this.buttonsEl.setAttribute('slot', 'start');
@@ -109,7 +106,6 @@ export class OemIonHeaderParallaxDirective
   }
 
   onScroll(ev: CustomEvent) {
-    console.log(ev.detail);
     
     if(ev.detail.scrollTop <0)return;
     let scrollTop = ev.detail.scrollTop ;

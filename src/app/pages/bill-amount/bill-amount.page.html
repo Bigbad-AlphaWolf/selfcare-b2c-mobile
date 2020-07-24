@@ -1,6 +1,6 @@
-<ion-header [oemIonHeaderParallax]="100">
+<ion-header [oemIonHeaderParallax]="90">
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <ion-buttons>
       <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
@@ -10,7 +10,7 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content fullscreen="true" [scrollEvents]="true">
+<ion-content  no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <div class="bill-amount-page">
     <div class="banniere-container">
       <img src="/assets/images/recharge-bill.svg" alt="header-transfer" />

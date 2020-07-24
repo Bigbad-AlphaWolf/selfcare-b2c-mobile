@@ -17,20 +17,20 @@
   letter-spacing: normal;
   color: $fullBlack;
 }
-
+.banniere-container {
+  width: 100%;
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
 .transferts-page {
   height: 120%;
   background-color: $white;
   :host {
     height: 100%;
   }
-  .banniere-container {
-    width: 100%;
-    img {
-      width: 100%;
-      height: auto;
-    }
-  }
+
 
   .amount-provider {
     margin-bottom: 10px;

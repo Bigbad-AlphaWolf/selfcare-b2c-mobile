@@ -83,12 +83,12 @@
 </ion-header> -->
 <ion-header [oemIonHeaderParallax]="90">
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <ion-buttons>
       <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
-    <ion-title class="achat-pass-internet">
+    <ion-title>
       <ng-container [ngSwitch]="purchaseType">
         <span *ngSwitchCase="OPERATION_INTERNET_TYPE">Achat Pass Internet</span>
         <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE">Achat Pass Illimix</span>

@@ -1,6 +1,6 @@
 <ion-header [oemIonHeaderParallax]="110">
   <ion-toolbar>
-    <ion-buttons slot="start" [hidden]="!showSousOption">
+    <ion-buttons [hidden]="!showSousOption">
       <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
@@ -12,7 +12,7 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content fullscreen="true" [scrollEvents]="true">
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <div class="check-options-list">
     <div
       (click)="goSuboption(opt)"
