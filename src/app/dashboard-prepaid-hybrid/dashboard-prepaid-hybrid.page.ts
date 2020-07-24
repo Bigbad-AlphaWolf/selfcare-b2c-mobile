@@ -36,7 +36,7 @@ import {
   PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
 } from '../dashboard';
-import { MatDialog, MatBottomSheet } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
@@ -116,7 +116,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
     private appliRouting: ApplicationRoutingService,
-    private bottomSheet: MatBottomSheet,
     private omServ: OrangeMoneyService,
     private modalController: ModalController,
     private offerPlanServ: OfferPlansService,
