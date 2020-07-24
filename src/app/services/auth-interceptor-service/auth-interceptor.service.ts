@@ -115,7 +115,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       headers = headers.set('X-Selfcare-Platform', deviceInfo.platform);
       headers = headers.set('X-Selfcare-Cordova', deviceInfo.cordova);
       headers = headers.set('X-Selfcare-Model', deviceInfo.model);
-      headers = headers.set('X-Selfcare-Uuid', deviceInfo.uuid);
+      headers = headers.set('X-Selfcare-Uuid', x_uuid);
       headers = headers.set('X-Selfcare-Os-Version', deviceInfo.version);
       headers = headers.set('X-Selfcare-Manufacturer', deviceInfo.manufacturer);
       headers = headers.set('X-Selfcare-Serial', deviceInfo.serial);

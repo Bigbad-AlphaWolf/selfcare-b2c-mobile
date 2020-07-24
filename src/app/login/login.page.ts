@@ -65,16 +65,6 @@ export class LoginPage implements OnInit {
       password: ['', [Validators.required]],
       rememberMe: [this.rememberMe],
     });
-    const uuid = ls.get('X-UUID');
-    if (!uuid) {
-      Fingerprint2.get((components) => {
-        const values = components.map((component) => {
-          return component.value;
-        });
-        const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
-        ls.set('X-UUID', x_uuid);
-      });
-    }
   }
 
   ionViewWillEnter() {
@@ -99,7 +89,7 @@ export class LoginPage implements OnInit {
   UserLogin(user: any) {
     this.loading = true;
     this.authServ.login(user).subscribe(
-      (res) => {
+      () => {
         this.followAnalyticsService.registerEventFollow(
           'login_success',
           'event',

@@ -48,8 +48,7 @@ describe('NewRegistrationPage', () => {
               return of();
             },
           },
-        },
-        { provide: Fingerprint2, useValue: { get: () => of() } },
+        }
       ],
     }).compileComponents();
   }));
