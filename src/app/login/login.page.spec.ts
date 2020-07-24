@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginPage } from './login.page';
-import { MatDialogRef, MatDialog, MatBottomSheet } from '@angular/material';
+import { MatDialogRef, MatDialog } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -20,7 +20,6 @@ describe('LoginPage', () => {
       providers: [
         { provide: MatDialogRef, useValue: {} },
         { provide: MatDialog, useValue: {} },
-        { provide: MatBottomSheet, useValue: {} },
         { provide: Router, useValue: {} },
         {
           provide: HttpClient,
