@@ -6,7 +6,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
-import { MatBottomSheet } from '@angular/material';
 
 describe('MerchantPaymentCodeComponent', () => {
   let component: MerchantPaymentCodeComponent;
@@ -15,28 +14,23 @@ describe('MerchantPaymentCodeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [ MerchantPaymentCodeComponent ],
+      declarations: [MerchantPaymentCodeComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: OrangeMoneyService,
           useValue: {
-            getMerchantByCode:() => {
-              return of()
-            }
-          }
+            getMerchantByCode: () => {
+              return of();
+            },
+          },
         },
         {
           provide: Router,
-          useValue: {}
+          useValue: {},
         },
-        {
-          provide: MatBottomSheet,
-          useValue: {}
-        }
-      ]
-    })
-    .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

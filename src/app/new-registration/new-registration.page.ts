@@ -8,7 +8,7 @@ import {
   RegistrationModel,
 } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { MatDialog, MatDialogRef, MatBottomSheet } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import * as SecureLS from 'secure-ls';
 import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
 import * as Fingerprint2 from 'fingerprintjs2';
@@ -16,12 +16,7 @@ const ls = new SecureLS({ encodingType: 'aes' });
 import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { takeUntil, finalize } from 'rxjs/operators';
-import {
-  HelpModalDefaultContent,
-  HelpModalAuthErrorContent,
-  HelpModalAPNContent,
-  HelpModalConfigApnContent,
-} from 'src/shared';
+import { HelpModalDefaultContent, HelpModalAuthErrorContent } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { ModalController, NavController } from '@ionic/angular';
 import { RegistrationSuccessModalPage } from '../registration-success-modal/registration-success-modal.page';
@@ -88,7 +83,6 @@ export class NewRegistrationPage implements OnInit {
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
     private modalController: ModalController,
-    private bottomSheet: MatBottomSheet,
     private navController: NavController,
     private ngZone: NgZone
   ) {
@@ -356,24 +350,13 @@ export class NewRegistrationPage implements OnInit {
     }
   }
 
-  openHelpModal(sheetData?: any) {
-    this.bottomSheet
-      .open(CommonIssuesComponent, {
-        panelClass: 'custom-css-common-issues',
-        data: sheetData,
-      })
-      .afterDismissed()
-      .subscribe((message: string) => {
-        if (message === 'ERROR_AUTH_IMP') {
-          this.openHelpModal(HelpModalAuthErrorContent);
-        }
-        if (message === 'APN_AUTH_IMP') {
-          this.openHelpModal(HelpModalAPNContent);
-        }
-        if (message === 'CONFIG_APN_AUTH_IMP') {
-          this.openHelpModal(HelpModalConfigApnContent);
-        }
-      });
+  async openHelpModal(sheetData?: any) {
+    const modal = await this.modalController.create({
+      component: CommonIssuesComponent,
+      cssClass: 'besoin-daide-modal',
+      componentProps: { data: sheetData },
+    });
+    return await modal.present();
   }
 
   displayMsisdnError() {
