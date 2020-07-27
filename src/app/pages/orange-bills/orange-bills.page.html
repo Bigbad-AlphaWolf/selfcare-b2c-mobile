@@ -1,11 +1,11 @@
 <!-- <ion-header [oemIonHeaderParallax]="100" >
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <ion-buttons>
       <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
-    <ion-title class="achat-pass-internet">
+    <ion-title>
       <span>Mes factures</span>
     </ion-title>
   </ion-toolbar>
@@ -44,7 +44,7 @@
     <ion-spinner name="crescent"></ion-spinner>
   </div>
 </ion-header> -->
-<ion-header mode="ios">
+<!-- <ion-header mode="ios">
   <ion-toolbar>
     <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
       <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
@@ -55,15 +55,62 @@
       </span>
     </ion-title>
   </ion-toolbar>
+</ion-header> -->
+<ion-header [oemIonHeaderParallax]="90" >
+  <ion-toolbar >
+      <ion-buttons>
+        <ion-back-button defaultHref="/dashboard" icon="" class="oem-back-button" >
+            <img src="/assets/images/arrow-left.png" alt="icon" />
+        </ion-back-button>  
+      </ion-buttons>
+      <ion-title >Mes factures</ion-title>
+  </ion-toolbar> 
+  <div class="top">
+    
+    <div class="banner-image">
+      <div class="banner-background">
+        <div class="banner-container">
+          <div class="number">{{phone|phoneNumberDisplay}}</div>
+          <div class="change" (click)="onChangeLine()" matRipple>Changer</div>
+        </div>
+      </div>
+    </div>
+    <div class="month-selection">
+      <ion-list mode="ios">
+        <ion-item mode="ios" lines="none">
+          <ion-label mode="ios">Choisir un mois</ion-label>
+          <ion-select
+            [value]="months[0].position"
+            interface="popover"
+            noIonSelectArrow
+            mode="ios"
+            (ionChange)="onMonthChanged($event)"
+          >
+            <ion-select-option
+              [value]="month.position"
+              *ngFor="let month of months"
+              mode="ios"
+              ><span>{{month.name}} {{month.year}}</span></ion-select-option
+            >
+          </ion-select>
+          <ion-icon name="arrow-down" mode="ios" slot="end"></ion-icon>
+        </ion-item>
+      </ion-list>
+      
+    </div>
+    <div *ngIf="isFactureLoading || isBordereauLoading"  class="spinner-wrapper">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  </div>
 </ion-header>
-<ion-content fullscreen="true" mode="ios">
-  <ion-header class="ion-padding-start" collapse="condense">
+<ion-content  no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" mode="ios"  [scrollEvents]="true">
+  <!-- <ion-header class="ion-padding-start" collapse="condense">
     <ion-toolbar>
       <span class="title">
         Mes factures
       </span>
     </ion-toolbar>
-  </ion-header> 
+  </ion-header>  
   <div class="banner-image">
     <div class="banner-background">
       <div class="banner-container">
@@ -97,7 +144,7 @@
   </div>
   <div *ngIf="isFactureLoading || isBordereauLoading"  class="spinner-wrapper">
     <ion-spinner name="crescent"></ion-spinner>
-  </div>
+  </div>-->
   <div class="content">
     <div class="s2-text" matRipple (click)="mailToCustomerService()">Demande d'assistance</div>
 

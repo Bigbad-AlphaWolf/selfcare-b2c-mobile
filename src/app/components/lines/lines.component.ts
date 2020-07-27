@@ -1,22 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { share, map, switchMap } from "rxjs/operators";
-import { Observable, forkJoin } from "rxjs";
-import { DashboardService } from "src/app/services/dashboard-service/dashboard.service";
-import { MatBottomSheetRef } from "@angular/material";
-import { ModalController } from "@ionic/angular";
-import { SessionOem } from "src/app/services/session-oem/session-oem.service";
-import { REGEX_FIX_NUMBER, SubscriptionModel } from "src/shared";
+import { Component, OnInit } from '@angular/core';
+import { share, map, switchMap } from 'rxjs/operators';
+import { Observable, forkJoin } from 'rxjs';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { ModalController } from '@ionic/angular';
+import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
+import { REGEX_FIX_NUMBER, SubscriptionModel } from 'src/shared';
 import {
   isPostpaidFix,
   isPostpaidMobile,
   ModelOfSouscription,
-} from "src/app/dashboard";
-import { AuthenticationService } from "src/app/services/authentication-service/authentication.service";
+} from 'src/app/dashboard';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 
 @Component({
-  selector: "app-lines",
-  templateUrl: "./lines.component.html",
-  styleUrls: ["./lines.component.scss"],
+  selector: 'app-lines',
+  templateUrl: './lines.component.html',
+  styleUrls: ['./lines.component.scss'],
 })
 export class LinesComponent implements OnInit {
   phones$: Observable<any[]>;
@@ -26,7 +25,6 @@ export class LinesComponent implements OnInit {
   phone: string;
   codeClient: String;
   constructor(
-    private bottomSheetRef: MatBottomSheetRef<LinesComponent>,
     private modalController: ModalController,
     private dashbServ: DashboardService,
     private authServ: AuthenticationService
@@ -44,7 +42,7 @@ export class LinesComponent implements OnInit {
         numbers.push(SessionOem.MAIN_PHONE);
 
         elements.forEach((element: any) => {
-          const msisdn = "" + element.msisdn;
+          const msisdn = '' + element.msisdn;
           oemSouscriptions.push(this.authServ.getSubscription(msisdn));
           numbers.push(msisdn);
         });
@@ -81,7 +79,7 @@ export class LinesComponent implements OnInit {
   }
 
   async onConfirmer() {
-    this.bottomSheetRef.dismiss(this.phone);
+    this.modalController.dismiss(this.phone);
   }
 
   onOptionChange(value: any) {
