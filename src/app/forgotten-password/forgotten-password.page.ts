@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { REGEX_NUMBER, REGEX_EMAIL, REGEX_PASSWORD2 } from 'src/shared';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as SecureLS from 'secure-ls';
@@ -7,10 +6,8 @@ import {
   AuthenticationService,
   ConfirmMsisdnModel,
 } from '../services/authentication-service/authentication.service';
-import * as Fingerprint2 from 'fingerprintjs2';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NavController } from '@ionic/angular';
-const ls = new SecureLS({ encodingType: 'aes' });
 export interface Description {
   text: string;
 }
@@ -53,48 +50,38 @@ export class ForgottenPasswordPage implements OnInit {
     this.getNumber();
   }
 
-  ionViewDidEnter() {
-    this.getNumber();
-  }
-
   getNumber() {
     this.error_message = '';
     this.gettingNumber = true;
     this.ref.detectChanges();
-    Fingerprint2.get((components) => {
-      const values = components.map((component) => {
-        return component.value;
-      });
-      const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
-      ls.set('X-UUID', x_uuid);
-      this.authServ.getMsisdnByNetwork().subscribe(
-        (res: { msisdn: string }) => {
-          const msisdn = res.msisdn;
-          this.authServ.confirmMsisdnByNetwork(msisdn).subscribe(
-            (response: ConfirmMsisdnModel) => {
-              this.gettingNumber = false;
-              if (response.status) {
-                this.numberGot = true;
-                this.phoneNumber = response.msisdn;
-                this.hmac = response.hmac;
-              } else {
-                this.error_message = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
-              }
-              this.ref.detectChanges();
-            },
-            (err) => {
+    this.authServ.getMsisdnByNetwork().subscribe(
+      (res: { msisdn: string }) => {
+        const msisdn = res.msisdn;
+        this.authServ.confirmMsisdnByNetwork(msisdn).subscribe(
+          (response: ConfirmMsisdnModel) => {
+            this.gettingNumber = false;
+            if (response.status) {
+              this.numberGot = true;
+              this.phoneNumber = response.msisdn;
+              this.hmac = response.hmac;
+            } else {
               this.error_message = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
-              this.ref.detectChanges();
             }
-          );
-        },
-        (err) => {
-          this.gettingNumber = false;
-          this.error_message = `La récupération ne s'est pas bien passée. Assurez d'activer vos données mobiles Orange puis réessayez`;
-          this.ref.detectChanges();
-        }
-      );
-    });
+            this.ref.detectChanges();
+          },
+          () => {
+            this.error_message = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
+            this.ref.detectChanges();
+          }
+        );
+      },
+      () => {
+        this.gettingNumber = false;
+        this.error_message = `La récupération ne s'est pas bien passée. Assurez d'activer vos données mobiles Orange puis réessayez`;
+        this.ref.detectChanges();
+      }
+    );
+   
   }
 
   goStepNewPassword() {
@@ -109,7 +96,7 @@ export class ForgottenPasswordPage implements OnInit {
     this.checkingNumber = true;
     const payload = { msisdn: this.phoneNumber, hmac: this.hmac };
     this.authServ.checkNumber(payload).subscribe(
-      (resp: any) => {
+      () => {
         // Go to registration page
         this.checkingNumber = false;
         this.error_message = 'Ce numéro ne possède pas de compte';
@@ -142,7 +129,7 @@ export class ForgottenPasswordPage implements OnInit {
         this.resetPasswordPayload.hmac = this.hmac;
         this.resetPasswordPayload.login = this.phoneNumber;
         this.authServ.resetPassword(this.resetPasswordPayload).subscribe(
-          (res) => {
+          () => {
             this.followAnalyticsService.registerEventFollow(
               'Reset_password_success',
               'event',

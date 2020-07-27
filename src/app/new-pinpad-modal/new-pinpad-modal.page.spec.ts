@@ -6,7 +6,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import {
   MatDialogRef,
   MatDialog,
-  MatBottomSheet,
   MatInputModule,
   MatSelectModule,
   MatFormFieldModule,
@@ -37,7 +36,6 @@ describe('NewPinpadModalPage', () => {
         { provide: MatDialogRef, useValue: {} },
         { provide: ModalController, useValue: {} },
         { provide: MatDialog, useValue: {} },
-        { provide: MatBottomSheet, useValue: {} },
         { provide: Router, useValue: {} },
         {
           provide: HttpClient,

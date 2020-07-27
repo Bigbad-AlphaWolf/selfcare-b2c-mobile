@@ -5,7 +5,7 @@ import { DashboardPrepaidHybridPage } from './dashboard-prepaid-hybrid.page';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
-import { MatDialog, MatBottomSheet } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { PassVolumeDisplayPipe } from 'src/shared/pipes/pass-volume-display.pipe';
 import { FormatBillNumPipe } from 'src/shared/pipes/format-bill-num.pipe';
 import { FormatCurrencyPipe } from 'src/shared/pipes/format-currency.pipe';
@@ -40,7 +40,6 @@ describe('DashboardPrepaidHybridPage', () => {
         { provide: MatDialog, useValue: {} },
         { provide: File },
         { provide: InAppBrowser },
-        { provide: MatBottomSheet },
       ],
     }).compileComponents();
   }));

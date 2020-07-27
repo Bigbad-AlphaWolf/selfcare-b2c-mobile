@@ -1,13 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatBottomSheet } from '@angular/material';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
-import {
-  HelpModalAuthErrorContent,
-  HelpModalAPNContent,
-  HelpModalConfigApnContent,
-  HelpModalDefaultContent,
-} from 'src/shared';
+import { HelpModalDefaultContent } from 'src/shared';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home-v2',
@@ -52,7 +47,10 @@ export class HomeV2Page implements OnInit {
       action: 'POPUP',
     },
   ];
-  constructor(private router: Router, private bottomSheet: MatBottomSheet) {}
+  constructor(
+    private router: Router,
+    private modalController: ModalController
+  ) {}
 
   ngOnInit() {}
 
@@ -72,23 +70,12 @@ export class HomeV2Page implements OnInit {
     }
   }
 
-  openHelpModal(sheetData?: any) {
-    this.bottomSheet
-      .open(CommonIssuesComponent, {
-        panelClass: 'custom-css-common-issues',
-        data: sheetData,
-      })
-      .afterDismissed()
-      .subscribe((message: string) => {
-        if (message === 'ERROR_AUTH_IMP') {
-          this.openHelpModal(HelpModalAuthErrorContent);
-        }
-        if (message === 'APN_AUTH_IMP') {
-          this.openHelpModal(HelpModalAPNContent);
-        }
-        if (message === 'CONFIG_APN_AUTH_IMP') {
-          this.openHelpModal(HelpModalConfigApnContent);
-        }
-      });
+  async openHelpModal(sheetData?: any) {
+    const modal = await this.modalController.create({
+      component: CommonIssuesComponent,
+      cssClass: 'besoin-daide-modal',
+      componentProps: { data: sheetData },
+    });
+    return await modal.present();
   }
 }

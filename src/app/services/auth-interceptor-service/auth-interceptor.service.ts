@@ -7,7 +7,7 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import * as SecureLS from 'secure-ls';
-import { tap, delay } from 'rxjs/operators';
+import { tap, delay, retryWhen, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 export const OmRequest = 'OrangeMoney';
 import * as jwt_decode from 'jwt-decode';
@@ -15,6 +15,9 @@ import { AuthenticationService } from '../authentication-service/authentication.
 import { OM_SERVICE_VERSION } from '../orange-money-service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { checkUrlMatchOM } from 'src/app/utils/utils';
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { ModalController } from '@ionic/angular';
+import { of } from 'rxjs';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable()
@@ -23,7 +26,8 @@ export class AuthInterceptorService implements HttpInterceptor {
   constructor(
     private authServ: AuthenticationService,
     private router: Router,
-    private appVersion: AppVersion
+    private appVersion: AppVersion,
+    private modalController: ModalController
   ) {
     this.appVersion
       .getVersionNumber()
@@ -35,6 +39,24 @@ export class AuthInterceptorService implements HttpInterceptor {
       });
   }
 
+  async resetOmToken(err) {
+    console.log(err);
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+      componentProps: {
+        operationType: null,
+      },
+    });
+    await modal.present();
+    let result = await modal.onDidDismiss();
+    if (result && result.data && result.data.success) return of(err);
+    throw new HttpErrorResponse({
+      error: { title: 'Pinpad cancled' },
+      status: 401,
+    });
+  }
+
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     const that = this;
     const token = ls.get('token');
@@ -43,7 +65,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221781734863');
+      headers = headers.set('X-MSISDN', '221775109027');
       //delay to test slowness of network
       req = req.clone({
         headers,
@@ -93,7 +115,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       headers = headers.set('X-Selfcare-Platform', deviceInfo.platform);
       headers = headers.set('X-Selfcare-Cordova', deviceInfo.cordova);
       headers = headers.set('X-Selfcare-Model', deviceInfo.model);
-      headers = headers.set('X-Selfcare-Uuid', deviceInfo.uuid);
+      headers = headers.set('X-Selfcare-Uuid', x_uuid);
       headers = headers.set('X-Selfcare-Os-Version', deviceInfo.version);
       headers = headers.set('X-Selfcare-Manufacturer', deviceInfo.manufacturer);
       headers = headers.set('X-Selfcare-Serial', deviceInfo.serial);
@@ -110,6 +132,15 @@ export class AuthInterceptorService implements HttpInterceptor {
       });
     }
     return next.handle(req).pipe(
+      retryWhen((err) => {
+        return err.pipe(
+          switchMap(async (err) => {
+            if (err.status === 401 && checkUrlMatchOM(err.url))
+              return await this.resetOmToken(err);
+            throw err;
+          })
+        );
+      }),
       tap(
         (event: HttpEvent<any>) => {},
         (err: any) => {
