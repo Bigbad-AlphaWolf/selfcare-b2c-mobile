@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
-import { Subscription, timer, Subject } from 'rxjs';
+import { Subscription, timer, Subject, of } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -8,20 +8,14 @@ import {
   RegistrationModel,
 } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { MatDialog, MatDialogRef, MatBottomSheet } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import * as SecureLS from 'secure-ls';
 import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
-import * as Fingerprint2 from 'fingerprintjs2';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { takeUntil, finalize } from 'rxjs/operators';
-import {
-  HelpModalDefaultContent,
-  HelpModalAuthErrorContent,
-  HelpModalAPNContent,
-  HelpModalConfigApnContent,
-} from 'src/shared';
+import { takeUntil, finalize, catchError, switchMap, take, tap } from 'rxjs/operators';
+import { HelpModalDefaultContent, HelpModalAuthErrorContent } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { ModalController, NavController } from '@ionic/angular';
 import { RegistrationSuccessModalPage } from '../registration-success-modal/registration-success-modal.page';
@@ -88,12 +82,11 @@ export class NewRegistrationPage implements OnInit {
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
     private modalController: ModalController,
-    private bottomSheet: MatBottomSheet,
     private navController: NavController,
     private ngZone: NgZone
   ) {
     this.authErrorDetected.subscribe({
-      next: (data) => {
+      next: () => {
         this.ngZone.run(() => {
           this.openHelpModal(HelpModalDefaultContent);
         });
@@ -133,14 +126,7 @@ export class NewRegistrationPage implements OnInit {
     this.showErrMessage = false;
     this.isNumberAttachedError = false;
     if (!this.ref['destroyed']) this.ref.detectChanges();
-    Fingerprint2.get((components) => {
-      const values = components.map((component) => {
-        return component.value;
-      });
-      const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
-      ls.set('X-UUID', x_uuid);
-      this.authServ
-        .getMsisdnByNetwork()
+      this.authServ.getMsisdnByNetwork()
         //if after msisdnTimeout milliseconds the call does not complete, stop it.
         .pipe(
           takeUntil(timer(this.msisdnTimeout)),
@@ -154,45 +140,42 @@ export class NewRegistrationPage implements OnInit {
               this.authErrorDetected.next(HelpModalAuthErrorContent);
               console.log('http call is not successful');
             }
-          })
-        )
-        .subscribe(
-          (res: { msisdn: string }) => {
+          }),
+          switchMap((res: { msisdn: string }) => {
             this.firstCallMsisdn = res.msisdn;
-            this.authServ.confirmMsisdnByNetwork(res.msisdn).subscribe(
-              (response: ConfirmMsisdnModel) => {
-                this.gettingNumber = false;
-                if (response !== undefined && response && response.status) {
-                  this.numberGot = true;
-                  this.phoneNumber = response.msisdn;
-                  this.hmac = response.hmac;
-                  this.followAnalyticsService.registerEventFollow(
-                    'User_msisdn_recuperation_succes',
-                    'event',
-                    this.phoneNumber
-                  );
-                } else {
-                  this.displayMsisdnError();
-                }
-                if (!this.ref['destroyed']) this.ref.detectChanges();
-              },
-              (err) => {
+            return this.authServ.confirmMsisdnByNetwork(res.msisdn).pipe(take(1),tap((response: ConfirmMsisdnModel) => {
+              this.gettingNumber = false;
+              if (response !== undefined && response && response.status) {
+                this.numberGot = true;
+                this.phoneNumber = response.msisdn;
+                this.hmac = response.hmac;
+                this.followAnalyticsService.registerEventFollow(
+                  'User_msisdn_recuperation_succes',
+                  'event',
+                  this.phoneNumber
+                );
+              } else {
                 this.displayMsisdnError();
               }
-            );
-          },
-          (err) => {
+              if (!this.ref['destroyed']) this.ref.detectChanges();
+            },
+            () => {
+              this.displayMsisdnError();
+            }))
+          }),
+          catchError(()=>{
             this.displayMsisdnError();
-          }
-        );
-    });
+            return of()
+          })
+        )
+        .subscribe();
   }
 
   checkNumber() {
     this.checkingNumber = true;
     const payload = { msisdn: this.phoneNumber, hmac: this.hmac };
     this.checkNumberSubscription = this.authServ.checkNumber(payload).subscribe(
-      (resp: any) => {
+      () => {
         // Go to registration page
         this.checkingNumber = false;
         this.step = 'PASSWORD';
@@ -311,7 +294,7 @@ export class NewRegistrationPage implements OnInit {
       rememberMe: true,
     };
     this.authServ.login(userCredential).subscribe(
-      (res) => {
+      () => {
         this.dashbServ.getAccountInfo(userCredential.username).subscribe(
           (resp: any) => {
             this.isLogging = false;
@@ -333,7 +316,7 @@ export class NewRegistrationPage implements OnInit {
           }
         );
       },
-      (err) => {
+      () => {
         this.followAnalyticsService.registerEventFollow(
           'Authentication_Failed',
           'error',
@@ -356,24 +339,13 @@ export class NewRegistrationPage implements OnInit {
     }
   }
 
-  openHelpModal(sheetData?: any) {
-    this.bottomSheet
-      .open(CommonIssuesComponent, {
-        panelClass: 'custom-css-common-issues',
-        data: sheetData,
-      })
-      .afterDismissed()
-      .subscribe((message: string) => {
-        if (message === 'ERROR_AUTH_IMP') {
-          this.openHelpModal(HelpModalAuthErrorContent);
-        }
-        if (message === 'APN_AUTH_IMP') {
-          this.openHelpModal(HelpModalAPNContent);
-        }
-        if (message === 'CONFIG_APN_AUTH_IMP') {
-          this.openHelpModal(HelpModalConfigApnContent);
-        }
-      });
+  async openHelpModal(sheetData?: any) {
+    const modal = await this.modalController.create({
+      component: CommonIssuesComponent,
+      cssClass: 'besoin-daide-modal',
+      componentProps: { data: sheetData },
+    });
+    return await modal.present();
   }
 
   displayMsisdnError() {

@@ -1,9 +1,7 @@
 import {
   Directive,
-  HostListener,
   ElementRef,
   AfterViewInit,
-  AfterContentInit,
   AfterViewChecked,
   OnInit,
   Renderer2,
@@ -23,6 +21,7 @@ export class OemIonHeaderParallaxDirective
   titleEl: HTMLElement;
   wrapperTitleEl: HTMLElement;
   containerToolBarEl: HTMLElement;
+  toolBarTitleEl: HTMLElement;
 
   constructor(
     private elRef?: ElementRef<HTMLElement>,
@@ -31,10 +30,14 @@ export class OemIonHeaderParallaxDirective
   ngOnInit(): void {}
   ngAfterViewChecked(): void {
     if (this.containerToolBarEl) return;
-    if (this.toolBarEl)
+    if (this.toolBarEl){
       this.containerToolBarEl = this.toolBarEl.shadowRoot.querySelector(
         '.toolbar-container'
       );
+      this.toolBarTitleEl = this.titleEl.shadowRoot.querySelector(
+        '.toolbar-title'
+      );
+    }
 
     if (!this.containerToolBarEl) return;
 
@@ -53,8 +56,15 @@ export class OemIonHeaderParallaxDirective
     this.expandedWrapperTitle();
     this.renderer.setStyle(this.titleEl, 'font-size', '24px');
     this.renderer.setStyle(this.titleEl, 'position', 'sticky');
-    this.renderer.setStyle(this.titleEl, 'padding', '5px 15px');
+    this.renderer.setStyle(this.titleEl, 'padding', '0px 15px');
     this.renderer.setStyle(this.titleEl, 'top', '10px');
+    this.renderer.setStyle(this.titleEl, 'text-align', 'left');
+    this.renderer.setStyle(this.titleEl, 'align-self', 'flex-end');
+    this.renderer.setStyle(this.titleEl, 'height', 'fit-content');
+
+    // this.renderer.setStyle(this.toolBarTitleEl, 'position', 'relative');
+    // this.renderer.setStyle(this.toolBarTitleEl, 'top', '2px');
+
 
     this.initScrollEvent();
   }
@@ -96,9 +106,11 @@ export class OemIonHeaderParallaxDirective
   }
 
   onScroll(ev: CustomEvent) {
-    let scrollTop = ev.detail.scrollTop / 2;
-
-    if (78 > this.maxHeight - scrollTop) {
+    
+    if(ev.detail.scrollTop <0)return;
+    let scrollTop = ev.detail.scrollTop ;
+    
+    if (50 > this.maxHeight - scrollTop) {
       //Normal Toolbar
 
       this.normalToolbar();
@@ -118,8 +130,14 @@ export class OemIonHeaderParallaxDirective
 
   private expandedWrapperTitle() {
     this.renderer.setStyle(this.wrapperTitleEl, 'position', 'absolute');
-    this.renderer.setStyle(this.wrapperTitleEl, 'bottom', '10px');
-    this.renderer.setStyle(this.wrapperTitleEl, 'height', 'fit-content');
+    this.renderer.setStyle(this.wrapperTitleEl, 'top', 0);
+    this.renderer.setStyle(this.wrapperTitleEl, 'left', 0);
+    this.renderer.setStyle(this.wrapperTitleEl, 'right', 0);
+    this.renderer.setStyle(this.wrapperTitleEl, 'bottom', 0);
+    this.renderer.setStyle(this.wrapperTitleEl, 'height', '100%');
+    this.renderer.setStyle(this.wrapperTitleEl, 'flex-grow', '1');
+    this.renderer.setStyle(this.wrapperTitleEl, 'display', 'flex');
+    this.renderer.setStyle(this.wrapperTitleEl, 'align-items', 'flex-end');
   }
 
   private expandedToolBar(scrollTop: number = 0) {
@@ -135,11 +153,14 @@ export class OemIonHeaderParallaxDirective
       'flex-start'
     );
     this.renderer.setStyle(this.containerToolBarEl, 'flex-direction', 'column');
+    this.renderer.setStyle(this.containerToolBarEl, 'margin', '0px 0px 10px');
   }
 
   private normalWrapperTitle() {
-    this.renderer.setStyle(this.wrapperTitleEl, 'bottom', '0');
+    this.renderer.setStyle(this.wrapperTitleEl, 'bottom', '0px');
     this.renderer.setStyle(this.wrapperTitleEl, 'position', 'relative');
+    this.renderer.setStyle(this.wrapperTitleEl, 'height', 'fit-content');
+
   }
 
   private normalToolbar() {
@@ -147,5 +168,7 @@ export class OemIonHeaderParallaxDirective
     this.renderer.setStyle(this.containerToolBarEl, 'align-items', 'center');
     this.renderer.setStyle(this.containerToolBarEl, 'flex-direction', 'row');
     this.renderer.setStyle(this.containerToolBarEl, 'height', 'auto');
+    this.renderer.setStyle(this.containerToolBarEl, 'margin', '0px');
+
   }
 }

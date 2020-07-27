@@ -16,6 +16,8 @@ const versionEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/v1/app-versio
 import * as SecureLS from 'secure-ls';
 import { DetailsConsoPage } from './details-conso/details-conso.page';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
+import { UuidService } from './services/uuid-service/uuid.service';
+import { take } from 'rxjs/operators';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 declare var FollowAnalytics: any;
@@ -35,8 +37,7 @@ export class AppComponent {
     private appMinimize: AppMinimize,
     private router: Router,
     private deeplinks: Deeplinks,
-    private appVersion: AppVersion
-  ) {
+    private uuidServ: UuidService  ) {
     this.initializeApp();
   }
 
@@ -113,7 +114,7 @@ export class AppComponent {
 
      
       this.checkDeeplinks();
-
+      this.setUUidValue(); 
       // Get firebase id for notifications
       // this.fcm
       //   .getToken()
@@ -210,4 +211,15 @@ export class AppComponent {
   //     return this.uid.UUID;
   //   }
   // }
+  setUUidValue(){
+    const x_uuid = ls.get('X-UUID');
+    const deviceInfo = window['device'];
+    if(!x_uuid){
+      if(deviceInfo && deviceInfo.uuid){
+        ls.set('X-UUID', deviceInfo.uuid)
+      }else {
+        this.uuidServ.generateRandomUuid().pipe(take(1)).subscribe();
+      }
+    }
+  }
 }

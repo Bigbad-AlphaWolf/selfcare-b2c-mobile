@@ -11,7 +11,7 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { HttpErrorResponse } from '@angular/common/http';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { NoOmAccountModalComponent } from 'src/shared/no-om-account-modal/no-om-account-modal.component';
-import { retryWhen, switchMap, map } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
@@ -61,14 +61,6 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     this.recentsRecipients$ = this.recentsService
       .fetchRecents('transfert_avec_code')
       .pipe(
-        retryWhen((err) => {
-          return err.pipe(
-            switchMap(async (err) => {
-              if (err.status === 401) return await this.resetOmToken(err);
-              throw err;
-            })
-          );
-        }),
         map((recents: RecentsOem[]) => {
           let results = [];
           recents = recents.slice(0, 3);
@@ -220,28 +212,15 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     this.errorMsg = null;
     this.omService
       .checkUserHasAccount(this.omPhoneNumber, payload.recipientMsisdn)
-      .pipe(
-        retryWhen((err) => {
-          return err.pipe(
-            switchMap(async (err) => {
-              if (err.status === 401) return await this.resetOmToken(err);
-              throw err;
-            })
-          );
-        })
-      )
       .subscribe(
         (res: any) => {
           this.isProcessing = false;
-          console.log(res);
-
           if (res) {
             if (res.status_code.match('Success')) {
               const pageData = Object.assign(payload, {
                 purchaseType: 'TRANSFER_MONEY',
               });
               this.modalController.dismiss(pageData);
-
               // this.appRouting.goSetAmountPage(pageData);
               this.followAnalytics.registerEventFollow(
                 'destinataire_transfert_has_om_account_success',

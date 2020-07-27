@@ -24,8 +24,8 @@ import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/selec
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { ModalController, NavController } from '@ionic/angular';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
-import { catchError, retryWhen, switchMap } from 'rxjs/operators';
-import { throwError, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -323,16 +323,6 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     };
     this.omService
       .checkUserHasAccount(this.omPhoneNumber, this.recipientInfos.phoneNumber)
-      .pipe(
-        retryWhen((err) => {
-          return err.pipe(
-            switchMap(async (err) => {
-              if (err.status === 401) return await this.resetOmToken(err);
-              throw err;
-            })
-          );
-        })
-      )
       .subscribe(
         (res: any) => {
           this.checkingOMAccount = false;
@@ -401,7 +391,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
   async resetOmToken(err) {
     const modal = await this.pinpadOM.create({
       component: NewPinpadModalPage,
-      cssClass: "pin-pad-modal",
+      cssClass: 'pin-pad-modal',
       componentProps: {
         operationType: null,
       },
@@ -410,7 +400,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     let result = await modal.onDidDismiss();
     if (result && result.data && result.data.success) return of(err);
     throw new HttpErrorResponse({
-      error: { title: "Ping pad cancled" },
+      error: { title: 'Ping pad cancled' },
       status: 401,
     });
   }
