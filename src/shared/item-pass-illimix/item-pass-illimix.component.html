@@ -18,12 +18,20 @@
                 Internet
             </span>
           </div>
+          <div *ngIf="passIllimix?.dureeAppelEntrant || passIllimix?.passPromo?.dureeAppelEntrant" class="infos left-side">
+            <span class="item-volume">
+                {{ !passIllimix?.passPromo ? passIllimix?.dureeAppelEntrant : passIllimix?.passPromo?.dureeAppelEntrant }}
+            </span>
+            <span class="item-type scb-text-gray">
+                Appel entrant
+            </span>
+          </div>
           <div *ngIf="passIllimix?.dureeAppel || passIllimix?.passPromo?.dureeAppel" class="infos left-side">
             <span class="item-volume">
                 {{ !passIllimix?.passPromo ? passIllimix?.dureeAppel : passIllimix?.passPromo?.dureeAppel }}
             </span>
             <span class="item-type scb-text-gray">
-                Appel*
+                {{passIllimix?.dureeAppelEntrant || passIllimix?.passPromo?.dureeAppelEntrant ?'Appel sortant*':'Appel*'}}
             </span>
           </div>
           <div *ngIf="passIllimix?.nombreSms || passIllimix?.passPromo?.nombreSms" class="infos left-side">
@@ -31,7 +39,7 @@
                 {{ !passIllimix?.passPromo ? passIllimix?.nombreSms : passIllimix?.passPromo?.nombreSms }}
             </span>
             <span class="item-type scb-text-gray">
-                Messages
+                SMS
             </span>
           </div>
         </div>

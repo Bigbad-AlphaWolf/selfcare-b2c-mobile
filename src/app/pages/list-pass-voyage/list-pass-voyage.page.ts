@@ -9,6 +9,7 @@ import { PassVoyageService } from 'src/app/services/pass-voyage/pass-voyage.serv
 import { Observable, forkJoin } from 'rxjs';
 import { CountryPass } from 'src/app/models/country-pass.model';
 import { tap } from 'rxjs/operators';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
 
 @Component({
   selector: 'app-list-pass-voyage',
@@ -39,10 +40,10 @@ export class ListPassVoyagePage implements OnInit {
   country: CountryPass;
   passs$: Observable<any[]>;
   tabHeaderItems : any[] = [
-    'Appel', 'Internet', 'Illimix'
+    'Appel', 'Internet'
   ]
   codeFormule: any;
-  opXtras: any;
+  opXtras: OperationExtras;
   constructor(
     private router: Router,
     private appRouting: ApplicationRoutingService,
@@ -55,14 +56,14 @@ export class ListPassVoyagePage implements OnInit {
     this.countries$ = this.passVoyageService.fetchCountries().pipe(
       tap((countries:any)=>{
         if(countries.length){
+          // get first one
           this.country = countries[0];
+           //fetch all pass[appel, internet, illimix]
           this.passs$ = forkJoin(this.constructPassRequests());
         }
       })
     );
-    // get first one
-    //fetch all pass[appel, internet, illimix]
-    //after that, init slides
+
     //on country change, repeat step 3
 
     this.opXtras = history.state
@@ -72,9 +73,8 @@ export class ListPassVoyagePage implements OnInit {
 
   constructPassRequests(){
     return [
-    this.passVoyageService.fetchPassAppel(this.country, this.codeFormule),
+      this.passVoyageService.fetchPassAppel(this.country, this.codeFormule),
       this.passVoyageService.fetchPassInternet(this.country, this.codeFormule),
-      this.passVoyageService.fetchPassIllimix(this.country, this.codeFormule)
     ];
   }
 
@@ -112,7 +112,8 @@ export class ListPassVoyagePage implements OnInit {
         purchaseType: this.purchaseType,
       },
     };
-    this.router.navigate(['/operation-recap'], navigationExtras);
+    this.opXtras.pass = pass;
+    this.router.navigate(['/operation-recap'], {state:this.opXtras});
   }
 
 }

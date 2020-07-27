@@ -1,4 +1,4 @@
-<ion-header [oemIonHeaderParallax]="100">
+<ion-header [oemIonHeaderParallax]="90">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
@@ -10,7 +10,7 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true">
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <div class="list-pass-body">
     <div class="header-image">
       <img src="/assets/images/achat-de-pass-voyage@2x.png" />
@@ -60,13 +60,13 @@
             (ionSlideDidChange)="slideChanged()"
             [options]="slideOpts"
           >
-            <ion-slide *ngFor="let pass of passs">
+            <ion-slide *ngFor="let pass of passs; index as i">
               <div class="filtered-list-pass">
-                <app-item-pass-internet
-                  *ngFor="let pas of pass"
-                  [passInternet]="pas.pass"
-                  (selectPass)="choosePass($event)"
-                ></app-item-pass-internet>
+                <app-item-pass-illimix
+                *ngFor="let pas of pass"
+                [passIllimix]="pas.pass"
+                (selectPass)="choosePass($event)"
+              ></app-item-pass-illimix>
               </div>
             </ion-slide>
           </ion-slides>

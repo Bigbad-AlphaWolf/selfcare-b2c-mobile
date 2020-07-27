@@ -25,5 +25,6 @@ export interface OperationExtras {
   billData?: { company?: BillCompany; counter?: CounterOem, codeRecharge?:string, kw?:number };
   omSession?: OmSession;
 
-  offerPlan?: OfferPlan
+  offerPlan?: OfferPlan;
+  pass:any;
 }
