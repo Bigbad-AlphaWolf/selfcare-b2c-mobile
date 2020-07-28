@@ -26,5 +26,5 @@ export interface OperationExtras {
   omSession?: OmSession;
 
   offerPlan?: OfferPlan;
-  pass:any;
+  pass?:any;
 }

@@ -404,7 +404,7 @@ export class OperationRecapPage implements OnInit {
   }
 
   get operationTypeRecap() {
-    return ['RECHARGEMENT_CREDIT', 'OPERATION_WOYOFAL'].includes(
+    return ['RECHARGEMENT_CREDIT', 'OPERATION_WOYOFAL', 'OPERATION_TYPE_PASS_VOYAGE'].includes(   
       this.purchaseType
     );
   }

@@ -10,7 +10,13 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
+<ion-content
+  no-bounce
+  has-bouncing="false"
+  forceOverscroll="false"
+  fullscreen="true"
+  [scrollEvents]="true"
+>
   <div class="list-pass-body">
     <div class="header-image">
       <img src="/assets/images/achat-de-pass-voyage@2x.png" />
@@ -20,14 +26,14 @@
         <ion-item mode="ios" lines="none">
           <ion-label mode="ios">Choisir un mois</ion-label>
           <ion-select
-            [value]="countries[0].code"
+            [value]="countries[0]"
             interface="popover"
             noIonSelectArrow
             mode="ios"
-            (ionChange)="onMonthChanged($event)"
+            (ionChange)="onCountryChanged($event)"
           >
             <ion-select-option
-              [value]="country.code"
+              [value]="country"
               *ngFor="let country of countries"
               mode="ios"
               ><span>{{country.name}}</span></ion-select-option
@@ -37,13 +43,11 @@
         </ion-item>
       </ion-list>
     </div>
-    <div class="list-pass-body-main-content">
-      <!-- loader -->
-      <div *ngIf="!isLoaded" class="profil-spinner">
-        <mat-spinner mode="indeterminate" [diameter]="25"></mat-spinner>
-      </div>
-
-      <div class="list-pass-body">
+    <div *ngIf="isLoading" class="spinner-wrapper">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+    <div class="list-pass-body-main-content" *ngIf="passs$ | async as passs" >
+      <div class="list-pass-body" *ngIf="!isLoading">
         <div class="tab-header">
           <div
             *ngFor="let item of tabHeaderItems; index as i"
@@ -54,7 +58,7 @@
             <span class="scb-text-light-black"> {{ item }}</span>
           </div>
         </div>
-        <div class="main-content" *ngIf="passs$ | async as passs">
+        <div class="main-content" >
           <ion-slides
             #sliders
             (ionSlideDidChange)="slideChanged()"
@@ -63,10 +67,10 @@
             <ion-slide *ngFor="let pass of passs; index as i">
               <div class="filtered-list-pass">
                 <app-item-pass-illimix
-                *ngFor="let pas of pass"
-                [passIllimix]="pas.pass"
-                (selectPass)="choosePass($event)"
-              ></app-item-pass-illimix>
+                  *ngFor="let pas of pass"
+                  [passIllimix]="pas.pass"
+                  (selectPass)="choosePass($event)"
+                ></app-item-pass-illimix>
               </div>
             </ion-slide>
           </ion-slides>
