@@ -118,10 +118,7 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (
-      this.operationType === OPERATION_TYPE_SEDDO_BONUS ||
-      this.operationType === OPERATION_TYPE_SEDDO_CREDIT
-    ) {
+    if (this.operationType === OPERATION_TYPE_SEDDO_CREDIT) {
       this.fees = TRANSFER_BONUS_CREDIT_FEE;
     }
     if (this.operationType === OPERATION_TYPE_TRANSFER_OM) {
