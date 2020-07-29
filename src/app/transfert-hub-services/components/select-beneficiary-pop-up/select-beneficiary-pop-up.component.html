@@ -35,7 +35,7 @@
     {{ errorGetContact }}
   </div>
   <div class="recents" *ngIf="recentsRecipients$ | async as recents">
-    <div class="recent-description scb-text-full-black">
+    <div class="recent-description scb-text-full-black" *ngIf="recents.length">
       Récents
     </div>
     <div
