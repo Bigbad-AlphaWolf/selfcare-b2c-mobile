@@ -69,7 +69,6 @@ import { AmountProviderComponent } from "src/app/components/amount-provider/amou
 import { OemIonHeaderParallaxDirective } from "src/app/directives/oem-ion-header-parallax.directive";
 import { CounterSelectionComponent } from "src/app/components/counter/counter-selection/counter-selection.component";
 import { FavoriteCountersComponent } from "src/app/components/counter/favorite-counters/favorite-counters.component";
-import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
 import { CodeFormatPipe } from 'src/app/pipes/code-format.pipe';
 import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.component';
 import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
@@ -255,7 +254,6 @@ import { IbouIonFabComponent } from './ibou-ion-fab/ibou-ion-fab.component';
     PassVolumeDisplayPipe,
     { provide: MatBottomSheetRef, useValue: {} },
     { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} },
-    BsBillsHubService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

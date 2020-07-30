@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { CounterOem } from 'src/app/models/counter-oem.model';
-import { MatBottomSheetRef } from '@angular/material';
 import { FavorisService } from 'src/app/services/favoris/favoris.service';
 import { map } from 'rxjs/operators';
 import { FavorisOem } from 'src/app/models/favoris-oem.model';
-import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
+import { ModalController } from '@ionic/angular';
+import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 
 @Component({
   selector: 'app-favorite-counters',
@@ -20,14 +20,14 @@ export class FavoriteCountersComponent implements OnInit {
   ]);
 
   constructor(
-    private bottomSheetRef: MatBottomSheetRef<FavoriteCountersComponent>,
     private favoriService: FavorisService,
-    private bsBillHubService: BsBillsHubService
+    private bsService: BottomSheetService,
+    private modalCtrl : ModalController
   ) {}
 
   ngOnInit() {
     let type_favoris = 'compteur';
-    let code = this.bsBillHubService.opXtras.billData.company.code;
+    let code = this.bsService.opXtras.billData.company.code;
     this.counters$ = this.favoriService.fetchFavorites(type_favoris).pipe(
       map((favoris: FavorisOem[]) => {
         let results = [];
@@ -42,7 +42,7 @@ export class FavoriteCountersComponent implements OnInit {
   }
 
   onFavoriteCounterSlected(counter: CounterOem) {
-    this.bottomSheetRef.dismiss({
+    this.modalCtrl.dismiss({
       TYPE_BS: 'FAVORIES',
       ACTION: 'FORWARD',
       counter: counter,
@@ -50,6 +50,6 @@ export class FavoriteCountersComponent implements OnInit {
   }
 
   navigateBack() {
-    this.bottomSheetRef.dismiss({ TYPE_BS: 'FAVORIES', ACTION: 'BACK' });
+    this.modalCtrl.dismiss({ TYPE_BS: 'FAVORIES', ACTION: 'BACK' });
   }
 }

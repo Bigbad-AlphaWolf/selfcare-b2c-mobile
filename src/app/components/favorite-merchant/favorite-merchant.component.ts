@@ -5,6 +5,7 @@ import { of, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MarchandOem } from 'src/app/models/marchand-oem.model';
 import { FavorisOem } from 'src/app/models/favoris-oem.model';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-favorite-merchant',
@@ -20,8 +21,8 @@ export class FavoriteMerchantComponent implements OnInit {
   company = 'marchand';
 
   constructor(
-    private bottomSheetRef: MatBottomSheetRef<FavoriteMerchantComponent>,
-    private favoriService: FavorisService
+    private favoriService : FavorisService,
+    private modalCtrl : ModalController
   ) {}
 
   ngOnInit() {
@@ -37,7 +38,7 @@ export class FavoriteMerchantComponent implements OnInit {
   }
 
   onFavoriteMerchantSelected(merchant: MarchandOem) {
-    this.bottomSheetRef.dismiss({
+    this.modalCtrl.dismiss({
       TYPE_BS: 'FAVORIES',
       ACTION: 'FORWARD',
       merchant,
@@ -45,6 +46,6 @@ export class FavoriteMerchantComponent implements OnInit {
   }
 
   navigateBack() {
-    this.bottomSheetRef.dismiss({ TYPE_BS: 'FAVORIES', ACTION: 'BACK' });
+    this.modalCtrl.dismiss({ TYPE_BS: 'FAVORIES', ACTION: 'BACK' });
   }
 }
