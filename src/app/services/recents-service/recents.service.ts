@@ -5,17 +5,25 @@ import { OM_RECENTS_ENDPOINT } from '../utils/om.endpoints';
 import { MarchandOem } from '../../models/marchand-oem.model';
 import { map, catchError, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { OM_RECENT_TYPES } from 'src/app/utils/constants';
 
 @Injectable({
   providedIn: 'root',
 })
-export class RecentsService {
+export class RecentsService { 
+
   constructor(
     private http: HttpClient,
     private omService: OrangeMoneyService
   ) {}
 
-  fetchRecents(service: string) {
+  recentType( opType : string ){
+    let recentType = OM_RECENT_TYPES.find((rt:any) => rt.operationType === opType);
+    return recentType ? recentType.recentType : '';
+  }
+
+  fetchRecents(op: string) {
+    let service = this.recentType(op);
     return this.omService.getOmMsisdn().pipe(
       switchMap((omPhonenumber) => {
         return this.http

@@ -1,4 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Inject,
+  ChangeDetectorRef,
+  Input,
+} from '@angular/core';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
 import {
   formatPhoneNumber,
   REGEX_NUMBER_OM,
@@ -27,7 +34,7 @@ import { RecentsOem } from 'src/app/models/recents-oem.model';
   styleUrls: ['./number-selection.component.scss'],
 })
 export class NumberSelectionComponent implements OnInit {
-  numbers$: Observable<string[]>;
+  numbers$: Observable<string[]> = of(['782363572', '776148081', '776148080']);
   recentsRecipients$: Observable<any[]>;
 
   numberSelected: string = '';
@@ -46,7 +53,6 @@ export class NumberSelectionComponent implements OnInit {
   @Input() data;
 
   constructor(
-    // @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private modalController: ModalController,
     private omService: OrangeMoneyService,
     private dashbServ: DashboardService,
@@ -70,21 +76,7 @@ export class NumberSelectionComponent implements OnInit {
   }
 
   getRecents() {
-    let recentType: string;
-    switch (this.data.purchaseType) {
-      case OPERATION_TYPE_RECHARGE_CREDIT:
-        recentType = 'achat_credit';
-        break;
-      case OPERATION_TYPE_PASS_INTERNET:
-        recentType = 'achat_pass_data';
-        break;
-      case OPERATION_TYPE_PASS_ILLIMIX:
-        recentType = 'achat_pass_illimix';
-        break;
-      default:
-        break;
-    }
-    this.recentsRecipients$ = this.recentsService.fetchRecents(recentType).pipe(
+    this.recentsRecipients$ = this.recentsService.fetchRecents(this.data.purchaseType).pipe(
       map((recents: RecentsOem[]) => {
         let results = [];
         recents = recents.slice(0, 2);
@@ -94,7 +86,6 @@ export class NumberSelectionComponent implements OnInit {
             msisdn: el.destinataire,
           });
         });
-        console.log(results);
         return results;
       })
     );
@@ -186,6 +177,7 @@ export class NumberSelectionComponent implements OnInit {
       },
       () => {
         this.modalController.dismiss();
+
         this.isErrorProcessing = true;
       }
     );
@@ -193,7 +185,7 @@ export class NumberSelectionComponent implements OnInit {
 
   async canRecieveCredit() {
     if (this.opXtras.forSelf) return true;
-    this.isProcessing = true;
+
     let canRecieve = await this.authService
       .canRecieveCredit(this.opXtras.recipientMsisdn)
       .pipe(
@@ -203,7 +195,6 @@ export class NumberSelectionComponent implements OnInit {
         })
       )
       .toPromise();
-    this.isProcessing = false;
     return canRecieve;
   }
 

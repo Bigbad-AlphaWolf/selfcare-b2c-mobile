@@ -18,6 +18,7 @@ import {
   SargalStatusModel,
   getBanniereTitle,
   getBanniereDescription,
+  OPERATION_TYPE_MERCHANT_PAYMENT,
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -47,6 +48,8 @@ import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
+import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amount.page';
+import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -119,10 +122,12 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     private omServ: OrangeMoneyService,
     private modalController: ModalController,
     private offerPlanServ: OfferPlansService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private bsService: BottomSheetService
   ) {}
 
   ngOnInit() {
+
     this.getUserInfos();
     this.getWelcomeStatus();
   }
@@ -509,11 +514,15 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   goMerchantPayment() {
     this.omServ.getOmMsisdn().subscribe(async (msisdn: string) => {
       if (msisdn !== 'error') {
-        const modal = await this.modalController.create({
-          component: MerchantPaymentCodeComponent,
-          cssClass: 'modalRecipientSelection',
-        });
-        return await modal.present();
+        this.bsService
+        .initBsModal(
+          MerchantPaymentCodeComponent,
+          OPERATION_TYPE_MERCHANT_PAYMENT,
+          PurchaseSetAmountPage.ROUTE_PATH
+        )
+        .subscribe((_) => {});
+        this.bsService.openModal(MerchantPaymentCodeComponent);
+
       } else {
         this.openPinpad();
       }
