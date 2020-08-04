@@ -9,13 +9,9 @@
     Choisissez sur la liste
   </div>
 
-  <div class="recents content" *ngIf="(merchants$ | async)?.length > 0">
-    <div
-      matRipple
-      class="oem-item"
-      (click)="onFavoriteMerchantSelected(merchant)"
-      *ngFor="let merchant of merchants$ | async; index as i; count as size"
-    >
+  <div class="recents content" *ngIf="(merchants$|async) as merchants else spinnerBlock">
+    <div matRipple class="oem-item" (click)="onFavoriteMerchantSelected(merchant)"
+      *ngFor="let merchant of merchants; index as i; count as size">
       <div class="logo scb-text-white">
         {{ merchant.name | acronym }}
       </div>
@@ -24,12 +20,11 @@
         <span class="number">{{ merchant.merchantCode | codeFormat: 2 }}</span>
       </div>
     </div>
+    <div *ngIf="!merchants.length">Aucun marchand enregistré</div>
   </div>
-  <div *ngIf="(merchants$ | async)?.length == 0">Aucun marchand enregistré</div>
-  <div
-    *ngIf="!(merchants$ | async)"
-    style="width: 100%; display: flex; justify-content: center;"
-  >
-    <ion-spinner name="crescent"></ion-spinner>
-  </div>
+  <ng-template #spinnerBlock>
+    <div style="width: 100%; display: flex; justify-content: center;">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  </ng-template>
 </div>
