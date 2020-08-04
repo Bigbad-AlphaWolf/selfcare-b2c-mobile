@@ -25,7 +25,7 @@
           <div class="sargal-content-filter">
             <button
               class="filter-container"
-              [ngClass]="{ selected: matMenuTrig.menuOpen }"
+              [ngClass]="{ 'selected': matMenuTrig.menuOpen }"
               mat-button
               #matMenuTrig="matMenuTrigger"
               [matMenuTriggerFor]="categoriesGift"
@@ -33,10 +33,8 @@
               <div [ngClass]="{ 'scb-text-white': matMenuTrig.menuOpen }" class="btn-filter">
                 {{ categoryGiftSargal ? categoryGiftSargal?.nom : 'Choisir une catégorie' }}
               </div>
-              <div class="arrows">
-                  <img *ngIf="!matMenuTrig.menuOpen" src="/content/images/arrow-down.svg" class="arrow-down down" alt="">
-                  <img *ngIf="matMenuTrig.menuOpen" src="/content/images/keyboard-arrow-right-white.svg" class="arrow-up up" alt="">
-              </div>
+                <img *ngIf="!matMenuTrig.menuOpen" src="/assets/images/arrow-down.svg" class="arrow-down" alt="">
+                <img *ngIf="matMenuTrig.menuOpen" src="/assets/images/keyboard-arrow-up-black.svg" class="arrow-up" alt="">
             </button>
 
             <mat-menu
