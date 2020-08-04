@@ -3,11 +3,11 @@
     class="select-counter-filter"
     *ngIf="currentProfil && currentProfil !== 'POSTPAID'"
   >
-    <button class="mat-menu" mat-button [matMenuTriggerFor]="counters">
+    <button class="mat-menu" mat-button [matMenuTriggerFor]="counters" #menuCompteur="matMenuTrigger">
       <div class="btn-class">{{ chargeType }}</div>
 
-      <mat-icon class="down">keyboard_arrow_down</mat-icon>
-      <mat-icon class="up">keyboard_arrow_up</mat-icon>
+      <img *ngIf="!menuCompteur.menuOpen" src="/assets/images/arrow-down.svg" class="arrow-down" alt="">
+      <img *ngIf="menuCompteur.menuOpen" src="/assets/images/keyboard-arrow-up-black.svg" class="arrow-up" alt="">
     </button>
 
     <mat-menu #counters="matMenu" class="left">
@@ -22,11 +22,11 @@
   </div>
 
   <div class="select-date-filter">
-    <button class="mat-menu-2" mat-button [matMenuTriggerFor]="dates">
+    <button class="mat-menu-2" mat-button [matMenuTriggerFor]="dates" #menuDate="matMenuTrigger">
       <div class="btn-class">{{ selectedDate?.title }}</div>
 
-      <mat-icon class="down">keyboard_arrow_down</mat-icon>
-      <mat-icon class="up">keyboard_arrow_up</mat-icon>
+      <img *ngIf="!menuDate.menuOpen" src="/assets/images/arrow-down.svg" class="arrow-down" alt="">
+      <img *ngIf="menuDate.menuOpen" src="/assets/images/keyboard-arrow-up-black.svg" class="arrow-up" alt="">
     </button>
 
     <mat-menu #dates="matMenu" class="right">
