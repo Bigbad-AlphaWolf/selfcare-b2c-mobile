@@ -13,12 +13,13 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./favorite-merchant.component.scss'],
 })
 export class FavoriteMerchantComponent implements OnInit {
-  merchants$: Observable<MarchandOem[]> = of([
-    { name: 'Maison Nord-foire', merchantCode: '14206941826' },
-    { name: 'Audi Q5', merchantCode: '14206941826' },
-    { name: 'Mn Nord-foire', merchantCode: '14206941826' },
-  ]);
-  company = 'marchand';
+  // merchants$: Observable<MarchandOem[]> = of([
+  //   { name: 'Maison Nord-foire', merchantCode: '14206941826' },
+  //   { name: 'Audi Q5', merchantCode: '14206941826' },
+  //   { name: 'Mn Nord-foire', merchantCode: '14206941826' },
+  // ]);
+  merchants$: Observable<MarchandOem[]>;
+  typeFavoris = 'marchand';
 
   constructor(
     private favoriService : FavorisService,
@@ -26,7 +27,7 @@ export class FavoriteMerchantComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.merchants$ = this.favoriService.fetchFavorites(this.company).pipe(
+    this.merchants$ = this.favoriService.fetchFavorites(this.typeFavoris).pipe(
       map((favoris: FavorisOem[]) => {
         let results = [];
         favoris.forEach((el) => {

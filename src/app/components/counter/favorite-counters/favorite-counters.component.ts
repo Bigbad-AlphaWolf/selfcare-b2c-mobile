@@ -13,11 +13,12 @@ import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.s
   styleUrls: ['./favorite-counters.component.scss'],
 })
 export class FavoriteCountersComponent implements OnInit {
-  counters$: Observable<CounterOem[]> = of([
-    { name: 'Maison Nord-foire', counterNumber: '14206941826' },
-    { name: 'Audi Q5', counterNumber: '14206941826' },
-    { name: 'Mn Nord-foire', counterNumber: '14206941826' },
-  ]);
+  // counters$: Observable<CounterOem[]> = of([
+  //   { name: 'Maison Nord-foire', counterNumber: '14206941826' },
+  //   { name: 'Audi Q5', counterNumber: '14206941826' },
+  //   { name: 'Mn Nord-foire', counterNumber: '14206941826' },
+  // ]);
+  counters$: Observable<CounterOem[]>;
 
   constructor(
     private favoriService: FavorisService,

@@ -11,6 +11,7 @@ import { RecentsService } from 'src/app/services/recents-service/recents.service
 import { map } from 'rxjs/operators';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
+import { OPERATION_WOYOFAL } from 'src/app/utils/operations.util';
 
 @Component({
   selector: 'app-counter-selection',
@@ -20,10 +21,11 @@ import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.s
 export class CounterSelectionComponent implements OnInit {
   isProcessing: boolean = false;
   inputCounterNumber: string = '';
-  counters$: Observable<CounterOem[]> = of([
-    { name: 'Maison Nord-foire', counterNumber: '14256266199' },
-    { name: 'Audi Q5', counterNumber: '14256266199' },
-  ]);
+  // counters$: Observable<CounterOem[]> = of([
+  //   { name: 'Maison Nord-foire', counterNumber: '14256266199' },
+  //   { name: 'Audi Q5', counterNumber: '14256266199' },
+  // ]);
+  counters$: Observable<CounterOem[]> ;
   constructor(
     private counterService: CounterService,
     private bsService: BottomSheetService,
@@ -35,7 +37,7 @@ export class CounterSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.counters$ = this.recentService.fetchRecents('paiement_woyofal').pipe(
+    this.counters$ = this.recentService.fetchRecents(OPERATION_WOYOFAL).pipe(
       map((recents: RecentsOem[]) => {
         let results = [];
         recents = recents.slice(0, 3);
