@@ -4,7 +4,6 @@ import { OrangeMoneyService } from '../orange-money-service/orange-money.service
 import { OM_RECENTS_ENDPOINT } from '../utils/om.endpoints';
 import { MarchandOem } from '../../models/marchand-oem.model';
 import { map, catchError, switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -32,8 +31,15 @@ export class RecentsService {
 
               if (error) return [];
 
-              const recents: any = r.content.data.historiqueTransactions;
-              return recents.length > 0 ? recents : [];
+              const recents: any[] = r.content.data.historiqueTransactions;
+              
+              return recents
+                ? recents.sort((r1, r2) => {
+                    if (r1.date > r2.date) return -1;
+                    if (r1.date < r2.date) return 1;
+                    return 0;
+                  })
+                : [];
             })
           );
       })
