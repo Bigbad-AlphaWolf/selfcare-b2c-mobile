@@ -14,7 +14,7 @@ import {
   WelcomeStatusModel,
   SubscriptionModel,
   getBanniereTitle,
-  getBanniereDescription
+  getBanniereDescription,
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import {
@@ -22,16 +22,18 @@ import {
   SARGAL_NOT_SUBSCRIBED,
   getConsoByCategory,
   SARGAL_UNSUBSCRIPTION_ONGOING,
-  PromoBoosterActive
+  PromoBoosterActive,
 } from '../dashboard';
 import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { map } from 'rxjs/operators';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-kirene',
   templateUrl: './dashboard-kirene.page.html',
-  styleUrls: ['./dashboard-kirene.page.scss']
+  styleUrls: ['./dashboard-kirene.page.scss'],
 })
 export class DashboardKirenePage implements OnInit {
   showPromoBarner = ls.get('banner');
@@ -55,7 +57,7 @@ export class DashboardKirenePage implements OnInit {
 
   pictures = [
     { image: '/assets/images/banniere-promo-mob.png' },
-    { image: '/assets/images/banniere-promo-fibre.png' }
+    { image: '/assets/images/banniere-promo-fibre.png' },
   ];
 
   soldebonus: number;
@@ -65,7 +67,7 @@ export class DashboardKirenePage implements OnInit {
   slideOpts = {
     speed: 400,
     slidesPerView: 1.5,
-    slideShadows: true
+    slideShadows: true,
   };
   userSargalData: SargalSubscriptionModel;
   sargalDataLoaded: boolean;
@@ -84,7 +86,8 @@ export class DashboardKirenePage implements OnInit {
     private sargalServ: SargalService,
     private followsAnalytics: FollowAnalyticsService,
     private shareDialog: MatDialog,
-    private assistanceService: AssistanceService
+    private assistanceService: AssistanceService,
+    private omServ: OrangeMoneyService
   ) {}
 
   ngOnInit() {
@@ -106,6 +109,20 @@ export class DashboardKirenePage implements OnInit {
     this.getSargalPoints();
     this.getCurrentSubscription();
     this.getActivePromoBooster();
+    this.checkOMNumber();
+  }
+
+  checkOMNumber() {
+    this.omServ
+      .getOmMsisdn()
+      .pipe(
+        map((omNumber) => {
+          if (omNumber !== 'error') {
+            this.dashbordServ.swapOMCard();
+          }
+        })
+      )
+      .subscribe();
   }
 
   getCurrentSubscription() {
@@ -119,11 +136,9 @@ export class DashboardKirenePage implements OnInit {
   }
 
   getActivePromoBooster() {
-    this.dashbordServ
-      .getActivePromoBooster()
-      .subscribe((res: any) => {
-        this.hasPromoBooster = res;
-      });
+    this.dashbordServ.getActivePromoBooster().subscribe((res: any) => {
+      this.hasPromoBooster = res;
+    });
   }
 
   getUserInfos() {
@@ -138,7 +153,7 @@ export class DashboardKirenePage implements OnInit {
     this.dashbordServ.getUserConsoInfosByCode().subscribe(
       (res: any[]) => {
         if (res.length) {
-          const appelConso = res.find(x => x.categorie === 'APPEL')
+          const appelConso = res.find((x) => x.categorie === 'APPEL')
             .consommations;
           if (appelConso) {
             this.getValidityDates(appelConso);
@@ -172,7 +187,9 @@ export class DashboardKirenePage implements OnInit {
       },
       () => {
         this.sargalDataLoaded = true;
-        this.sargalUnavailable = true;
+        if (!this.userSargalData) {
+          this.sargalUnavailable = true;
+        }
       }
     );
   }
@@ -217,8 +234,8 @@ export class DashboardKirenePage implements OnInit {
 
   getTrioConsoUser(consoSummary: UserConsommations) {
     const result = [];
-    if(consoSummary){
-      consoSummary.forEach(x => {
+    if (consoSummary) {
+      consoSummary.forEach((x) => {
         for (const cons of x.consommations) {
           if (result.length < 3) {
             result.push(cons);
@@ -250,7 +267,7 @@ export class DashboardKirenePage implements OnInit {
     let balance = 0;
     let isHybrid = false;
     if (callConsos) {
-      callConsos.forEach(x => {
+      callConsos.forEach((x) => {
         // goblal conso = Amout of code 1 + code 6
         if (x.code === 1 || x.code === 6 || x.code === 2) {
           if (x.code === 1) {
@@ -274,7 +291,7 @@ export class DashboardKirenePage implements OnInit {
     return {
       globalCredit: formatCurrency(globalCredit),
       balance: formatCurrency(balance),
-      isHybrid
+      isHybrid,
     };
   }
 
@@ -301,7 +318,7 @@ export class DashboardKirenePage implements OnInit {
 
   getValidityDates(appelConso: any[]) {
     let longestDate = 0;
-    appelConso.forEach(conso => {
+    appelConso.forEach((conso) => {
       const dateDMY = conso.dateExpiration.substring(0, 10);
       const date = this.processDateDMY(dateDMY);
       if (date > longestDate) {
@@ -373,7 +390,7 @@ export class DashboardKirenePage implements OnInit {
   showWelcomePopup(data: WelcomeStatusModel) {
     const dialog = this.shareDialog.open(WelcomePopupComponent, {
       data,
-      panelClass: 'gift-popup-class'
+      panelClass: 'gift-popup-class',
     });
     dialog.afterClosed().subscribe(() => {
       this.assistanceService.tutoViewed().subscribe(() => {});
