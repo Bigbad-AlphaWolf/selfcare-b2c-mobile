@@ -47,6 +47,7 @@ import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
+import { map } from 'rxjs/operators';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -127,6 +128,19 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.getWelcomeStatus();
   }
 
+  checkOMNumber() {
+    this.omServ
+      .getOmMsisdn()
+      .pipe(
+        map((omNumber) => {
+          if (omNumber !== 'error') {
+            this.dashbordServ.swapOMCard();
+          }
+        })
+      )
+      .subscribe();
+  }
+
   getUserInfos() {
     const user = ls.get('user');
     this.firstName = user.firstName;
@@ -141,6 +155,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.getSargalPoints();
     this.getUserActiveBonPlans();
     this.getActivePromoBooster();
+    this.checkOMNumber();
     this.banniereServ.setListBanniereByFormule();
     this.banniereServ
       .getStatusLoadingBanniere()
@@ -244,7 +259,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       },
       () => {
         this.sargalDataLoaded = true;
-        this.sargalUnavailable = true;
+        if (!this.userSargalData) {
+          this.sargalUnavailable = true;
+        }
       }
     );
   }
