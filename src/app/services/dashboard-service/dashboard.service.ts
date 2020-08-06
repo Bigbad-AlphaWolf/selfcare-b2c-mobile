@@ -26,7 +26,7 @@ const {
   ACCOUNT_MNGT_SERVICE,
   UAA_SERVICE,
 } = environment;
-const ls = new SecureLS({ encodingType: "aes" });
+const ls = new SecureLS({ encodingType: 'aes' });
 
 // user consumation endpoints
 const userConsoEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/suivi-compteur-consommations`;
@@ -72,10 +72,10 @@ const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boost
 const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/birthDate`;
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class DashboardService {
-  static CURRENT_DASHBOARD : string = '/dashboard';
+  static CURRENT_DASHBOARD: string = '/dashboard';
   currentPhoneNumberChangeSubject: Subject<string> = new Subject<string>();
   scrollToBottomSubject: Subject<string> = new Subject<string>();
   balanceAvailableSubject: Subject<any> = new Subject<any>();
@@ -129,13 +129,13 @@ export class DashboardService {
 
   getCurrentDate() {
     const date = new Date();
-    const lastDate = `${("0" + date.getDate()).slice(-2)}/${(
-      "0" +
+    const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
+      '0' +
       (date.getMonth() + 1)
     ).slice(-2)}/${date.getFullYear()}`;
     const lastDateTime =
       `${date.getHours()}h` +
-      (date.getMinutes() < 10 ? "0" : "") +
+      (date.getMinutes() < 10 ? '0' : '') +
       date.getMinutes();
     return `${lastDate} à ${lastDateTime}`;
   }
@@ -163,17 +163,17 @@ export class DashboardService {
   }
 
   getMainPhoneNumberProfil() {
-    return ls.get("mainPhoneNumber");
+    return ls.get('mainPhoneNumber');
   }
 
   // return the phone number that is used when getting user balance, conso history etc.
   getCurrentPhoneNumber() {
-    return ls.get("currentPhoneNumber");
+    return ls.get('currentPhoneNumber');
   }
 
   // change the active number
   setCurrentPhoneNumber(msisdn: string) {
-    ls.set("currentPhoneNumber", msisdn);
+    ls.set('currentPhoneNumber', msisdn);
     this.currentPhoneNumberChangeSubject.next(msisdn);
   }
 
@@ -192,7 +192,7 @@ export class DashboardService {
   // attach new mobile phone number
   registerNumberToAttach(detailsToCheck: {
     numero: string;
-    typeNumero: "MOBILE" | "FIXE";
+    typeNumero: 'MOBILE' | 'FIXE';
   }) {
     detailsToCheck = Object.assign(detailsToCheck, {
       login: this.authService.getUserMainPhoneNumber(),
@@ -206,7 +206,7 @@ export class DashboardService {
   registerNumberByIdClient(payload: {
     numero: string;
     idClient: string;
-    typeNumero: "MOBILE" | "FIXE";
+    typeNumero: 'MOBILE' | 'FIXE';
   }) {
     payload = Object.assign(payload, {
       login: this.authService.getUserMainPhoneNumber(),
@@ -228,7 +228,7 @@ export class DashboardService {
     idClient: string;
     numero: string;
   }) {
-    payload = Object.assign({}, payload, { typeNumero: "FIXE" });
+    payload = Object.assign({}, payload, { typeNumero: 'FIXE' });
     return this.http.post(saveFixNumber, payload);
   }
 
@@ -243,9 +243,9 @@ export class DashboardService {
     return this.http.get(`${userLinkedPhoneNumberEndpoint}/${mainPhone}`).pipe(
       map((elements: any) => {
         let numbers = [mainPhone];
-        elements.forEach((element:any) => {
-          const msisdn = "" + element.msisdn;
-          if (!msisdn.startsWith("33", 0)) {
+        elements.forEach((element: any) => {
+          const msisdn = '' + element.msisdn;
+          if (!msisdn.startsWith('33', 0)) {
             numbers.push(element.msisdn);
           }
         });
@@ -328,9 +328,9 @@ export class DashboardService {
   getUserConsoInfosByCode(consoCodes?: number[]) {
     this.msisdn = this.getCurrentPhoneNumber();
     // filter by code not working on Orange VM so
-    let queryParams = "";
+    let queryParams = '';
     if (consoCodes && Array.isArray(consoCodes) && consoCodes.length) {
-      const params = consoCodes.map((code) => `code=${code}`).join("&");
+      const params = consoCodes.map((code) => `code=${code}`).join('&');
       queryParams = `?${params}`;
     }
     return this.http
@@ -383,7 +383,7 @@ export class DashboardService {
     const { msisdn, receiver, codeIN, amount } = payload;
     const params = { msisdn, receiver, codeIN, amount };
     switch (payload.type) {
-      case "internet":
+      case 'internet':
         if (msisdn === receiver) {
           return this.http.post(buyPassInternetByCreditEndpoint, params);
         } else {
@@ -392,7 +392,7 @@ export class DashboardService {
             params
           );
         }
-      case "illimix":
+      case 'illimix':
         return this.http.post(buyPassIllimixByCreditEndpoint, params);
       default:
         break;
@@ -427,7 +427,7 @@ export class DashboardService {
       .getSubscription(msisdn)
       .subscribe((souscription: SubscriptionUserModel) => {
         const codeFormule =
-          souscription.profil === "HYBRID" || souscription.profil === "ND"
+          souscription.profil === 'HYBRID' || souscription.profil === 'ND'
             ? JAMONO_ALLO_CODE_FORMULE
             : souscription.code;
         res = of(codeFormule);
@@ -451,10 +451,14 @@ export class DashboardService {
           `${promoBoosterActiveEndpoint}?msisdn=${currentPhoneNumber}&code=${res.code}`
         );
       }),
-      catchError( _ => {
-        return of({promoPass: null, promoRecharge: null,promoPassIllimix: null})
-      }
-    ))
+      catchError((_) => {
+        return of({
+          promoPass: null,
+          promoRecharge: null,
+          promoPassIllimix: null,
+        });
+      })
+    );
   }
 
   getUserBirthDate(): Observable<any> {
@@ -466,5 +470,13 @@ export class DashboardService {
         ls.set('birthDate', birthDate);
       })
     );
+  }
+
+  swapOMCard() {
+    const omCard = document.getElementById('omCard');
+    if (omCard) {
+      omCard.remove();
+      document.getElementsByClassName('swiper-wrapper')[0].prepend(omCard);
+    }
   }
 }
