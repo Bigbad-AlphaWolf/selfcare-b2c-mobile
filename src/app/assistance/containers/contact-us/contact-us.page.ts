@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FACEBOOK_URL, MAIL_URL, TWITTER_URL } from 'src/shared';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-
+import { environment } from "src/environments/environment.prod";
+import { NavController } from '@ionic/angular';
+import { Router } from '@angular/router';
+const { DIMELO_CHAT_MARKUP } = environment;
+// PROD VALUE OF DIMELO_MARKUP IS USED
 
 @Component({
   selector: 'app-contact-us',
@@ -10,8 +14,13 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
   styleUrls: ['./contact-us.page.scss']
 })
 export class ContactUsPage implements OnInit {
-  constructor(private dashboardService: DashboardService, private iab: InAppBrowser) {
+  DIMELO_CHAT_MARKUP = DIMELO_CHAT_MARKUP;
+  constructor(private dashboardService: DashboardService, private iab: InAppBrowser, private router: Router) {
     // this.dashboardService.addDimeloScript();
+  }
+
+  ionViewWillEnter(){
+    this.dashboardService.prepareScriptChatIbou();
   }
 
   goToPage(page: string) {
@@ -32,4 +41,8 @@ export class ContactUsPage implements OnInit {
   }
 
   ngOnInit() {}
+
+  goBack(){
+    this.router.navigate(['/assistance'])
+  }
 }
