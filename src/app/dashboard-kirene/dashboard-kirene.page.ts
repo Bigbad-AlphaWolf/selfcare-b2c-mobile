@@ -290,7 +290,7 @@ export class DashboardKirenePage implements OnInit {
   openSosCreditPage() {
     this.canDoSOS = this.creditRechargement < 489;
     if (this.canDoSOS) {
-      this.router.navigate(['/buy-sos-credit-illimix']);
+      this.router.navigate(['/buy-sos']);
       this.followsAnalytics.registerEventFollow(
         'Recharge_dashboard',
         'event',
