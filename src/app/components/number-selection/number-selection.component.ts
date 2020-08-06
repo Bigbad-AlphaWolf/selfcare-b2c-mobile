@@ -27,6 +27,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { NumberSelectionOption } from 'src/app/models/enums/number-selection-option.enum';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
+import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
 
 @Component({
   selector: 'oem-number-selection',
@@ -71,24 +72,26 @@ export class NumberSelectionComponent implements OnInit {
       }),
       share()
     );
-    this.checkOmAccountSession();
-    this.getRecents();
+    this.opXtras.senderMsisdn = SessionOem.PHONE;
+    this.checkOmAccount();
   }
 
   getRecents() {
-    this.recentsRecipients$ = this.recentsService.fetchRecents(this.data.purchaseType).pipe(
-      map((recents: RecentsOem[]) => {
-        let results = [];
-        recents = recents.slice(0, 2);
-        recents.forEach((el) => {
-          results.push({
-            name: el.destinataire,
-            msisdn: el.destinataire,
+    this.recentsRecipients$ = this.recentsService
+      .fetchRecents(this.data.purchaseType)
+      .pipe(
+        map((recents: RecentsOem[]) => {
+          let results = [];
+          recents = recents.slice(0, 2);
+          recents.forEach((el) => {
+            results.push({
+              name: el.destinataire,
+              msisdn: el.destinataire,
+            });
           });
-        });
-        return results;
-      })
-    );
+          return results;
+        })
+      );
   }
 
   onRecentSelected(recent) {}
@@ -154,30 +157,28 @@ export class NumberSelectionComponent implements OnInit {
     this.canNotRecieve = false;
   }
 
-  checkOmAccountSession() {
+  checkOmAccount() {
     this.isProcessing = true;
-    this.omService.omAccountSession().subscribe(
-      (omSession: any) => {
-        this.omSession = omSession;
+    this.omService.getOmMsisdn().subscribe(
+      (msisdn: any) => {
         this.isProcessing = false;
         this.changeDetectorRef.detectChanges();
 
         if (
-          omSession.msisdn === 'error' ||
-          !omSession.hasApiKey ||
-          !omSession.accessToken ||
-          omSession.loginExpired
-        ) {
+          msisdn === 'error' &&
+          this.data.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT
+        ) {//force user to have om account
           this.modalController.dismiss();
           this.openPinpad();
         }
 
-        if (omSession.msisdn !== 'error')
-          this.opXtras.senderMsisdn = omSession.msisdn;
+        if (msisdn !== 'error') {
+          this.opXtras.senderMsisdn = msisdn;
+          this.getRecents();
+        }
       },
       () => {
         this.modalController.dismiss();
-
         this.isErrorProcessing = true;
       }
     );

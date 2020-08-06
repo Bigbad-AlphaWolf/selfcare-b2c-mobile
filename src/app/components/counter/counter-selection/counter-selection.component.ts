@@ -29,7 +29,6 @@ export class CounterSelectionComponent implements OnInit {
   constructor(
     private counterService: CounterService,
     private bsService: BottomSheetService,
-    private modalController: ModalController,
     private omService: OrangeMoneyService,
     private changeDetectorRef: ChangeDetectorRef,
     private recentService: RecentsService,
@@ -37,6 +36,11 @@ export class CounterSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+   
+    this.checkOmAccount();
+  }
+
+  initRecents(){
     this.counters$ = this.recentService.fetchRecents(OPERATION_WOYOFAL).pipe(
       map((recents: RecentsOem[]) => {
         let results = [];
@@ -50,7 +54,6 @@ export class CounterSelectionComponent implements OnInit {
         return results;
       })
     );
-    this.checkOmAccountSession();
   }
 
   onRecentCounterSlected(counter: CounterOem) {
@@ -72,7 +75,7 @@ export class CounterSelectionComponent implements OnInit {
   }
 
   onMyFavorites() {
-    this.modalController.dismiss();
+    this.modalCtrl.dismiss();
     this.bsService.openModal(FavoriteCountersComponent);
   }
 
@@ -88,37 +91,32 @@ export class CounterSelectionComponent implements OnInit {
     );
   }
 
-  checkOmAccountSession() {
+  checkOmAccount() {
     this.isProcessing = true;
-    this.omService.omAccountSession().subscribe(
-      (omSession: any) => {
-        this.bsService.opXtras.omSession = omSession;
+    this.omService.getOmMsisdn().subscribe(
+      (msisdn: any) => {
         this.isProcessing = false;
         this.changeDetectorRef.detectChanges();
 
-        if (
-          omSession.msisdn === 'error' ||
-          !omSession.hasApiKey ||
-          !omSession.accessToken ||
-          omSession.loginExpired
-        ) {
+        if (msisdn === "error") {
           this.modalCtrl.dismiss();
           this.openPinpad();
         }
 
-        if (omSession.msisdn !== 'error') {
-          this.bsService.opXtras.senderMsisdn = omSession.msisdn;
-          this.counterService.initFees(omSession.msisdn);
+        if (msisdn !== "error") {
+          this.initRecents();
+          this.bsService.opXtras.senderMsisdn = msisdn;
+          this.counterService.initFees(msisdn);
         }
       },
-      (error) => {
+      () => {
         this.modalCtrl.dismiss();
       }
     );
   }
 
   async openPinpad() {
-    const modal = await this.modalController.create({
+    const modal = await this.modalCtrl.create({
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
