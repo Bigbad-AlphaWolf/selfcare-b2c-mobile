@@ -123,7 +123,7 @@ export class NumberSelectionComponent implements OnInit {
 
   dismissBottomSheet() {
     this.isProcessing = true;
-    this.authService.getSubscription(this.opXtras.recipientMsisdn).subscribe(
+    this.authService.getSubscriptionForTiers(this.opXtras.recipientMsisdn).subscribe(
       (res: SubscriptionModel) => {
         this.isProcessing = false;
         this.opXtras.code = res.code;
