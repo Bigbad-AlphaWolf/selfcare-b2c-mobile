@@ -1,0 +1,90 @@
+@import "src/app/app";
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.28px;
+}
+
+.head {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+  padding: 15px 10px;
+}
+.banner-image {
+  width: 100%;
+  height: 70px;
+  background-image: url("/assets/images/bills-page-back.svg");
+}
+.banner-background {
+  width: 100%;
+  height: 70px;
+  opacity: 0.75;
+  background-color: #000000;
+}
+.top {
+  background-color: white;
+  width: 100%;
+}
+.banner-container {
+  width: 100%;
+  height: 70px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 23px 20px 17px;
+  .number {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+  }
+}
+
+ion-content {
+  height: 100%;
+  .content {
+    height: 120%;
+    background-color: #f3f3f8;
+    padding: 15px;
+
+    .autre {
+      .fieldArea {
+        position: relative;
+        margin-top: 15px;
+        mat-label{
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 16px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.25;
+            letter-spacing: normal;
+            color: #666666;
+        }
+        .scb-input-row {
+          padding-bottom: 0px !important;
+        }
+        .confirmer {
+          display: flex;
+          position: absolute;
+          align-items: center;
+          right: 10px;
+          bottom: 32px;
+          padding: 10px;
+
+          .btn-confirmer {
+            padding-left: 5px;
+            background-color: $white;
+            font-weight: bold;
+            position: relative;
+            top: 3px;
+            opacity: 0.4;
+            color: #ff7900;
+          }
+        }
+      }
+    }
+  }
+}

@@ -200,7 +200,8 @@ const routes: Routes = [
   { path: 'oem-services', loadChildren: './pages/oem-services/oem-services.module#OemServicesPageModule' },
   { path: 'app-update', loadChildren: './pages/app-update/app-update.module#AppUpdatePageModule' },
   { path: 'bills', loadChildren: './pages/orange-bills/orange-bills.module#OrangeBillsPageModule' },
-  { path: 'orange-bills', loadChildren: './pages/orange-bills/orange-bills.module#OrangeBillsPageModule' },
+  { path: 'orange-bills', loadChildren: './pages/orange-bills/orange-bills.module#OrangeBillsPageModule' },  { path: 'follow-up-requests', loadChildren: './pages/follow-up-requests/follow-up-requests.module#FollowUpRequestsPageModule' },
+
   
 
 
