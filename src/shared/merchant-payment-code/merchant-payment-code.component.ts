@@ -133,18 +133,20 @@ export class MerchantPaymentCodeComponent implements OnInit {
 
   getRecentMerchants() {
     const recentType = 'paiement_marchand';
-    this.recentMerchants$ = this.recentsService.fetchRecents(recentType).pipe(
-      map((recents: RecentsOem[]) => {
-        let results = [];
-        recents.forEach((el) => {
-          results.push({
-            name: JSON.parse(el.payload).nom_marchand,
-            merchantCode: el.destinataire,
+    this.recentMerchants$ = this.recentsService
+      .fetchRecents(recentType, 3)
+      .pipe(
+        map((recents: RecentsOem[]) => {
+          let results = [];
+          recents.forEach((el) => {
+            results.push({
+              name: JSON.parse(el.payload).nom_marchand,
+              merchantCode: el.destinataire,
+            });
           });
-        });
-        return results;
-      })
-    );
+          return results;
+        })
+      );
   }
 
   numberOnly(event) {

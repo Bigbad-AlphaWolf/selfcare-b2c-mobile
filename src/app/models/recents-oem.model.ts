@@ -17,4 +17,5 @@ export interface RecentsOem {
   montant_total?: any;
   label_destinataire?: string;
   icone_url?: string;
+  name?: string;
 }
