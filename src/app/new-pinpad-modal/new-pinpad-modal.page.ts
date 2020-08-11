@@ -654,6 +654,7 @@ export class NewPinpadModalPage implements OnInit {
     if (params.canalPromotion) {
       buyPassPayload.canal = params.canalPromotion;
     }
+    
     this.orangeMoneyService.AchatIllimix(buyPassPayload).subscribe(
       (res: any) => {
         this.processResult(res, db);

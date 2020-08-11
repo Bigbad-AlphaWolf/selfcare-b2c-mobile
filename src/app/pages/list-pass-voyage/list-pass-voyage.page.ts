@@ -12,8 +12,9 @@ import { PassIllimixService } from "src/app/services/pass-illimix-service/pass-i
 import { PassVoyageService } from "src/app/services/pass-voyage/pass-voyage.service";
 import { Observable, forkJoin } from "rxjs";
 import { CountryPass } from "src/app/models/country-pass.model";
-import { tap, delay } from "rxjs/operators";
+import { tap, delay, map } from "rxjs/operators";
 import { OperationExtras } from "src/app/models/operation-extras.model";
+import { PassVoyage } from 'src/app/models/enums/pass-voyage.enum';
 
 @Component({
   selector: "app-list-pass-voyage",
@@ -35,7 +36,7 @@ export class ListPassVoyagePage implements OnInit {
   countries$: Observable<CountryPass[]>;
   country: CountryPass;
   passs$: Observable<any[]>;
-  tabHeaderItems: any[] = ["Appel", "Internet"];
+  tabHeaderItems: any[] = [];
   codeFormule: any;
   opXtras: OperationExtras;
   constructor(
@@ -63,18 +64,31 @@ export class ListPassVoyagePage implements OnInit {
 
   initAllPass() {
     this.isLoading = true;
+    this.activeTabIndex = 0;
     this.passs$ = forkJoin(this.constructPassRequests()).pipe(
       delay(1000),
-      tap((rs) => {
+      map((rs:any[]) => {
         this.isLoading = false;
+        let results : any [] = [];
+        this.tabHeaderItems = [];
+        if(rs[0].length) {
+          this.tabHeaderItems.push('Appel');
+          results.push(rs[0]);
+        }
+        
+        if(rs[1].length){
+          this.tabHeaderItems.push('Internet');
+          results.push(rs[1]);
+        } 
+        return results;
       })
     );
   }
 
   constructPassRequests() {
     return [
-      this.passVoyageService.fetchPassAppel(this.country, this.codeFormule),
-      this.passVoyageService.fetchPassInternet(this.country, this.codeFormule),
+      this.passVoyageService.fetchPassVoyage(this.country, PassVoyage.APPEL),
+      this.passVoyageService.fetchPassVoyage(this.country, PassVoyage.DATA),
     ];
   }
 

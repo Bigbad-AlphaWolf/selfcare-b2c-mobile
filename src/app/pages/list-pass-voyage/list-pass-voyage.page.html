@@ -53,7 +53,7 @@
             *ngFor="let item of tabHeaderItems; index as i"
             (click)="changeCategory(i)"
             class="tab-header-item"
-            [ngClass]="{  'selected' : i === activeTabIndex} "
+            [ngClass]="{  'selected' : i === activeTabIndex } "
           >
             <span class="scb-text-light-black"> {{ item }}</span>
           </div>
@@ -68,7 +68,7 @@
               <div class="filtered-list-pass">
                 <app-item-pass-illimix
                   *ngFor="let pas of pass"
-                  [passIllimix]="pas.pass"
+                  [passIllimix]="pas"
                   (selectPass)="choosePass($event)"
                 ></app-item-pass-illimix>
               </div>
