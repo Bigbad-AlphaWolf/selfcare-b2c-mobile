@@ -102,10 +102,10 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.getCurrentSubscription();
-    if (!this.isFirebaseTokenSent) {
-      this.authServ.UpdateNotificationInfo();
-      this.isFirebaseTokenSent = true;
-    }
+    // if (!this.isFirebaseTokenSent) {
+    //   this.authServ.UpdateNotificationInfo();
+    //   this.isFirebaseTokenSent = true;
+    // }
   }
   ionViewDidEnter() {
     // Initialize BackButton Eevent.

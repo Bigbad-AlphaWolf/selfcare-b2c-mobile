@@ -81,7 +81,7 @@ export class MyFormulePage implements OnInit {
     this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
     this.processInfosFormules();
     this.queryAllTarifs();
-    this.authServ.UpdateNotificationInfo();
+    // this.authServ.UpdateNotificationInfo();
   }
 
 
