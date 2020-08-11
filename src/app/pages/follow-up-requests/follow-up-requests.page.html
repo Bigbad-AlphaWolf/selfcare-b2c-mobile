@@ -16,9 +16,9 @@
       </div>
     </div>
 
-    <!-- <div class="spinner-wrapper">
+    <div *ngIf="isInitRequests" class="spinner-wrapper">
       <ion-spinner name="crescent"></ion-spinner>
-    </div> -->
+    </div>
   </div>
 </ion-header>
 <ion-content
@@ -35,7 +35,11 @@
         Mes réclamations
       </div>
       <div class="requests" *ngIf="requests$ | async as requests">
-        <oem-request-card *ngFor="let request of requests" [request]="request"></oem-request-card>
+        <div class="none" *ngIf="!requests.length">Aucune réclamation</div>
+        <oem-request-card
+          *ngFor="let request of requests"
+          [request]="request"
+        ></oem-request-card>
       </div>
     </div>
     <div class="autre">
@@ -49,11 +53,19 @@
             <input #numberInput matInput type="text" maxlength="20" />
           </mat-form-field>
         </form>
-        <div class="confirmer" matRipple (click)="onConfirmer()">
+        <div
+          class="confirmer"
+          matRipple
+          (click)="onConfirmer()"
+          *ngIf="!isConfirm"
+        >
           <span class="btn-confirmer">Confirmer</span>
         </div>
-        <div *ngIf="0" class="error-msg scb-text-red-error">
-          {{ 'errorGetContact' }}
+        <div class="is-confirmer" *ngIf="isConfirm">
+          <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
+        </div>
+        <div *ngIf="noRequest" class="error-msg scb-text-red-error">
+          Aucune demande ou incident ne correspond au numéro renseigné!
         </div>
       </div>
     </div>

@@ -4,12 +4,14 @@ import { DATA_REQUESTS } from 'src/app/utils/data';
 import { HttpClient } from '@angular/common/http';
 import { ACCOUNT_REQUESTS_ENDPOINT } from '../utils/account.endpoints';
 import { RequestOem } from 'src/app/models/request-oem.model';
+import { tap } from 'rxjs/operators';
 const REQUESTS_ENDPOINT = '/api/abonné/request/statue/';
 @Injectable({
   providedIn: 'root'
 })
 export class RequestOemService {
-
+  currentRequestStatus : RequestOem [];
+  currentRequestStatusId : string;
   constructor(private http : HttpClient) { }
 
   fetchRequests(phoneFix : string): Observable<RequestOem[]>{
@@ -18,7 +20,12 @@ export class RequestOemService {
   }
 
   requestStatus(requestId : string){
+    this.currentRequestStatus = DATA_REQUESTS;
     return of(DATA_REQUESTS);
-    return this.http.get(`${ACCOUNT_REQUESTS_ENDPOINT}/${requestId}`);
+    return this.http.get<RequestOem[]>(`${ACCOUNT_REQUESTS_ENDPOINT}/${requestId}`).pipe(
+      tap((r)=>{
+        this.currentRequestStatus = r;
+      })
+    );
   }
 }
