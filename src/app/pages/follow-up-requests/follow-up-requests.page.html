@@ -34,6 +34,9 @@
       <div class="head">
         Mes réclamations
       </div>
+      <div class="requests" *ngIf="requests$ | async as requests">
+        <oem-request-card *ngFor="let request of requests" [request]="request"></oem-request-card>
+      </div>
     </div>
     <div class="autre">
       <div class="head">
