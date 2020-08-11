@@ -20,6 +20,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { NumberSelectionOption } from 'src/app/models/enums/number-selection-option.enum';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
+import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
 
 @Component({
   selector: 'oem-number-selection',
@@ -52,7 +53,8 @@ export class NumberSelectionComponent implements OnInit {
     private dashbServ: DashboardService,
     private authService: AuthenticationService,
     private changeDetectorRef: ChangeDetectorRef,
-    private recentsService: RecentsService
+    private recentsService: RecentsService,
+    private contactsService: ContactsService
   ) {}
 
   ngOnInit() {
@@ -84,20 +86,20 @@ export class NumberSelectionComponent implements OnInit {
       default:
         break;
     }
-    this.recentsRecipients$ = this.recentsService.fetchRecents(recentType).pipe(
-      map((recents: RecentsOem[]) => {
-        let results = [];
-        recents = recents.slice(0, 2);
-        recents.forEach((el) => {
-          results.push({
-            name: el.destinataire,
-            msisdn: el.destinataire,
+    this.recentsRecipients$ = this.recentsService
+      .fetchRecents(recentType, 2)
+      .pipe(
+        map((recents: RecentsOem[]) => {
+          let results = [];
+          recents.forEach((el) => {
+            results.push({
+              name: el.name,
+              msisdn: el.destinataire,
+            });
           });
-        });
-        console.log(results);
-        return results;
-      })
-    );
+          return results;
+        })
+      );
   }
 
   onRecentSelected(recent) {}
