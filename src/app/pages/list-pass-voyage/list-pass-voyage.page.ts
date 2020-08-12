@@ -66,7 +66,7 @@ export class ListPassVoyagePage implements OnInit {
     this.isLoading = true;
     this.activeTabIndex = 0;
     this.passs$ = forkJoin(this.constructPassRequests()).pipe(
-      delay(1000),
+      delay(100),
       map((rs:any[]) => {
         this.isLoading = false;
         let results : any [] = [];

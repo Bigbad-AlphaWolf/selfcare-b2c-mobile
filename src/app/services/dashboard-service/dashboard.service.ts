@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, RendererFactory2, Inject, Renderer2 } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {
   Subject,
@@ -17,6 +17,7 @@ import { environment } from "src/environments/environment";
 import { AuthenticationService } from "../authentication-service/authentication.service";
 import { BuyPassModel, TransfertBonnus, TransferCreditModel } from ".";
 import { SubscriptionUserModel, JAMONO_ALLO_CODE_FORMULE, SubscriptionModel } from "src/shared";
+import { DOCUMENT } from '@angular/platform-browser';
 const {
   SERVER_API_URL,
   SEDDO_SERVICE,
@@ -25,7 +26,7 @@ const {
   ACCOUNT_MNGT_SERVICE,
   UAA_SERVICE,
 } = environment;
-const ls = new SecureLS({ encodingType: "aes" });
+const ls = new SecureLS({ encodingType: 'aes' });
 
 // user consumation endpoints
 const userConsoEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/suivi-compteur-consommations`;
@@ -71,10 +72,10 @@ const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boost
 const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/birthDate`;
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class DashboardService {
-  static CURRENT_DASHBOARD : string = '/dashboard';
+  static CURRENT_DASHBOARD: string = '/dashboard';
   currentPhoneNumberChangeSubject: Subject<string> = new Subject<string>();
   scrollToBottomSubject: Subject<string> = new Subject<string>();
   balanceAvailableSubject: Subject<any> = new Subject<any>();
@@ -83,13 +84,14 @@ export class DashboardService {
   msisdn: string;
   screenWatcher: Subscription;
   isMobile = true;
+  private renderer: Renderer2;
   constructor(
-    // rendererFactory: RendererFactory2,
-    // @Inject(DOCUMENT) private _document,
+    rendererFactory: RendererFactory2,
+    @Inject(DOCUMENT) private _document,
     private http: HttpClient,
     private authService: AuthenticationService
   ) {
-    // this.renderer = rendererFactory.createRenderer(null, null);
+   this.renderer = rendererFactory.createRenderer(null, null);
     authService.currentPhoneNumberSetSubject.subscribe((value) => {
       if (value) {
         this.user = this.authService.getLocalUserInfos();
@@ -127,13 +129,13 @@ export class DashboardService {
 
   getCurrentDate() {
     const date = new Date();
-    const lastDate = `${("0" + date.getDate()).slice(-2)}/${(
-      "0" +
+    const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
+      '0' +
       (date.getMonth() + 1)
     ).slice(-2)}/${date.getFullYear()}`;
     const lastDateTime =
       `${date.getHours()}h` +
-      (date.getMinutes() < 10 ? "0" : "") +
+      (date.getMinutes() < 10 ? '0' : '') +
       date.getMinutes();
     return `${lastDate} à ${lastDateTime}`;
   }
@@ -161,17 +163,17 @@ export class DashboardService {
   }
 
   getMainPhoneNumberProfil() {
-    return ls.get("mainPhoneNumber");
+    return ls.get('mainPhoneNumber');
   }
 
   // return the phone number that is used when getting user balance, conso history etc.
   getCurrentPhoneNumber() {
-    return ls.get("currentPhoneNumber");
+    return ls.get('currentPhoneNumber');
   }
 
   // change the active number
   setCurrentPhoneNumber(msisdn: string) {
-    ls.set("currentPhoneNumber", msisdn);
+    ls.set('currentPhoneNumber', msisdn);
     this.currentPhoneNumberChangeSubject.next(msisdn);
   }
 
@@ -190,7 +192,7 @@ export class DashboardService {
   // attach new mobile phone number
   registerNumberToAttach(detailsToCheck: {
     numero: string;
-    typeNumero: "MOBILE" | "FIXE";
+    typeNumero: 'MOBILE' | 'FIXE';
   }) {
     detailsToCheck = Object.assign(detailsToCheck, {
       login: this.authService.getUserMainPhoneNumber(),
@@ -204,7 +206,7 @@ export class DashboardService {
   registerNumberByIdClient(payload: {
     numero: string;
     idClient: string;
-    typeNumero: "MOBILE" | "FIXE";
+    typeNumero: 'MOBILE' | 'FIXE';
   }) {
     payload = Object.assign(payload, {
       login: this.authService.getUserMainPhoneNumber(),
@@ -226,7 +228,7 @@ export class DashboardService {
     idClient: string;
     numero: string;
   }) {
-    payload = Object.assign({}, payload, { typeNumero: "FIXE" });
+    payload = Object.assign({}, payload, { typeNumero: 'FIXE' });
     return this.http.post(saveFixNumber, payload);
   }
 
@@ -241,9 +243,9 @@ export class DashboardService {
     return this.http.get(`${userLinkedPhoneNumberEndpoint}/${mainPhone}`).pipe(
       map((elements: any) => {
         let numbers = [mainPhone];
-        elements.forEach((element:any) => {
-          const msisdn = "" + element.msisdn;
-          if (!msisdn.startsWith("33", 0)) {
+        elements.forEach((element: any) => {
+          const msisdn = '' + element.msisdn;
+          if (!msisdn.startsWith('33', 0)) {
             numbers.push(element.msisdn);
           }
         });
@@ -257,35 +259,65 @@ export class DashboardService {
     return this.authService.getUserMainPhoneNumber();
   }
 
-  // addDimeloScript() {
-  //   // Dimelo user information
-  //   const userInfos = ls.get('user');
-  //   const fullName = userInfos.firstName + ' ' + userInfos.lastName;
-  //   const s = this.renderer.createElement('script');
-  //   s.type = 'text/javascript';
-  //   s.text =
-  //     'var _chatq = _chatq || [];' +
-  //     '_chatq.push(["_setIdentity", {' +
-  //     '"screenname": "' +
-  //     fullName +
-  //     '",' + // full name
-  //     '"avatar_url": "https://orangeetmoi.orange.sn/content/icons/icon-72x72.png",' + // ibou image
-  //     '"firstname": "' +
-  //     userInfos.firstName +
-  //     '",' +
-  //     '"lastname": "' +
-  //     userInfos.lastName +
-  //     '",' +
-  //     '"email": "",' +
-  //     '"uuid": "' +
-  //     userInfos.numero +
-  //     '",' +
-  //     '"extra_values": {' +
-  //     '"customer_id": "' +
-  //     userInfos.numero +
-  //     '"}}]);';
-  //   this.renderer.appendChild(this._document.body, s);
-  // }
+  addDimeloScript() {
+    // Dimelo user information
+    const userInfos = ls.get('user');
+    const fullName = userInfos.firstName + ' ' + userInfos.lastName;
+    const s = this.renderer.createElement('script');
+    s.type = 'text/javascript';
+    s.text =
+      'var _chatq = _chatq || [];' +
+      '_chatq.push(["_setIdentity", {' +
+      '"screenname": "' +
+      fullName +
+      '",' + // full name
+      '"avatar_url": "https://orangeetmoi.orange.sn/content/icons/icon-72x72.png",' + // ibou image
+      '"firstname": "' +
+      userInfos.firstName +
+      '",' +
+      '"lastname": "' +
+      userInfos.lastName +
+      '",' +
+      '"email": "",' +
+      '"uuid": "' +
+      userInfos.numero +
+      '",' +
+      '"mobile_phone": "' +
+      userInfos.numero +
+      '",' +
+      '"extra_values": {' +
+      '"customer_id": "' +
+      userInfos.numero +
+      '"}}]);';
+    this.renderer.appendChild(this._document.body, s);
+  }
+  
+  addDimeloScriptTotrigger() {
+    const s = this.renderer.createElement('script');
+    s.type = 'text/javascript';
+    s.text =
+      'var t = Dimelo.Chat.Manager.ChatQLoader.manager.triggers[1];' +
+      'Dimelo.Chat.Manager.ChatQLoader.manager.activateTrigger(t);';
+    this.renderer.appendChild(this._document.body, s);
+  }
+
+  prepareScriptChatIbou(){
+    this.removeScriptChatIbouIfExist()
+    const s = this.renderer.createElement('script');
+    s.type = 'text/javascript';
+    s.text =
+      'var trigger_id = "5f04681b0e69dc63aac7bb0e";' +
+      'loadChatTrigger(trigger_id)';
+    s.id = "ibou"
+    this.renderer.appendChild(this._document.body, s);
+  }
+
+  removeScriptChatIbouIfExist(){
+    const scriptIbou = document.getElementById('ibou');
+    if (scriptIbou) {
+      scriptIbou.remove();
+    }
+  }
 
   getAccountInfo(userLogin: string) {
     return this.http
@@ -296,9 +328,9 @@ export class DashboardService {
   getUserConsoInfosByCode(consoCodes?: number[]) {
     this.msisdn = this.getCurrentPhoneNumber();
     // filter by code not working on Orange VM so
-    let queryParams = "";
+    let queryParams = '';
     if (consoCodes && Array.isArray(consoCodes) && consoCodes.length) {
-      const params = consoCodes.map((code) => `code=${code}`).join("&");
+      const params = consoCodes.map((code) => `code=${code}`).join('&');
       queryParams = `?${params}`;
     }
     return this.http
@@ -351,7 +383,7 @@ export class DashboardService {
     const { msisdn, receiver, codeIN, amount } = payload;
     const params = { msisdn, receiver, codeIN, amount };
     switch (payload.type) {
-      case "internet":
+      case 'internet':
         if (msisdn === receiver) {
           return this.http.post(buyPassInternetByCreditEndpoint, params);
         } else {
@@ -360,7 +392,7 @@ export class DashboardService {
             params
           );
         }
-      case "illimix":
+      case 'illimix':
         return this.http.post(buyPassIllimixByCreditEndpoint, params);
       default:
         break;
@@ -395,7 +427,7 @@ export class DashboardService {
       .getSubscription(msisdn)
       .subscribe((souscription: SubscriptionUserModel) => {
         const codeFormule =
-          souscription.profil === "HYBRID" || souscription.profil === "ND"
+          souscription.profil === 'HYBRID' || souscription.profil === 'ND'
             ? JAMONO_ALLO_CODE_FORMULE
             : souscription.code;
         res = of(codeFormule);
@@ -419,10 +451,14 @@ export class DashboardService {
           `${promoBoosterActiveEndpoint}?msisdn=${currentPhoneNumber}&code=${res.code}`
         );
       }),
-      catchError( _ => {
-        return of({promoPass: null, promoRecharge: null,promoPassIllimix: null})
-      }
-    ))
+      catchError((_) => {
+        return of({
+          promoPass: null,
+          promoRecharge: null,
+          promoPassIllimix: null,
+        });
+      })
+    );
   }
 
   getUserBirthDate(): Observable<any> {
@@ -434,5 +470,13 @@ export class DashboardService {
         ls.set('birthDate', birthDate);
       })
     );
+  }
+
+  swapOMCard() {
+    const omCard = document.getElementById('omCard');
+    if (omCard) {
+      omCard.remove();
+      document.getElementsByClassName('swiper-wrapper')[0].prepend(omCard);
+    }
   }
 }

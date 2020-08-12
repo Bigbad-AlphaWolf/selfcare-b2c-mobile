@@ -15,6 +15,7 @@ import { switchMap, map } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
+import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
 
 @Component({
   selector: 'app-select-beneficiary-pop-up',
@@ -50,6 +51,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
 
   ngOnInit() {
     this.getRecents();
+    console.log('out', ContactsService.allContacts);
   }
 
   ionViewWillEnter() {
@@ -59,13 +61,14 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   getRecents() {
     const recentType = '';
     this.recentsRecipients$ = this.recentsService
-      .fetchRecents('transfert_avec_code')
+      .fetchRecents('transfert_avec_code', 3)
       .pipe(
         map((recents: RecentsOem[]) => {
           let results = [];
-          recents = recents.slice(0, 3);
+          console.log(recents);
           recents.forEach((el) => {
             results.push({
+              name: el.name,
               msisdn: el.destinataire,
             });
           });

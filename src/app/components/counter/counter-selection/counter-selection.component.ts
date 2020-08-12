@@ -37,19 +37,20 @@ export class CounterSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.counters$ = this.recentService.fetchRecents('paiement_woyofal').pipe(
-      map((recents: RecentsOem[]) => {
-        let results = [];
-        recents = recents.slice(0, 3);
-        recents.forEach((el) => {
-          results.push({
-            name: el.titre,
-            counterNumber: JSON.parse(el.payload).numero_compteur,
+    this.counters$ = this.recentService
+      .fetchRecents('paiement_woyofal', 3)
+      .pipe(
+        map((recents: RecentsOem[]) => {
+          let results = [];
+          recents.forEach((el) => {
+            results.push({
+              name: el.titre,
+              counterNumber: JSON.parse(el.payload).numero_compteur,
+            });
           });
-        });
-        return results;
-      })
-    );
+          return results;
+        })
+      );
     this.checkOmAccountSession();
   }
 

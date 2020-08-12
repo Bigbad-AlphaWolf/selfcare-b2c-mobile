@@ -28,15 +28,44 @@
     />
     <script>
       (function(d) {
-        var cm = d.createElement('scr' + 'ipt');
-        cm.type = 'text/javascript';
+        var cm = d.createElement('scr' + 'ipt'); 
+        cm.type = 'text/javascript'; 
         cm.async = true;
-        cm.src =
-          ('https:' == d.location.protocol ? 'https://' : 'http://') +
-          'sonatel.dimelochat.com/chat/406100a8fe1d5ecae45bf7d8/loader.js';
-        var s = d.getElementsByTagName('scr' + 'ipt')[0];
+        cm.src = 'https://sonatel.dimelochat.com/chat/b25dc90dcaed229e01ff8ffe/loader.js';
+        var s = d.getElementsByTagName('scr' + 'ipt')[0]; 
         s.parentNode.insertBefore(cm, s);
-      })(document);
+      }(document));
+    </script>
+    <script>
+      // DIMELO NEW SCRIPT
+      // Find elements of an array which satisfy a filter function
+      var grep = function(items, callback) {
+          var filtered = [],
+              len = items.length,
+              i = 0;
+          for (i; i < len; i++) {
+              var item = items[i];
+              var cond = callback(item);
+              if (cond) {
+                  filtered.push(item);
+              }
+          }
+          return filtered;
+        };
+
+        // Hack to force a trigger activation
+        var loadChatTrigger = function(trigger_id){
+            // Get all activated trigger objects
+            var triggers = Dimelo.Messaging.Manager.ChatQLoader.manager.triggers;
+          
+            // Find the good one
+            var target_trigger = grep(triggers, function(e){
+              return e.id == trigger_id; });
+            if (target_trigger.length > 0){
+              // Hack - Activate a dedicated trigger
+              Dimelo.Messaging.Manager.ChatQLoader.manager.activateTrigger(target_trigger[0]);
+            }
+        };
     </script>
   </head>
 

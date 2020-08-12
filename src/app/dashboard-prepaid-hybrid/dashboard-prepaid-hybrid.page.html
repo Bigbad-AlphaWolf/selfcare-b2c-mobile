@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="dashboard-block-conso-btns">
-        <ion-slides [options]="slideOpts">
+        <ion-slides [options]="slideOpts" id="slides">
           <ng-container *ngIf="isHyBride">
             <ion-slide>
               <div
@@ -64,7 +64,7 @@
               </div>
             </div>
           </ion-slide>
-          <ion-slide>
+          <ion-slide id="omCard">
             <app-om-button></app-om-button>
           </ion-slide>
           <ion-slide *ngIf="currentProfil && !isHyBride">
@@ -148,7 +148,12 @@
                 <div class="scb-btn-top-block">
                   <div class="scb-btn-top-block-text">
                     <span class="text">Orange</span>
-                    <span [ngStyle]="{'color': sargalStatus === 'GOLD' ? 'gold' :  '#e5e4e2'}" class="status-sargal"> {{ sargalStatus }}</span>
+                    <span
+                      [ngStyle]="{'color': sargalStatus === 'GOLD' ? 'gold' :  '#e5e4e2'}"
+                      class="status-sargal"
+                    >
+                      {{ sargalStatus }}</span
+                    >
                   </div>
                 </div>
                 <div *ngIf="isLoading" class="scb-block-spinner">
@@ -159,22 +164,19 @@
                 </div>
                 <ng-container *ngIf="!isLoading && !sargalStatusUnavailable">
                   <div class="bottom-block">
-                    <span class="show-solde-info-text">Voir ma carte</span
-                    >
+                    <span class="show-solde-info-text">Voir ma carte</span>
                   </div>
                 </ng-container>
                 <ng-container *ngIf="!isLoading && sargalStatusUnavailable">
                   <div class="bottom-block">
-                    <span class="show-solde-info-text">Service Indisponible</span
+                    <span class="show-solde-info-text"
+                      >Service Indisponible</span
                     >
                   </div>
                 </ng-container>
               </div>
 
-              <div
-                (click)="getCustomerSargalStatus()"
-                class="scb-data-reload"
-              >
+              <div (click)="getCustomerSargalStatus()" class="scb-data-reload">
                 <img src="/assets/images/reload.png" alt="reload-icon" />
               </div>
             </div>
@@ -278,7 +280,10 @@
             </span>
           </div>
         </div>
-        <div (click)="onPayerFacture()" class="dashboard-block-offres-top3-item">
+        <div
+          (click)="onPayerFacture()"
+          class="dashboard-block-offres-top3-item"
+        >
           <div class="item-icon">
             <img
               src="/assets/images/ic-orange-money.svg"
@@ -313,7 +318,8 @@
           </div>
         </div>
 
-        <div *ngIf="!isHyBride"
+        <div
+          *ngIf="!isHyBride"
           (click)="makeSargalAction()"
           class="dashboard-block-offres-top3-item"
         >
