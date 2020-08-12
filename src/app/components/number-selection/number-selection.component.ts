@@ -1,18 +1,14 @@
 import {
   Component,
   OnInit,
-  Inject,
   ChangeDetectorRef,
   Input,
 } from '@angular/core';
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
 import {
   formatPhoneNumber,
   REGEX_NUMBER_OM,
   SubscriptionModel,
   OPERATION_TYPE_RECHARGE_CREDIT,
-  OPERATION_TYPE_PASS_INTERNET,
-  OPERATION_TYPE_PASS_ILLIMIX,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -60,9 +56,7 @@ export class NumberSelectionComponent implements OnInit {
     private dashbServ: DashboardService,
     private authService: AuthenticationService,
     private changeDetectorRef: ChangeDetectorRef,
-    private recentsService: RecentsService,
-    private contactsService: ContactsService
-  ) {}
+    private recentsService: RecentsService  ) {}
 
   ngOnInit() {
     this.option = this.data.option;
@@ -95,7 +89,7 @@ export class NumberSelectionComponent implements OnInit {
       );
   }
 
-  onRecentSelected(recent) {}
+  onRecentSelected() {}
 
   async onContinue(recent?: string) {
     if (!REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn)) {
@@ -134,7 +128,7 @@ export class NumberSelectionComponent implements OnInit {
           this.modalController.dismiss(this.opXtras);
           // this.bottomSheetRef.dismiss(this.opXtras);
         },
-        (err: any) => {
+        () => {
           this.isProcessing = false;
           this.modalController.dismiss();
           // this.bottomSheetRef.dismiss();

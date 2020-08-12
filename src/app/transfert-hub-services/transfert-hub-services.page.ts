@@ -11,12 +11,14 @@ import {
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
+  OPERATION_TYPE_PASS_VOYAGE,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
 import { PromoBoosterActive } from '../dashboard';
 import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
+import { ListPassVoyagePage } from '../pages/list-pass-voyage/list-pass-voyage.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 
@@ -97,14 +99,14 @@ export class TransfertHubServicesPage implements OnInit {
       type: 'PASS_ILLIMIX',
       url: '',
     },
-    // {
-    //   title: 'Pass',
-    //   subtitle: 'voyage',
-    //   icon: '/assets/images/ic-aeroplane.png',
-    //   action: 'REDIRECT',
-    //   type: 'PASS_VOYAGE',
-    //   url: '',
-    // },
+    {
+      title: 'Pass',
+      subtitle: 'voyage',
+      icon: '/assets/images/ic-aeroplane.png',
+      action: 'REDIRECT',
+      type: 'PASS_VOYAGE',
+      url: '',
+    },
     // {
     //   title: 'Pass',
     //   subtitle: 'international',
@@ -210,7 +212,6 @@ export class TransfertHubServicesPage implements OnInit {
             OPERATION_TYPE_PASS_INTERNET,
             'list-pass'
           );
-          // this.appRouting.goToSelectRecepientPassInternet();
         }
         break;
       case 'PASS_ILLIMIX':
@@ -220,7 +221,15 @@ export class TransfertHubServicesPage implements OnInit {
             OPERATION_TYPE_PASS_ILLIMIX,
             'list-pass'
           );
-          // this.appRouting.goToSelectRecepientPassIllimix();
+        }
+        break;
+      case 'PASS_VOYAGE':
+        if (opt.action === 'REDIRECT') {
+          this.bsService.openNumberSelectionBottomSheet(
+            NumberSelectionOption.WITH_MY_PHONES,
+            OPERATION_TYPE_PASS_VOYAGE,
+            ListPassVoyagePage.ROUTE_PATH
+          );
         }
         break;
       default:

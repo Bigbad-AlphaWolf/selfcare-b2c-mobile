@@ -52,17 +52,16 @@ export class ContactsService {
   constructor(private contacts: Contacts) {}
 
   getAllContacts(): Observable<any> {
-    // return of(this.mockContactsProcessed);
+    // return of(this.mockContacts);
     if (ContactsService.allContacts) {
       return of(ContactsService.allContacts);
     }
-    // return from(
-    //   this.contacts.find(['displayName', 'name', 'phoneNumbers', 'emails'], {
-    //     filter: '',
-    //     multiple: true,
-    //   })
-    // )
-    return of(this.mockContacts).pipe(
+    return from(
+      this.contacts.find(['displayName', 'name', 'phoneNumbers', 'emails'], {
+        filter: '',
+        multiple: true,
+      })
+    ).pipe(
       map((contacts: any[]) => {
         const result = contacts.map(({ name, phoneNumbers, ...left }) => {
           const numbers = phoneNumbers.map((element) => {

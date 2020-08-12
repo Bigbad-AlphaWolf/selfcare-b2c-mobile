@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras } from '@angular/router';
-import { getPageTitle } from 'src/app/utils/title.util';
+import { getPageHeader } from 'src/app/utils/title.util';
 import { NavController } from '@ionic/angular';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { FeeModel } from 'src/app/services/orange-money-service';
@@ -33,7 +33,7 @@ export class BillAmountPage implements OnInit {
 
   ngOnInit() {
     this.opXtras = history.state;
-    this.title = getPageTitle(this.opXtras.purchaseType).title;
+    this.title = getPageHeader(this.opXtras.purchaseType).title;
     this.minimalAmount = this.counterService.fees[0].montant_min;
   }
 
