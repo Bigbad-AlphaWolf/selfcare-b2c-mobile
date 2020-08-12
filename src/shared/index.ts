@@ -91,8 +91,8 @@ export const CATEGORY_PURCHASE_HISTORY = [
 
 export const DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY = {
   label: 'Tous',
-  typeAchat: undefined
-}
+  typeAchat: undefined,
+};
 
 export const listRegisterSargalBonPlanText = ['inscription', 'inscris'];
 export const LIST_CATEGORY_BONS_PLANS = {
@@ -103,7 +103,7 @@ export const LIST_CATEGORY_BONS_PLANS = {
   autres: 'AUTRES',
 };
 
-export const IMAGES_DIRECTORY = "/assets/images/";
+export const IMAGES_DIRECTORY = '/assets/images/';
 
 export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   INTERNET: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
@@ -119,7 +119,7 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   TRANSFERT_ARGENT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   WOYOFAL: `${IMAGES_DIRECTORY}ic-files.png`,
   PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
-}
+};
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
 }
@@ -430,7 +430,7 @@ export function computeConsoHistory(consos) {
     } = x;
     let conso1, conso2;
 
-    if (charge1) {
+    if (charge1 || chargeType1.length > 0) {
       conso1 = {
         date,
         categorie,
@@ -441,7 +441,7 @@ export function computeConsoHistory(consos) {
       };
       result.push(conso1);
     }
-    if (charge2) {
+    if (charge2 || chargeType2.length > 0) {
       conso2 = {
         date,
         categorie,
