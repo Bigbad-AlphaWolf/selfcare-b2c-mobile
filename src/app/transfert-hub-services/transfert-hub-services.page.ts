@@ -19,6 +19,8 @@ import { PromoBoosterActive } from '../dashboard';
 import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 import { ListPassVoyagePage } from '../pages/list-pass-voyage/list-pass-voyage.page';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 
 @Component({
   selector: 'app-transfert-hub-services',
@@ -143,7 +145,8 @@ export class TransfertHubServicesPage implements OnInit {
     private router: Router,
     private offerPlanServ: OfferPlansService,
     private dashbServ: DashboardService,
-    private bsService: BottomSheetService
+    private bsService: BottomSheetService,
+    private omService : OrangeMoneyService
   ) {}
 
   ngOnInit() {
@@ -234,6 +237,23 @@ export class TransfertHubServicesPage implements OnInit {
     }
   }
 
+  checkOmAccount(){
+    this.omService.getOmMsisdn().subscribe((msisdn: string) => {
+      if (msisdn !== 'error') {
+       this.showBeneficiaryModal();
+      } else {
+        this.openPinpad();
+      }
+    });
+  }
+
+  async openPinpad() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+    });
+    return await modal.present();
+  }
   async showBeneficiaryModal() {
     const modal = await this.modalController.create({
       component: SelectBeneficiaryPopUpComponent,

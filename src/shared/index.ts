@@ -512,7 +512,7 @@ export interface GiftSargalItem {
   id: number;
   nom: string;
   ppi: string;
-  prix: string;
+  prix: any;
   validite: string;
   nombreNumeroIllimtes: number;
   fellowType: number;

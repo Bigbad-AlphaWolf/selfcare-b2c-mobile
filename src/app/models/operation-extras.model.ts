@@ -2,6 +2,7 @@ import { BillCompany } from "./bill-company.model";
 import { CounterOem } from "./counter-oem.model";
 import { OmSession } from './om-session.model';
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
+import { MarchandOem } from './marchand-oem.model';
 
 export interface OperationExtras {
   senderMsisdn?: string;
@@ -27,4 +28,5 @@ export interface OperationExtras {
 
   offerPlan?: OfferPlan;
   pass?:any;
+  merchant?: MarchandOem
 }

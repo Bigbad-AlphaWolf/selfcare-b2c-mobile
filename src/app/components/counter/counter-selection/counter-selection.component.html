@@ -28,8 +28,8 @@
   </div>
 
   <div class="recents" *ngIf="(counters$|async) as counters">
-    <div class="description">
-      Recents
+    <div class="description" *ngIf="counters.length">
+      Récents
     </div>
     <div
       matRipple

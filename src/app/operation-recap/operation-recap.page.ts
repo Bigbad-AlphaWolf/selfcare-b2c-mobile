@@ -159,8 +159,8 @@ export class OperationRecapPage implements OnInit {
               break;
             case OPERATION_TYPE_MERCHANT_PAYMENT:
               this.amount = state.amount;
-              this.merchantCode = state.merchantCode;
-              this.merchantName = state.merchantName;
+              this.merchantCode = state.merchant.merchantCode;
+              this.merchantName = state.merchant.name;
               this.paymentMod = 'ORANGE_MONEY';
               this.merchantPaymentPayload = {
                 amount: this.amount,
@@ -292,7 +292,6 @@ export class OperationRecapPage implements OnInit {
     params.amount = this.amount;
     params.merchantCode = this.merchantCode;
     params.merchantName = this.merchantName;
-    console.log(params, 'params');
 
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,

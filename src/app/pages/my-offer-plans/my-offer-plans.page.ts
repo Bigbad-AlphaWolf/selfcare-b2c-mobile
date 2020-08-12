@@ -111,9 +111,7 @@ export class MyOfferPlansPage implements OnInit {
         return offerPlanUncategorized.typeMPO.toLowerCase() === category.value.toLowerCase()
       })
       return value
-    })
-    console.log(this.fullList);
-    
+    })    
   }
 
   changeCategory(tabIndex: number) {
@@ -144,7 +142,7 @@ export class MyOfferPlansPage implements OnInit {
         break;
 
       case 'recharge':
-        const opBuyCreditSetAmountPayload: OperationExtras = {forSelf: true,recipientFirstname: null,recipientLastname: null,recipientFromContact: false,senderMsisdn: this.payloadNavigation.recipientMsisdn, offerPlan: offer }
+        const opBuyCreditSetAmountPayload: OperationExtras = {forSelf: true,recipientFirstname: null,recipientLastname: null,recipientFromContact: false,senderMsisdn: this.payloadNavigation.recipientMsisdn, ...this.payloadNavigation, offerPlan: offer }
         this.appliRout.goToBuyCreditSetAmount(opBuyCreditSetAmountPayload)
         break;
 

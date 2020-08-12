@@ -48,7 +48,7 @@ export class OperationSuccessFailModalPage implements OnInit {
     private router: Router,
     public modalController: ModalController,
     private appRouting: ApplicationRoutingService,
-    private navCtrl : NavController
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {}
@@ -58,27 +58,27 @@ export class OperationSuccessFailModalPage implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
-  goToPage(purchaseType: string){
+  goToPage(purchaseType: string) {
     switch (purchaseType) {
       case this.OPERATION_ILLIMIX_TYPE:
-       this.appRouting.goToSelectRecepientPassIllimix();
+        this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       case this.OPERATION_INTERNET_TYPE:
-       this.appRouting.goToSelectRecepientPassInternet();
+        this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       case this.OPERATION_TYPE_RECHARGE:
-       this.appRouting.goToTransfertHubServicesPage('BUY');
+        this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       case this.OPERATION_TYPE_MERCHANT_PAYMENT:
-       this.appRouting.goToDashboard();
+        this.appRouting.goToDashboard();
         break;
       case this.OPERATION_TRANSFER_OM:
       case this.OPERATION_TRANSFER_OM_WITH_CODE:
-       this.appRouting.goToTransfertHubServicesPage('TRANSFER');
+        this.appRouting.goToTransfertHubServicesPage('TRANSFER');
         break;
-        case OPERATION_WOYOFAL:
-          this.navCtrl.navigateBack(BillsHubPage.ROUTE_PATH);
-           break;
+      case OPERATION_WOYOFAL:
+        this.navCtrl.navigateBack(BillsHubPage.ROUTE_PATH);
+        break;
       default:
         break;
     }
