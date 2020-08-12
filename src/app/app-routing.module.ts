@@ -1,15 +1,16 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './services/auth-guard/auth.guard';
+import { AuthUpdateGuard } from './services/auth-update-guard/auth-update.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full', canActivate: [AuthGuard] },
-  { path: 'home-v2', loadChildren: './home-v2/home-v2.module#HomeV2PageModule' },
+  { path: 'home-v2', loadChildren: './home-v2/home-v2.module#HomeV2PageModule', canActivate:[AuthUpdateGuard] },
   {
     path: 'new-registration',
     loadChildren:
       './new-registration/new-registration.module#NewRegistrationPageModule',
-      // canActivate: [AuthGuard]
+      canActivate: [AuthUpdateGuard] 
   },
   {
     path: 'home',
@@ -19,7 +20,7 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: './login/login.module#LoginPageModule',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AuthUpdateGuard],
   },
   {
     path: 'dashboard',
