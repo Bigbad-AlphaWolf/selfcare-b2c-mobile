@@ -52,7 +52,7 @@
                       {{ !pass.passPromo ? pass?.tarif : pass?.passPromo?.tarif }}F
                     </span></span
                   >
-                  <span class="max-duration scb-text-light-black"
+                  <span *ngIf="!pass?.passPromo" class="max-duration scb-text-light-black"
                     >Valable 
                     <span
                       [ngSwitch]="

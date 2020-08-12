@@ -9,6 +9,7 @@ import { ContactsService } from '../contacts-service/contacts.service';
 import { CustomContact } from 'src/app/models/customized-contact.model';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { SERVICES_TO_MATCH_CONTACTS } from '.';
+import { OM_RECENT_TYPES } from 'src/app/utils/constants';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,15 @@ export class RecentsService {
     private contactService: ContactsService
   ) {}
 
-  fetchRecents(service: string, numberToDisplay: number) {
+  recentType(opType: string) {
+    let recentType = OM_RECENT_TYPES.find(
+      (rt: any) => rt.operationType === opType
+    );
+    return recentType ? recentType.recentType : '';
+  }
+
+  fetchRecents(op: string, numberToDisplay: number) {
+    let service = this.recentType(op);
     return this.omService.getOmMsisdn().pipe(
       switchMap((omPhonenumber) => {
         return this.http
@@ -58,11 +67,16 @@ export class RecentsService {
         response.content.data.status === '200')
     );
     if (error) return [];
-    const recents: any = response.content.data.historiqueTransactions.slice(
-      0,
-      numberToDisplay
-    );
-    return recents.length > 0 ? recents : [];
+    let recents: any = response.content.data.historiqueTransactions;
+    recents =
+      recents.length > 0
+        ? recents.sort((r1, r2) => {
+            if (r1.date > r2.date) return -1;
+            if (r1.date < r2.date) return 1;
+            return 0;
+          })
+        : [];
+    return recents.slice(0, numberToDisplay);
   }
 
   mapRecentsToContacts(recents: RecentsOem[], contacts: CustomContact[]) {

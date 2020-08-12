@@ -198,6 +198,16 @@ mat-dialog-container.mat-dialog-container {
     border: none;
   }
 }
+
+.sargal-content-filter {
+  .filter-container {
+    .mat-button-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}
 .mat-menu-panel.left,
 .mat-menu-panel.right {
   border: 1.5px solid black;

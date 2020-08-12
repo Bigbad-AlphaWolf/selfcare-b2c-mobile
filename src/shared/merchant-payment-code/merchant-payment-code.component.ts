@@ -9,10 +9,10 @@ import { ModalController } from '@ionic/angular';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MarchandOem } from 'src/app/models/marchand-oem.model';
-import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
+import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 
 @Component({
   selector: 'app-merchant-payment-code',
@@ -31,7 +31,7 @@ export class MerchantPaymentCodeComponent implements OnInit {
     private orangeMoneyService: OrangeMoneyService,
     private applicationRoutingService: ApplicationRoutingService,
     private ref: ChangeDetectorRef,
-    private bsBillsHubService: BsBillsHubService,
+    private bsService: BottomSheetService,
     private recentsService: RecentsService,
     private modalController: ModalController
   ) {}
@@ -40,23 +40,6 @@ export class MerchantPaymentCodeComponent implements OnInit {
     this.getRecentMerchants();
     this.merchantCodeForm = this.fb.group({
       merchantCode: ['', [Validators.required]],
-    });
-    this.bsBillsHubService.bsRef.subscribe((ref) => {
-      ref.afterDismissed().subscribe((result: any) => {
-        if (result && result.TYPE_BS === 'FAVORIES' && result.ACTION === 'BACK')
-          this.bsBillsHubService.openBSCounterSelection(
-            MerchantPaymentCodeComponent
-          );
-
-        if (result && result.ACTION === 'FORWARD') {
-          const payload = {
-            purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
-            merchantCode: result.merchant.merchantCode,
-            merchantName: result.merchant.name,
-          };
-          this.applicationRoutingService.goSetAmountPage(payload);
-        }
-      });
     });
   }
 
@@ -67,17 +50,20 @@ export class MerchantPaymentCodeComponent implements OnInit {
     this.orangeMoneyService.getMerchantByCode(code).subscribe(
       (response: any) => {
         this.chekingMerchant = false;
-        const payload = {
-          purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
-          merchantCode: code,
-          merchantName: response.content.data.nom_marchand,
-        };
+
         if (
           response &&
           response.status_code &&
           (response.status_code.match('Success') ||
             response.status_code.match('Erreur-601'))
         ) {
+          const payload = {
+            purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
+            merchant: {
+              name: response.content.data.nom_marchand,
+              merchantCode: code,
+            },
+          };
           this.applicationRoutingService.goSetAmountPage(payload);
           this.modalController.dismiss();
         } else {
@@ -94,25 +80,9 @@ export class MerchantPaymentCodeComponent implements OnInit {
     );
   }
 
-  async resetOmToken(err) {
-    const modal = await this.modalController.create({
-      component: NewPinpadModalPage,
-      cssClass: 'pin-pad-modal',
-      componentProps: {
-        operationType: null,
-      },
-    });
-    await modal.present();
-    let result = await modal.onDidDismiss();
-    if (result && result.data && result.data.success) return of(err);
-    throw new HttpErrorResponse({
-      error: { title: 'Pinpad cancled', name: 'pinpadDismissed' },
-      status: 401,
-    });
-  }
-
   onMyFavorites() {
-    this.bsBillsHubService.openBSFavoriteCounters(FavoriteMerchantComponent);
+    this.modalController.dismiss();
+    this.bsService.openModal(FavoriteMerchantComponent);
   }
 
   onCheckingMerchantError(msg?: string) {
@@ -124,17 +94,15 @@ export class MerchantPaymentCodeComponent implements OnInit {
   onRecentMerchantSelected(merchant: any) {
     const payload = {
       purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
-      merchantCode: merchant.merchantCode,
-      merchantName: merchant.name,
+      merchant: merchant,
     };
     this.applicationRoutingService.goSetAmountPage(payload);
     this.modalController.dismiss();
   }
 
   getRecentMerchants() {
-    const recentType = 'paiement_marchand';
     this.recentMerchants$ = this.recentsService
-      .fetchRecents(recentType, 3)
+      .fetchRecents(OPERATION_TYPE_MERCHANT_PAYMENT, 3)
       .pipe(
         map((recents: RecentsOem[]) => {
           let results = [];

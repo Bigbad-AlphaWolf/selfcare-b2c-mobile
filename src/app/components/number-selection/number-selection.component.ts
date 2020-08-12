@@ -1,4 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Inject,
+  ChangeDetectorRef,
+  Input,
+} from '@angular/core';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
 import {
   formatPhoneNumber,
   REGEX_NUMBER_OM,
@@ -21,6 +28,7 @@ import { NumberSelectionOption } from 'src/app/models/enums/number-selection-opt
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
+import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
 
 @Component({
   selector: 'oem-number-selection',
@@ -28,7 +36,7 @@ import { ContactsService } from 'src/app/services/contacts-service/contacts.serv
   styleUrls: ['./number-selection.component.scss'],
 })
 export class NumberSelectionComponent implements OnInit {
-  numbers$: Observable<string[]>;
+  numbers$: Observable<string[]> = of(['782363572', '776148081', '776148080']);
   recentsRecipients$: Observable<any[]>;
 
   numberSelected: string = '';
@@ -47,7 +55,6 @@ export class NumberSelectionComponent implements OnInit {
   @Input() data;
 
   constructor(
-    // @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private modalController: ModalController,
     private omService: OrangeMoneyService,
     private dashbServ: DashboardService,
@@ -67,27 +74,13 @@ export class NumberSelectionComponent implements OnInit {
       }),
       share()
     );
-    this.checkOmAccountSession();
-    this.getRecents();
+    this.opXtras.senderMsisdn = SessionOem.PHONE;
+    this.checkOmAccount();
   }
 
   getRecents() {
-    let recentType: string;
-    switch (this.data.purchaseType) {
-      case OPERATION_TYPE_RECHARGE_CREDIT:
-        recentType = 'achat_credit';
-        break;
-      case OPERATION_TYPE_PASS_INTERNET:
-        recentType = 'achat_pass_data';
-        break;
-      case OPERATION_TYPE_PASS_ILLIMIX:
-        recentType = 'achat_pass_illimix';
-        break;
-      default:
-        break;
-    }
     this.recentsRecipients$ = this.recentsService
-      .fetchRecents(recentType, 2)
+      .fetchRecents(this.data.purchaseType, 2)
       .pipe(
         map((recents: RecentsOem[]) => {
           let results = [];
@@ -131,20 +124,22 @@ export class NumberSelectionComponent implements OnInit {
 
   dismissBottomSheet() {
     this.isProcessing = true;
-    this.authService.getSubscription(this.opXtras.recipientMsisdn).subscribe(
-      (res: SubscriptionModel) => {
-        this.isProcessing = false;
-        this.opXtras.code = res.code;
-        this.opXtras.profil = res.profil;
-        this.modalController.dismiss(this.opXtras);
-        // this.bottomSheetRef.dismiss(this.opXtras);
-      },
-      (err: any) => {
-        this.isProcessing = false;
-        this.modalController.dismiss();
-        // this.bottomSheetRef.dismiss();
-      }
-    );
+    this.authService
+      .getSubscriptionForTiers(this.opXtras.recipientMsisdn)
+      .subscribe(
+        (res: SubscriptionModel) => {
+          this.isProcessing = false;
+          this.opXtras.code = res.code;
+          this.opXtras.profil = res.profil;
+          this.modalController.dismiss(this.opXtras);
+          // this.bottomSheetRef.dismiss(this.opXtras);
+        },
+        (err: any) => {
+          this.isProcessing = false;
+          this.modalController.dismiss();
+          // this.bottomSheetRef.dismiss();
+        }
+      );
   }
 
   onPhoneSelected(opContacts: OperationExtras) {
@@ -165,26 +160,26 @@ export class NumberSelectionComponent implements OnInit {
     this.canNotRecieve = false;
   }
 
-  checkOmAccountSession() {
+  checkOmAccount() {
     this.isProcessing = true;
-    this.omService.omAccountSession().subscribe(
-      (omSession: any) => {
-        this.omSession = omSession;
+    this.omService.getOmMsisdn().subscribe(
+      (msisdn: any) => {
         this.isProcessing = false;
         this.changeDetectorRef.detectChanges();
 
         if (
-          omSession.msisdn === 'error' ||
-          !omSession.hasApiKey ||
-          !omSession.accessToken ||
-          omSession.loginExpired
+          msisdn === 'error' &&
+          this.data.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT
         ) {
+          //force user to have om account
           this.modalController.dismiss();
           this.openPinpad();
         }
 
-        if (omSession.msisdn !== 'error')
-          this.opXtras.senderMsisdn = omSession.msisdn;
+        if (msisdn !== 'error') {
+          this.opXtras.senderMsisdn = msisdn;
+          this.getRecents();
+        }
       },
       () => {
         this.modalController.dismiss();
@@ -195,7 +190,7 @@ export class NumberSelectionComponent implements OnInit {
 
   async canRecieveCredit() {
     if (this.opXtras.forSelf) return true;
-    this.isProcessing = true;
+
     let canRecieve = await this.authService
       .canRecieveCredit(this.opXtras.recipientMsisdn)
       .pipe(
@@ -205,7 +200,6 @@ export class NumberSelectionComponent implements OnInit {
         })
       )
       .toPromise();
-    this.isProcessing = false;
     return canRecieve;
   }
 
