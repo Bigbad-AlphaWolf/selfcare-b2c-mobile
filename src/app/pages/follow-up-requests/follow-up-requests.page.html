@@ -35,11 +35,13 @@
         Mes réclamations
       </div>
       <div class="requests" *ngIf="requests$ | async as requests">
-        <div class="none" *ngIf="!requests.length">Aucune réclamation</div>
-        <oem-request-card
-          *ngFor="let request of requests"
-          [request]="request"
-        ></oem-request-card>
+        <div class="none" *ngIf="!requests.length">Aucune réclamation pour ce numéro</div>
+          <oem-request-card
+            *ngFor="let request of requests"
+            [request]="request"
+            (click)="onRequestChoosen(request)"
+            
+          ></oem-request-card>
       </div>
     </div>
     <div class="autre">
@@ -64,9 +66,10 @@
         <div class="is-confirmer" *ngIf="isConfirm">
           <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
         </div>
-        <div *ngIf="noRequest" class="error-msg scb-text-red-error">
-          Aucune demande ou incident ne correspond au numéro renseigné!
-        </div>
+        
+      </div>
+      <div *ngIf="noRequest" class="error-msg scb-text-red-error">
+        Aucune demande ou incident ne correspond au numéro renseigné!
       </div>
     </div>
   </div>

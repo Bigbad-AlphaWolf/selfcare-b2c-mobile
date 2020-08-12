@@ -22,6 +22,7 @@
         <oem-request-card
           *ngFor="let request of requestService.currentRequestStatus"
           [request]="request"
+          [fullDescription]="true"
         ></oem-request-card>
       </div>
     </div>

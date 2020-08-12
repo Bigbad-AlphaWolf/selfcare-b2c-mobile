@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { tap, takeUntil, delay } from 'rxjs/operators';
+import { tap, takeUntil, delay, catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { RequestOem } from 'src/app/models/request-oem.model';
 import { RequestOemService } from 'src/app/services/request-oem/request-oem.service';
@@ -35,6 +35,7 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
     this.isInitRequests = true;
     this.dashboardService.fetchFixedNumbers().pipe(
       tap((numbers) => {
+        // numbers = ['338239614'];
         if (numbers.length) {
           this.phoneFix = numbers[0];
           this.requests$ = this.requestSrvice.fetchRequests(this.phoneFix).pipe(
@@ -49,6 +50,17 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
     ).subscribe();
   }
 
+  onRequestChoosen(req:RequestOem){
+    this.isInitRequests = true;
+    this.requestSrvice.requestStatus(req.requestId).pipe(
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe((r) => {
+      this.isInitRequests = false;
+      this.requestSrvice.currentRequestStatusId = req.requestId;
+      this.navCtrl.navigateForward([RequestStatusPage.PATH_ROUTE]);
+    });
+  }
+
   onConfirmer() {
     this.isConfirm = true;
     let numberSuivi = this.numberInput.nativeElement.value;
@@ -57,6 +69,10 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
       return;
     }
     this.requestSrvice.requestStatus(numberSuivi).pipe(
+      catchError((err)=>{
+        this.isConfirm = false;
+        throw err;
+      }),
       takeUntil(this.ngUnsubscribe)
     ).subscribe((r) => {
       this.isConfirm = false;

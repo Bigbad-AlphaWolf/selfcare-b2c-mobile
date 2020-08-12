@@ -8,7 +8,7 @@ import { RequestOem } from 'src/app/models/request-oem.model';
 })
 export class RequestCardComponent implements OnInit {
   @Input('request') request: RequestOem;
-
+  @Input ('fullDescription') fullDescription : boolean = false;
   constructor() { }
 
   ngOnInit() { }

@@ -50,12 +50,16 @@ ion-content {
     padding: 15px;
     .requests{
         .none{
-            font-size: 16px;
+            font-size: 14px;
             line-height: 1.25;
             color: #666666;
+            margin-left: 10px;
+            margin-bottom: 100px;
+
         }
     }
     .autre {
+        margin-top: 20px;
       .fieldArea {
         position: relative;
         margin-top: 15px;

@@ -26,7 +26,6 @@
     }
   }
   .status {
-      width: 80px;
       margin-left: 15px;
     .band {
       border-radius: 20px;
@@ -36,7 +35,7 @@
       text-align: center;
       color: #ffcc00;
       padding: 5px 10px;
-      width: 80px;
+      min-width: 80px;
     }
     .band-vert {
         border-radius: 20px;
