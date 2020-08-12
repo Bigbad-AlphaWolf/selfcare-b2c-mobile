@@ -15,6 +15,7 @@ import {
   SubscriptionModel,
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TYPE_BONS_PLANS,
+  OPERATION_TYPE_PASS_VOYAGE,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -115,6 +116,21 @@ export class OperationRecapPage implements OnInit {
               };
               this.offerPlan = state.offerPlan;
               break;
+            case OPERATION_TYPE_PASS_VOYAGE:
+              this.opXtras = state;
+              this.recipientMsisdn = this.opXtras.recipientMsisdn;
+              this.recipientName = this.opXtras.recipientFromContact
+                ? this.opXtras.recipientFirstname +
+                ' ' +
+                  this.opXtras.recipientLastname
+                  : '';
+              this.buyPassPayload = {
+                destinataire: this.recipientMsisdn,
+                pass: this.opXtras.pass,
+              };
+              this.passChoosen = this.opXtras.pass;
+              this.offerPlan = state.offerPlan;
+              break;
             case OPERATION_TRANSFER_OM_WITH_CODE:
               this.recipientMsisdn = state.recipientMsisdn;
               this.amount = state.amount + state.fee;
@@ -143,8 +159,8 @@ export class OperationRecapPage implements OnInit {
               break;
             case OPERATION_TYPE_MERCHANT_PAYMENT:
               this.amount = state.amount;
-              this.merchantCode = state.merchantCode;
-              this.merchantName = state.merchantName;
+              this.merchantCode = state.merchant.merchantCode;
+              this.merchantName = state.merchant.name;
               this.paymentMod = 'ORANGE_MONEY';
               this.merchantPaymentPayload = {
                 amount: this.amount,
@@ -186,6 +202,7 @@ export class OperationRecapPage implements OnInit {
   pay() {
     switch (this.purchaseType) {
       case OPERATION_TYPE_PASS_INTERNET:
+      case OPERATION_TYPE_PASS_VOYAGE:
       case OPERATION_TYPE_PASS_ILLIMIX:
         this.setPaymentMod();
         break;
@@ -275,7 +292,6 @@ export class OperationRecapPage implements OnInit {
     params.amount = this.amount;
     params.merchantCode = this.merchantCode;
     params.merchantName = this.merchantName;
-    console.log(params, 'params');
 
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
@@ -387,7 +403,7 @@ export class OperationRecapPage implements OnInit {
   }
 
   get operationTypeRecap() {
-    return ['RECHARGEMENT_CREDIT', 'OPERATION_WOYOFAL'].includes(
+    return ['RECHARGEMENT_CREDIT', 'OPERATION_WOYOFAL', 'OPERATION_TYPE_PASS_VOYAGE'].includes(   
       this.purchaseType
     );
   }

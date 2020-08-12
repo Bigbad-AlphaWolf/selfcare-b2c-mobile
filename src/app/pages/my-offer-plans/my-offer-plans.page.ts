@@ -7,7 +7,7 @@ import { AuthenticationService } from '../../services/authentication-service/aut
 import { SubscriptionModel, BONS_PLANS, OPERATION_TYPE_PASS_ILLIMIX, OPERATION_TYPE_PASS_INTERNET, listRegisterSargalBonPlanText } from 'src/shared';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NavController, IonSlides } from '@ionic/angular';
-import { getPageTitle } from '../../utils/title.util';
+import { getPageHeader } from '../../utils/title.util';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 
 @Component({
@@ -50,7 +50,7 @@ export class MyOfferPlansPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.pageTitle = getPageTitle(BONS_PLANS).title;
+    this.pageTitle = getPageHeader(BONS_PLANS).title;
     this.getUserOfferPlans();
     this.payloadNavigation.recipientMsisdn = this.dashbServ.getCurrentPhoneNumber();
     this.authServ.getSubscription(this.payloadNavigation.recipientMsisdn).subscribe((res: SubscriptionModel) => {
@@ -111,9 +111,7 @@ export class MyOfferPlansPage implements OnInit {
         return offerPlanUncategorized.typeMPO.toLowerCase() === category.value.toLowerCase()
       })
       return value
-    })
-    console.log(this.fullList);
-    
+    })    
   }
 
   changeCategory(tabIndex: number) {
@@ -144,7 +142,7 @@ export class MyOfferPlansPage implements OnInit {
         break;
 
       case 'recharge':
-        const opBuyCreditSetAmountPayload: OperationExtras = {forSelf: true,recipientFirstname: null,recipientLastname: null,recipientFromContact: false,senderMsisdn: this.payloadNavigation.recipientMsisdn, offerPlan: offer }
+        const opBuyCreditSetAmountPayload: OperationExtras = {forSelf: true,recipientFirstname: null,recipientLastname: null,recipientFromContact: false,senderMsisdn: this.payloadNavigation.recipientMsisdn, ...this.payloadNavigation, offerPlan: offer }
         this.appliRout.goToBuyCreditSetAmount(opBuyCreditSetAmountPayload)
         break;
 

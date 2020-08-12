@@ -39,7 +39,7 @@ export class OrangeBillsPage implements OnInit {
     this.initData();
   }
   ngOnInit() {
-    this.months = previousMonths(8);
+    this.months = previousMonths();
     this.month = this.months[0];
     this.phone = SessionOem.PHONE;
     this.codeClient = SessionOem.CODE_CLIENT;

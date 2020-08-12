@@ -8,7 +8,7 @@ export function removeObjectField(obj: any, f: string) {
   return rest;
 }
 
-export function previousMonths(n: number) {
+export function previousMonths(n: number = 6) {
   let date = new Date();
   let r: MonthOem[] = [];
   for (let i = 0; i < n; i++) {

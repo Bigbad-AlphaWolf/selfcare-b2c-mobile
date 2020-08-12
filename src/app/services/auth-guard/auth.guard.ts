@@ -10,6 +10,7 @@ import { AuthenticationService } from '../authentication-service/authentication.
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { getConsoByCategory } from 'src/app/dashboard';
 import { USER_CONS_CATEGORY_CALL } from 'src/shared';
+import { SessionOem } from '../session-oem/session-oem.service';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +39,7 @@ export class AuthGuard implements CanActivate {
       this.router.navigate(['/home-v2']);
       return false;
     } else {
+      SessionOem.updateAbort = false;
       if (
         state.url === '/' ||
         state.url === '/login' ||

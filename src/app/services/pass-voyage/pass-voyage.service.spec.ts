@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { BsBillsHubService } from './bs-bills-hub.service';
+import { PassVoyageService } from './pass-voyage.service';
 
-describe('BsBillsHubService', () => {
+describe('PassVoyageService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: BsBillsHubService = TestBed.get(BsBillsHubService);
+    const service: PassVoyageService = TestBed.get(PassVoyageService);
     expect(service).toBeTruthy();
   });
 });

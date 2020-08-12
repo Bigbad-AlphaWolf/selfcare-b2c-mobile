@@ -4,14 +4,12 @@ import {
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
+  OPERATION_TYPE_MERCHANT_PAYMENT,
 } from 'src/shared';
 
 export const OPERATION_WOYOFAL = 'OPERATION_WOYOFAL';
 export const OPERATION_RECHARGE_CREDIT = 'OPERATION_RECHARGE_CREDIT';
-export const OPERATION_ACHAT_PASS = 'OPERATION_ACHAT_PASS';
-export const OPERATION_ACHAT_ILLIMIX = 'OPERATION_ACHAT_ILLIMIX';
 export const OPERATION_TRANSFERT_ARGENT = 'OPERATION_TRANSFERT_ARGENT';
-export const OPERATION_PAYER_MARCHAND = 'OPERATION_PAYER_MARCHAND';
 
 export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
   {
@@ -39,7 +37,7 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
     icon: `${IMAGES_DIR_PATH}/ic-internet-browser@2x.png`,
     action: 'openNumberSelectionBottomSheet',
     params: ['NONE', OPERATION_TYPE_PASS_INTERNET, '/list-pass'],
-    type: OPERATION_ACHAT_PASS,
+    type: OPERATION_TYPE_PASS_INTERNET,
     url: '',
   },
   {
@@ -48,14 +46,14 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
     icon: `${IMAGES_DIR_PATH}/ic-package-services@2x.png`,
     action: 'openNumberSelectionBottomSheet',
     params: ['NONE', OPERATION_TYPE_PASS_ILLIMIX, '/list-pass'],
-    type: OPERATION_ACHAT_ILLIMIX,
+    type: OPERATION_TYPE_PASS_ILLIMIX,
     url: '',
   },
   {
     title: 'Recharger',
     subtitle: 'Woyofal',
     icon: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
-    action: 'openBSCounterSelection',
+    action: 'openModal',
     type: OPERATION_WOYOFAL,
     url: '',
   },
@@ -77,9 +75,8 @@ export const ACTIONS_RAPIDES_OPERATIONS_POSTPAID: OperationOem[] = [
     title: 'Payer',
     subtitle: 'un marchand',
     icon: `${IMAGES_DIR_PATH}/ic-scan-ticket.svg`,
-    action: 'openMerchantPayment',
-    params: [],
-    type: OPERATION_TRANSFERT_ARGENT,
+    action: 'openModal',
+    type: OPERATION_TYPE_MERCHANT_PAYMENT,
     url: '',
   },
 

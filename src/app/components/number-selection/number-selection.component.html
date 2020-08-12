@@ -47,7 +47,7 @@
     Le numéro de votre destinataire ne peut pas recevoir de credit.
   </div>
   <div class="recents" *ngIf="recentsRecipients$ | async as recents">
-    <div class="recent-description scb-text-full-black">
+    <div class="recent-description scb-text-full-black" *ngIf="recents.length">
       Récents
     </div>
     <div
@@ -57,11 +57,13 @@
       *ngFor="let recent of recents"
     >
       <div class="logo scb-text-white">
-        {{ 'C' }}
+        {{ recent.name ? (recent.name | acronym) : 'C' }}
       </div>
       <div class="labels">
-        <span class="name"> {{ recent.msisdn | phoneNumberDisplay }}</span>
-        <!-- <span class="number scb-text-gray">{{ recent.msisdn }}</span> -->
+        <span class="name" *ngIf="recent.name">{{ recent.name }}</span>
+        <span class="number scb-text-gray">{{
+          recent.msisdn | phoneNumberDisplay
+        }}</span>
       </div>
     </div>
   </div>

@@ -1,19 +1,25 @@
-import { Injectable } from "@angular/core";
+import { Injectable, RendererFactory2, Inject, Renderer2 } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Subject, Observable, Subscription, of, forkJoin } from "rxjs";
-import { tap, map, switchMap, catchError, share } from "rxjs/operators";
+import {
+  Subject,
+  Observable,
+  Subscription,
+  of,
+} from "rxjs";
+import {
+  tap,
+  map,
+  switchMap,
+  catchError,
+  share,
+} from "rxjs/operators";
 import * as SecureLS from "secure-ls";
 import { environment } from "src/environments/environment";
 import { AuthenticationService } from "../authentication-service/authentication.service";
 import { BuyPassModel, TransfertBonnus, TransferCreditModel } from ".";
-import {
-  SubscriptionUserModel,
-  JAMONO_ALLO_CODE_FORMULE,
-  SubscriptionModel,
-  REGEX_FIX_NUMBER,
-} from "src/shared";
-import { SessionOem } from "../session-oem/session-oem.service";
-import { ModelOfSouscription } from "src/app/dashboard";
+import { SubscriptionUserModel, JAMONO_ALLO_CODE_FORMULE, SubscriptionModel, REGEX_FIX_NUMBER } from "src/shared";
+import { DOCUMENT } from '@angular/platform-browser';
+import { SessionOem } from '../session-oem/session-oem.service';
 const {
   SERVER_API_URL,
   SEDDO_SERVICE,
@@ -80,13 +86,14 @@ export class DashboardService {
   msisdn: string;
   screenWatcher: Subscription;
   isMobile = true;
+  private renderer: Renderer2;
   constructor(
-    // rendererFactory: RendererFactory2,
-    // @Inject(DOCUMENT) private _document,
+    rendererFactory: RendererFactory2,
+    @Inject(DOCUMENT) private _document,
     private http: HttpClient,
     private authService: AuthenticationService
   ) {
-    // this.renderer = rendererFactory.createRenderer(null, null);
+   this.renderer = rendererFactory.createRenderer(null, null);
     authService.currentPhoneNumberSetSubject.subscribe((value) => {
       if (value) {
         this.user = this.authService.getLocalUserInfos();
@@ -270,35 +277,65 @@ export class DashboardService {
     return this.authService.getUserMainPhoneNumber();
   }
 
-  // addDimeloScript() {
-  //   // Dimelo user information
-  //   const userInfos = ls.get('user');
-  //   const fullName = userInfos.firstName + ' ' + userInfos.lastName;
-  //   const s = this.renderer.createElement('script');
-  //   s.type = 'text/javascript';
-  //   s.text =
-  //     'var _chatq = _chatq || [];' +
-  //     '_chatq.push(["_setIdentity", {' +
-  //     '"screenname": "' +
-  //     fullName +
-  //     '",' + // full name
-  //     '"avatar_url": "https://orangeetmoi.orange.sn/content/icons/icon-72x72.png",' + // ibou image
-  //     '"firstname": "' +
-  //     userInfos.firstName +
-  //     '",' +
-  //     '"lastname": "' +
-  //     userInfos.lastName +
-  //     '",' +
-  //     '"email": "",' +
-  //     '"uuid": "' +
-  //     userInfos.numero +
-  //     '",' +
-  //     '"extra_values": {' +
-  //     '"customer_id": "' +
-  //     userInfos.numero +
-  //     '"}}]);';
-  //   this.renderer.appendChild(this._document.body, s);
-  // }
+  addDimeloScript() {
+    // Dimelo user information
+    const userInfos = ls.get('user');
+    const fullName = userInfos.firstName + ' ' + userInfos.lastName;
+    const s = this.renderer.createElement('script');
+    s.type = 'text/javascript';
+    s.text =
+      'var _chatq = _chatq || [];' +
+      '_chatq.push(["_setIdentity", {' +
+      '"screenname": "' +
+      fullName +
+      '",' + // full name
+      '"avatar_url": "https://orangeetmoi.orange.sn/content/icons/icon-72x72.png",' + // ibou image
+      '"firstname": "' +
+      userInfos.firstName +
+      '",' +
+      '"lastname": "' +
+      userInfos.lastName +
+      '",' +
+      '"email": "",' +
+      '"uuid": "' +
+      userInfos.numero +
+      '",' +
+      '"mobile_phone": "' +
+      userInfos.numero +
+      '",' +
+      '"extra_values": {' +
+      '"customer_id": "' +
+      userInfos.numero +
+      '"}}]);';
+    this.renderer.appendChild(this._document.body, s);
+  }
+  
+  addDimeloScriptTotrigger() {
+    const s = this.renderer.createElement('script');
+    s.type = 'text/javascript';
+    s.text =
+      'var t = Dimelo.Chat.Manager.ChatQLoader.manager.triggers[1];' +
+      'Dimelo.Chat.Manager.ChatQLoader.manager.activateTrigger(t);';
+    this.renderer.appendChild(this._document.body, s);
+  }
+
+  prepareScriptChatIbou(){
+    this.removeScriptChatIbouIfExist()
+    const s = this.renderer.createElement('script');
+    s.type = 'text/javascript';
+    s.text =
+      'var trigger_id = "5f04681b0e69dc63aac7bb0e";' +
+      'loadChatTrigger(trigger_id)';
+    s.id = "ibou"
+    this.renderer.appendChild(this._document.body, s);
+  }
+
+  removeScriptChatIbouIfExist(){
+    const scriptIbou = document.getElementById('ibou');
+    if (scriptIbou) {
+      scriptIbou.remove();
+    }
+  }
 
   getAccountInfo(userLogin: string) {
     return this.http

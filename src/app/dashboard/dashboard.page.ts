@@ -72,6 +72,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     } else if (this.platform.is('android')) {
       this.appId = 'com.orange.myorange.osn';
     }
+    this.dashboardServ.addDimeloScript();
   }
 
   async checkForUpdate() {
@@ -102,10 +103,10 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.getCurrentSubscription();
-    if (!this.isFirebaseTokenSent) {
-      this.authServ.UpdateNotificationInfo();
-      this.isFirebaseTokenSent = true;
-    }
+    // if (!this.isFirebaseTokenSent) {
+    //   this.authServ.UpdateNotificationInfo();
+    //   this.isFirebaseTokenSent = true;
+    // }
   }
   ionViewDidEnter() {
     // Initialize BackButton Eevent.

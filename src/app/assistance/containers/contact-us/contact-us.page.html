@@ -1,6 +1,6 @@
 <ion-header>
   <div class="contact-container-header">
-    <div routerLink="/assistance" class="arrow-icon">
+    <div (click)="goBack()" class="arrow-icon">
       <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
     </div>
     <span class="text scb-text-l-black">Nous contacter</span>
@@ -11,7 +11,7 @@
   <div class="contact-container">
     <div class="contact-container-body">
       <div class="contact-container-body-block">
-        <div id="dimelo_chat_item_markup_f44d42108d59e7f81fe2e086" class="dimelo_chat_item_markup"></div>
+        <div [id]=DIMELO_CHAT_MARKUP class="dimelo_chat_item_markup"></div>
         <div class="contact-container-body-block-list-channel">
           <div (click)="goToPage('facebook')" class="list-channel-item-container">
             <div class="list-channel-item facebook">

@@ -4,11 +4,9 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'acronym',
 })
 export class AcronymPipe implements PipeTransform {
-  transform(value: any, args?: any): any {
+  transform(value: string, args?: any): any {
     if (value) {
-      const matches = value.match(/\b(\w)/g);
-      const acronym = matches.join(' ');
-      return acronym;
+      return value.substring(0,1).toUpperCase();
     }
     return '';
   }

@@ -2,6 +2,7 @@ import { BillCompany } from "./bill-company.model";
 import { CounterOem } from "./counter-oem.model";
 import { OmSession } from './om-session.model';
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
+import { MarchandOem } from './marchand-oem.model';
 
 export interface OperationExtras {
   senderMsisdn?: string;
@@ -25,5 +26,7 @@ export interface OperationExtras {
   billData?: { company?: BillCompany; counter?: CounterOem, codeRecharge?:string, kw?:number };
   omSession?: OmSession;
 
-  offerPlan?: OfferPlan
+  offerPlan?: OfferPlan;
+  pass?:any;
+  merchant?: MarchandOem
 }

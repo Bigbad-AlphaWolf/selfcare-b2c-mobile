@@ -2,8 +2,6 @@ import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { CounterOem } from 'src/app/models/counter-oem.model';
 import { Observable, of } from 'rxjs';
 import { CounterService } from 'src/app/services/counter/counter.service';
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
-import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
 import { FavoriteCountersComponent } from '../favorite-counters/favorite-counters.component';
 
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
@@ -12,6 +10,8 @@ import { ModalController } from '@ionic/angular';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { map } from 'rxjs/operators';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
+import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
+import { OPERATION_WOYOFAL } from 'src/app/utils/operations.util';
 
 @Component({
   selector: 'app-counter-selection',
@@ -21,26 +21,28 @@ import { RecentsOem } from 'src/app/models/recents-oem.model';
 export class CounterSelectionComponent implements OnInit {
   isProcessing: boolean = false;
   inputCounterNumber: string = '';
-  counters$: Observable<CounterOem[]> = of([
-    { name: 'Maison Nord-foire', counterNumber: '14256266199' },
-    { name: 'Audi Q5', counterNumber: '14256266199' },
-  ]);
+  // counters$: Observable<CounterOem[]> = of([
+  //   { name: 'Maison Nord-foire', counterNumber: '14256266199' },
+  //   { name: 'Audi Q5', counterNumber: '14256266199' },
+  // ]);
+  counters$: Observable<CounterOem[]>;
   constructor(
     private counterService: CounterService,
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-    private bsBillsHubService: BsBillsHubService,
-    private bsRef: MatBottomSheetRef,
-    private modalController: ModalController,
+    private bsService: BottomSheetService,
     private omService: OrangeMoneyService,
     private changeDetectorRef: ChangeDetectorRef,
-    private recentService: RecentsService
+    private recentService: RecentsService,
+    private modalCtrl: ModalController
   ) {}
 
   ngOnInit() {
-    this.counters$ = this.recentService.fetchRecents('paiement_woyofal').pipe(
+    this.checkOmAccount();
+  }
+
+  initRecents() {
+    this.counters$ = this.recentService.fetchRecents(OPERATION_WOYOFAL, 3).pipe(
       map((recents: RecentsOem[]) => {
         let results = [];
-        recents = recents.slice(0, 3);
         recents.forEach((el) => {
           results.push({
             name: el.titre,
@@ -50,11 +52,10 @@ export class CounterSelectionComponent implements OnInit {
         return results;
       })
     );
-    this.checkOmAccountSession();
   }
 
   onRecentCounterSlected(counter: CounterOem) {
-    this.bsRef.dismiss({
+    this.modalCtrl.dismiss({
       TYPE_BS: 'RECENTS',
       ACTION: 'FORWARD',
       counter: counter,
@@ -64,7 +65,7 @@ export class CounterSelectionComponent implements OnInit {
   onContinue() {
     if (!this.counterNumberIsValid) return;
 
-    this.bsRef.dismiss({
+    this.modalCtrl.dismiss({
       TYPE_BS: 'INPUT',
       ACTION: 'FORWARD',
       counter: { name: 'Autre', counterNumber: this.inputCounterNumber },
@@ -72,7 +73,8 @@ export class CounterSelectionComponent implements OnInit {
   }
 
   onMyFavorites() {
-    this.bsBillsHubService.openBSFavoriteCounters(FavoriteCountersComponent);
+    this.modalCtrl.dismiss();
+    this.bsService.openModal(FavoriteCountersComponent);
   }
 
   onInputChange(counterNumber) {
@@ -87,37 +89,32 @@ export class CounterSelectionComponent implements OnInit {
     );
   }
 
-  checkOmAccountSession() {
+  checkOmAccount() {
     this.isProcessing = true;
-    this.omService.omAccountSession().subscribe(
-      (omSession: any) => {
-        this.bsBillsHubService.opXtras.omSession = omSession;
+    this.omService.getOmMsisdn().subscribe(
+      (msisdn: any) => {
         this.isProcessing = false;
         this.changeDetectorRef.detectChanges();
 
-        if (
-          omSession.msisdn === 'error' ||
-          !omSession.hasApiKey ||
-          !omSession.accessToken ||
-          omSession.loginExpired
-        ) {
-          this.bsRef.dismiss();
+        if (msisdn === 'error') {
+          this.modalCtrl.dismiss();
           this.openPinpad();
         }
 
-        if (omSession.msisdn !== 'error') {
-          this.bsBillsHubService.opXtras.senderMsisdn = omSession.msisdn;
-          this.counterService.initFees(omSession.msisdn);
+        if (msisdn !== 'error') {
+          this.initRecents();
+          this.bsService.opXtras.senderMsisdn = msisdn;
+          this.counterService.initFees(msisdn);
         }
       },
-      (error) => {
-        this.bsRef.dismiss();
+      () => {
+        this.modalCtrl.dismiss();
       }
     );
   }
 
   async openPinpad() {
-    const modal = await this.modalController.create({
+    const modal = await this.modalCtrl.create({
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
@@ -126,7 +123,7 @@ export class CounterSelectionComponent implements OnInit {
     });
     modal.onDidDismiss().then((response) => {
       if (response.data && response.data.success) {
-        this.bsBillsHubService.opXtras.omSession.loginExpired = false;
+        this.bsService.opXtras.omSession.loginExpired = false;
       }
     });
     return await modal.present();

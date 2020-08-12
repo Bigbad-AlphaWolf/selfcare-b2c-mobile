@@ -1,9 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
-import { formatPhoneNumber, REGEX_NUMBER_OM } from 'src/shared';
+import {
+  formatPhoneNumber,
+  REGEX_NUMBER_OM,
+  OPERATION_TRANSFER_OM,
+} from 'src/shared';
 import { MatDialog } from '@angular/material';
 import { Contacts, Contact } from '@ionic-native/contacts';
-import { ModalController, NavController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { Router } from '@angular/router';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
@@ -11,10 +15,11 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { HttpErrorResponse } from '@angular/common/http';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { NoOmAccountModalComponent } from 'src/shared/no-om-account-modal/no-om-account-modal.component';
-import { switchMap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
+import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
 
 @Component({
   selector: 'app-select-beneficiary-pop-up',
@@ -50,6 +55,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
 
   ngOnInit() {
     this.getRecents();
+    console.log('out', ContactsService.allContacts);
   }
 
   ionViewWillEnter() {
@@ -57,15 +63,15 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   }
 
   getRecents() {
-    const recentType = '';
     this.recentsRecipients$ = this.recentsService
-      .fetchRecents('transfert_avec_code')
+      .fetchRecents(OPERATION_TRANSFER_OM, 3)
       .pipe(
         map((recents: RecentsOem[]) => {
           let results = [];
-          recents = recents.slice(0, 3);
+          console.log(recents);
           recents.forEach((el) => {
             results.push({
+              name: el.name,
               msisdn: el.destinataire,
             });
           });
