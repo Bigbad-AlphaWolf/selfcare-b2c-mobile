@@ -9,6 +9,7 @@ import {
   REGEX_NUMBER_OM,
   SubscriptionModel,
   OPERATION_TYPE_RECHARGE_CREDIT,
+  OPERATION_TYPE_PASS_VOYAGE,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -172,7 +173,8 @@ export class NumberSelectionComponent implements OnInit {
 
         if (msisdn !== 'error') {
           this.opXtras.senderMsisdn = msisdn;
-          this.getRecents();
+          if(OPERATION_TYPE_PASS_VOYAGE !== this.data.purchaseType)
+            this.getRecents();
         }
       },
       () => {
