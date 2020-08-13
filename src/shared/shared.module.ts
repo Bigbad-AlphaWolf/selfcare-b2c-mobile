@@ -79,11 +79,13 @@ import { NoIonSelectArrowDirective } from 'src/app/directives/no-ion-select-arro
 import { InvoiceCardComponent } from 'src/app/components/invoice-card/invoice-card.component';
 import { LinesComponent } from 'src/app/components/lines/lines.component';
 import { IbouIonFabComponent } from './ibou-ion-fab/ibou-ion-fab.component';
+import { RequestCardComponent } from 'src/app/components/request-card/request-card.component';
 
 @NgModule({
   declarations: [
     LinesComponent,
     InvoiceCardComponent,
+    RequestCardComponent,
     NoIonSelectArrowDirective,
     OemOperationsComponent,
     SelectBeneficiaryPopUpComponent,
@@ -182,6 +184,7 @@ import { IbouIonFabComponent } from './ibou-ion-fab/ibou-ion-fab.component';
   ],
   exports: [
     InvoiceCardComponent,
+    RequestCardComponent,
     LinesComponent,
     NoIonSelectArrowDirective,
     OemOperationsComponent,

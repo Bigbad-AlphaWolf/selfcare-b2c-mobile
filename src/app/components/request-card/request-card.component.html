@@ -1,0 +1,17 @@
+<div class="request" >
+  <div class="content">
+    <div class="id">Nᵒ{{ request.requestId }}</div>
+    <div class="description">
+      {{
+        !fullDescription && request.description.length > 60
+          ? request.description.slice(0, 60) + "..."
+          : request.description
+      }}
+    </div>
+  </div>
+  <div class="status">
+    <div [ngClass]="['CLOSED' , 'ACKNOWLEDGED'].includes(request.status) ? 'band-vert' : 'band'">
+      {{ request.title }}
+    </div>
+  </div>
+</div>

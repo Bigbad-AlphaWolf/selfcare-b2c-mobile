@@ -1,0 +1,18 @@
+@import "src/app/app";
+
+ion-content {
+  height: 100%;
+  .content {
+    height: 120%;
+    background-color: #f3f3f8;
+    padding: 15px;
+    .requests{
+        .none{
+            font-size: 16px;
+            line-height: 1.25;
+            color: #666666;
+        }
+    }
+
+  }
+}

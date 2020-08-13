@@ -1,23 +1,19 @@
-import { Injectable, RendererFactory2, Inject, Renderer2 } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { Injectable, RendererFactory2, Inject, Renderer2 } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Subject, Observable, Subscription, of } from 'rxjs';
+import { tap, map, switchMap, catchError, share } from 'rxjs/operators';
+import * as SecureLS from 'secure-ls';
+import { environment } from 'src/environments/environment';
+import { AuthenticationService } from '../authentication-service/authentication.service';
+import { BuyPassModel, TransfertBonnus, TransferCreditModel } from '.';
 import {
-  Subject,
-  Observable,
-  Subscription,
-  of,
-} from "rxjs";
-import {
-  tap,
-  map,
-  switchMap,
-  catchError,
-} from "rxjs/operators";
-import * as SecureLS from "secure-ls";
-import { environment } from "src/environments/environment";
-import { AuthenticationService } from "../authentication-service/authentication.service";
-import { BuyPassModel, TransfertBonnus, TransferCreditModel } from ".";
-import { SubscriptionUserModel, JAMONO_ALLO_CODE_FORMULE, SubscriptionModel } from "src/shared";
+  SubscriptionUserModel,
+  JAMONO_ALLO_CODE_FORMULE,
+  SubscriptionModel,
+  REGEX_FIX_NUMBER,
+} from 'src/shared';
 import { DOCUMENT } from '@angular/platform-browser';
+import { SessionOem } from '../session-oem/session-oem.service';
 const {
   SERVER_API_URL,
   SEDDO_SERVICE,
@@ -91,7 +87,7 @@ export class DashboardService {
     private http: HttpClient,
     private authService: AuthenticationService
   ) {
-   this.renderer = rendererFactory.createRenderer(null, null);
+    this.renderer = rendererFactory.createRenderer(null, null);
     authService.currentPhoneNumberSetSubject.subscribe((value) => {
       if (value) {
         this.user = this.authService.getLocalUserInfos();
@@ -238,6 +234,22 @@ export class DashboardService {
     return this.http.get(`${userLinkedPhoneNumberEndpoint}/${login}`);
   }
 
+  fetchFixedNumbers() {
+    return this.getAttachedNumbers().pipe(
+      map((elements: any) => {
+        let numbers = [];
+        if (REGEX_FIX_NUMBER.test(SessionOem.MAIN_PHONE))
+          numbers.push(SessionOem.MAIN_PHONE);
+        elements.forEach((element: any) => {
+          if (REGEX_FIX_NUMBER.test(element.msisdn))
+            numbers.push(element.msisdn);
+        });
+        return numbers;
+      }),
+      share()
+    );
+  }
+
   fetchOemNumbers() {
     const mainPhone = this.authService.getUserMainPhoneNumber();
     return this.http.get(`${userLinkedPhoneNumberEndpoint}/${mainPhone}`).pipe(
@@ -291,7 +303,7 @@ export class DashboardService {
       '"}}]);';
     this.renderer.appendChild(this._document.body, s);
   }
-  
+
   addDimeloScriptTotrigger() {
     const s = this.renderer.createElement('script');
     s.type = 'text/javascript';
@@ -301,18 +313,18 @@ export class DashboardService {
     this.renderer.appendChild(this._document.body, s);
   }
 
-  prepareScriptChatIbou(){
-    this.removeScriptChatIbouIfExist()
+  prepareScriptChatIbou() {
+    this.removeScriptChatIbouIfExist();
     const s = this.renderer.createElement('script');
     s.type = 'text/javascript';
     s.text =
       'var trigger_id = "5f04681b0e69dc63aac7bb0e";' +
       'loadChatTrigger(trigger_id)';
-    s.id = "ibou"
+    s.id = 'ibou';
     this.renderer.appendChild(this._document.body, s);
   }
 
-  removeScriptChatIbouIfExist(){
+  removeScriptChatIbouIfExist() {
     const scriptIbou = document.getElementById('ibou');
     if (scriptIbou) {
       scriptIbou.remove();

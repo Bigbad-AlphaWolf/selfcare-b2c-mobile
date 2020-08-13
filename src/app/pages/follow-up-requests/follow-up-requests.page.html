@@ -1,0 +1,76 @@
+<ion-header [oemIonHeaderParallax]="90">
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-back-button defaultHref="/dashboard" icon="" class="oem-back-button">
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>Suivi réclamation</ion-title>
+  </ion-toolbar>
+  <div class="top">
+    <div class="banner-image">
+      <div class="banner-background">
+        <div class="banner-container">
+          <div class="number">{{phoneFix|phoneNumberDisplay}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isInitRequests" class="spinner-wrapper">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  </div>
+</ion-header>
+<ion-content
+  no-bounce
+  has-bouncing="false"
+  forceOverscroll="false"
+  fullscreen="true"
+  mode="ios"
+  [scrollEvents]="true"
+>
+  <div class="content">
+    <div class="requests" *ngIf="phoneFix">
+      <div class="head">
+        Mes réclamations
+      </div>
+      <div class="requests" *ngIf="requests$ | async as requests">
+        <div class="none" *ngIf="!requests.length">Aucune réclamation pour ce numéro</div>
+          <oem-request-card
+            *ngFor="let request of requests"
+            [request]="request"
+            (click)="onRequestChoosen(request)"
+            
+          ></oem-request-card>
+      </div>
+    </div>
+    <div class="autre">
+      <div class="head">
+        Autres réclamations
+      </div>
+      <div class="fieldArea">
+        <form novalidate autocomplete="false">
+          <mat-form-field class="scb-input-row" appearance="outline">
+            <mat-label>Saisir numéro de suivi &nbsp;&nbsp;</mat-label>
+            <input #numberInput matInput type="text" maxlength="20" />
+          </mat-form-field>
+        </form>
+        <div
+          class="confirmer"
+          matRipple
+          (click)="onConfirmer()"
+          *ngIf="!isConfirm"
+        >
+          <span class="btn-confirmer">Confirmer</span>
+        </div>
+        <div class="is-confirmer" *ngIf="isConfirm">
+          <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
+        </div>
+        
+      </div>
+      <div *ngIf="noRequest" class="error-msg scb-text-red-error">
+        Aucune demande ou incident ne correspond au numéro renseigné!
+      </div>
+    </div>
+  </div>
+</ion-content>
