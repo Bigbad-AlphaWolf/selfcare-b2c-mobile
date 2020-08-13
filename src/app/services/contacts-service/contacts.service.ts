@@ -63,11 +63,16 @@ export class ContactsService {
       })
     ).pipe(
       map((contacts: any[]) => {
+        console.log(contacts);
         const result = contacts.map(({ name, phoneNumbers, ...left }) => {
-          const numbers = phoneNumbers.map((element) => {
-            return formatPhoneNumber(element.value);
-          });
-          return { name, numbers };
+          console.log(phoneNumbers);
+          if (phoneNumbers) {
+            const numbers = phoneNumbers.map((element) => {
+              return formatPhoneNumber(element.value);
+            });
+            return { name, numbers };
+          }
+          return { name, numbers: [] };
         });
         ContactsService.allContacts = result;
         return result;
