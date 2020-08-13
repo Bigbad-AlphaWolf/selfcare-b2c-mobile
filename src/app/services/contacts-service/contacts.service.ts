@@ -64,10 +64,13 @@ export class ContactsService {
     ).pipe(
       map((contacts: any[]) => {
         const result = contacts.map(({ name, phoneNumbers, ...left }) => {
-          const numbers = phoneNumbers.map((element) => {
-            return formatPhoneNumber(element.value);
-          });
-          return { name, numbers };
+          if (phoneNumbers) {
+            const numbers = phoneNumbers.map((element) => {
+              return formatPhoneNumber(element.value);
+            });
+            return { name, numbers };
+          }
+          return { name, numbers: [] };
         });
         ContactsService.allContacts = result;
         return result;
