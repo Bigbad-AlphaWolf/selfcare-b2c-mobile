@@ -15,6 +15,9 @@ import { DetailsConsoPage } from './details-conso/details-conso.page';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { UuidService } from './services/uuid-service/uuid.service';
 import { v4 as uuidv4 } from 'uuid';
+import { TransfertHubServicesPage } from './transfert-hub-services/transfert-hub-services.page';
+import { ApplicationRoutingService } from './services/application-routing/application-routing.service';
+import { checkUrlMatch } from './utils/utils';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -34,7 +37,9 @@ export class AppComponent {
     private splash: SplashScreen,
     private appMinimize: AppMinimize,
     private router: Router,
-    private deeplinks: Deeplinks  ) {
+    private deeplinks: Deeplinks,
+    private appRout: ApplicationRoutingService
+    ) {
     this.initializeApp();
   }
 
@@ -151,24 +156,34 @@ export class AppComponent {
     if(this.deeplinks){
       this.deeplinks
         .route({
-          '/buy-pass-internet': BuyPassInternetPage,
+          '/buy-pass-internet': TransfertHubServicesPage,
           '/buy-pass-internet/:id': BuyPassInternetPage,
           '/assistance': AssistancePage,
-          '/buy-pass-illimix': BuyPassIllimixPage,
+          '/buy-pass-illimix': TransfertHubServicesPage,
           '/buy-pass-illimix/:id': BuyPassIllimixPage,
-          '/buy-credit': BuyCreditPage,
+          '/buy-credit': TransfertHubServicesPage,
           '/details-conso': DetailsConsoPage,
         })
         .subscribe(
           (matched) => {
-            this.router.navigate([matched.$link.path]);
+            this.goToPage(matched.$link.path)
+            // this.router.navigate([matched.$link.path]);
             console.log(matched);
+
           },
           () => {
             // console.log(notMatched);
             // console.log('deeplink not matched');
           }
         );
+    }
+  }
+
+  goToPage(path: string){
+    if( checkUrlMatch(path) ){
+      this.appRout.goToTransfertHubServicesPage('BUY');
+    }else {
+      this.router.navigate([path])
     }
   }
 

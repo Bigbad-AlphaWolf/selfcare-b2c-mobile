@@ -28,3 +28,12 @@ export function checkUrlMatchOM(url: string) {
   }
   return false;
 }
+
+export function checkUrlMatch(path: string) {
+  const transferHubServices = ['/buy-pass-internet', '/buy-pass-illimix','/buy-credit'];
+
+  for (let i = 0; i < transferHubServices.length; i++) {
+    if (path.startsWith(transferHubServices[i])) return true;
+  }
+  return false;
+}
