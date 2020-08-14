@@ -20,10 +20,12 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
   @ViewChild('numberInput') numberInput: ElementRef;
   isConfirm: boolean;
   noRequest: boolean;
+  isNotValid: boolean;
   constructor(
-    private dashboardService: DashboardService, 
+    private dashboardService: DashboardService,
     private requestSrvice: RequestOemService,
-    private navCtrl : NavController) {
+    private navCtrl: NavController
+  ) {
     super();
   }
 
@@ -31,62 +33,79 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
     this.initRequests();
   }
 
+  ionViewWillEnter() {
+    this.noRequest = false;
+    this.isNotValid = false;
+  }
+
   initRequests() {
     this.isInitRequests = true;
-    this.dashboardService.fetchFixedNumbers().pipe(
-      tap((numbers) => {
-        // numbers = ['338239614'];
-        if (numbers.length) {
+    this.dashboardService
+      .fetchFixedNumbers()
+      .pipe(
+        tap((numbers) => {
+          // numbers = ['338239614'];
+          if (!numbers.length) {
+            this.isInitRequests = false;
+            return;
+          }
           this.phoneFix = numbers[0];
           this.requests$ = this.requestSrvice.fetchRequests(this.phoneFix).pipe(
-            delay(1000),
+            delay(100),
             tap((_) => {
               this.isInitRequests = false;
             })
           );
-        }
-      }),
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe();
+        }),
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe();
   }
 
-  onRequestChoosen(req:RequestOem){
+  onRequestChoosen(req: RequestOem) {
     this.isInitRequests = true;
-    this.requestSrvice.requestStatus(req.requestId).pipe(
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe((r) => {
-      this.isInitRequests = false;
-      this.requestSrvice.currentRequestStatusId = req.requestId;
-      this.navCtrl.navigateForward([RequestStatusPage.PATH_ROUTE]);
-    });
+    this.requestSrvice
+      .requestStatus(req.requestId)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((r) => {
+        this.isInitRequests = false;
+        this.requestSrvice.currentRequestStatusId = req.requestId;
+        if (r.length)
+          this.navCtrl.navigateForward([RequestStatusPage.PATH_ROUTE]);
+      });
   }
 
   onConfirmer() {
     this.isConfirm = true;
+    this.noRequest = false;
+    this.isNotValid = false;
     let numberSuivi = this.numberInput.nativeElement.value;
-    if(!this.numberSuiviIsValid(numberSuivi)){
+    if (!this.numberSuiviIsValid(numberSuivi)) {
       this.isConfirm = false;
+      this.isNotValid = true;
       return;
     }
-    this.requestSrvice.requestStatus(numberSuivi).pipe(
-      catchError((err)=>{
+    this.requestSrvice
+      .requestStatus(numberSuivi)
+      .pipe(
+        catchError((err) => {
+          this.isConfirm = false;
+          throw err;
+        }),
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe((r) => {
         this.isConfirm = false;
-        throw err;
-      }),
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe((r) => {
-      this.isConfirm = false;
-      if (!r.length) this.noRequest = true;
-      else{
-        this.requestSrvice.currentRequestStatusId = numberSuivi;
-        this.noRequest = false;
-        this.navCtrl.navigateForward([RequestStatusPage.PATH_ROUTE]);
-      }
-    });
+        if (!r.length) this.noRequest = true;
+        else {
+          this.requestSrvice.currentRequestStatusId = numberSuivi;
+          this.noRequest = false;
+          this.navCtrl.navigateForward([RequestStatusPage.PATH_ROUTE]);
+        }
+      });
   }
 
-  numberSuiviIsValid(n:string){
-    return n.length >6;
+  numberSuiviIsValid(n: string) {
+    return n.length >= 1;
   }
-
 }

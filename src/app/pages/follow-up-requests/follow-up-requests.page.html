@@ -71,6 +71,9 @@
       <div *ngIf="noRequest" class="error-msg scb-text-red-error">
         Aucune demande ou incident ne correspond au numéro renseigné!
       </div>
+      <div *ngIf="isNotValid" class="error-msg scb-text-red-error">
+        Veuillez saisir un numéro correct
+      </div>
     </div>
   </div>
 </ion-content>
