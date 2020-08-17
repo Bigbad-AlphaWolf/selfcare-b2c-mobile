@@ -35,7 +35,7 @@ export class BuyPassIllimixPage implements OnInit {
   pinPadHasError = false;
   errorMsg: string;
   failed: boolean;
-  title = 'Achat de pass illimix';
+  title = 'Achat de pass illimix ou allo';
   choosedPaymentMod: string;
   passIllimixChosen: PassIllimModel | PromoPassIllimModel;
   buyingPass: boolean;
