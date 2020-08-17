@@ -52,7 +52,7 @@
             class="tab-header-item"
             [ngClass]="{  'selected' : i === activeTabIndex} "
           >
-            <span class="scb-text-light-black"> {{ slide.label }}</span>
+            <span class="scb-text-light-black"> {{ slide?.label }}</span>
           </div>
         </div>
         <div class="main-content">
@@ -64,11 +64,16 @@
             >
               <ion-slide *ngFor="let slide of fullListPass">
                 <div class="filtered-list-pass">
-                  <app-item-pass-internet
-                    *ngFor="let pass of slide.pass"
-                    [passInternet]="pass"
-                    (selectPass)="choosePass($event)"
-                  ></app-item-pass-internet>
+                  <ng-container *ngIf="slide?.pass?.length">
+                    <app-item-pass-internet
+                      *ngFor="let pass of slide?.pass"
+                      [passInternet]="pass"
+                      (selectPass)="choosePass($event)"
+                    ></app-item-pass-internet>
+                  </ng-container>
+                  <ng-container *ngIf="!slide?.pass?.length">
+                    {{ getErrorMessageNoPass() }}
+                  </ng-container>
                 </div>
               </ion-slide>
             </ion-slides>
@@ -79,15 +84,29 @@
               (ionSlideDidChange)="slideChanged()"
               [options]="slideOpts"
             >
+            <ng-container *ngIf="fullListPass.length">
               <ion-slide *ngFor="let slide of fullListPass">
                 <div class="filtered-list-pass">
-                  <app-item-pass-illimix
-                    *ngFor="let pass of slide.pass"
-                    [passIllimix]="pass"
-                    (selectPass)="choosePass($event)"
-                  ></app-item-pass-illimix>
+                  <ng-container *ngIf="slide?.pass?.length">
+                    <app-item-pass-illimix
+                      *ngFor="let pass of slide.pass"
+                      [passIllimix]="pass"
+                      (selectPass)="choosePass($event)"
+                    ></app-item-pass-illimix>
+                  </ng-container>
+                  <ng-container *ngIf="!slide?.pass?.length">
+                    {{ getErrorMessageNoPass() }}
+                  </ng-container>
                 </div>
               </ion-slide>
+            </ng-container>
+            <ng-container *ngIf="!fullListPass.length">
+              <ion-slide>
+                <div class="filtered-list-pass">
+                  {{ getErrorMessageNoPass() }}
+                </div>
+              </ion-slide>
+            </ng-container>
             </ion-slides>
           </ng-container>
         </div>

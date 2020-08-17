@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { Router } from '@angular/router';
 import { PassIllimixService } from 'src/app/services/pass-illimix-service/pass-illimix.service';
-import { getListPassFilteredByLabelAndPaymentMod } from 'src/shared';
+import { getListPassFilteredByLabelAndPaymentMod, CODE_KIRENE_Formule, ERROR_MSG_PASS } from 'src/shared';
 
 @Component({
   selector: 'app-illimix-list-v2',
@@ -23,7 +23,6 @@ export class IllimixListV2Component implements OnInit {
   showAlertAvantages = true;
 
   constructor(
-    private dashbServ: DashboardService,
     private router: Router,
     private passIllimixService: PassIllimixService
   ) {}
@@ -72,4 +71,11 @@ export class IllimixListV2Component implements OnInit {
   hideAlert() {
     this.showAlertAvantages = false;
 }
+getErrorMessageNoPass(){
+  if(this.destCodeFormule === CODE_KIRENE_Formule){
+    return ERROR_MSG_PASS.LIST_EMPTY_FOR_KIRENE
+  }
+  return ERROR_MSG_PASS.LIST_EMPTY
+}
+
 }

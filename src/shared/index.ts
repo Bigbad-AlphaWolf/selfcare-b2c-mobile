@@ -1161,3 +1161,8 @@ export const HelpModalConfigApnContent = {
   ],
   showChecks: false,
 };
+
+export const ERROR_MSG_PASS = {
+  LIST_EMPTY : "Aucun pass n'a été trouvé pour ce profil",
+  LIST_EMPTY_FOR_KIRENE : "Diegalou, Mixel et Wotel sont temporairement indisponibles sur Orange et Moi. Tu peux continuer à souscrire au #220# ou au #144#. Bul xaar, souscris vite. Nio far !"
+}
