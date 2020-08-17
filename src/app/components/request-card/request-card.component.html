@@ -10,7 +10,7 @@
     </div>
   </div>
   <div class="status">
-    <div [ngClass]="['CLOSED' , 'ACKNOWLEDGED'].includes(request.status) ? 'band-vert' : 'band'">
+    <div [ngClass]="request.currentState ? 'band-vert' : 'band'">
       {{ request.title }}
     </div>
   </div>

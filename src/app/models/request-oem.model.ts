@@ -5,5 +5,6 @@ export interface RequestOem{
     type? : string,
     order? : number,
     historic? : boolean,
-    requestId? : string
+    requestId? : string,
+    currentState? : boolean
 }
