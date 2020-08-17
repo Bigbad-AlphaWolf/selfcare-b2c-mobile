@@ -42,7 +42,7 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
   },
   {
     title: 'Acheter',
-    subtitle: 'pass illimix',
+    subtitle: 'pass illimix ou allo',
     icon: `${IMAGES_DIR_PATH}/ic-package-services@2x.png`,
     action: 'openNumberSelectionBottomSheet',
     params: ['NONE', OPERATION_TYPE_PASS_ILLIMIX, '/list-pass'],

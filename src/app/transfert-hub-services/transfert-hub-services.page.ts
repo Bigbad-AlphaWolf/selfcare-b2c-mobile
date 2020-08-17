@@ -91,7 +91,7 @@ export class TransfertHubServicesPage implements OnInit {
     },
     {
       title: 'Pass',
-      subtitle: 'illimix',
+      subtitle: 'illimix ou allo',
       icon: '/assets/images/ic-package-services@2x.png',
       action: 'REDIRECT',
       type: 'PASS_ILLIMIX',
