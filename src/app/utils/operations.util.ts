@@ -14,7 +14,7 @@ export const OPERATION_TRANSFERT_ARGENT = 'OPERATION_TRANSFERT_ARGENT';
 export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
   {
     title: 'Transférer',
-    subtitle: 'de l\'argent',
+    subtitle: "de l'argent",
     icon: `${IMAGES_DIR_PATH}/icOrangeMoney.png`,
     action: 'showBeneficiaryModal',
     params: [],
@@ -49,14 +49,14 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
     type: OPERATION_TYPE_PASS_ILLIMIX,
     url: '',
   },
-  {
-    title: 'Recharger',
-    subtitle: 'Woyofal',
-    icon: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
-    action: 'openModal',
-    type: OPERATION_WOYOFAL,
-    url: '',
-  },
+  // {
+  //   title: 'Recharger',
+  //   subtitle: 'Woyofal',
+  //   icon: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
+  //   action: 'openModal',
+  //   type: OPERATION_WOYOFAL,
+  //   url: '',
+  // },
 
   {
     title: 'Autres',
@@ -68,9 +68,8 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
   },
 ];
 
-
 export const ACTIONS_RAPIDES_OPERATIONS_POSTPAID: OperationOem[] = [
-  ...ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.slice(0,5),
+  ...ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.slice(0, 5),
   {
     title: 'Payer',
     subtitle: 'un marchand',
@@ -97,5 +96,5 @@ export const ACTIONS_RAPIDES_OPERATIONS_POSTPAID: OperationOem[] = [
     params: [],
     type: 'NAVIGATE',
     url: '',
-  }
+  },
 ];

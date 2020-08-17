@@ -15,12 +15,17 @@
       font-size: 24px;
     }
     &-top3 {
-      min-height: 117px;
       margin-top: 10px;
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
+      // justify-content: space-between;
       &-item {
+        &:not(:nth-child(3n)) {
+          margin-right: percentage(15px / 345px);
+        }
+        margin-bottom: 15px;
         width: percentage(105/345);
+        min-height: 117px;
         background-color: $white;
         border-radius: 15px;
         position: relative;
@@ -40,7 +45,7 @@
             padding: 10%;
             width: 100%;
             border-radius: 5% 5% 0 5%;
-            .percent{
+            .percent {
               font-family: HelveticaNeueLTStd-Bd;
               font-size: 16px;
             }
@@ -161,7 +166,7 @@
         }
       }
     }
-    .hide{
+    .hide {
       visibility: hidden;
     }
   }
@@ -239,13 +244,13 @@
               font-family: HelveticaNeueLTStd-Roman, sans-serif;
               font-size: 18px;
             }
-            .status-sargal{
+            .status-sargal {
               font-family: HelveticaNeueLTStd-Bd, sans-serif;
               font-size: 18px;
-              &.gold{
+              &.gold {
                 color: gold;
               }
-              &.platinum{
+              &.platinum {
                 color: #e5e4e2;
               }
             }
