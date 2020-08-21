@@ -13,6 +13,8 @@ import {
 } from 'src/shared';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
+import { Observable } from 'rxjs';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 
 @Component({
   selector: 'oem-operations',
@@ -23,13 +25,16 @@ export class OemOperationsComponent implements OnInit {
   @Input('operations') operations: OperationOem[] = [];
   @Input('showMore') showMore: boolean = true;
   OPERATION_TYPE_ALLO = OPERATION_TYPE_PASS_ALLO;
-
+  showNewFeatureBadge$: Observable<Boolean>;
   constructor(
     private bsService: BottomSheetService,
-    private navCtl: NavController
+    private navCtl: NavController,
+    private dashboardService: DashboardService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getShowStatusNewFeatureAllo();
+  }
 
   onOperation(op: OperationOem) {
     if (op.type === 'NAVIGATE') this.navCtl.navigateForward([op.action]);
@@ -78,5 +83,8 @@ export class OemOperationsComponent implements OnInit {
       )
       .subscribe((_) => {});
     this.bsService.openModal(MerchantPaymentCodeComponent);
+  }
+  getShowStatusNewFeatureAllo() {
+    this.showNewFeatureBadge$ = this.dashboardService.getNewFeatureAlloBadgeStatus();
   }
 }

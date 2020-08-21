@@ -20,6 +20,7 @@ import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-transfert-hub-services',
@@ -148,6 +149,8 @@ export class TransfertHubServicesPage implements OnInit {
   dataPayload: any;
   hasPromoPlanActive: OfferPlanActive = null;
   hasBoosterPromoActive: PromoBoosterActive = null;
+  showNewFeatureBadge$: Observable<Boolean>;
+
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
@@ -161,7 +164,7 @@ export class TransfertHubServicesPage implements OnInit {
 
   ngOnInit() {
     let purchaseType;
-
+    this.getShowStatusNewFeatureAllo();
     if (history && history.state) {
       purchaseType = history.state.purchaseType;
     }
@@ -381,5 +384,9 @@ export class TransfertHubServicesPage implements OnInit {
           break;
       }
     return result;
+  }
+
+  getShowStatusNewFeatureAllo() {
+    this.showNewFeatureBadge$ = this.dashbServ.getNewFeatureAlloBadgeStatus();
   }
 }

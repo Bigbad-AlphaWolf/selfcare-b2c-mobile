@@ -46,7 +46,7 @@
           >
             <div class="icon-container">
               <span
-                *ngIf="opt?.type === OPERATION_TYPE_PASS_ALLO else percentBlock"
+                *ngIf="showNewFeatureBadge$|async else percentBlock"
                 class="new scb-text-white"
               >
                 Nouveau
