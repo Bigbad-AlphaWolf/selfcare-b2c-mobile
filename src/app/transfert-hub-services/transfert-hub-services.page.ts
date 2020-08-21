@@ -11,6 +11,7 @@ import {
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
+  OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -26,6 +27,7 @@ import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
   styleUrls: ['./transfert-hub-services.page.scss'],
 })
 export class TransfertHubServicesPage implements OnInit {
+  OPERATION_TYPE_PASS_ALLO = OPERATION_TYPE_PASS_ALLO;
   pageTitle: string;
   transferOptions: {
     title: string;
@@ -69,7 +71,8 @@ export class TransfertHubServicesPage implements OnInit {
       | 'PASS'
       | 'PASS_ILLIMIX'
       | 'PASS_VOYAGE'
-      | 'PASS_INTERNATIONAL';
+      | 'PASS_INTERNATIONAL'
+      | 'PASS_ALLO';
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
   }[] = [
@@ -91,10 +94,18 @@ export class TransfertHubServicesPage implements OnInit {
     },
     {
       title: 'Pass',
-      subtitle: 'illimix ou allo',
+      subtitle: 'illimix',
       icon: '/assets/images/ic-package-services@2x.png',
       action: 'REDIRECT',
       type: 'PASS_ILLIMIX',
+      url: '',
+    },
+    {
+      title: 'Pass',
+      subtitle: 'Allo',
+      icon: '/assets/images/ic-call-forward@2x.png',
+      action: 'REDIRECT',
+      type: 'PASS_ALLO',
       url: '',
     },
     // {
@@ -126,7 +137,8 @@ export class TransfertHubServicesPage implements OnInit {
       | 'PASS'
       | 'PASS_ILLIMIX'
       | 'PASS_VOYAGE'
-      | 'PASS_INTERNATIONAL';
+      | 'PASS_INTERNATIONAL'
+      | 'PASS_ALLO';
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
   }[] = [];
@@ -144,7 +156,7 @@ export class TransfertHubServicesPage implements OnInit {
     private offerPlanServ: OfferPlansService,
     private dashbServ: DashboardService,
     private bsService: BottomSheetService,
-    private omService : OrangeMoneyService
+    private omService: OrangeMoneyService
   ) {}
 
   ngOnInit() {
@@ -223,15 +235,25 @@ export class TransfertHubServicesPage implements OnInit {
           // this.appRouting.goToSelectRecepientPassIllimix();
         }
         break;
+      case 'PASS_ALLO':
+        if (opt.action === 'REDIRECT') {
+          this.bsService.openNumberSelectionBottomSheet(
+            NumberSelectionOption.WITH_MY_PHONES,
+            OPERATION_TYPE_PASS_ALLO,
+            'list-pass'
+          );
+          // this.appRouting.goToSelectRecepientPassIllimix();
+        }
+        break;
       default:
         break;
     }
   }
 
-  checkOmAccount(){
+  checkOmAccount() {
     this.omService.getOmMsisdn().subscribe((msisdn: string) => {
       if (msisdn !== 'error') {
-       this.showBeneficiaryModal();
+        this.showBeneficiaryModal();
       } else {
         this.openPinpad();
       }

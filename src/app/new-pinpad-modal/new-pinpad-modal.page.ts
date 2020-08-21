@@ -21,6 +21,7 @@ import {
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_RECHARGE_CREDIT,
+  OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -46,7 +47,7 @@ export class NewPinpadModalPage implements OnInit {
   @Input() transferMoneyPayload: any;
   @Input() transferMoneyWithCodePayload: any;
   @Input() merchantPaymentPayload: any;
-  @Input() opXtras:OperationExtras;
+  @Input() opXtras: OperationExtras;
   bullets = [0, 1, 2, 3];
   codePin = [];
   uuid: string;
@@ -84,7 +85,7 @@ export class NewPinpadModalPage implements OnInit {
     private dialog: MatDialog,
     private dashboardService: DashboardService,
     public modalController: ModalController,
-    private woyofal : CounterService
+    private woyofal: CounterService
   ) {}
 
   ngOnInit() {
@@ -182,7 +183,7 @@ export class NewPinpadModalPage implements OnInit {
           app_version: 'v1.0',
           app_conf_version: 'v1.0',
           service_version: OM_SERVICE_VERSION,
-        };        
+        };
         // If user already connected open pinpad
         if (omUser['hasApiKey']) {
           this.userHasOmToken = true;
@@ -291,7 +292,7 @@ export class NewPinpadModalPage implements OnInit {
             showSolde: true,
           };
           this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
-          this.gettingPinpad = true;          
+          this.gettingPinpad = true;
           this.orangeMoneyService
             .GetPinPad(this.pinpadData)
             .subscribe((response: any) => {
@@ -377,6 +378,7 @@ export class NewPinpadModalPage implements OnInit {
                   this.buyPass(dataPassOM);
                   break;
                 case OPERATION_TYPE_PASS_ILLIMIX:
+                case OPERATION_TYPE_PASS_ALLO:
                   const dataIllimixOM = {
                     msisdn2: this.buyPassPayload.destinataire,
                     pin,
@@ -417,10 +419,9 @@ export class NewPinpadModalPage implements OnInit {
                   );
                   this.payMerchant(merchantPaymentPayload);
                   break;
-                  case OPERATION_WOYOFAL:
-
-                    this.payWoyofal(pin);
-                    break;
+                case OPERATION_WOYOFAL:
+                  this.payWoyofal(pin);
+                  break;
                 default:
                   this.seeSolde(pin);
                   break;
@@ -486,23 +487,21 @@ export class NewPinpadModalPage implements OnInit {
       this.pinError = '';
     }
   }
-  payWoyofal(pin:string) {
+  payWoyofal(pin: string) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     let body = {
-      "amount": this.opXtras.amount,
-      "em": db.em,
-      "fees": this.opXtras.fee,
-      "msisdn": db.msisdn,
-      "numero_compteur": this.opXtras.billData.counter.counterNumber,
-      "pin": pin
+      amount: this.opXtras.amount,
+      em: db.em,
+      fees: this.opXtras.fee,
+      msisdn: db.msisdn,
+      numero_compteur: this.opXtras.billData.counter.counterNumber,
+      pin: pin,
     };
     console.log(body);
-    
 
-    this.woyofal.pay(body)
-    .subscribe(
-      (res: any) => {  
+    this.woyofal.pay(body).subscribe(
+      (res: any) => {
         this.opXtras.billData.codeRecharge = res.content.data.code_woyofal;
         this.opXtras.billData.kw = res.content.data.valeur_recharge;
         this.processResult(res, db);

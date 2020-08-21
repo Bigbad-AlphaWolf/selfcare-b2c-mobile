@@ -9,6 +9,7 @@ import {
   OPERATION_TRANSFER_OM,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_RECHARGE_CREDIT,
+  OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -23,6 +24,7 @@ import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
 export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
+  OPERATION_ALLO_TYPE = OPERATION_TYPE_PASS_ALLO;
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
@@ -61,11 +63,8 @@ export class OperationSuccessFailModalPage implements OnInit {
   goToPage(purchaseType: string) {
     switch (purchaseType) {
       case this.OPERATION_ILLIMIX_TYPE:
-        this.appRouting.goToTransfertHubServicesPage('BUY');
-        break;
+      case this.OPERATION_ALLO_TYPE:
       case this.OPERATION_INTERNET_TYPE:
-        this.appRouting.goToTransfertHubServicesPage('BUY');
-        break;
       case this.OPERATION_TYPE_RECHARGE:
         this.appRouting.goToTransfertHubServicesPage('BUY');
         break;

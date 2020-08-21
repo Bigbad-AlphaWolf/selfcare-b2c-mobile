@@ -1,15 +1,18 @@
 <ion-grid>
   <ion-row>
-    <div
-      matRipple
-      (click)="onOperation(operation)"
-      class="operation"
-      *ngFor="let operation of operations"
-    >
+    <div matRipple (click)="onOperation(operation)" class="operation" *ngFor="let operation of operations">
       <img [src]="operation.icon" class="operation-img" />
       <div class="operation-text">
         <span class="action">{{ operation.title }} </span>
         <span class="target">{{ operation.subtitle }}</span>
+      </div>
+      <div class="badge-promo" *ngIf="operation?.type === OPERATION_TYPE_ALLO">
+        <div class="icon-container">
+          <span class="new scb-text-white">
+            Nouveau
+          </span>
+        </div>
+        <div class="triangle"></div>
       </div>
     </div>
   </ion-row>
