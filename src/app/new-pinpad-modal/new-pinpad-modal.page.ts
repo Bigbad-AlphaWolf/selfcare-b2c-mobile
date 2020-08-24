@@ -21,6 +21,7 @@ import {
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_RECHARGE_CREDIT,
+  OPERATION_TYPE_PASS_VOYAGE,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -376,6 +377,7 @@ export class NewPinpadModalPage implements OnInit {
                   };
                   this.buyPass(dataPassOM);
                   break;
+                case OPERATION_TYPE_PASS_VOYAGE:
                 case OPERATION_TYPE_PASS_ILLIMIX:
                   const dataIllimixOM = {
                     msisdn2: this.buyPassPayload.destinataire,
@@ -417,10 +419,9 @@ export class NewPinpadModalPage implements OnInit {
                   );
                   this.payMerchant(merchantPaymentPayload);
                   break;
-                  case OPERATION_WOYOFAL:
-
-                    this.payWoyofal(pin);
-                    break;
+                case OPERATION_WOYOFAL:
+                  this.payWoyofal(pin);
+                  break;
                 default:
                   this.seeSolde(pin);
                   break;
@@ -653,6 +654,7 @@ export class NewPinpadModalPage implements OnInit {
     if (params.canalPromotion) {
       buyPassPayload.canal = params.canalPromotion;
     }
+    
     this.orangeMoneyService.AchatIllimix(buyPassPayload).subscribe(
       (res: any) => {
         this.processResult(res, db);

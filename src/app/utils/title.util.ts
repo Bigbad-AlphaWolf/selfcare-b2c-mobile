@@ -3,14 +3,27 @@ import {
   OPERATION_TYPE_SEDDO_BONUS,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_RECHARGE_CREDIT,
+  OPERATION_TYPE_PASS_INTERNET,
+  OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
   BONS_PLANS,
 } from 'src/shared';
-import { PageTitle } from '../models/page-title.model';
+import { PageHeader } from '../models/page-header.model';
 import { OPERATION_WOYOFAL } from './operations.util';
+import { IMAGES_DIR_PATH } from './constants';
 
-export const titles: PageTitle[] = [
+export const titles: PageHeader[] = [
+  {
+    typeOperation: OPERATION_TYPE_PASS_INTERNET,
+    title: 'Achat Pass Internet',
+    banniere: `${IMAGES_DIR_PATH}/pass-internet-banniere.png`,
+  },
+  {
+    typeOperation: OPERATION_TYPE_PASS_ILLIMIX,
+    title: 'Achat Pass Illimix',
+    banniere: `${IMAGES_DIR_PATH}/pass-internet-banniere.png`,
+  },
   {
     typeOperation: OPERATION_TYPE_SEDDO_CREDIT,
     title: 'Transfert de Crédit',
@@ -22,6 +35,12 @@ export const titles: PageTitle[] = [
   {
     typeOperation: OPERATION_TYPE_MERCHANT_PAYMENT,
     title: 'Paiement marchand',
+    banniere: `${IMAGES_DIR_PATH}/banniere-payment.png`,
+  },
+  {
+    typeOperation: OPERATION_TRANSFER_OM,
+    title: 'Transfert d\'argent',
+    banniere: `${IMAGES_DIR_PATH}/achat-de-credit.png`,
   },
   {
     typeOperation: OPERATION_TYPE_RECHARGE_CREDIT,
@@ -47,6 +66,6 @@ export const titles: PageTitle[] = [
   },
 ];
 
-export function getPageTitle(typeOp: string) {
+export function getPageHeader(typeOp: string) {
   return titles.find((pt) => pt.typeOperation === typeOp);
 }

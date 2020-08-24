@@ -7,7 +7,7 @@ const ls = new SecureLS({ encodingType: "aes" });
   providedIn: 'root'
 })
 export class SessionOem {
-
+  static updateAbort : boolean = false;
   constructor() { }
   static get MAIN_PHONE() {
     return ls.get("mainPhoneNumber");

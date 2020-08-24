@@ -1,12 +1,14 @@
 import { MONTHS, OM_URLS } from './constants';
 import { MonthOem } from '../models/month.model';
+import { REGEX_FIX_NUMBER } from 'src/shared';
+import { isPostpaidFix, isPostpaidMobile, ModelOfSouscription } from '../dashboard';
 
 export function removeObjectField(obj: any, f: string) {
   const { [f]: propValue, ...rest } = obj;
   return rest;
 }
 
-export function previousMonths(n: number) {
+export function previousMonths(n: number = 6) {
   let date = new Date();
   let r: MonthOem[] = [];
   for (let i = 0; i < n; i++) {
@@ -27,4 +29,11 @@ export function checkUrlMatchOM(url: string) {
     if (url.match(OM_URLS[i])) return true;
   }
   return false;
+}
+
+export function isLineNumber(phone: string, souscription: ModelOfSouscription) {
+  return (
+    (REGEX_FIX_NUMBER.test(phone) && isPostpaidFix(souscription)) ||
+    (!REGEX_FIX_NUMBER.test(phone) && isPostpaidMobile(souscription))
+  );
 }

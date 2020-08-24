@@ -15,7 +15,7 @@
         >
           Crédit recharge
         </div>
-        <div class="balance-information" *ngIf="soldeCredit">
+        <div class="balance-information" *ngIf="soldeCredit || soldeCredit===0">
           <span class="balance-value">{{soldeCredit}} FCFA</span>
           <span class="balance-title scb-text-gray">Solde crédit restant</span>
         </div>

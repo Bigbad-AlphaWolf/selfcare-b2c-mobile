@@ -1,86 +1,3 @@
-<!-- <ion-header [myScrollVanish]="scrollArea">
-  <div (click)="goBack()"  class="arrow-container">
-    <img src="assets/images/long-arrow-left.png" alt="" />
-  </div>
-  <div class="text-container">
-    <ng-container [ngSwitch]="purchaseType">
-      <span *ngSwitchCase="OPERATION_INTERNET_TYPE">Achat Pass Internet</span>
-      <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE">Achat Pass Illimix</span>
-      <span *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
-        >Paiement Marchand</span
-      >
-      <span *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
-        >Transfert d'argent</span
-      >
-      <span *ngSwitchCase="OPERATION_TRANSFER_OM">Transfert d'argent</span>
-      <span *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
-      <span *ngSwitchCase="'OPERATION_WOYOFAL'">Rechargement Woyofal</span>
-
-<ion-content fullscreen="true">
-  <ion-header class="ion-padding-start" collapse="condense">
-    <ion-toolbar>
-        <ng-container [ngSwitch]="purchaseType">
-          <span class="title" *ngSwitchCase="OPERATION_INTERNET_TYPE">Achat Pass Internet</span>
-          <span class="title" *ngSwitchCase="OPERATION_ILLIMIX_TYPE">Achat Pass Illimix</span>
-          <span class="title" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
-            >Paiement Marchand</span
-          >
-          <span class="title" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
-            >Transfert d'argent</span
-          >
-          <span class="title" *ngSwitchCase="OPERATION_TRANSFER_OM">Transfert d'argent</span>
-          <span class="title" *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
-    
-        </ng-container>
-    </ion-toolbar>
-  </ion-header>
-  <div fullscreen="true" class="banner-container">
-    <ng-container [ngSwitch]="purchaseType">
-      <img
-        *ngSwitchCase="OPERATION_INTERNET_TYPE"
-        src="assets/images/pass-internet-banniere.png"
-        alt="banniere"
-        class="banniere"
-      />
-      <img
-        *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
-        src="assets/images/banniere-illimix.png"
-        alt="banniere"
-        class="banniere"
-      />
-      <img
-        *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
-        src="assets/images/banniere-payment.png"
-        alt="banniere"
-        class="banniere"
-      />
-      <img
-        *ngSwitchCase="OPERATION_TRANSFER_OM"
-        src="assets/images/achat-de-credit.png"
-        alt="banniere"
-        class="banniere"
-      />
-      <img
-        *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
-        src="assets/images/achat-de-credit.png"
-        alt="banniere"
-        class="banniere"
-      />
-      <img
-        *ngSwitchCase="'RECHARGEMENT_CREDIT'"
-        src="assets/images/achat-de-credit.svg"
-        alt="banniere"
-        class="banniere"
-      />
-      <img
-      *ngSwitchCase="'OPERATION_WOYOFAL'"
-      src="assets/images/recharge-bill.svg"
-      alt="banniere"
-      class="banniere"
-    />
-    </ng-container>
-  </div>
-</ion-header> -->
 <ion-header [oemIonHeaderParallax]="90">
   <ion-toolbar>
     <ion-buttons>
@@ -101,6 +18,7 @@
         <span *ngSwitchCase="OPERATION_TRANSFER_OM">Transfert d'argent</span>
         <span *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
         <span *ngSwitchCase="'OPERATION_WOYOFAL'">Rechargement Woyofal</span>
+        <span *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'">Pass selectionné</span>
       </ng-container>
     </ion-title>
   </ion-toolbar>
@@ -145,6 +63,12 @@
       <img
         *ngSwitchCase="'OPERATION_WOYOFAL'"
         src="assets/images/recharge-bill.svg"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+        *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+        src="assets/images/achat-de-pass-voyage@2x.png"
         alt="banniere"
         class="banniere"
       />
@@ -208,6 +132,7 @@
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_INTERNET_TYPE">
         <span class="pass">Pass sélectionné</span>
       </div>
+      
       <div class="amount-to-transfer" *ngSwitchCase="'RECHARGEMENT_CREDIT'">
         <span class="pass">Montant à acheter</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
@@ -215,6 +140,9 @@
       <div class="amount-to-transfer" *ngSwitchCase="'OPERATION_WOYOFAL'">
         <span class="pass">Montant à recharger</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'">
+        <span class="pass">Pass sélectionné</span>
       </div>
     </ng-container>
     <div class="card-container bill">
@@ -243,6 +171,12 @@
           [passIllimix]="passChoosen"
           [subscription]="subscriptionInfos"
           *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
+        >
+        </app-item-pass-illimix>
+        <app-item-pass-illimix
+          [passIllimix]="passChoosen"
+          [subscription]="subscriptionInfos"
+          *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
         >
         </app-item-pass-illimix>
 
@@ -326,6 +260,10 @@
           >Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
           passChoosen?.passPromo?.tarif}} FCFA)</span
         >
+        <span class="text" *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+          >Confirmer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
+            passChoosen?.passPromo?.tarif}} FCFA)</span
+        >
         <span class="text" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
           >Payer ({{amount}} FCFA)</span
         >
@@ -339,9 +277,6 @@
           >Confirmer ({{amount|formatCurrency}} FCFA)</span
         >
 
-        <span class="text" *ngSwitchCase="'OPERATION_WOYOFAL'"
-          >Confirmer ({{opXtras.amount|formatCurrency}} FCFA)</span
-        >
       </ng-container>
       <mat-spinner
         mode="indeterminate"

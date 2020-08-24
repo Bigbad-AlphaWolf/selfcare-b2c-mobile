@@ -198,6 +198,16 @@ mat-dialog-container.mat-dialog-container {
     border: none;
   }
 }
+
+.sargal-content-filter {
+  .filter-container {
+    .mat-button-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}
 .mat-menu-panel.left,
 .mat-menu-panel.right {
   border: 1.5px solid black;
@@ -646,6 +656,9 @@ button {
 .mat-button-toggle-group-appearance-standard,
 .mat-button-toggle-standalone.mat-button-toggle-appearance-standard {
   border-radius: none;
+}
+.fieldArea .mat-form-field-appearance-outline .mat-form-field-outline{
+  background-color: white;
 }
 // .mat-button-toggle-checked {
 //   background-color: #fdd8b71c;

@@ -86,6 +86,15 @@ export class EmergenciesPage implements OnInit {
     );
   }
 
+  onFollowUpRequests() {
+    this.router.navigate(['follow-up-requests']);
+    this.followAnalyticsService.registerEventFollow(
+      'Suivi_Reclamation_OM',
+      'event',
+      'clicked'
+    );
+  }
+
   getCurrentProfile() {
     const currentNumber = this.dashbordServ.getCurrentPhoneNumber();
     this.authServ.getSubscription(currentNumber).subscribe((res: any) => {

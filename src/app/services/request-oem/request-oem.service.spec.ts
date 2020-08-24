@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { BsBillsHubService } from './bs-bills-hub.service';
+import { RequestOemService } from './request-oem.service';
 
-describe('BsBillsHubService', () => {
+describe('RequestOemService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: BsBillsHubService = TestBed.get(BsBillsHubService);
+    const service: RequestOemService = TestBed.get(RequestOemService);
     expect(service).toBeTruthy();
   });
 });

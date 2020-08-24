@@ -1,47 +1,78 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
-import { BsBillsHubService } from 'src/app/services/bottom-sheet/bs-bills-hub.service';
-import { NavController } from '@ionic/angular';
-import { OperationOem } from 'src/app/models/operation.model';
-import { WOYOFAL } from 'src/app/utils/bills.util';
-import { IMAGES_DIR_PATH } from 'src/app/utils/constants';
-import { CounterSelectionComponent } from '../counter/counter-selection/counter-selection.component';
+import { Component, OnInit, Input } from "@angular/core";
+import { BottomSheetService } from "src/app/services/bottom-sheet/bottom-sheet.service";
+import { NavController } from "@ionic/angular";
+import { OperationOem } from "src/app/models/operation.model";
+import { WOYOFAL } from "src/app/utils/bills.util";
+import { IMAGES_DIR_PATH } from "src/app/utils/constants";
+import { CounterSelectionComponent } from "../counter/counter-selection/counter-selection.component";
+import { OPERATION_WOYOFAL } from "src/app/utils/operations.util";
+import { BillAmountPage } from "src/app/pages/bill-amount/bill-amount.page";
+import { OPERATION_TYPE_MERCHANT_PAYMENT } from "src/shared";
+import { MerchantPaymentCodeComponent } from "src/shared/merchant-payment-code/merchant-payment-code.component";
+import { PurchaseSetAmountPage } from "src/app/purchase-set-amount/purchase-set-amount.page";
 
 @Component({
-  selector: 'oem-operations',
-  templateUrl: './oem-operations.component.html',
-  styleUrls: ['./oem-operations.component.scss'],
+  selector: "oem-operations",
+  templateUrl: "./oem-operations.component.html",
+  styleUrls: ["./oem-operations.component.scss"],
 })
 export class OemOperationsComponent implements OnInit {
-  @Input('operations') operations: OperationOem[] = [];
-  @Input('showMore') showMore : boolean = true;
+  @Input("operations") operations: OperationOem[] = [];
+  @Input("showMore") showMore: boolean = true;
 
   constructor(
     private bsService: BottomSheetService,
-    private bsBillService: BsBillsHubService,
-    private navCtl : NavController
-  ) { }
+    private navCtl: NavController
+  ) {}
 
   ngOnInit() {}
 
   onOperation(op: OperationOem) {
-    if(op.type === 'NAVIGATE') this.navCtl.navigateForward([op.action]);
-    if(this.bsService[op.action]){
+    if (op.type === "NAVIGATE") this.navCtl.navigateForward([op.action]);
+    
+    if (this.bsService[op.action] && "openModal" === op.action) {
+      if (op.type === OPERATION_WOYOFAL){
+        this.openCounterBS();
+        return;
+      } 
+      
+      if (op.type === OPERATION_TYPE_MERCHANT_PAYMENT){
+        this.openMerchantBS();
+        return;
+      } 
+    }
+    
+    if (this.bsService[op.action]) {
       this.bsService[op.action](...op.params);
       return;
     }
+  }
 
-    if(this.bsBillService[op.action]){
-      this.bsBillService.opXtras.billData = {
-        company: {
-          name: "Woyofal",
-          code: WOYOFAL,
-          logo: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
-        },
-      };
-      this.bsBillService.initBs(CounterSelectionComponent).subscribe((_) => {});
-      this.bsBillService.openBSCounterSelection(CounterSelectionComponent);
-      return;
-    }
+  openCounterBS() {
+    this.bsService.opXtras.billData = {
+      company: {
+        name: "Woyofal",
+        code: WOYOFAL,
+        logo: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
+      },
+    };
+    this.bsService
+      .initBsModal(
+        CounterSelectionComponent,
+        OPERATION_WOYOFAL,
+        BillAmountPage.ROUTE_PATH
+      )
+      .subscribe((_) => {});
+    this.bsService.openModal(CounterSelectionComponent);
+  }
+  openMerchantBS() {
+    this.bsService
+      .initBsModal(
+        MerchantPaymentCodeComponent,
+        OPERATION_TYPE_MERCHANT_PAYMENT,
+        PurchaseSetAmountPage.ROUTE_PATH
+      )
+      .subscribe((_) => {});
+    this.bsService.openModal(MerchantPaymentCodeComponent);
   }
 }
