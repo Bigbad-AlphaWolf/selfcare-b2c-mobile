@@ -75,7 +75,7 @@
     "cordova-plugin-unique-device-id2": "^2.0.0",
     "cordova-plugin-whitelist": "^1.3.4",
     "cordova-plugin-x-socialsharing": "^5.6.0",
-    "cordova.plugin.followanalytics": "file:fa-sdk-cordova",
+    "cordova.plugin.followanalytics": "file:FACordovaPlugin",
     "core-js": "^2.5.4",
     "es6-promise-plugin": "^4.2.2",
     "fingerprintjs2": "^2.1.0",
@@ -192,11 +192,11 @@
       "cordova-plugin-whitelist": {},
       "cordova-plugin-app-version": {},
       "cordova-plugin-market": {},
-      "cordova.plugin.followanalytics": {},
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-statusbar": {},
       "cordova-plugin-android-permissions": {},
-      "cordova-plugin-unique-device-id2": {}
+      "cordova-plugin-unique-device-id2": {},
+      "cordova.plugin.followanalytics": {}
     },
     "platforms": [
       "android",
