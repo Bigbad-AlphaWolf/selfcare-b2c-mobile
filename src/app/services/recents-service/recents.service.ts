@@ -14,7 +14,8 @@ import { OM_RECENT_TYPES } from 'src/app/utils/constants';
 @Injectable({
   providedIn: 'root',
 })
-export class RecentsService {
+export class RecentsService { 
+
   constructor(
     private http: HttpClient,
     private omService: OrangeMoneyService,

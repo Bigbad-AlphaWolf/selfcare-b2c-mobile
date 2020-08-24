@@ -283,6 +283,7 @@
         <div
           (click)="onPayerFacture()"
           class="dashboard-block-offres-top3-item"
+          *ngIf="0"
         >
           <div class="item-icon">
             <img
@@ -299,8 +300,6 @@
             </span>
           </div>
         </div>
-      </div>
-      <div class="dashboard-block-offres-top3">
         <div
           (click)="goMerchantPayment()"
           class="dashboard-block-offres-top3-item"
@@ -317,7 +316,6 @@
             </span>
           </div>
         </div>
-
         <div
           *ngIf="!isHyBride"
           (click)="makeSargalAction()"
@@ -335,7 +333,6 @@
             >
           </div>
         </div>
-
         <div
           [ngClass]="{ 'disabled-block': !canDoSOS }"
           (click)="goToSOSPage()"
