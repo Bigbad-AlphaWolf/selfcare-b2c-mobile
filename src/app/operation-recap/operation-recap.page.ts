@@ -169,8 +169,10 @@ export class OperationRecapPage implements OnInit {
               };
               break;
             case OPERATION_TYPE_RECHARGE_CREDIT:
+              
               this.opXtras = state;
               this.amount = this.opXtras.amount;
+              this.paymentMod = 'ORANGE_MONEY';
               this.recipientMsisdn = this.opXtras.recipientMsisdn;
               this.recipientName = this.opXtras.recipientFromContact
                 ? this.opXtras.recipientFirstname +

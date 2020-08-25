@@ -128,6 +128,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+
     this.getUserInfos();
     this.getWelcomeStatus();
   }

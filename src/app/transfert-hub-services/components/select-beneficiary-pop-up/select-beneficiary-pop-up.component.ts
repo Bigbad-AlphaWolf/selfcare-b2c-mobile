@@ -1,10 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
-import {
-  formatPhoneNumber,
-  REGEX_NUMBER_OM,
-  OPERATION_TRANSFER_OM,
-} from 'src/shared';
+import { formatPhoneNumber, REGEX_NUMBER_OM, OPERATION_TYPE_TRANSFER_OM, OPERATION_TRANSFER_OM } from 'src/shared';
 import { MatDialog } from '@angular/material';
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { ModalController } from '@ionic/angular';

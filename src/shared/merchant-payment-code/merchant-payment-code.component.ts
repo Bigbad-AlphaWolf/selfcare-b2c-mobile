@@ -13,9 +13,9 @@ import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 
 @Component({
-  selector: 'app-merchant-payment-code',
-  templateUrl: './merchant-payment-code.component.html',
-  styleUrls: ['./merchant-payment-code.component.scss'],
+  selector: "app-merchant-payment-code",
+  templateUrl: "./merchant-payment-code.component.html",
+  styleUrls: ["./merchant-payment-code.component.scss"],
 })
 export class MerchantPaymentCodeComponent implements OnInit {
   chekingMerchant: boolean;
@@ -52,8 +52,8 @@ export class MerchantPaymentCodeComponent implements OnInit {
         if (
           response &&
           response.status_code &&
-          (response.status_code.match('Success') ||
-            response.status_code.match('Erreur-601'))
+          (response.status_code.match("Success") ||
+            response.status_code.match("Erreur-601"))
         ) {
           const payload = {
             purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
@@ -85,7 +85,7 @@ export class MerchantPaymentCodeComponent implements OnInit {
 
   onCheckingMerchantError(msg?: string) {
     this.hasErrorOnCheckMerchant = true;
-    this.errorMsg = msg ? msg : 'Une erreur est survenue';
+    this.errorMsg = msg ? msg : "Une erreur est survenue";
     this.ref.detectChanges();
   }
 

@@ -9,15 +9,16 @@ import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page'
 import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { isNewVersion } from 'src/shared';
-import { AppVersion } from '@ionic-native/app-version/ngx';
 const { SERVICES_SERVICE, SERVER_API_URL } = environment;
-const versionEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/v1/app-version`;
 import * as SecureLS from 'secure-ls';
 import { DetailsConsoPage } from './details-conso/details-conso.page';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { UuidService } from './services/uuid-service/uuid.service';
-import { take } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid';
+import { TransfertHubServicesPage } from './transfert-hub-services/transfert-hub-services.page';
+import { ApplicationRoutingService } from './services/application-routing/application-routing.service';
+import { checkUrlMatch } from './utils/utils';
+
 const ls = new SecureLS({ encodingType: 'aes' });
 
 declare var FollowAnalytics: any;
@@ -37,7 +38,8 @@ export class AppComponent {
     private appMinimize: AppMinimize,
     private router: Router,
     private deeplinks: Deeplinks,
-    private uuidServ: UuidService  ) {
+    private appRout: ApplicationRoutingService
+    ) {
     this.initializeApp();
   }
 
@@ -154,24 +156,34 @@ export class AppComponent {
     if(this.deeplinks){
       this.deeplinks
         .route({
-          '/buy-pass-internet': BuyPassInternetPage,
+          '/buy-pass-internet': TransfertHubServicesPage,
           '/buy-pass-internet/:id': BuyPassInternetPage,
           '/assistance': AssistancePage,
-          '/buy-pass-illimix': BuyPassIllimixPage,
+          '/buy-pass-illimix': TransfertHubServicesPage,
           '/buy-pass-illimix/:id': BuyPassIllimixPage,
-          '/buy-credit': BuyCreditPage,
+          '/buy-credit': TransfertHubServicesPage,
           '/details-conso': DetailsConsoPage,
         })
         .subscribe(
           (matched) => {
-            this.router.navigate([matched.$link.path]);
+            this.goToPage(matched.$link.path)
+            // this.router.navigate([matched.$link.path]);
             console.log(matched);
+
           },
-          (notMatched) => {
+          () => {
             // console.log(notMatched);
             // console.log('deeplink not matched');
           }
         );
+    }
+  }
+
+  goToPage(path: string){
+    if( checkUrlMatch(path) ){
+      this.appRout.goToTransfertHubServicesPage('BUY');
+    }else {
+      this.router.navigate([path])
     }
   }
 
@@ -213,13 +225,10 @@ export class AppComponent {
   // }
   setUUidValue(){
     const x_uuid = ls.get('X-UUID');
-    const deviceInfo = window['device'];
-    if(!x_uuid){
-      if(deviceInfo && deviceInfo.uuid){
-        ls.set('X-UUID', deviceInfo.uuid)
-      }else {
-        this.uuidServ.generateRandomUuid().pipe(take(1)).subscribe();
-      }
+    
+    if(!x_uuid || x_uuid === ""){
+      const uuidV4 = uuidv4();
+      ls.set('X-UUID',uuidV4)
     }
   }
 }
