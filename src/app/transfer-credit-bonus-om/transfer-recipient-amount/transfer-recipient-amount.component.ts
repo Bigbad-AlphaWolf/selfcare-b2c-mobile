@@ -27,6 +27,7 @@ import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.pa
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 
 @Component({
   selector: 'app-transfer-recipient-amount',
@@ -68,7 +69,8 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     private dashService: DashboardService,
     private followAnalytics: FollowAnalyticsService,
     private navControl: NavController,
-    private pinpadOM: ModalController
+    private pinpadOM: ModalController,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit() {
@@ -244,7 +246,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     // this.openPickRecipientModal(testContacts);
     this.contacts
       .pickContact()
-      .then((contact: Contact) => {
+      .then(async (contact: Contact) => {
         this.contactInfos = contact;
         if (contact.phoneNumbers.length > 1) {
           this.openPickRecipientModal(contact.phoneNumbers);
@@ -260,7 +262,10 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
               this.badNumberStep();
             }
           } else {
-            if (this.validateNumber(destNumber)) {
+            if (
+              this.validateNumber(destNumber) &&
+              (await this.checkRecipientCanRecieveCredit(destNumber))
+            ) {
               this.nextStepEmitter.emit(this.recipientInfos);
               this.contactEmitter.emit(contact);
             } else {
@@ -270,6 +275,13 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
         }
       })
       .catch(() => {});
+  }
+
+  async checkRecipientCanRecieveCredit(msisdn) {
+    let canRecieve = await this.authService
+      .canRecieveCredit(msisdn)
+      .toPromise();
+    return canRecieve;
   }
 
   openPickRecipientModal(phoneNumbers: any[]) {
