@@ -127,7 +127,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-
     this.getUserInfos();
     this.getWelcomeStatus();
   }
@@ -512,17 +511,22 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goMerchantPayment() {
-    this.omServ.getOmMsisdn().subscribe(async (msisdn: string) => {
-      if (msisdn !== 'error') {
+    this.omServ.omAccountSession().subscribe(async (omSession: any) => {
+      const omSessionValid = omSession
+        ? omSession.msisdn !== 'error' &&
+          omSession.hasApiKey &&
+          omSession.accessToken &&
+          !omSession.loginExpired
+        : null;
+      if (omSessionValid) {
         this.bsService
-        .initBsModal(
-          MerchantPaymentCodeComponent,
-          OPERATION_TYPE_MERCHANT_PAYMENT,
-          PurchaseSetAmountPage.ROUTE_PATH
-        )
-        .subscribe((_) => {});
+          .initBsModal(
+            MerchantPaymentCodeComponent,
+            OPERATION_TYPE_MERCHANT_PAYMENT,
+            PurchaseSetAmountPage.ROUTE_PATH
+          )
+          .subscribe((_) => {});
         this.bsService.openModal(MerchantPaymentCodeComponent);
-
       } else {
         this.openPinpad();
       }
@@ -537,6 +541,11 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
+    });
+    modal.onDidDismiss().then((resp) => {
+      if (resp && resp.data && resp.data.success) {
+        this.goMerchantPayment();
+      }
     });
     return await modal.present();
   }
