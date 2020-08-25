@@ -8,11 +8,6 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
 import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
-import { isNewVersion } from 'src/shared';
-import { AppVersion } from '@ionic-native/app-version/ngx';
-const { SERVICES_SERVICE, SERVER_API_URL } = environment;
-const versionEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/v1/app-version`;
 import * as SecureLS from 'secure-ls';
 import { DetailsConsoPage } from './details-conso/details-conso.page';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
@@ -167,7 +162,7 @@ export class AppComponent {
             this.router.navigate([matched.$link.path]);
             console.log(matched);
           },
-          (notMatched) => {
+          () => {
             // console.log(notMatched);
             // console.log('deeplink not matched');
           }
