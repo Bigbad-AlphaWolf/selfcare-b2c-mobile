@@ -1,0 +1,30 @@
+{
+  "name": "cordova.plugin.followanalytics",
+  "version": "6.4.2",
+  "description": "FollowAnalytics Cordova SDK",
+  "author": "FollowAnalytics",
+  "license": "ISC",
+  "homepage": "http://dev.followanalytics.com/sdks/phonegap/documentation/",
+  "cordova": {
+    "id": "com.batch.cordova",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "keywords": [
+    "followanalytics",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "cordovaDependencies": {
+    "6.4.2": {
+      "cordova": ">=7.0.1",
+      "cordova-android": ">=7.0.0",
+      "cordova-ios": ">=4.5.0",
+      "xcode": "1.1.0",
+      "q": "1.5.1"
+    }
+  }
+}
