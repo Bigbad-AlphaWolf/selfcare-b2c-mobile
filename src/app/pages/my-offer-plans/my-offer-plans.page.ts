@@ -9,6 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { NavController, IonSlides } from '@ionic/angular';
 import { getPageTitle } from '../../utils/title.util';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-my-offer-plans',
@@ -125,7 +126,13 @@ export class MyOfferPlansPage implements OnInit {
     });
   }
 
+  orderBonPlan(offer: OfferPlan){
+    this.offerPlansServ.orderBonPlanProduct(offer.productOfferingId).pipe(take(1)).subscribe();
+  }
+
   goToPage(offer: OfferPlan) {
+    if(offer) this.orderBonPlan(offer);
+    
     switch (offer.typeMPO.toLowerCase()) {
       case 'illimix':
         if(offer.pass){
