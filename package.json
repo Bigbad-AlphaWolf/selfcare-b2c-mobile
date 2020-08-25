@@ -35,6 +35,7 @@
     "@ionic-native/core": "^5.0.0",
     "@ionic-native/deeplinks": "^5.19.1",
     "@ionic-native/device": "^5.25.0",
+    "@ionic-native/facebook": "^5.28.0",
     "@ionic-native/file": "^5.14.0",
     "@ionic-native/file-opener": "^5.15.0",
     "@ionic-native/file-transfer": "^5.14.0",
@@ -104,6 +105,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~12.6.6",
     "codelyzer": "~4.5.0",
+    "cordova-plugin-facebook4": "^6.4.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.1.0",
@@ -196,7 +198,12 @@
       "cordova-plugin-statusbar": {},
       "cordova-plugin-android-permissions": {},
       "cordova-plugin-unique-device-id2": {},
-      "cordova.plugin.followanalytics": {}
+      "cordova.plugin.followanalytics": {},
+      "cordova-plugin-facebook4": {
+        "APP_ID": "602050624037766",
+        "APP_NAME": "orangeetmoisn",
+        "FACEBOOK_HYBRID_APP_EVENTS": "true"
+      }
     },
     "platforms": [
       "android",

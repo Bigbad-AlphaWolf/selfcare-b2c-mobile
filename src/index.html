@@ -27,46 +27,87 @@
       rel="stylesheet"
     />
     <script>
-      (function(d) {
-        var cm = d.createElement('scr' + 'ipt'); 
-        cm.type = 'text/javascript'; 
+      (function (d) {
+        var cm = d.createElement('scr' + 'ipt');
+        cm.type = 'text/javascript';
         cm.async = true;
-        cm.src = 'https://sonatel.dimelochat.com/chat/b25dc90dcaed229e01ff8ffe/loader.js';
-        var s = d.getElementsByTagName('scr' + 'ipt')[0]; 
+        cm.src =
+          'https://sonatel.dimelochat.com/chat/b25dc90dcaed229e01ff8ffe/loader.js';
+        var s = d.getElementsByTagName('scr' + 'ipt')[0];
         s.parentNode.insertBefore(cm, s);
-      }(document));
+      })(document);
     </script>
     <script>
       // DIMELO NEW SCRIPT
       // Find elements of an array which satisfy a filter function
-      var grep = function(items, callback) {
-          var filtered = [],
-              len = items.length,
-              i = 0;
-          for (i; i < len; i++) {
-              var item = items[i];
-              var cond = callback(item);
-              if (cond) {
-                  filtered.push(item);
-              }
+      var grep = function (items, callback) {
+        var filtered = [],
+          len = items.length,
+          i = 0;
+        for (i; i < len; i++) {
+          var item = items[i];
+          var cond = callback(item);
+          if (cond) {
+            filtered.push(item);
           }
-          return filtered;
-        };
+        }
+        return filtered;
+      };
 
-        // Hack to force a trigger activation
-        var loadChatTrigger = function(trigger_id){
-            // Get all activated trigger objects
-            var triggers = Dimelo.Messaging.Manager.ChatQLoader.manager.triggers;
-          
-            // Find the good one
-            var target_trigger = grep(triggers, function(e){
-              return e.id == trigger_id; });
-            if (target_trigger.length > 0){
-              // Hack - Activate a dedicated trigger
-              Dimelo.Messaging.Manager.ChatQLoader.manager.activateTrigger(target_trigger[0]);
-            }
-        };
+      // Hack to force a trigger activation
+      var loadChatTrigger = function (trigger_id) {
+        // Get all activated trigger objects
+        var triggers = Dimelo.Messaging.Manager.ChatQLoader.manager.triggers;
+
+        // Find the good one
+        var target_trigger = grep(triggers, function (e) {
+          return e.id == trigger_id;
+        });
+        if (target_trigger.length > 0) {
+          // Hack - Activate a dedicated trigger
+          Dimelo.Messaging.Manager.ChatQLoader.manager.activateTrigger(
+            target_trigger[0]
+          );
+        }
+      };
     </script>
+
+    <!-- Facebook Pixel Code -->
+    <script>
+      !(function (f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod
+            ? n.callMethod.apply(n, arguments)
+            : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = '2.0';
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(
+        window,
+        document,
+        'script',
+        'https://connect.facebook.net/en_US/fbevents.js'
+      );
+      fbq('init', '979547425862632');
+      fbq('set', 'mobileBridge', '979547425862632', '602050624037766');
+    </script>
+    <noscript
+      ><img
+        height="1"
+        width="1"
+        style="display: none;"
+        src="https://www.facebook.com/tr?id=979547425862632&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Facebook Pixel Code -->
   </head>
 
   <body>
