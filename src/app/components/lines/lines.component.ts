@@ -9,6 +9,9 @@ import {
   isPostpaidFix,
   isPostpaidMobile,
   ModelOfSouscription,
+  PROFILE_TYPE_HYBRID,
+  PROFILE_TYPE_HYBRID_1,
+  PROFILE_TYPE_HYBRID_2,
 } from 'src/app/dashboard';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 
@@ -74,7 +77,10 @@ export class LinesComponent implements OnInit {
   isLineNumber(phone: string, souscription: ModelOfSouscription) {
     return (
       (REGEX_FIX_NUMBER.test(phone) && isPostpaidFix(souscription)) ||
-      (!REGEX_FIX_NUMBER.test(phone) && isPostpaidMobile(souscription))
+      (!REGEX_FIX_NUMBER.test(phone) && isPostpaidMobile(souscription)) ||
+      souscription.profil === PROFILE_TYPE_HYBRID ||
+      souscription.profil === PROFILE_TYPE_HYBRID_1 ||
+      souscription.profil === PROFILE_TYPE_HYBRID_2
     );
   }
 

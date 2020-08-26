@@ -431,7 +431,7 @@ export function computeConsoHistory(consos) {
     } = x;
     let conso1, conso2;
 
-    if (charge1) {
+    if (charge1 || chargeType1.length > 0) {
       conso1 = {
         date,
         categorie,
@@ -442,7 +442,7 @@ export function computeConsoHistory(consos) {
       };
       result.push(conso1);
     }
-    if (charge2) {
+    if (charge2 || chargeType2.length > 0) {
       conso2 = {
         date,
         categorie,
@@ -1164,3 +1164,7 @@ export const HelpModalConfigApnContent = {
 };
 
 export const TRANSFER_BONUS_CREDIT_FEE = 20;
+export const ERROR_MSG_PASS = {
+  LIST_EMPTY : "Aucun pass n'a été trouvé pour ce profil",
+  LIST_EMPTY_FOR_KIRENE : "Diegalou, Mixel et Wotel sont temporairement indisponibles sur Orange et Moi. Tu peux continuer à souscrire au #220# ou au #144#. Bul xaar, souscris vite. Nio far !"
+}

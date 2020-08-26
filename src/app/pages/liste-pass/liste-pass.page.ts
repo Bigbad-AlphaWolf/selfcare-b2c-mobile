@@ -7,6 +7,8 @@ import {
   arrangePassByCategory,
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
+  CODE_KIRENE_Formule,
+  ERROR_MSG_PASS,
 } from 'src/shared';
 import { PassIllimixService } from '../../services/pass-illimix-service/pass-illimix.service';
 
@@ -30,7 +32,7 @@ export class ListePassPage implements OnInit {
     slidesPerView: 1,
     slideShadows: true,
   };
-  fullListPass: any[];
+  fullListPass: { label: string; pass: any[] }[];
   recipientName: string;
   purchaseType: string;
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
@@ -144,5 +146,12 @@ export class ListePassPage implements OnInit {
       },
     };
     this.router.navigate(['/operation-recap'], navigationExtras);
+  }
+
+  getErrorMessageNoPass(){
+    if(this.userCodeFormule === CODE_KIRENE_Formule){
+      return ERROR_MSG_PASS.LIST_EMPTY_FOR_KIRENE
+    }
+    return ERROR_MSG_PASS.LIST_EMPTY
   }
 }

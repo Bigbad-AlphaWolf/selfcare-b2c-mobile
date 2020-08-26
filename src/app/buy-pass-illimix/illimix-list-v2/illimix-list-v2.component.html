@@ -97,6 +97,6 @@
     <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
   </div>
   <div class="no-pass-block" *ngIf="isLoaded && listPassIllimixShown.length < 1">
-    Pas de pass disponible pour ce profil
+    {{ getErrorMessageNoPass() }}
   </div>
 </div>

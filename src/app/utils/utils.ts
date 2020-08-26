@@ -37,3 +37,12 @@ export function isLineNumber(phone: string, souscription: ModelOfSouscription) {
     (!REGEX_FIX_NUMBER.test(phone) && isPostpaidMobile(souscription))
   );
 }
+
+export function checkUrlMatch(path: string) {
+  const transferHubServices = ['/buy-pass-internet', '/buy-pass-illimix','/buy-credit'];
+
+  for (let i = 0; i < transferHubServices.length; i++) {
+    if (path.startsWith(transferHubServices[i])) return true;
+  }
+  return false;
+}

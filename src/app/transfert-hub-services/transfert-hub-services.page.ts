@@ -21,7 +21,9 @@ import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.servic
 import { ListPassVoyagePage } from '../pages/list-pass-voyage/list-pass-voyage.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
-
+import { FacebookEventService } from '../services/facebook-event/facebook-event.service';
+import { FacebookEvent } from '../models/enums/facebook-event.enum';
+import { FacebookCustomEvent } from '../models/enums/facebook-custom-event.enum';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -93,7 +95,7 @@ export class TransfertHubServicesPage implements OnInit {
     },
     {
       title: 'Pass',
-      subtitle: 'illimix',
+      subtitle: 'illimix ou allo',
       icon: '/assets/images/ic-package-services@2x.png',
       action: 'REDIRECT',
       type: 'PASS_ILLIMIX',
@@ -146,7 +148,8 @@ export class TransfertHubServicesPage implements OnInit {
     private offerPlanServ: OfferPlansService,
     private dashbServ: DashboardService,
     private bsService: BottomSheetService,
-    private omService : OrangeMoneyService
+    private omService : OrangeMoneyService,
+    private facebookevent : FacebookEventService
   ) {}
 
   ngOnInit() {
@@ -180,6 +183,9 @@ export class TransfertHubServicesPage implements OnInit {
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
   }) {
+    // this.facebookevent.fbEvent(FacebookEvent.ViewContent,{});
+    this.facebookevent.fbCustomEvent(FacebookCustomEvent.TestEvent,{customField1:'customField1',customField2:51});
+    
     switch (opt.type) {
       case 'TRANSFERT_MONEY':
         if (opt.action === 'REDIRECT') {
