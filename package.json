@@ -36,10 +36,11 @@
     "@ionic-native/deeplinks": "^5.19.1",
     "@ionic-native/device": "^5.25.0",
     "@ionic-native/file": "^5.14.0",
-    "@ionic-native/file-opener": "^5.15.0",
+    "@ionic-native/file-opener": "^5.28.0",
     "@ionic-native/file-transfer": "^5.14.0",
     "@ionic-native/http": "^5.14.0",
-    "@ionic-native/in-app-browser": "^5.18.0",
+    "@ionic-native/in-app-browser": "^5.28.0",
+    "@ionic-native/ionic-webview": "^5.28.0",
     "@ionic-native/market": "^5.22.0",
     "@ionic-native/open-native-settings": "^5.18.0",
     "@ionic-native/social-sharing": "^5.15.0",
@@ -52,22 +53,22 @@
     "cordova-android-firebase-gradle-release": "^4.0.0",
     "cordova-ios": "^5.1.1",
     "cordova-open-native-settings": "^1.5.2",
-    "cordova-plugin-advanced-http": "^2.2.0",
+    "cordova-plugin-advanced-http": "^3.0.1",
     "cordova-plugin-android-permissions": "^1.0.2",
     "cordova-plugin-app-version": "^0.1.9",
     "cordova-plugin-appminimize": "^1.0.1",
     "cordova-plugin-contacts": "^3.0.1",
     "cordova-plugin-device": "^2.0.3",
     "cordova-plugin-file": "^6.0.2",
-    "cordova-plugin-file-opener2": "^2.2.1",
+    "cordova-plugin-file-opener2": "^3.0.4",
     "cordova-plugin-file-transfer": "^1.7.1",
-    "cordova-plugin-inappbrowser": "^3.2.0",
+    "cordova-plugin-inappbrowser": "^4.0.0",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
-    "cordova-plugin-ionic-webview": "^4.2.1",
+    "cordova-plugin-ionic-webview": "^5.0.0",
     "cordova-plugin-market": "^1.2.0",
-    "cordova-plugin-splashscreen": "^5.0.3",
-    "cordova-plugin-statusbar": "^2.2.0",
-    "cordova-plugin-x-socialsharing": "^5.6.0",
+    "cordova-plugin-splashscreen": "^6.0.0",
+    "cordova-plugin-statusbar": "2.2.0",
+    "cordova-plugin-x-socialsharing": "^6.0.1",
     "cordova.plugin.followanalytics": "file:fa-sdk-cordova",
     "core-js": "^2.5.4",
     "es6-promise-plugin": "^4.2.2",
@@ -114,11 +115,7 @@
     "plugins": {
       "cordova-plugin-contacts": {},
       "cordova-plugin-device": {},
-      "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-advanced-http": {
-        "OKHTTP_VERSION": "3.10.0"
-      },
       "cordova-android-firebase-gradle-release": {
         "FIREBASE-CORE": "17.0.0",
         "FIREBASE-ADS": "18.0.0",
@@ -149,19 +146,9 @@
         "FIREBASE-DATABASE": "18.0.0",
         "FIREBASE-CONFIG": "18.0.0"
       },
-      "cordova-plugin-file-transfer": {},
       "cordova-plugin-file": {},
-      "cordova-plugin-file-opener2": {
-        "ANDROID_SUPPORT_V4_VERSION": "27.+"
-      },
-      "cordova-plugin-x-socialsharing": {
-        "ANDROID_SUPPORT_V4_VERSION": "24.1.1+",
-        "PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION": "This app requires photo library access to function properly.",
-        "PHOTO_LIBRARY_USAGE_DESCRIPTION": "This app requires photo library access to function properly."
-      },
       "cordova-plugin-appminimize": {},
       "cordova-open-native-settings": {},
-      "cordova-plugin-inappbrowser": {},
       "ionic-plugin-deeplinks": {
         "URL_SCHEME": "orangeetmoi",
         "DEEPLINK_SCHEME": "https",
@@ -183,9 +170,22 @@
       "cordova-plugin-app-version": {},
       "cordova-plugin-market": {},
       "cordova.plugin.followanalytics": {},
-      "cordova-plugin-ionic-webview": {},
       "cordova-plugin-statusbar": {},
-      "cordova-plugin-android-permissions": {}
+      "cordova-plugin-android-permissions": {},
+      "cordova-plugin-file-transfer": {},
+      "cordova-plugin-advanced-http": {
+        "OKHTTP_VERSION": "3.12.1"
+      },
+      "cordova-plugin-file-opener2": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      },
+      "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-ionic-webview": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-x-socialsharing": {
+        "PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION": "This app requires photo library access to function properly.",
+        "PHOTO_LIBRARY_USAGE_DESCRIPTION": "This app requires photo library access to function properly."
+      }
     },
     "platforms": [
       "android",
