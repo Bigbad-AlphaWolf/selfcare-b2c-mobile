@@ -322,41 +322,36 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
       hasOMAccount: false,
     };
     this.omService
-      .checkUserHasAccount(this.omPhoneNumber, this.recipientInfos.phoneNumber)
+      .checkUserHasAccount(this.recipientInfos.phoneNumber)
       .subscribe(
-        (res: any) => {
+        (hasOMAccount: boolean) => {
           this.checkingOMAccount = false;
-          if (res) {
-            if (res.status_code.match('Success')) {
-              this.recipientInfos.hasOMAccount = true;
-              this.nextStepEmitter.emit(this.recipientInfos);
-              if (this.contactInfos) {
-                this.contactEmitter.emit(this.contactInfos);
-              }
-              this.followAnalytics.registerEventFollow(
-                'destinataire_transfert_has_om_account_success',
-                'event',
-                {
-                  transfert_om_numero_sender: this.userCurrentNumber,
-                  transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
-                  has_om: 'true',
-                }
-              );
-            } else {
-              this.followAnalytics.registerEventFollow(
-                'destinataire_transfert_has_om_account_success',
-                'event',
-                {
-                  transfert_om_numero_sender: this.userCurrentNumber,
-                  transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
-                  has_om: 'false',
-                }
-              );
-              this.openModalNoOMAccount(this.recipientInfos);
+          if (hasOMAccount) {
+            this.recipientInfos.hasOMAccount = true;
+            this.nextStepEmitter.emit(this.recipientInfos);
+            if (this.contactInfos) {
+              this.contactEmitter.emit(this.contactInfos);
             }
+            this.followAnalytics.registerEventFollow(
+              'destinataire_transfert_has_om_account_success',
+              'event',
+              {
+                transfert_om_numero_sender: this.userCurrentNumber,
+                transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
+                has_om: 'true',
+              }
+            );
           } else {
-            this.operationOM = 'RESET_TOKEN';
-            this.typeOMCode = true;
+            this.followAnalytics.registerEventFollow(
+              'destinataire_transfert_has_om_account_success',
+              'event',
+              {
+                transfert_om_numero_sender: this.userCurrentNumber,
+                transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
+                has_om: 'false',
+              }
+            );
+            this.openModalNoOMAccount(this.recipientInfos);
           }
         },
         (err) => {
