@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
-import { NavController } from '@ionic/angular';
+import { NavController, ModalController } from '@ionic/angular';
 import { OperationOem } from 'src/app/models/operation.model';
 import { WOYOFAL } from 'src/app/utils/bills.util';
 import { IMAGES_DIR_PATH } from 'src/app/utils/constants';
@@ -15,6 +15,8 @@ import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/m
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { Observable } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 
 @Component({
   selector: 'oem-operations',
@@ -29,7 +31,9 @@ export class OemOperationsComponent implements OnInit {
   constructor(
     private bsService: BottomSheetService,
     private navCtl: NavController,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private omService: OrangeMoneyService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -74,15 +78,41 @@ export class OemOperationsComponent implements OnInit {
       .subscribe((_) => {});
     this.bsService.openModal(CounterSelectionComponent);
   }
+
   openMerchantBS() {
-    this.bsService
-      .initBsModal(
-        MerchantPaymentCodeComponent,
-        OPERATION_TYPE_MERCHANT_PAYMENT,
-        PurchaseSetAmountPage.ROUTE_PATH
-      )
-      .subscribe((_) => {});
-    this.bsService.openModal(MerchantPaymentCodeComponent);
+    this.omService.omAccountSession().subscribe(async (omSession: any) => {
+      const omSessionValid = omSession
+        ? omSession.msisdn !== 'error' &&
+          omSession.hasApiKey &&
+          omSession.accessToken &&
+          !omSession.loginExpired
+        : null;
+      if (omSessionValid) {
+        this.bsService
+          .initBsModal(
+            MerchantPaymentCodeComponent,
+            OPERATION_TYPE_MERCHANT_PAYMENT,
+            PurchaseSetAmountPage.ROUTE_PATH
+          )
+          .subscribe((_) => {});
+        this.bsService.openModal(MerchantPaymentCodeComponent);
+      } else {
+        this.openPinpad();
+      }
+    });
+  }
+
+  async openPinpad() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+    });
+    modal.onDidDismiss().then((resp) => {
+      if (resp && resp.data && resp.data.success) {
+        this.bsService.openModal(MerchantPaymentCodeComponent);
+      }
+    });
+    return await modal.present();
   }
   getShowStatusNewFeatureAllo() {
     this.showNewFeatureBadge$ = this.dashboardService.getNewFeatureAlloBadgeStatus();
