@@ -9,6 +9,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 const { CONSO_SERVICE, SERVER_API_URL } = environment;
 
 const getCurrentUserOfferPlansEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/get-mpo`;
+const mpoProductOrderEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/mpo-product-order`;
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,13 @@ export class OfferPlansService {
   getCurrentUserOfferPlans() {
     const msisdn = this.dashbServ.getCurrentPhoneNumber();
     return this.http.get(`${getCurrentUserOfferPlansEndpoint}/${msisdn}`);
+  }
+
+  orderBonPlanProduct(productOfferingId: string) {
+    let msisdn = this.dashbServ.getCurrentPhoneNumber();
+    msisdn = this.addPrefixOnNumber(msisdn, '221');
+    const payload = { msisdn , productOfferingId }
+    return this.http.post(`${mpoProductOrderEndpoint}`,payload);
   }
 
   getUserTypeOfferPlans() {
@@ -49,4 +57,13 @@ export class OfferPlansService {
       return item.typeMPO.toLowerCase() === bonPlanType.toLowerCase();
     });
   }
+
+  addPrefixOnNumber(phoneNumber: string, prefix: string){
+    if(phoneNumber.length === 9 && !phoneNumber.startsWith(prefix)){
+      return prefix + phoneNumber;
+    }
+    return phoneNumber;
+  }
+
+
 }
