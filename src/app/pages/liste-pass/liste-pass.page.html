@@ -8,7 +8,10 @@
         Achat pass internet
       </span>
       <span *ngIf="purchaseType === OPERATION_ILLIMIX_TYPE" class="title1">
-        Achat pass Illimix ou Allo
+        Achat pass Illimix
+      </span>
+      <span *ngIf="purchaseType === OPERATION_ALLO_TYPE" class="title1">
+        Achat pass Allo
       </span>
     </ion-title>
   </ion-toolbar>
@@ -20,7 +23,10 @@
         Achat pass internet
       </span>
       <span *ngIf="purchaseType === OPERATION_ILLIMIX_TYPE" class="title">
-        Achat pass Illimix ou Allo
+        Achat pass Illimix
+      </span>
+      <span *ngIf="purchaseType === OPERATION_ALLO_TYPE" class="title">
+        Achat pass Allo
       </span>
     </ion-toolbar>
   </ion-header>
@@ -37,6 +43,11 @@
         *ngIf="purchaseType === OPERATION_ILLIMIX_TYPE"
         alt=""
       />
+      <img
+        src="/assets/images/pass-allo-banniere.png"
+        *ngIf="purchaseType === OPERATION_ALLO_TYPE"
+        alt=""
+      />
     </div>
     <div class="list-pass-body-main-content">
       <!-- loader -->
@@ -45,7 +56,7 @@
       </div>
 
       <div *ngIf="isLoaded && listPass.length" class="list-pass-body">
-        <div class="tab-header">
+        <div class="tab-header" *ngIf="purchaseType !== OPERATION_ALLO_TYPE">
           <div
             *ngFor="let slide of fullListPass; let i=index"
             (click)="changeCategory(i)"
@@ -78,35 +89,37 @@
               </ion-slide>
             </ion-slides>
           </ng-container>
-          <ng-container *ngIf="purchaseType === OPERATION_ILLIMIX_TYPE">
+          <ng-container
+            *ngIf="purchaseType === OPERATION_ILLIMIX_TYPE || purchaseType === OPERATION_ALLO_TYPE"
+          >
             <ion-slides
               #sliders
               (ionSlideDidChange)="slideChanged()"
               [options]="slideOpts"
             >
-            <ng-container *ngIf="fullListPass.length">
-              <ion-slide *ngFor="let slide of fullListPass">
-                <div class="filtered-list-pass">
-                  <ng-container *ngIf="slide?.pass?.length">
-                    <app-item-pass-illimix
-                      *ngFor="let pass of slide.pass"
-                      [passIllimix]="pass"
-                      (selectPass)="choosePass($event)"
-                    ></app-item-pass-illimix>
-                  </ng-container>
-                  <ng-container *ngIf="!slide?.pass?.length">
+              <ng-container *ngIf="fullListPass.length">
+                <ion-slide *ngFor="let slide of fullListPass">
+                  <div class="filtered-list-pass">
+                    <ng-container *ngIf="slide?.pass?.length">
+                      <app-item-pass-illimix
+                        *ngFor="let pass of slide.pass"
+                        [passIllimix]="pass"
+                        (selectPass)="choosePass($event)"
+                      ></app-item-pass-illimix>
+                    </ng-container>
+                    <ng-container *ngIf="!slide?.pass?.length">
+                      {{ getErrorMessageNoPass() }}
+                    </ng-container>
+                  </div>
+                </ion-slide>
+              </ng-container>
+              <ng-container *ngIf="!fullListPass.length">
+                <ion-slide>
+                  <div class="filtered-list-pass">
                     {{ getErrorMessageNoPass() }}
-                  </ng-container>
-                </div>
-              </ion-slide>
-            </ng-container>
-            <ng-container *ngIf="!fullListPass.length">
-              <ion-slide>
-                <div class="filtered-list-pass">
-                  {{ getErrorMessageNoPass() }}
-                </div>
-              </ion-slide>
-            </ng-container>
+                  </div>
+                </ion-slide>
+              </ng-container>
             </ion-slides>
           </ng-container>
         </div>

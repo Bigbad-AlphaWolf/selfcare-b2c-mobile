@@ -23,6 +23,7 @@ export const USER_CONS_CATEGORY_SMS = 'SMS';
 export const USER_CALL_SUMMARY_CONSO_CODES = [1, 6, 9];
 export const OPERATION_TYPE_PASS_INTERNET = 'PASS_INTERNET';
 export const OPERATION_TYPE_PASS_ILLIMIX = 'PASS_ILLIMIX';
+export const OPERATION_TYPE_PASS_ALLO = 'PASS_ALLO';
 export const OPERATION_TYPE_MERCHANT_PAYMENT = 'MERCHANT_PAYMENT';
 export const OPERATION_TYPE_SOS = 'SOS';
 export const OPERATION_TYPE_SOS_CREDIT = 'SOS CREDIT';
@@ -323,6 +324,8 @@ export function getOrderedListCategory(
   listCategoryFiltered = [...new Set(unorderedList.map((x) => x.libelle))];
   return listCategoryFiltered;
 }
+
+export const ALLO_PASS_CATEGORY = 'ALLO';
 
 export function getTrioConsoUser(consoSummary: UserConsommations) {
   const result = [];
@@ -1163,6 +1166,7 @@ export const HelpModalConfigApnContent = {
 };
 
 export const ERROR_MSG_PASS = {
-  LIST_EMPTY : "Aucun pass n'a été trouvé pour ce profil",
-  LIST_EMPTY_FOR_KIRENE : "Diegalou, Mixel et Wotel sont temporairement indisponibles sur Orange et Moi. Tu peux continuer à souscrire au #220# ou au #144#. Bul xaar, souscris vite. Nio far !"
-}
+  LIST_EMPTY: "Aucun pass n'a été trouvé pour ce profil",
+  LIST_EMPTY_FOR_KIRENE:
+    'Diegalou, Mixel et Wotel sont temporairement indisponibles sur Orange et Moi. Tu peux continuer à souscrire au #220# ou au #144#. Bul xaar, souscris vite. Nio far !',
+};

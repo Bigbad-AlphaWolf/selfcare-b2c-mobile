@@ -15,6 +15,7 @@ import {
   SubscriptionModel,
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TYPE_BONS_PLANS,
+  OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -23,6 +24,7 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import { OperationExtras } from '../models/operation-extras.model';
 import { OPERATION_WOYOFAL } from '../utils/operations.util';
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
+import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 
 @Component({
   selector: 'app-operation-recap',
@@ -70,6 +72,7 @@ export class OperationRecapPage implements OnInit {
   };
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
+  OPERATION_ALLO_TYPE = OPERATION_TYPE_PASS_ALLO;
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
@@ -105,6 +108,7 @@ export class OperationRecapPage implements OnInit {
           switch (this.purchaseType) {
             case OPERATION_TYPE_PASS_INTERNET:
             case OPERATION_TYPE_PASS_ILLIMIX:
+            case OPERATION_TYPE_PASS_ALLO:
               this.recipientName = state.recipientName;
               this.passChoosen = state.pass;
               this.recipientMsisdn = state.recipientMsisdn;
@@ -153,7 +157,6 @@ export class OperationRecapPage implements OnInit {
               };
               break;
             case OPERATION_TYPE_RECHARGE_CREDIT:
-              
               this.opXtras = state;
               this.amount = this.opXtras.amount;
               this.paymentMod = 'ORANGE_MONEY';
@@ -189,7 +192,12 @@ export class OperationRecapPage implements OnInit {
     switch (this.purchaseType) {
       case OPERATION_TYPE_PASS_INTERNET:
       case OPERATION_TYPE_PASS_ILLIMIX:
-        this.setPaymentMod();
+      case OPERATION_TYPE_PASS_ALLO:
+        if (this.subscriptionInfos.profil === PROFILE_TYPE_POSTPAID) {
+          this.openPinpad();
+        } else {
+          this.setPaymentMod();
+        }
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
         this.openPinpad();

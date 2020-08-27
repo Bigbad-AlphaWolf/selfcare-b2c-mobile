@@ -7,9 +7,14 @@ import { IMAGES_DIR_PATH } from 'src/app/utils/constants';
 import { CounterSelectionComponent } from '../counter/counter-selection/counter-selection.component';
 import { OPERATION_WOYOFAL } from 'src/app/utils/operations.util';
 import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
-import { OPERATION_TYPE_MERCHANT_PAYMENT } from 'src/shared';
+import {
+  OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_TYPE_PASS_ALLO,
+} from 'src/shared';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
+import { Observable } from 'rxjs';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 
@@ -21,15 +26,19 @@ import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.pa
 export class OemOperationsComponent implements OnInit {
   @Input('operations') operations: OperationOem[] = [];
   @Input('showMore') showMore: boolean = true;
-
+  OPERATION_TYPE_ALLO = OPERATION_TYPE_PASS_ALLO;
+  showNewFeatureBadge$: Observable<Boolean>;
   constructor(
     private bsService: BottomSheetService,
     private navCtl: NavController,
+    private dashboardService: DashboardService,
     private omService: OrangeMoneyService,
     private modalController: ModalController
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getShowStatusNewFeatureAllo();
+  }
 
   onOperation(op: OperationOem) {
     if (op.type === 'NAVIGATE') this.navCtl.navigateForward([op.action]);
@@ -104,5 +113,8 @@ export class OemOperationsComponent implements OnInit {
       }
     });
     return await modal.present();
+  }
+  getShowStatusNewFeatureAllo() {
+    this.showNewFeatureBadge$ = this.dashboardService.getNewFeatureAlloBadgeStatus();
   }
 }

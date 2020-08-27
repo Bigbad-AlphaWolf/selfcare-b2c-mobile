@@ -10,21 +10,23 @@
       </ion-back-button>
     </ion-buttons>
     <ion-title>
-        {{pageTitle}}
+      {{pageTitle}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
+<ion-content
+  no-bounce
+  has-bouncing="false"
+  forceOverscroll="false"
+  fullscreen="true"
+  [scrollEvents]="true"
+>
   <div class="transferts-page">
     <div class="ion-cards-container" *ngIf="options.length">
       <ng-container *ngFor="let opt of options">
         <div class="card">
-          <ion-card
-            (click)="goTo(opt)"
-            class="card-content"
-            button="true"
-          >          
-            <ion-card-content>  
+          <ion-card (click)="goTo(opt)" class="card-content" button="true">
+            <ion-card-content>
               <div class="icon">
                 <img [src]="opt?.icon" alt="" />
               </div>
@@ -38,16 +40,25 @@
               </div>
             </ion-card-content>
           </ion-card>
-          <div class="badge-promo" *ngIf="displayBadgeBoosterPromoInOptionsForCategory(hasBoosterPromoActive, opt) || displayBadgeOfferPlanForInOptionsCategory(hasPromoPlanActive, opt)"
+          <div
+            class="badge-promo"
+            *ngIf="displayBadgeBoosterPromoInOptionsForCategory(hasBoosterPromoActive, opt) || displayBadgeOfferPlanForInOptionsCategory(hasPromoPlanActive, opt) || opt.type === OPERATION_TYPE_PASS_ALLO"
+          >
+            <div class="icon-container">
+              <span
+                *ngIf="showNewFeatureBadge$|async else percentBlock"
+                class="new scb-text-white"
               >
-                <div class="icon-container">
-                  <span class="percent scb-text-white"> % </span>
-                </div>
-                <div class="triangle"></div>
-              </div>
+                Nouveau
+              </span>
+              <ng-template #percentBlock>
+                <span class="percent scb-text-white"> % </span>
+              </ng-template>
+            </div>
+            <div class="triangle"></div>
+          </div>
         </div>
       </ng-container>
-    
     </div>
   </div>
 </ion-content>
