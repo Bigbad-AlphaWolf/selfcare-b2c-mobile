@@ -14,8 +14,19 @@ import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { takeUntil, finalize, catchError, switchMap, take, tap } from 'rxjs/operators';
-import { HelpModalDefaultContent, HelpModalAuthErrorContent } from 'src/shared';
+import {
+  takeUntil,
+  finalize,
+  catchError,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators';
+import {
+  HelpModalDefaultContent,
+  HelpModalAuthErrorContent,
+  PRO_MOBILE_ERROR_CODE,
+} from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { ModalController, NavController } from '@ionic/angular';
 import { RegistrationSuccessModalPage } from '../registration-success-modal/registration-success-modal.page';
@@ -117,6 +128,10 @@ export class NewRegistrationPage implements OnInit {
     this.getNumber();
   }
 
+  ionViewWillLeave() {
+    ls.remove('light-token');
+  }
+
   openDialogGoSettings() {
     this.dialogRef = this.dialog.open(SettingsPopupComponent);
   }
@@ -126,49 +141,55 @@ export class NewRegistrationPage implements OnInit {
     this.showErrMessage = false;
     this.isNumberAttachedError = false;
     if (!this.ref['destroyed']) this.ref.detectChanges();
-      this.authServ.getMsisdnByNetwork()
-        //if after msisdnTimeout milliseconds the call does not complete, stop it.
-        .pipe(
-          takeUntil(timer(this.msisdnTimeout)),
-          // finalize to detect whenever call is complete or terminated
-          finalize(() => {
-            if (
-              (!this.firstCallMsisdn && !this.showErrMessage) ||
-              (!this.firstCallMsisdn && this.showErrMessage)
-            ) {
-              this.displayMsisdnError();
-              this.authErrorDetected.next(HelpModalAuthErrorContent);
-              console.log('http call is not successful');
-            }
-          }),
-          switchMap((res: { msisdn: string }) => {
-            this.firstCallMsisdn = res.msisdn;
-            return this.authServ.confirmMsisdnByNetwork(res.msisdn).pipe(take(1),tap((response: ConfirmMsisdnModel) => {
-              this.gettingNumber = false;
-              if (response !== undefined && response && response.status) {
-                this.numberGot = true;
-                this.phoneNumber = response.msisdn;
-                this.hmac = response.hmac;
-                this.followAnalyticsService.registerEventFollow(
-                  'User_msisdn_recuperation_succes',
-                  'event',
-                  this.phoneNumber
-                );
-              } else {
+    this.authServ
+      .getMsisdnByNetwork()
+      //if after msisdnTimeout milliseconds the call does not complete, stop it.
+      .pipe(
+        takeUntil(timer(this.msisdnTimeout)),
+        // finalize to detect whenever call is complete or terminated
+        finalize(() => {
+          if (
+            (!this.firstCallMsisdn && !this.showErrMessage) ||
+            (!this.firstCallMsisdn && this.showErrMessage)
+          ) {
+            this.displayMsisdnError();
+            this.authErrorDetected.next(HelpModalAuthErrorContent);
+            console.log('http call is not successful');
+          }
+        }),
+        switchMap((res: { msisdn: string }) => {
+          this.firstCallMsisdn = res.msisdn;
+          return this.authServ.confirmMsisdnByNetwork(res.msisdn).pipe(
+            take(1),
+            tap(
+              (response: ConfirmMsisdnModel) => {
+                this.gettingNumber = false;
+                if (response !== undefined && response && response.status) {
+                  this.numberGot = true;
+                  this.phoneNumber = response.msisdn;
+                  this.hmac = response.hmac;
+                  this.followAnalyticsService.registerEventFollow(
+                    'User_msisdn_recuperation_succes',
+                    'event',
+                    this.phoneNumber
+                  );
+                } else {
+                  this.displayMsisdnError();
+                }
+                if (!this.ref['destroyed']) this.ref.detectChanges();
+              },
+              () => {
                 this.displayMsisdnError();
               }
-              if (!this.ref['destroyed']) this.ref.detectChanges();
-            },
-            () => {
-              this.displayMsisdnError();
-            }))
-          }),
-          catchError(()=>{
-            this.displayMsisdnError();
-            return of()
-          })
-        )
-        .subscribe();
+            )
+          );
+        }),
+        catchError(() => {
+          this.displayMsisdnError();
+          return of();
+        })
+      )
+      .subscribe();
   }
 
   checkNumber() {
@@ -182,10 +203,15 @@ export class NewRegistrationPage implements OnInit {
       },
       (err: any) => {
         this.checkingNumber = false;
+        console.log(err);
+
         if (err.status === 400) {
-          if (err.error.errorKey === 'userRattached') {
+          if (err && err.error && err.error.errorKey === 'userRattached') {
             // this.showErrMessage = true;
             this.errorMsg = err.error.title;
+            this.isNumberAttachedError = true;
+          } else if (err.errorKey === PRO_MOBILE_ERROR_CODE) {
+            this.errorMsg = err.message;
             this.isNumberAttachedError = true;
           } else {
             // err.error.errorKey === 'userexists'
