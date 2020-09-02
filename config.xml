@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget android-packageName="com.orange.myorange.osn" id="com.orange.mobile.myorangesn" ios-CFBundleIdentifier="com.orange.mobile.myorangesn" version="5.5.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Orange Et Moi</name>
+    <name>Orange Et Moi</name>
     <description>Tout Orange En Un Click</description>
     <author email="serviceclient@orange-sonatel.com" href="https://orange.sn/">Orange Sonatel Team</author>
     <content src="index.html" />
@@ -117,35 +117,14 @@
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
         <splash height="2732" src="resources/ios/splash/Default@2x~universal~anyany.png" width="2732" />
     </platform>
-    <plugin name="cordova-android-firebase-gradle-release" spec="^4.0.0">
-        <variable name="FIREBASE-CORE" value="17.0.0" />
-        <variable name="FIREBASE-ADS" value="18.0.0" />
-        <variable name="FIREBASE-ANALYTICS" value="17.0.0" />
-        <variable name="FIREBASE-APPINDEXING" value="19.0.0" />
-        <variable name="FIREBASE-AUTH" value="18.0.0" />
-        <variable name="FIREBASE-FIRESTORE" value="20.0.0" />
-        <variable name="FIREBASE-FUNCTIONS" value="18.0.0" />
-        <variable name="FIREBASE-MESSAGING" value="19.0.0" />
-        <variable name="FIREBASE-STORAGE" value="18.0.0" />
-        <variable name="FIREBASE-CRASH" value="16.2.1" />
-        <variable name="CRASHLYTICS" value="2.10.1" />
-        <variable name="FIREBASE-DYNAMIC-LINKS" value="18.0.0" />
-        <variable name="FIREBASE-INVITES" value="17.0.0" />
-        <variable name="FIREBASE-INAPPMESSAGING" value="18.0.1" />
-        <variable name="FIREBASE-INAPPMESSAGING-DISPLAY" value="18.0.1" />
-        <variable name="FIREBASE-ML-VISION" value="21.0.0" />
-        <variable name="FIREBASE-ML-VISION-IMAGE-LABEL-MODEL" value="18.0.0" />
-        <variable name="FIREBASE-ML-VISION-FACE-MODEL" value="18.0.0" />
-        <variable name="FIREBASE-ML-VISION-OBJECT-DETECTION-MODEL" value="17.0.0" />
-        <variable name="FIREBASE-ML-NATURAL-LANGUAGE" value="20.0.0" />
-        <variable name="FIREBASE-ML-NATURAL-LANGUAGE-LANGUAGE-ID-MODEL" value="20.0.0" />
-        <variable name="FIREBASE-ML-NATURAL-LANGUAGE-TRANSLATE-MODEL" value="20.0.0" />
-        <variable name="FIREBASE-ML-NATURAL-LANGUAGE-SMART-REPLY-MODEL" value="20.0.0" />
-        <variable name="FIREBASE-ML-MODEL-INTERPRETER" value="20.0.0" />
-        <variable name="FIREBASE-ML-VISION-AUTOML" value="17.0.0" />
-        <variable name="FIREBASE-PERF" value="18.0.0" />
-        <variable name="FIREBASE-DATABASE" value="18.0.0" />
-        <variable name="FIREBASE-CONFIG" value="18.0.0" />
+    <plugin name="cordova-plugin-x-socialsharing" spec="^6.0.1" />
+    <plugin name="cordova-plugin-splashscreen" spec="^6.0.0" />
+    <plugin name="cordova-plugin-file-transfer" spec="^1.7.1" />
+    <plugin name="cordova-plugin-file-opener2" spec="^3.0.4">
+        <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
+    </plugin>
+    <plugin name="cordova-plugin-advanced-http" spec="^3.0.1">
+        <variable name="OKHTTP_VERSION" value="3.12.1" />
     </plugin>
     <plugin name="cordova-plugin-file" spec="^6.0.2" />
     <plugin name="cordova-plugin-appminimize" spec="^1.0.1" />
