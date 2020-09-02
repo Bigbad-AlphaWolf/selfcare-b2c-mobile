@@ -8,6 +8,8 @@ import {
 } from '../services/authentication-service/authentication.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NavController } from '@ionic/angular';
+import { PRO_MOBILE_ERROR_CODE } from 'src/shared';
+const ls = new SecureLS({ encodingType: 'aes' });
 export interface Description {
   text: string;
 }
@@ -81,7 +83,6 @@ export class ForgottenPasswordPage implements OnInit {
         this.ref.detectChanges();
       }
     );
-   
   }
 
   goStepNewPassword() {
@@ -105,14 +106,23 @@ export class ForgottenPasswordPage implements OnInit {
         this.checkingNumber = false;
         //  && err.error && err.error.errorKey === 'userexists'
         if (err.status === 400) {
-          // Go to login page
-          this.goStepNewPassword();
+          if (err && err.error && err.error.errorKey === 'userRattached') {
+            this.error_message = err.error.title;
+          } else if (err && err.errorKey === PRO_MOBILE_ERROR_CODE) {
+            this.error_message = err.message;
+          } else {
+            this.goStepNewPassword();
+          }
         } else {
           this.error_message =
             'Oups!!! Une erreur est survenue, veuillez réessayer plus tard. Merci';
         }
       }
     );
+  }
+
+  ionViewWillLeave() {
+    ls.remove('light-token');
   }
 
   onSubmitPassword() {
@@ -179,7 +189,7 @@ export class ForgottenPasswordPage implements OnInit {
   goToPreviousStep() {
     this.error_message = '';
     if (this.currentStep === 1) {
-        this.navController.pop()
+      this.navController.pop();
     } else {
       this.currentStep = 1;
     }
