@@ -53,7 +53,7 @@
     "@wdio/selenium-standalone-service": "^5.12.1",
     "codeceptjs": "^2.5.0",
     "com.telerik.plugins.nativepagetransitions": "^0.6.5",
-    "cordova-android": "^8.1.0",
+    "cordova-android": "8.1.0",
     "cordova-android-firebase-gradle-release": "^4.0.0",
     "cordova-ios": "^5.1.1",
     "cordova-open-native-settings": "^1.5.2",
@@ -195,20 +195,23 @@
       "cordova-plugin-whitelist": {},
       "cordova-plugin-app-version": {},
       "cordova-plugin-market": {},
-      "cordova-plugin-ionic-webview": {},
+      "cordova-plugin-ionic-webview": {
+        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
+      },
       "cordova-plugin-statusbar": {},
       "cordova-plugin-android-permissions": {},
       "cordova-plugin-unique-device-id2": {},
-      "cordova.plugin.followanalytics": {},
       "cordova-plugin-facebook4": {
         "APP_ID": "602050624037766",
         "APP_NAME": "orangeetmoisn",
-        "FACEBOOK_HYBRID_APP_EVENTS": "true"
-      }
+        "FACEBOOK_HYBRID_APP_EVENTS": "true",
+        "FACEBOOK_ANDROID_SDK_VERSION": "5.13.0"
+      },
+      "cordova.plugin.followanalytics": {}
     },
     "platforms": [
-      "android",
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }
