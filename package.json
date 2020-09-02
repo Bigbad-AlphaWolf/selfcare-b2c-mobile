@@ -209,8 +209,8 @@
       "cordova.plugin.followanalytics": {}
     },
     "platforms": [
-      "android",
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }

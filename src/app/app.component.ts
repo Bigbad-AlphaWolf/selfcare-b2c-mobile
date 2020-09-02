@@ -90,12 +90,6 @@ export class AppComponent {
         
         /*if (this.platform.is('ios')) {
           if (typeof FollowAnalytics !== 'undefined') {
-            FollowAnalytics.initialize('LV4mrGLUK4o2zQ');
-            FollowAnalytics.registerForPush();
-          }
-        } else if (this.platform.is('android')) {
-          if (typeof FollowAnalytics !== 'undefined') {
-            FollowAnalytics.initialize('DgD85nBBSi5wtw');
             FollowAnalytics.registerForPush();
           }
         }*/
