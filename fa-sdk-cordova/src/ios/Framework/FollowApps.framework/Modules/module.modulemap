@@ -1,6 +1,0 @@
-framework module FollowApps {
-  umbrella header "FollowApps.h"
-
-  export *
-  module * { export * }
-}

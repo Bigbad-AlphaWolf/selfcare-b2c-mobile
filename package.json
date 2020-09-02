@@ -20,8 +20,8 @@
     "run:android": "npm run build:android && native-run android --app platforms/android/app/build/outputs/apk/debug/app-debug.apk --device",
     "build:ios": "ionic cordova platform add ios && ionic cordova build ios",
     "run:ios": "npm run build:ios && native-run ios --app platforms/ios/build/emulator/Orange Et Moi.app",
-    "clean:build:android": "npm run clean:all:install && npm run build:android",
-    "clean:build:ios": "npm run clean:all:install && npm run build:ios"
+    "clean:build:android": "npm run clean:all:install && npm run run:android",
+    "clean:build:ios": "npm run clean:all:install && npm run run:ios"
   },
   "private": true,
   "dependencies": {
