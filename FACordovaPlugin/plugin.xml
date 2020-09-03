@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova.plugin.followanalytics" version="6.4.2"
+    xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>FollowAnalyticsCordovaPlugin</name>
+    <js-module name="FollowAnalyticsCordovaPlugin" src="www/FollowAnalyticsCordovaPlugin.js">
+        <clobbers target="FollowAnalytics" />
+        <runs/>
+    </js-module>
+    <platform name="ios">
+        <config-file parent="/*" target="config.xml">
+            <feature name="FollowAnalyticsCordovaPlugin">
+                <param name="ios-package" value="FollowAnalyticsCordovaPlugin" />
+            </feature>
+        </config-file>
+        <source-file src="src/ios/FollowAnalyticsCordovaPlugin.h" />
+        <source-file src="src/ios/FollowAnalyticsCordovaPlugin.m" />
+        <source-file src="src/ios/FAWebViewPopupController.h" />
+        <source-file src="src/ios/FAWebViewPopupController.m" />
+        <source-file src="src/ios/strip-frameworks.sh" />
+        <!-- FollowAnalytics framework -->
+        <framework src="src/ios/Framework/FollowAnalytics.framework" embed="true" custom="true" />
+        <framework src="src/ios/Framework/FANotificationExtension.framework" embed="true" custom="true" />
+
+        <!-- Background Modes -->
+        <config-file target="*-Info.plist" parent="UIBackgroundModes">
+          <array>
+            <string>remote-notification</string>
+          </array>
+        </config-file>
+
+        <!-- Enable Push Notification Capabilities -->
+        <hook type="after_plugin_install" src="src/ios/hooks/enable_push_notifications.js"/>
+        <hook type="after_plugin_install" src="src/ios/hooks/addEmbeddedFramework.js"/>
+        <hook type="after_plugin_install" src="src/ios/hooks/addRunScriptPhase.js"/>
+        <hook type="after_plugin_install" src="src/hooks/configuration.js" />
+        <hook type="after_prepare" src="src/ios/hooks/configure_fa_sdk.js" />
+    </platform>
+    <platform name="android">
+        <framework src="src/android/build.gradle" custom="true" type="gradleReference" />
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="FollowAnalyticsCordovaPlugin">
+                <param name="android-package" value="cordova.plugin.followanalytics.FollowAnalyticsCordovaPlugin" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity android:name="cordova.plugin.followanalytics.FAWebViewActivity" android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+            <meta-data android:name="com.followanalytics.deeplinking.handler" android:value="cordova.plugin.followanalytics.CustomMessageHandler"/>
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <service android:name="cordova.plugin.followanalytics.FollowAnalyticsFirebaseMessagingService">
+                <intent-filter>
+                    <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                </intent-filter>
+            </service>
+        </config-file>
+        <!-- Enable Firebase -->
+        <hook type="after_plugin_install" src="src/android/hooks/after_plugin_install.js" />
+        <hook type="before_plugin_uninstall" src="src/android/hooks/before_plugin_uninstall.js" />
+        <hook type="after_prepare" src="src/android/hooks/configure_fa_sdk.js" />
+        <hook type="after_plugin_install" src="src/hooks/configuration.js" />
+        <framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
+
+        <source-file src="src/android/FollowAnalyticsCordovaPlugin.java" target-dir="src/cordova/plugin/followanalytics/" />
+        <source-file src="src/android/CustomMessageHandler.java" target-dir="src/cordova/plugin/followanalytics/" />
+        <source-file src="src/android/FollowAnalyticsInterfaceProcessor.java" target-dir="src/cordova/plugin/followanalytics/" />
+        <source-file src="src/android/FollowAnalyticsFirebaseMessagingService.java" target-dir="src/cordova/plugin/followanalytics" />
+        <source-file src="src/android/FollowAnalyticsApplication.java" target-dir="src/cordova/plugin/followanalytics" />
+        <source-file src="src/android/FAWebViewActivity.java" target-dir="src/cordova/plugin/followanalytics" />
+    </platform>
+</plugin>
