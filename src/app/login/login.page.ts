@@ -6,7 +6,6 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 const ls = new SecureLS({ encodingType: 'aes' });
-import * as Fingerprint2 from 'fingerprintjs2';
 import { HelpModalDefaultContent } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
