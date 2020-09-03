@@ -1,7 +1,3 @@
-import {
-  NativePageTransitions,
-  NativeTransitionOptions,
-} from '@ionic-native/native-page-transitions/ngx';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 const ORANGE_HOME_PAGE_URL = 'http://orange.sn';
@@ -51,7 +47,6 @@ export class HomePage implements OnInit {
 
   constructor(
     private router: Router,
-    private nativePageTransition: NativePageTransitions
   ) {
     if (typeof FollowAnalytics !== 'undefined') {
       FollowAnalytics.logEvent('Home', 'success');
@@ -63,12 +58,10 @@ export class HomePage implements OnInit {
   }
 
   goToLoginPage() {
-    this.nativePageTransition.fade(null);
     this.router.navigate(['/login']);
   }
 
   goToRegistrationPage() {
-    this.nativePageTransition.fade(null);
     this.router.navigate(['/register']);
   }
 

@@ -4,7 +4,7 @@
     "debug":
     {
       "apiKey" : "DgD85nBBSi5wtw",
-      "isVerbose" : true,
+      "isVerbose" : false,
       "maxBackgroundTimeWithinSession" : 120
     },
     "release":

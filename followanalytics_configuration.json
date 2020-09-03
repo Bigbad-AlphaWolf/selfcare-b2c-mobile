@@ -1,32 +1,33 @@
 {
   "android" :
-  { 
+  {
     "debug":
     {
       "apiKey" : "DgD85nBBSi5wtw",
-      "isVerbose" : true,
-      "maxBackgroundTimeWithinSession" : 120 
+      "isVerbose" : false,
+      "maxBackgroundTimeWithinSession" : 120
     },
     "release":
     {
       "apiKey" : "DgD85nBBSi5wtw",
       "isVerbose" : false,
-      "maxBackgroundTimeWithinSession" : 120 
-    }
-  },
+      "maxBackgroundTimeWithinSession" : 120
+    }   
+  }
+  ,
   "ios" :
-  { 
+  {
     "debug":
     {
       "apiKey" : "LV4mrGLUK4o2zQ",
       "isVerbose" : true,
-      "maxBackgroundTimeWithinSession" : 120 
+      "maxBackgroundTimeWithinSession" : 120
     },
     "release":
     {
       "apiKey" : "LV4mrGLUK4o2zQ",
       "isVerbose" : false,
-      "maxBackgroundTimeWithinSession" : 120 
+      "maxBackgroundTimeWithinSession" : 120
     }
   }
 }
