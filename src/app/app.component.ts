@@ -1,4 +1,3 @@
-import { BuyCreditPage } from './buy-credit/buy-credit.page';
 import { BuyPassIllimixPage } from './buy-pass-illimix/buy-pass-illimix.page';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { Component } from '@angular/core';
@@ -8,12 +7,9 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
 import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
-const { SERVICES_SERVICE, SERVER_API_URL } = environment;
 import * as SecureLS from 'secure-ls';
 import { DetailsConsoPage } from './details-conso/details-conso.page';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
-import { UuidService } from './services/uuid-service/uuid.service';
 import { v4 as uuidv4 } from 'uuid';
 import { TransfertHubServicesPage } from './transfert-hub-services/transfert-hub-services.page';
 import { ApplicationRoutingService } from './services/application-routing/application-routing.service';
