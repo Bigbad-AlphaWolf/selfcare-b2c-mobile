@@ -27,6 +27,8 @@ import {
 import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
+import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
+import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-kirene',
@@ -76,6 +78,8 @@ export class DashboardKirenePage implements OnInit {
   lastName: string;
   hasPromoBooster: PromoBoosterActive = null;
   currentProfil: string;
+  hasPromoPlanActive: OfferPlanActive = null;
+
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -84,7 +88,8 @@ export class DashboardKirenePage implements OnInit {
     private sargalServ: SargalService,
     private followsAnalytics: FollowAnalyticsService,
     private shareDialog: MatDialog,
-    private assistanceService: AssistanceService
+    private assistanceService: AssistanceService,
+    private offerPlanServ: OfferPlansService,
   ) {}
 
   ngOnInit() {
@@ -105,6 +110,7 @@ export class DashboardKirenePage implements OnInit {
     this.getUserConsommations();
     this.getSargalPoints();
     this.getCurrentSubscription();
+    this.getUserActiveBonPlans();
     this.getActivePromoBooster();
   }
 
@@ -123,6 +129,14 @@ export class DashboardKirenePage implements OnInit {
       .getActivePromoBooster()
       .subscribe((res: any) => {
         this.hasPromoBooster = res;
+      });
+  }
+
+  getUserActiveBonPlans() {
+    this.offerPlanServ
+      .getUserTypeOfferPlans()
+      .subscribe((res: OfferPlanActive) => {
+        this.hasPromoPlanActive = res;
       });
   }
 
