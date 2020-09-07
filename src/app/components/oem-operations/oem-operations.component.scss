@@ -2,7 +2,7 @@
 
 ion-grid {
   ion-row {
-    justify-content: space-around;
+    justify-content: space-between;
     &::after {
       content: '';
       margin: 7px;
