@@ -9,9 +9,7 @@
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
-    <ion-title>
-      {{pageTitle}}
-    </ion-title>
+    <ion-title> {{pageTitle}} </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content
@@ -31,29 +29,26 @@
                 <img [src]="opt?.icon" alt="" />
               </div>
               <div class="text">
-                <span class="title">
-                  {{opt.title}}
-                </span>
-                <span class="subtitle">
-                  {{opt.subtitle}}
-                </span>
+                <span class="title"> {{opt.title}} </span>
+                <span class="subtitle"> {{opt.subtitle}} </span>
               </div>
             </ion-card-content>
           </ion-card>
           <div
             class="badge-promo"
-            *ngIf="displayBadgeBoosterPromoInOptionsForCategory(hasBoosterPromoActive, opt) || displayBadgeOfferPlanForInOptionsCategory(hasPromoPlanActive, opt) || opt.type === OPERATION_TYPE_PASS_ALLO"
+            *ngIf="displayBadgeBoosterPromoInOptionsForCategory(hasBoosterPromoActive, opt) || displayBadgeOfferPlanForInOptionsCategory(hasPromoPlanActive, opt)"
           >
             <div class="icon-container">
-              <span
-                *ngIf="showNewFeatureBadge$|async else percentBlock"
-                class="new scb-text-white"
-              >
-                Nouveau
-              </span>
-              <ng-template #percentBlock>
-                <span class="percent scb-text-white"> % </span>
-              </ng-template>
+              <span class="percent scb-text-white"> % </span>
+            </div>
+            <div class="triangle"></div>
+          </div>
+          <div
+            class="badge-promo"
+            *ngIf="opt.type === OPERATION_TYPE_PASS_ALLO && showNewFeatureBadge$|async"
+          >
+            <div class="icon-container">
+              <span class="new scb-text-white"> Nouveau </span>
             </div>
             <div class="triangle"></div>
           </div>
