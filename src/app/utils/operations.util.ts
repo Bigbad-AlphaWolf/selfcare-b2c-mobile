@@ -79,7 +79,7 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
 ];
 
 export const ACTIONS_RAPIDES_OPERATIONS_POSTPAID: OperationOem[] = [
-  ...ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.slice(0, 5),
+  ...ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.slice(0, ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.length - 1),
   {
     title: 'Payer',
     subtitle: 'un marchand',
