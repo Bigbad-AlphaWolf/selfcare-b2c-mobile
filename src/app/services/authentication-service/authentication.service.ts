@@ -82,7 +82,8 @@ const resetPwdEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset
 const notificationInfoEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/notification-information`;
 // endpoint to get token
 const tokenEndpoint = `${SERVER_API_URL}/auth/get-service-token`;
-
+// eligibility to recieve pass internet & illimix endpoint
+const eligibilityRecievePassEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/check-conditions`;
 @Injectable({
   providedIn: 'root',
 })
@@ -285,6 +286,14 @@ export class AuthenticationService {
         return true;
       })
     );
+  }
+
+  checkUserEligibility(msisdn) {
+    // return of({
+    //   message: 'Vous avez déjà un illimix en cours.',
+    //   eligible: false,
+    // });
+    return this.http.get(`${eligibilityRecievePassEndpoint}/${msisdn}`);
   }
 
   deleteSubFromStorage(msisdn: string) {
