@@ -1,15 +1,11 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectorRef,
-  Input,
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
 import {
   formatPhoneNumber,
   REGEX_NUMBER_OM,
   SubscriptionModel,
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TYPE_PASS_VOYAGE,
+  CODE_KIRENE_Formule,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -49,6 +45,9 @@ export class NumberSelectionComponent implements OnInit {
   canNotRecieve: boolean;
   canNotRecieveError: boolean = false;
   option: NumberSelectionOption = NumberSelectionOption.WITH_MY_PHONES;
+  eligibilityChecked: boolean;
+  isRecipientEligible = true;
+  eligibilityError: string;
   @Input() data;
 
   constructor(
@@ -57,9 +56,12 @@ export class NumberSelectionComponent implements OnInit {
     private dashbServ: DashboardService,
     private authService: AuthenticationService,
     private changeDetectorRef: ChangeDetectorRef,
-    private recentsService: RecentsService  ) {}
+    private recentsService: RecentsService
+  ) {}
 
   ngOnInit() {
+    console.log(this.data);
+
     this.option = this.data.option;
     this.showInput = this.option === NumberSelectionOption.NONE;
     this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
@@ -117,15 +119,34 @@ export class NumberSelectionComponent implements OnInit {
     this.dismissBottomSheet();
   }
 
+  async isEligible() {
+    let isEligible = await this.authService
+      .checkUserEligibility(this.opXtras.recipientMsisdn)
+      .toPromise();
+    return isEligible;
+  }
+
   dismissBottomSheet() {
     this.isProcessing = true;
     this.authService
       .getSubscriptionForTiers(this.opXtras.recipientMsisdn)
       .subscribe(
-        (res: SubscriptionModel) => {
+        async (res: SubscriptionModel) => {
           this.isProcessing = false;
           this.opXtras.code = res.code;
           this.opXtras.profil = res.profil;
+          if (
+            res.code === CODE_KIRENE_Formule &&
+            this.data.purchaseType !== OPERATION_TYPE_RECHARGE_CREDIT
+          ) {
+            const eligibility: any = await this.isEligible();
+            this.eligibilityChecked = true;
+            if (eligibility && !eligibility.eligible) {
+              this.isRecipientEligible = false;
+              this.eligibilityError = eligibility.message;
+              return;
+            }
+          }
           this.modalController.dismiss(this.opXtras);
           // this.bottomSheetRef.dismiss(this.opXtras);
         },
@@ -173,7 +194,7 @@ export class NumberSelectionComponent implements OnInit {
 
         if (msisdn !== 'error') {
           this.opXtras.senderMsisdn = msisdn;
-          if(OPERATION_TYPE_PASS_VOYAGE !== this.data.purchaseType)
+          if (OPERATION_TYPE_PASS_VOYAGE !== this.data.purchaseType)
             this.getRecents();
         }
       },

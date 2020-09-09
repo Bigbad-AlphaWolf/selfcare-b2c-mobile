@@ -27,6 +27,7 @@
             [type]="'credit'"
           ></app-select-other-recipient>
           <app-select-recipient
+            [purchaseType]="OPERATION_TYPE_RECHARGE_CREDIT"
             (getDestinataire)="nextStepOfSelectDest($event)"
             (getContact)="contactGot($event)"
             *ngIf="currentProfil !== PROFILE_TYPE_POSTPAID"
