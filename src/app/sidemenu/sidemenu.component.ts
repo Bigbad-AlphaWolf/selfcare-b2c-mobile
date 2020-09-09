@@ -22,6 +22,8 @@ import {
 const ls = new SecureLS({ encodingType: 'aes' });
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { NavController } from '@ionic/angular';
+import { OffresServicesPage } from '../pages/offres-services/offres-services.page';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -45,7 +47,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private accountService: AccountService,
     private iab: InAppBrowser,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private navCtrl : NavController
   ) {}
 
   ngOnInit() {
@@ -108,6 +111,10 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   launchInProgressPage() {
     this.accountService.launchInProgressPage();
+  }
+
+  onOffreClicked(){
+    this.navCtrl.navigateForward(OffresServicesPage.ROUTE_PATH);
   }
 
   goToMyOfferPlans() {

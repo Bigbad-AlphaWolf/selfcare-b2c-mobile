@@ -80,10 +80,12 @@ import { InvoiceCardComponent } from 'src/app/components/invoice-card/invoice-ca
 import { LinesComponent } from 'src/app/components/lines/lines.component';
 import { IbouIonFabComponent } from './ibou-ion-fab/ibou-ion-fab.component';
 import { RequestCardComponent } from 'src/app/components/request-card/request-card.component';
+import { BanniereComponent } from 'src/app/components/banniere/banniere.component';
 
 @NgModule({
   declarations: [
     LinesComponent,
+    BanniereComponent,
     InvoiceCardComponent,
     RequestCardComponent,
     NoIonSelectArrowDirective,
@@ -183,6 +185,7 @@ import { RequestCardComponent } from 'src/app/components/request-card/request-ca
     FavoriteMerchantComponent,
   ],
   exports: [
+    BanniereComponent,
     InvoiceCardComponent,
     RequestCardComponent,
     LinesComponent,

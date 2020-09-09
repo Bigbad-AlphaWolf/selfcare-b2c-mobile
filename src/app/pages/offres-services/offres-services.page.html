@@ -1,0 +1,20 @@
+<ion-header [oemIonHeaderParallax]="90" >
+  <ion-toolbar >
+      <ion-buttons>
+        <ion-back-button defaultHref="/dashboard" icon="" class="oem-back-button" >
+            <img src="/assets/images/arrow-left.png" alt="icon" />
+        </ion-back-button>  
+      </ion-buttons>
+      <ion-title>Mes services</ion-title>
+  </ion-toolbar> 
+</ion-header>
+
+<ion-content  no-bounce has-bouncing="false" forceOverscroll="false" [scrollEvents]="true">
+  <div class="oem-services-page">
+    <div class="banierres" *ngIf="(bannieres$ | async) as bannieres">
+      <div class="scroll" scrollX="true">
+        <oem-banniere *ngFor="let banniere of bannieres" [banniere]="banniere" clas="scroll-item"></oem-banniere>
+      </div>
+    </div>
+  </div>
+</ion-content>
