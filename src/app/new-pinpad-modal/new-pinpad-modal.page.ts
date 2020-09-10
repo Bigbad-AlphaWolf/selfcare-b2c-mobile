@@ -371,7 +371,7 @@ export class NewPinpadModalPage implements OnInit {
                       ? this.buyPassPayload.pass.passPromo.price_plan_index_om
                       : this.buyPassPayload.pass.price_plan_index_om,
                     canalPromotion,
-                    amount: this.buyPassPayload.passPromo
+                    amount: this.buyPassPayload.pass.passPromo
                       ? this.buyPassPayload.pass.passPromo.tarif
                       : this.buyPassPayload.pass.tarif,
                   };
