@@ -35,7 +35,7 @@ import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
   styleUrls: ['./number-selection.component.scss'],
 })
 export class NumberSelectionComponent implements OnInit {
-  numbers$: Observable<string[]> = of(['782363572', '776148081', '776148080']);
+  numbers$: Observable<string[]> ;
   recentsRecipients$: Observable<any[]>;
 
   numberSelected: string = '';
@@ -52,8 +52,8 @@ export class NumberSelectionComponent implements OnInit {
   canNotRecieveError: boolean = false;
   option: NumberSelectionOption = NumberSelectionOption.WITH_MY_PHONES;
   @Input() data;
-  loadingNumber : boolean;
-  currentPhone : string = SessionOem.PHONE;
+  loadingNumbers : boolean;
+  currentPhone : string = (SessionOem.PHONE).trim();
   
 
   constructor(
@@ -68,11 +68,11 @@ export class NumberSelectionComponent implements OnInit {
   ngOnInit() {
     this.option = this.data.option;
     this.showInput = this.option === NumberSelectionOption.NONE;
-    this.loadingNumber = true;
+    this.loadingNumbers = true;
     this.opXtras.recipientMsisdn = this.currentPhone;
     this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
       tap((numbers) => { 
-        this.loadingNumber = false;
+        this.loadingNumbers = false;
       }),
       share()
     );

@@ -12,7 +12,7 @@ export class SessionOem {
   static get MAIN_PHONE() {
     return ls.get("mainPhoneNumber");
   }
-  static get PHONE(){
+  static get PHONE() : string{
     return ls.get("currentPhoneNumber");
   }
 

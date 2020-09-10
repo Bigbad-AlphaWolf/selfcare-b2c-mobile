@@ -236,7 +236,7 @@ export class DashboardService {
     const mainPhone = this.authService.getUserMainPhoneNumber();
     return this.http.get(`${userLinkedPhoneNumberEndpoint}/${mainPhone}`).pipe(
       map((elements: any) => {
-        let numbers = [mainPhone];
+        let numbers = [mainPhone.trim()];
         elements.forEach((element: any) => {
           const msisdn = '' + element.msisdn;
           if (!msisdn.startsWith('33', 0)) {
