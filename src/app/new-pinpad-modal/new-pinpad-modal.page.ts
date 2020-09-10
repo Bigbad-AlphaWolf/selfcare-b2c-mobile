@@ -47,7 +47,7 @@ export class NewPinpadModalPage implements OnInit {
   @Input() transferMoneyPayload: any;
   @Input() transferMoneyWithCodePayload: any;
   @Input() merchantPaymentPayload: any;
-  @Input() opXtras:OperationExtras;
+  @Input() opXtras: OperationExtras;
   bullets = [0, 1, 2, 3];
   codePin = [];
   uuid: string;
@@ -85,7 +85,7 @@ export class NewPinpadModalPage implements OnInit {
     private dialog: MatDialog,
     private dashboardService: DashboardService,
     public modalController: ModalController,
-    private woyofal : CounterService
+    private woyofal: CounterService
   ) {}
 
   ngOnInit() {
@@ -183,7 +183,7 @@ export class NewPinpadModalPage implements OnInit {
           app_version: 'v1.0',
           app_conf_version: 'v1.0',
           service_version: OM_SERVICE_VERSION,
-        };        
+        };
         // If user already connected open pinpad
         if (omUser['hasApiKey']) {
           this.userHasOmToken = true;
@@ -292,7 +292,7 @@ export class NewPinpadModalPage implements OnInit {
             showSolde: true,
           };
           this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
-          this.gettingPinpad = true;          
+          this.gettingPinpad = true;
           this.orangeMoneyService
             .GetPinPad(this.pinpadData)
             .subscribe((response: any) => {
@@ -487,23 +487,19 @@ export class NewPinpadModalPage implements OnInit {
       this.pinError = '';
     }
   }
-  payWoyofal(pin:string) {
+  payWoyofal(pin: string) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     let body = {
-      "amount": this.opXtras.amount,
-      "em": db.em,
-      "fees": this.opXtras.fee,
-      "msisdn": db.msisdn,
-      "numero_compteur": this.opXtras.billData.counter.counterNumber,
-      "pin": pin
+      amount: this.opXtras.amount,
+      em: db.em,
+      fees: this.opXtras.fee,
+      msisdn: db.msisdn,
+      numero_compteur: this.opXtras.billData.counter.counterNumber,
+      pin: pin,
     };
-    console.log(body);
-    
-
-    this.woyofal.pay(body)
-    .subscribe(
-      (res: any) => {  
+    this.woyofal.pay(body).subscribe(
+      (res: any) => {
         this.opXtras.billData.codeRecharge = res.content.data.code_woyofal;
         this.opXtras.billData.kw = res.content.data.valeur_recharge;
         this.processResult(res, db);
@@ -572,8 +568,8 @@ export class NewPinpadModalPage implements OnInit {
           );
         }
       },
-      () => {
-        this.processingPin = false;
+      (err) => {
+        this.processError(err, db);
       }
     );
   }
@@ -598,8 +594,8 @@ export class NewPinpadModalPage implements OnInit {
       (res: any) => {
         this.processResult(res, db);
       },
-      () => {
-        this.processingPin = false;
+      (err) => {
+        this.processError(err, db);
       }
     );
   }
@@ -628,8 +624,10 @@ export class NewPinpadModalPage implements OnInit {
       (res: any) => {
         this.processResult(res, db);
       },
-      () => {
-        this.processingPin = false;
+      (err) => {
+        console.log(err, err.error);
+
+        this.processError(err, db);
       }
     );
   }
@@ -654,13 +652,13 @@ export class NewPinpadModalPage implements OnInit {
     if (params.canalPromotion) {
       buyPassPayload.canal = params.canalPromotion;
     }
-    
+
     this.orangeMoneyService.AchatIllimix(buyPassPayload).subscribe(
       (res: any) => {
         this.processResult(res, db);
       },
-      () => {
-        this.processingPin = false;
+      (err) => {
+        this.processError(err, db);
       }
     );
   }
@@ -688,7 +686,7 @@ export class NewPinpadModalPage implements OnInit {
         this.processResult(res, omUser);
       },
       (err) => {
-        this.processingPin = false;
+        this.processError(err, omUser);
       }
     );
   }
@@ -724,7 +722,7 @@ export class NewPinpadModalPage implements OnInit {
         this.processResult(res, omUser);
       },
       (err) => {
-        this.processingPin = false;
+        this.processError(err, omUser);
       }
     );
   }
@@ -753,7 +751,7 @@ export class NewPinpadModalPage implements OnInit {
         this.processResult(res, omUser);
       },
       (err) => {
-        this.processingPin = false;
+        this.processError(err, omUser);
       }
     );
   }
@@ -781,33 +779,40 @@ export class NewPinpadModalPage implements OnInit {
         "Une erreur s'est produite. Veuillez ressayer ultérieurement";
       this.pinHasError = true;
       this.recurrentOperation = true;
-      // this.resultEmit.emit('erreur');
-    } else {
-      this.pinHasError = true;
-      this.orangeMoneyService.logWithFollowAnalytics(
-        res,
-        'error',
-        this.dataToLog
-      );
-      if (res.status_code.match('Erreur-045')) {
+    }
+  }
+
+  processError(err: any, db: any) {
+    this.processingPin = false;
+    this.pinHasError = true;
+    this.orangeMoneyService.logWithFollowAnalytics(
+      err,
+      'error',
+      this.dataToLog
+    );
+    // erreur métiers
+    if (err && err.error && err.error.status === 400) {
+      if (err.error.errorCode.match('Erreur-045')) {
         this.pinError =
           'Vous avez effectué la même transaction il y a quelques instants.';
         this.recurrentOperation = true;
-        // this.resultEmit.emit('erreur');
       } else if (
-        res.status_code.match('Erreur-019') ||
-        res.status_code.match('Erreur-602') ||
-        res.status_code.match('Erreur-55')
+        err.error.errorCode.match('Erreur-019') ||
+        err.error.errorCode.match('Erreur-602') ||
+        err.error.errorCode.match('Erreur-55')
       ) {
-        this.pinError = res.status_code.match('Erreur-55')
-          ? res.content.data.message
-          : res.status_wording;
+        this.pinError = err.error.message;
         this.recurrentOperation = true;
-        // this.resultEmit.emit('erreur');
       } else {
-        this.pinError = res.status_wording;
-        // this.resultEmit.emit('erreur');
+        this.pinError = err.error.message;
       }
+    } else {
+      this.pinError =
+        err && err.error && err.error.message
+          ? err.error.message
+          : "Une erreur s'est produite. Veuillez ressayer ultérieurement";
+      this.pinHasError = true;
+      this.recurrentOperation = true;
     }
   }
 
