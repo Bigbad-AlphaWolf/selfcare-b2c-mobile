@@ -60,10 +60,22 @@
     *ngIf="data.type === 'rattachment-failed'"
     class="operation-img"
   />
+    <img
+    src="/assets/images/rattachment-failed.png"
+    alt=""
+    *ngIf="data.type === 'sargal-failed'"
+    class="operation-img"
+  />
   <img
     src="/assets/images/rattachment-success.png"
     alt=""
     *ngIf="data.type === 'rattachment-success'"
+    class="operation-img"
+  />
+  <img
+    src="/assets/images/rattachment-success.png"
+    alt=""
+    *ngIf="data.type === 'sargal-success'"
     class="operation-img"
   />
   </div>
@@ -91,6 +103,12 @@
     </span>
     <span class="title" *ngIf="data.type === 'facture'">
       Facture indisponible
+    </span>
+    <span class="title" *ngIf="data.type === 'sargal-success'">
+      Inscription Sargal Bien effectué
+    </span>
+    <span class="title" *ngIf="data.type === 'sargal-failed'">
+      Une erreur est survenue lors du processus d'inscription
     </span>
     <span class="title" *ngIf="data.type === 'file'">
       {{ data.title }}
