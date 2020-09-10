@@ -1,0 +1,18 @@
+.oem-services-page {
+  .banierres {
+    width: 100%;
+    div[scrollx='true'] {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      position: relative;
+      &::-webkit-scrollbar {
+        display: none; 
+      }
+      .scroll-item {
+        flex: 0 0 auto;
+      }
+    }
+  }
+
+}
