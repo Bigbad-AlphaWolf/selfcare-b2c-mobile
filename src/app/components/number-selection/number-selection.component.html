@@ -1,16 +1,18 @@
 <div class="select-beneficiary-container">
-  <div class="title">
-    Choix du bénéficiaire
-  </div>
-  <div class="description">
-    Sélecionnez le bénéficiaire
-  </div>
+  <div class="title">Choix du bénéficiaire</div>
+  <div class="description">Sélecionnez le bénéficiaire</div>
   <div *ngIf="option === 'WITH_MY_PHONES'" class="number-options">
     <mat-radio-group (change)="onOptionChange($event.value)">
+      <mat-radio-button *ngIf="loadingNumber" [value]="currentPhone" checked>
+        <div class="destination-number">
+          <span> Mon numéro </span>
+          <span>{{ currentPhone | phoneNumberDisplay }}</span>
+        </div>
+      </mat-radio-button>
       <mat-radio-button
         *ngFor="let number of numbers$ | async; index as i; count as size"
         [value]="number"
-        [checked]="i === 0"
+        [checked]="currentPhone === number"
       >
         <div class="destination-number">
           <span> Mon numéro {{ size > 1 ? i + 1 : '' }} </span>
@@ -19,9 +21,7 @@
       </mat-radio-button>
       <mat-radio-button [value]="'AUTRE'">
         <div class="destination-number autre-number">
-          <span>
-            Offrir à un autre
-          </span>
+          <span> Offrir à un autre </span>
           <span>
             <ng-container *ngIf="showInput && opXtras.recipientFromContact">
               {{ numberFromInput | phoneNumberDisplay }}

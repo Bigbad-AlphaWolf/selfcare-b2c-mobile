@@ -52,6 +52,9 @@ export class NumberSelectionComponent implements OnInit {
   canNotRecieveError: boolean = false;
   option: NumberSelectionOption = NumberSelectionOption.WITH_MY_PHONES;
   @Input() data;
+  loadingNumber : boolean;
+  currentPhone : string = SessionOem.PHONE;
+  
 
   constructor(
     private modalController: ModalController,
@@ -65,10 +68,11 @@ export class NumberSelectionComponent implements OnInit {
   ngOnInit() {
     this.option = this.data.option;
     this.showInput = this.option === NumberSelectionOption.NONE;
+    this.loadingNumber = true;
+    this.opXtras.recipientMsisdn = this.currentPhone;
     this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
-      tap((numbers) => {
-        if (numbers && numbers.length)
-          this.opXtras.recipientMsisdn = numbers[0];
+      tap((numbers) => { 
+        this.loadingNumber = false;
       }),
       share()
     );
