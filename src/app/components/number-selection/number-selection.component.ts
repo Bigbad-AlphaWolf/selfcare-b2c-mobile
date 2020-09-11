@@ -94,14 +94,7 @@ export class NumberSelectionComponent implements OnInit {
       );
   }
 
-  onRecentSelected(recent) {}
-
   async onContinue(recent?: string) {
-    if (!REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn)) {
-      this.phoneIsNotValid = true;
-      return;
-    }
-
     this.opXtras.destinataire = this.opXtras.recipientMsisdn = formatPhoneNumber(
       this.opXtras.recipientMsisdn
     );
@@ -109,6 +102,10 @@ export class NumberSelectionComponent implements OnInit {
       this.opXtras.destinataire = this.opXtras.recipientMsisdn = formatPhoneNumber(
         recent
       );
+    }
+    if (!REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn)) {
+      this.phoneIsNotValid = true;
+      return;
     }
     this.opXtras.forSelf = !this.showInput;
 
@@ -123,20 +120,22 @@ export class NumberSelectionComponent implements OnInit {
 
   dismissBottomSheet() {
     this.isProcessing = true;
-    this.authService.getSubscriptionForTiers(this.opXtras.recipientMsisdn).subscribe(
-      (res: SubscriptionModel) => {
-        this.isProcessing = false;
-        this.opXtras.code = res.code;
-        this.opXtras.profil = res.profil;
-        this.modalController.dismiss(this.opXtras);
-        // this.bottomSheetRef.dismiss(this.opXtras);
-      },
-      (err: any) => {
-        this.isProcessing = false;
-        this.modalController.dismiss();
-        // this.bottomSheetRef.dismiss();
-      }
-    );
+    this.authService
+      .getSubscriptionForTiers(this.opXtras.recipientMsisdn)
+      .subscribe(
+        (res: SubscriptionModel) => {
+          this.isProcessing = false;
+          this.opXtras.code = res.code;
+          this.opXtras.profil = res.profil;
+          this.modalController.dismiss(this.opXtras);
+          // this.bottomSheetRef.dismiss(this.opXtras);
+        },
+        (err: any) => {
+          this.isProcessing = false;
+          this.modalController.dismiss();
+          // this.bottomSheetRef.dismiss();
+        }
+      );
   }
 
   onPhoneSelected(opContacts: OperationExtras) {
@@ -167,7 +166,8 @@ export class NumberSelectionComponent implements OnInit {
         if (
           msisdn === 'error' &&
           this.data.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT
-        ) {//force user to have om account
+        ) {
+          //force user to have om account
           this.modalController.dismiss();
           this.openPinpad();
         }
