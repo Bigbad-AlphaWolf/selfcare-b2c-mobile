@@ -101,7 +101,8 @@ export class NumberSelectionComponent implements OnInit {
 
   onRecentSelected(recent) {}
 
-  async onContinue(recent?: string) {
+  async onContinue(phone?: string) {
+    if (phone) this.opXtras.recipientMsisdn = phone;
     if (!REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn)) {
       this.phoneIsNotValid = true;
       return;
@@ -110,11 +111,7 @@ export class NumberSelectionComponent implements OnInit {
     this.opXtras.destinataire = this.opXtras.recipientMsisdn = formatPhoneNumber(
       this.opXtras.recipientMsisdn
     );
-    if (recent) {
-      this.opXtras.destinataire = this.opXtras.recipientMsisdn = formatPhoneNumber(
-        recent
-      );
-    }
+
     this.opXtras.forSelf = !this.showInput;
 
     if (!(await this.canRecieveCredit())) {
