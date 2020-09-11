@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HomePage } from './home.page';
 import { Router } from '@angular/router';
-import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
 
 describe('HomePage', () => {
   let component: HomePage;
@@ -13,7 +12,7 @@ describe('HomePage', () => {
     TestBed.configureTestingModule({
       declarations: [HomePage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{ provide: Router }, { provide: NativePageTransitions }],
+      providers: [{ provide: Router }],
     }).compileComponents();
   }));
 

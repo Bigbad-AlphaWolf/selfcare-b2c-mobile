@@ -15,7 +15,6 @@ import { ModalController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
-import * as Fingerprint2 from 'fingerprintjs2';
 
 describe('NewRegistrationPage', () => {
   let component: NewRegistrationPage;
