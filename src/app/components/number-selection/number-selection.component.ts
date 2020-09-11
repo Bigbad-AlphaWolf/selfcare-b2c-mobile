@@ -22,7 +22,7 @@ import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.pa
 import { of, Observable } from 'rxjs';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { catchError, share, tap, map } from 'rxjs/operators';
+import { catchError, share, tap, map, delay } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NumberSelectionOption } from 'src/app/models/enums/number-selection-option.enum';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
@@ -71,6 +71,7 @@ export class NumberSelectionComponent implements OnInit {
     this.loadingNumbers = true;
     this.opXtras.recipientMsisdn = this.currentPhone;
     this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
+      delay(100),
       tap((numbers) => { 
         this.loadingNumbers = false;
       }),

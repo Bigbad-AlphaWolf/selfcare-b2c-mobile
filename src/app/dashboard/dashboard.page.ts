@@ -22,7 +22,7 @@ import { Platform, NavController } from '@ionic/angular';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { AppUpdatePage } from '../pages/app-update/app-update.page';
 import { SessionOem } from '../services/session-oem/session-oem.service';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { PROFIL, CODE_CLIENT, CODE_FORMULE, FORMULE } from '../utils/constants';
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -62,7 +62,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     private appMinimize: AppMinimize,
     private appVersion: AppVersion,
     private navCtl: NavController,
-    private session: SessionOem
   ) {}
 
   ngOnInit() {
@@ -164,6 +163,7 @@ export class DashboardPage implements OnInit, OnDestroy {
             currentDashboard = '/dashboard-home-prepaid';
           }
           DashboardService.CURRENT_DASHBOARD = currentDashboard;
+          this.saveAttachedNumbers();
           this.router.navigate([DashboardService.CURRENT_DASHBOARD]);
           this.checkForUpdate();
           this.followAnalyticsService.registerEventFollow(
@@ -200,6 +200,11 @@ export class DashboardPage implements OnInit, OnDestroy {
           this.hasErrorSubscription = true;
         }
       );
+  }
+
+  private saveAttachedNumbers() {
+    DashboardService.rattachedNumbers = null;
+    this.dashboardServ.attachedNumbers().pipe(take(1)).subscribe();
   }
 
   logUserBirthDateOnFollow() {
