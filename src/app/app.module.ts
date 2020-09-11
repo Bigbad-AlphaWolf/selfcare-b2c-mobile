@@ -1,5 +1,4 @@
 import { HTTP } from '@ionic-native/http/ngx';
-import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
 import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -32,9 +31,7 @@ import localeFr from '@angular/common/locales/fr';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Market } from '@ionic-native/market/ngx';
 import { Device } from '@ionic-native/device/ngx';
-import { Uid } from '@ionic-native/uid/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
-import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
 import { SetPaymentChannelModalPageModule } from './set-payment-channel-modal/set-payment-channel-modal.module';
 import { NewPinpadModalPageModule } from './new-pinpad-modal/new-pinpad-modal.module';
 import { OperationSuccessFailModalPageModule } from './operation-success-fail-modal/operation-success-fail-modal.module';
@@ -66,7 +63,6 @@ registerLocaleData(localeFr);
     AppVersion,
     StatusBar,
     SplashScreen,
-    NativePageTransitions,
     { provide: LOCALE_ID, useValue: 'fr-FR' },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {
@@ -84,9 +80,7 @@ registerLocaleData(localeFr);
     Deeplinks,
     Market,
     Device,
-    Uid,
     AndroidPermissions,
-    UniqueDeviceID,
   ],
   bootstrap: [AppComponent],
 })
