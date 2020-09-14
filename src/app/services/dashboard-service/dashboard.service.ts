@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject, Observable, Subscription, of } from 'rxjs';
-import { tap, map, switchMap, catchError } from 'rxjs/operators';
+import { tap, map, switchMap, catchError, take } from 'rxjs/operators';
 import * as SecureLS from 'secure-ls';
 import { environment } from 'src/environments/environment';
 import { AuthenticationService } from '../authentication-service/authentication.service';
@@ -71,6 +71,7 @@ const showNewFeatureStateEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass
 })
 export class DashboardService {
   static CURRENT_DASHBOARD: string = '/dashboard';
+  static rattachedNumbers: any[];
   currentPhoneNumberChangeSubject: Subject<string> = new Subject<string>();
   scrollToBottomSubject: Subject<string> = new Subject<string>();
   balanceAvailableSubject: Subject<any> = new Subject<any>();
@@ -194,6 +195,11 @@ export class DashboardService {
     return this.http.post(
       `${attachMobileNumberEndpoint}/register`,
       detailsToCheck
+    ).pipe(
+      tap((r) => {
+        DashboardService.rattachedNumbers = null;
+        this.attachedNumbers().pipe(take(1)).subscribe();
+      })
     );
   }
 
@@ -205,10 +211,14 @@ export class DashboardService {
     payload = Object.assign(payload, {
       login: this.authService.getUserMainPhoneNumber(),
     });
-    return this.http.post(
-      `${attachMobileNumberEndpoint}/fixe-register`,
-      payload
-    );
+    return this.http
+      .post(`${attachMobileNumberEndpoint}/fixe-register`, payload)
+      .pipe(
+        tap((r) => {
+          DashboardService.rattachedNumbers = null;
+          this.attachedNumbers().pipe(take(1)).subscribe();
+        })
+      );
   }
 
   // check if fix number is already linked to an account
@@ -232,10 +242,21 @@ export class DashboardService {
     return this.http.get(`${userLinkedPhoneNumberEndpoint}/${login}`);
   }
 
+  attachedNumbers() {    
+    if (DashboardService.rattachedNumbers)
+      return of(DashboardService.rattachedNumbers);
+
+    return this.getAttachedNumbers().pipe(
+      tap((elements: any) => {
+        DashboardService.rattachedNumbers = elements;
+      })
+    );
+  }
+
   fetchOemNumbers() {
-    const mainPhone = this.authService.getUserMainPhoneNumber();
-    return this.http.get(`${userLinkedPhoneNumberEndpoint}/${mainPhone}`).pipe(
+    return this.attachedNumbers().pipe(
       map((elements: any) => {
+        const mainPhone = this.authService.getUserMainPhoneNumber();
         let numbers = [mainPhone.trim()];
         elements.forEach((element: any) => {
           const msisdn = '' + element.msisdn;
