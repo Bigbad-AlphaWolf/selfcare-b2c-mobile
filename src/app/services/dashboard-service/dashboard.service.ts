@@ -477,7 +477,7 @@ export class DashboardService {
     const userBirthDay = ls.get('birthDate');
     if (userBirthDay) return of(userBirthDay);
     const msisdn = this.getMainPhoneNumber();
-    return this.http.get(`${userBirthDateEndpoint}/${msisdn}`).pipe(
+    return this.http.get(`${userBirthDateEndpoint}/${msisdn}`, {responseType: 'text'}).pipe(
       map((birthDate) => {
         ls.set('birthDate', birthDate);
       })
