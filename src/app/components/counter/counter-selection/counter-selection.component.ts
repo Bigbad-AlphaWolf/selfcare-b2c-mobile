@@ -25,26 +25,24 @@ export class CounterSelectionComponent implements OnInit {
   //   { name: 'Maison Nord-foire', counterNumber: '14256266199' },
   //   { name: 'Audi Q5', counterNumber: '14256266199' },
   // ]);
-  counters$: Observable<CounterOem[]> ;
+  counters$: Observable<CounterOem[]>;
   constructor(
     private counterService: CounterService,
     private bsService: BottomSheetService,
     private omService: OrangeMoneyService,
     private changeDetectorRef: ChangeDetectorRef,
     private recentService: RecentsService,
-    private modalCtrl : ModalController
+    private modalCtrl: ModalController
   ) {}
 
   ngOnInit() {
-   
     this.checkOmAccount();
   }
 
-  initRecents(){
-    this.counters$ = this.recentService.fetchRecents(OPERATION_WOYOFAL).pipe(
+  initRecents() {
+    this.counters$ = this.recentService.fetchRecents(OPERATION_WOYOFAL, 3).pipe(
       map((recents: RecentsOem[]) => {
         let results = [];
-        recents = recents.slice(0, 3);
         recents.forEach((el) => {
           results.push({
             name: el.titre,
@@ -98,12 +96,12 @@ export class CounterSelectionComponent implements OnInit {
         this.isProcessing = false;
         this.changeDetectorRef.detectChanges();
 
-        if (msisdn === "error") {
+        if (msisdn === 'error') {
           this.modalCtrl.dismiss();
           this.openPinpad();
         }
 
-        if (msisdn !== "error") {
+        if (msisdn !== 'error') {
           this.initRecents();
           this.bsService.opXtras.senderMsisdn = msisdn;
           this.counterService.initFees(msisdn);

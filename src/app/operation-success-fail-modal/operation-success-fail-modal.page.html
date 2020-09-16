@@ -34,6 +34,10 @@
       <span class="title" *ngSwitchCase="OPERATION_ALLO_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
+      <span class="title" *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+        >{{success ? 'Achat pass effectué' : 'Echec achat pass'}}</span
+      >
+     
       <span class="title" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
         >{{success ? 'Paiement effectué' : 'Echec Paiement'}}</span
       >
@@ -54,7 +58,10 @@
           >Vous avez acheté le pass illimix</span
         >
         <span *ngSwitchCase="OPERATION_ALLO_TYPE"
-          >Vous avez acheté le pass allo</span
+          >Vous avez acheté le pass allo</span>
+          
+        <span *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+          >Vous avez acheté le pass voyage</span
         >
         <span *ngSwitchCase="OPERATION_TRANSFER_OM"
           >Vous avez transféré un montant de
@@ -75,6 +82,11 @@
       <app-item-pass-illimix
         [passIllimix]="passBought"
         *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
+      >
+    </app-item-pass-illimix>
+      <app-item-pass-illimix
+        [passIllimix]="passBought"
+        *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
       >
       </app-item-pass-illimix>
       <app-item-pass-illimix

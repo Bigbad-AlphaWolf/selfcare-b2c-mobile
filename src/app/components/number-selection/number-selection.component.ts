@@ -1,18 +1,11 @@
-import {
-  Component,
-  OnInit,
-  Inject,
-  ChangeDetectorRef,
-  Input,
-} from '@angular/core';
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
+import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
 import {
   formatPhoneNumber,
   REGEX_NUMBER_OM,
   SubscriptionModel,
   OPERATION_TYPE_RECHARGE_CREDIT,
-  OPERATION_TYPE_PASS_INTERNET,
-  OPERATION_TYPE_PASS_ILLIMIX,
+  OPERATION_TYPE_PASS_VOYAGE,
+  CODE_KIRENE_Formule,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -27,6 +20,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { NumberSelectionOption } from 'src/app/models/enums/number-selection-option.enum';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
+import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
 import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
 
 @Component({
@@ -51,6 +45,9 @@ export class NumberSelectionComponent implements OnInit {
   canNotRecieve: boolean;
   canNotRecieveError: boolean = false;
   option: NumberSelectionOption = NumberSelectionOption.WITH_MY_PHONES;
+  eligibilityChecked: boolean;
+  isRecipientEligible = true;
+  eligibilityError: string;
   @Input() data;
   loadingNumbers : boolean;
   currentPhone : string = (SessionOem.PHONE).trim();
@@ -66,6 +63,8 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log(this.data);
+
     this.option = this.data.option;
     this.showInput = this.option === NumberSelectionOption.NONE;
     this.loadingNumbers = true;
@@ -83,14 +82,13 @@ export class NumberSelectionComponent implements OnInit {
 
   getRecents() {
     this.recentsRecipients$ = this.recentsService
-      .fetchRecents(this.data.purchaseType)
+      .fetchRecents(this.data.purchaseType, 2)
       .pipe(
         map((recents: RecentsOem[]) => {
           let results = [];
-          recents = recents.slice(0, 2);
           recents.forEach((el) => {
             results.push({
-              name: el.destinataire,
+              name: el.name,
               msisdn: el.destinataire,
             });
           });
@@ -99,7 +97,7 @@ export class NumberSelectionComponent implements OnInit {
       );
   }
 
-  onRecentSelected(recent) {}
+  onRecentSelected() {}
 
   async onContinue(phone?: string) {
     if (phone) this.opXtras.recipientMsisdn = phone;
@@ -123,19 +121,38 @@ export class NumberSelectionComponent implements OnInit {
     this.dismissBottomSheet();
   }
 
+  async isEligible() {
+    let isEligible = await this.authService
+      .checkUserEligibility(this.opXtras.recipientMsisdn)
+      .toPromise();
+    return isEligible;
+  }
+
   dismissBottomSheet() {
     this.isProcessing = true;
     this.authService
       .getSubscriptionForTiers(this.opXtras.recipientMsisdn)
       .subscribe(
-        (res: SubscriptionModel) => {
+        async (res: SubscriptionModel) => {
           this.isProcessing = false;
           this.opXtras.code = res.code;
           this.opXtras.profil = res.profil;
+          if (
+            res.code === CODE_KIRENE_Formule &&
+            this.data.purchaseType !== OPERATION_TYPE_RECHARGE_CREDIT
+          ) {
+            const eligibility: any = await this.isEligible();
+            this.eligibilityChecked = true;
+            if (eligibility && !eligibility.eligible) {
+              this.isRecipientEligible = false;
+              this.eligibilityError = eligibility.message;
+              return;
+            }
+          }
           this.modalController.dismiss(this.opXtras);
           // this.bottomSheetRef.dismiss(this.opXtras);
         },
-        (err: any) => {
+        () => {
           this.isProcessing = false;
           this.modalController.dismiss();
           // this.bottomSheetRef.dismiss();
@@ -179,7 +196,8 @@ export class NumberSelectionComponent implements OnInit {
 
         if (msisdn !== 'error') {
           this.opXtras.senderMsisdn = msisdn;
-          this.getRecents();
+          if (OPERATION_TYPE_PASS_VOYAGE !== this.data.purchaseType)
+            this.getRecents();
         }
       },
       () => {

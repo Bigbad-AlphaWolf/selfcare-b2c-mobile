@@ -202,6 +202,12 @@ const routes: Routes = [
   { path: 'app-update', loadChildren: './pages/app-update/app-update.module#AppUpdatePageModule' },
   { path: 'bills', loadChildren: './pages/orange-bills/orange-bills.module#OrangeBillsPageModule' },
   { path: 'orange-bills', loadChildren: './pages/orange-bills/orange-bills.module#OrangeBillsPageModule' },
+  { path: 'follow-up-requests', loadChildren: './pages/follow-up-requests/follow-up-requests.module#FollowUpRequestsPageModule' },
+  { path: 'request-status', loadChildren: './pages/request-status/request-status.module#RequestStatusPageModule' },
+  { path: 'list-pass-voyage', loadChildren: './pages/list-pass-voyage/list-pass-voyage.module#ListPassVoyagePageModule' },  { path: 'offres-services', loadChildren: './pages/offres-services/offres-services.module#OffresServicesPageModule' },
+  { path: 'banniere-description', loadChildren: './pages/banniere-description/banniere-description.module#BanniereDescriptionPageModule' },
+
+
   
 
 

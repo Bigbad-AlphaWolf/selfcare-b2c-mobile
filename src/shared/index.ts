@@ -24,6 +24,7 @@ export const USER_CALL_SUMMARY_CONSO_CODES = [1, 6, 9];
 export const OPERATION_TYPE_PASS_INTERNET = 'PASS_INTERNET';
 export const OPERATION_TYPE_PASS_ILLIMIX = 'PASS_ILLIMIX';
 export const OPERATION_TYPE_PASS_ALLO = 'PASS_ALLO';
+export const OPERATION_TYPE_PASS_VOYAGE = 'OPERATION_TYPE_PASS_VOYAGE';
 export const OPERATION_TYPE_MERCHANT_PAYMENT = 'MERCHANT_PAYMENT';
 export const OPERATION_TYPE_SOS = 'SOS';
 export const OPERATION_TYPE_SOS_CREDIT = 'SOS CREDIT';
@@ -59,6 +60,8 @@ export const CODE_KIRENE_Formule = '9134';
 export const JAMONO_NEW_SCOOL_CODE_FORMULE = '9131';
 export const JAMONO_ALLO_CODE_FORMULE = '9132';
 export const JAMONO_MAX_CODE_FORMULE = '9133';
+export const JAMONO_PRO_CODE_FORMULE = '9136';
+export const PRO_MOBILE_ERROR_CODE = 'userProMobile';
 export const CODE_COMPTEUR_CREDIT_MENSUEL_OFFERT = 8;
 export const MAIL_URL = 'mailto:serviceclient@orange-sonatel.com';
 export const NO_AVATAR_ICON_URL = '/assets/images/profil-mob.png';
@@ -1165,6 +1168,7 @@ export const HelpModalConfigApnContent = {
   showChecks: false,
 };
 
+export const TRANSFER_BONUS_CREDIT_FEE = 20;
 export const ERROR_MSG_PASS = {
   LIST_EMPTY: "Aucun pass n'a été trouvé pour ce profil",
   LIST_EMPTY_FOR_KIRENE:

@@ -97,9 +97,9 @@
       </ion-menu-toggle>
       <ion-menu-toggle>
         <div
-          (click)="launchInProgressPage()"
+          (click)="onOffreClicked()"
           class="menu-list-services-item-block c-pointer"
-          *ngIf="currentProfile !== 'POSTPAID' && 0"
+          *ngIf="currentProfile !== 'POSTPAID'"
         >
           <div class="menu-list-services-item">
             <div class="services-item-icon">
@@ -110,7 +110,7 @@
               />
             </div>
             <div class="services-item-text">
-              <span class="content">Mes offres et services</span>
+              <span class="content">Offres et services</span>
             </div>
           </div>
         </div>
