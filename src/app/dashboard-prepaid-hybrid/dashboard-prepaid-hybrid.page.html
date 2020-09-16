@@ -71,14 +71,12 @@
             <div
               class="scb-btn-black scb-btn-sargal"
               [ngClass]="{
-              'btn-disabled': sargalUnavailable || userSargalData?.status === getSargalStatusUnsubscriptionOnGoing()
-            }"
+              'btn-disabled': sargalUnavailable }"
             >
               <div
                 (click)="makeSargalAction()"
                 [ngClass]="{
-                'btn-no-action': sargalUnavailable || userSargalData?.status === getSargalStatusUnsubscriptionOnGoing()
-              }"
+                'btn-no-action': sargalUnavailable }"
                 class="btn-container"
               >
                 <div class="scb-btn-top-block">
@@ -104,12 +102,12 @@
                       <span class="text-style-1"> Pts </span></span
                     >
                     <span
-                      *ngIf="userSargalData?.status === getSargalStatusNotSubscribed()"
+                      *ngIf="userSargalData?.status === getSargalStatusNotSubscribed() || userSargalData?.status === getSargalStatusUnsubscriptionOnGoing()"
                       class="show-solde-info-text"
                       >M'inscrire</span
                     >
                     <span
-                      *ngIf="sargalUnavailable || userSargalData?.status === getSargalStatusUnsubscriptionOnGoing()"
+                      *ngIf="sargalUnavailable"
                       class="show-solde-info-text"
                       >Service indisponible</span
                     >
@@ -320,7 +318,7 @@
           </div>
         </div>
         <div
-          *ngIf="!isHyBride"
+          *ngIf="!isHyBride && userSargalData?.status !== getSargalStatusUnsubscriptionOnGoing()"
           (click)="makeSargalAction()"
           class="dashboard-block-offres-top3-item"
         >

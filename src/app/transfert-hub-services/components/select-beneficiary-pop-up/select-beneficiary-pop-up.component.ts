@@ -1,6 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
-import { formatPhoneNumber, REGEX_NUMBER_OM, OPERATION_TYPE_TRANSFER_OM, OPERATION_TRANSFER_OM } from 'src/shared';
+import {
+  formatPhoneNumber,
+  REGEX_NUMBER_OM,
+  OPERATION_TYPE_TRANSFER_OM,
+  OPERATION_TRANSFER_OM,
+} from 'src/shared';
 import { MatDialog } from '@angular/material';
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { ModalController } from '@ionic/angular';
@@ -193,7 +198,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       this.isProcessing = false;
       if (userMsisdn !== 'error') {
         this.omPhoneNumber = userMsisdn;
-        this.checkOMToken(userMsisdn, payload);
+        this.checkRecipientHasOMAccount(userMsisdn, payload);
       } else {
         this.modalController.dismiss();
         this.openPinpad();
@@ -212,93 +217,69 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   ) {
     this.isProcessing = true;
     this.errorMsg = null;
-    this.omService
-      .checkUserHasAccount(this.omPhoneNumber, payload.recipientMsisdn)
-      .subscribe(
-        (res: any) => {
-          this.isProcessing = false;
-          if (res) {
-            if (res.status_code.match('Success')) {
-              const pageData = Object.assign(payload, {
-                purchaseType: 'TRANSFER_MONEY',
-              });
-              this.modalController.dismiss(pageData);
-              // this.appRouting.goSetAmountPage(pageData);
-              this.followAnalytics.registerEventFollow(
-                'destinataire_transfert_has_om_account_success',
-                'event',
-                {
-                  transfert_om_numero_sender: userOMNumber,
-                  transfert_om_numero_receiver: payload.recipientMsisdn,
-                  has_om: 'true',
-                }
-              );
-            } else {
-              this.openNoOMAccountModal(payload);
-              this.followAnalytics.registerEventFollow(
-                'destinataire_transfert_has_om_account_success',
-                'event',
-                {
-                  transfert_om_numero_sender: userOMNumber,
-                  transfert_om_numero_receiver: payload.recipientMsisdn,
-                  has_om: 'false',
-                }
-              );
-              this.errorMsg = 'Recipient has No OM ';
-              // this.openModalNoOMAccount(this.recipientInfos);
+    this.omService.checkUserHasAccount(payload.recipientMsisdn).subscribe(
+      (hasOmAccount: boolean) => {
+        this.isProcessing = false;
+        if (hasOmAccount) {
+          const pageData = Object.assign(payload, {
+            purchaseType: 'TRANSFER_MONEY',
+          });
+          this.modalController.dismiss(pageData);
+          // this.appRouting.goSetAmountPage(pageData);
+          this.followAnalytics.registerEventFollow(
+            'destinataire_transfert_has_om_account_success',
+            'event',
+            {
+              transfert_om_numero_sender: userOMNumber,
+              transfert_om_numero_receiver: payload.recipientMsisdn,
+              has_om: 'true',
             }
-          } else {
-            this.router.navigate(['/see-solde-om']);
-          }
-        },
-        (err: HttpErrorResponse) => {
-          this.isProcessing = false;
+          );
+        } else {
+          this.openNoOMAccountModal(payload);
+          this.followAnalytics.registerEventFollow(
+            'destinataire_transfert_has_om_account_success',
+            'event',
+            {
+              transfert_om_numero_sender: userOMNumber,
+              transfert_om_numero_receiver: payload.recipientMsisdn,
+              has_om: 'false',
+            }
+          );
           this.errorMsg = 'Recipient has No OM ';
-
-          if (err.status === 400) {
-            this.openNoOMAccountModal(payload);
-            this.followAnalytics.registerEventFollow(
-              'destinataire_transfert_has_om_account',
-              'event',
-              {
-                transfert_om_numero_destinataire: payload.recipientMsisdn,
-                has_om: 'false',
-              }
-            );
-          } else {
-            this.followAnalytics.registerEventFollow(
-              'destinataire_transfert_has_om_account_error',
-              'error',
-              {
-                transfert_om_numero_sender: userOMNumber,
-                transfert_om_numero_receiver: payload.recipientMsisdn,
-                error:
-                  'Une error ' + err.status + ' est survenue' + err && err.error
-                    ? err.error.title
-                    : '',
-              }
-            );
-            this.errorMsg = 'Une erreur est survenue, veuillez reessayer';
-          }
         }
-      );
-  }
-
-  async resetOmToken(err) {
-    const modal = await this.modalController.create({
-      component: NewPinpadModalPage,
-      cssClass: 'pin-pad-modal',
-      componentProps: {
-        operationType: null,
       },
-    });
-    await modal.present();
-    let result = await modal.onDidDismiss();
-    if (result && result.data && result.data.success) return of(err);
-    throw new HttpErrorResponse({
-      error: { title: 'Pinpad cancled' },
-      status: 401,
-    });
+      (err: HttpErrorResponse) => {
+        this.isProcessing = false;
+        this.errorMsg = 'Recipient has No OM ';
+
+        if (err.status === 400) {
+          this.openNoOMAccountModal(payload);
+          this.followAnalytics.registerEventFollow(
+            'destinataire_transfert_has_om_account',
+            'event',
+            {
+              transfert_om_numero_destinataire: payload.recipientMsisdn,
+              has_om: 'false',
+            }
+          );
+        } else {
+          this.followAnalytics.registerEventFollow(
+            'destinataire_transfert_has_om_account_error',
+            'error',
+            {
+              transfert_om_numero_sender: userOMNumber,
+              transfert_om_numero_receiver: payload.recipientMsisdn,
+              error:
+                'Une error ' + err.status + ' est survenue' + err && err.error
+                  ? err.error.title
+                  : '',
+            }
+          );
+          this.errorMsg = 'Une erreur est survenue, veuillez reessayer';
+        }
+      }
+    );
   }
 
   async openPinpad(payload?: any) {
@@ -337,33 +318,5 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       }
     });
     return await modal.present();
-  }
-
-  checkOMToken(
-    userOMMsisdn: string,
-    payload: {
-      senderMsisdn: string;
-      recipientMsisdn: string;
-      recipientFirstname: string;
-      recipientLastname: string;
-    }
-  ) {
-    this.isProcessing = true;
-
-    this.omService.GetUserAuthInfo(userOMMsisdn).subscribe(
-      (omUser: any) => {
-        this.isProcessing = false;
-        // If user already connected open pinpad
-        if (!omUser.hasApiKey || !omUser.accessToken || omUser.loginExpired) {
-          this.openPinpad(payload);
-        } else {
-          this.checkRecipientHasOMAccount(userOMMsisdn, payload);
-        }
-      },
-      (err: HttpErrorResponse) => {
-        this.isProcessing = false;
-        if (err.status === 401) this.modalController.dismiss();
-      }
-    );
   }
 }

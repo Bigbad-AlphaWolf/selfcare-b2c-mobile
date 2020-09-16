@@ -8,7 +8,8 @@
     <ion-title>
       <ng-container [ngSwitch]="purchaseType">
         <span *ngSwitchCase="OPERATION_INTERNET_TYPE">Achat Pass Internet</span>
-        <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE">Achat Pass Illimix ou Allo</span>
+        <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE">Achat Pass Illimix</span>
+        <span *ngSwitchCase="OPERATION_ALLO_TYPE">Achat Pass Allo</span>
         <span *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
           >Paiement Marchand</span
         >
@@ -33,6 +34,12 @@
       <img
         *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         src="assets/images/banniere-illimix.png"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+        *ngSwitchCase="OPERATION_ALLO_TYPE"
+        src="assets/images/pass-allo-banniere.png"
         alt="banniere"
         class="banniere"
       />
@@ -75,11 +82,14 @@
     </ng-container>
   </div>
 </ion-header>
-<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
-  <div
-    *ngIf="operationTypeRecap"
-    class="recap-text"
-  >
+<ion-content
+  no-bounce
+  has-bouncing="false"
+  forceOverscroll="false"
+  fullscreen="true"
+  [scrollEvents]="true"
+>
+  <div *ngIf="operationTypeRecap" class="recap-text">
     Récapitulatif
   </div>
   <div class="recap-title" *ngIf="!operationTypeRecap">
@@ -89,6 +99,9 @@
         >Vous allez recharger</span
       >
       <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE" class="text-2 scb-text-gray"
+        >Vous allez recharger</span
+      >
+      <span *ngSwitchCase="OPERATION_ALLO_TYPE" class="text-2 scb-text-gray"
         >Vous allez recharger</span
       >
       <span
@@ -127,6 +140,9 @@
         ><span *ngIf="0" class="modifier scb-text-orange">modifier</span>
       </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_ILLIMIX_TYPE">
+        <span class="pass">Pass sélectionné</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_ALLO_TYPE">
         <span class="pass">Pass sélectionné</span>
       </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_INTERNET_TYPE">
@@ -171,6 +187,12 @@
           [passIllimix]="passChoosen"
           [subscription]="subscriptionInfos"
           *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
+        >
+        </app-item-pass-illimix>
+        <app-item-pass-illimix
+          [passIllimix]="passChoosen"
+          [subscription]="subscriptionInfos"
+          *ngSwitchCase="OPERATION_ALLO_TYPE"
         >
         </app-item-pass-illimix>
         <app-item-pass-illimix
@@ -253,6 +275,10 @@
     >
       <ng-container [ngSwitch]="purchaseType">
         <span class="text" *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
+          >Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
+          passChoosen?.passPromo?.tarif}} FCFA)</span
+        >
+        <span class="text" *ngSwitchCase="OPERATION_ALLO_TYPE"
           >Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
           passChoosen?.passPromo?.tarif}} FCFA)</span
         >

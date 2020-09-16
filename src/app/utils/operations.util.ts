@@ -5,6 +5,7 @@ import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
 
 export const OPERATION_WOYOFAL = 'OPERATION_WOYOFAL';
@@ -42,13 +43,22 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
   },
   {
     title: 'Acheter',
-    subtitle: 'pass illimix ou allo',
+    subtitle: 'pass illimix',
     icon: `${IMAGES_DIR_PATH}/ic-package-services@2x.png`,
     action: 'openNumberSelectionBottomSheet',
     params: ['NONE', OPERATION_TYPE_PASS_ILLIMIX, '/list-pass'],
     type: OPERATION_TYPE_PASS_ILLIMIX,
     url: '',
   },
+  // {
+  //   title: 'Acheter',
+  //   subtitle: 'pass allo',
+  //   icon: `${IMAGES_DIR_PATH}/ic-call-forward@2x.png`,
+  //   action: 'openNumberSelectionBottomSheet',
+  //   params: ['NONE', OPERATION_TYPE_PASS_ALLO, '/list-pass'],
+  //   type: OPERATION_TYPE_PASS_ALLO,
+  //   url: '',
+  // },
   // {
   //   title: 'Recharger',
   //   subtitle: 'Woyofal',
@@ -69,7 +79,7 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
 ];
 
 export const ACTIONS_RAPIDES_OPERATIONS_POSTPAID: OperationOem[] = [
-  ...ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.slice(0, 5),
+  ...ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.slice(0, ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.length - 1),
   {
     title: 'Payer',
     subtitle: 'un marchand',

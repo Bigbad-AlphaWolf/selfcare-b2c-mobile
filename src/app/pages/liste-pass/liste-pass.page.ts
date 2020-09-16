@@ -9,6 +9,7 @@ import {
   OPERATION_TYPE_PASS_ILLIMIX,
   CODE_KIRENE_Formule,
   ERROR_MSG_PASS,
+  OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
 import { PassIllimixService } from '../../services/pass-illimix-service/pass-illimix.service';
 
@@ -37,12 +38,13 @@ export class ListePassPage implements OnInit {
   purchaseType: string;
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
+  OPERATION_ALLO_TYPE = OPERATION_TYPE_PASS_ALLO;
   constructor(
     private router: Router,
     private appRouting: ApplicationRoutingService,
     private passIntService: PassInternetService,
     private passIllimixServ: PassIllimixService,
-    private navCtl:NavController
+    private navCtl: NavController
   ) {}
 
   ngOnInit() {
@@ -52,9 +54,9 @@ export class ListePassPage implements OnInit {
     //   this.router.getCurrentNavigation().extras.state.payload
     // ) {
     if (this.router) {
-     let payload = this.router.getCurrentNavigation().extras.state.payload;
-     payload = payload?payload:history.state
-      
+      let payload = this.router.getCurrentNavigation().extras.state.payload;
+      payload = payload ? payload : history.state;
+
       this.userNumber = payload.destinataire;
       this.userCodeFormule = payload.code;
       this.recipientName = payload.recipientName;
@@ -79,8 +81,10 @@ export class ListePassPage implements OnInit {
             }
           });
       } else {
+        const category =
+          this.purchaseType === OPERATION_TYPE_PASS_ALLO ? 'allo' : null;
         this.passIllimixServ.setUserCodeFormule(this.userCodeFormule);
-        this.passIllimixServ.setListPassIllimix();
+        this.passIllimixServ.setListPassIllimix(category);
         this.passIllimixServ
           .getStatusLoadingPass()
           .subscribe((status: boolean) => {
@@ -123,7 +127,7 @@ export class ListePassPage implements OnInit {
     //     this.goToRecipientPassIllimixPage();
     //     break;
     //   default:
-    //     break; 
+    //     break;
     // }
     this.navCtl.pop();
   }
@@ -148,10 +152,10 @@ export class ListePassPage implements OnInit {
     this.router.navigate(['/operation-recap'], navigationExtras);
   }
 
-  getErrorMessageNoPass(){
-    if(this.userCodeFormule === CODE_KIRENE_Formule){
-      return ERROR_MSG_PASS.LIST_EMPTY_FOR_KIRENE
+  getErrorMessageNoPass() {
+    if (this.userCodeFormule === CODE_KIRENE_Formule) {
+      return ERROR_MSG_PASS.LIST_EMPTY_FOR_KIRENE;
     }
-    return ERROR_MSG_PASS.LIST_EMPTY
+    return ERROR_MSG_PASS.LIST_EMPTY;
   }
 }

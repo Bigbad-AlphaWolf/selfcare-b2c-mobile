@@ -23,6 +23,7 @@ export const USER_CONS_CATEGORY_SMS = 'SMS';
 export const USER_CALL_SUMMARY_CONSO_CODES = [1, 6, 9];
 export const OPERATION_TYPE_PASS_INTERNET = 'PASS_INTERNET';
 export const OPERATION_TYPE_PASS_ILLIMIX = 'PASS_ILLIMIX';
+export const OPERATION_TYPE_PASS_ALLO = 'PASS_ALLO';
 export const OPERATION_TYPE_PASS_VOYAGE = 'OPERATION_TYPE_PASS_VOYAGE';
 export const OPERATION_TYPE_MERCHANT_PAYMENT = 'MERCHANT_PAYMENT';
 export const OPERATION_TYPE_SOS = 'SOS';
@@ -326,6 +327,8 @@ export function getOrderedListCategory(
   listCategoryFiltered = [...new Set(unorderedList.map((x) => x.libelle))];
   return listCategoryFiltered;
 }
+
+export const ALLO_PASS_CATEGORY = 'ALLO';
 
 export function getTrioConsoUser(consoSummary: UserConsommations) {
   const result = [];

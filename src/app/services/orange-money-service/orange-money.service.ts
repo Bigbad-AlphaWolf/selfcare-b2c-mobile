@@ -100,9 +100,11 @@ export class OrangeMoneyService {
     }
   }
 
-  checkUserHasAccount(msisdn1: string, msisdn2: string) {
-    return this.http.get(
-      `${checkOMAccountEndpoint2}?principal=${msisdn1}&client=${msisdn2}`
+  checkUserHasAccount(msisdn: string): Observable<boolean> {
+    return this.http.get(`${checkOMAccountEndpoint2}/${msisdn}`).pipe(
+      map((hasOmAccount: boolean) => {
+        return hasOmAccount;
+      })
     );
   }
 
