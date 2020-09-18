@@ -6,6 +6,7 @@ import { DashboardService, downloadEndpoint, downloadAvatarEndpoint } from '../d
 import { BannierePubModel } from '../dashboard-service';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { SubscriptionModel } from 'src/app/dashboard';
+import { DATA_BANNIERES, DATA_OFFRES_SERVICES } from 'src/app/utils/data';
 
 const { SERVER_API_URL, CONSO_SERVICE } = environment;
 
@@ -39,6 +40,7 @@ export class BanniereService {
   }
 
   queryListBanniereByFormule(codeFormule: string, zone_affichage:string='dashboard') {
+    // return of(DATA_BANNIERES);
     return this.http.get(`${endpointBanniere}/${codeFormule}?zone=${zone_affichage}`);
   }
 
@@ -55,14 +57,17 @@ export class BanniereService {
   }
 
   title(description:string){
+    if(!description) return;
     this.displays = description.split(';');
     return this.displays.length > 0 ? this.displays[0] : null;
   }
   details(description:string){
+    if(!description) return;
     this.displays = description.split(';');
     return this.displays.length > 1 ? this.displays[1] : null;
   }
   autre(description:string){
+    if(!description) return;
     this.displays = description.split(';');
     return this.displays.length > 2 ? this.displays[2] : null;
   }

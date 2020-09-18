@@ -12,11 +12,16 @@ import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/bann
 export class BanniereComponent implements OnInit {
   @Input('banniere') banniere : BannierePubModel;
   FILE_BASE_URL : string = FILE_PATH;
+  imageUrl : string;
   displays : string[] = [];
   constructor(private navCtrl : NavController) { }
 
   ngOnInit() {
-    this.displays = this.banniere.description.split(';');
+    if(this.banniere.description){
+      this.displays = this.banniere.description.split(';');
+    }
+
+    this.imageUrl = this.FILE_BASE_URL+'/'+this.banniere.image;
   }
 
   get title(){
@@ -38,6 +43,10 @@ export class BanniereComponent implements OnInit {
 
     window.open(this.banniere.action.url);
 
+  }
+
+  onErrorImg(){
+    this.imageUrl = 'assets/images/default_ban.PNG';
   }
 
 }

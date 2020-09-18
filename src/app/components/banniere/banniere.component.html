@@ -1,12 +1,12 @@
 <div class="banner" (click)="onBannerClicked()">
   <div class="triangle" [hidden]="!autre"></div>
-  <img [src]="FILE_BASE_URL+'/'+banniere.image" alt=""  class="image">
+  <div class="image">
+    <img [src]="imageUrl"  alt=" " width="315" height="115" (error)="onErrorImg()">
+  </div>
   <div class="banner-overlay">
     <div class="banner-left">
-      <div class="banner-container">
-        <div class="title">{{ title }}</div>
-        <div class="details">{{ details }}</div>
-      </div>
+        <div class="title" *ngIf="title">{{ title }}</div>
+        <div class="details" *ngIf="details">{{ details }}</div>
     </div>
     <div class="band" [hidden]="!autre">
       <div class="text">

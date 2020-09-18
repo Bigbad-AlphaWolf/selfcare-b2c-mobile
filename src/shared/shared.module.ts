@@ -81,11 +81,13 @@ import { LinesComponent } from 'src/app/components/lines/lines.component';
 import { IbouIonFabComponent } from './ibou-ion-fab/ibou-ion-fab.component';
 import { RequestCardComponent } from 'src/app/components/request-card/request-card.component';
 import { BanniereComponent } from 'src/app/components/banniere/banniere.component';
+import { OffreServiceCardComponent } from 'src/app/components/offre-service-card/offre-service-card.component';
 
 @NgModule({
   declarations: [
     LinesComponent,
     BanniereComponent,
+    OffreServiceCardComponent,
     InvoiceCardComponent,
     RequestCardComponent,
     NoIonSelectArrowDirective,
@@ -186,6 +188,7 @@ import { BanniereComponent } from 'src/app/components/banniere/banniere.componen
   ],
   exports: [
     BanniereComponent,
+    OffreServiceCardComponent,
     InvoiceCardComponent,
     RequestCardComponent,
     LinesComponent,

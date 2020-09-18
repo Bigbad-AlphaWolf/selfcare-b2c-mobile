@@ -10,10 +10,16 @@
     border-radius: 15px;
     position: relative;
     z-index: 33;
+    display: flex;
+    background-color: #ff790005;
+    img{
+      border-radius: 15px;
+    }
   }
   .banner-overlay {
     position: relative;
-    top: -118px;
+    border-radius: 15px;
+    top: -115px;
     width: 315px;
     height: 115px;
     z-index: 99;
@@ -25,34 +31,31 @@
       border-radius: 15px 0px 0px 15px;
       position: relative;
 
-      .banner-container {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px;
-        .title {
-          font-family: HelveticaNeueLTStd-Bd;
-          font-size: 18px;
-          font-weight: normal;
-          font-stretch: normal;
-          font-style: normal;
-          line-height: 1.22;
-          letter-spacing: normal;
-          color: #ffffff;
-          margin-bottom: 10px;
-        }
-        .details {
-          width: 150px;
-          font-family: HelveticaNeueLTStd-Roman;
-          font-size: 12px;
-          font-weight: normal;
-          font-stretch: normal;
-          font-style: normal;
-          line-height: 1.33;
-          letter-spacing: normal;
-          color: #ffffff;
-        }
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 15px;
+      .title {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 18px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.22;
+        letter-spacing: normal;
+        color: #ffffff;
+        margin-bottom: 10px;
+      }
+      .details {
+        width: 150px;
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.33;
+        letter-spacing: normal;
+        color: #ffffff;
       }
     }
 

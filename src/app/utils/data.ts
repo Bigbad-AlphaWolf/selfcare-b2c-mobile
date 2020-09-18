@@ -1,31 +1,631 @@
+import { OffreService } from '../models/offre-service.model';
 import { RequestOem } from '../models/request-oem.model';
 
-export const DATA_REQUESTS : RequestOem [] = [
-    {
-        "status": "INPROGRESS",
-        "title": "En Cours",
-        "description": "Votre demande est en cours de traitement, vous serez contacter par nos équipes.",
-        "type": "REQUEST",
-        "order": 1,
-        "historic": true,
-        "requestId": '9009903453'
-    },
-    {
-        "status": "INPROGRESS",
-        "title": "En Cours",
-        "description": "Votre demande est en cours de traitement, vous serez contacter par nos équipes. Votre demande est en cours de traitement, vous serez contacter par nos équipes. ",
-        "type": "REQUEST",
-        "order": 1,
-        "historic": true,
-        "requestId": '9009903453'
-    },
-    {
-        "status": "CLOSED",
-        "title": "Cloture",
-        "description": "Vous serez contacter par nos équipes.",
-        "type": "REQUEST",
-        "order": 1,
-        "historic": true,
-        "requestId": '9009903453'
-    }
-]
+export const DATA_BANNIERES: any[] = [
+  {
+    id: 5,
+    type: 'NOUVELLE_OFFRE',
+    image: 'IMG-20200206-WA0011.jpg',
+    description: 'Allo illimix 300M 50;Dans 15 jours;New',
+    dateDebut: '2020-09-01T13:55:00Z',
+    dateFin: '2020-10-31T13:55:00Z',
+    priorite: null,
+    imageWeb: null,
+    callToAction: null,
+    profil: null,
+    action: null,
+    formuleMobiles: [
+      {
+        id: 1,
+        code: '9131',
+        nomFormule: 'Jamono New Scool',
+        description: 'Reste connecté avec tes potes!',
+        type: 'MOBILE',
+        prixAppels: 1.0,
+        prixSMS: 5.0,
+        image: null,
+        profil: {
+          id: 1,
+          code: null,
+          nomProfil: 'PrePaid',
+          typeProfil: {
+            id: 2,
+            code: null,
+            nom: 'Mobile',
+          },
+        },
+        tarifFormules: null,
+        sos: null,
+      },
+      {
+        id: 2,
+        code: '9132',
+        nomFormule: 'Jamono Allo',
+        description: 'Prenez le temps de vous parler !',
+        type: 'MOBILE',
+        prixAppels: 1.99,
+        prixSMS: 20.0,
+        image: null,
+        profil: {
+          id: 1,
+          code: null,
+          nomProfil: 'PrePaid',
+          typeProfil: {
+            id: 2,
+            code: null,
+            nom: 'Mobile',
+          },
+        },
+        tarifFormules: null,
+        sos: null,
+      },
+    ],
+    zoneAffichages: [
+      {
+        id: 1,
+        code: 'offre',
+        name: 'Offres et Services',
+        description: 'Offres et services Desc',
+      },
+      {
+        id: 2,
+        code: 'dashboard',
+        name: 'Dashboard',
+        description: 'Desc',
+      },
+    ],
+  },
+  {
+    id: 5,
+    type: 'NOUVELLE_OFFRE',
+    image: 'IMG-20200206-WA0011.jpg',
+    description: 'Allo illimix 300M 50;Dans 15 jours;New',
+    dateDebut: '2020-09-01T13:55:00Z',
+    dateFin: '2020-10-31T13:55:00Z',
+    priorite: null,
+    imageWeb: null,
+    callToAction: null,
+    profil: null,
+    action: null,
+    formuleMobiles: [
+      {
+        id: 1,
+        code: '9131',
+        nomFormule: 'Jamono New Scool',
+        description: 'Reste connecté avec tes potes!',
+        type: 'MOBILE',
+        prixAppels: 1.0,
+        prixSMS: 5.0,
+        image: null,
+        profil: {
+          id: 1,
+          code: null,
+          nomProfil: 'PrePaid',
+          typeProfil: {
+            id: 2,
+            code: null,
+            nom: 'Mobile',
+          },
+        },
+        tarifFormules: null,
+        sos: null,
+      },
+      {
+        id: 2,
+        code: '9132',
+        nomFormule: 'Jamono Allo',
+        description: 'Prenez le temps de vous parler !',
+        type: 'MOBILE',
+        prixAppels: 1.99,
+        prixSMS: 20.0,
+        image: null,
+        profil: {
+          id: 1,
+          code: null,
+          nomProfil: 'PrePaid',
+          typeProfil: {
+            id: 2,
+            code: null,
+            nom: 'Mobile',
+          },
+        },
+        tarifFormules: null,
+        sos: null,
+      },
+    ],
+    zoneAffichages: [
+      {
+        id: 1,
+        code: 'offre',
+        name: 'Offres et Services',
+        description: 'Offres et services Desc',
+      },
+      {
+        id: 2,
+        code: 'dashboard',
+        name: 'Dashboard',
+        description: 'Desc',
+      },
+    ],
+  },
+  {
+    id: 5,
+    type: 'NOUVELLE_OFFRE',
+    image: 'IMG-20200206-WA0011.jpg',
+    description: 'Allo illimix 300M 50;Dans 15 jours;New',
+    dateDebut: '2020-09-01T13:55:00Z',
+    dateFin: '2020-10-31T13:55:00Z',
+    priorite: null,
+    imageWeb: null,
+    callToAction: null,
+    profil: null,
+    action: null,
+    formuleMobiles: [
+      {
+        id: 1,
+        code: '9131',
+        nomFormule: 'Jamono New Scool',
+        description: 'Reste connecté avec tes potes!',
+        type: 'MOBILE',
+        prixAppels: 1.0,
+        prixSMS: 5.0,
+        image: null,
+        profil: {
+          id: 1,
+          code: null,
+          nomProfil: 'PrePaid',
+          typeProfil: {
+            id: 2,
+            code: null,
+            nom: 'Mobile',
+          },
+        },
+        tarifFormules: null,
+        sos: null,
+      },
+      {
+        id: 2,
+        code: '9132',
+        nomFormule: 'Jamono Allo',
+        description: 'Prenez le temps de vous parler !',
+        type: 'MOBILE',
+        prixAppels: 1.99,
+        prixSMS: 20.0,
+        image: null,
+        profil: {
+          id: 1,
+          code: null,
+          nomProfil: 'PrePaid',
+          typeProfil: {
+            id: 2,
+            code: null,
+            nom: 'Mobile',
+          },
+        },
+        tarifFormules: null,
+        sos: null,
+      },
+    ],
+    zoneAffichages: [
+      {
+        id: 1,
+        code: 'offre',
+        name: 'Offres et Services',
+        description: 'Offres et services Desc',
+      },
+      {
+        id: 2,
+        code: 'dashboard',
+        name: 'Dashboard',
+        description: 'Desc',
+      },
+    ],
+  },
+];
+
+export const DATA_REQUESTS: RequestOem[] = [
+  {
+    status: 'INPROGRESS',
+    title: 'En Cours',
+    description:
+      'Votre demande est en cours de traitement, vous serez contacter par nos équipes.',
+    type: 'REQUEST',
+    order: 1,
+    historic: true,
+    requestId: '9009903453',
+  },
+  {
+    status: 'INPROGRESS',
+    title: 'En Cours',
+    description:
+      'Votre demande est en cours de traitement, vous serez contacter par nos équipes. Votre demande est en cours de traitement, vous serez contacter par nos équipes. ',
+    type: 'REQUEST',
+    order: 1,
+    historic: true,
+    requestId: '9009903453',
+  },
+  {
+    status: 'CLOSED',
+    title: 'Cloture',
+    description: 'Vous serez contacter par nos équipes.',
+    type: 'REQUEST',
+    order: 1,
+    historic: true,
+    requestId: '9009903453',
+  },
+];
+
+export const DATA_OFFRES_SERVICES: any[] = [
+  {
+    id: 3,
+    code: 'MOBILE',
+    name: 'Mobile',
+    subcategories: [
+      {
+        id: 3,
+        code: 'INTERNET',
+        name: 'Internet',
+        services: [
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+        ],
+      },
+
+      {
+        id: 1,
+        code: 'APPEL',
+        name: 'Appel',
+        services: [
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+        ],
+      },
+      {
+        id: 4,
+        code: 'MULTIMEDIA',
+        name: 'Multimédia',
+        services: [
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 1,
+    code: 'Orange',
+    name: 'Orange Money',
+    subcategories: [
+      {
+        id: 3,
+        code: 'INTERNET',
+        name: 'Internet',
+        services: [
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+        ],
+      },
+
+      {
+        id: 1,
+        code: 'APPEL',
+        name: 'Appel',
+        services: [
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+        ],
+      },
+      {
+        id: 4,
+        code: 'MULTIMEDIA',
+        name: 'Multimédia',
+        services: [
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+        ],
+      },
+      {
+        id: 4,
+        code: 'MULTIMEDIA',
+        name: 'Multimédia',
+        services: [
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 4,
+    code: 'PARTENER',
+    name: 'Parténaires',
+    subcategories: [
+      {
+        id: 3,
+        code: 'INTERNET',
+        name: 'Internet',
+        services: [
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+        ],
+      },
+
+      {
+        id: 1,
+        code: 'APPEL',
+        name: 'Appel',
+        services: [
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+        ],
+      },
+      {
+        id: 1,
+        code: 'AUTRE 2',
+        name: 'AUTRE 2',
+        services: [
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+        ],
+      },
+      {
+        id: 1,
+        code: 'AUTRE',
+        name: 'AUTRE 1',
+        services: [
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+        ],
+      },
+      {
+        id: 4,
+        code: 'MULTIMEDIA',
+        name: 'Multimédia',
+        services: [
+          {
+            title: 'Pass internet',
+            shortDescription: 'Profitez d’internet trés haut débit',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+          {
+            title: 'Crédit recharge',
+            shortDescription: 'Appelez vos proches de partout',
+            icone: 'ic-package-services@2x.png',
+            redirectionPath: '/transfert-hub-services',
+            redirectionType: 'BUY',
+          },
+        ],
+      },
+    ],
+  },
+];
