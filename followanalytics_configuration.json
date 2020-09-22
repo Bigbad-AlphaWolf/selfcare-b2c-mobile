@@ -1,12 +1,12 @@
 
 {
   "android" :
-  { 
+  {
     "debug":
     {
       "apiKey" : "DgD85nBBSi5wtw",
       "isVerbose" : false,
-      "maxBackgroundTimeWithinSession" : 120 
+      "maxBackgroundTimeWithinSession" : 120
     },
     "release":
     {

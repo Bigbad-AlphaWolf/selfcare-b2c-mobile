@@ -162,31 +162,28 @@
     background: url('/assets/images/kirene-mobile.jpg');
     background-size: 100% 100%;
     background-repeat: no-repeat;
-    height: 359px;
-    padding-top: 15px;
-    margin-top: 10px;
+    // height: 430px;
+    margin: 10px 0;
 
     &-top-texts {
       display: flex;
       justify-content: space-between;
-      padding-right: percentage(10px / $baseWidthMobile2);
-      padding-left: percentage(10px / $baseWidthMobile2);
-
-      .voir-details {
-        font-family: HelveticaNeueLTStd-Bd, sans-serif;
-        font-size: 14px;
-      }
-
+      padding: 20px percentage(15px / $baseWidthMobile2);
       .suivi-conso {
-        font-family: HelveticaNeueLTStd-Bd, sans-serif;
-        font-size: 20px;
+        font-size: 24px;
+      }
+      .voir-details-text {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
       }
     }
 
     &-btns {
-      //height: 120px;
-      height: 130px;
-      margin-top: -5px; // margin-top: 15px; // old value commented because of slides with native margin
+      // height: 130px;
+      // margin-top: -5px; // margin-top: 15px; // old value commented because of slides with native margin
       overflow-x: scroll;
       white-space: nowrap;
       display: flex;
@@ -194,112 +191,77 @@
         display: none;
       }
       ion-slides {
+        width: 100%;
         ion-slide {
-          padding-left: 10px;
+          padding-left: 15px;
           display: flex;
           align-items: flex-start;
-          margin-top: 12px;
+          // margin-top: 12px;
+          // width: percentage(255/375) !important;
           // width: 66% !important;
           // min-width: 300px;
         }
       }
       app-om-button {
-        min-width: 63%;
+        // min-width: 63%;
         width: 100%;
-        height: 90px;
-        margin-right: percentage(10px / 366px);
+        height: 110px;
+        // margin-right: percentage(10px / 366px);
       }
-      .scb-btn-om {
-        position: relative;
 
-        background-color: #d03c34;
-        color: $fullBlack;
-        border-color: #d03c34;
-
-        .om-solde-visibility {
-          position: absolute;
-          top: 12px;
-          right: 12px;
-          .refresh-icon {
-            width: 14px;
-            height: 14px;
-          }
-        }
-        .arrow-right {
-          margin-left: 5px;
-        }
-      }
       .scb-btn-balance,
       .scb-btn-credit,
       .scb-btn-sargal {
         text-align: left;
-        min-width: 63%;
+        // min-width: 63%;
         width: 100%;
-        height: 90px;
+        height: 110px;
         display: inline-block;
-        padding: 8px 0 10px 15px;
+        padding: 12px 0 20px 15px;
         border-radius: 15px;
-        box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
-        margin-right: percentage(10px / 366px);
+        // box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
+        // margin-right: percentage(10px / 366px);
         .scb-btn-top-block {
-          &-icon,
-          &-text {
-            display: inline-block;
-            vertical-align: middle;
-            .text-om {
-              display: inline-block;
-              vertical-align: middle;
-              color: $white;
-              font-family: HelveticaNeueLTStd-Roman;
-              font-size: 16px;
-            }
-          }
-
+          display: flex;
+          align-items: center;
           &-icon {
             height: 24px;
             width: 24px;
             margin-right: 4px;
           }
-
           &-text {
             .text {
               font-family: HelveticaNeueLTStd-Roman, sans-serif;
               font-size: 18px;
             }
-          }
-        }
-
-        .bottom-block {
-          margin-top: 1px;
-          // height: 26px;
-          .value {
-            font-family: HelveticaNeueLTStd-Bd, sans-serif;
-            font-size: 26px;
-
-            .text-style-1 {
-              font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            .status-sargal {
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
               font-size: 18px;
+              &.gold {
+                color: gold;
+              }
+              &.platinum {
+                color: #e5e4e2;
+              }
             }
           }
         }
 
-        .bottom-block-om {
-          margin-top: 1px;
-          // height: 26px;
+        .bottom-block {
+          margin-top: 4px;
           .value {
             font-family: HelveticaNeueLTStd-Bd, sans-serif;
-            font-size: 26px;
-            color: $white;
+            font-size: 32px;
 
             .text-style-1 {
-              font-family: HelveticaNeueLTStd-Roman, sans-serif;
-              font-size: 18px;
+              // font-family: HelveticaNeueLTStd-Roman, sans-serif;
+              font-size: 24px;
             }
           }
         }
 
         .validity-text {
-          margin-top: 6px;
+          margin-top: 5px;
           font-family: HelveticaNeueLTStd-Roman;
           font-size: 9px;
         }
@@ -310,36 +272,20 @@
           line-height: 1.14;
           display: inline-block;
           margin-top: 27px;
-          color: $white;
         }
-      }
-      .scb-btn-sargal {
-        background-image: url(/assets/images/background-sargal.svg);
-        background-size: cover;
-        position: relative;
-        .btn-container {
-          width: 100%;
-          background: transparent;
-        }
+
         .scb-data-reload {
           position: absolute;
           right: 15px;
           top: 15px;
         }
-        &.btn-disabled {
-          background-color: $gray;
-          .btn-no-action {
-            pointer-events: none;
-          }
-        }
       }
     }
 
     &-details {
-      margin: -15px percentage(10px / 292px) 0 0;
+      // margin: -15px 0 0 0;
       border-radius: 4px;
-      width: 100%;
-      padding: 5px percentage(10px / $baseWidthMobile2);
+      padding: 25px percentage(15px / $baseWidthMobile2) 70px;
 
       &::-webkit-scrollbar {
         display: none;
@@ -359,7 +305,8 @@
         width: 100%;
 
         &:not(:last-child) {
-          margin-bottom: 10px;
+          margin-bottom: 7px;
+          padding-bottom: 5px;
           border-bottom: 1px solid $silver;
         }
 
@@ -370,13 +317,12 @@
 
           .conso-name {
             font-family: HelveticaNeueLTStd-Roman, sans-serif;
-            font-size: 16px;
+            font-size: 18px;
           }
 
           .conso-value {
-            font-family: HelveticaNeueLTStd-Bd, sans-serif;
-            font-size: 16px;
-            color: $white;
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 18px;
           }
         }
 

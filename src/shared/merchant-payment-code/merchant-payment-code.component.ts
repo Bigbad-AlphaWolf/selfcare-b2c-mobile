@@ -1,18 +1,16 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { OrangeMoneyService } from "src/app/services/orange-money-service/orange-money.service";
-import { ApplicationRoutingService } from "src/app/services/application-routing/application-routing.service";
-import { Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
-import { OPERATION_TYPE_MERCHANT_PAYMENT, REGEX_IS_DIGIT } from "..";
-import { ModalController } from "@ionic/angular";
-import { NewPinpadModalPage } from "src/app/new-pinpad-modal/new-pinpad-modal.page";
-import { HttpErrorResponse } from "@angular/common/http";
-import { MarchandOem } from "src/app/models/marchand-oem.model";
-import { RecentsService } from "src/app/services/recents-service/recents.service";
-import { FavoriteMerchantComponent } from "src/app/components/favorite-merchant/favorite-merchant.component";
-import { RecentsOem } from "src/app/models/recents-oem.model";
-import { BottomSheetService } from "src/app/services/bottom-sheet/bottom-sheet.service";
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { OPERATION_TYPE_MERCHANT_PAYMENT, REGEX_IS_DIGIT } from '..';
+import { ModalController } from '@ionic/angular';
+import { MarchandOem } from 'src/app/models/marchand-oem.model';
+import { RecentsService } from 'src/app/services/recents-service/recents.service';
+import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
+import { RecentsOem } from 'src/app/models/recents-oem.model';
+import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 
 @Component({
   selector: "app-merchant-payment-code",
@@ -39,7 +37,7 @@ export class MerchantPaymentCodeComponent implements OnInit {
   ngOnInit() {
     this.getRecentMerchants();
     this.merchantCodeForm = this.fb.group({
-      merchantCode: ["", [Validators.required]],
+      merchantCode: ['', [Validators.required]],
     });
   }
 
@@ -101,19 +99,20 @@ export class MerchantPaymentCodeComponent implements OnInit {
   }
 
   getRecentMerchants() {
-    this.recentMerchants$ = this.recentsService.fetchRecents(OPERATION_TYPE_MERCHANT_PAYMENT).pipe(
-      map((recents: RecentsOem[]) => {
-        let results = [];
-        recents = recents.slice(0, 3);
-        recents.forEach((el) => {
-          results.push({
-            name: JSON.parse(el.payload).nom_marchand,
-            merchantCode: el.destinataire,
+    this.recentMerchants$ = this.recentsService
+      .fetchRecents(OPERATION_TYPE_MERCHANT_PAYMENT, 3)
+      .pipe(
+        map((recents: RecentsOem[]) => {
+          let results = [];
+          recents.forEach((el) => {
+            results.push({
+              name: JSON.parse(el.payload).nom_marchand,
+              merchantCode: el.destinataire,
+            });
           });
-        });
-        return results;
-      })
-    );
+          return results;
+        })
+      );
   }
 
   numberOnly(event) {

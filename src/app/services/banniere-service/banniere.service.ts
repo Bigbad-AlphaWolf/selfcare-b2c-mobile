@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { DashboardService, downloadEndpoint, downloadAvatarEndpoint } from '../dashboard-service/dashboard.service';
@@ -17,6 +17,8 @@ const endpointBanniere = `${SERVER_API_URL}/${CONSO_SERVICE}/api/bannieres-by-fo
 export class BanniereService {
   private listBanniereUserFormule: BannierePubModel[] = [];
   private isLoadedSubject: Subject<any> = new Subject<any>();
+  displays : string[] = [];
+
   constructor(private http: HttpClient, private dashb: DashboardService, private authServ: AuthenticationService) {}
 
   setListBanniereByFormule() {
@@ -36,8 +38,8 @@ export class BanniereService {
     });
   }
 
-  queryListBanniereByFormule(codeFormule: string) {
-    return this.http.get(`${endpointBanniere}/${codeFormule}`);
+  queryListBanniereByFormule(codeFormule: string, zone_affichage:string='dashboard') {
+    return this.http.get(`${endpointBanniere}/${codeFormule}?zone=${zone_affichage}`);
   }
 
   getListBanniereByFormule() {
@@ -50,5 +52,18 @@ export class BanniereService {
 
   getFullUrlImage() {
     return downloadEndpoint;
+  }
+
+  title(description:string){
+    this.displays = description.split(';');
+    return this.displays.length > 0 ? this.displays[0] : null;
+  }
+  details(description:string){
+    this.displays = description.split(';');
+    return this.displays.length > 1 ? this.displays[1] : null;
+  }
+  autre(description:string){
+    this.displays = description.split(';');
+    return this.displays.length > 2 ? this.displays[2] : null;
   }
 }

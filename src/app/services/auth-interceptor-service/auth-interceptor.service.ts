@@ -74,10 +74,11 @@ export class AuthInterceptorService implements HttpInterceptor {
         body: {...req.body, uuid: x_uuid }
       });
     }
+    const lightToken = ls.get('light-token');
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221775109027');
+      headers = headers.set('X-MSISDN', '221770167323');
       //delay to test slowness of network
       req = req.clone({
         headers,
@@ -110,6 +111,14 @@ export class AuthInterceptorService implements HttpInterceptor {
       req.headers.set('X-Selfcare-Source', 'mobile');
       return next.handle(req);
     }
+    if (lightToken) {
+      let headers = req.headers
+        .set('X-UUID', x_uuid)
+        .set('Authorization', `Bearer ${lightToken}`);
+      req = req.clone({
+        headers,
+      });
+    }
     if (token) {
       let headers = req.headers;
       headers = headers.set('X-Selfcare-Source', 'mobile');
@@ -119,7 +128,6 @@ export class AuthInterceptorService implements HttpInterceptor {
         headers,
       });
     }
-
     let deviceInfo = window['device'];
 
     if (deviceInfo) {

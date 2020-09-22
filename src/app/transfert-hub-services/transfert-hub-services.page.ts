@@ -12,16 +12,21 @@ import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_PASS_ALLO,
+  OPERATION_TYPE_PASS_VOYAGE
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
 import { PromoBoosterActive } from '../dashboard';
 import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
+import { ListPassVoyagePage } from '../pages/list-pass-voyage/list-pass-voyage.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { Observable } from 'rxjs';
 
+import { FacebookEventService } from '../services/facebook-event/facebook-event.service';
+import { FacebookEvent } from '../models/enums/facebook-event.enum';
+import { FacebookCustomEvent } from '../models/enums/facebook-custom-event.enum';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -159,7 +164,8 @@ export class TransfertHubServicesPage implements OnInit {
     private offerPlanServ: OfferPlansService,
     private dashbServ: DashboardService,
     private bsService: BottomSheetService,
-    private omService: OrangeMoneyService
+    private omService : OrangeMoneyService,
+    private facebookevent : FacebookEventService
   ) {}
 
   ngOnInit() {
@@ -193,6 +199,9 @@ export class TransfertHubServicesPage implements OnInit {
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
   }) {
+    // this.facebookevent.fbEvent(FacebookEvent.ViewContent,{});
+    this.facebookevent.fbCustomEvent(FacebookCustomEvent.TestEvent,{customField1:'customField1',customField2:51});
+    
     switch (opt.type) {
       case 'TRANSFERT_MONEY':
         if (opt.action === 'REDIRECT') {
@@ -225,7 +234,6 @@ export class TransfertHubServicesPage implements OnInit {
             OPERATION_TYPE_PASS_INTERNET,
             'list-pass'
           );
-          // this.appRouting.goToSelectRecepientPassInternet();
         }
         break;
       case 'PASS_ILLIMIX':
@@ -235,7 +243,15 @@ export class TransfertHubServicesPage implements OnInit {
             OPERATION_TYPE_PASS_ILLIMIX,
             'list-pass'
           );
-          // this.appRouting.goToSelectRecepientPassIllimix();
+        }
+        break;
+      case 'PASS_VOYAGE':
+        if (opt.action === 'REDIRECT') {
+          this.bsService.openNumberSelectionBottomSheet(
+            NumberSelectionOption.WITH_MY_PHONES,
+            OPERATION_TYPE_PASS_VOYAGE,
+            ListPassVoyagePage.ROUTE_PATH
+          );
         }
         break;
       case 'PASS_ALLO':

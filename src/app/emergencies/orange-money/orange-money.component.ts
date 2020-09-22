@@ -121,7 +121,7 @@ export class OrangeMoneyComponent implements OnInit {
     }
   }
   checkExtension2(filename: string, step: string) {
-    const regExtension = /(png|jpg|jpeg)$/;
+    const regExtension = /(png|jpg|jpeg|pdf)$/;
     if (filename.toLowerCase().match(regExtension)) {
       switch (step) {
         case 'cni1':
@@ -320,8 +320,10 @@ export class OrangeMoneyComponent implements OnInit {
     emailFormDataModel.append('formulaire', this.formulaireToUpload);
     emailFormDataModel.append('rectoID', this.cn1ToUpload);
     emailFormDataModel.append('verso', this.cn2ToUpload);
+    
     this.emerg.sendMailCustomerService(emailFormDataModel).subscribe(
       (res: any) => {
+        
         this.loader = false;
         switch (this.type) {
           case 'creation-compte':
@@ -349,9 +351,10 @@ export class OrangeMoneyComponent implements OnInit {
         this.openSuccessDialog(this.type);
       },
       (err: any) => {
+
         this.loader = false;
         this.openErrorDialog(
-          'errorUpload',
+          'failed-action',
           `Une erreur est survenue lors de l'envoi du mail`
         );
         switch (this.type) {
@@ -429,7 +432,7 @@ export class OrangeMoneyComponent implements OnInit {
 
   manageUploadError() {
     this.loader = false;
-    this.openErrorDialog('errorUpload', 'Désolé, une erreur est survenue');
+    this.openErrorDialog('failed-action', 'Désolé, une erreur est survenue');
     this.followAnalyticsService.registerEventFollow(
       'Upload_File_Error',
       'error',
@@ -438,9 +441,9 @@ export class OrangeMoneyComponent implements OnInit {
   }
 
   openErrorDialog(type: string, msg: string) {
-    // this.dialog.open(UnauthorizedSosModalComponent, {
-    //   data: { type, message: msg }
-    // });
-    alert(msg);
+    this.dialog.open(ModalSuccessComponent, {
+      data: { type, text: msg }
+    });
+    // alert(msg);
   }
 }
