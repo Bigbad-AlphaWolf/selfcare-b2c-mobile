@@ -15,6 +15,7 @@ import {
   retryWhen,
   flatMap,
   switchMap,
+  catchError,
 } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -464,6 +465,9 @@ export class AuthenticationService {
               };
               return throwError(error);
             }
+          }),
+          catchError((err) => {
+            return throwError(err);
           })
         );
       })

@@ -60,7 +60,6 @@
         >
           <div class="menu-list-services-item">
             <div class="services-item-icon">
-
               <img
                 src="/assets/images/suivi-conso-off.svg"
                 alt="suivi-conso"
@@ -95,7 +94,7 @@
           </div>
         </div>
       </ion-menu-toggle>
-      <ion-menu-toggle>
+      <ion-menu-toggle *ngIf="0">
         <div
           (click)="onOffreClicked()"
           class="menu-list-services-item-block c-pointer"
@@ -177,16 +176,9 @@
     </div>
     <div class="menu-list-user-assistance">
       <ion-menu-toggle>
-        <div
-          (click)="goMyAccount()"
-          class="user-assistance-account-block"
-        >
+        <div (click)="goMyAccount()" class="user-assistance-account-block">
           <div class="assistance-icon">
-            <img
-              src="/assets/images/compte.svg"
-              alt="compte"
-              class="icon"
-            />
+            <img src="/assets/images/compte.svg" alt="compte" class="icon" />
           </div>
           <div class="assistance-text">
             <span class="title">Mon compte</span>
@@ -215,10 +207,7 @@
         </div>
       </ion-menu-toggle>
       <ion-menu-toggle>
-        <div
-          (click)="goEmergencies()"
-          class="user-assistance-account-block"
-        >
+        <div (click)="goEmergencies()" class="user-assistance-account-block">
           <div class="assistance-icon">
             <img
               src="/assets/images/control-centre.svg"
@@ -233,17 +222,13 @@
             >
           </div>
         </div>
-        <div
-          (click)="goToAbout()"
-          class="user-assistance-account-block"
-        >
+        <div (click)="goToAbout()" class="user-assistance-account-block">
           <div class="assistance-icon">
             <img
               src="/assets/images/ios-information-circle.svg"
               alt="info"
               class="icon"
             />
-           
           </div>
           <div class="assistance-text">
             <span class="title">A propos d'Orange et moi</span>
