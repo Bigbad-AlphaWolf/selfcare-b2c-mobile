@@ -6,16 +6,15 @@
         <div>
           <span class="suivi-conso scb-text-white">Suivi conso</span>
         </div>
-        <div routerLink="/details-conso">
-          <span class="voir-details scb-text-white">Voir details </span>
-          <img
-            src="/assets/images/keyboard-arrow-right-white.svg"
-            alt="keyboard-arrow-right-orange-mob"
-          />
+        <div
+          routerLink="/details-conso"
+          class="voir-details-text scb-text-orange"
+        >
+          Voir details
         </div>
       </div>
       <div class="dashboard-block-conso-btns">
-        <ion-slides [options]="slideOpts">
+        <ion-slides [options]="slideOpts" id="slides">
           <ion-slide>
             <div
               routerLink="/details-conso"
@@ -42,7 +41,7 @@
               </div>
             </div>
           </ion-slide>
-          <ion-slide>
+          <ion-slide id="omCard">
             <app-om-button [isKirene]="true"></app-om-button>
           </ion-slide>
           <ion-slide>
@@ -143,7 +142,7 @@
                 <span class="conso-name scb-text-white"
                   >{{ conso.compteur }}</span
                 >
-                <span class="conso-value"
+                <span class="conso-value scb-text-white"
                   >{{ conso.montantFormat }}<span class="text-style-1"></span
                 ></span>
               </div>

@@ -1,72 +1,86 @@
 <div class="buy-pass-internet-dest-container">
-	<div class="buy-pass-dest-body-block">
-		<div class="buy-pass-dest-body-block-top-text">
-			<span class="text">Pour quel numéro ?</span>
-		</div>
+  <div class="buy-pass-dest-body-block">
+    <div class="buy-pass-dest-body-block-top-text">
+      <span class="text">Pour quel numéro ?</span>
+    </div>
 
-		<div class="buy-pass-dest-body-block-select-block">
-			<div fxLayout="row" fxLayoutAlign="space-between" class="buy-pass-dest-body-block-select">
-				<div
-					(click)="setMeDestinataire()"
-					fxFlex="47.4%"
-					[ngClass]="{ 'selected-dest': !otherDestinataire }"
-					class="choice-dest dest-myself"
-				>
-					<div class="dest-label">
-						<span class="text scb-text-l-black">Pour mon numéro</span>
-					</div>
-					<div class="icon">
-						<img src="/assets/images/my-orange.svg" alt="compte" />
-					</div>
-				</div>
-				<div
-					(click)="setOtherDestinataire()"
-					fxFlex="47.4%"
-					[ngClass]="{ 'selected-dest': otherDestinataire }"
-					class="choice-dest dest-others"
-				>
-					<div class="dest-label">
-						<span class="text scb-text-l-black">Pour un autre numéro</span>
-					</div>
-					<div class="icon">
-						<img src="/assets/images/our-orange.svg" alt="compte" />
-					</div>
-				</div>
-			</div>
-			<div [hidden]="!otherDestinataire" class="buy-pass-dest-body-block-input">
-				<form novalidate autocomplete="false">
-					<mat-form-field class="dest-number-input font-size-30">
-						<input
-							#otherDestNumber
-							matInput
-							placeholder="Entrez le Numéro du destinataire"
-							type="tel"
-							(input)="enableNextBtn(otherDestNumber.value)"
-							(change)="enableNextBtn(otherDestNumber.value)"
-							[value]="destNumber"
-							(keyup.enter)="goToListPassStep()"
-						/>
-					</mat-form-field>
-				</form>
-				<div class="contact" (click)="pickContact()">
-					<img src="/assets/images/contact.svg" alt="contact-icon" />
-					<span class="scb-text-orange contact-text">Mes contacts</span>
-				</div>
-			</div>
-			<div class="err scb-text-red-error" *ngIf="showErrorMsg">
-				Ce destinataire ne peux pas bénéficier de ce service.
-			</div>
-		</div>
-		<div class="next-btn">
-			<button
-				(click)="goToListPassStep()"
-				[disabled]="otherDestinataire && !destNumberValid || isProcessing"
-				class="scb-btn-full c-pointer scb-btn-orange"
-				mat-stroked-button
-			>
-				Suivant
-				<mat-spinner mode="indeterminate" [diameter]="20" *ngIf="isProcessing"></mat-spinner>
-			</button>
-		</div>
-	</div>
+    <div class="buy-pass-dest-body-block-select-block">
+      <div
+        fxLayout="row"
+        fxLayoutAlign="space-between"
+        class="buy-pass-dest-body-block-select"
+      >
+        <div
+          (click)="setMeDestinataire()"
+          fxFlex="47.4%"
+          [ngClass]="{ 'selected-dest': !otherDestinataire }"
+          class="choice-dest dest-myself"
+        >
+          <div class="dest-label">
+            <span class="text scb-text-l-black">Pour mon numéro</span>
+          </div>
+          <div class="icon">
+            <img src="/assets/images/my-orange.svg" alt="compte" />
+          </div>
+        </div>
+        <div
+          (click)="setOtherDestinataire()"
+          fxFlex="47.4%"
+          [ngClass]="{ 'selected-dest': otherDestinataire }"
+          class="choice-dest dest-others"
+        >
+          <div class="dest-label">
+            <span class="text scb-text-l-black">Pour un autre numéro</span>
+          </div>
+          <div class="icon">
+            <img src="/assets/images/our-orange.svg" alt="compte" />
+          </div>
+        </div>
+      </div>
+      <div [hidden]="!otherDestinataire" class="buy-pass-dest-body-block-input">
+        <form novalidate autocomplete="false">
+          <mat-form-field class="dest-number-input font-size-30">
+            <input
+              #otherDestNumber
+              matInput
+              placeholder="Entrez le Numéro du destinataire"
+              type="tel"
+              (input)="enableNextBtn(otherDestNumber.value)"
+              (change)="enableNextBtn(otherDestNumber.value)"
+              [value]="destNumber"
+              (keyup.enter)="goToListPassStep()"
+            />
+          </mat-form-field>
+        </form>
+        <div class="contact" (click)="pickContact()">
+          <img src="/assets/images/contact.svg" alt="contact-icon" />
+          <span class="scb-text-orange contact-text">Mes contacts</span>
+        </div>
+      </div>
+      <div class="err scb-text-red-error" *ngIf="showErrorMsg">
+        Ce destinataire ne peux pas bénéficier de ce service.
+      </div>
+      <div
+        class="err scb-text-red-error"
+        *ngIf="eligibilityChecked && !isRecipientEligible"
+      >
+        {{ eligibilityError }}
+      </div>
+    </div>
+    <div class="next-btn">
+      <button
+        (click)="goToListPassStep()"
+        [disabled]="(otherDestinataire && !destNumberValid) || isProcessing"
+        class="scb-btn-full c-pointer scb-btn-orange"
+        mat-stroked-button
+      >
+        Suivant
+        <mat-spinner
+          mode="indeterminate"
+          [diameter]="20"
+          *ngIf="isProcessing"
+        ></mat-spinner>
+      </button>
+    </div>
+  </div>
 </div>

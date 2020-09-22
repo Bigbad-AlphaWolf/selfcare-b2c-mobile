@@ -14,6 +14,8 @@ import {
   delay,
   retryWhen,
   flatMap,
+  switchMap,
+  catchError,
 } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -32,6 +34,8 @@ import {
   JAMONO_ALLO_CODE_FORMULE,
   NotificationInfoModel,
   SubscriptionModel,
+  JAMONO_PRO_CODE_FORMULE,
+  PRO_MOBILE_ERROR_CODE,
 } from 'src/shared';
 import { SessionOem } from '../session-oem/session-oem.service';
 import {
@@ -77,7 +81,10 @@ const registerEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-
 const resetPwdEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password`;
 
 const notificationInfoEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/notification-information`;
-
+// endpoint to get token
+const tokenEndpoint = `${SERVER_API_URL}/auth/get-service-token`;
+// eligibility to recieve pass internet & illimix endpoint
+const eligibilityRecievePassEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/check-conditions`;
 @Injectable({
   providedIn: 'root',
 })
@@ -220,7 +227,7 @@ export class AuthenticationService {
     );
   }
 
-  getSubscriptionForTiers(msisdn: string) {
+  getSubscriptionForTiers(msisdn: string): Observable<any> {
     const lsKey = 'subtiers' + msisdn;
     const savedData = ls.get(lsKey);
     if (savedData) {
@@ -280,6 +287,14 @@ export class AuthenticationService {
         return true;
       })
     );
+  }
+
+  checkUserEligibility(msisdn) {
+    // return of({
+    //   message: 'Vous avez déjà un illimix en cours.',
+    //   eligible: false,
+    // });
+    return this.http.get(`${eligibilityRecievePassEndpoint}/${msisdn}`);
   }
 
   deleteSubFromStorage(msisdn: string) {
@@ -421,8 +436,42 @@ export class AuthenticationService {
     return this.http.get(`${CONFIRM_MSISDN_BY_NETWORK_URL}/${msisdn}`);
   }
 
+  getTokenFromBackend() {
+    return this.http.get(tokenEndpoint).pipe(
+      tap((res: any) => {
+        ls.set('light-token', res.access_token);
+      })
+    );
+  }
+
   checkNumber(checkNumberPayload: { msisdn: string; hmac: string }) {
-    return this.http.post(checkNumberEndpoint, checkNumberPayload);
+    return this.getTokenFromBackend().pipe(
+      switchMap((res) => {
+        const msisdn = checkNumberPayload.msisdn.substring(
+          checkNumberPayload.msisdn.length - 9
+        );
+        return this.getSubscriptionForTiers(msisdn).pipe(
+          switchMap((sub: SubscriptionModel) => {
+            console.log(sub);
+
+            const isProMobile = sub.code === JAMONO_PRO_CODE_FORMULE;
+            if (!isProMobile) {
+              return this.http.post(checkNumberEndpoint, checkNumberPayload);
+            } else {
+              const error = {
+                status: 400,
+                errorKey: PRO_MOBILE_ERROR_CODE,
+                message: 'Ce numéro ne peut pas accéder à Orange et Moi',
+              };
+              return throwError(error);
+            }
+          }),
+          catchError((err) => {
+            return throwError(err);
+          })
+        );
+      })
+    );
   }
 
   register(registerPayload: RegistrationModel) {

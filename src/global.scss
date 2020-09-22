@@ -657,6 +657,9 @@ button {
 .mat-button-toggle-standalone.mat-button-toggle-appearance-standard {
   border-radius: none;
 }
+.fieldArea .mat-form-field-appearance-outline .mat-form-field-outline{
+  background-color: white;
+}
 // .mat-button-toggle-checked {
 //   background-color: #fdd8b71c;
 //   &.mat-button-toggle-appearance-standard{

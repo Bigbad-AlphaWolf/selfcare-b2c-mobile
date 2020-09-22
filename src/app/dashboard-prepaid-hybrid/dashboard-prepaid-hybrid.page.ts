@@ -43,13 +43,15 @@ import { AssistanceService } from '../services/assistance.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
+import { map } from 'rxjs/operators';
 import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amount.page';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
+import { OffresServicesPage } from '../pages/offres-services/offres-services.page';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -123,12 +125,26 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     private modalController: ModalController,
     private offerPlanServ: OfferPlansService,
     private ref: ChangeDetectorRef,
-    private bsService: BottomSheetService
+    private bsService: BottomSheetService,
+    private navCtrl : NavController
   ) {}
 
   ngOnInit() {
     this.getUserInfos();
     this.getWelcomeStatus();
+  }
+
+  checkOMNumber() {
+    this.omServ
+      .getOmMsisdn()
+      .pipe(
+        map((omNumber) => {
+          if (omNumber !== 'error') {
+            this.dashbordServ.swapOMCard();
+          }
+        })
+      )
+      .subscribe();
   }
 
   getUserInfos() {
@@ -145,6 +161,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.getSargalPoints();
     this.getUserActiveBonPlans();
     this.getActivePromoBooster();
+    this.checkOMNumber();
     this.banniereServ.setListBanniereByFormule();
     this.banniereServ
       .getStatusLoadingBanniere()
@@ -248,7 +265,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       },
       () => {
         this.sargalDataLoaded = true;
-        this.sargalUnavailable = true;
+        if (!this.userSargalData) {
+          this.sargalUnavailable = true;
+        }
       }
     );
   }
@@ -553,5 +572,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       .subscribe((res: OfferPlanActive) => {
         this.hasPromoPlanActive = res;
       });
+  }
+
+  onOffreClicked(){
+    this.navCtrl.navigateForward(OffresServicesPage.ROUTE_PATH);
   }
 }

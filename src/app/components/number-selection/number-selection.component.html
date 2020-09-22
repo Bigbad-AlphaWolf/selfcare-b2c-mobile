@@ -46,6 +46,12 @@
   >
     Le numéro de votre destinataire ne peut pas recevoir de credit.
   </div>
+  <div
+    *ngIf="eligibilityChecked && !isRecipientEligible"
+    class="error-msg scb-text-red-error"
+  >
+    {{ eligibilityError }}
+  </div>
   <div class="recents" *ngIf="recentsRecipients$ | async as recents">
     <div class="recent-description scb-text-full-black" *ngIf="recents.length">
       Récents
@@ -57,11 +63,13 @@
       *ngFor="let recent of recents"
     >
       <div class="logo scb-text-white">
-        {{ 'C' }}
+        {{ recent.name ? (recent.name | acronym) : 'C' }}
       </div>
       <div class="labels">
-        <span class="name"> {{ recent.msisdn | phoneNumberDisplay }}</span>
-        <!-- <span class="number scb-text-gray">{{ recent.msisdn }}</span> -->
+        <span class="name" *ngIf="recent.name">{{ recent.name }}</span>
+        <span class="number scb-text-gray">{{
+          recent.msisdn | phoneNumberDisplay
+        }}</span>
       </div>
     </div>
   </div>

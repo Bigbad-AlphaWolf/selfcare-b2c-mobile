@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="dashboard-block-conso-btns">
-        <ion-slides [options]="slideOpts">
+        <ion-slides [options]="slideOpts" id="slides">
           <ng-container *ngIf="isHyBride">
             <ion-slide>
               <div
@@ -64,7 +64,7 @@
               </div>
             </div>
           </ion-slide>
-          <ion-slide>
+          <ion-slide id="omCard">
             <app-om-button></app-om-button>
           </ion-slide>
           <ion-slide *ngIf="currentProfil && !isHyBride">
@@ -106,9 +106,7 @@
                       class="show-solde-info-text"
                       >M'inscrire</span
                     >
-                    <span
-                      *ngIf="sargalUnavailable"
-                      class="show-solde-info-text"
+                    <span *ngIf="sargalUnavailable" class="show-solde-info-text"
                       >Service indisponible</span
                     >
                   </div>
@@ -232,7 +230,10 @@
       </div>
     </div>
     <div class="dashboard-block-offres">
-      <div class="title">Je souhaite</div>
+      <div class="top">
+        <div class="title">Je souhaite</div>
+        <div class="more" (click)="onOffreClicked()" *ngIf="0">Voir plus</div>
+      </div>
       <div class="dashboard-block-offres-top3">
         <div (click)="goToBuyPage()" class="dashboard-block-offres-top3-item">
           <div
@@ -331,6 +332,7 @@
             >
           </div>
         </div>
+
         <div
           [ngClass]="{ 'disabled-block': !canDoSOS }"
           (click)="goToSOSPage()"
@@ -343,6 +345,23 @@
             <span class="sos text"
               >Demander <br />
               <span class="text-style-1 scb-text-item-offre-black">un SOS</span>
+            </span>
+          </div>
+        </div>
+        <div
+          *ngIf="0"
+          (click)="onOffreClicked()"
+          class="dashboard-block-offres-top3-item"
+        >
+          <div class="item-icon">
+            <img src="/assets/images/ic-more-dots@2x.png" alt="group-55" />
+          </div>
+          <div class="item-text scb-text-black">
+            <span class="sos text"
+              >Autres <br />
+              <span class="text-style-1 scb-text-item-offre-black"
+                >Services</span
+              >
             </span>
           </div>
         </div>

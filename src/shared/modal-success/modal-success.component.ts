@@ -21,7 +21,7 @@ export class ModalSuccessComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
+    this.currentNumber = this.dashboardService.getCurrentPhoneNumber();    
   }
 
   closeDialog() {
