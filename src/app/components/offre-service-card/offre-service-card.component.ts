@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { OffreService } from 'src/app/models/offre-service.model';
-import { FILE_PATH } from 'src/app/services/utils/services.endpoints';
+import { FILE_DOWNBLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -10,15 +10,22 @@ import { FILE_PATH } from 'src/app/services/utils/services.endpoints';
 })
 export class OffreServiceCardComponent implements OnInit {
   @Input('service') service: OffreService;
-  FILE_BASE_URL: string = FILE_PATH;
+  FILE_BASE_URL: string = FILE_DOWNBLOAD_ENDPOINT;
   constructor(private navCtrl: NavController) {}
+  imageUrl : string;
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.imageUrl = this.FILE_BASE_URL+'/'+this.service.icone;
+  }
 
   onClick() {
     if (!this.service.redirectionPath) return;
     this.navCtrl.navigateForward(this.service.redirectionPath, {
       state: { purchaseType: this.service.redirectionType },
     });
+  }
+
+  onErrorImg(){
+    this.imageUrl = 'assets/images/ic-package-services@2x.png';
   }
 }

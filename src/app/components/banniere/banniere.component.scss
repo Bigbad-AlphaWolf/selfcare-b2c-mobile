@@ -12,8 +12,17 @@
     z-index: 33;
     display: flex;
     background-color: #ff790005;
-    img{
-      border-radius: 15px;
+    img-loader{
+        border-radius: 15px;
+        width: 315px;
+        height: 115px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        ion-spinner{
+            height: 20%;
+            width: 20%;
+        }
     }
   }
   .banner-overlay {

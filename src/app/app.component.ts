@@ -14,6 +14,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { TransfertHubServicesPage } from './transfert-hub-services/transfert-hub-services.page';
 import { ApplicationRoutingService } from './services/application-routing/application-routing.service';
 import { checkUrlMatch } from './utils/utils';
+import { ImageLoaderConfigService } from 'ionic-image-loader';
+import { HttpHeaders } from '@angular/common/http';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -34,8 +36,24 @@ export class AppComponent {
     private appMinimize: AppMinimize,
     private router: Router,
     private deeplinks: Deeplinks,
-    private appRout: ApplicationRoutingService
+    private appRout: ApplicationRoutingService,
+    private imageLoaderConfig: ImageLoaderConfigService 
     ) {
+    this.imageLoaderConfig.enableSpinner(false);
+    // this could be useful while trying to debug issues with the component
+this.imageLoaderConfig.enableDebugMode();
+const token = ls.get('token');
+const headers = new HttpHeaders()
+                  // .set("Authorization", `Bearer ${token}`);
+                  // headers.set( 'Access-Control-Allow-Origin','*');
+                  // headers.set('Access-Control-Allow-Methods','GET, POST, PATCH, PUT, DELETE, OPTIONS')
+                  // headers.set('Access-Control-Allow-Headers','Origin, Content-Type, X-Auth-Token, Accept')
+                  // headers.set('Accept','image/avif,image/webp,image/apng,image/*,*/*;q=0.8')
+                  // headers.set('sec-fetch-mode','no-cors')
+                  // headers.set(':authority','orangeetmoi.orange.sn')
+
+                  this.imageLoaderConfig.setHttpHeaders(headers);
+
     this.initializeApp();
   }
 

@@ -82,6 +82,7 @@ import { IbouIonFabComponent } from './ibou-ion-fab/ibou-ion-fab.component';
 import { RequestCardComponent } from 'src/app/components/request-card/request-card.component';
 import { BanniereComponent } from 'src/app/components/banniere/banniere.component';
 import { OffreServiceCardComponent } from 'src/app/components/offre-service-card/offre-service-card.component';
+import { IonicImageLoader } from 'ionic-image-loader';
 
 @NgModule({
   declarations: [
@@ -147,6 +148,7 @@ import { OffreServiceCardComponent } from 'src/app/components/offre-service-card
   ],
   imports: [
     CommonModule,
+    IonicImageLoader,
     MatProgressSpinnerModule,
     MatBottomSheetModule,
     MatButtonModule,

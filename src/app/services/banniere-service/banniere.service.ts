@@ -40,6 +40,7 @@ export class BanniereService {
   }
 
   queryListBanniereByFormule(codeFormule: string, zone_affichage:string='dashboard') {
+    // if(zone_affichage !== 'dashboard')
     // return of(DATA_BANNIERES);
     return this.http.get(`${endpointBanniere}/${codeFormule}?zone=${zone_affichage}`);
   }

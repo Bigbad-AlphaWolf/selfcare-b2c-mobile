@@ -26,6 +26,11 @@
       .tab{
         display: flex;
         flex-direction: column;
+        position: sticky;
+        top: 0px;
+        z-index: 999;
+        opacity: 1;
+        background-color: white;
         .tab-header {
           width: 100%;
           height: 50px;
@@ -65,14 +70,13 @@
             background-color: #f3f3f8;
             border: solid 1px #000000;
             border-radius: 20px;
-            padding: 10px 20px;
+            padding: 10px 20px 5px;
             margin: 5px;
             .name{
               width: fit-content;
               white-space: nowrap;
             }
             &.selected {
-              color: $orange;
               border: solid 1px $orange;
               span {
                 color: $orange;

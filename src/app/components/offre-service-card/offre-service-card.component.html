@@ -1,5 +1,5 @@
 <div class="service" (click)="onClick()">
-  <img class="icone" [src]="FILE_BASE_URL+'/'+service.icone" />
+  <img-loader [spinner]="true" class="icone" [src]="imageUrl" fallbackUrl="assets/images/ic-package-services@2x.png" useImg></img-loader>
   <div class="content">
     <div class="name">{{service.title}}</div>
     <div class="short-description">{{service.shortDescription}}</div>
