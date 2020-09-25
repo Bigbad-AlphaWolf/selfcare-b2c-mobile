@@ -1,8 +1,19 @@
 export interface OffreService {
-  title?: string;
+  code?: number;
+  titre?: string;
   shortDescription?: string;
+  duree?: string;
+  activated?: boolean;
+  fullDescription?: string;
+  tariff?: number;
+  profilAbonnes?: any;
+  formuleAbonnes?: any;
+  description?: string;
   icone?: string;
-  redirectionPath?: string;
+  ordre?: number;
+  libelle?: string;
+  categorieOffreServices?: any;
   redirectionType?: string;
-  subcategories ?: any;
+  redirectionPath?: string;
+  reasonDeactivation?: string;
 }

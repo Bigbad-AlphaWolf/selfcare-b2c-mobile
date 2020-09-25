@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { DATA_OFFRES_SERVICES } from 'src/app/utils/data';
+import { OFFRE_SERVICES_ENDPOINT } from '../utils/services.endpoints';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +14,13 @@ export class OperationService {
   
   constructor(private http: HttpClient) { }
 
-  initData() {
+  initServicesData() {
     this.offresServices = DATA_OFFRES_SERVICES;
-    return of(DATA_OFFRES_SERVICES);
-    this.http.get('');
+    // return of(DATA_OFFRES_SERVICES);
+    return this.http.get(OFFRE_SERVICES_ENDPOINT).pipe(
+      map((r: any)=>{
+        this.offresServices = r;
+      })
+    );
   }
 }

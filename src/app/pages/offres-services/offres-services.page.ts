@@ -44,7 +44,7 @@ export class OffresServicesPage implements OnInit {
   }
 
   initData(){
-    this.opService.initData();
+    this.opService.initServicesData().subscribe();
   }
 
   changeTabHeader(tabIndex: number) {
@@ -60,6 +60,7 @@ export class OffresServicesPage implements OnInit {
   slideChanged() {
     this.sliders.getActiveIndex().then((index) => {
       this.activeTabIndex = index;
+      this.activeSubIndex = 0;
     });
   }
 

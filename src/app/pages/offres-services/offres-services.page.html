@@ -29,18 +29,18 @@
               class="tab-header-item"
               [ngClass]="{  'selected' : i === activeTabIndex } "
             >
-              <span class="scb-text-light-black"> {{ category.name }}</span>
+              <span class="scb-text-light-black"> {{ category.libelle }}</span>
             </div>
           </div>
           <div class="sub-category" >
             <div class="scroll" scrollX="true">
               <div
-              *ngFor="let subCategory of opService.offresServices[activeTabIndex].subcategories ; index as i"
+              *ngFor="let subCategory of opService.offresServices[activeTabIndex].categorieOffreServices ; index as i"
               (click)="onChangeSubCat(i)"
               class="sub-cat-item"
               [ngClass]="{  'selected' : i === activeSubIndex } "
             >
-              <span class="name"> {{ subCategory.name }}</span>
+              <span class="name"> {{ subCategory.libelle }}</span>
             </div>
             </div>
           </div>
@@ -54,8 +54,7 @@
           >
             <ion-slide *ngFor="let category of opService.offresServices; index as i">
               <div class="list-operations">
-                <oem-offre-service-card *ngFor="let operation of category.subcategories[activeSubIndex].services; index as i" [service]="operation">
-                  {{operation.title}}
+                <oem-offre-service-card *ngFor="let operation of category.categorieOffreServices[activeSubIndex].offreServices; index as i" [service]="operation">
                 </oem-offre-service-card>
               </div>
             </ion-slide>
