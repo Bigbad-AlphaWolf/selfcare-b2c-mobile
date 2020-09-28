@@ -102,7 +102,7 @@
                       <span class="text-style-1"> Pts </span></span
                     >
                     <span
-                      *ngIf="userSargalData?.status === getSargalStatusNotSubscribed() || userSargalData?.status === getSargalStatusUnsubscriptionOnGoing()"
+                      *ngIf="isNotSubscribedToSargal(userSargalData?.status)"
                       class="show-solde-info-text"
                       >M'inscrire</span
                     >
@@ -316,7 +316,7 @@
           </div>
         </div>
         <div
-          *ngIf="!isHyBride && userSargalData?.status !== getSargalStatusUnsubscriptionOnGoing()"
+          *ngIf="!isHyBride && !isNotSubscribedToSargal(userSargalData?.status)"
           (click)="makeSargalAction()"
           class="dashboard-block-offres-top3-item"
         >

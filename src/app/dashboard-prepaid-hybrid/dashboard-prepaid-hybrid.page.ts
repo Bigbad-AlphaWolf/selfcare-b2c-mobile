@@ -19,6 +19,7 @@ import {
   getBanniereTitle,
   getBanniereDescription,
   OPERATION_TYPE_MERCHANT_PAYMENT,
+  SARGAL_NOT_SUBSCRIBED_STATUS,
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -576,5 +577,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
 
   onOffreClicked(){
     this.navCtrl.navigateForward(OffresServicesPage.ROUTE_PATH);
+  }
+
+  isNotSubscribedToSargal(status: string){
+    return SARGAL_NOT_SUBSCRIBED_STATUS.includes(status);
   }
 }
