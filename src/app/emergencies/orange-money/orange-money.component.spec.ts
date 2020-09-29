@@ -7,7 +7,6 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
-import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 
@@ -24,7 +23,6 @@ describe('OrangeMoneyComponent', () => {
         { provide: MatDialogRef, useValue: {} },
         { provide: MatDialog, useValue: {} },
         { provide: ActivatedRoute, useValue: {} },
-        { provide: FileTransfer, useValue: {} },
         { provide: File, useValue: {} },
         { provide: FileOpener, useValue: {} },
         {

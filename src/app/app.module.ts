@@ -18,10 +18,6 @@ import { ChangeAvatarPopupComponent } from './my-account/change-avatar-popup/cha
 import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
 import { SharedModule } from 'src/shared/shared.module';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
-import {
-  FileTransfer,
-  FileTransferObject,
-} from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
@@ -71,8 +67,6 @@ registerLocaleData(localeFr);
       multi: true,
     },
     HTTP,
-    FileTransfer,
-    FileTransferObject,
     File,
     FileOpener,
     AppMinimize,
