@@ -1,0 +1,63 @@
+@import 'src/app/app';
+
+.dalal-success {
+  padding: 50px 23px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  .image-container {
+    width: 99px;
+    height: auto;
+    margin-bottom: 30px;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+  .title {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 34px;
+    margin-bottom: 20px;
+  }
+  .subtitle {
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 16px;
+    margin-bottom: 30px;
+  }
+  .dalal-infos {
+    border: solid 2px rgba(238, 238, 238, 0.5);
+    border-radius: 10px;
+    background-color: $silver;
+    display: flex;
+    padding: 15px;
+    margin-bottom: 30px;
+    width: 100%;
+    .artiste-img-container {
+      width: 50px;
+      height: 50px;
+      img {
+        width: 50px;
+        height: 50px;
+      }
+    }
+    .infos-text {
+      margin-left: 10px;
+      display: flex;
+      flex-direction: column;
+      .titre {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        line-height: 1.38;
+        margin-bottom: 5px;
+      }
+      .artiste-name {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 14px;
+      }
+    }
+  }
+  button {
+    border-radius: 10px;
+  }
+}

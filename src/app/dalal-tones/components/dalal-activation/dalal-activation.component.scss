@@ -1,0 +1,110 @@
+@import 'src/app/app';
+
+.dalal-activation-page {
+  padding: 30px 38px;
+  .title {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 24px;
+    line-height: 1.17;
+  }
+  .dalal-infos {
+    border: solid 2px rgba(238, 238, 238, 0.5);
+    border-radius: 10px;
+    background-color: $silver;
+    display: flex;
+    padding: 15px;
+    margin-top: 23px;
+    .artiste-img-container {
+      width: 50px;
+      height: 50px;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-right: 10px;
+      img {
+        width: 50px;
+        height: 50px;
+      }
+    }
+    .infos-text {
+      display: flex;
+      flex-direction: column;
+      .titre {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        line-height: 1.38;
+        margin-bottom: 5px;
+      }
+      .artiste-name {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 14px;
+      }
+    }
+  }
+  .dalal-tarification {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 2px dashed $grayDisable;
+    margin-bottom: 22px;
+    .period {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 16px;
+    }
+    .price {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 30px;
+    }
+  }
+  .form {
+    width: 100%;
+    .item {
+      &-selected {
+        border: solid 2px $orange;
+      }
+      width: 100%;
+      height: 50px;
+      font-size: 18px;
+      font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      display: flex;
+      align-items: center;
+      border: solid 2px $grayDashboard;
+      border-radius: 10px;
+      margin: 0 auto 10px;
+      padding-left: 10px;
+      display: flex;
+      justify-content: space-between;
+      ::ng-deep
+        .mat-radio-button.mat-accent.mat-radio-checked
+        .mat-radio-outer-circle {
+        border-color: $orange;
+      }
+      ::ng-deep .mat-radio-button.mat-accent .mat-radio-inner-circle {
+        background-color: $orange;
+      }
+      input {
+        margin-right: 20px;
+      }
+    }
+    .error-message {
+      width: 100%;
+      margin: 15px 0;
+    }
+    .btn-container {
+      margin-top: 18px;
+      width: 100%;
+      button {
+        border-radius: 4px;
+        position: relative;
+        mat-spinner {
+          position: absolute;
+          top: 15px;
+          right: 10px;
+        }
+        .mat-spinner::ng-deep circle {
+          stroke: $white;
+        }
+      }
+    }
+  }
+}

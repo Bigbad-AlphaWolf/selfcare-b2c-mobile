@@ -206,6 +206,7 @@ const routes: Routes = [
   { path: 'request-status', loadChildren: './pages/request-status/request-status.module#RequestStatusPageModule' },
   { path: 'list-pass-voyage', loadChildren: './pages/list-pass-voyage/list-pass-voyage.module#ListPassVoyagePageModule' },  { path: 'offres-services', loadChildren: './pages/offres-services/offres-services.module#OffresServicesPageModule' },
   { path: 'banniere-description', loadChildren: './pages/banniere-description/banniere-description.module#BanniereDescriptionPageModule' },
+  { path: 'dalal-tones', loadChildren: './dalal-tones/dalal-tones.module#DalalTonesPageModule' },
 
 
   

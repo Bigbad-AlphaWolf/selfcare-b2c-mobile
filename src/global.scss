@@ -657,7 +657,7 @@ button {
 .mat-button-toggle-standalone.mat-button-toggle-appearance-standard {
   border-radius: none;
 }
-.fieldArea .mat-form-field-appearance-outline .mat-form-field-outline{
+.fieldArea .mat-form-field-appearance-outline .mat-form-field-outline {
   background-color: white;
 }
 // .mat-button-toggle-checked {
@@ -742,4 +742,22 @@ button {
   display: flex;
   justify-content: center;
   padding: 10px 0px;
+}
+
+.dalal-success-modal {
+  // align-items: flex-end !important;
+  --height: auto;
+  .modal-wrapper {
+    width: percentage(345/375) !important;
+    max-width: 345px;
+    border-radius: 10px !important;
+    min-height: 345px;
+    .ion-page {
+      position: relative;
+      contain: content;
+      .modal-content {
+        overflow: auto;
+      }
+    }
+  }
 }

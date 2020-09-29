@@ -1,0 +1,21 @@
+<div class="dalal-success">
+  <div class="image-container">
+    <img src="/assets/images/green-checbox.png" alt="checkbox" />
+  </div>
+  <div class="title">Bravo</div>
+  <div class="subtitle scb-text-gray">Vous venez d’activer le dalal</div>
+  <div class="dalal-infos">
+    <div class="artiste-img-container">
+      <img src="" alt="art" />
+    </div>
+    <div class="infos-text">
+      <span class="titre scb-text-orange">{{ choosenDalal?.titre }}</span>
+      <span class="artiste-name scb-text-dark-grey">{{
+        choosenDalal?.artiste?.nom
+      }}</span>
+    </div>
+  </div>
+  <button class="scb-btn scb-btn-orange scb-btn-full" (click)="close()">
+    <span>Fermer</span>
+  </button>
+</div>

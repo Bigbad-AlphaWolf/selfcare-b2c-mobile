@@ -1,0 +1,113 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="(0)" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">Dalal Tones</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="body-dalal-list">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">Dalal Tones</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="dalal-tones-page-body">
+    <div class="banniere-container">
+      <img src="/assets/images/mon-statut.png" alt="header-dalal" />
+    </div>
+    <div class="description">
+      <div class="text scb-text-gray">
+        Avec <span class="scb-text-full-black">Dalal tones</span>, personnalisez
+        votre sonnerie d’attente et donnez de la joie à ceux qui vous appellent
+      </div>
+      <div class="tarification">
+        <div class="tarifs-infos">
+          <span class="tarif scb-text-orange">350 FCFA</span>
+          <span class="period scb-text-gray"> / semaine</span>
+        </div>
+        <button class="scb-text-full-black" *ngIf="0">Voir détails</button>
+      </div>
+    </div>
+    <div class="filters-block">
+      <ion-list>
+        <ion-item
+          *ngFor="let genre of genres$ | async; let i = index;"
+          mode="ios"
+          lines="none"
+          [ngClass]="{'selected': checkCategorySelected(genre)}"
+        >
+          <!-- <ion-label *ngIf="!checkCategorySelected(genre)">{{genre?.nom}}</ion-label> -->
+          <ion-label>{{genre?.nom}}</ion-label>
+          <ion-select
+            mode="ios"
+            interface="popover"
+            noIonSelectArrow
+            (ionChange)="selectGenre(genre, $event.detail.value)"
+          >
+            <ion-select-option
+              *ngFor="let sousGenre of genre?.sousGenres"
+              [value]="sousGenre.code"
+              >{{sousGenre?.nom}}</ion-select-option
+            >
+          </ion-select>
+          <ion-icon ios="md-arrow-dropdown" md="md-arrow-dropdown"></ion-icon>
+        </ion-item>
+      </ion-list>
+    </div>
+    <div class="dalal-tones-block">
+      <div *ngIf="loadingDalal" class="loading-dalal-spinner">
+        <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+      </div>
+      <ion-list *ngIf="!loadingDalal && dalalTones && dalalTones.length">
+        <ion-item
+          *ngFor="let dalal of dalalTones"
+          lines="none"
+          class="ion-no-padding"
+          (click)="openDalalActivationModal(dalal)"
+        >
+          <div class="item">
+            <div class="artiste-img-container" *ngIf="dalal?.artiste?.image">
+              <img
+                [src]="downloadAvatarEndpoint + dalal?.artiste?.image"
+                alt="art"
+              />
+            </div>
+            <div class="infos-text">
+              <div class="titre scb-text-orange">{{dalal?.titre}}</div>
+              <div class="artiste scb-text-dark-grey">
+                {{dalal?.artiste?.nom}}
+              </div>
+            </div>
+          </div>
+        </ion-item>
+      </ion-list>
+      <div
+        class="empty-array-message"
+        *ngIf="!loadingDalal && dalalTones && !dalalTones.length && !loadingError"
+      >
+        Il n y a pas de Dalal Tone correspondant à ce(s) filtre(s)
+      </div>
+      <div
+        class="error-block scb-text-red-error"
+        *ngIf="loadingError"
+        (click)="reloadDalalTones()"
+      >
+        N'a pas pu recupérer les Dalal. Cliquez pour réactualiser
+      </div>
+      <ion-infinite-scroll
+        (ionInfinite)="doInfinite($event)"
+        [disabled]="infiniteScrollDisabled"
+      >
+        <ion-infinite-scroll-content
+          loadingSpinner="bubbles"
+          loadingText="Chargement en cours..."
+        >
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </div>
+  </div>
+</ion-content>
