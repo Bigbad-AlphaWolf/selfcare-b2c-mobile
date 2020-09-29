@@ -171,8 +171,8 @@ export class TransfertHubServicesPage implements OnInit {
     }
   }
 
-  goToDashboard() {
-    this.navController.navigateBack('/dashboard');
+  goBack() {
+    this.navController.pop();
   }
 
   goTo(opt: {

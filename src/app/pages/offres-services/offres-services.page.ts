@@ -5,13 +5,15 @@ import { Observable } from 'rxjs';
 import { ZoneBanniere } from 'src/app/models/enums/zone-banniere.enum';
 import { IonSlides, NavController } from '@ionic/angular';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
+import { BaseComponent } from 'src/app/base.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-offres-services',
   templateUrl: './offres-services.page.html',
   styleUrls: ['./offres-services.page.scss'],
 })
-export class OffresServicesPage implements OnInit {
+export class OffresServicesPage extends BaseComponent implements OnInit {
   static ROUTE_PATH: string = '/offres-services';
   bannieres$: Observable<any>;
 
@@ -29,22 +31,28 @@ export class OffresServicesPage implements OnInit {
   tabHeaderItems: any[] = [];
 
   constructor(
-    private banniereService: BanniereService,
+    public banniereService: BanniereService,
     private navCtl: NavController,
     public opService : OperationService
-  ) {}
+  ) {
+    super()
+  }
 
   ngOnInit() {
-    this.bannieres$ = this.banniereService.queryListBanniereByFormule(
+    this.banniereService.queryListBanniereByFormule(
       SessionOem.CODE_FORMULE,
       ZoneBanniere.offre
-    );
+    )
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe();
 
     this.initData();
   }
 
   initData(){
-    this.opService.initServicesData().subscribe();
+    this.opService.initServicesData()
+    .pipe(takeUntil(this.ngUnsubscribe))
+    .subscribe();
   }
 
   changeTabHeader(tabIndex: number) {

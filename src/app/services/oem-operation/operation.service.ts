@@ -15,12 +15,14 @@ export class OperationService {
   constructor(private http: HttpClient) { }
 
   initServicesData() {
-    this.offresServices = DATA_OFFRES_SERVICES;
-    // return of(DATA_OFFRES_SERVICES);
     return this.http.get(OFFRE_SERVICES_ENDPOINT).pipe(
-      map((r: any)=>{
+      map((r: any[])=>{
         this.offresServices = r;
       })
     );
+  }
+
+  sortByOrdre(arr:any[]){
+    return arr.sort((r1, r2) =>r1.ordre - r2.ordre);
   }
 }

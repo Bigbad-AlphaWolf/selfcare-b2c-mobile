@@ -1,8 +1,14 @@
-<div class="service" (click)="onClick()">
-  <img-loader [spinner]="true" class="icone" [src]="imageUrl" fallbackUrl="assets/images/ic-package-services@2x.png" useImg></img-loader>
-  <div class="content">
-    <div class="name">{{service.titre}}</div>
-    <div class="short-description">{{service.shortDescription}}</div>
+<div class="service" (click)="onClick()"matRipple>
+  <div class="active-infos" >
+    <img-loader [spinner]="true" class="icone" [src]="imageUrl" fallbackUrl="assets/images/ic-package-services@2x.png" useImg></img-loader>
+    <div class="content">
+      <div class="name">{{service.titre}}</div>
+      <div class="short-description">{{service.shortDescription}}</div>
+    </div>
+    <img class="arrow" src="assets/images/long-arrow-right-orange.png"/>
   </div>
-  <img class="arrow" src="assets/images/long-arrow-right-orange.png"/>
+  <div class="inactive-infos" *ngIf="service.clicked && !service.activated" [@fadeAnimation]="'in'">
+    <div class="trait"></div>
+    {{service.reasonDeactivation ? service.reasonDeactivation : 'Service indisponible!'}}
+  </div>
 </div>

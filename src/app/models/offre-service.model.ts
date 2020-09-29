@@ -16,4 +16,5 @@ export interface OffreService {
   redirectionType?: string;
   redirectionPath?: string;
   reasonDeactivation?: string;
+  clicked?:boolean;
 }

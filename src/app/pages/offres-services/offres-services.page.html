@@ -11,7 +11,7 @@
 
 <ion-content  no-bounce has-bouncing="false" forceOverscroll="false" [scrollEvents]="true">
   <div class="oem-services-page">
-    <div class="banierres" *ngIf="(bannieres$ | async) as bannieres">
+    <div class="banierres" *ngIf="banniereService.bannieres as bannieres">
       <div class="scroll" scrollX="true">
         <oem-banniere *ngFor="let banniere of bannieres" [banniere]="banniere" clas="scroll-item"></oem-banniere>
       </div>
@@ -27,23 +27,26 @@
               *ngFor="let category of opService.offresServices ; index as i"
               (click)="changeTabHeader(i)"
               class="tab-header-item"
-              [ngClass]="{  'selected' : i === activeTabIndex } "
+              [ngClass]="{  'selected' : i === activeTabIndex }"
             >
               <span class="scb-text-light-black"> {{ category.libelle }}</span>
             </div>
           </div>
-          <div class="sub-category" >
-            <div class="scroll" scrollX="true">
-              <div
-              *ngFor="let subCategory of opService.offresServices[activeTabIndex].categorieOffreServices ; index as i"
-              (click)="onChangeSubCat(i)"
-              class="sub-cat-item"
-              [ngClass]="{  'selected' : i === activeSubIndex } "
-            >
-              <span class="name"> {{ subCategory.libelle }}</span>
+          <ng-container *ngIf="opService.offresServices[activeTabIndex].categorieOffreServices as subCats">
+
+            <div class="sub-category"  *ngIf="subCats.length">
+              <div class="scroll" scrollX="true">
+                <div
+                *ngFor="let subCategory of subCats ; index as i"
+                (click)="onChangeSubCat(i)"
+                class="sub-cat-item"
+                [ngClass]="{  'selected' : i === activeSubIndex } "
+              >
+                <span class="name"> {{ subCategory.libelle }}</span>
+              </div>
+              </div>
             </div>
-            </div>
-          </div>
+          </ng-container>
       
         </div>
         <div class="main-content" >
@@ -53,10 +56,12 @@
             [options]="slideOpts"
           >
             <ion-slide *ngFor="let category of opService.offresServices; index as i">
-              <div class="list-operations">
-                <oem-offre-service-card *ngFor="let operation of category.categorieOffreServices[activeSubIndex].offreServices; index as i" [service]="operation">
-                </oem-offre-service-card>
-              </div>
+              <ng-container *ngIf="category.categorieOffreServices.length">
+                <div class="list-operations" *ngIf="opService.offresServices[activeTabIndex].categorieOffreServices[activeSubIndex].offreServices as offreServices">
+                  <oem-offre-service-card *ngFor="let operation of offreServices; index as i" [service]="operation">
+                  </oem-offre-service-card>
+                </div>
+              </ng-container>
             </ion-slide>
           </ion-slides>
         </div>

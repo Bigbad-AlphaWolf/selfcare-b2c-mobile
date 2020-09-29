@@ -7,6 +7,8 @@ import { BannierePubModel } from '../dashboard-service';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { SubscriptionModel } from 'src/app/dashboard';
 import { DATA_BANNIERES, DATA_OFFRES_SERVICES } from 'src/app/utils/data';
+import { tap } from 'rxjs/operators';
+import { ZoneBanniere } from 'src/app/models/enums/zone-banniere.enum';
 
 const { SERVER_API_URL, CONSO_SERVICE } = environment;
 
@@ -19,6 +21,8 @@ export class BanniereService {
   private listBanniereUserFormule: BannierePubModel[] = [];
   private isLoadedSubject: Subject<any> = new Subject<any>();
   displays : string[] = [];
+
+  bannieres : any[];
 
   constructor(private http: HttpClient, private dashb: DashboardService, private authServ: AuthenticationService) {}
 
@@ -39,10 +43,13 @@ export class BanniereService {
     });
   }
 
-  queryListBanniereByFormule(codeFormule: string, zone_affichage:string='dashboard') {
-    // if(zone_affichage !== 'dashboard')
-    // return of(DATA_BANNIERES);
-    return this.http.get(`${endpointBanniere}/${codeFormule}?zone=${zone_affichage}`);
+  queryListBanniereByFormule(codeFormule: string, zone_affichage:ZoneBanniere = ZoneBanniere.dashboard) {
+    return this.http.get(`${endpointBanniere}/${codeFormule}?zone=${zone_affichage}`).pipe(
+      tap((r:any[])=>{
+        if(zone_affichage === ZoneBanniere.offre)
+          this.bannieres = r;
+      })
+    );
   }
 
   getListBanniereByFormule() {
