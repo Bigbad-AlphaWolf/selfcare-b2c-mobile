@@ -20,14 +20,12 @@ import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup
 import { environment } from 'src/environments/environment';
 const { SERVER_API_URL } = environment;
 import * as SecureLS from 'secure-ls';
-import {
-  FileTransfer,
-  FileTransferObject,
-} from '@ionic-native/file-transfer/ngx';
+
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { Platform } from '@ionic/angular';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { FileOemService } from 'src/app/services/oem-file/file-oem.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 const logEndpoint = `${SERVER_API_URL}/management/selfcare-logs-file`;
 
@@ -61,10 +59,7 @@ export class OrangeMoneyComponent implements OnInit {
     private route: ActivatedRoute,
     private emerg: EmergencyService,
     private dashb: DashboardService,
-    private transfer: FileTransfer,
-    private file: File,
-    private fileOpener: FileOpener,
-    private platform: Platform,
+    private fileService: FileOemService,
     private followAnalyticsService: FollowAnalyticsService
   ) {}
 
@@ -278,31 +273,7 @@ export class OrangeMoneyComponent implements OnInit {
   }
 
   download(fileName: string) {
-    const fileTransfer: FileTransferObject = this.transfer.create();
-    const url = downloadEndpoint + fileName;
-    const token = ls.get('token');
-    const headers = { Authorization: `Bearer ${token}` };
-    const options = { headers };
-    let path = this.file.dataDirectory;
-    if (this.platform.is('ios')) {
-      path = this.file.documentsDirectory;
-    }
-    fileTransfer.download(url, path + fileName, true, options).then(
-      (entry) => {
-        const fileurl = entry.toURL();
-        this.fileOpener
-          .open(fileurl, 'application/pdf')
-          .then(() => {
-            // log file opened successfully
-          })
-          .catch((e) => {
-            // log file opened successfully console.log('Error opening file', e)
-          });
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+    this.fileService.openSecureFile(fileName);
   }
 
   sendMail() {

@@ -8,10 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { BillsPage } from './bills.page';
 import { SharedModule } from 'src/shared/shared.module';
 import { BillsDetailsMobileComponent } from './bills-details-mobile/bills-details-mobile.component';
-import {
-  FileTransfer,
-  FileTransferObject
-} from '@ionic-native/file-transfer/ngx';
+
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 const routes: Routes = [
@@ -29,8 +26,6 @@ const routes: Routes = [
     RouterModule.forChild(routes),
   ],
   providers: [
-    FileTransfer,
-    FileTransferObject,
     File,
     FileOpener
   ],
