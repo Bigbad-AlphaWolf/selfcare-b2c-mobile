@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { BILLS_COMPANIES_DATA } from "src/app/utils/bills.util";
+import { BILLS_COMPANIES_DATA, WOYOFAL } from "src/app/utils/bills.util";
 import { BillCompany } from "src/app/models/bill-company.model";
 import { CounterSelectionComponent } from "src/app/components/counter/counter-selection/counter-selection.component";
 import { NavController } from "@ionic/angular";
@@ -31,7 +31,7 @@ export class BillsHubPage implements OnInit {
 
   onCompanySelected(billCompany: BillCompany) {
     this.bsService.opXtras.billData = { company: billCompany };
-    if (billCompany.code === "WOYOFAL")
+    if (billCompany.code === WOYOFAL)
       //this will change
       this.bsService.openModal(CounterSelectionComponent);
   }
