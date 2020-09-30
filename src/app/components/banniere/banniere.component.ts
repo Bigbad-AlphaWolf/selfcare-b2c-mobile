@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
-import { FILE_PATH } from 'src/app/services/utils/services.endpoints';
+import { FILE_PATH } from 'src/app/services/utils/services.paths';
 import { NavController } from '@ionic/angular';
 import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
+import { FILE_DOWNBLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
 
 @Component({
   selector: 'oem-banniere',
@@ -11,12 +12,16 @@ import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/bann
 })
 export class BanniereComponent implements OnInit {
   @Input('banniere') banniere : BannierePubModel;
-  FILE_BASE_URL : string = FILE_PATH;
+  imageUrl : string;
   displays : string[] = [];
   constructor(private navCtrl : NavController) { }
 
   ngOnInit() {
-    this.displays = this.banniere.description.split(';');
+    if(this.banniere.description){
+      this.displays = this.banniere.description.split(';');
+    }
+    
+    this.imageUrl = FILE_DOWNBLOAD_ENDPOINT+'/'+this.banniere.image;
   }
 
   get title(){
@@ -38,6 +43,10 @@ export class BanniereComponent implements OnInit {
 
     window.open(this.banniere.action.url);
 
+  }
+
+  onErrorImg(){
+    this.imageUrl = 'assets/images/default_ban.PNG';
   }
 
 }
