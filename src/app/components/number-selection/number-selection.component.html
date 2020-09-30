@@ -3,10 +3,16 @@
   <div class="description">Sélecionnez le bénéficiaire</div>
   <div *ngIf="option === 'WITH_MY_PHONES'" class="number-options">
     <mat-radio-group (change)="onOptionChange($event.value)">
+      <mat-radio-button *ngIf="loadingNumbers" [value]="currentPhone" checked>
+        <div class="destination-number">
+          <span> Mon numéro </span>
+          <span>{{ currentPhone | phoneNumberDisplay }}</span>
+        </div>
+      </mat-radio-button>
       <mat-radio-button
         *ngFor="let number of numbers$ | async; index as i; count as size"
         [value]="number"
-        [checked]="i === 0"
+        [checked]="currentPhone === number && !showInput"
       >
         <div class="destination-number">
           <span> Mon numéro {{ size > 1 ? i + 1 : '' }} </span>

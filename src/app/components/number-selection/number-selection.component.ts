@@ -15,7 +15,7 @@ import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.pa
 import { of, Observable } from 'rxjs';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { catchError, share, tap, map } from 'rxjs/operators';
+import { catchError, share, tap, map, delay } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NumberSelectionOption } from 'src/app/models/enums/number-selection-option.enum';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
@@ -29,7 +29,7 @@ import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
   styleUrls: ['./number-selection.component.scss'],
 })
 export class NumberSelectionComponent implements OnInit {
-  numbers$: Observable<string[]> = of(['782363572', '776148081', '776148080']);
+  numbers$: Observable<string[]> ;
   recentsRecipients$: Observable<any[]>;
 
   numberSelected: string = '';
@@ -49,6 +49,9 @@ export class NumberSelectionComponent implements OnInit {
   isRecipientEligible = true;
   eligibilityError: string;
   @Input() data;
+  loadingNumbers : boolean;
+  currentPhone : string = (SessionOem.PHONE).trim();
+  
 
   constructor(
     private modalController: ModalController,
@@ -64,10 +67,12 @@ export class NumberSelectionComponent implements OnInit {
 
     this.option = this.data.option;
     this.showInput = this.option === NumberSelectionOption.NONE;
+    this.loadingNumbers = true;
+    this.opXtras.recipientMsisdn = this.currentPhone;
     this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
-      tap((numbers) => {
-        if (numbers && numbers.length)
-          this.opXtras.recipientMsisdn = numbers[0];
+      delay(100),
+      tap((numbers) => { 
+        this.loadingNumbers = false;
       }),
       share()
     );
@@ -94,7 +99,8 @@ export class NumberSelectionComponent implements OnInit {
 
   onRecentSelected() {}
 
-  async onContinue(recent?: string) {
+  async onContinue(phone?: string) {
+    if (phone) this.opXtras.recipientMsisdn = phone;
     if (!REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn)) {
       this.phoneIsNotValid = true;
       return;
@@ -103,11 +109,7 @@ export class NumberSelectionComponent implements OnInit {
     this.opXtras.destinataire = this.opXtras.recipientMsisdn = formatPhoneNumber(
       this.opXtras.recipientMsisdn
     );
-    if (recent) {
-      this.opXtras.destinataire = this.opXtras.recipientMsisdn = formatPhoneNumber(
-        recent
-      );
-    }
+
     this.opXtras.forSelf = !this.showInput;
 
     if (!(await this.canRecieveCredit())) {

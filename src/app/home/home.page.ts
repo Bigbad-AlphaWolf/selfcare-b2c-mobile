@@ -46,7 +46,7 @@ export class HomePage implements OnInit {
   currentIndex;
 
   constructor(
-    private router: Router,
+    private router: Router
   ) {
     if (typeof FollowAnalytics !== 'undefined') {
       FollowAnalytics.logEvent('Home', 'success');

@@ -18,6 +18,7 @@ import { checkUrlMatchOM } from 'src/app/utils/utils';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable()
@@ -60,7 +61,19 @@ export class AuthInterceptorService implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     const that = this;
     const token = ls.get('token');
-    const x_uuid = ls.get('X-UUID');
+    let x_uuid = ls.get('X-UUID');
+
+    if(checkUrlMatchOM(req.url)){
+      if(!x_uuid || x_uuid === ""){
+        const uuidV4 = uuidv4();
+        ls.set('X-UUID',uuidV4);
+        x_uuid = ls.get('X-UUID');
+      }
+
+      req = req.clone({
+        body: {...req.body, uuid: x_uuid }
+      });
+    }
     const lightToken = ls.get('light-token');
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;

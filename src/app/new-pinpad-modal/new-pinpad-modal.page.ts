@@ -21,7 +21,8 @@ import {
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_RECHARGE_CREDIT,
-  OPERATION_TYPE_PASS_VOYAGE,
+  OPERATION_TYPE_PASS_ALLO,
+  OPERATION_TYPE_PASS_VOYAGE
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -371,7 +372,7 @@ export class NewPinpadModalPage implements OnInit {
                       ? this.buyPassPayload.pass.passPromo.price_plan_index_om
                       : this.buyPassPayload.pass.price_plan_index_om,
                     canalPromotion,
-                    amount: this.buyPassPayload.passPromo
+                    amount: this.buyPassPayload.pass.passPromo
                       ? this.buyPassPayload.pass.passPromo.tarif
                       : this.buyPassPayload.pass.tarif,
                   };
@@ -379,6 +380,7 @@ export class NewPinpadModalPage implements OnInit {
                   break;
                 case OPERATION_TYPE_PASS_VOYAGE:
                 case OPERATION_TYPE_PASS_ILLIMIX:
+                case OPERATION_TYPE_PASS_ALLO:
                   const dataIllimixOM = {
                     msisdn2: this.buyPassPayload.destinataire,
                     pin,

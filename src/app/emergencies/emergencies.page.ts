@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { FIND_AGENCE_EXTERNAL_URL } from 'src/shared';
 @Component({
   selector: 'app-emergencies',
   templateUrl: './emergencies.page.html',
@@ -16,7 +18,8 @@ export class EmergenciesPage implements OnInit {
     private router: Router,
     private dashbordServ: DashboardService,
     private authServ: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private inAppBrowser: InAppBrowser
   ) {}
 
   ngOnInit() {
@@ -90,6 +93,15 @@ export class EmergenciesPage implements OnInit {
     this.router.navigate(['follow-up-requests']);
     this.followAnalyticsService.registerEventFollow(
       'Suivi_Reclamation_OM',
+      'event',
+      'clicked'
+    );
+  }
+
+  goFindToAgenceWebSite() {
+    this.inAppBrowser.create(FIND_AGENCE_EXTERNAL_URL, '_self');
+    this.followAnalyticsService.registerEventFollow(
+      'Trouver_agence_orange',
       'event',
       'clicked'
     );

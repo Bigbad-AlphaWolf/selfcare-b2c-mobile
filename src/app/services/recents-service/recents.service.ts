@@ -35,7 +35,7 @@ export class RecentsService {
       switchMap((omPhonenumber) => {
         return this.http
           .get<MarchandOem[]>(
-            `${OM_RECENTS_ENDPOINT}/${omPhonenumber}?service=${service}`
+            `${OM_RECENTS_ENDPOINT}/${omPhonenumber.trim()}?service=${service}`
           )
           .pipe(
             switchMap((response: any) => {

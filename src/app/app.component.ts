@@ -105,12 +105,7 @@ const headers = new HttpHeaders()
           //   }
           // }
         }
-        
-        /*if (this.platform.is('ios')) {
-          if (typeof FollowAnalytics !== 'undefined') {
-            FollowAnalytics.registerForPush();
-          }
-        }*/
+       
       }
       if(this.statusBar){
         this.statusBar.overlaysWebView(false);
