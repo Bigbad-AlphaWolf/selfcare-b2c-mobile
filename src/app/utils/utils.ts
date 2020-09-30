@@ -8,18 +8,27 @@ export function removeObjectField(obj: any, f: string) {
   return rest;
 }
 
-export function previousMonths(n: number = 6) {
+export function previousMonths(moisDispo : string, n: number = 6) {
   let date = new Date();
+  date.setMonth( date.getMonth() -1);
+  if(moisDispo){
+    let moisItems : string[] = moisDispo.split('-');
+    date = new Date( parseInt(moisItems[0]), parseInt(moisItems[1])-1, 1);
+  }
   let r: MonthOem[] = [];
   for (let i = 0; i < n; i++) {
-    date.setMonth(date.getMonth() - 1);
-    let m = date.getMonth() + 1;
+    let m = date.getMonth();
+    let p = m + 1;
+
     r.push({
-      position: m < 10 ? '0' + m : m + '',
-      code: MONTHS[date.getMonth()].toLowerCase(),
-      name: MONTHS[date.getMonth()],
+      position: p < 10 ? '0' + p : p + '',
+      code: MONTHS[m].toLowerCase(),
+      name: MONTHS[m],
       year: date.getFullYear().toString(),
     });
+
+    date.setMonth(m - 1);
+
   }
   return r;
 }
