@@ -2,18 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { CODE_KIRENE_Formule, FormuleMobileModel, TarifZoningByCountryModel } from 'src/shared';
+import {
+  CODE_KIRENE_Formule,
+  FormuleMobileModel,
+  TarifZoningByCountryModel,
+} from 'src/shared';
 import { FormuleService } from '../services/formule-service/formule.service';
-import { SubscriptionModel, dashboardOpened } from '../dashboard';
+import {
+  SubscriptionModel,
+  dashboardOpened,
+  PROFILE_TYPE_PREPAID,
+} from '../dashboard';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { Platform } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
+import { ChangeOfferPopupComponent } from './change-offer-popup/change-offer-popup.component';
 
 @Component({
   selector: 'app-my-formule',
   templateUrl: './my-formule.page.html',
-  styleUrls: ['./my-formule.page.scss']
+  styleUrls: ['./my-formule.page.scss'],
 })
 export class MyFormulePage implements OnInit {
+  PREPAID_PROFILE = PROFILE_TYPE_PREPAID;
   currentFormule;
   otherFormules;
   error;
@@ -27,67 +37,77 @@ export class MyFormulePage implements OnInit {
   customAlertOptions: any = {
     header: 'Liste de pays',
     subHeader: 'Choisir un pays',
-    translucent: true
+    translucent: true,
   };
 
   images = [
     {
       codeFormule: '9133',
       icon: '/assets/images/4-2-g.png',
-      banner: '/assets/images/background-header-jamono-max.jpg'
+      banner: '/assets/images/background-header-jamono-max.jpg',
     },
     {
       codeFormule: '9131',
       icon: '/assets/images/4-g.png',
-      banner: '/assets/images/background-header-jamono-new-scool.jpg'
+      banner: '/assets/images/background-header-jamono-new-scool.jpg',
     },
     {
       codeFormule: '9132',
       icon: '/assets/images/4-g.png',
-      banner: '/assets/images/background-header-jamono-allo.jpg'
-    }
+      banner: '/assets/images/background-header-jamono-allo.jpg',
+    },
   ];
   scr;
   listTarifsInternationaux: TarifZoningByCountryModel[] = [];
-  tarifsByCountry: {tarifAppel: any, tarifSms: any};
-  isIOS:boolean;
+  tarifsByCountry: { tarifAppel: any; tarifSms: any };
+  isIOS: boolean;
   selectedCountry: any;
+  currentNumberSubscription: SubscriptionModel;
   constructor(
     private router: Router,
     private formuleService: FormuleService,
     private authServ: AuthenticationService,
     private dashbdServ: DashboardService,
     private followAnalyticsService: FollowAnalyticsService,
-    private platform: Platform
+    private platform: Platform,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
-    if(this.platform.is("ios")){
+    if (this.platform.is('ios')) {
       this.isIOS = true;
-    }      
-
+    }
   }
 
-  queryAllTarifs(){
-    this.formuleService.getAllCountriesWithTarifs().subscribe((res: TarifZoningByCountryModel[])=>{
-      this.listTarifsInternationaux = res;
-      if(this.listTarifsInternationaux.length){
-        this.tarifsByCountry = {tarifAppel: this.listTarifsInternationaux[0].zone.tarifFormule ? this.listTarifsInternationaux[0].zone.tarifFormule.tarifAppel : '', tarifSms: this.listTarifsInternationaux[0].zone.tarifFormule ? this.listTarifsInternationaux[0].zone.tarifFormule.tarifSms : ''};
-      }
-    })
+  queryAllTarifs() {
+    this.formuleService
+      .getAllCountriesWithTarifs()
+      .subscribe((res: TarifZoningByCountryModel[]) => {
+        this.listTarifsInternationaux = res;
+        if (this.listTarifsInternationaux.length) {
+          this.tarifsByCountry = {
+            tarifAppel: this.listTarifsInternationaux[0].zone.tarifFormule
+              ? this.listTarifsInternationaux[0].zone.tarifFormule.tarifAppel
+              : '',
+            tarifSms: this.listTarifsInternationaux[0].zone.tarifFormule
+              ? this.listTarifsInternationaux[0].zone.tarifFormule.tarifSms
+              : '',
+          };
+        }
+      });
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
     this.processInfosFormules();
     this.queryAllTarifs();
     // this.authServ.UpdateNotificationInfo();
   }
 
-
   processInfosFormules() {
     this.authServ.getSubscription(this.currentNumber).subscribe(
       (res: SubscriptionModel) => {
+        this.currentNumberSubscription = res;
         this.followAnalyticsService.registerEventFollow(
           'MaFormule_sidemenu',
           'event',
@@ -95,7 +115,7 @@ export class MyFormulePage implements OnInit {
         );
         this.formuleService.getformules(res.profil).subscribe(
           (resp: FormuleMobileModel[]) => {
-            this.formulesArray = resp.filter((val: FormuleMobileModel)=>{
+            this.formulesArray = resp.filter((val: FormuleMobileModel) => {
               return val.type === 'MOBILE';
             });
             if (this.formulesArray.length === 0) {
@@ -112,7 +132,7 @@ export class MyFormulePage implements OnInit {
           }
         );
       },
-      err => {
+      (err) => {
         this.dataLoaded = true;
         this.error = 'erreur lors du chargement';
       }
@@ -143,27 +163,23 @@ export class MyFormulePage implements OnInit {
           }
         } else {
           this.error =
-            'Erreur, Votre formule n\'est peut etre pas encore prise en compte ';
+            "Erreur, Votre formule n'est peut etre pas encore prise en compte ";
         }
         this.dataLoaded = true;
       },
       (err: any) => {
         this.dataLoaded = true;
         this.error =
-          'Erreur, Votre formule n\'est peut etre pas encore prise en compte ';
+          "Erreur, Votre formule n'est peut etre pas encore prise en compte ";
       }
     );
   }
-  getCategoryList(currentFormuleArray, category: string) {
-    return currentFormuleArray.filter(item => {
-      return item.categorie === category;
-    });
-  }
+
   getKireneFormule() {
     return CODE_KIRENE_Formule;
   }
   getImgByFormule(formule: FormuleMobileModel) {
-    const img = this.images.find(image => {
+    const img = this.images.find((image) => {
       return image.codeFormule === formule.code;
     });
     return img && img.icon ? img.icon : '/assets/images/4-2-g.png';
@@ -172,7 +188,7 @@ export class MyFormulePage implements OnInit {
   getBannerByFormule(formule: FormuleMobileModel) {
     let img;
     if (formule && formule.code) {
-      img = this.images.find(element => {
+      img = this.images.find((element) => {
         return element.codeFormule === formule.code;
       });
     }
@@ -186,12 +202,23 @@ export class MyFormulePage implements OnInit {
     this.step = 'DETAILS_FORMULE';
   }
 
+  async openChangeFormuleModal(formule) {
+    const banner = this.getBannerByFormule(formule);
+    const modal = await this.modalController.create({
+      component: ChangeOfferPopupComponent,
+      cssClass: 'modalRecipientSelection',
+      componentProps: { formule, banner },
+    });
+    modal.onDidDismiss().then((response) => {
+      if (response && response.data && response.data === 'changed') {
+        this.getCurrentAndOthersFormules();
+      }
+    });
+    return await modal.present();
+  }
+
   goBack() {
-    if (this.step === 'MA_FORMULE') {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.step = 'MA_FORMULE';
-    }
+    this.router.navigate(['/dashboard']);
   }
 
   getNewFormuleInfos() {
