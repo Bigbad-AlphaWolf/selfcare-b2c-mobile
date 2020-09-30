@@ -1,4 +1,4 @@
-import { OM_PATH } from './services.endpoints';
+import { OM_PATH } from './services.paths';
 
 export const OM_BANLANCE_ENDPOINT = `${OM_PATH}/purchases/balance`;
 export const OM_FAVORITES_ENDPOINT = `${OM_PATH}/payment/favoris`;
