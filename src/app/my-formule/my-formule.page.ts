@@ -5,6 +5,7 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import {
   CODE_KIRENE_Formule,
   FormuleMobileModel,
+  LOCAL_ZONE,
   TarifZoningByCountryModel,
 } from 'src/shared';
 import { FormuleService } from '../services/formule-service/formule.service';
@@ -63,6 +64,7 @@ export class MyFormulePage implements OnInit {
   isIOS: boolean;
   selectedCountry: any;
   currentNumberSubscription: SubscriptionModel;
+  LOCAL_ZONE = LOCAL_ZONE;
   constructor(
     private router: Router,
     private formuleService: FormuleService,
@@ -164,6 +166,7 @@ export class MyFormulePage implements OnInit {
         } else {
           this.error =
             "Erreur, Votre formule n'est peut etre pas encore prise en compte ";
+          this.currentFormule = resp;
         }
         this.dataLoaded = true;
       },
