@@ -1,12 +1,12 @@
 <div class="banner" (click)="onBannerClicked()">
   <div class="triangle" [hidden]="!autre"></div>
-  <img [src]="FILE_BASE_URL+'/'+banniere.image" alt=""  class="image">
-  <div class="banner-overlay">
+  <div class="image">
+    <img-loader  [spinner]="true" [src]="imageUrl" fallbackUrl="assets/images/default_ban.PNG" useImg></img-loader>
+  </div>
+  <div class="banner-overlay" *ngIf="banniere.description && banniere.description.trim() !== ''">
     <div class="banner-left">
-      <div class="banner-container">
-        <div class="title">{{ title }}</div>
-        <div class="details">{{ details }}</div>
-      </div>
+        <div class="title" *ngIf="title">{{ title }}</div>
+        <div class="details" *ngIf="details">{{ details }}</div>
     </div>
     <div class="band" [hidden]="!autre">
       <div class="text">
