@@ -74,7 +74,6 @@ export class BuyCreditPage implements OnInit {
         if (
           omSession.msisdn === "error" ||
           !omSession.hasApiKey ||
-          !omSession.accessToken ||
           omSession.loginExpired
         ) {
           this.openPinpad();
