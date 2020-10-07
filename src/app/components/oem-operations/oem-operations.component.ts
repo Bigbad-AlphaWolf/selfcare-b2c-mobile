@@ -4,8 +4,8 @@ import { NavController, ModalController } from '@ionic/angular';
 import { OperationOem } from 'src/app/models/operation.model';
 import { WOYOFAL } from 'src/app/utils/bills.util';
 import { IMAGES_DIR_PATH } from 'src/app/utils/constants';
-import { CounterSelectionComponent } from '../counter/counter-selection/counter-selection.component';
-import { OPERATION_WOYOFAL } from 'src/app/utils/operations.util';
+import { WoyofalSelectionComponent } from '../counter/woyofal-selection/woyofal-selection.component';
+import { OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
 import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
 import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
@@ -71,12 +71,12 @@ export class OemOperationsComponent implements OnInit {
     };
     this.bsService
       .initBsModal(
-        CounterSelectionComponent,
+        WoyofalSelectionComponent,
         OPERATION_WOYOFAL,
         BillAmountPage.ROUTE_PATH
       )
       .subscribe((_) => {});
-    this.bsService.openModal(CounterSelectionComponent);
+    this.bsService.openModal(WoyofalSelectionComponent);
   }
 
   openMerchantBS() {

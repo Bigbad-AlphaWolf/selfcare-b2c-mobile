@@ -46,4 +46,28 @@ export class FavorisService {
       })
     );
   }
+
+  favoritesByService(service: string) {
+    return this.omService.getOmMsisdn().pipe(
+      switchMap((omPhonenumber) => {
+        return this.http
+          .get(`${OM_FAVORITES_ENDPOINT}/${omPhonenumber.trim()}?service=${service}`)
+          .pipe(
+            map((r: any) => {
+              let error: boolean = !(
+                r &&
+                (r.status_code === 'Success-001' ||
+                  r.content.data.status === '200')
+              );
+
+              if (error) return [];
+
+              let typeFavoris: any = r.content.data.type_favoris;
+
+              return typeFavoris && typeFavoris.length ? typeFavoris[0].liste_favoris : [];
+            })
+          );
+      })
+    );
+  }
 }

@@ -1,8 +1,6 @@
-import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
-import { CounterOem } from 'src/app/models/counter-oem.model';
-import { Observable, of } from 'rxjs';
-import { CounterService } from 'src/app/services/counter/counter.service';
-import { FavoriteCountersComponent } from '../favorite-counters/favorite-counters.component';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Observable } from 'rxjs';
+
 
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -11,23 +9,25 @@ import { RecentsService } from 'src/app/services/recents-service/recents.service
 import { map } from 'rxjs/operators';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
-import { OPERATION_WOYOFAL } from 'src/app/utils/operations.util';
+import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
+import { FavoriteRapidoComponent } from '../favorite-rapido/favorite-rapido.component';
+import { FeesService } from 'src/app/services/fees/fees.service';
 
 @Component({
-  selector: 'app-counter-selection',
-  templateUrl: './counter-selection.component.html',
-  styleUrls: ['./counter-selection.component.scss'],
+  selector: 'app-rapido-selection',
+  templateUrl: './rapido-selection.component.html',
+  styleUrls: ['./rapido-selection.component.scss'],
 })
-export class CounterSelectionComponent implements OnInit {
+export class RapidoSelectionComponent implements OnInit {
   isProcessing: boolean = false;
-  inputCounterNumber: string = '';
-  // counters$: Observable<CounterOem[]> = of([
-  //   { name: 'Maison Nord-foire', counterNumber: '14256266199' },
-  //   { name: 'Audi Q5', counterNumber: '14256266199' },
+  inputRapidoNumber: string = '';
+  // rapidos$: Observable<RapidoOem[]> = of([
+  //   { name: 'Maison Nord-foire', rapidoNumber: '14256266199' },
+  //   { name: 'Audi Q5', rapidoNumber: '14256266199' },
   // ]);
-  counters$: Observable<CounterOem[]>;
+  rapidos$: Observable<any[]>;
   constructor(
-    private counterService: CounterService,
+    private feesService: FeesService,
     private bsService: BottomSheetService,
     private omService: OrangeMoneyService,
     private changeDetectorRef: ChangeDetectorRef,
@@ -40,13 +40,13 @@ export class CounterSelectionComponent implements OnInit {
   }
 
   initRecents() {
-    this.counters$ = this.recentService.fetchRecents(OPERATION_WOYOFAL, 3).pipe(
+    this.rapidos$ = this.recentService.fetchRecents(OPERATION_RAPIDO, 3).pipe(
       map((recents: RecentsOem[]) => {
         let results = [];
         recents.forEach((el) => {
           results.push({
             name: el.titre,
-            counterNumber: JSON.parse(el.payload).numero_compteur,
+            counterNumber: JSON.parse(el.payload).numero_carte,
           });
         });
         return results;
@@ -54,38 +54,38 @@ export class CounterSelectionComponent implements OnInit {
     );
   }
 
-  onRecentCounterSlected(counter: CounterOem) {
+  onRecentRapidoSlected(rapido: any) {
     this.modalCtrl.dismiss({
       TYPE_BS: 'RECENTS',
       ACTION: 'FORWARD',
-      counter: counter,
+      counter: rapido,
     });
   }
 
   onContinue() {
-    if (!this.counterNumberIsValid) return;
+    if (!this.rapidoNumberIsValid) return;
 
     this.modalCtrl.dismiss({
       TYPE_BS: 'INPUT',
       ACTION: 'FORWARD',
-      counter: { name: 'Autre', counterNumber: this.inputCounterNumber },
+      counter: { name: 'Autre', counterNumber: this.inputRapidoNumber },
     });
   }
 
   onMyFavorites() {
     this.modalCtrl.dismiss();
-    this.bsService.openModal(FavoriteCountersComponent);
+    this.bsService.openModal(FavoriteRapidoComponent);
   }
 
-  onInputChange(counterNumber) {
-    this.inputCounterNumber = counterNumber;
+  onInputChange(rapidoNumber) {
+    this.inputRapidoNumber = rapidoNumber;
   }
 
-  get counterNumberIsValid() {
+  get rapidoNumberIsValid() {
     return (
-      this.inputCounterNumber &&
-      this.inputCounterNumber.length === 11 &&
-      /^\d+$/.test(this.inputCounterNumber)
+      this.inputRapidoNumber &&
+      this.inputRapidoNumber.length >= 9 &&
+      /^\d+$/.test(this.inputRapidoNumber)
     );
   }
 
@@ -104,7 +104,7 @@ export class CounterSelectionComponent implements OnInit {
         if (msisdn !== 'error') {
           this.initRecents();
           this.bsService.opXtras.senderMsisdn = msisdn;
-          this.counterService.initFees(msisdn);
+          this.feesService.initFees(msisdn);
         }
       },
       () => {

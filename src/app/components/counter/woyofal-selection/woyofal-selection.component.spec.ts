@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CounterSelectionComponent } from './counter-selection.component';
+import { WoyofalSelectionComponent } from './woyofal-selection.component';
 
 describe('CounterSelectionComponent', () => {
-  let component: CounterSelectionComponent;
-  let fixture: ComponentFixture<CounterSelectionComponent>;
+  let component: WoyofalSelectionComponent;
+  let fixture: ComponentFixture<WoyofalSelectionComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CounterSelectionComponent ],
+      declarations: [ WoyofalSelectionComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CounterSelectionComponent);
+    fixture = TestBed.createComponent(WoyofalSelectionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

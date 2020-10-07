@@ -67,8 +67,8 @@ import { PhoneNumberProviderComponent } from "src/app/components/phone-number-pr
 import { NumberSelectionComponent } from "src/app/components/number-selection/number-selection.component";
 import { AmountProviderComponent } from "src/app/components/amount-provider/amount-provider.component";
 import { OemIonHeaderParallaxDirective } from "src/app/directives/oem-ion-header-parallax.directive";
-import { CounterSelectionComponent } from "src/app/components/counter/counter-selection/counter-selection.component";
-import { FavoriteCountersComponent } from "src/app/components/counter/favorite-counters/favorite-counters.component";
+import { WoyofalSelectionComponent } from "src/app/components/counter/woyofal-selection/woyofal-selection.component";
+import { FavoriteWoyofalComponent } from "src/app/components/counter/favorite-woyofal/favorite-woyofal.component";
 import { CodeFormatPipe } from 'src/app/pipes/code-format.pipe';
 import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.component';
 import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
@@ -83,6 +83,8 @@ import { RequestCardComponent } from 'src/app/components/request-card/request-ca
 import { BanniereComponent } from 'src/app/components/banniere/banniere.component';
 import { OffreServiceCardComponent } from 'src/app/components/offre-service-card/offre-service-card.component';
 import { IonicImageLoader } from 'ionic-image-loader';
+import { RapidoSelectionComponent } from 'src/app/components/counter/rapido-selection/rapido-selection.component';
+import { FavoriteRapidoComponent } from 'src/app/components/counter/favorite-rapido/favorite-rapido.component';
 
 @NgModule({
   declarations: [
@@ -94,8 +96,10 @@ import { IonicImageLoader } from 'ionic-image-loader';
     NoIonSelectArrowDirective,
     OemOperationsComponent,
     SelectBeneficiaryPopUpComponent,
-    CounterSelectionComponent,
-    FavoriteCountersComponent,
+    RapidoSelectionComponent,
+    WoyofalSelectionComponent,
+    FavoriteWoyofalComponent,
+    FavoriteRapidoComponent,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
     AmountProviderComponent,
@@ -171,8 +175,10 @@ import { IonicImageLoader } from 'ionic-image-loader';
     LinesComponent,
     SelectBeneficiaryPopUpComponent,
     NumberSelectionComponent,
-    FavoriteCountersComponent,
-    CounterSelectionComponent,
+    FavoriteWoyofalComponent,
+    FavoriteRapidoComponent,
+    WoyofalSelectionComponent,
+    RapidoSelectionComponent,
     ModalSuccessComponent,
     NoOMAccountPopupComponent,
     CancelOperationPopupComponent,
@@ -197,8 +203,10 @@ import { IonicImageLoader } from 'ionic-image-loader';
     NoIonSelectArrowDirective,
     OemOperationsComponent,
     SelectBeneficiaryPopUpComponent,
-    CounterSelectionComponent,
-    FavoriteCountersComponent,
+    WoyofalSelectionComponent,
+    RapidoSelectionComponent,
+    FavoriteWoyofalComponent,
+    FavoriteRapidoComponent,
     OemIonHeaderParallaxDirective,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
