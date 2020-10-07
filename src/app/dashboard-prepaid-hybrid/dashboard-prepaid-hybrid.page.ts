@@ -19,7 +19,6 @@ import {
   getBanniereTitle,
   getBanniereDescription,
   OPERATION_TYPE_MERCHANT_PAYMENT,
-  SARGAL_NOT_SUBSCRIBED_STATUS,
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -37,6 +36,7 @@ import {
   PROFILE_TYPE_HYBRID,
   PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
+  SARGAL_NOT_SUBSCRIBED_STATUS,
 } from '../dashboard';
 import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
@@ -127,7 +127,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     private offerPlanServ: OfferPlansService,
     private ref: ChangeDetectorRef,
     private bsService: BottomSheetService,
-    private navCtrl : NavController
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {
@@ -281,10 +281,11 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     return SARGAL_UNSUBSCRIPTION_ONGOING;
   }
 
-  makeSargalAction() {    
+  makeSargalAction() {
     if (
       this.userSargalData &&
-      (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED || this.userSargalData.status === SARGAL_UNSUBSCRIPTION_ONGOING) &&
+      (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED ||
+        this.userSargalData.status === SARGAL_UNSUBSCRIPTION_ONGOING) &&
       this.sargalDataLoaded
     ) {
       this.followAnalyticsService.registerEventFollow(
@@ -293,8 +294,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         'clicked'
       );
       this.router.navigate(['/sargal-registration']);
-    } else if(!this.sargalUnavailable && this.sargalDataLoaded)
-     {
+    } else if (!this.sargalUnavailable && this.sargalDataLoaded) {
       this.followAnalyticsService.registerEventFollow(
         'Sargal-dashboard',
         'event',
@@ -575,11 +575,11 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       });
   }
 
-  onOffreClicked(){
+  onOffreClicked() {
     this.navCtrl.navigateForward(OffresServicesPage.ROUTE_PATH);
   }
 
-  isNotSubscribedToSargal(status: string){
+  isNotSubscribedToSargal(status: string) {
     return SARGAL_NOT_SUBSCRIBED_STATUS.includes(status);
   }
 }
