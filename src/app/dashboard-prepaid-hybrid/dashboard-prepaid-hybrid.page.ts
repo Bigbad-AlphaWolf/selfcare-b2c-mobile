@@ -532,7 +532,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       const omSessionValid = omSession
         ? omSession.msisdn !== 'error' &&
           omSession.hasApiKey &&
-          omSession.accessToken &&
           !omSession.loginExpired
         : null;
       if (omSessionValid) {
