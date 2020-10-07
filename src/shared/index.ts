@@ -1,9 +1,7 @@
 import * as SecureLS from 'secure-ls';
 import { HTTP } from '@ionic-native/http/ngx';
-import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { SARGAL_NOT_SUBSCRIBED, SARGAL_UNSUBSCRIPTION_ONGOING } from 'src/app/dashboard';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
@@ -128,8 +126,6 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
 }
-
-export const SARGAL_NOT_SUBSCRIBED_STATUS = [ SARGAL_NOT_SUBSCRIBED, SARGAL_UNSUBSCRIPTION_ONGOING ];
 
 export function isExtensionImageValid(fileType: string) {
   const result = VALID_IMG_EXTENSIONS.filter((x) => {
