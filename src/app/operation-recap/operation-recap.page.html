@@ -19,7 +19,10 @@
         <span *ngSwitchCase="OPERATION_TRANSFER_OM">Transfert d'argent</span>
         <span *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
         <span *ngSwitchCase="'OPERATION_WOYOFAL'">Rechargement Woyofal</span>
-        <span *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'">Pass selectionné</span>
+        <span *ngSwitchCase="'OPERATION_RAPIDO'">Rechargement Rapido</span>
+        <span *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+          >Pass selectionné</span
+        >
       </ng-container>
     </ion-title>
   </ion-toolbar>
@@ -74,6 +77,12 @@
         class="banniere"
       />
       <img
+        *ngSwitchCase="'OPERATION_RAPIDO'"
+        src="assets/images/recharge-bill.svg"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
         *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
         src="assets/images/achat-de-pass-voyage@2x.png"
         alt="banniere"
@@ -89,9 +98,7 @@
   fullscreen="true"
   [scrollEvents]="true"
 >
-  <div *ngIf="operationTypeRecap" class="recap-text">
-    Récapitulatif
-  </div>
+  <div *ngIf="operationTypeRecap" class="recap-text">Récapitulatif</div>
   <div class="recap-title" *ngIf="!operationTypeRecap">
     <span class="text-1">Récapitulatif</span>
     <ng-container [ngSwitch]="purchaseType">
@@ -148,7 +155,7 @@
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_INTERNET_TYPE">
         <span class="pass">Pass sélectionné</span>
       </div>
-      
+
       <div class="amount-to-transfer" *ngSwitchCase="'RECHARGEMENT_CREDIT'">
         <span class="pass">Montant à acheter</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
@@ -157,7 +164,14 @@
         <span class="pass">Montant à recharger</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
       </div>
-      <div class="amount-to-transfer" *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'">
+      <div class="amount-to-transfer" *ngSwitchCase="'OPERATION_RAPIDO'">
+        <span class="pass">Montant à recharger</span>
+        <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
+      </div>
+      <div
+        class="amount-to-transfer"
+        *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+      >
         <span class="pass">Pass sélectionné</span>
       </div>
     </ng-container>
@@ -212,6 +226,11 @@
           *ngSwitchCase="'OPERATION_WOYOFAL'"
         >
         </app-item-recharge-credit>
+        <app-item-recharge-credit
+          [amount]="opXtras.amount + opXtras.fee"
+          *ngSwitchCase="'OPERATION_RAPIDO'"
+        >
+        </app-item-recharge-credit>
       </ng-container>
     </div>
     <div class="amount-to-transfer">
@@ -226,14 +245,14 @@
       <div class="top-block">
         <span class="title"
           >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT ? merchantCode :
-          recipientMsisdn | phoneNumberDisplay}} {{(purchaseType ===
-          'OPERATION_WOYOFAL'?opXtras.billData.counter.counterNumber
+          recipientMsisdn | phoneNumberDisplay}} {{([ 'OPERATION_WOYOFAL',
+          'OPERATION_RAPIDO'].includes(purchaseType)?opXtras.billData.counter.counterNumber
           :'')|codeFormat:2}}</span
         >
         <span class="recipient"
           >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT
-          ?merchantName:recipientName}}{{purchaseType ===
-          'OPERATION_WOYOFAL'?opXtras.billData.counter.name:''}}</span
+          ?merchantName:recipientName}}{{ [ 'OPERATION_WOYOFAL',
+          'OPERATION_RAPIDO'].includes(purchaseType)?opXtras.billData.counter.name:''}}</span
         >
       </div>
     </div>
@@ -245,9 +264,7 @@
       </div>
       <div class="recipient-information">
         <div class="top-block-transfert">
-          <span class="title">
-            Transfert d'argent
-          </span>
+          <span class="title"> Transfert d'argent </span>
           <span class="title scb-text-orange"
             >{{purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ? "avec code" :
             "sans code" }}</span
@@ -262,9 +279,7 @@
       </div>
       <div class="recipient-information offer-desc">
         <div class="top-block-transfert">
-          <span class="title">
-            {{ offerPlan?.description }}
-          </span>
+          <span class="title"> {{ offerPlan?.description }} </span>
         </div>
       </div>
     </ng-container>
@@ -288,7 +303,7 @@
         >
         <span class="text" *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
           >Confirmer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
-            passChoosen?.passPromo?.tarif}} FCFA)</span
+          passChoosen?.passPromo?.tarif}} FCFA)</span
         >
         <span class="text" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
           >Payer ({{amount}} FCFA)</span
@@ -302,7 +317,14 @@
         <span class="text" *ngSwitchCase="'RECHARGEMENT_CREDIT'"
           >Confirmer ({{amount|formatCurrency}} FCFA)</span
         >
-
+        <span class="text" *ngSwitchCase="'OPERATION_RAPIDO'"
+          >Confirmer ({{(opXtras.amount + opXtras.fee)|formatCurrency}}
+          FCFA)</span
+        >
+        <span class="text" *ngSwitchCase="'OPERATION_WOYOFAL'"
+          >Confirmer ({{(opXtras.amount + opXtras.fee)|formatCurrency}}
+          FCFA)</span
+        >
       </ng-container>
       <mat-spinner
         mode="indeterminate"

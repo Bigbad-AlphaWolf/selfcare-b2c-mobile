@@ -23,7 +23,10 @@ import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/o
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { OperationExtras } from '../models/operation-extras.model';
-import { OPERATION_WOYOFAL } from '../utils/operations.util';
+import {
+  OPERATION_RAPIDO,
+  OPERATION_WOYOFAL,
+} from '../utils/operations.constants';
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 
@@ -125,9 +128,9 @@ export class OperationRecapPage implements OnInit {
               this.recipientMsisdn = this.opXtras.recipientMsisdn;
               this.recipientName = this.opXtras.recipientFromContact
                 ? this.opXtras.recipientFirstname +
-                ' ' +
+                  ' ' +
                   this.opXtras.recipientLastname
-                  : '';
+                : '';
               this.buyPassPayload = {
                 destinataire: this.recipientMsisdn,
                 pass: this.opXtras.pass,
@@ -184,11 +187,11 @@ export class OperationRecapPage implements OnInit {
                 : '';
               this.offerPlan = state.offerPlan;
               break;
+            case OPERATION_RAPIDO:
             case OPERATION_WOYOFAL:
               this.opXtras = state;
-              // this.amount = this.opXtras.amount;
-
               break;
+
             default:
               break;
           }
@@ -224,6 +227,7 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TRANSFER_OM_WITH_CODE:
         this.openPinpad();
         break;
+      case OPERATION_RAPIDO:
       case OPERATION_WOYOFAL:
         this.openPinpad();
         break;
@@ -413,9 +417,12 @@ export class OperationRecapPage implements OnInit {
   }
 
   get operationTypeRecap() {
-    return ['RECHARGEMENT_CREDIT', 'OPERATION_WOYOFAL', 'OPERATION_TYPE_PASS_VOYAGE'].includes(   
-      this.purchaseType
-    );
+    return [
+      'RECHARGEMENT_CREDIT',
+      'OPERATION_TYPE_PASS_VOYAGE',
+      'OPERATION_WOYOFAL',
+      'OPERATION_RAPIDO',
+    ].includes(this.purchaseType);
   }
 }
 

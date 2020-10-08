@@ -7,6 +7,7 @@ import {
   OPERATION_TRANSFER_OM,
   OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
+import { OPERATION_RAPIDO, OPERATION_WOYOFAL } from './operations.constants';
 
 export const IMAGES_DIR_PATH = '/assets/images';
 export const MONTHS: string[] = [
@@ -35,8 +36,12 @@ export abstract class Constants {
 export const OM_URLS = ['selfcare-b2c-om'];
 export const OM_RECENT_TYPES = [
   {
-    operationType: 'OPERATION_WOYOFAL',
+    operationType: OPERATION_WOYOFAL,
     recentType: RecentType.paiement_woyofal,
+  },
+  {
+    operationType: OPERATION_RAPIDO,
+    recentType: RecentType.paiement_rapido,
   },
   {
     operationType: OPERATION_TYPE_MERCHANT_PAYMENT,

@@ -6,17 +6,12 @@ import { PurchaseSetAmountPage } from "src/app/purchase-set-amount/purchase-set-
 import { NumberSelectionOption } from "src/app/models/enums/number-selection-option.enum";
 import { NumberSelectionComponent } from "src/app/components/number-selection/number-selection.component";
 import { OperationExtras } from "src/app/models/operation-extras.model";
-import { OPERATION_TYPE_RECHARGE_CREDIT } from "src/shared";
-import { CreditPassAmountPage } from "src/app/pages/credit-pass-amount/credit-pass-amount.page";
-import { MerchantPaymentCodeComponent } from "src/shared/merchant-payment-code/merchant-payment-code.component";
 import { NewPinpadModalPage } from "src/app/new-pinpad-modal/new-pinpad-modal.page";
 import { take, map } from "rxjs/operators";
 import { OrangeMoneyService } from "../orange-money-service/orange-money.service";
 import { LinesComponent } from "src/app/components/lines/lines.component";
 import { BillCompany } from "src/app/models/bill-company.model";
 import { Subject } from "rxjs";
-import { OPERATION_WOYOFAL } from "src/app/utils/operations.util";
-import { BillAmountPage } from "src/app/pages/bill-amount/bill-amount.page";
 
 @Injectable({
   providedIn: "root",
