@@ -13,7 +13,7 @@ import * as SecureLS from 'secure-ls';
 import { Platform } from '@ionic/angular';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, catchError } from 'rxjs/operators';
 import { SessionOem } from '../session-oem/session-oem.service';
 import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
 import { MonthOem } from 'src/app/models/month.model';
@@ -23,6 +23,7 @@ const billsPackageDownloadEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/down
 const lastSlipEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/last-bordereau`;
 const BORDEREAU_ENDPOINT = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bordereau`;
 const INVOICE_ENDPOINT = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
+const INVOICE_MOIS_DISPO_ENDPOINT = `${SERVER_API_URL}/${BILL_SERVICE}/api/get-last-month`;
 const billsEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bordereau`;
 const billsDetailEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
 
@@ -70,7 +71,12 @@ export class BillsService {
         )
       );
   }
-  bordereau(codeClient: string, type:string, phone?:string, month?:MonthOem):Observable<InvoiceOrange> {
+  bordereau(
+    codeClient: string,
+    type: string,
+    phone?: string,
+    month?: MonthOem
+  ): Observable<InvoiceOrange> {
     return this.http
       .get(
         `${BORDEREAU_ENDPOINT}/${codeClient}?type=${type}&search=summaryYear:${month.year},summaryMonth:${month.position}`
@@ -90,19 +96,24 @@ export class BillsService {
               phone
             )
         ),
-        map((rs:any)=>{
-          if(rs.length)
-            return rs[0];
+        map((rs: any) => {
+          if (rs.length) return rs[0];
           return null;
         })
-
       );
   }
 
-  invoices(codeClient: string, type:string, phone?:string, month?:MonthOem):Observable<InvoiceOrange[]> {
+  invoices(
+    codeClient: string,
+    type: string,
+    phone?: string,
+    month?: MonthOem
+  ): Observable<InvoiceOrange[]> {
     return this.http
       .get<InvoiceOrange[]>(
-        `${INVOICE_ENDPOINT}/${codeClient}?type=${type}&search=${type==='MOBILE'?'phoneNumber:'+phone+',':''}year:${month.year},month:${month.position}`
+        `${INVOICE_ENDPOINT}/${codeClient}?type=${type}&search=${
+          type === 'MOBILE' ? 'phoneNumber:' + phone + ',' : ''
+        }year:${month.year},month:${month.position}`
       )
       .pipe(
         tap(
@@ -120,6 +131,21 @@ export class BillsService {
             )
         )
       );
+  }
+
+  async moisDisponible(codeClient: string, type: string, phone?: string) {
+    return await this.http
+      .get<string>(
+        `${INVOICE_MOIS_DISPO_ENDPOINT}/${codeClient}?type=${type}&search=${
+          type === 'MOBILE' ? 'phoneNumber:' + phone  : ''
+        }`
+      )
+      .pipe(
+        catchError((err)=>{
+          return of(null);
+        })
+      )
+      .toPromise<string>();
   }
   getBillsPackage(numClient: string) {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
@@ -197,8 +223,8 @@ export class BillsService {
     annee: number;
   }) {
     // api/v1/facture/365915?type=MOBILE&search=year:2019,month:11
-    if(!payload) return of({})
-    
+    if (!payload) return of({});
+
     if (this.currentNumber.startsWith('33')) {
       return this.http
         .get(

@@ -8,12 +8,13 @@ import { IonicModule } from '@ionic/angular';
 import { MyFormulePage } from './my-formule.page';
 import { SeeDetailsFormuleComponent } from './see-details-formule/see-details-formule.component';
 import { SharedModule } from 'src/shared/shared.module';
+import { ChangeOfferPopupComponent } from './change-offer-popup/change-offer-popup.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: MyFormulePage
-  }
+    component: MyFormulePage,
+  },
 ];
 
 @NgModule({
@@ -22,8 +23,13 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  declarations: [MyFormulePage, SeeDetailsFormuleComponent]
+  declarations: [
+    MyFormulePage,
+    SeeDetailsFormuleComponent,
+    ChangeOfferPopupComponent,
+  ],
+  entryComponents: [ChangeOfferPopupComponent],
 })
 export class MyFormulePageModule {}
