@@ -13,8 +13,9 @@ import {
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
-import { OPERATION_WOYOFAL } from '../utils/operations.util';
+import { OPERATION_RAPIDO, OPERATION_WOYOFAL } from '../utils/operations.constants';
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
+import { RapidOperationPage } from '../pages/rapid-operation/rapid-operation.page';
 
 @Component({
   selector: 'app-operation-success-fail-modal',
@@ -77,6 +78,9 @@ export class OperationSuccessFailModalPage implements OnInit {
         break;
       case OPERATION_WOYOFAL:
         this.navCtrl.navigateBack(BillsHubPage.ROUTE_PATH);
+        break;
+      case OPERATION_RAPIDO:
+        this.navCtrl.navigateBack(RapidOperationPage.ROUTE_PATH);
         break;
       default:
         break;

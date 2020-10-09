@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CounterSelectionComponent } from './counter-selection.component';
+import { RapidOperationPage } from './rapid-operation.page';
 
-describe('CounterSelectionComponent', () => {
-  let component: CounterSelectionComponent;
-  let fixture: ComponentFixture<CounterSelectionComponent>;
+describe('RapidOperationPage', () => {
+  let component: RapidOperationPage;
+  let fixture: ComponentFixture<RapidOperationPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CounterSelectionComponent ],
+      declarations: [ RapidOperationPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CounterSelectionComponent);
+    fixture = TestBed.createComponent(RapidOperationPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
