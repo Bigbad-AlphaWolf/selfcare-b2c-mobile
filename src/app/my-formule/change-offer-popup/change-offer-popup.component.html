@@ -1,0 +1,55 @@
+<div class="change-offer-page">
+  <div class="offer-container">
+    <div
+      class="offer"
+      [ngStyle]="{
+        'background-image': 'url(' + banner + ')'
+      }"
+    >
+      <span class="offer-name scb-text-white">{{ formule?.nomFormule }}</span>
+      <span class="tarif scb-text-white"
+        >{{ formule?.prixAppels }} F / Sec</span
+      >
+    </div>
+  </div>
+  <div class="tarification-block">
+    <div class="tarif-item">
+      <div class="option-title">
+        <img src="/assets/images/appel_icon.png" alt="ic" />
+        <span class="title">Appels</span>
+      </div>
+      <div class="tarif-description">
+        <span class="tarif">{{ formule?.prixAppels }} F / Sec</span>
+        <div class="description scb-text-gray">
+          {{ formule?.description }}
+        </div>
+      </div>
+    </div>
+    <div class="tarif-item">
+      <div class="option-title">
+        <img src="/assets/images/msg_icon.png" alt="ic" />
+        <span class="title">SMS</span>
+      </div>
+      <div class="tarif-description">
+        <span class="tarif">{{ formule?.prixSMS }} F</span>
+        <div class="description scb-text-gray">
+          {{ formule?.description }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="button-container">
+    <button
+      class="scb-btn scb-btn-orange scb-btn-full"
+      [disabled]="changeFormuleProcessing"
+      (click)="confirmChangeFormule()"
+    >
+      <span>Changer de formule</span>
+      <mat-spinner
+        mode="indeterminate"
+        [diameter]="20"
+        *ngIf="changeFormuleProcessing"
+      ></mat-spinner>
+    </button>
+  </div>
+</div>
