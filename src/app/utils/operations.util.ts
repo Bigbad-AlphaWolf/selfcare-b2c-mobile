@@ -7,7 +7,7 @@ import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
-import { OPERATION_RECHARGE_CREDIT, OPERATION_TRANSFERT_ARGENT } from './operations.constants';
+import { OPERATION_RAPIDO, OPERATION_RECHARGE_CREDIT, OPERATION_TRANSFERT_ARGENT, OPERATION_WOYOFAL } from './operations.constants';
 
 export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
   {
@@ -47,23 +47,31 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
     type: OPERATION_TYPE_PASS_ILLIMIX,
     url: '',
   },
-  // {
-  //   title: 'Acheter',
-  //   subtitle: 'pass allo',
-  //   icon: `${IMAGES_DIR_PATH}/ic-call-forward@2x.png`,
-  //   action: 'openNumberSelectionBottomSheet',
-  //   params: ['NONE', OPERATION_TYPE_PASS_ALLO, '/list-pass'],
-  //   type: OPERATION_TYPE_PASS_ALLO,
-  //   url: '',
-  // },
-  // {
-  //   title: 'Recharger',
-  //   subtitle: 'Woyofal',
-  //   icon: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
-  //   action: 'openModal',
-  //   type: OPERATION_WOYOFAL,
-  //   url: '',
-  // },
+  {
+    title: 'Acheter',
+    subtitle: 'pass allo',
+    icon: `${IMAGES_DIR_PATH}/ic-call-forward@2x.png`,
+    action: 'openNumberSelectionBottomSheet',
+    params: ['NONE', OPERATION_TYPE_PASS_ALLO, '/list-pass'],
+    type: OPERATION_TYPE_PASS_ALLO,
+    url: '',
+  },
+  {
+    title: 'Recharger',
+    subtitle: 'Woyofal',
+    icon: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
+    action: 'openModal',
+    type: OPERATION_WOYOFAL,
+    url: '',
+  },
+  {
+    title: 'Recharger',
+    subtitle: 'Rapido',
+    icon: `${IMAGES_DIR_PATH}/rapido@3x.png`,
+    action: '/rapid-operation',
+    type: 'NAVIGATE',
+    url: '',
+  },
 
   {
     title: 'Autres',
