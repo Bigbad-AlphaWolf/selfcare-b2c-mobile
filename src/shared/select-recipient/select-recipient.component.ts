@@ -158,20 +158,20 @@ export class SelectRecipientComponent implements OnInit {
             res.code !== KILIMANJARO_FORMULE
           ) {
             this.showErrorMsg = true;
+            return;
           } else if (
             res.code === CODE_KIRENE_Formule &&
             this.purchaseType !== OPERATION_TYPE_RECHARGE_CREDIT
           ) {
             const eligibility = await this.isEligible();
             if (eligibility && !eligibility.eligible) return;
-          } else {
-            this.getDestinataire.emit({
-              destinataire: this.destNumber,
-              code: res.code,
-            });
-            if (this.contactInfos) {
-              this.getContact.emit(this.contactInfos);
-            }
+          }
+          this.getDestinataire.emit({
+            destinataire: this.destNumber,
+            code: res.code,
+          });
+          if (this.contactInfos) {
+            this.getContact.emit(this.contactInfos);
           }
         },
         () => {
