@@ -14,7 +14,7 @@
       <span class="title"> Ma formule </span>
     </ion-toolbar>
   </ion-header>
-  <div class="my-formule-page">
+  <div class="my-formule-page" *ngIf="!error && dataLoaded">
     <div
       class="banniere"
       [ngStyle]="{'background-image': 'url(' + getBannerByFormule(currentFormule) + ')'}"
@@ -54,13 +54,14 @@
               ios="md-arrow-dropdown"
               md="md-arrow-dropdown"
               slot="end"
+              *ngIf="0"
             ></ion-icon>
           </ion-item>
           <ion-item mode="ios" lines="none">
             <ion-select
               mode="ios"
-              interface="popover"
               noIonSelectArrow
+              [interfaceOptions]="customAlertOptions"
               #selectedCountry
               [value]="currentNumberSubscription?.profil === PREPAID_PROFILE ? listTarifsInternationaux[0]:listTarifsInternationaux[1]"
             >
@@ -115,7 +116,7 @@
       </div>
       <div class="tarif-item">
         <div class="option-title">
-          <img src="" alt="ic" />
+          <img src="/assets/images/appel_icon.png" alt="ic" />
           <span class="title">Zone</span>
         </div>
         <div class="tarif-description">
@@ -149,6 +150,14 @@
           </span>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="error-management" *ngIf="error || !dataLoaded">
+    <div class="other-formules-label scb-text-red-error" *ngIf="error">
+      <span>{{ error }}</span>
+    </div>
+    <div *ngIf="!dataLoaded" class="spinner">
+      <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
     </div>
   </div>
 </ion-content>
