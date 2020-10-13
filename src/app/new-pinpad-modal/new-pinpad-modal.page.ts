@@ -245,6 +245,9 @@ export class NewPinpadModalPage implements OnInit {
       disableClose: true,
       data: { pageDesktop: false },
     });
+    this.noOMAccountModal.afterClosed().subscribe(() => {
+      this.modalController.dismiss();
+    });
   }
 
   userRegisterOM() {
