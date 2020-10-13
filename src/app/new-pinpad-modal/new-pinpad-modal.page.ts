@@ -221,15 +221,9 @@ export class NewPinpadModalPage implements OnInit {
         this.checkingToken = false;
         this.sendingOtp = false;
         this.userNotRegisteredInOm = false;
-        if (res.status_code.match('Erreur-046')) {
-          this.openModalNoOMAccount();
-          this.modalController.dismiss();
-          this.errorOnOtp = res.status_wording;
-        } else {
-          this.otpValidation = true;
-          this.resendCode = false;
-          this.showResendCodeBtn(30);
-        }
+        this.otpValidation = true;
+        this.resendCode = false;
+        this.showResendCodeBtn(30);
       },
       (err) => {
         this.userNotRegisteredInOm = true;
@@ -237,6 +231,11 @@ export class NewPinpadModalPage implements OnInit {
         this.sendingOtp = false;
         this.resendCode = false;
         this.showResendCodeBtn(2);
+        if (err && err.error && err.error.errorCode.match('Erreur-046')) {
+          this.openModalNoOMAccount();
+        } else {
+          this.errorOnOtp = 'Une erreur est survenue';
+        }
       }
     );
   }
