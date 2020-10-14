@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NavController} from '@ionic/angular';
 import { OffreService } from 'src/app/models/offre-service.model';
-import { FILE_DOWNBLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
+import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
@@ -26,7 +26,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 })
 export class OffreServiceCardComponent implements OnInit {
   @Input('service') service: OffreService;
-  FILE_BASE_URL: string = FILE_DOWNBLOAD_ENDPOINT;
+  FILE_BASE_URL: string = FILE_DOWNLOAD_ENDPOINT;
   constructor(private navCtrl: NavController) {}
   imageUrl : string;
 

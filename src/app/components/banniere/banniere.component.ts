@@ -3,7 +3,7 @@ import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { FILE_PATH } from 'src/app/services/utils/services.paths';
 import { NavController } from '@ionic/angular';
 import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
-import { FILE_DOWNBLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
+import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
 
 @Component({
   selector: 'oem-banniere',
@@ -21,7 +21,7 @@ export class BanniereComponent implements OnInit {
       this.displays = this.banniere.description.split(';');
     }
     
-    this.imageUrl = FILE_DOWNBLOAD_ENDPOINT+'/'+this.banniere.image;
+    this.imageUrl = FILE_DOWNLOAD_ENDPOINT+'/'+this.banniere.image;
   }
 
   get title(){
