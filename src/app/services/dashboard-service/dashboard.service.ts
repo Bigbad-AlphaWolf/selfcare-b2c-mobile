@@ -1,7 +1,7 @@
 import { Injectable, RendererFactory2, Inject, Renderer2 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject, Observable, Subscription, of } from 'rxjs';
-import { tap, map, switchMap, catchError, share } from 'rxjs/operators';
+import { tap, map, switchMap, catchError, share, take } from 'rxjs/operators';
 import * as SecureLS from 'secure-ls';
 import { environment } from 'src/environments/environment';
 import { AuthenticationService } from '../authentication-service/authentication.service';
@@ -67,11 +67,14 @@ const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boost
 // Endpoint to get the user's birthdate
 const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/birthDate`;
 
+// Endpoint to check allo feature status
+const showNewFeatureStateEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-allo-new`;
 @Injectable({
   providedIn: 'root',
 })
 export class DashboardService {
   static CURRENT_DASHBOARD: string = '/dashboard';
+  static rattachedNumbers: any[];
   currentPhoneNumberChangeSubject: Subject<string> = new Subject<string>();
   scrollToBottomSubject: Subject<string> = new Subject<string>();
   balanceAvailableSubject: Subject<any> = new Subject<any>();
@@ -196,6 +199,11 @@ export class DashboardService {
     return this.http.post(
       `${attachMobileNumberEndpoint}/register`,
       detailsToCheck
+    ).pipe(
+      tap((r) => {
+        DashboardService.rattachedNumbers = null;
+        this.attachedNumbers().pipe(take(1)).subscribe();
+      })
     );
   }
 
@@ -207,10 +215,14 @@ export class DashboardService {
     payload = Object.assign(payload, {
       login: this.authService.getUserMainPhoneNumber(),
     });
-    return this.http.post(
-      `${attachMobileNumberEndpoint}/fixe-register`,
-      payload
-    );
+    return this.http
+      .post(`${attachMobileNumberEndpoint}/fixe-register`, payload)
+      .pipe(
+        tap((r) => {
+          DashboardService.rattachedNumbers = null;
+          this.attachedNumbers().pipe(take(1)).subscribe();
+        })
+      );
   }
 
   // check if fix number is already linked to an account
@@ -234,6 +246,17 @@ export class DashboardService {
     return this.http.get(`${userLinkedPhoneNumberEndpoint}/${login}`);
   }
 
+  attachedNumbers() {    
+    if (DashboardService.rattachedNumbers)
+      return of(DashboardService.rattachedNumbers);
+
+    return this.getAttachedNumbers().pipe(
+      tap((elements: any) => {
+        DashboardService.rattachedNumbers = elements;
+      })
+    )
+  }
+
   fetchFixedNumbers() {
     return this.getAttachedNumbers().pipe(
       map((elements: any) => {
@@ -251,10 +274,10 @@ export class DashboardService {
   }
 
   fetchOemNumbers() {
-    const mainPhone = this.authService.getUserMainPhoneNumber();
-    return this.http.get(`${userLinkedPhoneNumberEndpoint}/${mainPhone}`).pipe(
+    return this.attachedNumbers().pipe(
       map((elements: any) => {
-        let numbers = [mainPhone];
+        const mainPhone = this.authService.getUserMainPhoneNumber();
+        let numbers = [mainPhone.trim()];
         elements.forEach((element: any) => {
           const msisdn = '' + element.msisdn;
           if (!msisdn.startsWith('33', 0)) {
@@ -383,8 +406,10 @@ export class DashboardService {
     return this.http.get(`${listFormulesEndpoint}`);
   }
 
-  getListPassIllimix(codeFormule) {
-    return this.http.get(`${listPassIllimixEndpoint}/${codeFormule}`);
+  getListPassIllimix(codeFormule, category?: string) {
+    let url = `${listPassIllimixEndpoint}/${codeFormule}`;
+    if (category) url += `?categorie=${category}`;
+    return this.http.get(url);
   }
 
   getListPassInternet(codeFormule) {
@@ -477,13 +502,21 @@ export class DashboardService {
     const userBirthDay = ls.get('birthDate');
     if (userBirthDay) return of(userBirthDay);
     const msisdn = this.getMainPhoneNumber();
-    return this.http.get(`${userBirthDateEndpoint}/${msisdn}`).pipe(
+    return this.http.get(`${userBirthDateEndpoint}/${msisdn}`, {responseType: 'text'}).pipe(
       map((birthDate) => {
         ls.set('birthDate', birthDate);
       })
     );
   }
 
+  getNewFeatureAlloBadgeStatus() {
+    return this.http.get(`${showNewFeatureStateEndpoint}`).pipe(
+      map((isNew: boolean) => {
+        return isNew;
+      })
+    );
+  }
+  
   swapOMCard() {
     const omCard = document.getElementById('omCard');
     if (omCard) {

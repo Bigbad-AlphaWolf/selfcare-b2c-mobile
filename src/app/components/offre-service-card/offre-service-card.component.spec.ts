@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CounterSelectionComponent } from './counter-selection.component';
+import { OffreServiceCardComponent } from './offre-service-card.component';
 
-describe('CounterSelectionComponent', () => {
-  let component: CounterSelectionComponent;
-  let fixture: ComponentFixture<CounterSelectionComponent>;
+describe('OffreServiceCardComponent', () => {
+  let component: OffreServiceCardComponent;
+  let fixture: ComponentFixture<OffreServiceCardComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CounterSelectionComponent ],
+      declarations: [ OffreServiceCardComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CounterSelectionComponent);
+    fixture = TestBed.createComponent(OffreServiceCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

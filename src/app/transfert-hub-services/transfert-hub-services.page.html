@@ -2,52 +2,58 @@
   <ion-toolbar>
     <ion-buttons>
       <ion-back-button
-        (click)="goToDashboard()"
+        (click)="goBack()"
         icon=""
         class="oem-back-button"
       >
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
-    <ion-title>
-        {{pageTitle}}
-    </ion-title>
+    <ion-title> {{pageTitle}} </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
+<ion-content
+  no-bounce
+  has-bouncing="false"
+  forceOverscroll="false"
+  fullscreen="true"
+  [scrollEvents]="true"
+>
   <div class="transferts-page">
     <div class="ion-cards-container" *ngIf="options.length">
       <ng-container *ngFor="let opt of options">
-        <div class="card">
-          <ion-card
-            (click)="goTo(opt)"
-            class="card-content"
-            button="true"
-          >          
-            <ion-card-content>  
+        <div class="card" *ngIf="opt.type !== OPERATION_TYPE_PASS_ALLO">
+          <ion-card (click)="goTo(opt)" class="card-content" button="true">
+            <ion-card-content>
               <div class="icon">
                 <img [src]="opt?.icon" alt="" />
               </div>
               <div class="text">
-                <span class="title">
-                  {{opt.title}}
-                </span>
-                <span class="subtitle">
-                  {{opt.subtitle}}
-                </span>
+                <span class="title"> {{opt.title}} </span>
+                <span class="subtitle"> {{opt.subtitle}} </span>
               </div>
             </ion-card-content>
           </ion-card>
-          <div class="badge-promo" *ngIf="displayBadgeBoosterPromoInOptionsForCategory(hasBoosterPromoActive, opt) || displayBadgeOfferPlanForInOptionsCategory(hasPromoPlanActive, opt)"
-              >
-                <div class="icon-container">
-                  <span class="percent scb-text-white"> % </span>
-                </div>
-                <div class="triangle"></div>
-              </div>
+          <div
+            class="badge-promo"
+            *ngIf="displayBadgeBoosterPromoInOptionsForCategory(hasBoosterPromoActive, opt) || displayBadgeOfferPlanForInOptionsCategory(hasPromoPlanActive, opt)"
+          >
+            <div class="icon-container">
+              <span class="percent scb-text-white"> % </span>
+            </div>
+            <div class="triangle"></div>
+          </div>
+          <div
+            class="badge-promo"
+            *ngIf="opt.type === OPERATION_TYPE_PASS_ALLO && showNewFeatureBadge$|async"
+          >
+            <div class="icon-container">
+              <span class="new scb-text-white"> Nouveau </span>
+            </div>
+            <div class="triangle"></div>
+          </div>
         </div>
       </ng-container>
-    
     </div>
   </div>
 </ion-content>

@@ -11,7 +11,8 @@ import {
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
-  OPERATION_TYPE_PASS_VOYAGE,
+  OPERATION_TYPE_PASS_ALLO,
+  OPERATION_TYPE_PASS_VOYAGE
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -21,6 +22,8 @@ import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.servic
 import { ListPassVoyagePage } from '../pages/list-pass-voyage/list-pass-voyage.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
+import { Observable } from 'rxjs';
+
 import { FacebookEventService } from '../services/facebook-event/facebook-event.service';
 import { FacebookEvent } from '../models/enums/facebook-event.enum';
 import { FacebookCustomEvent } from '../models/enums/facebook-custom-event.enum';
@@ -30,6 +33,7 @@ import { FacebookCustomEvent } from '../models/enums/facebook-custom-event.enum'
   styleUrls: ['./transfert-hub-services.page.scss'],
 })
 export class TransfertHubServicesPage implements OnInit {
+  OPERATION_TYPE_PASS_ALLO = OPERATION_TYPE_PASS_ALLO;
   pageTitle: string;
   transferOptions: {
     title: string;
@@ -73,7 +77,8 @@ export class TransfertHubServicesPage implements OnInit {
       | 'PASS'
       | 'PASS_ILLIMIX'
       | 'PASS_VOYAGE'
-      | 'PASS_INTERNATIONAL';
+      | 'PASS_INTERNATIONAL'
+      | 'PASS_ALLO';
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
   }[] = [
@@ -95,7 +100,7 @@ export class TransfertHubServicesPage implements OnInit {
     },
     {
       title: 'Pass',
-      subtitle: 'illimix ou allo',
+      subtitle: 'illimix',
       icon: '/assets/images/ic-package-services@2x.png',
       action: 'REDIRECT',
       type: 'PASS_ILLIMIX',
@@ -103,12 +108,20 @@ export class TransfertHubServicesPage implements OnInit {
     },
     {
       title: 'Pass',
-      subtitle: 'voyage',
-      icon: '/assets/images/ic-aeroplane.png',
+      subtitle: 'Allo',
+      icon: '/assets/images/ic-call-forward@2x.png',
       action: 'REDIRECT',
-      type: 'PASS_VOYAGE',
+      type: 'PASS_ALLO',
       url: '',
     },
+    // {
+    //   title: 'Pass',
+    //   subtitle: 'voyage',
+    //   icon: '/assets/images/ic-aeroplane.png',
+    //   action: 'REDIRECT',
+    //   type: 'PASS_VOYAGE',
+    //   url: '',
+    // },
     // {
     //   title: 'Pass',
     //   subtitle: 'international',
@@ -130,7 +143,8 @@ export class TransfertHubServicesPage implements OnInit {
       | 'PASS'
       | 'PASS_ILLIMIX'
       | 'PASS_VOYAGE'
-      | 'PASS_INTERNATIONAL';
+      | 'PASS_INTERNATIONAL'
+      | 'PASS_ALLO';
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
   }[] = [];
@@ -140,6 +154,8 @@ export class TransfertHubServicesPage implements OnInit {
   dataPayload: any;
   hasPromoPlanActive: OfferPlanActive = null;
   hasBoosterPromoActive: PromoBoosterActive = null;
+  showNewFeatureBadge$: Observable<Boolean>;
+
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
@@ -154,7 +170,7 @@ export class TransfertHubServicesPage implements OnInit {
 
   ngOnInit() {
     let purchaseType;
-
+    this.getShowStatusNewFeatureAllo();
     if (history && history.state) {
       purchaseType = history.state.purchaseType;
     }
@@ -171,8 +187,8 @@ export class TransfertHubServicesPage implements OnInit {
     }
   }
 
-  goToDashboard() {
-    this.navController.navigateBack('/dashboard');
+  goBack() {
+    this.navController.pop();
   }
 
   goTo(opt: {
@@ -238,15 +254,25 @@ export class TransfertHubServicesPage implements OnInit {
           );
         }
         break;
+      case 'PASS_ALLO':
+        if (opt.action === 'REDIRECT') {
+          this.bsService.openNumberSelectionBottomSheet(
+            NumberSelectionOption.WITH_MY_PHONES,
+            OPERATION_TYPE_PASS_ALLO,
+            'list-pass'
+          );
+          // this.appRouting.goToSelectRecepientPassIllimix();
+        }
+        break;
       default:
         break;
     }
   }
 
-  checkOmAccount(){
+  checkOmAccount() {
     this.omService.getOmMsisdn().subscribe((msisdn: string) => {
       if (msisdn !== 'error') {
-       this.showBeneficiaryModal();
+        this.showBeneficiaryModal();
       } else {
         this.openPinpad();
       }
@@ -374,5 +400,9 @@ export class TransfertHubServicesPage implements OnInit {
           break;
       }
     return result;
+  }
+
+  getShowStatusNewFeatureAllo() {
+    this.showNewFeatureBadge$ = this.dashbServ.getNewFeatureAlloBadgeStatus();
   }
 }

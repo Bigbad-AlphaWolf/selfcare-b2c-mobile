@@ -10,7 +10,7 @@ import {
   BONS_PLANS,
 } from 'src/shared';
 import { PageHeader } from '../models/page-header.model';
-import { OPERATION_WOYOFAL } from './operations.util';
+import { OPERATION_RAPIDO, OPERATION_WOYOFAL } from './operations.constants';
 import { IMAGES_DIR_PATH } from './constants';
 
 export const titles: PageHeader[] = [
@@ -59,6 +59,10 @@ export const titles: PageHeader[] = [
   {
     typeOperation: OPERATION_WOYOFAL,
     title: 'Rechargement Woyofal',
+  },
+  {
+    typeOperation: OPERATION_RAPIDO,
+    title: 'Rechargement Rapido',
   },
   {
     typeOperation: BONS_PLANS,

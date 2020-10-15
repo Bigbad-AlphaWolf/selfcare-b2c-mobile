@@ -34,8 +34,8 @@ export class RecentsService {
     return this.omService.getOmMsisdn().pipe(
       switchMap((omPhonenumber) => {
         return this.http
-          .get<MarchandOem[]>(
-            `${OM_RECENTS_ENDPOINT}/${omPhonenumber}?service=${service}`
+          .get(
+            `${OM_RECENTS_ENDPOINT}/${omPhonenumber.trim()}?service=${service}`
           )
           .pipe(
             switchMap((response: any) => {

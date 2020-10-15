@@ -23,6 +23,7 @@ export const USER_CONS_CATEGORY_SMS = 'SMS';
 export const USER_CALL_SUMMARY_CONSO_CODES = [1, 6, 9];
 export const OPERATION_TYPE_PASS_INTERNET = 'PASS_INTERNET';
 export const OPERATION_TYPE_PASS_ILLIMIX = 'PASS_ILLIMIX';
+export const OPERATION_TYPE_PASS_ALLO = 'PASS_ALLO';
 export const OPERATION_TYPE_PASS_VOYAGE = 'OPERATION_TYPE_PASS_VOYAGE';
 export const OPERATION_TYPE_MERCHANT_PAYMENT = 'MERCHANT_PAYMENT';
 export const OPERATION_TYPE_SOS = 'SOS';
@@ -39,6 +40,8 @@ export const OPERATION_TRANSFER_OM = 'TRANSFER_MONEY';
 export const OPERATION_TRANSFER_OM_WITH_CODE = 'TRANSFER_MONEY_WITH_CODE';
 export const BONS_PLANS = 'BONS_PLANS';
 export const OPERATION_TYPE_BONS_PLANS = 'BONS_PLANS';
+export const OPERATION_ENABLE_DALAL = 'ACTIVATE_DALAL';
+export const OPERATION_DISABLE_DALAL = 'DISABLE_DALAL';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -69,6 +72,7 @@ export const FACEBOOK_URL = 'https://m.me/165622776799685';
 export const TWITTER_URL =
   'https://twitter.com/messages/compose?recipient_id=733327435299729408';
 
+export const FIND_AGENCE_EXTERNAL_URL = 'https://agence.orange.sn/';
 export const VALID_IMG_EXTENSIONS = ['jpg', 'jpeg', 'png'];
 
 export const CREDIT = 'crédit';
@@ -326,6 +330,8 @@ export function getOrderedListCategory(
   listCategoryFiltered = [...new Set(unorderedList.map((x) => x.libelle))];
   return listCategoryFiltered;
 }
+
+export const ALLO_PASS_CATEGORY = 'ALLO';
 
 export function getTrioConsoUser(consoSummary: UserConsommations) {
   const result = [];
@@ -1178,3 +1184,6 @@ export function concatArtistsNames(artistsArray: { nom?: string }[]) {
   }
   return artistsArray.map((artist) => artist.nom).join(', ');
 }
+export const LOCAL_ZONE = 'Zone Locale';
+export const MONTHLY_DALAL_TARIF = '350 FCFA /mois';
+export const DAILY_DALAL_TARIF = '12 FCFA /jour';

@@ -5,11 +5,9 @@ import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
-
-export const OPERATION_WOYOFAL = 'OPERATION_WOYOFAL';
-export const OPERATION_RECHARGE_CREDIT = 'OPERATION_RECHARGE_CREDIT';
-export const OPERATION_TRANSFERT_ARGENT = 'OPERATION_TRANSFERT_ARGENT';
+import { OPERATION_RAPIDO, OPERATION_RECHARGE_CREDIT, OPERATION_TRANSFERT_ARGENT, OPERATION_WOYOFAL } from './operations.constants';
 
 export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
   {
@@ -42,21 +40,38 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
   },
   {
     title: 'Acheter',
-    subtitle: 'pass illimix ou allo',
+    subtitle: 'pass illimix',
     icon: `${IMAGES_DIR_PATH}/ic-package-services@2x.png`,
     action: 'openNumberSelectionBottomSheet',
     params: ['NONE', OPERATION_TYPE_PASS_ILLIMIX, '/list-pass'],
     type: OPERATION_TYPE_PASS_ILLIMIX,
     url: '',
   },
-  // {
-  //   title: 'Recharger',
-  //   subtitle: 'Woyofal',
-  //   icon: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
-  //   action: 'openModal',
-  //   type: OPERATION_WOYOFAL,
-  //   url: '',
-  // },
+  {
+    title: 'Acheter',
+    subtitle: 'pass allo',
+    icon: `${IMAGES_DIR_PATH}/ic-call-forward@2x.png`,
+    action: 'openNumberSelectionBottomSheet',
+    params: ['NONE', OPERATION_TYPE_PASS_ALLO, '/list-pass'],
+    type: OPERATION_TYPE_PASS_ALLO,
+    url: '',
+  },
+  {
+    title: 'Recharger',
+    subtitle: 'Woyofal',
+    icon: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
+    action: 'openModal',
+    type: OPERATION_WOYOFAL,
+    url: '',
+  },
+  {
+    title: 'Recharger',
+    subtitle: 'Rapido',
+    icon: `${IMAGES_DIR_PATH}/rapido@3x.png`,
+    action: '/rapid-operation',
+    type: 'NAVIGATE',
+    url: '',
+  },
 
   {
     title: 'Autres',
@@ -69,7 +84,7 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
 ];
 
 export const ACTIONS_RAPIDES_OPERATIONS_POSTPAID: OperationOem[] = [
-  ...ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.slice(0, 5),
+  ...ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.slice(0, ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.length - 1),
   {
     title: 'Payer',
     subtitle: 'un marchand',

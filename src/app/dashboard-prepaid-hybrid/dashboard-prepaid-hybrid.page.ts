@@ -130,7 +130,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-
     this.getUserInfos();
     this.getWelcomeStatus();
   }
@@ -281,10 +280,10 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     return SARGAL_UNSUBSCRIPTION_ONGOING;
   }
 
-  makeSargalAction() {
+  makeSargalAction() {    
     if (
       this.userSargalData &&
-      this.userSargalData.status === SARGAL_NOT_SUBSCRIBED &&
+      (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED || this.userSargalData.status === SARGAL_UNSUBSCRIPTION_ONGOING) &&
       this.sargalDataLoaded
     ) {
       this.followAnalyticsService.registerEventFollow(
@@ -293,11 +292,8 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         'clicked'
       );
       this.router.navigate(['/sargal-registration']);
-    } else if (
-      (this.userSargalData &&
-        this.userSargalData.status !== SARGAL_UNSUBSCRIPTION_ONGOING) ||
-      (!this.sargalUnavailable && this.sargalDataLoaded)
-    ) {
+    } else if(!this.sargalUnavailable && this.sargalDataLoaded)
+     {
       this.followAnalyticsService.registerEventFollow(
         'Sargal-dashboard',
         'event',
@@ -531,8 +527,14 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goMerchantPayment() {
-    this.omServ.getOmMsisdn().subscribe(async (msisdn: string) => {
-      if (msisdn !== 'error') {
+    this.omServ.omAccountSession().subscribe(async (omSession: any) => {
+      const omSessionValid = omSession
+        ? omSession.msisdn !== 'error' &&
+          omSession.hasApiKey &&
+          omSession.accessToken &&
+          !omSession.loginExpired
+        : null;
+      if (omSessionValid) {
         this.bsService
           .initBsModal(
             MerchantPaymentCodeComponent,
@@ -555,6 +557,11 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
+    });
+    modal.onDidDismiss().then((resp) => {
+      if (resp && resp.data && resp.data.success) {
+        this.goMerchantPayment();
+      }
     });
     return await modal.present();
   }

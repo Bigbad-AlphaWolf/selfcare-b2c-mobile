@@ -11,6 +11,20 @@
         <span class="action">{{ operation.title }} </span>
         <span class="target">{{ operation.subtitle }}</span>
       </div>
+      <div
+        class="badge-promo"
+        *ngIf="
+          operation?.type === OPERATION_TYPE_ALLO && showNewFeatureBadge$
+            | async
+        "
+      >
+        <div class="icon-container">
+          <span class="new scb-text-white">
+            Nouveau
+          </span>
+        </div>
+        <div class="triangle"></div>
+      </div>
     </div>
   </ion-row>
 </ion-grid>

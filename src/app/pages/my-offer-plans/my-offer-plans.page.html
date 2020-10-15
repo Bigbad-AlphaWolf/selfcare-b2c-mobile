@@ -41,7 +41,7 @@
                     <app-item-offer-plan
                     *ngFor="let offer of listOffers.offersPlans"
                      [offerPlan]="offer"
-                     (selectOfferPlans)="goToPage($event)"
+                     (selectOfferPlans)="processMPO($event)"
                     ></app-item-offer-plan>
                   </div>
                 </ion-slide>
@@ -53,6 +53,9 @@
         </div>
         <div *ngIf="hasNoOfferPlans" (click)="getUserOfferPlans()" class="has-error">
           Vous n’avez pas de bon plan ce jour
+        </div>
+        <div *ngIf="hasErrorProcessingMPO" (click)="processMPO(selectedOfferPlan)" class="has-error">
+          Une erreur est survenue. Veuillez cliquer ici pour réessayer
         </div>
       </ng-container>
     </div>

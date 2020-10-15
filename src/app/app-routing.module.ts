@@ -4,13 +4,22 @@ import { AuthGuard } from './services/auth-guard/auth.guard';
 import { AuthUpdateGuard } from './services/auth-update-guard/auth-update.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full', canActivate: [AuthGuard] },
-  { path: 'home-v2', loadChildren: './home-v2/home-v2.module#HomeV2PageModule', canActivate:[AuthUpdateGuard] },
+  {
+    path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full',
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'home-v2',
+    loadChildren: './home-v2/home-v2.module#HomeV2PageModule',
+    canActivate: [AuthUpdateGuard],
+  },
   {
     path: 'new-registration',
     loadChildren:
       './new-registration/new-registration.module#NewRegistrationPageModule',
-      canActivate: [AuthUpdateGuard] 
+    canActivate: [AuthUpdateGuard],
   },
   {
     path: 'home',
@@ -183,38 +192,111 @@ const routes: Routes = [
     loadChildren:
       './pages/my-offer-plans/my-offer-plans.module#MyOfferPlansPageModule',
   },
-  { path: 'select-beneficiary-v2', loadChildren: './select-beneficiary-v2/select-beneficiary-v2.module#SelectBeneficiaryV2PageModule' },
+  {
+    path: 'select-beneficiary-v2',
+    loadChildren:
+      './select-beneficiary-v2/select-beneficiary-v2.module#SelectBeneficiaryV2PageModule',
+  },
   {
     path: 'operation-recap',
     loadChildren:
       './operation-recap/operation-recap.module#OperationRecapPageModule',
   },
-  { path: 'new-pinpad-modal', loadChildren: './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule' },
-  { path: 'operation-success-fail-modal', loadChildren: './operation-success-fail-modal/operation-success-fail-modal.module#OperationSuccessFailModalPageModule' },
-  { path: 'list-pass', loadChildren: './pages/liste-pass/liste-pass.module#ListePassPageModule' },
-  { path: 'registration-success-modal', loadChildren: './registration-success-modal/registration-success-modal.module#RegistrationSuccessModalPageModule' },
-  { path: 'transfert-hub-services', loadChildren: './transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule' },
-  { path: 'purchase-set-amount', loadChildren: './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule' },
-  { path: 'credit-pass-amount', loadChildren: './pages/credit-pass-amount/credit-pass-amount.module#CreditPassAmountPageModule' },
-  { path: 'bills-hub', loadChildren: './pages/bills-hub/bills-hub.module#BillsHubPageModule' },
-  { path: 'bill-amount', loadChildren: './pages/bill-amount/bill-amount.module#BillAmountPageModule' },
-  { path: 'oem-services', loadChildren: './pages/oem-services/oem-services.module#OemServicesPageModule' },
-  { path: 'app-update', loadChildren: './pages/app-update/app-update.module#AppUpdatePageModule' },
-  { path: 'bills', loadChildren: './pages/orange-bills/orange-bills.module#OrangeBillsPageModule' },
-  { path: 'orange-bills', loadChildren: './pages/orange-bills/orange-bills.module#OrangeBillsPageModule' },
-  { path: 'follow-up-requests', loadChildren: './pages/follow-up-requests/follow-up-requests.module#FollowUpRequestsPageModule' },
-  { path: 'request-status', loadChildren: './pages/request-status/request-status.module#RequestStatusPageModule' },
-  { path: 'list-pass-voyage', loadChildren: './pages/list-pass-voyage/list-pass-voyage.module#ListPassVoyagePageModule' },  { path: 'offres-services', loadChildren: './pages/offres-services/offres-services.module#OffresServicesPageModule' },
-  { path: 'banniere-description', loadChildren: './pages/banniere-description/banniere-description.module#BanniereDescriptionPageModule' },
-  { path: 'dalal-tones', loadChildren: './dalal-tones/dalal-tones.module#DalalTonesPageModule' },
-
-
-  
-
-
-
-
-
+  {
+    path: 'new-pinpad-modal',
+    loadChildren:
+      './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule',
+  },
+  {
+    path: 'operation-success-fail-modal',
+    loadChildren:
+      './operation-success-fail-modal/operation-success-fail-modal.module#OperationSuccessFailModalPageModule',
+  },
+  {
+    path: 'list-pass',
+    loadChildren: './pages/liste-pass/liste-pass.module#ListePassPageModule',
+  },
+  {
+    path: 'registration-success-modal',
+    loadChildren:
+      './registration-success-modal/registration-success-modal.module#RegistrationSuccessModalPageModule',
+  },
+  {
+    path: 'transfert-hub-services',
+    loadChildren:
+      './transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule',
+  },
+  {
+    path: 'purchase-set-amount',
+    loadChildren:
+      './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule',
+  },
+  {
+    path: 'credit-pass-amount',
+    loadChildren:
+      './pages/credit-pass-amount/credit-pass-amount.module#CreditPassAmountPageModule',
+  },
+  {
+    path: 'bills-hub',
+    loadChildren: './pages/bills-hub/bills-hub.module#BillsHubPageModule',
+  },
+  {
+    path: 'bill-amount',
+    loadChildren: './pages/bill-amount/bill-amount.module#BillAmountPageModule',
+  },
+  {
+    path: 'oem-services',
+    loadChildren:
+      './pages/oem-services/oem-services.module#OemServicesPageModule',
+  },
+  {
+    path: 'app-update',
+    loadChildren: './pages/app-update/app-update.module#AppUpdatePageModule',
+  },
+  {
+    path: 'bills',
+    loadChildren:
+      './pages/orange-bills/orange-bills.module#OrangeBillsPageModule',
+  },
+  {
+    path: 'orange-bills',
+    loadChildren:
+      './pages/orange-bills/orange-bills.module#OrangeBillsPageModule',
+  },
+  {
+    path: 'follow-up-requests',
+    loadChildren:
+      './pages/follow-up-requests/follow-up-requests.module#FollowUpRequestsPageModule',
+  },
+  {
+    path: 'request-status',
+    loadChildren:
+      './pages/request-status/request-status.module#RequestStatusPageModule',
+  },
+  {
+    path: 'list-pass-voyage',
+    loadChildren:
+      './pages/list-pass-voyage/list-pass-voyage.module#ListPassVoyagePageModule',
+  },
+  {
+    path: 'offres-services',
+    loadChildren:
+      './pages/offres-services/offres-services.module#OffresServicesPageModule',
+  },
+  {
+    path: 'banniere-description',
+    loadChildren:
+      './pages/banniere-description/banniere-description.module#BanniereDescriptionPageModule',
+  },
+  {
+    path: 'dalal-tones',
+    loadChildren: './dalal-tones/dalal-tones.module#DalalTonesPageModule',
+  },
+  {
+    path: 'rapid-operation',
+    loadChildren:
+      './pages/rapid-operation/rapid-operation.module#RapidOperationPageModule',
+  },
 ];
 
 @NgModule({

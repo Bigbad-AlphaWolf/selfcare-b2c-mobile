@@ -17,19 +17,20 @@
   </ion-header>
   <div class="dalal-tones-page-body">
     <div class="banniere-container">
-      <img src="/assets/images/mon-statut.png" alt="header-dalal" />
+      <img src="/assets/images/dalal-tones-banniere.png" alt="header-dalal" />
     </div>
     <div class="description">
       <div class="text scb-text-gray">
         Avec <span class="scb-text-full-black">Dalal tones</span>, personnalisez
         votre sonnerie d’attente et donnez de la joie à ceux qui vous appellent
+        le temps que vous décrochez
       </div>
       <div class="tarification">
         <div class="tarifs-infos">
-          <span class="tarif scb-text-orange">350 FCFA</span>
-          <span class="period scb-text-gray"> / semaine</span>
+          <span class="tarif scb-text-orange">12 FCFA</span>
+          <span class="period scb-text-gray"> / jour</span>
         </div>
-        <button class="scb-text-full-black" *ngIf="0">Voir détails</button>
+        <button class="scb-text-full-black" *ngIf="1">En savoir plus</button>
       </div>
     </div>
     <div class="filters-block">
@@ -63,27 +64,11 @@
         <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
       </div>
       <ion-list *ngIf="!loadingDalal && dalalTones && dalalTones.length">
-        <ion-item
+        <app-dalal-card-item
           *ngFor="let dalal of dalalTones"
-          lines="none"
-          class="ion-no-padding"
-          (click)="openDalalActivationModal(dalal)"
-        >
-          <div class="item">
-            <div class="artiste-img-container" *ngIf="dalal?.artiste?.image">
-              <img
-                [src]="downloadAvatarEndpoint + dalal?.artiste?.image"
-                alt="art"
-              />
-            </div>
-            <div class="infos-text">
-              <div class="titre scb-text-orange">{{dalal?.titre}}</div>
-              <div class="artiste scb-text-dark-grey">
-                {{dalal?.artiste?.nom}}
-              </div>
-            </div>
-          </div>
-        </ion-item>
+          (click)="goDalalActivationRecapPage(dalal)"
+          [dalal]="dalal"
+        ></app-dalal-card-item>
       </ion-list>
       <div
         class="empty-array-message"

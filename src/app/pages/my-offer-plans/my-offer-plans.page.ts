@@ -9,6 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { NavController, IonSlides } from '@ionic/angular';
 import { getPageHeader } from '../../utils/title.util';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-my-offer-plans',
@@ -33,6 +34,8 @@ export class MyOfferPlansPage implements OnInit {
   payloadNavigation: { recipientMsisdn: string; recipientCodeFormule: string } = { recipientMsisdn: null, recipientCodeFormule: null };
   hasNoOfferPlans: boolean;
   fullList: { category: {label: string, value: string} , offersPlans: OfferPlan[] }[];
+  hasErrorProcessingMPO: boolean;
+  selectedOfferPlan: OfferPlan;
   @ViewChild('sliders') sliders: IonSlides;
   slideOpts = {
     speed: 400,
@@ -125,7 +128,21 @@ export class MyOfferPlansPage implements OnInit {
     });
   }
 
-  goToPage(offer: OfferPlan) {
+  orderBonPlan(offer: OfferPlan){
+    return this.offerPlansServ.orderBonPlanProduct(offer.productOfferingId).pipe(take(1));
+  }
+
+  processMPO(offer: OfferPlan) {
+    this.hasErrorProcessingMPO = false;
+    this.orderBonPlan(offer).subscribe(() => {      
+      this.goToPage(offer);
+    }, () => {
+      this.selectedOfferPlan = offer;
+      this.hasErrorProcessingMPO = true;
+    });
+  }
+
+  goToPage(offer: OfferPlan){
     switch (offer.typeMPO.toLowerCase()) {
       case 'illimix':
         if(offer.pass){
@@ -156,5 +173,9 @@ export class MyOfferPlansPage implements OnInit {
       default:
         break;
     }
+  }
+
+  showErrorMsg(){
+    this.hasErrorProcessingMPO = true;
   }
 }

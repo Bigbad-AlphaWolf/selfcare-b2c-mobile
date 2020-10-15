@@ -26,9 +26,7 @@ export class DalalActivationComponent implements OnInit {
     private dalalTonesService: DalalTonesService
   ) {}
 
-  ngOnInit() {
-    console.log(this.choosenDalal);
-  }
+  ngOnInit() {}
 
   setChoice(choice) {
     this.currentChoice = choice;

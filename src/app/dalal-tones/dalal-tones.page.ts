@@ -1,11 +1,14 @@
 import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { NavigationExtras } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { OPERATION_ENABLE_DALAL } from 'src/shared';
 import { DalalTonesGenreModel } from '../models/dalal-tones-genre.model';
 import { DalalTonesSousGenreModel } from '../models/dalal-tones-sous-genre.model';
 import { DalalTonesModel } from '../models/dalal-tones.model';
+import { OperationExtras } from '../models/operation-extras.model';
 import { DalalTonesService } from '../services/dalal-tones-service/dalal-tones.service';
 import { downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
 import { DalalActivationSuccessModalComponent } from './components/dalal-activation-success-modal/dalal-activation-success-modal.component';
@@ -17,6 +20,7 @@ const SINGLE_REQUEST_SIZE = 10;
   styleUrls: ['./dalal-tones.page.scss'],
 })
 export class DalalTonesPage implements OnInit {
+  static ROUTE_PATH = '/dalal-tones';
   genres$: Observable<DalalTonesGenreModel[]>;
   allGenres: DalalTonesGenreModel[];
   // variable used to check if genre is selected (in the array) to set a css class
@@ -108,6 +112,14 @@ export class DalalTonesPage implements OnInit {
     const index = this.allGenres.map((genre) => genre.nom).indexOf(genre.nom);
     this.selectedSousGenres[index] = sousGenreCode;
     this.reloadDalalTones();
+  }
+
+  goDalalActivationRecapPage(dalal: DalalTonesModel) {
+    let state: OperationExtras = {};
+    state.purchaseType = OPERATION_ENABLE_DALAL;
+    state.dalal = dalal;
+    const navExtras: NavigationExtras = { state };
+    this.navController.navigateForward(['/operation-recap'], navExtras);
   }
 
   async openDalalActivationModal(choosenDalal: DalalTonesModel) {

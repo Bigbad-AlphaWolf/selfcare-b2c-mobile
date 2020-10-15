@@ -3,28 +3,28 @@
     <img alt="" src="/assets/images/arrow-left.png" />
   </div>
   <div class="title">
-    Sélectionner un compteur
+    Sélectionner une carte
   </div>
   <div class="description">
     Choisissez sur la liste
   </div>
 
-    <div class="recents content" *ngIf="(counters$|async) as counters else spinnerBlock">
+    <div class="recents content" *ngIf="(rapidos$|async) as rapidos else spinnerBlock">
       <div 
         matRipple
         class="oem-item"
-        (click)="onFavoriteCounterSlected(counter)"
-        *ngFor="let counter of counters; index as i; count as size"
+        (click)="onFavoriteRapidoSlected(rapido)"
+        *ngFor="let rapido of rapidos; index as i; count as size"
       >
         <div class="logo">
-          <img src="assets/images/woyofal@3x.png" />
+          <img src="assets/images/rapido@3x.png" />
         </div>
         <div class="labels" [ngClass]="i + 1 == size ? 'last-label' : ''">
-          <span class="name"> {{ counter.name }}</span>
-          <span class="number">{{ counter.counterNumber |codeFormat:2}}</span>
+          <span class="name"> {{ rapido.name }}</span>
+          <span class="number">{{ rapido.counterNumber |codeFormat:2}}</span>
         </div>
       </div>
-      <div *ngIf="counters.length==0" >Aucun compteur enregistré</div>
+      <div *ngIf="rapidos.length==0" >Aucune carte rapido enregistrée</div>
     </div>
     <ng-template #spinnerBlock>
       <div style="width: 100%; display: flex; justify-content: center;">

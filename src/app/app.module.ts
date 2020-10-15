@@ -41,6 +41,7 @@ import { SetPaymentChannelModalPageModule } from './set-payment-channel-modal/se
 import { NewPinpadModalPageModule } from './new-pinpad-modal/new-pinpad-modal.module';
 import { OperationSuccessFailModalPageModule } from './operation-success-fail-modal/operation-success-fail-modal.module';
 import { RegistrationSuccessModalPageModule } from './registration-success-modal/registration-success-modal.module';
+import { IonicImageLoader } from 'ionic-image-loader';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -56,6 +57,7 @@ registerLocaleData(localeFr);
     MatDialogModule,
     BrowserModule,
     IonicModule.forRoot(),
+    IonicImageLoader.forRoot(),
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule,

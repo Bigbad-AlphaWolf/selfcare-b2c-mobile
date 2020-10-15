@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CounterService } from './counter.service';
+import { OperationService } from './operation.service';
 
-describe('WoyofalService', () => {
+describe('OperationService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: CounterService = TestBed.get(CounterService);
+    const service: OperationService = TestBed.get(OperationService);
     expect(service).toBeTruthy();
   });
 });

@@ -761,3 +761,23 @@ button {
     }
   }
 }
+/**
+*Banner
+**/
+.banner {
+  img {
+    border-radius: 15px;
+    width: 315px;
+    height: 115px;
+  }
+}
+
+img-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  ion-spinner {
+    height: 20%;
+    width: 20%;
+  }
+}

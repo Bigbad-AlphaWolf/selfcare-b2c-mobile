@@ -1,0 +1,46 @@
+ion-content{
+    height: 100%;
+    background-color: #f3f3f8;
+}
+.banniere{
+    img{
+        display: flex;
+    }
+}
+.operations{
+    display: flex;
+    justify-content: space-around;
+    padding-top: 20px;
+    height: 120%;
+    background-color: #f3f3f8;
+
+    .operation{
+        width: 165px;
+        height: 133px;
+        border-radius: 10px;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        img{
+            width: 47px;
+            height: 47px;
+        }
+        .name{
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 16px;
+            color: #000000;
+            text-align: center;
+        }
+        .description{
+            width: 145px;
+            height: 28px;
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 12px;
+            text-align: center;
+            color: #666666;
+        }
+    }
+
+}

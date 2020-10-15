@@ -1,13 +1,14 @@
-import { BillCompany } from "./bill-company.model";
-import { CounterOem } from "./counter-oem.model";
+import { BillCompany } from './bill-company.model';
+import { CounterOem } from './counter-oem.model';
 import { OmSession } from './om-session.model';
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
 import { MarchandOem } from './marchand-oem.model';
+import { DalalTonesModel } from './dalal-tones.model';
 
 export interface OperationExtras {
   senderMsisdn?: string;
   recipientMsisdn?: string;
-  destinataire?:string;
+  destinataire?: string;
   recipientFirstname?: string;
   recipientLastname?: string;
   recipientName?: string;
@@ -20,13 +21,19 @@ export interface OperationExtras {
   includeFee?: any;
   fee?: any;
 
-  code?:any;
-  profil?:any;
+  code?: any;
+  profil?: any;
 
-  billData?: { company?: BillCompany; counter?: CounterOem, codeRecharge?:string, kw?:number };
+  billData?: {
+    company?: BillCompany;
+    counter?: CounterOem;
+    codeRecharge?: string;
+    kw?: number;
+  };
   omSession?: OmSession;
 
   offerPlan?: OfferPlan;
-  pass?:any;
-  merchant?: MarchandOem
+  pass?: any;
+  merchant?: MarchandOem;
+  dalal?: DalalTonesModel;
 }

@@ -1,12 +1,15 @@
+@import 'src/app/app';
+
 ion-grid {
   ion-row {
-    justify-content: space-around;
+    justify-content: space-between;
     &::after {
-      content: "";
+      content: '';
       margin: 7px;
       width: 105px;
     }
     .operation {
+      overflow: unset !important;
       width: 105px;
       height: 117px;
       border-radius: 10px;
@@ -16,6 +19,7 @@ ion-grid {
       justify-content: center;
       align-items: center;
       margin: 7px;
+      position: relative;
       .operation-img {
         width: 47px;
         height: 47px;
@@ -47,6 +51,33 @@ ion-grid {
           letter-spacing: normal;
           text-align: center;
           color: #666666;
+        }
+      }
+      .badge-promo {
+        position: absolute;
+        top: 15px;
+        right: -5px;
+        .icon-container {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 10px;
+          background-color: $lightBlue;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 5px 10px;
+          width: 100%;
+          border-radius: 5% 5% 0 5%;
+          .new {
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 10px;
+          }
+        }
+        .triangle {
+          width: 0;
+          height: 0;
+          border-top: 5px solid $bluePopUp;
+          border-right: 5px solid transparent;
+          float: right;
         }
       }
     }

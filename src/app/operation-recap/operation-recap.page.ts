@@ -15,15 +15,23 @@ import {
   SubscriptionModel,
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TYPE_BONS_PLANS,
+  OPERATION_TYPE_PASS_ALLO,
   OPERATION_TYPE_PASS_VOYAGE,
+  OPERATION_ENABLE_DALAL,
+  MONTHLY_DALAL_TARIF,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { OperationExtras } from '../models/operation-extras.model';
-import { OPERATION_WOYOFAL } from '../utils/operations.util';
+import {
+  OPERATION_RAPIDO,
+  OPERATION_WOYOFAL,
+} from '../utils/operations.constants';
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
+import { PROFILE_TYPE_POSTPAID } from '../dashboard';
+import { DalalTonesService } from '../services/dalal-tones-service/dalal-tones.service';
 
 @Component({
   selector: 'app-operation-recap',
@@ -71,11 +79,13 @@ export class OperationRecapPage implements OnInit {
   };
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
+  OPERATION_ALLO_TYPE = OPERATION_TYPE_PASS_ALLO;
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   OPERATION_TYPE_BONS_PLANS = OPERATION_TYPE_BONS_PLANS;
-  state: any;
+  OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
+  DALAL_TARIF = MONTHLY_DALAL_TARIF;
   subscriptionInfos: SubscriptionModel;
   buyCreditPayload: any;
   offerPlan: OfferPlan;
@@ -88,7 +98,8 @@ export class OperationRecapPage implements OnInit {
     private appRouting: ApplicationRoutingService,
     private orangeMoneyService: OrangeMoneyService,
     private navController: NavController,
-    private authServ: AuthenticationService
+    private authServ: AuthenticationService,
+    private dalalTonesService: DalalTonesService
   ) {}
 
   ngOnInit() {
@@ -101,11 +112,12 @@ export class OperationRecapPage implements OnInit {
           this.router.getCurrentNavigation().extras.state.purchaseType
         ) {
           const state = this.router.getCurrentNavigation().extras.state;
-          this.state = state;
+          this.opXtras = state;
           this.purchaseType = state.purchaseType;
           switch (this.purchaseType) {
             case OPERATION_TYPE_PASS_INTERNET:
             case OPERATION_TYPE_PASS_ILLIMIX:
+            case OPERATION_TYPE_PASS_ALLO:
               this.recipientName = state.recipientName;
               this.passChoosen = state.pass;
               this.recipientMsisdn = state.recipientMsisdn;
@@ -121,9 +133,9 @@ export class OperationRecapPage implements OnInit {
               this.recipientMsisdn = this.opXtras.recipientMsisdn;
               this.recipientName = this.opXtras.recipientFromContact
                 ? this.opXtras.recipientFirstname +
-                ' ' +
+                  ' ' +
                   this.opXtras.recipientLastname
-                  : '';
+                : '';
               this.buyPassPayload = {
                 destinataire: this.recipientMsisdn,
                 pass: this.opXtras.pass,
@@ -169,7 +181,6 @@ export class OperationRecapPage implements OnInit {
               };
               break;
             case OPERATION_TYPE_RECHARGE_CREDIT:
-              
               this.opXtras = state;
               this.amount = this.opXtras.amount;
               this.paymentMod = 'ORANGE_MONEY';
@@ -181,11 +192,11 @@ export class OperationRecapPage implements OnInit {
                 : '';
               this.offerPlan = state.offerPlan;
               break;
+            case OPERATION_RAPIDO:
             case OPERATION_WOYOFAL:
               this.opXtras = state;
-              // this.amount = this.opXtras.amount;
-
               break;
+
             default:
               break;
           }
@@ -206,7 +217,12 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_INTERNET:
       case OPERATION_TYPE_PASS_VOYAGE:
       case OPERATION_TYPE_PASS_ILLIMIX:
-        this.setPaymentMod();
+      case OPERATION_TYPE_PASS_ALLO:
+        if (this.subscriptionInfos.profil === PROFILE_TYPE_POSTPAID) {
+          this.openPinpad();
+        } else {
+          this.setPaymentMod();
+        }
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
         this.openPinpad();
@@ -216,10 +232,41 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TRANSFER_OM_WITH_CODE:
         this.openPinpad();
         break;
+      case OPERATION_RAPIDO:
       case OPERATION_WOYOFAL:
         this.openPinpad();
         break;
+      case OPERATION_ENABLE_DALAL:
+        this.activateDalal();
+        break;
     }
+  }
+
+  activateDalal() {
+    this.buyingPass = true;
+    this.dalalTonesService.activateDalal(this.opXtras.dalal).subscribe(
+      (res) => {
+        this.buyingPass = false;
+        this.openSuccessFailModal({
+          success: true,
+          msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
+          buyForMe: true,
+        });
+      },
+      (err) => {
+        this.buyingPass = false;
+        const activationErrorMsg =
+          err && err.error && err.error.message
+            ? err.error.message
+            : 'Une erreur est survenue';
+        this.openSuccessFailModal({
+          success: false,
+          msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
+          buyForMe: true,
+          errorMsg: activationErrorMsg,
+        });
+      }
+    );
   }
 
   async setPaymentMod() {
@@ -261,8 +308,8 @@ export class OperationRecapPage implements OnInit {
         operationType: this.purchaseType,
         buyPassPayload: this.buyPassPayload,
         buyCreditPayload: {
-          msisdn2: this.state.recipientMsisdn,
-          amount: this.state.amount,
+          msisdn2: this.opXtras.recipientMsisdn,
+          amount: this.opXtras.amount,
         },
         opXtras: this.opXtras,
         merchantPaymentPayload: this.merchantPaymentPayload,
@@ -383,7 +430,7 @@ export class OperationRecapPage implements OnInit {
 
   transactionFailure() {
     this.buyingPass = false;
-    this.openSuccessFailModal({ success: false });
+    // this.openSuccessFailModal({ success: false });
     this.buyPassErrorMsg =
       'Service indisponible. Veuillez réessayer ultérieurement';
     this.followAnalyticsService.registerEventFollow(
@@ -405,9 +452,12 @@ export class OperationRecapPage implements OnInit {
   }
 
   get operationTypeRecap() {
-    return ['RECHARGEMENT_CREDIT', 'OPERATION_WOYOFAL', 'OPERATION_TYPE_PASS_VOYAGE'].includes(   
-      this.purchaseType
-    );
+    return [
+      'RECHARGEMENT_CREDIT',
+      'OPERATION_TYPE_PASS_VOYAGE',
+      'OPERATION_WOYOFAL',
+      'OPERATION_RAPIDO',
+    ].includes(this.purchaseType);
   }
 }
 

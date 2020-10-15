@@ -5,6 +5,7 @@ import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { NavController } from '@ionic/angular';
+import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 
 @Component({
   selector: 'app-sargal-registration',
@@ -15,6 +16,7 @@ export class SargalRegistrationPage implements OnInit {
   public static readonly PATH: string = "/sargal-registration";
 
   confirmDialog: MatDialogRef<CancelOperationPopupComponent>;
+  success: MatDialogRef<ModalSuccessComponent>;
   currentPhoneNumber: string;
   isProcessing: boolean;
   hasError: boolean;
@@ -52,7 +54,9 @@ export class SargalRegistrationPage implements OnInit {
                 msisdn: this.currentPhoneNumber
               }
             );
-            this.goBack();
+            const type = 'sargal-success';
+            this.openPopUpDialog(type);
+            // this.goBack();
           },
           (err: any) => {
             this.followService.registerEventFollow(
@@ -66,11 +70,19 @@ export class SargalRegistrationPage implements OnInit {
                     : 'Une erreur est survenue durant le traitement de la requête'
               }
             );
+            const type = 'sargal-failed';
+            this.openPopUpDialog(type);
             this.isProcessing = false;
             this.hasError = true;
           }
         );
       }
+    });
+  }
+
+  openPopUpDialog(type: string) {
+    const dialogRef = this.matDialog.open(ModalSuccessComponent, {
+      data: { type },
     });
   }
 }
