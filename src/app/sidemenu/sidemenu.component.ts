@@ -70,11 +70,13 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.msisdn = this.dashboardServ.getCurrentPhoneNumber();
     const userHasLogin = !!this.authServ.getToken();
     if (userHasLogin) {
-      this.authServ.getSubscription(this.msisdn).subscribe((souscription) => {
-        this.userSubscription = souscription;
-        this.currentProfile = souscription.profil;
-        this.currentFormule = souscription.nomOffre;
-      });
+      setTimeout(() => {
+        this.authServ.getSubscription(this.msisdn).subscribe((souscription) => {
+          this.userSubscription = souscription;
+          this.currentProfile = souscription.profil;
+          this.currentFormule = souscription.nomOffre;
+        });
+      }, 1000);
     }
   }
 

@@ -15,6 +15,8 @@ import {
   retryWhen,
   flatMap,
   switchMap,
+  take,
+  share,
 } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -143,6 +145,10 @@ export class AuthenticationService {
     return this.http.post(`${registerUserEndpoint}`, userInfos);
   }
 
+  getCustomerOfferRefact(msisdn: string){
+    return this.http.get(`${userSubscriptionEndpoint2}/${msisdn}`).pipe(share());
+  }
+
   // get msisdn subscription
   getSubscriptionCustomerOffer(msisdn: string) {
     // step 1 check if data exists in localstorage
@@ -186,14 +192,39 @@ export class AuthenticationService {
     const lsKey = 'sub' + msisdn;
     const savedData = ls.get(lsKey);
     if (savedData) {
-      return of(savedData);
+      return of(savedData).pipe(take(1));
+    } else {
+      return this.getCustomerOfferRefact(msisdn).pipe(
+        map((res: any) => {
+          const subscription = {
+            clientCode: res.clientCode,
+            nomOffre: res.offerName,
+            profil: res.offerType,
+            code: res.offerId,
+          };
+          if (
+            subscription.profil === PROFILE_TYPE_HYBRID ||
+            subscription.profil === PROFILE_TYPE_HYBRID_1 ||
+            subscription.profil === PROFILE_TYPE_HYBRID_2
+          ) {
+            subscription.code = JAMONO_ALLO_CODE_FORMULE;
+          }
+          if (isFixPostpaid(subscription.nomOffre)) {
+            subscription.profil = PROFILE_TYPE_POSTPAID;
+          }
+          const lsKey = 'sub' + msisdn;
+          ls.set(lsKey, subscription);
+          // this.subscriptionUpdatedSubject.next(subscription);
+          return subscription;
+        })
+      );
     }
-    if (!this.SubscriptionHttpCache.has(msisdn)) {
-      this.SubscriptionHttpCache[msisdn] = this.getSubscriptionCustomerOffer(
-        msisdn
-      ).pipe(shareReplay(1));
-    }
-    return this.SubscriptionHttpCache[msisdn];
+    // if (!this.SubscriptionHttpCache.has(msisdn)) {
+    //   this.SubscriptionHttpCache[msisdn] = this.getSubscriptionCustomerOffer(
+    //     msisdn
+    //   ).pipe(shareReplay(1));
+    // }
+    // return this.SubscriptionHttpCache[msisdn];
   }
 
   getSubscriptionCustomerOfferForTiers(msisdn: string) {
@@ -332,7 +363,7 @@ export class AuthenticationService {
       tap((res: any) => {
         this.storeAuthenticationData(res, credential);
         this.isLoginSubject.next(true);
-        this.getSubscription(credential.username).subscribe();
+        // this.getSubscription(credential.username).subscribe();
       })
     );
   }
@@ -451,7 +482,6 @@ export class AuthenticationService {
         );
         return this.getSubscriptionForTiers(msisdn).pipe(
           switchMap((sub: SubscriptionModel) => {
-            console.log(sub);
 
             const isProMobile = sub.code === JAMONO_PRO_CODE_FORMULE;
             if (!isProMobile) {

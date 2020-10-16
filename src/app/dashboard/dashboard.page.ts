@@ -140,9 +140,6 @@ export class DashboardPage implements OnInit, OnDestroy {
         (res: SubscriptionModel) => {
           this.isLoading = false;
           this.hasErrorSubscription = false;
-          this.userSubscription = res;
-          this.currentProfile = this.userSubscription.profil;
-          this.currentFormule = this.userSubscription.nomOffre;
           this.currentProfile = res.profil;
           this.currentFormule = res.nomOffre;
           this.currentCodeFormule = res.code;

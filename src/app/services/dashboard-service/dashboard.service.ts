@@ -354,10 +354,10 @@ export class DashboardService {
     }
   }
 
-  getAccountInfo(userLogin: string) {
+  getAccountInfo(userLogin: string) {    
     return this.http
       .get(`${userAccountInfos}/${userLogin}`)
-      .pipe(tap(() => {}));
+      .pipe(share());
   }
 
   getUserConsoInfosByCode(consoCodes?: number[]) {
@@ -454,7 +454,7 @@ export class DashboardService {
   getIdClient() {
     const phoneNumber = this.getCurrentPhoneNumber();
     return this.authService
-      .getSubscriptionCustomerOffer(phoneNumber)
+      .getSubscription(phoneNumber)
       .pipe(map((response: any) => response.clientCode));
   }
 
