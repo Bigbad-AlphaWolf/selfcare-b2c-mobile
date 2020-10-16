@@ -9,7 +9,7 @@ import {
   PAYMENT_MOD_CREDIT,
   PAYMENT_MOD_BONUS,
   OPERATION_TRANSFER_OM_WITH_CODE,
-  OPERATION_TRANSFER_OM
+  OPERATION_TRANSFER_OM,
 } from 'src/shared';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { getConsoByCategory } from '../dashboard';
@@ -22,7 +22,7 @@ import { FollowAnalyticsService } from '../services/follow-analytics/follow-anal
 @Component({
   selector: 'app-transfer-credit-bonus-om',
   templateUrl: './transfer-credit-bonus-om.page.html',
-  styleUrls: ['./transfer-credit-bonus-om.page.scss']
+  styleUrls: ['./transfer-credit-bonus-om.page.scss'],
 })
 export class TransferCreditBonusOmPage implements OnInit {
   step = 'CHOOSE_TRANSFER';
@@ -48,7 +48,12 @@ export class TransferCreditBonusOmPage implements OnInit {
   operationType;
   transferOMWithCode: boolean;
   fees: { feeValue: number; payFee: boolean };
-  omTransferPayload = { amount: 0, msisdn2: '', prenom_receiver: '', nom_receiver: '' };
+  omTransferPayload = {
+    amount: 0,
+    msisdn2: '',
+    prenom_receiver: '',
+    nom_receiver: '',
+  };
   firstName = '';
   lastName = '';
   payFee = false;
@@ -63,10 +68,9 @@ export class TransferCreditBonusOmPage implements OnInit {
     private followAnalyticsService: FollowAnalyticsService
   ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     if (this.route.snapshot) {
       this.operationType = this.route.snapshot.paramMap.get('type');
     }
@@ -181,7 +185,7 @@ export class TransferCreditBonusOmPage implements OnInit {
     const transfertbonnusInfo: TransfertBonnus = {
       amount: Number(this.amount),
       dmsisdn: this.numberDestinatary,
-      smsisdn: this.dashboardService.getCurrentPhoneNumber()
+      smsisdn: this.dashboardService.getCurrentPhoneNumber(),
     };
     if (
       transfertbonnusInfo.amount + 20 >=
@@ -200,7 +204,7 @@ export class TransferCreditBonusOmPage implements OnInit {
             this.step = 'SUCCESS';
             const followDetails = {
               amount: `${transfertbonnusInfo.amount} FCFA`,
-              fees: `20 FCFA`
+              fees: `20 FCFA`,
             };
             this.followAnalyticsService.registerEventFollow(
               'Transfer_Bonus_Success',
@@ -258,7 +262,7 @@ export class TransferCreditBonusOmPage implements OnInit {
               amount: `${this.amount} FCFA`,
               fees: '20 FCFA',
               msisdn,
-              msisdn2
+              msisdn2,
             };
             this.followAnalyticsService.registerEventFollow(
               'Transfer_Credit_Success',
@@ -272,7 +276,7 @@ export class TransferCreditBonusOmPage implements OnInit {
               code_error: res.status,
               msisdn,
               msisdn2,
-              message: this.pinErrMsg
+              message: this.pinErrMsg,
             };
             this.followAnalyticsService.registerEventFollow(
               'Transfer_Credit_Error',
@@ -334,12 +338,12 @@ export class TransferCreditBonusOmPage implements OnInit {
   }
   getSoldeRechargementAndBonus() {
     this.dashboardService
-      .getUserConsoInfosByCode([1, 2, 6])
+      .getUserConsoInfosByCode(null, [1, 2, 6])
       .subscribe((res: any) => {
         this.isLoaded = true;
         const myconso = getConsoByCategory(res)[USER_CONS_CATEGORY_CALL];
         if (myconso) {
-          myconso.forEach(x => {
+          myconso.forEach((x) => {
             if (x.code === 1) {
               this.solderechargement += Number(x.montant);
             } else if (x.code === 2) {

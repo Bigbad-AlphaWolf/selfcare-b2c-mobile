@@ -207,6 +207,7 @@ const routes: Routes = [
   { path: 'list-pass-voyage', loadChildren: './pages/list-pass-voyage/list-pass-voyage.module#ListPassVoyagePageModule' },  { path: 'offres-services', loadChildren: './pages/offres-services/offres-services.module#OffresServicesPageModule' },
   { path: 'banniere-description', loadChildren: './pages/banniere-description/banniere-description.module#BanniereDescriptionPageModule' },
   { path: 'rapid-operation', loadChildren: './pages/rapid-operation/rapid-operation.module#RapidOperationPageModule' },
+  { path: 'dashboard-prepaid-light', loadChildren: './dashboard-prepaid-light/dashboard-prepaid-light.module#DashboardPrepaidLightPageModule' },
 
 
   

@@ -48,19 +48,25 @@ export class SargalService {
     private authServ: AuthenticationService
   ) {}
 
-  getSargalBalance(msisdn: string) {
-    return this.http.get(`${sargalBalanceEndpoint}/${msisdn}`).pipe(
-      map(
-        (sargalStatus) => {
-          ls.set(`lastSargalData_${msisdn}`, sargalStatus);
-          return sargalStatus;
-        },
-        (err) => {
-          const sargalData = ls.get(`lastSargalData_${msisdn}`);
-          return sargalData;
-        }
-      )
-    );
+  getSargalBalance(msisdn: string, hmac?: string) {
+    let queryParam = '';
+    if (hmac) {
+      queryParam += `?hmac=${hmac}`;
+    }
+    return this.http
+      .get(`${sargalBalanceEndpoint}/${msisdn}${queryParam}`)
+      .pipe(
+        map(
+          (sargalStatus) => {
+            ls.set(`lastSargalData_${msisdn}`, sargalStatus);
+            return sargalStatus;
+          },
+          (err) => {
+            const sargalData = ls.get(`lastSargalData_${msisdn}`);
+            return sargalData;
+          }
+        )
+      );
   }
 
   querySargalGiftCategories() {
