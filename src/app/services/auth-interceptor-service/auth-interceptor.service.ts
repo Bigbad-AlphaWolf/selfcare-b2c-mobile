@@ -63,22 +63,22 @@ export class AuthInterceptorService implements HttpInterceptor {
     const token = ls.get('token');
     let x_uuid = ls.get('X-UUID');
 
-    if(checkUrlMatchOM(req.url)){
-      if(!x_uuid || x_uuid === ""){
+    if (checkUrlMatchOM(req.url)) {
+      if (!x_uuid || x_uuid === '') {
         const uuidV4 = uuidv4();
-        ls.set('X-UUID',uuidV4);
+        ls.set('X-UUID', uuidV4);
         x_uuid = ls.get('X-UUID');
       }
 
       req = req.clone({
-        body: {...req.body, uuid: x_uuid }
+        body: { ...req.body, uuid: x_uuid },
       });
     }
     const lightToken = ls.get('light-token');
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221770167323');
+      headers = headers.set('X-MSISDN', '221775896287');
       //delay to test slowness of network
       req = req.clone({
         headers,

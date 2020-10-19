@@ -18,7 +18,7 @@
     padding: 0 15px 20px;
     font-size: 16px;
   }
-  .title {
+  .bonjour {
     background-color: $white;
     font-family: HelveticaNeueLTStd-Bd, sans-serif;
     font-size: 34px;
@@ -177,6 +177,36 @@
       text-align: center;
       border-radius: 10px;
       background-color: $white;
+      position: relative;
+      .badge-promo {
+        position: absolute;
+        top: 10px;
+        right: -5px;
+        width: 18%;
+        min-width: 25px;
+        .icon-container {
+          font-family: HelveticaNeueLTStd-Roman, sans-serif;
+          font-size: 10px;
+          background-color: $lightBlue;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 10%;
+          width: 100%;
+          border-radius: 5% 5% 0 5%;
+          .percent {
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 16px;
+          }
+        }
+        .triangle {
+          width: 0;
+          height: 0;
+          border-top: 5px solid $bluePopUp;
+          border-right: 5px solid transparent;
+          float: right;
+        }
+      }
       .img-container {
         width: percentage(47/95);
         margin: 0 auto 5px;

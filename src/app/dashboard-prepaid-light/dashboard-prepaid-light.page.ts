@@ -123,7 +123,7 @@ export class DashboardPrepaidLightPage implements OnInit {
       .getSubscriptionForTiers(this.userPhoneNumber)
       .subscribe((res: SubscriptionModel) => {
         this.currentProfil = res.profil;
-        this.getActivePromoBooster(this.userPhoneNumber, res.code);
+        this.getActivePromoBooster();
       });
     this.banniereService.setListBanniereByFormule();
     this.banniereService
@@ -282,7 +282,7 @@ export class DashboardPrepaidLightPage implements OnInit {
     }
   }
 
-  getActivePromoBooster(msisdn: string, code: string) {
+  getActivePromoBooster() {
     this.dashboardService.getActivePromoBooster().subscribe((res: any) => {
       this.hasPromoBooster = res;
     });
