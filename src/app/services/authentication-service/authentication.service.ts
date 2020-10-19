@@ -323,6 +323,10 @@ export class AuthenticationService {
     return ls.get('token');
   }
 
+  getLightToken() {
+    return ls.get('light-token');
+  }
+
   login(credential: {
     username: string;
     password: string;
@@ -490,6 +494,14 @@ export class AuthenticationService {
     if (info.msisdn && info.codeFormule) {
       this.http.put(notificationInfoEndpoint, info).subscribe();
     }
+  }
+
+  setHmacOnLs(hmac: string) {
+    ls.set('hmac', hmac);
+  }
+
+  getHmac() {
+    return ls.get('hmac');
   }
 }
 
