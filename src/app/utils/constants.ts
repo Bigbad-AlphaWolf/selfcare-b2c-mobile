@@ -68,3 +68,5 @@ export const OM_RECENT_TYPES = [
     recentType: RecentType.transfert_avec_code,
   },
 ];
+
+export const CATEGORY_MPO = { illimix: "illimix", internet: "internet", recharge: "recharge", sargal: "sargal"  }

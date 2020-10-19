@@ -175,16 +175,15 @@ export class DashboardHomePrepaidPage implements OnInit {
       .subscribe((res: SubscriptionModel) => {
         if (res.code !== '0') {
           this.passIntService.setUserCodeFormule(res.code);
-          this.passIntService.setListPassInternetOfUserByQuery();
-          this.passIntService
-            .getStatusPassLoaded()
-            .subscribe((result: { status: boolean; error: boolean }) => {
-              if (result.status) {
-                if (!result.error) {
-                  this.listPass = this.passIntService.getListPassInternetOfUser();
-                }
-              }
-            });
+          this.passIntService.queryListPassInternetOfUser(res.code).subscribe(
+            (result: any) => {
+            if (result) {
+                this.listPass = this.passIntService.getListPassInternetOfUser();
+            }
+          }, (err: any) => {
+            console.log('error');
+            
+          });
         }
       });
   }

@@ -203,7 +203,6 @@ export class NewRegistrationPage implements OnInit {
       },
       (err: any) => {
         this.checkingNumber = false;
-        console.log(err);
 
         if (err.status === 400) {
           if (err && err.error && err.error.errorKey === 'userRattached') {
