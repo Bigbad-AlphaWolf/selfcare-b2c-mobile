@@ -42,7 +42,7 @@
           [ngClass]="{'selected': checkCategorySelected(genre)}"
         >
           <!-- <ion-label *ngIf="!checkCategorySelected(genre)">{{genre?.nom}}</ion-label> -->
-          <ion-label>{{genre?.nom}}</ion-label>
+          <ion-label [ngClass]="{'label-selected': checkCategorySelected(genre)}">{{genre?.nom}}</ion-label>
           <ion-select
             mode="ios"
             interface="popover"

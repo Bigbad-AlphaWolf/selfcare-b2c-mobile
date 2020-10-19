@@ -88,6 +88,13 @@
           --ion-background-color: #000000;
           color: #ffffff;
         }
+        ion-label {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 14px;
+          &.label-selected {
+            font-family: HelveticaNeueLTStd-Roman;
+          }
+        }
         ion-select {
           max-width: 100% !important;
         }
