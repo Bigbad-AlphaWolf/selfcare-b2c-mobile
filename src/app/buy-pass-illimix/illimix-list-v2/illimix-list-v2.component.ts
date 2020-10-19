@@ -28,21 +28,20 @@ export class IllimixListV2Component implements OnInit {
   ) {}
 
   ngOnInit() {
-    // this.getListPassIllimix();
-    this.passIllimixService.setUserCodeFormule(this.destCodeFormule);
     this.getListPassIllimix();
   }
 
   getListPassIllimix() {
-    this.passIllimixService.setListPassIllimix();
-    this.passIllimixService.getStatusLoadingPass().subscribe((status: boolean) => {
-      this.isLoaded = status;
-      if (this.isLoaded) {
-        this.listUserPassIllimix = this.passIllimixService.getListPassIllimix();
-        this.listPassIllimixShown = this.passIllimixService.getListPassIllimixShown();
-        this.listCategory = this.passIllimixService.getCategoryListPassIllimix();
-        this.selectedCategory = this.listCategory[0];
-      }
+    this.passIllimixService.queryListPassIllimix(this.destCodeFormule).subscribe(
+      (res: any) => {
+      this.isLoaded = true;
+      this.listUserPassIllimix = this.passIllimixService.getListPassIllimix();
+      this.listPassIllimixShown = this.passIllimixService.getListPassIllimixShown();
+      this.listCategory = this.passIllimixService.getCategoryListPassIllimix();
+      this.selectedCategory = this.listCategory[0];
+      
+    },(err: any) => {
+      this.isLoaded = true;
     });
   }
 

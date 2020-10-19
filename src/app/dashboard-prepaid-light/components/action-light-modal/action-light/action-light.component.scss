@@ -1,0 +1,22 @@
+@import 'src/app/app';
+
+.modal-action-light {
+  padding: 30px 15px;
+  .title {
+    line-height: 1.25;
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  .text {
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 16px;
+    line-height: 1.25;
+  }
+  .buttons-block {
+    button {
+      border-radius: 10px;
+      margin-top: 20px !important;
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { OfferPlan } from '../models/offer-plan.model';
+import { CATEGORY_MPO } from 'src/app/utils/constants';
 
 @Component({
   selector: 'app-item-offer-plan',
@@ -19,8 +20,8 @@ export class ItemOfferPlanComponent implements OnInit {
 
   formatOfferPlanInfos(offer: OfferPlan){
     switch (offer.typeMPO.toLowerCase()) {
-      case 'illimix':
-      case 'internet':
+      case CATEGORY_MPO.illimix:
+      case CATEGORY_MPO.internet:
         return 'Achète un '+offer.bpTarget
       default:
         return offer.bpTarget;

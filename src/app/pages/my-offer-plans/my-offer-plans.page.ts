@@ -10,6 +10,7 @@ import { NavController, IonSlides } from '@ionic/angular';
 import { getPageHeader } from '../../utils/title.util';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { take } from 'rxjs/operators';
+import { CATEGORY_MPO } from 'src/app/utils/constants';
 
 @Component({
   selector: 'app-my-offer-plans',
@@ -144,26 +145,26 @@ export class MyOfferPlansPage implements OnInit {
 
   goToPage(offer: OfferPlan){
     switch (offer.typeMPO.toLowerCase()) {
-      case 'illimix':
+      case CATEGORY_MPO.illimix:
         if(offer.pass){
           const payloadPassPageRecap = { pass: offer.pass, recipientName: null , purchaseType: OPERATION_TYPE_PASS_ILLIMIX, ...this.payloadNavigation, offerPlan: offer  }
           this.appliRout.goToPassRecapPage(payloadPassPageRecap);
         }
         break;
         
-      case 'internet':
+      case CATEGORY_MPO.internet:
         if(offer.pass){
           const payloadPassPageRecap = { pass: offer.pass, recipientName: null , purchaseType: OPERATION_TYPE_PASS_INTERNET, ...this.payloadNavigation, offerPlan: offer  }
           this.appliRout.goToPassRecapPage(payloadPassPageRecap);
         }
         break;
 
-      case 'recharge':
+      case CATEGORY_MPO.recharge:
         const opBuyCreditSetAmountPayload: OperationExtras = {forSelf: true,recipientFirstname: null,recipientLastname: null,recipientFromContact: false,senderMsisdn: this.payloadNavigation.recipientMsisdn, ...this.payloadNavigation, offerPlan: offer }
         this.appliRout.goToBuyCreditSetAmount(opBuyCreditSetAmountPayload)
         break;
 
-      case 'sargal':
+      case CATEGORY_MPO.sargal:
         for (const text of listRegisterSargalBonPlanText) {
           if(offer.bpTarget.toLowerCase().includes(text) ) {
             this.appliRout.goToRegisterForSargal()

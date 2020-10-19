@@ -66,38 +66,35 @@ export class ListePassPage implements OnInit {
       this.activeTabIndex = 0;
       if (this.purchaseType === OPERATION_TYPE_PASS_INTERNET) {
         this.passIntService.setUserCodeFormule(this.userCodeFormule);
-        this.passIntService.setListPassInternetOfUserByQuery();
-        this.passIntService
-          .getStatusPassLoaded()
-          .subscribe((status: boolean) => {
-            this.isLoaded = status;
-            if (this.isLoaded) {
-              this.listCategory = this.passIntService.getListCategoryPassInternet();
-              this.listPass = this.passIntService.getListPassInternetOfUser();
-              this.fullListPass = arrangePassByCategory(
-                this.listPass,
-                this.listCategory
-              );
-            }
-          });
+        this.passIntService.queryListPassInternetOfUser(this.userCodeFormule).subscribe(
+          (res: any) => {
+          this.isLoaded = true;
+          this.listCategory = this.passIntService.getListCategoryPassInternet();
+          this.listPass = this.passIntService.getListPassInternetOfUser();
+          this.fullListPass = arrangePassByCategory(
+            this.listPass,
+            this.listCategory
+          );
+          
+        }, (err: any) => {
+          this.isLoaded = true;
+        });
+          
       } else {
         const category =
           this.purchaseType === OPERATION_TYPE_PASS_ALLO ? 'allo' : null;
-        this.passIllimixServ.setUserCodeFormule(this.userCodeFormule);
-        this.passIllimixServ.setListPassIllimix(category);
-        this.passIllimixServ
-          .getStatusLoadingPass()
-          .subscribe((status: boolean) => {
-            this.isLoaded = status;
-            if (this.isLoaded) {
-              this.listCategory = this.passIllimixServ.getCategoryListPassIllimix();
-              this.listPass = this.passIllimixServ.getListPassIllimix();
-              this.fullListPass = arrangePassByCategory(
-                this.listPass,
-                this.listCategory
-              );
-            }
-          });
+        this.passIllimixServ.queryListPassIllimix(this.userCodeFormule,category).subscribe(
+          (res: any) => {
+          this.isLoaded = true;
+            this.listCategory = this.passIllimixServ.getCategoryListPassIllimix();
+            this.listPass = this.passIllimixServ.getListPassIllimix();
+            this.fullListPass = arrangePassByCategory(
+              this.listPass,
+              this.listCategory
+            );
+        }, (err: any) => {
+          this.isLoaded = true;
+        });
       }
     }
 

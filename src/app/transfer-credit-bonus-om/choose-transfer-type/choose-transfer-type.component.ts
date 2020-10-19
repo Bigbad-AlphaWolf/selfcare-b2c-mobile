@@ -2,14 +2,14 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import {
   OPERATION_TYPE_SEDDO_CREDIT,
   OPERATION_TYPE_SEDDO_PASS,
-  OPERATION_TYPE_SEDDO_BONUS
+  OPERATION_TYPE_SEDDO_BONUS,
 } from 'src/shared';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { getConsoByCategory, USER_CONS_CATEGORY_CALL } from 'src/app/dashboard';
 @Component({
   selector: 'app-choose-transfer-type',
   templateUrl: './choose-transfer-type.component.html',
-  styleUrls: ['./choose-transfer-type.component.scss']
+  styleUrls: ['./choose-transfer-type.component.scss'],
 })
 export class ChooseTransferTypeComponent implements OnInit {
   OPERATION_TYPE_SEDDO_CREDIT = OPERATION_TYPE_SEDDO_CREDIT;
@@ -39,11 +39,11 @@ export class ChooseTransferTypeComponent implements OnInit {
     this.soldebonus = 0;
     this.creditRechargement = 0;
     this.dashboardService
-      .getUserConsoInfosByCode([1, 2, 6])
+      .getUserConsoInfosByCode(null, [1, 2, 6])
       .subscribe((res: any) => {
         const myconso = getConsoByCategory(res)[USER_CONS_CATEGORY_CALL];
         if (myconso) {
-          myconso.forEach(x => {
+          myconso.forEach((x) => {
             if (x.code === 1) {
               this.creditRechargement += Number(x.montant);
             } else if (x.code === 2 || x.code === 6) {

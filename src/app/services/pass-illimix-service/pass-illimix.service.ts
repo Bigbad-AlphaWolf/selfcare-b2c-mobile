@@ -14,6 +14,7 @@ import { AuthenticationService } from '../authentication-service/authentication.
 import { SubscriptionModel } from 'src/app/dashboard';
 
 import { environment } from 'src/environments/environment';
+import { map } from 'rxjs/operators';
 const { SERVER_API_URL, CONSO_SERVICE } = environment;
 const passByIdEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-illimixes`;
 @Injectable({
@@ -27,7 +28,6 @@ export class PassIllimixService {
   private passLoadedSubject: Subject<any> = new Subject<any>();
   constructor(
     private dashbService: DashboardService,
-    private authServ: AuthenticationService,
     private http: HttpClient
   ) {}
 
@@ -35,12 +35,11 @@ export class PassIllimixService {
     this.userCodeFormule = msisdn;
   }
 
-  setListPassIllimix(category?: string) {
+  queryListPassIllimix(codeFormule: string, category?: string) {
     this.listPassIllimix = [];
-    this.dashbService
-      .getListPassIllimix(this.userCodeFormule, category)
-      .subscribe(
-        (res: PassIllimixModel[]) => {
+    return this.dashbService
+      .getListPassIllimix(codeFormule, category)
+      .pipe( map( (res: PassIllimixModel[]) => {
           res.forEach((x) => {
             const isPassAllo =
               (x.pass &&
@@ -78,12 +77,9 @@ export class PassIllimixService {
             this.listCategoryPass[0],
             this.listPassIllimix
           );
-          this.passLoadedSubject.next(true);
-        },
-        (err: any) => {
-          this.passLoadedSubject.next(true);
+          return list;
         }
-      );
+      ));
   }
 
   getCategoryListPassIllimix() {
