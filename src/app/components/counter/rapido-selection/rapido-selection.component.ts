@@ -6,12 +6,16 @@ import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.pa
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { ModalController } from '@ionic/angular';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
 import { FavoriteRapidoComponent } from '../favorite-rapido/favorite-rapido.component';
 import { FeesService } from 'src/app/services/fees/fees.service';
+import { FavorisService } from 'src/app/services/favoris/favoris.service';
+import { FavoriteType } from 'src/app/models/enums/om-favori-type.enum';
+import { FavorisOem } from 'src/app/models/favoris-oem.model';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 
 @Component({
   selector: 'app-rapido-selection',
@@ -26,17 +30,50 @@ export class RapidoSelectionComponent implements OnInit {
   //   { name: 'Audi Q5', rapidoNumber: '14256266199' },
   // ]);
   rapidos$: Observable<any[]>;
+  rapidosFavorites$: Observable<any[]>;
+  isFavoriteCarteRapido: boolean;
+  currentUserNumber = this.dashbServ.getCurrentPhoneNumber();
+
   constructor(
     private feesService: FeesService,
     private bsService: BottomSheetService,
     private omService: OrangeMoneyService,
     private changeDetectorRef: ChangeDetectorRef,
     private recentService: RecentsService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private favoriService: FavorisService,
+    private dashbServ: DashboardService
   ) {}
 
   ngOnInit() {
     this.checkOmAccount();
+    this.getFavoritesRapido();
+  }
+
+  getFavoritesRapido(){    
+    this.rapidosFavorites$ = this.favoriService
+      .favoritesByService(FavoriteType.RAPIDO)
+      .pipe(
+        map((favoris: FavorisOem[]) => {
+          let results = [];
+          favoris = favoris.slice(0, 5);
+          favoris.forEach((el) => {
+            results.push({ name: el.ref_label, counterNumber: el.ref_num });
+          });
+          return results;
+        })
+      );
+  }
+
+  isFavoriteRapido(carteRapido: any){
+    this.isFavoriteCarteRapido = false;
+    return this.rapidosFavorites$.pipe(tap((res: { name: string, counterNumber: string}[]) => {
+       const carte = res.filter((c: { name: string, counterNumber: string} )=> {
+        if(c.counterNumber === carteRapido){
+          this.isFavoriteCarteRapido = true;
+        }
+       })
+    }))
   }
 
   initRecents() {
@@ -64,7 +101,12 @@ export class RapidoSelectionComponent implements OnInit {
 
   onContinue() {
     if (!this.rapidoNumberIsValid) return;
-
+   this.isFavoriteRapido(this.inputRapidoNumber).subscribe((res: any) => {     
+     if(!this.isFavoriteCarteRapido){
+       const data = { msisdn: this.currentUserNumber,card_num: this.inputRapidoNumber, card_label: ''   }
+      this.saveCardRapidoFavorite(data);
+     }
+   })
     this.modalCtrl.dismiss({
       TYPE_BS: 'INPUT',
       ACTION: 'FORWARD',
@@ -72,9 +114,14 @@ export class RapidoSelectionComponent implements OnInit {
     });
   }
 
+  saveCardRapidoFavorite(data: { msisdn: string, card_num: string, card_label: string }){
+    return this.favoriService.saveRapidoFavorite(data).subscribe();
+  }
+
+
   onMyFavorites() {
     this.modalCtrl.dismiss();
-    this.bsService.openModal(FavoriteRapidoComponent);
+    this.bsService.openModal(FavoriteRapidoComponent, { rapidosFavorites$: this.rapidosFavorites$ });
   }
 
   onInputChange(rapidoNumber) {
