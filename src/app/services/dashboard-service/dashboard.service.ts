@@ -484,7 +484,7 @@ export class DashboardService {
 
   getActivePromoBooster() {
     const currentPhoneNumber = this.getCurrentPhoneNumber();
-    return this.authService.getSubscription(currentPhoneNumber).pipe(
+    return this.authService.getSubscriptionForTiers(currentPhoneNumber).pipe(
       switchMap((res: SubscriptionModel) => {
         return this.http.get(
           `${promoBoosterActiveEndpoint}?msisdn=${currentPhoneNumber}&code=${res.code}`
