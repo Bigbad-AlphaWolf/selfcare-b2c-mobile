@@ -9,7 +9,7 @@
     Choisissez sur la liste
   </div>
 
-    <div class="recents content" *ngIf="(rapidos$|async) as rapidos else spinnerBlock">
+    <div class="recents content" *ngIf="(rapidosFavorites$|async) as rapidos else spinnerBlock">
       <div 
         matRipple
         class="oem-item"

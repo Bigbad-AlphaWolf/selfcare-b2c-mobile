@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, catchError, switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { OM_FAVORITES_ENDPOINT } from '../utils/om.endpoints';
+import { map, switchMap } from 'rxjs/operators';
+import { OM_FAVORITES_ENDPOINT, OM_SAVE_RAPIDO_FAVORITES_ENDPOINT } from '../utils/om.endpoints';
 import { OrangeMoneyService } from '../orange-money-service/orange-money.service';
 
 @Injectable({
@@ -69,5 +68,9 @@ export class FavorisService {
           );
       })
     );
+  }
+
+  saveRapidoFavorite(data: { msisdn: string, card_num: string, card_label: string }){
+    return this.http.post(OM_SAVE_RAPIDO_FAVORITES_ENDPOINT, data);
   }
 }

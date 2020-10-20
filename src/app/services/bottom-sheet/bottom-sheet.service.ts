@@ -73,9 +73,10 @@ export class BottomSheetService {
     );
   }
 
-  async openModal(component) {
+  async openModal(component, data?: { rapidosFavorites$: any }) {
     const modal = await this.modalCtrl.create({
       component,
+      componentProps: data,
       cssClass: "select-recipient-modal",
     });
     this.bsModalEl.next(modal);
