@@ -11,8 +11,8 @@ import { DalalTonesModel } from '../models/dalal-tones.model';
 import { OperationExtras } from '../models/operation-extras.model';
 import { DalalTonesService } from '../services/dalal-tones-service/dalal-tones.service';
 import { downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
-import { DalalActivationSuccessModalComponent } from './components/dalal-activation-success-modal/dalal-activation-success-modal.component';
-import { DalalActivationComponent } from './components/dalal-activation/dalal-activation.component';
+import { DalalDisablePopupComponent } from './components/dalal-disable-popup/dalal-disable-popup.component';
+import { DalalMoreInfosComponent } from './components/dalal-more-infos/dalal-more-infos.component';
 const SINGLE_REQUEST_SIZE = 10;
 @Component({
   selector: 'app-dalal-tones',
@@ -34,6 +34,7 @@ export class DalalTonesPage implements OnInit {
   loadingError: boolean;
   infiniteScrollDisabled: boolean;
   downloadAvatarEndpoint = downloadAvatarEndpoint;
+  currentActiveDalal$ = this.dalalTonesService.getActiveDalal();
   constructor(
     private dalalTonesService: DalalTonesService,
     private modalController: ModalController,
@@ -122,26 +123,24 @@ export class DalalTonesPage implements OnInit {
     this.navController.navigateForward(['/operation-recap'], navExtras);
   }
 
-  async openDalalActivationModal(choosenDalal: DalalTonesModel) {
+  async openMoreInfosPopup() {
     const modal = await this.modalController.create({
-      component: DalalActivationComponent,
-      cssClass: 'modalRecipientSelection',
-      componentProps: { choosenDalal },
+      component: DalalMoreInfosComponent,
+      cssClass: 'dalal-success-modal',
+      backdropDismiss: true,
     });
-    modal.onDidDismiss().then((response) => {
-      if (response && response.data && response.data.success) {
-        this.openDalalActivationSuccessModal(choosenDalal);
-      }
+    modal.onDidDismiss().then(() => {
+      this.navController.pop();
     });
     return await modal.present();
   }
 
-  async openDalalActivationSuccessModal(choosenDalal: DalalTonesModel) {
+  async openDisablePopup(dalal) {
     const modal = await this.modalController.create({
-      component: DalalActivationSuccessModalComponent,
-      cssClass: 'dalal-success-modal',
-      componentProps: { choosenDalal },
-      backdropDismiss: false,
+      component: DalalDisablePopupComponent,
+      cssClass: 'select-recipient-modal',
+      backdropDismiss: true,
+      componentProps: { dalal },
     });
     modal.onDidDismiss().then(() => {
       this.navController.pop();

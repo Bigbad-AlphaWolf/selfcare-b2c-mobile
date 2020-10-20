@@ -104,6 +104,19 @@
   .dalal-tones-block {
     padding: 10px percentage(10/375) 0;
     width: 100%;
+    .active-dalal-block {
+      .dalal-en-cours {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 30px 0 15px;
+        .current-dalal {
+          font-size: 20px;
+          font-family: HelveticaNeueLTStd-Bd;
+          line-height: 1.5;
+        }
+      }
+    }
     .loading-dalal-spinner {
       width: 100%;
       display: flex;
@@ -114,6 +127,12 @@
     }
     ion-list {
       background: transparent !important;
+      .list-dalal-title {
+        font-size: 20px;
+        font-family: HelveticaNeueLTStd-Bd;
+        line-height: 1.5;
+        margin: 15px 0;
+      }
     }
     .empty-array-message {
     }

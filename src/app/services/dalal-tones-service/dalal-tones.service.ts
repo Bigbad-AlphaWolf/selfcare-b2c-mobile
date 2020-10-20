@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DalalTonesGenreModel } from 'src/app/models/dalal-tones-genre.model';
 import { DalalTonesModel } from 'src/app/models/dalal-tones.model';
@@ -8,9 +8,9 @@ import { environment } from 'src/environments/environment';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 const { SERVER_API_URL, SERVICES_SERVICE } = environment;
 const dalalBaseURL = `${SERVER_API_URL}/${SERVICES_SERVICE}/api`;
-const dalalSousGenreEndpoint = `${dalalBaseURL}/sous-genres`;
 const dalalTonesEndpoint = `${dalalBaseURL}/dalal-tones`;
 const dalalTonesGenresEndpoint = `${dalalBaseURL}/genres`;
+const activeDalalEndpoint = `${dalalTonesEndpoint}/active-dalal`;
 
 @Injectable({
   providedIn: 'root',
@@ -57,5 +57,21 @@ export class DalalTonesService {
       `${dalalTonesEndpoint}/activation/${msisdn}`,
       payload
     );
+  }
+
+  getActiveDalal() {
+    const msisdn = this.dashboardService.getCurrentPhoneNumber();
+    const mockDalal = {
+      cid: 'string',
+      titre: 'string',
+      codeDalal: 'string',
+      actif: true,
+      statut: 'string',
+      fournisseur: 'fournisseur',
+      artiste: { nom: 'string', image: 'string' },
+      sousGenres: [],
+    };
+    return of(mockDalal);
+    return this.http.get(`${activeDalalEndpoint}/${msisdn}`);
   }
 }

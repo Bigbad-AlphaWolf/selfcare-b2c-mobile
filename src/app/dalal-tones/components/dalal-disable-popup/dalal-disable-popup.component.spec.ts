@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DalalActivationComponent } from './dalal-activation.component';
+import { DalalDisablePopupComponent } from './dalal-disable-popup.component';
 
-describe('DalalActivationComponent', () => {
-  let component: DalalActivationComponent;
-  let fixture: ComponentFixture<DalalActivationComponent>;
+describe('DalalDisablePopupComponent', () => {
+  let component: DalalDisablePopupComponent;
+  let fixture: ComponentFixture<DalalDisablePopupComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DalalActivationComponent ],
+      declarations: [ DalalDisablePopupComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DalalActivationComponent);
+    fixture = TestBed.createComponent(DalalDisablePopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

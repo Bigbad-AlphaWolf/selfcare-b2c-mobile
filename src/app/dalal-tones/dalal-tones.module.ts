@@ -7,8 +7,9 @@ import { IonicModule } from '@ionic/angular';
 
 import { DalalTonesPage } from './dalal-tones.page';
 import { SharedModule } from 'src/shared/shared.module';
-import { DalalActivationComponent } from './components/dalal-activation/dalal-activation.component';
 import { DalalActivationSuccessModalComponent } from './components/dalal-activation-success-modal/dalal-activation-success-modal.component';
+import { DalalMoreInfosComponent } from './components/dalal-more-infos/dalal-more-infos.component';
+import { DalalDisablePopupComponent } from './components/dalal-disable-popup/dalal-disable-popup.component';
 
 const routes: Routes = [
   {
@@ -27,12 +28,14 @@ const routes: Routes = [
   ],
   declarations: [
     DalalTonesPage,
-    DalalActivationComponent,
     DalalActivationSuccessModalComponent,
+    DalalMoreInfosComponent,
+    DalalDisablePopupComponent,
   ],
   entryComponents: [
-    DalalActivationComponent,
     DalalActivationSuccessModalComponent,
+    DalalMoreInfosComponent,
+    DalalDisablePopupComponent,
   ],
 })
 export class DalalTonesPageModule {}

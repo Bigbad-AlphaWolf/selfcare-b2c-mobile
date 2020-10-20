@@ -30,7 +30,7 @@
           <span class="tarif scb-text-orange">12 FCFA</span>
           <span class="period scb-text-gray"> / jour</span>
         </div>
-        <button class="scb-text-full-black" *ngIf="1">En savoir plus</button>
+        <button class="scb-text-full-black" (click)="openMoreInfosPopup()">En savoir plus</button>
       </div>
     </div>
     <div class="filters-block">
@@ -60,10 +60,18 @@
       </ion-list>
     </div>
     <div class="dalal-tones-block">
+      <div class="active-dalal-block" *ngIf="currentActiveDalal$ | async as currentActiveDalal">
+        <div class="dalal-en-cours">
+          <span class="current-dalal">Mon Dalal en cours</span>
+          <span class="scb-text-orange">Voir tout</span>
+        </div>
+        <app-dalal-card-item [dalal]="currentActiveDalal" (click)="openDisablePopup()"></app-dalal-card-item>
+      </div>
       <div *ngIf="loadingDalal" class="loading-dalal-spinner">
         <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
       </div>
       <ion-list *ngIf="!loadingDalal && dalalTones && dalalTones.length">
+        <div class="list-dalal-title">Dalal disponibles</div>
         <app-dalal-card-item
           *ngFor="let dalal of dalalTones"
           (click)="goDalalActivationRecapPage(dalal)"
