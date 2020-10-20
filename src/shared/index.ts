@@ -1176,3 +1176,7 @@ export const ERROR_MSG_PASS = {
     'Diegalou, Mixel et Wotel sont temporairement indisponibles sur Orange et Moi. Tu peux continuer à souscrire au #220# ou au #144#. Bul xaar, souscris vite. Nio far !',
 };
 export const LOCAL_ZONE = 'Zone Locale';
+export const LIGHT_DASHBOARD_EVENT = 'GO_DASHBOARD_LIGHT';
+export const REGISTRATION_PASSWORD_STEP = 'PASSWORD';
+export const USER_ERROR_MSG_BLOCKED =
+  'Votre Compte Orange et Moi a été bloqué. Cliquez sur mot de passe oublié et suivez les instructions.';
