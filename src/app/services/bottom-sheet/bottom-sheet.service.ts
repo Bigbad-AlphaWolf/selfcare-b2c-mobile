@@ -40,7 +40,7 @@ export class BottomSheetService {
 
           if (fromFavorites) this.openModal(comp);
 
-          if (result && result.ACTION === "FORWARD") {
+          if (result && result.ACTION === "FORWARD") {            
             this.opXtras.purchaseType = purchaseType;
             this.opXtras.billData
               ? (this.opXtras.billData.counter = result.counter)

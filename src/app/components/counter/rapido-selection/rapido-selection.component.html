@@ -47,6 +47,9 @@
     </div>
   </div>
 
+  <div class="error-msg" *ngIf="errorMsg">
+    {{ errorMsg }}
+  </div>
   <div class="btn-continue">
     <button mat-button [disabled]="isProcessing || !rapidoNumberIsValid" (click)="onContinue()">
       Continuer
