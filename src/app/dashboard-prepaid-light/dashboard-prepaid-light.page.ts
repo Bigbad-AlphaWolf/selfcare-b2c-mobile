@@ -6,6 +6,7 @@ import {
   getBanniereTitle,
   getLastUpdatedDateTimeText,
   getTrioConsoUser,
+  REGISTRATION_PASSWORD_STEP,
   SargalStatusModel,
   SubscriptionModel,
   UserConsommations,
@@ -33,6 +34,7 @@ import { SargalService } from '../services/sargal-service/sargal.service';
 import * as SecureLS from 'secure-ls';
 import { ModalController } from '@ionic/angular';
 import { ActionLightComponent } from './components/action-light-modal/action-light/action-light.component';
+import { switchMap } from 'rxjs/operators';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -66,7 +68,7 @@ export class DashboardPrepaidLightPage implements OnInit {
   userSargalSubscription: SargalSubscriptionModel;
   sargalLastUpdate: string;
   hasPromoBooster: PromoBoosterActive = null;
-  userPhoneNumber: string;
+  userPhoneNumber: string = this.dashboardService.getCurrentPhoneNumber();
   PROFILE_TYPE_PREPAID = PROFILE_TYPE_PREPAID;
   PROFILE_TYPE_HYBRID = PROFILE_TYPE_HYBRID;
   PROFILE_TYPE_HYBRID_1 = PROFILE_TYPE_HYBRID_1;
@@ -103,6 +105,7 @@ export class DashboardPrepaidLightPage implements OnInit {
     slidesPerView: 1.68,
     slideShadows: true,
   };
+  alreadyHasAccount = true;
   constructor(
     private dashboardService: DashboardService,
     private sargalService: SargalService,
@@ -112,7 +115,37 @@ export class DashboardPrepaidLightPage implements OnInit {
     private modalController: ModalController
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.checkHasAccount();
+  }
+
+  checkHasAccount() {
+    this.authenticationService
+      .getMsisdnByNetwork()
+      .pipe(
+        switchMap((res: { msisdn: string }) => {
+          return this.authenticationService
+            .confirmMsisdnByNetwork(res.msisdn)
+            .pipe(
+              switchMap((response: any) => {
+                const payload = {
+                  msisdn: this.userPhoneNumber,
+                  hmac: response.hmac,
+                };
+                return this.authenticationService.checkNumber(payload);
+              })
+            );
+        })
+      )
+      .subscribe(
+        (res) => {
+          console.log(res);
+
+          this.alreadyHasAccount = false;
+        },
+        (err) => {}
+      );
+  }
 
   ionViewWillEnter() {
     this.userPhoneNumber = this.dashboardService.getCurrentPhoneNumber();
@@ -307,10 +340,16 @@ export class DashboardPrepaidLightPage implements OnInit {
   }
 
   async onOperation(operation) {
-    const modal = await this.modalController.create({
-      component: ActionLightComponent,
-      cssClass: 'select-recipient-modal',
-    });
-    return await modal.present();
+    if (this.alreadyHasAccount) {
+      const modal = await this.modalController.create({
+        component: ActionLightComponent,
+        cssClass: 'select-recipient-modal',
+      });
+      return await modal.present();
+    } else {
+      this.router.navigate(['/new-registration'], {
+        state: { step: REGISTRATION_PASSWORD_STEP },
+      });
+    }
   }
 }

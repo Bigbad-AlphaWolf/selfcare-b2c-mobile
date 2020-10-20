@@ -1,12 +1,67 @@
 <div class="modal-action-light">
   <div class="title">
-    Veuillez vous inscrire ou vous connecter pour accéder à cette fonctionnalité
+    Veuillez vous connecter pour accéder à cette fonctionnalité
   </div>
   <div class="text scb-text-gray">
-    En mode visiteur, vous avez un accés limité aux fonctionnalités. Découvrez le meilleur d'orange et moi personnalisé pour vous en vous connectant ou en créant un compte.
+    En mode visiteur, vous avez un accés limité aux fonctionnalités. Découvrez le meilleur d'orange et moi personnalisé pour vous en vous connectant à votre compte.
   </div>
-  <div class="buttons-block">
-    <button class="scb-btn scb-btn-full scb-btn-orange" (click)="goLogin()">Je me connecte</button>
-    <button class="scb-btn scb-btn-full scb-btn-white" (click)="goRegister()">Je m'inscris</button>
-  </div>
+  <form
+      [formGroup]="form"
+      (ngSubmit)="login()"
+      novalidate
+      autocomplete="false"
+    >
+      <mat-form-field class="scb-input-row" appearance="outline">
+        <mat-label>Numéro de téléphone &nbsp;&nbsp;</mat-label>
+        <input
+          formControlName="username"
+          matInput
+          [(ngModel)]="number"
+          type="tel"
+        />
+      </mat-form-field>
+      <mat-form-field class="scb-input-row" appearance="outline">
+        <mat-label>Mot de passe &nbsp;&nbsp;</mat-label>
+        <input
+          formControlName="password"
+          [attr.type]="pFieldType"
+          matInput
+          #password
+          value=""
+          autocomplete="off"
+          class="input-password"
+        />
+        <span
+          *ngIf="password.value"
+          (click)="changePasswordVisibility()"
+          matSuffix
+          class="show-hide-text c-pointer"
+        >
+          {{ pFieldType === 'text' ? 'Cacher' : 'Afficher' }}
+        </span>
+      </mat-form-field>
+
+      <div *ngIf="showErrMessage" class="error-text">
+        <span class="scb-text-red-error"> {{ errorMsg }} </span>
+      </div>
+
+      <div class="password-forgotten">
+        <span routerLink="/forgotten-password" class="scb-text-gray">
+          Mot de passe oublié ?
+        </span>
+      </div>
+      <button
+        type="submit"
+        [disabled]="!form.valid || loading"
+        class="scb-btn-full scb-btn-orange"
+        mat-stroked-button
+      >
+        <span>Me connecter</span>
+        <mat-spinner
+          mode="indeterminate"
+          [diameter]="20"
+          *ngIf="loading"
+        ></mat-spinner>
+      </button>
+    </form>
 </div>

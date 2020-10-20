@@ -4,6 +4,7 @@ import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.co
 import {
   HelpModalDefaultContent,
   JAMONO_PRO_CODE_FORMULE,
+  LIGHT_DASHBOARD_EVENT,
   SubscriptionModel,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
@@ -87,6 +88,8 @@ export class HomeV2Page implements OnInit {
     this.getUserMsisdn();
   }
 
+  ionViewWillEnter() {}
+
   goTo(option: {
     title: string;
     subtitle: string;
@@ -96,7 +99,10 @@ export class HomeV2Page implements OnInit {
   }) {
     if (option.action === 'REDIRECT') {
       if (option.type === 'VISITOR') {
-        if (this.msisdn) this.router.navigate(['/dashboard-prepaid-light']);
+        if (this.msisdn)
+          this.router.navigate(['/new-registration'], {
+            state: { event: LIGHT_DASHBOARD_EVENT },
+          });
       } else {
         this.router.navigate([option.url]);
       }

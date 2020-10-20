@@ -13,10 +13,33 @@
     font-size: 16px;
     line-height: 1.25;
   }
-  .buttons-block {
+  form {
+    margin-top: 30px;
+    .error-text {
+      padding-bottom: 20px;
+      span {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 12px;
+      }
+    }
+    .password-forgotten {
+      padding-bottom: 20px;
+      span {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 12px;
+      }
+    }
     button {
       border-radius: 10px;
-      margin-top: 20px !important;
+      position: relative;
+      mat-spinner {
+        position: absolute;
+        top: 15px;
+        right: 10px;
+      }
+      .mat-spinner::ng-deep circle {
+        stroke: $white;
+      }
     }
   }
 }
