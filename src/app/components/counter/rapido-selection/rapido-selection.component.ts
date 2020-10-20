@@ -1,12 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { ModalController } from '@ionic/angular';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, catchError } from 'rxjs/operators';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
@@ -16,6 +16,8 @@ import { FavorisService } from 'src/app/services/favoris/favoris.service';
 import { FavoriteType } from 'src/app/models/enums/om-favori-type.enum';
 import { FavorisOem } from 'src/app/models/favoris-oem.model';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { STATUS_ERROR_CODE_OM_CARD_RAPIDO_NOT_FOUND } from 'src/app/utils/errors.utils';
 
 @Component({
   selector: 'app-rapido-selection',
@@ -33,7 +35,7 @@ export class RapidoSelectionComponent implements OnInit {
   rapidosFavorites$: Observable<any[]>;
   isFavoriteCarteRapido: boolean;
   currentUserNumber = this.dashbServ.getCurrentPhoneNumber();
-
+  errorMsg = null;
   constructor(
     private feesService: FeesService,
     private bsService: BottomSheetService,
@@ -100,22 +102,38 @@ export class RapidoSelectionComponent implements OnInit {
   }
 
   onContinue() {
+    this.errorMsg = null;
     if (!this.rapidoNumberIsValid) return;
-   this.isFavoriteRapido(this.inputRapidoNumber).subscribe((res: any) => {     
-     if(!this.isFavoriteCarteRapido){
-       const data = { msisdn: this.currentUserNumber,card_num: this.inputRapidoNumber, card_label: ''   }
-      this.saveCardRapidoFavorite(data);
-     }
-   })
-    this.modalCtrl.dismiss({
-      TYPE_BS: 'INPUT',
-      ACTION: 'FORWARD',
-      counter: { name: 'Autre', counterNumber: this.inputRapidoNumber },
-    });
+   this.isFavoriteRapido(this.inputRapidoNumber).pipe(tap((res: any) => {     
+    if(!this.isFavoriteCarteRapido){
+      const data = { msisdn: this.currentUserNumber,card_num: this.inputRapidoNumber, card_label: ''   }
+      this.saveCardRapidoFavorite(data).subscribe((res: any) => {
+        this.modalCtrl.dismiss({
+          TYPE_BS: 'INPUT',
+          ACTION: 'FORWARD',
+          counter: { name: 'Autre', counterNumber: this.inputRapidoNumber },
+        });
+      });
+    } else {      
+      this.modalCtrl.dismiss({
+        TYPE_BS: 'INPUT',
+        ACTION: 'FORWARD',
+        counter: { name: 'Autre', counterNumber: this.inputRapidoNumber },
+      });
+    }
+    })).subscribe()
   }
 
   saveCardRapidoFavorite(data: { msisdn: string, card_num: string, card_label: string }){
-    return this.favoriService.saveRapidoFavorite(data).subscribe();
+    return this.favoriService.saveRapidoFavorite(data).pipe(catchError((err: any) => {
+      
+      if(err && err.error && err.error.errorCode === STATUS_ERROR_CODE_OM_CARD_RAPIDO_NOT_FOUND){
+        this.errorMsg = err.error.message;
+      } else {
+        this.errorMsg = 'Une erreur est survenue';
+      }      
+      return throwError(err);
+    }));
   }
 
 
