@@ -62,6 +62,7 @@ export class ActionLightComponent implements OnInit {
     this.loading = true;
     this.authServ.login(user).subscribe(
       () => {
+        ls.remove('light-token');
         this.followAnalyticsService.registerEventFollow(
           'login_success',
           'event',
