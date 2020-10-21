@@ -68,7 +68,6 @@ export class LoginPage implements OnInit {
 
   ionViewWillEnter() {
     this.getRegistrationInformation();
-    ls.remove('light-token');
   }
 
   getRegistrationInformation() {
@@ -98,6 +97,7 @@ export class LoginPage implements OnInit {
         this.dashbServ.getAccountInfo(user.username).subscribe(
           (resp: any) => {
             this.loading = false;
+            ls.remove('light-token');
             ls.set('user', resp);
             this.dashbServ.setCurrentPhoneNumber(user.username);
             this.router.navigate(['/dashboard']);
