@@ -1,0 +1,16 @@
+@import "src/app/app";
+@import "src/app/styles/bottomsheet.style";
+
+.rapido-solde{
+    position: relative;
+    background-color: $grayDashboard;
+    border-radius: 10px;
+    height: 80px;
+    margin-bottom: 30px;
+    .value{
+        position: absolute;
+        top: 30px;
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 26px;
+    }
+}

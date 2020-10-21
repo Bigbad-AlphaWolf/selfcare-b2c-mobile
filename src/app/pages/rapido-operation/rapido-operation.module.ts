@@ -5,13 +5,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { RapidOperationPage } from './rapid-operation.page';
+import { RapidoOperationPage } from './rapido-operation.page';
 import { SharedModule } from 'src/shared/shared.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: RapidOperationPage
+    component: RapidoOperationPage
   }
 ];
 
@@ -23,6 +23,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [RapidOperationPage]
+  declarations: [RapidoOperationPage]
 })
-export class RapidOperationPageModule {}
+export class RapidoOperationPageModule {}
