@@ -196,15 +196,14 @@ export class DashboardService {
     detailsToCheck = Object.assign(detailsToCheck, {
       login: this.authService.getUserMainPhoneNumber(),
     });
-    return this.http.post(
-      `${attachMobileNumberEndpoint}/register`,
-      detailsToCheck
-    ).pipe(
-      tap((r) => {
-        DashboardService.rattachedNumbers = null;
-        this.attachedNumbers().pipe(take(1)).subscribe();
-      })
-    );
+    return this.http
+      .post(`${attachMobileNumberEndpoint}/register`, detailsToCheck)
+      .pipe(
+        tap((r) => {
+          DashboardService.rattachedNumbers = null;
+          this.attachedNumbers().pipe(take(1)).subscribe();
+        })
+      );
   }
 
   registerNumberByIdClient(payload: {
@@ -246,7 +245,7 @@ export class DashboardService {
     return this.http.get(`${userLinkedPhoneNumberEndpoint}/${login}`);
   }
 
-  attachedNumbers() {    
+  attachedNumbers() {
     if (DashboardService.rattachedNumbers)
       return of(DashboardService.rattachedNumbers);
 
@@ -254,7 +253,7 @@ export class DashboardService {
       tap((elements: any) => {
         DashboardService.rattachedNumbers = elements;
       })
-    )
+    );
   }
 
   fetchFixedNumbers() {
@@ -355,18 +354,19 @@ export class DashboardService {
   }
 
   getAccountInfo(userLogin: string) {
-    return this.http
-      .get(`${userAccountInfos}/${userLogin}`)
-      .pipe(tap(() => {}));
+    return this.http.get(`${userAccountInfos}/${userLogin}`).pipe(share());
   }
 
-  getUserConsoInfosByCode(consoCodes?: number[]) {
+  getUserConsoInfosByCode(hmac?: string, consoCodes?: number[]) {
     this.msisdn = this.getCurrentPhoneNumber();
     // filter by code not working on Orange VM so
     let queryParams = '';
     if (consoCodes && Array.isArray(consoCodes) && consoCodes.length) {
       const params = consoCodes.map((code) => `code=${code}`).join('&');
       queryParams = `?${params}`;
+    }
+    if (hmac) {
+      queryParams += `?hmac=${hmac}`;
     }
     return this.http
       .get(`${userConsoByCodeEndpoint}/${this.msisdn}${queryParams}`)
@@ -454,7 +454,7 @@ export class DashboardService {
   getIdClient() {
     const phoneNumber = this.getCurrentPhoneNumber();
     return this.authService
-      .getSubscriptionCustomerOffer(phoneNumber)
+      .getSubscription(phoneNumber)
       .pipe(map((response: any) => response.clientCode));
   }
 
@@ -482,7 +482,7 @@ export class DashboardService {
 
   getActivePromoBooster() {
     const currentPhoneNumber = this.getCurrentPhoneNumber();
-    return this.authService.getSubscription(currentPhoneNumber).pipe(
+    return this.authService.getSubscriptionForTiers(currentPhoneNumber).pipe(
       switchMap((res: SubscriptionModel) => {
         return this.http.get(
           `${promoBoosterActiveEndpoint}?msisdn=${currentPhoneNumber}&code=${res.code}`
@@ -502,11 +502,13 @@ export class DashboardService {
     const userBirthDay = ls.get('birthDate');
     if (userBirthDay) return of(userBirthDay);
     const msisdn = this.getMainPhoneNumber();
-    return this.http.get(`${userBirthDateEndpoint}/${msisdn}`, {responseType: 'text'}).pipe(
-      map((birthDate) => {
-        ls.set('birthDate', birthDate);
-      })
-    );
+    return this.http
+      .get(`${userBirthDateEndpoint}/${msisdn}`, { responseType: 'text' })
+      .pipe(
+        map((birthDate) => {
+          ls.set('birthDate', birthDate);
+        })
+      );
   }
 
   getNewFeatureAlloBadgeStatus() {
@@ -516,7 +518,7 @@ export class DashboardService {
       })
     );
   }
-  
+
   swapOMCard() {
     const omCard = document.getElementById('omCard');
     if (omCard) {

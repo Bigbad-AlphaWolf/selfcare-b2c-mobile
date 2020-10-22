@@ -5,9 +5,10 @@
 export const environment = {
   production: false,
   // SERVER_API_URL: 'https://orangeetmoi.orange.sn',
-  // SERVER_API_URL: 'http://10.137.52.31:8712',
   // SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
   // SERVER_API_URL: 'http://10.137.52.31:8712',
+  // SERVER_API_URL:
+  //   'https://selfcareb2c-admin-dsiselfcarebcorangeetmoi-rec.malaw.orange-sonatel.com',
   SERVER_API_URL:
     'https://selfcareb2c-client-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
   // SERVER_API_URL: 'http://10.100.97.175:8712',

@@ -1,5 +1,5 @@
 <ion-item lines="none" class="ion-no-padding">
-  <div class="item">
+  <div class="item" [ngClass]="{'item-gray': disable}">
     <div class="artiste-img-container" *ngIf="dalal?.artiste?.image">
       <img [src]="downloadAvatarEndpoint + dalal?.artiste?.image" alt="art" />
     </div>
@@ -7,6 +7,9 @@
       <div class="titre scb-text-orange">{{ dalal?.titre }}</div>
       <div class="artiste scb-text-dark-grey">
         {{ dalal?.artiste?.nom }}
+      </div>
+      <div class="artiste scb-text-dark-grey" *ngIf="dalal?.date">
+        actif depuis {{ dalal?.date | date: 'dd/MM/yyyy' }}
       </div>
     </div>
   </div>

@@ -9,4 +9,5 @@ export interface DalalTonesModel {
   fournisseur?;
   artiste?: { nom?: string; image?: string };
   sousGenres?: DalalTonesSousGenreModel[];
+  date?: string;
 }

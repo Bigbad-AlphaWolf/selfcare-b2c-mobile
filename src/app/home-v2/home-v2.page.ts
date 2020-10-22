@@ -1,15 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
-import { HelpModalDefaultContent } from 'src/shared';
+import {
+  HelpModalDefaultContent,
+  JAMONO_PRO_CODE_FORMULE,
+  LIGHT_DASHBOARD_EVENT,
+  SubscriptionModel,
+} from 'src/shared';
 import { ModalController } from '@ionic/angular';
-
+import { Subscription } from 'rxjs';
+import {
+  AuthenticationService,
+  ConfirmMsisdnModel,
+} from '../services/authentication-service/authentication.service';
+import { UuidService } from '../services/uuid-service/uuid.service';
+import { PROFILE_TYPE_POSTPAID } from '../dashboard';
+import * as SecureLS from 'secure-ls';
+const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-home-v2',
   templateUrl: './home-v2.page.html',
   styleUrls: ['./home-v2.page.scss'],
 })
 export class HomeV2Page implements OnInit {
+  getMsisdnSubscription: Subscription;
+  confirmMsisdnSubscription: Subscription;
+  loginSubscription: Subscription;
+  msisdn: string;
   options: {
     title: string;
     subtitle: string;
@@ -47,12 +64,31 @@ export class HomeV2Page implements OnInit {
       action: 'POPUP',
     },
   ];
+  lightAccessItem: {
+    title: string;
+    subtitle: string;
+    type: 'REGISTER' | 'LOGIN' | 'VISITOR' | 'HELP';
+    url?: string;
+    action?: 'REDIRECT' | 'POPUP';
+  } = {
+    title: 'Accèder sans créer de compte',
+    subtitle: 'Accès visiteurs, avec un accés limité aux fonctionnalités',
+    type: 'VISITOR',
+    url: '',
+    action: 'REDIRECT',
+  };
   constructor(
     private router: Router,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private uuidService: UuidService,
+    private authenticationService: AuthenticationService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getUserMsisdn();
+  }
+
+  ionViewWillEnter() {}
 
   goTo(option: {
     title: string;
@@ -62,7 +98,14 @@ export class HomeV2Page implements OnInit {
     action?: 'REDIRECT' | 'POPUP';
   }) {
     if (option.action === 'REDIRECT') {
-      this.router.navigate([option.url]);
+      if (option.type === 'VISITOR') {
+        if (this.msisdn)
+          this.router.navigate(['/new-registration'], {
+            state: { event: LIGHT_DASHBOARD_EVENT },
+          });
+      } else {
+        this.router.navigate([option.url]);
+      }
     } else if (option.action === 'POPUP') {
       if (option.type === 'HELP') {
         this.openHelpModal(HelpModalDefaultContent);
@@ -77,5 +120,48 @@ export class HomeV2Page implements OnInit {
       componentProps: { data: sheetData },
     });
     return await modal.present();
+  }
+
+  getUserMsisdn() {
+    const uuid = this.uuidService.getUuid();
+    this.getMsisdnSubscription = this.authenticationService
+      .getMsisdnByNetwork()
+      .subscribe((res: { msisdn: string }) => {
+        const msisdn = res.msisdn;
+        this.confirmMsisdnSubscription = this.authenticationService
+          .confirmMsisdnByNetwork(msisdn)
+          .subscribe((response: ConfirmMsisdnModel) => {
+            if (response.status) {
+              this.authenticationService.setHmacOnLs(response.hmac);
+              this.msisdn =
+                response.msisdn && response.msisdn.startsWith('221')
+                  ? response.msisdn.substring(3)
+                  : response.msisdn;
+              this.loginAnonymAccount();
+            }
+          });
+      });
+  }
+
+  loginAnonymAccount() {
+    this.loginSubscription = this.authenticationService
+      .getTokenFromBackend()
+      .subscribe((res) => {
+        ls.set('light_token', res.access_token);
+        this.authenticationService
+          .getSubscriptionForTiers(this.msisdn)
+          .subscribe((sub: SubscriptionModel) => {
+            const profile = sub.profil;
+            const code = sub.code;
+            console.log(sub);
+            ls.set('currentPhoneNumber', this.msisdn);
+            if (
+              profile !== PROFILE_TYPE_POSTPAID &&
+              code !== JAMONO_PRO_CODE_FORMULE
+            ) {
+              this.options.splice(1, 0, this.lightAccessItem);
+            }
+          });
+      });
   }
 }

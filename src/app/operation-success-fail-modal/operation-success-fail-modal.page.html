@@ -24,14 +24,14 @@
       <span
         class="title"
         *ngSwitchCase="'OPERATION_WOYOFAL'"
-        style="white-space: pre-line"
+        style="white-space: pre-line;"
         >{{success ? 'Rechargement'+'\n'+'Woyofal effectué' :
         'Echec'+'\n'+'rechargement Woyofal'}}</span
       >
       <span
         class="title"
         *ngSwitchCase="'OPERATION_RAPIDO'"
-        style="white-space: pre-line"
+        style="white-space: pre-line;"
         >{{success ? 'Rechargement'+'\n'+'Rapido effectué' :
         'Echec'+'\n'+'rechargement Rapido'}}</span
       >
@@ -70,9 +70,8 @@
           >Vous avez acheté le pass illimix</span
         >
         <span *ngSwitchCase="OPERATION_ALLO_TYPE"
-          >Vous avez acheté le pass allo</span
-        >
-
+          >Vous avez acheté le pass allo</span>
+          
         <span *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
           >Vous avez acheté le pass voyage</span
         >
@@ -144,7 +143,7 @@
         *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
       >
       </app-item-recharge-credit>
-      <app-dalal-card-item [dalal]="opXtras?.dalal"></app-dalal-card-item>
+      <app-dalal-card-item [dalal]="dalal"></app-dalal-card-item>
     </ng-container>
   </div>
   <div
@@ -180,6 +179,16 @@
         <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
       </div>
     </div>
+    <ng-container
+        *ngIf="purchaseType === OPERATION_ENABLE_DALAL"
+      >
+      <div class="details">
+        <div class="left-block">Montant échéance</div>
+        <div class="right-block scb-text-gray">
+          <span class="numero">350 FCFA</span>
+          <span class="name">Tous les 30 jours</span>
+        </div></div>
+      </ng-container>
     <div class="details details-date">
       <div class="left-block">Date d'achat</div>
       <div class="right-block scb-text-gray">
@@ -281,7 +290,7 @@
         <ng-container *ngSwitchCase="OPERATION_ENABLE_DALAL">
           Activer un autre dalal
         </ng-container>
-        <ng-container *ngSwitchDefault>
+        <ng-container *ngSwitchDefault> 
           Faire une autre operation
         </ng-container>
       </ng-container>

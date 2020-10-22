@@ -1,8 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NavController} from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { OffreService } from 'src/app/models/offre-service.model';
-import { FILE_DOWNBLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -11,32 +17,27 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   animations: [
     // the fade-in/fade-out animation.
     trigger('fadeAnimation', [
+      state('in', style({ opacity: 1 })),
 
-      state('in', style({opacity: 1})),
+      transition(':enter', [style({ opacity: 0 }), animate(400)]),
 
-      transition(':enter', [
-        style({opacity: 0}),
-        animate(400 )
-      ]),
-
-      transition(':leave',
-        animate(400, style({opacity: 0})))
-    ])
-  ]      
+      transition(':leave', animate(400, style({ opacity: 0 }))),
+    ]),
+  ],
 })
 export class OffreServiceCardComponent implements OnInit {
   @Input('service') service: OffreService;
-  FILE_BASE_URL: string = FILE_DOWNBLOAD_ENDPOINT;
+  FILE_BASE_URL: string = FILE_DOWNLOAD_ENDPOINT;
   constructor(private navCtrl: NavController) {}
-  imageUrl : string;
+  imageUrl: string;
 
   ngOnInit() {
-    this.imageUrl = this.FILE_BASE_URL+'/'+this.service.icone;
+    this.imageUrl = this.FILE_BASE_URL + '/' + this.service.icone;
   }
 
   onClick() {
-    if(!this.service.activated){
-      this.service.clicked =  !this.service.clicked;
+    if (!this.service.activated) {
+      this.service.clicked = !this.service.clicked;
       return;
     }
     if (!this.service.redirectionPath) return;
@@ -45,7 +46,7 @@ export class OffreServiceCardComponent implements OnInit {
     });
   }
 
-  onErrorImg(){
+  onErrorImg() {
     this.imageUrl = 'assets/images/ic-package-services@2x.png';
   }
 }

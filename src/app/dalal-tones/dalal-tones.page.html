@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons (click)="(0)" class="ion-padding-start" slot="start">
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
       <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
     </ion-buttons>
     <ion-title class="ion-no-padding">
@@ -60,12 +60,12 @@
       </ion-list>
     </div>
     <div class="dalal-tones-block">
-      <div class="active-dalal-block" *ngIf="currentActiveDalal$ | async as currentActiveDalal">
+      <div class="active-dalal-block" *ngIf="currentActiveDalal">
         <div class="dalal-en-cours">
           <span class="current-dalal">Mon Dalal en cours</span>
           <span class="scb-text-orange">Voir tout</span>
         </div>
-        <app-dalal-card-item [dalal]="currentActiveDalal" (click)="openDisablePopup()"></app-dalal-card-item>
+        <app-dalal-card-item [dalal]="currentActiveDalal" (click)="openDisablePopup(currentActiveDalal)"></app-dalal-card-item>
       </div>
       <div *ngIf="loadingDalal" class="loading-dalal-spinner">
         <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>

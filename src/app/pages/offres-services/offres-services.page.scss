@@ -3,7 +3,6 @@
   height: 100%;
   .banierres {
     width: 100%;
-   
   }
   div[scrollx='true'] {
     display: flex;
@@ -11,7 +10,7 @@
     overflow-x: auto;
     position: relative;
     &::-webkit-scrollbar {
-      display: none; 
+      display: none;
     }
     .scroll-item {
       flex: 0 0 auto;
@@ -23,7 +22,7 @@
 
     .operations-body {
       height: 100%;
-      .tab{
+      .tab {
         display: flex;
         flex-direction: column;
         position: sticky;
@@ -55,15 +54,16 @@
               border-bottom: 3px solid $orange;
               padding-bottom: 7px;
               span {
+                font-family: HelveticaNeueLTStd-Bd;
                 color: $orange;
               }
             }
           }
         }
-        .sub-category{
+        .sub-category {
           padding: 10px 5px;
           background-color: $grayDashboard;
-          .sub-cat-item{
+          .sub-cat-item {
             font-family: HelveticaNeueLTStd-Bd;
             text-align: center;
             color: #000000;
@@ -72,7 +72,7 @@
             border-radius: 20px;
             padding: 10px 20px 5px;
             margin: 5px;
-            .name{
+            .name {
               width: fit-content;
               white-space: nowrap;
             }
@@ -112,5 +112,4 @@
       }
     }
   }
-
 }

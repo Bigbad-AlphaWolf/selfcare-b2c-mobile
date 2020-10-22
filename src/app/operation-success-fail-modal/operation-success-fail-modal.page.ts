@@ -49,6 +49,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   @Input() merchantCode: number;
   @Input() merchantName: string;
   @Input() opXtras: OperationExtras;
+  @Input() dalal: any;
   dateAchat = this.dashboardService.getCurrentDate();
   btnText: string;
 

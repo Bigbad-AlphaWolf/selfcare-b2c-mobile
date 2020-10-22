@@ -26,6 +26,8 @@ import {
   HelpModalDefaultContent,
   HelpModalAuthErrorContent,
   PRO_MOBILE_ERROR_CODE,
+  LIGHT_DASHBOARD_EVENT,
+  REGISTRATION_PASSWORD_STEP,
 } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { ModalController, NavController } from '@ionic/angular';
@@ -110,6 +112,13 @@ export class NewRegistrationPage implements OnInit {
     });
   }
 
+  ionViewWillEnter() {
+    const step = history.state.step;
+    if (step === REGISTRATION_PASSWORD_STEP) {
+      this.step = 'PASSWORD';
+    }
+  }
+
   goIntro() {
     this.followAnalyticsService.registerEventFollow(
       'Voir_Intro',
@@ -126,10 +135,6 @@ export class NewRegistrationPage implements OnInit {
       confirmPassword: ['', [Validators.required]],
     });
     this.getNumber();
-  }
-
-  ionViewWillLeave() {
-    ls.remove('light-token');
   }
 
   openDialogGoSettings() {
@@ -186,6 +191,7 @@ export class NewRegistrationPage implements OnInit {
         }),
         catchError(() => {
           this.displayMsisdnError();
+          this.openHelpModal(HelpModalDefaultContent);
           return of();
         })
       )
@@ -193,6 +199,11 @@ export class NewRegistrationPage implements OnInit {
   }
 
   checkNumber() {
+    const event = history.state.event;
+    if (event === LIGHT_DASHBOARD_EVENT) {
+      this.router.navigate(['dashboard-prepaid-light']);
+      return;
+    }
     this.checkingNumber = true;
     const payload = { msisdn: this.phoneNumber, hmac: this.hmac };
     this.checkNumberSubscription = this.authServ.checkNumber(payload).subscribe(
@@ -203,7 +214,6 @@ export class NewRegistrationPage implements OnInit {
       },
       (err: any) => {
         this.checkingNumber = false;
-        console.log(err);
 
         if (err.status === 400) {
           if (err && err.error && err.error.errorKey === 'userRattached') {

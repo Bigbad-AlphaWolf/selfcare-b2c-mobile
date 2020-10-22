@@ -2,17 +2,19 @@
   <div class="image-container">
     <img src="/assets/images/green-checbox.png" alt="checkbox" />
   </div>
-  <div class="title">Bravo</div>
-  <div class="subtitle scb-text-gray">Vous venez d’activer le dalal</div>
+  <div class="subtitle scb-text-gray">Vous venez de désactiver le dalal</div>
   <div class="dalal-infos">
-    <div class="artiste-img-container">
-      <img src="" alt="art" />
+    <div class="artiste-img-container" *ngIf="choosenDalal?.artiste?.image">
+      <img [src]="downloadAvatarEndpoint + choosenDalal?.artiste?.image" alt="art" />
     </div>
     <div class="infos-text">
       <span class="titre scb-text-orange">{{ choosenDalal?.titre }}</span>
       <span class="artiste-name scb-text-dark-grey">{{
         choosenDalal?.artiste?.nom
       }}</span>
+      <div class="artiste-name scb-text-dark-grey" *ngIf="choosenDalal?.date">
+        actif depuis {{ choosenDalal?.date | date: 'dd/MM/yyyy' }}
+      </div>
     </div>
   </div>
   <button class="scb-btn scb-btn-orange scb-btn-full" (click)="close()">

@@ -19,6 +19,8 @@ import {
   OPERATION_TYPE_PASS_VOYAGE,
   OPERATION_ENABLE_DALAL,
   MONTHLY_DALAL_TARIF,
+  PAYMENT_MOD_CREDIT,
+  PAYMENT_MOD_OM,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -156,7 +158,7 @@ export class OperationRecapPage implements OnInit {
               this.recipientLastName = state.recipientLastname;
               this.recipientName =
                 this.recipientFirstName + ' ' + this.recipientLastName;
-              this.paymentMod = 'ORANGE_MONEY';
+              this.paymentMod = PAYMENT_MOD_OM;
               break;
             case OPERATION_TRANSFER_OM:
               this.recipientMsisdn = state.recipientMsisdn;
@@ -167,13 +169,13 @@ export class OperationRecapPage implements OnInit {
               this.transferOMPayload.msisdn2 = this.recipientMsisdn;
               this.recipientName =
                 state.recipientFirstname + ' ' + state.recipientLastname;
-              this.paymentMod = 'ORANGE_MONEY';
+              this.paymentMod = PAYMENT_MOD_OM;
               break;
             case OPERATION_TYPE_MERCHANT_PAYMENT:
               this.amount = state.amount;
               this.merchantCode = state.merchant.merchantCode;
               this.merchantName = state.merchant.name;
-              this.paymentMod = 'ORANGE_MONEY';
+              this.paymentMod = PAYMENT_MOD_OM;
               this.merchantPaymentPayload = {
                 amount: this.amount,
                 code_marchand: this.merchantCode,
@@ -183,7 +185,7 @@ export class OperationRecapPage implements OnInit {
             case OPERATION_TYPE_RECHARGE_CREDIT:
               this.opXtras = state;
               this.amount = this.opXtras.amount;
-              this.paymentMod = 'ORANGE_MONEY';
+              this.paymentMod = PAYMENT_MOD_OM;
               this.recipientMsisdn = this.opXtras.recipientMsisdn;
               this.recipientName = this.opXtras.recipientFromContact
                 ? this.opXtras.recipientFirstname +
@@ -225,19 +227,17 @@ export class OperationRecapPage implements OnInit {
         }
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
-        this.openPinpad();
-        break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
       case OPERATION_TRANSFER_OM:
       case OPERATION_TRANSFER_OM_WITH_CODE:
-        this.openPinpad();
-        break;
       case OPERATION_RAPIDO:
       case OPERATION_WOYOFAL:
         this.openPinpad();
         break;
       case OPERATION_ENABLE_DALAL:
         this.activateDalal();
+        break;
+      default:
         break;
     }
   }
@@ -278,22 +278,22 @@ export class OperationRecapPage implements OnInit {
       },
     });
     modal.onDidDismiss().then((response) => {
-      if (response.data && response.data.paymentMod === 'CREDIT') {
-        this.paymentMod = 'CREDIT';
+      if (response.data && response.data.paymentMod === PAYMENT_MOD_CREDIT) {
+        this.paymentMod = PAYMENT_MOD_CREDIT;
         this.payWithCredit();
         this.followAnalyticsService.registerEventFollow(
           'Buy_pass_payment_mod',
           'event',
-          'CREDIT'
+          PAYMENT_MOD_CREDIT
         );
       }
-      if (response.data && response.data.paymentMod === 'ORANGE_MONEY') {
-        this.paymentMod = 'ORANGE_MONEY';
+      if (response.data && response.data.paymentMod === PAYMENT_MOD_OM) {
+        this.paymentMod = PAYMENT_MOD_OM;
         this.openPinpad();
         this.followAnalyticsService.registerEventFollow(
           'Buy_pass_payment_mod',
           'event',
-          'ORANGE_MONEY'
+          PAYMENT_MOD_OM
         );
       }
     });
@@ -341,6 +341,8 @@ export class OperationRecapPage implements OnInit {
     params.amount = this.amount;
     params.merchantCode = this.merchantCode;
     params.merchantName = this.merchantName;
+    params.dalal = this.opXtras ? this.opXtras.dalal : null;
+    console.log(params.dalal);
 
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
@@ -475,4 +477,5 @@ interface ModalSuccessModel {
   merchantName?: string;
   merchantCode?: number;
   opXtras?: OperationExtras;
+  dalal?: any;
 }

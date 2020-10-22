@@ -34,7 +34,7 @@ export class DalalTonesPage implements OnInit {
   loadingError: boolean;
   infiniteScrollDisabled: boolean;
   downloadAvatarEndpoint = downloadAvatarEndpoint;
-  currentActiveDalal$ = this.dalalTonesService.getActiveDalal();
+  currentActiveDalal;
   constructor(
     private dalalTonesService: DalalTonesService,
     private modalController: ModalController,
@@ -44,6 +44,19 @@ export class DalalTonesPage implements OnInit {
   ngOnInit() {
     this.getGenresDalal();
     this.getDalalTones(true, '');
+    this.getCurrentActiveDalal();
+  }
+
+  getCurrentActiveDalal() {
+    this.dalalTonesService.getActiveDalal().subscribe(
+      (res: any) => {
+        console.log(res);
+
+        if (res && res.serviceCharacteristic)
+          this.currentActiveDalal = res.serviceCharacteristic[0];
+      },
+      (err) => {}
+    );
   }
 
   getGenresDalal() {
@@ -129,9 +142,6 @@ export class DalalTonesPage implements OnInit {
       cssClass: 'dalal-success-modal',
       backdropDismiss: true,
     });
-    modal.onDidDismiss().then(() => {
-      this.navController.pop();
-    });
     return await modal.present();
   }
 
@@ -142,9 +152,11 @@ export class DalalTonesPage implements OnInit {
       backdropDismiss: true,
       componentProps: { dalal },
     });
-    modal.onDidDismiss().then(() => {
-      this.navController.pop();
-    });
+    modal.onDidDismiss().then(() => {});
     return await modal.present();
+  }
+
+  goBack() {
+    this.navController.pop();
   }
 }

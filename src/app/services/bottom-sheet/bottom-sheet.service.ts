@@ -40,7 +40,7 @@ export class BottomSheetService {
 
           if (fromFavorites) this.openModal(comp);
 
-          if (result && result.ACTION === "FORWARD") {
+          if (result && result.ACTION === "FORWARD") {            
             this.opXtras.purchaseType = purchaseType;
             this.opXtras.billData
               ? (this.opXtras.billData.counter = result.counter)
@@ -73,9 +73,10 @@ export class BottomSheetService {
     );
   }
 
-  async openModal(component) {
+  async openModal(component, data?: { rapidosFavorites$: any }) {
     const modal = await this.modalCtrl.create({
       component,
+      componentProps: data,
       cssClass: "select-recipient-modal",
     });
     this.bsModalEl.next(modal);
