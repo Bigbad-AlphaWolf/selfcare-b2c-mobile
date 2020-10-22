@@ -15,12 +15,6 @@ export class UuidService {
       ls.set('X-UUID', uuid);
       return uuid;
     }
-    let deviceInfo = window['device'];
-    if (deviceInfo && deviceInfo.uuid && deviceInfo.uuid !== '') {
-      ls.set('X-UUID', uuid);
-      uuid = deviceInfo.uuid;
-      return uuid;
-    }
     uuid = uuidv4();
     ls.set('X-UUID', uuid);
     return uuid;

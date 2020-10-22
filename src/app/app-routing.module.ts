@@ -297,6 +297,11 @@ const routes: Routes = [
     loadChildren:
       './pages/rapid-operation/rapid-operation.module#RapidOperationPageModule',
   },
+  {
+    path: 'dashboard-prepaid-light',
+    loadChildren:
+      './dashboard-prepaid-light/dashboard-prepaid-light.module#DashboardPrepaidLightPageModule',
+  },
 ];
 
 @NgModule({

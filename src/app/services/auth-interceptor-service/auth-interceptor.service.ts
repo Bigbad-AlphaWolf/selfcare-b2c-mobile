@@ -14,7 +14,10 @@ import * as jwt_decode from 'jwt-decode';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { OM_SERVICE_VERSION } from '../orange-money-service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import { checkUrlMatchOM } from 'src/app/utils/utils';
+import {
+  checkUrlMatchOM,
+  checkUrlNotNeedAuthorization,
+} from 'src/app/utils/utils';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
@@ -78,7 +81,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221782954881');
+      headers = headers.set('X-MSISDN', '221786258731');
       //delay to test slowness of network
       req = req.clone({
         headers,
@@ -147,6 +150,12 @@ export class AuthInterceptorService implements HttpInterceptor {
       if (this.appVersionNumber)
         headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
 
+      req = req.clone({
+        headers,
+      });
+    }
+    if (checkUrlNotNeedAuthorization(req.url)) {
+      let headers = req.headers.delete('Authorization');
       req = req.clone({
         headers,
       });
