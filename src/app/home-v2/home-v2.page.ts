@@ -84,11 +84,11 @@ export class HomeV2Page implements OnInit {
     private authenticationService: AuthenticationService
   ) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewWillEnter() {
     this.getUserMsisdn();
   }
-
-  ionViewWillEnter() {}
 
   goTo(option: {
     title: string;
@@ -124,6 +124,7 @@ export class HomeV2Page implements OnInit {
 
   getUserMsisdn() {
     const uuid = this.uuidService.getUuid();
+    console.log(uuid);
     this.getMsisdnSubscription = this.authenticationService
       .getMsisdnByNetwork()
       .subscribe((res: { msisdn: string }) => {
@@ -147,19 +148,21 @@ export class HomeV2Page implements OnInit {
     this.loginSubscription = this.authenticationService
       .getTokenFromBackend()
       .subscribe((res) => {
-        ls.set('light_token', res.access_token);
+        ls.set('light-token', res.access_token);
         this.authenticationService
           .getSubscriptionForTiers(this.msisdn)
           .subscribe((sub: SubscriptionModel) => {
             const profile = sub.profil;
             const code = sub.code;
-            console.log(sub);
             ls.set('currentPhoneNumber', this.msisdn);
             if (
               profile !== PROFILE_TYPE_POSTPAID &&
               code !== JAMONO_PRO_CODE_FORMULE
             ) {
-              this.options.splice(1, 0, this.lightAccessItem);
+              const lightItem = this.options.find(
+                (item) => item.type === 'VISITOR'
+              );
+              if (!lightItem) this.options.splice(1, 0, this.lightAccessItem);
             }
           });
       });

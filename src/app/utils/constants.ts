@@ -34,6 +34,12 @@ export abstract class Constants {
 }
 
 export const OM_URLS = ['selfcare-b2c-om'];
+export const NO_TOKEN_URLS = [
+  '/auth/get-service-token',
+  '/auth/login',
+  '/api/v1/get-msisdn',
+  '/api/v1/confirm-msisdn',
+];
 export const OM_RECENT_TYPES = [
   {
     operationType: OPERATION_WOYOFAL,
@@ -69,4 +75,9 @@ export const OM_RECENT_TYPES = [
   },
 ];
 
-export const CATEGORY_MPO = { illimix: "illimix", internet: "internet", recharge: "recharge", sargal: "sargal"  }
+export const CATEGORY_MPO = {
+  illimix: 'illimix',
+  internet: 'internet',
+  recharge: 'recharge',
+  sargal: 'sargal',
+};
