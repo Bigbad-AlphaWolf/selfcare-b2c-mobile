@@ -89,6 +89,7 @@ export class LoginPage implements OnInit {
     this.loading = true;
     this.authServ.login(user).subscribe(
       () => {
+        ls.remove('light-token');
         this.followAnalyticsService.registerEventFollow(
           'login_success',
           'event',
@@ -97,7 +98,6 @@ export class LoginPage implements OnInit {
         this.dashbServ.getAccountInfo(user.username).subscribe(
           (resp: any) => {
             this.loading = false;
-            ls.remove('light-token');
             ls.set('user', resp);
             this.dashbServ.setCurrentPhoneNumber(user.username);
             this.router.navigate(['/dashboard']);
