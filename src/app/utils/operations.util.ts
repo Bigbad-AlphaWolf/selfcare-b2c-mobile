@@ -68,7 +68,7 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
     title: 'Recharger',
     subtitle: 'Rapido',
     icon: `${IMAGES_DIR_PATH}/rapido@3x.png`,
-    action: '/rapid-operation',
+    action: '/rapido-operation',
     type: 'NAVIGATE',
     url: '',
   },

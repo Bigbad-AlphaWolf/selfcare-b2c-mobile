@@ -7,3 +7,4 @@ export const WOYOFAL_RECENTS_COUNTER_ENDPOINT = `${WOYOFAL_PATH}/recents`;
 export const FEES_ENDPOINT = `${WOYOFAL_PATH}/fees`;
 export const WOYOFAL_PAYMENT_ENDPOINT = `${WOYOFAL_PATH}/payment`; 
 export const RAPIDO_PAYMENT_ENDPOINT = `${RAPIDO_PATH}/charge-rapido`; 
+export const RAPIDO_SOLDE_ENDPOINT = `${RAPIDO_PATH}/balance-rapido`; 

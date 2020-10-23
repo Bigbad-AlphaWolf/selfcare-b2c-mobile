@@ -85,6 +85,7 @@ import { OffreServiceCardComponent } from 'src/app/components/offre-service-card
 import { IonicImageLoader } from 'ionic-image-loader';
 import { RapidoSelectionComponent } from 'src/app/components/counter/rapido-selection/rapido-selection.component';
 import { FavoriteRapidoComponent } from 'src/app/components/counter/favorite-rapido/favorite-rapido.component';
+import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
 
 @NgModule({
   declarations: [
@@ -148,7 +149,8 @@ import { FavoriteRapidoComponent } from 'src/app/components/counter/favorite-rap
     CodeFormatPipe,
     FavoriteMerchantComponent,
     AcronymPipe,
-    IbouIonFabComponent
+    IbouIonFabComponent,
+    RapidoSoldeComponent
   ],
   imports: [
     CommonModule,
@@ -193,6 +195,7 @@ import { FavoriteRapidoComponent } from 'src/app/components/counter/favorite-rap
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
     FavoriteMerchantComponent,
+    RapidoSoldeComponent
   ],
   exports: [
     BanniereComponent,
@@ -265,7 +268,8 @@ import { FavoriteRapidoComponent } from 'src/app/components/counter/favorite-rap
     ItemRechargeCreditComponent,
     ItemOfferPlanComponent,
     FavoriteMerchantComponent,
-    IbouIonFabComponent
+    IbouIonFabComponent,
+    RapidoSoldeComponent
   ],
   providers: [
     Contacts,

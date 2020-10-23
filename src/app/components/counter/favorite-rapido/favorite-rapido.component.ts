@@ -13,36 +13,26 @@ import { FavoriteType } from 'src/app/models/enums/om-favori-type.enum';
 })
 export class FavoriteRapidoComponent implements OnInit {
   @Input() rapidosFavorites$: Observable<any[]>;
-
+  @Input() operation: string;
   constructor(
     private favoriService: FavorisService,
     private modalCtrl: ModalController
   ) {}
 
   ngOnInit() {
-    // this.rapidosFavorites$ = this.favoriService
-    //   .favoritesByService(FavoriteType.RAPIDO)
-    //   .pipe(
-    //     map((favoris: FavorisOem[]) => {
-    //       let results = [];
-    //       favoris = favoris.slice(0, 5);
-    //       favoris.forEach((el) => {
-    //         results.push({ name: el.ref_label, counterNumber: el.ref_num });
-    //       });
-    //       return results;
-    //     })
-    //   );
   }
 
   onFavoriteRapidoSlected(rapido: any) {
+    
     this.modalCtrl.dismiss({
       TYPE_BS: 'FAVORIES',
       ACTION: 'FORWARD',
       counter: rapido,
+      operation: this.operation
     });
   }
 
   navigateBack() {
-    this.modalCtrl.dismiss({ TYPE_BS: 'FAVORIES', ACTION: 'BACK' });
+    this.modalCtrl.dismiss({ TYPE_BS: 'FAVORIES', ACTION: 'BACK', operation: this.operation });
   }
 }
