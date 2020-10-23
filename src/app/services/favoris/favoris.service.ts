@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, switchMap } from 'rxjs/operators';
-import { OM_FAVORITES_ENDPOINT, OM_SAVE_RAPIDO_FAVORITES_ENDPOINT } from '../utils/om.endpoints';
+import {
+  OM_FAVORITES_ENDPOINT,
+  OM_SAVE_RAPIDO_FAVORITES_ENDPOINT,
+} from '../utils/om.endpoints';
 import { OrangeMoneyService } from '../orange-money-service/orange-money.service';
 
 @Injectable({
@@ -50,7 +53,9 @@ export class FavorisService {
     return this.omService.getOmMsisdn().pipe(
       switchMap((omPhonenumber) => {
         return this.http
-          .get(`${OM_FAVORITES_ENDPOINT}/${omPhonenumber.trim()}?service=${service}`)
+          .get(
+            `${OM_FAVORITES_ENDPOINT}/${omPhonenumber.trim()}?service=${service}`
+          )
           .pipe(
             map((r: any) => {
               let error: boolean = !(
@@ -63,14 +68,20 @@ export class FavorisService {
 
               let typeFavoris: any = r.content.data.type_favoris;
 
-              return typeFavoris && typeFavoris.length ? typeFavoris[0].liste_favoris : [];
+              return typeFavoris && typeFavoris.length
+                ? typeFavoris[0].liste_favoris
+                : [];
             })
           );
       })
     );
   }
 
-  saveRapidoFavorite(data: { msisdn: string, card_num: string, card_label: string }){
+  saveRapidoFavorite(data: {
+    msisdn: string;
+    card_num: string;
+    card_label: string;
+  }) {
     return this.http.post(OM_SAVE_RAPIDO_FAVORITES_ENDPOINT, data);
   }
 }

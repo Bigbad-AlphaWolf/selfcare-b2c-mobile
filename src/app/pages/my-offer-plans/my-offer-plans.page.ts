@@ -4,7 +4,13 @@ import { OfferPlan } from 'src/shared/models/offer-plan.model';
 import { ApplicationRoutingService } from '../../services/application-routing/application-routing.service';
 import { DashboardService } from '../../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../../services/authentication-service/authentication.service';
-import { SubscriptionModel, BONS_PLANS, OPERATION_TYPE_PASS_ILLIMIX, OPERATION_TYPE_PASS_INTERNET, listRegisterSargalBonPlanText } from 'src/shared';
+import {
+  SubscriptionModel,
+  BONS_PLANS,
+  OPERATION_TYPE_PASS_ILLIMIX,
+  OPERATION_TYPE_PASS_INTERNET,
+  listRegisterSargalBonPlanText,
+} from 'src/shared';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NavController, IonSlides } from '@ionic/angular';
 import { getPageHeader } from '../../utils/title.util';
@@ -32,9 +38,15 @@ export class MyOfferPlansPage implements OnInit {
   hasError: boolean;
   categorySelected: string;
   currentUserCodeFormule: string;
-  payloadNavigation: { recipientMsisdn: string; recipientCodeFormule: string } = { recipientMsisdn: null, recipientCodeFormule: null };
+  payloadNavigation: {
+    recipientMsisdn: string;
+    recipientCodeFormule: string;
+  } = { recipientMsisdn: null, recipientCodeFormule: null };
   hasNoOfferPlans: boolean;
-  fullList: { category: {label: string, value: string} , offersPlans: OfferPlan[] }[];
+  fullList: {
+    category: { label: string; value: string };
+    offersPlans: OfferPlan[];
+  }[];
   hasErrorProcessingMPO: boolean;
   selectedOfferPlan: OfferPlan;
   @ViewChild('sliders') sliders: IonSlides;
@@ -45,7 +57,7 @@ export class MyOfferPlansPage implements OnInit {
   };
   activeTabIndex = 0;
 
-    constructor(
+  constructor(
     private navController: NavController,
     private offerPlansServ: OfferPlansService,
     private appliRout: ApplicationRoutingService,
@@ -57,9 +69,11 @@ export class MyOfferPlansPage implements OnInit {
     this.pageTitle = getPageHeader(BONS_PLANS).title;
     this.getUserOfferPlans();
     this.payloadNavigation.recipientMsisdn = this.dashbServ.getCurrentPhoneNumber();
-    this.authServ.getSubscription(this.payloadNavigation.recipientMsisdn).subscribe((res: SubscriptionModel) => {
-      this.payloadNavigation.recipientCodeFormule = res.code;
-    });
+    this.authServ
+      .getSubscription(this.payloadNavigation.recipientMsisdn)
+      .subscribe((res: SubscriptionModel) => {
+        this.payloadNavigation.recipientCodeFormule = res.code;
+      });
   }
 
   goBack() {
@@ -92,7 +106,7 @@ export class MyOfferPlansPage implements OnInit {
         }
       }
     );
-  }  
+  }
 
   initCategoriesOfferPlan() {
     let cats = [];
@@ -104,18 +118,29 @@ export class MyOfferPlansPage implements OnInit {
         } else return false;
       })
       .map((op: OfferPlan) => {
-        return { label: this.categories[op.typeMPO.toLowerCase()], value: op.typeMPO };
+        return {
+          label: this.categories[op.typeMPO.toLowerCase()],
+          value: op.typeMPO,
+        };
       });
   }
 
-  arrangeOfferPlansByCategory(listOffer: OfferPlan[], listCategories: {label: string, value: string}[]) {
-    this.fullList = listCategories.map((category: {label: string, value: string})=> {
-      const value = { category, offersPlans: [] };      
-      value.offersPlans = listOffer.filter((offerPlanUncategorized)=>{        
-        return offerPlanUncategorized.typeMPO.toLowerCase() === category.value.toLowerCase()
-      })
-      return value
-    })    
+  arrangeOfferPlansByCategory(
+    listOffer: OfferPlan[],
+    listCategories: { label: string; value: string }[]
+  ) {
+    this.fullList = listCategories.map(
+      (category: { label: string; value: string }) => {
+        const value = { category, offersPlans: [] };
+        value.offersPlans = listOffer.filter((offerPlanUncategorized) => {
+          return (
+            offerPlanUncategorized.typeMPO.toLowerCase() ===
+            category.value.toLowerCase()
+          );
+        });
+        return value;
+      }
+    );
   }
 
   changeCategory(tabIndex: number) {
@@ -129,54 +154,79 @@ export class MyOfferPlansPage implements OnInit {
     });
   }
 
-  orderBonPlan(offer: OfferPlan){
-    return this.offerPlansServ.orderBonPlanProduct(offer.productOfferingId).pipe(take(1));
+  orderBonPlan(offer: OfferPlan) {
+    return this.offerPlansServ
+      .orderBonPlanProduct(offer.productOfferingId)
+      .pipe(take(1));
   }
 
   processMPO(offer: OfferPlan) {
     this.hasErrorProcessingMPO = false;
-    this.orderBonPlan(offer).subscribe(() => {      
-      this.goToPage(offer);
-    }, () => {
-      this.selectedOfferPlan = offer;
-      this.hasErrorProcessingMPO = true;
-    });
+    this.orderBonPlan(offer).subscribe(
+      () => {
+        this.goToPage(offer);
+      },
+      () => {
+        this.selectedOfferPlan = offer;
+        this.hasErrorProcessingMPO = true;
+      }
+    );
   }
 
-  goToPage(offer: OfferPlan){
+  goToPage(offer: OfferPlan) {
     switch (offer.typeMPO.toLowerCase()) {
       case CATEGORY_MPO.illimix:
-        if(offer.pass){
-          const payloadPassPageRecap = { pass: offer.pass, recipientName: null , purchaseType: OPERATION_TYPE_PASS_ILLIMIX, ...this.payloadNavigation, offerPlan: offer  }
+        if (offer.pass) {
+          const payloadPassPageRecap = {
+            pass: offer.pass,
+            recipientName: null,
+            purchaseType: OPERATION_TYPE_PASS_ILLIMIX,
+            ...this.payloadNavigation,
+            offerPlan: offer,
+          };
           this.appliRout.goToPassRecapPage(payloadPassPageRecap);
         }
         break;
-        
+
       case CATEGORY_MPO.internet:
-        if(offer.pass){
-          const payloadPassPageRecap = { pass: offer.pass, recipientName: null , purchaseType: OPERATION_TYPE_PASS_INTERNET, ...this.payloadNavigation, offerPlan: offer  }
+        if (offer.pass) {
+          const payloadPassPageRecap = {
+            pass: offer.pass,
+            recipientName: null,
+            purchaseType: OPERATION_TYPE_PASS_INTERNET,
+            ...this.payloadNavigation,
+            offerPlan: offer,
+          };
           this.appliRout.goToPassRecapPage(payloadPassPageRecap);
         }
         break;
 
       case CATEGORY_MPO.recharge:
-        const opBuyCreditSetAmountPayload: OperationExtras = {forSelf: true,recipientFirstname: null,recipientLastname: null,recipientFromContact: false,senderMsisdn: this.payloadNavigation.recipientMsisdn, ...this.payloadNavigation, offerPlan: offer }
-        this.appliRout.goToBuyCreditSetAmount(opBuyCreditSetAmountPayload)
+        const opBuyCreditSetAmountPayload: OperationExtras = {
+          forSelf: true,
+          recipientFirstname: null,
+          recipientLastname: null,
+          recipientFromContact: false,
+          senderMsisdn: this.payloadNavigation.recipientMsisdn,
+          ...this.payloadNavigation,
+          offerPlan: offer,
+        };
+        this.appliRout.goToBuyCreditSetAmount(opBuyCreditSetAmountPayload);
         break;
 
       case CATEGORY_MPO.sargal:
         for (const text of listRegisterSargalBonPlanText) {
-          if(offer.bpTarget.toLowerCase().includes(text) ) {
-            this.appliRout.goToRegisterForSargal()
-            break
+          if (offer.bpTarget.toLowerCase().includes(text)) {
+            this.appliRout.goToRegisterForSargal();
+            break;
           }
-        }     
+        }
       default:
         break;
     }
   }
 
-  showErrorMsg(){
+  showErrorMsg() {
     this.hasErrorProcessingMPO = true;
   }
 }

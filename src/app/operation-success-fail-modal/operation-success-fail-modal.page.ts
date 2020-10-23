@@ -10,11 +10,16 @@ import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TYPE_PASS_ALLO,
+  OPERATION_ENABLE_DALAL,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
-import { OPERATION_RAPIDO, OPERATION_WOYOFAL } from '../utils/operations.constants';
+import {
+  OPERATION_RAPIDO,
+  OPERATION_WOYOFAL,
+} from '../utils/operations.constants';
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
+import { DalalTonesPage } from '../dalal-tones/dalal-tones.page';
 import { RapidoOperationPage } from '../pages/rapido-operation/rapido-operation.page';
 
 @Component({
@@ -30,6 +35,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
   OPERATION_TYPE_RECHARGE = OPERATION_TYPE_RECHARGE_CREDIT;
+  OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;
@@ -43,6 +49,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   @Input() merchantCode: number;
   @Input() merchantName: string;
   @Input() opXtras: OperationExtras;
+  @Input() dalal: any;
   dateAchat = this.dashboardService.getCurrentDate();
   btnText: string;
 
@@ -61,8 +68,8 @@ export class OperationSuccessFailModalPage implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
-  goToPage(purchaseType: string) {
-    switch (purchaseType) {
+  goToPage() {
+    switch (this.purchaseType) {
       case this.OPERATION_ILLIMIX_TYPE:
       case this.OPERATION_ALLO_TYPE:
       case this.OPERATION_INTERNET_TYPE:
@@ -81,6 +88,9 @@ export class OperationSuccessFailModalPage implements OnInit {
         break;
       case OPERATION_RAPIDO:
         this.navCtrl.navigateBack(RapidoOperationPage.ROUTE_PATH);
+        break;
+      case OPERATION_ENABLE_DALAL:
+        this.navCtrl.navigateBack(DalalTonesPage.ROUTE_PATH);
         break;
       default:
         break;

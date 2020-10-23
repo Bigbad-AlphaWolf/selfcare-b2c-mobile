@@ -17,6 +17,8 @@ import {
   OPERATION_TYPE_BONS_PLANS,
   OPERATION_TYPE_PASS_ALLO,
   OPERATION_TYPE_PASS_VOYAGE,
+  OPERATION_ENABLE_DALAL,
+  MONTHLY_DALAL_TARIF,
   PAYMENT_MOD_CREDIT,
   PAYMENT_MOD_OM,
 } from 'src/shared';
@@ -31,6 +33,7 @@ import {
 } from '../utils/operations.constants';
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
+import { DalalTonesService } from '../services/dalal-tones-service/dalal-tones.service';
 
 @Component({
   selector: 'app-operation-recap',
@@ -83,7 +86,8 @@ export class OperationRecapPage implements OnInit {
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   OPERATION_TYPE_BONS_PLANS = OPERATION_TYPE_BONS_PLANS;
-  state: any;
+  OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
+  DALAL_TARIF = MONTHLY_DALAL_TARIF;
   subscriptionInfos: SubscriptionModel;
   buyCreditPayload: any;
   offerPlan: OfferPlan;
@@ -96,7 +100,8 @@ export class OperationRecapPage implements OnInit {
     private appRouting: ApplicationRoutingService,
     private orangeMoneyService: OrangeMoneyService,
     private navController: NavController,
-    private authServ: AuthenticationService
+    private authServ: AuthenticationService,
+    private dalalTonesService: DalalTonesService
   ) {}
 
   ngOnInit() {
@@ -109,7 +114,7 @@ export class OperationRecapPage implements OnInit {
           this.router.getCurrentNavigation().extras.state.purchaseType
         ) {
           const state = this.router.getCurrentNavigation().extras.state;
-          this.state = state;
+          this.opXtras = state;
           this.purchaseType = state.purchaseType;
           switch (this.purchaseType) {
             case OPERATION_TYPE_PASS_INTERNET:
@@ -229,9 +234,39 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_WOYOFAL:
         this.openPinpad();
         break;
+      case OPERATION_ENABLE_DALAL:
+        this.activateDalal();
+        break;
       default:
         break;
     }
+  }
+
+  activateDalal() {
+    this.buyingPass = true;
+    this.dalalTonesService.activateDalal(this.opXtras.dalal).subscribe(
+      (res) => {
+        this.buyingPass = false;
+        this.openSuccessFailModal({
+          success: true,
+          msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
+          buyForMe: true,
+        });
+      },
+      (err) => {
+        this.buyingPass = false;
+        const activationErrorMsg =
+          err && err.error && err.error.message
+            ? err.error.message
+            : 'Une erreur est survenue';
+        this.openSuccessFailModal({
+          success: false,
+          msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
+          buyForMe: true,
+          errorMsg: activationErrorMsg,
+        });
+      }
+    );
   }
 
   async setPaymentMod() {
@@ -273,8 +308,8 @@ export class OperationRecapPage implements OnInit {
         operationType: this.purchaseType,
         buyPassPayload: this.buyPassPayload,
         buyCreditPayload: {
-          msisdn2: this.state.recipientMsisdn,
-          amount: this.state.amount,
+          msisdn2: this.opXtras.recipientMsisdn,
+          amount: this.opXtras.amount,
         },
         opXtras: this.opXtras,
         merchantPaymentPayload: this.merchantPaymentPayload,
@@ -306,6 +341,8 @@ export class OperationRecapPage implements OnInit {
     params.amount = this.amount;
     params.merchantCode = this.merchantCode;
     params.merchantName = this.merchantName;
+    params.dalal = this.opXtras ? this.opXtras.dalal : null;
+    console.log(params.dalal);
 
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
@@ -395,7 +432,7 @@ export class OperationRecapPage implements OnInit {
 
   transactionFailure() {
     this.buyingPass = false;
-    this.openSuccessFailModal({ success: false });
+    // this.openSuccessFailModal({ success: false });
     this.buyPassErrorMsg =
       'Service indisponible. Veuillez réessayer ultérieurement';
     this.followAnalyticsService.registerEventFollow(
@@ -440,4 +477,5 @@ interface ModalSuccessModel {
   merchantName?: string;
   merchantCode?: number;
   opXtras?: OperationExtras;
+  dalal?: any;
 }

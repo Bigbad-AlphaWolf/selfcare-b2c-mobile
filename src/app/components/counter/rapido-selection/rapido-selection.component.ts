@@ -1,7 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 
-
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { ModalController } from '@ionic/angular';
@@ -52,11 +51,11 @@ export class RapidoSelectionComponent implements OnInit {
     this.checkOmAccountSession();
   }
 
-  getPageTitle(operationType: string){    
+  getPageTitle(operationType: string) {
     return getPageHeader(operationType).title;
   }
 
-  getFavoritesRapido(){    
+  getFavoritesRapido() {
     this.rapidosFavorites$ = this.favoriService
       .favoritesByService(FavoriteType.RAPIDO)
       .pipe(
@@ -71,19 +70,25 @@ export class RapidoSelectionComponent implements OnInit {
       );
   }
 
-
-  async isFavoriteRapido(carteRapido: any){
+  async isFavoriteRapido(carteRapido: any) {
     this.isProcessing = true;
-    return await this.rapidosFavorites$.pipe(map((res: { name: string, counterNumber: string}[]) => {
-      this.isProcessing = false; 
-      const carte = res.find((c: { name: string, counterNumber: string} )=> {
-         return c.counterNumber === carteRapido
-       })
-       return !!carte;
-    }), catchError((err: any) => {
-      this.isProcessing = false
-      return err;
-    })).toPromise();
+    return await this.rapidosFavorites$
+      .pipe(
+        map((res: { name: string; counterNumber: string }[]) => {
+          this.isProcessing = false;
+          const carte = res.find(
+            (c: { name: string; counterNumber: string }) => {
+              return c.counterNumber === carteRapido;
+            }
+          );
+          return !!carte;
+        }),
+        catchError((err: any) => {
+          this.isProcessing = false;
+          return err;
+        })
+      )
+      .toPromise();
   }
 
   initRecents() {
@@ -102,54 +107,69 @@ export class RapidoSelectionComponent implements OnInit {
   }
 
   onRecentRapidoSlected(rapido: RapidoCounter) {
-    this.onContinue(rapido);  
+    this.onContinue(rapido);
   }
 
   async onContinue(rapido?: RapidoCounter) {
     this.errorMsg = null;
     let counterRapido = rapido ? rapido.counterNumber : this.inputRapidoNumber;
-    
+
     if (!this.rapidoNumberIsValid && !rapido) return;
-    let isFavoriteRapido = await this.isFavoriteRapido(counterRapido)
-    if(!isFavoriteRapido) {
-      const data = { msisdn: this.currentUserNumber,card_num: counterRapido, card_label: ''   }
+    let isFavoriteRapido = await this.isFavoriteRapido(counterRapido);
+    if (!isFavoriteRapido) {
+      const data = {
+        msisdn: this.currentUserNumber,
+        card_num: counterRapido,
+        card_label: '',
+      };
       this.saveCardRapidoFavorite(data).subscribe(() => {
         this.isProcessing = false;
         this.modalCtrl.dismiss({
           TYPE_BS: 'INPUT',
           ACTION: 'FORWARD',
           counter: { name: 'Autre', counterNumber: counterRapido },
-          operation: this.operation
+          operation: this.operation,
         });
       });
-    }else {
+    } else {
       this.modalCtrl.dismiss({
         TYPE_BS: 'INPUT',
         ACTION: 'FORWARD',
         counter: { name: 'Autre', counterNumber: counterRapido },
-        operation: this.operation} );
-      }
-
+        operation: this.operation,
+      });
     }
-
-  saveCardRapidoFavorite(data: { msisdn: string, card_num: string, card_label: string }){
-    this.isProcessing = true;
-    return this.favoriService.saveRapidoFavorite(data).pipe(catchError((err: any) => {
-      this.isProcessing = false;
-      if(err && err.error && err.error.errorCode === STATUS_ERROR_CODE_OM_CARD_RAPIDO_NOT_FOUND){
-        this.errorMsg = err.error.message;
-      } else {
-        this.errorMsg = 'Une erreur est survenue';
-      }      
-      return throwError(err);
-    }));
   }
 
+  saveCardRapidoFavorite(data: {
+    msisdn: string;
+    card_num: string;
+    card_label: string;
+  }) {
+    this.isProcessing = true;
+    return this.favoriService.saveRapidoFavorite(data).pipe(
+      catchError((err: any) => {
+        this.isProcessing = false;
+        if (
+          err &&
+          err.error &&
+          err.error.errorCode === STATUS_ERROR_CODE_OM_CARD_RAPIDO_NOT_FOUND
+        ) {
+          this.errorMsg = err.error.message;
+        } else {
+          this.errorMsg = 'Une erreur est survenue';
+        }
+        return throwError(err);
+      })
+    );
+  }
 
   onMyFavorites() {
     this.modalCtrl.dismiss();
-    this.bsService.openModal(FavoriteRapidoComponent, { rapidosFavorites$: this.rapidosFavorites$, operation: this.operation });
-
+    this.bsService.openModal(FavoriteRapidoComponent, {
+      rapidosFavorites$: this.rapidosFavorites$,
+      operation: this.operation,
+    });
   }
 
   onInputChange(rapidoNumber) {
@@ -164,25 +184,28 @@ export class RapidoSelectionComponent implements OnInit {
     );
   }
 
-
   checkOmAccountSession() {
     this.isProcessing = true;
     this.omService.omAccountSession().subscribe(
       (omSession: any) => {
+        this.isProcessing = false;
         if (
-          omSession.msisdn === "error" ||
+          omSession.msisdn === 'error' ||
           !omSession.hasApiKey ||
           omSession.loginExpired
         ) {
           this.modalCtrl.dismiss();
           this.openPinpad();
         }
-        if(omSession.msisdn !== 'error'){
+        if (omSession.msisdn !== 'error') {
           this.initRecents();
           this.bsService.opXtras.senderMsisdn = omSession.msisdn;
           this.feesService.initFees(omSession.msisdn);
           this.getFavoritesRapido();
         }
+      },
+      (err) => {
+        this.isProcessing = false;
       }
     );
   }

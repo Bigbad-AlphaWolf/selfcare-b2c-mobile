@@ -1,0 +1,142 @@
+@import 'src/app/app';
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.28px;
+}
+
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+  padding: 0 10px;
+}
+
+.dalal-tones-page-body {
+  min-height: 100%;
+  height: fit-content;
+  background-color: $grayDashboard;
+  .banniere-container {
+    background-color: $white;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+  .description {
+    background-color: $white;
+    padding: 20px percentage(10/375);
+    .text {
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 16px;
+      line-height: 1.13;
+      span {
+        font-family: HelveticaNeueLTStd-Bd;
+      }
+    }
+    .tarification {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      .tarifs-infos {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        .tarif {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 20px;
+          line-height: 1.1;
+          margin-bottom: 2px;
+        }
+        .period {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 12px;
+          line-height: 1.33;
+        }
+      }
+      button {
+        border: 2px solid $fullBlack;
+        border-radius: 10px;
+        font-size: 16px;
+        height: 40px;
+        background: none;
+        padding: 0 20px;
+      }
+    }
+  }
+  .filters-block {
+    background-color: $white;
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    ion-list {
+      display: flex;
+      margin-bottom: 0px !important;
+      ion-item {
+        --ion-background-color: #eeeeee;
+        color: #000000;
+        margin-left: 10px;
+        flex-shrink: 0;
+        border-radius: 20px;
+        border: solid 1px $silver;
+        &.selected {
+          --ion-background-color: #000000;
+          color: #ffffff;
+        }
+        ion-label {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 14px;
+          &.label-selected {
+            font-family: HelveticaNeueLTStd-Roman;
+          }
+        }
+        ion-select {
+          max-width: 100% !important;
+        }
+      }
+    }
+  }
+  .dalal-tones-block {
+    padding: 10px percentage(10/375) 0;
+    width: 100%;
+    .active-dalal-block {
+      .dalal-en-cours {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 30px 0 15px;
+        .current-dalal {
+          font-size: 20px;
+          font-family: HelveticaNeueLTStd-Bd;
+          line-height: 1.5;
+        }
+      }
+    }
+    .loading-dalal-spinner {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      .mat-spinner::ng-deep circle {
+        stroke: $orange;
+      }
+    }
+    ion-list {
+      background: transparent !important;
+      .list-dalal-title {
+        font-size: 20px;
+        font-family: HelveticaNeueLTStd-Bd;
+        line-height: 1.5;
+        margin: 15px 0;
+      }
+    }
+    .empty-array-message {
+    }
+    .error-block {
+    }
+  }
+}

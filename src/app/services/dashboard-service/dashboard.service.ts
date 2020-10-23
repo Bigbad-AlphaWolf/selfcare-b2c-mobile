@@ -353,10 +353,8 @@ export class DashboardService {
     }
   }
 
-  getAccountInfo(userLogin: string) {    
-    return this.http
-      .get(`${userAccountInfos}/${userLogin}`)
-      .pipe(share());
+  getAccountInfo(userLogin: string) {
+    return this.http.get(`${userAccountInfos}/${userLogin}`).pipe(share());
   }
 
   getUserConsoInfosByCode(hmac?: string, consoCodes?: number[]) {

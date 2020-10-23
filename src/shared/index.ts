@@ -40,6 +40,8 @@ export const OPERATION_TRANSFER_OM = 'TRANSFER_MONEY';
 export const OPERATION_TRANSFER_OM_WITH_CODE = 'TRANSFER_MONEY_WITH_CODE';
 export const BONS_PLANS = 'BONS_PLANS';
 export const OPERATION_TYPE_BONS_PLANS = 'BONS_PLANS';
+export const OPERATION_ENABLE_DALAL = 'ACTIVATE_DALAL';
+export const OPERATION_DISABLE_DALAL = 'DISABLE_DALAL';
 export const OPERATION_SEE_SOLDE_RAPIDO = 'SOLDE_RAPIDO';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
@@ -1176,6 +1178,15 @@ export const ERROR_MSG_PASS = {
   LIST_EMPTY_FOR_KIRENE:
     'Diegalou, Mixel et Wotel sont temporairement indisponibles sur Orange et Moi. Tu peux continuer à souscrire au #220# ou au #144#. Bul xaar, souscris vite. Nio far !',
 };
+
+export function concatArtistsNames(artistsArray: { nom?: string }[]) {
+  if (!artistsArray || !artistsArray.length) {
+    return '';
+  }
+  return artistsArray.map((artist) => artist.nom).join(', ');
+}
+export const MONTHLY_DALAL_TARIF = '350 FCFA /mois';
+export const DAILY_DALAL_TARIF = '12 FCFA /jour';
 export const LOCAL_ZONE = 'Zone Locale';
 export const LIGHT_DASHBOARD_EVENT = 'GO_DASHBOARD_LIGHT';
 export const REGISTRATION_PASSWORD_STEP = 'PASSWORD';

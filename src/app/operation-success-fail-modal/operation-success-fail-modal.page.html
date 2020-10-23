@@ -44,9 +44,11 @@
       <span class="title" *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
         >{{success ? 'Achat pass effectué' : 'Echec achat pass'}}</span
       >
-     
       <span class="title" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
         >{{success ? 'Paiement effectué' : 'Echec Paiement'}}</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_ENABLE_DALAL"
+        >{{success ? 'Dalal Tones activé' : 'Dalal non activé'}}</span
       >
     </ng-container>
     <span class="subtitle scb-text-gray">
@@ -79,6 +81,9 @@
         <span *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
           >Vous avez payé un montant de
         </span>
+        <span *ngSwitchCase="OPERATION_ENABLE_DALAL"
+          >Vous avez activé le Dalal
+        </span>
       </ng-container>
     </span>
   </div>
@@ -93,7 +98,7 @@
         [passIllimix]="passBought"
         *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
       >
-    </app-item-pass-illimix>
+      </app-item-pass-illimix>
       <app-item-pass-illimix
         [passIllimix]="passBought"
         *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
@@ -138,6 +143,7 @@
         *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
       >
       </app-item-recharge-credit>
+      <app-dalal-card-item [dalal]="dalal"></app-dalal-card-item>
     </ng-container>
   </div>
   <div
@@ -160,9 +166,7 @@
         <div class="left-block">Marchand</div>
         <div class="right-block scb-text-gray">
           <span class="numero">{{merchantCode}}</span>
-          <span class="name">
-            {{merchantName}}
-          </span>
+          <span class="name"> {{merchantName}} </span>
         </div>
       </ng-template>
     </div>
@@ -175,6 +179,16 @@
         <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
       </div>
     </div>
+    <ng-container
+        *ngIf="purchaseType === OPERATION_ENABLE_DALAL"
+      >
+      <div class="details">
+        <div class="left-block">Montant échéance</div>
+        <div class="right-block scb-text-gray">
+          <span class="numero">350 FCFA</span>
+          <span class="name">Tous les 30 jours</span>
+        </div></div>
+      </ng-container>
     <div class="details details-date">
       <div class="left-block">Date d'achat</div>
       <div class="right-block scb-text-gray">
@@ -192,17 +206,13 @@
         <span class="numero"
           >{{opXtras.billData.counter.counterNumber|codeFormat:2}}</span
         >
-        <span class="name">
-          {{opXtras.billData.counter.name}}
-        </span>
+        <span class="name"> {{opXtras.billData.counter.name}} </span>
       </div>
     </div>
     <div class="details">
       <div class="left-block">Paiement par</div>
       <div class="right-block scb-text-gray">
-        <span class="numero">
-          Orange Money
-        </span>
+        <span class="numero"> Orange Money </span>
         <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
       </div>
     </div>
@@ -227,17 +237,13 @@
         <span class="numero"
           >{{opXtras.billData.counter.counterNumber|codeFormat:2}}</span
         >
-        <span class="name">
-          {{opXtras.billData.counter.name}}
-        </span>
+        <span class="name"> {{opXtras.billData.counter.name}} </span>
       </div>
     </div>
     <div class="details">
       <div class="left-block">Paiement par</div>
       <div class="right-block scb-text-gray">
-        <span class="numero">
-          Orange Money
-        </span>
+        <span class="numero"> Orange Money </span>
         <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
       </div>
     </div>
@@ -251,7 +257,7 @@
 
   <div *ngIf="success" class="confirm-btn">
     <ion-button
-      (click)="goToPage(purchaseType)"
+      (click)="goToPage()"
       shape="round"
       class="btn btn-cancel"
       expand="block"
@@ -281,7 +287,10 @@
         <ng-container *ngSwitchCase="'OPERATION_RAPIDO'">
           Faire une autre recharge
         </ng-container>
-        <ng-container *ngSwitchDefault>
+        <ng-container *ngSwitchCase="OPERATION_ENABLE_DALAL">
+          Activer un autre dalal
+        </ng-container>
+        <ng-container *ngSwitchDefault> 
           Faire une autre operation
         </ng-container>
       </ng-container>

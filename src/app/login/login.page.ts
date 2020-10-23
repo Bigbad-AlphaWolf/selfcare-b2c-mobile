@@ -68,6 +68,7 @@ export class LoginPage implements OnInit {
 
   ionViewWillEnter() {
     this.getRegistrationInformation();
+    ls.remove('light-token');
   }
 
   getRegistrationInformation() {
