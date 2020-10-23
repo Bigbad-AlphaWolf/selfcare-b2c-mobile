@@ -293,9 +293,9 @@ const routes: Routes = [
     loadChildren: './dalal-tones/dalal-tones.module#DalalTonesPageModule',
   },
   {
-    path: 'rapid-operation',
+    path: 'rapido-operation',
     loadChildren:
-      './pages/rapid-operation/rapid-operation.module#RapidOperationPageModule',
+      './pages/rapido-operation/rapido-operation.module#RapidoOperationPageModule',
   },
   {
     path: 'dashboard-prepaid-light',

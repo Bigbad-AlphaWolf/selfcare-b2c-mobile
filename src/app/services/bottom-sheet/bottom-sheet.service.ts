@@ -12,6 +12,8 @@ import { OrangeMoneyService } from "../orange-money-service/orange-money.service
 import { LinesComponent } from "src/app/components/lines/lines.component";
 import { BillCompany } from "src/app/models/bill-company.model";
 import { Subject } from "rxjs";
+import { OPERATION_SEE_SOLDE_RAPIDO } from 'src/shared';
+import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
 
 @Injectable({
   providedIn: "root",
@@ -38,9 +40,9 @@ export class BottomSheetService {
           let fromFavorites =
             result && result.TYPE_BS === "FAVORIES" && result.ACTION === "BACK";
 
-          if (fromFavorites) this.openModal(comp);
-
-          if (result && result.ACTION === "FORWARD") {            
+          if (fromFavorites) this.openModal(comp, { operation: result.operation} );
+          
+          if (result && result.ACTION === "FORWARD" && result.operation !== OPERATION_SEE_SOLDE_RAPIDO) {            
             this.opXtras.purchaseType = purchaseType;
             this.opXtras.billData
               ? (this.opXtras.billData.counter = result.counter)
@@ -50,6 +52,10 @@ export class BottomSheetService {
             this.navCtl.navigateForward([routePath], {
               state: this.opXtras,
             });
+
+          }
+          if(result && result.operation === OPERATION_SEE_SOLDE_RAPIDO && result.ACTION === "FORWARD") {
+            this.openModalSoldeRapido(RapidoSoldeComponent, {...result,opXtras: this.opXtras})
           }
         });
       })
@@ -73,13 +79,22 @@ export class BottomSheetService {
     );
   }
 
-  async openModal(component, data?: { rapidosFavorites$: any }) {
+  async openModal(component, data?: any) {
     const modal = await this.modalCtrl.create({
       component,
       componentProps: data,
       cssClass: "select-recipient-modal",
     });
     this.bsModalEl.next(modal);
+    return modal.present();
+  }
+
+  async openModalSoldeRapido(component, data?: any) {
+    const modal = await this.modalCtrl.create({
+      component,
+      componentProps: data,
+      cssClass: "select-recipient-modal",
+    });
     return modal.present();
   }
 

@@ -10,7 +10,7 @@ import { NavController } from '@ionic/angular';
 import { OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
 import { BillAmountPage } from '../bill-amount/bill-amount.page';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
-import { RapidOperationPage } from '../rapid-operation/rapid-operation.page';
+import { RapidoOperationPage } from '../rapido-operation/rapido-operation.page';
 
 @Component({
   selector: 'app-bills-hub',
@@ -45,7 +45,7 @@ export class BillsHubPage implements OnInit {
     if (billCompany.code === RAPIDO) {
       console.log(this.bsService.opXtras.billData);
 
-      this.navCtrl.navigateForward(RapidOperationPage.ROUTE_PATH);
+      this.navCtrl.navigateForward(RapidoOperationPage.ROUTE_PATH);
       return;
     }
     //this will change

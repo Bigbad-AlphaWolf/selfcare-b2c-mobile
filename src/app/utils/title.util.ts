@@ -8,6 +8,7 @@ import {
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
   BONS_PLANS,
+  OPERATION_SEE_SOLDE_RAPIDO,
 } from 'src/shared';
 import { PageHeader } from '../models/page-header.model';
 import { OPERATION_RAPIDO, OPERATION_WOYOFAL } from './operations.constants';
@@ -67,6 +68,10 @@ export const titles: PageHeader[] = [
   {
     typeOperation: BONS_PLANS,
     title: "Bons plans - Samay Sargal",
+  },
+  {
+    typeOperation: OPERATION_SEE_SOLDE_RAPIDO,
+    title: "Solde de la carte Rapido",
   },
 ];
 

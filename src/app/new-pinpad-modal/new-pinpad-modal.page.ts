@@ -511,8 +511,9 @@ export class NewPinpadModalPage implements OnInit {
         this.opXtras.billData.kw = res.content.data.valeur_recharge;
         this.processResult(res, db);
       },
-      () => {
+      (err: any) => {
         this.processingPin = false;
+        this.processError(err, db);
       }
     );
   }
@@ -531,8 +532,10 @@ export class NewPinpadModalPage implements OnInit {
       (res: any) => {
         this.processResult(res, db);
       },
-      () => {
+      (err: any) => {
         this.processingPin = false;
+        this.processError(err, db);
+
       }
     );
   }

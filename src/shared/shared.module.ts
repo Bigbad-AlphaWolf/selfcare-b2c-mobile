@@ -86,6 +86,7 @@ import { IonicImageLoader } from 'ionic-image-loader';
 import { RapidoSelectionComponent } from 'src/app/components/counter/rapido-selection/rapido-selection.component';
 import { FavoriteRapidoComponent } from 'src/app/components/counter/favorite-rapido/favorite-rapido.component';
 import { DalalCardItemComponent } from './dalal-card-item/dalal-card-item.component';
+import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
 
 @NgModule({
   declarations: [
@@ -151,6 +152,7 @@ import { DalalCardItemComponent } from './dalal-card-item/dalal-card-item.compon
     AcronymPipe,
     IbouIonFabComponent,
     DalalCardItemComponent,
+    RapidoSoldeComponent,
   ],
   imports: [
     CommonModule,
@@ -195,6 +197,7 @@ import { DalalCardItemComponent } from './dalal-card-item/dalal-card-item.compon
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
     FavoriteMerchantComponent,
+    RapidoSoldeComponent,
   ],
   exports: [
     BanniereComponent,
@@ -269,6 +272,7 @@ import { DalalCardItemComponent } from './dalal-card-item/dalal-card-item.compon
     FavoriteMerchantComponent,
     IbouIonFabComponent,
     DalalCardItemComponent,
+    RapidoSoldeComponent,
   ],
   providers: [
     Contacts,

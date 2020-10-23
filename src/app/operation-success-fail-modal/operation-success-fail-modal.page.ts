@@ -19,8 +19,8 @@ import {
   OPERATION_WOYOFAL,
 } from '../utils/operations.constants';
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
-import { RapidOperationPage } from '../pages/rapid-operation/rapid-operation.page';
 import { DalalTonesPage } from '../dalal-tones/dalal-tones.page';
+import { RapidoOperationPage } from '../pages/rapido-operation/rapido-operation.page';
 
 @Component({
   selector: 'app-operation-success-fail-modal',
@@ -87,7 +87,7 @@ export class OperationSuccessFailModalPage implements OnInit {
         this.navCtrl.navigateBack(BillsHubPage.ROUTE_PATH);
         break;
       case OPERATION_RAPIDO:
-        this.navCtrl.navigateBack(RapidOperationPage.ROUTE_PATH);
+        this.navCtrl.navigateBack(RapidoOperationPage.ROUTE_PATH);
         break;
       case OPERATION_ENABLE_DALAL:
         this.navCtrl.navigateBack(DalalTonesPage.ROUTE_PATH);
