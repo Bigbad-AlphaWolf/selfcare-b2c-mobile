@@ -10,11 +10,16 @@ import { SharedModule } from 'src/shared/shared.module';
 import { DalalActivationSuccessModalComponent } from './components/dalal-activation-success-modal/dalal-activation-success-modal.component';
 import { DalalMoreInfosComponent } from './components/dalal-more-infos/dalal-more-infos.component';
 import { DalalDisablePopupComponent } from './components/dalal-disable-popup/dalal-disable-popup.component';
+import { ActivatedDalalPageComponent } from './components/activated-dalal-page/activated-dalal-page.component';
 
 const routes: Routes = [
   {
     path: '',
     component: DalalTonesPage,
+  },
+  {
+    path: 'activated-dalal',
+    component: ActivatedDalalPageComponent,
   },
 ];
 
@@ -31,6 +36,7 @@ const routes: Routes = [
     DalalActivationSuccessModalComponent,
     DalalMoreInfosComponent,
     DalalDisablePopupComponent,
+    ActivatedDalalPageComponent,
   ],
   entryComponents: [
     DalalActivationSuccessModalComponent,

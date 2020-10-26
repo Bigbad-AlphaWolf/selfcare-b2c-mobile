@@ -1,6 +1,6 @@
 import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -34,11 +34,12 @@ export class DalalTonesPage implements OnInit {
   loadingError: boolean;
   infiniteScrollDisabled: boolean;
   downloadAvatarEndpoint = downloadAvatarEndpoint;
-  currentActiveDalal;
+  currentActiveDalals: any[];
   constructor(
     private dalalTonesService: DalalTonesService,
     private modalController: ModalController,
-    private navController: NavController
+    private navController: NavController,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -53,7 +54,7 @@ export class DalalTonesPage implements OnInit {
         console.log(res);
 
         if (res && res.serviceCharacteristic)
-          this.currentActiveDalal = res.serviceCharacteristic[0];
+          this.currentActiveDalals = res.serviceCharacteristic;
       },
       (err) => {}
     );
@@ -158,5 +159,11 @@ export class DalalTonesPage implements OnInit {
 
   goBack() {
     this.navController.pop();
+  }
+
+  goActivatedDalalPage() {
+    this.router.navigate(['/dalal-tones/activated-dalal'], {
+      state: { activeDalal: this.currentActiveDalals },
+    });
   }
 }

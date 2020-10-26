@@ -60,12 +60,12 @@
       </ion-list>
     </div>
     <div class="dalal-tones-block">
-      <div class="active-dalal-block" *ngIf="currentActiveDalal">
+      <div class="active-dalal-block" *ngIf="currentActiveDalals && currentActiveDalals.length">
         <div class="dalal-en-cours">
-          <span class="current-dalal">Mon Dalal en cours</span>
-          <span class="scb-text-orange">Voir tout</span>
+          <span class="current-dalal">Dalal en cours</span>
+          <span class="scb-text-orange" (click)="goActivatedDalalPage()">Voir tout</span>
         </div>
-        <app-dalal-card-item [dalal]="currentActiveDalal" (click)="openDisablePopup(currentActiveDalal)"></app-dalal-card-item>
+        <app-dalal-card-item [dalal]="currentActiveDalals[0]" (click)="goActivatedDalalPage()"></app-dalal-card-item>
       </div>
       <div *ngIf="loadingDalal" class="loading-dalal-spinner">
         <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>

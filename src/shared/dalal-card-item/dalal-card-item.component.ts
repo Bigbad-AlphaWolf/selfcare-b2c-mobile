@@ -9,7 +9,8 @@ import { downloadAvatarEndpoint } from 'src/app/services/dashboard-service/dashb
 })
 export class DalalCardItemComponent implements OnInit {
   @Input() dalal: DalalTonesModel;
-  @Input() disable: boolean;
+  @Input() disable: boolean; // handle the background color
+  @Input() editable: boolean; // handle show or not the text 'desactiver'
   downloadAvatarEndpoint = downloadAvatarEndpoint;
   constructor() {}
 
