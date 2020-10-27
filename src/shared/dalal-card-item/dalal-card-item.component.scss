@@ -7,6 +7,7 @@ ion-item {
     padding: 20px 15px;
     width: 100%;
     display: flex;
+    position: relative;
     &-gray {
       background-color: $grayDashboard;
     }
@@ -39,6 +40,15 @@ ion-item {
           font-size: 14px;
         }
       }
+    }
+    .desactiver {
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
     }
   }
 }

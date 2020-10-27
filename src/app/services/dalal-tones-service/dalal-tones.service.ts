@@ -9,6 +9,7 @@ import { DalalTonesGenreModel } from 'src/app/models/dalal-tones-genre.model';
 import { DalalTonesModel } from 'src/app/models/dalal-tones.model';
 import { environment } from 'src/environments/environment';
 import { DashboardService } from '../dashboard-service/dashboard.service';
+import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 const { SERVER_API_URL, SERVICES_SERVICE } = environment;
 const dalalBaseURL = `${SERVER_API_URL}/${SERVICES_SERVICE}/api`;
 const dalalTonesEndpoint = `${dalalBaseURL}/dalal-tones`;
@@ -21,7 +22,8 @@ const activeDalalEndpoint = `${dalalTonesEndpoint}/actived`;
 export class DalalTonesService {
   constructor(
     private http: HttpClient,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   fetchDalalGenres(): Observable<DalalTonesGenreModel[]> {
@@ -57,10 +59,35 @@ export class DalalTonesService {
     const state = disable ? 'INACTIVE' : 'ACTIVE';
     const msisdn = this.dashboardService.getCurrentPhoneNumber();
     const payload = { id: dalalTone.cid, state };
-    return this.http.post(
-      `${dalalTonesEndpoint}/activation/${msisdn}`,
-      payload
-    );
+    return this.http
+      .post(`${dalalTonesEndpoint}/activation/${msisdn}`, payload)
+      .pipe(
+        map(
+          (res) => {
+            const followEventName = disable
+              ? 'Dalal_Desactivation_Success'
+              : 'Dalal_Activation_Success';
+            payload['msisdn'] = msisdn;
+            this.followAnalyticsService.registerEventFollow(
+              followEventName,
+              'event',
+              payload
+            );
+            return res;
+          },
+          (err) => {
+            const followEventName = disable
+              ? 'Dalal_Desactivation_Failed'
+              : 'Dalal_Activation_Failed';
+            payload['msisdn'] = msisdn;
+            this.followAnalyticsService.registerEventFollow(
+              followEventName,
+              'error',
+              payload
+            );
+          }
+        )
+      );
   }
 
   disableDalal(activeDalal: ActiveDalalToneModel) {
@@ -70,17 +97,6 @@ export class DalalTonesService {
 
   getActiveDalal() {
     const msisdn = this.dashboardService.getCurrentPhoneNumber();
-    // const mockDalal = {
-    //   cid: 'string',
-    //   titre: 'string',
-    //   codeDalal: 'string',
-    //   actif: true,
-    //   statut: 'string',
-    //   fournisseur: 'fournisseur',
-    //   artiste: { nom: 'string', image: 'string' },
-    //   sousGenres: [],
-    // };
-    // return of(mockDalal);
     return this.http.get(`${activeDalalEndpoint}/${msisdn}`).pipe(
       map((response: any) => {
         response.serviceCharacteristic = response.serviceCharacteristic.map(

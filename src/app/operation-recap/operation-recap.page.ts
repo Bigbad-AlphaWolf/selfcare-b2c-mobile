@@ -342,8 +342,6 @@ export class OperationRecapPage implements OnInit {
     params.merchantCode = this.merchantCode;
     params.merchantName = this.merchantName;
     params.dalal = this.opXtras ? this.opXtras.dalal : null;
-    console.log(params.dalal);
-
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
       cssClass: params.success ? 'success-modal' : 'failed-modal',

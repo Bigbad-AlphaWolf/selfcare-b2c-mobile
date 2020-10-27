@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">Mes Dalal</span>
+    </ion-title>
+    <span class="ion-padding-end scb-text-orange edit" slot="end" (click)="switchMode()">{{editMode ?'Annuler' :'Editer la liste'}}</span>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="body-dalal-list">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">Mes Dalal en cours</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="dalal-tones-page-body">
+    <app-dalal-card-item
+          *ngFor="let dalal of currentActiveDalals"
+          (click)="openDisablePopup(dalal)"
+          [dalal]="dalal"
+          [editable]="editMode"
+        ></app-dalal-card-item>
+  </div>
+</ion-content>
