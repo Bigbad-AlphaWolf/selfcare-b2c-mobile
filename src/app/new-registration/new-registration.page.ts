@@ -228,6 +228,10 @@ export class NewRegistrationPage implements OnInit {
             // Go to login page
             this.goLoginPage();
           }
+        } else if (err.status === 404) {
+          this.errorMsg =
+            'Orange et moi est disponible uniquement pour les numéros Orange et Kirene avec Orange';
+          this.isNumberAttachedError = true;
         } else {
           this.showErrMessage = true;
           this.errorMsg =
