@@ -11,6 +11,7 @@ import { DalalActivationSuccessModalComponent } from './components/dalal-activat
 import { DalalMoreInfosComponent } from './components/dalal-more-infos/dalal-more-infos.component';
 import { DalalDisablePopupComponent } from './components/dalal-disable-popup/dalal-disable-popup.component';
 import { ActivatedDalalPageComponent } from './components/activated-dalal-page/activated-dalal-page.component';
+import { DalalActivationComponent } from './components/dalal-activation/dalal-activation.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,7 @@ const routes: Routes = [
   declarations: [
     DalalTonesPage,
     DalalActivationSuccessModalComponent,
+    DalalActivationComponent,
     DalalMoreInfosComponent,
     DalalDisablePopupComponent,
     ActivatedDalalPageComponent,

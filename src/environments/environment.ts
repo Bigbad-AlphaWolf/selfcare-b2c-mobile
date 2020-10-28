@@ -7,7 +7,7 @@ export const environment = {
   // SERVER_API_URL: 'https://orangeetmoi.orange.sn',
   // SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
   SERVER_API_URL:
-    'https://selfcareb2c-client-dsiselfcarebcorangeetmoi-rec.malaw.orange-sonatel.com',
+    'http://selfcare-b2c-client-http-dsiselfcarebcorangeetmoi-rec.malaw.orange-sonatel.com',
   //  SERVER_API_URL: 'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
   // SERVER_API_URL: 'http://10.100.97.175:8712',
   OM_URL: 'https://appom.orange-sonatel.com',

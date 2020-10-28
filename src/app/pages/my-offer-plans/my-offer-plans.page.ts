@@ -15,8 +15,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { NavController, IonSlides } from '@ionic/angular';
 import { getPageHeader } from '../../utils/title.util';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
-import { take } from 'rxjs/operators';
+import { take, map } from 'rxjs/operators';
 import { CATEGORY_MPO } from 'src/app/utils/constants';
+import { SargalService } from 'src/app/services/sargal-service/sargal.service';
+import { SargalSubscriptionModel, SARGAL_NOT_SUBSCRIBED, SARGAL_UNSUBSCRIPTION_ONGOING } from 'src/app/dashboard';
+import { MatDialog } from '@angular/material';
+import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 
 @Component({
   selector: 'app-my-offer-plans',
@@ -62,7 +66,9 @@ export class MyOfferPlansPage implements OnInit {
     private offerPlansServ: OfferPlansService,
     private appliRout: ApplicationRoutingService,
     private dashbServ: DashboardService,
-    private authServ: AuthenticationService
+    private authServ: AuthenticationService,
+    private sargalServ: SargalService,
+    private matDialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -85,7 +91,7 @@ export class MyOfferPlansPage implements OnInit {
     this.hasNoOfferPlans = false;
     this.hasError = false;
     this.offerPlansServ.getCurrentUserOfferPlans().subscribe(
-      (response: OfferPlan[]) => {
+      (response: OfferPlan[]) => {        
         this.isLoading = false;
         this.hasError = false;
         if (response.length === 0) {
@@ -160,8 +166,27 @@ export class MyOfferPlansPage implements OnInit {
       .pipe(take(1));
   }
 
-  processMPO(offer: OfferPlan) {
+  openPopUpSargalError(type: string){
+    this.matDialog.open(ModalSuccessComponent, {
+      width: '300px',
+      data: { type }
+    })
+  }
+
+   async processMPO(offer: OfferPlan) {
     this.hasErrorProcessingMPO = false;
+    if (offer.typeMPO.toLocaleLowerCase() === CATEGORY_MPO.sargal) {
+          for (const text of listRegisterSargalBonPlanText) {
+            if(offer.bpTarget.toLowerCase().includes(text)){
+              const isRegistered = await this.isUserSargalRegistered();
+              if(isRegistered){
+                const type = 'sargal-already-registered';
+                this.openPopUpSargalError(type);
+                return ;
+              }
+            }
+        }     
+    }
     this.orderBonPlan(offer).subscribe(
       () => {
         this.goToPage(offer);
@@ -171,6 +196,18 @@ export class MyOfferPlansPage implements OnInit {
         this.hasErrorProcessingMPO = true;
       }
     );
+  }
+
+  async isUserSargalRegistered(){
+    this.isLoading = true;
+    const msisdn = this.payloadNavigation.recipientMsisdn;
+    return await this.sargalServ.getSargalBalance(msisdn).pipe(map((res: SargalSubscriptionModel) => {
+      this.isLoading = false;
+      const UNSUSCRIBED_SARGAL_STATUS = [ SARGAL_NOT_SUBSCRIBED, SARGAL_UNSUBSCRIPTION_ONGOING];
+      return !UNSUSCRIBED_SARGAL_STATUS.includes(res.status);
+    } )).toPromise().catch(() => {
+      this.isLoading = false;
+    });
   }
 
   goToPage(offer: OfferPlan) {
@@ -217,7 +254,7 @@ export class MyOfferPlansPage implements OnInit {
       case CATEGORY_MPO.sargal:
         for (const text of listRegisterSargalBonPlanText) {
           if (offer.bpTarget.toLowerCase().includes(text)) {
-            this.appliRout.goToRegisterForSargal();
+              this.appliRout.goToRegisterForSargal();
             break;
           }
         }
