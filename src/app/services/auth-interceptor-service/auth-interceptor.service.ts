@@ -22,6 +22,7 @@ import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.pa
 import { ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
+import { AppComponent } from 'src/app/app.component';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable()
@@ -65,7 +66,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     const that = this;
     const token = ls.get('token');
     let x_uuid = ls.get('X-UUID');
-
+    const imei = AppComponent.IMEI;
     if (checkUrlMatchOM(req.url)) {
       if (!x_uuid || x_uuid === '') {
         const uuidV4 = uuidv4();
@@ -81,7 +82,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221786258731');
+      headers = headers.set('X-MSISDN', '221770813772');
       //delay to test slowness of network
       req = req.clone({
         headers,
@@ -118,6 +119,13 @@ export class AuthInterceptorService implements HttpInterceptor {
       let headers = req.headers
         .set('X-UUID', x_uuid)
         .set('Authorization', `Bearer ${lightToken}`);
+      req = req.clone({
+        headers,
+      });
+    }
+    if (imei) {
+      let headers = req.headers;
+      headers = headers.set('X-Selfcare-Device-Imei', imei);
       req = req.clone({
         headers,
       });
