@@ -6,6 +6,7 @@ import {
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TYPE_PASS_VOYAGE,
   CODE_KIRENE_Formule,
+  REGEX_FIX_NUMBER,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -63,8 +64,6 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.data);
-
     this.option = this.data.option;
     this.showInput = this.option === NumberSelectionOption.NONE;
     this.loadingNumbers = true;
@@ -100,8 +99,10 @@ export class NumberSelectionComponent implements OnInit {
   onRecentSelected() {}
 
   async onContinue(phone?: string) {
+    console.log('sd', this.opXtras.recipientMsisdn);
+    
     if (phone) this.opXtras.recipientMsisdn = phone;
-    if (!REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn)) {
+    if (!(REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn) || REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn))) {
       this.phoneIsNotValid = true;
       return;
     }

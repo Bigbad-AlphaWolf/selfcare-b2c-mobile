@@ -505,6 +505,7 @@ export class DashboardService {
     return this.http.get(`${userBirthDateEndpoint}/${msisdn}`, {responseType: 'text'}).pipe(
       map((birthDate) => {
         ls.set('birthDate', birthDate);
+        return birthDate;
       })
     );
   }
