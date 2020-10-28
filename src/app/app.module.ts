@@ -42,6 +42,7 @@ import { NewPinpadModalPageModule } from './new-pinpad-modal/new-pinpad-modal.mo
 import { OperationSuccessFailModalPageModule } from './operation-success-fail-modal/operation-success-fail-modal.module';
 import { RegistrationSuccessModalPageModule } from './registration-success-modal/registration-success-modal.module';
 import { IonicImageLoader } from 'ionic-image-loader';
+import { Uid } from '@ionic-native/uid/ngx';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -93,6 +94,7 @@ registerLocaleData(localeFr);
     Market,
     Device,
     AndroidPermissions,
+    Uid,
   ],
   bootstrap: [AppComponent],
 })
