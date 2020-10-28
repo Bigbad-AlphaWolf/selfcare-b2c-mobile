@@ -35,6 +35,7 @@ const routes: Routes = [
   declarations: [
     DalalTonesPage,
     DalalActivationSuccessModalComponent,
+    DalalActivationComponent,
     DalalMoreInfosComponent,
     DalalDisablePopupComponent,
     ActivatedDalalPageComponent,
