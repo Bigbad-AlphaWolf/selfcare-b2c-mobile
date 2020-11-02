@@ -27,9 +27,6 @@ import localeFr from '@angular/common/locales/fr';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Market } from '@ionic-native/market/ngx';
 import { Device } from '@ionic-native/device/ngx';
-import { Facebook } from '@ionic-native/facebook/ngx';
-import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { SetPaymentChannelModalPageModule } from './set-payment-channel-modal/set-payment-channel-modal.module';
 import { NewPinpadModalPageModule } from './new-pinpad-modal/new-pinpad-modal.module';
@@ -60,9 +57,6 @@ registerLocaleData(localeFr);
   ],
   providers: [
     AppVersion,
-    WebView,
-    OpenNativeSettings,
-    Facebook,
     StatusBar,
     SplashScreen,
     { provide: LOCALE_ID, useValue: 'fr-FR' },
