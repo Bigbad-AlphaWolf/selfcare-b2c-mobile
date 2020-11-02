@@ -10,6 +10,9 @@
 .item-container {
     background-color: transparent;
     width: 100%;
+    &.disabled{
+      pointer-events: none;
+    }
     // min-height: 110px;
     // padding: 0 15px;
     .item-offer {
