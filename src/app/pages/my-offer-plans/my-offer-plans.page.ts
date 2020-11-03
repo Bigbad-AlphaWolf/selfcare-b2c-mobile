@@ -60,7 +60,7 @@ export class MyOfferPlansPage implements OnInit {
     slideShadows: true,
   };
   activeTabIndex = 0;
-
+  isChecking: boolean;
   constructor(
     private navController: NavController,
     private offerPlansServ: OfferPlansService,
@@ -186,7 +186,7 @@ export class MyOfferPlansPage implements OnInit {
               }
             }
         }     
-    }
+    }    
     this.orderBonPlan(offer).subscribe(
       () => {
         this.goToPage(offer);
@@ -199,14 +199,14 @@ export class MyOfferPlansPage implements OnInit {
   }
 
   async isUserSargalRegistered(){
-    this.isLoading = true;
+    this.isChecking = true;
     const msisdn = this.payloadNavigation.recipientMsisdn;
     return await this.sargalServ.getSargalBalance(msisdn).pipe(map((res: SargalSubscriptionModel) => {
-      this.isLoading = false;
+      this.isChecking = false;
       const UNSUSCRIBED_SARGAL_STATUS = [ SARGAL_NOT_SUBSCRIBED, SARGAL_UNSUBSCRIPTION_ONGOING];
       return !UNSUSCRIBED_SARGAL_STATUS.includes(res.status);
     } )).toPromise().catch(() => {
-      this.isLoading = false;
+      this.isChecking = false;
     });
   }
 

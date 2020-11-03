@@ -9,6 +9,7 @@ import { CATEGORY_MPO } from 'src/app/utils/constants';
 })
 export class ItemOfferPlanComponent implements OnInit {
   @Input() offerPlan: OfferPlan;
+  @Input() isChecking: boolean;
   @Output() selectOfferPlans = new EventEmitter();
   constructor() { }
 

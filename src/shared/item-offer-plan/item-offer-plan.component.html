@@ -1,4 +1,4 @@
-<div class="item-container" (click)="chooseOfferPlan(offerPlan)">
+<div class="item-container" [ngClass]="{'disabled': isChecking } " (click)="chooseOfferPlan(offerPlan)">
   <div class="item-offer">
         <div class="left-side">
           {{ formatOfferPlanInfos(offerPlan) }}
