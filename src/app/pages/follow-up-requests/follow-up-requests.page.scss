@@ -9,7 +9,7 @@
 .head {
   font-family: HelveticaNeueLTStd-Bd;
   font-size: 20px;
-  padding: 15px 10px;
+  padding: 15px 10px 0;
 }
 .banner-image {
   width: 100%;
@@ -50,12 +50,16 @@ ion-content {
     padding: 15px;
     .requests{
         .none{
-            font-size: 14px;
-            line-height: 1.25;
+            font-size: 17px;
+            font-family: HelveticaNeueLTStd-Roman;
             color: #666666;
             margin-left: 10px;
-            margin-bottom: 100px;
-
+            margin-bottom: 20px;
+        }
+        .text{
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 17px;
+          color: #666666;
         }
     }
     .autre {
