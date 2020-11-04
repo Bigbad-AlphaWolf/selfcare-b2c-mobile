@@ -19,6 +19,8 @@
   .beneficiary-number {
     position: relative;
     margin-top: 10px;
+    margin-bottom: 20px;
+
     .icon {
       position: absolute;
       right: 122px;
@@ -82,8 +84,11 @@
     }
   }
   .confirm-btn {
-    margin-top: 20px;
-    position: relative;
+    // position: relative;
+    position: absolute;
+    width: percentage(345/375);
+    bottom: 10px;
+    // left: percentage(15/375);
     ion-button {
       height: 50px;
       --border-radius: 10px;

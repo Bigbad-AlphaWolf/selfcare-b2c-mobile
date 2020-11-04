@@ -9,10 +9,7 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
-import {
-  FileTransferObject,
-  FileTransfer,
-} from '@ionic-native/file-transfer/ngx';
+
 
 describe('AproposPage', () => {
   let component: AproposPage;
@@ -31,15 +28,6 @@ describe('AproposPage', () => {
           provide: AppVersion,
           useValue: {
             getVersionNumber:() => {
-              return Promise.resolve()
-            }
-          },
-        },
-        {
-          provide: FileTransfer,
-          useValue: {
-            create:() => {},
-            download:() => {
               return Promise.resolve()
             }
           },

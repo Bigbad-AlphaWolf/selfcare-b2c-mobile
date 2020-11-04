@@ -8,7 +8,6 @@ import { IonicModule } from '@ionic/angular';
 import { AproposPage } from './apropos.page';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { File } from '@ionic-native/file/ngx';
-import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 
 const routes: Routes = [
   {
@@ -25,6 +24,6 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   declarations: [AproposPage],
-  providers: [FileTransfer, File, FileOpener]
+  providers: [File, FileOpener]
 })
 export class AproposPageModule {}

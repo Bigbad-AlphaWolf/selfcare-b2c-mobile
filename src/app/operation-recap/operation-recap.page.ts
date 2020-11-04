@@ -210,7 +210,7 @@ export class OperationRecapPage implements OnInit {
       });
 
     this.authServ
-      .getSubscription(this.currentUserNumber)
+      .getSubscriptionForTiers(this.currentUserNumber)
       .subscribe((res: SubscriptionModel) => {
         this.subscriptionInfos = res;
       });

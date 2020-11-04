@@ -106,14 +106,14 @@ export class TransfertHubServicesPage implements OnInit {
       type: 'PASS_ALLO',
       url: '',
     },
-    // {
-    //   title: 'Pass',
-    //   subtitle: 'voyage',
-    //   icon: '/assets/images/ic-aeroplane.png',
-    //   action: 'REDIRECT',
-    //   type: 'PASS_VOYAGE',
-    //   url: '',
-    // },
+    {
+      title: 'Pass',
+      subtitle: 'voyage',
+      icon: '/assets/images/ic-aeroplane.png',
+      action: 'REDIRECT',
+      type: 'PASS_VOYAGE',
+      url: '',
+    },
     // {
     //   title: 'Pass',
     //   subtitle: 'international',
