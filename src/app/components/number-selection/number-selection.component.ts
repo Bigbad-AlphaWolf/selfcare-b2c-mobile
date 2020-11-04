@@ -104,6 +104,7 @@ export class NumberSelectionComponent implements OnInit {
   async onContinue(phone?: string) {
     console.log('sd', this.opXtras.recipientMsisdn);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     if (phone) this.opXtras.recipientMsisdn = phone;
     if (
@@ -112,6 +113,11 @@ export class NumberSelectionComponent implements OnInit {
         REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn)
       )
     ) {
+=======
+    
+    if (phone) this.opXtras.recipientMsisdn = phone;
+    if (!(REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn) || REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn))) {
+>>>>>>> 2bc5061a2fe11343c505f2317cbba7cf956187c6
 =======
     
     if (phone) this.opXtras.recipientMsisdn = phone;
