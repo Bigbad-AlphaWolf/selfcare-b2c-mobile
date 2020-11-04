@@ -320,7 +320,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
   checkOMToken(phoneNumber: string) {
     this.omService.GetUserAuthInfo(phoneNumber).subscribe((omUser: any) => {
       // If user already connected open pinpad
-      if (!omUser.hasApiKey || omUser.loginExpired || !omUser.accessToken) {
+      if (!omUser.hasApiKey || omUser.loginExpired ) {
         this.openPinpad();
       }
     });

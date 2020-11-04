@@ -43,8 +43,8 @@ export class RecentsService {
                 response,
                 numberToDisplay
               );
+              return of(recents);
               if (!SERVICES_TO_MATCH_CONTACTS.includes(service))
-                return of(recents);
               return this.contactService.getAllContacts().pipe(
                 map((contacts: CustomContact[]) => {
                   const res = this.mapRecentsToContacts(recents, contacts);

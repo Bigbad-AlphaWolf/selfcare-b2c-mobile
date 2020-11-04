@@ -16,7 +16,6 @@ import { ParametrageInternetComponent } from './parametrage-internet/parametrage
 import { RechargeCardNumberComponent } from './recharge-card-number/recharge-card-number.component';
 import { SharedModule } from 'src/shared/shared.module';
 import { EmergenciesRoutingModule } from './emergencies-routing.module';
-import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 
@@ -47,6 +46,6 @@ const routes: Routes = [
     RechargeCardNumberComponent
   ],
   entryComponents: [NumeroSeriePopupComponent],
-  providers: [FileTransfer, File, FileOpener]
+  providers: [File, FileOpener]
 })
 export class EmergenciesPageModule {}

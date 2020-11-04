@@ -22,7 +22,7 @@ import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TYPE_PASS_ALLO,
-  OPERATION_TYPE_PASS_VOYAGE
+  OPERATION_TYPE_PASS_VOYAGE,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -223,15 +223,9 @@ export class NewPinpadModalPage implements OnInit {
         this.checkingToken = false;
         this.sendingOtp = false;
         this.userNotRegisteredInOm = false;
-        if (res.status_code.match('Erreur-046')) {
-          this.openModalNoOMAccount();
-          this.modalController.dismiss();
-          this.errorOnOtp = res.status_wording;
-        } else {
-          this.otpValidation = true;
-          this.resendCode = false;
-          this.showResendCodeBtn(30);
-        }
+        this.otpValidation = true;
+        this.resendCode = false;
+        this.showResendCodeBtn(30);
       },
       (err) => {
         this.userNotRegisteredInOm = true;
@@ -239,6 +233,11 @@ export class NewPinpadModalPage implements OnInit {
         this.sendingOtp = false;
         this.resendCode = false;
         this.showResendCodeBtn(2);
+        if (err && err.error && err.error.errorCode.match('Erreur-046')) {
+          this.openModalNoOMAccount();
+        } else {
+          this.errorOnOtp = 'Une erreur est survenue';
+        }
       }
     );
   }
@@ -247,6 +246,9 @@ export class NewPinpadModalPage implements OnInit {
     this.noOMAccountModal = this.dialog.open(NoOMAccountPopupComponent, {
       disableClose: true,
       data: { pageDesktop: false },
+    });
+    this.noOMAccountModal.afterClosed().subscribe(() => {
+      this.modalController.dismiss();
     });
   }
 
@@ -312,9 +314,11 @@ export class NewPinpadModalPage implements OnInit {
           this.errorOnOtp = res.status_wording;
         }
       },
-      () => {
+      (err) => {
         this.otpValidation = true;
         this.registering = false;
+        this.otpHasError = true;
+        this.errorOnOtp = err.error.message;
       }
     );
   }
@@ -353,125 +357,124 @@ export class NewPinpadModalPage implements OnInit {
         this.orangeMoneyService.LoginClient(loginPayload).subscribe(
           (loginRes: any) => {
             this.processingPin = false;
-            // check response status
-            if (loginRes.status_code.match('Success')) {
-              omUser.pinFailed = 0;
-              omUser.loginToken = loginRes.content.data.access_token; // reset the pinfailed
-              omUser.loginRefreshToken = loginRes.content.data.refresh_token;
-              this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
-              switch (this.operationType) {
-                case OPERATION_TYPE_RECHARGE_CREDIT:
-                  const creditToBuy = Object.assign({}, this.buyCreditPayload, {
-                    pin,
-                  });
-                  this.buyCredit(creditToBuy);
-                  break;
-                case OPERATION_TYPE_PASS_INTERNET:
-                  const dataPassOM = {
-                    msisdn2: this.buyPassPayload.destinataire,
-                    pin,
-                    price_plan_index: this.buyPassPayload.pass.passPromo
-                      ? this.buyPassPayload.pass.passPromo.price_plan_index_om
-                      : this.buyPassPayload.pass.price_plan_index_om,
-                    canalPromotion,
-                    amount: this.buyPassPayload.pass.passPromo
-                      ? this.buyPassPayload.pass.passPromo.tarif
-                      : this.buyPassPayload.pass.tarif,
-                  };
-                  this.buyPass(dataPassOM);
-                  break;
-                case OPERATION_TYPE_PASS_VOYAGE:
-                case OPERATION_TYPE_PASS_ILLIMIX:
-                case OPERATION_TYPE_PASS_ALLO:
-                  const dataIllimixOM = {
-                    msisdn2: this.buyPassPayload.destinataire,
-                    pin,
-                    price_plan_index: this.buyPassPayload.pass.passPromo
-                      ? this.buyPassPayload.pass.passPromo.price_plan_index_om
-                      : this.buyPassPayload.pass.price_plan_index_om,
-                    canalPromotion,
-                    amount: this.buyPassPayload.pass.passPromo
-                      ? this.buyPassPayload.pass.passPromo.tarif
-                      : this.buyPassPayload.pass.tarif,
-                  };
-
-                  this.buyIllimix(dataIllimixOM);
-                  break;
-                case OPERATION_TRANSFER_OM:
-                  const transferMoneyPayload = Object.assign(
-                    {},
-                    this.transferMoneyPayload,
-                    {
-                      pin,
-                    }
-                  );
-                  this.transferMoney(transferMoneyPayload);
-                  break;
-                case OPERATION_TRANSFER_OM_WITH_CODE:
-                  const transferPayload = Object.assign(
-                    {},
-                    this.transferMoneyWithCodePayload,
-                    { pin }
-                  );
-                  this.transferMoneyWithCode(transferPayload);
-                  break;
-                case OPERATION_TYPE_MERCHANT_PAYMENT:
-                  const merchantPaymentPayload = Object.assign(
-                    {},
-                    this.merchantPaymentPayload,
-                    { pin }
-                  );
-                  this.payMerchant(merchantPaymentPayload);
-                  break;
-                case OPERATION_RAPIDO:
-                  this.payRapido(pin);
-                  break;
-                case OPERATION_WOYOFAL:
-                  this.payWoyofal(pin);
-                  break;
-                default:
-                  this.seeSolde(pin);
-                  break;
-              }
-            } else {
-              this.gettingPinpad = true;
-              this.orangeMoneyService
-                .GetPinPad(this.pinpadData)
-                .subscribe((res: any) => {
-                  const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
-                    this.omPhoneNumber
-                  );
-                  omUser.sequence = res.content.data.sequence;
-                  omUser.em = res.content.data.em;
-                  this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
-                  this.userHasOmToken = true;
+            omUser.pinFailed = 0;
+            omUser.loginToken = loginRes.content.data.access_token; // reset the pinfailed
+            omUser.loginRefreshToken = loginRes.content.data.refresh_token;
+            this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
+            switch (this.operationType) {
+              case OPERATION_TYPE_RECHARGE_CREDIT:
+                const creditToBuy = Object.assign({}, this.buyCreditPayload, {
+                  pin,
                 });
-              omUser.pinFailed++;
-              this.resetPad();
-              // lock account when number of failed pin is >= 3
-              if (omUser.pinFailed >= 3) {
-                omUser.active = false;
-                this.pinError = `Code secret est invalide. Vous venez de bloquer votre compte Orange Money. Veuillez passer dans une de nos agences pour le reactiver!`;
-              } else {
-                this.pinError = `Code secret est invalide. Il vous reste ${
-                  3 - omUser.pinFailed
-                } tentatives!`;
-              }
-              this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
-              this.pinHasError = true;
-              this.errorBulletActive = true;
-              this.orangeMoneyService.logWithFollowAnalytics(
-                loginRes,
-                'error',
-                this.dataToLog
-              );
+                this.buyCredit(creditToBuy);
+                break;
+              case OPERATION_TYPE_PASS_INTERNET:
+                const dataPassOM = {
+                  msisdn2: this.buyPassPayload.destinataire,
+                  pin,
+                  price_plan_index: this.buyPassPayload.pass.passPromo
+                    ? this.buyPassPayload.pass.passPromo.price_plan_index_om
+                    : this.buyPassPayload.pass.price_plan_index_om,
+                  canalPromotion,
+                  amount: this.buyPassPayload.pass.passPromo
+                    ? this.buyPassPayload.pass.passPromo.tarif
+                    : this.buyPassPayload.pass.tarif,
+                };
+                this.buyPass(dataPassOM);
+                break;
+              case OPERATION_TYPE_PASS_VOYAGE:
+              case OPERATION_TYPE_PASS_ILLIMIX:
+              case OPERATION_TYPE_PASS_ALLO:
+                const dataIllimixOM = {
+                  msisdn2: this.buyPassPayload.destinataire,
+                  pin,
+                  price_plan_index: this.buyPassPayload.pass.passPromo
+                    ? this.buyPassPayload.pass.passPromo.price_plan_index_om
+                    : this.buyPassPayload.pass.price_plan_index_om,
+                  canalPromotion,
+                  amount: this.buyPassPayload.pass.passPromo
+                    ? this.buyPassPayload.pass.passPromo.tarif
+                    : this.buyPassPayload.pass.tarif,
+                };
+
+                this.buyIllimix(dataIllimixOM);
+                break;
+              case OPERATION_TRANSFER_OM:
+                const transferMoneyPayload = Object.assign(
+                  {},
+                  this.transferMoneyPayload,
+                  {
+                    pin,
+                  }
+                );
+                this.transferMoney(transferMoneyPayload);
+                break;
+              case OPERATION_TRANSFER_OM_WITH_CODE:
+                const transferPayload = Object.assign(
+                  {},
+                  this.transferMoneyWithCodePayload,
+                  { pin }
+                );
+                this.transferMoneyWithCode(transferPayload);
+                break;
+              case OPERATION_TYPE_MERCHANT_PAYMENT:
+                const merchantPaymentPayload = Object.assign(
+                  {},
+                  this.merchantPaymentPayload,
+                  { pin }
+                );
+                this.payMerchant(merchantPaymentPayload);
+                break;
+              case OPERATION_WOYOFAL:
+                this.payWoyofal(pin);
+                break;
+              case OPERATION_RAPIDO:
+                this.payRapido(pin);
+                break;
+              default:
+                this.seeSolde(pin);
+                break;
             }
           },
-          () => {
+          (err) => {
             this.processingPin = false;
+            this.gettingPinpad = true;
             this.pinHasError = true;
-            this.pinError =
-              "Une erreur s'est produite. Veuillez réessayer plus tard.";
+            this.orangeMoneyService
+              .GetPinPad(this.pinpadData)
+              .subscribe((res: any) => {
+                const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
+                  this.omPhoneNumber
+                );
+                omUser.sequence = res.content.data.sequence;
+                omUser.em = res.content.data.em;
+                this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
+                this.userHasOmToken = true;
+              });
+            omUser.pinFailed++;
+            this.resetPad();
+            if (err && err.status !== 400) {
+              this.pinError =
+                "Une erreur s'est produite. Veuillez réessayer plus tard.";
+              return;
+            }
+            // lock account when number of failed pin is >= 3
+            if (omUser.pinFailed >= 3) {
+              omUser.active = false;
+              this.pinError = `Code secret est invalide. Vous venez de bloquer votre compte Orange Money. Veuillez passer dans une de nos agences pour le reactiver!`;
+            } else {
+              this.pinError = `Code secret est invalide. Il vous reste ${
+                3 - omUser.pinFailed
+              } tentatives!`;
+            }
+            this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
+            this.pinHasError = true;
+            this.errorBulletActive = true;
+            this.orangeMoneyService.logWithFollowAnalytics(
+              err,
+              'error',
+              this.dataToLog
+            );
           }
         );
       } else {

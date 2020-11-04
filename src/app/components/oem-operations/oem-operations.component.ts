@@ -84,7 +84,6 @@ export class OemOperationsComponent implements OnInit {
       const omSessionValid = omSession
         ? omSession.msisdn !== 'error' &&
           omSession.hasApiKey &&
-          omSession.accessToken &&
           !omSession.loginExpired
         : null;
       if (omSessionValid) {
