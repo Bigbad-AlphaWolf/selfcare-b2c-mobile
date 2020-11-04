@@ -1,22 +1,22 @@
-import { Injectable } from "@angular/core";
-import { ModalController, NavController } from "@ionic/angular";
-import { MatBottomSheet, MatBottomSheetRef } from "@angular/material";
-import { SelectBeneficiaryPopUpComponent } from "src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component";
-import { PurchaseSetAmountPage } from "src/app/purchase-set-amount/purchase-set-amount.page";
-import { NumberSelectionOption } from "src/app/models/enums/number-selection-option.enum";
-import { NumberSelectionComponent } from "src/app/components/number-selection/number-selection.component";
-import { OperationExtras } from "src/app/models/operation-extras.model";
-import { NewPinpadModalPage } from "src/app/new-pinpad-modal/new-pinpad-modal.page";
-import { take, map } from "rxjs/operators";
-import { OrangeMoneyService } from "../orange-money-service/orange-money.service";
-import { LinesComponent } from "src/app/components/lines/lines.component";
-import { BillCompany } from "src/app/models/bill-company.model";
-import { Subject } from "rxjs";
+import { Injectable } from '@angular/core';
+import { ModalController, NavController } from '@ionic/angular';
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material';
+import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
+import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
+import { NumberSelectionOption } from 'src/app/models/enums/number-selection-option.enum';
+import { NumberSelectionComponent } from 'src/app/components/number-selection/number-selection.component';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { take, map } from 'rxjs/operators';
+import { OrangeMoneyService } from '../orange-money-service/orange-money.service';
+import { LinesComponent } from 'src/app/components/lines/lines.component';
+import { BillCompany } from 'src/app/models/bill-company.model';
+import { Subject } from 'rxjs';
 import { OPERATION_SEE_SOLDE_RAPIDO } from 'src/shared';
 import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class BottomSheetService {
   opXtras: OperationExtras = {};
@@ -38,24 +38,35 @@ export class BottomSheetService {
         el.onDidDismiss().then((result: any) => {
           result = result.data;
           let fromFavorites =
-            result && result.TYPE_BS === "FAVORIES" && result.ACTION === "BACK";
+            result && result.TYPE_BS === 'FAVORIES' && result.ACTION === 'BACK';
 
-          if (fromFavorites) this.openModal(comp, { operation: result.operation} );
-          
-          if (result && result.ACTION === "FORWARD" && result.operation !== OPERATION_SEE_SOLDE_RAPIDO) {            
+          if (fromFavorites)
+            this.openModal(comp, { operation: result.operation });
+
+          if (
+            result &&
+            result.ACTION === 'FORWARD' &&
+            result.operation !== OPERATION_SEE_SOLDE_RAPIDO
+          ) {
             this.opXtras.purchaseType = purchaseType;
             this.opXtras.billData
               ? (this.opXtras.billData.counter = result.counter)
               : '';
-            
+
             this.opXtras.merchant = result.merchant;
             this.navCtl.navigateForward([routePath], {
               state: this.opXtras,
             });
-
           }
-          if(result && result.operation === OPERATION_SEE_SOLDE_RAPIDO && result.ACTION === "FORWARD") {
-            this.openModalSoldeRapido(RapidoSoldeComponent, {...result,opXtras: this.opXtras})
+          if (
+            result &&
+            result.operation === OPERATION_SEE_SOLDE_RAPIDO &&
+            result.ACTION === 'FORWARD'
+          ) {
+            this.openModalSoldeRapido(RapidoSoldeComponent, {
+              ...result,
+              opXtras: this.opXtras,
+            });
           }
         });
       })
@@ -66,7 +77,7 @@ export class BottomSheetService {
     this.bsRef.next(
       this.matBottomSheet.open(compType, {
         data: { billCompany: this.companySelected },
-        backdropClass: "oem-ion-bottomsheet",
+        backdropClass: 'oem-ion-bottomsheet',
       })
     );
   }
@@ -74,7 +85,7 @@ export class BottomSheetService {
   openBSFavoriteCounters(compType: any) {
     this.bsRef.next(
       this.matBottomSheet.open(compType, {
-        backdropClass: "oem-ion-bottomsheet",
+        backdropClass: 'oem-ion-bottomsheet',
       })
     );
   }
@@ -83,7 +94,7 @@ export class BottomSheetService {
     const modal = await this.modalCtrl.create({
       component,
       componentProps: data,
-      cssClass: "select-recipient-modal",
+      cssClass: 'select-recipient-modal',
     });
     this.bsModalEl.next(modal);
     return modal.present();
@@ -93,7 +104,7 @@ export class BottomSheetService {
     const modal = await this.modalCtrl.create({
       component,
       componentProps: data,
-      cssClass: "select-recipient-modal",
+      cssClass: 'select-recipient-modal',
     });
     return modal.present();
   }
@@ -101,7 +112,7 @@ export class BottomSheetService {
   public async showBeneficiaryModal() {
     const modal = await this.modalCtrl.create({
       component: SelectBeneficiaryPopUpComponent,
-      cssClass: "select-recipient-modal",
+      cssClass: 'select-recipient-modal',
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data && response.data.recipientMsisdn) {
@@ -117,18 +128,19 @@ export class BottomSheetService {
   public async openNumberSelectionBottomSheet(
     option: NumberSelectionOption,
     purchaseType: string,
-    routePath: string
+    routePath: string,
+    isLightMod?
   ) {
     const modal = await this.modalCtrl.create({
       component: NumberSelectionComponent,
-      componentProps: { data: { option, purchaseType } },
-      cssClass: "select-recipient-modal",
+      componentProps: { data: { option, purchaseType, isLightMod } },
+      cssClass: 'select-recipient-modal',
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data) {
         let opInfos = response.data;
         if (!opInfos || !opInfos.recipientMsisdn) return;
-        opInfos = { purchaseType: purchaseType, ...opInfos };
+        opInfos = { purchaseType: purchaseType, isLightMod, ...opInfos };
         this.navCtl.navigateForward([routePath], {
           state: opInfos,
         });
@@ -142,10 +154,10 @@ export class BottomSheetService {
       .getOmMsisdn()
       .pipe(take(1))
       .subscribe((msisdn: string) => {
-        if (msisdn !== "error") {
+        if (msisdn !== 'error') {
           this.matBottomSheet
             .open(component, {
-              panelClass: "merchant-code-modal",
+              panelClass: 'merchant-code-modal',
             })
             .afterDismissed()
             .subscribe(() => {});
@@ -158,7 +170,7 @@ export class BottomSheetService {
   async openPinpad() {
     const modal = await this.modalCtrl.create({
       component: NewPinpadModalPage,
-      cssClass: "pin-pad-modal",
+      cssClass: 'pin-pad-modal',
     });
     return await modal.present();
   }
@@ -166,7 +178,7 @@ export class BottomSheetService {
   public openLinesBottomSheet() {
     this.matBottomSheet
       .open(LinesComponent, {
-        backdropClass: "oem-ion-bottomsheet",
+        backdropClass: 'oem-ion-bottomsheet',
       })
       .afterDismissed()
       .subscribe((opInfos: OperationExtras) => {});
