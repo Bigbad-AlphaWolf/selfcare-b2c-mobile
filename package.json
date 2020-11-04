@@ -209,8 +209,7 @@
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       },
       "cordova-plugin-whitelist": {},
-      "cordova.plugin.followanalytics": {},
-      "cordova-plugin-dreamover-uid": {}
+      "cordova.plugin.followanalytics": {}
     },
     "platforms": [
       "ios",

@@ -145,8 +145,10 @@ export class AuthenticationService {
     return this.http.post(`${registerUserEndpoint}`, userInfos);
   }
 
-  getCustomerOfferRefact(msisdn: string){
-    return this.http.get(`${userSubscriptionEndpoint2}/${msisdn}`).pipe(share());
+  getCustomerOfferRefact(msisdn: string) {
+    return this.http
+      .get(`${userSubscriptionEndpoint2}/${msisdn}`)
+      .pipe(share());
   }
 
   // get msisdn subscription
@@ -486,7 +488,6 @@ export class AuthenticationService {
         );
         return this.getSubscriptionForTiers(msisdn).pipe(
           switchMap((sub: SubscriptionModel) => {
-
             const isProMobile = sub.code === JAMONO_PRO_CODE_FORMULE;
             if (!isProMobile) {
               return this.http.post(checkNumberEndpoint, checkNumberPayload);

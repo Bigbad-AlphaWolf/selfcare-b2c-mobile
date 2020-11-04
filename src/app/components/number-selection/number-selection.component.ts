@@ -29,7 +29,7 @@ import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
   styleUrls: ['./number-selection.component.scss'],
 })
 export class NumberSelectionComponent implements OnInit {
-  numbers$: Observable<string[]> ;
+  numbers$: Observable<string[]>;
   recentsRecipients$: Observable<any[]>;
 
   numberSelected: string = '';
@@ -49,9 +49,9 @@ export class NumberSelectionComponent implements OnInit {
   isRecipientEligible = true;
   eligibilityError: string;
   @Input() data;
-  loadingNumbers : boolean;
-  currentPhone : string = (SessionOem.PHONE).trim();
-  
+  loadingNumbers: boolean;
+  currentPhone: string = SessionOem.PHONE.trim();
+  isLightMod: boolean;
 
   constructor(
     private modalController: ModalController,
@@ -64,20 +64,23 @@ export class NumberSelectionComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.data);
+    this.isLightMod = this.data.isLightMod;
 
     this.option = this.data.option;
     this.showInput = this.option === NumberSelectionOption.NONE;
     this.loadingNumbers = true;
     this.opXtras.recipientMsisdn = this.currentPhone;
-    this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
-      delay(100),
-      tap((numbers) => { 
-        this.loadingNumbers = false;
-      }),
-      share()
-    );
     this.opXtras.senderMsisdn = SessionOem.PHONE;
-    this.checkOmAccount();
+    if (!this.isLightMod) {
+      this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
+        delay(100),
+        tap((numbers) => {
+          this.loadingNumbers = false;
+        }),
+        share()
+      );
+      this.checkOmAccount();
+    }
   }
 
   getRecents() {
