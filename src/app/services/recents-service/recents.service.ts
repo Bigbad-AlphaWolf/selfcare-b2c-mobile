@@ -14,12 +14,10 @@ import { OM_RECENT_TYPES } from 'src/app/utils/constants';
 @Injectable({
   providedIn: 'root',
 })
-export class RecentsService { 
-
+export class RecentsService {
   constructor(
     private http: HttpClient,
-    private omService: OrangeMoneyService,
-    private contactService: ContactsService
+    private omService: OrangeMoneyService // private contactService: ContactsService
   ) {}
 
   recentType(opType: string) {
@@ -38,23 +36,23 @@ export class RecentsService {
             `${OM_RECENTS_ENDPOINT}/${omPhonenumber.trim()}?service=${service}`
           )
           .pipe(
-            switchMap((response: any) => {
+            map((response: any) => {
               const recents: RecentsOem[] = this.parseRecentsResponse(
                 response,
                 numberToDisplay
               );
-              return of(recents);
-              if (!SERVICES_TO_MATCH_CONTACTS.includes(service))
-              return this.contactService.getAllContacts().pipe(
-                map((contacts: CustomContact[]) => {
-                  const res = this.mapRecentsToContacts(recents, contacts);
-                  return res;
-                }),
-                catchError((err) => {
-                  console.log('caught error', err);
-                  return of(recents);
-                })
-              );
+              return recents;
+              // if (!SERVICES_TO_MATCH_CONTACTS.includes(service))
+              // return this.contactService.getAllContacts().pipe(
+              //   map((contacts: CustomContact[]) => {
+              //     const res = this.mapRecentsToContacts(recents, contacts);
+              //     return res;
+              //   }),
+              //   catchError((err) => {
+              //     console.log('caught error', err);
+              //     return of(recents);
+              //   })
+              // );
             })
           );
       })
