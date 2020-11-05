@@ -13,6 +13,7 @@ import {
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_PASS_ALLO,
   OPERATION_TYPE_PASS_VOYAGE,
+  SubscriptionModel,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -27,6 +28,7 @@ import { Observable } from 'rxjs';
 import { FacebookEventService } from '../services/facebook-event/facebook-event.service';
 import { FacebookEvent } from '../models/enums/facebook-event.enum';
 import { FacebookCustomEvent } from '../models/enums/facebook-custom-event.enum';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -163,7 +165,7 @@ export class TransfertHubServicesPage implements OnInit {
   hasBoosterPromoActive: PromoBoosterActive = null;
   showNewFeatureBadge$: Observable<Boolean>;
   isLightMod: boolean; //boolean to tell if user is in connected or not connected mod
-
+  currentPhone = this.dashbServ.getCurrentPhoneNumber();
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
@@ -173,7 +175,8 @@ export class TransfertHubServicesPage implements OnInit {
     private dashbServ: DashboardService,
     private bsService: BottomSheetService,
     private omService: OrangeMoneyService,
-    private facebookevent: FacebookEventService
+    private facebookevent: FacebookEventService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit() {
@@ -244,28 +247,23 @@ export class TransfertHubServicesPage implements OnInit {
         break;
       case 'PASS':
         if (opt.action === 'REDIRECT') {
-          this.bsService.openNumberSelectionBottomSheet(
-            NumberSelectionOption.WITH_MY_PHONES,
+          this.openModalPassNumberSelection(
             OPERATION_TYPE_PASS_INTERNET,
-            'list-pass',
-            this.isLightMod
+            'list-pass'
           );
         }
         break;
       case 'PASS_ILLIMIX':
         if (opt.action === 'REDIRECT') {
-          this.bsService.openNumberSelectionBottomSheet(
-            NumberSelectionOption.WITH_MY_PHONES,
+          this.openModalPassNumberSelection(
             OPERATION_TYPE_PASS_ILLIMIX,
-            'list-pass',
-            this.isLightMod
+            'list-pass'
           );
         }
         break;
       case 'PASS_VOYAGE':
         if (opt.action === 'REDIRECT') {
-          this.bsService.openNumberSelectionBottomSheet(
-            NumberSelectionOption.WITH_MY_PHONES,
+          this.openModalPassNumberSelection(
             OPERATION_TYPE_PASS_VOYAGE,
             ListPassVoyagePage.ROUTE_PATH
           );
@@ -273,16 +271,41 @@ export class TransfertHubServicesPage implements OnInit {
         break;
       case 'PASS_ALLO':
         if (opt.action === 'REDIRECT') {
-          this.bsService.openNumberSelectionBottomSheet(
-            NumberSelectionOption.WITH_MY_PHONES,
+          this.openModalPassNumberSelection(
             OPERATION_TYPE_PASS_ALLO,
             'list-pass'
           );
-          // this.appRouting.goToSelectRecepientPassIllimix();
         }
         break;
       default:
         break;
+    }
+  }
+
+  openModalPassNumberSelection(operation: string, routePath: string) {
+    if (this.isLightMod) {
+      this.authService
+        .getSubscriptionForTiers(this.currentPhone)
+        .subscribe((res: SubscriptionModel) => {
+          const opInfos = {
+            code: res.code,
+            profil: res.profil,
+            senderMsisdn: this.currentPhone,
+            destinataire: this.currentPhone,
+            purchaseType: operation,
+            isLightMod: true,
+          };
+          this.navController.navigateForward([routePath], {
+            state: opInfos,
+          });
+        });
+    } else {
+      this.bsService.openNumberSelectionBottomSheet(
+        NumberSelectionOption.WITH_MY_PHONES,
+        operation,
+        'list-pass',
+        this.isLightMod
+      );
     }
   }
 
