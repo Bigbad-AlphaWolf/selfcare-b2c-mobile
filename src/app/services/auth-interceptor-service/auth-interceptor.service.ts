@@ -172,7 +172,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       retryWhen((err) => {
         return err.pipe(
           switchMap(async (err) => {
-            if (err.status === 401 && checkUrlMatchOM(err.url))
+            if (err.status === 401 && checkUrlMatchOM(err.url) && !err.statusText)
               return await this.resetOmToken(err);
             throw err;
           })

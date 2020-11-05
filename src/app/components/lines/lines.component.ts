@@ -35,7 +35,7 @@ export class LinesComponent implements OnInit {
 
   ngOnInit() {
     this.isProcessing = true;
-    this.phones$ = this.dashbServ.getAttachedNumbers().pipe(
+    this.phones$ = this.dashbServ.attachedNumbers().pipe(
       switchMap((elements: any) => {
         let numbers = [];
         let oemSouscriptions: Observable<any>[] = [];
