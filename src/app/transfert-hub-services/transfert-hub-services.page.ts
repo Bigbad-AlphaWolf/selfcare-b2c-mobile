@@ -12,7 +12,7 @@ import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_PASS_ALLO,
-  OPERATION_TYPE_PASS_VOYAGE
+  OPERATION_TYPE_PASS_VOYAGE,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -83,14 +83,6 @@ export class TransfertHubServicesPage implements OnInit {
     action?: 'REDIRECT' | 'POPUP';
   }[] = [
     {
-      title: 'Crédit',
-      subtitle: 'recharge',
-      icon: '/assets/images/ic-top-up-mobile@2x.png',
-      action: 'REDIRECT',
-      type: 'CREDIT',
-      url: '',
-    },
-    {
       title: 'Pass',
       subtitle: 'internet',
       icon: '/assets/images/ic-internet-usage@2x.png',
@@ -131,6 +123,21 @@ export class TransfertHubServicesPage implements OnInit {
     //   url: '',
     // },
   ];
+  buyCreditOption: {
+    title: string;
+    subtitle: string;
+    icon: string;
+    type: 'CREDIT';
+    url?: string;
+    action?: 'REDIRECT' | 'POPUP';
+  } = {
+    title: 'Crédit',
+    subtitle: 'recharge',
+    icon: '/assets/images/ic-top-up-mobile@2x.png',
+    action: 'REDIRECT',
+    type: 'CREDIT',
+    url: '',
+  };
   options: {
     title: string;
     subtitle: string;
@@ -155,6 +162,7 @@ export class TransfertHubServicesPage implements OnInit {
   hasPromoPlanActive: OfferPlanActive = null;
   hasBoosterPromoActive: PromoBoosterActive = null;
   showNewFeatureBadge$: Observable<Boolean>;
+  isLightMod: boolean; //boolean to tell if user is in connected or not connected mod
 
   constructor(
     private appRouting: ApplicationRoutingService,
@@ -164,8 +172,8 @@ export class TransfertHubServicesPage implements OnInit {
     private offerPlanServ: OfferPlansService,
     private dashbServ: DashboardService,
     private bsService: BottomSheetService,
-    private omService : OrangeMoneyService,
-    private facebookevent : FacebookEventService
+    private omService: OrangeMoneyService,
+    private facebookevent: FacebookEventService
   ) {}
 
   ngOnInit() {
@@ -173,6 +181,10 @@ export class TransfertHubServicesPage implements OnInit {
     this.getShowStatusNewFeatureAllo();
     if (history && history.state) {
       purchaseType = history.state.purchaseType;
+      this.isLightMod = history.state.isLightMod;
+      if (!this.isLightMod) {
+        this.buyOptions.splice(0, 0, this.buyCreditOption);
+      }
     }
     if (purchaseType === 'TRANSFER') {
       this.options = this.transferOptions;
@@ -200,8 +212,11 @@ export class TransfertHubServicesPage implements OnInit {
     action?: 'REDIRECT' | 'POPUP';
   }) {
     // this.facebookevent.fbEvent(FacebookEvent.ViewContent,{});
-    this.facebookevent.fbCustomEvent(FacebookCustomEvent.TestEvent,{customField1:'customField1',customField2:51});
-    
+    this.facebookevent.fbCustomEvent(FacebookCustomEvent.TestEvent, {
+      customField1: 'customField1',
+      customField2: 51,
+    });
+
     switch (opt.type) {
       case 'TRANSFERT_MONEY':
         if (opt.action === 'REDIRECT') {
@@ -232,7 +247,8 @@ export class TransfertHubServicesPage implements OnInit {
           this.bsService.openNumberSelectionBottomSheet(
             NumberSelectionOption.WITH_MY_PHONES,
             OPERATION_TYPE_PASS_INTERNET,
-            'list-pass'
+            'list-pass',
+            this.isLightMod
           );
         }
         break;
@@ -241,7 +257,8 @@ export class TransfertHubServicesPage implements OnInit {
           this.bsService.openNumberSelectionBottomSheet(
             NumberSelectionOption.WITH_MY_PHONES,
             OPERATION_TYPE_PASS_ILLIMIX,
-            'list-pass'
+            'list-pass',
+            this.isLightMod
           );
         }
         break;

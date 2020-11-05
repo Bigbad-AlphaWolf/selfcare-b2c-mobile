@@ -416,13 +416,20 @@ export class DashboardService {
     return this.http.get(`${listPassInternetEndpoint}/${codeFormule}`);
   }
 
-  buyPassByCredit(payload: BuyPassModel) {
+  buyPassByCredit(payload: BuyPassModel, hmac?: string) {
     const { msisdn, receiver, codeIN, amount } = payload;
     const params = { msisdn, receiver, codeIN, amount };
+    let queryParams = '';
+    if (hmac && hmac !== '') {
+      queryParams += `?hmac=${hmac}`;
+    }
     switch (payload.type) {
       case 'internet':
         if (msisdn === receiver) {
-          return this.http.post(buyPassInternetByCreditEndpoint, params);
+          return this.http.post(
+            `${buyPassInternetByCreditEndpoint}${queryParams}`,
+            params
+          );
         } else {
           return this.http.post(
             buyPassInternetForSomeoneByCreditEndpoint,

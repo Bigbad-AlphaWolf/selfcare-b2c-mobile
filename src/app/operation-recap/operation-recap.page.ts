@@ -91,6 +91,7 @@ export class OperationRecapPage implements OnInit {
   subscriptionInfos: SubscriptionModel;
   buyCreditPayload: any;
   offerPlan: OfferPlan;
+  isLightMod: boolean;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -116,6 +117,7 @@ export class OperationRecapPage implements OnInit {
           const state = this.router.getCurrentNavigation().extras.state;
           this.opXtras = state;
           this.purchaseType = state.purchaseType;
+          this.isLightMod = state.isLightMod;
           switch (this.purchaseType) {
             case OPERATION_TYPE_PASS_INTERNET:
             case OPERATION_TYPE_PASS_ILLIMIX:
@@ -208,7 +210,7 @@ export class OperationRecapPage implements OnInit {
       });
 
     this.authServ
-      .getSubscription(this.currentUserNumber)
+      .getSubscriptionForTiers(this.currentUserNumber)
       .subscribe((res: SubscriptionModel) => {
         this.subscriptionInfos = res;
       });
@@ -220,7 +222,10 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_VOYAGE:
       case OPERATION_TYPE_PASS_ILLIMIX:
       case OPERATION_TYPE_PASS_ALLO:
-        if (this.subscriptionInfos.profil === PROFILE_TYPE_POSTPAID) {
+        if (this.isLightMod) {
+          const hmac = this.authServ.getHmac();
+          this.payWithCredit(hmac);
+        } else if (this.subscriptionInfos.profil === PROFILE_TYPE_POSTPAID) {
           this.openPinpad();
         } else {
           this.setPaymentMod();
@@ -353,14 +358,10 @@ export class OperationRecapPage implements OnInit {
   }
 
   goBack() {
-    // if(this.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT)
-    // console.log(this.purchaseType);
-
-    //   this.navController.navigateBack(CreditPassAmountPage.PATH);
     this.navController.pop();
   }
 
-  payWithCredit() {
+  payWithCredit(hmac?: string) {
     this.buyingPass = true;
     const codeIN = this.passChoosen.passPromo
       ? this.passChoosen.passPromo.price_plan_index
@@ -381,7 +382,7 @@ export class OperationRecapPage implements OnInit {
       msisdn,
       receiver,
     };
-    this.dashboardService.buyPassByCredit(payload).subscribe(
+    this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
       (res: any) => {
         this.transactionSuccessful(res);
       },

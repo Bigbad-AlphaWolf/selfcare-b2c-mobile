@@ -63,15 +63,15 @@ export class ApplicationRoutingService {
     this.route.navigate(['/select-beneficiary-v2'], navigationExtras);
   }
 
-  goToTransfertHubServicesPage(purchaseType: 'BUY' | 'TRANSFER') {
+  goToTransfertHubServicesPage(purchaseType: 'BUY' | 'TRANSFER', isLightMod?) {
     let navigationExtras: NavigationExtras = {
       state: {
         purchaseType,
+        isLightMod,
       },
     };
     this.route.navigate(['/transfert-hub-services'], navigationExtras);
   }
-
 
   goToTransfertMoneySetAmountPage(payload: {
     transfertOMType: string;
@@ -93,10 +93,10 @@ export class ApplicationRoutingService {
   }
 
   goToTransfertCreditPage() {
-     this.route.navigate(['/transfer/credit-bonus'])
+    this.route.navigate(['/transfer/credit-bonus']);
   }
   goToTransfertBonusPage() {
-     this.route.navigate(['/transfer/credit-bonus'])
+    this.route.navigate(['/transfer/credit-bonus']);
   }
 
   goBuyCredit() {
@@ -110,19 +110,26 @@ export class ApplicationRoutingService {
     this.route.navigate(['/purchase-set-amount'], navigationExtras);
   }
 
-  goToPassRecapPage(purchaseInformation: {pass: any, recipientMsisdn: string, recipientCodeFormule: string, recipientName: string, purchaseType: string, offerPlan ?: OfferPlan }){
+  goToPassRecapPage(purchaseInformation: {
+    pass: any;
+    recipientMsisdn: string;
+    recipientCodeFormule: string;
+    recipientName: string;
+    purchaseType: string;
+    offerPlan?: OfferPlan;
+  }) {
     let navigationExtras: NavigationExtras = {
       state: purchaseInformation,
     };
     this.route.navigate(['/operation-recap'], navigationExtras);
   }
 
-  goToBuyCreditSetAmount(opInfos: OperationExtras){
-    opInfos = { purchaseType:OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos}
-    this.route.navigate([CreditPassAmountPage.PATH], {state:opInfos});
+  goToBuyCreditSetAmount(opInfos: OperationExtras) {
+    opInfos = { purchaseType: OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos };
+    this.route.navigate([CreditPassAmountPage.PATH], { state: opInfos });
   }
 
-  goToRegisterForSargal(){
+  goToRegisterForSargal() {
     this.route.navigate([SargalRegistrationPage.PATH]);
   }
 }

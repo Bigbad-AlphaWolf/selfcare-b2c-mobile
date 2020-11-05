@@ -35,6 +35,7 @@ import * as SecureLS from 'secure-ls';
 import { ModalController } from '@ionic/angular';
 import { ActionLightComponent } from './components/action-light-modal/action-light/action-light.component';
 import { switchMap } from 'rxjs/operators';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -112,7 +113,8 @@ export class DashboardPrepaidLightPage implements OnInit {
     private banniereService: BanniereService,
     private authenticationService: AuthenticationService,
     private router: Router,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private applicationRoutingService: ApplicationRoutingService
   ) {}
 
   ngOnInit() {
@@ -340,6 +342,10 @@ export class DashboardPrepaidLightPage implements OnInit {
   }
 
   async onOperation(operation) {
+    if (operation.action === 'BUY') {
+      this.applicationRoutingService.goToTransfertHubServicesPage('BUY', true);
+      return;
+    }
     if (this.alreadyHasAccount) {
       const modal = await this.modalController.create({
         component: ActionLightComponent,
