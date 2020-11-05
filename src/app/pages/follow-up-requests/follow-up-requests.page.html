@@ -5,13 +5,14 @@
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
-    <ion-title>{{ title }}</ion-title>
+    <ion-title>{{ header.title }}</ion-title>
   </ion-toolbar>
   <div class="top">
     <div class="banner-image">
       <div class="banner-background">
         <div class="banner-container">
           <div class="number">{{phoneFix|phoneNumberDisplay}}</div>
+          <div *ngIf="phoneFix" class="change" (click)="openLinesModal()" matRipple>Changer</div>
         </div>
       </div>
     </div>
@@ -76,7 +77,7 @@
     </div>
     <div class="autre">
       <div class="head">
-        Autres réclamations
+        Autres demandes ou réclamations
       </div>
       <div class="fieldArea">
         <form novalidate autocomplete="false">
