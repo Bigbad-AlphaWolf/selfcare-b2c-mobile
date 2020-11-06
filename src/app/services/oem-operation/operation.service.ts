@@ -14,8 +14,12 @@ export class OperationService {
   
   constructor(private http: HttpClient) { }
 
-  initServicesData() {
-    return this.http.get(OFFRE_SERVICES_ENDPOINT).pipe(
+  initServicesData(codeFormule?: string) {
+    let endpointOffresServices = OFFRE_SERVICES_ENDPOINT;
+    if(codeFormule) {
+      endpointOffresServices += `/${codeFormule}?typeResearch=FORMULE`
+    }
+    return this.http.get(endpointOffresServices).pipe(
       map((r: any[])=>{
         this.offresServices = r;
       })

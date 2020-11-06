@@ -19,12 +19,12 @@
         <div *ngIf="isLoading" class="spinner-wrapper">
       <ion-spinner name="crescent"></ion-spinner>
     </div>
-    <div class="operations-main-content" *ngIf="opService.offresServices" >
+    <div class="operations-main-content" *ngIf="opService?.offresServices" >
       <div class="operations-body" *ngIf="!isLoading">
         <div class="tab">
           <div class="tab-header">
             <div
-              *ngFor="let category of opService.offresServices ; index as i"
+              *ngFor="let category of opService?.offresServices ; index as i"
               (click)="changeTabHeader(i)"
               class="tab-header-item"
               [ngClass]="{  'selected' : i === activeTabIndex }"
@@ -32,7 +32,7 @@
               <span class="scb-text-light-black"> {{ category.libelle }}</span>
             </div>
           </div>
-          <ng-container *ngIf="opService.offresServices[activeTabIndex].categorieOffreServices as subCats">
+          <ng-container *ngIf="opService?.offresServices[activeTabIndex]?.categorieOffreServices as subCats">
 
             <div class="sub-category"  *ngIf="subCats.length">
               <div class="scroll" scrollX="true">
@@ -42,7 +42,7 @@
                 class="sub-cat-item"
                 [ngClass]="{  'selected' : i === activeSubIndex } "
               >
-                <span class="name"> {{ subCategory.libelle }}</span>
+                <span class="name"> {{ subCategory?.libelle }}</span>
               </div>
               </div>
             </div>
@@ -55,9 +55,9 @@
             (ionSlideDidChange)="slideChanged()"
             [options]="slideOpts"
           >
-            <ion-slide *ngFor="let category of opService.offresServices; index as i">
-              <ng-container *ngIf="category.categorieOffreServices.length">
-                <div class="list-operations" *ngIf="opService.offresServices[activeTabIndex].categorieOffreServices[activeSubIndex].offreServices as offreServices">
+            <ion-slide *ngFor="let category of opService?.offresServices; index as i">
+              <ng-container *ngIf="category?.categorieOffreServices?.length">
+                <div class="list-operations" *ngIf="opService?.offresServices[activeTabIndex]?.categorieOffreServices[activeSubIndex]?.offreServices as offreServices">
                   <oem-offre-service-card *ngFor="let operation of offreServices; index as i" [service]="operation">
                   </oem-offre-service-card>
                 </div>
