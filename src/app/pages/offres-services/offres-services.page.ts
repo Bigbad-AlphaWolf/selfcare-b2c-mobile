@@ -6,7 +6,10 @@ import { ZoneBanniere } from 'src/app/models/enums/zone-banniere.enum';
 import { IonSlides, NavController } from '@ionic/angular';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
 import { BaseComponent } from 'src/app/base.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, switchMap, catchError, tap } from 'rxjs/operators';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { SubscriptionModel } from 'src/shared';
 
 @Component({
   selector: 'app-offres-services',
@@ -21,6 +24,7 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
   isLoading: boolean = false;
   activeTabIndex = 0;
   activeSubIndex = 0;
+  currentPhoneNumber = this.dashbService.getCurrentPhoneNumber();
   @ViewChild('sliders') sliders: IonSlides;
   slideOpts = {
     speed: 400,
@@ -33,7 +37,9 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
   constructor(
     public banniereService: BanniereService,
     private navCtl: NavController,
-    public opService : OperationService
+    public opService : OperationService,
+    private dashbService: DashboardService,
+    private authServ: AuthenticationService
   ) {
     super()
   }
@@ -45,14 +51,26 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
     )
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe();
-
     this.initData();
   }
 
   initData(){
-    this.opService.initServicesData()
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe();
+    this.isLoading = true;
+    this.authServ.getSubscriptionForTiers(this.currentPhoneNumber).pipe(
+      switchMap((res: SubscriptionModel) => {
+      return this.opService.initServicesData(res.code).pipe(
+        tap( (res: any) => this.isLoading = false ),
+        catchError((err: any) => {
+          this.isLoading = false;
+          return err;
+      }),
+        takeUntil(this.ngUnsubscribe)
+        )
+    }),catchError((err:any) => {
+      this.isLoading = false;
+      return err;
+    })
+    ).subscribe();
   }
 
   changeTabHeader(tabIndex: number) {
