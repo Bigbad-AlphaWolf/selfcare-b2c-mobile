@@ -79,8 +79,8 @@ registerLocaleData(localeFr);
     Deeplinks,
     Market,
     Device,
-    AndroidPermissions,
     Uid,
+    AndroidPermissions,
   ],
   bootstrap: [AppComponent],
 })
