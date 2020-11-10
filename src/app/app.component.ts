@@ -192,14 +192,18 @@ export class AppComponent {
   }
 
   async getImei() {
+    console.log(this.uid);
     const { hasPermission } = await this.androidPermissions.checkPermission(
       this.androidPermissions.PERMISSION.READ_PHONE_STATE
     );
     if (!hasPermission) {
+      console.log('hasPermission', hasPermission);
+
       const result = await this.androidPermissions.requestPermission(
         this.androidPermissions.PERMISSION.READ_PHONE_STATE
       );
       if (!result.hasPermission) {
+        console.log('hasPermission2', hasPermission);
         throw new Error('Permissions required');
       }
       return;
