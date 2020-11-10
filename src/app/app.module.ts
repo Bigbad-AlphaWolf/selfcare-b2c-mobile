@@ -34,6 +34,7 @@ import { OperationSuccessFailModalPageModule } from './operation-success-fail-mo
 import { RegistrationSuccessModalPageModule } from './registration-success-modal/registration-success-modal.module';
 import { IonicImageLoader } from 'ionic-image-loader';
 import { Uid } from '@ionic-native/uid/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -62,6 +63,7 @@ registerLocaleData(localeFr);
     AppVersion,
     StatusBar,
     SplashScreen,
+    WebView,
     { provide: LOCALE_ID, useValue: 'fr-FR' },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {
