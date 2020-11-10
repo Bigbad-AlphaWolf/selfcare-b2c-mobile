@@ -301,7 +301,9 @@ const routes: Routes = [
     path: 'dashboard-prepaid-light',
     loadChildren:
       './dashboard-prepaid-light/dashboard-prepaid-light.module#DashboardPrepaidLightPageModule',
-  },
+  },  { path: 'select-illiflex-type', loadChildren: './select-illiflex-type/select-illiflex-type.module#SelectIlliflexTypePageModule' },
+  { path: 'illiflex-configuration', loadChildren: './illiflex-configuration/illiflex-configuration.module#IlliflexConfigurationPageModule' },
+
 ];
 
 @NgModule({

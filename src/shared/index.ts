@@ -1192,3 +1192,8 @@ export const LIGHT_DASHBOARD_EVENT = 'GO_DASHBOARD_LIGHT';
 export const REGISTRATION_PASSWORD_STEP = 'PASSWORD';
 export const USER_ERROR_MSG_BLOCKED =
   'Votre Compte Orange et Moi a été bloqué. Cliquez sur mot de passe oublié et suivez les instructions.';
+
+export enum IlliflexOption {
+  BUDGET = 'BUDGET',
+  USAGE = 'USAGE',
+}
