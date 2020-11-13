@@ -7,6 +7,7 @@ import {
   OPERATION_TYPE_PASS_VOYAGE,
   CODE_KIRENE_Formule,
   REGEX_FIX_NUMBER,
+  OPERATION_TYPE_PASS_ILLIMIX,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -30,7 +31,7 @@ import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
   styleUrls: ['./number-selection.component.scss'],
 })
 export class NumberSelectionComponent implements OnInit {
-  numbers$: Observable<string[]> ;
+  numbers$: Observable<string[]>;
   recentsRecipients$: Observable<any[]>;
 
   numberSelected: string = '';
@@ -50,9 +51,8 @@ export class NumberSelectionComponent implements OnInit {
   isRecipientEligible = true;
   eligibilityError: string;
   @Input() data;
-  loadingNumbers : boolean;
-  currentPhone : string = (SessionOem.PHONE).trim();
-  
+  loadingNumbers: boolean;
+  currentPhone: string = SessionOem.PHONE.trim();
 
   constructor(
     private modalController: ModalController,
@@ -70,7 +70,7 @@ export class NumberSelectionComponent implements OnInit {
     this.opXtras.recipientMsisdn = this.currentPhone;
     this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
       delay(100),
-      tap((numbers) => { 
+      tap((numbers) => {
         this.loadingNumbers = false;
       }),
       share()
@@ -100,9 +100,14 @@ export class NumberSelectionComponent implements OnInit {
 
   async onContinue(phone?: string) {
     console.log('sd', this.opXtras.recipientMsisdn);
-    
+
     if (phone) this.opXtras.recipientMsisdn = phone;
-    if (!(REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn) || REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn))) {
+    if (
+      !(
+        REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn) ||
+        REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn)
+      )
+    ) {
       this.phoneIsNotValid = true;
       return;
     }
@@ -140,7 +145,7 @@ export class NumberSelectionComponent implements OnInit {
           this.opXtras.profil = res.profil;
           if (
             res.code === CODE_KIRENE_Formule &&
-            this.data.purchaseType !== OPERATION_TYPE_RECHARGE_CREDIT
+            this.data.purchaseType === OPERATION_TYPE_PASS_ILLIMIX
           ) {
             const eligibility: any = await this.isEligible();
             this.eligibilityChecked = true;
