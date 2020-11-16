@@ -6,12 +6,13 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { IlliflexConfigurationPage } from './illiflex-configuration.page';
+import { SharedModule } from 'src/shared/shared.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: IlliflexConfigurationPage
-  }
+    component: IlliflexConfigurationPage,
+  },
 ];
 
 @NgModule({
@@ -19,8 +20,9 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    SharedModule,
+    RouterModule.forChild(routes),
   ],
-  declarations: [IlliflexConfigurationPage]
+  declarations: [IlliflexConfigurationPage],
 })
 export class IlliflexConfigurationPageModule {}

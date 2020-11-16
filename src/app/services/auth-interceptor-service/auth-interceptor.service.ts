@@ -82,7 +82,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221781040956');
+      headers = headers.set('X-MSISDN', '221770518353');
       //delay to test slowness of network
       req = req.clone({
         headers,
@@ -172,7 +172,11 @@ export class AuthInterceptorService implements HttpInterceptor {
       retryWhen((err) => {
         return err.pipe(
           switchMap(async (err) => {
-            if (err.status === 401 && checkUrlMatchOM(err.url) && !err.statusText)
+            if (
+              err.status === 401 &&
+              checkUrlMatchOM(err.url) &&
+              !err.statusText
+            )
               return await this.resetOmToken(err);
             throw err;
           })
