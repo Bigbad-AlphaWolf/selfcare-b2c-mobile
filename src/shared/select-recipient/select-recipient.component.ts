@@ -6,6 +6,7 @@ import {
   SubscriptionModel,
   CODE_KIRENE_Formule,
   OPERATION_TYPE_RECHARGE_CREDIT,
+  OPERATION_TYPE_PASS_ILLIMIX,
 } from '..';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
@@ -97,7 +98,7 @@ export class SelectRecipientComponent implements OnInit {
         this.isProcessing = false;
         if (
           res.code === CODE_KIRENE_Formule &&
-          this.purchaseType !== OPERATION_TYPE_RECHARGE_CREDIT
+          this.purchaseType === OPERATION_TYPE_PASS_ILLIMIX
         ) {
           const eligibility = await this.isEligible();
           if (eligibility && !eligibility.eligible) return;
@@ -161,7 +162,7 @@ export class SelectRecipientComponent implements OnInit {
             return;
           } else if (
             res.code === CODE_KIRENE_Formule &&
-            this.purchaseType !== OPERATION_TYPE_RECHARGE_CREDIT
+            this.purchaseType === OPERATION_TYPE_PASS_ILLIMIX
           ) {
             const eligibility = await this.isEligible();
             if (eligibility && !eligibility.eligible) return;
