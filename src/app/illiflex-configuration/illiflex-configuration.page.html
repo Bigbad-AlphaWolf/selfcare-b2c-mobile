@@ -41,7 +41,7 @@
           <ion-item mode="ios" lines="none">
             <ion-range [(ngModel)]="dataVolumeValue" [min]="minDataVolume" [max]="maxDataVolume" [step]="1" (ionChange)="onDataGaugeChanged()" #internetGauge>
               <ion-label slot="start" class="label-title scb-text-gray">Volume</ion-label>
-              <ion-label slot="end" class="label-value">{{roundValue(dataVolumeValue/1024)}} Go</ion-label>
+              <ion-label slot="end" class="label-value">{{dataVolumeValue | dataVolume}}</ion-label>
             </ion-range>
           </ion-item>
         </div>
@@ -49,8 +49,8 @@
           <span class="gauge-title">Appels</span>
           <ion-item mode="ios" lines="none">
             <ion-range [(ngModel)]="voiceQuantityValue" [min]="minVoice" [max]="maxVoice" [step]="1" (ionChange)="onVoiceGaugeChanged()" #appelGauge>
-              <ion-label slot="start" class="label-title scb-text-gray">Minutes</ion-label>
-              <ion-label slot="end" class="label-value">{{roundValue(voiceQuantityValue)}} Min</ion-label>
+              <ion-label slot="start" class="label-title scb-text-gray">Temps</ion-label>
+              <ion-label slot="end" class="label-value">{{voiceQuantityValue | illiflexVoice}}</ion-label>
             </ion-range>
           </ion-item>
         </div>
@@ -62,7 +62,7 @@
         </div>
         <div class="buttons">
           <button class="scb-btn scb-btn-white">Annuler</button>
-          <button class="scb-btn scb-btn-orange">Confirmer</button>
+          <button class="scb-btn scb-btn-orange" [disabled]="!illiflexTitle" (click)="goRecapPage()">Confirmer</button>
         </div>
       </div>
     </div>

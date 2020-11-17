@@ -21,6 +21,7 @@ import {
   MONTHLY_DALAL_TARIF,
   PAYMENT_MOD_CREDIT,
   PAYMENT_MOD_OM,
+  OPERATION_TYPE_PASS_ILLIFLEX,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -34,6 +35,8 @@ import {
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { DalalTonesService } from '../services/dalal-tones-service/dalal-tones.service';
+import { IlliflexService } from '../services/illiflex-service/illiflex.service';
+import { BuyIlliflexModel } from '../models/buy-illiflex.model';
 
 @Component({
   selector: 'app-operation-recap',
@@ -87,6 +90,7 @@ export class OperationRecapPage implements OnInit {
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   OPERATION_TYPE_BONS_PLANS = OPERATION_TYPE_BONS_PLANS;
   OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
+  OPERATION_ILLIFLEX = OPERATION_TYPE_PASS_ILLIFLEX;
   DALAL_TARIF = MONTHLY_DALAL_TARIF;
   subscriptionInfos: SubscriptionModel;
   buyCreditPayload: any;
@@ -102,7 +106,8 @@ export class OperationRecapPage implements OnInit {
     private orangeMoneyService: OrangeMoneyService,
     private navController: NavController,
     private authServ: AuthenticationService,
-    private dalalTonesService: DalalTonesService
+    private dalalTonesService: DalalTonesService,
+    private illiflexService: IlliflexService
   ) {}
 
   ngOnInit() {
@@ -116,12 +121,14 @@ export class OperationRecapPage implements OnInit {
         ) {
           const state = this.router.getCurrentNavigation().extras.state;
           this.opXtras = state;
+          this.recipientMsisdn = state.recipientMsisdn;
           this.purchaseType = state.purchaseType;
           this.isLightMod = state.isLightMod;
           switch (this.purchaseType) {
             case OPERATION_TYPE_PASS_INTERNET:
             case OPERATION_TYPE_PASS_ILLIMIX:
             case OPERATION_TYPE_PASS_ALLO:
+            case OPERATION_TYPE_PASS_ILLIFLEX:
               this.recipientName = state.recipientName;
               this.passChoosen = state.pass;
               this.recipientMsisdn = state.recipientMsisdn;
@@ -241,6 +248,9 @@ export class OperationRecapPage implements OnInit {
         break;
       case OPERATION_ENABLE_DALAL:
         this.activateDalal();
+        break;
+      case OPERATION_TYPE_PASS_ILLIFLEX:
+        this.payIlliflex();
         break;
       default:
         break;
@@ -388,6 +398,31 @@ export class OperationRecapPage implements OnInit {
       },
       () => {
         this.transactionFailure();
+      }
+    );
+  }
+
+  payIlliflex() {
+    this.buyingPass = true;
+    this.illiflexService.buyIlliflex(this.passChoosen).subscribe(
+      (res) => {
+        this.buyingPass = false;
+        this.openSuccessFailModal({
+          success: true,
+          msisdnBuyer: this.recipientMsisdn,
+          buyForMe: true,
+        });
+      },
+      (err) => {
+        this.buyingPass = false;
+        const errorMsg = err.message
+          ? err.message
+          : 'Une erreur est survenue. Veuillez réessayer plus tard';
+        this.openSuccessFailModal({
+          success: false,
+          msisdnBuyer: this.recipientMsisdn,
+          errorMsg,
+        });
       }
     );
   }

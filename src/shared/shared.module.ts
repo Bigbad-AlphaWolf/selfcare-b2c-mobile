@@ -87,6 +87,9 @@ import { RapidoSelectionComponent } from 'src/app/components/counter/rapido-sele
 import { FavoriteRapidoComponent } from 'src/app/components/counter/favorite-rapido/favorite-rapido.component';
 import { DalalCardItemComponent } from './dalal-card-item/dalal-card-item.component';
 import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
+import { ItemIlliflexComponent } from './illiflex-item/item-illiflex/item-illiflex.component';
+import { DataVolumePipe } from './pipes/data-volume.pipe';
+import { IlliflexVoicePipe } from './pipes/illiflex-voice.pipe';
 
 @NgModule({
   declarations: [
@@ -153,6 +156,9 @@ import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/ra
     IbouIonFabComponent,
     DalalCardItemComponent,
     RapidoSoldeComponent,
+    ItemIlliflexComponent,
+    DataVolumePipe,
+    IlliflexVoicePipe,
   ],
   imports: [
     CommonModule,
@@ -273,11 +279,16 @@ import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/ra
     IbouIonFabComponent,
     DalalCardItemComponent,
     RapidoSoldeComponent,
+    ItemIlliflexComponent,
+    DataVolumePipe,
+    IlliflexVoicePipe,
   ],
   providers: [
     Contacts,
     SocialSharing,
     PassVolumeDisplayPipe,
+    DataVolumePipe,
+    IlliflexVoicePipe,
     { provide: MatBottomSheetRef, useValue: {} },
     { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} },
   ],

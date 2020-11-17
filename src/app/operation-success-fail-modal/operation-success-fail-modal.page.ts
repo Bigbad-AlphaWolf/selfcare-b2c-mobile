@@ -11,6 +11,7 @@ import {
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TYPE_PASS_ALLO,
   OPERATION_ENABLE_DALAL,
+  OPERATION_TYPE_PASS_ILLIFLEX,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -36,6 +37,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
   OPERATION_TYPE_RECHARGE = OPERATION_TYPE_RECHARGE_CREDIT;
   OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
+  OPERATION_ILLIFLEX_TYPE = OPERATION_TYPE_PASS_ILLIFLEX;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;
@@ -91,6 +93,9 @@ export class OperationSuccessFailModalPage implements OnInit {
         break;
       case OPERATION_ENABLE_DALAL:
         this.navCtrl.navigateBack(DalalTonesPage.ROUTE_PATH);
+        break;
+      case OPERATION_TYPE_PASS_ILLIFLEX:
+        this.router.navigate(['/select-illiflex-type']);
         break;
       default:
         break;

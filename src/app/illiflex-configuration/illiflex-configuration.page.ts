@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationExtras, Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import {
   getMaxDataVolumeOrVoiceOfPaliers,
   getMinDataVolumeOrVoiceOfPaliers,
+  OPERATION_TYPE_PASS_ILLIFLEX,
 } from 'src/shared';
+import { DataVolumePipe } from 'src/shared/pipes/data-volume.pipe';
+import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
 import { PalierModel } from '../models/palier.model';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { IlliflexService } from '../services/illiflex-service/illiflex.service';
 
 @Component({
@@ -13,8 +18,6 @@ import { IlliflexService } from '../services/illiflex-service/illiflex.service';
   styleUrls: ['./illiflex-configuration.page.scss'],
 })
 export class IlliflexConfigurationPage implements OnInit {
-  // illiflex amount
-  illiflexAmount: number = 0;
   // all paliers from all validities
   paliers: PalierModel[] = [];
   // all paliers with the selected validity by user
@@ -36,11 +39,17 @@ export class IlliflexConfigurationPage implements OnInit {
   minDataVolume: number = 0;
   maxVoice: number = 0;
   minVoice: number = 0;
-  // total price of illiflex
+  // illiflex amount
   totalPrice = 0;
+  illiflexTitle: string;
+  illiflexValidity: string;
   constructor(
     private navController: NavController,
-    private illiflexService: IlliflexService
+    private illiflexService: IlliflexService,
+    private router: Router,
+    private dashboardService: DashboardService,
+    private dataVolumePipe: DataVolumePipe,
+    private illiflexVoicePipe: IlliflexVoicePipe
   ) {}
 
   ngOnInit() {
@@ -68,6 +77,20 @@ export class IlliflexConfigurationPage implements OnInit {
     this.selectedVoicePalier = this.currentPaliers[0];
     this.getMaxMinBudgetOfPaliers();
     this.getMaxMinOfDataAndVoice();
+    this.illiflexValidity = validity;
+    switch (validity) {
+      case 'Jour':
+        this.illiflexTitle = 'Achat illiflex 24 heures';
+        break;
+      case 'Semaine':
+        this.illiflexTitle = 'Achat illiflex 7 jours';
+        break;
+      case 'Mois':
+        this.illiflexTitle = 'Achat illiflex 30 jours';
+        break;
+      default:
+        break;
+    }
   }
 
   getMaxMinBudgetOfPaliers() {
@@ -217,5 +240,25 @@ export class IlliflexConfigurationPage implements OnInit {
       this.voiceQuantityValue < minVoiceValue
         ? minVoiceValue
         : this.voiceQuantityValue;
+  }
+
+  goRecapPage() {
+    const pass = {
+      data: this.dataVolumeValue,
+      amount: this.totalPrice,
+      voice: this.voiceQuantityValue,
+      validity: this.illiflexValidity,
+      recipient: this.dashboardService.getCurrentPhoneNumber(),
+    };
+    let navigationExtras: NavigationExtras = {
+      state: {
+        pass,
+        recipientMsisdn: this.dashboardService.getCurrentPhoneNumber(),
+        amount: this.totalPrice,
+        purchaseType: OPERATION_TYPE_PASS_ILLIFLEX,
+        title: this.illiflexTitle,
+      },
+    };
+    this.router.navigate(['/operation-recap'], navigationExtras);
   }
 }
