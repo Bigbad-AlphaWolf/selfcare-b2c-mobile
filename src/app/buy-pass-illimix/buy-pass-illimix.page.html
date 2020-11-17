@@ -49,14 +49,6 @@
       ></app-operation-validation>
     </ng-container>
 
-    <ng-container *ngIf="step === 4">
-      <app-activation-om
-        [operation]="OPERATION_TYPE_PASS_ILLIMIX"
-        [passToBuy]="passIllimixChoosed"
-        (resultEmit)="payWithOM($event)"
-      ></app-activation-om>
-    </ng-container>
-
     <ng-container *ngIf="step === 5">
       <app-operation-success-or-fail
         [operationType]="OPERATION_TYPE_PASS_ILLIMIX"

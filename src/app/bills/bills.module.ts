@@ -11,6 +11,7 @@ import { BillsDetailsMobileComponent } from './bills-details-mobile/bills-detail
 
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { PipesModule } from '../pipes/pipes.module';
 const routes: Routes = [
   {
     path: '',
@@ -23,6 +24,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
+    PipesModule,
     RouterModule.forChild(routes),
   ],
   providers: [

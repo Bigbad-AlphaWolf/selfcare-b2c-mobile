@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { DashboardPage } from './dashboard.page';
 import { MatProgressSpinnerModule } from '@angular/material';
 import { SharedModule } from 'src/shared/shared.module';
+import { SidemenuComponent } from '../sidemenu/sidemenu.component';
 const routes: Routes = [
   {
     path: '',

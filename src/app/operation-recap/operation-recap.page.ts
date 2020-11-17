@@ -34,6 +34,7 @@ import {
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { DalalTonesService } from '../services/dalal-tones-service/dalal-tones.service';
+import { ModalSuccessModel } from '../models/modal-success-infos.model';
 
 @Component({
   selector: 'app-operation-recap',
@@ -148,6 +149,8 @@ export class OperationRecapPage implements OnInit {
               this.offerPlan = state.offerPlan;
               break;
             case OPERATION_TRANSFER_OM_WITH_CODE:
+              console.log('this.opXtras', this.opXtras);
+              
               this.recipientMsisdn = state.recipientMsisdn;
               this.amount = state.amount + state.fee;
               this.transferOMWithCodePayload.amount = state.amount;
@@ -163,6 +166,8 @@ export class OperationRecapPage implements OnInit {
               this.paymentMod = PAYMENT_MOD_OM;
               break;
             case OPERATION_TRANSFER_OM:
+              console.log('this.opXtras', this.opXtras);
+
               this.recipientMsisdn = state.recipientMsisdn;
               this.amount = state.includeFee
                 ? state.amount + state.fee
@@ -305,7 +310,7 @@ export class OperationRecapPage implements OnInit {
     return await modal.present();
   }
 
-  async openPinpad() {
+  async openPinpad() {    
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
@@ -462,19 +467,4 @@ export class OperationRecapPage implements OnInit {
   }
 }
 
-interface ModalSuccessModel {
-  purchaseType?: string;
-  passBought?: any;
-  success?: boolean;
-  recipientMsisdn?: string;
-  recipientName?: string;
-  buyForMe?: boolean;
-  paymentMod?: string;
-  msisdnBuyer?: string;
-  errorMsg?: string;
-  amount?: number;
-  merchantName?: string;
-  merchantCode?: number;
-  opXtras?: OperationExtras;
-  dalal?: any;
-}
+

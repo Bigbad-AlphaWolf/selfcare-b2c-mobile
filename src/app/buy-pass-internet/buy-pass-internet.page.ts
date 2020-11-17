@@ -20,6 +20,12 @@ import { BuyPassModel } from '../services/dashboard-service';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { ModalController } from '@ionic/angular';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
+import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
+import { OperationExtras } from '../models/operation-extras.model';
+import { ModalSuccessModel } from '../models/modal-success-infos.model';
 @Component({
   selector: 'app-buy-pass-internet',
   templateUrl: './buy-pass-internet.page.html',
@@ -57,6 +63,7 @@ export class BuyPassInternetPage implements OnInit {
   buyForFixPrepaid: boolean;
   destCodeFormule: string;
   pageAccessUrl: string;
+  opXtras: OperationExtras = {};
 
   constructor(
     private router: Router,
@@ -66,8 +73,8 @@ export class BuyPassInternetPage implements OnInit {
     private route: ActivatedRoute,
     private passService: PassInternetService,
     private followAnalyticsService: FollowAnalyticsService,
-    private appliRouting: ApplicationRoutingService
-  ) {}
+    private modalController: ModalController,
+    private orangeMoneyService: OrangeMoneyService  ) {}
 
   ngOnInit() {}
 
@@ -97,6 +104,7 @@ export class BuyPassInternetPage implements OnInit {
         this.currentProfil = souscription.profil;
         this.currentFormule = souscription.nomOffre;
         this.currentCodeFormule = souscription.code;
+        this.opXtras.code = this.currentCodeFormule;
         if (this.currentProfil === PROFILE_TYPE_POSTPAID) {
           this.step = 1;
           this.choosedPaymentMod = PAYMENT_MOD_OM;
@@ -183,7 +191,7 @@ export class BuyPassInternetPage implements OnInit {
   }
 
   payWithOM() {
-    this.goToNextStep();
+    this.openPinpad();
   }
 
   buyPassByCredit() {
@@ -214,7 +222,7 @@ export class BuyPassInternetPage implements OnInit {
       // Make request for buying pass with credit
       this.buyPassByCredit();
     } else {
-      this.goToNextStep();
+      this.payWithOM()
     }
   }
 
@@ -229,7 +237,7 @@ export class BuyPassInternetPage implements OnInit {
   }
 
   goToFinalStep() {
-    this.step = 5;
+    this.step = 4;
   }
 
   goToPreviousStep() {
@@ -267,11 +275,50 @@ export class BuyPassInternetPage implements OnInit {
     this.goToStepValidation();
   }
 
-  omResultGot(result) {
-    if (result !== 'erreur') {
-      this.goToFinalStep();
-    }
+  async openPinpad() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+      componentProps: {
+        operationType: OPERATION_TYPE_PASS_ILLIMIX,
+        buyPassPayload: {
+          destinataire: this.destinataire,
+          pass: this.purchasePass.pass,
+        },
+        opXtras: this.opXtras
+      },
+    });
+    modal.onDidDismiss().then((response) => {
+      if (response.data && response.data.success) {
+        this.openSuccessFailModal({
+          opXtras: response.data.opXtras,
+          success: true,
+          msisdnBuyer: this.orangeMoneyService.getOrangeMoneyNumber(),
+          buyForMe:
+            this.destinataire ===
+            this.orangeMoneyService.getOrangeMoneyNumber(),
+        });
+      }
+    });
+    return await modal.present();
   }
+
+  async openSuccessFailModal(params: ModalSuccessModel) {
+    params.passBought = this.purchasePass.pass;
+    params.paymentMod = this.choosedPaymentMod;
+    params.recipientMsisdn = this.destinataire;
+    params.recipientName = this.recipientFirstName && this.recipientLastName ? this.recipientFirstName + ' ' + this.recipientLastName : null ;
+    params.purchaseType = OPERATION_TYPE_PASS_INTERNET;
+    const modal = await this.modalController.create({
+      component: OperationSuccessFailModalPage,
+      cssClass: params.success ? 'success-modal' : 'failed-modal',
+      componentProps: params,
+      backdropDismiss: false,
+    });
+    modal.onDidDismiss().then(() => {});
+    return await modal.present();
+  }
+
 
   goToDashboardPage() {
     this.router.navigate(['/dashboard']);

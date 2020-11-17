@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { SargalPage } from './sargal.page';
 import { SharedModule } from 'src/shared/shared.module';
+import { PipesModule } from '../pipes/pipes.module';
 
 const routes: Routes = [
 	{
@@ -20,8 +21,9 @@ const routes: Routes = [
 		CommonModule,
 		FormsModule,
 		IonicModule,
-		RouterModule.forChild(routes),
-		SharedModule
+		SharedModule,
+		PipesModule,
+		RouterModule.forChild(routes)
 	],
 	declarations: [SargalPage]
 })

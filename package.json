@@ -19,6 +19,7 @@
     "build:android": "ionic cordova platform add android && ionic cordova build android",
     "run:android": "npm run build:android && native-run android --app platforms/android/app/build/outputs/apk/debug/app-debug.apk --device",
     "build:ios": "ionic cordova platform add ios && ionic cordova build ios",
+    "build:ios:release": "ionic cordova platform add ios && ionic cordova build ios --release --prod",
     "run:ios": "npm run build:ios && native-run ios --app platforms/ios/build/emulator/Orange Et Moi.app",
     "clean:build:android": "npm run clean:all:install && npm run run:android",
     "clean:build:ios": "npm run clean:all:install && npm run run:ios"
@@ -107,7 +108,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~12.6.6",
     "codelyzer": "~4.5.0",
-    "cordova-ios": "^6.1.1",
+    "cordova-ios": "^5.1.1",
     "cordova.plugin.followanalytics": "file:FACordovaPlugin",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -206,8 +207,7 @@
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       },
       "cordova-plugin-whitelist": {},
-      "cordova.plugin.followanalytics": {},
-      "cordova-plugin-dreamover-uid": {}
+      "cordova.plugin.followanalytics": {}
     },
     "platforms": [
       "ios",
