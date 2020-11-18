@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as SecureLS from 'secure-ls';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { ChangeAvatarPopupComponent } from './change-avatar-popup/change-avatar-popup.component';
@@ -15,6 +15,7 @@ import {
   getNOAvatartUrlImage,
 } from 'src/shared';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-my-account',
@@ -30,6 +31,7 @@ export class MyAccountPage implements OnInit {
   imgSizeinKO: number;
   errorImageFormat = false;
   dialogRef: MatDialogRef<ChangeAvatarPopupComponent, any>;
+  dialogRefInProgress: MatDialogRef<InProgressPopupComponent, any>;
   dialogSub: Subscription;
   userAvatarUrl: string;
   emailState: number;
@@ -95,7 +97,11 @@ export class MyAccountPage implements OnInit {
   }
 
   launchInProgressPage() {
-    this.accountService.launchInProgressPage();
+    this.dialog.open(InProgressPopupComponent, {
+      width: '330px',
+      maxWidth: '100%',
+      hasBackdrop: true,
+    });
   }
   setImgAvatarToDefault() {
     this.userAvatarUrl = getNOAvatartUrlImage();

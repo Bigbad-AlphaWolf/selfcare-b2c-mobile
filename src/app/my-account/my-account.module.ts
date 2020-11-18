@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { MyAccountPage } from './my-account.page';
 import { SharedModule } from 'src/shared/shared.module';
 import { MyAccountRoutingModule } from './my-account-routing.module';
+import { ChangeAvatarPopupComponent } from './change-avatar-popup/change-avatar-popup.component';
+import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
 
 @NgModule({
   imports: [
@@ -16,6 +18,7 @@ import { MyAccountRoutingModule } from './my-account-routing.module';
     SharedModule,
     MyAccountRoutingModule
   ],
-  declarations: [MyAccountPage]
+  entryComponents: [ChangeAvatarPopupComponent, InProgressPopupComponent],
+  declarations: [MyAccountPage, ChangeAvatarPopupComponent, InProgressPopupComponent]
 })
 export class MyAccountPageModule {}

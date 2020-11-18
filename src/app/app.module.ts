@@ -40,11 +40,7 @@ registerLocaleData(localeFr);
 @NgModule({
   declarations: [
     AppComponent,
-    SidemenuComponent,
-    ChangeAvatarPopupComponent,
-    InProgressPopupComponent,
-  ],
-  entryComponents: [ChangeAvatarPopupComponent, InProgressPopupComponent],
+    SidemenuComponent ],
   imports: [
     HttpClientModule,
     MatDialogModule,

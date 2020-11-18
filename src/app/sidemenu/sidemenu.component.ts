@@ -24,6 +24,8 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NavController } from '@ionic/angular';
 import { OffresServicesPage } from '../pages/offres-services/offres-services.page';
+import { AppVersion } from '@ionic-native/app-version/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -39,6 +41,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   currentFormule;
   msisdn = this.dashboardServ.getCurrentPhoneNumber();
   avatarUrl: string;
+  numbers: any[] = [];
+  currentAppVersion;
 
   constructor(
     private router: Router,
@@ -48,7 +52,9 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private iab: InAppBrowser,
     private followAnalyticsService: FollowAnalyticsService,
-    private navCtrl : NavController
+    private navCtrl: NavController,
+    private appVersion: AppVersion,
+    private socialSharing: SocialSharing
   ) {}
 
   ngOnInit() {
@@ -60,10 +66,17 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     });
     this.authServ.currentPhoneNumbersubscriptionUpdated.subscribe(() => {
       this.getSouscription();
+      this.getAllAttachedNumbers();
     });
     this.accountService.userUrlAvatarSubject.subscribe(() => {
       this.extractData();
     });
+    this.getAllAttachedNumbers();
+    this.getVersion();
+  }
+
+  async getVersion() {
+    this.currentAppVersion = await this.appVersion.getVersionNumber();
   }
 
   getSouscription() {
@@ -78,6 +91,31 @@ export class SidemenuComponent implements OnInit, OnDestroy {
         });
       }, 1000);
     }
+  }
+
+  getAllAttachedNumbers() {
+    this.dashboardServ.getAllOemNumbers().subscribe((res) => {
+      this.numbers = res;
+    });
+  }
+
+  isActiveNumber(numberInfos) {
+    return this.msisdn === numberInfos.msisdn;
+  }
+
+  goDetailsConso() {
+    this.router.navigate(['/details-conso']);
+  }
+
+  switchPhoneNumber(msisdn) {
+    if (this.msisdn === msisdn) return;
+    this.dashboardServ.setCurrentPhoneNumber(msisdn);
+    this.closeMenu();
+    this.router.navigate(['/dashboard']);
+  }
+
+  attachLine() {
+    this.router.navigate(['/new-number']);
   }
 
   extractData() {
@@ -111,26 +149,12 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {}
 
-  launchInProgressPage() {
-    this.accountService.launchInProgressPage();
-  }
-
-  onOffreClicked(){
+  onOffreClicked() {
     this.navCtrl.navigateForward(OffresServicesPage.ROUTE_PATH);
   }
 
   goToMyOfferPlans() {
     this.router.navigate(['/my-offer-plans']);
-  }
-
-  goDashboard() {
-    this.closeMenu();
-    this.router.navigate(['/dashboard']);
-    this.followAnalyticsService.registerEventFollow(
-      'Sidemenu_Suivi_conso',
-      'event',
-      'clicked'
-    );
   }
 
   goFormule() {
@@ -201,5 +225,20 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
   goToAbout() {
     this.router.navigate(['/apropos']);
+  }
+  defaulSharingSheet() {
+    const url = 'http://bit.ly/2NHn5aS';
+    const postTitle =
+      "Comme moi télécharge et connecte toi gratuitement sur l'application " +
+      'Orange et Moi Fi rek la http://onelink.to/6h78t2 ou sur www.orangeetmoi.sn ' +
+      'Bu ande ak simplicité ak réseau mo gën #WaawKay';
+    const hashtag = '#WaawKay';
+
+    this.socialSharing
+      .share(postTitle, null, null, url)
+      .then()
+      .catch((err: any) => {
+        console.log('Cannot open default sharing sheet' + err);
+      });
   }
 }

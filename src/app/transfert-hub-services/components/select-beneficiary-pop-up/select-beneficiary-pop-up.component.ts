@@ -48,7 +48,6 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     private contacts: Contacts,
     private modalController: ModalController,
     private omService: OrangeMoneyService,
-    private router: Router,
     private followAnalytics: FollowAnalyticsService,
     private dashbServ: DashboardService,
     private recentsService: RecentsService
@@ -56,7 +55,6 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
 
   ngOnInit() {
     this.getRecents();
-    console.log('out', ContactsService.allContacts);
   }
 
   ionViewWillEnter() {
@@ -154,7 +152,6 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       this.recipientNumber = formatPhoneNumber(
         this.htmlInput.nativeElement.value
       );
-      console.log('OK', this.recipientNumber);
       const payload = {
         senderMsisdn: '',
         recipientMsisdn: this.recipientNumber,
