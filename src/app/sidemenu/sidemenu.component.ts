@@ -42,7 +42,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   msisdn = this.dashboardServ.getCurrentPhoneNumber();
   avatarUrl: string;
   numbers: any[] = [];
-  currentAppVersion = '5.3.2';
+  currentAppVersion;
 
   constructor(
     private router: Router,
@@ -149,26 +149,12 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {}
 
-  launchInProgressPage() {
-    this.accountService.launchInProgressPage();
-  }
-
   onOffreClicked() {
     this.navCtrl.navigateForward(OffresServicesPage.ROUTE_PATH);
   }
 
   goToMyOfferPlans() {
     this.router.navigate(['/my-offer-plans']);
-  }
-
-  goDashboard() {
-    this.closeMenu();
-    this.router.navigate(['/dashboard']);
-    this.followAnalyticsService.registerEventFollow(
-      'Sidemenu_Suivi_conso',
-      'event',
-      'clicked'
-    );
   }
 
   goFormule() {
