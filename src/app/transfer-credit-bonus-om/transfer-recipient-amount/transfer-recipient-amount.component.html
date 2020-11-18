@@ -2,7 +2,6 @@
   class="credit-transfer-form"
   *ngIf="step === 'SAISIE_NUMBER' || step === 'SAISIE_MONTANT'"
 >
-  <ng-container *ngIf="!typeOMCode; else pinpadOM">
     <div class="credit-balance-container">
       <div class="img-container">
         <img
@@ -134,12 +133,4 @@
         </div>
       </div>
     </div>
-  </ng-container>
-  <ng-template #pinpadOM>
-    <app-activation-om
-      [operation]="'CHECK_SOLDE'"
-      (resultEmit)="soldeGot($event)"
-    >
-    </app-activation-om>
-  </ng-template>
 </div>

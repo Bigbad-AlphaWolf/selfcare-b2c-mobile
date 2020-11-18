@@ -137,13 +137,7 @@ export class ListePassPage implements OnInit {
   goBack() {
     this.navCtl.pop();
   }
-  goToRecepientPassInternetPage() {
-    this.appRouting.goToSelectRecepientPassInternet();
-  }
 
-  goToRecipientPassIllimixPage() {
-    this.appRouting.goToSelectRecepientPassIllimix();
-  }
 
   choosePass(pass: any) {
     let navigationExtras: NavigationExtras = {
