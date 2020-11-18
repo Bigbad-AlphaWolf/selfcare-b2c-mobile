@@ -11,6 +11,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { ListePassPage } from './liste-pass.page';
 import { SharedModule } from 'src/shared/shared.module';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 const routes: Routes = [
   {
@@ -25,9 +26,9 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
+    ComponentsModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [ListePassPage],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+  declarations: [ListePassPage]
 })
 export class ListePassPageModule {}

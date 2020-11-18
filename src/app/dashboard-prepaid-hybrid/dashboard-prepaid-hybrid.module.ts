@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { DashboardPrepaidHybridPage } from './dashboard-prepaid-hybrid.page';
 import { SharedModule } from 'src/shared/shared.module';
-import { MatBottomSheetModule } from '@angular/material';
+import { PipesModule } from '../pipes/pipes.module';
 
 const routes: Routes = [
   {
@@ -22,7 +22,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
-    MatBottomSheetModule,
+    PipesModule,
     RouterModule.forChild(routes),
   ],
   declarations: [DashboardPrepaidHybridPage],

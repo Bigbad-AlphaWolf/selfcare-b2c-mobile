@@ -143,7 +143,7 @@
         *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
       >
       </app-item-recharge-credit>
-      <app-dalal-card-item [dalal]="dalal"></app-dalal-card-item>
+      <app-dalal-card-item *ngSwitchCase="OPERATION_ENABLE_DALAL" [dalal]="dalal"></app-dalal-card-item>
     </ng-container>
   </div>
   <div

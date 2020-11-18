@@ -584,8 +584,6 @@ export class NewPinpadModalPage implements OnInit {
               success: true,
               balance: balance,
             });
-          } else {
-            // this.resultEmit.emit(db.solde);
           }
           this.orangeMoneyService.logWithFollowAnalytics(
             res,
