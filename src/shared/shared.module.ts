@@ -287,8 +287,6 @@ import { IlliflexVoicePipe } from './pipes/illiflex-voice.pipe';
     Contacts,
     SocialSharing,
     PassVolumeDisplayPipe,
-    DataVolumePipe,
-    IlliflexVoicePipe,
     { provide: MatBottomSheetRef, useValue: {} },
     { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} },
   ],

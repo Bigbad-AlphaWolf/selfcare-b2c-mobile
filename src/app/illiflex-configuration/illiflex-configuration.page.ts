@@ -6,8 +6,6 @@ import {
   getMinDataVolumeOrVoiceOfPaliers,
   OPERATION_TYPE_PASS_ILLIFLEX,
 } from 'src/shared';
-import { DataVolumePipe } from 'src/shared/pipes/data-volume.pipe';
-import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
 import { PalierModel } from '../models/palier.model';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { IlliflexService } from '../services/illiflex-service/illiflex.service';
@@ -47,9 +45,7 @@ export class IlliflexConfigurationPage implements OnInit {
     private navController: NavController,
     private illiflexService: IlliflexService,
     private router: Router,
-    private dashboardService: DashboardService,
-    private dataVolumePipe: DataVolumePipe,
-    private illiflexVoicePipe: IlliflexVoicePipe
+    private dashboardService: DashboardService
   ) {}
 
   ngOnInit() {
@@ -59,6 +55,8 @@ export class IlliflexConfigurationPage implements OnInit {
   getIlliflexPaliers() {
     this.illiflexService.getIlliflexPaliers().subscribe((res: any[]) => {
       this.paliers = res;
+      console.log(res);
+
       this.validities = [
         ...new Set(this.paliers.map((palier) => palier.validite)),
       ];
