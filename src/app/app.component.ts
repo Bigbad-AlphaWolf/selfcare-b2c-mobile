@@ -18,6 +18,8 @@ import { ImageLoaderConfigService } from 'ionic-image-loader';
 import { HttpHeaders } from '@angular/common/http';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { Uid } from '@ionic-native/uid/ngx';
+import { OperationRecapPage } from './operation-recap/operation-recap.page';
+import { DashboardPage } from './dashboard/dashboard.page';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -162,12 +164,14 @@ export class AppComponent {
       this.deeplinks
         .route({
           '/buy-pass-internet': TransfertHubServicesPage,
-          '/buy-pass-internet/:id': BuyPassInternetPage,
+          '/pass-internet/:ppi': BuyPassInternetPage,
           '/assistance': AssistancePage,
           '/buy-pass-illimix': TransfertHubServicesPage,
-          '/buy-pass-illimix/:id': BuyPassIllimixPage,
+          '/pass-illimix/:ppi': BuyPassIllimixPage,
           '/buy-credit': TransfertHubServicesPage,
           '/details-conso': DetailsConsoPage,
+          '/suivi-conso': DashboardPage,
+          '/transfer-money': TransfertHubServicesPage,
         })
         .subscribe(
           (matched) => {
@@ -186,6 +190,8 @@ export class AppComponent {
   goToPage(path: string) {
     if (checkUrlMatch(path)) {
       this.appRout.goToTransfertHubServicesPage('BUY');
+    } else if (path.startsWith('/transfer-money')) {
+      this.appRout.goToTransfertHubServicesPage('TRANSFER');
     } else {
       this.router.navigate([path]);
     }
