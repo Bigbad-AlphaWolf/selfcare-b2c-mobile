@@ -1,0 +1,38 @@
+<div class="rattach-by-id-card oem-bottomsheet-container">
+  <div  class="arrow-left" (click)="goBack()">
+    <img alt="" src="/assets/images/arrow-left.png" />
+  </div>
+  <div class="title">
+    Numéro client fixe
+  </div>
+  <div class="description">
+    Entrez votre numéro client se trouvant sur l’entête de votre facture fixe
+  </div>
+  <div class="id-card-input">
+    <form novalidate autocomplete="false">
+      <mat-form-field class="scb-input-row" appearance="outline">
+          <mat-label>Numéro client &nbsp;&nbsp;</mat-label>
+          <input
+          [ngModelOptions]="{standalone: true}"
+            matInput
+            type="tel" 
+            [(ngModel)]="clientCode"
+          />
+        </mat-form-field>
+    </form>
+    <div *ngIf="hasError" class="error-msg scb-text-red-error">
+      Veuillez choisir un numéro de destinataire valide pour continuer
+    </div>
+  </div>
+
+  <div class="btn-continue">
+    <ion-button expand="block" (click)="processRattachment()" [disabled]="isLoading || !clientCode?.length">
+      Continuer
+    </ion-button>
+    <ion-spinner *ngIf="isLoading"
+      name="crescent"
+    ></ion-spinner>
+  </div>
+
+  
+</div>

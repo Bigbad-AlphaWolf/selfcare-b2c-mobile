@@ -78,6 +78,7 @@ export class DashboardService {
   currentPhoneNumberChangeSubject: Subject<string> = new Subject<string>();
   scrollToBottomSubject: Subject<string> = new Subject<string>();
   balanceAvailableSubject: Subject<any> = new Subject<any>();
+  updateRattachmentList: Subject<any> = new Subject<any>();
   isSponsorSubject: Subject<any> = new Subject<boolean>();
   user: any;
   msisdn: string;
@@ -98,11 +99,6 @@ export class DashboardService {
       }
     });
 
-    authService.isLoginSubject.subscribe((value) => {
-      if (value) {
-        // do something after login
-      }
-    });
   }
 
   getSargalBalance(msisdn: string) {
@@ -113,6 +109,13 @@ export class DashboardService {
     return this.http.post(initOTPReinitializeEndpoint, { login, token });
   }
 
+  updateRattachmentListInfo() {
+    this.updateRattachmentList.next(true)
+  }
+
+  getRattachmentlistUpdateInfo() {
+    return  this.updateRattachmentList.asObservable();
+  }
   reinitializePassword(payload: {
     otp: string;
     newPassword: string;

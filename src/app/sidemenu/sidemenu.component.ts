@@ -24,6 +24,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NavController } from '@ionic/angular';
 import { OffresServicesPage } from '../pages/offres-services/offres-services.page';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -48,7 +49,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private iab: InAppBrowser,
     private followAnalyticsService: FollowAnalyticsService,
-    private navCtrl : NavController
+    private navCtrl : NavController,
+    private appRout: ApplicationRoutingService
   ) {}
 
   ngOnInit() {
@@ -178,8 +180,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     );
   }
 
-  changeCurrentNumber() {
-    this.router.navigate(['/change-main-phone-number']);
+  goToRattachedNumberPage() {
+    this.appRout.goToRattachementsPage();
     this.followAnalyticsService.registerEventFollow(
       'changer_de_ligne',
       'event',

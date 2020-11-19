@@ -1,0 +1,18 @@
+<ion-item lines="none" class="item-custom-style" [ngClass]="{ 'selected': checked } ">
+  <div class="item-rattached-number">
+    <div class="left-block">
+      <div class="icon">
+        <img src="/assets/images/sim-card-solid-new.svg" alt="">
+      </div>
+      <div class="text-infos">
+        <span class="number"> {{ line?.msisdn  }} </span>
+        <span class="formule scb-text-light-black"> {{ line?.formule }} </span>
+      </div>
+    </div>
+    <div class="right-block">
+      <div class="circle">
+        <ion-checkbox mode="ios" slot="end" [disabled]="disabled" [checked]="checked" ></ion-checkbox>
+      </div>
+    </div>
+  </div>
+</ion-item>

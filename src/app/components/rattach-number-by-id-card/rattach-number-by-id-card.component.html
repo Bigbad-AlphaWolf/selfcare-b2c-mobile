@@ -1,0 +1,39 @@
+<div class="rattach-by-id-card oem-bottomsheet-container">
+  <div  class="arrow-left" (click)="goBack()">
+    <img alt="" src="/assets/images/arrow-left.png" />
+  </div>
+  <div class="title">
+    Numéro CNI
+  </div>
+  <div class="description">
+    Entrez le numéro de la pièce d’identité identifié sur ce numéro
+  </div>
+  <div class="id-card-input">
+    <form novalidate autocomplete="false">
+      <mat-form-field class="scb-input-row" appearance="outline">
+          <mat-label>Numéro de la pièce &nbsp;&nbsp;</mat-label>
+          <input
+          [ngModelOptions]="{standalone: true}"
+            matInput
+            type="tel" 
+            maxlength=20
+            [(ngModel)]="idCard"
+          />
+        </mat-form-field>
+    </form>
+    <div *ngIf="hasError" class="error-msg scb-text-red-error">
+      Veuillez choisir un numéro de destinataire valide pour continuer
+    </div>
+  </div>
+
+  <div class="btn-continue">
+    <ion-button expand="block" (click)="processRattachment()" [disabled]="isLoading || !idCard?.length">
+      Continuer
+    </ion-button>
+    <ion-spinner *ngIf="isLoading"
+      name="crescent"
+    ></ion-spinner>
+  </div>
+
+  
+</div>

@@ -10,6 +10,7 @@ import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { CreditPassAmountPage } from 'src/app/pages/credit-pass-amount/credit-pass-amount.page';
 import { SargalRegistrationPage } from 'src/app/sargal/components/sargal-registration/sargal-registration.page';
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
+import { RattachedPhonesNumberPage } from 'src/app/pages/rattached-phones-number/rattached-phones-number.page';
 
 @Injectable({
   providedIn: 'root',
@@ -131,5 +132,13 @@ export class ApplicationRoutingService {
 
   goToRegisterForSargal() {
     this.route.navigate([SargalRegistrationPage.PATH]);
+  }
+
+  goToRattachementsPage() {
+    this.route.navigate([RattachedPhonesNumberPage.PATH]);
+  }
+
+  goToDeleteRattachmentPage() {
+    this.route.navigate(['/my-account/delete-number']);
   }
 }

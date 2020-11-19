@@ -87,6 +87,10 @@ import { RapidoSelectionComponent } from 'src/app/components/counter/rapido-sele
 import { FavoriteRapidoComponent } from 'src/app/components/counter/favorite-rapido/favorite-rapido.component';
 import { DalalCardItemComponent } from './dalal-card-item/dalal-card-item.component';
 import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
+import { RattachNumberModalComponent } from 'src/app/components/rattach-number-modal/rattach-number-modal.component';
+import { ComponentsModule } from 'src/app/components/components.module';
+import { RattachNumberByIdCardComponent } from 'src/app/components/rattach-number-by-id-card/rattach-number-by-id-card.component';
+import { RattachNumberByClientCodeComponent } from 'src/app/components/rattach-number-by-client-code/rattach-number-by-client-code.component';
 
 @NgModule({
   declarations: [
@@ -174,6 +178,7 @@ import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/ra
     MatRadioModule,
     MatMenuModule,
     RouterModule,
+    ComponentsModule
   ],
   entryComponents: [
     LinesComponent,
@@ -198,6 +203,9 @@ import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/ra
     NoOmAccountModalComponent,
     FavoriteMerchantComponent,
     RapidoSoldeComponent,
+    RattachNumberModalComponent,
+    RattachNumberByIdCardComponent,
+    RattachNumberByClientCodeComponent
   ],
   exports: [
     BanniereComponent,
@@ -278,6 +286,7 @@ import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/ra
     Contacts,
     SocialSharing,
     PassVolumeDisplayPipe,
+    Location,
     { provide: MatBottomSheetRef, useValue: {} },
     { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} },
   ],
