@@ -36,4 +36,6 @@ export interface OperationExtras {
   pass?: any;
   merchant?: MarchandOem;
   dalal?: DalalTonesModel;
+  isLightMod?: boolean;
+  recipientCodeFormule?;
 }
