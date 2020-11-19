@@ -33,13 +33,13 @@ export class RattachedPhonesNumberPage implements OnInit {
     this.isLoading = true;
     this.hasError = false;
     const currentNumber = this.dashbServ.getCurrentPhoneNumber();
-    DashboardService.rattachedNumbers = null;
     this.authServ.getSubscription(currentNumber).pipe(
       switchMap((res: SubscriptionModel) => {
-        return this.dashbServ.attachedNumbers().pipe(take(1),
+        return this.dashbServ.getAllOemNumbers().pipe(take(1),
         tap((list: RattachedNumber[]) => {
-          this.listRattachedNumbers.current = {msisdn: currentNumber, formule: res.nomOffre, profil: res.profil };
-          this.listRattachedNumbers.others = list;
+          this.listRattachedNumbers.current = { msisdn: currentNumber, formule: res.nomOffre, profil: res.profil };
+          this.listRattachedNumbers.others = list.filter((val: RattachedNumber) => { return  val.msisdn !== currentNumber });
+
         }))
     })).subscribe( () => { 
       this.isLoading = false;

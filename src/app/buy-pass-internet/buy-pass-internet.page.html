@@ -63,14 +63,6 @@
     </ng-container>
 
     <ng-container *ngIf="step === 4">
-      <app-activation-om
-        [operation]="OPERATION_TYPE_PASS_INTERNET"
-        [passToBuy]="purchasePass"
-        (resultEmit)="omResultGot($event)"
-      ></app-activation-om>
-    </ng-container>
-
-    <ng-container *ngIf="step === 5">
       <app-operation-success-or-fail
         [operationType]="OPERATION_TYPE_PASS_INTERNET"
         [failed]="failed"

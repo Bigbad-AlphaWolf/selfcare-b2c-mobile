@@ -102,8 +102,6 @@ export class NumberSelectionComponent implements OnInit {
   onRecentSelected() {}
 
   async onContinue(phone?: string) {
-    console.log('sd', this.opXtras.recipientMsisdn);
-
     if (phone) this.opXtras.recipientMsisdn = phone;
     if (
       !(

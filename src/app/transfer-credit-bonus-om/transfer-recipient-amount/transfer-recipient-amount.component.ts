@@ -167,8 +167,11 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
         operationType: null,
       },
     });
-    modal.onDidDismiss().then(() => {
-      this.navControl.navigateBack(['/dashboard']);
+    modal.onDidDismiss().then((res: any) => {
+      if(res.data && res.data.balance) {
+        this.omBalanceVisible = true;
+        this.omBalance = res.data.balance;
+      }
     });
     return await modal.present();
   }
@@ -221,17 +224,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
   }
 
   seeSolde() {
-    this.typeOMCode = true;
-  }
-
-  soldeGot(solde) {
-    this.typeOMCode = false;
-    if (solde !== 'erreur') {
-      if (this.operationOM !== 'RESET_TOKEN') {
-        this.omBalanceVisible = true;
-        this.omBalance = solde;
-      }
-    }
+    this.openPinpad();
   }
 
   hideSolde() {

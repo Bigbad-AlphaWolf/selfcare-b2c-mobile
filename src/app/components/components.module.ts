@@ -1,17 +1,23 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ItemOfferPlanComponent } from './item-offer-plan/item-offer-plan.component';
+import { ItemPassIllimixComponent } from './item-pass-illimix/item-pass-illimix.component';
+import { ItemPassInternetComponent } from './item-pass-internet/item-pass-internet.component';
+import { ItemRechargeCreditComponent } from './item-recharge-credit/item-recharge-credit.component';
+import { PipesModule } from '../pipes/pipes.module';
 import { ItemRattachedNumberComponent } from './item-rattached-number/item-rattached-number.component';
-import { SharedModule } from 'src/shared/shared.module';
 import { RattachNumberModalComponent } from './rattach-number-modal/rattach-number-modal.component';
-import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule, MatInputModule } from '@angular/material';
-import { IonicModule } from '@ionic/angular';
 import { RattachNumberByIdCardComponent } from './rattach-number-by-id-card/rattach-number-by-id-card.component';
 import { RattachNumberByClientCodeComponent } from './rattach-number-by-client-code/rattach-number-by-client-code.component';
+import { MaterialComponentsModule } from '../material-components/material-components.module';
+import { IonicModule } from '@ionic/angular';
 
 @NgModule({
   declarations: [
+    ItemOfferPlanComponent,
+    ItemPassIllimixComponent,
+    ItemPassInternetComponent,
+    ItemRechargeCreditComponent,
     ItemRattachedNumberComponent,
     RattachNumberModalComponent,
     RattachNumberByIdCardComponent,
@@ -19,14 +25,17 @@ import { RattachNumberByClientCodeComponent } from './rattach-number-by-client-c
   ],
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
+    PipesModule,
+    MaterialComponentsModule,
     IonicModule
   ],
-  exports: [ItemRattachedNumberComponent,RattachNumberModalComponent,RattachNumberByIdCardComponent,RattachNumberByClientCodeComponent ],
-  entryComponents: [RattachNumberModalComponent],
-  schemas: []
+  exports: [
+    ItemOfferPlanComponent,
+    ItemPassIllimixComponent,
+    ItemPassInternetComponent,
+    ItemRechargeCreditComponent,
+    ItemRattachedNumberComponent,RattachNumberModalComponent,RattachNumberByIdCardComponent,RattachNumberByClientCodeComponent
+  ],
+  entryComponents: [RattachNumberModalComponent]
 })
 export class ComponentsModule { }

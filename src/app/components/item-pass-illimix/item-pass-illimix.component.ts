@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { SubscriptionModel, CODE_KIRENE_Formule } from '..';
+import { SubscriptionModel, CODE_KIRENE_Formule } from 'src/shared';
 
 @Component({
   selector: 'app-item-pass-illimix',

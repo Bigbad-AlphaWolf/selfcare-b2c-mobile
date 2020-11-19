@@ -13,7 +13,6 @@ const routes: Routes = [
   {
     path: 'home-v2',
     loadChildren: './home-v2/home-v2.module#HomeV2PageModule',
-    canActivate: [AuthUpdateGuard],
   },
   {
     path: 'new-registration',
@@ -97,10 +96,6 @@ const routes: Routes = [
   {
     path: 'control-center',
     loadChildren: './emergencies/emergencies.module#EmergenciesPageModule',
-  },
-  {
-    path: 'see-solde-om',
-    loadChildren: './see-solde-om/see-solde-om.module#SeeSoldeOmPageModule',
   },
   {
     path: 'change-main-phone-number',
@@ -191,11 +186,6 @@ const routes: Routes = [
     path: 'my-offer-plans',
     loadChildren:
       './pages/my-offer-plans/my-offer-plans.module#MyOfferPlansPageModule',
-  },
-  {
-    path: 'select-beneficiary-v2',
-    loadChildren:
-      './select-beneficiary-v2/select-beneficiary-v2.module#SelectBeneficiaryV2PageModule',
   },
   {
     path: 'operation-recap',

@@ -22,14 +22,6 @@ export class ApplicationRoutingService {
     this.route.navigate(['/dashboard']);
   }
 
-  goToSelectRecepientPassInternet() {
-    let navigationExtras: NavigationExtras = {
-      state: {
-        payload: OPERATION_TYPE_PASS_INTERNET,
-      },
-    };
-    this.route.navigate(['/select-beneficiary-v2'], navigationExtras);
-  }
 
   goToListPassInternet(data: any) {
     const payload = Object.assign(data, {
@@ -55,14 +47,6 @@ export class ApplicationRoutingService {
     this.route.navigate(['/list-pass'], navigationExtras);
   }
 
-  goToSelectRecepientPassIllimix() {
-    let navigationExtras: NavigationExtras = {
-      state: {
-        payload: OPERATION_TYPE_PASS_ILLIMIX,
-      },
-    };
-    this.route.navigate(['/select-beneficiary-v2'], navigationExtras);
-  }
 
   goToTransfertHubServicesPage(purchaseType: 'BUY' | 'TRANSFER', isLightMod?) {
     let navigationExtras: NavigationExtras = {
@@ -140,5 +124,17 @@ export class ApplicationRoutingService {
 
   goToDeleteRattachmentPage() {
     this.route.navigate(['/my-account/delete-number']);
+  }
+  
+  goToBuyPassInternetKirene() {
+    this.route.navigate(['/buy-pass-internet']);
+  }
+
+  goToBuyPassIllimixKirene() {
+    this.route.navigate(['/buy-pass-illimix']);
+  }
+
+  goToTransfertOMKirene() {
+    this.route.navigate(['/transfer/orange-money']);
   }
 }

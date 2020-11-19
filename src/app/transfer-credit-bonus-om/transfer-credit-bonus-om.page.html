@@ -72,14 +72,6 @@
       >
       </app-pin-pad>
 
-      <app-activation-om
-        *ngIf="step === 'PIN_PAD_OM'"
-        [operation]="transferOMType"
-        [amountToTransfer]="omTransferPayload"
-        [transferWithCodePayload]="omTransferPayload"
-        (resultEmit)="soldeGot($event)"
-      ></app-activation-om>
-
       <!-- When transfer successful -->
       <app-operation-success-or-fail
         *ngIf="step === 'SUCCESS'"

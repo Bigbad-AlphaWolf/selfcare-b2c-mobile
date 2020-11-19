@@ -1,4 +1,4 @@
-<div class="service" (click)="onClick()"matRipple>
+<div class="service" (click)="onClick()"matRipple [ngClass]="{'disabled': !service.activated}">
   <div class="active-infos" >
     <img-loader [spinner]="true" class="icone" [src]="imageUrl" fallbackUrl="assets/images/ic-package-services@2x.png" useImg></img-loader>
     <div class="content">
