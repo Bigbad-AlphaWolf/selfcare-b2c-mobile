@@ -224,7 +224,6 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     Contacts,
     SocialSharing,
     PassVolumeDisplayPipe,
-    Location,
     { provide: MatBottomSheetRef, useValue: {} },
     { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} },
   ],
