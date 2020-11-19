@@ -15,6 +15,7 @@ import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progre
 import { SuccessFailPopupComponent } from 'src/shared/success-fail-popup/success-fail-popup.component';
 import { generateUUID } from 'src/shared';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
+import { ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT } from '../utils/account.endpoints';
 const {
   FILE_SERVICE,
   ACCOUNT_MNGT_SERVICE,
@@ -201,5 +202,10 @@ export class AccountService {
       maxWidth: '100%',
       hasBackdrop: true,
     });
+  }
+
+  attachNumberByIdCard( data: { identificationId: string, login: string, numero: string }) {
+    const payload = { identificationId: data.identificationId, login: data.login, numero: data.numero, typeNumero: 'MOBILE' }
+    return this.http.post(ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT, payload);
   }
 }

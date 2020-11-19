@@ -64,6 +64,10 @@ import { RapidoSelectionComponent } from 'src/app/components/counter/rapido-sele
 import { FavoriteRapidoComponent } from 'src/app/components/counter/favorite-rapido/favorite-rapido.component';
 import { DalalCardItemComponent } from './dalal-card-item/dalal-card-item.component';
 import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
+import { RattachNumberModalComponent } from 'src/app/components/rattach-number-modal/rattach-number-modal.component';
+import { ComponentsModule } from 'src/app/components/components.module';
+import { RattachNumberByIdCardComponent } from 'src/app/components/rattach-number-by-id-card/rattach-number-by-id-card.component';
+import { RattachNumberByClientCodeComponent } from 'src/app/components/rattach-number-by-client-code/rattach-number-by-client-code.component';
 import { MaterialComponentsModule } from 'src/app/material-components/material-components.module';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 
@@ -130,6 +134,7 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     CommonModule,
     IonicImageLoader,
     RouterModule,
+    ComponentsModule,
     MaterialComponentsModule,
     PipesModule
   ],
@@ -156,6 +161,9 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     NoOmAccountModalComponent,
     FavoriteMerchantComponent,
     RapidoSoldeComponent,
+    RattachNumberModalComponent,
+    RattachNumberByIdCardComponent,
+    RattachNumberByClientCodeComponent
   ],
   exports: [
     BanniereComponent,
@@ -216,6 +224,7 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     Contacts,
     SocialSharing,
     PassVolumeDisplayPipe,
+    Location,
     { provide: MatBottomSheetRef, useValue: {} },
     { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} },
   ],

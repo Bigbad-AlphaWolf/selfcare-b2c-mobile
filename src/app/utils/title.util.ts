@@ -10,6 +10,7 @@ import {
   BONS_PLANS,
   OPERATION_SEE_SOLDE_RAPIDO,
   OPERATION_SEE_FOLLOW_UP_REQUESTS,
+  OPERATION_SEE_RATTACHED_NUMBERS,
 } from 'src/shared';
 import { PageHeader } from '../models/page-header.model';
 import { OPERATION_RAPIDO, OPERATION_WOYOFAL } from './operations.constants';
@@ -77,6 +78,10 @@ export const titles: PageHeader[] = [
   {
     typeOperation: OPERATION_SEE_FOLLOW_UP_REQUESTS,
     title: "Suivi Demande ou Réclamation",
+  },
+  {
+    typeOperation: OPERATION_SEE_RATTACHED_NUMBERS,
+    title: "Mes lignes",
   },
 ];
 

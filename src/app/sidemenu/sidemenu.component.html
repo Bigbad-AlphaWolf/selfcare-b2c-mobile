@@ -18,8 +18,8 @@
   <div class="gerer-mes-lignes">
     <div class="text">
       <span class="mes-lignes">Mes lignes</span>
-      <span class="scb-text-orange gerer" (click)="attachLine()">
-        <ion-menu-toggle>gérer mes lignes</ion-menu-toggle>
+      <span class="scb-text-orange gerer" (click)="goToRattachedNumberPage()">
+        <ion-menu-toggle>Gérer mes lignes</ion-menu-toggle>
       </span>
     </div>
     <div class="lignes">
@@ -33,7 +33,7 @@
           <div class="offer scb-text-light-black">{{number?.formule}}</div>
         </ion-menu-toggle>
       </div>
-      <div class="ligne-item ligne-item-plus" (click)="attachLine()">
+      <div class="ligne-item ligne-item-plus" (click)="goToRattachedNumberPage()">
         <ion-menu-toggle>
           <img src="assets/images/combined-shape.svg" alt="plus" class="img-plus">
         </ion-menu-toggle>

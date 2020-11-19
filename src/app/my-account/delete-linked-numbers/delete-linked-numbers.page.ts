@@ -4,6 +4,7 @@ import { AccountService } from 'src/app/services/account-service/account.service
 import { MatDialog } from '@angular/material';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-delete-linked-numbers',
@@ -19,7 +20,8 @@ export class DeleteLinkedNumbersPage implements OnInit, OnDestroy {
     private accountService: AccountService,
     public dialog: MatDialog,
     private dashboardservice: DashboardService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private navCtr: NavController
   ) {}
 
   ngOnInit() {
@@ -64,5 +66,9 @@ export class DeleteLinkedNumbersPage implements OnInit, OnDestroy {
     if (this.dialogSub) {
       this.dialogSub.unsubscribe();
     }
+  }
+
+  goBack() {
+    this.navCtr.pop();
   }
 }

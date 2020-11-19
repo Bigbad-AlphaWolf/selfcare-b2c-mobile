@@ -307,6 +307,7 @@ const routes: Routes = [
     loadChildren:
       './dashboard-prepaid-light/dashboard-prepaid-light.module#DashboardPrepaidLightPageModule',
   },
+  { path: 'rattached-phones-number', loadChildren: './pages/rattached-phones-number/rattached-phones-number.module#RattachedPhonesNumberPageModule' },
 ];
 
 @NgModule({

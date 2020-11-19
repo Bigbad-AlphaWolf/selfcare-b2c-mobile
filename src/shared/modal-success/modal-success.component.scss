@@ -1,3 +1,5 @@
+@import 'src/app/app';
+
 .success-modal {
   border-radius: 6px;
   .img-container {
@@ -20,12 +22,17 @@
     .title {
       &.custom-rattach {
           font-family: HelveticaNeueLTStd-Bd;
-          font-size: 24px;
-          line-height: 1.08;
+          font-size: 34px;
+          font-weight: bold;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.12;
+          letter-spacing: -0.34px;
+          text-align: center;
+          color: #000000;
           display: inline-block;
-          width: 70%;
-      }
-  }
+      } 
+    }
   }
   .text-container {
     padding-top: 8px;
@@ -42,7 +49,17 @@
           font-family: HelveticaNeueLTStd-Roman;
           font-size: 16px;
           line-height: 1.13;
+          font-weight: normal;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.25;
+          color: $gray;
+          .numero {
+            font-family: HelveticaNeueLTStd-Bd;
+            color: $fullBlack;
+          }
       }
+      
   }
   }
   .btn-container {
@@ -50,5 +67,13 @@
     width: percentage(200/350);
     margin: auto;
     padding-bottom: 30px;
+      ion-button {
+        --background-activated: black;
+        --background: #ff7900;
+        --color-activated: black;
+        --border-radius: 10px;
+        --color-activated: #ff7900;
+        height: 50px;
+      }
   }
 }
