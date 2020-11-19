@@ -3,6 +3,9 @@ ion-grid {
   height: 120%;
   ion-row {
     justify-content: center;
+    .disabled {
+      opacity: 0.4;
+    }
     .oem-bloc-1 {
       width: 100px;
       height: 100px;
