@@ -1,15 +1,14 @@
 .service {
-    background-color: white;
-    width: 100%;
-    border-radius: 10px;
-    padding: 15px;
-    margin: 10px 0px;
+  background-color: white;
+  width: 100%;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px 0px;
   .active-infos {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-
 
     .icone {
       width: 60px;
@@ -52,11 +51,15 @@
     color: #888888;
     text-align: left;
     padding: 10px 10px 0px 10px;
-    .trait{
-        width: 40px;
-        height: 2px;
-        margin-bottom: 10px;
-        background-color: #999;
+    .trait {
+      width: 40px;
+      height: 2px;
+      margin-bottom: 10px;
+      background-color: #999;
     }
   }
+}
+
+.disabled {
+  opacity: 0.7;
 }

@@ -11,6 +11,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { OperationRecapPage } from './operation-recap.page';
 import { SharedModule } from 'src/shared/shared.module';
+import { ComponentsModule } from '../components/components.module';
+import { PipesModule } from '../pipes/pipes.module';
 
 const routes: Routes = [
   {
@@ -25,6 +27,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
+    ComponentsModule,
+    PipesModule,
     RouterModule.forChild(routes),
   ],
   declarations: [OperationRecapPage],

@@ -35,6 +35,7 @@ import { OfferPlan } from 'src/shared/models/offer-plan.model';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { DalalTonesService } from '../services/dalal-tones-service/dalal-tones.service';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
+import { ModalSuccessModel } from '../models/modal-success-infos.model';
 
 @Component({
   selector: 'app-operation-recap',
@@ -471,21 +472,4 @@ export class OperationRecapPage implements OnInit {
       'OPERATION_RAPIDO',
     ].includes(this.purchaseType);
   }
-}
-
-interface ModalSuccessModel {
-  purchaseType?: string;
-  passBought?: any;
-  success?: boolean;
-  recipientMsisdn?: string;
-  recipientName?: string;
-  buyForMe?: boolean;
-  paymentMod?: string;
-  msisdnBuyer?: string;
-  errorMsg?: string;
-  amount?: number;
-  merchantName?: string;
-  merchantCode?: number;
-  opXtras?: OperationExtras;
-  dalal?: any;
 }

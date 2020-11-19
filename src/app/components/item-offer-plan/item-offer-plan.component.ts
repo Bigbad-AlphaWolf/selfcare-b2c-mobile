@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { OfferPlan } from '../models/offer-plan.model';
+import { OfferPlan } from '../../../shared/models/offer-plan.model';
 import { CATEGORY_MPO } from 'src/app/utils/constants';
 
 @Component({
