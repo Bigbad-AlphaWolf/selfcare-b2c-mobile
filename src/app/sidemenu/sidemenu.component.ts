@@ -27,6 +27,7 @@ import { OffresServicesPage } from '../pages/offres-services/offres-services.pag
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -56,7 +57,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     private navCtrl: NavController,
     private appVersion: AppVersion,
     private socialSharing: SocialSharing,
-    private appRout: ApplicationRoutingService
+    private appRout: ApplicationRoutingService,
+    private bsService: BottomSheetService
   ) {}
 
   ngOnInit() {
@@ -79,6 +81,11 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   async getVersion() {
     this.currentAppVersion = await this.appVersion.getVersionNumber();
+  }
+
+  openModalRattachNumber() {
+    this.bsService
+    .openRattacheNumberModal();
   }
 
   getSouscription() {

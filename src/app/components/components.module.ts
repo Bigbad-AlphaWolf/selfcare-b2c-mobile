@@ -34,7 +34,10 @@ import { IonicModule } from '@ionic/angular';
     ItemPassIllimixComponent,
     ItemPassInternetComponent,
     ItemRechargeCreditComponent,
-    ItemRattachedNumberComponent,RattachNumberModalComponent,RattachNumberByIdCardComponent,RattachNumberByClientCodeComponent
+    ItemRattachedNumberComponent,
+    RattachNumberModalComponent,
+    RattachNumberByIdCardComponent,
+    RattachNumberByClientCodeComponent
   ],
   entryComponents: [RattachNumberModalComponent]
 })

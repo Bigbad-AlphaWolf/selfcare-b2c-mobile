@@ -1,8 +1,5 @@
 @import 'src/app/app';
 
-:host {
-    height: 100%;
-}
 ion-header {
     position: relative;
     ion-label {
@@ -39,12 +36,14 @@ ion-content{
             line-height: 1.5;
             display: block;
             margin-bottom: 10px;
+            white-space: nowrap;
         }
         .other-lines{
             margin-top: 30px;
         }
         ion-button {
             --border-color: black;
+            --background: white;
             --background-activated: black;
             --color: black;
             --border-radius: 10px;
