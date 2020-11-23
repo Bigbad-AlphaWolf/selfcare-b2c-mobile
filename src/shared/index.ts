@@ -133,6 +133,7 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   PAIEMENT_FACTURE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   WOYOFAL: `${IMAGES_DIRECTORY}ic-files.png`,
   PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
+  SARGAL: `${IMAGES_DIRECTORY}transfert-icon.png`,
 };
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;

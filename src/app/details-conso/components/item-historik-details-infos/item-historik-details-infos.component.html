@@ -100,7 +100,7 @@
             </div>
             <div class="right-block-text">
               <div class="item-value">
-                  {{ purchaseInfos?.amount }} FCFA
+                  {{ purchaseInfos?.amount }} {{ isSargalTransaction(purchaseInfos) ? 'Pts' : 'FCFA'}}
               </div>
               <div class="subtitle-1 datetime">
                   {{ purchaseInfos?.operationDate | date: 'short' }}
