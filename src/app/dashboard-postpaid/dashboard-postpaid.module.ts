@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { DashboardPostpaidPage } from './dashboard-postpaid.page';
 import { SharedModule } from 'src/shared/shared.module';
 import { PipesModule } from '../pipes/pipes.module';
+import { ComponentsModule } from '../components/components.module';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
     IonicModule,
     SharedModule,
     PipesModule,
+    ComponentsModule,
     RouterModule.forChild(routes)
   ],
   declarations: [DashboardPostpaidPage],
