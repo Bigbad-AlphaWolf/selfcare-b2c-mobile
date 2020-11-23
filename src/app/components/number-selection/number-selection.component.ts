@@ -7,6 +7,7 @@ import {
   OPERATION_TYPE_PASS_VOYAGE,
   CODE_KIRENE_Formule,
   REGEX_FIX_NUMBER,
+  OPERATION_TYPE_PASS_ILLIMIX,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -146,7 +147,7 @@ export class NumberSelectionComponent implements OnInit {
           this.opXtras.profil = res.profil;
           if (
             res.code === CODE_KIRENE_Formule &&
-            this.data.purchaseType !== OPERATION_TYPE_RECHARGE_CREDIT
+            this.data.purchaseType === OPERATION_TYPE_PASS_ILLIMIX
           ) {
             const eligibility: any = await this.isEligible();
             this.eligibilityChecked = true;
