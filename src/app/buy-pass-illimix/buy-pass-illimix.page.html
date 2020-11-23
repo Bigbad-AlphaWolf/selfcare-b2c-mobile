@@ -18,6 +18,7 @@
     <ng-container *ngIf="step === 1">
       <app-select-recipient
         *ngIf="currentProfil !== PROFILE_TYPE_POSTPAID"
+        [purchaseType]="OPERATION_TYPE_PASS_ILLIMIX"
         (getDestinataire)="nextStepOfSelectDest($event)"
         (getContact)="contactGot($event)"
       ></app-select-recipient>

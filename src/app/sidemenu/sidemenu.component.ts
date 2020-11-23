@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Output,
   OnDestroy,
+  Input,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
@@ -27,6 +28,7 @@ import { OffresServicesPage } from '../pages/offres-services/offres-services.pag
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -43,7 +45,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   msisdn = this.dashboardServ.getCurrentPhoneNumber();
   avatarUrl: string;
   numbers: any[] = [];
-  currentAppVersion;
+  @Input() currentAppVersion;
 
   constructor(
     private router: Router,
@@ -56,7 +58,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     private navCtrl: NavController,
     private appVersion: AppVersion,
     private socialSharing: SocialSharing,
-    private appRout: ApplicationRoutingService
+    private appRout: ApplicationRoutingService,
+    private bsService: BottomSheetService
   ) {}
 
   ngOnInit() {
@@ -75,10 +78,21 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     });
     this.getAllAttachedNumbers();
     this.getVersion();
+    this.dashboardServ.attachedNumbersChanged.subscribe(() => {
+      this.getAllAttachedNumbers();
+    });
+    this.accountService.deletedPhoneNumbersEmit().subscribe(() => {
+      this.getAllAttachedNumbers();
+    });
   }
 
   async getVersion() {
     this.currentAppVersion = await this.appVersion.getVersionNumber();
+  }
+
+  openModalRattachNumber() {
+    this.bsService
+    .openRattacheNumberModal();
   }
 
   getSouscription() {

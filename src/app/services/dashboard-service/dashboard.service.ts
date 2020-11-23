@@ -80,6 +80,7 @@ export class DashboardService {
   balanceAvailableSubject: Subject<any> = new Subject<any>();
   updateRattachmentList: Subject<any> = new Subject<any>();
   isSponsorSubject: Subject<any> = new Subject<boolean>();
+  attachedNumbersChangedSubject: Subject<any> = new Subject<any>();
   user: any;
   msisdn: string;
   screenWatcher: Subscription;
@@ -98,7 +99,6 @@ export class DashboardService {
         this.setCurrentPhoneNumber(this.user.login);
       }
     });
-
   }
 
   getSargalBalance(msisdn: string) {
@@ -110,11 +110,11 @@ export class DashboardService {
   }
 
   updateRattachmentListInfo() {
-    this.updateRattachmentList.next(true)
+    this.updateRattachmentList.next(true);
   }
 
   getRattachmentlistUpdateInfo() {
-    return  this.updateRattachmentList.asObservable();
+    return this.updateRattachmentList.asObservable();
   }
   reinitializePassword(payload: {
     otp: string;
@@ -205,8 +205,13 @@ export class DashboardService {
         tap((r) => {
           DashboardService.rattachedNumbers = null;
           this.attachedNumbers().pipe(take(1)).subscribe();
+          this.attachedNumbersChangedSubject.next();
         })
       );
+  }
+
+  get attachedNumbersChanged() {
+    return this.attachedNumbersChangedSubject.asObservable();
   }
 
   registerNumberByIdClient(payload: {
