@@ -15,6 +15,7 @@ export class RapidoSoldeComponent implements OnInit {
   @Input() counter: {name: string, counterNumber: string}
   @Input() opXtras: OperationExtras;
   infoSolde: string;
+  lastSoldeUpdate: string;
   isLoading: boolean;
   constructor(private rapidServ: RapidoService, private navCtl: NavController, private modal: ModalController) { }
 
@@ -30,6 +31,7 @@ export class RapidoSoldeComponent implements OnInit {
       const data = res.content.data
       if(data){
         this.infoSolde = data.solde;
+        this.lastSoldeUpdate = data.date_solde;
       }
     }), catchError((err: any) => {
       this.isLoading = false;
