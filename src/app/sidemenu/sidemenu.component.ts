@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Output,
   OnDestroy,
+  Input,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
@@ -43,7 +44,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   msisdn = this.dashboardServ.getCurrentPhoneNumber();
   avatarUrl: string;
   numbers: any[] = [];
-  currentAppVersion;
+  @Input() currentAppVersion;
 
   constructor(
     private router: Router,
@@ -75,6 +76,12 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     });
     this.getAllAttachedNumbers();
     this.getVersion();
+    this.dashboardServ.attachedNumbersChanged.subscribe(() => {
+      this.getAllAttachedNumbers();
+    });
+    this.accountService.deletedPhoneNumbersEmit().subscribe(() => {
+      this.getAllAttachedNumbers();
+    });
   }
 
   async getVersion() {

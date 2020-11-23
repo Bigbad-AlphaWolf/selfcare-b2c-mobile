@@ -12,6 +12,7 @@ import { BillAmountPage } from '../bill-amount/bill-amount.page';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { RapidoOperationPage } from '../rapido-operation/rapido-operation.page';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-bills-hub',
@@ -25,7 +26,8 @@ export class BillsHubPage implements OnInit {
   constructor(
     private bsService: BottomSheetService,
     private navCtrl: NavController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private router: Router
   ) {}
 
   ngOnInit() {}
@@ -74,5 +76,9 @@ export class BillsHubPage implements OnInit {
     );
     if (service) return service.activated;
     return true;
+  }
+
+  goBack() {
+    this.router.navigate(['/dashboard']);
   }
 }

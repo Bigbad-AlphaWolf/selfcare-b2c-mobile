@@ -20,6 +20,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { Uid } from '@ionic-native/uid/ngx';
 import { OperationRecapPage } from './operation-recap/operation-recap.page';
 import { DashboardPage } from './dashboard/dashboard.page';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -30,7 +31,7 @@ declare var FollowAnalytics: any;
   templateUrl: 'app.component.html',
 })
 export class AppComponent {
-  AppVersionNumber: any;
+  appVersionNumber: any;
   isIOS = false;
   appId: string;
   static IMEI: string;
@@ -44,8 +45,10 @@ export class AppComponent {
     private appRout: ApplicationRoutingService,
     private imageLoaderConfig: ImageLoaderConfigService,
     private uid: Uid,
-    private androidPermissions: AndroidPermissions
+    private androidPermissions: AndroidPermissions,
+    private appVersion: AppVersion
   ) {
+    this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
     // this could be useful while trying to debug issues with the component
     this.imageLoaderConfig.enableDebugMode();
@@ -64,9 +67,17 @@ export class AppComponent {
     this.initializeApp();
   }
 
+  async getVersion() {
+    this.appVersion.getVersionNumber().then((version) => {
+      console.log('version', version);
+      this.appVersionNumber = version;
+    });
+  }
+
   initializeApp() {
     this.platform.ready().then(() => {
       // Initialize BackButton Eevent.
+      this.getVersion();
       if (this.platform && this.platform.backButton) {
         this.platform.backButton.subscribe(() => {
           this.appMinimize.minimize();
