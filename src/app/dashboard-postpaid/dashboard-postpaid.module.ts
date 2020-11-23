@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { DashboardPostpaidPage } from './dashboard-postpaid.page';
 import { SharedModule } from 'src/shared/shared.module';
-import { OemOperationsComponent } from '../components/oem-operations/oem-operations.component';
+import { PipesModule } from '../pipes/pipes.module';
 
 const routes: Routes = [
   {
@@ -22,6 +22,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
+    PipesModule,
     RouterModule.forChild(routes)
   ],
   declarations: [DashboardPostpaidPage],

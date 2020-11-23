@@ -346,7 +346,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       'event',
       'clicked'
     );
-    this.appliRouting.goToSelectRecepientPassIllimix();
   }
 
   goToTransfertOM() {
@@ -448,7 +447,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       'event',
       'clicked'
     );
-    this.appliRouting.goToSelectRecepientPassInternet();
   }
 
   goDetailsCom(number?: number) {

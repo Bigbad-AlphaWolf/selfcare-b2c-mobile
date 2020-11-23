@@ -99,10 +99,6 @@ const routes: Routes = [
     loadChildren: './emergencies/emergencies.module#EmergenciesPageModule',
   },
   {
-    path: 'see-solde-om',
-    loadChildren: './see-solde-om/see-solde-om.module#SeeSoldeOmPageModule',
-  },
-  {
     path: 'change-main-phone-number',
     loadChildren:
       './change-main-phone-number/change-main-phone-number.module#ChangeMainPhoneNumberPageModule',
@@ -191,11 +187,6 @@ const routes: Routes = [
     path: 'my-offer-plans',
     loadChildren:
       './pages/my-offer-plans/my-offer-plans.module#MyOfferPlansPageModule',
-  },
-  {
-    path: 'select-beneficiary-v2',
-    loadChildren:
-      './select-beneficiary-v2/select-beneficiary-v2.module#SelectBeneficiaryV2PageModule',
   },
   {
     path: 'operation-recap',
@@ -301,9 +292,22 @@ const routes: Routes = [
     path: 'dashboard-prepaid-light',
     loadChildren:
       './dashboard-prepaid-light/dashboard-prepaid-light.module#DashboardPrepaidLightPageModule',
-  },  { path: 'select-illiflex-type', loadChildren: './select-illiflex-type/select-illiflex-type.module#SelectIlliflexTypePageModule' },
-  { path: 'illiflex-configuration', loadChildren: './illiflex-configuration/illiflex-configuration.module#IlliflexConfigurationPageModule' },
-
+  },
+  {
+    path: 'rattached-phones-number',
+    loadChildren:
+      './pages/rattached-phones-number/rattached-phones-number.module#RattachedPhonesNumberPageModule',
+  },
+  {
+    path: 'select-illiflex-type',
+    loadChildren:
+      './select-illiflex-type/select-illiflex-type.module#SelectIlliflexTypePageModule',
+  },
+  {
+    path: 'illiflex-configuration',
+    loadChildren:
+      './illiflex-configuration/illiflex-configuration.module#IlliflexConfigurationPageModule',
+  },
 ];
 
 @NgModule({

@@ -12,6 +12,7 @@ import {
   OPERATION_TYPE_PASS_ALLO,
   OPERATION_ENABLE_DALAL,
   OPERATION_TYPE_PASS_ILLIFLEX,
+  CODE_KIRENE_Formule,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -72,18 +73,47 @@ export class OperationSuccessFailModalPage implements OnInit {
 
   goToPage() {
     switch (this.purchaseType) {
-      case this.OPERATION_ILLIMIX_TYPE:
-      case this.OPERATION_ALLO_TYPE:
-      case this.OPERATION_INTERNET_TYPE:
-      case this.OPERATION_TYPE_RECHARGE:
+      case OPERATION_TYPE_PASS_ALLO:
         this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
-      case this.OPERATION_TYPE_MERCHANT_PAYMENT:
+      case OPERATION_TYPE_PASS_ILLIMIX:
+        if (this.opXtras.code === CODE_KIRENE_Formule) {
+          this.appRouting.goToBuyPassIllimixKirene();
+        } else {
+          this.appRouting.goToTransfertHubServicesPage('BUY');
+        }
+        break;
+      case OPERATION_TYPE_PASS_INTERNET:
+        if (this.opXtras.code === CODE_KIRENE_Formule) {
+          this.appRouting.goToBuyPassInternetKirene();
+        } else {
+          this.appRouting.goToTransfertHubServicesPage('BUY');
+        }
+        break;
+      case OPERATION_TYPE_RECHARGE_CREDIT:
+        if (this.opXtras.code === CODE_KIRENE_Formule) {
+          this.appRouting.goBuyCredit();
+        } else {
+          this.appRouting.goToTransfertHubServicesPage('BUY');
+        }
+        break;
+      case OPERATION_TYPE_MERCHANT_PAYMENT:
         this.appRouting.goToDashboard();
         break;
-      case this.OPERATION_TRANSFER_OM:
-      case this.OPERATION_TRANSFER_OM_WITH_CODE:
-        this.appRouting.goToTransfertHubServicesPage('TRANSFER');
+      case OPERATION_TRANSFER_OM:
+        if (this.opXtras.code === CODE_KIRENE_Formule) {
+          this.navCtrl.pop();
+        } else {
+          this.appRouting.goToTransfertHubServicesPage('TRANSFER');
+        }
+        break;
+      case OPERATION_TRANSFER_OM_WITH_CODE:
+        if (this.opXtras.code === CODE_KIRENE_Formule) {
+          this.navCtrl.pop();
+        } else {
+          this.appRouting.goToTransfertHubServicesPage('TRANSFER');
+        }
+        break;
         break;
       case OPERATION_WOYOFAL:
         this.navCtrl.navigateBack(BillsHubPage.ROUTE_PATH);

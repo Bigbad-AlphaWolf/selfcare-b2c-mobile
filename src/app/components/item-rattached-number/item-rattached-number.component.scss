@@ -1,0 +1,57 @@
+@import 'src/app/app';
+
+
+ion-item{
+    --padding: 5px;
+    --padding-start: none;
+    --inner-padding-end: none;
+    --ripple-color: transparent;
+    --background-hover: transparent;
+    --background-activated: transparent;
+    padding: 5px 10px;
+    border: 1px solid $silver;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    &.selected {
+        border: 2px solid #32c832;
+        pointer-events: none;
+    }
+    .item-rattached-number{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        
+        .left-block{
+            display: flex;
+            justify-content: flex-start;
+            .icon{
+                width: 25px;
+                margin-right: 16px;
+            }
+            .text-infos{
+                .number{
+                    font-family: HelveticaNeueLTStd-Bd;
+                    font-size: 14px;
+                    margin-bottom: 2px;
+                }
+                .formule{
+                    font-family: HelveticaNeueLTStd-Roman;
+                    font-size: 12px;
+                }
+                span{
+                    display: block;
+                }
+            }
+        }
+        .right-block{
+            .circle{
+                ion-checkbox {
+                    --background-checked: #32c832;
+                    --border-color-checked: transparent;
+                }
+            }
+        }
+    }
+}

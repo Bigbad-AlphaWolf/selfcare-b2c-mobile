@@ -44,6 +44,7 @@ export class IlliflexService {
   }
 
   buyIlliflex(passIlliflex: IlliflexModel) {
+    const validity = this.getValidityName(passIlliflex.validity);
     const buyIlliflexPayload = {
       sender: {
         msisdn: passIlliflex.recipient,
@@ -53,25 +54,40 @@ export class IlliflexService {
       },
       bucket: {
         budget: {
-          unit: 'F CFA',
+          unit: 'XOF',
           value: passIlliflex.amount,
         },
         dataBucket: {
           balance: {
-            amount: Math.round(passIlliflex.data),
-            unit: 'Mo',
+            amount: passIlliflex.data,
+            unit: 'MO',
           },
-          validity: passIlliflex.validity,
+          validity,
+          code: 193,
         },
         voiceBucket: {
           balance: {
-            amount: Math.round(passIlliflex.voice),
-            unit: 'minutes',
+            amount: passIlliflex.voice,
+            unit: 'MN',
           },
-          validity: passIlliflex.validity,
+          validity,
+          code: 192,
         },
       },
     };
     return this.http.post(buyIlliflexEndpoint, buyIlliflexPayload);
+  }
+
+  getValidityName(validity) {
+    switch (validity) {
+      case 'Jour':
+        return 'DAY';
+      case 'Semaine':
+        return 'WEEK';
+      case 'Mois':
+        return 'MONTH';
+      default:
+        return;
+    }
   }
 }

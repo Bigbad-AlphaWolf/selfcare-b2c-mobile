@@ -45,6 +45,8 @@ export const OPERATION_ENABLE_DALAL = 'ACTIVATE_DALAL';
 export const OPERATION_DISABLE_DALAL = 'DISABLE_DALAL';
 export const OPERATION_SEE_SOLDE_RAPIDO = 'SOLDE_RAPIDO';
 export const OPERATION_SEE_FOLLOW_UP_REQUESTS = 'FOLLOW_UP_REQUESTS';
+export const OPERATION_SEE_RATTACHED_NUMBERS = 'RATTACHED_NUMBERS';
+export const OPERATION_RATTACH_NUMBER = 'RATTACHE_NUMBER';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -127,6 +129,10 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   DEPOT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   RETRAIT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   TRANSFERT_ARGENT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  TRANSFERT_ARGENT_CODE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  PAIEMENT_FACTURE_SONATEL_FIXE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  PAIEMENT_SENELEC: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  PAIEMENT_FACTURE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   WOYOFAL: `${IMAGES_DIRECTORY}ic-files.png`,
   PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
 };
@@ -709,6 +715,8 @@ export interface PurchaseModel {
   operationType: 'DEBIT' | 'CREDIT';
   details: any[];
   label?: string;
+  prenomReceiver?: string;
+  nomReceiver?: string;
 }
 
 /**

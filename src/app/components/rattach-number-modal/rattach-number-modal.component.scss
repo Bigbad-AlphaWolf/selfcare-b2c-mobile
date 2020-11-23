@@ -1,0 +1,46 @@
+@import 'src/app/app';
+
+.select-beneficiary-container {
+  padding: 30px 15px 70px;
+  overflow-y: scroll;
+  .title {
+    font-size: 24px;
+    font-family: HelveticaNeueLTStd-Bd;
+    line-height: 1.25;
+    color: $fullBlack;
+    margin-bottom: 10px;
+  }
+  .description {
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 16px;
+    line-height: 1.25;
+    color: $gray;
+    padding-bottom: 13px;
+  }
+  .phone-number-input{
+    margin-bottom: 15px;
+  }
+  .error-msg {
+    margin-top: 10px;
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 12px;
+  }
+  .btn-continue {
+    position: absolute;
+    bottom: 15px;
+    height: 50px;
+    width: 90%;
+    ion-button {
+        height: 100%;
+        width: 100%;
+        --background-activated: black;
+        --color-activated: black;
+        --border-radius: 10px;
+    }
+    ion-spinner {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+    }
+  }
+}

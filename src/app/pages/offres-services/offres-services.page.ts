@@ -37,40 +37,42 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
   constructor(
     public banniereService: BanniereService,
     private navCtl: NavController,
-    public opService : OperationService,
+    public opService: OperationService,
     private dashbService: DashboardService,
     private authServ: AuthenticationService
   ) {
-    super()
+    super();
   }
 
   ngOnInit() {
-    this.banniereService.queryListBanniereByFormule(
-      SessionOem.CODE_FORMULE,
-      ZoneBanniere.offre
-    )
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe();
+    this.banniereService
+      .queryListBanniereByFormule(SessionOem.CODE_FORMULE, ZoneBanniere.offre)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe();
     this.initData();
   }
 
-  initData(){
+  initData() {
     this.isLoading = true;
-    this.authServ.getSubscriptionForTiers(this.currentPhoneNumber).pipe(
-      switchMap((res: SubscriptionModel) => {
-      return this.opService.initServicesData(res.code).pipe(
-        tap( (res: any) => this.isLoading = false ),
+    this.authServ
+      .getSubscriptionForTiers(this.currentPhoneNumber)
+      .pipe(
+        switchMap((res: SubscriptionModel) => {
+          return this.opService.initServicesData(res.code).pipe(
+            tap((res: any) => (this.isLoading = false)),
+            catchError((err: any) => {
+              this.isLoading = false;
+              return err;
+            }),
+            takeUntil(this.ngUnsubscribe)
+          );
+        }),
         catchError((err: any) => {
           this.isLoading = false;
           return err;
-      }),
-        takeUntil(this.ngUnsubscribe)
-        )
-    }),catchError((err:any) => {
-      this.isLoading = false;
-      return err;
-    })
-    ).subscribe();
+        })
+      )
+      .subscribe();
   }
 
   changeTabHeader(tabIndex: number) {
@@ -79,7 +81,7 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
     this.activeSubIndex = 0;
   }
 
-  onChangeSubCat(subCatIndex: number){
+  onChangeSubCat(subCatIndex: number) {
     this.activeSubIndex = subCatIndex;
   }
 

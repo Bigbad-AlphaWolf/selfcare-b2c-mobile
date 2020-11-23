@@ -78,6 +78,7 @@ export class DashboardService {
   currentPhoneNumberChangeSubject: Subject<string> = new Subject<string>();
   scrollToBottomSubject: Subject<string> = new Subject<string>();
   balanceAvailableSubject: Subject<any> = new Subject<any>();
+  updateRattachmentList: Subject<any> = new Subject<any>();
   isSponsorSubject: Subject<any> = new Subject<boolean>();
   user: any;
   msisdn: string;
@@ -98,11 +99,6 @@ export class DashboardService {
       }
     });
 
-    authService.isLoginSubject.subscribe((value) => {
-      if (value) {
-        // do something after login
-      }
-    });
   }
 
   getSargalBalance(msisdn: string) {
@@ -113,6 +109,13 @@ export class DashboardService {
     return this.http.post(initOTPReinitializeEndpoint, { login, token });
   }
 
+  updateRattachmentListInfo() {
+    this.updateRattachmentList.next(true)
+  }
+
+  getRattachmentlistUpdateInfo() {
+    return  this.updateRattachmentList.asObservable();
+  }
   reinitializePassword(payload: {
     otp: string;
     newPassword: string;
@@ -252,6 +255,26 @@ export class DashboardService {
     return this.getAttachedNumbers().pipe(
       tap((elements: any) => {
         DashboardService.rattachedNumbers = elements;
+      })
+    );
+  }
+
+  getAllOemNumbers() {
+    const mainMsisdn = this.getMainPhoneNumber();
+    let mainMsisdnInfos;
+    return this.authService.getSubscription(mainMsisdn).pipe(
+      switchMap((res) => {
+        mainMsisdnInfos = {
+          msisdn: mainMsisdn,
+          profil: res.profil,
+          formule: res.nomOffre,
+        };
+        return this.getAttachedNumbers().pipe(
+          map((res: any[]) => {
+            res.splice(0, 0, mainMsisdnInfos);
+            return res;
+          })
+        );
       })
     );
   }
@@ -509,12 +532,14 @@ export class DashboardService {
     const userBirthDay = ls.get('birthDate');
     if (userBirthDay) return of(userBirthDay);
     const msisdn = this.getMainPhoneNumber();
-    return this.http.get(`${userBirthDateEndpoint}/${msisdn}`, {responseType: 'text'}).pipe(
-      map((birthDate) => {
-        ls.set('birthDate', birthDate);
-        return birthDate;
-      })
-    );
+    return this.http
+      .get(`${userBirthDateEndpoint}/${msisdn}`, { responseType: 'text' })
+      .pipe(
+        map((birthDate) => {
+          ls.set('birthDate', birthDate);
+          return birthDate;
+        })
+      );
   }
 
   getNewFeatureAlloBadgeStatus() {

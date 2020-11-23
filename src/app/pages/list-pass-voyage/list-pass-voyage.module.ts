@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { ListPassVoyagePage } from './list-pass-voyage.page';
 import { SharedModule } from 'src/shared/shared.module';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 const routes: Routes = [
   {
@@ -21,6 +22,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
+    ComponentsModule,
     RouterModule.forChild(routes)
   ],
   declarations: [ListPassVoyagePage]

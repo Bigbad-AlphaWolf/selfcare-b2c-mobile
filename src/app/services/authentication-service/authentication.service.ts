@@ -39,13 +39,6 @@ import {
   JAMONO_PRO_CODE_FORMULE,
   PRO_MOBILE_ERROR_CODE,
 } from 'src/shared';
-import { SessionOem } from '../session-oem/session-oem.service';
-import {
-  PROFIL,
-  CODE_CLIENT,
-  CODE_FORMULE,
-  FORMULE,
-} from 'src/app/utils/constants';
 
 const {
   SERVER_API_URL,
@@ -483,7 +476,7 @@ export class AuthenticationService {
 
   checkNumber(checkNumberPayload: { msisdn: string; hmac: string }) {
     return this.getTokenFromBackend().pipe(
-      switchMap((res) => {
+      switchMap(() => {
         const msisdn = checkNumberPayload.msisdn.substring(
           checkNumberPayload.msisdn.length - 9
         );

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, ToastController } from '@ionic/angular';
 import { OffreService } from 'src/app/models/offre-service.model';
 import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
 import {
@@ -28,7 +28,10 @@ import {
 export class OffreServiceCardComponent implements OnInit {
   @Input('service') service: OffreService;
   FILE_BASE_URL: string = FILE_DOWNLOAD_ENDPOINT;
-  constructor(private navCtrl: NavController) {}
+  constructor(
+    private navCtrl: NavController,
+    private toastController: ToastController
+  ) {}
   imageUrl: string;
 
   ngOnInit() {
@@ -37,7 +40,8 @@ export class OffreServiceCardComponent implements OnInit {
 
   onClick() {
     if (!this.service.activated) {
-      this.service.clicked = !this.service.clicked;
+      this.showServiceUnavailableToast();
+      // this.service.clicked = !this.service.clicked;
       return;
     }
     if (!this.service.redirectionPath) return;
@@ -48,5 +52,16 @@ export class OffreServiceCardComponent implements OnInit {
 
   onErrorImg() {
     this.imageUrl = 'assets/images/ic-package-services@2x.png';
+  }
+
+  async showServiceUnavailableToast() {
+    const toast = await this.toastController.create({
+      header: 'Service indisponible',
+      message: this.service.reasonDeactivation,
+      duration: 3000,
+      position: 'middle',
+      color: 'medium',
+    });
+    toast.present();
   }
 }

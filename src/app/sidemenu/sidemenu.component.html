@@ -4,236 +4,119 @@
       <ion-icon name="close" class="close-icon"></ion-icon>
     </ion-menu-toggle>
   </div>
-  <div class="menu-user-infos">
-    <div class="menu-user-infos-icon">
-      <img
-        [src]="avatarUrl"
-        alt="profil-mob"
-        (error)="setImgAvatarToDefault()"
-        class="profil-icon"
-      />
+  <div class="user-infos">
+    <div class="avatar-block">
+      <img [src]="avatarUrl" alt="profil-mob" (error)="setImgAvatarToDefault()" class="avatar-profil" />
     </div>
-    <div class="menu-user-infos-details">
-      <div class="hello-user-block">
-        <span class="bonjour scb-text-full-black"> Bienvenue </span>
-        <span class="username scb-text-full-black"
-          >{{ lastName }} {{ firstName }}</span
-        >
-      </div>
-      <div class="user-number-block">
-        <div class="numberblock">
-          <span class="user-number scb-text-orange">{{ msisdn }}</span>
-        </div>
-        <div class="user-number-profil">
-          <span class="profil scb-text-orange">
-            {{ currentFormule }}
-          </span>
-        </div>
+    <div class="user-name">{{ lastName }} {{ firstName }}</div>
+    <div>
+      <span class="edit-account scb-text-orange" (click)="goMyAccount()">
+        <ion-menu-toggle>Editer mon compte</ion-menu-toggle>
+      </span>
+    </div>
+  </div>
+  <div class="gerer-mes-lignes">
+    <div class="text">
+      <span class="mes-lignes">Mes lignes</span>
+      <span class="scb-text-orange gerer" (click)="goToRattachedNumberPage()">
+        <ion-menu-toggle>Gérer mes lignes</ion-menu-toggle>
+      </span>
+    </div>
+    <div class="lignes">
+      <div class="ligne-item" (click)="switchPhoneNumber(number.msisdn)" *ngFor="let number of numbers"
+        [ngClass]="{'active': isActiveNumber(number)}">
         <ion-menu-toggle>
-          <div
-            routerLink="/change-main-phone-number"
-            class="changer-ligne-block"
-          >
-            <div class="changer-ligne-text">
-              <span class="change scb-text-orange c-pointer"
-                >Changer de ligne
-              </span>
-            </div>
-            <div class="arrow-right-icon">
-              <img
-                src="/assets/images/arrow-right.svg"
-                alt="keyboard-arrow-right-orange"
-                class="arrow-right"
-              />
-            </div>
-          </div>
+          <img *ngIf="isActiveNumber(number)" src="/assets/images/validate-green.svg" alt="" class="checkbox">
+          <div class="circle"></div>
+          <img src="/assets/images/sim-icon2.svg" alt="sim" class="sim-image">
+          <div class="sim-number">{{number?.msisdn | phoneNumberDisplay}}</div>
+          <div class="offer scb-text-light-black">{{number?.formule}}</div>
+        </ion-menu-toggle>
+      </div>
+      <div class="ligne-item ligne-item-plus" (click)="goToRattachedNumberPage()">
+        <ion-menu-toggle>
+          <img src="assets/images/combined-shape.svg" alt="plus" class="img-plus">
         </ion-menu-toggle>
       </div>
     </div>
   </div>
-  <div class="menu-list">
-    <div class="menu-list-services">
+  <div class="menu-items">
+    <div class="item-option" (click)="goDetailsConso()">
       <ion-menu-toggle>
-        <div
-          class="menu-list-services-item-block cclose-icon c-pointer"
-          (click)="goDashboard()"
-        >
-          <div class="menu-list-services-item">
-            <div class="services-item-icon">
-              <img
-                src="/assets/images/suivi-conso-off.svg"
-                alt="suivi-conso"
-                class="item-icon"
-              />
-            </div>
-            <div class="services-item-text">
-              <span class="content"> Mon suivi Conso</span>
-            </div>
-          </div>
-        </div>
-      </ion-menu-toggle>
-      <ion-menu-toggle>
-        <div
-          (click)="goFormule()"
-          class="menu-list-services-item-block c-pointer"
-        >
-          <div class="menu-list-services-item">
-            <div class="services-item-icon">
-              <img
-                src="/assets/images/formule.svg"
-                alt="formule"
-                class="item-icon"
-              />
-            </div>
-            <div class="services-item-text">
-              <span class="content">Ma formule</span>
-            </div>
-          </div>
-        </div>
-      </ion-menu-toggle>
-      <ion-menu-toggle>
-        <div
-          (click)="onOffreClicked()"
-          class="menu-list-services-item-block c-pointer"
-          *ngIf="currentProfile !== 'POSTPAID'"
-        >
-          <div class="menu-list-services-item">
-            <div class="services-item-icon">
-              <img
-                src="/assets/images/offres-services.svg"
-                alt="offres-services"
-                class="item-icon"
-              />
-            </div>
-            <div class="services-item-text">
-              <span class="content">Offres et services</span>
-            </div>
-          </div>
-        </div>
-      </ion-menu-toggle>
-      <ion-menu-toggle>
-        <div
-          (click)="goToMyOfferPlans()"
-          class="menu-list-services-item-block c-pointer"
-          *ngIf="currentProfile === 'PREPAID'"
-        >
-          <div class="menu-list-services-item">
-            <div class="services-item-icon">
-              <img
-                src="/assets/images/buzz.png"
-                alt="mes-bons-plans"
-                class="item-icon"
-              />
-            </div>
-            <div class="services-item-text">
-              <span class="content">Mes Bons Plans</span>
-            </div>
-          </div>
-        </div>
-      </ion-menu-toggle>
-      <ion-menu-toggle>
-        <div
-          class="menu-list-services-item-block c-pointer"
-          (click)="goFacture()"
-          *ngIf="currentProfile !== 'PREPAID' && currentProfile"
-        >
-          <div class="menu-list-services-item">
-            <div class="services-item-icon">
-              <img
-                src="/assets/images/bill_menu_icon.svg"
-                alt="factures"
-                class="item-icon"
-              />
-            </div>
-            <div class="services-item-text">
-              <span class="content">Mes factures</span>
-            </div>
-          </div>
-        </div>
-      </ion-menu-toggle>
-      <ion-menu-toggle>
-        <div
-          class="menu-list-services-item-block c-pointer"
-          (click)="goParrainage()"
-        >
-          <div class="menu-list-services-item">
-            <div class="services-item-icon">
-              <img
-                src="/assets/images/bill_menu_icon.svg"
-                alt="factures"
-                class="item-icon"
-              />
-            </div>
-            <div class="services-item-text">
-              <span class="content">Mes parrainages</span>
-            </div>
-          </div>
-        </div>
+        <img src="/assets/images/icons-suivi-conso.svg" alt="" class="option-img">
+        <span class="option-text">Détails suivi conso</span>
+        <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
-    <div class="menu-list-user-assistance">
+    <div class="item-option" (click)="goFormule()">
       <ion-menu-toggle>
-        <div (click)="goMyAccount()" class="user-assistance-account-block">
-          <div class="assistance-icon">
-            <img src="/assets/images/compte.svg" alt="compte" class="icon" />
-          </div>
-          <div class="assistance-text">
-            <span class="title">Mon compte</span>
-            <span class="subtitle scb-text-light-black"
-              >Modifier mes infos personnelles</span
-            >
-          </div>
-        </div>
+        <img src="/assets/images/icon-formule.svg" alt="" class="option-img">
+        <span class="option-text">Formule</span>
+        <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
+    </div>
+    <div class="item-option" (click)="onOffreClicked()" *ngIf="currentProfile !== 'POSTPAID'">
       <ion-menu-toggle>
-        <div
-          (click)="goToAssistancePage()"
-          class="user-assistance-account-block"
-        >
-          <div class="assistance-icon">
-            <img
-              src="/assets/images/assistance.svg"
-              alt="assistance"
-              class="icon"
-            />
-          </div>
-          <div class="assistance-text">
-            <span class="title">Besoin d’aide</span>
-            <span class="subtitle scb-text-light-black">Communauté</span>
-          </div>
-        </div>
+        <img src="/assets/images/icons-offres-service.svg" alt="" class="option-img">
+        <span class="option-text">Offres et services</span>
+        <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
+    </div>
+    <div class="item-option" (click)="goFacture()" *ngIf="currentProfile !== 'PREPAID' && currentProfile">
       <ion-menu-toggle>
-        <div (click)="goEmergencies()" class="user-assistance-account-block">
-          <div class="assistance-icon">
-            <img
-              src="/assets/images/control-centre.svg"
-              alt="urgence"
-              class="icon"
-            />
-          </div>
-          <div class="assistance-text">
-            <span class="title">Assistance</span>
-            <span class="subtitle scb-text-light-black"
-              >Vous avez des soucis ?</span
-            >
-          </div>
-        </div>
-        <div (click)="goToAbout()" class="user-assistance-account-block">
-          <div class="assistance-icon">
-            <img
-              src="/assets/images/ios-information-circle.svg"
-              alt="info"
-              class="icon"
-            />
-          </div>
-          <div class="assistance-text">
-            <span class="title">A propos d'Orange et moi</span>
-            <span class="subtitle scb-text-light-black"
-              >Informations generales sur Orange et moi</span
-            >
-          </div>
-        </div>
+        <img src="/assets/images/icons-facture.svg" alt="" class="option-img">
+        <span class="option-text">Factures</span>
+        <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
+      </ion-menu-toggle>
+    </div>
+    <div class="item-option" (click)="goParrainage()">
+      <ion-menu-toggle>
+        <img src="/assets/images/icons-parrainage.svg" alt="" class="option-img">
+        <span class="option-text">Parrainages</span>
+        <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
+      </ion-menu-toggle>
+    </div>
+    <div class="item-option" (click)="goToMyOfferPlans()" *ngIf="currentProfile === 'PREPAID'">
+      <ion-menu-toggle>
+        <img src="/assets/images/icons-bons-plan.svg" alt="" class="option-img">
+        <span class="option-text">Bons plans</span>
+        <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
+      </ion-menu-toggle>
+    </div>
+    <div class="item-option" (click)="goEmergencies()">
+      <ion-menu-toggle>
+        <img src="/assets/images/icons-urgence-et-depannage.svg" alt="" class="option-img">
+        <span class="option-text">Assistance</span>
+        <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
+      </ion-menu-toggle>
+    </div>
+    <div class="item-option" (click)="goToAssistancePage()">
+      <ion-menu-toggle>
+        <img src="/assets/images/icons-communaute.svg" alt="" class="option-img">
+        <span class="option-text">Communauté</span>
+        <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
+      </ion-menu-toggle>
+    </div>
+    <div class="item-option" (click)="defaulSharingSheet()">
+      <ion-menu-toggle>
+        <img src="/assets/images/icons-partage.svg" alt="" class="option-img">
+        <span class="option-text">Partager l’application</span>
+        <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
+      </ion-menu-toggle>
+    </div>
+  </div>
+  <div class="menu-items">
+    <div class="submenu-title">À propos</div>
+    <div class="item-option">
+      <ion-menu-toggle>
+        <span class="option-text">Version</span>
+        <span class="scb-text-gray version">{{currentAppVersion}}</span>
+      </ion-menu-toggle>
+    </div>
+    <div class="item-option" (click)="goToAbout()">
+      <ion-menu-toggle>
+        <span class="option-text">Informations générales</span>
+        <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
   </div>
