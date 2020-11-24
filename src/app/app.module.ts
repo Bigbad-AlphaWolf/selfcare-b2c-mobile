@@ -35,6 +35,7 @@ import { RegistrationSuccessModalPageModule } from './registration-success-modal
 import { IonicImageLoader } from 'ionic-image-loader';
 import { Uid } from '@ionic-native/uid/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { PipesModule } from './pipes/pipes.module';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -54,6 +55,7 @@ registerLocaleData(localeFr);
     NewPinpadModalPageModule,
     OperationSuccessFailModalPageModule,
     RegistrationSuccessModalPageModule,
+    PipesModule
   ],
   providers: [
     AppVersion,

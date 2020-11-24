@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RapidoOperationPage } from './rapido-operation.page';
+import { CardRapidoNameModalComponent } from './card-rapido-name-modal.component';
 
-describe('RapidoOperationPage', () => {
-  let component: RapidoOperationPage;
-  let fixture: ComponentFixture<RapidoOperationPage>;
+describe('CardRapidoNameModalComponent', () => {
+  let component: CardRapidoNameModalComponent;
+  let fixture: ComponentFixture<CardRapidoNameModalComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RapidoOperationPage ],
+      declarations: [ CardRapidoNameModalComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RapidoOperationPage);
+    fixture = TestBed.createComponent(CardRapidoNameModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

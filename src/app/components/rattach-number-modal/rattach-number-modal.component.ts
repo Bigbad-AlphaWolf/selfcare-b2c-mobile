@@ -3,10 +3,8 @@ import { REGEX_FIX_NUMBER, REGEX_NUMBER } from 'src/shared';
 import { MatDialog } from '@angular/material';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import { ModalController } from '@ionic/angular';
-import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { tap, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
@@ -45,10 +43,10 @@ export class RattachNumberModalComponent implements OnInit {
     this.hasError = false;
     this.msgError = null;
     const payload : { numero: string, typeNumero: "MOBILE" | "FIXE" } = { numero: this.phoneNumber, typeNumero: this.isValidMobileNumber ? "MOBILE" : "FIXE" };
-    this.dashbServ.registerNumberToAttach(payload).pipe((tap((res: any) => {
+    this.dashbServ.registerNumberToAttach(payload).pipe((tap(() => {
       this.openSuccessDialog(payload.numero);
     }))
-    ).subscribe((res: any) => {
+    ).subscribe(() => {
       this.isLoading = false;
       this.hasError = false;
       this.followAttachmentIssues(payload, 'event')

@@ -18,6 +18,7 @@ import { SharedModule } from 'src/shared/shared.module';
 import { EmergenciesRoutingModule } from './emergencies-routing.module';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { PipesModule } from '../pipes/pipes.module';
 
 const routes: Routes = [
   {
@@ -33,6 +34,7 @@ const routes: Routes = [
     IonicModule,
     SharedModule,
     ClipboardModule,
+    PipesModule,
     EmergenciesRoutingModule
   ],
   declarations: [

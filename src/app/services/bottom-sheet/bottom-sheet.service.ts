@@ -125,7 +125,6 @@ export class BottomSheetService {
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data && response.data.recipientMsisdn) {
-        const pageData = response.data;
         this.navCtl.navigateForward([PurchaseSetAmountPage.ROUTE_PATH], {
           state: response.data,
         });
@@ -190,7 +189,7 @@ export class BottomSheetService {
         backdropClass: 'oem-ion-bottomsheet',
       })
       .afterDismissed()
-      .subscribe((opInfos: OperationExtras) => {});
+      .subscribe(() => {});
   }
 
   async openRattacheNumberModal() {
