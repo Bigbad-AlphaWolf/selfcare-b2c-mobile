@@ -13,6 +13,7 @@ const routes: Routes = [
   {
     path: 'home-v2',
     loadChildren: './home-v2/home-v2.module#HomeV2PageModule',
+    canActivate: [AuthUpdateGuard],
   },
   {
     path: 'new-registration',
@@ -32,11 +33,6 @@ const routes: Routes = [
   },
   {
     path: 'dashboard',
-    loadChildren: './dashboard/dashboard.module#DashboardPageModule',
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'suivi-conso',
     loadChildren: './dashboard/dashboard.module#DashboardPageModule',
     canActivate: [AuthGuard],
   },
@@ -198,16 +194,6 @@ const routes: Routes = [
       './operation-recap/operation-recap.module#OperationRecapPageModule',
   },
   {
-    path: 'pass-illimix/:ppi',
-    loadChildren:
-      './operation-recap/operation-recap.module#OperationRecapPageModule',
-  },
-  {
-    path: 'pass-internet/:ppi',
-    loadChildren:
-      './operation-recap/operation-recap.module#OperationRecapPageModule',
-  },
-  {
     path: 'new-pinpad-modal',
     loadChildren:
       './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule',
@@ -307,7 +293,21 @@ const routes: Routes = [
     loadChildren:
       './dashboard-prepaid-light/dashboard-prepaid-light.module#DashboardPrepaidLightPageModule',
   },
-  { path: 'rattached-phones-number', loadChildren: './pages/rattached-phones-number/rattached-phones-number.module#RattachedPhonesNumberPageModule' },
+  {
+    path: 'rattached-phones-number',
+    loadChildren:
+      './pages/rattached-phones-number/rattached-phones-number.module#RattachedPhonesNumberPageModule',
+  },
+  {
+    path: 'select-illiflex-type',
+    loadChildren:
+      './select-illiflex-type/select-illiflex-type.module#SelectIlliflexTypePageModule',
+  },
+  {
+    path: 'illiflex-configuration',
+    loadChildren:
+      './illiflex-configuration/illiflex-configuration.module#IlliflexConfigurationPageModule',
+  },
 ];
 
 @NgModule({

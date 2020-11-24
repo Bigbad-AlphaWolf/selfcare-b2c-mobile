@@ -5,6 +5,7 @@ import {
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_RECHARGE_CREDIT,
+  IlliflexOption,
 } from 'src/shared';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { CreditPassAmountPage } from 'src/app/pages/credit-pass-amount/credit-pass-amount.page';
@@ -56,6 +57,17 @@ export class ApplicationRoutingService {
       },
     };
     this.route.navigate(['/transfert-hub-services'], navigationExtras);
+  }
+
+  goToSetIlliflexPage(type: IlliflexOption, amount?) {
+    type = IlliflexOption.BUDGET;
+    let navigationExtras: NavigationExtras = {
+      state: {
+        type,
+        amount,
+      },
+    };
+    this.route.navigate(['/illiflex-configuration'], navigationExtras);
   }
 
   goToTransfertMoneySetAmountPage(payload: {

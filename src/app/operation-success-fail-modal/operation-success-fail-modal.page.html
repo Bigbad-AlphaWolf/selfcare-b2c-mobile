@@ -50,6 +50,9 @@
       <span class="title" *ngSwitchCase="OPERATION_ENABLE_DALAL"
         >{{success ? 'Dalal Tones activé' : 'Dalal non activé'}}</span
       >
+      <span class="title" *ngSwitchCase="OPERATION_ILLIFLEX_TYPE"
+        >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
+      >
     </ng-container>
     <span class="subtitle scb-text-gray">
       <span *ngIf="!success">{{errorMsg}}</span>
@@ -84,6 +87,9 @@
         <span *ngSwitchCase="OPERATION_ENABLE_DALAL"
           >Vous avez activé le Dalal
         </span>
+        <span *ngSwitchCase="OPERATION_ILLIFLEX_TYPE"
+          >Vous avez acheté le pass illiflex</span
+        >
       </ng-container>
     </span>
   </div>
@@ -143,6 +149,7 @@
         *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
       >
       </app-item-recharge-credit>
+      <app-item-illiflex *ngSwitchCase="OPERATION_ILLIFLEX_TYPE" [passIlliflex]="passBought"></app-item-illiflex>
       <app-dalal-card-item *ngSwitchCase="OPERATION_ENABLE_DALAL" [dalal]="dalal"></app-dalal-card-item>
     </ng-container>
   </div>
@@ -293,6 +300,9 @@
         <ng-container *ngSwitchDefault> 
           Faire une autre operation
         </ng-container>
+        <ng-container *ngSwitchCase="OPERATION_ILLIFLEX_TYPE">
+          Configurer un autre pass</ng-container
+        >
       </ng-container>
     </ion-button>
   </div>

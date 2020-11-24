@@ -2,6 +2,7 @@ import * as SecureLS from 'secure-ls';
 import { HTTP } from '@ionic-native/http/ngx';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { PalierModel } from 'src/app/models/palier.model';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
@@ -24,6 +25,7 @@ export const OPERATION_TYPE_PASS_INTERNET = 'PASS_INTERNET';
 export const OPERATION_TYPE_PASS_ILLIMIX = 'PASS_ILLIMIX';
 export const OPERATION_TYPE_PASS_ALLO = 'PASS_ALLO';
 export const OPERATION_TYPE_PASS_VOYAGE = 'OPERATION_TYPE_PASS_VOYAGE';
+export const OPERATION_TYPE_PASS_ILLIFLEX = 'PASS_ILLIFLEX';
 export const OPERATION_TYPE_MERCHANT_PAYMENT = 'MERCHANT_PAYMENT';
 export const OPERATION_TYPE_SOS = 'SOS';
 export const OPERATION_TYPE_SOS_CREDIT = 'SOS CREDIT';
@@ -1201,3 +1203,32 @@ export const LIGHT_DASHBOARD_EVENT = 'GO_DASHBOARD_LIGHT';
 export const REGISTRATION_PASSWORD_STEP = 'PASSWORD';
 export const USER_ERROR_MSG_BLOCKED =
   'Votre Compte Orange et Moi a été bloqué. Cliquez sur mot de passe oublié et suivez les instructions.';
+
+export enum IlliflexOption {
+  BUDGET = 'BUDGET',
+  USAGE = 'USAGE',
+}
+
+export function getMaxDataVolumeOrVoiceOfPaliers(
+  paliers: PalierModel[],
+  dataOrVoice: 'data' | 'voice'
+) {
+  const maxAmount = Math.max(...paliers.map((palier) => palier.maxPalier));
+  const palier = paliers.find((palier) => palier.maxPalier === maxAmount);
+  const unitPrice =
+    dataOrVoice === 'data' ? palier.dataPrice : palier.voicePrice;
+  const maxPercentage = 0.8;
+  return (maxPercentage * maxAmount) / (unitPrice * 1.239);
+}
+
+export function getMinDataVolumeOrVoiceOfPaliers(
+  paliers: PalierModel[],
+  dataOrVoice: 'data' | 'voice'
+) {
+  const minAmount = Math.min(...paliers.map((palier) => palier.minPalier));
+  const palier = paliers.find((palier) => palier.minPalier === minAmount);
+  const unitPrice =
+    dataOrVoice === 'data' ? palier.dataPrice : palier.voicePrice;
+  const minPercentage = 0.2;
+  return (minPercentage * minAmount) / (unitPrice * 1.239);
+}

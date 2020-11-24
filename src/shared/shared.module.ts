@@ -4,10 +4,7 @@ import { ChoosePaymentModComponent } from './choose-payment-mod/choose-payment-m
 import { OperationValidationComponent } from './operation-validation/operation-validation.component';
 import { PinPadComponent } from './pin-pad/pin-pad.component';
 import { SelectRecipientComponent } from './select-recipient/select-recipient.component';
-import {
-  MatBottomSheetRef,
-  MAT_BOTTOM_SHEET_DATA,
-} from '@angular/material';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 import { ModalSuccessComponent } from './modal-success/modal-success.component';
 import { NoOMAccountPopupComponent } from './no-omaccount-popup/no-omaccount-popup.component';
 import { CancelOperationPopupComponent } from './cancel-operation-popup/cancel-operation-popup.component';
@@ -52,6 +49,9 @@ import { IonicImageLoader } from 'ionic-image-loader';
 import { RapidoSelectionComponent } from 'src/app/components/counter/rapido-selection/rapido-selection.component';
 import { FavoriteRapidoComponent } from 'src/app/components/counter/favorite-rapido/favorite-rapido.component';
 import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
+import { ItemIlliflexComponent } from './illiflex-item/item-illiflex/item-illiflex.component';
+import { DataVolumePipe } from './pipes/data-volume.pipe';
+import { IlliflexVoicePipe } from './pipes/illiflex-voice.pipe';
 import { RattachNumberModalComponent } from 'src/app/components/rattach-number-modal/rattach-number-modal.component';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { RattachNumberByIdCardComponent } from 'src/app/components/rattach-number-by-id-card/rattach-number-by-id-card.component';
@@ -106,6 +106,9 @@ import { CardRapidoNameModalComponent } from 'src/app/components/card-rapido-nam
     FavoriteMerchantComponent,
     IbouIonFabComponent,
     RapidoSoldeComponent,
+    ItemIlliflexComponent,
+    DataVolumePipe,
+    IlliflexVoicePipe,
   ],
   imports: [
     CommonModule,
@@ -113,7 +116,7 @@ import { CardRapidoNameModalComponent } from 'src/app/components/card-rapido-nam
     RouterModule,
     ComponentsModule,
     MaterialComponentsModule,
-    PipesModule
+    PipesModule,
   ],
   entryComponents: [
     LinesComponent,
@@ -141,7 +144,7 @@ import { CardRapidoNameModalComponent } from 'src/app/components/card-rapido-nam
     RattachNumberModalComponent,
     RattachNumberByIdCardComponent,
     RattachNumberByClientCodeComponent,
-    CardRapidoNameModalComponent
+    CardRapidoNameModalComponent,
   ],
   exports: [
     BanniereComponent,
@@ -185,7 +188,10 @@ import { CardRapidoNameModalComponent } from 'src/app/components/card-rapido-nam
     FavoriteMerchantComponent,
     IbouIonFabComponent,
     RapidoSoldeComponent,
-    MaterialComponentsModule
+    ItemIlliflexComponent,
+    DataVolumePipe,
+    IlliflexVoicePipe,
+    MaterialComponentsModule,
   ],
   providers: [
     Contacts,
