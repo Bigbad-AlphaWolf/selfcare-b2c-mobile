@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { DashboardHomePrepaidPage } from './dashboard-home-prepaid.page';
 import { SharedModule } from 'src/shared/shared.module';
+import { ComponentsModule } from '../components/components.module';
+import { PipesModule } from '../pipes/pipes.module';
 
 const routes: Routes = [
   {
@@ -21,6 +23,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
+    ComponentsModule,
+    PipesModule,
     RouterModule.forChild(routes)
   ],
   declarations: [DashboardHomePrepaidPage]

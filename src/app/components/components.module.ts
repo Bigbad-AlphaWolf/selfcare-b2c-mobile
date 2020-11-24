@@ -11,6 +11,9 @@ import { RattachNumberByIdCardComponent } from './rattach-number-by-id-card/ratt
 import { RattachNumberByClientCodeComponent } from './rattach-number-by-client-code/rattach-number-by-client-code.component';
 import { MaterialComponentsModule } from '../material-components/material-components.module';
 import { IonicModule } from '@ionic/angular';
+import { DalalCardItemComponent } from 'src/shared/dalal-card-item/dalal-card-item.component';
+import { DashboardHeaderComponent } from 'src/shared/dashboard-header/dashboard-header.component';
+import { CardRapidoNameModalComponent } from './card-rapido-name-modal/card-rapido-name-modal.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,10 @@ import { IonicModule } from '@ionic/angular';
     ItemRattachedNumberComponent,
     RattachNumberModalComponent,
     RattachNumberByIdCardComponent,
-    RattachNumberByClientCodeComponent
+    RattachNumberByClientCodeComponent,
+    DalalCardItemComponent,
+    DashboardHeaderComponent,
+    CardRapidoNameModalComponent
   ],
   imports: [
     CommonModule,
@@ -37,8 +43,11 @@ import { IonicModule } from '@ionic/angular';
     ItemRattachedNumberComponent,
     RattachNumberModalComponent,
     RattachNumberByIdCardComponent,
-    RattachNumberByClientCodeComponent
+    RattachNumberByClientCodeComponent,
+    DalalCardItemComponent,
+    DashboardHeaderComponent,
+    CardRapidoNameModalComponent
   ],
-  entryComponents: [RattachNumberModalComponent]
+  entryComponents: [RattachNumberModalComponent, CardRapidoNameModalComponent]
 })
 export class ComponentsModule { }

@@ -30,7 +30,7 @@ export class FavorisService {
               );
               if (error) return [];
 
-              let typeFavoris: any = r.content.data.type_favoris;
+              let typeFavoris: any = r && r.content ? r.content.data.type_favoris : [] ;
               if (typeFavoris) {
                 const favoris = typeFavoris.find((favoris) => {
                   return favoris.label === service;
@@ -65,8 +65,7 @@ export class FavorisService {
               );
 
               if (error) return [];
-
-              let typeFavoris: any = r.content.data.type_favoris;
+              let typeFavoris: any = r && r.content ? r.content.data.type_favoris : [] ;
 
               return typeFavoris && typeFavoris.length
                 ? typeFavoris[0].liste_favoris

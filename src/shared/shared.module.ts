@@ -6,20 +6,15 @@ import { PinPadComponent } from './pin-pad/pin-pad.component';
 import { SelectRecipientComponent } from './select-recipient/select-recipient.component';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 import { ModalSuccessComponent } from './modal-success/modal-success.component';
-import { FormatBillNumPipe } from './pipes/format-bill-num.pipe';
-import { FormatBillDatePipe } from './pipes/format-bill-date.pipe';
 import { NoOMAccountPopupComponent } from './no-omaccount-popup/no-omaccount-popup.component';
 import { CancelOperationPopupComponent } from './cancel-operation-popup/cancel-operation-popup.component';
-import { PhoneNumberDisplayPipe } from './pipes/phone-number-display.pipe';
 import { Contacts } from '@ionic-native/contacts';
 import { SetOperationAmountComponent } from './set-operation-amount/set-operation-amount.component';
 import { HeaderComponent } from './header/header.component';
-import { FormatSecondDatePipe } from './pipes/format-second-date.pipe';
 import { SuccessFailPopupComponent } from './success-fail-popup/success-fail-popup.component';
 import { PhonenumberItemComponent } from './phonenumber-item/phonenumber-item.component';
 import { SelectNumberPopupComponent } from './select-number-popup/select-number-popup.component';
 import { SelectOtherRecipientComponent } from './select-other-recipient/select-other-recipient.component';
-import { GetLabelLigneBillBordereauPipe } from './pipes/get-label-ligne-bill-bordereau.pipe';
 import { AvantagePopupComponent } from './avantage-popup/avantage-popup.component';
 import { DeleteNumberPopupComponent } from 'src/app/my-account/delete-number-popup/delete-number-popup.component';
 import { CguPopupComponent } from './cgu-popup/cgu-popup.component';
@@ -29,11 +24,7 @@ import { WelcomePopupComponent } from './welcome-popup/welcome-popup.component';
 import { SettingsPopupComponent } from './settings-popup/settings-popup.component';
 import { HelpBannerComponent } from 'src/app/emergencies/help-banner/help-banner.component';
 import { RouterModule } from '@angular/router';
-import { PassVolumeDisplayPipe } from './pipes/pass-volume-display.pipe';
 import { OmButtonComponent } from './om-button/om-button.component';
-import { DashboardHeaderComponent } from './dashboard-header/dashboard-header.component';
-import { FormatSuiviConsoCategoryTitlePipe } from './pipes/format-suivi-conso-category-title.pipe';
-import { FormatCalledNumberPipe } from './pipes/format-called-number.pipe';
 import { HeaderScrollEffectDirective } from './directives/header-scroll-effect.directive';
 import { CommonIssuesComponent } from './common-issues/common-issues.component';
 import { MerchantPaymentCodeComponent } from './merchant-payment-code/merchant-payment-code.component';
@@ -44,9 +35,7 @@ import { AmountProviderComponent } from 'src/app/components/amount-provider/amou
 import { OemIonHeaderParallaxDirective } from 'src/app/directives/oem-ion-header-parallax.directive';
 import { WoyofalSelectionComponent } from 'src/app/components/counter/woyofal-selection/woyofal-selection.component';
 import { FavoriteWoyofalComponent } from 'src/app/components/counter/favorite-woyofal/favorite-woyofal.component';
-import { CodeFormatPipe } from 'src/app/pipes/code-format/code-format.pipe';
 import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
-import { AcronymPipe } from './pipes/acronym.pipe';
 import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import { OemOperationsComponent } from 'src/app/components/oem-operations/oem-operations.component';
 import { NoIonSelectArrowDirective } from 'src/app/directives/no-ion-select-arrow/no-ion-select-arrow.directive';
@@ -59,7 +48,6 @@ import { OffreServiceCardComponent } from 'src/app/components/offre-service-card
 import { IonicImageLoader } from 'ionic-image-loader';
 import { RapidoSelectionComponent } from 'src/app/components/counter/rapido-selection/rapido-selection.component';
 import { FavoriteRapidoComponent } from 'src/app/components/counter/favorite-rapido/favorite-rapido.component';
-import { DalalCardItemComponent } from './dalal-card-item/dalal-card-item.component';
 import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
 import { ItemIlliflexComponent } from './illiflex-item/item-illiflex/item-illiflex.component';
 import { DataVolumePipe } from './pipes/data-volume.pipe';
@@ -70,6 +58,7 @@ import { RattachNumberByIdCardComponent } from 'src/app/components/rattach-numbe
 import { RattachNumberByClientCodeComponent } from 'src/app/components/rattach-number-by-client-code/rattach-number-by-client-code.component';
 import { MaterialComponentsModule } from 'src/app/material-components/material-components.module';
 import { PipesModule } from 'src/app/pipes/pipes.module';
+import { CardRapidoNameModalComponent } from 'src/app/components/card-rapido-name-modal/card-rapido-name-modal.component';
 
 @NgModule({
   declarations: [
@@ -93,19 +82,14 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     PinPadComponent,
     ModalSuccessComponent,
     SelectRecipientComponent,
-    FormatBillNumPipe,
-    FormatBillDatePipe,
     NoOMAccountPopupComponent,
     CancelOperationPopupComponent,
-    PhoneNumberDisplayPipe,
     SetOperationAmountComponent,
     HeaderComponent,
-    FormatSecondDatePipe,
     SuccessFailPopupComponent,
     PhonenumberItemComponent,
     SelectNumberPopupComponent,
     SelectOtherRecipientComponent,
-    GetLabelLigneBillBordereauPipe,
     AvantagePopupComponent,
     CguPopupComponent,
     OperationSuccessOrFailComponent,
@@ -113,21 +97,14 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     WelcomePopupComponent,
     SettingsPopupComponent,
     HelpBannerComponent,
-    PassVolumeDisplayPipe,
     OmButtonComponent,
-    DashboardHeaderComponent,
-    FormatSuiviConsoCategoryTitlePipe,
-    FormatCalledNumberPipe,
     HeaderScrollEffectDirective,
     CommonIssuesComponent,
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
     OemIonHeaderParallaxDirective,
-    CodeFormatPipe,
     FavoriteMerchantComponent,
-    AcronymPipe,
     IbouIonFabComponent,
-    DalalCardItemComponent,
     RapidoSoldeComponent,
     ItemIlliflexComponent,
     DataVolumePipe,
@@ -167,6 +144,7 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     RattachNumberModalComponent,
     RattachNumberByIdCardComponent,
     RattachNumberByClientCodeComponent,
+    CardRapidoNameModalComponent,
   ],
   exports: [
     BanniereComponent,
@@ -190,15 +168,9 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     PinPadComponent,
     ModalSuccessComponent,
     SelectRecipientComponent,
-    FormatBillNumPipe,
-    FormatBillDatePipe,
-    GetLabelLigneBillBordereauPipe,
-    FormatSuiviConsoCategoryTitlePipe,
     CancelOperationPopupComponent,
-    PhoneNumberDisplayPipe,
     SetOperationAmountComponent,
     HeaderComponent,
-    FormatSecondDatePipe,
     SuccessFailPopupComponent,
     PhonenumberItemComponent,
     SelectNumberPopupComponent,
@@ -208,18 +180,13 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     WelcomePopupComponent,
     SettingsPopupComponent,
     HelpBannerComponent,
-    PassVolumeDisplayPipe,
-    CodeFormatPipe,
     OmButtonComponent,
-    DashboardHeaderComponent,
-    FormatCalledNumberPipe,
     HeaderScrollEffectDirective,
     CommonIssuesComponent,
     MerchantPaymentCodeComponent,
     NoOmAccountModalComponent,
     FavoriteMerchantComponent,
     IbouIonFabComponent,
-    DalalCardItemComponent,
     RapidoSoldeComponent,
     ItemIlliflexComponent,
     DataVolumePipe,
@@ -229,7 +196,6 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
   providers: [
     Contacts,
     SocialSharing,
-    PassVolumeDisplayPipe,
     { provide: MatBottomSheetRef, useValue: {} },
     { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} },
   ],

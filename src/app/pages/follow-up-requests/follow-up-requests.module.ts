@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { FollowUpRequestsPage } from './follow-up-requests.page';
 import { SharedModule } from 'src/shared/shared.module';
+import { PipesModule } from 'src/app/pipes/pipes.module';
 
 const routes: Routes = [
   {
@@ -21,6 +22,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
+    PipesModule,
     RouterModule.forChild(routes)
   ],
   declarations: [FollowUpRequestsPage]

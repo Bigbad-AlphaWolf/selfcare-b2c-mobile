@@ -6,7 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { DashboardPage } from './dashboard.page';
 import { MatProgressSpinnerModule } from '@angular/material';
 import { SharedModule } from 'src/shared/shared.module';
-import { SidemenuComponent } from '../sidemenu/sidemenu.component';
+import { ComponentsModule } from '../components/components.module';
 const routes: Routes = [
   {
     path: '',
@@ -21,6 +21,7 @@ const routes: Routes = [
     IonicModule,
     MatProgressSpinnerModule,
     SharedModule,
+    ComponentsModule,
     RouterModule.forChild(routes)
   ],
   declarations: [DashboardPage]

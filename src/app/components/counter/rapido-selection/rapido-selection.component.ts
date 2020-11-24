@@ -18,6 +18,7 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { STATUS_ERROR_CODE_OM_CARD_RAPIDO_NOT_FOUND } from 'src/app/utils/errors.utils';
 import { getPageHeader } from 'src/app/utils/title.util';
 import { RapidoCounter } from 'src/app/models/rapido.model';
+import { CardRapidoNameModalComponent } from '../../card-rapido-name-modal/card-rapido-name-modal.component';
 
 @Component({
   selector: 'app-rapido-selection',
@@ -81,7 +82,7 @@ export class RapidoSelectionComponent implements OnInit {
               return c.counterNumber === carteRapido;
             }
           );
-          return !!carte;
+          return carte;
         }),
         catchError((err: any) => {
           this.isProcessing = false;
@@ -115,30 +116,48 @@ export class RapidoSelectionComponent implements OnInit {
     let counterRapido = rapido ? rapido.counterNumber : this.inputRapidoNumber;
 
     if (!this.rapidoNumberIsValid && !rapido) return;
-    let isFavoriteRapido = await this.isFavoriteRapido(counterRapido);
-    if (!isFavoriteRapido) {
-      const data = {
-        msisdn: this.currentUserNumber,
-        card_num: counterRapido,
-        card_label: '',
-      };
-      this.saveCardRapidoFavorite(data).subscribe(() => {
-        this.isProcessing = false;
-        this.modalCtrl.dismiss({
-          TYPE_BS: 'INPUT',
-          ACTION: 'FORWARD',
-          counter: { name: 'Autre', counterNumber: counterRapido },
-          operation: this.operation,
-        });
-      });
+    const favoriteRapido: RapidoCounter = await this.isFavoriteRapido(counterRapido);
+    if (!favoriteRapido) {
+      this.openCardRapidoNameModal(counterRapido);
     } else {
       this.modalCtrl.dismiss({
         TYPE_BS: 'INPUT',
         ACTION: 'FORWARD',
-        counter: { name: 'Autre', counterNumber: counterRapido },
+        counter: { name: favoriteRapido.name, counterNumber: counterRapido },
         operation: this.operation,
       });
     }
+  }
+
+  async openCardRapidoNameModal(counter: string) {
+    const modal = await this.modalCtrl.create({
+      component: CardRapidoNameModalComponent,
+      componentProps: {
+        counter
+      },
+      cssClass: 'select-recipient-modal'
+    });
+    modal.onDidDismiss().then((res: any) => {
+      res = res.data;
+      if(res.label_carte) {
+        const data = {
+          msisdn: this.currentUserNumber,
+          card_num: counter,
+          card_label: res.label_carte,
+        };
+        this.saveCardRapidoFavorite(data).subscribe(() => {
+          this.isProcessing = false;
+          this.modalCtrl.dismiss({
+            TYPE_BS: 'INPUT',
+            ACTION: 'FORWARD',
+            counter: { name: data.card_label, counterNumber: counter },
+            operation: this.operation,
+          });
+        });
+      }
+    })
+
+    return await modal.present();
   }
 
   saveCardRapidoFavorite(data: {
@@ -194,7 +213,6 @@ export class RapidoSelectionComponent implements OnInit {
           !omSession.hasApiKey ||
           omSession.loginExpired
         ) {
-          this.modalCtrl.dismiss();
           this.openPinpad();
         }
         if (omSession.msisdn !== 'error') {
@@ -221,8 +239,14 @@ export class RapidoSelectionComponent implements OnInit {
     modal.onDidDismiss().then((response) => {
       if (response.data && response.data.success) {
         this.bsService.opXtras.omSession.loginExpired = false;
+      } else {
+        this.modalCtrl.dismiss({});
       }
     });
     return await modal.present();
+  }
+
+  getRapidoLabelFromCounter(counter) {
+    
   }
 }
