@@ -5,6 +5,10 @@
   border-radius: 5px;
   background-color: $white;
   position: relative;
+  background-image: url('/assets/images/star-illiflex.png');
+  background-repeat: no-repeat;
+  background-position-x: 105%;
+  background-position-y: -50%;
   .price-block {
     font-family: HelveticaNeueLTStd-Bd;
     font-size: 20px;

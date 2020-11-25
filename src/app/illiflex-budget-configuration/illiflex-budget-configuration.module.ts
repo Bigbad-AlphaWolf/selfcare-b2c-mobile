@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { SharedModule } from 'src/shared/shared.module';
 import { IlliflexBudgetConfigurationPage } from './illiflex-budget-configuration.page';
 import { IlliflexSetAmountModalComponent } from './components/illiflex-set-amount-modal/illiflex-set-amount-modal.component';
+import { GaugeKnobDirective } from '../directives/gauge-range-knob-style/gauge-knob.directive';
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
   declarations: [
     IlliflexBudgetConfigurationPage,
     IlliflexSetAmountModalComponent,
+    GaugeKnobDirective,
   ],
   entryComponents: [IlliflexSetAmountModalComponent],
 })

@@ -30,6 +30,8 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
   maxData: number = 0;
   // min data volume
   minData: number = 0;
+  // percentage of total amount invested in data
+  dataSegmentation: number;
   constructor(
     private navController: NavController,
     private illiflexService: IlliflexService,
@@ -46,15 +48,6 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     this.illiflexService.getIlliflexPaliers().subscribe((res: any[]) => {
       this.paliers = res;
     });
-  }
-
-  ionViewDidEnter() {
-    // style my knob cursor on gauge (to put in directive)
-    const range = document.getElementsByTagName('ion-range')[0];
-    const shadow = range.shadowRoot;
-    const childNodes = Array.from(shadow.childNodes);
-    const el2 = <HTMLElement>childNodes[1].childNodes[2].childNodes[0];
-    el2.style.border = 'solid 2px #ffffff';
   }
 
   goBack() {
@@ -100,6 +93,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     if (!this.selectedPalier) return;
     const dataPrice =
       this.dataVolumeValue * this.selectedPalier.dataPrice * 1.239;
+    this.dataSegmentation = dataPrice / this.amount;
     const voicePrice = this.amount - dataPrice;
     this.voiceQuantityValue =
       voicePrice / (this.selectedPalier.voicePrice * 1.239);
