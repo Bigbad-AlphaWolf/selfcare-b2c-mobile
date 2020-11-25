@@ -23,7 +23,6 @@ export class ApplicationRoutingService {
     this.route.navigate(['/dashboard']);
   }
 
-
   goToListPassInternet(data: any) {
     const payload = Object.assign(data, {
       purchaseType: OPERATION_TYPE_PASS_INTERNET,
@@ -48,7 +47,6 @@ export class ApplicationRoutingService {
     this.route.navigate(['/list-pass'], navigationExtras);
   }
 
-
   goToTransfertHubServicesPage(purchaseType: 'BUY' | 'TRANSFER', isLightMod?) {
     let navigationExtras: NavigationExtras = {
       state: {
@@ -60,14 +58,17 @@ export class ApplicationRoutingService {
   }
 
   goToSetIlliflexPage(type: IlliflexOption, amount?) {
-    type = IlliflexOption.BUDGET;
     let navigationExtras: NavigationExtras = {
       state: {
         type,
         amount,
       },
     };
-    this.route.navigate(['/illiflex-configuration'], navigationExtras);
+    const routeUrl =
+      type === IlliflexOption.USAGE
+        ? '/illiflex-configuration'
+        : 'illiflex-budget-configuration';
+    this.route.navigate([routeUrl], navigationExtras);
   }
 
   goToTransfertMoneySetAmountPage(payload: {
@@ -137,7 +138,7 @@ export class ApplicationRoutingService {
   goToDeleteRattachmentPage() {
     this.route.navigate(['/my-account/delete-number']);
   }
-  
+
   goToBuyPassInternetKirene() {
     this.route.navigate(['/buy-pass-internet']);
   }

@@ -55,8 +55,6 @@ export class IlliflexConfigurationPage implements OnInit {
   getIlliflexPaliers() {
     this.illiflexService.getIlliflexPaliers().subscribe((res: any[]) => {
       this.paliers = res;
-      console.log(res);
-
       this.validities = [
         ...new Set(this.paliers.map((palier) => palier.validite)),
       ];

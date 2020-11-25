@@ -49,7 +49,6 @@ import { IonicImageLoader } from 'ionic-image-loader';
 import { RapidoSelectionComponent } from 'src/app/components/counter/rapido-selection/rapido-selection.component';
 import { FavoriteRapidoComponent } from 'src/app/components/counter/favorite-rapido/favorite-rapido.component';
 import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
-import { ItemIlliflexComponent } from './illiflex-item/item-illiflex/item-illiflex.component';
 import { DataVolumePipe } from './pipes/data-volume.pipe';
 import { IlliflexVoicePipe } from './pipes/illiflex-voice.pipe';
 import { RattachNumberModalComponent } from 'src/app/components/rattach-number-modal/rattach-number-modal.component';
@@ -106,9 +105,6 @@ import { CardRapidoNameModalComponent } from 'src/app/components/card-rapido-nam
     FavoriteMerchantComponent,
     IbouIonFabComponent,
     RapidoSoldeComponent,
-    ItemIlliflexComponent,
-    DataVolumePipe,
-    IlliflexVoicePipe,
   ],
   imports: [
     CommonModule,
@@ -188,10 +184,8 @@ import { CardRapidoNameModalComponent } from 'src/app/components/card-rapido-nam
     FavoriteMerchantComponent,
     IbouIonFabComponent,
     RapidoSoldeComponent,
-    ItemIlliflexComponent,
-    DataVolumePipe,
-    IlliflexVoicePipe,
     MaterialComponentsModule,
+    PipesModule,
   ],
   providers: [
     Contacts,
