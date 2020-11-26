@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { REGEX_FIX_NUMBER, REGEX_NUMBER } from 'src/shared';
 import { MatDialog } from '@angular/material';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
@@ -14,14 +14,19 @@ import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow
 })
 export class RattachNumberModalComponent implements OnInit {
   isLoading: boolean;
-  phoneNumber: string;
+  @Input() phoneNumber: string;
   hasError: boolean;
   isInputValid: boolean;
   msgError: string;
   mainNumber = this.dashbServ.getMainPhoneNumber();
   constructor(private dialog: MatDialog, private modalCon: ModalController, private dashbServ: DashboardService, private followAnalyticsService: FollowAnalyticsService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('phone', this.phoneNumber);
+    if(this.phoneNumber){
+      this.processRattachement();
+    }
+  }
 
   isValidMobileNumber(): boolean {
     return REGEX_NUMBER.test(this.phoneNumber);
@@ -42,13 +47,15 @@ export class RattachNumberModalComponent implements OnInit {
     this.isLoading = true;
     this.hasError = false;
     this.msgError = null;
-    const payload : { numero: string, typeNumero: "MOBILE" | "FIXE" } = { numero: this.phoneNumber, typeNumero: this.isValidMobileNumber ? "MOBILE" : "FIXE" };
+    const payload : { numero: string, typeNumero: "MOBILE" | "FIXE" } = { numero: this.phoneNumber, typeNumero: this.isValidMobileNumber() ? "MOBILE" : "FIXE" };
     this.dashbServ.registerNumberToAttach(payload).pipe((tap(() => {
       this.openSuccessDialog(payload.numero);
     }))
     ).subscribe(() => {
       this.isLoading = false;
       this.hasError = false;
+      this.nextStepRattachement(true, this.phoneNumber, "NONE")
+
       this.followAttachmentIssues(payload, 'event')
 
     }, (err: any) => {
@@ -58,11 +65,7 @@ export class RattachNumberModalComponent implements OnInit {
       if(err && (err.error.errorKey === 'userRattached' || err.error.errorKey === 'userexists')) {
         this.msgError = err.error.title ? err.error.title : "Impossible d'effectuer le rattachement de la ligne " ;
       } else {
-        if(this.isValidMobileNumber()){
-          this.openRattachementNumberByIdCardModal(this.phoneNumber);
-        } else {
-          this.nextStepRattachement(false, this.phoneNumber, "FIXE")
-        }
+          this.nextStepRattachement(false, this.phoneNumber, "FORWARD")
       }
     })
     
@@ -76,11 +79,11 @@ export class RattachNumberModalComponent implements OnInit {
     });
   }
 
-  nextStepRattachement(status: boolean, numeroToRattach: string, typeNumber: 'MOBILE' | 'FIXE') {
+  nextStepRattachement(status: boolean, numeroToRattach: string, direction?: string) {
     this.modalCon.dismiss({
       'rattached': status,
       'numeroToRattach': numeroToRattach,
-      'typeRattachment' : typeNumber
+      'direction' : direction
     })
   }
   openRattachementNumberByIdCardModal(numeroToRattach: string) {
@@ -122,5 +125,11 @@ export class RattachNumberModalComponent implements OnInit {
         infosFollow
       );
     }
+  }
+
+  goBack() {
+    this.modalCon.dismiss({
+      direction: "BACK"
+    })
   }
 }

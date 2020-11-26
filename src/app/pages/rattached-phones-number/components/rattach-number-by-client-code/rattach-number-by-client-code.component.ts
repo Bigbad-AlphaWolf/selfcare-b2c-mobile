@@ -4,6 +4,7 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { AccountService } from 'src/app/services/account-service/account.service';
 import { take, tap, catchError } from 'rxjs/operators';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { REGEX_NUMBER } from 'src/shared';
 
 @Component({
   selector: 'app-rattach-number-by-client-code',
@@ -22,21 +23,25 @@ export class RattachNumberByClientCodeComponent implements OnInit {
 
   ngOnInit() {}
 
+  isValidMobileNumber(): boolean {
+    return REGEX_NUMBER.test(this.number);
+  }
   processRattachment() {
     this.isLoading = true;
-    const payload: { numero: string, idClient: string, typeNumero: "FIXE" | "MOBILE" } = { idClient: this.clientCode, numero: this.number, typeNumero: "FIXE"  }
+    const typeNumero = this.isValidMobileNumber() ? "MOBILE" : "FIXE" ;
+    const payload: { numero: string, idClient: string, typeNumero: "FIXE" | "MOBILE" } = { idClient: this.clientCode, numero: this.number, typeNumero: typeNumero  }
     this.dashbServ.registerNumberByIdClient(payload).pipe(
       take(1)
       ).subscribe((res: any) => {
         this.isLoading = false;
         this.hasError = false;
-        this.followAttachmentIssues({numero: this.number, clientCode: payload.idClient, typeNumero: "FIXE"}, 'event')
-        this.dismissModal({ success: true, typeRattachment: 'FIXE', numero: this.number })
+        this.followAttachmentIssues({numero: this.number, clientCode: payload.idClient, typeNumero: typeNumero}, 'event')
+        this.dismissModal({ success: true, typeRattachment: typeNumero, numero: this.number })
       }, (err: any) => {
         this.isLoading = false
         this.hasError = true;
-        this.followAttachmentIssues({numero: this.number, clientCode: payload.idClient, typeNumero: "FIXE"}, 'error')
-        this.dismissModal({ success: false, typeRattachment: 'FIXE', numero: this.number })
+        this.followAttachmentIssues({numero: this.number, clientCode: payload.idClient, typeNumero: typeNumero}, 'error')
+        this.dismissModal({ success: false, typeRattachment: typeNumero, numero: this.number })
       });
   }
 

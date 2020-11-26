@@ -4,6 +4,7 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { AccountService } from 'src/app/services/account-service/account.service';
 import { take } from 'rxjs/operators';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { REGEX_NUMBER } from 'src/shared';
 
 @Component({
   selector: 'app-rattach-number-by-id-card',
@@ -20,25 +21,27 @@ export class RattachNumberByIdCardComponent implements OnInit {
 
   constructor(private modContr: ModalController, private dashbServ: DashboardService, private accountServ: AccountService, private followAnalyticsService: FollowAnalyticsService) { }
 
-  ngOnInit() {
-    console.log(this.number,);
-    
-  }
+  ngOnInit() {}
 
+  isValidMobileNumber(): boolean {
+    return REGEX_NUMBER.test(this.number);
+  }
+  
   processRattachment() {
     this.isLoading = true;
+    const typeNumero = this.isValidMobileNumber() ? "MOBILE" : "FIXE"
     const payload = { identificationId: this.idCard, login: this.mainUser, numero: this.number  }
 
     this.accountServ.attachNumberByIdCard(payload).pipe(take(1)).subscribe((res: any) => {
       this.isLoading = false;
       this.hasError = false;
-      this.followAttachmentIssues({numero: payload.numero, idCard: payload.identificationId, typeNumero: "MOBILE"}, 'event');
-      this.dismissModal({ success: true, typeRattachment: 'MOBILE', numero: this.number })
+      this.followAttachmentIssues({numero: payload.numero, idCard: payload.identificationId, typeNumero: typeNumero}, 'event');
+      this.dismissModal({ success: true, typeRattachment: typeNumero, numero: this.number })
     }, (err: any) => {
       this.isLoading = false;
       this.hasError = true;
       this.followAttachmentIssues({numero: payload.numero, idCard: payload.identificationId, typeNumero: "MOBILE"}, 'error');
-      this.dismissModal({ success: false, typeRattachment: 'MOBILE', numero: this.number })
+      this.dismissModal({ success: false, typeRattachment: typeNumero, numero: this.number })
     });
   }
 
