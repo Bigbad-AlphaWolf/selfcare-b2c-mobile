@@ -69,12 +69,21 @@
     }
 
     .gauge-block {
-      &-disabled {
-        pointer-events: none;
-        opacity: 0.2;
+      position: relative;
+      mat-spinner {
+        position: absolute;
+        left: percentage(162.5/345);
+        top: 30%;
+      }
+      .mat-spinner::ng-deep circle {
+        stroke: $orange;
       }
       .gauge-item {
         margin-top: 25px;
+        &.gauge-disabled {
+          pointer-events: none;
+          opacity: 0.2;
+        }
         .gauge-title {
           font-size: 20px;
           line-height: 1.5;

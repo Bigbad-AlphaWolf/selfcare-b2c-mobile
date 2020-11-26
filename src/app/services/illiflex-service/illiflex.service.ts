@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { SubscriptionModel } from 'src/app/dashboard';
 import { BuyIlliflexModel } from 'src/app/models/buy-illiflex.model';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
 import { PalierModel } from 'src/app/models/palier.model';
@@ -9,17 +11,22 @@ import {
   getMaxDataVolumeOrVoiceOfPaliers,
   getMinDataVolumeOrVoiceOfPaliers,
 } from 'src/shared';
+import { AuthenticationService } from '../authentication-service/authentication.service';
 const { CONSO_SERVICE, SERVER_API_URL } = environment;
 const paliersEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pricings`;
 const buyIlliflexEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/buy-pass-illiflex`;
+const bestOfferEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pricings`;
 
 @Injectable({
   providedIn: 'root',
 })
 export class IlliflexService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthenticationService
+  ) {}
 
-  getIlliflexPaliers() {
+  getIlliflexPaliers(): Observable<PalierModel[]> {
     return this.http.get(`${paliersEndpoint}`).pipe(
       map((res: PalierModel[]) => {
         res.map((palier) => {
@@ -89,5 +96,28 @@ export class IlliflexService {
       default:
         return;
     }
+  }
+
+  getBestOffer(param: {
+    recipientMsisdn: string;
+    amount: number;
+    validity: string;
+  }): Observable<BuyIlliflexModel> {
+    return this.authService.getSubscriptionForTiers(param.recipientMsisdn).pipe(
+      switchMap((sub: SubscriptionModel) => {
+        const payload = {
+          partyAccount: {
+            msisdn: param.recipientMsisdn,
+            profile: sub.code,
+          },
+          budget: {
+            unit: 'XOF',
+            value: param.amount,
+          },
+          validity: this.getValidityName(param.validity),
+        };
+        return this.http.post(bestOfferEndpoint, payload);
+      })
+    );
   }
 }

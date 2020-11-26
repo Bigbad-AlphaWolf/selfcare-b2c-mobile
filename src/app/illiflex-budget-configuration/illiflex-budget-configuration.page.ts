@@ -6,6 +6,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { PalierModel } from '../models/palier.model';
 import { IlliflexSetAmountModalComponent } from './components/illiflex-set-amount-modal/illiflex-set-amount-modal.component';
 import { OPERATION_TYPE_PASS_ILLIFLEX } from 'src/shared';
+import { BuyIlliflexModel } from '../models/buy-illiflex.model';
 @Component({
   selector: 'app-illiflex-budget-configuration',
   templateUrl: './illiflex-budget-configuration.page.html',
@@ -32,6 +33,8 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
   minData: number = 0;
   // percentage of total amount invested in data
   dataSegmentation: number;
+  // boolean to get bestOffer
+  gettingBestOffer: boolean;
   constructor(
     private navController: NavController,
     private illiflexService: IlliflexService,
@@ -62,7 +65,26 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     this.getMaxDataVolumeOfAmount();
     this.getMinDataVolumeOfAmount();
     this.validity = this.getCurrentValidity();
-    this.dataVolumeValue = this.selectedPalier.minDataVolume;
+    this.getBestOffer();
+  }
+
+  getBestOffer() {
+    this.gettingBestOffer = true;
+    const bestOfferPayload = {
+      recipientMsisdn: this.dashboardService.getCurrentPhoneNumber(),
+      amount: this.amount,
+      validity: this.selectedPalier.validite,
+    };
+    this.illiflexService.getBestOffer(bestOfferPayload).subscribe(
+      (bestOffer: BuyIlliflexModel) => {
+        this.dataVolumeValue = bestOffer.bucket.dataBucket.balance.amount;
+        this.gettingBestOffer = false;
+      },
+      (err) => {
+        this.dataVolumeValue = this.minData;
+        this.gettingBestOffer = false;
+      }
+    );
   }
 
   getMaxDataVolumeOfAmount() {

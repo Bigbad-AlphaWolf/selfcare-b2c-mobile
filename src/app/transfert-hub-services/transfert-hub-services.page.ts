@@ -140,6 +140,21 @@ export class TransfertHubServicesPage implements OnInit {
     type: 'CREDIT',
     url: '',
   };
+  buyIlliflexOption: {
+    title: string;
+    subtitle: string;
+    icon: string;
+    type;
+    url?: string;
+    action?: 'REDIRECT' | 'POPUP';
+  } = {
+    title: 'Pass',
+    subtitle: 'Illiflex',
+    icon: '/assets/images/ic-international.png',
+    action: 'REDIRECT',
+    type: 'ILLIFLEX',
+    url: '',
+  };
   options: {
     title: string;
     subtitle: string;
@@ -153,7 +168,8 @@ export class TransfertHubServicesPage implements OnInit {
       | 'PASS_ILLIMIX'
       | 'PASS_VOYAGE'
       | 'PASS_INTERNATIONAL'
-      | 'PASS_ALLO';
+      | 'PASS_ALLO'
+      | 'ILLIFLEX';
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
   }[] = [];
@@ -187,6 +203,7 @@ export class TransfertHubServicesPage implements OnInit {
       this.isLightMod = history.state.isLightMod;
       if (!this.isLightMod) {
         this.buyOptions.splice(0, 0, this.buyCreditOption);
+        this.buyOptions.push(this.buyIlliflexOption);
       }
     }
     if (purchaseType === 'TRANSFER') {
@@ -276,6 +293,9 @@ export class TransfertHubServicesPage implements OnInit {
             'list-pass'
           );
         }
+        break;
+      case 'ILLIFLEX':
+        this.router.navigate(['/select-illiflex-type']);
         break;
       default:
         break;

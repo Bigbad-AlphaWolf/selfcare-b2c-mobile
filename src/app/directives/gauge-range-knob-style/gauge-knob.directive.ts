@@ -29,6 +29,6 @@ export class GaugeKnobDirective implements AfterViewChecked {
       this.el.nativeElement.shadowRoot.querySelector('.range-bar-active')
     );
     rangeBar.style.opacity = `${1 - this.dataOpacity}`;
-    rangeBarActive.style.opacity = `${this.dataOpacity * 1.5}`;
+    rangeBarActive.style.opacity = `${this.dataOpacity * 0.75 + 0.3}`;
   }
 }
