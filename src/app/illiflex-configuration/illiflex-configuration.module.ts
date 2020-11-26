@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { IlliflexConfigurationPage } from './illiflex-configuration.page';
 import { SharedModule } from 'src/shared/shared.module';
+import { PipesModule } from '../pipes/pipes.module';
 
 const routes: Routes = [
   {

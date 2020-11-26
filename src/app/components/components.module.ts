@@ -14,6 +14,7 @@ import { IonicModule } from '@ionic/angular';
 import { DalalCardItemComponent } from 'src/shared/dalal-card-item/dalal-card-item.component';
 import { DashboardHeaderComponent } from 'src/shared/dashboard-header/dashboard-header.component';
 import { CardRapidoNameModalComponent } from './card-rapido-name-modal/card-rapido-name-modal.component';
+import { ItemIlliflexComponent } from 'src/shared/illiflex-item/item-illiflex/item-illiflex.component';
 
 @NgModule({
   declarations: [
@@ -27,14 +28,10 @@ import { CardRapidoNameModalComponent } from './card-rapido-name-modal/card-rapi
     RattachNumberByClientCodeComponent,
     DalalCardItemComponent,
     DashboardHeaderComponent,
-    CardRapidoNameModalComponent
+    CardRapidoNameModalComponent,
+    ItemIlliflexComponent,
   ],
-  imports: [
-    CommonModule,
-    PipesModule,
-    MaterialComponentsModule,
-    IonicModule
-  ],
+  imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule],
   exports: [
     ItemOfferPlanComponent,
     ItemPassIllimixComponent,
@@ -46,8 +43,9 @@ import { CardRapidoNameModalComponent } from './card-rapido-name-modal/card-rapi
     RattachNumberByClientCodeComponent,
     DalalCardItemComponent,
     DashboardHeaderComponent,
-    CardRapidoNameModalComponent
+    CardRapidoNameModalComponent,
+    ItemIlliflexComponent,
   ],
-  entryComponents: [RattachNumberModalComponent, CardRapidoNameModalComponent]
+  entryComponents: [RattachNumberModalComponent, CardRapidoNameModalComponent],
 })
-export class ComponentsModule { }
+export class ComponentsModule {}

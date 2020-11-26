@@ -11,32 +11,40 @@ import { FormatSuiviConsoCategoryTitlePipe } from 'src/shared/pipes/format-suivi
 import { FormatCalledNumberPipe } from 'src/shared/pipes/format-called-number.pipe';
 import { CodeFormatPipe } from './code-format/code-format.pipe';
 import { AcronymPipe } from 'src/shared/pipes/acronym.pipe';
+import { DataVolumePipe } from 'src/shared/pipes/data-volume.pipe';
+import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
 
 @NgModule({
-  declarations: [ FormatCurrencyPipe,
-    FormatBillNumPipe, 
-    FormatBillDatePipe, 
-    PhoneNumberDisplayPipe, 
-    FormatSecondDatePipe, 
+  declarations: [
+    FormatCurrencyPipe,
+    FormatBillNumPipe,
+    FormatBillDatePipe,
+    PhoneNumberDisplayPipe,
+    FormatSecondDatePipe,
     GetLabelLigneBillBordereauPipe,
     PassVolumeDisplayPipe,
     FormatSuiviConsoCategoryTitlePipe,
     FormatCalledNumberPipe,
     CodeFormatPipe,
-    AcronymPipe ],
-  imports: [
-    CommonModule
+    AcronymPipe,
+    DataVolumePipe,
+    IlliflexVoicePipe,
   ],
-  exports: [ FormatCurrencyPipe, 
-    FormatBillNumPipe, 
-    FormatBillDatePipe, 
-    PhoneNumberDisplayPipe, 
-    FormatSecondDatePipe, 
+  imports: [CommonModule],
+  exports: [
+    FormatCurrencyPipe,
+    FormatBillNumPipe,
+    FormatBillDatePipe,
+    PhoneNumberDisplayPipe,
+    FormatSecondDatePipe,
     GetLabelLigneBillBordereauPipe,
     PassVolumeDisplayPipe,
     FormatSuiviConsoCategoryTitlePipe,
     FormatCalledNumberPipe,
     CodeFormatPipe,
-    AcronymPipe ]
+    AcronymPipe,
+    DataVolumePipe,
+    IlliflexVoicePipe,
+  ],
 })
-export class PipesModule { }
+export class PipesModule {}
