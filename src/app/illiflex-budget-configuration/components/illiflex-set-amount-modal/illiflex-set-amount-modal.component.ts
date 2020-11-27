@@ -28,12 +28,12 @@ export class IlliflexSetAmountModalComponent implements OnInit {
   }
 
   setAmount(amount) {
-    console.log(amount);
     this.hasError = false;
     if (amount < 500) {
       this.hasError = true;
       this.error = 'Le montant saisi doit être supérieur à 500 F CFA';
     } else if (amount > 15000) {
+      this.hasError = true;
       this.error = 'Le montant saisi doit être inférieur à 15000 F CFA';
     } else {
       this.modalController.dismiss(amount);
