@@ -73,7 +73,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     const bestOfferPayload = {
       recipientMsisdn: this.dashboardService.getCurrentPhoneNumber(),
       amount: this.amount,
-      validity: 'Jour', // this.selectedPalier.validite,
+      validity: this.selectedPalier.validite,
     };
     this.illiflexService.getBestOffer(bestOfferPayload).subscribe(
       (bestOffer: BestOfferIlliflexModel) => {
