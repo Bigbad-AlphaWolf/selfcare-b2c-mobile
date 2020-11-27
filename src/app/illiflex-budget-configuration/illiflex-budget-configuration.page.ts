@@ -6,7 +6,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { PalierModel } from '../models/palier.model';
 import { IlliflexSetAmountModalComponent } from './components/illiflex-set-amount-modal/illiflex-set-amount-modal.component';
 import { OPERATION_TYPE_PASS_ILLIFLEX } from 'src/shared';
-import { BuyIlliflexModel } from '../models/buy-illiflex.model';
+import { BestOfferIlliflexModel } from '../models/best-offer-illiflex.model';
 @Component({
   selector: 'app-illiflex-budget-configuration',
   templateUrl: './illiflex-budget-configuration.page.html',
@@ -73,11 +73,11 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     const bestOfferPayload = {
       recipientMsisdn: this.dashboardService.getCurrentPhoneNumber(),
       amount: this.amount,
-      validity: this.selectedPalier.validite,
+      validity: 'Jour', // this.selectedPalier.validite,
     };
     this.illiflexService.getBestOffer(bestOfferPayload).subscribe(
-      (bestOffer: BuyIlliflexModel) => {
-        this.dataVolumeValue = bestOffer.bucket.dataBucket.balance.amount;
+      (bestOffer: BestOfferIlliflexModel) => {
+        this.dataVolumeValue = bestOffer.dataBucket.balance.amount;
         this.gettingBestOffer = false;
       },
       (err) => {

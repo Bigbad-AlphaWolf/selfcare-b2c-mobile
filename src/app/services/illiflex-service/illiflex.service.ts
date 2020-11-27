@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { SubscriptionModel } from 'src/app/dashboard';
-import { BuyIlliflexModel } from 'src/app/models/buy-illiflex.model';
+import { BestOfferIlliflexModel } from 'src/app/models/best-offer-illiflex.model';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
 import { PalierModel } from 'src/app/models/palier.model';
 import { environment } from 'src/environments/environment';
@@ -15,7 +15,7 @@ import { AuthenticationService } from '../authentication-service/authentication.
 const { CONSO_SERVICE, SERVER_API_URL } = environment;
 const paliersEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pricings`;
 const buyIlliflexEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/buy-pass-illiflex`;
-const bestOfferEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pricings`;
+const bestOfferEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/prepay-balance/best-offer`;
 
 @Injectable({
   providedIn: 'root',
@@ -102,21 +102,13 @@ export class IlliflexService {
     recipientMsisdn: string;
     amount: number;
     validity: string;
-  }): Observable<BuyIlliflexModel> {
+  }): Observable<BestOfferIlliflexModel> {
     return this.authService.getSubscriptionForTiers(param.recipientMsisdn).pipe(
       switchMap((sub: SubscriptionModel) => {
-        const payload = {
-          partyAccount: {
-            msisdn: param.recipientMsisdn,
-            profile: sub.code,
-          },
-          budget: {
-            unit: 'XOF',
-            value: param.amount,
-          },
-          validity: this.getValidityName(param.validity),
-        };
-        return this.http.post(bestOfferEndpoint, payload);
+        const validity = this.getValidityName(param.validity);
+        return this.http.get(
+          `${bestOfferEndpoint}/${param.recipientMsisdn}?codeFormule=${sub.code}&montant=${param.amount}&validity=${validity}&unit=XOF`
+        );
       })
     );
   }
