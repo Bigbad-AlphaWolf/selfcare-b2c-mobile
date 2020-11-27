@@ -34,14 +34,8 @@ import { ChooseRattachementTypeModalComponent } from '../pages/rattached-phones-
     ItemIlliflexComponent,
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent
-
   ],
-  imports: [
-    CommonModule,
-    PipesModule,
-    MaterialComponentsModule,
-    IonicModule
-  ],
+  imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule],
   exports: [
     ItemOfferPlanComponent,
     ItemPassIllimixComponent,
@@ -60,4 +54,4 @@ import { ChooseRattachementTypeModalComponent } from '../pages/rattached-phones-
   ],
   entryComponents: []
 })
-export class ComponentsModule { }
+export class ComponentsModule {}

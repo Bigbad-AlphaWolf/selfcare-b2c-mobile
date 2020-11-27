@@ -187,6 +187,7 @@ import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-ph
     IbouIonFabComponent,
     RapidoSoldeComponent,
     MaterialComponentsModule,
+    PipesModule,
   ],
   providers: [
     Contacts,

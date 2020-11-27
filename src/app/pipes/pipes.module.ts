@@ -15,11 +15,12 @@ import { DataVolumePipe } from 'src/shared/pipes/data-volume.pipe';
 import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
 
 @NgModule({
-  declarations: [ FormatCurrencyPipe,
-    FormatBillNumPipe, 
-    FormatBillDatePipe, 
-    PhoneNumberDisplayPipe, 
-    FormatSecondDatePipe, 
+  declarations: [
+    FormatCurrencyPipe,
+    FormatBillNumPipe,
+    FormatBillDatePipe,
+    PhoneNumberDisplayPipe,
+    FormatSecondDatePipe,
     GetLabelLigneBillBordereauPipe,
     PassVolumeDisplayPipe,
     FormatSuiviConsoCategoryTitlePipe,
@@ -31,11 +32,12 @@ import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
   imports: [
     CommonModule
   ],
-  exports: [ FormatCurrencyPipe, 
-    FormatBillNumPipe, 
-    FormatBillDatePipe, 
-    PhoneNumberDisplayPipe, 
-    FormatSecondDatePipe, 
+  exports: [
+    FormatCurrencyPipe,
+    FormatBillNumPipe,
+    FormatBillDatePipe,
+    PhoneNumberDisplayPipe,
+    FormatSecondDatePipe,
     GetLabelLigneBillBordereauPipe,
     PassVolumeDisplayPipe,
     FormatSuiviConsoCategoryTitlePipe,
@@ -45,4 +47,4 @@ import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
     DataVolumePipe,
     IlliflexVoicePipe ]
 })
-export class PipesModule { }
+export class PipesModule {}

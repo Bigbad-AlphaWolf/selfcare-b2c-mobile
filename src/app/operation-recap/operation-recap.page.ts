@@ -140,8 +140,8 @@ export class OperationRecapPage implements OnInit {
       };
       return;
     }
-
     this.opXtras = history.state;
+    console.log(this.opXtras);
     this.purchaseType = this.opXtras.purchaseType;
     this.isLightMod = this.opXtras.isLightMod;
     this.recipientMsisdn = this.opXtras.recipientMsisdn;

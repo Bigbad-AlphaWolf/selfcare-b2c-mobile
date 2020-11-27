@@ -211,7 +211,12 @@ export class BottomSheetService {
           this.openIdentifiedNumbersList();
       } else if( res.direction === "FORWARD") {
         const numero = res.numeroToRattach;
-        this.openSelectRattachmentType(numero);     
+        const typeRattachment = res.typeRattachment;
+        if(typeRattachment === 'FIXE') {
+          this.openSelectRattachmentType(numero);     
+        }else {
+          this.openRattacheNumberByIdCardModal(numero);
+        }
       }
       
     })
@@ -236,9 +241,9 @@ export class BottomSheetService {
           this.openRattacheNumberByIdCardModal(phoneNumber);
         } else if (res.typeRattachment === 'IDCLIENT') {
           this.openRattacheNumberByCustomerIdModal(phoneNumber);
-        } else if(res.direction === "BACK") {
-          this.openIdentifiedNumbersList();
         }
+      } else if(res.direction === "BACK") {
+        this.openIdentifiedNumbersList();
       }
       
     })
@@ -254,9 +259,14 @@ export class BottomSheetService {
       cssClass: 'select-recipient-modal'
     });
     modal.onDidDismiss().then((res: any) => {
-      res = res.data;      
+      res = res.data;            
       if(res.direction === "BACK"){
-        this.openSelectRattachmentType(number);
+        const typeRattachment = res.typeRattachment;
+        if(typeRattachment === "MOBILE") {
+          this.openIdentifiedNumbersList();
+        }else {
+          this.openSelectRattachmentType(number);
+        }
       } else {        
         if(res.rattached ) {          
           const numero = res.numeroToRattach;

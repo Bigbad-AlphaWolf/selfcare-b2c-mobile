@@ -1,0 +1,43 @@
+@import 'src/app/app';
+
+.modal-set-amount {
+  padding: 30px percentage(15/375);
+  .title {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 24px;
+    line-height: 1.25;
+    margin-bottom: 25px;
+  }
+  form {
+    .error-display {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 12px;
+      padding: 15px 0;
+    }
+    .rapid-choices {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      .choice {
+        width: percentage(105/345);
+        border-radius: 10px;
+        border: solid 1px $silver;
+        text-align: center;
+        padding: 15px 0;
+        margin-bottom: 15px;
+        .value {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 16px;
+        }
+        .unit {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 12px;
+          line-height: 1.17;
+        }
+      }
+    }
+    button {
+      border-radius: 10px;
+    }
+  }
+}

@@ -54,7 +54,7 @@ export class RattachNumberModalComponent implements OnInit {
     ).subscribe(() => {
       this.isLoading = false;
       this.hasError = false;
-      this.nextStepRattachement(true, this.phoneNumber, "NONE")
+      this.nextStepRattachement(true, this.phoneNumber, "NONE", payload.typeNumero)
 
       this.followAttachmentIssues(payload, 'event')
 
@@ -65,7 +65,7 @@ export class RattachNumberModalComponent implements OnInit {
       if(err && (err.error.errorKey === 'userRattached' || err.error.errorKey === 'userexists')) {
         this.msgError = err.error.title ? err.error.title : "Impossible d'effectuer le rattachement de la ligne " ;
       } else {
-          this.nextStepRattachement(false, this.phoneNumber, "FORWARD")
+          this.nextStepRattachement(false, this.phoneNumber, "FORWARD", payload.typeNumero)
       }
     })
     
@@ -79,20 +79,15 @@ export class RattachNumberModalComponent implements OnInit {
     });
   }
 
-  nextStepRattachement(status: boolean, numeroToRattach: string, direction?: string) {
+  nextStepRattachement(status: boolean, numeroToRattach: string, direction: string, typeRattachment: string) {
     this.modalCon.dismiss({
-      'rattached': status,
-      'numeroToRattach': numeroToRattach,
-      'direction' : direction
+      rattached: status,
+      numeroToRattach: numeroToRattach,
+      direction : direction,
+      typeRattachment : typeRattachment
     })
   }
-  openRattachementNumberByIdCardModal(numeroToRattach: string) {
-    this.modalCon.dismiss({
-      'rattached': false,
-      'typeRattachment' : 'MOBILE',
-      'numeroToRattach': numeroToRattach
-    });
-  }
+
 
   followAttachmentIssues(
     payload: { numero: string; typeNumero: string },
