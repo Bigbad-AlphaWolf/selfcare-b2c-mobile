@@ -4,6 +4,7 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { AccountService } from 'src/app/services/account-service/account.service';
 import { take } from 'rxjs/operators';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { REGEX_NUMBER } from 'src/shared';
 
 @Component({
   selector: 'app-rattach-number-by-id-card',
@@ -17,14 +18,18 @@ export class RattachNumberByIdCardComponent implements OnInit {
   hasError: boolean;
   mainUser = this.dashbServ.getMainPhoneNumber();
   errorMsg: string;
+  typeNumero: "MOBILE" | "FIXE";
 
   constructor(private modContr: ModalController, private dashbServ: DashboardService, private accountServ: AccountService, private followAnalyticsService: FollowAnalyticsService) { }
 
   ngOnInit() {
-    console.log(this.number,);
-    
+    this.typeNumero = this.isValidMobileNumber() ? "MOBILE" : "FIXE";
   }
 
+  isValidMobileNumber(): boolean {
+    return REGEX_NUMBER.test(this.number);
+  }
+  
   processRattachment() {
     this.isLoading = true;
     const payload = { identificationId: this.idCard, login: this.mainUser, numero: this.number  }
@@ -32,13 +37,13 @@ export class RattachNumberByIdCardComponent implements OnInit {
     this.accountServ.attachNumberByIdCard(payload).pipe(take(1)).subscribe((res: any) => {
       this.isLoading = false;
       this.hasError = false;
-      this.followAttachmentIssues({numero: payload.numero, idCard: payload.identificationId, typeNumero: "MOBILE"}, 'event');
-      this.dismissModal({ success: true, typeRattachment: 'MOBILE', numero: this.number })
+      this.followAttachmentIssues({numero: payload.numero, idCard: payload.identificationId, typeNumero: this.typeNumero}, 'event');
+      this.dismissModal({ success: true, typeRattachment: this.typeNumero, numero: this.number })
     }, (err: any) => {
       this.isLoading = false;
       this.hasError = true;
       this.followAttachmentIssues({numero: payload.numero, idCard: payload.identificationId, typeNumero: "MOBILE"}, 'error');
-      this.dismissModal({ success: false, typeRattachment: 'MOBILE', numero: this.number })
+      this.dismissModal({ success: false, typeRattachment: this.typeNumero, numero: this.number })
     });
   }
 
@@ -52,7 +57,8 @@ export class RattachNumberByIdCardComponent implements OnInit {
 
   goBack() {
     this.modContr.dismiss({
-      direction: "BACK"
+      direction: "BACK",
+      typeRattachment: this.typeNumero
     })
   }
 

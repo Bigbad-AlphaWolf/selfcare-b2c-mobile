@@ -5,3 +5,4 @@ export const ACCOUNT_PATH = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api`;
 export const ACCOUNT_REQUESTS_ENDPOINT = `${ACCOUNT_PATH}/abonne/requests`;
 export const ACCOUNT_REQUESTS_STATUS_ENDPOINT = `${ACCOUNT_PATH}/abonne/request`;
 export const ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT = `${ACCOUNT_PATH}/v2/rattachement-lignes/register/by-cni`;
+export const ACCOUNT_IDENTIFIED_NUMBERS_ENDPOINT = `${ACCOUNT_PATH}/abonne/v1/contact-numbers`;

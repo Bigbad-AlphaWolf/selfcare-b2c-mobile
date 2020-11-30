@@ -14,12 +14,15 @@ import { BillCompany } from 'src/app/models/bill-company.model';
 import { Subject } from 'rxjs';
 import { OPERATION_SEE_SOLDE_RAPIDO } from 'src/shared';
 import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
-import { RattachNumberModalComponent } from 'src/app/components/rattach-number-modal/rattach-number-modal.component';
-import { RattachNumberByIdCardComponent } from 'src/app/components/rattach-number-by-id-card/rattach-number-by-id-card.component';
+import { RattachNumberModalComponent } from 'src/app/pages/rattached-phones-number/components/rattach-number-modal/rattach-number-modal.component';
+import { RattachNumberByIdCardComponent } from 'src/app/pages/rattached-phones-number/components/rattach-number-by-id-card/rattach-number-by-id-card.component';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
-import { RattachNumberByClientCodeComponent } from 'src/app/components/rattach-number-by-client-code/rattach-number-by-client-code.component';
+import { RattachNumberByClientCodeComponent } from 'src/app/pages/rattached-phones-number/components/rattach-number-by-client-code/rattach-number-by-client-code.component';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
+import { IdentifiedNumbersListComponent } from 'src/app/pages/rattached-phones-number/components/identified-numbers-list/identified-numbers-list.component';
+import { RattachedNumber } from 'src/app/models/rattached-number.model';
+import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-phones-number/components/choose-rattachement-type-modal/choose-rattachement-type-modal.component';
 
 @Injectable({
   providedIn: 'root',
@@ -192,22 +195,55 @@ export class BottomSheetService {
       .subscribe(() => {});
   }
 
-  async openRattacheNumberModal() {
+  async openRattacheNumberModal(phoneNumber?: string) {
     const modal = await this.modalCtrl.create({
       component: RattachNumberModalComponent,
+      componentProps: {
+        phoneNumber
+      },
+      cssClass: 'select-recipient-modal'
+    });
+
+    modal.onDidDismiss().then((res: any) => {
+      console.log(res);
+      res = res.data;
+      if(res && res.direction === "BACK") {
+          this.openIdentifiedNumbersList();
+      } else if( res.direction === "FORWARD") {
+        const numero = res.numeroToRattach;
+        const typeRattachment = res.typeRattachment;
+        if(typeRattachment === 'FIXE') {
+          this.openSelectRattachmentType(numero);     
+        }else {
+          this.openRattacheNumberByIdCardModal(numero);
+        }
+      }
+      
+    })
+    return await modal.present();
+  }
+
+  async openSelectRattachmentType(phoneNumber?: string) {
+    const modal = await this.modalCtrl.create({
+      component: ChooseRattachementTypeModalComponent,
+      componentProps: {
+        phoneNumber
+      },
       cssClass: 'select-recipient-modal'
     });
 
     modal.onDidDismiss().then((res: any) => {
       console.log(res);
       res = res.data;      
-      if(res && !res.rattached) {
+      if(res && res.typeRattachment) {
         const numero = res.numeroToRattach;        
-        if(res.typeRattachment === 'MOBILE') {
-          this.openRattacheNumberByIdCardModal(numero);
-        } else if (res.typeRattachment === 'FIXE') {
-          this.openRattacheNumberByCustomerIdModal(numero);
+        if(res.typeRattachment === 'CIN') {
+          this.openRattacheNumberByIdCardModal(phoneNumber);
+        } else if (res.typeRattachment === 'IDCLIENT') {
+          this.openRattacheNumberByCustomerIdModal(phoneNumber);
         }
+      } else if(res.direction === "BACK") {
+        this.openIdentifiedNumbersList();
       }
       
     })
@@ -223,13 +259,17 @@ export class BottomSheetService {
       cssClass: 'select-recipient-modal'
     });
     modal.onDidDismiss().then((res: any) => {
-      res = res.data;      
+      res = res.data;            
       if(res.direction === "BACK"){
-        this.openRattacheNumberModal();
+        const typeRattachment = res.typeRattachment;
+        if(typeRattachment === "MOBILE") {
+          this.openIdentifiedNumbersList();
+        }else {
+          this.openSelectRattachmentType(number);
+        }
       } else {        
         if(res.rattached ) {          
           const numero = res.numeroToRattach;
-          this.actualiseRattachmentList();
           this.openSuccessDialog('rattachment-success', numero);
         } else {          
           this.openSuccessDialog('rattachment-failed');
@@ -250,11 +290,10 @@ export class BottomSheetService {
     modal.onDidDismiss().then((res: any) => {
       res = res.data;
       if(res.direction === "BACK"){
-        this.openRattacheNumberModal();
+        this.openSelectRattachmentType(number);
       } else {
         if(res.rattached ) {
           const numero = res.numeroToRattach;
-          this.actualiseRattachmentList();
           this.openSuccessDialog('rattachment-success', numero);
         } else {
           this.openSuccessDialog('rattachment-failed');
@@ -273,9 +312,22 @@ export class BottomSheetService {
     });
   }
 
-  actualiseRattachmentList() {
-    DashboardService.rattachedNumbers = null;
-    this.dashbServ.attachedNumbers().pipe(take(1)).subscribe();
+  async openIdentifiedNumbersList(rattachedNumbers?: RattachedNumber[]) {
+    const modal = await this.modalCtrl.create({
+      component: IdentifiedNumbersListComponent,
+      componentProps: {
+        rattachedNumbers
+      },
+      cssClass: 'select-recipient-modal'
+    });
+    modal.onDidDismiss().then((res: any) => {
+      res = res.data;
+      if(res.numeroToAttach || !res.direction){
+        this.openRattacheNumberModal(res.numeroToAttach);
+      }
+    })
+
+    return await modal.present();
   }
 
   followAttachmentIssues(

@@ -5,7 +5,7 @@
         <img src="/assets/images/sim-card-solid-new.svg" alt="">
       </div>
       <div class="text-infos">
-        <span class="number"> {{ line?.msisdn  }} </span>
+        <span class="number"> {{ line?.msisdn | phoneNumberDisplay  }} </span>
         <span class="formule scb-text-light-black"> {{ line?.formule }} </span>
       </div>
     </div>

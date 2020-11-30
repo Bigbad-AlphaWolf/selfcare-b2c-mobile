@@ -22,6 +22,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
+    PipesModule,
     RouterModule.forChild(routes),
   ],
   declarations: [IlliflexConfigurationPage],

@@ -49,15 +49,15 @@ import { IonicImageLoader } from 'ionic-image-loader';
 import { RapidoSelectionComponent } from 'src/app/components/counter/rapido-selection/rapido-selection.component';
 import { FavoriteRapidoComponent } from 'src/app/components/counter/favorite-rapido/favorite-rapido.component';
 import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
-import { DataVolumePipe } from './pipes/data-volume.pipe';
-import { IlliflexVoicePipe } from './pipes/illiflex-voice.pipe';
-import { RattachNumberModalComponent } from 'src/app/components/rattach-number-modal/rattach-number-modal.component';
+import { RattachNumberModalComponent } from 'src/app/pages/rattached-phones-number/components/rattach-number-modal/rattach-number-modal.component';
 import { ComponentsModule } from 'src/app/components/components.module';
-import { RattachNumberByIdCardComponent } from 'src/app/components/rattach-number-by-id-card/rattach-number-by-id-card.component';
-import { RattachNumberByClientCodeComponent } from 'src/app/components/rattach-number-by-client-code/rattach-number-by-client-code.component';
+import { RattachNumberByIdCardComponent } from 'src/app/pages/rattached-phones-number/components/rattach-number-by-id-card/rattach-number-by-id-card.component';
+import { RattachNumberByClientCodeComponent } from 'src/app/pages/rattached-phones-number/components/rattach-number-by-client-code/rattach-number-by-client-code.component';
 import { MaterialComponentsModule } from 'src/app/material-components/material-components.module';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { CardRapidoNameModalComponent } from 'src/app/components/card-rapido-name-modal/card-rapido-name-modal.component';
+import { IdentifiedNumbersListComponent } from 'src/app/pages/rattached-phones-number/components/identified-numbers-list/identified-numbers-list.component';
+import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-phones-number/components/choose-rattachement-type-modal/choose-rattachement-type-modal.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +104,7 @@ import { CardRapidoNameModalComponent } from 'src/app/components/card-rapido-nam
     OemIonHeaderParallaxDirective,
     FavoriteMerchantComponent,
     IbouIonFabComponent,
-    RapidoSoldeComponent,
+    RapidoSoldeComponent
   ],
   imports: [
     CommonModule,
@@ -141,6 +141,8 @@ import { CardRapidoNameModalComponent } from 'src/app/components/card-rapido-nam
     RattachNumberByIdCardComponent,
     RattachNumberByClientCodeComponent,
     CardRapidoNameModalComponent,
+    IdentifiedNumbersListComponent,
+    ChooseRattachementTypeModalComponent
   ],
   exports: [
     BanniereComponent,
