@@ -113,117 +113,126 @@ export class OperationRecapPage implements OnInit {
     private passService: PassInternetService
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     this.currentUserNumber = this.dashboardService.getCurrentPhoneNumber();
     this.getCurrentNumSubscription();
-    const pricePlanIndex = +this.route.snapshot.paramMap.get('ppi');
-    if (pricePlanIndex) {
-      const passByPPi: any = await this.passService.getPassByPPI(
-        pricePlanIndex
-      );
-      if (passByPPi.error) {
-        this.appRouting.goToDashboard();
-        return;
-      }
-      this.recipientMsisdn = this.currentUserNumber;
-      this.purchaseType =
-        passByPPi.passType === 'INTERNET'
-          ? OPERATION_TYPE_PASS_INTERNET
-          : OPERATION_TYPE_PASS_ILLIMIX;
-      this.passChoosen =
-        passByPPi.passType === 'INTERNET'
-          ? passByPPi.passInternet
-          : passByPPi.passIllimix;
-      this.buyPassPayload = {
-        destinataire: this.recipientMsisdn,
-        pass: this.passChoosen,
-      };
-      return;
-    }
-    this.opXtras = history.state;
-    console.log(this.opXtras);
-    this.purchaseType = this.opXtras.purchaseType;
-    this.isLightMod = this.opXtras.isLightMod;
-    this.recipientMsisdn = this.opXtras.recipientMsisdn;
-    switch (this.purchaseType) {
-      case OPERATION_TYPE_PASS_INTERNET:
-      case OPERATION_TYPE_PASS_ILLIMIX:
-      case OPERATION_TYPE_PASS_ALLO:
-      case OPERATION_TYPE_PASS_ILLIFLEX:
-        this.recipientName = this.opXtras.recipientName;
-        this.passChoosen = this.opXtras.pass;
-        this.recipientCodeFormule = this.opXtras.recipientCodeFormule;
-        this.buyPassPayload = {
-          destinataire: this.recipientMsisdn,
-          pass: this.passChoosen,
-        };
-        this.offerPlan = this.opXtras.offerPlan;
-        break;
-      case OPERATION_TYPE_PASS_VOYAGE:
-        this.recipientName = this.opXtras.recipientFromContact
-          ? this.opXtras.recipientFirstname +
-            ' ' +
-            this.opXtras.recipientLastname
-          : '';
-        this.buyPassPayload = {
-          destinataire: this.recipientMsisdn,
-          pass: this.opXtras.pass,
-        };
-        this.passChoosen = this.opXtras.pass;
-        this.offerPlan = this.opXtras.offerPlan;
-        break;
-      case OPERATION_TRANSFER_OM_WITH_CODE:
-        this.amount = this.opXtras.amount + this.opXtras.fee;
-        this.transferOMWithCodePayload.amount = this.opXtras.amount;
-        this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
-        this.transferOMWithCodePayload.prenom_receiver = this.opXtras.recipientFirstname;
-        this.transferOMWithCodePayload.nom_receiver = this.opXtras.recipientLastname;
-        this.recipientFirstName = this.opXtras.recipientFirstname;
-        this.recipientLastName = this.opXtras.recipientLastname;
-        this.recipientName =
-          this.recipientFirstName + ' ' + this.recipientLastName;
-        this.paymentMod = PAYMENT_MOD_OM;
-        break;
-      case OPERATION_TRANSFER_OM:
-        this.amount = this.opXtras.includeFee
-          ? this.opXtras.amount + this.opXtras.fee
-          : this.opXtras.amount;
-        this.transferOMPayload.amount = this.amount;
-        this.transferOMPayload.msisdn2 = this.recipientMsisdn;
-        this.recipientName =
-          this.opXtras.recipientFirstname +
-          ' ' +
-          this.opXtras.recipientLastname;
-        this.paymentMod = PAYMENT_MOD_OM;
-        break;
-      case OPERATION_TYPE_MERCHANT_PAYMENT:
-        this.amount = this.opXtras.amount;
-        this.merchantCode = this.opXtras.merchant.merchantCode;
-        this.merchantName = this.opXtras.merchant.name;
-        this.paymentMod = PAYMENT_MOD_OM;
-        this.merchantPaymentPayload = {
-          amount: this.amount,
-          code_marchand: this.merchantCode,
-          nom_marchand: this.merchantName,
-        };
-        break;
-      case OPERATION_TYPE_RECHARGE_CREDIT:
-        this.amount = this.opXtras.amount;
-        this.paymentMod = PAYMENT_MOD_OM;
-        this.recipientName = this.opXtras.recipientFromContact
-          ? this.opXtras.recipientFirstname +
-            ' ' +
-            this.opXtras.recipientLastname
-          : '';
-        this.offerPlan = this.opXtras.offerPlan;
-        break;
-      case OPERATION_RAPIDO:
-      case OPERATION_WOYOFAL:
-        break;
-      default:
-        this.appRouting.goToDashboard();
-        break;
-    }
+    if (this.route)
+      this.route.queryParams.subscribe(async () => {
+        if (
+          this.router.getCurrentNavigation() &&
+          this.router.getCurrentNavigation().extras.state &&
+          this.router.getCurrentNavigation().extras.state.purchaseType
+        ) {
+          const pricePlanIndex = +this.route.snapshot.paramMap.get('ppi');
+          if (pricePlanIndex) {
+            const passByPPi: any = await this.passService.getPassByPPI(
+              pricePlanIndex
+            );
+            if (passByPPi.error) {
+              this.appRouting.goToDashboard();
+              return;
+            }
+            this.recipientMsisdn = this.currentUserNumber;
+            this.purchaseType =
+              passByPPi.passType === 'INTERNET'
+                ? OPERATION_TYPE_PASS_INTERNET
+                : OPERATION_TYPE_PASS_ILLIMIX;
+            this.passChoosen =
+              passByPPi.passType === 'INTERNET'
+                ? passByPPi.passInternet
+                : passByPPi.passIllimix;
+            this.buyPassPayload = {
+              destinataire: this.recipientMsisdn,
+              pass: this.passChoosen,
+            };
+            return;
+          }
+          this.opXtras = history.state;
+          console.log(this.opXtras);
+          this.purchaseType = this.opXtras.purchaseType;
+          this.isLightMod = this.opXtras.isLightMod;
+          this.recipientMsisdn = this.opXtras.recipientMsisdn;
+          switch (this.purchaseType) {
+            case OPERATION_TYPE_PASS_INTERNET:
+            case OPERATION_TYPE_PASS_ILLIMIX:
+            case OPERATION_TYPE_PASS_ALLO:
+            case OPERATION_TYPE_PASS_ILLIFLEX:
+              this.recipientName = this.opXtras.recipientName;
+              this.passChoosen = this.opXtras.pass;
+              this.recipientCodeFormule = this.opXtras.recipientCodeFormule;
+              this.buyPassPayload = {
+                destinataire: this.recipientMsisdn,
+                pass: this.passChoosen,
+              };
+              this.offerPlan = this.opXtras.offerPlan;
+              break;
+            case OPERATION_TYPE_PASS_VOYAGE:
+              this.recipientName = this.opXtras.recipientFromContact
+                ? this.opXtras.recipientFirstname +
+                  ' ' +
+                  this.opXtras.recipientLastname
+                : '';
+              this.buyPassPayload = {
+                destinataire: this.recipientMsisdn,
+                pass: this.opXtras.pass,
+              };
+              this.passChoosen = this.opXtras.pass;
+              this.offerPlan = this.opXtras.offerPlan;
+              break;
+            case OPERATION_TRANSFER_OM_WITH_CODE:
+              this.amount = this.opXtras.amount + this.opXtras.fee;
+              this.transferOMWithCodePayload.amount = this.opXtras.amount;
+              this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
+              this.transferOMWithCodePayload.prenom_receiver = this.opXtras.recipientFirstname;
+              this.transferOMWithCodePayload.nom_receiver = this.opXtras.recipientLastname;
+              this.recipientFirstName = this.opXtras.recipientFirstname;
+              this.recipientLastName = this.opXtras.recipientLastname;
+              this.recipientName =
+                this.recipientFirstName + ' ' + this.recipientLastName;
+              this.paymentMod = PAYMENT_MOD_OM;
+              break;
+            case OPERATION_TRANSFER_OM:
+              this.amount = this.opXtras.includeFee
+                ? this.opXtras.amount + this.opXtras.fee
+                : this.opXtras.amount;
+              this.transferOMPayload.amount = this.amount;
+              this.transferOMPayload.msisdn2 = this.recipientMsisdn;
+              this.recipientName =
+                this.opXtras.recipientFirstname +
+                ' ' +
+                this.opXtras.recipientLastname;
+              this.paymentMod = PAYMENT_MOD_OM;
+              break;
+            case OPERATION_TYPE_MERCHANT_PAYMENT:
+              this.amount = this.opXtras.amount;
+              this.merchantCode = this.opXtras.merchant.merchantCode;
+              this.merchantName = this.opXtras.merchant.name;
+              this.paymentMod = PAYMENT_MOD_OM;
+              this.merchantPaymentPayload = {
+                amount: this.amount,
+                code_marchand: this.merchantCode,
+                nom_marchand: this.merchantName,
+              };
+              break;
+            case OPERATION_TYPE_RECHARGE_CREDIT:
+              this.amount = this.opXtras.amount;
+              this.paymentMod = PAYMENT_MOD_OM;
+              this.recipientName = this.opXtras.recipientFromContact
+                ? this.opXtras.recipientFirstname +
+                  ' ' +
+                  this.opXtras.recipientLastname
+                : '';
+              this.offerPlan = this.opXtras.offerPlan;
+              break;
+            case OPERATION_RAPIDO:
+            case OPERATION_WOYOFAL:
+              break;
+            default:
+              this.appRouting.goToDashboard();
+              break;
+          }
+        }
+      });
   }
 
   getCurrentNumSubscription() {
@@ -407,8 +416,8 @@ export class OperationRecapPage implements OnInit {
       (res: any) => {
         this.transactionSuccessful(res);
       },
-      () => {
-        this.transactionFailure();
+      (err: any) => {
+        this.transactionFailure(err);
       }
     );
   }
@@ -426,9 +435,12 @@ export class OperationRecapPage implements OnInit {
       },
       (err) => {
         this.buyingPass = false;
-        const errorMsg = err.message
-          ? err.message
-          : 'Une erreur est survenue. Veuillez réessayer plus tard';
+        let errorMsg;
+        if (err.status && err.status === 400) {
+          errorMsg = `Vous n'avez pas assez de crédit de recharge pour effectuer cette opération`;
+        } else {
+          errorMsg = `Une erreur est survenue. Veuillez réessayer plus tard`;
+        }
         this.openSuccessFailModal({
           success: false,
           msisdnBuyer: this.recipientMsisdn,
@@ -475,11 +487,12 @@ export class OperationRecapPage implements OnInit {
     });
   }
 
-  transactionFailure() {
+  transactionFailure(err) {
     this.buyingPass = false;
     // this.openSuccessFailModal({ success: false });
-    this.buyPassErrorMsg =
-      'Service indisponible. Veuillez réessayer ultérieurement';
+    this.buyPassErrorMsg = err.message
+      ? err.message
+      : 'Service indisponible. Veuillez réessayer ultérieurement';
     this.followAnalyticsService.registerEventFollow(
       'Credit_Buy_Pass_Internet_Error',
       'error',

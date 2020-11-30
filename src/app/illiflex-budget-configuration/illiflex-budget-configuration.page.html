@@ -30,8 +30,9 @@
         <span class="budget-title scb-text-gray">Budget</span>
             <span class="choosen-amount">{{amount ? amount + ' FCFA' :'Choisir mon budget'}}</span>
       </div>
-      <div class="gauge-block" [ngClass]="{'gauge-block-disabled': !amount || !paliers.length}">
-        <div class="gauge-item">
+      <div class="gauge-block">
+        <mat-spinner mode="indeterminate" [diameter]="25" *ngIf="gettingBestOffer"></mat-spinner>
+        <div class="gauge-item" [ngClass]="{'gauge-disabled': !amount || !paliers.length || gettingBestOffer}">
           <div class="gauge-godet">
             <span>Internet</span>
             <span>Appels</span>
@@ -52,7 +53,7 @@
         </div>
         <div class="buttons">
           <button class="scb-btn scb-btn-white">Annuler</button>
-          <button class="scb-btn scb-btn-orange" [disabled]="!amount" (click)="goRecapPage()">Confirmer</button>
+          <button class="scb-btn scb-btn-orange" [disabled]="!amount || gettingBestOffer" (click)="goRecapPage()">Confirmer</button>
         </div>
       </div>
     </div>

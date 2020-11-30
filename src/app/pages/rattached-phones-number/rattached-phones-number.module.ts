@@ -8,7 +8,6 @@ import { IonicModule } from '@ionic/angular';
 import { RattachedPhonesNumberPage } from './rattached-phones-number.page';
 import { SharedModule } from 'src/shared/shared.module';
 import { ComponentsModule } from 'src/app/components/components.module';
-import { RattachNumberModalComponent } from 'src/app/components/rattach-number-modal/rattach-number-modal.component';
 
 const routes: Routes = [
   {
@@ -26,7 +25,6 @@ const routes: Routes = [
     ComponentsModule,
     RouterModule.forChild(routes)
   ],
-  entryComponents:[RattachNumberModalComponent],
   declarations: [RattachedPhonesNumberPage]
 })
 export class RattachedPhonesNumberPageModule {}
