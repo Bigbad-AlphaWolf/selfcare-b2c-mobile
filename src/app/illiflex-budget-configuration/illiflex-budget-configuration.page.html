@@ -53,7 +53,7 @@
         </div>
         <div class="buttons">
           <button class="scb-btn scb-btn-white">Annuler</button>
-          <button class="scb-btn scb-btn-orange" [disabled]="!amount" (click)="goRecapPage()">Confirmer</button>
+          <button class="scb-btn scb-btn-orange" [disabled]="!amount || gettingBestOffer" (click)="goRecapPage()">Confirmer</button>
         </div>
       </div>
     </div>

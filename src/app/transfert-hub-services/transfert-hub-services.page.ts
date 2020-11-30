@@ -295,7 +295,7 @@ export class TransfertHubServicesPage implements OnInit {
         }
         break;
       case 'ILLIFLEX':
-        this.router.navigate(['/select-illiflex-type']);
+        this.router.navigate(['/illiflex-budget-configuration']);
         break;
       default:
         break;

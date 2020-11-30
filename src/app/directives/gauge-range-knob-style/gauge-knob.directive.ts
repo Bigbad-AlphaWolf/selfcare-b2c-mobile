@@ -21,7 +21,6 @@ export class GaugeKnobDirective implements AfterViewChecked {
 
   setBarOpacity() {
     if (!this.dataOpacity) return;
-    console.log(this.dataOpacity);
     const rangeBar = <HTMLElement>(
       this.el.nativeElement.shadowRoot.querySelector('.range-bar')
     );

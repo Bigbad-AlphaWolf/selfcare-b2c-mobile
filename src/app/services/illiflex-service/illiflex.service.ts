@@ -66,16 +66,16 @@ export class IlliflexService {
         },
         dataBucket: {
           balance: {
-            amount: passIlliflex.data,
-            unit: 'MO',
+            amount: passIlliflex.data * 1024,
+            unit: 'KO',
           },
           validity,
           code: 193,
         },
         voiceBucket: {
           balance: {
-            amount: passIlliflex.voice,
-            unit: 'MN',
+            amount: passIlliflex.voice * 60,
+            unit: 'SECOND',
           },
           validity,
           code: 192,
