@@ -490,9 +490,10 @@ export class OperationRecapPage implements OnInit {
   transactionFailure(err) {
     this.buyingPass = false;
     // this.openSuccessFailModal({ success: false });
-    this.buyPassErrorMsg = err.message
-      ? err.message
-      : 'Service indisponible. Veuillez réessayer ultérieurement';
+    this.buyPassErrorMsg =
+      err.error && err.error.message
+        ? err.error.message
+        : 'Service indisponible. Veuillez réessayer ultérieurement';
     this.followAnalyticsService.registerEventFollow(
       'Credit_Buy_Pass_Internet_Error',
       'error',
