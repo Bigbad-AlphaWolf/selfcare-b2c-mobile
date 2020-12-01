@@ -106,9 +106,21 @@ export class IlliflexService {
     return this.authService.getSubscriptionForTiers(param.recipientMsisdn).pipe(
       switchMap((sub: SubscriptionModel) => {
         const validity = this.getValidityName(param.validity);
-        return this.http.get(
-          `${bestOfferEndpoint}/${param.recipientMsisdn}?codeFormule=${sub.code}&montant=${param.amount}&validity=${validity}&unit=XOF`
-        );
+        return this.http
+          .get(
+            `${bestOfferEndpoint}/${param.recipientMsisdn}?codeFormule=${sub.code}&montant=${param.amount}&validity=${validity}&unit=XOF`
+          )
+          .pipe(
+            map((bestOffer: BestOfferIlliflexModel) => {
+              // process data volume in Mo as it is received in Ko
+              bestOffer.dataBucket.balance.amount =
+                bestOffer.dataBucket.balance.amount / 1024;
+              // process voice in Min as it is received in second
+              bestOffer.voiceBucket.balance.amount =
+                bestOffer.voiceBucket.balance.amount / 60;
+              return bestOffer;
+            })
+          );
       })
     );
   }
