@@ -1,0 +1,34 @@
+<div class="select-beneficiary-container oem-bottomsheet-container">
+  <div  class="arrow-left" (click)="goBack()">
+    <img alt="" src="/assets/images/arrow-left.png" />
+  </div>
+  <div class="title">Rattacher une ligne</div>
+  <div class="description"> Entrez le numéro de la ligne que vous voulez rattacher à votre compte</div>
+  <div class="phone-number-input">
+  <form novalidate autocomplete="false">
+    <mat-form-field class="scb-input-row" appearance="outline">
+        <mat-label>Numéro de la ligne &nbsp;&nbsp;</mat-label>
+        <input
+        [ngModelOptions]="{standalone: true}"
+          #numberInput
+          matInput
+          type="tel" 
+          maxlength=20
+          [(ngModel)]="phoneNumber"
+          (input)="isValid()"
+        />
+      </mat-form-field>
+  </form>
+  <div *ngIf="hasError" class="error-msg scb-text-red-error">
+    {{ this.msgError }}
+  </div>
+</div>
+  <div class="btn-continue">
+    <ion-button (click)="processRattachement()" expand="block" [disabled]="!isInputValid || isLoading">
+      Continuer
+    </ion-button>
+    <ion-spinner *ngIf="isLoading"
+      name="crescent"
+    ></ion-spinner>
+  </div>
+</div>

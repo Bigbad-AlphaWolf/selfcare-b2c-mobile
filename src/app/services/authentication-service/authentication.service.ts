@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
   Subject,
@@ -6,7 +6,7 @@ import {
   of,
   interval,
   throwError,
-} from "rxjs";
+} from 'rxjs';
 import {
   tap,
   shareReplay,
@@ -14,24 +14,31 @@ import {
   delay,
   retryWhen,
   flatMap,
-} from "rxjs/operators";
-import { HttpClient } from "@angular/common/http";
-import { environment } from "src/environments/environment";
-import * as jwt_decode from "jwt-decode";
-import * as SecureLS from "secure-ls";
+  switchMap,
+  catchError,
+  share,
+  take,
+} from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import * as jwt_decode from 'jwt-decode';
+import * as SecureLS from 'secure-ls';
 import {
   PROFILE_TYPE_HYBRID,
   PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
   isFixPostpaid,
   PROFILE_TYPE_POSTPAID,
-  
-} from "src/app/dashboard";
+  KILIMANJARO_FORMULE,
+  isPrepaidFix,
+} from 'src/app/dashboard';
 import {
   JAMONO_ALLO_CODE_FORMULE,
   NotificationInfoModel,
-} from "src/shared";
-
+  SubscriptionModel,
+  JAMONO_PRO_CODE_FORMULE,
+  PRO_MOBILE_ERROR_CODE,
+} from 'src/shared';
 
 const {
   SERVER_API_URL,
@@ -42,7 +49,7 @@ const {
   CONFIRM_MSISDN_BY_NETWORK_URL,
   UAA_SERVICE,
 } = environment;
-const ls = new SecureLS({ encodingType: "aes" });
+const ls = new SecureLS({ encodingType: 'aes' });
 
 // Account & msisdn infos
 const accountBaseUrl = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management`;
@@ -69,9 +76,12 @@ const registerEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-
 const resetPwdEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password`;
 
 const notificationInfoEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/notification-information`;
-
+// endpoint to get token
+const tokenEndpoint = `${SERVER_API_URL}/auth/get-service-token`;
+// eligibility to recieve pass internet & illimix endpoint
+const eligibilityRecievePassEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/check-conditions`;
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class AuthenticationService {
   currentPhoneNumberSetSubject = new BehaviorSubject<boolean>(false);
@@ -93,7 +103,7 @@ export class AuthenticationService {
 
   // accept cookies
   acceptCookies() {
-    ls.set("acceptCookies", "yes");
+    ls.set('acceptCookies', 'yes');
     this.acceptCookieSubject.next();
   }
 
@@ -129,13 +139,19 @@ export class AuthenticationService {
     return this.http.post(`${registerUserEndpoint}`, userInfos);
   }
 
+  getCustomerOfferRefact(msisdn: string) {
+    return this.http
+      .get(`${userSubscriptionEndpoint2}/${msisdn}`)
+      .pipe(share());
+  }
+
   // get msisdn subscription
   getSubscriptionCustomerOffer(msisdn: string) {
     // step 1 check if data exists in localstorage
     // step 2 if exists return data from localstorage
     // else call server to get data
     // what to save? 'subXXXXXXXX"
-    const lsKey = "sub" + msisdn;
+    const lsKey = 'sub' + msisdn;
     const savedData = ls.get(lsKey);
     if (savedData) {
       return of(savedData);
@@ -158,7 +174,7 @@ export class AuthenticationService {
           if (isFixPostpaid(subscription.nomOffre)) {
             subscription.profil = PROFILE_TYPE_POSTPAID;
           }
-          const lsKey = "sub" + msisdn;
+          const lsKey = 'sub' + msisdn;
           ls.set(lsKey, subscription);
           this.subscriptionUpdatedSubject.next(subscription);
           return subscription;
@@ -169,27 +185,15 @@ export class AuthenticationService {
 
   // get msisdn subscription
   getSubscription(msisdn: string) {
-    const lsKey = "sub" + msisdn;
+    const lsKey = 'sub' + msisdn;
     const savedData = ls.get(lsKey);
     if (savedData) {
-      return of(savedData);
-    }
-    if (!this.SubscriptionHttpCache.has(msisdn)) {
-      this.SubscriptionHttpCache[msisdn] = this.getSubscriptionCustomerOffer(
-        msisdn
-      ).pipe(shareReplay(1));
-    }
-    return this.SubscriptionHttpCache[msisdn];
-  }
-
-  getSubscriptionCustomerOfferForTiers(msisdn: string) {
-    // step 1 check if data exists in localstorage
-    // step 2 if exists return data from localstorage
-    // else call server to get data
-    // what to save? 'subXXXXXXXX"
-      return this.http.get(`${SUBSCRIPTION_ENDPOINT_FOR_TIER}/${msisdn}`).pipe(
+      return of(savedData).pipe(take(1));
+    } else {
+      return this.getCustomerOfferRefact(msisdn).pipe(
         map((res: any) => {
           const subscription = {
+            clientCode: res.clientCode,
             nomOffre: res.offerName,
             profil: res.offerType,
             code: res.offerId,
@@ -204,26 +208,63 @@ export class AuthenticationService {
           if (isFixPostpaid(subscription.nomOffre)) {
             subscription.profil = PROFILE_TYPE_POSTPAID;
           }
-          const lsKey = "subtiers" + msisdn;
+          const lsKey = 'sub' + msisdn;
           ls.set(lsKey, subscription);
-          this.subscriptionUpdatedSubject.next(subscription);
+          // this.subscriptionUpdatedSubject.next(subscription);
           return subscription;
         })
       );
-    
+    }
+    // if (!this.SubscriptionHttpCache.has(msisdn)) {
+    //   this.SubscriptionHttpCache[msisdn] = this.getSubscriptionCustomerOffer(
+    //     msisdn
+    //   ).pipe(shareReplay(1));
+    // }
+    // return this.SubscriptionHttpCache[msisdn];
   }
 
+  getSubscriptionCustomerOfferForTiers(msisdn: string) {
+    // step 1 check if data exists in localstorage
+    // step 2 if exists return data from localstorage
+    // else call server to get data
+    // what to save? 'subXXXXXXXX"
+    return this.http.get(`${SUBSCRIPTION_ENDPOINT_FOR_TIER}/${msisdn}`).pipe(
+      map((res: any) => {
+        const subscription = {
+          nomOffre: res.offerName,
+          profil: res.offerType,
+          code: res.offerId,
+        };
+        if (
+          subscription.profil === PROFILE_TYPE_HYBRID ||
+          subscription.profil === PROFILE_TYPE_HYBRID_1 ||
+          subscription.profil === PROFILE_TYPE_HYBRID_2
+        ) {
+          subscription.code = JAMONO_ALLO_CODE_FORMULE;
+        }
+        if (isFixPostpaid(subscription.nomOffre)) {
+          subscription.profil = PROFILE_TYPE_POSTPAID;
+        }
+        const lsKey = 'subtiers' + msisdn;
+        ls.set(lsKey, subscription);
+        this.subscriptionUpdatedSubject.next(subscription);
+        return subscription;
+      })
+    );
+  }
 
-  getSubscriptionForTiers(msisdn: string) {
-    const lsKey = "subtiers" + msisdn;
+  getSubscriptionForTiers(msisdn: string): Observable<any> {
+    const lsKey = 'subtiers' + msisdn;
     const savedData = ls.get(lsKey);
     if (savedData) {
       return of(savedData);
     }
     if (!this.SubscriptionHttpCache.has(msisdn)) {
-      this.SubscriptionHttpCache[msisdn] = this.getSubscriptionCustomerOfferForTiers(
+      this.SubscriptionHttpCache[
         msisdn
-      ).pipe(shareReplay(1));
+      ] = this.getSubscriptionCustomerOfferForTiers(msisdn).pipe(
+        shareReplay(1)
+      );
     }
     return this.SubscriptionHttpCache[msisdn];
   }
@@ -245,7 +286,7 @@ export class AuthenticationService {
         ) {
           result.code = JAMONO_ALLO_CODE_FORMULE;
         }
-        const lsKey = "sub" + msisdn;
+        const lsKey = 'sub' + msisdn;
         ls.set(lsKey, result);
         return result;
       })
@@ -253,21 +294,37 @@ export class AuthenticationService {
   }
 
   canRecieveCredit(msisdn: string): Observable<any> {
-    return this.isPostpaid(msisdn).pipe(
-      map((isPostPaid: any) => {
-        return (!isPostPaid);
-       }),
-      // catchError((er:HttpErrorResponse) => {
-      //   console.log(er);
-        
-      //   if(er.status !== 401)
-      //     return of(false);
-      // })
+    // return this.isPostpaid(msisdn).pipe(
+    //   map((isPostPaid: any) => {
+    //     return !isPostPaid;
+    //   })
+    // );
+    return this.getSubscriptionForTiers(msisdn).pipe(
+      map((res: SubscriptionModel) => {
+        const codeFormule = res.code;
+        const profil = res.profil;
+        if (
+          (profil === PROFILE_TYPE_POSTPAID &&
+            codeFormule != KILIMANJARO_FORMULE) ||
+          isPrepaidFix(res)
+        ) {
+          return false;
+        }
+        return true;
+      })
     );
   }
 
+  checkUserEligibility(msisdn) {
+    // return of({
+    //   message: 'Vous avez déjà un illimix en cours.',
+    //   eligible: false,
+    // });
+    return this.http.get(`${eligibilityRecievePassEndpoint}/${msisdn}`);
+  }
+
   deleteSubFromStorage(msisdn: string) {
-    const lsKey = "sub" + msisdn;
+    const lsKey = 'sub' + msisdn;
     const savedData = ls.get(lsKey);
     if (savedData) {
       ls.remove(lsKey);
@@ -290,7 +347,11 @@ export class AuthenticationService {
   }
 
   getToken() {
-    return ls.get("token");
+    return ls.get('token');
+  }
+
+  getLightToken() {
+    return ls.get('light-token');
   }
 
   login(credential: {
@@ -302,14 +363,14 @@ export class AuthenticationService {
       tap((res: any) => {
         this.storeAuthenticationData(res, credential);
         this.isLoginSubject.next(true);
-        this.getSubscription(credential.username).subscribe();
+        // this.getSubscription(credential.username).subscribe();
       })
     );
   }
 
   logout() {
     this.http
-      .post(logoutEndpoint, "")
+      .post(logoutEndpoint, '')
       .pipe(
         tap(() => {
           this.isLoginSubject.next(false);
@@ -321,13 +382,13 @@ export class AuthenticationService {
 
   captcha(token: string, ip: string) {
     return this.http.post(
-      captchaEndpoint + "?token=" + token + "&ip=" + ip,
+      captchaEndpoint + '?token=' + token + '&ip=' + ip,
       null
     );
   }
 
   cleanCache() {
-    ls.remove("currentPhoneNumber");
+    ls.remove('currentPhoneNumber');
     this.currentPhoneNumberSetSubject.next(false);
     this.removeAuthenticationData();
     this.removeUserInfos();
@@ -345,12 +406,12 @@ export class AuthenticationService {
   }
 
   getUserMainPhoneNumber() {
-    return ls.get("mainPhoneNumber");
+    return ls.get('mainPhoneNumber');
   }
 
   getLocalUserInfos() {
     try {
-      const User = ls.get("user");
+      const User = ls.get('user');
       return User;
     } catch (err) {
       return null;
@@ -358,25 +419,25 @@ export class AuthenticationService {
   }
 
   storeUserInfos(userInfos) {
-    ls.set("user", userInfos);
+    ls.set('user', userInfos);
     this.currentPhoneNumberSetSubject.next(true);
   }
 
   removeUserInfos() {
-    ls.remove("user");
-    ls.remove("deviceInfo");
+    ls.remove('user');
+    ls.remove('deviceInfo');
   }
 
   private storeAuthenticationData(authenticationData: any, user: any) {
-    ls.set("token", authenticationData.access_token);
-    ls.set("mainPhoneNumber", user.username);
-    ls.set("currentPhoneNumber", user.username);
-    ls.set("refresh_token", authenticationData.refresh_token);
-    ls.set("banner", true);
+    ls.set('token', authenticationData.access_token);
+    ls.set('mainPhoneNumber', user.username);
+    ls.set('currentPhoneNumber', user.username);
+    ls.set('refresh_token', authenticationData.refresh_token);
+    ls.set('banner', true);
   }
 
   private removeAuthenticationData() {
-    ls.remove("token");
+    ls.remove('token');
   }
 
   scrollChatBox() {
@@ -405,8 +466,40 @@ export class AuthenticationService {
     return this.http.get(`${CONFIRM_MSISDN_BY_NETWORK_URL}/${msisdn}`);
   }
 
+  getTokenFromBackend() {
+    return this.http.get(tokenEndpoint).pipe(
+      tap((res: any) => {
+        ls.set('light-token', res.access_token);
+      })
+    );
+  }
+
   checkNumber(checkNumberPayload: { msisdn: string; hmac: string }) {
-    return this.http.post(checkNumberEndpoint, checkNumberPayload);
+    return this.getTokenFromBackend().pipe(
+      switchMap(() => {
+        const msisdn = checkNumberPayload.msisdn.substring(
+          checkNumberPayload.msisdn.length - 9
+        );
+        return this.getSubscriptionForTiers(msisdn).pipe(
+          switchMap((sub: SubscriptionModel) => {
+            const isProMobile = sub.code === JAMONO_PRO_CODE_FORMULE;
+            if (!isProMobile) {
+              return this.http.post(checkNumberEndpoint, checkNumberPayload);
+            } else {
+              const error = {
+                status: 400,
+                errorKey: PRO_MOBILE_ERROR_CODE,
+                message: 'Ce numéro ne peut pas accéder à Orange et Moi',
+              };
+              return throwError(error);
+            }
+          }),
+          catchError((err) => {
+            return throwError(err);
+          })
+        );
+      })
+    );
   }
 
   register(registerPayload: RegistrationModel) {
@@ -421,14 +514,22 @@ export class AuthenticationService {
   UpdateNotificationInfo() {
     delay(10000);
     const info = {} as NotificationInfoModel;
-    info.firebaseId = ls.get("firebaseId");
+    info.firebaseId = ls.get('firebaseId');
     info.msisdn = this.getUserMainPhoneNumber();
-    const lsKey = "sub" + info.msisdn;
+    const lsKey = 'sub' + info.msisdn;
     const savedData = ls.get(lsKey);
     info.codeFormule = savedData.code;
     if (info.msisdn && info.codeFormule) {
       this.http.put(notificationInfoEndpoint, info).subscribe();
     }
+  }
+
+  setHmacOnLs(hmac: string) {
+    ls.set('hmac', hmac);
+  }
+
+  getHmac() {
+    return ls.get('hmac');
   }
 }
 
@@ -467,7 +568,7 @@ export function http_retry(maxRetry = 10, delayMs = 10000) {
       retryWhen((_) => {
         return interval(delayMs).pipe(
           flatMap((count) =>
-            count === maxRetry ? throwError("Giving up") : of(count)
+            count === maxRetry ? throwError('Giving up') : of(count)
           )
         );
       })

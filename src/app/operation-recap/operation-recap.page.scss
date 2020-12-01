@@ -1,5 +1,16 @@
 @import 'src/app/app';
 
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.28px;
+}
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+}
+
 ion-content {
   background-color: $grayDashboard;
 }
@@ -21,17 +32,19 @@ ion-content {
     font-size: 24px;
     padding-left: 15px;
   }
-  .banner-container {
+}
+.banner-container {
+  width: 100%;
+  .banniere {
     width: 100%;
-    .banniere {
-      width: 100%;
-    }
+    background-color: $white;
   }
 }
 
 .show-toolbar {
   .arrow-container {
     height: 40px;
+    width: 50px;
   }
   .text-container {
     font-family: HelveticaNeueLTStd-Bd, sans-serif;
@@ -84,12 +97,12 @@ ion-content {
     height: 100%;
   }
   .amount-to-transfer {
-    padding: 15px 0;
+    padding: 10px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     .pass {
-      font-family: HelveticaNeue;
+      font-family: HelveticaNeueLTStd-Bd;
       font-size: 20px;
       font-weight: bold;
       font-stretch: normal;
@@ -112,6 +125,9 @@ ion-content {
   }
   .card-container {
     margin-bottom: -10px;
+    &.bill {
+      margin-bottom: 0px;
+    }
   }
   .recipient-information {
     border-radius: 5px;
@@ -154,6 +170,24 @@ ion-content {
       }
     }
   }
+
+  .offer-desc {
+    .top-block-transfert {
+      .title {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.67;
+      }
+    }
+  }
+
+  .dalal-amount-block {
+    padding-bottom: 20px;
+  }
+
   button {
     height: 50px;
     font-size: 16px;
@@ -174,7 +208,7 @@ ion-content {
 }
 
 .recap-text {
-  font-family: HelveticaNeue;
+  font-family: HelveticaNeueLTStd-Bd;
   font-size: 20px;
   font-weight: bold;
   font-stretch: normal;
@@ -182,6 +216,5 @@ ion-content {
   line-height: 1.5;
   letter-spacing: normal;
   color: #000000;
-  padding: 15px 15px 20px 15px;
-
+  padding: 15px 15px 12px 15px;
 }

@@ -1,86 +1,86 @@
-import { Component, OnInit, Input, Inject, NgZone } from '@angular/core';
+import { Component, OnInit, Inject, NgZone, Input } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material';
-import { Router } from '@angular/router';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import { HelpModalDefaultContent } from '..';
+import { Router } from '@angular/router';
+import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
+import { ModalController } from '@ionic/angular';
 @Component({
-    selector: 'app-common-issues',
-    templateUrl: './common-issues.component.html',
-    styleUrls: ['./common-issues.component.scss'],
+  selector: 'app-common-issues',
+  templateUrl: './common-issues.component.html',
+  styleUrls: ['./common-issues.component.scss'],
 })
 export class CommonIssuesComponent implements OnInit {
-    popupTitle: string;
-    popupSubtitle: string;
-    options: {
-        title: string;
-        subtitle: string;
-        type: 'ERROR_AUTH_IMP' | 'REGISTER' | 'LOGIN' | 'FORGOT_PWD';
-        url?: string;
-        action?: 'REDIRECT' | 'POPUP';
-    }[];
-    showChecks: boolean = false;
-    constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-        private bottomSheetRef: MatBottomSheetRef<CommonIssuesComponent>,
-        private router: Router, private ngZone: NgZone) {
-        if (data) {
-            this.showChecks = data.showChecks;
-            this.options = data.options;
-            this.popupTitle = data.popupTitle;
-            this.popupSubtitle = data.popupSubtitle;
-        }
+  popupTitle: string;
+  options: {
+    title: string;
+    subtitle: string;
+    type?: string;
+    url?: string;
+    action?: string;
+    icon?: string;
+    subOptions?: { title: string; subtitle: string; icon?: string }[];
+  }[];
+  showSousOption: boolean;
+  type: string;
+  @Input() data;
+  constructor(
+    private modalController: ModalController,
+    private ngZone: NgZone,
+    private router: Router,
+    private openNativeSettings: OpenNativeSettings
+  ) {}
+  ngOnInit() {
+    console.log(this.data);
+    if (this.data) {
+      this.options = this.data.options;
+      this.popupTitle = this.data.popupTitle;
     }
-    ngOnInit() { }
-    close(message?: string) {
-        this.ngZone.run(() => {
-            this.bottomSheetRef.dismiss(message);
-        });
+  }
+
+  goSuboption(option: {
+    title: string;
+    subtitle: string;
+    type: string;
+    url?: string;
+    action?: string;
+    subOptions: { title: string; subtitle: string }[];
+  }) {
+    if (!this.showSousOption) {
+      this.options = option.subOptions;
+      this.showSousOption = true;
+      this.popupTitle = option.title;
+      this.type = option.type;
     }
+  }
 
-    makeAction(option: {
-        title: string;
-        subtitle: string;
-        type: '' | 'ERROR_AUTH_IMP' | 'REGISTER' | 'LOGIN' | 'FORGOT_PWD'
-        |'APN_AUTH_IMP'|'DATA_AUTH_IMP'|'WIFI_AUTH_IMP'|'CONFIG_APN_AUTH_IMP';
-        url?: string;
-        action?: 'REDIRECT' | 'POPUP';
-    }) {
-        switch (option.type) {
-            case 'REGISTER':
-                if (option.action === 'REDIRECT') {
-                    this.router.navigate(['/new-registration']);
-                }
-                this.close();
-                break;
-            case 'LOGIN':
-                if (option.action === 'REDIRECT') {
-                    this.router.navigate(['/login']);
-                }
-                this.close();
-                break;
-            case 'FORGOT_PWD':
-                if (option.action === 'REDIRECT') {
-                    this.router.navigate(['/forgotten-password']);
-                }
-                this.close();
-                break;
-            case 'ERROR_AUTH_IMP':
-                this.close('ERROR_AUTH_IMP');
-                break;
-            case 'APN_AUTH_IMP':
-                this.close('APN_AUTH_IMP');
-                break;
-            case 'DATA_AUTH_IMP':
-                this.close('DATA_AUTH_IMP');
-                break;
-            case 'WIFI_AUTH_IMP':
-                this.close('WIFI_AUTH_IMP');
-                break;
-                case 'CONFIG_APN_AUTH_IMP':
-                this.close('CONFIG_APN_AUTH_IMP');
-                break;
-            default:
-                break;
-        }
+  goBack() {
+    this.showSousOption = false;
+    this.options = HelpModalDefaultContent.options;
+    this.popupTitle = HelpModalDefaultContent.popupTitle;
+    this.type = null;
+  }
 
+  continue() {
+    this.modalController.dismiss();
+    switch (this.type) {
+      case 'ERROR_AUTH_IMP':
+        this.router.navigate(['/new-registration']);
+        break;
+      case 'FORGOT_PWD':
+        this.router.navigate(['/forgotten-password']);
+        break;
+      case 'LOGIN':
+        this.router.navigate(['/login']);
+        break;
+      case 'APN':
+        this.openNativeSettings
+          .open('settings')
+          .then((res) => {})
+          .catch((err) => {});
+        break;
+      default:
+        break;
     }
-
+  }
 }

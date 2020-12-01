@@ -3,7 +3,7 @@ import {
   REGEX_POSTPAID_FIXE,
   REGEX_PREPAID_FIXE,
   UserConsommation,
-  CODE_KIRENE_Formule
+  CODE_KIRENE_Formule,
 } from 'src/shared';
 
 // differents profiles
@@ -53,7 +53,7 @@ export const getConsoByCategory /* : { [k: string]: Array<UserConsommation> }  *
   }>
 ) => {
   const consoByCategory = {};
-  userConsos.forEach(x => {
+  userConsos.forEach((x) => {
     consoByCategory[x.categorie] = x.consommations;
   });
   return consoByCategory;
@@ -94,6 +94,7 @@ export interface SubscriptionModel {
 export interface PromoBoosterActive {
   promoPass: boolean;
   promoRecharge: boolean;
+  promoPassIllimix: boolean;
 }
 
 export function isFixPostpaid(codeFormule: string) {
@@ -153,7 +154,7 @@ export function isPrepaidFix(souscription: ModelOfSouscription): boolean {
 }
 
 // tslint:disable-next-line: only-arrow-functions
-export const hash53 = function(str, seed = 0) {
+export const hash53 = function (str, seed = 0) {
   // tslint:disable-next-line: no-bitwise
   let h1 = 0xdeadbeef ^ seed,
     // tslint:disable-next-line: no-bitwise
@@ -178,3 +179,8 @@ export const hash53 = function(str, seed = 0) {
   // tslint:disable-next-line: no-bitwise
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
+
+export const SARGAL_NOT_SUBSCRIBED_STATUS = [
+  SARGAL_NOT_SUBSCRIBED,
+  SARGAL_UNSUBSCRIPTION_ONGOING,
+];

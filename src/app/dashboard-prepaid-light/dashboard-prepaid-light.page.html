@@ -1,0 +1,172 @@
+<div class="dashboard-light">
+  <div class="icon-container">
+    <img src="/assets/images/logo-orange.svg" alt="">
+  </div>
+  <div class="back-home scb-text-orange" (click)="goBackHome()">Retour à l'accueil</div>
+  <div class="bonjour">Bonjour {{userName}}</div>
+  <div class="subtitle scb-text-gray">Vous êtes connecté en tant que visiteur, avec un accés limité aux fonctionnalités
+  </div>
+  <div class="block-conso">
+    <div class="text-suivi">
+      <span class="suivi-conso">Suivi conso</span>
+      <span class="scb-text-orange details">Voir détails</span>
+    </div>
+    <div class="dashboard-cards">
+      <ion-slides [options]="slideOpts" id="slides">
+        <ion-slide *ngIf="
+        currentProfil &&
+        (currentProfil === PROFILE_TYPE_HYBRID ||
+            currentProfil === PROFILE_TYPE_HYBRID_1 ||
+            currentProfil === PROFILE_TYPE_HYBRID_2)
+    ">
+          <div class="scb-btn-blue card">
+            <div class="top-block">
+              <img src="/assets/images/orange-dialler-white.svg" alt="" class="icon">
+              <span>Balance</span>
+            </div>
+            <div class="middle-block">{{ userCallConsoSummary?.balance }} FCFA</div>
+            <div class="bottom-block" *ngIf="balanceValidity">valable jusqu'au {{ balanceValidity }}</div>
+          </div>
+        </ion-slide>
+        <ion-slide>
+          <div class="scb-btn-green card">
+            <div class="top-block">
+              <img src="/assets/images/orange-dialler-white.svg" alt="" class="icon">
+              <span>Crédit global</span>
+            </div>
+            <div class="middle-block">{{ userCallConsoSummary?.globalCredit }} FCFA</div>
+            <div class="bottom-block" *ngIf="creditValidity">Expire le {{ creditValidity }}</div>
+          </div>
+        </ion-slide>
+        <ion-slide *ngIf="currentProfil && currentProfil === PROFILE_TYPE_PREPAID">
+          <div class="scb-btn-purple card">
+            <div class="top-block">
+              <img src="/assets/images/gift-sargal.svg" alt="" class="icon">
+              <span>Points Sargal</span>
+            </div>
+            <div *ngIf="sargalPointsLoading" class="scb-block-spinner">
+              <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
+            </div>
+            <ng-container *ngIf="!sargalPointsLoading">
+              <div class="middle-block" *ngIf="userSargalSubscription?.totalPoints">
+                {{ userSargalSubscription.totalPoints | formatCurrency }} Pts</div>
+              <div class="bottom-block" *ngIf="userSargalSubscription?.totalPoints">Mis à jour le {{ sargalLastUpdate }}
+              </div>
+              <div class="see-card" *ngIf="userSargalSubscription?.status === SARGAL_NOT_SUBSCRIBED">M'inscrire</div>
+              <div class="see-card"
+                *ngIf="sargalUnavailable || userSargalSubscription?.status === SARGAL_UNSUBSCRIPTION_ONGOING">Service
+                indisponible</div>
+              <div class="refresh-icon-container">
+                <img src="/assets/images/reload.png" alt="reload-icon" (click)="getSargalPoints()" />
+              </div>
+            </ng-container>
+          </div>
+        </ion-slide>
+        <ion-slide *ngIf="currentProfil && currentProfil !== PROFILE_TYPE_PREPAID && !userHasNoSargalProfil">
+          <div class="scb-btn-black card sargal-profil-card">
+            <div class="top-block">
+              <img src="/assets/images/points-sargal.svg" alt="" class="icon">
+              <span>Sargal</span>
+            </div>
+            <div *ngIf="isCheckingSargalProfile" class="scb-block-spinner">
+              <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
+            </div>
+            <div class="see-card" *ngIf="!isCheckingSargalProfile && !sargalStatusUnavailable">Voir ma carte</div>
+            <div class="see-card" *ngIf="!isCheckingSargalProfile && sargalStatusUnavailable">Service indisponible</div>
+            <div class="refresh-icon-container" *ngIf="!isCheckingSargalProfile">
+              <img src="/assets/images/reload.png" alt="reload-icon" (click)="getCustomerSargalStatus()" />
+            </div>
+          </div>
+        </ion-slide>
+      </ion-slides>
+    </div>
+    <div class="dashboard-details-conso">
+      <div *ngIf="loadingConso" class="dashboard-block-spinner">
+        <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+      </div>
+      <div *ngIf="consoHasError" (click)="loadUserConsommation()" class="dashboard-block-conso-error">
+        <span class="scb-text-full-black">
+          Erreur lors du chargement des données <span class="scb-btn-v2">Actualiser</span>
+        </span>
+      </div>
+      <ng-container *ngFor="let conso of userConsommationsCategories">
+        <div class="dashboard-block-conso-details-item">
+          <div class="conso-name-value-line">
+            <span class="conso-name scb-text-gray">{{ conso.compteur }}</span>
+            <span class="conso-value scb-text-full-black">{{ conso.montantFormat }}</span>
+          </div>
+          <ng-container *ngIf="
+                    conso.code !== CODE_COMPTEUR_VOLUME_NUIT_1 &&
+                        conso.code !== CODE_COMPTEUR_VOLUME_NUIT_2 &&
+                        conso.code !== CODE_COMPTEUR_VOLUME_NUIT_3;
+                    else compteurNuit
+                ">
+            <div class="conso-expiration-line">
+              <span class="conso-expiration-date scb-text-light-black">Expire le
+                {{ conso.dateExpiration }}</span>
+            </div>
+          </ng-container>
+          <ng-template #compteurNuit>
+            <div class="conso-expiration-line">
+              <span class="conso-expiration-date scb-text-light-black">Utilisable de 00h à 08h</span>
+            </div>
+          </ng-template>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <div class="operations-block">
+    <div class="operation-item" *ngFor="let operation of operationsButtons" (click)="onOperation(operation)">
+      <div class="badge-promo"
+        *ngIf="operation?.action === 'BUY' && (hasPromoBooster?.promoPass || hasPromoBooster?.promoRecharge || hasPromoBooster?.promoPassIllimix)">
+        <div class="icon-container">
+          <span class="percent scb-text-white"> % </span>
+        </div>
+        <div class="triangle"></div>
+      </div>
+      <div class="img-container">
+        <img src="{{ '/assets/images/' + operation.imgName }}" alt="">
+      </div>
+      <div class="text">
+        <div class="operation-title">{{operation.title}}</div>
+        <div class="operation-subtitle scb-text-gray">{{operation.subtitle}}</div>
+      </div>
+    </div>
+  </div>
+  <div class="bons-plans" *ngIf="listBanniere && listBanniere.length">
+    Bons Plans
+  </div>
+  <div *ngIf="listBanniere.length" class="dashboard-img-promo slide-container">
+    <ion-slides pager [options]="{loop: true}">
+      <ng-container *ngFor="let banniere of listBanniere">
+        <ion-slide>
+          <span #error class="error-slide scb-text-full-black">
+            Erreur lors du chargement de l'image</span>
+          <div class="description" #description>
+            <div class="title">
+              {{getBanniereTitle(banniere.description)}}
+            </div>
+            <div class="text">
+              {{getBanniereDescription(banniere.description)}}
+            </div>
+          </div>
+          <div class="img-container" #imageContainer>
+            <img #img (load)="onError([
+            { el: error, display: false },
+            { el: img, display: true },
+            { el: description, display: true },
+            { el: imageContainer, display: true }
+          ])" (error)="
+          onError([
+            { el: error, display: true },
+            { el: img, display: false },
+            { el: description, display: false },
+            { el: imageContainer, display: false }
+          ])
+        " [src]="banniere.image" alt="ban" />
+          </div>
+        </ion-slide>
+      </ng-container>
+    </ion-slides>
+  </div>
+</div>

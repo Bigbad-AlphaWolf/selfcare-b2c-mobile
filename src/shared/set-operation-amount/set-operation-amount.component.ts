@@ -1,6 +1,8 @@
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { Router } from '@angular/router';
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-set-operation-amount',
@@ -20,7 +22,8 @@ export class SetOperationAmountComponent implements OnInit {
 
   constructor(
     private orangeMoneyService: OrangeMoneyService,
-    private router: Router
+    private router: Router,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -62,10 +65,28 @@ export class SetOperationAmountComponent implements OnInit {
   }
 
   showOmSolde() {
-    this.showSolde.emit();
+    this.openPinpad();
   }
 
   hideTheSolde() {
     this.hideUserSolde = true;
+  }
+
+  async openPinpad(purchaseType?: string) {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: "pin-pad-modal",
+      componentProps: {
+        operationType: null,
+      },
+    });
+    modal.onDidDismiss().then((response) => {      
+      if(response && response.data ) {
+        this.hideUserSolde = false;
+        this.omBalance = response.data.balance;
+      }
+      
+    });
+    return await modal.present();
   }
 }

@@ -45,19 +45,18 @@ export class ListPassInternetV2Component implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.passIntService.setUserCodeFormule(this.destCodeFormule);
-    this.passIntService.setListPassInternetOfUserByQuery();
-    this.fromSubscription = this.passIntService
-      .getStatusPassLoaded()
-      .subscribe((status: boolean) => {
-        this.isLoaded = status;
-        if (this.isLoaded) {
-          this.listCategory = this.passIntService.getListCategoryPassInternet();
-          this.listPassInternet = this.passIntService.getListPassInternetOfUser();
-          this.listPassInternetShown = this.passIntService.getListPassInternetShown();
-          this.selectedCategory = this.listCategory[0];
-        }
-      });
+    this.passIntService.queryListPassInternetOfUser(this.destCodeFormule).subscribe(
+      (res: any) => {
+      this.isLoaded = true;
+      this.listCategory = this.passIntService.getListCategoryPassInternet();
+      this.listPassInternet = this.passIntService.getListPassInternetOfUser();
+      this.listPassInternetShown = this.passIntService.getListPassInternetShown();
+      this.selectedCategory = this.listCategory[0];
+      
+    }, (err: any) => {
+      this.isLoaded = true; 
+    } );
+      
   }
 
   goToActivationPage() {

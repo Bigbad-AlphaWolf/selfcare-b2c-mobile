@@ -3,7 +3,7 @@
     <span>N'a pas pu charger les pass</span>
     <span (click)="getListPassIllimix()" class="reload-text">cliquer pour recharger</span>
   </div>
-  <div *ngIf="showAlertAvantages" class="buy-pass-illimix-v2-list-body-block-alert">
+  <div *ngIf="0" class="buy-pass-illimix-v2-list-body-block-alert">
       <scb-avantage-popup (close)="hideAlert()" [type]="'illimix'"> </scb-avantage-popup>
     </div>
   <div class="buy-pass-illimix-v2-list-body-block" *ngIf="!error && isLoaded">
@@ -30,15 +30,20 @@
               <span class="pass-name scb-text-orange">
                 {{ !pass?.passPromo ? pass?.tarif : pass?.passPromo?.tarif }} F
               </span>
-              <span class="pass-duration scb-text-light-black">Valable
+                <span *ngIf="!pass?.passPromo" class="pass-duration scb-text-light-black">
+                  Valable
                 <ng-container
-                  [ngSwitch]="!pass?.passPromo ? pass?.categoriePass?.libelle : pass?.passPromo?.categoriePass?.libelle">
-                  <span *ngSwitchCase="'Jour'">24 heures.</span>
-                  <span *ngSwitchCase="'Semaine'">7 jours.</span>
-                  <span *ngSwitchCase="'Mois'">1 mois.</span>
-                  <span *ngSwitchDefault>3 jours.</span>
-                </ng-container>
-                , 24h/24</span>
+                [ngSwitch]="
+                  !pass?.passPromo ? pass?.categoriePass?.libelle : pass?.passPromo?.categoriePass?.libelle
+                "
+              >
+                <ng-container *ngSwitchCase="'Jour'">{{(!pass?.passPromo && pass?.validitePass) ? pass?.validitePass : '1 jour.' }} </ng-container>
+                <ng-container *ngSwitchCase="'Semaine'">{{(!pass?.passPromo && pass?.validitePass) ? pass?.validitePass : '7 jours.' }} </ng-container>
+                <ng-container *ngSwitchCase="'Mois'"> {{(!pass?.passPromo && pass?.validitePass) ? pass?.validitePass : '30 jours.' }}</ng-container>
+                <ng-container *ngSwitchCase="'Nuit'"> {{(!pass?.passPromo && pass?.validitePass) ? pass?.validitePass : 'de 00h à 08h.' }}</ng-container>
+                <ng-container *ngSwitchDefault>{{(!pass?.passPromo && pass?.validitePass) ? pass?.validitePass : '' }} </ng-container>
+            </ng-container>
+                </span>
             </div>
             <div class="item-icon">
               <img src="/assets/images/arrow-right.svg" alt="arrow-right" class="arrow-right" />
@@ -92,6 +97,6 @@
     <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
   </div>
   <div class="no-pass-block" *ngIf="isLoaded && listPassIllimixShown.length < 1">
-    Pas de pass disponible pour ce profil
+    {{ getErrorMessageNoPass() }}
   </div>
 </div>

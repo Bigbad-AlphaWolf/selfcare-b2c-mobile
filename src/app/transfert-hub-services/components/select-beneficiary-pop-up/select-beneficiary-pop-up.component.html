@@ -1,35 +1,67 @@
 <div class="select-beneficiary-container">
   <div class="title">
-      Choix du bénéficiaire
+    Choix du bénéficiaire
   </div>
   <div class="description">
-      Renseigner le numéro du bénéficiaire
+    Renseigner le numéro du bénéficiaire
   </div>
   <div class="beneficiary-number">
-      <form novalidate autocomplete="false">
-        <mat-form-field class="scb-input-row" appearance="outline">
-            <mat-label>N° du bénéficiaire&nbsp;&nbsp;</mat-label>
-            <input
-              #inputTel
-              matInput
-              type="tel" [value]="recipientContactInfos ? recipientContactInfos : otherBeneficiaryNumber"
-              maxlength=20
-            />
-          </mat-form-field>
-      </form>
+    <form novalidate autocomplete="false">
+      <mat-form-field class="scb-input-row" appearance="outline">
+        <mat-label>N° du bénéficiaire&nbsp;&nbsp;</mat-label>
+        <input
+          #inputTel
+          matInput
+          type="tel"
+          [value]="
+            recipientContactInfos
+              ? recipientContactInfos
+              : otherBeneficiaryNumber
+          "
+          maxlength="20"
+        />
+      </mat-form-field>
+    </form>
     <!-- <ion-item lines="full">
       <ion-label position="floating">Numéro du bénéficiaire</ion-label>
       <ion-input maxlength="20" #inputTel inputmode="tel" clearInput [value]="recipientContactInfos ? recipientContactInfos : otherBeneficiaryNumber"></ion-input>
     </ion-item> -->
-    <img class="icon" src="/assets/images/address-book.png" alt="">
-    <span (click)="pickContact()" class="btn-contact scb-text-orange">Mes contacts</span>
+    <img class="icon" src="/assets/images/address-book.png" alt="" />
+    <span (click)="pickContact()" class="btn-contact scb-text-orange"
+      >Mes contacts</span
+    >
   </div>
   <div *ngIf="hasErrorGetContact" class="error-msg scb-text-red-error">
-      {{ errorGetContact }}
-   </div>
+    {{ errorGetContact }}
+  </div>
+  <div class="recents" *ngIf="recentsRecipients$ | async as recents">
+    <div class="recent-description scb-text-full-black" *ngIf="recents.length">
+      Récents
+    </div>
+    <div
+      matRipple
+      class="oem-item"
+      (click)="validateBeneficiary(recent.msisdn)"
+      *ngFor="let recent of recents"
+    >
+      <div class="logo scb-text-white">
+        {{ recent.name ? (recent.name | acronym) : 'C' }}
+      </div>
+      <div class="labels">
+        <span class="name"> {{ recent.name }}</span>
+        <span class="number scb-text-gray">{{ recent.msisdn | phoneNumberDisplay}}</span>
+      </div>
+    </div>
+  </div>
   <div class="confirm-btn">
-      <ion-button [disabled]="isProcessing" shape="round" (click)="validateBeneficiary()" class="btn" expand="block" >Continuer</ion-button>
-      <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
-
+    <ion-button
+      [disabled]="isProcessing"
+      shape="round"
+      (click)="validateBeneficiary()"
+      class="btn"
+      expand="block"
+      >Continuer</ion-button
+    >
+    <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
   </div>
 </div>

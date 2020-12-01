@@ -14,21 +14,25 @@ import {
   WelcomeStatusModel,
   SargalStatusModel,
   getBanniereTitle,
-  getBanniereDescription
+  getBanniereDescription,
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { PassVolumeDisplayPipe } from 'src/shared/pipes/pass-volume-display.pipe';
-import { ShareSocialNetworkComponent } from 'src/shared/share-social-network/share-social-network.component';
 import { MatDialog } from '@angular/material';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
 import { SargalService } from '../services/sargal-service/sargal.service';
-import { CODE_FORMULE_KILIMANJARO, KILIMANJARO_FORMULE } from '../dashboard';
+import { KILIMANJARO_FORMULE } from '../dashboard';
+import { OperationOem } from '../models/operation.model';
+import { ACTIONS_RAPIDES_OPERATIONS_DASHBOARD } from '../utils/operations.util';
+import { NavController } from '@ionic/angular';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { map } from 'rxjs/operators';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid',
   templateUrl: './dashboard-postpaid.page.html',
-  styleUrls: ['./dashboard-postpaid.page.scss']
+  styleUrls: ['./dashboard-postpaid.page.scss'],
 })
 export class DashboardPostpaidPage implements OnInit {
   months = months;
@@ -59,7 +63,7 @@ export class DashboardPostpaidPage implements OnInit {
   lastUpdateConso;
   pictures = [
     { image: '/assets/images/banniere-promo-mob.png' },
-    { image: '/assets/images/banniere-promo-fibre.png' }
+    { image: '/assets/images/banniere-promo-fibre.png' },
   ];
   sosEligible = true;
   listBanniere: BannierePubModel[] = [];
@@ -67,7 +71,7 @@ export class DashboardPostpaidPage implements OnInit {
   slideOpts = {
     speed: 400,
     slidesPerView: 1.5,
-    slideShadows: true
+    slideShadows: true,
   };
   userPhoneNumber: string;
   firstName: string;
@@ -77,7 +81,8 @@ export class DashboardPostpaidPage implements OnInit {
   noSargalProfil: boolean;
   hasError: boolean;
   isKilimanjaroPostpaid: boolean;
-
+  operations: OperationOem[] = ACTIONS_RAPIDES_OPERATIONS_DASHBOARD;
+  sargalStatus: string;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -88,7 +93,9 @@ export class DashboardPostpaidPage implements OnInit {
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
     private sargalServ: SargalService,
-    private banniereServ: BanniereService
+    private banniereServ: BanniereService,
+    private navCtl: NavController,
+    private omServ: OrangeMoneyService
   ) {}
 
   ngOnInit() {
@@ -102,6 +109,7 @@ export class DashboardPostpaidPage implements OnInit {
     this.getBills();
     this.getCustomerSargalStatus();
     this.getCurrentSubscription();
+    this.checkOMNumber();
     this.banniereServ.setListBanniereByFormule();
     this.banniereServ
       .getStatusLoadingBanniere()
@@ -113,13 +121,26 @@ export class DashboardPostpaidPage implements OnInit {
       });
   }
 
+  checkOMNumber() {
+    this.omServ
+      .getOmMsisdn()
+      .pipe(
+        map((omNumber) => {
+          console.log(omNumber);
+          if (omNumber !== 'error') {
+            this.dashbordServ.swapOMCard();
+          }
+        })
+      )
+      .subscribe();
+  }
+
   getCurrentSubscription() {
     this.userPhoneNumber = this.dashbordServ.getCurrentPhoneNumber();
     this.authServ
       .getSubscription(this.userPhoneNumber)
       .subscribe((subscription: SubscriptionModel) => {
-        this.isKilimanjaroPostpaid =
-          subscription.code === KILIMANJARO_FORMULE;
+        this.isKilimanjaroPostpaid = subscription.code === KILIMANJARO_FORMULE;
       });
   }
 
@@ -133,6 +154,7 @@ export class DashboardPostpaidPage implements OnInit {
         if (!sargalStatus.valid) {
           this.sargalStatusUnavailable = true;
         }
+        this.sargalStatus = sargalStatus.profilClient;
         this.loadingStatus = true;
         this.hasError = false;
       },
@@ -195,14 +217,14 @@ export class DashboardPostpaidPage implements OnInit {
         amount: consoVoix,
         percent: percentConsoVoix,
         total: totalVoix,
-        unit: 'F'
+        unit: 'F',
       });
       conso.push({
         compteur: 'Restant Conso Internet',
         amount: formatConsoInt,
         percent: percentConsoInt,
         total: totalData,
-        dataFinished: consoInt < 0
+        dataFinished: consoInt < 0,
       });
       return conso;
     }
@@ -223,14 +245,15 @@ export class DashboardPostpaidPage implements OnInit {
   }
 
   getBills() {
+    this.errorBill = false;
     this.authServ
       .getSubscription(this.userPhoneNumber)
       .subscribe((client: SubscriptionModel) => {
         this.billsService.getFactureMobile(client.clientCode).subscribe(
-          res => {
+          (res) => {
             this.bills = res;
           },
-          error => {
+          () => {
             this.errorBill = true;
           }
         );
@@ -281,18 +304,6 @@ export class DashboardPostpaidPage implements OnInit {
     );
   }
 
-  fabToggled() {
-    this.fabOpened = !this.fabOpened;
-  }
-
-  openSocialNetworkModal() {
-    this.shareDialog.open(ShareSocialNetworkComponent, {
-      height: '530px',
-      width: '330px',
-      maxWidth: '100%'
-    });
-  }
-
   onError(input: { el: HTMLElement; display: boolean }[]) {
     input.forEach((item: { el: HTMLElement; display: boolean }) => {
       item.el.style.display = item.display ? 'block' : 'none';
@@ -302,7 +313,7 @@ export class DashboardPostpaidPage implements OnInit {
   showWelcomePopup(data: WelcomeStatusModel) {
     const dialog = this.shareDialog.open(WelcomePopupComponent, {
       data,
-      panelClass: 'gift-popup-class'
+      panelClass: 'gift-popup-class',
     });
     dialog.afterClosed().subscribe(() => {
       this.assistanceService.tutoViewed().subscribe(() => {});
@@ -321,7 +332,7 @@ export class DashboardPostpaidPage implements OnInit {
                 this.showWelcomePopup(res);
               }
             },
-            err => {}
+            () => {}
           );
         }
       },
@@ -334,5 +345,9 @@ export class DashboardPostpaidPage implements OnInit {
   }
   getBanniereDescription(description: string) {
     return getBanniereDescription(description);
+  }
+
+  onVoirPlus() {
+    this.navCtl.navigateForward(['/oem-services']);
   }
 }

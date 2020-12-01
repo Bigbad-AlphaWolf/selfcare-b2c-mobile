@@ -1,6 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
-import { OPERATION_TYPE_RECHARGE_CREDIT, PAYMENT_MOD_OM, formatCurrency } from 'src/shared';
+import { OPERATION_TYPE_RECHARGE_CREDIT, PAYMENT_MOD_OM, formatCurrency, SubscriptionModel } from 'src/shared';
 import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
@@ -9,6 +9,10 @@ import { FollowAnalyticsService } from '../services/follow-analytics/follow-anal
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { ModalController, NavController } from '@ionic/angular';
+import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
+import { ModalSuccessModel } from '../models/modal-success-infos.model';
+import { OperationExtras } from '../models/operation-extras.model';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 
 @Component({
   selector: 'app-buy-credit',
@@ -30,7 +34,6 @@ export class BuyCreditPage implements OnInit {
   PROFILE_TYPE_POSTPAID = PROFILE_TYPE_POSTPAID;
   balancePinErrorMsg;
   balancePinPadHasError;
-  omBalancePinPadDisplayed = false;
   currentOMBalance = 0;
   purchasePass: any;
   errorCounting = 0;
@@ -44,11 +47,15 @@ export class BuyCreditPage implements OnInit {
   recipientFirstName = '';
   recipientLastName = '';
   isProcessing: boolean;
+  opXtras: OperationExtras = {};
   constructor(
-    private router: Router,
     private dashbordServ: DashboardService,
     private authService: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService, private omService: OrangeMoneyService, private modalController: ModalController, private navControl: NavController
+    private followAnalyticsService: FollowAnalyticsService,
+    private omService: OrangeMoneyService,
+    private modalController: ModalController,
+    private navControl: NavController,
+    private appRout: ApplicationRoutingService
 
   ) {}
 
@@ -60,8 +67,9 @@ export class BuyCreditPage implements OnInit {
     this.step = 0;
     this.authService
       .getSubscription(this.currentNumber)
-      .subscribe((souscription: any) => {
+      .subscribe((souscription: SubscriptionModel) => {
         this.currentProfil = souscription.profil;
+        this.opXtras.code = souscription.code;
       });
       this.checkOmAccountSession()
   }
@@ -73,30 +81,47 @@ export class BuyCreditPage implements OnInit {
 
         if (
           omSession.msisdn === "error" ||
-          !omSession.hasApiKey ||
-          !omSession.accessToken ||
-          omSession.loginExpired
+          !omSession.hasApiKey 
         ) {
           this.openPinpad();
         }
-      },
-      () => {
-        this.openPinpad();
       }
     );
   }
 
-  async openPinpad() {
+  async openPinpad(purchaseType?: string) {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
       cssClass: "pin-pad-modal",
       componentProps: {
-        operationType: null,
+        operationType: purchaseType,
+        buyCreditPayload: {
+          msisdn2: this.destinatorPhoneNumber,
+          amount: this.amount,
+        },
+        opXtras: this.opXtras,
       },
     });
-    modal.onDidDismiss().then((response) => {
-      if (response && !response.data) 
-        this.navControl.navigateBack(['/dashboard'])
+    modal.onDidDismiss().then((response) => {      
+      if(purchaseType) {
+        if(response && response.data) {
+          this.openSuccessFailModal({
+            opXtras: response.data.opXtras,
+            success: true,
+            msisdnBuyer: this.omService.getOrangeMoneyNumber(),
+            buyForMe:
+              this.destinatorPhoneNumber ===
+              this.omService.getOrangeMoneyNumber(),
+          });
+        }
+      } else {        
+        if( response && response.data ) {
+          this.hideUserSolde = false;
+          this.omBalance = response.data.balance;
+        } else {
+          this.appRout.goToDashboard()
+        }
+      }
       
     });
     return await modal.present();
@@ -106,12 +131,10 @@ export class BuyCreditPage implements OnInit {
     if (this.step === 1) {
       this.operation = 'CHECK_SOLDE';
     }
-    this.omBalancePinPadDisplayed = true;
   }
 
   soldeGot(solde) {
     if (solde !== 'erreur') {
-      this.omBalancePinPadDisplayed = false;
       this.omBalance = solde;
       this.hideUserSolde = false;
       if (this.step === 2) {
@@ -162,11 +185,11 @@ export class BuyCreditPage implements OnInit {
 
   payCredit() {
     this.operation = 'BUY_CREDIT';
-    this.omBalancePinPadDisplayed = true;
     this.creditToBuy = {
       msisdn2: this.destinatorPhoneNumber,
       amount: this.amount
     };
+    this.openPinpad(OPERATION_TYPE_RECHARGE_CREDIT);
   }
 
   goToNextStep() {
@@ -175,7 +198,6 @@ export class BuyCreditPage implements OnInit {
 
   goToPreviousStep() {
     this.operation = 'CHECK_SOLDE';
-    this.omBalancePinPadDisplayed = false;
     const previousStep = this.step - 1;
     if (previousStep < 0) {
       this.goToDashboardPage();
@@ -193,7 +215,6 @@ export class BuyCreditPage implements OnInit {
     this.pinPadHasError = false;
     this.balancePinErrorMsg = '';
     this.balancePinPadHasError = false;
-    this.omBalancePinPadDisplayed = false;
     this.currentOMBalance = 0;
     this.hideUserSolde = true;
     this.step = 0
@@ -211,5 +232,21 @@ export class BuyCreditPage implements OnInit {
     this.recipientFirstName += contact.name.middleName
       ? ` ${contact.name.middleName}`
       : '';
+  }
+
+  async openSuccessFailModal(params: ModalSuccessModel) {
+    params.paymentMod = this.choosedPaymentMod;
+    params.recipientMsisdn = this.destinatorPhoneNumber;
+    params.recipientName = this.recipientFirstName && this.recipientLastName ? this.recipientFirstName + ' ' + this.recipientLastName : null ;
+    params.purchaseType = OPERATION_TYPE_RECHARGE_CREDIT;
+    params.amount = this.amount;
+    const modal = await this.modalController.create({
+      component: OperationSuccessFailModalPage,
+      cssClass: params.success ? 'success-modal' : 'failed-modal',
+      componentProps: params,
+      backdropDismiss: false,
+    });
+    modal.onDidDismiss().then(() => {});
+    return await modal.present();
   }
 }

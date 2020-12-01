@@ -1,5 +1,4 @@
 import { HTTP } from '@ionic-native/http/ngx';
-import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
 import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -19,10 +18,6 @@ import { ChangeAvatarPopupComponent } from './my-account/change-avatar-popup/cha
 import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
 import { SharedModule } from 'src/shared/shared.module';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
-import {
-  FileTransfer,
-  FileTransferObject,
-} from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
@@ -32,28 +27,27 @@ import localeFr from '@angular/common/locales/fr';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Market } from '@ionic-native/market/ngx';
 import { Device } from '@ionic-native/device/ngx';
-import { Uid } from '@ionic-native/uid/ngx';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
-import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
 import { SetPaymentChannelModalPageModule } from './set-payment-channel-modal/set-payment-channel-modal.module';
 import { NewPinpadModalPageModule } from './new-pinpad-modal/new-pinpad-modal.module';
 import { OperationSuccessFailModalPageModule } from './operation-success-fail-modal/operation-success-fail-modal.module';
 import { RegistrationSuccessModalPageModule } from './registration-success-modal/registration-success-modal.module';
+import { IonicImageLoader } from 'ionic-image-loader';
+import { Uid } from '@ionic-native/uid/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { PipesModule } from './pipes/pipes.module';
 
 registerLocaleData(localeFr);
 @NgModule({
   declarations: [
     AppComponent,
-    SidemenuComponent,
-    ChangeAvatarPopupComponent,
-    InProgressPopupComponent,
-  ],
-  entryComponents: [ChangeAvatarPopupComponent, InProgressPopupComponent],
+    SidemenuComponent ],
   imports: [
     HttpClientModule,
     MatDialogModule,
     BrowserModule,
     IonicModule.forRoot(),
+    IonicImageLoader.forRoot(),
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule,
@@ -61,12 +55,13 @@ registerLocaleData(localeFr);
     NewPinpadModalPageModule,
     OperationSuccessFailModalPageModule,
     RegistrationSuccessModalPageModule,
+    PipesModule
   ],
   providers: [
     AppVersion,
     StatusBar,
     SplashScreen,
-    NativePageTransitions,
+    WebView,
     { provide: LOCALE_ID, useValue: 'fr-FR' },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {
@@ -75,8 +70,6 @@ registerLocaleData(localeFr);
       multi: true,
     },
     HTTP,
-    FileTransfer,
-    FileTransferObject,
     File,
     FileOpener,
     AppMinimize,
@@ -86,7 +79,6 @@ registerLocaleData(localeFr);
     Device,
     Uid,
     AndroidPermissions,
-    UniqueDeviceID,
   ],
   bootstrap: [AppComponent],
 })

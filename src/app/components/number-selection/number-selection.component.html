@@ -1,30 +1,31 @@
 <div class="select-beneficiary-container">
-  <div class="title">
-    Choix du bénéficiaire
-  </div>
-  <div class="description">
-    Sélecionnez le bénéficiaire
-  </div>
-  <div class="number-options">
+  <div class="title">Choix du bénéficiaire</div>
+  <div class="description">Sélecionnez le bénéficiaire</div>
+  <div *ngIf="option === 'WITH_MY_PHONES'" class="number-options">
     <mat-radio-group (change)="onOptionChange($event.value)">
+      <mat-radio-button *ngIf="loadingNumbers" [value]="currentPhone" checked>
+        <div class="destination-number">
+          <span> Mon numéro </span>
+          <span>{{ currentPhone | phoneNumberDisplay }}</span>
+        </div>
+      </mat-radio-button>
       <mat-radio-button
         *ngFor="let number of numbers$ | async; index as i; count as size"
         [value]="number"
+        [checked]="currentPhone === number && !showInput"
       >
         <div class="destination-number">
-          <span> Mon numéro {{ size > 1 ? i + 1 : "" }} </span>
+          <span> Mon numéro {{ size > 1 ? i + 1 : '' }} </span>
           <span>{{ number | phoneNumberDisplay }}</span>
         </div>
       </mat-radio-button>
-      <mat-radio-button [value]="'AUTRE'" checked>
+      <mat-radio-button [value]="'AUTRE'">
         <div class="destination-number autre-number">
+          <span> Offrir à un autre </span>
           <span>
-            Offrir à un autre
-          </span>
-          <span >
-           <ng-container *ngIf="showInput && opXtras.recipientFromContact">
-             {{ numberFromInput | phoneNumberDisplay }}
-           </ng-container>
+            <ng-container *ngIf="showInput && opXtras.recipientFromContact">
+              {{ numberFromInput | phoneNumberDisplay }}
+            </ng-container>
           </span>
         </div>
       </mat-radio-button>
@@ -39,17 +40,45 @@
     Veuillez choisir un numéro de destinataire valide pour continuer
   </div>
 
-  <div [hidden]="!canNotRecieve && !canNotRecieveError" class="error-msg scb-text-red-error">
+  <div
+    [hidden]="!canNotRecieve && !canNotRecieveError"
+    class="error-msg scb-text-red-error"
+  >
     Le numéro de votre destinataire ne peut pas recevoir de credit.
   </div>
-  <div class="btn-continue">
-    <button mat-button
-      [disabled]="isProcessing"
-      (click)="onContinue()"
-      >Continuer</button
+  <div
+    *ngIf="eligibilityChecked && !isRecipientEligible"
+    class="error-msg scb-text-red-error"
+  >
+    {{ eligibilityError }}
+  </div>
+  <div class="recents" *ngIf="recentsRecipients$ | async as recents">
+    <div class="recent-description scb-text-full-black" *ngIf="recents.length">
+      Récents
+    </div>
+    <div
+      matRipple
+      class="oem-item"
+      (click)="onContinue(recent.msisdn)"
+      *ngFor="let recent of recents"
     >
+      <div class="logo scb-text-white">
+        {{ recent.name ? (recent.name | acronym) : 'C' }}
+      </div>
+      <div class="labels">
+        <span class="name" *ngIf="recent.name">{{ recent.name }}</span>
+        <span class="number scb-text-gray">{{
+          recent.msisdn | phoneNumberDisplay
+        }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="btn-continue">
+    <button mat-button [disabled]="isProcessing" (click)="onContinue()">
+      Continuer
+    </button>
     <ion-spinner
-      *ngIf="isProcessing || !((numbers$ | async)?.length)"
+      *ngIf="isProcessing || (!isLightMod && !(numbers$ | async)?.length)"
       name="crescent"
     ></ion-spinner>
   </div>

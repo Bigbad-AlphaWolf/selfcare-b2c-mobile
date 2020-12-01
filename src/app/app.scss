@@ -332,6 +332,9 @@ body {
   color: $grey-platinum;
 }
 
+.#{$prefix}-text-light-blue {
+  color: $lightBlue;
+}
 .c-pointer {
   cursor: pointer;
 }
@@ -409,5 +412,3 @@ $bluePopUp: #085ebd;
   top: 0;
   left: 0;
 }
-
-

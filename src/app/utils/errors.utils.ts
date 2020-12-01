@@ -1,0 +1,1 @@
+export const STATUS_ERROR_CODE_OM_CARD_RAPIDO_NOT_FOUND = "Erreur-614";

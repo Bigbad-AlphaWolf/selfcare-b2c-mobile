@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="dashboard-block-conso-btns">
-        <ion-slides [options]="slideOpts">
+        <ion-slides [options]="slideOpts" id="slides">
           <ng-container *ngIf="isHyBride">
             <ion-slide>
               <div
@@ -64,21 +64,19 @@
               </div>
             </div>
           </ion-slide>
-          <ion-slide>
+          <ion-slide id="omCard">
             <app-om-button></app-om-button>
           </ion-slide>
           <ion-slide *ngIf="currentProfil && !isHyBride">
             <div
               class="scb-btn-black scb-btn-sargal"
               [ngClass]="{
-              'btn-disabled': sargalUnavailable || userSargalData?.status === getSargalStatusUnsubscriptionOnGoing()
-            }"
+              'btn-disabled': sargalUnavailable }"
             >
               <div
                 (click)="makeSargalAction()"
                 [ngClass]="{
-                'btn-no-action': sargalUnavailable || userSargalData?.status === getSargalStatusUnsubscriptionOnGoing()
-              }"
+                'btn-no-action': sargalUnavailable }"
                 class="btn-container"
               >
                 <div class="scb-btn-top-block">
@@ -104,13 +102,11 @@
                       <span class="text-style-1"> Pts </span></span
                     >
                     <span
-                      *ngIf="userSargalData?.status === getSargalStatusNotSubscribed()"
+                      *ngIf="isNotSubscribedToSargal(userSargalData?.status)"
                       class="show-solde-info-text"
                       >M'inscrire</span
                     >
-                    <span
-                      *ngIf="sargalUnavailable || userSargalData?.status === getSargalStatusUnsubscriptionOnGoing()"
-                      class="show-solde-info-text"
+                    <span *ngIf="sargalUnavailable" class="show-solde-info-text"
                       >Service indisponible</span
                     >
                   </div>
@@ -146,13 +142,14 @@
                 class="btn-container"
               >
                 <div class="scb-btn-top-block">
-                  <img
-                    class="scb-btn-top-block-icon"
-                    src="/assets/images/gift-sargal.svg"
-                    alt="sargal-cfa-3-mob"
-                  />
                   <div class="scb-btn-top-block-text">
-                    <span class="text">Sargal</span>
+                    <span class="text">Orange</span>
+                    <span
+                      [ngStyle]="{'color': sargalStatus === 'GOLD' ? 'gold' :  '#e5e4e2'}"
+                      class="status-sargal"
+                    >
+                      {{ sargalStatus }}</span
+                    >
                   </div>
                 </div>
                 <div *ngIf="isLoading" class="scb-block-spinner">
@@ -163,22 +160,19 @@
                 </div>
                 <ng-container *ngIf="!isLoading && !sargalStatusUnavailable">
                   <div class="bottom-block">
-                    <span class="show-solde-info-text">Voir ma carte</span
-                    >
+                    <span class="show-solde-info-text">Voir ma carte</span>
                   </div>
                 </ng-container>
                 <ng-container *ngIf="!isLoading && sargalStatusUnavailable">
                   <div class="bottom-block">
-                    <span class="show-solde-info-text">Service Indisponible</span
+                    <span class="show-solde-info-text"
+                      >Service Indisponible</span
                     >
                   </div>
                 </ng-container>
               </div>
 
-              <div
-                (click)="getCustomerSargalStatus()"
-                class="scb-data-reload"
-              >
+              <div (click)="getCustomerSargalStatus()" class="scb-data-reload">
                 <img src="/assets/images/reload.png" alt="reload-icon" />
               </div>
             </div>
@@ -236,15 +230,18 @@
       </div>
     </div>
     <div class="dashboard-block-offres">
-      <div class="title">Je souhaite</div>
+      <div class="top">
+        <div class="title">Je souhaite</div>
+        <div class="more" (click)="onOffreClicked()" >Voir plus</div>
+      </div>
       <div class="dashboard-block-offres-top3">
         <div (click)="goToBuyPage()" class="dashboard-block-offres-top3-item">
           <div
             class="badge-promo"
-            *ngIf="hasPromoBooster?.promoPass || hasPromoBooster?.promoRecharge"
+            *ngIf="hasPromoBooster?.promoPass || hasPromoBooster?.promoRecharge || hasPromoBooster?.promoPassIllimix || hasPromoPlanActive?.hasPassIllimix || hasPromoPlanActive?.hasPassInternet || hasPromoPlanActive?.hasRecharge"
           >
             <div class="icon-container">
-              <img src="/assets/images/gift-sargal.svg" alt="gift-icon" />
+              <span class="percent scb-text-white"> % </span>
             </div>
             <div class="triangle"></div>
           </div>
@@ -283,22 +280,9 @@
           </div>
         </div>
         <div
-        (click)="goMerchantPayment()"
-        class="dashboard-block-offres-top3-item"
-      >
-        <div class="item-icon">
-          <img src="/assets/images/ic-scan-ticket.svg" alt="group-56" />
-        </div>
-        <div class="item-text scb-text-black">
-          <span class="transfert text"
-            >Payer <br />
-            <span class="text-style-1 scb-text-item-offre-black"
-              >un marchand</span
-            >
-          </span>
-        </div>
-      </div>
-        <!-- <div (click)="(0)" class="dashboard-block-offres-top3-item disabled-block">
+          (click)="onPayerFacture()"
+          class="dashboard-block-offres-top3-item"
+        >
           <div class="item-icon">
             <img
               src="/assets/images/ic-orange-money.svg"
@@ -313,10 +297,8 @@
               >
             </span>
           </div>
-        </div> -->
-      </div>
-      <div class="dashboard-block-offres-top3">
-        <!-- <div
+        </div>
+        <div
           (click)="goMerchantPayment()"
           class="dashboard-block-offres-top3-item"
         >
@@ -331,9 +313,9 @@
               >
             </span>
           </div>
-        </div> -->
-
-        <div *ngIf="!isHyBride"
+        </div>
+        <div
+          *ngIf="!isHyBride && !isNotSubscribedToSargal(userSargalData?.status)"
           (click)="makeSargalAction()"
           class="dashboard-block-offres-top3-item"
         >
@@ -366,17 +348,19 @@
           </div>
         </div>
         <div
-          [ngClass]="{ 'disabled-block': !canDoSOS }"
-          (click)="goToSOSPage()"
-          class="dashboard-block-offres-top3-item hide"
+          *ngIf="0"
+          (click)="onOffreClicked()"
+          class="dashboard-block-offres-top3-item"
         >
           <div class="item-icon">
-            <img src="/assets/images/ic-emergency-sos@2x.png" alt="group-55" />
+            <img src="/assets/images/ic-more-dots@2x.png" alt="group-55" />
           </div>
           <div class="item-text scb-text-black">
             <span class="sos text"
-              >Demander <br />
-              <span class="text-style-1 scb-text-item-offre-black">un SOS</span>
+              >Autres <br />
+              <span class="text-style-1 scb-text-item-offre-black"
+                >Services</span
+              >
             </span>
           </div>
         </div>
@@ -433,35 +417,4 @@
     </div>
   </div>
 </ion-content>
-<div id="fab-background" *ngIf="fabOpened"></div>
-<ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)="fabToggled()">
-  <ion-fab-button>
-    <img
-      class="ibou-icon"
-      src="/assets/images/avatar-ibou-update.svg"
-      alt=""
-      (tap)="fabToggled()"
-    />
-  </ion-fab-button>
-
-  <ion-fab-list side="top">
-    <ion-fab-button class="fab-item" (click)="openSocialNetworkModal()">
-      <img src="/assets/images/share_fab_icon.svg" alt="" />
-    </ion-fab-button>
-    <ion-label (click)="openSocialNetworkModal()">
-      Partager l’application
-    </ion-label>
-
-    <ion-fab-button class="fab-item" routerLink="/assistance">
-      <img src="/assets/images/need_help_fab_icon.svg" alt="" />
-    </ion-fab-button>
-    <ion-label routerLink="/assistance"> Besoin d’aide ? </ion-label>
-
-    <ion-fab-button class="fab-item" routerLink="/control-center">
-      <img src="/assets/images/emergency_help_fab_icon.svg" alt="" />
-    </ion-fab-button>
-    <ion-label routerLink="/control-center" (click)="goAssistance()"
-      >Assistance</ion-label
-    >
-  </ion-fab-list>
-</ion-fab>
+<app-ibou-ion-fab></app-ibou-ion-fab>

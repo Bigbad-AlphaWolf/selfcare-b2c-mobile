@@ -16,6 +16,12 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import { BuyPassModel } from '../services/dashboard-service';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { ModalController } from '@ionic/angular';
+import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
+import { OperationExtras } from '../models/operation-extras.model';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { ModalSuccessModel } from '../models/modal-success-infos.model';
+import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 declare var FollowAnalytics: any;
 
 @Component({
@@ -35,7 +41,7 @@ export class BuyPassIllimixPage implements OnInit {
   pinPadHasError = false;
   errorMsg: string;
   failed: boolean;
-  title = 'Achat de pass illimix';
+  title = 'Achat de pass illimix ou allo';
   choosedPaymentMod: string;
   passIllimixChosen: PassIllimModel | PromoPassIllimModel;
   buyingPass: boolean;
@@ -50,6 +56,7 @@ export class BuyPassIllimixPage implements OnInit {
   idPassSelected: number;
   buyFromLink: boolean;
   currentFormule: string;
+  opXtras: OperationExtras = {};
 
   constructor(
     private router: Router,
@@ -58,7 +65,9 @@ export class BuyPassIllimixPage implements OnInit {
     private authServ: AuthenticationService,
     private followAnalyticsService: FollowAnalyticsService,
     private route: ActivatedRoute,
-    private passService: PassIllimixService
+    private passService: PassIllimixService,
+    private modalController: ModalController,
+    private orangeMoneyService: OrangeMoneyService
   ) {}
 
   /** les etapes
@@ -265,8 +274,52 @@ export class BuyPassIllimixPage implements OnInit {
     if (this.passIllimixDetails.paymentMod === PAYMENT_MOD_CREDIT) {
       this.payWithCredit();
     } else {
-      this.goToNextStep();
+      this.openPinpad();
     }
+  }
+
+  async openPinpad() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+      componentProps: {
+        operationType: OPERATION_TYPE_PASS_ILLIMIX,
+        buyPassPayload: {
+          destinataire: this.destNumber,
+          pass: this.passIllimixChoosed,
+        },
+        opXtras: this.opXtras
+      },
+    });
+    modal.onDidDismiss().then((response) => {
+      if (response.data && response.data.success) {
+        this.openSuccessFailModal({
+          opXtras: response.data.opXtras,
+          success: true,
+          msisdnBuyer: this.orangeMoneyService.getOrangeMoneyNumber(),
+          buyForMe:
+            this.destNumber ===
+            this.orangeMoneyService.getOrangeMoneyNumber(),
+        });
+      }
+    });
+    return await modal.present();
+  }
+
+  async openSuccessFailModal(params: ModalSuccessModel) {
+    params.passBought = this.passIllimixChoosed;
+    params.paymentMod = this.choosedPaymentMod;
+    params.recipientMsisdn = this.destNumber;
+    params.recipientName = this.recipientFirstName && this.recipientLastName ? this.recipientFirstName + ' ' + this.recipientLastName : null ;
+    params.purchaseType = OPERATION_TYPE_PASS_ILLIMIX;
+    const modal = await this.modalController.create({
+      component: OperationSuccessFailModalPage,
+      cssClass: params.success ? 'success-modal' : 'failed-modal',
+      componentProps: params,
+      backdropDismiss: false,
+    });
+    modal.onDidDismiss().then(() => {});
+    return await modal.present();
   }
 
   returnToTheBeginning() {
@@ -275,6 +328,7 @@ export class BuyPassIllimixPage implements OnInit {
 
   getCurrentSubscription() {
     this.authServ.getSubscription(this.currentUserNumber).subscribe((res: any) => {
+      this.opXtras.code = res.code;
       if (res.code === CODE_KIRENE_Formule) {
         this.title = 'Acheter un  Mixel';
       }

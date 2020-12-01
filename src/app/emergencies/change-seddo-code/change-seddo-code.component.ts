@@ -65,7 +65,7 @@ export class ChangeSeddoCodeComponent implements OnInit {
     const mainNumber = this.authServ.getUserMainPhoneNumber();
     this.numbers = [];
     this.numbers.push(mainNumber);
-    this.dashboardService.getAttachedNumbers().subscribe((res: any[]) => {
+    this.dashboardService.attachedNumbers().subscribe((res: any[]) => {
       res.forEach((number) => {
         this.numbers.push(number.msisdn);
       });

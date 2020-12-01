@@ -1,20 +1,25 @@
-<ion-header [oemIonHeaderParallax]="100">
+<ion-header [oemIonHeaderParallax]="90">
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
+    <ion-buttons>
+      <ion-back-button
+        (click)="goBack()"
+        icon=""
+        class="oem-back-button"
+      >
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
-    <ion-title class="title-achat-pass-internet">
-      {{title}}
+    <ion-title>
+        {{title}}
     </ion-title>
   </ion-toolbar>
+  <div class="banniere-container">
+    <img src="/assets/images/achat-de-credit.svg" alt="header-transfer" />
+  </div>
 </ion-header>
-<ion-content fullscreen="true" [scrollEvents]="true">
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <div class="transferts-page">
-    <div class="banniere-container">
-      <img src="/assets/images/achat-de-credit.svg" alt="header-transfer" />
-    </div>
+  
     <div class="amount-provider">
       <oem-amount-provider
         (onAmountSelected)="onAmountSelected($event)"

@@ -8,12 +8,10 @@ import { IonicModule } from '@ionic/angular';
 import { BillsPage } from './bills.page';
 import { SharedModule } from 'src/shared/shared.module';
 import { BillsDetailsMobileComponent } from './bills-details-mobile/bills-details-mobile.component';
-import {
-  FileTransfer,
-  FileTransferObject
-} from '@ionic-native/file-transfer/ngx';
+
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { PipesModule } from '../pipes/pipes.module';
 const routes: Routes = [
   {
     path: '',
@@ -26,11 +24,10 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
+    PipesModule,
     RouterModule.forChild(routes),
   ],
   providers: [
-    FileTransfer,
-    FileTransferObject,
     File,
     FileOpener
   ],

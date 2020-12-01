@@ -22,8 +22,9 @@ export class FollowAnalyticsService {
   }
 
   logUserBirthDate(birthdate: string) {
-    if (typeof FollowAnalytics !== 'undefined')
-      FollowAnalytics.UserAttributes.setDateOfBirth(new Date(birthdate));
+    if (typeof FollowAnalytics !== 'undefined'){
+      FollowAnalytics.UserAttributes.setDateOfBirth(birthdate);
+    }
   }
 
   registerId(hashUserName: string) {
@@ -34,11 +35,13 @@ export class FollowAnalyticsService {
 
   setFirstName(firstName: string) {
     if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.UserAttributes.setFirstName(firstName);
     }
   }
 
   setLastName(lastName: string) {
     if (typeof FollowAnalytics !== 'undefined') {
+      FollowAnalytics.UserAttributes.setLastName(lastName);
     }
   }
 

@@ -24,9 +24,10 @@ import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/selec
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { ModalController, NavController } from '@ionic/angular';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
-import { catchError, retryWhen, switchMap } from 'rxjs/operators';
-import { throwError, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 
 @Component({
   selector: 'app-transfer-recipient-amount',
@@ -68,7 +69,8 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     private dashService: DashboardService,
     private followAnalytics: FollowAnalyticsService,
     private navControl: NavController,
-    private pinpadOM: ModalController
+    private pinpadOM: ModalController,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit() {
@@ -165,8 +167,11 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
         operationType: null,
       },
     });
-    modal.onDidDismiss().then(() => {
-      this.navControl.navigateBack(['/dashboard']);
+    modal.onDidDismiss().then((res: any) => {
+      if(res.data && res.data.balance) {
+        this.omBalanceVisible = true;
+        this.omBalance = res.data.balance;
+      }
     });
     return await modal.present();
   }
@@ -219,17 +224,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
   }
 
   seeSolde() {
-    this.typeOMCode = true;
-  }
-
-  soldeGot(solde) {
-    this.typeOMCode = false;
-    if (solde !== 'erreur') {
-      if (this.operationOM !== 'RESET_TOKEN') {
-        this.omBalanceVisible = true;
-        this.omBalance = solde;
-      }
-    }
+    this.openPinpad();
   }
 
   hideSolde() {
@@ -244,7 +239,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     // this.openPickRecipientModal(testContacts);
     this.contacts
       .pickContact()
-      .then((contact: Contact) => {
+      .then(async (contact: Contact) => {
         this.contactInfos = contact;
         if (contact.phoneNumbers.length > 1) {
           this.openPickRecipientModal(contact.phoneNumbers);
@@ -260,7 +255,10 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
               this.badNumberStep();
             }
           } else {
-            if (this.validateNumber(destNumber)) {
+            if (
+              this.validateNumber(destNumber) &&
+              (await this.checkRecipientCanRecieveCredit(destNumber))
+            ) {
               this.nextStepEmitter.emit(this.recipientInfos);
               this.contactEmitter.emit(contact);
             } else {
@@ -270,6 +268,13 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
         }
       })
       .catch(() => {});
+  }
+
+  async checkRecipientCanRecieveCredit(msisdn) {
+    let canRecieve = await this.authService
+      .canRecieveCredit(msisdn)
+      .toPromise();
+    return canRecieve;
   }
 
   openPickRecipientModal(phoneNumbers: any[]) {
@@ -308,7 +313,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
   checkOMToken(phoneNumber: string) {
     this.omService.GetUserAuthInfo(phoneNumber).subscribe((omUser: any) => {
       // If user already connected open pinpad
-      if (!omUser.hasApiKey || omUser.loginExpired || !omUser.accessToken) {
+      if (!omUser.hasApiKey || omUser.loginExpired ) {
         this.openPinpad();
       }
     });
@@ -322,51 +327,36 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
       hasOMAccount: false,
     };
     this.omService
-      .checkUserHasAccount(this.omPhoneNumber, this.recipientInfos.phoneNumber)
-      .pipe(
-        retryWhen((err) => {
-          return err.pipe(
-            switchMap(async (err) => {
-              if (err.status === 401) return await this.resetOmToken(err);
-              throw err;
-            })
-          );
-        })
-      )
+      .checkUserHasAccount(this.recipientInfos.phoneNumber)
       .subscribe(
-        (res: any) => {
+        (hasOMAccount: boolean) => {
           this.checkingOMAccount = false;
-          if (res) {
-            if (res.status_code.match('Success')) {
-              this.recipientInfos.hasOMAccount = true;
-              this.nextStepEmitter.emit(this.recipientInfos);
-              if (this.contactInfos) {
-                this.contactEmitter.emit(this.contactInfos);
-              }
-              this.followAnalytics.registerEventFollow(
-                'destinataire_transfert_has_om_account_success',
-                'event',
-                {
-                  transfert_om_numero_sender: this.userCurrentNumber,
-                  transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
-                  has_om: 'true',
-                }
-              );
-            } else {
-              this.followAnalytics.registerEventFollow(
-                'destinataire_transfert_has_om_account_success',
-                'event',
-                {
-                  transfert_om_numero_sender: this.userCurrentNumber,
-                  transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
-                  has_om: 'false',
-                }
-              );
-              this.openModalNoOMAccount(this.recipientInfos);
+          if (hasOMAccount) {
+            this.recipientInfos.hasOMAccount = true;
+            this.nextStepEmitter.emit(this.recipientInfos);
+            if (this.contactInfos) {
+              this.contactEmitter.emit(this.contactInfos);
             }
+            this.followAnalytics.registerEventFollow(
+              'destinataire_transfert_has_om_account_success',
+              'event',
+              {
+                transfert_om_numero_sender: this.userCurrentNumber,
+                transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
+                has_om: 'true',
+              }
+            );
           } else {
-            this.operationOM = 'RESET_TOKEN';
-            this.typeOMCode = true;
+            this.followAnalytics.registerEventFollow(
+              'destinataire_transfert_has_om_account_success',
+              'event',
+              {
+                transfert_om_numero_sender: this.userCurrentNumber,
+                transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
+                has_om: 'false',
+              }
+            );
+            this.openModalNoOMAccount(this.recipientInfos);
           }
         },
         (err) => {
@@ -401,7 +391,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
   async resetOmToken(err) {
     const modal = await this.pinpadOM.create({
       component: NewPinpadModalPage,
-      cssClass: "pin-pad-modal",
+      cssClass: 'pin-pad-modal',
       componentProps: {
         operationType: null,
       },
@@ -410,7 +400,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     let result = await modal.onDidDismiss();
     if (result && result.data && result.data.success) return of(err);
     throw new HttpErrorResponse({
-      error: { title: "Ping pad cancled" },
+      error: { title: 'Ping pad cancled' },
       status: 401,
     });
   }

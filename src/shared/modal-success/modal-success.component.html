@@ -60,10 +60,28 @@
     *ngIf="data.type === 'rattachment-failed'"
     class="operation-img"
   />
+    <img
+    src="/assets/images/rattachment-failed.png"
+    alt=""
+    *ngIf="data.type === 'sargal-failed'"
+    class="operation-img"
+  />
+  <img
+    src="/assets/images/confirmation-copy.svg"
+    alt=""
+    *ngIf="data.type === 'rattachment-success'"
+    class="operation-img"
+  />
   <img
     src="/assets/images/rattachment-success.png"
     alt=""
-    *ngIf="data.type === 'rattachment-success'"
+    *ngIf="data.type === 'sargal-success'"
+    class="operation-img"
+  />
+  <img
+    src="/assets/images/rattachment-failed.png"
+    alt=""
+    *ngIf="data.type === 'sargal-already-registered'"
     class="operation-img"
   />
   </div>
@@ -92,6 +110,12 @@
     <span class="title" *ngIf="data.type === 'facture'">
       Facture indisponible
     </span>
+    <span class="title" *ngIf="data.type === 'sargal-success'">
+      Inscription Sargal Bien effectué
+    </span>
+    <span class="title" *ngIf="data.type === 'sargal-failed'">
+      Une erreur est survenue lors du processus d'inscription
+    </span>
     <span class="title" *ngIf="data.type === 'file'">
       {{ data.title }}
     </span>
@@ -101,7 +125,7 @@
     <span class="title" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-failed'}"  *ngIf="data.type === 'rattachment-failed'">
       Echec rattachement !
     </span>
-    <span class="title" *ngIf="data.type === 'noOMAccount'">Désolé, </span>
+    <span class="title" *ngIf="data.type === 'noOMAccount' || data.type === 'failed-action' || data.type === 'sargal-already-registered'">Désolé, </span>
   </div>
   <div class="text-container scb-text-light-black">
     <span class="text" *ngIf="data.type === 'parametrage-internet'">
@@ -123,6 +147,12 @@
     <span class="text" *ngIf="data.type === 'deplafonnement'">
       Vous recevrez une notification dès que votre compte sera déplafonné
     </span>
+    <span class="text" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-success'}" *ngIf="data.type === 'rattachment-success'">
+      Vous venez de rattacher la ligne <span class="numero"> {{ data?.rattachedNumber }} </span>  à votre compte
+    </span>
+    <span class="text scb-text-light-black" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-failed'}" *ngIf="data.type === 'rattachment-failed'">
+      Veuillez contacter le service client
+    </span>
     <span class="text" *ngIf="data.type === 'reclamation'">
       Merci, votre demande a bien été prise en compte, vous serez contacté par
       le service client
@@ -137,16 +167,22 @@
       Ce numéro n'a pas de compte Orange Money et ne peut bénéficier de votre
       transfert
     </span>
-    <span class="text scb-text-light-black" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-success'}" *ngIf="data.type === 'rattachment-success'">
-      Votre nouvelle ligne a bien était rajoutée à votre compte
+
+    <span class="text" *ngIf="data.type === 'sargal-already-registered'">
+      Vous avez déja un compte Sargal
     </span>
-    <span class="text scb-text-light-black" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-failed'}" *ngIf="data.type === 'rattachment-failed'">
-      Veuillez contacter le service client
+
+    <span class="text" *ngIf="data.type === 'failed-action'">
+      {{ data.text }}
     </span>
   </div>
   <div class="btn-container">
-    <button class="scb-btn scb-btn-white scb-btn-full" (click)="closeDialog()">
-      {{ data && data.type === 'rattachment-success' || data && data.type === 'rattachment-failed' ? 'Terminer' : 'Fermer' }}
+    <button *ngIf="data.type !== 'rattachment-success' && data.type !== 'rattachment-failed' " class="scb-btn scb-btn-white scb-btn-full" (click)="closeDialog()">
+       Fermer
     </button>
+    <ion-button *ngIf="data.type === 'rattachment-success' || data.type === 'rattachment-failed'" expand="block" (click)="closeDialog()">
+      Terminer
+    </ion-button>
+
   </div>
 </div>

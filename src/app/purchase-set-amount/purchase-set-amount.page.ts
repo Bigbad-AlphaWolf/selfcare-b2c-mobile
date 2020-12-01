@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_SEDDO_CREDIT,
@@ -8,16 +8,15 @@ import {
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
+  REGEX_IS_DIGIT,
 } from 'src/shared';
 import {
   FeeModel,
   ORANGE_MONEY_TRANSFER_FEES,
 } from '../services/orange-money-service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
-import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { NavController } from '@ionic/angular';
 import { OperationExtras } from '../models/operation-extras.model';
-import { of, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-purchase-set-amount',
@@ -25,6 +24,7 @@ import { of, Observable } from 'rxjs';
   styleUrls: ['./purchase-set-amount.page.scss'],
 })
 export class PurchaseSetAmountPage implements OnInit {
+  static ROUTE_PATH : string = '/purchase-set-amount'
   title: string;
   subtitle: string;
   setAmountForm: FormGroup;
@@ -49,10 +49,8 @@ export class PurchaseSetAmountPage implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private route: ActivatedRoute,
     private router: Router,
     private omService: OrangeMoneyService,
-    private appliRouting: ApplicationRoutingService,
     private navController: NavController
   ) {}
 
@@ -73,7 +71,7 @@ export class PurchaseSetAmountPage implements OnInit {
     this.setAmountForm = this.fb.group({
       amount: [initialValue, [Validators.required, Validators.min(1)]],
       recipientFirstname: [
-        this.recipientFirstname,
+        '',
         [
           Validators.required,
           Validators.minLength(3),
@@ -81,7 +79,7 @@ export class PurchaseSetAmountPage implements OnInit {
         ],
       ],
       recipientLastname: [
-        this.recipientLastname,
+        '',
         [
           Validators.required,
           Validators.minLength(2),
@@ -223,7 +221,8 @@ export class PurchaseSetAmountPage implements OnInit {
 
   redirectRecapPage(payload: any) {
     const navExtras: NavigationExtras = { state: payload };
-    this.router.navigate(['/operation-recap'], navExtras);
+    this.navController.navigateForward(['/operation-recap'], navExtras);
+    // this.router.navigate(['/operation-recap'], navExtras);
   }
 
   getOMTransferFees() {
@@ -287,8 +286,10 @@ export class PurchaseSetAmountPage implements OnInit {
     }
   }
 
-  onAmountChanged(amount) {
+  onAmountChanged(event: any) {
+    const amount = event.target.value;
     this.totalAmount = +amount;
+    this.updateInput(event);
     if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
       const fee = this.extractFees(this.transferFeesArray, amount);
       this.fee = fee.with_code;
@@ -300,6 +301,16 @@ export class PurchaseSetAmountPage implements OnInit {
       this.includeFees
         ? (this.totalAmount += this.fee)
         : (this.totalAmount = amount);
+    }
+    
+  }
+
+
+  updateInput(eventInput: any) {        
+    if(!REGEX_IS_DIGIT.test(eventInput.data)){
+      const value = eventInput.target.value;
+      eventInput.target.value = 0;
+      eventInput.target.value = value;
     }
   }
 }

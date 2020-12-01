@@ -1,0 +1,58 @@
+@import 'src/app/app';
+@import "src/app/styles/bottomsheet.style";
+
+ion-header {
+    position: relative;
+    ion-label {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        color: $orange;
+        font-size: 16px;
+        font-family: HelveticaNeueLTStd-Bd;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.88;
+    }
+}
+ion-content{
+    .separator{
+        height: 10px;
+        width: 100%;
+        background-color: $grayDashboard;
+    }
+    .content{
+        padding: 20px 15px;
+        padding-bottom: 80px;
+        .title {
+            background-color: $white;
+            width: 144px;
+            height: 30px;
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 20px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+            display: block;
+            margin-bottom: 10px;
+            white-space: nowrap;
+        }
+        .other-lines{
+            margin-top: 30px;
+        }
+        ion-button {
+            --border-color: black;
+            --background: white;
+            --background-activated: black;
+            --color: black;
+            --border-radius: 10px;
+            --color-activated: white;
+            height: 50px;
+            position: fixed;
+            bottom: 30px;
+            width: 90%;
+        }
+    }
+}

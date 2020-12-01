@@ -7,13 +7,22 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import * as SecureLS from 'secure-ls';
-import { tap, delay } from 'rxjs/operators';
+import { tap, delay, retryWhen, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 export const OmRequest = 'OrangeMoney';
 import * as jwt_decode from 'jwt-decode';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { OM_SERVICE_VERSION } from '../orange-money-service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import {
+  checkUrlMatchOM,
+  checkUrlNotNeedAuthorization,
+} from 'src/app/utils/utils';
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { ModalController } from '@ionic/angular';
+import { of } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
+import { AppComponent } from 'src/app/app.component';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable()
@@ -22,7 +31,8 @@ export class AuthInterceptorService implements HttpInterceptor {
   constructor(
     private authServ: AuthenticationService,
     private router: Router,
-    private appVersion: AppVersion
+    private appVersion: AppVersion,
+    private modalController: ModalController
   ) {
     this.appVersion
       .getVersionNumber()
@@ -34,11 +44,41 @@ export class AuthInterceptorService implements HttpInterceptor {
       });
   }
 
+  async resetOmToken(err) {
+    console.log(err);
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+      componentProps: {
+        operationType: null,
+      },
+    });
+    await modal.present();
+    let result = await modal.onDidDismiss();
+    if (result && result.data && result.data.success) return of(err);
+    throw new HttpErrorResponse({
+      error: { title: 'Pinpad cancled' },
+      status: 401,
+    });
+  }
+
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     const that = this;
     const token = ls.get('token');
-    const x_uuid = ls.get('X-UUID');
+    let x_uuid = ls.get('X-UUID');
+    const imei = AppComponent.IMEI;
+    if (checkUrlMatchOM(req.url)) {
+      if (!x_uuid || x_uuid === '') {
+        const uuidV4 = uuidv4();
+        ls.set('X-UUID', uuidV4);
+        x_uuid = ls.get('X-UUID');
+      }
 
+      req = req.clone({
+        body: { ...req.body, uuid: x_uuid },
+      });
+    }
+    const lightToken = ls.get('light-token');
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
@@ -75,6 +115,21 @@ export class AuthInterceptorService implements HttpInterceptor {
       req.headers.set('X-Selfcare-Source', 'mobile');
       return next.handle(req);
     }
+    if (lightToken) {
+      let headers = req.headers
+        .set('X-UUID', x_uuid)
+        .set('Authorization', `Bearer ${lightToken}`);
+      req = req.clone({
+        headers,
+      });
+    }
+    if (imei) {
+      let headers = req.headers;
+      headers = headers.set('X-Selfcare-Device-Imei', imei);
+      req = req.clone({
+        headers,
+      });
+    }
     if (token) {
       let headers = req.headers;
       headers = headers.set('X-Selfcare-Source', 'mobile');
@@ -84,7 +139,6 @@ export class AuthInterceptorService implements HttpInterceptor {
         headers,
       });
     }
-
     let deviceInfo = window['device'];
 
     if (deviceInfo) {
@@ -92,7 +146,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       headers = headers.set('X-Selfcare-Platform', deviceInfo.platform);
       headers = headers.set('X-Selfcare-Cordova', deviceInfo.cordova);
       headers = headers.set('X-Selfcare-Model', deviceInfo.model);
-      headers = headers.set('X-Selfcare-Uuid', deviceInfo.uuid);
+      headers = headers.set('X-Selfcare-Uuid', x_uuid);
       headers = headers.set('X-Selfcare-Os-Version', deviceInfo.version);
       headers = headers.set('X-Selfcare-Manufacturer', deviceInfo.manufacturer);
       headers = headers.set('X-Selfcare-Serial', deviceInfo.serial);
@@ -101,19 +155,38 @@ export class AuthInterceptorService implements HttpInterceptor {
         String(deviceInfo.isVirtual)
       );
 
-      if(this.appVersionNumber)
-          headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
+      if (this.appVersionNumber)
+        headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
 
       req = req.clone({
         headers,
       });
     }
+    if (checkUrlNotNeedAuthorization(req.url)) {
+      let headers = req.headers.delete('Authorization');
+      req = req.clone({
+        headers,
+      });
+    }
     return next.handle(req).pipe(
+      retryWhen((err) => {
+        return err.pipe(
+          switchMap(async (err) => {
+            if (
+              err.status === 401 &&
+              checkUrlMatchOM(err.url) &&
+              !err.statusText
+            )
+              return await this.resetOmToken(err);
+            throw err;
+          })
+        );
+      }),
       tap(
         (event: HttpEvent<any>) => {},
         (err: any) => {
           if (err instanceof HttpErrorResponse) {
-            if (err.status === 401 && !err.url.match('v2/check-client')) {
+            if (err.status === 401 && !checkUrlMatchOM(err.url)) {
               that.authServ.cleanCache();
               that.router.navigate(['login']);
             }

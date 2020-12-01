@@ -1,0 +1,35 @@
+<div class="rattach-by-id-card oem-bottomsheet-container">
+  <div  class="arrow-left" (click)="goBack()">
+    <img alt="" src="/assets/images/arrow-left.png" />
+  </div>
+  <div class="title">
+    Type de rattachement
+  </div>
+  <div class="description">
+    Sélectionner le type de rattachement pour le numéro: {{ phoneNumber }}
+  </div>
+  <div class="id-card-input">
+    <ion-card (click)="select('CIN')" class="card-content" button="true">
+      <ion-card-content>
+        <div class="icon">
+          <img src="/assets/images/new_carte-idendite.svg" alt="" />
+        </div>
+        <div class="text">
+          <span class="title"> Par Carte d'identité </span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    <ion-card (click)="select('IDCLIENT')" class="card-content" button="true">
+      <ion-card-content>
+        <div class="icon">
+          <img src="/assets/images/numero-client.svg" alt="" />
+        </div>
+        <div class="text">
+          <span class="title"> Par Code Client </span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  
+</div>

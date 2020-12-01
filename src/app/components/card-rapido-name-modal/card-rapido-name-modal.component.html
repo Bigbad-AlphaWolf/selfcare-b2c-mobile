@@ -1,0 +1,28 @@
+<div class="select-beneficiary-container">
+  <div class="title">Nom de la carte Rapido </div>
+  <div class="sub-title">Numéro de la carte: {{ counter }} </div>
+  <div class="description"> Entrez un nom à afficher pour cette carte Rapido</div>
+  <div class="phone-number-input">
+  <form novalidate autocomplete="false">
+    <mat-form-field class="scb-input-row" appearance="outline">
+        <mat-label>Nom de la carte &nbsp;&nbsp;</mat-label>
+        <input
+        [ngModelOptions]="{standalone: true}"
+          matInput
+          type="text" 
+          maxlength=20
+          [(ngModel)]="labelCardRapido"
+          (input)="isValid()"
+        />
+      </mat-form-field>
+  </form>
+  <div *ngIf="hasError" class="error-msg scb-text-red-error">
+    {{ this.msgError }}
+  </div>
+</div>
+  <div class="btn-continue">
+    <ion-button expand="block" (click)="closeModal()" [disabled]="!isInputValid">
+      Continuer
+    </ion-button>
+  </div>
+</div>

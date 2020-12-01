@@ -1,5 +1,14 @@
 @import 'src/app/app';
-
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.25;
+  letter-spacing: normal;
+  color: #000000;
+}
 .dashboard-container-mobile {
   overflow-y: auto;
   background-color: $grayDashboard;
@@ -8,19 +17,37 @@
   padding-bottom: 97px;
 
   .dashboard-block-offres {
-    padding: 0 15px;
-    .title {
-      padding: 10px 0;
-      font-family: HelveticaNeueLTStd-Bd, sans-serif;
-      font-size: 24px;
+    // padding: 0 15px;
+
+    .top {
+      display: flex;
+      padding: 15px 20px 5px 20px;
+
+      .more {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.88;
+        letter-spacing: normal;
+        text-align: right;
+        color: #ff7900;
+        flex-grow: 1;
+      }
     }
     &-top3 {
-      min-height: 117px;
       margin-top: 10px;
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
+      // justify-content: space-between;
       &-item {
+        &:not(:nth-child(3n)) {
+          margin-right: percentage(15px / 345px);
+        }
+        margin-bottom: 15px;
         width: percentage(105/345);
+        min-height: 117px;
         background-color: $white;
         border-radius: 15px;
         position: relative;
@@ -40,8 +67,9 @@
             padding: 10%;
             width: 100%;
             border-radius: 5% 5% 0 5%;
-            img {
-              width: 80%;
+            .percent {
+              font-family: HelveticaNeueLTStd-Bd;
+              font-size: 16px;
             }
           }
           .triangle {
@@ -160,7 +188,7 @@
         }
       }
     }
-    .hide{
+    .hide {
       visibility: hidden;
     }
   }
@@ -238,6 +266,16 @@
               font-family: HelveticaNeueLTStd-Roman, sans-serif;
               font-size: 18px;
             }
+            .status-sargal {
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+              font-size: 18px;
+              &.gold {
+                color: gold;
+              }
+              &.platinum {
+                color: #e5e4e2;
+              }
+            }
           }
         }
 
@@ -293,9 +331,6 @@
             pointer-events: none;
           }
         }
-      }
-
-      .scb-btn-balance {
       }
 
       .scb-btn-credit {

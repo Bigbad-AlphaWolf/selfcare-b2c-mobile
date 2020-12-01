@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { Router } from '@angular/router';
 import { PassIllimixService } from 'src/app/services/pass-illimix-service/pass-illimix.service';
-import { getListPassFilteredByLabelAndPaymentMod } from 'src/shared';
+import { getListPassFilteredByLabelAndPaymentMod, CODE_KIRENE_Formule, ERROR_MSG_PASS } from 'src/shared';
 
 @Component({
   selector: 'app-illimix-list-v2',
@@ -23,27 +23,25 @@ export class IllimixListV2Component implements OnInit {
   showAlertAvantages = true;
 
   constructor(
-    private dashbServ: DashboardService,
     private router: Router,
     private passIllimixService: PassIllimixService
   ) {}
 
   ngOnInit() {
-    // this.getListPassIllimix();
-    this.passIllimixService.setUserCodeFormule(this.destCodeFormule);
     this.getListPassIllimix();
   }
 
   getListPassIllimix() {
-    this.passIllimixService.setListPassIllimix();
-    this.passIllimixService.getStatusLoadingPass().subscribe((status: boolean) => {
-      this.isLoaded = status;
-      if (this.isLoaded) {
-        this.listUserPassIllimix = this.passIllimixService.getListPassIllimix();
-        this.listPassIllimixShown = this.passIllimixService.getListPassIllimixShown();
-        this.listCategory = this.passIllimixService.getCategoryListPassIllimix();
-        this.selectedCategory = this.listCategory[0];
-      }
+    this.passIllimixService.queryListPassIllimix(this.destCodeFormule).subscribe(
+      (res: any) => {
+      this.isLoaded = true;
+      this.listUserPassIllimix = this.passIllimixService.getListPassIllimix();
+      this.listPassIllimixShown = this.passIllimixService.getListPassIllimixShown();
+      this.listCategory = this.passIllimixService.getCategoryListPassIllimix();
+      this.selectedCategory = this.listCategory[0];
+      
+    },(err: any) => {
+      this.isLoaded = true;
     });
   }
 
@@ -72,4 +70,11 @@ export class IllimixListV2Component implements OnInit {
   hideAlert() {
     this.showAlertAvantages = false;
 }
+getErrorMessageNoPass(){
+  if(this.destCodeFormule === CODE_KIRENE_Formule){
+    return ERROR_MSG_PASS.LIST_EMPTY_FOR_KIRENE
+  }
+  return ERROR_MSG_PASS.LIST_EMPTY
+}
+
 }

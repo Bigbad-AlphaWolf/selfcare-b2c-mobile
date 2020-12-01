@@ -1,21 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatBottomSheet } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 const ls = new SecureLS({ encodingType: 'aes' });
-import * as Fingerprint2 from 'fingerprintjs2';
-import {
-  HelpModalAuthErrorContent,
-  HelpModalAPNContent,
-  HelpModalConfigApnContent,
-  HelpModalDefaultContent,
-} from 'src/shared';
+import { HelpModalDefaultContent } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { NavController } from '@ionic/angular';
+import { NavController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -59,9 +53,9 @@ export class LoginPage implements OnInit {
     private authServ: AuthenticationService,
     private dashbServ: DashboardService,
     public dialog: MatDialog,
-    private bottomSheet: MatBottomSheet,
     private followAnalyticsService: FollowAnalyticsService,
-    private navController: NavController
+    private navController: NavController,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -70,20 +64,11 @@ export class LoginPage implements OnInit {
       password: ['', [Validators.required]],
       rememberMe: [this.rememberMe],
     });
-    const uuid = ls.get('X-UUID');
-    if (!uuid) {
-      Fingerprint2.get((components) => {
-        const values = components.map((component) => {
-          return component.value;
-        });
-        const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
-        ls.set('X-UUID', x_uuid);
-      });
-    }
   }
 
   ionViewWillEnter() {
     this.getRegistrationInformation();
+    ls.remove('light-token');
   }
 
   getRegistrationInformation() {
@@ -104,7 +89,8 @@ export class LoginPage implements OnInit {
   UserLogin(user: any) {
     this.loading = true;
     this.authServ.login(user).subscribe(
-      (res) => {
+      () => {
+        ls.remove('light-token');
         this.followAnalyticsService.registerEventFollow(
           'login_success',
           'event',
@@ -170,24 +156,13 @@ export class LoginPage implements OnInit {
     }
   }
 
-  openHelpModal(sheetData?: any) {
-    this.bottomSheet
-      .open(CommonIssuesComponent, {
-        panelClass: 'custom-css-common-issues',
-        data: sheetData,
-      })
-      .afterDismissed()
-      .subscribe((message: string) => {
-        if (message === 'ERROR_AUTH_IMP') {
-          this.openHelpModal(HelpModalAuthErrorContent);
-        }
-        if (message === 'APN_AUTH_IMP') {
-          this.openHelpModal(HelpModalAPNContent);
-        }
-        if (message === 'CONFIG_APN_AUTH_IMP') {
-          this.openHelpModal(HelpModalConfigApnContent);
-        }
-      });
+  async openHelpModal(sheetData?: any) {
+    const modal = await this.modalController.create({
+      component: CommonIssuesComponent,
+      cssClass: 'besoin-daide-modal',
+      componentProps: { data: sheetData },
+    });
+    return await modal.present();
   }
 
   goRegisterPage() {
@@ -202,7 +177,7 @@ export class LoginPage implements OnInit {
     );
     this.router.navigate(['/home']);
   }
-  goBack(){
-    this.navController.navigateBack(['/home-v2'])
+  goBack() {
+    this.navController.navigateBack(['/home-v2']);
   }
 }

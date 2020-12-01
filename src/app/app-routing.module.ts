@@ -1,15 +1,25 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './services/auth-guard/auth.guard';
+import { AuthUpdateGuard } from './services/auth-update-guard/auth-update.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full', canActivate: [AuthGuard] },
-  { path: 'home-v2', loadChildren: './home-v2/home-v2.module#HomeV2PageModule' },
+  {
+    path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full',
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'home-v2',
+    loadChildren: './home-v2/home-v2.module#HomeV2PageModule',
+    canActivate: [AuthUpdateGuard],
+  },
   {
     path: 'new-registration',
     loadChildren:
       './new-registration/new-registration.module#NewRegistrationPageModule',
-      // canActivate: [AuthGuard]
+    canActivate: [AuthUpdateGuard],
   },
   {
     path: 'home',
@@ -19,7 +29,7 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: './login/login.module#LoginPageModule',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AuthUpdateGuard],
   },
   {
     path: 'dashboard',
@@ -89,10 +99,6 @@ const routes: Routes = [
     loadChildren: './emergencies/emergencies.module#EmergenciesPageModule',
   },
   {
-    path: 'see-solde-om',
-    loadChildren: './see-solde-om/see-solde-om.module#SeeSoldeOmPageModule',
-  },
-  {
     path: 'change-main-phone-number',
     loadChildren:
       './change-main-phone-number/change-main-phone-number.module#ChangeMainPhoneNumberPageModule',
@@ -110,7 +116,7 @@ const routes: Routes = [
     loadChildren:
       './sargal/components/sargal-catalogue/sargal-catalogue.module#SargalCataloguePageModule',
   },
-  { path: 'bills', loadChildren: './bills/bills.module#BillsPageModule' },
+  // { path: 'bills', loadChildren: './bills/bills.module#BillsPageModule' },
   {
     path: 'assistance',
     loadChildren: './assistance/assistance.module#AssistancePageModule',
@@ -180,28 +186,129 @@ const routes: Routes = [
   {
     path: 'my-offer-plans',
     loadChildren:
-      './my-offer-plans/my-offer-plans.module#MyOfferPlansPageModule',
+      './pages/my-offer-plans/my-offer-plans.module#MyOfferPlansPageModule',
   },
-  { path: 'select-beneficiary-v2', loadChildren: './select-beneficiary-v2/select-beneficiary-v2.module#SelectBeneficiaryV2PageModule' },
   {
     path: 'operation-recap',
     loadChildren:
       './operation-recap/operation-recap.module#OperationRecapPageModule',
   },
-  { path: 'new-pinpad-modal', loadChildren: './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule' },
-  { path: 'operation-success-fail-modal', loadChildren: './operation-success-fail-modal/operation-success-fail-modal.module#OperationSuccessFailModalPageModule' },
-  { path: 'list-pass', loadChildren: './liste-pass/liste-pass.module#ListePassPageModule' },
-  { path: 'registration-success-modal', loadChildren: './registration-success-modal/registration-success-modal.module#RegistrationSuccessModalPageModule' },
-  { path: 'transfert-hub-services', loadChildren: './transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule' },
-  { path: 'purchase-set-amount', loadChildren: './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule' },
-  { path: 'credit-pass-amount', loadChildren: './pages/credit-pass-amount/credit-pass-amount.module#CreditPassAmountPageModule' },
-
-
-
-
-
-
-
+  {
+    path: 'new-pinpad-modal',
+    loadChildren:
+      './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule',
+  },
+  {
+    path: 'operation-success-fail-modal',
+    loadChildren:
+      './operation-success-fail-modal/operation-success-fail-modal.module#OperationSuccessFailModalPageModule',
+  },
+  {
+    path: 'list-pass',
+    loadChildren: './pages/liste-pass/liste-pass.module#ListePassPageModule',
+  },
+  {
+    path: 'registration-success-modal',
+    loadChildren:
+      './registration-success-modal/registration-success-modal.module#RegistrationSuccessModalPageModule',
+  },
+  {
+    path: 'transfert-hub-services',
+    loadChildren:
+      './transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule',
+  },
+  {
+    path: 'purchase-set-amount',
+    loadChildren:
+      './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule',
+  },
+  {
+    path: 'credit-pass-amount',
+    loadChildren:
+      './pages/credit-pass-amount/credit-pass-amount.module#CreditPassAmountPageModule',
+  },
+  {
+    path: 'bills-hub',
+    loadChildren: './pages/bills-hub/bills-hub.module#BillsHubPageModule',
+  },
+  {
+    path: 'bill-amount',
+    loadChildren: './pages/bill-amount/bill-amount.module#BillAmountPageModule',
+  },
+  {
+    path: 'oem-services',
+    loadChildren:
+      './pages/oem-services/oem-services.module#OemServicesPageModule',
+  },
+  {
+    path: 'app-update',
+    loadChildren: './pages/app-update/app-update.module#AppUpdatePageModule',
+  },
+  {
+    path: 'bills',
+    loadChildren:
+      './pages/orange-bills/orange-bills.module#OrangeBillsPageModule',
+  },
+  {
+    path: 'orange-bills',
+    loadChildren:
+      './pages/orange-bills/orange-bills.module#OrangeBillsPageModule',
+  },
+  {
+    path: 'follow-up-requests',
+    loadChildren:
+      './pages/follow-up-requests/follow-up-requests.module#FollowUpRequestsPageModule',
+  },
+  {
+    path: 'request-status',
+    loadChildren:
+      './pages/request-status/request-status.module#RequestStatusPageModule',
+  },
+  {
+    path: 'list-pass-voyage',
+    loadChildren:
+      './pages/list-pass-voyage/list-pass-voyage.module#ListPassVoyagePageModule',
+  },
+  {
+    path: 'offres-services',
+    loadChildren:
+      './pages/offres-services/offres-services.module#OffresServicesPageModule',
+  },
+  {
+    path: 'banniere-description',
+    loadChildren:
+      './pages/banniere-description/banniere-description.module#BanniereDescriptionPageModule',
+  },
+  {
+    path: 'dalal-tones',
+    loadChildren: './dalal-tones/dalal-tones.module#DalalTonesPageModule',
+  },
+  {
+    path: 'rapido-operation',
+    loadChildren:
+      './pages/rapido-operation/rapido-operation.module#RapidoOperationPageModule',
+  },
+  {
+    path: 'dashboard-prepaid-light',
+    loadChildren:
+      './dashboard-prepaid-light/dashboard-prepaid-light.module#DashboardPrepaidLightPageModule',
+  },
+  {
+    path: 'rattached-phones-number',
+    loadChildren:
+      './pages/rattached-phones-number/rattached-phones-number.module#RattachedPhonesNumberPageModule',
+  },
+  {
+    path: 'select-illiflex-type',
+    loadChildren:
+      './select-illiflex-type/select-illiflex-type.module#SelectIlliflexTypePageModule',
+  },
+  {
+    path: 'illiflex-configuration',
+    loadChildren:
+      './illiflex-configuration/illiflex-configuration.module#IlliflexConfigurationPageModule',
+  },
+  { path: 'illiflex-budget-configuration', loadChildren: './illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule' },
 ];
 
 @NgModule({

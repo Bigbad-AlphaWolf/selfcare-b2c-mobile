@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Subscription, timer, Subject } from 'rxjs';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Subscription, timer, Subject, of } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -8,19 +8,26 @@ import {
   RegistrationModel,
 } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { MatDialog, MatDialogRef, MatBottomSheet } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import * as SecureLS from 'secure-ls';
 import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
-import * as Fingerprint2 from 'fingerprintjs2';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { takeUntil, finalize } from 'rxjs/operators';
+import {
+  takeUntil,
+  finalize,
+  catchError,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators';
 import {
   HelpModalDefaultContent,
   HelpModalAuthErrorContent,
-  HelpModalAPNContent,
-  HelpModalConfigApnContent,
+  PRO_MOBILE_ERROR_CODE,
+  LIGHT_DASHBOARD_EVENT,
+  REGISTRATION_PASSWORD_STEP,
 } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { ModalController, NavController } from '@ionic/angular';
@@ -71,14 +78,14 @@ export class NewRegistrationPage implements OnInit {
       title: 'J’ai besoin d’aide',
       subTitle: "J'ai des difficultés pour me connecter",
       action: 'help',
-    }
-    
+    },
   ];
   //Temps d'attente pour la recuperation automatique du numero -> 10 secondes
   msisdnTimeout = 10000;
   authErrorDetected = new Subject<any>();
   helpNeeded = new Subject<any>();
   firstCallMsisdn: string;
+  isNumberAttachedError: boolean;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -87,13 +94,15 @@ export class NewRegistrationPage implements OnInit {
     public dialog: MatDialog,
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
-    private bottomSheet: MatBottomSheet,
     private modalController: ModalController,
-    private navController: NavController
+    private navController: NavController,
+    private ngZone: NgZone
   ) {
     this.authErrorDetected.subscribe({
-      next: (data) => {
-        this.openHelpModal(data);
+      next: () => {
+        this.ngZone.run(() => {
+          this.openHelpModal(HelpModalDefaultContent);
+        });
       },
     });
     this.helpNeeded.subscribe({
@@ -101,6 +110,13 @@ export class NewRegistrationPage implements OnInit {
         this.openHelpModal(data);
       },
     });
+  }
+
+  ionViewWillEnter() {
+    const step = history.state.step;
+    if (step === REGISTRATION_PASSWORD_STEP) {
+      this.step = 'PASSWORD';
+    }
   }
 
   goIntro() {
@@ -128,35 +144,29 @@ export class NewRegistrationPage implements OnInit {
   getNumber() {
     this.gettingNumber = true;
     this.showErrMessage = false;
-    if (!this.ref['destroyed']) 
-    this.ref.detectChanges();
-    Fingerprint2.get((components) => {
-      const values = components.map((component) => {
-        return component.value;
-      });
-      const x_uuid = Fingerprint2.x64hash128(values.join(''), 31);
-      ls.set('X-UUID', x_uuid);
-      this.authServ
-        .getMsisdnByNetwork()
-        //if after msisdnTimeout milliseconds the call does not complete, stop it.
-        .pipe(
-          takeUntil(timer(this.msisdnTimeout)),
-          // finalize to detect whenever call is complete or terminated
-          finalize(() => {
-            if (
-              (!this.firstCallMsisdn && !this.showErrMessage) ||
-              (!this.firstCallMsisdn && this.showErrMessage)
-            ) {
-              this.displayMsisdnError();
-              this.authErrorDetected.next(HelpModalAuthErrorContent);
-              console.log('http call is not successful');
-            }
-          })
-        )
-        .subscribe(
-          (res: { msisdn: string }) => {
-            this.firstCallMsisdn = res.msisdn;
-            this.authServ.confirmMsisdnByNetwork(res.msisdn).subscribe(
+    this.isNumberAttachedError = false;
+    if (!this.ref['destroyed']) this.ref.detectChanges();
+    this.authServ
+      .getMsisdnByNetwork()
+      //if after msisdnTimeout milliseconds the call does not complete, stop it.
+      .pipe(
+        takeUntil(timer(this.msisdnTimeout)),
+        // finalize to detect whenever call is complete or terminated
+        finalize(() => {
+          if (
+            (!this.firstCallMsisdn && !this.showErrMessage) ||
+            (!this.firstCallMsisdn && this.showErrMessage)
+          ) {
+            this.displayMsisdnError();
+            this.authErrorDetected.next(HelpModalAuthErrorContent);
+            console.log('http call is not successful');
+          }
+        }),
+        switchMap((res: { msisdn: string }) => {
+          this.firstCallMsisdn = res.msisdn;
+          return this.authServ.confirmMsisdnByNetwork(res.msisdn).pipe(
+            take(1),
+            tap(
               (response: ConfirmMsisdnModel) => {
                 this.gettingNumber = false;
                 if (response !== undefined && response && response.status) {
@@ -171,36 +181,57 @@ export class NewRegistrationPage implements OnInit {
                 } else {
                   this.displayMsisdnError();
                 }
-                if (!this.ref['destroyed']) 
-    this.ref.detectChanges();
+                if (!this.ref['destroyed']) this.ref.detectChanges();
               },
-              (err) => {
+              () => {
                 this.displayMsisdnError();
               }
-            );
-          },
-          (err) => {
-            this.displayMsisdnError();
-          }
-        );
-    });
+            )
+          );
+        }),
+        catchError(() => {
+          this.displayMsisdnError();
+          this.openHelpModal(HelpModalDefaultContent);
+          return of();
+        })
+      )
+      .subscribe();
   }
 
   checkNumber() {
+    const event = history.state.event;
+    if (event === LIGHT_DASHBOARD_EVENT) {
+      this.router.navigate(['dashboard-prepaid-light']);
+      return;
+    }
     this.checkingNumber = true;
     const payload = { msisdn: this.phoneNumber, hmac: this.hmac };
     this.checkNumberSubscription = this.authServ.checkNumber(payload).subscribe(
-      (resp: any) => {
+      () => {
         // Go to registration page
         this.checkingNumber = false;
         this.step = 'PASSWORD';
       },
       (err: any) => {
         this.checkingNumber = false;
-        //  && err.error && err.error.errorKey === 'userexists'
+
         if (err.status === 400) {
-          // Go to login page
-          this.goLoginPage();
+          if (err && err.error && err.error.errorKey === 'userRattached') {
+            // this.showErrMessage = true;
+            this.errorMsg = err.error.title;
+            this.isNumberAttachedError = true;
+          } else if (err.errorKey === PRO_MOBILE_ERROR_CODE) {
+            this.errorMsg = err.message;
+            this.isNumberAttachedError = true;
+          } else {
+            // err.error.errorKey === 'userexists'
+            // Go to login page
+            this.goLoginPage();
+          }
+        } else if (err.status === 404) {
+          this.errorMsg =
+            'Orange et moi est disponible uniquement pour les numéros Orange et Kirene avec Orange';
+          this.isNumberAttachedError = true;
         } else {
           this.showErrMessage = true;
           this.errorMsg =
@@ -303,7 +334,7 @@ export class NewRegistrationPage implements OnInit {
       rememberMe: true,
     };
     this.authServ.login(userCredential).subscribe(
-      (res) => {
+      () => {
         this.dashbServ.getAccountInfo(userCredential.username).subscribe(
           (resp: any) => {
             this.isLogging = false;
@@ -325,7 +356,7 @@ export class NewRegistrationPage implements OnInit {
           }
         );
       },
-      (err) => {
+      () => {
         this.followAnalyticsService.registerEventFollow(
           'Authentication_Failed',
           'error',
@@ -348,24 +379,13 @@ export class NewRegistrationPage implements OnInit {
     }
   }
 
-  openHelpModal(sheetData?: any) {
-    this.bottomSheet
-      .open(CommonIssuesComponent, {
-        panelClass: 'custom-css-common-issues',
-        data: sheetData,
-      })
-      .afterDismissed()
-      .subscribe((message: string) => {
-        if (message === 'ERROR_AUTH_IMP') {
-          this.openHelpModal(HelpModalAuthErrorContent);
-        }
-        if (message === 'APN_AUTH_IMP') {
-          this.openHelpModal(HelpModalAPNContent);
-        }
-        if (message === 'CONFIG_APN_AUTH_IMP') {
-          this.openHelpModal(HelpModalConfigApnContent);
-        }
-      });
+  async openHelpModal(sheetData?: any) {
+    const modal = await this.modalController.create({
+      component: CommonIssuesComponent,
+      cssClass: 'besoin-daide-modal',
+      componentProps: { data: sheetData },
+    });
+    return await modal.present();
   }
 
   displayMsisdnError() {
@@ -378,8 +398,7 @@ export class NewRegistrationPage implements OnInit {
       'error',
       this.phoneNumber
     );
-    if (!this.ref['destroyed']) 
-    this.ref.detectChanges();
+    if (!this.ref['destroyed']) this.ref.detectChanges();
   }
 
   async openSuccessModal() {
@@ -407,7 +426,7 @@ export class NewRegistrationPage implements OnInit {
     return await modal.present();
   }
 
-  goBack(){
-    this.navController.navigateBack(['/home-v2'])
+  goBack() {
+    this.navController.navigateBack(['/home-v2']);
   }
 }

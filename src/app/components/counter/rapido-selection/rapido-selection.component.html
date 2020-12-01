@@ -1,0 +1,59 @@
+<div class="oem-bottomsheet-container">
+  <div class="title">
+    {{ getPageTitle(operation) }}
+  </div>
+  <div class="description">
+    Renseignez le numéro de la carte
+  </div>
+
+  <div class="rapido-number">
+    <form novalidate autocomplete="false">
+      <mat-form-field class="scb-input-row" appearance="outline">
+        <mat-label>Numéro de carte &nbsp;&nbsp;</mat-label>
+        <input
+          #numberInput
+          matInput
+          type="number"
+          maxlength="20"
+          (keyup)="onInputChange(numberInput.value)"
+        />
+      </mat-form-field>
+    </form>
+    <div class="card" (click)="onMyFavorites()" >
+      <img class="icon" src="/assets/images/credit-card-front.png" alt="" />
+      <span class="btn-card scb-text-orange"
+        >Mes cartes</span
+      >
+    </div>
+  </div>
+
+  <div class="recents" *ngIf="(rapidos$|async) as rapidos">
+    <div class="description" *ngIf="rapidos.length">
+      Récents
+    </div>
+    <div
+      matRipple
+      class="oem-item"
+      (click)="onRecentRapidoSlected(rapido)"
+      *ngFor="let rapido of rapidos ; index as i; count as size"
+    >
+      <div class="logo">
+        <img src="assets/images/rapido@3x.png" />
+      </div>
+      <div class="labels" [ngClass]="i + 1 == size ? 'last-label' : ''">
+        <span class="name"> {{ rapido.name }}</span>
+        <span class="number">{{ rapido.counterNumber |codeFormat:2 }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="error-msg" *ngIf="errorMsg">
+    {{ errorMsg }}
+  </div>
+  <div class="btn-continue">
+    <button mat-button [disabled]="isProcessing || !rapidoNumberIsValid" (click)="onContinue()">
+      Continuer
+    </button>
+    <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
+  </div>
+</div>

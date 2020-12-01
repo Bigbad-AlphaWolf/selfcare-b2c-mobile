@@ -3,16 +3,17 @@ import {
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
-  Router
+  Router,
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { getConsoByCategory } from 'src/app/dashboard';
 import { USER_CONS_CATEGORY_CALL } from 'src/shared';
+import { SessionOem } from '../session-oem/session-oem.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
   currentProfil;
@@ -27,22 +28,25 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     const userHasLogin = !!this.authServ.getToken();
+    const userHasLightToken = !!this.authServ.getLightToken();
     const currentPhoneNumber = this.dashboardService.getCurrentPhoneNumber();
     if (!userHasLogin) {
-      if (
-        state.url === '/login' ||
-        state.url === '/home'
-      ) {
+      if (state.url === '/login' || state.url === '/home') {
         return true;
+      }
+      if (userHasLightToken) {
+        if (state.url === '/dashboard-prepaid-light') {
+          return true;
+        }
       }
       this.router.navigate(['/home-v2']);
       return false;
     } else {
+      SessionOem.updateAbort = false;
       if (
         state.url === '/' ||
         state.url === '/login' ||
         state.url === '/home'
-
       ) {
         this.router.navigate(['/dashboard']);
         return false;
@@ -52,13 +56,13 @@ export class AuthGuard implements CanActivate {
         state.url === '/transfer/credit-pass'
       ) {
         this.dashboardService
-          .getUserConsoInfosByCode([1, 2, 6])
+          .getUserConsoInfosByCode(null, [1, 2, 6])
           .subscribe((res: any) => {
             const myconso = getConsoByCategory(res)[USER_CONS_CATEGORY_CALL];
             let solde = 0;
             let soldebonus = 0;
             if (myconso) {
-              myconso.forEach(x => {
+              myconso.forEach((x) => {
                 if (x.code === 1) {
                   solde += Number(x.montant);
                 } else if (x.code === 2 || x.code === 6) {

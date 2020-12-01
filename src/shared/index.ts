@@ -1,8 +1,8 @@
 import * as SecureLS from 'secure-ls';
 import { HTTP } from '@ionic-native/http/ngx';
-import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { PalierModel } from 'src/app/models/palier.model';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
@@ -15,6 +15,7 @@ export const REGEX_EMAIL = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*
 export const REGEX_DIGIT = /\d/;
 export const REGEX_POSTPAID_FIXE = /(Keurgui).*|(Fibre).*|(LFB).*|(HOME).*/i;
 export const REGEX_PREPAID_FIXE = /(BOX).*/i;
+export const REGEX_IS_DIGIT: RegExp = /^[0-9]*$/;
 
 export const USER_CONS_CATEGORY_CALL = 'APPEL';
 export const USER_CONS_CATEGORY_INTERNET = 'INTERNET';
@@ -22,6 +23,9 @@ export const USER_CONS_CATEGORY_SMS = 'SMS';
 export const USER_CALL_SUMMARY_CONSO_CODES = [1, 6, 9];
 export const OPERATION_TYPE_PASS_INTERNET = 'PASS_INTERNET';
 export const OPERATION_TYPE_PASS_ILLIMIX = 'PASS_ILLIMIX';
+export const OPERATION_TYPE_PASS_ALLO = 'PASS_ALLO';
+export const OPERATION_TYPE_PASS_VOYAGE = 'OPERATION_TYPE_PASS_VOYAGE';
+export const OPERATION_TYPE_PASS_ILLIFLEX = 'PASS_ILLIFLEX';
 export const OPERATION_TYPE_MERCHANT_PAYMENT = 'MERCHANT_PAYMENT';
 export const OPERATION_TYPE_SOS = 'SOS';
 export const OPERATION_TYPE_SOS_CREDIT = 'SOS CREDIT';
@@ -35,6 +39,14 @@ export const OPERATION_TYPE_RECHARGE_CREDIT = 'RECHARGEMENT_CREDIT';
 export const OPERATION_TYPE_SARGAL_CONVERSION = 'SARGAL_CONVERSION';
 export const OPERATION_TRANSFER_OM = 'TRANSFER_MONEY';
 export const OPERATION_TRANSFER_OM_WITH_CODE = 'TRANSFER_MONEY_WITH_CODE';
+export const BONS_PLANS = 'BONS_PLANS';
+export const OPERATION_TYPE_BONS_PLANS = 'BONS_PLANS';
+export const OPERATION_ENABLE_DALAL = 'ACTIVATE_DALAL';
+export const OPERATION_DISABLE_DALAL = 'DISABLE_DALAL';
+export const OPERATION_SEE_SOLDE_RAPIDO = 'SOLDE_RAPIDO';
+export const OPERATION_SEE_FOLLOW_UP_REQUESTS = 'FOLLOW_UP_REQUESTS';
+export const OPERATION_SEE_RATTACHED_NUMBERS = 'RATTACHED_NUMBERS';
+export const OPERATION_RATTACH_NUMBER = 'RATTACHE_NUMBER';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -55,6 +67,8 @@ export const CODE_KIRENE_Formule = '9134';
 export const JAMONO_NEW_SCOOL_CODE_FORMULE = '9131';
 export const JAMONO_ALLO_CODE_FORMULE = '9132';
 export const JAMONO_MAX_CODE_FORMULE = '9133';
+export const JAMONO_PRO_CODE_FORMULE = '9136';
+export const PRO_MOBILE_ERROR_CODE = 'userProMobile';
 export const CODE_COMPTEUR_CREDIT_MENSUEL_OFFERT = 8;
 export const MAIL_URL = 'mailto:serviceclient@orange-sonatel.com';
 export const NO_AVATAR_ICON_URL = '/assets/images/profil-mob.png';
@@ -63,6 +77,7 @@ export const FACEBOOK_URL = 'https://m.me/165622776799685';
 export const TWITTER_URL =
   'https://twitter.com/messages/compose?recipient_id=733327435299729408';
 
+export const FIND_AGENCE_EXTERNAL_URL = 'https://agence.orange.sn/';
 export const VALID_IMG_EXTENSIONS = ['jpg', 'jpeg', 'png'];
 
 export const CREDIT = 'crédit';
@@ -86,6 +101,42 @@ export const CATEGORY_PURCHASE_HISTORY = [
   { nom: 'SOS', value: 'SOS' },
 ];
 
+export const DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY = {
+  label: 'Tous',
+  typeAchat: undefined,
+};
+
+export const listRegisterSargalBonPlanText = ['inscription', 'inscris'];
+export const LIST_CATEGORY_BONS_PLANS = {
+  internet: 'INTERNET',
+  illimix: 'ILLIMIX',
+  sargal: 'SARGAL',
+  recharge: 'RECHARGE',
+  autres: 'AUTRES',
+};
+
+export const IMAGES_DIRECTORY = '/assets/images/';
+
+export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
+  INTERNET: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
+  ILLIMIX: `${IMAGES_DIRECTORY}ic-unlimited-calls.png`,
+  RECHARGEMENT: `${IMAGES_DIRECTORY}ic-orange-phone.svg`,
+  TRANSFERT_BONUS: `${IMAGES_DIRECTORY}transfert-icon.png`,
+  SEDDO: `${IMAGES_DIRECTORY}transfert-icon.png`,
+  PASSFOROTHER: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
+  DALALTONE: `${IMAGES_DIRECTORY}ic-device-ringtone.png`,
+  SOS: `${IMAGES_DIRECTORY}ic-emergency-sos.png`,
+  DEPOT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  RETRAIT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  TRANSFERT_ARGENT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  TRANSFERT_ARGENT_CODE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  PAIEMENT_FACTURE_SONATEL_FIXE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  PAIEMENT_SENELEC: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  PAIEMENT_FACTURE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  WOYOFAL: `${IMAGES_DIRECTORY}ic-files.png`,
+  PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
+  SARGAL: `${IMAGES_DIRECTORY}transfert-icon.png`,
+};
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
 }
@@ -290,6 +341,8 @@ export function getOrderedListCategory(
   return listCategoryFiltered;
 }
 
+export const ALLO_PASS_CATEGORY = 'ALLO';
+
 export function getTrioConsoUser(consoSummary: UserConsommations) {
   const result = [];
   consoSummary.forEach((x: ItemUserConso) => {
@@ -396,7 +449,7 @@ export function computeConsoHistory(consos) {
     } = x;
     let conso1, conso2;
 
-    if (charge1) {
+    if (charge1 || chargeType1.length > 0) {
       conso1 = {
         date,
         categorie,
@@ -407,7 +460,7 @@ export function computeConsoHistory(consos) {
       };
       result.push(conso1);
     }
-    if (charge2) {
+    if (charge2 || chargeType2.length > 0) {
       conso2 = {
         date,
         categorie,
@@ -477,7 +530,7 @@ export interface GiftSargalItem {
   id: number;
   nom: string;
   ppi: string;
-  prix: string;
+  prix: any;
   validite: string;
   nombreNumeroIllimtes: number;
   fellowType: number;
@@ -662,6 +715,9 @@ export interface PurchaseModel {
   operationDate: string;
   operationType: 'DEBIT' | 'CREDIT';
   details: any[];
+  label?: string;
+  prenomReceiver?: string;
+  nomReceiver?: string;
 }
 
 /**
@@ -670,8 +726,8 @@ export interface PurchaseModel {
  * Version A is the version from the server.
  * Version B is the installed version.
  */
-export function isNewVersion(versionA, versionB) {
-  if(versionA && versionB){
+export function isNewVersion(versionA: string, versionB: string) {
+  if (versionA && versionB) {
     const versionsA = versionA.split(/\./g),
       versionsB = versionB.split(/\./g);
     while (versionsA.length || versionsB.length) {
@@ -790,37 +846,236 @@ export function getBanniereDescription(banniereDescription: string) {
     : '';
 }
 
-export const HelpModalDefaultContent = {
-  popupTitle: 'Quel soucis rencontrez-vous ?',
+export const HelpModalDefaultContent: {
+  popupTitle: string;
+  popupSubtitle: string;
+  options: {
+    title: string;
+    subtitle: string;
+    type: string;
+    url: string;
+    action: string;
+    subOptions?: { title: string; subtitle: string; icon?: string }[];
+  }[];
+  showChecks?: boolean;
+} = {
+  popupTitle: 'Quel souci rencontrez-vous ?',
   popupSubtitle: '',
   options: [
     {
       title: 'Mon numéro ne s’affiche pas',
-      subtitle: 'Regarder le tutoriel',
+      subtitle: 'Suivez les instructions du tutoriel',
       type: 'ERROR_AUTH_IMP',
       url: '',
       action: 'POPUP',
+      subOptions: [
+        {
+          title:
+            'Activez vos données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" />',
+          subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
+        },
+        {
+          title:
+            'Désactivez le Wifi &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
+          subtitle:
+            'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
+        },
+        {
+          title: 'Assurez vous d’être sur le bon APN (Point d’Accès Internet)',
+          subtitle:
+            'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+        },
+      ],
     },
     {
-      title: 'C’est ma première connexion',
-      subtitle: 'Je veux créer un compte',
-      type: 'REGISTER',
-      url: '',
-      action: 'REDIRECT',
-    },
-    {
-      title: 'J’ai déjà un compte',
-      subtitle: 'Je veux me connecter',
-      type: 'LOGIN',
-      url: '',
-      action: 'REDIRECT',
-    },
-    {
-      title: 'J’ai oublié mon mot de passe',
-      subtitle: 'Je veux le récupérer',
+      title: 'J’ai oublié mon mot de passe ou mon compte est bloqué.',
+      subtitle: 'Je réinitialise mon mot de passe',
       type: 'FORGOT_PWD',
       url: '',
       action: 'REDIRECT',
+      subOptions: [
+        {
+          title:
+            'Activez vos données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" />',
+          subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
+        },
+        {
+          title:
+            'Désactivez le Wifi &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
+          subtitle:
+            'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
+        },
+        {
+          title: 'Une fois identifié, je clique sur suivant',
+          subtitle:
+            'Si votre numéro s’affiche, cliquez sur le bouton « Suivant »',
+        },
+        {
+          title: 'Saisissez votre nouveau mot de passe',
+          subtitle: 'Je saisis mon nouveau mot de passe et le confirme',
+        },
+      ],
+    },
+    {
+      title: 'Mon numéro est rattaché à un compte',
+      subtitle: 'Je veux le supprimer ?',
+      type: 'ERROR_ATTACHED_NUMBER',
+      url: '',
+      action: 'POPUP',
+      subOptions: [
+        {
+          title: 'Rendez-vous sur la page d’accueil en mode connecté',
+          subtitle:
+            'Accédez à la page de connexion puis connectez-vous avec le compte ayant rattaché votre numéro en question',
+        },
+        {
+          title: 'Accédez au menu « Mon compte »',
+          subtitle:
+            'Depuis l’accueil, cliquez sur le menu de gauche puis sur « Mon compte »',
+        },
+        {
+          title: 'Supprimez le numéro rattaché',
+          subtitle:
+            'Cliquez sur « Supprimer une ligne », choisissez la ligne à supprimer puis confirmer',
+        },
+      ],
+    },
+    {
+      title: 'Je ne sais plus si j’ai un compte',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: 'ERROR_AUTH_IMP',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title: 'Rendez vous sur la page de création de compte',
+          subtitle:
+            'A l’ouverture de l’application, cliquez sur la première rubrique « C’est ma première visite »',
+        },
+        {
+          title: 'Une fois identifié, cliquez sur "Suivant"',
+          subtitle:
+            'Si votre numéro s’affiche, cliquez sur le bouton « Suivant »',
+        },
+        {
+          title: 'Vous serez redirigé vers la page adéquate',
+          subtitle:
+            'Vous serez redirigé vers la page de création de mot de passe si vous n’avez pas de compte dans le cas contraire vers la page de connexion',
+        },
+      ],
+    },
+    {
+      title: 'Je n’arrive pas à me connecter',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: 'LOGIN',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title:
+            'L’accés à Orange et moi est gratuit en étant sur le réseau Orange, assurez vous d’avoir activé les données mobiles sur la sim Orange',
+          subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
+        },
+        {
+          title:
+            'Si vous êtes sur le Wifi, assurez vous d’avoir une connexion internet',
+          subtitle:
+            'Accéder au menu « Wifi » depuis vos « Paramètres » pour vous connecter à un réseau Wifi',
+        },
+      ],
+    },
+    {
+      title: 'Comment configurer le bon APN (Point d’Accès Internet)',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: 'APN',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title:
+            '<span>Accéder aux Paramètres &nbsp <img class="item-icon" src="/assets/images/parameters.png" /></span>',
+          subtitle:
+            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+          icon: 'settings',
+        },
+        {
+          title:
+            '<span>Sélectionner la partie Sans fil et réseau &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
+          subtitle:
+            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
+          icon: 'wifi',
+        },
+        {
+          title:
+            '<span>Choisissez ensuite Réseau mobile ou Réseau de données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" /></span>',
+          subtitle:
+            'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+        },
+        {
+          title: 'Allez sur Noms des points d’accès (APN)',
+          subtitle: 'Je saisis mon nouveau mot de passe et le confirme',
+        },
+        {
+          title:
+            'Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
+          subtitle:
+            'Les paramètres internet Orange sont: \nNom : Orange Internet \nAPN : internet \nLaisser tous les autres options en l’état puis sauvegarder',
+        },
+      ],
+    },
+    {
+      title: 'Je suis client fixe, comment accéder à mon espace ?',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: '',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title: 'Vous devez accéder à Orange et moi, avec un numéro mobile',
+          subtitle: 'Activez vos données mobile sur la Sim Orange',
+        },
+        {
+          title:
+            'Une fois connecté, cliquez sur le menu de gauche(trois traits), puis cliquez sur l’entrée "Mon compte"',
+          subtitle:
+            'Cliquez sur le menu en haut à gauche de l’écran puis sur "Mon compte"',
+        },
+        {
+          title:
+            'Une fois sur "Mon compte", cliquez sur "Rattachez une ligne" et saisissez votre numéro de téléphone fixe',
+          subtitle:
+            'Saisissez votre numéro de téléphone fixe pour pouvoir le lier à votre compte et suivre sa consommation',
+        },
+        {
+          title: 'Et enfin suivez les instructions',
+          subtitle:
+            'Une fois fait, retournez cliquer sur le menu de gauche puis cliquez sur "Changer de ligne" et choisissez votre numéro fixe',
+        },
+      ],
+    },
+    {
+      title: 'J’ai besoin d’assistance',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: '',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title:
+            'Une fois connecté, cliquez sur le bouton Ibou puis cliquez sur "Besoin d’aide" puis "Contacter l’assistance"',
+          subtitle: 'Suivre ces instructions',
+        },
+        {
+          title: 'Choisissez le canal de communication souhaité',
+          subtitle: 'Cliquez sur le canal de communication qui vous convient',
+        },
+        {
+          title:
+            'Décrire brièvement le souci rencontré, si possible y joindre une capture ou le message d’erreur',
+          subtitle:
+            'Bien expliquer son souci pour un meilleur traitement de celui-ci',
+        },
+      ],
     },
   ],
   showChecks: false,
@@ -854,6 +1109,8 @@ export const HelpModalAuthErrorContent = {
   ],
   showChecks: true,
 };
+
+export const HelpModalMsisdnNotDisplayed = {};
 
 export const HelpModalAPNContent = {
   popupTitle: 'Êtes-vous sur le  bon APN ?',
@@ -925,3 +1182,53 @@ export const HelpModalConfigApnContent = {
   ],
   showChecks: false,
 };
+
+export const TRANSFER_BONUS_CREDIT_FEE = 20;
+export const ERROR_MSG_PASS = {
+  LIST_EMPTY: "Aucun pass n'a été trouvé pour ce profil",
+  LIST_EMPTY_FOR_KIRENE:
+    'Diegalou, Mixel et Wotel sont temporairement indisponibles sur Orange et Moi. Tu peux continuer à souscrire au #220# ou au #144#. Bul xaar, souscris vite. Nio far !',
+};
+
+export function concatArtistsNames(artistsArray: { nom?: string }[]) {
+  if (!artistsArray || !artistsArray.length) {
+    return '';
+  }
+  return artistsArray.map((artist) => artist.nom).join(', ');
+}
+export const MONTHLY_DALAL_TARIF = '350 FCFA /mois';
+export const DAILY_DALAL_TARIF = '12 FCFA /jour';
+export const LOCAL_ZONE = 'Zone Locale';
+export const LIGHT_DASHBOARD_EVENT = 'GO_DASHBOARD_LIGHT';
+export const REGISTRATION_PASSWORD_STEP = 'PASSWORD';
+export const USER_ERROR_MSG_BLOCKED =
+  'Votre Compte Orange et Moi a été bloqué. Cliquez sur mot de passe oublié et suivez les instructions.';
+
+export enum IlliflexOption {
+  BUDGET = 'BUDGET',
+  USAGE = 'USAGE',
+}
+
+export function getMaxDataVolumeOrVoiceOfPaliers(
+  paliers: PalierModel[],
+  dataOrVoice: 'data' | 'voice'
+) {
+  const maxAmount = Math.max(...paliers.map((palier) => palier.maxPalier));
+  const palier = paliers.find((palier) => palier.maxPalier === maxAmount);
+  const unitPrice =
+    dataOrVoice === 'data' ? palier.dataPrice : palier.voicePrice;
+  const maxPercentage = 0.8;
+  return (maxPercentage * maxAmount) / (unitPrice * 1.239);
+}
+
+export function getMinDataVolumeOrVoiceOfPaliers(
+  paliers: PalierModel[],
+  dataOrVoice: 'data' | 'voice'
+) {
+  const minAmount = Math.min(...paliers.map((palier) => palier.minPalier));
+  const palier = paliers.find((palier) => palier.minPalier === minAmount);
+  const unitPrice =
+    dataOrVoice === 'data' ? palier.dataPrice : palier.voicePrice;
+  const minPercentage = 0.2;
+  return (minPercentage * minAmount) / (unitPrice * 1.239);
+}

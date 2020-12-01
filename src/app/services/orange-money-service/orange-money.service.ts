@@ -100,9 +100,11 @@ export class OrangeMoneyService {
     }
   }
 
-  checkUserHasAccount(msisdn1: string, msisdn2: string) {
-    return this.http.get(
-      `${checkOMAccountEndpoint2}?principal=${msisdn1}&client=${msisdn2}`
+  checkUserHasAccount(msisdn: string): Observable<boolean> {
+    return this.http.get(`${checkOMAccountEndpoint2}/${msisdn}`).pipe(
+      map((hasOmAccount: boolean) => {
+        return hasOmAccount;
+      })
     );
   }
 
@@ -155,9 +157,8 @@ export class OrangeMoneyService {
 
   GetPinPad(pinPadData: OmPinPadModel) {
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
-    const os = isIOS ? "iOS" : "Android";
-    if (pinPadData)
-      pinPadData.os = os;
+    const os = isIOS ? 'iOS' : 'Android';
+    if (pinPadData) pinPadData.os = os;
     return this.http.post(pinpadEndpoint, pinPadData).pipe(
       tap((res: any) => {
         const sequence = res.content.data.sequence.replace(

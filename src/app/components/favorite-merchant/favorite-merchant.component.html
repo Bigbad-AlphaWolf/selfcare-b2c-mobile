@@ -1,0 +1,30 @@
+<div class="favorite-page oem-bottomsheet-container">
+  <div class="arrow-left" (click)="navigateBack()">
+    <img alt="" src="/assets/images/arrow-left.png" />
+  </div>
+  <div class="title">
+    Sélectionner un marchand
+  </div>
+  <div class="description">
+    Choisissez sur la liste
+  </div>
+
+  <div class="recents content" *ngIf="(merchants$|async) as merchants else spinnerBlock">
+    <div matRipple class="oem-item" (click)="onFavoriteMerchantSelected(merchant)"
+      *ngFor="let merchant of merchants; index as i; count as size">
+      <div class="logo scb-text-white">
+        {{ merchant.name | acronym }}
+      </div>
+      <div class="labels" [ngClass]="i + 1 == size ? 'last-label' : ''">
+        <span class="name"> {{ merchant.name }}</span>
+        <span class="number">{{ merchant.merchantCode | codeFormat: 2 }}</span>
+      </div>
+    </div>
+    <div *ngIf="!merchants.length">Aucun marchand enregistré</div>
+  </div>
+  <ng-template #spinnerBlock>
+    <div style="width: 100%; display: flex; justify-content: center;">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  </ng-template>
+</div>

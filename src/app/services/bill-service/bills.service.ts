@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 
 import { MatDialog } from '@angular/material';
-import { Subject, of } from 'rxjs';
+import { Subject, of, Observable } from 'rxjs';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { MAIL_URL } from 'src/shared';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
@@ -13,13 +13,17 @@ import * as SecureLS from 'secure-ls';
 import { Platform } from '@ionic/angular';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, catchError } from 'rxjs/operators';
+import { SessionOem } from '../session-oem/session-oem.service';
+import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
+import { MonthOem } from 'src/app/models/month.model';
 const ls = new SecureLS({ encodingType: 'aes' });
 const { BILL_SERVICE, SERVER_API_URL } = environment;
 const billsPackageDownloadEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/download-bordereau-fixe`;
 const lastSlipEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/last-bordereau`;
-const billsEndpointAPI = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bordereau`;
-const billsDetailEndpointAPI = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
+const BORDEREAU_ENDPOINT = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bordereau`;
+const INVOICE_ENDPOINT = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
+const INVOICE_MOIS_DISPO_ENDPOINT = `${SERVER_API_URL}/${BILL_SERVICE}/api/get-last-month`;
 const billsEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bordereau`;
 const billsDetailEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
 
@@ -48,7 +52,7 @@ export class BillsService {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
     return this.http
       .get(
-        `${billsDetailEndpointAPI}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`
+        `${INVOICE_ENDPOINT}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`
       )
       .pipe(
         tap(
@@ -66,6 +70,82 @@ export class BillsService {
             )
         )
       );
+  }
+  bordereau(
+    codeClient: string,
+    type: string,
+    phone?: string,
+    month?: MonthOem
+  ): Observable<InvoiceOrange> {
+    return this.http
+      .get(
+        `${BORDEREAU_ENDPOINT}/${codeClient}?type=${type}&search=summaryYear:${month.year},summaryMonth:${month.position}`
+      )
+      .pipe(
+        tap(
+          (el) =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Success',
+              'event',
+              phone
+            ),
+          (err) =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Error',
+              'error',
+              phone
+            )
+        ),
+        map((rs: any) => {
+          if (rs.length) return rs[0];
+          return null;
+        })
+      );
+  }
+
+  invoices(
+    codeClient: string,
+    type: string,
+    phone?: string,
+    month?: MonthOem
+  ): Observable<InvoiceOrange[]> {
+    return this.http
+      .get<InvoiceOrange[]>(
+        `${INVOICE_ENDPOINT}/${codeClient}?type=${type}&search=${
+          type === 'MOBILE' ? 'phoneNumber:' + phone + ',' : ''
+        }year:${month.year},month:${month.position}`
+      )
+      .pipe(
+        tap(
+          (el) =>
+            this.followServ.registerEventFollow(
+              'Facture_Mobile_Success',
+              'event',
+              phone
+            ),
+          (err) =>
+            this.followServ.registerEventFollow(
+              'Facture_Mobile_Error',
+              'error',
+              phone
+            )
+        )
+      );
+  }
+
+  async moisDisponible(codeClient: string, type: string, phone?: string) {
+    return await this.http
+      .get<string>(
+        `${INVOICE_MOIS_DISPO_ENDPOINT}/${codeClient}?type=${type}&search=${
+          type === 'MOBILE' ? 'phoneNumber:' + phone  : ''
+        }`
+      )
+      .pipe(
+        catchError((err)=>{
+          return of(null);
+        })
+      )
+      .toPromise<string>();
   }
   getBillsPackage(numClient: string) {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
@@ -107,7 +187,7 @@ export class BillsService {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
     return this.http
       .get(
-        `${billsDetailEndpointAPI}/${numClient}?type=MOBILE&search=phoneNumber:${this.currentNumber}&sort=year,desc&sort=month,desc`
+        `${INVOICE_ENDPOINT}/${numClient}?type=MOBILE&search=phoneNumber:${this.currentNumber}&sort=year,desc&sort=month,desc`
       )
       .pipe(
         map(
@@ -143,8 +223,8 @@ export class BillsService {
     annee: number;
   }) {
     // api/v1/facture/365915?type=MOBILE&search=year:2019,month:11
-    if(!payload) return of({})
-    
+    if (!payload) return of({});
+
     if (this.currentNumber.startsWith('33')) {
       return this.http
         .get(

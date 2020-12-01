@@ -1,18 +1,15 @@
-<ion-header [oemIonHeaderParallax]="100">
+<ion-header [oemIonHeaderParallax]="90">
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button
-        (click)="goBack()"
-        icon=""
-        class="oem-back-button"
-      >
+    <ion-buttons>
+      <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
-    <ion-title class="achat-pass-internet">
+    <ion-title>
       <ng-container [ngSwitch]="purchaseType">
         <span *ngSwitchCase="OPERATION_INTERNET_TYPE">Achat Pass Internet</span>
         <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE">Achat Pass Illimix</span>
+        <span *ngSwitchCase="OPERATION_ALLO_TYPE">Achat Pass Allo</span>
         <span *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
           >Paiement Marchand</span
         >
@@ -21,7 +18,17 @@
         >
         <span *ngSwitchCase="OPERATION_TRANSFER_OM">Transfert d'argent</span>
         <span *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
-  
+        <span *ngSwitchCase="'OPERATION_WOYOFAL'">Rechargement Woyofal</span>
+        <span *ngSwitchCase="'OPERATION_RAPIDO'">Rechargement Rapido</span>
+        <span *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+          >Pass selectionné</span
+        >
+        <span *ngSwitchCase="OPERATION_ENABLE_DALAL"
+          >Souscription Dalal Tones</span
+        >
+        <span *ngSwitchCase="OPERATION_ILLIFLEX"
+          >{{opXtras?.title}}</span
+        >
       </ng-container>
     </ion-title>
   </ion-toolbar>
@@ -36,6 +43,12 @@
       <img
         *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         src="assets/images/banniere-illimix.png"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+        *ngSwitchCase="OPERATION_ALLO_TYPE"
+        src="assets/images/pass-allo-banniere.png"
         alt="banniere"
         class="banniere"
       />
@@ -64,24 +77,58 @@
         class="banniere"
       />
       <img
-      *ngSwitchCase="'OPERATION_WOYOFAL'"
-      src="assets/images/recharge-bill.svg"
-      alt="banniere"
-      class="banniere"
-    />
+        *ngSwitchCase="'OPERATION_WOYOFAL'"
+        src="assets/images/recharge-bill.svg"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+        *ngSwitchCase="'OPERATION_RAPIDO'"
+        src="assets/images/recharge-bill.svg"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+        *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+        src="assets/images/achat-de-pass-voyage@2x.png"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+        *ngSwitchCase="OPERATION_ENABLE_DALAL"
+        src="assets/images/dalal-tones-banniere.png"
+        alt="banniere"
+        class="banniere"
+      />
+      <img
+        *ngSwitchCase="OPERATION_ILLIFLEX"
+        src="/assets/images/10-illustration-dalal-tones-copy.svg" alt="header-illiflex"
+        class="banniere"
+      />
     </ng-container>
   </div>
 </ion-header>
-
-<ion-content #scrollArea [scrollEvents]="true">
-  <div *ngIf="purchaseType==='RECHARGEMENT_CREDIT'" class="recap-text">Récapitulatif</div>
-  <div class="recap-title" *ngIf="purchaseType!=='RECHARGEMENT_CREDIT'" >
-    <span class="text-1" >Récapitulatif</span>
+<ion-content
+  no-bounce
+  has-bouncing="false"
+  forceOverscroll="false"
+  fullscreen="true"
+  [scrollEvents]="true"
+>
+  <div *ngIf="operationTypeRecap" class="recap-text">Récapitulatif</div>
+  <div class="recap-title" *ngIf="!operationTypeRecap">
+    <span class="text-1">Récapitulatif</span>
     <ng-container [ngSwitch]="purchaseType">
       <span *ngSwitchCase="OPERATION_INTERNET_TYPE" class="text-2 scb-text-gray"
         >Vous allez recharger</span
       >
       <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE" class="text-2 scb-text-gray"
+        >Vous allez recharger</span
+      >
+      <span *ngSwitchCase="OPERATION_ALLO_TYPE" class="text-2 scb-text-gray"
+        >Vous allez recharger</span
+      >
+      <span *ngSwitchCase="OPERATION_ILLIFLEX" class="text-2 scb-text-gray"
         >Vous allez recharger</span
       >
       <span
@@ -97,7 +144,9 @@
       <span *ngSwitchCase="OPERATION_TRANSFER_OM" class="text-2 scb-text-gray"
         >Vous allez transférer</span
       >
-
+      <span *ngSwitchCase="OPERATION_ENABLE_DALAL" class="text-2 scb-text-gray"
+        >Vous allez activer le dalal</span
+      >
     </ng-container>
   </div>
   <div class="buy-pass-information">
@@ -123,16 +172,39 @@
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_ILLIMIX_TYPE">
         <span class="pass">Pass sélectionné</span>
       </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_ALLO_TYPE">
+        <span class="pass">Pass sélectionné</span>
+      </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_INTERNET_TYPE">
         <span class="pass">Pass sélectionné</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_ILLIFLEX">
+        <span class="pass">Ma composition</span>
       </div>
       <div class="amount-to-transfer" *ngSwitchCase="'RECHARGEMENT_CREDIT'">
         <span class="pass">Montant à acheter</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
-
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="'OPERATION_WOYOFAL'">
+        <span class="pass">Montant à recharger</span>
+        <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="'OPERATION_RAPIDO'">
+        <span class="pass">Montant à recharger</span>
+        <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
+      </div>
+      <div
+        class="amount-to-transfer"
+        *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+      >
+        <span class="pass">Pass sélectionné</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_ENABLE_DALAL">
+        <span class="pass">Dalal Sélectionné</span>
+        <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
       </div>
     </ng-container>
-    <div class="card-container">
+    <div class="card-container bill">
       <ng-container [ngSwitch]="purchaseType">
         <app-item-recharge-credit
           [amount]="amount"
@@ -159,17 +231,50 @@
           [subscription]="subscriptionInfos"
           *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >
-        
         </app-item-pass-illimix>
-
+        <app-item-illiflex
+        [passIlliflex]="opXtras.pass"
+          *ngSwitchCase="OPERATION_ILLIFLEX"
+        >
+        </app-item-illiflex>
+        <app-item-pass-illimix
+          [passIllimix]="passChoosen"
+          [subscription]="subscriptionInfos"
+          *ngSwitchCase="OPERATION_ALLO_TYPE"
+        >
+        </app-item-pass-illimix>
+        <app-item-pass-illimix
+          [passIllimix]="passChoosen"
+          [subscription]="subscriptionInfos"
+          *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+        >
+        </app-item-pass-illimix>
         <app-item-recharge-credit
-        [amount]="amount"
-        *ngSwitchCase="'RECHARGEMENT_CREDIT'"
-      >
-      </app-item-recharge-credit>
+          [amount]="opXtras.amount"
+          *ngSwitchCase="'RECHARGEMENT_CREDIT'"
+        >
+        </app-item-recharge-credit>
+        <app-item-recharge-credit
+          [amount]="opXtras.amount + opXtras.fee"
+          *ngSwitchCase="'OPERATION_WOYOFAL'"
+        >
+        </app-item-recharge-credit>
+        <app-item-recharge-credit
+          [amount]="opXtras.amount + opXtras.fee"
+          *ngSwitchCase="'OPERATION_RAPIDO'"
+        >
+        </app-item-recharge-credit>
+        <app-dalal-card-item
+          [dalal]="opXtras?.dalal"
+          *ngSwitchCase="OPERATION_ENABLE_DALAL"
+        >
+        </app-dalal-card-item>
       </ng-container>
     </div>
-    <div class="amount-to-transfer">
+    <div
+      class="amount-to-transfer"
+      *ngIf="purchaseType !== OPERATION_ENABLE_DALAL"
+    >
       <span class="pass">Bénéficiaire</span>
       <span
         class="modifier scb-text-orange"
@@ -177,34 +282,60 @@
         >Modifier</span
       >
     </div>
-    <div class="recipient-information">
+    <div
+      class="recipient-information"
+      *ngIf="purchaseType !== OPERATION_ENABLE_DALAL"
+    >
       <div class="top-block">
         <span class="title"
           >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT ? merchantCode :
-          recipientMsisdn | phoneNumberDisplay}}</span
+          recipientMsisdn | phoneNumberDisplay}} {{([ 'OPERATION_WOYOFAL',
+          'OPERATION_RAPIDO'].includes(purchaseType)?opXtras.billData.counter.counterNumber
+          :'')|codeFormat:2}}</span
         >
         <span class="recipient"
           >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT
-          ?merchantName:recipientName}}</span
+          ?merchantName:recipientName}}{{ [ 'OPERATION_WOYOFAL',
+          'OPERATION_RAPIDO'].includes(purchaseType)?opXtras.billData.counter.name:''}}</span
         >
       </div>
     </div>
-    <ng-container *ngIf="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE || purchaseType === OPERATION_TRANSFER_OM">
+    <ng-container
+      *ngIf="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE || purchaseType === OPERATION_TRANSFER_OM"
+    >
       <div class="amount-to-transfer">
         <span class="pass">Type de transfert</span>
       </div>
       <div class="recipient-information">
         <div class="top-block-transfert">
-          <span class="title">
-            Transfert d'argent
-          </span>
+          <span class="title"> Transfert d'argent </span>
           <span class="title scb-text-orange"
-            >{{purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ? "avec code" : "sans code" }}</span
+            >{{purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ? "avec code" :
+            "sans code" }}</span
           >
-          <span class="recipient"
-            ></span
-          >
+          <span class="recipient"></span>
         </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="offerPlan">
+      <div class="amount-to-transfer">
+        <span class="pass">Infos additionnelles</span>
+      </div>
+      <div class="recipient-information offer-desc">
+        <div class="top-block-transfert">
+          <span class="title"> {{ offerPlan?.description }} </span>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="purchaseType === OPERATION_ENABLE_DALAL">
+      <div class="dalal-amount-block">
+        <div class="amount-to-transfer">
+          <span class="pass">Montant</span>
+        </div>
+        <app-item-recharge-credit
+          [amount]="DALAL_TARIF"
+          [showUnity]="false"
+        ></app-item-recharge-credit>
       </div>
     </ng-container>
     <button
@@ -217,8 +348,16 @@
           >Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
           passChoosen?.passPromo?.tarif}} FCFA)</span
         >
+        <span class="text" *ngSwitchCase="OPERATION_ALLO_TYPE"
+          >Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
+          passChoosen?.passPromo?.tarif}} FCFA)</span
+        >
         <span class="text" *ngSwitchCase="OPERATION_INTERNET_TYPE"
           >Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
+          passChoosen?.passPromo?.tarif}} FCFA)</span
+        >
+        <span class="text" *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+          >Confirmer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
           passChoosen?.passPromo?.tarif}} FCFA)</span
         >
         <span class="text" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
@@ -231,8 +370,22 @@
           >Transférer ({{amount}} FCFA)</span
         >
         <span class="text" *ngSwitchCase="'RECHARGEMENT_CREDIT'"
-        >Confirmer ({{amount}} FCFA)</span
-      >
+          >Confirmer ({{amount|formatCurrency}} FCFA)</span
+        >
+        <span class="text" *ngSwitchCase="'OPERATION_RAPIDO'"
+          >Confirmer ({{(opXtras.amount + opXtras.fee)|formatCurrency}}
+          FCFA)</span
+        >
+        <span class="text" *ngSwitchCase="'OPERATION_WOYOFAL'"
+          >Confirmer ({{(opXtras.amount + opXtras.fee)|formatCurrency}}
+          FCFA)</span
+        >
+        <span class="text" *ngSwitchCase="OPERATION_ENABLE_DALAL"
+          >Confirmer ({{DALAL_TARIF}})</span
+        >
+        <span class="text" *ngSwitchCase="OPERATION_ILLIFLEX"
+          >Confirmer ({{opXtras.amount}} FCFA)</span
+        >
       </ng-container>
       <mat-spinner
         mode="indeterminate"

@@ -82,19 +82,9 @@
   <ng-container *ngIf="userProfil !== 'POSTPAID' && purchaseInfos ">
       <div class="item-container-left-block">
         <div class="icon-category">
-            <ng-container [ngSwitch]="purchaseInfos.typeAchat">
-              <img *ngSwitchCase="'INTERNET'" src="/assets/images/ic-internet-usage.png" alt="" class="icon">
-              <img *ngSwitchCase="'ILLIMIX'" src="/assets/images/ic-unlimited-calls.png" alt="" class="icon">
-              <img *ngSwitchCase="'RECHARGEMENT'" src="/assets/images/ic-orange-phone.svg" alt="" class="icon">
-              <img *ngSwitchCase="'TRANSFERT_BONUS'" src="/assets/images/transfert-icon.png" alt="" class="icon">
-              <img *ngSwitchCase="'SEDDO'" src="/assets/images/transfert-icon.png" alt="" class="icon">
-              <img *ngSwitchCase="'PASSFOROTHER'" src="/assets/images/ic-internet-usage.png" alt="" class="icon">
-              <img *ngSwitchCase="'DALALTONE'" src="/assets/images/ic-device-ringtone.png" alt="" class="icon">
-              <img *ngSwitchCase="'SOS'" src="/assets/images/ic-emergency-sos.png" alt="" class="icon">
+            <ng-container *ngIf="purchaseInfos.typeAchat && getPurchaseItemIcon(purchaseInfos)">
+              <img [src]="getPurchaseItemIcon(purchaseInfos)" alt="" class="icon">
             </ng-container>
-          <!-- <img *ngIf="historikInfos.categorie === 'APPEL'" src="/assets/images/ic-call.svg" alt="" class="icon">
-          <img *ngIf="historikInfos.categorie === 'SMS'" src="/assets/images/ic-sms-message.svg" alt="" class="icon">
-          <img *ngIf="historikInfos.categorie !== 'APPEL' && historikInfos.categorie !== 'SMS'" src="/assets/images/ic-africa.svg" alt="" class="icon"> -->
         </div>
       </div>
       <div class="item-container-right-block">
@@ -103,13 +93,14 @@
                   {{purchaseInfos.name}}
               </div>
               <div class="subtitle-1">
+                {{ purchaseInfos?.prenomReceiver }} {{ purchaseInfos?.nomReceiver }}
               </div>
               <div class="subtitle-2 channel">
               </div>
             </div>
             <div class="right-block-text">
               <div class="item-value">
-                  {{ purchaseInfos?.amount }} FCFA
+                  {{ purchaseInfos?.amount }} {{ isSargalTransaction(purchaseInfos) ? 'Pts' : 'FCFA'}}
               </div>
               <div class="subtitle-1 datetime">
                   {{ purchaseInfos?.operationDate | date: 'short' }}

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { PurchaseModel } from 'src/shared';
+import { PurchaseModel, LIST_ICON_PURCHASE_HISTORIK_ITEMS } from 'src/shared';
 
 @Component({
   selector: 'app-item-historik-details-infos',
@@ -17,6 +17,15 @@ export class ItemHistorikDetailsInfosComponent implements OnInit {
 
   formatVolumeData(volume: string) {
     return volume.substring(0, volume.indexOf(',') + 3);
+  }
+
+  getPurchaseItemIcon(item: PurchaseModel){
+    const typeAchat = item.typeAchat;
+    return LIST_ICON_PURCHASE_HISTORIK_ITEMS[typeAchat];    
+  }
+
+  isSargalTransaction(purchase: PurchaseModel): boolean {
+    return purchase.typeAchat === "SARGAL";
   }
 
 }

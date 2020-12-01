@@ -1,55 +1,82 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
-import { SelectNumberPopupComponent } from "src/shared/select-number-popup/select-number-popup.component";
-import { formatPhoneNumber, REGEX_NUMBER_OM } from "src/shared";
-import { MatDialog } from "@angular/material";
-import { Contacts, Contact } from "@ionic-native/contacts";
-import { ModalController, NavController } from "@ionic/angular";
-import { OrangeMoneyService } from "src/app/services/orange-money-service/orange-money.service";
-import { Router } from "@angular/router";
-import { FollowAnalyticsService } from "src/app/services/follow-analytics/follow-analytics.service";
-import { DashboardService } from "src/app/services/dashboard-service/dashboard.service";
-import { HttpErrorResponse } from "@angular/common/http";
-import { NewPinpadModalPage } from "src/app/new-pinpad-modal/new-pinpad-modal.page";
-import { NoOmAccountModalComponent } from "src/shared/no-om-account-modal/no-om-account-modal.component";
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
 import {
-  retryWhen,
-  switchMap,
-} from "rxjs/operators";
-import { of } from "rxjs";
+  formatPhoneNumber,
+  REGEX_NUMBER_OM,
+  OPERATION_TYPE_TRANSFER_OM,
+  OPERATION_TRANSFER_OM,
+} from 'src/shared';
+import { MatDialog } from '@angular/material';
+import { Contacts, Contact } from '@ionic-native/contacts';
+import { ModalController } from '@ionic/angular';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { Router } from '@angular/router';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { NoOmAccountModalComponent } from 'src/shared/no-om-account-modal/no-om-account-modal.component';
+import { map } from 'rxjs/operators';
+import { of, Observable } from 'rxjs';
+import { RecentsService } from 'src/app/services/recents-service/recents.service';
+import { RecentsOem } from 'src/app/models/recents-oem.model';
+import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
 
 @Component({
-  selector: "app-select-beneficiary-pop-up",
-  templateUrl: "./select-beneficiary-pop-up.component.html",
-  styleUrls: ["./select-beneficiary-pop-up.component.scss"],
+  selector: 'app-select-beneficiary-pop-up',
+  templateUrl: './select-beneficiary-pop-up.component.html',
+  styleUrls: ['./select-beneficiary-pop-up.component.scss'],
 })
 export class SelectBeneficiaryPopUpComponent implements OnInit {
   hasErrorGetContact: boolean;
   errorGetContact: string;
-  recipientNumber = "";
+  recipientNumber = '';
   recipientContactInfos: any;
-  otherBeneficiaryNumber = "";
+  otherBeneficiaryNumber = '';
   firstName: string;
   lastName: string;
-  @ViewChild("inputTel") htmlInput: ElementRef;
+  @ViewChild('inputTel') htmlInput: ElementRef;
   isProcessing: boolean;
   omPhoneNumber: string;
   errorMsg: string;
   dataPayload: any;
   senderMsisdn: string;
+  recentsRecipients$: Observable<any[]>;
 
   constructor(
     private dialog: MatDialog,
     private contacts: Contacts,
     private modalController: ModalController,
     private omService: OrangeMoneyService,
-    private router: Router,
     private followAnalytics: FollowAnalyticsService,
-    private dashbServ: DashboardService  ) {}
+    private dashbServ: DashboardService,
+    private recentsService: RecentsService
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getRecents();
+  }
 
   ionViewWillEnter() {
     this.senderMsisdn = this.dashbServ.getCurrentPhoneNumber();
+  }
+
+  getRecents() {
+    this.recentsRecipients$ = this.recentsService
+      .fetchRecents(OPERATION_TRANSFER_OM, 3)
+      .pipe(
+        map((recents: RecentsOem[]) => {
+          let results = [];
+          console.log(recents);
+          recents.forEach((el) => {
+            results.push({
+              name: el.name,
+              msisdn: el.destinataire,
+            });
+          });
+          return results;
+        })
+      );
   }
 
   pickContact() {
@@ -69,7 +96,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
         }
       })
       .catch((err) => {
-        console.log("err", err);
+        console.log('err', err);
       });
   }
 
@@ -90,7 +117,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     } else {
       this.hasErrorGetContact = true;
       this.errorGetContact =
-        "Veuillez choisir un numéro de destinataire valide pour continuer";
+        'Veuillez choisir un numéro de destinataire valide pour continuer';
     }
   }
 
@@ -100,11 +127,11 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
 
   getContactFormattedName(contact: any) {
     const givenName =
-      contact && contact.name.givenName ? `${contact.name.givenName}` : "";
+      contact && contact.name.givenName ? `${contact.name.givenName}` : '';
     const familyName =
-      contact && contact.name.familyName ? ` ${contact.name.familyName}` : "";
+      contact && contact.name.familyName ? ` ${contact.name.familyName}` : '';
     const middleName =
-      contact && contact.name.middleName ? ` ${contact.name.middleName}` : "";
+      contact && contact.name.middleName ? ` ${contact.name.middleName}` : '';
     this.recipientContactInfos =
       contact.name && contact.name.formatted
         ? contact.name.formatted
@@ -113,7 +140,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     this.lastName = familyName;
   }
 
-  validateBeneficiary() {
+  validateBeneficiary(recentNumber?: string) {
     this.hasErrorGetContact = false;
     this.errorGetContact = null;
 
@@ -125,27 +152,34 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       this.recipientNumber = formatPhoneNumber(
         this.htmlInput.nativeElement.value
       );
-      console.log("OK", this.recipientNumber);
       const payload = {
-        senderMsisdn: "",
+        senderMsisdn: '',
         recipientMsisdn: this.recipientNumber,
-        recipientFirstname: "",
-        recipientLastname: "",
+        recipientFirstname: '',
+        recipientLastname: '',
       };
       this.getOmPhoneNumberAndCheckrecipientHasOMAccount(payload);
     } else if (this.otherBeneficiaryNumber && this.recipientContactInfos) {
       this.recipientNumber = this.otherBeneficiaryNumber;
       const payload = {
-        senderMsisdn: "",
+        senderMsisdn: '',
         recipientMsisdn: this.recipientNumber,
         recipientFirstname: this.firstName,
         recipientLastname: this.lastName,
       };
       this.getOmPhoneNumberAndCheckrecipientHasOMAccount(payload);
+    } else if (recentNumber) {
+      const payload = {
+        senderMsisdn: '',
+        recipientMsisdn: recentNumber,
+        recipientFirstname: '',
+        recipientLastname: '',
+      };
+      this.getOmPhoneNumberAndCheckrecipientHasOMAccount(payload);
     } else {
       this.hasErrorGetContact = true;
       this.errorGetContact =
-        "Veuillez choisir un numéro de destinataire valide pour continuer";
+        'Veuillez choisir un numéro de destinataire valide pour continuer';
     }
   }
 
@@ -159,9 +193,9 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
 
     this.omService.getOmMsisdn().subscribe((userMsisdn) => {
       this.isProcessing = false;
-      if (userMsisdn !== "error") {
+      if (userMsisdn !== 'error') {
         this.omPhoneNumber = userMsisdn;
-        this.checkOMToken(userMsisdn, payload);
+        this.checkRecipientHasOMAccount(userMsisdn, payload);
       } else {
         this.modalController.dismiss();
         this.openPinpad();
@@ -180,112 +214,75 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   ) {
     this.isProcessing = true;
     this.errorMsg = null;
-    this.omService
-      .checkUserHasAccount(this.omPhoneNumber, payload.recipientMsisdn)
-      .pipe(
-        retryWhen((err) => {
-          return err.pipe(
-            switchMap(async (err) => {
-              if (err.status === 401) return await this.resetOmToken(err);
-              throw err;
-            })
-          );
-        })
-      )
-      .subscribe(
-        (res: any) => {
-          this.isProcessing = false;
-          console.log(res);
-
-          if (res) {
-            if (res.status_code.match("Success")) {
-              const pageData = Object.assign(payload, {
-                purchaseType: "TRANSFER_MONEY",
-              });
-              this.modalController.dismiss(pageData);
-
-              // this.appRouting.goSetAmountPage(pageData);
-              this.followAnalytics.registerEventFollow(
-                "destinataire_transfert_has_om_account_success",
-                "event",
-                {
-                  transfert_om_numero_sender: userOMNumber,
-                  transfert_om_numero_receiver: payload.recipientMsisdn,
-                  has_om: "true",
-                }
-              );
-            } else {
-              this.openNoOMAccountModal(payload);
-              this.followAnalytics.registerEventFollow(
-                "destinataire_transfert_has_om_account_success",
-                "event",
-                {
-                  transfert_om_numero_sender: userOMNumber,
-                  transfert_om_numero_receiver: payload.recipientMsisdn,
-                  has_om: "false",
-                }
-              );
-              this.errorMsg = "Recipient has No OM ";
-              // this.openModalNoOMAccount(this.recipientInfos);
+    this.omService.checkUserHasAccount(payload.recipientMsisdn).subscribe(
+      (hasOmAccount: boolean) => {
+        this.isProcessing = false;
+        if (hasOmAccount) {
+          const pageData = Object.assign(payload, {
+            purchaseType: 'TRANSFER_MONEY',
+          });
+          this.modalController.dismiss(pageData);
+          // this.appRouting.goSetAmountPage(pageData);
+          this.followAnalytics.registerEventFollow(
+            'destinataire_transfert_has_om_account_success',
+            'event',
+            {
+              transfert_om_numero_sender: userOMNumber,
+              transfert_om_numero_receiver: payload.recipientMsisdn,
+              has_om: 'true',
             }
-          } else {
-            this.router.navigate(["/see-solde-om"]);
-          }
-        },
-        (err: HttpErrorResponse) => {
-          this.isProcessing = false;
-          this.errorMsg = "Recipient has No OM ";
-    
-          if (err.status === 400) {
-            this.openNoOMAccountModal(payload);
-            this.followAnalytics.registerEventFollow(
-              "destinataire_transfert_has_om_account",
-              "event",
-              {
-                transfert_om_numero_destinataire: payload.recipientMsisdn,
-                has_om: "false",
-              }
-            );
-          } else {
-            this.followAnalytics.registerEventFollow(
-              "destinataire_transfert_has_om_account_error",
-              "error",
-              {
-                transfert_om_numero_sender: userOMNumber,
-                transfert_om_numero_receiver: payload.recipientMsisdn,
-                error:
-                  "Une error " + err.status + " est survenue" + err && err.error
-                    ? err.error.title
-                    : "",
-              }
-            );
-            this.errorMsg = "Une erreur est survenue, veuillez reessayer";
-          }
+          );
+        } else {
+          this.openNoOMAccountModal(payload);
+          this.followAnalytics.registerEventFollow(
+            'destinataire_transfert_has_om_account_success',
+            'event',
+            {
+              transfert_om_numero_sender: userOMNumber,
+              transfert_om_numero_receiver: payload.recipientMsisdn,
+              has_om: 'false',
+            }
+          );
+          this.errorMsg = 'Recipient has No OM ';
         }
-      );
-  }
-
-  async resetOmToken(err) {
-    const modal = await this.modalController.create({
-      component: NewPinpadModalPage,
-      cssClass: "pin-pad-modal",
-      componentProps: {
-        operationType: null,
       },
-    });
-    await modal.present();
-    let result = await modal.onDidDismiss();
-    if (result && result.data && result.data.success) return of(err);
-    throw new HttpErrorResponse({
-      error: { title: "Pinpad cancled" },
-      status: 401,
-    });
+      (err: HttpErrorResponse) => {
+        this.isProcessing = false;
+        this.errorMsg = 'Recipient has No OM ';
+
+        if (err.status === 400) {
+          this.openNoOMAccountModal(payload);
+          this.followAnalytics.registerEventFollow(
+            'destinataire_transfert_has_om_account',
+            'event',
+            {
+              transfert_om_numero_destinataire: payload.recipientMsisdn,
+              has_om: 'false',
+            }
+          );
+        } else {
+          this.followAnalytics.registerEventFollow(
+            'destinataire_transfert_has_om_account_error',
+            'error',
+            {
+              transfert_om_numero_sender: userOMNumber,
+              transfert_om_numero_receiver: payload.recipientMsisdn,
+              error:
+                'Une error ' + err.status + ' est survenue' + err && err.error
+                  ? err.error.title
+                  : '',
+            }
+          );
+          this.errorMsg = 'Une erreur est survenue, veuillez reessayer';
+        }
+      }
+    );
   }
 
   async openPinpad(payload?: any) {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
-      cssClass: "pin-pad-modal",
+      cssClass: 'pin-pad-modal',
       componentProps: {
         operationType: null,
       },
@@ -306,46 +303,17 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   }) {
     const modal = await this.modalController.create({
       component: NoOmAccountModalComponent,
-      cssClass: "customModalNoOMAccountModal",
+      cssClass: 'customModalNoOMAccountModal',
     });
     modal.onDidDismiss().then((response) => {
       if (response && response.data && response.data.continue) {
         const pageData = Object.assign(payload, {
           userHasNoOmAccount: true,
-          purchaseType: "TRANSFER_MONEY_WITH_CODE",
+          purchaseType: 'TRANSFER_MONEY_WITH_CODE',
         });
         this.modalController.dismiss(pageData);
       }
     });
     return await modal.present();
-  }
-
-  checkOMToken(
-    userOMMsisdn: string,
-    payload: {
-      senderMsisdn: string;
-      recipientMsisdn: string;
-      recipientFirstname: string;
-      recipientLastname: string;
-    }
-  ) {
-    this.isProcessing = true;
-
-    this.omService.GetUserAuthInfo(userOMMsisdn).subscribe(
-      (omUser: any) => {
-        this.isProcessing = false;
-        // If user already connected open pinpad
-        if (!omUser.hasApiKey  || !omUser.accessToken || omUser.loginExpired) {
-          this.openPinpad(payload);
-        } else {
-          this.checkRecipientHasOMAccount(userOMMsisdn, payload);
-        }
-      },
-      (err: HttpErrorResponse) => {
-        this.isProcessing = false;
-        if(err.status === 401)
-          this.modalController.dismiss();
-      }
-    );
   }
 }

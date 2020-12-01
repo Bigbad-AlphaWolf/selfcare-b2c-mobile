@@ -168,14 +168,12 @@
   // FOR KEURGUIBOX FORMULE
   .dashboard-block-conso {
     background-color: $white;
-    padding: 15px 0 10px 0;
-    margin-bottom: 10px;
-    margin-top: 10px;
+    margin: 10px 0;
 
     &-top-texts {
       display: flex;
       justify-content: space-between;
-      padding: 0 percentage(10px / $baseWidthMobile2);
+      padding: 20px percentage(15px / $baseWidthMobile2);
       .suivi-conso {
         font-size: 24px;
       }
@@ -189,79 +187,87 @@
     }
 
     &-btns {
-      height: 130px;
-      margin-top: -5px;
+      // height: 130px;
+      // margin-top: -5px; // margin-top: 15px; // old value commented because of slides with native margin
       overflow-x: scroll;
       white-space: nowrap;
       display: flex;
       &::-webkit-scrollbar {
         display: none;
       }
-
       ion-slides {
+        width: 100%;
         ion-slide {
-          padding-left: 10px;
+          padding-left: 15px;
           display: flex;
           align-items: flex-start;
-          margin-top: 12px;
+          // margin-top: 12px;
+          // width: percentage(255/375) !important;
           // width: 66% !important;
+          // min-width: 300px;
         }
       }
-
       app-om-button {
         // min-width: 63%;
         width: 100%;
-        height: 90px;
-        margin-right: percentage(10px / 366px);
+        height: 110px;
+        // margin-right: percentage(10px / 366px);
       }
 
+      .scb-btn-balance,
       .scb-btn-credit,
+      .scb-btn-sargal,
       .scb-btn-pass {
         text-align: left;
-        min-width: 63%;
+        // min-width: 63%;
         width: 100%;
-        height: 90px;
+        height: 110px;
         display: inline-block;
-        padding: 8px 0 10px 15px;
+        padding: 12px 0 20px 15px;
         border-radius: 15px;
-        box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
-        margin-right: percentage(10px / 366px);
+        // box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
+        // margin-right: percentage(10px / 366px);
         .scb-btn-top-block {
-          &-icon,
-          &-text {
-            display: inline-block;
-            vertical-align: middle;
-          }
-
+          display: flex;
+          align-items: center;
           &-icon {
             height: 24px;
             width: 24px;
             margin-right: 4px;
           }
-
           &-text {
             .text {
               font-family: HelveticaNeueLTStd-Roman, sans-serif;
               font-size: 18px;
             }
+            .status-sargal {
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+              font-size: 18px;
+              &.gold {
+                color: gold;
+              }
+              &.platinum {
+                color: #e5e4e2;
+              }
+            }
           }
         }
 
         .bottom-block {
-          margin-top: 1px;
+          margin-top: 4px;
           .value {
             font-family: HelveticaNeueLTStd-Bd, sans-serif;
-            font-size: 26px;
+            font-size: 32px;
 
             .text-style-1 {
-              font-family: HelveticaNeueLTStd-Roman, sans-serif;
-              font-size: 18px;
+              // font-family: HelveticaNeueLTStd-Roman, sans-serif;
+              font-size: 24px;
             }
           }
         }
 
         .validity-text {
-          margin-top: 6px;
+          margin-top: 5px;
           font-family: HelveticaNeueLTStd-Roman;
           font-size: 9px;
         }
@@ -277,9 +283,9 @@
     }
 
     &-details {
-      margin: -15px 0 0 0;
+      // margin: -15px 0 0 0;
       border-radius: 4px;
-      padding: 5px percentage(10px / $baseWidthMobile2);
+      padding: 25px percentage(15px / $baseWidthMobile2);
 
       &::-webkit-scrollbar {
         display: none;

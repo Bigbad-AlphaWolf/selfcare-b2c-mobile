@@ -11,11 +11,14 @@
             #amountInput
             matInput
             type="number"
-            (input)="onInputAmount(amountInput.value)"
+            (input)="onInputAmount($event)"
             [value]="initValue"
           />
           <span matSuffix class="scb-text-gray suffix">FCFA</span>
         </mat-form-field>
+        <div>
+          <ng-content select=".amount-error"></ng-content>
+        </div>
      
       </form>
     </div>

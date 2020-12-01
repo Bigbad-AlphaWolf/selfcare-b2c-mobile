@@ -7,12 +7,13 @@ import { IonicModule } from '@ionic/angular';
 
 import { HomeV2Page } from './home-v2.page';
 import { MatBottomSheetModule } from '@angular/material';
+import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 
 const routes: Routes = [
   {
     path: '',
-    component: HomeV2Page
-  }
+    component: HomeV2Page,
+  },
 ];
 
 @NgModule({
@@ -21,8 +22,9 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     MatBottomSheetModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  declarations: [HomeV2Page]
+  declarations: [HomeV2Page],
+  providers: [OpenNativeSettings],
 })
 export class HomeV2PageModule {}

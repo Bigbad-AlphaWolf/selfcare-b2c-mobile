@@ -1,8 +1,7 @@
 @import 'src/app/app';
 
 .set-merchant-code-page {
-  padding: 7px 14px;
-  padding-top: 30px;
+  padding: 30px 14px;
   .text-block {
     .title {
       font-size: 24px;
@@ -21,9 +20,58 @@
     padding-top: 30px;
     mat-form-field {
       margin-bottom: -10px;
+      .input-title {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 16px;
+        line-height: 1.25;
+      }
     }
     .error {
       font-size: 12px;
+    }
+    .recents {
+      .description {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 20px;
+        line-height: 1.5;
+        margin-bottom: 15px;
+      }
+      .oem-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+        border-bottom: 1px solid $grayDashboard;
+        padding-bottom: 15px;
+        .logo {
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: $grayDashboard;
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 12px;
+          line-height: 1.33;
+        }
+        .labels {
+          width: calc(100% - 24px);
+          margin-left: 10px;
+          span {
+            display: block;
+          }
+          .name {
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 16px;
+            line-height: 1.38;
+          }
+          .number {
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 12px;
+            line-height: 1.33;
+          }
+        }
+      }
     }
     button {
       border-radius: 10px;

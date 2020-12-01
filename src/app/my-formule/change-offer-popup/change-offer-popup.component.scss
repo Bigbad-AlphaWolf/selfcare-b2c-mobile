@@ -1,0 +1,88 @@
+@import 'src/app/app';
+
+.change-offer-page {
+  padding: 15px 0;
+  .offer-container {
+    padding: 0 15px;
+    margin-bottom: 15px;
+    .offer {
+      display: flex;
+      flex-direction: column;
+      height: 92px;
+      width: 100%;
+      padding: 20px 15px;
+      border-radius: 5px;
+      background-repeat: no-repeat;
+      background-size: cover;
+      .offer-name {
+        line-height: 1.5;
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 20px;
+      }
+      .tarif {
+        line-height: 1.38;
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 16px;
+      }
+    }
+  }
+  .tarification-block {
+    padding: 15px;
+    background-color: $grayDashboard;
+    display: flex;
+    justify-content: space-between;
+    .tarif-item {
+      padding: 20px 15px;
+      border-radius: 5px;
+      width: percentage(180/375);
+      background-color: $white;
+      flex-shrink: 0;
+      .option-title {
+        display: flex;
+        align-items: center;
+        padding-bottom: 20px;
+        border-bottom: solid 1px $silver;
+        img {
+          width: 30px;
+          height: auto;
+          margin-right: 10px;
+        }
+        .title {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 20px;
+          line-height: 1.5;
+        }
+      }
+      .tarif-description {
+        padding-top: 15px;
+        .tarif {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 16px;
+          line-height: 1.38;
+        }
+        .description {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+  .error {
+    padding: 20px 15px 0;
+  }
+  .button-container {
+    padding: 15px;
+    button {
+      border-radius: 10px;
+      position: relative;
+      mat-spinner {
+        position: absolute;
+        top: 15px;
+        right: 10px;
+      }
+      .mat-spinner::ng-deep circle {
+        stroke: $white;
+      }
+    }
+  }
+}

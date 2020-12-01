@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { Router, NavigationExtras } from "@angular/router";
 import { NavController } from "@ionic/angular";
 import { OperationExtras } from "src/app/models/operation-extras.model";
-import { getPageTitle } from 'src/app/utils/title.util';
+import { getPageHeader } from 'src/app/utils/title.util';
 
 @Component({
   selector: "app-credit-pass-amount",
@@ -19,13 +19,12 @@ export class CreditPassAmountPage implements OnInit {
 
   constructor(
     private navController: NavController,
-    private refChangeDetector : ChangeDetectorRef,
   ) {}
 
 
   ngOnInit() {
     this.opXtras = history.state;
-    this.title = (getPageTitle(this.opXtras.purchaseType)).title;
+    this.title = (getPageHeader(this.opXtras.purchaseType)).title;
   }
 
   ionViewWillEnter(){

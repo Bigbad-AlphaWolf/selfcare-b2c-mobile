@@ -1,53 +1,103 @@
 @import 'src/app/app';
 
-.select-beneficiary-container{
-    padding: 30px 15px;
-    --height: 300px;
-    .title{
-        font-size: 24px;
+.select-beneficiary-container {
+  padding: 30px 15px;
+  --height: 300px;
+  .title {
+    font-size: 24px;
+    font-family: HelveticaNeueLTStd-Bd;
+    line-height: 1.25;
+    color: $fullBlack;
+    margin-bottom: 10px;
+  }
+  .description {
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 16px;
+    line-height: 1.25;
+    color: $gray;
+  }
+  .beneficiary-number {
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 20px;
+
+    .icon {
+      position: absolute;
+      right: 122px;
+      bottom: 43px;
+    }
+    .btn-contact {
+      position: absolute;
+      right: 15px;
+      bottom: 40px;
+      background-color: $white;
+    }
+  }
+  .error-msg {
+    margin-top: 10px;
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 12px;
+  }
+  .recents {
+    margin-top: 15px;
+    .recent-description {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 20px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+    .oem-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+      border-bottom: 1px solid $grayDashboard;
+      padding-bottom: 15px;
+      .logo {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: $grayDashboard;
         font-family: HelveticaNeueLTStd-Bd;
-        line-height: 1.25;
-        color: $fullBlack;
-        margin-bottom: 10px;
-    }
-    .description{
-        font-family: HelveticaNeueLTStd-Roman;
-        font-size: 16px;
-        line-height: 1.25;
-        color: $gray;
-    }
-    .beneficiary-number{
-        position: relative;
-        margin-top: 10px;
-        .icon{
-            position: absolute;
-            right: 122px;
-            bottom: 43px;
-        }
-        .btn-contact{
-                position: absolute;
-                right: 15px;
-                bottom: 40px;
-                background-color: $white;
-        }
-    }
-    .error-msg{
-        margin-top: 10px;
-        font-family: HelveticaNeueLTStd-Roman;
         font-size: 12px;
-    }
-    .confirm-btn{
-        margin-top: 20px;
-        position: relative;
-        ion-button{
-            height: 50px;
-            --border-radius: 10px;
-            --background-activated : #ff7900;
+        line-height: 1.33;
+      }
+      .labels {
+        width: calc(100% - 24px);
+        margin-left: 10px;
+        span {
+          display: block;
         }
-        ion-spinner{
-            position: absolute;
-            top: 10px;
-            right: 20px;
+        .name {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
+          line-height: 1.38;
         }
+        .number {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 12px;
+          line-height: 1.33;
+        }
+      }
     }
+  }
+  .confirm-btn {
+    // position: relative;
+    position: absolute;
+    width: percentage(345/375);
+    bottom: 10px;
+    // left: percentage(15/375);
+    ion-button {
+      height: 50px;
+      --border-radius: 10px;
+      --background-activated: #ff7900;
+    }
+    ion-spinner {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+    }
+  }
 }

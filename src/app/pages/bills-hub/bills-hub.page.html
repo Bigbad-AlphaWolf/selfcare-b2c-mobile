@@ -1,0 +1,20 @@
+<ion-header [oemIonHeaderParallax]="90" >
+  <ion-toolbar >
+      <ion-buttons>
+        <ion-back-button (click)="goBack()" icon="" class="oem-back-button" >
+            <img src="/assets/images/arrow-left.png" alt="icon" />
+        </ion-back-button>  
+      </ion-buttons>
+      <ion-title>Payer ma facture</ion-title>
+  </ion-toolbar> 
+</ion-header>
+
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
+  <ion-grid >
+    <ion-row>
+      <div [ngClass]="{'disabled': !isServciceActivated(company)}" matRipple (click)="onCompanySelected(company)" class="oem-bloc-1" *ngFor="let company of companies">
+          <img [src]="company.logo" class="oem-img"/>
+      </div>
+    </ion-row>
+  </ion-grid>
+</ion-content>

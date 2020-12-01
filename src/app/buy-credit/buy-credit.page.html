@@ -9,16 +9,6 @@
   ></app-header>
 
   <div class="buy-pass-body-block">
-    <ng-container *ngIf="omBalancePinPadDisplayed">
-      <app-activation-om
-        [operation]="operation"
-        (resultEmit)="soldeGot($event)"
-        [creditToBuy]="creditToBuy"
-      >
-      </app-activation-om>
-    </ng-container>
-
-    <ng-container *ngIf="!omBalancePinPadDisplayed">
       <ng-container *ngIf="step === 0">
         <ng-container *ngIf="!isProcessing">
           <app-select-other-recipient
@@ -27,6 +17,7 @@
             [type]="'credit'"
           ></app-select-other-recipient>
           <app-select-recipient
+            [purchaseType]="OPERATION_TYPE_RECHARGE_CREDIT"
             (getDestinataire)="nextStepOfSelectDest($event)"
             (getContact)="contactGot($event)"
             *ngIf="currentProfil !== PROFILE_TYPE_POSTPAID"
@@ -75,6 +66,5 @@
           [recipientLastName]="recipientFirstName"
         ></app-operation-success-or-fail>
       </ng-container>
-    </ng-container>
   </div>
 </div>
