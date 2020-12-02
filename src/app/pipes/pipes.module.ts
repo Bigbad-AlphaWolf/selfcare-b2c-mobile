@@ -28,10 +28,9 @@ import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
     CodeFormatPipe,
     AcronymPipe,
     DataVolumePipe,
-    IlliflexVoicePipe ],
-  imports: [
-    CommonModule
+    IlliflexVoicePipe,
   ],
+  imports: [CommonModule],
   exports: [
     FormatCurrencyPipe,
     FormatBillNumPipe,
@@ -45,6 +44,8 @@ import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
     CodeFormatPipe,
     AcronymPipe,
     DataVolumePipe,
-    IlliflexVoicePipe ]
+    IlliflexVoicePipe,
+  ],
+  providers: [PassVolumeDisplayPipe],
 })
 export class PipesModule {}
