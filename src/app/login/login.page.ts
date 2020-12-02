@@ -68,6 +68,7 @@ export class LoginPage implements OnInit {
 
   ionViewWillEnter() {
     this.getRegistrationInformation();
+    ls.remove('light-token');
   }
 
   getRegistrationInformation() {
@@ -89,6 +90,7 @@ export class LoginPage implements OnInit {
     this.loading = true;
     this.authServ.login(user).subscribe(
       () => {
+        ls.remove('light-token');
         this.followAnalyticsService.registerEventFollow(
           'login_success',
           'event',

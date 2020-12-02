@@ -7,6 +7,7 @@ import {
   OPERATION_TRANSFER_OM,
   OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
+import { OPERATION_RAPIDO, OPERATION_WOYOFAL } from './operations.constants';
 
 export const IMAGES_DIR_PATH = '/assets/images';
 export const MONTHS: string[] = [
@@ -33,10 +34,20 @@ export abstract class Constants {
 }
 
 export const OM_URLS = ['selfcare-b2c-om'];
+export const NO_TOKEN_URLS = [
+  '/auth/get-service-token',
+  '/auth/login',
+  '/api/v1/get-msisdn',
+  '/api/v1/confirm-msisdn',
+];
 export const OM_RECENT_TYPES = [
   {
-    operationType: 'OPERATION_WOYOFAL',
+    operationType: OPERATION_WOYOFAL,
     recentType: RecentType.paiement_woyofal,
+  },
+  {
+    operationType: OPERATION_RAPIDO,
+    recentType: RecentType.paiement_rapido,
   },
   {
     operationType: OPERATION_TYPE_MERCHANT_PAYMENT,
@@ -63,3 +74,10 @@ export const OM_RECENT_TYPES = [
     recentType: RecentType.transfert_avec_code,
   },
 ];
+
+export const CATEGORY_MPO = {
+  illimix: 'illimix',
+  internet: 'internet',
+  recharge: 'recharge',
+  sargal: 'sargal',
+};

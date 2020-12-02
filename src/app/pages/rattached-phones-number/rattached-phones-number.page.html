@@ -1,0 +1,51 @@
+<ion-header [oemIonHeaderParallax]="90" >
+  <ion-toolbar >
+      <ion-buttons>
+        <ion-back-button (click)="goBack()" icon="" class="oem-back-button" >
+            <img src="/assets/images/arrow-left.png" alt="icon" />
+        </ion-back-button>  
+      </ion-buttons>
+      <ion-title> {{ title }} </ion-title>
+      <ion-label (click)="deleteRattachment()" class="edit" >Editer la liste</ion-label>
+  </ion-toolbar> 
+</ion-header>
+
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true" class="rattachement-page">
+  <div class="separator"></div>
+  <div class="content" >
+    <ng-container *ngIf="!isLoading">
+      <ng-container *ngIf="!hasError">
+        <div class="current-line">
+          <span class="title">
+            Ma ligne active
+          </span>
+          <app-item-rattached-number [checked]="true" [line]="listRattachedNumbers.current" ></app-item-rattached-number>
+        </div>
+        <div *ngIf="listRattachedNumbers.others.length" class="other-lines">
+          <span class="title">
+            Autres lignes
+          </span>
+          <div class="list">
+            <ng-container *ngFor="let line of listRattachedNumbers.others">
+              <app-item-rattached-number [disabled]="!editable" [line]="line"></app-item-rattached-number>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="hasError">
+        <div class="scb-text-full-black">
+          <span (click)="fetchingNumbers()">
+            Veuillez cliquer pour actualiser la page
+          </span>
+        </div>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="isLoading">
+      <div class="spinner-wrapper">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+    </ng-container>
+    <ion-button (click)="openModalRattachNumber()" expand="block" fill="outline" >Rattacher une ligne</ion-button>
+
+  </div>
+</ion-content>

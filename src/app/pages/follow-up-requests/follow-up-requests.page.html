@@ -5,13 +5,14 @@
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
-    <ion-title>Suivi réclamation</ion-title>
+    <ion-title>{{ header.title }}</ion-title>
   </ion-toolbar>
   <div class="top">
     <div class="banner-image">
       <div class="banner-background">
         <div class="banner-container">
           <div class="number">{{phoneFix|phoneNumberDisplay}}</div>
+          <div *ngIf="phoneFix" class="change" (click)="openLinesModal()" matRipple>Changer</div>
         </div>
       </div>
     </div>
@@ -31,22 +32,52 @@
 >
   <div class="content">
     <div class="requests" *ngIf="phoneFix">
-      <div class="head">
+      <!-- <div class="head">
         Mes réclamations
-      </div>
+      </div> -->
       <div class="requests" *ngIf="requests$ | async as requests">
         <div class="none" *ngIf="!requests.length">Aucune réclamation pour ce numéro</div>
-          <oem-request-card
-            *ngFor="let request of requests"
-            [request]="request"
-            (click)="onRequestChoosen(request)"
+          <ng-container *ngIf="requests.length">
+            <div class="title">
+              Statut Actuel
+            </div>
+            <oem-request-card
+              [request]="listRequestWithStatus?.current"
+              (click)="onRequestChoosen(listRequestWithStatus?.current)"
+              [fullDescription]="true"
+            ></oem-request-card>
+            <ng-container *ngIf="listRequestWithStatus?.next?.length">
+              <div class="title">
+                Prochaines étapes
+              </div>
+              <oem-request-card
+                  *ngFor="let req of listRequestWithStatus?.next"
+                [request]="req"
+                (click)="onRequestChoosen(req)"
+              ></oem-request-card>
+            </ng-container>
+            <ng-container *ngIf="listRequestWithStatus?.previous?.length">
+              <div class="title">
+                Anciennes étapes
+              </div>
+              <oem-request-card
+              *ngFor="let req of listRequestWithStatus?.previous"
+              [request]="req"
+            (click)="onRequestChoosen(req)"
             
           ></oem-request-card>
+            </ng-container>
+          </ng-container>
       </div>
+    </div>
+    <div class="requests" *ngIf="!phoneFix && !isInitRequests">
+      <span class="text">
+        Aucune demande ou réclamation associée à ce numéro
+      </span>
     </div>
     <div class="autre">
       <div class="head">
-        Autres réclamations
+        Autres demandes ou réclamations
       </div>
       <div class="fieldArea">
         <form novalidate autocomplete="false">

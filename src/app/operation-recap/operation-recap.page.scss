@@ -35,9 +35,9 @@ ion-content {
 }
 .banner-container {
   width: 100%;
-  display: flex;
   .banniere {
     width: 100%;
+    background-color: $white;
   }
 }
 
@@ -171,9 +171,9 @@ ion-content {
     }
   }
 
-  .offer-desc{
-    .top-block-transfert{
-      .title{
+  .offer-desc {
+    .top-block-transfert {
+      .title {
         font-family: HelveticaNeueLTStd-Roman;
         font-size: 12px;
         font-weight: normal;
@@ -182,6 +182,10 @@ ion-content {
         line-height: 1.67;
       }
     }
+  }
+
+  .dalal-amount-block {
+    padding-bottom: 20px;
   }
 
   button {

@@ -8,9 +8,12 @@ import {
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
   BONS_PLANS,
+  OPERATION_SEE_SOLDE_RAPIDO,
+  OPERATION_SEE_FOLLOW_UP_REQUESTS,
+  OPERATION_SEE_RATTACHED_NUMBERS,
 } from 'src/shared';
 import { PageHeader } from '../models/page-header.model';
-import { OPERATION_WOYOFAL } from './operations.util';
+import { OPERATION_RAPIDO, OPERATION_WOYOFAL } from './operations.constants';
 import { IMAGES_DIR_PATH } from './constants';
 
 export const titles: PageHeader[] = [
@@ -61,8 +64,24 @@ export const titles: PageHeader[] = [
     title: 'Rechargement Woyofal',
   },
   {
+    typeOperation: OPERATION_RAPIDO,
+    title: 'Rechargement Rapido',
+  },
+  {
     typeOperation: BONS_PLANS,
     title: "Bons plans - Samay Sargal",
+  },
+  {
+    typeOperation: OPERATION_SEE_SOLDE_RAPIDO,
+    title: "Solde de la carte Rapido",
+  },
+  {
+    typeOperation: OPERATION_SEE_FOLLOW_UP_REQUESTS,
+    title: "Suivi Demande ou Réclamation",
+  },
+  {
+    typeOperation: OPERATION_SEE_RATTACHED_NUMBERS,
+    title: "Mes lignes",
   },
 ];
 

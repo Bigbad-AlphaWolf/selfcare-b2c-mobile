@@ -14,6 +14,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { TransfertHubServicesPage } from './transfert-hub-services/transfert-hub-services.page';
 import { ApplicationRoutingService } from './services/application-routing/application-routing.service';
 import { checkUrlMatch } from './utils/utils';
+import { ImageLoaderConfigService } from 'ionic-image-loader';
+import { HttpHeaders } from '@angular/common/http';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { Uid } from '@ionic-native/uid/ngx';
+import { OperationRecapPage } from './operation-recap/operation-recap.page';
+import { DashboardPage } from './dashboard/dashboard.page';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -24,9 +31,10 @@ declare var FollowAnalytics: any;
   templateUrl: 'app.component.html',
 })
 export class AppComponent {
-  AppVersionNumber: any;
+  appVersionNumber: any;
   isIOS = false;
   appId: string;
+  static IMEI: string;
   constructor(
     private platform: Platform,
     private statusBar: StatusBar,
@@ -34,21 +42,50 @@ export class AppComponent {
     private appMinimize: AppMinimize,
     private router: Router,
     private deeplinks: Deeplinks,
-    private appRout: ApplicationRoutingService
-    ) {
+    private appRout: ApplicationRoutingService,
+    private imageLoaderConfig: ImageLoaderConfigService,
+    private uid: Uid,
+    private androidPermissions: AndroidPermissions,
+    private appVersion: AppVersion
+  ) {
+    this.getVersion();
+    this.imageLoaderConfig.enableSpinner(false);
+    // this could be useful while trying to debug issues with the component
+    this.imageLoaderConfig.enableDebugMode();
+    const token = ls.get('token');
+    const headers = new HttpHeaders();
+    // .set("Authorization", `Bearer ${token}`);
+    // headers.set( 'Access-Control-Allow-Origin','*');
+    // headers.set('Access-Control-Allow-Methods','GET, POST, PATCH, PUT, DELETE, OPTIONS')
+    // headers.set('Access-Control-Allow-Headers','Origin, Content-Type, X-Auth-Token, Accept')
+    // headers.set('Accept','image/avif,image/webp,image/apng,image/*,*/*;q=0.8')
+    // headers.set('sec-fetch-mode','no-cors')
+    // headers.set(':authority','orangeetmoi.orange.sn')
+
+    this.imageLoaderConfig.setHttpHeaders(headers);
+
     this.initializeApp();
+  }
+
+  async getVersion() {
+    this.appVersion.getVersionNumber().then((version) => {
+      console.log('version', version);
+      this.appVersionNumber = version;
+    });
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
       // Initialize BackButton Eevent.
-      if(this.platform && this.platform.backButton){
+      this.getVersion();
+      if (this.platform && this.platform.backButton) {
         this.platform.backButton.subscribe(() => {
           this.appMinimize.minimize();
         });
 
         if (this.platform.is('android')) {
           this.statusBar.backgroundColorByHexString('#FFFFFF');
+          this.getImei();
           //getPermission is for getting the IMEI
           //this.getPermission();getPermission() {
           //   this.androidPermissions
@@ -72,7 +109,7 @@ export class AppComponent {
           //       console.log('Error! ' + error);
           //     });
           // }
-  
+
           // getID_UID(type) {
           //   if (type === 'IMEI') {
           //     return this.uid.IMEI;
@@ -87,21 +124,17 @@ export class AppComponent {
           //   }
           // }
         }
-       
       }
-      if(this.statusBar){
+      if (this.statusBar) {
         this.statusBar.overlaysWebView(false);
         this.statusBar.styleDefault();
-       
       }
       // #AARRGGBB where AA is an alpha value RR is red, GG is green and BB is blue
-     
-      
+
       this.splash.hide();
 
-     
       this.checkDeeplinks();
-      this.setUUidValue(); 
+      this.setUUidValue();
       // Get firebase id for notifications
       // this.fcm
       //   .getToken()
@@ -138,23 +171,24 @@ export class AppComponent {
   }
 
   checkDeeplinks() {
-    if(this.deeplinks){
+    if (this.deeplinks) {
       this.deeplinks
         .route({
           '/buy-pass-internet': TransfertHubServicesPage,
-          '/buy-pass-internet/:id': BuyPassInternetPage,
+          '/pass-internet/:ppi': BuyPassInternetPage,
           '/assistance': AssistancePage,
           '/buy-pass-illimix': TransfertHubServicesPage,
-          '/buy-pass-illimix/:id': BuyPassIllimixPage,
+          '/pass-illimix/:ppi': BuyPassIllimixPage,
           '/buy-credit': TransfertHubServicesPage,
           '/details-conso': DetailsConsoPage,
+          '/suivi-conso': DashboardPage,
+          '/transfer-money': TransfertHubServicesPage,
         })
         .subscribe(
           (matched) => {
-            this.goToPage(matched.$link.path)
+            this.goToPage(matched.$link.path);
             // this.router.navigate([matched.$link.path]);
             console.log(matched);
-
           },
           () => {
             // console.log(notMatched);
@@ -164,12 +198,36 @@ export class AppComponent {
     }
   }
 
-  goToPage(path: string){
-    if( checkUrlMatch(path) ){
+  goToPage(path: string) {
+    if (checkUrlMatch(path)) {
       this.appRout.goToTransfertHubServicesPage('BUY');
-    }else {
-      this.router.navigate([path])
+    } else if (path.startsWith('/transfer-money')) {
+      this.appRout.goToTransfertHubServicesPage('TRANSFER');
+    } else {
+      this.router.navigate([path]);
     }
+  }
+
+  async getImei() {
+    console.log(this.uid);
+    const { hasPermission } = await this.androidPermissions.checkPermission(
+      this.androidPermissions.PERMISSION.READ_PHONE_STATE
+    );
+    if (!hasPermission) {
+      console.log('hasPermission', hasPermission);
+
+      const result = await this.androidPermissions.requestPermission(
+        this.androidPermissions.PERMISSION.READ_PHONE_STATE
+      );
+      if (!result.hasPermission) {
+        console.log('hasPermission2', hasPermission);
+        throw new Error('Permissions required');
+      }
+      return;
+    }
+    const imei = this.uid.IMEI;
+    AppComponent.IMEI = imei;
+    return imei;
   }
 
   // getPermission() {
@@ -208,12 +266,12 @@ export class AppComponent {
   //     return this.uid.UUID;
   //   }
   // }
-  setUUidValue(){
+
+  setUUidValue() {
     const x_uuid = ls.get('X-UUID');
-    
-    if(!x_uuid || x_uuid === ""){
+    if (!x_uuid || x_uuid === '') {
       const uuidV4 = uuidv4();
-      ls.set('X-UUID',uuidV4)
+      ls.set('X-UUID', uuidV4);
     }
   }
 }

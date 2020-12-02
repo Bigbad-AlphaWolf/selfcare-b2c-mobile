@@ -40,6 +40,7 @@
                   <div class="filtered-list-pass">
                     <app-item-offer-plan
                     *ngFor="let offer of listOffers.offersPlans"
+                    [isChecking]="isChecking"
                      [offerPlan]="offer"
                      (selectOfferPlans)="processMPO($event)"
                     ></app-item-offer-plan>

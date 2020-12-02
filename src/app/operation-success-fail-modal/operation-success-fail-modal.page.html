@@ -28,6 +28,13 @@
         >{{success ? 'Rechargement'+'\n'+'Woyofal effectué' :
         'Echec'+'\n'+'rechargement Woyofal'}}</span
       >
+      <span
+        class="title"
+        *ngSwitchCase="'OPERATION_RAPIDO'"
+        style="white-space: pre-line;"
+        >{{success ? 'Rechargement'+'\n'+'Rapido effectué' :
+        'Echec'+'\n'+'rechargement Rapido'}}</span
+      >
       <span class="title" *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
@@ -37,9 +44,14 @@
       <span class="title" *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
         >{{success ? 'Achat pass effectué' : 'Echec achat pass'}}</span
       >
-     
       <span class="title" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
         >{{success ? 'Paiement effectué' : 'Echec Paiement'}}</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_ENABLE_DALAL"
+        >{{success ? 'Dalal Tones activé' : 'Dalal non activé'}}</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_ILLIFLEX_TYPE"
+        >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
     </ng-container>
     <span class="subtitle scb-text-gray">
@@ -52,6 +64,9 @@
           >Vous avez acheté pour un montant de</span
         >
         <span *ngSwitchCase="'OPERATION_WOYOFAL'"
+          >Vous avez rechargé un montant de</span
+        >
+        <span *ngSwitchCase="'OPERATION_RAPIDO'"
           >Vous avez rechargé un montant de</span
         >
         <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
@@ -69,6 +84,12 @@
         <span *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
           >Vous avez payé un montant de
         </span>
+        <span *ngSwitchCase="OPERATION_ENABLE_DALAL"
+          >Vous avez activé le Dalal
+        </span>
+        <span *ngSwitchCase="OPERATION_ILLIFLEX_TYPE"
+          >Vous avez acheté le pass illiflex</span
+        >
       </ng-container>
     </span>
   </div>
@@ -83,7 +104,7 @@
         [passIllimix]="passBought"
         *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
       >
-    </app-item-pass-illimix>
+      </app-item-pass-illimix>
       <app-item-pass-illimix
         [passIllimix]="passBought"
         *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
@@ -113,6 +134,11 @@
       ></app-item-recharge-credit>
       <app-item-recharge-credit
         [modifiable]="false"
+        [amount]="opXtras.amount + opXtras.fee"
+        *ngSwitchCase="'OPERATION_RAPIDO'"
+      ></app-item-recharge-credit>
+      <app-item-recharge-credit
+        [modifiable]="false"
         [amount]="amount"
         *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
       >
@@ -123,11 +149,13 @@
         *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
       >
       </app-item-recharge-credit>
+      <app-item-illiflex *ngSwitchCase="OPERATION_ILLIFLEX_TYPE" [passIlliflex]="passBought"></app-item-illiflex>
+      <app-dalal-card-item *ngSwitchCase="OPERATION_ENABLE_DALAL" [dalal]="dalal"></app-dalal-card-item>
     </ng-container>
   </div>
   <div
     class="bottom-block"
-    *ngIf="success && purchaseType !== 'OPERATION_WOYOFAL'"
+    *ngIf="success &&  !(['OPERATION_WOYOFAL', 'OPERATION_RAPIDO'].includes(purchaseType))"
   >
     <div class="details">
       <ng-container
@@ -145,9 +173,7 @@
         <div class="left-block">Marchand</div>
         <div class="right-block scb-text-gray">
           <span class="numero">{{merchantCode}}</span>
-          <span class="name">
-            {{merchantName}}
-          </span>
+          <span class="name"> {{merchantName}} </span>
         </div>
       </ng-template>
     </div>
@@ -160,6 +186,16 @@
         <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
       </div>
     </div>
+    <ng-container
+        *ngIf="purchaseType === OPERATION_ENABLE_DALAL"
+      >
+      <div class="details">
+        <div class="left-block">Montant échéance</div>
+        <div class="right-block scb-text-gray">
+          <span class="numero">350 FCFA</span>
+          <span class="name">Tous les 30 jours</span>
+        </div></div>
+      </ng-container>
     <div class="details details-date">
       <div class="left-block">Date d'achat</div>
       <div class="right-block scb-text-gray">
@@ -169,25 +205,21 @@
   </div>
   <div
     class="bottom-block"
-    *ngIf="success && purchaseType === 'OPERATION_WOYOFAL'"
+    *ngIf="success && 'OPERATION_WOYOFAL' === purchaseType"
   >
     <div class="details">
-      <div class="left-block">Comptuer à recharger</div>
+      <div class="left-block">Compteur à recharger</div>
       <div class="right-block scb-text-gray">
         <span class="numero"
           >{{opXtras.billData.counter.counterNumber|codeFormat:2}}</span
         >
-        <span class="name">
-          {{opXtras.billData.counter.name}}
-        </span>
+        <span class="name"> {{opXtras.billData.counter.name}} </span>
       </div>
     </div>
     <div class="details">
-      <div class="left-block">Transfert avec</div>
+      <div class="left-block">Paiement par</div>
       <div class="right-block scb-text-gray">
-        <span class="numero">
-          Orange Money
-        </span>
+        <span class="numero"> Orange Money </span>
         <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
       </div>
     </div>
@@ -202,10 +234,37 @@
       <div class="code">{{opXtras.billData.codeRecharge|codeFormat:3}}</div>
     </div>
   </div>
+  <div
+    class="bottom-block"
+    *ngIf="success && 'OPERATION_RAPIDO' === purchaseType"
+  >
+    <div class="details">
+      <div class="left-block">Carte rechargée</div>
+      <div class="right-block scb-text-gray">
+        <span class="numero"
+          >{{opXtras.billData.counter.counterNumber|codeFormat:2}}</span
+        >
+        <span class="name"> {{opXtras.billData.counter.name}} </span>
+      </div>
+    </div>
+    <div class="details">
+      <div class="left-block">Paiement par</div>
+      <div class="right-block scb-text-gray">
+        <span class="numero"> Orange Money </span>
+        <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
+      </div>
+    </div>
+    <div class="details details-date">
+      <div class="left-block">Date de recharge</div>
+      <div class="right-block scb-text-gray">
+        <span class="numero">{{dateAchat}}</span>
+      </div>
+    </div>
+  </div>
 
   <div *ngIf="success" class="confirm-btn">
     <ion-button
-      (click)="goToPage(purchaseType)"
+      (click)="goToPage()"
       shape="round"
       class="btn btn-cancel"
       expand="block"
@@ -232,9 +291,18 @@
         <ng-container *ngSwitchCase="'OPERATION_WOYOFAL'">
           Faire une autre recharge
         </ng-container>
-        <ng-container *ngSwitchDefault>
+        <ng-container *ngSwitchCase="'OPERATION_RAPIDO'">
+          Faire une autre recharge
+        </ng-container>
+        <ng-container *ngSwitchCase="OPERATION_ENABLE_DALAL">
+          Activer un autre dalal
+        </ng-container>
+        <ng-container *ngSwitchDefault> 
           Faire une autre operation
         </ng-container>
+        <ng-container *ngSwitchCase="OPERATION_ILLIFLEX_TYPE">
+          Configurer un autre pass</ng-container
+        >
       </ng-container>
     </ion-button>
   </div>

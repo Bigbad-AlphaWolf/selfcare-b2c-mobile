@@ -24,6 +24,7 @@ import { AppUpdatePage } from '../pages/app-update/app-update.page';
 import { SessionOem } from '../services/session-oem/session-oem.service';
 import { map, take } from 'rxjs/operators';
 import { PROFIL, CODE_CLIENT, CODE_FORMULE, FORMULE } from '../utils/constants';
+import { OperationService } from '../services/oem-operation/operation.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()
@@ -62,6 +63,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     private appMinimize: AppMinimize,
     private appVersion: AppVersion,
     private navCtl: NavController,
+    private operationService: OperationService
   ) {}
 
   ngOnInit() {
@@ -102,11 +104,13 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.getCurrentSubscription();
+    this.getActiveServices();
     // if (!this.isFirebaseTokenSent) {
     //   this.authServ.UpdateNotificationInfo();
     //   this.isFirebaseTokenSent = true;
     // }
   }
+
   ionViewDidEnter() {
     // Initialize BackButton Eevent.
     this.backButtonSubscription = this.platform.backButton.subscribe(() => {
@@ -116,6 +120,12 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   ionViewWillLeave() {
     this.backButtonSubscription.unsubscribe();
+  }
+
+  getActiveServices() {
+    this.operationService.getAllServices().subscribe((res: any) => {
+      OperationService.AllOffers = res;
+    });
   }
 
   getCurrentSubscription() {
@@ -140,9 +150,6 @@ export class DashboardPage implements OnInit, OnDestroy {
         (res: SubscriptionModel) => {
           this.isLoading = false;
           this.hasErrorSubscription = false;
-          this.userSubscription = res;
-          this.currentProfile = this.userSubscription.profil;
-          this.currentFormule = this.userSubscription.nomOffre;
           this.currentProfile = res.profil;
           this.currentFormule = res.nomOffre;
           this.currentCodeFormule = res.code;

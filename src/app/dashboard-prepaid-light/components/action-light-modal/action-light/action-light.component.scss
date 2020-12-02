@@ -1,0 +1,45 @@
+@import 'src/app/app';
+
+.modal-action-light {
+  padding: 30px 15px;
+  .title {
+    line-height: 1.25;
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  .text {
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 16px;
+    line-height: 1.25;
+  }
+  form {
+    margin-top: 30px;
+    .error-text {
+      padding-bottom: 20px;
+      span {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 12px;
+      }
+    }
+    .password-forgotten {
+      padding-bottom: 20px;
+      span {
+        font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        font-size: 12px;
+      }
+    }
+    button {
+      border-radius: 10px;
+      position: relative;
+      mat-spinner {
+        position: absolute;
+        top: 15px;
+        right: 10px;
+      }
+      .mat-spinner::ng-deep circle {
+        stroke: $white;
+      }
+    }
+  }
+}

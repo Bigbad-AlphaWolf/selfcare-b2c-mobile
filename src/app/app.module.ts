@@ -32,21 +32,22 @@ import { SetPaymentChannelModalPageModule } from './set-payment-channel-modal/se
 import { NewPinpadModalPageModule } from './new-pinpad-modal/new-pinpad-modal.module';
 import { OperationSuccessFailModalPageModule } from './operation-success-fail-modal/operation-success-fail-modal.module';
 import { RegistrationSuccessModalPageModule } from './registration-success-modal/registration-success-modal.module';
+import { IonicImageLoader } from 'ionic-image-loader';
+import { Uid } from '@ionic-native/uid/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { PipesModule } from './pipes/pipes.module';
 
 registerLocaleData(localeFr);
 @NgModule({
   declarations: [
     AppComponent,
-    SidemenuComponent,
-    ChangeAvatarPopupComponent,
-    InProgressPopupComponent,
-  ],
-  entryComponents: [ChangeAvatarPopupComponent, InProgressPopupComponent],
+    SidemenuComponent ],
   imports: [
     HttpClientModule,
     MatDialogModule,
     BrowserModule,
     IonicModule.forRoot(),
+    IonicImageLoader.forRoot(),
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule,
@@ -54,11 +55,13 @@ registerLocaleData(localeFr);
     NewPinpadModalPageModule,
     OperationSuccessFailModalPageModule,
     RegistrationSuccessModalPageModule,
+    PipesModule
   ],
   providers: [
     AppVersion,
     StatusBar,
     SplashScreen,
+    WebView,
     { provide: LOCALE_ID, useValue: 'fr-FR' },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     {
@@ -74,6 +77,7 @@ registerLocaleData(localeFr);
     Deeplinks,
     Market,
     Device,
+    Uid,
     AndroidPermissions,
   ],
   bootstrap: [AppComponent],

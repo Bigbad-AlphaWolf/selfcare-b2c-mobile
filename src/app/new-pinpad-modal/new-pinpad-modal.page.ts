@@ -32,9 +32,10 @@ import { ModalController } from '@ionic/angular';
 import { catchError, map } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of } from 'rxjs';
-import { OPERATION_WOYOFAL } from '../utils/operations.util';
+import { OPERATION_RAPIDO, OPERATION_WOYOFAL } from '../utils/operations.constants';
 import { OperationExtras } from '../models/operation-extras.model';
-import { CounterService } from '../services/counter/counter.service';
+import { WoyofalService } from '../services/woyofal/woyofal.service';
+import { RapidoService } from '../services/rapido/rapido.service';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -86,7 +87,8 @@ export class NewPinpadModalPage implements OnInit {
     private dialog: MatDialog,
     private dashboardService: DashboardService,
     public modalController: ModalController,
-    private woyofal: CounterService
+    private woyofal: WoyofalService,
+    private rapido: RapidoService
   ) {}
 
   ngOnInit() {
@@ -426,6 +428,9 @@ export class NewPinpadModalPage implements OnInit {
               case OPERATION_WOYOFAL:
                 this.payWoyofal(pin);
                 break;
+              case OPERATION_RAPIDO:
+                this.payRapido(pin);
+                break;
               default:
                 this.seeSolde(pin);
                 break;
@@ -509,8 +514,31 @@ export class NewPinpadModalPage implements OnInit {
         this.opXtras.billData.kw = res.content.data.valeur_recharge;
         this.processResult(res, db);
       },
-      () => {
+      (err: any) => {
         this.processingPin = false;
+        this.processError(err, db);
+      }
+    );
+  }
+  payRapido(pin: string) {
+    this.processingPin = true;
+    const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
+    let body = {
+      amount: this.opXtras.amount,
+      em: db.em,
+      fees: this.opXtras.fee,
+      msisdn: db.msisdn,
+      numero_carte: this.opXtras.billData.counter.counterNumber,
+      pin: pin,
+    };
+    this.rapido.pay(body).subscribe(
+      (res: any) => {
+        this.processResult(res, db);
+      },
+      (err: any) => {
+        this.processingPin = false;
+        this.processError(err, db);
+
       }
     );
   }
@@ -556,8 +584,6 @@ export class NewPinpadModalPage implements OnInit {
               success: true,
               balance: balance,
             });
-          } else {
-            // this.resultEmit.emit(db.solde);
           }
           this.orangeMoneyService.logWithFollowAnalytics(
             res,

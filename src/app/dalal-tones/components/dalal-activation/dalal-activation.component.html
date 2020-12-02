@@ -1,0 +1,56 @@
+<div class="dalal-activation-page">
+  <div class="title">Vous allez souscrire au dalal tones</div>
+  <div class="dalal-infos">
+    <div class="artiste-img-container">
+      <img
+        [src]="downloadAvatarEndpoint + choosenDalal?.artiste?.image"
+        alt="art"
+      />
+    </div>
+    <div class="infos-text">
+      <span class="titre scb-text-orange">{{ choosenDalal?.titre }}</span>
+      <span class="artiste-name scb-text-dark-grey">{{
+        choosenDalal?.artiste?.nom
+      }}</span>
+    </div>
+  </div>
+  <div class="dalal-tarification">
+    <span class="period scb-text-dark-grey">Tarif (30 jours)</span>
+    <span class="price scb-text-orange">350 F</span>
+  </div>
+  <div class="form">
+    <!-- <div
+      class="item"
+      *ngFor="let choice of choices"
+      (click)="setChoice(choice?.value)"
+      [ngClass]="{ 'item-selected': currentChoice === choice?.value }"
+    >
+      <span>{{ choice?.text }}</span>
+      <mat-radio-button
+        [checked]="currentChoice === choice?.value"
+      ></mat-radio-button>
+    </div>
+    <oem-phone-number-provider
+      *ngIf="currentChoice === 'ONE'"
+      (onPhoneSelected)="onPhoneSelected($event)"
+    ></oem-phone-number-provider> -->
+    <div class="error-message scb-text-red-error" *ngIf="activationHasError">
+      {{ activationErrorMsg }}
+    </div>
+    <div class="btn-container">
+      <button
+        class="scb-btn scb-btn-orange scb-btn-full"
+        [disabled]="activatingDalal"
+        (click)="activateDalal()"
+      >
+        <span>Confirmer</span>
+        <mat-spinner
+          *ngIf="activatingDalal"
+          mode="indeterminate"
+          [diameter]="20"
+        >
+        </mat-spinner>
+      </button>
+    </div>
+  </div>
+</div>

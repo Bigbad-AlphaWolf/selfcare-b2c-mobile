@@ -11,6 +11,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { OperationSuccessFailModalPage } from './operation-success-fail-modal.page';
 import { SharedModule } from 'src/shared/shared.module';
+import { ComponentsModule } from '../components/components.module';
+import { PipesModule } from '../pipes/pipes.module';
 
 const routes: Routes = [
   {
@@ -24,12 +26,13 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    SharedModule,
+    ComponentsModule,
+    PipesModule,
     RouterModule.forChild(routes),
   ],
   declarations: [OperationSuccessFailModalPage],
   exports: [OperationSuccessFailModalPage],
   entryComponents: [OperationSuccessFailModalPage],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+  schemas: [],
 })
 export class OperationSuccessFailModalPageModule {}

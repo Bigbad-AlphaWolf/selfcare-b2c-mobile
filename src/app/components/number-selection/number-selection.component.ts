@@ -53,6 +53,7 @@ export class NumberSelectionComponent implements OnInit {
   @Input() data;
   loadingNumbers: boolean;
   currentPhone: string = SessionOem.PHONE.trim();
+  isLightMod: boolean;
 
   constructor(
     private modalController: ModalController,
@@ -64,19 +65,22 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.isLightMod = this.data.isLightMod;
     this.option = this.data.option;
     this.showInput = this.option === NumberSelectionOption.NONE;
     this.loadingNumbers = true;
     this.opXtras.recipientMsisdn = this.currentPhone;
-    this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
-      delay(100),
-      tap((numbers) => {
-        this.loadingNumbers = false;
-      }),
-      share()
-    );
     this.opXtras.senderMsisdn = SessionOem.PHONE;
-    this.checkOmAccount();
+    if (!this.isLightMod) {
+      this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
+        delay(100),
+        tap((numbers) => {
+          this.loadingNumbers = false;
+        }),
+        share()
+      );
+      this.checkOmAccount();
+    }
   }
 
   getRecents() {
@@ -99,8 +103,6 @@ export class NumberSelectionComponent implements OnInit {
   onRecentSelected() {}
 
   async onContinue(phone?: string) {
-    console.log('sd', this.opXtras.recipientMsisdn);
-
     if (phone) this.opXtras.recipientMsisdn = phone;
     if (
       !(

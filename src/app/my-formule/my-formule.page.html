@@ -1,206 +1,163 @@
-<div class="my-formule-page">
-  <app-header [title]="'Ma formule'" (goBack)="goBack()"></app-header>
-  <ng-container *ngIf="step === 'MA_FORMULE'">
-    <div *ngIf="!error && dataLoaded">
-      <div class="my-formule-details">
-        <div class="my-formule-details-icon-top">
-          <img [src]="getBannerByFormule(currentFormule)" alt="" />
-        </div>
-        <div class="my-formule-label-and-value">
-          <span class="my-formule-label">Ma formule</span>
-          <span class="my-formule-value">{{ currentFormule?.nomFormule }}</span>
-        </div>
-        <div class="my-formule-details-infos">
-          <div class="my-formule-details-infos-title">
-            Tarifs Nationaux
-          </div>
-          <div class="my-formule-details-infos-container">
-            <div class="my-formule-details-infos-container-list">
-              <div class="list-header-container">
-                <div class="header-container-icon">
-                  <img alt="" src="/assets/images/phone-black.svg" />
-                </div>
-                <span class="title scb-text-full-black">
-                  Appels
-                </span>
-              </div>
-              <div class="list-content-container">
-                <div class="list-content-container-item">
-                  <div class="scb-text-full-black item-top-block">
-                    {{ currentFormule?.prixAppels }} F / Sec
-                  </div>
-                  <div class="scb-text-dark-grey item-subtitle">
-                    {{ currentFormule?.nomFormule }}
-                  </div>
-                </div>
-                <div
-                  class="list-content-container-item"
-                  *ngFor="let tarifFormule of currentFormule?.tarifFormules"
-                >
-                  <ng-container *ngIf="tarifFormule?.categorie === 'APPEL'">
-                    <div class="scb-text-full-black item-top-block">
-                      {{ tarifFormule?.tarif }} F / Sec
-                    </div>
-                    <div class="scb-text-dark-grey item-subtitle">
-                      {{ tarifFormule?.description }}
-                    </div>
-                  </ng-container>
-                </div>
-              </div>
-            </div>
-            <div class="my-formule-details-infos-container-list">
-              <div class="list-header-container">
-                <div class="header-container-icon">
-                  <img alt="" src="/assets/images/message-black.svg" />
-                </div>
-                <span class="title scb-text-full-black">
-                  SMS
-                </span>
-              </div>
-              <div class="list-content-container">
-                <div class="list-content-container-item">
-                  <div class="scb-text-full-black item-top-block">
-                    {{ currentFormule?.prixSMS }} F
-                  </div>
-                  <div class="scb-text-dark-grey item-subtitle">
-                    {{ currentFormule?.nomFormule }}
-                  </div>
-                </div>
-                <div
-                  class="list-content-container-item"
-                  *ngFor="let tarifFormule of currentFormule?.tarifFormules"
-                >
-                  <ng-container *ngIf="tarifFormule?.categorie === 'SMS'">
-                    <div class="scb-text-full-black item-top-block">
-                      {{ tarifFormule?.tarif }} F
-                    </div>
-                    <div class="scb-text-dark-grey item-subtitle">
-                      {{ tarifFormule?.description }}
-                    </div>
-                  </ng-container>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="my-formule-details-infos-title infos-international">
-            Tarifs Internationaux
-          </div>
-          <div class="select-country">
-              <ion-label class="content">Pays</ion-label>
-              <ion-select [mode]="isIOS ? 'ios' : 'md'" #pays [interfaceOptions]="customAlertOptions" [value]="listTarifsInternationaux[0]" interface="alert" class="select" okText="OK" cancelText="Annuler" placeholder="Choisir un pays">
-                <ion-select-option *ngFor="let item of listTarifsInternationaux" [value]="item">{{ item?.name }} </ion-select-option>
-              </ion-select>
-          </div>
-          <div class="my-formule-details-infos-container international">
-            <div class="my-formule-details-infos-container-list">
-              <div class="list-header-container">
-                <div class="header-container-icon">
-                  <img alt="" src="/assets/images/phone-black.svg" />
-                </div>
-                <span class="title scb-text-full-black">
-                  Zone
-                </span>
-              </div>
-              <div class="list-content-container">
-                <div class="list-content-container-item">
-                  <div class="scb-text-orange item-top-block">
-                    {{ pays?.value?.zone?.name }}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="my-formule-details-infos-container-list">
-              <div class="list-header-container">
-                <div class="header-container-icon">
-                  <img alt="" src="/assets/images/phone-black.svg" />
-                </div>
-                <span class="title scb-text-full-black">
-                  Appels
-                </span>
-              </div>
-              <div class="list-content-container">
-                <div class="list-content-container-item">
-                  <div class="scb-text-orange item-top-block">
-                    {{ pays?.value?.zone?.tarifFormule?.tarifAppel }} F / Sec
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="my-formule-details-infos-container-list">
-              <div class="list-header-container">
-                <div class="header-container-icon">
-                  <img alt="" src="/assets/images/message-black.svg" />
-                </div>
-                <span class="title scb-text-full-black">
-                  SMS
-                </span>
-              </div>
-              <div class="list-content-container">
-                <div class="list-content-container-item">
-                  <div class="scb-text-orange item-top-block">
-                    {{ pays?.value?.zone?.tarifFormule?.tarifSms }} F
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="other-formules-label-and-list"
-        *ngIf="currentFormule?.code !== getKireneFormule()"
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title>
+      <span class="title1"> Ma formule </span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title"> Ma formule </span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="my-formule-page" *ngIf="!error && dataLoaded">
+    <div
+      class="banniere"
+      [ngStyle]="{'background-image': 'url(' + getBannerByFormule(currentFormule) + ')'}"
+    >
+      <span class="formule scb-text-white"
+        >{{currentFormule?.nomFormule ? currentFormule?.nomFormule :
+        currentFormule?.nomOffre}}</span
       >
-        <div class="other-formules-label">
-          <span>Je consulte et je change de formule</span>
+      <span *ngIf="0" class="changer scb-text-orange">Changer</span>
+    </div>
+    <div class="filters-block">
+      <span class="title">Tarification</span>
+      <div class="countries-filter">
+        <div class="depuis-vers scb-text-gray">
+          <div class="depuis">Depuis</div>
+          <div class="vers">Vers</div>
         </div>
-        <div class="other-formules-list">
-          <div
-            (click)="seeDetailsFormule(formule)"
-            class="formules-list-item"
-            *ngFor="let formule of otherFormules"
+        <ion-list>
+          <ion-item mode="ios" lines="none" class="disabled">
+            <ion-label mode="ios" class="scb-text-full-black"
+              >Sénégal</ion-label
+            >
+            <ion-select
+              class="disabled"
+              mode="ios"
+              interface="popover"
+              noIonSelectArrow
+              [disabled]="true"
+            >
+              <ion-select-option
+                *ngFor="let country of listTarifsInternationaux"
+                [value]="country"
+                >{{country?.name}}</ion-select-option
+              >
+            </ion-select>
+            <ion-icon
+              ios="md-arrow-dropdown"
+              md="md-arrow-dropdown"
+              slot="end"
+              *ngIf="0"
+            ></ion-icon>
+          </ion-item>
+          <ion-item mode="ios" lines="none">
+            <ion-select
+              mode="ios"
+              noIonSelectArrow
+              [interfaceOptions]="customAlertOptions"
+              #selectedCountry
+              [value]="currentNumberSubscription?.profil === PREPAID_PROFILE ? listTarifsInternationaux[0]:listTarifsInternationaux[1]"
+            >
+              <ng-container *ngFor="let country2 of listTarifsInternationaux">
+                <ion-select-option
+                  *ngIf="country2?.zone?.name !== LOCAL_ZONE || currentNumberSubscription?.profil === PREPAID_PROFILE"
+                  [value]="country2"
+                >
+                  {{country2?.zone?.name !== LOCAL_ZONE ? country2?.name :
+                  'Même' + ' pays'}}
+                </ion-select-option>
+              </ng-container>
+            </ion-select>
+            <ion-icon
+              ios="md-arrow-dropdown"
+              md="md-arrow-dropdown"
+              slot="end"
+            ></ion-icon>
+          </ion-item>
+        </ion-list>
+      </div>
+    </div>
+    <div class="tarification-block">
+      <div class="tarif-item">
+        <div class="option-title">
+          <img src="/assets/images/appel_icon.png" alt="ic" />
+          <span class="title">Appels</span>
+        </div>
+        <div class="tarif-description">
+          <span class="tarif"
+            >{{selectedCountry?.value?.zone?.tarifFormule?.tarifAppel}} F /
+            Sec</span
           >
-            <div class="formules-list-item-icon">
-              <img [src]="getImgByFormule(formule)" alt="" />
-            </div>
-            <div class="formules-list-item-right-content">
-              <div class="formules-list-item-title-rate-and-scope">
-                <div class="formules-list-item-title">
-                  <span>{{ formule.nomFormule }}</span>
-                </div>
-                <div class="formules-list-item-rate-and-scope">
-                  <span class="formules-list-item-rate"
-                    >{{ formule.prixAppels }} F / Sec
-                  </span>
-                  <span class="formules-list-item-scope">{{
-                    formule?.nomFormule
-                  }}</span>
-                </div>
-              </div>
-              <div class="formules-list-item-arrow-right">
-                <img
-                  alt=""
-                  src="/assets/images/keyboard-arrow-right-orange.svg"
-                />
-              </div>
-            </div>
+          <div class="description scb-text-gray">
+            {{selectedCountry?.value?.zone?.tarifFormule?.destination}}
+          </div>
+        </div>
+      </div>
+      <div class="tarif-item">
+        <div class="option-title">
+          <img src="/assets/images/msg_icon.png" alt="ic" />
+          <span class="title">SMS</span>
+        </div>
+        <div class="tarif-description">
+          <span class="tarif"
+            >{{selectedCountry?.value?.zone?.tarifFormule?.tarifSms}} F</span
+          >
+          <div class="description scb-text-gray">
+            {{selectedCountry?.value?.zone?.tarifFormule?.destination}}
+          </div>
+        </div>
+      </div>
+      <div class="tarif-item">
+        <div class="option-title">
+          <img src="/assets/images/appel_icon.png" alt="ic" />
+          <span class="title">Zone</span>
+        </div>
+        <div class="tarif-description">
+          <span class="tarif scb-text-orange"
+            >{{selectedCountry?.value?.zone?.name}}</span
+          >
+          <div class="description scb-text-gray">
+            {{selectedCountry?.value?.zone?.description}}
           </div>
         </div>
       </div>
     </div>
-    <div class="error-management" *ngIf="error || !dataLoaded">
-      <div class="other-formules-label" *ngIf="error">
-        <span>{{ error }}</span>
-      </div>
-      <div *ngIf="!dataLoaded" class="spinner">
-        <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+    <div
+      class="other-offers-block"
+      *ngIf="currentNumberSubscription && currentNumberSubscription?.profil === PREPAID_PROFILE && currentFormule?.code !== getKireneFormule() && otherFormules"
+    >
+      <span class="title">Découvrir les autres formules</span>
+      <div class="other-offers-list">
+        <div
+          *ngFor="let formule of otherFormules"
+          class="offer-item"
+          [ngStyle]="{'background-image': 'url('+ getBannerByFormule(formule) + ')'}"
+          (click)="openChangeFormuleModal(formule)"
+        >
+          <span class="offer-name scb-text-white">{{formule?.nomFormule}}</span>
+          <span class="tarif-and-infos">
+            <span class="tarif scb-text-white"
+              >{{formule?.prixAppels}} F / Sec</span
+            >
+            <span class="infos scb-text-orange">En savoir plus</span>
+          </span>
+        </div>
       </div>
     </div>
-  </ng-container>
-  <ng-container *ngIf="step === 'DETAILS_FORMULE'">
-    <app-see-details-formule
-      [formule]="detailsFormule"
-      [msisdn]="currentNumber"
-      (goBackToListFormules)="getNewFormuleInfos()"
-    ></app-see-details-formule>
-  </ng-container>
-</div>
+  </div>
+  <div class="error-management" *ngIf="error || !dataLoaded">
+    <div class="other-formules-label scb-text-red-error" *ngIf="error">
+      <span>{{ error }}</span>
+    </div>
+    <div *ngIf="!dataLoaded" class="spinner">
+      <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+    </div>
+  </div>
+</ion-content>

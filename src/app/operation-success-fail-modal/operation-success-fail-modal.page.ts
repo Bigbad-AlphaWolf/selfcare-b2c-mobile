@@ -10,11 +10,19 @@ import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_RECHARGE_CREDIT,
   OPERATION_TYPE_PASS_ALLO,
+  OPERATION_ENABLE_DALAL,
+  OPERATION_TYPE_PASS_ILLIFLEX,
+  CODE_KIRENE_Formule,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
-import { OPERATION_WOYOFAL } from '../utils/operations.util';
+import {
+  OPERATION_RAPIDO,
+  OPERATION_WOYOFAL,
+} from '../utils/operations.constants';
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
+import { DalalTonesPage } from '../dalal-tones/dalal-tones.page';
+import { RapidoOperationPage } from '../pages/rapido-operation/rapido-operation.page';
 
 @Component({
   selector: 'app-operation-success-fail-modal',
@@ -29,6 +37,8 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   OPERATION_TYPE_MERCHANT_PAYMENT = OPERATION_TYPE_MERCHANT_PAYMENT;
   OPERATION_TYPE_RECHARGE = OPERATION_TYPE_RECHARGE_CREDIT;
+  OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
+  OPERATION_ILLIFLEX_TYPE = OPERATION_TYPE_PASS_ILLIFLEX;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;
@@ -42,6 +52,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   @Input() merchantCode: number;
   @Input() merchantName: string;
   @Input() opXtras: OperationExtras;
+  @Input() dalal: any;
   dateAchat = this.dashboardService.getCurrentDate();
   btnText: string;
 
@@ -60,23 +71,61 @@ export class OperationSuccessFailModalPage implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
-  goToPage(purchaseType: string) {
-    switch (purchaseType) {
-      case this.OPERATION_ILLIMIX_TYPE:
-      case this.OPERATION_ALLO_TYPE:
-      case this.OPERATION_INTERNET_TYPE:
-      case this.OPERATION_TYPE_RECHARGE:
+  goToPage() {
+    switch (this.purchaseType) {
+      case OPERATION_TYPE_PASS_ALLO:
         this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
-      case this.OPERATION_TYPE_MERCHANT_PAYMENT:
+      case OPERATION_TYPE_PASS_ILLIMIX:
+        if (this.opXtras.code === CODE_KIRENE_Formule) {
+          this.appRouting.goToBuyPassIllimixKirene();
+        } else {
+          this.appRouting.goToTransfertHubServicesPage('BUY');
+        }
+        break;
+      case OPERATION_TYPE_PASS_INTERNET:
+        if (this.opXtras.code === CODE_KIRENE_Formule) {
+          this.appRouting.goToBuyPassInternetKirene();
+        } else {
+          this.appRouting.goToTransfertHubServicesPage('BUY');
+        }
+        break;
+      case OPERATION_TYPE_RECHARGE_CREDIT:
+        if (this.opXtras.code === CODE_KIRENE_Formule) {
+          this.appRouting.goBuyCredit();
+        } else {
+          this.appRouting.goToTransfertHubServicesPage('BUY');
+        }
+        break;
+      case OPERATION_TYPE_MERCHANT_PAYMENT:
         this.appRouting.goToDashboard();
         break;
-      case this.OPERATION_TRANSFER_OM:
-      case this.OPERATION_TRANSFER_OM_WITH_CODE:
-        this.appRouting.goToTransfertHubServicesPage('TRANSFER');
+      case OPERATION_TRANSFER_OM:
+        if (this.opXtras.code === CODE_KIRENE_Formule) {
+          this.navCtrl.pop();
+        } else {
+          this.appRouting.goToTransfertHubServicesPage('TRANSFER');
+        }
+        break;
+      case OPERATION_TRANSFER_OM_WITH_CODE:
+        if (this.opXtras.code === CODE_KIRENE_Formule) {
+          this.navCtrl.pop();
+        } else {
+          this.appRouting.goToTransfertHubServicesPage('TRANSFER');
+        }
+        break;
         break;
       case OPERATION_WOYOFAL:
         this.navCtrl.navigateBack(BillsHubPage.ROUTE_PATH);
+        break;
+      case OPERATION_RAPIDO:
+        this.navCtrl.navigateBack(RapidoOperationPage.ROUTE_PATH);
+        break;
+      case OPERATION_ENABLE_DALAL:
+        this.navCtrl.navigateBack(DalalTonesPage.ROUTE_PATH);
+        break;
+      case OPERATION_TYPE_PASS_ILLIFLEX:
+        this.router.navigate(['/select-illiflex-type']);
         break;
       default:
         break;

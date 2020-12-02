@@ -121,9 +121,7 @@ export class ForgottenPasswordPage implements OnInit {
     );
   }
 
-  ionViewWillLeave() {
-    ls.remove('light-token');
-  }
+  ionViewWillLeave() {}
 
   onSubmitPassword() {
     this.error_message = '';

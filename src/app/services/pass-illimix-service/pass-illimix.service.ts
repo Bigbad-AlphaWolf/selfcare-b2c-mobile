@@ -14,6 +14,7 @@ import { AuthenticationService } from '../authentication-service/authentication.
 import { SubscriptionModel } from 'src/app/dashboard';
 
 import { environment } from 'src/environments/environment';
+import { map } from 'rxjs/operators';
 const { SERVER_API_URL, CONSO_SERVICE } = environment;
 const passByIdEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-illimixes`;
 @Injectable({
@@ -27,7 +28,6 @@ export class PassIllimixService {
   private passLoadedSubject: Subject<any> = new Subject<any>();
   constructor(
     private dashbService: DashboardService,
-    private authServ: AuthenticationService,
     private http: HttpClient
   ) {}
 
@@ -35,55 +35,49 @@ export class PassIllimixService {
     this.userCodeFormule = msisdn;
   }
 
-  setListPassIllimix(category?: string) {
+  queryListPassIllimix(codeFormule: string, category?: string) {
     this.listPassIllimix = [];
-    this.dashbService
-      .getListPassIllimix(this.userCodeFormule, category)
-      .subscribe(
-        (res: PassIllimixModel[]) => {
-          res.forEach((x) => {
-            const isPassAllo =
-              (x.pass &&
-                x.pass.categoriePass.libelle.toLowerCase() ===
-                  ALLO_PASS_CATEGORY.toLowerCase()) ||
-              (x.promoPass &&
-                x.promoPass.passPromo.categoriePass.libelle.toLowerCase() !==
-                  ALLO_PASS_CATEGORY.toLowerCase());
-            if (x.pass && x.pass.actif) {
-              if (category || !isPassAllo) this.listPassIllimix.push(x.pass);
-            } else if (x.promoPass && x.promoPass.passPromo.actif) {
-              if (category || !isPassAllo)
-                this.listPassIllimix.push(x.promoPass);
-            }
-          });
-          // get from all pass the different categories
-          let list = res.map((x) => {
-            if (x.pass) {
-              return x.pass.categoriePass;
-            } else if (x.promoPass) {
-              return x.promoPass.passPromo.categoriePass;
-            }
-          });
-          // hide allo category if all illimix requested ie if no category specified
-          if (!category) {
-            list = list.filter((category) => {
-              return (
-                category.libelle.toLowerCase() !==
-                ALLO_PASS_CATEGORY.toLowerCase()
-              );
-            });
+    return this.dashbService.getListPassIllimix(codeFormule, category).pipe(
+      map((res: PassIllimixModel[]) => {
+        res.forEach((x) => {
+          const isPassAllo =
+            (x.pass &&
+              x.pass.categoriePass.libelle.toLowerCase() ===
+                ALLO_PASS_CATEGORY.toLowerCase()) ||
+            (x.promoPass &&
+              x.promoPass.passPromo.categoriePass.libelle.toLowerCase() !==
+                ALLO_PASS_CATEGORY.toLowerCase());
+          if (x.pass && x.pass.actif) {
+            if (category || !isPassAllo) this.listPassIllimix.push(x.pass);
+          } else if (x.promoPass && x.promoPass.passPromo.actif) {
+            if (category || !isPassAllo) this.listPassIllimix.push(x.promoPass);
           }
-          this.listCategoryPass = getOrderedListCategory(list);
-          this.listPassIllimixShown = getListPassFilteredByLabelAndPaymentMod(
-            this.listCategoryPass[0],
-            this.listPassIllimix
-          );
-          this.passLoadedSubject.next(true);
-        },
-        (err: any) => {
-          this.passLoadedSubject.next(true);
+        });
+        // get from all pass the different categories
+        let list = res.map((x) => {
+          if (x.pass) {
+            return x.pass.categoriePass;
+          } else if (x.promoPass) {
+            return x.promoPass.passPromo.categoriePass;
+          }
+        });
+        // hide allo category if all illimix requested ie if no category specified
+        if (!category) {
+          list = list.filter((category) => {
+            return (
+              category.libelle.toLowerCase() !==
+              ALLO_PASS_CATEGORY.toLowerCase()
+            );
+          });
         }
-      );
+        this.listCategoryPass = getOrderedListCategory(list);
+        this.listPassIllimixShown = getListPassFilteredByLabelAndPaymentMod(
+          this.listCategoryPass[0],
+          this.listPassIllimix
+        );
+        return list;
+      })
+    );
   }
 
   getCategoryListPassIllimix() {

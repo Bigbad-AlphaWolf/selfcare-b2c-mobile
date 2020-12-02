@@ -4,7 +4,8 @@ import { getPageHeader } from 'src/app/utils/title.util';
 import { NavController } from '@ionic/angular';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { FeeModel } from 'src/app/services/orange-money-service';
-import { CounterService } from 'src/app/services/counter/counter.service';
+import { WoyofalService } from 'src/app/services/woyofal/woyofal.service';
+import { FeesService } from 'src/app/services/fees/fees.service';
 
 @Component({
   selector: 'app-bill-amount',
@@ -25,16 +26,20 @@ export class BillAmountPage implements OnInit {
   isFee: boolean = true;
   minimalAmount = 1000;
   amountIsValid: boolean = false;
+  service: string;
 
   constructor(
     private navController: NavController,
-    private counterService: CounterService
+    private feeService: FeesService
   ) {}
 
   ngOnInit() {
     this.opXtras = history.state;
+    this.service = this.opXtras.billData.company.code.toLowerCase();
+    console.log(this.service);
+
     this.title = getPageHeader(this.opXtras.purchaseType).title;
-    this.minimalAmount = this.counterService.fees[0].montant_min;
+    this.minimalAmount = this.feeService.fees[this.service][0].montant_min;
   }
 
   ionViewWillEnter() {
@@ -61,19 +66,26 @@ export class BillAmountPage implements OnInit {
   inputAmountIsValid(amount: number) {
     if (!amount) return false;
 
-    let includefeeAmountIsValid =
-      amount >= this.counterService.feesIncludes[0].montant_min &&
-      amount <=
-        this.counterService.feesIncludes[
-          this.counterService.feesIncludes.length - 1
-        ].montant_max;
-    let amountIsValid =
-      amount >= this.counterService.fees[0].montant_min &&
-      amount <=
-        this.counterService.fees[this.counterService.fees.length - 1]
-          .montant_max;
+    return this.isFee
+      ? this.amountExcludeFeeIsValid(amount)
+      : this.amountIncludeFeeIsValid(amount);
+  }
 
-    return this.isFee ? amountIsValid : includefeeAmountIsValid;
+  amountIncludeFeeIsValid(amount: number) {
+    let feesIncludes = this.feeService.feesIncludes[this.service];
+    return (
+      amount >= feesIncludes[0].montant_min &&
+      amount <= feesIncludes[feesIncludes.length - 1].montant_max
+    );
+  }
+
+  
+  amountExcludeFeeIsValid(amount: number) {
+    let fees = this.feeService.fees[this.service];
+    return (
+      amount >= fees[0].montant_min &&
+      amount <= fees[fees.length - 1].montant_max
+    );
   }
 
   toogleFee($event) {
@@ -91,15 +103,17 @@ export class BillAmountPage implements OnInit {
 
     this.amountIsValid = true;
     if (this.isFee) {
-      this.fee = this.opXtras.fee = this.counterService.findAmountFee(
+      this.fee = this.opXtras.fee = this.feeService.findAmountFee(
         amount,
+        this.service,
         false
       );
       this.opXtras.amount = amount;
       this.totalAmount = this.opXtras.amount + this.opXtras.fee;
     } else {
-      this.fee = this.opXtras.fee = this.counterService.findAmountFee(
+      this.fee = this.opXtras.fee = this.feeService.findAmountFee(
         amount,
+        this.service,
         true
       );
       this.opXtras.amount = amount - this.opXtras.fee;

@@ -12,7 +12,8 @@ import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_PASS_ALLO,
-  OPERATION_TYPE_PASS_VOYAGE
+  OPERATION_TYPE_PASS_VOYAGE,
+  SubscriptionModel,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -27,6 +28,7 @@ import { Observable } from 'rxjs';
 import { FacebookEventService } from '../services/facebook-event/facebook-event.service';
 import { FacebookEvent } from '../models/enums/facebook-event.enum';
 import { FacebookCustomEvent } from '../models/enums/facebook-custom-event.enum';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -83,14 +85,6 @@ export class TransfertHubServicesPage implements OnInit {
     action?: 'REDIRECT' | 'POPUP';
   }[] = [
     {
-      title: 'Crédit',
-      subtitle: 'recharge',
-      icon: '/assets/images/ic-top-up-mobile@2x.png',
-      action: 'REDIRECT',
-      type: 'CREDIT',
-      url: '',
-    },
-    {
       title: 'Pass',
       subtitle: 'internet',
       icon: '/assets/images/ic-internet-usage@2x.png',
@@ -131,6 +125,36 @@ export class TransfertHubServicesPage implements OnInit {
     //   url: '',
     // },
   ];
+  buyCreditOption: {
+    title: string;
+    subtitle: string;
+    icon: string;
+    type: 'CREDIT';
+    url?: string;
+    action?: 'REDIRECT' | 'POPUP';
+  } = {
+    title: 'Crédit',
+    subtitle: 'recharge',
+    icon: '/assets/images/ic-top-up-mobile@2x.png',
+    action: 'REDIRECT',
+    type: 'CREDIT',
+    url: '',
+  };
+  buyIlliflexOption: {
+    title: string;
+    subtitle: string;
+    icon: string;
+    type;
+    url?: string;
+    action?: 'REDIRECT' | 'POPUP';
+  } = {
+    title: 'Pass',
+    subtitle: 'Illiflex',
+    icon: '/assets/images/ic-international.png',
+    action: 'REDIRECT',
+    type: 'ILLIFLEX',
+    url: '',
+  };
   options: {
     title: string;
     subtitle: string;
@@ -144,7 +168,8 @@ export class TransfertHubServicesPage implements OnInit {
       | 'PASS_ILLIMIX'
       | 'PASS_VOYAGE'
       | 'PASS_INTERNATIONAL'
-      | 'PASS_ALLO';
+      | 'PASS_ALLO'
+      | 'ILLIFLEX';
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
   }[] = [];
@@ -155,7 +180,8 @@ export class TransfertHubServicesPage implements OnInit {
   hasPromoPlanActive: OfferPlanActive = null;
   hasBoosterPromoActive: PromoBoosterActive = null;
   showNewFeatureBadge$: Observable<Boolean>;
-
+  isLightMod: boolean; //boolean to tell if user is in connected or not connected mod
+  currentPhone = this.dashbServ.getCurrentPhoneNumber();
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
@@ -164,8 +190,9 @@ export class TransfertHubServicesPage implements OnInit {
     private offerPlanServ: OfferPlansService,
     private dashbServ: DashboardService,
     private bsService: BottomSheetService,
-    private omService : OrangeMoneyService,
-    private facebookevent : FacebookEventService
+    private omService: OrangeMoneyService,
+    private facebookevent: FacebookEventService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit() {
@@ -173,6 +200,11 @@ export class TransfertHubServicesPage implements OnInit {
     this.getShowStatusNewFeatureAllo();
     if (history && history.state) {
       purchaseType = history.state.purchaseType;
+      this.isLightMod = history.state.isLightMod;
+      if (!this.isLightMod) {
+        this.buyOptions.splice(0, 0, this.buyCreditOption);
+        this.buyOptions.push(this.buyIlliflexOption);
+      }
     }
     if (purchaseType === 'TRANSFER') {
       this.options = this.transferOptions;
@@ -187,8 +219,8 @@ export class TransfertHubServicesPage implements OnInit {
     }
   }
 
-  goToDashboard() {
-    this.navController.navigateBack('/dashboard');
+  goBack() {
+    this.navController.pop();
   }
 
   goTo(opt: {
@@ -200,8 +232,11 @@ export class TransfertHubServicesPage implements OnInit {
     action?: 'REDIRECT' | 'POPUP';
   }) {
     // this.facebookevent.fbEvent(FacebookEvent.ViewContent,{});
-    this.facebookevent.fbCustomEvent(FacebookCustomEvent.TestEvent,{customField1:'customField1',customField2:51});
-    
+    this.facebookevent.fbCustomEvent(FacebookCustomEvent.TestEvent, {
+      customField1: 'customField1',
+      customField2: 51,
+    });
+
     switch (opt.type) {
       case 'TRANSFERT_MONEY':
         if (opt.action === 'REDIRECT') {
@@ -229,8 +264,7 @@ export class TransfertHubServicesPage implements OnInit {
         break;
       case 'PASS':
         if (opt.action === 'REDIRECT') {
-          this.bsService.openNumberSelectionBottomSheet(
-            NumberSelectionOption.WITH_MY_PHONES,
+          this.openModalPassNumberSelection(
             OPERATION_TYPE_PASS_INTERNET,
             'list-pass'
           );
@@ -238,8 +272,7 @@ export class TransfertHubServicesPage implements OnInit {
         break;
       case 'PASS_ILLIMIX':
         if (opt.action === 'REDIRECT') {
-          this.bsService.openNumberSelectionBottomSheet(
-            NumberSelectionOption.WITH_MY_PHONES,
+          this.openModalPassNumberSelection(
             OPERATION_TYPE_PASS_ILLIMIX,
             'list-pass'
           );
@@ -247,8 +280,7 @@ export class TransfertHubServicesPage implements OnInit {
         break;
       case 'PASS_VOYAGE':
         if (opt.action === 'REDIRECT') {
-          this.bsService.openNumberSelectionBottomSheet(
-            NumberSelectionOption.WITH_MY_PHONES,
+          this.openModalPassNumberSelection(
             OPERATION_TYPE_PASS_VOYAGE,
             ListPassVoyagePage.ROUTE_PATH
           );
@@ -256,16 +288,44 @@ export class TransfertHubServicesPage implements OnInit {
         break;
       case 'PASS_ALLO':
         if (opt.action === 'REDIRECT') {
-          this.bsService.openNumberSelectionBottomSheet(
-            NumberSelectionOption.WITH_MY_PHONES,
+          this.openModalPassNumberSelection(
             OPERATION_TYPE_PASS_ALLO,
             'list-pass'
           );
-          // this.appRouting.goToSelectRecepientPassIllimix();
         }
+        break;
+      case 'ILLIFLEX':
+        this.router.navigate(['/illiflex-budget-configuration']);
         break;
       default:
         break;
+    }
+  }
+
+  openModalPassNumberSelection(operation: string, routePath: string) {
+    if (this.isLightMod) {
+      this.authService
+        .getSubscriptionForTiers(this.currentPhone)
+        .subscribe((res: SubscriptionModel) => {
+          const opInfos = {
+            code: res.code,
+            profil: res.profil,
+            senderMsisdn: this.currentPhone,
+            destinataire: this.currentPhone,
+            purchaseType: operation,
+            isLightMod: true,
+          };
+          this.navController.navigateForward([routePath], {
+            state: opInfos,
+          });
+        });
+    } else {
+      this.bsService.openNumberSelectionBottomSheet(
+        NumberSelectionOption.WITH_MY_PHONES,
+        operation,
+        'list-pass',
+        this.isLightMod
+      );
     }
   }
 

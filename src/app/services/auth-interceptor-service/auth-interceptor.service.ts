@@ -14,11 +14,15 @@ import * as jwt_decode from 'jwt-decode';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { OM_SERVICE_VERSION } from '../orange-money-service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import { checkUrlMatchOM } from 'src/app/utils/utils';
+import {
+  checkUrlMatchOM,
+  checkUrlNotNeedAuthorization,
+} from 'src/app/utils/utils';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
+import { AppComponent } from 'src/app/app.component';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable()
@@ -62,23 +66,23 @@ export class AuthInterceptorService implements HttpInterceptor {
     const that = this;
     const token = ls.get('token');
     let x_uuid = ls.get('X-UUID');
-
-    if(checkUrlMatchOM(req.url)){
-      if(!x_uuid || x_uuid === ""){
+    const imei = AppComponent.IMEI;
+    if (checkUrlMatchOM(req.url)) {
+      if (!x_uuid || x_uuid === '') {
         const uuidV4 = uuidv4();
-        ls.set('X-UUID',uuidV4);
+        ls.set('X-UUID', uuidV4);
         x_uuid = ls.get('X-UUID');
       }
 
       req = req.clone({
-        body: {...req.body, uuid: x_uuid }
+        body: { ...req.body, uuid: x_uuid },
       });
     }
     const lightToken = ls.get('light-token');
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221770167323');
+      headers = headers.set('X-MSISDN', '221781040956');
       //delay to test slowness of network
       req = req.clone({
         headers,
@@ -119,6 +123,13 @@ export class AuthInterceptorService implements HttpInterceptor {
         headers,
       });
     }
+    if (imei) {
+      let headers = req.headers;
+      headers = headers.set('X-Selfcare-Device-Imei', imei);
+      req = req.clone({
+        headers,
+      });
+    }
     if (token) {
       let headers = req.headers;
       headers = headers.set('X-Selfcare-Source', 'mobile');
@@ -151,11 +162,21 @@ export class AuthInterceptorService implements HttpInterceptor {
         headers,
       });
     }
+    if (checkUrlNotNeedAuthorization(req.url)) {
+      let headers = req.headers.delete('Authorization');
+      req = req.clone({
+        headers,
+      });
+    }
     return next.handle(req).pipe(
       retryWhen((err) => {
         return err.pipe(
           switchMap(async (err) => {
-            if (err.status === 401 && checkUrlMatchOM(err.url))
+            if (
+              err.status === 401 &&
+              checkUrlMatchOM(err.url) &&
+              !err.statusText
+            )
               return await this.resetOmToken(err);
             throw err;
           })

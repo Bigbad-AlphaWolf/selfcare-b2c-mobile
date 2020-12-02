@@ -36,6 +36,7 @@ export class ListePassPage implements OnInit {
   fullListPass: { label: string; pass: any[] }[];
   recipientName: string;
   purchaseType: string;
+  isLightMod: boolean;
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
   OPERATION_ALLO_TYPE = OPERATION_TYPE_PASS_ALLO;
@@ -56,7 +57,7 @@ export class ListePassPage implements OnInit {
     if (this.router) {
       let payload = this.router.getCurrentNavigation().extras.state.payload;
       payload = payload ? payload : history.state;
-
+      this.isLightMod = payload.isLightMod;
       this.userNumber = payload.destinataire;
       this.userCodeFormule = payload.code;
       this.recipientName = payload.recipientName;
@@ -66,45 +67,60 @@ export class ListePassPage implements OnInit {
       this.activeTabIndex = 0;
       if (this.purchaseType === OPERATION_TYPE_PASS_INTERNET) {
         this.passIntService.setUserCodeFormule(this.userCodeFormule);
-        this.passIntService.setListPassInternetOfUserByQuery();
         this.passIntService
-          .getStatusPassLoaded()
-          .subscribe((status: boolean) => {
-            this.isLoaded = status;
-            if (this.isLoaded) {
+          .queryListPassInternetOfUser(this.userCodeFormule)
+          .subscribe(
+            (res: any) => {
+              this.isLoaded = true;
               this.listCategory = this.passIntService.getListCategoryPassInternet();
               this.listPass = this.passIntService.getListPassInternetOfUser();
+              if (this.isLightMod) {
+                this.filterPassForLightMod();
+              }
               this.fullListPass = arrangePassByCategory(
                 this.listPass,
                 this.listCategory
               );
+            },
+            (err: any) => {
+              this.isLoaded = true;
             }
-          });
+          );
       } else {
         const category =
           this.purchaseType === OPERATION_TYPE_PASS_ALLO ? 'allo' : null;
-        this.passIllimixServ.setUserCodeFormule(this.userCodeFormule);
-        this.passIllimixServ.setListPassIllimix(category);
         this.passIllimixServ
-          .getStatusLoadingPass()
-          .subscribe((status: boolean) => {
-            this.isLoaded = status;
-            if (this.isLoaded) {
+          .queryListPassIllimix(this.userCodeFormule, category)
+          .subscribe(
+            (res: any) => {
+              this.isLoaded = true;
               this.listCategory = this.passIllimixServ.getCategoryListPassIllimix();
               this.listPass = this.passIllimixServ.getListPassIllimix();
+              if (this.isLightMod) {
+                this.filterPassForLightMod();
+              }
               this.fullListPass = arrangePassByCategory(
                 this.listPass,
                 this.listCategory
               );
+            },
+            (err: any) => {
+              this.isLoaded = true;
             }
-          });
+          );
       }
     }
+  }
 
-    // }else{
-    // this.appRouting.goToDashboard();
-    // }
-    // });
+  // filter listPass with pass with price_plan_index credit set
+  filterPassForLightMod() {
+    console.log(this.listPass, 'before');
+    this.listPass = this.listPass.filter((pass) => {
+      return (
+        (pass && pass.price_plan_index) ||
+        (pass.passParent && pass.passParent.price_plan_index)
+      );
+    });
   }
 
   changeCategory(tabIndex: number) {
@@ -119,25 +135,9 @@ export class ListePassPage implements OnInit {
   }
 
   goBack() {
-    // switch (this.purchaseType) {
-    //   case OPERATION_TYPE_PASS_INTERNET:
-    //     this.goToRecepientPassInternetPage();
-    //     break;
-    //   case OPERATION_TYPE_PASS_ILLIMIX:
-    //     this.goToRecipientPassIllimixPage();
-    //     break;
-    //   default:
-    //     break;
-    // }
     this.navCtl.pop();
   }
-  goToRecepientPassInternetPage() {
-    this.appRouting.goToSelectRecepientPassInternet();
-  }
 
-  goToRecipientPassIllimixPage() {
-    this.appRouting.goToSelectRecepientPassIllimix();
-  }
 
   choosePass(pass: any) {
     let navigationExtras: NavigationExtras = {
@@ -147,6 +147,7 @@ export class ListePassPage implements OnInit {
         recipientCodeFormule: this.userCodeFormule,
         recipientName: this.recipientName,
         purchaseType: this.purchaseType,
+        isLightMod: this.isLightMod,
       },
     };
     this.router.navigate(['/operation-recap'], navigationExtras);

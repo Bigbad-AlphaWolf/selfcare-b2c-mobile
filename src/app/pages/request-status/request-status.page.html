@@ -19,11 +19,33 @@
   <div class="content">
     <div class="requests">
       <div class="requests" >
+        <div class="title">
+          Statut Actuel
+        </div>
         <oem-request-card
-          *ngFor="let request of requestService.currentRequestStatus"
-          [request]="request"
+          [request]="listRequestWithStatus?.current"
           [fullDescription]="true"
         ></oem-request-card>
+        <ng-container *ngIf="listRequestWithStatus?.next?.length">
+          <div class="title">
+            Prochaines étapes
+          </div>
+          <oem-request-card
+              *ngFor="let req of listRequestWithStatus?.next"
+            [request]="req"
+            [fullDescription]="true"
+          ></oem-request-card>
+        </ng-container>
+        <ng-container *ngIf="listRequestWithStatus?.previous?.length">
+          <div class="title">
+            Anciennes étapes
+          </div>
+          <oem-request-card
+              *ngFor="let req of listRequestWithStatus?.previous"
+            [request]="req"
+            [fullDescription]="true"
+          ></oem-request-card>
+        </ng-container>
       </div>
     </div>
 

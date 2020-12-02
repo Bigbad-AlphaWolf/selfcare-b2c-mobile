@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title>
+      <span class="title1">
+        Illiflex
+      </span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">
+        Illiflex
+      </span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="banniere-container">
+    <img src="/assets/images/10-illustration-dalal-tones-copy.svg" alt="header-illiflex" />
+  </div>
+  <div class="illiflex-page-background">
+    <div class="illiflex-settings-page">
+      <div class="config-illiflex-title scb-text-gray">Choisissez un budget et composez votre illiflex comme vous le
+        souhaitez.</div>
+      <div class="select-validity-block" (click)="openModalSetAmount()">
+        <span class="budget-title scb-text-gray">Budget</span>
+            <span class="choosen-amount">{{amount ? amount + ' FCFA' :'Choisir mon budget'}}</span>
+      </div>
+      <div class="gauge-block">
+        <mat-spinner mode="indeterminate" [diameter]="25" *ngIf="gettingBestOffer"></mat-spinner>
+        <div class="gauge-item" [ngClass]="{'gauge-disabled': !amount || !paliers.length || gettingBestOffer}">
+          <div class="gauge-godet">
+            <span>Internet</span>
+            <span>Appels</span>
+          </div>
+          <ion-item mode="ios" lines="none">
+            <ion-range [appGaugeKnob]="dataSegmentation" class="my-range" [(ngModel)]="dataVolumeValue" [min]="minData"
+              [max]="maxData" [step]="1" (ionChange)="onGaugeChanged()">
+              <ion-label slot="start" class="label-value-left scb-text-light-blue">{{dataVolumeValue | dataVolume}}</ion-label>
+              <ion-label slot="end" class="label-value-right scb-text-orange">{{voiceQuantityValue | illiflexVoice}}</ion-label>
+            </ion-range>
+          </ion-item>
+        </div>
+      </div>
+      <div class="amount-block">
+        <div class="amount">
+          <span class="montant scb-text-gray">Durée de validité</span>
+          <span class="value"> {{validity}}</span>
+        </div>
+        <div class="buttons">
+          <button class="scb-btn scb-btn-white">Annuler</button>
+          <button class="scb-btn scb-btn-orange" [disabled]="!amount || gettingBestOffer" (click)="goRecapPage()">Confirmer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

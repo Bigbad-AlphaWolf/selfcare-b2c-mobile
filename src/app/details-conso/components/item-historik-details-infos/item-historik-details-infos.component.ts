@@ -24,4 +24,8 @@ export class ItemHistorikDetailsInfosComponent implements OnInit {
     return LIST_ICON_PURCHASE_HISTORIK_ITEMS[typeAchat];    
   }
 
+  isSargalTransaction(purchase: PurchaseModel): boolean {
+    return purchase.typeAchat === "SARGAL";
+  }
+
 }

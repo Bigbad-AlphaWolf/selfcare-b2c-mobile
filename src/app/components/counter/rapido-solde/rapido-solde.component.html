@@ -1,0 +1,27 @@
+<div class="oem-bottomsheet-container">
+  <div class="title">
+    Solde de mon compte Rapido
+  </div>
+  <div class="description">
+    Carte: {{ counter.name }}
+  </div>
+
+  <div class="rapido-solde">
+    <span class="value">
+      <ng-container *ngIf="!isLoading">
+      <span class="amount"> {{ infoSolde }} FCFA </span>
+      <span class="date"> Dernière mise à jour {{ lastSoldeUpdate }} </span>
+    </ng-container>
+    <ng-container *ngIf="isLoading">
+        <ion-spinner name="crescent"></ion-spinner>
+    </ng-container>
+    </span>
+  </div>
+
+ 
+  <div class="btn-continue">
+    <ion-button mat-butto expand="block" (click)="onRecharge()">
+      Recharger
+    </ion-button>
+  </div>
+</div>

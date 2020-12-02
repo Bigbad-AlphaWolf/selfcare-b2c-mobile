@@ -78,7 +78,7 @@
       Continuer
     </button>
     <ion-spinner
-      *ngIf="isProcessing || !(numbers$ | async)?.length"
+      *ngIf="isProcessing || (!isLightMod && !(numbers$ | async)?.length)"
       name="crescent"
     ></ion-spinner>
   </div>
