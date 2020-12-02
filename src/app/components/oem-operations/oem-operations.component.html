@@ -5,6 +5,7 @@
       (click)="onOperation(operation)"
       class="operation"
       *ngFor="let operation of operations"
+      [ngClass]="{'disabled': !isServciceActivated(operation)}"
     >
       <img [src]="operation.icon" class="operation-img" />
       <div class="operation-text">
