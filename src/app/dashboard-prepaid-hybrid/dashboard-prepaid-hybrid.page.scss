@@ -21,7 +21,7 @@
 
     .top {
       display: flex;
-      padding: 15px 20px 5px 20px;
+      padding: 15px percentage(15/375) 5px;
 
       .more {
         font-family: HelveticaNeueLTStd-Bd;
@@ -40,6 +40,7 @@
       margin-top: 10px;
       display: flex;
       flex-wrap: wrap;
+      padding: 0 percentage(15/375);
       // justify-content: space-between;
       &-item {
         &:not(:nth-child(3n)) {
