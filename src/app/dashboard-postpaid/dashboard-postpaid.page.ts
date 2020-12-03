@@ -213,14 +213,14 @@ export class DashboardPostpaidPage implements OnInit {
         formatDataVolume(totalData)
       );
       conso.push({
-        compteur: 'Solde Restant Voix',
+        compteur: 'Solde Restant Appels',
         amount: consoVoix,
         percent: percentConsoVoix,
         total: totalVoix,
         unit: 'F',
       });
       conso.push({
-        compteur: 'Restant Conso Internet',
+        compteur: 'Solde Restant Internet',
         amount: formatConsoInt,
         percent: percentConsoInt,
         total: totalData,
