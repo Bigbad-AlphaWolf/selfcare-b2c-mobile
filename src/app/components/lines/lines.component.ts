@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { share, map, switchMap } from 'rxjs/operators';
 import { Observable, forkJoin } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -25,8 +25,9 @@ export class LinesComponent implements OnInit {
 
   isProcessing: boolean;
 
-  phone: string;
+  @Input() phone: string;
   codeClient: String;
+  currentPhoneSelected: string;
   constructor(
     private modalController: ModalController,
     private dashbServ: DashboardService,
@@ -64,7 +65,9 @@ export class LinesComponent implements OnInit {
                   codeClient: sub.clientCode,
                 });
             });
-            if (fNumbers.length) this.phone = fNumbers[0];
+            if (fNumbers.length && !this.phone) {
+              this.phone = fNumbers[0];
+            } 
             this.isProcessing = false;
             return fNumbers;
           })

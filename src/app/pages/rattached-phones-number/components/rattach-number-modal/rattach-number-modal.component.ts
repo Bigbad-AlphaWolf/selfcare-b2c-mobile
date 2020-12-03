@@ -22,7 +22,6 @@ export class RattachNumberModalComponent implements OnInit {
   constructor(private dialog: MatDialog, private modalCon: ModalController, private dashbServ: DashboardService, private followAnalyticsService: FollowAnalyticsService) { }
 
   ngOnInit() {
-    console.log('phone', this.phoneNumber);
     if(this.phoneNumber){
       this.processRattachement();
     }

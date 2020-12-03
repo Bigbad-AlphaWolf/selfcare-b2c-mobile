@@ -27,9 +27,11 @@ ion-item {
     ion-button {
         height: 100%;
         width: 100%;
-        --background-activated: black;
-        --color-activated: black;
+        --background-activated: orange;
+        --color-activated: white;
+        --color: black;
         --border-radius: 10px;
+        --border-color: black
     }
     ion-spinner {
       position: absolute;

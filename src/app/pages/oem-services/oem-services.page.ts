@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { OperationOem } from 'src/app/models/operation.model';
-import { ACTIONS_RAPIDES_OPERATIONS_DASHBOARD, ACTIONS_RAPIDES_OPERATIONS_POSTPAID } from 'src/app/utils/operations.util';
+import { ACTIONS_RAPIDES_OPERATIONS_POSTPAID } from 'src/app/utils/operations.util';
 
 @Component({
   selector: 'app-oem-services',
@@ -10,9 +11,11 @@ import { ACTIONS_RAPIDES_OPERATIONS_DASHBOARD, ACTIONS_RAPIDES_OPERATIONS_POSTPA
 export class OemServicesPage implements OnInit {
   operations: OperationOem[] = ACTIONS_RAPIDES_OPERATIONS_POSTPAID;
 
-  constructor() { }
+  constructor(private router: Router) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  goBack() {
+    this.router.navigate(['/dashboard']);
   }
-
 }

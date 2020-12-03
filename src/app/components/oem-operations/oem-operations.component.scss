@@ -20,6 +20,9 @@ ion-grid {
       align-items: center;
       margin: 7px;
       position: relative;
+      &.disabled {
+        opacity: 0.7;
+      }
       .operation-img {
         width: 47px;
         height: 47px;

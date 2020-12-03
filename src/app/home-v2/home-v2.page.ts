@@ -124,7 +124,6 @@ export class HomeV2Page implements OnInit {
 
   getUserMsisdn() {
     const uuid = this.uuidService.getUuid();
-    console.log(uuid);
     this.getMsisdnSubscription = this.authenticationService
       .getMsisdnByNetwork()
       .subscribe((res: { msisdn: string }) => {
