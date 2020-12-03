@@ -151,7 +151,7 @@
       Vous venez de rattacher la ligne <span class="numero"> {{ data?.rattachedNumber }} </span>  à votre compte
     </span>
     <span class="text scb-text-light-black" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-failed'}" *ngIf="data.type === 'rattachment-failed'">
-      Veuillez contacter le service client
+      {{ data.errorStatus !== 404 ? data.errorMsg : 'Impossible de rattacher ce numéro' }}
     </span>
     <span class="text" *ngIf="data.type === 'reclamation'">
       Merci, votre demande a bien été prise en compte, vous serez contacté par
