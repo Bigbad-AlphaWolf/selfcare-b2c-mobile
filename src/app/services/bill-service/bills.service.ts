@@ -137,15 +137,15 @@ export class BillsService {
     return await this.http
       .get<string>(
         `${INVOICE_MOIS_DISPO_ENDPOINT}/${codeClient}?type=${type}&search=${
-          type === 'MOBILE' ? 'phoneNumber:' + phone  : ''
+          type === 'MOBILE' ? 'phoneNumber:' + phone : ''
         }`
       )
       .pipe(
-        catchError((err)=>{
+        catchError((err) => {
           return of(null);
         })
       )
-      .toPromise<string>();
+      .toPromise<number>();
   }
   getBillsPackage(numClient: string) {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();

@@ -12,13 +12,11 @@ export function removeObjectField(obj: any, f: string) {
   return rest;
 }
 
-export function previousMonths(moisDispo: string, n: number = 6) {
+export function previousMonths(moisDispo: number, n: number = 6) {
   let date = new Date();
   date.setMonth(date.getMonth() - 1);
-  if (moisDispo) {
-    let moisItems: string[] = moisDispo.split('-');
-    date = new Date(parseInt(moisItems[0]), parseInt(moisItems[1]) - 1, 1);
-  }
+  if (moisDispo) date.setMonth(moisDispo - 1);
+
   let r: MonthOem[] = [];
   for (let i = 0; i < n; i++) {
     let m = date.getMonth();
