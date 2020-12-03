@@ -6,6 +6,7 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FIND_AGENCE_EXTERNAL_URL } from 'src/shared';
+import { NavController } from '@ionic/angular';
 @Component({
   selector: 'app-emergencies',
   templateUrl: './emergencies.page.html',
@@ -19,7 +20,8 @@ export class EmergenciesPage implements OnInit {
     private dashbordServ: DashboardService,
     private authServ: AuthenticationService,
     private followAnalyticsService: FollowAnalyticsService,
-    private inAppBrowser: InAppBrowser
+    private inAppBrowser: InAppBrowser,
+    private navControler: NavController
   ) {}
 
   ngOnInit() {
@@ -92,7 +94,7 @@ export class EmergenciesPage implements OnInit {
   onFollowUpRequests() {
     this.router.navigate(['follow-up-requests']);
     this.followAnalyticsService.registerEventFollow(
-      'Suivi_Reclamation_OM',
+      'suivi_demande-fixe',
       'event',
       'clicked'
     );
@@ -112,5 +114,9 @@ export class EmergenciesPage implements OnInit {
     this.authServ.getSubscription(currentNumber).subscribe((res: any) => {
       this.userProfile = res.profil;
     });
+  }
+
+  goBack() {
+    this.navControler.pop();
   }
 }
