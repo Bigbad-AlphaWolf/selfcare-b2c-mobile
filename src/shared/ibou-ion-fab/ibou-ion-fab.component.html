@@ -17,16 +17,15 @@
       Partager l’application
     </ion-label>
 
-    <ion-fab-button class="fab-item" routerLink="/assistance">
+    <ion-fab-button class="fab-item" (click)="goToBesoinAide()">
       <img src="/assets/images/need_help_fab_icon.svg" alt="" />
     </ion-fab-button>
-    <ion-label routerLink="/assistance"> Besoin d’aide ? </ion-label>
+    <ion-label (click)="goToBesoinAide()"> Besoin d’aide ? </ion-label>
 
-    <ion-fab-button class="fab-item" routerLink="/control-center">
+    <ion-fab-button class="fab-item" (click)="goAssistance()">
       <img src="/assets/images/emergency_help_fab_icon.svg" alt="" />
     </ion-fab-button>
-    <ion-label routerLink="/control-center" (click)="goAssistance()"
-      >Assistance</ion-label
+    <ion-label (click)="goAssistance()" >Assistance</ion-label
     >
   </ion-fab-list>
 </ion-fab>
