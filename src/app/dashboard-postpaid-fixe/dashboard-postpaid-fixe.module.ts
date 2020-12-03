@@ -9,6 +9,7 @@ import { DashboardPostpaidFixePage } from './dashboard-postpaid-fixe.page';
 import { SharedModule } from 'src/shared/shared.module';
 import { PipesModule } from '../pipes/pipes.module';
 import { ComponentsModule } from '../components/components.module';
+import { IonicImageLoader } from 'ionic-image-loader';
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
     SharedModule,
     PipesModule,
     ComponentsModule,
+    IonicImageLoader,
     RouterModule.forChild(routes)
   ],
   declarations: [DashboardPostpaidFixePage]

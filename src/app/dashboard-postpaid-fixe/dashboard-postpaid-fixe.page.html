@@ -7,8 +7,7 @@
           <ng-container *ngFor="let banniere of listBanniere">
             <ion-slide>
               <span #error class="error-slide scb-text-full-black"> Erreur lors du chargement de l'image</span>
-              <img #img (error)="onError([{ el: error, display: true }, { el: img, display: false }])"
-                [src]="banniere.image" alt="ban" />
+              <img-loader [spinner]="true" class="icone" [src]="banniere.image" useImg></img-loader>
             </ion-slide>
           </ng-container>
         </ion-slides>

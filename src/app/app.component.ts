@@ -1,7 +1,7 @@
 import { BuyPassIllimixPage } from './buy-pass-illimix/buy-pass-illimix.page';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { Component } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
@@ -46,7 +46,8 @@ export class AppComponent {
     private imageLoaderConfig: ImageLoaderConfigService,
     private uid: Uid,
     private androidPermissions: AndroidPermissions,
-    private appVersion: AppVersion
+    private appVersion: AppVersion,
+    private navContr: NavController
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -80,7 +81,7 @@ export class AppComponent {
       this.getVersion();
       if (this.platform && this.platform.backButton) {
         this.platform.backButton.subscribe(() => {
-          this.appMinimize.minimize();
+          this.navContr.pop();
         });
 
         if (this.platform.is('android')) {

@@ -9,6 +9,7 @@ import { DashboardHomePrepaidPage } from './dashboard-home-prepaid.page';
 import { SharedModule } from 'src/shared/shared.module';
 import { ComponentsModule } from '../components/components.module';
 import { PipesModule } from '../pipes/pipes.module';
+import { IonicImageLoader } from 'ionic-image-loader';
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
     SharedModule,
     ComponentsModule,
     PipesModule,
+    IonicImageLoader,
     RouterModule.forChild(routes)
   ],
   declarations: [DashboardHomePrepaidPage]
