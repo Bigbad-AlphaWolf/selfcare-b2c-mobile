@@ -26,6 +26,7 @@ export class OrangeBillsPage implements OnInit {
   isProcessing: boolean;
   isBordereauLoading: boolean;
   isFactureLoading: boolean;
+  moisDispo: number;
   constructor(
     private billsService: BillsService,
     private navCtl: NavController,
@@ -39,11 +40,9 @@ export class OrangeBillsPage implements OnInit {
     this.initData();
   }
   ngOnInit() {
-
     this.phone = SessionOem.PHONE;
     this.codeClient = SessionOem.CODE_CLIENT;
     this.updatePhoneType();
-
     this.initData();
   }
 
@@ -56,10 +55,15 @@ export class OrangeBillsPage implements OnInit {
   async initData() {
     this.isBordereauLoading = this.invoiceType === 'LANDLINE';
     this.isFactureLoading = true;
+    if (!this.moisDispo)
+      this.moisDispo = await this.billsService.moisDisponible(
+        this.codeClient,
+        this.invoiceType,
+        this.phone
+      );
 
-    let moisDispo : string = await this.billsService.moisDisponible(this.codeClient, this.invoiceType, this.phone);
-    this.months = previousMonths(moisDispo);
-    this.month = this.months[0];
+    this.months = previousMonths(this.moisDispo);
+    if (!this.month) this.month = this.months[0];
 
     this.bordereau$ = this.billsService
       .bordereau(this.codeClient, this.invoiceType, this.phone, this.month)
