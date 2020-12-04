@@ -1,10 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AccountService } from 'src/app/services/account-service/account.service';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, map } from 'rxjs/operators';
 import { ModalController } from '@ionic/angular';
 import { RattachedNumber } from 'src/app/models/rattached-number.model';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { of } from 'rxjs';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { SubscriptionModel } from 'src/shared';
 
 @Component({
   selector: 'app-identified-numbers-list',
@@ -16,7 +18,7 @@ export class IdentifiedNumbersListComponent implements OnInit {
   listIdentifiedNumeros: string[] = [];
   isLoading: boolean;
   hasError: boolean;
-  constructor(private accServ: AccountService, private modCtrl: ModalController, private dashServ: DashboardService) { }
+  constructor(private accServ: AccountService, private modCtrl: ModalController, private dashServ: DashboardService, private authServ: AuthenticationService) { }
 
   ngOnInit() {    
     if(!this.rattachedNumbers){
@@ -46,7 +48,22 @@ export class IdentifiedNumbersListComponent implements OnInit {
 
   dismissModal(numeroToAttach?: string) {
     this.modCtrl.dismiss({
+      direction: "FORWARD",
       numeroToAttach: numeroToAttach
+    })
+  }
+
+  getSubscriptionForTiers(number: string) {
+    return this.authServ.getSubscriptionForTiers(number).pipe(map((res: SubscriptionModel) => {
+      return res.nomOffre;
+    }), catchError((err: any) => {
+      return of(null);
+    }))
+  }
+
+  goBack() {
+    this.modCtrl.dismiss({
+      direction: "BACK"
     })
   }
 

@@ -92,7 +92,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   openModalRattachNumber() {
     this.bsService
-    .openIdentifiedNumbersList();
+    .openRattacheNumberModal();
   }
 
   getSouscription() {
