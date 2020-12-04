@@ -1,6 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
-import { NavController, ModalController } from '@ionic/angular';
+import {
+  NavController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 import { OperationOem } from 'src/app/models/operation.model';
 import { WOYOFAL } from 'src/app/utils/bills.util';
 import { IMAGES_DIR_PATH } from 'src/app/utils/constants';
@@ -17,6 +21,7 @@ import { Observable } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { OperationService } from 'src/app/services/oem-operation/operation.service';
 
 @Component({
   selector: 'oem-operations',
@@ -33,14 +38,29 @@ export class OemOperationsComponent implements OnInit {
     private navCtl: NavController,
     private dashboardService: DashboardService,
     private omService: OrangeMoneyService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
     this.getShowStatusNewFeatureAllo();
   }
 
-  onOperation(op: OperationOem) {
+  async onOperation(op: OperationOem) {
+    if (!this.isServciceActivated(op)) {
+      const service = OperationService.AllOffers.find(
+        (service) => service.code && service.code === op.code
+      );
+      const toast = await this.toastController.create({
+        header: 'Service indisponible',
+        message: service.reasonDeactivation,
+        duration: 3000,
+        position: 'middle',
+        color: 'medium',
+      });
+      toast.present();
+      return;
+    }
     if (op.type === 'NAVIGATE') this.navCtl.navigateForward([op.action]);
 
     if (this.bsService[op.action] && 'openModal' === op.action) {
@@ -113,7 +133,16 @@ export class OemOperationsComponent implements OnInit {
     });
     return await modal.present();
   }
+
   getShowStatusNewFeatureAllo() {
     this.showNewFeatureBadge$ = this.dashboardService.getNewFeatureAlloBadgeStatus();
+  }
+
+  isServciceActivated(action: OperationOem) {
+    const service = OperationService.AllOffers.find(
+      (service) => service.code === action.code
+    );
+    if (service) return service.activated;
+    return true;
   }
 }

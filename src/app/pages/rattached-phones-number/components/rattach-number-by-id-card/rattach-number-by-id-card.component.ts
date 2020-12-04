@@ -41,17 +41,19 @@ export class RattachNumberByIdCardComponent implements OnInit {
       this.dismissModal({ success: true, typeRattachment: this.typeNumero, numero: this.number })
     }, (err: any) => {
       this.isLoading = false;
-      this.hasError = true;
+      this.hasError = true;      
       this.followAttachmentIssues({numero: payload.numero, idCard: payload.identificationId, typeNumero: "MOBILE"}, 'error');
-      this.dismissModal({ success: false, typeRattachment: this.typeNumero, numero: this.number })
+      this.dismissModal({ success: false, typeRattachment: this.typeNumero, numero: this.number, errorMsg: err.error.title, errorStatus: err.error.status })
     });
   }
 
-  dismissModal(data: { success: boolean, typeRattachment: string, numero: string }) {
+  dismissModal(data: { success: boolean, typeRattachment: string, numero: string, errorMsg?: string, errorStatus?: any }) {
     this.modContr.dismiss({
       rattached: data.success,
       typeRattachment: data.typeRattachment,
-      numeroToRattach: data.numero
+      numeroToRattach: data.numero,
+      errorMsg: data.errorMsg,
+      errorStatus: data.errorStatus
     })
   }
 

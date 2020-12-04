@@ -7,7 +7,12 @@ import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
-import { OPERATION_RAPIDO, OPERATION_RECHARGE_CREDIT, OPERATION_TRANSFERT_ARGENT, OPERATION_WOYOFAL } from './operations.constants';
+import {
+  OPERATION_RAPIDO,
+  OPERATION_RECHARGE_CREDIT,
+  OPERATION_TRANSFERT_ARGENT,
+  OPERATION_WOYOFAL,
+} from './operations.constants';
 
 export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
   {
@@ -57,23 +62,6 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
     url: '',
   },
   {
-    title: 'Recharger',
-    subtitle: 'Woyofal',
-    icon: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
-    action: 'openModal',
-    type: OPERATION_WOYOFAL,
-    url: '',
-  },
-  {
-    title: 'Recharger',
-    subtitle: 'Rapido',
-    icon: `${IMAGES_DIR_PATH}/rapido@3x.png`,
-    action: '/rapido-operation',
-    type: 'NAVIGATE',
-    url: '',
-  },
-
-  {
     title: 'Autres',
     subtitle: 'Services',
     icon: `${IMAGES_DIR_PATH}/ic-more-dots@2x.png`,
@@ -84,7 +72,10 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
 ];
 
 export const ACTIONS_RAPIDES_OPERATIONS_POSTPAID: OperationOem[] = [
-  ...ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.slice(0, ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.length - 1),
+  ...ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.slice(
+    0,
+    ACTIONS_RAPIDES_OPERATIONS_DASHBOARD.length - 1
+  ),
   {
     title: 'Payer',
     subtitle: 'un marchand',
@@ -93,7 +84,24 @@ export const ACTIONS_RAPIDES_OPERATIONS_POSTPAID: OperationOem[] = [
     type: OPERATION_TYPE_MERCHANT_PAYMENT,
     url: '',
   },
-
+  {
+    title: 'Recharger',
+    subtitle: 'Woyofal',
+    icon: `${IMAGES_DIR_PATH}/woyofal@3x.png`,
+    action: 'openModal',
+    type: OPERATION_WOYOFAL,
+    url: '',
+    code: 1121,
+  },
+  {
+    title: 'Recharger',
+    subtitle: 'Rapido',
+    icon: `${IMAGES_DIR_PATH}/rapido@3x.png`,
+    action: '/rapido-operation',
+    type: 'NAVIGATE',
+    url: '',
+    code: 1122,
+  },
   {
     title: 'Convertir',
     subtitle: 'Points Sargal',

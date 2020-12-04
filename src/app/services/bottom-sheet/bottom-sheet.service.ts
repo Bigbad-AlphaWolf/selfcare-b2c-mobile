@@ -233,7 +233,6 @@ export class BottomSheetService {
     });
 
     modal.onDidDismiss().then((res: any) => {
-      console.log(res);
       res = res.data;      
       if(res && res.typeRattachment) {
         const numero = res.numeroToRattach;        
@@ -272,7 +271,7 @@ export class BottomSheetService {
           const numero = res.numeroToRattach;
           this.openSuccessDialog('rattachment-success', numero);
         } else {          
-          this.openSuccessDialog('rattachment-failed');
+          this.openSuccessDialog('rattachment-failed', null, res.errorMsg, res.errorStatus );
         }
       }
     })
@@ -296,7 +295,7 @@ export class BottomSheetService {
           const numero = res.numeroToRattach;
           this.openSuccessDialog('rattachment-success', numero);
         } else {
-          this.openSuccessDialog('rattachment-failed');
+          this.openSuccessDialog('rattachment-failed', null, res.errorMsg, res.errorStatus);
         }
       }
     })
@@ -304,9 +303,9 @@ export class BottomSheetService {
     return await modal.present();
   }
 
-  openSuccessDialog(dialogType: string,phoneNumber?: string) {
+  openSuccessDialog(dialogType: string,phoneNumber?: string, errorMsg?: string, errorStatus?: any,) {
     this.dialog.open(ModalSuccessComponent, {
-      data: { type: dialogType, rattachedNumber: phoneNumber },
+      data: { type: dialogType, errorStatus: errorStatus, errorMsg: errorMsg, rattachedNumber: phoneNumber },
       width: '95%',
       maxWidth: '375px'
     });

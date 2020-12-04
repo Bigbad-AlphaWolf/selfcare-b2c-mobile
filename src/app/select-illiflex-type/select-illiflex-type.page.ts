@@ -9,6 +9,7 @@ import { ApplicationRoutingService } from '../services/application-routing/appli
   styleUrls: ['./select-illiflex-type.page.scss'],
 })
 export class SelectIlliflexTypePage implements OnInit {
+  IlliflexOption = IlliflexOption;
   constructor(
     private navController: NavController,
     private applicationRoutingService: ApplicationRoutingService
