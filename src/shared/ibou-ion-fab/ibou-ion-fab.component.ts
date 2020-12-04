@@ -17,12 +17,26 @@ export class IbouIonFabComponent implements OnInit {
 
   fabToggled() {
     this.fabOpened = !this.fabOpened;
+    this.followAnalyticsService.registerEventFollow(
+      'click_on_Ibou',
+      'event',
+      'clicked'
+    );
   }
 
   goAssistance() {
     this.router.navigate(['/control-center']);
     this.followAnalyticsService.registerEventFollow(
       'Assistance_via_Ibou',
+      'event',
+      'clicked'
+    );
+  }
+
+  goToBesoinAide() {
+    this.router.navigate(['/assistance']);
+    this.followAnalyticsService.registerEventFollow(
+      'page_faq_via_Ibou',
       'event',
       'clicked'
     );
@@ -42,5 +56,10 @@ export class IbouIonFabComponent implements OnInit {
       .catch((err: any) => {
         console.log('Cannot open default sharing sheet' + err);
       });
+      this.followAnalyticsService.registerEventFollow(
+        'share_application_via_Ibou',
+        'event',
+        'clicked'
+      );
   }
 }
