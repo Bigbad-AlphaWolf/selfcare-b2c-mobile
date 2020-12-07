@@ -205,9 +205,8 @@ export class BottomSheetService {
     });
 
     modal.onDidDismiss().then((res: any) => {
-      console.log(res);
-      res = res.data;
-      if(res && res.direction === "BACK") {
+      res = res.data;      
+      if(res && res.direction === "ORANGE_NUMBERS") {
           this.openIdentifiedNumbersList();
       } else if( res.direction === "FORWARD") {
         const numero = res.numeroToRattach;
@@ -242,7 +241,7 @@ export class BottomSheetService {
           this.openRattacheNumberByCustomerIdModal(phoneNumber);
         }
       } else if(res.direction === "BACK") {
-        this.openIdentifiedNumbersList();
+        this.openRattacheNumberModal();
       }
       
     })
@@ -321,7 +320,9 @@ export class BottomSheetService {
     });
     modal.onDidDismiss().then((res: any) => {
       res = res.data;
-      if(res.numeroToAttach || !res.direction){
+      if(res.direction === "BACK"){
+        this.openRattacheNumberModal();
+      } else {
         this.openRattacheNumberModal(res.numeroToAttach);
       }
     })
