@@ -1,15 +1,30 @@
 @import "src/app/app";
 @import "src/app/styles/bottomsheet.style";
-.rattach-by-id-card {
-  padding-bottom: 80px;
-}
 
-ion-item {
+.item{
+  border: 1px solid $silver;
+  border-radius: 10px;
   &.disable {
     pointer-events: none;
   }
-  border: 1px solid gray;
-  border-radius: 5px;
+}
+
+ion-item {
+  ion-thumbnail {
+    width: 20px;
+    height: 30px;
+  }
+  ion-label {
+    ion-text {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 14px;
+    }
+    p {
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 12px;
+      color: $lightBlack;
+    }
+  }
   .icon {
     display: flex;
     align-items: center;

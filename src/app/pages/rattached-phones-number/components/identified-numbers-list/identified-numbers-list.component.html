@@ -1,25 +1,33 @@
 <div class="rattach-by-id-card oem-bottomsheet-container">
+  <div  class="arrow-left" (click)="goBack()">
+    <img alt="" src="/assets/images/arrow-left.png" />
+  </div>
   <div class="title">
     Rattacher une ligne
   </div>
   <div class="description">
-    Sélectionner un numéro dans la liste de vos numéros identifiés
+    Selectionner un numéro dans votre liste de numéros Orange déjà identifiés.
   </div>
   <div class="id-card-input">
     <ng-container *ngIf="!isLoading">
       <ng-container *ngIf="!hasError">
         <ion-list mode="ios" *ngIf="listIdentifiedNumeros.length">
           <ng-container *ngFor="let ligne of listIdentifiedNumeros;index as i">
-            <ion-item class="ion-text-wrap" [ngClass]="{ 'disable': isAlreadyRattached(ligne) } " (click)="dismissModal(ligne)" lines="none" slot="start">
-              <ion-text color="primary">
-                <h5>{{ ligne }}</h5>
-              </ion-text>
-              <ion-text slot="end">
-                <p>{{ isAlreadyRattached(ligne) ? 'Déja rattaché' : '' }}</p>
-              </ion-text>
-              <div class="icon" *ngIf="!isAlreadyRattached(ligne)" slot="end">
-                <img src="/assets/images/arrow-right.svg" alt="arrow-right" class="arrow-right" />
-              </div>
+            <ion-item class="ion-text-wrap item" [ngClass]="{ 'disable': isAlreadyRattached(ligne) } " (click)="dismissModal(ligne)" lines="none" slot="start">
+              <ion-thumbnail slot="start">
+                <ion-img src="/assets/images/sim-card-solid-new.svg"></ion-img>
+              </ion-thumbnail>
+                <ion-label class="ion-text-wrap">
+                  <ion-text>
+                    {{ ligne | phoneNumberDisplay }}
+                  </ion-text>
+                  <p>{{ getSubscriptionForTiers(ligne) | async }}</p>
+                </ion-label>
+                <div slot="end">
+                  <ion-text slot="end">
+                    <p>{{ isAlreadyRattached(ligne) ? 'Déja rattaché' : '' }}</p>
+                  </ion-text>
+                </div>
             </ion-item>
           </ng-container>
         </ion-list>
@@ -37,12 +45,5 @@
       <ion-spinner name="crescent"></ion-spinner>
     </ng-container>
   </div>
-
-  <div class="btn-continue">
-    <ion-button expand="block" fill="outline" (click)="dismissModal()">
-      Entrer un autre numéro
-    </ion-button>
-  </div>
-
   
 </div>

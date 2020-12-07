@@ -48,9 +48,7 @@ export class RattachedPhonesNumberPage implements OnInit {
   }
 
   openModalRattachNumber() {
-    const list = [this.listRattachedNumbers.current,...this.listRattachedNumbers.others];
-    this.bsService
-    .openIdentifiedNumbersList(list);
+    this.bsService.openRattacheNumberModal();
   }
   goBack() {
     this.navCon.pop();

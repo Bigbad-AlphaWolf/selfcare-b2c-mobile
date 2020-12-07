@@ -1,9 +1,6 @@
 <div class="select-beneficiary-container oem-bottomsheet-container">
-  <div  class="arrow-left" (click)="goBack()">
-    <img alt="" src="/assets/images/arrow-left.png" />
-  </div>
   <div class="title">Rattacher une ligne</div>
-  <div class="description"> Entrez le numéro de la ligne que vous voulez rattacher à votre compte</div>
+  <div class="description"> Entrez le numéro de la ligne ou cliquez sur « Mes numéros » pour le choisir parmis vos numéros Orange déjà identifiés.</div>
   <div class="phone-number-input">
   <form novalidate autocomplete="false">
     <mat-form-field class="scb-input-row" appearance="outline">
@@ -17,6 +14,9 @@
           [(ngModel)]="phoneNumber"
           (input)="isValid()"
         />
+        <span (click)="openIdentifiedNumbersList()" class="my-orange-numbers">
+          Mes numéros
+        </span>
       </mat-form-field>
   </form>
   <div *ngIf="hasError" class="error-msg scb-text-red-error">

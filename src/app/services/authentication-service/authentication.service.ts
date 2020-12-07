@@ -258,15 +258,9 @@ export class AuthenticationService {
     const savedData = ls.get(lsKey);
     if (savedData) {
       return of(savedData);
+    } else {
+      return this.getSubscriptionCustomerOfferForTiers(msisdn).pipe(share());
     }
-    if (!this.SubscriptionHttpCache.has(msisdn)) {
-      this.SubscriptionHttpCache[
-        msisdn
-      ] = this.getSubscriptionCustomerOfferForTiers(msisdn).pipe(
-        shareReplay(1)
-      );
-    }
-    return this.SubscriptionHttpCache[msisdn];
   }
 
   getSubscriptionData(msisdn) {

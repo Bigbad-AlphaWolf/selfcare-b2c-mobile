@@ -53,7 +53,7 @@ export class RattachNumberModalComponent implements OnInit {
     ).subscribe(() => {
       this.isLoading = false;
       this.hasError = false;
-      this.nextStepRattachement(true, this.phoneNumber, "NONE", payload.typeNumero)
+      this.nextStepRattachement(true,"NONE", this.phoneNumber , payload.typeNumero)
 
       this.followAttachmentIssues(payload, 'event')
 
@@ -64,7 +64,7 @@ export class RattachNumberModalComponent implements OnInit {
       if(err && (err.error.errorKey === 'userRattached' || err.error.errorKey === 'userexists')) {
         this.msgError = err.error.title ? err.error.title : "Impossible d'effectuer le rattachement de la ligne " ;
       } else {
-          this.nextStepRattachement(false, this.phoneNumber, "FORWARD", payload.typeNumero)
+          this.nextStepRattachement(false, "FORWARD", this.phoneNumber , payload.typeNumero)
       }
     })
     
@@ -78,13 +78,17 @@ export class RattachNumberModalComponent implements OnInit {
     });
   }
 
-  nextStepRattachement(status: boolean, numeroToRattach: string, direction: string, typeRattachment: string) {
+  nextStepRattachement(status: boolean, direction: string, numeroToRattach?: string, typeRattachment?: string) {
     this.modalCon.dismiss({
       rattached: status,
       numeroToRattach: numeroToRattach,
       direction : direction,
       typeRattachment : typeRattachment
     })
+  }
+
+  openIdentifiedNumbersList() {
+    this.nextStepRattachement(false, "ORANGE_NUMBERS");
   }
 
 
