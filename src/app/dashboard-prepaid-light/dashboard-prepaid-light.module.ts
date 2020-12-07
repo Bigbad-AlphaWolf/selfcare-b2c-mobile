@@ -9,6 +9,7 @@ import { DashboardPrepaidLightPage } from './dashboard-prepaid-light.page';
 import { SharedModule } from 'src/shared/shared.module';
 import { ActionLightComponent } from './components/action-light-modal/action-light/action-light.component';
 import { PipesModule } from '../pipes/pipes.module';
+import { IonicImageLoader } from 'ionic-image-loader';
 
 const routes: Routes = [
   {
@@ -24,6 +25,7 @@ const routes: Routes = [
     IonicModule,
     SharedModule,
     PipesModule,
+    IonicImageLoader,
     RouterModule.forChild(routes),
   ],
   declarations: [DashboardPrepaidLightPage, ActionLightComponent],

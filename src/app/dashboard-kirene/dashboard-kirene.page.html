@@ -332,17 +332,7 @@
               </div>
             </div>
             <div class="img-container">
-              <img
-                #img
-                (error)="
-              onError([
-                { el: error, display: true },
-                { el: img, display: false }
-              ])
-            "
-                [src]="banniere.image"
-                alt="ban"
-              />
+              <img-loader [spinner]="true" class="icone" [src]="banniere.image" useImg></img-loader>
             </div>
           </ion-slide>
         </ng-container>

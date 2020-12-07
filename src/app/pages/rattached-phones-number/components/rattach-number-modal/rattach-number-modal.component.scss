@@ -19,6 +19,15 @@
   }
   .phone-number-input{
     margin-bottom: 15px;
+    form {
+      position: relative;
+    }
+    .my-orange-numbers{
+      color: $orange;
+      position: absolute;
+      right: 0;
+      top: 30%;
+    }
   }
   .error-msg {
     margin-top: 10px;

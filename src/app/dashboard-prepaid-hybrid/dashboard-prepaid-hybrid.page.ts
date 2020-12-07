@@ -386,6 +386,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         } else if (x.code === 9) {
           balance = Number(x.montant);
           isHybrid = true;
+          globalCredit += Number(x.montant);
         }
       });
       // Check if eligible for SOS
