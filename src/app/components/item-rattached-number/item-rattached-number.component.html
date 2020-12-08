@@ -1,4 +1,4 @@
-<ion-item lines="none" class="item-custom-style" [ngClass]="{ 'selected': checked } ">
+<ion-item button detail="false" (click)="selectItem(line)" lines="none" class="item-custom-style" [ngClass]="{ 'selected': checked } ">
   <div class="item-rattached-number">
     <div class="left-block">
       <div class="icon">
@@ -10,8 +10,13 @@
       </div>
     </div>
     <div class="right-block">
-      <div class="circle">
-        <ion-checkbox mode="ios" slot="end" [disabled]="disabled" [checked]="checked" ></ion-checkbox>
+      <div class="circle" *ngIf="!isEditable">
+        <ion-checkbox mode="ios" slot="end" [disabled]="!isEditable" [checked]="checked" ></ion-checkbox>
+      </div>
+      <div *ngIf="isEditable">
+        <ion-text class="scb-text-orange">
+          Supprimer
+        </ion-text>
       </div>
     </div>
   </div>

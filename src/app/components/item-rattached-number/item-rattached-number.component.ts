@@ -10,14 +10,16 @@ export class ItemRattachedNumberComponent implements OnInit {
   @Input() line: RattachedNumber;
   @Input() checked: boolean;
   @Output() selectedItem = new EventEmitter();
-  @Input() disabled:boolean;
+  @Input() isEditable:boolean;
   @Input() operationType: string;
   constructor() { }
 
   ngOnInit() {}
 
-  check() {
-    
+  selectItem(line: RattachedNumber) {    
+    if(this.isEditable) {
+      this.selectedItem.emit(line.msisdn);
+    }
   }
 
 }

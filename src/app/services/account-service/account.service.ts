@@ -16,7 +16,7 @@ import { SuccessFailPopupComponent } from 'src/shared/success-fail-popup/success
 import { generateUUID } from 'src/shared';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT, ACCOUNT_IDENTIFIED_NUMBERS_ENDPOINT } from '../utils/account.endpoints';
-import { map } from 'rxjs/operators';
+import { map, take, tap } from 'rxjs/operators';
 const {
   FILE_SERVICE,
   ACCOUNT_MNGT_SERVICE,
@@ -209,7 +209,13 @@ export class AccountService {
 
   attachNumberByIdCard( data: { identificationId: string, login: string, numero: string }) {
     const payload = { identificationId: data.identificationId, login: data.login, numero: data.numero, typeNumero: 'MOBILE' }
-    return this.http.post(ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT, payload);
+    return this.http.post(ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT, payload).pipe(
+      tap((r) => {
+        DashboardService.rattachedNumbers = null;
+        this.dashbServ.attachedNumbers().pipe(take(1)).subscribe();
+        this.dashbServ.attachedNumbersChangedSubject.next();
+      })
+    );
   }
 
   fetchIdentifiedNumbers() {

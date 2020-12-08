@@ -6,7 +6,7 @@
         </ion-back-button>  
       </ion-buttons>
       <ion-title> {{ title }} </ion-title>
-      <ion-label (click)="deleteRattachment()" class="edit" >Editer la liste</ion-label>
+      <ion-label (click)="deleteRattachment()" class="edit" > {{ editable ? 'Annuler' : 'Editer la liste' }} </ion-label>
   </ion-toolbar> 
 </ion-header>
 
@@ -27,7 +27,7 @@
           </span>
           <div class="list">
             <ng-container *ngFor="let line of listRattachedNumbers.others">
-              <app-item-rattached-number [disabled]="!editable" [line]="line"></app-item-rattached-number>
+              <app-item-rattached-number (selectedItem)="deletePhoneNumbers($event)" [isEditable]="editable" [line]="line"></app-item-rattached-number>
             </ng-container>
           </div>
         </div>

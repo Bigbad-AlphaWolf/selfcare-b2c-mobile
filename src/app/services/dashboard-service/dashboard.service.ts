@@ -30,9 +30,10 @@ const postpaidUserConsoEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/v1/sui
 const postpaidUserHistoryEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/detail-com-postpaid`;
 const userConsoByCodeEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/suivi-compteur-consommations-bycode`;
 const userConsoByDayEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/suivi-conso-by-days`;
+
+// Rattachment Endpoints
 const attachMobileNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/rattachement-lignes`;
 const checkFixNumber = `${attachMobileNumberEndpoint}/check_number_fixe`;
-const saveFixNumber = `${attachMobileNumberEndpoint}/ligne-fixe/register`;
 const userLinkedPhoneNumberEndpoint = `${attachMobileNumberEndpoint}/get-all-number`;
 
 // avatar endpoints
@@ -202,7 +203,7 @@ export class DashboardService {
     return this.http
       .post(`${attachMobileNumberEndpoint}/register`, detailsToCheck)
       .pipe(
-        tap((r) => {
+        tap(() => {
           DashboardService.rattachedNumbers = null;
           this.attachedNumbers().pipe(take(1)).subscribe();
           this.attachedNumbersChangedSubject.next();
@@ -225,9 +226,10 @@ export class DashboardService {
     return this.http
       .post(`${attachMobileNumberEndpoint}/fixe-register`, payload)
       .pipe(
-        tap((r) => {
+        tap(() => {
           DashboardService.rattachedNumbers = null;
           this.attachedNumbers().pipe(take(1)).subscribe();
+          this.attachedNumbersChangedSubject.next();
         })
       );
   }
@@ -237,15 +239,6 @@ export class DashboardService {
     return this.http.post(checkFixNumber, payload);
   }
 
-  // attach fix number
-  attachFixNumber(payload: {
-    login: string;
-    idClient: string;
-    numero: string;
-  }) {
-    payload = Object.assign({}, payload, { typeNumero: 'FIXE' });
-    return this.http.post(saveFixNumber, payload);
-  }
 
   // get all attached numbers
   getAttachedNumbers() {
