@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>
       <span class="title1">
-        Illiflex
+        illiflex
       </span>
     </ion-title>
   </ion-toolbar>
@@ -15,7 +15,7 @@
   <ion-header class="ion-padding-start" collapse="condense">
     <ion-toolbar>
       <span class="title">
-        Illiflex
+        illiflex
       </span>
     </ion-toolbar>
   </ion-header>
@@ -24,11 +24,12 @@
   </div>
   <div class="illiflex-page-background">
     <div class="illiflex-settings-page">
-      <div class="config-illiflex-title scb-text-gray">Choisissez un budget et composez votre illiflex comme vous le
-        souhaitez.</div>
+      <div class="config-illiflex-title scb-text-gray">
+        Je tape le montant que je veux utiliser pour acheter un illiflex, la validité dépend du montant saisi. Le montant doit être compris entre 500F et 15000F
+      </div>
       <div class="select-validity-block" (click)="openModalSetAmount()">
-        <span class="budget-title scb-text-gray">Budget</span>
-            <span class="choosen-amount">{{amount ? amount + ' FCFA' :'Choisir mon budget'}}</span>
+        <span class="budget-title scb-text-gray">Montant</span>
+            <span class="choosen-amount">{{amount ? amount + ' FCFA' :'Choisir le montant'}}</span>
       </div>
       <div class="gauge-block">
         <mat-spinner mode="indeterminate" [diameter]="25" *ngIf="gettingBestOffer"></mat-spinner>
