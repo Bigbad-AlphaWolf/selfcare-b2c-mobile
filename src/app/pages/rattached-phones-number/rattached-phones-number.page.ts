@@ -6,7 +6,7 @@ import { take, tap } from 'rxjs/operators';
 import { RattachedNumber } from 'src/app/models/rattached-number.model';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { NavController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { AccountService } from 'src/app/services/account-service/account.service';
 
 @Component({
   selector: 'app-rattached-phones-number',
@@ -20,7 +20,7 @@ export class RattachedPhonesNumberPage implements OnInit {
   isLoading: boolean;
   editable: boolean;
   hasError: boolean;
-  constructor(private dashbServ: DashboardService, private bsService: BottomSheetService, private navCon: NavController, private router: Router) { }
+  constructor(private dashbServ: DashboardService, private bsService: BottomSheetService, private navCon: NavController, private accountService: AccountService) { }
 
   ngOnInit() {
     this.fetchingNumbers();
@@ -55,7 +55,12 @@ export class RattachedPhonesNumberPage implements OnInit {
   }
 
   deleteRattachment() {
-    this.router.navigate(['/my-account/delete-number']);
+    this.editable = !this.editable;
+  }
+
+  deletePhoneNumbers(numero: string) {
+    const line = [numero];
+    this.accountService.deleteUserLinkedPhoneNumbers(line);
   }
 
   
