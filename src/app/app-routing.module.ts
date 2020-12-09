@@ -243,6 +243,11 @@ const routes: Routes = [
       './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule',
   },
   {
+    path: 'transfer-money/:msisdn',
+    loadChildren:
+      './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule',
+  },
+  {
     path: 'credit-pass-amount',
     loadChildren:
       './pages/credit-pass-amount/credit-pass-amount.module#CreditPassAmountPageModule',

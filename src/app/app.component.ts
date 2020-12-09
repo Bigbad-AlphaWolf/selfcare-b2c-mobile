@@ -184,6 +184,7 @@ export class AppComponent {
           '/details-conso': DetailsConsoPage,
           '/suivi-conso': DashboardPage,
           '/transfer-money/:msisdn/:amount': TransfertHubServicesPage,
+          '/transfer-money/:msisdn': TransfertHubServicesPage,
         })
         .subscribe(
           (matched) => {
