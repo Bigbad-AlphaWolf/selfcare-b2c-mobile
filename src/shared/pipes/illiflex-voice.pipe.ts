@@ -6,10 +6,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class IlliflexVoicePipe implements PipeTransform {
   transform(voice: number, args?: any): any {
     const roundedMinuts = Math.round(voice);
-    if (roundedMinuts < 1000) {
+    if (roundedMinuts < 60) {
       return `${roundedMinuts} Min`;
     } else {
-      return `${Math.floor(roundedMinuts / 60)} H ${roundedMinuts % 60} M`;
+      const minuts = roundedMinuts % 60;
+      return `${Math.floor(roundedMinuts / 60)} H ${
+        minuts ? minuts + ' M' : ``
+      }`;
     }
   }
 }
