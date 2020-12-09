@@ -8,13 +8,14 @@ import { ModalController } from '@ionic/angular';
 })
 export class ChooseRattachementTypeModalComponent implements OnInit {
   @Input() phoneNumber: string;
+  typeRattachement = "CIN";
   constructor(private modCtrl: ModalController) { }
 
   ngOnInit() {}
 
-  select(type: "CIN" | "IDCLIENT") {
+  confirmChoice() {    
     this.modCtrl.dismiss({
-      typeRattachment: type
+      typeRattachment: this.typeRattachement
     })
   }
 
