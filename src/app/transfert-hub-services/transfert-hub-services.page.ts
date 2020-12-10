@@ -149,7 +149,7 @@ export class TransfertHubServicesPage implements OnInit {
     action?: 'REDIRECT' | 'POPUP';
   } = {
     title: 'Pass',
-    subtitle: 'Illiflex',
+    subtitle: 'illiflex',
     icon: '/assets/images/ic-international.png',
     action: 'REDIRECT',
     type: 'ILLIFLEX',

@@ -37,6 +37,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'suivi-conso',
+    loadChildren: './dashboard/dashboard.module#DashboardPageModule',
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'buy-pass-internet',
     loadChildren:
       './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
@@ -194,6 +199,21 @@ const routes: Routes = [
       './operation-recap/operation-recap.module#OperationRecapPageModule',
   },
   {
+    path: 'pass-illimix/:ppi',
+    loadChildren:
+      './operation-recap/operation-recap.module#OperationRecapPageModule',
+  },
+  {
+    path: 'pass-internet/:ppi',
+    loadChildren:
+      './operation-recap/operation-recap.module#OperationRecapPageModule',
+  },
+  {
+    path: 'transfer-money/:msisdn/:amount',
+    loadChildren:
+      './operation-recap/operation-recap.module#OperationRecapPageModule',
+  },
+  {
     path: 'new-pinpad-modal',
     loadChildren:
       './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule',
@@ -219,6 +239,11 @@ const routes: Routes = [
   },
   {
     path: 'purchase-set-amount',
+    loadChildren:
+      './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule',
+  },
+  {
+    path: 'transfer-money/:msisdn',
     loadChildren:
       './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule',
   },
@@ -308,7 +333,11 @@ const routes: Routes = [
     loadChildren:
       './illiflex-configuration/illiflex-configuration.module#IlliflexConfigurationPageModule',
   },
-  { path: 'illiflex-budget-configuration', loadChildren: './illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule' },
+  {
+    path: 'illiflex-budget-configuration',
+    loadChildren:
+      './illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule',
+  },
 ];
 
 @NgModule({
