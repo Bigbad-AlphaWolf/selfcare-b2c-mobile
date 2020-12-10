@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_SEDDO_CREDIT,
@@ -24,7 +24,7 @@ import { OperationExtras } from '../models/operation-extras.model';
   styleUrls: ['./purchase-set-amount.page.scss'],
 })
 export class PurchaseSetAmountPage implements OnInit {
-  static ROUTE_PATH : string = '/purchase-set-amount'
+  static ROUTE_PATH: string = '/purchase-set-amount';
   title: string;
   subtitle: string;
   setAmountForm: FormGroup;
@@ -51,11 +51,12 @@ export class PurchaseSetAmountPage implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private omService: OrangeMoneyService,
-    private navController: NavController
+    private navController: NavController,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    // this.initForm(100);
+    this.initForm(100);
     this.getPurchaseType();
   }
 
@@ -116,9 +117,12 @@ export class PurchaseSetAmountPage implements OnInit {
     }
   }
 
-  getPurchaseType() {
+  async getPurchaseType() {
     // let state = this.router.getCurrentNavigation().extras.state;
+    const isDeeplinkTransferOM = await this.checkTransferOMDeeplink();
+    if (isDeeplinkTransferOM) return;
     this.purchasePayload = history.state;
+    console.log(this.purchasePayload);
 
     if (this.purchasePayload && this.purchasePayload.purchaseType) {
       this.purchaseType = this.purchasePayload.purchaseType;
@@ -148,22 +152,28 @@ export class PurchaseSetAmountPage implements OnInit {
     }
   }
 
-  getPurchaseData() {
-    switch (this.purchaseType) {
-      case OPERATION_TYPE_MERCHANT_PAYMENT:
-        break;
-      case OPERATION_TYPE_SEDDO_CREDIT:
-      case OPERATION_TYPE_SEDDO_BONUS:
-        break;
-      case OPERATION_TYPE_MERCHANT_PAYMENT:
-      case OPERATION_TYPE_RECHARGE_CREDIT:
-      case OPERATION_TRANSFER_OM:
-        break;
-      case OPERATION_TRANSFER_OM_WITH_CODE:
-        break;
-      default:
-        break;
+  async checkTransferOMDeeplink() {
+    const msisdn = this.route.snapshot.paramMap.get('msisdn');
+    if (msisdn) {
+      this.purchasePayload = {
+        recipientMsisdn: msisdn,
+        recipientFirstname: '',
+        recipientLastname: '',
+      };
+      const msisdnHasOM = await this.omService
+        .checkUserHasAccount(msisdn)
+        .toPromise();
+      this.purchaseType = msisdnHasOM
+        ? OPERATION_TRANSFER_OM
+        : OPERATION_TRANSFER_OM_WITH_CODE;
+      this.userHasNoOmAccount = !msisdnHasOM;
+      this.userHasNoOmAccount
+        ? this.initTransferWithCodeForm()
+        : this.initForm(1);
+      this.getPageTitle();
+      return 1;
     }
+    return 0;
   }
 
   goBack() {
@@ -302,12 +312,10 @@ export class PurchaseSetAmountPage implements OnInit {
         ? (this.totalAmount += this.fee)
         : (this.totalAmount = amount);
     }
-    
   }
 
-
-  updateInput(eventInput: any) {        
-    if(!REGEX_IS_DIGIT.test(eventInput.data)){
+  updateInput(eventInput: any) {
+    if (!REGEX_IS_DIGIT.test(eventInput.data)) {
       const value = eventInput.target.value;
       eventInput.target.value = 0;
       eventInput.target.value = value;

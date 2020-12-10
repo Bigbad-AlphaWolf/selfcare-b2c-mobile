@@ -23,6 +23,7 @@ import {
   TransferOrangeMoneyModel,
   TransferOMWithCodeModel,
   MerchantPaymentModel,
+  FeeModel,
 } from '.';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
@@ -102,9 +103,14 @@ export class OrangeMoneyService {
 
   checkUserHasAccount(msisdn: string): Observable<boolean> {
     return this.http.get(`${checkOMAccountEndpoint2}/${msisdn}`).pipe(
-      map((hasOmAccount: boolean) => {
-        return hasOmAccount;
-      })
+      map(
+        (hasOmAccount: boolean) => {
+          return hasOmAccount;
+        },
+        (err) => {
+          return true;
+        }
+      )
     );
   }
 
@@ -219,8 +225,12 @@ export class OrangeMoneyService {
     return this.http.post(merchantPaymentEndpoint, merchantPaymentData);
   }
 
-  getTransferFees() {
-    return this.http.get(getFeesEndpoint);
+  getTransferFees(): Observable<FeeModel[]> {
+    return this.http.get(getFeesEndpoint).pipe(
+      map((fees: FeeModel[]) => {
+        return fees;
+      })
+    );
   }
 
   GetPin(pinPadResponse: any[], pin) {

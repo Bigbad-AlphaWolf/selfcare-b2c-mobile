@@ -1,5 +1,13 @@
 @import 'src/app/app';
 
+:host {
+    .checkbox-disabled{
+        opacity: 1;
+    }
+}
+ion-item[button] {
+    pointer-events: initial !important;
+}
 
 ion-item{
     --padding: 5px;
