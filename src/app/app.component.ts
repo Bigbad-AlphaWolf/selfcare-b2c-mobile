@@ -183,7 +183,8 @@ export class AppComponent {
           '/buy-credit': TransfertHubServicesPage,
           '/details-conso': DetailsConsoPage,
           '/suivi-conso': DashboardPage,
-          '/transfer-money': TransfertHubServicesPage,
+          '/transfer-money/:msisdn/:amount': TransfertHubServicesPage,
+          '/transfer-money/:msisdn': TransfertHubServicesPage,
         })
         .subscribe(
           (matched) => {

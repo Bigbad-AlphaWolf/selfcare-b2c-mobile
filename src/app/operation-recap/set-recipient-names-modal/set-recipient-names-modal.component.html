@@ -1,0 +1,13 @@
+<form [formGroup]="form" class="recipient-info-block">
+  <div class="title">Ce numéro n'a pas de compte</div>
+  <div class="scb-text-gray subtitle">Veuillez renseigner les prénom et nom du bénéficiaire pour effectuer un transfert avec code</div>
+  <mat-form-field class="scb-input-row scb-required" appearance="outline">
+    <mat-label>Prénom du destinataire &nbsp;&nbsp;</mat-label>
+    <input formControlName="recipientFirstname" type="text" matInput />
+  </mat-form-field>
+  <mat-form-field class="scb-input-row scb-required" appearance="outline">
+    <mat-label>Nom du destinataire &nbsp;&nbsp;</mat-label>
+    <input formControlName="recipientLastname" type="text" matInput />
+  </mat-form-field>
+  <button class="scb-btn scb-btn-full scb-btn-orange" [disabled]="!form.valid" (click)="continue()">Continuer</button>
+</form>

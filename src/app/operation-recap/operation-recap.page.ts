@@ -39,6 +39,8 @@ import { IlliflexService } from '../services/illiflex-service/illiflex.service';
 import { BuyIlliflexModel } from '../models/buy-illiflex.model';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
 import { ModalSuccessModel } from '../models/modal-success-infos.model';
+import { SetRecipientNamesModalComponent } from './set-recipient-names-modal/set-recipient-names-modal.component';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-operation-recap',
@@ -118,37 +120,12 @@ export class OperationRecapPage implements OnInit {
     this.getCurrentNumSubscription();
     if (this.route)
       this.route.queryParams.subscribe(async () => {
-        if (
-          this.router.getCurrentNavigation() &&
-          this.router.getCurrentNavigation().extras.state &&
-          this.router.getCurrentNavigation().extras.state.purchaseType
-        ) {
-          const pricePlanIndex = +this.route.snapshot.paramMap.get('ppi');
-          if (pricePlanIndex) {
-            const passByPPi: any = await this.passService.getPassByPPI(
-              pricePlanIndex
-            );
-            if (passByPPi.error) {
-              this.appRouting.goToDashboard();
-              return;
-            }
-            this.recipientMsisdn = this.currentUserNumber;
-            this.purchaseType =
-              passByPPi.passType === 'INTERNET'
-                ? OPERATION_TYPE_PASS_INTERNET
-                : OPERATION_TYPE_PASS_ILLIMIX;
-            this.passChoosen =
-              passByPPi.passType === 'INTERNET'
-                ? passByPPi.passInternet
-                : passByPPi.passIllimix;
-            this.buyPassPayload = {
-              destinataire: this.recipientMsisdn,
-              pass: this.passChoosen,
-            };
-            return;
-          }
+        if (this.router.getCurrentNavigation()) {
+          const isTransferDeeplink = await this.checkTransferOMDeeplink();
+          if (isTransferDeeplink) return;
+          const pricePlanIndex = await this.checkBuyPassDeeplink();
+          if (pricePlanIndex) return;
           this.opXtras = history.state;
-          console.log(this.opXtras);
           this.purchaseType = this.opXtras.purchaseType;
           this.isLightMod = this.opXtras.isLightMod;
           this.recipientMsisdn = this.opXtras.recipientMsisdn;
@@ -233,6 +210,90 @@ export class OperationRecapPage implements OnInit {
           }
         }
       });
+  }
+
+  async checkBuyPassDeeplink(): Promise<any> {
+    const pricePlanIndex = +this.route.snapshot.paramMap.get('ppi');
+    if (pricePlanIndex) {
+      const passByPPi: any = await this.passService.getPassByPPI(
+        pricePlanIndex
+      );
+      if (passByPPi.error) {
+        this.appRouting.goToDashboard();
+        return;
+      }
+      this.recipientMsisdn = this.currentUserNumber;
+      this.purchaseType =
+        passByPPi.passType === 'INTERNET'
+          ? OPERATION_TYPE_PASS_INTERNET
+          : OPERATION_TYPE_PASS_ILLIMIX;
+      this.passChoosen =
+        passByPPi.passType === 'INTERNET'
+          ? passByPPi.passInternet
+          : passByPPi.passIllimix;
+      this.buyPassPayload = {
+        destinataire: this.recipientMsisdn,
+        pass: this.passChoosen,
+      };
+      return of(pricePlanIndex).toPromise();
+    } else {
+      return of(null).toPromise();
+    }
+  }
+
+  async checkTransferOMDeeplink() {
+    let amount = +this.route.snapshot.paramMap.get('amount');
+    const msisdn = this.route.snapshot.paramMap.get('msisdn');
+    if (msisdn) {
+      const msisdnHasOM = await this.orangeMoneyService
+        .checkUserHasAccount(msisdn)
+        .toPromise();
+      this.purchaseType = msisdnHasOM
+        ? OPERATION_TRANSFER_OM
+        : OPERATION_TRANSFER_OM_WITH_CODE;
+      this.recipientMsisdn = msisdn;
+      this.paymentMod = PAYMENT_MOD_OM;
+      if (!msisdnHasOM) {
+        const fees = await this.orangeMoneyService
+          .getTransferFees()
+          .toPromise();
+        const fee = fees.find(
+          (fee) => amount <= fee.maximum && amount >= fee.minimum
+        );
+        amount = fee ? amount + fee.withCode : amount;
+        const response = await this.openSetRecipientNamesModal();
+        this.amount = amount;
+        this.transferOMWithCodePayload.amount = amount;
+        this.transferOMWithCodePayload.msisdn2 = msisdn;
+        this.transferOMWithCodePayload.prenom_receiver =
+          response.recipientFirstname;
+        this.transferOMWithCodePayload.nom_receiver =
+          response.recipientLastname;
+        this.recipientFirstName = response.recipientFirstname;
+        this.recipientLastName = response.recipientLastname;
+        this.recipientName =
+          this.recipientFirstName + ' ' + this.recipientLastName;
+        return of(response).toPromise();
+      } else {
+        this.amount = amount;
+        this.transferOMPayload.amount = this.amount;
+        this.transferOMPayload.msisdn2 = this.recipientMsisdn;
+        return of('y').toPromise();
+      }
+    } else {
+      return of(null).toPromise();
+    }
+  }
+
+  async openSetRecipientNamesModal(): Promise<any> {
+    const modal = await this.modalController.create({
+      component: SetRecipientNamesModalComponent,
+      cssClass: 'select-recipient-modal',
+      backdropDismiss: false,
+    });
+    await modal.present();
+    let result = await modal.onDidDismiss();
+    return of(result.data).toPromise();
   }
 
   getCurrentNumSubscription() {
