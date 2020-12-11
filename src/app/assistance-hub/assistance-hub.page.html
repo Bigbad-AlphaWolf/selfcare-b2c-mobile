@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">Bienvenue dans l'assistance</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">Bienvenue dans l'assistance</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="assistance-page-body">
+    <div class="search-bar-block" *ngIf="0">
+      <ion-item lines="none">
+        <ion-input placeholder="Comment pouvons-nous vous aider ?"></ion-input>
+        <ion-icon name="search" slot="end"></ion-icon>
+      </ion-item>
+    </div>
+    <div class="banner-block" *ngIf="0">
+      <ion-slides [options]="slideOpts">
+        <ion-slide>
+          <div class="ban"></div>
+        </ion-slide>
+        <ion-slide>
+          <div class="ban"></div>
+        </ion-slide>
+      </ion-slides>
+    </div>
+    <div class="actions-block">
+      <div class="block-title">
+        <span class="act">Top des actes</span>
+        <span class="scb-text-orange see-all" (click)="goAllActionsHub()">Voir tous les actes</span>
+      </div>
+      <div class="acts">
+        <app-action-item [action]="act" *ngFor="let act of fastActions"></app-action-item>
+      </div>
+    </div>
+    <div class="questions-block">
+      <div class="block-title">
+        <span class="act">Questions fréquentes</span>
+        <span class="scb-text-orange see-all" (click)="goAllQuestionsHub()">Voir tout</span>
+      </div>
+      <div class="questions" *ngIf="listQuestions && listQuestions.length">
+        <ng-container *ngFor="let question of listQuestions, let i=index">
+          <app-faq-item [question]="question" *ngIf="i<3"></app-faq-item>
+        </ng-container>
+      </div>
+    </div>
+    <div class="more">
+      <span class="more-title">Je n’y arrive toujours pas</span>
+      <div class="more-actions">
+        <div class="action-item" *ngFor="let action of moreActions">
+          <img [src]="action?.image" alt="act">
+          <div class="action-description scb-text-gray">{{action?.description}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </ion-content>

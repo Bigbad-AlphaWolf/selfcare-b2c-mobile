@@ -1,0 +1,24 @@
+@import 'src/app/app';
+
+:host {
+  width: percentage(135/375);
+  margin-left: percentage(15/375);
+}
+
+.act-item {
+  min-height: 100px;
+  background-color: $white;
+  border-radius: 10px;
+  padding: 20px 15px;
+  flex-shrink: 0;
+  text-align: left;
+  img {
+    width: percentage(47/135);
+    margin-bottom: 3px;
+  }
+  .act-description {
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 14px;
+    line-height: 1.29;
+  }
+}
