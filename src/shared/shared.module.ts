@@ -58,6 +58,7 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
 import { CardRapidoNameModalComponent } from 'src/app/components/card-rapido-name-modal/card-rapido-name-modal.component';
 import { IdentifiedNumbersListComponent } from 'src/app/pages/rattached-phones-number/components/identified-numbers-list/identified-numbers-list.component';
 import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-phones-number/components/choose-rattachement-type-modal/choose-rattachement-type-modal.component';
+import { YesNoModalComponent } from './yes-no-modal/yes-no-modal.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +105,8 @@ import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-ph
     OemIonHeaderParallaxDirective,
     FavoriteMerchantComponent,
     IbouIonFabComponent,
-    RapidoSoldeComponent
+    RapidoSoldeComponent,
+    YesNoModalComponent
   ],
   imports: [
     CommonModule,
@@ -142,7 +144,8 @@ import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-ph
     RattachNumberByClientCodeComponent,
     CardRapidoNameModalComponent,
     IdentifiedNumbersListComponent,
-    ChooseRattachementTypeModalComponent
+    ChooseRattachementTypeModalComponent,
+    YesNoModalComponent
   ],
   exports: [
     BanniereComponent,
@@ -188,6 +191,7 @@ import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-ph
     RapidoSoldeComponent,
     MaterialComponentsModule,
     PipesModule,
+    YesNoModalComponent
   ],
   providers: [
     Contacts,
