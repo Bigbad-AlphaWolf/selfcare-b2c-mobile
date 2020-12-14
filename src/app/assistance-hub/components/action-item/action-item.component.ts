@@ -2,7 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
-import { FIND_AGENCE_EXTERNAL_URL } from 'src/shared';
+import {
+  FIND_AGENCE_EXTERNAL_URL,
+  CHECK_ELIGIBILITY_EXTERNAL_URL,
+} from 'src/shared';
 
 @Component({
   selector: 'app-action-item',
@@ -57,7 +60,9 @@ export class ActionItemComponent implements OnInit {
     }
   }
 
-  goFiberEligibility() {}
+  goFiberEligibility() {
+    this.inAppBrowser.create(CHECK_ELIGIBILITY_EXTERNAL_URL, '_self');
+  }
 
   goPuk() {
     this.router.navigate(['/control-center/puk']);

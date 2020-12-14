@@ -41,12 +41,12 @@
         <app-action-item [action]="act" *ngFor="let act of fastActions"></app-action-item>
       </div>
     </div>
-    <div class="questions-block">
+    <div class="questions-block" *ngIf="listQuestions && listQuestions.length">
       <div class="block-title">
         <span class="act">Questions fréquentes</span>
         <span class="scb-text-orange see-all" (click)="goAllQuestionsHub()">Voir tout</span>
       </div>
-      <div class="questions" *ngIf="listQuestions && listQuestions.length">
+      <div class="questions">
         <ng-container *ngFor="let question of listQuestions, let i=index">
           <app-faq-item [question]="question" *ngIf="i<3"></app-faq-item>
         </ng-container>
@@ -55,7 +55,7 @@
     <div class="more">
       <span class="more-title">Je n’y arrive toujours pas</span>
       <div class="more-actions">
-        <div class="action-item" *ngFor="let action of moreActions">
+        <div class="action-item" *ngFor="let action of moreActions" (click)="goFastAction(action)">
           <img [src]="action?.image" alt="act">
           <div class="action-description scb-text-gray">{{action?.description}}</div>
         </div>

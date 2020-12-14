@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
-import { ItemBesoinAide } from 'src/shared';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { ModalController, NavController } from '@ionic/angular';
+import { FIND_AGENCE_EXTERNAL_URL, ItemBesoinAide } from 'src/shared';
 import { AssistanceService } from '../services/assistance.service';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { ContactIbouModalComponent } from './components/contact-ibou-modal/contact-ibou-modal.component';
 
 @Component({
   selector: 'app-assistance-hub',
@@ -54,7 +57,10 @@ export class AssistanceHubPage implements OnInit {
   constructor(
     private assistanceService: AssistanceService,
     private router: Router,
-    private navController: NavController
+    private navController: NavController,
+    private inAppBrowser: InAppBrowser,
+    private followAnalyticsService: FollowAnalyticsService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {}
@@ -86,5 +92,34 @@ export class AssistanceHubPage implements OnInit {
 
   goBack() {
     this.navController.pop();
+  }
+
+  goFindToAgenceWebSite() {
+    this.inAppBrowser.create(FIND_AGENCE_EXTERNAL_URL, '_self');
+    this.followAnalyticsService.registerEventFollow(
+      'Trouver_agence_orange',
+      'event',
+      'clicked'
+    );
+  }
+
+  goFastAction(action) {
+    switch (action.act) {
+      case 'IBOU_CONTACT':
+        this.openIbouContactModal();
+        break;
+      case 'AGENCE_LOCATOR':
+        this.goFindToAgenceWebSite();
+        break;
+    }
+  }
+
+  async openIbouContactModal() {
+    const modal = await this.modalController.create({
+      component: ContactIbouModalComponent,
+      cssClass: 'select-recipient-modal',
+    });
+    modal.onDidDismiss().then((resp) => {});
+    return await modal.present();
   }
 }

@@ -20,28 +20,11 @@ export class IbouIonFabComponent implements OnInit, AfterViewInit {
     private dashboardService: DashboardService,
     private el: ElementRef
   ) {}
-  ngAfterViewInit() {
-    this.getButtonChat();
-    this.getButtonChat();
-  }
+  ngAfterViewInit() {}
 
   ngOnInit() {}
 
-  ionViewWillEnter() {
-    console.log('tr');
-
-    this.dashboardService.prepareScriptChatIbou();
-  }
-
-  af;
-
-  getButtonChat() {
-    if (!this.el.nativeElement.shadowRoot) return;
-    let button = this.el.nativeElement.shadowRoot.querySelector(
-      '.contact-container-body-block-btn'
-    );
-    console.log(button);
-  }
+  ionViewWillEnter() {}
 
   fabToggled() {
     this.fabOpened = !this.fabOpened;
@@ -50,7 +33,23 @@ export class IbouIonFabComponent implements OnInit, AfterViewInit {
       'event',
       'clicked'
     );
-    this.getButtonChat();
+    this.dashboardService.prepareScriptChatIbou();
+    this.hideChatBlock();
+  }
+
+  hideChatBlock() {
+    const chatBlock = this.el.nativeElement.querySelectorAll(
+      '.dimelo_chat_item_markup'
+    )[0];
+    chatBlock.setAttribute('display', 'none');
+    chatBlock.style.display = 'none';
+  }
+
+  chatWithIbou() {
+    const btn = this.el.nativeElement.querySelectorAll(
+      '.contact-container-body-block-btn'
+    )[0];
+    if (btn) btn.click();
   }
 
   goAssistance() {
@@ -63,7 +62,7 @@ export class IbouIonFabComponent implements OnInit, AfterViewInit {
   }
 
   goToBesoinAide() {
-    this.router.navigate(['/assistance']);
+    this.router.navigate(['/assistance-hub']);
     this.followAnalyticsService.registerEventFollow(
       'page_faq_via_Ibou',
       'event',

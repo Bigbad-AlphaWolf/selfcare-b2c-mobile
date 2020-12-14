@@ -10,6 +10,7 @@ import { AssistanceActionsComponent } from './components/assistance-actions/assi
 import { AssistanceQuestionsComponent } from './components/assistance-questions/assistance-questions.component';
 import { ActionItemComponent } from './components/action-item/action-item.component';
 import { FaqItemComponent } from './components/faq-item/faq-item.component';
+import { ContactIbouModalComponent } from './components/contact-ibou-modal/contact-ibou-modal.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,8 @@ const routes: Routes = [
     AssistanceQuestionsComponent,
     ActionItemComponent,
     FaqItemComponent,
+    ContactIbouModalComponent,
   ],
+  entryComponents: [ContactIbouModalComponent],
 })
 export class AssistanceHubPageModule {}
