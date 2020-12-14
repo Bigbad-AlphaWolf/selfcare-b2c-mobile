@@ -8,7 +8,6 @@ import {
   OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
 import {
-  OPERATION_RAPIDO,
   OPERATION_RECHARGE_CREDIT,
   OPERATION_TRANSFERT_ARGENT,
   OPERATION_WOYOFAL,
@@ -18,7 +17,7 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
   {
     title: 'Transférer',
     subtitle: "de l'argent",
-    icon: `${IMAGES_DIR_PATH}/icOrangeMoney.png`,
+    icon: `${IMAGES_DIR_PATH}/04-boutons-01-illustrations-03-payer-ma-facture.svg`,
     action: 'showBeneficiaryModal',
     params: [],
     type: OPERATION_TRANSFERT_ARGENT,
@@ -28,7 +27,7 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
   {
     title: 'Acheter',
     subtitle: 'du crédit',
-    icon: `${IMAGES_DIR_PATH}/ic-top-up-mobile@2x.png`,
+    icon: `${IMAGES_DIR_PATH}/04-boutons-01-illustrations-19-acheter-du-credit.svg`,
     action: 'openNumberSelectionBottomSheet',
     params: ['NONE', OPERATION_TYPE_RECHARGE_CREDIT, '/credit-pass-amount'],
     type: OPERATION_RECHARGE_CREDIT,
@@ -37,7 +36,7 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
   {
     title: 'Acheter',
     subtitle: 'pass internet',
-    icon: `${IMAGES_DIR_PATH}/ic-internet-browser@2x.png`,
+    icon: `${IMAGES_DIR_PATH}/04-boutons-01-illustrations-18-acheter-pass-internet.svg`,
     action: 'openNumberSelectionBottomSheet',
     params: ['NONE', OPERATION_TYPE_PASS_INTERNET, '/list-pass'],
     type: OPERATION_TYPE_PASS_INTERNET,
@@ -46,21 +45,21 @@ export const ACTIONS_RAPIDES_OPERATIONS_DASHBOARD: OperationOem[] = [
   {
     title: 'Acheter',
     subtitle: 'pass illimix',
-    icon: `${IMAGES_DIR_PATH}/ic-package-services@2x.png`,
+    icon: `${IMAGES_DIR_PATH}/04-boutons-01-illustrations-16-acheter-pass-illimix.svg`,
     action: 'openNumberSelectionBottomSheet',
     params: ['NONE', OPERATION_TYPE_PASS_ILLIMIX, '/list-pass'],
     type: OPERATION_TYPE_PASS_ILLIMIX,
     url: '',
   },
-  {
-    title: 'Acheter',
-    subtitle: 'pass allo',
-    icon: `${IMAGES_DIR_PATH}/ic-call-forward@2x.png`,
-    action: 'openNumberSelectionBottomSheet',
-    params: ['NONE', OPERATION_TYPE_PASS_ALLO, '/list-pass'],
-    type: OPERATION_TYPE_PASS_ALLO,
-    url: '',
-  },
+  // {
+  //   title: 'Acheter',
+  //   subtitle: 'pass allo',
+  //   icon: `${IMAGES_DIR_PATH}/ic-call-forward@2x.png`,
+  //   action: 'openNumberSelectionBottomSheet',
+  //   params: ['NONE', OPERATION_TYPE_PASS_ALLO, '/list-pass'],
+  //   type: OPERATION_TYPE_PASS_ALLO,
+  //   url: '',
+  // },
   {
     title: 'Autres',
     subtitle: 'Services',
@@ -79,7 +78,7 @@ export const ACTIONS_RAPIDES_OPERATIONS_POSTPAID: OperationOem[] = [
   {
     title: 'Payer',
     subtitle: 'un marchand',
-    icon: `${IMAGES_DIR_PATH}/ic-scan-ticket.svg`,
+    icon: `${IMAGES_DIR_PATH}/04-boutons-01-illustrations-03-payer-ma-facture.svg`,
     action: 'openModal',
     type: OPERATION_TYPE_MERCHANT_PAYMENT,
     url: '',
@@ -105,7 +104,7 @@ export const ACTIONS_RAPIDES_OPERATIONS_POSTPAID: OperationOem[] = [
   {
     title: 'Convertir',
     subtitle: 'Points Sargal',
-    icon: `${IMAGES_DIR_PATH}/ic-reward.svg`,
+    icon: `${IMAGES_DIR_PATH}/04-boutons-01-illustrations-05-convertire-mes-points-sargal.svg`,
     action: '/sargal-dashboard',
     params: [],
     type: 'NAVIGATE',

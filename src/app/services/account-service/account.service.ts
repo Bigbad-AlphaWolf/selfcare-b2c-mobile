@@ -13,10 +13,12 @@ import { DeleteNumberPopupComponent } from 'src/app/my-account/delete-number-pop
 import { ChangeAvatarPopupComponent } from 'src/app/my-account/change-avatar-popup/change-avatar-popup.component';
 import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
 import { SuccessFailPopupComponent } from 'src/shared/success-fail-popup/success-fail-popup.component';
-import { generateUUID } from 'src/shared';
+import { generateUUID, OPERATION_CONFIRM_DELETE_RATTACH_NUMBER } from 'src/shared';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT, ACCOUNT_IDENTIFIED_NUMBERS_ENDPOINT } from '../utils/account.endpoints';
 import { map, take, tap } from 'rxjs/operators';
+import { ModalController } from '@ionic/angular';
+import { YesNoModalComponent } from 'src/shared/yes-no-modal/yes-no-modal.component';
 const {
   FILE_SERVICE,
   ACCOUNT_MNGT_SERVICE,
@@ -47,7 +49,8 @@ export class AccountService {
     private dialog: MatDialog,
     private authService: AuthenticationService,
     private followService: FollowAnalyticsService,
-    private dashbServ: DashboardService
+    private dashbServ: DashboardService,
+    private modal: ModalController
   ) {}
 
   changePassword(payload: { currentPassword: string; newPassword: string }) {
@@ -102,13 +105,19 @@ export class AccountService {
     });
   }
 
-  deleteUserLinkedPhoneNumbers(phoneNumbersToDelete: any[]) {
-    this.dialogRef = this.dialog.open(DeleteNumberPopupComponent, {
-      width: '300px',
-      data: { phoneNumbers: phoneNumbersToDelete },
+  async deleteUserLinkedPhoneNumbers(phoneNumbersToDelete: string[]) {
+    const modal = await this.modal.create({
+      component: YesNoModalComponent,
+      componentProps: {
+        'typeModal': OPERATION_CONFIRM_DELETE_RATTACH_NUMBER,
+        'numero': phoneNumbersToDelete[0]
+      },
+      cssClass: 'select-recipient-modal'
     });
-    this.dialogSub = this.dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+
+    modal.onDidDismiss().then((res: any) => {
+      res = res.data;      
+      if (res.continue) {
         this.deleteLinkedPhoneNumbers(phoneNumbersToDelete).subscribe(
           () => {
             this.deleteLinkedPhoneNumberSubject.next();
@@ -128,7 +137,9 @@ export class AccountService {
           }
         );
       }
-    });
+      
+    })
+    return await modal.present();
   }
 
   deletedPhoneNumbersEmit() {
