@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import {
@@ -52,7 +52,8 @@ export class PurchaseSetAmountPage implements OnInit {
     private router: Router,
     private omService: OrangeMoneyService,
     private navController: NavController,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -122,8 +123,6 @@ export class PurchaseSetAmountPage implements OnInit {
     const isDeeplinkTransferOM = await this.checkTransferOMDeeplink();
     if (isDeeplinkTransferOM) return;
     this.purchasePayload = history.state;
-    console.log(this.purchasePayload);
-
     if (this.purchasePayload && this.purchasePayload.purchaseType) {
       this.purchaseType = this.purchasePayload.purchaseType;
       this.userHasNoOmAccount = this.purchasePayload.userHasNoOmAccount;
@@ -171,6 +170,7 @@ export class PurchaseSetAmountPage implements OnInit {
         ? this.initTransferWithCodeForm()
         : this.initForm(1);
       this.getPageTitle();
+      this.ref.detectChanges();
       return 1;
     }
     return 0;

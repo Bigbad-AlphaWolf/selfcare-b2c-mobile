@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { SetPaymentChannelModalPage } from '../set-payment-channel-modal/set-payment-channel-modal.page';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -112,7 +112,8 @@ export class OperationRecapPage implements OnInit {
     private authServ: AuthenticationService,
     private dalalTonesService: DalalTonesService,
     private illiflexService: IlliflexService,
-    private passService: PassInternetService
+    private passService: PassInternetService,
+    private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -121,6 +122,7 @@ export class OperationRecapPage implements OnInit {
     if (this.route)
       this.route.queryParams.subscribe(async () => {
         if (this.router.getCurrentNavigation()) {
+          console.log(this.router.getCurrentNavigation());
           const isTransferDeeplink = await this.checkTransferOMDeeplink();
           if (isTransferDeeplink) return;
           const pricePlanIndex = await this.checkBuyPassDeeplink();
@@ -208,6 +210,7 @@ export class OperationRecapPage implements OnInit {
               this.appRouting.goToDashboard();
               break;
           }
+          this.ref.detectChanges();
         }
       });
   }
@@ -235,6 +238,7 @@ export class OperationRecapPage implements OnInit {
         destinataire: this.recipientMsisdn,
         pass: this.passChoosen,
       };
+      this.ref.detectChanges();
       return of(pricePlanIndex).toPromise();
     } else {
       return of(null).toPromise();
@@ -273,12 +277,14 @@ export class OperationRecapPage implements OnInit {
         this.recipientLastName = response.recipientLastname;
         this.recipientName =
           this.recipientFirstName + ' ' + this.recipientLastName;
+        this.ref.detectChanges();
         return of(response).toPromise();
       } else {
         this.amount = amount;
         this.transferOMPayload.amount = this.amount;
         this.transferOMPayload.msisdn2 = this.recipientMsisdn;
-        return of('y').toPromise();
+        this.ref.detectChanges();
+        return of('hasOM').toPromise();
       }
     } else {
       return of(null).toPromise();

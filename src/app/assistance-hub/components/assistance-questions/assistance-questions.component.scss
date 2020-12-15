@@ -1,0 +1,33 @@
+@import 'src/app/app';
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: -0.34px;
+}
+
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+  padding: 0 10px;
+}
+
+.questions-page-body {
+  min-height: 100%;
+  height: fit-content;
+  background-color: $grayDashboard;
+  .search-bar-block {
+    background-color: $white;
+    padding: 20px percentage(15/375);
+    ion-item {
+      border: solid 2px $grayDashboard;
+      height: 60px;
+      border-radius: 10px;
+      --min-height: 100%;
+    }
+  }
+  .questions-list {
+    padding: 20px percentage(15/375);
+  }
+}

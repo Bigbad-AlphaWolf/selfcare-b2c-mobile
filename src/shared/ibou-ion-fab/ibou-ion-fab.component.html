@@ -10,6 +10,12 @@
   </ion-fab-button>
 
   <ion-fab-list side="top">
+    <ion-fab-button class="fab-item" (click)="chatWithIbou()">
+      <img src="/assets/images/04-boutons-01-illustrations-21-ibou-assistance.png" alt="" />
+    </ion-fab-button>
+    <ion-label (click)="chatWithIbou()" >Chat avec Ibou</ion-label
+    >
+
     <ion-fab-button class="fab-item" (click)="defaulSharingSheet()">
       <img src="/assets/images/share_fab_icon.svg" alt="" />
     </ion-fab-button>
@@ -20,12 +26,8 @@
     <ion-fab-button class="fab-item" (click)="goToBesoinAide()">
       <img src="/assets/images/need_help_fab_icon.svg" alt="" />
     </ion-fab-button>
-    <ion-label (click)="goToBesoinAide()"> Besoin d’aide ? </ion-label>
-
-    <ion-fab-button class="fab-item" (click)="goAssistance()">
-      <img src="/assets/images/emergency_help_fab_icon.svg" alt="" />
-    </ion-fab-button>
-    <ion-label (click)="goAssistance()" >Assistance</ion-label
-    >
+    <ion-label (click)="goToBesoinAide()"> J'ai besoin d'aide </ion-label>
+    
+    <div [id]=DIMELO_CHAT_MARKUP class="dimelo_chat_item_markup" #test></div>
   </ion-fab-list>
 </ion-fab>

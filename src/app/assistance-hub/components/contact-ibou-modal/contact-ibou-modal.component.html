@@ -1,0 +1,10 @@
+<div class="ibou-channel-modal">
+  <div class="title">Contacter votre assistant Ibou 24/24</div>
+  <div class="subtitle scb-text-gray">Ibou votre assistance est là pour vous 24h/7. Choisissez votre canal préféré et commencez à chatter avec lui.</div>
+  <div class="channel-block">
+    <div class="channel-item" *ngFor="let channel of channels" (click)="goChannel(channel)">
+      <img [src]="channel?.image" alt="act">
+      <div class="channel-description scb-text-gray">{{channel?.description}}</div>
+    </div>
+  </div>
+</div>

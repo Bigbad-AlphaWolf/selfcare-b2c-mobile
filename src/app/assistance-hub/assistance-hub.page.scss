@@ -1,0 +1,116 @@
+@import 'src/app/app';
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: -0.34px;
+}
+
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+  padding: 0 10px;
+}
+
+.assistance-page-body {
+  min-height: 100%;
+  height: fit-content;
+  background-color: $grayDashboard;
+  .search-bar-block {
+    background-color: $white;
+    padding: 23px percentage(15/375) 0;
+    ion-item {
+      border: solid 2px $grayDashboard;
+      height: 60px;
+      border-radius: 10px;
+      --min-height: 100%;
+      ion-input {
+        // --placeholder-opacity: 1;
+      }
+    }
+  }
+  .banner-block {
+    background-color: $white;
+    padding: 20px 0;
+    ion-slides {
+      height: 115px;
+      width: 100%;
+      ion-slide {
+        height: 100%;
+        padding-left: 15px;
+        .ban {
+          background-color: $fullBlack;
+          height: 100%;
+          width: 100%;
+          border-radius: 10px;
+        }
+      }
+    }
+  }
+  .actions-block {
+    .acts {
+      display: flex;
+      width: 100%;
+      overflow-x: auto;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      app-action-item {
+        flex-shrink: 0;
+      }
+    }
+  }
+  .questions-block {
+    .questions {
+      padding: 0 percentage(15/375);
+    }
+  }
+  .block-title {
+    width: 100%;
+    padding: 30px percentage(15/375) 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    .act {
+      font-size: 20px;
+      line-height: 1.5;
+    }
+    .see-all {
+      font-size: 16px;
+      line-height: 1.88;
+    }
+  }
+  .more {
+    padding: 20px percentage(15/375);
+    .more-title {
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 1.5;
+    }
+    .more-actions {
+      margin-top: 20px;
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      .action-item {
+        width: percentage(165/345);
+        min-height: 100px;
+        background-color: $white;
+        border-radius: 10px;
+        padding: 20px 15px;
+        flex-shrink: 0;
+        img {
+          width: percentage(47/165);
+          margin-bottom: 5px;
+        }
+        .action-description {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 14px;
+          line-height: 1.29;
+        }
+      }
+    }
+  }
+}

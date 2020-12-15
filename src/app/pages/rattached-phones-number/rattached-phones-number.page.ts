@@ -58,10 +58,18 @@ export class RattachedPhonesNumberPage implements OnInit {
     this.editable = !this.editable;
   }
 
-  deletePhoneNumbers(numero: string) {
-    const line = [numero];
-    this.accountService.deleteUserLinkedPhoneNumbers(line);
+  performAction(numero: string) {
+    if(this.editable) {
+      const line = [numero];
+      this.accountService.deleteUserLinkedPhoneNumbers(line);
+    } else {
+      this.switchPhoneNumber(numero);
+    }
   }
 
-  
+  switchPhoneNumber(msisdn) {
+    if (this.listRattachedNumbers.current === msisdn) return;
+    this.dashbServ.setCurrentPhoneNumber(msisdn);
+    this.goBack();
+  }
 }
