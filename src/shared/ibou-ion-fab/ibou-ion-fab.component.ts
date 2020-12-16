@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
@@ -10,7 +10,7 @@ const { DIMELO_CHAT_MARKUP } = environment;
   templateUrl: './ibou-ion-fab.component.html',
   styleUrls: ['./ibou-ion-fab.component.scss'],
 })
-export class IbouIonFabComponent implements OnInit, AfterViewInit {
+export class IbouIonFabComponent implements OnInit {
   fabOpened = false;
   DIMELO_CHAT_MARKUP = DIMELO_CHAT_MARKUP;
   constructor(
@@ -20,7 +20,6 @@ export class IbouIonFabComponent implements OnInit, AfterViewInit {
     private dashboardService: DashboardService,
     private el: ElementRef
   ) {}
-  ngAfterViewInit() {}
 
   ngOnInit() {}
 
@@ -52,19 +51,10 @@ export class IbouIonFabComponent implements OnInit, AfterViewInit {
     if (btn) btn.click();
   }
 
-  goAssistance() {
-    this.router.navigate(['/control-center']);
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_via_Ibou',
-      'event',
-      'clicked'
-    );
-  }
-
   goToBesoinAide() {
     this.router.navigate(['/assistance-hub']);
     this.followAnalyticsService.registerEventFollow(
-      'page_faq_via_Ibou',
+      'assistanceHub_via_Ibou',
       'event',
       'clicked'
     );

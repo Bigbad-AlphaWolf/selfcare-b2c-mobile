@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonSlides, NavController } from '@ionic/angular';
 
 @Component({
@@ -15,37 +15,36 @@ export class AssistanceActionsComponent implements OnInit {
           act: 'FIBRE_OPTIC',
           description: 'Vérifier mon éligibilité à la fibre optique',
           image:
-            '/assets/images/04-boutons-01-illustrations-03-paiement-facture.svg',
+            '/assets/images/04-boutons-01-illustrations-04-paiement-marchand.svg',
         },
         {
           act: 'CODE_PUK',
           description: 'Retrouver mon code PUK',
           image:
-            '/assets/images/04-boutons-01-illustrations-03-paiement-facture.svg',
+            '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
         },
         {
           act: 'SET_INTERNET',
           description: 'Paramétrer mon mobile à internet',
           image:
-            '/assets/images/04-boutons-01-illustrations-03-paiement-facture.svg',
+            '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
         },
         {
           act: 'SEDDO_CODE',
           description: 'Changer mon code Seddo',
           image:
-            '/assets/images/04-boutons-01-illustrations-03-paiement-facture.svg',
+            '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
         },
         {
           act: 'SUIVI_DEMANDE',
           description: 'Suivre l’état de ma demande',
-          image:
-            '/assets/images/04-boutons-01-illustrations-03-paiement-facture.svg',
+          image: '/assets/images/04-boutons-01-illustrations-25-suivi.svg',
         },
         {
           act: 'SEARCH_AGENCY',
           description: 'Retrouver les agences',
           image:
-            '/assets/images/04-boutons-01-illustrations-03-paiement-facture.svg',
+            '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
         },
       ],
     ],
@@ -56,19 +55,19 @@ export class AssistanceActionsComponent implements OnInit {
           act: 'TRANSACTION_ERROR',
           description: 'Déclarer une erreur de transaction',
           image:
-            '/assets/images/04-boutons-01-illustrations-03-paiement-facture.svg',
+            '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
         },
         {
           act: 'OUVERTURE_OM_ACCOUNT',
           description: 'Ouvrir un compte Orange Money',
           image:
-            '/assets/images/04-boutons-01-illustrations-03-paiement-facture.svg',
+            '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
         },
         {
           act: 'DEPLAFONNEMENT',
           description: 'Déplafonner mon compte Orange Money',
           image:
-            '/assets/images/04-boutons-01-illustrations-03-paiement-facture.svg',
+            '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
         },
       ],
     ],
