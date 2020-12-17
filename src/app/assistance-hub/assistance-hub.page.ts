@@ -5,7 +5,6 @@ import { ModalController, NavController } from '@ionic/angular';
 import { FIND_AGENCE_EXTERNAL_URL, ItemBesoinAide } from 'src/shared';
 import { AssistanceService } from '../services/assistance.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { ContactIbouModalComponent } from './components/contact-ibou-modal/contact-ibou-modal.component';
 
 @Component({
   selector: 'app-assistance-hub',
@@ -24,19 +23,19 @@ export class AssistanceHubPage implements OnInit {
       act: 'DEPLAFONNEMENT',
       description: 'Déplafonner mon compte Orange Money',
       image:
-        '/assets/images/04-boutons-01-illustrations-03-paiement-facture.svg',
+        '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
     },
     {
       act: 'TRANSACTION_ERROR',
       description: 'Déclarer une erreur de transaction',
       image:
-        '/assets/images/04-boutons-01-illustrations-03-paiement-facture.svg',
+        '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
     },
     {
-      act: 'OUVERTURE_OM_ACCOUNT',
-      description: 'Ouvrir un compte Orange Money',
+      act: 'FIBRE_OPTIC',
+      description: 'Vérifier mon éligibilité à la fibre optique',
       image:
-        '/assets/images/04-boutons-01-illustrations-03-paiement-facture.svg',
+        '/assets/images/04-boutons-01-illustrations-04-paiement-marchand.svg',
     },
   ];
   moreActions = [
@@ -106,7 +105,7 @@ export class AssistanceHubPage implements OnInit {
   goFastAction(action) {
     switch (action.act) {
       case 'IBOU_CONTACT':
-        this.openIbouContactModal();
+        this.goIbouContactPage();
         break;
       case 'AGENCE_LOCATOR':
         this.goFindToAgenceWebSite();
@@ -114,12 +113,7 @@ export class AssistanceHubPage implements OnInit {
     }
   }
 
-  async openIbouContactModal() {
-    const modal = await this.modalController.create({
-      component: ContactIbouModalComponent,
-      cssClass: 'select-recipient-modal',
-    });
-    modal.onDidDismiss().then((resp) => {});
-    return await modal.present();
+  async goIbouContactPage() {
+    this.router.navigate(['/assistance-hub/ibou-contact']);
   }
 }

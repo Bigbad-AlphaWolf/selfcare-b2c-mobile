@@ -10,7 +10,7 @@ import { AssistanceActionsComponent } from './components/assistance-actions/assi
 import { AssistanceQuestionsComponent } from './components/assistance-questions/assistance-questions.component';
 import { ActionItemComponent } from './components/action-item/action-item.component';
 import { FaqItemComponent } from './components/faq-item/faq-item.component';
-import { ContactIbouModalComponent } from './components/contact-ibou-modal/contact-ibou-modal.component';
+import { ContactIbouPageComponent } from './components/contact-ibou-page/contact-ibou-page.component';
 
 const routes: Routes = [
   {
@@ -24,6 +24,10 @@ const routes: Routes = [
   {
     path: 'questions',
     component: AssistanceQuestionsComponent,
+  },
+  {
+    path: 'ibou-contact',
+    component: ContactIbouPageComponent,
   },
 ];
 
@@ -40,8 +44,7 @@ const routes: Routes = [
     AssistanceQuestionsComponent,
     ActionItemComponent,
     FaqItemComponent,
-    ContactIbouModalComponent,
+    ContactIbouPageComponent,
   ],
-  entryComponents: [ContactIbouModalComponent],
 })
 export class AssistanceHubPageModule {}

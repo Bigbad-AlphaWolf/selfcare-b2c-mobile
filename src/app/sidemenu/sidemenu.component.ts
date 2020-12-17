@@ -91,8 +91,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   openModalRattachNumber() {
-    this.bsService
-    .openRattacheNumberModal();
+    this.bsService.openRattacheNumberModal();
   }
 
   getSouscription() {
@@ -210,9 +209,9 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goEmergencies() {
-    this.router.navigate(['/control-center']);
+    this.router.navigate(['/assistance-hub']);
     this.followAnalyticsService.registerEventFollow(
-      'Sidemenu_urgences_depannages',
+      'Sidemenu_assistance',
       'event',
       'clicked'
     );

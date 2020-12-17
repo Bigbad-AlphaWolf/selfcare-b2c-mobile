@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContactIbouModalComponent } from './contact-ibou-modal.component';
+import { ContactIbouPageComponent } from './contact-ibou-page.component';
 
-describe('ContactIbouModalComponent', () => {
-  let component: ContactIbouModalComponent;
-  let fixture: ComponentFixture<ContactIbouModalComponent>;
+describe('ContactIbouPageComponent', () => {
+  let component: ContactIbouPageComponent;
+  let fixture: ComponentFixture<ContactIbouPageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContactIbouModalComponent ],
+      declarations: [ ContactIbouPageComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ContactIbouModalComponent);
+    fixture = TestBed.createComponent(ContactIbouPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

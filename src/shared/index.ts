@@ -78,9 +78,12 @@ export const ASSISTANCE_URL = 'https://assistance.orange.sn';
 export const FACEBOOK_URL = 'https://m.me/165622776799685';
 export const TWITTER_URL =
   'https://twitter.com/messages/compose?recipient_id=733327435299729408';
+export const INSTAGRAM_URL =
+  'https://instagram.com/orange_senegal?igshid=7xv78qwpivfm';
 
 export const FIND_AGENCE_EXTERNAL_URL = 'https://agence.orange.sn/';
-export const CHECK_ELIGIBILITY_EXTERNAL_URL = 'http://www.senefibre.orange.sn/';
+export const CHECK_ELIGIBILITY_EXTERNAL_URL =
+  'https://www.orange.sn/test-fibre';
 export const VALID_IMG_EXTENSIONS = ['jpg', 'jpeg', 'png'];
 
 export const CREDIT = 'crédit';
