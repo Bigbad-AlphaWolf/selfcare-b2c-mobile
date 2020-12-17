@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { NavController } from '@ionic/angular';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -12,11 +12,11 @@ import { environment } from 'src/environments/environment.prod';
 const { DIMELO_CHAT_MARKUP } = environment;
 
 @Component({
-  selector: 'app-contact-ibou-page',
-  templateUrl: './contact-ibou-page.component.html',
-  styleUrls: ['./contact-ibou-page.component.scss'],
+  selector: 'app-contact-ibou-hub',
+  templateUrl: './contact-ibou-hub.page.html',
+  styleUrls: ['./contact-ibou-hub.page.scss'],
 })
-export class ContactIbouPageComponent implements OnInit, AfterViewInit {
+export class ContactIbouHubPage implements OnInit {
   channels = [
     {
       code: 'FACEBOOK',
@@ -50,9 +50,8 @@ export class ContactIbouPageComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {}
 
-  ngAfterViewInit() {
+  ionViewWillEnter() {
     this.dashboardService.prepareScriptChatIbou();
-    this.hideChatBlock();
   }
 
   hideChatBlock() {

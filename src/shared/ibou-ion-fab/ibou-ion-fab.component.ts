@@ -32,8 +32,6 @@ export class IbouIonFabComponent implements OnInit {
       'event',
       'clicked'
     );
-    this.dashboardService.prepareScriptChatIbou();
-    this.hideChatBlock();
   }
 
   hideChatBlock() {
@@ -79,5 +77,9 @@ export class IbouIonFabComponent implements OnInit {
       'event',
       'clicked'
     );
+  }
+
+  goIbouPage() {
+    this.router.navigate(['/contact-ibou-hub']);
   }
 }

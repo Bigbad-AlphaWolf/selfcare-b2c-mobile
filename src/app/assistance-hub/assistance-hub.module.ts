@@ -10,7 +10,6 @@ import { AssistanceActionsComponent } from './components/assistance-actions/assi
 import { AssistanceQuestionsComponent } from './components/assistance-questions/assistance-questions.component';
 import { ActionItemComponent } from './components/action-item/action-item.component';
 import { FaqItemComponent } from './components/faq-item/faq-item.component';
-import { ContactIbouPageComponent } from './components/contact-ibou-page/contact-ibou-page.component';
 
 const routes: Routes = [
   {
@@ -24,11 +23,7 @@ const routes: Routes = [
   {
     path: 'questions',
     component: AssistanceQuestionsComponent,
-  },
-  {
-    path: 'ibou-contact',
-    component: ContactIbouPageComponent,
-  },
+  }
 ];
 
 @NgModule({
@@ -44,7 +39,6 @@ const routes: Routes = [
     AssistanceQuestionsComponent,
     ActionItemComponent,
     FaqItemComponent,
-    ContactIbouPageComponent,
   ],
 })
 export class AssistanceHubPageModule {}
