@@ -9,7 +9,6 @@ import {
 } from 'rxjs';
 import {
   tap,
-  shareReplay,
   map,
   delay,
   retryWhen,
@@ -542,6 +541,7 @@ export interface RegistrationModel {
   login: string;
   password: string;
   hmac: string;
+  clientId: any
 }
 
 export interface ConfirmMsisdnModel {
