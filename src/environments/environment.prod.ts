@@ -15,6 +15,7 @@ export const environment = {
   CODE_OTP_SERVICE: 'selfcare-otp',
   UAA_SERVICE: 'selfcare-b2c-uaa',
   OM_SERVICE: 'selfcare-b2c-om',
+  PURCHASES_SERVICE: 'selfcare-b2c-purchases',
   SARGAL_SERVICE: 'selfcare-b2c-sargal',
   GA_CONFIG: {
     trackingId: 'UA-92621294-1',
