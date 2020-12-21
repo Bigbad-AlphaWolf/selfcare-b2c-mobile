@@ -31,6 +31,10 @@
     font-size: 16px;
     line-height: 1.13;
   }
+  .dimelo_chat_item_markup {
+    width: percentage(345/375);
+    margin: 15px auto 0;
+  }
   .chat-with-ibou-block {
     background-color: $orange;
     border-radius: 10px;
