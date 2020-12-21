@@ -114,6 +114,6 @@ export class AssistanceHubPage implements OnInit {
   }
 
   async goIbouContactPage() {
-    this.router.navigate(['/assistance-hub/ibou-contact']);
+    this.router.navigate(['/contact-ibou-hub']);
   }
 }

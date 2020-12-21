@@ -23,7 +23,7 @@
       Ibou votre assistance est là pour vous 24h/7. Choisissez votre canal préféré et commencez à chatter avec lui.
     </div>
     <div [id]=DIMELO_CHAT_MARKUP class="dimelo_chat_item_markup" #test></div>
-    <div class="chat-with-ibou-block" (click)="chatWithIbou()">
+    <!-- <div class="chat-with-ibou-block" (click)="chatWithIbou()">
       <div class="ibou-img-container">
         <img src="/assets/images/ibou-assi.png" alt="">
       </div>
@@ -31,7 +31,7 @@
         <span class="text-1 scb-text-white">Démarrer le chat</span>
         <span class="text-2 scb-text-white">Ibou vous répond en moins de 30 min</span>
       </div>
-    </div>
+    </div> -->
     <div class="channel-block">
       <div class="channel-item" *ngFor="let channel of channels" (click)="goChannel(channel)">
         <img [src]="channel?.image" alt="act">
