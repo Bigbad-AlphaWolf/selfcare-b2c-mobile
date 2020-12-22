@@ -338,6 +338,11 @@ const routes: Routes = [
     loadChildren:
       './illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule',
   },
+  {
+    path: 'illiflex',
+    loadChildren:
+      './illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule',
+  },
 ];
 
 @NgModule({
