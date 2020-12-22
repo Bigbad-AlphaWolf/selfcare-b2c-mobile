@@ -4,4 +4,5 @@ export interface IlliflexModel {
   voice: number;
   validity: string;
   recipient: string;
+  sender: string;
 }
