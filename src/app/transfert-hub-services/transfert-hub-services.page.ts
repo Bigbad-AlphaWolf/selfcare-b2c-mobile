@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
-import { ModalController, NavController } from '@ionic/angular';
+import {
+  ModalController,
+  NavController,
+  ToastController,
+} from '@ionic/angular';
 import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
@@ -27,6 +31,7 @@ import { Observable } from 'rxjs';
 import { FacebookEventService } from '../services/facebook-event/facebook-event.service';
 import { FacebookCustomEvent } from '../models/enums/facebook-custom-event.enum';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { OperationService } from '../services/oem-operation/operation.service';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -46,7 +51,8 @@ export class TransfertHubServicesPage implements OnInit {
     {
       title: 'Transfert',
       subtitle: "d'argent",
-      icon: '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
+      icon:
+        '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
       action: 'REDIRECT',
       type: 'TRANSFERT_MONEY',
       url: '',
@@ -54,7 +60,8 @@ export class TransfertHubServicesPage implements OnInit {
     {
       title: 'Transfert',
       subtitle: 'de crédit',
-      icon: '/assets/images/04-boutons-01-illustrations-19-acheter-du-credit.svg',
+      icon:
+        '/assets/images/04-boutons-01-illustrations-19-acheter-du-credit.svg',
       action: 'REDIRECT',
       type: 'TRANSFERT_CREDIT',
       url: '/transfer/credit-bonus',
@@ -62,7 +69,8 @@ export class TransfertHubServicesPage implements OnInit {
     {
       title: 'Transfert',
       subtitle: 'de bonus',
-      icon: '/assets/images/04-boutons-01-illustrations-02-transfert-argent-ou-credit.svg',
+      icon:
+        '/assets/images/04-boutons-01-illustrations-02-transfert-argent-ou-credit.svg',
       action: 'REDIRECT',
       type: 'TRANSFERT_BONUS',
       url: '/transfer/credit-bonus',
@@ -81,11 +89,13 @@ export class TransfertHubServicesPage implements OnInit {
       | 'PASS_ALLO';
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
+    idCode?: number;
   }[] = [
     {
       title: 'Pass',
       subtitle: 'internet',
-      icon: '/assets/images/04-boutons-01-illustrations-18-acheter-pass-internet.svg',
+      icon:
+        '/assets/images/04-boutons-01-illustrations-18-acheter-pass-internet.svg',
       action: 'REDIRECT',
       type: 'PASS',
       url: '',
@@ -93,7 +103,8 @@ export class TransfertHubServicesPage implements OnInit {
     {
       title: 'Pass',
       subtitle: 'illimix',
-      icon: '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
+      icon:
+        '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
       action: 'REDIRECT',
       type: 'PASS_ILLIMIX',
       url: '',
@@ -109,7 +120,8 @@ export class TransfertHubServicesPage implements OnInit {
     {
       title: 'Pass',
       subtitle: 'voyage',
-      icon: '/assets/images/04-boutons-01-illustrations-09-acheter-pass-voyage.svg',
+      icon:
+        '/assets/images/04-boutons-01-illustrations-09-acheter-pass-voyage.svg',
       action: 'REDIRECT',
       type: 'PASS_VOYAGE',
       url: '',
@@ -145,13 +157,16 @@ export class TransfertHubServicesPage implements OnInit {
     type;
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
+    idCode?: number;
   } = {
     title: 'Pass',
     subtitle: 'illiflex',
-    icon: '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
+    icon:
+      '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
     action: 'REDIRECT',
     type: 'ILLIFLEX',
     url: '',
+    idCode: 1134,
   };
   options: {
     title: string;
@@ -190,7 +205,8 @@ export class TransfertHubServicesPage implements OnInit {
     private bsService: BottomSheetService,
     private omService: OrangeMoneyService,
     private facebookevent: FacebookEventService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -217,23 +233,47 @@ export class TransfertHubServicesPage implements OnInit {
     }
   }
 
+  isServciceActivated(action) {
+    const actionService = OperationService.AllOffers.find(
+      (service) => action.idCode && service.code === action.idCode
+    );
+    if (actionService) return actionService.activated;
+    return true;
+  }
+
   goBack() {
     this.navController.pop();
   }
 
-  goTo(opt: {
+  async goTo(opt: {
     title: string;
     subtitle: string;
     icon: string;
     type: string;
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
+    idCode?: number;
   }) {
     // this.facebookevent.fbEvent(FacebookEvent.ViewContent,{});
     this.facebookevent.fbCustomEvent(FacebookCustomEvent.TestEvent, {
       customField1: 'customField1',
       customField2: 51,
     });
+
+    if (!this.isServciceActivated(opt)) {
+      const service = OperationService.AllOffers.find(
+        (service) => opt.idCode && service.code === opt.idCode
+      );
+      const toast = await this.toastController.create({
+        header: 'Service indisponible',
+        message: service.reasonDeactivation,
+        duration: 3000,
+        position: 'middle',
+        color: 'medium',
+      });
+      toast.present();
+      return;
+    }
 
     switch (opt.type) {
       case 'TRANSFERT_MONEY':
