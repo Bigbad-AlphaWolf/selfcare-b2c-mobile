@@ -122,7 +122,6 @@ export class OperationRecapPage implements OnInit {
     if (this.route)
       this.route.queryParams.subscribe(async () => {
         if (this.router.getCurrentNavigation()) {
-          console.log(this.router.getCurrentNavigation());
           const isTransferDeeplink = await this.checkTransferOMDeeplink();
           if (isTransferDeeplink) return;
           const pricePlanIndex = await this.checkBuyPassDeeplink();

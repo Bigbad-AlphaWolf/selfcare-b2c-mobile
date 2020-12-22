@@ -54,7 +54,7 @@ export class IlliflexService {
     const validity = this.getValidityName(passIlliflex.validity);
     const buyIlliflexPayload = {
       sender: {
-        msisdn: passIlliflex.recipient,
+        msisdn: passIlliflex.sender,
       },
       receiver: {
         msisdn: passIlliflex.recipient,

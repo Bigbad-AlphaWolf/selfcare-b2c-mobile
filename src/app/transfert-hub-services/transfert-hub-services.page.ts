@@ -13,6 +13,7 @@ import {
   OPERATION_TYPE_PASS_ALLO,
   OPERATION_TYPE_PASS_VOYAGE,
   SubscriptionModel,
+  OPERATION_TYPE_PASS_ILLIFLEX,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -46,7 +47,8 @@ export class TransfertHubServicesPage implements OnInit {
     {
       title: 'Transfert',
       subtitle: "d'argent",
-      icon: '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
+      icon:
+        '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
       action: 'REDIRECT',
       type: 'TRANSFERT_MONEY',
       url: '',
@@ -54,7 +56,8 @@ export class TransfertHubServicesPage implements OnInit {
     {
       title: 'Transfert',
       subtitle: 'de crédit',
-      icon: '/assets/images/04-boutons-01-illustrations-19-acheter-du-credit.svg',
+      icon:
+        '/assets/images/04-boutons-01-illustrations-19-acheter-du-credit.svg',
       action: 'REDIRECT',
       type: 'TRANSFERT_CREDIT',
       url: '/transfer/credit-bonus',
@@ -62,7 +65,8 @@ export class TransfertHubServicesPage implements OnInit {
     {
       title: 'Transfert',
       subtitle: 'de bonus',
-      icon: '/assets/images/04-boutons-01-illustrations-02-transfert-argent-ou-credit.svg',
+      icon:
+        '/assets/images/04-boutons-01-illustrations-02-transfert-argent-ou-credit.svg',
       action: 'REDIRECT',
       type: 'TRANSFERT_BONUS',
       url: '/transfer/credit-bonus',
@@ -85,7 +89,8 @@ export class TransfertHubServicesPage implements OnInit {
     {
       title: 'Pass',
       subtitle: 'internet',
-      icon: '/assets/images/04-boutons-01-illustrations-18-acheter-pass-internet.svg',
+      icon:
+        '/assets/images/04-boutons-01-illustrations-18-acheter-pass-internet.svg',
       action: 'REDIRECT',
       type: 'PASS',
       url: '',
@@ -93,7 +98,8 @@ export class TransfertHubServicesPage implements OnInit {
     {
       title: 'Pass',
       subtitle: 'illimix',
-      icon: '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
+      icon:
+        '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
       action: 'REDIRECT',
       type: 'PASS_ILLIMIX',
       url: '',
@@ -109,7 +115,8 @@ export class TransfertHubServicesPage implements OnInit {
     {
       title: 'Pass',
       subtitle: 'voyage',
-      icon: '/assets/images/04-boutons-01-illustrations-09-acheter-pass-voyage.svg',
+      icon:
+        '/assets/images/04-boutons-01-illustrations-09-acheter-pass-voyage.svg',
       action: 'REDIRECT',
       type: 'PASS_VOYAGE',
       url: '',
@@ -148,7 +155,8 @@ export class TransfertHubServicesPage implements OnInit {
   } = {
     title: 'Pass',
     subtitle: 'illiflex',
-    icon: '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
+    icon:
+      '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
     action: 'REDIRECT',
     type: 'ILLIFLEX',
     url: '',
@@ -293,7 +301,10 @@ export class TransfertHubServicesPage implements OnInit {
         }
         break;
       case 'ILLIFLEX':
-        this.router.navigate(['/illiflex-budget-configuration']);
+        this.openModalPassNumberSelection(
+          OPERATION_TYPE_PASS_ILLIFLEX,
+          'illiflex-budget-configuration'
+        );
         break;
       default:
         break;
@@ -321,7 +332,7 @@ export class TransfertHubServicesPage implements OnInit {
       this.bsService.openNumberSelectionBottomSheet(
         NumberSelectionOption.WITH_MY_PHONES,
         operation,
-        'list-pass',
+        routePath,
         this.isLightMod
       );
     }
