@@ -724,6 +724,7 @@ export interface PurchaseModel {
   label?: string;
   prenomReceiver?: string;
   nomReceiver?: string;
+  msisdnReceiver?: string;
 }
 
 /**
