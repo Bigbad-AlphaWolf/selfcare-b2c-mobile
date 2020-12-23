@@ -1,0 +1,38 @@
+@import 'src/app/app';
+ion-header {
+  background-color: $white;
+}
+
+.banner-container {
+    width: 100%;
+    display: flex;
+    img {
+      width: 100%;
+    }
+}
+.header-subdiviser{
+  height: 10px;
+  width: 100%;
+  background-color: $grayDashboard;
+}
+
+.page-container {
+  padding: 30px 15px;
+  padding-bottom: 10px;
+  ion-spinner {
+    position: absolute;
+    right: 50%;
+  }
+}
+.btn-submit{
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 30px;
+  ion-button {
+    width: 90%;
+  }
+}
+.error {
+  text-align: center;
+  margin-bottom: 5px;
+}
