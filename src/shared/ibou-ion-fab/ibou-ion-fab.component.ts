@@ -33,6 +33,15 @@ export class IbouIonFabComponent implements OnInit {
     );
   }
 
+  goToSatisfactionForm() {
+    this.router.navigate(['/satisfaction-form']);
+    this.followAnalyticsService.registerEventFollow(
+      'Formulaire_de_satisfaction_via_Ibou',
+      'event',
+      'clicked'
+    );
+  }
+
   goToBesoinAide() {
     this.router.navigate(['/assistance']);
     this.followAnalyticsService.registerEventFollow(

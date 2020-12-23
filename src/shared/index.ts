@@ -137,6 +137,15 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
   SARGAL: `${IMAGES_DIRECTORY}transfert-icon.png`,
 };
+
+export const TYPE_QUESTION_SATISFACTION_FORM = { 
+  BASIC: 'NONE',
+ NOTE: 'RATING', 
+ RECOMMENDATION: 'RECOMMENDATION', 
+ YES_NO: 'YES_NO', 
+ SELECT_ANSWER: 'SELECT_ANSWER_QUESTION' 
+};
+
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
 }

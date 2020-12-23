@@ -338,6 +338,7 @@ const routes: Routes = [
     loadChildren:
       './illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule',
   },
+  { path: 'satisfaction-form', loadChildren: './pages/satisfaction-form/satisfaction-form.module#SatisfactionFormPageModule' },
 ];
 
 @NgModule({
