@@ -203,8 +203,6 @@ export class AppComponent {
   goToPage(path: string) {
     if (checkUrlMatch(path)) {
       this.appRout.goToTransfertHubServicesPage('BUY');
-    } else if (path.startsWith('/transfer-money')) {
-      this.appRout.goToTransfertHubServicesPage('TRANSFER');
     } else {
       this.router.navigate([path]);
     }

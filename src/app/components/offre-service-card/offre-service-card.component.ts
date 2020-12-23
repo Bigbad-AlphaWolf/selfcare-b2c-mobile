@@ -51,7 +51,7 @@ export class OffreServiceCardComponent implements OnInit {
   }
 
   onErrorImg() {
-    this.imageUrl = 'assets/images/ic-package-services@2x.png';
+    this.imageUrl = 'assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg';
   }
 
   async showServiceUnavailableToast() {

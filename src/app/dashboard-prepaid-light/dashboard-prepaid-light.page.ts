@@ -84,19 +84,19 @@ export class DashboardPrepaidLightPage implements OnInit {
     {
       title: 'Acheter',
       subtitle: 'Crédit, pass',
-      imgName: 'ic-package-services@2x.png',
+      imgName: '04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg',
       action: 'BUY',
     },
     {
       title: 'Transférer',
       subtitle: 'Argent, crédit',
-      imgName: 'ic-transfer-data.svg',
+      imgName: '04-boutons-01-illustrations-02-transfert-argent-ou-credit.svg',
       action: 'TRANSFER',
     },
     {
       title: 'Payer OM',
       subtitle: 'Facture',
-      imgName: 'ic-orange-money.svg',
+      imgName: '04-boutons-01-illustrations-03-payer-ma-facture.svg',
       action: 'OM',
     },
   ];

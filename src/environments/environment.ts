@@ -24,20 +24,20 @@ export const environment = {
   UAA_SERVICE: 'selfcare-b2c-uaa',
   OM_SERVICE: 'selfcare-b2c-om',
   COMMUNITY_MANAGEMENT_SERVICE: 'selfcare-b2c-community-management',
-
+  PURCHASES_SERVICE: 'selfcare-b2c-purchases',
   SARGAL_SERVICE: 'selfcare-b2c-sargal',
   GA_CONFIG: {
     trackingId: 'UA-92621294-1',
     trackPageviews: true,
   },
-  // GET_MSISDN_BY_NETWORK_URL:
-  //   'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
-  // CONFIRM_MSISDN_BY_NETWORK_URL:
-  //   'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
-  GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
+  GET_MSISDN_BY_NETWORK_URL:
+    'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
   CONFIRM_MSISDN_BY_NETWORK_URL:
-    'http://10.100.99.116:1494/api/v1/confirm-msisdn',
-  DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_95fb0f8745090d63e5acebaa',
+    'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
+  // GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
+  // CONFIRM_MSISDN_BY_NETWORK_URL:
+  //   'http://10.100.99.116:1494/api/v1/confirm-msisdn',
+  // DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_95fb0f8745090d63e5acebaa',
 };
 
 /*

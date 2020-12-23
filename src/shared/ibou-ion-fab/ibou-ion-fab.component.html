@@ -10,28 +10,33 @@
   </ion-fab-button>
 
   <ion-fab-list side="top">
-    <ion-fab-button class="fab-item" (click)="defaulSharingSheet()">
-      <img src="/assets/images/share_fab_icon.svg" alt="" />
-    </ion-fab-button>
-    <ion-label (click)="defaulSharingSheet()">
-      Partager l’application
-    </ion-label>
-
-    <ion-fab-button class="fab-item" (click)="goToBesoinAide()">
-      <img src="/assets/images/need_help_fab_icon.svg" alt="" />
-    </ion-fab-button>
-    <ion-label (click)="goToBesoinAide()"> Besoin d’aide ? </ion-label>
-
-    <ion-fab-button class="fab-item" (click)="goAssistance()">
-      <img src="/assets/images/emergency_help_fab_icon.svg" alt="" />
-    </ion-fab-button>
-    <ion-label (click)="goAssistance()" >Assistance</ion-label
-    >
-
-    <ion-fab-button class="fab-item" (click)="goToSatisfactionForm()">
-      <img src="/assets/images/emergency_help_fab_icon.svg" alt="" />
-    </ion-fab-button>
-    <ion-label (click)="goToSatisfactionForm()" >Votre avis ?</ion-label
-    >
+    <div (click)="goToSatisfactionForm()" class="fab-item-block">
+      <div class="description">
+        <span class="title scb-text-white">Donnez nous votre avis</span>
+        <span class="subtitle scb-text-dark-grey">Aidez nous à améliorer l’appli</span>
+      </div>
+      <img src="/assets/images/give-yo-opinion_icon.png" alt="">
+    </div>
+    <div class="fab-item-block" (click)="goIbouPage()">
+      <div class="description">
+        <span class="title scb-text-white">Chat avec Ibou</span>
+        <span class="subtitle scb-text-dark-grey">Discuter avec Ibou</span>
+      </div>
+      <img src="/assets/images/04-boutons-01-illustrations-21-ibou-assistance.png" alt="">
+    </div>
+    <div class="fab-item-block" (click)="defaulSharingSheet()">
+      <div class="description">
+        <span class="title scb-text-white">Partager l’application</span>
+        <span class="subtitle scb-text-dark-grey">Parlez en à vos amis</span>
+      </div>
+      <img src="/assets/images/share_fab_icon.svg" alt="">
+    </div>
+    <div class="fab-item-block" (click)="goToBesoinAide()">
+      <div class="description">
+        <span class="title scb-text-white">Assistance</span>
+        <span class="subtitle scb-text-dark-grey">Besoin d’aide ?</span>
+      </div>
+      <img src="/assets/images/emergency_help_fab_icon.svg" alt="">
+    </div>
   </ion-fab-list>
 </ion-fab>
