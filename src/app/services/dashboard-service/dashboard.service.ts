@@ -21,7 +21,8 @@ const {
   FILE_SERVICE,
   ACCOUNT_MNGT_SERVICE,
   UAA_SERVICE,
-  PURCHASES_SERVICE
+  PURCHASES_SERVICE,
+  BOOSTER_SERVICE
 } = environment;
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -61,10 +62,10 @@ const buyPassInternetForSomeoneByCreditEndpoint = `${SERVER_API_URL}/${PURCHASES
 
 // Endpoint to get sargal balance
 const sargalBalanceEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/`;
-const welcomeStatusEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters`;
+const welcomeStatusEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters`;
 
 // Endpoint promoBooster active
-const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters/active-boosters`;
+const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters/active-boosters`;
 
 // Endpoint to get the user's birthdate
 const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/birthDate`;
