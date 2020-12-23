@@ -341,6 +341,7 @@ const routes: Routes = [
   { path: 'assistance-hub', loadChildren: './assistance-hub/assistance-hub.module#AssistanceHubPageModule' },
   { path: 'contact-ibou-hub', loadChildren: './contact-ibou-hub/contact-ibou-hub.module#ContactIbouHubPageModule' },
   { path: 'satisfaction-form', loadChildren: './pages/satisfaction-form/satisfaction-form.module#SatisfactionFormPageModule' }
+
 ];
 
 @NgModule({
