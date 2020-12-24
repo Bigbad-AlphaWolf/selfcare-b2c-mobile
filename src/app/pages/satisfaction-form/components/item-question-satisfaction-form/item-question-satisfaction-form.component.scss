@@ -23,6 +23,15 @@
                 height: 50px;
                 color: $jauge-illimix;
             }
+            ion-label {
+                font-family: HelveticaNeueLTStd-Roman;
+                font-size: 16px;
+                line-height: 1.25;
+                color: $gray;
+            }
+            .starts{
+                display: flex;
+            }
         }
         .select{
             border: 2px solid $silver;
@@ -35,7 +44,6 @@
             .note-block{
                 display: flex;
                 align-items: center;
-                flex-wrap: wrap;
                 .note{
                     display: inline-block;
                     padding: 8px;
@@ -62,6 +70,9 @@
         .radio-button {
             ion-radio-group{
                 display: flex;
+                ion-label {
+                    margin-right: 5px;
+                }
             }
         }
         

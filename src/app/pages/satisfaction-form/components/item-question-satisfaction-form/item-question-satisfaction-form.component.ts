@@ -13,15 +13,14 @@ export class ItemQuestionSatisfactionFormComponent implements OnInit {
   @Input() answer : AnswerSurveyOem;
   @Output() answerChange = new EventEmitter();
   BASE_NOTATIONS_RATING = [1,2,3,4,5];
-  BASE_NOTATIONS_RECOMENDATION_RATING = [1,2,3,4,5];
+  BASE_NOTATIONS_RECOMENDATION_RATING = [1,2,3,4,5,6,7,8,9,10];
   currentRatingNote:number;
   currentRecommendationNote:number;
   TYPE_QUESTION_SATISFACTION_FORM = TYPE_QUESTION_SATISFACTION_FORM;
   constructor() { }
 
-  ngOnInit() {
-    console.log('answer', this.answer);
-    
+  ngOnInit() {  
+    this.initializeAllNotes();
   }
 
   rate(note: number) {
@@ -83,5 +82,23 @@ export class ItemQuestionSatisfactionFormComponent implements OnInit {
 
   isMultiSelection(): boolean {
     return this.itemQuestion.libelle === 'multi'
+  }
+
+  initializeAllNotes(){
+    if(this.itemQuestion.libelle && !isNaN(+this.itemQuestion.libelle)) {
+      if(this.isType(this.itemQuestion, TYPE_QUESTION_SATISFACTION_FORM.RECOMMENDATION)){
+        this.BASE_NOTATIONS_RECOMENDATION_RATING = this.initializeNote()
+      } else if(this.isType(this.itemQuestion, TYPE_QUESTION_SATISFACTION_FORM.NOTE)) {
+        this.BASE_NOTATIONS_RATING = this.initializeNote();
+      }
+    }
+  }
+
+  initializeNote(){
+    if(this.itemQuestion.libelle && !isNaN(+this.itemQuestion.libelle)) {
+      const max_note = +this.itemQuestion.libelle;
+      const notes = [...Array(max_note).keys()].map(x => x += 1);       
+      return notes;
+    }
   }
 }

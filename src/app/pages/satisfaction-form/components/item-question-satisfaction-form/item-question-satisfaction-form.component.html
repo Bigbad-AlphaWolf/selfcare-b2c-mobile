@@ -6,9 +6,11 @@
   </div>
   <div class="answer-input">
     <div id="rating" class="rating">
-      <ion-icon *ngFor="let note of BASE_NOTATIONS_RATING" (click)="rate(note)" class="star" [name]="coloreStar(note)"></ion-icon>
-      <ion-item mode="md" class="text-area">
-        <ion-textarea (ionChange)="onCommentEntered($event)" rows="3" cols="15" placeholder="Vos commentaires ou suggestions"></ion-textarea>
+      <ion-item lines="none" class="starts">
+        <ion-icon *ngFor="let note of BASE_NOTATIONS_RATING" (click)="rate(note)" class="star" [name]="coloreStar(note)"></ion-icon>
+      </ion-item>
+      <ion-item mode="md" lines="none">
+        <ion-label>Touchez une étoile pour noter</ion-label>
       </ion-item>
     </div>
   </div>
@@ -26,9 +28,6 @@
           {{ note }}
         </span>
       </div>
-      <ion-item mode="md" class="text-area">
-        <ion-textarea (ionChange)="onCommentEntered($event)" rows="3" cols="15" placeholder="Vos commentaires ou suggestions"></ion-textarea>
-      </ion-item>
     </div>
   </div>
 </div>
@@ -51,9 +50,6 @@
           <ion-radio mode="md" value="no"></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <ion-item mode="md" class="text-area">
-        <ion-textarea (ionChange)="onCommentEntered($event)" rows="3" cols="15" placeholder="Vos commentaires ou suggestions"></ion-textarea>
-      </ion-item>
     </div>
   </div>
 </div>
@@ -71,9 +67,6 @@
           <ion-select-option *ngFor="let el of itemQuestion?.answers" [value]="el.libelle"> {{ el?.libelle }} </ion-select-option>
         </ion-select>
         <ion-icon src="assets/images/arrow-down.svg" slot="end"></ion-icon>
-      </ion-item>
-      <ion-item mode="md" class="text-area">
-        <ion-textarea (ionChange)="onCommentEntered($event)" rows="3" cols="15" placeholder="Vos commentaires ou suggestions"></ion-textarea>
       </ion-item>
     </div>
   </div>
