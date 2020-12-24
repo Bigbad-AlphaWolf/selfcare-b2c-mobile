@@ -96,6 +96,7 @@
                 {{ purchaseInfos?.prenomReceiver }} {{ purchaseInfos?.nomReceiver }}
               </div>
               <div class="subtitle-2 channel">
+                {{ purchaseInfos?.msisdnReceiver === mainUser ? 'Moi' : purchaseInfos?.msisdnReceiver | phoneNumberDisplay }}
               </div>
             </div>
             <div class="right-block-text">

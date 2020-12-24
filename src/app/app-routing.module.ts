@@ -356,6 +356,11 @@ const routes: Routes = [
     loadChildren:
       './contact-ibou-hub/contact-ibou-hub.module#ContactIbouHubPageModule',
   },
+  {
+    path: 'satisfaction-form',
+    loadChildren:
+      './pages/satisfaction-form/satisfaction-form.module#SatisfactionFormPageModule',
+  },
 ];
 
 @NgModule({
