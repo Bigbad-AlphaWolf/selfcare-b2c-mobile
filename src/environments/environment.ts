@@ -25,6 +25,7 @@ export const environment = {
   OM_SERVICE: 'selfcare-b2c-om',
   COMMUNITY_MANAGEMENT_SERVICE: 'selfcare-b2c-community-management',
   PURCHASES_SERVICE: 'selfcare-b2c-purchases',
+  BOOSTER_SERVICE: 'selfcare-b2c-booster-management',
   SARGAL_SERVICE: 'selfcare-b2c-sargal',
   GA_CONFIG: {
     trackingId: 'UA-92621294-1',

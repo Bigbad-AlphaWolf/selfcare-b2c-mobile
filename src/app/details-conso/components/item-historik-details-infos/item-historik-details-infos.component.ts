@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { PurchaseModel, LIST_ICON_PURCHASE_HISTORIK_ITEMS } from 'src/shared';
 
 @Component({
@@ -11,7 +12,10 @@ export class ItemHistorikDetailsInfosComponent implements OnInit {
   @Input() purchaseInfos: PurchaseModel;
   @Input() itemType:string;
   @Input() userProfil:string;
-  constructor() { }
+  mainUser: string
+  constructor(private dashbServ: DashboardService) {
+    this.mainUser = this.dashbServ.getMainPhoneNumber();
+   }
 
   ngOnInit() {}
 
