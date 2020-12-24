@@ -95,6 +95,14 @@ const routes: Routes = [
     loadChildren: './buy-sos/buy-sos.module#BuySosPageModule',
   },
   {
+    path: 'soscredit/:amount',
+    loadChildren: './buy-sos/buy-sos.module#BuySosPageModule',
+  },
+  {
+    path: 'sospass/:amount',
+    loadChildren: './buy-sos/buy-sos.module#BuySosPageModule',
+  },
+  {
     path: 'transfer/:type',
     loadChildren:
       './transfer-credit-bonus-om/transfer-credit-bonus-om.module#TransferCreditBonusOmPageModule',
@@ -337,9 +345,17 @@ const routes: Routes = [
     path: 'illiflex-budget-configuration',
     loadChildren:
       './illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule',
-  },  { path: 'assistance-hub', loadChildren: './assistance-hub/assistance-hub.module#AssistanceHubPageModule' },
-  { path: 'contact-ibou-hub', loadChildren: './contact-ibou-hub/contact-ibou-hub.module#ContactIbouHubPageModule' },
-
+  },
+  {
+    path: 'assistance-hub',
+    loadChildren:
+      './assistance-hub/assistance-hub.module#AssistanceHubPageModule',
+  },
+  {
+    path: 'contact-ibou-hub',
+    loadChildren:
+      './contact-ibou-hub/contact-ibou-hub.module#ContactIbouHubPageModule',
+  },
 ];
 
 @NgModule({
