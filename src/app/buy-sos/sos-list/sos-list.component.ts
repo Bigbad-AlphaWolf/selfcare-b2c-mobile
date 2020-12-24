@@ -2,7 +2,6 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { SoSModel } from 'src/app/services/sos-service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { SosService } from 'src/app/services/sos-service/sos.service';
-import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 
 @Component({
   selector: 'app-sos-list',
@@ -19,7 +18,6 @@ export class SosListComponent implements OnInit {
   currentNumber: string;
   constructor(
     private dashboardService: DashboardService,
-    private authServ: AuthenticationService,
     private sosService: SosService
   ) {}
 
