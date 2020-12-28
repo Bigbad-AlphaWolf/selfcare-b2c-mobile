@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { ModalController } from '@ionic/angular';
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import {
   FIND_AGENCE_EXTERNAL_URL,
@@ -21,7 +23,8 @@ export class ActionItemComponent implements OnInit {
   constructor(
     private router: Router,
     private followAnalyticsService: FollowAnalyticsService,
-    private inAppBrowser: InAppBrowser
+    private inAppBrowser: InAppBrowser,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {}
@@ -54,6 +57,9 @@ export class ActionItemComponent implements OnInit {
         break;
       case 'SEARCH_AGENCY':
         this.goFindToAgenceWebSite();
+        break;
+      case 'CHANGE_PIN_OM':
+        this.openPinpad();
         break;
       default:
         break;
@@ -133,5 +139,19 @@ export class ActionItemComponent implements OnInit {
       'event',
       'clicked'
     );
+  }
+
+  async openPinpad() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+    });
+    modal.onDidDismiss().then((resp) => {
+      console.log(resp);
+      if (resp && resp.data && resp.data.success) {
+        this.router.navigate(['/change-orange-money-pin']);
+      }
+    });
+    return await modal.present();
   }
 }
