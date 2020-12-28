@@ -1,0 +1,16 @@
+{
+  "android": {
+    "debug": {
+      "keystore": "dev_hms_keystore.jks",
+      "storePassword": "azerty",
+      "alias": "pushkitshowcase",
+      "password": "azerty"
+    },
+    "release": {
+      "keystore": "dev_hms_keystore.jks",
+      "storePassword": "azerty",
+      "alias": "pushkitshowcase",
+      "password": "azerty"
+    }
+  }
+}
