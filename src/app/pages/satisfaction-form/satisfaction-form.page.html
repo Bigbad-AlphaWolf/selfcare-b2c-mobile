@@ -1,0 +1,40 @@
+<ion-header [oemIonHeaderParallax]="90" >
+  <ion-toolbar >
+      <ion-buttons>
+        <ion-back-button (click)="goBack()" icon="" class="oem-back-button" >
+            <img src="/assets/images/arrow-left.png" alt="icon" />
+        </ion-back-button>  
+      </ion-buttons>
+      <ion-title> Donnez votre avis </ion-title>
+  </ion-toolbar> 
+  <div class="banner-container">
+    <img src="assets/images/10-illustration-mon-statut.svg" alt="">
+  </div>
+</ion-header>
+
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
+  <div class="header-subdiviser">
+  </div>
+  <div class="page-container">
+    <ng-container *ngIf="isLoading">
+      <ion-spinner name="crescent"></ion-spinner>
+    </ng-container>
+    <ng-container *ngIf="!isLoading && !hasError">
+      <app-item-question-satisfaction-form [(answer)]="listAnswer[i]" *ngFor="let item of listQuestions; let i=index" [itemQuestion]="item">
+      </app-item-question-satisfaction-form>
+    </ng-container>
+    <ng-container *ngIf="!isLoading && hasError">
+      <span (click)="fetchQuestions()">
+        Une erreur est survenue durant l'affichage. Veuillez cliquer ici pour actualiser la page.
+      </span>
+    </ng-container>
+  </div>
+  <div *ngIf="hasErrorSubmitting" class="scb-text-red-error error">
+    {{ errorMsg }}
+  </div>
+  <div class="btn-submit">
+    <ion-button [disabled]="isSubmitting" expand="block" (click)="submit()"> Partager mon avis 
+        <ion-spinner *ngIf="isSubmitting" name="crescent"></ion-spinner>
+    </ion-button>
+  </div>
+</ion-content>

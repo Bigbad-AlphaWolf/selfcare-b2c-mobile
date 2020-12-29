@@ -32,6 +32,7 @@ import {
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { ModalController, NavController } from '@ionic/angular';
 import { RegistrationSuccessModalPage } from '../registration-success-modal/registration-success-modal.page';
+import { hash53 } from '../dashboard';
 
 @Component({
   selector: 'app-new-registration',
@@ -260,6 +261,7 @@ export class NewRegistrationPage implements OnInit {
       lastName: '',
       email: null,
       hmac: this.hmac,
+      clientId: hash53(this.phoneNumber)
     };
     this.authServ.register(userInfo).subscribe(
       () => {

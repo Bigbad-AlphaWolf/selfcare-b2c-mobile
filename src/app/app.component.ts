@@ -185,6 +185,8 @@ export class AppComponent {
           '/suivi-conso': DashboardPage,
           '/transfer-money/:msisdn/:amount': TransfertHubServicesPage,
           '/transfer-money/:msisdn': TransfertHubServicesPage,
+          '/soscredit/:amount': '',
+          '/sospass/:amount': '',
         })
         .subscribe(
           (matched) => {
@@ -203,8 +205,6 @@ export class AppComponent {
   goToPage(path: string) {
     if (checkUrlMatch(path)) {
       this.appRout.goToTransfertHubServicesPage('BUY');
-    } else if (path.startsWith('/transfer-money')) {
-      this.appRout.goToTransfertHubServicesPage('TRANSFER');
     } else {
       this.router.navigate([path]);
     }

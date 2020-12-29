@@ -1,6 +1,6 @@
 <!-- header -->
 <div class="help-header">
-    <div class="arrow-left" routerLink="{{redirectTo}}">
+    <div class="arrow-left" (click)="goBack()">
         <img alt="" src="/assets/images/arrow-left.png" />
     </div>
   <div *ngIf="helpType !== 'rattachment' && helpType !== 'rattachment-by-id'" class="title"><span>Assistance</span></div>

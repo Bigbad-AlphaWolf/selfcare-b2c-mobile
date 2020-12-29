@@ -1,0 +1,86 @@
+<div *ngIf="isType(itemQuestion, TYPE_QUESTION_SATISFACTION_FORM.NOTE)" class="item-container rating">
+  <div class="question-label">
+    <span class="text">
+      {{ itemQuestion.question }}
+    </span>
+  </div>
+  <div class="answer-input">
+    <div id="rating" class="rating">
+      <ion-item lines="none" class="starts">
+        <ion-icon *ngFor="let note of BASE_NOTATIONS_RATING" (click)="rate(note)" class="star" [name]="coloreStar(note)"></ion-icon>
+      </ion-item>
+      <ion-item mode="md" lines="none">
+        <ion-label>Touchez une étoile pour noter</ion-label>
+      </ion-item>
+    </div>
+  </div>
+</div>
+<div *ngIf="isType(itemQuestion, TYPE_QUESTION_SATISFACTION_FORM.RECOMMENDATION)" class="item-container recommendation">
+  <div class="question-label">
+    <span class="text">
+      {{ itemQuestion.question }}
+    </span>
+  </div>
+  <div class="answer-input">
+    <div id="recommedation" class="recommedation">
+      <div class="note-block">
+        <span *ngFor="let note of BASE_NOTATIONS_RECOMENDATION_RATING" (click)="rateRecommendation(note)" [ngClass]="{'colored': colorRecommendationIndex(note) } " class="note" >
+          {{ note }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="isType(itemQuestion, TYPE_QUESTION_SATISFACTION_FORM.YES_NO)" class="item-container yes-no">
+  <div class="question-label">
+    <span class="text">
+      {{ itemQuestion.question }}
+    </span>
+  </div>
+  <div class="answer-input">
+    <div id="radio" class="radio-button">
+      <ion-radio-group (ionChange)="onAnswerSelected($event)" placeholder="Selectionner votre réponse">
+        <ion-item lines="none">
+          <ion-label>Oui</ion-label>
+          <ion-radio mode="md" value="yes"></ion-radio>
+        </ion-item>
+    
+        <ion-item lines="none">
+          <ion-label>Non</ion-label>
+          <ion-radio mode="md" value="no"></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+    </div>
+  </div>
+</div>
+<div *ngIf="isType(itemQuestion, TYPE_QUESTION_SATISFACTION_FORM.SELECT_ANSWER)" class="item-container select-answer">
+  <div class="question-label">
+    <span class="text">
+      {{ itemQuestion.question }}
+    </span>
+  </div>
+  <div class="answer-input">
+    <div id="select-option" class="select-option">
+      <ion-item *ngIf="itemQuestion?.answers.length" class="select" lines="none">
+        <ion-label> Choisir</ion-label>
+        <ion-select [multiple]="isMultiSelection()" (ionChange)="onAnswerSelectedFromSelection($event)" #select noIonSelectArrow interface="popover" placeholder="Selectionner votre réponse">
+          <ion-select-option *ngFor="let el of itemQuestion?.answers" [value]="el.libelle"> {{ el?.libelle }} </ion-select-option>
+        </ion-select>
+        <ion-icon src="assets/images/arrow-down.svg" slot="end"></ion-icon>
+      </ion-item>
+    </div>
+  </div>
+</div>
+<div *ngIf="isType(itemQuestion, TYPE_QUESTION_SATISFACTION_FORM.BASIC)" class="item-container basic">
+  <div class="question-label">
+    <span class="text">
+      {{ itemQuestion.question }}
+    </span>
+  </div>
+  <div class="answer-input">
+    <ion-item mode="md" class="text-area">
+      <ion-textarea (ionChange)="onAnswerSelected($event)" rows="3" cols="15" placeholder="Vos commentaires ou suggestions"></ion-textarea>
+    </ion-item>
+  </div>
+</div>
+    

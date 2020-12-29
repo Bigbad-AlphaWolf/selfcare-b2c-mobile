@@ -29,7 +29,7 @@ export const OPERATION_TYPE_PASS_ILLIFLEX = 'PASS_ILLIFLEX';
 export const OPERATION_TYPE_MERCHANT_PAYMENT = 'MERCHANT_PAYMENT';
 export const OPERATION_TYPE_SOS = 'SOS';
 export const OPERATION_TYPE_SOS_CREDIT = 'SOS CREDIT';
-export const OPERATION_TYPE_SOS_PASS = 'SOS DATA';
+export const OPERATION_TYPE_SOS_PASS = 'SOS Pass Internet';
 export const OPERATION_TYPE_SOS_ILLIMIX = 'SOS Illimix';
 export const OPERATION_TYPE_SEDDO_CREDIT = 'SEDDO CREDIT';
 export const OPERATION_TYPE_SEDDO_PASS = 'SEDDO PASS';
@@ -47,6 +47,8 @@ export const OPERATION_SEE_SOLDE_RAPIDO = 'SOLDE_RAPIDO';
 export const OPERATION_SEE_FOLLOW_UP_REQUESTS = 'FOLLOW_UP_REQUESTS';
 export const OPERATION_SEE_RATTACHED_NUMBERS = 'RATTACHED_NUMBERS';
 export const OPERATION_RATTACH_NUMBER = 'RATTACHE_NUMBER';
+export const OPERATION_CONFIRM_DELETE_RATTACH_NUMBER =
+  'CONFIRM_DELETE_RATTACHE_NUMBER';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -76,8 +78,12 @@ export const ASSISTANCE_URL = 'https://assistance.orange.sn';
 export const FACEBOOK_URL = 'https://m.me/165622776799685';
 export const TWITTER_URL =
   'https://twitter.com/messages/compose?recipient_id=733327435299729408';
+export const INSTAGRAM_URL =
+  'https://instagram.com/orange_senegal?igshid=7xv78qwpivfm';
 
 export const FIND_AGENCE_EXTERNAL_URL = 'https://agence.orange.sn/';
+export const CHECK_ELIGIBILITY_EXTERNAL_URL =
+  'https://www.orange.sn/test-fibre';
 export const VALID_IMG_EXTENSIONS = ['jpg', 'jpeg', 'png'];
 
 export const CREDIT = 'crédit';
@@ -137,6 +143,15 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
   SARGAL: `${IMAGES_DIRECTORY}transfert-icon.png`,
 };
+
+export const TYPE_QUESTION_SATISFACTION_FORM = { 
+  BASIC: 'NONE',
+ NOTE: 'RATING', 
+ RECOMMENDATION: 'RECOMMENDATION', 
+ YES_NO: 'YES_NO', 
+ SELECT_ANSWER: 'SELECT_ANSWER_QUESTION' 
+};
+
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
 }
@@ -718,6 +733,7 @@ export interface PurchaseModel {
   label?: string;
   prenomReceiver?: string;
   nomReceiver?: string;
+  msisdnReceiver?: string;
 }
 
 /**

@@ -27,7 +27,7 @@
           </span>
           <div class="list">
             <ng-container *ngFor="let line of listRattachedNumbers.others">
-              <app-item-rattached-number (selectedItem)="deletePhoneNumbers($event)" [isEditable]="editable" [line]="line"></app-item-rattached-number>
+              <app-item-rattached-number (selectedItem)="performAction($event)" [isEditable]="editable" [line]="line"></app-item-rattached-number>
             </ng-container>
           </div>
         </div>

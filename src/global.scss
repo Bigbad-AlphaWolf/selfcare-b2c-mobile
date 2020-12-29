@@ -789,3 +789,13 @@ ion-button {
 .my-knob {
   background-color: black !important;
 }
+
+.assistance-page-body,
+.questions-page-body,
+.actions-page-body {
+  ion-input {
+    input {
+      font-size: 16px !important;
+    }
+  }
+}

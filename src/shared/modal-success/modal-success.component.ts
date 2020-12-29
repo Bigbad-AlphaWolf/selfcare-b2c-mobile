@@ -28,7 +28,7 @@ export class ModalSuccessComponent implements OnInit {
 
   closeDialog() {
     this.dialogRef.close(false);
-    if (this.data.type === 'changePassword' || this.data.type === 'sargal-success' || this.data.type === 'sargal-failed') {
+    if (this.data.type === 'changePassword' || this.data.type === 'sargal-success' || this.data.type === 'sargal-failed' || this.data.type === 'survey') {
       this.router.navigate(['/dashboard']);
     } else if (this.data.type === 'noOMAccount' || this.data.type === 'rattachment-success' || this.data.type === 'rattachment-failed') {
       this.dialogRef.close();

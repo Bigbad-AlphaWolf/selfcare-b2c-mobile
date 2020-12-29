@@ -16,6 +16,7 @@ import {
 } from 'src/shared';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
+import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-my-account',
@@ -43,7 +44,8 @@ export class MyAccountPage implements OnInit {
     private router: Router,
     public dialog: MatDialog,
     private accountService: AccountService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private bsService: BottomSheetService
   ) {}
 
   ngOnInit() {
@@ -107,7 +109,7 @@ export class MyAccountPage implements OnInit {
     this.userAvatarUrl = getNOAvatartUrlImage();
   }
   goToRattachmentPage() {
-    this.router.navigate(['/new-number']);
+    this.bsService.openRattacheNumberModal();
     this.followAnalyticsService.registerEventFollow(
       'Sidemenu_rattacher_une_ligne',
       'event',
