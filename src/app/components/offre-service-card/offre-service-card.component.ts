@@ -9,6 +9,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -30,7 +31,8 @@ export class OffreServiceCardComponent implements OnInit {
   FILE_BASE_URL: string = FILE_DOWNLOAD_ENDPOINT;
   constructor(
     private navCtrl: NavController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private inAppBrowser: InAppBrowser
   ) {}
   imageUrl: string;
 
@@ -44,7 +46,10 @@ export class OffreServiceCardComponent implements OnInit {
       // this.service.clicked = !this.service.clicked;
       return;
     }
-    if (!this.service.redirectionPath) return;
+    if (!this.service.redirectionPath){
+      this.inAppBrowser.create('https://widget.iaascore.com/?lang=fr','_blank');
+      return;
+    }
     this.navCtrl.navigateForward(this.service.redirectionPath, {
       state: { purchaseType: this.service.redirectionType },
     });
