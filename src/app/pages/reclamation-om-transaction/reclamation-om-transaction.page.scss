@@ -1,0 +1,43 @@
+@import 'src/app/app';
+
+.banner-header{
+    position: relative;
+    height: 70px;
+    background-color: black;
+    img {
+        height: 100%;
+        width: 100%;
+    }
+    .text{
+        position: absolute;
+        top: 40%;
+        left: 6%;
+        display: flex;
+        width: 90%;
+        justify-content: space-between;
+        .number{
+            color: $white;
+        }
+        .change {
+            color: $orange;
+        }
+    }
+}
+.reclamation-content{
+    padding: 10px;
+    .date-picker {
+        border: 1px solid $grey;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .text-conditions{
+        .text {
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 12px;
+        }
+    }
+    ion-button {
+        height: 50px;
+        margin-top: 20px;
+    }
+}

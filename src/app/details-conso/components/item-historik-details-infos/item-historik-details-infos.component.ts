@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { PurchaseModel, LIST_ICON_PURCHASE_HISTORIK_ITEMS } from 'src/shared';
 
@@ -12,6 +12,7 @@ export class ItemHistorikDetailsInfosComponent implements OnInit {
   @Input() purchaseInfos: PurchaseModel;
   @Input() itemType:string;
   @Input() userProfil:string;
+  @Output() selectedItem = new EventEmitter();
   mainUser: string
   constructor(private dashbServ: DashboardService) {
     this.mainUser = this.dashbServ.getMainPhoneNumber();
@@ -30,6 +31,10 @@ export class ItemHistorikDetailsInfosComponent implements OnInit {
 
   isSargalTransaction(purchase: PurchaseModel): boolean {
     return purchase.typeAchat === "SARGAL";
+  }
+
+  purchaseSelected(item: PurchaseModel) {
+    this.selectedItem.emit(item)
   }
 
 }

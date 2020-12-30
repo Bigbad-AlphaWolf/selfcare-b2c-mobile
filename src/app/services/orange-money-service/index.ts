@@ -264,3 +264,6 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     withCode: 4600,
   },
 ];
+
+export const RECLAMATION_TRANSACTIONS_CONDITIONS =
+	'Je demande la correction de cette erreur de saisie par une récupération du montant ci-dessus. Je reconnais que OFMS n’a aucune obligation de résultat pour la récupération du montant de la transaction envoyé par erreur notamment si tout ou partie dudit montant n’est plus disponible. Je certifie que mes déclarations ci-dessus sont complètes, authentiques et faites de bonne foi. Je certifie être pleinement conscient que toute déclaration mensongère ou fausse est susceptible de déclencher une mise en œuvre de ma responsabilité civile et pénale devant les juridictions compétentes. Je reste entièrement responsable de tout préjudice direct ou indirect occasionné par mes déclarations effectuées dans le présent formulaire';
