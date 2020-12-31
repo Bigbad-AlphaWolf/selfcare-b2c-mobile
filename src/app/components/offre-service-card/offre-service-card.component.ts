@@ -9,7 +9,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { OperationService } from 'src/app/services/oem-operation/operation.service';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -32,7 +32,7 @@ export class OffreServiceCardComponent implements OnInit {
   constructor(
     private navCtrl: NavController,
     private toastController: ToastController,
-    private inAppBrowser: InAppBrowser
+    public opService: OperationService,
   ) {}
   imageUrl: string;
 
@@ -47,7 +47,9 @@ export class OffreServiceCardComponent implements OnInit {
       return;
     }
     if (!this.service.redirectionPath){
-      this.inAppBrowser.create('https://widget.iaascore.com/?lang=fr','_blank');
+      if(this.service.code === 1){//OFC
+        this.opService.loadOFC();
+      }
       return;
     }
     this.navCtrl.navigateForward(this.service.redirectionPath, {
@@ -69,4 +71,5 @@ export class OffreServiceCardComponent implements OnInit {
     });
     toast.present();
   }
+
 }
