@@ -1,49 +1,55 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
-      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
-    </ion-buttons>
-    <ion-title class="ion-no-padding">
-      <span class="title1">Changer code secret OM</span>
-    </ion-title>
-  </ion-toolbar>
+	<ion-toolbar>
+		<ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+			<img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+		</ion-buttons>
+		<ion-title class="ion-no-padding">
+			<span class="title1">Changer code secret OM</span>
+		</ion-title>
+	</ion-toolbar>
 </ion-header>
 
 <ion-content class="body-dalal-list">
-  <ion-header class="ion-padding-start" collapse="condense">
-    <ion-toolbar>
-      <span class="title">Changer code secret Orange Money</span>
-    </ion-toolbar>
-  </ion-header>
-  <div class="change-om-pin-page-body">
-    <div class="description scb-text-gray">
-      Le nouveau code secret doit être différent de votre date de naissance et les chiffres consécutifs ne sont pas
-      autorisés
-    </div>
-    <div class="password-form">
-      <form [formGroup]="form" (ngSubmit)="changePinOM()" novalidate autocomplete="false">
-        <mat-form-field class="scb-input-row" appearance="outline">
-          <mat-label>Nouveau code secret &nbsp;&nbsp;</mat-label>
-          <input formControlName="password" matInput type="password" class="input-password"/>
-        </mat-form-field>
-        <mat-form-field class="scb-input-row" appearance="outline">
-          <mat-label>Confirmer le nouveau code secret &nbsp;&nbsp;</mat-label>
-          <input formControlName="confirmPassword" matInput type="password" class="input-password" autocomplete="off"/>
-        </mat-form-field>
-        <button
-        type="submit"
-        [disabled]="!form.valid || loading"
-        class="scb-btn-full scb-btn-orange"
-        mat-stroked-button
-      >
-        <span>Enregistrer</span>
-        <mat-spinner
-          mode="indeterminate"
-          [diameter]="20"
-          *ngIf="loading"
-        ></mat-spinner>
-      </button>
-      </form>
-    </div>
-  </div>
+	<ion-header class="ion-padding-start" collapse="condense">
+		<ion-toolbar>
+			<span class="title">Changer code secret Orange Money</span>
+		</ion-toolbar>
+	</ion-header>
+	<div class="change-om-pin-page-body">
+		<div class="description scb-text-gray">
+			Le nouveau code secret doit être différent de votre date de naissance et les chiffres consécutifs ne sont pas
+			autorisés
+		</div>
+		<div class="password-form">
+			<form [formGroup]="form" (ngSubmit)="changePinOM()" novalidate autocomplete="false">
+				<mat-form-field (click)="openBasicPinpad('PIN')" class="scb-input-row" appearance="outline">
+					<mat-label>Nouveau code secret &nbsp;&nbsp;</mat-label>
+					<input formControlName="pin" [(ngModel)]="form.value.pin" matInput type="password" class="input-password" />
+				</mat-form-field>
+				<mat-form-field (click)="openBasicPinpad('CONFIRM_PIN')" class="scb-input-row" appearance="outline">
+					<mat-label>Confirmer le nouveau code secret &nbsp;&nbsp;</mat-label>
+					<input
+						formControlName="confirmPin"
+						[(ngModel)]="form.value.confirmPin"
+						matInput
+						type="password"
+						class="input-password"
+						autocomplete="off"
+					/>
+				</mat-form-field>
+				<!-- <div class="btn-continue"></div> -->
+				<ng-container *ngIf="hasError">
+					<ion-item lines="none">
+						<span class="scb-text-red-error"> {{ errorMsg }} </span>
+					</ion-item>
+				</ng-container>
+				<div class="submit-btn">
+					<ion-button type="submit" [disabled]="!form.valid || loading" expand="block">
+						Enregistrer
+						<ion-spinner name="crescent" *ngIf="loading"></ion-spinner>
+					</ion-button>
+				</div>
+			</form>
+		</div>
+	</div>
 </ion-content>

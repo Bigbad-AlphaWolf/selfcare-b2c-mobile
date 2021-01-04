@@ -2,11 +2,15 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { ModalController } from '@ionic/angular';
+import { of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import {
   FIND_AGENCE_EXTERNAL_URL,
   CHECK_ELIGIBILITY_EXTERNAL_URL,
+  OPERATION_INIT_CHANGE_PIN_OM,
 } from 'src/shared';
 
 @Component({
@@ -24,7 +28,8 @@ export class ActionItemComponent implements OnInit {
     private router: Router,
     private followAnalyticsService: FollowAnalyticsService,
     private inAppBrowser: InAppBrowser,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private dashbServ: DashboardService
   ) {}
 
   ngOnInit() {}
@@ -145,13 +150,30 @@ export class ActionItemComponent implements OnInit {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
+      componentProps: {
+        'operationType' : OPERATION_INIT_CHANGE_PIN_OM
+      }
     });
     modal.onDidDismiss().then((resp) => {
-      console.log(resp);
       if (resp && resp.data && resp.data.success) {
-        this.router.navigate(['/change-orange-money-pin']);
+
+        const omUserInfos = resp.data.omUserInfos;
+        console.log('omUser', omUserInfos);
+        this.getBirhDate().pipe(tap((birthDate: string) => {
+          
+          if(birthDate){
+            const year = birthDate.split('-')[0];
+            this.router.navigate(['/change-orange-money-pin'], { state: { omUserInfos, birthYear: year } });
+          }
+        }), catchError((err: any) => {
+          this.router.navigate(['/change-orange-money-pin'], { state: { omUserInfos } });
+          return of(err)
+        })).subscribe();
       }
     });
     return await modal.present();
   }
+  getBirhDate() {
+    return this.dashbServ.getUserBirthDate();
+   }
 }
