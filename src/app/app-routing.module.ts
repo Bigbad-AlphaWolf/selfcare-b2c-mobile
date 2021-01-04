@@ -360,7 +360,8 @@ const routes: Routes = [
     path: 'satisfaction-form',
     loadChildren:
       './pages/satisfaction-form/satisfaction-form.module#SatisfactionFormPageModule',
-  },
+  },  { path: 'change-orange-money-pin', loadChildren: './change-orange-money-pin/change-orange-money-pin.module#ChangeOrangeMoneyPinPageModule' },
+
 ];
 
 @NgModule({
