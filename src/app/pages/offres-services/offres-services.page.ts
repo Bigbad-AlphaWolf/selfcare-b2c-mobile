@@ -10,13 +10,9 @@ import { takeUntil, switchMap, catchError, tap } from 'rxjs/operators';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { SubscriptionModel } from 'src/shared';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { CookieService, Cookie } from 'ng2-cookies';
-import { HttpResponse } from '@angular/common/http';
-declare let cordova: any;
+
 @Component({
   selector: 'app-offres-services',
-  providers: [CookieService],
   templateUrl: './offres-services.page.html',
   styleUrls: ['./offres-services.page.scss'],
 })
@@ -43,9 +39,7 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
     private navCtl: NavController,
     public opService: OperationService,
     private dashbService: DashboardService,
-    private authServ: AuthenticationService,
-    private inAppBrowser: InAppBrowser,
-    public cookieService: CookieService
+    private authServ: AuthenticationService
   ) {
     super();
   }

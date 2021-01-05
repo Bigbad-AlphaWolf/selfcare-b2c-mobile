@@ -10,6 +10,8 @@ import {
   trigger,
 } from '@angular/animations';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
+import { OfcService } from 'src/app/services/ofc/ofc.service';
+import { ServiceCode } from 'src/app/models/enums/service-code.enum';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -32,7 +34,7 @@ export class OffreServiceCardComponent implements OnInit {
   constructor(
     private navCtrl: NavController,
     private toastController: ToastController,
-    public opService: OperationService,
+    private ofcService: OfcService
   ) {}
   imageUrl: string;
 
@@ -47,8 +49,8 @@ export class OffreServiceCardComponent implements OnInit {
       return;
     }
     if (!this.service.redirectionPath){
-      if(this.service.code === 1){//OFC
-        this.opService.loadOFC();
+      if(this.service.code + '' === ServiceCode.OFC){//OFC
+        this.ofcService.loadOFC();
       }
       return;
     }
