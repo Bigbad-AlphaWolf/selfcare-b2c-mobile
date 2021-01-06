@@ -208,7 +208,6 @@
       "cordova-plugin-whitelist": {},
       "cordova.plugin.followanalytics": {},
       "cordova-plugin-uid": {},
-      "com.cordova.plugins.cookiemaster": {},
       "cordova-plugin-dreamover-uid": {},
       "cordova-plugin-inappbrowser": {}
     },

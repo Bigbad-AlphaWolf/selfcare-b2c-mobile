@@ -65,7 +65,7 @@ export class OfcService {
             ? 1
             : this.ofcLoadTimes;
 
-        this.loadOFCCookiestest()
+        this.loadOFCCookies()
           .then((data) => {
             const cookiesSet = data.headers['set-cookie'];
             if (cookiesSet && cookiesSet !== '') {
