@@ -77,14 +77,14 @@ export class OperationSuccessFailModalPage implements OnInit {
         this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       case OPERATION_TYPE_PASS_ILLIMIX:
-        if (this.opXtras.code === CODE_KIRENE_Formule) {
+        if (this.opXtras.recipientCodeFormule === CODE_KIRENE_Formule) {
           this.appRouting.goToBuyPassIllimixKirene();
         } else {
           this.appRouting.goToTransfertHubServicesPage('BUY');
         }
         break;
       case OPERATION_TYPE_PASS_INTERNET:
-        if (this.opXtras.code === CODE_KIRENE_Formule) {
+        if (this.opXtras.recipientCodeFormule === CODE_KIRENE_Formule) {
           this.appRouting.goToBuyPassInternetKirene();
         } else {
           this.appRouting.goToTransfertHubServicesPage('BUY');

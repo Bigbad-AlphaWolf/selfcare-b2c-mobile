@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonSlides, NavController } from '@ionic/angular';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { ApplicationRoutingService } from '../../services/application-routing/application-routing.service';
+import { Router, NavigationExtras } from '@angular/router';
 import { PassInternetService } from '../../services/pass-internet-service/pass-internet.service';
 import {
   arrangePassByCategory,
@@ -42,7 +41,6 @@ export class ListePassPage implements OnInit {
   OPERATION_ALLO_TYPE = OPERATION_TYPE_PASS_ALLO;
   constructor(
     private router: Router,
-    private appRouting: ApplicationRoutingService,
     private passIntService: PassInternetService,
     private passIllimixServ: PassIllimixService,
     private navCtl: NavController
@@ -66,11 +64,10 @@ export class ListePassPage implements OnInit {
       this.listPass = [];
       this.activeTabIndex = 0;
       if (this.purchaseType === OPERATION_TYPE_PASS_INTERNET) {
-        this.passIntService.setUserCodeFormule(this.userCodeFormule);
         this.passIntService
           .queryListPassInternetOfUser(this.userCodeFormule)
           .subscribe(
-            (res: any) => {
+            () => {
               this.isLoaded = true;
               this.listCategory = this.passIntService.getListCategoryPassInternet();
               this.listPass = this.passIntService.getListPassInternetOfUser();
@@ -82,7 +79,7 @@ export class ListePassPage implements OnInit {
                 this.listCategory
               );
             },
-            (err: any) => {
+            () => {
               this.isLoaded = true;
             }
           );
@@ -92,7 +89,7 @@ export class ListePassPage implements OnInit {
         this.passIllimixServ
           .queryListPassIllimix(this.userCodeFormule, category)
           .subscribe(
-            (res: any) => {
+            () => {
               this.isLoaded = true;
               this.listCategory = this.passIllimixServ.getCategoryListPassIllimix();
               this.listPass = this.passIllimixServ.getListPassIllimix();
@@ -104,7 +101,7 @@ export class ListePassPage implements OnInit {
                 this.listCategory
               );
             },
-            (err: any) => {
+            () => {
               this.isLoaded = true;
             }
           );

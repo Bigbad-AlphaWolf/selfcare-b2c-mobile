@@ -208,6 +208,7 @@
       },
       "cordova-plugin-whitelist": {},
       "cordova.plugin.followanalytics": {},
+      "cordova-plugin-uid": {},
       "cordova-plugin-dreamover-uid": {}
     },
     "platforms": [
