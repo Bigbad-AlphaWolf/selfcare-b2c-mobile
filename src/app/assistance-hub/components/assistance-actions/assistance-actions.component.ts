@@ -69,6 +69,11 @@ export class AssistanceActionsComponent implements OnInit {
           image:
             '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
         },
+        {
+          act: 'CHANGE_PIN_OM',
+          description: 'Changer mon code de transaction Orange Money',
+          image: '/assets/images/change-pin-om.png',
+        },
       ],
     ],
   ]);
