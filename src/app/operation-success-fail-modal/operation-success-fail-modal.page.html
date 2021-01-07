@@ -97,11 +97,13 @@
     <ng-container [ngSwitch]="purchaseType">
       <app-item-pass-internet
         [passInternet]="passBought"
+        [boosters]="getPassBoosters(passBought)"
         *ngSwitchCase="OPERATION_INTERNET_TYPE"
       >
       </app-item-pass-internet>
       <app-item-pass-illimix
         [passIllimix]="passBought"
+        [boosters]="getPassBoosters(passBought)"
         *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
       >
       </app-item-pass-illimix>
@@ -262,7 +264,7 @@
     </div>
   </div>
 
-  <div *ngIf="success" class="confirm-btn">
+  <div *ngIf="success && !coupon" class="confirm-btn">
     <ion-button
       (click)="goToPage()"
       shape="round"
@@ -305,6 +307,18 @@
         >
       </ng-container>
     </ion-button>
+  </div>
+
+  <div class="coupon-block" *ngIf="success && coupon">
+    <div class="header">
+      <span class="scb-text-gray">Coupon &nbsp;</span>
+      <img src="/assets/images/logo-trace.png" alt="">
+    </div>
+    <span class="code">{{coupon}}</span>
+  </div>
+
+  <div class="scb-text-gray loading-coupon" *ngIf="success && hasCoupon">
+    Vous recevrez le coupon par message...
   </div>
 
   <div class="terminer scb-text-orange" (click)="terminer()">

@@ -3,6 +3,7 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { PalierModel } from 'src/app/models/palier.model';
+import { BoosterModel } from 'src/app/models/booster.model';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
@@ -144,12 +145,12 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   SARGAL: `${IMAGES_DIRECTORY}transfert-icon.png`,
 };
 
-export const TYPE_QUESTION_SATISFACTION_FORM = { 
+export const TYPE_QUESTION_SATISFACTION_FORM = {
   BASIC: 'NONE',
- NOTE: 'RATING', 
- RECOMMENDATION: 'RECOMMENDATION', 
- YES_NO: 'YES_NO', 
- SELECT_ANSWER: 'SELECT_ANSWER_QUESTION' 
+  NOTE: 'RATING',
+  RECOMMENDATION: 'RECOMMENDATION',
+  YES_NO: 'YES_NO',
+  SELECT_ANSWER: 'SELECT_ANSWER_QUESTION',
 };
 
 export function getNOAvatartUrlImage() {
@@ -1247,4 +1248,18 @@ export function getMinDataVolumeOrVoiceOfPaliers(
     dataOrVoice === 'data' ? palier.dataPrice : palier.voicePrice;
   const minPercentage = 0.2;
   return (minPercentage * minAmount) / (unitPrice * 1.239);
+}
+
+// method to get boosters array for a specific pass
+export function getActiveBoostersForSpecificPass(
+  pass,
+  boosters: BoosterModel[]
+) {
+  const passPPI = pass.passPromo
+    ? pass.passPromo.price_plan_index
+    : pass.price_plan_index;
+  const boostersArray = boosters.filter((booster) =>
+    booster.pricePlanIndexes.includes(passPPI.toString())
+  );
+  return boostersArray;
 }

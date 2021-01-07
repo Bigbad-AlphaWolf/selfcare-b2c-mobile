@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { of, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import {
   PassInfoModel,
@@ -9,11 +9,12 @@ import {
   getListPassFilteredByLabelAndPaymentMod,
 } from 'src/shared';
 import { environment } from 'src/environments/environment';
-const { SERVER_API_URL, CONSO_SERVICE } = environment;
+const { SERVER_API_URL, CONSO_SERVICE, BOOSTER_SERVICE } = environment;
 import { HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 const passByIdEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-internets`;
 const passByPPIEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-by-ppi`;
+const passInPromoEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/booster/pass-promo`;
 @Injectable({
   providedIn: 'root',
 })
@@ -43,7 +44,6 @@ export class PassInternetService {
     this.setListPassInternetOfUser([]);
     return this.dashbService.getListPassInternet(codeFormule).pipe(
       map((resp: any[]) => {
-        console.log('res', resp);
         if (resp instanceof Array) {
           resp.forEach((x: PassInternetModel) => {
             if (x.pass && x.pass.actif) {
