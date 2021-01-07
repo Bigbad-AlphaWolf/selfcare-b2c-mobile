@@ -9,6 +9,9 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { OperationService } from 'src/app/services/oem-operation/operation.service';
+import { OfcService } from 'src/app/services/ofc/ofc.service';
+import { ServiceCode } from 'src/app/models/enums/service-code.enum';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -30,7 +33,8 @@ export class OffreServiceCardComponent implements OnInit {
   FILE_BASE_URL: string = FILE_DOWNLOAD_ENDPOINT;
   constructor(
     private navCtrl: NavController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private ofcService: OfcService
   ) {}
   imageUrl: string;
 
@@ -44,7 +48,12 @@ export class OffreServiceCardComponent implements OnInit {
       // this.service.clicked = !this.service.clicked;
       return;
     }
-    if (!this.service.redirectionPath) return;
+    if (!this.service.redirectionPath){
+      if(this.service.code + '' === ServiceCode.OFC){//OFC
+        this.ofcService.loadOFC();
+      }
+      return;
+    }
     this.navCtrl.navigateForward(this.service.redirectionPath, {
       state: { purchaseType: this.service.redirectionType },
     });
@@ -64,4 +73,5 @@ export class OffreServiceCardComponent implements OnInit {
     });
     toast.present();
   }
+
 }

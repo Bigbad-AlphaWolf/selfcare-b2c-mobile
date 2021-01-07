@@ -14,6 +14,7 @@ import {
   OPERATION_TYPE_PASS_ILLIFLEX,
   CODE_KIRENE_Formule,
   getActiveBoostersForSpecificPass,
+  OPERATION_CHANGE_PIN_OM,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -42,6 +43,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TYPE_RECHARGE = OPERATION_TYPE_RECHARGE_CREDIT;
   OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
   OPERATION_ILLIFLEX_TYPE = OPERATION_TYPE_PASS_ILLIFLEX;
+  OPERATION_CHANGE_PIN_OM = OPERATION_CHANGE_PIN_OM;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;
@@ -56,6 +58,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   @Input() merchantName: string;
   @Input() opXtras: OperationExtras;
   @Input() dalal: any;
+  @Input() textMsg: any;
   dateAchat = this.dashboardService.getCurrentDate();
   btnText: string;
   coupon;
