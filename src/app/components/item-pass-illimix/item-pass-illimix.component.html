@@ -90,7 +90,7 @@
       <ng-container *ngIf="boosters && boosters.length">
         <div class="gift-infos scb-text-gray" *ngFor="let booster of boosters">
           <span>{{booster?.gift?.description + ' '}}</span>
-          <img *ngIf="booster?.gift?.partner" [src]="FILE_BASE_URL+'/'+booster?.gift?.partner?.icone" alt="">
+          <img-loader *ngIf="booster?.gift?.partner" [spinner]="true" class="icone" [src]="FILE_BASE_URL+'/'+booster?.gift?.partner?.icone" useImg></img-loader>
         </div>
       </ng-container>
     </div>

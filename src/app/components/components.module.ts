@@ -17,6 +17,7 @@ import { CardRapidoNameModalComponent } from './card-rapido-name-modal/card-rapi
 import { ItemIlliflexComponent } from 'src/shared/illiflex-item/item-illiflex/item-illiflex.component';
 import { IdentifiedNumbersListComponent } from '../pages/rattached-phones-number/components/identified-numbers-list/identified-numbers-list.component';
 import { ChooseRattachementTypeModalComponent } from '../pages/rattached-phones-number/components/choose-rattachement-type-modal/choose-rattachement-type-modal.component';
+import { IonicImageLoader } from 'ionic-image-loader';
 
 @NgModule({
   declarations: [
@@ -33,9 +34,15 @@ import { ChooseRattachementTypeModalComponent } from '../pages/rattached-phones-
     CardRapidoNameModalComponent,
     ItemIlliflexComponent,
     IdentifiedNumbersListComponent,
-    ChooseRattachementTypeModalComponent
+    ChooseRattachementTypeModalComponent,
   ],
-  imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule],
+  imports: [
+    CommonModule,
+    PipesModule,
+    MaterialComponentsModule,
+    IonicModule,
+    IonicImageLoader,
+  ],
   exports: [
     ItemOfferPlanComponent,
     ItemPassIllimixComponent,
@@ -50,8 +57,8 @@ import { ChooseRattachementTypeModalComponent } from '../pages/rattached-phones-
     CardRapidoNameModalComponent,
     ItemIlliflexComponent,
     IdentifiedNumbersListComponent,
-    ChooseRattachementTypeModalComponent
+    ChooseRattachementTypeModalComponent,
   ],
-  entryComponents: []
+  entryComponents: [],
 })
 export class ComponentsModule {}
