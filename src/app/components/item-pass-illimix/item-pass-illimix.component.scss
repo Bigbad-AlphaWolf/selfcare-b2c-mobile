@@ -101,6 +101,15 @@
           line-height: 1.33;
         }
       }
+      .gift-infos {
+        display: flex;
+        font-size: 12px;
+        margin-top: 10px;
+        span {
+          font-family: HelveticaNeueLTStd-Roman;
+          padding-right: 10px !important;
+        }
+      }
     }
     .promo-block {
       position: absolute;

@@ -14,6 +14,9 @@ import {
 } from 'src/shared';
 import { DOCUMENT } from '@angular/platform-browser';
 import { SessionOem } from '../session-oem/session-oem.service';
+import { BoosterModel, BoosterTrigger } from 'src/app/models/booster.model';
+import { GiftType } from 'src/app/models/enums/gift-type.enum';
+import { BoosterService } from '../booster.service';
 const {
   SERVER_API_URL,
   SEDDO_SERVICE,
@@ -22,7 +25,7 @@ const {
   ACCOUNT_MNGT_SERVICE,
   UAA_SERVICE,
   PURCHASES_SERVICE,
-  BOOSTER_SERVICE
+  BOOSTER_SERVICE,
 } = environment;
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -66,6 +69,7 @@ const welcomeStatusEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters
 
 // Endpoint promoBooster active
 const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters/active-boosters`;
+const boosterTransactionEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters/booster-promo-transaction`;
 
 // Endpoint to get the user's birthdate
 const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/birthDate`;
@@ -93,7 +97,8 @@ export class DashboardService {
     rendererFactory: RendererFactory2,
     @Inject(DOCUMENT) private _document,
     private http: HttpClient,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private boosterService: BoosterService
   ) {
     this.renderer = rendererFactory.createRenderer(null, null);
     authService.currentPhoneNumberSetSubject.subscribe((value) => {
@@ -240,7 +245,6 @@ export class DashboardService {
   checkFixNumber(payload: { login: string; token: string; msisdn: string }) {
     return this.http.post(checkFixNumber, payload);
   }
-
 
   // get all attached numbers
   getAttachedNumbers() {
@@ -505,18 +509,56 @@ export class DashboardService {
 
   getWelcomeStatus() {
     const currentPhoneNumber = this.getCurrentPhoneNumber();
-    return this.http.get(
-      `${welcomeStatusEndpoint}/${currentPhoneNumber}/welcome-status`
-    );
+    return this.boosterService
+      .getBoosters({ trigger: BoosterTrigger.FORM_INSCRIPTION })
+      .pipe(
+        switchMap((res: BoosterModel[]) => {
+          const lastWelcomeBooster = res[0];
+          return this.http
+            .get(
+              `${boosterTransactionEndpoint}/?msisdn=${currentPhoneNumber}&boosterId=${lastWelcomeBooster.id}`
+            )
+            .pipe(
+              map((res: any) => {
+                const response = {
+                  status: res.transactionStatus,
+                  type: GiftType.RECHARGE,
+                  value: {
+                    amount: res.transactionValue,
+                    unit: 'F CFA',
+                  },
+                };
+                return response;
+              })
+            );
+        })
+      );
   }
 
   getActivePromoBooster() {
     const currentPhoneNumber = this.getCurrentPhoneNumber();
     return this.authService.getSubscriptionForTiers(currentPhoneNumber).pipe(
       switchMap((res: SubscriptionModel) => {
-        return this.http.get(
-          `${promoBoosterActiveEndpoint}?msisdn=${currentPhoneNumber}&code=${res.code}`
-        );
+        return this.boosterService
+          .getBoosters({
+            trigger: BoosterTrigger.TOUS,
+            codeFormuleRecipient: res.code,
+            msisdn: currentPhoneNumber,
+          })
+          .pipe(
+            map((res: BoosterModel[]) => {
+              const promoPass = res.find(
+                (promo) => promo.boosterTrigger === BoosterTrigger.PASS_INTERNET
+              );
+              const promoRecharge = res.find(
+                (promo) => promo.boosterTrigger === BoosterTrigger.RECHARGE
+              );
+              const promoPassIllimix = res.find(
+                (promo) => promo.boosterTrigger === BoosterTrigger.PASS_ILLIMIX
+              );
+              return { promoPass, promoRecharge, promoPassIllimix };
+            })
+          );
       }),
       catchError((_) => {
         return of({

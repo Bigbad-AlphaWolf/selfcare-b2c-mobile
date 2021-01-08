@@ -223,12 +223,14 @@
         <app-item-pass-internet
           [passInternet]="passChoosen"
           [subscription]="subscriptionInfos"
+          [boosters]="getPassBoosters(passChoosen)"
           *ngSwitchCase="OPERATION_INTERNET_TYPE"
         >
         </app-item-pass-internet>
         <app-item-pass-illimix
           [passIllimix]="passChoosen"
           [subscription]="subscriptionInfos"
+          [boosters]="getPassBoosters(passChoosen)"
           *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >
         </app-item-pass-illimix>
