@@ -444,6 +444,7 @@ export class OperationRecapPage implements OnInit {
     params.merchantCode = this.merchantCode;
     params.merchantName = this.merchantName;
     params.dalal = this.opXtras ? this.opXtras.dalal : null;
+    params.opXtras = this.opXtras;
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
       cssClass: params.success ? 'success-modal' : 'failed-modal',
@@ -479,14 +480,15 @@ export class OperationRecapPage implements OnInit {
       msisdn,
       receiver,
     };
-    this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
-      (res: any) => {
-        this.transactionSuccessful(res);
-      },
-      (err: any) => {
-        this.transactionFailure(err);
-      }
-    );
+    this.transactionSuccessful(null);
+    // this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
+    //   (res: any) => {
+    //     this.transactionSuccessful(res);
+    //   },
+    //   (err: any) => {
+    //     this.transactionFailure(err);
+    //   }
+    // );
   }
 
   payIlliflex() {
@@ -523,28 +525,28 @@ export class OperationRecapPage implements OnInit {
 
   transactionSuccessful(res: any) {
     this.buyingPass = false;
-    if (res.code !== '0') {
-      this.buyPassFailed = true;
-      this.buyPassErrorMsg = res.message;
-      const followDetails = { error_code: res.code };
-      this.followAnalyticsService.registerEventFollow(
-        'Credit_Buy_Pass_Internet_Error',
-        'error',
-        followDetails
-      );
-    } else {
-      this.buyPassFailed = false;
-      const followDetails = {
-        option_name: this.passChoosen.nom,
-        amount: this.passChoosen.tarif,
-        plan: this.passChoosen.price_plan_index,
-      };
-      this.followAnalyticsService.registerEventFollow(
-        'Credit_Buy_Pass_Internet_Success',
-        'event',
-        followDetails
-      );
-    }
+    // if (res.code !== '0') {
+    //   this.buyPassFailed = true;
+    //   this.buyPassErrorMsg = res.message;
+    //   const followDetails = { error_code: res.code };
+    //   this.followAnalyticsService.registerEventFollow(
+    //     'Credit_Buy_Pass_Internet_Error',
+    //     'error',
+    //     followDetails
+    //   );
+    // } else {
+    //   this.buyPassFailed = false;
+    //   const followDetails = {
+    //     option_name: this.passChoosen.nom,
+    //     amount: this.passChoosen.tarif,
+    //     plan: this.passChoosen.price_plan_index,
+    //   };
+    //   this.followAnalyticsService.registerEventFollow(
+    //     'Credit_Buy_Pass_Internet_Success',
+    //     'event',
+    //     followDetails
+    //   );
+    // }
     this.openSuccessFailModal({
       success: !this.buyPassFailed,
       msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
