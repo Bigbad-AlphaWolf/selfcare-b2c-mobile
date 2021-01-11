@@ -361,6 +361,7 @@ const routes: Routes = [
     loadChildren:
       './pages/satisfaction-form/satisfaction-form.module#SatisfactionFormPageModule',
   },  { path: 'change-orange-money-pin', loadChildren: './change-orange-money-pin/change-orange-money-pin.module#ChangeOrangeMoneyPinPageModule' },
+  { path: 'community', loadChildren: './community/community.module#CommunityPageModule' },
 
 ];
 

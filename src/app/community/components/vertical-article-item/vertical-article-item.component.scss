@@ -1,0 +1,70 @@
+@import 'src/app/app';
+
+.vertical-article-item {
+  width: 100%;
+  background-color: $white;
+  border-radius: 10px;
+  .img-container {
+    width: 100%;
+    position: relative;
+    border-radius: 10px;
+    .article-image {
+      width: 100%;
+      height: auto;
+    }
+    .fav-block {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background-color: $grayDashboard;
+      border-radius: 50%;
+      bottom: 15px;
+      right: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .fav-icon {
+        width: 25px;
+      }
+    }
+  }
+  .article-details {
+    padding: 15px 15px 25px;
+    .category {
+      padding: 5px 10px;
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 10px;
+      background-color: $orange;
+      width: fit-content;
+      border-radius: 5px;
+    }
+    .article-title {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 16px;
+      line-height: 1.38;
+      margin: 5px 0 10px;
+    }
+    .more-infos {
+      display: flex;
+      .comments,
+      .publication-date {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        line-height: 1.33;
+        display: flex;
+        align-items: center;
+        .icon {
+          margin-right: 5px;
+        }
+        .text {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 12px;
+          line-height: 1.33;
+        }
+      }
+      .comments {
+        margin-left: 20px;
+      }
+    }
+  }
+}

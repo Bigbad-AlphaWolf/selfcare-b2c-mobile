@@ -1,0 +1,93 @@
+@import 'src/app/app';
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: -0.34px;
+}
+
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+  padding: 0 10px;
+}
+
+.community-page-body {
+  min-height: 100%;
+  height: fit-content;
+  background-color: $grayDashboard;
+  .search-bar-block {
+    background-color: $white;
+    padding: 23px percentage(15/375);
+    ion-item {
+      border: solid 2px $grayDashboard;
+      height: 60px;
+      border-radius: 10px;
+      --min-height: 100%;
+      ion-input {
+        // --placeholder-opacity: 1;
+      }
+    }
+  }
+  .body-content-block {
+    .title-and-more {
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: 20px;
+      padding: 30px percentage(15/375) 20px;
+      .block-title {
+        font-size: 24px;
+        font-weight: bold;
+        line-height: 1.25;
+      }
+      .voir-tout {
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1.88;
+      }
+    }
+    .categories-block {
+      .categories-list {
+        display: flex;
+        overflow-x: scroll;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        app-category-article-item {
+          margin-left: percentage(15/375);
+          min-width: 135px;
+          width: percentage(135/375);
+          max-width: 180px;
+        }
+      }
+    }
+    .recommended-articles-block {
+      .recommended-list {
+        display: flex;
+        overflow-x: scroll;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        padding-bottom: 22px;
+        app-vertical-article-item {
+          width: percentage(255/375);
+          margin-left: 15px;
+          flex-shrink: 0;
+        }
+      }
+    }
+    .famous-articles-block {
+      background-color: $white;
+      .famous-list {
+        padding: 0 percentage(15/375);
+        display: flex;
+        flex-direction: column;
+        app-horizontal-article-item {
+          width: 100%;
+          margin-bottom: 20px;
+        }
+      }
+    }
+  }
+}

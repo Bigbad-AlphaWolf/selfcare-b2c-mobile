@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">Communauté S’Cool</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">Bienvenue dans la communauté S’Cool</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="community-page-body">
+    <div class="search-bar-block">
+      <ion-item lines="none">
+        <ion-input placeholder="Rechercher dans la communauté"></ion-input>
+        <ion-icon name="search" slot="end"></ion-icon>
+      </ion-item>
+    </div>
+    <div class="body-content-block">
+      <div class="categories-block">
+        <div class="title-and-more">
+          <span class="block-title">Les catégories</span>
+          <span class="scb-text-orange voir-tout">Voir tout</span>
+        </div>
+        <div class="categories-list">
+          <app-category-article-item [category]="category" *ngFor="let category of categories"></app-category-article-item>
+        </div>
+      </div>
+      <div class="recommended-articles-block">
+        <div class="title-and-more">
+          <span class="block-title">Vous intéresse</span>
+          <span class="scb-text-orange voir-tout">Voir tout</span>
+        </div>
+        <div class="recommended-list">
+          <app-vertical-article-item [article]="article" *ngFor="let article of articlesRecommendations"></app-vertical-article-item>
+        </div>
+      </div>
+      <div class="famous-articles-block">
+        <div class="title-and-more">
+          <span class="block-title">Populaires</span>
+          <span class="scb-text-orange voir-tout">Voir tout</span>
+        </div>
+        <div class="famous-list">
+          <app-horizontal-article-item [article]="article" *ngFor="let article of articlesRecommendations"></app-horizontal-article-item>
+        </div>
+      </div>
+    </div>
+  </div>
+  </ion-content>
