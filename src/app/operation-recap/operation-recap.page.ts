@@ -122,7 +122,6 @@ export class OperationRecapPage implements OnInit {
     if (this.route)
       this.route.queryParams.subscribe(async () => {
         if (this.router.getCurrentNavigation()) {
-          console.log(this.router.getCurrentNavigation());
           const isTransferDeeplink = await this.checkTransferOMDeeplink();
           if (isTransferDeeplink) return;
           const pricePlanIndex = await this.checkBuyPassDeeplink();
@@ -480,15 +479,14 @@ export class OperationRecapPage implements OnInit {
       msisdn,
       receiver,
     };
-    this.transactionSuccessful(null);
-    // this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
-    //   (res: any) => {
-    //     this.transactionSuccessful(res);
-    //   },
-    //   (err: any) => {
-    //     this.transactionFailure(err);
-    //   }
-    // );
+    this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
+      (res: any) => {
+        this.transactionSuccessful(res);
+      },
+      (err: any) => {
+        this.transactionFailure(err);
+      }
+    );
   }
 
   payIlliflex() {
