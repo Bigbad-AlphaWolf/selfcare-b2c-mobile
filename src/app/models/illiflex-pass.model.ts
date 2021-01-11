@@ -5,4 +5,5 @@ export interface IlliflexModel {
   validity: string;
   recipient: string;
   sender: string;
+  recipientOfferCode: string;
 }

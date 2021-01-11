@@ -58,6 +58,7 @@ export class IlliflexService {
       },
       receiver: {
         msisdn: passIlliflex.recipient,
+        profile: +passIlliflex.recipientOfferCode,
       },
       bucket: {
         budget: {
