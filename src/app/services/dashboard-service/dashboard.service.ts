@@ -239,7 +239,6 @@ export class DashboardService {
     return this.http.post(checkFixNumber, payload);
   }
 
-
   // get all attached numbers
   getAttachedNumbers() {
     const login = this.authService.getUserMainPhoneNumber();
@@ -458,7 +457,10 @@ export class DashboardService {
           );
         }
       case 'illimix':
-        return this.http.post(buyPassIllimixByCreditEndpoint, params);
+        return this.http.post(
+          `${buyPassIllimixByCreditEndpoint}${queryParams}`,
+          params
+        );
       default:
         break;
     }

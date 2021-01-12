@@ -58,6 +58,7 @@ export class IlliflexService {
       },
       receiver: {
         msisdn: passIlliflex.recipient,
+        profile: 0,
       },
       bucket: {
         budget: {
@@ -82,7 +83,14 @@ export class IlliflexService {
         },
       },
     };
-    return this.http.post(buyIlliflexEndpoint, buyIlliflexPayload);
+    return this.authService
+      .getSubscriptionForTiers(passIlliflex.recipient)
+      .pipe(
+        switchMap((sub: SubscriptionModel) => {
+          buyIlliflexPayload.receiver.profile = +sub.code;
+          return this.http.post(buyIlliflexEndpoint, buyIlliflexPayload);
+        })
+      );
   }
 
   getValidityName(validity) {
