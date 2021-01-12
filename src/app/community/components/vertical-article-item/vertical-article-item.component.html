@@ -1,4 +1,4 @@
-<div class="vertical-article-item">
+<div class="vertical-article-item" [ngClass]="{'display-by-one': uniqueDisplay}">
   <div class="img-container">
     <img [src]="article?.image" alt="img" class="article-image">
     <div class="fav-block">
@@ -17,6 +17,23 @@
         <img src="/assets/images/comments.png" alt="" class="icon">
         <span class="scb-text-gray text">120 commentaires</span>
       </div>
+    </div>
+    <div class="article-content scb-text-gray" *ngIf="uniqueDisplay">
+      <div class="text" [ngClass]="{'show-more': showMore}">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat.
+      </div>
+      <div class="voir-plus" (click)="showeMore()">
+        <span class="scb-text-orange">{{!showMore ? 'Voir plus' : 'Voir moins'}}</span>
+      </div>
+    </div>
+    <div class="comments-block" *ngIf="uniqueDisplay">
+      <div class="title-and-more">
+        <span class="block-title">120 commentaires</span>
+        <span class="scb-text-orange voir-tout">Voir tout</span>
+      </div>
+      <app-comment-block></app-comment-block>
     </div>
   </div>
 </div>

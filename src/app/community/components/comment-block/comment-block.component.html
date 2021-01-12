@@ -1,0 +1,12 @@
+<div class="single-comment-block">
+  <app-article-comment-item></app-article-comment-item>
+  <div class="sub-commments-block">
+    <div class="sub-comments-list">
+      <app-article-comment-item [isSubComment]="true"></app-article-comment-item>
+      <app-article-comment-item [isSubComment]="true"></app-article-comment-item>
+    </div>
+    <div class="more">
+      <span class="show-reponse scb-text-gray">{{true ? 'Plus de réponses' : 'Moins de réponse'}}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">Gagne des tickets pour le Concert de Samba Peuzzi !</span>
+    </ion-title>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="end">
+      <img src="/assets/images/share-square.png" alt="icon" class="share-icon" />
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">Gagne des tickets pour le Concert de Samba Peuzzi !</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="article-page-body">
+    <div class="article-block">
+      <app-vertical-article-item [article]="article" [uniqueDisplay]="true"></app-vertical-article-item>
+    </div>
+    <div class="comments-block"></div>
+  </div>
+</ion-content>

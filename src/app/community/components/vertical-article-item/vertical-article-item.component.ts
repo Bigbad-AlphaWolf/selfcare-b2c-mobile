@@ -8,7 +8,13 @@ import { ArticleModel } from 'src/app/models/article.model';
 })
 export class VerticalArticleItemComponent implements OnInit {
   @Input() article: ArticleModel;
+  @Input() uniqueDisplay: boolean;
+  showMore: boolean;
   constructor() {}
 
   ngOnInit() {}
+
+  showeMore() {
+    this.showMore = !this.showMore;
+  }
 }

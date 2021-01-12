@@ -1,0 +1,23 @@
+@import 'src/app/app';
+
+ion-title {
+  padding: 0 50px !important;
+}
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: -0.34px;
+}
+
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+  padding: 0 10px;
+}
+
+.article-page-body {
+  min-height: 100%;
+  height: fit-content;
+}
