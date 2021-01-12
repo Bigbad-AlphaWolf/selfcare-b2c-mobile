@@ -150,7 +150,8 @@
       />
     </div>
   </div>
-  <div class="loading" *ngIf="processingPin">
-    <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+  <div class="loading" *ngIf="processingPin || gettingPinpad">
+    <ion-spinner name="crescent">
+    </ion-spinner>
   </div>
 </div>

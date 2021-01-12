@@ -192,9 +192,12 @@ export class NewPinpadModalPage implements OnInit {
           this.userHasOmToken = true;
           this.checkingToken = false;
           this.gettingPinpad = true;
+          this.pinHasError = false;
+          this.pinError = null;
           this.orangeMoneyService
             .GetPinPad(this.pinpadData)
             .subscribe((res: any) => {
+              this.gettingPinpad = false;
               const omUser1 = this.orangeMoneyService.GetOrangeMoneyUser(
                 this.omPhoneNumber
               );
@@ -208,6 +211,10 @@ export class NewPinpadModalPage implements OnInit {
                 omUser1.pinFailed = 0;
               }
               this.orangeMoneyService.SaveOrangeMoneyUser(omUser1);
+            }, (err: any)=> {
+              this.gettingPinpad = false;
+              this.pinHasError = true;
+              this.pinError = 'Une erreur est survenue. Veuillez réessayer'
             });
         } else {
           this.sendOTPCode();
@@ -307,6 +314,11 @@ export class NewPinpadModalPage implements OnInit {
               omUser1.sequence = response.content.data.sequence;
               omUser1.em = response.content.data.em;
               this.orangeMoneyService.SaveOrangeMoneyUser(omUser1);
+              this.gettingPinpad = false;
+            }, (err: any) => {
+              this.gettingPinpad = false;
+              this.pinHasError = true;
+              this.pinError = 'Une erreur est survenue. Veuillez réessayer'
             });
         } else {
           this.otpValidation = true;
@@ -450,6 +462,12 @@ export class NewPinpadModalPage implements OnInit {
                 omUser.em = res.content.data.em;
                 this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
                 this.userHasOmToken = true;
+                this.gettingPinpad = false;
+
+              }, (err: any) => {
+                this.gettingPinpad = false;
+                this.pinHasError = true;
+                this.pinError = 'Une erreur est survenue. Veuillez réessayer'
               });
             omUser.pinFailed++;
             this.resetPad();
