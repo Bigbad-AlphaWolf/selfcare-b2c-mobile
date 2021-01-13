@@ -1,4 +1,16 @@
 @import 'src/app/app';
+.title {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: -0.28px;
+
+  }
+  .title1 {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
+    padding-left: 50px;
+  }
 
 .banner-header{
     position: relative;
@@ -35,6 +47,9 @@
             font-family: HelveticaNeueLTStd-Roman;
             font-size: 12px;
         }
+    }
+    .transactions_list{
+       white-space: nowrap;
     }
     ion-button {
         height: 50px;

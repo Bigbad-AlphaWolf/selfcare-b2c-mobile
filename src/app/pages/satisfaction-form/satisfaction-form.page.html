@@ -1,18 +1,23 @@
-<ion-header [oemIonHeaderParallax]="90" >
-  <ion-toolbar >
-      <ion-buttons>
-        <ion-back-button (click)="goBack()" icon="" class="oem-back-button" >
-            <img src="/assets/images/arrow-left.png" alt="icon" />
-        </ion-back-button>  
-      </ion-buttons>
-      <ion-title> Donnez votre avis </ion-title>
-  </ion-toolbar> 
+<ion-header >
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1"> Donnez votre avis  </span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">Donnez votre avis</span>
+    </ion-toolbar>
+  </ion-header>
   <div class="banner-container">
     <img src="assets/images/10-illustration-mon-statut.svg" alt="">
   </div>
-</ion-header>
-
-<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <div class="header-subdiviser">
   </div>
   <div class="page-container">
@@ -33,7 +38,7 @@
     {{ errorMsg }}
   </div>
   <div class="btn-submit">
-    <ion-button [disabled]="isSubmitting" expand="block" (click)="submit()"> Continuer 
+    <ion-button [disabled]="isSubmitting" expand="block" (click)="submit()"> Continuer
         <ion-spinner *ngIf="isSubmitting" name="crescent"></ion-spinner>
     </ion-button>
   </div>

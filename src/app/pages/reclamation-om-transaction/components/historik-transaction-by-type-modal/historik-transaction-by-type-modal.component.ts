@@ -1,11 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { PurchaseModel } from 'src/app/models/purchase.model';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { PurchaseService } from 'src/app/services/purchase-service/purchase.service';
-import { PurchaseModel } from 'src/shared';
-
 @Component({
   selector: 'app-historik-transaction-by-type-modal',
   templateUrl: './historik-transaction-by-type-modal.component.html',
@@ -34,7 +33,15 @@ export class HistorikTransactionByTypeModalComponent implements OnInit {
   fetchTransactions() {
     this.isProcessing = true;
     this.hasError = false;
-    this.purchServ.getAllTransactionByDay(this.currentPhoneNumber,7,'TRANSFERT_ARGENT').pipe(tap((res: PurchaseModel[]) => {
+    this.purchServ.getAllTransactionByDay(this.currentPhoneNumber,7,'TRANSFERT_ARGENT').pipe(
+      switchMap((resp1: PurchaseModel[]) => {
+        return this.purchServ.getAllTransactionByDay(this.currentPhoneNumber, 7, 'TRANSFERT_ARGENT_CODE').pipe(
+          map((resp2: any) => {
+            return resp1.concat(resp2)
+          })
+        )
+      }),
+      tap((res: PurchaseModel[]) => {
       this.isProcessing = false;
       this.hasError = false;
       this.listTransactionsFiltered = res;

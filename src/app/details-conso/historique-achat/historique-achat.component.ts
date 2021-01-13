@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { PurchaseModel, DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY } from 'src/shared';
+import { DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY } from 'src/shared';
 import { CategoryPurchaseHistory } from 'src/app/models/category-purchase-history.model';
+import { PurchaseModel } from 'src/app/models/purchase.model';
 
 @Component({
   selector: 'app-historique-achat',

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { PurchaseModel, DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY } from 'src/shared';
-import { of } from 'rxjs';
+import { DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY } from 'src/shared';
 import { CategoryPurchaseHistory } from 'src/app/models/category-purchase-history.model';
-import { tap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { PurchaseModel } from 'src/app/models/purchase.model';
 
 const { SERVER_API_URL, CONSO_SERVICE } = environment;
 const listPurchase = `${SERVER_API_URL}/${CONSO_SERVICE}/api/historique-achats`;
@@ -36,13 +36,13 @@ export class PurchaseService {
   getListCategoryPurchaseHistory(listPurchase :PurchaseModel[]){
     const categories: CategoryPurchaseHistory[] = [DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY]
     for (const item of listPurchase) {
-      const values: CategoryPurchaseHistory = {typeAchat: item.typeAchat, label: item.label}      
+      const values: CategoryPurchaseHistory = {typeAchat: item.typeAchat, label: item.label}
       if( categories.some((value: CategoryPurchaseHistory) => value.typeAchat === item.typeAchat )){
         continue
       }else {
         categories.push(values)
       }
-    }    
+    }
     return categories;
   }
 

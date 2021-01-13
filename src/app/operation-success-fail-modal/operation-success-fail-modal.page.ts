@@ -13,6 +13,7 @@ import {
   OPERATION_ENABLE_DALAL,
   OPERATION_TYPE_PASS_ILLIFLEX,
   CODE_KIRENE_Formule,
+  OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -39,6 +40,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TYPE_RECHARGE = OPERATION_TYPE_RECHARGE_CREDIT;
   OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
   OPERATION_ILLIFLEX_TYPE = OPERATION_TYPE_PASS_ILLIFLEX;
+  OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM = OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;

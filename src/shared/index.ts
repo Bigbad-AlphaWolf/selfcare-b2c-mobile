@@ -144,12 +144,12 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   SARGAL: `${IMAGES_DIRECTORY}transfert-icon.png`,
 };
 
-export const TYPE_QUESTION_SATISFACTION_FORM = { 
+export const TYPE_QUESTION_SATISFACTION_FORM = {
   BASIC: 'NONE',
- NOTE: 'RATING', 
- RECOMMENDATION: 'RECOMMENDATION', 
- YES_NO: 'YES_NO', 
- SELECT_ANSWER: 'SELECT_ANSWER_QUESTION' 
+ NOTE: 'RATING',
+ RECOMMENDATION: 'RECOMMENDATION',
+ YES_NO: 'YES_NO',
+ SELECT_ANSWER: 'SELECT_ANSWER_QUESTION'
 };
 
 export function getNOAvatartUrlImage() {
@@ -721,20 +721,6 @@ export interface UserConsommation {
 }
 
 export const CGU_FILE_NAME = 'cgu_orangeetmoi.pdf';
-
-export interface PurchaseModel {
-  typeAchat: string;
-  amount: number;
-  name: string;
-  channel: string;
-  operationDate: string;
-  operationType: 'DEBIT' | 'CREDIT';
-  details: any[];
-  label?: string;
-  prenomReceiver?: string;
-  nomReceiver?: string;
-  msisdnReceiver?: string;
-}
 
 /**
  * Compare two semver versions. Returns true if version A is greater than

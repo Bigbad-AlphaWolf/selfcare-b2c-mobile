@@ -9,6 +9,7 @@ import { ReclamationOmTransactionPage } from './reclamation-om-transaction.page'
 import { SharedModule } from 'src/shared/shared.module';
 import { HistorikTransactionByTypeModalComponent } from './components/historik-transaction-by-type-modal/historik-transaction-by-type-modal.component';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { PipesModule } from 'src/app/pipes/pipes.module';
 
 const routes: Routes = [
   {
@@ -24,6 +25,7 @@ const routes: Routes = [
     IonicModule,
     SharedModule,
     ComponentsModule,
+    PipesModule,
     RouterModule.forChild(routes)
   ],
   declarations: [ReclamationOmTransactionPage, HistorikTransactionByTypeModalComponent],

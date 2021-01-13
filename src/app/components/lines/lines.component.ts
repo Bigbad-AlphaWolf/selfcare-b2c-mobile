@@ -26,7 +26,7 @@ export class LinesComponent implements OnInit {
   isProcessing: boolean;
 
   @Input() phone: string;
-  @Input() typeLine: string;
+  @Input() typePhone: string;
   codeClient: String;
   currentPhoneSelected: string;
   constructor(
@@ -60,24 +60,24 @@ export class LinesComponent implements OnInit {
                 formule: sub.nomOffre,
                 codeFormule: sub.code,
               };
-              if (this.isLineNumber(numbers[i], sousc) && this.typeLine !== 'MOBILE'){
+              if (this.isLineNumber(numbers[i], sousc) && this.typePhone !== 'MOBILE'){
                 fNumbers.push({
                   phone: numbers[i],
                   codeClient: sub.clientCode,
                 });
               }
 
-              if(!this.isLineNumber(numbers[i], sousc) && this.typeLine === 'MOBILE'){
+              if(!this.isLineNumber(numbers[i], sousc) && this.typePhone === 'MOBILE'){
                 fNumbers.push({
                   phone: numbers[i],
                   codeClient: sub.clientCode,
                 });
               }
-                
+
             });
             if (fNumbers.length && !this.phone) {
               this.phone = fNumbers[0];
-            } 
+            }
             this.isProcessing = false;
             return fNumbers;
           })
