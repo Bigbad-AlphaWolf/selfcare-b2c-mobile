@@ -3,6 +3,7 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { PalierModel } from 'src/app/models/palier.model';
+import { BoosterModel } from 'src/app/models/booster.model';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
@@ -16,6 +17,7 @@ export const REGEX_DIGIT = /\d/;
 export const REGEX_POSTPAID_FIXE = /(Keurgui).*|(Fibre).*|(LFB).*|(HOME).*/i;
 export const REGEX_PREPAID_FIXE = /(BOX).*/i;
 export const REGEX_IS_DIGIT: RegExp = /^[0-9]*$/;
+export const REGEX_IOS_SYSTEM = /iPhone|iPad|iPod|crios|CriOS/i;
 
 export const USER_CONS_CATEGORY_CALL = 'APPEL';
 export const USER_CONS_CATEGORY_INTERNET = 'INTERNET';
@@ -29,7 +31,7 @@ export const OPERATION_TYPE_PASS_ILLIFLEX = 'PASS_ILLIFLEX';
 export const OPERATION_TYPE_MERCHANT_PAYMENT = 'MERCHANT_PAYMENT';
 export const OPERATION_TYPE_SOS = 'SOS';
 export const OPERATION_TYPE_SOS_CREDIT = 'SOS CREDIT';
-export const OPERATION_TYPE_SOS_PASS = 'SOS DATA';
+export const OPERATION_TYPE_SOS_PASS = 'SOS Pass Internet';
 export const OPERATION_TYPE_SOS_ILLIMIX = 'SOS Illimix';
 export const OPERATION_TYPE_SEDDO_CREDIT = 'SEDDO CREDIT';
 export const OPERATION_TYPE_SEDDO_PASS = 'SEDDO PASS';
@@ -49,6 +51,8 @@ export const OPERATION_SEE_RATTACHED_NUMBERS = 'RATTACHED_NUMBERS';
 export const OPERATION_RATTACH_NUMBER = 'RATTACHE_NUMBER';
 export const OPERATION_CONFIRM_DELETE_RATTACH_NUMBER =  'CONFIRM_DELETE_RATTACHE_NUMBER';
 export const OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM =  'ERREUR_TRANSACTION_OM';
+export const OPERATION_INIT_CHANGE_PIN_OM = 'INIT_CHANGE_PIN_OM';
+export const OPERATION_CHANGE_PIN_OM = 'CHANGE_PIN_OM';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -146,10 +150,10 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
 
 export const TYPE_QUESTION_SATISFACTION_FORM = {
   BASIC: 'NONE',
- NOTE: 'RATING',
- RECOMMENDATION: 'RECOMMENDATION',
- YES_NO: 'YES_NO',
- SELECT_ANSWER: 'SELECT_ANSWER_QUESTION'
+  NOTE: 'RATING',
+  RECOMMENDATION: 'RECOMMENDATION',
+  YES_NO: 'YES_NO',
+  SELECT_ANSWER: 'SELECT_ANSWER_QUESTION',
 };
 
 export function getNOAvatartUrlImage() {
@@ -1233,4 +1237,18 @@ export function getMinDataVolumeOrVoiceOfPaliers(
     dataOrVoice === 'data' ? palier.dataPrice : palier.voicePrice;
   const minPercentage = 0.2;
   return (minPercentage * minAmount) / (unitPrice * 1.239);
+}
+
+// method to get boosters array for a specific pass
+export function getActiveBoostersForSpecificPass(
+  pass,
+  boosters: BoosterModel[]
+) {
+  const passPPI = pass.passPromo
+    ? pass.passPromo.price_plan_index
+    : pass.price_plan_index;
+  const boostersArray = boosters.filter((booster) =>
+    booster.pricePlanIndexes.includes(passPPI.toString())
+  );
+  return boostersArray;
 }

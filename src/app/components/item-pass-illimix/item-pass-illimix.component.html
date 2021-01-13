@@ -1,86 +1,102 @@
 <div class="item-container" (click)="choosePass(passIllimix)">
-    <div class="item-pass-internet">
-      <div *ngIf="subscription?.code !== KIRENE_SUBSCRIPTION_CODE_FORMULE || !subscription" class="top-block">
-          <span *ngIf="!passIllimix?.passPromo" class="price scb-text-orange"> {{ +passIllimix?.tarif ? passIllimix?.tarif + " FCFA" : passIllimix?.tarif }} </span>
-          <span *ngIf="passIllimix?.passPromo" class="price scb-text-orange"> {{ +passIllimix?.passPromo?.tarif || +passIllimix?.passPromo?.tarif === 0 ? passIllimix?.passPromo?.tarif + " FCFA" : passIllimix?.passPromo?.tarif }} </span>
-      </div>
-      <div *ngIf="subscription?.code === KIRENE_SUBSCRIPTION_CODE_FORMULE" class="top-block">
-          <span *ngIf="!passIllimix?.passPromo" class="price scb-text-orange"> {{ +passIllimix?.tarif ? passIllimix?.nom : passIllimix?.tarif }} </span>
-          <span *ngIf="passIllimix?.passPromo" class="price scb-text-orange"> {{ +passIllimix?.passPromo?.tarif || +passIllimix?.passPromo?.tarif === 0 ? passIllimix?.passPromo?.tarif + " FCFA" : passIllimix?.passPromo?.tarif }} </span>
-      </div>
-      <div class="bottom-block">
-        <div class="item-details">
-          <div *ngIf="passIllimix?.volumeInternet || passIllimix?.passPromo?.volumeInternet " class="infos left-side">
-            <span class="item-volume">
-                {{ !passIllimix?.passPromo ? passIllimix?.volumeInternet : passIllimix?.passPromo?.volumeInternet }}
-            </span>
-            <span class="item-type scb-text-gray">
-                Internet
-            </span>
-          </div>
-          <div *ngIf="passIllimix?.dureeAppelEntrant || passIllimix?.passPromo?.dureeAppelEntrant" class="infos left-side">
-            <span class="item-volume">
-                {{ !passIllimix?.passPromo ? passIllimix?.dureeAppelEntrant : passIllimix?.passPromo?.dureeAppelEntrant }}
-            </span>
-            <span class="item-type scb-text-gray">
-                Appel entrant
-            </span>
-          </div>
-          <div *ngIf="passIllimix?.dureeAppel || passIllimix?.passPromo?.dureeAppel" class="infos left-side">
-            <span class="item-volume">
-                {{ !passIllimix?.passPromo ? passIllimix?.dureeAppel : passIllimix?.passPromo?.dureeAppel }}
-            </span>
-            <span class="item-type scb-text-gray">
-                {{passIllimix?.dureeAppelEntrant || passIllimix?.passPromo?.dureeAppelEntrant ?'Appel sortant*':'Appel*'}}
-            </span>
-          </div>
-          <div *ngIf="passIllimix?.nombreSms || passIllimix?.passPromo?.nombreSms" class="infos left-side">
-            <span class="item-volume">
-                {{ !passIllimix?.passPromo ? passIllimix?.nombreSms : passIllimix?.passPromo?.nombreSms }}
-            </span>
-            <span class="item-type scb-text-gray">
-                SMS
-            </span>
-          </div>
+  <div class="item-pass-internet">
+    <div *ngIf="subscription?.code !== KIRENE_SUBSCRIPTION_CODE_FORMULE || !subscription" class="top-block">
+      <span *ngIf="!passIllimix?.passPromo" class="price scb-text-orange"> {{ +passIllimix?.tarif ? passIllimix?.tarif +
+        " FCFA" : passIllimix?.tarif }} </span>
+      <span *ngIf="passIllimix?.passPromo" class="price scb-text-orange"> {{ +passIllimix?.passPromo?.tarif ||
+        +passIllimix?.passPromo?.tarif === 0 ? passIllimix?.passPromo?.tarif + " FCFA" : passIllimix?.passPromo?.tarif
+        }} </span>
+    </div>
+    <div *ngIf="subscription?.code === KIRENE_SUBSCRIPTION_CODE_FORMULE" class="top-block">
+      <span *ngIf="!passIllimix?.passPromo" class="price scb-text-orange"> {{ +passIllimix?.tarif ? passIllimix?.nom :
+        passIllimix?.tarif }} </span>
+      <span *ngIf="passIllimix?.passPromo" class="price scb-text-orange"> {{ +passIllimix?.passPromo?.tarif ||
+        +passIllimix?.passPromo?.tarif === 0 ? passIllimix?.passPromo?.tarif + " FCFA" : passIllimix?.passPromo?.tarif
+        }} </span>
+    </div>
+    <div class="bottom-block">
+      <div class="item-details">
+        <div *ngIf="passIllimix?.volumeInternet || passIllimix?.passPromo?.volumeInternet " class="infos left-side">
+          <span class="item-volume">
+            {{ !passIllimix?.passPromo ? passIllimix?.volumeInternet : passIllimix?.passPromo?.volumeInternet }}
+          </span>
+          <span class="item-type scb-text-gray">
+            Internet
+          </span>
         </div>
-        <div class="item-sub-details">
-          <div class="left-side">
-            <!-- Illimix Subtitle descriptions -->
-            <ng-container *ngFor="let desc of passIllimix?.description?.split(';')">
-              <span *ngIf="desc" class="item-validity scb-text-gray">
-                {{ "*"+desc }}
-              </span>
-            </ng-container> 
-          </div>
-          <div class="right-side">
-            <span *ngIf="!passIllimix?.passPromo" class="item-validity scb-text-gray">
-              Valable
-            <ng-container
-            [ngSwitch]="
+        <div *ngIf="passIllimix?.dureeAppelEntrant || passIllimix?.passPromo?.dureeAppelEntrant"
+          class="infos left-side">
+          <span class="item-volume">
+            {{ !passIllimix?.passPromo ? passIllimix?.dureeAppelEntrant : passIllimix?.passPromo?.dureeAppelEntrant }}
+          </span>
+          <span class="item-type scb-text-gray">
+            Appel entrant
+          </span>
+        </div>
+        <div *ngIf="passIllimix?.dureeAppel || passIllimix?.passPromo?.dureeAppel" class="infos left-side">
+          <span class="item-volume">
+            {{ !passIllimix?.passPromo ? passIllimix?.dureeAppel : passIllimix?.passPromo?.dureeAppel }}
+          </span>
+          <span class="item-type scb-text-gray">
+            {{passIllimix?.dureeAppelEntrant || passIllimix?.passPromo?.dureeAppelEntrant ?'Appel sortant*':'Appel*'}}
+          </span>
+        </div>
+        <div *ngIf="passIllimix?.nombreSms || passIllimix?.passPromo?.nombreSms" class="infos left-side">
+          <span class="item-volume">
+            {{ !passIllimix?.passPromo ? passIllimix?.nombreSms : passIllimix?.passPromo?.nombreSms }}
+          </span>
+          <span class="item-type scb-text-gray">
+            SMS
+          </span>
+        </div>
+      </div>
+      <div class="item-sub-details">
+        <div class="left-side">
+          <!-- Illimix Subtitle descriptions -->
+          <ng-container *ngFor="let desc of passIllimix?.description?.split(';')">
+            <span *ngIf="desc" class="item-validity scb-text-gray">
+              {{ "*"+desc }}
+            </span>
+          </ng-container>
+        </div>
+        <div class="right-side">
+          <span *ngIf="!passIllimix?.passPromo" class="item-validity scb-text-gray">
+            Valable
+            <ng-container [ngSwitch]="
               !passIllimix?.passPromo ? passIllimix?.categoriePass?.libelle : passIllimix?.passPromo?.categoriePass?.libelle
-            "
-          >
-            <ng-container *ngSwitchCase="'Jour'">{{(!passIllimix?.passPromo && passIllimix?.validitePass) ? passIllimix?.validitePass : '1 jour.' }} </ng-container>
-            <ng-container *ngSwitchCase="'Semaine'">{{(!passIllimix?.passPromo && passIllimix?.validitePass) ? passIllimix?.validitePass : '7 jours.' }} </ng-container>
-            <ng-container *ngSwitchCase="'Mois'"> {{(!passIllimix?.passPromo && passIllimix?.validitePass) ? passIllimix?.validitePass : '30 jours.' }}</ng-container>
-            <ng-container *ngSwitchCase="'Nuit'"> {{(!passIllimix?.passPromo && passIllimix?.validitePass) ? passIllimix?.validitePass : 'de 00h à 08h.' }}</ng-container>
-            <ng-container *ngSwitchDefault>{{(!passIllimix?.passPromo && passIllimix?.validitePass) ? passIllimix?.validitePass : '' }} </ng-container>
-        </ng-container>
-            </span>
-            <span *ngIf="passIllimix?.passPromo" class="item-validity scb-text-gray">
-              Valable jusqu'au {{ passIllimix?.dateFin | date: 'dd MMM' }}
-            </span>
-            <span class="item-bonus scb-text-gray">
-                {{
-                  !passIllimix?.passPromo ? passIllimix?.bonusNuit : passIllimix?.passPromo?.bonusNuit
-                }}
-            </span>
-          </div>
+            ">
+              <ng-container *ngSwitchCase="'Jour'">{{(!passIllimix?.passPromo && passIllimix?.validitePass) ?
+                passIllimix?.validitePass : '1 jour.' }} </ng-container>
+              <ng-container *ngSwitchCase="'Semaine'">{{(!passIllimix?.passPromo && passIllimix?.validitePass) ?
+                passIllimix?.validitePass : '7 jours.' }} </ng-container>
+              <ng-container *ngSwitchCase="'Mois'"> {{(!passIllimix?.passPromo && passIllimix?.validitePass) ?
+                passIllimix?.validitePass : '30 jours.' }}</ng-container>
+              <ng-container *ngSwitchCase="'Nuit'"> {{(!passIllimix?.passPromo && passIllimix?.validitePass) ?
+                passIllimix?.validitePass : 'de 00h à 08h.' }}</ng-container>
+              <ng-container *ngSwitchDefault>{{(!passIllimix?.passPromo && passIllimix?.validitePass) ?
+                passIllimix?.validitePass : '' }} </ng-container>
+            </ng-container>
+          </span>
+          <span *ngIf="passIllimix?.passPromo" class="item-validity scb-text-gray">
+            Valable jusqu'au {{ passIllimix?.dateFin | date: 'dd MMM' }}
+          </span>
+          <span class="item-bonus scb-text-gray">
+            {{
+            !passIllimix?.passPromo ? passIllimix?.bonusNuit : passIllimix?.passPromo?.bonusNuit
+            }}
+          </span>
         </div>
       </div>
-      <div *ngIf="passIllimix?.passPromo" class="promo-block">
-        <span class="description scb-text-white"> {{ passIllimix?.description }}</span>
-        <span class="arrow"></span>
-      </div>
+      <ng-container *ngIf="boosters && boosters.length">
+        <div class="gift-infos scb-text-gray" *ngFor="let booster of boosters">
+          <span>{{booster?.gift?.description + ' '}}</span>
+          <img-loader *ngIf="booster?.gift?.partner" [spinner]="true" class="icone" [src]="FILE_BASE_URL+'/'+booster?.gift?.partner?.icone" useImg></img-loader>
+        </div>
+      </ng-container>
+    </div>
+    <div *ngIf="passIllimix?.passPromo" class="promo-block">
+      <span class="description scb-text-white"> {{ passIllimix?.description }}</span>
+      <span class="arrow"></span>
     </div>
   </div>
+</div>

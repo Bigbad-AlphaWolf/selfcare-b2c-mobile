@@ -36,6 +36,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
   // boolean to get bestOffer
   gettingBestOffer: boolean;
   recipientMsisdn: string;
+  recipientOfferCode: string;
   constructor(
     private navController: NavController,
     private illiflexService: IlliflexService,
@@ -49,6 +50,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     let payload = this.router.getCurrentNavigation().extras.state.payload;
     payload = payload ? payload : history.state;
     this.recipientMsisdn = payload.recipientMsisdn;
+    this.recipientOfferCode = payload.code;
   }
 
   getIlliflexPaliers() {
@@ -133,6 +135,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
       validity: this.selectedPalier.validite,
       recipient: this.recipientMsisdn,
       sender: this.dashboardService.getCurrentPhoneNumber(),
+      recipientOfferCode: this.recipientOfferCode,
     };
     let navigationExtras: NavigationExtras = {
       state: {

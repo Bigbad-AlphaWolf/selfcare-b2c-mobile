@@ -14,6 +14,8 @@ import {
   OPERATION_TYPE_PASS_ILLIFLEX,
   CODE_KIRENE_Formule,
   OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM,
+  getActiveBoostersForSpecificPass,
+  OPERATION_CHANGE_PIN_OM,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -24,6 +26,8 @@ import {
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
 import { DalalTonesPage } from '../dalal-tones/dalal-tones.page';
 import { RapidoOperationPage } from '../pages/rapido-operation/rapido-operation.page';
+import { BoosterService } from '../services/booster.service';
+import { GiftType } from '../models/enums/gift-type.enum';
 
 @Component({
   selector: 'app-operation-success-fail-modal',
@@ -41,6 +45,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
   OPERATION_ILLIFLEX_TYPE = OPERATION_TYPE_PASS_ILLIFLEX;
   OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM = OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM;
+  OPERATION_CHANGE_PIN_OM = OPERATION_CHANGE_PIN_OM;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;
@@ -55,22 +60,54 @@ export class OperationSuccessFailModalPage implements OnInit {
   @Input() merchantName: string;
   @Input() opXtras: OperationExtras;
   @Input() dalal: any;
+  @Input() textMsg: any;
   dateAchat = this.dashboardService.getCurrentDate();
   btnText: string;
+  coupon;
+  hasCoupon: boolean;
 
   constructor(
     private dashboardService: DashboardService,
     private router: Router,
     public modalController: ModalController,
     private appRouting: ApplicationRoutingService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private boosterService: BoosterService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getCoupon();
+  }
+
+  getCoupon() {
+    if (
+      !BoosterService.lastBoostersList ||
+      !BoosterService.lastBoostersList.length ||
+      !this.passBought
+    )
+      return;
+    const passPPI = this.passBought.passPromo
+      ? this.passBought.passPromo.price_plan_index
+      : this.passBought.price_plan_index;
+    const appliedBooster = BoosterService.lastBoostersList.find(
+      (booster) =>
+        booster.gift.type === GiftType.COUPON &&
+        booster.pricePlanIndexes.includes(passPPI.toString())
+    );
+    if (!appliedBooster) return;
+    this.hasCoupon = true;
+  }
 
   terminer() {
     this.modalController.dismiss();
     this.router.navigate(['/dashboard']);
+  }
+
+  getPassBoosters(pass: any) {
+    return getActiveBoostersForSpecificPass(
+      pass,
+      BoosterService.lastBoostersList
+    );
   }
 
   goToPage() {

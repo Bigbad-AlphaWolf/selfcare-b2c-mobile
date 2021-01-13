@@ -69,8 +69,8 @@ export class SatisfactionFormPage implements OnInit {
   submit() {
     this.hasErrorSubmitting = false;
     this.errorMsg = null;
-    this.isSubmitting = true;
-    if(this.isFormValid()) {      
+    if(this.isFormValid()) {   
+      this.isSubmitting = true;   
       this.satisformServ.submitSurvey(this.listAnswer).subscribe(
         (res: any) => {
           console.log('res', res);

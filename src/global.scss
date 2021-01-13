@@ -541,6 +541,24 @@ body {
   }
 }
 
+// css for modal in operation success or fail in operaction recap
+.success-or-fail-modal {
+  // align-items: flex-end !important;
+  --height: auto;
+  .modal-wrapper {
+    width: 90% !important;
+    border-radius: 10px !important;
+    .ion-page {
+      position: relative;
+      contain: content;
+      max-height: 90vh;
+      .modal-content {
+        overflow: auto;
+      }
+    }
+  }
+}
+
 // css for besoin d'aide modal
 .besoin-daide-modal {
   align-items: flex-end !important;

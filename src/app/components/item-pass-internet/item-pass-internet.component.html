@@ -1,47 +1,62 @@
 <div class="item-container" (click)="choosePass(passInternet)">
   <div class="item-pass-internet">
     <div *ngIf="subscription?.code !== KIRENE_SUBSCRIPTION_CODE_FORMULE || !subscription" class="top-block">
-        <span *ngIf="!passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.tarif ? passInternet?.tarif + " FCFA" : passInternet?.tarif }} </span>
-        <span *ngIf="passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.passPromo?.tarif || +passInternet?.passPromo?.tarif === 0 ? passInternet?.passPromo?.tarif + " FCFA" : passInternet?.passPromo?.tarif }} </span>
+      <span *ngIf="!passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.tarif ?
+        passInternet?.tarif + " FCFA" : passInternet?.tarif }} </span>
+      <span *ngIf="passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.passPromo?.tarif ||
+        +passInternet?.passPromo?.tarif === 0 ? passInternet?.passPromo?.tarif + " FCFA" :
+        passInternet?.passPromo?.tarif }} </span>
     </div>
     <div *ngIf="subscription?.code === KIRENE_SUBSCRIPTION_CODE_FORMULE" class="top-block">
-        <span *ngIf="!passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.tarif ? passInternet?.nom : passInternet?.tarif }} </span>
-        <span *ngIf="passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.passPromo?.tarif || +passInternet?.passPromo?.tarif === 0 ? passInternet?.passPromo?.tarif + " FCFA" : passInternet?.passPromo?.tarif }} </span>
+      <span *ngIf="!passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.tarif ? passInternet?.nom
+        : passInternet?.tarif }} </span>
+      <span *ngIf="passInternet?.passPromo" class="price scb-text-orange"> {{ +passInternet?.passPromo?.tarif ||
+        +passInternet?.passPromo?.tarif === 0 ? passInternet?.passPromo?.tarif + " FCFA" :
+        passInternet?.passPromo?.tarif }} </span>
     </div>
     <div class="bottom-block">
       <div class="left-side">
         <span class="item-volume">
-            {{ !passInternet?.passPromo ? passInternet?.volumeInternet : passInternet?.passPromo?.volumeInternet }}
+          {{ !passInternet?.passPromo ? passInternet?.volumeInternet : passInternet?.passPromo?.volumeInternet }}
         </span>
         <span class="item-type scb-text-gray">
-            Internet
+          Internet
         </span>
       </div>
       <div class="right-side">
         <span *ngIf="!passInternet?.passPromo" class="item-validity scb-text-gray">
           Valable
-            <ng-container
-            [ngSwitch]="
+          <ng-container [ngSwitch]="
               !passInternet?.passPromo ? passInternet?.categoriePass?.libelle : passInternet?.passPromo?.categoriePass?.libelle
-            "
-          >
-            <ng-container *ngSwitchCase="'Jour'">{{(!passInternet?.passPromo && passInternet?.validitePass) ? passInternet?.validitePass : '1 jour.' }} </ng-container>
-            <ng-container *ngSwitchCase="'Semaine'">{{(!passInternet?.passPromo && passInternet?.validitePass) ? passInternet?.validitePass : '7 jours.' }} </ng-container>
-            <ng-container *ngSwitchCase="'Mois'"> {{(!passInternet?.passPromo && passInternet?.validitePass) ? passInternet?.validitePass : '30 jours.' }}</ng-container>
-            <ng-container *ngSwitchCase="'Nuit'"> {{(!passInternet?.passPromo && passInternet?.validitePass) ? passInternet?.validitePass : 'de 00h à 08h.' }}</ng-container>
-            <ng-container *ngSwitchDefault>{{(!passInternet?.passPromo && passInternet?.validitePass) ? passInternet?.validitePass : '' }} </ng-container>
-        </ng-container>
+            ">
+            <ng-container *ngSwitchCase="'Jour'">{{(!passInternet?.passPromo && passInternet?.validitePass) ?
+              passInternet?.validitePass : '1 jour.' }} </ng-container>
+            <ng-container *ngSwitchCase="'Semaine'">{{(!passInternet?.passPromo && passInternet?.validitePass) ?
+              passInternet?.validitePass : '7 jours.' }} </ng-container>
+            <ng-container *ngSwitchCase="'Mois'"> {{(!passInternet?.passPromo && passInternet?.validitePass) ?
+              passInternet?.validitePass : '30 jours.' }}</ng-container>
+            <ng-container *ngSwitchCase="'Nuit'"> {{(!passInternet?.passPromo && passInternet?.validitePass) ?
+              passInternet?.validitePass : 'de 00h à 08h.' }}</ng-container>
+            <ng-container *ngSwitchDefault>{{(!passInternet?.passPromo && passInternet?.validitePass) ?
+              passInternet?.validitePass : '' }} </ng-container>
+          </ng-container>
         </span>
         <span *ngIf="passInternet?.passPromo" class="item-validity scb-text-gray">
           Valable jusqu'au {{ passInternet?.dateFin | date: 'dd MMM' }}
         </span>
         <span class="item-bonus scb-text-gray">
-            {{
-              !passInternet?.passPromo ? passInternet?.bonusNuit : passInternet?.passPromo?.bonusNuit
-            }}
+          {{
+          !passInternet?.passPromo ? passInternet?.bonusNuit : passInternet?.passPromo?.bonusNuit
+          }}
         </span>
       </div>
     </div>
+    <ng-container *ngIf="boosters && boosters.length">
+      <div class="gift-infos scb-text-gray" *ngFor="let booster of boosters">
+        <span>{{booster?.gift?.description + ' '}}</span>
+        <img-loader *ngIf="booster?.gift?.partner" [spinner]="true" class="icone" [src]="FILE_BASE_URL+'/'+booster?.gift?.partner?.icone" useImg></img-loader>
+      </div>
+    </ng-container>
     <div *ngIf="passInternet?.passPromo" class="promo-block">
       <span class="description scb-text-white"> {{ passInternet?.description }}</span>
       <span class="arrow"></span>

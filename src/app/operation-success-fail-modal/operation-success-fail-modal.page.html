@@ -7,7 +7,11 @@
   />
   <div class="top-block">
     <img *ngIf="success" src="/assets/images/confirmation.png" alt="checked" />
-    <img *ngIf="!success" src="/assets/images/echec.png" alt="checked" />
+    <ng-container *ngIf="!success">
+      <img *ngIf="purchaseType !== OPERATION_CHANGE_PIN_OM" src="/assets/images/echec.png" alt="checked" />
+      <img *ngIf="purchaseType === OPERATION_CHANGE_PIN_OM" src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="checked" />
+
+    </ng-container>
     <ng-container [ngSwitch]="purchaseType">
       <span class="title" *ngSwitchCase="OPERATION_TRANSFER_OM"
         >{{success ? 'Transfert effectué' : 'Echec Transfert'}}</span
@@ -53,12 +57,16 @@
       <span class="title" *ngSwitchCase="OPERATION_ILLIFLEX_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
-      <span class="title" *ngSwitchCase="OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM"
-        > Reclamation d’erreur de transaction envoyée</span
+      <span class="title" *ngSwitchCase="OPERATION_CHANGE_PIN_OM"
+        >Bravo !</span
       >
     </ng-container>
     <span class="subtitle scb-text-gray">
-      <span *ngIf="!success">{{errorMsg}}</span>
+      <ng-container *ngIf="!success">
+        <span *ngIf="purchaseType !== OPERATION_CHANGE_PIN_OM" >{{errorMsg}}</span>
+        <span *ngIf="purchaseType === OPERATION_CHANGE_PIN_OM" >{{textMsg}}</span>
+
+      </ng-container>
       <ng-container *ngIf="success" [ngSwitch]="purchaseType">
         <span *ngSwitchCase="OPERATION_INTERNET_TYPE"
           >Vous avez acheté le pass internet</span
@@ -104,11 +112,13 @@
       <ng-container [ngSwitch]="purchaseType">
         <app-item-pass-internet
           [passInternet]="passBought"
+          [boosters]="getPassBoosters(passBought)"
           *ngSwitchCase="OPERATION_INTERNET_TYPE"
         >
         </app-item-pass-internet>
         <app-item-pass-illimix
           [passIllimix]="passBought"
+          [boosters]="getPassBoosters(passBought)"
           *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >
         </app-item-pass-illimix>
@@ -268,10 +278,7 @@
         </div>
       </div>
     </div>
-  </ng-container>
-
-  <ng-container *ngIf="purchaseType !== OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM">
-    <div *ngIf="success" class="confirm-btn">
+    <div *ngIf="success && !coupon" class="confirm-btn">
       <ion-button
         (click)="goToPage()"
         shape="round"
@@ -315,7 +322,19 @@
         </ng-container>
       </ion-button>
     </div>
-  </ng-container>
+</ng-container>
+
+  <div class="coupon-block" *ngIf="success && coupon">
+    <div class="header">
+      <span class="scb-text-gray">Coupon &nbsp;</span>
+      <img src="/assets/images/logo-trace.png" alt="">
+    </div>
+    <span class="code">{{coupon}}</span>
+  </div>
+
+  <div class="scb-text-gray loading-coupon" *ngIf="success && hasCoupon">
+    Vous recevrez le coupon par message...
+  </div>
 
   <div class="terminer scb-text-orange" (click)="terminer()">
     {{ success ? 'Terminer' : 'Retour à l\'accueil' }}

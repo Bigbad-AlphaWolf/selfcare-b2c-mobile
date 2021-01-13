@@ -61,7 +61,7 @@ export class ReclamationOmTransactionPage implements OnInit {
 			component: LinesComponent,
 			componentProps: {
 				'phone': this.currentNumber,
-				'typeLine' : 'MOBILE'
+				'typePhone' : 'MOBILE'
 			},
 			cssClass: 'select-recipient-modal',
 		});
