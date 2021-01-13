@@ -79,11 +79,11 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
         this.listRequestWithStatus.current = res.find((el: RequestOem) => {
           return el.currentState
         });
-    
+
         this.listRequestWithStatus.previous = res.filter((elt: RequestOem) => {
           return elt.order < this.listRequestWithStatus.current.order;
         });
-    
+
         this.listRequestWithStatus.next = res.filter((elt: RequestOem) => {
           return elt.order > this.listRequestWithStatus.current.order;
         });
@@ -180,7 +180,7 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
         this.isConfirm = false;
         if (!r.length) this.noRequest = true;
         else {
-          
+
           // this.followServ.registerEventFollow()
           this.requestSrvice.currentRequestStatusId = numberSuivi;
           this.noRequest = false;
@@ -192,7 +192,8 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
     const modal = await this.modalController.create({
       component: LinesComponent,
       componentProps: {
-        phone: this.phoneFix
+        phone: this.phoneFix,
+        phoneType: 'FIXE'
       },
       cssClass: 'select-recipient-modal',
     });
