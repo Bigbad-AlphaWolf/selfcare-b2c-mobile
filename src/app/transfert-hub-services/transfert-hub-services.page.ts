@@ -361,7 +361,7 @@ export class TransfertHubServicesPage implements OnInit {
       this.bsService.openNumberSelectionBottomSheet(
         NumberSelectionOption.WITH_MY_PHONES,
         operation,
-        'list-pass',
+        routePath,
         this.isLightMod
       );
     }

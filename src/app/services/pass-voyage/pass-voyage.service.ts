@@ -1,12 +1,16 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { CONSO_PASS_COUNTRIES_ENDPOINT, CONSO_PASS_VOYAGE_PATH } from "../utils/pass-voyage.endpoints";
-import { CountryPass } from "src/app/models/country-pass.model";
-import { SessionOem } from "../session-oem/session-oem.service";
-import { of } from "rxjs";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {
+  CONSO_PASS_COUNTRIES_ENDPOINT,
+  CONSO_PASS_VOYAGE_PATH,
+} from '../utils/pass-voyage.endpoints';
+import { CountryPass } from 'src/app/models/country-pass.model';
+import { SessionOem } from '../session-oem/session-oem.service';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class PassVoyageService {
   constructor(private http: HttpClient) {}
@@ -70,9 +74,15 @@ export class PassVoyageService {
       `${CONSO_PASS_VOYAGE_PATH}?countryID=${country.id}&passVoyageType=${type}`
     );
   }
- 
 
   fetchCountries() {
-    return this.http.get(`${CONSO_PASS_COUNTRIES_ENDPOINT}`);
+    return this.http.get(`${CONSO_PASS_COUNTRIES_ENDPOINT}`).pipe(
+      map((countries: CountryPass[]) => {
+        const resp = countries.sort((a, b) => {
+          return a.name > b.name ? 1 : -1;
+        });
+        return resp;
+      })
+    );
   }
 }
