@@ -46,8 +46,8 @@
                 align-items: center;
                 .note{
                     display: inline-block;
-                    padding: 8px;
-                    width: 40px;
+                    padding: 6px;
+                    width: 35px;
                     height: 40px;
                     border-radius: 10px;
                     border: 2px solid;
@@ -75,7 +75,7 @@
                 }
             }
         }
-        
+
     }
     ion-item {
         &.text-area{
