@@ -445,17 +445,10 @@ export class DashboardService {
     }
     switch (payload.type) {
       case 'internet':
-        if (msisdn === receiver) {
-          return this.http.post(
-            `${buyPassInternetByCreditEndpoint}${queryParams}`,
-            params
-          );
-        } else {
-          return this.http.post(
-            buyPassInternetForSomeoneByCreditEndpoint,
-            params
-          );
-        }
+        return this.http.post(
+          `${buyPassInternetByCreditEndpoint}${queryParams}`,
+          params
+        );
       case 'illimix':
         return this.http.post(
           `${buyPassIllimixByCreditEndpoint}${queryParams}`,
