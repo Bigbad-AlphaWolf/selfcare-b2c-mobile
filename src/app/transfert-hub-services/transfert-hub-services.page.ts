@@ -352,6 +352,7 @@ export class TransfertHubServicesPage implements OnInit {
             destinataire: this.currentPhone,
             purchaseType: operation,
             isLightMod: true,
+            recipientMsisdn: this.currentPhone,
           };
           this.navController.navigateForward([routePath], {
             state: opInfos,
