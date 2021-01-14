@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
 import { ArticleModel } from '../../../models/article.model';
 
 @Component({
@@ -8,12 +9,15 @@ import { ArticleModel } from '../../../models/article.model';
 })
 export class ViewArticleComponent implements OnInit {
   article: ArticleModel = {
-    image: '/assets/images/article-img.png',
-    title: 'Gagne des tickets pour le Concert de Samba Peuzzi !',
-    description: '',
+    imageHeader: '/assets/images/article-img.png',
+    titre: 'Gagne des tickets pour le Concert de Samba Peuzzi !',
     createdDate: `il y'a 5 min`,
   };
-  constructor() {}
+  constructor(private navController: NavController) {}
 
   ngOnInit() {}
+
+  goBack() {
+    this.navController.pop();
+  }
 }

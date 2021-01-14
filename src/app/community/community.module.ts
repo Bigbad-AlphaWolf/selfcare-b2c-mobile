@@ -13,9 +13,12 @@ import { CommunityPage } from './community.page';
 import { VerticalArticleItemComponent } from './components/vertical-article-item/vertical-article-item.component';
 import { HorizontalArticleItemComponent } from './components/horizontal-article-item/horizontal-article-item.component';
 import { CategoryArticleItemComponent } from './components/category-article-item/category-article-item.component';
-import { ViewArticleComponent } from './components/view-article/view-article.component';
 import { ArticleCommentItemComponent } from './components/article-comment-item/article-comment-item.component';
 import { CommentBlockComponent } from './components/comment-block/comment-block.component';
+import { ViewArticleComponent } from './pages/view-article/view-article.component';
+import { ViewCategoryArticlesComponent } from './pages/view-category-articles/view-category-articles.component';
+import { ViewArticlesCommentsComponent } from './pages/view-articles-comments/view-articles-comments.component';
+import { AllCategoriesModalComponent } from './components/all-categories-modal/all-categories-modal.component';
 
 const routes: Routes = [
   {
@@ -25,6 +28,14 @@ const routes: Routes = [
   {
     path: 'article/:id',
     component: ViewArticleComponent,
+  },
+  {
+    path: 'category-articles/:code',
+    component: ViewCategoryArticlesComponent,
+  },
+  {
+    path: 'article-comments/:id',
+    component: ViewArticlesCommentsComponent,
   },
 ];
 
@@ -43,7 +54,11 @@ const routes: Routes = [
     ViewArticleComponent,
     ArticleCommentItemComponent,
     CommentBlockComponent,
+    ViewCategoryArticlesComponent,
+    ViewArticlesCommentsComponent,
+    AllCategoriesModalComponent,
   ],
+  entryComponents: [AllCategoriesModalComponent],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
 export class CommunityPageModule {}

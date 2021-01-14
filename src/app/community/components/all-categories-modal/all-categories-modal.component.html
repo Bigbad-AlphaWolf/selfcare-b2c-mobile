@@ -1,0 +1,6 @@
+<div class="categories-modal-page">
+  <div class="modal-title">Toutes les catégories</div>
+  <div class="categories-list">
+    <app-category-article-item (click)="onCategorySelected(category)" [category]="category" *ngFor="let category of categories"></app-category-article-item>
+  </div>
+</div>
