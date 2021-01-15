@@ -111,7 +111,6 @@ export class ListePassPage implements OnInit {
 
   // filter listPass with pass with price_plan_index credit set
   filterPassForLightMod() {
-    console.log(this.listPass, 'before');
     this.listPass = this.listPass.filter((pass) => {
       return (
         (pass && pass.price_plan_index) ||
@@ -134,7 +133,6 @@ export class ListePassPage implements OnInit {
   goBack() {
     this.navCtl.pop();
   }
-
 
   choosePass(pass: any) {
     let navigationExtras: NavigationExtras = {

@@ -352,6 +352,7 @@ export class TransfertHubServicesPage implements OnInit {
             destinataire: this.currentPhone,
             purchaseType: operation,
             isLightMod: true,
+            recipientMsisdn: this.currentPhone,
           };
           this.navController.navigateForward([routePath], {
             state: opInfos,
@@ -361,7 +362,7 @@ export class TransfertHubServicesPage implements OnInit {
       this.bsService.openNumberSelectionBottomSheet(
         NumberSelectionOption.WITH_MY_PHONES,
         operation,
-        'list-pass',
+        routePath,
         this.isLightMod
       );
     }
