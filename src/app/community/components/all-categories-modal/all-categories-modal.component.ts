@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { ArticleCategoryModel } from 'src/app/models/article.model';
+import { CommunityService } from 'src/app/services/community-service/community.service';
 
 @Component({
   selector: 'app-all-categories-modal',
@@ -40,11 +41,33 @@ export class AllCategoriesModalComponent implements OnInit {
       image: '/assets/images/article-img.png',
     },
   ];
-  constructor(private modalController: ModalController) {}
+  loadingCategories: boolean;
+  hasErrorLoading: boolean;
+  constructor(
+    private modalController: ModalController,
+    private communityService: CommunityService
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getAllCategories();
+  }
 
   onCategorySelected(category) {
     this.modalController.dismiss({ category });
+  }
+
+  getAllCategories() {
+    this.loadingCategories = true;
+    this.hasErrorLoading = false;
+    this.communityService.getArticlesCategories().subscribe(
+      (categories) => {
+        this.loadingCategories = false;
+        this.categories = categories;
+      },
+      (err) => {
+        this.loadingCategories = false;
+        this.hasErrorLoading = true;
+      }
+    );
   }
 }

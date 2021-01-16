@@ -1,13 +1,15 @@
 <div class="vertical-article-item" [ngClass]="{'display-by-one': uniqueDisplay}">
   <div class="img-container">
-    <img [src]="article?.imageHeader" alt="img" class="article-image">
+    <img [src]="FILE_ENDPOINT + '/' +article?.imageHeader" alt="img" class="article-image">
     <div class="fav-block">
       <img src="/assets/images/heart.png" alt="fav-icon" class="fav-icon">
     </div>
   </div>
   <div class="article-details">
-    <div class="category scb-text-white">Bons plans</div>
-    <div class="article-title">Gagne des tickets pour le Concert de Samba Peuzzi !</div>
+    <div class="category scb-text-white"
+      [ngStyle]="{'background-color': article?.categorieArticle?.colorCode ? article?.categorieArticle?.colorCode : '#000000'}">
+      {{article?.categorieArticle?.name}}</div>
+    <div class="article-title">{{article?.titre}}</div>
     <div class="more-infos">
       <div class="publication-date">
         <img src="/assets/images/clock.png" alt="" class="icon">
@@ -20,9 +22,7 @@
     </div>
     <div class="article-content scb-text-gray" *ngIf="uniqueDisplay">
       <div class="text" [ngClass]="{'show-more': showMore}">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat.
+        {{article?.contenu}}
       </div>
       <div class="voir-plus" (click)="showeMore()">
         <span class="scb-text-orange">{{!showMore ? 'Voir plus' : 'Voir moins'}}</span>
@@ -33,7 +33,7 @@
         <span class="block-title">120 commentaires</span>
         <span class="scb-text-orange voir-tout">Voir tout</span>
       </div>
-      <app-comment-block></app-comment-block>
+      <app-comment-block [comment]="article" *ngFor="let comment of comments"></app-comment-block>
     </div>
   </div>
 </div>

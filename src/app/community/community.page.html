@@ -29,7 +29,19 @@
           <span class="scb-text-orange voir-tout" (click)="openAllCategories()">Voir tout</span>
         </div>
         <div class="categories-list">
-          <app-category-article-item (click)="goToCategory(category)" [category]="category" *ngFor="let category of categories"></app-category-article-item>
+          <ng-container *ngIf="loadingFavoriteCategories">
+            <ion-skeleton-text animated></ion-skeleton-text>
+            <ion-skeleton-text animated></ion-skeleton-text>
+            <ion-skeleton-text animated></ion-skeleton-text>
+          </ng-container>          
+          <ng-container *ngIf="categories && categories.length">
+            <app-category-article-item (click)="goToCategory(category)" [category]="category" *ngFor="let category of categories"></app-category-article-item>
+          </ng-container>
+          <ng-container *ngIf="categoriesHasError">
+            <div class="error-block">
+              <span class="error-msg">{{errorMessage}}</span>
+            </div>
+          </ng-container>
         </div>
       </div>
       <div class="recommended-articles-block">
@@ -38,7 +50,23 @@
           <span class="scb-text-orange voir-tout">Voir tout</span>
         </div>
         <div class="recommended-list">
-          <app-vertical-article-item (click)="goToArticle(article)" [article]="article" *ngFor="let article of articlesRecommendations"></app-vertical-article-item>
+          <ng-container *ngIf="loadingRecommendedArticles">
+            <app-article-skeleton-loader [isVertical]="true"></app-article-skeleton-loader>
+            <app-article-skeleton-loader [isVertical]="true"></app-article-skeleton-loader>
+          </ng-container>
+          <ng-container *ngIf="articlesRecommendations && articlesRecommendations.length">
+            <app-vertical-article-item (click)="goToArticle(article)" [article]="article" *ngFor="let article of articlesRecommendations"></app-vertical-article-item>
+          </ng-container>
+          <ng-container *ngIf="recommendedHasError">
+            <div class="error-block">
+              <span class="error-msg scb-text-red-error" (click)="getRecommendedArticles()">{{errorMessage}}</span>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!loadingRecommendedArticles && articlesRecommendations && !articlesRecommendations.length">
+            <div class="empty-array">
+              <span class="empty-array-msg">{{noArticleMsg}}</span>
+            </div>
+          </ng-container>
         </div>
       </div>
       <div class="famous-articles-block">
@@ -47,7 +75,23 @@
           <span class="scb-text-orange voir-tout">Voir tout</span>
         </div>
         <div class="famous-list">
-          <app-horizontal-article-item (click)="goToArticle(article)" [article]="article" *ngFor="let article of articlesRecommendations"></app-horizontal-article-item>
+          <ng-container *ngIf="loadingFamousArticles">
+            <app-article-skeleton-loader></app-article-skeleton-loader>
+            <app-article-skeleton-loader></app-article-skeleton-loader>
+          </ng-container>
+          <ng-container *ngIf="famousArticles && famousArticles.length">
+            <app-horizontal-article-item (click)="goToArticle(article)" [article]="article" *ngFor="let article of articlesRecommendations"></app-horizontal-article-item>
+          </ng-container>
+          <ng-container *ngIf="famousHasError">
+            <div class="error-block">
+              <span class="error-msg scb-text-red-error" (click)="getFamousArticles()">{{errorMessage}}</span>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!loadingFamousArticles && famousArticles && !famousArticles.length">
+            <div class="empty-array">
+              <span class="empty-array-msg">{{noArticleMsg}}</span>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>

@@ -2,11 +2,10 @@
   <app-article-comment-item></app-article-comment-item>
   <div class="sub-commments-block" *ngIf="0">
     <div class="sub-comments-list">
-      <app-article-comment-item [isSubComment]="true"></app-article-comment-item>
-      <app-article-comment-item [isSubComment]="true"></app-article-comment-item>
+      <app-article-comment-item [isSubComment]="true" *ngFor="let subComment of subComments"></app-article-comment-item>
     </div>
     <div class="more">
-      <span class="show-reponse scb-text-gray">{{true ? 'Plus de réponses' : 'Moins de réponse'}}</span>
+      <span class="show-reponse scb-text-gray" *ngIf="!maxNumberReached">Plus de réponses</span>
     </div>
   </div>
 </div>

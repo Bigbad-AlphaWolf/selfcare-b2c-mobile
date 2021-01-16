@@ -4,7 +4,7 @@
       <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
     </ion-buttons>
     <ion-title class="ion-no-padding">
-      <span class="title1">Gagne des tickets pour le Concert de Samba Peuzzi !</span>
+      <span class="title1">{{article?.titre}}</span>
     </ion-title>
     <ion-buttons (click)="goBack()" class="ion-padding-start" slot="end">
       <img src="/assets/images/share-square.png" alt="icon" class="share-icon" />
@@ -15,7 +15,7 @@
 <ion-content>
   <ion-header class="ion-padding-start" collapse="condense">
     <ion-toolbar>
-      <span class="title">Gagne des tickets pour le Concert de Samba Peuzzi !</span>
+      <span class="title">{{article?.titre}}</span>
     </ion-toolbar>
   </ion-header>
   <div class="article-page-body">

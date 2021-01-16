@@ -1,9 +1,11 @@
 <div class="horizontal-article-item">
   <div class="img-container-block">
-    <img [src]="article?.imageHeader" alt="" class="article-image">
+    <img [src]="FILE_ENDPOINT + '/' +article?.imageHeader" alt="" class="article-image">
   </div>
   <div class="article-details">
-    <div class="category scb-text-white">Bons plans</div>
+    <div class="category scb-text-white"
+      [ngStyle]="{'background-color': article?.categorieArticle?.colorCode ? article?.categorieArticle?.colorCode : '#000000'}">
+      {{article?.categorieArticle?.name}}</div>
     <div class="article-title">{{article?.titre}}</div>
     <div class="more-infos">
       <div class="publication-date">

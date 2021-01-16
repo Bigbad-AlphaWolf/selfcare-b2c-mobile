@@ -11,57 +11,17 @@ import { AllCategoriesModalComponent } from './components/all-categories-modal/a
   styleUrls: ['./community.page.scss'],
 })
 export class CommunityPage implements OnInit {
-  categories: ArticleCategoryModel[] = [
-    {
-      name: 'Bons plans',
-      colorCode: '#ff7900',
-      image: '/assets/images/article-img.png',
-    },
-    {
-      name: 'Coin Geek',
-      colorCode: '#a885d8',
-      image: '/assets/images/article-img.png',
-    },
-    {
-      name: 'Divertissement',
-      colorCode: '#ffcc00',
-      image: '/assets/images/article-img.png',
-    },
-    {
-      name: 'Culture / Education',
-      colorCode: '#50be87',
-      image: '/assets/images/article-img.png',
-    },
-    {
-      name: 'Santé / Bien-être',
-      colorCode: '#50be87',
-      image: '/assets/images/article-img.png',
-    },
-    {
-      name: 'Cinéma',
-      colorCode: '#ffb4e6',
-      image: '/assets/images/article-img.png',
-    },
-  ];
-  articlesRecommendations: ArticleModel[] = [
-    {
-      imageHeader: '/assets/images/article-img.png',
-      titre: 'Gagne des tickets pour le Concert de Samba Peuzzi !',
-      createdDate: `il y'a 5 min`,
-    },
-    {
-      imageHeader: '/assets/images/article-img.png',
-      titre: 'Gagne des tickets pour le Concert de Samba Peuzzi !',
-      createdDate: `il y'a 5 min`,
-    },
-  ];
-  famousArticles: ArticleModel[] = [
-    {
-      imageHeader: '/assets/images/article-image.png',
-      titre: 'Gagne des tickets pour le Concert de Samba Peuzzi !',
-      createdDate: `il y'a 5 min`,
-    },
-  ];
+  categories: ArticleCategoryModel[] = [];
+  articlesRecommendations: ArticleModel[] = [];
+  famousArticles: ArticleModel[] = [];
+  loadingFavoriteCategories: boolean;
+  categoriesHasError: boolean;
+  loadingRecommendedArticles: boolean;
+  recommendedHasError: boolean;
+  loadingFamousArticles: boolean;
+  famousHasError: boolean;
+  errorMessage = 'Erreur de chargement. Réactualisez ici';
+  noArticleMsg = `Pas d'articles disponibles pour le moment`;
 
   constructor(
     private router: Router,
@@ -70,26 +30,69 @@ export class CommunityPage implements OnInit {
     private modalController: ModalController
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getMyFavouriteCategories();
+    this.getRecommendedArticles();
+    this.getFamousArticles();
+  }
 
   goBack() {
     this.navController.pop();
   }
 
   goToArticle(article) {
-    this.router.navigate([`/community/article/1`]);
-    // this.router.navigate([`/community/article/${article.id}`])
+    this.router.navigate([`/community/article`], { state: { article } });
   }
 
   goToCategory(category) {
-    this.router.navigate([`/community/category-articles/code`]);
-    // this.router.navigate([`/category-articles/${category.code}`])
+    this.router.navigate([`/community/category-articles`], {
+      state: { category },
+    });
   }
 
   getMyFavouriteCategories() {
-    this.communityService.getArticlesCategories().subscribe((categories) => {
-      this.categories = categories;
-    });
+    this.loadingFavoriteCategories = true;
+    this.categoriesHasError = false;
+    this.communityService.getArticlesCategories().subscribe(
+      (categories) => {
+        this.categories = categories;
+        this.loadingFavoriteCategories = false;
+      },
+      (err) => {
+        this.categoriesHasError = true;
+        this.loadingFavoriteCategories = false;
+      }
+    );
+  }
+
+  getRecommendedArticles() {
+    this.loadingRecommendedArticles = true;
+    this.recommendedHasError = false;
+    this.communityService.getRecommendedArticles().subscribe(
+      (recommended) => {
+        this.articlesRecommendations = recommended;
+        this.loadingRecommendedArticles = false;
+      },
+      (err) => {
+        this.recommendedHasError = true;
+        this.loadingRecommendedArticles = false;
+      }
+    );
+  }
+
+  getFamousArticles() {
+    this.loadingFamousArticles = true;
+    this.famousHasError = false;
+    this.communityService.getFamousArticles().subscribe(
+      (famous) => {
+        this.famousArticles = famous;
+        this.loadingFamousArticles = false;
+      },
+      (err) => {
+        this.famousHasError = true;
+        this.loadingFamousArticles = false;
+      }
+    );
   }
 
   async openAllCategories() {
@@ -100,13 +103,9 @@ export class CommunityPage implements OnInit {
     modal.onDidDismiss().then((resp) => {
       if (resp && resp.data) {
         const category = resp.data.category;
-        this.goToArticle(category);
+        this.goToCategory(category);
       }
     });
     return await modal.present();
   }
-
-  getRecommendedArticles() {}
-
-  getFamousArticles() {}
 }

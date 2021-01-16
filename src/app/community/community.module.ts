@@ -19,6 +19,7 @@ import { ViewArticleComponent } from './pages/view-article/view-article.componen
 import { ViewCategoryArticlesComponent } from './pages/view-category-articles/view-category-articles.component';
 import { ViewArticlesCommentsComponent } from './pages/view-articles-comments/view-articles-comments.component';
 import { AllCategoriesModalComponent } from './components/all-categories-modal/all-categories-modal.component';
+import { ArticleSkeletonLoaderComponent } from './components/article-skeleton-loader/article-skeleton-loader.component';
 
 const routes: Routes = [
   {
@@ -30,7 +31,15 @@ const routes: Routes = [
     component: ViewArticleComponent,
   },
   {
+    path: 'article',
+    component: ViewArticleComponent,
+  },
+  {
     path: 'category-articles/:code',
+    component: ViewCategoryArticlesComponent,
+  },
+  {
+    path: 'category-articles',
     component: ViewCategoryArticlesComponent,
   },
   {
@@ -57,6 +66,7 @@ const routes: Routes = [
     ViewCategoryArticlesComponent,
     ViewArticlesCommentsComponent,
     AllCategoriesModalComponent,
+    ArticleSkeletonLoaderComponent,
   ],
   entryComponents: [AllCategoriesModalComponent],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],

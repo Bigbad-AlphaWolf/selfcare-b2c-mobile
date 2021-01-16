@@ -14,8 +14,7 @@
 }
 
 .articles-page-body {
-  min-height: 100%;
-  height: fit-content;
+  height: 100%;
   background-color: $grayDashboard;
   .search-bar-block {
     background-color: $white;
@@ -36,7 +35,17 @@
     background-color: $white;
     display: flex;
     flex-direction: column;
-    app-horizontal-article-item {
+    height: 100%;
+    .error-block,
+    .empty-array {
+      .msg {
+        font-size: 14px;
+        font-weight: bold;
+        font-style: italic;
+      }
+    }
+    app-horizontal-article-item,
+    app-article-skeleton-loader {
       margin-bottom: 20px;
     }
   }

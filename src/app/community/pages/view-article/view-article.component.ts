@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { ArticleModel } from '../../../models/article.model';
 
@@ -13,9 +14,15 @@ export class ViewArticleComponent implements OnInit {
     titre: 'Gagne des tickets pour le Concert de Samba Peuzzi !',
     createdDate: `il y'a 5 min`,
   };
-  constructor(private navController: NavController) {}
+  constructor(private navController: NavController, private router: Router) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getArticle();
+  }
+
+  getArticle() {
+    this.article = this.router.getCurrentNavigation().extras.state.article;
+  }
 
   goBack() {
     this.navController.pop();

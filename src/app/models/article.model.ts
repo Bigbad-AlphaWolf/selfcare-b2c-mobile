@@ -7,6 +7,7 @@ export interface ArticleModel {
   actif?: boolean;
   contenu?: string;
   createdDate?: string;
+  categorieArticle?: ArticleCategoryModel;
 }
 
 export interface ArticleCategoryModel {
@@ -15,4 +16,16 @@ export interface ArticleCategoryModel {
   colorCode?: string;
   image?: string;
   name?: string;
+}
+
+export interface CommentModel {
+  id?: number;
+  content?: string;
+  msisdn?: string;
+  firstName?: string;
+  lastName?: string;
+  createdDate?: string;
+  lastUpdatedDate?: string;
+  isEdited?: boolean;
+  article?: ArticleModel;
 }

@@ -1,0 +1,19 @@
+<ng-container *ngIf="!isVertical">
+  <div class="horizontal-article-skeleton">
+    <ion-skeleton-text class="left-block" animated></ion-skeleton-text>
+    <div class="right-block">
+      <ion-skeleton-text animated class="item"></ion-skeleton-text>
+      <ion-skeleton-text animated class="item"></ion-skeleton-text>
+      <ion-skeleton-text animated class="item"></ion-skeleton-text>
+      <ion-skeleton-text animated class="item"></ion-skeleton-text>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="isVertical">
+  <div class="vertical-article-skeleton">
+    <ion-skeleton-text class="img-skeleton" animated></ion-skeleton-text>
+      <ion-skeleton-text animated class="item"></ion-skeleton-text>
+      <ion-skeleton-text animated class="item"></ion-skeleton-text>
+      <ion-skeleton-text animated class="item"></ion-skeleton-text>
+  </div>
+</ng-container>
