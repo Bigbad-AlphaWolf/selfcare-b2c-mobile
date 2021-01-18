@@ -1,10 +1,10 @@
 <div class="comment-item" [ngClass]="{'sub-comment': isSubComment}">
   <img [src]="'/assets/images/profil-mob.png'" alt="profil-mob" class="avatar"/>
   <div class="content">
-    <div class="auteur">Papa Oumar Kébé</div>
+    <div class="auteur">{{comment?.firstName + ' ' + comment?.lastName | titlecase}}</div>
     <div class="comment-content">
       <div class="comment-text scb-text-gray" [ngClass]="{'show-more': showMore}">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.
+        {{comment?.content}}
       </div>
       <div class="voir-plus" (click)="showeMore()">
         <span class="voir-plus-text scb-text-orange">{{!showMore ? 'Voir plus' : 'Voir moins'}}</span>

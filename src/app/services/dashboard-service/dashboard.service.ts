@@ -73,7 +73,7 @@ const boosterTransactionEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boo
 
 // Endpoint to get the user's birthdate
 const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/birthDate`;
-
+const userInfosEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/infos-client`;
 // Endpoint to check allo feature status
 const showNewFeatureStateEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-allo-new`;
 @Injectable({
@@ -582,6 +582,18 @@ export class DashboardService {
           return birthDate;
         })
       );
+  }
+
+  getCustomerInformations() {
+    const userInfos = ls.get('userInfos');
+    if (userInfos) return of(userInfos);
+    const msisdn = this.getMainPhoneNumber();
+    return this.http.get(`${userInfosEndpoint}/${msisdn}`).pipe(
+      map((infos) => {
+        ls.set('userInfos', infos);
+        return infos;
+      })
+    );
   }
 
   getNewFeatureAlloBadgeStatus() {

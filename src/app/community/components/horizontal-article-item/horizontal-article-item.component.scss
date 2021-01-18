@@ -5,11 +5,12 @@
   background-color: $white;
   .img-container-block {
     width: percentage(105/345);
+    max-width: 105px;
     flex-shrink: 0;
     .article-image {
       width: 100%;
       border-radius: 10px;
-      height: 100%;
+      height: 100px;
     }
   }
   .article-details {

@@ -44,9 +44,15 @@
         font-style: italic;
       }
     }
-    app-horizontal-article-item,
     app-article-skeleton-loader {
       margin-bottom: 20px;
+    }
+    ion-list {
+      display: flex;
+      flex-direction: column;
+      app-horizontal-article-item {
+        margin-bottom: 15px;
+      }
     }
   }
 }

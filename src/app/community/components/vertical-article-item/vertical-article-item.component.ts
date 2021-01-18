@@ -16,33 +16,28 @@ export class VerticalArticleItemComponent implements OnInit {
   FILE_ENDPOINT = FILE_PATH;
   loadingComments: boolean;
   comments_page_number = 0;
-  comments_max_size: number;
+  comments_max_size: number = 0;
   infiniteScrollDisabled: boolean;
   constructor(private communityService: CommunityService) {}
 
   ngOnInit() {
-    if (this.uniqueDisplay) {
-      this.loadComments(true, {});
-    }
+    this.loadComments(true);
   }
 
-  loadComments(isFirstLoad: boolean, event, reqParams = {}) {
+  loadComments(isFirstLoad: boolean) {
     this.loadingComments = true;
-    reqParams = {
-      ...{ size: SINGLE_REQUEST_SIZE, page: this.comments_page_number },
-      ...reqParams,
+    const reqParams = {
+      size: SINGLE_REQUEST_SIZE,
+      page: this.comments_page_number,
     };
-    console.log(reqParams);
     this.communityService
-      .getArticlesComments(this.article)
+      .getArticlesComments(this.article, reqParams)
       .subscribe((commentsResponse) => {
+        this.loadingComments = false;
         if (isFirstLoad) {
           this.comments_max_size = +commentsResponse.headers.get(
             'X-Total-Count'
           );
-          this.loadingComments = false;
-        } else {
-          event.target.complete();
         }
         this.comments = this.comments.concat(commentsResponse.body);
         if (this.comments.length === this.comments_max_size) {

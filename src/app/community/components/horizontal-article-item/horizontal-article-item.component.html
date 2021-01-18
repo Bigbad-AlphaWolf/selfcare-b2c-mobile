@@ -10,11 +10,12 @@
     <div class="more-infos">
       <div class="publication-date">
         <img src="/assets/images/clock.png" alt="" class="icon">
-        <span class="scb-text-gray text">il y a 5 min</span>
+        <span class="scb-text-gray text">{{article?.createdDate | publicationDateFormat}}</span>
       </div>
       <div class="comments">
         <img src="/assets/images/comments.png" alt="" class="icon">
-        <span class="scb-text-gray text">120 commentaires</span>
+        <span class="scb-text-gray text">{{comments_max_size}} {{comments_max_size < 2 ? 'commentaire'
+            :'commentaires'}}</span>
       </div>
     </div>
   </div>

@@ -22,6 +22,17 @@
     <div class="article-block">
       <app-vertical-article-item [article]="article" [uniqueDisplay]="true"></app-vertical-article-item>
     </div>
-    <div class="comments-block"></div>
+    <form [formGroup]="commentForm" class="comment-form">
+      <mat-form-field class="scb-input-row" appearance="outline">
+        <mat-label>Ajouter un commentaire &nbsp;&nbsp;</mat-label>
+        <input formControlName="comment" type="text" matInput autocomplete="off" [readonly]="postingComment"/>
+        <div matSuffix class="comment-submit">
+          <span (click)="postComment()" *ngIf="!postingComment" class="comment-text scb-text-orange" [ngClass]="{'disabled': !commentForm.valid}">
+            Publier
+          </span>
+          <ion-spinner *ngIf="postingComment" name="dots"></ion-spinner>
+        </div>
+      </mat-form-field>
+    </form>
   </div>
 </ion-content>

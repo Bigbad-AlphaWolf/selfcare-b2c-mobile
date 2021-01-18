@@ -1,5 +1,5 @@
 <div class="single-comment-block">
-  <app-article-comment-item></app-article-comment-item>
+  <app-article-comment-item [comment]="comment"></app-article-comment-item>
   <div class="sub-commments-block" *ngIf="0">
     <div class="sub-comments-list">
       <app-article-comment-item [isSubComment]="true" *ngFor="let subComment of subComments"></app-article-comment-item>

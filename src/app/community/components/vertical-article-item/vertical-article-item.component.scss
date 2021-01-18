@@ -25,6 +25,7 @@
       height: unset;
       .article-image {
         border-radius: unset !important;
+        min-height: 305px;
       }
     }
     .article-details {
@@ -138,6 +139,29 @@
         font-style: italic;
         font-size: 14px;
         padding-top: 6.5px;
+      }
+    }
+    .comments-block {
+      .comments-list {
+        display: flex;
+        flex-direction: column;
+        app-comment-block {
+          margin-bottom: 15px;
+        }
+        .spinner-block {
+          width: 100%;
+          text-align: center;
+          padding: 15px;
+        }
+        .more-comments-block {
+          text-align: end;
+          padding-right: 10px;
+          .text {
+            font-size: 14px;
+            font-style: italic;
+            font-family: HelveticaNeueLTStd-Roman;
+          }
+        }
       }
     }
   }

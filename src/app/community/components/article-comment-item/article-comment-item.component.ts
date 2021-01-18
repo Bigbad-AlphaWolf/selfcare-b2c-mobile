@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { CommentModel } from 'src/app/models/article.model';
 
 @Component({
   selector: 'app-article-comment-item',
@@ -7,6 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class ArticleCommentItemComponent implements OnInit {
   @Input() isSubComment: boolean;
+  @Input() comment: CommentModel;
   showMore: boolean;
   constructor() {}
 

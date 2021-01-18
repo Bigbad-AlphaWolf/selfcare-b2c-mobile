@@ -6,7 +6,7 @@ import {
   ArticleModel,
 } from 'src/app/models/article.model';
 import { CommunityService } from 'src/app/services/community-service/community.service';
-const SINGLE_REQUEST_SIZE = 3;
+const SINGLE_REQUEST_SIZE = 10;
 
 @Component({
   selector: 'app-view-category-articles',
@@ -41,7 +41,7 @@ export class ViewCategoryArticlesComponent implements OnInit {
     this.getArticles(true, {});
   }
 
-  getArticles(isFirstLoad: boolean, event) {
+  getArticles(isFirstLoad: boolean, event?) {
     this.loadingArticles = true;
     this.hasError = false;
     const reqParams = {
@@ -52,10 +52,10 @@ export class ViewCategoryArticlesComponent implements OnInit {
       .getArticlesByCategory(this.category, reqParams)
       .subscribe(
         (articlesResponse) => {
+          this.loadingArticles = false;
           if (isFirstLoad) {
             this.maxSize = +articlesResponse.headers.get('X-Total-Count');
-            this.loadingArticles = false;
-          } else {
+          } else if (event) {
             event.target.complete();
           }
           this.articles = this.articles.concat(articlesResponse.body);

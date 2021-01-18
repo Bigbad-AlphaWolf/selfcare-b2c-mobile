@@ -23,10 +23,10 @@
       </ion-item>
     </div>
     <div class="articles-block">
-      <ng-container *ngIf="articles && articles.length">
+      <ion-list *ngIf="articles && articles.length">
         <app-horizontal-article-item (click)="goToArticle(article)" [article]="article"
           *ngFor="let article of articles"></app-horizontal-article-item>
-      </ng-container>
+      </ion-list>
       <ng-container *ngIf="loadingArticles">
         <app-article-skeleton-loader></app-article-skeleton-loader>
         <app-article-skeleton-loader></app-article-skeleton-loader>
@@ -34,7 +34,7 @@
       </ng-container>
       <ng-container *ngIf="hasError">
         <div class="error-block">
-          <span class="msg scb-text-red-error" (click)="getArticles(true, {})">{{errorMessage}}</span>
+          <span class="msg scb-text-red-error" (click)="getArticles(true)">{{errorMessage}}</span>
         </div>
       </ng-container>
       <ng-container *ngIf="!loadingArticles && articles && !articles.length">
@@ -42,6 +42,10 @@
           <span class="msg">{{noArticleMsg}}</span>
         </div>
       </ng-container>
+      <ion-infinite-scroll (ionInfinite)="getArticles(false ,$event)" [disabled]="maxNumberReached">
+        <ion-infinite-scroll-content>
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
     </div>
   </div>
 </ion-content>

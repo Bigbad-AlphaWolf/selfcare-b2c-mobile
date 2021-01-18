@@ -4,7 +4,7 @@ import {
   NgModule,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
@@ -20,6 +20,8 @@ import { ViewCategoryArticlesComponent } from './pages/view-category-articles/vi
 import { ViewArticlesCommentsComponent } from './pages/view-articles-comments/view-articles-comments.component';
 import { AllCategoriesModalComponent } from './components/all-categories-modal/all-categories-modal.component';
 import { ArticleSkeletonLoaderComponent } from './components/article-skeleton-loader/article-skeleton-loader.component';
+import { MatInputModule } from '@angular/material';
+import { PipesModule } from '../pipes/pipes.module';
 
 const routes: Routes = [
   {
@@ -52,6 +54,9 @@ const routes: Routes = [
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    PipesModule,
     IonicModule,
     RouterModule.forChild(routes),
   ],

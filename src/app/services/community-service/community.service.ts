@@ -16,6 +16,7 @@ const COMMUNITY_BASE_URL = `${SERVER_API_URL}/${COMMUNITY_MANAGEMENT_SERVICE}/ap
 const ARTICLE_CATEGORIES_ENDPOINT = `${COMMUNITY_BASE_URL}/categorie-articles`;
 const ARTICLES_ENDPOINT = `${COMMUNITY_BASE_URL}/articles`;
 const ARTICLE_COMMENTS_ENDPOINT = `${COMMUNITY_BASE_URL}/commentaires-by-article`;
+const POST_ARTICLE_COMMENT_ENDPOINT = `${COMMUNITY_BASE_URL}/commentaires`;
 const FAMOUS_ARTICLE_ENDPOINT = `${COMMUNITY_BASE_URL}/famous-article`;
 const RECOMMENDED_ARTICLE_ENDPOINT = `${COMMUNITY_BASE_URL}/recommended-article`;
 const ALL_ARTICLES_ENDPOINT = `${COMMUNITY_BASE_URL}/admin/articles`;
@@ -98,5 +99,11 @@ export class CommunityService {
         observe: 'response',
       })
       .pipe(map((res: HttpResponse<CommentModel[]>) => res));
+  }
+
+  postComment(comment: CommentModel): Observable<CommentModel> {
+    return this.http
+      .post(POST_ARTICLE_COMMENT_ENDPOINT, comment)
+      .pipe(map((createdComment: CommentModel) => createdComment));
   }
 }

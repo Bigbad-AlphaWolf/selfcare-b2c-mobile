@@ -13,11 +13,12 @@
     <div class="more-infos">
       <div class="publication-date">
         <img src="/assets/images/clock.png" alt="" class="icon">
-        <span class="scb-text-gray text">il y a 5 min</span>
+        <span class="scb-text-gray text">{{article?.createdDate | publicationDateFormat}}</span>
       </div>
       <div class="comments">
         <img src="/assets/images/comments.png" alt="" class="icon">
-        <span class="scb-text-gray text">120 commentaires</span>
+        <span class="scb-text-gray text">{{comments_max_size}} {{comments_max_size < 2 ? 'commentaire'
+            :'commentaires'}}</span>
       </div>
     </div>
     <div class="article-content scb-text-gray" *ngIf="uniqueDisplay">
@@ -30,10 +31,18 @@
     </div>
     <div class="comments-block" *ngIf="uniqueDisplay">
       <div class="title-and-more">
-        <span class="block-title">120 commentaires</span>
-        <span class="scb-text-orange voir-tout">Voir tout</span>
+        <span class="block-title">{{comments_max_size}} {{comments_max_size < 2 ? 'commentaire' :'commentaires'}}</span>
+            <span class="scb-text-orange voir-tout">Voir tout</span>
       </div>
-      <app-comment-block [comment]="article" *ngFor="let comment of comments"></app-comment-block>
+      <div class="comments-list">
+        <app-comment-block [comment]="comment" *ngFor="let comment of comments"></app-comment-block>
+        <div *ngIf="loadingComments" class="spinner-block">
+          <ion-spinner name="bubbles"></ion-spinner>
+        </div>
+        <div class="more-comments-block" *ngIf="!infiniteScrollDisabled && !loadingComments">
+          <span class="text scb-text-gray" (click)="loadComments()">Plus de commentaires</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>

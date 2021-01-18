@@ -186,7 +186,7 @@ export class DashboardPage implements OnInit, OnDestroy {
           );
           this.followAnalyticsService.setString('profil', this.currentProfile);
           this.followAnalyticsService.setString('formule', this.currentFormule);
-          this.logUserBirthDateOnFollow();
+          this.getUserInfosNlogBirthDateOnFollow();
           const user = ls.get('user');
           this.followAnalyticsService.setFirstName(user.firstName);
           this.followAnalyticsService.setLastName(user.lastName);
@@ -223,5 +223,18 @@ export class DashboardPage implements OnInit, OnDestroy {
         .subscribe((birthDate: string) => {
           this.followAnalyticsService.logUserBirthDate(birthDate);
         });
+  }
+
+  getUserInfosNlogBirthDateOnFollow() {
+    const userInfosAlreadySet = !!ls.get('userInfos');
+    if (!userInfosAlreadySet)
+      this.dashboardServ.getCustomerInformations().subscribe(
+        (res) => {
+          this.followAnalyticsService.logUserBirthDate(res.birthDate);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
   }
 }

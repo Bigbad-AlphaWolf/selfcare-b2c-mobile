@@ -70,6 +70,10 @@ ion-menu {
   }
 }
 
+mat-form-field.scb-input-row .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+
 /*  Add asterisk (*) to required field */
 .scb-required {
   .mat-form-field-infix {
@@ -815,5 +819,19 @@ ion-button {
     input {
       font-size: 16px !important;
     }
+  }
+}
+
+.comment-form {
+  .mat-form-field-suffix {
+    position: absolute !important;
+    height: 93% !important;
+    right: 0;
+    padding: 0 10px !important;
+    display: flex !important;
+    top: 5px !important;
+  }
+  .mat-input-element {
+    width: 77% !important;
   }
 }

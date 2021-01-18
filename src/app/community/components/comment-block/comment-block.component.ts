@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ArticleModel, CommentModel } from 'src/app/models/article.model';
+import { CommentModel } from 'src/app/models/article.model';
 import { CommunityService } from 'src/app/services/community-service/community.service';
 const SINGLE_REQUEST_SIZE = 3;
 @Component({
