@@ -55,5 +55,23 @@
         </div>
       </ng-container>
     </div>
+    <ng-container *ngIf="purchaseType === 'BUY' && ( favoritesPass && favoritesPass.passInternets.length || favoritesPass && favoritesPass.passIllimixes.length)">
+      <div class="favorite-pass-container">
+        <div class="title">
+          <span class="text">
+            Mes habitudes
+          </span>
+        </div>
+        <ng-container  *ngIf="favoritesPass && favoritesPass.passInternets.length">
+          <app-item-pass-internet *ngFor="let passInternet of favoritesPass.passInternets" [passInternet]="passInternet" (selectPass)="choosePass(passInternet, OPERATION_TYPE_PASS_INTERNET)">
+          </app-item-pass-internet>
+        </ng-container>
+        <ng-container  *ngIf="favoritesPass && favoritesPass.passIllimixes.length">
+          <app-item-pass-illimix *ngFor="let passIllimix of favoritesPass.passIllimixes" [passIllimix]="passIllimix" (selectPass)="choosePass(passIllimix, OPERATION_TYPE_PASS_ILLIMIX)">
+          </app-item-pass-illimix>
+        </ng-container>
+      </div>
+    </ng-container>
   </div>
+
 </ion-content>
