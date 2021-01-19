@@ -817,3 +817,9 @@ ion-button {
     }
   }
 }
+
+.ref-transaction{
+  .mat-form-field-infix {
+      display: flex;
+  }
+}
