@@ -70,10 +70,6 @@ ion-menu {
   }
 }
 
-mat-form-field.scb-input-row .mat-form-field-wrapper {
-  padding-bottom: 0;
-}
-
 /*  Add asterisk (*) to required field */
 .scb-required {
   .mat-form-field-infix {
@@ -833,5 +829,8 @@ ion-button {
   }
   .mat-input-element {
     width: 77% !important;
+  }
+  mat-form-field.scb-input-row .mat-form-field-wrapper {
+    padding-bottom: 0;
   }
 }

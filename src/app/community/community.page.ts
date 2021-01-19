@@ -12,8 +12,8 @@ import { AllCategoriesModalComponent } from './components/all-categories-modal/a
 })
 export class CommunityPage implements OnInit {
   categories: ArticleCategoryModel[] = [];
-  articlesRecommendations: ArticleModel[] = [];
-  famousArticles: ArticleModel[] = [];
+  articlesRecommendations: ArticleModel[];
+  famousArticles: ArticleModel[];
   loadingFavoriteCategories: boolean;
   categoriesHasError: boolean;
   loadingRecommendedArticles: boolean;

@@ -6,7 +6,7 @@ import {
   ArticleModel,
 } from 'src/app/models/article.model';
 import { CommunityService } from 'src/app/services/community-service/community.service';
-const SINGLE_REQUEST_SIZE = 10;
+const SINGLE_REQUEST_SIZE = 5;
 
 @Component({
   selector: 'app-view-category-articles',
@@ -14,7 +14,7 @@ const SINGLE_REQUEST_SIZE = 10;
   styleUrls: ['./view-category-articles.component.scss'],
 })
 export class ViewCategoryArticlesComponent implements OnInit {
-  articles: ArticleModel[] = [];
+  articles: ArticleModel[];
   category: ArticleCategoryModel;
   // param page to get articles
   page = 0;
@@ -55,6 +55,7 @@ export class ViewCategoryArticlesComponent implements OnInit {
           this.loadingArticles = false;
           if (isFirstLoad) {
             this.maxSize = +articlesResponse.headers.get('X-Total-Count');
+            this.articles = [];
           } else if (event) {
             event.target.complete();
           }

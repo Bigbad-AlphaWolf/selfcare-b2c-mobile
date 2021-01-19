@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ArticleModel, CommentModel } from 'src/app/models/article.model';
 import { CommunityService } from 'src/app/services/community-service/community.service';
 import { FILE_PATH } from 'src/app/services/utils/services.paths';
-const SINGLE_REQUEST_SIZE = 5;
+const SINGLE_REQUEST_SIZE = 3;
 @Component({
   selector: 'app-vertical-article-item',
   templateUrl: './vertical-article-item.component.html',
