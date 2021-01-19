@@ -6,10 +6,10 @@ export const environment = {
   production: false,
   // SERVER_API_URL: 'https://orangeetmoi.orange.sn',
   // SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
-  // SERVER_API_URL:
-  //   'http://selfcare-b2c-client-http-dsiselfcarebcorangeetmoi-rec.malaw.orange-sonatel.com',
   SERVER_API_URL:
-    'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
+    'http://selfcare-b2c-client-http-dsiselfcarebcorangeetmoi-rec.malaw.orange-sonatel.com',
+  // SERVER_API_URL:
+  //   'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
   // SERVER_API_URL: 'http://10.100.97.175:8712',
   OM_URL: 'https://appom.orange-sonatel.com',
   SEDDO_SERVICE: 'selfcare-b2c-seddo',
@@ -25,8 +25,8 @@ export const environment = {
   CODE_OTP_SERVICE: 'selfcare-otp',
   UAA_SERVICE: 'selfcare-b2c-uaa',
   OM_SERVICE: 'selfcare-b2c-om',
-  COMMUNITY_MANAGEMENT_SERVICE: 'selfcare-b2c-community-management',
   PURCHASES_SERVICE: 'selfcare-b2c-purchases',
+  COMMUNITY_MANAGEMENT_SERVICE: 'selfcare-b2c-community-management',
   BOOSTER_SERVICE: 'selfcare-b2c-booster-management',
   SARGAL_SERVICE: 'selfcare-b2c-sargal',
   GA_CONFIG: {
@@ -40,7 +40,7 @@ export const environment = {
   GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
   CONFIRM_MSISDN_BY_NETWORK_URL:
     'http://10.100.99.116:1494/api/v1/confirm-msisdn',
-  // DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_95fb0f8745090d63e5acebaa',
+  DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_95fb0f8745090d63e5acebaa',
 };
 
 /*
