@@ -262,7 +262,7 @@
     </div>
   </div>
 
-  <div *ngIf="success" class="confirm-btn">
+  <div *ngIf="success && !isBuyerPostpaid" class="confirm-btn">
     <ion-button
       (click)="goToPage()"
       shape="round"

@@ -13,6 +13,7 @@ import {
   OPERATION_ENABLE_DALAL,
   OPERATION_TYPE_PASS_ILLIFLEX,
   CODE_KIRENE_Formule,
+  SubscriptionModel,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -23,6 +24,8 @@ import {
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
 import { DalalTonesPage } from '../dalal-tones/dalal-tones.page';
 import { RapidoOperationPage } from '../pages/rapido-operation/rapido-operation.page';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 
 @Component({
   selector: 'app-operation-success-fail-modal',
@@ -55,16 +58,27 @@ export class OperationSuccessFailModalPage implements OnInit {
   @Input() dalal: any;
   dateAchat = this.dashboardService.getCurrentDate();
   btnText: string;
-
+  isBuyerPostpaid: boolean;
   constructor(
     private dashboardService: DashboardService,
     private router: Router,
     public modalController: ModalController,
     private appRouting: ApplicationRoutingService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private authenticationService: AuthenticationService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.checkifBuyerPostpaid();
+  }
+
+  checkifBuyerPostpaid() {
+    this.authenticationService
+      .getSubscription(this.msisdnBuyer)
+      .subscribe((res: SubscriptionModel) => {
+        this.isBuyerPostpaid = res && res.profil === PROFILE_TYPE_POSTPAID;
+      });
+  }
 
   terminer() {
     this.modalController.dismiss();
