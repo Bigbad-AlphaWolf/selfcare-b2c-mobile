@@ -266,14 +266,14 @@ export interface PassInfoModel {
   bonus: string;
   description: string;
   actif: boolean;
-  validitePass: string;
   categoriePass: any;
   formuleMobiles: any;
   profils: any;
   promos: any;
   duree: string;
   bonusNuit: string;
-  compteurCredite: string;
+  validitePass?: string;
+  compteurCredite?: string;
   typePassInternet: any;
   price_plan_index: number;
   price_plan_index_om: number;

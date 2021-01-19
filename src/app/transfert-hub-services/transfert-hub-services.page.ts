@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { ModalController, NavController } from '@ionic/angular';
 import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { NumberSelectionComponent } from '../components/number-selection/number-selection.component';
 import { NumberSelectionOption } from '../models/enums/number-selection-option.enum';
@@ -14,6 +14,7 @@ import {
   OPERATION_TYPE_PASS_VOYAGE,
   SubscriptionModel,
   OPERATION_TYPE_PASS_ILLIFLEX,
+  PassInternetModel,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -28,6 +29,10 @@ import { Observable } from 'rxjs';
 import { FacebookEventService } from '../services/facebook-event/facebook-event.service';
 import { FacebookCustomEvent } from '../models/enums/facebook-custom-event.enum';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
+import { catchError, tap } from 'rxjs/operators';
+import { FavoritePassOemModel } from '../models/favorite-pass-oem.model';
+import { FavorisService } from '../services/favoris/favoris.service';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -35,6 +40,8 @@ import { AuthenticationService } from '../services/authentication-service/authen
 })
 export class TransfertHubServicesPage implements OnInit {
   OPERATION_TYPE_PASS_ALLO = OPERATION_TYPE_PASS_ALLO;
+  OPERATION_TYPE_PASS_INTERNET = OPERATION_TYPE_PASS_INTERNET;
+  OPERATION_TYPE_PASS_ILLIMIX = OPERATION_TYPE_PASS_ILLIMIX;
   pageTitle: string;
   transferOptions: {
     title: string;
@@ -182,12 +189,14 @@ export class TransfertHubServicesPage implements OnInit {
   omPhoneNumber: string;
   isProcessing: boolean;
   errorMsg: string;
-  dataPayload: any;
+  userInfos: SubscriptionModel;
   hasPromoPlanActive: OfferPlanActive = null;
   hasBoosterPromoActive: PromoBoosterActive = null;
   showNewFeatureBadge$: Observable<Boolean>;
   isLightMod: boolean; //boolean to tell if user is in connected or not connected mod
   currentPhone = this.dashbServ.getCurrentPhoneNumber();
+  purchaseType: "BUY" | "TRANSFER";
+  favoritesPass : FavoritePassOemModel;
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
@@ -198,28 +207,30 @@ export class TransfertHubServicesPage implements OnInit {
     private bsService: BottomSheetService,
     private omService: OrangeMoneyService,
     private facebookevent: FacebookEventService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private favService: FavorisService
   ) {}
 
   ngOnInit() {
-    let purchaseType;
     this.getShowStatusNewFeatureAllo();
     if (history && history.state) {
-      purchaseType = history.state.purchaseType;
+      this.purchaseType = history.state.purchaseType;
       this.isLightMod = history.state.isLightMod;
       if (!this.isLightMod) {
         this.buyOptions.splice(0, 0, this.buyCreditOption);
         this.buyOptions.push(this.buyIlliflexOption);
       }
     }
-    if (purchaseType === 'TRANSFER') {
+    if (this.purchaseType === 'TRANSFER') {
       this.options = this.transferOptions;
       this.pageTitle = 'Transférer argent ou crédit';
-    } else if (purchaseType === 'BUY') {
+    } else if (this.purchaseType === 'BUY') {
       this.options = this.buyOptions;
       this.pageTitle = 'Acheter crédit ou pass';
       this.getUserActiveBonPlans();
       this.getUserActiveBoosterPromo();
+      this.getFavoritePass();
+      this.getUserInfos();
     } else {
       this.navController.navigateBack('/dashboard');
     }
@@ -364,7 +375,6 @@ export class TransfertHubServicesPage implements OnInit {
       if (response && response.data && response.data.recipientMsisdn) {
         const pageData = response.data;
         this.appRouting.goSetAmountPage(pageData);
-        // this.getOmPhoneNumberAndCheckrecipientHasOMAccount(this.dataPayload);
       }
     });
     return await modal.present();
@@ -473,5 +483,34 @@ export class TransfertHubServicesPage implements OnInit {
 
   getShowStatusNewFeatureAllo() {
     this.showNewFeatureBadge$ = this.dashbServ.getNewFeatureAlloBadgeStatus();
+  }
+
+  getFavoritePass() {
+    return this.favService.getFavoritePass().pipe(
+      tap((res: any) => {
+        this.favoritesPass = res;
+      }),
+    ).subscribe()
+   }
+
+   choosePass(pass: any, opType: string ) {
+    let navigationExtras: NavigationExtras = {
+      state: {
+        pass,
+        recipientCodeFormule: this.userInfos.code,
+        purchaseType: opType,
+        recipientMsisdn: this.currentPhone,
+        isLightMod: this.isLightMod,
+      },
+    };
+    this.router.navigate(['/operation-recap'], navigationExtras);
+  }
+
+  getUserInfos() {
+    this.authService.getSubscription(this.currentPhone).subscribe(
+      (res: SubscriptionModel) => {
+        this.userInfos = res;
+      }
+    );
   }
 }
