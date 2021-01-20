@@ -40,7 +40,7 @@ export class OfcService {
     var browser = this.inAppBrowser.create(
       OfcService.OFC_WEBVIEW_URL,
       '_blank',
-      `fullscreen=no,zoom=no,location=no${hidden}`
+      `fullscreen=no,zoom=no`
     );
 
     browser.on('loadstop').subscribe((event) => {
