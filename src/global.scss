@@ -818,8 +818,25 @@ ion-button {
   }
 }
 
-.ref-transaction{
+.comment-form {
+  .mat-form-field-suffix {
+    position: absolute !important;
+    height: 93% !important;
+    right: 0;
+    padding: 0 10px !important;
+    display: flex !important;
+    top: 5px !important;
+  }
+  .mat-input-element {
+    width: 77% !important;
+  }
+  mat-form-field.scb-input-row .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+}
+
+.ref-transaction {
   .mat-form-field-infix {
-      display: flex;
+    display: flex;
   }
 }

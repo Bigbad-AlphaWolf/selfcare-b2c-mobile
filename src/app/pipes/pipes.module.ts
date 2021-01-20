@@ -13,6 +13,7 @@ import { CodeFormatPipe } from './code-format/code-format.pipe';
 import { AcronymPipe } from 'src/shared/pipes/acronym.pipe';
 import { DataVolumePipe } from 'src/shared/pipes/data-volume.pipe';
 import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
+import { PublicationDateFormatPipe } from 'src/shared/pipes/publication-date-format.pipe';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
     AcronymPipe,
     DataVolumePipe,
     IlliflexVoicePipe,
+    PublicationDateFormatPipe,
   ],
   imports: [CommonModule],
   exports: [
@@ -45,6 +47,7 @@ import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
     AcronymPipe,
     DataVolumePipe,
     IlliflexVoicePipe,
+    PublicationDateFormatPipe,
   ],
   providers: [PassVolumeDisplayPipe, DatePipe],
 })

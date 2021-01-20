@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">{{category?.name}}</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">{{category?.name}}</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="articles-page-body">
+    <div class="search-bar-block">
+      <ion-item lines="none">
+        <ion-input [placeholder]="'Rechercher dans ' + category.name"></ion-input>
+        <ion-icon name="search" slot="end"></ion-icon>
+      </ion-item>
+    </div>
+    <div class="articles-block">
+      <ion-list *ngIf="articles && articles.length">
+        <app-horizontal-article-item (click)="goToArticle(article)" [article]="article"
+          *ngFor="let article of articles"></app-horizontal-article-item>
+      </ion-list>
+      <ng-container *ngIf="loadingArticles">
+        <app-article-skeleton-loader></app-article-skeleton-loader>
+        <app-article-skeleton-loader></app-article-skeleton-loader>
+        <app-article-skeleton-loader></app-article-skeleton-loader>
+      </ng-container>
+      <ng-container *ngIf="hasError">
+        <div class="error-block">
+          <span class="msg scb-text-red-error" (click)="getArticles(true)">{{errorMessage}}</span>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!loadingArticles && articles && !articles.length">
+        <div class="empty-array">
+          <span class="msg">{{noArticleMsg}}</span>
+        </div>
+      </ng-container>
+      <ion-infinite-scroll (ionInfinite)="getArticles(false ,$event)" [disabled]="maxNumberReached">
+        <ion-infinite-scroll-content>
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </div>
+  </div>
+</ion-content>

@@ -361,9 +361,20 @@ const routes: Routes = [
     loadChildren:
       './pages/satisfaction-form/satisfaction-form.module#SatisfactionFormPageModule',
   },
-  { path: 'change-orange-money-pin', loadChildren: './change-orange-money-pin/change-orange-money-pin.module#ChangeOrangeMoneyPinPageModule' },
-  { path: 'reclamation-om-transaction', loadChildren: './pages/reclamation-om-transaction/reclamation-om-transaction.module#ReclamationOmTransactionPageModule' }
-
+  {
+    path: 'change-orange-money-pin',
+    loadChildren:
+      './change-orange-money-pin/change-orange-money-pin.module#ChangeOrangeMoneyPinPageModule',
+  },
+  {
+    path: 'community',
+    loadChildren: './community/community.module#CommunityPageModule',
+  },
+  {
+    path: 'reclamation-om-transaction',
+    loadChildren:
+      './pages/reclamation-om-transaction/reclamation-om-transaction.module#ReclamationOmTransactionPageModule',
+  },
 ];
 
 @NgModule({

@@ -1,0 +1,42 @@
+@import 'src/app/app';
+
+ion-title {
+  padding: 0 50px !important;
+}
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: -0.34px;
+}
+
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+  padding: 0 10px;
+}
+
+.article-page-body {
+  min-height: 100%;
+  height: fit-content;
+  .comment-form {
+    padding: 12px percentage(15/375);
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    background-color: $white;
+    box-shadow: 5px 5px 50px -20px rgba(0, 0, 0, 0.5);
+    .comment-submit {
+      display: flex;
+      align-items: center;
+      .comment-text {
+        margin-right: 8px;
+        &.disabled {
+          color: $gray;
+          font-family: HelveticaNeueLTStd-Roman;
+        }
+      }
+    }
+  }
+}
