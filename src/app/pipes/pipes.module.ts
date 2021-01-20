@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormatCurrencyPipe } from 'src/shared/pipes/format-currency.pipe';
 import { FormatBillNumPipe } from 'src/shared/pipes/format-bill-num.pipe';
 import { FormatBillDatePipe } from 'src/shared/pipes/format-bill-date.pipe';
@@ -49,6 +49,6 @@ import { PublicationDateFormatPipe } from 'src/shared/pipes/publication-date-for
     IlliflexVoicePipe,
     PublicationDateFormatPipe,
   ],
-  providers: [PassVolumeDisplayPipe],
+  providers: [PassVolumeDisplayPipe, DatePipe],
 })
 export class PipesModule {}

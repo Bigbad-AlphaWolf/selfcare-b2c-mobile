@@ -49,7 +49,8 @@ export const OPERATION_SEE_SOLDE_RAPIDO = 'SOLDE_RAPIDO';
 export const OPERATION_SEE_FOLLOW_UP_REQUESTS = 'FOLLOW_UP_REQUESTS';
 export const OPERATION_SEE_RATTACHED_NUMBERS = 'RATTACHED_NUMBERS';
 export const OPERATION_RATTACH_NUMBER = 'RATTACHE_NUMBER';
-export const OPERATION_CONFIRM_DELETE_RATTACH_NUMBER = 'CONFIRM_DELETE_RATTACHE_NUMBER';
+export const OPERATION_CONFIRM_DELETE_RATTACH_NUMBER =  'CONFIRM_DELETE_RATTACHE_NUMBER';
+export const OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM =  'ERREUR_TRANSACTION_OM';
 export const OPERATION_INIT_CHANGE_PIN_OM = 'INIT_CHANGE_PIN_OM';
 export const OPERATION_CHANGE_PIN_OM = 'CHANGE_PIN_OM';
 
@@ -265,14 +266,14 @@ export interface PassInfoModel {
   bonus: string;
   description: string;
   actif: boolean;
-  validitePass: string;
   categoriePass: any;
   formuleMobiles: any;
   profils: any;
   promos: any;
   duree: string;
   bonusNuit: string;
-  compteurCredite: string;
+  validitePass?: string;
+  compteurCredite?: string;
   typePassInternet: any;
   price_plan_index: number;
   price_plan_index_om: number;
@@ -724,20 +725,6 @@ export interface UserConsommation {
 }
 
 export const CGU_FILE_NAME = 'cgu_orangeetmoi.pdf';
-
-export interface PurchaseModel {
-  typeAchat: string;
-  amount: number;
-  name: string;
-  channel: string;
-  operationDate: string;
-  operationType: 'DEBIT' | 'CREDIT';
-  details: any[];
-  label?: string;
-  prenomReceiver?: string;
-  nomReceiver?: string;
-  msisdnReceiver?: string;
-}
 
 /**
  * Compare two semver versions. Returns true if version A is greater than

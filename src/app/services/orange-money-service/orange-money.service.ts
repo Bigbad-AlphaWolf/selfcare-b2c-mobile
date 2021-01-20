@@ -6,10 +6,9 @@ import {
   of,
   Observable,
   forkJoin,
-  throwError,
 } from 'rxjs';
-import { tap, switchMap, map, catchError } from 'rxjs/operators';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { tap, switchMap, map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {
   OmUserInfo,
@@ -27,8 +26,9 @@ import {
 } from '.';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
-import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { ModalController } from '@ionic/angular';
+import { ErreurTransactionOmModel } from 'src/app/models/erreur-transaction-om.model';
+import { SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT } from '../utils/om.endpoints';
 import { ChangePinOm } from 'src/app/models/change-pin-om.model';
 import { OM_CHANGE_PIN_ENDPOINT } from '../utils/om.endpoints';
 import { REGEX_IOS_SYSTEM } from 'src/shared';
@@ -68,9 +68,7 @@ export class OrangeMoneyService {
   constructor(
     private http: HttpClient,
     private followAnalyticsService: FollowAnalyticsService,
-    private dashboardService: DashboardService,
-    private modalController: ModalController
-  ) {}
+    private dashboardService: DashboardService  ) {}
   pinPadDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b'];
   gotPinPadSubject = new BehaviorSubject<string[]>([]);
   loginResponseSubject = new BehaviorSubject<any>({});
@@ -109,7 +107,7 @@ export class OrangeMoneyService {
         (hasOmAccount: boolean) => {
           return hasOmAccount;
         },
-        (err) => {
+        () => {
           return true;
         }
       )
@@ -163,7 +161,7 @@ export class OrangeMoneyService {
     return this.http.post(registerClientEndpoint, registerClientData);
   }
 
-  GetPinPad(pinPadData: OmPinPadModel, changePinInfos?: { apiKey: string,em: string,loginToken: string, msisdn: string, sequence: string }) {    
+  GetPinPad(pinPadData: OmPinPadModel, changePinInfos?: { apiKey: string,em: string,loginToken: string, msisdn: string, sequence: string }) {
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
     const os = isIOS ? 'iOS' : 'Android';
     if (pinPadData) pinPadData.os = os;
@@ -425,6 +423,10 @@ export class OrangeMoneyService {
         );
       })
     );
+  }
+
+  sendRequestErreurTransactionOM(data: ErreurTransactionOmModel) {
+    return this.http.post(`${SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT}`, data);
   }
 
   changePin(data: ChangePinOm){

@@ -120,7 +120,7 @@ export class ActionItemComponent implements OnInit {
   }
 
   goReclamation() {
-    this.router.navigate(['/control-center/operation-om/reclamation']);
+    this.router.navigate(['/reclamation-om-transaction']);
     this.followAnalyticsService.registerEventFollow(
       'Reclamation_OM',
       'event',

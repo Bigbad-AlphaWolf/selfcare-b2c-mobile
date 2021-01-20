@@ -4,7 +4,6 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import {
   computeConsoHistory,
   arrangeCompteurByOrdre,
-  PurchaseModel,
   DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY
 } from 'src/shared';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
@@ -14,6 +13,7 @@ import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { tap } from 'rxjs/operators';
 import { CategoryPurchaseHistory } from '../models/category-purchase-history.model';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { PurchaseModel } from '../models/purchase.model';
 
 @AutoUnsubscribe()
 @Component({
@@ -82,12 +82,12 @@ export class DetailsConsoPage implements OnInit {
           this.getPrepaidUserHistory(2);
           this.getUserConsoInfos();
           this.getTransactionsByDay(this.purchaseDateFilterSelected);
-          
+
         }
       });
   }
 
-  goNext(tabIndex?:number){    
+  goNext(tabIndex?:number){
     this.slideGroup.getActiveIndex().then(index => {
       this.seeSlide(index);
     });
