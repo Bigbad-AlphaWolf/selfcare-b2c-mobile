@@ -12,9 +12,11 @@
 <ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <ion-grid >
     <ion-row>
-      <div [ngClass]="{'disabled': !isServciceActivated(company)}" matRipple (click)="onCompanySelected(company)" class="oem-bloc-1" *ngFor="let company of companies">
-          <img [src]="company.logo" class="oem-img"/>
-      </div>
+      <ng-container *ngFor="let company of companies">
+        <div *ngIf="!isServiceHidden(company)" [ngClass]="{'disabled': !isServciceActivated(company)}" matRipple (click)="onCompanySelected(company)" class="oem-bloc-1" >
+            <img [src]="company.logo" class="oem-img"/>
+        </div>
+      </ng-container>
     </ion-row>
   </ion-grid>
 </ion-content>

@@ -21,10 +21,8 @@ import { FollowAnalyticsService } from '../services/follow-analytics/follow-anal
 import { Platform, NavController } from '@ionic/angular';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { AppUpdatePage } from '../pages/app-update/app-update.page';
-import { SessionOem } from '../services/session-oem/session-oem.service';
 import { map, take } from 'rxjs/operators';
 import { PROFIL, CODE_CLIENT, CODE_FORMULE, FORMULE } from '../utils/constants';
-import { OperationService } from '../services/oem-operation/operation.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()
@@ -62,8 +60,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     private platform: Platform,
     private appMinimize: AppMinimize,
     private appVersion: AppVersion,
-    private navCtl: NavController,
-    private operationService: OperationService
+    private navCtl: NavController
   ) {}
 
   ngOnInit() {
@@ -104,7 +101,6 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.getCurrentSubscription();
-    this.getActiveServices();
     // if (!this.isFirebaseTokenSent) {
     //   this.authServ.UpdateNotificationInfo();
     //   this.isFirebaseTokenSent = true;
@@ -120,12 +116,6 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   ionViewWillLeave() {
     this.backButtonSubscription.unsubscribe();
-  }
-
-  getActiveServices() {
-    this.operationService.getAllServices().subscribe((res: any) => {
-      OperationService.AllOffers = res;
-    });
   }
 
   getCurrentSubscription() {

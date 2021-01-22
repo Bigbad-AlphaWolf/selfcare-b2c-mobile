@@ -217,7 +217,8 @@ export class TransfertHubServicesPage implements OnInit {
       this.isLightMod = history.state.isLightMod;
       if (!this.isLightMod) {
         this.buyOptions.splice(0, 0, this.buyCreditOption);
-        this.buyOptions.push(this.buyIlliflexOption);
+        if (this.isServciceActivated(this.buyIlliflexOption))
+          this.buyOptions.push(this.buyIlliflexOption);
       }
     }
     if (purchaseType === 'TRANSFER') {

@@ -28,6 +28,7 @@ import { ACTIONS_RAPIDES_OPERATIONS_DASHBOARD } from '../utils/operations.util';
 import { NavController } from '@ionic/angular';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { map } from 'rxjs/operators';
+import { OperationService } from '../services/oem-operation/operation.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid',
@@ -95,13 +96,20 @@ export class DashboardPostpaidPage implements OnInit {
     private sargalServ: SargalService,
     private banniereServ: BanniereService,
     private navCtl: NavController,
-    private omServ: OrangeMoneyService
+    private omServ: OrangeMoneyService,
+    private operationService: OperationService
   ) {}
 
   ngOnInit() {
     this.getUserInfos();
     this.getWelcomeStatus();
     this.userPhoneNumber = this.dashbordServ.getCurrentPhoneNumber();
+  }
+
+  getActiveServices() {
+    this.operationService.getAllServices().subscribe((res: any) => {
+      OperationService.AllOffers = res;
+    });
   }
 
   ionViewWillEnter() {
