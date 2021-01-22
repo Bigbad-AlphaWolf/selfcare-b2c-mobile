@@ -113,6 +113,7 @@ export class DashboardPostpaidPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.getActiveServices();
     this.getConsoPostpaid();
     this.getBills();
     this.getCustomerSargalStatus();
