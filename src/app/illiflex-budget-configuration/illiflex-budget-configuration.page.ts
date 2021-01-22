@@ -35,6 +35,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
   dataSegmentation: number;
   // boolean to get bestOffer
   gettingBestOffer: boolean;
+  bonusSms: number;
   constructor(
     private navController: NavController,
     private illiflexService: IlliflexService,
@@ -62,6 +63,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
       (palier) =>
         this.amount >= palier.minPalier && this.amount <= palier.maxPalier
     );
+    this.bonusSms = this.selectedPalier.bonusSms;
     this.getMaxDataVolumeOfAmount();
     this.getMinDataVolumeOfAmount();
     this.validity = this.getCurrentValidity();
@@ -127,6 +129,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
       amount: this.amount,
       voice: this.voiceQuantityValue,
       validity: this.selectedPalier.validite,
+      bonusSms: this.bonusSms,
       recipient: this.dashboardService.getCurrentPhoneNumber(),
     };
     let navigationExtras: NavigationExtras = {
