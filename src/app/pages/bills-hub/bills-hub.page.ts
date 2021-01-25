@@ -78,6 +78,18 @@ export class BillsHubPage implements OnInit {
     return true;
   }
 
+  isServiceHidden(company: BillCompany) {
+    const service = OperationService.AllOffers.find(
+      (service) => service.code === company.idCode
+    );
+    if (service)
+      return (
+        !service.activated &&
+        (!service.reasonDeactivation || service.reasonDeactivation === '')
+      );
+    return false;
+  }
+
   goBack() {
     this.router.navigate(['/dashboard']);
   }
