@@ -8,4 +8,5 @@ export interface PalierModel {
   minDataVolume?: number;
   maxVoice?: number;
   minVoice?: number;
+  bonusSms?: number;
 }

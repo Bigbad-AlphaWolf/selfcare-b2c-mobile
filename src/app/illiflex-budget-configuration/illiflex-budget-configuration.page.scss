@@ -141,21 +141,31 @@
       left: 0;
       width: 100%;
       padding: 0 percentage(15/375) 40px;
-      .amount {
-        display: flex;
-        justify-content: space-between;
-        border-radius: 10px;
-        align-items: center;
-        padding: 25px 15px;
+      .amount-bonus-sms {
+        padding: 20px 15px;
         background-color: $grayDashboard;
-        .montant {
-          font-family: HelveticaNeueLTStd-Roman;
-          font-size: 16px;
-          line-height: 1.38;
+        border-radius: 10px;
+        .amount {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .montant {
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 16px;
+            line-height: 1.38;
+          }
+          .value {
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 20px;
+          }
         }
-        .value {
-          font-family: HelveticaNeueLTStd-Bd;
-          font-size: 24px;
+        .bonus-sms {
+          width: 100%;
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 12px;
+          line-height: 1.67;
+          text-align: right;
+          margin-top: 5px;
         }
       }
       .buttons {

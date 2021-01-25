@@ -47,7 +47,8 @@ export const OPERATION_SEE_SOLDE_RAPIDO = 'SOLDE_RAPIDO';
 export const OPERATION_SEE_FOLLOW_UP_REQUESTS = 'FOLLOW_UP_REQUESTS';
 export const OPERATION_SEE_RATTACHED_NUMBERS = 'RATTACHED_NUMBERS';
 export const OPERATION_RATTACH_NUMBER = 'RATTACHE_NUMBER';
-export const OPERATION_CONFIRM_DELETE_RATTACH_NUMBER = 'CONFIRM_DELETE_RATTACHE_NUMBER';
+export const OPERATION_CONFIRM_DELETE_RATTACH_NUMBER =
+  'CONFIRM_DELETE_RATTACHE_NUMBER';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -837,12 +838,15 @@ export class SplashScreenMock extends SplashScreen {
 }
 
 export function getBanniereTitle(banniereDescription: string) {
+  const semiColonIndex = banniereDescription.indexOf(';');
+  if (semiColonIndex < 1) return banniereDescription;
   return banniereDescription
     ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
     : '';
 }
 
 export function getBanniereDescription(banniereDescription: string) {
+  console.log(banniereDescription, banniereDescription.indexOf(';') + 1);
   return banniereDescription
     ? banniereDescription.substring(banniereDescription.indexOf(';') + 1)
     : '';
