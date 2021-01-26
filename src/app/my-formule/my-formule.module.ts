@@ -9,7 +9,6 @@ import { MyFormulePage } from './my-formule.page';
 import { SeeDetailsFormuleComponent } from './see-details-formule/see-details-formule.component';
 import { SharedModule } from 'src/shared/shared.module';
 import { ChangeOfferPopupComponent } from './change-offer-popup/change-offer-popup.component';
-import { ChangeFormuleSuccessModalComponent } from './change-formule-success-modal/change-formule-success-modal.component';
 
 const routes: Routes = [
   {
@@ -30,11 +29,7 @@ const routes: Routes = [
     MyFormulePage,
     SeeDetailsFormuleComponent,
     ChangeOfferPopupComponent,
-    ChangeFormuleSuccessModalComponent,
   ],
-  entryComponents: [
-    ChangeOfferPopupComponent,
-    ChangeFormuleSuccessModalComponent,
-  ],
+  entryComponents: [ChangeOfferPopupComponent],
 })
 export class MyFormulePageModule {}

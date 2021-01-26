@@ -17,7 +17,7 @@ import {
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { ModalController, Platform } from '@ionic/angular';
 import { ChangeOfferPopupComponent } from './change-offer-popup/change-offer-popup.component';
-import { ChangeFormuleSuccessModalComponent } from './change-formule-success-modal/change-formule-success-modal.component';
+import { ChangeFormuleSuccessModalComponent } from '../../shared/change-formule-success-modal/change-formule-success-modal.component';
 
 @Component({
   selector: 'app-my-formule',
