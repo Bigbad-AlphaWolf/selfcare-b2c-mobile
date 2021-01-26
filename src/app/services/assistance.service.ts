@@ -6,9 +6,11 @@ import { AuthenticationService } from './authentication-service/authentication.s
 import { environment } from 'src/environments/environment';
 import { ItemBesoinAide, SubscriptionModel } from 'src/shared';
 import { map, switchMap } from 'rxjs/operators';
+import { createRequestOption } from '../utils/request-utils';
+import { ASSISTANCE_ENDPOINT } from './utils/services.endpoints';
 
 const { SERVICES_SERVICE, SERVER_API_URL, ACCOUNT_MNGT_SERVICE } = environment;
-const questionsAnswersEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/besoin-aides/by-profil-formule`;
+// const questionsAnswersEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/besoin-aides/by-profil-formule`;
 const tutoViewedEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/view-tutorial`;
 const versionEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/v1/app-version`;
 
@@ -36,7 +38,7 @@ export class AssistanceService {
       .subscribe((sub: SubscriptionModel) => {
         const codeFormule = sub.code;
         if (codeFormule !== 'error') {
-          this.getAssistanceFAQ(codeFormule).subscribe(
+          this.queryBesoinAides(codeFormule).subscribe(
             (res: ItemBesoinAide[]) => {
               if (res.length) {
                 res.sort((item1: ItemBesoinAide, item2: ItemBesoinAide) => {
@@ -60,21 +62,15 @@ export class AssistanceService {
       });
   }
 
-  getFAQ(): Observable<ItemBesoinAide[]> {
+  fetchHelpItems(req?: any): Observable<ItemBesoinAide[]> {
     const currentMsisdn = this.dashboardService.getCurrentPhoneNumber();
     return this.authService.getSubscription(currentMsisdn).pipe(
       switchMap((sub: SubscriptionModel) => {
         const codeFormule = sub.code;
         if (!codeFormule) return of([]);
-        return this.getAssistanceFAQ(codeFormule).pipe(
-          map((res: ItemBesoinAide[]) => {
-            res = res.filter((item) => item && item.actif);
-            res.sort((item1: ItemBesoinAide, item2: ItemBesoinAide) => {
-              return item2.priorite - item1.priorite;
-            });
-            return res;
-          })
-        );
+        req = {...req, formule:codeFormule};
+        return this.queryBesoinAides(req);
+        
       })
     );
   }
@@ -82,8 +78,11 @@ export class AssistanceService {
   getListItemBesoinAide() {
     return this.listItemBesoinAide;
   }
-  getAssistanceFAQ(codeFormule: string) {
-    return this.http.get(`${questionsAnswersEndpoint}/formule/${codeFormule}`);
+  queryBesoinAides(req?: any):  Observable<ItemBesoinAide[]>{
+    const options = createRequestOption(req);
+    return this.http.get<ItemBesoinAide[]>(`${ASSISTANCE_ENDPOINT}`, {
+      params: options
+    });
   }
 
   tutoViewed() {

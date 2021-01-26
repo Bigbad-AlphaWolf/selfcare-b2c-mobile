@@ -7,10 +7,12 @@ import { catchError, tap } from 'rxjs/operators';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
 import {
   FIND_AGENCE_EXTERNAL_URL,
   CHECK_ELIGIBILITY_EXTERNAL_URL,
   OPERATION_INIT_CHANGE_PIN_OM,
+  ItemBesoinAide,
 } from 'src/shared';
 
 @Component({
@@ -19,11 +21,10 @@ import {
   styleUrls: ['./action-item.component.scss'],
 })
 export class ActionItemComponent implements OnInit {
-  @Input() action: {
-    act: string;
-    description: string;
-    image: string;
-  };
+  @Input() action: ItemBesoinAide;
+  FILE_BASE_URL: string = FILE_DOWNLOAD_ENDPOINT;
+  imageUrl: string;
+
   constructor(
     private router: Router,
     private followAnalyticsService: FollowAnalyticsService,
@@ -32,10 +33,12 @@ export class ActionItemComponent implements OnInit {
     private dashbServ: DashboardService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.imageUrl = this.FILE_BASE_URL + '/' + this.action.icone;
+  }
 
   doAction() {
-    switch (this.action.act) {
+    switch (this.action.code) {
       case 'FIBRE_OPTIC':
         this.goFiberEligibility();
         break;

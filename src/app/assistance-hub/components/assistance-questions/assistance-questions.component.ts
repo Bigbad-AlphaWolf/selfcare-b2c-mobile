@@ -16,24 +16,11 @@ export class AssistanceQuestionsComponent implements OnInit {
     private navController: NavController
   ) {}
 
-  ngOnInit() {}
-
-  ionViewWillEnter() {
-    this.getFAQ();
+  ngOnInit() {
+    this.listQuestions = history.state.listFaqs;
   }
 
-  getFAQ() {
-    this.loadingFAQ = true;
-    this.assistanceService.getFAQ().subscribe(
-      (res) => {
-        this.listQuestions = res;
-        this.loadingFAQ = false;
-      },
-      (err) => {
-        this.loadingFAQ = false;
-      }
-    );
-  }
+  
   goBack() {
     this.navController.pop();
   }

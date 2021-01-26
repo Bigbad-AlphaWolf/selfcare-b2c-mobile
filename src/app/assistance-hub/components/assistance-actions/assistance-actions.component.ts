@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonSlides, NavController } from '@ionic/angular';
+import { ItemBesoinAide } from 'src/shared';
 
 @Component({
   selector: 'app-assistance-actions',
@@ -7,7 +8,9 @@ import { IonSlides, NavController } from '@ionic/angular';
   styleUrls: ['./assistance-actions.component.scss'],
 })
 export class AssistanceActionsComponent implements OnInit {
-  acts: Map<string, any> = new Map([
+  listActes?: ItemBesoinAide[];
+  acts? : Map<string, ItemBesoinAide[]> =  new Map([]);
+  actsStatic: Map<string, any> = new Map([
     [
       'Mobiles',
       [
@@ -81,7 +84,33 @@ export class AssistanceActionsComponent implements OnInit {
   currentSlideIndex = 0;
   constructor(private navController: NavController) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.listActes = history.state.listActes;
+    console.log(this.listActes);
+    
+    this.groudActesByCategorie();
+    
+  }
+
+  groudActesByCategorie(){
+    this.listActes.forEach((a, i)=>{
+      let cat =  a.categorieOffreService
+      if(!cat){
+        cat = {libelle:'Autres'};
+      } 
+     
+      let catLibelle = cat.libelle;
+
+      if(this.acts.get(catLibelle)){
+        this.acts.set(catLibelle, [...this.acts.get(catLibelle), a]);
+        return;
+      }
+
+      this.acts.set(catLibelle, [a]);
+      
+    });
+
+  }
 
   slideChanged() {
     this.slides.getActiveIndex().then((index) => {
