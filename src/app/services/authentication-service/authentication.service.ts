@@ -211,7 +211,7 @@ export class AuthenticationService {
           const lsLastUpdateKey = lsKey + '_last_update';
           ls.set(lsLastUpdateKey, Date.now());
           ls.set(lsKey, subscription);
-          // this.subscriptionUpdatedSubject.next(subscription);
+          this.subscriptionUpdatedSubject.next(subscription);
           return subscription;
         })
       );
