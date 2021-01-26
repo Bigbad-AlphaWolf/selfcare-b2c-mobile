@@ -17,7 +17,7 @@ import {
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { ModalController, Platform } from '@ionic/angular';
 import { ChangeOfferPopupComponent } from './change-offer-popup/change-offer-popup.component';
-import { ChangeFormuleSuccessModalComponent } from '../../shared/change-formule-success-modal/change-formule-success-modal.component';
+import { SimpleOperationSuccessModalComponent } from 'src/shared/simple-operation-success-modal/simple-operation-success-modal.component';
 
 @Component({
   selector: 'app-my-formule',
@@ -223,7 +223,7 @@ export class MyFormulePage implements OnInit {
 
   async openSuccessModal() {
     const modal = await this.modalController.create({
-      component: ChangeFormuleSuccessModalComponent,
+      component: SimpleOperationSuccessModalComponent,
       cssClass: 'success-or-fail-modal',
       backdropDismiss: false,
     });

@@ -3,11 +3,11 @@ import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-change-formule-success-modal',
-  templateUrl: './change-formule-success-modal.component.html',
-  styleUrls: ['./change-formule-success-modal.component.scss'],
+  selector: 'app-simple-operation-success-modal',
+  templateUrl: './simple-operation-success-modal.component.html',
+  styleUrls: ['./simple-operation-success-modal.component.scss'],
 })
-export class ChangeFormuleSuccessModalComponent implements OnInit {
+export class SimpleOperationSuccessModalComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private router: Router
