@@ -635,9 +635,13 @@ export interface ItemBesoinAide {
   code: string;
   question: string;
   reponse: string;
+  icone?:string;
+  type?: string;
+  descCourte?: string;
+  descLong?: string;
   actif: boolean;
   priorite: number;
-  categorieAide: any;
+  categorieOffreService?: any;
   profils: any[];
   formules: any[];
 }

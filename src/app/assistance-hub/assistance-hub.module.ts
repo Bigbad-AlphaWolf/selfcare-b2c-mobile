@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
-
+import { IonicImageLoader } from 'ionic-image-loader';
 import { AssistanceHubPage } from './assistance-hub.page';
 import { AssistanceActionsComponent } from './components/assistance-actions/assistance-actions.component';
 import { AssistanceQuestionsComponent } from './components/assistance-questions/assistance-questions.component';
@@ -32,6 +32,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
+    IonicImageLoader
   ],
   declarations: [
     AssistanceHubPage,

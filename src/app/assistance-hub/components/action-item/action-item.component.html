@@ -1,4 +1,5 @@
 <div class="act-item" (click)="doAction()">
-  <img [src]="action?.image" alt="act">
-  <div class="act-description scb-text-gray">{{action?.description}}</div>
+  <img-loader [spinner]="true" class="icone" [src]="imageUrl" fallbackUrl="assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
+
+  <div class="act-description scb-text-gray">{{action?.descCourte}}</div>
 </div>
