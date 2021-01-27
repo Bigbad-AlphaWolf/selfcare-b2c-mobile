@@ -204,7 +204,6 @@ export class TransfertHubServicesPage implements OnInit {
     private dashbServ: DashboardService,
     private bsService: BottomSheetService,
     private omService: OrangeMoneyService,
-    private facebookevent: FacebookEventService,
     private authService: AuthenticationService,
     private toastController: ToastController
   ) {}
@@ -255,11 +254,6 @@ export class TransfertHubServicesPage implements OnInit {
     action?: 'REDIRECT' | 'POPUP';
     idCode?: number;
   }) {
-    // this.facebookevent.fbEvent(FacebookEvent.ViewContent,{});
-    this.facebookevent.fbCustomEvent(FacebookCustomEvent.TestEvent, {
-      customField1: 'customField1',
-      customField2: 51,
-    });
 
     if (!this.isServciceActivated(opt)) {
       const service = OperationService.AllOffers.find(

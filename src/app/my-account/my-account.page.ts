@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { Router } from '@angular/router';
 import { AccountService } from '../services/account-service/account.service';
-import { downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
+import { DashboardService, downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
 import {
   NO_AVATAR_ICON_URL,
   isExtensionImageValid,
@@ -45,7 +45,8 @@ export class MyAccountPage implements OnInit {
     public dialog: MatDialog,
     private accountService: AccountService,
     private followAnalyticsService: FollowAnalyticsService,
-    private bsService: BottomSheetService
+    private bsService: BottomSheetService,
+    private dashbServ: DashboardService
   ) {}
 
   ngOnInit() {
@@ -67,6 +68,7 @@ export class MyAccountPage implements OnInit {
       'clicked'
     );
     this.authServ.logout();
+    this.dashbServ.cleanAddedScript(['ibou','userDimelo'])
     this.router.navigate(['/']);
   }
 
