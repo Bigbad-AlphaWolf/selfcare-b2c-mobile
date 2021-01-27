@@ -10,6 +10,7 @@ import { AssistanceActionsComponent } from './components/assistance-actions/assi
 import { AssistanceQuestionsComponent } from './components/assistance-questions/assistance-questions.component';
 import { ActionItemComponent } from './components/action-item/action-item.component';
 import { FaqItemComponent } from './components/faq-item/faq-item.component';
+import { AssistanceSearchComponent } from './components/assistance-search/assistance-search.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: 'questions',
     component: AssistanceQuestionsComponent,
+  },
+  {
+    path: 'search',
+    component: AssistanceSearchComponent,
   }
 ];
 
@@ -40,6 +45,7 @@ const routes: Routes = [
     AssistanceQuestionsComponent,
     ActionItemComponent,
     FaqItemComponent,
+    AssistanceSearchComponent
   ],
 })
 export class AssistanceHubPageModule {}

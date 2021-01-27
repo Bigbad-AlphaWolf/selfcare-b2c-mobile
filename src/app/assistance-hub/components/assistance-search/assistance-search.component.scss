@@ -13,12 +13,9 @@
   padding: 0 10px;
 }
 
-.questions-page-body {
+.search-page {
   min-height: 100%;
   height: fit-content;
   background-color: $grayDashboard;
 
-  .questions-list {
-    padding: 20px percentage(15/375);
-  }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { ModalController, NavController } from '@ionic/angular';
@@ -56,6 +56,8 @@ export class AssistanceHubPage implements OnInit {
   listFaqs?: ItemBesoinAide[];
   listActes?: ItemBesoinAide[];
   loadingHelpItems: boolean;
+  displaySearchIcon: boolean = true;
+  @ViewChild('searchInput') searchRef;
   constructor(
     private assistanceService: AssistanceService,
     private router: Router,
@@ -65,10 +67,13 @@ export class AssistanceHubPage implements OnInit {
     private modalController: ModalController
   ) {}
 
-  ngOnInit() {}
-
-  ionViewWillEnter() {
+  ngOnInit() {
     this.fetchAllHelpItems();
+  }
+
+  ionViewDidEnter() {
+    this.searchRef.value = '';
+
   }
 
   fetchAllHelpItems() {
@@ -131,5 +136,21 @@ export class AssistanceHubPage implements OnInit {
 
   async goIbouContactPage() {
     this.router.navigate(['/contact-ibou-hub']);
+  }
+
+  onInputChange($event){
+    const inputvalue = $event.detail.value;
+    this.displaySearchIcon = true;
+    if(inputvalue){
+      this.navController.navigateForward(['/assistance-hub/search'],{state:{listBesoinAides:this.listBesoinAides, search:inputvalue}});
+      this.displaySearchIcon = false;
+    }
+    
+  }
+
+  onClear(searchInput){
+    const inputValue : string =  searchInput.value;
+    searchInput.value = inputValue.slice(0,inputValue.length-1);
+    
   }
 }
