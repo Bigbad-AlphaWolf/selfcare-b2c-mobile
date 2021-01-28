@@ -17,6 +17,7 @@ import {
   OPERATION_TYPE_PASS_ALLO,
   OPERATION_TYPE_PASS_VOYAGE,
   SubscriptionModel,
+  OPERATION_TYPE_PASS_ILLIFLEX,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -334,7 +335,10 @@ export class TransfertHubServicesPage implements OnInit {
         }
         break;
       case 'ILLIFLEX':
-        this.router.navigate(['/illiflex-budget-configuration']);
+        this.openModalPassNumberSelection(
+          OPERATION_TYPE_PASS_ILLIFLEX,
+          'illiflex-budget-configuration'
+        );
         break;
       default:
         break;
