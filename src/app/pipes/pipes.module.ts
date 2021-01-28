@@ -14,6 +14,7 @@ import { AcronymPipe } from 'src/shared/pipes/acronym.pipe';
 import { DataVolumePipe } from 'src/shared/pipes/data-volume.pipe';
 import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
 import { PublicationDateFormatPipe } from 'src/shared/pipes/publication-date-format.pipe';
+import { SearchAssistancePipe } from './search-assistance/search-assistance.pipe';
 
 @NgModule({
   declarations: [
@@ -27,10 +28,12 @@ import { PublicationDateFormatPipe } from 'src/shared/pipes/publication-date-for
     FormatSuiviConsoCategoryTitlePipe,
     FormatCalledNumberPipe,
     CodeFormatPipe,
+    SearchAssistancePipe,
     AcronymPipe,
     DataVolumePipe,
     IlliflexVoicePipe,
     PublicationDateFormatPipe,
+    SearchAssistancePipe,
   ],
   imports: [CommonModule],
   exports: [
@@ -44,6 +47,7 @@ import { PublicationDateFormatPipe } from 'src/shared/pipes/publication-date-for
     FormatSuiviConsoCategoryTitlePipe,
     FormatCalledNumberPipe,
     CodeFormatPipe,
+    SearchAssistancePipe,
     AcronymPipe,
     DataVolumePipe,
     IlliflexVoicePipe,

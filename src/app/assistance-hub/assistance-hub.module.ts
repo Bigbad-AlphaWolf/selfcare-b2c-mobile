@@ -11,6 +11,8 @@ import { AssistanceQuestionsComponent } from './components/assistance-questions/
 import { ActionItemComponent } from './components/action-item/action-item.component';
 import { FaqItemComponent } from './components/faq-item/faq-item.component';
 import { AssistanceSearchComponent } from './components/assistance-search/assistance-search.component';
+import { PipesModule } from '../pipes/pipes.module';
+import { SearchItemComponent } from './components/search-item/search-item.component';
 
 const routes: Routes = [
   {
@@ -37,7 +39,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    IonicImageLoader
+    IonicImageLoader,
+    PipesModule
   ],
   declarations: [
     AssistanceHubPage,
@@ -45,6 +48,7 @@ const routes: Routes = [
     AssistanceQuestionsComponent,
     ActionItemComponent,
     FaqItemComponent,
+    SearchItemComponent,
     AssistanceSearchComponent
   ],
 })

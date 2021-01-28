@@ -82,6 +82,8 @@ export class AssistanceActionsComponent implements OnInit {
   ]);
   @ViewChild('slides') slides: IonSlides;
   currentSlideIndex = 0;
+  displaySearchIcon: boolean = true;
+  @ViewChild('searchInput') searchRef;
   constructor(private navController: NavController) {}
 
   ngOnInit() {
@@ -120,6 +122,22 @@ export class AssistanceActionsComponent implements OnInit {
 
   slide(index: number) {
     this.slides.slideTo(index);
+  }
+
+  onInputChange($event){
+    const inputvalue = $event.detail.value;
+    this.displaySearchIcon = true;
+    if(inputvalue){
+      this.navController.navigateForward(['/assistance-hub/search'],{state:{listBesoinAides:this.listActes, search:inputvalue}});
+      this.displaySearchIcon = false;
+    }
+    
+  }
+
+  onClear(searchInput){
+    const inputValue : string =  searchInput.value;
+    searchInput.value = inputValue.slice(0,inputValue.length-1);
+    
   }
 
   goBack() {

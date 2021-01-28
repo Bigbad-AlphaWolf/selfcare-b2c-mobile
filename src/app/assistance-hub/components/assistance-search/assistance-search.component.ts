@@ -9,42 +9,43 @@ import { ItemBesoinAide } from 'src/shared';
 })
 export class AssistanceSearchComponent implements OnInit {
   displaySearchIcon: boolean = true;
-  @ViewChild('searchInput') searchRef : IonInput;
+  @ViewChild('searchInput') searchRef: IonInput;
+  terms = '';
   listBesoinAides: ItemBesoinAide[];
+  listBesoinAidesAltered: ItemBesoinAide[];
 
-  constructor( private navController: NavController) { }
+  constructor(private navController: NavController) {}
 
   ngOnInit() {
-    this.listBesoinAides = history.state.listBesoinAides;
-    
+    this.listBesoinAidesAltered = this.listBesoinAides =
+      history.state.listBesoinAides;
   }
 
   ngAfterViewInit() {
     const search = history.state.search;
     this.searchRef.value = search;
-    console.log(this.searchRef);
-    
-    this.searchRef.setFocus();
- }
-
-  onInputChange($event){
-    const inputvalue = $event.detail.value;
-    this.displaySearchIcon = true;
-    if(inputvalue){
-      console.log(inputvalue);
-      this.displaySearchIcon = false;
-    }
-    
+    this.displaySearchIcon = false;
+    this.terms = search;
+    setTimeout(() => {
+      this.searchRef.setFocus();
+    }, 400);
   }
 
-  onClear(searchInput){
-    const inputValue : string =  searchInput.value;
-    searchInput.value = inputValue.slice(0,inputValue.length-1);
-    
+  onInputChange($event) {
+    const inputvalue = $event.detail.value;
+    this.displaySearchIcon = true;
+    if (inputvalue) {
+      this.displaySearchIcon = false;
+    }
+    this.terms = inputvalue;
+  }
+
+  onClear(searchInput) {
+    const inputValue: string = searchInput.value;
+    searchInput.value = inputValue.slice(0, inputValue.length - 1);
   }
 
   goBack() {
     this.navController.pop();
   }
-
 }

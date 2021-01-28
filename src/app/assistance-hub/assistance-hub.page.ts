@@ -82,7 +82,8 @@ export class AssistanceHubPage implements OnInit {
       {
         page: 0,
         size: 1000000,
-        sort: ['type,asc', 'priorite,asc', 'id']
+        sort: ['type,asc', 'priorite,asc', 'id'],
+        // type: 'FAQ'
       }
     ).subscribe(
       (res) => {
