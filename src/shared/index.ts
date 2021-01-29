@@ -846,7 +846,6 @@ export function getBanniereTitle(banniereDescription: string) {
 }
 
 export function getBanniereDescription(banniereDescription: string) {
-  console.log(banniereDescription, banniereDescription.indexOf(';') + 1);
   return banniereDescription
     ? banniereDescription.substring(banniereDescription.indexOf(';') + 1)
     : '';

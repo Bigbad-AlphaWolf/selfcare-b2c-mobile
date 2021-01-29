@@ -20,6 +20,7 @@ export class ContactUsPage implements OnInit {
   }
 
   ionViewWillEnter(){
+    this.dashboardService.addDimeloScript();
     this.dashboardService.prepareScriptChatIbou();
   }
 

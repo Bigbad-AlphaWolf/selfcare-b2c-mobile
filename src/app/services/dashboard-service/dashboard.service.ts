@@ -317,42 +317,50 @@ export class DashboardService {
     // Dimelo user information
     const userInfos = ls.get('user');
     const fullName = userInfos.firstName + ' ' + userInfos.lastName;
-    const s = this.renderer.createElement('script');
-    s.type = 'text/javascript';
-    s.text =
-      'var _chatq = _chatq || [];' +
-      '_chatq.push(["_setIdentity", {' +
-      '"screenname": "' +
-      fullName +
-      '",' + // full name
-      '"avatar_url": "https://orangeetmoi.orange.sn/content/icons/icon-72x72.png",' + // ibou image
-      '"firstname": "' +
-      userInfos.firstName +
-      '",' +
-      '"lastname": "' +
-      userInfos.lastName +
-      '",' +
-      '"email": "",' +
-      '"uuid": "' +
-      userInfos.numero +
-      '",' +
-      '"mobile_phone": "' +
-      userInfos.numero +
-      '",' +
-      '"extra_values": {' +
-      '"customer_id": "' +
-      userInfos.numero +
-      '"}}]);';
-    this.renderer.appendChild(this._document.body, s);
+    const script = document.getElementById('userDimelo')
+    if(!script) {
+      const s = this.renderer.createElement('script');
+      s.type = 'text/javascript';
+      s.text =
+        'var _chatq = _chatq || [];' +
+        '_chatq.push(["_setIdentity", {' +
+        '"screenname": "' +
+        fullName +
+        '",' + // full name
+        '"avatar_url": "https://orangeetmoi.orange.sn/content/icons/icon-72x72.png",' + // ibou image
+        '"firstname": "' +
+        userInfos.firstName +
+        '",' +
+        '"lastname": "' +
+        userInfos.lastName +
+        '",' +
+        '"email": "",' +
+        '"uuid": "' +
+        userInfos.numero +
+        '",' +
+        '"mobile_phone": "' +
+        userInfos.numero +
+        '",' +
+        '"extra_values": {' +
+        '"customer_id": "' +
+        userInfos.numero +
+        '"}}]);';
+        s.id = 'userDimelo'
+      this.renderer.appendChild(this._document.body, s);
+    }
   }
 
-  addDimeloScriptTotrigger() {
-    const s = this.renderer.createElement('script');
-    s.type = 'text/javascript';
-    s.text =
-      'var t = Dimelo.Chat.Manager.ChatQLoader.manager.triggers[1];' +
-      'Dimelo.Chat.Manager.ChatQLoader.manager.activateTrigger(t);';
-    this.renderer.appendChild(this._document.body, s);
+  initScriptDimelo() {
+    const script = document.getElementById('initDimelo')
+    if (!script) {
+      const s: HTMLScriptElement = this.renderer.createElement('script');
+      s.type = 'text/javascript';
+      s.async = true;
+      s.src =  'https://sonatel.dimelochat.com/chat/b25dc90dcaed229e01ff8ffe/loader.js';
+      s.id = 'initDimelo';
+      const first: HTMLScriptElement = document.getElementsByTagName('script')[0];
+      first.parentNode.insertBefore(s,first)
+    }
   }
 
   prepareScriptChatIbou() {
@@ -371,6 +379,14 @@ export class DashboardService {
     if (scriptIbou) {
       scriptIbou.remove();
     }
+  }
+
+  cleanAddedScript(listScriptID: string[]) {
+    listScriptID.forEach((id: string) => {
+      if(document.getElementById(id)) {
+        document.getElementById(id).remove()
+      }
+    })
   }
 
   getAccountInfo(userLogin: string) {
