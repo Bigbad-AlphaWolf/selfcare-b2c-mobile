@@ -35,6 +35,8 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
   dataSegmentation: number;
   // boolean to get bestOffer
   gettingBestOffer: boolean;
+  recipientMsisdn: string;
+  recipientOfferCode: string;
   bonusSms: number;
   constructor(
     private navController: NavController,
@@ -46,6 +48,10 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
 
   ngOnInit() {
     this.getIlliflexPaliers();
+    let payload = this.router.getCurrentNavigation().extras.state.payload;
+    payload = payload ? payload : history.state;
+    this.recipientMsisdn = payload.recipientMsisdn;
+    this.recipientOfferCode = payload.code;
   }
 
   getIlliflexPaliers() {
@@ -73,7 +79,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
   getBestOffer() {
     this.gettingBestOffer = true;
     const bestOfferPayload = {
-      recipientMsisdn: this.dashboardService.getCurrentPhoneNumber(),
+      recipientMsisdn: this.recipientMsisdn,
       amount: this.amount,
       validity: this.selectedPalier.validite,
     };
@@ -129,13 +135,15 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
       amount: this.amount,
       voice: this.voiceQuantityValue,
       validity: this.selectedPalier.validite,
+      recipient: this.recipientMsisdn,
+      sender: this.dashboardService.getCurrentPhoneNumber(),
+      recipientOfferCode: this.recipientOfferCode,
       bonusSms: this.bonusSms,
-      recipient: this.dashboardService.getCurrentPhoneNumber(),
     };
     let navigationExtras: NavigationExtras = {
       state: {
         pass,
-        recipientMsisdn: this.dashboardService.getCurrentPhoneNumber(),
+        recipientMsisdn: this.recipientMsisdn,
         amount: this.amount,
         purchaseType: OPERATION_TYPE_PASS_ILLIFLEX,
         title: this.illiflexTitle,
