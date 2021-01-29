@@ -840,3 +840,23 @@ ion-button {
     display: flex;
   }
 }
+
+.search-bar-block {
+  background-color: $white;
+  padding: 15px;
+  ion-item {
+    border: solid 2px $grayDashboard;
+    height: 60px;
+    border-radius: 10px;
+    --min-height: 100%;
+    ion-input {
+      // --placeholder-opacity: 1;
+    }
+    &.item-has-value{
+      border: solid 2px $orange;
+    }
+  }
+  span.effacer{
+    color: $orange;
+  }
+}

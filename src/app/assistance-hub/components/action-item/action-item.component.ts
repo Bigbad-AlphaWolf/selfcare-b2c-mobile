@@ -22,6 +22,7 @@ import {
 })
 export class ActionItemComponent implements OnInit {
   @Input() action: ItemBesoinAide;
+  @Input() search: boolean = false;
   FILE_BASE_URL: string = FILE_DOWNLOAD_ENDPOINT;
   imageUrl: string;
 
@@ -30,7 +31,7 @@ export class ActionItemComponent implements OnInit {
     private followAnalyticsService: FollowAnalyticsService,
     private inAppBrowser: InAppBrowser,
     private modalController: ModalController,
-    private dashbServ: DashboardService
+    private dashbServ: DashboardService,
   ) {}
 
   ngOnInit() {

@@ -4,7 +4,7 @@
       <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
     </ion-buttons>
     <ion-title class="ion-no-padding">
-      <span class="title1">Questions fréquentes</span>
+      <span class="title1">Recherche assistance</span>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,21 +12,29 @@
 <ion-content>
   <ion-header class="ion-padding-start" collapse="condense">
     <ion-toolbar>
-      <span class="title">Assistance - Questions fréquentes</span>
+      <span class="title">Recherche assistance</span>
     </ion-toolbar>
   </ion-header>
-  <div class="questions-page-body">
+  <div class="search-page">
     <div class="search-bar-block" >
-      <ion-item lines="none">
+      <ion-item lines="none" class="item-has-value">
         <ion-input #searchInput  placeholder="Comment pouvons-nous vous aider ?" (ionChange)="onInputChange($event)"></ion-input>
         <ion-icon name="search" slot="end" *ngIf="displaySearchIcon"></ion-icon>
         <span class="effacer" *ngIf="!displaySearchIcon" (click)="onClear(searchInput)">Effacer</span>
       </ion-item>
     </div>
-    <div class="questions-list">
-      <ng-container *ngIf="listQuestions">
-        <app-faq-item [question]="question" *ngFor="let question of listQuestions"></app-faq-item>
+
+    <div class="search-result">
+      <ng-container   *ngIf="listBesoinAides | searchAssistance : terms as filtredBas">
+
+        <div class="result-count">Résultats({{filtredBas?.length}})</div>
+        <ng-container *ngFor="let besoinAide of filtredBas , let i=index">
+          <app-action-item class="app-action-item" [action]="besoinAide" [search]="true" *ngIf="besoinAide.type === 'ACTE' "></app-action-item>
+          <app-faq-item [question]="besoinAide" *ngIf="besoinAide.type === 'FAQ' "></app-faq-item> 
+        </ng-container>
       </ng-container>
+
     </div>
+
   </div>
 </ion-content>

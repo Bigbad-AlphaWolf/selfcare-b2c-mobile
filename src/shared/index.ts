@@ -644,6 +644,8 @@ export interface ItemBesoinAide {
   categorieOffreService?: any;
   profils: any[];
   formules: any[];
+  countTermMached?: number;
+  countFiedMached?: number;
 }
 
 // this method removes prefix 221 +221 00221

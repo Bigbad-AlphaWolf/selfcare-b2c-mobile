@@ -17,19 +17,7 @@
   min-height: 100%;
   height: fit-content;
   background-color: $grayDashboard;
-  .search-bar-block {
-    background-color: $white;
-    padding: 23px percentage(15/375) 0;
-    ion-item {
-      border: solid 2px $grayDashboard;
-      height: 60px;
-      border-radius: 10px;
-      --min-height: 100%;
-      ion-input {
-        // --placeholder-opacity: 1;
-      }
-    }
-  }
+
   .banner-block {
     background-color: $white;
     padding: 20px 0;
