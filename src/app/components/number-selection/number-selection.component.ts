@@ -8,6 +8,7 @@ import {
   CODE_KIRENE_Formule,
   REGEX_FIX_NUMBER,
   OPERATION_TYPE_PASS_ILLIMIX,
+  OPERATION_TYPE_PASS_ILLIFLEX,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -24,6 +25,7 @@ import { RecentsService } from 'src/app/services/recents-service/recents.service
 import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
 import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
+import { CODE_FORMULE_FIX_PREPAID } from 'src/app/dashboard';
 
 @Component({
   selector: 'oem-number-selection',
@@ -156,6 +158,17 @@ export class NumberSelectionComponent implements OnInit {
               this.eligibilityError = eligibility.message;
               return;
             }
+          }
+          if (
+            (res.code === CODE_KIRENE_Formule ||
+              res.code === CODE_FORMULE_FIX_PREPAID) &&
+            this.data.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX
+          ) {
+            this.eligibilityChecked = true;
+            this.isRecipientEligible = false;
+            this.eligibilityError =
+              'Ce destinataire ne peut pas bénéficier de illiflex';
+            return;
           }
           this.modalController.dismiss(this.opXtras);
           // this.bottomSheetRef.dismiss(this.opXtras);
