@@ -14,8 +14,13 @@ export function removeObjectField(obj: any, f: string) {
 
 export function previousMonths(moisDispo: number, n: number = 6) {
   let date = new Date();
-  date.setMonth(date.getMonth() - 1);
-  if (moisDispo) date.setMonth(moisDispo - 1);
+  const currentMonth = date.getMonth();
+  if (moisDispo) {
+    moisDispo = moisDispo > currentMonth + 1 ? moisDispo - 12 : moisDispo;
+    date.setMonth(moisDispo - 1);
+  } else {
+    return [];
+  }
 
   let r: MonthOem[] = [];
   for (let i = 0; i < n; i++) {

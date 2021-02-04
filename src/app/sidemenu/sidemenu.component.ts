@@ -67,6 +67,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.extractData();
     this.dashboardServ.currentPhoneNumberChange.subscribe(() => {
       this.getSouscription();
+      this.getAllAttachedNumbers();
       this.extractData();
     });
     this.authServ.currentPhoneNumbersubscriptionUpdated.subscribe(() => {
@@ -91,8 +92,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   openModalRattachNumber() {
-    this.bsService
-    .openRattacheNumberModal();
+    this.bsService.openRattacheNumberModal();
   }
 
   getSouscription() {

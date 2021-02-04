@@ -70,7 +70,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     } else if (this.platform.is('android')) {
       this.appId = 'com.orange.myorange.osn';
     }
-    this.dashboardServ.addDimeloScript();
+    this.dashboardServ.initScriptDimelo();
   }
 
   async checkForUpdate() {
