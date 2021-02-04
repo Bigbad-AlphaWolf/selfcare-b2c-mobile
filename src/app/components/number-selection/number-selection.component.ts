@@ -47,7 +47,8 @@ export class NumberSelectionComponent implements OnInit {
   opXtras: OperationExtras = {};
   isErrorProcessing: boolean = false;
   canNotRecieve: boolean;
-  canNotRecieveError: boolean = false;
+  canNotRecieveError =
+    'Le numéro de votre destinataire ne peut pas recevoir de';
   option: NumberSelectionOption = NumberSelectionOption.WITH_MY_PHONES;
   eligibilityChecked: boolean;
   isRecipientEligible = true;
@@ -102,9 +103,9 @@ export class NumberSelectionComponent implements OnInit {
       );
   }
 
-  onRecentSelected() {}
-
   async onContinue(phone?: string) {
+    this.eligibilityChecked = false;
+    this.canNotRecieve = false;
     if (phone) this.opXtras.recipientMsisdn = phone;
     if (
       !(
@@ -167,7 +168,7 @@ export class NumberSelectionComponent implements OnInit {
             this.eligibilityChecked = true;
             this.isRecipientEligible = false;
             this.eligibilityError =
-              'Ce destinataire ne peut pas bénéficier de illiflex';
+              'Le numéro du bénéficiaire ne peut pas bénéficier de pass';
             return;
           }
           this.modalController.dismiss(this.opXtras);
@@ -240,6 +241,10 @@ export class NumberSelectionComponent implements OnInit {
         })
       )
       .toPromise();
+    this.canNotRecieveError +=
+      this.data.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT
+        ? ' crédit'
+        : ' pass';
     return canRecieve;
   }
 
