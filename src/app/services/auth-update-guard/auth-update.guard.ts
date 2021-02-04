@@ -31,14 +31,14 @@ export class AuthUpdateGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
 
-    if (this.platform.is('ios')) { 
+    if (this.platform.is('ios')) {
       this.isIOS = true;
       this.appId = 'orange-et-moi-sénégal/id1039327980';
     } else if (this.platform.is('android')) {
       this.appId = 'com.orange.myorange.osn';
     }
     this.checkForUpdate();
-    
+
     return true;
   }
 
@@ -52,6 +52,7 @@ export class AuthUpdateGuard implements CanActivate {
         .subscribe((version: any) => {
           const versionAndroid = version.android;
           const versionIos = version.ios;
+          const forceUpdate = version.forceUpdateApp;
 
           if (versionAndroid || versionIos) {
             if (
@@ -62,7 +63,7 @@ export class AuthUpdateGuard implements CanActivate {
             ) {
               if(!SessionOem.updateAbort)
               this.navCtl.navigateForward([AppUpdatePage.ROUTE_PATH], {
-                state: { appId: this.appId },
+                state: { appId: this.appId, forceUpdate: forceUpdate },
               });
             }
           }

@@ -31,6 +31,9 @@ import { OfferPlansService } from '../services/offer-plans-service/offer-plans.s
 import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { map } from 'rxjs/operators';
+import { SelectBeneficiaryPopUpComponent } from '../transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
+import { ModalController } from '@ionic/angular';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-kirene',
@@ -92,7 +95,9 @@ export class DashboardKirenePage implements OnInit {
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
     private offerPlanServ: OfferPlansService,
-    private omServ: OrangeMoneyService
+    private omServ: OrangeMoneyService,
+    private modalController: ModalController,
+    private appRouting: ApplicationRoutingService
   ) {}
 
   ngOnInit() {
@@ -369,12 +374,27 @@ export class DashboardKirenePage implements OnInit {
   }
 
   goToTransfertOM() {
-    this.router.navigate(['/transfer/orange-money']);
+    this.showBeneficiaryModal();
     this.followsAnalytics.registerEventFollow(
       'Transfert_OM_dashboard',
       'event',
       'clicked'
     );
+  }
+
+  async showBeneficiaryModal() {
+    const modal = await this.modalController.create({
+      component: SelectBeneficiaryPopUpComponent,
+      cssClass: 'select-recipient-modal',
+    });
+    modal.onWillDismiss().then((response: any) => {
+      if (response && response.data && response.data.recipientMsisdn) {
+        const pageData = response.data;
+        this.appRouting.goSetAmountPage(pageData);
+        // this.getOmPhoneNumberAndCheckrecipientHasOMAccount(this.dataPayload);
+      }
+    });
+    return await modal.present();
   }
 
   goBuyCredit() {

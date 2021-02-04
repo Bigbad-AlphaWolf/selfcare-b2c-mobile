@@ -158,12 +158,12 @@ export interface LogModel {
 }
 
 export interface FeeModel {
-  id: number;
-  level: number;
-  minimum: number;
-  maximum: number;
-  withoutCode: number;
-  withCode: number;
+  service_code: string,
+  min: number,
+  max: number,
+  has_promo: boolean,
+  effective_fees: number,
+  mode_calcul: "pourcent" | "fixe"
 }
 
 export const ORANGE_MONEY_TRANSFER_FEES = [

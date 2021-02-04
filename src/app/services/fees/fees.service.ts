@@ -1,72 +1,85 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import {
-  FEES,
-  FEES_INCLUDES,
-  WOYOFAL_DEFAULT_FEES,
-  WOYOFAL_DEFAULT_FEES_INCLUDES,
-} from 'src/app/utils/bills.util';
+import { map } from 'rxjs/operators';
+import { DashboardService } from '../dashboard-service/dashboard.service';
+import { FeeModel } from '../orange-money-service';
 import { FEES_ENDPOINT } from '../utils/counter.endpoints';
 
 @Injectable({
-  providedIn: 'root',
+	providedIn: 'root',
 })
 export class FeesService {
-  fees: any;
-  feesIncludes: any;
+	fees: any;
+	feesIncludes: any;
 
-  constructor(private http: HttpClient) {}
+	constructor(private http: HttpClient, private dashbServ: DashboardService) {}
 
-  async initFees(msisdn: any) {
-    if (!(this.fees && this.feesIncludes))
-      await this.http
-        .get(`${FEES_ENDPOINT}/?msisdn=${msisdn}`)
-        .pipe(
-          map((r: any) => {
-            if (!(r && r.paliers[0])) return null;
+	parseFees(feesObj) {
+		let result = {};
+		Object.keys(feesObj).forEach((service) => {
+			if (feesObj[service]) result[service] = this.toIncludesFees(feesObj[service]);
+		});
+		return result;
+	}
 
-            this.fees = r.paliers[0];
-            this.feesIncludes = this.parseFees(this.fees);
-          }),
-          catchError((err) => {
-            this.fees = FEES;
-            this.feesIncludes = FEES_INCLUDES;
-            return of(this.fees);
-          })
-        )
-        .toPromise();
-  }
+	toIncludesFees(fees: any[]): any[] {
+		let results = [];
+		let prev: any;
+		fees.forEach((ell) => {
+			let el = { ...ell };
+			el.montant_min += prev ? prev.tarif : el.tarif;
+			el.montant_max += el.tarif;
+			results.push(el);
+			prev = el;
+		});
 
-  parseFees(feesObj) {
-    let result = {};
-    Object.keys(feesObj).forEach((service) => {
-      if (feesObj[service])
-        result[service] = this.toIncludesFees(feesObj[service]);
-    });
-    return result;
-  }
+		return results;
+	}
 
-  toIncludesFees(fees: any[]): any[] {
-    let results = [];
-    let prev: any;
-    fees.forEach((ell) => {
-      let el = { ...ell };
-      el.montant_min += prev ? prev.tarif : el.tarif;
-      el.montant_max += el.tarif;
-      results.push(el);
-      prev = el;
-    });
+	findAmountFee(amount: number, service: string, includeFee?: boolean) {
+		let fees = includeFee ? this.feesIncludes[service] : this.fees[service];
+		let fee = fees.find((fee) => amount >= +fee.montant_min && amount <= +fee.montant_max);
+		return fee.tarif;
+	}
 
-    return results;
-  }
+	getFeesByOMService(service: string, receiver?: string) {
+		const msisdn = this.dashbServ.getCurrentPhoneNumber();
+		if (!receiver) {
+			receiver = msisdn;
+		}
+		return this.http.get(`${FEES_ENDPOINT}/${receiver}?msisdn=${msisdn}&service-code=${service}`).pipe(
+			map((fees: FeeModel[]) => {
+				return fees;
+			})
+		);
+	}
 
-  findAmountFee(amount: number, service: string, includeFee?: boolean) {
-    let fees = includeFee ? this.feesIncludes[service] : this.fees[service];
-    let fee = fees.find(
-      (fee) => amount >= +fee.montant_min && amount <= +fee.montant_max
-    );
-    return fee.tarif;
-  }
+	extractFeeWhenFeeIncluded(amount: number, feesArray: FeeModel[]) {
+		for (const fees of feesArray) {
+			if (amount >= fees.min + fees.effective_fees && amount <= fees.max + fees.effective_fees) {
+				return fees;
+			}
+		}
+		return 0;
+	}
+
+	extractFees( fees: FeeModel[], amount: number, feeIncluded?: boolean ) {
+		 for (let fee of fees) {
+		   if (!feeIncluded) {
+			   if(amount >= +fee.min && amount <= +fee.max) {
+				   if(fee.mode_calcul === 'fixe') {
+					   return fee;
+				   } else if(fee.mode_calcul === 'pourcent') {
+						const computedFee = { effective_fees :amount * ( fee.effective_fees / 100)}
+						return computedFee;
+				   }
+			   }
+		   } else if (feeIncluded) {
+			   if(amount >= fee.min + fee.effective_fees && amount <= fee.max + fee.effective_fees) {
+					return fee
+			   }
+		   }
+		 }
+		  return { effective_fees: 0 }
+	  }
 }

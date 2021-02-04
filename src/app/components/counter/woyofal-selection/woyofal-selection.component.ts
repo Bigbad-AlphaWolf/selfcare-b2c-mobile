@@ -100,7 +100,6 @@ export class WoyofalSelectionComponent implements OnInit {
         if (msisdn !== 'error') {
           this.initRecents();
           this.bsService.opXtras.senderMsisdn = msisdn;
-          this.feeService.initFees(msisdn);
         }
       },
       () => {
