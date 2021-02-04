@@ -192,37 +192,6 @@
             <span class="fees-title scb-text-dark-grey">Frais</span>
             <span class="fees-value scb-text-orange">+ 20 F</span>
         </div>
-        <div class="fees-om" *ngIf="operationType === OPERATION_TRANSFER_OM">
-            <div class="toggle-fees">
-                <div class="title scb-text-dark-grey">Frais à ma charge</div>
-                <div class="toggle-box">
-                    <span class="fee scb-text-orange" *ngIf="feesOnMyCharge">+
-                        {{ transferWithCode? feeWithCode : feeWithoutCode }} FCFA</span>
-                    <mat-slide-toggle (change)="toggleFees($event)" [(ngModel)]="feesOnMyCharge"
-                        [disabled]="!recipientHasOmAccount || transferWithCode">
-                    </mat-slide-toggle>
-                </div>
-            </div>
-            <div class="toggle-code">
-                <div class="title scb-text-dark-grey">Transfert avec code</div>
-                <div class="toggle-box">
-                    <span class="fee scb-text-orange" *ngIf="transferWithCode && 0">+ {{feeWithCode}} FCFA</span>
-                    <mat-slide-toggle [(ngModel)]="transferWithCode" (change)="toggleTransferWithCode($event)"
-                        [disabled]="!recipientHasOmAccount">
-                    </mat-slide-toggle>
-                </div>
-            </div>
-        </div>
-        <div class="transfer-om-form" *ngIf="transferWithCode">
-            <form [formGroup]="form">
-                <mat-form-field class="scb-input-row scb-required">
-                    <input formControlName="nom" type="text" matInput placeholder="Nom du destinataire" />
-                </mat-form-field>
-                <mat-form-field class="scb-input-row scb-required">
-                    <input formControlName="prenom" type="text" matInput placeholder="Prénom du destinataire" />
-                </mat-form-field>
-            </form>
-        </div>
         <div class="total-block">
             <span class="total-title scb-text-black">Total</span>
             <ng-container>

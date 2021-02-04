@@ -15,6 +15,7 @@ export class AppUpdatePage implements OnInit {
   updateMessage: string = `Votre application n'est pas à jour.
   Pour profiter des dernières fonctionnalités, Mettez la à jour.`;
   appId: string = '';
+  forceUpdate:boolean;
   constructor(
     private market: Market,
     private navCtl: NavController,
@@ -23,6 +24,7 @@ export class AppUpdatePage implements OnInit {
 
   ngOnInit() {
     this.appId = history.state.appId;
+    this.forceUpdate = history.state.forceUpdate;
   }
 
   close() {

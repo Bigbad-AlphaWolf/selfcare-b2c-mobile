@@ -218,7 +218,6 @@ export class RapidoSelectionComponent implements OnInit {
         if (omSession.msisdn !== 'error') {
           this.initRecents();
           this.bsService.opXtras.senderMsisdn = omSession.msisdn;
-          this.feesService.initFees(omSession.msisdn);
           this.getFavoritesRapido();
         }
       },
@@ -247,6 +246,6 @@ export class RapidoSelectionComponent implements OnInit {
   }
 
   getRapidoLabelFromCounter(counter) {
-    
+
   }
 }
