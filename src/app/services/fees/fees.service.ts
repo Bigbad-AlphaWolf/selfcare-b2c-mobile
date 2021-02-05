@@ -70,7 +70,7 @@ export class FeesService {
 				   if(fee.mode_calcul === 'fixe') {
 					   return fee;
 				   } else if(fee.mode_calcul === 'pourcent') {
-						const computedFee = { effective_fees :amount * ( fee.effective_fees / 100)}
+						const computedFee = { effective_fees :Math.trunc((amount * fee.effective_fees)/100) }
 						return computedFee;
 				   }
 			   }
