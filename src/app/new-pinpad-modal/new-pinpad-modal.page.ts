@@ -801,7 +801,7 @@ export class NewPinpadModalPage implements OnInit {
       ) {
         this.pinError = err.error.message;
         this.recurrentOperation = true;
-      } else if(err.error.errorCode.match('Erreur-015')) {
+      } else if(err.error.errorCode.match('Erreur-015') || err.error.errorCode.match('Erreur-016')) {
         const omUser = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
         omUser.pinFailed++;
         this.resetPad();
