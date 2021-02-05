@@ -287,7 +287,7 @@ export class PurchaseSetAmountPage implements OnInit {
     this.error = null;
      if (amount && this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
        const feeInfo= this.feeService.extractFees(this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE], amount);
-       if(!feeInfo) {
+       if(!feeInfo.effective_fees) {
         this.error = "Le montant que vous avez saisi n'est pas dans la plage autorisé";
         return
        }
@@ -295,7 +295,7 @@ export class PurchaseSetAmountPage implements OnInit {
      }
      if (amount && this.purchaseType === OPERATION_TRANSFER_OM) {
        const fees = this.feeService.extractFees(this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_SANS_CODE], amount);
-       if(!fees) {
+       if(!fees.effective_fees) {
         this.error = "Le montant que vous avez saisi n'est pas dans la plage autorisé";
         return
        }
@@ -307,13 +307,22 @@ export class PurchaseSetAmountPage implements OnInit {
      const amount = event.target.value;
      this.totalAmount = +amount;
      this.updateInput(event);
+     this.error = null;
      if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
        const fee = this.feeService.extractFees(this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE], amount);
+       if(!fee.effective_fees) {
+        this.error = "Le montant que vous avez saisi n'est pas dans la plage autorisé";
+        return
+       }
        this.fee = fee.effective_fees;
        this.totalAmount += this.fee;
      }
     if (this.purchaseType === OPERATION_TRANSFER_OM) {
       const fee = this.feeService.extractFees(this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_SANS_CODE], amount);
+      if(!fee.effective_fees) {
+        this.error = "Le montant que vous avez saisi n'est pas dans la plage autorisé";
+        return
+       }
       this.fee = fee.effective_fees;
       this.includeFees
         ? (this.totalAmount += this.fee)

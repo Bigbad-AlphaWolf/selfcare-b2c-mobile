@@ -80,6 +80,6 @@ export class FeesService {
 			   }
 		   }
 		 }
-		  return { effective_fees: 0 }
+		  return { effective_fees: null }
 	  }
 }
