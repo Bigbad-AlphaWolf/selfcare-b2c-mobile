@@ -1,11 +1,12 @@
 <ion-grid>
   <ion-row>
+    <ng-container *ngFor="let operation of operations">    
     <div
       matRipple
       (click)="onOperation(operation)"
       class="operation"
-      *ngFor="let operation of operations"
       [ngClass]="{'disabled': !isServciceActivated(operation)}"
+      *ngIf="!isServiceHidden(operation)"
     >
       <img [src]="operation.icon" class="operation-img" />
       <div class="operation-text">
@@ -27,5 +28,6 @@
         <div class="triangle"></div>
       </div>
     </div>
+  </ng-container>
   </ion-row>
 </ion-grid>

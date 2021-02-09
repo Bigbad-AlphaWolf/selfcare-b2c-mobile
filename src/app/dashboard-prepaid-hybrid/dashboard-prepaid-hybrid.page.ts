@@ -53,6 +53,7 @@ import { map } from 'rxjs/operators';
 import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amount.page';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 import { OffresServicesPage } from '../pages/offres-services/offres-services.page';
+import { OperationService } from '../services/oem-operation/operation.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -127,7 +128,8 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     private offerPlanServ: OfferPlansService,
     private ref: ChangeDetectorRef,
     private bsService: BottomSheetService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private operationService: OperationService
   ) {}
 
   ngOnInit() {
@@ -172,6 +174,13 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
           this.listBanniere = this.banniereServ.getListBanniereByFormule();
         }
       });
+    this.getActiveServices();
+  }
+
+  getActiveServices() {
+    this.operationService.getAllServices().subscribe((res: any) => {
+      OperationService.AllOffers = res;
+    });
   }
 
   getCustomerSargalStatus() {

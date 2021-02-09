@@ -37,12 +37,14 @@ import { OfferPlan } from 'src/shared/models/offer-plan.model';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { DalalTonesService } from '../services/dalal-tones-service/dalal-tones.service';
 import { IlliflexService } from '../services/illiflex-service/illiflex.service';
-import { BuyIlliflexModel } from '../models/buy-illiflex.model';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
 import { ModalSuccessModel } from '../models/modal-success-infos.model';
 import { SetRecipientNamesModalComponent } from './set-recipient-names-modal/set-recipient-names-modal.component';
 import { of } from 'rxjs';
 import { BoosterService } from '../services/booster.service';
+import { FeeModel } from '../services/orange-money-service';
+import { FeesService } from '../services/fees/fees.service';
+import { OM_LABEL_SERVICES } from '../utils/bills.util';
 
 @Component({
   selector: 'app-operation-recap',
@@ -115,7 +117,8 @@ export class OperationRecapPage implements OnInit {
     private dalalTonesService: DalalTonesService,
     private illiflexService: IlliflexService,
     private passService: PassInternetService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private feeService: FeesService
   ) {}
 
   ngOnInit() {
@@ -259,13 +262,13 @@ export class OperationRecapPage implements OnInit {
       this.recipientMsisdn = msisdn;
       this.paymentMod = PAYMENT_MOD_OM;
       if (!msisdnHasOM) {
-        const fees = await this.orangeMoneyService
-          .getTransferFees()
+        const fees = await this.feeService
+          .getFeesByOMService(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE, msisdn)
           .toPromise();
         const fee = fees.find(
-          (fee) => amount <= fee.maximum && amount >= fee.minimum
+          (fee: FeeModel) => amount <= fee.max && amount >= fee.min
         );
-        amount = fee ? amount + fee.withCode : amount;
+        amount = fee ? amount + fee.effective_fees : amount;
         const response = await this.openSetRecipientNamesModal();
         this.amount = amount;
         this.transferOMWithCodePayload.amount = amount;
@@ -348,7 +351,7 @@ export class OperationRecapPage implements OnInit {
   activateDalal() {
     this.buyingPass = true;
     this.dalalTonesService.activateDalal(this.opXtras.dalal).subscribe(
-      (res) => {
+      () => {
         this.buyingPass = false;
         this.openSuccessFailModal({
           success: true,
@@ -445,6 +448,7 @@ export class OperationRecapPage implements OnInit {
     params.merchantCode = this.merchantCode;
     params.merchantName = this.merchantName;
     params.dalal = this.opXtras ? this.opXtras.dalal : null;
+    params.opXtras = this.opXtras;
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
       cssClass: 'success-or-fail-modal',
@@ -500,7 +504,7 @@ export class OperationRecapPage implements OnInit {
   payIlliflex() {
     this.buyingPass = true;
     this.illiflexService.buyIlliflex(this.passChoosen).subscribe(
-      (res) => {
+      () => {
         this.buyingPass = false;
         this.openSuccessFailModal({
           success: true,

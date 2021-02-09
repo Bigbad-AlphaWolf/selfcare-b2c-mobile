@@ -38,10 +38,8 @@ import {
 import { CancelOperationPopupComponent } from '../cancel-operation-popup/cancel-operation-popup.component';
 import { SoSModel } from 'src/app/services/sos-service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import {
   FeeModel,
-  ORANGE_MONEY_TRANSFER_FEES,
 } from 'src/app/services/orange-money-service';
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { validateNumber } from 'src/app/register';
@@ -99,41 +97,22 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
   total;
   payBuyOm = false;
   fees = 0;
-  feeWithCode: number;
-  feeWithoutCode: number;
   transferWithCode = false;
   feesOnMyCharge = false;
   form: FormGroup;
   formNumeroIllimite: FormGroup;
   showErrorMsg1: boolean;
   showErrorMsg2: boolean;
-
   constructor(
     private fb: FormBuilder,
     private dashServ: DashboardService,
     public dialog: MatDialog,
     private contacts: Contacts,
-    private omService: OrangeMoneyService,
-    private followsServ: FollowAnalyticsService
-  ) {}
+    private followsServ: FollowAnalyticsService  ) {}
 
   ngOnInit() {
     if (this.operationType === OPERATION_TYPE_SEDDO_CREDIT) {
       this.fees = TRANSFER_BONUS_CREDIT_FEE;
-    }
-    if (this.operationType === OPERATION_TYPE_TRANSFER_OM) {
-      this.form = this.fb.group({
-        nom: [
-          this.omRecipientLastName,
-          [Validators.required, Validators.minLength(2)],
-        ],
-        prenom: [this.omRecipientFirstName, [Validators.required]],
-      });
-      this.getFees();
-      if (!this.recipientHasOmAccount) {
-        this.transferWithCode = true;
-        this.feesOnMyCharge = true;
-      }
     }
     if (this.sargalGift) {
       if (this.sargalGift.nombreNumeroIllimtes > 1) {
@@ -158,27 +137,13 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
     }
   }
 
-  getFees() {
-    this.omService.getTransferFees().subscribe(
-      (fees: FeeModel[]) => {
-        this.extractOMfees(fees);
-      },
-      (err) => {
-        const fees = ORANGE_MONEY_TRANSFER_FEES;
-        this.extractOMfees(fees);
-      }
-    );
-  }
-
   extractOMfees(fees: FeeModel[]) {
-    for (let i = 0; i < fees.length; i++) {
+    for (let fee of fees) {
       if (
-        this.amountToTransfer <= fees[i].maximum &&
-        this.amountToTransfer >= fees[i].minimum
+        this.amountToTransfer <= fee.max &&
+        this.amountToTransfer >= fee.min
       ) {
-        this.feeWithCode = fees[i].withCode;
-        this.feeWithoutCode = fees[i].withoutCode;
-        break;
+        return fee.effective_fees;
       }
     }
   }
@@ -254,25 +219,6 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleTransferWithCode(event) {
-    this.transferWithCode = event.checked;
-    if (this.transferWithCode) {
-      this.feesOnMyCharge = true;
-      this.fees = this.feeWithCode;
-    } else {
-      this.feesOnMyCharge = false;
-      this.fees = 0;
-    }
-  }
-
-  toggleFees(event) {
-    this.feesOnMyCharge = event.checked;
-    if (this.feesOnMyCharge) {
-      this.fees = this.feeWithoutCode;
-    } else {
-      this.fees = 0;
-    }
-  }
 
   getPaymentModLabel(paymentMod: string) {
     switch (paymentMod) {
@@ -327,7 +273,7 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
           this.fillNumeroIllimiteForm(numeroChampIllimite, number);
         }
       })
-      .catch((err) => {});
+      .catch(() => {});
   }
 
   openPickRecipientModal(phoneNumbers: any[], numeroChampIllimite: number) {

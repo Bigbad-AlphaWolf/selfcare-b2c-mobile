@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { SubscriptionModel } from 'src/app/dashboard';
 import { BestOfferIlliflexModel } from 'src/app/models/best-offer-illiflex.model';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
@@ -13,6 +13,8 @@ import {
 } from 'src/shared';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 const { CONSO_SERVICE, SERVER_API_URL, PURCHASES_SERVICE } = environment;
+import { DashboardService } from '../dashboard-service/dashboard.service';
+import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 const paliersEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pricings`;
 const buyIlliflexEndpoint = `${SERVER_API_URL}/${PURCHASES_SERVICE}/api/buy-pass-illiflex`;
 const bestOfferEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/prepay-balance/best-offer`;
@@ -21,10 +23,15 @@ const bestOfferEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/prepay-balance
   providedIn: 'root',
 })
 export class IlliflexService {
+  currentMsisdn: string;
   constructor(
     private http: HttpClient,
-    private authService: AuthenticationService
-  ) {}
+    private authService: AuthenticationService,
+    private followAnalyticsService: FollowAnalyticsService,
+    private dashboardService: DashboardService
+  ) {
+    this.currentMsisdn = this.dashboardService.getCurrentPhoneNumber();
+  }
 
   getIlliflexPaliers(): Observable<PalierModel[]> {
     return this.http.get(`${paliersEndpoint}`).pipe(
@@ -45,7 +52,20 @@ export class IlliflexService {
         res = res.sort(
           (palier1, palier2) => palier1.maxPalier - palier2.maxPalier
         );
+        this.followAnalyticsService.registerEventFollow(
+          'illiflex_pricings_success',
+          'event',
+          { msisdn: this.currentMsisdn }
+        );
         return res;
+      }),
+      catchError((err) => {
+        this.followAnalyticsService.registerEventFollow(
+          'illiflex_pricings_failed',
+          'error',
+          { msisdn: this.currentMsisdn, error: err }
+        );
+        return throwError(err);
       })
     );
   }
@@ -71,7 +91,6 @@ export class IlliflexService {
             unit: 'KO',
           },
           validity,
-          code: 193,
         },
         voiceBucket: {
           balance: {
@@ -79,11 +98,33 @@ export class IlliflexService {
             unit: 'SECOND',
           },
           validity,
-          code: 192,
+        },
+        smsBucket: {
+          balance: {
+            amount: passIlliflex.bonusSms,
+            unit: 'SMS',
+          },
+          validity,
         },
       },
     };
-    return this.http.post(buyIlliflexEndpoint, buyIlliflexPayload);
+    return this.http.post(buyIlliflexEndpoint, buyIlliflexPayload).pipe(
+      map((res) => {
+        this.followAnalyticsService.registerEventFollow(
+          'buy_pass_illiflex_success',
+          'event',
+          buyIlliflexPayload
+        );
+      }),
+      catchError((err) => {
+        this.followAnalyticsService.registerEventFollow(
+          'buy_pass_illiflex_failed',
+          'error',
+          { payload: buyIlliflexPayload, error: err }
+        );
+        return throwError(err);
+      })
+    );
   }
 
   getValidityName(validity) {
@@ -119,7 +160,20 @@ export class IlliflexService {
               // process voice in Min as it is received in second
               bestOffer.voiceBucket.balance.amount =
                 bestOffer.voiceBucket.balance.amount / 60;
+              this.followAnalyticsService.registerEventFollow(
+                'best_offer_success',
+                'event',
+                { offer: bestOffer, msisdn: param.recipientMsisdn }
+              );
               return bestOffer;
+            }),
+            catchError((err) => {
+              this.followAnalyticsService.registerEventFollow(
+                'best_offer_failed',
+                'error',
+                { msisdn: param.recipientMsisdn, error: err }
+              );
+              return throwError(err);
             })
           );
       })
