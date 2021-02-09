@@ -50,7 +50,7 @@ export class PurchaseSetAmountPage implements OnInit {
   OPERATION_TYPE_RECHARGE_CREDIT = OPERATION_TYPE_RECHARGE_CREDIT;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
-
+  isLoadingFees: boolean;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -59,7 +59,7 @@ export class PurchaseSetAmountPage implements OnInit {
     private route: ActivatedRoute,
     private ref: ChangeDetectorRef,
     private feeService: FeesService
-  ) {}
+    ) {}
 
   ngOnInit() {
     this.initForm(100);
@@ -241,14 +241,17 @@ export class PurchaseSetAmountPage implements OnInit {
 
   getOMTransferFees(om_service: string) {
     this.hasError = false;
+    this.isLoadingFees = true;
     return this.feeService.getFeesByOMService(om_service, this.purchasePayload.recipientMsisdn).pipe(
       tap((fees: FeeModel[]) => {
+        this.isLoadingFees = false;
         this.transferFeesArray[om_service] = fees;
         if(!fees.length) {
           this.hasError = true;
         }
       }), catchError((err: any) => {
         this.hasError = true;
+        this.isLoadingFees = false;
         return of(err)
       })
     );
@@ -258,6 +261,7 @@ export class PurchaseSetAmountPage implements OnInit {
   toggleTransferWithCode(event, amountInputValue) {
     const checked = event.detail.checked;
     const amount = +amountInputValue;
+
     if (checked) {
       this.initTransferWithCodeForm(amount);
       this.purchaseType = OPERATION_TRANSFER_OM_WITH_CODE;
@@ -274,7 +278,6 @@ export class PurchaseSetAmountPage implements OnInit {
   }
 
   handleFees(event, amountInputValue) {
-    console.log('in toggle fees', this.fee);
     const amount = +amountInputValue;
     this.includeFees = event.detail.checked;
     this.includeFees

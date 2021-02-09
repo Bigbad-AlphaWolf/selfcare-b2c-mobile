@@ -33,6 +33,7 @@ export class BillAmountPage implements OnInit {
   firstFees: FeeModel;
   lastFees: FeeModel;
   hasErrorOnRequest: boolean;
+  isLoadingFees:boolean;
   constructor(
     private navController: NavController,
     private feeService: FeesService
@@ -50,9 +51,11 @@ export class BillAmountPage implements OnInit {
 
   queryFees() {
     this.hasErrorOnRequest = false;
+    this.isLoadingFees = true;
     this.feeService.getFeesByOMService(this.service).pipe(
       tap((res: FeeModel[])=> {
       this.feesArray = res;
+      this.isLoadingFees = false;
       if(res.length) {
         this.firstFees = this.feesArray[0]
         this.lastFees = this.feesArray[this.feesArray.length -1]
@@ -64,6 +67,7 @@ export class BillAmountPage implements OnInit {
     }),
     catchError((err) => {
       this.hasErrorOnRequest = true;
+      this.isLoadingFees = false;
         return of(err)
     })).subscribe()
   }
@@ -160,7 +164,4 @@ export class BillAmountPage implements OnInit {
     this.navController.pop();
   }
 
-  getFeesByService(service_code: string) {
-    return this.feeService.getFeesByOMService(service_code)
-  }
 }
