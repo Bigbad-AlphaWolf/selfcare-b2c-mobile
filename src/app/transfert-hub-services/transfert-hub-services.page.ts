@@ -128,14 +128,6 @@ export class TransfertHubServicesPage implements OnInit {
       type: 'PASS_VOYAGE',
       url: '',
     },
-    // {
-    //   title: 'Pass',
-    //   subtitle: 'international',
-    //   icon: '/assets/images/ic-international.png',
-    //   action: 'REDIRECT',
-    //   type: 'PASS_INTERNATIONAL',
-    //   url: '',
-    // },
   ];
   buyCreditOption: {
     title: string;
@@ -145,8 +137,8 @@ export class TransfertHubServicesPage implements OnInit {
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
   } = {
-    title: 'Crédit',
-    subtitle: 'recharge',
+    title: 'Recharge',
+    subtitle: 'crédit',
     icon: '/assets/images/04-boutons-01-illustrations-19-acheter-du-credit.svg',
     action: 'REDIRECT',
     type: 'CREDIT',
