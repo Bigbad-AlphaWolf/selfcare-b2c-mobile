@@ -35,7 +35,7 @@ export class BillsHubPage implements OnInit {
   async onCompanySelected(billCompany: BillCompany) {
     if (!this.isServciceActivated(billCompany)) {
       const service = OperationService.AllOffers.find(
-        (service) => service.code === billCompany.idCode
+        (service) => billCompany.idCode && service.code === billCompany.idCode
       );
       const toast = await this.toastController.create({
         header: 'Service indisponible',
@@ -76,6 +76,18 @@ export class BillsHubPage implements OnInit {
     );
     if (service) return service.activated;
     return true;
+  }
+
+  isServiceHidden(company: BillCompany) {
+    const service = OperationService.AllOffers.find(
+      (service) => service.code === company.idCode
+    );
+    if (service)
+      return (
+        !service.activated &&
+        (!service.reasonDeactivation || service.reasonDeactivation === '')
+      );
+    return false;
   }
 
   goBack() {

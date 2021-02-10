@@ -236,3 +236,26 @@ export const FEES_INCLUDES = {
   wofofal: WOYOFAL_DEFAULT_FEES_INCLUDES,
   rapido: RAPIDO_DEFAULT_FEES_INCLUDES,
 };
+
+export const OM_LABEL_SERVICES = {
+  RAPIDO : "rapido",
+  ISM : "ism",
+  SENELEC: "senelec",
+  MALI: "mali",
+  EDUCATION: "education",
+  BISSAU: "bissau",
+  SONATEL_FIXE: "sonatel_fixe",
+  NIGER: "NIGER",
+  PAIEMENT_MARCHAND: "paiement_marchand",
+  OOLU_SOLAR : "oolu_solar",
+  TRANSFERT_SANS_CODE: "retrait",
+  WOYOFAL: "woyofal",
+  OFFRE_TERANGA: "offre_teranga",
+  BURKINA: "burkina",
+  SDE: "sde",
+  BAOBAB: "baobab",
+  TRANSFERT_AVEC_CODE: "tac",
+  OFFRE_ENERGIE: "offre_energie",
+  COTE_D_IVOIRE: "cod",
+  CANAL: "canal"
+}

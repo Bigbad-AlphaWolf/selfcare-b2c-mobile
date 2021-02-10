@@ -16,6 +16,7 @@ import {
   OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM,
   getActiveBoostersForSpecificPass,
   OPERATION_CHANGE_PIN_OM,
+  SubscriptionModel,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -28,6 +29,8 @@ import { DalalTonesPage } from '../dalal-tones/dalal-tones.page';
 import { RapidoOperationPage } from '../pages/rapido-operation/rapido-operation.page';
 import { BoosterService } from '../services/booster.service';
 import { GiftType } from '../models/enums/gift-type.enum';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 
 @Component({
   selector: 'app-operation-success-fail-modal',
@@ -66,17 +69,20 @@ export class OperationSuccessFailModalPage implements OnInit {
   coupon;
   hasCoupon: boolean;
 
+  isBuyerPostpaid: boolean;
   constructor(
     private dashboardService: DashboardService,
     private router: Router,
     public modalController: ModalController,
     private appRouting: ApplicationRoutingService,
     private navCtrl: NavController,
-    private boosterService: BoosterService
+    private boosterService: BoosterService,
+    private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit() {
     this.getCoupon();
+    this.checkifBuyerPostpaid();
   }
 
   getCoupon() {
@@ -98,6 +104,14 @@ export class OperationSuccessFailModalPage implements OnInit {
     this.hasCoupon = true;
   }
 
+  checkifBuyerPostpaid() {
+    this.authenticationService
+      .getSubscription(this.msisdnBuyer)
+      .subscribe((res: SubscriptionModel) => {
+        this.isBuyerPostpaid = res && res.profil === PROFILE_TYPE_POSTPAID;
+      });
+  }
+
   terminer() {
     this.modalController.dismiss();
     this.router.navigate(['/dashboard']);
@@ -116,14 +130,14 @@ export class OperationSuccessFailModalPage implements OnInit {
         this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       case OPERATION_TYPE_PASS_ILLIMIX:
-        if (this.opXtras.code === CODE_KIRENE_Formule) {
+        if (this.opXtras.recipientCodeFormule === CODE_KIRENE_Formule) {
           this.appRouting.goToBuyPassIllimixKirene();
         } else {
           this.appRouting.goToTransfertHubServicesPage('BUY');
         }
         break;
       case OPERATION_TYPE_PASS_INTERNET:
-        if (this.opXtras.code === CODE_KIRENE_Formule) {
+        if (this.opXtras.recipientCodeFormule === CODE_KIRENE_Formule) {
           this.appRouting.goToBuyPassInternetKirene();
         } else {
           this.appRouting.goToTransfertHubServicesPage('BUY');

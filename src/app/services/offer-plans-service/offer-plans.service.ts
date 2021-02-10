@@ -24,7 +24,6 @@ export class OfferPlansService {
 
   orderBonPlanProduct(productOfferingId: string) {
     let msisdn = this.dashbServ.getCurrentPhoneNumber();
-    msisdn = this.addPrefixOnNumber(msisdn, '221');
     const payload = { msisdn , productOfferingId }
     return this.http.post(`${mpoProductOrderEndpoint}`,payload);
   }

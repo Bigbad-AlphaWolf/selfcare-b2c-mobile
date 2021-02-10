@@ -5,7 +5,7 @@
       <div class="orange">
         <div class="rectangle"></div>
       </div>
-      <div (click)="close()" class="close">Fermer</div>
+      <div *ngIf="!forceUpdate" (click)="close()" class="close">Fermer</div>
     </div>
     <div class="content">
       <img src="/assets/images/confirmation.png" class="checked" />
@@ -17,10 +17,10 @@
             Mettre à jour
           </span>
           </ion-button>
-  
+
     </div>
     </div>
-   
+
 
   </div>
 

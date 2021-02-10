@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonSlides, NavController } from '@ionic/angular';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { ApplicationRoutingService } from '../../services/application-routing/application-routing.service';
+import { Router, NavigationExtras } from '@angular/router';
 import { PassInternetService } from '../../services/pass-internet-service/pass-internet.service';
 import {
   arrangePassByCategory,
@@ -46,7 +45,6 @@ export class ListePassPage implements OnInit {
   boosters: BoosterModel[] = [];
   constructor(
     private router: Router,
-    private appRouting: ApplicationRoutingService,
     private passIntService: PassInternetService,
     private passIllimixServ: PassIllimixService,
     private boosterService: BoosterService,
@@ -81,7 +79,7 @@ export class ListePassPage implements OnInit {
         this.passIntService
           .queryListPassInternetOfUser(this.userCodeFormule)
           .subscribe(
-            (res: any) => {
+            () => {
               this.isLoaded = true;
               this.listCategory = this.passIntService.getListCategoryPassInternet();
               this.listPass = this.passIntService.getListPassInternetOfUser();
@@ -93,7 +91,7 @@ export class ListePassPage implements OnInit {
                 this.listCategory
               );
             },
-            (err: any) => {
+            () => {
               this.isLoaded = true;
             }
           );
@@ -104,7 +102,7 @@ export class ListePassPage implements OnInit {
         this.passIllimixServ
           .queryListPassIllimix(this.userCodeFormule, category)
           .subscribe(
-            (res: any) => {
+            () => {
               this.isLoaded = true;
               this.listCategory = this.passIllimixServ.getCategoryListPassIllimix();
               this.listPass = this.passIllimixServ.getListPassIllimix();
@@ -116,7 +114,7 @@ export class ListePassPage implements OnInit {
                 this.listCategory
               );
             },
-            (err: any) => {
+            () => {
               this.isLoaded = true;
             }
           );
@@ -134,7 +132,6 @@ export class ListePassPage implements OnInit {
 
   // filter listPass with pass with price_plan_index credit set
   filterPassForLightMod() {
-    console.log(this.listPass, 'before');
     this.listPass = this.listPass.filter((pass) => {
       return (
         (pass && pass.price_plan_index) ||

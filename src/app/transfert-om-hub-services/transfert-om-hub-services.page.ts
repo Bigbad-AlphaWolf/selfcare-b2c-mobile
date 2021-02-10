@@ -34,9 +34,7 @@ export class TransfertOmHubServicesPage implements OnInit {
     },
   ];
   constructor(
-    private appRouting: ApplicationRoutingService,
-    private modalController: ModalController
-  ) {}
+    private appRouting: ApplicationRoutingService  ) {}
 
   ngOnInit() {}
 

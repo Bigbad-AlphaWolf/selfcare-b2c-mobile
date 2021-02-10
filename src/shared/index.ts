@@ -49,8 +49,10 @@ export const OPERATION_SEE_SOLDE_RAPIDO = 'SOLDE_RAPIDO';
 export const OPERATION_SEE_FOLLOW_UP_REQUESTS = 'FOLLOW_UP_REQUESTS';
 export const OPERATION_SEE_RATTACHED_NUMBERS = 'RATTACHED_NUMBERS';
 export const OPERATION_RATTACH_NUMBER = 'RATTACHE_NUMBER';
-export const OPERATION_CONFIRM_DELETE_RATTACH_NUMBER =  'CONFIRM_DELETE_RATTACHE_NUMBER';
-export const OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM =  'ERREUR_TRANSACTION_OM';
+export const OPERATION_CONFIRM_DELETE_RATTACH_NUMBER =
+  'CONFIRM_DELETE_RATTACHE_NUMBER';
+export const OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM =
+  'ERREUR_TRANSACTION_OM';
 export const OPERATION_INIT_CHANGE_PIN_OM = 'INIT_CHANGE_PIN_OM';
 export const OPERATION_CHANGE_PIN_OM = 'CHANGE_PIN_OM';
 
@@ -635,7 +637,7 @@ export interface ItemBesoinAide {
   code: string;
   question: string;
   reponse: string;
-  icone?:string;
+  icone?: string;
   type?: string;
   descCourte?: string;
   descLong?: string;
@@ -847,6 +849,8 @@ export class SplashScreenMock extends SplashScreen {
 }
 
 export function getBanniereTitle(banniereDescription: string) {
+  const semiColonIndex = banniereDescription.indexOf(';');
+  if (semiColonIndex < 1) return banniereDescription;
   return banniereDescription
     ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
     : '';
