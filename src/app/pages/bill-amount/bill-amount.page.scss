@@ -21,8 +21,13 @@
 .bill-amount-page {
   height: 120%;
   background-color: $white;
+  position: relative;
   :host {
     height: 100%;
+  }
+  ion-spinner {
+    position: absolute;
+    right: 50%;
   }
   .banniere-container {
     width: 100%;

@@ -15,7 +15,7 @@
     <div class="banniere-container">
       <img src="/assets/images/recharge-bill.svg" alt="header-transfer" />
     </div>
-    <ng-container *ngIf="!hasErrorOnRequest">
+    <ng-container *ngIf="!hasErrorOnRequest && !isLoadingFees">
       <div class="amount-provider">
         <oem-amount-provider
           [amounts]="amounts"
@@ -71,10 +71,11 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="hasErrorOnRequest">
+    <ng-container *ngIf="hasErrorOnRequest && !isLoadingFees">
       <div class="scb-text-red-error" (click)="queryFees()">
         Veuillez cliquer pour réactualiser la page
       </div>
     </ng-container>
+    <ion-spinner *ngIf="isLoadingFees" name="crescent"></ion-spinner>
   </div>
 </ion-content>
