@@ -40,6 +40,10 @@
         *ngIf="sendingOtp"
       ></mat-spinner>
     </button>
+
+    <div class="error-message" *ngIf="errorOnOtp">
+      <span>{{ errorOnOtp }}</span>
+    </div>
   </div>
 </div>
 <div class="codeOTP-content" *ngIf="otpValidation">
