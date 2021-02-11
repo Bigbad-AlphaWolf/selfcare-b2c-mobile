@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Market } from '@ionic-native/market/ngx';
 import { NavController } from '@ionic/angular';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -14,15 +15,21 @@ export class AppUpdatePage implements OnInit {
   updateMessage: string = `Votre application n'est pas à jour.
   Pour profiter des dernières fonctionnalités, Mettez la à jour.`;
   appId: string = '';
-  constructor(private market: Market, private navCtl: NavController) {}
+  forceUpdate:boolean;
+  constructor(
+    private market: Market,
+    private navCtl: NavController,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.appId = history.state.appId;
+    this.forceUpdate = history.state.forceUpdate;
   }
 
   close() {
     SessionOem.updateAbort = true;
-    this.navCtl.navigateBack(DashboardService.CURRENT_DASHBOARD);
+    this.router.navigate([DashboardService.CURRENT_DASHBOARD]);
   }
 
   update() {

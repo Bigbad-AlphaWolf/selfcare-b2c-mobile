@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
-import { ModalController, NavController } from '@ionic/angular';
+import {
+  ModalController,
+  NavController,
+  ToastController,
+} from '@ionic/angular';
 import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import { NavigationExtras, Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
@@ -33,6 +37,7 @@ import { PassInternetService } from '../services/pass-internet-service/pass-inte
 import { catchError, tap } from 'rxjs/operators';
 import { FavoritePassOemModel } from '../models/favorite-pass-oem.model';
 import { FavorisService } from '../services/favoris/favoris.service';
+import { OperationService } from '../services/oem-operation/operation.service';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -92,6 +97,7 @@ export class TransfertHubServicesPage implements OnInit {
       | 'PASS_ALLO';
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
+    idCode?: number;
   }[] = [
     {
       title: 'Pass',
@@ -151,6 +157,7 @@ export class TransfertHubServicesPage implements OnInit {
     type;
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
+    idCode?: number;
   } = {
     title: 'Pass',
     subtitle: 'illiflex',
@@ -159,6 +166,7 @@ export class TransfertHubServicesPage implements OnInit {
     action: 'REDIRECT',
     type: 'ILLIFLEX',
     url: '',
+    idCode: 1134,
   };
   options: {
     title: string;
@@ -187,8 +195,8 @@ export class TransfertHubServicesPage implements OnInit {
   showNewFeatureBadge$: Observable<Boolean>;
   isLightMod: boolean; //boolean to tell if user is in connected or not connected mod
   currentPhone = this.dashbServ.getCurrentPhoneNumber();
-  purchaseType: "BUY" | "TRANSFER";
-  favoritesPass : FavoritePassOemModel;
+  purchaseType: 'BUY' | 'TRANSFER';
+  favoritesPass: FavoritePassOemModel;
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
@@ -200,7 +208,8 @@ export class TransfertHubServicesPage implements OnInit {
     private omService: OrangeMoneyService,
     private facebookevent: FacebookEventService,
     private authService: AuthenticationService,
-    private favService: FavorisService
+    private favService: FavorisService,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -210,7 +219,8 @@ export class TransfertHubServicesPage implements OnInit {
       this.isLightMod = history.state.isLightMod;
       if (!this.isLightMod) {
         this.buyOptions.splice(0, 0, this.buyCreditOption);
-        this.buyOptions.push(this.buyIlliflexOption);
+        if (this.isServciceActivated(this.buyIlliflexOption))
+          this.buyOptions.push(this.buyIlliflexOption);
       }
     }
     if (this.purchaseType === 'TRANSFER') {
@@ -228,23 +238,41 @@ export class TransfertHubServicesPage implements OnInit {
     }
   }
 
+  isServciceActivated(action) {
+    const actionService = OperationService.AllOffers.find(
+      (service) => action.idCode && service.code === action.idCode
+    );
+    if (actionService) return actionService.activated;
+    return true;
+  }
+
   goBack() {
     this.navController.pop();
   }
 
-  goTo(opt: {
+  async goTo(opt: {
     title: string;
     subtitle: string;
     icon: string;
     type: string;
     url?: string;
     action?: 'REDIRECT' | 'POPUP';
+    idCode?: number;
   }) {
-    // this.facebookevent.fbEvent(FacebookEvent.ViewContent,{});
-    this.facebookevent.fbCustomEvent(FacebookCustomEvent.TestEvent, {
-      customField1: 'customField1',
-      customField2: 51,
-    });
+    if (!this.isServciceActivated(opt)) {
+      const service = OperationService.AllOffers.find(
+        (service) => opt.idCode && service.code === opt.idCode
+      );
+      const toast = await this.toastController.create({
+        header: 'Service indisponible',
+        message: service.reasonDeactivation,
+        duration: 3000,
+        position: 'middle',
+        color: 'medium',
+      });
+      toast.present();
+      return;
+    }
 
     switch (opt.type) {
       case 'TRANSFERT_MONEY':
@@ -326,6 +354,7 @@ export class TransfertHubServicesPage implements OnInit {
             destinataire: this.currentPhone,
             purchaseType: operation,
             isLightMod: true,
+            recipientMsisdn: this.currentPhone,
           };
           this.navController.navigateForward([routePath], {
             state: opInfos,
@@ -478,14 +507,17 @@ export class TransfertHubServicesPage implements OnInit {
   }
 
   getFavoritePass() {
-    return this.favService.getFavoritePass().pipe(
-      tap((res: any) => {
-        this.favoritesPass = res;
-      }),
-    ).subscribe()
-   }
+    return this.favService
+      .getFavoritePass()
+      .pipe(
+        tap((res: any) => {
+          this.favoritesPass = res;
+        })
+      )
+      .subscribe();
+  }
 
-   choosePass(pass: any, opType: string ) {
+  choosePass(pass: any, opType: string) {
     let navigationExtras: NavigationExtras = {
       state: {
         pass,
@@ -499,10 +531,10 @@ export class TransfertHubServicesPage implements OnInit {
   }
 
   getUserInfos() {
-    this.authService.getSubscription(this.currentPhone).subscribe(
-      (res: SubscriptionModel) => {
+    this.authService
+      .getSubscription(this.currentPhone)
+      .subscribe((res: SubscriptionModel) => {
         this.userInfos = res;
-      }
-    );
+      });
   }
 }

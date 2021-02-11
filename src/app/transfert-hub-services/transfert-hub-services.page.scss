@@ -45,6 +45,9 @@ ion-spinner {
       &:nth-child(n + 4) {
         margin-top: 15px;
       }
+      &.disabled {
+        opacity: 0.4;
+      }
       width: percentage(105/345);
       height: 120px;
       --background: white;

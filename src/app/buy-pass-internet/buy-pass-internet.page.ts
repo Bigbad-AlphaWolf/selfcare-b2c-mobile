@@ -7,14 +7,14 @@ import {
   OPERATION_TYPE_PASS_ILLIMIX,
   PassInternetModel,
   PAYMENT_MOD_CREDIT,
-  PAYMENT_MOD_OM
+  PAYMENT_MOD_OM,
 } from 'src/shared';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import {
   PROFILE_TYPE_POSTPAID,
   HOME_PREPAID_FORMULE,
   CODE_FORMULE_KILIMANJARO,
-  KILIMANJARO_FORMULE
+  KILIMANJARO_FORMULE,
 } from '../dashboard';
 import { BuyPassModel } from '../services/dashboard-service';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
@@ -29,7 +29,7 @@ import { ModalSuccessModel } from '../models/modal-success-infos.model';
 @Component({
   selector: 'app-buy-pass-internet',
   templateUrl: './buy-pass-internet.page.html',
-  styleUrls: ['./buy-pass-internet.page.scss']
+  styleUrls: ['./buy-pass-internet.page.scss'],
 })
 export class BuyPassInternetPage implements OnInit {
   OPERATION_TYPE_PASS_INTERNET = OPERATION_TYPE_PASS_INTERNET;
@@ -74,7 +74,8 @@ export class BuyPassInternetPage implements OnInit {
     private passService: PassInternetService,
     private followAnalyticsService: FollowAnalyticsService,
     private modalController: ModalController,
-    private orangeMoneyService: OrangeMoneyService  ) {}
+    private orangeMoneyService: OrangeMoneyService
+  ) {}
 
   ngOnInit() {}
 
@@ -118,7 +119,7 @@ export class BuyPassInternetPage implements OnInit {
               this.purchasePass = {
                 destinataire: this.destinataire,
                 pass,
-                paymentMod: this.choosedPaymentMod
+                paymentMod: this.choosedPaymentMod,
               };
               this.step = 0;
             });
@@ -177,7 +178,6 @@ export class BuyPassInternetPage implements OnInit {
       );
     }
     this.goToNextStep();
-
   }
 
   nextStepOfChoosePassInternet(passInternet: any) {
@@ -185,7 +185,7 @@ export class BuyPassInternetPage implements OnInit {
     this.purchasePass = {
       destinataire: this.destinataire,
       pass: passInternet,
-      paymentMod: this.choosedPaymentMod
+      paymentMod: this.choosedPaymentMod,
     };
     this.goToNextStep();
   }
@@ -205,13 +205,13 @@ export class BuyPassInternetPage implements OnInit {
       codeIN,
       amount,
       msisdn,
-      receiver
+      receiver,
     };
     this.dashServ.buyPassByCredit(payload).subscribe(
       (res: any) => {
         this.transactionSuccessful(res);
       },
-      err => {
+      (err) => {
         this.transactionFailure();
       }
     );
@@ -222,7 +222,7 @@ export class BuyPassInternetPage implements OnInit {
       // Make request for buying pass with credit
       this.buyPassByCredit();
     } else {
-      this.payWithOM()
+      this.payWithOM();
     }
   }
 
@@ -270,7 +270,7 @@ export class BuyPassInternetPage implements OnInit {
     this.passFavorisSelected = passFavoris;
     this.purchasePass = {
       pass: passFavoris,
-      destinataire: this.currentUserNumber
+      destinataire: this.currentUserNumber,
     };
     this.goToStepValidation();
   }
@@ -280,12 +280,12 @@ export class BuyPassInternetPage implements OnInit {
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
-        operationType: OPERATION_TYPE_PASS_ILLIMIX,
+        operationType: OPERATION_TYPE_PASS_INTERNET,
         buyPassPayload: {
           destinataire: this.destinataire,
           pass: this.purchasePass.pass,
         },
-        opXtras: this.opXtras
+        opXtras: this.opXtras,
       },
     });
     modal.onDidDismiss().then((response) => {
@@ -307,7 +307,10 @@ export class BuyPassInternetPage implements OnInit {
     params.passBought = this.purchasePass.pass;
     params.paymentMod = this.choosedPaymentMod;
     params.recipientMsisdn = this.destinataire;
-    params.recipientName = this.recipientFirstName && this.recipientLastName ? this.recipientFirstName + ' ' + this.recipientLastName : null ;
+    params.recipientName =
+      this.recipientFirstName && this.recipientLastName
+        ? this.recipientFirstName + ' ' + this.recipientLastName
+        : null;
     params.purchaseType = OPERATION_TYPE_PASS_INTERNET;
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
@@ -318,7 +321,6 @@ export class BuyPassInternetPage implements OnInit {
     modal.onDidDismiss().then(() => {});
     return await modal.present();
   }
-
 
   goToDashboardPage() {
     this.router.navigate(['/dashboard']);
@@ -340,7 +342,7 @@ export class BuyPassInternetPage implements OnInit {
       const followDetails = {
         option_name: this.purchasePass.pass.nom,
         amount: this.purchasePass.pass.tarif,
-        plan: this.purchasePass.pass.price_plan_index
+        plan: this.purchasePass.pass.price_plan_index,
       };
       this.followAnalyticsService.registerEventFollow(
         'Credit_Buy_Pass_Internet_Success',
@@ -362,7 +364,7 @@ export class BuyPassInternetPage implements OnInit {
       {
         msisdn1: this.currentUserNumber,
         msisdn2: this.destinataire,
-        message: 'Service indisponible'
+        message: 'Service indisponible',
       }
     );
   }

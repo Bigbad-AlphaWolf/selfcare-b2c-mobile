@@ -41,10 +41,10 @@
   </div>
 
   <div
-    [hidden]="!canNotRecieve && !canNotRecieveError"
+    [hidden]="!canNotRecieve"
     class="error-msg scb-text-red-error"
   >
-    Le numéro de votre destinataire ne peut pas recevoir de credit.
+    {{canNotRecieveError}}
   </div>
   <div
     *ngIf="eligibilityChecked && !isRecipientEligible"
