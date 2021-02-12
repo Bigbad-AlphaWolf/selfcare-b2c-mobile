@@ -1,7 +1,17 @@
 import { Injectable, RendererFactory2, Inject, Renderer2 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject, Observable, Subscription, of } from 'rxjs';
-import { tap, map, switchMap, catchError, share, take } from 'rxjs/operators';
+import {
+  tap,
+  map,
+  switchMap,
+  catchError,
+  share,
+  take,
+  retryWhen,
+  delay,
+  mergeMap,
+} from 'rxjs/operators';
 import * as SecureLS from 'secure-ls';
 import { environment } from 'src/environments/environment';
 import { AuthenticationService } from '../authentication-service/authentication.service';
@@ -152,16 +162,23 @@ export class DashboardService {
 
   getPostpaidUserConsoInfos() {
     this.msisdn = this.getCurrentPhoneNumber();
+    let retries = 3;
     return this.http.get(`${postpaidUserConsoEndpoint}/${this.msisdn}`).pipe(
-      map(
-        (res: any) => {
-          return this.processConso(res, true);
-        },
-        () => {
-          const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
-          return lastLoadedConso;
-        }
-      )
+      map((res: any) => {
+        return this.processConso(res, true);
+      }),
+      retryWhen((errors) => {
+        return errors.pipe(
+          delay(1000),
+          mergeMap((error) => {
+            if (retries > 0) {
+              retries--;
+              return of(error);
+            }
+            throw new Error();
+          })
+        );
+      })
     );
   }
 
@@ -324,8 +341,8 @@ export class DashboardService {
     // Dimelo user information
     const userInfos = ls.get('user');
     const fullName = userInfos.firstName + ' ' + userInfos.lastName;
-    const script = document.getElementById('userDimelo')
-    if(!script) {
+    const script = document.getElementById('userDimelo');
+    if (!script) {
       const s = this.renderer.createElement('script');
       s.type = 'text/javascript';
       s.text =
@@ -352,21 +369,24 @@ export class DashboardService {
         '"customer_id": "' +
         userInfos.numero +
         '"}}]);';
-        s.id = 'userDimelo'
+      s.id = 'userDimelo';
       this.renderer.appendChild(this._document.body, s);
     }
   }
 
   initScriptDimelo() {
-    const script = document.getElementById('initDimelo')
+    const script = document.getElementById('initDimelo');
     if (!script) {
       const s: HTMLScriptElement = this.renderer.createElement('script');
       s.type = 'text/javascript';
       s.async = true;
-      s.src =  'https://sonatel.dimelochat.com/chat/b25dc90dcaed229e01ff8ffe/loader.js';
+      s.src =
+        'https://sonatel.dimelochat.com/chat/b25dc90dcaed229e01ff8ffe/loader.js';
       s.id = 'initDimelo';
-      const first: HTMLScriptElement = document.getElementsByTagName('script')[0];
-      first.parentNode.insertBefore(s,first)
+      const first: HTMLScriptElement = document.getElementsByTagName(
+        'script'
+      )[0];
+      first.parentNode.insertBefore(s, first);
     }
   }
 
@@ -390,10 +410,10 @@ export class DashboardService {
 
   cleanAddedScript(listScriptID: string[]) {
     listScriptID.forEach((id: string) => {
-      if(document.getElementById(id)) {
-        document.getElementById(id).remove()
+      if (document.getElementById(id)) {
+        document.getElementById(id).remove();
       }
-    })
+    });
   }
 
   getAccountInfo(userLogin: string) {
@@ -401,6 +421,7 @@ export class DashboardService {
   }
 
   getUserConsoInfosByCode(hmac?: string, consoCodes?: number[]) {
+    let retries = 3;
     this.msisdn = this.getCurrentPhoneNumber();
     // filter by code not working on Orange VM so
     let queryParams = '';
@@ -414,15 +435,21 @@ export class DashboardService {
     return this.http
       .get(`${userConsoByCodeEndpoint}/${this.msisdn}${queryParams}`)
       .pipe(
-        map(
-          (res: any) => {
-            return this.processConso(res);
-          },
-          () => {
-            const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
-            return lastLoadedConso;
-          }
-        )
+        map((res: any) => {
+          return this.processConso(res);
+        }),
+        retryWhen((errors) => {
+          return errors.pipe(
+            delay(1000),
+            mergeMap((error) => {
+              if (retries > 0) {
+                retries--;
+                return of(error);
+              }
+              throw new Error();
+            })
+          );
+        })
       );
   }
 
