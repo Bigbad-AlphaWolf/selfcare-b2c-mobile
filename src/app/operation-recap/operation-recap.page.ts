@@ -260,7 +260,8 @@ export class OperationRecapPage implements OnInit {
       this.recipientMsisdn = msisdn;
       this.paymentMod = PAYMENT_MOD_OM;
       if (!msisdnHasOM) {
-        const fees = await this.feeService.getFeesByOMService(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE, msisdn)
+        const fees = await this.feeService
+          .getFeesByOMService(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE, msisdn)
           .toPromise();
         const fee = fees.find(
           (fee: FeeModel) => amount <= fee.max && amount >= fee.min
@@ -499,7 +500,9 @@ export class OperationRecapPage implements OnInit {
         this.openSuccessFailModal({
           success: true,
           msisdnBuyer: this.recipientMsisdn,
-          buyForMe: true,
+          buyForMe:
+            this.recipientMsisdn ===
+            this.dashboardService.getCurrentPhoneNumber(),
         });
       },
       (err) => {
