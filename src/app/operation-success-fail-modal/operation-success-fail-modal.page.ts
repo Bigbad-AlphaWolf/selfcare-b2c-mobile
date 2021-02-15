@@ -178,7 +178,7 @@ export class OperationSuccessFailModalPage implements OnInit {
         this.navCtrl.navigateBack(DalalTonesPage.ROUTE_PATH);
         break;
       case OPERATION_TYPE_PASS_ILLIFLEX:
-        this.router.navigate(['/select-illiflex-type']);
+        this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       default:
         break;

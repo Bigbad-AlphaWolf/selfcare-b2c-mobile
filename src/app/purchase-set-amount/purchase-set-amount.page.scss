@@ -16,6 +16,12 @@
 .transferts-page {
   height: 100%;
   background-color: $white;
+  position: relative;
+  ion-spinner {
+    position: absolute;
+    top: 50%;
+    right: 50%;
+  }
   .banniere-container {
     width: 100%;
     img {

@@ -509,7 +509,9 @@ export class OperationRecapPage implements OnInit {
         this.openSuccessFailModal({
           success: true,
           msisdnBuyer: this.recipientMsisdn,
-          buyForMe: true,
+          buyForMe:
+            this.recipientMsisdn ===
+            this.dashboardService.getCurrentPhoneNumber(),
         });
       },
       (err) => {

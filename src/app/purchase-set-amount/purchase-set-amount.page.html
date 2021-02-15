@@ -8,6 +8,7 @@
         {{title}}
       </span>
     </ion-title>
+    <ion-spinner *ngIf="!hasError && isLoadingFees" name="crescent" slot="end"></ion-spinner>
   </ion-toolbar>
 </ion-header>
 <ion-content fullscreen="true">
@@ -74,7 +75,7 @@
             </ion-item>
           </ion-list>
           <div class="amount-fees">
-            Le bénéficiaire reçoit {{totalAmount}} FCFA
+            Le bénéficiaire reçoit {{ totalAmount | number}} FCFA
           </div>
         </div>
         <div
@@ -104,7 +105,7 @@
             type="submit"
             expand="block"
             (click)="goNext()"
-            [disabled]="!setAmountForm?.valid || checkingAmount || error"
+            [disabled]="!setAmountForm?.valid || checkingAmount || error || isLoadingFees"
           >
             <span>Continuer</span>
             <mat-spinner
@@ -116,7 +117,7 @@
         </div>
       </form>
     </div>
-    <div class="scb-text-red-error" (click)="getPurchaseType()" *ngIf="hasError">
+    <div class="scb-text-red-error" (click)="getPurchaseType()" *ngIf="hasError && !isLoadingFees">
       Veuillez cliquer pour réactualiser la page
     </div>
   </div>
