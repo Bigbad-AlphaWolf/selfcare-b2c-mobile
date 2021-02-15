@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonSlides, NavController } from '@ionic/angular';
+import { ItemBesoinAide } from 'src/shared';
 
 @Component({
   selector: 'app-assistance-actions',
@@ -7,7 +8,9 @@ import { IonSlides, NavController } from '@ionic/angular';
   styleUrls: ['./assistance-actions.component.scss'],
 })
 export class AssistanceActionsComponent implements OnInit {
-  acts: Map<string, any> = new Map([
+  listActes?: ItemBesoinAide[];
+  acts? : Map<string, ItemBesoinAide[]> =  new Map([]);
+  actsStatic: Map<string, any> = new Map([
     [
       'Mobiles',
       [
@@ -69,14 +72,47 @@ export class AssistanceActionsComponent implements OnInit {
           image:
             '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
         },
+        {
+          act: 'CHANGE_PIN_OM',
+          description: 'Changer mon code de transaction Orange Money',
+          image: '/assets/images/change-pin-om.png',
+        },
       ],
     ],
   ]);
   @ViewChild('slides') slides: IonSlides;
   currentSlideIndex = 0;
+  displaySearchIcon: boolean = true;
+  @ViewChild('searchInput') searchRef;
   constructor(private navController: NavController) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.listActes = history.state.listActes;
+    console.log(this.listActes);
+    
+    this.groudActesByCategorie();
+    
+  }
+
+  groudActesByCategorie(){
+    this.listActes.forEach((a, i)=>{
+      let cat =  a.categorieOffreService
+      if(!cat){
+        cat = {libelle:'Autres'};
+      } 
+     
+      let catLibelle = cat.libelle;
+
+      if(this.acts.get(catLibelle)){
+        this.acts.set(catLibelle, [...this.acts.get(catLibelle), a]);
+        return;
+      }
+
+      this.acts.set(catLibelle, [a]);
+      
+    });
+
+  }
 
   slideChanged() {
     this.slides.getActiveIndex().then((index) => {
@@ -86,6 +122,22 @@ export class AssistanceActionsComponent implements OnInit {
 
   slide(index: number) {
     this.slides.slideTo(index);
+  }
+
+  onInputChange($event){
+    const inputvalue = $event.detail.value;
+    this.displaySearchIcon = true;
+    if(inputvalue){
+      this.navController.navigateForward(['/assistance-hub/search'],{state:{listBesoinAides:this.listActes, search:inputvalue}});
+      this.displaySearchIcon = false;
+    }
+    
+  }
+
+  onClear(searchInput){
+    const inputValue : string =  searchInput.value;
+    searchInput.value = inputValue.slice(0,inputValue.length-1);
+    
   }
 
   goBack() {

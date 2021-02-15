@@ -79,6 +79,7 @@
                     <app-item-pass-internet
                       *ngFor="let pass of slide?.pass"
                       [passInternet]="pass"
+                      [boosters]="getPassBoosters(pass)"
                       (selectPass)="choosePass($event)"
                     ></app-item-pass-internet>
                   </ng-container>
@@ -104,6 +105,7 @@
                       <app-item-pass-illimix
                         *ngFor="let pass of slide.pass"
                         [passIllimix]="pass"
+                        [boosters]="getPassBoosters(pass)"
                         (selectPass)="choosePass($event)"
                       ></app-item-pass-illimix>
                     </ng-container>

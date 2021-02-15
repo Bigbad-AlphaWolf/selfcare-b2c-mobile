@@ -13,6 +13,10 @@ import {
   OPERATION_ENABLE_DALAL,
   OPERATION_TYPE_PASS_ILLIFLEX,
   CODE_KIRENE_Formule,
+  OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM,
+  getActiveBoostersForSpecificPass,
+  OPERATION_CHANGE_PIN_OM,
+  SubscriptionModel,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -23,6 +27,10 @@ import {
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
 import { DalalTonesPage } from '../dalal-tones/dalal-tones.page';
 import { RapidoOperationPage } from '../pages/rapido-operation/rapido-operation.page';
+import { BoosterService } from '../services/booster.service';
+import { GiftType } from '../models/enums/gift-type.enum';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 
 @Component({
   selector: 'app-operation-success-fail-modal',
@@ -39,6 +47,8 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TYPE_RECHARGE = OPERATION_TYPE_RECHARGE_CREDIT;
   OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
   OPERATION_ILLIFLEX_TYPE = OPERATION_TYPE_PASS_ILLIFLEX;
+  OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM = OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM;
+  OPERATION_CHANGE_PIN_OM = OPERATION_CHANGE_PIN_OM;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;
@@ -53,22 +63,65 @@ export class OperationSuccessFailModalPage implements OnInit {
   @Input() merchantName: string;
   @Input() opXtras: OperationExtras;
   @Input() dalal: any;
+  @Input() textMsg: any;
   dateAchat = this.dashboardService.getCurrentDate();
   btnText: string;
+  coupon;
+  hasCoupon: boolean;
 
+  isBuyerPostpaid: boolean;
   constructor(
     private dashboardService: DashboardService,
     private router: Router,
     public modalController: ModalController,
     private appRouting: ApplicationRoutingService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private boosterService: BoosterService,
+    private authenticationService: AuthenticationService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getCoupon();
+    this.checkifBuyerPostpaid();
+  }
+
+  getCoupon() {
+    if (
+      !BoosterService.lastBoostersList ||
+      !BoosterService.lastBoostersList.length ||
+      !this.passBought
+    )
+      return;
+    const passPPI = this.passBought.passPromo
+      ? this.passBought.passPromo.price_plan_index
+      : this.passBought.price_plan_index;
+    const appliedBooster = BoosterService.lastBoostersList.find(
+      (booster) =>
+        booster.gift.type === GiftType.COUPON &&
+        booster.pricePlanIndexes.includes(passPPI.toString())
+    );
+    if (!appliedBooster) return;
+    this.hasCoupon = true;
+  }
+
+  checkifBuyerPostpaid() {
+    this.authenticationService
+      .getSubscription(this.msisdnBuyer)
+      .subscribe((res: SubscriptionModel) => {
+        this.isBuyerPostpaid = res && res.profil === PROFILE_TYPE_POSTPAID;
+      });
+  }
 
   terminer() {
     this.modalController.dismiss();
     this.router.navigate(['/dashboard']);
+  }
+
+  getPassBoosters(pass: any) {
+    return getActiveBoostersForSpecificPass(
+      pass,
+      BoosterService.lastBoostersList
+    );
   }
 
   goToPage() {
@@ -77,14 +130,14 @@ export class OperationSuccessFailModalPage implements OnInit {
         this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       case OPERATION_TYPE_PASS_ILLIMIX:
-        if (this.opXtras.code === CODE_KIRENE_Formule) {
+        if (this.opXtras.recipientCodeFormule === CODE_KIRENE_Formule) {
           this.appRouting.goToBuyPassIllimixKirene();
         } else {
           this.appRouting.goToTransfertHubServicesPage('BUY');
         }
         break;
       case OPERATION_TYPE_PASS_INTERNET:
-        if (this.opXtras.code === CODE_KIRENE_Formule) {
+        if (this.opXtras.recipientCodeFormule === CODE_KIRENE_Formule) {
           this.appRouting.goToBuyPassInternetKirene();
         } else {
           this.appRouting.goToTransfertHubServicesPage('BUY');
@@ -125,7 +178,7 @@ export class OperationSuccessFailModalPage implements OnInit {
         this.navCtrl.navigateBack(DalalTonesPage.ROUTE_PATH);
         break;
       case OPERATION_TYPE_PASS_ILLIFLEX:
-        this.router.navigate(['/select-illiflex-type']);
+        this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       default:
         break;

@@ -51,8 +51,6 @@ export class DalalTonesPage implements OnInit {
   getCurrentActiveDalal() {
     this.dalalTonesService.getActiveDalal().subscribe(
       (res: any) => {
-        console.log(res);
-
         if (res && res.serviceCharacteristic)
           this.currentActiveDalals = res.serviceCharacteristic;
       },

@@ -82,6 +82,9 @@ export class OrangeBillsPage implements OnInit {
     const modal = await this.modalController.create({
       component: LinesComponent,
       cssClass: 'select-recipient-modal',
+      componentProps : {
+        phone: this.phone
+      }
     });
     modal.onDidDismiss().then((response) => {
       if (response && response.data) {

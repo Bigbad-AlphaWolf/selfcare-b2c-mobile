@@ -1,20 +1,24 @@
 ion-grid {
   background-color: #f3f3f8;
   height: 120%;
+  padding: 0 percentage(15/375);
   ion-row {
-    justify-content: center;
+    display: flex;
+    :not(:nth-child(3n)) {
+      margin-right: percentage(15/345);
+    }
     .disabled {
       opacity: 0.4;
     }
     .oem-bloc-1 {
-      width: 100px;
+      width: percentage(105/345);
       height: 100px;
       border-radius: 10px;
       background-color: #ffffff;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 8px;
+      margin-top: 15px;
       position: relative;
       .oem-img {
         width: 95px;

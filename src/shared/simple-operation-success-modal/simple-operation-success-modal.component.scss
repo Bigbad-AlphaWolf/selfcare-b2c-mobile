@@ -1,0 +1,36 @@
+@import 'src/app/app';
+
+.change-formule-success {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  .image-container {
+    width: 99px;
+    height: auto;
+    margin-bottom: 15px;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+  .title {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  .subtitle {
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 16px;
+    margin-bottom: 30px;
+  }
+  .button {
+    border-radius: 10px;
+    position: relative;
+    height: 50px;
+    line-height: 50px;
+    width: 80%;
+    background-color: $orange;
+  }
+}

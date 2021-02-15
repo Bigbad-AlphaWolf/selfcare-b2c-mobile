@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
@@ -10,7 +10,6 @@ import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
 import { FavoriteRapidoComponent } from '../favorite-rapido/favorite-rapido.component';
-import { FeesService } from 'src/app/services/fees/fees.service';
 import { FavorisService } from 'src/app/services/favoris/favoris.service';
 import { FavoriteType } from 'src/app/models/enums/om-favori-type.enum';
 import { FavorisOem } from 'src/app/models/favoris-oem.model';
@@ -39,7 +38,6 @@ export class RapidoSelectionComponent implements OnInit {
   currentUserNumber = this.dashbServ.getCurrentPhoneNumber();
   errorMsg = null;
   constructor(
-    private feesService: FeesService,
     private bsService: BottomSheetService,
     private omService: OrangeMoneyService,
     private recentService: RecentsService,
@@ -218,11 +216,10 @@ export class RapidoSelectionComponent implements OnInit {
         if (omSession.msisdn !== 'error') {
           this.initRecents();
           this.bsService.opXtras.senderMsisdn = omSession.msisdn;
-          this.feesService.initFees(omSession.msisdn);
           this.getFavoritesRapido();
         }
       },
-      (err) => {
+      () => {
         this.isProcessing = false;
       }
     );
@@ -246,7 +243,4 @@ export class RapidoSelectionComponent implements OnInit {
     return await modal.present();
   }
 
-  getRapidoLabelFromCounter(counter) {
-    
-  }
 }

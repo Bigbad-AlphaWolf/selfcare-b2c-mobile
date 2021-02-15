@@ -12,7 +12,7 @@
   padding: 20px 15px;
   flex-shrink: 0;
   text-align: left;
-  img {
+  .img {
     width: percentage(47/135);
     margin-bottom: 3px;
   }
@@ -21,4 +21,35 @@
     font-size: 14px;
     line-height: 1.29;
   }
+}
+
+.item-action {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 18px 0;
+    width: 100%;
+    border-bottom: solid 1px #eeeeee;
+  &:not(:last-child) {
+    border-bottom: solid 1px $silver;
+  }
+  .action-img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+  .action-text {
+    margin: 4px 12px 0 10px;
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 16px;
+    line-height: 1.25;
+    letter-spacing: normal;
+    color: #000000;
+    flex-grow: 1;
+  }
+  .arrow-right {
+    width: 22px;
+    height: 30px;
+  }
+
 }

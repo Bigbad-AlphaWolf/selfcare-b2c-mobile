@@ -187,6 +187,7 @@ export class AppComponent {
           '/transfer-money/:msisdn': TransfertHubServicesPage,
           '/soscredit/:amount': '',
           '/sospass/:amount': '',
+          '/illiflex': TransfertHubServicesPage,
         })
         .subscribe(
           (matched) => {

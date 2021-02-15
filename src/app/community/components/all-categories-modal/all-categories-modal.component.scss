@@ -1,0 +1,22 @@
+@import 'src/app/app';
+
+.categories-modal-page {
+  padding: 30px percentage(15/375) 40px;
+  .modal-title {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.25;
+    margin-bottom: 20px;
+  }
+  .categories-list {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    app-category-article-item {
+      width: percentage(165/345);
+      margin-bottom: 15px;
+      //   max-width: 170px;
+    }
+  }
+}

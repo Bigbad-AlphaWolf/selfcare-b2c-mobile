@@ -112,6 +112,37 @@
       }
     }
   }
+  .coupon-block {
+    text-align: center;
+    border-radius: 10px;
+    border: solid 1px $blue;
+    background-color: $weak-blue;
+    margin: 3px auto;
+    width: 90%;
+    padding: 12px 0;
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      span {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 14px;
+      }
+    }
+    .code {
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 1.88;
+    }
+  }
+  .loading-coupon {
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 13px;
+    font-style: italic;
+    padding: 10px 0;
+    margin: 3px auto;
+    width: 90%;
+  }
   .terminer {
     text-align: center;
     padding: 20px 0;

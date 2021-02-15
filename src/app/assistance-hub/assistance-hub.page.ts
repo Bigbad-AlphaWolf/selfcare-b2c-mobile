@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { ModalController, NavController } from '@ionic/angular';
 import { FIND_AGENCE_EXTERNAL_URL, ItemBesoinAide } from 'src/shared';
+import { BesoinAideType } from '../models/enums/besoin-aide-type.enum';
 import { AssistanceService } from '../services/assistance.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
@@ -51,8 +52,12 @@ export class AssistanceHubPage implements OnInit {
       image: '/assets/images/04-boutons-01-illustrations-22-store-locator.svg',
     },
   ];
-  listQuestions: ItemBesoinAide[];
-  loadingFAQ: boolean;
+  listBesoinAides: ItemBesoinAide[];
+  listFaqs?: ItemBesoinAide[];
+  listActes?: ItemBesoinAide[];
+  loadingHelpItems: boolean;
+  displaySearchIcon: boolean = true;
+  @ViewChild('searchInput') searchRef;
   constructor(
     private assistanceService: AssistanceService,
     private router: Router,
@@ -62,31 +67,48 @@ export class AssistanceHubPage implements OnInit {
     private modalController: ModalController
   ) {}
 
-  ngOnInit() {}
-
-  ionViewWillEnter() {
-    this.getFAQ();
+  ngOnInit() {
+    this.fetchAllHelpItems();
   }
 
-  getFAQ() {
-    this.loadingFAQ = true;
-    this.assistanceService.getFAQ().subscribe(
+  ionViewDidEnter() {
+    this.searchRef.value = '';
+
+  }
+
+  fetchAllHelpItems() {
+    this.loadingHelpItems = true;
+    this.assistanceService.fetchHelpItems(
+      {
+        page: 0,
+        size: 1000000,
+        sort: ['type,asc', 'priorite,asc', 'id'],
+        // type: 'FAQ'
+      }
+    ).subscribe(
       (res) => {
-        this.listQuestions = res;
-        this.loadingFAQ = false;
+        this.listBesoinAides = res;
+        this.loadingHelpItems = false;
+        this.splitHelpItemsByType();
       },
       (err) => {
-        this.loadingFAQ = false;
+        this.loadingHelpItems = false;
       }
     );
   }
 
+  splitHelpItemsByType(){
+    const firtFaqIndex = this.listBesoinAides.map((i)=>i.type).indexOf(BesoinAideType.FAQ);
+    this.listActes = this.listBesoinAides.slice(0,firtFaqIndex);
+    this.listFaqs = this.listBesoinAides.slice(firtFaqIndex);
+  }
+
   goAllActionsHub() {
-    this.router.navigate(['/assistance-hub/actions']);
+    this.router.navigate(['/assistance-hub/actions'],{state:{listActes:this.listActes}});
   }
 
   goAllQuestionsHub() {
-    this.router.navigate(['/assistance-hub/questions']);
+    this.router.navigate(['/assistance-hub/questions'],{state:{listFaqs:this.listFaqs}});
   }
 
   goBack() {
@@ -115,5 +137,21 @@ export class AssistanceHubPage implements OnInit {
 
   async goIbouContactPage() {
     this.router.navigate(['/contact-ibou-hub']);
+  }
+
+  onInputChange($event){
+    const inputvalue = $event.detail.value;
+    this.displaySearchIcon = true;
+    if(inputvalue){
+      this.navController.navigateForward(['/assistance-hub/search'],{state:{listBesoinAides:this.listBesoinAides, search:inputvalue}});
+      this.displaySearchIcon = false;
+    }
+    
+  }
+
+  onClear(searchInput){
+    const inputValue : string =  searchInput.value;
+    searchInput.value = inputValue.slice(0,inputValue.length-1);
+    
   }
 }

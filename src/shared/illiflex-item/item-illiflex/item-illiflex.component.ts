@@ -11,6 +11,7 @@ export class ItemIlliflexComponent implements OnInit {
     data: number;
     voice: number;
     validity: string;
+    bonusSms: number;
   };
   constructor() {}
 

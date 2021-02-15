@@ -139,10 +139,26 @@ export class OemOperationsComponent implements OnInit {
   }
 
   isServciceActivated(action: OperationOem) {
+    console.log(OperationService.AllOffers);
+
     const service = OperationService.AllOffers.find(
       (service) => service.code === action.code
     );
+    console.log(service);
+
     if (service) return service.activated;
     return true;
+  }
+
+  isServiceHidden(action: OperationOem) {
+    const service = OperationService.AllOffers.find(
+      (service) => service.code === action.code
+    );
+    if (service)
+      return (
+        !service.activated &&
+        (!service.reasonDeactivation || service.reasonDeactivation === '')
+      );
+    return false;
   }
 }

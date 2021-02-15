@@ -4,8 +4,9 @@ import { getPageHeader } from 'src/app/utils/title.util';
 import { NavController } from '@ionic/angular';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { FeeModel } from 'src/app/services/orange-money-service';
-import { WoyofalService } from 'src/app/services/woyofal/woyofal.service';
 import { FeesService } from 'src/app/services/fees/fees.service';
+import { catchError, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-bill-amount',
@@ -24,10 +25,15 @@ export class BillAmountPage implements OnInit {
   includeFees: any;
   totalAmount: any;
   isFee: boolean = true;
-  minimalAmount = 1000;
+  minimalAmount: number;
+  maximalAmount: number;
   amountIsValid: boolean = false;
   service: string;
-
+  feesArray: FeeModel[];
+  firstFees: FeeModel;
+  lastFees: FeeModel;
+  hasErrorOnRequest: boolean;
+  isLoadingFees:boolean;
   constructor(
     private navController: NavController,
     private feeService: FeesService
@@ -39,7 +45,31 @@ export class BillAmountPage implements OnInit {
     console.log(this.service);
 
     this.title = getPageHeader(this.opXtras.purchaseType).title;
-    this.minimalAmount = this.feeService.fees[this.service][0].montant_min;
+    this.queryFees();
+
+  }
+
+  queryFees() {
+    this.hasErrorOnRequest = false;
+    this.isLoadingFees = true;
+    this.feeService.getFeesByOMService(this.service).pipe(
+      tap((res: FeeModel[])=> {
+      this.feesArray = res;
+      this.isLoadingFees = false;
+      if(res.length) {
+        this.firstFees = this.feesArray[0]
+        this.lastFees = this.feesArray[this.feesArray.length -1]
+        this.minimalAmount = this.firstFees.min;
+        this.maximalAmount = this.lastFees.max;
+      } else {
+        this.hasErrorOnRequest = true;
+      }
+    }),
+    catchError((err) => {
+      this.hasErrorOnRequest = true;
+      this.isLoadingFees = false;
+        return of(err)
+    })).subscribe()
   }
 
   ionViewWillEnter() {
@@ -72,19 +102,20 @@ export class BillAmountPage implements OnInit {
   }
 
   amountIncludeFeeIsValid(amount: number) {
-    let feesIncludes = this.feeService.feesIncludes[this.service];
+    const feeInclude = true;
+    let feesIncludes = this.feeService.extractFees(this.feesArray,amount, feeInclude);
+    this.amountIsValid = !!feesIncludes;
     return (
-      amount >= feesIncludes[0].montant_min &&
-      amount <= feesIncludes[feesIncludes.length - 1].montant_max
+      amount >= this.firstFees.min &&
+      amount <= this.lastFees.max
     );
   }
 
-  
+
   amountExcludeFeeIsValid(amount: number) {
-    let fees = this.feeService.fees[this.service];
     return (
-      amount >= fees[0].montant_min &&
-      amount <= fees[fees.length - 1].montant_max
+      amount >= this.firstFees.min &&
+      amount <= this.lastFees.max
     );
   }
 
@@ -103,19 +134,27 @@ export class BillAmountPage implements OnInit {
 
     this.amountIsValid = true;
     if (this.isFee) {
-      this.fee = this.opXtras.fee = this.feeService.findAmountFee(
-        amount,
-        this.service,
-        false
+      const fee = this.feeService.extractFees(
+        this.feesArray,
+        amount
       );
+      if (!fee) {
+        this.amountIsValid = false;
+        return
+      }
+      this.fee = this.opXtras.fee = fee.effective_fees
       this.opXtras.amount = amount;
       this.totalAmount = this.opXtras.amount + this.opXtras.fee;
     } else {
-      this.fee = this.opXtras.fee = this.feeService.findAmountFee(
-        amount,
-        this.service,
-        true
+      const fee = this.feeService.extractFees(
+        this.feesArray,
+        amount
       );
+      if (!fee) {
+        this.amountIsValid = false;
+        return
+      }
+      this.fee = this.opXtras.fee = fee.effective_fees;
       this.opXtras.amount = amount - this.opXtras.fee;
       this.totalAmount = this.opXtras.amount;
     }
@@ -124,4 +163,5 @@ export class BillAmountPage implements OnInit {
   goBack() {
     this.navController.pop();
   }
+
 }

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormatCurrencyPipe } from 'src/shared/pipes/format-currency.pipe';
 import { FormatBillNumPipe } from 'src/shared/pipes/format-bill-num.pipe';
 import { FormatBillDatePipe } from 'src/shared/pipes/format-bill-date.pipe';
@@ -13,6 +13,8 @@ import { CodeFormatPipe } from './code-format/code-format.pipe';
 import { AcronymPipe } from 'src/shared/pipes/acronym.pipe';
 import { DataVolumePipe } from 'src/shared/pipes/data-volume.pipe';
 import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
+import { PublicationDateFormatPipe } from 'src/shared/pipes/publication-date-format.pipe';
+import { SearchAssistancePipe } from './search-assistance/search-assistance.pipe';
 
 @NgModule({
   declarations: [
@@ -26,9 +28,12 @@ import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
     FormatSuiviConsoCategoryTitlePipe,
     FormatCalledNumberPipe,
     CodeFormatPipe,
+    SearchAssistancePipe,
     AcronymPipe,
     DataVolumePipe,
     IlliflexVoicePipe,
+    PublicationDateFormatPipe,
+    SearchAssistancePipe,
   ],
   imports: [CommonModule],
   exports: [
@@ -42,10 +47,12 @@ import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
     FormatSuiviConsoCategoryTitlePipe,
     FormatCalledNumberPipe,
     CodeFormatPipe,
+    SearchAssistancePipe,
     AcronymPipe,
     DataVolumePipe,
     IlliflexVoicePipe,
+    PublicationDateFormatPipe,
   ],
-  providers: [PassVolumeDisplayPipe],
+  providers: [PassVolumeDisplayPipe, DatePipe],
 })
 export class PipesModule {}

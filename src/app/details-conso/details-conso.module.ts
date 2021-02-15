@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
@@ -8,11 +7,10 @@ import { IonicModule } from '@ionic/angular';
 import { DetailsConsoPage } from './details-conso.page';
 import { HistoriqueConsoComponent } from './historique-conso/historique-conso.component';
 import { SuiviConsoComponent } from './suivi-conso/suivi-conso.component';
-import { MatIconModule, MatButtonModule, MatTabsModule } from '@angular/material';
 import { SharedModule } from 'src/shared/shared.module';
 import { HistoriqueAchatComponent } from './historique-achat/historique-achat.component';
-import { ItemHistorikDetailsInfosComponent } from './components/item-historik-details-infos/item-historik-details-infos.component';
 import { PipesModule } from '../pipes/pipes.module';
+import { ComponentsModule } from '../components/components.module';
 
 const routes: Routes = [
   {
@@ -27,8 +25,9 @@ const routes: Routes = [
     IonicModule,
     SharedModule,
     PipesModule,
+    ComponentsModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [DetailsConsoPage, HistoriqueConsoComponent, SuiviConsoComponent, HistoriqueAchatComponent, ItemHistorikDetailsInfosComponent]
+  declarations: [DetailsConsoPage, HistoriqueConsoComponent, SuiviConsoComponent, HistoriqueAchatComponent]
 })
 export class DetailsConsoPageModule {}

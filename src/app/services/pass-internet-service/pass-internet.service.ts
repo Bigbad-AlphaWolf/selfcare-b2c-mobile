@@ -43,7 +43,6 @@ export class PassInternetService {
     this.setListPassInternetOfUser([]);
     return this.dashbService.getListPassInternet(codeFormule).pipe(
       map((resp: any[]) => {
-        console.log('res', resp);
         if (resp instanceof Array) {
           resp.forEach((x: PassInternetModel) => {
             if (x.pass && x.pass.actif) {
@@ -110,4 +109,5 @@ export class PassInternetService {
       )
       .toPromise();
   }
+
 }

@@ -63,10 +63,12 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.getAllAttachedNumbers();
     this.getSouscription();
     this.extractData();
     this.dashboardServ.currentPhoneNumberChange.subscribe(() => {
       this.getSouscription();
+      this.getAllAttachedNumbers();
       this.extractData();
     });
     this.authServ.currentPhoneNumbersubscriptionUpdated.subscribe(() => {
@@ -76,7 +78,6 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.accountService.userUrlAvatarSubject.subscribe(() => {
       this.extractData();
     });
-    this.getAllAttachedNumbers();
     this.getVersion();
     this.dashboardServ.attachedNumbersChanged.subscribe(() => {
       this.getAllAttachedNumbers();
@@ -154,6 +155,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goToAssistancePage() {
+    this.router.navigate(['/community']);
+    return;
     this.iab.create(ASSISTANCE_URL, '_self');
     this.followAnalyticsService.registerEventFollow(
       'Sidemenu_Assistance',

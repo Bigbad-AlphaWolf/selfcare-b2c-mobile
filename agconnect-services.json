@@ -1,0 +1,14 @@
+{
+	"client":{
+		"appType":"1",
+		"cp_id":"2640221000000043138",
+		"product_id":"736430079244721194",
+		"client_id":"507231275413668928",
+		"client_secret":"D0B93A2C38D3BA803EF32645353FE9CF92E8DCC81E3792CFD86E1B8A4C90EC1C",
+		"project_id":"736430079244721194",
+		"app_id":"103199461",
+		"api_key":"CgB6e3x9jsDz1myAgoCojUxqB3/Z+iH9Ai2Rx2Rrakyl4R7MyXx08NOTeRT5mHtTEGUwLuDZxbGCyJKEzcsRqSuM",
+		"package_name":"com.orange.myorange.osn"
+	},
+	"configuration_version":"1.0"
+}

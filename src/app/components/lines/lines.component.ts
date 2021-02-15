@@ -26,6 +26,7 @@ export class LinesComponent implements OnInit {
   isProcessing: boolean;
 
   @Input() phone: string;
+  @Input() phoneType: string;
   codeClient: String;
   currentPhoneSelected: string;
   constructor(
@@ -59,15 +60,24 @@ export class LinesComponent implements OnInit {
                 formule: sub.nomOffre,
                 codeFormule: sub.code,
               };
-              if (this.isLineNumber(numbers[i], sousc))
-                fNumbers.push({
-                  phone: numbers[i],
-                  codeClient: sub.clientCode,
-                });
+              if (this.phoneType === 'FIXE') {
+                if (this.isFixeNumber(numbers[i], sousc)) {
+                  fNumbers.push({
+                    phone: numbers[i],
+                    codeClient: sub.clientCode,
+                  });
+                }
+              } else {
+                if (this.isLineNumber(numbers[i], sousc))
+                  fNumbers.push({
+                    phone: numbers[i],
+                    codeClient: sub.clientCode,
+                  });
+              }
             });
             if (fNumbers.length && !this.phone) {
               this.phone = fNumbers[0];
-            } 
+            }
             this.isProcessing = false;
             return fNumbers;
           })
@@ -85,6 +95,10 @@ export class LinesComponent implements OnInit {
       souscription.profil === PROFILE_TYPE_HYBRID_1 ||
       souscription.profil === PROFILE_TYPE_HYBRID_2
     );
+  }
+
+  isFixeNumber(phone: string, souscription: ModelOfSouscription) {
+    return REGEX_FIX_NUMBER.test(phone) && isPostpaidFix(souscription);
   }
 
   async onConfirmer() {

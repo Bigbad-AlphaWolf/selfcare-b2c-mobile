@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">{{article?.titre}}</span>
+    </ion-title>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="end">
+      <img src="/assets/images/share-square.png" alt="icon" class="share-icon" />
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">{{article?.titre}}</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="article-page-body">
+    <div class="article-block">
+      <app-vertical-article-item [article]="article" [uniqueDisplay]="true"></app-vertical-article-item>
+    </div>
+    <form [formGroup]="commentForm" class="comment-form">
+      <mat-form-field class="scb-input-row" appearance="outline">
+        <mat-label>Ajouter un commentaire &nbsp;&nbsp;</mat-label>
+        <input formControlName="comment" type="text" matInput autocomplete="off" [readonly]="postingComment"/>
+        <div matSuffix class="comment-submit">
+          <span (click)="postComment()" *ngIf="!postingComment" class="comment-text scb-text-orange" [ngClass]="{'disabled': !commentForm.valid}">
+            Publier
+          </span>
+          <ion-spinner *ngIf="postingComment" name="dots"></ion-spinner>
+        </div>
+      </mat-form-field>
+    </form>
+  </div>
+</ion-content>

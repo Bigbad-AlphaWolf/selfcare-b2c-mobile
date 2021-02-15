@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { PurchaseModel } from 'src/app/models/purchase.model';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { PurchaseModel, LIST_ICON_PURCHASE_HISTORIK_ITEMS } from 'src/shared';
+import { LIST_ICON_PURCHASE_HISTORIK_ITEMS } from 'src/shared';
 
 @Component({
   selector: 'app-item-historik-details-infos',
@@ -12,6 +13,7 @@ export class ItemHistorikDetailsInfosComponent implements OnInit {
   @Input() purchaseInfos: PurchaseModel;
   @Input() itemType:string;
   @Input() userProfil:string;
+  @Output() selectedItem = new EventEmitter();
   mainUser: string
   constructor(private dashbServ: DashboardService) {
     this.mainUser = this.dashbServ.getMainPhoneNumber();
@@ -25,11 +27,15 @@ export class ItemHistorikDetailsInfosComponent implements OnInit {
 
   getPurchaseItemIcon(item: PurchaseModel){
     const typeAchat = item.typeAchat;
-    return LIST_ICON_PURCHASE_HISTORIK_ITEMS[typeAchat];    
+    return LIST_ICON_PURCHASE_HISTORIK_ITEMS[typeAchat];
   }
 
   isSargalTransaction(purchase: PurchaseModel): boolean {
     return purchase.typeAchat === "SARGAL";
+  }
+
+  purchaseSelected(item: PurchaseModel) {
+    this.selectedItem.emit(item)
   }
 
 }

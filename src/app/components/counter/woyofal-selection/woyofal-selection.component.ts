@@ -1,6 +1,5 @@
-import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { WoyofalService } from 'src/app/services/woyofal/woyofal.service';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Observable } from 'rxjs';
 import { FavoriteWoyofalComponent } from '../favorite-woyofal/favorite-woyofal.component';
 
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
@@ -11,7 +10,6 @@ import { map } from 'rxjs/operators';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
-import { FeesService } from 'src/app/services/fees/fees.service';
 
 @Component({
   selector: 'app-woyofal-selection',
@@ -23,7 +21,6 @@ export class WoyofalSelectionComponent implements OnInit {
   inputWoyofalNumber: string = '';
   woyofals$: Observable<any[]>;
   constructor(
-    private feeService: FeesService,
     private bsService: BottomSheetService,
     private omService: OrangeMoneyService,
     private changeDetectorRef: ChangeDetectorRef,
@@ -100,7 +97,6 @@ export class WoyofalSelectionComponent implements OnInit {
         if (msisdn !== 'error') {
           this.initRecents();
           this.bsService.opXtras.senderMsisdn = msisdn;
-          this.feeService.initFees(msisdn);
         }
       },
       () => {

@@ -15,58 +15,67 @@
     <div class="banniere-container">
       <img src="/assets/images/recharge-bill.svg" alt="header-transfer" />
     </div>
-    <div class="amount-provider">
-      <oem-amount-provider
-        [amounts]="amounts"
-        (onAmountSelected)="onAmountSelected($event)"
-        (onInputAmount)="onInputSelected($event)"
-        [value]="initialAmount"
-      >
-        <!-- <span class="amount-error">Le montant doit etre compris entre 1 000  et 2 000 000 FCFA</span> -->
-      </oem-amount-provider>
-    </div>
-    <div class="details">
-      <ion-list>
-        <ion-item class="ion-no-padding">
-          <ion-label class="label">
-            Frais de recharge
-          </ion-label>
-          <ion-label class="fees-value" slot="end">
-            {{fee}} FCFA
-          </ion-label>
-        </ion-item>
-        <ion-item class="ion-no-padding" *ngIf="0">
-          <ion-label class="label">Rajouter les frais</ion-label>
-          <ion-toggle
-            (ionChange)="toogleFee($event)"
-            slot="end"
-            checked
-          ></ion-toggle>
-        </ion-item>
-      </ion-list>
-      <div class="amount-fees">
-        <span *ngIf="+inputAmount >= minimalAmount"
-          >Le montant de la recharge est de {{totalAmount|formatCurrency}}
-          FCFA</span
+    <ng-container *ngIf="!hasErrorOnRequest && !isLoadingFees">
+      <div class="amount-provider">
+        <oem-amount-provider
+          [amounts]="amounts"
+          (onAmountSelected)="onAmountSelected($event)"
+          (onInputAmount)="onInputSelected($event)"
+          [value]="initialAmount"
         >
-        <span *ngIf="+inputAmount < minimalAmount"
-          >Le montant ne doit pas être inférieur à {{minimalAmount}} FCFA</span
-        >
+          <!-- <span class="amount-error">Le montant doit etre compris entre 1 000  et 2 000 000 FCFA</span> -->
+        </oem-amount-provider>
       </div>
-    </div>
-    <div class="btn-container">
-      <button
-        class="scb-btn scb-btn-orange scb-btn-full"
-        [disabled]="!amountIsValid"
-        (click)="onContinue()"
-      >
-        <span>Continuer</span>
-        <mat-spinner
-          mode="indeterminate"
-          [diameter]="20"
-          *ngIf=""
-        ></mat-spinner>
-      </button>
-    </div>
+      <div class="details">
+        <ion-list>
+          <ion-item class="ion-no-padding">
+            <ion-label class="label">
+              Frais de recharge
+            </ion-label>
+            <ion-label class="fees-value" slot="end">
+              {{fee}} FCFA
+            </ion-label>
+          </ion-item>
+          <ion-item class="ion-no-padding" *ngIf="0">
+            <ion-label class="label">Rajouter les frais</ion-label>
+            <ion-toggle
+              (ionChange)="toogleFee($event)"
+              slot="end"
+              checked
+            ></ion-toggle>
+          </ion-item>
+        </ion-list>
+        <div class="amount-fees">
+          <span *ngIf="amountIsValid"
+            >Le montant de la recharge est de {{totalAmount|formatCurrency}}
+            FCFA</span
+          >
+          <span *ngIf="!amountIsValid"
+            >Le montant ne doit pas être inférieur à {{minimalAmount}} FCFA ni dépasser {{ maximalAmount }} FCFA </span
+          >
+        </div>
+      </div>
+      <div class="btn-container">
+        <button
+          class="scb-btn scb-btn-orange scb-btn-full"
+          [disabled]="!amountIsValid"
+          (click)="onContinue()"
+        >
+          <span>Continuer</span>
+          <mat-spinner
+            mode="indeterminate"
+            [diameter]="20"
+            *ngIf=""
+          ></mat-spinner>
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="hasErrorOnRequest && !isLoadingFees">
+      <div class="scb-text-red-error" (click)="queryFees()">
+        Veuillez cliquer pour réactualiser la page
+      </div>
+    </ng-container>
+    <ion-spinner *ngIf="isLoadingFees" name="crescent"></ion-spinner>
   </div>
 </ion-content>

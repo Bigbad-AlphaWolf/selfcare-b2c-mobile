@@ -6,7 +6,7 @@ import { AfterViewChecked, Directive, ElementRef, Input } from '@angular/core';
 export class GaugeKnobDirective implements AfterViewChecked {
   @Input('appGaugeKnob') dataOpacity: number;
 
-  constructor(private el: ElementRef) {}
+  constructor(private el?: ElementRef) {}
 
   ngAfterViewChecked() {
     this.setGaugeBorder();

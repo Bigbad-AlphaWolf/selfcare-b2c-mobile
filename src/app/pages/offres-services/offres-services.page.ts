@@ -95,4 +95,5 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
   goBack() {
     this.navCtl.pop();
   }
+
 }

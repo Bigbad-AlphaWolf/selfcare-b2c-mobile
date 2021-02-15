@@ -20,7 +20,7 @@
     max-height: 99px;
   }
   .title {
-    padding: percentage(20px/612px) 65px percentage(38px/612px);
+    padding: percentage(20px/612px) 35px percentage(38px/612px);
     .title-1,
     .subtitle {
       display: block;
@@ -186,4 +186,8 @@
       color: red;
     }
   }
+}
+
+ion-spinner {
+  --color: #ff7900;
 }
