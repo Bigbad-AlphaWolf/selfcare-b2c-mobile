@@ -8,7 +8,7 @@
     <div class="avatar-block">
       <img [src]="avatarUrl" alt="profil-mob" (error)="setImgAvatarToDefault()" class="avatar-profil" />
     </div>
-    <div class="user-name">{{ lastName }} {{ firstName }}</div>
+    <div class="user-name">{{ firstName }} {{ lastName }}</div>
     <div>
       <span class="edit-account scb-text-orange" (click)="goMyAccount()">
         <ion-menu-toggle>Editer mon compte</ion-menu-toggle>

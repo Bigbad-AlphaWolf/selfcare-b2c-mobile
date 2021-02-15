@@ -34,17 +34,6 @@ ion-grid {
         justify-content: center;
         align-items: center;
         .action {
-          font-family: HelveticaNeueLTStd-Bd;
-          font-size: 16px;
-          font-weight: normal;
-          font-stretch: normal;
-          font-style: normal;
-          line-height: normal;
-          letter-spacing: normal;
-          text-align: center;
-          color: #000000;
-        }
-        .target {
           font-family: HelveticaNeueLTStd-Roman;
           font-size: 12px;
           font-weight: normal;
@@ -54,6 +43,17 @@ ion-grid {
           letter-spacing: normal;
           text-align: center;
           color: #666666;
+        }
+        .target {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 16px;
+          font-weight: normal;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: normal;
+          letter-spacing: normal;
+          text-align: center;
+          color: #000000;
         }
       }
       .badge-promo {

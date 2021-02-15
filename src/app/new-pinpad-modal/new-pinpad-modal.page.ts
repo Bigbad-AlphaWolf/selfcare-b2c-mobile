@@ -245,6 +245,8 @@ export class NewPinpadModalPage implements OnInit {
   sendOTPCode() {
     // TODO use specific error code to handle message => 012
     this.sendingOtp = true;
+    this.errorOnOtp = null;
+    this.otpHasError = false;
     this.orangeMoneyService.InitOtp(this.omPhoneNumber).subscribe(
       () => {
         this.checkingToken = false;
@@ -260,7 +262,7 @@ export class NewPinpadModalPage implements OnInit {
         this.sendingOtp = false;
         this.resendCode = false;
         this.showResendCodeBtn(2);
-        if (err && err.error && err.error.errorCode.match('Erreur-046')) {
+        if (err && err.error && err.error.errorCode && err.error.errorCode.match('Erreur-046')) {
           this.openModalNoOMAccount();
         } else {
           this.errorOnOtp = 'Une erreur est survenue';
