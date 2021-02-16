@@ -53,7 +53,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     private modalController: ModalController
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     this.getIlliflexPaliers();
     if (this.router.url.match('/illiflex-budget-configuration')) {
       let payload = this.router.getCurrentNavigation().extras.state.payload;
@@ -61,20 +61,23 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
       this.recipientMsisdn = payload.recipientMsisdn;
       this.recipientOfferCode = payload.code;
     } else {
-      const msisdn = this.dashboardService.getCurrentPhoneNumber();
-      const sub: SubscriptionModel = await this.authenticationService
-        .getSubscription(msisdn)
-        .toPromise();
-      if (
-        sub &&
-        (sub.code === CODE_KIRENE_Formule ||
-          sub.profil !== PROFILE_TYPE_PREPAID)
-      ) {
-        this.router.navigate(['/dashboard']);
-      } else {
-        this.recipientMsisdn = msisdn;
-        this.recipientOfferCode = sub.code;
-      }
+      this.checkIfDeeplink();
+    }
+  }
+
+  async checkIfDeeplink() {
+    const msisdn = this.dashboardService.getCurrentPhoneNumber();
+    const sub: SubscriptionModel = await this.authenticationService
+      .getSubscription(msisdn)
+      .toPromise();
+    if (
+      sub &&
+      (sub.code === CODE_KIRENE_Formule || sub.profil !== PROFILE_TYPE_PREPAID)
+    ) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.recipientMsisdn = msisdn;
+      this.recipientOfferCode = sub.code;
     }
   }
 
