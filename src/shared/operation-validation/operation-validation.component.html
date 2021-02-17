@@ -183,7 +183,7 @@
             </div>
         </div>
         <div class="fees-block"
-            *ngIf="sosChosen?.frais && operationType === OPERATION_TYPE_SOS_CREDIT || operationType === OPERATION_TYPE_SOS_PASS">
+            *ngIf="sosChosen?.frais && (operationType === OPERATION_TYPE_SOS_CREDIT || operationType === OPERATION_TYPE_SOS_PASS)">
             <span class="fees-title scb-text-dark-grey">Frais</span>
             <span class="fees-value scb-text-orange">+ {{sosChosen.frais}} F</span>
         </div>

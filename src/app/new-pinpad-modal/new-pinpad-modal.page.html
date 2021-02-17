@@ -40,6 +40,10 @@
         *ngIf="sendingOtp"
       ></mat-spinner>
     </button>
+
+    <div class="error-message" *ngIf="errorOnOtp">
+      <span>{{ errorOnOtp }}</span>
+    </div>
   </div>
 </div>
 <div class="codeOTP-content" *ngIf="otpValidation">
@@ -105,13 +109,24 @@
   </div>
 </div>
 <div class="pinpad-v3" *ngIf="userHasOmToken">
-  <img src="/assets/images/password.png" alt="lock" />
-  <div class="title">
-    <span class="title-1">Mot de passe</span>
-    <span class="subtitle scb-text-gray"
-      >Veuillez entrer votre code de sécurité Orange Money</span
-    >
-  </div>
+  <ng-container *ngIf="operationType !== OPERATION_CHANGE_PIN_OM ">
+    <img src="/assets/images/password.png" alt="lock" />
+    <div class="title">
+      <span class="title-1">Mot de passe</span>
+      <span class="subtitle scb-text-gray"
+        >Veuillez entrer votre code de sécurité Orange Money</span
+      >
+    </div>
+  </ng-container>
+  <ng-container *ngIf="operationType === OPERATION_CHANGE_PIN_OM ">
+    <img src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="lock" />
+    <div class="title">
+      <span class="title-1">Nouveau code secret</span>
+      <span class="subtitle scb-text-gray"
+        >Le nouveau code secret doit être différent de votre date de naissance et les chiffres consécutifs ne sont pas autorisés</span
+      >
+    </div>
+  </ng-container>
   <div class="bullet-container">
     <div class="bullets">
       <span

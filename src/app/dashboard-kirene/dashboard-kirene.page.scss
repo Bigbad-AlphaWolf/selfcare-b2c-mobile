@@ -60,12 +60,28 @@
         .item-text {
           margin-left: (12px / 111px) * 100%;
           margin-right: (12px / 111px) * 100%;
-          font-family: HelveticaNeueLTStd-Bd, sans-serif;
-          font-size: 14px;
           text-align: center;
-
-          .text-style-1 {
+          span {
+            display: block;
             font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 12px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.17;
+            letter-spacing: normal;
+
+            .text-style-1 {
+              font-family: HelveticaNeueLTStd-Bd, sans-serif;
+              font-size: 16px;
+              font-weight: normal;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: $fullBlack;
+            }
+
           }
         }
 

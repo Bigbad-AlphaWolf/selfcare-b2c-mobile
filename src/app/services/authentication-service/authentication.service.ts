@@ -9,7 +9,6 @@ import {
 } from 'rxjs';
 import {
   tap,
-  shareReplay,
   map,
   delay,
   retryWhen,
@@ -186,6 +185,7 @@ export class AuthenticationService {
   // get msisdn subscription
   getSubscription(msisdn: string) {
     const lsKey = 'sub' + msisdn;
+    this.checkSubscriptionHasExpired(lsKey);
     const savedData = ls.get(lsKey);
     if (savedData) {
       return of(savedData).pipe(take(1));
@@ -208,9 +208,10 @@ export class AuthenticationService {
           if (isFixPostpaid(subscription.nomOffre)) {
             subscription.profil = PROFILE_TYPE_POSTPAID;
           }
-          const lsKey = 'sub' + msisdn;
+          const lsLastUpdateKey = lsKey + '_last_update';
+          ls.set(lsLastUpdateKey, Date.now());
           ls.set(lsKey, subscription);
-          // this.subscriptionUpdatedSubject.next(subscription);
+          this.subscriptionUpdatedSubject.next(subscription);
           return subscription;
         })
       );
@@ -246,6 +247,8 @@ export class AuthenticationService {
           subscription.profil = PROFILE_TYPE_POSTPAID;
         }
         const lsKey = 'subtiers' + msisdn;
+        const lsLastUpdateKey = lsKey + '_last_update';
+        ls.set(lsLastUpdateKey, Date.now());
         ls.set(lsKey, subscription);
         this.subscriptionUpdatedSubject.next(subscription);
         return subscription;
@@ -255,12 +258,28 @@ export class AuthenticationService {
 
   getSubscriptionForTiers(msisdn: string): Observable<any> {
     const lsKey = 'subtiers' + msisdn;
+    this.checkSubscriptionHasExpired(lsKey);
     const savedData = ls.get(lsKey);
     if (savedData) {
       return of(savedData);
     } else {
       return this.getSubscriptionCustomerOfferForTiers(msisdn).pipe(share());
     }
+  }
+
+  // function to check if subscriptionn has lasted more than 30 minuts in storage
+  checkSubscriptionHasExpired(subscriptionKey) {
+    const lsLastUpdateKey = subscriptionKey + '_last_update';
+    const lastUpdateTime = ls.get(lsLastUpdateKey);
+    if (!lastUpdateTime) {
+      ls.set(lsLastUpdateKey, Date.now());
+      return false;
+    }
+    const currentDate = Date.now();
+    const elapsedTime = currentDate - lastUpdateTime;
+    const hasExpired = elapsedTime > 1800000;
+    if (hasExpired) ls.remove(subscriptionKey);
+    return hasExpired;
   }
 
   getSubscriptionData(msisdn) {
@@ -542,6 +561,7 @@ export interface RegistrationModel {
   login: string;
   password: string;
   hmac: string;
+  clientId: any;
 }
 
 export interface ConfirmMsisdnModel {

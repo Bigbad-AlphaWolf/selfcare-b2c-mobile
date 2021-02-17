@@ -3,17 +3,17 @@ import { SoSModel } from '../services/sos-service';
 import {
   OPERATION_TYPE_SOS,
   PAY_WITH_CREDIT,
-  PAYMENT_MOD_NEXT_RECHARGE
+  PAYMENT_MOD_NEXT_RECHARGE,
 } from 'src/shared';
 import { MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { SosService } from '../services/sos-service/sos.service';
 
 @Component({
   selector: 'app-buy-sos',
   templateUrl: './buy-sos.page.html',
-  styleUrls: ['./buy-sos.page.scss']
+  styleUrls: ['./buy-sos.page.scss'],
 })
 export class BuySosPage implements OnInit {
   title = 'Sos Crédit et Pass';
@@ -31,14 +31,38 @@ export class BuySosPage implements OnInit {
     private router: Router,
     private dashServ: DashboardService,
     public dialog: MatDialog,
-    private sosService: SosService
+    private sosService: SosService,
+    private route: ActivatedRoute
   ) {}
 
-  ngOnInit() {  }
+  ngOnInit() {}
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     this.currentNumber = this.dashServ.getCurrentPhoneNumber();
+    const isDeeplinkSos = await this.checkDeeplinkSos();
+    if (isDeeplinkSos) return;
     this.step = 0;
+  }
+
+  async checkDeeplinkSos() {
+    const amount = +this.route.snapshot.paramMap.get('amount');
+    console.log(amount);
+    if (!amount) return 0;
+    const route = this.router.url;
+    if (!route.match('soscredit') && !route.match('sospass')) return;
+    const typeSos = route.match('soscredit')
+      ? 'SOS CREDIT'
+      : 'SOS Pass Internet';
+    const allSos = await this.sosService.getListSosByFormule().toPromise();
+    const currentSos = allSos.find(
+      (sos) => sos.montant === amount && sos.typeSOS.nom === typeSos
+    );
+    console.log(currentSos);
+    if (currentSos) {
+      this.step = 1;
+      this.selectedSos = currentSos;
+    }
+    return currentSos;
   }
 
   goToNextStep() {
@@ -78,7 +102,7 @@ export class BuySosPage implements OnInit {
         if (response_code === '0') {
           const followDetails = {
             amount: `${amount} FCFA`,
-            fees: `${this.selectedSos.frais} FCFA`
+            fees: `${this.selectedSos.frais} FCFA`,
           };
           // FollowAnalytics.logEvent('EmergencyCredit_Success', followDetails);
           this.step = 2;

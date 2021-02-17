@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">Questions fréquentes</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">Assistance - Questions fréquentes</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="questions-page-body">
+    <div class="search-bar-block" >
+      <ion-item lines="none">
+        <ion-input #searchInput  placeholder="Comment pouvons-nous vous aider ?" (ionChange)="onInputChange($event)"></ion-input>
+        <ion-icon name="search" slot="end" *ngIf="displaySearchIcon"></ion-icon>
+        <span class="effacer" *ngIf="!displaySearchIcon" (click)="onClear(searchInput)">Effacer</span>
+      </ion-item>
+    </div>
+    <div class="questions-list">
+      <ng-container *ngIf="listQuestions">
+        <app-faq-item [question]="question" *ngFor="let question of listQuestions"></app-faq-item>
+      </ng-container>
+    </div>
+  </div>
+</ion-content>

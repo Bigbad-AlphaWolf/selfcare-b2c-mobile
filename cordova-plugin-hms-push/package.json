@@ -1,0 +1,47 @@
+{
+  "name": "@hmscore/cordova-plugin-hms-push",
+  "description": "Huawei Push Cordova Plugin",
+  "version": "5.0.2-301",
+  "types": "types/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HMS-Core/hms-cordova-plugin.git",
+    "directory": "cordova-plugin-hms-push"
+  },
+  "homepage": "https://developer.huawei.com/consumer/en/doc/overview/HMS-Core-Plugin",
+  "license": "Apache-2.0",
+  "licenseFilename": "LICENCE",
+  "readmeFilename": "README.md",
+  "cordova": {
+    "id": "cordova-plugin-hms-push",
+    "platforms": [
+      "android"
+    ]
+  },
+  "keywords": [
+    "cordova",
+    "push",
+    "hmspush",
+    "huaweipush",
+    "ecosystem:cordova"
+  ],
+  "files": [
+    "hooks",
+    "resources",
+    "src",
+    "www",
+    "LICENCE",
+    "package.json",
+    "plugin.xml",
+    "README.md",
+    "ionic",
+    "scripts",
+    "types",
+    "wrapper",
+    "tsconfig.json",
+    "THIRD PARTY OPEN SOURCE SOFTWARE NOTICE.txt"
+  ],
+  "devDependencies": {
+    "@types/cordova": "0.0.34"
+  }
+}

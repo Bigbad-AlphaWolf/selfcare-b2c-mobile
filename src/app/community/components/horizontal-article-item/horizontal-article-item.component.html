@@ -1,0 +1,22 @@
+<div class="horizontal-article-item">
+  <div class="img-container-block">
+    <img [src]="FILE_ENDPOINT + '/' +article?.imageHeader" alt="" class="article-image">
+  </div>
+  <div class="article-details">
+    <div class="category scb-text-white"
+      [ngStyle]="{'background-color': article?.categorieArticle?.colorCode ? article?.categorieArticle?.colorCode : '#000000'}">
+      {{article?.categorieArticle?.name}}</div>
+    <div class="article-title">{{article?.titre}}</div>
+    <div class="more-infos">
+      <div class="publication-date">
+        <img src="/assets/images/clock.png" alt="" class="icon">
+        <span class="scb-text-gray text">{{article?.createdDate | publicationDateFormat}}</span>
+      </div>
+      <div class="comments">
+        <img src="/assets/images/comments.png" alt="" class="icon">
+        <span class="scb-text-gray text">{{comments_max_size}} {{comments_max_size < 2 ? 'commentaire'
+            :'commentaires'}}</span>
+      </div>
+    </div>
+  </div>
+</div>

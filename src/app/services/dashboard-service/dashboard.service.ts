@@ -1,7 +1,17 @@
 import { Injectable, RendererFactory2, Inject, Renderer2 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject, Observable, Subscription, of } from 'rxjs';
-import { tap, map, switchMap, catchError, share, take } from 'rxjs/operators';
+import {
+  tap,
+  map,
+  switchMap,
+  catchError,
+  share,
+  take,
+  retryWhen,
+  delay,
+  mergeMap,
+} from 'rxjs/operators';
 import * as SecureLS from 'secure-ls';
 import { environment } from 'src/environments/environment';
 import { AuthenticationService } from '../authentication-service/authentication.service';
@@ -14,6 +24,9 @@ import {
 } from 'src/shared';
 import { DOCUMENT } from '@angular/platform-browser';
 import { SessionOem } from '../session-oem/session-oem.service';
+import { BoosterModel, BoosterTrigger } from 'src/app/models/booster.model';
+import { GiftType } from 'src/app/models/enums/gift-type.enum';
+import { BoosterService } from '../booster.service';
 const {
   SERVER_API_URL,
   SEDDO_SERVICE,
@@ -21,6 +34,8 @@ const {
   FILE_SERVICE,
   ACCOUNT_MNGT_SERVICE,
   UAA_SERVICE,
+  PURCHASES_SERVICE,
+  BOOSTER_SERVICE,
 } = environment;
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -46,8 +61,8 @@ const transferCreditEndpoint = `${SERVER_API_URL}/${SEDDO_SERVICE}/api/seddo/tra
 const transferbonusEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/transfert-bonus`;
 
 // buy pass by credit endpoints
-const buyPassInternetByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/v1/internet`;
-const buyPassIllimixByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/v1/illimix`;
+const buyPassInternetByCreditEndpoint = `${SERVER_API_URL}/${PURCHASES_SERVICE}/api/v1/internet`;
+const buyPassIllimixByCreditEndpoint = `${SERVER_API_URL}/${PURCHASES_SERVICE}/api/v1/illimix`;
 const listPassIllimixEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-illimix-by-formule`;
 const listPassInternetEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-internets-by-formule`;
 const listFormulesEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/formule-mobiles`;
@@ -56,18 +71,19 @@ const listFormulesEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/formule-mob
 const initOTPReinitializeEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password/init`;
 const reinitializeEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password/finish`;
 
-const buyPassInternetForSomeoneByCreditEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/achat/internet-for-other`;
+const buyPassInternetForSomeoneByCreditEndpoint = `${SERVER_API_URL}/${PURCHASES_SERVICE}/api/achat/internet-for-other`;
 
 // Endpoint to get sargal balance
 const sargalBalanceEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/`;
-const welcomeStatusEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters`;
+const welcomeStatusEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters`;
 
 // Endpoint promoBooster active
-const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/boosters/active-boosters`;
+const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters/active-boosters`;
+const boosterTransactionEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters/booster-promo-transaction`;
 
 // Endpoint to get the user's birthdate
 const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/birthDate`;
-
+const userInfosEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/infos-client`;
 // Endpoint to check allo feature status
 const showNewFeatureStateEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-allo-new`;
 @Injectable({
@@ -91,7 +107,8 @@ export class DashboardService {
     rendererFactory: RendererFactory2,
     @Inject(DOCUMENT) private _document,
     private http: HttpClient,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private boosterService: BoosterService
   ) {
     this.renderer = rendererFactory.createRenderer(null, null);
     authService.currentPhoneNumberSetSubject.subscribe((value) => {
@@ -145,16 +162,23 @@ export class DashboardService {
 
   getPostpaidUserConsoInfos() {
     this.msisdn = this.getCurrentPhoneNumber();
+    let retries = 3;
     return this.http.get(`${postpaidUserConsoEndpoint}/${this.msisdn}`).pipe(
-      map(
-        (res: any) => {
-          return this.processConso(res, true);
-        },
-        () => {
-          const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
-          return lastLoadedConso;
-        }
-      )
+      map((res: any) => {
+        return this.processConso(res, true);
+      }),
+      retryWhen((errors) => {
+        return errors.pipe(
+          delay(1000),
+          mergeMap((error) => {
+            if (retries > 0) {
+              retries--;
+              return of(error);
+            }
+            throw new Error();
+          })
+        );
+      })
     );
   }
 
@@ -317,8 +341,8 @@ export class DashboardService {
     // Dimelo user information
     const userInfos = ls.get('user');
     const fullName = userInfos.firstName + ' ' + userInfos.lastName;
-    const script = document.getElementById('userDimelo')
-    if(!script) {
+    const script = document.getElementById('userDimelo');
+    if (!script) {
       const s = this.renderer.createElement('script');
       s.type = 'text/javascript';
       s.text =
@@ -345,21 +369,24 @@ export class DashboardService {
         '"customer_id": "' +
         userInfos.numero +
         '"}}]);';
-        s.id = 'userDimelo'
+      s.id = 'userDimelo';
       this.renderer.appendChild(this._document.body, s);
     }
   }
 
   initScriptDimelo() {
-    const script = document.getElementById('initDimelo')
+    const script = document.getElementById('initDimelo');
     if (!script) {
       const s: HTMLScriptElement = this.renderer.createElement('script');
       s.type = 'text/javascript';
       s.async = true;
-      s.src =  'https://sonatel.dimelochat.com/chat/b25dc90dcaed229e01ff8ffe/loader.js';
+      s.src =
+        'https://sonatel.dimelochat.com/chat/b25dc90dcaed229e01ff8ffe/loader.js';
       s.id = 'initDimelo';
-      const first: HTMLScriptElement = document.getElementsByTagName('script')[0];
-      first.parentNode.insertBefore(s,first)
+      const first: HTMLScriptElement = document.getElementsByTagName(
+        'script'
+      )[0];
+      first.parentNode.insertBefore(s, first);
     }
   }
 
@@ -383,10 +410,10 @@ export class DashboardService {
 
   cleanAddedScript(listScriptID: string[]) {
     listScriptID.forEach((id: string) => {
-      if(document.getElementById(id)) {
-        document.getElementById(id).remove()
+      if (document.getElementById(id)) {
+        document.getElementById(id).remove();
       }
-    })
+    });
   }
 
   getAccountInfo(userLogin: string) {
@@ -394,6 +421,7 @@ export class DashboardService {
   }
 
   getUserConsoInfosByCode(hmac?: string, consoCodes?: number[]) {
+    let retries = 3;
     this.msisdn = this.getCurrentPhoneNumber();
     // filter by code not working on Orange VM so
     let queryParams = '';
@@ -407,15 +435,21 @@ export class DashboardService {
     return this.http
       .get(`${userConsoByCodeEndpoint}/${this.msisdn}${queryParams}`)
       .pipe(
-        map(
-          (res: any) => {
-            return this.processConso(res);
-          },
-          () => {
-            const lastLoadedConso = ls.get(`lastConso_${this.msisdn}`);
-            return lastLoadedConso;
-          }
-        )
+        map((res: any) => {
+          return this.processConso(res);
+        }),
+        retryWhen((errors) => {
+          return errors.pipe(
+            delay(1000),
+            mergeMap((error) => {
+              if (retries > 0) {
+                retries--;
+                return of(error);
+              }
+              throw new Error();
+            })
+          );
+        })
       );
   }
 
@@ -514,18 +548,56 @@ export class DashboardService {
 
   getWelcomeStatus() {
     const currentPhoneNumber = this.getCurrentPhoneNumber();
-    return this.http.get(
-      `${welcomeStatusEndpoint}/${currentPhoneNumber}/welcome-status`
-    );
+    return this.boosterService
+      .getBoosters({ trigger: BoosterTrigger.FORM_INSCRIPTION })
+      .pipe(
+        switchMap((res: BoosterModel[]) => {
+          const lastWelcomeBooster = res[0];
+          return this.http
+            .get(
+              `${boosterTransactionEndpoint}/?msisdn=${currentPhoneNumber}&boosterId=${lastWelcomeBooster.id}`
+            )
+            .pipe(
+              map((res: any) => {
+                const response = {
+                  status: res.transactionStatus,
+                  type: GiftType.RECHARGE,
+                  value: {
+                    amount: res.transactionValue,
+                    unit: 'F CFA',
+                  },
+                };
+                return response;
+              })
+            );
+        })
+      );
   }
 
   getActivePromoBooster() {
     const currentPhoneNumber = this.getCurrentPhoneNumber();
     return this.authService.getSubscriptionForTiers(currentPhoneNumber).pipe(
       switchMap((res: SubscriptionModel) => {
-        return this.http.get(
-          `${promoBoosterActiveEndpoint}?msisdn=${currentPhoneNumber}&code=${res.code}`
-        );
+        return this.boosterService
+          .getBoosters({
+            trigger: BoosterTrigger.TOUS,
+            codeFormuleRecipient: res.code,
+            msisdn: currentPhoneNumber,
+          })
+          .pipe(
+            map((res: BoosterModel[]) => {
+              const promoPass = res.find(
+                (promo) => promo.boosterTrigger === BoosterTrigger.PASS_INTERNET
+              );
+              const promoRecharge = res.find(
+                (promo) => promo.boosterTrigger === BoosterTrigger.RECHARGE
+              );
+              const promoPassIllimix = res.find(
+                (promo) => promo.boosterTrigger === BoosterTrigger.PASS_ILLIMIX
+              );
+              return { promoPass, promoRecharge, promoPassIllimix };
+            })
+          );
       }),
       catchError((_) => {
         return of({
@@ -549,6 +621,18 @@ export class DashboardService {
           return birthDate;
         })
       );
+  }
+
+  getCustomerInformations() {
+    const userInfos = ls.get('userInfos');
+    if (userInfos) return of(userInfos);
+    const msisdn = this.getMainPhoneNumber();
+    return this.http.get(`${userInfosEndpoint}/${msisdn}`).pipe(
+      map((infos) => {
+        ls.set('userInfos', infos);
+        return infos;
+      })
+    );
   }
 
   getNewFeatureAlloBadgeStatus() {

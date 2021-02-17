@@ -1,0 +1,86 @@
+@import 'src/app/app';
+
+
+.item-container {
+    margin-bottom: 25px;
+    .question-label{
+        margin-bottom: 10px;
+        .text {
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 20px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+        }
+    }
+    .answer-input{
+        margin-bottom: 10px;
+        .rating{
+            width: 100%;
+            ion-icon {
+                width: 50px;
+                height: 50px;
+                color: $jauge-illimix;
+            }
+            ion-label {
+                font-family: HelveticaNeueLTStd-Roman;
+                font-size: 16px;
+                line-height: 1.25;
+                color: $gray;
+            }
+            .starts{
+                display: flex;
+            }
+        }
+        .select{
+            border: 2px solid $silver;
+            border-radius: 10px;
+            ion-icon {
+                width: 20px;
+            }
+        }
+        .recommedation{
+            .note-block{
+                display: flex;
+                align-items: center;
+                .note{
+                    display: inline-block;
+                    padding: 6px;
+                    width: 35px;
+                    height: 40px;
+                    border-radius: 10px;
+                    border: 2px solid;
+                    text-align: center;
+                    line-height: 24px;
+                    margin-right: 10px;
+                    margin-bottom: 5px;
+                    &.colored {
+                        background-color: $black;
+                        color: $white;
+                    }
+                }
+            }
+        }
+        .select-option{
+            .text-area {
+                border: none;
+            }
+        }
+        .radio-button {
+            ion-radio-group{
+                display: flex;
+                ion-label {
+                    margin-right: 5px;
+                }
+            }
+        }
+
+    }
+    ion-item {
+        &.text-area{
+            border: 2px solid $silver;
+            border-radius: 5px;
+        }
+    }
+}

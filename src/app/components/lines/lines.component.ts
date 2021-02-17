@@ -60,8 +60,8 @@ export class LinesComponent implements OnInit {
                 formule: sub.nomOffre,
                 codeFormule: sub.code,
               };
-              if(this.phoneType === 'FIXE') {
-                if(this.isFixeNumber(numbers[i],sousc)) {
+              if (this.phoneType === 'FIXE') {
+                if (this.isFixeNumber(numbers[i], sousc)) {
                   fNumbers.push({
                     phone: numbers[i],
                     codeClient: sub.clientCode,
@@ -98,7 +98,7 @@ export class LinesComponent implements OnInit {
   }
 
   isFixeNumber(phone: string, souscription: ModelOfSouscription) {
-    return REGEX_FIX_NUMBER.test(phone) && isPostpaidFix(souscription)
+    return REGEX_FIX_NUMBER.test(phone) && isPostpaidFix(souscription);
   }
 
   async onConfirmer() {

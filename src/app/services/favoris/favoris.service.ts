@@ -6,6 +6,10 @@ import {
   OM_SAVE_RAPIDO_FAVORITES_ENDPOINT,
 } from '../utils/om.endpoints';
 import { OrangeMoneyService } from '../orange-money-service/orange-money.service';
+import { DashboardService } from '../dashboard-service/dashboard.service';
+import { FAVORITE_PASS_ENDPOINT } from '../utils/conso.endpoint';
+import { FavoritePassOemModel } from 'src/app/models/favorite-pass-oem.model';
+import { PassInfoModel } from 'src/shared';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +17,8 @@ import { OrangeMoneyService } from '../orange-money-service/orange-money.service
 export class FavorisService {
   constructor(
     private http: HttpClient,
-    private omService: OrangeMoneyService
+    private omService: OrangeMoneyService,
+    private dashbService: DashboardService
   ) {}
 
   fetchFavorites(service: string) {
@@ -82,5 +87,31 @@ export class FavorisService {
     card_label: string;
   }) {
     return this.http.post(OM_SAVE_RAPIDO_FAVORITES_ENDPOINT, data);
+  }
+
+  getFavoritePass() {
+    const userPhoneNumber = this.dashbService.getCurrentPhoneNumber();
+    return  this.http.get(`${FAVORITE_PASS_ENDPOINT}/${userPhoneNumber}`).pipe(
+      map((res: FavoritePassOemModel) => {
+        const result = {passInternets: [], passIllimixes: [] };
+        if(res.passInternets.length) {
+          result.passInternets = this.returnValidPassItems(res.passInternets)
+        }
+        if(res.passIllimixes.length) {
+          result.passIllimixes = this.returnValidPassItems(res.passIllimixes)
+        }
+        return result;
+      })
+    )
+  }
+
+  returnValidPassItems(list: any[]) {
+    let result: any[] = [];
+    if(list.length) {
+      result = list.filter((val: any) => {
+        return val.actif
+      })
+    }
+    return result
   }
 }

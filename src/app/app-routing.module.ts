@@ -95,6 +95,14 @@ const routes: Routes = [
     loadChildren: './buy-sos/buy-sos.module#BuySosPageModule',
   },
   {
+    path: 'soscredit/:amount',
+    loadChildren: './buy-sos/buy-sos.module#BuySosPageModule',
+  },
+  {
+    path: 'sospass/:amount',
+    loadChildren: './buy-sos/buy-sos.module#BuySosPageModule',
+  },
+  {
     path: 'transfer/:type',
     loadChildren:
       './transfer-credit-bonus-om/transfer-credit-bonus-om.module#TransferCreditBonusOmPageModule',
@@ -342,6 +350,35 @@ const routes: Routes = [
     path: 'illiflex',
     loadChildren:
       './illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule',
+  },
+  {
+    path: 'assistance-hub',
+    loadChildren:
+      './assistance-hub/assistance-hub.module#AssistanceHubPageModule',
+  },
+  {
+    path: 'contact-ibou-hub',
+    loadChildren:
+      './contact-ibou-hub/contact-ibou-hub.module#ContactIbouHubPageModule',
+  },
+  {
+    path: 'satisfaction-form',
+    loadChildren:
+      './pages/satisfaction-form/satisfaction-form.module#SatisfactionFormPageModule',
+  },
+  {
+    path: 'change-orange-money-pin',
+    loadChildren:
+      './change-orange-money-pin/change-orange-money-pin.module#ChangeOrangeMoneyPinPageModule',
+  },
+  {
+    path: 'community',
+    loadChildren: './community/community.module#CommunityPageModule',
+  },
+  {
+    path: 'reclamation-om-transaction',
+    loadChildren:
+      './pages/reclamation-om-transaction/reclamation-om-transaction.module#ReclamationOmTransactionPageModule',
   },
 ];
 

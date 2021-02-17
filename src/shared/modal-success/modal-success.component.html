@@ -84,6 +84,12 @@
     *ngIf="data.type === 'sargal-already-registered'"
     class="operation-img"
   />
+  <img
+      src="/assets/images/05-ic-nes-note-appli.svg"
+      alt=""
+      *ngIf="data.type === 'survey'"
+      class="operation-img"
+    />
   </div>
   <div class="title-container scb-text-black">
     <span class="title" *ngIf="data.type === 'parametrage-internet'">
@@ -119,10 +125,13 @@
     <span class="title" *ngIf="data.type === 'file'">
       {{ data.title }}
     </span>
-    <span class="title" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-success'}"  *ngIf="data.type === 'rattachment-success'">
+    <span class="title" [ngClass]="{ 'custome-style': data.type === 'rattachment-success'}"  *ngIf="data.type === 'rattachment-success'">
       Bravo !
     </span>
-    <span class="title" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-failed'}"  *ngIf="data.type === 'rattachment-failed'">
+    <span class="title" [ngClass]="{ 'custome-style': data.type === 'survey'}"  *ngIf="data.type === 'survey'">
+      Jërëjëf !
+    </span>
+    <span class="title" [ngClass]="{ 'custome-style': data.type === 'rattachment-failed'}"  *ngIf="data.type === 'rattachment-failed'">
       Echec rattachement !
     </span>
     <span class="title" *ngIf="data.type === 'noOMAccount' || data.type === 'failed-action' || data.type === 'sargal-already-registered'">Désolé, </span>
@@ -149,6 +158,9 @@
     </span>
     <span class="text" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-success'}" *ngIf="data.type === 'rattachment-success'">
       Vous venez de rattacher la ligne <span class="numero"> {{ data?.rattachedNumber }} </span>  à votre compte
+    </span>
+    <span class="text" [ngClass]="{ 'custom-rattach': data.type === 'survey'}" *ngIf="data.type === 'survey'">
+      Merci de nous avoir remonter vos avis concernant l’application Orange et Moi.
     </span>
     <span class="text scb-text-light-black" [ngClass]="{ 'custom-rattach': data.type === 'rattachment-failed'}" *ngIf="data.type === 'rattachment-failed'">
       {{ data.errorStatus !== 404 ? data.errorMsg : 'Impossible de rattacher ce numéro' }}
@@ -177,12 +189,14 @@
     </span>
   </div>
   <div class="btn-container">
-    <button *ngIf="data.type !== 'rattachment-success' && data.type !== 'rattachment-failed' " class="scb-btn scb-btn-white scb-btn-full" (click)="closeDialog()">
+    <button *ngIf="data.type !== 'rattachment-success' && data.type !== 'rattachment-failed' && data.type !== 'survey' " class="scb-btn scb-btn-white scb-btn-full" (click)="closeDialog()">
        Fermer
     </button>
     <ion-button *ngIf="data.type === 'rattachment-success' || data.type === 'rattachment-failed'" expand="block" (click)="closeDialog()">
       Terminer
     </ion-button>
-
+    <ion-button fill="clear" class="button" *ngIf="data.type === 'survey'" expand="block" (click)="closeDialog()">
+      Retourner à l’accueil
+    </ion-button>
   </div>
 </div>

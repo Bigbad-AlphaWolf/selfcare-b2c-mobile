@@ -97,6 +97,8 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
         this.amount >= palier.minPalier && this.amount <= palier.maxPalier
     );
     this.bonusSms = this.selectedPalier.bonusSms;
+    console.log(this.selectedPalier.bonusSms);
+
     this.getMaxDataVolumeOfAmount();
     this.getMinDataVolumeOfAmount();
     this.validity = this.getCurrentValidity();

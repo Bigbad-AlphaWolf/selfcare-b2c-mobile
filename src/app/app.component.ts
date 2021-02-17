@@ -185,6 +185,8 @@ export class AppComponent {
           '/suivi-conso': DashboardPage,
           '/transfer-money/:msisdn/:amount': TransfertHubServicesPage,
           '/transfer-money/:msisdn': TransfertHubServicesPage,
+          '/soscredit/:amount': '',
+          '/sospass/:amount': '',
           '/illiflex': TransfertHubServicesPage,
         })
         .subscribe(

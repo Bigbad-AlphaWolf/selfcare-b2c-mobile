@@ -1,0 +1,22 @@
+@import 'src/app/app';
+
+.single-comment-block {
+  .sub-commments-block {
+    margin-left: 50px;
+    .more {
+      .show-reponse {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-style: italic;
+        font-size: 12px;
+        text-decoration: underline;
+      }
+    }
+    .sub-comments-list {
+      display: flex;
+      flex-direction: column;
+      app-article-comment-item {
+        margin-top: 10px;
+      }
+    }
+  }
+}

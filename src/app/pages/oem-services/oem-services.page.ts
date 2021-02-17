@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { OperationOem } from 'src/app/models/operation.model';
 import { ACTIONS_RAPIDES_OPERATIONS_POSTPAID } from 'src/app/utils/operations.util';
 
@@ -11,11 +11,11 @@ import { ACTIONS_RAPIDES_OPERATIONS_POSTPAID } from 'src/app/utils/operations.ut
 export class OemServicesPage implements OnInit {
   operations: OperationOem[] = ACTIONS_RAPIDES_OPERATIONS_POSTPAID;
 
-  constructor(private router: Router) {}
+  constructor(private navCtr: NavController) {}
 
   ngOnInit() {}
 
   goBack() {
-    this.router.navigate(['/dashboard']);
+    this.navCtr.pop();
   }
 }

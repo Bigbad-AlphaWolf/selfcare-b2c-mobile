@@ -59,6 +59,7 @@ import { CardRapidoNameModalComponent } from 'src/app/components/card-rapido-nam
 import { IdentifiedNumbersListComponent } from 'src/app/pages/rattached-phones-number/components/identified-numbers-list/identified-numbers-list.component';
 import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-phones-number/components/choose-rattachement-type-modal/choose-rattachement-type-modal.component';
 import { YesNoModalComponent } from './yes-no-modal/yes-no-modal.component';
+import { SimpleOperationSuccessModalComponent } from './simple-operation-success-modal/simple-operation-success-modal.component';
 
 @NgModule({
   declarations: [
@@ -106,7 +107,8 @@ import { YesNoModalComponent } from './yes-no-modal/yes-no-modal.component';
     FavoriteMerchantComponent,
     IbouIonFabComponent,
     RapidoSoldeComponent,
-    YesNoModalComponent
+    YesNoModalComponent,
+    SimpleOperationSuccessModalComponent,
   ],
   imports: [
     CommonModule,
@@ -145,7 +147,8 @@ import { YesNoModalComponent } from './yes-no-modal/yes-no-modal.component';
     CardRapidoNameModalComponent,
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
-    YesNoModalComponent
+    YesNoModalComponent,
+    SimpleOperationSuccessModalComponent,
   ],
   exports: [
     BanniereComponent,
@@ -191,7 +194,8 @@ import { YesNoModalComponent } from './yes-no-modal/yes-no-modal.component';
     RapidoSoldeComponent,
     MaterialComponentsModule,
     PipesModule,
-    YesNoModalComponent
+    YesNoModalComponent,
+    SimpleOperationSuccessModalComponent,
   ],
   providers: [
     Contacts,

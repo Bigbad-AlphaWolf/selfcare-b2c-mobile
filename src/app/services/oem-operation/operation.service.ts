@@ -1,19 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OffreService } from 'src/app/models/offre-service.model';
 import { DATA_OFFRES_SERVICES } from 'src/app/utils/data';
+
 import {
   OFFRE_SERVICES_ENDPOINT,
   ALL_SERVICES_ENDPOINT,
 } from '../utils/services.endpoints';
+
 @Injectable({
   providedIn: 'root',
 })
 export class OperationService {
   offresServices: any[];
   static AllOffers: OffreService[] = [];
+
   constructor(private http: HttpClient) {}
 
   initServicesData(codeFormule?: string) {
