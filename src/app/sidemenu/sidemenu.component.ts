@@ -155,8 +155,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goToAssistancePage() {
-    this.router.navigate(['/community']);
-    return;
+    // this.router.navigate(['/community']);
+    // return;
     this.iab.create(ASSISTANCE_URL, '_self');
     this.followAnalyticsService.registerEventFollow(
       'Sidemenu_Assistance',
