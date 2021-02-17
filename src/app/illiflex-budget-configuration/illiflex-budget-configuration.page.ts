@@ -5,8 +5,14 @@ import { IlliflexService } from '../services/illiflex-service/illiflex.service';
 import { NavigationExtras, Router } from '@angular/router';
 import { PalierModel } from '../models/palier.model';
 import { IlliflexSetAmountModalComponent } from './components/illiflex-set-amount-modal/illiflex-set-amount-modal.component';
-import { OPERATION_TYPE_PASS_ILLIFLEX } from 'src/shared';
+import {
+  CODE_KIRENE_Formule,
+  OPERATION_TYPE_PASS_ILLIFLEX,
+  SubscriptionModel,
+} from 'src/shared';
 import { BestOfferIlliflexModel } from '../models/best-offer-illiflex.model';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { PROFILE_TYPE_PREPAID } from '../dashboard';
 @Component({
   selector: 'app-illiflex-budget-configuration',
   templateUrl: './illiflex-budget-configuration.page.html',
@@ -43,15 +49,36 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     private illiflexService: IlliflexService,
     private router: Router,
     private dashboardService: DashboardService,
+    private authenticationService: AuthenticationService,
     private modalController: ModalController
   ) {}
 
   ngOnInit() {
     this.getIlliflexPaliers();
-    let payload = this.router.getCurrentNavigation().extras.state.payload;
-    payload = payload ? payload : history.state;
-    this.recipientMsisdn = payload.recipientMsisdn;
-    this.recipientOfferCode = payload.code;
+    if (this.router.url.match('/illiflex-budget-configuration')) {
+      let payload = this.router.getCurrentNavigation().extras.state.payload;
+      payload = payload ? payload : history.state;
+      this.recipientMsisdn = payload.recipientMsisdn;
+      this.recipientOfferCode = payload.code;
+    } else {
+      this.checkIfDeeplink();
+    }
+  }
+
+  async checkIfDeeplink() {
+    const msisdn = this.dashboardService.getCurrentPhoneNumber();
+    const sub: SubscriptionModel = await this.authenticationService
+      .getSubscription(msisdn)
+      .toPromise();
+    if (
+      sub &&
+      (sub.code === CODE_KIRENE_Formule || sub.profil !== PROFILE_TYPE_PREPAID)
+    ) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.recipientMsisdn = msisdn;
+      this.recipientOfferCode = sub.code;
+    }
   }
 
   getIlliflexPaliers() {
