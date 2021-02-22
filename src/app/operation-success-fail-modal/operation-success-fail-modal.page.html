@@ -278,50 +278,6 @@
         </div>
       </div>
     </div>
-    <div *ngIf="success && !coupon" class="confirm-btn">
-      <ion-button
-        (click)="goToPage()"
-        shape="round"
-        class="btn btn-cancel"
-        expand="block"
-      >
-        <ng-container [ngSwitch]="purchaseType">
-          <ng-container *ngSwitchCase="OPERATION_ILLIMIX_TYPE">
-            Faire un autre achat de pass
-          </ng-container>
-          <ng-container *ngSwitchCase="OPERATION_ALLO_TYPE">
-            Faire un autre achat de pass
-          </ng-container>
-          <ng-container *ngSwitchCase="OPERATION_INTERNET_TYPE">
-            Faire un autre achat de pass</ng-container
-          >
-          <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM">
-            Faire un autre transfert
-          </ng-container>
-          <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">
-            Faire un autre transfert
-          </ng-container>
-          <ng-container *ngSwitchCase="OPERATION_TYPE_RECHARGE">
-            Faire une autre recharge de credit
-          </ng-container>
-          <ng-container *ngSwitchCase="'OPERATION_WOYOFAL'">
-            Faire une autre recharge
-          </ng-container>
-          <ng-container *ngSwitchCase="'OPERATION_RAPIDO'">
-            Faire une autre recharge
-          </ng-container>
-          <ng-container *ngSwitchCase="OPERATION_ENABLE_DALAL">
-            Activer un autre dalal
-          </ng-container>
-          <ng-container *ngSwitchDefault>
-            Faire une autre operation
-          </ng-container>
-          <ng-container *ngSwitchCase="OPERATION_ILLIFLEX_TYPE">
-            Configurer un autre pass</ng-container
-          >
-        </ng-container>
-      </ion-button>
-    </div>
 </ng-container>
 
   <div class="coupon-block" *ngIf="success && coupon">
@@ -369,7 +325,7 @@
         <ng-container *ngSwitchCase="OPERATION_ENABLE_DALAL">
           Activer un autre dalal
         </ng-container>
-        <ng-container *ngSwitchDefault> 
+        <ng-container *ngSwitchDefault>
           Faire une autre operation
         </ng-container>
         <ng-container *ngSwitchCase="OPERATION_ILLIFLEX_TYPE">
