@@ -196,6 +196,9 @@ export class TransfertHubServicesPage implements OnInit {
   showNewFeatureBadge$: Observable<Boolean>;
   isLightMod: boolean; //boolean to tell if user is in connected or not connected mod
   currentPhone = this.dashbServ.getCurrentPhoneNumber();
+  loadingServices: boolean;
+  servicesHasError: boolean;
+  allServices = [];
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
@@ -206,7 +209,8 @@ export class TransfertHubServicesPage implements OnInit {
     private bsService: BottomSheetService,
     private omService: OrangeMoneyService,
     private authService: AuthenticationService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private operationService: OperationService
   ) {}
 
   ngOnInit() {
@@ -217,25 +221,41 @@ export class TransfertHubServicesPage implements OnInit {
       this.isLightMod = history.state.isLightMod;
       if (!this.isLightMod) {
         this.buyOptions.splice(0, 0, this.buyCreditOption);
-        if (this.isServciceActivated(this.buyIlliflexOption))
-          this.buyOptions.push(this.buyIlliflexOption);
       }
     }
     if (purchaseType === 'TRANSFER') {
       this.options = this.transferOptions;
       this.pageTitle = 'Transférer argent ou crédit';
     } else if (purchaseType === 'BUY') {
-      this.options = this.buyOptions;
       this.pageTitle = 'Acheter crédit ou pass';
-      this.getUserActiveBonPlans();
-      this.getUserActiveBoosterPromo();
+      this.getActiveServices();
     } else {
       this.navController.navigateBack('/dashboard');
     }
   }
 
+  getActiveServices() {
+    this.loadingServices = true;
+    this.servicesHasError = false;
+    this.operationService.getAllServices().subscribe(
+      (res: any) => {
+        this.loadingServices = false;
+        this.options = this.buyOptions;
+        this.getUserActiveBonPlans();
+        this.getUserActiveBoosterPromo();
+        this.allServices = res;
+        if (this.isServciceActivated(this.buyIlliflexOption))
+          this.buyOptions.push(this.buyIlliflexOption);
+      },
+      (err) => {
+        this.loadingServices = false;
+        this.servicesHasError = true;
+      }
+    );
+  }
+
   isServciceActivated(action) {
-    const actionService = OperationService.AllOffers.find(
+    const actionService = this.allServices.find(
       (service) => action.idCode && service.code === action.idCode
     );
     if (actionService) return actionService.activated;
@@ -255,7 +275,6 @@ export class TransfertHubServicesPage implements OnInit {
     action?: 'REDIRECT' | 'POPUP';
     idCode?: number;
   }) {
-
     if (!this.isServciceActivated(opt)) {
       const service = OperationService.AllOffers.find(
         (service) => opt.idCode && service.code === opt.idCode

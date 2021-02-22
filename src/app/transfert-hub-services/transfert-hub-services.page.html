@@ -55,5 +55,15 @@
         </div>
       </ng-container>
     </div>
+    <ng-container *ngIf="loadingServices">
+      <div class="loader-container">
+        <mat-spinner mode="indeterminate" [diameter]="50"></mat-spinner>
+      </div>
+    </ng-container>
+    <ng-container>
+      <div *ngIf="servicesHasError">
+        <span class="scb-text-red-error" (click)="getActiveServices()">N'a pas pu charger les services. Réactualisez ici</span>
+      </div>
+    </ng-container>
   </div>
 </ion-content>
