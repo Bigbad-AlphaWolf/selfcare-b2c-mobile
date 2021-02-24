@@ -97,8 +97,6 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
         this.amount >= palier.minPalier && this.amount <= palier.maxPalier
     );
     this.bonusSms = this.selectedPalier.bonusSms;
-    console.log(this.selectedPalier.bonusSms);
-
     this.getMaxDataVolumeOfAmount();
     this.getMinDataVolumeOfAmount();
     this.validity = this.getCurrentValidity();
@@ -114,7 +112,9 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     };
     this.illiflexService.getBestOffer(bestOfferPayload).subscribe(
       (bestOffer: BestOfferIlliflexModel) => {
-        this.dataVolumeValue = bestOffer.dataBucket.balance.amount;
+        this.dataVolumeValue = this.roundDataVolumeBestOffer(
+          bestOffer.dataBucket.balance.amount
+        );
         this.gettingBestOffer = false;
       },
       (err) => {
@@ -124,20 +124,37 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     );
   }
 
+  roundDataVolumeBestOffer(dataVolume) {
+    let volumeData: number;
+    if (dataVolume > this.maxData) {
+      volumeData = this.maxData;
+    } else if (dataVolume < this.minData) {
+      volumeData = this.minData;
+    } else {
+      volumeData = Math.round(dataVolume / 5) * 5;
+    }
+    return volumeData;
+  }
+
   getMaxDataVolumeOfAmount() {
-    this.maxData =
+    const maxData =
       (this.amount * 0.8) / (this.selectedPalier.dataPrice * 1.239);
+    // round it to nearest and smallest multiple of 5
+    this.maxData = Math.floor(maxData / 5) * 5;
   }
 
   getMinDataVolumeOfAmount() {
-    this.minData =
+    const minData =
       (this.amount * 0.2) / (this.selectedPalier.dataPrice * 1.239);
+    // round it to nearest and biggest multiple of 5
+    this.minData = Math.ceil(minData / 5) * 5;
   }
 
   async openModalSetAmount() {
     const modal = await this.modalController.create({
       component: IlliflexSetAmountModalComponent,
       cssClass: 'select-recipient-modal',
+      componentProps: { pricings: this.paliers },
     });
     modal.onDidDismiss().then((response) => {
       if (response && response.data) {
