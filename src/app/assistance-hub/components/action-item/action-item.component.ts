@@ -162,9 +162,8 @@ export class ActionItemComponent implements OnInit {
       if (resp && resp.data && resp.data.success) {
 
         const omUserInfos = resp.data.omUserInfos;
-        console.log('omUser', omUserInfos);
-        this.getBirhDate().pipe(tap((birthDate: string) => {
-          
+        this.dashbServ.getCustomerInformations().pipe(tap((res: any) => {
+          const birthDate = res.birthDate
           if(birthDate){
             const year = birthDate.split('-')[0];
             this.router.navigate(['/change-orange-money-pin'], { state: { omUserInfos, birthYear: year } });
