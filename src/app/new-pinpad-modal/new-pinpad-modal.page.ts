@@ -392,6 +392,10 @@ export class NewPinpadModalPage implements OnInit {
     if (omUser.msisdn === this.omPhoneNumber) {
       // the account is active
       if (omUser.active) {
+        if(this.operationType === OPERATION_CHANGE_PIN_OM ) {
+          this.setNewPinOM(pin);
+          return
+        }
         // login and get balance
         const loginPayload: OmLoginClientModel = {
           msisdn: omUser.msisdn,
@@ -472,6 +476,9 @@ export class NewPinpadModalPage implements OnInit {
             break;
           case OPERATION_RAPIDO:
             this.payRapido(pin);
+            break;
+          case OPERATION_INIT_CHANGE_PIN_OM:
+            this.initOperationChangePinOM(pin);
             break;
           default:
             this.seeSolde(pin);
