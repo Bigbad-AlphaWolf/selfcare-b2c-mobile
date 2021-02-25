@@ -1,5 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  ValidatorFn,
+  AbstractControl,
+  FormControl,
+} from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { PalierModel } from 'src/app/models/palier.model';
 const BASE_MULTIPLE = 50;
@@ -45,9 +52,22 @@ export class IlliflexSetAmountModalComponent implements OnInit {
   }
 
   initForm() {
-    this.amountForm = this.fb.group({
-      amount: [null, [Validators.required]],
-    });
+    this.amountForm = this.fb.group(
+      {
+        amount: ['', [Validators.required, this.validateAmount()]],
+      },
+      { updateOn: 'change' }
+    );
+  }
+
+  validateAmount(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      console.log(+control.value);
+      const amount = +control.value;
+      return amount % 50 === 0 && amount <= 15000 && amount >= 500
+        ? null
+        : { wrong: true };
+    };
   }
 
   getValidity(amount) {
