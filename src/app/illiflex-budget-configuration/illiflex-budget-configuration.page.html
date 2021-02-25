@@ -41,7 +41,7 @@
           </div>
           <ion-item mode="ios" lines="none">
             <ion-range [appGaugeKnob]="dataSegmentation" class="my-range" [(ngModel)]="dataVolumeValue" [min]="minData"
-              [max]="maxData" [step]="5" (ionChange)="onGaugeChanged()">
+              [max]="maxData" [step]="BASE_MULTIPLE" (ionChange)="onGaugeChanged()">
               <ion-label slot="start" class="label-value-left scb-text-light-blue">{{dataVolumeValue | dataVolume}}
               </ion-label>
               <ion-label slot="end" class="label-value-right scb-text-orange">{{voiceQuantityValue | illiflexVoice}}

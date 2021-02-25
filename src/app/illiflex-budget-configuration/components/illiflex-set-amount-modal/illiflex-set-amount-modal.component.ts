@@ -5,7 +5,6 @@ import {
   Validators,
   ValidatorFn,
   AbstractControl,
-  FormControl,
 } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { PalierModel } from 'src/app/models/palier.model';
@@ -64,7 +63,7 @@ export class IlliflexSetAmountModalComponent implements OnInit {
     return (control: AbstractControl): { [key: string]: any } | null => {
       console.log(+control.value);
       const amount = +control.value;
-      return amount % 50 === 0 && amount <= 15000 && amount >= 500
+      return amount % BASE_MULTIPLE === 0 && amount <= 15000 && amount >= 500
         ? null
         : { wrong: true };
     };

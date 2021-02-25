@@ -13,6 +13,7 @@ import {
 import { BestOfferIlliflexModel } from '../models/best-offer-illiflex.model';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { PROFILE_TYPE_PREPAID } from '../dashboard';
+const BASE_MULTIPLE = 5;
 @Component({
   selector: 'app-illiflex-budget-configuration',
   templateUrl: './illiflex-budget-configuration.page.html',
@@ -44,6 +45,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
   recipientMsisdn: string;
   recipientOfferCode: string;
   bonusSms: number;
+  BASE_MULTIPLE = BASE_MULTIPLE;
   constructor(
     private navController: NavController,
     private illiflexService: IlliflexService,
@@ -131,7 +133,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     } else if (dataVolume < this.minData) {
       volumeData = this.minData;
     } else {
-      volumeData = Math.round(dataVolume / 5) * 5;
+      volumeData = Math.round(dataVolume / BASE_MULTIPLE) * BASE_MULTIPLE;
     }
     return volumeData;
   }
@@ -140,14 +142,14 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     const maxData =
       (this.amount * 0.8) / (this.selectedPalier.dataPrice * 1.239);
     // round it to nearest and smallest multiple of 5
-    this.maxData = Math.floor(maxData / 5) * 5;
+    this.maxData = Math.floor(maxData / BASE_MULTIPLE) * BASE_MULTIPLE;
   }
 
   getMinDataVolumeOfAmount() {
     const minData =
       (this.amount * 0.2) / (this.selectedPalier.dataPrice * 1.239);
     // round it to nearest and biggest multiple of 5
-    this.minData = Math.ceil(minData / 5) * 5;
+    this.minData = Math.ceil(minData / BASE_MULTIPLE) * BASE_MULTIPLE;
   }
 
   async openModalSetAmount() {
