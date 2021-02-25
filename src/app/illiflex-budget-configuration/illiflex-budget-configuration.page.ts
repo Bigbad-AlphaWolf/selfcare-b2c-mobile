@@ -13,6 +13,7 @@ import {
 import { BestOfferIlliflexModel } from '../models/best-offer-illiflex.model';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { PROFILE_TYPE_PREPAID } from '../dashboard';
+const BASE_MULTIPLE = 5;
 @Component({
   selector: 'app-illiflex-budget-configuration',
   templateUrl: './illiflex-budget-configuration.page.html',
@@ -44,6 +45,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
   recipientMsisdn: string;
   recipientOfferCode: string;
   bonusSms: number;
+  BASE_MULTIPLE = BASE_MULTIPLE;
   constructor(
     private navController: NavController,
     private illiflexService: IlliflexService,
@@ -97,8 +99,6 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
         this.amount >= palier.minPalier && this.amount <= palier.maxPalier
     );
     this.bonusSms = this.selectedPalier.bonusSms;
-    console.log(this.selectedPalier.bonusSms);
-
     this.getMaxDataVolumeOfAmount();
     this.getMinDataVolumeOfAmount();
     this.validity = this.getCurrentValidity();
@@ -114,7 +114,9 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     };
     this.illiflexService.getBestOffer(bestOfferPayload).subscribe(
       (bestOffer: BestOfferIlliflexModel) => {
-        this.dataVolumeValue = bestOffer.dataBucket.balance.amount;
+        this.dataVolumeValue = this.roundDataVolumeBestOffer(
+          bestOffer.dataBucket.balance.amount
+        );
         this.gettingBestOffer = false;
       },
       (err) => {
@@ -124,20 +126,37 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
     );
   }
 
+  roundDataVolumeBestOffer(dataVolume) {
+    let volumeData: number;
+    if (dataVolume > this.maxData) {
+      volumeData = this.maxData;
+    } else if (dataVolume < this.minData) {
+      volumeData = this.minData;
+    } else {
+      volumeData = Math.round(dataVolume / BASE_MULTIPLE) * BASE_MULTIPLE;
+    }
+    return volumeData;
+  }
+
   getMaxDataVolumeOfAmount() {
-    this.maxData =
+    const maxData =
       (this.amount * 0.8) / (this.selectedPalier.dataPrice * 1.239);
+    // round it to nearest and smallest multiple of 5
+    this.maxData = Math.floor(maxData / BASE_MULTIPLE) * BASE_MULTIPLE;
   }
 
   getMinDataVolumeOfAmount() {
-    this.minData =
+    const minData =
       (this.amount * 0.2) / (this.selectedPalier.dataPrice * 1.239);
+    // round it to nearest and biggest multiple of 5
+    this.minData = Math.ceil(minData / BASE_MULTIPLE) * BASE_MULTIPLE;
   }
 
   async openModalSetAmount() {
     const modal = await this.modalController.create({
       component: IlliflexSetAmountModalComponent,
       cssClass: 'select-recipient-modal',
+      componentProps: { pricings: this.paliers },
     });
     modal.onDidDismiss().then((response) => {
       if (response && response.data) {

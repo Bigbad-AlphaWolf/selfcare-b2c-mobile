@@ -3,9 +3,33 @@
   <form [formGroup]="amountForm" novalidate autocomplete="false" (submit)="(0)">
     <mat-form-field class="scb-input-row amount-input" appearance="outline">
       <mat-label>saisir un autre montant &nbsp;&nbsp;</mat-label>
-      <input #amountInput matInput formControlName="amount" type="number" />
+      <input [(ngModel)]="amount" #amountInput matInput formControlName="amount" type="number"
+        (input)="onAmountChanged($event.target.value)" />
       <span matSuffix class="scb-text-gray suffix">FCFA</span>
+      <div class="arrows" *ngIf="0">
+        <div class="arrow-container">
+          <img class="arrow" src="/assets/images/keyboard-arrow-up-black.svg" alt="">
+        </div>
+        <div class="arrow-container">
+          <img class="arrow" src="/assets/images/arrow-down.svg" alt="">
+        </div>
+      </div>
     </mat-form-field>
+    <div class="amount-suggestions"
+      *ngIf="amountInput.value && amountInput.value >= 500 && amountInput.value <= 15000 && !isAmountValid">
+      Choisissez &nbsp;<div class="extrem" (click)="chooseAmount(aroundInf)">{{aroundInf}}</div>&nbsp;&nbsp;ou&nbsp;&nbsp;
+      <div class="extrem" (click)="chooseAmount(aroundSup)">{{aroundSup}}</div>
+    </div>
+    <div class="amount-suggestions scb-text-red-error" *ngIf="amountInput.value && amountInput.value < 500">
+      Le montant minimal autorisé est &nbsp;&nbsp;<span class="extrem scb-text-full-black"
+        (click)="chooseAmount(500)">{{500 + ' F'}}</span>
+    </div>
+    <div class="amount-suggestions scb-text-red-error" *ngIf="amountInput.value && amountInput.value > 15000">
+      Le montant maximal autorisé est &nbsp;&nbsp;<span class="extrem scb-text-full-black"
+        (click)="chooseAmount(15000)">{{15000 + ' F'}}</span>
+    </div>
+    <div class="amount-validity scb-text-gray" *ngIf="amount && isAmountValid">La durée de validité pour ce montant est
+      : <span class="scb-text-full-black validity">{{' ' + getValidity(amount)}}</span></div>
     <div class="rapid-choices">
       <div class="choice" *ngFor="let choice of rapidChoices" (click)="setAmount(choice)">
         <div class="value">{{choice}}</div>
@@ -15,7 +39,7 @@
     <div class="error-display scb-text-red-error" *ngIf="hasError">
       {{error}}
     </div>
-    <button class="scb-btn scb-btn-full scb-btn-orange" [disabled]="!amountForm.valid" (click)="setAmount(amountInput.value)">Confirmer</button>
+    <button class="scb-btn scb-btn-full scb-btn-orange" [disabled]="!amountForm.valid"
+      (click)="setAmount(amountInput.value)">Confirmer</button>
   </form>
-
 </div>
