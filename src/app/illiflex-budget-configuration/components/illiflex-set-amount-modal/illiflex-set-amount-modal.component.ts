@@ -23,7 +23,9 @@ export class IlliflexSetAmountModalComponent implements OnInit {
   aroundSup: number;
   isAmountValid: boolean;
   amount: number;
-  @Input() pricings: PalierModel[];
+  @Input() pricings: PalierModel[] = [];
+  minAmountIlliflex: number = 500;
+  maxAmountIlliflex: number = 15000;
   constructor(
     private fb: FormBuilder,
     private modalController: ModalController
@@ -31,6 +33,15 @@ export class IlliflexSetAmountModalComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
+    this.getMinAndMax();
+  }
+
+  getMinAndMax() {
+    if (!this.pricings && !this.pricings.length) return;
+    const maxArray = this.pricings.map((pricing) => pricing.maxPalier);
+    this.maxAmountIlliflex = Math.max(...maxArray);
+    const minArray = this.pricings.map((pricing) => pricing.minPalier);
+    this.minAmountIlliflex = Math.min(...minArray);
   }
 
   chooseAmount(amount) {
@@ -41,8 +52,8 @@ export class IlliflexSetAmountModalComponent implements OnInit {
   onAmountChanged(amount) {
     this.amount = +amount;
     this.isAmountValid =
-      this.amount >= 500 &&
-      this.amount <= 15000 &&
+      this.amount >= this.minAmountIlliflex &&
+      this.amount <= this.maxAmountIlliflex &&
       this.amount % BASE_MULTIPLE === 0
         ? true
         : false;
@@ -63,7 +74,9 @@ export class IlliflexSetAmountModalComponent implements OnInit {
     return (control: AbstractControl): { [key: string]: any } | null => {
       console.log(+control.value);
       const amount = +control.value;
-      return amount % BASE_MULTIPLE === 0 && amount <= 15000 && amount >= 500
+      return amount % BASE_MULTIPLE === 0 &&
+        amount <= this.maxAmountIlliflex &&
+        amount >= this.minAmountIlliflex
         ? null
         : { wrong: true };
     };
@@ -87,12 +100,12 @@ export class IlliflexSetAmountModalComponent implements OnInit {
 
   setAmount(amount) {
     this.hasError = false;
-    if (amount < 500) {
+    if (amount < this.minAmountIlliflex) {
       this.hasError = true;
-      this.error = 'Le montant saisi doit être supérieur à 500 F CFA';
-    } else if (amount > 15000) {
+      this.error = `Le montant saisi doit être supérieur à ${this.minAmountIlliflex} F CFA`;
+    } else if (amount > this.maxAmountIlliflex) {
       this.hasError = true;
-      this.error = 'Le montant saisi doit être inférieur à 15000 F CFA';
+      this.error = `Le montant saisi doit être inférieur à ${this.minAmountIlliflex} F CFA`;
     } else {
       this.modalController.dismiss(amount);
     }

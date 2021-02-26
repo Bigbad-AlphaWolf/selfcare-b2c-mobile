@@ -16,17 +16,17 @@
       </div>
     </mat-form-field>
     <div class="amount-suggestions"
-      *ngIf="amountInput.value && amountInput.value >= 500 && amountInput.value <= 15000 && !isAmountValid">
+      *ngIf="amountInput.value && amountInput.value >= minAmountIlliflex && amountInput.value <= maxAmountIlliflex && !isAmountValid">
       Choisissez &nbsp;<div class="extrem" (click)="chooseAmount(aroundInf)">{{aroundInf}}</div>&nbsp;&nbsp;ou&nbsp;&nbsp;
       <div class="extrem" (click)="chooseAmount(aroundSup)">{{aroundSup}}</div>
     </div>
-    <div class="amount-suggestions scb-text-red-error" *ngIf="amountInput.value && amountInput.value < 500">
+    <div class="amount-suggestions scb-text-red-error" *ngIf="amountInput.value && amountInput.value < minAmountIlliflex">
       Le montant minimal autorisé est &nbsp;&nbsp;<span class="extrem scb-text-full-black"
-        (click)="chooseAmount(500)">{{500 + ' F'}}</span>
+        (click)="chooseAmount(minAmountIlliflex)">{{minAmountIlliflex + ' F'}}</span>
     </div>
-    <div class="amount-suggestions scb-text-red-error" *ngIf="amountInput.value && amountInput.value > 15000">
+    <div class="amount-suggestions scb-text-red-error" *ngIf="amountInput.value && amountInput.value > maxAmountIlliflex">
       Le montant maximal autorisé est &nbsp;&nbsp;<span class="extrem scb-text-full-black"
-        (click)="chooseAmount(15000)">{{15000 + ' F'}}</span>
+        (click)="chooseAmount(maxAmountIlliflex)">{{maxAmountIlliflex + ' F'}}</span>
     </div>
     <div class="amount-validity scb-text-gray" *ngIf="amount && isAmountValid">La durée de validité pour ce montant est
       : <span class="scb-text-full-black validity">{{' ' + getValidity(amount)}}</span></div>
