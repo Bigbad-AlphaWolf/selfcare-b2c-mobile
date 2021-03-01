@@ -63,8 +63,7 @@ export class AssistanceHubPage implements OnInit {
     private router: Router,
     private navController: NavController,
     private inAppBrowser: InAppBrowser,
-    private followAnalyticsService: FollowAnalyticsService,
-    private modalController: ModalController
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -146,12 +145,12 @@ export class AssistanceHubPage implements OnInit {
       this.navController.navigateForward(['/assistance-hub/search'],{state:{listBesoinAides:this.listBesoinAides, search:inputvalue}});
       this.displaySearchIcon = false;
     }
-    
+
   }
 
   onClear(searchInput){
     const inputValue : string =  searchInput.value;
     searchInput.value = inputValue.slice(0,inputValue.length-1);
-    
+
   }
 }

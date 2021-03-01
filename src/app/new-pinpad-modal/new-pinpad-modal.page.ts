@@ -473,6 +473,12 @@ export class NewPinpadModalPage implements OnInit {
           case OPERATION_RAPIDO:
             this.payRapido(pin);
             break;
+          case OPERATION_INIT_CHANGE_PIN_OM:
+            this.initOperationChangePinOM(pin);
+            break;
+          case OPERATION_CHANGE_PIN_OM:
+            this.setNewPinOM(pin);
+            break;
           default:
             this.seeSolde(pin);
             break;
@@ -578,12 +584,11 @@ export class NewPinpadModalPage implements OnInit {
           db.lastUpdateTime = lastDateTime;
           this.orangeMoneyService.SaveOrangeMoneyUser(db);
           // this.dashService.balanceAvailableSubject.next(db.solde);
-          if (!this.operationType) {
             this.modalController.dismiss({
               success: true,
               balance: balance,
+              omUserInfos: { ...db, pin }
             });
-          }
           this.orangeMoneyService.logWithFollowAnalytics(
             res,
             'event',
@@ -758,13 +763,7 @@ export class NewPinpadModalPage implements OnInit {
   }
 
   initOperationChangePinOM(pin: string) {
-    const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
-      this.omPhoneNumber
-    );
-    this.modalController.dismiss({
-      omUserInfos: { ...omUser, pin },
-      success: true,
-    });
+    this.seeSolde(pin);
   }
 
   setNewPinOM(pin: string) {
@@ -941,7 +940,6 @@ export class NewPinpadModalPage implements OnInit {
       hasError: boolean;
       typeError: 'BIRTHDATE' | 'DENIED_PIN' | null;
     } = { hasError: false, typeError: null };
-    console.log('birthYear', this.omInfos.birthYear);
 
     const isDeniedPin = !!LIST_DENIED_PIN_OM.filter(
       (invalidPin: string) => invalidPin === pin
