@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { PalierModel } from 'src/app/models/palier.model';
-const BASE_MULTIPLE = 50;
+const BASE_MULTIPLE = 100;
 @Component({
   selector: 'app-illiflex-set-amount-modal',
   templateUrl: './illiflex-set-amount-modal.component.html',
