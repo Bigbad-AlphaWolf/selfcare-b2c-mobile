@@ -134,6 +134,14 @@ ion-spinner {
       }
     }
   }
+  .loader-container {
+    padding-top: 30px;
+    display: flex;
+    justify-content: center;
+    .mat-spinner::ng-deep circle {
+      stroke: $orange;
+    }
+  }
 }
 
 .favorite-pass-container {

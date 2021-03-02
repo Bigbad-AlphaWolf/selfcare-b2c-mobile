@@ -197,6 +197,9 @@ export class TransfertHubServicesPage implements OnInit {
   currentPhone = this.dashbServ.getCurrentPhoneNumber();
   purchaseType: 'BUY' | 'TRANSFER';
   favoritesPass: FavoritePassOemModel;
+  loadingServices: boolean;
+  servicesHasError: boolean;
+  allServices = [];
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
@@ -209,7 +212,8 @@ export class TransfertHubServicesPage implements OnInit {
     private facebookevent: FacebookEventService,
     private authService: AuthenticationService,
     private favService: FavorisService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private operationService: OperationService
   ) {}
 
   ngOnInit() {
@@ -219,27 +223,43 @@ export class TransfertHubServicesPage implements OnInit {
       this.isLightMod = history.state.isLightMod;
       if (!this.isLightMod) {
         this.buyOptions.splice(0, 0, this.buyCreditOption);
-        if (this.isServciceActivated(this.buyIlliflexOption))
-          this.buyOptions.push(this.buyIlliflexOption);
       }
     }
     if (this.purchaseType === 'TRANSFER') {
       this.options = this.transferOptions;
       this.pageTitle = 'Transférer argent ou crédit';
     } else if (this.purchaseType === 'BUY') {
-      this.options = this.buyOptions;
       this.pageTitle = 'Acheter crédit ou pass';
-      this.getUserActiveBonPlans();
-      this.getUserActiveBoosterPromo();
-      this.getFavoritePass();
-      this.getUserInfos();
+      this.getActiveServices();
     } else {
       this.navController.navigateBack('/dashboard');
     }
   }
 
+  getActiveServices() {
+    this.loadingServices = true;
+    this.servicesHasError = false;
+    this.operationService.getAllServices().subscribe(
+      (res: any) => {
+        this.loadingServices = false;
+        this.options = this.buyOptions;
+        this.getUserActiveBonPlans();
+        this.getUserActiveBoosterPromo();
+        this.getFavoritePass();
+        this.getUserInfos();
+        this.allServices = res;
+        if (this.isServciceActivated(this.buyIlliflexOption))
+          this.buyOptions.push(this.buyIlliflexOption);
+      },
+      (err) => {
+        this.loadingServices = false;
+        this.servicesHasError = true;
+      }
+    );
+  }
+
   isServciceActivated(action) {
-    const actionService = OperationService.AllOffers.find(
+    const actionService = this.allServices.find(
       (service) => action.idCode && service.code === action.idCode
     );
     if (actionService) return actionService.activated;
