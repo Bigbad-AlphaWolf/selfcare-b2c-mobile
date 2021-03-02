@@ -18,7 +18,7 @@ export class HelpBannerComponent implements OnInit {
     } else if (this.helpType === 'rattachment-by-id') {
       this.redirectTo = '/new-number';
     } else {
-      this.redirectTo = '/control-center';
+      this.redirectTo = '/assistance-hub';
     }
   }
 

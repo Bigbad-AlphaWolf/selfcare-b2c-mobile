@@ -70,9 +70,16 @@ export class ActionItemComponent implements OnInit {
       case 'CHANGE_PIN_OM':
         this.openPinpad();
         break;
+      case 'IBOU_CONTACT':
+        this.goIbouPage();
+        break;
       default:
         break;
     }
+  }
+
+  goIbouPage() {
+    this.router.navigate(['/contact-ibou-hub']);
   }
 
   goFiberEligibility() {
@@ -176,7 +183,4 @@ export class ActionItemComponent implements OnInit {
     });
     return await modal.present();
   }
-  getBirhDate() {
-    return this.dashbServ.getUserBirthDate();
-   }
 }

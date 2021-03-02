@@ -97,9 +97,12 @@ export class AssistanceHubPage implements OnInit {
   }
 
   splitHelpItemsByType(){
-    const firtFaqIndex = this.listBesoinAides.map((i)=>i.type).indexOf(BesoinAideType.FAQ);
-    this.listActes = this.listBesoinAides.slice(0,firtFaqIndex);
-    this.listFaqs = this.listBesoinAides.slice(firtFaqIndex);
+    this.listActes = this.listBesoinAides.filter((item: ItemBesoinAide) => {
+     return item.type === BesoinAideType.ACTE
+    });
+    this.listFaqs = this.listBesoinAides.filter((item: ItemBesoinAide) => {
+      return item.type === BesoinAideType.FAQ
+    });
   }
 
   goAllActionsHub() {

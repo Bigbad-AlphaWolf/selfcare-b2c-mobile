@@ -850,3 +850,9 @@ ion-button {
     color: $orange;
   }
 }
+
+.my-custom-class {
+  .popover-content {
+    --min-width: 80%;
+  }
+}
