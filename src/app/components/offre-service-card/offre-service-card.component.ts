@@ -39,7 +39,7 @@ export class OffreServiceCardComponent implements OnInit {
   imageUrl: string;
 
   ngOnInit() {
-    this.imageUrl = this.FILE_BASE_URL + '/' + this.service.icone;
+    this.imageUrl = this.service.icone ? this.FILE_BASE_URL + '/' + this.service.icone : null;
   }
 
   onClick() {
