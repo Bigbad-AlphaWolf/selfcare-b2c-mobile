@@ -17,9 +17,13 @@ export class ItemQuestionSatisfactionFormComponent implements OnInit {
   currentRatingNote:number;
   currentRecommendationNote:number;
   TYPE_QUESTION_SATISFACTION_FORM = TYPE_QUESTION_SATISFACTION_FORM;
+  customPopoverOptions: any = {
+    translucent: true,
+    cssClass: 'my-custom-class'
+  };
   constructor() { }
 
-  ngOnInit() {  
+  ngOnInit() {
     this.initializeAllNotes();
   }
 
@@ -27,7 +31,7 @@ export class ItemQuestionSatisfactionFormComponent implements OnInit {
     this.answer.feedback = note;
     this.currentRatingNote = note;
     this.answerChange.emit(this.answer)
-    
+
   }
   rateRecommendation(note: number) {
     this.answer.feedback = note;
@@ -48,7 +52,7 @@ export class ItemQuestionSatisfactionFormComponent implements OnInit {
   }
 
   onCommentEntered(input: any) {
-    let text: string;    
+    let text: string;
     if(input.detail.value) {
       text = input.detail.value;
     }
@@ -57,7 +61,7 @@ export class ItemQuestionSatisfactionFormComponent implements OnInit {
   }
 
   onAnswerSelected(input: any) {
-    let text: string;    
+    let text: string;
     if(input.detail.value) {
       text = input.detail.value;
     }
@@ -67,11 +71,11 @@ export class ItemQuestionSatisfactionFormComponent implements OnInit {
 
   onAnswerSelectedFromSelection(input: any) {
     let text: string;
-       
+
     if(input.detail.value) {
       if(this.itemQuestion.libelle === 'multi') {
         const response: [] = input.detail.value;
-        text = response.join('|');      
+        text = response.join('|');
       } else {
         text = input.detail.value;
       }
@@ -97,7 +101,7 @@ export class ItemQuestionSatisfactionFormComponent implements OnInit {
   initializeNote(){
     if(this.itemQuestion.libelle && !isNaN(+this.itemQuestion.libelle)) {
       const max_note = +this.itemQuestion.libelle;
-      const notes = [...Array(max_note).keys()].map(x => x += 1);       
+      const notes = [...Array(max_note).keys()].map(x => x += 1);
       return notes;
     }
   }

@@ -23,7 +23,7 @@ export class ModalSuccessComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.currentNumber = this.dashboardService.getCurrentPhoneNumber();    
+    this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
   }
 
   closeDialog() {
@@ -33,7 +33,7 @@ export class ModalSuccessComponent implements OnInit {
     } else if (this.data.type === 'noOMAccount' || this.data.type === 'rattachment-success' || this.data.type === 'rattachment-failed') {
       this.dialogRef.close();
     } else if (this.data.type !== 'facture' && this.data.type !== 'sargal-already-registered' && this.data.type !== 'rattachment-success' && this.data.type !== 'rattachment-failed') {
-      this.router.navigate(['/control-center']);
+      this.navCont.pop();
     }
   }
 }
