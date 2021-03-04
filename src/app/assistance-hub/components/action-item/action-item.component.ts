@@ -35,7 +35,7 @@ export class ActionItemComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.imageUrl = this.FILE_BASE_URL + '/' + this.action.icone;
+    this.imageUrl = this.action.icone ? this.FILE_BASE_URL + '/' + this.action.icone : null;
   }
 
   doAction() {
