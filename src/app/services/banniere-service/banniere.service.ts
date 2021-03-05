@@ -9,7 +9,7 @@ import {
 import { BannierePubModel } from '../dashboard-service';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { SubscriptionModel } from 'src/app/dashboard';
-import { switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { ZoneBanniere } from 'src/app/models/enums/zone-banniere.enum';
 import { FILE_DOWNLOAD_ENDPOINT } from '../utils/file.endpoints';
 
@@ -85,6 +85,14 @@ export class BanniereService {
         return this.http
         .get(`${endpoint}/${userInfos.code}?zone=${zone_affichage}${queryParams}`)
         .pipe(
+          map((res: any []) => {
+            if (res.length) {
+              return res.map((item: BannierePubModel) => {
+                item.image = FILE_DOWNLOAD_ENDPOINT + '/' + item.image;
+                return item;
+              });
+            }
+          }),
           tap((r: any[]) => {
             if (zone_affichage === ZoneBanniere.offre) this.bannieres = r;
           })
