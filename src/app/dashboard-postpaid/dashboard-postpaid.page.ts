@@ -119,14 +119,10 @@ export class DashboardPostpaidPage implements OnInit {
     this.getCustomerSargalStatus();
     this.getCurrentSubscription();
     this.checkOMNumber();
-    this.banniereServ.setListBanniereByFormule();
     this.banniereServ
-      .getStatusLoadingBanniere()
-      .subscribe((status: boolean) => {
-        this.isBanniereLoaded = status;
-        if (this.isBanniereLoaded) {
-          this.listBanniere = this.banniereServ.getListBanniereByFormule();
-        }
+      .getListBanniereByFormuleByZone()
+      .subscribe((res: any) => {
+          this.listBanniere = res;
       });
   }
 

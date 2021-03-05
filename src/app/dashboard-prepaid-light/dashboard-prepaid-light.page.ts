@@ -153,20 +153,18 @@ export class DashboardPrepaidLightPage implements OnInit {
     this.userPhoneNumber = this.dashboardService.getCurrentPhoneNumber();
     this.loadUserConsommation();
     this.getSargalPoints();
-    this.getCustomerSargalStatus();
+    // this.getCustomerSargalStatus();
+    this.getActivePromoBooster();
     this.authenticationService
       .getSubscriptionForTiers(this.userPhoneNumber)
       .subscribe((res: SubscriptionModel) => {
         this.currentProfil = res.profil;
-        this.getActivePromoBooster();
       });
-    this.banniereService.setListBanniereByFormule();
+    const hmac = this.authenticationService.getHmac();
     this.banniereService
-      .getStatusLoadingBanniere()
-      .subscribe((isBanniereLoaded: boolean) => {
-        if (isBanniereLoaded) {
-          this.listBanniere = this.banniereService.getListBanniereByFormule();
-        }
+      .getListBanniereByFormuleByZone(hmac)
+      .subscribe((res: any) => {
+          this.listBanniere = res;
       });
   }
 

@@ -206,10 +206,12 @@ export class TransfertHubServicesPage implements OnInit {
 		} else if (this.purchaseType === 'BUY') {
 			this.options = this.buyOptions;
 			this.pageTitle = 'Acheter crédit ou pass';
-			this.getUserActiveBonPlans();
 			this.getUserActiveBoosterPromo();
 			this.getFavoritePass();
 			this.getUserInfos();
+			if (!this.isLightMod) {
+				this.getUserActiveBonPlans();
+			}
 		} else {
 			this.navController.navigateBack('/dashboard');
 		}
@@ -459,8 +461,9 @@ export class TransfertHubServicesPage implements OnInit {
 	}
 
 	getFavoritePass() {
+		const hmac = this.authService.getHmac();
 		return this.favService
-			.getFavoritePass()
+			.getFavoritePass(this.isLightMod, hmac)
 			.pipe(
 				tap((res: any) => {
 					this.favoritesPass = res;
@@ -483,7 +486,7 @@ export class TransfertHubServicesPage implements OnInit {
 	}
 
 	getUserInfos() {
-		this.authService.getSubscription(this.currentPhone).subscribe((res: SubscriptionModel) => {
+		this.authService.getSubscriptionForTiers(this.currentPhone).subscribe((res: SubscriptionModel) => {
 			this.userInfos = res;
 		});
 	}
