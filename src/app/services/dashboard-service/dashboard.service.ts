@@ -86,6 +86,14 @@ const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abo
 const userInfosEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/infos-client`;
 // Endpoint to check allo feature status
 const showNewFeatureStateEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-allo-new`;
+
+// Endpoint Lights
+const userConsoByCodeEndpointLight = `${SERVER_API_URL}/${CONSO_SERVICE}/api/light/suivi-compteur-consommations-bycode`;
+const buyPassInternetByCreditEndpointLight = `${SERVER_API_URL}/${PURCHASES_SERVICE}/api/light/v1/internet`;
+const buyPassIllimixByCreditEndpointLight = `${SERVER_API_URL}/${PURCHASES_SERVICE}/api/light/v1/illimix`;
+const listPassInternetEndpointLight = `${SERVER_API_URL}/${CONSO_SERVICE}/api/light/pass-internets-by-formule`;
+const listPassIllimixEndpointLight = `${SERVER_API_URL}/${CONSO_SERVICE}/api/light/pass-illimix-by-formule`;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -422,6 +430,7 @@ export class DashboardService {
 
   getUserConsoInfosByCode(hmac?: string, consoCodes?: number[]) {
     let retries = 3;
+    let endpoint = userConsoByCodeEndpoint;
     this.msisdn = this.getCurrentPhoneNumber();
     // filter by code not working on Orange VM so
     let queryParams = '';
@@ -430,10 +439,10 @@ export class DashboardService {
       queryParams = `?${params}`;
     }
     if (hmac) {
+      endpoint = userConsoByCodeEndpointLight
       queryParams += `?hmac=${hmac}`;
     }
-    return this.http
-      .get(`${userConsoByCodeEndpoint}/${this.msisdn}${queryParams}`)
+    return this.http.get(`${endpoint}/${this.msisdn}${queryParams}`)
       .pipe(
         map((res: any) => {
           return this.processConso(res);
@@ -476,32 +485,59 @@ export class DashboardService {
     return this.http.get(`${listFormulesEndpoint}`);
   }
 
-  getListPassIllimix(codeFormule, category?: string) {
-    let url = `${listPassIllimixEndpoint}/${codeFormule}`;
+  getListPassIllimix(codeFormule, category?: string, isLightMod?: boolean) {
+    let endpoint = isLightMod ? listPassIllimixEndpointLight : listPassIllimixEndpoint;
+    let url = `${endpoint}/${codeFormule}`;
+    let queryParams = ''
+    const hmac = this.authService.getHmac();
+    const currentNumber = this.getCurrentPhoneNumber()
     if (category) url += `?categorie=${category}`;
+    if (isLightMod) {
+      queryParams += `hmac=${hmac}&misdn=${currentNumber}`;
+      if (category) {
+        url += '&' +queryParams
+      } else {
+        url += '?' + queryParams
+      }
+    }
     return this.http.get(url);
   }
 
-  getListPassInternet(codeFormule) {
-    return this.http.get(`${listPassInternetEndpoint}/${codeFormule}`);
+  getListPassInternet(codeFormule: string, isLighMod?: boolean) {
+    const endpoint = isLighMod ? listPassInternetEndpointLight : listPassInternetEndpoint
+    let queryParams = '';
+    const hmac = this.authService.getHmac();
+    const currentNumber = this.getCurrentPhoneNumber()
+    if (isLighMod) {
+      queryParams += `?hmac=${hmac}&msisdn=${currentNumber}`
+    }
+    return this.http.get(`${endpoint}/${codeFormule}${queryParams}`);
   }
 
   buyPassByCredit(payload: BuyPassModel, hmac?: string) {
     const { msisdn, receiver, codeIN, amount } = payload;
     const params = { msisdn, receiver, codeIN, amount };
     let queryParams = '';
+    let endpointInternet = buyPassInternetByCreditEndpoint;
+    let endpointIllimix = buyPassIllimixByCreditEndpoint;
     if (hmac && hmac !== '') {
       queryParams += `?hmac=${hmac}`;
     }
     switch (payload.type) {
       case 'internet':
+        if(hmac && hmac !== '') {
+          endpointInternet = buyPassInternetByCreditEndpointLight
+        }
         return this.http.post(
-          `${buyPassInternetByCreditEndpoint}${queryParams}`,
+          `${endpointInternet}${queryParams}`,
           params
         );
       case 'illimix':
+        if(hmac && hmac !== '') {
+          endpointIllimix = buyPassIllimixByCreditEndpointLight
+        }
         return this.http.post(
-          `${buyPassIllimixByCreditEndpoint}${queryParams}`,
+          `${endpointIllimix}${queryParams}`,
           params
         );
       default:

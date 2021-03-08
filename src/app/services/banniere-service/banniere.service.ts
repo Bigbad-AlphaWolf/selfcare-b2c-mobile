@@ -9,13 +9,15 @@ import {
 import { BannierePubModel } from '../dashboard-service';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { SubscriptionModel } from 'src/app/dashboard';
-import { tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { ZoneBanniere } from 'src/app/models/enums/zone-banniere.enum';
 import { FILE_DOWNLOAD_ENDPOINT } from '../utils/file.endpoints';
 
 const { SERVER_API_URL, CONSO_SERVICE } = environment;
 
 const endpointBanniere = `${SERVER_API_URL}/${CONSO_SERVICE}/api/bannieres-by-formule`;
+// Endpoint Light
+const endpointBanniereLight = `${SERVER_API_URL}/${CONSO_SERVICE}/api/light/bannieres-by-formule`;
 
 @Injectable({
   providedIn: 'root',
@@ -67,9 +69,37 @@ export class BanniereService {
       );
   }
 
-  getListBanniereByFormule() {
-    return this.listBanniereUserFormule;
+  getListBanniereByFormuleByZone(
+    hmac?: string,
+    zone_affichage: ZoneBanniere = ZoneBanniere.dashboard
+  ) {
+    const currentNumber = this.dashb.getCurrentPhoneNumber();
+    let queryParams = '';
+    let endpoint = endpointBanniere
+    if(hmac && hmac !== '') {
+      endpoint = endpointBanniereLight
+      queryParams += `&hmac=${hmac}&msisdn=${currentNumber}`
+    }
+    return this.authServ
+      .getSubscriptionForTiers(currentNumber).pipe(switchMap((userInfos: SubscriptionModel) => {
+        return this.http
+        .get(`${endpoint}/${userInfos.code}?zone=${zone_affichage}${queryParams}`)
+        .pipe(
+          map((res: any []) => {
+            if (res.length) {
+              return res.map((item: BannierePubModel) => {
+                item.image = FILE_DOWNLOAD_ENDPOINT + '/' + item.image;
+                return item;
+              });
+            }
+          }),
+          tap((r: any[]) => {
+            if (zone_affichage === ZoneBanniere.offre) this.bannieres = r;
+          })
+        );
+      }))
   }
+
 
   getStatusLoadingBanniere() {
     return this.isLoadedSubject.asObservable();

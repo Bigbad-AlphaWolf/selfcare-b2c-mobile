@@ -77,7 +77,7 @@ export class ListePassPage implements OnInit {
         boosterPayload.trigger = BoosterTrigger.PASS_INTERNET;
         this.passIntService.setUserCodeFormule(this.userCodeFormule);
         this.passIntService
-          .queryListPassInternetOfUser(this.userCodeFormule)
+          .queryListPassInternetOfUser(this.userCodeFormule, this.isLightMod)
           .subscribe(
             () => {
               this.isLoaded = true;
@@ -100,7 +100,7 @@ export class ListePassPage implements OnInit {
         const category =
           this.purchaseType === OPERATION_TYPE_PASS_ALLO ? 'allo' : null;
         this.passIllimixServ
-          .queryListPassIllimix(this.userCodeFormule, category)
+          .queryListPassIllimix(this.userCodeFormule, category, this.isLightMod)
           .subscribe(
             () => {
               this.isLoaded = true;
