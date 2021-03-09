@@ -493,7 +493,7 @@ export class DashboardService {
     const currentNumber = this.getCurrentPhoneNumber()
     if (category) url += `?categorie=${category}`;
     if (isLightMod) {
-      queryParams += `hmac=${hmac}&misdn=${currentNumber}`;
+      queryParams += `hmac=${hmac}&msisdn=${currentNumber}`;
       if (category) {
         url += '&' +queryParams
       } else {
