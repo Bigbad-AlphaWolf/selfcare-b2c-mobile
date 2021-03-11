@@ -563,7 +563,7 @@ export class DashboardService {
                   status: res.transactionStatus,
                   type: GiftType.RECHARGE,
                   value: {
-                    amount: res.transactionValue,
+                    amount: res.transactionDetails.transactionValue,
                     unit: 'F CFA',
                   },
                 };
@@ -612,10 +612,12 @@ export class DashboardService {
   getUserBirthDate(): Observable<any> {
     const userBirthDay = ls.get('birthDate');
     if (userBirthDay) return of(userBirthDay);
-      return this.getCustomerInformations().pipe( map((res: any) => {
+    return this.getCustomerInformations().pipe(
+      map((res: any) => {
         ls.set('birthDate', res.birthDate);
-        return res.birthdate
-      }))
+        return res.birthdate;
+      })
+    );
   }
 
   getCustomerInformations() {
