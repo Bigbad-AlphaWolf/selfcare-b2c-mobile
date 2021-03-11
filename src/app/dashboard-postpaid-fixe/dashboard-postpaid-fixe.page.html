@@ -2,7 +2,7 @@
 <ion-content>
   <div class="dashboard-container-mobile">
     <div class="postpaid-dashboard-container">
-      <div *ngIf="showPromoBarner && listBanniere.length" class="dashboard-img-promo">
+      <div *ngIf="showPromoBarner && listBanniere?.length" class="dashboard-img-promo">
         <ion-slides>
           <ng-container *ngFor="let banniere of listBanniere">
             <ion-slide>
@@ -18,18 +18,18 @@
       <div class="dashboard-block-conso">
         <div class="dashboard-block-conso-top-texts">
           <div><span class="suivi-conso">Suivi conso </span></div>
-          <div (click)="goDetailsCom(1)">
+          <div (click)="goDetailsCom()">
             <span class="voir-details scb-text-orange">Voir details </span>
             <img src="/assets/images/arrow-right.svg" alt="keyboard-arrow-right-orange-mob" />
           </div>
         </div>
         <div class="dashboard-block-conso-btns">
-          <div (click)="goDetailsCom()" class="scb-btn-green scb-btn-credit-fix">
+          <div (click)="goDetailsCom()" class="scb-btn-blue scb-btn-credit-fix">
             <div class="scb-btn-top-block">
-              <img class="scb-btn-top-block-icon" src="/assets/images/orange-dialler-white.svg"
+              <img class="scb-btn-top-block-icon" src="/assets/images/icon-call.svg"
                 alt="curency-cfa-3-mob" />
               <div class="scb-btn-top-block-text">
-                <span class="text">Crédit mensuel</span>
+                <span class="text">Crédit mensuel Offert</span>
               </div>
             </div>
             <div class="bottom-block">
@@ -49,61 +49,51 @@
           </div>
         </div>
       </div>
-      <div class="dashboard-block-bill">
-        <div *ngIf="errorBill" class="scb-text-red-error error">
-          <span (click)="getBills()">
-            Erreur Chargement Facture. Cliquer ici pour recharger
+      <div (click)="getBordereau()" *ngIf="hasErrorBordereau" class="scb-text-red-error error">
+        <span>
+          Erreur Chargement Facture. Cliquer ici pour recharger
+        </span>
+      </div>
+      <div *ngIf="(bordereau$|async) as bordereau" class="dashboard-block-bill">
+          <div class="bordereau" >
+            <div class="labels">
+              <div class="title">Mes factures</div>
+              <span (click)="goFacture()" class="voir-tout" > Voir tout </span>
+            </div>
+            <div class="border-bill">
+              <invoice-card [invoice]="bordereau" [title]="'Facture globale'"></invoice-card>
+            </div>
+          </div>
+      </div>
+      <div class="offre-infos">
+        <span class="title" > Mes infos clients </span>
+        <div class="infos-item">
+          <span class="label">
+            Numéro client (NCLI)
+          </span>
+          <span class="value">
+            {{ customerOfferInfos?.clientCode }}
           </span>
         </div>
-        <div class="last-bill" *ngIf="bills?.length > 0">
-          <div class="last-bill-title">
-            <div class="scb-text-l-black">Mes factures</div>
-            <div class="more-bills">
-              <span class="scb-text-orange" routerLink="/bills">Voir tout </span>
-              <img src="/assets/images/arrow-right.svg" alt="keyboard-arrow-right-orange-mob" />
-            </div>
-          </div>
-          <div class="last-bill-infos">
-            <div class="last-bill-infos-utils">
-              <div class="bill-img-container">
-                <img alt="" src="/assets/images/group-39.svg" />
-              </div>
-              <div class="bill-infos-container">
-                <div class="top-infos">
-                  <span>{{ months[lastSlip?.moisfact - 1] }} {{ lastSlip?.annefact }}</span>
-                </div>
-                <div class="bottom-infos">
-                  <span class="scb-text-item-offre-black emiss-text">N° {{lastSlip?.nfact}}</span>
-                  <span class="price">{{ lastSlip?.total | formatCurrency }} F</span>
-                </div>
-              </div>
-            </div>
-            <div class="last-bill-infos-dates">
-              <div class="echeance-date" #detail>
-                <span class="scb-text-item-offre-black emiss-text">
-                  Echéance {{ lastSlip?.dateEcheance | formatBillDate }}</span>
-                <img alt="" src="/assets/images/keyboard-arrow-up-black.svg" *ngIf="detail.show"
-                  (click)="detail.show = !detail.show" />
-                <img alt="" src="/assets/images/arrow-down.svg" *ngIf="!detail.show"
-                  (click)="detail.show = !detail.show" />
-              </div>
-            </div>
-            <div class="more-infos" *ngIf="detail.show">
-              <div class="more-infos-item-block" (click)="downloadBill(bills[0])">
-                <img alt="" src="/assets/images/pdf-file-2.svg" class="img-icon" /><span
-                  class="scb-text-orange">Télécharger en PDF</span>
-                <mat-spinner mode="indeterminate" *ngIf="bills[0]?.downloading" [diameter]="17"></mat-spinner>
-              </div>
-              <div (click)="mailToCustomerService()" class="more-infos-item-block" *ngIf="0">
-                <img alt="" src="/assets/images/pdf-file-copy-4.svg" class="img-icon" /><span
-                  class="scb-text-orange">Faire une réclamation</span>
-              </div>
-              <div *ngIf="0" class="more-infos-item-block">
-                <img alt="" src="/assets/images/pdf-file-copy-5.svg" class="img-icon" /><span
-                  class="scb-text-orange">Payer par Orange Money</span>
-              </div>
-            </div>
-          </div>
+        <div class="infos-item">
+          <span class="label">
+            Etat de la ligne
+          </span>
+          <span class="value">
+            <span class="text">
+              {{ isNumberActivated ? 'Actif' : 'Inactif' }}&nbsp;
+            </span>
+            <span class="icone" [ngClass]="{ 'actif': isNumberActivated }">
+            </span>
+          </span>
+        </div>
+        <div class="infos-item">
+          <span class="label">
+            Offre en cours
+          </span>
+          <span class="value">
+            {{ customerOfferInfos?.nomOffre }}
+          </span>
         </div>
       </div>
     </div>

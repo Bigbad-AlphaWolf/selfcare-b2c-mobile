@@ -7,9 +7,6 @@ import { AuthenticationService } from 'src/app/services/authentication-service/a
 import { BillsService } from 'src/app/services/bill-service/bills.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import {
-  formatDataVolume,
-  MAIL_URL,
-  months,
   arrangeCompteurByOrdre,
   USER_CONS_CATEGORY_CALL,
   SubscriptionModel,
@@ -18,6 +15,11 @@ import {
 import { MatDialog } from '@angular/material';
 import { AssistanceService } from '../services/assistance.service';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import { previousMonths } from '../utils/utils';
+import { Observable, of } from 'rxjs';
+import { InvoiceOrange } from '../models/invoice-orange.model';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
@@ -26,51 +28,19 @@ const ls = new SecureLS({ encodingType: 'aes' });
   styleUrls: ['./dashboard-postpaid-fixe.page.scss']
 })
 export class DashboardPostpaidFixePage implements OnInit {
-  opened = false;
-  userInfos: any = {};
   firstName;
-  months = months;
   showPromoBarner = true;
-  userConsoSummary: any = {};
-  userCallConsoSummary: {
-    globalCredit: number;
-    balance: number;
-    isHybrid: boolean;
-  } = null;
-  bills;
-  userConsommations: any;
-  userConsommationsCategories = [];
-  balance = 0;
-  consumedAmount;
-  balanceIsAvailable = false;
-  isHyBride = false;
-  errorConso;
-  errorBill;
+  errorConso: boolean;
   dataLoaded = false;
-  isConnected = false;
-  showHelbBtn = false;
-  creditRechargement: number;
-  canDoSOS = false;
-  lastUpdateOM;
-  lastTimeUpdateOM;
-  lastUpdateConso;
   creditMensuelle: number;
-  pictures = [
-    { image: '/assets/images/banniere-promo-mob.png' },
-    { image: '/assets/images/banniere-promo-fibre.png' }
-  ];
-  sosEligible = true;
   listBanniere: BannierePubModel[] = [];
   isBanniereLoaded: boolean;
-  slideOpts = {
-    speed: 400,
-    slidesPerView: 1.5,
-    slideShadows: true
-  };
-  lastSlip;
-  bordereau;
   currentNumber: string;
-  clientId: string;
+  dateExpiration: any;
+  bordereau$: Observable<InvoiceOrange>;
+  hasErrorBordereau: boolean;
+  customerOfferInfos: SubscriptionModel;
+  isNumberActivated: boolean;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -78,7 +48,8 @@ export class DashboardPostpaidFixePage implements OnInit {
     private billsService: BillsService,
     private banniereServ: BanniereService,
     private shareDialog: MatDialog,
-    private assistanceService: AssistanceService
+    private assistanceService: AssistanceService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -89,6 +60,11 @@ export class DashboardPostpaidFixePage implements OnInit {
       .subscribe((res: any) => {
           this.listBanniere = res;
       });
+    this.dashbordServ.getFixPostpaidInfos().pipe(tap((status: string) => {
+      if(status === 'ACTIVATED') {
+        this.isNumberActivated = true;
+      }
+    })).subscribe()
   }
 
   getUserInfos() {
@@ -98,46 +74,23 @@ export class DashboardPostpaidFixePage implements OnInit {
 
   ionViewWillEnter() {
     this.getConso();
-    this.bordereau = true;
     this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
-    this.getSubscription();
-    this.getBills();
+    this.getBordereau();
   }
 
-  getSubscription() {
-    this.authServ.getSubscription(this.currentNumber).subscribe(
-      (res: SubscriptionModel) => {
-        this.clientId = res.clientCode;
-        this.errorBill = false;
-        this.subscribeBillServices(this.clientId);
-      },
-      () => {
-        this.errorBill = true;
-      }
-    );
+  getBordereau() {
+    this.authServ.getSubscription(this.currentNumber).pipe(switchMap((res: SubscriptionModel) => {
+      this.customerOfferInfos = res;
+      return this.initData(res.clientCode)
+    })).subscribe();
   }
 
-  subscribeBillServices(clientId: string) {
-    this.errorBill = false;
-    this.billsService.getBillsPackage(clientId).subscribe(
-      res => {
-        // this.loading = false;
-        this.errorBill = false;
-        this.bills = res;
-        this.lastSlip =
-          this.bills && this.bills.length > 0 ? this.bills[0] : null;
-      },
-      () => {
-        this.errorBill = true;
-      }
-    );
-  }
 
   getConso() {
     this.errorConso = false;
     this.dataLoaded = false;
     this.dashbordServ.getUserConsoInfosByCode().subscribe(
-      (res: any) => {
+      (res: any[]) => {
         this.dataLoaded = true;
         if (res.length) {
           res = arrangeCompteurByOrdre(res);
@@ -145,12 +98,13 @@ export class DashboardPostpaidFixePage implements OnInit {
             ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL)
                 .consommations
             : null;
-          this.creditMensuelle =
-            appelConso && appelConso.length > 0
-              ? appelConso.find((x: any) => {
-                  return x.code === 8;
-                }).montant
-              : 0;
+          const CMO_INFOS = appelConso.find((x: any) => {
+            return x.code === 8;
+          })
+          this.creditMensuelle = CMO_INFOS ? CMO_INFOS.montant : 0
+          this.dateExpiration = CMO_INFOS ? CMO_INFOS.dateExpiration : null
+          console.log('credit', this.creditMensuelle, 'date', this.dateExpiration);
+
         } else {
           this.errorConso = true;
         }
@@ -162,86 +116,19 @@ export class DashboardPostpaidFixePage implements OnInit {
     );
   }
 
-  computeUserConso(userconsommations: any) {
-    if (userconsommations) {
-      const totalVoix = userconsommations.iinitalAmount;
-      let totalData = userconsommations.ivolumeInitialGprs;
-      this.consumedAmount = userconsommations.iusedAmount;
-      const conso = [];
-      const consoVoix = userconsommations.iremainingAmount;
-      const consoInt = totalData - userconsommations.iusedvolume;
-      const percentConsoVoix = Math.round((consoVoix * 100) / totalVoix);
-      const percentConsoInt = Math.round((consoInt * 100) / totalData);
-      let formatConsoInt = formatDataVolume(consoInt);
-      totalData = formatDataVolume(totalData).substring(0, 5);
-      let consoDataTitle = 'Restant Conso Internet';
-      if (consoInt < 0) {
-        formatConsoInt = formatDataVolume(userconsommations.iusedvolume);
-        consoDataTitle = 'Conso Internet';
-      }
-      conso.push({
-        compteur: 'Solde Restant Voix',
-        amount: consoVoix,
-        percent: percentConsoVoix,
-        total: totalVoix,
-        unit: 'F'
-      });
-      conso.push({
-        compteur: consoDataTitle,
-        amount: formatConsoInt,
-        percent: percentConsoInt,
-        total: totalData,
-        dataFinished: consoInt < 0
-      });
-      return conso;
-    }
-  }
-
-  logOut() {
-    this.authServ.logout();
-    this.router.navigate(['/']);
-  }
-
   hidePromoBarner() {
     this.showPromoBarner = false;
   }
 
-  getBills() {
-    this.billsService.getBillsPackage(this.clientId).subscribe((res: any) => {
-      res === 'error' ? (this.errorBill = true) : (this.bills = res);
-      this.lastSlip = this.bills.length > 0 ? this.bills[0] : null;
-    });
-  }
 
-  downloadBill(bill: any) {
-    this.billsService.downloadBill(bill);
-  }
 
-  mailToCustomerService() {
-    window.open(MAIL_URL);
-  }
 
-  getLastConsoUpdate() {
-    const date = new Date();
-    const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
-      '0' +
-      (date.getMonth() + 1)
-    ).slice(-2)}/${date.getFullYear()}`;
-    const lastDateTime =
-      `${date.getHours()}h` +
-      (date.getMinutes() < 10 ? '0' : '') +
-      date.getMinutes();
-    this.lastUpdateConso = `${lastDate} à ${lastDateTime}`;
-  }
 
-  goDetailsCom(phoneNumber?: number) {
-    phoneNumber = phoneNumber;
+
+  goDetailsCom() {
     this.router.navigate(['/details-conso']);
   }
 
-  goToTransfertOM() {
-    this.router.navigate(['/transfer/orange-money']);
-  }
 
   onError(input: { el: HTMLElement; display: boolean }[]) {
     input.forEach((item: { el: HTMLElement; display: boolean }) => {
@@ -276,6 +163,45 @@ export class DashboardPostpaidFixePage implements OnInit {
         }
       },
       () => {}
+    );
+  }
+
+  async initData(codeClient: string) {
+    const invoiceType = 'LANDLINE';
+    const moisDispo = await this.billsService.moisDisponible(
+        codeClient,
+        invoiceType,
+        this.currentNumber
+      );
+    this.hasErrorBordereau = false;
+    if (moisDispo) {
+      const months = previousMonths(moisDispo);
+      const last_month = months[0];
+
+      this.bordereau$ = this.billsService
+        .bordereau(codeClient, invoiceType, this.currentNumber, last_month)
+        .pipe(
+          tap((res: any) => {
+            console.log('res', res);
+
+          }),
+          catchError((err: any) => {
+          this.hasErrorBordereau = true;
+          return of(err)
+        }));
+    } else {
+      this.hasErrorBordereau = true;
+      console.log('hasErr', this.hasErrorBordereau);
+
+    }
+  }
+
+  goFacture() {
+    this.router.navigate(['/bills']);
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_Fixe_Mobile',
+      'event',
+      'clicked'
     );
   }
 }

@@ -27,6 +27,7 @@ import { SessionOem } from '../session-oem/session-oem.service';
 import { BoosterModel, BoosterTrigger } from 'src/app/models/booster.model';
 import { GiftType } from 'src/app/models/enums/gift-type.enum';
 import { BoosterService } from '../booster.service';
+import { ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT } from '../utils/account.endpoints';
 const {
   SERVER_API_URL,
   SEDDO_SERVICE,
@@ -685,5 +686,12 @@ export class DashboardService {
       omCard.remove();
       document.getElementsByClassName('swiper-wrapper')[0].prepend(omCard);
     }
+  }
+
+  getFixPostpaidInfos() {
+    const msisdn = this.getCurrentPhoneNumber();
+    return this.http.get(`${ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT}/${msisdn}/status`, {
+      responseType: 'text'
+    })
   }
 }
