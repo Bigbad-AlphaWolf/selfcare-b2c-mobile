@@ -133,10 +133,10 @@
       </div>
     </div>
   </div>
-  <div class="bons-plans" *ngIf="listBanniere && listBanniere.length">
+  <div class="bons-plans" *ngIf="listBanniere && listBanniere?.length">
     Bons Plans
   </div>
-  <div *ngIf="listBanniere.length" class="dashboard-img-promo slide-container">
+  <div *ngIf="listBanniere?.length" class="dashboard-img-promo slide-container">
     <ion-slides pager [options]="{loop: true}">
       <ng-container *ngFor="let banniere of listBanniere">
         <ion-slide>
