@@ -10,7 +10,8 @@ import {
   arrangeCompteurByOrdre,
   USER_CONS_CATEGORY_CALL,
   SubscriptionModel,
-  WelcomeStatusModel
+  WelcomeStatusModel,
+  getTrioConsoUser
 } from 'src/shared';
 import { MatDialog } from '@angular/material';
 import { AssistanceService } from '../services/assistance.service';
@@ -20,6 +21,7 @@ import { previousMonths } from '../utils/utils';
 import { Observable, of } from 'rxjs';
 import { InvoiceOrange } from '../models/invoice-orange.model';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { CODE_COMPTEUR_VOLUME_NUIT_1, CODE_COMPTEUR_VOLUME_NUIT_2, CODE_COMPTEUR_VOLUME_NUIT_3 } from '../dashboard';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
@@ -35,12 +37,16 @@ export class DashboardPostpaidFixePage implements OnInit {
   creditMensuelle: number;
   listBanniere: BannierePubModel[] = [];
   isBanniereLoaded: boolean;
-  currentNumber: string;
   dateExpiration: any;
   bordereau$: Observable<InvoiceOrange>;
   hasErrorBordereau: boolean;
   customerOfferInfos: SubscriptionModel;
   isNumberActivated: boolean;
+  userConsommationsCategories = [];
+  CODE_COMPTEUR_VOLUME_NUIT_1 = CODE_COMPTEUR_VOLUME_NUIT_1;
+  CODE_COMPTEUR_VOLUME_NUIT_2 = CODE_COMPTEUR_VOLUME_NUIT_2;
+  CODE_COMPTEUR_VOLUME_NUIT_3 = CODE_COMPTEUR_VOLUME_NUIT_3;
+  currentNumber = this.dashbordServ.getCurrentPhoneNumber();
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -53,6 +59,16 @@ export class DashboardPostpaidFixePage implements OnInit {
   ) {}
 
   ngOnInit() {
+
+  }
+
+  getUserInfos() {
+    const user = ls.get('user');
+    this.firstName = user.firstName;
+  }
+
+  ionViewWillEnter() {
+    this.getConso();
     this.getUserInfos();
     this.getWelcomeStatus();
     this.banniereServ
@@ -64,23 +80,15 @@ export class DashboardPostpaidFixePage implements OnInit {
       if(status === 'ACTIVATED') {
         this.isNumberActivated = true;
       }
-    })).subscribe()
-  }
-
-  getUserInfos() {
-    const user = ls.get('user');
-    this.firstName = user.firstName;
-  }
-
-  ionViewWillEnter() {
-    this.getConso();
-    this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
+    })).subscribe();
     this.getBordereau();
   }
 
   getBordereau() {
     this.authServ.getSubscription(this.currentNumber).pipe(switchMap((res: SubscriptionModel) => {
       this.customerOfferInfos = res;
+      console.log('res', res);
+
       return this.initData(res.clientCode)
     })).subscribe();
   }
@@ -104,7 +112,7 @@ export class DashboardPostpaidFixePage implements OnInit {
           this.creditMensuelle = CMO_INFOS ? CMO_INFOS.montant : 0
           this.dateExpiration = CMO_INFOS ? CMO_INFOS.dateExpiration : null
           console.log('credit', this.creditMensuelle, 'date', this.dateExpiration);
-
+          this.userConsommationsCategories = getTrioConsoUser(res);
         } else {
           this.errorConso = true;
         }

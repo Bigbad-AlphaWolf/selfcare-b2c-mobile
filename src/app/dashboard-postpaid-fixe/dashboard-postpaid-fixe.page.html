@@ -47,6 +47,30 @@
               Erreur Chargement Conso. Cliquer ici pour recharger
             </span>
           </div>
+          <ng-container *ngFor="let conso of userConsommationsCategories">
+            <div class="dashboard-block-conso-details-item">
+              <div class="conso-name-value-line">
+                <span class="conso-name scb-text-gray">{{ conso.compteur }}</span>
+                <span class="conso-value scb-text-full-black">{{ conso.montantFormat }}</span>
+              </div>
+              <ng-container *ngIf="
+                        conso.code !== CODE_COMPTEUR_VOLUME_NUIT_1 &&
+                            conso.code !== CODE_COMPTEUR_VOLUME_NUIT_2 &&
+                            conso.code !== CODE_COMPTEUR_VOLUME_NUIT_3;
+                        else compteurNuit
+                    ">
+                <div class="conso-expiration-line">
+                  <span class="conso-expiration-date scb-text-light-black">Expire le
+                    {{ conso.dateExpiration }}</span>
+                </div>
+              </ng-container>
+              <ng-template #compteurNuit>
+                <div class="conso-expiration-line">
+                  <span class="conso-expiration-date scb-text-light-black">Utilisable de 00h à 08h</span>
+                </div>
+              </ng-template>
+            </div>
+          </ng-container>
         </div>
       </div>
       <div (click)="getBordereau()" *ngIf="hasErrorBordereau" class="scb-text-red-error error">

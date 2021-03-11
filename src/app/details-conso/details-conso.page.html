@@ -3,7 +3,7 @@
     <div class="arrow-left-container" routerLink="/dashboard">
       <img alt="arrow" src="/assets/images/arrow-left.png" />
     </div>
-  
+
     <div class="suivi_conso_label-container">
       <span>Détails consommations</span>
     </div>
@@ -12,12 +12,12 @@
 
 <ion-content>
   <div class="suivi_conso-page">
-  
+
     <!-- loader -->
     <div class="profil-spinner" *ngIf="!currentProfil">
       <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
     </div>
-  
+
     <div class="suivi-conso-page-body">
       <div class="tab-header">
         <ng-container *ngIf="currentProfil && currentProfil !== 'POSTPAID'">
@@ -40,7 +40,7 @@
               <span class="scb-text-gray">Mes souscriptions</span>
           </div>
         </ng-container>
-        
+
         <ng-container *ngIf="currentProfil && currentProfil === 'POSTPAID'">
             <div class="conso-tab-category tab-header-item selected" >
                 <div class="spinner" *ngIf="histLoading">
@@ -82,7 +82,7 @@
             </ion-slide>
             </ng-container>
             <ng-container *ngIf="currentProfil && currentProfil === 'POSTPAID'">
-                <ion-slide>  
+                <ion-slide>
                     <ng-container *ngIf="!histLoading">
                       <app-historique-conso
                           [chargeTypes]="chargeTypes"
@@ -98,7 +98,7 @@
                       >
                       </app-historique-conso>
                   </ng-container>
-                  
+
                 </ion-slide>
             </ng-container>
           </ion-slides>
