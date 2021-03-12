@@ -49,7 +49,7 @@ export class OffreServiceCardComponent implements OnInit {
       return;
     }
     if (!this.service.redirectionPath){
-      if(this.service.code + '' === ServiceCode.OFC){//OFC
+      if(this.service.code === ServiceCode.OFC){//OFC
         this.ofcService.loadOFC();
       }
       return;
