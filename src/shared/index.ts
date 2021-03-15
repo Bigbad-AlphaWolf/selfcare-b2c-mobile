@@ -343,8 +343,8 @@ export function getOrderedListCategory(
 ): CategoryPassInternet[] {
   let listCategoryFiltered = [];
   unorderedList = unorderedList.filter((elt: any) => {
-   return !!elt
-  })
+    return !!elt;
+  });
   unorderedList.sort(
     (elt1: CategoryPassInternet, elt2: CategoryPassInternet) =>
       elt1.ordre - elt2.ordre
@@ -841,6 +841,7 @@ export class SplashScreenMock extends SplashScreen {
 }
 
 export function getBanniereTitle(banniereDescription: string) {
+  if (!banniereDescription) return;
   const semiColonIndex = banniereDescription.indexOf(';');
   if (semiColonIndex < 1) return banniereDescription;
   return banniereDescription
