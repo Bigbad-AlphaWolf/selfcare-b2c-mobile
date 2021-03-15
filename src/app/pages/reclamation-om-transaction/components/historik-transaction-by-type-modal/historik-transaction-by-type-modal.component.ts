@@ -33,7 +33,7 @@ export class HistorikTransactionByTypeModalComponent implements OnInit {
   fetchTransactions() {
     this.isProcessing = true;
     this.hasError = false;
-    this.purchServ.getAllTransactionByDay(this.currentPhoneNumber,7,'TRANSFERT_ARGENT').pipe(
+    this.purchServ.getAllTransactionByDay(this.currentPhoneNumber,7,'TRANSFER').pipe(
       switchMap((resp1: PurchaseModel[]) => {
         return this.purchServ.getAllTransactionByDay(this.currentPhoneNumber, 7, 'TRANSFERT_ARGENT_CODE').pipe(
           map((resp2: any) => {

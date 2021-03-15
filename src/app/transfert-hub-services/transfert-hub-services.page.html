@@ -22,15 +22,15 @@
   <div class="transferts-page">
     <div class="ion-cards-container" *ngIf="options.length">
       <ng-container *ngFor="let opt of options">
-        <div class="card" *ngIf="opt.type !== OPERATION_TYPE_PASS_ALLO" [ngClass]="{'disabled': !isServciceActivated(opt)}">
+        <div class="card" *ngIf="opt.code !== OPERATION_TYPE_PASS_ALLO" [ngClass]="{'disabled': !opt.activated}">
           <ion-card (click)="goTo(opt)" class="card-content" button="true">
             <ion-card-content>
               <div class="icon">
-                <img [src]="opt?.icon" alt="" />
+                <img [src]="opt?.icone" alt="" />
               </div>
               <div class="text">
-                <span class="title"> {{opt.title}} </span>
-                <span class="subtitle"> {{opt.subtitle}} </span>
+                <span class="title"> {{opt.titre}} </span>
+                <span class="subtitle"> {{opt.shortDescription}} </span>
               </div>
             </ion-card-content>
           </ion-card>
@@ -45,7 +45,7 @@
           </div>
           <div
             class="badge-promo"
-            *ngIf="opt.type === OPERATION_TYPE_PASS_ALLO && showNewFeatureBadge$|async"
+            *ngIf="opt.code === OPERATION_TYPE_PASS_ALLO && showNewFeatureBadge$|async"
           >
             <div class="icon-container">
               <span class="new scb-text-white"> Nouveau </span>
@@ -70,6 +70,16 @@
           <app-item-pass-illimix *ngFor="let passIllimix of favoritesPass.passIllimixes" [passIllimix]="passIllimix" (selectPass)="choosePass(passIllimix, OPERATION_TYPE_PASS_ILLIMIX)">
           </app-item-pass-illimix>
         </ng-container>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="loadingServices">
+      <div class="loader-container">
+        <mat-spinner mode="indeterminate" [diameter]="50"></mat-spinner>
+      </div>
+    </ng-container>
+    <ng-container>
+      <div *ngIf="servicesHasError">
+        <span class="scb-text-red-error" (click)="getServices()">N'a pas pu charger les services. Réactualisez ici</span>
       </div>
     </ng-container>
   </div>

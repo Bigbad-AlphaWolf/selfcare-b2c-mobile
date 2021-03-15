@@ -599,7 +599,7 @@ export class DashboardService {
                   status: res.transactionStatus,
                   type: GiftType.RECHARGE,
                   value: {
-                    amount: res.transactionValue,
+                    amount: res.transactionDetails.transactionValue,
                     unit: 'F CFA',
                   },
                 };
@@ -648,15 +648,12 @@ export class DashboardService {
   getUserBirthDate(): Observable<any> {
     const userBirthDay = ls.get('birthDate');
     if (userBirthDay) return of(userBirthDay);
-    const msisdn = this.getMainPhoneNumber();
-    return this.http
-      .get(`${userBirthDateEndpoint}/${msisdn}`, { responseType: 'text' })
-      .pipe(
-        map((birthDate) => {
-          ls.set('birthDate', birthDate);
-          return birthDate;
-        })
-      );
+    return this.getCustomerInformations().pipe(
+      map((res: any) => {
+        ls.set('birthDate', res.birthDate);
+        return res.birthdate;
+      })
+    );
   }
 
   getCustomerInformations() {

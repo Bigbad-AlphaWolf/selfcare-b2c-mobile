@@ -63,8 +63,7 @@ export class AssistanceHubPage implements OnInit {
     private router: Router,
     private navController: NavController,
     private inAppBrowser: InAppBrowser,
-    private followAnalyticsService: FollowAnalyticsService,
-    private modalController: ModalController
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -98,9 +97,12 @@ export class AssistanceHubPage implements OnInit {
   }
 
   splitHelpItemsByType(){
-    const firtFaqIndex = this.listBesoinAides.map((i)=>i.type).indexOf(BesoinAideType.FAQ);
-    this.listActes = this.listBesoinAides.slice(0,firtFaqIndex);
-    this.listFaqs = this.listBesoinAides.slice(firtFaqIndex);
+    this.listActes = this.listBesoinAides.filter((item: ItemBesoinAide) => {
+     return item.type === BesoinAideType.ACTE
+    });
+    this.listFaqs = this.listBesoinAides.filter((item: ItemBesoinAide) => {
+      return item.type === BesoinAideType.FAQ
+    });
   }
 
   goAllActionsHub() {
@@ -146,12 +148,12 @@ export class AssistanceHubPage implements OnInit {
       this.navController.navigateForward(['/assistance-hub/search'],{state:{listBesoinAides:this.listBesoinAides, search:inputvalue}});
       this.displaySearchIcon = false;
     }
-    
+
   }
 
   onClear(searchInput){
     const inputValue : string =  searchInput.value;
     searchInput.value = inputValue.slice(0,inputValue.length-1);
-    
+
   }
 }

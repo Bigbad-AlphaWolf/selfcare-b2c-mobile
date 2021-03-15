@@ -136,6 +136,8 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   PAIEMENT_FACTURE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   WOYOFAL_PAYMENT: `${IMAGES_DIRECTORY}ic-files.png`,
   PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
+  MERCHANT_PAYMENT: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
+  RAPIDO: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
   SARGAL: `${IMAGES_DIRECTORY}transfert-icon.png`,
 };
 
@@ -343,11 +345,15 @@ export function getOrderedListCategory(
   unorderedList: CategoryPassInternet[]
 ): CategoryPassInternet[] {
   let listCategoryFiltered = [];
+  unorderedList = unorderedList.filter((elt: any) => {
+    return !!elt;
+  });
   unorderedList.sort(
     (elt1: CategoryPassInternet, elt2: CategoryPassInternet) =>
       elt1.ordre - elt2.ordre
   );
   listCategoryFiltered = [...new Set(unorderedList.map((x) => x.libelle))];
+
   return listCategoryFiltered;
 }
 
@@ -845,7 +851,7 @@ export function getBanniereTitle(banniereDescription: string) {
       ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
       : '';
   }
-  return banniereDescription
+  return banniereDescription;
 }
 
 export function getBanniereDescription(banniereDescription: string) {
@@ -1253,4 +1259,10 @@ export function getActiveBoostersForSpecificPass(
     booster.pricePlanIndexes.includes(passPPI.toString())
   );
   return boostersArray;
+}
+
+export enum HUB_ACTIONS {
+  ACHAT = 'HUB_ACHAT',
+  TRANSFERT = 'HUB_TRANSFER',
+  FACTURES = 'HUB_BILLS',
 }

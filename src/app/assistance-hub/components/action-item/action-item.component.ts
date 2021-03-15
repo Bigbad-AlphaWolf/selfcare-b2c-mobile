@@ -35,7 +35,7 @@ export class ActionItemComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.imageUrl = this.FILE_BASE_URL + '/' + this.action.icone;
+    this.imageUrl = this.action.icone ? this.FILE_BASE_URL + '/' + this.action.icone : null;
   }
 
   doAction() {
@@ -70,9 +70,16 @@ export class ActionItemComponent implements OnInit {
       case 'CHANGE_PIN_OM':
         this.openPinpad();
         break;
+      case 'IBOU_CONTACT':
+        this.goIbouPage();
+        break;
       default:
         break;
     }
+  }
+
+  goIbouPage() {
+    this.router.navigate(['/contact-ibou-hub']);
   }
 
   goFiberEligibility() {
@@ -162,9 +169,8 @@ export class ActionItemComponent implements OnInit {
       if (resp && resp.data && resp.data.success) {
 
         const omUserInfos = resp.data.omUserInfos;
-        console.log('omUser', omUserInfos);
-        this.getBirhDate().pipe(tap((birthDate: string) => {
-          
+        this.dashbServ.getCustomerInformations().pipe(tap((res: any) => {
+          const birthDate = res.birthDate
           if(birthDate){
             const year = birthDate.split('-')[0];
             this.router.navigate(['/change-orange-money-pin'], { state: { omUserInfos, birthYear: year } });
@@ -177,7 +183,4 @@ export class ActionItemComponent implements OnInit {
     });
     return await modal.present();
   }
-  getBirhDate() {
-    return this.dashbServ.getUserBirthDate();
-   }
 }

@@ -1,5 +1,5 @@
 export interface OffreService {
-  code?: number;
+  code?: string;
   titre?: string;
   shortDescription?: string;
   duree?: string;
@@ -12,9 +12,20 @@ export interface OffreService {
   icone?: string;
   ordre?: number;
   libelle?: string;
-  categorieOffreServices?: any;
+  categorieOffreServices?: any[];
   redirectionType?: string;
   redirectionPath?: string;
   reasonDeactivation?: string;
-  clicked?:boolean;
+  clicked?: boolean;
+  nouveau?: boolean;
+  iconeBackground?: string;
+}
+
+export interface CategoryOffreServiceModel {
+  categorieOffreServices?: any[];
+  description?: string;
+  libelle?: string;
+  niveau?: string;
+  offreServices?: OffreService;
+  ordre?: number;
 }
