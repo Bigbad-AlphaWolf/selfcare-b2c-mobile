@@ -1,33 +1,22 @@
 <ion-grid>
   <ion-row>
-    <ng-container *ngFor="let operation of operations">    
-    <div
-      matRipple
-      (click)="onOperation(operation)"
-      class="operation"
-      [ngClass]="{'disabled': !isServciceActivated(operation)}"
-      *ngIf="!isServiceHidden(operation)"
-    >
-      <img [src]="operation.icon" class="operation-img" />
-      <div class="operation-text">
-        <span class="action">{{ operation.title }} </span>
-        <span class="target">{{ operation.subtitle }}</span>
-      </div>
-      <div
-        class="badge-promo"
-        *ngIf="
-          operation?.type === OPERATION_TYPE_ALLO && showNewFeatureBadge$
-            | async
-        "
-      >
-        <div class="icon-container">
-          <span class="new scb-text-white">
-            Nouveau
-          </span>
+    <ng-container *ngFor="let operation of operations">
+      <div matRipple (click)="onOperation(operation)" class="operation" [ngClass]="{'disabled': !operation.activated}"
+        *ngIf="!isServiceHidden(operation)">
+        <img [src]="operation.icone" class="operation-img" />
+        <div class="operation-text">
+          <span class="action">{{ operation.titre }} </span>
+          <span class="target">{{ operation.description }}</span>
         </div>
-        <div class="triangle"></div>
+        <div class="badge-promo" *ngIf="operation.nouveau">
+          <div class="icon-container">
+            <span class="new scb-text-white">
+              Nouveau
+            </span>
+          </div>
+          <div class="triangle"></div>
+        </div>
       </div>
-    </div>
-  </ng-container>
+    </ng-container>
   </ion-row>
 </ion-grid>

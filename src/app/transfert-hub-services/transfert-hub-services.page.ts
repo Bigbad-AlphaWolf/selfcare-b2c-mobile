@@ -19,6 +19,7 @@ import {
   SubscriptionModel,
   OPERATION_TYPE_PASS_ILLIFLEX,
   PassInternetModel,
+  HUB_ACTIONS,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -38,6 +39,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { FavoritePassOemModel } from '../models/favorite-pass-oem.model';
 import { FavorisService } from '../services/favoris/favoris.service';
 import { OperationService } from '../services/oem-operation/operation.service';
+import { OffreService } from '../models/offre-service.model';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -48,144 +50,7 @@ export class TransfertHubServicesPage implements OnInit {
   OPERATION_TYPE_PASS_INTERNET = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_TYPE_PASS_ILLIMIX = OPERATION_TYPE_PASS_ILLIMIX;
   pageTitle: string;
-  transferOptions: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type: 'TRANSFERT_MONEY' | 'TRANSFERT_CREDIT' | 'TRANSFERT_BONUS';
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-  }[] = [
-    {
-      title: 'Transfert',
-      subtitle: "d'argent",
-      icon:
-        '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
-      action: 'REDIRECT',
-      type: 'TRANSFERT_MONEY',
-      url: '',
-    },
-    {
-      title: 'Transfert',
-      subtitle: 'de crédit',
-      icon:
-        '/assets/images/04-boutons-01-illustrations-19-acheter-du-credit.svg',
-      action: 'REDIRECT',
-      type: 'TRANSFERT_CREDIT',
-      url: '/transfer/credit-bonus',
-    },
-    {
-      title: 'Transfert',
-      subtitle: 'de bonus',
-      icon:
-        '/assets/images/04-boutons-01-illustrations-02-transfert-argent-ou-credit.svg',
-      action: 'REDIRECT',
-      type: 'TRANSFERT_BONUS',
-      url: '/transfer/credit-bonus',
-    },
-  ];
-  buyOptions: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type:
-      | 'CREDIT'
-      | 'PASS'
-      | 'PASS_ILLIMIX'
-      | 'PASS_VOYAGE'
-      | 'PASS_INTERNATIONAL'
-      | 'PASS_ALLO';
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-    idCode?: number;
-  }[] = [
-    {
-      title: 'Pass',
-      subtitle: 'internet',
-      icon:
-        '/assets/images/04-boutons-01-illustrations-18-acheter-pass-internet.svg',
-      action: 'REDIRECT',
-      type: 'PASS',
-      url: '',
-    },
-    {
-      title: 'Pass',
-      subtitle: 'illimix',
-      icon:
-        '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
-      action: 'REDIRECT',
-      type: 'PASS_ILLIMIX',
-      url: '',
-    },
-    {
-      title: 'Pass',
-      subtitle: 'Allo',
-      icon: '/assets/images/ic-call-forward@2x.png',
-      action: 'REDIRECT',
-      type: 'PASS_ALLO',
-      url: '',
-    },
-    {
-      title: 'Pass',
-      subtitle: 'voyage',
-      icon:
-        '/assets/images/04-boutons-01-illustrations-09-acheter-pass-voyage.svg',
-      action: 'REDIRECT',
-      type: 'PASS_VOYAGE',
-      url: '',
-    },
-  ];
-  buyCreditOption: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type: 'CREDIT';
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-  } = {
-    title: 'Recharge',
-    subtitle: 'crédit',
-    icon: '/assets/images/04-boutons-01-illustrations-19-acheter-du-credit.svg',
-    action: 'REDIRECT',
-    type: 'CREDIT',
-    url: '',
-  };
-  buyIlliflexOption: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type;
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-    idCode?: number;
-  } = {
-    title: 'Pass',
-    subtitle: 'illiflex',
-    icon:
-      '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
-    action: 'REDIRECT',
-    type: 'ILLIFLEX',
-    url: '',
-    idCode: 1134,
-  };
-  options: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type:
-      | 'TRANSFERT_MONEY'
-      | 'TRANSFERT_CREDIT'
-      | 'TRANSFERT_BONUS'
-      | 'CREDIT'
-      | 'PASS'
-      | 'PASS_ILLIMIX'
-      | 'PASS_VOYAGE'
-      | 'PASS_INTERNATIONAL'
-      | 'PASS_ALLO'
-      | 'ILLIFLEX';
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-  }[] = [];
+  options: OffreService[] = [];
   omPhoneNumber: string;
   isProcessing: boolean;
   errorMsg: string;
@@ -199,7 +64,7 @@ export class TransfertHubServicesPage implements OnInit {
   favoritesPass: FavoritePassOemModel;
   loadingServices: boolean;
   servicesHasError: boolean;
-  allServices = [];
+  hubCode: HUB_ACTIONS;
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
@@ -221,35 +86,30 @@ export class TransfertHubServicesPage implements OnInit {
     if (history && history.state) {
       this.purchaseType = history.state.purchaseType;
       this.isLightMod = history.state.isLightMod;
-      if (!this.isLightMod) {
-        this.buyOptions.splice(0, 0, this.buyCreditOption);
-      }
     }
     if (this.purchaseType === 'TRANSFER') {
-      this.options = this.transferOptions;
       this.pageTitle = 'Transférer argent ou crédit';
+      this.hubCode = HUB_ACTIONS.TRANSFERT;
     } else if (this.purchaseType === 'BUY') {
       this.pageTitle = 'Acheter crédit ou pass';
-      this.getActiveServices();
+      this.hubCode = HUB_ACTIONS.ACHAT;
     } else {
       this.navController.navigateBack('/dashboard');
     }
+    this.getServices();
   }
 
-  getActiveServices() {
+  getServices() {
     this.loadingServices = true;
     this.servicesHasError = false;
-    this.operationService.getAllServices().subscribe(
+    this.operationService.getServicesByFormule(this.hubCode).subscribe(
       (res: any) => {
         this.loadingServices = false;
-        this.options = this.buyOptions;
+        this.options = res;
         this.getUserActiveBonPlans();
         this.getUserActiveBoosterPromo();
         this.getFavoritePass();
         this.getUserInfos();
-        this.allServices = res;
-        if (this.isServciceActivated(this.buyIlliflexOption))
-          this.buyOptions.push(this.buyIlliflexOption);
       },
       (err) => {
         this.loadingServices = false;
@@ -258,34 +118,15 @@ export class TransfertHubServicesPage implements OnInit {
     );
   }
 
-  isServciceActivated(action) {
-    const actionService = this.allServices.find(
-      (service) => action.idCode && service.code === action.idCode
-    );
-    if (actionService) return actionService.activated;
-    return true;
-  }
-
   goBack() {
     this.navController.pop();
   }
 
-  async goTo(opt: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type: string;
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-    idCode?: number;
-  }) {
-    if (!this.isServciceActivated(opt)) {
-      const service = OperationService.AllOffers.find(
-        (service) => opt.idCode && service.code === opt.idCode
-      );
+  async goTo(opt: OffreService) {
+    if (!opt.activated) {
       const toast = await this.toastController.create({
         header: 'Service indisponible',
-        message: service.reasonDeactivation,
+        message: opt.reasonDeactivation,
         duration: 3000,
         position: 'middle',
         color: 'medium',
@@ -294,62 +135,46 @@ export class TransfertHubServicesPage implements OnInit {
       return;
     }
 
-    switch (opt.type) {
+    switch (opt.code) {
       case 'TRANSFERT_MONEY':
-        if (opt.action === 'REDIRECT') {
-          this.showBeneficiaryModal();
-        }
+        this.showBeneficiaryModal();
         break;
       case 'TRANSFERT_CREDIT':
-        if (opt.action === 'REDIRECT') {
-          this.appRouting.goToTransfertCreditPage();
-        }
+        this.appRouting.goToTransfertCreditPage();
         break;
       case 'TRANSFERT_BONUS':
-        if (opt.action === 'REDIRECT') {
-          this.appRouting.goToTransfertBonusPage();
-        }
+        this.appRouting.goToTransfertBonusPage();
         break;
       case 'CREDIT':
-        if (opt.action === 'REDIRECT') {
-          this.bsService.openNumberSelectionBottomSheet(
-            NumberSelectionOption.WITH_MY_PHONES,
-            OPERATION_TYPE_RECHARGE_CREDIT,
-            CreditPassAmountPage.PATH
-          );
-        }
+        this.bsService.openNumberSelectionBottomSheet(
+          NumberSelectionOption.WITH_MY_PHONES,
+          OPERATION_TYPE_RECHARGE_CREDIT,
+          CreditPassAmountPage.PATH
+        );
         break;
       case 'PASS':
-        if (opt.action === 'REDIRECT') {
-          this.openModalPassNumberSelection(
-            OPERATION_TYPE_PASS_INTERNET,
-            'list-pass'
-          );
-        }
+        this.openModalPassNumberSelection(
+          OPERATION_TYPE_PASS_INTERNET,
+          'list-pass'
+        );
         break;
       case 'PASS_ILLIMIX':
-        if (opt.action === 'REDIRECT') {
-          this.openModalPassNumberSelection(
-            OPERATION_TYPE_PASS_ILLIMIX,
-            'list-pass'
-          );
-        }
+        this.openModalPassNumberSelection(
+          OPERATION_TYPE_PASS_ILLIMIX,
+          'list-pass'
+        );
         break;
       case 'PASS_VOYAGE':
-        if (opt.action === 'REDIRECT') {
-          this.openModalPassNumberSelection(
-            OPERATION_TYPE_PASS_VOYAGE,
-            ListPassVoyagePage.ROUTE_PATH
-          );
-        }
+        this.openModalPassNumberSelection(
+          OPERATION_TYPE_PASS_VOYAGE,
+          ListPassVoyagePage.ROUTE_PATH
+        );
         break;
       case 'PASS_ALLO':
-        if (opt.action === 'REDIRECT') {
-          this.openModalPassNumberSelection(
-            OPERATION_TYPE_PASS_ALLO,
-            'list-pass'
-          );
-        }
+        this.openModalPassNumberSelection(
+          OPERATION_TYPE_PASS_ALLO,
+          'list-pass'
+        );
         break;
       case 'ILLIFLEX':
         this.openModalPassNumberSelection(
@@ -407,6 +232,7 @@ export class TransfertHubServicesPage implements OnInit {
     });
     return await modal.present();
   }
+
   async showBeneficiaryModal() {
     const modal = await this.modalController.create({
       component: SelectBeneficiaryPopUpComponent,
@@ -488,6 +314,7 @@ export class TransfertHubServicesPage implements OnInit {
       }
     return result;
   }
+
   displayBadgeOfferPlanForInOptionsCategory(
     offerPlan: OfferPlanActive,
     opt: {

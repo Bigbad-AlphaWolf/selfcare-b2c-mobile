@@ -343,8 +343,8 @@ export function getOrderedListCategory(
 ): CategoryPassInternet[] {
   let listCategoryFiltered = [];
   unorderedList = unorderedList.filter((elt: any) => {
-   return !!elt
-  })
+    return !!elt;
+  });
   unorderedList.sort(
     (elt1: CategoryPassInternet, elt2: CategoryPassInternet) =>
       elt1.ordre - elt2.ordre
@@ -1253,4 +1253,10 @@ export function getActiveBoostersForSpecificPass(
     booster.pricePlanIndexes.includes(passPPI.toString())
   );
   return boostersArray;
+}
+
+export enum HUB_ACTIONS {
+  ACHAT = 'HUB_ACHAT',
+  TRANSFERT = 'HUB_TRANSFER',
+  FACTURES = 'HUB_BILLS',
 }

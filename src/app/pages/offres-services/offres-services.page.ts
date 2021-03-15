@@ -10,6 +10,7 @@ import { takeUntil, switchMap, catchError, tap } from 'rxjs/operators';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { SubscriptionModel } from 'src/shared';
+import { OffreService } from 'src/app/models/offre-service.model';
 
 @Component({
   selector: 'app-offres-services',
@@ -33,6 +34,9 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
   };
   operations$: Observable<any[]>;
   tabHeaderItems: any[] = [];
+  categoriesOffreServiceLevel1: any[];
+  allServices: OffreService[];
+  filteredServices: OffreService[];
 
   constructor(
     public banniereService: BanniereService,
@@ -55,11 +59,16 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
   initData() {
     this.isLoading = true;
     this.authServ
-      .getSubscriptionForTiers(this.currentPhoneNumber)
+      .getSubscription(this.currentPhoneNumber)
       .pipe(
         switchMap((res: SubscriptionModel) => {
           return this.opService.initServicesData(res.code).pipe(
-            tap((res: any) => (this.isLoading = false)),
+            tap((res: any) => {
+              this.isLoading = false;
+              this.categoriesOffreServiceLevel1 = res.categories;
+              this.allServices = res.services;
+              this.filterServices();
+            }),
             catchError((err: any) => {
               this.isLoading = false;
               return err;
@@ -79,21 +88,37 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
     this.sliders.slideTo(tabIndex);
     this.activeTabIndex = tabIndex;
     this.activeSubIndex = 0;
+    this.filterServices();
   }
 
   onChangeSubCat(subCatIndex: number) {
     this.activeSubIndex = subCatIndex;
+    this.filterServices();
   }
 
   slideChanged() {
     this.sliders.getActiveIndex().then((index) => {
       this.activeTabIndex = index;
       this.activeSubIndex = 0;
+      this.filterServices();
+    });
+  }
+
+  filterServices() {
+    const currentSubCategory = this.categoriesOffreServiceLevel1[
+      this.activeTabIndex
+    ].categorieOffreServices[this.activeSubIndex];
+    console.log(currentSubCategory);
+
+    this.filteredServices = this.allServices.filter((service) => {
+      const serviceMappedCategoryById = service.categorieOffreServices.map(
+        (x) => x.id
+      );
+      return serviceMappedCategoryById.includes(currentSubCategory.id);
     });
   }
 
   goBack() {
     this.navCtl.pop();
   }
-
 }
