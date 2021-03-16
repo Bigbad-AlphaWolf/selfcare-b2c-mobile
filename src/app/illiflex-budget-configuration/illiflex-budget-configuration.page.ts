@@ -46,6 +46,8 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
   recipientOfferCode: string;
   bonusSms: number;
   BASE_MULTIPLE = BASE_MULTIPLE;
+  maxAmountIlliflex = 15000;
+  minAmountIlliflex = 500;
   constructor(
     private navController: NavController,
     private illiflexService: IlliflexService,
@@ -86,6 +88,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
   getIlliflexPaliers() {
     this.illiflexService.getIlliflexPaliers().subscribe((res: any[]) => {
       this.paliers = res;
+      this.getMinAndMax();
     });
   }
 
@@ -212,5 +215,13 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
         this.illiflexTitle = 'Achat illiflex 30 jours';
         return '30 jours';
     }
+  }
+
+  getMinAndMax() {
+    if (!this.paliers && !this.paliers.length) return;
+    const maxArray = this.paliers.map((pricing) => pricing.maxPalier);
+    this.maxAmountIlliflex = Math.max(...maxArray);
+    const minArray = this.paliers.map((pricing) => pricing.minPalier);
+    this.minAmountIlliflex = Math.min(...minArray);
   }
 }
