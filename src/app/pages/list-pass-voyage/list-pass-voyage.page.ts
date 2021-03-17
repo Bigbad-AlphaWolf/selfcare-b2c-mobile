@@ -49,6 +49,7 @@ export class ListPassVoyagePage implements OnInit {
     this.isLoading = true;
     this.countries$ = this.passVoyageService.fetchCountries().pipe(
       tap((countries: any) => {
+        this.isLoading = false;
         if (countries.length) {
           //2 get first one
           this.country = countries[0];
@@ -75,11 +76,11 @@ export class ListPassVoyagePage implements OnInit {
           this.tabHeaderItems.push('Appel');
           results.push(rs[0]);
         }
-        
+
         if(rs[1].length){
           this.tabHeaderItems.push('Internet');
           results.push(rs[1]);
-        } 
+        }
         return results;
       })
     );

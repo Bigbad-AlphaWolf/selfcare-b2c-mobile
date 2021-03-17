@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { OperationOem } from 'src/app/models/operation.model';
-import { ACTIONS_RAPIDES_OPERATIONS_POSTPAID } from 'src/app/utils/operations.util';
+import { OffreService } from 'src/app/models/offre-service.model';
+import { OperationService } from 'src/app/services/oem-operation/operation.service';
 
 @Component({
   selector: 'app-oem-services',
@@ -9,11 +9,35 @@ import { ACTIONS_RAPIDES_OPERATIONS_POSTPAID } from 'src/app/utils/operations.ut
   styleUrls: ['./oem-services.page.scss'],
 })
 export class OemServicesPage implements OnInit {
-  operations: OperationOem[] = ACTIONS_RAPIDES_OPERATIONS_POSTPAID;
+  operations: OffreService[];
+  loadingServices: boolean;
+  hasError: boolean;
 
-  constructor(private navCtr: NavController) {}
+  constructor(
+    private navCtr: NavController,
+    private operationService: OperationService
+  ) {}
 
   ngOnInit() {}
+
+  ionViewWillEnter() {
+    this.fetchAllPostpaidOffers();
+  }
+
+  fetchAllPostpaidOffers() {
+    this.loadingServices = true;
+    this.hasError = false;
+    this.operationService.getServicesByFormule().subscribe(
+      (res) => {
+        this.operations = res;
+        this.loadingServices = false;
+      },
+      (err) => {
+        this.loadingServices = false;
+        this.hasError = true;
+      }
+    );
+  }
 
   goBack() {
     this.navCtr.pop();

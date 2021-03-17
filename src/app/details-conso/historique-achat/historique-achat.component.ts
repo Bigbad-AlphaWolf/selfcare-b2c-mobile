@@ -27,6 +27,7 @@ export class HistoriqueAchatComponent implements OnInit {
   getTransactionByDay(day: number) {
       this.dateFilterSelected = day;
       this.getTransactionsByDay.emit(day);
+      this.typePurchaseFilterSelected = DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
   }
 
   getTransactionByType(filterType: {label: string, typeAchat: string}){

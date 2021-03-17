@@ -172,7 +172,7 @@
           <div class="title">Je souhaite</div>
           <div class="more" (click)="onVoirPlus()">Voir plus</div>
         </div>
-        <oem-operations [operations]="operations"></oem-operations>
+        <oem-operations [operations]="operations" *ngIf="operations?.length"></oem-operations>
       </div>
 
       <div class="dashboard-block-bill">
@@ -287,7 +287,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="listBanniere.length" class="bons-plans">
+      <div *ngIf="listBanniere?.length" class="bons-plans">
         <div class="title">Bons plans</div>
         <div class="dashboard-img-promo slide-container">
           <ion-slides pager [options]="{loop: true}">

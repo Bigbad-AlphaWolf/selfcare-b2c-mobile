@@ -33,9 +33,9 @@ export const OPERATION_TYPE_SOS = 'SOS';
 export const OPERATION_TYPE_SOS_CREDIT = 'SOS CREDIT';
 export const OPERATION_TYPE_SOS_PASS = 'SOS Pass Internet';
 export const OPERATION_TYPE_SOS_ILLIMIX = 'SOS Illimix';
-export const OPERATION_TYPE_SEDDO_CREDIT = 'SEDDO CREDIT';
+export const OPERATION_TYPE_SEDDO_CREDIT = 'SEDDO_CREDIT';
 export const OPERATION_TYPE_SEDDO_PASS = 'SEDDO PASS';
-export const OPERATION_TYPE_SEDDO_BONUS = 'SEDDO BONUS';
+export const OPERATION_TYPE_SEDDO_BONUS = 'SEDDO_BONUS';
 export const OPERATION_TYPE_TRANSFER_OM = 'orange-money';
 export const OPERATION_TYPE_RECHARGE_CREDIT = 'RECHARGEMENT_CREDIT';
 export const OPERATION_TYPE_SARGAL_CONVERSION = 'SARGAL_CONVERSION';
@@ -101,18 +101,6 @@ export const MAX_USER_AVATAR_UPLOAD_SIZE = 3072;
 // Maximum size of avatar image allowed in bytes : 5 Mo ou 5 * 1024Ko
 export const MAX_USER_FILE_UPLOAD_SIZE = 5120;
 
-export const CATEGORY_PURCHASE_HISTORY = [
-  { nom: 'Tous', value: undefined },
-  { nom: 'Rechargement', value: 'RECHARGEMENT' },
-  { nom: 'Transfert Bonus', value: 'TRANSFERT_BONUS' },
-  { nom: 'Pass Illimix', value: 'ILLIMIX' },
-  { nom: 'Pass Internet', value: 'INTERNET' },
-  { nom: 'Dalal Tones', value: 'DALALTONE' },
-  { nom: 'Achat pour tiers', value: 'PASSFOROTHER' },
-  { nom: 'Transfert Credit', value: 'SEDDO' },
-  { nom: 'SOS', value: 'SOS' },
-];
-
 export const DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY = {
   label: 'Tous',
   typeAchat: undefined,
@@ -130,23 +118,26 @@ export const LIST_CATEGORY_BONS_PLANS = {
 export const IMAGES_DIRECTORY = '/assets/images/';
 
 export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
-  INTERNET: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
-  ILLIMIX: `${IMAGES_DIRECTORY}ic-unlimited-calls.png`,
-  RECHARGEMENT: `${IMAGES_DIRECTORY}ic-orange-phone.svg`,
+  PASS_INTERNET: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
+  PASS_ILLIMIX: `${IMAGES_DIRECTORY}ic-unlimited-calls.png`,
+  CREDIT: `${IMAGES_DIRECTORY}ic-orange-phone.svg`,
   TRANSFERT_BONUS: `${IMAGES_DIRECTORY}transfert-icon.png`,
   SEDDO: `${IMAGES_DIRECTORY}transfert-icon.png`,
   PASSFOROTHER: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
   DALALTONE: `${IMAGES_DIRECTORY}ic-device-ringtone.png`,
   SOS: `${IMAGES_DIRECTORY}ic-emergency-sos.png`,
   DEPOT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
-  RETRAIT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  TRANSFER: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   TRANSFERT_ARGENT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   TRANSFERT_ARGENT_CODE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   PAIEMENT_FACTURE_SONATEL_FIXE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  PAIEMENT_FACTURE_SDE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   PAIEMENT_SENELEC: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   PAIEMENT_FACTURE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
-  WOYOFAL: `${IMAGES_DIRECTORY}ic-files.png`,
+  WOYOFAL_PAYMENT: `${IMAGES_DIRECTORY}ic-files.png`,
   PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
+  MERCHANT_PAYMENT: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
+  RAPIDO: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
   SARGAL: `${IMAGES_DIRECTORY}transfert-icon.png`,
 };
 
@@ -354,11 +345,15 @@ export function getOrderedListCategory(
   unorderedList: CategoryPassInternet[]
 ): CategoryPassInternet[] {
   let listCategoryFiltered = [];
+  unorderedList = unorderedList.filter((elt: any) => {
+    return !!elt;
+  });
   unorderedList.sort(
     (elt1: CategoryPassInternet, elt2: CategoryPassInternet) =>
       elt1.ordre - elt2.ordre
   );
   listCategoryFiltered = [...new Set(unorderedList.map((x) => x.libelle))];
+
   return listCategoryFiltered;
 }
 
@@ -849,11 +844,14 @@ export class SplashScreenMock extends SplashScreen {
 }
 
 export function getBanniereTitle(banniereDescription: string) {
-  const semiColonIndex = banniereDescription.indexOf(';');
-  if (semiColonIndex < 1) return banniereDescription;
-  return banniereDescription
-    ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
-    : '';
+  if (banniereDescription) {
+    const semiColonIndex = banniereDescription.indexOf(';');
+    if (semiColonIndex < 1) return banniereDescription;
+    return banniereDescription
+      ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
+      : '';
+  }
+  return banniereDescription;
 }
 
 export function getBanniereDescription(banniereDescription: string) {
@@ -1261,4 +1259,10 @@ export function getActiveBoostersForSpecificPass(
     booster.pricePlanIndexes.includes(passPPI.toString())
   );
   return boostersArray;
+}
+
+export enum HUB_ACTIONS {
+  ACHAT = 'HUB_ACHAT',
+  TRANSFERT = 'HUB_TRANSFER',
+  FACTURES = 'HUB_BILLS',
 }

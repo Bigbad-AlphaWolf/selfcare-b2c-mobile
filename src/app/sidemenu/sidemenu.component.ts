@@ -12,7 +12,6 @@ import {
   DashboardService,
   downloadAvatarEndpoint,
 } from '../services/dashboard-service/dashboard.service';
-import { MatDialog } from '@angular/material';
 import { AccountService } from '../services/account-service/account.service';
 import * as SecureLS from 'secure-ls';
 import {
@@ -51,7 +50,6 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     private router: Router,
     private authServ: AuthenticationService,
     private dashboardServ: DashboardService,
-    public dialog: MatDialog,
     private accountService: AccountService,
     private iab: InAppBrowser,
     private followAnalyticsService: FollowAnalyticsService,
@@ -155,8 +153,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goToAssistancePage() {
-    this.router.navigate(['/community']);
-    return;
+    // this.router.navigate(['/community']);
+    // return;
     this.iab.create(ASSISTANCE_URL, '_self');
     this.followAnalyticsService.registerEventFollow(
       'Sidemenu_Assistance',

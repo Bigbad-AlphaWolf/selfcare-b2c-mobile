@@ -27,8 +27,10 @@ import { OperationOem } from '../models/operation.model';
 import { ACTIONS_RAPIDES_OPERATIONS_DASHBOARD } from '../utils/operations.util';
 import { NavController } from '@ionic/angular';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { OperationService } from '../services/oem-operation/operation.service';
+import { OffreService } from '../models/offre-service.model';
+import { IMAGES_DIR_PATH } from '../utils/constants';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid',
@@ -82,7 +84,7 @@ export class DashboardPostpaidPage implements OnInit {
   noSargalProfil: boolean;
   hasError: boolean;
   isKilimanjaroPostpaid: boolean;
-  operations: OperationOem[] = ACTIONS_RAPIDES_OPERATIONS_DASHBOARD;
+  operations: OffreService[];
   sargalStatus: string;
   constructor(
     private dashbordServ: DashboardService,
@@ -106,6 +108,30 @@ export class DashboardPostpaidPage implements OnInit {
     this.userPhoneNumber = this.dashbordServ.getCurrentPhoneNumber();
   }
 
+  fetchPostpaidActions() {
+    this.operationService
+      .getServicesByFormule()
+      .pipe(
+        map((res) => {
+          const moreActionService: OffreService = {
+            redirectionType: 'NAVIGATE',
+            titre: 'Autres',
+            icone: `${IMAGES_DIR_PATH}/ic-more-dots@2x.png`,
+            description: 'Services',
+            redirectionPath: 'oem-services',
+            activated: true,
+          };
+          const response: OffreService[] = res.slice(0, 4);
+          response.push(moreActionService);
+          return response;
+        }),
+        tap((res) => {
+          this.operations = res;
+        })
+      )
+      .subscribe();
+  }
+
   getActiveServices() {
     this.operationService.getAllServices().subscribe((res: any) => {
       OperationService.AllOffers = res;
@@ -119,15 +145,11 @@ export class DashboardPostpaidPage implements OnInit {
     this.getCustomerSargalStatus();
     this.getCurrentSubscription();
     this.checkOMNumber();
+    this.fetchPostpaidActions();
     this.banniereServ.setListBanniereByFormule();
-    this.banniereServ
-      .getStatusLoadingBanniere()
-      .subscribe((status: boolean) => {
-        this.isBanniereLoaded = status;
-        if (this.isBanniereLoaded) {
-          this.listBanniere = this.banniereServ.getListBanniereByFormule();
-        }
-      });
+    this.banniereServ.getListBanniereByFormuleByZone().subscribe((res: any) => {
+      this.listBanniere = res;
+    });
   }
 
   checkOMNumber() {

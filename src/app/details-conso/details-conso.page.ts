@@ -121,7 +121,7 @@ export class DetailsConsoPage implements OnInit {
           this.listPurchaseForDays = res.listPurchase;
           this.listPurchaseForDayByType = this.purchaseServ.filterPurchaseByType(
               this.listPurchaseForDays,
-              this.purchaseTypeFilterSelected
+              DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY
             );
         })))
         .subscribe(
