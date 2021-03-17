@@ -2,7 +2,6 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { environment } from 'src/environments/environment.prod';
 const { DIMELO_CHAT_MARKUP } = environment;
 @Component({
@@ -17,7 +16,6 @@ export class IbouIonFabComponent implements OnInit {
     private router: Router,
     private followAnalyticsService: FollowAnalyticsService,
     private socialSharing: SocialSharing,
-    private dashboardService: DashboardService,
     private el: ElementRef
   ) {}
 
@@ -73,7 +71,6 @@ export class IbouIonFabComponent implements OnInit {
       "Comme moi télécharge et connecte toi gratuitement sur l'application " +
       'Orange et Moi Fi rek la http://onelink.to/6h78t2 ou sur www.orangeetmoi.sn ' +
       'Bu ande ak simplicité ak réseau mo gën #WaawKay';
-    const hashtag = '#WaawKay';
 
     this.socialSharing
       .share(postTitle, null, null, url)

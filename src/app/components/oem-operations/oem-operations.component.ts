@@ -22,6 +22,7 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
+import { OffreService } from 'src/app/models/offre-service.model';
 
 @Component({
   selector: 'oem-operations',
@@ -29,7 +30,7 @@ import { OperationService } from 'src/app/services/oem-operation/operation.servi
   styleUrls: ['./oem-operations.component.scss'],
 })
 export class OemOperationsComponent implements OnInit {
-  @Input('operations') operations: OperationOem[] = [];
+  @Input('operations') operations: OffreService[] = [];
   @Input('showMore') showMore: boolean = true;
   OPERATION_TYPE_ALLO = OPERATION_TYPE_PASS_ALLO;
   showNewFeatureBadge$: Observable<Boolean>;
@@ -44,16 +45,14 @@ export class OemOperationsComponent implements OnInit {
 
   ngOnInit() {
     this.getShowStatusNewFeatureAllo();
+    console.log(this.operations);
   }
 
-  async onOperation(op: OperationOem) {
-    if (!this.isServciceActivated(op)) {
-      const service = OperationService.AllOffers.find(
-        (service) => service.code && service.code === op.code
-      );
+  async onOperation(op: OffreService) {
+    if (!op.activated) {
       const toast = await this.toastController.create({
         header: 'Service indisponible',
-        message: service.reasonDeactivation,
+        message: op.reasonDeactivation,
         duration: 3000,
         position: 'middle',
         color: 'medium',
@@ -61,22 +60,22 @@ export class OemOperationsComponent implements OnInit {
       toast.present();
       return;
     }
-    if (op.type === 'NAVIGATE') this.navCtl.navigateForward([op.action]);
+    if (op.redirectionType === 'NAVIGATE')
+      this.navCtl.navigateForward([op.redirectionPath]);
 
-    if (this.bsService[op.action] && 'openModal' === op.action) {
-      if (op.type === OPERATION_WOYOFAL) {
-        this.openCounterBS();
-        return;
-      }
-
-      if (op.type === OPERATION_TYPE_MERCHANT_PAYMENT) {
-        this.openMerchantBS();
-        return;
-      }
+    if (op.code === OPERATION_WOYOFAL) {
+      this.openCounterBS();
+      return;
     }
 
-    if (this.bsService[op.action]) {
-      this.bsService[op.action](...op.params);
+    if (op.code === OPERATION_TYPE_MERCHANT_PAYMENT) {
+      this.openMerchantBS();
+      return;
+    }
+
+    if (this.bsService[op.redirectionType]) {
+      const params = ['NONE', op.code, op.redirectionPath];
+      this.bsService[op.redirectionType](...params);
       return;
     }
   }
@@ -138,27 +137,10 @@ export class OemOperationsComponent implements OnInit {
     this.showNewFeatureBadge$ = this.dashboardService.getNewFeatureAlloBadgeStatus();
   }
 
-  isServciceActivated(action: OperationOem) {
-    console.log(OperationService.AllOffers);
-
-    const service = OperationService.AllOffers.find(
-      (service) => service.code === action.code
+  isServiceHidden(action: OffreService) {
+    return (
+      !action.activated &&
+      (!action.reasonDeactivation || action.reasonDeactivation === '')
     );
-    console.log(service);
-
-    if (service) return service.activated;
-    return true;
-  }
-
-  isServiceHidden(action: OperationOem) {
-    const service = OperationService.AllOffers.find(
-      (service) => service.code === action.code
-    );
-    if (service)
-      return (
-        !service.activated &&
-        (!service.reasonDeactivation || service.reasonDeactivation === '')
-      );
-    return false;
   }
 }

@@ -205,16 +205,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.dashboardServ.attachedNumbers().pipe(take(1)).subscribe();
   }
 
-  logUserBirthDateOnFollow() {
-    const userBirthDateAlreadySet = !!ls.get('birthDate');
-    if (!userBirthDateAlreadySet)
-      this.birthDateSubscription = this.dashboardServ
-        .getUserBirthDate()
-        .subscribe((birthDate: string) => {
-          this.followAnalyticsService.logUserBirthDate(birthDate);
-        });
-  }
-
   getUserInfosNlogBirthDateOnFollow() {
     const userInfosAlreadySet = !!ls.get('userInfos');
     if (!userInfosAlreadySet)

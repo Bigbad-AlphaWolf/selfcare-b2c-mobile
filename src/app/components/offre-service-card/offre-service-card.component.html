@@ -1,14 +1,21 @@
-<div class="service" (click)="onClick()"matRipple [ngClass]="{'disabled': !service.activated}">
-  <div class="active-infos" >
-    <img-loader [spinner]="true" class="icone" [src]="imageUrl" fallbackUrl="assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
+<div class="service" (click)="onClick()" matRipple [ngClass]="{'disabled': !service.activated}">
+  <div class="active-infos">
+    <img-loader [spinner]="true" class="icone" [src]="imageUrl"
+      fallbackUrl="assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
     <div class="content">
       <div class="name">{{service.titre}}</div>
-      <div class="short-description">{{service.shortDescription}}</div>
+      <div class="short-description">{{service.description}}</div>
     </div>
-    <img class="arrow" src="assets/images/long-arrow-right-orange.png"/>
+    <img class="arrow" src="assets/images/long-arrow-right-orange.png" />
   </div>
   <div class="inactive-infos" *ngIf="service.clicked && !service.activated" [@fadeAnimation]="'in'">
     <div class="trait"></div>
     {{service.reasonDeactivation ? service.reasonDeactivation : 'Service indisponible!'}}
+  </div>
+  <div class="badge-promo" *ngIf="service.nouveau">
+    <div class="icon-container">
+      <span class="new scb-text-white"> Nouveau </span>
+    </div>
+    <div class="triangle"></div>
   </div>
 </div>

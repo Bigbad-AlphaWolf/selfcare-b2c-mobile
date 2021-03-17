@@ -91,6 +91,7 @@ export class IlliflexService {
             unit: 'KO',
           },
           validity,
+          usageType: 'DATA',
         },
         voiceBucket: {
           balance: {
@@ -98,6 +99,7 @@ export class IlliflexService {
             unit: 'SECOND',
           },
           validity,
+          usageType: 'VOICE',
         },
         smsBucket: {
           balance: {
@@ -105,6 +107,7 @@ export class IlliflexService {
             unit: 'SMS',
           },
           validity,
+          usageType: 'SMS',
         },
       },
     };

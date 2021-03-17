@@ -44,7 +44,7 @@
           <ion-label>Oui</ion-label>
           <ion-radio mode="md" value="yes"></ion-radio>
         </ion-item>
-    
+
         <ion-item lines="none">
           <ion-label>Non</ion-label>
           <ion-radio mode="md" value="no"></ion-radio>
@@ -63,7 +63,7 @@
     <div id="select-option" class="select-option">
       <ion-item *ngIf="itemQuestion?.answers.length" class="select" lines="none">
         <ion-label> Choisir</ion-label>
-        <ion-select [multiple]="isMultiSelection()" (ionChange)="onAnswerSelectedFromSelection($event)" #select noIonSelectArrow interface="popover" placeholder="Selectionner votre réponse">
+        <ion-select [multiple]="isMultiSelection()" (ionChange)="onAnswerSelectedFromSelection($event)" #select noIonSelectArrow [interfaceOptions]="customPopoverOptions" interface="popover" placeholder="Selectionner votre réponse">
           <ion-select-option *ngFor="let el of itemQuestion?.answers" [value]="el.libelle"> {{ el?.libelle }} </ion-select-option>
         </ion-select>
         <ion-icon src="assets/images/arrow-down.svg" slot="end"></ion-icon>
@@ -83,4 +83,3 @@
     </ion-item>
   </div>
 </div>
-    
