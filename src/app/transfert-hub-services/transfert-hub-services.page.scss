@@ -68,9 +68,10 @@ ion-spinner {
             width: 100%;
             height: 47px;
             margin-bottom: 4px;
-            img {
+            .img {
               display: inline-block;
               width: 47px;
+              height: 47px;
               margin: auto;
             }
           }

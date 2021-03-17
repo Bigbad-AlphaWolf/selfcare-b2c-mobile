@@ -26,11 +26,11 @@
           <ion-card (click)="goTo(opt)" class="card-content" button="true">
             <ion-card-content>
               <div class="icon">
-                <img [src]="opt?.icone" alt="" />
+                <img-loader [spinner]="true" class="img" [src]="opt.icone" fallbackUrl="/assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
               </div>
               <div class="text">
-                <span class="title"> {{opt.titre}} </span>
-                <span class="subtitle"> {{opt.shortDescription}} </span>
+                <span class="title"> {{opt.fullDescription}} </span>
+                <span class="subtitle"> {{opt.description}} </span>
               </div>
             </ion-card-content>
           </ion-card>

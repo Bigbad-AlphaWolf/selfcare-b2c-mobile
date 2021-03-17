@@ -3,10 +3,10 @@
     <ng-container *ngFor="let operation of operations">
       <div matRipple (click)="onOperation(operation)" class="operation" [ngClass]="{'disabled': !operation.activated}"
         *ngIf="!isServiceHidden(operation)">
-        <img [src]="operation.icone" class="operation-img" />
+        <img-loader [spinner]="true" class="operation-img" [src]="operation.icone" fallbackUrl="assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
         <div class="operation-text">
           <span class="action">{{ operation.titre }} </span>
-          <span class="target">{{ operation.description }}</span>
+          <span class="target">{{ operation.shortDescription }}</span>
         </div>
         <div class="badge-promo" *ngIf="operation.nouveau">
           <div class="icon-container">

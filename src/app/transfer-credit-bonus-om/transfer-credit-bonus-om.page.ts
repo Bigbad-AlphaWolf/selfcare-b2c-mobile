@@ -19,7 +19,7 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import { TransfertBonnus } from '../services/dashboard-service';
 import { Contact } from '@ionic-native/contacts';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OperationExtras } from '../models/operation-extras.model';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
@@ -57,33 +57,59 @@ export class TransferCreditBonusOmPage implements OnInit {
   operationType;
   transferOMWithCode: boolean;
   fees: { feeValue: number; payFee: boolean };
-  omTransferPayload = { amount: 0, msisdn2: '', prenom_receiver: null, nom_receiver: null };
+  omTransferPayload = {
+    amount: 0,
+    msisdn2: '',
+    prenom_receiver: null,
+    nom_receiver: null,
+  };
   firstName = '';
   lastName = '';
   payFee = false;
   isLoaded = false;
   recipientHasOMAccount: boolean;
-  transferOMPayload: { amount: number; msisdn2: string } = { amount: null, msisdn2: null };
-  transferOMWithCodePayload: { amount: number; msisdn2: string; nom_receiver: string; prenom_receiver: string } = { amount: null,  msisdn2: null, nom_receiver: null, prenom_receiver: null };
+  transferOMPayload: { amount: number; msisdn2: string } = {
+    amount: null,
+    msisdn2: null,
+  };
+  transferOMWithCodePayload: {
+    amount: number;
+    msisdn2: string;
+    nom_receiver: string;
+    prenom_receiver: string;
+  } = {
+    amount: null,
+    msisdn2: null,
+    nom_receiver: null,
+    prenom_receiver: null,
+  };
   opXtras: OperationExtras = {};
   currentUser: string;
   constructor(
     private router: Router,
     private dashboardService: DashboardService,
+    private navController: NavController,
     private authServ: AuthenticationService,
     private route: ActivatedRoute,
     private followAnalyticsService: FollowAnalyticsService,
     private modalController: ModalController,
-    private orangeMoneyService: OrangeMoneyService  ) {}
+    private orangeMoneyService: OrangeMoneyService
+  ) {}
 
   ngOnInit() {
     this.currentUser = this.dashboardService.getCurrentPhoneNumber();
   }
 
   ionViewWillEnter() {
-    this.authServ.getSubscription(this.currentUser).pipe(tap((res: SubscriptionModel) => {
-      this.opXtras.code = res.code;
-    }),take(1)).subscribe();
+    this.authServ
+      .getSubscription(this.currentUser)
+      .pipe(
+        tap((res: SubscriptionModel) => {
+          this.opXtras.code = res.code;
+        }),
+        take(1)
+      )
+      .subscribe();
     if (this.route.snapshot) {
       this.operationType = this.route.snapshot.paramMap.get('type');
     }
@@ -173,23 +199,26 @@ export class TransferCreditBonusOmPage implements OnInit {
   }
 
   pay(omTransferInfos: any) {
-    console.log('omTransfertPayload',omTransferInfos);
-    
+    console.log('omTransfertPayload', omTransferInfos);
+
     if (this.transferType === OPERATION_TYPE_TRANSFER_OM) {
       this.transferOMWithCode = omTransferInfos.transferWithCode;
       if (this.transferOMWithCode) {
         this.transferOMType = OPERATION_TRANSFER_OM_WITH_CODE;
-        this.transferOMWithCodePayload.prenom_receiver = omTransferInfos.firstName;
+        this.transferOMWithCodePayload.prenom_receiver =
+          omTransferInfos.firstName;
         this.transferOMWithCodePayload.nom_receiver = omTransferInfos.lastName;
-        this.transferOMWithCodePayload.amount = omTransferInfos.amountToTransfer;
+        this.transferOMWithCodePayload.amount =
+          omTransferInfos.amountToTransfer;
         this.transferOMWithCodePayload.msisdn2 = this.omTransferPayload.msisdn2;
       } else {
         this.transferOMType = OPERATION_TRANSFER_OM;
-        this.transferOMPayload.amount = omTransferInfos.amountToTransfer + omTransferInfos.fees;
-        this.transferOMPayload.msisdn2 = this.omTransferPayload.msisdn2
+        this.transferOMPayload.amount =
+          omTransferInfos.amountToTransfer + omTransferInfos.fees;
+        this.transferOMPayload.msisdn2 = this.omTransferPayload.msisdn2;
       }
       this.openPinpad(this.transferOMType);
-    } else if (this.transferType !== 'SEDDO BONUS') {
+    } else if (this.transferType !== OPERATION_TYPE_SEDDO_BONUS) {
       this.step = 'TYPE_PIN_CODE';
     } else {
       this.bonusTransfert();
@@ -204,7 +233,7 @@ export class TransferCreditBonusOmPage implements OnInit {
         operationType: purchaseType,
         transferMoneyPayload: this.transferOMPayload,
         transferMoneyWithCodePayload: this.transferOMWithCodePayload,
-        opXtras: {...this.opXtras, }
+        opXtras: { ...this.opXtras },
       },
     });
     modal.onDidDismiss().then((response) => {
@@ -225,9 +254,14 @@ export class TransferCreditBonusOmPage implements OnInit {
   async openSuccessFailModal(params: ModalSuccessModel) {
     params.paymentMod = this.paymentMode;
     params.recipientMsisdn = this.omTransferPayload.msisdn2;
-    params.recipientName = this.omTransferPayload.nom_receiver ? this.omTransferPayload.nom_receiver : null;
+    params.recipientName = this.omTransferPayload.nom_receiver
+      ? this.omTransferPayload.nom_receiver
+      : null;
     params.purchaseType = this.transferOMType;
-    params.amount = this.transferOMType === OPERATION_TRANSFER_OM ? this.transferOMPayload.amount : this.transferOMWithCodePayload.amount ;
+    params.amount =
+      this.transferOMType === OPERATION_TRANSFER_OM
+        ? this.transferOMPayload.amount
+        : this.transferOMWithCodePayload.amount;
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
       cssClass: params.success ? 'success-modal' : 'failed-modal',
@@ -362,7 +396,8 @@ export class TransferCreditBonusOmPage implements OnInit {
   goBack() {
     switch (this.step) {
       case 'CHOOSE_TRANSFER':
-        this.router.navigate(['/dashboard']);
+        this.navController.pop();
+        // this.router.navigate(['/dashboard']);
         break;
       case 'SAISIE_NUMBER':
         if (this.operationType === 'orange-money') {

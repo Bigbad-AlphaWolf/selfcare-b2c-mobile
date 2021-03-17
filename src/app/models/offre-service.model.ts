@@ -19,6 +19,7 @@ export interface OffreService {
   clicked?: boolean;
   nouveau?: boolean;
   iconeBackground?: string;
+  banniere?: string;
 }
 
 export interface CategoryOffreServiceModel {
