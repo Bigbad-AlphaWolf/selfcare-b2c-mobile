@@ -78,6 +78,9 @@
           Erreur Chargement Facture. Cliquer ici pour recharger
         </span>
       </div>
+      <div class="loader" *ngIf="isLoading">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
       <div *ngIf="(bordereau$|async) as bordereau" class="dashboard-block-bill">
           <div class="bordereau" >
             <div class="labels">

@@ -442,6 +442,11 @@
         }
       }
     }
+    .loader{
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
 
     .dashboard-block-footer-container {
       position: fixed;

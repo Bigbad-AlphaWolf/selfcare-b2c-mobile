@@ -47,6 +47,7 @@ export class DashboardPostpaidFixePage implements OnInit {
   CODE_COMPTEUR_VOLUME_NUIT_2 = CODE_COMPTEUR_VOLUME_NUIT_2;
   CODE_COMPTEUR_VOLUME_NUIT_3 = CODE_COMPTEUR_VOLUME_NUIT_3;
   currentNumber = this.dashbordServ.getCurrentPhoneNumber();
+  isLoading: boolean;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -87,8 +88,6 @@ export class DashboardPostpaidFixePage implements OnInit {
   getBordereau() {
     this.authServ.getSubscription(this.currentNumber).pipe(switchMap((res: SubscriptionModel) => {
       this.customerOfferInfos = res;
-      console.log('res', res);
-
       return this.initData(res.clientCode)
     })).subscribe();
   }
@@ -111,7 +110,6 @@ export class DashboardPostpaidFixePage implements OnInit {
           })
           this.creditMensuelle = CMO_INFOS ? CMO_INFOS.montant : 0
           this.dateExpiration = CMO_INFOS ? CMO_INFOS.dateExpiration : null
-          console.log('credit', this.creditMensuelle, 'date', this.dateExpiration);
           this.userConsommationsCategories = getTrioConsoUser(res);
         } else {
           this.errorConso = true;
@@ -175,13 +173,17 @@ export class DashboardPostpaidFixePage implements OnInit {
   }
 
   async initData(codeClient: string) {
+    this.hasErrorBordereau = false;
+    this.isLoading = true;
     const invoiceType = 'LANDLINE';
     const moisDispo = await this.billsService.moisDisponible(
         codeClient,
         invoiceType,
         this.currentNumber
-      );
-    this.hasErrorBordereau = false;
+      ).catch(_ => {
+        this.isLoading = false;
+        this.hasErrorBordereau = true;
+      });
     if (moisDispo) {
       const months = previousMonths(moisDispo);
       const last_month = months[0];
@@ -190,16 +192,16 @@ export class DashboardPostpaidFixePage implements OnInit {
         .bordereau(codeClient, invoiceType, this.currentNumber, last_month)
         .pipe(
           tap((res: any) => {
-            console.log('res', res);
-
+            this.isLoading = false;
           }),
           catchError((err: any) => {
           this.hasErrorBordereau = true;
+          this.isLoading = false;
           return of(err)
         }));
     } else {
+      this.isLoading = false;
       this.hasErrorBordereau = true;
-      console.log('hasErr', this.hasErrorBordereau);
 
     }
   }
