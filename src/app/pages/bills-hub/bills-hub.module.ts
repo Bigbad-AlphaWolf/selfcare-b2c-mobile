@@ -7,12 +7,13 @@ import { IonicModule } from '@ionic/angular';
 
 import { BillsHubPage } from './bills-hub.page';
 import { SharedModule } from 'src/shared/shared.module';
+import { IonicImageLoader } from 'ionic-image-loader';
 
 const routes: Routes = [
   {
     path: '',
-    component: BillsHubPage
-  }
+    component: BillsHubPage,
+  },
 ];
 
 @NgModule({
@@ -21,10 +22,10 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
-    RouterModule.forChild(routes)
+    IonicImageLoader,
+    RouterModule.forChild(routes),
   ],
   declarations: [BillsHubPage],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-
 })
 export class BillsHubPageModule {}

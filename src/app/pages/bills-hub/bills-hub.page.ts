@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  BILLS_COMPANIES_DATA,
-  RAPIDO,
-  WOYOFAL,
-} from 'src/app/utils/bills.util';
+import { RAPIDO, WOYOFAL } from 'src/app/utils/bills.util';
 import { WoyofalSelectionComponent } from 'src/app/components/counter/woyofal-selection/woyofal-selection.component';
 import { NavController, ToastController } from '@ionic/angular';
 import { OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';

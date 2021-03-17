@@ -14,7 +14,7 @@
     <ion-row *ngIf="companies?.length">
       <ng-container *ngFor="let company of companies">
         <div *ngIf="!isServiceHidden(company)" [ngClass]="{'disabled': !company.activated}" matRipple (click)="onCompanySelected(company)" class="oem-bloc-1" >
-            <img [src]="company.icone" class="oem-img"/>
+            <img-loader [spinner]="true" class="oem-img" [src]="company.icone" fallbackUrl="/assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
         </div>
       </ng-container>
     </ion-row>
