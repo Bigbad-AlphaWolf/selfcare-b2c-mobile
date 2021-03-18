@@ -53,7 +53,6 @@ export class TransfertHubServicesPage implements OnInit {
   userInfos: SubscriptionModel;
   hasPromoPlanActive: OfferPlanActive = null;
   hasBoosterPromoActive: PromoBoosterActive = null;
-  showNewFeatureBadge$: Observable<Boolean>;
   isLightMod: boolean; //boolean to tell if user is in connected or not connected mod
   currentPhone = this.dashbServ.getCurrentPhoneNumber();
   purchaseType: 'BUY' | 'TRANSFER';
@@ -77,7 +76,6 @@ export class TransfertHubServicesPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getShowStatusNewFeatureAllo();
     if (history && history.state) {
       this.purchaseType = history.state.purchaseType;
       this.isLightMod = history.state.isLightMod;
@@ -342,10 +340,6 @@ export class TransfertHubServicesPage implements OnInit {
           break;
       }
     return result;
-  }
-
-  getShowStatusNewFeatureAllo() {
-    this.showNewFeatureBadge$ = this.dashbServ.getNewFeatureAlloBadgeStatus();
   }
 
   getFavoritePass() {

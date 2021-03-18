@@ -5,7 +5,6 @@ import {
   ModalController,
   ToastController,
 } from '@ionic/angular';
-import { OperationOem } from 'src/app/models/operation.model';
 import { WOYOFAL } from 'src/app/utils/bills.util';
 import { IMAGES_DIR_PATH } from 'src/app/utils/constants';
 import { WoyofalSelectionComponent } from '../counter/woyofal-selection/woyofal-selection.component';
@@ -17,11 +16,9 @@ import {
 } from 'src/shared';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
-import { Observable } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
-import { OperationService } from 'src/app/services/oem-operation/operation.service';
 import { OffreService } from 'src/app/models/offre-service.model';
 
 @Component({
@@ -32,21 +29,15 @@ import { OffreService } from 'src/app/models/offre-service.model';
 export class OemOperationsComponent implements OnInit {
   @Input('operations') operations: OffreService[] = [];
   @Input('showMore') showMore: boolean = true;
-  OPERATION_TYPE_ALLO = OPERATION_TYPE_PASS_ALLO;
-  showNewFeatureBadge$: Observable<Boolean>;
   constructor(
     private bsService: BottomSheetService,
     private navCtl: NavController,
-    private dashboardService: DashboardService,
     private omService: OrangeMoneyService,
     private modalController: ModalController,
     private toastController: ToastController
   ) {}
 
-  ngOnInit() {
-    this.getShowStatusNewFeatureAllo();
-    console.log(this.operations);
-  }
+  ngOnInit() {}
 
   async onOperation(op: OffreService) {
     if (!op.activated) {
@@ -131,10 +122,6 @@ export class OemOperationsComponent implements OnInit {
       }
     });
     return await modal.present();
-  }
-
-  getShowStatusNewFeatureAllo() {
-    this.showNewFeatureBadge$ = this.dashboardService.getNewFeatureAlloBadgeStatus();
   }
 
   isServiceHidden(action: OffreService) {
