@@ -1,14 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import { Platform } from '@ionic/angular';
 import { from } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { OffreService } from 'src/app/models/offre-service.model';
-import { DATA_OFFRES_SERVICES } from 'src/app/utils/data';
 import { SubscriptionModel } from 'src/shared';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
+import { FILE_DOWNLOAD_ENDPOINT } from '../utils/file.endpoints';
 
 import {
   OFFRE_SERVICES_ENDPOINT,
@@ -21,89 +20,12 @@ import {
 })
 export class OperationService {
   offresServices: any[];
+  FILE_MANAGER_BASE_URL = FILE_DOWNLOAD_ENDPOINT;
   static AllOffers: OffreService[] = [];
-  mockOfferService = [
-    {
-      activated: false,
-      categorieOffreServices: [
-        {
-          categorieOffreServices: null,
-          libelle: 'Mobile',
-          niveau: '1',
-          ordre: 1,
-        },
-        {
-          categorieOffreServices: null,
-          libelle: 'Mobile',
-          niveau: '1',
-          ordre: 1,
-        },
-      ],
-      code: '1121',
-      description: 'woyofal pour vous servir',
-      fullDescription: 'woyofal pour vous servir',
-      icone: 'woyofal_3x.png',
-      ordre: 1,
-      reasonDeactivation: null,
-      shortDescription: "faire le plein d'electricité.",
-      titre: 'Woyofal',
-    },
-    {
-      activated: false,
-      categorieOffreServices: [
-        {
-          categorieOffreServices: null,
-          libelle: 'Mobile',
-          niveau: '1',
-          ordre: 1,
-        },
-        {
-          categorieOffreServices: null,
-          libelle: 'Mobile',
-          niveau: '1',
-          ordre: 1,
-        },
-      ],
-      code: '1121',
-      description: 'woyofal pour vous servir',
-      fullDescription: 'woyofal pour vous servir',
-      icone: 'woyofal_3x.png',
-      ordre: 1,
-      reasonDeactivation: null,
-      shortDescription: "faire le plein d'electricité.",
-      titre: 'Woyofal',
-    },
-    {
-      activated: false,
-      categorieOffreServices: [
-        {
-          categorieOffreServices: null,
-          libelle: 'Mobile',
-          niveau: '1',
-          ordre: 1,
-        },
-        {
-          categorieOffreServices: null,
-          libelle: 'Mobile',
-          niveau: '1',
-          ordre: 1,
-        },
-      ],
-      code: '1121',
-      description: 'woyofal pour vous servir',
-      fullDescription: 'woyofal pour vous servir',
-      icone: 'woyofal_3x.png',
-      ordre: 1,
-      reasonDeactivation: null,
-      shortDescription: "faire le plein d'electricité.",
-      titre: 'Woyofal',
-    },
-  ];
 
   constructor(
     private http: HttpClient,
     private appVersion: AppVersion,
-    private platform: Platform,
     private dashboardService: DashboardService,
     private authenticationService: AuthenticationService
   ) {}
@@ -115,6 +37,7 @@ export class OperationService {
     }
     return this.http.get(endpointOffresServices).pipe(
       switchMap((categories) => {
+        console.log(categories);
         return this.getServicesByFormule().pipe(
           map((services) => {
             return { categories, services };
@@ -137,28 +60,52 @@ export class OperationService {
   }
 
   getServicesByFormule(hub?: string) {
-    // return this.http.get(`${OFFER_SERVICE_BY_CODE}/9131?hub=${hub}`);
     const msisdn = this.dashboardService.getCurrentPhoneNumber();
     return this.authenticationService.getSubscription(msisdn).pipe(
       switchMap((customerOffer: SubscriptionModel) => {
         const versionObservable = from(this.appVersion.getVersionNumber());
-        let queryParams = `?${hub ? 'hub=' + hub : ''}`;
+        let queryParams = `?code=${customerOffer.code}`;
+        if (hub) queryParams += `&hub=${hub}`;
         return versionObservable.pipe(
           switchMap((appVersion) => {
-            queryParams += `?${
-              this.platform.is('ios') ? '&iosVersion=' : '&androidVersion='
-            }${appVersion}`;
-            return this.http.get<OffreService[]>(
-              `${OFFER_SERVICE_BY_CODE}/${customerOffer.code}${queryParams}`
-            );
+            queryParams += `&version=${appVersion}`;
+            return this.http
+              .get<OffreService[]>(`${OFFER_SERVICE_BY_CODE}${queryParams}`)
+              .pipe(
+                map((res) => {
+                  for (let offerService of res) {
+                    this.prefixServiceImgByFileServerUrl(offerService);
+                  }
+                  return res;
+                })
+              );
           }),
           catchError(() => {
-            return this.http.get<OffreService[]>(
-              `${OFFER_SERVICE_BY_CODE}/${customerOffer.code}${queryParams}`
-            );
+            return this.http
+              .get<OffreService[]>(`${OFFER_SERVICE_BY_CODE}${queryParams}`)
+              .pipe(
+                map((res) => {
+                  for (let offerService of res) {
+                    this.prefixServiceImgByFileServerUrl(offerService);
+                  }
+                  return res;
+                })
+              );
           })
         );
       })
     );
+  }
+
+  prefixServiceImgByFileServerUrl(offerService: OffreService) {
+    offerService.icone = offerService.icone
+      ? `${this.FILE_MANAGER_BASE_URL}/${offerService.icone}`
+      : '';
+    offerService.banniere = offerService.banniere
+      ? `${this.FILE_MANAGER_BASE_URL}/${offerService.banniere}`
+      : '';
+    offerService.iconeBackground = offerService.iconeBackground
+      ? `${this.FILE_MANAGER_BASE_URL}/${offerService.iconeBackground}`
+      : '';
   }
 }

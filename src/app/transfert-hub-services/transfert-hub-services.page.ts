@@ -19,6 +19,8 @@ import {
   SubscriptionModel,
   OPERATION_TYPE_PASS_ILLIFLEX,
   HUB_ACTIONS,
+  OPERATION_TYPE_SEDDO_BONUS,
+  OPERATION_TYPE_SEDDO_CREDIT,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -36,6 +38,7 @@ import { FavoritePassOemModel } from '../models/favorite-pass-oem.model';
 import { FavorisService } from '../services/favoris/favoris.service';
 import { OperationService } from '../services/oem-operation/operation.service';
 import { OffreService } from '../models/offre-service.model';
+import { OPERATION_TRANSFERT_ARGENT } from '../utils/operations.constants';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -98,6 +101,8 @@ export class TransfertHubServicesPage implements OnInit {
     this.operationService.getServicesByFormule(this.hubCode).subscribe(
       (res: any) => {
         this.loadingServices = false;
+        console.log(res);
+
         this.options = res;
         this.getUserActiveBonPlans();
         this.getUserActiveBoosterPromo();
@@ -129,47 +134,47 @@ export class TransfertHubServicesPage implements OnInit {
     }
 
     switch (opt.code) {
-      case 'TRANSFERT_MONEY':
+      case OPERATION_TRANSFERT_ARGENT:
         this.showBeneficiaryModal();
         break;
-      case 'TRANSFERT_CREDIT':
+      case OPERATION_TYPE_SEDDO_CREDIT:
         this.appRouting.goToTransfertCreditPage();
         break;
-      case 'TRANSFERT_BONUS':
+      case OPERATION_TYPE_SEDDO_BONUS:
         this.appRouting.goToTransfertBonusPage();
         break;
-      case 'CREDIT':
+      case OPERATION_TYPE_RECHARGE_CREDIT:
         this.bsService.openNumberSelectionBottomSheet(
           NumberSelectionOption.WITH_MY_PHONES,
           OPERATION_TYPE_RECHARGE_CREDIT,
           CreditPassAmountPage.PATH
         );
         break;
-      case 'PASS':
+      case OPERATION_TYPE_PASS_INTERNET:
         this.openModalPassNumberSelection(
           OPERATION_TYPE_PASS_INTERNET,
           'list-pass'
         );
         break;
-      case 'PASS_ILLIMIX':
+      case OPERATION_TYPE_PASS_ILLIMIX:
         this.openModalPassNumberSelection(
           OPERATION_TYPE_PASS_ILLIMIX,
           'list-pass'
         );
         break;
-      case 'PASS_VOYAGE':
+      case OPERATION_TYPE_PASS_VOYAGE:
         this.openModalPassNumberSelection(
           OPERATION_TYPE_PASS_VOYAGE,
           ListPassVoyagePage.ROUTE_PATH
         );
         break;
-      case 'PASS_ALLO':
+      case OPERATION_TYPE_PASS_ALLO:
         this.openModalPassNumberSelection(
           OPERATION_TYPE_PASS_ALLO,
           'list-pass'
         );
         break;
-      case 'ILLIFLEX':
+      case OPERATION_TYPE_PASS_ILLIFLEX:
         this.openModalPassNumberSelection(
           OPERATION_TYPE_PASS_ILLIFLEX,
           'illiflex-budget-configuration'
