@@ -7,5 +7,5 @@ repositories {
     }
 }
 dependencies {
-    implementation "com.followapps.android:sdk:6.5.0"
+    implementation "com.followapps.android:sdk:6.7.3"
 }

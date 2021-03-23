@@ -17,6 +17,11 @@
 @property(nonatomic, readonly, assign) BOOL optInAnalyticsDefault;
 
 /**
+ Used at first startup to decide if the SDK should receive notifications. By default set to TRUE.
+ */
+@property(nonatomic, readonly, assign) BOOL optInNotificationsDefault;
+
+/**
  Set to true if using DataWallet. By default set to FALSE.
  */
 @property(nonatomic, readonly, assign) BOOL isDataWalletEnabled;

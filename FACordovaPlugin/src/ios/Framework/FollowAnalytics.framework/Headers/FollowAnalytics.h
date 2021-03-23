@@ -114,7 +114,7 @@
  the authorisation process only in a context that is relevant for the user. It is usualy not a good
  practice to run this method blindly at application startup.
  */
-+ (void) requestNotificationAuthorization;
++ (void)requestNotificationAuthorization;
 
 /**
  In iOS 12, it was introduced provisional authorization, and this is an automatic trial of the
@@ -123,7 +123,36 @@
  notifications will automatically start getting delivered. But these notifications will be delivered
  quietly and will only show up in notifications center, and they will not play a sound.
 */
-+ (void) requestProvisionalNotificationAuthorization API_AVAILABLE(ios(12));
++ (void)requestProvisionalNotificationAuthorization API_AVAILABLE(ios(12));
+
+/**
+ Let the user authorize notifications, even if it has already denied this authorization before. Calling this method
+ will eventually open the iOS app settings screen, so that the user can enter notification settings and authorize
+ them.
+ This method will either:
+  - Display the system notification authorization alert if the user has never seen this prompt before (authorization is not determined or provisional). [iOS >= 10.0 only]
+  - Open the iOS notification settings screen if the user has already denied notifications (authorization is denied).
+  - Do nothing if the user has already allowed notifications (authorization is authorized).
+*/
++ (void)openNotificationSettingsEventually;
+
+/**
+ Set the opt-in notification status. This status is used to indicate the choice made by the user for the receiving of notifications.
+ This status is independent from the iOS system notification authorization and reflects only the choice made by the user inside the app.
+ */
++ (void)setOptInNotifications:(BOOL)state;
+
+/**
+ Get the opt-in notification status.
+ This status is independent from the iOS system notification authorization and reflects only the choice made by the user inside the app.
+ */
++ (BOOL)getOptInNotifications;
+
+/**
+ Get the Push campaigns registration status. It's an asynchronous method that will call completionHandler() with isRegistered set to true
+ only if the iOS system notification authorization is allowed AND the SDK opt-in notifications status is true.
+ */
++ (void)getPushNotificationsRegistrationStatus:(nonnull void (^)(BOOL isRegistered))completionHandler;
 
 /**
  Sets the user id. If called multiple times, the previous value will be overriden.
@@ -200,11 +229,6 @@
 @property(class, nonatomic, readonly, nonnull) id<FollowAnalyticsGDPR> GDPR;
 
 /**
- Access DataWallet functionality
- */
-@property(class, nonatomic, readonly, nonnull) id<FollowAnalyticsDataWallet> dataWallet;
-
-/**
  FollowAnalytics SDK version number
  */
 + (nonnull NSString*)getSDKVersion;
@@ -220,6 +244,11 @@
  FollowAnalytics SDK version number
  */
 + (nonnull NSString*)getVersion __deprecated_msg("Please use FollowAnalytics.getSDKVersion()");
+
+/**
+ Access DataWallet functionality
+ */
+@property(class, nonatomic, readonly, nonnull) id<FollowAnalyticsDataWallet> dataWallet __deprecated_msg("DataWallet feature is disabled");
 
 #pragma mark - Manual Swizzling - This methods needs to be called on the Application Delegate class.
 
@@ -283,5 +312,16 @@ handleEventsForBackgroundURLSession:(NSString*_Nonnull) identifier
 + (void) userNotificationCenter:(UNUserNotificationCenter*_Nonnull) center
         willPresentNotification:(UNNotification*_Nonnull) notification
           withCompletionHandler:(void (^_Nullable)(UNNotificationPresentationOptions)) completionHandler  API_AVAILABLE(ios(10.0));
+
++ (void) sceneDidBecomeActive:(UIScene*_Nonnull) scene API_AVAILABLE(ios(13.0));
+
++ (void) sceneWillEnterForeground:(UIScene*_Nonnull) scene API_AVAILABLE(ios(13.0));
+
++ (void) sceneDidEnterBackground:(UIScene*_Nonnull) scene API_AVAILABLE(ios(13.0));
+
++ (void)scene:(UIScene * _Nonnull)scene willConnectToSession:(UISceneSession *_Nonnull)session options:(UISceneConnectionOptions *_Nullable)connectionOptions API_AVAILABLE(ios(13.0));
+
++ (void)scene:(UIScene * _Nonnull)scene
+openURLContexts:(NSSet<UIOpenURLContext *> * _Nonnull)URLContexts API_AVAILABLE(ios(13.0));
 
 @end

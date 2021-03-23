@@ -11,9 +11,7 @@
 
 #import "FAConstants.h"
 
-@interface FAGeneralManager : NSObject {
-  UIBackgroundTaskIdentifier bgTask;
-}
+@interface FAGeneralManager : NSObject
 
 // InBox configuration
 @property(nonatomic, assign) BOOL isPushInboxAvailable;
@@ -66,7 +64,8 @@
 - (NSDictionary* _Nonnull)sessionInfo;
 - (void)checkOptOut DEPRECATED_MSG_ATTRIBUTE("Use FAFollowApps.optOutAnalytics");
 - (NSDictionary* _Nonnull)sessionInfoForContext:(FASessionContext)sessionContext;
-- (void)sessionShouldEndWithTimer;
+- (void)cancelEndSessionTimer;
+- (void)clearEndSessionTimer;
 
 /********************************************************************************/
 #pragma mark - Application Lifecycle management

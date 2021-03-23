@@ -20,10 +20,9 @@
  */
 + (nonnull instancetype)new NS_UNAVAILABLE;
 
-@property(nonatomic, readwrite, assign) BOOL isDataWalletEnabled;
-@property(nonatomic, readwrite, copy, nullable) void (^onDataWalletPolicyChange)(void);
 @property(nonatomic, readwrite, copy, nullable) NSString* dataWalletDefaultPolicyPath;
 @property(nonatomic, readwrite, assign) BOOL optInAnalyticsDefault;
+@property(nonatomic, readwrite, assign) BOOL optInNotificationsDefault;
 @property(nonatomic, readwrite, copy, nonnull) NSString* apiKey;
 @property(nonatomic, readwrite, copy, nullable) NSString* appGroup;
 @property(nonatomic, readwrite, copy, nullable) NSString* keychainGroupName;
@@ -47,4 +46,10 @@ onNotificationReceived;
 onNativeInAppButtonTapped;
 @property(nullable, nonatomic, readwrite, copy) FollowAnalyticsShouldOpenURLHandlerBlock shouldOpenURL;
 @property(nonatomic, readwrite, assign) BOOL lastKnownLocationEnabled;
+
+#pragma mark-- deprecated
+
+@property(nonatomic, readwrite, assign) BOOL isDataWalletEnabled __deprecated_msg("DataWallet feature is disabled");
+@property(nonatomic, readwrite, copy, nullable) void (^onDataWalletPolicyChange)(void) __deprecated_msg("DataWallet feature is disabled");
+
 @end
