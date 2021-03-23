@@ -1,0 +1,108 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">Déplafonnement Orange Money</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="deplafonnement-content">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">Déplafonner mon compte Orange Money</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="deplafonnement-body">
+    <div class="banniere-container">
+      <img src="/assets/images/banniere-om-new-account.png" alt="header-om" />
+    </div>
+    <div class="all-informations-block">
+      <div class="single-block">
+        <div class="block-title">Numéro de téléphone</div>
+        <div class="block-description scb-text-gray">Selectionnez le numéro sur lequel vous souhaitez ouvrir votre
+          compte Orange Money</div>
+        <div class="form-block">
+          <div class="om-number-block scb-text-gray"><span *ngIf="omMsisdn" class="msisdn">{{omMsisdn + ' (principal)'}}</span></div>
+          <div class="error-block scb-text-red-error" *ngIf="getMsisdnHasError" (click)="getOmMsisdn()">Une erreur est survenue. Réactualisez ici</div>
+        </div>
+      </div>
+      <div class="single-block">
+        <div class="block-title" (click)="(0)">Infos personnelles</div>
+        <form class="form-block" [formGroup]="personalInfosForm">
+          <ion-list mode="ios">
+            <ion-item mode="ios" lines="none">
+              <ion-label mode="ios" class="scb-text-gray">Civilité</ion-label>
+              <ion-select interface="popover" noIonSelectArrow mode="ios">
+                <ion-select-option value="monsieur" mode="ios"><span>Monsieur</span></ion-select-option>
+                <ion-select-option value="madame" mode="ios"><span>Madame</span></ion-select-option>
+              </ion-select>
+              <ion-icon name="arrow-down" mode="ios" slot="end"></ion-icon>
+            </ion-item>
+          </ion-list>
+          <mat-form-field class="scb-input-row" appearance="outline">
+            <mat-label>Nom &nbsp;&nbsp;</mat-label>
+            <input formControlName="lastname" matInput type="text" />
+          </mat-form-field>
+          <mat-form-field class="scb-input-row" appearance="outline">
+            <mat-label>Prénom &nbsp;&nbsp;</mat-label>
+            <input formControlName="firstname" matInput type="text" />
+          </mat-form-field>
+          <ion-datetime placeholder="Date de naissance" displayFormat="DD-MM-YYYY" formControlName="birthdate"
+            display-timezone="utc"></ion-datetime>
+        </form>
+      </div>
+      <div class="single-block">
+        <div class="block-title">Preuve d’identité</div>
+        <form class="form-block" [formGroup]="identityForm">
+          <div class="radio-group">
+            <mat-radio-group>
+              <mat-radio-button [value]="'CNI'" checked #cni>
+                <div class="identity-option scb-text-gray" [ngClass]="{'radio-selected': cni.checked}">
+                  Carte d'identité
+                </div>
+              </mat-radio-button>
+              <mat-radio-button [value]="'PASSPORT'" #pass>
+                <div class="identity-option scb-text-gray" [ngClass]="{'radio-selected': pass.checked}">
+                  Passport
+                </div>
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <mat-form-field class="scb-input-row" appearance="outline">
+            <mat-label>Numéro de la pièce &nbsp;&nbsp;</mat-label>
+            <input formControlName="nIdentity" matInput type="text" />
+          </mat-form-field>
+          <div class="photo-button" [ngClass]="{'field-filled': rectoFilled}" (click)="takePicture('recto')">
+            <span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': rectoFilled}">Scanner recto pièce d’identité</span>
+            <ion-icon name="camera" class="scb-text-orange" *ngIf="!rectoFilled"></ion-icon>
+            <ion-icon name="trash" class="scb-text-green-success" *ngIf="rectoFilled" ></ion-icon>
+          </div>
+          <div class="photo-button" [ngClass]="{'field-filled': versoFilled}" (click)="takePicture('verso')">
+            <span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': versoFilled}">Scanner verso pièce d’identité</span>
+            <ion-icon name="camera" class="scb-text-orange" *ngIf="!versoFilled"></ion-icon>
+            <ion-icon name="trash" class="scb-text-green-success" *ngIf="versoFilled" ></ion-icon>
+          </div>
+          <div class="photo-button" [ngClass]="{'field-filled': selfieFilled}" (click)="takePicture('selfie')">
+            <span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': selfieFilled}">Prendre un selfie</span>
+            <ion-icon name="camera" class="scb-text-orange" *ngIf="!selfieFilled"></ion-icon>
+            <ion-icon name="trash" class="scb-text-green-success" *ngIf="selfieFilled" ></ion-icon>
+          </div>
+        </form>
+      </div>
+      <div class="single-block">
+        <div class="block-title">Confirmation</div>
+        <div class="form-block">
+          <div class="cgu-block">
+            <mat-checkbox class="cgu-checkbox" [(ngModel)]="acceptCGU">
+            </mat-checkbox>
+            <div class="scb-text-gray text" (click)="toggleAcceptCGU()">J’accepte les <span class="scb-text-orange cg">conditions générales</span> de déplafonnement de compte Orange Money.</div>
+          </div>
+          <button class="scb-btn scb-btn-full scb-btn-orange">Continuer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

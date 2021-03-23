@@ -1,0 +1,27 @@
+<ion-header>
+  <div class="img-container" (click)="goBack()">
+    <img src="/assets/images/arrow-left.png" alt="arrow">
+  </div>
+  <span>Pièces justificatives</span>
+</ion-header>
+
+<ion-content>
+  <div class="camera-page-body">
+    <div class="camera-preview">
+      <div class="steps">
+        <div class="steps-number scb-text-white">1/3</div>
+        <div class="steps-description scb-text-white">
+          Placez le verso de votre carte sur le rectangle violet puis appuyer sur “Capturer”
+        </div>
+      </div>
+      <div class="camera-frame"></div>
+      <div class="catch-picture-btn">
+        <div class="circle" (click)="takePicture()">
+          <div class="sub-circle"></div>
+        </div>
+        <div class="photo-text scb-text-white" (click)="takePicture()">Capturer</div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
