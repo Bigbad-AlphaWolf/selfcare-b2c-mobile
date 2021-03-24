@@ -5,6 +5,8 @@ module.exports = function (ctx) {
     var xcode = require("xcode");
     var deferral = require('q').defer();
 
+    const regexScript = /(\/\* FollowAnalyticsScript \*\/[\s]+=[\s]+{[\s\S]+)(shellScript[\s\S][^;]+)/;
+
     /**
      * Recursively search for file with the tiven filter starting on startPath
      */
@@ -36,22 +38,6 @@ module.exports = function (ctx) {
         }
     }
 
-    /**
-     * find a PBXFileReference on the provided project by its name
-     */
-    function findPbxFileReference(project, pbxFileName) {
-        for (var uuid in project.hash.project.objects.PBXFileReference) {
-            if (uuid.endsWith("_comment")) {
-                continue;
-            }
-            var file = project.hash.project.objects.PBXFileReference[uuid];
-
-            if (file.name !== undefined && file.name.indexOf(pbxFileName) != -1) {
-                return file;
-            }
-        }
-    }
-
     if (process.length >= 5 && process.argv[1].indexOf('cordova') == -1) {
         if (process.argv[4] != 'ios') {
             return; // plugin only meant to work for ios platform.
@@ -68,20 +54,29 @@ module.exports = function (ctx) {
     //Path to strip-framework.sh
     var options = { shellPath: '/bin/sh', shellScript: '$SRCROOT/$PROJECT_NAME/Plugins/cordova.plugin.followanalytics/strip-frameworks.sh' };
 
-    //Add Run Stript with the path 
-    proj.parse(function(err) {
-        proj.addBuildPhase([], 'PBXShellScriptBuildPhase', 'Run a script', proj.getFirstTarget().uuid, options);
+    const xcodeProjectContent = fs.readFileSync(projectPath, "utf8");
+    let hasScript = regexScript.exec(xcodeProjectContent);
+
+    if (proj.buildPhase("FollowAnalyticsScript", proj.getFirstTarget().uuid)) {
+        let shellScriptModified = hasScript[2].replace(
+            hasScript[2],
+            'shellScript = "$SRCROOT/$PROJECT_NAME/Plugins/cordova.plugin.followanalytics/strip-frameworks.sh"'
+        );
+        let shellScript = hasScript[1] + shellScriptModified;
+        let result = xcodeProjectContent.replace(
+            regexScript,
+            shellScript.toString()
+        );
+        fs.writeFileSync(projectPath, result);
+    } else {
+        //Add Run Stript with the path
+        proj.addBuildPhase(
+            [],
+            "PBXShellScriptBuildPhase",
+            "FollowAnalyticsScript",
+            proj.getFirstTarget().uuid,
+            options
+        );
         fs.writeFileSync(projectPath, proj.writeSync());
-    })
-
-    fs.writeFile(proj.filepath, proj.writeSync(), 'utf8', function (err) {
-        if (err) {
-            deferral.reject(err);
-            return;
-        }
-        console.log("Wrote xcodeproj");
-        deferral.resolve();
-    });
-
-    return deferral.promise;
+    }
 };

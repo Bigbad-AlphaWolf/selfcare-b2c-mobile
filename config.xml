@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-packageName="com.orange.myorange.osn" id="com.orange.mobile.myorangesn" ios-CFBundleIdentifier="com.orange.mobile.myorangesn" version="5.8.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-packageName="com.orange.myorange.osn" id="com.orange.mobile.myorangesn" ios-CFBundleIdentifier="com.orange.mobile.myorangesn" version="5.8.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Orange Et Moi</name>
     <description>Tout Orange En Un Click</description>
     <author email="serviceclient@orange-sonatel.com" href="https://orange.sn/">Orange Sonatel Team</author>
@@ -129,7 +129,6 @@
     <plugin name="cordova-plugin-appminimize" spec="^1.0.1" />
     <plugin name="cordova-plugin-device" spec="^2.0.3" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.2.0" />
-    <plugin name="cordova-plugin-contacts" spec="^3.0.1" />
     <plugin name="cordova-open-native-settings" spec="^1.5.2" />
     <plugin name="ionic-plugin-deeplinks" spec="^1.0.20">
         <variable name="URL_SCHEME" value="orangeetmoi" />

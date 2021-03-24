@@ -14,6 +14,7 @@ const regexAndroidManifestJavaClass = /android:name="([^"]*)/;
 const regexAndroidManifestApplicationTag = /(<application([^>]*))/;
 
 const regexJavaFollowAnalyticsConfiguration = /FollowAnalytics.Configuration\(\)([^}]+)/;
+const regexJavaFollowAnalyticsConfigurationCallbacks = /(FollowAnalyticsApplication extends Application {)([^@])+/;
 const regexJavaIsVerbose = /isVerbose = ([^;]+)/;
 const regexJavaApiKey = /apiKey = ([^;]+)/;
 const regexJavaMaxBackgroundTimeWithinSession = /maxBackgroundTimeWithinSession[^=]*=[^\d]*(\d+)[^;]*/;
@@ -24,7 +25,7 @@ const regexAppIml = /<option name="SELECTED_BUILD_VARIANT" value="(.*?)"[^\/>]/;
 * This object contains all the parameters from the Native SDKs.
 * All this parameters can be used on the followanalytics_configuration.json
 */
-const allParameters = 
+const allParameters =
 {
     "apiKey": "string",
     "environmentProtocol": "string",
@@ -37,7 +38,11 @@ const allParameters =
     "archiveInAppMessages": "boolean",
     "isDataWalletEnabled": "boolean",
     "dataWalletDefaultPolicyPath": "string",
-    "apiMode": "ApiMode"
+    "apiMode": "ApiMode",
+    "onConsoleLog": "callbacks", // Boolean
+    "onMessageReceived": "callbacks", // Boolean
+    "onNativeInAppButtonTapped": "callbacks", // Boolean
+    "onNotificationTapped": "callbacks" // Boolean
 };
 
 const allParametersKeys = Object.keys(allParameters);
@@ -101,51 +106,51 @@ function configure_sdk_initialization(androidProjectOSPath) {
     const androidManifestOSPath = find_android_manifest(androidProjectOSPath);
     if (androidManifestOSPath) {
         fs.readFile(androidManifestOSPath, 'utf8', function (err, androidManifestData) {
-                if (err) {
-                    console.log("[FA] configure_sdk_initialization method : " + err);
-                    return;
-                }
-                const matchAndroidManifestApplicationTag = regexAndroidManifestApplicationTag.exec(androidManifestData);
-                const androidManifestApplicationTagString = matchAndroidManifestApplicationTag[1];
-                const androidManifestExtrasApplicationTagString = matchAndroidManifestApplicationTag[2];
-                let applicationClassJavaPath = regexAndroidManifestJavaClass.exec(androidManifestApplicationTagString);
-                if (androidManifestApplicationTagString) {
-                    if (applicationClassJavaPath) {
-                        applicationClassJavaPath = applicationClassJavaPath[1];
-                        console.log("[FA] Found Application class in AndroidManifest.xml with the following value : " + applicationClassJavaPath);
-                        if (applicationClassJavaPath === FOLLOW_ANALYTICS_APPLICATION_JAVA_PATH) {
-                            console.log("[FA] Follow Analytics Application class already set in AndroidManifest.xml : " + FOLLOW_ANALYTICS_APPLICATION_JAVA_PATH + ".");
-                            const javaDirectoryOsPath = path.join(androidProjectOSPath, 'app', 'src', 'main', 'java');
-                            const myFollowAnalyticsApplicationOsPath = path.join(javaDirectoryOsPath, format_java_path_to_os_path(applicationClassJavaPath) + ".java");
-                            fs.readFile(myFollowAnalyticsApplicationOsPath, 'utf8', function (error, myFollowAnalyticsApplicationData) {
-                                if (error) {
-                                    console.error("[FA] Unable to read file " + myFollowAnalyticsApplicationOsPath + " : " + error);
-                                }
-                                replace_client_configuration_in_application(myFollowAnalyticsApplicationOsPath, myFollowAnalyticsApplicationData);
-                            });
-                        } else {
-                            if (applicationClassJavaPath.startsWith(".")) { // check that class is a relative path
-                                const regexAndroidManifestPackage = /package="([^"]*)/;
-                                const packageInAndroidManifest = regexAndroidManifestPackage.exec(androidManifestData)[1];
-                                if (packageInAndroidManifest) {
-                                    const customApplicationJavaPath = packageInAndroidManifest + applicationClassJavaPath;
-                                    replace_custom_application(androidProjectOSPath, customApplicationJavaPath, androidManifestExtrasApplicationTagString, androidManifestData, androidManifestOSPath);
-                                } else {
-                                    console.log("[FA] Could not find package attribute in AndroidManifest.xml file.");
-                                }
-                            } else {
-                                replace_custom_application(androidProjectOSPath, applicationClassJavaPath, androidManifestExtrasApplicationTagString, androidManifestData, androidManifestOSPath);
+            if (err) {
+                console.log("[FA] configure_sdk_initialization method : " + err);
+                return;
+            }
+            const matchAndroidManifestApplicationTag = regexAndroidManifestApplicationTag.exec(androidManifestData);
+            const androidManifestApplicationTagString = matchAndroidManifestApplicationTag[1];
+            const androidManifestExtrasApplicationTagString = matchAndroidManifestApplicationTag[2];
+            let applicationClassJavaPath = regexAndroidManifestJavaClass.exec(androidManifestApplicationTagString);
+            if (androidManifestApplicationTagString) {
+                if (applicationClassJavaPath) {
+                    applicationClassJavaPath = applicationClassJavaPath[1];
+                    console.log("[FA] Found Application class in AndroidManifest.xml with the following value : " + applicationClassJavaPath);
+                    if (applicationClassJavaPath === FOLLOW_ANALYTICS_APPLICATION_JAVA_PATH) {
+                        console.log("[FA] Follow Analytics Application class already set in AndroidManifest.xml : " + FOLLOW_ANALYTICS_APPLICATION_JAVA_PATH + ".");
+                        const javaDirectoryOsPath = path.join(androidProjectOSPath, 'app', 'src', 'main', 'java');
+                        const myFollowAnalyticsApplicationOsPath = path.join(javaDirectoryOsPath, format_java_path_to_os_path(applicationClassJavaPath) + ".java");
+                        fs.readFile(myFollowAnalyticsApplicationOsPath, 'utf8', function (error, myFollowAnalyticsApplicationData) {
+                            if (error) {
+                                console.error("[FA] Unable to read file " + myFollowAnalyticsApplicationOsPath + " : " + error);
                             }
-                        }
+                            replace_client_configuration_in_application(myFollowAnalyticsApplicationOsPath, myFollowAnalyticsApplicationData);
+                        });
                     } else {
-                        console.log("[FA] No application class set in AndroidManifest.xml file.");
-                        replace_custom_application(androidProjectOSPath, applicationClassJavaPath, androidManifestExtrasApplicationTagString, androidManifestData, androidManifestOSPath);
-                        console.log("[FA] Adding FollowAnalytics Application class in AndroidManifest.xml file.");
+                        if (applicationClassJavaPath.startsWith(".")) { // check that class is a relative path
+                            const regexAndroidManifestPackage = /package="([^"]*)/;
+                            const packageInAndroidManifest = regexAndroidManifestPackage.exec(androidManifestData)[1];
+                            if (packageInAndroidManifest) {
+                                const customApplicationJavaPath = packageInAndroidManifest + applicationClassJavaPath;
+                                replace_custom_application(androidProjectOSPath, customApplicationJavaPath, androidManifestExtrasApplicationTagString, androidManifestData, androidManifestOSPath);
+                            } else {
+                                console.log("[FA] Could not find package attribute in AndroidManifest.xml file.");
+                            }
+                        } else {
+                            replace_custom_application(androidProjectOSPath, applicationClassJavaPath, androidManifestExtrasApplicationTagString, androidManifestData, androidManifestOSPath);
+                        }
                     }
                 } else {
-                    console.log("[FA] Could not find Application tag in AndroidManifest.xml file.")
+                    console.log("[FA] No application class set in AndroidManifest.xml file.");
+                    replace_custom_application(androidProjectOSPath, applicationClassJavaPath, androidManifestExtrasApplicationTagString, androidManifestData, androidManifestOSPath);
+                    console.log("[FA] Adding FollowAnalytics Application class in AndroidManifest.xml file.");
                 }
+            } else {
+                console.log("[FA] Could not find Application tag in AndroidManifest.xml file.")
             }
+        }
         );
     }
 }
@@ -264,19 +269,19 @@ function get_build_type() {
     let projectPath = find_android_project();
     let pathToAppIml = path.join(projectPath, 'app', 'app.iml');
     let exists = fs.existsSync(pathToAppIml);
-    if(!exists){
+    if (!exists) {
         console.log("[FA] The file app.iml could not be found in: " + pathToAppIml);
         console.log("[FA] Your build type will be set to debug");
         return 'debug';
     }
     let imlFile = fs.readFileSync(pathToAppIml).toString();
     let buildType = imlFile.match(regexAppIml);
-    if(buildType.length > 1){
+    if (buildType.length > 1) {
         console.log("[FA] Build Variant: " + buildType[1]);
         return buildType[1];
-    }else{
+    } else {
         console.log("Could not find the Active Build Variant.");
-    }   
+    }
 }
 
 /*
@@ -285,64 +290,88 @@ function get_build_type() {
 */
 function replace_client_configuration_properties_in_follow_analytics_configuration(applicationData) {
     let res = undefined;
+    let resCallbacks = undefined;
     let buildType = get_build_type();
     let parameterJSON = configurationJSON[configurationPlatform][buildType];
     let StringParameters = "";
-    if(buildType){
+    let StringCallbacks = "\nprivate Boolean onConsoleLog = false;\nprivate Boolean onMessageReceived = false;\nprivate static Boolean onNativeInAppButtonTapped = false;\nprivate static Boolean onNotificationTapped = false;\n";
+    if (buildType) {
         for (let i = 0; i < Object.keys(parameterJSON).length; i++) {
             let parameterKey = Object.keys(parameterJSON)[i];
             let parameterValue = parameterJSON[parameterKey];
             let isValidParameter = allParametersKeys.includes(parameterKey);
 
-            if(isValidParameter){
+            if (isValidParameter) {
                 let parameterType = allParameters[parameterKey]
-                if(parameterType == "string"){
-                    if (!parameterValue || typeof parameterValue != "string"){ 
-                        console.log("[FA] " + parameterKey + " parameter with value of "+ parameterValue +" have an invalid value in followanalytics_configuration.json");
-                    } else {
-                        console.log("[FA] " + parameterKey + ": " + parameterValue);
-                        StringParameters += '\n this.'+parameterKey+' = "'+parameterValue+'";'
-                    }
-                }else if(parameterType == "integer"){
-                    if (!parameterValue || typeof parameterValue != "number"){ 
-                        console.log("[FA] " + parameterKey + " parameter with value of "+ parameterValue +" have an invalid value in followanalytics_configuration.json");
-                    } else {
-                        console.log("[FA] " + parameterKey + ": " + parameterValue);
-                        StringParameters += "\n this."+parameterKey+" = "+parameterValue+";"
-                    }
-                }else if(parameterType == "boolean"){
-                    if (typeof parameterValue != "boolean"){ 
-                        console.log("[FA] " + parameterKey + " parameter with value of "+ parameterValue +" have an invalid value in followanalytics_configuration.json");
-                    } else {
-                        console.log("[FA] " + parameterKey + ": " + parameterValue);
-                        StringParameters += "\n this."+parameterKey+" = "+parameterValue+";"
-                    }
-                }else if(parameterType == "ApiMode"){
-                    if (!parameterValue || typeof parameterValue != "string"){ 
-                        console.log("[FA] " + parameterKey + " parameter with value of "+ parameterValue +" have an invalid value in followanalytics_configuration.json");
-                    } else {
-                        if(parameterValue.toLowerCase() == "dev"){
+                switch (parameterType) {
+
+                    case "string":
+                        if (!parameterValue || typeof parameterValue != "string") {
+                            console.log("[FA] " + parameterKey + " parameter with value of " + parameterValue + " have an invalid value in followanalytics_configuration.json");
+                        } else {
                             console.log("[FA] " + parameterKey + ": " + parameterValue);
-                            parameterValue = 1;
-                            StringParameters += "\n this."+parameterKey+" = FollowAnalytics.ApiMode.DEV;"
-                        } else if(parameterValue.toLowerCase() == "prod"){
+                            StringParameters += '\n this.' + parameterKey + ' = "' + parameterValue + '";'
+                        }
+                        break;
+
+                    case "integer":
+                        if (!parameterValue || typeof parameterValue != "number") {
+                            console.log("[FA] " + parameterKey + " parameter with value of " + parameterValue + " have an invalid value in followanalytics_configuration.json");
+                        } else {
                             console.log("[FA] " + parameterKey + ": " + parameterValue);
-                            parameterValue = 0;
-                            StringParameters += "\n this."+parameterKey+" = FollowAnalytics.ApiMode.PROD;"
-                        }else{
-                            console.log("[FA] " + parameterKey + " parameter with value of "+ parameterValue +" have an invalid value in followanalytics_configuration.json");
-                        }    
-                    }
-                }else{
-                    console.log("[FA]Invalid Type on Plugin. Contact us reporting this problem");
+                            StringParameters += "\n this." + parameterKey + " = " + parameterValue + ";"
+                        }
+                        break;
+
+                    case "boolean":
+                        if (typeof parameterValue != "boolean") {
+                            console.log("[FA] " + parameterKey + " parameter with value of " + parameterValue + " have an invalid value in followanalytics_configuration.json");
+                        } else {
+                            console.log("[FA] " + parameterKey + ": " + parameterValue);
+                            StringParameters += "\n this." + parameterKey + " = " + parameterValue + ";"
+                        }
+                        break;
+
+                    case "ApiMode":
+                        if (!parameterValue || typeof parameterValue != "string") {
+                            console.log("[FA] " + parameterKey + " parameter with value of " + parameterValue + " have an invalid value in followanalytics_configuration.json");
+                        } else {
+                            if (parameterValue.toLowerCase() == "dev") {
+                                console.log("[FA] " + parameterKey + ": " + parameterValue);
+                                parameterValue = 1;
+                                StringParameters += "\n this." + parameterKey + " = FollowAnalytics.ApiMode.DEV;"
+                            } else if (parameterValue.toLowerCase() == "prod") {
+                                console.log("[FA] " + parameterKey + ": " + parameterValue);
+                                parameterValue = 0;
+                                StringParameters += "\n this." + parameterKey + " = FollowAnalytics.ApiMode.PROD;"
+                            } else {
+                                console.log("[FA] " + parameterKey + " parameter with value of " + parameterValue + " have an invalid value in followanalytics_configuration.json");
+                            }
+                        }
+                        break;
+
+                    case "callbacks":
+                        if (typeof parameterValue != "boolean") {
+                            console.log("[FA] " + parameterKey + " parameter with value of " + parameterValue + " have an invalid value in followanalytics_configuration.json");
+                        } else {
+                            console.log("[FA] " + parameterKey + ": " + parameterValue);
+                            var re = new RegExp(parameterKey + " = " + "([^;]+)", "g");
+                            StringCallbacks = StringCallbacks.replace(re, parameterKey + " = " + parameterValue);
+                        }
+                        break;
+
+                    default:
+                        console.log("[FA]Invalid Type on Plugin. Contact us reporting this problem");
+                        break;
                 }
-            }else{
-                console.log("[FA] The parameter " + parameterKey + " is not valid." )
+            } else {
+                console.log("[FA] The parameter " + parameterKey + " is not valid.")
             }
         }
-        res = applicationData.replace(regexJavaFollowAnalyticsConfiguration, 'FollowAnalytics.Configuration() {\n{' + StringParameters + "\n");
-        return res; 
-    } 
+        resCallbacks = applicationData.replace(regexJavaFollowAnalyticsConfigurationCallbacks, `$1 \n${StringCallbacks}\n\n    `);
+        res = resCallbacks.replace(regexJavaFollowAnalyticsConfiguration, 'FollowAnalytics.Configuration() {\n{' + StringParameters + "\n");
+        return res;
+    }
 
     return res;
 }
@@ -433,18 +462,75 @@ function add_google_services_plugin(androidProjectOSPath) {
     if (androidProjectOSPath) {
         const appBuildGradleOsPath = path.join(androidProjectOSPath, "app", "build.gradle");
         if (fs.existsSync(appBuildGradleOsPath)) {
-            var appBuildGradleContent = fs.readFileSync(appBuildGradleOsPath,'utf8');
-            if(appBuildGradleContent) {
+            var appBuildGradleContent = fs.readFileSync(appBuildGradleOsPath, 'utf8');
+            if (appBuildGradleContent) {
                 const regexApplyPluginGoogleServices = /apply plugin: 'com.google.gms.google-services'/;
                 var isPluginGoogleServicesApplied = regexApplyPluginGoogleServices.exec(appBuildGradleContent);
                 if (!isPluginGoogleServicesApplied) {
-                    appBuildGradleContent = appBuildGradleContent + "\napply plugin: 'com.google.gms.google-services'";
+                    appBuildGradleContent = appBuildGradleContent + "\napply plugin: 'com.google.gms.google-services' // Added by FollowAnalytics";
                     fs.writeFileSync(appBuildGradleOsPath, appBuildGradleContent);
                 }
             }
         } else {
-            console.error("[FA] Couldn't read build.gradle file in app module at "+appBuildGradleOsPath);
+            console.error("[FA] Couldn't read build.gradle file in app module at " + appBuildGradleOsPath);
         }
 
     }
 }
+
+const rm_google_services_plugin = function () {
+    const androidProjectOSPath = find_android_project();
+
+    const appBuildGradleOsPath = path.join(
+        androidProjectOSPath,
+        "app",
+        "build.gradle"
+    );
+
+    if (fs.existsSync(appBuildGradleOsPath)) {
+        let appBuildGradleContent = fs.readFileSync(appBuildGradleOsPath, "utf8");
+        if (appBuildGradleContent) {
+            const regexApplyPluginGoogleServices = /\napply plugin: 'com.google.gms.google-services' \/\/ Added by FollowAnalytics/;
+            const isPluginGoogleServicesApplied = regexApplyPluginGoogleServices.exec(
+                appBuildGradleContent
+            );
+            if (isPluginGoogleServicesApplied) {
+                appBuildGradleContent = appBuildGradleContent.replace(
+                    regexApplyPluginGoogleServices,
+                    ""
+                );
+                fs.writeFileSync(appBuildGradleOsPath, appBuildGradleContent);
+            }
+        }
+    }
+};
+
+const rm_replace_custom_application = function () {
+    const androidProjectOSPath = find_android_project();
+    const manifestPath = find_android_manifest(androidProjectOSPath);
+
+    if (fs.existsSync(manifestPath)) {
+        let androidManifestContent = fs.readFileSync(manifestPath, "utf8");
+        const regexAndroidManifestNameTag = /android:name="cordova.plugin.followanalytics.FollowAnalyticsApplication"/;
+        const isNameTagApplied = regexAndroidManifestNameTag.exec(
+            androidManifestContent
+        );
+
+        if (isNameTagApplied) {
+            androidManifestContent = androidManifestContent.replace(
+                regexAndroidManifestNameTag,
+                ""
+            );
+            fs.writeFileSync(manifestPath, androidManifestContent);
+        }
+    }
+};
+
+const restoreConfigs = function () {
+    rm_google_services_plugin();
+    rm_replace_custom_application();
+};
+
+module.exports.functions = {
+    restoreConfigs,
+};
