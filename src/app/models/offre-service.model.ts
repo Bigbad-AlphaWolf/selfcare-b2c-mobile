@@ -17,7 +17,7 @@ export interface OffreService {
   redirectionPath?: string;
   reasonDeactivation?: string;
   clicked?: boolean;
-  nouveau?: boolean;
+  newOffer?: boolean;
   iconeBackground?: string;
   banniere?: string;
 }

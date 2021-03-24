@@ -37,7 +37,7 @@
 
         .suivi-conso {
           font-family: HelveticaNeueLTStd-Bd, sans-serif;
-          font-size: 20px;
+          font-size: 24px;
         }
       }
 
@@ -73,13 +73,13 @@
           text-align: left;
           width: 100%;
           min-width: 63%;
-          height: 85px;
+          height: 110px;
           display: inline-block;
           padding: 8px 0 10px 15px;
           border-radius: 15px;
-          box-shadow: 0 12px 20px 0 rgba(0, 0, 0, 0.2);
           margin-right: percentage(15px / 366px);
           margin-left: percentage(15px / 366px);
+          background: radial-gradient(circle at 77% 36%, #b1a8f0, #4c77d7 111%);
           .scb-btn-top-block {
             &-icon,
             &-text {
@@ -102,13 +102,13 @@
           }
 
           .bottom-block {
-            margin-top: 1px;
+            margin-top: 5px;
             .value {
               font-family: HelveticaNeueLTStd-Bd, sans-serif;
-              font-size: 26px;
+              font-size: 32px;
 
               .text-style-1 {
-                font-family: HelveticaNeueLTStd-Roman, sans-serif;
+                font-family: HelveticaNeueLTStd-Bd, sans-serif;
                 font-size: 18px;
               }
             }
@@ -131,9 +131,8 @@
       }
 
       &-details {
-        margin: -15px 0 0 0;
         border-radius: 4px;
-        padding: 5px percentage(10px / $baseWidthMobile2);
+        padding: 10px percentage(10px / $baseWidthMobile2);
         .error {
           font-family: HelveticaNeueLTStd-Roman, sans-serif;
           font-size: 10px;
@@ -242,7 +241,9 @@
     }
 
     .dashboard-block-bill {
-      margin: 0 10px;
+      padding: 10px 15px;
+      background-color: $white;
+      margin-bottom: 20px;
       .error {
         font-family: HelveticaNeueLTStd-Roman, sans-serif;
         font-size: 10px;
@@ -359,42 +360,92 @@
           }
         }
       }
-    }
-
-    .dashboard-block-offres {
-      &-top1 {
-        display: flex;
+      .bordereau{
+        width: 100%;
         background-color: $white;
-        align-items: center;
-        width: (358px / $baseWidthMobile2) * 100%;
-        height: 50px;
-        border-radius: 3px;
-        margin-top: 9px;
-        margin-left: auto;
-        margin-right: auto;
-
-        .item-icon {
-          // width: percentage(60px / 172px);
-          display: inline-block;
-          vertical-align: middle;
-          margin: 12px percentage(11px / 358px);
-          img {
-            width: 100%;
-            height: auto;
+        .labels{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .title {
+            font-family: HelveticaNeueLTStd-Bd, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.25;
+          }
+          .voir-tout {
+            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.88;
+            color: $orange;
           }
         }
-
-        .item-text {
-          font-family: HelveticaNeueLTStd-Roman, sans-serif;
-          font-size: 14px;
-          display: inline-block;
-          vertical-align: middle;
-
-          .text-style-1 {
-            font-family: HelveticaNeueLTStd-Roman, sans-serif;
+        .border-bill{
+          border: solid 1px $silver;
+          border-radius: 5px;
+          margin-top: 15px;
+        }
+      }
+    }
+    .offre-infos{
+      background-color: $white;
+      padding: 30px 15px;
+      .title{
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.25;
+      }
+      .infos-item{
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 15px;
+        margin-top: 15px;
+        &:not(:last-child) {
+          border-bottom: solid 1px $silver;
+        }
+        .label {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
+          font-weight: normal;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.38;
+          color: $gray;
+        }
+        .value {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
+          font-weight: normal;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.38;
+          color: $fullBlack;
+          display: flex;
+          .icone {
+            display: block;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+            background-color: red;
+            &.actif{
+              background-color: #32c832;
+            }
           }
         }
       }
+    }
+    .loader{
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
     }
 
     .dashboard-block-footer-container {
