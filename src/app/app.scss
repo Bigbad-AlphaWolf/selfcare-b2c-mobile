@@ -273,6 +273,10 @@ body {
   color: $green;
 }
 
+.#{$prefix}-text-green-success {
+  color: $greenSuccess;
+}
+
 .#{$prefix}-text-purple {
   color: $purple;
 }

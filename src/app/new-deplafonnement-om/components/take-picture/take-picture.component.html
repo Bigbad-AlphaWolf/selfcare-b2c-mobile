@@ -9,9 +9,9 @@
   <div class="camera-page-body">
     <div class="camera-preview">
       <div class="steps">
-        <div class="steps-number scb-text-white">1/3</div>
+        <div class="steps-number scb-text-white">{{stepNumber}}/3</div>
         <div class="steps-description scb-text-white">
-          Placez le verso de votre carte sur le rectangle violet puis appuyer sur “Capturer”
+          {{stepDescription}}
         </div>
       </div>
       <div class="camera-frame"></div>
@@ -19,9 +19,10 @@
         <div class="circle" (click)="takePicture()">
           <div class="sub-circle"></div>
         </div>
-        <div class="photo-text scb-text-white" (click)="takePicture()">Capturer</div>
+        <div class="photo-text scb-text-white" (click)="switchCamera()">Capturer</div>
       </div>
     </div>
+    <img class="reverse-camera" (click)="switchCamera()" src="assets/images/camera-reverse-outline.png" alt="">
   </div>
 </ion-content>
 

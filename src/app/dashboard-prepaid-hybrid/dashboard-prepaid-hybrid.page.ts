@@ -165,11 +165,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.getUserActiveBonPlans();
     this.getActivePromoBooster();
     this.checkOMNumber();
-    this.banniereServ
-      .getListBanniereByFormuleByZone()
-      .subscribe((res: any) => {
-          this.listBanniere = res;
-      });
+    this.banniereServ.getListBanniereByFormuleByZone().subscribe((res: any) => {
+      this.listBanniere = res;
+    });
     this.getActiveServices();
   }
 
@@ -456,7 +454,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goDetailsCom(number?: number) {
-    this.router.navigate(['/details-conso']);
+    this.router.navigate(['/new-deplafonnement-om']);
     number
       ? this.followAnalyticsService.registerEventFollow(
           'Voirs_details_dashboard',

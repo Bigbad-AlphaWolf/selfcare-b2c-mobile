@@ -5,7 +5,8 @@ import {
   CameraPreviewOptions,
   CameraPreviewPictureOptions,
 } from '@ionic-native/camera-preview/ngx';
-import { NavController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
+import { VisualizePictureModalComponent } from '../visualize-picture-modal/visualize-picture-modal.component';
 
 const cameraPreviewOpts: CameraPreviewOptions = {
   x: 0,
@@ -33,11 +34,13 @@ const pictureOpts: CameraPreviewPictureOptions = {
 export class TakePictureComponent implements OnInit {
   picture;
   step: 'recto' | 'verso' | 'selfie';
-  @Output() goback = new EventEmitter();
+  stepNumber: number;
+  stepDescription: string;
 
   constructor(
     private cameraPreview: CameraPreview,
-    private navController: NavController
+    private navController: NavController,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -45,8 +48,51 @@ export class TakePictureComponent implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.getCurrentStep();
+  }
+
+  switchCamera() {
+    cameraPreviewOpts.camera =
+      cameraPreviewOpts.camera === 'rear' ? 'front' : 'rear';
+    console.log(cameraPreviewOpts);
+
+    this.cameraPreview.stopCamera().then((_) => {
+      this.startCamera();
+    });
+  }
+
+  async previsualizePicture() {
+    const modal = await this.modalController.create({
+      component: VisualizePictureModalComponent,
+      cssClass: 'previsualize-picture-modal',
+      componentProps: { base64Img: this.picture },
+    });
+    modal.onDidDismiss().then((resp) => {
+      if (resp && resp.data && resp.data.accepted) {
+        this.returnPicture();
+      }
+    });
+    return await modal.present();
+  }
+
+  getCurrentStep() {
     this.step = history.state.step;
-    console.log(this.step);
+    switch (this.step) {
+      case 'recto':
+        this.stepNumber = 1;
+        this.stepDescription = `Placez le recto de votre carte sur le rectangle violet puis appuyer sur “Capturer”`;
+        break;
+      case 'verso':
+        this.stepNumber = 2;
+        this.stepDescription = `Placez le verso de votre carte sur le rectangle violet puis appuyer sur “Capturer”`;
+        break;
+      case 'selfie':
+        this.stepNumber = 3;
+        this.stepDescription = `Prenez vous en selfie`;
+        break;
+      default:
+        break;
+    }
   }
 
   startCamera() {
@@ -64,7 +110,7 @@ export class TakePictureComponent implements OnInit {
     this.cameraPreview.takePicture(pictureOpts).then(
       (imageData) => {
         this.picture = 'data:image/jpeg;base64,' + imageData;
-        this.goBack();
+        this.previsualizePicture();
       },
       (err) => {
         console.log(err);
@@ -72,12 +118,16 @@ export class TakePictureComponent implements OnInit {
     );
   }
 
-  goBack() {
+  returnPicture() {
     this.navController.navigateBack('/new-deplafonnement-om', {
       state: {
         image: this.picture,
         step: this.step,
       },
     });
+  }
+
+  goBack() {
+    this.navController.navigateBack('/new-deplafonnement-om');
   }
 }

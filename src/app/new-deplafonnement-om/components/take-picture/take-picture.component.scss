@@ -90,4 +90,11 @@ ion-content {
       }
     }
   }
+  .reverse-camera {
+    width: 30px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+  }
 }

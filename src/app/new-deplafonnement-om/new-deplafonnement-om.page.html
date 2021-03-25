@@ -19,14 +19,16 @@
     <div class="banniere-container">
       <img src="/assets/images/banniere-om-new-account.png" alt="header-om" />
     </div>
-    <div class="all-informations-block">
+    <div class="all-informations-block" *ngIf="userOmStatus && userOmStatus.om && !userOmStatus?.full && userOmStatus?.step === 'NEW'">
       <div class="single-block">
         <div class="block-title">Numéro de téléphone</div>
         <div class="block-description scb-text-gray">Selectionnez le numéro sur lequel vous souhaitez ouvrir votre
           compte Orange Money</div>
         <div class="form-block">
-          <div class="om-number-block scb-text-gray"><span *ngIf="omMsisdn" class="msisdn">{{omMsisdn + ' (principal)'}}</span></div>
-          <div class="error-block scb-text-red-error" *ngIf="getMsisdnHasError" (click)="getOmMsisdn()">Une erreur est survenue. Réactualisez ici</div>
+          <div class="om-number-block scb-text-gray"><span *ngIf="omMsisdn" class="msisdn">{{omMsisdn + '
+              (principal)'}}</span></div>
+          <div class="error-block scb-text-red-error" *ngIf="getMsisdnHasError" (click)="getOmMsisdn()">Une erreur est
+            survenue. Réactualisez ici</div>
         </div>
       </div>
       <div class="single-block">
@@ -76,19 +78,27 @@
             <input formControlName="nIdentity" matInput type="text" />
           </mat-form-field>
           <div class="photo-button" [ngClass]="{'field-filled': rectoFilled}" (click)="takePicture('recto')">
-            <span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': rectoFilled}">Scanner recto pièce d’identité</span>
+            <span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': rectoFilled}">{{rectoFilled ?
+              rectoFileName : 'Scanner recto pièce d’identité'}}</span>
             <ion-icon name="camera" class="scb-text-orange" *ngIf="!rectoFilled"></ion-icon>
-            <ion-icon name="trash" class="scb-text-green-success" *ngIf="rectoFilled" ></ion-icon>
+            <ion-icon name="trash" class="delete-icon scb-text-green-success" *ngIf="rectoFilled"
+              (click)="removePicture('recto')">
+            </ion-icon>
           </div>
           <div class="photo-button" [ngClass]="{'field-filled': versoFilled}" (click)="takePicture('verso')">
-            <span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': versoFilled}">Scanner verso pièce d’identité</span>
+            <span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': versoFilled}">{{versoFilled ?
+              versoFileName : 'Scanner verso pièce d’identité'}}</span>
             <ion-icon name="camera" class="scb-text-orange" *ngIf="!versoFilled"></ion-icon>
-            <ion-icon name="trash" class="scb-text-green-success" *ngIf="versoFilled" ></ion-icon>
+            <ion-icon name="trash" class="delete-icon scb-text-green-success" *ngIf="versoFilled"
+              (click)="removePicture('verso')">
+            </ion-icon>
           </div>
           <div class="photo-button" [ngClass]="{'field-filled': selfieFilled}" (click)="takePicture('selfie')">
-            <span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': selfieFilled}">Prendre un selfie</span>
+            <span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': selfieFilled}">{{selfieFilled ?
+              selfieFileName : 'Prendre un selfie'}}</span>
             <ion-icon name="camera" class="scb-text-orange" *ngIf="!selfieFilled"></ion-icon>
-            <ion-icon name="trash" class="scb-text-green-success" *ngIf="selfieFilled" ></ion-icon>
+            <ion-icon name="trash" class="delete-icon scb-text-green-success" *ngIf="selfieFilled"
+              (click)="removePicture('selfie')"></ion-icon>
           </div>
         </form>
       </div>
@@ -98,11 +108,37 @@
           <div class="cgu-block">
             <mat-checkbox class="cgu-checkbox" [(ngModel)]="acceptCGU">
             </mat-checkbox>
-            <div class="scb-text-gray text" (click)="toggleAcceptCGU()">J’accepte les <span class="scb-text-orange cg">conditions générales</span> de déplafonnement de compte Orange Money.</div>
+            <div class="scb-text-gray text" (click)="toggleAcceptCGU()">J’accepte les <span
+                class="scb-text-orange cg">conditions générales</span> de déplafonnement de compte Orange Money.</div>
           </div>
-          <button class="scb-btn scb-btn-full scb-btn-orange">Continuer</button>
+          <button
+          [disabled]="(!omMsisdn || !identityForm.valid || !personalInfosForm.valid || !acceptCGU || !rectoFilled || !versoFilled || !selfieFilled)"
+            class="scb-btn scb-btn-full scb-btn-orange" (click)="openTypeOtpModal()">Continuer</button>
         </div>
       </div>
+    </div>
+    <div class="operation-status" *ngIf="userOmStatus && userOmStatus.om && userOmStatus?.step !== 'NEW'">
+      <div class="status-header">
+        <div class="numero-demand">N ᵒ P2005094389</div>
+        <ng-container [ngSwitch]="!userOmStatus?.step">
+          <div class="status-demand on-going" *ngSwitchCase="'ONGOING'">En cours</div>
+          <div class="status-demand completed" *ngSwitchCase="'COMPLETED'">Clôturée</div>
+          <div class="status-demand rejected" *ngSwitchCase="'ERROR'">Rejetée</div>
+        </ng-container>
+      </div>
+      <div class="status-title">Demande de déplafonnement de compte Orange Money - {{omMsisdn}}</div>
+      <div class="status-description scb-text-gray">
+        {{omMessage}}
+      </div>
+    </div>
+    <div class="spinner-block"*ngIf="checkingStatus">
+      <mat-spinner
+          mode="indeterminate"
+          [diameter]="40"
+        ></mat-spinner>
+    </div>
+    <div class="check-status-error scb-text-red-error" *ngIf="0 && checkStatusError" (click)="checkStatus()">
+      Erreur récupération statut. Réactualisez ici.
     </div>
   </div>
 </ion-content>
