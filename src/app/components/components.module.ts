@@ -19,6 +19,7 @@ import { CommonModule } from '@angular/common';
 import { PipesModule } from '../pipes/pipes.module';
 import { MaterialComponentsModule } from '../material-components/material-components.module';
 import { IonicModule } from '@ionic/angular';
+import { SlideBanniereDashboardComponent } from './slide-banniere-dashboard/slide-banniere-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { IonicModule } from '@ionic/angular';
     ItemIlliflexComponent,
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
-    ItemHistorikDetailsInfosComponent
+    ItemHistorikDetailsInfosComponent,
+    SlideBanniereDashboardComponent
   ],
   imports: [
     CommonModule,
@@ -60,7 +62,8 @@ import { IonicModule } from '@ionic/angular';
     ItemIlliflexComponent,
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
-    ItemHistorikDetailsInfosComponent
+    ItemHistorikDetailsInfosComponent,
+    SlideBanniereDashboardComponent
   ],
   entryComponents: [],
 })

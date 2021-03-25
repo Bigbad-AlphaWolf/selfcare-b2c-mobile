@@ -25,7 +25,7 @@ export interface BuyPassInternetModel {
 }
 
 export interface BannierePubModel {
-  action?:any;
+  action?: {typeAction: string, description: string, url: string, libelle: string};
   callToAction: boolean;
   dateDebut: string;
   dateFin: string;
