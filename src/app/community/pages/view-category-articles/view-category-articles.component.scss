@@ -1,0 +1,58 @@
+@import 'src/app/app';
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: -0.34px;
+}
+
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+  padding: 0 10px;
+}
+
+.articles-page-body {
+  height: 100%;
+  background-color: $grayDashboard;
+  .search-bar-block {
+    background-color: $white;
+    padding: 23px percentage(15/375);
+    ion-item {
+      border: solid 2px $grayDashboard;
+      height: 60px;
+      border-radius: 10px;
+      --min-height: 100%;
+      ion-input {
+        // --placeholder-opacity: 1;
+      }
+    }
+  }
+  .articles-block {
+    margin-top: 10px;
+    padding: 30px percentage(15/375) 0;
+    background-color: $white;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    .error-block,
+    .empty-array {
+      .msg {
+        font-size: 14px;
+        font-weight: bold;
+        font-style: italic;
+      }
+    }
+    app-article-skeleton-loader {
+      margin-bottom: 20px;
+    }
+    ion-list {
+      display: flex;
+      flex-direction: column;
+      app-horizontal-article-item {
+        margin-bottom: 15px;
+      }
+    }
+  }
+}

@@ -30,7 +30,7 @@ export class OemIonHeaderParallaxDirective
   ngOnInit(): void {}
   ngAfterViewChecked(): void {
     if (this.containerToolBarEl) return;
-    if (this.toolBarEl){
+    if (this.toolBarEl && this.toolBarEl.shadowRoot){
       this.containerToolBarEl = this.toolBarEl.shadowRoot.querySelector(
         '.toolbar-container'
       );
@@ -84,9 +84,12 @@ export class OemIonHeaderParallaxDirective
       );
     }
 
-    this.containerToolBarEl = this.toolBarEl.shadowRoot.querySelector(
-      '.toolbar-container'
-    );
+    if(this.toolBarEl.shadowRoot){
+
+      this.containerToolBarEl = this.toolBarEl.shadowRoot.querySelector(
+        '.toolbar-container'
+      );
+    }
 
     this.titleEl = this.toolBarEl.querySelector('ion-title');
 

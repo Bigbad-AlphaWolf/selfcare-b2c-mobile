@@ -12,7 +12,6 @@ import {
   DashboardService,
   downloadAvatarEndpoint,
 } from '../services/dashboard-service/dashboard.service';
-import { MatDialog } from '@angular/material';
 import { AccountService } from '../services/account-service/account.service';
 import * as SecureLS from 'secure-ls';
 import {
@@ -51,7 +50,6 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     private router: Router,
     private authServ: AuthenticationService,
     private dashboardServ: DashboardService,
-    public dialog: MatDialog,
     private accountService: AccountService,
     private iab: InAppBrowser,
     private followAnalyticsService: FollowAnalyticsService,
@@ -63,6 +61,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.getAllAttachedNumbers();
     this.getSouscription();
     this.extractData();
     this.dashboardServ.currentPhoneNumberChange.subscribe(() => {
@@ -77,7 +76,6 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.accountService.userUrlAvatarSubject.subscribe(() => {
       this.extractData();
     });
-    this.getAllAttachedNumbers();
     this.getVersion();
     this.dashboardServ.attachedNumbersChanged.subscribe(() => {
       this.getAllAttachedNumbers();
@@ -155,6 +153,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goToAssistancePage() {
+    // this.router.navigate(['/community']);
+    // return;
     this.iab.create(ASSISTANCE_URL, '_self');
     this.followAnalyticsService.registerEventFollow(
       'Sidemenu_Assistance',
@@ -210,9 +210,9 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goEmergencies() {
-    this.router.navigate(['/control-center']);
+    this.router.navigate(['/assistance-hub']);
     this.followAnalyticsService.registerEventFollow(
-      'Sidemenu_urgences_depannages',
+      'Sidemenu_assistance',
       'event',
       'clicked'
     );

@@ -11,7 +11,6 @@ import {
 import { environment } from 'src/environments/environment';
 const { SERVER_API_URL, CONSO_SERVICE } = environment;
 import { HttpClient } from '@angular/common/http';
-import { AuthenticationService } from '../authentication-service/authentication.service';
 import { catchError, map } from 'rxjs/operators';
 const passByIdEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-internets`;
 const passByPPIEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-by-ppi`;
@@ -40,9 +39,9 @@ export class PassInternetService {
     return this.userCodeFormule;
   }
 
-  queryListPassInternetOfUser(codeFormule: string) {
+  queryListPassInternetOfUser(codeFormule: string, isLighMod?: boolean) {
     this.setListPassInternetOfUser([]);
-    return this.dashbService.getListPassInternet(codeFormule).pipe(
+    return this.dashbService.getListPassInternet(codeFormule, isLighMod).pipe(
       map((resp: any[]) => {
         if (resp instanceof Array) {
           resp.forEach((x: PassInternetModel) => {
@@ -110,4 +109,5 @@ export class PassInternetService {
       )
       .toPromise();
   }
+
 }

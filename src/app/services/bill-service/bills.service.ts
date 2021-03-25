@@ -136,8 +136,8 @@ export class BillsService {
   async moisDisponible(codeClient: string, type: string, phone?: string) {
     return await this.http
       .get<string>(
-        `${INVOICE_MOIS_DISPO_ENDPOINT}/${codeClient}?type=${type}&search=${
-          type === 'MOBILE' ? 'phoneNumber:' + phone : ''
+        `${INVOICE_MOIS_DISPO_ENDPOINT}/${codeClient}?type=${type}${
+          type === 'MOBILE' ? '&search=phoneNumber:' + phone : ''
         }`
       )
       .pipe(

@@ -1,40 +1,73 @@
 @import 'src/app/app';
 
 ion-fab-button {
-    margin-left: 140px;
-    overflow: visible;
+  margin-left: 140px;
+  overflow: visible;
+  position: relative;
+  img {
+    width: 56px;
+    height: auto;
+  }
+}
+ion-fab-list {
+  min-width: 300px !important;
+  right: 0;
+  align-items: flex-end;
+  text-align: right;
+  ion-label {
     position: relative;
+    top: 45px;
+    right: 45px;
+    color: white;
+    line-height: 24px;
+    padding: 4px 8px;
+    border-radius: 4px;
   }
-  ion-fab-list {
-    ion-label {
-      position: relative;
-      top: 45px;
-      right: 45px;
-      color: white;
-      line-height: 24px;
-      padding: 4px 8px;
-      border-radius: 4px;
+  .fab-item-block {
+    display: flex;
+    margin-bottom: 30px;
+    .description {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      .title {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        line-height: 1;
+        padding-bottom: 3px;
+      }
+      .subtitle {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 16px;
+      }
+    }
+    img {
+      width: 60px;
+      height: auto;
+      margin-left: 15px;
     }
   }
-  ion-fab {
-    ion-badge {
-      position: relative;
-      top: 10px;
-      left: 140px;
-    }
+}
+ion-fab {
+  ion-badge {
+    position: relative;
+    top: 10px;
+    left: 140px;
   }
-  
-  #fab-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 99;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  
-  .fab-item {
-    width: 50px;
-    height: 50px;
-  }
+}
+
+#fab-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+.fab-item {
+  width: 56px;
+  height: 56px;
+}

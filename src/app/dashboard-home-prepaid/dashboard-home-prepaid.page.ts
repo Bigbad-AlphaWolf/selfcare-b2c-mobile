@@ -85,14 +85,10 @@ export class DashboardHomePrepaidPage implements OnInit {
     this.getPassInternetFixe();
     this.getUserInfos();
     this.getWelcomeStatus();
-    this.banniereServ.setListBanniereByFormule();
     this.banniereServ
-      .getStatusLoadingBanniere()
-      .subscribe((status: boolean) => {
-        this.isBanniereLoaded = status;
-        if (this.isBanniereLoaded) {
-          this.listBanniere = this.banniereServ.getListBanniereByFormule();
-        }
+      .getListBanniereByFormuleByZone()
+      .subscribe((res: any) => {
+          this.listBanniere = res;
       });
   }
 
@@ -182,7 +178,7 @@ export class DashboardHomePrepaidPage implements OnInit {
             }
           }, (err: any) => {
             console.log('error');
-            
+
           });
         }
       });

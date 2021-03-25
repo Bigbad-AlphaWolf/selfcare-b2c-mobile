@@ -230,7 +230,7 @@ export class NumberSelectionComponent implements OnInit {
   }
 
   async canRecieveCredit() {
-    if (this.opXtras.forSelf) return true;
+    // if (this.opXtras.forSelf) return true;
 
     let canRecieve = await this.authService
       .canRecieveCredit(this.opXtras.recipientMsisdn)

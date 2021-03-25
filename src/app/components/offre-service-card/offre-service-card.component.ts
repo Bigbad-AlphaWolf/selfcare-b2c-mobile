@@ -9,6 +9,11 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { OperationService } from 'src/app/services/oem-operation/operation.service';
+import { OfcService } from 'src/app/services/ofc/ofc.service';
+import { ServiceCode } from 'src/app/models/enums/service-code.enum';
+import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
+import { NumberSelectionOption } from 'src/app/models/enums/number-selection-option.enum';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -30,12 +35,14 @@ export class OffreServiceCardComponent implements OnInit {
   FILE_BASE_URL: string = FILE_DOWNLOAD_ENDPOINT;
   constructor(
     private navCtrl: NavController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private ofcService: OfcService,
+    private bsService: BottomSheetService
   ) {}
   imageUrl: string;
 
   ngOnInit() {
-    this.imageUrl = this.FILE_BASE_URL + '/' + this.service.icone;
+    this.imageUrl = this.service.icone;
   }
 
   onClick() {
@@ -44,14 +51,28 @@ export class OffreServiceCardComponent implements OnInit {
       // this.service.clicked = !this.service.clicked;
       return;
     }
-    if (!this.service.redirectionPath) return;
-    this.navCtrl.navigateForward(this.service.redirectionPath, {
-      state: { purchaseType: this.service.redirectionType },
-    });
+    if (this.service.code + '' === ServiceCode.OFC) {
+      this.ofcService.loadOFC();
+      return;
+    }
+    if (this.service.redirectionType === 'NAVIGATE')
+      this.navCtrl.navigateForward([this.service.redirectionPath], {
+        state: { purchaseType: this.service.code },
+      });
+    if (this.bsService[this.service.redirectionType]) {
+      const params = [
+        NumberSelectionOption.WITH_MY_PHONES,
+        this.service.code,
+        this.service.redirectionPath,
+      ];
+      this.bsService[this.service.redirectionType](...params);
+      return;
+    }
   }
 
   onErrorImg() {
-    this.imageUrl = 'assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg';
+    this.imageUrl =
+      'assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg';
   }
 
   async showServiceUnavailableToast() {

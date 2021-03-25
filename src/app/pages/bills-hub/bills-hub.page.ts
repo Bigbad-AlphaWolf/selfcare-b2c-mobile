@@ -1,10 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  BILLS_COMPANIES_DATA,
-  RAPIDO,
-  WOYOFAL,
-} from 'src/app/utils/bills.util';
-import { BillCompany } from 'src/app/models/bill-company.model';
+import { RAPIDO, WOYOFAL } from 'src/app/utils/bills.util';
 import { WoyofalSelectionComponent } from 'src/app/components/counter/woyofal-selection/woyofal-selection.component';
 import { NavController, ToastController } from '@ionic/angular';
 import { OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
@@ -13,6 +8,8 @@ import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.s
 import { RapidoOperationPage } from '../rapido-operation/rapido-operation.page';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
 import { Router } from '@angular/router';
+import { OffreService } from 'src/app/models/offre-service.model';
+import { HUB_ACTIONS } from 'src/shared';
 
 @Component({
   selector: 'app-bills-hub',
@@ -21,25 +18,42 @@ import { Router } from '@angular/router';
 })
 export class BillsHubPage implements OnInit {
   public static ROUTE_PATH = '/bills-hub';
-  companies: BillCompany[] = BILLS_COMPANIES_DATA;
+  companies: OffreService[];
+  onCompaniesError: boolean;
+  loadingCompanies: boolean;
 
   constructor(
     private bsService: BottomSheetService,
     private navCtrl: NavController,
     private toastController: ToastController,
-    private router: Router
+    private router: Router,
+    private operationService: OperationService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getCompanies();
+  }
 
-  async onCompanySelected(billCompany: BillCompany) {
-    if (!this.isServciceActivated(billCompany)) {
-      const service = OperationService.AllOffers.find(
-        (service) => billCompany.idCode && service.code === billCompany.idCode
-      );
+  getCompanies() {
+    this.onCompaniesError = false;
+    this.loadingCompanies = true;
+    this.operationService.getServicesByFormule(HUB_ACTIONS.FACTURES).subscribe(
+      (companies: OffreService[]) => {
+        this.companies = companies;
+        this.loadingCompanies = false;
+      },
+      (err) => {
+        this.onCompaniesError = true;
+        this.loadingCompanies = false;
+      }
+    );
+  }
+
+  async onCompanySelected(billCompany: OffreService) {
+    if (!billCompany.activated) {
       const toast = await this.toastController.create({
         header: 'Service indisponible',
-        message: service.reasonDeactivation,
+        message: billCompany.reasonDeactivation,
         duration: 3000,
         position: 'middle',
         color: 'medium',
@@ -70,24 +84,11 @@ export class BillsHubPage implements OnInit {
     //this will change
   }
 
-  isServciceActivated(company: BillCompany) {
-    const service = OperationService.AllOffers.find(
-      (service) => service.code === company.idCode
+  isServiceHidden(company: OffreService) {
+    return (
+      !company.activated &&
+      (!company.reasonDeactivation || company.reasonDeactivation === '')
     );
-    if (service) return service.activated;
-    return true;
-  }
-
-  isServiceHidden(company: BillCompany) {
-    const service = OperationService.AllOffers.find(
-      (service) => service.code === company.idCode
-    );
-    if (service)
-      return (
-        !service.activated &&
-        (!service.reasonDeactivation || service.reasonDeactivation === '')
-      );
-    return false;
   }
 
   goBack() {

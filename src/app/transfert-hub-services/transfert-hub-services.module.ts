@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { TransfertHubServicesPage } from './transfert-hub-services.page';
 import { SharedModule } from 'src/shared/shared.module';
+import { ComponentsModule } from '../components/components.module';
+import { IonicImageLoader } from 'ionic-image-loader';
 
 const routes: Routes = [
   {
@@ -21,6 +23,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
+    ComponentsModule,
+    IonicImageLoader,
     RouterModule.forChild(routes),
   ],
   declarations: [TransfertHubServicesPage],

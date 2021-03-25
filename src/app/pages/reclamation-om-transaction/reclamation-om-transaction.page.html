@@ -1,0 +1,99 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1"> {{ title }}  </span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="rattachement-page">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">{{ title }}</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="banner-header">
+    <!-- <img src="/assets/images/achat-de-pass-voyage@2x.png" /> -->
+    <div class="text">
+        <span class="number scb-text-orange" >{{ currentNumber|phoneNumberDisplay }}</span>
+        <span  class="change" (click)="openLinesModal()" matRipple>Changer</span>
+    </div>
+  </div>
+
+  <div class="reclamation-content">
+  <form (ngSubmit)="submitInfos()">
+    <mat-form-field class="scb-input-row" appearance="outline">
+      <mat-label>Votre Email &nbsp;&nbsp;</mat-label>
+      <input
+      [ngModelOptions]="{standalone: true}"
+        matInput
+        type="email"
+        [(ngModel)]="infosReclamationsOM.email"
+      />
+    </mat-form-field>
+    <mat-form-field class="scb-input-row ref-transaction" appearance="outline">
+      <mat-label>Référence de la transaction &nbsp;&nbsp;</mat-label>
+      <input
+      [ngModelOptions]="{standalone: true}"
+        matInput
+        type="email"
+        maxlength=20
+        [(ngModel)]="infosReclamationsOM.refTransaction"
+      />
+
+      <span (click)="selectTransaction()" class="transactions_list">
+         Transactions
+      </span>
+      <img (click)="selectTransaction()" src="assets/images/arrow-down.svg" alt="">
+
+    </mat-form-field>
+    <ion-item lines="none" class="date-picker">
+      <ion-label>Date de la transaction</ion-label>
+      <ion-datetime [ngModelOptions]="{standalone: true}" doneText="Valider" cancelText="Annuler" displayFormat="D MMM YYYY H:mm" min="2020" [(ngModel)]="infosReclamationsOM.dateTransaction"></ion-datetime>
+    </ion-item>
+    <mat-form-field class="scb-input-row" appearance="outline">
+      <mat-label>Bénéficiare de la transaction &nbsp;&nbsp;</mat-label>
+      <input
+      [ngModelOptions]="{standalone: true}"
+        matInput
+        type="tel"
+        maxlength=20
+        [(ngModel)]="infosReclamationsOM.recipientTransaction"
+      />
+    </mat-form-field>
+    <mat-form-field class="scb-input-row" appearance="outline">
+      <mat-label>Montant de la transaction &nbsp;&nbsp;</mat-label>
+      <input
+      [ngModelOptions]="{standalone: true}"
+        matInput
+        type="number"
+        maxlength=20
+        [(ngModel)]="infosReclamationsOM.amountTransaction"
+      />
+    </mat-form-field>
+    <div class="text-conditions">
+      <span class="text scb-text-gray">
+        *{{ RECLAMATIONS_TRANSACCTIONS_OM_CONDITIONS }}
+      </span>
+    </div>
+    <ion-item lines="none">
+      <ion-checkbox [ngModelOptions]="{standalone: true}" mode="ios" [(ngModel)]="acceptConditions" ></ion-checkbox>
+      <ion-label>
+       Cocher pour accepter les conditions
+      </ion-label>
+    </ion-item>
+
+    <ion-item lines="none" *ngIf="hasErrorSubmiting">
+      <span class="scb-text-red-error">
+        {{ errorFormSubmission }}
+      </span>
+    </ion-item>
+    <ion-button [disabled]="isSubmitting" ion-ion-button type="submit" expand="block">
+      Envoyer
+      <ion-spinner *ngIf="isSubmitting" name="crescent"></ion-spinner>
+    </ion-button>
+  </form>
+</div>
+</ion-content>

@@ -23,6 +23,10 @@ const listAllSargalGiftsEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/gift
 const convertGiftEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/loyaltypoints-gift`;
 const registerSargalEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/suscribe`;
 const customerSargalStatusEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/client-sargals-profile`;
+
+// Endpoint Light get Sargal Balance
+const sargalBalanceEndpointLight = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/light/subscription-status`;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -50,11 +54,13 @@ export class SargalService {
 
   getSargalBalance(msisdn: string, hmac?: string) {
     let queryParam = '';
+    let endpoint = sargalBalanceEndpoint;
     if (hmac) {
+      endpoint = sargalBalanceEndpointLight;
       queryParam += `?hmac=${hmac}`;
     }
     return this.http
-      .get(`${sargalBalanceEndpoint}/${msisdn}${queryParam}`)
+      .get(`${endpoint}/${msisdn}${queryParam}`)
       .pipe(
         map(
           (sargalStatus) => {

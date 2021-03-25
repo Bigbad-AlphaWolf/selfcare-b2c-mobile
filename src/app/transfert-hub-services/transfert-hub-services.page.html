@@ -22,15 +22,15 @@
   <div class="transferts-page">
     <div class="ion-cards-container" *ngIf="options.length">
       <ng-container *ngFor="let opt of options">
-        <div class="card" *ngIf="opt.type !== OPERATION_TYPE_PASS_ALLO" [ngClass]="{'disabled': !isServciceActivated(opt)}">
+        <div class="card" *ngIf="opt.code !== OPERATION_TYPE_PASS_ALLO" [ngClass]="{'disabled': !opt.activated}">
           <ion-card (click)="goTo(opt)" class="card-content" button="true">
             <ion-card-content>
               <div class="icon">
-                <img [src]="opt?.icon" alt="" />
+                <img-loader [spinner]="true" class="img" [src]="opt.icone" fallbackUrl="/assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
               </div>
               <div class="text">
-                <span class="title"> {{opt.title}} </span>
-                <span class="subtitle"> {{opt.subtitle}} </span>
+                <span class="title"> {{opt.shortDescription}} </span>
+                <span class="subtitle"> {{opt.fullDescription}} </span>
               </div>
             </ion-card-content>
           </ion-card>
@@ -45,7 +45,7 @@
           </div>
           <div
             class="badge-promo"
-            *ngIf="opt.type === OPERATION_TYPE_PASS_ALLO && showNewFeatureBadge$|async"
+            *ngIf="opt.newOffer"
           >
             <div class="icon-container">
               <span class="new scb-text-white"> Nouveau </span>
@@ -55,6 +55,23 @@
         </div>
       </ng-container>
     </div>
+    <ng-container *ngIf="purchaseType === 'BUY' && ( favoritesPass && favoritesPass.passInternets.length || favoritesPass && favoritesPass.passIllimixes.length)">
+      <div class="favorite-pass-container">
+        <div class="title">
+          <span class="text">
+            Mes habitudes
+          </span>
+        </div>
+        <ng-container  *ngIf="favoritesPass && favoritesPass.passInternets.length">
+          <app-item-pass-internet *ngFor="let passInternet of favoritesPass.passInternets" [passInternet]="passInternet" (selectPass)="choosePass(passInternet, OPERATION_TYPE_PASS_INTERNET)">
+          </app-item-pass-internet>
+        </ng-container>
+        <ng-container  *ngIf="favoritesPass && favoritesPass.passIllimixes.length">
+          <app-item-pass-illimix *ngFor="let passIllimix of favoritesPass.passIllimixes" [passIllimix]="passIllimix" (selectPass)="choosePass(passIllimix, OPERATION_TYPE_PASS_ILLIMIX)">
+          </app-item-pass-illimix>
+        </ng-container>
+      </div>
+    </ng-container>
     <ng-container *ngIf="loadingServices">
       <div class="loader-container">
         <mat-spinner mode="indeterminate" [diameter]="50"></mat-spinner>
@@ -62,8 +79,9 @@
     </ng-container>
     <ng-container>
       <div *ngIf="servicesHasError">
-        <span class="scb-text-red-error" (click)="getActiveServices()">Nous n'avons pas pu charger vos services. Veuillez réessayer</span>
+        <span class="scb-text-red-error" (click)="getServices()">Nous n'avons pas pu charger vos services. Veuillez réessayer</span>
       </div>
     </ng-container>
   </div>
+
 </ion-content>

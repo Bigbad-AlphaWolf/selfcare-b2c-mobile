@@ -4,16 +4,18 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import {
   computeConsoHistory,
   arrangeCompteurByOrdre,
-  PurchaseModel,
-  DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY
+  DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY,
+  SubscriptionModel,
+  REGEX_POSTPAID_FIXE
 } from 'src/shared';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { PurchaseService } from '../services/purchase-service/purchase.service';
 import { IonSlides } from '@ionic/angular';
-import { PROFILE_TYPE_POSTPAID } from '../dashboard';
+import { isPostpaidFix, ModelOfSouscription, PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { tap } from 'rxjs/operators';
 import { CategoryPurchaseHistory } from '../models/category-purchase-history.model';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { PurchaseModel } from '../models/purchase.model';
 
 @AutoUnsubscribe()
 @Component({
@@ -56,6 +58,7 @@ export class DetailsConsoPage implements OnInit {
     slidesPerView: 1,
     slideShadows: true
   };
+  souscription: ModelOfSouscription;
   constructor(
     private dashboardservice: DashboardService,
     private authService: AuthenticationService,
@@ -69,7 +72,13 @@ export class DetailsConsoPage implements OnInit {
     this.userPhoneNumber = this.dashboardservice.getCurrentPhoneNumber();
     this.authService
       .getSubscription(this.userPhoneNumber)
-      .subscribe((res: any) => {
+      .subscribe((res: SubscriptionModel) => {
+        this.souscription = {
+          profil: res.profil,
+          formule: res.nomOffre,
+          codeFormule: res.code,
+        };
+
         this.followAnalyticsService.registerEventFollow(
           'Voir_details_dashboard',
           'event',
@@ -78,16 +87,22 @@ export class DetailsConsoPage implements OnInit {
         this.currentProfil = res.profil;
         if (this.currentProfil === 'POSTPAID') {
           this.getPostpaidUserHistory(2);
+          if(isPostpaidFix(this.souscription)) {
+            this.getUserConsoInfos();
+          }
         } else {
           this.getPrepaidUserHistory(2);
           this.getUserConsoInfos();
           this.getTransactionsByDay(this.purchaseDateFilterSelected);
-          
+
         }
       });
   }
+  isPostpaidFix(souscription) {
+    return isPostpaidFix(souscription)
+  }
 
-  goNext(tabIndex?:number){    
+  goNext(tabIndex?:number){
     this.slideGroup.getActiveIndex().then(index => {
       this.seeSlide(index);
     });
@@ -121,7 +136,7 @@ export class DetailsConsoPage implements OnInit {
           this.listPurchaseForDays = res.listPurchase;
           this.listPurchaseForDayByType = this.purchaseServ.filterPurchaseByType(
               this.listPurchaseForDays,
-              this.purchaseTypeFilterSelected
+              DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY
             );
         })))
         .subscribe(

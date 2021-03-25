@@ -6,7 +6,7 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { NumberSelectionComponent } from '../components/number-selection/number-selection.component';
 import { NumberSelectionOption } from '../models/enums/number-selection-option.enum';
@@ -18,6 +18,9 @@ import {
   OPERATION_TYPE_PASS_VOYAGE,
   SubscriptionModel,
   OPERATION_TYPE_PASS_ILLIFLEX,
+  HUB_ACTIONS,
+  OPERATION_TYPE_SEDDO_BONUS,
+  OPERATION_TYPE_SEDDO_CREDIT,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -29,10 +32,13 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { Observable } from 'rxjs';
 
-import { FacebookEventService } from '../services/facebook-event/facebook-event.service';
-import { FacebookCustomEvent } from '../models/enums/facebook-custom-event.enum';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { tap } from 'rxjs/operators';
+import { FavoritePassOemModel } from '../models/favorite-pass-oem.model';
+import { FavorisService } from '../services/favoris/favoris.service';
 import { OperationService } from '../services/oem-operation/operation.service';
+import { OffreService } from '../models/offre-service.model';
+import { OPERATION_TRANSFERT_ARGENT } from '../utils/operations.constants';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -40,165 +46,23 @@ import { OperationService } from '../services/oem-operation/operation.service';
 })
 export class TransfertHubServicesPage implements OnInit {
   OPERATION_TYPE_PASS_ALLO = OPERATION_TYPE_PASS_ALLO;
+  OPERATION_TYPE_PASS_INTERNET = OPERATION_TYPE_PASS_INTERNET;
+  OPERATION_TYPE_PASS_ILLIMIX = OPERATION_TYPE_PASS_ILLIMIX;
   pageTitle: string;
-  transferOptions: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type: 'TRANSFERT_MONEY' | 'TRANSFERT_CREDIT' | 'TRANSFERT_BONUS';
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-  }[] = [
-    {
-      title: 'Transfert',
-      subtitle: "d'argent",
-      icon:
-        '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
-      action: 'REDIRECT',
-      type: 'TRANSFERT_MONEY',
-      url: '',
-    },
-    {
-      title: 'Transfert',
-      subtitle: 'de crédit',
-      icon:
-        '/assets/images/04-boutons-01-illustrations-19-acheter-du-credit.svg',
-      action: 'REDIRECT',
-      type: 'TRANSFERT_CREDIT',
-      url: '/transfer/credit-bonus',
-    },
-    {
-      title: 'Transfert',
-      subtitle: 'de bonus',
-      icon:
-        '/assets/images/04-boutons-01-illustrations-02-transfert-argent-ou-credit.svg',
-      action: 'REDIRECT',
-      type: 'TRANSFERT_BONUS',
-      url: '/transfer/credit-bonus',
-    },
-  ];
-  buyOptions: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type:
-      | 'CREDIT'
-      | 'PASS'
-      | 'PASS_ILLIMIX'
-      | 'PASS_VOYAGE'
-      | 'PASS_INTERNATIONAL'
-      | 'PASS_ALLO';
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-    idCode?: number;
-  }[] = [
-    {
-      title: 'Pass',
-      subtitle: 'internet',
-      icon:
-        '/assets/images/04-boutons-01-illustrations-18-acheter-pass-internet.svg',
-      action: 'REDIRECT',
-      type: 'PASS',
-      url: '',
-    },
-    {
-      title: 'Pass',
-      subtitle: 'illimix',
-      icon:
-        '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
-      action: 'REDIRECT',
-      type: 'PASS_ILLIMIX',
-      url: '',
-    },
-    {
-      title: 'Pass',
-      subtitle: 'Allo',
-      icon: '/assets/images/ic-call-forward@2x.png',
-      action: 'REDIRECT',
-      type: 'PASS_ALLO',
-      url: '',
-    },
-    {
-      title: 'Pass',
-      subtitle: 'voyage',
-      icon:
-        '/assets/images/04-boutons-01-illustrations-09-acheter-pass-voyage.svg',
-      action: 'REDIRECT',
-      type: 'PASS_VOYAGE',
-      url: '',
-    },
-    // {
-    //   title: 'Pass',
-    //   subtitle: 'international',
-    //   icon: '/assets/images/ic-international.png',
-    //   action: 'REDIRECT',
-    //   type: 'PASS_INTERNATIONAL',
-    //   url: '',
-    // },
-  ];
-  buyCreditOption: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type: 'CREDIT';
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-  } = {
-    title: 'Crédit',
-    subtitle: 'recharge',
-    icon: '/assets/images/04-boutons-01-illustrations-19-acheter-du-credit.svg',
-    action: 'REDIRECT',
-    type: 'CREDIT',
-    url: '',
-  };
-  buyIlliflexOption: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type;
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-    idCode?: number;
-  } = {
-    title: 'Pass',
-    subtitle: 'illiflex',
-    icon:
-      '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
-    action: 'REDIRECT',
-    type: 'ILLIFLEX',
-    url: '',
-    idCode: 1134,
-  };
-  options: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type:
-      | 'TRANSFERT_MONEY'
-      | 'TRANSFERT_CREDIT'
-      | 'TRANSFERT_BONUS'
-      | 'CREDIT'
-      | 'PASS'
-      | 'PASS_ILLIMIX'
-      | 'PASS_VOYAGE'
-      | 'PASS_INTERNATIONAL'
-      | 'PASS_ALLO'
-      | 'ILLIFLEX';
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-  }[] = [];
+  options: OffreService[] = [];
   omPhoneNumber: string;
   isProcessing: boolean;
   errorMsg: string;
-  dataPayload: any;
+  userInfos: SubscriptionModel;
   hasPromoPlanActive: OfferPlanActive = null;
   hasBoosterPromoActive: PromoBoosterActive = null;
-  showNewFeatureBadge$: Observable<Boolean>;
   isLightMod: boolean; //boolean to tell if user is in connected or not connected mod
   currentPhone = this.dashbServ.getCurrentPhoneNumber();
+  purchaseType: 'BUY' | 'TRANSFER';
+  favoritesPass: FavoritePassOemModel;
   loadingServices: boolean;
   servicesHasError: boolean;
-  allServices = [];
+  hubCode: HUB_ACTIONS;
   constructor(
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
@@ -209,43 +73,41 @@ export class TransfertHubServicesPage implements OnInit {
     private bsService: BottomSheetService,
     private omService: OrangeMoneyService,
     private authService: AuthenticationService,
+    private favService: FavorisService,
     private toastController: ToastController,
     private operationService: OperationService
   ) {}
 
   ngOnInit() {
-    let purchaseType;
-    this.getShowStatusNewFeatureAllo();
     if (history && history.state) {
-      purchaseType = history.state.purchaseType;
+      this.purchaseType = history.state.purchaseType;
       this.isLightMod = history.state.isLightMod;
-      if (!this.isLightMod) {
-        this.buyOptions.splice(0, 0, this.buyCreditOption);
-      }
     }
-    if (purchaseType === 'TRANSFER') {
-      this.options = this.transferOptions;
+    if (this.purchaseType === 'TRANSFER') {
       this.pageTitle = 'Transférer argent ou crédit';
-    } else if (purchaseType === 'BUY') {
+      this.hubCode = HUB_ACTIONS.TRANSFERT;
+    } else if (this.purchaseType === 'BUY') {
       this.pageTitle = 'Acheter crédit ou pass';
-      this.getActiveServices();
+      this.hubCode = HUB_ACTIONS.ACHAT;
     } else {
       this.navController.navigateBack('/dashboard');
     }
+    this.getServices();
   }
 
-  getActiveServices() {
+  getServices() {
     this.loadingServices = true;
     this.servicesHasError = false;
-    this.operationService.getAllServices().subscribe(
+    this.operationService.getServicesByFormule(this.hubCode).subscribe(
       (res: any) => {
         this.loadingServices = false;
-        this.options = this.buyOptions;
+        console.log(res);
+
+        this.options = res;
         this.getUserActiveBonPlans();
         this.getUserActiveBoosterPromo();
-        this.allServices = res;
-        if (this.isServciceActivated(this.buyIlliflexOption))
-          this.buyOptions.push(this.buyIlliflexOption);
+        this.getFavoritePass();
+        this.getUserInfos();
       },
       (err) => {
         this.loadingServices = false;
@@ -254,34 +116,15 @@ export class TransfertHubServicesPage implements OnInit {
     );
   }
 
-  isServciceActivated(action) {
-    const actionService = this.allServices.find(
-      (service) => action.idCode && service.code === action.idCode
-    );
-    if (actionService) return actionService.activated;
-    return true;
-  }
-
   goBack() {
     this.navController.pop();
   }
 
-  async goTo(opt: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    type: string;
-    url?: string;
-    action?: 'REDIRECT' | 'POPUP';
-    idCode?: number;
-  }) {
-    if (!this.isServciceActivated(opt)) {
-      const service = OperationService.AllOffers.find(
-        (service) => opt.idCode && service.code === opt.idCode
-      );
+  async goTo(opt: OffreService) {
+    if (!opt.activated) {
       const toast = await this.toastController.create({
         header: 'Service indisponible',
-        message: service.reasonDeactivation,
+        message: opt.reasonDeactivation,
         duration: 3000,
         position: 'middle',
         color: 'medium',
@@ -290,64 +133,48 @@ export class TransfertHubServicesPage implements OnInit {
       return;
     }
 
-    switch (opt.type) {
-      case 'TRANSFERT_MONEY':
-        if (opt.action === 'REDIRECT') {
-          this.showBeneficiaryModal();
-        }
+    switch (opt.code) {
+      case OPERATION_TRANSFERT_ARGENT:
+        this.showBeneficiaryModal();
         break;
-      case 'TRANSFERT_CREDIT':
-        if (opt.action === 'REDIRECT') {
-          this.appRouting.goToTransfertCreditPage();
-        }
+      case OPERATION_TYPE_SEDDO_CREDIT:
+        this.appRouting.goToTransfertCreditPage();
         break;
-      case 'TRANSFERT_BONUS':
-        if (opt.action === 'REDIRECT') {
-          this.appRouting.goToTransfertBonusPage();
-        }
+      case OPERATION_TYPE_SEDDO_BONUS:
+        this.appRouting.goToTransfertBonusPage();
         break;
-      case 'CREDIT':
-        if (opt.action === 'REDIRECT') {
-          this.bsService.openNumberSelectionBottomSheet(
-            NumberSelectionOption.WITH_MY_PHONES,
-            OPERATION_TYPE_RECHARGE_CREDIT,
-            CreditPassAmountPage.PATH
-          );
-        }
+      case OPERATION_TYPE_RECHARGE_CREDIT:
+        this.bsService.openNumberSelectionBottomSheet(
+          NumberSelectionOption.WITH_MY_PHONES,
+          OPERATION_TYPE_RECHARGE_CREDIT,
+          CreditPassAmountPage.PATH
+        );
         break;
-      case 'PASS':
-        if (opt.action === 'REDIRECT') {
-          this.openModalPassNumberSelection(
-            OPERATION_TYPE_PASS_INTERNET,
-            'list-pass'
-          );
-        }
+      case OPERATION_TYPE_PASS_INTERNET:
+        this.openModalPassNumberSelection(
+          OPERATION_TYPE_PASS_INTERNET,
+          'list-pass'
+        );
         break;
-      case 'PASS_ILLIMIX':
-        if (opt.action === 'REDIRECT') {
-          this.openModalPassNumberSelection(
-            OPERATION_TYPE_PASS_ILLIMIX,
-            'list-pass'
-          );
-        }
+      case OPERATION_TYPE_PASS_ILLIMIX:
+        this.openModalPassNumberSelection(
+          OPERATION_TYPE_PASS_ILLIMIX,
+          'list-pass'
+        );
         break;
-      case 'PASS_VOYAGE':
-        if (opt.action === 'REDIRECT') {
-          this.openModalPassNumberSelection(
-            OPERATION_TYPE_PASS_VOYAGE,
-            ListPassVoyagePage.ROUTE_PATH
-          );
-        }
+      case OPERATION_TYPE_PASS_VOYAGE:
+        this.openModalPassNumberSelection(
+          OPERATION_TYPE_PASS_VOYAGE,
+          ListPassVoyagePage.ROUTE_PATH
+        );
         break;
-      case 'PASS_ALLO':
-        if (opt.action === 'REDIRECT') {
-          this.openModalPassNumberSelection(
-            OPERATION_TYPE_PASS_ALLO,
-            'list-pass'
-          );
-        }
+      case OPERATION_TYPE_PASS_ALLO:
+        this.openModalPassNumberSelection(
+          OPERATION_TYPE_PASS_ALLO,
+          'list-pass'
+        );
         break;
-      case 'ILLIFLEX':
+      case OPERATION_TYPE_PASS_ILLIFLEX:
         this.openModalPassNumberSelection(
           OPERATION_TYPE_PASS_ILLIFLEX,
           'illiflex-budget-configuration'
@@ -403,6 +230,7 @@ export class TransfertHubServicesPage implements OnInit {
     });
     return await modal.present();
   }
+
   async showBeneficiaryModal() {
     const modal = await this.modalController.create({
       component: SelectBeneficiaryPopUpComponent,
@@ -412,7 +240,6 @@ export class TransfertHubServicesPage implements OnInit {
       if (response && response.data && response.data.recipientMsisdn) {
         const pageData = response.data;
         this.appRouting.goSetAmountPage(pageData);
-        // this.getOmPhoneNumberAndCheckrecipientHasOMAccount(this.dataPayload);
       }
     });
     return await modal.present();
@@ -485,6 +312,7 @@ export class TransfertHubServicesPage implements OnInit {
       }
     return result;
   }
+
   displayBadgeOfferPlanForInOptionsCategory(
     offerPlan: OfferPlanActive,
     opt: {
@@ -519,7 +347,36 @@ export class TransfertHubServicesPage implements OnInit {
     return result;
   }
 
-  getShowStatusNewFeatureAllo() {
-    this.showNewFeatureBadge$ = this.dashbServ.getNewFeatureAlloBadgeStatus();
+  getFavoritePass() {
+    const hmac = this.authService.getHmac();
+    return this.favService
+      .getFavoritePass(this.isLightMod, hmac)
+      .pipe(
+        tap((res: any) => {
+          this.favoritesPass = res;
+        })
+      )
+      .subscribe();
+  }
+
+  choosePass(pass: any, opType: string) {
+    let navigationExtras: NavigationExtras = {
+      state: {
+        pass,
+        recipientCodeFormule: this.userInfos.code,
+        purchaseType: opType,
+        recipientMsisdn: this.currentPhone,
+        isLightMod: this.isLightMod,
+      },
+    };
+    this.router.navigate(['/operation-recap'], navigationExtras);
+  }
+
+  getUserInfos() {
+    this.authService
+      .getSubscriptionForTiers(this.currentPhone)
+      .subscribe((res: SubscriptionModel) => {
+        this.userInfos = res;
+      });
   }
 }

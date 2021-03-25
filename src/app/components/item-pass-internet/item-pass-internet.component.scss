@@ -74,6 +74,17 @@
         }
       }
     }
+    .gift-infos {
+      display: flex;
+      font-size: 12px;
+      margin-top: 10px;
+      padding-top: 5px;
+      border-top: solid 1px $silver;
+      span {
+        font-family: HelveticaNeueLTStd-Roman;
+        padding-right: 10px !important;
+      }
+    }
     .promo-block {
       position: absolute;
       top: 20px;

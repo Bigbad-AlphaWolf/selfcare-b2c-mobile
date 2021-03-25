@@ -12,11 +12,11 @@ import {
   getMinDataVolumeOrVoiceOfPaliers,
 } from 'src/shared';
 import { AuthenticationService } from '../authentication-service/authentication.service';
+const { CONSO_SERVICE, SERVER_API_URL, PURCHASES_SERVICE } = environment;
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
-const { CONSO_SERVICE, SERVER_API_URL } = environment;
 const paliersEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pricings`;
-const buyIlliflexEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/buy-pass-illiflex`;
+const buyIlliflexEndpoint = `${SERVER_API_URL}/${PURCHASES_SERVICE}/api/buy-pass-illiflex`;
 const bestOfferEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/prepay-balance/best-offer`;
 
 @Injectable({
@@ -91,6 +91,7 @@ export class IlliflexService {
             unit: 'KO',
           },
           validity,
+          usageType: 'DATA',
         },
         voiceBucket: {
           balance: {
@@ -98,6 +99,7 @@ export class IlliflexService {
             unit: 'SECOND',
           },
           validity,
+          usageType: 'VOICE',
         },
         smsBucket: {
           balance: {
@@ -105,6 +107,7 @@ export class IlliflexService {
             unit: 'SMS',
           },
           validity,
+          usageType: 'SMS',
         },
       },
     };

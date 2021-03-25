@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">Mes actes d’assistance</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">Mes actes d’assistance</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="actions-page-body">
+    <div class="search-bar-block" >
+      <ion-item lines="none">
+        <ion-input #searchInput  placeholder="Comment pouvons-nous vous aider ?" (ionChange)="onInputChange($event)"></ion-input>
+        <ion-icon name="search" slot="end" *ngIf="displaySearchIcon"></ion-icon>
+        <span class="effacer" *ngIf="!displaySearchIcon" (click)="onClear(searchInput)">Effacer</span>
+      </ion-item>
+    </div>
+    <div class="tabs-block">
+      <div class="tab-item scb-text-light-black" (click)="slide(i)" *ngFor="let actTypes of acts | keyvalue, let i = index" [ngClass]="{'active': i === currentSlideIndex}">{{actTypes.key}}</div>
+    </div>
+    <ion-slides #slides (ionSlideDidChange)="slideChanged()">
+      <ion-slide *ngFor="let actTypes of acts | keyvalue, let i = index">
+        <app-action-item [action]="action" *ngFor="let action of actTypes.value"></app-action-item>
+      </ion-slide>
+    </ion-slides>
+  </div>
+</ion-content>

@@ -9,8 +9,11 @@ import {
   CODE_KIRENE_Formule,
   ERROR_MSG_PASS,
   OPERATION_TYPE_PASS_ALLO,
+  getActiveBoostersForSpecificPass,
 } from 'src/shared';
 import { PassIllimixService } from '../../services/pass-illimix-service/pass-illimix.service';
+import { BoosterService } from 'src/app/services/booster.service';
+import { BoosterModel, BoosterTrigger } from 'src/app/models/booster.model';
 
 @Component({
   selector: 'app-liste-pass',
@@ -39,10 +42,12 @@ export class ListePassPage implements OnInit {
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
   OPERATION_ALLO_TYPE = OPERATION_TYPE_PASS_ALLO;
+  boosters: BoosterModel[] = [];
   constructor(
     private router: Router,
     private passIntService: PassInternetService,
     private passIllimixServ: PassIllimixService,
+    private boosterService: BoosterService,
     private navCtl: NavController
   ) {}
 
@@ -63,9 +68,16 @@ export class ListePassPage implements OnInit {
       this.listCategory = [];
       this.listPass = [];
       this.activeTabIndex = 0;
+      let boosterPayload = {
+        trigger: null,
+        codeFormuleRecipient: this.userCodeFormule,
+        msisdn: this.userNumber,
+      };
       if (this.purchaseType === OPERATION_TYPE_PASS_INTERNET) {
+        boosterPayload.trigger = BoosterTrigger.PASS_INTERNET;
+        this.passIntService.setUserCodeFormule(this.userCodeFormule);
         this.passIntService
-          .queryListPassInternetOfUser(this.userCodeFormule)
+          .queryListPassInternetOfUser(this.userCodeFormule, this.isLightMod)
           .subscribe(
             () => {
               this.isLoaded = true;
@@ -84,10 +96,11 @@ export class ListePassPage implements OnInit {
             }
           );
       } else {
+        boosterPayload.trigger = BoosterTrigger.PASS_ILLIMIX;
         const category =
           this.purchaseType === OPERATION_TYPE_PASS_ALLO ? 'allo' : null;
         this.passIllimixServ
-          .queryListPassIllimix(this.userCodeFormule, category)
+          .queryListPassIllimix(this.userCodeFormule, category, this.isLightMod)
           .subscribe(
             () => {
               this.isLoaded = true;
@@ -106,7 +119,15 @@ export class ListePassPage implements OnInit {
             }
           );
       }
+      this.boosterService.getBoosters(boosterPayload).subscribe((boosters) => {
+        this.boosters = boosters;
+        BoosterService.lastBoostersList = boosters;
+      });
     }
+  }
+
+  getPassBoosters(pass: any) {
+    return getActiveBoostersForSpecificPass(pass, this.boosters);
   }
 
   // filter listPass with pass with price_plan_index credit set

@@ -22,6 +22,7 @@ import {
   PAYMENT_MOD_CREDIT,
   PAYMENT_MOD_OM,
   OPERATION_TYPE_PASS_ILLIFLEX,
+  getActiveBoostersForSpecificPass,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -40,6 +41,7 @@ import { PassInternetService } from '../services/pass-internet-service/pass-inte
 import { ModalSuccessModel } from '../models/modal-success-infos.model';
 import { SetRecipientNamesModalComponent } from './set-recipient-names-modal/set-recipient-names-modal.component';
 import { of } from 'rxjs';
+import { BoosterService } from '../services/booster.service';
 import { FeeModel } from '../services/orange-money-service';
 import { FeesService } from '../services/fees/fees.service';
 import { OM_LABEL_SERVICES } from '../utils/bills.util';
@@ -449,12 +451,19 @@ export class OperationRecapPage implements OnInit {
     params.opXtras = this.opXtras;
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
-      cssClass: params.success ? 'success-modal' : 'failed-modal',
+      cssClass: 'success-or-fail-modal',
       componentProps: params,
       backdropDismiss: false,
     });
     modal.onDidDismiss().then(() => {});
     return await modal.present();
+  }
+
+  getPassBoosters(pass: any) {
+    return getActiveBoostersForSpecificPass(
+      pass,
+      BoosterService.lastBoostersList
+    );
   }
 
   goBack() {

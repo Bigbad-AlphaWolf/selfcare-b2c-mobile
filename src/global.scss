@@ -541,6 +541,24 @@ body {
   }
 }
 
+// css for modal in operation success or fail in operaction recap
+.success-or-fail-modal {
+  // align-items: flex-end !important;
+  --height: auto;
+  .modal-wrapper {
+    width: 90% !important;
+    border-radius: 10px !important;
+    .ion-page {
+      position: relative;
+      contain: content;
+      max-height: 90vh;
+      .modal-content {
+        overflow: auto;
+      }
+    }
+  }
+}
+
 // css for besoin d'aide modal
 .besoin-daide-modal {
   align-items: flex-end !important;
@@ -778,4 +796,63 @@ ion-button {
 
 .my-knob {
   background-color: black !important;
+}
+
+.assistance-page-body,
+.questions-page-body,
+.actions-page-body {
+  ion-input {
+    input {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.comment-form {
+  .mat-form-field-suffix {
+    position: absolute !important;
+    height: 93% !important;
+    right: 0;
+    padding: 0 10px !important;
+    display: flex !important;
+    top: 5px !important;
+  }
+  .mat-input-element {
+    width: 77% !important;
+  }
+  mat-form-field.scb-input-row .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+}
+
+.ref-transaction {
+  .mat-form-field-infix {
+    display: flex;
+  }
+}
+
+.search-bar-block {
+  background-color: $white;
+  padding: 15px;
+  ion-item {
+    border: solid 2px $grayDashboard;
+    height: 60px;
+    border-radius: 10px;
+    --min-height: 100%;
+    ion-input {
+      // --placeholder-opacity: 1;
+    }
+    &.item-has-value{
+      border: solid 2px $orange;
+    }
+  }
+  span.effacer{
+    color: $orange;
+  }
+}
+
+.my-custom-class {
+  .popover-content {
+    --min-width: 80%;
+  }
 }

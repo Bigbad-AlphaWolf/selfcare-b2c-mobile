@@ -3,6 +3,7 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { PalierModel } from 'src/app/models/palier.model';
+import { BoosterModel } from 'src/app/models/booster.model';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
@@ -16,6 +17,7 @@ export const REGEX_DIGIT = /\d/;
 export const REGEX_POSTPAID_FIXE = /(Keurgui).*|(Fibre).*|(LFB).*|(HOME).*/i;
 export const REGEX_PREPAID_FIXE = /(BOX).*/i;
 export const REGEX_IS_DIGIT: RegExp = /^[0-9]*$/;
+export const REGEX_IOS_SYSTEM = /iPhone|iPad|iPod|crios|CriOS/i;
 
 export const USER_CONS_CATEGORY_CALL = 'APPEL';
 export const USER_CONS_CATEGORY_INTERNET = 'INTERNET';
@@ -29,11 +31,11 @@ export const OPERATION_TYPE_PASS_ILLIFLEX = 'PASS_ILLIFLEX';
 export const OPERATION_TYPE_MERCHANT_PAYMENT = 'MERCHANT_PAYMENT';
 export const OPERATION_TYPE_SOS = 'SOS';
 export const OPERATION_TYPE_SOS_CREDIT = 'SOS CREDIT';
-export const OPERATION_TYPE_SOS_PASS = 'SOS DATA';
+export const OPERATION_TYPE_SOS_PASS = 'SOS Pass Internet';
 export const OPERATION_TYPE_SOS_ILLIMIX = 'SOS Illimix';
-export const OPERATION_TYPE_SEDDO_CREDIT = 'SEDDO CREDIT';
+export const OPERATION_TYPE_SEDDO_CREDIT = 'SEDDO_CREDIT';
 export const OPERATION_TYPE_SEDDO_PASS = 'SEDDO PASS';
-export const OPERATION_TYPE_SEDDO_BONUS = 'SEDDO BONUS';
+export const OPERATION_TYPE_SEDDO_BONUS = 'SEDDO_BONUS';
 export const OPERATION_TYPE_TRANSFER_OM = 'orange-money';
 export const OPERATION_TYPE_RECHARGE_CREDIT = 'RECHARGEMENT_CREDIT';
 export const OPERATION_TYPE_SARGAL_CONVERSION = 'SARGAL_CONVERSION';
@@ -49,6 +51,10 @@ export const OPERATION_SEE_RATTACHED_NUMBERS = 'RATTACHED_NUMBERS';
 export const OPERATION_RATTACH_NUMBER = 'RATTACHE_NUMBER';
 export const OPERATION_CONFIRM_DELETE_RATTACH_NUMBER =
   'CONFIRM_DELETE_RATTACHE_NUMBER';
+export const OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM =
+  'ERREUR_TRANSACTION_OM';
+export const OPERATION_INIT_CHANGE_PIN_OM = 'INIT_CHANGE_PIN_OM';
+export const OPERATION_CHANGE_PIN_OM = 'CHANGE_PIN_OM';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -78,8 +84,12 @@ export const ASSISTANCE_URL = 'https://assistance.orange.sn';
 export const FACEBOOK_URL = 'https://m.me/165622776799685';
 export const TWITTER_URL =
   'https://twitter.com/messages/compose?recipient_id=733327435299729408';
+export const INSTAGRAM_URL =
+  'https://instagram.com/orange_senegal?igshid=7xv78qwpivfm';
 
 export const FIND_AGENCE_EXTERNAL_URL = 'https://agence.orange.sn/';
+export const CHECK_ELIGIBILITY_EXTERNAL_URL =
+  'https://www.orange.sn/test-fibre';
 export const VALID_IMG_EXTENSIONS = ['jpg', 'jpeg', 'png'];
 
 export const CREDIT = 'crédit';
@@ -90,18 +100,6 @@ export const MAX_USER_AVATAR_UPLOAD_SIZE = 3072;
 
 // Maximum size of avatar image allowed in bytes : 5 Mo ou 5 * 1024Ko
 export const MAX_USER_FILE_UPLOAD_SIZE = 5120;
-
-export const CATEGORY_PURCHASE_HISTORY = [
-  { nom: 'Tous', value: undefined },
-  { nom: 'Rechargement', value: 'RECHARGEMENT' },
-  { nom: 'Transfert Bonus', value: 'TRANSFERT_BONUS' },
-  { nom: 'Pass Illimix', value: 'ILLIMIX' },
-  { nom: 'Pass Internet', value: 'INTERNET' },
-  { nom: 'Dalal Tones', value: 'DALALTONE' },
-  { nom: 'Achat pour tiers', value: 'PASSFOROTHER' },
-  { nom: 'Transfert Credit', value: 'SEDDO' },
-  { nom: 'SOS', value: 'SOS' },
-];
 
 export const DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY = {
   label: 'Tous',
@@ -120,25 +118,37 @@ export const LIST_CATEGORY_BONS_PLANS = {
 export const IMAGES_DIRECTORY = '/assets/images/';
 
 export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
-  INTERNET: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
-  ILLIMIX: `${IMAGES_DIRECTORY}ic-unlimited-calls.png`,
-  RECHARGEMENT: `${IMAGES_DIRECTORY}ic-orange-phone.svg`,
+  PASS_INTERNET: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
+  PASS_ILLIMIX: `${IMAGES_DIRECTORY}ic-unlimited-calls.png`,
+  CREDIT: `${IMAGES_DIRECTORY}ic-orange-phone.svg`,
   TRANSFERT_BONUS: `${IMAGES_DIRECTORY}transfert-icon.png`,
   SEDDO: `${IMAGES_DIRECTORY}transfert-icon.png`,
   PASSFOROTHER: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
   DALALTONE: `${IMAGES_DIRECTORY}ic-device-ringtone.png`,
   SOS: `${IMAGES_DIRECTORY}ic-emergency-sos.png`,
   DEPOT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
-  RETRAIT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  TRANSFER: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   TRANSFERT_ARGENT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   TRANSFERT_ARGENT_CODE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   PAIEMENT_FACTURE_SONATEL_FIXE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  PAIEMENT_FACTURE_SDE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   PAIEMENT_SENELEC: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   PAIEMENT_FACTURE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
-  WOYOFAL: `${IMAGES_DIRECTORY}ic-files.png`,
+  WOYOFAL_PAYMENT: `${IMAGES_DIRECTORY}ic-files.png`,
   PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
+  MERCHANT_PAYMENT: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
+  RAPIDO: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
   SARGAL: `${IMAGES_DIRECTORY}transfert-icon.png`,
 };
+
+export const TYPE_QUESTION_SATISFACTION_FORM = {
+  BASIC: 'NONE',
+  NOTE: 'RATING',
+  RECOMMENDATION: 'RECOMMENDATION',
+  YES_NO: 'YES_NO',
+  SELECT_ANSWER: 'SELECT_ANSWER_QUESTION',
+};
+
 export function getNOAvatartUrlImage() {
   return NO_AVATAR_ICON_URL;
 }
@@ -249,14 +259,14 @@ export interface PassInfoModel {
   bonus: string;
   description: string;
   actif: boolean;
-  validitePass: string;
   categoriePass: any;
   formuleMobiles: any;
   profils: any;
   promos: any;
   duree: string;
   bonusNuit: string;
-  compteurCredite: string;
+  validitePass?: string;
+  compteurCredite?: string;
   typePassInternet: any;
   price_plan_index: number;
   price_plan_index_om: number;
@@ -335,11 +345,15 @@ export function getOrderedListCategory(
   unorderedList: CategoryPassInternet[]
 ): CategoryPassInternet[] {
   let listCategoryFiltered = [];
+  unorderedList = unorderedList.filter((elt: any) => {
+    return !!elt;
+  });
   unorderedList.sort(
     (elt1: CategoryPassInternet, elt2: CategoryPassInternet) =>
       elt1.ordre - elt2.ordre
   );
   listCategoryFiltered = [...new Set(unorderedList.map((x) => x.libelle))];
+
   return listCategoryFiltered;
 }
 
@@ -618,11 +632,17 @@ export interface ItemBesoinAide {
   code: string;
   question: string;
   reponse: string;
+  icone?: string;
+  type?: string;
+  descCourte?: string;
+  descLong?: string;
   actif: boolean;
   priorite: number;
-  categorieAide: any;
+  categorieOffreService?: any;
   profils: any[];
   formules: any[];
+  countTermMached?: number;
+  countFiedMached?: number;
 }
 
 // this method removes prefix 221 +221 00221
@@ -708,20 +728,6 @@ export interface UserConsommation {
 }
 
 export const CGU_FILE_NAME = 'cgu_orangeetmoi.pdf';
-
-export interface PurchaseModel {
-  typeAchat: string;
-  amount: number;
-  name: string;
-  channel: string;
-  operationDate: string;
-  operationType: 'DEBIT' | 'CREDIT';
-  details: any[];
-  label?: string;
-  prenomReceiver?: string;
-  nomReceiver?: string;
-  msisdnReceiver?: string;
-}
 
 /**
  * Compare two semver versions. Returns true if version A is greater than
@@ -838,11 +844,14 @@ export class SplashScreenMock extends SplashScreen {
 }
 
 export function getBanniereTitle(banniereDescription: string) {
-  const semiColonIndex = banniereDescription.indexOf(';');
-  if (semiColonIndex < 1) return banniereDescription;
-  return banniereDescription
-    ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
-    : '';
+  if (banniereDescription) {
+    const semiColonIndex = banniereDescription.indexOf(';');
+    if (semiColonIndex < 1) return banniereDescription;
+    return banniereDescription
+      ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
+      : '';
+  }
+  return banniereDescription;
 }
 
 export function getBanniereDescription(banniereDescription: string) {
@@ -1236,4 +1245,24 @@ export function getMinDataVolumeOrVoiceOfPaliers(
     dataOrVoice === 'data' ? palier.dataPrice : palier.voicePrice;
   const minPercentage = 0.2;
   return (minPercentage * minAmount) / (unitPrice * 1.239);
+}
+
+// method to get boosters array for a specific pass
+export function getActiveBoostersForSpecificPass(
+  pass,
+  boosters: BoosterModel[]
+) {
+  const passPPI = pass.passPromo
+    ? pass.passPromo.price_plan_index
+    : pass.price_plan_index;
+  const boostersArray = boosters.filter((booster) =>
+    booster.pricePlanIndexes.includes(passPPI.toString())
+  );
+  return boostersArray;
+}
+
+export enum HUB_ACTIONS {
+  ACHAT = 'HUB_ACHAT',
+  TRANSFERT = 'HUB_TRANSFER',
+  FACTURES = 'HUB_BILLS',
 }

@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">Contacter Ibou</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="contact-ibou-page">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">Contacter Ibou</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="contact-ibou-page-body">
+    <div class="banniere-container">
+      <img src="/assets/images/ibou-contact-banniere.png" alt="header-ibou" />
+    </div>
+    <div class="description scb-text-gray">
+      Ibou votre assistance est là pour vous 24h/7. Choisissez votre canal préféré et commencez à chatter avec lui.
+    </div>
+    <div [id]=DIMELO_CHAT_MARKUP class="dimelo_chat_item_markup" #test></div>
+    <!-- <div class="chat-with-ibou-block" (click)="chatWithIbou()">
+      <div class="ibou-img-container">
+        <img src="/assets/images/ibou-assi.png" alt="">
+      </div>
+      <div class="start-chat">
+        <span class="text-1 scb-text-white">Démarrer le chat</span>
+        <span class="text-2 scb-text-white">Ibou vous répond en moins de 30 min</span>
+      </div>
+    </div> -->
+    <div class="channel-block">
+      <div class="channel-item" *ngFor="let channel of channels" (click)="goChannel(channel)">
+        <img [src]="channel?.image" alt="act">
+        <div class="channel-description scb-text-gray">{{channel?.description}}</div>
+      </div>
+    </div>
+  </div>
+</ion-content>

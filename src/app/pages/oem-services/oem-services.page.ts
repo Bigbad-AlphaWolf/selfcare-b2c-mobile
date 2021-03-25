@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { OperationOem } from 'src/app/models/operation.model';
-import { ACTIONS_RAPIDES_OPERATIONS_POSTPAID } from 'src/app/utils/operations.util';
+import { NavController } from '@ionic/angular';
+import { OffreService } from 'src/app/models/offre-service.model';
+import { OperationService } from 'src/app/services/oem-operation/operation.service';
 
 @Component({
   selector: 'app-oem-services',
@@ -9,13 +9,37 @@ import { ACTIONS_RAPIDES_OPERATIONS_POSTPAID } from 'src/app/utils/operations.ut
   styleUrls: ['./oem-services.page.scss'],
 })
 export class OemServicesPage implements OnInit {
-  operations: OperationOem[] = ACTIONS_RAPIDES_OPERATIONS_POSTPAID;
+  operations: OffreService[];
+  loadingServices: boolean;
+  hasError: boolean;
 
-  constructor(private router: Router) {}
+  constructor(
+    private navCtr: NavController,
+    private operationService: OperationService
+  ) {}
 
   ngOnInit() {}
 
+  ionViewWillEnter() {
+    this.fetchAllPostpaidOffers();
+  }
+
+  fetchAllPostpaidOffers() {
+    this.loadingServices = true;
+    this.hasError = false;
+    this.operationService.getServicesByFormule().subscribe(
+      (res) => {
+        this.operations = res;
+        this.loadingServices = false;
+      },
+      (err) => {
+        this.loadingServices = false;
+        this.hasError = true;
+      }
+    );
+  }
+
   goBack() {
-    this.router.navigate(['/dashboard']);
+    this.navCtr.pop();
   }
 }
