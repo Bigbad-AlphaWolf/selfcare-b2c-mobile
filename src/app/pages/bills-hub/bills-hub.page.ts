@@ -130,6 +130,11 @@ export class BillsHubPage implements OnInit {
   }
 
   isServiceHidden(company: OffreService) {
+    console.log(
+      company.libelle,
+      !company.activated &&
+        (!company.reasonDeactivation || company.reasonDeactivation === '')
+    );
     return (
       !company.activated &&
       (!company.reasonDeactivation || company.reasonDeactivation === '')
