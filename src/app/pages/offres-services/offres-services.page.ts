@@ -84,6 +84,13 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
       .subscribe();
   }
 
+  isServiceHidden(service: OffreService) {
+    return (
+      !service.activated &&
+      (!service.reasonDeactivation || service.reasonDeactivation === '')
+    );
+  }
+
   changeTabHeader(tabIndex: number) {
     this.sliders.slideTo(tabIndex);
     this.activeTabIndex = tabIndex;
