@@ -36,9 +36,6 @@
 
 @property(nonatomic) BOOL isNewSessionStarted;
 @property(nullable) dispatch_semaphore_t validatorApiKeySemaphore;
-@property(nullable) dispatch_semaphore_t contextualBackgroundCampaignSemaphore;
-
-@property(nullable, nonatomic, strong) id _Nullable (^JSONSerializingHelperBlock)(id _Nullable);
 
 // -- helpers
 // time allowed in background before considering the current logging session over and starting a new
@@ -51,10 +48,6 @@
 - (nullable NSString*)serializationFileName;
 + (void)checkOpenUrl:( NSURL* _Nonnull) url;
 + (void)openUrl:(NSURL* _Nonnull) url;
-/********************************************************************************/
-#pragma mark - Birth & Death
-
-+ (FAGeneralManager* _Nonnull)sharedGeneralManager;
 
 /********************************************************************************/
 #pragma mark - Session Management
