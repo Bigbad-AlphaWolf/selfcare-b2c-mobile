@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import { from } from 'rxjs';
+import { from, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { OffreService } from 'src/app/models/offre-service.model';
 import { SubscriptionModel } from 'src/shared';
@@ -37,7 +37,6 @@ export class OperationService {
     }
     return this.http.get(endpointOffresServices).pipe(
       switchMap((categories) => {
-        console.log(categories);
         return this.getServicesByFormule().pipe(
           map((services) => {
             return { categories, services };
