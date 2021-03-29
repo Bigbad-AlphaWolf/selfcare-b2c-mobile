@@ -4,7 +4,7 @@
       <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
     </ion-buttons>
     <ion-title class="ion-no-padding">
-      <span class="title1">Déplafonnement Orange Money</span>
+      <span class="title1">Déplafonnement OM</span>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -19,7 +19,7 @@
     <div class="banniere-container">
       <img src="/assets/images/banniere-om-new-account.png" alt="header-om" />
     </div>
-    <div class="all-informations-block" *ngIf="userOmStatus && userOmStatus.om && !userOmStatus?.full && userOmStatus?.step === 'NEW'">
+    <div class="all-informations-block" *ngIf="1 || (userOmStatus && userOmStatus.om && !userOmStatus?.full && userOmStatus?.step === 'NEW')">
       <div class="single-block">
         <div class="block-title">Numéro de téléphone</div>
         <div class="block-description scb-text-gray">Selectionnez le numéro sur lequel vous souhaitez ouvrir votre
@@ -37,7 +37,7 @@
           <ion-list mode="ios">
             <ion-item mode="ios" lines="none">
               <ion-label mode="ios" class="scb-text-gray">Civilité</ion-label>
-              <ion-select interface="popover" noIonSelectArrow mode="ios">
+              <ion-select interface="popover" noIonSelectArrow mode="ios" formControlName="civility">
                 <ion-select-option value="monsieur" mode="ios"><span>Monsieur</span></ion-select-option>
                 <ion-select-option value="madame" mode="ios"><span>Madame</span></ion-select-option>
               </ion-select>
@@ -60,7 +60,7 @@
         <div class="block-title">Preuve d’identité</div>
         <form class="form-block" [formGroup]="identityForm">
           <div class="radio-group">
-            <mat-radio-group>
+            <mat-radio-group formControlName="identityType">
               <mat-radio-button [value]="'CNI'" checked #cni>
                 <div class="identity-option scb-text-gray" [ngClass]="{'radio-selected': cni.checked}">
                   Carte d'identité
@@ -106,7 +106,7 @@
         <div class="block-title">Confirmation</div>
         <div class="form-block">
           <div class="cgu-block">
-            <mat-checkbox class="cgu-checkbox" [(ngModel)]="acceptCGU">
+            <mat-checkbox class="cgu-checkbox" [checked]="acceptCGU">
             </mat-checkbox>
             <div class="scb-text-gray text" (click)="toggleAcceptCGU()">J’accepte les <span
                 class="scb-text-orange cg">conditions générales</span> de déplafonnement de compte Orange Money.</div>
@@ -137,7 +137,7 @@
           [diameter]="40"
         ></mat-spinner>
     </div>
-    <div class="check-status-error scb-text-red-error" *ngIf="0 && checkStatusError" (click)="checkStatus()">
+    <div class="check-status-error scb-text-red-error" *ngIf="checkStatusError" (click)="checkStatus()">
       Erreur récupération statut. Réactualisez ici.
     </div>
   </div>

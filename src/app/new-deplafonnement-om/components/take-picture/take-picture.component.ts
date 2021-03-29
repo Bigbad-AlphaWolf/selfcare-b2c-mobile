@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import {
   CameraPreview,
@@ -6,7 +6,6 @@ import {
   CameraPreviewPictureOptions,
 } from '@ionic-native/camera-preview/ngx';
 import { ModalController, NavController } from '@ionic/angular';
-import { VisualizePictureModalComponent } from '../visualize-picture-modal/visualize-picture-modal.component';
 
 const cameraPreviewOpts: CameraPreviewOptions = {
   x: 0,
@@ -52,27 +51,7 @@ export class TakePictureComponent implements OnInit {
   }
 
   switchCamera() {
-    cameraPreviewOpts.camera =
-      cameraPreviewOpts.camera === 'rear' ? 'front' : 'rear';
-    console.log(cameraPreviewOpts);
-
-    this.cameraPreview.stopCamera().then((_) => {
-      this.startCamera();
-    });
-  }
-
-  async previsualizePicture() {
-    const modal = await this.modalController.create({
-      component: VisualizePictureModalComponent,
-      cssClass: 'previsualize-picture-modal',
-      componentProps: { base64Img: this.picture },
-    });
-    modal.onDidDismiss().then((resp) => {
-      if (resp && resp.data && resp.data.accepted) {
-        this.returnPicture();
-      }
-    });
-    return await modal.present();
+    this.cameraPreview.switchCamera();
   }
 
   getCurrentStep() {
@@ -110,12 +89,17 @@ export class TakePictureComponent implements OnInit {
     this.cameraPreview.takePicture(pictureOpts).then(
       (imageData) => {
         this.picture = 'data:image/jpeg;base64,' + imageData;
-        this.previsualizePicture();
+        this.cameraPreview.stopCamera();
       },
       (err) => {
         console.log(err);
       }
     );
+  }
+
+  retry() {
+    this.picture = null;
+    this.startCamera();
   }
 
   returnPicture() {

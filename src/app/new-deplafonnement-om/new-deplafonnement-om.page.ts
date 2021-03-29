@@ -61,6 +61,7 @@ export class NewDeplafonnementOmPage implements OnInit {
     });
     this.identityForm = this.formBuilder.group({
       nIdentity: [null, [Validators.required]],
+      identityType: [[Validators.required]],
     });
   }
 
@@ -94,6 +95,7 @@ export class NewDeplafonnementOmPage implements OnInit {
         } else {
           this.omMsisdn = msisdn;
         }
+        console.log(this.omMsisdn, !this.omMsisdn);
       },
       (err) => {
         this.getMsisdnHasError = true;
@@ -134,6 +136,8 @@ export class NewDeplafonnementOmPage implements OnInit {
         break;
     }
   }
+
+  generateOtp() {}
 
   async openTypeOtpModal() {
     const modal = await this.modalController.create({

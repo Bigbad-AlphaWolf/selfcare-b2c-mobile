@@ -28,6 +28,8 @@ ion-content {
   width: 100%;
   height: 100%;
   position: relative;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
   .camera-preview {
     position: absolute;
     width: 100%;
@@ -60,7 +62,9 @@ ion-content {
       border-radius: 10px;
       border: solid 2px #ff7900;
       box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.2);
-      margin-bottom: 100px;
+      &.selfie {
+        height: 300px !important;
+      }
     }
     .catch-picture-btn {
       width: 100%;
@@ -68,6 +72,7 @@ ion-content {
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      margin-top: 100px;
       .circle {
         width: 79px;
         height: 79px;
@@ -87,6 +92,17 @@ ion-content {
         font-family: HelveticaNeueLTStd-Roman;
         font-size: 12px;
         margin-top: 10px;
+      }
+    }
+    .btn-block {
+      display: flex;
+      justify-content: space-between;
+      width: percentage(330/375);
+      max-width: 330px;
+      margin: 56px auto 0;
+      .scb-btn {
+        width: percentage(160/330);
+        border-radius: 10px;
       }
     }
   }
