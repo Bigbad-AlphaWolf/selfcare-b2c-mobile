@@ -109,6 +109,11 @@ Default NULL.
 @property(nullable, nonatomic, readonly, copy) NSString* environmentDomain;
 
 /**
+Current api hasEnvironementSubdomain = true.
+*/
+@property(nonatomic, readonly, assign) BOOL hasEnvironementSubdomain;
+
+/**
  Current api environmentDomain = follow-apps.com.
  */
 @property(nonatomic, readonly, assign) NSTimeInterval maxBackgroundTimeWithinSession;

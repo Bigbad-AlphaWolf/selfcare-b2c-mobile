@@ -47,6 +47,16 @@ OTHER: 3
  FollowAnalytics.logLocation = function(latitude,longitude) {
  window.webkit.messageHandlers.logLocation.postMessage({latitude: latitude, longitude: longitude});
  };
+
+ //ANALYTICS
+
+ FollowAnalytics.getOptInAnalytics = function() {
+ return callSync("getOptInAnalytics");
+ };
+
+ FollowAnalytics.setOptInAnalytics = function(value) {
+ window.webkit.messageHandlers.setOptInAnalytics.postMessage(value);
+ };
  
  //USER
  

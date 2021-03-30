@@ -31,6 +31,7 @@
 @property(nonatomic, readwrite, copy, nullable) NSString* environment;
 @property(nonatomic, readwrite, copy, nullable) NSString* environmentProtocol;
 @property(nonatomic, readwrite, copy, nullable) NSString* environmentDomain;
+@property(nonatomic, readwrite, assign) BOOL hasEnvironementSubdomain;
 @property(nonatomic, readwrite, assign) FollowAnalyticsAPIMode apiMode;
 @property(nonatomic, readwrite, assign) BOOL swizzlingEnabled;
 @property(nonatomic, readwrite, assign) BOOL archivePushMessages;
