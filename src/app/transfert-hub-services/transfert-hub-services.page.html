@@ -22,7 +22,7 @@
   <div class="transferts-page">
     <div class="ion-cards-container" *ngIf="options.length">
       <ng-container *ngFor="let opt of options">
-        <div class="card" *ngIf="opt.code !== OPERATION_TYPE_PASS_ALLO" [ngClass]="{'disabled': !opt.activated}">
+        <div class="card" *ngIf="!isServiceHidden(opt)" [ngClass]="{'disabled': !opt.activated}">
           <ion-card (click)="goTo(opt)" class="card-content" button="true">
             <ion-card-content>
               <div class="icon">
@@ -79,7 +79,7 @@
     </ng-container>
     <ng-container>
       <div *ngIf="servicesHasError">
-        <span class="scb-text-red-error" (click)="getServices()">N'a pas pu charger les services. Réactualisez ici</span>
+        <span class="scb-text-red-error" (click)="getServices()">Nous n'avons pas pu charger vos services. Veuillez réessayer</span>
       </div>
     </ng-container>
   </div>

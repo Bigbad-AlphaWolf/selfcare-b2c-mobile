@@ -21,6 +21,7 @@ import {
   HUB_ACTIONS,
   OPERATION_TYPE_SEDDO_BONUS,
   OPERATION_TYPE_SEDDO_CREDIT,
+  OPERATION_TYPE_MERCHANT_PAYMENT,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -39,6 +40,8 @@ import { FavorisService } from '../services/favoris/favoris.service';
 import { OperationService } from '../services/oem-operation/operation.service';
 import { OffreService } from '../models/offre-service.model';
 import { OPERATION_TRANSFERT_ARGENT } from '../utils/operations.constants';
+import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
+import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amount.page';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -180,6 +183,8 @@ export class TransfertHubServicesPage implements OnInit {
           'illiflex-budget-configuration'
         );
         break;
+      case OPERATION_TYPE_MERCHANT_PAYMENT:
+        this.openMerchantBS();
       default:
         break;
     }
@@ -217,6 +222,35 @@ export class TransfertHubServicesPage implements OnInit {
     this.omService.getOmMsisdn().subscribe((msisdn: string) => {
       if (msisdn !== 'error') {
         this.showBeneficiaryModal();
+      } else {
+        this.openPinpad();
+      }
+    });
+  }
+
+  isServiceHidden(service: OffreService) {
+    return (
+      !service.activated &&
+      (!service.reasonDeactivation || service.reasonDeactivation === '')
+    );
+  }
+
+  openMerchantBS() {
+    this.omService.omAccountSession().subscribe(async (omSession: any) => {
+      const omSessionValid = omSession
+        ? omSession.msisdn !== 'error' &&
+          omSession.hasApiKey &&
+          !omSession.loginExpired
+        : null;
+      if (omSessionValid) {
+        this.bsService
+          .initBsModal(
+            MerchantPaymentCodeComponent,
+            OPERATION_TYPE_MERCHANT_PAYMENT,
+            PurchaseSetAmountPage.ROUTE_PATH
+          )
+          .subscribe((_) => {});
+        this.bsService.openModal(MerchantPaymentCodeComponent);
       } else {
         this.openPinpad();
       }

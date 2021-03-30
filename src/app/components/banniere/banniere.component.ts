@@ -4,6 +4,8 @@ import { FILE_PATH } from 'src/app/services/utils/services.paths';
 import { NavController } from '@ionic/angular';
 import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
 import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
+import { TYPE_ACTION_ON_BANNER } from 'src/shared';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @Component({
   selector: 'oem-banniere',
@@ -14,7 +16,7 @@ export class BanniereComponent implements OnInit {
   @Input('banniere') banniere: BannierePubModel;
   imageUrl: string;
   displays: string[] = [];
-  constructor(private navCtrl: NavController) {}
+  constructor(private navCtrl: NavController, private iab: InAppBrowser) {}
 
   ngOnInit() {
     if (this.banniere.description) {
@@ -36,15 +38,24 @@ export class BanniereComponent implements OnInit {
 
   onBannerClicked() {
     if (!this.banniere.callToAction) return;
-    if (this.banniere.action.description) {
-      //open description page
-      this.navCtrl.navigateForward(BanniereDescriptionPage.ROUTE_PATH, {
-        state: this.banniere,
-      });
-      return;
+    switch (this.banniere.action.typeAction) {
+      case TYPE_ACTION_ON_BANNER.DEEPLINK:
+        this.navCtrl.navigateForward([this.banniere.action.url]);
+        break;
+      case TYPE_ACTION_ON_BANNER.REDIRECTION:
+        this.iab.create(this.banniere.action.url, '_blank')
+        break;
+      case TYPE_ACTION_ON_BANNER.MODAL:
+        if (this.banniere.action.description) {
+          //open description page
+          this.navCtrl.navigateForward(BanniereDescriptionPage.ROUTE_PATH, {
+            state: this.banniere,
+          });
+        }
+        break;
+      default:
+        break;
     }
-
-    window.open(this.banniere.action.url);
   }
 
   onErrorImg() {
