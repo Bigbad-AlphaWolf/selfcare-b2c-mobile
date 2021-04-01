@@ -43,10 +43,6 @@ export class OperationService {
           })
         );
       })
-      // map((r: any[]) => {
-      //   this.offresServices = r;
-      //   return r;
-      // })
     );
   }
 
@@ -58,13 +54,14 @@ export class OperationService {
     return this.http.get(`${ALL_SERVICES_ENDPOINT}?page=0&size=100`);
   }
 
-  getServicesByFormule(hub?: string) {
+  getServicesByFormule(hub?: string, isBesoinAide?: boolean) {
     const msisdn = this.dashboardService.getCurrentPhoneNumber();
     return this.authenticationService.getSubscription(msisdn).pipe(
       switchMap((customerOffer: SubscriptionModel) => {
         const versionObservable = from(this.appVersion.getVersionNumber());
         let queryParams = `?code=${customerOffer.code}`;
         if (hub) queryParams += `&hub=${hub}`;
+        if (isBesoinAide) queryParams += `&besoinAide=${isBesoinAide}`;
         return versionObservable.pipe(
           switchMap((appVersion) => {
             queryParams += `&version=${appVersion}`;

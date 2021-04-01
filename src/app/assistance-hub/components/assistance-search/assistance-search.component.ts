@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IonInput, NavController } from '@ionic/angular';
-import { ItemBesoinAide } from 'src/shared';
+import { OffreService } from 'src/app/models/offre-service.model';
 
 @Component({
   selector: 'app-assistance-search',
@@ -11,8 +11,8 @@ export class AssistanceSearchComponent implements OnInit {
   displaySearchIcon: boolean = true;
   @ViewChild('searchInput') searchRef: IonInput;
   terms = '';
-  listBesoinAides: ItemBesoinAide[];
-  listBesoinAidesAltered: ItemBesoinAide[];
+  listBesoinAides: OffreService[];
+  listBesoinAidesAltered: OffreService[];
 
   constructor(private navController: NavController) {}
 
