@@ -20,6 +20,26 @@ export class AssistanceHubPage implements OnInit {
     slideShadows: true,
     loop: true,
   };
+  fastActions = [
+    {
+      act: 'DEPLAFONNEMENT',
+      description: 'Déplafonner mon compte Orange Money',
+      image:
+        '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
+    },
+    {
+      act: 'TRANSACTION_ERROR',
+      description: 'Déclarer une erreur de transaction',
+      image:
+        '/assets/images/04-boutons-01-illustrations-03-payer-ma-facture.svg',
+    },
+    {
+      act: 'FIBRE_OPTIC',
+      description: 'Vérifier mon éligibilité à la fibre optique',
+      image:
+        '/assets/images/04-boutons-01-illustrations-04-paiement-marchand.svg',
+    },
+  ];
   moreActions = [
     {
       act: 'IBOU_CONTACT',
