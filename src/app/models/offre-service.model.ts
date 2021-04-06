@@ -29,7 +29,8 @@ export interface OffreService {
 }
 
 export interface CategoryOffreServiceModel {
-  categorieOffreServices?: any[];
+  id?: number;
+  categorieOffreServices?: CategoryOffreServiceModel[];
   description?: string;
   libelle?: string;
   niveau?: string;
