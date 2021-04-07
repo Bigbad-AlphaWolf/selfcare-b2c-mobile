@@ -20,10 +20,17 @@ export interface OffreService {
   newOffer?: boolean;
   iconeBackground?: string;
   banniere?: string;
+  besoinAide?: boolean;
+  typeService?: string;
+  question?: string;
+  reponse?: string;
+  countTermMached?: number;
+  countFiedMached?: number;
 }
 
 export interface CategoryOffreServiceModel {
-  categorieOffreServices?: any[];
+  id?: number;
+  categorieOffreServices?: CategoryOffreServiceModel[];
   description?: string;
   libelle?: string;
   niveau?: string;
