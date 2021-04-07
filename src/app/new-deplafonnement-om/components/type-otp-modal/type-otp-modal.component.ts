@@ -1,5 +1,14 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { IonInput } from '@ionic/angular';
+import { OmCheckOtpModel } from 'src/app/models/om-self-operation-otp.model';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 
 @Component({
   selector: 'app-type-otp-modal',
@@ -9,8 +18,12 @@ import { IonInput } from '@ionic/angular';
 export class TypeOtpModalComponent implements OnInit, AfterViewInit {
   currentInput = 1;
   @ViewChild('input') input: IonInput;
+  @Input() checkOtpPayload: OmCheckOtpModel;
+  checkingOtp: boolean;
+  errorCheckOtp: boolean;
+  errorMsg: string;
 
-  constructor() {}
+  constructor(private orangeMoneyService: OrangeMoneyService) {}
 
   ngOnInit() {}
 
@@ -18,5 +31,24 @@ export class TypeOtpModalComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.input.setFocus();
     }, 500);
+  }
+
+  checkOtp() {
+    this.checkingOtp = true;
+    this.errorCheckOtp = false;
+    const otp = this.input.value;
+    this.orangeMoneyService
+      .checkSelfOperationOtp(this.checkOtpPayload, otp)
+      .subscribe(
+        (res) => {
+          this.checkingOtp = false;
+        },
+        (err) => {
+          this.errorCheckOtp = true;
+          this.checkingOtp = false;
+          this.errorMsg =
+            err && err.message ? err.message : 'Une erreur est survenue';
+        }
+      );
   }
 }

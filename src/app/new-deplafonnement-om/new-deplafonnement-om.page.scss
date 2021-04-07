@@ -151,8 +151,15 @@
         }
         button {
           border-radius: 10px;
-          font-size: 16px;
-          font-weight: bold;
+          position: relative;
+          mat-spinner {
+            position: absolute;
+            top: 15px;
+            right: 10px;
+          }
+          .mat-spinner::ng-deep circle {
+            stroke: $white;
+          }
         }
       }
     }

@@ -1,12 +1,14 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
-import { switchMap } from 'rxjs/operators';
+import {
+  OmCheckOtpModel,
+  OmInitOtpModel,
+} from '../models/om-self-operation-otp.model';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { TypeOtpModalComponent } from './components/type-otp-modal/type-otp-modal.component';
-import { VisualizePictureModalComponent } from './components/visualize-picture-modal/visualize-picture-modal.component';
 
 @Component({
   selector: 'app-new-deplafonnement-om',
@@ -33,6 +35,8 @@ export class NewDeplafonnementOmPage implements OnInit {
   userOmStatus: any;
   checkStatusError: boolean;
   omMessage: string;
+  initOtpError: boolean;
+  generatingOtp: boolean;
 
   constructor(
     private router: Router,
@@ -137,12 +141,53 @@ export class NewDeplafonnementOmPage implements OnInit {
     }
   }
 
-  generateOtp() {}
+  generateOtp() {
+    let otpPayload: OmInitOtpModel = {
+      msisdn: this.omMsisdn,
+      first_name: this.personalInfosForm.value.firstname,
+      last_name: this.personalInfosForm.value.lastname,
+      birth_date: this.personalInfosForm.value.birthdate,
+      civilite: this.personalInfosForm.value.civility,
+      cniRectoBase64: this.rectoImage,
+      cniVectoBase64: this.versoImage,
+      cni_recto: this.rectoImage,
+      cni_verso: this.versoImage,
+      id_num: this.identityForm.value.nIdentity,
+      type_piece: this.identityForm.value.identityType,
+      adresse: '',
+      delivery_date: '',
+      expiry_date: '',
+    };
+    this.initOtpError = false;
+    this.generatingOtp = true;
+    this.orangeMoneyService.initSelfOperationOtp(otpPayload).subscribe(
+      (res) => {
+        const hmac2 = res.content.data.hmac;
+        otpPayload = Object.assign({}, otpPayload, hmac2);
+        this.generatingOtp = false;
+        this.openTypeOtpModal(otpPayload);
+      },
+      (err) => {
+        this.initOtpError = true;
+        this.generatingOtp = false;
+      }
+    );
+  }
 
-  async openTypeOtpModal() {
+  async openTypeOtpModal(initOtpPayload: OmInitOtpModel) {
+    const checkOtpPayload: OmCheckOtpModel = {
+      kyc: initOtpPayload,
+      channel: 'OeM',
+      cniRectoBase64: this.rectoImage,
+      cniVersoBase64: this.versoImage,
+      imageBase64: this.selfieImage,
+      msisdn: this.omMsisdn,
+      typeDemande: 'UPGRADE',
+    };
     const modal = await this.modalController.create({
       component: TypeOtpModalComponent,
       cssClass: 'select-recipient-modal',
+      componentProps: { checkOtpPayload },
     });
     modal.onDidDismiss().then((resp) => {
       if (resp && resp.data && resp.data.accept) {
@@ -152,7 +197,9 @@ export class NewDeplafonnementOmPage implements OnInit {
     return await modal.present();
   }
 
-  openSuccessModal() {}
+  openSuccessModal() {
+    alert('success');
+  }
 
   goBack() {
     this.navController.pop();

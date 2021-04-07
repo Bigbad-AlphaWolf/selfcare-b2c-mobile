@@ -19,7 +19,8 @@
     <div class="banniere-container">
       <img src="/assets/images/banniere-om-new-account.png" alt="header-om" />
     </div>
-    <div class="all-informations-block" *ngIf="1 || (userOmStatus && userOmStatus.om && !userOmStatus?.full && userOmStatus?.step === 'NEW')">
+    <div class="all-informations-block"
+      *ngIf="1 || (userOmStatus && userOmStatus.om && !userOmStatus?.full && userOmStatus?.step === 'NEW')">
       <div class="single-block">
         <div class="block-title">Numéro de téléphone</div>
         <div class="block-description scb-text-gray">Selectionnez le numéro sur lequel vous souhaitez ouvrir votre
@@ -103,7 +104,7 @@
         </form>
       </div>
       <div class="single-block">
-        <div class="block-title">Confirmation</div>
+        <div class="block-title" (click)="openTypeOtpModal()">Confirmation</div>
         <div class="form-block">
           <div class="cgu-block">
             <mat-checkbox class="cgu-checkbox" [checked]="acceptCGU">
@@ -111,9 +112,13 @@
             <div class="scb-text-gray text" (click)="toggleAcceptCGU()">J’accepte les <span
                 class="scb-text-orange cg">conditions générales</span> de déplafonnement de compte Orange Money.</div>
           </div>
+          <div class="init-otp-error" *ngIf="initOtpError">Une erreur est survenue.</div>
           <button
-          [disabled]="(!omMsisdn || !identityForm.valid || !personalInfosForm.valid || !acceptCGU || !rectoFilled || !versoFilled || !selfieFilled)"
-            class="scb-btn scb-btn-full scb-btn-orange" (click)="openTypeOtpModal()">Continuer</button>
+            [disabled]="(generatingOtp || !omMsisdn || !identityForm.valid || !personalInfosForm.valid || !acceptCGU || !rectoFilled || !versoFilled || !selfieFilled)"
+            class="scb-btn scb-btn-full scb-btn-orange" (click)="openTypeOtpModal()">
+            <span>Continuer</span>
+            <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="generatingOtp"></mat-spinner>
+          </button>
         </div>
       </div>
     </div>
@@ -131,11 +136,8 @@
         {{omMessage}}
       </div>
     </div>
-    <div class="spinner-block"*ngIf="checkingStatus">
-      <mat-spinner
-          mode="indeterminate"
-          [diameter]="40"
-        ></mat-spinner>
+    <div class="spinner-block" *ngIf="checkingStatus">
+      <mat-spinner mode="indeterminate" [diameter]="40"></mat-spinner>
     </div>
     <div class="check-status-error scb-text-red-error" *ngIf="checkStatusError" (click)="checkStatus()">
       Erreur récupération statut. Réactualisez ici.

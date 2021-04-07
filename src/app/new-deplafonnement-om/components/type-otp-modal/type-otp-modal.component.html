@@ -8,8 +8,13 @@
       <div class="square" [ngClass]="{'active': input.value.length === 2}"></div>
       <div class="square" [ngClass]="{'active': input.value.length >= 3}"></div>
     </div>
-    <ion-input #input type="text" maxlength="4" pattern="\d*" [ngClass]="{'cursor-hidden': input.value.length === 4}"></ion-input>
+    <ion-input #input type="text" maxlength="4" [ngClass]="{'cursor-hidden': input.value.length === 4}"></ion-input>
   </div>
-  <div class="resend-block scb-text-gray">Vous n’avez pas reçu de SMS ? <span class="scb-text-orange">Renvoyer</span> </div>
-  <button class="scb-btn scb-btn-orange scb-btn-full">Continuer</button>
+  <div class="resend-block scb-text-gray">Vous n’avez pas reçu de SMS ? <span class="scb-text-orange">Renvoyer</span>
+  </div>
+  <button class="scb-btn scb-btn-orange scb-btn-full" [disabled]="input.value.length < 4" (click)="checkOtp()">
+    <span>Continuer</span>
+    <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="checkingOtp"></mat-spinner>
+  </button>
+  <div class="scb-text-red-error error" *ngIf="errorCheckOtp">{{errorMsg}}</div>
 </div>
