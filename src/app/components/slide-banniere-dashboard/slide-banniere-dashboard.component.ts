@@ -4,6 +4,7 @@ import { getBanniereDescription, getBanniereTitle, TYPE_ACTION_ON_BANNER } from 
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { NavController } from '@ionic/angular';
 import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
+import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 
 @Component({
   selector: 'app-slide-banniere-dashboard',
@@ -12,7 +13,7 @@ import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/bann
 })
 export class SlideBanniereDashboardComponent implements OnInit {
   @Input() listBanniere: BannierePubModel[];
-  constructor(private iab: InAppBrowser, private navCtrl: NavController) { }
+  constructor(private iab: InAppBrowser, private navCtrl: NavController, private bottomSheetServ: BottomSheetService) { }
 
   ngOnInit() {}
 
@@ -36,9 +37,7 @@ export class SlideBanniereDashboardComponent implements OnInit {
       case TYPE_ACTION_ON_BANNER.MODAL:
         if (item.action.description) {
           //open description page
-          this.navCtrl.navigateForward(BanniereDescriptionPage.ROUTE_PATH, {
-            state: item,
-          });
+          this.bottomSheetServ.openBannerDescription(item);
         }
         break;
       default:
