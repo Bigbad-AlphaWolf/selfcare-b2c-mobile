@@ -10,7 +10,7 @@ import {
   take,
   retryWhen,
   delay,
-  mergeMap,
+  mergeMap
 } from 'rxjs/operators';
 import * as SecureLS from 'secure-ls';
 import { environment } from 'src/environments/environment';
@@ -21,6 +21,8 @@ import {
   JAMONO_ALLO_CODE_FORMULE,
   SubscriptionModel,
   REGEX_FIX_NUMBER,
+  USER_CONS_CATEGORY_CALL,
+  ItemUserConso,
 } from 'src/shared';
 import { DOCUMENT } from '@angular/platform-browser';
 import { SessionOem } from '../session-oem/session-oem.service';
@@ -154,6 +156,13 @@ export class DashboardService {
   getUserConsoInfos() {
     this.msisdn = this.getCurrentPhoneNumber();
     return this.http.get(`${userConsoEndpoint}/${this.msisdn}`);
+  }
+
+  getUserCallCompteursInfos() {
+    return this.getUserConsoInfosByCode().pipe(
+      map((res: ItemUserConso[]) => {
+     return res.find(elt => elt.categorie === USER_CONS_CATEGORY_CALL)
+    }));
   }
 
   getCurrentDate() {

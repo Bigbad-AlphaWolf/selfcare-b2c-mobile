@@ -10,4 +10,5 @@ export interface DalalTonesModel {
   artiste?: { nom?: string; image?: string };
   sousGenres?: DalalTonesSousGenreModel[];
   date?: string;
+  tarif?: number;
 }
