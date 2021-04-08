@@ -71,7 +71,6 @@ export class OperationService {
                 }
               }
             });
-            console.log(categories);
             // categories = categories.flat(1);
             return { categories, services };
           })
@@ -94,7 +93,7 @@ export class OperationService {
       switchMap((customerOffer: SubscriptionModel) => {
         const versionObservable = from(this.appVersion.getVersionNumber());
         let queryParams = `?code=${customerOffer.code}`;
-        if (category) queryParams += `&hub=${category}`;
+        if (category) queryParams += `&categorie=${category}`;
         if (isBesoinAide) queryParams += `&besoinAide=${isBesoinAide}`;
         return versionObservable.pipe(
           switchMap((appVersion) => {
