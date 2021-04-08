@@ -2,10 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { ModalController, NavController } from '@ionic/angular';
-import { FIND_AGENCE_EXTERNAL_URL, ItemBesoinAide } from 'src/shared';
+import { FIND_AGENCE_EXTERNAL_URL } from 'src/shared';
 import { BesoinAideType } from '../models/enums/besoin-aide-type.enum';
-import { AssistanceService } from '../services/assistance.service';
+import { OffreService } from '../models/offre-service.model';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { OperationService } from '../services/oem-operation/operation.service';
 
 @Component({
   selector: 'app-assistance-hub',
@@ -52,14 +53,14 @@ export class AssistanceHubPage implements OnInit {
       image: '/assets/images/04-boutons-01-illustrations-22-store-locator.svg',
     },
   ];
-  listBesoinAides: ItemBesoinAide[];
-  listFaqs?: ItemBesoinAide[];
-  listActes?: ItemBesoinAide[];
+  listBesoinAides: OffreService[];
+  listFaqs?: OffreService[];
+  listActes?: OffreService[];
   loadingHelpItems: boolean;
   displaySearchIcon: boolean = true;
   @ViewChild('searchInput') searchRef;
   constructor(
-    private assistanceService: AssistanceService,
+    private operationService: OperationService,
     private router: Router,
     private navController: NavController,
     private inAppBrowser: InAppBrowser,
@@ -72,19 +73,11 @@ export class AssistanceHubPage implements OnInit {
 
   ionViewDidEnter() {
     this.searchRef.value = '';
-
   }
 
   fetchAllHelpItems() {
     this.loadingHelpItems = true;
-    this.assistanceService.fetchHelpItems(
-      {
-        page: 0,
-        size: 1000000,
-        sort: ['type,asc', 'priorite,asc', 'id'],
-        // type: 'FAQ'
-      }
-    ).subscribe(
+    this.operationService.getServicesByFormule(null, true).subscribe(
       (res) => {
         this.listBesoinAides = res;
         this.loadingHelpItems = false;
@@ -96,21 +89,25 @@ export class AssistanceHubPage implements OnInit {
     );
   }
 
-  splitHelpItemsByType(){
-    this.listActes = this.listBesoinAides.filter((item: ItemBesoinAide) => {
-     return item.type === BesoinAideType.ACTE
+  splitHelpItemsByType() {
+    this.listActes = this.listBesoinAides.filter((item: OffreService) => {
+      return item.typeService === BesoinAideType.ACTE;
     });
-    this.listFaqs = this.listBesoinAides.filter((item: ItemBesoinAide) => {
-      return item.type === BesoinAideType.FAQ
+    this.listFaqs = this.listBesoinAides.filter((item: OffreService) => {
+      return item.typeService === BesoinAideType.FAQ;
     });
   }
 
   goAllActionsHub() {
-    this.router.navigate(['/assistance-hub/actions'],{state:{listActes:this.listActes}});
+    this.router.navigate(['/assistance-hub/actions'], {
+      state: { listActes: this.listActes },
+    });
   }
 
   goAllQuestionsHub() {
-    this.router.navigate(['/assistance-hub/questions'],{state:{listFaqs:this.listFaqs}});
+    this.router.navigate(['/assistance-hub/questions'], {
+      state: { listFaqs: this.listFaqs },
+    });
   }
 
   goBack() {
@@ -141,19 +138,19 @@ export class AssistanceHubPage implements OnInit {
     this.router.navigate(['/contact-ibou-hub']);
   }
 
-  onInputChange($event){
+  onInputChange($event) {
     const inputvalue = $event.detail.value;
     this.displaySearchIcon = true;
-    if(inputvalue){
-      this.navController.navigateForward(['/assistance-hub/search'],{state:{listBesoinAides:this.listBesoinAides, search:inputvalue}});
+    if (inputvalue) {
+      this.navController.navigateForward(['/assistance-hub/search'], {
+        state: { listBesoinAides: this.listBesoinAides, search: inputvalue },
+      });
       this.displaySearchIcon = false;
     }
-
   }
 
-  onClear(searchInput){
-    const inputValue : string =  searchInput.value;
-    searchInput.value = inputValue.slice(0,inputValue.length-1);
-
+  onClear(searchInput) {
+    const inputValue: string = searchInput.value;
+    searchInput.value = inputValue.slice(0, inputValue.length - 1);
   }
 }

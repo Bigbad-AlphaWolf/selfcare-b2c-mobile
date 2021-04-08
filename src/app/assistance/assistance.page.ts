@@ -1,16 +1,17 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AssistanceService } from '../services/assistance.service';
-import { ItemBesoinAide, ASSISTANCE_URL } from 'src/shared';
+import { ASSISTANCE_URL } from 'src/shared';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { OffreService } from '../models/offre-service.model';
 
 @Component({
   selector: 'app-assistance',
   templateUrl: './assistance.page.html',
-  styleUrls: ['./assistance.page.scss']
+  styleUrls: ['./assistance.page.scss'],
 })
 export class AssistancePage implements OnInit {
-  listQuestions: ItemBesoinAide[] = [];
+  listQuestions: OffreService[] = [];
   isLoaded = false;
   constructor(
     private assistService: AssistanceService,
@@ -42,7 +43,7 @@ export class AssistancePage implements OnInit {
       });
   }
 
-  goToCommunityExternalPage(){
+  goToCommunityExternalPage() {
     this.iab.create(ASSISTANCE_URL, '_self');
   }
 }

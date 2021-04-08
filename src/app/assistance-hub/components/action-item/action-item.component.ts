@@ -4,6 +4,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { OffreService } from 'src/app/models/offre-service.model';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
@@ -12,7 +13,6 @@ import {
   FIND_AGENCE_EXTERNAL_URL,
   CHECK_ELIGIBILITY_EXTERNAL_URL,
   OPERATION_INIT_CHANGE_PIN_OM,
-  ItemBesoinAide,
 } from 'src/shared';
 
 @Component({
@@ -21,7 +21,7 @@ import {
   styleUrls: ['./action-item.component.scss'],
 })
 export class ActionItemComponent implements OnInit {
-  @Input() action: ItemBesoinAide;
+  @Input() action: OffreService;
   @Input() search: boolean = false;
   FILE_BASE_URL: string = FILE_DOWNLOAD_ENDPOINT;
   imageUrl: string;
@@ -31,11 +31,13 @@ export class ActionItemComponent implements OnInit {
     private followAnalyticsService: FollowAnalyticsService,
     private inAppBrowser: InAppBrowser,
     private modalController: ModalController,
-    private dashbServ: DashboardService,
+    private dashbServ: DashboardService
   ) {}
 
   ngOnInit() {
-    this.imageUrl = this.action.icone ? this.FILE_BASE_URL + '/' + this.action.icone : null;
+    this.imageUrl = this.action.icone
+      ? this.FILE_BASE_URL + '/' + this.action.icone
+      : null;
   }
 
   doAction() {
@@ -162,23 +164,32 @@ export class ActionItemComponent implements OnInit {
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
-        'operationType' : OPERATION_INIT_CHANGE_PIN_OM
-      }
+        operationType: OPERATION_INIT_CHANGE_PIN_OM,
+      },
     });
     modal.onDidDismiss().then((resp) => {
       if (resp && resp.data && resp.data.success) {
-
         const omUserInfos = resp.data.omUserInfos;
-        this.dashbServ.getCustomerInformations().pipe(tap((res: any) => {
-          const birthDate = res.birthDate
-          if(birthDate){
-            const year = birthDate.split('-')[0];
-            this.router.navigate(['/change-orange-money-pin'], { state: { omUserInfos, birthYear: year } });
-          }
-        }), catchError((err: any) => {
-          this.router.navigate(['/change-orange-money-pin'], { state: { omUserInfos } });
-          return of(err)
-        })).subscribe();
+        this.dashbServ
+          .getCustomerInformations()
+          .pipe(
+            tap((res: any) => {
+              const birthDate = res.birthDate;
+              if (birthDate) {
+                const year = birthDate.split('-')[0];
+                this.router.navigate(['/change-orange-money-pin'], {
+                  state: { omUserInfos, birthYear: year },
+                });
+              }
+            }),
+            catchError((err: any) => {
+              this.router.navigate(['/change-orange-money-pin'], {
+                state: { omUserInfos },
+              });
+              return of(err);
+            })
+          )
+          .subscribe();
       }
     });
     return await modal.present();
