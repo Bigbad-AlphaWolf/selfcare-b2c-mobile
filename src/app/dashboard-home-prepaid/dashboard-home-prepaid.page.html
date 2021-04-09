@@ -155,16 +155,10 @@
         </div>
       </div>
     </div>
-    <div
-      *ngIf="showPromoBanner || (listBanniere.length && showPromoBanner)"
-      class="dashboard-img-promo slide-container"
-    >
+
     <app-slide-banniere-dashboard [listBanniere]="listBanniere">
     </app-slide-banniere-dashboard>
-      <div class="close-icon" (click)="hidePromoBarner()" *ngIf="0">
-        <img src="/assets/images/group-14.svg" alt="hide-banniere-promo" />
-      </div>
-    </div>
+
   </div>
 </ion-content>
 <app-ibou-ion-fab></app-ibou-ion-fab>
