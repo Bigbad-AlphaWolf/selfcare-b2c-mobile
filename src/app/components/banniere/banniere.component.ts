@@ -6,6 +6,7 @@ import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/bann
 import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
 import { TYPE_ACTION_ON_BANNER } from 'src/shared';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 
 @Component({
   selector: 'oem-banniere',
@@ -16,7 +17,7 @@ export class BanniereComponent implements OnInit {
   @Input('banniere') banniere: BannierePubModel;
   imageUrl: string;
   displays: string[] = [];
-  constructor(private navCtrl: NavController, private iab: InAppBrowser) {}
+  constructor(private navCtrl: NavController, private iab: InAppBrowser, private bottomSheetServ: BottomSheetService) {}
 
   ngOnInit() {
     if (this.banniere.description) {
@@ -48,9 +49,7 @@ export class BanniereComponent implements OnInit {
       case TYPE_ACTION_ON_BANNER.MODAL:
         if (this.banniere.action.description) {
           //open description page
-          this.navCtrl.navigateForward(BanniereDescriptionPage.ROUTE_PATH, {
-            state: this.banniere,
-          });
+          this.bottomSheetServ.openBannerDescription(this.banniere);
         }
         break;
       default:

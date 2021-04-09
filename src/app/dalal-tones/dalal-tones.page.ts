@@ -4,12 +4,13 @@ import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, NavController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ItemUserConso, OPERATION_ENABLE_DALAL, UserConsommation } from 'src/shared';
+import { ItemUserConso, OPERATION_ENABLE_DALAL, SubscriptionModel, UserConsommation } from 'src/shared';
 import { DalalTonesGenreModel } from '../models/dalal-tones-genre.model';
 import { DalalTonesSousGenreModel } from '../models/dalal-tones-sous-genre.model';
 import { DalalTonesModel } from '../models/dalal-tones.model';
 import { OperationExtras } from '../models/operation-extras.model';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { DalalTonesService } from '../services/dalal-tones-service/dalal-tones.service';
 import { DashboardService, downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
 import { DalalDisablePopupComponent } from './components/dalal-disable-popup/dalal-disable-popup.component';
@@ -38,6 +39,8 @@ export class DalalTonesPage implements OnInit {
   currentActiveDalals: any[];
   rechargementSolde = 0;
   RECHARGEMENT_COMPTEUR_CODE = 1;
+  currentPhoneNumber: string;
+  currentCodeFormulePhoneNumber: string;
   constructor(
     private dalalTonesService: DalalTonesService,
     private modalController: ModalController,
@@ -45,7 +48,8 @@ export class DalalTonesPage implements OnInit {
     private router: Router,
     private dashbService: DashboardService,
     private toastController: ToastController,
-    private appRouting: ApplicationRoutingService
+    private appRouting: ApplicationRoutingService,
+    private authServ: AuthenticationService
   ) {}
 
   ngOnInit() {
@@ -61,7 +65,13 @@ export class DalalTonesPage implements OnInit {
           this.rechargementSolde = rechargementCompteur.montant;
         }
       })
-    ).subscribe()
+    ).subscribe();
+    this.currentPhoneNumber = this.dashbService.getCurrentPhoneNumber();
+    this.authServ
+      .getSubscription(this.currentPhoneNumber)
+      .subscribe((res: SubscriptionModel) => {
+        this.currentCodeFormulePhoneNumber = res.code;
+      });
   }
 
   getCurrentActiveDalal() {
@@ -195,7 +205,7 @@ export class DalalTonesPage implements OnInit {
        {
           text: 'Recharger',
           handler: () => {
-            this.goToRechargeHub();
+            this.goToPageSetAmountForRechargeCredit();
           }
         }
       ]
@@ -203,7 +213,16 @@ export class DalalTonesPage implements OnInit {
     toast.present();
   }
 
-  goToRechargeHub() {
-    this.appRouting.goToTransfertHubServicesPage('BUY')
+  goToPageSetAmountForRechargeCredit() {
+    const opBuyCreditSetAmountPayload: OperationExtras = {
+      forSelf: true,
+      recipientFirstname: null,
+      recipientLastname: null,
+      recipientFromContact: false,
+      senderMsisdn: this.currentPhoneNumber,
+      recipientMsisdn: this.currentPhoneNumber,
+      recipientCodeFormule: this.currentCodeFormulePhoneNumber
+    };
+    this.appRouting.goToBuyCreditSetAmount(opBuyCreditSetAmountPayload);
   }
 }
