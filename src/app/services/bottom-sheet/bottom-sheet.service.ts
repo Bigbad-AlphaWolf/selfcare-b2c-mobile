@@ -27,6 +27,8 @@ import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.ser
 import { IdentifiedNumbersListComponent } from 'src/app/pages/rattached-phones-number/components/identified-numbers-list/identified-numbers-list.component';
 import { RattachedNumber } from 'src/app/models/rattached-number.model';
 import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-phones-number/components/choose-rattachement-type-modal/choose-rattachement-type-modal.component';
+import { BannierePubModel } from '../dashboard-service';
+import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
 
 @Injectable({
   providedIn: 'root',
@@ -383,5 +385,16 @@ export class BottomSheetService {
         infosFollow
       );
     }
+  }
+
+  public async openBannerDescription(
+    banner: BannierePubModel
+  ) {
+    const modal = await this.modalCtrl.create({
+      component: BanniereDescriptionPage,
+      componentProps: { banniere: banner },
+      cssClass: 'select-recipient-modal'
+    });
+    return await modal.present();
   }
 }
