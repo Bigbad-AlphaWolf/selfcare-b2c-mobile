@@ -17,6 +17,11 @@
 @property(nonatomic, readonly, assign) BOOL optInAnalyticsDefault;
 
 /**
+ Used at first startup to decide if the SDK should receive notifications. By default set to TRUE.
+ */
+@property(nonatomic, readonly, assign) BOOL optInNotificationsDefault;
+
+/**
  Set to true if using DataWallet. By default set to FALSE.
  */
 @property(nonatomic, readonly, assign) BOOL isDataWalletEnabled;
@@ -102,6 +107,11 @@ Default NULL.
  Current api environmentDomain = follow-apps.com. 
  */
 @property(nullable, nonatomic, readonly, copy) NSString* environmentDomain;
+
+/**
+Current api hasEnvironementSubdomain = true.
+*/
+@property(nonatomic, readonly, assign) BOOL hasEnvironementSubdomain;
 
 /**
  Current api environmentDomain = follow-apps.com.

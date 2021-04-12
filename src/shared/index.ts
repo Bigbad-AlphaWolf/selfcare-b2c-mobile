@@ -844,14 +844,12 @@ export class SplashScreenMock extends SplashScreen {
 }
 
 export function getBanniereTitle(banniereDescription: string) {
-  if (banniereDescription) {
-    const semiColonIndex = banniereDescription.indexOf(';');
-    if (semiColonIndex < 1) return banniereDescription;
-    return banniereDescription
-      ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
-      : '';
-  }
-  return banniereDescription;
+  if (!banniereDescription) return;
+  const semiColonIndex = banniereDescription.indexOf(';');
+  if (semiColonIndex < 1) return banniereDescription;
+  return banniereDescription
+    ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
+    : '';
 }
 
 export function getBanniereDescription(banniereDescription: string) {

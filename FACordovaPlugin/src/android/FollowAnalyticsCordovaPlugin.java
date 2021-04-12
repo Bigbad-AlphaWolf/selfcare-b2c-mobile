@@ -29,13 +29,12 @@ public class FollowAnalyticsCordovaPlugin extends CordovaPlugin {
 
     private static CallbackContext pushContext;
     public static CordovaWebView gWebView;
-    private static String gCachedExtras = null;
+    private static String savedCallback = null;
 
-    private static final String ACTION_DEEPLINKG = "handleDeeplink";
+    private static final String ACTION_HANDLE_CALLBACKS = "handleCallbacks";
     private static final String ACTION_OPEN_WEBVIEW = "openWebView";
     private static final String ACTION_IS_SDK_INITIALIZED = "isSdkInitialized";
 
-    private static final String META_DATA_NOTIFICATION_LOCAL_ID = "com.followapps.internal.EXTRA_NOTIFICATION_LOCAL_ID";
 
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext cb) throws JSONException {
@@ -63,10 +62,10 @@ public class FollowAnalyticsCordovaPlugin extends CordovaPlugin {
             return true;
         }
 
-        if (ACTION_DEEPLINKG.equals(action)) {
-            if (gCachedExtras != null) {
-                sendExtras(gCachedExtras);
-                gCachedExtras = null;
+        if (ACTION_HANDLE_CALLBACKS.equals(action)) {
+            if (savedCallback != null) {
+                sendEventIfNeeded(savedCallback);
+                savedCallback = null;
             }
             return true;
         }
@@ -111,36 +110,34 @@ public class FollowAnalyticsCordovaPlugin extends CordovaPlugin {
 
     public static void sendEvent(JSONObject data) {
         try {
-            if (!data.isNull(CustomMessageHandler.KEY_EVENT) && data.getString(CustomMessageHandler.KEY_EVENT).equals(CustomMessageHandler.EVENT_PUSH_CLICKED)) {
-                data.remove(CustomMessageHandler.KEY_EVENT);
-                data.remove(META_DATA_NOTIFICATION_LOCAL_ID);
-
+                String event = data.getString("event");
+                data.remove("event");
                 Handler handler = new Handler(Looper.getMainLooper());
                 try {
-                    handler.post(() -> webView.loadUrl("javascript:FollowAnalytics.emit('onPushMessageClicked'," + data.toString() + ")"));
+                    handler.post(() -> webView.loadUrl("javascript:FollowAnalytics.emit('" + event +"'," + data.toString() + ")"));
                 } catch (Exception e) {
                     Log.e("FollowAnalytics", "Error while sending JavaScript Event: " + e.getMessage());
                 }
 
-            }
         } catch (JSONException exception) {
             Log.e("FollowAnalytics", "Error while sending Event: " + exception.getMessage());
         }
+
         PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, data);
         pluginResult.setKeepCallback(true);
         pushContext.sendPluginResult(pluginResult);
     }
 
-    public static void sendExtras(String extras) {
+    public static void sendEventIfNeeded(String extras) {
         if (extras != null) {
             if (gWebView != null) {
                 try {
                     sendEvent(new JSONObject(extras));
                 } catch (Exception e) {
-                    gCachedExtras = extras;
+                    savedCallback = extras;
                 }
             } else {
-                gCachedExtras = extras;
+                savedCallback = extras;
             }
         }
     }

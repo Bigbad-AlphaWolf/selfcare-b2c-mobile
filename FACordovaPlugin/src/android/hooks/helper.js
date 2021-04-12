@@ -25,9 +25,9 @@ function addDependencies(buildGradle) {
   if (dependenciesContent) {
     const googleServicesClassPath = regexGoogleServicesClassPath.exec(dependenciesContent);
     if (googleServicesClassPath) {
-      dependenciesContent = dependenciesContent.replace(regexGoogleServicesClassPath, "com.google.gms:google-services:4.0.1'");
+      dependenciesContent = dependenciesContent.replace(regexGoogleServicesClassPath, "com.google.gms:google-services:4.3.3'");
     } else {
-      dependenciesContent = dependenciesContent + "\tclasspath 'com.google.gms:google-services:4.0.1'\n\t";
+      dependenciesContent = dependenciesContent + "\tclasspath 'com.google.gms:google-services:4.3.3'\n\t";
     }
     buildGradle = buildGradle.replace(regexDependencies, dependenciesContent);
   }

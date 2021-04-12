@@ -12,10 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FANotificationInfo : NSObject
 
-@property(nonatomic, readonly, nonnull) NSString *campaignId;
+@property(nonatomic, readonly, nonnull) NSString *messageId;
 @property(nonatomic, readonly) BOOL isSilent;
 @property(nonatomic, readonly, nullable) NSURL *url;
 @property(nonatomic, readonly, nullable) NSDictionary *parameters;
+
+@property(nonatomic, readonly, nonnull) NSString *campaignId __deprecated_msg("Use FANotificationInfo.messageId instead");
 
 - (instancetype)init NS_UNAVAILABLE;
 

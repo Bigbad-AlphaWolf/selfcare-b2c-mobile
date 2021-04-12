@@ -13,11 +13,47 @@
 #import "FAWebViewPopupController.h"
 #import "FollowAnalyticsCordovaPlugin.h"
 #import "FollowAnalytics/FollowAnalytics+Private.h"
+#import <Cordova/CDVCommandDelegateImpl.h>
+
+@interface CDVPlugin()
+- (instancetype)initWithWebViewEngine:(id <CDVWebViewEngineProtocol>)theWebViewEngine;
+@end
+
+@interface LaunchOptionContainer:NSObject
+@property(nonatomic, strong) NSDictionary *launchOptions;
+@end
+@implementation LaunchOptionContainer
+static LaunchOptionContainer* sharedInstance;
++ (LaunchOptionContainer *) shared {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[LaunchOptionContainer alloc] init];
+    });
+    return sharedInstance;
+}
++ (void) setLaunchOptions:(NSDictionary *) options {
+    [self shared].launchOptions = options;
+}
++ (NSDictionary *) getLaunchOptions{
+    return [self shared].launchOptions;
+}
+@end
 
 @implementation FollowAnalyticsCordovaPlugin
 
+static CDVCommandDelegateImpl *command;
+static NSString *cache;
+
++ (void) setCommand:(CDVCommandDelegateImpl *) impl {
+    command = impl;
+}
+
+- (void)pluginInitialize {
+    [FollowAnalyticsCordovaPlugin setCommand:self.commandDelegate];
+}
+
 + (void)initialize {
-        id launchOptions = [[NSUserDefaults standardUserDefaults] valueForKey:@"launchOptions"];
+        id launchOptions = [LaunchOptionContainer getLaunchOptions];
         FollowAnalyticsConfiguration* configuration = [FollowAnalyticsConfiguration
                                                        configurationWith:^(FollowAnalyticsConfiguration* _Nonnull c) {
 
@@ -33,6 +69,98 @@
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"[FA] FollowAnalytics iOS  SDK is not initialized."];
     }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+
+- (void) registerForShouldOpenURL:(CDVInvokedUrlCommand *) command {
+    _commandShouldOpenURL = command;
+}
+
+- (void) url: (NSURL* ) url {
+    if (_commandShouldOpenURL != nil) {
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:url.absoluteString];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:_commandShouldOpenURL.callbackId];
+    }
+}
+
++ (void) sendOnNotificationTapped:(FANotificationInfo *) notificationInfo action:(NSString *) actionIdentifier {
+    NSString *identifier = [NSString stringWithFormat:@"%@", notificationInfo.messageId];
+    NSString *url = [NSString stringWithFormat:@"%@", notificationInfo.url];
+    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    [data setValue:identifier forKey:@"messageId"];
+    [data setValue:actionIdentifier forKey:@"identifier"];
+    if(notificationInfo.url)[data setValue:url forKey:@"openingUrl"];
+    [data setValue:notificationInfo.parameters forKey:@"parameters"];
+    
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+    NSString *jsCode = [NSString stringWithFormat:@"FollowAnalytics.emit('onNotificationTapped', %@)", jsonString];
+    
+    if (command) {
+        [command evalJs:jsCode];
+    } else {
+        cache = jsCode;
+    }
+}
+
++ (void) sendOnNativeInAppButtonTapped:(FACustomButtonInfo *) buttonInfo {
+    NSString *identifier = [NSString stringWithFormat:@"%zd", buttonInfo.identifier];
+    NSString *url = [NSString stringWithFormat:@"%@", buttonInfo.url];
+    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    [data setValue:identifier forKey:@"messageId"];
+    if(buttonInfo.url)[data setValue:url forKey:@"openingUrl"];
+    [data setValue:buttonInfo.parameters forKey:@"parameters"];
+    
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+    NSString *jsCode = [NSString stringWithFormat:@"FollowAnalytics.emit('onNativeInAppButtonTapped', %@)", jsonString];
+    [command evalJs:jsCode];
+}
+
++ (void) sendOnConsoleLog:(NSString *) message severity:(FollowAnalyticsSeverity) severity tags: (NSArray<NSString *> *) tags {
+    NSString * tagString = [[tags valueForKey:@"description"] componentsJoinedByString:@""];
+    NSString * severityString = [NSString stringWithFormat:@"%lu", (unsigned long) severity];
+    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    [data setValue:message forKey:@"message"];
+    [data setValue:severityString forKey:@"severity"];
+    [data setValue:tagString forKey:@"tag"];
+    
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    NSString *jsCode = [NSString stringWithFormat:@"FollowAnalytics.emit('onConsoleLog', %@)", jsonString];
+    [command evalJs:jsCode];
+}
+
++ (void) sendOnMessageReceived:(FANotificationInfo *) notificationInfo {
+    NSDictionary * data = [[NSDictionary alloc] init];
+    
+    FAMessage * message = [FollowAnalytics.push get:notificationInfo.messageId];
+    
+    if(message){
+        data = [FollowAnalyticsCordovaPlugin FAtoDictionary: message];
+    }else{
+        FAMessage * newMessage = [[FAMessage alloc] init];
+        [newMessage setValue:notificationInfo.messageId forKey:@"identifier"];
+        [newMessage setValue:[NSNumber numberWithBool:notificationInfo.isSilent] forKey:@"isSilent"];
+        [newMessage setValue:notificationInfo.parameters forKey:@"params"];
+        [newMessage setValue:[notificationInfo.url absoluteString] forKey:@"deepLinkUrl"];
+        
+        data = [FollowAnalyticsCordovaPlugin FAtoDictionary: newMessage];
+    }
+    
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    NSString *jsCode = [NSString stringWithFormat:@"FollowAnalytics.emit('onMessageReceived', %@)", jsonString];
+    
+    if (command) {
+        [command evalJs:jsCode];
+    } else {
+        cache = jsCode;
+    }
 }
 
 - (void)getDeviceId:(CDVInvokedUrlCommand *)command
@@ -76,6 +204,66 @@
     }];
 }
 
+- (void)badgeGet:(CDVInvokedUrlCommand *)command
+{
+    CDVPluginResult *pluginResult = nil;
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsNSInteger:[FABadge badge]];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)badgeSet:(CDVInvokedUrlCommand *)command
+{
+    CDVPluginResult *pluginResult = nil;
+    
+    if (command.arguments.count != 1) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Only one argument is allowed"];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
+    
+    bool isNumber = [[command.arguments objectAtIndex:0] isKindOfClass:[NSNumber class]];
+
+    if (!isNumber) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Invalid argument"];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
+    
+    NSInteger value = [[command.arguments objectAtIndex:0] integerValue];
+
+    [FABadge setBadge:value];
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)badgeUpdateBy:(CDVInvokedUrlCommand *)command
+{
+    CDVPluginResult *pluginResult = nil;
+    
+    if (command.arguments.count != 1) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Only one argument is allowed"];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
+    
+    bool isNumber = [[command.arguments objectAtIndex:0] isKindOfClass:[NSNumber class]];
+
+    if (!isNumber) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Invalid argument"];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
+    
+    NSInteger value = [[command.arguments objectAtIndex:0] integerValue];
+
+    [FABadge updateBadgeBy:value];
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+
 - (void)logLocationCoordinates:(CDVInvokedUrlCommand *)command
 {
     [self.commandDelegate runInBackground:^{
@@ -95,7 +283,7 @@
 - (void)logEvent:(CDVInvokedUrlCommand *)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([command.arguments count] == 2)
@@ -128,7 +316,7 @@
 - (void)logError:(CDVInvokedUrlCommand *)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([command.arguments count] == 2)
@@ -158,7 +346,7 @@
 - (void)registerForPush:(CDVInvokedUrlCommand *)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         [FollowAnalytics requestNotificationAuthorization];
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -166,21 +354,30 @@
     }];
 }
 
+- (void)isRegisteredForPushNotifications:(CDVInvokedUrlCommand *) command
+{
+    [self.commandDelegate runInBackground:^{
+        [FollowAnalytics getPushNotificationsRegistrationStatus:^(BOOL isRegistered) {
+            CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isRegistered];
+            [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+        }];
+    }];
+}
+
 - (void)lastPushCampaignParams:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult* pluginResult = nil;
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:@"launchOptions"];
+        NSDictionary *dict = [LaunchOptionContainer getLaunchOptions];
         NSData *data = nil;
         if (dict) {
             NSDictionary *customParams = [[[dict valueForKey:UIApplicationLaunchOptionsRemoteNotificationKey] valueForKey:@"FA"] valueForKey:@"c"];
             if (customParams) {
                 NSError *error = nil;
                 data = [NSJSONSerialization dataWithJSONObject:customParams
-                                                       options:NSJSONWritingPrettyPrinted
-                                                         error:&error];
+                                                    options:NSJSONWritingPrettyPrinted
+                                                        error:&error];
             }
         }
         
@@ -190,7 +387,7 @@
         }
         else {
             NSString *string = [[NSString alloc] initWithData:data
-                                                     encoding:NSUTF8StringEncoding];
+                                                    encoding:NSUTF8StringEncoding];
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:string];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
             
@@ -205,16 +402,16 @@
 - (void)cleanUpCustomParams
 {
     [[NSUserDefaults standardUserDefaults] setValue:nil
-                                             forKey:@"FACampaignParamsContentKey"];
+                                            forKey:@"FACampaignParamsContentKey"];
     [[NSUserDefaults standardUserDefaults] setValue:nil
-                                             forKey:@"launchOptions"];
+                                            forKey:@"launchOptions"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)pauseCampaignDisplay:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         [FollowAnalytics.inApp pauseCampaignDisplay];
@@ -227,7 +424,7 @@
 - (void)resumeCampaignDisplay:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         [FollowAnalytics.inApp resumeCampaignDisplay];
@@ -263,7 +460,7 @@
 - (void)unsetUserId:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         [FollowAnalytics setUserId:nil];
@@ -275,7 +472,7 @@
 - (void)setLastName:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -303,7 +500,7 @@
 - (void)setFirstName:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -331,7 +528,7 @@
 - (void)setEmail:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -359,7 +556,7 @@
 - (void)setCity:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -387,7 +584,7 @@
 - (void)setDateOfBirth:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -418,7 +615,7 @@
 - (void)setProfilePictureUrl:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -446,7 +643,7 @@
 - (void)setGender:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         if ([command.arguments count] == 1)
         {
@@ -475,7 +672,7 @@
 - (void)setCountry:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -503,7 +700,7 @@
 - (void)setRegion:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -531,7 +728,7 @@
 - (void)setDate:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -569,7 +766,7 @@
 - (void)setDateTime:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -601,7 +798,7 @@
 
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -641,7 +838,7 @@
 - (void)setNumber:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -682,7 +879,7 @@
 - (void)setString:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -710,7 +907,7 @@
 - (void)setBoolean:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         NSLog(@"%@", command.arguments);
         if ([self validCommandArguments:command])
@@ -741,7 +938,7 @@
 - (void)addUserAttributeSet:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -783,7 +980,7 @@
 - (void)deleteUserAttribute:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -811,7 +1008,7 @@
 - (void)emptyUserAttributeSet:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -838,7 +1035,7 @@
 
 - (void)clear:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         
         if ([self validCommandArguments:command])
@@ -876,42 +1073,46 @@
 }
 
 
-//- (void)handleDeeplink:(CDVInvokedUrlCommand*)command
-//{
-//    [self.commandDelegate runInBackground:^(void){
-//        NSDictionary *params = [FollowAnalytics lastPushCampaignParams];
-//        CDVPluginResult *pluginResult = nil;
-//        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:params];
-//        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-//    }];
-//}
+- (void)handleCallbacks:(CDVInvokedUrlCommand*)command
+{
+    [self.commandDelegate runInBackground:^(void){
+        if(cache) {
+            [self.commandDelegate evalJs:cache];
+            cache = nil;
+        }
+        
+        CDVPluginResult *pluginResult = nil;
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:cache];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
 
 
-- (NSDictionary *) FAtoDictionary:(FAMessage*) message {
++ (NSDictionary *) FAtoDictionary:(FAMessage*) message {
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     data[@"isRead"] = @(message.isRead);
     data[@"isPush"] = @(message.isPush);
     data[@"isSilent"] = @(message.isSilent);
     data[@"isInApp"] = @(message.isInApp);
-    data[@"identifier"] = [self objectFrom: message.identifier];
-    data[@"dateReceived"] = [self objectFrom:[self utcFormatter:message.dateReceived]];
-    data[@"campaignId"] = [self objectFrom: message.campaignId];
-    data[@"messageType"] = [self objectFrom: message.messageType];
-    data[@"title"] = [self objectFrom: message.title];
-    data[@"subtitle"] = [self objectFrom: message.subtitle];
-    data[@"body"] = [self objectFrom: message.body];
-    data[@"url"] = [self objectFrom: message.url];
-    data[@"layout"] = [self objectFrom: message.layout];
-    data[@"deepLinkUrl"] = [self objectFrom: message.deepLinkUrl];
-    data[@"params"] = [self objectFrom: message.params];
+    data[@"identifier"] = [FollowAnalyticsCordovaPlugin objectFrom: message.identifier];
+    data[@"date"] = [FollowAnalyticsCordovaPlugin objectFrom:[self utcFormatter:message.dateReceived]];
+    data[@"notificationId"] = [FollowAnalyticsCordovaPlugin objectFrom: message.notificationId];
+    data[@"type"] = [FollowAnalyticsCordovaPlugin objectFrom: message.messageType];
+    data[@"title"] = [FollowAnalyticsCordovaPlugin objectFrom: message.title];
+    data[@"subtitle"] = [FollowAnalyticsCordovaPlugin objectFrom: message.subtitle];
+    data[@"body"] = [FollowAnalyticsCordovaPlugin objectFrom: message.body];
+    data[@"contentUrl"] = [FollowAnalyticsCordovaPlugin objectFrom: message.url];
+    data[@"layout"] = [FollowAnalyticsCordovaPlugin objectFrom: message.layout];
+    data[@"openingUrl"] = [FollowAnalyticsCordovaPlugin objectFrom: message.deepLinkUrl];
+    data[@"parameters"] = [FollowAnalyticsCordovaPlugin objectFrom: message.params];
     return data;
 }
 
-- (NSObject *) objectFrom:(NSObject *) object {
++ (NSObject *) objectFrom:(NSObject *) object {
     return (object != nil ? object : [NSNull null]);
 }
 
-- (NSString *) utcFormatter:(NSDate*) date {
++ (NSString *) utcFormatter:(NSDate*) date {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSSZZZZ"];
     NSString *stringFromDate = [formatter stringFromDate:date];
@@ -921,7 +1122,7 @@
 
 - (void)InAppgetAll:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         NSArray *allInApp = [FollowAnalytics.inApp getAll];
         
@@ -930,7 +1131,7 @@
         } else {
             NSMutableArray *result = [[NSMutableArray alloc] init];
             for (FAMessage *message in allInApp) {
-                NSDictionary* dict = [self FAtoDictionary: message];
+                NSDictionary* dict = [FollowAnalyticsCordovaPlugin FAtoDictionary: message];
                 [result addObject:dict];
             }
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:result];
@@ -942,7 +1143,7 @@
 
 - (void)InAppget:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         NSMutableArray *result = [[NSMutableArray alloc] init];
         
@@ -953,7 +1154,7 @@
             NSString* error = [NSString stringWithFormat:@"InApp with id '%@' not found", inAppId];
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error];
         } else {
-            NSDictionary* dict = [self FAtoDictionary: message];
+            NSDictionary* dict = [FollowAnalyticsCordovaPlugin FAtoDictionary: message];
             [result addObject:dict];
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:result];
         }
@@ -964,7 +1165,7 @@
 
 - (void)InAppmarkAsRead:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         if ([self validCommandArguments:command])
         {
@@ -989,7 +1190,7 @@
 
 - (void)InAppmarkAsUnread:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         if ([self validCommandArguments:command])
         {
@@ -1014,7 +1215,7 @@
 
 - (void)InAppdelete:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         if ([self validCommandArguments:command])
         {
@@ -1040,7 +1241,7 @@
 
 - (void)PushgetAll:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         NSArray *allPush = [FollowAnalytics.push getAll];
         
@@ -1049,7 +1250,7 @@
         } else {
             NSMutableArray *result = [[NSMutableArray alloc] init];
             for(FAMessage *message in allPush){
-                NSDictionary* dict = [self FAtoDictionary: message];
+                NSDictionary* dict = [FollowAnalyticsCordovaPlugin FAtoDictionary: message];
                 [result addObject:dict];
             }
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:result];
@@ -1060,7 +1261,7 @@
 
 - (void)Pushget:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         NSMutableArray *result = [[NSMutableArray alloc] init];
         
@@ -1071,7 +1272,7 @@
             NSString* error = [NSString stringWithFormat:@"Push with id '%@' not found", pushId];
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error];
         } else {
-            NSDictionary* dict = [self FAtoDictionary: message];
+            NSDictionary* dict = [FollowAnalyticsCordovaPlugin FAtoDictionary: message];
             [result addObject:dict];
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:result];
         }
@@ -1081,7 +1282,7 @@
 
 - (void)PushmarkAsRead:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         if ([self validCommandArguments:command])
         {
@@ -1106,7 +1307,7 @@
 
 - (void)PushmarkAsUnread:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         if ([self validCommandArguments:command])
         {
@@ -1131,7 +1332,7 @@
 
 - (void)Pushdelete:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         if ([self validCommandArguments:command])
         {
@@ -1297,7 +1498,7 @@
 
 - (void)getOptInAnalytics:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         BOOL optIn = [FollowAnalytics getOptInAnalytics];
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:optIn];
@@ -1305,23 +1506,43 @@
     }];
 }
 
-- (void)requestToAccessMyData:(CDVInvokedUrlCommand *)command {
+- (void)setOptInNotifications:(CDVInvokedUrlCommand *)command {
+    if (!command.arguments || [command.arguments count] < 1) { return; }
+    [FollowAnalytics setOptInNotifications:[[command.arguments objectAtIndex:0] boolValue]];
+}
+
+- (void)getOptInNotifications:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^(void)
      {
+        CDVPluginResult *pluginResult = nil;
+        BOOL optIn = [FollowAnalytics getOptInNotifications];
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:optIn];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+- (void)openNotificationSettingsIfNeeded:(CDVInvokedUrlCommand *)command {
+    [FollowAnalytics openNotificationSettingsEventually];
+}
+
+
+- (void)requestToAccessMyData:(CDVInvokedUrlCommand *)command {
+    [self.commandDelegate runInBackground:^(void)
+    {
         [FollowAnalytics.GDPR requestToAccessMyData];
     }];
 }
 
 - (void)requestToDeleteMyData:(CDVInvokedUrlCommand *)command {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         [FollowAnalytics.GDPR requestToDeleteMyData];
     }];
 }
 
-- (void)DataWalletIsRead:(CDVInvokedUrlCommand *)command {
+- (void)DataWalletIsRead:(CDVInvokedUrlCommand *)command DEPRECATED_MSG_ATTRIBUTE("DataWallet feature is disabled") {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         BOOL isRead = [FollowAnalytics.dataWallet isRead];
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isRead];
@@ -1329,16 +1550,16 @@
     }];
 }
 
-- (void)DataWalletSetIsRead:(CDVInvokedUrlCommand *)command {
+- (void)DataWalletSetIsRead:(CDVInvokedUrlCommand *)command DEPRECATED_MSG_ATTRIBUTE("DataWallet feature is disabled") {
     if (!command.arguments || [command.arguments count] < 1) { return; }
     [self.commandDelegate runInBackground:^(void) {
         [FollowAnalytics.dataWallet setIsRead:[[command.arguments objectAtIndex:0] boolValue]];
     }];
 }
 
-- (void)DataWalletGetPolicy:(CDVInvokedUrlCommand *)command {
+- (void)DataWalletGetPolicy:(CDVInvokedUrlCommand *)command DEPRECATED_MSG_ATTRIBUTE("DataWallet feature is disabled") {
     [self.commandDelegate runInBackground:^(void)
-     {
+    {
         CDVPluginResult *pluginResult = nil;
         id<FADataWalletPolicy> policy = [FollowAnalytics.dataWallet getPolicy];
         if (policy == nil) {
@@ -1403,8 +1624,7 @@ void swizzleMethod(Class c, SEL originalSelector)
 - (BOOL)swizzled_application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
     BOOL ret = [self swizzled_application:application didFinishLaunchingWithOptions:launchOptions];
-    [[NSUserDefaults standardUserDefaults] setObject:launchOptions forKey:@"launchOptions"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    [LaunchOptionContainer setLaunchOptions:launchOptions];
     if (ret) {  if (application.applicationState != UIApplicationStateBackground) { } }
     return ret;
 }
@@ -1417,7 +1637,7 @@ void swizzleMethod(Class c, SEL originalSelector)
 - (void)followAppsShouldHandleParameters:(NSDictionary *)customParameters
                         actionIdentifier:(NSString *)actionIdentifier
                              actionTitle:(NSString *)actionTitle
-                       completionHandler:(void (^)())completionHandler
+                       completionHandler:(void (^)(void))completionHandler
 
 {
     NSData *data = [NSJSONSerialization dataWithJSONObject:customParameters

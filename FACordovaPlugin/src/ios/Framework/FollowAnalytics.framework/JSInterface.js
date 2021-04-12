@@ -47,6 +47,16 @@ OTHER: 3
  FollowAnalytics.logLocation = function(latitude,longitude) {
  window.webkit.messageHandlers.logLocation.postMessage({latitude: latitude, longitude: longitude});
  };
+
+ //ANALYTICS
+
+ FollowAnalytics.getOptInAnalytics = function() {
+ return callSync("getOptInAnalytics");
+ };
+
+ FollowAnalytics.setOptInAnalytics = function(value) {
+ window.webkit.messageHandlers.setOptInAnalytics.postMessage(value);
+ };
  
  //USER
  
@@ -206,7 +216,7 @@ OTHER: 3
  };
  
  
- //OTHER
+ //NOTIFICATIONS
  
  FollowAnalytics.requestNotificationAuthorization = function() {
  window.webkit.messageHandlers.requestNotificationAuthorization.postMessage("register");
@@ -215,5 +225,36 @@ OTHER: 3
  FollowAnalytics.requestProvisionalNotificationAuthorization = function() {
  window.webkit.messageHandlers.requestProvisionalNotificationAuthorization.postMessage("register");
  };
+  
+  FollowAnalytics.setOptInNotifications = function(state) {
+    window.webkit.messageHandlers.setOptInNotifications.postMessage(state);
+  };
+  
+  FollowAnalytics.getOptInNotifications = function() {
+    return callSync("getOptInNotifications");
+  };
+  
+  FollowAnalytics.openNotificationSettingsEventually = function() {
+    window.webkit.messageHandlers.openNotificationSettingsEventually.postMessage("register");
+  };
+  
+  // DATA
+  
+  FollowAnalytics.getData = function(key) {
+    return callSync("getData", key);
+  };
+  
+  FollowAnalytics.setData = function(key, value) {
+    window.webkit.messageHandlers.setData.postMessage({key: key, value: value});
+  };
+  
+  FollowAnalytics.isRegisteredForPushNotifications = function() {
+    var notificationAuthorization = FollowAnalytics.getData("notificationAuthorization");
+    if (notificationAuthorization == "true") {
+      return FollowAnalytics.getOptInNotifications();
+    } else {
+      return notificationAuthorization;
+    }
+  };
  
  })();
