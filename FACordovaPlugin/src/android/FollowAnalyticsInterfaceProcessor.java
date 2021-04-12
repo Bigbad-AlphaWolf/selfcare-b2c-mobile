@@ -14,7 +14,10 @@ import java.lang.Double;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 
@@ -23,6 +26,7 @@ public class FollowAnalyticsInterfaceProcessor {
     private static final String KEY_LOG_EVENT =                     "logEvent";
     private static final String KEY_LOG_ERROR =                     "logError";
     private static final String KEY_LOG_LOCATION_COORDINATES =      "logLocationCoordinates";
+    private static final String IS_REGISTER_FOR_PUSH_NOTIFICATIONS ="isRegisteredForPushNotifications";
     private static final String REGISTER_FOR_PUSH =                 "registerForPush";
     private static final String REGISTER_FOR_PROVISIONAL_PUSH =     "registerForProvisionalPush";
     private static final String ACTION_GET_DEVICE_ID =              "getDeviceId";
@@ -31,6 +35,10 @@ public class FollowAnalyticsInterfaceProcessor {
     private static final String ACTION_UNSET_USER_ID =              "unsetUserId";
     private static final String ACTION_GET_SDK_PLATFORM =           "getSDKPlatform";
     private static final String ACTION_GET_SDK_VERSION =            "getSDKVersion";
+
+    private static final String ACTION_BADGE_GET =                  "badgeGet";
+    private static final String ACTION_BADGE_SET =                  "badgeSet";
+    private static final String ACTION_BADGE_UPDATE_BY =            "badgeUpdateBy";
 
     private static final String ACTION_PAUSE_CAMPAIGNS =            "pauseCampaignDisplay";
     private static final String ACTION_RESUME_CAMPAIGNS =           "resumeCampaignDisplay";
@@ -71,6 +79,10 @@ public class FollowAnalyticsInterfaceProcessor {
 
     private static final String ACTION_GET_OPTIN_ANALYTICS =        "getOptInAnalytics";
     private static final String ACTION_SET_OPTIN_ANALYTICS =        "setOptInAnalytics";
+
+    private static final String ACTION_GET_OPTIN_NOTIFICATIONS =    "getOptInNotifications";
+    private static final String ACTION_SET_OPTIN_NOTIFICATIONS =    "setOptInNotifications";
+
     private static final String ACTION_REQUESTACCESSTODATA =        "requestToAccessMyData";
     private static final String ACTION_REQUESTDATADELETION =        "requestToDeleteMyData";
 
@@ -78,29 +90,32 @@ public class FollowAnalyticsInterfaceProcessor {
     private static final String ACTION_DATAWALLET_SET_IS_READ   =   "DataWalletSetIsRead";
     private static final String ACTION_DATAWALLET_GET_POLICY    =   "DataWalletGetPolicy";
 
+    private  static final String OPEN_NOTIFICATIONS_SETTINGS_IF_NEEDED = "openNotificationSettingsIfNeeded";
+
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String DATE_TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'";
 
     private static Ln logger = new Ln(FollowAnalyticsInterfaceProcessor.class);
 
-    private JSONObject messageToJSON(FollowAnalytics.Message message, DateFormat dateFormat){
+    static JSONObject messageToJSON(FollowAnalytics.Message message){
         try {
             JSONObject json = new JSONObject();
             json.put("body", message.getBody());
-            json.put("campaignId", message.getCampaignId());
-            json.put("category", message.getCategory());
-            json.put("deepLinkURL", message.getDeepLinkUrl());
+            json.put("openingUrl", message.getDeepLinkUrl());
             json.put("identifier", message.getId());
             json.put("layout", message.getLayout());
-            json.put("messageType", message.getMessageType());
-            json.put("params", message.getParams());
-            json.put("receivedDate", dateFormat.format(message.getReceivedDate()));
+            json.put("type", message.getMessageType());
+            json.put("parameters", message.getParams());
+            json.put("date", message.getReceivedDate());
             json.put("title", message.getTitle());
-            json.put("url", message.getUrl());
+            json.put("contentUrl", message.getUrl());
             json.put("isInApp", message.isInApp());
             json.put("isPush", message.isPush());
             json.put("isRead", message.isRead());
             json.put("isSilent", message.isSilentPush());
+            json.put("isNotificationDismissed", message.isNotificationDismissed());
+            json.put("notificationId", message.getNotificationId());
+            json.put("category", message.getCategory());
             return json;
         } catch (Exception e) {
             String error = "Error while trying to convert FollowAnalytics.Message to JSONObject : " + e.getMessage();
@@ -112,26 +127,66 @@ public class FollowAnalyticsInterfaceProcessor {
 
     public boolean process(CordovaPlugin plugin, String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (KEY_LOG_EVENT.equals(action)) {
-            String eventDetail = null;
+            if(args.isNull(0) || args.getString(0).isEmpty()){
+                return sendError(callbackContext, "Is needed a valid name as a parameter on '" + KEY_LOG_EVENT + "' method.");
+            }
             final String eventName = args.getString(0);
+
             if (args.length() == 2) {
-                if (!args.isNull(1)) {
-                    eventDetail = args.getString(1);
+                if (!args.isNull(1) && args.get(1) instanceof String) {
+                    String eventDetail = args.getString(1);
+                    FollowAnalytics.logEvent(eventName, eventDetail);
+                    return true;
+
+                } else if (!args.isNull(1) && args.get(1) instanceof JSONObject) {
+                    JSONObject eventDetail = args.getJSONObject(1);
+
+                    Map<String, String> map = new HashMap<>();
+                    Iterator<String> iterator = eventDetail.keys();
+
+                    while (iterator.hasNext()) {
+                        String key = String.valueOf(iterator.next());
+                        String value = eventDetail.getString(key);
+                        map.put(key, value);
+                    }
+
+                    FollowAnalytics.logEvent(eventName, map);
+                    return true;
                 }
             }
-            FollowAnalytics.logEvent(eventName, eventDetail);
+            FollowAnalytics.logEvent(eventName);
             return true;
         }
 
         if (KEY_LOG_ERROR.equals(action)) {
-            String errorDetail = null;
+            if(args.isNull(0) || args.getString(0).isEmpty()){
+                return sendError(callbackContext, "Is needed a valid name as a parameter on  '" + KEY_LOG_ERROR + "' method.");
+            }
             final String errorName = args.getString(0);
+
             if (args.length() == 2) {
-                if (!args.isNull(1)) {
-                    errorDetail = args.getString(1);
+                if (!args.isNull(1) && args.get(1) instanceof String) {
+                    String errorDetail = args.getString(1);
+                    FollowAnalytics.logError(errorName, errorDetail);
+                    return true;
+
+                } else if (!args.isNull(1) && args.get(1) instanceof JSONObject) {
+                    JSONObject errorDetail = args.getJSONObject(1);
+
+                    Map<String, String> map = new HashMap<>();
+                    Iterator<String> iterator = errorDetail.keys();
+
+                    while (iterator.hasNext()) {
+                        String key = String.valueOf(iterator.next());
+                        String value = errorDetail.getString(key);
+                        map.put(key, value);
+                    }
+
+                    FollowAnalytics.logError(errorName, map);
+                    return true;
                 }
             }
-            FollowAnalytics.logError(errorName, errorDetail);
+            FollowAnalytics.logError(errorName);
             return true;
         }
 
@@ -154,6 +209,10 @@ public class FollowAnalyticsInterfaceProcessor {
             return sendEvent(callbackContext, "Only available for IOS devices");
         }
 
+        if (IS_REGISTER_FOR_PUSH_NOTIFICATIONS.equals((action))) {
+            return sendEvent(callbackContext, String.valueOf(FollowAnalytics.isRegisteredForPushNotifications()));
+        }
+
         if (ACTION_GET_DEVICE_ID.equals(action)) {
             return sendEvent(callbackContext, FollowAnalytics.getDeviceId());
         }
@@ -164,6 +223,34 @@ public class FollowAnalyticsInterfaceProcessor {
 
         if (ACTION_GET_SDK_VERSION.equals(action)) {
             return sendEvent(callbackContext, FollowAnalytics.getSDKVersion());
+        }
+
+        if (ACTION_BADGE_GET.equals(action)) {
+            return sendEvent(callbackContext, FollowAnalytics.Badge.get());
+        }
+
+        if (ACTION_BADGE_SET.equals(action)) {
+            if (args.length() != 1) {
+                return sendError(callbackContext, "Only one argument is allowed");
+            }
+            if(!(args.get(0) instanceof Integer)) {
+                return sendError(callbackContext, "Invalid arguments");
+            }
+
+            FollowAnalytics.Badge.set(args.getInt(0));
+            return true;
+        }
+
+        if (ACTION_BADGE_UPDATE_BY.equals(action)) {
+            if (args.length() != 1) {
+                return sendError(callbackContext, "Only one argument is allowed");
+            }
+            if(!(args.get(0) instanceof Integer)) {
+                return sendError(callbackContext, "Invalid arguments");
+            }
+
+            FollowAnalytics.Badge.updateBy(args.getInt(0));
+            return true;
         }
 
         if (ACTION_GET_USER_ID.equals(action)) {
@@ -182,7 +269,7 @@ public class FollowAnalyticsInterfaceProcessor {
                     dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
                     for (FollowAnalytics.Message message : messages) {
-                        result.put(messageToJSON(message, dateFormat));
+                        result.put(messageToJSON(message));
                     }
                     return sendEvent(callbackContext, result);
                 }
@@ -202,7 +289,7 @@ public class FollowAnalyticsInterfaceProcessor {
                     DateFormat dateFormat = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSSZZZZ", Locale.US);
                     dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-                    JSONObject result = messageToJSON(message, dateFormat);
+                    JSONObject result = messageToJSON(message);
 
                     return sendEvent(callbackContext, result);
                 }
@@ -256,7 +343,7 @@ public class FollowAnalyticsInterfaceProcessor {
                     dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
                     for (FollowAnalytics.Message message : messages) {
-                        result.put(messageToJSON(message, dateFormat));
+                        result.put(messageToJSON(message));
                     }
                     return sendEvent(callbackContext, result);
                 }
@@ -276,7 +363,7 @@ public class FollowAnalyticsInterfaceProcessor {
                     DateFormat dateFormat = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSSZZZZ", Locale.US);
                     dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-                    JSONObject result = messageToJSON(message, dateFormat);
+                    JSONObject result = messageToJSON(message);
 
                     return sendEvent(callbackContext, result);
                 }
@@ -486,6 +573,24 @@ public class FollowAnalyticsInterfaceProcessor {
             return true;
         }
 
+        if (ACTION_GET_OPTIN_NOTIFICATIONS.equals(action)) {
+            return sendEvent(callbackContext, String.valueOf(FollowAnalytics.getOptInNotifications()));
+        }
+
+        if (ACTION_SET_OPTIN_NOTIFICATIONS.equals(action)) {
+            Object o = args.get(0);
+            if (!(o instanceof Boolean)) {
+                o = Boolean.TRUE;
+            }
+            FollowAnalytics.setOptInNotifications((Boolean) o);
+            return true;
+        }
+
+        if (OPEN_NOTIFICATIONS_SETTINGS_IF_NEEDED.equals(action)) {
+            FollowAnalytics.openNotificationSettingsEventually();
+            return true;
+        }
+
         if (ACTION_REQUESTACCESSTODATA.equals(action)) {
             FollowAnalytics.GDPR.requestToAccessMyData();
             return true;
@@ -542,6 +647,12 @@ public class FollowAnalyticsInterfaceProcessor {
         return true;
     }
     public boolean sendEvent(CallbackContext callbackContext, JSONObject data) {
+        PluginResult result = new PluginResult(PluginResult.Status.OK, data);
+        result.setKeepCallback(true);
+        callbackContext.sendPluginResult(result);
+        return true;
+    }
+    public boolean sendEvent(CallbackContext callbackContext, Integer data) {
         PluginResult result = new PluginResult(PluginResult.Status.OK, data);
         result.setKeepCallback(true);
         callbackContext.sendPluginResult(result);
