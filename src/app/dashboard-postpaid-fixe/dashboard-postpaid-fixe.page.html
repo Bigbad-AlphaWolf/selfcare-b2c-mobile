@@ -2,19 +2,8 @@
 <ion-content>
   <div class="dashboard-container-mobile">
     <div class="postpaid-dashboard-container">
-      <div *ngIf="showPromoBarner && listBanniere?.length" class="dashboard-img-promo">
-        <ion-slides>
-          <ng-container *ngFor="let banniere of listBanniere">
-            <ion-slide>
-              <span #error class="error-slide scb-text-full-black"> Erreur lors du chargement de l'image</span>
-              <img-loader [spinner]="true" class="icone" [src]="banniere.image" useImg></img-loader>
-            </ion-slide>
-          </ng-container>
-        </ion-slides>
-        <div class="close-icon" (click)="hidePromoBarner()">
-          <img src="/assets/images/group-14.svg" alt="hide-banniere-promo" />
-        </div>
-      </div>
+      <app-slide-banniere-dashboard [listBanniere]="listBanniere">
+      </app-slide-banniere-dashboard>
       <div class="dashboard-block-conso">
         <div class="dashboard-block-conso-top-texts">
           <div><span class="suivi-conso">Suivi conso </span></div>

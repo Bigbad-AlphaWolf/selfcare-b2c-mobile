@@ -1,20 +1,23 @@
-<ion-slides pager [options]="{loop: true}">
-  <ng-container *ngFor="let banniere of listBanniere">
-    <ion-slide (click)="onBannerClicked(banniere)">
-      <span #error class="error-slide scb-text-full-black">
-        Erreur lors du chargement de l'image</span
-      >
-      <div class="description" #description>
-        <div class="desc-title scb-text-white">
-          {{getBanniereTitle(banniere.description)}}
+<div *ngIf="listBanniere?.length" class="dashboard-img-promo slide-container">
+  <ion-slides pager [options]="{loop: true}">
+    <ng-container *ngFor="let banniere of listBanniere">
+      <ion-slide (click)="onBannerClicked(banniere)">
+        <span #error class="error-slide scb-text-full-black">
+          Erreur lors du chargement de l'image</span
+        >
+        <div class="description" #description>
+          <div class="desc-title scb-text-white">
+            {{getBanniereTitle(banniere.description)}}
+          </div>
+          <div class="desc-text scb-text-white">
+            {{getBanniereDescription(banniere.description)}}
+          </div>
         </div>
-        <div class="desc-text scb-text-white">
-          {{getBanniereDescription(banniere.description)}}
+        <div class="img-container" #imageContainer>
+          <img-loader [spinner]="true" class="icone" [src]="banniere.image" useImg></img-loader>
         </div>
-      </div>
-      <div class="img-container" #imageContainer>
-        <img-loader [spinner]="true" class="icone" [src]="banniere.image" useImg></img-loader>
-      </div>
-    </ion-slide>
-  </ng-container>
-</ion-slides>
+      </ion-slide>
+    </ng-container>
+  </ion-slides>
+
+</div>
