@@ -53,6 +53,39 @@ export class TransfertHubServicesPage implements OnInit {
   OPERATION_TYPE_PASS_ILLIMIX = OPERATION_TYPE_PASS_ILLIMIX;
   pageTitle: string;
   options: OffreService[] = [];
+  lightOptions: OffreService[] = [
+    {
+      shortDescription: 'Pass',
+      fullDescription: 'internet',
+      icone:
+        '/assets/images/04-boutons-01-illustrations-18-acheter-pass-internet.svg',
+      code: 'PASS',
+      activated: true,
+    },
+    {
+      shortDescription: 'Pass',
+      fullDescription: 'illimix',
+      icone:
+        '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
+      code: 'PASS_ILLIMIX',
+      activated: true,
+    },
+    {
+      shortDescription: 'Pass',
+      fullDescription: 'Allo',
+      icone: '/assets/images/ic-call-forward@2x.png',
+      code: 'PASS_ALLO',
+      activated: true,
+    },
+    {
+      shortDescription: 'Pass',
+      fullDescription: 'voyage',
+      icone:
+        '/assets/images/04-boutons-01-illustrations-09-acheter-pass-voyage.svg',
+      code: 'PASS_VOYAGE',
+      activated: true,
+    },
+  ];
   omPhoneNumber: string;
   isProcessing: boolean;
   errorMsg: string;
@@ -89,13 +122,14 @@ export class TransfertHubServicesPage implements OnInit {
     if (this.purchaseType === 'TRANSFER') {
       this.pageTitle = 'Transférer argent ou crédit';
       this.hubCode = HUB_ACTIONS.TRANSFERT;
+      this.getServices();
     } else if (this.purchaseType === 'BUY') {
       this.pageTitle = 'Acheter crédit ou pass';
       this.hubCode = HUB_ACTIONS.ACHAT;
+      this.isLightMod ? (this.options = this.lightOptions) : this.getServices();
     } else {
       this.navController.navigateBack('/dashboard');
     }
-    this.getServices();
   }
 
   getServices() {
@@ -186,6 +220,10 @@ export class TransfertHubServicesPage implements OnInit {
       case OPERATION_TYPE_MERCHANT_PAYMENT:
         this.openMerchantBS();
       default:
+        if (opt.redirectionType === 'NAVIGATE')
+          this.navController.navigateForward([opt.redirectionPath], {
+            state: { purchaseType: opt.code },
+          });
         break;
     }
   }
