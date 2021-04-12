@@ -15,6 +15,8 @@
 
 @interface FollowAnalyticsCordovaPlugin : CDVPlugin
 
+@property (nonatomic, retain) CDVInvokedUrlCommand *commandShouldOpenURL;
+
 + (void)initialize;
 
 @end

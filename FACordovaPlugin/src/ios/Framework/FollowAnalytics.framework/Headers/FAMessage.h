@@ -19,15 +19,17 @@
 @property(nonatomic, retain, readonly) NSString* identifier;
 @property(nonatomic, retain, readonly) NSDate* dateReceived;
 
-@property(nonatomic, retain, readonly) NSString* campaignId;
+@property(nonatomic, retain, readonly) NSString* campaignId __deprecated_msg("Use FAMessage.identifier instead");
+
+@property(nonatomic, retain, readonly, nullable) NSString* notificationId;
 @property(nonatomic, retain, readonly) NSString* messageType;
-@property(nonatomic, retain, readonly) NSString* title;
-@property(nonatomic, retain, readonly) NSString* body;
-@property(nonatomic, retain, readonly) NSString* subtitle;
-@property(nonatomic, retain, readonly) NSString* url;
+@property(nonatomic, retain, readonly, nullable) NSString* title;
+@property(nonatomic, retain, readonly, nullable) NSString* body;
+@property(nonatomic, retain, readonly, nullable) NSString* subtitle;
+@property(nonatomic, retain, readonly, nullable) NSString* url;
 @property(nonatomic, retain, readonly) NSString* layout;
-@property(nonatomic, retain, readonly) NSString* deepLinkUrl;
-@property(nonatomic, retain, readonly) NSDictionary* params;
+@property(nonatomic, retain, readonly, nullable) NSString* deepLinkUrl;
+@property(nonatomic, retain, readonly, nullable) NSDictionary* params;
 
 @property(nonatomic, retain, readonly) NSDictionary* rawData;
 

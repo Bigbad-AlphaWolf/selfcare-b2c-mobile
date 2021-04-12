@@ -17,9 +17,17 @@
  @code
   FollowAnalytics.requestNotificationAuthorization()
   FollowAnalytics.requestProvisionalNotificationAuthorization()
+  FollowAnalytics.getOptInNotifications() // Returns the string "true" if the opt-in notifications status is true, "false" otherwhise.
+  FollowAnalytics.setOptInNotifications(false)
+  FollowAnalytics.openNotificationSettingsEventually()
   FollowAnalytics.getDeviceId()
   FollowAnalytics.getUserId()
   FollowAnalytics.setUserId('id1')
+  FollowAnalytics.setData('key', 'value') // To save and persist string data.
+  FollowAnalytics.getData() // To retrieve a previously saved string data from its key: note that "notificationAuthorization" is a reserved key
+                            // returning "true" if the iOS system notification authorization is allowed, "false" otherwise, or null if not set.
+  FollowAnalytics.isRegisteredForPushNotifications() // Get the Push campaigns registration status. Will return "true" only if the iOS system notification
+                                                     // authorization is allowed AND the SDK opt-in notifications status is true. Otherwise, will return "false".
   FollowAnalytics.logError('err1',{'key1':'value1'})
   FollowAnalytics.logError('err1','str value')
   FollowAnalytics.logError('err1',11)
@@ -49,9 +57,8 @@
   FollowAnalytics.UserAttributes.setRegion('region')
   FollowAnalytics.UserAttributes.setCity('city')
   FollowAnalytics.UserAttributes.setCountry('country')
-  FollowAnalytics.UserAttributes.setGender(FollowAnalytics.Gender.FEMALE)
-  // other values for gender FollowAnalytics.Gender.MALE, FollowAnalytics.Gender.REMOVE,
-FollowAnalytics.Gender.OTHER FollowAnalytics.UserAttributes.setEmail('email')
+  FollowAnalytics.UserAttributes.setGender(FollowAnalytics.Gender.[FEMALE|MALE|REMOVE|OTHER])
+  FollowAnalytics.UserAttributes.setEmail('email')
   FollowAnalytics.UserAttributes.setLastName('last name')
   FollowAnalytics.UserAttributes.setFirstName('first name')
   FollowAnalytics.UserAttributes.setDateOfBirth(new Date(Date.UTC(2012,10,11)))
