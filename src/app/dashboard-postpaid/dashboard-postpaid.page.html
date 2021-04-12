@@ -289,13 +289,8 @@
       </div>
       <div *ngIf="listBanniere?.length" class="bons-plans">
         <div class="title">Bons plans</div>
-        <div class="dashboard-img-promo slide-container">
           <app-slide-banniere-dashboard [listBanniere]="listBanniere">
           </app-slide-banniere-dashboard>
-          <div class="close-icon" (click)="hidePromoBarner()" *ngIf="0">
-            <img src="/assets/images/group-14.svg" alt="hide-banniere-promo" />
-          </div>
-        </div>
       </div>
     </div>
   </div>
