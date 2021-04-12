@@ -308,11 +308,6 @@ const routes: Routes = [
       './pages/offres-services/offres-services.module#OffresServicesPageModule',
   },
   {
-    path: 'banniere-description',
-    loadChildren:
-      './pages/banniere-description/banniere-description.module#BanniereDescriptionPageModule',
-  },
-  {
     path: 'dalal-tones',
     loadChildren: './dalal-tones/dalal-tones.module#DalalTonesPageModule',
   },

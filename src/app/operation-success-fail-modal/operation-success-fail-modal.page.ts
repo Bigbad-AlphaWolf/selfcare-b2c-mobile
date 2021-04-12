@@ -114,7 +114,11 @@ export class OperationSuccessFailModalPage implements OnInit {
 
   terminer() {
     this.modalController.dismiss();
-    this.router.navigate(['/dashboard']);
+    if (this.opXtras && this.opXtras.isLightMod){
+      this.router.navigate(['/dashboard-prepaid-light']);
+    }else {
+      this.router.navigate(['/dashboard']);
+    }
   }
 
   getPassBoosters(pass: any) {
@@ -166,7 +170,6 @@ export class OperationSuccessFailModalPage implements OnInit {
         } else {
           this.appRouting.goToTransfertHubServicesPage('TRANSFER');
         }
-        break;
         break;
       case OPERATION_WOYOFAL:
         this.navCtrl.navigateBack(BillsHubPage.ROUTE_PATH);

@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
-import { NavController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'banniere-description',
@@ -11,11 +11,11 @@ import { NavController } from '@ionic/angular';
 })
 export class BanniereDescriptionPage implements OnInit {
   static ROUTE_PATH : string = '/banniere-description'
-  banniere : BannierePubModel;
-  constructor(private route: ActivatedRoute, public banniereService : BanniereService, private navCtrl : NavController) { }
+  @Input() banniere : BannierePubModel;
+  constructor(private route: ActivatedRoute, public banniereService : BanniereService, private modController : ModalController) { }
 
   ngOnInit() {
-    this.banniere = history.state;
+
   }
 
   openUrl(){
@@ -25,7 +25,7 @@ export class BanniereDescriptionPage implements OnInit {
   }
 
   quit(){
-    this.navCtrl.pop();
+    this.modController.dismiss();
   }
 
 }

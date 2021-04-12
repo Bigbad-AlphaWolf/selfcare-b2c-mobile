@@ -1,9 +1,12 @@
+@import 'src/app/app';
+
 .service {
   background-color: white;
   width: 100%;
   border-radius: 10px;
   padding: 15px;
   margin: 10px 0px;
+  position: relative;
   .active-infos {
     width: 100%;
     display: flex;
@@ -58,8 +61,39 @@
       background-color: #999;
     }
   }
+  .badge-promo {
+    position: absolute;
+    top: 15px;
+    right: -5px;
+    .icon-container {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 10px;
+      background-color: $lightBlue;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 5px 10px;
+      width: 100%;
+      border-radius: 7% 0 0 7%;
+      .percent {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+      }
+      .new {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 10px;
+      }
+    }
+    .triangle {
+      width: 0;
+      height: 0;
+      border-top: 5px solid $bluePopUp;
+      border-right: 5px solid transparent;
+      float: right;
+    }
+  }
 }
 
 .disabled {
-  opacity: 0.7;
+  opacity: 0.5;
 }

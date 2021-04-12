@@ -70,7 +70,6 @@ export class AppComponent {
 
   async getVersion() {
     this.appVersion.getVersionNumber().then((version) => {
-      console.log('version', version);
       this.appVersionNumber = version;
     });
   }

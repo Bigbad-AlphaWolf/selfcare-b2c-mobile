@@ -290,7 +290,7 @@
   <div class="scb-text-gray loading-coupon" *ngIf="success && hasCoupon">
     Vous recevrez le coupon par message...
   </div>
-  <div *ngIf="success && !isBuyerPostpaid" class="confirm-btn">
+  <div *ngIf="success && !isBuyerPostpaid && !coupon" class="confirm-btn">
     <ion-button
       (click)="goToPage()"
       shape="round"
