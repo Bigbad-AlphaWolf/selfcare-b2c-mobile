@@ -69,6 +69,16 @@
         <config-file parent="NSPhotoLibraryUsageDescription" target="*-Info.plist">
             <string>needs photo library access to choose profile picture</string>
         </config-file>
+        <config-file parent="com.apple.developer.associated-domains" target="*-Debug.plist">
+            <array>
+                <string>applinks:orangeetmoi.sn</string>
+            </array>
+        </config-file>
+        <config-file parent="com.apple.developer.associated-domains" target="*-Release.plist">
+            <array>
+                <string>applinks:orangeetmoi.sn</string>
+            </array>
+        </config-file>
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
         <icon height="114" src="resources/ios/icon/icon@2x.png" width="114" />
         <icon height="20" src="resources/ios/icon/icon-20.png" width="20" />
