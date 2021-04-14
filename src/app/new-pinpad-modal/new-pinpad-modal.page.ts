@@ -44,6 +44,7 @@ import {
 import { OperationExtras } from '../models/operation-extras.model';
 import { WoyofalService } from '../services/woyofal/woyofal.service';
 import { RapidoService } from '../services/rapido/rapido.service';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -105,7 +106,8 @@ export class NewPinpadModalPage implements OnInit {
     private dashboardService: DashboardService,
     public modalController: ModalController,
     private woyofal: WoyofalService,
-    private rapido: RapidoService
+    private rapido: RapidoService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -262,7 +264,12 @@ export class NewPinpadModalPage implements OnInit {
         this.sendingOtp = false;
         this.resendCode = false;
         this.showResendCodeBtn(2);
-        if (err && err.error && err.error.errorCode && err.error.errorCode.match('Erreur-046')) {
+        if (
+          err &&
+          err.error &&
+          err.error.errorCode &&
+          err.error.errorCode.match('Erreur-046')
+        ) {
           this.openModalNoOMAccount();
         } else {
           this.errorOnOtp = 'Une erreur est survenue';
@@ -327,6 +334,11 @@ export class NewPinpadModalPage implements OnInit {
           };
           this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
           this.gettingPinpad = true;
+          this.followAnalyticsService.registerEventFollow(
+            'Activation_OM_dashboard_success',
+            'event',
+            this.omPhoneNumber
+          );
           this.orangeMoneyService.GetPinPad(this.pinpadData).subscribe(
             (response: any) => {
               const omUser1 = this.orangeMoneyService.GetOrangeMoneyUser(
@@ -347,13 +359,26 @@ export class NewPinpadModalPage implements OnInit {
           this.otpValidation = true;
           this.otpHasError = true;
           this.errorOnOtp = res.status_wording;
+          this.followAnalyticsService.registerEventFollow(
+            'Activation_OM_dashboard_error',
+            'error',
+            { msisdn: this.omPhoneNumber, error: this.errorOnOtp }
+          );
         }
       },
       (err) => {
         this.otpValidation = true;
         this.registering = false;
         this.otpHasError = true;
-        this.errorOnOtp = err.error.message;
+        this.errorOnOtp =
+          err && err.error && err.error.message
+            ? err.error.message
+            : 'Une erreur est survenue';
+        this.followAnalyticsService.registerEventFollow(
+          'Activation_OM_dashboard_error',
+          'error',
+          { msisdn: this.omPhoneNumber, error: this.errorOnOtp }
+        );
       }
     );
   }
@@ -584,11 +609,11 @@ export class NewPinpadModalPage implements OnInit {
           db.lastUpdateTime = lastDateTime;
           this.orangeMoneyService.SaveOrangeMoneyUser(db);
           // this.dashService.balanceAvailableSubject.next(db.solde);
-            this.modalController.dismiss({
-              success: true,
-              balance: balance,
-              omUserInfos: { ...db, pin }
-            });
+          this.modalController.dismiss({
+            success: true,
+            balance: balance,
+            omUserInfos: { ...db, pin },
+          });
           this.orangeMoneyService.logWithFollowAnalytics(
             res,
             'event',

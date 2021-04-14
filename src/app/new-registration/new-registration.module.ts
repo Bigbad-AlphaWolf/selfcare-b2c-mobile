@@ -9,6 +9,7 @@ import { NewRegistrationPage } from './new-registration.page';
 import { SharedModule } from 'src/shared/shared.module';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 import { MatBottomSheetModule, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
+import { Network } from '@ionic-native/network/ngx';
 
 const routes: Routes = [
   {
@@ -27,6 +28,6 @@ const routes: Routes = [
     RouterModule.forChild(routes),
   ],
   declarations: [NewRegistrationPage],
-  providers: [OpenNativeSettings],
+  providers: [OpenNativeSettings, Network],
 })
 export class NewRegistrationPageModule {}
