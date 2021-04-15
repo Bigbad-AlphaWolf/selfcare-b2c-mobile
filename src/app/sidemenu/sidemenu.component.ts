@@ -61,9 +61,12 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getAllAttachedNumbers();
-    this.getSouscription();
-    this.extractData();
+    const userHasLogin = !!this.authServ.getToken();
+    if (userHasLogin) {
+      this.getSouscription();
+      this.getAllAttachedNumbers();
+      this.extractData();
+    }
     this.dashboardServ.currentPhoneNumberChange.subscribe(() => {
       this.getSouscription();
       this.getAllAttachedNumbers();
@@ -108,9 +111,23 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   getAllAttachedNumbers() {
-    this.dashboardServ.getAllOemNumbers().subscribe((res) => {
-      this.numbers = res;
-    });
+    this.dashboardServ.getAllOemNumbers().subscribe(
+      (res) => {
+        this.numbers = res;
+        this.followAnalyticsService.registerEventFollow(
+          'Recuperation_lignes_rattachees_menu_success',
+          'event',
+          this.msisdn
+        );
+      },
+      (err) => {
+        this.followAnalyticsService.registerEventFollow(
+          'Recuperation_lignes_rattachees_menu_failed',
+          'error',
+          { msisdn: this.msisdn, error: err.status }
+        );
+      }
+    );
   }
 
   isActiveNumber(numberInfos) {
@@ -118,17 +135,32 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goDetailsConso() {
+    this.followAnalyticsService.registerEventFollow(
+      'Details_conso_menu',
+      'event',
+      this.msisdn
+    );
     this.router.navigate(['/details-conso']);
   }
 
   switchPhoneNumber(msisdn) {
     if (this.msisdn === msisdn) return;
+    const mainMsisdn = this.dashboardServ.getMainPhoneNumber();
+    this.followAnalyticsService.registerEventFollow(
+      'Switch_msisdn_menu',
+      'event',
+      { main: mainMsisdn, msisdn }
+    );
     this.dashboardServ.setCurrentPhoneNumber(msisdn);
     this.closeMenu();
     this.router.navigate(['/dashboard']);
   }
 
   attachLine() {
+    this.followAnalyticsService.registerEventFollow(
+      'Attach_msisdn_menu',
+      'event'
+    );
     this.router.navigate(['/new-number']);
   }
 
@@ -166,17 +198,22 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   ngOnDestroy() {}
 
   onOffreClicked() {
+    this.followAnalyticsService.registerEventFollow(
+      'Offres_services_menu',
+      'event'
+    );
     this.navCtrl.navigateForward(OffresServicesPage.ROUTE_PATH);
   }
 
   goToMyOfferPlans() {
+    this.followAnalyticsService.registerEventFollow('Bons_plans_menu', 'event');
     this.router.navigate(['/my-offer-plans']);
   }
 
   goFormule() {
     this.router.navigate(['/my-formule']);
     this.followAnalyticsService.registerEventFollow(
-      'Sidemenu_MaFormule',
+      'Ma_formule_menu',
       'event',
       'clicked'
     );
@@ -185,7 +222,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   goFacture() {
     this.router.navigate(['/bills']);
     this.followAnalyticsService.registerEventFollow(
-      'Sidemenu_Factures_Fixe_Mobile',
+      'Factures_menu',
       'event',
       'clicked'
     );
@@ -194,7 +231,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   goMyAccount() {
     this.router.navigate(['/my-account']);
     this.followAnalyticsService.registerEventFollow(
-      'Sidemenu_Mon_Compte',
+      'Mon_compte_menu',
       'event',
       'clicked'
     );
@@ -203,7 +240,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   goParrainage() {
     this.router.navigate(['/parrainage']);
     this.followAnalyticsService.registerEventFollow(
-      'Sidemenu_Mes_Parrainages',
+      'Mes_parrainages_menu',
       'event',
       'clicked'
     );
@@ -212,7 +249,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   goEmergencies() {
     this.router.navigate(['/assistance-hub']);
     this.followAnalyticsService.registerEventFollow(
-      'Sidemenu_assistance',
+      'Assistance_menu',
       'event',
       'clicked'
     );
@@ -221,7 +258,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   goToRattachedNumberPage() {
     this.appRout.goToRattachementsPage();
     this.followAnalyticsService.registerEventFollow(
-      'changer_de_ligne',
+      'Gérer_mes_lignes_menu',
       'event',
       'clicked'
     );
@@ -239,10 +276,17 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     );
     this.close.emit();
   }
+
   goToAbout() {
+    this.followAnalyticsService.registerEventFollow('A_propos_menu', 'event');
     this.router.navigate(['/apropos']);
   }
+
   defaulSharingSheet() {
+    this.followAnalyticsService.registerEventFollow(
+      'Partager_app_menu',
+      'event'
+    );
     const url = 'http://bit.ly/2NHn5aS';
     const postTitle =
       "Comme moi télécharge et connecte toi gratuitement sur l'application " +

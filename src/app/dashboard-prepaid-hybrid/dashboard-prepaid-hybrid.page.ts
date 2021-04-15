@@ -435,7 +435,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   goToSOSPage() {
     if (this.canDoSOS) {
       this.followAnalyticsService.registerEventFollow(
-        'Recharge_dashboard',
+        'Dashboard_sos_clic',
         'event',
         'clicked'
       );
