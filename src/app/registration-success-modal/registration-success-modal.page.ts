@@ -38,7 +38,7 @@ export class RegistrationSuccessModalPage implements OnInit {
               ls.set('user', resp);
               this.router.navigate(['/dashboard']);
               this.followAnalyticsService.registerEventFollow(
-                'Authentication_Successful',
+                'Post_register_login_successful',
                 'event',
                 this.userCredential.username
               );
@@ -47,7 +47,7 @@ export class RegistrationSuccessModalPage implements OnInit {
               this.router.navigate(['/dashboard']);
               this.logging = false;
               this.followAnalyticsService.registerEventFollow(
-                'Authentication_Failed',
+                'Post_register_login_failed',
                 'error',
                 this.userCredential.username
               );
@@ -56,7 +56,7 @@ export class RegistrationSuccessModalPage implements OnInit {
       },
       (err) => {
         this.followAnalyticsService.registerEventFollow(
-          'Authentication_Failed',
+          'Post_register_login_failed',
           'error',
           this.userCredential.username
         );
