@@ -1,45 +1,39 @@
-import {
-  Component,
-  OnInit,
-  Output,
-  EventEmitter,
-} from "@angular/core";
-import { formatPhoneNumber, REGEX_NUMBER_OM } from "src/shared";
-import { SelectNumberPopupComponent } from "src/shared/select-number-popup/select-number-popup.component";
-import { Contacts, Contact } from "@ionic-native/contacts";
-import { MatDialog } from "@angular/material";
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { formatPhoneNumber, REGEX_NUMBER_OM } from 'src/shared';
+import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
+import { Contacts, Contact } from '@ionic-native/contacts';
+import { MatDialog } from '@angular/material';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
-  selector: "oem-phone-number-provider",
-  templateUrl: "./phone-number-provider.component.html",
-  styleUrls: ["./phone-number-provider.component.scss"],
+  selector: 'oem-phone-number-provider',
+  templateUrl: './phone-number-provider.component.html',
+  styleUrls: ['./phone-number-provider.component.scss'],
 })
 export class PhoneNumberProviderComponent implements OnInit {
-  @Output("onPhoneSelected") onPhoneSelected: EventEmitter<
-  OperationExtras
-  > = new EventEmitter();
-
+  @Output('onPhoneSelected')
+  onPhoneSelected: EventEmitter<OperationExtras> = new EventEmitter();
 
   hasErrorGetContact: boolean;
   errorGetContact: any;
-  otherBeneficiaryNumber ='';
+  otherBeneficiaryNumber = '';
   recipientContactInfos = '';
-  
-  opXtras:OperationExtras={};
+
+  opXtras: OperationExtras = {};
   constructor(
     private dialog: MatDialog,
-    private contacts: Contacts
+    private contacts: Contacts,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
-  ngOnInit() {
-  }
-  onValueChange(value?:any) {
-
-    this.onPhoneSelected.emit({recipientMsisdn:value});
+  ngOnInit() {}
+  onValueChange(value?: any) {
+    this.onPhoneSelected.emit({ recipientMsisdn: value });
   }
 
   pickContact() {
+    this.followAnalyticsService.registerEventFollow('Access_contacts', 'event');
     this.hasErrorGetContact = false;
     this.errorGetContact = null;
     this.contacts
@@ -55,7 +49,7 @@ export class PhoneNumberProviderComponent implements OnInit {
         }
       })
       .catch((err) => {
-        console.log("err", err);
+        console.log('err', err);
       });
   }
 
@@ -76,11 +70,10 @@ export class PhoneNumberProviderComponent implements OnInit {
       this.opXtras.recipientMsisdn = this.otherBeneficiaryNumber;
       this.opXtras.recipientFromContact = true;
       this.onPhoneSelected.emit(this.opXtras);
-
     } else {
       this.hasErrorGetContact = true;
       this.errorGetContact =
-        "Veuillez choisir un numéro de destinataire valide pour continuer";
+        'Veuillez choisir un numéro de destinataire valide pour continuer';
     }
   }
 
@@ -90,15 +83,15 @@ export class PhoneNumberProviderComponent implements OnInit {
 
   getContactFormattedName(contact: any) {
     const givenName = contact.name.givenName;
-    const familyName = contact.name.familyName ? contact.name.familyName : "";
+    const familyName = contact.name.familyName ? contact.name.familyName : '';
 
     this.recipientContactInfos =
       contact.name && contact.name.formatted
         ? contact.name.formatted
-        : givenName + " " + familyName;
-    
-        this.opXtras.recipientName = this.recipientContactInfos;
-        this.opXtras.recipientFirstname = givenName;
-        this.opXtras.recipientLastname = familyName;
+        : givenName + ' ' + familyName;
+
+    this.opXtras.recipientName = this.recipientContactInfos;
+    this.opXtras.recipientFirstname = givenName;
+    this.opXtras.recipientLastname = familyName;
   }
 }

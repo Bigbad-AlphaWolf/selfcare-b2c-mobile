@@ -26,6 +26,7 @@ import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
 import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
 import { CODE_FORMULE_FIX_PREPAID } from 'src/app/dashboard';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'oem-number-selection',
@@ -64,7 +65,8 @@ export class NumberSelectionComponent implements OnInit {
     private dashbServ: DashboardService,
     private authService: AuthenticationService,
     private changeDetectorRef: ChangeDetectorRef,
-    private recentsService: RecentsService
+    private recentsService: RecentsService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -106,7 +108,14 @@ export class NumberSelectionComponent implements OnInit {
   async onContinue(phone?: string) {
     this.eligibilityChecked = false;
     this.canNotRecieve = false;
-    if (phone) this.opXtras.recipientMsisdn = phone;
+    if (phone) {
+      this.opXtras.recipientMsisdn = phone;
+      this.followAnalyticsService.registerEventFollow(
+        'Select_recents_buy',
+        'event',
+        { msisdn: this.currentPhone, recent: phone }
+      );
+    }
     if (
       !(
         REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn) ||
@@ -237,6 +246,11 @@ export class NumberSelectionComponent implements OnInit {
       .pipe(
         catchError((er: HttpErrorResponse) => {
           if (er.status === 401) this.modalController.dismiss();
+          this.followAnalyticsService.registerEventFollow(
+            'Check_recipient_failed',
+            'error',
+            { error: er.status }
+          );
           return of(false);
         })
       )
@@ -245,6 +259,15 @@ export class NumberSelectionComponent implements OnInit {
       this.data.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT
         ? ' crédit'
         : ' pass';
+    this.followAnalyticsService.registerEventFollow(
+      'Check_recipient_success',
+      'event',
+      {
+        recipient: this.opXtras.recipientMsisdn,
+        canRecieve,
+        service: this.opXtras.purchaseType,
+      }
+    );
     return canRecieve;
   }
 
