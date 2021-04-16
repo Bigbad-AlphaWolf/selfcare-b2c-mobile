@@ -131,10 +131,6 @@ const routes: Routes = [
   },
   // { path: 'bills', loadChildren: './bills/bills.module#BillsPageModule' },
   {
-    path: 'assistance',
-    loadChildren: './assistance/assistance.module#AssistancePageModule',
-  },
-  {
     path: 'forgotten-password',
     loadChildren:
       './forgotten-password/forgotten-password.module#ForgottenPasswordPageModule',
@@ -143,11 +139,6 @@ const routes: Routes = [
     path: 'sargal-registration',
     loadChildren:
       './sargal/components/sargal-registration/sargal-registration.module#SargalRegistrationPageModule',
-  },
-  {
-    path: 'contact-us',
-    loadChildren:
-      './assistance/containers/contact-us/contact-us.module#ContactUsPageModule',
   },
   {
     path: 'apropos',
