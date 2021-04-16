@@ -114,16 +114,16 @@ export class IlliflexService {
     return this.http.post(buyIlliflexEndpoint, buyIlliflexPayload).pipe(
       map((res) => {
         this.followAnalyticsService.registerEventFollow(
-          'buy_pass_illiflex_success',
+          'buy_pass_illiflex_by_credit_success',
           'event',
           buyIlliflexPayload
         );
       }),
       catchError((err) => {
         this.followAnalyticsService.registerEventFollow(
-          'buy_pass_illiflex_failed',
+          'buy_pass_illiflex_by_credit_failed',
           'error',
-          { payload: buyIlliflexPayload, error: err }
+          { payload: buyIlliflexPayload, error: err.status }
         );
         return throwError(err);
       })
@@ -174,7 +174,7 @@ export class IlliflexService {
               this.followAnalyticsService.registerEventFollow(
                 'best_offer_failed',
                 'error',
-                { msisdn: param.recipientMsisdn, error: err }
+                { msisdn: param.recipientMsisdn, error: err.status }
               );
               return throwError(err);
             })

@@ -1,4 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  NgZone,
+  OnDestroy,
+} from '@angular/core';
 import { Subscription, timer, Subject, of } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -40,7 +46,7 @@ import { Network } from '@ionic-native/network/ngx';
   templateUrl: './new-registration.page.html',
   styleUrls: ['./new-registration.page.scss'],
 })
-export class NewRegistrationPage implements OnInit {
+export class NewRegistrationPage implements OnInit, OnDestroy {
   dialogRef: MatDialogRef<SettingsPopupComponent, any>;
   dialogSub: Subscription;
   phoneNumber: string;
@@ -88,6 +94,7 @@ export class NewRegistrationPage implements OnInit {
   helpNeeded = new Subject<any>();
   firstCallMsisdn: string;
   isNumberAttachedError: boolean;
+  newtworkSubscription: Subscription;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -113,6 +120,12 @@ export class NewRegistrationPage implements OnInit {
         this.openHelpModal(data);
       },
     });
+  }
+
+  ngOnDestroy() {
+    if (this.newtworkSubscription) {
+      this.newtworkSubscription.unsubscribe();
+    }
   }
 
   ionViewWillEnter() {
@@ -370,7 +383,7 @@ export class NewRegistrationPage implements OnInit {
     this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
     let connexion: string;
     console.log('connexionType', connexion);
-    this.network.onConnect().subscribe(() => {
+    this.newtworkSubscription = this.network.onConnect().subscribe(() => {
       setTimeout(() => {
         connexion = this.network.type;
         this.followAnalyticsService.registerEventFollow(

@@ -190,7 +190,7 @@ export class TransfertHubServicesPage implements OnInit {
       (this.purchaseType === 'TRANSFER'
         ? 'Hub_transfert_clic_'
         : 'Hub_Achat_clic_') +
-      opt.fullDescription +
+      opt.fullDescription.replace(/[^a-zA-Z]/g, '_') +
       this.isLightMod
         ? '_light'
         : '';
