@@ -31,37 +31,6 @@ export class AssistanceService {
     this.userNumber = msisdn;
   }
 
-  setListItemBesoinAide() {
-    this.listItemBesoinAide = [];
-    this.authService
-      .getSubscription(this.userNumber)
-      .subscribe((sub: SubscriptionModel) => {
-        const codeFormule = sub.code;
-        if (codeFormule !== 'error') {
-          this.queryBesoinAides(codeFormule).subscribe(
-            (res: ItemBesoinAide[]) => {
-              if (res.length) {
-                res.sort((item1: ItemBesoinAide, item2: ItemBesoinAide) => {
-                  if (item1 && item2) {
-                    return item2.priorite - item1.priorite;
-                  }
-                });
-                this.listItemBesoinAide = res.filter((x) => {
-                  if (x) {
-                    return x.actif;
-                  }
-                });
-              }
-              this.isLoadedSubject.next(true);
-            },
-            (err: any) => {
-              this.isLoadedSubject.next(true);
-            }
-          );
-        }
-      });
-  }
-
   fetchHelpItems(req?: any): Observable<ItemBesoinAide[]> {
     const currentMsisdn = this.dashboardService.getCurrentPhoneNumber();
     return this.authService.getSubscription(currentMsisdn).pipe(
@@ -70,7 +39,7 @@ export class AssistanceService {
         if (!codeFormule) return of([]);
         req = {...req, formule:codeFormule};
         return this.queryBesoinAides(req);
-        
+
       })
     );
   }

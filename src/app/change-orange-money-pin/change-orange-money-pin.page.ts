@@ -11,6 +11,7 @@ import { UuidService } from '../services/uuid-service/uuid.service';
 import * as SecureLS from 'secure-ls';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { SUCCESS_CHANGE_PIN_MSG } from '../services/orange-money-service';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -27,16 +28,21 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
   birthYear: string;
   DEFAULT_ERROR_CHANGE_PIN_REQUEST = 'Une erreur est survenue. Veuillez réessayer';
   DEFAULT_ERROR_VALIDATION_FORMS = "Les champs renseignés doivent être conformes et être différents de l'ancien code secret";
-  constructor(private fb: FormBuilder, private mdCtrl: ModalController, private omServ: OrangeMoneyService, private uuidServ: UuidService, private navCtrl: NavController) {}
+  constructor(private fb: FormBuilder, private mdCtrl: ModalController, private omServ: OrangeMoneyService, private uuidServ: UuidService,
+     private navCtrl: NavController, private followAnalyticsService: FollowAnalyticsService) {}
 
   ngOnInit() {
     this.form = this.fb.group({
       pin: ['', [Validators.required]],
       confirmPin: ['', [Validators.required]],
     });
+    this.omInfos = history.state.omUserInfos;
+    this.birthYear = history.state.birthYear;
 
-    this.omInfos = history.state.omUserInfos;    
-    this.birthYear = history.state.birthYear; 
+    this.followAnalyticsService.registerEventFollow(
+      'Change_Pin_OM_page',
+      'event'
+    );
   }
 
   goBack() {
@@ -46,7 +52,7 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
   changePinOM() {
     this.hasError = false;
     this.errorMsg = null;
-    
+
     if(this.isInputsValid()){
       this.loading = true;
       let isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
@@ -54,7 +60,6 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
       const newPin = this.form.value.pin;
       const confirmNewPin = this.form.value.confirmPin;
       const uuid = this.uuidServ.getUuid();
-      const token = ls.get('token');
       const os = isIOS ? 'iOS' : 'Android';
 
       const data: ChangePinOm = {
@@ -71,14 +76,24 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
         service_version: 'v1.0',
         type: 'CLIENT',
         is_primo: false
-      }    
-      this.omServ.changePin(data).pipe(tap((res: any) => {
+      }
+      this.omServ.changePin(data).pipe(tap(() => {
         this.loading = false;
-        this.showModal({purchaseType: OPERATION_CHANGE_PIN_OM , textMsg: SUCCESS_CHANGE_PIN_MSG });         
+        this.showModal({purchaseType: OPERATION_CHANGE_PIN_OM , textMsg: SUCCESS_CHANGE_PIN_MSG });
+        this.followAnalyticsService.registerEventFollow(
+          'Change_Pin_OM_success',
+          'event',
+          { msisdn: this.omInfos.msisdn }
+        );
       }),catchError((err: any) => {
         this.loading = false;
         this.hasError = true;
         this.errorMsg = this.DEFAULT_ERROR_CHANGE_PIN_REQUEST;
+        this.followAnalyticsService.registerEventFollow(
+          'Change_Pin_OM_failed',
+          'error',
+          { msisdn: this.omInfos.msisdn, error: err && err.error && err.error.message ? err.error.message : err.status }
+        );
         return of(err)
       })).subscribe();
     }else{
