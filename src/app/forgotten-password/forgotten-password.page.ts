@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as SecureLS from 'secure-ls';
@@ -11,6 +11,7 @@ import { NavController } from '@ionic/angular';
 import { PRO_MOBILE_ERROR_CODE } from 'src/shared';
 import { Network } from '@ionic-native/network/ngx';
 import { Uid } from '@ionic-native/uid/ngx';
+import { Subscription } from 'rxjs';
 const ls = new SecureLS({ encodingType: 'aes' });
 export interface Description {
   text: string;
@@ -21,7 +22,7 @@ export interface Description {
   templateUrl: './forgotten-password.page.html',
   styleUrls: ['./forgotten-password.page.scss'],
 })
-export class ForgottenPasswordPage implements OnInit {
+export class ForgottenPasswordPage implements OnInit, OnDestroy {
   resetPasswordPayload = { login: null, hmac: null, newPassword: null };
   formPassword: FormGroup;
   currentStep = 1;
@@ -41,6 +42,8 @@ export class ForgottenPasswordPage implements OnInit {
   phoneNumber: string;
   hmac: string;
   resetingPwd: boolean;
+  newtworkSubscription: Subscription;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -104,7 +107,7 @@ export class ForgottenPasswordPage implements OnInit {
   logFollowError() {
     let connexion: string;
     console.log('connexionType', connexion);
-    this.network.onConnect().subscribe(() => {
+    this.newtworkSubscription = this.network.onConnect().subscribe(() => {
       setTimeout(() => {
         connexion = this.network.type;
         this.followAnalyticsService.registerEventFollow(
@@ -150,6 +153,12 @@ export class ForgottenPasswordPage implements OnInit {
         }
       }
     );
+  }
+
+  ngOnDestroy() {
+    if (this.newtworkSubscription) {
+      this.newtworkSubscription.unsubscribe();
+    }
   }
 
   onSubmitPassword() {
