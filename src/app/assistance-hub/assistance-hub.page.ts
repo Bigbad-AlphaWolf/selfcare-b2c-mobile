@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { ModalController, NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { FIND_AGENCE_EXTERNAL_URL } from 'src/shared';
 import { BesoinAideType } from '../models/enums/besoin-aide-type.enum';
 import { OffreService } from '../models/offre-service.model';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { OperationService } from '../services/oem-operation/operation.service';
 
@@ -59,12 +60,14 @@ export class AssistanceHubPage implements OnInit {
   loadingHelpItems: boolean;
   displaySearchIcon: boolean = true;
   @ViewChild('searchInput') searchRef;
+  current_user_msisdn = this.dashboardService.getCurrentPhoneNumber();
   constructor(
     private operationService: OperationService,
     private router: Router,
     private navController: NavController,
     private inAppBrowser: InAppBrowser,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private dashboardService: DashboardService
   ) {}
 
   ngOnInit() {
@@ -81,10 +84,19 @@ export class AssistanceHubPage implements OnInit {
       (res) => {
         this.listBesoinAides = res;
         this.loadingHelpItems = false;
+        this.followAnalyticsService.registerEventFollow(
+          'Assistance_hub_affichage_success',
+          'event'
+        );
         this.splitHelpItemsByType();
       },
       (err) => {
         this.loadingHelpItems = false;
+        this.followAnalyticsService.registerEventFollow(
+          'Assistance_hub_affichage_error',
+          'error',
+          { msisdn: this.current_user_msisdn, error: err.status }
+        );
       }
     );
   }
@@ -102,12 +114,22 @@ export class AssistanceHubPage implements OnInit {
     this.router.navigate(['/assistance-hub/actions'], {
       state: { listActes: this.listActes },
     });
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_hub_voir_toutes_actions_clic',
+      'event',
+      'clicked'
+    );
   }
 
   goAllQuestionsHub() {
     this.router.navigate(['/assistance-hub/questions'], {
       state: { listFaqs: this.listFaqs },
     });
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_hub_voir_tous_faq_clic',
+      'event',
+      'clicked'
+    );
   }
 
   goBack() {
@@ -117,7 +139,7 @@ export class AssistanceHubPage implements OnInit {
   goFindToAgenceWebSite() {
     this.inAppBrowser.create(FIND_AGENCE_EXTERNAL_URL, '_self');
     this.followAnalyticsService.registerEventFollow(
-      'Trouver_agence_orange',
+      'Assistance_hub_Trouver_agence_orange_clic',
       'event',
       'clicked'
     );
@@ -135,6 +157,11 @@ export class AssistanceHubPage implements OnInit {
   }
 
   async goIbouContactPage() {
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_Hub_Ibou_card_clic',
+      'event',
+      'clicked'
+    );
     this.router.navigate(['/contact-ibou-hub']);
   }
 
@@ -145,6 +172,11 @@ export class AssistanceHubPage implements OnInit {
       this.navController.navigateForward(['/assistance-hub/search'], {
         state: { listBesoinAides: this.listBesoinAides, search: inputvalue },
       });
+      this.followAnalyticsService.registerEventFollow(
+        'Assistance_hub_recherche',
+        'event',
+        { 'keyword': inputvalue }
+      );
       this.displaySearchIcon = false;
     }
   }
