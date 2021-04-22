@@ -26,12 +26,13 @@ import {
 } from '.';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
-import { ModalController } from '@ionic/angular';
 import { ErreurTransactionOmModel } from 'src/app/models/erreur-transaction-om.model';
 import { SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT } from '../utils/om.endpoints';
 import { ChangePinOm } from 'src/app/models/change-pin-om.model';
 import { OM_CHANGE_PIN_ENDPOINT } from '../utils/om.endpoints';
-import { REGEX_IOS_SYSTEM } from 'src/shared';
+import { OPERATION_TRANSFER_OM, OPERATION_TRANSFER_OM_WITH_CODE, OPERATION_TYPE_MERCHANT_PAYMENT, OPERATION_TYPE_PASS_ALLO, OPERATION_TYPE_PASS_ILLIMIX, OPERATION_TYPE_PASS_INTERNET, OPERATION_TYPE_PASS_VOYAGE, OPERATION_TYPE_RECHARGE_CREDIT, REGEX_IOS_SYSTEM } from 'src/shared';
+import { FollowOemlogPurchaseInfos } from 'src/app/models/follow-log-oem-purchase-Infos.model';
+import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL } = environment;
@@ -285,50 +286,54 @@ export class OrangeMoneyService {
   }
   // Log Event and errors with Follow Analytics for Orange Money
   // type can be 'error' or 'event'
-  logWithFollowAnalytics(res: any, type: string, dataToLog: any) {
-    const operation = dataToLog.operation;
-    const phoneNumber = dataToLog.phoneNumber;
-    const creditToBuy = dataToLog.creditToBuy;
-    const transferPayload = dataToLog.amountToTransfer;
-    const passToBuy = dataToLog.passToBuy;
-    switch (operation) {
+  logWithFollowAnalytics(res: any, type: string, operationType: string, dataToLog: FollowOemlogPurchaseInfos) {
+    switch (operationType) {
       case undefined:
         value = res.status_code;
         eventKey = 'Voir_solde_OM_dashboard_success';
         errorKey = 'Voir_solde_OM_dashboard_error';
         break;
-      case 'CHECK_SOLDE':
-        value = res.status_code;
-        eventKey = 'Recharge_Voir_Solde_OM_Success';
-        errorKey = 'Recharge_Voir_Solde_OM_Error';
+      case OPERATION_TYPE_RECHARGE_CREDIT:
+        eventKey = 'Achat_credit_success';
+        errorKey = 'Achat_credit_failed';
+        value = dataToLog;
         break;
-      case 'BUY_CREDIT':
-        eventKey = 'Recharge_OM_Success';
-        errorKey = 'Recharge_OM_Error';
-        value = Object.assign({}, creditToBuy, { msisdn: phoneNumber });
+      case OPERATION_TYPE_PASS_VOYAGE:
+      case OPERATION_TYPE_PASS_ILLIMIX:
+      case OPERATION_TYPE_PASS_ALLO:
+      case OPERATION_TYPE_PASS_INTERNET:
+        let type_pass;
+        if (operationType === OPERATION_TYPE_PASS_ALLO) {
+          type_pass = 'allo'
+        } else if(operationType === OPERATION_TYPE_PASS_ILLIMIX) {
+          type_pass = 'illimix'
+        } else if (operationType === OPERATION_TYPE_PASS_VOYAGE) {
+          type_pass = 'voyage'
+        } else if (operationType === OPERATION_TYPE_PASS_INTERNET) {
+          type_pass = 'internet'
+        }
+        errorKey = `Achat_Pass_${type_pass}_Error`;
+        eventKey = `Achat_Pass_${type_pass}_Success`;
+        value = dataToLog;
         break;
-      case 'PASS_INTERNET':
-        errorKey = 'OM_Buy_Pass_Internet_Error';
-        eventKey = 'OM_Buy_Pass_Internet_Success';
-        value = {
-          option_name: passToBuy.pass.nom,
-          amount: passToBuy.pass.tarif,
-          plan: passToBuy.pass.price_plan_index,
-        };
+      case OPERATION_TRANSFER_OM:
+        errorKey = 'OM_Transfer_sans_code_Error';
+        eventKey = 'OM_Transfer_sans_code_Success';
+        value = dataToLog;
         break;
-      case 'PASS_ILLIMIX':
-        errorKey = 'OM_Buy_Pass_Illimix_Error';
-        eventKey = 'OM_Buy_Pass_Illimix_Success';
-        value = {
-          option_name: passToBuy.pass.nom,
-          amount: passToBuy.pass.tarif,
-          plan: passToBuy.pass.price_plan_index,
-        };
+      case OPERATION_TRANSFER_OM_WITH_CODE:
+        errorKey = 'OM_Transfer_avec_code_Error';
+        eventKey = 'OM_Transfer_avec_code_Success';
+        value = dataToLog;
         break;
-      case 'TRANSFER_MONEY':
-        errorKey = 'OM_Transfer_Money_Error';
-        eventKey = 'OM_Transfer_Money_Success';
-        value = Object.assign({}, transferPayload, { msisdn: phoneNumber });
+      case OPERATION_TYPE_MERCHANT_PAYMENT:
+        errorKey = 'OM_Paiement_Marchand_Error';
+        eventKey = 'OM_Paiement_Marchand_Success';
+        value = dataToLog;
+      case OPERATION_RAPIDO:
+        errorKey = 'Recharge_Rapido_Error';
+        eventKey = 'Recharge_Rapido_Success';
+        value = dataToLog;
         break;
       default:
         break;

@@ -188,11 +188,10 @@ export class PurchaseSetAmountPage implements OnInit {
       case OPERATION_TYPE_SEDDO_BONUS:
       case OPERATION_TRANSFER_OM:
       case OPERATION_TRANSFER_OM_WITH_CODE:
+      case OPERATION_TYPE_MERCHANT_PAYMENT:
         this.navController.pop();
         break;
-      case OPERATION_TYPE_MERCHANT_PAYMENT:
       default:
-        this.router.navigate(['/dashboard']);
         break;
     }
   }

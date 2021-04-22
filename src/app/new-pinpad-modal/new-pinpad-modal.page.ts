@@ -28,6 +28,7 @@ import {
   OPERATION_TYPE_PASS_VOYAGE,
   OPERATION_INIT_CHANGE_PIN_OM,
   OPERATION_CHANGE_PIN_OM,
+  PAYMENT_MOD_OM,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -45,6 +46,7 @@ import { OperationExtras } from '../models/operation-extras.model';
 import { WoyofalService } from '../services/woyofal/woyofal.service';
 import { RapidoService } from '../services/rapido/rapido.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -121,6 +123,8 @@ export class NewPinpadModalPage implements OnInit {
       creditToBuy: this.buyCreditPayload,
       passToBuy: this.buyPassPayload,
       amountToTransfer: this.transferMoneyPayload,
+      transfertWithCodeInfos: this.transferMoneyWithCodePayload,
+      merchantPaymentInfos: this.merchantPaymentPayload
     };
     this.getOMPhoneNumber();
     this.orangeMoneyService.gotPinPadSubject.subscribe((value) => {
@@ -539,15 +543,17 @@ export class NewPinpadModalPage implements OnInit {
       numero_compteur: this.opXtras.billData.counter.counterNumber,
       pin: pin,
     };
+    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, receiver: body.numero_compteur, montant: body.amount, mod_paiement: PAYMENT_MOD_OM }
+
     this.woyofal.pay(body).subscribe(
       (res: any) => {
         this.opXtras.billData.codeRecharge = res.content.data.code_woyofal;
         this.opXtras.billData.kw = res.content.data.valeur_recharge;
-        this.processResult(res, db);
+        this.processResult(res, db, logInfos);
       },
       (err: any) => {
         this.processingPin = false;
-        this.processError(err);
+        this.processError(err, logInfos);
       }
     );
   }
@@ -562,13 +568,15 @@ export class NewPinpadModalPage implements OnInit {
       numero_carte: this.opXtras.billData.counter.counterNumber,
       pin: pin,
     };
+    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, receiver: body.numero_carte, montant: body.amount, mod_paiement: PAYMENT_MOD_OM }
+
     this.rapido.pay(body).subscribe(
       (res: any) => {
-        this.processResult(res, db);
+        this.processResult(res, db, logInfos);
       },
       (err: any) => {
         this.processingPin = false;
-        this.processError(err);
+        this.processError(err, logInfos);
       }
     );
   }
@@ -587,6 +595,8 @@ export class NewPinpadModalPage implements OnInit {
       service_version: OM_SERVICE_VERSION,
       uuid: this.uuid,
     };
+    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn }
+
     this.orangeMoneyService.GetBalance(balancePayload).subscribe(
       (res: any) => {
         this.processingPin = false;
@@ -617,19 +627,21 @@ export class NewPinpadModalPage implements OnInit {
           this.orangeMoneyService.logWithFollowAnalytics(
             res,
             'event',
-            this.dataToLog
+            this.operationType,
+            logInfos
           );
         } else {
           // this.goToDashboard();
           this.orangeMoneyService.logWithFollowAnalytics(
             res,
             'error',
+            this.operationType,
             this.dataToLog
           );
         }
       },
       (err) => {
-        this.processError(err);
+        this.processError(err, logInfos);
       }
     );
   }
@@ -650,12 +662,14 @@ export class NewPinpadModalPage implements OnInit {
       service_version: OM_SERVICE_VERSION,
       uuid: this.uuid,
     };
+    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, receiver: params.msisdn2, montant: params.amount, mod_paiement: PAYMENT_MOD_OM }
+
     this.orangeMoneyService.AchatCredit(buyCreditPayload).subscribe(
       (res: any) => {
-        this.processResult(res, db);
+        this.processResult(res, db, logInfos);
       },
       (err) => {
-        this.processError(err);
+        this.processError(err, logInfos);
       }
     );
   }
@@ -680,14 +694,16 @@ export class NewPinpadModalPage implements OnInit {
     if (params.canalPromotion) {
       buyPassPayload.canal = params.canalPromotion;
     }
+    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, receiver: params.msisdn2, montant: params.amount, mod_paiement: PAYMENT_MOD_OM, ppi: params.price_plan_index }
+
     this.orangeMoneyService.AchatPassInternet(buyPassPayload).subscribe(
       (res: any) => {
-        this.processResult(res, db);
+        this.processResult(res, db, logInfos);
       },
       (err) => {
         console.log(err, err.error);
 
-        this.processError(err);
+        this.processError(err, logInfos);
       }
     );
   }
@@ -712,13 +728,14 @@ export class NewPinpadModalPage implements OnInit {
     if (params.canalPromotion) {
       buyPassPayload.canal = params.canalPromotion;
     }
+    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, receiver: params.msisdn2, montant: params.amount, mod_paiement: PAYMENT_MOD_OM, ppi: params.price_plan_index }
 
     this.orangeMoneyService.AchatIllimix(buyPassPayload).subscribe(
       (res: any) => {
-        this.processResult(res, db);
+        this.processResult(res, db, logInfos);
       },
       (err) => {
-        this.processError(err);
+        this.processError(err, logInfos);
       }
     );
   }
@@ -741,12 +758,14 @@ export class NewPinpadModalPage implements OnInit {
       user_type: 'user',
       service_version: OM_SERVICE_VERSION,
     };
+    const logInfos: FollowOemlogPurchaseInfos = { sender: omUser.msisdn, receiver: params.msisdn2, montant: params.amount }
+
     this.orangeMoneyService.transferOM(transferOMPayload).subscribe(
       (res: any) => {
-        this.processResult(res, omUser);
+        this.processResult(res, omUser, logInfos);
       },
       (err) => {
-        this.processError(err);
+        this.processError(err, logInfos);
       }
     );
   }
@@ -777,12 +796,14 @@ export class NewPinpadModalPage implements OnInit {
       nom_receiver: params.nom_receiver,
       prenom_receiver: params.prenom_receiver,
     };
+    const logInfos: FollowOemlogPurchaseInfos = { sender: omUser.msisdn, receiver: params.msisdn2, montant: params.amount }
+
     this.orangeMoneyService.transferOMWithCode(transferOMPayload).subscribe(
       (res: any) => {
-        this.processResult(res, omUser);
+        this.processResult(res, omUser, logInfos);
       },
       (err) => {
-        this.processError(err);
+        this.processError(err, logInfos);
       }
     );
   }
@@ -817,17 +838,18 @@ export class NewPinpadModalPage implements OnInit {
       em: omUser.em,
       uuid: this.uuid,
     };
+    const logInfos: FollowOemlogPurchaseInfos = { sender: omUser.msisdn, receiver: params.code_marchand, montant: params.amount, mod_paiement: PAYMENT_MOD_OM }
     this.orangeMoneyService.payMerchantOM(payMerchantPayload).subscribe(
       (res: any) => {
-        this.processResult(res, omUser);
+        this.processResult(res, omUser, logInfos);
       },
       (err) => {
-        this.processError(err);
+        this.processError(err, logInfos);
       }
     );
   }
 
-  processResult(res: any, db: any) {
+  processResult(res: any, db: any, logInfos: FollowOemlogPurchaseInfos ) {
     // check response status
     this.processingPin = false;
     if (
@@ -840,7 +862,8 @@ export class NewPinpadModalPage implements OnInit {
       this.orangeMoneyService.logWithFollowAnalytics(
         res,
         'event',
-        this.dataToLog
+        this.operationType,
+        logInfos
       );
       this.modalController.dismiss({
         success: true,
@@ -851,17 +874,24 @@ export class NewPinpadModalPage implements OnInit {
         "Une erreur s'est produite. Veuillez ressayer ultérieurement";
       this.pinHasError = true;
       this.recurrentOperation = true;
+      this.orangeMoneyService.logWithFollowAnalytics(
+        { status_code: 200 },
+        'error',
+        this.operationType,
+        logInfos
+      );
     }
   }
 
-  processError(err: any) {
+  processError(err: any, logInfos: FollowOemlogPurchaseInfos) {
     this.processingPin = false;
     this.pinHasError = true;
     this.reintializePinpad();
     this.orangeMoneyService.logWithFollowAnalytics(
       err,
       'error',
-      this.dataToLog
+      this.operationType,
+      logInfos
     );
     // erreur métiers
     if (err && err.error && err.error.status === 400) {
