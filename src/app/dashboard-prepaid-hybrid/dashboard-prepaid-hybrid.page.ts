@@ -511,6 +511,10 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goMerchantPayment() {
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_paiement_marchand_clic',
+      'event'
+    )
     this.omServ.omAccountSession().subscribe(async (omSession: any) => {
       const omSessionValid = omSession
         ? omSession.msisdn !== 'error' &&
