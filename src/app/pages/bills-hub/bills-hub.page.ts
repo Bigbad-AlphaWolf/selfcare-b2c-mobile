@@ -6,7 +6,10 @@ import {
   NavController,
   ToastController,
 } from '@ionic/angular';
-import { OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
+import {
+  OPERATION_RAPIDO,
+  OPERATION_WOYOFAL,
+} from 'src/app/utils/operations.constants';
 import { BillAmountPage } from '../bill-amount/bill-amount.page';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { RapidoOperationPage } from '../rapido-operation/rapido-operation.page';
@@ -73,7 +76,7 @@ export class BillsHubPage implements OnInit {
     }
 
     this.bsService.opXtras.billData = { company: billCompany };
-    if (billCompany.code === WOYOFAL) {
+    if (billCompany.code === OPERATION_WOYOFAL) {
       this.bsService
         .initBsModal(
           WoyofalSelectionComponent,
@@ -90,7 +93,7 @@ export class BillsHubPage implements OnInit {
       return;
     }
 
-    if (billCompany.code === RAPIDO) {
+    if (billCompany.code === OPERATION_RAPIDO) {
       this.navCtrl.navigateForward(RapidoOperationPage.ROUTE_PATH);
       return;
     }
