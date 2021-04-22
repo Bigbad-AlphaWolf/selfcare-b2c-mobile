@@ -7,13 +7,12 @@ import { IonicModule } from '@ionic/angular';
 
 import { ForgottenPasswordPage } from './forgotten-password.page';
 import { SharedModule } from 'src/shared/shared.module';
-import { NgxCaptchaModule } from 'ngx-captcha';
 
 const routes: Routes = [
   {
     path: '',
-    component: ForgottenPasswordPage
-  }
+    component: ForgottenPasswordPage,
+  },
 ];
 
 @NgModule({
@@ -22,9 +21,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     SharedModule,
-    NgxCaptchaModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  declarations: [ForgottenPasswordPage]
+  declarations: [ForgottenPasswordPage],
 })
 export class ForgottenPasswordPageModule {}

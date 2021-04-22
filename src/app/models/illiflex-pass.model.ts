@@ -7,4 +7,6 @@ export interface IlliflexModel {
   recipient: string;
   sender: string;
   recipientOfferCode: string;
+  em?: string;
+  pin?: string;
 }
