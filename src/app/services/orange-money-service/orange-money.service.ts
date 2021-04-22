@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as SecureLS from 'secure-ls';
-import {
-  BehaviorSubject,
-  Subject,
-  of,
-  Observable,
-  forkJoin,
-} from 'rxjs';
+import { BehaviorSubject, Subject, of, Observable, forkJoin } from 'rxjs';
 import { tap, switchMap, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -28,10 +22,15 @@ import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.ser
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { ModalController } from '@ionic/angular';
 import { ErreurTransactionOmModel } from 'src/app/models/erreur-transaction-om.model';
-import { SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT } from '../utils/om.endpoints';
+import {
+  OM_BUY_ILLIFLEX_ENDPOINT,
+  SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT,
+} from '../utils/om.endpoints';
 import { ChangePinOm } from 'src/app/models/change-pin-om.model';
 import { OM_CHANGE_PIN_ENDPOINT } from '../utils/om.endpoints';
 import { REGEX_IOS_SYSTEM } from 'src/shared';
+import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
+import { IlliflexService } from '../illiflex-service/illiflex.service';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL } = environment;
@@ -68,7 +67,9 @@ export class OrangeMoneyService {
   constructor(
     private http: HttpClient,
     private followAnalyticsService: FollowAnalyticsService,
-    private dashboardService: DashboardService  ) {}
+    private dashboardService: DashboardService,
+    private illiflexService: IlliflexService
+  ) {}
   pinPadDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b'];
   gotPinPadSubject = new BehaviorSubject<string[]>([]);
   loginResponseSubject = new BehaviorSubject<any>({});
@@ -161,17 +162,30 @@ export class OrangeMoneyService {
     return this.http.post(registerClientEndpoint, registerClientData);
   }
 
-  GetPinPad(pinPadData: OmPinPadModel, changePinInfos?: { apiKey: string,em: string,loginToken: string, msisdn: string, sequence: string }) {
+  GetPinPad(
+    pinPadData: OmPinPadModel,
+    changePinInfos?: {
+      apiKey: string;
+      em: string;
+      loginToken: string;
+      msisdn: string;
+      sequence: string;
+    }
+  ) {
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
     const os = isIOS ? 'iOS' : 'Android';
     if (pinPadData) pinPadData.os = os;
-    if(changePinInfos) {
+    if (changePinInfos) {
       const sequence = changePinInfos.sequence.replace(
         new RegExp('-', 'g'),
         ' '
       );
       this.gotPinPadSubject.next(sequence.split(''));
-      return of({ content : { data : { sequence: changePinInfos.sequence, em: changePinInfos.em } }})
+      return of({
+        content: {
+          data: { sequence: changePinInfos.sequence, em: changePinInfos.em },
+        },
+      });
     }
     return this.http.post(pinpadEndpoint, pinPadData).pipe(
       tap((res: any) => {
@@ -426,10 +440,61 @@ export class OrangeMoneyService {
   }
 
   sendRequestErreurTransactionOM(data: ErreurTransactionOmModel) {
-    return this.http.post(`${SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT}`, data);
+    return this.http.post(
+      `${SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT}`,
+      data
+    );
   }
 
-  changePin(data: ChangePinOm){
+  changePin(data: ChangePinOm) {
     return this.http.post(`${OM_CHANGE_PIN_ENDPOINT}`, data);
+  }
+
+  buyIlliflexByOM(passIlliflex: IlliflexModel) {
+    const validity = this.illiflexService.getValidityName(
+      passIlliflex.validity
+    );
+    const buyIlliflexPayload = {
+      buyer: {
+        msisdn: passIlliflex.sender,
+        em: passIlliflex.em,
+        encodedPin: passIlliflex.pin,
+      },
+      buyee: {
+        msisdn: passIlliflex.recipient,
+        profile: passIlliflex.recipientOfferCode,
+      },
+      bucket: {
+        budget: {
+          unit: 'XOF',
+          value: passIlliflex.amount,
+        },
+        dataBucket: {
+          balance: {
+            amount: passIlliflex.data * 1024,
+            unit: 'KO',
+          },
+          validity,
+          usageType: 'DATA',
+        },
+        voiceBucket: {
+          balance: {
+            amount: passIlliflex.voice * 60,
+            unit: 'SECOND',
+          },
+          validity,
+          usageType: 'VOICE',
+        },
+        smsBucket: {
+          balance: {
+            amount: passIlliflex.bonusSms,
+            unit: 'SMS',
+          },
+          validity,
+          usageType: 'SMS',
+        },
+      },
+    };
+    return this.http.post(`${OM_BUY_ILLIFLEX_ENDPOINT}`, buyIlliflexPayload);
   }
 }

@@ -28,6 +28,7 @@ import {
   OPERATION_TYPE_PASS_VOYAGE,
   OPERATION_INIT_CHANGE_PIN_OM,
   OPERATION_CHANGE_PIN_OM,
+  OPERATION_TYPE_PASS_ILLIFLEX,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -45,6 +46,7 @@ import { OperationExtras } from '../models/operation-extras.model';
 import { WoyofalService } from '../services/woyofal/woyofal.service';
 import { RapidoService } from '../services/rapido/rapido.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { IlliflexModel } from '../models/illiflex-pass.model';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -58,6 +60,7 @@ export class NewPinpadModalPage implements OnInit {
   @Input() transferMoneyPayload: any;
   @Input() transferMoneyWithCodePayload: any;
   @Input() merchantPaymentPayload: any;
+  @Input() illiflexPayload: IlliflexModel;
   @Input() opXtras: OperationExtras;
   @Input() omInfos: {
     apiKey: string;
@@ -504,6 +507,9 @@ export class NewPinpadModalPage implements OnInit {
           case OPERATION_CHANGE_PIN_OM:
             this.setNewPinOM(pin);
             break;
+          case OPERATION_TYPE_PASS_ILLIFLEX:
+            this.buyIlliflex(pin);
+            break;
           default:
             this.seeSolde(pin);
             break;
@@ -551,6 +557,7 @@ export class NewPinpadModalPage implements OnInit {
       }
     );
   }
+
   payRapido(pin: string) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
@@ -714,6 +721,22 @@ export class NewPinpadModalPage implements OnInit {
     }
 
     this.orangeMoneyService.AchatIllimix(buyPassPayload).subscribe(
+      (res: any) => {
+        this.processResult(res, db);
+      },
+      (err) => {
+        this.processError(err);
+      }
+    );
+  }
+
+  buyIlliflex(pin) {
+    this.processingPin = true;
+    const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
+    this.illiflexPayload.sender = this.omPhoneNumber;
+    this.illiflexPayload.em = db.em;
+    this.illiflexPayload.pin = pin;
+    this.orangeMoneyService.buyIlliflexByOM(this.illiflexPayload).subscribe(
       (res: any) => {
         this.processResult(res, db);
       },

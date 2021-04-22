@@ -321,6 +321,7 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_VOYAGE:
       case OPERATION_TYPE_PASS_ILLIMIX:
       case OPERATION_TYPE_PASS_ALLO:
+      case OPERATION_TYPE_PASS_ILLIFLEX:
         if (this.isLightMod) {
           const hmac = this.authServ.getHmac();
           this.payWithCredit(hmac);
@@ -340,9 +341,6 @@ export class OperationRecapPage implements OnInit {
         break;
       case OPERATION_ENABLE_DALAL:
         this.activateDalal();
-        break;
-      case OPERATION_TYPE_PASS_ILLIFLEX:
-        this.payIlliflex();
         break;
       default:
         break;
@@ -377,19 +375,33 @@ export class OperationRecapPage implements OnInit {
   }
 
   async setPaymentMod() {
+    let passIlliflex =
+      this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX
+        ? this.passChoosen
+        : null;
     const modal = await this.modalController.create({
       component: SetPaymentChannelModalPage,
       cssClass: 'set-channel-payment-modal',
       componentProps: {
         pass: this.passChoosen,
+        passIlliflex,
       },
     });
     modal.onDidDismiss().then((response) => {
+      let eventName =
+        this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX
+          ? 'Buy_illiflex_payment_mod'
+          : 'Buy_pass_payment_mod';
       if (response.data && response.data.paymentMod === PAYMENT_MOD_CREDIT) {
         this.paymentMod = PAYMENT_MOD_CREDIT;
-        this.payWithCredit();
+        if (this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX) {
+          this.payIlliflex();
+        } else {
+          // pass internet, illimix, allo, ...
+          this.payWithCredit();
+        }
         this.followAnalyticsService.registerEventFollow(
-          'Buy_pass_payment_mod',
+          eventName,
           'event',
           PAYMENT_MOD_CREDIT
         );
@@ -398,7 +410,7 @@ export class OperationRecapPage implements OnInit {
         this.paymentMod = PAYMENT_MOD_OM;
         this.openPinpad();
         this.followAnalyticsService.registerEventFollow(
-          'Buy_pass_payment_mod',
+          eventName,
           'event',
           PAYMENT_MOD_OM
         );
@@ -422,6 +434,7 @@ export class OperationRecapPage implements OnInit {
         merchantPaymentPayload: this.merchantPaymentPayload,
         transferMoneyPayload: this.transferOMPayload,
         transferMoneyWithCodePayload: this.transferOMWithCodePayload,
+        illiflexPayload: this.passChoosen,
       },
     });
     modal.onDidDismiss().then((response) => {
