@@ -753,7 +753,7 @@ export class NewPinpadModalPage implements OnInit {
     this.illiflexPayload.sender = this.omPhoneNumber;
     this.illiflexPayload.em = db.em;
     this.illiflexPayload.pin = pin;
-    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, receiver: this.illiflexPayload.recipient, montant: this.illiflexPayload.amount }
+    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, receiver: this.illiflexPayload.recipient, montant: this.illiflexPayload.amount, mod_paiement: PAYMENT_MOD_OM }
 
     this.orangeMoneyService.buyIlliflexByOM(this.illiflexPayload).subscribe(
       (res: any) => {

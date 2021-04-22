@@ -27,7 +27,7 @@ import {
 } from '../utils/om.endpoints';
 import { ChangePinOm } from 'src/app/models/change-pin-om.model';
 import { OM_CHANGE_PIN_ENDPOINT } from '../utils/om.endpoints';
-import { OPERATION_TRANSFER_OM, OPERATION_TRANSFER_OM_WITH_CODE, OPERATION_TYPE_MERCHANT_PAYMENT, OPERATION_TYPE_PASS_ALLO, OPERATION_TYPE_PASS_ILLIMIX, OPERATION_TYPE_PASS_INTERNET, OPERATION_TYPE_PASS_VOYAGE, OPERATION_TYPE_RECHARGE_CREDIT, REGEX_IOS_SYSTEM } from 'src/shared';
+import { OPERATION_TRANSFER_OM, OPERATION_TRANSFER_OM_WITH_CODE, OPERATION_TYPE_MERCHANT_PAYMENT, OPERATION_TYPE_PASS_ALLO, OPERATION_TYPE_PASS_ILLIFLEX, OPERATION_TYPE_PASS_ILLIMIX, OPERATION_TYPE_PASS_INTERNET, OPERATION_TYPE_PASS_VOYAGE, OPERATION_TYPE_RECHARGE_CREDIT, REGEX_IOS_SYSTEM } from 'src/shared';
 import { FollowOemlogPurchaseInfos } from 'src/app/models/follow-log-oem-purchase-Infos.model';
 import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
@@ -328,6 +328,11 @@ export class OrangeMoneyService {
         }
         errorKey = `Achat_Pass_${type_pass}_Error`;
         eventKey = `Achat_Pass_${type_pass}_Success`;
+        value = dataToLog;
+        break;
+      case OPERATION_TYPE_PASS_ILLIFLEX:
+        errorKey = 'buy_pass_illiflex_by_om_failed';
+        eventKey = 'buy_pass_illiflex_by_om_success';
         value = dataToLog;
         break;
       case OPERATION_TRANSFER_OM:
