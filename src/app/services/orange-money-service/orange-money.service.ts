@@ -316,6 +316,7 @@ export class OrangeMoneyService {
       case OPERATION_TYPE_PASS_ILLIMIX:
       case OPERATION_TYPE_PASS_ALLO:
       case OPERATION_TYPE_PASS_INTERNET:
+      case OPERATION_TYPE_PASS_ILLIFLEX:
         let type_pass;
         if (operationType === OPERATION_TYPE_PASS_ALLO) {
           type_pass = 'allo'
@@ -325,14 +326,11 @@ export class OrangeMoneyService {
           type_pass = 'voyage'
         } else if (operationType === OPERATION_TYPE_PASS_INTERNET) {
           type_pass = 'internet'
+        } else if (operationType === OPERATION_TYPE_PASS_ILLIFLEX) {
+          type_pass = 'illiflex'
         }
         errorKey = `Achat_Pass_${type_pass}_Error`;
         eventKey = `Achat_Pass_${type_pass}_Success`;
-        value = dataToLog;
-        break;
-      case OPERATION_TYPE_PASS_ILLIFLEX:
-        errorKey = 'buy_pass_illiflex_by_om_failed';
-        eventKey = 'buy_pass_illiflex_by_om_success';
         value = dataToLog;
         break;
       case OPERATION_TRANSFER_OM:
