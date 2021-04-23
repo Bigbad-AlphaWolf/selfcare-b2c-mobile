@@ -107,7 +107,7 @@ export class OperationSuccessFailModalPage implements OnInit {
 
   checkifBuyerPostpaid() {
     this.authenticationService
-      .getSubscription(this.msisdnBuyer)
+      .getSubscription(this.dashboardService.getCurrentPhoneNumber())
       .subscribe((res: SubscriptionModel) => {
         this.isBuyerPostpaid = res && res.profil === PROFILE_TYPE_POSTPAID;
       });
