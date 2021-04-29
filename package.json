@@ -137,7 +137,7 @@
       "ionic-plugin-deeplinks": {
         "URL_SCHEME": "orangeetmoi",
         "DEEPLINK_SCHEME": "https",
-        "DEEPLINK_HOST": "myorangesn.page.link",
+        "DEEPLINK_HOST": "orangeetmoi.sn",
         "ANDROID_PATH_PREFIX": "/",
         "ANDROID_2_PATH_PREFIX": "/",
         "ANDROID_3_PATH_PREFIX": "/",
