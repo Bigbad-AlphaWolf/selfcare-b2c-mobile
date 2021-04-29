@@ -23,6 +23,9 @@ import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.pa
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
+import { WoyofalSelectionComponent } from '../counter/woyofal-selection/woyofal-selection.component';
+import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -74,6 +77,17 @@ export class OffreServiceCardComponent implements OnInit {
       this.navCtrl.navigateForward([this.service.redirectionPath], {
         state: { purchaseType: this.service.code },
       });
+    if (this.service.code === OPERATION_WOYOFAL) {
+      this.bsService
+        .initBsModal(
+          WoyofalSelectionComponent,
+          OPERATION_WOYOFAL,
+          BillAmountPage.ROUTE_PATH
+        )
+        .subscribe((_) => {});
+      this.bsService.openModal(WoyofalSelectionComponent);
+      return;
+    }
     if (this.bsService[this.service.redirectionType]) {
       const params = [
         NumberSelectionOption.WITH_MY_PHONES,

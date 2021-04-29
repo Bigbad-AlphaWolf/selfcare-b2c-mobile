@@ -353,31 +353,16 @@ export class TransfertHubServicesPage implements OnInit {
 
   displayBadgeBoosterPromoInOptionsForCategory(
     boosterActive: PromoBoosterActive,
-    opt: {
-      title: string;
-      subtitle: string;
-      icon: string;
-      type:
-        | 'TRANSFERT_MONEY'
-        | 'TRANSFERT_CREDIT'
-        | 'TRANSFERT_BONUS'
-        | 'CREDIT'
-        | 'PASS'
-        | 'PASS_ILLIMIX'
-        | 'PASS_VOYAGE'
-        | 'PASS_INTERNATIONAL';
-      url?: string;
-      action?: 'REDIRECT' | 'POPUP';
-    }
+    opt: OffreService
   ): boolean {
     let result: boolean;
     if (boosterActive)
-      switch (opt.type) {
-        case 'CREDIT':
+      switch (opt.code) {
+        case OPERATION_TYPE_RECHARGE_CREDIT:
           return boosterActive.promoRecharge;
-        case 'PASS_ILLIMIX':
+        case OPERATION_TYPE_PASS_ILLIMIX:
           return boosterActive.promoPassIllimix;
-        case 'PASS':
+        case OPERATION_TYPE_PASS_INTERNET:
           return boosterActive.promoPass;
         default:
           break;
@@ -387,31 +372,16 @@ export class TransfertHubServicesPage implements OnInit {
 
   displayBadgeOfferPlanForInOptionsCategory(
     offerPlan: OfferPlanActive,
-    opt: {
-      title: string;
-      subtitle: string;
-      icon: string;
-      type:
-        | 'TRANSFERT_MONEY'
-        | 'TRANSFERT_CREDIT'
-        | 'TRANSFERT_BONUS'
-        | 'CREDIT'
-        | 'PASS'
-        | 'PASS_ILLIMIX'
-        | 'PASS_VOYAGE'
-        | 'PASS_INTERNATIONAL';
-      url?: string;
-      action?: 'REDIRECT' | 'POPUP';
-    }
+    opt: OffreService
   ): boolean {
     let result: boolean;
     if (offerPlan)
-      switch (opt.type) {
-        case 'CREDIT':
+      switch (opt.code) {
+        case OPERATION_TYPE_RECHARGE_CREDIT:
           return offerPlan.hasRecharge;
-        case 'PASS_ILLIMIX':
+        case OPERATION_TYPE_PASS_ILLIMIX:
           return offerPlan.hasPassIllimix;
-        case 'PASS':
+        case OPERATION_TYPE_PASS_INTERNET:
           return offerPlan.hasPassInternet;
         default:
           break;

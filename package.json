@@ -82,7 +82,6 @@
     "ionic-plugin-deeplinks": "^1.0.20",
     "jwt-decode": "^2.2.0",
     "ngx-auto-unsubscribe": "^3.0.1",
-    "ngx-captcha": "^7.0.0",
     "ngx-clipboard": "^12.2.0",
     "rxjs": "~6.5.1",
     "secure-ls": "^1.2.5",

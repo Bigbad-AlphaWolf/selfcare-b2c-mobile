@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
@@ -26,6 +26,7 @@ export class IlliflexSetAmountModalComponent implements OnInit {
   @Input() pricings: PalierModel[] = [];
   minAmountIlliflex: number = 500;
   maxAmountIlliflex: number = 15000;
+  @ViewChild('amountInput') input: ElementRef;
   constructor(
     private fb: FormBuilder,
     private modalController: ModalController
@@ -34,6 +35,9 @@ export class IlliflexSetAmountModalComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.getMinAndMax();
+    setTimeout(() => {
+      this.input.nativeElement.focus();
+    }, 300);
   }
 
   getMinAndMax() {
