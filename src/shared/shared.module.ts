@@ -108,7 +108,7 @@ import { SimpleOperationSuccessModalComponent } from './simple-operation-success
     IbouIonFabComponent,
     RapidoSoldeComponent,
     YesNoModalComponent,
-    SimpleOperationSuccessModalComponent,
+    SimpleOperationSuccessModalComponent
   ],
   imports: [
     CommonModule,
@@ -195,7 +195,7 @@ import { SimpleOperationSuccessModalComponent } from './simple-operation-success
     MaterialComponentsModule,
     PipesModule,
     YesNoModalComponent,
-    SimpleOperationSuccessModalComponent,
+    SimpleOperationSuccessModalComponent
   ],
   providers: [
     Contacts,

@@ -698,7 +698,7 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  transferMoney(params: { msisdn2: string; pin: any; amount: number }) {
+  transferMoney(params: { msisdn2: string; pin: any; amount: number, send_fees: number, cashout_fees: number, a_ma_charge: boolean }) {
     this.processingPin = true;
     const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
       this.omPhoneNumber
@@ -707,6 +707,9 @@ export class NewPinpadModalPage implements OnInit {
       msisdn_sender: omUser.msisdn,
       msisdn_receiver: params.msisdn2,
       amount: params.amount,
+      send_fees: params.send_fees,
+      cashout_fees: params.cashout_fees,
+      a_ma_charge: !!params.a_ma_charge,
       uuid: 'uuid',
       os: 'mobile',
       pin: params.pin,

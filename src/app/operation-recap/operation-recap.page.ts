@@ -75,9 +75,13 @@ export class OperationRecapPage implements OnInit {
     code_marchand: number;
     nom_marchand: string;
   };
-  transferOMPayload: { amount: number; msisdn2: string } = {
+  transferOMPayload: { amount: number; msisdn2: string, send_fees: number, cashout_fees: number, a_ma_charge: boolean } = {
     amount: null,
     msisdn2: null,
+    send_fees: null,
+    cashout_fees: null,
+    a_ma_charge: null
+
   };
   transferOMWithCodePayload: {
     amount: number;
@@ -180,6 +184,9 @@ export class OperationRecapPage implements OnInit {
                 : this.opXtras.amount;
               this.transferOMPayload.amount = this.amount;
               this.transferOMPayload.msisdn2 = this.recipientMsisdn;
+              this.transferOMPayload.a_ma_charge = this.opXtras.includeFee;
+              this.transferOMPayload.send_fees = this.opXtras.sending_fees
+              this.transferOMPayload.cashout_fees = this.opXtras.fee;
               this.recipientName =
                 this.opXtras.recipientFirstname +
                 ' ' +

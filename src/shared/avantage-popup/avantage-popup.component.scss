@@ -33,6 +33,13 @@
             font-family: HelveticaNeueLTStd-Roman;
             font-size: 14px;
             line-height: 1.29;
+            .new_fees {
+                font-family: HelveticaNeueLTStd-Bd;
+            }
+            .old_fees {
+                font-family: HelveticaNeueLTStd-Bd;
+                text-decoration: line-through;
+            }
         }
     }
 }

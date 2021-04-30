@@ -105,6 +105,9 @@ export interface TransferOrangeMoneyModel {
   msisdn_sender: string;
   msisdn_receiver: string;
   amount: number;
+  send_fees: number;
+  cashout_fees: number;
+  a_ma_charge: boolean;
   uuid: string;
   os: string;
   pin: string;
@@ -164,6 +167,7 @@ export interface FeeModel {
   has_promo: boolean;
   effective_fees: number;
   mode_calcul: 'pourcent' | 'fixe';
+  old_fees: number
 }
 
 export const ORANGE_MONEY_TRANSFER_FEES = [

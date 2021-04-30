@@ -19,6 +19,7 @@ import { CommonModule } from '@angular/common';
 import { PipesModule } from '../pipes/pipes.module';
 import { MaterialComponentsModule } from '../material-components/material-components.module';
 import { IonicModule } from '@ionic/angular';
+import { ItemTransfertOmComponent } from './item-transfert-om/item-transfert-om.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { IonicModule } from '@ionic/angular';
     ItemIlliflexComponent,
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
-    ItemHistorikDetailsInfosComponent
+    ItemHistorikDetailsInfosComponent,
+    ItemTransfertOmComponent
   ],
   imports: [
     CommonModule,
@@ -60,7 +62,8 @@ import { IonicModule } from '@ionic/angular';
     ItemIlliflexComponent,
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
-    ItemHistorikDetailsInfosComponent
+    ItemHistorikDetailsInfosComponent,
+    ItemTransfertOmComponent
   ],
   entryComponents: [],
 })

@@ -44,6 +44,7 @@
           --inner-padding-end: 0px;
           --padding-start: 0px;
           margin-top: 10px;
+          position: relative;
           .fees-value {
             text-align: right;
             font-size: 12px;
@@ -54,6 +55,30 @@
             line-height: 1.14;
             color: $fullBlack;
           }
+          .fees_retrait_value {
+            color: $gray;
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 12px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.33;
+            // text-align: end;
+            position: absolute;
+            left: 222px;
+          }
+          .fees_value {
+            color: $gray;
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 12px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.33;
+            text-align: end;
+            // position: absolute;
+            // left: 220px;
+          }
         }
       }
       .amount-fees {
@@ -62,6 +87,27 @@
         font-family: HelveticaNeueLTStd-Roman;
         font-size: 12px;
         margin-top: 10px;
+      }
+      .frais_envoi {
+        margin-bottom: 10px;
+        color: $gray;
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.33;
+      }
+      .bull-infos{
+        border-radius: 50%;
+        background-color: $bluePopUp;
+        width: 20px;
+        height: 20px;
+        line-height: 25px;
+        color: $white;
+        display: inline-block;
+        font-size: 14px;
+        text-align: center;
       }
     }
     .recipient-info-block {
