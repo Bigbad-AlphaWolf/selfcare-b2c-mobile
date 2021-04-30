@@ -56,7 +56,7 @@
             </ion-item>
             <ion-item *ngIf="purchaseType === OPERATION_TRANSFER_OM" class="ion-no-padding">
               <ion-label class="label">Frais d'envoi</ion-label>
-              <ion-label class="fees_value" slot="end"> + {{sending_fees_Info.effective_fees | number }} FCFA  </ion-label>
+              <ion-label class="fees_value" slot="end"> + {{ +sending_fees_Info.effective_fees === 0 ? 'Gratuit' : sending_fees_Info.effective_fees }} FCFA  </ion-label>
             </ion-item>
             <ion-item class="ion-no-padding">
               <ion-label class="label">Frais de retrait</ion-label>

@@ -154,13 +154,16 @@ export class PurchaseSetAmountPage implements OnInit {
           this.initForm(1, initialAmount);
           break;
         case OPERATION_TRANSFER_OM:
-          this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_SANS_CODE).subscribe();
-          this.initForm(1, initialAmount);
-          this.getOMTransferFees(OM_LABEL_SERVICES.TAF).subscribe();
-          break;
         case OPERATION_TRANSFER_OM_WITH_CODE:
+          this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_SANS_CODE).subscribe();
           this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE).subscribe()
-          this.initTransferWithCodeForm(initialAmount);
+          if(this.purchaseType === OPERATION_TRANSFER_OM) {
+            this.initForm(1, initialAmount);
+            this.getOMTransferFees(OM_LABEL_SERVICES.TAF).subscribe();
+          } else if(this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
+            this.initTransferWithCodeForm(initialAmount);
+          }
+
           break
         default:
           break;
@@ -259,7 +262,6 @@ export class PurchaseSetAmountPage implements OnInit {
       tap((fees: FeeModel[]) => {
         this.isLoadingFees = false;
         this.transferFeesArray[om_service] = fees;
-        console.log(this.transferFeesArray);
 
         if(!fees.length) {
           this.hasError = true;
@@ -280,25 +282,24 @@ export class PurchaseSetAmountPage implements OnInit {
     if (checked) {
       this.initTransferWithCodeForm(amount);
       this.purchaseType = OPERATION_TRANSFER_OM_WITH_CODE;
-      if (!this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE].length) {
-        this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE).subscribe( _ => {
-          this.toggleTransferWithCode(event, amountInputValue)
-        })
-      }
+
     } else {
       this.initForm(1, amount);
       this.purchaseType = OPERATION_TRANSFER_OM;
     }
     this.getCurrentFee(amount);
+    this.onAmountChanged({target: {value: amount}})
   }
 
   handleFees(event, amountInputValue) {
-    const amount = +amountInputValue;
-    this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(this.transferFeesArray[OM_LABEL_SERVICES.TAF], amount);
-    this.includeFees = event.detail.checked;
-    this.includeFees
-      ? (this.totalAmount = amount + this.fee + this.sending_fees_Info.effective_fees)
-      : (this.totalAmount = amount + this.sending_fees_Info.effective_fees);
+    if(this.purchaseType === OPERATION_TRANSFER_OM) {
+      const amount = +amountInputValue;
+      this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(this.transferFeesArray[OM_LABEL_SERVICES.TAF], amount);
+      this.includeFees = event.detail.checked;
+      this.includeFees
+        ? (this.totalAmount = amount + this.fee + this.sending_fees_Info.effective_fees)
+        : (this.totalAmount = amount + this.sending_fees_Info.effective_fees);
+    }
 
   }
 
@@ -311,9 +312,11 @@ export class PurchaseSetAmountPage implements OnInit {
         return
        }
        this.fee = feeInfo.effective_fees;
+       console.log('totalCode',  'amount', amount, 'fee', this.fee);
      }
      if (amount && this.purchaseType === OPERATION_TRANSFER_OM) {
        const fees = this.feeService.extractFees(this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_SANS_CODE], amount);
+       this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(this.transferFeesArray[OM_LABEL_SERVICES.TAF], amount);
        if(!fees.effective_fees) {
         this.error = "Le montant que vous avez saisi n'est pas dans la plage autorisé";
         return
@@ -335,7 +338,7 @@ export class PurchaseSetAmountPage implements OnInit {
         return
        }
        this.fee = fee.effective_fees;
-       this.totalAmount += this.fee;
+       this.totalAmount = amount + this.fee;
      }
     if (this.purchaseType === OPERATION_TRANSFER_OM) {
       const fee = this.feeService.extractFees(this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_SANS_CODE], amount);
