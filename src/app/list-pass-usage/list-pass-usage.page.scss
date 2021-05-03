@@ -1,0 +1,39 @@
+@import 'src/app/app';
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.28px;
+}
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+}
+
+.list-pass-body {
+  min-height: 100%;
+  background-color: $grayDashboard;
+  .header-image {
+    width: 100%;
+    img {
+      width: 100%;
+    }
+  }
+  .spinner-block {
+    padding-top: 30px;
+    display: flex;
+    justify-content: center;
+    .mat-spinner::ng-deep circle {
+      stroke: $orange;
+    }
+  }
+  .error {
+    padding: 15px;
+  }
+  .pass-list {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+}

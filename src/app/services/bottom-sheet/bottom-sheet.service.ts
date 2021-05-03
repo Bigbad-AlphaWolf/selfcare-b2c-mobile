@@ -29,6 +29,7 @@ import { RattachedNumber } from 'src/app/models/rattached-number.model';
 import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-phones-number/components/choose-rattachement-type-modal/choose-rattachement-type-modal.component';
 import { BannierePubModel } from '../dashboard-service';
 import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
+import { OffreService } from 'src/app/models/offre-service.model';
 
 @Injectable({
   providedIn: 'root',
@@ -146,18 +147,26 @@ export class BottomSheetService {
     option: NumberSelectionOption,
     purchaseType: string,
     routePath: string,
-    isLightMod?
+    isLightMod?,
+    serviceUsage?: OffreService
   ) {
     const modal = await this.modalCtrl.create({
       component: NumberSelectionComponent,
-      componentProps: { data: { option, purchaseType, isLightMod } },
+      componentProps: {
+        data: { option, purchaseType, isLightMod, serviceUsage },
+      },
       cssClass: 'select-recipient-modal',
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data) {
         let opInfos = response.data;
         if (!opInfos || !opInfos.recipientMsisdn) return;
-        opInfos = { purchaseType: purchaseType, isLightMod, ...opInfos };
+        opInfos = {
+          purchaseType: purchaseType,
+          isLightMod,
+          serviceUsage,
+          ...opInfos,
+        };
         this.navCtl.navigateForward([routePath], {
           state: opInfos,
         });
@@ -387,13 +396,11 @@ export class BottomSheetService {
     }
   }
 
-  public async openBannerDescription(
-    banner: BannierePubModel
-  ) {
+  public async openBannerDescription(banner: BannierePubModel) {
     const modal = await this.modalCtrl.create({
       component: BanniereDescriptionPage,
       componentProps: { banniere: banner },
-      cssClass: 'select-recipient-modal'
+      cssClass: 'select-recipient-modal',
     });
     return await modal.present();
   }

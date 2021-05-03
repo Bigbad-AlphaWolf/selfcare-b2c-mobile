@@ -1,0 +1,32 @@
+@import 'src/app/app';
+
+.pass-usage-item {
+  background-color: $white;
+  padding: 20px 15px;
+  border-radius: 5px;
+  .price {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .bottom-block {
+    display: flex;
+    justify-content: space-between;
+    .left-block,
+    .right-block {
+      display: flex;
+      flex-direction: column;
+      .duration {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        line-height: 1.38;
+      }
+      .text {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        line-height: 1.33;
+      }
+    }
+  }
+}

@@ -54,6 +54,7 @@ export class TransfertHubServicesPage implements OnInit {
   OPERATION_TYPE_PASS_ILLIMIX = OPERATION_TYPE_PASS_ILLIMIX;
   pageTitle: string;
   options: OffreService[] = [];
+  passUsages: OffreService[] = [];
   lightOptions: OffreService[] = [
     {
       shortDescription: 'Pass',
@@ -138,9 +139,10 @@ export class TransfertHubServicesPage implements OnInit {
     this.loadingServices = true;
     this.servicesHasError = false;
     this.operationService.getServicesByFormule(this.hubCode).subscribe(
-      (res: any) => {
+      (res) => {
         this.loadingServices = false;
-        this.options = res;
+        this.options = res.filter((option) => !option.passUsage);
+        this.passUsages = res.filter((option) => option.passUsage);
         this.getUserActiveBonPlans();
         this.getUserActiveBoosterPromo();
         this.getFavoritePass();
@@ -199,6 +201,16 @@ export class TransfertHubServicesPage implements OnInit {
       'event',
       'clic'
     );
+    if (opt.passUsage) {
+      this.bsService.openNumberSelectionBottomSheet(
+        NumberSelectionOption.WITH_MY_PHONES,
+        opt.code,
+        'list-pass-usage',
+        false,
+        opt
+      );
+      return;
+    }
     switch (opt.code) {
       case OPERATION_TRANSFERT_ARGENT:
         this.showBeneficiaryModal();
