@@ -59,7 +59,7 @@
               <ion-label class="fees_value" slot="end"> + {{ +sending_fees_Info.effective_fees === 0 ? 'Gratuit' : sending_fees_Info.effective_fees }} FCFA  </ion-label>
             </ion-item>
             <ion-item class="ion-no-padding">
-              <ion-label class="label">Frais de retrait</ion-label>
+              <ion-label class="label"> {{ purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ? "Frais d'envoi" : 'Frais de retrait'  }} </ion-label>
               <ion-label class="fees_retrait_value"> + {{+fee | number }} FCFA  </ion-label>
               <ion-toggle
                 (ionChange)="handleFees($event, amountInput.value)"
@@ -92,7 +92,7 @@
             <input formControlName="recipientFirstname" type="text" matInput />
           </mat-form-field>
           <mat-form-field
-            class="scb-input-row scb-requireàd"
+            class="scb-input-row scb-required"
             appearance="outline"
           >
             <mat-label>Nom du destinataire &nbsp;&nbsp;</mat-label>

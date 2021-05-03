@@ -338,7 +338,7 @@ export class PurchaseSetAmountPage implements OnInit {
         return
        }
        this.fee = fee.effective_fees;
-       this.totalAmount = amount + this.fee;
+       this.totalAmount = +amount + this.fee;
      }
     if (this.purchaseType === OPERATION_TRANSFER_OM) {
       const fee = this.feeService.extractFees(this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_SANS_CODE], amount);
