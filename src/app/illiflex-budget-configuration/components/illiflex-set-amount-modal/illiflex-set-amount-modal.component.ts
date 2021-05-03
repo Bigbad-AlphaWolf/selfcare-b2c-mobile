@@ -18,7 +18,7 @@ export class IlliflexSetAmountModalComponent implements OnInit {
   amountForm: FormGroup;
   hasError: boolean;
   error: string;
-  rapidChoices = [500, 1900, 5900];
+  rapidChoices = [];
   aroundInf: number;
   aroundSup: number;
   isAmountValid: boolean;
