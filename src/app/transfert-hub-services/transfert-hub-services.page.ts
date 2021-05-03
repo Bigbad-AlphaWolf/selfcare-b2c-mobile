@@ -22,6 +22,7 @@ import {
   OPERATION_TYPE_SEDDO_BONUS,
   OPERATION_TYPE_SEDDO_CREDIT,
   OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_TYPE_SOS_ILLIMIX,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -59,7 +60,7 @@ export class TransfertHubServicesPage implements OnInit {
       fullDescription: 'internet',
       icone:
         '/assets/images/04-boutons-01-illustrations-18-acheter-pass-internet.svg',
-      code: 'PASS',
+      code: OPERATION_TYPE_PASS_INTERNET,
       activated: true,
     },
     {
@@ -67,14 +68,14 @@ export class TransfertHubServicesPage implements OnInit {
       fullDescription: 'illimix',
       icone:
         '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
-      code: 'PASS_ILLIMIX',
+      code: OPERATION_TYPE_PASS_ILLIMIX,
       activated: true,
     },
     {
       shortDescription: 'Pass',
       fullDescription: 'Allo',
       icone: '/assets/images/ic-call-forward@2x.png',
-      code: 'PASS_ALLO',
+      code: OPERATION_TYPE_PASS_ALLO,
       activated: true,
     },
     {
@@ -82,7 +83,7 @@ export class TransfertHubServicesPage implements OnInit {
       fullDescription: 'voyage',
       icone:
         '/assets/images/04-boutons-01-illustrations-09-acheter-pass-voyage.svg',
-      code: 'PASS_VOYAGE',
+      code: OPERATION_TYPE_PASS_VOYAGE,
       activated: true,
     },
   ];
