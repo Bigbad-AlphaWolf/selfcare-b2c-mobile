@@ -46,6 +46,7 @@ import { FeeModel } from '../services/orange-money-service';
 import { FeesService } from '../services/fees/fees.service';
 import { OM_LABEL_SERVICES } from '../utils/bills.util';
 import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
+import { OffreService } from '../models/offre-service.model';
 
 @Component({
   selector: 'app-operation-recap',
@@ -105,6 +106,8 @@ export class OperationRecapPage implements OnInit {
   buyCreditPayload: any;
   offerPlan: OfferPlan;
   isLightMod: boolean;
+  servicePassUsage: OffreService;
+
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -133,9 +136,13 @@ export class OperationRecapPage implements OnInit {
           const pricePlanIndex = await this.checkBuyPassDeeplink();
           if (pricePlanIndex) return;
           this.opXtras = history.state;
+          this.servicePassUsage = this.opXtras.serviceUsage;
+          if (this.servicePassUsage) return;
           this.purchaseType = this.opXtras.purchaseType;
           this.isLightMod = this.opXtras.isLightMod;
           this.recipientMsisdn = this.opXtras.recipientMsisdn;
+          console.log(this.opXtras);
+
           switch (this.purchaseType) {
             case OPERATION_TYPE_PASS_INTERNET:
             case OPERATION_TYPE_PASS_ILLIMIX:
@@ -350,11 +357,16 @@ export class OperationRecapPage implements OnInit {
 
   activateDalal() {
     this.buyingPass = true;
-    const logInfos: FollowOemlogPurchaseInfos = { sender: this.currentUserNumber, montant: this.opXtras.dalal.tarif, ppi: this.opXtras.dalal.cid, mod_paiement: PAYMENT_MOD_CREDIT};
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: this.currentUserNumber,
+      montant: this.opXtras.dalal.tarif,
+      ppi: this.opXtras.dalal.cid,
+      mod_paiement: PAYMENT_MOD_CREDIT,
+    };
     this.dalalTonesService.activateDalal(this.opXtras.dalal).subscribe(
       () => {
         this.buyingPass = false;
-        this.sendFollowLogs('event', this.purchaseType, logInfos)
+        this.sendFollowLogs('event', this.purchaseType, logInfos);
         this.openSuccessFailModal({
           success: true,
           msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
@@ -367,8 +379,10 @@ export class OperationRecapPage implements OnInit {
           err && err.error && err.error.message
             ? err.error.message
             : 'Une erreur est survenue';
-        const followDetails = Object.assign({}, logInfos, { error_code: err.status });
-        this.sendFollowLogs('error', this.purchaseType, followDetails)
+        const followDetails = Object.assign({}, logInfos, {
+          error_code: err.status,
+        });
+        this.sendFollowLogs('error', this.purchaseType, followDetails);
         this.openSuccessFailModal({
           success: false,
           msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
@@ -510,7 +524,12 @@ export class OperationRecapPage implements OnInit {
       msisdn,
       receiver,
     };
-    const logInfos: FollowOemlogPurchaseInfos = { sender: msisdn, receiver: receiver, montant: amount, ppi: codeIN}
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: msisdn,
+      receiver: receiver,
+      montant: amount,
+      ppi: codeIN,
+    };
     this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
       (res: any) => {
         this.transactionSuccessful(res, logInfos);
@@ -523,11 +542,16 @@ export class OperationRecapPage implements OnInit {
 
   payIlliflex() {
     this.buyingPass = true;
-    const logInfos: FollowOemlogPurchaseInfos = { sender: this.currentUserNumber, receiver: this.recipientMsisdn, montant: this.passChoosen.amount, mod_paiement: PAYMENT_MOD_CREDIT};
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: this.currentUserNumber,
+      receiver: this.recipientMsisdn,
+      montant: this.passChoosen.amount,
+      mod_paiement: PAYMENT_MOD_CREDIT,
+    };
     this.illiflexService.buyIlliflex(this.passChoosen).subscribe(
       () => {
         this.buyingPass = false;
-        this.sendFollowLogs('event', this.purchaseType, logInfos)
+        this.sendFollowLogs('event', this.purchaseType, logInfos);
         this.openSuccessFailModal({
           success: true,
           msisdnBuyer: this.recipientMsisdn,
@@ -544,8 +568,10 @@ export class OperationRecapPage implements OnInit {
         } else {
           errorMsg = `Une erreur est survenue. Veuillez réessayer plus tard`;
         }
-        const followDetails = Object.assign({}, logInfos, {error_code: err.status })
-        this.sendFollowLogs('error', this.purchaseType, followDetails)
+        const followDetails = Object.assign({}, logInfos, {
+          error_code: err.status,
+        });
+        this.sendFollowLogs('error', this.purchaseType, followDetails);
         this.openSuccessFailModal({
           success: false,
           msisdnBuyer: this.recipientMsisdn,
@@ -564,12 +590,14 @@ export class OperationRecapPage implements OnInit {
     if (res.code !== '0') {
       this.buyPassFailed = true;
       this.buyPassErrorMsg = res.message;
-      const followDetails = Object.assign({} ,logInfos, {error_code : res.code}) ;
-      this.sendFollowLogs('error', this.purchaseType, followDetails)
+      const followDetails = Object.assign({}, logInfos, {
+        error_code: res.code,
+      });
+      this.sendFollowLogs('error', this.purchaseType, followDetails);
     } else {
       this.buyPassFailed = false;
       const followDetails = logInfos;
-      this.sendFollowLogs('event', this.purchaseType, followDetails)
+      this.sendFollowLogs('event', this.purchaseType, followDetails);
     }
     this.openSuccessFailModal({
       success: !this.buyPassFailed,
@@ -587,8 +615,10 @@ export class OperationRecapPage implements OnInit {
       err.error && err.error.message
         ? err.error.message
         : 'Service indisponible. Veuillez réessayer ultérieurement';
-    const followDetails = Object.assign({} , logInfos, {error_code : err.status }) ;
-    this.sendFollowLogs('error', this.purchaseType, followDetails)
+    const followDetails = Object.assign({}, logInfos, {
+      error_code: err.status,
+    });
+    this.sendFollowLogs('error', this.purchaseType, followDetails);
     this.openSuccessFailModal({
       success: false,
       msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
@@ -607,37 +637,49 @@ export class OperationRecapPage implements OnInit {
     ].includes(this.purchaseType);
   }
 
-  sendFollowLogs(type: 'event' | 'error', purchaseType: string, logDetails: any ) {
+  sendFollowLogs(
+    type: 'event' | 'error',
+    purchaseType: string,
+    logDetails: any
+  ) {
     let logPurchaseType: string;
     let eventName = `Achat_Pass_${logPurchaseType}_Success`;
     let errortName = `Achat_Pass_${logPurchaseType}_Error`;
     switch (purchaseType) {
       case OPERATION_TYPE_PASS_INTERNET:
-        logPurchaseType = 'internet'
+        logPurchaseType = 'internet';
         break;
       case OPERATION_TYPE_PASS_ILLIMIX:
-        logPurchaseType = 'illimix'
+        logPurchaseType = 'illimix';
         break;
       case OPERATION_TYPE_PASS_VOYAGE:
-        logPurchaseType = 'voyage'
+        logPurchaseType = 'voyage';
         break;
       case OPERATION_TYPE_PASS_ILLIFLEX:
-        logPurchaseType = 'illiflex'
+        logPurchaseType = 'illiflex';
         break;
       case OPERATION_ENABLE_DALAL:
         eventName = 'Dalal_activation_Success';
-        errortName = 'Dalal_activation_Error'
+        errortName = 'Dalal_activation_Error';
         break;
       default:
         break;
     }
 
-    if(type === 'event') {
+    if (type === 'event') {
       console.log('followSuccess', logDetails, 'op', purchaseType);
-      this.followAnalyticsService.registerEventFollow(eventName, type, logDetails)
+      this.followAnalyticsService.registerEventFollow(
+        eventName,
+        type,
+        logDetails
+      );
     } else {
       console.log('followError', logDetails, 'op', purchaseType);
-      this.followAnalyticsService.registerEventFollow(errortName, 'error', logDetails)
+      this.followAnalyticsService.registerEventFollow(
+        errortName,
+        'error',
+        logDetails
+      );
     }
   }
 }

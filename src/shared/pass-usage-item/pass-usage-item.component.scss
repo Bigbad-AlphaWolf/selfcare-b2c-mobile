@@ -1,9 +1,17 @@
 @import 'src/app/app';
 
+:host {
+  width: 100%;
+}
+
 .pass-usage-item {
   background-color: $white;
   padding: 20px 15px;
   border-radius: 5px;
+  box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.05);
+  background-repeat: no-repeat;
+  background-position-x: 106%;
+  background-position-y: -185%;
   .price {
     font-family: HelveticaNeueLTStd-Bd;
     font-size: 20px;

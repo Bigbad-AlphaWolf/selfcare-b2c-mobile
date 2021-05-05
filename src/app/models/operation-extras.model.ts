@@ -4,6 +4,7 @@ import { OmSession } from './om-session.model';
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
 import { MarchandOem } from './marchand-oem.model';
 import { DalalTonesModel } from './dalal-tones.model';
+import { OffreService } from './offre-service.model';
 
 export interface OperationExtras {
   senderMsisdn?: string;
@@ -39,4 +40,5 @@ export interface OperationExtras {
   title?: string;
   isLightMod?: boolean;
   recipientCodeFormule?;
+  serviceUsage?: OffreService;
 }

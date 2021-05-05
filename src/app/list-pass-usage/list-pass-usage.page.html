@@ -22,15 +22,15 @@
 
   <div class="list-pass-body">
     <div class="header-image">
-      <img-loader [spinner]="true" class="icone" [src]="serviceUsage?.banniere"
+      <img-loader class="icone" [src]="serviceUsage?.banniere"
         fallbackUrl="/assets/images/pass-internet-page-header.svg" useImg></img-loader>
     </div>
-    <div class="spinner-block">
+    <div class="spinner-block" *ngIf="loadingPass">
       <mat-spinner mode="indeterminate" [diameter]="50"></mat-spinner>
     </div>
-    <div class="error scb-text-red-error">Erreur lors du chargement. Récatualisez</div>
-    <div class="pass-list">
-      <app-pass-usage-item></app-pass-usage-item>
+    <div class="error scb-text-red-error" *ngIf="errorLoadingPass" (click)="loadPass()">Erreur lors du chargement. Récatualisez</div>
+    <div class="pass-list" *ngIf="listPass?.length">
+      <app-pass-usage-item (click)="choosePass()" *ngFor="let pass of listPass.concat(listPass)"></app-pass-usage-item>
     </div>
   </div>
 </ion-content>

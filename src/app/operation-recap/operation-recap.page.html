@@ -29,6 +29,7 @@
         <span *ngSwitchCase="OPERATION_ILLIFLEX"
           >{{opXtras?.title}}</span
         >
+        <span *ngSwitchDefault>Achat de pass {{servicePassUsage?.fullDescription}}</span>
       </ng-container>
     </ion-title>
   </ion-toolbar>
@@ -105,6 +106,8 @@
         src="/assets/images/10-illustration-dalal-tones-copy.svg" alt="header-illiflex"
         class="banniere"
       />
+      <img-loader [spinner]="true" class="icone" [src]="servicePassUsage?.banniere"
+        fallbackUrl="/assets/images/pass-internet-page-header.svg" useImg></img-loader>
     </ng-container>
   </div>
 </ion-header>
@@ -146,6 +149,9 @@
       >
       <span *ngSwitchCase="OPERATION_ENABLE_DALAL" class="text-2 scb-text-gray"
         >Vous allez activer le dalal</span
+      >
+      <span *ngSwitchDefault class="text-2 scb-text-gray"
+        >Vous allez recharger</span
       >
     </ng-container>
   </div>
@@ -201,6 +207,10 @@
       </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_ENABLE_DALAL">
         <span class="pass">Dalal Sélectionné</span>
+        <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchDefault>
+        <span class="pass">Pass Sélectionné</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
       </div>
     </ng-container>
@@ -271,6 +281,7 @@
           *ngSwitchCase="OPERATION_ENABLE_DALAL"
         >
         </app-dalal-card-item>
+        <app-pass-usage-item *ngSwitchDefault></app-pass-usage-item>
       </ng-container>
     </div>
     <div
@@ -291,7 +302,7 @@
       <div class="top-block">
         <span class="title"
           >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT ? merchantCode :
-          recipientMsisdn | phoneNumberDisplay}} {{([ 'OPERATION_WOYOFAL',
+          opXtras.recipientMsisdn | phoneNumberDisplay}} {{([ 'OPERATION_WOYOFAL',
           'OPERATION_RAPIDO'].includes(purchaseType)?opXtras.billData.counter.counterNumber
           :'')|codeFormat:2}}</span
         >
