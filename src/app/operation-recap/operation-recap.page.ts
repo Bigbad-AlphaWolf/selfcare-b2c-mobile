@@ -47,6 +47,8 @@ import { FeesService } from '../services/fees/fees.service';
 import { OM_LABEL_SERVICES } from '../utils/bills.util';
 import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
 import { OffreService } from '../models/offre-service.model';
+import { BuyPassUsageModel } from '../models/buy-pass-usage-payload.model';
+import { PurchaseService } from '../services/purchase-service/purchase.service';
 
 @Component({
   selector: 'app-operation-recap',
@@ -122,7 +124,8 @@ export class OperationRecapPage implements OnInit {
     private illiflexService: IlliflexService,
     private passService: PassInternetService,
     private ref: ChangeDetectorRef,
-    private feeService: FeesService
+    private feeService: FeesService,
+    private purchaseService: PurchaseService
   ) {}
 
   ngOnInit() {
@@ -136,19 +139,18 @@ export class OperationRecapPage implements OnInit {
           const pricePlanIndex = await this.checkBuyPassDeeplink();
           if (pricePlanIndex) return;
           this.opXtras = history.state;
-          this.servicePassUsage = this.opXtras.serviceUsage;
-          if (this.servicePassUsage) return;
           this.purchaseType = this.opXtras.purchaseType;
           this.isLightMod = this.opXtras.isLightMod;
           this.recipientMsisdn = this.opXtras.recipientMsisdn;
-          console.log(this.opXtras);
+          this.recipientName = this.opXtras.recipientName;
+          this.servicePassUsage = this.opXtras.serviceUsage;
+          if (this.servicePassUsage) return;
 
           switch (this.purchaseType) {
             case OPERATION_TYPE_PASS_INTERNET:
             case OPERATION_TYPE_PASS_ILLIMIX:
             case OPERATION_TYPE_PASS_ALLO:
             case OPERATION_TYPE_PASS_ILLIFLEX:
-              this.recipientName = this.opXtras.recipientName;
               this.passChoosen = this.opXtras.pass;
               this.recipientCodeFormule = this.opXtras.recipientCodeFormule;
               this.buyPassPayload = {
@@ -324,6 +326,10 @@ export class OperationRecapPage implements OnInit {
   }
 
   pay() {
+    if (this.servicePassUsage) {
+      this.buyPassUsage();
+      return;
+    }
     switch (this.purchaseType) {
       case OPERATION_TYPE_PASS_INTERNET:
       case OPERATION_TYPE_PASS_VOYAGE:
@@ -531,6 +537,32 @@ export class OperationRecapPage implements OnInit {
       ppi: codeIN,
     };
     this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
+      (res: any) => {
+        this.transactionSuccessful(res, logInfos);
+      },
+      (err: any) => {
+        this.transactionFailure(err, logInfos);
+      }
+    );
+  }
+
+  buyPassUsage() {
+    this.buyingPass = true;
+    const payload: BuyPassUsageModel = {
+      codeIN: this.opXtras.pass.price_plan_index,
+      amount: this.opXtras.pass.tarif,
+      receiver: this.opXtras.recipientMsisdn,
+      msisdn: this.currentUserNumber,
+      serviceId: this.opXtras.pass.serviceId,
+      typePassUsage: this.opXtras.pass.typeUsage.code,
+    };
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: this.currentUserNumber,
+      receiver: this.opXtras.recipientMsisdn,
+      montant: this.opXtras.pass.tarif,
+      ppi: this.opXtras.pass.price_plan_index,
+    };
+    this.purchaseService.buyPassUsage(payload).subscribe(
       (res: any) => {
         this.transactionSuccessful(res, logInfos);
       },

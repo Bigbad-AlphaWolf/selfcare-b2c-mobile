@@ -106,7 +106,7 @@
         src="/assets/images/10-illustration-dalal-tones-copy.svg" alt="header-illiflex"
         class="banniere"
       />
-      <img-loader [spinner]="true" class="icone" [src]="servicePassUsage?.banniere"
+      <img-loader *ngSwitchDefault class="icone" [src]="servicePassUsage?.banniere"
         fallbackUrl="/assets/images/pass-internet-page-header.svg" useImg></img-loader>
     </ng-container>
   </div>
@@ -281,7 +281,7 @@
           *ngSwitchCase="OPERATION_ENABLE_DALAL"
         >
         </app-dalal-card-item>
-        <app-pass-usage-item *ngSwitchDefault></app-pass-usage-item>
+        <app-pass-usage-item [passUsage]="opXtras.pass" [serviceUsage]="servicePassUsage" *ngSwitchDefault></app-pass-usage-item>
       </ng-container>
     </div>
     <div
@@ -398,6 +398,9 @@
         >
         <span class="text" *ngSwitchCase="OPERATION_ILLIFLEX"
           >Confirmer ({{opXtras.amount}} FCFA)</span
+        >
+        <span class="text" *ngSwitchDefault
+          >Confirmer ({{opXtras?.pass?.tarif}} FCFA)</span
         >
       </ng-container>
       <mat-spinner

@@ -62,6 +62,8 @@ export class ListPassUsagePage implements OnInit {
 
   choosePass(pass) {
     this.state.pass = pass;
+    console.log('state to send', this.state);
+
     let navigationExtras: NavigationExtras = {
       state: this.state,
     };

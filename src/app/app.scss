@@ -420,3 +420,13 @@ $bluePopUp: #085ebd;
   top: 0;
   left: 0;
 }
+
+.header-image,
+.banner-container {
+  img-loader {
+    width: 100% !important;
+    img {
+      width: 100% !important;
+    }
+  }
+}
