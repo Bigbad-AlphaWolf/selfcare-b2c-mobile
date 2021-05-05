@@ -224,22 +224,22 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
           this.modalController.dismiss(pageData);
           // this.appRouting.goSetAmountPage(pageData);
           this.followAnalytics.registerEventFollow(
-            'destinataire_transfert_has_om_account_success',
+            'transfert_om_select_beneficiary_success',
             'event',
             {
-              transfert_om_numero_sender: userOMNumber,
-              transfert_om_numero_receiver: payload.recipientMsisdn,
+              sender: userOMNumber,
+              receiver: payload.recipientMsisdn,
               has_om: 'true',
             }
           );
         } else {
           this.openNoOMAccountModal(payload);
           this.followAnalytics.registerEventFollow(
-            'destinataire_transfert_has_om_account_success',
+            'transfert_om_select_beneficiary_error',
             'event',
             {
-              transfert_om_numero_sender: userOMNumber,
-              transfert_om_numero_receiver: payload.recipientMsisdn,
+              sender: userOMNumber,
+              receiver: payload.recipientMsisdn,
               has_om: 'false',
             }
           );
@@ -248,31 +248,20 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       },
       (err: HttpErrorResponse) => {
         this.isProcessing = false;
-        this.errorMsg = 'Recipient has No OM ';
-
+        this.errorMsg = 'Recipient has No OM';
+        this.followAnalytics.registerEventFollow(
+          'transfert_om_select_beneficiary_error',
+          'error',
+          {
+            sender: userOMNumber,
+            receiver : payload.recipientMsisdn,
+            has_om: 'false',
+            error: err.status
+          }
+        );
         if (err.status === 400) {
           this.openNoOMAccountModal(payload);
-          this.followAnalytics.registerEventFollow(
-            'destinataire_transfert_has_om_account',
-            'event',
-            {
-              transfert_om_numero_destinataire: payload.recipientMsisdn,
-              has_om: 'false',
-            }
-          );
         } else {
-          this.followAnalytics.registerEventFollow(
-            'destinataire_transfert_has_om_account_error',
-            'error',
-            {
-              transfert_om_numero_sender: userOMNumber,
-              transfert_om_numero_receiver: payload.recipientMsisdn,
-              error:
-                'Une error ' + err.status + ' est survenue' + err && err.error
-                  ? err.error.title
-                  : '',
-            }
-          );
           this.errorMsg = 'Une erreur est survenue, veuillez reessayer';
         }
       }

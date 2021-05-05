@@ -323,7 +323,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     return SARGAL_UNSUBSCRIPTION_ONGOING;
   }
 
-  makeSargalAction() {
+  makeSargalAction(origin?: string) {
     if (
       this.userSargalData &&
       (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED ||
@@ -331,17 +331,25 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       this.sargalDataLoaded
     ) {
       this.followAnalyticsService.registerEventFollow(
-        'Sargal_registration_page',
+        'Sargal_registration_card_clic',
         'event',
         'clicked'
       );
       this.router.navigate(['/sargal-registration']);
     } else if (!this.sargalUnavailable && this.sargalDataLoaded) {
-      this.followAnalyticsService.registerEventFollow(
-        'Sargal_dashboard',
-        'event',
-        'clicked'
-      );
+      if (origin === 'card') {
+        this.followAnalyticsService.registerEventFollow(
+          'Sargal_dashboard_card_clic',
+          'event',
+          'clicked'
+        );
+      } else {
+        this.followAnalyticsService.registerEventFollow(
+          'Dashboard_Convertir_Sargal_clic',
+          'event',
+          'clicked'
+        );
+      }
       this.goToSargalDashboard();
     }
   }
@@ -503,10 +511,20 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goToTransfertsPage() {
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_hub_transfert_clic',
+      'event',
+      'clicked'
+    )
     this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
   }
 
   goToBuyPage() {
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_hub_achat_clic',
+      'event',
+      'clicked'
+    )
     this.appliRouting.goToTransfertHubServicesPage('BUY');
   }
 
@@ -529,7 +547,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
             PurchaseSetAmountPage.ROUTE_PATH
           )
           .subscribe((_) => {});
-        this.bsService.openModal(MerchantPaymentCodeComponent);
+        this.bsService.openModal(MerchantPaymentCodeComponent, { omMsisdn: omSession.msisdn });
       } else {
         this.openPinpad();
       }
@@ -537,6 +555,11 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   onPayerFacture() {
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_hub_facture_clic',
+      'event',
+      'clicked'
+    );
     this.router.navigate([BillsHubPage.ROUTE_PATH]);
   }
 

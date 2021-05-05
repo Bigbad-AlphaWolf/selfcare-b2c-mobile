@@ -17,6 +17,7 @@ import {
   getActiveBoostersForSpecificPass,
   OPERATION_CHANGE_PIN_OM,
   SubscriptionModel,
+  OPERATION_TYPE_PASS_VOYAGE,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -50,6 +51,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_ILLIFLEX_TYPE = OPERATION_TYPE_PASS_ILLIFLEX;
   OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM = OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM;
   OPERATION_CHANGE_PIN_OM = OPERATION_CHANGE_PIN_OM;
+  OPERATION_TYPE_PASS_VOYAGE = OPERATION_TYPE_PASS_VOYAGE;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;

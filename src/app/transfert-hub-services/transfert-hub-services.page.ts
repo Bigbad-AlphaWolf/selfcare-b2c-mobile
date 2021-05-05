@@ -120,6 +120,8 @@ export class TransfertHubServicesPage implements OnInit {
     if (history && history.state) {
       this.purchaseType = history.state.purchaseType;
       this.isLightMod = history.state.isLightMod;
+      console.log('isLightMod', this.isLightMod);
+
     }
     if (this.purchaseType === 'TRANSFER') {
       this.pageTitle = 'Transférer argent ou crédit';
@@ -190,15 +192,16 @@ export class TransfertHubServicesPage implements OnInit {
       (this.purchaseType === 'TRANSFER'
         ? 'Hub_transfert_clic_'
         : 'Hub_Achat_clic_') +
-      opt.fullDescription.replace(/[^a-zA-Z]/g, '_') +
-      this.isLightMod
+      opt.code.toLocaleLowerCase() +
+      (this.isLightMod
         ? '_light'
-        : '';
+        : '');
     this.followAnalyticsService.registerEventFollow(
       followEvent,
       'event',
       'clic'
     );
+
     switch (opt.code) {
       case OPERATION_TRANSFERT_ARGENT:
         this.showBeneficiaryModal();
@@ -317,7 +320,7 @@ export class TransfertHubServicesPage implements OnInit {
             PurchaseSetAmountPage.ROUTE_PATH
           )
           .subscribe((_) => {});
-        this.bsService.openModal(MerchantPaymentCodeComponent);
+        this.bsService.openModal(MerchantPaymentCodeComponent, { omMsisdn: omSession.msisdn });
       } else {
         this.openPinpad();
       }
