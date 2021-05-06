@@ -61,7 +61,7 @@ export class TransfertHubServicesPage implements OnInit {
       fullDescription: 'internet',
       icone:
         '/assets/images/04-boutons-01-illustrations-18-acheter-pass-internet.svg',
-      code: 'PASS',
+      code: OPERATION_TYPE_PASS_INTERNET,
       activated: true,
     },
     {
@@ -69,14 +69,14 @@ export class TransfertHubServicesPage implements OnInit {
       fullDescription: 'illimix',
       icone:
         '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
-      code: 'PASS_ILLIMIX',
+      code: OPERATION_TYPE_PASS_ILLIMIX,
       activated: true,
     },
     {
       shortDescription: 'Pass',
       fullDescription: 'Allo',
       icone: '/assets/images/ic-call-forward@2x.png',
-      code: 'PASS_ALLO',
+      code: OPERATION_TYPE_PASS_ALLO,
       activated: true,
     },
     {
@@ -84,7 +84,7 @@ export class TransfertHubServicesPage implements OnInit {
       fullDescription: 'voyage',
       icone:
         '/assets/images/04-boutons-01-illustrations-09-acheter-pass-voyage.svg',
-      code: 'PASS_VOYAGE',
+      code: OPERATION_TYPE_PASS_VOYAGE,
       activated: true,
     },
   ];
@@ -192,7 +192,7 @@ export class TransfertHubServicesPage implements OnInit {
       (this.purchaseType === 'TRANSFER'
         ? 'Hub_transfert_clic_'
         : 'Hub_Achat_clic_') +
-      opt.fullDescription.replace(/[^a-zA-Z]/g, '_') +
+      opt.code.toLocaleLowerCase() +
       this.isLightMod
         ? '_light'
         : '';
@@ -394,31 +394,16 @@ export class TransfertHubServicesPage implements OnInit {
 
   displayBadgeBoosterPromoInOptionsForCategory(
     boosterActive: PromoBoosterActive,
-    opt: {
-      title: string;
-      subtitle: string;
-      icon: string;
-      type:
-        | 'TRANSFERT_MONEY'
-        | 'TRANSFERT_CREDIT'
-        | 'TRANSFERT_BONUS'
-        | 'CREDIT'
-        | 'PASS'
-        | 'PASS_ILLIMIX'
-        | 'PASS_VOYAGE'
-        | 'PASS_INTERNATIONAL';
-      url?: string;
-      action?: 'REDIRECT' | 'POPUP';
-    }
+    opt: OffreService
   ): boolean {
     let result: boolean;
     if (boosterActive)
-      switch (opt.type) {
-        case 'CREDIT':
+      switch (opt.code) {
+        case OPERATION_TYPE_RECHARGE_CREDIT:
           return boosterActive.promoRecharge;
-        case 'PASS_ILLIMIX':
+        case OPERATION_TYPE_PASS_ILLIMIX:
           return boosterActive.promoPassIllimix;
-        case 'PASS':
+        case OPERATION_TYPE_PASS_INTERNET:
           return boosterActive.promoPass;
         default:
           break;
@@ -428,31 +413,16 @@ export class TransfertHubServicesPage implements OnInit {
 
   displayBadgeOfferPlanForInOptionsCategory(
     offerPlan: OfferPlanActive,
-    opt: {
-      title: string;
-      subtitle: string;
-      icon: string;
-      type:
-        | 'TRANSFERT_MONEY'
-        | 'TRANSFERT_CREDIT'
-        | 'TRANSFERT_BONUS'
-        | 'CREDIT'
-        | 'PASS'
-        | 'PASS_ILLIMIX'
-        | 'PASS_VOYAGE'
-        | 'PASS_INTERNATIONAL';
-      url?: string;
-      action?: 'REDIRECT' | 'POPUP';
-    }
+    opt: OffreService
   ): boolean {
     let result: boolean;
     if (offerPlan)
-      switch (opt.type) {
-        case 'CREDIT':
+      switch (opt.code) {
+        case OPERATION_TYPE_RECHARGE_CREDIT:
           return offerPlan.hasRecharge;
-        case 'PASS_ILLIMIX':
+        case OPERATION_TYPE_PASS_ILLIMIX:
           return offerPlan.hasPassIllimix;
-        case 'PASS':
+        case OPERATION_TYPE_PASS_INTERNET:
           return offerPlan.hasPassInternet;
         default:
           break;

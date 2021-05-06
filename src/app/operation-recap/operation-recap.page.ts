@@ -49,6 +49,7 @@ import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Inf
 import { OffreService } from '../models/offre-service.model';
 import { BuyPassUsageModel } from '../models/buy-pass-usage-payload.model';
 import { PurchaseService } from '../services/purchase-service/purchase.service';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-operation-recap',
@@ -563,13 +564,45 @@ export class OperationRecapPage implements OnInit {
       ppi: this.opXtras.pass.price_plan_index,
     };
     this.purchaseService.buyPassUsage(payload).subscribe(
-      (res: any) => {
-        this.transactionSuccessful(res, logInfos);
+      (res) => {
+        this.onBuyPassUsageComplete(res, logInfos);
       },
-      (err: any) => {
-        this.transactionFailure(err, logInfos);
+      (err) => {
+        this.onBuyPassUsageComplete(err, logInfos);
       }
     );
+  }
+
+  onBuyPassUsageComplete(res: any, logFollowInfos) {
+    let success: boolean;
+    let message: string;
+    let followEventName = `buy_pass_usage_${this.servicePassUsage.code.toLocaleLowerCase()}`;
+    let eventType: 'error' | 'event' = 'error';
+    this.buyingPass = false;
+    console.log(res);
+
+    if (res.status === 201) {
+      success = true;
+      followEventName += 'success';
+      eventType = 'event';
+    } else {
+      message =
+        res && res.error && res.error.message
+          ? res.error.message
+          : 'Une erreur est survenue';
+      followEventName += 'failed';
+      logFollowInfos = Object.assign({}, logFollowInfos, {
+        error_code: res.status,
+        message,
+      });
+    }
+    this.sendFollowLogs(eventType, followEventName, logFollowInfos);
+    this.openSuccessFailModal({
+      success,
+      msisdnBuyer: this.currentUserNumber,
+      buyForMe: this.recipientMsisdn === this.currentUserNumber,
+      errorMsg: message,
+    });
   }
 
   payIlliflex() {

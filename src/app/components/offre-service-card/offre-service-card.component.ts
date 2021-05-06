@@ -62,6 +62,16 @@ export class OffreServiceCardComponent implements OnInit {
       // this.service.clicked = !this.service.clicked;
       return;
     }
+    if (this.service.passUsage) {
+      this.bsService.openNumberSelectionBottomSheet(
+        NumberSelectionOption.WITH_MY_PHONES,
+        this.service.code,
+        'list-pass-usage',
+        false,
+        this.service
+      );
+      return;
+    }
     if (this.service.code + '' === ServiceCode.OFC) {
       this.ofcService.loadOFC();
       return;

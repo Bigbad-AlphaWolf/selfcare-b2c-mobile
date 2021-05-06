@@ -1,7 +1,16 @@
 <div class="pass-usage-item" [ngStyle]="{'background-image': 'url(' + downloadAvatarEndpoint + serviceUsage?.iconeBackground + ')'}">
   <div class="price scb-text-orange">{{passUsage?.tarif}} FCFA</div>
   <div class="bottom-block">
-    <div class="left-block">
+    <div class="bottom-block1">
+      <span class="duration">{{passUsage?.typePassInternet?.libelle === "Pass Volume" ? passUsage?.volumeInternet :
+        passUsage?.duree}}</span>
+        <span class="text scb-text-gray">{{getValidity()}}</span>
+    </div>
+    <div class="bottom-block2">
+      <span class="text scb-text-gray">Streaming</span>
+      <span class="text scb-text-gray">{{passUsage?.description}}</span>
+    </div>
+    <!-- <div class="left-block">
       <span class="duration">{{passUsage?.typePassInternet?.libelle === "Pass Volume" ? passUsage?.volumeInternet :
         passUsage?.duree}}</span>
       <span class="text scb-text-gray">Streaming</span>
@@ -9,6 +18,6 @@
     <div class="right-block">
       <span class="text scb-text-gray">{{getValidity()}}</span>
       <span class="text scb-text-gray">{{passUsage?.description}}</span>
-    </div>
+    </div> -->
   </div>
 </div>

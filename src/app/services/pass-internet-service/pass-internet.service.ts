@@ -115,16 +115,19 @@ export class PassInternetService {
   getPassUsage(serviceCode: string, recipient: string) {
     return this.authenticationService.getSubscriptionForTiers(recipient).pipe(
       switchMap((res) => {
-        return this.dashbService.getListPassInternet(res.code).pipe(
-          map((listPass: any[]) => {
-            const response = listPass.filter((pass) => {
-              return (
-                pass.pass.typeUsage && pass.pass.typeUsage.code === serviceCode
-              );
-            });
-            return response.map((x) => x.pass);
-          })
-        );
+        return this.dashbService
+          .getListPassInternet(res.code, false, serviceCode)
+          .pipe(
+            map((listPass: any[]) => {
+              const response = listPass.filter((pass) => {
+                return (
+                  pass.pass.typeUsage &&
+                  pass.pass.typeUsage.code === serviceCode
+                );
+              });
+              return response.map((x) => x.pass);
+            })
+          );
       })
     );
   }
