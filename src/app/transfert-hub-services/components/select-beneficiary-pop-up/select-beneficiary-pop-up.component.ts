@@ -249,19 +249,27 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       (err: HttpErrorResponse) => {
         this.isProcessing = false;
         this.errorMsg = 'Recipient has No OM';
-        this.followAnalytics.registerEventFollow(
-          'transfert_om_select_beneficiary_error',
-          'error',
-          {
-            sender: userOMNumber,
-            receiver : payload.recipientMsisdn,
-            has_om: 'false',
-            error: err.status
-          }
-        );
         if (err.status === 400) {
+          this.followAnalytics.registerEventFollow(
+            'transfert_om_select_beneficiary_error',
+            'event',
+            {
+              sender: this.omPhoneNumber,
+              receiver : payload.recipientMsisdn,
+              has_om: false
+            }
+          );
           this.openNoOMAccountModal(payload);
         } else {
+          this.followAnalytics.registerEventFollow(
+            'transfert_om_select_beneficiary_error',
+            'error',
+            {
+              sender: userOMNumber,
+              receiver : payload.recipientMsisdn,
+              error: err.status
+            }
+          );
           this.errorMsg = 'Une erreur est survenue, veuillez reessayer';
         }
       }
