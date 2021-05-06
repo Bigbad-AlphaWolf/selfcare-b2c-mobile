@@ -9,6 +9,8 @@ import {
   REGEX_FIX_NUMBER,
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_PASS_ILLIFLEX,
+  OPERATION_TYPE_PASS_ALLO,
+  OPERATION_TYPE_PASS_INTERNET,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -23,7 +25,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { NumberSelectionOption } from 'src/app/models/enums/number-selection-option.enum';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
-import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
 import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
 import { CODE_FORMULE_FIX_PREPAID } from 'src/app/dashboard';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
@@ -49,7 +50,7 @@ export class NumberSelectionComponent implements OnInit {
   isErrorProcessing: boolean = false;
   canNotRecieve: boolean;
   canNotRecieveError =
-    'Le numéro de votre destinataire ne peut pas recevoir de';
+    'Le numéro de votre destinataire ne peut pas recevoir ce service';
   option: NumberSelectionOption = NumberSelectionOption.WITH_MY_PHONES;
   eligibilityChecked: boolean;
   isRecipientEligible = true;
@@ -101,6 +102,11 @@ export class NumberSelectionComponent implements OnInit {
             });
           });
           return results;
+        }), tap( (res: {name: string, msisdn: string} [])=> {
+          this.followAnalyticsService.registerEventFollow('Get_recents_destinataire_OM_success', 'event', {operation: this.data.purchaseType, sender: this.opXtras.senderMsisdn });
+        }), catchError((err) => {
+          this.followAnalyticsService.registerEventFollow('Get_recents_destinataire_OM_error', 'error', {operation: this.data.purchaseType, sender: this.opXtras.senderMsisdn, error: err.status } );
+          return of(err)
         })
       );
   }
@@ -134,6 +140,8 @@ export class NumberSelectionComponent implements OnInit {
 
     if (!(await this.canRecieveCredit())) {
       this.canNotRecieve = true;
+      const data = Object.assign({}, this.opXtras, { error: this.eligibilityError });
+      this.logRecipientOnFollow('error', data, this.data.isLightMod);
       this.changeDetectorRef.detectChanges();
       return;
     }
@@ -166,6 +174,8 @@ export class NumberSelectionComponent implements OnInit {
             if (eligibility && !eligibility.eligible) {
               this.isRecipientEligible = false;
               this.eligibilityError = eligibility.message;
+              const data = Object.assign({}, this.opXtras, { error: this.eligibilityError });
+              this.logRecipientOnFollow('error', data, this.data.isLightMod);
               return;
             }
           }
@@ -178,13 +188,18 @@ export class NumberSelectionComponent implements OnInit {
             this.isRecipientEligible = false;
             this.eligibilityError =
               'Le numéro du bénéficiaire ne peut pas bénéficier de pass';
+            const data = Object.assign({}, this.opXtras, { error: this.eligibilityError });
+            this.logRecipientOnFollow('error', data, this.data.isLightMod);
             return;
           }
+          this.logRecipientOnFollow('event', this.opXtras, this.data.isLightMod);
           this.modalController.dismiss(this.opXtras);
           // this.bottomSheetRef.dismiss(this.opXtras);
         },
-        () => {
+        (err: any) => {
           this.isProcessing = false;
+          const data = Object.assign({}, this.opXtras, { error: err.status });
+          this.logRecipientOnFollow('error', data, this.data.isLightMod);
           this.modalController.dismiss();
           // this.bottomSheetRef.dismiss();
         }
@@ -246,28 +261,10 @@ export class NumberSelectionComponent implements OnInit {
       .pipe(
         catchError((er: HttpErrorResponse) => {
           if (er.status === 401) this.modalController.dismiss();
-          this.followAnalyticsService.registerEventFollow(
-            'Check_recipient_failed',
-            'error',
-            { error: er.status }
-          );
           return of(false);
         })
       )
       .toPromise();
-    this.canNotRecieveError +=
-      this.data.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT
-        ? ' crédit'
-        : ' pass';
-    this.followAnalyticsService.registerEventFollow(
-      'Check_recipient_success',
-      'event',
-      {
-        recipient: this.opXtras.recipientMsisdn,
-        canRecieve,
-        service: this.opXtras.purchaseType,
-      }
-    );
     return canRecieve;
   }
 
@@ -285,5 +282,41 @@ export class NumberSelectionComponent implements OnInit {
       }
     });
     return await modal.present();
+  }
+
+  logRecipientOnFollow(typeEvent: 'event' | 'error', infos: any, isLightMod?: boolean) {
+    let followEventSucess: string;
+    let followEventError: string;
+    let payload = { sender: infos.senderMsisdn, recipient: infos.recipientMsisdn, operation: this.data.purchaseType.toLowerCase() }
+    if (infos.error) {
+      payload = Object.assign({}, payload, {error: infos.error})
+    };
+    switch (this.data.purchaseType) {
+      case OPERATION_TYPE_RECHARGE_CREDIT:
+        followEventSucess = 'Recharge_Credit_Select_Recipient_success';
+        followEventError = 'Recharge_Credit_Select_Recipient_error';
+        break;
+      case OPERATION_TYPE_PASS_INTERNET:
+      case OPERATION_TYPE_PASS_ILLIMIX:
+      case OPERATION_TYPE_PASS_ILLIFLEX:
+      case OPERATION_TYPE_PASS_VOYAGE:
+      case OPERATION_TYPE_PASS_ALLO:
+        followEventSucess = 'Achat_pass_Select_Recipient_success';
+        followEventError = 'Achat_pass_Select_Recipient_error';
+        break;
+
+      default:
+        break;
+    }
+
+    if (typeEvent === 'event') {
+      console.log('follow', followEventSucess, payload);
+
+      this.followAnalyticsService.registerEventFollow(followEventSucess, 'event', payload);
+    } else {
+      console.log('follow', followEventError, payload);
+
+      this.followAnalyticsService.registerEventFollow(followEventError, 'error', payload);
+    }
   }
 }
