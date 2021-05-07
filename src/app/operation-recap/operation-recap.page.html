@@ -29,7 +29,7 @@
         <span *ngSwitchCase="OPERATION_ILLIFLEX"
           >{{opXtras?.title}}</span
         >
-        <span *ngSwitchDefault>Achat de pass {{servicePassUsage?.fullDescription}}</span>
+        <span *ngSwitchDefault>Achat de pass {{opXtras?.serviceUsage?.fullDescription}}</span>
       </ng-container>
     </ion-title>
   </ion-toolbar>
@@ -106,7 +106,7 @@
         src="/assets/images/10-illustration-dalal-tones-copy.svg" alt="header-illiflex"
         class="banniere"
       />
-      <img-loader *ngSwitchDefault class="icone" [src]="servicePassUsage?.banniere"
+      <img-loader *ngSwitchCase="OPERATION_TYPE_PASS_USAGE" class="icone" [src]="opXtras?.serviceUsage?.banniere"
         fallbackUrl="/assets/images/pass-internet-page-header.svg" useImg></img-loader>
     </ng-container>
   </div>
@@ -150,8 +150,8 @@
       <span *ngSwitchCase="OPERATION_ENABLE_DALAL" class="text-2 scb-text-gray"
         >Vous allez activer le dalal</span
       >
-      <span *ngSwitchDefault class="text-2 scb-text-gray"
-        >Vous allez recharger</span
+      <span *ngSwitchCase="OPERATION_TYPE_PASS_USAGE" class="text-2 scb-text-gray"
+        >Vous allez acheter</span
       >
     </ng-container>
   </div>
@@ -209,7 +209,7 @@
         <span class="pass">Dalal Sélectionné</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
       </div>
-      <div class="amount-to-transfer" *ngSwitchDefault>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE">
         <span class="pass">Pass Sélectionné</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
       </div>
@@ -281,7 +281,7 @@
           *ngSwitchCase="OPERATION_ENABLE_DALAL"
         >
         </app-dalal-card-item>
-        <app-pass-usage-item [passUsage]="opXtras.pass" [serviceUsage]="servicePassUsage" *ngSwitchDefault></app-pass-usage-item>
+        <app-pass-usage-item [passUsage]="opXtras?.pass" [serviceUsage]="opXtras?.serviceUsage" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"></app-pass-usage-item>
       </ng-container>
     </div>
     <div
@@ -302,7 +302,7 @@
       <div class="top-block">
         <span class="title"
           >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT ? merchantCode :
-          opXtras.recipientMsisdn | phoneNumberDisplay}} {{([ 'OPERATION_WOYOFAL',
+          recipientMsisdn | phoneNumberDisplay}} {{([ 'OPERATION_WOYOFAL',
           'OPERATION_RAPIDO'].includes(purchaseType)?opXtras.billData.counter.counterNumber
           :'')|codeFormat:2}}</span
         >
@@ -399,7 +399,7 @@
         <span class="text" *ngSwitchCase="OPERATION_ILLIFLEX"
           >Confirmer ({{opXtras.amount}} FCFA)</span
         >
-        <span class="text" *ngSwitchDefault
+        <span class="text" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"
           >Confirmer ({{opXtras?.pass?.tarif}} FCFA)</span
         >
       </ng-container>

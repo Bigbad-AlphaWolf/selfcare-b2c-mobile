@@ -39,7 +39,10 @@ import { FavoritePassOemModel } from '../models/favorite-pass-oem.model';
 import { FavorisService } from '../services/favoris/favoris.service';
 import { OperationService } from '../services/oem-operation/operation.service';
 import { OffreService } from '../models/offre-service.model';
-import { OPERATION_TRANSFERT_ARGENT } from '../utils/operations.constants';
+import {
+  OPERATION_TRANSFERT_ARGENT,
+  OPERATION_TYPE_PASS_USAGE,
+} from '../utils/operations.constants';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amount.page';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
@@ -203,7 +206,7 @@ export class TransfertHubServicesPage implements OnInit {
     if (opt.passUsage) {
       this.bsService.openNumberSelectionBottomSheet(
         NumberSelectionOption.WITH_MY_PHONES,
-        opt.code,
+        OPERATION_TYPE_PASS_USAGE,
         'list-pass-usage',
         false,
         opt

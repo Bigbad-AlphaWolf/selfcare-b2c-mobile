@@ -24,6 +24,7 @@ import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/m
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OPERATION_TYPE_PASS_USAGE } from 'src/app/utils/operations.constants';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -72,7 +73,7 @@ export class OffreServiceCardComponent implements OnInit {
     if (this.service.passUsage) {
       this.bsService.openNumberSelectionBottomSheet(
         NumberSelectionOption.WITH_MY_PHONES,
-        this.service.code,
+        OPERATION_TYPE_PASS_USAGE,
         'list-pass-usage',
         false,
         this.service

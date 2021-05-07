@@ -31,6 +31,7 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import { OperationExtras } from '../models/operation-extras.model';
 import {
   OPERATION_RAPIDO,
+  OPERATION_TYPE_PASS_USAGE,
   OPERATION_WOYOFAL,
 } from '../utils/operations.constants';
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
@@ -105,12 +106,12 @@ export class OperationRecapPage implements OnInit {
   OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
   OPERATION_ILLIFLEX = OPERATION_TYPE_PASS_ILLIFLEX;
   OPERATION_TYPE_PASS_VOYAGE = OPERATION_TYPE_PASS_VOYAGE;
+  OPERATION_TYPE_PASS_USAGE = OPERATION_TYPE_PASS_USAGE;
   DALAL_TARIF = MONTHLY_DALAL_TARIF;
   subscriptionInfos: SubscriptionModel;
   buyCreditPayload: any;
   offerPlan: OfferPlan;
   isLightMod: boolean;
-  servicePassUsage: OffreService;
 
   constructor(
     public modalController: ModalController,
@@ -145,8 +146,6 @@ export class OperationRecapPage implements OnInit {
           this.isLightMod = this.opXtras.isLightMod;
           this.recipientMsisdn = this.opXtras.recipientMsisdn;
           this.recipientName = this.opXtras.recipientName;
-          this.servicePassUsage = this.opXtras.serviceUsage;
-          if (this.servicePassUsage) return;
 
           switch (this.purchaseType) {
             case OPERATION_TYPE_PASS_INTERNET:
@@ -222,6 +221,7 @@ export class OperationRecapPage implements OnInit {
             case OPERATION_RAPIDO:
             case OPERATION_WOYOFAL:
             case OPERATION_ENABLE_DALAL:
+            case OPERATION_TYPE_PASS_USAGE:
               break;
             default:
               this.appRouting.goToDashboard();
@@ -328,10 +328,6 @@ export class OperationRecapPage implements OnInit {
   }
 
   pay() {
-    if (this.servicePassUsage) {
-      this.buyPassUsage();
-      return;
-    }
     switch (this.purchaseType) {
       case OPERATION_TYPE_PASS_INTERNET:
       case OPERATION_TYPE_PASS_VOYAGE:
@@ -357,6 +353,9 @@ export class OperationRecapPage implements OnInit {
         break;
       case OPERATION_ENABLE_DALAL:
         this.activateDalal();
+        break;
+      case OPERATION_TYPE_PASS_USAGE:
+        this.buyPassUsage();
         break;
       default:
         break;
@@ -577,10 +576,10 @@ export class OperationRecapPage implements OnInit {
   onBuyPassUsageComplete(res: any, logFollowInfos) {
     let success: boolean;
     let message: string;
-    let followEventName = `buy_pass_usage_${this.servicePassUsage.code.toLocaleLowerCase()}`;
+    let followEventName = `buy_pass_usage_${this.opXtras.serviceUsage.code.toLocaleLowerCase()}`;
     let eventType: 'error' | 'event' = 'error';
     this.buyingPass = false;
-    console.log(res);
+    console.log(followEventName);
 
     if (res.status === 201) {
       success = true;
