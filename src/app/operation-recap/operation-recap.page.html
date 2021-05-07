@@ -20,7 +20,7 @@
         <span *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
         <span *ngSwitchCase="'OPERATION_WOYOFAL'">Rechargement Woyofal</span>
         <span *ngSwitchCase="'OPERATION_RAPIDO'">Rechargement Rapido</span>
-        <span *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+        <span *ngSwitchCase="OPERATION_TYPE_PASS_VOYAGE"
           >Pass selectionné</span
         >
         <span *ngSwitchCase="OPERATION_ENABLE_DALAL"
@@ -90,7 +90,7 @@
         class="banniere"
       />
       <img
-        *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+        *ngSwitchCase="OPERATION_TYPE_PASS_VOYAGE"
         src="assets/images/achat-de-pass-voyage@2x.png"
         alt="banniere"
         class="banniere"
@@ -201,7 +201,7 @@
       </div>
       <div
         class="amount-to-transfer"
-        *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+        *ngSwitchCase="OPERATION_TYPE_PASS_VOYAGE"
       >
         <span class="pass">Pass sélectionné</span>
       </div>
@@ -258,7 +258,7 @@
         <app-item-pass-illimix
           [passIllimix]="passChoosen"
           [subscription]="subscriptionInfos"
-          *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+          *ngSwitchCase="OPERATION_TYPE_PASS_VOYAGE"
         >
         </app-item-pass-illimix>
         <app-item-recharge-credit
@@ -369,7 +369,7 @@
           >Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
           passChoosen?.passPromo?.tarif}} FCFA)</span
         >
-        <span class="text" *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+        <span class="text" *ngSwitchCase="OPERATION_TYPE_PASS_VOYAGE"
           >Confirmer ({{!passChoosen?.passPromo ? passChoosen?.tarif :
           passChoosen?.passPromo?.tarif}} FCFA)</span
         >

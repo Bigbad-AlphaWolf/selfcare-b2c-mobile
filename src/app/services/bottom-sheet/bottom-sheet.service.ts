@@ -16,7 +16,15 @@ import { OrangeMoneyService } from '../orange-money-service/orange-money.service
 import { LinesComponent } from 'src/app/components/lines/lines.component';
 import { BillCompany } from 'src/app/models/bill-company.model';
 import { Subject } from 'rxjs';
-import { OPERATION_SEE_SOLDE_RAPIDO } from 'src/shared';
+import {
+  OPERATION_SEE_SOLDE_RAPIDO,
+  OPERATION_TYPE_PASS_ALLO,
+  OPERATION_TYPE_PASS_ILLIFLEX,
+  OPERATION_TYPE_PASS_ILLIMIX,
+  OPERATION_TYPE_PASS_INTERNET,
+  OPERATION_TYPE_PASS_VOYAGE,
+  OPERATION_TYPE_RECHARGE_CREDIT,
+} from 'src/shared';
 import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
 import { RattachNumberModalComponent } from 'src/app/pages/rattached-phones-number/components/rattach-number-modal/rattach-number-modal.component';
 import { RattachNumberByIdCardComponent } from 'src/app/pages/rattached-phones-number/components/rattach-number-by-id-card/rattach-number-by-id-card.component';
@@ -30,6 +38,7 @@ import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-ph
 import { BannierePubModel } from '../dashboard-service';
 import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
 import { OffreService } from 'src/app/models/offre-service.model';
+import { OPERATION_RECHARGE_CREDIT } from 'src/app/utils/operations.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -159,6 +168,7 @@ export class BottomSheetService {
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data) {
+        console.log('opInfos', response.data);
         let opInfos = response.data;
         if (!opInfos || !opInfos.recipientMsisdn) return;
         opInfos = {
@@ -403,5 +413,42 @@ export class BottomSheetService {
       cssClass: 'select-recipient-modal',
     });
     return await modal.present();
+  }
+
+  logRecipientOnFollow(purchaseType: string, infos: any, isLightMod?: boolean) {
+    let followEvent: string;
+    let payload: any;
+    switch (purchaseType) {
+      case OPERATION_TYPE_RECHARGE_CREDIT:
+        followEvent = 'Recharge_Credit_Select_Recipient_success';
+        payload = {
+          sender: infos.senderMsisdn,
+          recipient: infos.recipientMsisdn,
+          operation: purchaseType.toLowerCase(),
+        };
+        break;
+      case OPERATION_TYPE_PASS_INTERNET:
+      case OPERATION_TYPE_PASS_ILLIMIX:
+      case OPERATION_TYPE_PASS_ILLIFLEX:
+      case OPERATION_TYPE_PASS_VOYAGE:
+      case OPERATION_TYPE_PASS_ALLO:
+        followEvent = 'Achat_pass_Select_Recipient_success';
+        payload = {
+          sender: infos.senderMsisdn,
+          recipient: infos.recipientMsisdn,
+          operation: purchaseType.toLowerCase(),
+        };
+        break;
+
+      default:
+        break;
+    }
+    console.log('follow', followEvent, payload);
+
+    this.followAnalyticsService.registerEventFollow(
+      followEvent,
+      'event',
+      payload
+    );
   }
 }
