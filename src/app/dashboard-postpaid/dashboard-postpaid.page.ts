@@ -243,7 +243,7 @@ export class DashboardPostpaidPage implements OnInit {
         this.dataLoaded = true;
         this.errorConso = true;
         this.followAnalyticsService.registerEventFollow(
-          'dashboard_postpaid_get_conso_success',
+          'dashboard_postpaid_get_conso_error',
           'error',
           {
             msisdn : this.userPhoneNumber,
