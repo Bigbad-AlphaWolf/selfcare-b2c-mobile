@@ -29,7 +29,7 @@
         <span *ngSwitchCase="OPERATION_ILLIFLEX"
           >{{opXtras?.title}}</span
         >
-        <span *ngSwitchDefault>Achat de pass {{opXtras?.serviceUsage?.fullDescription}}</span>
+        <span *ngSwitchCase="OPERATION_TYPE_PASS_USAGE">Achat de pass {{opXtras?.serviceUsage?.fullDescription}}</span>
       </ng-container>
     </ion-title>
   </ion-toolbar>
