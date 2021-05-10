@@ -71,6 +71,11 @@ export class BillsHubPage implements OnInit {
   }
 
   async onCompanySelected(billCompany: OffreService) {
+    this.followAnalyticsService.registerEventFollow(
+      'hub_payer_services_'+billCompany.code.toLowerCase()+'_clic',
+      'event',
+      'clicked'
+    );
     if (!billCompany.activated) {
       const toast = await this.toastController.create({
         header: 'Service indisponible',

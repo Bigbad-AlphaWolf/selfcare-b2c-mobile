@@ -12,14 +12,13 @@ import { OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
 import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
 import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
-  OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
-import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { OffreService } from 'src/app/models/offre-service.model';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'oem-operations',
@@ -34,12 +33,18 @@ export class OemOperationsComponent implements OnInit {
     private navCtl: NavController,
     private omService: OrangeMoneyService,
     private modalController: ModalController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {}
 
   async onOperation(op: OffreService) {
+    this.followAnalyticsService.registerEventFollow(
+      'services_'+op.code.toLowerCase()+'_clic',
+      'event',
+      'clicked'
+    );
     if (!op.activated) {
       const toast = await this.toastController.create({
         header: 'Service indisponible',
