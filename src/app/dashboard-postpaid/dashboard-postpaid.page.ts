@@ -23,14 +23,13 @@ import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.co
 import { AssistanceService } from '../services/assistance.service';
 import { SargalService } from '../services/sargal-service/sargal.service';
 import { KILIMANJARO_FORMULE } from '../dashboard';
-import { OperationOem } from '../models/operation.model';
-import { ACTIONS_RAPIDES_OPERATIONS_DASHBOARD } from '../utils/operations.util';
 import { NavController } from '@ionic/angular';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
-import { map, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { OperationService } from '../services/oem-operation/operation.service';
 import { OffreService } from '../models/offre-service.model';
 import { IMAGES_DIR_PATH } from '../utils/constants';
+import { of } from 'rxjs';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid',
@@ -113,6 +112,13 @@ export class DashboardPostpaidPage implements OnInit {
       .getServicesByFormule()
       .pipe(
         map((res) => {
+          this.followAnalyticsService.registerEventFollow(
+            'dashboard_postpaid_get_services_success',
+            'event',
+            {
+              msisdn: this.userPhoneNumber
+            }
+          );
           const moreActionService: OffreService = {
             redirectionType: 'NAVIGATE',
             titre: 'Autres',
@@ -127,19 +133,23 @@ export class DashboardPostpaidPage implements OnInit {
         }),
         tap((res) => {
           this.operations = res;
+        }),
+        catchError((err: any) => {
+          this.followAnalyticsService.registerEventFollow(
+            'dashboard_postpaid_get_services_error',
+            'error',
+            {
+              msisdn: this.userPhoneNumber,
+              error: err.status
+            }
+          );
+          return of(err)
         })
       )
       .subscribe();
   }
 
-  getActiveServices() {
-    this.operationService.getAllServices().subscribe((res: any) => {
-      OperationService.AllOffers = res;
-    });
-  }
-
   ionViewWillEnter() {
-    this.getActiveServices();
     this.getConsoPostpaid();
     this.getBills();
     this.getCustomerSargalStatus();
@@ -201,6 +211,11 @@ export class DashboardPostpaidPage implements OnInit {
   }
 
   makeSargalAction() {
+    this.followAnalyticsService.registerEventFollow(
+      'dashboard_postpaid_sargal_status_card_clic',
+      'event',
+      'clicked'
+    );
     this.router.navigate(['/sargal-status-card']);
   }
 
@@ -215,11 +230,26 @@ export class DashboardPostpaidPage implements OnInit {
       (res: any) => {
         this.dataLoaded = true;
         this.userConsommations = this.computeUserConso(res);
+        this.followAnalyticsService.registerEventFollow(
+          'dashboard_postpaid_get_conso_success',
+          'event',
+          {
+            msisdn : this.userPhoneNumber
+          }
+        );
         this.getLastConsoUpdate();
       },
-      () => {
+      (err) => {
         this.dataLoaded = true;
         this.errorConso = true;
+        this.followAnalyticsService.registerEventFollow(
+          'dashboard_postpaid_get_conso_error',
+          'error',
+          {
+            msisdn : this.userPhoneNumber,
+            error: err.status
+          }
+        );
       }
     );
   }
@@ -326,21 +356,6 @@ export class DashboardPostpaidPage implements OnInit {
         );
   }
 
-  goToTransfertOM() {
-    this.router.navigate(['/transfer/orange-money']);
-    this.followAnalyticsService.registerEventFollow(
-      'Transfert_OM_dashboard',
-      'event',
-      'clicked'
-    );
-  }
-
-  onError(input: { el: HTMLElement; display: boolean }[]) {
-    input.forEach((item: { el: HTMLElement; display: boolean }) => {
-      item.el.style.display = item.display ? 'block' : 'none';
-    });
-  }
-
   showWelcomePopup(data: WelcomeStatusModel) {
     const dialog = this.shareDialog.open(WelcomePopupComponent, {
       data,
@@ -379,6 +394,11 @@ export class DashboardPostpaidPage implements OnInit {
   }
 
   onVoirPlus() {
+    this.followAnalyticsService.registerEventFollow(
+      'dashboard_postpaid_voir_plus_clic',
+      'event',
+      'clicked'
+    )
     this.navCtl.navigateForward(['/oem-services']);
   }
 }
