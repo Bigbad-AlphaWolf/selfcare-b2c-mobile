@@ -1,0 +1,42 @@
+@import 'src/app/app';
+
+:host {
+  width: 100%;
+}
+
+.pass-usage-item {
+  background-color: $white;
+  padding: 20px 15px;
+  border-radius: 5px;
+  box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.05);
+  background-repeat: no-repeat;
+  background-position-x: 106%;
+  background-position-y: -140%;
+  .price {
+    font-family: HelveticaNeueLTStd-Bd;
+    font-size: 20px;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .bottom-block {
+    display: flex;
+    flex-direction: column;
+    &1,
+    &2 {
+      display: flex;
+      justify-content: space-between;
+      .duration {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        line-height: 1.38;
+      }
+      .text {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        line-height: 1.33;
+        display: flex;
+        align-items: flex-end;
+      }
+    }
+  }
+}

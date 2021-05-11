@@ -29,6 +29,7 @@
         <span *ngSwitchCase="OPERATION_ILLIFLEX"
           >{{opXtras?.title}}</span
         >
+        <span *ngSwitchCase="OPERATION_TYPE_PASS_USAGE">Achat de pass {{opXtras?.serviceUsage?.fullDescription}}</span>
       </ng-container>
     </ion-title>
   </ion-toolbar>
@@ -105,6 +106,8 @@
         src="/assets/images/10-illustration-dalal-tones-copy.svg" alt="header-illiflex"
         class="banniere"
       />
+      <img-loader *ngSwitchCase="OPERATION_TYPE_PASS_USAGE" class="icone" [src]="opXtras?.serviceUsage?.banniere"
+        fallbackUrl="/assets/images/pass-internet-page-header.svg" useImg></img-loader>
     </ng-container>
   </div>
 </ion-header>
@@ -146,6 +149,9 @@
       >
       <span *ngSwitchCase="OPERATION_ENABLE_DALAL" class="text-2 scb-text-gray"
         >Vous allez activer le dalal</span
+      >
+      <span *ngSwitchCase="OPERATION_TYPE_PASS_USAGE" class="text-2 scb-text-gray"
+        >Vous allez acheter</span
       >
     </ng-container>
   </div>
@@ -201,6 +207,10 @@
       </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_ENABLE_DALAL">
         <span class="pass">Dalal Sélectionné</span>
+        <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE">
+        <span class="pass">Pass Sélectionné</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
       </div>
     </ng-container>
@@ -271,6 +281,7 @@
           *ngSwitchCase="OPERATION_ENABLE_DALAL"
         >
         </app-dalal-card-item>
+        <app-pass-usage-item [passUsage]="opXtras?.pass" [serviceUsage]="opXtras?.serviceUsage" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"></app-pass-usage-item>
       </ng-container>
     </div>
     <div
@@ -387,6 +398,9 @@
         >
         <span class="text" *ngSwitchCase="OPERATION_ILLIFLEX"
           >Confirmer ({{opXtras.amount}} FCFA)</span
+        >
+        <span class="text" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"
+          >Confirmer ({{opXtras?.pass?.tarif}} FCFA)</span
         >
       </ng-container>
       <mat-spinner

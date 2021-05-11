@@ -60,6 +60,9 @@
       <span class="title" *ngSwitchCase="OPERATION_CHANGE_PIN_OM"
         >Bravo !</span
       >
+      <span class="title" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"
+        >{{ success ? 'Achat pass effectué' : 'Echec achat de pass'}}</span
+      >
     </ng-container>
     <span class="subtitle scb-text-gray">
       <ng-container *ngIf="!success">
@@ -103,6 +106,9 @@
         >
         <span *ngSwitchCase="OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM"
           >Merci, votre demande a bien été prise en compte, vous serez contacté par le service client dans les 48h</span
+        >
+        <span *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"
+          >Vous avez acheté le pass {{opXtras?.serviceUsage?.fullDescription}}</span
         >
       </ng-container>
     </span>
@@ -168,6 +174,7 @@
         </app-item-recharge-credit>
         <app-item-illiflex *ngSwitchCase="OPERATION_ILLIFLEX_TYPE" [passIlliflex]="passBought"></app-item-illiflex>
         <app-dalal-card-item *ngSwitchCase="OPERATION_ENABLE_DALAL" [dalal]="dalal"></app-dalal-card-item>
+        <app-pass-usage-item *ngSwitchCase="OPERATION_TYPE_PASS_USAGE" [serviceUsage]="opXtras.serviceUsage" [passUsage]="opXtras.pass"></app-pass-usage-item>
       </ng-container>
     </div>
     <div

@@ -11,7 +11,8 @@ import {
 import { environment } from 'src/environments/environment';
 const { SERVER_API_URL, CONSO_SERVICE } = environment;
 import { HttpClient } from '@angular/common/http';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { AuthenticationService } from '../authentication-service/authentication.service';
 const passByIdEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-internets`;
 const passByPPIEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-by-ppi`;
 @Injectable({
@@ -28,6 +29,7 @@ export class PassInternetService {
   hasErrorSubject: Subject<any> = new Subject<any>();
   constructor(
     private dashbService: DashboardService,
+    private authenticationService: AuthenticationService,
     private http: HttpClient
   ) {}
 
@@ -110,4 +112,23 @@ export class PassInternetService {
       .toPromise();
   }
 
+  getPassUsage(serviceCode: string, recipient: string) {
+    return this.authenticationService.getSubscriptionForTiers(recipient).pipe(
+      switchMap((res) => {
+        return this.dashbService
+          .getListPassInternet(res.code, false, serviceCode)
+          .pipe(
+            map((listPass: any[]) => {
+              const response = listPass.filter((pass) => {
+                return (
+                  pass.pass.typeUsage &&
+                  pass.pass.typeUsage.code === serviceCode
+                );
+              });
+              return response.map((x) => x.pass);
+            })
+          );
+      })
+    );
+  }
 }

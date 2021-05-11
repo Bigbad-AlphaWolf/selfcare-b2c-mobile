@@ -39,7 +39,10 @@ import { FavoritePassOemModel } from '../models/favorite-pass-oem.model';
 import { FavorisService } from '../services/favoris/favoris.service';
 import { OperationService } from '../services/oem-operation/operation.service';
 import { OffreService } from '../models/offre-service.model';
-import { OPERATION_TRANSFERT_ARGENT } from '../utils/operations.constants';
+import {
+  OPERATION_TRANSFERT_ARGENT,
+  OPERATION_TYPE_PASS_USAGE,
+} from '../utils/operations.constants';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amount.page';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
@@ -54,13 +57,14 @@ export class TransfertHubServicesPage implements OnInit {
   OPERATION_TYPE_PASS_ILLIMIX = OPERATION_TYPE_PASS_ILLIMIX;
   pageTitle: string;
   options: OffreService[] = [];
+  passUsages: OffreService[] = [];
   lightOptions: OffreService[] = [
     {
       shortDescription: 'Pass',
       fullDescription: 'internet',
       icone:
         '/assets/images/04-boutons-01-illustrations-18-acheter-pass-internet.svg',
-      code: 'PASS',
+      code: OPERATION_TYPE_PASS_INTERNET,
       activated: true,
     },
     {
@@ -68,14 +72,14 @@ export class TransfertHubServicesPage implements OnInit {
       fullDescription: 'illimix',
       icone:
         '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
-      code: 'PASS_ILLIMIX',
+      code: OPERATION_TYPE_PASS_ILLIMIX,
       activated: true,
     },
     {
       shortDescription: 'Pass',
       fullDescription: 'Allo',
       icone: '/assets/images/ic-call-forward@2x.png',
-      code: 'PASS_ALLO',
+      code: OPERATION_TYPE_PASS_ALLO,
       activated: true,
     },
     {
@@ -83,7 +87,7 @@ export class TransfertHubServicesPage implements OnInit {
       fullDescription: 'voyage',
       icone:
         '/assets/images/04-boutons-01-illustrations-09-acheter-pass-voyage.svg',
-      code: 'PASS_VOYAGE',
+      code: OPERATION_TYPE_PASS_VOYAGE,
       activated: true,
     },
   ];
@@ -121,7 +125,6 @@ export class TransfertHubServicesPage implements OnInit {
       this.purchaseType = history.state.purchaseType;
       this.isLightMod = history.state.isLightMod;
       console.log('isLightMod', this.isLightMod);
-
     }
     if (this.purchaseType === 'TRANSFER') {
       this.pageTitle = 'Transférer argent ou crédit';
@@ -140,9 +143,10 @@ export class TransfertHubServicesPage implements OnInit {
     this.loadingServices = true;
     this.servicesHasError = false;
     this.operationService.getServicesByFormule(this.hubCode).subscribe(
-      (res: any) => {
+      (res) => {
         this.loadingServices = false;
-        this.options = res;
+        this.options = res.filter((option) => !option.passUsage);
+        this.passUsages = res.filter((option) => option.passUsage);
         this.getUserActiveBonPlans();
         this.getUserActiveBoosterPromo();
         this.getFavoritePass();
@@ -193,15 +197,22 @@ export class TransfertHubServicesPage implements OnInit {
         ? 'Hub_transfert_clic_'
         : 'Hub_Achat_clic_') +
       opt.code.toLocaleLowerCase() +
-      (this.isLightMod
-        ? '_light'
-        : '');
+      (this.isLightMod ? '_light' : '');
     this.followAnalyticsService.registerEventFollow(
       followEvent,
       'event',
       'clic'
     );
-
+    if (opt.passUsage) {
+      this.bsService.openNumberSelectionBottomSheet(
+        NumberSelectionOption.WITH_MY_PHONES,
+        OPERATION_TYPE_PASS_USAGE,
+        'list-pass-usage',
+        false,
+        opt
+      );
+      return;
+    }
     switch (opt.code) {
       case OPERATION_TRANSFERT_ARGENT:
         this.showBeneficiaryModal();
@@ -320,7 +331,9 @@ export class TransfertHubServicesPage implements OnInit {
             PurchaseSetAmountPage.ROUTE_PATH
           )
           .subscribe((_) => {});
-        this.bsService.openModal(MerchantPaymentCodeComponent, { omMsisdn: omSession.msisdn });
+        this.bsService.openModal(MerchantPaymentCodeComponent, {
+          omMsisdn: omSession.msisdn,
+        });
       } else {
         this.openPinpad();
       }
@@ -385,31 +398,16 @@ export class TransfertHubServicesPage implements OnInit {
 
   displayBadgeBoosterPromoInOptionsForCategory(
     boosterActive: PromoBoosterActive,
-    opt: {
-      title: string;
-      subtitle: string;
-      icon: string;
-      type:
-        | 'TRANSFERT_MONEY'
-        | 'TRANSFERT_CREDIT'
-        | 'TRANSFERT_BONUS'
-        | 'CREDIT'
-        | 'PASS'
-        | 'PASS_ILLIMIX'
-        | 'PASS_VOYAGE'
-        | 'PASS_INTERNATIONAL';
-      url?: string;
-      action?: 'REDIRECT' | 'POPUP';
-    }
+    opt: OffreService
   ): boolean {
     let result: boolean;
     if (boosterActive)
-      switch (opt.type) {
-        case 'CREDIT':
+      switch (opt.code) {
+        case OPERATION_TYPE_RECHARGE_CREDIT:
           return boosterActive.promoRecharge;
-        case 'PASS_ILLIMIX':
+        case OPERATION_TYPE_PASS_ILLIMIX:
           return boosterActive.promoPassIllimix;
-        case 'PASS':
+        case OPERATION_TYPE_PASS_INTERNET:
           return boosterActive.promoPass;
         default:
           break;
@@ -419,31 +417,16 @@ export class TransfertHubServicesPage implements OnInit {
 
   displayBadgeOfferPlanForInOptionsCategory(
     offerPlan: OfferPlanActive,
-    opt: {
-      title: string;
-      subtitle: string;
-      icon: string;
-      type:
-        | 'TRANSFERT_MONEY'
-        | 'TRANSFERT_CREDIT'
-        | 'TRANSFERT_BONUS'
-        | 'CREDIT'
-        | 'PASS'
-        | 'PASS_ILLIMIX'
-        | 'PASS_VOYAGE'
-        | 'PASS_INTERNATIONAL';
-      url?: string;
-      action?: 'REDIRECT' | 'POPUP';
-    }
+    opt: OffreService
   ): boolean {
     let result: boolean;
     if (offerPlan)
-      switch (opt.type) {
-        case 'CREDIT':
+      switch (opt.code) {
+        case OPERATION_TYPE_RECHARGE_CREDIT:
           return offerPlan.hasRecharge;
-        case 'PASS_ILLIMIX':
+        case OPERATION_TYPE_PASS_ILLIMIX:
           return offerPlan.hasPassIllimix;
-        case 'PASS':
+        case OPERATION_TYPE_PASS_INTERNET:
           return offerPlan.hasPassInternet;
         default:
           break;

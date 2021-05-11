@@ -24,6 +24,7 @@ import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/m
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OPERATION_TYPE_PASS_USAGE } from 'src/app/utils/operations.constants';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -59,7 +60,8 @@ export class OffreServiceCardComponent implements OnInit {
   }
 
   onClick() {
-    const follow = 'my_services_card_'+this.service.code.toLowerCase()+'_clic';
+    const follow =
+      'my_services_card_' + this.service.code.toLowerCase() + '_clic';
     this.followAnalyticsServ.registerEventFollow(follow, 'event', 'clic');
     console.log('follow', follow);
 
@@ -68,7 +70,17 @@ export class OffreServiceCardComponent implements OnInit {
       // this.service.clicked = !this.service.clicked;
       return;
     }
-    if (this.service.code === ServiceCode.OFC) {
+    if (this.service.passUsage) {
+      this.bsService.openNumberSelectionBottomSheet(
+        NumberSelectionOption.WITH_MY_PHONES,
+        OPERATION_TYPE_PASS_USAGE,
+        'list-pass-usage',
+        false,
+        this.service
+      );
+      return;
+    }
+    if (this.service.code + '' === ServiceCode.OFC) {
       this.ofcService.loadOFC();
       return;
     }
