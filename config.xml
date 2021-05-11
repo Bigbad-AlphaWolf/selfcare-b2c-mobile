@@ -73,12 +73,14 @@
             <array>
                 <string>applinks:orangeetmoi.sn</string>
                 <string>applinks:espaceclientv2.orangebusiness.sn</string>
+                <string>applinks:myorangesn.page.link</string>
             </array>
         </config-file>
         <config-file parent="com.apple.developer.associated-domains" target="*-Release.plist">
             <array>
                 <string>applinks:orangeetmoi.sn</string>
                 <string>applinks:espaceclientv2.orangebusiness.sn</string>
+                <string>applinks:myorangesn.page.link</string>
             </array>
         </config-file>
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
