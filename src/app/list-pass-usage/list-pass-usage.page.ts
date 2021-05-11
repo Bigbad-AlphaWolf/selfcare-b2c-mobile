@@ -47,7 +47,6 @@ export class ListPassUsagePage implements OnInit {
         (res) => {
           this.loadingPass = false;
           this.listPass = res;
-          console.log(res);
         },
         (err) => {
           this.loadingPass = false;
