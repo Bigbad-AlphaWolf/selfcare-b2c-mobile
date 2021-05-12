@@ -1,4 +1,4 @@
-sdk_version: PhoneGap v6.4
+sdk_version: PhoneGap v7.1
 
 !!! note "Hybrid solutions and the FollowAnalytics SDK"
     Note that if you are working on a hybrid non-native solution, you will have to do some of the procedures on the native side of your app. This will be the case for OS specific as well as more advanced features. When this is necessary, we will provide the information for each platform. Each FollowAnalytics SDK for PhoneGap/Cordova are based on a native version of the SDK.
@@ -7,9 +7,9 @@ sdk_version: PhoneGap v6.4
 !!! note "Prerequisites"
     The FollowAnalytics PhoneGap/Cordova SDK was tested on :
 
-    - Cordova CLI v7.0.1
-    - Cordova platform android v7.0.0
-    - Cordova platform iOS v4.5.0
+    - Cordova CLI v9.0.1
+    - Cordova platform android v8.1.0
+    - Cordova platform iOS v5.0.1
 
 ## Integration
 
@@ -166,6 +166,9 @@ Below, a description table that FollowAnalytics Phonegap SDK accepts as properti
 | `archiveInAppMessages`           | Optional     | boolean   |     false       | `true` to archive InApp campaigns messages                                      |
 | `archivePushMessages`            | Optional     | boolean   |     false       | `true` to archive Push campaigns messages                                       |
 | `appGroup`                       | Optional     | string    |     undefined   | An app group identifier to link the extension target the app                    |
+| `onNotificationTapped`          | Optional     | boolean   |     false       | Allows you to perform specific actions when a notification is tapped            |
+| `onMessageReceived`             | Optional     | boolean   |     false       | Allows you to perform specific actions when a notification is received          |
+| `onNativeInAppButtonTapped`     | Optional     | boolean   |     false       | Allows you to perform specific actions when a native alert button is tapped     |
 
 ##### Android
 
@@ -297,6 +300,14 @@ You can also add details to the events and errors
 <a href="#" onclick="FollowAnalytics.logError('My error', 'My error details')">Log an error</a>
 ```
 
+The details could be a single string like showed before or a key/value object like the following:
+
+```html
+// Log an event/error with details
+<a href="#" onclick="FollowAnalytics.logEvent('My event', {'Key1':'Value1', 'Key2':'Value2'})">Log an event</a>
+<a href="#" onclick="FollowAnalytics.logError('My error', {'Key1':'Value1', 'Key2':'Value2'})">Log an error</a>
+```
+
 Use the name as the unique identifier of your log. Use the details to be more specific and add some context. The details allow you to associate multiple key-values for additional context.
 
 For logging geolocations, you can use the following methods:
@@ -312,16 +323,6 @@ The `logLocationPosition(position)` method can be used to pass to FollowAnalytic
 
 !!! note "Events can be renamed on the FollowAnalytics platform"
     The name that you give to your event here can be overridden in the FollowAnalytics platform. For more information, reach out to your Customer Success Manager or [message support](mailto:support@followanalytics.com).
-
-Use the name as the unique identifier of your log. Use the details section to add specific details or context. The details field can either be a **String** or a **Hash**, so that you can associate multiple key-values for additional context.
-
-For example, you can log the display of a view by writing the following:
-
-```JavaScript
-FollowAnalytics.logEvent('Product view', Product reference);
-
-FollowAnalytics.logEvent('Add product to cart', {'product_id': 'ABCD123','product_category': 'Jeans'});
-```
 
 !!! note "Logging best practices"
     To ensure your tags are relevant and will end up empowering your team through FollowAnalytics, please read the [Logging best practices](https://intercom.help/followanalytics/en/articles/3049146-logging-best-practices) entry in the FAQ section.
@@ -391,7 +392,8 @@ FollowAnalytics.UserAttributes.setNumber('key', "1");
 FollowAnalytics.UserAttributes.setString('key', "A custom string attribute");
 FollowAnalytics.UserAttributes.setBoolean('key', "true");
 FollowAnalytics.UserAttributes.setDate('key', "2016-10-26");
-FollowAnalytics.UserAttributes.setDateTime('key', "2016-10-26T11:22:33+01:00");
+FollowAnalytics.UserAttributes.setDateTime('key', "2020-06-30T12:56:01.928+0100"); // Example using a string
+FollowAnalytics.UserAttributes.setDateTime('key', new Date().toISOString()); // Example with a JavaScript Date object converted to an ISO String
 ```
 
 For example, to set the user's job:
@@ -694,60 +696,74 @@ class NotificationService: UNNotificationServiceExtension {
 ### Badge Management
 
 !!! note "Prerequisites"
-    For using this feature, there are 3 prerequisites:
+    For using this feature, there are 3 prerequisites needed for iOS:
     
     * Have the Notification Service Extension with the FollowAnalytics extension framework. [More information here](#notification-service-extension-framework)
     * Create an app group between your app and the extension. [More information here](#create-an-app-group-between-your-app-and-the-extension)
     * Specify your app group in the `followanalytics_configuration.json`. [More information here](#configuring-the-sdk-to-work-with-the-extension)
 
 
-Badges are the numbers displayed on the icon of the app, indicating to user that the app has new information. The FollowAnalytics SDK handles the badge number automatically, but if you need to update it and you want to take in consideration the current value number from our SDK you can use the `FABadge` class which lets you set and get the SDK badge value thought the following methods:
+!!! warning "Android Version"
+    This feature will only work for Android devices with versions below Android 8.
 
-```Objective-C tab=
-[FABadge setBadge:INTEGER]; // Set the value of the icon badge number
-[FABadge updateBadgeBy:INTEGER]; // Update the value of the icon badge number
-[FABadge badge]; // Get the value of the icon badge number
+Badges are the numbers displayed on the icon of the app, indicating to user that the app has new information. The FollowAnalytics SDK handles the badge number automatically, but if you need to update it and you want to take in consideration the current value number from our SDK you can do it with the following methods:
+
+```javascript
+FollowAnalytics.Badge.set(int); // Set the value of the icon badge number
+FollowAnalytics.Badge.updateBy(int); // Update the value of the icon badge number
+FollowAnalytics.Badge.get(function) // Get the value of the icon badge number
 ```
 
+Examples of usage:
 
-```Swift  tab=
-FABadge.setBadge(Int) // Set the value of the icon badge number
-FABadge.updateBadgeBy(Int) // Update the value of the icon badge number
-FABadge.badge // Get the value of the icon badge number
+```javascript
+FollowAnalytics.Badge.set(1); // Set the badge number to 1
+FollowAnalytics.Badge.updateBy(2); // Increase the badge number by 2
+FollowAnalytics.Badge.get((error, result) => {
+    if (!error) {
+        console.log(result); // Get the value of the icon badge number
+    } else {
+        console.log(error);
+    }
+});
 ```
 
-### Custom handling of rich campaigns
+### Opt-in Notifications
 
-Rich campaigns can be handled directly by the application code, instead of being showed automatically by the SDK. The behavior is defined when creating the campaign, using the "automatically display content" switch.
+The FollowAnalytics SDK opt-in notifications status defines whether your app will receive notifications from your Push campaigns. Opt-in notifications is `true` by default, meaning notifications from your Push campaigns will be received by your app. This status is independent from the system notification authorization, which is also needed by your app to display notifications.
 
-##### iOS
-For campaigns where the content is not handled by FollowAnalytics,
-implement the following *FAFollowAppsDelegate* method in your *AppDelegate*:
+Thanks to this opt-in notifications status, you can implement a UI in your app to allow to choose whether to receive notifications, without the need to go to the system notification authorization settings. Note that the opt-in notifications status will have no effect if the system notification authorization is not allowed, and in this case, your app will not receive notifications from your Push campaigns, whatever the opt-in notifications status.
 
-```Objective-C
-- (void)followAppsShouldHandleWebViewUrl:(NSURL *)url withTitle:(NSString *)webviewTitle;
+To update your app UI to reflect the current opt-in notifications status, use the `getOptInNotifications` method:
+
+```javascript
+FollowAnalytics.getOptInNotifications((error, result) => {
+    if (!error) {
+        // do something with the result
+        // console.log(result);
+    } else {
+        // do something with the error
+        // console.log(error);
+    }      
+});
 ```
 
-##### Android
+To update the current opt-in notifications status upon UI change, use the `setOptInNotifications` method:
 
-For campaigns where the content is not handled by FollowAnalytics, you will need to extend `com.followapps.android.CustomRichCampaignBaseReceiver` and declare it in your `AndroidManifest.xml`.
-You'll need to use an intent-filter on `BROADCAST_RICH_CAMPAIGNS_ACTION`. For instance:
-
-```XML
-<receiver android:name=".RichCampaignDataReceiver" >
-    <intent-filter>
-        <action android:name="%YOUR_APP_PACKAGE_NAME%.BROADCAST_RICH_CAMPAIGNS_ACTION" />
-    </intent-filter>
-</receiver>
+```javascript
+FollowAnalytics.setOptInNotifications(true); // accepts true/false as input
 ```
 
-Where `%YOUR_APP_PACKAGE_NAME%` is your application package name.
+!!! note "Handling transistion from opt-out to opt-in notifications"
 
-The method `onRichCampaignDataReceived` must be overridden. Rich campaign parameters are provided as method arguments:
+    Just calling `setOptInNotifications(true)` after the user interacts with your app UI to opts-in for notifications could be insufficient if the system notification authorization is not allowed. For this reason, we recommend to implement the following flow after the user opts-in for notifications in your app:
 
-* Campaign title: `title`
-* Campaign URL: `url`
-* Custom Parameters associated to the campaign: `customParams`
+    - Check the return value of `FollowAnalytics.isRegisteredForPushNotifications()` which is `true` only if the system notification authorization is allowed AND the SDK opt-in notifications status is `true`.
+    - If `false`, display a message and button to invite your user to enable the system notification authorization.
+    - Call `FollowAnalytics.openNotificationSettingsIfNeeded()` when the user taps the button. The method will take care of either displaying the notification authorization request alert, or directing to the app settings screen. This will allow the user to enable notifications.
+
+    Another possibility is to bypass the first two steps and only implement the last one.
+
 
 
 ### Customize the Icon Notification (Android specific)
@@ -763,44 +779,129 @@ Then, place them to your project under `platforms/android/res` folder and make s
 !!! note "Icon colors"
     Update or remove assets that involve color. The system ignores all non-alpha channels in action icons and in the main notification icon. You should assume that these icons will be alpha-only. The system draws notification icons in white and action icons in dark gray.
 
-### Deep-linking: URL, Parameters
+### Implement custom behavior on notification tap
 
-Campaigns created through FollowAnalytics allow to deep link to content in your app. You can either use an App Link, or use key-value parameters that are forwarded to your code.
+You can implement a custom behavior when the user taps on a notification by implementing the `onNotificationTapped` callback in `followAnalytics_configuration.json`. This allows you to perform specific actions when a notification is tapped:
 
-#### App Links
-Version _4.1.0_ of the SDK introduced the possibility to use direct App Links like `twitter://messages`, which will send you to the corresponding screen inside the Twitter application.
+```JSON
+    {
+        "apiKey" : "YOUR_API_KEY",
+        "isVerbose" : true,
+        "maxBackgroundTimeWithinSession" : 120,
+        "onNotificationTapped" : true
+    }
+```
 
-To use App Links you need to enable Deep Linking switch in our UI, when creating a campaign. Use the _App Link_ field to set the type of URLs schemas.
+!!! note "Use `cordova prepare "platform"`"
+    Don't forget to run `cordova prepare ios` and `cordova prepare android` to apply the changes on `followanalytics_configuration.json` file.
 
-It can either be an URL Schema to an external application or for your own application.
-
-#### Deep-linking parameters (Android Only)
-
-On the platform, you can specify _deep-linking parameters_ for your Push campaign. These parameters are passed to the app by the SDK. **It is then up to the developer to implement the deep-linking** in the app (specific path of screens, format of the arguments, etc.).
-
-To handle the deeplinking from your javascript code, set a callback for the `onPushMessageClicked` event as soon as the device is ready:
+To implement `onNotificationTapped`, add the following code to the `onDeviceReady` Cordova callback:
 
 ```JavaScript
-onDeviceReady: function() {
-    ...
-    FollowAnalytics.handleDeeplink();
-    FollowAnalytics.on("onPushMessageClicked", function(data){
-        alert(JSON.stringify(data));
+onDeviceReady: () => {
+    FollowAnalytics.handleCallbacks();
+    FollowAnalytics.on("onNotificationTapped", (actionInfo) => {
+        alert(JSON.stringify(actionInfo));
     });
-    ...
 },
 ```
 
-* **PushMessageClicked**: When the user clicks on the push, you can retrieve all the added custom parameter as following:
+The SDK passes some Push campaign information to your app through this callback thanks to the `actionInfo` argument
 
-    ```javascript
-    FollowAnalytics.on("onPushMessageClicked",function(data) {
-        //The argument data is an object Json.You can retrieve your value by data.my_key key/value json
+| Properties                   | Type      | Usage                   | Description                                                                     |
+| ---------------------------- | --------- | ----------------------- | ------------------------------------------------------------------------------- |
+| `messageId`                  | string    | actionInfo.messageId          | Containing the FollowAnalytics campaign identifier.                             |
+| `identifier`                 | string    | actionInfo.identifier         | Containing the notification action button identifier defined in your code when customizing the notification (only doable on the native side of your app). |
+| `parameters`                 | object    | actionInfo.parameters.yourKey | Containing the key/value pairs defined in the campaign editor.                  |
+| `openingUrl`                 | string    | actionInfo.openingUrl         | Containing the app link  defined in the campaign editor.                        |
+
+
+### Implement custom behavior on Push reception
+
+You can implement a custom behavior when the device receives a message from a push campaign that contains custom parameters (i.e. at least one key/value pair). This can be used to fetch data from your server if a particular custom parameter is defined in the push message. To do so, implement the `onMessageReceived` callback in `followAnalytics_configuration.json`:
+
+```JSON
+    {
+        "apiKey" : "YOUR_API_KEY",
+        "isVerbose" : true,
+        "maxBackgroundTimeWithinSession" : 120,
+        "onMessageReceived" : true
+    }
+```
+
+!!! note "Use `cordova prepare "platform"`"
+    Don't forget to run `cordova prepare ios` and `cordova prepare android` to apply the changes on `followanalytics_configuration.json` file.
+
+To implement `onMessageReceived`, add the following code to the `onDeviceReady` Cordova callback:
+
+```JavaScript
+onDeviceReady: () => {
+    FollowAnalytics.handleCallbacks();
+    FollowAnalytics.on("onMessageReceived", (message) => {
+        alert(JSON.stringify(message));
     });
-    ```
+},
+```
 
-    The argument `data` is the javascript key-value object, you can retrieve the value by the key as following : `data["deepurl"]`
+The SDK passes some Push campaign information to your app through this callback thanks to the `message` argument:
 
+| Properties       | Type      | Description                                                                     |
+| -----------------| --------- | ------------------------------------------------------------------------------- |
+| `body`           | string    | Text provided in the platform's "Content" field of the Push campaign editor. |
+| `category`       | string    | Interactive notification action key (Android) or category (iOS)              |
+| `openingUrl`     | string    | Url provided in the platform's "App Link" field of the Push campaign editor. |
+| `identifier`     | string    | Unique message Identifier. |
+| `layout`         | string    | Return layout |
+| `parameters`     | object    | Key/Value pairs provided in the Push campaign editor. |
+| `type`           | string    | Return message type  |
+| `date`           | string    | If message comes from a Push campaign, this is the date at which the message is received on the device. If message comes from an In-App campaign, this is the start date of the campaign. |
+| `title`          | string    | Text provided in the platform's "Title" field of the Push campaign editor.                    |
+| `contentUrl`     | string    | Url provided in the platform's "URL" field of In-App Custom Web Page campaign editor. If the message comes from a Push campaign, this is the url of the Rich Media. |
+| `isInApp`        | boolean   | Returns `true` if message comes from a In-App campaign, `false` if it comes from a Push campaign. |
+| `isPush`         | boolean   | Returns `true` if message comes from a Push campaign, `false` if it comes from a In-App campaign. |
+| `isRead`         | boolean   | Indicates if the message has been read or not. False at message reception.  |
+| `isSilent`       | boolean   | Returns `true` if message comes from a Push campaign with the "Silent" option enabled, `false` otherwise.  |
+| `isNotificationDismissed`    | boolean   | This property returns `true` if the notification has been dismissed, `false` otherwise. |
+| `notificationId` | integer   | If message comes from a Push campaign, this is the system notification identifier. |
+| `subtitle`       | boolean   | Text provided in the platform's "Subtitle" field of the Push campaign editor.|
+
+### Implement custom behavior on Native Alert button tap
+
+You can implement a custom behavior when the user taps on a **Native Alert** button by implementing the `onNativeInAppButtonTapped` callback in the `followanalytics_configuration.json`. This allows you to perform specific actions when a native alert button is tapped:
+
+```JSON
+    {
+        "apiKey" : "YOUR_API_KEY",
+        "isVerbose" : true,
+        "maxBackgroundTimeWithinSession" : 120,
+        "onNativeInAppButtonTapped" : true
+    }
+```
+
+!!! note "Use `cordova prepare "platform"`"
+    Don't forget to run `cordova prepare ios` and `cordova prepare android` to apply the changes on `followanalytics_configuration.json` file.
+
+!!! note "App Link" 
+    On Android the `onNativeInAppButtonTapped` is not called when the taps on a App Link button. It's only called on iOS.
+
+To implement `onNativeInAppButtonTapped`, add the following code to the `onDeviceReady` Cordova callback:
+
+```JavaScript
+onDeviceReady: () => {
+    FollowAnalytics.handleCallbacks();
+    FollowAnalytics.on("onNativeInAppButtonTapped", (actionInfo) => {
+        alert(JSON.stringify(actionInfo));
+    });
+},
+```
+
+The SDK passes some Native Alert campaign information to your app through this callback thanks to the `actionInfo` argument:
+
+| Properties                   | Type      | Usage                   | Description                                                                     |
+| ---------------------------- | --------- | ----------------------- | ------------------------------------------------------------------------------- |
+| `messageId`                  | string    | actionInfo.messageId          | Containing the FollowAnalytics campaign identifier. This field is only set on iOS and will always be undefined on Android. |
+| `parameters`                 | object    | actionInfo.parameters.yourKey | Containing the key/value pairs defined in the campaign editor.                  |
+| `openingUrl`                 | string    | actionInfo.openingUrl         | Containing the app link  defined in the campaign editor. This field is only set on iOS and will always be undefined on Android. |
 
 ### Pausing in-app campaigns
 
@@ -901,6 +1002,37 @@ FollowAnalytics.InApp.delete([identifier1, identifier2, ...]);
 FollowAnalytics.Push.delete([identifier1, identifier2, ...]);
 ```
 
+The JavaScript object contains the following properties:
+
+| Properties       | Type      | Description                                                                     |
+| -----------------| --------- | ------------------------------------------------------------------------------- |
+| `body`           | string    | Text provided in the platform's "Content" field of the Push campaign editor. |
+| `category`       | string    | Interactive notification action key (Android) or category (iOS) |
+| `openingUrl`     | string    | Url provided in the platform's "App Link" field of the Push campaign editor. |
+| `identifier`     | string    | Unique message Identifier. |
+| `layout`         | string    | Return layout |
+| `parameters`     | object    | Key/Value pairs provided in the Push campaign editor. |
+| `type`           | string    | Return message type  |
+| `date`           | string    | If message comes from a Push campaign, this is the date at which the message is received on the device. If message comes from an In-App campaign, this is the start date of the campaign. |
+| `title`          | string    | Text provided in the platform's "Title" field of the Push campaign editor.                    |
+| `contentUrl`     | string    | Url provided in the platform's "URL" field of In-App Custom Web Page campaign editor. If the message comes from a Push campaign, this is the url of the Rich Media. |
+| `isInApp`        | boolean   | Returns `true` if message comes from a In-App campaign, `false` if it comes from a Push campaign. |
+| `isPush`         | boolean   | Returns `true` if message comes from a Push campaign, `false` if it comes from a In-App campaign. |
+| `isRead`         | boolean   | Indicates if the message has been read or not. False at message reception.  |
+| `isSilent`       | boolean   | Returns `true` if message comes from a Push campaign with the "Silent" option enabled, `false` otherwise.  |
+
+##### Android only:
+| Properties                  | Type      | Description                                                                     |
+| ----------------------------| --------- | ------------------------------------------------------------------------------- |
+| `isNotificationDismissed` | boolean   | This property returns `true` if the notification has been dismissed, `false` otherwise. |
+| `notificationId`          | integer   | If message comes from a Push campaign, this is the Android notification identifier. |
+
+##### iOS only:
+| Properties | Type      | Description                                                                     |
+| -----------| --------- | ------------------------------------------------------------------------------- |
+| `subtitle` | boolean   | Text provided in the platform's "Subtitle" field of the Push campaign editor.|
+| `notificationId` | string   | If message comes from a Push campaign, this is the `UNNotificationRequest` unique identifier (iOS >= 10.0), otherwise it's `null`|
+
 ### Opening an external webview
 
 The plugin allows you to launch a native web view with a given `url` and be able to performs logs from that external resource. In order to do so, if you want to open url `https://s3-eu-west-1.amazonaws.com/fa-sdk-files/index.html` in a native web view launched from your html code, call the following method from your PhoneGap HTML:
@@ -929,6 +1061,10 @@ Current available methods are:
 **NOTE**: if you're tagging from a link and the link has a real `href` set, the SDK will handle that for you, performing the `onclick` action and redirecting you right after.
 
 ## Migration and Troubleshooting
+
+### Updating from 6.4.0 to 7.0.0
+- Deep Link event `onPushMessageClicked` was been replaced by `onNotificationTapped` callback. If you were using `onPushMessageClicked` to handle notification tap event, consider to move your implementation to `onNotificationTapped`, as `onPushMessageClicked` no longer exists. See implementation details [here.](sdks/phonegap/documentation/#implement-custom-behavior-on-notification-tap)
+- If you were calling `FollowAnalytics.handleDeepLink()` in the `onDeviceReady` callback, replace this call by a call to `FollowAnalytics.handleCallbacks()`.
 
 ### Updating from 6.3.0 to 6.3.1
 - Calling `FABage.enable()` on the native side is no longer necessary to enable the bagde feature. Now the SDK automatically handles the badge number from the received campaigns.

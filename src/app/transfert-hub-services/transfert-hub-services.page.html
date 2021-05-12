@@ -1,32 +1,24 @@
 <ion-header [oemIonHeaderParallax]="90">
   <ion-toolbar>
     <ion-buttons>
-      <ion-back-button
-        (click)="goBack()"
-        icon=""
-        class="oem-back-button"
-      >
+      <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
     <ion-title> {{pageTitle}} </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content
-  no-bounce
-  has-bouncing="false"
-  forceOverscroll="false"
-  fullscreen="true"
-  [scrollEvents]="true"
->
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <div class="transferts-page">
-    <div class="ion-cards-container" *ngIf="options.length">
+    <div class="ion-cards-container" *ngIf="options?.length">
       <ng-container *ngFor="let opt of options">
-        <div class="card" *ngIf="opt.code !== OPERATION_TYPE_PASS_ALLO" [ngClass]="{'disabled': !opt.activated}">
+        <div class="card" *ngIf="!isServiceHidden(opt)" [ngClass]="{'disabled': !opt.activated}">
           <ion-card (click)="goTo(opt)" class="card-content" button="true">
             <ion-card-content>
               <div class="icon">
-                <img-loader [spinner]="true" class="img" [src]="opt.icone" fallbackUrl="/assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
+                <img-loader [spinner]="true" class="img" [src]="opt.icone"
+                  fallbackUrl="/assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg>
+                </img-loader>
               </div>
               <div class="text">
                 <span class="title"> {{opt.shortDescription}} </span>
@@ -34,19 +26,14 @@
               </div>
             </ion-card-content>
           </ion-card>
-          <div
-            class="badge-promo"
-            *ngIf="displayBadgeBoosterPromoInOptionsForCategory(hasBoosterPromoActive, opt) || displayBadgeOfferPlanForInOptionsCategory(hasPromoPlanActive, opt)"
-          >
+          <div class="badge-promo"
+            *ngIf="displayBadgeBoosterPromoInOptionsForCategory(hasBoosterPromoActive, opt) || displayBadgeOfferPlanForInOptionsCategory(hasPromoPlanActive, opt)">
             <div class="icon-container">
               <span class="percent scb-text-white"> % </span>
             </div>
             <div class="triangle"></div>
           </div>
-          <div
-            class="badge-promo"
-            *ngIf="opt.newOffer"
-          >
+          <div class="badge-promo" *ngIf="opt.newOffer">
             <div class="icon-container">
               <span class="new scb-text-white"> Nouveau </span>
             </div>
@@ -55,19 +42,59 @@
         </div>
       </ng-container>
     </div>
-    <ng-container *ngIf="purchaseType === 'BUY' && ( favoritesPass && favoritesPass.passInternets.length || favoritesPass && favoritesPass.passIllimixes.length)">
+    <ng-container *ngIf="passUsages?.length">
+      <div class="pass-usage-block">
+        <div class="pass-usage-title">Autres pass</div>
+        <div class="ion-cards-container">
+          <ng-container *ngFor="let opt of passUsages">
+            <div class="card" *ngIf="!isServiceHidden(opt)" [ngClass]="{'disabled': !opt.activated}">
+              <ion-card (click)="goTo(opt)" class="card-content" button="true">
+                <ion-card-content>
+                  <div class="icon">
+                    <img-loader [spinner]="true" class="img" [src]="opt.icone"
+                      fallbackUrl="/assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg>
+                    </img-loader>
+                  </div>
+                  <div class="text">
+                    <span class="title"> {{opt.shortDescription}} </span>
+                    <span class="subtitle"> {{opt.fullDescription}} </span>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+              <div class="badge-promo"
+                *ngIf="displayBadgeBoosterPromoInOptionsForCategory(hasBoosterPromoActive, opt) || displayBadgeOfferPlanForInOptionsCategory(hasPromoPlanActive, opt)">
+                <div class="icon-container">
+                  <span class="percent scb-text-white"> % </span>
+                </div>
+                <div class="triangle"></div>
+              </div>
+              <div class="badge-promo" *ngIf="opt.newOffer">
+                <div class="icon-container">
+                  <span class="new scb-text-white"> Nouveau </span>
+                </div>
+                <div class="triangle"></div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container
+      *ngIf="purchaseType === 'BUY' && ( favoritesPass && favoritesPass.passInternets.length || favoritesPass && favoritesPass.passIllimixes.length)">
       <div class="favorite-pass-container">
         <div class="title">
           <span class="text">
             Mes habitudes
           </span>
         </div>
-        <ng-container  *ngIf="favoritesPass && favoritesPass.passInternets.length">
-          <app-item-pass-internet *ngFor="let passInternet of favoritesPass.passInternets" [passInternet]="passInternet" (selectPass)="choosePass(passInternet, OPERATION_TYPE_PASS_INTERNET)">
+        <ng-container *ngIf="favoritesPass && favoritesPass.passInternets.length">
+          <app-item-pass-internet *ngFor="let passInternet of favoritesPass.passInternets" [passInternet]="passInternet"
+            (selectPass)="choosePass(passInternet, OPERATION_TYPE_PASS_INTERNET)">
           </app-item-pass-internet>
         </ng-container>
-        <ng-container  *ngIf="favoritesPass && favoritesPass.passIllimixes.length">
-          <app-item-pass-illimix *ngFor="let passIllimix of favoritesPass.passIllimixes" [passIllimix]="passIllimix" (selectPass)="choosePass(passIllimix, OPERATION_TYPE_PASS_ILLIMIX)">
+        <ng-container *ngIf="favoritesPass && favoritesPass.passIllimixes.length">
+          <app-item-pass-illimix *ngFor="let passIllimix of favoritesPass.passIllimixes" [passIllimix]="passIllimix"
+            (selectPass)="choosePass(passIllimix, OPERATION_TYPE_PASS_ILLIMIX)">
           </app-item-pass-illimix>
         </ng-container>
       </div>
@@ -79,7 +106,8 @@
     </ng-container>
     <ng-container>
       <div *ngIf="servicesHasError">
-        <span class="scb-text-red-error" (click)="getServices()">N'a pas pu charger les services. Réactualisez ici</span>
+        <span class="scb-text-red-error" (click)="getServices()">Nous n'avons pas pu charger vos services. Veuillez
+          réessayer</span>
       </div>
     </ng-container>
   </div>

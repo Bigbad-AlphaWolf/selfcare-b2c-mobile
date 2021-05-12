@@ -340,6 +340,11 @@ body {
 .#{$prefix}-text-light-blue {
   color: $lightBlue;
 }
+
+.#{$prefix}-text-green-success {
+  color: $greenSuccess;
+}
+
 .c-pointer {
   cursor: pointer;
 }
@@ -423,4 +428,14 @@ $bluePopUp: #085ebd;
   height: 100%;
   top: 0;
   left: 0;
+}
+
+.header-image,
+.banner-container {
+  img-loader {
+    width: 100% !important;
+    img {
+      width: 100% !important;
+    }
+  }
 }

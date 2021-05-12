@@ -60,6 +60,8 @@ import { IdentifiedNumbersListComponent } from 'src/app/pages/rattached-phones-n
 import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-phones-number/components/choose-rattachement-type-modal/choose-rattachement-type-modal.component';
 import { YesNoModalComponent } from './yes-no-modal/yes-no-modal.component';
 import { SimpleOperationSuccessModalComponent } from './simple-operation-success-modal/simple-operation-success-modal.component';
+import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
+import { PassUsageItemComponent } from './pass-usage-item/pass-usage-item.component';
 
 @NgModule({
   declarations: [
@@ -109,6 +111,8 @@ import { SimpleOperationSuccessModalComponent } from './simple-operation-success
     RapidoSoldeComponent,
     YesNoModalComponent,
     SimpleOperationSuccessModalComponent,
+    BanniereDescriptionPage,
+    PassUsageItemComponent,
   ],
   imports: [
     CommonModule,
@@ -149,6 +153,7 @@ import { SimpleOperationSuccessModalComponent } from './simple-operation-success
     ChooseRattachementTypeModalComponent,
     YesNoModalComponent,
     SimpleOperationSuccessModalComponent,
+    BanniereDescriptionPage,
   ],
   exports: [
     BanniereComponent,
@@ -196,6 +201,7 @@ import { SimpleOperationSuccessModalComponent } from './simple-operation-success
     PipesModule,
     YesNoModalComponent,
     SimpleOperationSuccessModalComponent,
+    PassUsageItemComponent,
   ],
   providers: [
     Contacts,

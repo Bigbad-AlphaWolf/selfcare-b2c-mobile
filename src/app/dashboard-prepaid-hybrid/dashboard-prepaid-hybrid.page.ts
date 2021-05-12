@@ -54,6 +54,7 @@ import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amoun
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 import { OffresServicesPage } from '../pages/offres-services/offres-services.page';
 import { OperationService } from '../services/oem-operation/operation.service';
+import { OffreService } from '../models/offre-service.model';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -113,6 +114,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   sargalStatusUnavailable: boolean;
   noSargalProfil: boolean;
   sargalStatus: string;
+  showMerchantPay: boolean;
+  currentMsisdn = this.dashbordServ.getCurrentPhoneNumber();
+
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -135,6 +139,20 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.getUserInfos();
     this.getWelcomeStatus();
+  }
+
+  checkMerchantPayment() {
+    this.showMerchantPay = false;
+    this.operationService
+      .getServicesByFormule()
+      .subscribe((allServices: OffreService[]) => {
+        const merchantService = allServices.find(
+          (service) => service.code === OPERATION_TYPE_MERCHANT_PAYMENT
+        );
+        if (merchantService) {
+          this.showMerchantPay = merchantService.activated;
+        }
+      });
   }
 
   checkOMNumber() {
@@ -165,6 +183,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.getUserActiveBonPlans();
     this.getActivePromoBooster();
     this.checkOMNumber();
+    this.checkMerchantPayment();
     this.banniereServ.getListBanniereByFormuleByZone().subscribe((res: any) => {
       this.listBanniere = res;
     });
@@ -184,6 +203,11 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.noSargalProfil = false;
     this.sargalServ.getCustomerSargalStatus().subscribe(
       (sargalStatus: SargalStatusModel) => {
+        this.followAnalyticsService.registerEventFollow(
+          'Affichage_profil_sargal_success',
+          'event',
+          this.currentMsisdn
+        );
         if (!sargalStatus.valid) {
           this.sargalStatusUnavailable = true;
         }
@@ -193,6 +217,11 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         this.ref.detectChanges();
       },
       (err: any) => {
+        this.followAnalyticsService.registerEventFollow(
+          'Affichage_profil_sargal_error',
+          'error',
+          { msisdn: this.currentMsisdn, error: err.status }
+        );
         this.isLoading = false;
         if (err.status === 400) {
           this.noSargalProfil = true;
@@ -266,8 +295,18 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         this.userSargalData = res;
         this.sargalLastUpdate = getLastUpdatedDateTimeText();
         this.sargalDataLoaded = true;
+        this.followAnalyticsService.registerEventFollow(
+          'Affichage_solde_sargal_success',
+          'event',
+          currentNumber
+        );
       },
-      () => {
+      (err) => {
+        this.followAnalyticsService.registerEventFollow(
+          'Affichage_solde_sargal_error',
+          'error',
+          { msisdn: currentNumber, error: err.status }
+        );
         this.sargalDataLoaded = true;
         if (!this.userSargalData) {
           this.sargalUnavailable = true;
@@ -284,7 +323,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     return SARGAL_UNSUBSCRIPTION_ONGOING;
   }
 
-  makeSargalAction() {
+  makeSargalAction(origin?: string) {
     if (
       this.userSargalData &&
       (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED ||
@@ -292,22 +331,35 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       this.sargalDataLoaded
     ) {
       this.followAnalyticsService.registerEventFollow(
-        'Sargal-registration-page',
+        'Sargal_registration_card_clic',
         'event',
         'clicked'
       );
       this.router.navigate(['/sargal-registration']);
     } else if (!this.sargalUnavailable && this.sargalDataLoaded) {
-      this.followAnalyticsService.registerEventFollow(
-        'Sargal-dashboard',
-        'event',
-        'clicked'
-      );
+      if (origin === 'card') {
+        this.followAnalyticsService.registerEventFollow(
+          'Sargal_dashboard_card_clic',
+          'event',
+          'clicked'
+        );
+      } else {
+        this.followAnalyticsService.registerEventFollow(
+          'Dashboard_Convertir_Sargal_clic',
+          'event',
+          'clicked'
+        );
+      }
       this.goToSargalDashboard();
     }
   }
 
   seeSargalCard() {
+    this.followAnalyticsService.registerEventFollow(
+      'Sargal_profil',
+      'event',
+      'clicked'
+    );
     this.router.navigate(['/sargal-status-card']);
   }
 
@@ -341,23 +393,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         this.creditValidity = dateDMY;
       }
     });
-  }
-
-  goToIllimixPage() {
-    this.followAnalyticsService.registerEventFollow(
-      'Pass_illimix_dashboard',
-      'event',
-      'clicked'
-    );
-  }
-
-  goToTransfertOM() {
-    this.followAnalyticsService.registerEventFollow(
-      'Transfert_OM_dashboard',
-      'event',
-      'clicked'
-    );
-    this.router.navigate(['/transfer/orange-money']);
   }
 
   hideMenu() {
@@ -405,30 +440,10 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     };
   }
 
-  transferCreditOrPass() {
-    // if (!this.canDoSOS || this.canTransferBonus) {
-    this.followAnalyticsService.registerEventFollow(
-      'Transfert_dashboard',
-      'event',
-      'clicked'
-    );
-    this.router.navigate(['/transfer/credit-bonus']);
-    // }
-  }
-
-  showSoldeOM() {
-    this.router.navigate(['activate-om']);
-    this.followAnalyticsService.registerEventFollow(
-      'Click_Voir_solde_OM_dashboard',
-      'event',
-      'clicked'
-    );
-  }
-
   goToSOSPage() {
     if (this.canDoSOS) {
       this.followAnalyticsService.registerEventFollow(
-        'Recharge_dashboard',
+        'Dashboard_sos_clic',
         'event',
         'clicked'
       );
@@ -436,25 +451,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     }
   }
 
-  goBuyCredit() {
-    this.followAnalyticsService.registerEventFollow(
-      'Recharge_dashboard',
-      'event',
-      'clicked'
-    );
-    this.router.navigate(['/buy-credit']);
-  }
-
-  goBuyPassInternet() {
-    this.followAnalyticsService.registerEventFollow(
-      'Pass_internet_dashboard',
-      'event',
-      'clicked'
-    );
-  }
-
   goDetailsCom(number?: number) {
-    this.router.navigate(['/new-deplafonnement-om']);
     number
       ? this.followAnalyticsService.registerEventFollow(
           'Voirs_details_dashboard',
@@ -466,15 +463,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
           'event',
           'clicked'
         );
-  }
-
-  hidePromoBarner() {
-    this.followAnalyticsService.registerEventFollow(
-      'Banner_close_dashboard',
-      'event',
-      'Mobile'
-    );
-    this.showPromoBarner = false;
   }
 
   onError(input: { el: HTMLElement; display: boolean }[]) {
@@ -522,14 +510,28 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goToTransfertsPage() {
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_hub_transfert_clic',
+      'event',
+      'clicked'
+    );
     this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
   }
 
   goToBuyPage() {
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_hub_achat_clic',
+      'event',
+      'clicked'
+    );
     this.appliRouting.goToTransfertHubServicesPage('BUY');
   }
 
   goMerchantPayment() {
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_paiement_marchand_clic',
+      'event'
+    );
     this.omServ.omAccountSession().subscribe(async (omSession: any) => {
       const omSessionValid = omSession
         ? omSession.msisdn !== 'error' &&
@@ -544,7 +546,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
             PurchaseSetAmountPage.ROUTE_PATH
           )
           .subscribe((_) => {});
-        this.bsService.openModal(MerchantPaymentCodeComponent);
+        this.bsService.openModal(MerchantPaymentCodeComponent, {
+          omMsisdn: omSession.msisdn,
+        });
       } else {
         this.openPinpad();
       }
@@ -552,6 +556,11 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   onPayerFacture() {
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_hub_facture_clic',
+      'event',
+      'clicked'
+    );
     this.router.navigate([BillsHubPage.ROUTE_PATH]);
   }
 

@@ -23,9 +23,13 @@
  */
 @property(nullable, class, nonatomic, readwrite, strong) FAPushBase* shared;
 
-- (void) requestNotificationAuthorization;
+- (void)requestNotificationAuthorization;
 
-- (void) requestProvisionalNotificationAuthorization API_AVAILABLE(ios(12));
+- (void)requestProvisionalNotificationAuthorization API_AVAILABLE(ios(12));
+
+- (void)openNotificationSettingsEventually;
+
+- (void)getPushNotificationsRegistrationStatus:(nonnull void (^)(BOOL isRegistered))completionHandler;
 
 /**
  Handles incomming deviceTokens after registration. It should use os specific functions to determine

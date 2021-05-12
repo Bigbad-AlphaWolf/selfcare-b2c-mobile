@@ -51,15 +51,33 @@ require('cordova/channel').onCordovaReady.subscribe(function () {
 var FollowAnalytics = {
     initialized: false,
     _handlers: {
-        'onPushMessageClicked': [],
-        'onPushDeeplinkingClicked': [],
-        'onInAppMessageClicked': []
+        'onNotificationTapped': [],
+        'onNativeInAppButtonTapped': [],
+        'onMessageReceived': [],
+        'onConsoleLog': []
     },
 
     Gender: {
         MALE: 1,
         FEMALE: 2,
         OTHER: 3
+    },
+    initialize: function (faid, debug_mode) {
+        const platformOS = window.cordova.platformId;
+        if (platformOS === "ios") {
+            this.initialized = true;
+            __executeCordova("initialize", faid, debug_mode);
+        }
+    },
+    registerForShouldOpenURL: function (callback) {
+        var success = function (url) {
+            callback(url);
+            this.registerForShouldOpenURL(callback);
+        }.bind(this);
+        var error = function (error) {
+            callback(error);
+        }.bind(this);
+        __executeCordovaWithCallBack(success, error, 'registerForShouldOpenURL');
     },
     getUserId: function (callback) {
         var success = function (result) {
@@ -91,6 +109,20 @@ var FollowAnalytics = {
         }.bind(this);
         __executeCordovaWithCallBack(success, null, "getSDKVersion");
     },
+    Badge:{
+        get: function (callback) {
+            var success = function (result) {
+                callback(null, result);
+            }.bind(this);
+            __executeCordovaWithCallBack(success, null, "badgeGet");
+        },
+        set: function (number) {
+            __executeCordova("badgeSet", number);
+        },
+        updateBy: function (number) {
+            __executeCordova("badgeUpdateBy", number);
+        },
+    },
     logEvent: function (eventName, eventDetails) {
         __executeCordova("logEvent", eventName, eventDetails);
     },
@@ -102,6 +134,12 @@ var FollowAnalytics = {
     },
     registerForPush: function () {
         __executeCordova("registerForPush");
+    },
+    isRegisteredForPushNotifications: function (callback) {
+        var success = function (result) {
+            callback(null, result);
+        }.bind(this);
+        __executeCordovaWithCallBack(success, null, "isRegisteredForPushNotifications");
     },
     setUserId: function (userId) {
         __executeCordova("setUserId", userId);
@@ -117,6 +155,9 @@ var FollowAnalytics = {
             closeButtonTitle = (closeButtonTitle.length > 0) ? closeButtonTitle : null;
             __executeCordova("openWebView", url, title, closeButtonTitle);
         }
+    },
+    openNotificationSettingsIfNeeded: () => {
+        __executeCordova("openNotificationSettingsIfNeeded");
     },
     retrieveLastMessage: function (callback, senderId) {
         var success = function (result) {
@@ -156,13 +197,13 @@ var FollowAnalytics = {
         }
         return true;
     },
-    handleDeeplink: function (callback) {
+    handleCallbacks: function (callback) {
         var success = function (result) {
             if (result) {
                 this.emit(result.event, result);
             }
         }.bind(this);
-        __executeCordovaWithCallBack(success, null, "handleDeeplink", [])
+        __executeCordovaWithCallBack(success, null, "handleCallbacks", [])
     },
     InApp: {
         pauseCampaignDisplay: function () {
@@ -296,6 +337,19 @@ var FollowAnalytics = {
         }.bind(this);
         __executeCordovaWithCallBack(success, error, "getOptInAnalytics", []);
     },
+    setOptInNotifications: function (value) {
+        __executeCordova("setOptInNotifications", value);
+    },
+    getOptInNotifications: function (callback) {
+        var success = function (result) {
+            callback(null, result);
+        }.bind(this);
+        var error = function (error) {
+            callback(error);
+        }.bind(this);
+        __executeCordovaWithCallBack(success, error, "getOptInNotifications", []);
+    },
+
     GDPR: {
         requestToAccessMyData: function () {
             __executeCordova("requestToAccessMyData", []);
@@ -328,5 +382,5 @@ var FollowAnalytics = {
         },
     }
 };
-    
+
 module.exports = FollowAnalytics;

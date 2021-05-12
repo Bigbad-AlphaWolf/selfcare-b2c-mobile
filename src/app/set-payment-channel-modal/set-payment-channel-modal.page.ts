@@ -9,6 +9,7 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 })
 export class SetPaymentChannelModalPage implements OnInit {
   @Input() pass;
+  @Input() passIlliflex;
   selectedPaymentChannel: 'CREDIT' | 'ORANGE_MONEY';
   soldeCredit;
 

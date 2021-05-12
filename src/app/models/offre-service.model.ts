@@ -18,12 +18,20 @@ export interface OffreService {
   reasonDeactivation?: string;
   clicked?: boolean;
   newOffer?: boolean;
+  passUsage?: boolean;
   iconeBackground?: string;
   banniere?: string;
+  besoinAide?: boolean;
+  typeService?: string;
+  question?: string;
+  reponse?: string;
+  countTermMached?: number;
+  countFiedMached?: number;
 }
 
 export interface CategoryOffreServiceModel {
-  categorieOffreServices?: any[];
+  id?: number;
+  categorieOffreServices?: CategoryOffreServiceModel[];
   description?: string;
   libelle?: string;
   niveau?: string;

@@ -1,9 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import { from } from 'rxjs';
+import { from, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { OffreService } from 'src/app/models/offre-service.model';
+import {
+  CategoryOffreServiceModel,
+  OffreService,
+} from 'src/app/models/offre-service.model';
 import { SubscriptionModel } from 'src/shared';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
@@ -36,18 +39,43 @@ export class OperationService {
       endpointOffresServices += `/${codeFormule}?typeResearch=FORMULE`;
     }
     return this.http.get(endpointOffresServices).pipe(
-      switchMap((categories) => {
-        console.log(categories);
+      switchMap((subcategories: CategoryOffreServiceModel[]) => {
         return this.getServicesByFormule().pipe(
           map((services) => {
+            let categories: CategoryOffreServiceModel[];
+            // get array of array of parent categories (eg: [[cat1], [cat2], [cat3]])
+            const categoriesArray = subcategories.map((sub) => {
+              return sub.categorieOffreServices;
+            });
+
+            // concat to get parent categories like [cat1, cat2, cat3]
+            categories = [].concat.apply([], categoriesArray);
+
+            // filter to remove duplicates
+            categories = categories.filter(
+              (category, categoryIndex, array) =>
+                array.findIndex((t) => t.id === category.id) === categoryIndex
+            );
+
+            // insert into every parent category its subcategories
+            categories.forEach((element) => {
+              element.categorieOffreServices = [];
+              for (let subCategory of subcategories) {
+                if (
+                  subCategory.categorieOffreServices &&
+                  subCategory.categorieOffreServices
+                    .map((s) => s.id)
+                    .includes(element.id)
+                ) {
+                  element.categorieOffreServices.push(subCategory);
+                }
+              }
+            });
+            // categories = categories.flat(1);
             return { categories, services };
           })
         );
       })
-      // map((r: any[]) => {
-      //   this.offresServices = r;
-      //   return r;
-      // })
     );
   }
 
@@ -59,13 +87,14 @@ export class OperationService {
     return this.http.get(`${ALL_SERVICES_ENDPOINT}?page=0&size=100`);
   }
 
-  getServicesByFormule(hub?: string) {
+  getServicesByFormule(category?: string, isBesoinAide?: boolean) {
     const msisdn = this.dashboardService.getCurrentPhoneNumber();
     return this.authenticationService.getSubscription(msisdn).pipe(
       switchMap((customerOffer: SubscriptionModel) => {
         const versionObservable = from(this.appVersion.getVersionNumber());
         let queryParams = `?code=${customerOffer.code}`;
-        if (hub) queryParams += `&hub=${hub}`;
+        if (category) queryParams += `&categorie=${category}`;
+        if (isBesoinAide) queryParams += `&besoinAide=${isBesoinAide}`;
         return versionObservable.pipe(
           switchMap((appVersion) => {
             queryParams += `&version=${appVersion}`;
@@ -104,8 +133,8 @@ export class OperationService {
     offerService.banniere = offerService.banniere
       ? `${this.FILE_MANAGER_BASE_URL}/${offerService.banniere}`
       : '';
-    offerService.iconeBackground = offerService.iconeBackground
-      ? `${this.FILE_MANAGER_BASE_URL}/${offerService.iconeBackground}`
-      : '';
+    // offerService.iconeBackground = offerService.iconeBackground
+    //   ? `${this.FILE_MANAGER_BASE_URL}/${offerService.iconeBackground}`
+    //   : '';
   }
 }

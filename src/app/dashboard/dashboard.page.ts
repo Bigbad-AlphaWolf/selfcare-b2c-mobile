@@ -165,7 +165,7 @@ export class DashboardPage implements OnInit, OnDestroy {
           this.router.navigate([DashboardService.CURRENT_DASHBOARD]);
           this.checkForUpdate();
           this.followAnalyticsService.registerEventFollow(
-            'dashboard',
+            'Dashboard_displayed',
             'event',
             {
               msisdn: currentNumber,

@@ -131,10 +131,6 @@ const routes: Routes = [
   },
   // { path: 'bills', loadChildren: './bills/bills.module#BillsPageModule' },
   {
-    path: 'assistance',
-    loadChildren: './assistance/assistance.module#AssistancePageModule',
-  },
-  {
     path: 'forgotten-password',
     loadChildren:
       './forgotten-password/forgotten-password.module#ForgottenPasswordPageModule',
@@ -143,11 +139,6 @@ const routes: Routes = [
     path: 'sargal-registration',
     loadChildren:
       './sargal/components/sargal-registration/sargal-registration.module#SargalRegistrationPageModule',
-  },
-  {
-    path: 'contact-us',
-    loadChildren:
-      './assistance/containers/contact-us/contact-us.module#ContactUsPageModule',
   },
   {
     path: 'apropos',
@@ -308,11 +299,6 @@ const routes: Routes = [
       './pages/offres-services/offres-services.module#OffresServicesPageModule',
   },
   {
-    path: 'banniere-description',
-    loadChildren:
-      './pages/banniere-description/banniere-description.module#BanniereDescriptionPageModule',
-  },
-  {
     path: 'dalal-tones',
     loadChildren: './dalal-tones/dalal-tones.module#DalalTonesPageModule',
   },
@@ -379,8 +365,17 @@ const routes: Routes = [
     path: 'reclamation-om-transaction',
     loadChildren:
       './pages/reclamation-om-transaction/reclamation-om-transaction.module#ReclamationOmTransactionPageModule',
-  },  { path: 'new-deplafonnement-om', loadChildren: './new-deplafonnement-om/new-deplafonnement-om.module#NewDeplafonnementOmPageModule' },
-
+  },
+  {
+    path: 'new-deplafonnement-om',
+    loadChildren:
+      './new-deplafonnement-om/new-deplafonnement-om.module#NewDeplafonnementOmPageModule',
+  },
+  {
+    path: 'list-pass-usage',
+    loadChildren:
+      './list-pass-usage/list-pass-usage.module#ListPassUsagePageModule',
+  },
 ];
 
 @NgModule({

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { AssistanceService } from 'src/app/services/assistance.service';
-import { ItemBesoinAide } from 'src/shared';
+import { OffreService } from 'src/app/models/offre-service.model';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-assistance-questions',
@@ -9,36 +9,36 @@ import { ItemBesoinAide } from 'src/shared';
   styleUrls: ['./assistance-questions.component.scss'],
 })
 export class AssistanceQuestionsComponent implements OnInit {
-  listQuestions: ItemBesoinAide[];
+  listQuestions: OffreService[];
   loadingFAQ: boolean;
   displaySearchIcon: boolean = true;
   @ViewChild('searchInput') searchRef;
-  constructor(
-    private assistanceService: AssistanceService,
-    private navController: NavController
-  ) {}
+  constructor(private navController: NavController, private followAnalyticsService: FollowAnalyticsService) {}
 
   ngOnInit() {
     this.listQuestions = history.state.listFaqs;
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_faq_affichage_success',
+      'event'
+    );
   }
 
-  onInputChange($event){
+  onInputChange($event) {
     const inputvalue = $event.detail.value;
     this.displaySearchIcon = true;
-    if(inputvalue){
-      this.navController.navigateForward(['/assistance-hub/search'],{state:{listBesoinAides:this.listQuestions, search:inputvalue}});
+    if (inputvalue) {
+      this.navController.navigateForward(['/assistance-hub/search'], {
+        state: { listBesoinAides: this.listQuestions, search: inputvalue },
+      });
       this.displaySearchIcon = false;
     }
-    
   }
 
-  onClear(searchInput){
-    const inputValue : string =  searchInput.value;
-    searchInput.value = inputValue.slice(0,inputValue.length-1);
-    
+  onClear(searchInput) {
+    const inputValue: string = searchInput.value;
+    searchInput.value = inputValue.slice(0, inputValue.length - 1);
   }
 
-  
   goBack() {
     this.navController.pop();
   }

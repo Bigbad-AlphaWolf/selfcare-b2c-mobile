@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ItemBesoinAide } from 'src/shared';
+import { OffreService } from 'src/app/models/offre-service.model';
 
 @Pipe({
   name: 'searchAssistance',
@@ -7,7 +7,7 @@ import { ItemBesoinAide } from 'src/shared';
 export class SearchAssistancePipe implements PipeTransform {
   regTermSpanO = new RegExp(`<span class='motcle'>`, 'gi');
   regTermSpanF = new RegExp(`</span>`, 'gi');
-  searchfields = ['descCourte', 'descLong', 'question', 'reponse'];
+  searchfields = ['shortDescription', 'fullDescription', 'question', 'reponse'];
 
   transform(listBas: any[], args?: string): any {
     let newValue = listBas;
@@ -16,7 +16,7 @@ export class SearchAssistancePipe implements PipeTransform {
         let terms = args.trim().split(' ');
         if (terms.length > 0) {
           return listBas
-            .filter((ba: ItemBesoinAide) => {
+            .filter((ba: OffreService) => {
               ba.countTermMached = 0;
               for (let i = 0; i < terms.length; i++) {
                 ba.countFiedMached = this.countFieldMachedTerm(ba, terms[i]);
@@ -40,7 +40,7 @@ export class SearchAssistancePipe implements PipeTransform {
     return listBas;
   }
 
-  clearSpans(ba: ItemBesoinAide) {
+  clearSpans(ba: OffreService) {
     this.searchfields.forEach((f) => {
       if (ba[f])
         ba[f] = ba[f]
@@ -50,7 +50,7 @@ export class SearchAssistancePipe implements PipeTransform {
 
     return ba;
   }
-  countFieldMachedTerm(ba: ItemBesoinAide, term) {
+  countFieldMachedTerm(ba: OffreService, term) {
     let countMached = 0;
     const regTerm = new RegExp(term, 'i');
     this.searchfields.forEach((f) => {

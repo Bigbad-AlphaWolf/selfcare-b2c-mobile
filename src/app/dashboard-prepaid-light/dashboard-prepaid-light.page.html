@@ -136,25 +136,6 @@
   <div class="bons-plans" *ngIf="listBanniere && listBanniere?.length">
     Bons Plans
   </div>
-  <div *ngIf="listBanniere?.length" class="dashboard-img-promo slide-container">
-    <ion-slides pager [options]="{loop: true}">
-      <ng-container *ngFor="let banniere of listBanniere">
-        <ion-slide>
-          <span #error class="error-slide scb-text-full-black">
-            Erreur lors du chargement de l'image</span>
-          <div class="description" #description>
-            <div class="desc-title scb-text-white">
-              {{getBanniereTitle(banniere.description)}}
-            </div>
-            <div class="desc-text scb-text-white">
-              {{getBanniereDescription(banniere.description)}}
-            </div>
-          </div>
-          <div class="img-container" #imageContainer>
-            <img-loader [spinner]="true" class="icone" [src]="banniere.image" useImg></img-loader>
-          </div>
-        </ion-slide>
-      </ng-container>
-    </ion-slides>
-  </div>
+    <app-slide-banniere-dashboard [listBanniere]="listBanniere">
+    </app-slide-banniere-dashboard>
 </div>

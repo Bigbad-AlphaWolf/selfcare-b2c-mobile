@@ -49,7 +49,7 @@
                   *ngIf="filteredServices as offreServices">
                   <ng-container *ngFor="let operation of offreServices; index as i">
                     <oem-offre-service-card
-                      *ngIf="(operation.reasonDeactivation && operation.reasonDeactivation !== '') || operation.activated"
+                      *ngIf="!isServiceHidden(operation)"
                       [service]="operation">
                     </oem-offre-service-card>
                   </ng-container>

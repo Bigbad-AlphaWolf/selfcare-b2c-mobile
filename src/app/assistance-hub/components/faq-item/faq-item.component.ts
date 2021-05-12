@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ItemBesoinAide } from 'src/shared';
+import { OffreService } from 'src/app/models/offre-service.model';
 
 @Component({
   selector: 'app-faq-item',
@@ -7,7 +7,7 @@ import { ItemBesoinAide } from 'src/shared';
   styleUrls: ['./faq-item.component.scss'],
 })
 export class FaqItemComponent implements OnInit {
-  @Input() question: ItemBesoinAide;
+  @Input() question: OffreService;
   constructor() {}
 
   ngOnInit() {}

@@ -26,7 +26,7 @@
     <div class="illiflex-settings-page">
       <div class="config-illiflex-title scb-text-gray">
         Je tape le montant que je veux utiliser pour acheter un illiflex, la validité dépend du montant saisi. Le
-        montant doit être compris entre 500F et 15000F
+        montant doit être compris entre {{ minAmountIlliflex }}F et {{ maxAmountIlliflex }}F
       </div>
       <div class="select-validity-block" (click)="openModalSetAmount()">
         <span class="budget-title scb-text-gray">Montant</span>
@@ -48,6 +48,7 @@
               </ion-label>
             </ion-range>
           </ion-item>
+          <div class="help-slide scb-text-gray">Faites glisser pour modifier l'internet ou l'appel</div>
         </div>
       </div>
       <div class="amount-block">

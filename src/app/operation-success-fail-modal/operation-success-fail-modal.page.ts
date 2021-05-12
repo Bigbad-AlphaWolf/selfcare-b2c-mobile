@@ -17,11 +17,13 @@ import {
   getActiveBoostersForSpecificPass,
   OPERATION_CHANGE_PIN_OM,
   SubscriptionModel,
+  OPERATION_TYPE_PASS_VOYAGE,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
 import {
   OPERATION_RAPIDO,
+  OPERATION_TYPE_PASS_USAGE,
   OPERATION_WOYOFAL,
 } from '../utils/operations.constants';
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
@@ -31,6 +33,7 @@ import { BoosterService } from '../services/booster.service';
 import { GiftType } from '../models/enums/gift-type.enum';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-operation-success-fail-modal',
@@ -49,6 +52,8 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_ILLIFLEX_TYPE = OPERATION_TYPE_PASS_ILLIFLEX;
   OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM = OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM;
   OPERATION_CHANGE_PIN_OM = OPERATION_CHANGE_PIN_OM;
+  OPERATION_TYPE_PASS_VOYAGE = OPERATION_TYPE_PASS_VOYAGE;
+  OPERATION_TYPE_PASS_USAGE = OPERATION_TYPE_PASS_USAGE;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;
@@ -76,7 +81,7 @@ export class OperationSuccessFailModalPage implements OnInit {
     public modalController: ModalController,
     private appRouting: ApplicationRoutingService,
     private navCtrl: NavController,
-    private boosterService: BoosterService,
+    private followAnalyticsServ: FollowAnalyticsService,
     private authenticationService: AuthenticationService
   ) {}
 
@@ -106,7 +111,7 @@ export class OperationSuccessFailModalPage implements OnInit {
 
   checkifBuyerPostpaid() {
     this.authenticationService
-      .getSubscription(this.msisdnBuyer)
+      .getSubscription(this.dashboardService.getCurrentPhoneNumber())
       .subscribe((res: SubscriptionModel) => {
         this.isBuyerPostpaid = res && res.profil === PROFILE_TYPE_POSTPAID;
       });
@@ -114,9 +119,9 @@ export class OperationSuccessFailModalPage implements OnInit {
 
   terminer() {
     this.modalController.dismiss();
-    if (this.opXtras && this.opXtras.isLightMod){
+    if (this.opXtras && this.opXtras.isLightMod) {
       this.router.navigate(['/dashboard-prepaid-light']);
-    }else {
+    } else {
       this.router.navigate(['/dashboard']);
     }
   }
@@ -134,6 +139,11 @@ export class OperationSuccessFailModalPage implements OnInit {
         this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       case OPERATION_TYPE_PASS_ILLIMIX:
+        this.followAnalyticsServ.registerEventFollow(
+          'Achat_pass_illimix_recap_renouvellement',
+          'event',
+          'clicked'
+        );
         if (this.opXtras.recipientCodeFormule === CODE_KIRENE_Formule) {
           this.appRouting.goToBuyPassIllimixKirene();
         } else {
@@ -141,6 +151,11 @@ export class OperationSuccessFailModalPage implements OnInit {
         }
         break;
       case OPERATION_TYPE_PASS_INTERNET:
+        this.followAnalyticsServ.registerEventFollow(
+          'Achat_pass_internet_recap_renouvellement',
+          'event',
+          'clicked'
+        );
         if (this.opXtras.recipientCodeFormule === CODE_KIRENE_Formule) {
           this.appRouting.goToBuyPassInternetKirene();
         } else {
@@ -148,6 +163,11 @@ export class OperationSuccessFailModalPage implements OnInit {
         }
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
+        this.followAnalyticsServ.registerEventFollow(
+          'Achat_credit_recap_renouvellement',
+          'event',
+          'clicked'
+        );
         if (this.opXtras.code === CODE_KIRENE_Formule) {
           this.appRouting.goBuyCredit();
         } else {
@@ -155,9 +175,19 @@ export class OperationSuccessFailModalPage implements OnInit {
         }
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
+        this.followAnalyticsServ.registerEventFollow(
+          'Paiement_marchand_recap_renouvellement',
+          'event',
+          'clicked'
+        );
         this.appRouting.goToDashboard();
         break;
       case OPERATION_TRANSFER_OM:
+        this.followAnalyticsServ.registerEventFollow(
+          'OM_transfert_recap_renouvellement',
+          'event',
+          'clicked'
+        );
         if (this.opXtras.code === CODE_KIRENE_Formule) {
           this.navCtrl.pop();
         } else {
@@ -165,6 +195,11 @@ export class OperationSuccessFailModalPage implements OnInit {
         }
         break;
       case OPERATION_TRANSFER_OM_WITH_CODE:
+        this.followAnalyticsServ.registerEventFollow(
+          'OM_transfert_recap_renouvellement',
+          'event',
+          'clicked'
+        );
         if (this.opXtras.code === CODE_KIRENE_Formule) {
           this.navCtrl.pop();
         } else {
@@ -172,15 +207,35 @@ export class OperationSuccessFailModalPage implements OnInit {
         }
         break;
       case OPERATION_WOYOFAL:
+        this.followAnalyticsServ.registerEventFollow(
+          'Achat_woyofal_recap_renouvellement',
+          'event',
+          'clicked'
+        );
         this.navCtrl.navigateBack(BillsHubPage.ROUTE_PATH);
         break;
       case OPERATION_RAPIDO:
+        this.followAnalyticsServ.registerEventFollow(
+          'Recharge_rapido_recap_renouvellement',
+          'event',
+          'clicked'
+        );
         this.navCtrl.navigateBack(RapidoOperationPage.ROUTE_PATH);
         break;
       case OPERATION_ENABLE_DALAL:
+        this.followAnalyticsServ.registerEventFollow(
+          'Dalal_activation_recap_renouvellement',
+          'event',
+          'clicked'
+        );
         this.navCtrl.navigateBack(DalalTonesPage.ROUTE_PATH);
         break;
       case OPERATION_TYPE_PASS_ILLIFLEX:
+        this.followAnalyticsServ.registerEventFollow(
+          'Achat_pass_illiflex_recap_renouvellement',
+          'event',
+          'clicked'
+        );
         this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       default:

@@ -21,6 +21,8 @@ import {
   JAMONO_ALLO_CODE_FORMULE,
   SubscriptionModel,
   REGEX_FIX_NUMBER,
+  USER_CONS_CATEGORY_CALL,
+  ItemUserConso,
 } from 'src/shared';
 import { DOCUMENT } from '@angular/platform-browser';
 import { SessionOem } from '../session-oem/session-oem.service';
@@ -154,6 +156,14 @@ export class DashboardService {
   getUserConsoInfos() {
     this.msisdn = this.getCurrentPhoneNumber();
     return this.http.get(`${userConsoEndpoint}/${this.msisdn}`);
+  }
+
+  getUserCallCompteursInfos() {
+    return this.getUserConsoInfosByCode().pipe(
+      map((res: ItemUserConso[]) => {
+        return res.find((elt) => elt.categorie === USER_CONS_CATEGORY_CALL);
+      })
+    );
   }
 
   getCurrentDate() {
@@ -392,9 +402,8 @@ export class DashboardService {
       s.src =
         'https://sonatel.dimelochat.com/chat/b25dc90dcaed229e01ff8ffe/loader.js';
       s.id = 'initDimelo';
-      const first: HTMLScriptElement = document.getElementsByTagName(
-        'script'
-      )[0];
+      const first: HTMLScriptElement =
+        document.getElementsByTagName('script')[0];
       first.parentNode.insertBefore(s, first);
     }
   }
@@ -440,27 +449,26 @@ export class DashboardService {
       queryParams = `?${params}`;
     }
     if (hmac) {
-      endpoint = userConsoByCodeEndpointLight
+      endpoint = userConsoByCodeEndpointLight;
       queryParams += `?hmac=${hmac}`;
     }
-    return this.http.get(`${endpoint}/${this.msisdn}${queryParams}`)
-      .pipe(
-        map((res: any) => {
-          return this.processConso(res);
-        }),
-        retryWhen((errors) => {
-          return errors.pipe(
-            delay(1000),
-            mergeMap((error) => {
-              if (retries > 0) {
-                retries--;
-                return of(error);
-              }
-              throw new Error();
-            })
-          );
-        })
-      );
+    return this.http.get(`${endpoint}/${this.msisdn}${queryParams}`).pipe(
+      map((res: any) => {
+        return this.processConso(res);
+      }),
+      retryWhen((errors) => {
+        return errors.pipe(
+          delay(1000),
+          mergeMap((error) => {
+            if (retries > 0) {
+              retries--;
+              return of(error);
+            }
+            throw new Error();
+          })
+        );
+      })
+    );
   }
 
   processConso(conso: any, consoPostpaid?: boolean) {
@@ -487,37 +495,41 @@ export class DashboardService {
   }
 
   getListPassIllimix(codeFormule, category?: string, isLightMod?: boolean) {
-    let endpoint = isLightMod ? listPassIllimixEndpointLight : listPassIllimixEndpoint;
+    let endpoint = isLightMod
+      ? listPassIllimixEndpointLight
+      : listPassIllimixEndpoint;
     let url = `${endpoint}/${codeFormule}`;
-    let queryParams = ''
+    let queryParams = '';
     const hmac = this.authService.getHmac();
-    const currentNumber = this.getCurrentPhoneNumber()
+    const currentNumber = this.getCurrentPhoneNumber();
     if (category) url += `?categorie=${category}`;
     if (isLightMod) {
       queryParams += `hmac=${hmac}&msisdn=${currentNumber}`;
       if (category) {
-        url += '&' +queryParams
+        url += '&' + queryParams;
       } else {
-        url += '?' + queryParams
+        url += '?' + queryParams;
       }
     }
     return this.http.get(url);
   }
 
-  getListPassInternet(codeFormule: string, isLighMod?: boolean) {
-    const endpoint = isLighMod ? listPassInternetEndpointLight : listPassInternetEndpoint
-    let queryParams = '';
+  getListPassInternet(
+    codeFormule: string,
+    isLighMod?: boolean,
+    typeUsage = 'TOUS'
+  ) {
+    const endpoint = isLighMod
+      ? listPassInternetEndpointLight
+      : listPassInternetEndpoint;
+    let queryParams = `?typeUsage=${typeUsage}`;
     const hmac = this.authService.getHmac();
-    const currentNumber = this.getCurrentPhoneNumber()
-    if (isLighMod) {
-      queryParams += `?hmac=${hmac}&msisdn=${currentNumber}`
-    }
+    const currentNumber = this.getCurrentPhoneNumber();
+    if (isLighMod) queryParams += `&hmac=${hmac}&msisdn=${currentNumber}`;
     return this.http.get(`${endpoint}/${codeFormule}${queryParams}`);
   }
 
   buyPassByCredit(payload: BuyPassModel, hmac?: string) {
-    const { msisdn, receiver, codeIN, amount } = payload;
-    const params = { msisdn, receiver, codeIN, amount };
     let queryParams = '';
     let endpointInternet = buyPassInternetByCreditEndpoint;
     let endpointIllimix = buyPassIllimixByCreditEndpoint;
@@ -526,21 +538,16 @@ export class DashboardService {
     }
     switch (payload.type) {
       case 'internet':
-        if(hmac && hmac !== '') {
-          endpointInternet = buyPassInternetByCreditEndpointLight
+      case 'usage':
+        if (hmac && hmac !== '') {
+          endpointInternet = buyPassInternetByCreditEndpointLight;
         }
-        return this.http.post(
-          `${endpointInternet}${queryParams}`,
-          params
-        );
+        return this.http.post(`${endpointInternet}${queryParams}`, payload);
       case 'illimix':
-        if(hmac && hmac !== '') {
-          endpointIllimix = buyPassIllimixByCreditEndpointLight
+        if (hmac && hmac !== '') {
+          endpointIllimix = buyPassIllimixByCreditEndpointLight;
         }
-        return this.http.post(
-          `${endpointIllimix}${queryParams}`,
-          params
-        );
+        return this.http.post(`${endpointIllimix}${queryParams}`, payload);
       default:
         break;
     }
@@ -687,8 +694,11 @@ export class DashboardService {
 
   getFixPostpaidInfos() {
     const msisdn = this.getCurrentPhoneNumber();
-    return this.http.get(`${ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT}/${msisdn}/status`, {
-      responseType: 'text'
-    })
+    return this.http.get(
+      `${ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT}/${msisdn}/status`,
+      {
+        responseType: 'text',
+      }
+    );
   }
 }

@@ -46,7 +46,7 @@ ion-spinner {
         margin-top: 15px;
       }
       &.disabled {
-        opacity: 0.4;
+        opacity: 0.5;
       }
       width: percentage(105/345);
       height: 120px;
@@ -133,6 +133,14 @@ ion-spinner {
           float: right;
         }
       }
+    }
+  }
+  .pass-usage-block {
+    margin-top: 30px;
+    .pass-usage-title {
+      font-size: 20px;
+      margin-bottom: 15px;
+      line-height: 1.5;
     }
   }
   .loader-container {

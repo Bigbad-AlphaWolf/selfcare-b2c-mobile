@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ZoneBanniere } from 'src/app/models/enums/zone-banniere.enum';
 import { IonSlides, NavController } from '@ionic/angular';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
@@ -51,7 +51,6 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
   ngOnInit() {
     this.banniereService
       .queryListBanniereByFormule(SessionOem.CODE_FORMULE, ZoneBanniere.offre)
-      .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe();
     this.initData();
   }
@@ -71,7 +70,7 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
             }),
             catchError((err: any) => {
               this.isLoading = false;
-              return err;
+              return of(err);
             }),
             takeUntil(this.ngUnsubscribe)
           );
@@ -82,6 +81,13 @@ export class OffresServicesPage extends BaseComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  isServiceHidden(service: OffreService) {
+    return (
+      !service.activated &&
+      (!service.reasonDeactivation || service.reasonDeactivation === '')
+    );
   }
 
   changeTabHeader(tabIndex: number) {

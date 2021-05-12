@@ -35,9 +35,17 @@ ion-content {
 }
 .banner-container {
   width: 100%;
+  display: flex;
+  background-color: $white;
   .banniere {
     width: 100%;
     background-color: $white;
+  }
+  img-loader {
+    width: 100% !important;
+    img {
+      width: 100% !important;
+    }
   }
 }
 

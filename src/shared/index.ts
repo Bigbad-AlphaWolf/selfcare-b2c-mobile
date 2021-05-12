@@ -844,14 +844,12 @@ export class SplashScreenMock extends SplashScreen {
 }
 
 export function getBanniereTitle(banniereDescription: string) {
-  if (banniereDescription) {
-    const semiColonIndex = banniereDescription.indexOf(';');
-    if (semiColonIndex < 1) return banniereDescription;
-    return banniereDescription
-      ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
-      : '';
-  }
-  return banniereDescription;
+  if (!banniereDescription) return;
+  const semiColonIndex = banniereDescription.indexOf(';');
+  if (semiColonIndex < 1) return banniereDescription;
+  return banniereDescription
+    ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
+    : '';
 }
 
 export function getBanniereDescription(banniereDescription: string) {
@@ -1265,4 +1263,10 @@ export enum HUB_ACTIONS {
   ACHAT = 'HUB_ACHAT',
   TRANSFERT = 'HUB_TRANSFER',
   FACTURES = 'HUB_BILLS',
+}
+
+export enum TYPE_ACTION_ON_BANNER {
+  DEEPLINK = 'DEEPLINK',
+  REDIRECTION = 'REDIRECTION',
+  MODAL = 'MODAL'
 }

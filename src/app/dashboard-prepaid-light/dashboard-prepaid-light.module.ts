@@ -10,6 +10,7 @@ import { SharedModule } from 'src/shared/shared.module';
 import { ActionLightComponent } from './components/action-light-modal/action-light/action-light.component';
 import { PipesModule } from '../pipes/pipes.module';
 import { IonicImageLoader } from 'ionic-image-loader';
+import { ComponentsModule } from '../components/components.module';
 
 const routes: Routes = [
   {
@@ -26,6 +27,7 @@ const routes: Routes = [
     SharedModule,
     PipesModule,
     IonicImageLoader,
+    ComponentsModule,
     RouterModule.forChild(routes),
   ],
   declarations: [DashboardPrepaidLightPage, ActionLightComponent],
