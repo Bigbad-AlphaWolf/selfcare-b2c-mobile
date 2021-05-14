@@ -402,9 +402,8 @@ export class DashboardService {
       s.src =
         'https://sonatel.dimelochat.com/chat/b25dc90dcaed229e01ff8ffe/loader.js';
       s.id = 'initDimelo';
-      const first: HTMLScriptElement = document.getElementsByTagName(
-        'script'
-      )[0];
+      const first: HTMLScriptElement =
+        document.getElementsByTagName('script')[0];
       first.parentNode.insertBefore(s, first);
     }
   }
@@ -531,8 +530,6 @@ export class DashboardService {
   }
 
   buyPassByCredit(payload: BuyPassModel, hmac?: string) {
-    const { msisdn, receiver, codeIN, amount } = payload;
-    const params = { msisdn, receiver, codeIN, amount };
     let queryParams = '';
     let endpointInternet = buyPassInternetByCreditEndpoint;
     let endpointIllimix = buyPassIllimixByCreditEndpoint;
@@ -541,15 +538,16 @@ export class DashboardService {
     }
     switch (payload.type) {
       case 'internet':
+      case 'usage':
         if (hmac && hmac !== '') {
           endpointInternet = buyPassInternetByCreditEndpointLight;
         }
-        return this.http.post(`${endpointInternet}${queryParams}`, params);
+        return this.http.post(`${endpointInternet}${queryParams}`, payload);
       case 'illimix':
         if (hmac && hmac !== '') {
           endpointIllimix = buyPassIllimixByCreditEndpointLight;
         }
-        return this.http.post(`${endpointIllimix}${queryParams}`, params);
+        return this.http.post(`${endpointIllimix}${queryParams}`, payload);
       default:
         break;
     }

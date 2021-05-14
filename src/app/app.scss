@@ -336,6 +336,11 @@ body {
 .#{$prefix}-text-light-blue {
   color: $lightBlue;
 }
+
+.#{$prefix}-text-green-success {
+  color: $greenSuccess;
+}
+
 .c-pointer {
   cursor: pointer;
 }

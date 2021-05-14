@@ -177,8 +177,10 @@ export class OperationRecapPage implements OnInit {
               this.amount = this.opXtras.amount + this.opXtras.fee;
               this.transferOMWithCodePayload.amount = this.opXtras.amount;
               this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
-              this.transferOMWithCodePayload.prenom_receiver = this.opXtras.recipientFirstname;
-              this.transferOMWithCodePayload.nom_receiver = this.opXtras.recipientLastname;
+              this.transferOMWithCodePayload.prenom_receiver =
+                this.opXtras.recipientFirstname;
+              this.transferOMWithCodePayload.nom_receiver =
+                this.opXtras.recipientLastname;
               this.recipientFirstName = this.opXtras.recipientFirstname;
               this.recipientLastName = this.opXtras.recipientLastname;
               this.recipientName =
@@ -549,13 +551,15 @@ export class OperationRecapPage implements OnInit {
 
   buyPassUsage() {
     this.buyingPass = true;
-    const payload: BuyPassUsageModel = {
+    const payload: BuyPassModel = {
       codeIN: this.opXtras.pass.price_plan_index,
       amount: this.opXtras.pass.tarif,
       receiver: this.opXtras.recipientMsisdn,
       msisdn: this.currentUserNumber,
       serviceId: this.opXtras.pass.serviceId,
+      type: 'usage',
       typePassUsage: this.opXtras.pass.typeUsage.code,
+      typeAbonnementPassUsage: this.opXtras.pass.typeAbonnement,
     };
     const logInfos: FollowOemlogPurchaseInfos = {
       sender: this.currentUserNumber,
@@ -563,46 +567,14 @@ export class OperationRecapPage implements OnInit {
       montant: this.opXtras.pass.tarif,
       ppi: this.opXtras.pass.price_plan_index,
     };
-    this.purchaseService.buyPassUsage(payload).subscribe(
+    this.dashboardService.buyPassByCredit(payload).subscribe(
       (res) => {
-        this.onBuyPassUsageComplete(res, logInfos);
+        this.transactionSuccessful(res, logInfos);
       },
       (err) => {
-        this.onBuyPassUsageComplete(err, logInfos);
+        this.transactionFailure(err, logInfos);
       }
     );
-  }
-
-  onBuyPassUsageComplete(res: any, logFollowInfos) {
-    let success: boolean;
-    let message: string;
-    let followEventName = `buy_pass_usage_${this.opXtras.serviceUsage.code.toLocaleLowerCase()}`;
-    let eventType: 'error' | 'event' = 'error';
-    this.buyingPass = false;
-    console.log(followEventName);
-
-    if (res.status === 201) {
-      success = true;
-      followEventName += 'success';
-      eventType = 'event';
-    } else {
-      message =
-        res && res.error && res.error.message
-          ? res.error.message
-          : 'Une erreur est survenue';
-      followEventName += 'failed';
-      logFollowInfos = Object.assign({}, logFollowInfos, {
-        error_code: res.status,
-        message,
-      });
-    }
-    this.sendFollowLogs(eventType, followEventName, logFollowInfos);
-    this.openSuccessFailModal({
-      success,
-      msisdnBuyer: this.currentUserNumber,
-      buyForMe: this.recipientMsisdn === this.currentUserNumber,
-      errorMsg: message,
-    });
   }
 
   payIlliflex() {
@@ -707,44 +679,35 @@ export class OperationRecapPage implements OnInit {
     purchaseType: string,
     logDetails: any
   ) {
-    let logPurchaseType: string;
-    let eventName = `Achat_Pass_${logPurchaseType}_Success`;
-    let errortName = `Achat_Pass_${logPurchaseType}_Error`;
+    let eventName;
     switch (purchaseType) {
       case OPERATION_TYPE_PASS_INTERNET:
-        logPurchaseType = 'internet';
+        eventName = 'Achat_Pass_internet';
+        break;
+      case OPERATION_TYPE_PASS_USAGE:
+        eventName = `Achat_Pass_usage_${this.opXtras.serviceUsage.code.toLowerCase()}`;
         break;
       case OPERATION_TYPE_PASS_ILLIMIX:
-        logPurchaseType = 'illimix';
+        eventName = 'Achat_Pass_illimix';
         break;
       case OPERATION_TYPE_PASS_VOYAGE:
-        logPurchaseType = 'voyage';
+        eventName = 'Achat_Pass_voyage';
         break;
       case OPERATION_TYPE_PASS_ILLIFLEX:
-        logPurchaseType = 'illiflex';
+        eventName = 'Achat_Pass_illiflex';
         break;
       case OPERATION_ENABLE_DALAL:
-        eventName = 'Dalal_activation_Success';
-        errortName = 'Dalal_activation_Error';
+        eventName = 'Dalal_activation';
         break;
       default:
         break;
     }
-
-    if (type === 'event') {
-      console.log('followSuccess', logDetails, 'op', purchaseType);
-      this.followAnalyticsService.registerEventFollow(
-        eventName,
-        type,
-        logDetails
-      );
-    } else {
-      console.log('followError', logDetails, 'op', purchaseType);
-      this.followAnalyticsService.registerEventFollow(
-        errortName,
-        'error',
-        logDetails
-      );
-    }
+    eventName += type === 'event' ? '_Success' : '_Error';
+    console.log('followSuccess', logDetails, 'op', purchaseType, eventName);
+    this.followAnalyticsService.registerEventFollow(
+      eventName,
+      type,
+      logDetails
+    );
   }
 }

@@ -119,13 +119,7 @@ export class PassInternetService {
           .getListPassInternet(res.code, false, serviceCode)
           .pipe(
             map((listPass: any[]) => {
-              const response = listPass.filter((pass) => {
-                return (
-                  pass.pass.typeUsage &&
-                  pass.pass.typeUsage.code === serviceCode
-                );
-              });
-              return response.map((x) => x.pass);
+              return listPass.map((x) => x.pass);
             })
           );
       })
