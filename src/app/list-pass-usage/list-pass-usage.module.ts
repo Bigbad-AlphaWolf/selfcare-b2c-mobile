@@ -5,14 +5,16 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AssistancePage } from './assistance.page';
+import { ListPassUsagePage } from './list-pass-usage.page';
+import { IonicImageLoader } from 'ionic-image-loader';
+import { MatProgressSpinnerModule } from '@angular/material';
 import { SharedModule } from 'src/shared/shared.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: AssistancePage
-  }
+    component: ListPassUsagePage,
+  },
 ];
 
 @NgModule({
@@ -20,9 +22,11 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    RouterModule.forChild(routes),
+    IonicImageLoader,
+    MatProgressSpinnerModule,
     SharedModule,
-    RouterModule.forChild(routes)
   ],
-  declarations: [AssistancePage]
+  declarations: [ListPassUsagePage],
 })
-export class AssistancePageModule {}
+export class ListPassUsagePageModule {}

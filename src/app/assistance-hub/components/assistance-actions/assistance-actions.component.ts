@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonSlides, NavController } from '@ionic/angular';
 import { OffreService } from 'src/app/models/offre-service.model';
-import { ItemBesoinAide } from 'src/shared';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-assistance-actions',
@@ -85,12 +85,10 @@ export class AssistanceActionsComponent implements OnInit {
   currentSlideIndex = 0;
   displaySearchIcon: boolean = true;
   @ViewChild('searchInput') searchRef;
-  constructor(private navController: NavController) {}
+  constructor(private navController: NavController, private followAnalyticsService: FollowAnalyticsService) {}
 
   ngOnInit() {
     this.listActes = history.state.listActes;
-    console.log(this.listActes);
-
     this.groudActesByCategorie();
   }
 
@@ -110,6 +108,10 @@ export class AssistanceActionsComponent implements OnInit {
 
       this.acts.set(catLibelle, [a]);
     });
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_actions_affichage_success',
+      'event'
+    );
   }
 
   slideChanged() {

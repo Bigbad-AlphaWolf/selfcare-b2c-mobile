@@ -135,6 +135,14 @@ ion-spinner {
       }
     }
   }
+  .pass-usage-block {
+    margin-top: 30px;
+    .pass-usage-title {
+      font-size: 20px;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+  }
   .loader-container {
     padding-top: 30px;
     display: flex;

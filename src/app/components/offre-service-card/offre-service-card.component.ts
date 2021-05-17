@@ -23,6 +23,8 @@ import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.pa
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OPERATION_TYPE_PASS_USAGE } from 'src/app/utils/operations.constants';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -48,7 +50,8 @@ export class OffreServiceCardComponent implements OnInit {
     private ofcService: OfcService,
     private bsService: BottomSheetService,
     private modalController: ModalController,
-    private orangeMoneyService: OrangeMoneyService
+    private orangeMoneyService: OrangeMoneyService,
+    private followAnalyticsServ: FollowAnalyticsService
   ) {}
   imageUrl: string;
 
@@ -57,9 +60,24 @@ export class OffreServiceCardComponent implements OnInit {
   }
 
   onClick() {
+    const follow =
+      'my_services_card_' + this.service.code.toLowerCase() + '_clic';
+    this.followAnalyticsServ.registerEventFollow(follow, 'event', 'clic');
+    console.log('follow', follow);
+
     if (!this.service.activated) {
       this.showServiceUnavailableToast();
       // this.service.clicked = !this.service.clicked;
+      return;
+    }
+    if (this.service.passUsage) {
+      this.bsService.openNumberSelectionBottomSheet(
+        NumberSelectionOption.WITH_MY_PHONES,
+        OPERATION_TYPE_PASS_USAGE,
+        'list-pass-usage',
+        false,
+        this.service
+      );
       return;
     }
     if (this.service.code + '' === ServiceCode.OFC) {

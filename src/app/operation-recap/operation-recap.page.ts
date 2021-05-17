@@ -31,6 +31,7 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import { OperationExtras } from '../models/operation-extras.model';
 import {
   OPERATION_RAPIDO,
+  OPERATION_TYPE_PASS_USAGE,
   OPERATION_WOYOFAL,
 } from '../utils/operations.constants';
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
@@ -45,6 +46,11 @@ import { BoosterService } from '../services/booster.service';
 import { FeeModel } from '../services/orange-money-service';
 import { FeesService } from '../services/fees/fees.service';
 import { OM_LABEL_SERVICES } from '../utils/bills.util';
+import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
+import { OffreService } from '../models/offre-service.model';
+import { BuyPassUsageModel } from '../models/buy-pass-usage-payload.model';
+import { PurchaseService } from '../services/purchase-service/purchase.service';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-operation-recap',
@@ -99,11 +105,14 @@ export class OperationRecapPage implements OnInit {
   OPERATION_TYPE_BONS_PLANS = OPERATION_TYPE_BONS_PLANS;
   OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
   OPERATION_ILLIFLEX = OPERATION_TYPE_PASS_ILLIFLEX;
+  OPERATION_TYPE_PASS_VOYAGE = OPERATION_TYPE_PASS_VOYAGE;
+  OPERATION_TYPE_PASS_USAGE = OPERATION_TYPE_PASS_USAGE;
   DALAL_TARIF = MONTHLY_DALAL_TARIF;
   subscriptionInfos: SubscriptionModel;
   buyCreditPayload: any;
   offerPlan: OfferPlan;
   isLightMod: boolean;
+
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -118,7 +127,8 @@ export class OperationRecapPage implements OnInit {
     private illiflexService: IlliflexService,
     private passService: PassInternetService,
     private ref: ChangeDetectorRef,
-    private feeService: FeesService
+    private feeService: FeesService,
+    private purchaseService: PurchaseService
   ) {}
 
   ngOnInit() {
@@ -135,12 +145,13 @@ export class OperationRecapPage implements OnInit {
           this.purchaseType = this.opXtras.purchaseType;
           this.isLightMod = this.opXtras.isLightMod;
           this.recipientMsisdn = this.opXtras.recipientMsisdn;
+          this.recipientName = this.opXtras.recipientName;
+
           switch (this.purchaseType) {
             case OPERATION_TYPE_PASS_INTERNET:
             case OPERATION_TYPE_PASS_ILLIMIX:
             case OPERATION_TYPE_PASS_ALLO:
             case OPERATION_TYPE_PASS_ILLIFLEX:
-              this.recipientName = this.opXtras.recipientName;
               this.passChoosen = this.opXtras.pass;
               this.recipientCodeFormule = this.opXtras.recipientCodeFormule;
               this.buyPassPayload = {
@@ -166,8 +177,10 @@ export class OperationRecapPage implements OnInit {
               this.amount = this.opXtras.amount + this.opXtras.fee;
               this.transferOMWithCodePayload.amount = this.opXtras.amount;
               this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
-              this.transferOMWithCodePayload.prenom_receiver = this.opXtras.recipientFirstname;
-              this.transferOMWithCodePayload.nom_receiver = this.opXtras.recipientLastname;
+              this.transferOMWithCodePayload.prenom_receiver =
+                this.opXtras.recipientFirstname;
+              this.transferOMWithCodePayload.nom_receiver =
+                this.opXtras.recipientLastname;
               this.recipientFirstName = this.opXtras.recipientFirstname;
               this.recipientLastName = this.opXtras.recipientLastname;
               this.recipientName =
@@ -210,6 +223,7 @@ export class OperationRecapPage implements OnInit {
             case OPERATION_RAPIDO:
             case OPERATION_WOYOFAL:
             case OPERATION_ENABLE_DALAL:
+            case OPERATION_TYPE_PASS_USAGE:
               break;
             default:
               this.appRouting.goToDashboard();
@@ -321,6 +335,7 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_VOYAGE:
       case OPERATION_TYPE_PASS_ILLIMIX:
       case OPERATION_TYPE_PASS_ALLO:
+      case OPERATION_TYPE_PASS_ILLIFLEX:
         if (this.isLightMod) {
           const hmac = this.authServ.getHmac();
           this.payWithCredit(hmac);
@@ -341,8 +356,8 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_ENABLE_DALAL:
         this.activateDalal();
         break;
-      case OPERATION_TYPE_PASS_ILLIFLEX:
-        this.payIlliflex();
+      case OPERATION_TYPE_PASS_USAGE:
+        this.buyPassUsage();
         break;
       default:
         break;
@@ -351,9 +366,16 @@ export class OperationRecapPage implements OnInit {
 
   activateDalal() {
     this.buyingPass = true;
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: this.currentUserNumber,
+      montant: this.opXtras.dalal.tarif,
+      ppi: this.opXtras.dalal.cid,
+      mod_paiement: PAYMENT_MOD_CREDIT,
+    };
     this.dalalTonesService.activateDalal(this.opXtras.dalal).subscribe(
       () => {
         this.buyingPass = false;
+        this.sendFollowLogs('event', this.purchaseType, logInfos);
         this.openSuccessFailModal({
           success: true,
           msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
@@ -366,6 +388,10 @@ export class OperationRecapPage implements OnInit {
           err && err.error && err.error.message
             ? err.error.message
             : 'Une erreur est survenue';
+        const followDetails = Object.assign({}, logInfos, {
+          error_code: err.status,
+        });
+        this.sendFollowLogs('error', this.purchaseType, followDetails);
         this.openSuccessFailModal({
           success: false,
           msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
@@ -377,19 +403,33 @@ export class OperationRecapPage implements OnInit {
   }
 
   async setPaymentMod() {
+    let passIlliflex =
+      this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX
+        ? this.passChoosen
+        : null;
     const modal = await this.modalController.create({
       component: SetPaymentChannelModalPage,
       cssClass: 'set-channel-payment-modal',
       componentProps: {
         pass: this.passChoosen,
+        passIlliflex,
       },
     });
     modal.onDidDismiss().then((response) => {
+      let eventName =
+        this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX
+          ? 'Buy_illiflex_payment_mod'
+          : 'Buy_pass_payment_mod';
       if (response.data && response.data.paymentMod === PAYMENT_MOD_CREDIT) {
         this.paymentMod = PAYMENT_MOD_CREDIT;
-        this.payWithCredit();
+        if (this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX) {
+          this.payIlliflex();
+        } else {
+          // pass internet, illimix, allo, ...
+          this.payWithCredit();
+        }
         this.followAnalyticsService.registerEventFollow(
-          'Buy_pass_payment_mod',
+          eventName,
           'event',
           PAYMENT_MOD_CREDIT
         );
@@ -398,7 +438,7 @@ export class OperationRecapPage implements OnInit {
         this.paymentMod = PAYMENT_MOD_OM;
         this.openPinpad();
         this.followAnalyticsService.registerEventFollow(
-          'Buy_pass_payment_mod',
+          eventName,
           'event',
           PAYMENT_MOD_OM
         );
@@ -422,6 +462,7 @@ export class OperationRecapPage implements OnInit {
         merchantPaymentPayload: this.merchantPaymentPayload,
         transferMoneyPayload: this.transferOMPayload,
         transferMoneyWithCodePayload: this.transferOMWithCodePayload,
+        illiflexPayload: this.passChoosen,
       },
     });
     modal.onDidDismiss().then((response) => {
@@ -492,21 +533,62 @@ export class OperationRecapPage implements OnInit {
       msisdn,
       receiver,
     };
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: msisdn,
+      receiver: receiver,
+      montant: amount,
+      ppi: codeIN,
+    };
     this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
       (res: any) => {
-        this.transactionSuccessful(res);
+        this.transactionSuccessful(res, logInfos);
       },
       (err: any) => {
-        this.transactionFailure(err);
+        this.transactionFailure(err, logInfos);
+      }
+    );
+  }
+
+  buyPassUsage() {
+    this.buyingPass = true;
+    const payload: BuyPassModel = {
+      codeIN: this.opXtras.pass.price_plan_index,
+      amount: this.opXtras.pass.tarif,
+      receiver: this.opXtras.recipientMsisdn,
+      msisdn: this.currentUserNumber,
+      serviceId: this.opXtras.pass.serviceId,
+      type: 'usage',
+      typePassUsage: this.opXtras.pass.typeUsage.code,
+      typeAbonnementPassUsage: this.opXtras.pass.typeAbonnement,
+    };
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: this.currentUserNumber,
+      receiver: this.opXtras.recipientMsisdn,
+      montant: this.opXtras.pass.tarif,
+      ppi: this.opXtras.pass.price_plan_index,
+    };
+    this.dashboardService.buyPassByCredit(payload).subscribe(
+      (res) => {
+        this.transactionSuccessful(res, logInfos);
+      },
+      (err) => {
+        this.transactionFailure(err, logInfos);
       }
     );
   }
 
   payIlliflex() {
     this.buyingPass = true;
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: this.currentUserNumber,
+      receiver: this.recipientMsisdn,
+      montant: this.passChoosen.amount,
+      mod_paiement: PAYMENT_MOD_CREDIT,
+    };
     this.illiflexService.buyIlliflex(this.passChoosen).subscribe(
       () => {
         this.buyingPass = false;
+        this.sendFollowLogs('event', this.purchaseType, logInfos);
         this.openSuccessFailModal({
           success: true,
           msisdnBuyer: this.recipientMsisdn,
@@ -523,6 +605,10 @@ export class OperationRecapPage implements OnInit {
         } else {
           errorMsg = `Une erreur est survenue. Veuillez réessayer plus tard`;
         }
+        const followDetails = Object.assign({}, logInfos, {
+          error_code: err.status,
+        });
+        this.sendFollowLogs('error', this.purchaseType, followDetails);
         this.openSuccessFailModal({
           success: false,
           msisdnBuyer: this.recipientMsisdn,
@@ -536,29 +622,19 @@ export class OperationRecapPage implements OnInit {
     this.openPinpad();
   }
 
-  transactionSuccessful(res: any) {
+  transactionSuccessful(res: any, logInfos: FollowOemlogPurchaseInfos) {
     this.buyingPass = false;
     if (res.code !== '0') {
       this.buyPassFailed = true;
       this.buyPassErrorMsg = res.message;
-      const followDetails = { error_code: res.code };
-      this.followAnalyticsService.registerEventFollow(
-        'Credit_Buy_Pass_Internet_Error',
-        'error',
-        followDetails
-      );
+      const followDetails = Object.assign({}, logInfos, {
+        error_code: res.code,
+      });
+      this.sendFollowLogs('error', this.purchaseType, followDetails);
     } else {
       this.buyPassFailed = false;
-      const followDetails = {
-        option_name: this.passChoosen.nom,
-        amount: this.passChoosen.tarif,
-        plan: this.passChoosen.price_plan_index,
-      };
-      this.followAnalyticsService.registerEventFollow(
-        'Credit_Buy_Pass_Internet_Success',
-        'event',
-        followDetails
-      );
+      const followDetails = logInfos;
+      this.sendFollowLogs('event', this.purchaseType, followDetails);
     }
     this.openSuccessFailModal({
       success: !this.buyPassFailed,
@@ -569,22 +645,17 @@ export class OperationRecapPage implements OnInit {
     });
   }
 
-  transactionFailure(err) {
+  transactionFailure(err: any, logInfos: FollowOemlogPurchaseInfos) {
     this.buyingPass = false;
     // this.openSuccessFailModal({ success: false });
     this.buyPassErrorMsg =
       err.error && err.error.message
         ? err.error.message
         : 'Service indisponible. Veuillez réessayer ultérieurement';
-    this.followAnalyticsService.registerEventFollow(
-      'Credit_Buy_Pass_Internet_Error',
-      'error',
-      {
-        msisdn1: this.currentUserNumber,
-        msisdn2: this.recipientMsisdn,
-        message: 'Service indisponible',
-      }
-    );
+    const followDetails = Object.assign({}, logInfos, {
+      error_code: err.status,
+    });
+    this.sendFollowLogs('error', this.purchaseType, followDetails);
     this.openSuccessFailModal({
       success: false,
       msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
@@ -597,9 +668,46 @@ export class OperationRecapPage implements OnInit {
   get operationTypeRecap() {
     return [
       'RECHARGEMENT_CREDIT',
-      'OPERATION_TYPE_PASS_VOYAGE',
+      OPERATION_TYPE_PASS_VOYAGE,
       'OPERATION_WOYOFAL',
       'OPERATION_RAPIDO',
     ].includes(this.purchaseType);
+  }
+
+  sendFollowLogs(
+    type: 'event' | 'error',
+    purchaseType: string,
+    logDetails: any
+  ) {
+    let eventName;
+    switch (purchaseType) {
+      case OPERATION_TYPE_PASS_INTERNET:
+        eventName = 'Achat_Pass_internet';
+        break;
+      case OPERATION_TYPE_PASS_USAGE:
+        eventName = `Achat_Pass_usage_${this.opXtras.serviceUsage.code.toLowerCase()}`;
+        break;
+      case OPERATION_TYPE_PASS_ILLIMIX:
+        eventName = 'Achat_Pass_illimix';
+        break;
+      case OPERATION_TYPE_PASS_VOYAGE:
+        eventName = 'Achat_Pass_voyage';
+        break;
+      case OPERATION_TYPE_PASS_ILLIFLEX:
+        eventName = 'Achat_Pass_illiflex';
+        break;
+      case OPERATION_ENABLE_DALAL:
+        eventName = 'Dalal_activation';
+        break;
+      default:
+        break;
+    }
+    eventName += type === 'event' ? '_Success' : '_Error';
+    console.log('followSuccess', logDetails, 'op', purchaseType, eventName);
+    this.followAnalyticsService.registerEventFollow(
+      eventName,
+      type,
+      logDetails
+    );
   }
 }

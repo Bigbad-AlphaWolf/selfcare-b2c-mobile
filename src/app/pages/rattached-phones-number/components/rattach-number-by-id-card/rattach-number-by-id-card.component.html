@@ -3,19 +3,19 @@
     <img alt="" src="/assets/images/arrow-left.png" />
   </div>
   <div class="title">
-    Numéro CNI
+    Numéro CNI / Passeport
   </div>
   <div class="description">
-    Entrez le numéro de la pièce d’identité identifié sur ce numéro
+    Entrez le numéro de la pièce d’identité ou du passeport identifié sur ce numéro
   </div>
   <div class="id-card-input">
     <form novalidate autocomplete="false">
       <mat-form-field class="scb-input-row" appearance="outline">
-          <mat-label>Numéro de la pièce &nbsp;&nbsp;</mat-label>
+          <mat-label>Numéro de la pièce ou du passeport &nbsp;</mat-label>
           <input
           [ngModelOptions]="{standalone: true}"
             matInput
-            type="tel" 
+            type="text"
             maxlength=20
             [(ngModel)]="idCard"
           />
@@ -35,5 +35,5 @@
     ></ion-spinner>
   </div>
 
-  
+
 </div>

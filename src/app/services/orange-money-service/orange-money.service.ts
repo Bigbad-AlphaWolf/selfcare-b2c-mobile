@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as SecureLS from 'secure-ls';
-import {
-  BehaviorSubject,
-  Subject,
-  of,
-  Observable,
-  forkJoin,
-} from 'rxjs';
+import { BehaviorSubject, Subject, of, Observable, forkJoin } from 'rxjs';
 import { tap, switchMap, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -26,12 +20,18 @@ import {
 } from '.';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
-import { ModalController } from '@ionic/angular';
 import { ErreurTransactionOmModel } from 'src/app/models/erreur-transaction-om.model';
-import { SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT } from '../utils/om.endpoints';
+import {
+  OM_BUY_ILLIFLEX_ENDPOINT,
+  SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT,
+} from '../utils/om.endpoints';
 import { ChangePinOm } from 'src/app/models/change-pin-om.model';
 import { OM_CHANGE_PIN_ENDPOINT } from '../utils/om.endpoints';
-import { REGEX_IOS_SYSTEM } from 'src/shared';
+import { OPERATION_TRANSFER_OM, OPERATION_TRANSFER_OM_WITH_CODE, OPERATION_TYPE_MERCHANT_PAYMENT, OPERATION_TYPE_PASS_ALLO, OPERATION_TYPE_PASS_ILLIFLEX, OPERATION_TYPE_PASS_ILLIMIX, OPERATION_TYPE_PASS_INTERNET, OPERATION_TYPE_PASS_VOYAGE, OPERATION_TYPE_RECHARGE_CREDIT, REGEX_IOS_SYSTEM } from 'src/shared';
+import { FollowOemlogPurchaseInfos } from 'src/app/models/follow-log-oem-purchase-Infos.model';
+import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
+import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
+import { IlliflexService } from '../illiflex-service/illiflex.service';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL } = environment;
@@ -68,7 +68,9 @@ export class OrangeMoneyService {
   constructor(
     private http: HttpClient,
     private followAnalyticsService: FollowAnalyticsService,
-    private dashboardService: DashboardService  ) {}
+    private dashboardService: DashboardService,
+    private illiflexService: IlliflexService
+  ) {}
   pinPadDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b'];
   gotPinPadSubject = new BehaviorSubject<string[]>([]);
   loginResponseSubject = new BehaviorSubject<any>({});
@@ -161,17 +163,30 @@ export class OrangeMoneyService {
     return this.http.post(registerClientEndpoint, registerClientData);
   }
 
-  GetPinPad(pinPadData: OmPinPadModel, changePinInfos?: { apiKey: string,em: string,loginToken: string, msisdn: string, sequence: string }) {
+  GetPinPad(
+    pinPadData: OmPinPadModel,
+    changePinInfos?: {
+      apiKey: string;
+      em: string;
+      loginToken: string;
+      msisdn: string;
+      sequence: string;
+    }
+  ) {
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
     const os = isIOS ? 'iOS' : 'Android';
     if (pinPadData) pinPadData.os = os;
-    if(changePinInfos) {
+    if (changePinInfos) {
       const sequence = changePinInfos.sequence.replace(
         new RegExp('-', 'g'),
         ' '
       );
       this.gotPinPadSubject.next(sequence.split(''));
-      return of({ content : { data : { sequence: changePinInfos.sequence, em: changePinInfos.em } }})
+      return of({
+        content: {
+          data: { sequence: changePinInfos.sequence, em: changePinInfos.em },
+        },
+      });
     }
     return this.http.post(pinpadEndpoint, pinPadData).pipe(
       tap((res: any) => {
@@ -285,50 +300,57 @@ export class OrangeMoneyService {
   }
   // Log Event and errors with Follow Analytics for Orange Money
   // type can be 'error' or 'event'
-  logWithFollowAnalytics(res: any, type: string, dataToLog: any) {
-    const operation = dataToLog.operation;
-    const phoneNumber = dataToLog.phoneNumber;
-    const creditToBuy = dataToLog.creditToBuy;
-    const transferPayload = dataToLog.amountToTransfer;
-    const passToBuy = dataToLog.passToBuy;
-    switch (operation) {
+  logWithFollowAnalytics(res: any, type: string, operationType: string, dataToLog: FollowOemlogPurchaseInfos) {
+    switch (operationType) {
       case undefined:
         value = res.status_code;
         eventKey = 'Voir_solde_OM_dashboard_success';
         errorKey = 'Voir_solde_OM_dashboard_error';
         break;
-      case 'CHECK_SOLDE':
-        value = res.status_code;
-        eventKey = 'Recharge_Voir_Solde_OM_Success';
-        errorKey = 'Recharge_Voir_Solde_OM_Error';
+      case OPERATION_TYPE_RECHARGE_CREDIT:
+        eventKey = 'Achat_credit_success';
+        errorKey = 'Achat_credit_failed';
+        value = dataToLog;
         break;
-      case 'BUY_CREDIT':
-        eventKey = 'Recharge_OM_Success';
-        errorKey = 'Recharge_OM_Error';
-        value = Object.assign({}, creditToBuy, { msisdn: phoneNumber });
+      case OPERATION_TYPE_PASS_VOYAGE:
+      case OPERATION_TYPE_PASS_ILLIMIX:
+      case OPERATION_TYPE_PASS_ALLO:
+      case OPERATION_TYPE_PASS_INTERNET:
+      case OPERATION_TYPE_PASS_ILLIFLEX:
+        let type_pass;
+        if (operationType === OPERATION_TYPE_PASS_ALLO) {
+          type_pass = 'allo'
+        } else if(operationType === OPERATION_TYPE_PASS_ILLIMIX) {
+          type_pass = 'illimix'
+        } else if (operationType === OPERATION_TYPE_PASS_VOYAGE) {
+          type_pass = 'voyage'
+        } else if (operationType === OPERATION_TYPE_PASS_INTERNET) {
+          type_pass = 'internet'
+        } else if (operationType === OPERATION_TYPE_PASS_ILLIFLEX) {
+          type_pass = 'illiflex'
+        }
+        errorKey = `Achat_Pass_${type_pass}_Error`;
+        eventKey = `Achat_Pass_${type_pass}_Success`;
+        value = dataToLog;
         break;
-      case 'PASS_INTERNET':
-        errorKey = 'OM_Buy_Pass_Internet_Error';
-        eventKey = 'OM_Buy_Pass_Internet_Success';
-        value = {
-          option_name: passToBuy.pass.nom,
-          amount: passToBuy.pass.tarif,
-          plan: passToBuy.pass.price_plan_index,
-        };
+      case OPERATION_TRANSFER_OM:
+        errorKey = 'OM_Transfer_sans_code_Error';
+        eventKey = 'OM_Transfer_sans_code_Success';
+        value = dataToLog;
         break;
-      case 'PASS_ILLIMIX':
-        errorKey = 'OM_Buy_Pass_Illimix_Error';
-        eventKey = 'OM_Buy_Pass_Illimix_Success';
-        value = {
-          option_name: passToBuy.pass.nom,
-          amount: passToBuy.pass.tarif,
-          plan: passToBuy.pass.price_plan_index,
-        };
+      case OPERATION_TRANSFER_OM_WITH_CODE:
+        errorKey = 'OM_Transfer_avec_code_Error';
+        eventKey = 'OM_Transfer_avec_code_Success';
+        value = dataToLog;
         break;
-      case 'TRANSFER_MONEY':
-        errorKey = 'OM_Transfer_Money_Error';
-        eventKey = 'OM_Transfer_Money_Success';
-        value = Object.assign({}, transferPayload, { msisdn: phoneNumber });
+      case OPERATION_TYPE_MERCHANT_PAYMENT:
+        errorKey = 'OM_Paiement_Marchand_Error';
+        eventKey = 'OM_Paiement_Marchand_Success';
+        value = dataToLog;
+      case OPERATION_RAPIDO:
+        errorKey = 'Recharge_Rapido_Error';
+        eventKey = 'Recharge_Rapido_Success';
+        value = dataToLog;
         break;
       default:
         break;
@@ -426,10 +448,61 @@ export class OrangeMoneyService {
   }
 
   sendRequestErreurTransactionOM(data: ErreurTransactionOmModel) {
-    return this.http.post(`${SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT}`, data);
+    return this.http.post(
+      `${SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT}`,
+      data
+    );
   }
 
-  changePin(data: ChangePinOm){
+  changePin(data: ChangePinOm) {
     return this.http.post(`${OM_CHANGE_PIN_ENDPOINT}`, data);
+  }
+
+  buyIlliflexByOM(passIlliflex: IlliflexModel) {
+    const validity = this.illiflexService.getValidityName(
+      passIlliflex.validity
+    );
+    const buyIlliflexPayload = {
+      buyer: {
+        msisdn: passIlliflex.sender,
+        em: passIlliflex.em,
+        encodedPin: passIlliflex.pin,
+      },
+      buyee: {
+        msisdn: passIlliflex.recipient,
+        profile: passIlliflex.recipientOfferCode,
+      },
+      bucket: {
+        budget: {
+          unit: 'XOF',
+          value: passIlliflex.amount,
+        },
+        dataBucket: {
+          balance: {
+            amount: passIlliflex.data * 1024,
+            unit: 'KO',
+          },
+          validity,
+          usageType: 'DATA',
+        },
+        voiceBucket: {
+          balance: {
+            amount: passIlliflex.voice * 60,
+            unit: 'SECOND',
+          },
+          validity,
+          usageType: 'VOICE',
+        },
+        smsBucket: {
+          balance: {
+            amount: passIlliflex.bonusSms,
+            unit: 'SMS',
+          },
+          validity,
+          usageType: 'SMS',
+        },
+      },
+    };
+    return this.http.post(`${OM_BUY_ILLIFLEX_ENDPOINT}`, buyIlliflexPayload);
   }
 }

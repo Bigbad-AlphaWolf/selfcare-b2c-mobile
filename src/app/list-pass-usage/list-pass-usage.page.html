@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title>
+      <span class="title1">
+        Achat de pass {{serviceUsage?.fullDescription}}
+      </span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">
+        Achat de pass {{serviceUsage?.fullDescription}}
+      </span>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="list-pass-body">
+    <div class="header-image">
+      <img-loader class="icone" [src]="serviceUsage?.banniere"
+        fallbackUrl="/assets/images/pass-internet-page-header.svg" useImg></img-loader>
+    </div>
+    <div class="spinner-block" *ngIf="loadingPass">
+      <mat-spinner mode="indeterminate" [diameter]="50"></mat-spinner>
+    </div>
+    <div class="error scb-text-red-error" *ngIf="errorLoadingPass" (click)="loadPass()">Erreur lors du chargement. Récatualisez</div>
+    <div class="pass-list" *ngIf="listPass?.length">
+      <app-pass-usage-item [serviceUsage]="serviceUsage" [passUsage]="pass" (click)="choosePass(pass)" *ngFor="let pass of listPass"></app-pass-usage-item>
+    </div>
+  </div>
+</ion-content>
