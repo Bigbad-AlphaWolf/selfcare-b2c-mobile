@@ -109,11 +109,11 @@
   </div>
 </div>
 <div class="pinpad-v3" *ngIf="userHasOmToken">
-  <ng-container *ngIf="operationType !== OPERATION_CHANGE_PIN_OM ">
+  <ng-container *ngIf="operationType !== OPERATION_CHANGE_PIN_OM">
     <img src="/assets/images/password.png" alt="lock" />
     <div class="title">
-      <span class="title-1">Mot de passe</span>
-      <span class="subtitle scb-text-gray"
+      <span class="title-1" *ngIf="!canRetry">Mot de passe</span>
+      <span class="subtitle scb-text-gray" *ngIf="!canRetry"
         >Veuillez entrer votre code de sécurité Orange Money</span
       >
     </div>
@@ -128,15 +128,21 @@
     </div>
   </ng-container>
   <div class="bullet-container">
-    <div class="bullets">
+    <div class="bullets" *ngIf="!canRetry">
       <span
         class="bullet"
         *ngFor="let bullet of bullets, let i = index"
         [ngClass]="{'bullet-filled': codePin.length >= i+1, 'bullet-error': errorBulletActive}"
       ></span>
     </div>
-    <div class="error-block scb-text-red-error" *ngIf="pinHasError">
+    <div class="error-block scb-text-red-error" *ngIf="pinHasError" [ngClass]="{'big-text': canRetry}">
       {{pinError}}
+    </div>
+    <div class="confirm-block" *ngIf="canRetry">
+      <button class="scb-btn scb-btn-orange" [disabled]="processingPin" (click)="retry('Capping-social-error')">
+        Confirmer
+      </button>
+      <button class="scb-btn scb-btn-white cancel">Annuler</button>
     </div>
   </div>
   <div
