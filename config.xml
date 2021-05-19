@@ -154,7 +154,7 @@
         <variable name="ANDROID_4_PATH_PREFIX" value="/" />
         <variable name="ANDROID_5_PATH_PREFIX" value="/" />
         <variable name="DEEPLINK_2_SCHEME" value="https" />
-        <variable name="DEEPLINK_2_HOST" value="orangeetmoi.sn" />
+        <variable name="DEEPLINK_2_HOST" value="myorangesn.page.link" />
         <variable name="DEEPLINK_3_SCHEME" value=" " />
         <variable name="DEEPLINK_3_HOST" value=" " />
         <variable name="DEEPLINK_4_SCHEME" value=" " />
