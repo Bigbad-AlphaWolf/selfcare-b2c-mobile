@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { PalierModel } from 'src/app/models/palier.model';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 const BASE_MULTIPLE = 100;
 @Component({
   selector: 'app-illiflex-set-amount-modal',
@@ -29,7 +30,8 @@ export class IlliflexSetAmountModalComponent implements OnInit {
   @ViewChild('amountInput') input: ElementRef;
   constructor(
     private fb: FormBuilder,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private followAnalyticsServ: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -76,7 +78,6 @@ export class IlliflexSetAmountModalComponent implements OnInit {
 
   validateAmount(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      console.log(+control.value);
       const amount = +control.value;
       return amount % BASE_MULTIPLE === 0 &&
         amount <= this.maxAmountIlliflex &&
@@ -102,8 +103,9 @@ export class IlliflexSetAmountModalComponent implements OnInit {
     }
   }
 
-  setAmount(amount) {
+  setAmount(amount, rapideChoice?: boolean) {
     this.hasError = false;
+    this.addFollowEvent(amount, rapideChoice);
     if (amount < this.minAmountIlliflex) {
       this.hasError = true;
       this.error = `Le montant saisi doit être supérieur à ${this.minAmountIlliflex} F CFA`;
@@ -113,5 +115,10 @@ export class IlliflexSetAmountModalComponent implements OnInit {
     } else {
       this.modalController.dismiss(amount);
     }
+  }
+
+  addFollowEvent(amount: number, rapideChoice?: boolean) {
+    const eventIlliflex_clic = `Illiflex_amount_${amount}_${rapideChoice ? 'clic' : 'typed'}`;
+    this.followAnalyticsServ.registerEventFollow(eventIlliflex_clic, 'event')
   }
 }
