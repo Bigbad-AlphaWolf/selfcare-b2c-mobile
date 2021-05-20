@@ -236,12 +236,14 @@ export class OrangeMoneyService {
     const os = isIOS ? 'iOS' : 'Android';
     transferOMData.uuid = uuid;
     transferOMData.os = os;
-    return this.http.post(transferOMEndpoint, transferOMData).pipe(
-      catchError((err) => {
-        const error = new HttpErrorResponse({ error: mockData, status: 400 });
-        return throwError(error);
-      })
-    );
+    return this.http
+      .post(transferOMEndpoint, transferOMData)
+      .pipe
+      // catchError((err) => {
+      //   const error = new HttpErrorResponse({ error: mockData, status: 400 });
+      //   return throwError(error);
+      // })
+      ();
   }
 
   transferOMWithCode(transferOMData: TransferOMWithCodeModel) {

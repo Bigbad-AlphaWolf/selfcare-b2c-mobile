@@ -89,6 +89,7 @@ export class NewPinpadModalPage implements OnInit {
   sendingOtp: boolean;
   recurrentOperation: boolean;
   canRetry: boolean; // boolean to permit user to confirm an operation if similar to recent one or caaping reached
+  cappingFees: number;
   pin: string;
   title: string;
   allNumbers: string[] = [];
@@ -456,6 +457,7 @@ export class NewPinpadModalPage implements OnInit {
               this.transferMoneyPayload,
               {
                 pin,
+                fees: 0,
               }
             );
             this.transferMoney(transferMoneyPayload);
@@ -714,6 +716,7 @@ export class NewPinpadModalPage implements OnInit {
     send_fees: number;
     cashout_fees: number;
     a_ma_charge: boolean;
+    fees: number;
   }) {
     this.processingPin = true;
     this.canRetry = false;
@@ -728,6 +731,7 @@ export class NewPinpadModalPage implements OnInit {
       amount: params.amount,
       send_fees: params.send_fees,
       cashout_fees: params.cashout_fees,
+      fees: params.fees,
       a_ma_charge: !!params.a_ma_charge,
       uuid: 'uuid',
       os: 'mobile',
@@ -832,6 +836,7 @@ export class NewPinpadModalPage implements OnInit {
           this.transferMoneyPayload,
           {
             pin: this.pin,
+            fees: this.cappingFees,
           }
         );
         this.transferMoney(transferMoneyPayload);
@@ -856,9 +861,13 @@ export class NewPinpadModalPage implements OnInit {
         'event',
         this.dataToLog
       );
+      this.opXtras.sending_fees = this.cappingFees
+        ? this.cappingFees
+        : this.opXtras.sending_fees;
       this.modalController.dismiss({
         success: true,
         opXtras: this.opXtras,
+        cappingFee: this.cappingFees,
       });
     } else if (res === null || res.status_code === null) {
       this.pinError =
@@ -894,6 +903,7 @@ export class NewPinpadModalPage implements OnInit {
         this.recurrentOperation = true;
         this.pinError = err.error.message;
         this.canRetry = true;
+        this.cappingFees = +err.error.fees;
       } else if (
         err.error.errorCode.match('Erreur-015') ||
         err.error.errorCode.match('Erreur-016')

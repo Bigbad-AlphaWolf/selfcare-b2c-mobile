@@ -75,13 +75,18 @@ export class OperationRecapPage implements OnInit {
     code_marchand: number;
     nom_marchand: string;
   };
-  transferOMPayload: { amount: number; msisdn2: string, send_fees: number, cashout_fees: number, a_ma_charge: boolean } = {
+  transferOMPayload: {
+    amount: number;
+    msisdn2: string;
+    send_fees: number;
+    cashout_fees: number;
+    a_ma_charge: boolean;
+  } = {
     amount: null,
     msisdn2: null,
     send_fees: null,
     cashout_fees: null,
-    a_ma_charge: null
-
+    a_ma_charge: null,
   };
   transferOMWithCodePayload: {
     amount: number;
@@ -170,8 +175,10 @@ export class OperationRecapPage implements OnInit {
               this.amount = this.opXtras.amount + this.opXtras.fee;
               this.transferOMWithCodePayload.amount = this.opXtras.amount;
               this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
-              this.transferOMWithCodePayload.prenom_receiver = this.opXtras.recipientFirstname;
-              this.transferOMWithCodePayload.nom_receiver = this.opXtras.recipientLastname;
+              this.transferOMWithCodePayload.prenom_receiver =
+                this.opXtras.recipientFirstname;
+              this.transferOMWithCodePayload.nom_receiver =
+                this.opXtras.recipientLastname;
               this.recipientFirstName = this.opXtras.recipientFirstname;
               this.recipientLastName = this.opXtras.recipientLastname;
               this.recipientName =
@@ -185,7 +192,7 @@ export class OperationRecapPage implements OnInit {
               this.transferOMPayload.amount = this.amount;
               this.transferOMPayload.msisdn2 = this.recipientMsisdn;
               this.transferOMPayload.a_ma_charge = this.opXtras.includeFee;
-              this.transferOMPayload.send_fees = this.opXtras.sending_fees
+              this.transferOMPayload.send_fees = this.opXtras.sending_fees;
               this.transferOMPayload.cashout_fees = this.opXtras.fee;
               this.recipientName =
                 this.opXtras.recipientFirstname +
