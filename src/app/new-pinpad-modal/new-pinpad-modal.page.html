@@ -136,7 +136,7 @@
       ></span>
     </div>
     <div class="error-block scb-text-red-error" *ngIf="pinHasError" [ngClass]="{'big-text': canRetry}">
-      {{pinError}}
+      {{pinError}} <span *ngIf="canRetry">{{' ' + cappingFees + ' FCFA'}}</span>
     </div>
     <div class="confirm-block" *ngIf="canRetry">
       <button class="scb-btn scb-btn-orange" [disabled]="processingPin" (click)="retry('Capping-social-error')">
