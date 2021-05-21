@@ -15,10 +15,14 @@
       <span class="title">
         Frais d'envoi
       </span>
-      <span class="value">
-        {{ omTransfertInfos.sending_fees }} FCFA
-      </span>
+      <div class="value">
+        <ng-container *ngIf="omTransfertInfos.sending_fees else freeFees">
+          {{omTransfertInfos.sending_fees}}
+        </ng-container>
+        <ng-template #freeFees>Gratuit <span class="asterisk scb-text-red-error">*</span></ng-template>        
+      </div>
     </div>
+    <div class="scb-text-red-error limit-free" *ngIf="!omTransfertInfos.sending_fees">Dans la limite de 2 transferts par jour</div>
     <div *ngIf="omTransfertInfos.includeFee" class="item-fees">
       <span class="title">
         Frais de retrait

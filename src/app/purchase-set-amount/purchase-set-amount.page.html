@@ -55,8 +55,20 @@
               </ion-label>
             </ion-item>
             <ion-item *ngIf="purchaseType === OPERATION_TRANSFER_OM" class="ion-no-padding">
-              <ion-label class="label">Frais d'envoi</ion-label>
-              <ion-label class="fees_value" slot="end"> + {{ +sending_fees_Info.effective_fees === 0 ? 'Gratuit' : sending_fees_Info.effective_fees }} FCFA  </ion-label>
+              <div class="send-fees">
+                <div class="fees-content">
+                  <ion-label class="label send-fees-title">Frais d'envoi</ion-label>
+                <ng-container *ngIf="+sending_fees_Info.effective_fees === 0 else notFree">
+                  <ion-label class="fees_value" slot="end">
+                    <div>Gratuit<span class="asterisk scb-text-red-error">*</span></div>
+                  </ion-label>
+                </ng-container>
+                <ng-template #notFree>
+                  <ion-label class="fees_value" slot="end"> + {{sending_fees_Info.effective_fees}} FCFA</ion-label>
+                </ng-template>
+                </div>
+                <div class="scb-text-red-error limit-free" *ngIf="+sending_fees_Info.effective_fees === 0">Dans la limite de 2 transferts par jour</div>
+              </div>
             </ion-item>
             <ion-item class="ion-no-padding">
               <ion-label class="label"> {{ purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ? "Frais d'envoi" : 'Frais de retrait'  }} </ion-label>

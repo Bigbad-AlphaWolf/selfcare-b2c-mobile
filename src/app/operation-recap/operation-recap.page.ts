@@ -186,9 +186,7 @@ export class OperationRecapPage implements OnInit {
               this.paymentMod = PAYMENT_MOD_OM;
               break;
             case OPERATION_TRANSFER_OM:
-              this.amount = this.opXtras.includeFee
-                ? this.opXtras.amount + this.opXtras.fee
-                : this.opXtras.amount;
+              this.amount = this.opXtras.amount;
               this.transferOMPayload.amount = this.amount;
               this.transferOMPayload.msisdn2 = this.recipientMsisdn;
               this.transferOMPayload.a_ma_charge = this.opXtras.includeFee;

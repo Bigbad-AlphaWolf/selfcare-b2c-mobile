@@ -133,6 +133,10 @@ export interface TransferOMWithCodeModel {
   service_version: string;
   nom_receiver: string;
   prenom_receiver: string;
+  send_fees?: number;
+  cashout_fees?: number;
+  fees?: number;
+  a_ma_charge?: boolean;
 }
 export interface BuyPassPayload {
   msisdn2: string;

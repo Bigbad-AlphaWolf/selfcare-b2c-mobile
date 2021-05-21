@@ -45,6 +45,21 @@
           --padding-start: 0px;
           margin-top: 10px;
           position: relative;
+          .send-fees {
+            width: 100%;
+          }
+          .fees-content {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+          }
+          .limit-free {
+            width: 100%;
+            text-align: right;
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 12px;
+            padding: 5px 0 8px;
+          }
           .fees-value {
             text-align: right;
             font-size: 12px;
@@ -54,6 +69,10 @@
             font-size: 14px;
             line-height: 1.14;
             color: $fullBlack;
+            &.send-fees-title {
+              display: flex;
+              align-items: flex-end;
+            }
           }
           .fees_retrait_value {
             color: $gray;
@@ -78,6 +97,9 @@
             text-align: end;
             // position: absolute;
             // left: 220px;
+            .asterisk {
+              font-size: 22px;
+            }
           }
         }
       }
@@ -98,7 +120,7 @@
         font-style: normal;
         line-height: 1.33;
       }
-      .bull-infos{
+      .bull-infos {
         border-radius: 50%;
         background-color: $bluePopUp;
         width: 20px;
