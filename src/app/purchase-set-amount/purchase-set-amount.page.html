@@ -58,26 +58,27 @@
               <div class="send-fees">
                 <div class="fees-content">
                   <ion-label class="label send-fees-title">Frais d'envoi</ion-label>
-                <ng-container *ngIf="+sending_fees_Info.effective_fees === 0 else notFree">
+                <ng-container *ngIf="+sending_fees_Info.effective_fees === 0 && setAmountForm?.value?.amount !== null">
                   <ion-label class="fees_value" slot="end">
                     <div>Gratuit<span class="asterisk scb-text-red-error">*</span></div>
                   </ion-label>
                 </ng-container>
-                <ng-template #notFree>
+                <ng-container #notFree *ngIf="+sending_fees_Info.effective_fees">
                   <ion-label class="fees_value" slot="end"> + {{sending_fees_Info.effective_fees}} FCFA</ion-label>
-                </ng-template>
+                </ng-container>
                 </div>
-                <div class="scb-text-red-error limit-free" *ngIf="+sending_fees_Info.effective_fees === 0">Dans la limite de 2 transferts par jour</div>
+                <div class="scb-text-red-error limit-free" *ngIf="+sending_fees_Info.effective_fees === 0 && setAmountForm?.value?.amount !== null">Dans la limite de 2 transferts par jour</div>
               </div>
             </ion-item>
             <ion-item class="ion-no-padding">
               <ion-label class="label"> {{ purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ? "Frais d'envoi" : 'Frais de retrait'  }} </ion-label>
-              <ion-label class="fees_retrait_value"> + {{+fee | number }} FCFA  </ion-label>
+              <ion-label class="fees_retrait_value" *ngIf="setAmountForm?.value?.amount !== null"> + {{+fee | number }} FCFA  </ion-label>
               <ion-toggle
                 (ionChange)="handleFees($event, amountInput.value)"
                 slot="end"
                 [disabled]="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE"
                 [checked]="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE"
+                *ngIf="setAmountForm?.value?.amount !== null"
               ></ion-toggle>
             </ion-item>
             <ion-item class="ion-no-padding">
