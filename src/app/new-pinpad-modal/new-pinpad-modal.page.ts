@@ -777,10 +777,6 @@ export class NewPinpadModalPage implements OnInit {
       service_version: OM_SERVICE_VERSION,
       nom_receiver: params.nom_receiver,
       prenom_receiver: params.prenom_receiver,
-      a_ma_charge: true,
-      send_fees: 10,
-      cashout_fees: 10,
-      fees: 10,
     };
     this.orangeMoneyService.transferOMWithCode(transferOMPayload).subscribe(
       (res: any) => {
