@@ -116,11 +116,14 @@
   [scrollEvents]="true"
 >
   <div *ngIf="operationTypeRecap" class="recap-text">Récapitulatif</div>
-  <div class="recap-title" *ngIf="!operationTypeRecap">
+  <div class="recap-title" *ngIf="!operationTypeRecap && ![OPERATION_TRANSFER_OM].includes(purchaseType)">
     <span class="text-1">Récapitulatif</span>
     <ng-container [ngSwitch]="purchaseType">
       <span *ngSwitchCase="OPERATION_INTERNET_TYPE" class="text-2 scb-text-gray"
         >Vous allez recharger</span
+      >
+      <span *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE" class="text-2 scb-text-gray"
+        >Vous allez transférer</span
       >
       <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE" class="text-2 scb-text-gray"
         >Vous allez recharger</span
@@ -134,14 +137,6 @@
       <span
         *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
         class="text-2 scb-text-gray"
-        >Vous allez transférer</span
-      >
-      <span
-        *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
-        class="text-2 scb-text-gray"
-        >Vous allez transférer</span
-      >
-      <span *ngSwitchCase="OPERATION_TRANSFER_OM" class="text-2 scb-text-gray"
         >Vous allez transférer</span
       >
       <span *ngSwitchCase="OPERATION_ENABLE_DALAL" class="text-2 scb-text-gray"
@@ -211,15 +206,14 @@
           *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
         >
         </app-item-recharge-credit>
+        <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM" >
+          <app-item-transfert-om [omTransfertInfos]="opXtras" >
+          </app-item-transfert-om>
+        </ng-container>
         <app-item-recharge-credit
-          [amount]="amount"
-          *ngSwitchCase="OPERATION_TRANSFER_OM"
-        ></app-item-recharge-credit>
-        <app-item-recharge-credit
-          [amount]="amount"
-          *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
-        >
-        </app-item-recharge-credit>
+        [amount]="amount"
+        *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">
+      </app-item-recharge-credit>
         <app-item-pass-internet
           [passInternet]="passChoosen"
           [subscription]="subscriptionInfos"
@@ -303,7 +297,7 @@
       </div>
     </div>
     <ng-container
-      *ngIf="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE || purchaseType === OPERATION_TRANSFER_OM"
+      *ngIf="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE"
     >
       <div class="amount-to-transfer">
         <span class="pass">Type de transfert</span>
@@ -340,6 +334,9 @@
         ></app-item-recharge-credit>
       </div>
     </ng-container>
+    <ng-container *ngIf="purchaseType === OPERATION_TRANSFER_OM && opXtras.includeFee">
+      <scb-avantage-popup [type]="'novo-fees'" [details]="opXtras" ></scb-avantage-popup>
+    </ng-container>
     <button
       class="scb-btn scb-btn-orange"
       (click)="pay()"
@@ -366,7 +363,7 @@
           >Payer ({{amount}} FCFA)</span
         >
         <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM"
-          >Transférer ({{amount}} FCFA)</span
+          >Transférer ({{amount + opXtras?.sending_fees_Info?.effective_fees}} FCFA)</span
         >
         <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
           >Transférer ({{amount}} FCFA)</span

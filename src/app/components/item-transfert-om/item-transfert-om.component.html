@@ -1,0 +1,43 @@
+<div class="item-container">
+  <div class="tarifs-infos-amount-confirmed">
+    <span class="value">
+      {{ omTransfertInfos.amount }} FCFA
+    </span>
+  </div>
+  <div class="badge-promo" >
+    <div class="icon-container">
+      <span class="new scb-text-white"> Nouveaux tarifs </span>
+    </div>
+    <div class="triangle"></div>
+  </div>
+  <div class="tarifs-infos-fees">
+    <div class="item-fees">
+      <span class="title">
+        Frais d'envoi
+      </span>
+      <div class="value">
+        <ng-container *ngIf="omTransfertInfos.sending_fees else freeFees">
+          {{omTransfertInfos.sending_fees}}
+        </ng-container>
+        <ng-template #freeFees>Gratuit <span class="asterisk scb-text-red-error">*</span></ng-template>        
+      </div>
+    </div>
+    <div class="scb-text-red-error limit-free" *ngIf="!omTransfertInfos.sending_fees">Dans la limite de 2 transferts par jour</div>
+    <div *ngIf="omTransfertInfos.includeFee" class="item-fees">
+      <span class="title">
+        Frais de retrait
+      </span>
+      <span class="value">
+        {{ omTransfertInfos?.fee }} FCFA
+      </span>
+    </div>
+  </div>
+  <div class="tarifs-infos-summary">
+    <span class="title">
+      Total à débiter
+    </span>
+    <span class="value">
+      {{ omTransfertInfos.includeFee ? +omTransfertInfos.amount + omTransfertInfos.fee + omTransfertInfos.sending_fees : +omTransfertInfos.amount + omTransfertInfos.sending_fees }} FCFA
+    </span>
+  </div>
+</div>

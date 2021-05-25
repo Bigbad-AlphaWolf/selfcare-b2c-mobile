@@ -6,9 +6,10 @@ import {
   of,
   Observable,
   forkJoin,
+  throwError,
 } from 'rxjs';
-import { tap, switchMap, map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { tap, switchMap, map, catchError } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {
   OmUserInfo,
@@ -49,7 +50,7 @@ const getBalanceEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/balanc
 const achatCreditEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/buy-credit`;
 const achatIllimixEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/buy-illimix`;
 const achatPassEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/buy-pass`;
-const transferOMEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transfer-p2p`;
+const transferOMEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/v2/transfer-p2p`;
 const transferOMWithCodeEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transfer-avec-code`;
 const merchantPaymentEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/merchant/payment`;
 const getMerchantEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/merchant/naming`;
@@ -68,7 +69,8 @@ export class OrangeMoneyService {
   constructor(
     private http: HttpClient,
     private followAnalyticsService: FollowAnalyticsService,
-    private dashboardService: DashboardService  ) {}
+    private dashboardService: DashboardService
+  ) {}
   pinPadDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b'];
   gotPinPadSubject = new BehaviorSubject<string[]>([]);
   loginResponseSubject = new BehaviorSubject<any>({});
@@ -161,17 +163,30 @@ export class OrangeMoneyService {
     return this.http.post(registerClientEndpoint, registerClientData);
   }
 
-  GetPinPad(pinPadData: OmPinPadModel, changePinInfos?: { apiKey: string,em: string,loginToken: string, msisdn: string, sequence: string }) {
+  GetPinPad(
+    pinPadData: OmPinPadModel,
+    changePinInfos?: {
+      apiKey: string;
+      em: string;
+      loginToken: string;
+      msisdn: string;
+      sequence: string;
+    }
+  ) {
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
     const os = isIOS ? 'iOS' : 'Android';
     if (pinPadData) pinPadData.os = os;
-    if(changePinInfos) {
+    if (changePinInfos) {
       const sequence = changePinInfos.sequence.replace(
         new RegExp('-', 'g'),
         ' '
       );
       this.gotPinPadSubject.next(sequence.split(''));
-      return of({ content : { data : { sequence: changePinInfos.sequence, em: changePinInfos.em } }})
+      return of({
+        content: {
+          data: { sequence: changePinInfos.sequence, em: changePinInfos.em },
+        },
+      });
     }
     return this.http.post(pinpadEndpoint, pinPadData).pipe(
       tap((res: any) => {
@@ -204,12 +219,31 @@ export class OrangeMoneyService {
   }
 
   transferOM(transferOMData: TransferOrangeMoneyModel) {
+    const mockData = {
+      contentMessage:
+        'Vous avez droit à 2 transferts gratuits de 2 000F ou moins par jour. Ce transfert sera payant, voulez-vous continuer?',
+      errorCode: 'Capping-social-error',
+      message:
+        'Vous avez droit à 2 transferts gratuits de 2 000F ou moins par jour. Ce transfert sera payant, voulez-vous continuer?',
+      status: 400,
+      title: "Impossible d'effectuer l'operation orange money",
+      trid: '777917217202105171153C3046',
+      txnId: 'PP210517.1153.C00019',
+      type: '/problem-with-message',
+    };
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
     const uuid = ls.get('X-UUID');
     const os = isIOS ? 'iOS' : 'Android';
     transferOMData.uuid = uuid;
     transferOMData.os = os;
-    return this.http.post(transferOMEndpoint, transferOMData);
+    return this.http
+      .post(transferOMEndpoint, transferOMData)
+      .pipe
+      // catchError((err) => {
+      //   const error = new HttpErrorResponse({ error: mockData, status: 400 });
+      //   return throwError(error);
+      // })
+      ();
   }
 
   transferOMWithCode(transferOMData: TransferOMWithCodeModel) {
@@ -426,10 +460,13 @@ export class OrangeMoneyService {
   }
 
   sendRequestErreurTransactionOM(data: ErreurTransactionOmModel) {
-    return this.http.post(`${SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT}`, data);
+    return this.http.post(
+      `${SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT}`,
+      data
+    );
   }
 
-  changePin(data: ChangePinOm){
+  changePin(data: ChangePinOm) {
     return this.http.post(`${OM_CHANGE_PIN_ENDPOINT}`, data);
   }
 }
