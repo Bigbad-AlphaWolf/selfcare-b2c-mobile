@@ -54,6 +54,7 @@ import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amoun
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 import { OffresServicesPage } from '../pages/offres-services/offres-services.page';
 import { OperationService } from '../services/oem-operation/operation.service';
+import { OffreService } from '../models/offre-service.model';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -113,6 +114,8 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   sargalStatusUnavailable: boolean;
   noSargalProfil: boolean;
   sargalStatus: string;
+  showMerchantPay: boolean;
+
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -135,6 +138,20 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.getUserInfos();
     this.getWelcomeStatus();
+  }
+
+  checkMerchantPayment() {
+    this.showMerchantPay = false;
+    this.operationService
+      .getServicesByFormule()
+      .subscribe((allServices: OffreService[]) => {
+        const merchantService = allServices.find(
+          (service) => service.code === OPERATION_TYPE_MERCHANT_PAYMENT
+        );
+        if (merchantService) {
+          this.showMerchantPay = merchantService.activated;
+        }
+      });
   }
 
   checkOMNumber() {
@@ -165,15 +182,10 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.getUserActiveBonPlans();
     this.getActivePromoBooster();
     this.checkOMNumber();
-    this.banniereServ.setListBanniereByFormule();
-    this.banniereServ
-      .getStatusLoadingBanniere()
-      .subscribe((status: boolean) => {
-        this.isBanniereLoaded = status;
-        if (this.isBanniereLoaded) {
-          this.listBanniere = this.banniereServ.getListBanniereByFormule();
-        }
-      });
+    this.checkMerchantPayment();
+    this.banniereServ.getListBanniereByFormuleByZone().subscribe((res: any) => {
+      this.listBanniere = res;
+    });
     this.getActiveServices();
   }
 

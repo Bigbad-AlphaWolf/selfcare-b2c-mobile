@@ -1,16 +1,18 @@
 import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { ModalController, NavController } from '@ionic/angular';
+import { ModalController, NavController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { OPERATION_ENABLE_DALAL } from 'src/shared';
+import { ItemUserConso, OPERATION_ENABLE_DALAL, SubscriptionModel, UserConsommation } from 'src/shared';
 import { DalalTonesGenreModel } from '../models/dalal-tones-genre.model';
 import { DalalTonesSousGenreModel } from '../models/dalal-tones-sous-genre.model';
 import { DalalTonesModel } from '../models/dalal-tones.model';
 import { OperationExtras } from '../models/operation-extras.model';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { DalalTonesService } from '../services/dalal-tones-service/dalal-tones.service';
-import { downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
+import { DashboardService, downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
 import { DalalDisablePopupComponent } from './components/dalal-disable-popup/dalal-disable-popup.component';
 import { DalalMoreInfosComponent } from './components/dalal-more-infos/dalal-more-infos.component';
 const SINGLE_REQUEST_SIZE = 10;
@@ -35,17 +37,41 @@ export class DalalTonesPage implements OnInit {
   infiniteScrollDisabled: boolean;
   downloadAvatarEndpoint = downloadAvatarEndpoint;
   currentActiveDalals: any[];
+  rechargementSolde = 0;
+  RECHARGEMENT_COMPTEUR_CODE = 1;
+  currentPhoneNumber: string;
+  currentCodeFormulePhoneNumber: string;
   constructor(
     private dalalTonesService: DalalTonesService,
     private modalController: ModalController,
     private navController: NavController,
-    private router: Router
+    private router: Router,
+    private dashbService: DashboardService,
+    private toastController: ToastController,
+    private appRouting: ApplicationRoutingService,
+    private authServ: AuthenticationService
   ) {}
 
   ngOnInit() {
     this.getGenresDalal();
     this.getDalalTones(true, '');
     this.getCurrentActiveDalal();
+    this.dashbService.getUserCallCompteursInfos().pipe(
+      tap((res: ItemUserConso) => {
+        if(res) {
+          const rechargementCompteur = res.consommations.find((x: UserConsommation) => {
+             return x.code === this.RECHARGEMENT_COMPTEUR_CODE
+          })
+          this.rechargementSolde = rechargementCompteur.montant;
+        }
+      })
+    ).subscribe();
+    this.currentPhoneNumber = this.dashbService.getCurrentPhoneNumber();
+    this.authServ
+      .getSubscription(this.currentPhoneNumber)
+      .subscribe((res: SubscriptionModel) => {
+        this.currentCodeFormulePhoneNumber = res.code;
+      });
   }
 
   getCurrentActiveDalal() {
@@ -128,11 +154,15 @@ export class DalalTonesPage implements OnInit {
   }
 
   goDalalActivationRecapPage(dalal: DalalTonesModel) {
-    let state: OperationExtras = {};
-    state.purchaseType = OPERATION_ENABLE_DALAL;
-    state.dalal = dalal;
-    const navExtras: NavigationExtras = { state };
-    this.navController.navigateForward(['/operation-recap'], navExtras);
+    if(this.rechargementSolde < dalal.tarif) {
+      this.presentToastErrorMsg()
+    } else {
+      let state: OperationExtras = {};
+      state.purchaseType = OPERATION_ENABLE_DALAL;
+      state.dalal = dalal;
+      const navExtras: NavigationExtras = { state };
+      this.navController.navigateForward(['/operation-recap'], navExtras);
+    }
   }
 
   async openMoreInfosPopup() {
@@ -163,5 +193,36 @@ export class DalalTonesPage implements OnInit {
     this.router.navigate(['/dalal-tones/activated-dalal'], {
       state: { activeDalal: this.currentActiveDalals },
     });
+  }
+
+  async presentToastErrorMsg() {
+    const toast = await this.toastController.create({
+      header: 'Crédit Insuffisant',
+      message: "Vous n'avez pas assez de crédit pour activer ce service",
+      position: 'top',
+      duration: 3000,
+      buttons: [
+       {
+          text: 'Recharger',
+          handler: () => {
+            this.goToPageSetAmountForRechargeCredit();
+          }
+        }
+      ]
+    });
+    toast.present();
+  }
+
+  goToPageSetAmountForRechargeCredit() {
+    const opBuyCreditSetAmountPayload: OperationExtras = {
+      forSelf: true,
+      recipientFirstname: null,
+      recipientLastname: null,
+      recipientFromContact: false,
+      senderMsisdn: this.currentPhoneNumber,
+      recipientMsisdn: this.currentPhoneNumber,
+      recipientCodeFormule: this.currentCodeFormulePhoneNumber
+    };
+    this.appRouting.goToBuyCreditSetAmount(opBuyCreditSetAmountPayload);
   }
 }

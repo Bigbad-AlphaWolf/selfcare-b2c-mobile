@@ -33,9 +33,9 @@ export const OPERATION_TYPE_SOS = 'SOS';
 export const OPERATION_TYPE_SOS_CREDIT = 'SOS CREDIT';
 export const OPERATION_TYPE_SOS_PASS = 'SOS Pass Internet';
 export const OPERATION_TYPE_SOS_ILLIMIX = 'SOS Illimix';
-export const OPERATION_TYPE_SEDDO_CREDIT = 'SEDDO CREDIT';
+export const OPERATION_TYPE_SEDDO_CREDIT = 'SEDDO_CREDIT';
 export const OPERATION_TYPE_SEDDO_PASS = 'SEDDO PASS';
-export const OPERATION_TYPE_SEDDO_BONUS = 'SEDDO BONUS';
+export const OPERATION_TYPE_SEDDO_BONUS = 'SEDDO_BONUS';
 export const OPERATION_TYPE_TRANSFER_OM = 'orange-money';
 export const OPERATION_TYPE_RECHARGE_CREDIT = 'RECHARGEMENT_CREDIT';
 export const OPERATION_TYPE_SARGAL_CONVERSION = 'SARGAL_CONVERSION';
@@ -126,13 +126,16 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   PASSFOROTHER: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
   DALALTONE: `${IMAGES_DIRECTORY}ic-device-ringtone.png`,
   SOS: `${IMAGES_DIRECTORY}ic-emergency-sos.png`,
+  DEPOT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   TRANSFER: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  TRANSFERT_ARGENT: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   TRANSFERT_ARGENT_CODE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   PAIEMENT_FACTURE_SONATEL_FIXE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
-  PAIEMENT_SENELEC: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   PAIEMENT_FACTURE_SDE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
+  PAIEMENT_SENELEC: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   PAIEMENT_FACTURE: `${IMAGES_DIRECTORY}ic-orange-money-transactions.png`,
   WOYOFAL_PAYMENT: `${IMAGES_DIRECTORY}ic-files.png`,
+  PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
   MERCHANT_PAYMENT: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
   RAPIDO: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
   SARGAL: `${IMAGES_DIRECTORY}transfert-icon.png`,
@@ -1254,4 +1257,16 @@ export function getActiveBoostersForSpecificPass(
     booster.pricePlanIndexes.includes(passPPI.toString())
   );
   return boostersArray;
+}
+
+export enum HUB_ACTIONS {
+  ACHAT = 'HUB_ACHAT',
+  TRANSFERT = 'HUB_TRANSFER',
+  FACTURES = 'HUB_BILLS',
+}
+
+export enum TYPE_ACTION_ON_BANNER {
+  DEEPLINK = 'DEEPLINK',
+  REDIRECTION = 'REDIRECTION',
+  MODAL = 'MODAL'
 }

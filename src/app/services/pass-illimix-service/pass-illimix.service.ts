@@ -35,9 +35,9 @@ export class PassIllimixService {
     this.userCodeFormule = msisdn;
   }
 
-  queryListPassIllimix(codeFormule: string, category?: string) {
+  queryListPassIllimix(codeFormule: string, category?: string, isLightMod?: boolean) {
     this.listPassIllimix = [];
-    return this.dashbService.getListPassIllimix(codeFormule, category).pipe(
+    return this.dashbService.getListPassIllimix(codeFormule, category, isLightMod).pipe(
       map((res: PassIllimixModel[]) => {
         res.forEach((x) => {
           const isPassAllo =

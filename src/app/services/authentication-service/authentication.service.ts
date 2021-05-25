@@ -145,44 +145,6 @@ export class AuthenticationService {
   }
 
   // get msisdn subscription
-  getSubscriptionCustomerOffer(msisdn: string) {
-    // step 1 check if data exists in localstorage
-    // step 2 if exists return data from localstorage
-    // else call server to get data
-    // what to save? 'subXXXXXXXX"
-    const lsKey = 'sub' + msisdn;
-    const savedData = ls.get(lsKey);
-    if (savedData) {
-      return of(savedData);
-    } else {
-      return this.http.get(`${userSubscriptionEndpoint2}/${msisdn}`).pipe(
-        map((res: any) => {
-          const subscription = {
-            clientCode: res.clientCode,
-            nomOffre: res.offerName,
-            profil: res.offerType,
-            code: res.offerId,
-          };
-          if (
-            subscription.profil === PROFILE_TYPE_HYBRID ||
-            subscription.profil === PROFILE_TYPE_HYBRID_1 ||
-            subscription.profil === PROFILE_TYPE_HYBRID_2
-          ) {
-            subscription.code = JAMONO_ALLO_CODE_FORMULE;
-          }
-          if (isFixPostpaid(subscription.nomOffre)) {
-            subscription.profil = PROFILE_TYPE_POSTPAID;
-          }
-          const lsKey = 'sub' + msisdn;
-          ls.set(lsKey, subscription);
-          this.subscriptionUpdatedSubject.next(subscription);
-          return subscription;
-        })
-      );
-    }
-  }
-
-  // get msisdn subscription
   getSubscription(msisdn: string) {
     const lsKey = 'sub' + msisdn;
     this.checkSubscriptionHasExpired(lsKey);
@@ -407,6 +369,7 @@ export class AuthenticationService {
     this.removeUserInfos();
     this.isLoginSubject.next(false);
     ls.removeAll();
+    ls.clear();
     window.localStorage.clear();
   }
   get isLoggedIn() {

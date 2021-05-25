@@ -14,8 +14,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material';
 import { SidemenuComponent } from './sidemenu/sidemenu.component';
 import { AuthInterceptorService } from './services/auth-interceptor-service/auth-interceptor.service';
-import { ChangeAvatarPopupComponent } from './my-account/change-avatar-popup/change-avatar-popup.component';
-import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
 import { SharedModule } from 'src/shared/shared.module';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { File } from '@ionic-native/file/ngx';

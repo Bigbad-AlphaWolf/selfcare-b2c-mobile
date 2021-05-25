@@ -117,7 +117,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     }
     if (lightToken) {
       let headers = req.headers
-        .set('X-UUID', x_uuid)
+        .set('X-Selfcare-UUID', x_uuid)
         .set('Authorization', `Bearer ${lightToken}`);
       req = req.clone({
         headers,

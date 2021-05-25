@@ -221,6 +221,7 @@ export class OperationRecapPage implements OnInit {
               break;
             case OPERATION_RAPIDO:
             case OPERATION_WOYOFAL:
+            case OPERATION_ENABLE_DALAL:
               break;
             default:
               this.appRouting.goToDashboard();

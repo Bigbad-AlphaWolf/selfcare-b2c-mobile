@@ -51,6 +51,7 @@ export class ContactIbouHubPage implements OnInit {
   ngOnInit() {}
 
   ionViewWillEnter() {
+    this.dashboardService.addDimeloScript();
     this.dashboardService.prepareScriptChatIbou();
   }
 

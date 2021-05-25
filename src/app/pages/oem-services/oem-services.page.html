@@ -11,8 +11,7 @@
 
 <ion-content  no-bounce has-bouncing="false" forceOverscroll="false" [scrollEvents]="true">
   <div class="oem-services-page">
-
-    <oem-operations [operations]="operations"></oem-operations>
+    <oem-operations *ngIf="operations?.length" [operations]="operations"></oem-operations>
   </div>
 </ion-content>
 
