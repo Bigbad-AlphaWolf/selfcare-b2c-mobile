@@ -149,8 +149,7 @@ const routes: Routes = [
   {
     path: 'forgotten-password',
     loadChildren:
-      './forgotten-password/forgotten-password.module#ForgottenPasswordPageModule',
-      canActivate: [AuthGuard],
+      './forgotten-password/forgotten-password.module#ForgottenPasswordPageModule'
   },
   {
     path: 'sargal-registration',
