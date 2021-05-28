@@ -99,6 +99,7 @@ export class OperationRecapPage implements OnInit {
   OPERATION_TYPE_BONS_PLANS = OPERATION_TYPE_BONS_PLANS;
   OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
   OPERATION_ILLIFLEX = OPERATION_TYPE_PASS_ILLIFLEX;
+  OPERATION_RAPIDO = OPERATION_RAPIDO;
   DALAL_TARIF = MONTHLY_DALAL_TARIF;
   subscriptionInfos: SubscriptionModel;
   buyCreditPayload: any;
@@ -599,7 +600,7 @@ export class OperationRecapPage implements OnInit {
       'RECHARGEMENT_CREDIT',
       'OPERATION_TYPE_PASS_VOYAGE',
       'OPERATION_WOYOFAL',
-      'OPERATION_RAPIDO',
+      OPERATION_RAPIDO,
     ].includes(this.purchaseType);
   }
 }
