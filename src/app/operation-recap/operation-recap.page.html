@@ -362,9 +362,9 @@
         <span class="text" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
           >Payer ({{amount}} FCFA)</span
         >
-        <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM"
-          >Transférer ({{amount + opXtras?.sending_fees_Info?.effective_fees}} FCFA)</span
-        >
+        <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM">Transférer ({{!transferOMPayload.a_ma_charge ? amount +
+          opXtras?.sending_fees_Info?.effective_fees : amount + opXtras?.sending_fees_Info?.effective_fees + opXtras.fee}}
+          FCFA)</span>
         <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
           >Transférer ({{amount}} FCFA)</span
         >
