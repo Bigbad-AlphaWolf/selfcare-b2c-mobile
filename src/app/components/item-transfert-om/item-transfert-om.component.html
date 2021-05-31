@@ -17,7 +17,7 @@
       </span>
       <div class="value">
         <ng-container *ngIf="omTransfertInfos.sending_fees else freeFees">
-          {{omTransfertInfos.sending_fees}}
+          {{omTransfertInfos.sending_fees + " F CFA"}}
         </ng-container>
         <ng-template #freeFees>Gratuit <span class="asterisk scb-text-red-error">*</span></ng-template>        
       </div>
