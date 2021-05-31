@@ -198,7 +198,7 @@ import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/bann
     MaterialComponentsModule,
     PipesModule,
     YesNoModalComponent,
-    SimpleOperationSuccessModalComponent,
+    SimpleOperationSuccessModalComponent
   ],
   providers: [
     Contacts,

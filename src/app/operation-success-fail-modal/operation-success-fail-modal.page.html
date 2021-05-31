@@ -132,12 +132,11 @@
           *ngSwitchCase="OPERATION_ALLO_TYPE"
         >
         </app-item-pass-illimix>
-        <app-item-recharge-credit
-          [modifiable]="false"
-          [amount]="amount"
+        <app-item-transfert-om
+          [omTransfertInfos]="opXtras"
           *ngSwitchCase="OPERATION_TRANSFER_OM"
         >
-        </app-item-recharge-credit>
+        </app-item-transfert-om>
         <app-item-recharge-credit
           [modifiable]="false"
           [amount]="amount"

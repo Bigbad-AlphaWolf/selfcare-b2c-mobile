@@ -19,6 +19,7 @@ import { CommonModule } from '@angular/common';
 import { PipesModule } from '../pipes/pipes.module';
 import { MaterialComponentsModule } from '../material-components/material-components.module';
 import { IonicModule } from '@ionic/angular';
+import { ItemTransfertOmComponent } from './item-transfert-om/item-transfert-om.component';
 import { SlideBanniereDashboardComponent } from './slide-banniere-dashboard/slide-banniere-dashboard.component';
 
 @NgModule({
@@ -38,6 +39,7 @@ import { SlideBanniereDashboardComponent } from './slide-banniere-dashboard/slid
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
     ItemHistorikDetailsInfosComponent,
+    ItemTransfertOmComponent,
     SlideBanniereDashboardComponent
   ],
   imports: [
@@ -63,6 +65,7 @@ import { SlideBanniereDashboardComponent } from './slide-banniere-dashboard/slid
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
     ItemHistorikDetailsInfosComponent,
+    ItemTransfertOmComponent,
     SlideBanniereDashboardComponent
   ],
   entryComponents: [],

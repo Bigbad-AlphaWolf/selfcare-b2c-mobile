@@ -20,7 +20,8 @@ export interface OperationExtras {
   amount?: any;
   includeFee?: any;
   fee?: any;
-
+  sending_fees?: any;
+  sending_fees_Info?: {effective_fees: number, old_fees: number};
   code?: any;
   profil?: any;
 
