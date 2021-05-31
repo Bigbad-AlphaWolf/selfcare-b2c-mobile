@@ -6,10 +6,9 @@ import {
   of,
   Observable,
   forkJoin,
-  throwError,
 } from 'rxjs';
-import { tap, switchMap, map, catchError } from 'rxjs/operators';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { tap, switchMap, map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {
   OmUserInfo,
@@ -27,7 +26,6 @@ import {
 } from '.';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
-import { ModalController } from '@ionic/angular';
 import { ErreurTransactionOmModel } from 'src/app/models/erreur-transaction-om.model';
 import { SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT } from '../utils/om.endpoints';
 import { ChangePinOm } from 'src/app/models/change-pin-om.model';
@@ -219,31 +217,12 @@ export class OrangeMoneyService {
   }
 
   transferOM(transferOMData: TransferOrangeMoneyModel) {
-    const mockData = {
-      contentMessage:
-        'Vous avez droit à 2 transferts gratuits de 2 000F ou moins par jour. Ce transfert sera payant, voulez-vous continuer?',
-      errorCode: 'Capping-social-error',
-      message:
-        'Vous avez droit à 2 transferts gratuits de 2 000F ou moins par jour. Ce transfert sera payant, voulez-vous continuer?',
-      status: 400,
-      title: "Impossible d'effectuer l'operation orange money",
-      trid: '777917217202105171153C3046',
-      txnId: 'PP210517.1153.C00019',
-      type: '/problem-with-message',
-    };
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
     const uuid = ls.get('X-UUID');
     const os = isIOS ? 'iOS' : 'Android';
     transferOMData.uuid = uuid;
     transferOMData.os = os;
-    return this.http
-      .post(transferOMEndpoint, transferOMData)
-      .pipe
-      // catchError((err) => {
-      //   const error = new HttpErrorResponse({ error: mockData, status: 400 });
-      //   return throwError(error);
-      // })
-      ();
+    return this.http.post(transferOMEndpoint, transferOMData);
   }
 
   transferOMWithCode(transferOMData: TransferOMWithCodeModel) {
