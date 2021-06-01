@@ -142,11 +142,6 @@ const routes: Routes = [
   },
   // { path: 'bills', loadChildren: './bills/bills.module#BillsPageModule' },
   {
-    path: 'assistance',
-    loadChildren: './assistance/assistance.module#AssistancePageModule',
-    canActivate: [AuthGuard],
-  },
-  {
     path: 'forgotten-password',
     loadChildren:
       './forgotten-password/forgotten-password.module#ForgottenPasswordPageModule'
