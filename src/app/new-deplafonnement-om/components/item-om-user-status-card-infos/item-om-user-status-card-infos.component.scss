@@ -1,0 +1,59 @@
+@import 'src/app/app';
+
+.operation-status {
+    padding: 20px 15px 30px;
+    background-color: $white;
+    width: percentage(345/375);
+    margin: 15px auto 0;
+    border-radius: 5px;
+    .status-header {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      .numero-demand {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        line-height: 1.38;
+        display: flex;
+        align-items: center;
+      }
+      .status-demand {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 12px;
+        border-radius: 20px;
+        padding: 5px 15px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1 0 auto;
+        &.on-going {
+          border: solid 1px #ffcc00;
+          color: #ffcc00;
+          background-color: rgba(255, 204, 0, 0.15);
+        }
+        &.completed {
+          border: solid 1px #32c832;
+          color: #32c832;
+          background-color: rgba(50, 200, 50, 0.15);
+        }
+        &.rejected {
+          border: solid 1px #cd3c14;
+          color: #cd3c14;
+          background-color: rgba(205, 60, 20, 0.15);
+        }
+      }
+      .status-title {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        line-height: 1.38;
+        margin-bottom: 10px;
+        padding-right: 10px;
+      }
+    }
+    .status-description {
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 14px;
+      line-height: 1.29;
+    }
+  }

@@ -6,7 +6,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { IonInput } from '@ionic/angular';
+import { IonInput, ModalController } from '@ionic/angular';
 import { OmCheckOtpModel } from 'src/app/models/om-self-operation-otp.model';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 
@@ -23,7 +23,7 @@ export class TypeOtpModalComponent implements OnInit, AfterViewInit {
   errorCheckOtp: boolean;
   errorMsg: string;
 
-  constructor(private orangeMoneyService: OrangeMoneyService) {}
+  constructor(private orangeMoneyService: OrangeMoneyService, private modal: ModalController) {}
 
   ngOnInit() {}
 
@@ -42,6 +42,7 @@ export class TypeOtpModalComponent implements OnInit, AfterViewInit {
       .subscribe(
         (res) => {
           this.checkingOtp = false;
+          this.modal.dismiss({accept: true});
         },
         (err) => {
           this.errorCheckOtp = true;

@@ -24,6 +24,7 @@ export interface OmCheckOtpModel {
   kyc: OmInitOtpModel;
   msisdn: string;
   typeDemande: string;
+  hmac: string
 }
 
 export interface checkOtpResponseModel {

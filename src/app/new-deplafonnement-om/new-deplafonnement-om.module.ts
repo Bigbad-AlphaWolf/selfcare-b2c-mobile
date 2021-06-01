@@ -14,8 +14,8 @@ import {
   MatRadioModule,
 } from '@angular/material';
 import { SharedModule } from 'src/shared/shared.module';
-import { VisualizePictureModalComponent } from './components/visualize-picture-modal/visualize-picture-modal.component';
 import { TypeOtpModalComponent } from './components/type-otp-modal/type-otp-modal.component';
+import { ItemOmUserStatusCardInfosComponent } from './components/item-om-user-status-card-infos/item-om-user-status-card-infos.component';
 
 const routes: Routes = [
   {
@@ -43,10 +43,10 @@ const routes: Routes = [
   declarations: [
     NewDeplafonnementOmPage,
     TakePictureComponent,
-    VisualizePictureModalComponent,
     TypeOtpModalComponent,
+    ItemOmUserStatusCardInfosComponent
   ],
   providers: [CameraPreview],
-  entryComponents: [VisualizePictureModalComponent, TypeOtpModalComponent],
+  entryComponents: [TypeOtpModalComponent],
 })
 export class NewDeplafonnementOmPageModule {}

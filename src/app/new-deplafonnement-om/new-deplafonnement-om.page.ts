@@ -2,11 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
+import { OPERATION_OPEN_OM_ACCOUNT } from 'src/shared';
+import { OMCustomerStatusModel } from '../models/om-customer-status.model';
 import {
   OmCheckOtpModel,
   OmInitOtpModel,
 } from '../models/om-self-operation-otp.model';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
+import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
+import { SUCCESS_MSG_OM_ACCOUNT_CREATION } from '../services/orange-money-service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { TypeOtpModalComponent } from './components/type-otp-modal/type-otp-modal.component';
 
@@ -20,19 +24,19 @@ export class NewDeplafonnementOmPage implements OnInit {
   identityForm: FormGroup;
   rectoFilled: boolean;
   rectoImage: any;
-  rectoFileName = 'recto.jpg';
+  rectoFileName: string;
   versoFilled: boolean;
   versoImage: any;
-  versoFileName = 'verso.jpg';
+  versoFileName: string;
   selfieFilled: boolean;
   selfieImage: any;
-  selfieFileName = 'selfie.jpg';
+  selfieFileName: string;
   acceptCGU: boolean;
   omMsisdn: string;
   gettingOmNumber: boolean;
   getMsisdnHasError: boolean;
   checkingStatus: boolean;
-  userOmStatus: any;
+  userOmStatus: OMCustomerStatusModel;
   checkStatusError: boolean;
   omMessage: string;
   initOtpError: boolean;
@@ -65,7 +69,7 @@ export class NewDeplafonnementOmPage implements OnInit {
     });
     this.identityForm = this.formBuilder.group({
       nIdentity: [null, [Validators.required]],
-      identityType: [[Validators.required]],
+      identityType: ['CNI', [Validators.required]],
     });
   }
 
@@ -75,9 +79,8 @@ export class NewDeplafonnementOmPage implements OnInit {
     this.orangeMoneyService.getUserStatus().subscribe(
       (status) => {
         this.omMsisdn = status.omNumber;
-        this.omMessage = status.status_wording;
-        this.userOmStatus = status.content.data;
-        this.checkingStatus = true;
+        this.userOmStatus = status;
+        this.checkingStatus = false;
       },
       (err) => {
         this.checkingStatus = false;
@@ -99,7 +102,6 @@ export class NewDeplafonnementOmPage implements OnInit {
         } else {
           this.omMsisdn = msisdn;
         }
-        console.log(this.omMsisdn, !this.omMsisdn);
       },
       (err) => {
         this.getMsisdnHasError = true;
@@ -154,18 +156,17 @@ export class NewDeplafonnementOmPage implements OnInit {
       cni_verso: this.versoImage,
       id_num: this.identityForm.value.nIdentity,
       type_piece: this.identityForm.value.identityType,
-      adresse: '',
-      delivery_date: '',
-      expiry_date: '',
+      adresse: 'adresse',
+      delivery_date: 'delivery_date',
+      expiry_date: 'expiry_date',
+      hmac2: this.userOmStatus.hmac
     };
     this.initOtpError = false;
     this.generatingOtp = true;
     this.orangeMoneyService.initSelfOperationOtp(otpPayload).subscribe(
-      (res) => {
-        const hmac2 = res.content.data.hmac;
-        otpPayload = Object.assign({}, otpPayload, hmac2);
+      (res: any) => {
         this.generatingOtp = false;
-        this.openTypeOtpModal(otpPayload);
+        this.openTypeOtpModal(otpPayload, res.content.data.hmac);
       },
       (err) => {
         this.initOtpError = true;
@@ -174,7 +175,7 @@ export class NewDeplafonnementOmPage implements OnInit {
     );
   }
 
-  async openTypeOtpModal(initOtpPayload: OmInitOtpModel) {
+  async openTypeOtpModal(initOtpPayload: OmInitOtpModel, hmac?: string) {
     const checkOtpPayload: OmCheckOtpModel = {
       kyc: initOtpPayload,
       channel: 'OeM',
@@ -183,6 +184,7 @@ export class NewDeplafonnementOmPage implements OnInit {
       imageBase64: this.selfieImage,
       msisdn: this.omMsisdn,
       typeDemande: 'UPGRADE',
+      hmac
     };
     const modal = await this.modalController.create({
       component: TypeOtpModalComponent,
@@ -198,7 +200,7 @@ export class NewDeplafonnementOmPage implements OnInit {
   }
 
   openSuccessModal() {
-    alert('success');
+    this.showModal({purchaseType: OPERATION_OPEN_OM_ACCOUNT , textMsg: SUCCESS_MSG_OM_ACCOUNT_CREATION });
   }
 
   goBack() {
@@ -232,5 +234,24 @@ export class NewDeplafonnementOmPage implements OnInit {
       default:
         break;
     }
+  }
+
+  async showModal(data: {purchaseType: string, textMsg: string}){
+    const modal = await this.modalController.create({
+      component: OperationSuccessFailModalPage,
+      cssClass: 'failed-modal',
+      componentProps: data,
+      backdropDismiss: false,
+    });
+    modal.onDidDismiss().then(() => {});
+    return await modal.present();
+  }
+
+  isElligibleToDeplafonnement(userStatus: OMCustomerStatusModel){
+    return userStatus && userStatus.operation === 'DEPLAFONNEMENT' && userStatus.operationStatus === 'NEW'
+  }
+
+  isElligibleToSuiviDeplafonnement(userStatus: OMCustomerStatusModel){
+    return userStatus && userStatus.operation === 'DEPLAFONNEMENT' && userStatus.operationStatus !== 'NEW'
   }
 }

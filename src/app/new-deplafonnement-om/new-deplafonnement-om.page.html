@@ -19,14 +19,14 @@
     <div class="banniere-container">
       <img src="/assets/images/banniere-om-new-account.png" alt="header-om" />
     </div>
-    <div class="all-informations-block"
-      *ngIf="1 || (userOmStatus && userOmStatus.om && !userOmStatus?.full && userOmStatus?.step === 'NEW')">
+    <div class="all-informations-block" *ngIf="isElligibleToDeplafonnement(userOmStatus)"
+     >
       <div class="single-block">
         <div class="block-title">Numéro de téléphone</div>
         <div class="block-description scb-text-gray">Selectionnez le numéro sur lequel vous souhaitez ouvrir votre
           compte Orange Money</div>
         <div class="form-block">
-          <div class="om-number-block scb-text-gray"><span *ngIf="omMsisdn" class="msisdn">{{omMsisdn + '
+          <div class="om-number-block scb-text-gray"><span *ngIf="omMsisdn" class="msisdn">{{(omMsisdn | phoneNumberDisplay) + '
               (principal)'}}</span></div>
           <div class="error-block scb-text-red-error" *ngIf="getMsisdnHasError" (click)="getOmMsisdn()">Une erreur est
             survenue. Réactualisez ici</div>
@@ -62,7 +62,7 @@
         <form class="form-block" [formGroup]="identityForm">
           <div class="radio-group">
             <mat-radio-group formControlName="identityType">
-              <mat-radio-button [value]="'CNI'" checked #cni>
+              <mat-radio-button [value]="'CNI'" #cni>
                 <div class="identity-option scb-text-gray" [ngClass]="{'radio-selected': cni.checked}">
                   Carte d'identité
                 </div>
@@ -107,7 +107,7 @@
         <div class="block-title" (click)="openTypeOtpModal()">Confirmation</div>
         <div class="form-block">
           <div class="cgu-block">
-            <mat-checkbox class="cgu-checkbox" [checked]="acceptCGU">
+            <mat-checkbox class="cgu-checkbox" [(ngModel)]="acceptCGU">
             </mat-checkbox>
             <div class="scb-text-gray text" (click)="toggleAcceptCGU()">J’accepte les <span
                 class="scb-text-orange cg">conditions générales</span> de déplafonnement de compte Orange Money.</div>
@@ -115,27 +115,15 @@
           <div class="init-otp-error" *ngIf="initOtpError">Une erreur est survenue.</div>
           <button
             [disabled]="(generatingOtp || !omMsisdn || !identityForm.valid || !personalInfosForm.valid || !acceptCGU || !rectoFilled || !versoFilled || !selfieFilled)"
-            class="scb-btn scb-btn-full scb-btn-orange" (click)="openTypeOtpModal()">
+            class="scb-btn scb-btn-full scb-btn-orange" (click)="generateOtp()">
             <span>Continuer</span>
             <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="generatingOtp"></mat-spinner>
           </button>
         </div>
       </div>
     </div>
-    <div class="operation-status" *ngIf="userOmStatus && userOmStatus.om && userOmStatus?.step !== 'NEW'">
-      <div class="status-header">
-        <div class="numero-demand">N ᵒ P2005094389</div>
-        <ng-container [ngSwitch]="!userOmStatus?.step">
-          <div class="status-demand on-going" *ngSwitchCase="'ONGOING'">En cours</div>
-          <div class="status-demand completed" *ngSwitchCase="'COMPLETED'">Clôturée</div>
-          <div class="status-demand rejected" *ngSwitchCase="'ERROR'">Rejetée</div>
-        </ng-container>
-      </div>
-      <div class="status-title">Demande de déplafonnement de compte Orange Money - {{omMsisdn}}</div>
-      <div class="status-description scb-text-gray">
-        {{omMessage}}
-      </div>
-    </div>
+    <app-item-om-user-status-card-infos *ngIf="isElligibleToSuiviDeplafonnement(userOmStatus)" [userOmStatus]="userOmStatus">
+    </app-item-om-user-status-card-infos>
     <div class="spinner-block" *ngIf="checkingStatus">
       <mat-spinner mode="indeterminate" [diameter]="40"></mat-spinner>
     </div>

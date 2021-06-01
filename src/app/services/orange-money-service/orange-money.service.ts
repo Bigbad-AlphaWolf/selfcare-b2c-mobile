@@ -416,6 +416,8 @@ export class OrangeMoneyService {
   }
 
   initSelfOperationOtp(initOtpPayload: OmInitOtpModel) {
+    console.log('url', selfOperationCheckOtpEndpoint,'payload', initOtpPayload);
+
     return this.http.post<checkOtpResponseModel>(
       selfOperationInitOtpEndpoint,
       initOtpPayload

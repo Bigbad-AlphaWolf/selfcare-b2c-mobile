@@ -5,7 +5,7 @@ import {
   CameraPreviewOptions,
   CameraPreviewPictureOptions,
 } from '@ionic-native/camera-preview/ngx';
-import { ModalController, NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 
 const cameraPreviewOpts: CameraPreviewOptions = {
   x: 0,
@@ -17,12 +17,13 @@ const cameraPreviewOpts: CameraPreviewOptions = {
   previewDrag: true,
   toBack: true,
   alpha: 1,
+  tapFocus: true
 };
 
 const pictureOpts: CameraPreviewPictureOptions = {
   width: 1280,
   height: 1280,
-  quality: 85,
+  quality: 85
 };
 
 @Component({
@@ -35,11 +36,9 @@ export class TakePictureComponent implements OnInit {
   step: 'recto' | 'verso' | 'selfie';
   stepNumber: number;
   stepDescription: string;
-
   constructor(
     private cameraPreview: CameraPreview,
-    private navController: NavController,
-    private modalController: ModalController
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -48,6 +47,11 @@ export class TakePictureComponent implements OnInit {
 
   ionViewWillEnter() {
     this.getCurrentStep();
+  }
+
+  ionViewWillLeave() {
+    this.getCurrentStep();
+    this.stopCamera()
   }
 
   switchCamera() {
@@ -75,6 +79,10 @@ export class TakePictureComponent implements OnInit {
   }
 
   startCamera() {
+    const cameraOption = cameraPreviewOpts;
+    if (this.step === 'selfie') {
+      cameraOption.camera = 'front'
+    }
     this.cameraPreview
       .startCamera(cameraPreviewOpts)
       .then((res) => {
@@ -85,11 +93,21 @@ export class TakePictureComponent implements OnInit {
       });
   }
 
+  stopCamera() {
+    this.cameraPreview.stopCamera().then().catch((err) => {
+      console.log(err);
+    })
+  }
+
   takePicture() {
     this.cameraPreview.takePicture(pictureOpts).then(
       (imageData) => {
         this.picture = 'data:image/jpeg;base64,' + imageData;
         this.cameraPreview.stopCamera();
+        // this.crop.crop(this.picture, {quality: 75}).then(
+        //   newImage => console.log('new image path is: ' + newImage),
+        //    error => console.error('Error cropping image', error)
+        // );
       },
       (err) => {
         console.log(err);

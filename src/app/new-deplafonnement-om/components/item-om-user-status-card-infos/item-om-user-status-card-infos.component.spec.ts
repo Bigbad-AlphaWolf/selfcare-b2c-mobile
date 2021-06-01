@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VisualizePictureModalComponent } from './visualize-picture-modal.component';
+import { ItemOmUserStatusCardInfosComponent } from './item-om-user-status-card-infos.component';
 
-describe('VisualizePictureModalComponent', () => {
-  let component: VisualizePictureModalComponent;
-  let fixture: ComponentFixture<VisualizePictureModalComponent>;
+describe('ItemOmUserStatusCardInfosComponent', () => {
+  let component: ItemOmUserStatusCardInfosComponent;
+  let fixture: ComponentFixture<ItemOmUserStatusCardInfosComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VisualizePictureModalComponent ],
+      declarations: [ ItemOmUserStatusCardInfosComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VisualizePictureModalComponent);
+    fixture = TestBed.createComponent(ItemOmUserStatusCardInfosComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
