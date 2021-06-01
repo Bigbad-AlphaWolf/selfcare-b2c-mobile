@@ -54,6 +54,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_CHANGE_PIN_OM = OPERATION_CHANGE_PIN_OM;
   OPERATION_TYPE_PASS_VOYAGE = OPERATION_TYPE_PASS_VOYAGE;
   OPERATION_TYPE_PASS_USAGE = OPERATION_TYPE_PASS_USAGE;
+  OPERATION_RAPIDO = OPERATION_RAPIDO;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;

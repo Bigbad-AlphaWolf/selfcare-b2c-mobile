@@ -185,3 +185,10 @@
     }
   }
 }
+
+@media screen and (max-height: 700px) {
+  .amount-block {
+    position: relative !important;
+    padding: 30px 0 40px !important;
+  }
+}

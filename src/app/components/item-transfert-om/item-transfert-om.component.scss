@@ -1,0 +1,120 @@
+@import 'src/app/app';
+
+.item-container {
+  background-color: $white;
+  padding: 20px 15px;
+  position: relative;
+  .tarifs-infos-amount-confirmed {
+    padding-bottom: 10px;
+    border-bottom: 1px solid $silver;
+    .value {
+      color: $orange;
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 20px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.1;
+    }
+  }
+  .badge-promo {
+    position: absolute;
+    top: 15px;
+    right: -5px;
+    // width: 18%;
+    // min-width: 25px;
+    .icon-container {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 10px;
+      background-color: $lightBlue;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 5px 10px;
+      width: 100%;
+      border-radius: 5% 5% 0 5%;
+      .new {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 10px;
+      }
+    }
+    .triangle {
+      width: 0;
+      height: 0;
+      border-top: 5px solid $bluePopUp;
+      border-right: 5px solid transparent;
+      float: right;
+    }
+  }
+  .tarifs-infos-fees {
+    margin-top: 9px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid $silver;
+    .item-fees {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      .title {
+        color: $gray;
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.33;
+        .former-fees {
+          text-decoration: line-through;
+        }
+        .new-fees {
+          color: $greenSuccess;
+        }
+      }
+      .value {
+        color: $fullBlack;
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 12px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.33;
+        .asterisk {
+          font-size: 22px;
+        }
+      }
+      .save-amount {
+        color: $greenSuccess;
+      }
+    }
+    .limit-free {
+      width: 100%;
+      text-align: right;
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 12px;
+      padding-bottom: 3px;
+    }
+  }
+  .tarifs-infos-summary {
+    padding-top: 9px;
+    display: flex;
+    justify-content: space-between;
+    .title {
+      color: $gray;
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 12px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.33;
+    }
+    .value {
+      color: $fullBlack;
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 16px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1;
+    }
+  }
+}

@@ -3,4 +3,5 @@ export interface BillCompany {
   logo?: string;
   code?: string;
   idCode?: number;
+  codeOM?: string;
 }

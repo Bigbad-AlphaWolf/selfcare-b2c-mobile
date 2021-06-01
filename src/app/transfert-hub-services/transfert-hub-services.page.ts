@@ -22,6 +22,7 @@ import {
   OPERATION_TYPE_SEDDO_BONUS,
   OPERATION_TYPE_SEDDO_CREDIT,
   OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_TYPE_SOS_ILLIMIX,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';

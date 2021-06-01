@@ -121,9 +121,9 @@ export class DashboardPostpaidPage implements OnInit {
           );
           const moreActionService: OffreService = {
             redirectionType: 'NAVIGATE',
-            titre: 'Autres',
+            shortDescription: 'Autres',
             icone: `${IMAGES_DIR_PATH}/ic-more-dots@2x.png`,
-            description: 'Services',
+            fullDescription: 'Services',
             redirectionPath: 'oem-services',
             activated: true,
           };
