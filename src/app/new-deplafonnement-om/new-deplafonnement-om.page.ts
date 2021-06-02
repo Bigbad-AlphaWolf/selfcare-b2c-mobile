@@ -24,13 +24,13 @@ export class NewDeplafonnementOmPage implements OnInit {
   identityForm: FormGroup;
   rectoFilled: boolean;
   rectoImage: any;
-  rectoFileName: string;
+  rectoFileName = 'recto.jpg';
   versoFilled: boolean;
   versoImage: any;
-  versoFileName: string;
+  versoFileName= 'verso.jpg';
   selfieFilled: boolean;
   selfieImage: any;
-  selfieFileName: string;
+  selfieFileName = 'selfie.jpg';
   acceptCGU: boolean;
   omMsisdn: string;
   gettingOmNumber: boolean;
