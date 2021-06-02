@@ -36,12 +36,11 @@ import { IonicImageLoader } from 'ionic-image-loader';
 import { Uid } from '@ionic-native/uid/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { PipesModule } from './pipes/pipes.module';
+import { Network } from '@ionic-native/network/ngx';
 
 registerLocaleData(localeFr);
 @NgModule({
-  declarations: [
-    AppComponent,
-    SidemenuComponent ],
+  declarations: [AppComponent, SidemenuComponent],
   imports: [
     HttpClientModule,
     MatDialogModule,
@@ -55,7 +54,7 @@ registerLocaleData(localeFr);
     NewPinpadModalPageModule,
     OperationSuccessFailModalPageModule,
     RegistrationSuccessModalPageModule,
-    PipesModule
+    PipesModule,
   ],
   providers: [
     AppVersion,
@@ -79,6 +78,7 @@ registerLocaleData(localeFr);
     Device,
     Uid,
     AndroidPermissions,
+    Network,
   ],
   bootstrap: [AppComponent],
 })

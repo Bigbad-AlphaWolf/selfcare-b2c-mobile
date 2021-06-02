@@ -72,7 +72,6 @@ export class IlliflexSetAmountModalComponent implements OnInit {
 
   validateAmount(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      console.log(+control.value);
       const amount = +control.value;
       return amount % BASE_MULTIPLE === 0 &&
         amount <= this.maxAmountIlliflex &&
