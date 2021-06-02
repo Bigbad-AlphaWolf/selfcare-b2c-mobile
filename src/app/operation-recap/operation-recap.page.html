@@ -19,8 +19,8 @@
         <span *ngSwitchCase="OPERATION_TRANSFER_OM">Transfert d'argent</span>
         <span *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
         <span *ngSwitchCase="'OPERATION_WOYOFAL'">Rechargement Woyofal</span>
-        <span *ngSwitchCase="'OPERATION_RAPIDO'">Rechargement Rapido</span>
-        <span *ngSwitchCase="OPERATION_TYPE_PASS_VOYAGE"
+        <span *ngSwitchCase="OPERATION_RAPIDO">Rechargement Rapido</span>
+        <span *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
           >Pass selectionné</span
         >
         <span *ngSwitchCase="OPERATION_ENABLE_DALAL"
@@ -84,7 +84,7 @@
         class="banniere"
       />
       <img
-        *ngSwitchCase="'OPERATION_RAPIDO'"
+        *ngSwitchCase="OPERATION_RAPIDO"
         src="assets/images/recharge-bill.svg"
         alt="banniere"
         class="banniere"
@@ -119,11 +119,14 @@
   [scrollEvents]="true"
 >
   <div *ngIf="operationTypeRecap" class="recap-text">Récapitulatif</div>
-  <div class="recap-title" *ngIf="!operationTypeRecap">
+  <div class="recap-title" *ngIf="!operationTypeRecap && ![OPERATION_TRANSFER_OM].includes(purchaseType)">
     <span class="text-1">Récapitulatif</span>
     <ng-container [ngSwitch]="purchaseType">
       <span *ngSwitchCase="OPERATION_INTERNET_TYPE" class="text-2 scb-text-gray"
         >Vous allez recharger</span
+      >
+      <span *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE" class="text-2 scb-text-gray"
+        >Vous allez transférer</span
       >
       <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE" class="text-2 scb-text-gray"
         >Vous allez recharger</span
@@ -137,14 +140,6 @@
       <span
         *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
         class="text-2 scb-text-gray"
-        >Vous allez transférer</span
-      >
-      <span
-        *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
-        class="text-2 scb-text-gray"
-        >Vous allez transférer</span
-      >
-      <span *ngSwitchCase="OPERATION_TRANSFER_OM" class="text-2 scb-text-gray"
         >Vous allez transférer</span
       >
       <span *ngSwitchCase="OPERATION_ENABLE_DALAL" class="text-2 scb-text-gray"
@@ -195,7 +190,7 @@
         <span class="pass">Montant à recharger</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
       </div>
-      <div class="amount-to-transfer" *ngSwitchCase="'OPERATION_RAPIDO'">
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_RAPIDO">
         <span class="pass">Montant à recharger</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
       </div>
@@ -221,15 +216,14 @@
           *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
         >
         </app-item-recharge-credit>
+        <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM" >
+          <app-item-transfert-om [omTransfertInfos]="opXtras" >
+          </app-item-transfert-om>
+        </ng-container>
         <app-item-recharge-credit
-          [amount]="amount"
-          *ngSwitchCase="OPERATION_TRANSFER_OM"
-        ></app-item-recharge-credit>
-        <app-item-recharge-credit
-          [amount]="amount"
-          *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
-        >
-        </app-item-recharge-credit>
+        [amount]="amount"
+        *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">
+      </app-item-recharge-credit>
         <app-item-pass-internet
           [passInternet]="passChoosen"
           [subscription]="subscriptionInfos"
@@ -273,7 +267,7 @@
         </app-item-recharge-credit>
         <app-item-recharge-credit
           [amount]="opXtras.amount + opXtras.fee"
-          *ngSwitchCase="'OPERATION_RAPIDO'"
+          *ngSwitchCase="OPERATION_RAPIDO"
         >
         </app-item-recharge-credit>
         <app-dalal-card-item
@@ -303,18 +297,18 @@
         <span class="title"
           >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT ? merchantCode :
           recipientMsisdn | phoneNumberDisplay}} {{([ 'OPERATION_WOYOFAL',
-          'OPERATION_RAPIDO'].includes(purchaseType)?opXtras.billData.counter.counterNumber
+          OPERATION_RAPIDO].includes(purchaseType)?opXtras.billData.counter.counterNumber
           :'')|codeFormat:2}}</span
         >
         <span class="recipient"
           >{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT
           ?merchantName:recipientName}}{{ [ 'OPERATION_WOYOFAL',
-          'OPERATION_RAPIDO'].includes(purchaseType)?opXtras.billData.counter.name:''}}</span
+          OPERATION_RAPIDO].includes(purchaseType)?opXtras.billData.counter.name:''}}</span
         >
       </div>
     </div>
     <ng-container
-      *ngIf="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE || purchaseType === OPERATION_TRANSFER_OM"
+      *ngIf="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE"
     >
       <div class="amount-to-transfer">
         <span class="pass">Type de transfert</span>
@@ -351,6 +345,9 @@
         ></app-item-recharge-credit>
       </div>
     </ng-container>
+    <ng-container *ngIf="purchaseType === OPERATION_TRANSFER_OM && opXtras.includeFee">
+      <scb-avantage-popup [type]="'novo-fees'" [details]="opXtras" ></scb-avantage-popup>
+    </ng-container>
     <button
       class="scb-btn scb-btn-orange"
       (click)="pay()"
@@ -376,16 +373,16 @@
         <span class="text" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
           >Payer ({{amount}} FCFA)</span
         >
-        <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM"
-          >Transférer ({{amount}} FCFA)</span
-        >
+        <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM">Transférer ({{!transferOMPayload.a_ma_charge ? amount +
+          opXtras?.sending_fees_Info?.effective_fees : amount + opXtras?.sending_fees_Info?.effective_fees + opXtras.fee}}
+          FCFA)</span>
         <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
           >Transférer ({{amount}} FCFA)</span
         >
         <span class="text" *ngSwitchCase="'RECHARGEMENT_CREDIT'"
           >Confirmer ({{amount|formatCurrency}} FCFA)</span
         >
-        <span class="text" *ngSwitchCase="'OPERATION_RAPIDO'"
+        <span class="text" *ngSwitchCase="OPERATION_RAPIDO"
           >Confirmer ({{(opXtras.amount + opXtras.fee)|formatCurrency}}
           FCFA)</span
         >

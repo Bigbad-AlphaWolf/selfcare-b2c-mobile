@@ -39,8 +39,7 @@ export class OfcService {
     const hidden = !cookies ? ',hidden=yes' : '';
     var browser = this.inAppBrowser.create(
       OfcService.OFC_WEBVIEW_URL,
-      '_blank',
-      `fullscreen=no,zoom=no`
+      '_blank'
     );
 
     browser.on('loadstop').subscribe((event) => {
