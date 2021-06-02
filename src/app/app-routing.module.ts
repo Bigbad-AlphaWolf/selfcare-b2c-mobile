@@ -366,6 +366,7 @@ const routes: Routes = [
     loadChildren:
       './pages/reclamation-om-transaction/reclamation-om-transaction.module#ReclamationOmTransactionPageModule',
   },  { path: 'list-pass-usage', loadChildren: './list-pass-usage/list-pass-usage.module#ListPassUsagePageModule' },
+  { path: 'cancel-transaction-om', loadChildren: './cancel-transaction-om/cancel-transaction-om.module#CancelTransactionOmPageModule' },
 
 ];
 

@@ -20,6 +20,7 @@ import { PipesModule } from '../pipes/pipes.module';
 import { MaterialComponentsModule } from '../material-components/material-components.module';
 import { IonicModule } from '@ionic/angular';
 import { SlideBanniereDashboardComponent } from './slide-banniere-dashboard/slide-banniere-dashboard.component';
+import { HistorikTransactionByTypeModalComponent } from '../pages/reclamation-om-transaction/components/historik-transaction-by-type-modal/historik-transaction-by-type-modal.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { SlideBanniereDashboardComponent } from './slide-banniere-dashboard/slid
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
     ItemHistorikDetailsInfosComponent,
-    SlideBanniereDashboardComponent
+    SlideBanniereDashboardComponent,
+    HistorikTransactionByTypeModalComponent
   ],
   imports: [
     CommonModule,
@@ -63,8 +65,9 @@ import { SlideBanniereDashboardComponent } from './slide-banniere-dashboard/slid
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
     ItemHistorikDetailsInfosComponent,
-    SlideBanniereDashboardComponent
+    SlideBanniereDashboardComponent,
+    HistorikTransactionByTypeModalComponent
   ],
-  entryComponents: [],
+  entryComponents: [HistorikTransactionByTypeModalComponent],
 })
 export class ComponentsModule {}
