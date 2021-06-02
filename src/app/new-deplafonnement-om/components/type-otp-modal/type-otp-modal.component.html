@@ -1,6 +1,6 @@
 <div class="type-otp-modal">
   <div class="title">Confirmez votre numéro</div>
-  <div class="sub-title scb-text-gray">Entrez le code reçu par SMS au 77 445 29 16</div>
+  <div class="sub-title scb-text-gray">Entrez le code reçu par SMS au {{ checkOtpPayload.msisdn | phoneNumberDisplay }}</div>
   <div class="input-block">
     <div class="fake-input-block">
       <div class="square" [ngClass]="{'active': input.value.length === 0}"></div>
