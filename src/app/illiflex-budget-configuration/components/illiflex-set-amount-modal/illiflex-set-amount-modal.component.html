@@ -31,7 +31,7 @@
     <div class="amount-validity scb-text-gray" *ngIf="amount && isAmountValid">La durée de validité pour ce montant est
       : <span class="scb-text-full-black validity">{{' ' + getValidity(amount)}}</span></div>
     <div class="rapid-choices">
-      <div class="choice" *ngFor="let choice of rapidChoices" (click)="setAmount(choice)">
+      <div class="choice" *ngFor="let choice of rapidChoices" (click)="setAmount(choice, true)">
         <div class="value">{{choice}}</div>
         <div class="unit scb-text-gray">FCFA</div>
       </div>

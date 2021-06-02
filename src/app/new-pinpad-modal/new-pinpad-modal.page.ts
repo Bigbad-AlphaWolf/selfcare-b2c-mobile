@@ -93,7 +93,10 @@ export class NewPinpadModalPage implements OnInit {
   resendCode = false;
   noOMAccountModal: MatDialogRef<NoOMAccountPopupComponent, any>;
   sendingOtp: boolean;
-  recurrentOperation;
+  recurrentOperation: boolean;
+  canRetry: boolean; // boolean to permit user to confirm an operation if similar to recent one or caaping reached
+  cappingFees: number;
+  pin: string;
   title: string;
   allNumbers: string[] = [];
   otpValidation: boolean;
@@ -422,6 +425,7 @@ export class NewPinpadModalPage implements OnInit {
       this.omPhoneNumber
     );
     pin = this.orangeMoneyService.GetPin(omUser.sequence.split(''), pin);
+    this.pin = pin;
     if (omUser.msisdn === this.omPhoneNumber) {
       // the account is active
       if (omUser.active) {
@@ -480,6 +484,7 @@ export class NewPinpadModalPage implements OnInit {
               this.transferMoneyPayload,
               {
                 pin,
+                fees: 0,
               }
             );
             this.transferMoney(transferMoneyPayload);
@@ -798,8 +803,19 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  transferMoney(params: { msisdn2: string; pin: any; amount: number }) {
+  transferMoney(params: {
+    msisdn2: string;
+    pin: any;
+    amount: number;
+    send_fees: number;
+    cashout_fees: number;
+    a_ma_charge: boolean;
+    fees: number;
+  }) {
     this.processingPin = true;
+    this.canRetry = false;
+    this.pinHasError = false;
+    this.errorBulletActive = false;
     const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
       this.omPhoneNumber
     );
@@ -807,6 +823,10 @@ export class NewPinpadModalPage implements OnInit {
       msisdn_sender: omUser.msisdn,
       msisdn_receiver: params.msisdn2,
       amount: params.amount,
+      send_fees: params.send_fees,
+      cashout_fees: params.cashout_fees,
+      fees: params.fees,
+      a_ma_charge: !!params.a_ma_charge,
       uuid: 'uuid',
       os: 'mobile',
       pin: params.pin,
@@ -920,6 +940,24 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
+  retry(errorCode: string) {
+    switch (errorCode) {
+      case 'Capping-social-error':
+        const transferMoneyPayload = Object.assign(
+          {},
+          this.transferMoneyPayload,
+          {
+            pin: this.pin,
+            fees: this.cappingFees,
+          }
+        );
+        this.transferMoney(transferMoneyPayload);
+        break;
+      default:
+        break;
+    }
+  }
+
   processResult(res: any, db: any, logInfos: FollowOemlogPurchaseInfos) {
     // check response status
     console.log(res);
@@ -937,9 +975,13 @@ export class NewPinpadModalPage implements OnInit {
         this.operationType,
         logInfos
       );
+      this.opXtras.sending_fees = this.cappingFees
+        ? this.cappingFees
+        : this.opXtras.sending_fees;
       this.modalController.dismiss({
         success: true,
         opXtras: this.opXtras,
+        cappingFee: this.cappingFees,
       });
     } else if (res === null || res.status_code === null) {
       this.pinError =
@@ -978,6 +1020,11 @@ export class NewPinpadModalPage implements OnInit {
       ) {
         this.pinError = err.error.message;
         this.recurrentOperation = true;
+      } else if (err.error.errorCode.match('Capping-social-error')) {
+        this.recurrentOperation = true;
+        this.pinError = err.error.message;
+        this.canRetry = true;
+        this.cappingFees = +err.error.fees;
       } else if (
         err.error.errorCode.match('Erreur-015') ||
         err.error.errorCode.match('Erreur-016')

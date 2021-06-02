@@ -257,5 +257,6 @@ export const OM_LABEL_SERVICES = {
   TRANSFERT_AVEC_CODE: "tac",
   OFFRE_ENERGIE: "offre_energie",
   COTE_D_IVOIRE: "cod",
-  CANAL: "canal"
+  CANAL: "canal",
+  TAF: "taf"
 }

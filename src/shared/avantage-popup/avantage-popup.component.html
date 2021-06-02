@@ -2,7 +2,7 @@
   <div class="icon-info">
     <img src="/assets/images/information.svg" alt="" />
   </div>
-  <div (click)="closeDialog()" class="icon-close">
+  <div *ngIf="type !== 'novo-fees'" (click)="closeDialog()" class="icon-close">
     <img src="/assets/images/close-icon-blue.svg" alt="" />
   </div>
   <div class="container-text-avantages-body">
@@ -20,6 +20,9 @@
         </div>
         <div *ngIf="type ==='otp'" class="scb-text-blue-popup text">
           Vous allez recevoir un code par SMS. Ne communiquez ce code à personne, il est confidentiel.
+        </div>
+        <div *ngIf="type ==='novo-fees'" class="scb-text-blue-popup text">
+          vous allez payer <span class="new_fees"> {{ +details?.sending_fees_Info?.effective_fees + details?.fee}}FCFA </span> de frais au lieu de <span class="old_fees"> {{ +details?.sending_fees_Info?.old_fees }} FCFA </span> grâce à nos nouveaux tarifs
         </div>
       </div>
     </div>
