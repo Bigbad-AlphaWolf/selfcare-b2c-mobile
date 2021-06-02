@@ -36,6 +36,7 @@ export class TakePictureComponent implements OnInit {
   step: 'recto' | 'verso' | 'selfie';
   stepNumber: number;
   stepDescription: string;
+  operation: 'OUVERTURE' | 'ANNULATION_TRANSFERT' = 'OUVERTURE'
   constructor(
     private cameraPreview: CameraPreview,
     private navController: NavController
@@ -60,6 +61,9 @@ export class TakePictureComponent implements OnInit {
 
   getCurrentStep() {
     this.step = history.state.step;
+    if(history.state.operation) {
+      this.operation = history.state.operation
+    }
     switch (this.step) {
       case 'recto':
         this.stepNumber = 1;
@@ -121,7 +125,8 @@ export class TakePictureComponent implements OnInit {
   }
 
   returnPicture() {
-    this.navController.navigateBack('/new-deplafonnement-om', {
+    const previousUrl = this.operation === 'OUVERTURE' ? '/new-deplafonnement-om' : '/cancel-transaction-om';
+    this.navController.navigateBack(previousUrl, {
       state: {
         image: this.picture,
         step: this.step,
@@ -130,6 +135,7 @@ export class TakePictureComponent implements OnInit {
   }
 
   goBack() {
-    this.navController.navigateBack('/new-deplafonnement-om');
+    const previousUrl = this.operation === 'OUVERTURE' ? '/new-deplafonnement-om' : '/cancel-transaction-om';
+    this.navController.navigateBack(previousUrl);
   }
 }

@@ -49,6 +49,10 @@ export class CancelTransactionOmPage implements OnInit {
 		this.getOmMsisdn();
 	}
 
+	ionViewWillEnter() {
+		this.getStepImage();
+	}
+
 	initForms() {
 		this.cancelTransactionOMInfos = this.formBuilder.group({
 			transaction_id: [null, [Validators.required]],
@@ -97,8 +101,8 @@ export class CancelTransactionOmPage implements OnInit {
 	}
 
 	takePicture(step?: 'recto' | 'verso' | 'selfie') {
-		this.router.navigate(['new-deplafonnement-om/take-picture'], {
-			state: { step },
+		this.router.navigate(['/new-deplafonnement-om/take-picture'], {
+			state: { step, operation: 'ANNULATION_TRANSFERT' },
 		});
 	}
 
@@ -138,6 +142,23 @@ export class CancelTransactionOmPage implements OnInit {
 		});
 		return await modal.present();
 	}
+
+	getStepImage() {
+		const state = history.state;
+		const step = state ? state.step : null;
+		switch (step) {
+		  case 'recto':
+			this.rectoFilled = true;
+			this.rectoImage = state.image;
+			break;
+		  case 'verso':
+			this.versoFilled = true;
+			this.versoImage = state.image;
+			break;
+		  default:
+			break;
+		}
+	  }
 
 	submittingFormsInfos() {
 		console.log('formValues', this.cancelTransactionOMInfos.value);

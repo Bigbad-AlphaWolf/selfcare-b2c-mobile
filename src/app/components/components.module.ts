@@ -21,6 +21,7 @@ import { MaterialComponentsModule } from '../material-components/material-compon
 import { IonicModule } from '@ionic/angular';
 import { SlideBanniereDashboardComponent } from './slide-banniere-dashboard/slide-banniere-dashboard.component';
 import { HistorikTransactionByTypeModalComponent } from '../pages/reclamation-om-transaction/components/historik-transaction-by-type-modal/historik-transaction-by-type-modal.component';
+import { TakePictureComponent } from './take-picture/take-picture.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { HistorikTransactionByTypeModalComponent } from '../pages/reclamation-om
     ChooseRattachementTypeModalComponent,
     ItemHistorikDetailsInfosComponent,
     SlideBanniereDashboardComponent,
-    HistorikTransactionByTypeModalComponent
+    HistorikTransactionByTypeModalComponent,
+    TakePictureComponent
   ],
   imports: [
     CommonModule,
@@ -66,7 +68,8 @@ import { HistorikTransactionByTypeModalComponent } from '../pages/reclamation-om
     ChooseRattachementTypeModalComponent,
     ItemHistorikDetailsInfosComponent,
     SlideBanniereDashboardComponent,
-    HistorikTransactionByTypeModalComponent
+    HistorikTransactionByTypeModalComponent,
+    TakePictureComponent
   ],
   entryComponents: [HistorikTransactionByTypeModalComponent],
 })

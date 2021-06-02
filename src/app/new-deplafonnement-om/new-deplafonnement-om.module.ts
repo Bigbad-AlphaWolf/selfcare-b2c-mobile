@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { NewDeplafonnementOmPage } from './new-deplafonnement-om.page';
 import { CameraPreview } from '@ionic-native/camera-preview/ngx';
-import { TakePictureComponent } from './components/take-picture/take-picture.component';
+import { TakePictureComponent } from '../components/take-picture/take-picture.component';
 import {
   MatInputModule,
   MatProgressSpinnerModule,
@@ -16,6 +16,7 @@ import {
 import { SharedModule } from 'src/shared/shared.module';
 import { TypeOtpModalComponent } from './components/type-otp-modal/type-otp-modal.component';
 import { ItemOmUserStatusCardInfosComponent } from './components/item-om-user-status-card-infos/item-om-user-status-card-infos.component';
+import { ComponentsModule } from '../components/components.module';
 
 const routes: Routes = [
   {
@@ -38,11 +39,11 @@ const routes: Routes = [
     MatInputModule,
     MatRadioModule,
     SharedModule,
+    ComponentsModule,
     RouterModule.forChild(routes),
   ],
   declarations: [
     NewDeplafonnementOmPage,
-    TakePictureComponent,
     TypeOtpModalComponent,
     ItemOmUserStatusCardInfosComponent
   ],
