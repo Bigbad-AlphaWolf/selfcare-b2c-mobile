@@ -27,7 +27,24 @@ import {
 } from '../utils/om.endpoints';
 import { ChangePinOm } from 'src/app/models/change-pin-om.model';
 import { OM_CHANGE_PIN_ENDPOINT } from '../utils/om.endpoints';
-import { OPERATION_TRANSFER_OM, OPERATION_TRANSFER_OM_WITH_CODE, OPERATION_TYPE_MERCHANT_PAYMENT, OPERATION_TYPE_PASS_ALLO, OPERATION_TYPE_PASS_ILLIFLEX, OPERATION_TYPE_PASS_ILLIMIX, OPERATION_TYPE_PASS_INTERNET, OPERATION_TYPE_PASS_VOYAGE, OPERATION_TYPE_RECHARGE_CREDIT, REGEX_IOS_SYSTEM } from 'src/shared';
+import { OMCustomerStatusModel } from 'src/app/models/om-customer-status.model';
+import {
+  checkOtpResponseModel,
+  OmCheckOtpModel,
+  OmInitOtpModel,
+} from 'src/app/models/om-self-operation-otp.model';
+import {
+  OPERATION_TRANSFER_OM,
+  OPERATION_TRANSFER_OM_WITH_CODE,
+  OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_TYPE_PASS_ALLO,
+  OPERATION_TYPE_PASS_ILLIFLEX,
+  OPERATION_TYPE_PASS_ILLIMIX,
+  OPERATION_TYPE_PASS_INTERNET,
+  OPERATION_TYPE_PASS_VOYAGE,
+  OPERATION_TYPE_RECHARGE_CREDIT,
+  REGEX_IOS_SYSTEM,
+} from 'src/shared';
 import { FollowOemlogPurchaseInfos } from 'src/app/models/follow-log-oem-purchase-Infos.model';
 import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
@@ -56,6 +73,9 @@ const getMerchantEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/merchant/naming
 const omFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-without-code`;
 const omFeesEndpoint2 = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-with-code`;
 const checkBalanceSufficiencyEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/check-balance`;
+const userStatusEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-status`;
+const selfOperationInitOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-otp-init`;
+const selfOperationCheckOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-otp-check`;
 const ls = new SecureLS({ encodingType: 'aes' });
 let eventKey = '';
 let errorKey = '';
@@ -300,7 +320,12 @@ export class OrangeMoneyService {
   }
   // Log Event and errors with Follow Analytics for Orange Money
   // type can be 'error' or 'event'
-  logWithFollowAnalytics(res: any, type: string, operationType: string, dataToLog: FollowOemlogPurchaseInfos) {
+  logWithFollowAnalytics(
+    res: any,
+    type: string,
+    operationType: string,
+    dataToLog: FollowOemlogPurchaseInfos
+  ) {
     switch (operationType) {
       case undefined:
         value = res.status_code;
@@ -319,15 +344,15 @@ export class OrangeMoneyService {
       case OPERATION_TYPE_PASS_ILLIFLEX:
         let type_pass;
         if (operationType === OPERATION_TYPE_PASS_ALLO) {
-          type_pass = 'allo'
-        } else if(operationType === OPERATION_TYPE_PASS_ILLIMIX) {
-          type_pass = 'illimix'
+          type_pass = 'allo';
+        } else if (operationType === OPERATION_TYPE_PASS_ILLIMIX) {
+          type_pass = 'illimix';
         } else if (operationType === OPERATION_TYPE_PASS_VOYAGE) {
-          type_pass = 'voyage'
+          type_pass = 'voyage';
         } else if (operationType === OPERATION_TYPE_PASS_INTERNET) {
-          type_pass = 'internet'
+          type_pass = 'internet';
         } else if (operationType === OPERATION_TYPE_PASS_ILLIFLEX) {
-          type_pass = 'illiflex'
+          type_pass = 'illiflex';
         }
         errorKey = `Achat_Pass_${type_pass}_Error`;
         eventKey = `Achat_Pass_${type_pass}_Success`;
@@ -371,6 +396,41 @@ export class OrangeMoneyService {
           `${checkBalanceSufficiencyEndpoint}/${msisdn}?amount=${amount}`
         );
       })
+    );
+  }
+
+  getUserStatus() {
+    return this.getOmMsisdn().pipe(
+      switchMap((msisdn) => {
+        if (msisdn === 'error') throw new Error('NO_OM_ACCOUNT');
+        return this.http
+          .get<OMCustomerStatusModel>(`${userStatusEndpoint}/${msisdn}`)
+          .pipe(
+            map((status) => {
+              status.omNumber = msisdn;
+              return status;
+            })
+          );
+      })
+    );
+  }
+
+  initSelfOperationOtp(initOtpPayload: OmInitOtpModel) {
+    console.log('url', selfOperationCheckOtpEndpoint,'payload', initOtpPayload);
+
+    return this.http.post<checkOtpResponseModel>(
+      selfOperationInitOtpEndpoint,
+      initOtpPayload
+    );
+  }
+
+  checkSelfOperationOtp(
+    checkOtpPayload: OmCheckOtpModel,
+    otpCode: string | number
+  ) {
+    return this.http.post<checkOtpResponseModel>(
+      `${selfOperationCheckOtpEndpoint}?otp=${otpCode}`,
+      checkOtpPayload
     );
   }
 

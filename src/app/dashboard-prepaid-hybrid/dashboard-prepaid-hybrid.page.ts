@@ -515,7 +515,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       'Dashboard_hub_transfert_clic',
       'event',
       'clicked'
-    )
+    );
     this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
   }
 
@@ -524,7 +524,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       'Dashboard_hub_achat_clic',
       'event',
       'clicked'
-    )
+    );
     this.appliRouting.goToTransfertHubServicesPage('BUY');
   }
 
@@ -532,7 +532,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.followAnalyticsService.registerEventFollow(
       'Dashboard_paiement_marchand_clic',
       'event'
-    )
+    );
     this.omServ.omAccountSession().subscribe(async (omSession: any) => {
       const omSessionValid = omSession
         ? omSession.msisdn !== 'error' &&
@@ -547,7 +547,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
             PurchaseSetAmountPage.ROUTE_PATH
           )
           .subscribe((_) => {});
-        this.bsService.openModal(MerchantPaymentCodeComponent, { omMsisdn: omSession.msisdn });
+        this.bsService.openModal(MerchantPaymentCodeComponent, {
+          omMsisdn: omSession.msisdn,
+        });
       } else {
         this.openPinpad();
       }

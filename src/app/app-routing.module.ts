@@ -365,9 +365,18 @@ const routes: Routes = [
     path: 'reclamation-om-transaction',
     loadChildren:
       './pages/reclamation-om-transaction/reclamation-om-transaction.module#ReclamationOmTransactionPageModule',
-  },  { path: 'list-pass-usage', loadChildren: './list-pass-usage/list-pass-usage.module#ListPassUsagePageModule' },
-  { path: 'cancel-transaction-om', loadChildren: './cancel-transaction-om/cancel-transaction-om.module#CancelTransactionOmPageModule' },
-
+  },
+  {
+    path: 'new-deplafonnement-om',
+    loadChildren:
+      './new-deplafonnement-om/new-deplafonnement-om.module#NewDeplafonnementOmPageModule',
+  },
+  {
+    path: 'list-pass-usage',
+    loadChildren:
+      './list-pass-usage/list-pass-usage.module#ListPassUsagePageModule',
+  },
+  { path: 'cancel-transaction-om', loadChildren: './cancel-transaction-om/cancel-transaction-om.module#CancelTransactionOmPageModule' }
 ];
 
 @NgModule({
