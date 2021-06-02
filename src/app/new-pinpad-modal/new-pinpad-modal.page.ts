@@ -130,7 +130,7 @@ export class NewPinpadModalPage implements OnInit {
       passToBuy: this.buyPassPayload,
       amountToTransfer: this.transferMoneyPayload,
       transfertWithCodeInfos: this.transferMoneyWithCodePayload,
-      merchantPaymentInfos: this.merchantPaymentPayload
+      merchantPaymentInfos: this.merchantPaymentPayload,
     };
     this.getOMPhoneNumber();
     this.orangeMoneyService.gotPinPadSubject.subscribe((value) => {
@@ -555,7 +555,12 @@ export class NewPinpadModalPage implements OnInit {
       numero_compteur: this.opXtras.billData.counter.counterNumber,
       pin: pin,
     };
-    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, receiver: body.numero_compteur, montant: body.amount, mod_paiement: PAYMENT_MOD_OM }
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: db.msisdn,
+      receiver: body.numero_compteur,
+      montant: body.amount,
+      mod_paiement: PAYMENT_MOD_OM,
+    };
 
     this.woyofal.pay(body).subscribe(
       (res: any) => {
@@ -581,7 +586,12 @@ export class NewPinpadModalPage implements OnInit {
       numero_carte: this.opXtras.billData.counter.counterNumber,
       pin: pin,
     };
-    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, receiver: body.numero_carte, montant: body.amount, mod_paiement: PAYMENT_MOD_OM }
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: db.msisdn,
+      receiver: body.numero_carte,
+      montant: body.amount,
+      mod_paiement: PAYMENT_MOD_OM,
+    };
 
     this.rapido.pay(body).subscribe(
       (res: any) => {
@@ -608,7 +618,7 @@ export class NewPinpadModalPage implements OnInit {
       service_version: OM_SERVICE_VERSION,
       uuid: this.uuid,
     };
-    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn }
+    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn };
 
     this.orangeMoneyService.GetBalance(balancePayload).subscribe(
       (res: any) => {
@@ -675,7 +685,12 @@ export class NewPinpadModalPage implements OnInit {
       service_version: OM_SERVICE_VERSION,
       uuid: this.uuid,
     };
-    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, receiver: params.msisdn2, montant: params.amount, mod_paiement: PAYMENT_MOD_OM }
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: db.msisdn,
+      receiver: params.msisdn2,
+      montant: params.amount,
+      mod_paiement: PAYMENT_MOD_OM,
+    };
 
     this.orangeMoneyService.AchatCredit(buyCreditPayload).subscribe(
       (res: any) => {
@@ -707,7 +722,13 @@ export class NewPinpadModalPage implements OnInit {
     if (params.canalPromotion) {
       buyPassPayload.canal = params.canalPromotion;
     }
-    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, receiver: params.msisdn2, montant: params.amount, mod_paiement: PAYMENT_MOD_OM, ppi: params.price_plan_index }
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: db.msisdn,
+      receiver: params.msisdn2,
+      montant: params.amount,
+      mod_paiement: PAYMENT_MOD_OM,
+      ppi: params.price_plan_index,
+    };
 
     this.orangeMoneyService.AchatPassInternet(buyPassPayload).subscribe(
       (res: any) => {
@@ -741,7 +762,13 @@ export class NewPinpadModalPage implements OnInit {
     if (params.canalPromotion) {
       buyPassPayload.canal = params.canalPromotion;
     }
-    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, receiver: params.msisdn2, montant: params.amount, mod_paiement: PAYMENT_MOD_OM, ppi: params.price_plan_index }
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: db.msisdn,
+      receiver: params.msisdn2,
+      montant: params.amount,
+      mod_paiement: PAYMENT_MOD_OM,
+      ppi: params.price_plan_index,
+    };
 
     this.orangeMoneyService.AchatIllimix(buyPassPayload).subscribe(
       (res: any) => {
@@ -759,7 +786,12 @@ export class NewPinpadModalPage implements OnInit {
     this.illiflexPayload.sender = this.omPhoneNumber;
     this.illiflexPayload.em = db.em;
     this.illiflexPayload.pin = pin;
-    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, receiver: this.illiflexPayload.recipient, montant: this.illiflexPayload.amount, mod_paiement: PAYMENT_MOD_OM }
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: db.msisdn,
+      receiver: this.illiflexPayload.recipient,
+      montant: this.illiflexPayload.amount,
+      mod_paiement: PAYMENT_MOD_OM,
+    };
 
     this.orangeMoneyService.buyIlliflexByOM(this.illiflexPayload).subscribe(
       (res: any) => {
@@ -804,7 +836,11 @@ export class NewPinpadModalPage implements OnInit {
       user_type: 'user',
       service_version: OM_SERVICE_VERSION,
     };
-    const logInfos: FollowOemlogPurchaseInfos = { sender: omUser.msisdn, receiver: params.msisdn2, montant: params.amount }
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: omUser.msisdn,
+      receiver: params.msisdn2,
+      montant: params.amount,
+    };
 
     this.orangeMoneyService.transferOM(transferOMPayload).subscribe(
       (res: any) => {
@@ -840,9 +876,13 @@ export class NewPinpadModalPage implements OnInit {
       user_type: 'user',
       service_version: OM_SERVICE_VERSION,
       nom_receiver: params.nom_receiver,
-      prenom_receiver: params.prenom_receiver
+      prenom_receiver: params.prenom_receiver,
     };
-    const logInfos: FollowOemlogPurchaseInfos = { sender: omUser.msisdn, receiver: params.msisdn2, montant: params.amount }
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: omUser.msisdn,
+      receiver: params.msisdn2,
+      montant: params.amount,
+    };
 
     this.orangeMoneyService.transferOMWithCode(transferOMPayload).subscribe(
       (res: any) => {
@@ -884,7 +924,12 @@ export class NewPinpadModalPage implements OnInit {
       em: omUser.em,
       uuid: this.uuid,
     };
-    const logInfos: FollowOemlogPurchaseInfos = { sender: omUser.msisdn, receiver: params.code_marchand, montant: params.amount, mod_paiement: PAYMENT_MOD_OM }
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: omUser.msisdn,
+      receiver: params.code_marchand,
+      montant: params.amount,
+      mod_paiement: PAYMENT_MOD_OM,
+    };
     this.orangeMoneyService.payMerchantOM(payMerchantPayload).subscribe(
       (res: any) => {
         this.processResult(res, omUser, logInfos);
@@ -915,6 +960,7 @@ export class NewPinpadModalPage implements OnInit {
 
   processResult(res: any, db: any, logInfos: FollowOemlogPurchaseInfos) {
     // check response status
+    console.log(res);
     this.processingPin = false;
     if (
       (res && res.status_code !== null && res.status_code.match('Success')) ||

@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
 import * as SecureLS from 'secure-ls';
-import { BehaviorSubject, Subject, of, Observable, forkJoin } from 'rxjs';
-import { tap, switchMap, map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import {
+  BehaviorSubject,
+  Subject,
+  of,
+  Observable,
+  forkJoin,
+  throwError,
+} from 'rxjs';
+import { tap, switchMap, map, catchError } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {
   OmUserInfo,
@@ -27,7 +34,18 @@ import {
 } from '../utils/om.endpoints';
 import { ChangePinOm } from 'src/app/models/change-pin-om.model';
 import { OM_CHANGE_PIN_ENDPOINT } from '../utils/om.endpoints';
-import { OPERATION_TRANSFER_OM, OPERATION_TRANSFER_OM_WITH_CODE, OPERATION_TYPE_MERCHANT_PAYMENT, OPERATION_TYPE_PASS_ALLO, OPERATION_TYPE_PASS_ILLIFLEX, OPERATION_TYPE_PASS_ILLIMIX, OPERATION_TYPE_PASS_INTERNET, OPERATION_TYPE_PASS_VOYAGE, OPERATION_TYPE_RECHARGE_CREDIT, REGEX_IOS_SYSTEM } from 'src/shared';
+import {
+  OPERATION_TRANSFER_OM,
+  OPERATION_TRANSFER_OM_WITH_CODE,
+  OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_TYPE_PASS_ALLO,
+  OPERATION_TYPE_PASS_ILLIFLEX,
+  OPERATION_TYPE_PASS_ILLIMIX,
+  OPERATION_TYPE_PASS_INTERNET,
+  OPERATION_TYPE_PASS_VOYAGE,
+  OPERATION_TYPE_RECHARGE_CREDIT,
+  REGEX_IOS_SYSTEM,
+} from 'src/shared';
 import { FollowOemlogPurchaseInfos } from 'src/app/models/follow-log-oem-purchase-Infos.model';
 import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
@@ -300,7 +318,12 @@ export class OrangeMoneyService {
   }
   // Log Event and errors with Follow Analytics for Orange Money
   // type can be 'error' or 'event'
-  logWithFollowAnalytics(res: any, type: string, operationType: string, dataToLog: FollowOemlogPurchaseInfos) {
+  logWithFollowAnalytics(
+    res: any,
+    type: string,
+    operationType: string,
+    dataToLog: FollowOemlogPurchaseInfos
+  ) {
     switch (operationType) {
       case undefined:
         value = res.status_code;
@@ -319,15 +342,15 @@ export class OrangeMoneyService {
       case OPERATION_TYPE_PASS_ILLIFLEX:
         let type_pass;
         if (operationType === OPERATION_TYPE_PASS_ALLO) {
-          type_pass = 'allo'
-        } else if(operationType === OPERATION_TYPE_PASS_ILLIMIX) {
-          type_pass = 'illimix'
+          type_pass = 'allo';
+        } else if (operationType === OPERATION_TYPE_PASS_ILLIMIX) {
+          type_pass = 'illimix';
         } else if (operationType === OPERATION_TYPE_PASS_VOYAGE) {
-          type_pass = 'voyage'
+          type_pass = 'voyage';
         } else if (operationType === OPERATION_TYPE_PASS_INTERNET) {
-          type_pass = 'internet'
+          type_pass = 'internet';
         } else if (operationType === OPERATION_TYPE_PASS_ILLIFLEX) {
-          type_pass = 'illiflex'
+          type_pass = 'illiflex';
         }
         errorKey = `Achat_Pass_${type_pass}_Error`;
         eventKey = `Achat_Pass_${type_pass}_Success`;
@@ -475,7 +498,7 @@ export class OrangeMoneyService {
       bucket: {
         budget: {
           unit: 'XOF',
-          value: passIlliflex.amount,
+          value: +passIlliflex.amount,
         },
         dataBucket: {
           balance: {
@@ -503,6 +526,33 @@ export class OrangeMoneyService {
         },
       },
     };
-    return this.http.post(`${OM_BUY_ILLIFLEX_ENDPOINT}`, buyIlliflexPayload);
+    return this.http
+      .post(`${OM_BUY_ILLIFLEX_ENDPOINT}`, buyIlliflexPayload)
+      .pipe(
+        map((res) => {
+          const mappedOmResponse = {
+            content: {
+              data: {
+                status_code: '200',
+              },
+            },
+            status_code: 'Success-001',
+          };
+          return mappedOmResponse;
+        }),
+        catchError((err) => {
+          const status = err.status;
+          const errorCode = status === 400 ? 'Erreur-019' : 'Erreur';
+          const message =
+            status === 400
+              ? `Vous n'avez pas assez de crédit de recharge pour effectuer cette opération`
+              : 'Une erreur est survenue';
+          const error = new HttpErrorResponse({
+            error: { errorCode, status, message },
+            status,
+          });
+          return throwError(error);
+        })
+      );
   }
 }
