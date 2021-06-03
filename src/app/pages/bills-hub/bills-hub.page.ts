@@ -1,19 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { RAPIDO, WOYOFAL } from 'src/app/utils/bills.util';
+import { OM_LABEL_SERVICES } from 'src/app/utils/bills.util';
 import { WoyofalSelectionComponent } from 'src/app/components/counter/woyofal-selection/woyofal-selection.component';
 import {
   ModalController,
   NavController,
   ToastController,
 } from '@ionic/angular';
-import { OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
+import {
+  OPERATION_RAPIDO,
+  OPERATION_WOYOFAL,
+} from 'src/app/utils/operations.constants';
 import { BillAmountPage } from '../bill-amount/bill-amount.page';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { RapidoOperationPage } from '../rapido-operation/rapido-operation.page';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
 import { Router } from '@angular/router';
 import { OffreService } from 'src/app/models/offre-service.model';
-import { HUB_ACTIONS, OPERATION_TYPE_MERCHANT_PAYMENT } from 'src/shared';
+import { HUB_ACTIONS, OPERATION_TRANSFER_OM, OPERATION_TRANSFER_OM_WITH_CODE, OPERATION_TYPE_MERCHANT_PAYMENT } from 'src/shared';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
@@ -51,7 +54,9 @@ export class BillsHubPage implements OnInit {
     this.loadingCompanies = true;
     this.operationService.getServicesByFormule(HUB_ACTIONS.FACTURES).subscribe(
       (companies: OffreService[]) => {
-        this.companies = companies;
+        this.companies = companies.map((item: OffreService) => {
+          return this.mapOffreServiceWithCodeOM(item);
+        });
         this.loadingCompanies = false;
         this.followAnalyticsService.registerEventFollow(
           'Get_hub_payer_services_success',
@@ -89,7 +94,7 @@ export class BillsHubPage implements OnInit {
     }
 
     this.bsService.opXtras.billData = { company: billCompany };
-    if (billCompany.code === WOYOFAL) {
+    if (billCompany.code === OPERATION_WOYOFAL) {
       this.bsService
         .initBsModal(
           WoyofalSelectionComponent,
@@ -106,7 +111,7 @@ export class BillsHubPage implements OnInit {
       return;
     }
 
-    if (billCompany.code === RAPIDO) {
+    if (billCompany.code === OPERATION_RAPIDO) {
       this.navCtrl.navigateForward(RapidoOperationPage.ROUTE_PATH);
       return;
     }
@@ -154,5 +159,31 @@ export class BillsHubPage implements OnInit {
 
   goBack() {
     this.router.navigate(['/dashboard']);
+  }
+
+  mapOffreServiceWithCodeOM(offre: OffreService) {
+    if (!offre.codeOM) {
+      switch (offre.code) {
+        case OPERATION_RAPIDO:
+          offre.codeOM = OM_LABEL_SERVICES.RAPIDO;
+          return offre;
+        case OPERATION_WOYOFAL:
+          offre.codeOM = OM_LABEL_SERVICES.WOYOFAL;
+          return offre;
+        case OPERATION_TRANSFER_OM:
+          offre.codeOM = OM_LABEL_SERVICES.TRANSFERT_SANS_CODE;
+          return offre;
+        case OPERATION_TRANSFER_OM_WITH_CODE:
+          offre.codeOM = OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE;
+          return offre;
+        case OPERATION_TYPE_MERCHANT_PAYMENT:
+          offre.codeOM = OM_LABEL_SERVICES.PAIEMENT_MARCHAND;
+          return offre;
+        default:
+          return offre
+      }
+    } else {
+      return offre;
+    }
   }
 }

@@ -1,5 +1,5 @@
 <div *ngIf="listBanniere?.length" class="dashboard-img-promo slide-container">
-  <ion-slides pager [options]="{loop: true}">
+  <ion-slides pager>
     <ng-container *ngFor="let banniere of listBanniere">
       <ion-slide (click)="onBannerClicked(banniere)">
         <span #error class="error-slide scb-text-full-black">

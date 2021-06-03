@@ -1,5 +1,6 @@
 export interface OffreService {
   code?: string;
+  codeOM?: string;
   titre?: string;
   shortDescription?: string;
   duree?: string;

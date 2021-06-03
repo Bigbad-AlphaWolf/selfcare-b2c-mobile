@@ -170,9 +170,8 @@ export class AppComponent {
   }
 
   checkDeeplinks() {
-    if (this.deeplinks) {
       this.deeplinks
-        .route({
+        .routeWithNavController( this.navContr ,{
           '/buy-pass-internet': TransfertHubServicesPage,
           '/pass-internet/:ppi': BuyPassInternetPage,
           '/assistance': AssistanceHubPage,
@@ -189,7 +188,8 @@ export class AppComponent {
         })
         .subscribe(
           (matched) => {
-            this.goToPage(matched.$link.path);
+            const path = matched.$link.path ? matched.$link.path : matched.$link.host;
+            this.goToPage(path);
             // this.router.navigate([matched.$link.path]);
             console.log(matched);
           },
@@ -198,7 +198,6 @@ export class AppComponent {
             // console.log('deeplink not matched');
           }
         );
-    }
   }
 
   goToPage(path: string) {

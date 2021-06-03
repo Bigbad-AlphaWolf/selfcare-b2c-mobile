@@ -35,7 +35,7 @@
       >
       <span
         class="title"
-        *ngSwitchCase="'OPERATION_RAPIDO'"
+        *ngSwitchCase="OPERATION_RAPIDO"
         style="white-space: pre-line;"
         >{{success ? 'Rechargement'+'\n'+'Rapido effectué' :
         'Echec'+'\n'+'rechargement Rapido'}}</span
@@ -84,7 +84,7 @@
         <span *ngSwitchCase="'OPERATION_WOYOFAL'"
           >Vous avez rechargé un montant de</span
         >
-        <span *ngSwitchCase="'OPERATION_RAPIDO'"
+        <span *ngSwitchCase="OPERATION_RAPIDO"
           >Vous avez rechargé un montant de</span
         >
         <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
@@ -142,12 +142,11 @@
           *ngSwitchCase="OPERATION_ALLO_TYPE"
         >
         </app-item-pass-illimix>
-        <app-item-recharge-credit
-          [modifiable]="false"
-          [amount]="amount"
+        <app-item-transfert-om
+          [omTransfertInfos]="opXtras"
           *ngSwitchCase="OPERATION_TRANSFER_OM"
         >
-        </app-item-recharge-credit>
+        </app-item-transfert-om>
         <app-item-recharge-credit
           [modifiable]="false"
           [amount]="amount"
@@ -162,7 +161,7 @@
         <app-item-recharge-credit
           [modifiable]="false"
           [amount]="opXtras.amount + opXtras.fee"
-          *ngSwitchCase="'OPERATION_RAPIDO'"
+          *ngSwitchCase="OPERATION_RAPIDO"
         ></app-item-recharge-credit>
         <app-item-recharge-credit
           [modifiable]="false"
@@ -183,7 +182,7 @@
     </div>
     <div
       class="bottom-block"
-      *ngIf="success &&  !(['OPERATION_WOYOFAL', 'OPERATION_RAPIDO'].includes(purchaseType))"
+      *ngIf="success &&  !(['OPERATION_WOYOFAL', OPERATION_RAPIDO].includes(purchaseType))"
     >
       <div class="details">
         <ng-container
@@ -264,7 +263,7 @@
     </div>
     <div
       class="bottom-block"
-      *ngIf="success && 'OPERATION_RAPIDO' === purchaseType"
+      *ngIf="success && OPERATION_RAPIDO === purchaseType"
     >
       <div class="details">
         <div class="left-block">Carte rechargée</div>
@@ -330,7 +329,7 @@
         <ng-container *ngSwitchCase="'OPERATION_WOYOFAL'">
           Faire une autre recharge
         </ng-container>
-        <ng-container *ngSwitchCase="'OPERATION_RAPIDO'">
+        <ng-container *ngSwitchCase="OPERATION_RAPIDO">
           Faire une autre recharge
         </ng-container>
         <ng-container *ngSwitchCase="OPERATION_ENABLE_DALAL">

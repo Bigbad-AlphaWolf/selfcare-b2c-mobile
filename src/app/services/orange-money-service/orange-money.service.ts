@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
 import * as SecureLS from 'secure-ls';
-import { BehaviorSubject, Subject, of, Observable, forkJoin } from 'rxjs';
-import { tap, switchMap, map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import {
+  BehaviorSubject,
+  Subject,
+  of,
+  Observable,
+  forkJoin,
+  throwError,
+} from 'rxjs';
+import { tap, switchMap, map, catchError } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {
   OmUserInfo,
@@ -66,7 +73,7 @@ const getBalanceEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/balanc
 const achatCreditEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/buy-credit`;
 const achatIllimixEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/buy-illimix`;
 const achatPassEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/buy-pass`;
-const transferOMEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transfer-p2p`;
+const transferOMEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/v2/transfer-p2p`;
 const transferOMWithCodeEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transfer-avec-code`;
 const merchantPaymentEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/merchant/payment`;
 const getMerchantEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/merchant/naming`;
@@ -535,7 +542,7 @@ export class OrangeMoneyService {
       bucket: {
         budget: {
           unit: 'XOF',
-          value: passIlliflex.amount,
+          value: +passIlliflex.amount,
         },
         dataBucket: {
           balance: {
@@ -563,6 +570,33 @@ export class OrangeMoneyService {
         },
       },
     };
-    return this.http.post(`${OM_BUY_ILLIFLEX_ENDPOINT}`, buyIlliflexPayload);
+    return this.http
+      .post(`${OM_BUY_ILLIFLEX_ENDPOINT}`, buyIlliflexPayload)
+      .pipe(
+        map((res) => {
+          const mappedOmResponse = {
+            content: {
+              data: {
+                status_code: '200',
+              },
+            },
+            status_code: 'Success-001',
+          };
+          return mappedOmResponse;
+        }),
+        catchError((err) => {
+          const status = err.status;
+          const errorCode = status === 400 ? 'Erreur-019' : 'Erreur';
+          const message =
+            status === 400
+              ? `Vous n'avez pas assez de crédit de recharge pour effectuer cette opération`
+              : 'Une erreur est survenue';
+          const error = new HttpErrorResponse({
+            error: { errorCode, status, message },
+            status,
+          });
+          return throwError(error);
+        })
+      );
   }
 }
