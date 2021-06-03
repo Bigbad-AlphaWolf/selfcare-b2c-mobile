@@ -1,8 +1,8 @@
-import { CustomerStatusStep } from './enums/om-customer-status.enum';
+import { CustomerOperationStatus } from './enums/om-customer-status.enum';
 
 export interface OMCustomerStatusModel {
 	operation: 'DEPLAFONNEMENT' | 'OUVERTURE_COMPTE';
-	operationStatus: CustomerStatusStep;
+	operationStatus: CustomerOperationStatus;
 	message: string;
 	hmac: string;
 	omNumber: string;
