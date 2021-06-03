@@ -2,10 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
+import { of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { OPERATION_CANCEL_TRANSFERT_OM } from 'src/shared';
+import { CancelOmTransactionPayloadModel } from '../models/cancel-om-transaction-payload.model';
 import { PurchaseModel } from '../models/purchase.model';
 import { ReclamationOmOem } from '../models/reclamation-OM-oem.model';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
+import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { HistorikTransactionByTypeModalComponent } from '../pages/reclamation-om-transaction/components/historik-transaction-by-type-modal/historik-transaction-by-type-modal.component';
+import { ImageService } from '../services/image-service/image.service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 
 @Component({
@@ -23,10 +29,10 @@ export class CancelTransactionOmPage implements OnInit {
 	getMsisdnHasError: boolean;
 	rectoFilled: boolean;
 	rectoImage: any;
-	rectoFileName: string;
+	rectoFileName = 'recto.jpeg';
 	versoFilled: boolean;
 	versoImage: any;
-	versoFileName: string;
+	versoFileName = 'verso.jpeg';
 	errorMsg: string;
 	isSubmitting: boolean;
 	transactionOMInfos: ReclamationOmOem = {
@@ -36,12 +42,14 @@ export class CancelTransactionOmPage implements OnInit {
 		dateTransaction: null,
 		recipientTransaction: null,
 	};
+	successMsgModal = `Elle sera traité sous un délai prévisionnel de 48H. Vous recevrez une notification après le traitement.`;
 	constructor(
 		private navCtrl: NavController,
 		private formBuilder: FormBuilder,
 		private orangeMoneyService: OrangeMoneyService,
 		private modalController: ModalController,
-		private router: Router
+		private router: Router,
+		private imgService: ImageService
 	) {}
 
 	ngOnInit() {
@@ -59,7 +67,7 @@ export class CancelTransactionOmPage implements OnInit {
 			receiver: ['', [Validators.required]],
 			dateTransfert: ['', [Validators.required]],
 			montant: ['', [Validators.required]],
-      		civility: [null, [Validators.required]],
+			civility: [null, [Validators.required]],
 			lastname: ['', [Validators.required]],
 			firstname: ['', [Validators.required]],
 			email: ['', [Validators.required]],
@@ -136,8 +144,12 @@ export class CancelTransactionOmPage implements OnInit {
 				this.transactionOMInfos.amountTransaction = Math.abs(data.amount);
 				this.transactionOMInfos.recipientTransaction = data.msisdnReceiver;
 				this.transactionOMInfos.dateTransaction = data.operationDate;
-				this.cancelTransactionOMInfos.patchValue({ transaction_id: this.transactionOMInfos.refTransaction, receiver: this.transactionOMInfos.recipientTransaction, dateTransfert: this.transactionOMInfos.dateTransaction, montant: this.transactionOMInfos.amountTransaction });
-
+				this.cancelTransactionOMInfos.patchValue({
+					transaction_id: this.transactionOMInfos.refTransaction,
+					receiver: this.transactionOMInfos.recipientTransaction,
+					dateTransfert: this.transactionOMInfos.dateTransaction,
+					montant: this.transactionOMInfos.amountTransaction,
+				});
 			}
 		});
 		return await modal.present();
@@ -147,25 +159,64 @@ export class CancelTransactionOmPage implements OnInit {
 		const state = history.state;
 		const step = state ? state.step : null;
 		switch (step) {
-		  case 'recto':
-			this.rectoFilled = true;
-			this.rectoImage = state.image;
-			break;
-		  case 'verso':
-			this.versoFilled = true;
-			this.versoImage = state.image;
-			break;
-		  default:
-			break;
+			case 'recto':
+				this.rectoFilled = true;
+				this.rectoImage = this.removeBase64Prefix(state.image);
+				break;
+			case 'verso':
+				this.versoFilled = true;
+				this.versoImage = this.removeBase64Prefix(state.image);
+				break;
+			default:
+				break;
 		}
-	  }
+	}
 
 	submittingFormsInfos() {
-		console.log('formValues', this.cancelTransactionOMInfos.value);
+		this.isSubmitting = true;
+		this.errorMsg = null;
+		const fileRecto = this.imgService.convertBase64ToImageObject(this.rectoImage, 'recto.png');
+		const fileVerso = this.imgService.convertBase64ToImageObject(this.versoImage, 'verso.png');
+		const dataForm: CancelOmTransactionPayloadModel = {
+			civility: this.cancelTransactionOMInfos.value.civility,
+			firstName: this.cancelTransactionOMInfos.value.firstname,
+			lastName: this.cancelTransactionOMInfos.value.lastname,
+			msisdnBeneficiaire: this.cancelTransactionOMInfos.value.receiver,
+			email: this.cancelTransactionOMInfos.value.email,
+			dateTransaction: this.cancelTransactionOMInfos.value.dateTransfert,
+			identityType: this.cancelTransactionOMInfos.value.identityType,
+			identityNumber: this.cancelTransactionOMInfos.value.nIdentity,
+			montantTransfert: this.cancelTransactionOMInfos.value.montant,
+			referenceTransaction: this.cancelTransactionOMInfos.value.transaction_id,
+			numero: this.omMsisdn
+		};
+		this.orangeMoneyService.sendInfosCancelationTransfertOM(dataForm, fileRecto, fileVerso).pipe(tap((res: any) => {
+			this.isSubmitting = false;
+			this.showModal({purchaseType: OPERATION_CANCEL_TRANSFERT_OM, textMsg: this.successMsgModal})
+		}),
+		catchError((err: any) => {
+			this.isSubmitting = false;
+			this.errorMsg = 'Une erreur est survenue. Veuillez réesayer';
+			return of(err)
+		})).subscribe();
+	}
 
+	removeBase64Prefix(imageBase64: string) {
+		return imageBase64.split(',')[1];
 	}
 
 	goBack() {
 		this.navCtrl.pop();
 	}
+
+	async showModal(data: {purchaseType: string, textMsg: string}){
+		const modal = await this.modalController.create({
+		  component: OperationSuccessFailModalPage,
+		  cssClass: 'failed-modal',
+		  componentProps: data,
+		  backdropDismiss: false,
+		});
+		modal.onDidDismiss().then(() => {});
+		return await modal.present();
+	  }
 }

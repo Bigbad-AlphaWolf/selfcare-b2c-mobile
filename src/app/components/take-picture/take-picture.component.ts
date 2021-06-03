@@ -36,7 +36,8 @@ export class TakePictureComponent implements OnInit {
   step: 'recto' | 'verso' | 'selfie';
   stepNumber: number;
   stepDescription: string;
-  operation: 'OUVERTURE' | 'ANNULATION_TRANSFERT' = 'OUVERTURE'
+  operation: 'OUVERTURE' | 'ANNULATION_TRANSFERT' = 'OUVERTURE';
+  nbreSteps = 3;
   constructor(
     private cameraPreview: CameraPreview,
     private navController: NavController
@@ -48,6 +49,7 @@ export class TakePictureComponent implements OnInit {
 
   ionViewWillEnter() {
     this.getCurrentStep();
+    this.getNbreStep();
   }
 
   ionViewWillLeave() {
@@ -59,11 +61,15 @@ export class TakePictureComponent implements OnInit {
     this.cameraPreview.switchCamera();
   }
 
+  getNbreStep() {
+    if(history.state.operation) {
+      this.operation = history.state.operation;
+      this.nbreSteps = this.operation === 'OUVERTURE' ? 3 : 2;
+    }
+  }
+
   getCurrentStep() {
     this.step = history.state.step;
-    if(history.state.operation) {
-      this.operation = history.state.operation
-    }
     switch (this.step) {
       case 'recto':
         this.stepNumber = 1;
@@ -106,7 +112,7 @@ export class TakePictureComponent implements OnInit {
   takePicture() {
     this.cameraPreview.takePicture(pictureOpts).then(
       (imageData) => {
-        this.picture = 'data:image/jpeg;base64,' + imageData;
+        this.picture = 'data:image/png;base64,' + imageData;
         this.cameraPreview.stopCamera();
         // this.crop.crop(this.picture, {quality: 75}).then(
         //   newImage => console.log('new image path is: ' + newImage),

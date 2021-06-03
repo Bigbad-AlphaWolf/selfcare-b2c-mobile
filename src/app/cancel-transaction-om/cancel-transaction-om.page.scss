@@ -130,15 +130,15 @@
 				}
 			}
 			ion-radio-group {
-        margin-bottom: 20px;
+				margin-bottom: 20px;
 				display: flex;
-        // .identity-option {
-        //   font-family: HelveticaNeueLTStd-Roman;
-        // }
-        .radio-selected {
-          font-family: HelveticaNeueLTStd-Bd !important;
-          color: $fullBlack;
-        }
+				ion-radio {
+					margin-right: 10px;
+				}
+				.radio-selected {
+					font-family: HelveticaNeueLTStd-Bd !important;
+					color: $fullBlack;
+				}
 			}
 			.photo-button {
 				width: 100%;
