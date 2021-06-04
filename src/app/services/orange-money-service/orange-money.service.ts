@@ -34,6 +34,12 @@ import {
 } from '../utils/om.endpoints';
 import { ChangePinOm } from 'src/app/models/change-pin-om.model';
 import { OM_CHANGE_PIN_ENDPOINT } from '../utils/om.endpoints';
+import { OMCustomerStatusModel } from 'src/app/models/om-customer-status.model';
+import {
+  checkOtpResponseModel,
+  OmCheckOtpModel,
+  OmInitOtpModel,
+} from 'src/app/models/om-self-operation-otp.model';
 import {
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
@@ -74,6 +80,9 @@ const getMerchantEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/merchant/naming
 const omFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-without-code`;
 const omFeesEndpoint2 = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-with-code`;
 const checkBalanceSufficiencyEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/check-balance`;
+const userStatusEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-status`;
+const selfOperationInitOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-otp-init`;
+const selfOperationCheckOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-otp-check`;
 const ls = new SecureLS({ encodingType: 'aes' });
 let eventKey = '';
 let errorKey = '';
@@ -394,6 +403,41 @@ export class OrangeMoneyService {
           `${checkBalanceSufficiencyEndpoint}/${msisdn}?amount=${amount}`
         );
       })
+    );
+  }
+
+  getUserStatus() {
+    return this.getOmMsisdn().pipe(
+      switchMap((msisdn) => {
+        if (msisdn === 'error') throw new Error('NO_OM_ACCOUNT');
+        return this.http
+          .get<OMCustomerStatusModel>(`${userStatusEndpoint}/${msisdn}`)
+          .pipe(
+            map((status) => {
+              status.omNumber = msisdn;
+              return status;
+            })
+          );
+      })
+    );
+  }
+
+  initSelfOperationOtp(initOtpPayload: OmInitOtpModel) {
+    console.log('url', selfOperationCheckOtpEndpoint,'payload', initOtpPayload);
+
+    return this.http.post<checkOtpResponseModel>(
+      selfOperationInitOtpEndpoint,
+      initOtpPayload
+    );
+  }
+
+  checkSelfOperationOtp(
+    checkOtpPayload: OmCheckOtpModel,
+    otpCode: string | number
+  ) {
+    return this.http.post<checkOtpResponseModel>(
+      `${selfOperationCheckOtpEndpoint}?otp=${otpCode}`,
+      checkOtpPayload
     );
   }
 

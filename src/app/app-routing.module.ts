@@ -144,18 +144,12 @@ const routes: Routes = [
   {
     path: 'forgotten-password',
     loadChildren:
-      './forgotten-password/forgotten-password.module#ForgottenPasswordPageModule'
+      './forgotten-password/forgotten-password.module#ForgottenPasswordPageModule',
   },
   {
     path: 'sargal-registration',
     loadChildren:
       './sargal/components/sargal-registration/sargal-registration.module#SargalRegistrationPageModule',
-      canActivate: [AuthGuard],
-  },
-  {
-    path: 'contact-us',
-    loadChildren:
-      './assistance/containers/contact-us/contact-us.module#ContactUsPageModule',
       canActivate: [AuthGuard],
   },
   {
@@ -428,7 +422,18 @@ const routes: Routes = [
     path: 'reclamation-om-transaction',
     loadChildren:
       './pages/reclamation-om-transaction/reclamation-om-transaction.module#ReclamationOmTransactionPageModule',
-      canActivate: [AuthGuard],
+  },
+  {
+    path: 'new-deplafonnement-om',
+    loadChildren:
+      './new-deplafonnement-om/new-deplafonnement-om.module#NewDeplafonnementOmPageModule',
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'list-pass-usage',
+    loadChildren:
+      './list-pass-usage/list-pass-usage.module#ListPassUsagePageModule',
+      canActivate: [AuthGuard]
   },
 ];
 

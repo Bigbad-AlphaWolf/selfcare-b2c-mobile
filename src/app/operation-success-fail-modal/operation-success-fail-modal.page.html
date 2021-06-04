@@ -8,8 +8,9 @@
   <div class="top-block">
     <img *ngIf="success" src="/assets/images/confirmation.png" alt="checked" />
     <ng-container *ngIf="!success">
-      <img *ngIf="purchaseType !== OPERATION_CHANGE_PIN_OM" src="/assets/images/echec.png" alt="checked" />
+      <img *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT].includes(purchaseType)" src="/assets/images/echec.png" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_CHANGE_PIN_OM" src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="checked" />
+      <img *ngIf="purchaseType === OPERATION_OPEN_OM_ACCOUNT" src="/assets/images/05-ic-nes-ouverture-compte-om.svg" alt="checked" />
 
     </ng-container>
     <ng-container [ngSwitch]="purchaseType">
@@ -60,14 +61,17 @@
       <span class="title" *ngSwitchCase="OPERATION_CHANGE_PIN_OM"
         >Bravo !</span
       >
+      <span class="title" *ngSwitchCase="OPERATION_OPEN_OM_ACCOUNT"
+        >Merci !</span
+      >
       <span class="title" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"
         >{{ success ? 'Achat pass effectué' : 'Echec achat de pass'}}</span
       >
     </ng-container>
     <span class="subtitle scb-text-gray">
       <ng-container *ngIf="!success">
-        <span *ngIf="purchaseType !== OPERATION_CHANGE_PIN_OM" >{{errorMsg}}</span>
-        <span *ngIf="purchaseType === OPERATION_CHANGE_PIN_OM" >{{textMsg}}</span>
+        <span *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT].includes(purchaseType)" >{{errorMsg}}</span>
+        <span *ngIf="[OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT].includes(purchaseType)" >{{textMsg}}</span>
 
       </ng-container>
       <ng-container *ngIf="success" [ngSwitch]="purchaseType">
