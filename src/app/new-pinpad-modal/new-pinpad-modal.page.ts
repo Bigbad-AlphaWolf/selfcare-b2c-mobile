@@ -965,9 +965,10 @@ export class NewPinpadModalPage implements OnInit {
           this.processingPin = false;
           this.pinHasError = true;
           this.resetPad();
+          console.log(err.transactionNumber, err.message);
           this.pinError =
-            err.transactionNumber && err.message
-              ? err.message
+            err && err.error && err.error.transactionNumber && err.error.message
+              ? err.error.message
               : 'Une erreur est survenue';
           return throwError(err);
         })

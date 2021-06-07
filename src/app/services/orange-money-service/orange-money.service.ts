@@ -611,10 +611,6 @@ export class OrangeMoneyService {
   }
 
   isTxnEligibleToBlock(transactionId: string) {
-    // const mock: Observable<CheckEligibilityModel> = of({ eligible: true }).pipe(
-    //   delay(2000)
-    // );
-    // return mock;
     return this.getOmMsisdn().pipe(
       switchMap((msisdn) => {
         return this.http.get<CheckEligibilityModel>(

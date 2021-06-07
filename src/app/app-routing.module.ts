@@ -150,7 +150,7 @@ const routes: Routes = [
     path: 'sargal-registration',
     loadChildren:
       './sargal/components/sargal-registration/sargal-registration.module#SargalRegistrationPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'apropos',
@@ -422,24 +422,25 @@ const routes: Routes = [
     path: 'reclamation-om-transaction',
     loadChildren:
       './pages/reclamation-om-transaction/reclamation-om-transaction.module#ReclamationOmTransactionPageModule',
-<<<<<<< HEAD
     canActivate: [AuthGuard],
-=======
->>>>>>> af51eab00bf469f7619b689ac36821de0c33b94a
   },
   {
     path: 'new-deplafonnement-om',
     loadChildren:
       './new-deplafonnement-om/new-deplafonnement-om.module#NewDeplafonnementOmPageModule',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'list-pass-usage',
     loadChildren:
       './list-pass-usage/list-pass-usage.module#ListPassUsagePageModule',
-      canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
-  { path: 'cancel-transaction-om', loadChildren: './cancel-transaction-om/cancel-transaction-om.module#CancelTransactionOmPageModule' }
+  {
+    path: 'cancel-transaction-om',
+    loadChildren:
+      './cancel-transaction-om/cancel-transaction-om.module#CancelTransactionOmPageModule',
+  },
 ];
 
 @NgModule({

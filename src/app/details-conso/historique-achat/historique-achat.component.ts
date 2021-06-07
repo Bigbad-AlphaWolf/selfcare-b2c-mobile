@@ -3,6 +3,7 @@ import {
   DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY,
   OPERATION_TRANSFER_OM,
   PAYMENT_MOD_OM,
+  THREE_DAYS_DURATION_IN_MILLISECONDS,
 } from 'src/shared';
 import { CategoryPurchaseHistory } from 'src/app/models/category-purchase-history.model';
 import { PurchaseModel } from 'src/app/models/purchase.model';
@@ -50,11 +51,10 @@ export class HistoriqueAchatComponent implements OnInit {
   async openTransactionModal(transaction) {
     const date = new Date();
     // date difference in ms
-    // const dateDifference =  new Date(transaction.currentDate).getTime() - new Date(transaction.operationDate).getTime();
     const dateDifference =
-      date.getTime() - new Date(transaction.operationDate).getTime();
-    // 72h = 72 * 3600 s = 72 * 3600 * 1000 ms = 259.200.000
-    const isLessThan72h = dateDifference < 259200000;
+      new Date(transaction.currentDate).getTime() -
+      new Date(transaction.operationDate).getTime();
+    const isLessThan72h = dateDifference < THREE_DAYS_DURATION_IN_MILLISECONDS;
     if (!isLessThan72h || transaction.typeAchat !== 'TRANSFER') return;
     const omMsisdn = await this.omService.getOmMsisdn().toPromise();
     if (!omMsisdn || omMsisdn === 'error') return;
