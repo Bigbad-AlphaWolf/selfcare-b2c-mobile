@@ -41,8 +41,7 @@ export class BillAmountPage implements OnInit {
 
   ngOnInit() {
     this.opXtras = history.state;
-    this.service = this.opXtras.billData.company.code.toLowerCase();
-    console.log(this.service);
+    this.service = this.opXtras.billData.company.codeOM.toLowerCase();
 
     this.title = getPageHeader(this.opXtras.purchaseType).title;
     this.queryFees();

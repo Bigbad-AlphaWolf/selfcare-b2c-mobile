@@ -8,9 +8,13 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 export class AvantagePopupComponent implements OnInit {
     @Output() close = new EventEmitter();
     @Input() type: string;
+    @Input() details: any;
     constructor() {}
 
-    ngOnInit() {}
+    ngOnInit() {
+        console.log(this.details);
+
+    }
     closeDialog() {
         this.close.emit(true);
     }

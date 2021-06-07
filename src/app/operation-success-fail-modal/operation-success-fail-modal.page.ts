@@ -58,6 +58,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TYPE_PASS_USAGE = OPERATION_TYPE_PASS_USAGE;
   OPERATION_OPEN_OM_ACCOUNT = OPERATION_OPEN_OM_ACCOUNT;
   OPERATION_CANCEL_TRANSFERT_OM = OPERATION_CANCEL_TRANSFERT_OM;
+  OPERATION_RAPIDO = OPERATION_RAPIDO;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;

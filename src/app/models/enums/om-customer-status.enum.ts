@@ -1,4 +1,4 @@
-export enum CustomerStatusStep {
+export enum CustomerOperationStatus {
   new = 'NEW',
   ongoing = 'ONGOING',
   completed = 'COMPLETED',
