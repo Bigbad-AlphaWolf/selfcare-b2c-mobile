@@ -1,0 +1,69 @@
+.block-txn-modal {
+  padding: 30px 30px 40px;
+  position: relative;
+  .close-icon {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+  }
+  .icon-container {
+    width: 100%;
+    text-align: center;
+  }
+  .title {
+    font-size: 20px;
+    line-height: 1.2;
+    text-align: center;
+    padding: 15px 0;
+  }
+  .items-block {
+    .item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      &:not(:last-child) {
+        border-bottom: solid 1px #eeeeee;
+      }
+      .item-key {
+        font-size: 14px;
+        line-height: 1.14;
+      }
+      .item-value {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        line-height: 1.33;
+        &-amount {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 14px;
+          line-height: 1.14;
+        }
+      }
+    }
+  }
+  .warning {
+    position: relative;
+    width: 285px;
+    padding: 15px 10px 15px 45px;
+    background-color: rgba(255, 204, 0, 0.2);
+    border: solid 1px #ffcc00;
+    border-left: solid 5px#ffcc00;
+    border-radius: 6px;
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 14px;
+    line-height: 1.29;
+    margin-top: 10px;
+    .warning-ico {
+      position: absolute;
+      left: 15px;
+      top: 15px;
+    }
+  }
+  .btn-container {
+    text-align: center;
+    margin-top: 20px;
+    button {
+      width: 285px;
+      border-radius: 10px;
+    }
+  }
+}

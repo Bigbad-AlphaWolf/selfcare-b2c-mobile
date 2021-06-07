@@ -112,36 +112,29 @@
       }
     }
   }
-  .coupon-block {
-    text-align: center;
-    border-radius: 10px;
-    border: solid 1px $blue;
-    background-color: $weak-blue;
-    margin: 3px auto;
-    width: 90%;
-    padding: 12px 0;
-    .header {
+  .cancel-transfer-block {
+    padding: 20px 15px 0;
+    margin-bottom: -10px;
+    .cancel-title {
+      font-size: 16px;
+      line-height: 1.88;
       display: flex;
-      align-items: center;
       justify-content: center;
-      span {
-        font-family: HelveticaNeueLTStd-Roman;
-        font-size: 14px;
+      align-items: center;
+      .text-disabled {
+        opacity: 0.6;
+      }
+      mat-spinner {
+        margin-left: 5px;
+      }
+      .mat-spinner::ng-deep circle {
+        stroke: $redError;
       }
     }
-    .code {
-      font-size: 16px;
-      font-weight: bold;
-      line-height: 1.88;
+    .cancel-error {
+      font-family: HelveticaNeueLTStd-Roman;
+      margin-top: 5px;
     }
-  }
-  .loading-coupon {
-    font-family: HelveticaNeueLTStd-Roman;
-    font-size: 13px;
-    font-style: italic;
-    padding: 10px 0;
-    margin: 3px auto;
-    width: 90%;
   }
   .terminer {
     text-align: center;

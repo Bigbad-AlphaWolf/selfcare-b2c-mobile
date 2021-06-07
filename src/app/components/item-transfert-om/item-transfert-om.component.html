@@ -1,7 +1,7 @@
 <div class="item-container">
   <div class="tarifs-infos-amount-confirmed">
     <span class="value">
-      {{ omTransfertInfos.amount }} FCFA
+      {{ !isFromHistory ? omTransfertInfos?.amount : MATH.abs(transferHistoryItem?.amount)}} FCFA
     </span>
   </div>
   <div class="badge-promo" >
@@ -10,20 +10,20 @@
     </div>
     <div class="triangle"></div>
   </div>
-  <div class="tarifs-infos-fees">
+  <div class="tarifs-infos-fees" *ngIf="!isFromHistory">
     <div class="item-fees">
       <span class="title">
         Frais d'envoi
       </span>
       <div class="value">
-        <ng-container *ngIf="omTransfertInfos.sending_fees else freeFees">
-          {{omTransfertInfos.sending_fees + " F CFA"}}
+        <ng-container *ngIf="omTransfertInfos?.sending_fees else freeFees">
+          {{omTransfertInfos?.sending_fees + " F CFA"}}
         </ng-container>
         <ng-template #freeFees>Gratuit <span class="asterisk scb-text-red-error">*</span></ng-template>        
       </div>
     </div>
-    <div class="scb-text-red-error limit-free" *ngIf="!omTransfertInfos.sending_fees">Dans la limite de 2 transferts par jour</div>
-    <div *ngIf="omTransfertInfos.includeFee" class="item-fees">
+    <div class="scb-text-red-error limit-free" *ngIf="!omTransfertInfos?.sending_fees">Dans la limite de 2 transferts par jour</div>
+    <div *ngIf="omTransfertInfos?.includeFee" class="item-fees">
       <span class="title">
         Frais de retrait
       </span>
@@ -32,12 +32,12 @@
       </span>
     </div>
   </div>
-  <div class="tarifs-infos-summary">
+  <div class="tarifs-infos-summary" *ngIf="!isFromHistory">
     <span class="title">
       Total à débiter
     </span>
     <span class="value">
-      {{ omTransfertInfos.includeFee ? +omTransfertInfos.amount + omTransfertInfos.fee + omTransfertInfos.sending_fees : +omTransfertInfos.amount + omTransfertInfos.sending_fees }} FCFA
+      {{ omTransfertInfos?.includeFee ? +omTransfertInfos?.amount + omTransfertInfos?.fee + omTransfertInfos?.sending_fees : +omTransfertInfos?.amount + omTransfertInfos?.sending_fees }} FCFA
     </span>
   </div>
 </div>

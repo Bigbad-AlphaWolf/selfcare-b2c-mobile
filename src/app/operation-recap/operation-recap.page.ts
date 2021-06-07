@@ -480,6 +480,7 @@ export class OperationRecapPage implements OnInit {
       if (response.data && response.data.success) {
         this.openSuccessFailModal({
           opXtras: response.data.opXtras,
+          historyTransactionItem: response.data.transferToBlock,
           success: true,
           msisdnBuyer: this.orangeMoneyService.getOrangeMoneyNumber(),
           buyForMe:
