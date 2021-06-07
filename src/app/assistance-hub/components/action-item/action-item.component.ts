@@ -75,6 +75,9 @@ export class ActionItemComponent implements OnInit {
       case 'IBOU_CONTACT':
         this.goIbouPage();
         break;
+      case 'CANCEL_TRANSACTION_OM':
+        this.goToFormulaireCancelOMTransaction();
+        break;
       default:
         break;
     }
@@ -156,6 +159,15 @@ export class ActionItemComponent implements OnInit {
     this.router.navigate(['follow-up-requests']);
     this.followAnalyticsService.registerEventFollow(
       'Assistance_actions_suivi_demande-fixe_clic',
+      'event',
+      'clicked'
+    );
+  }
+
+  goToFormulaireCancelOMTransaction() {
+    this.router.navigate(['/cancel-transaction-om']);
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_actions_formulaire_annuler_transaction_om_clic',
       'event',
       'clicked'
     );

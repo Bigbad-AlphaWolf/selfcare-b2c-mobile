@@ -435,6 +435,7 @@ const routes: Routes = [
       './list-pass-usage/list-pass-usage.module#ListPassUsagePageModule',
       canActivate: [AuthGuard]
   },
+  { path: 'cancel-transaction-om', loadChildren: './cancel-transaction-om/cancel-transaction-om.module#CancelTransactionOmPageModule' }
 ];
 
 @NgModule({
