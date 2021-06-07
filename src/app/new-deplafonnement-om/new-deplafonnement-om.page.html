@@ -61,7 +61,7 @@
         <div class="block-title">Preuve d’identité</div>
         <form class="form-block" [formGroup]="identityForm">
           <div class="radio-group">
-            <mat-radio-group formControlName="identityType">
+            <mat-radio-group #radio formControlName="identityType">
               <mat-radio-button [value]="'CNI'" #cni>
                 <div class="identity-option scb-text-gray" [ngClass]="{'radio-selected': cni.checked}">
                   Carte d'identité
@@ -76,7 +76,7 @@
           </div>
           <mat-form-field class="scb-input-row" appearance="outline">
             <mat-label>Numéro de la pièce &nbsp;&nbsp;</mat-label>
-            <input formControlName="nIdentity" matInput type="text" />
+            <input formControlName="nIdentity" matInput [type]="radio.value === 'CNI' ? 'number': 'text'" />
           </mat-form-field>
           <div class="photo-button" [ngClass]="{'field-filled': rectoFilled}" (click)="takePicture('recto')">
             <span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': rectoFilled}">{{rectoFilled ?
