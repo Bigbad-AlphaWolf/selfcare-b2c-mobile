@@ -35,6 +35,12 @@ import {
 } from '../utils/om.endpoints';
 import { ChangePinOm } from 'src/app/models/change-pin-om.model';
 import { OM_CHANGE_PIN_ENDPOINT } from '../utils/om.endpoints';
+import { OMCustomerStatusModel } from 'src/app/models/om-customer-status.model';
+import {
+  checkOtpResponseModel,
+  OmCheckOtpModel,
+  OmInitOtpModel,
+} from 'src/app/models/om-self-operation-otp.model';
 import {
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
@@ -51,9 +57,10 @@ import { FollowOemlogPurchaseInfos } from 'src/app/models/follow-log-oem-purchas
 import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
 import { IlliflexService } from '../illiflex-service/illiflex.service';
+import { CancelOmTransactionPayloadModel } from 'src/app/models/cancel-om-transaction-payload.model';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
-const { OM_SERVICE, SERVER_API_URL } = environment;
+const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
 const otpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/init-otp`;
 const registerClientEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/register-client`;
 const loginClientEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/login-client`;
@@ -77,6 +84,10 @@ const omFeesEndpoint2 = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-with-
 const checkBalanceSufficiencyEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/check-balance`;
 const checkTxnBlockEligibilityEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/is-eligible-for-blocking`;
 const BlockTransferEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/cancel-transaction`;
+const userStatusEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-status`;
+const selfOperationInitOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-otp-init`;
+const selfOperationCheckOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-otp-check`;
+const CANCEL_TRANSACTIONS_OM_Endpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/urgence-depannage/v2/erreur-transaction`;
 const ls = new SecureLS({ encodingType: 'aes' });
 let eventKey = '';
 let errorKey = '';
@@ -400,6 +411,46 @@ export class OrangeMoneyService {
     );
   }
 
+  getUserStatus() {
+    return this.getOmMsisdn().pipe(
+      switchMap((msisdn) => {
+        if (msisdn === 'error') throw new Error('NO_OM_ACCOUNT');
+        return this.http
+          .get<OMCustomerStatusModel>(`${userStatusEndpoint}/${msisdn}`)
+          .pipe(
+            map((status) => {
+              status.omNumber = msisdn;
+              return status;
+            })
+          );
+      })
+    );
+  }
+
+  initSelfOperationOtp(initOtpPayload: OmInitOtpModel) {
+    console.log(
+      'url',
+      selfOperationCheckOtpEndpoint,
+      'payload',
+      initOtpPayload
+    );
+
+    return this.http.post<checkOtpResponseModel>(
+      selfOperationInitOtpEndpoint,
+      initOtpPayload
+    );
+  }
+
+  checkSelfOperationOtp(
+    checkOtpPayload: OmCheckOtpModel,
+    otpCode: string | number
+  ) {
+    return this.http.post<checkOtpResponseModel>(
+      `${selfOperationCheckOtpEndpoint}?otp=${otpCode}`,
+      checkOtpPayload
+    );
+  }
+
   getOmMsisdn(): Observable<string> {
     const omNumberOnLS = ls.get('nOrMo');
     if (omNumberOnLS) {
@@ -560,9 +611,9 @@ export class OrangeMoneyService {
   }
 
   isTxnEligibleToBlock(transactionId: string) {
-    const mock: Observable<CheckEligibilityModel> = of({ eligible: true }).pipe(
-      delay(2000)
-    );
+    // const mock: Observable<CheckEligibilityModel> = of({ eligible: true }).pipe(
+    //   delay(2000)
+    // );
     // return mock;
     return this.getOmMsisdn().pipe(
       switchMap((msisdn) => {
@@ -574,11 +625,6 @@ export class OrangeMoneyService {
   }
 
   blockTransfer(transaction) {
-    // return of({});
-    // return throwError({
-    //   message: 'Blocage non effectué',
-    //   transactionNumber: 1,
-    // });
     return this.getOmMsisdn().pipe(
       switchMap((msisdn) => {
         const { amount, txnid, msisdnReceiver } = transaction;
@@ -594,5 +640,17 @@ export class OrangeMoneyService {
         );
       })
     );
+  }
+
+  sendInfosCancelationTransfertOM(
+    formInfos: CancelOmTransactionPayloadModel,
+    fileRecto: any,
+    fileVerso: any
+  ) {
+    const payload: FormData = new FormData();
+    payload.append('erreurTransactionOmDTO', JSON.stringify(formInfos));
+    payload.append('recto', fileRecto);
+    payload.append('verso', fileVerso);
+    return this.http.post(`${CANCEL_TRANSACTIONS_OM_Endpoint}`, payload);
   }
 }

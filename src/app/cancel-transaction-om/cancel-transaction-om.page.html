@@ -1,0 +1,167 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+			<img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+		</ion-buttons>
+		<ion-title class="ion-no-padding">
+			<span class="title1">Annuler une transaction</span>
+		</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content class="deplafonnement-content">
+	<ion-header class="ion-padding-start" collapse="condense">
+		<ion-toolbar>
+			<span class="title">Annuler une transaction</span>
+		</ion-toolbar>
+	</ion-header>
+	<div class="deplafonnement-body">
+		<div class="banniere-container">
+			<img src="/assets/images/05-illustrations-header-29-bloquer-transfert.svg" alt="header-om" />
+		</div>
+		<div class="all-informations-block">
+			<form [formGroup]="cancelTransactionOMInfos">
+				<div class="single-block">
+					<div class="block-title">Référence transaction</div>
+					<div class="block-description scb-text-gray">
+						Selectionnez la transaction que vous souhaitez annuler dans la liste déroulante.
+					</div>
+					<div class="form-block">
+						<mat-form-field class="scb-input-row ref-transaction" appearance="outline">
+							<mat-label>Référence de la transaction &nbsp;&nbsp;</mat-label>
+							<input matInput type="text" maxlength="20" readonly formControlName="transaction_id" />
+
+							<span (click)="selectTransaction()" class="transactions_list"> Choisir </span>
+							<img class="arrow-select" (click)="selectTransaction()" src="assets/images/arrow-down.svg" alt="" />
+						</mat-form-field>
+						<div *ngIf="transactionOMInfos.refTransaction" class="transaction-infos">
+							<div class="item-infos">
+								<span class="infos-title"> Bénéficiaire </span>
+								<span class="infos-value scb-text-gray">
+									{{transactionOMInfos?.recipientTransaction | phoneNumberDisplay }}
+								</span>
+							</div>
+							<div class="item-infos">
+								<span class="infos-title"> Date de transfert </span>
+								<span class="infos-value scb-text-gray">
+									{{transactionOMInfos.dateTransaction | date: 'dd/MMM/yyyy à HH:mm'}}
+								</span>
+							</div>
+							<div class="item-infos">
+								<span class="infos-title"> Montant </span>
+								<span class="infos-value scb-text-orange amount"> {{transactionOMInfos.amountTransaction}} FCFA </span>
+							</div>
+						</div>
+						<div class="error-block scb-text-red-error" *ngIf="getMsisdnHasError" (click)="getOmMsisdn()">
+							Une erreur est survenue. Réactualisez ici
+						</div>
+					</div>
+				</div>
+				<div class="single-block">
+					<div class="block-title">Infos personnelles</div>
+					<ion-list mode="ios">
+						<ion-item mode="ios" lines="none">
+							<ion-label mode="ios" class="scb-text-gray">Civilité</ion-label>
+							<ion-select interface="popover" noIonSelectArrow mode="ios" formControlName="civility">
+								<ion-select-option value="monsieur" mode="ios"><span>Monsieur</span></ion-select-option>
+								<ion-select-option value="madame" mode="ios"><span>Madame</span></ion-select-option>
+							</ion-select>
+							<ion-icon name="arrow-down" mode="ios" slot="end"></ion-icon>
+						</ion-item>
+					</ion-list>
+					<mat-form-field class="scb-input-row" appearance="outline">
+						<mat-label>Nom &nbsp;&nbsp;</mat-label>
+						<input formControlName="lastname" matInput type="text" />
+					</mat-form-field>
+					<mat-form-field class="scb-input-row" appearance="outline">
+						<mat-label>Prénom &nbsp;&nbsp;</mat-label>
+						<input formControlName="firstname" matInput type="text" />
+					</mat-form-field>
+					<mat-form-field class="scb-input-row" appearance="outline">
+						<mat-label>Email &nbsp;&nbsp;</mat-label>
+						<input formControlName="email" matInput type="email" />
+					</mat-form-field>
+				</div>
+				<div class="single-block">
+					<div class="block-title">Identité</div>
+					<div class="radio-group">
+						<ion-radio-group #radio value="CNI" formControlName="identityType">
+							<ion-item lines="none">
+								<ion-label class="identity-option scb-text-gray" [ngClass]="{'radio-selected': radio.value === 'CNI'}">
+									Carte d'identité</ion-label
+								>
+								<ion-radio mode="md" #cni slot="start" value="CNI"></ion-radio>
+							</ion-item>
+
+							<ion-item lines="none">
+								<ion-label
+									class="identity-option scb-text-gray"
+									[ngClass]="{'radio-selected': radio.value === 'PASSPORT'}"
+									>Passport</ion-label
+								>
+								<ion-radio mode="md" #pass slot="start" value="PASSPORT"></ion-radio>
+							</ion-item>
+						</ion-radio-group>
+					</div>
+					<mat-form-field class="scb-input-row" appearance="outline">
+						<mat-label>Numéro de la pièce &nbsp;&nbsp;</mat-label>
+						<input formControlName="nIdentity" matInput [type]="radio.value === 'CNI' ? 'number': 'text' " />
+					</mat-form-field>
+					<div class="photo-button" [ngClass]="{'field-filled': rectoFilled}" (click)="takePicture('recto')">
+						<span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': rectoFilled}"
+							>{{rectoFilled ? rectoFileName : 'Scanner recto pièce d’identité'}}</span
+						>
+						<ion-icon name="camera" class="scb-text-orange" *ngIf="!rectoFilled"></ion-icon>
+						<ion-icon
+							name="trash"
+							class="delete-icon scb-text-green-success"
+							*ngIf="rectoFilled"
+							(click)="removePicture('recto')"
+						>
+						</ion-icon>
+					</div>
+					<div class="photo-button" [ngClass]="{'field-filled': versoFilled}" (click)="takePicture('verso')">
+						<span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': versoFilled}"
+							>{{versoFilled ? versoFileName : 'Scanner verso pièce d’identité'}}</span
+						>
+						<ion-icon name="camera" class="scb-text-orange" *ngIf="!versoFilled"></ion-icon>
+						<ion-icon
+							name="trash"
+							class="delete-icon scb-text-green-success"
+							*ngIf="versoFilled"
+							(click)="removePicture('verso')"
+						>
+						</ion-icon>
+					</div>
+				</div>
+			</form>
+
+			<div class="single-block">
+				<div class="block-title">Confirmation</div>
+				<div class="form-block">
+					<div class="cgu-block">
+						<mat-checkbox #checkbox class="cgu-checkbox" [(ngModel)]="saveUserInfos"> </mat-checkbox>
+						<div class="scb-text-gray text" (click)="checkbox.checked = !saveUserInfos">
+							J’accepte de <span class="scb-text-orange cg">sauvegarder mes infos d’identité</span> dans l’application.
+							Cette option vous permet d’aller plus vite lors de vos prochaines demandes d’annulation de transfert.
+						</div>
+					</div>
+					<div class="init-otp-error" *ngIf="errorMsg">{{ errorMsg }}</div>
+					<button
+						[disabled]="(isSubmitting || !omMsisdn || !cancelTransactionOMInfos.valid || !rectoFilled || !versoFilled )"
+						class="scb-btn scb-btn-full scb-btn-orange"
+						(click)="submittingFormsInfos()"
+					>
+						<span>Continuer</span>
+						<mat-spinner mode="indeterminate" [diameter]="20" *ngIf="isSubmitting"></mat-spinner>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="spinner-block" *ngIf="gettingOmNumber">
+			<mat-spinner mode="indeterminate" [diameter]="40"></mat-spinner>
+		</div>
+	</div>
+</ion-content>
+
+<!-- [disabled]="(isSubmitting || !omMsisdn || !identityForm.valid || !personalInfosForm.valid || !rectoFilled || !versoFilled )" -->
