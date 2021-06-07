@@ -106,13 +106,14 @@ pipeline {
       }
     }
 
-   /* jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk my-alias*/
+   jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk my-alias*
+    jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks -storepass "azerty" platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk my-alias
 
 
     stage('Android Build Signed') {
       steps {
         echo "Build Android Signed"
-        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -keystore ../../../../../../ovto-key.keystore -storepass 'b:[S_#3R7?nLs*yJd^6<y' app-release-unsigned.apk ovto && mv app-release-unsigned.apk ovto.apk"
+        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks -storepass "azerty" platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk my-alias"
       }
       post{
         success {
