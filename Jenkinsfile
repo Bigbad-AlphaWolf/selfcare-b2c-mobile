@@ -50,7 +50,7 @@ pipeline {
 
     stage("Clean install") {
       steps{
-        sh "clean:all:install" 
+        sh "npm run clean:all:install" 
       }
     }
 
