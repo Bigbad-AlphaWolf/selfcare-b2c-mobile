@@ -104,10 +104,7 @@ pipeline {
         echo "Build Android Unsigned"
         sh "npm run build:android:release"
       }
-    }
-
-   jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk my-alias*
-    jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks -storepass "azerty" platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk my-alias
+    } 
 
 
     stage('Android Build Signed') {
