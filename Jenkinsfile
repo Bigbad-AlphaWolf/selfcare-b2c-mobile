@@ -47,15 +47,23 @@ pipeline {
           }
         }
     }
+    
+    
+     stage("Clean install") {
+      steps{
+        sh "clean:all:install"
+      }
+    }
+    
 
-    stage("Plugins install ionic cordova") {
+   /* stage("Plugins install ionic cordova") {
       steps{
         sh "npm i -g @ionic/cli"
         sh "npm i -g cordova@9.0.0"
         sh "npm i -g cordova-res"
         sh "npm i"
       }
-    }
+    }*/
 
 
 
@@ -87,20 +95,20 @@ pipeline {
           }
         }*/
 
-    stage("Create www && cp google-services") {
+   /* stage("Create www && cp google-services") {
       steps{
          sh "mkdir -p www/"
          sh "cp google-services.json www/"
       }
-    }
+    }*/
 
-   stage("Prepare build  android") {
+  /* stage("Prepare build  android") {
       steps{
          sh "rm -rf platforms"
          sh "ionic cordova platform add android"
          sh "ionic cordova prepare android"
       }
-    }
+    }*/
 
     stage('Android Build Unsigned') {
       steps {
@@ -109,10 +117,10 @@ pipeline {
       }
     }
 
-    stage('Android Build Signed') {
+   /* stage('Android Build Signed') {
       steps {
         echo "Build Android Signed"
-        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -keystore ../../../../../../ovto-key.keystore -storepass 'b:[S_#3R7?nLs*yJd^6<y' app-release-unsigned.apk ovto && mv app-release-unsigned.apk ovto.apk"
+        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -keystore ../../../../../../my-release-key.keystore -storepass 'b:[S_#3R7?nLs*yJd^6<y' app-release-unsigned.apk ovto && mv app-release-unsigned.apk ovto.apk"
       }
       post{
         success {
@@ -123,7 +131,7 @@ pipeline {
             to: devsMail
         }
        }
-    }
+    }*/
 
 
     stage("Remove node module") {
