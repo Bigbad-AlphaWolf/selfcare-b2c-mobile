@@ -5,12 +5,12 @@ import { ModalController, NavController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { OPERATION_CANCEL_TRANSFERT_OM } from 'src/shared';
+import { HistorikTransactionByTypeModalComponent } from '../components/historik-transaction-by-type-modal/historik-transaction-by-type-modal.component';
 import { CancelOmTransactionPayloadModel } from '../models/cancel-om-transaction-payload.model';
 import { PurchaseModel } from '../models/purchase.model';
 import { ReclamationOmOem } from '../models/reclamation-OM-oem.model';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
-import { HistorikTransactionByTypeModalComponent } from '../pages/reclamation-om-transaction/components/historik-transaction-by-type-modal/historik-transaction-by-type-modal.component';
 import { ImageService } from '../services/image-service/image.service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 

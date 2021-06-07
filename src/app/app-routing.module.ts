@@ -419,12 +419,6 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'reclamation-om-transaction',
-    loadChildren:
-      './pages/reclamation-om-transaction/reclamation-om-transaction.module#ReclamationOmTransactionPageModule',
-    canActivate: [AuthGuard],
-  },
-  {
     path: 'new-deplafonnement-om',
     loadChildren:
       './new-deplafonnement-om/new-deplafonnement-om.module#NewDeplafonnementOmPageModule',
