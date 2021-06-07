@@ -48,12 +48,9 @@ pipeline {
         }
     }
 
-    stage("Plugins install ionic cordova") {
+    stage("Clean install") {
       steps{
-        sh "npm i -g @ionic/cli"
-        sh "npm i -g cordova@9.0.0"
-        sh "npm i -g cordova-res"
-        sh "npm i"
+        sh "clean:all:install" 
       }
     }
 
@@ -94,13 +91,13 @@ pipeline {
       }
     }
 
-   stage("Prepare build  android") {
+  /* stage("Prepare build  android") {
       steps{
          sh "rm -rf platforms"
          sh "ionic cordova platform add android"
          sh "ionic cordova prepare android"
       }
-    }
+    }*/
 
     stage('Android Build Unsigned') {
       steps {
@@ -108,6 +105,9 @@ pipeline {
         sh "npm run build:android:release"
       }
     }
+
+   /* jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk my-alias*/
+
 
     stage('Android Build Signed') {
       steps {
