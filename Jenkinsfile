@@ -1,4 +1,4 @@
- devsMail = 'mouhamadoubambambacke.sow@orange-sonatel.com, xx@orange-sonatel.com'
+ devsMail = 'Team.selfcare-b2c@orange-sonatel.com'
 
 pipeline {
   // agent any
@@ -117,7 +117,7 @@ pipeline {
           archiveArtifacts artifacts:  'platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk'
           emailext attachmentsPattern: 'platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk',
             body: 'Apk joint au mail.',
-            subject: '[RELEASE] Signed',
+            subject: '[RELEASE] O&M ANDROID APK Signed',
             to: devsMail
         }
        }
