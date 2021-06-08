@@ -110,7 +110,7 @@ pipeline {
     stage('Android Build Signed') {
       steps {
         echo "Build Android Signed"
-        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks -storepass 'azerty' platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk my-alias"
+        sh "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks -storepass 'azerty' platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk my-alias"
       }
       post{
         success {
