@@ -19,13 +19,14 @@ export const environment = {
   SARGAL_SERVICE: 'selfcare-b2c-sargal',
   COMMUNITY_MANAGEMENT_SERVICE: 'selfcare-b2c-community-management',
   BOOSTER_SERVICE: 'selfcare-b2c-booster-management',
+  AUTH_IMPLICIT_MSISDN: '221785898096',
   GA_CONFIG: {
     trackingId: 'UA-92621294-1',
-    trackPageviews: true
+    trackPageviews: true,
   },
   GET_MSISDN_BY_NETWORK_URL:
     'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
   CONFIRM_MSISDN_BY_NETWORK_URL:
     'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
-  DIMELO_CHAT_MARKUP : "dimelo_chat_item_markup_b7ba58e0175d1f96e1eca4e3"
+  DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_b7ba58e0175d1f96e1eca4e3',
 };
