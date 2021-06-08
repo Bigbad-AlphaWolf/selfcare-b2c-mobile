@@ -114,8 +114,8 @@ pipeline {
       }
       post{
         success {
-          archiveArtifacts artifacts:  'platforms/android/app/build/outputs/apk/release/ovto.apk'
-          emailext attachmentsPattern: 'platforms/android/app/build/outputs/apk/release/ovto.apk',
+          archiveArtifacts artifacts:  'platforms/android/app/build/outputs/apk/release/app-release.apk'
+          emailext attachmentsPattern: 'platforms/android/app/build/outputs/apk/release/app-release.apk',
             body: 'Apk joint au mail.',
             subject: '[RELEASE] Signed',
             to: devsMail
