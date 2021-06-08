@@ -273,6 +273,10 @@ body {
   color: $green;
 }
 
+.#{$prefix}-text-green-success {
+  color: $greenSuccess;
+}
+
 .#{$prefix}-text-purple {
   color: $purple;
 }
@@ -409,6 +413,7 @@ $bluePopUp: #085ebd;
           img {
             width: 100%;
             height: 100%;
+            border-radius: 0 10px 10px 0 !important;
           }
         }
       }

@@ -105,6 +105,10 @@ export interface TransferOrangeMoneyModel {
   msisdn_sender: string;
   msisdn_receiver: string;
   amount: number;
+  send_fees: number;
+  cashout_fees: number;
+  fees: number;
+  a_ma_charge: boolean;
   uuid: string;
   os: string;
   pin: string;
@@ -129,6 +133,10 @@ export interface TransferOMWithCodeModel {
   service_version: string;
   nom_receiver: string;
   prenom_receiver: string;
+  send_fees?: number;
+  cashout_fees?: number;
+  fees?: number;
+  a_ma_charge?: boolean;
 }
 export interface BuyPassPayload {
   msisdn2: string;
@@ -148,6 +156,20 @@ export interface MerchantPaymentModel {
   uuid: string;
 }
 
+export interface CheckEligibilityModel {
+  eligible?: boolean;
+  message?: string;
+  transactionDetails?: {
+    amount?: string;
+    date?: string;
+    destinataire?: string;
+    fees?: string;
+    msisdn?: string;
+    status?: string;
+    txnid?: string;
+  };
+}
+
 export interface LogModel {
   userId: string;
   contexte: string;
@@ -164,6 +186,7 @@ export interface FeeModel {
   has_promo: boolean;
   effective_fees: number;
   mode_calcul: 'pourcent' | 'fixe';
+  old_fees: number;
 }
 
 export const ORANGE_MONEY_TRANSFER_FEES = [
@@ -293,3 +316,7 @@ export const LIST_DENIED_PIN_OM: string[] = [
   '6789',
   '7890',
 ];
+export const SUCCESS_MSG_OM_ACCOUNT_CREATION =
+  `Votre demande d’ouverture de compte
+  Orange Money a été enregistré avec succés.
+  Vous recevrez une confirmation d’ouverture.`;

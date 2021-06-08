@@ -1,0 +1,116 @@
+@import 'src/app/app';
+
+ion-header {
+  height: 50px;
+  font-size: 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: $white;
+  .img-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+}
+
+ion-content {
+  --background: transparent !important;
+}
+
+.camera-page-body {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  .camera-preview {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    text-align: center;
+    padding-top: 46px;
+    .steps {
+      margin-bottom: 53px;
+      &-number {
+        opacity: 0.3;
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 44px;
+        width: 100%;
+        margin-bottom: 13px;
+      }
+      &-description {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        line-height: 1.25;
+        width: percentage(226/375);
+        margin: 0 auto;
+      }
+    }
+    .camera-frame {
+      width: percentage(300/375);
+      height: 190px;
+      margin-left: percentage(37.5/375);
+      border-radius: 10px;
+      border: solid 2px #ff7900;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.2);
+      &.selfie {
+        height: 300px !important;
+      }
+    }
+    .catch-picture-btn {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: 100px;
+      .circle {
+        width: 79px;
+        height: 79px;
+        border-radius: 50%;
+        border: solid 2px #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .sub-circle {
+          width: 65px;
+          height: 65px;
+          border-radius: 50%;
+          background-color: #ffffff;
+        }
+      }
+      .photo-text {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        margin-top: 10px;
+      }
+    }
+    .btn-block {
+      display: flex;
+      justify-content: space-between;
+      width: percentage(330/375);
+      max-width: 330px;
+      margin: 56px auto 0;
+      .scb-btn {
+        width: percentage(160/330);
+        border-radius: 10px;
+      }
+    }
+  }
+  .reverse-camera {
+    width: 30px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+  }
+}

@@ -48,12 +48,9 @@ pipeline {
         }
     }
 
-    stage("Plugins install ionic cordova") {
+    stage("Clean install") {
       steps{
-        sh "npm i -g @ionic/cli"
-        sh "npm i -g cordova@9.0.0"
-        sh "npm i -g cordova-res"
-        sh "npm i"
+        sh "npm run clean:all:install" 
       }
     }
 
@@ -94,25 +91,26 @@ pipeline {
       }
     }
 
-   stage("Prepare build  android") {
+  /* stage("Prepare build  android") {
       steps{
          sh "rm -rf platforms"
          sh "ionic cordova platform add android"
          sh "ionic cordova prepare android"
       }
-    }
+    }*/
 
     stage('Android Build Unsigned') {
       steps {
         echo "Build Android Unsigned"
         sh "npm run build:android:release"
       }
-    }
+    } 
+
 
     stage('Android Build Signed') {
       steps {
         echo "Build Android Signed"
-        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -keystore ../../../../../../ovto-key.keystore -storepass 'b:[S_#3R7?nLs*yJd^6<y' app-release-unsigned.apk ovto && mv app-release-unsigned.apk ovto.apk"
+        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks -storepass 'azerty' platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk my-alias"
       }
       post{
         success {

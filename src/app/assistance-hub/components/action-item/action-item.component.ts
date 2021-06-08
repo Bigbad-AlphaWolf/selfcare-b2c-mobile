@@ -134,7 +134,8 @@ export class ActionItemComponent implements OnInit {
   }
 
   goDeplafonnement() {
-    this.router.navigate(['/control-center/operation-om/deplafonnement']);
+    // this.router.navigate(['/control-center/operation-om/deplafonnement']);
+    this.router.navigate(['/new-deplafonnement-om']);
     this.followAnalyticsService.registerEventFollow(
       'Assistance_actions_Deplafonnement_OM_clic',
       'event',
@@ -143,7 +144,7 @@ export class ActionItemComponent implements OnInit {
   }
 
   goReclamation() {
-    this.router.navigate(['/reclamation-om-transaction']);
+    this.router.navigate(['/cancel-transaction-om']);
     this.followAnalyticsService.registerEventFollow(
       'Assistance_actions_Reclamation_OM_clic',
       'event',

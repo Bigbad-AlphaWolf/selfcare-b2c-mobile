@@ -842,11 +842,11 @@ ion-button {
     ion-input {
       // --placeholder-opacity: 1;
     }
-    &.item-has-value{
+    &.item-has-value {
       border: solid 2px $orange;
     }
   }
-  span.effacer{
+  span.effacer {
     color: $orange;
   }
 }
@@ -854,5 +854,24 @@ ion-button {
 .my-custom-class {
   .popover-content {
     --min-width: 80%;
+  }
+}
+
+.previsualize-picture-modal {
+  --height: auto;
+  --backdrop-opacity: 0.8;
+  ion-backdrop {
+  }
+  .modal-wrapper {
+    width: percentage(300/375) !important;
+    max-width: 300px;
+    border-radius: 10px !important;
+    .ion-page {
+      position: relative;
+      contain: content;
+      .modal-content {
+        overflow: auto;
+      }
+    }
   }
 }

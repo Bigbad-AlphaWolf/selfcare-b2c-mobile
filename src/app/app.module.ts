@@ -14,8 +14,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material';
 import { SidemenuComponent } from './sidemenu/sidemenu.component';
 import { AuthInterceptorService } from './services/auth-interceptor-service/auth-interceptor.service';
-import { ChangeAvatarPopupComponent } from './my-account/change-avatar-popup/change-avatar-popup.component';
-import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
 import { SharedModule } from 'src/shared/shared.module';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { File } from '@ionic-native/file/ngx';
@@ -36,12 +34,11 @@ import { IonicImageLoader } from 'ionic-image-loader';
 import { Uid } from '@ionic-native/uid/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { PipesModule } from './pipes/pipes.module';
+import { Network } from '@ionic-native/network/ngx';
 
 registerLocaleData(localeFr);
 @NgModule({
-  declarations: [
-    AppComponent,
-    SidemenuComponent ],
+  declarations: [AppComponent, SidemenuComponent],
   imports: [
     HttpClientModule,
     MatDialogModule,
@@ -55,7 +52,7 @@ registerLocaleData(localeFr);
     NewPinpadModalPageModule,
     OperationSuccessFailModalPageModule,
     RegistrationSuccessModalPageModule,
-    PipesModule
+    PipesModule,
   ],
   providers: [
     AppVersion,
@@ -79,6 +76,7 @@ registerLocaleData(localeFr);
     Device,
     Uid,
     AndroidPermissions,
+    Network,
   ],
   bootstrap: [AppComponent],
 })

@@ -12,7 +12,7 @@
 
 .pinpad-v3 {
   text-align: center;
-  padding: percentage(30px/612px) 20px 0;
+  padding: 30px 20px 0;
   height: 100%;
   img {
     width: auto;
@@ -24,6 +24,9 @@
     .title-1,
     .subtitle {
       display: block;
+      .msisdn-bold {
+        font-family: HelveticaNeueLTStd-Bd, sans-serif;
+      }
     }
     .title-1 {
       font-family: HelveticaNeueLTStd-Bd, sans-serif;
@@ -62,6 +65,28 @@
       font-family: HelveticaNeueLTStd-Bd;
       font-size: 12px;
       line-height: 1.5;
+      &.big-text {
+        font-size: 16px;
+        margin-bottom: 25px;
+      }
+    }
+    .confirm-block {
+      button {
+        border-radius: 5px;
+        position: relative;
+        width: 130px;
+        &.cancel {
+          margin-left: 10px;
+        }
+        mat-spinner {
+          position: absolute;
+          top: 15px;
+          right: 10px;
+        }
+        .mat-spinner::ng-deep circle {
+          stroke: $white;
+        }
+      }
     }
   }
   .numbers-table {
@@ -152,14 +177,14 @@
       width: 95%;
       // display: flex;
       .scb-btn-ion {
-          height: 50px;;
-          --border-radius: 4px;
-          --background-activated: $orange;
+        height: 50px;
+        --border-radius: 4px;
+        --background-activated: $orange;
       }
       mat-spinner {
-          position: absolute;
-          right: 5px;
-          top: 12px;
+        position: absolute;
+        right: 5px;
+        top: 12px;
       }
       .mat-spinner::ng-deep circle {
         stroke: $white;

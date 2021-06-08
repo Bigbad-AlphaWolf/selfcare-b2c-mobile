@@ -8,8 +8,10 @@
   <div class="top-block">
     <img *ngIf="success" src="/assets/images/confirmation.png" alt="checked" />
     <ng-container *ngIf="!success">
-      <img *ngIf="purchaseType !== OPERATION_CHANGE_PIN_OM" src="/assets/images/echec.png" alt="checked" />
+      <img *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM].includes(purchaseType)" src="/assets/images/echec.png" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_CHANGE_PIN_OM" src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="checked" />
+      <img *ngIf="purchaseType === OPERATION_OPEN_OM_ACCOUNT" src="/assets/images/05-ic-nes-ouverture-compte-om.svg" alt="checked" />
+      <img *ngIf="purchaseType === OPERATION_CANCEL_TRANSFERT_OM" src="/assets/images/05-ic-nes-blocage-transfert.svg" alt="checked" />
 
     </ng-container>
     <ng-container [ngSwitch]="purchaseType">
@@ -34,7 +36,7 @@
       >
       <span
         class="title"
-        *ngSwitchCase="'OPERATION_RAPIDO'"
+        *ngSwitchCase="OPERATION_RAPIDO"
         style="white-space: pre-line;"
         >{{success ? 'Rechargement'+'\n'+'Rapido effectué' :
         'Echec'+'\n'+'rechargement Rapido'}}</span
@@ -60,14 +62,19 @@
       <span class="title" *ngSwitchCase="OPERATION_CHANGE_PIN_OM"
         >Bravo !</span
       >
+      <span class="title" *ngSwitchCase="OPERATION_OPEN_OM_ACCOUNT"
+        >Merci !</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_CANCEL_TRANSFERT_OM">Votre demande d’annulation a bien était envoyée !</span
+      >
       <span class="title" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"
         >{{ success ? 'Achat pass effectué' : 'Echec achat de pass'}}</span
       >
     </ng-container>
     <span class="subtitle scb-text-gray">
       <ng-container *ngIf="!success">
-        <span *ngIf="purchaseType !== OPERATION_CHANGE_PIN_OM" >{{errorMsg}}</span>
-        <span *ngIf="purchaseType === OPERATION_CHANGE_PIN_OM" >{{textMsg}}</span>
+        <span *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM].includes(purchaseType)" >{{errorMsg}}</span>
+        <span class="custom-font" *ngIf="[OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM].includes(purchaseType)" >{{textMsg}}</span>
 
       </ng-container>
       <ng-container *ngIf="success" [ngSwitch]="purchaseType">
@@ -80,7 +87,7 @@
         <span *ngSwitchCase="'OPERATION_WOYOFAL'"
           >Vous avez rechargé un montant de</span
         >
-        <span *ngSwitchCase="'OPERATION_RAPIDO'"
+        <span *ngSwitchCase="OPERATION_RAPIDO"
           >Vous avez rechargé un montant de</span
         >
         <span *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
@@ -138,12 +145,13 @@
           *ngSwitchCase="OPERATION_ALLO_TYPE"
         >
         </app-item-pass-illimix>
-        <app-item-recharge-credit
-          [modifiable]="false"
-          [amount]="amount"
+        <app-item-transfert-om
+          [omTransfertInfos]="opXtras"
+          [isFromHistory]="isOpenedFromHistory"
+          [transferHistoryItem]="historyTransactionItem"
           *ngSwitchCase="OPERATION_TRANSFER_OM"
         >
-        </app-item-recharge-credit>
+        </app-item-transfert-om>
         <app-item-recharge-credit
           [modifiable]="false"
           [amount]="amount"
@@ -158,7 +166,7 @@
         <app-item-recharge-credit
           [modifiable]="false"
           [amount]="opXtras.amount + opXtras.fee"
-          *ngSwitchCase="'OPERATION_RAPIDO'"
+          *ngSwitchCase="OPERATION_RAPIDO"
         ></app-item-recharge-credit>
         <app-item-recharge-credit
           [modifiable]="false"
@@ -179,7 +187,7 @@
     </div>
     <div
       class="bottom-block"
-      *ngIf="success &&  !(['OPERATION_WOYOFAL', 'OPERATION_RAPIDO'].includes(purchaseType))"
+      *ngIf="success &&  !(['OPERATION_WOYOFAL', OPERATION_RAPIDO].includes(purchaseType))"
     >
       <div class="details">
         <ng-container
@@ -223,7 +231,8 @@
       <div class="details details-date">
         <div class="left-block">Date d'achat</div>
         <div class="right-block scb-text-gray">
-          <span class="numero">{{dateAchat}}</span>
+          <span class="numero" *ngIf="!isOpenedFromHistory">{{dateAchat}}</span>
+          <span class="numero" *ngIf="isOpenedFromHistory">{{formatDate(historyTransactionItem?.operationDate) | date:'shortDate'}} à {{formatDate(historyTransactionItem?.operationDate) | date:'hh:mm'}}</span>
         </div>
       </div>
     </div>
@@ -260,7 +269,7 @@
     </div>
     <div
       class="bottom-block"
-      *ngIf="success && 'OPERATION_RAPIDO' === purchaseType"
+      *ngIf="success && OPERATION_RAPIDO === purchaseType"
     >
       <div class="details">
         <div class="left-block">Carte rechargée</div>
@@ -287,17 +296,7 @@
     </div>
 </ng-container>
 
-  <div class="coupon-block" *ngIf="success && coupon">
-    <div class="header">
-      <span class="scb-text-gray">Coupon &nbsp;</span>
-      <img src="/assets/images/logo-trace.png" alt="">
-    </div>
-    <span class="code">{{coupon}}</span>
-  </div>
-  <div class="scb-text-gray loading-coupon" *ngIf="success && hasCoupon">
-    Vous recevrez le coupon par message...
-  </div>
-  <div *ngIf="success && !isBuyerPostpaid && !coupon" class="confirm-btn">
+  <div *ngIf="success && !isBuyerPostpaid" class="confirm-btn">
     <ion-button
       (click)="goToPage()"
       shape="round"
@@ -326,7 +325,7 @@
         <ng-container *ngSwitchCase="'OPERATION_WOYOFAL'">
           Faire une autre recharge
         </ng-container>
-        <ng-container *ngSwitchCase="'OPERATION_RAPIDO'">
+        <ng-container *ngSwitchCase="OPERATION_RAPIDO">
           Faire une autre recharge
         </ng-container>
         <ng-container *ngSwitchCase="OPERATION_ENABLE_DALAL">
@@ -340,6 +339,18 @@
         >
       </ng-container>
     </ion-button>
+  </div>
+
+  <div class="cancel-transfer-block scb-text-red-error" *ngIf="(success && purchaseType === OPERATION_TRANSFER_OM) || isOpenedFromHistory">
+    <div class="cancel-title">
+      <span class="text" [ngClass]="{'text-disabled': checkingEligibility}" (click)="checkTransferEligibility()">Bloquer le transfert</span>
+      <mat-spinner
+          mode="indeterminate"
+          [diameter]="15"
+          *ngIf="checkingEligibility"
+        ></mat-spinner>
+    </div>
+    <div class="cancel-error" *ngIf="eligibilityHasError">{{eligibilityError}}</div>
   </div>
 
   <div class="terminer scb-text-orange" (click)="terminer()">

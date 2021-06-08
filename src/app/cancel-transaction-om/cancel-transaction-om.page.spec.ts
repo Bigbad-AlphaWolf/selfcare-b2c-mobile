@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReclamationOmTransactionPage } from './reclamation-om-transaction.page';
+import { CancelTransactionOmPage } from './cancel-transaction-om.page';
 
-describe('ReclamationOmTransactionPage', () => {
-  let component: ReclamationOmTransactionPage;
-  let fixture: ComponentFixture<ReclamationOmTransactionPage>;
+describe('CancelTransactionOmPage', () => {
+  let component: CancelTransactionOmPage;
+  let fixture: ComponentFixture<CancelTransactionOmPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ReclamationOmTransactionPage ],
+      declarations: [ CancelTransactionOmPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ReclamationOmTransactionPage);
+    fixture = TestBed.createComponent(CancelTransactionOmPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

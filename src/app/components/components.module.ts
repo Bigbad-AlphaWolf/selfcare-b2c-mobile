@@ -19,7 +19,10 @@ import { CommonModule } from '@angular/common';
 import { PipesModule } from '../pipes/pipes.module';
 import { MaterialComponentsModule } from '../material-components/material-components.module';
 import { IonicModule } from '@ionic/angular';
+import { ItemTransfertOmComponent } from './item-transfert-om/item-transfert-om.component';
 import { SlideBanniereDashboardComponent } from './slide-banniere-dashboard/slide-banniere-dashboard.component';
+import { TakePictureComponent } from './take-picture/take-picture.component';
+import { HistorikTransactionByTypeModalComponent } from './historik-transaction-by-type-modal/historik-transaction-by-type-modal.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +41,10 @@ import { SlideBanniereDashboardComponent } from './slide-banniere-dashboard/slid
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
     ItemHistorikDetailsInfosComponent,
-    SlideBanniereDashboardComponent
+    SlideBanniereDashboardComponent,
+    HistorikTransactionByTypeModalComponent,
+    TakePictureComponent,
+    ItemTransfertOmComponent
   ],
   imports: [
     CommonModule,
@@ -63,8 +69,11 @@ import { SlideBanniereDashboardComponent } from './slide-banniere-dashboard/slid
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
     ItemHistorikDetailsInfosComponent,
-    SlideBanniereDashboardComponent
+    SlideBanniereDashboardComponent,
+    HistorikTransactionByTypeModalComponent,
+    TakePictureComponent,
+    ItemTransfertOmComponent
   ],
-  entryComponents: [],
+  entryComponents: [HistorikTransactionByTypeModalComponent],
 })
 export class ComponentsModule {}
