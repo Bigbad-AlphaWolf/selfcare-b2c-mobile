@@ -51,7 +51,7 @@
   <div class="purchase-history-container-body">
     <ng-container *ngIf="!isLoading && !hasError">
       <div class="list-purchase" *ngIf="listTransactions.length">
-         <app-item-historik-details-infos *ngFor="let transaction of listTransactions" [purchaseInfos]="transaction" [userProfil]="userProfil" ></app-item-historik-details-infos>
+         <app-item-historik-details-infos (click)="openTransactionModal(transaction)" *ngFor="let transaction of listTransactions" [purchaseInfos]="transaction" [userProfil]="userProfil" ></app-item-historik-details-infos>
       </div>
       <div class="no-transactions" *ngIf="!listTransactions.length">
         Aucune transaction trouvée dans cette période

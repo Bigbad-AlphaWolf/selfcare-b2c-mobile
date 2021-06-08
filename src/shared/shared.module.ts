@@ -62,6 +62,7 @@ import { YesNoModalComponent } from './yes-no-modal/yes-no-modal.component';
 import { SimpleOperationSuccessModalComponent } from './simple-operation-success-modal/simple-operation-success-modal.component';
 import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
 import { PassUsageItemComponent } from './pass-usage-item/pass-usage-item.component';
+import { BlockTransferSuccessPopupComponent } from './block-transfer-success-popup/block-transfer-success-popup.component';
 
 @NgModule({
   declarations: [
@@ -113,6 +114,7 @@ import { PassUsageItemComponent } from './pass-usage-item/pass-usage-item.compon
     SimpleOperationSuccessModalComponent,
     BanniereDescriptionPage,
     PassUsageItemComponent,
+    BlockTransferSuccessPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -154,6 +156,7 @@ import { PassUsageItemComponent } from './pass-usage-item/pass-usage-item.compon
     YesNoModalComponent,
     SimpleOperationSuccessModalComponent,
     BanniereDescriptionPage,
+    BlockTransferSuccessPopupComponent,
   ],
   exports: [
     BanniereComponent,
@@ -202,6 +205,7 @@ import { PassUsageItemComponent } from './pass-usage-item/pass-usage-item.compon
     YesNoModalComponent,
     SimpleOperationSuccessModalComponent,
     PassUsageItemComponent,
+    BlockTransferSuccessPopupComponent,
   ],
   providers: [
     Contacts,
