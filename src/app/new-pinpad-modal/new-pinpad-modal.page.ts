@@ -50,6 +50,7 @@ import { RapidoService } from '../services/rapido/rapido.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
 import { IlliflexModel } from '../models/illiflex-pass.model';
+import { PurchaseModel } from '../models/purchase.model';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -73,7 +74,7 @@ export class NewPinpadModalPage implements OnInit {
     sequence: string;
     birthYear: string;
   };
-  @Input() transactionToBlock: any;
+  @Input() transactionToBlock: PurchaseModel;
   OPERATION_CHANGE_PIN_OM = OPERATION_CHANGE_PIN_OM;
   OPERATION_BLOCK_TRANSFER = OPERATION_BLOCK_TRANSFER;
   bullets = [0, 1, 2, 3];
@@ -826,7 +827,7 @@ export class NewPinpadModalPage implements OnInit {
     this.transactionToBlock = {
       amount: -params.amount,
       msisdnReceiver: params.msisdn2,
-      operationDate: new Date(),
+      operationDate: new Date().toString(),
     };
     const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
       this.omPhoneNumber
@@ -1013,8 +1014,10 @@ export class NewPinpadModalPage implements OnInit {
       this.opXtras.sending_fees = this.cappingFees
         ? this.cappingFees
         : this.opXtras.sending_fees;
+        const totalFees = this.opXtras.sending_fees + (this.transferMoneyPayload.a_ma_charge ? this.transferMoneyPayload.cashout_fees : 0)
       this.transactionToBlock = Object.assign({}, this.transactionToBlock, {
         txnid: res.content.data.txn_id,
+        fees: totalFees
       });
       this.modalController.dismiss({
         success: true,
