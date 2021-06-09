@@ -252,6 +252,6 @@ export class NewDeplafonnementOmPage implements OnInit {
   }
 
   isElligibleToSuiviDeplafonnement(userStatus: OMCustomerStatusModel){
-    return userStatus && userStatus.operation === 'DEPLAFONNEMENT' && userStatus.operationStatus !== 'NEW'
+    return userStatus && (userStatus.operation === 'DEPLAFONNEMENT' || userStatus.operation === 'FULL') && userStatus.operationStatus !== 'NEW'
   }
 }
