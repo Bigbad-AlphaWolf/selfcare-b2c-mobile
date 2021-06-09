@@ -342,7 +342,7 @@
   </div>
 
   <div class="cancel-transfer-block scb-text-red-error" *ngIf="(success && purchaseType === OPERATION_TRANSFER_OM) || isOpenedFromHistory">
-    <div class="cancel-title">
+    <div class="cancel-title" *ngIf="!eligibilityHasError">
       <span class="text" [ngClass]="{'text-disabled': checkingEligibility}" (click)="checkTransferEligibility()">Bloquer le transfert</span>
       <mat-spinner
           mode="indeterminate"
