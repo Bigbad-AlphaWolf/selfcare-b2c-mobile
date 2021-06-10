@@ -29,8 +29,7 @@
 					<div class="form-block">
 						<mat-form-field class="scb-input-row ref-transaction" appearance="outline">
 							<mat-label>Référence de la transaction &nbsp;&nbsp;</mat-label>
-							<input matInput type="text" maxlength="20" readonly formControlName="transaction_id" />
-
+							<input (click)="selectTransaction()" matInput type="text" maxlength="20" readonly formControlName="transaction_id" />
 							<span (click)="selectTransaction()" class="transactions_list"> Choisir </span>
 							<img class="arrow-select" (click)="selectTransaction()" src="assets/images/arrow-down.svg" alt="" />
 						</mat-form-field>

@@ -161,22 +161,22 @@ export class CancelTransactionOmPage implements OnInit {
 		switch (step) {
 			case 'recto':
 				this.rectoFilled = true;
-				this.rectoImage = this.removeBase64Prefix(state.image);
+				this.rectoImage = state.image;
 				break;
 			case 'verso':
 				this.versoFilled = true;
-				this.versoImage = this.removeBase64Prefix(state.image);
+				this.versoImage = state.image;
 				break;
 			default:
 				break;
 		}
 	}
 
-	submittingFormsInfos() {
+	async submittingFormsInfos() {
 		this.isSubmitting = true;
 		this.errorMsg = null;
-		const fileRecto = this.imgService.convertBase64ToImageObject(this.rectoImage, 'recto.png');
-		const fileVerso = this.imgService.convertBase64ToImageObject(this.versoImage, 'verso.png');
+		const fileRecto = await this.imgService.convertBase64ToBlob(this.rectoImage);
+		const fileVerso = await this.imgService.convertBase64ToBlob(this.rectoImage);
 		const dataForm: CancelOmTransactionPayloadModel = {
 			civility: this.cancelTransactionOMInfos.value.civility,
 			firstName: this.cancelTransactionOMInfos.value.firstname,
@@ -201,10 +201,6 @@ export class CancelTransactionOmPage implements OnInit {
 		})).subscribe();
 	}
 
-	removeBase64Prefix(imageBase64: string) {
-		return imageBase64.split(',')[1];
-	}
-
 	goBack() {
 		this.navCtrl.pop();
 	}
@@ -219,4 +215,5 @@ export class CancelTransactionOmPage implements OnInit {
 		modal.onDidDismiss().then(() => {});
 		return await modal.present();
 	  }
+
 }
