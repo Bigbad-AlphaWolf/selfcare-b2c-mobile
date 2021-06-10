@@ -6,13 +6,18 @@ import { PalierModel } from 'src/app/models/palier.model';
 import { BoosterModel } from 'src/app/models/booster.model';
 
 const ls = new SecureLS({ encodingType: 'aes' });
-export const REGEX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
-export const REGEX_NUMBER_OM: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
-export const REGEX_FIX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(33) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
-export const REGEX_PASSWORD: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$/;
+export const REGEX_NUMBER: RegExp =
+  /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
+export const REGEX_NUMBER_OM: RegExp =
+  /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
+export const REGEX_FIX_NUMBER: RegExp =
+  /^((\+221|00221|221) ?)?(33) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
+export const REGEX_PASSWORD: RegExp =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$/;
 export const REGEX_PASSWORD2: RegExp = /^.{5,19}$/;
 export const REGEX_NAME = /^([^0-9_!¡?÷?¿/+=,.@#$%ˆ&*(){}|~<>;:\]\[-]){1,}$/;
-export const REGEX_EMAIL = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+export const REGEX_EMAIL =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export const REGEX_DIGIT = /\d/;
 export const REGEX_POSTPAID_FIXE = /(Keurgui).*|(Fibre).*|(LFB).*|(HOME).*/i;
 export const REGEX_PREPAID_FIXE = /(BOX).*/i;
@@ -41,6 +46,7 @@ export const OPERATION_TYPE_RECHARGE_CREDIT = 'RECHARGEMENT_CREDIT';
 export const OPERATION_TYPE_SARGAL_CONVERSION = 'SARGAL_CONVERSION';
 export const OPERATION_TRANSFER_OM = 'TRANSFER_MONEY';
 export const OPERATION_TRANSFER_OM_WITH_CODE = 'TRANSFER_MONEY_WITH_CODE';
+export const OPERATION_BLOCK_TRANSFER = 'BLOCK_TRANSFER';
 export const BONS_PLANS = 'BONS_PLANS';
 export const OPERATION_TYPE_BONS_PLANS = 'BONS_PLANS';
 export const OPERATION_ENABLE_DALAL = 'ACTIVATE_DALAL';
@@ -107,6 +113,9 @@ export const DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY = {
   label: 'Tous',
   typeAchat: undefined,
 };
+
+// 72 hours duration in milliseconds (72h = 72 * 3600 s = 72 * 3600 * 1000 ms = 259.200.000)
+export const THREE_DAYS_DURATION_IN_MILLISECONDS = 259200000;
 
 export const listRegisterSargalBonPlanText = ['inscription', 'inscris'];
 export const LIST_CATEGORY_BONS_PLANS = {
@@ -1270,5 +1279,7 @@ export enum HUB_ACTIONS {
 export enum TYPE_ACTION_ON_BANNER {
   DEEPLINK = 'DEEPLINK',
   REDIRECTION = 'REDIRECTION',
-  MODAL = 'MODAL'
+  MODAL = 'MODAL',
 }
+
+export const ANNULATION_TRANSFER_DEADLINE = "5 jours"

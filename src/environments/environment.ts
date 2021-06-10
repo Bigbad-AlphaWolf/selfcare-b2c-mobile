@@ -7,8 +7,9 @@ export const environment = {
   // SERVER_API_URL: 'https://orangeetmoi.orange.sn',
   // SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
   // SERVER_API_URL:  'http://selfcare-b2c-client-http-dsiselfcarebcorangeetmoi-rec.malaw.orange-sonatel.com',
-  // SERVER_API_URL:  'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
-  SERVER_API_URL: 'https://selfcare-client-dsiselfcarebcorangeetmoi-prod.apps.paas.orange-sonatel.com',
+  SERVER_API_URL:
+    'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
+  // SERVER_API_URL: 'https://selfcare-client-dsiselfcarebcorangeetmoi-prod.apps.paas.orange-sonatel.com',
   OM_URL: 'https://appom.orange-sonatel.com',
   SEDDO_SERVICE: 'selfcare-b2c-seddo',
   CONSO_SERVICE: 'selfcare-b2c-conso',
@@ -27,6 +28,7 @@ export const environment = {
   COMMUNITY_MANAGEMENT_SERVICE: 'selfcare-b2c-community-management',
   BOOSTER_SERVICE: 'selfcare-b2c-booster-management',
   SARGAL_SERVICE: 'selfcare-b2c-sargal',
+  AUTH_IMPLICIT_MSISDN: '221785898096',
   GA_CONFIG: {
     trackingId: 'UA-92621294-1',
     trackPageviews: true,

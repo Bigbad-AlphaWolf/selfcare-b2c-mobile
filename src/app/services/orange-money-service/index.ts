@@ -156,6 +156,20 @@ export interface MerchantPaymentModel {
   uuid: string;
 }
 
+export interface CheckEligibilityModel {
+  eligible?: boolean;
+  message?: string;
+  transactionDetails?: {
+    amount?: string;
+    date?: string;
+    destinataire?: string;
+    fees?: string;
+    msisdn?: string;
+    status?: string;
+    txnid?: string;
+  };
+}
+
 export interface LogModel {
   userId: string;
   contexte: string;
@@ -306,3 +320,6 @@ export const SUCCESS_MSG_OM_ACCOUNT_CREATION =
   `Votre demande d’ouverture de compte
   Orange Money a été enregistré avec succés.
   Vous recevrez une confirmation d’ouverture.`;
+export const ERROR_MSG_OM_CODE_OTP_INVALIDE =
+  `Le code renseigné est invalide. Veuillez entrez le bon code.`;
+export const SUCCESS_OM_STATUS_CODE = `Success-001`;

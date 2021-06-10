@@ -7,9 +7,10 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class ItemTransfertOmComponent implements OnInit {
   @Input() omTransfertInfos: any;
-  constructor() { }
+  @Input() isFromHistory: boolean;
+  @Input() transferHistoryItem: any;
+  MATH = Math;
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

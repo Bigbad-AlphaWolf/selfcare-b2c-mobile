@@ -8,7 +8,7 @@ import {
   forkJoin,
   throwError,
 } from 'rxjs';
-import { tap, switchMap, map, catchError } from 'rxjs/operators';
+import { tap, switchMap, map, catchError, delay } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {
@@ -24,6 +24,7 @@ import {
   TransferOMWithCodeModel,
   MerchantPaymentModel,
   FeeModel,
+  CheckEligibilityModel,
 } from '.';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
@@ -81,6 +82,8 @@ const getMerchantEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/merchant/naming
 const omFeesEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-without-code`;
 const omFeesEndpoint2 = `${SERVER_API_URL}/${OM_SERVICE}/api/fees/transfer-with-code`;
 const checkBalanceSufficiencyEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/check-balance`;
+const checkTxnBlockEligibilityEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/is-eligible-for-blocking`;
+const BlockTransferEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/cancel-transaction`;
 const userStatusEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-status`;
 const selfOperationInitOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-otp-init`;
 const selfOperationCheckOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-otp-check`;
@@ -425,7 +428,12 @@ export class OrangeMoneyService {
   }
 
   initSelfOperationOtp(initOtpPayload: OmInitOtpModel) {
-    console.log('url', selfOperationCheckOtpEndpoint,'payload', initOtpPayload);
+    console.log(
+      'url',
+      selfOperationCheckOtpEndpoint,
+      'payload',
+      initOtpPayload
+    );
 
     return this.http.post<checkOtpResponseModel>(
       selfOperationInitOtpEndpoint,
@@ -602,12 +610,39 @@ export class OrangeMoneyService {
       );
   }
 
+  isTxnEligibleToBlock(transactionId: string) {
+    return this.getOmMsisdn().pipe(
+      switchMap((msisdn) => {
+        return this.http.get<CheckEligibilityModel>(
+          `${checkTxnBlockEligibilityEndpoint}/${msisdn}/${transactionId}`
+        );
+      })
+    );
+  }
+
+  blockTransfer(transaction) {
+    return this.getOmMsisdn().pipe(
+      switchMap((msisdn) => {
+        const { amount, txnid, msisdnReceiver } = transaction;
+        const payload = {
+          amount: Math.abs(amount),
+          txn_id: txnid,
+          destinataire: msisdnReceiver,
+          msisdn,
+        };
+        return this.http.post<{ message: string; transactionNumber: string }>(
+          BlockTransferEndpoint,
+          payload
+        );
+      })
+    );
+  }
+
   sendInfosCancelationTransfertOM(formInfos: CancelOmTransactionPayloadModel, fileRecto: any, fileVerso: any) {
     const payload = new FormData();
     const erreurTransactionOmDTO = new Blob([JSON.stringify(formInfos)], { type: 'application/json' });
     payload.append('erreurTransactionOmDTO', erreurTransactionOmDTO);
     payload.append('recto', fileRecto, 'recto.png');
     payload.append('verso', fileVerso, 'verso.png');
-    return this.http.post(`${CANCEL_TRANSACTIONS_OM_Endpoint}`, payload);
   }
 }
