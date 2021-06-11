@@ -638,15 +638,11 @@ export class OrangeMoneyService {
     );
   }
 
-  sendInfosCancelationTransfertOM(
-    formInfos: CancelOmTransactionPayloadModel,
-    fileRecto: any,
-    fileVerso: any
-  ) {
-    const payload: FormData = new FormData();
-    payload.append('erreurTransactionOmDTO', JSON.stringify(formInfos));
-    payload.append('recto', fileRecto);
-    payload.append('verso', fileVerso);
-    return this.http.post(`${CANCEL_TRANSACTIONS_OM_Endpoint}`, payload);
+  sendInfosCancelationTransfertOM(formInfos: CancelOmTransactionPayloadModel, fileRecto: any, fileVerso: any) {
+    const payload = new FormData();
+    const erreurTransactionOmDTO = new Blob([JSON.stringify(formInfos)], { type: 'application/json' });
+    payload.append('erreurTransactionOmDTO', erreurTransactionOmDTO);
+    payload.append('recto', fileRecto, 'recto.png');
+    payload.append('verso', fileVerso, 'verso.png');
   }
 }
