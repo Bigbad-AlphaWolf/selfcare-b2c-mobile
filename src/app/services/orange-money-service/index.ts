@@ -173,6 +173,9 @@ export interface FeeModel {
   effective_fees: number;
   mode_calcul: 'pourcent' | 'fixe';
   old_fees: number;
+  old_mode_calcul: 'pourcent' | 'fixe';
+  transfer_fees: number;
+  cashout_fees: number;
 }
 
 export const ORANGE_MONEY_TRANSFER_FEES = [

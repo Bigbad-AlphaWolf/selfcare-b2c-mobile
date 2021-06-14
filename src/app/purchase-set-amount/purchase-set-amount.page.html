@@ -37,6 +37,7 @@
             matInput
             formControlName="amount"
             type="number"
+            [max]="2000000"
             (input)="onAmountChanged($event)"
           />
           <span matSuffix class="scb-text-gray suffix">FCFA</span>
