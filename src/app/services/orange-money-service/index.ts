@@ -322,6 +322,8 @@ export const SUCCESS_MSG_OM_ACCOUNT_CREATION =
   Vous recevrez une confirmation d’ouverture.`;
 export const ERROR_MSG_OM_CODE_OTP_INVALIDE =
   `Le code renseigné est invalide. Veuillez entrez le bon code.`;
+export const SUCCESS_MSG_OM_CANCEL_TRANSACTION_OM =
+  `Elle sera traité sous un délai prévisionnel de 48H. Vous recevrez une notification après le traitement.`;
 export const SUCCESS_OM_STATUS_CODE = `Success-001`;
 
 export function getAge(dateString) {
