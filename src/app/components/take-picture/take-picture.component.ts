@@ -94,7 +94,7 @@ export class TakePictureComponent implements OnInit {
       cameraOption.camera = 'front'
     }
     this.cameraPreview
-      .startCamera(cameraPreviewOpts)
+      .startCamera(cameraOption)
       .then((res) => {
         console.log(res);
       })
