@@ -309,3 +309,16 @@ export const SUCCESS_MSG_OM_ACCOUNT_CREATION =
 export const ERROR_MSG_OM_CODE_OTP_INVALIDE =
   `Le code renseigné est invalide. Veuillez entrez le bon code.`;
 export const SUCCESS_OM_STATUS_CODE = `Success-001`;
+
+export function getAge(dateString) {
+  var today = new Date();
+  var birthDate = new Date(dateString);
+  var age = today.getFullYear() - birthDate.getFullYear();
+  var m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+  }
+  return age;
+}
+
+export const ID_CARD_CARACTERS_MIN_LENGTH = 13;
