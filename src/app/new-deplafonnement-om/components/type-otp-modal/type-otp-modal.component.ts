@@ -58,7 +58,7 @@ export class TypeOtpModalComponent implements OnInit, AfterViewInit {
           this.errorCheckOtp = true;
           this.checkingOtp = false;
           this.errorMsg = 'Une erreur est survenue';
-          this.input.value = null;
+          this.input.value = '';
           if (err && err.status === 400 && err.error.code === 'OTP_CHECK_ERROR') {
             this.errorMsg = ERROR_MSG_OM_CODE_OTP_INVALIDE;
           }
