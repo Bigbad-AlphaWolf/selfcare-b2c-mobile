@@ -13,7 +13,7 @@ import {
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { getAge, ID_CARD_CARACTERS_MIN_LENGTH, SUCCESS_MSG_OM_ACCOUNT_CREATION } from '../services/orange-money-service';
+import { getAge, ID_CARD_CARACTERS_MIN_LENGTH, SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT } from '../services/orange-money-service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { TypeOtpModalComponent } from './components/type-otp-modal/type-otp-modal.component';
 
@@ -227,7 +227,7 @@ export class NewDeplafonnementOmPage implements OnInit {
   }
 
   openSuccessModal() {
-    this.showModal({purchaseType: OPERATION_OPEN_OM_ACCOUNT , textMsg: SUCCESS_MSG_OM_ACCOUNT_CREATION });
+    this.showModal({purchaseType: OPERATION_OPEN_OM_ACCOUNT , textMsg: SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT });
   }
 
   goBack() {
