@@ -22,12 +22,9 @@
 		<div class="all-informations-block" *ngIf="isElligibleToDeplafonnement(userOmStatus)">
 			<div class="single-block">
 				<div class="block-title">Numéro de téléphone</div>
-				<div class="block-description scb-text-gray">
-					Selectionnez le numéro sur lequel vous souhaitez ouvrir votre compte Orange Money
-				</div>
 				<div class="form-block">
 					<div class="om-number-block scb-text-gray">
-						<span *ngIf="omMsisdn" class="msisdn">{{(omMsisdn | phoneNumberDisplay) + ' (principal)'}}</span>
+						<span *ngIf="omMsisdn" class="msisdn">{{(omMsisdn | phoneNumberDisplay) }}</span>
 					</div>
 					<div class="error-block scb-text-red-error" *ngIf="getMsisdnHasError" (click)="getOmMsisdn()">
 						Une erreur est survenue. Réactualisez ici

@@ -23,7 +23,7 @@ export class TypeOtpModalComponent implements OnInit, AfterViewInit {
   checkingOtp: boolean;
   errorCheckOtp: boolean;
   errorMsg: string;
-
+  sendingOtp: boolean;
   constructor(private orangeMoneyService: OrangeMoneyService, private modal: ModalController) {}
 
   ngOnInit() {}
@@ -32,6 +32,15 @@ export class TypeOtpModalComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.input.setFocus();
     }, 500);
+  }
+
+  sendCode() {
+    this.sendingOtp = true;
+    this.orangeMoneyService.initSelfOperationOtp(this.checkOtpPayload.kyc).subscribe((_) =>{
+      this.sendingOtp = false;
+    }, (_) => {
+      this.sendingOtp = false;
+    })
   }
 
   checkOtp() {
@@ -49,6 +58,7 @@ export class TypeOtpModalComponent implements OnInit, AfterViewInit {
           this.errorCheckOtp = true;
           this.checkingOtp = false;
           this.errorMsg = 'Une erreur est survenue';
+          this.input.value = null;
           if (err && err.status === 400 && err.error.code === 'OTP_CHECK_ERROR') {
             this.errorMsg = ERROR_MSG_OM_CODE_OTP_INVALIDE;
           }
