@@ -144,7 +144,7 @@ export class ActionItemComponent implements OnInit {
   }
 
   goReclamation() {
-    this.router.navigate(['/reclamation-om-transaction']);
+    this.router.navigate(['/cancel-transaction-om']);
     this.followAnalyticsService.registerEventFollow(
       'Assistance_actions_Reclamation_OM_clic',
       'event',

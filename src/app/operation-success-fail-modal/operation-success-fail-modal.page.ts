@@ -18,7 +18,9 @@ import {
   OPERATION_CHANGE_PIN_OM,
   SubscriptionModel,
   OPERATION_TYPE_PASS_VOYAGE,
+  OPERATION_BLOCK_TRANSFER,
   OPERATION_OPEN_OM_ACCOUNT,
+  OPERATION_CANCEL_TRANSFERT_OM,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -35,6 +37,12 @@ import { GiftType } from '../models/enums/gift-type.enum';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { catchError, tap } from 'rxjs/operators';
+import { CheckEligibilityModel } from '../services/orange-money-service';
+import { throwError } from 'rxjs';
+import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
+import { BlockTransferSuccessPopupComponent } from 'src/shared/block-transfer-success-popup/block-transfer-success-popup.component';
 
 @Component({
   selector: 'app-operation-success-fail-modal',
@@ -51,11 +59,13 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TYPE_RECHARGE = OPERATION_TYPE_RECHARGE_CREDIT;
   OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
   OPERATION_ILLIFLEX_TYPE = OPERATION_TYPE_PASS_ILLIFLEX;
-  OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM = OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM;
+  OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM =
+    OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM;
   OPERATION_CHANGE_PIN_OM = OPERATION_CHANGE_PIN_OM;
   OPERATION_TYPE_PASS_VOYAGE = OPERATION_TYPE_PASS_VOYAGE;
   OPERATION_TYPE_PASS_USAGE = OPERATION_TYPE_PASS_USAGE;
   OPERATION_OPEN_OM_ACCOUNT = OPERATION_OPEN_OM_ACCOUNT;
+  OPERATION_CANCEL_TRANSFERT_OM = OPERATION_CANCEL_TRANSFERT_OM;
   OPERATION_RAPIDO = OPERATION_RAPIDO;
   @Input() passBought: any;
   @Input() success: boolean;
@@ -78,6 +88,12 @@ export class OperationSuccessFailModalPage implements OnInit {
   hasCoupon: boolean;
 
   isBuyerPostpaid: boolean;
+  @Input() isOpenedFromHistory: boolean;
+  @Input() historyTransactionItem: any;
+  checkingEligibility: boolean;
+  eligibilityHasError: boolean;
+  eligibilityError: string;
+
   constructor(
     private dashboardService: DashboardService,
     private router: Router,
@@ -85,31 +101,72 @@ export class OperationSuccessFailModalPage implements OnInit {
     private appRouting: ApplicationRoutingService,
     private navCtrl: NavController,
     private followAnalyticsServ: FollowAnalyticsService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private omService: OrangeMoneyService
   ) {}
 
   ngOnInit() {
-    this.getCoupon();
     this.checkifBuyerPostpaid();
   }
 
-  getCoupon() {
-    if (
-      !BoosterService.lastBoostersList ||
-      !BoosterService.lastBoostersList.length ||
-      !this.passBought
-    )
-      return;
-    const passPPI = this.passBought.passPromo
-      ? this.passBought.passPromo.price_plan_index
-      : this.passBought.price_plan_index;
-    const appliedBooster = BoosterService.lastBoostersList.find(
-      (booster) =>
-        booster.gift.type === GiftType.COUPON &&
-        booster.pricePlanIndexes.includes(passPPI.toString())
-    );
-    if (!appliedBooster) return;
-    this.hasCoupon = true;
+  checkTransferEligibility() {
+    if (this.checkingEligibility) return true;
+    this.checkingEligibility = true;
+    this.eligibilityHasError = false;
+    this.omService
+      .isTxnEligibleToBlock(this.historyTransactionItem.txnid)
+      .pipe(
+        tap((res: CheckEligibilityModel) => {
+          this.checkingEligibility = false;
+          if (res.eligible) {
+            this.openPinPadToBlock();
+          } else {
+            this.eligibilityHasError = true;
+            this.eligibilityError = res.message;
+          }
+        }),
+        catchError((err) => {
+          this.checkingEligibility = false;
+          this.eligibilityHasError = true;
+          this.eligibilityError = 'Une erreur est survenue';
+          return throwError(err);
+        })
+      )
+      .subscribe();
+  }
+
+  async openPinPadToBlock() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+      componentProps: {
+        transactionToBlock: this.historyTransactionItem,
+        operationType: OPERATION_BLOCK_TRANSFER,
+      },
+    });
+    modal.onDidDismiss().then(async (response) => {
+      if (response.data && response.data.success) {
+        await this.modalController.dismiss();
+        this.openBlockTxnModalSuccess();
+      }
+    });
+    return await modal.present();
+  }
+
+  async openBlockTxnModalSuccess() {
+    const modal = await this.modalController.create({
+      component: BlockTransferSuccessPopupComponent,
+      cssClass: 'success-or-fail-modal',
+      backdropDismiss: false,
+      componentProps: {
+        transactionToBlock: this.historyTransactionItem,
+      },
+    });
+    return await modal.present();
+  }
+
+  formatDate(date: any) {
+    return new Date(date);
   }
 
   checkifBuyerPostpaid() {
@@ -122,6 +179,7 @@ export class OperationSuccessFailModalPage implements OnInit {
 
   terminer() {
     this.modalController.dismiss();
+    if (this.isOpenedFromHistory) return;
     if (this.opXtras && this.opXtras.isLightMod) {
       this.router.navigate(['/dashboard-prepaid-light']);
     } else {
@@ -191,7 +249,7 @@ export class OperationSuccessFailModalPage implements OnInit {
           'event',
           'clicked'
         );
-        if (this.opXtras.code === CODE_KIRENE_Formule) {
+        if (this.opXtras && this.opXtras.code === CODE_KIRENE_Formule) {
           this.navCtrl.pop();
         } else {
           this.appRouting.goToTransfertHubServicesPage('TRANSFER');

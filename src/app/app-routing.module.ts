@@ -111,7 +111,7 @@ const routes: Routes = [
     path: 'transfer/:type',
     loadChildren:
       './transfer-credit-bonus-om/transfer-credit-bonus-om.module#TransferCreditBonusOmPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'control-center',
@@ -122,7 +122,7 @@ const routes: Routes = [
     path: 'change-main-phone-number',
     loadChildren:
       './change-main-phone-number/change-main-phone-number.module#ChangeMainPhoneNumberPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'my-formule',
@@ -138,7 +138,7 @@ const routes: Routes = [
     path: 'sargal-catalogue',
     loadChildren:
       './sargal/components/sargal-catalogue/sargal-catalogue.module#SargalCataloguePageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   // { path: 'bills', loadChildren: './bills/bills.module#BillsPageModule' },
   {
@@ -150,7 +150,7 @@ const routes: Routes = [
     path: 'sargal-registration',
     loadChildren:
       './sargal/components/sargal-registration/sargal-registration.module#SargalRegistrationPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'apropos',
@@ -171,85 +171,85 @@ const routes: Routes = [
     path: 'sargal-status-card',
     loadChildren:
       './sargal-status-card/sargal-status-card.module#SargalStatusCardPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'new-number',
     loadChildren:
       './add-new-phone-number-v2/add-new-phone-number-v2.module#AddNewPhoneNumberV2PageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'dashboard-home-prepaid',
     loadChildren:
       './dashboard-home-prepaid/dashboard-home-prepaid.module#DashboardHomePrepaidPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'dashboard-postpaid',
     loadChildren:
       './dashboard-postpaid/dashboard-postpaid.module#DashboardPostpaidPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'dashboard-kirene',
     loadChildren:
       './dashboard-kirene/dashboard-kirene.module#DashboardKirenePageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'dashboard-postpaid-fixe',
     loadChildren:
       './dashboard-postpaid-fixe/dashboard-postpaid-fixe.module#DashboardPostpaidFixePageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'dashboard-prepaid-hybrid',
     loadChildren:
       './dashboard-prepaid-hybrid/dashboard-prepaid-hybrid.module#DashboardPrepaidHybridPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'my-offer-plans',
     loadChildren:
       './pages/my-offer-plans/my-offer-plans.module#MyOfferPlansPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'operation-recap',
     loadChildren:
       './operation-recap/operation-recap.module#OperationRecapPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'pass-illimix/:ppi',
     loadChildren:
       './operation-recap/operation-recap.module#OperationRecapPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'pass-internet/:ppi',
     loadChildren:
       './operation-recap/operation-recap.module#OperationRecapPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'transfer-money/:msisdn/:amount',
     loadChildren:
       './operation-recap/operation-recap.module#OperationRecapPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'new-pinpad-modal',
     loadChildren:
       './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'operation-success-fail-modal',
     loadChildren:
       './operation-success-fail-modal/operation-success-fail-modal.module#OperationSuccessFailModalPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'list-pass',
@@ -260,31 +260,31 @@ const routes: Routes = [
     path: 'registration-success-modal',
     loadChildren:
       './registration-success-modal/registration-success-modal.module#RegistrationSuccessModalPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'transfert-hub-services',
     loadChildren:
       './transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'purchase-set-amount',
     loadChildren:
       './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'transfer-money/:msisdn',
     loadChildren:
       './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'credit-pass-amount',
     loadChildren:
       './pages/credit-pass-amount/credit-pass-amount.module#CreditPassAmountPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'bills-hub',
@@ -300,7 +300,7 @@ const routes: Routes = [
     path: 'oem-services',
     loadChildren:
       './pages/oem-services/oem-services.module#OemServicesPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'app-update',
@@ -310,37 +310,37 @@ const routes: Routes = [
     path: 'bills',
     loadChildren:
       './pages/orange-bills/orange-bills.module#OrangeBillsPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'orange-bills',
     loadChildren:
       './pages/orange-bills/orange-bills.module#OrangeBillsPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'follow-up-requests',
     loadChildren:
       './pages/follow-up-requests/follow-up-requests.module#FollowUpRequestsPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'request-status',
     loadChildren:
       './pages/request-status/request-status.module#RequestStatusPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'list-pass-voyage',
     loadChildren:
       './pages/list-pass-voyage/list-pass-voyage.module#ListPassVoyagePageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'offres-services',
     loadChildren:
       './pages/offres-services/offres-services.module#OffresServicesPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'dalal-tones',
@@ -351,67 +351,67 @@ const routes: Routes = [
     path: 'rapido-operation',
     loadChildren:
       './pages/rapido-operation/rapido-operation.module#RapidoOperationPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'dashboard-prepaid-light',
     loadChildren:
       './dashboard-prepaid-light/dashboard-prepaid-light.module#DashboardPrepaidLightPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'rattached-phones-number',
     loadChildren:
       './pages/rattached-phones-number/rattached-phones-number.module#RattachedPhonesNumberPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'select-illiflex-type',
     loadChildren:
       './select-illiflex-type/select-illiflex-type.module#SelectIlliflexTypePageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'illiflex-configuration',
     loadChildren:
       './illiflex-configuration/illiflex-configuration.module#IlliflexConfigurationPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'illiflex-budget-configuration',
     loadChildren:
       './illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'illiflex',
     loadChildren:
       './illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'assistance-hub',
     loadChildren:
       './assistance-hub/assistance-hub.module#AssistanceHubPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'contact-ibou-hub',
     loadChildren:
       './contact-ibou-hub/contact-ibou-hub.module#ContactIbouHubPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'satisfaction-form',
     loadChildren:
       './pages/satisfaction-form/satisfaction-form.module#SatisfactionFormPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'change-orange-money-pin',
     loadChildren:
       './change-orange-money-pin/change-orange-money-pin.module#ChangeOrangeMoneyPinPageModule',
-      canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'community',
@@ -419,21 +419,21 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'reclamation-om-transaction',
-    loadChildren:
-      './pages/reclamation-om-transaction/reclamation-om-transaction.module#ReclamationOmTransactionPageModule',
-  },
-  {
     path: 'new-deplafonnement-om',
     loadChildren:
       './new-deplafonnement-om/new-deplafonnement-om.module#NewDeplafonnementOmPageModule',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'list-pass-usage',
     loadChildren:
       './list-pass-usage/list-pass-usage.module#ListPassUsagePageModule',
-      canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'cancel-transaction-om',
+    loadChildren:
+      './cancel-transaction-om/cancel-transaction-om.module#CancelTransactionOmPageModule',
   },
 ];
 

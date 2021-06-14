@@ -30,6 +30,7 @@ import {
   OPERATION_CHANGE_PIN_OM,
   PAYMENT_MOD_OM,
   OPERATION_TYPE_PASS_ILLIFLEX,
+  OPERATION_BLOCK_TRANSFER,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -38,7 +39,7 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import { ModalController } from '@ionic/angular';
 import { catchError, tap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import {
   OPERATION_RAPIDO,
   OPERATION_WOYOFAL,
@@ -49,6 +50,7 @@ import { RapidoService } from '../services/rapido/rapido.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
 import { IlliflexModel } from '../models/illiflex-pass.model';
+import { PurchaseModel } from '../models/purchase.model';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -72,7 +74,9 @@ export class NewPinpadModalPage implements OnInit {
     sequence: string;
     birthYear: string;
   };
+  @Input() transactionToBlock: PurchaseModel;
   OPERATION_CHANGE_PIN_OM = OPERATION_CHANGE_PIN_OM;
+  OPERATION_BLOCK_TRANSFER = OPERATION_BLOCK_TRANSFER;
   bullets = [0, 1, 2, 3];
   codePin = [];
   uuid: string;
@@ -106,7 +110,7 @@ export class NewPinpadModalPage implements OnInit {
   userNotRegisteredInOm: boolean;
   errorBulletActive: boolean;
   gettingPinpad: boolean;
-
+  MATH = Math;
   constructor(
     private orangeMoneyService: OrangeMoneyService,
     private fb: FormBuilder,
@@ -626,6 +630,10 @@ export class NewPinpadModalPage implements OnInit {
         // check response status
         if (res.status_code.match('Success')) {
           // valid pin
+          if (this.operationType === OPERATION_BLOCK_TRANSFER) {
+            this.blockTransfer();
+            return;
+          }
           const balance = res.content.data.balance;
           db.pinFailed = 0; // reset the pinfailed
           db.solde = balance;
@@ -816,6 +824,11 @@ export class NewPinpadModalPage implements OnInit {
     this.canRetry = false;
     this.pinHasError = false;
     this.errorBulletActive = false;
+    this.transactionToBlock = {
+      amount: -params.amount,
+      msisdnReceiver: params.msisdn2,
+      operationDate: new Date().toString(),
+    };
     const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
       this.omPhoneNumber
     );
@@ -940,6 +953,30 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
+  blockTransfer() {
+    this.processingPin = true;
+    this.orangeMoneyService
+      .blockTransfer(this.transactionToBlock)
+      .pipe(
+        tap((res) => {
+          this.processingPin = false;
+          this.modalController.dismiss({ success: true });
+        }),
+        catchError((err) => {
+          this.processingPin = false;
+          this.pinHasError = true;
+          this.resetPad();
+          console.log(err.transactionNumber, err.message);
+          this.pinError =
+            err && err.error && err.error.transactionNumber && err.error.message
+              ? err.error.message
+              : 'Une erreur est survenue';
+          return throwError(err);
+        })
+      )
+      .subscribe();
+  }
+
   retry(errorCode: string) {
     switch (errorCode) {
       case 'Capping-social-error':
@@ -960,7 +997,6 @@ export class NewPinpadModalPage implements OnInit {
 
   processResult(res: any, db: any, logInfos: FollowOemlogPurchaseInfos) {
     // check response status
-    console.log(res);
     this.processingPin = false;
     if (
       (res && res.status_code !== null && res.status_code.match('Success')) ||
@@ -978,10 +1014,16 @@ export class NewPinpadModalPage implements OnInit {
       this.opXtras.sending_fees = this.cappingFees
         ? this.cappingFees
         : this.opXtras.sending_fees;
+        const totalFees = this.opXtras.sending_fees + (this.transferMoneyPayload.a_ma_charge ? this.transferMoneyPayload.cashout_fees : 0)
+      this.transactionToBlock = Object.assign({}, this.transactionToBlock, {
+        txnid: res.content.data.txn_id,
+        fees: totalFees
+      });
       this.modalController.dismiss({
         success: true,
         opXtras: this.opXtras,
         cappingFee: this.cappingFees,
+        transferToBlock: this.transactionToBlock,
       });
     } else if (res === null || res.status_code === null) {
       this.pinError =

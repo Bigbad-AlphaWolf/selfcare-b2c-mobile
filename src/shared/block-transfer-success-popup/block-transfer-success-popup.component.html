@@ -1,0 +1,33 @@
+<div class="block-txn-modal">
+  <img (click)="close()" src="/assets/images/times.png" class="close-icon" alt="" />
+  <div class="icon-container">
+    <img src="assets/images/block-transfer-ico.png" alt="">
+  </div>
+  <div class="title">Transfert Bloqué</div>
+  <div class="items-block">
+    <div class="item">
+      <div class="item-key">Réf. transaction</div>
+      <div class="item-value scb-text-gray">{{transactionToBlock?.txnid}}</div>
+    </div>
+    <div class="item">
+      <div class="item-key">Bénéficiaire</div>
+      <div class="item-value scb-text-gray">{{transactionToBlock?.msisdnReceiver | phoneNumberDisplay}}</div>
+    </div>
+    <div class="item">
+      <div class="item-key">Date de transfert</div>
+      <div class="item-value scb-text-gray">{{formatDate(transactionToBlock?.operationDate) | date:'shortDate'}} à
+        {{formatDate(transactionToBlock?.operationDate) | date:'hh:mm'}}</div>
+    </div>
+    <div class="item">
+      <div class="item-key">Montant</div>
+      <div class="item-value-amount scb-text-orange">{{transactionToBlock?.amount + transactionToBlock?.fees + ' FCFA'}}</div>
+    </div>
+  </div>
+  <div class="warning">
+    <img src="assets/images/icon-warning.png" alt="" class="warning-ico">
+    Vous disposez de {{annulationDeadline}} pour remplir le formulaire d’annulation.
+  </div>
+  <div class="btn-container">
+    <button class="scb-btn scb-btn-white" (click)="goFillAnnulationForm()">Remplir le formulaire</button>
+  </div>
+</div>

@@ -6,11 +6,10 @@
 </ion-header>
 
 <ion-content>
-  <div>
     <div class="camera-page-body" [ngStyle]="{'background-image': picture ? 'url(' + picture + ')' : 'unset'}">
       <div class="camera-preview">
         <div class="steps">
-          <div class="steps-number scb-text-white">{{stepNumber}}/3</div>
+          <div class="steps-number scb-text-white">{{stepNumber}}/{{ nbreSteps }}</div>
           <div class="steps-description scb-text-white">
             {{stepDescription}}
           </div>
@@ -29,5 +28,4 @@
       </div>
       <img *ngIf="!picture" class="reverse-camera" (click)="switchCamera()" src="assets/images/camera-reverse-outline.png" alt="">
     </div>
-  </div>
 </ion-content>

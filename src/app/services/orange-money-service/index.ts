@@ -156,6 +156,20 @@ export interface MerchantPaymentModel {
   uuid: string;
 }
 
+export interface CheckEligibilityModel {
+  eligible?: boolean;
+  message?: string;
+  transactionDetails?: {
+    amount?: string;
+    date?: string;
+    destinataire?: string;
+    fees?: string;
+    msisdn?: string;
+    status?: string;
+    txnid?: string;
+  };
+}
+
 export interface LogModel {
   userId: string;
   contexte: string;
