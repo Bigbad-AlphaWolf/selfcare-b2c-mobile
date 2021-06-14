@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
+import { of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { OPERATION_OPEN_OM_ACCOUNT } from 'src/shared';
 import { OMCustomerStatusModel } from '../models/om-customer-status.model';
 import {
@@ -10,7 +12,8 @@ import {
 } from '../models/om-self-operation-otp.model';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
-import { SUCCESS_MSG_OM_ACCOUNT_CREATION } from '../services/orange-money-service';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { getAge, ID_CARD_CARACTERS_MIN_LENGTH, SUCCESS_MSG_OM_ACCOUNT_CREATION } from '../services/orange-money-service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { TypeOtpModalComponent } from './components/type-otp-modal/type-otp-modal.component';
 
@@ -21,7 +24,6 @@ import { TypeOtpModalComponent } from './components/type-otp-modal/type-otp-moda
 })
 export class NewDeplafonnementOmPage implements OnInit {
   personalInfosForm: FormGroup;
-  identityForm: FormGroup;
   rectoFilled: boolean;
   rectoImage: any;
   rectoFileName = 'recto.jpg';
@@ -39,38 +41,49 @@ export class NewDeplafonnementOmPage implements OnInit {
   userOmStatus: OMCustomerStatusModel;
   checkStatusError: boolean;
   omMessage: string;
-  initOtpError: boolean;
+  hasErrorsubmit: boolean;
   generatingOtp: boolean;
-
+  userInfos: any;
+  msgSubmitError: string;
+  maxBirthYearAuthorized = (new Date().getFullYear() - 18).toString() ;
+  isUserAgeInvalid: boolean
+  isUserIDInvalid: boolean
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
     private orangeMoneyService: OrangeMoneyService,
     private navController: NavController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private dashbServ: DashboardService,
   ) {}
 
   ngOnInit() {
-    this.initForms();
-    this.checkStatus();
-    this.getOmMsisdn();
+    this.getOmMsisdn().subscribe();
   }
 
   ionViewWillEnter() {
     this.getStepImage();
   }
 
+
   initForms() {
     this.personalInfosForm = this.formBuilder.group({
       civility: [null, [Validators.required]],
-      lastname: ['', [Validators.required]],
-      firstname: ['', [Validators.required]],
+      lastname: [null, [Validators.required, Validators.minLength(2)]],
+      firstname: [null, [Validators.required, Validators.minLength(2)]],
       birthdate: [null, [Validators.required]],
-    });
-    this.identityForm = this.formBuilder.group({
       nIdentity: [null, [Validators.required]],
       identityType: ['CNI', [Validators.required]],
     });
+  }
+
+  setUserInfos() {
+    this.dashbServ.getCustomerInformations().pipe(tap((res: {givenName?: string, familyName?: string, birthDate?: string, gender?: 'MALE' | 'FEMALE'}) => {
+      this.personalInfosForm.patchValue({ civility: res.gender === 'MALE' ? 'monsieur' : res.gender === 'FEMALE' ? 'madame' : null })
+      this.personalInfosForm.patchValue({ firstname: res.givenName })
+      this.personalInfosForm.patchValue({ lastname: res.familyName })
+      this.personalInfosForm.patchValue({ birthdate: new Date(res.birthDate).toISOString() });
+    })).subscribe();
   }
 
   checkStatus() {
@@ -93,20 +106,22 @@ export class NewDeplafonnementOmPage implements OnInit {
   getOmMsisdn() {
     this.getMsisdnHasError = false;
     this.gettingOmNumber = true;
-    this.orangeMoneyService.getOmMsisdn().subscribe(
-      (msisdn: string) => {
-        this.gettingOmNumber = false;
-        if (msisdn.match('error')) {
-          this.openPinpad();
-          this.getMsisdnHasError = true;
-        } else {
-          this.omMsisdn = msisdn;
-        }
-      },
-      (err) => {
+    return this.orangeMoneyService.getOmMsisdn().pipe(tap((msisdn: string) => {
+      this.gettingOmNumber = false;
+      if (msisdn.match('error')) {
+        this.openPinpad();
         this.getMsisdnHasError = true;
+        throw new Error();
+      } else {
+        this.omMsisdn = msisdn;
+        this.checkStatus();
+        this.initForms();
+        this.setUserInfos();
       }
-    );
+    }), catchError((err: any) => {
+      this.getMsisdnHasError = true;
+      return of(err)
+    }));
   }
 
   async openPinpad() {
@@ -116,7 +131,9 @@ export class NewDeplafonnementOmPage implements OnInit {
     });
     modal.onDidDismiss().then((resp) => {
       if (resp && resp.data && resp.data.success) {
-        this.getOmMsisdn();
+        this.getOmMsisdn().subscribe();
+      } else {
+        this.router.navigate(['/assistance-hub']);
       }
     });
     return await modal.present();
@@ -144,35 +161,41 @@ export class NewDeplafonnementOmPage implements OnInit {
   }
 
   generateOtp() {
-    let otpPayload: OmInitOtpModel = {
-      msisdn: this.omMsisdn,
-      first_name: this.personalInfosForm.value.firstname,
-      last_name: this.personalInfosForm.value.lastname,
-      birth_date: this.personalInfosForm.value.birthdate,
-      civilite: this.personalInfosForm.value.civility,
-      cniRectoBase64: this.rectoImage,
-      cniVectoBase64: this.versoImage,
-      cni_recto: this.rectoImage,
-      cni_verso: this.versoImage,
-      id_num: this.identityForm.value.nIdentity,
-      type_piece: this.identityForm.value.identityType,
-      adresse: 'adresse',
-      delivery_date: 'delivery_date',
-      expiry_date: 'expiry_date',
-      hmac2: this.userOmStatus.hmac
-    };
-    this.initOtpError = false;
-    this.generatingOtp = true;
-    this.orangeMoneyService.initSelfOperationOtp(otpPayload).subscribe(
-      (res: any) => {
-        this.generatingOtp = false;
-        this.openTypeOtpModal(otpPayload, res.content.data.hmac);
-      },
-      (err) => {
-        this.initOtpError = true;
-        this.generatingOtp = false;
-      }
-    );
+    this.hasErrorsubmit = false;
+    if(this.personalInfosForm.valid && this.rectoFilled && this.versoFilled && this.selfieFilled && this.acceptCGU) {
+      let otpPayload: OmInitOtpModel = {
+        msisdn: this.omMsisdn,
+        first_name: this.personalInfosForm.value.firstname,
+        last_name: this.personalInfosForm.value.lastname,
+        birth_date: this.personalInfosForm.value.birthdate,
+        civilite: this.personalInfosForm.value.civility,
+        cniRectoBase64: this.rectoImage,
+        cniVectoBase64: this.versoImage,
+        cni_recto: this.rectoImage,
+        cni_verso: this.versoImage,
+        id_num: this.personalInfosForm.value.nIdentity,
+        type_piece: this.personalInfosForm.value.identityType,
+        adresse: 'adresse',
+        delivery_date: 'delivery_date',
+        expiry_date: 'expiry_date',
+        hmac2: this.userOmStatus.hmac
+      };
+      this.generatingOtp = true;
+      this.orangeMoneyService.initSelfOperationOtp(otpPayload).subscribe(
+        (res: any) => {
+          this.generatingOtp = false;
+          this.openTypeOtpModal(otpPayload, res.content.data.hmac);
+        },
+        (err) => {
+          this.hasErrorsubmit = true;
+          this.generatingOtp = false;
+          this.msgSubmitError = 'Une erreur est survenue';
+        }
+      );
+    } else {
+      this.hasErrorsubmit = true;
+      this.msgSubmitError = 'Veuillez remplir correctement toutes les infos avant de valider'
+    }
   }
 
   async openTypeOtpModal(initOtpPayload: OmInitOtpModel, hmac?: string) {
@@ -197,6 +220,10 @@ export class NewDeplafonnementOmPage implements OnInit {
       }
     });
     return await modal.present();
+  }
+
+  clearInput() {
+    this.personalInfosForm.patchValue({ 'nIdentity' : null });
   }
 
   openSuccessModal() {
@@ -253,5 +280,32 @@ export class NewDeplafonnementOmPage implements OnInit {
 
   isElligibleToSuiviDeplafonnement(userStatus: OMCustomerStatusModel){
     return userStatus && (userStatus.operation === 'DEPLAFONNEMENT' || userStatus.operation === 'FULL') && userStatus.operationStatus !== 'NEW'
+  }
+
+  checkAge(event: any) {
+    const birthDate = event.detail.value;
+    if(birthDate) {
+      const age = getAge(new Date(birthDate));
+      if (age < 18) {
+        this.isUserAgeInvalid = true;
+        event.target.value = null;
+      } else {
+        this.isUserAgeInvalid = false;
+      }
+    }
+  }
+
+  checkIdentityNumber(event: any) {
+    this.isUserIDInvalid = false;
+    if(event.target) {
+      const value = event.srcElement.value.toString();
+      if(this.personalInfosForm.value.identityType === 'CNI' && value.length && value.length < ID_CARD_CARACTERS_MIN_LENGTH ) {
+        this.isUserIDInvalid = true;
+        this.personalInfosForm.controls['identityType'].setErrors({'incorrect': true});
+      } else {
+        this.isUserIDInvalid = false;
+        this.personalInfosForm.controls['identityType'].setErrors(null);
+      }
+    }
   }
 }

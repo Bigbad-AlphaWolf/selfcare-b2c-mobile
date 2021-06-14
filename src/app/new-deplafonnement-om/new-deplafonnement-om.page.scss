@@ -39,128 +39,136 @@
         font-size: 16px;
         line-height: 1.25;
       }
-      .form-block {
-        .om-number-block {
-          height: 60px;
-          border-radius: 6px;
-          border: solid 2px #eeeeee;
-          display: flex;
-          align-items: center;
-          margin-top: 30px;
-          padding: 15px;
-          .msisdn {
-            font-family: HelveticaNeueLTStd-Roman;
-          }
-        }
-        .error-block {
+    }
+    .form-block {
+      .om-number-block {
+        height: 60px;
+        border-radius: 6px;
+        border: solid 2px #eeeeee;
+        display: flex;
+        align-items: center;
+        margin-top: 30px;
+        padding: 15px;
+        .msisdn {
           font-family: HelveticaNeueLTStd-Roman;
-          font-size: 14px;
+        }
+      }
+      .error-block {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 14px;
+        line-height: 1.25;
+        margin-top: 15px;
+      }
+      ion-item {
+        height: 60px;
+        border-radius: 6px;
+        border: solid 2px #eeeeee;
+        display: flex;
+        align-items: center;
+        margin-top: 20px;
+        ion-label {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
           line-height: 1.25;
-          margin-top: 15px;
         }
-        ion-item {
-          height: 60px;
-          border-radius: 6px;
-          border: solid 2px #eeeeee;
-          display: flex;
-          align-items: center;
-          margin-top: 20px;
-          ion-label {
-            font-family: HelveticaNeueLTStd-Roman;
-            font-size: 16px;
-            line-height: 1.25;
-          }
-          ion-select {
-            ion-select-option {
-              span {
-                font-size: 16px;
-                font-family: HelveticaNeueLTStd-Bd;
-              }
-            }
-          }
-          ion-icon {
-            font-size: 24px;
-            margin-top: 2px;
-          }
-        }
-        ion-datetime {
-          height: 60px;
-          display: flex;
-          align-items: center;
-          border-radius: 6px;
-          border: solid 2px #eeeeee;
-        }
-        .radio-group {
-          margin: 20px 0 30px;
-          mat-radio-button {
-            &:not(:last-child) {
-              margin-right: 30px;
-            }
-            .identity-option {
-              font-family: HelveticaNeueLTStd-Roman;
-            }
-            .radio-selected {
-              font-family: HelveticaNeueLTStd-Bd !important;
-              color: $fullBlack;
-            }
-          }
-        }
-        .photo-button {
-          width: 100%;
-          height: 60px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 15px;
-          border-radius: 6px;
-          border: solid 2px $orange;
-          background-color: rgba(255, 121, 0, 0.1);
-          &.field-filled {
-            border: solid 2px $greenSuccess;
-            background-color: rgba(50, 200, 50, 0.1);
-          }
-          &:not(:last-child) {
-            margin-bottom: 20px;
-          }
-          .pic-name {
-            font-family: HelveticaNeueLTStd-Roman;
-            font-size: 16px;
-            line-height: 1.25;
-          }
-          ion-icon {
-            font-size: 30px;
-            &.delete-icon {
-              z-index: 10;
-            }
-          }
-        }
-        .cgu-block {
-          display: flex;
-          margin-bottom: 30px;
-          .cgu-checkbox {
-          }
-          .text {
-            font-family: HelveticaNeueLTStd-Roman;
-            font-size: 16px;
-            line-height: 1.25;
-            margin-left: 10px;
-            .cg {
+        ion-select {
+          ion-select-option {
+            span {
+              font-size: 16px;
               font-family: HelveticaNeueLTStd-Bd;
             }
           }
         }
-        button {
-          border-radius: 10px;
-          position: relative;
-          mat-spinner {
-            position: absolute;
-            top: 15px;
-            right: 10px;
+        ion-icon {
+          font-size: 24px;
+          margin-top: 2px;
+        }
+      }
+      ion-datetime {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        border-radius: 6px;
+        border: solid 2px #eeeeee;
+      }
+      .radio-group {
+        margin: 20px 0 30px;
+        mat-radio-button {
+          &:not(:last-child) {
+            margin-right: 30px;
           }
-          .mat-spinner::ng-deep circle {
-            stroke: $white;
+          .identity-option {
+            font-family: HelveticaNeueLTStd-Roman;
+          }
+          .radio-selected {
+            font-family: HelveticaNeueLTStd-Bd !important;
+            color: $fullBlack;
           }
         }
+      }
+      .photo-button {
+        width: 100%;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 15px;
+        border-radius: 6px;
+        border: solid 2px $orange;
+        background-color: rgba(255, 121, 0, 0.1);
+        &.field-filled {
+          border: solid 2px $greenSuccess;
+          background-color: rgba(50, 200, 50, 0.1);
+        }
+        &:not(:last-child) {
+          margin-bottom: 20px;
+        }
+        .pic-name {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
+          line-height: 1.25;
+        }
+        ion-icon {
+          font-size: 30px;
+          &.delete-icon {
+            z-index: 10;
+          }
+        }
+      }
+      .cgu-block {
+        display: flex;
+        margin-bottom: 30px;
+        .cgu-checkbox {
+        }
+        .text {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
+          line-height: 1.25;
+          margin-left: 10px;
+          .cg {
+            font-family: HelveticaNeueLTStd-Bd;
+          }
+        }
+      }
+      button {
+        border-radius: 10px;
+        position: relative;
+        mat-spinner {
+          position: absolute;
+          top: 15px;
+          right: 10px;
+        }
+        .mat-spinner::ng-deep circle {
+          stroke: $white;
+        }
+      }
+      .init-otp-error {
+        color: red;
+        font-size: 12px;
+      }
+      .error {
+        margin-bottom: 10px;
+        font-size: 12px;
       }
     }
   }
