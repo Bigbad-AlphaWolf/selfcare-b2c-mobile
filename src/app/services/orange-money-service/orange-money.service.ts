@@ -644,5 +644,6 @@ export class OrangeMoneyService {
     payload.append('erreurTransactionOmDTO', erreurTransactionOmDTO);
     payload.append('recto', fileRecto, 'recto.png');
     payload.append('verso', fileVerso, 'verso.png');
+    return this.http.post(`${CANCEL_TRANSACTIONS_OM_Endpoint}`, payload);
   }
 }
