@@ -13,7 +13,8 @@ import {
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { getAge, ID_CARD_CARACTERS_MIN_LENGTH, SUCCESS_MSG_OM_ACCOUNT_CREATION } from '../services/orange-money-service';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { getAge, ID_CARD_CARACTERS_MIN_LENGTH, SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT } from '../services/orange-money-service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { TypeOtpModalComponent } from './components/type-otp-modal/type-otp-modal.component';
 
@@ -46,8 +47,8 @@ export class NewDeplafonnementOmPage implements OnInit {
   userInfos: any;
   msgSubmitError: string;
   maxBirthYearAuthorized = (new Date().getFullYear() - 18).toString() ;
-  isUserAgeInvalid: boolean
-  isUserIDInvalid: boolean
+  isUserAgeInvalid: boolean;
+  isUserIDInvalid: boolean;
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
@@ -55,6 +56,7 @@ export class NewDeplafonnementOmPage implements OnInit {
     private navController: NavController,
     private modalController: ModalController,
     private dashbServ: DashboardService,
+    private followAnalyticsServ: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -94,9 +96,15 @@ export class NewDeplafonnementOmPage implements OnInit {
         this.omMsisdn = status.omNumber;
         this.userOmStatus = status;
         this.checkingStatus = false;
+        if (this.isElligibleToDeplafonnement(status)) {
+          this.followAnalyticsServ.registerEventFollow('deplafonnement_om_affichage_formulaire', 'event', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.omMsisdn, typeDemande: status.operation, status: status.operationStatus })
+        } else if(this.isElligibleToSuiviDeplafonnement(status)) {
+          this.followAnalyticsServ.registerEventFollow('deplafonnement_om_affichage_suivi_deplafonnement', 'event', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.omMsisdn, status: status.operationStatus, typeDemande: status.operation })
+        }
       },
       (err) => {
         this.checkingStatus = false;
+        this.followAnalyticsServ.registerEventFollow('deplafonnement_om_affichage_error', 'error', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.omMsisdn, error: err })
         if (err === 'NO_OM_ACCOUNT') this.openPinpad();
         this.checkStatusError = true;
       }
@@ -111,15 +119,18 @@ export class NewDeplafonnementOmPage implements OnInit {
       if (msisdn.match('error')) {
         this.openPinpad();
         this.getMsisdnHasError = true;
+        this.followAnalyticsServ.registerEventFollow('deplafonnement_om_recuperation_numéro_msisdn_failed', 'error', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), error: 'no om number registered' })
         throw new Error();
       } else {
         this.omMsisdn = msisdn;
+        this.followAnalyticsServ.registerEventFollow('deplafonnement_om_recuperation_numéro_msisdn_success', 'event', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.omMsisdn })
         this.checkStatus();
         this.initForms();
         this.setUserInfos();
       }
     }), catchError((err: any) => {
       this.getMsisdnHasError = true;
+      this.followAnalyticsServ.registerEventFollow('deplafonnement_om_recuperation_numéro_msisdn_failed', 'error', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), error: err });
       return of(err)
     }));
   }
@@ -184,11 +195,13 @@ export class NewDeplafonnementOmPage implements OnInit {
       this.orangeMoneyService.initSelfOperationOtp(otpPayload).subscribe(
         (res: any) => {
           this.generatingOtp = false;
+          this.followAnalyticsServ.registerEventFollow('deplafonnement_om_init_otp_success', 'event', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.omMsisdn });
           this.openTypeOtpModal(otpPayload, res.content.data.hmac);
         },
         (err) => {
           this.hasErrorsubmit = true;
           this.generatingOtp = false;
+          this.followAnalyticsServ.registerEventFollow('deplafonnement_om_init_otp_failed', 'error', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.omMsisdn, error: err });
           this.msgSubmitError = 'Une erreur est survenue';
         }
       );
@@ -227,7 +240,7 @@ export class NewDeplafonnementOmPage implements OnInit {
   }
 
   openSuccessModal() {
-    this.showModal({purchaseType: OPERATION_OPEN_OM_ACCOUNT , textMsg: SUCCESS_MSG_OM_ACCOUNT_CREATION });
+    this.showModal({purchaseType: OPERATION_OPEN_OM_ACCOUNT , textMsg: SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT });
   }
 
   goBack() {
