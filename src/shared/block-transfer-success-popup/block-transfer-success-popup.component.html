@@ -20,7 +20,7 @@
     </div>
     <div class="item">
       <div class="item-key">Montant</div>
-      <div class="item-value-amount scb-text-orange">{{transactionToBlock?.amount + transactionToBlock?.fees + ' FCFA'}}</div>
+      <div class="item-value-amount scb-text-orange">{{MATH.abs(transactionToBlock?.amount) + transactionToBlock?.fees + ' FCFA'}}</div>
     </div>
   </div>
   <div class="warning">

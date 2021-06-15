@@ -12,6 +12,7 @@ import { ANNULATION_TRANSFER_DEADLINE } from '..';
 export class BlockTransferSuccessPopupComponent implements OnInit {
   @Input() transactionToBlock: PurchaseModel;
   annulationDeadline = ANNULATION_TRANSFER_DEADLINE;
+  MATH = Math;
 
   constructor(
     public modalController: ModalController,
