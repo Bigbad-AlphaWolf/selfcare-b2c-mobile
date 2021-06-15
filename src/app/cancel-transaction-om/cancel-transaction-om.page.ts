@@ -11,7 +11,10 @@ import { PurchaseModel } from '../models/purchase.model';
 import { ReclamationOmOem } from '../models/reclamation-OM-oem.model';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { ImageService } from '../services/image-service/image.service';
+import { SUCCESS_MSG_OM_CANCEL_TRANSACTION_OM } from '../services/orange-money-service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 
 @Component({
@@ -42,19 +45,19 @@ export class CancelTransactionOmPage implements OnInit {
 		dateTransaction: null,
 		recipientTransaction: null,
 	};
-	successMsgModal = `Elle sera traité sous un délai prévisionnel de 48H. Vous recevrez une notification après le traitement.`;
 	constructor(
 		private navCtrl: NavController,
 		private formBuilder: FormBuilder,
 		private orangeMoneyService: OrangeMoneyService,
 		private modalController: ModalController,
 		private router: Router,
-		private imgService: ImageService
+		private imgService: ImageService,
+		private dashbServ: DashboardService,
+		private followAnalServ: FollowAnalyticsService
 	) {}
 
 	ngOnInit() {
-		this.initForms();
-		this.getOmMsisdn();
+		this.getOmMsisdn().subscribe();
 	}
 
 	ionViewWillEnter() {
@@ -76,22 +79,46 @@ export class CancelTransactionOmPage implements OnInit {
 		});
 	}
 
+	setUserInfos() {
+		this.dashbServ
+			.getCustomerInformations()
+			.pipe(
+				tap((res: { givenName?: string; familyName?: string; birthDate?: string; gender?: 'MALE' | 'FEMALE' }) => {
+					this.cancelTransactionOMInfos.patchValue({
+						civility: res.gender === 'MALE' ? 'monsieur' : res.gender === 'FEMALE' ? 'madame' : null,
+					});
+					this.cancelTransactionOMInfos.patchValue({ firstname: res.givenName });
+					this.cancelTransactionOMInfos.patchValue({ lastname: res.familyName });
+				})
+			)
+			.subscribe();
+	}
+
+	initTransactionsOMInfos() {
+		const trxOMInfos = history.state.transactionInfos;
+		if (trxOMInfos) this.setInfosTransactionOM(trxOMInfos);
+	}
+
 	getOmMsisdn() {
 		this.getMsisdnHasError = false;
 		this.gettingOmNumber = true;
-		this.orangeMoneyService.getOmMsisdn().subscribe(
-			(msisdn: string) => {
+		return this.orangeMoneyService.getOmMsisdn().pipe(
+			tap((msisdn: string) => {
 				this.gettingOmNumber = false;
 				if (msisdn.match('error')) {
 					this.openPinpad();
 					this.getMsisdnHasError = true;
 				} else {
 					this.omMsisdn = msisdn;
+					this.initForms();
+					this.initTransactionsOMInfos();
+					this.setUserInfos();
 				}
-			},
-			(err) => {
+			}),
+			catchError((err: any) => {
 				this.getMsisdnHasError = true;
-			}
+				return of(err);
+			})
 		);
 	}
 
@@ -102,7 +129,9 @@ export class CancelTransactionOmPage implements OnInit {
 		});
 		modal.onDidDismiss().then((resp) => {
 			if (resp && resp.data && resp.data.success) {
-				this.getOmMsisdn();
+				this.getOmMsisdn().subscribe();
+			} else {
+				this.navCtrl.pop();
 			}
 		});
 		return await modal.present();
@@ -140,19 +169,23 @@ export class CancelTransactionOmPage implements OnInit {
 		modal.onDidDismiss().then((res: any) => {
 			if (res && res.data) {
 				const data: PurchaseModel = res.data.purchaseInfos;
-				this.transactionOMInfos.refTransaction = data.txnid;
-				this.transactionOMInfos.amountTransaction = Math.abs(data.amount);
-				this.transactionOMInfos.recipientTransaction = data.msisdnReceiver;
-				this.transactionOMInfos.dateTransaction = data.operationDate;
-				this.cancelTransactionOMInfos.patchValue({
-					transaction_id: this.transactionOMInfos.refTransaction,
-					receiver: this.transactionOMInfos.recipientTransaction,
-					dateTransfert: this.transactionOMInfos.dateTransaction,
-					montant: this.transactionOMInfos.amountTransaction,
-				});
+				this.setInfosTransactionOM(data);
 			}
 		});
 		return await modal.present();
+	}
+
+	setInfosTransactionOM(data: PurchaseModel) {
+		this.transactionOMInfos.refTransaction = data.txnid;
+		this.transactionOMInfos.amountTransaction = Math.abs(data.amount);
+		this.transactionOMInfos.recipientTransaction = data.msisdnReceiver;
+		this.transactionOMInfos.dateTransaction = data.operationDate;
+		this.cancelTransactionOMInfos.patchValue({
+			transaction_id: data.txnid,
+			receiver: data.msisdnReceiver,
+			dateTransfert: data.operationDate,
+			montant: Math.abs(data.amount),
+		});
 	}
 
 	getStepImage() {
@@ -188,32 +221,37 @@ export class CancelTransactionOmPage implements OnInit {
 			identityNumber: this.cancelTransactionOMInfos.value.nIdentity,
 			montantTransfert: this.cancelTransactionOMInfos.value.montant,
 			referenceTransaction: this.cancelTransactionOMInfos.value.transaction_id,
-			numero: this.omMsisdn
+			numero: this.omMsisdn,
 		};
-		this.orangeMoneyService.sendInfosCancelationTransfertOM(dataForm, fileRecto, fileVerso).pipe(tap((res: any) => {
-			this.isSubmitting = false;
-			this.showModal({purchaseType: OPERATION_CANCEL_TRANSFERT_OM, textMsg: this.successMsgModal})
-		}),
-		catchError((err: any) => {
-			this.isSubmitting = false;
-			this.errorMsg = 'Une erreur est survenue. Veuillez réesayer';
-			return of(err)
-		})).subscribe();
+		this.orangeMoneyService
+			.sendInfosCancelationTransfertOM(dataForm, fileRecto, fileVerso)
+			.pipe(
+				tap((res: any) => {
+					this.isSubmitting = false;
+					this.followAnalServ.registerEventFollow('cancel_transactions_om_success', 'event', { trx_sender: dataForm.numero, trx_receiver: dataForm.msisdnBeneficiaire, amount: dataForm.montantTransfert, trxID: dataForm.referenceTransaction })
+					this.showModal({ purchaseType: OPERATION_CANCEL_TRANSFERT_OM, textMsg: SUCCESS_MSG_OM_CANCEL_TRANSACTION_OM });
+				}),
+				catchError((err: any) => {
+					this.isSubmitting = false;
+					this.errorMsg = 'Une erreur est survenue. Veuillez réesayer';
+					this.followAnalServ.registerEventFollow('cancel_transactions_om_error', 'error', { trx_sender: dataForm.numero, trx_receiver: dataForm.msisdnBeneficiaire, amount: dataForm.montantTransfert, trxID: dataForm.referenceTransaction, error: err.error && err.error.status ? err.error.status : 'une erreur est survenue' })
+					return of(err);
+				})
+			).subscribe();
 	}
 
 	goBack() {
 		this.navCtrl.pop();
 	}
 
-	async showModal(data: {purchaseType: string, textMsg: string}){
+	async showModal(data: { purchaseType: string; textMsg: string }) {
 		const modal = await this.modalController.create({
-		  component: OperationSuccessFailModalPage,
-		  cssClass: 'failed-modal',
-		  componentProps: data,
-		  backdropDismiss: false,
+			component: OperationSuccessFailModalPage,
+			cssClass: 'failed-modal',
+			componentProps: data,
+			backdropDismiss: false,
 		});
 		modal.onDidDismiss().then(() => {});
 		return await modal.present();
-	  }
-
+	}
 }

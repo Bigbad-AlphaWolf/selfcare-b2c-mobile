@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { PurchaseModel } from 'src/app/models/purchase.model';
+import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
 import { ANNULATION_TRANSFER_DEADLINE } from '..';
 
 @Component({
@@ -15,7 +15,7 @@ export class BlockTransferSuccessPopupComponent implements OnInit {
 
   constructor(
     public modalController: ModalController,
-    private router: Router
+    private appRouting: ApplicationRoutingService
   ) {}
 
   ngOnInit() {}
@@ -26,11 +26,11 @@ export class BlockTransferSuccessPopupComponent implements OnInit {
 
   close() {
     this.modalController.dismiss();
-    this.router.navigate(['/dashboard']);
+    this.appRouting.goToCancelTransactionOM(this.transactionToBlock);
   }
 
   goFillAnnulationForm() {
     this.modalController.dismiss();
-    this.router.navigate(['/cancel-transaction-om']);
+    this.appRouting.goToCancelTransactionOM(this.transactionToBlock);
   }
 }
