@@ -1,6 +1,4 @@
-import { Component, OnInit, Inject, NgZone, Input } from '@angular/core';
-import { MatBottomSheetRef } from '@angular/material';
-import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import { Component, OnInit, NgZone, Input } from '@angular/core';
 import { HelpModalDefaultContent } from '..';
 import { Router } from '@angular/router';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
@@ -56,8 +54,8 @@ export class CommonIssuesComponent implements OnInit {
 
   goBack() {
     this.showSousOption = false;
-    this.options = HelpModalDefaultContent.options;
-    this.popupTitle = HelpModalDefaultContent.popupTitle;
+    this.options = this.data.options;
+    this.popupTitle = this.data.popupTitle;
     this.type = null;
   }
 

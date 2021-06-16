@@ -5,18 +5,18 @@ import { ModalController, NavController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { OPERATION_OPEN_OM_ACCOUNT } from 'src/shared';
-import { OMCustomerStatusModel } from '../models/om-customer-status.model';
+import { OMCustomerStatusModel } from '../../../models/om-customer-status.model';
 import {
   OmCheckOtpModel,
   OmInitOtpModel,
-} from '../models/om-self-operation-otp.model';
-import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
-import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { getAge, ID_CARD_CARACTERS_MIN_LENGTH, SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT } from '../services/orange-money-service';
-import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
-import { TypeOtpModalComponent } from './components/type-otp-modal/type-otp-modal.component';
+} from '../../../models/om-self-operation-otp.model';
+import { NewPinpadModalPage } from '../../../new-pinpad-modal/new-pinpad-modal.page';
+import { OperationSuccessFailModalPage } from '../../../operation-success-fail-modal/operation-success-fail-modal.page';
+import { DashboardService } from '../../../services/dashboard-service/dashboard.service';
+import { FollowAnalyticsService } from '../../../services/follow-analytics/follow-analytics.service';
+import { getAge, ID_CARD_CARACTERS_MIN_LENGTH, SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT } from '../../../services/orange-money-service';
+import { OrangeMoneyService } from '../../../services/orange-money-service/orange-money.service';
+import { TypeOtpModalComponent } from '../../components/type-otp-modal/type-otp-modal.component';
 
 @Component({
   selector: 'app-new-deplafonnement-om',
@@ -88,10 +88,10 @@ export class NewDeplafonnementOmPage implements OnInit {
     })).subscribe();
   }
 
-  checkStatus() {
+  checkStatus(msisdn: string) {
     this.checkingStatus = true;
     this.checkStatusError = false;
-    this.orangeMoneyService.getUserStatus().subscribe(
+    this.orangeMoneyService.getUserStatus(msisdn).subscribe(
       (status) => {
         this.omMsisdn = status.omNumber;
         this.userOmStatus = status;
@@ -124,7 +124,7 @@ export class NewDeplafonnementOmPage implements OnInit {
       } else {
         this.omMsisdn = msisdn;
         this.followAnalyticsServ.registerEventFollow('deplafonnement_om_recuperation_numéro_msisdn_success', 'event', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.omMsisdn })
-        this.checkStatus();
+        this.checkStatus(msisdn);
         this.initForms();
         this.setUserInfos();
       }
@@ -252,8 +252,8 @@ export class NewDeplafonnementOmPage implements OnInit {
   }
 
   takePicture(step?: 'recto' | 'verso' | 'selfie') {
-    this.router.navigate(['new-deplafonnement-om/take-picture'], {
-      state: { step },
+    this.router.navigate(['/om-self-operation/take-picture'], {
+      state: { step, operation: 'DEPLAFONNEMENT' },
     });
   }
 

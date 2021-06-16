@@ -21,6 +21,7 @@ import {
   OPERATION_BLOCK_TRANSFER,
   OPERATION_OPEN_OM_ACCOUNT,
   OPERATION_CANCEL_TRANSFERT_OM,
+  OPERATION_DEPLAFONNEMENT_OM_ACCOUNT,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -65,6 +66,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TYPE_PASS_VOYAGE = OPERATION_TYPE_PASS_VOYAGE;
   OPERATION_TYPE_PASS_USAGE = OPERATION_TYPE_PASS_USAGE;
   OPERATION_OPEN_OM_ACCOUNT = OPERATION_OPEN_OM_ACCOUNT;
+  OPERATION_DEPLAFONNEMENT_OM_ACCOUNT = OPERATION_DEPLAFONNEMENT_OM_ACCOUNT;
   OPERATION_CANCEL_TRANSFERT_OM = OPERATION_CANCEL_TRANSFERT_OM;
   OPERATION_RAPIDO = OPERATION_RAPIDO;
   @Input() passBought: any;

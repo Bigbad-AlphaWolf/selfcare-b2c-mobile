@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { CancelTransactionOmPage } from './cancel-transaction-om.page';
 import { SharedModule } from 'src/shared/shared.module';
-import { ComponentsModule } from '../components/components.module';
+import { ComponentsModule } from '../../../components/components.module';
 
 const routes: Routes = [
   {
