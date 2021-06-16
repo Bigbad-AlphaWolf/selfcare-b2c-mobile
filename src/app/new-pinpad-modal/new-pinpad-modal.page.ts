@@ -609,6 +609,8 @@ export class NewPinpadModalPage implements OnInit {
   }
 
   seeSolde(pin: string) {
+    console.log(this.transactionToBlock);
+
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     // get balance
@@ -1014,10 +1016,12 @@ export class NewPinpadModalPage implements OnInit {
       this.opXtras.sending_fees = this.cappingFees
         ? this.cappingFees
         : this.opXtras.sending_fees;
-        const totalFees = this.opXtras.sending_fees + (this.transferMoneyPayload.a_ma_charge ? this.transferMoneyPayload.cashout_fees : 0)
+      const totalFees = this.transferMoneyPayload.a_ma_charge
+        ? this.transferMoneyPayload.cashout_fees
+        : 0;
       this.transactionToBlock = Object.assign({}, this.transactionToBlock, {
         txnid: res.content.data.txn_id,
-        fees: totalFees
+        fees: totalFees,
       });
       this.modalController.dismiss({
         success: true,

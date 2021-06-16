@@ -56,6 +56,11 @@ export class HistoriqueAchatComponent implements OnInit {
       new Date(transaction.operationDate).getTime();
     const isLessThan72h = dateDifference < THREE_DAYS_DURATION_IN_MILLISECONDS;
     if (!isLessThan72h || transaction.typeAchat !== 'TRANSFER') return;
+    transaction.fees =
+      transaction.transactionMetadata &&
+      transaction.transactionMetadata.a_ma_charge
+        ? +transaction.transactionMetadata.cashout_fees
+        : 0;
     const omMsisdn = await this.omService.getOmMsisdn().toPromise();
     if (!omMsisdn || omMsisdn === 'error') return;
     const params: ModalSuccessModel = {};
