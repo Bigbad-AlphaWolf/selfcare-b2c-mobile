@@ -628,9 +628,9 @@ export class OrangeMoneyService {
   blockTransfer(transaction) {
     return this.getOmMsisdn().pipe(
       switchMap((msisdn) => {
-        const { amount, txnid, msisdnReceiver } = transaction;
+        const { amount, txnid, msisdnReceiver, fees } = transaction;
         const payload = {
-          amount: Math.abs(amount),
+          amount: Math.abs(amount) + fees,
           txn_id: txnid,
           destinataire: msisdnReceiver,
           msisdn,
@@ -643,9 +643,15 @@ export class OrangeMoneyService {
     );
   }
 
-  sendInfosCancelationTransfertOM(formInfos: CancelOmTransactionPayloadModel, fileRecto: any, fileVerso: any) {
+  sendInfosCancelationTransfertOM(
+    formInfos: CancelOmTransactionPayloadModel,
+    fileRecto: any,
+    fileVerso: any
+  ) {
     const payload = new FormData();
-    const erreurTransactionOmDTO = new Blob([JSON.stringify(formInfos)], { type: 'application/json' });
+    const erreurTransactionOmDTO = new Blob([JSON.stringify(formInfos)], {
+      type: 'application/json',
+    });
     payload.append('erreurTransactionOmDTO', erreurTransactionOmDTO);
     payload.append('recto', fileRecto, 'recto.png');
     payload.append('verso', fileVerso, 'verso.png');
