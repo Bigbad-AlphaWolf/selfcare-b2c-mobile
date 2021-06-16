@@ -613,9 +613,32 @@ export class OrangeMoneyService {
   isTxnEligibleToBlock(transactionId: string) {
     return this.getOmMsisdn().pipe(
       switchMap((msisdn) => {
-        return this.http.get<CheckEligibilityModel>(
-          `${checkTxnBlockEligibilityEndpoint}/${msisdn}/${transactionId}`
-        );
+        return this.http
+          .get<CheckEligibilityModel>(
+            `${checkTxnBlockEligibilityEndpoint}/${msisdn}/${transactionId}`
+          )
+          .pipe(
+            tap((res) => {
+              res.eligible
+                ? this.followAnalyticsService.registerEventFollow(
+                    'check_txn_eligibility_true',
+                    'event'
+                  )
+                : this.followAnalyticsService.registerEventFollow(
+                    'check_txn_eligibility_false',
+                    'event',
+                    {}
+                  );
+            }),
+            catchError((err) => {
+              this.followAnalyticsService.registerEventFollow(
+                'check_txn_eligibility_error',
+                'error',
+                { error: err }
+              );
+              return throwError(err);
+            })
+          );
       })
     );
   }
@@ -630,10 +653,28 @@ export class OrangeMoneyService {
           destinataire: msisdnReceiver,
           msisdn,
         };
-        return this.http.post<{ message: string; transactionNumber: string }>(
-          BlockTransferEndpoint,
-          payload
-        );
+        return this.http
+          .post<{ message: string; transactionNumber: string }>(
+            BlockTransferEndpoint,
+            payload
+          )
+          .pipe(
+            tap((res) => {
+              this.followAnalyticsService.registerEventFollow(
+                'block_transaction_success',
+                'event',
+                { msisdn, transaction: payload }
+              );
+            }),
+            catchError((error) => {
+              this.followAnalyticsService.registerEventFollow(
+                'block_transaction_success',
+                'error',
+                { msisdn, transaction: payload, error }
+              );
+              return throwError(error);
+            })
+          );
       })
     );
   }

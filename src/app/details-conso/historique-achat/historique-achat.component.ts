@@ -11,6 +11,7 @@ import { ModalSuccessModel } from 'src/app/models/modal-success-infos.model';
 import { ModalController } from '@ionic/angular';
 import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-historique-achat',
@@ -31,7 +32,8 @@ export class HistoriqueAchatComponent implements OnInit {
   @Input() userProfil: string;
   constructor(
     public modalController: ModalController,
-    private omService: OrangeMoneyService
+    private omService: OrangeMoneyService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {}
@@ -57,6 +59,11 @@ export class HistoriqueAchatComponent implements OnInit {
     const isLessThan72h = dateDifference < THREE_DAYS_DURATION_IN_MILLISECONDS;
     if (!isLessThan72h || transaction.typeAchat !== 'TRANSFER') return;
     const omMsisdn = await this.omService.getOmMsisdn().toPromise();
+    this.followAnalyticsService.registerEventFollow(
+      'clic_transfer_from_history',
+      'event',
+      { msisdn: omMsisdn, transaction }
+    );
     if (!omMsisdn || omMsisdn === 'error') return;
     const params: ModalSuccessModel = {};
     params.paymentMod = PAYMENT_MOD_OM;

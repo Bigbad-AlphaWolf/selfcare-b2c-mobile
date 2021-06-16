@@ -111,6 +111,12 @@ export class OperationSuccessFailModalPage implements OnInit {
 
   checkTransferEligibility() {
     if (this.checkingEligibility) return true;
+    const eventName = this.isOpenedFromHistory
+      ? 'clic_block_transfer_from_history'
+      : 'clic_block_transfer_after_transfer';
+    this.followAnalyticsServ.registerEventFollow(eventName, 'event', {
+      transaction: this.historyTransactionItem,
+    });
     this.checkingEligibility = true;
     this.eligibilityHasError = false;
     this.omService
