@@ -58,6 +58,7 @@ import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
 import { IlliflexService } from '../illiflex-service/illiflex.service';
 import { CancelOmTransactionPayloadModel } from 'src/app/models/cancel-om-transaction-payload.model';
+import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-event-type.enum';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
@@ -618,9 +619,32 @@ export class OrangeMoneyService {
   isTxnEligibleToBlock(transactionId: string) {
     return this.getOmMsisdn().pipe(
       switchMap((msisdn) => {
-        return this.http.get<CheckEligibilityModel>(
-          `${checkTxnBlockEligibilityEndpoint}/${msisdn}/${transactionId}`
-        );
+        return this.http
+          .get<CheckEligibilityModel>(
+            `${checkTxnBlockEligibilityEndpoint}/${msisdn}/${transactionId}`
+          )
+          .pipe(
+            tap((res) => {
+              res.eligible
+                ? this.followAnalyticsService.registerEventFollow(
+                    'check_txn_eligibility_true',
+                    FollowAnalyticsEventType.EVENT
+                  )
+                : this.followAnalyticsService.registerEventFollow(
+                    'check_txn_eligibility_false',
+                    FollowAnalyticsEventType.EVENT,
+                    {}
+                  );
+            }),
+            catchError((err) => {
+              this.followAnalyticsService.registerEventFollow(
+                'check_txn_eligibility_error',
+                FollowAnalyticsEventType.ERROR,
+                { error: err }
+              );
+              return throwError(err);
+            })
+          );
       })
     );
   }
@@ -635,10 +659,28 @@ export class OrangeMoneyService {
           destinataire: msisdnReceiver,
           msisdn,
         };
-        return this.http.post<{ message: string; transactionNumber: string }>(
-          BlockTransferEndpoint,
-          payload
-        );
+        return this.http
+          .post<{ message: string; transactionNumber: string }>(
+            BlockTransferEndpoint,
+            payload
+          )
+          .pipe(
+            tap((res) => {
+              this.followAnalyticsService.registerEventFollow(
+                'block_transaction_success',
+                FollowAnalyticsEventType.EVENT,
+                { msisdn, transaction: payload }
+              );
+            }),
+            catchError((error) => {
+              this.followAnalyticsService.registerEventFollow(
+                'block_transaction_error',
+                FollowAnalyticsEventType.ERROR,
+                { msisdn, transaction: payload, error }
+              );
+              return throwError(error);
+            })
+          );
       })
     );
   }
