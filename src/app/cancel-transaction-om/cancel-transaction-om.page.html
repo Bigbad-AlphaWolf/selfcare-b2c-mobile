@@ -71,10 +71,18 @@
 					<mat-form-field class="scb-input-row" appearance="outline">
 						<mat-label>Nom &nbsp;&nbsp;</mat-label>
 						<input formControlName="lastname" matInput type="text" />
+						<small class="text-danger"
+							*ngIf="personalInfosForm.get('lastname').hasError('minlength')">
+        					Le nombre minimal de caractères pour ce champ est {{personalInfosForm.get('lastname').errors.minlength.requiredLength}} caractères.
+    					</small>
 					</mat-form-field>
 					<mat-form-field class="scb-input-row" appearance="outline">
 						<mat-label>Prénom &nbsp;&nbsp;</mat-label>
 						<input formControlName="firstname" matInput type="text" />
+						<small class="text-danger"
+							*ngIf="personalInfosForm.get('firstname').hasError('minlength')">
+        					Le nombre minimal de caractères pour ce champ est {{personalInfosForm.get('firstname').errors.minlength.requiredLength}} caractères.
+    					</small>
 					</mat-form-field>
 					<mat-form-field class="scb-input-row" appearance="outline">
 						<mat-label>Email &nbsp;&nbsp;</mat-label>
