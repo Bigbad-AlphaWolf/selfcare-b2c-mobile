@@ -58,6 +58,7 @@ import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
 import { IlliflexService } from '../illiflex-service/illiflex.service';
 import { CancelOmTransactionPayloadModel } from 'src/app/models/cancel-om-transaction-payload.model';
+import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-event-type.enum';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
@@ -622,18 +623,18 @@ export class OrangeMoneyService {
               res.eligible
                 ? this.followAnalyticsService.registerEventFollow(
                     'check_txn_eligibility_true',
-                    'event'
+                    FollowAnalyticsEventType.EVENT
                   )
                 : this.followAnalyticsService.registerEventFollow(
                     'check_txn_eligibility_false',
-                    'event',
+                    FollowAnalyticsEventType.EVENT,
                     {}
                   );
             }),
             catchError((err) => {
               this.followAnalyticsService.registerEventFollow(
                 'check_txn_eligibility_error',
-                'error',
+                FollowAnalyticsEventType.ERROR,
                 { error: err }
               );
               return throwError(err);
@@ -662,14 +663,14 @@ export class OrangeMoneyService {
             tap((res) => {
               this.followAnalyticsService.registerEventFollow(
                 'block_transaction_success',
-                'event',
+                FollowAnalyticsEventType.EVENT,
                 { msisdn, transaction: payload }
               );
             }),
             catchError((error) => {
               this.followAnalyticsService.registerEventFollow(
-                'block_transaction_success',
-                'error',
+                'block_transaction_error',
+                FollowAnalyticsEventType.ERROR,
                 { msisdn, transaction: payload, error }
               );
               return throwError(error);

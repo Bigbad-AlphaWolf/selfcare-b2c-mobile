@@ -12,6 +12,7 @@ import { ModalController } from '@ionic/angular';
 import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { FollowAnalyticsEventType } from 'src/app/services/follow-analytics/follow-analytics-event-type.enum';
 
 @Component({
   selector: 'app-historique-achat',
@@ -61,7 +62,7 @@ export class HistoriqueAchatComponent implements OnInit {
     const omMsisdn = await this.omService.getOmMsisdn().toPromise();
     this.followAnalyticsService.registerEventFollow(
       'clic_transfer_from_history',
-      'event',
+      FollowAnalyticsEventType.EVENT,
       { msisdn: omMsisdn, transaction }
     );
     if (!omMsisdn || omMsisdn === 'error') return;

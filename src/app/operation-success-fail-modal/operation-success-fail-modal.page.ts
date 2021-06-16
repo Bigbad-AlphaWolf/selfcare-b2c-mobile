@@ -43,6 +43,7 @@ import { CheckEligibilityModel } from '../services/orange-money-service';
 import { throwError } from 'rxjs';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { BlockTransferSuccessPopupComponent } from 'src/shared/block-transfer-success-popup/block-transfer-success-popup.component';
+import { FollowAnalyticsEventType } from '../services/follow-analytics/follow-analytics-event-type.enum';
 
 @Component({
   selector: 'app-operation-success-fail-modal',
@@ -114,9 +115,13 @@ export class OperationSuccessFailModalPage implements OnInit {
     const eventName = this.isOpenedFromHistory
       ? 'clic_block_transfer_from_history'
       : 'clic_block_transfer_after_transfer';
-    this.followAnalyticsServ.registerEventFollow(eventName, 'event', {
-      transaction: this.historyTransactionItem,
-    });
+    this.followAnalyticsServ.registerEventFollow(
+      eventName,
+      FollowAnalyticsEventType.EVENT,
+      {
+        transaction: this.historyTransactionItem,
+      }
+    );
     this.checkingEligibility = true;
     this.eligibilityHasError = false;
     this.omService
