@@ -156,6 +156,6 @@ export class ApplicationRoutingService {
     let navigationExtras: NavigationExtras = {
       state: { transactionInfos: data },
     };
-    this.route.navigate(['/cancel-transaction-om'], navigationExtras);
+    this.route.navigate(['/om-self-operation/cancel-transaction'], navigationExtras);
   }
 }
