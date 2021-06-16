@@ -22,7 +22,20 @@ export class PurchaseService {
     if (filterType) {
       endpoint += `&typeAchat=${filterType}`;
     }
-    return this.http.get(endpoint);
+    return this.http.get(endpoint).pipe(
+      map((response: PurchaseModel[]) => {
+        response = response.map((transaction) => {
+          transaction.fees =
+            transaction.transactionMetadata &&
+            transaction.transactionMetadata.a_ma_charge &&
+            transaction.transactionMetadata.a_ma_charge === 'true'
+              ? +transaction.transactionMetadata.cashout_fees
+              : 0;
+          return transaction;
+        });
+        return response;
+      })
+    );
   }
 
   filterPurchaseByType(

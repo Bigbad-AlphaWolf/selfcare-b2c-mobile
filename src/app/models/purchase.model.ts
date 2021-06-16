@@ -13,7 +13,7 @@ export interface PurchaseModel {
   txnid?: string;
   fees?: number;
   transactionMetadata?: {
-    a_ma_charge?: boolean;
+    a_ma_charge?: string;
     amount?: string;
     cashout_fees?: string;
     fees?: string;
