@@ -49,7 +49,6 @@ export class OpenOmAccountPage implements OnInit {
 	checkingStatus: boolean;
 	userOmStatus: OMCustomerStatusModel;
 	checkStatusError: boolean;
-	omMessage: string;
 	hasErrorsubmit: boolean;
 	generatingOtp: boolean;
 	userInfos: any;
@@ -67,6 +66,7 @@ export class OpenOmAccountPage implements OnInit {
 	authErrorDetected = new Subject<any>();
 	newtworkSubscription: Subscription;
 	errorGettingNumber: string;
+	listRattachedNumbers: string[] = [this.dashbServ.getMainPhoneNumber()];
 	constructor(
 		private router: Router,
 		private formBuilder: FormBuilder,
@@ -113,6 +113,14 @@ export class OpenOmAccountPage implements OnInit {
 			nIdentity: [null, [Validators.required]],
 			identityType: ['CNI', [Validators.required]],
 		});
+	}
+
+	async getRattachedNumber() {
+		return await this.dashbServ.attachedNumbers().pipe(
+			tap((res: any) => {
+				console.log('res', res);
+			})
+		).toPromise();
 	}
 
 	setUserInfos() {
@@ -378,12 +386,18 @@ export class OpenOmAccountPage implements OnInit {
 					this.selectedNumber = res.msisdn;
 					return this.authServ.confirmMsisdnByNetwork(res.msisdn).pipe(
 						tap(
-							(response: ConfirmMsisdnModel) => {
+							async(response: ConfirmMsisdnModel) => {
 								this.gettingNumber = false;
 								if (response && response.status) {
 									response.msisdn = response.msisdn.substring(response.msisdn.length - 9);
 									this.selectedNumber = response.msisdn;
-									this.initPage();
+									const listNumeros: string[] = await this.getRattachedNumber();
+									if(!listNumeros.includes(this.selectedNumber)) {
+										this.isSelectedNumberValid = true;
+										this.errorGettingNumber = `Veuillez vous connecter avec le numéro récupéré du reseau pour pouvoir continuer.`;
+									} else {
+										this.initPage();
+									}
 									const endTime = Date.now();
 									const elapsedSeconds = endTime - startTime;
 									const duration = `${elapsedSeconds} ms`;
