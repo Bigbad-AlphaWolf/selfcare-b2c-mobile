@@ -49,12 +49,13 @@ export class TypeOtpModalComponent implements OnInit, AfterViewInit {
     this.checkingOtp = true;
     this.errorCheckOtp = false;
     const otp = this.input.value;
+    const eventTypeName = this.checkOtpPayload.typeDemande === 'INSCRIPTION' ? 'open_om_account' : 'deplafonnement_om';
     this.orangeMoneyService
       .checkSelfOperationOtp(this.checkOtpPayload, otp)
       .subscribe(
         (res) => {
           this.checkingOtp = false;
-          this.followAnalyticsServ.registerEventFollow('deplafonnement_om_check_otp_success', 'event', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.checkOtpPayload.msisdn });
+          this.followAnalyticsServ.registerEventFollow(`${eventTypeName}_check_otp_success`, 'event', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.checkOtpPayload.msisdn });
           this.modal.dismiss({accept: true});
         },
         (err) => {
@@ -62,7 +63,7 @@ export class TypeOtpModalComponent implements OnInit, AfterViewInit {
           this.checkingOtp = false;
           this.errorMsg = 'Une erreur est survenue';
           this.input.value = '';
-          this.followAnalyticsServ.registerEventFollow('deplafonnement_om_check_otp_failed', 'event', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.checkOtpPayload.msisdn, error: err });
+          this.followAnalyticsServ.registerEventFollow(`${eventTypeName}_check_otp_failed`, 'event', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.checkOtpPayload.msisdn, error: err });
           if (err && err.status === 400 && err.error.code === 'OTP_CHECK_ERROR') {
             this.errorMsg = ERROR_MSG_OM_CODE_OTP_INVALIDE;
           }

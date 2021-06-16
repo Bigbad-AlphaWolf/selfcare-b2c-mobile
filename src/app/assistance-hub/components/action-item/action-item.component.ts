@@ -125,7 +125,8 @@ export class ActionItemComponent implements OnInit {
     );
   }
   goCreateOMAccount() {
-    this.router.navigate(['/control-center/operation-om/creation-compte']);
+    this.router.navigate(['/om-self-operation/open-om-account']);
+    // this.router.navigate(['/control-center/operation-om/creation-compte']);
     this.followAnalyticsService.registerEventFollow(
       'Assistance_actions_Creation_Compte_OM_clic',
       'event',
@@ -135,7 +136,7 @@ export class ActionItemComponent implements OnInit {
 
   goDeplafonnement() {
     // this.router.navigate(['/control-center/operation-om/deplafonnement']);
-    this.router.navigate(['/new-deplafonnement-om']);
+    this.router.navigate(['/om-self-operation/deplafonnement']);
     this.followAnalyticsService.registerEventFollow(
       'Assistance_actions_Deplafonnement_OM_clic',
       'event',
@@ -144,7 +145,7 @@ export class ActionItemComponent implements OnInit {
   }
 
   goReclamation() {
-    this.router.navigate(['/cancel-transaction-om']);
+    this.router.navigate(['/om-self-operation/cancel-transaction']);
     this.followAnalyticsService.registerEventFollow(
       'Assistance_actions_Reclamation_OM_clic',
       'event',

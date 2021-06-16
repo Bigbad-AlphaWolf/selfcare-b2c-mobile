@@ -2,12 +2,15 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { NavController } from '@ionic/angular';
+import { switchMap } from 'rxjs/operators';
 import { FIND_AGENCE_EXTERNAL_URL } from 'src/shared';
 import { BesoinAideType } from '../models/enums/besoin-aide-type.enum';
 import { OffreService } from '../models/offre-service.model';
+import { OMCustomerStatusModel } from '../models/om-customer-status.model';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { OperationService } from '../services/oem-operation/operation.service';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 
 @Component({
   selector: 'app-assistance-hub',
@@ -61,13 +64,16 @@ export class AssistanceHubPage implements OnInit {
   displaySearchIcon: boolean = true;
   @ViewChild('searchInput') searchRef;
   current_user_msisdn = this.dashboardService.getCurrentPhoneNumber();
+  checkingStatus: boolean;
+  userOMStatus: OMCustomerStatusModel;
   constructor(
     private operationService: OperationService,
     private router: Router,
     private navController: NavController,
     private inAppBrowser: InAppBrowser,
     private followAnalyticsService: FollowAnalyticsService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private orangeMoneyService: OrangeMoneyService
   ) {}
 
   ngOnInit() {
@@ -78,10 +84,34 @@ export class AssistanceHubPage implements OnInit {
     this.searchRef.value = '';
   }
 
+  async checkStatus() {
+    this.checkingStatus = true;
+    return await this.orangeMoneyService.getUserStatus(this.current_user_msisdn).toPromise();
+  }
+
+  filterOMActesFollowingOMStatus(user: OMCustomerStatusModel, actes: OffreService[]) {
+    let response = actes;
+    if(user.operation === 'DEPLAFONNEMENT' || user.operation === 'FULL') {
+      response = actes.filter((item: OffreService) => {
+        return item.code !== 'OUVERTURE_OM_ACCOUNT'
+      })
+    } else if(user.operation === 'OUVERTURE_COMPTE' ) {
+      response = actes.filter((item: OffreService) => {
+        return item.code !== 'DEPLAFONNEMENT'
+      })
+    }
+    console.log('resp', response);
+
+    return response;
+  }
+
   fetchAllHelpItems() {
     this.loadingHelpItems = true;
     this.operationService.getServicesByFormule(null, true).subscribe(
-      (res) => {
+      async (res) => {
+        this.userOMStatus = await this.checkStatus();
+        console.log('statusii', status);
+
         this.listBesoinAides = res;
         this.loadingHelpItems = false;
         this.followAnalyticsService.registerEventFollow(
@@ -105,6 +135,9 @@ export class AssistanceHubPage implements OnInit {
     this.listActes = this.listBesoinAides.filter((item: OffreService) => {
       return item.typeService === BesoinAideType.ACTE;
     });
+    this.listActes = this.filterOMActesFollowingOMStatus(this.userOMStatus,this.listActes);
+    console.log('listActes', this.listActes);
+
     this.listFaqs = this.listBesoinAides.filter((item: OffreService) => {
       return item.typeService === BesoinAideType.FAQ;
     });

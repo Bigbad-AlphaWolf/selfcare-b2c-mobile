@@ -419,21 +419,15 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'new-deplafonnement-om',
-    loadChildren:
-      './new-deplafonnement-om/new-deplafonnement-om.module#NewDeplafonnementOmPageModule',
-    canActivate: [AuthGuard],
-  },
-  {
     path: 'list-pass-usage',
     loadChildren:
       './list-pass-usage/list-pass-usage.module#ListPassUsagePageModule',
     canActivate: [AuthGuard],
   },
   {
-    path: 'cancel-transaction-om',
+    path: 'om-self-operation',
     loadChildren:
-      './cancel-transaction-om/cancel-transaction-om.module#CancelTransactionOmPageModule',
+      './orange-money-self-operation/orange-money-self-operation.module#OrangeMoneySelfOperationModule',
   },
 ];
 

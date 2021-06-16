@@ -5,17 +5,17 @@ import { ModalController, NavController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { OPERATION_CANCEL_TRANSFERT_OM } from 'src/shared';
-import { HistorikTransactionByTypeModalComponent } from '../components/historik-transaction-by-type-modal/historik-transaction-by-type-modal.component';
-import { CancelOmTransactionPayloadModel } from '../models/cancel-om-transaction-payload.model';
-import { PurchaseModel } from '../models/purchase.model';
-import { ReclamationOmOem } from '../models/reclamation-OM-oem.model';
-import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
-import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { ImageService } from '../services/image-service/image.service';
-import { SUCCESS_MSG_OM_CANCEL_TRANSACTION_OM } from '../services/orange-money-service';
-import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { HistorikTransactionByTypeModalComponent } from '../../../components/historik-transaction-by-type-modal/historik-transaction-by-type-modal.component';
+import { CancelOmTransactionPayloadModel } from '../../../models/cancel-om-transaction-payload.model';
+import { PurchaseModel } from '../../../models/purchase.model';
+import { ReclamationOmOem } from '../../../models/reclamation-OM-oem.model';
+import { NewPinpadModalPage } from '../../../new-pinpad-modal/new-pinpad-modal.page';
+import { OperationSuccessFailModalPage } from '../../../operation-success-fail-modal/operation-success-fail-modal.page';
+import { DashboardService } from '../../../services/dashboard-service/dashboard.service';
+import { FollowAnalyticsService } from '../../../services/follow-analytics/follow-analytics.service';
+import { ImageService } from '../../../services/image-service/image.service';
+import { SUCCESS_MSG_OM_CANCEL_TRANSACTION_OM } from '../../../services/orange-money-service';
+import { OrangeMoneyService } from '../../../services/orange-money-service/orange-money.service';
 
 @Component({
 	selector: 'app-cancel-transaction-om',
@@ -138,7 +138,7 @@ export class CancelTransactionOmPage implements OnInit {
 	}
 
 	takePicture(step?: 'recto' | 'verso' | 'selfie') {
-		this.router.navigate(['/new-deplafonnement-om/take-picture'], {
+		this.router.navigate(['/om-self-operation/take-picture'], {
 			state: { step, operation: 'ANNULATION_TRANSFERT' },
 		});
 	}

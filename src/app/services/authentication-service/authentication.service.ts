@@ -533,6 +533,7 @@ export interface ConfirmMsisdnModel {
   hmac: string;
   msisdn: string;
   status: boolean;
+  api_key?: string;
 }
 
 export interface ResetPwdModel {

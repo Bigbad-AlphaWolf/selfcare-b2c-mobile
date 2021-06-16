@@ -36,7 +36,7 @@ export class TakePictureComponent implements OnInit {
   step: 'recto' | 'verso' | 'selfie';
   stepNumber: number;
   stepDescription: string;
-  operation: 'OUVERTURE' | 'ANNULATION_TRANSFERT' = 'OUVERTURE';
+  operation: 'OUVERTURE_COMPTE' | 'ANNULATION_TRANSFERT' | 'DEPLAFONNEMENT' = 'OUVERTURE_COMPTE';
   nbreSteps = 3;
   constructor(
     private cameraPreview: CameraPreview,
@@ -45,6 +45,7 @@ export class TakePictureComponent implements OnInit {
 
   ngOnInit() {
     this.startCamera();
+    this.getPreviousRoute();
   }
 
   ionViewWillEnter() {
@@ -64,7 +65,7 @@ export class TakePictureComponent implements OnInit {
   getNbreStep() {
     if(history.state.operation) {
       this.operation = history.state.operation;
-      this.nbreSteps = this.operation === 'OUVERTURE' ? 3 : 2;
+      this.nbreSteps = this.operation === 'OUVERTURE_COMPTE' || this.operation === 'DEPLAFONNEMENT' ? 3 : 2;
     }
   }
 
@@ -131,7 +132,7 @@ export class TakePictureComponent implements OnInit {
   }
 
   returnPicture() {
-    const previousUrl = this.operation === 'OUVERTURE' ? '/new-deplafonnement-om' : '/cancel-transaction-om';
+    const previousUrl = this.operation === 'OUVERTURE_COMPTE' ? '/om-self-operation/open-om-account' : this.operation === 'DEPLAFONNEMENT' ? '/om-self-operation/deplafonnement' : '/om-self-operation/cancel-transaction';
     this.navController.navigateBack(previousUrl, {
       state: {
         image: this.picture,
@@ -141,7 +142,13 @@ export class TakePictureComponent implements OnInit {
   }
 
   goBack() {
-    const previousUrl = this.operation === 'OUVERTURE' ? '/new-deplafonnement-om' : '/cancel-transaction-om';
+    const previousUrl = this.operation === 'OUVERTURE_COMPTE' ? '/om-self-operation/open-om-account' : this.operation === 'DEPLAFONNEMENT' ? '/om-self-operation/deplafonnement' : '/om-self-operation/cancel-transaction';
     this.navController.navigateBack(previousUrl);
+  }
+
+  getPreviousRoute() {
+    const { redirect } = window.history.state;
+    console.log('redirect', window.history);
+
   }
 }

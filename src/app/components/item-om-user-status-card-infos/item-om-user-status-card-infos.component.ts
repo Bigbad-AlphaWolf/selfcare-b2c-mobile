@@ -8,6 +8,7 @@ import { OMCustomerStatusModel } from 'src/app/models/om-customer-status.model';
 })
 export class ItemOmUserStatusCardInfosComponent implements OnInit {
   @Input() userOmStatus: OMCustomerStatusModel;
+  @Input() typeDemande: 'OUVERTURE_COMPTE' | 'DEPLAFONNEMENT';
   constructor() { }
 
   ngOnInit() {}

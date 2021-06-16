@@ -148,6 +148,16 @@ export class OrangeMoneyService {
     );
   }
 
+  checkUserHasAccountV2(msisdn: string): Observable<boolean> {
+    return this.http.get(`${checkOMAccountEndpoint2}/${msisdn}`).pipe(
+      map(
+        (hasOmAccount: boolean) => {
+          return hasOmAccount;
+        }
+      )
+    );
+  }
+
   updateAccount(phoneNumber: any, accountInfos: OmUserInfo) {
     const accountId = this.getAccountId(phoneNumber);
     ls.set(accountId, accountInfos);
@@ -411,10 +421,7 @@ export class OrangeMoneyService {
     );
   }
 
-  getUserStatus() {
-    return this.getOmMsisdn().pipe(
-      switchMap((msisdn) => {
-        if (msisdn === 'error') throw new Error('NO_OM_ACCOUNT');
+  getUserStatus(msisdn: string) {
         return this.http
           .get<OMCustomerStatusModel>(`${userStatusEndpoint}/${msisdn}`)
           .pipe(
@@ -423,8 +430,6 @@ export class OrangeMoneyService {
               return status;
             })
           );
-      })
-    );
   }
 
   initSelfOperationOtp(initOtpPayload: OmInitOtpModel) {

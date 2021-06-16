@@ -160,6 +160,7 @@
 		<app-item-om-user-status-card-infos
 			*ngIf="isElligibleToSuiviDeplafonnement(userOmStatus)"
 			[userOmStatus]="userOmStatus"
+			[typeDemande]="'DEPLAFONNEMENT'"
 		>
 		</app-item-om-user-status-card-infos>
 		<div class="spinner-block" *ngIf="checkingStatus">

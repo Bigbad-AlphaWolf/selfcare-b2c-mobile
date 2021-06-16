@@ -40,6 +40,7 @@ import { RegistrationSuccessModalPage } from '../registration-success-modal/regi
 import { hash53 } from '../dashboard';
 import { Uid } from '@ionic-native/uid/ngx';
 import { Network } from '@ionic-native/network/ngx';
+import { MSISDN_RECUPERATION_TIMEOUT } from '../register';
 
 @Component({
   selector: 'app-new-registration',
@@ -89,7 +90,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
     },
   ];
   //Temps d'attente pour la recuperation automatique du numero -> 10 secondes
-  msisdnTimeout = 10000;
+  MSISDN_RECUPERATION_TIMEOUT = MSISDN_RECUPERATION_TIMEOUT;
   authErrorDetected = new Subject<any>();
   helpNeeded = new Subject<any>();
   firstCallMsisdn: string;
@@ -167,7 +168,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
       .getMsisdnByNetwork()
       //if after msisdnTimeout milliseconds the call does not complete, stop it.
       .pipe(
-        takeUntil(timer(this.msisdnTimeout)),
+        takeUntil(timer(MSISDN_RECUPERATION_TIMEOUT)),
         // finalize to detect whenever call is complete or terminated
         finalize(() => {
           if (
