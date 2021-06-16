@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import { IonInput, ModalController } from '@ionic/angular';
 import { OmCheckOtpModel } from 'src/app/models/om-self-operation-otp.model';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { ERROR_MSG_OM_CODE_OTP_INVALIDE, SUCCESS_OM_STATUS_CODE } from 'src/app/services/orange-money-service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 
@@ -24,7 +26,7 @@ export class TypeOtpModalComponent implements OnInit, AfterViewInit {
   errorCheckOtp: boolean;
   errorMsg: string;
   sendingOtp: boolean;
-  constructor(private orangeMoneyService: OrangeMoneyService, private modal: ModalController) {}
+  constructor(private orangeMoneyService: OrangeMoneyService, private modal: ModalController, private followAnalyticsServ: FollowAnalyticsService, private dashbServ: DashboardService) {}
 
   ngOnInit() {}
 
@@ -52,6 +54,7 @@ export class TypeOtpModalComponent implements OnInit, AfterViewInit {
       .subscribe(
         (res) => {
           this.checkingOtp = false;
+          this.followAnalyticsServ.registerEventFollow('deplafonnement_om_check_otp_success', 'event', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.checkOtpPayload.msisdn });
           this.modal.dismiss({accept: true});
         },
         (err) => {
@@ -59,6 +62,7 @@ export class TypeOtpModalComponent implements OnInit, AfterViewInit {
           this.checkingOtp = false;
           this.errorMsg = 'Une erreur est survenue';
           this.input.value = '';
+          this.followAnalyticsServ.registerEventFollow('deplafonnement_om_check_otp_failed', 'event', {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.checkOtpPayload.msisdn, error: err });
           if (err && err.status === 400 && err.error.code === 'OTP_CHECK_ERROR') {
             this.errorMsg = ERROR_MSG_OM_CODE_OTP_INVALIDE;
           }

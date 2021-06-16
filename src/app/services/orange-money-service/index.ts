@@ -320,6 +320,11 @@ export const SUCCESS_MSG_OM_ACCOUNT_CREATION =
   `Votre demande d’ouverture de compte
   Orange Money a été enregistré avec succés.
   Vous recevrez une confirmation d’ouverture.`;
+
+export const SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT =
+  `Votre demande de déplafonnement de votre compte
+  Orange Money a été enregistré avec succés.
+  Vous recevrez une confirmation`;
 export const ERROR_MSG_OM_CODE_OTP_INVALIDE =
   `Le code renseigné est invalide. Veuillez entrez le bon code.`;
 export const SUCCESS_MSG_OM_CANCEL_TRANSACTION_OM =
