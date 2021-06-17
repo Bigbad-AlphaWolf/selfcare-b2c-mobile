@@ -42,14 +42,13 @@ export class OpenOmAccountPage implements OnInit {
 	selfieFilled: boolean;
 	selfieImage: any;
 	selfieFileName = 'selfie.jpg';
-	acceptCGU: boolean;
+	acceptCGU: boolean = true;
 	omMsisdn: string;
 	gettingOmNumber: boolean;
 	getMsisdnHasError: boolean;
 	checkingStatus: boolean;
 	userOmStatus: OMCustomerStatusModel;
 	checkStatusError: boolean;
-	omMessage: string;
 	hasErrorsubmit: boolean;
 	generatingOtp: boolean;
 	userInfos: any;
@@ -67,6 +66,7 @@ export class OpenOmAccountPage implements OnInit {
 	authErrorDetected = new Subject<any>();
 	newtworkSubscription: Subscription;
 	errorGettingNumber: string;
+	listRattachedNumbers: string[] = [this.dashbServ.getMainPhoneNumber()];
 	constructor(
 		private router: Router,
 		private formBuilder: FormBuilder,
@@ -113,6 +113,10 @@ export class OpenOmAccountPage implements OnInit {
 			nIdentity: [null, [Validators.required]],
 			identityType: ['CNI', [Validators.required]],
 		});
+	}
+
+	async getRattachedNumber() {
+		return await this.dashbServ.attachedNumbers().toPromise();
 	}
 
 	setUserInfos() {
@@ -378,12 +382,20 @@ export class OpenOmAccountPage implements OnInit {
 					this.selectedNumber = res.msisdn;
 					return this.authServ.confirmMsisdnByNetwork(res.msisdn).pipe(
 						tap(
-							(response: ConfirmMsisdnModel) => {
+							async(response: ConfirmMsisdnModel) => {
 								this.gettingNumber = false;
 								if (response && response.status) {
 									response.msisdn = response.msisdn.substring(response.msisdn.length - 9);
 									this.selectedNumber = response.msisdn;
-									this.initPage();
+									const listNumeros: string[] = await this.getRattachedNumber();
+									this.listRattachedNumbers.concat(...listNumeros);
+									if(!this.listRattachedNumbers.includes(this.selectedNumber)) {
+										this.isSelectedNumberValid = false;
+										this.errorGettingNumber = `Veuillez vous connecter avec le numéro récupéré du reseau pour pouvoir continuer.`;
+									} else {
+										this.isSelectedNumberValid = true;
+										this.initPage();
+									}
 									const endTime = Date.now();
 									const elapsedSeconds = endTime - startTime;
 									const duration = `${elapsedSeconds} ms`;
@@ -412,10 +424,9 @@ export class OpenOmAccountPage implements OnInit {
 
 	displayMsisdnError() {
 		this.gettingNumber = false;
-		this.isSelectedNumberValid = true;
+		this.isSelectedNumberValid = false;
 		this.errorGettingNumber = `La récupération du numéro ne s'est pas bien passée. Cliquez ici pour réessayer`;
 		let connexion: string;
-		console.log('connexionType', connexion);
 		this.newtworkSubscription = this.network.onConnect().subscribe(() => {
 			setTimeout(() => {
 				connexion = this.network.type;
