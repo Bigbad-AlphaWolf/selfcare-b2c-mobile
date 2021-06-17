@@ -390,9 +390,10 @@ export class OpenOmAccountPage implements OnInit {
 									const listNumeros: string[] = await this.getRattachedNumber();
 									this.listRattachedNumbers.concat(...listNumeros);
 									if(!this.listRattachedNumbers.includes(this.selectedNumber)) {
-										this.isSelectedNumberValid = true;
+										this.isSelectedNumberValid = false;
 										this.errorGettingNumber = `Veuillez vous connecter avec le numéro récupéré du reseau pour pouvoir continuer.`;
 									} else {
+										this.isSelectedNumberValid = true;
 										this.initPage();
 									}
 									const endTime = Date.now();
@@ -423,10 +424,9 @@ export class OpenOmAccountPage implements OnInit {
 
 	displayMsisdnError() {
 		this.gettingNumber = false;
-		this.isSelectedNumberValid = true;
+		this.isSelectedNumberValid = false;
 		this.errorGettingNumber = `La récupération du numéro ne s'est pas bien passée. Cliquez ici pour réessayer`;
 		let connexion: string;
-		console.log('connexionType', connexion);
 		this.newtworkSubscription = this.network.onConnect().subscribe(() => {
 			setTimeout(() => {
 				connexion = this.network.type;

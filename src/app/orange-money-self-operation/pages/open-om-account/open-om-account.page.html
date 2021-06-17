@@ -174,7 +174,7 @@
 		<div class="check-status-error scb-text-red-error" *ngIf="checkStatusError" (click)="checkStatus()">
 			Erreur récupération statut. Réactualisez ici.
 		</div>
-		<div class="check-status-error scb-text-red-error" *ngIf="isSelectedNumberValid || !gettingNumber" (click)="getNumber()">
+		<div class="check-status-error scb-text-red-error" *ngIf="!isSelectedNumberValid || !gettingNumber" (click)="getNumber()">
 			{{errorGettingNumber}}
 		</div>
 	</div>
