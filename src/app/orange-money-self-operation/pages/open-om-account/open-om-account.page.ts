@@ -116,11 +116,7 @@ export class OpenOmAccountPage implements OnInit {
 	}
 
 	async getRattachedNumber() {
-		return await this.dashbServ.attachedNumbers().pipe(
-			tap((res: any) => {
-				console.log('res', res);
-			})
-		).toPromise();
+		return await this.dashbServ.attachedNumbers().toPromise();
 	}
 
 	setUserInfos() {
@@ -392,7 +388,8 @@ export class OpenOmAccountPage implements OnInit {
 									response.msisdn = response.msisdn.substring(response.msisdn.length - 9);
 									this.selectedNumber = response.msisdn;
 									const listNumeros: string[] = await this.getRattachedNumber();
-									if(!listNumeros.includes(this.selectedNumber)) {
+									this.listRattachedNumbers.concat(...listNumeros);
+									if(!this.listRattachedNumbers.includes(this.selectedNumber)) {
 										this.isSelectedNumberValid = true;
 										this.errorGettingNumber = `Veuillez vous connecter avec le numéro récupéré du reseau pour pouvoir continuer.`;
 									} else {
