@@ -42,7 +42,7 @@ export class OpenOmAccountPage implements OnInit {
 	selfieFilled: boolean;
 	selfieImage: any;
 	selfieFileName = 'selfie.jpg';
-	acceptCGU: boolean;
+	acceptCGU: boolean = true;
 	omMsisdn: string;
 	gettingOmNumber: boolean;
 	getMsisdnHasError: boolean;

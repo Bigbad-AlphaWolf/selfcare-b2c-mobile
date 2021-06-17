@@ -150,7 +150,7 @@
 						</div>
 						<div class="init-otp-error" *ngIf="hasErrorsubmit">{{ msgSubmitError }}</div>
 						<button
-							[disabled]="(generatingOtp || !omMsisdn || checkingStatus )"
+							[disabled]="(generatingOtp || !omMsisdn || checkingStatus || !personalInfosForm.valid || !rectoFilled || !versoFilled || !selfieFilled || !acceptCGU )"
 							class="scb-btn scb-btn-full scb-btn-orange"
 							(click)="generateOtp()"
 						>

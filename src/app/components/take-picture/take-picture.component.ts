@@ -44,12 +44,12 @@ export class TakePictureComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.getCurrentStep();
     this.startCamera();
     this.getPreviousRoute();
   }
 
   ionViewWillEnter() {
-    this.getCurrentStep();
     this.getNbreStep();
   }
 
@@ -93,6 +93,8 @@ export class TakePictureComponent implements OnInit {
     const cameraOption = cameraPreviewOpts;
     if (this.step === 'selfie') {
       cameraOption.camera = 'front'
+    } else {
+      cameraOption.camera = 'rear'
     }
     this.cameraPreview
       .startCamera(cameraOption)
