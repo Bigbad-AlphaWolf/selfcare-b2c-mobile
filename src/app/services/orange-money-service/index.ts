@@ -117,6 +117,7 @@ export interface TransferOrangeMoneyModel {
   app_conf_version: string;
   user_type: string;
   service_version: string;
+  capping: boolean;
 }
 
 export interface TransferOMWithCodeModel {
