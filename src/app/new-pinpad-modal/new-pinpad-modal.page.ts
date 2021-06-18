@@ -457,7 +457,7 @@ export class NewPinpadModalPage implements OnInit {
               this.transferMoneyPayload,
               {
                 pin,
-                fees: 0,
+                fees: this.transferMoneyPayload.send_fees,
               }
             );
             this.transferMoney(transferMoneyPayload);

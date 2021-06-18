@@ -107,7 +107,7 @@ export interface TransferOrangeMoneyModel {
   amount: number;
   send_fees: number;
   cashout_fees: number;
-  fees: number;
+  fees?: number;
   a_ma_charge: boolean;
   uuid: string;
   os: string;
