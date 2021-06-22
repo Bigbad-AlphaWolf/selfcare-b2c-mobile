@@ -9,9 +9,13 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
-import { Router } from '@angular/router';
+import { Router, UrlSerializer } from '@angular/router';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { HttpClient } from '@angular/common/http';
+import { Uid } from '@ionic-native/uid/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { Location } from '@angular/common';
+import { of } from 'rxjs';
 
 describe('AppComponent', () => {
   let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
@@ -20,7 +24,12 @@ describe('AppComponent', () => {
     statusBarSpy = jasmine.createSpyObj('StatusBar', ['styleDefault']);
     splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
     platformReadySpy = Promise.resolve();
-    platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
+    platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy,
+      backButton: () => {
+        return { subscribeWithPriority: () => {
+          return ""
+        } }
+      } });
 
     TestBed.configureTestingModule({
       declarations: [AppComponent],
@@ -35,6 +44,12 @@ describe('AppComponent', () => {
         { provide: Platform, useValue: platformSpy },
         { provide: Router },
         { provide: Deeplinks },
+        { provide: AndroidPermissions },
+        { provide: Location },
+        { provide: UrlSerializer },
+        {
+          provide: Uid
+        },
         {
           provide: HttpClient,
           useValue: {},
