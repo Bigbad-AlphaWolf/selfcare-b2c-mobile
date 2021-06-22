@@ -429,6 +429,7 @@ const routes: Routes = [
     loadChildren:
       './orange-money-self-operation/orange-money-self-operation.module#OrangeMoneySelfOperationModule',
   },
+  { path: 'transfer-set-amount', loadChildren: './transfer-set-amount/transfer-set-amount.module#TransferSetAmountPageModule' },
 ];
 
 @NgModule({

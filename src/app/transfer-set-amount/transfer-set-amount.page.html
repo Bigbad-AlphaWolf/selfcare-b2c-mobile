@@ -1,0 +1,96 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">
+        Transfert d’argent
+      </span>
+    </ion-title>
+    <ion-spinner *ngIf="loadingFees" name="crescent" slot="end"></ion-spinner>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">
+        Transfert d’argent
+      </span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="banniere-container">
+    <img src="/assets/images/transfer-money-banniere.png" alt="header-transfer" />
+  </div>
+  <div class="transfer-page">
+    <div class="transfer-settings">
+      <div class="recipient-block">
+        <div class="recu-par">Montant reçu par</div>
+        <div class="recipient">
+          <span class="rec-msisdn">77 540 34 65</span>
+          <span class="rec-name">Vieux Mamadou Kasse</span>
+        </div>
+      </div>
+      <form class="transfer-amount-block">
+        <mat-form-field class="scb-input-row amount-input" appearance="outline">
+          <mat-label>Saisir le montant reçu&nbsp;&nbsp;</mat-label>
+          <input
+            #amountInput
+            matInput
+            type="number"
+            (input)="onAmountChanged($event)"
+          />
+          <div matSuffix class="scb-text-gray suffix">
+            <span class="cfa-unit scb-text-gray">FCFA</span>
+            <div class="send-fee">
+              <span class="send-fee-value scb-text-gray" *ngIf="0">Frais d'envoi 100 F CFA</span>
+              <span class="free-fees">
+                Gratuit <span class="asterisk scb-text-red-error">*</span>
+              </span>
+              <ion-icon name="information-circle" class="info-icon"></ion-icon>
+            </div>
+          </div>
+        </mat-form-field>
+        <div class="free-fees-description scb-text-red-error">Dans la limite de 2 transferts par jour</div>
+      </form>
+      <div class="cashout-fees-block">
+        <div class="cashout-fees-details">
+          <div class="cashout-title">Ajouter les frais de retrait</div>
+          <div class="toggle-content">
+            <span class="cashout-fees-value scb-text-gray">+ 270 F CFA</span>
+            <ion-toggle
+              #transfertOMTypeToggle
+              (ionChange)="(0)"
+              slot="end"
+            ></ion-toggle>
+          </div>
+        </div>
+        <div class="cashout-fees-description scb-text-gray">Je prends en charge les frais de retrait</div>
+      </div>
+      <div class="toggle-tac-block">
+        <span class="tac-title">Transfert avec code</span>
+        <ion-toggle
+          #transfertOMTypeToggle
+          (ionChange)="(0)"
+          slot="end"
+        ></ion-toggle>
+      </div>
+      <form class="tac-recipient-sup-infos">
+        <mat-form-field class="scb-input-row scb-required" appearance="outline">
+          <mat-label>Prénom du destinataire &nbsp;&nbsp;</mat-label>
+          <input type="text" matInput />
+        </mat-form-field>
+        <mat-form-field class="scb-input-row scb-required" appearance="outline">
+          <mat-label>Nom du destinataire &nbsp;&nbsp;</mat-label>
+          <input type="text" matInput />
+        </mat-form-field>
+      </form>
+      <div class="btn-container">
+        <button class="scb-btn scb-btn-full scb-btn-orange">
+          <span>Continuer</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</ion-content>
