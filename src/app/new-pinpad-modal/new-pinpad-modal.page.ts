@@ -488,7 +488,7 @@ export class NewPinpadModalPage implements OnInit {
               this.transferMoneyPayload,
               {
                 pin,
-                fees: 0,
+                fees: this.transferMoneyPayload.send_fees,
               }
             );
             this.transferMoney(transferMoneyPayload);
@@ -821,6 +821,7 @@ export class NewPinpadModalPage implements OnInit {
     cashout_fees: number;
     a_ma_charge: boolean;
     fees: number;
+    capping?: boolean;
   }) {
     this.processingPin = true;
     this.canRetry = false;
@@ -850,6 +851,7 @@ export class NewPinpadModalPage implements OnInit {
       app_conf_version: 'v1.0',
       user_type: 'user',
       service_version: OM_SERVICE_VERSION,
+      capping: params.capping,
     };
     const logInfos: FollowOemlogPurchaseInfos = {
       sender: omUser.msisdn,
@@ -988,6 +990,7 @@ export class NewPinpadModalPage implements OnInit {
           {
             pin: this.pin,
             fees: this.cappingFees,
+            capping: true,
           }
         );
         this.transferMoney(transferMoneyPayload);
