@@ -1,4 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  NgZone,
+  OnDestroy,
+} from '@angular/core';
 import { Subscription, timer, Subject, of } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,7 +13,6 @@ import {
   ConfirmMsisdnModel,
   RegistrationModel,
 } from '../services/authentication-service/authentication.service';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import * as SecureLS from 'secure-ls';
 import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
@@ -33,13 +38,16 @@ import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.co
 import { ModalController, NavController } from '@ionic/angular';
 import { RegistrationSuccessModalPage } from '../registration-success-modal/registration-success-modal.page';
 import { hash53 } from '../dashboard';
+import { Uid } from '@ionic-native/uid/ngx';
+import { Network } from '@ionic-native/network/ngx';
+import { MSISDN_RECUPERATION_TIMEOUT } from '../register';
 
 @Component({
   selector: 'app-new-registration',
   templateUrl: './new-registration.page.html',
   styleUrls: ['./new-registration.page.scss'],
 })
-export class NewRegistrationPage implements OnInit {
+export class NewRegistrationPage implements OnInit, OnDestroy {
   dialogRef: MatDialogRef<SettingsPopupComponent, any>;
   dialogSub: Subscription;
   phoneNumber: string;
@@ -82,22 +90,24 @@ export class NewRegistrationPage implements OnInit {
     },
   ];
   //Temps d'attente pour la recuperation automatique du numero -> 10 secondes
-  msisdnTimeout = 10000;
+  MSISDN_RECUPERATION_TIMEOUT = MSISDN_RECUPERATION_TIMEOUT;
   authErrorDetected = new Subject<any>();
   helpNeeded = new Subject<any>();
   firstCallMsisdn: string;
   isNumberAttachedError: boolean;
+  newtworkSubscription: Subscription;
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private authServ: AuthenticationService,
-    private dashbServ: DashboardService,
     public dialog: MatDialog,
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
     private modalController: ModalController,
     private navController: NavController,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private uid: Uid,
+    private network: Network
   ) {
     this.authErrorDetected.subscribe({
       next: () => {
@@ -111,6 +121,12 @@ export class NewRegistrationPage implements OnInit {
         this.openHelpModal(data);
       },
     });
+  }
+
+  ngOnDestroy() {
+    if (this.newtworkSubscription) {
+      this.newtworkSubscription.unsubscribe();
+    }
   }
 
   ionViewWillEnter() {
@@ -143,6 +159,7 @@ export class NewRegistrationPage implements OnInit {
   }
 
   getNumber() {
+    const startTime = Date.now();
     this.gettingNumber = true;
     this.showErrMessage = false;
     this.isNumberAttachedError = false;
@@ -151,7 +168,7 @@ export class NewRegistrationPage implements OnInit {
       .getMsisdnByNetwork()
       //if after msisdnTimeout milliseconds the call does not complete, stop it.
       .pipe(
-        takeUntil(timer(this.msisdnTimeout)),
+        takeUntil(timer(MSISDN_RECUPERATION_TIMEOUT)),
         // finalize to detect whenever call is complete or terminated
         finalize(() => {
           if (
@@ -170,14 +187,18 @@ export class NewRegistrationPage implements OnInit {
             tap(
               (response: ConfirmMsisdnModel) => {
                 this.gettingNumber = false;
-                if (response !== undefined && response && response.status) {
+                if (response && response.status) {
                   this.numberGot = true;
                   this.phoneNumber = response.msisdn;
                   this.hmac = response.hmac;
+                  const endTime = Date.now();
+                  const elapsedSeconds = endTime - startTime;
+                  const duration = `${elapsedSeconds} ms`;
+                  console.log(duration);
                   this.followAnalyticsService.registerEventFollow(
-                    'User_msisdn_recuperation_succes',
+                    'User_msisdn_recuperation_success',
                     'event',
-                    this.phoneNumber
+                    { msisdn: this.phoneNumber, duration }
                   );
                 } else {
                   this.displayMsisdnError();
@@ -261,12 +282,12 @@ export class NewRegistrationPage implements OnInit {
       lastName: '',
       email: null,
       hmac: this.hmac,
-      clientId: hash53(this.phoneNumber)
+      clientId: hash53(this.phoneNumber),
     };
     this.authServ.register(userInfo).subscribe(
       () => {
         this.followAnalyticsService.registerEventFollow(
-          'User_register_succes',
+          'User_register_success',
           'event',
           userInfo.login
         );
@@ -280,7 +301,7 @@ export class NewRegistrationPage implements OnInit {
         this.followAnalyticsService.registerEventFollow(
           'User_register_failed',
           'error',
-          userInfo.login
+          { msisdn: userInfo.login, status }
         );
         if (status === 400) {
           // bad input
@@ -324,59 +345,26 @@ export class NewRegistrationPage implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  goLogin() {
-    this.isLogging = true;
-    let login: string;
-    this.phoneNumber && this.phoneNumber.startsWith('221')
-      ? (login = this.phoneNumber.substring(3))
-      : (login = this.phoneNumber);
-    const userCredential = {
-      username: login,
-      password: this.formPassword.value.password,
-      rememberMe: true,
-    };
-    this.authServ.login(userCredential).subscribe(
-      () => {
-        this.dashbServ.getAccountInfo(userCredential.username).subscribe(
-          (resp: any) => {
-            this.isLogging = false;
-            ls.set('user', resp);
-            this.router.navigate(['/dashboard']);
-            this.followAnalyticsService.registerEventFollow(
-              'Authentication_Successful',
-              'event',
-              this.phoneNumber
-            );
-          },
-          () => {
-            this.isLogging = false;
-            this.followAnalyticsService.registerEventFollow(
-              'Authentication_Failed',
-              'error',
-              this.phoneNumber
-            );
-          }
-        );
-      },
-      () => {
-        this.followAnalyticsService.registerEventFollow(
-          'Authentication_Failed',
-          'error',
-          this.phoneNumber
-        );
-        this.router.navigate(['/login']);
-      }
-    );
-  }
-
   doAction(action: 'login' | 'help' | 'password') {
     if (action === 'login') {
+      this.followAnalyticsService.registerEventFollow(
+        'Go_login_from_register',
+        'event'
+      );
       this.goLoginPage();
     }
     if (action === 'help') {
+      this.followAnalyticsService.registerEventFollow(
+        'Open_help_modal_from_register',
+        'event'
+      );
       this.openHelpModal(HelpModalDefaultContent);
     }
     if (action === 'password') {
+      this.followAnalyticsService.registerEventFollow(
+        'Forgotten_pwd_from_register',
+        'event'
+      );
       this.router.navigate(['/forgotten-password']);
     }
   }
@@ -394,12 +382,19 @@ export class NewRegistrationPage implements OnInit {
     this.gettingNumber = false;
     this.showErrMessage = true;
     this.errorMsg = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
+    let connexion: string;
+    console.log('connexionType', connexion);
+    this.newtworkSubscription = this.network.onConnect().subscribe(() => {
+      setTimeout(() => {
+        connexion = this.network.type;
+        this.followAnalyticsService.registerEventFollow(
+          'User_msisdn_recuperation_failed',
+          'error',
+          { imei: this.uid.IMEI, connexion }
+        );
+      }, 3000);
+    });
     //this.openDialogGoSettings();
-    this.followAnalyticsService.registerEventFollow(
-      'User_msisdn_recuperation_failed',
-      'error',
-      this.phoneNumber
-    );
     if (!this.ref['destroyed']) this.ref.detectChanges();
   }
 
@@ -420,10 +415,9 @@ export class NewRegistrationPage implements OnInit {
       componentProps: { userCredential },
     });
     modal.onDidDismiss().then((response) => {
-      console.log(response);
-      if (!response.data) {
-        this.goLoginPage();
-      }
+      // if (!response.data) {
+      //   this.goLoginPage();
+      // }
     });
     return await modal.present();
   }

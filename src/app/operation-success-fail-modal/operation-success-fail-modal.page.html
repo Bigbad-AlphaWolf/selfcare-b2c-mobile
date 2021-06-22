@@ -8,8 +8,11 @@
   <div class="top-block">
     <img *ngIf="success" src="/assets/images/confirmation.png" alt="checked" />
     <ng-container *ngIf="!success">
-      <img *ngIf="purchaseType !== OPERATION_CHANGE_PIN_OM" src="/assets/images/echec.png" alt="checked" />
+      <img *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT].includes(purchaseType)" src="/assets/images/echec.png" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_CHANGE_PIN_OM" src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="checked" />
+      <img *ngIf="purchaseType === OPERATION_OPEN_OM_ACCOUNT" src="/assets/images/05-ic-nes-ouverture-compte-om.svg" alt="checked" />
+      <img *ngIf="purchaseType === OPERATION_CANCEL_TRANSFERT_OM" src="/assets/images/05-ic-nes-blocage-transfert.svg" alt="checked" />
+      <img *ngIf="purchaseType === OPERATION_DEPLAFONNEMENT_OM_ACCOUNT" src="/assets/images/05-ic-nes-ouverture-compte-om.svg" alt="checked" />
 
     </ng-container>
     <ng-container [ngSwitch]="purchaseType">
@@ -45,7 +48,7 @@
       <span class="title" *ngSwitchCase="OPERATION_ALLO_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
-      <span class="title" *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+      <span class="title" *ngSwitchCase="OPERATION_TYPE_PASS_VOYAGE"
         >{{success ? 'Achat pass effectué' : 'Echec achat pass'}}</span
       >
       <span class="title" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT"
@@ -60,11 +63,22 @@
       <span class="title" *ngSwitchCase="OPERATION_CHANGE_PIN_OM"
         >Bravo !</span
       >
+      <span class="title" *ngSwitchCase="OPERATION_OPEN_OM_ACCOUNT"
+        >Merci !</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_DEPLAFONNEMENT_OM_ACCOUNT"
+        >Merci !</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_CANCEL_TRANSFERT_OM">Votre demande d’annulation a bien était envoyée !</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"
+        >{{ success ? 'Achat pass effectué' : 'Echec achat de pass'}}</span
+      >
     </ng-container>
     <span class="subtitle scb-text-gray">
       <ng-container *ngIf="!success">
-        <span *ngIf="purchaseType !== OPERATION_CHANGE_PIN_OM" >{{errorMsg}}</span>
-        <span *ngIf="purchaseType === OPERATION_CHANGE_PIN_OM" >{{textMsg}}</span>
+        <span *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT].includes(purchaseType)" >{{errorMsg}}</span>
+        <span class="custom-font" *ngIf="[OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT].includes(purchaseType)" >{{textMsg}}</span>
 
       </ng-container>
       <ng-container *ngIf="success" [ngSwitch]="purchaseType">
@@ -86,7 +100,7 @@
         <span *ngSwitchCase="OPERATION_ALLO_TYPE"
           >Vous avez acheté le pass allo</span>
 
-        <span *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+        <span *ngSwitchCase="OPERATION_TYPE_PASS_VOYAGE"
           >Vous avez acheté le pass voyage</span
         >
         <span *ngSwitchCase="OPERATION_TRANSFER_OM"
@@ -103,6 +117,9 @@
         >
         <span *ngSwitchCase="OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM"
           >Merci, votre demande a bien été prise en compte, vous serez contacté par le service client dans les 48h</span
+        >
+        <span *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"
+          >Vous avez acheté le pass {{opXtras?.serviceUsage?.fullDescription}}</span
         >
       </ng-container>
     </span>
@@ -124,7 +141,7 @@
         </app-item-pass-illimix>
         <app-item-pass-illimix
           [passIllimix]="passBought"
-          *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'"
+          *ngSwitchCase="OPERATION_TYPE_PASS_VOYAGE"
         >
         </app-item-pass-illimix>
         <app-item-pass-illimix
@@ -134,6 +151,8 @@
         </app-item-pass-illimix>
         <app-item-transfert-om
           [omTransfertInfos]="opXtras"
+          [isFromHistory]="isOpenedFromHistory"
+          [transferHistoryItem]="historyTransactionItem"
           *ngSwitchCase="OPERATION_TRANSFER_OM"
         >
         </app-item-transfert-om>
@@ -167,6 +186,7 @@
         </app-item-recharge-credit>
         <app-item-illiflex *ngSwitchCase="OPERATION_ILLIFLEX_TYPE" [passIlliflex]="passBought"></app-item-illiflex>
         <app-dalal-card-item *ngSwitchCase="OPERATION_ENABLE_DALAL" [dalal]="dalal"></app-dalal-card-item>
+        <app-pass-usage-item *ngSwitchCase="OPERATION_TYPE_PASS_USAGE" [serviceUsage]="opXtras.serviceUsage" [passUsage]="opXtras.pass"></app-pass-usage-item>
       </ng-container>
     </div>
     <div
@@ -215,7 +235,8 @@
       <div class="details details-date">
         <div class="left-block">Date d'achat</div>
         <div class="right-block scb-text-gray">
-          <span class="numero">{{dateAchat}}</span>
+          <span class="numero" *ngIf="!isOpenedFromHistory">{{dateAchat}}</span>
+          <span class="numero" *ngIf="isOpenedFromHistory">{{formatDate(historyTransactionItem?.operationDate) | date:'shortDate'}} à {{formatDate(historyTransactionItem?.operationDate) | date:'hh:mm'}}</span>
         </div>
       </div>
     </div>
@@ -279,17 +300,7 @@
     </div>
 </ng-container>
 
-  <div class="coupon-block" *ngIf="success && coupon">
-    <div class="header">
-      <span class="scb-text-gray">Coupon &nbsp;</span>
-      <img src="/assets/images/logo-trace.png" alt="">
-    </div>
-    <span class="code">{{coupon}}</span>
-  </div>
-  <div class="scb-text-gray loading-coupon" *ngIf="success && hasCoupon">
-    Vous recevrez le coupon par message...
-  </div>
-  <div *ngIf="success && !isBuyerPostpaid && !coupon" class="confirm-btn">
+  <div *ngIf="success && !isBuyerPostpaid" class="confirm-btn">
     <ion-button
       (click)="goToPage()"
       shape="round"
@@ -332,6 +343,18 @@
         >
       </ng-container>
     </ion-button>
+  </div>
+
+  <div class="cancel-transfer-block scb-text-red-error" *ngIf="(success && purchaseType === OPERATION_TRANSFER_OM) || isOpenedFromHistory">
+    <div class="cancel-title" *ngIf="!eligibilityHasError">
+      <span class="text" [ngClass]="{'text-disabled': checkingEligibility}" (click)="checkTransferEligibility()">Bloquer le transfert</span>
+      <mat-spinner
+          mode="indeterminate"
+          [diameter]="15"
+          *ngIf="checkingEligibility"
+        ></mat-spinner>
+    </div>
+    <div class="cancel-error" *ngIf="eligibilityHasError">{{eligibilityError}}</div>
   </div>
 
   <div class="terminer scb-text-orange" (click)="terminer()">

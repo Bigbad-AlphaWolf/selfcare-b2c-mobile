@@ -82,16 +82,26 @@ export class ActionItemComponent implements OnInit {
 
   goIbouPage() {
     this.router.navigate(['/contact-ibou-hub']);
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_Hub_Ibou_card_clic',
+      'event',
+      'clicked'
+    );
   }
 
   goFiberEligibility() {
     this.inAppBrowser.create(CHECK_ELIGIBILITY_EXTERNAL_URL, '_self');
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_actions_eligibilité_fibre_clic',
+      'event',
+      'clicked'
+    );
   }
 
   goPuk() {
     this.router.navigate(['/control-center/puk']);
     this.followAnalyticsService.registerEventFollow(
-      'Find_PUK',
+      'Assistance_actions_Find_PUK_clic',
       'event',
       'clicked'
     );
@@ -100,7 +110,7 @@ export class ActionItemComponent implements OnInit {
   goChangeSeddo() {
     this.router.navigate(['/control-center/change-seddo-code']);
     this.followAnalyticsService.registerEventFollow(
-      'Seddo_PIN',
+      'Assistance_actions_Change_Seddo_PIN_clic',
       'event',
       'clicked'
     );
@@ -109,33 +119,35 @@ export class ActionItemComponent implements OnInit {
   goInternet() {
     this.router.navigate(['/control-center/internet-mobile']);
     this.followAnalyticsService.registerEventFollow(
-      'Parametrage_Internet_Mobile',
+      'Assistance_actions_Parametrage_Internet_Mobile_clic',
       'event',
       'clicked'
     );
   }
   goCreateOMAccount() {
-    this.router.navigate(['/control-center/operation-om/creation-compte']);
+    this.router.navigate(['/om-self-operation/open-om-account']);
+    // this.router.navigate(['/control-center/operation-om/creation-compte']);
     this.followAnalyticsService.registerEventFollow(
-      'Creation_Compte_OM',
+      'Assistance_actions_Creation_Compte_OM_clic',
       'event',
       'clicked'
     );
   }
 
   goDeplafonnement() {
-    this.router.navigate(['/control-center/operation-om/deplafonnement']);
+    // this.router.navigate(['/control-center/operation-om/deplafonnement']);
+    this.router.navigate(['/om-self-operation/deplafonnement']);
     this.followAnalyticsService.registerEventFollow(
-      'Deplafonnement_OM',
+      'Assistance_actions_Deplafonnement_OM_clic',
       'event',
       'clicked'
     );
   }
 
   goReclamation() {
-    this.router.navigate(['/reclamation-om-transaction']);
+    this.router.navigate(['/om-self-operation/cancel-transaction']);
     this.followAnalyticsService.registerEventFollow(
-      'Reclamation_OM',
+      'Assistance_actions_Reclamation_OM_clic',
       'event',
       'clicked'
     );
@@ -144,7 +156,7 @@ export class ActionItemComponent implements OnInit {
   onFollowUpRequests() {
     this.router.navigate(['follow-up-requests']);
     this.followAnalyticsService.registerEventFollow(
-      'suivi_demande-fixe',
+      'Assistance_actions_suivi_demande-fixe_clic',
       'event',
       'clicked'
     );
@@ -153,7 +165,7 @@ export class ActionItemComponent implements OnInit {
   goFindToAgenceWebSite() {
     this.inAppBrowser.create(FIND_AGENCE_EXTERNAL_URL, '_self');
     this.followAnalyticsService.registerEventFollow(
-      'Trouver_agence_orange',
+      'Assistance_hub_Trouver_agence_orange_clic',
       'event',
       'clicked'
     );
@@ -167,6 +179,11 @@ export class ActionItemComponent implements OnInit {
         operationType: OPERATION_INIT_CHANGE_PIN_OM,
       },
     });
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_actions_change_pin_OM_clic',
+      'event',
+      'clicked'
+    );
     modal.onDidDismiss().then((resp) => {
       if (resp && resp.data && resp.data.success) {
         const omUserInfos = resp.data.omUserInfos;

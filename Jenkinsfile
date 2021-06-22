@@ -1,4 +1,4 @@
- devsMail = 'mouhamadoubambambacke.sow@orange-sonatel.com, xx@orange-sonatel.com'
+ devsMail = 'Team.selfcare-b2c@orange-sonatel.com'
 
 pipeline {
   // agent any
@@ -58,10 +58,7 @@ pipeline {
 
    /* stage("Plugins install ionic cordova") {
       steps{
-        sh "npm i -g @ionic/cli"
-        sh "npm i -g cordova@9.0.0"
-        sh "npm i -g cordova-res"
-        sh "npm i"
+        sh "npm run clean:all:install" 
       }
     }*/
 
@@ -115,7 +112,8 @@ pipeline {
         echo "Build Android Unsigned"
         sh "npm run build:android:release"
       }
-    }
+    } 
+
 
    /* stage('Android Build Signed') {
       steps {
@@ -124,10 +122,10 @@ pipeline {
       }
       post{
         success {
-          archiveArtifacts artifacts:  'platforms/android/app/build/outputs/apk/release/ovto.apk'
-          emailext attachmentsPattern: 'platforms/android/app/build/outputs/apk/release/ovto.apk',
+          archiveArtifacts artifacts:  'platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk'
+          emailext attachmentsPattern: 'platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk',
             body: 'Apk joint au mail.',
-            subject: '[RELEASE] Signed',
+            subject: '[RELEASE] O&M ANDROID APK Signed',
             to: devsMail
         }
        }

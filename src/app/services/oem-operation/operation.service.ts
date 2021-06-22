@@ -133,8 +133,8 @@ export class OperationService {
     offerService.banniere = offerService.banniere
       ? `${this.FILE_MANAGER_BASE_URL}/${offerService.banniere}`
       : '';
-    offerService.iconeBackground = offerService.iconeBackground
-      ? `${this.FILE_MANAGER_BASE_URL}/${offerService.iconeBackground}`
-      : '';
+    // offerService.iconeBackground = offerService.iconeBackground
+    //   ? `${this.FILE_MANAGER_BASE_URL}/${offerService.iconeBackground}`
+    //   : '';
   }
 }

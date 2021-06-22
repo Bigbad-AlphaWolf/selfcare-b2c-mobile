@@ -61,6 +61,8 @@ import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-ph
 import { YesNoModalComponent } from './yes-no-modal/yes-no-modal.component';
 import { SimpleOperationSuccessModalComponent } from './simple-operation-success-modal/simple-operation-success-modal.component';
 import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
+import { PassUsageItemComponent } from './pass-usage-item/pass-usage-item.component';
+import { BlockTransferSuccessPopupComponent } from './block-transfer-success-popup/block-transfer-success-popup.component';
 
 @NgModule({
   declarations: [
@@ -110,7 +112,9 @@ import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/bann
     RapidoSoldeComponent,
     YesNoModalComponent,
     SimpleOperationSuccessModalComponent,
-    BanniereDescriptionPage
+    BanniereDescriptionPage,
+    PassUsageItemComponent,
+    BlockTransferSuccessPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -151,7 +155,8 @@ import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/bann
     ChooseRattachementTypeModalComponent,
     YesNoModalComponent,
     SimpleOperationSuccessModalComponent,
-    BanniereDescriptionPage
+    BanniereDescriptionPage,
+    BlockTransferSuccessPopupComponent,
   ],
   exports: [
     BanniereComponent,
@@ -198,7 +203,9 @@ import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/bann
     MaterialComponentsModule,
     PipesModule,
     YesNoModalComponent,
-    SimpleOperationSuccessModalComponent
+    SimpleOperationSuccessModalComponent,
+    PassUsageItemComponent,
+    BlockTransferSuccessPopupComponent,
   ],
   providers: [
     Contacts,

@@ -239,6 +239,8 @@ export class AuthenticationService {
     }
     const currentDate = Date.now();
     const elapsedTime = currentDate - lastUpdateTime;
+    // 1.800.000 ms = 1.800 s = 30 min subscription cache duration
+    // multiply by an int to extend storage duration in the cache (eg. 1800000 * 48)
     const hasExpired = elapsedTime > 1800000;
     if (hasExpired) ls.remove(subscriptionKey);
     return hasExpired;
@@ -531,6 +533,7 @@ export interface ConfirmMsisdnModel {
   hmac: string;
   msisdn: string;
   status: boolean;
+  api_key?: string;
 }
 
 export interface ResetPwdModel {

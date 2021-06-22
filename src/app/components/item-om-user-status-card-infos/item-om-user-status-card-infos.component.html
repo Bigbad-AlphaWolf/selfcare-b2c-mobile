@@ -1,0 +1,15 @@
+<div class="operation-status">
+  <div class="status-header">
+    <div class="status-title">Demande {{ userOmStatus.operation === 'FULL' || userOmStatus.operation === 'DEPLAFONNEMENT' ? "de déplafonnement" : "d'ouverture"  }} de compte Orange Money <br > {{userOmStatus?.omNumber | phoneNumberDisplay}}</div>
+    <ng-container [ngSwitch]="userOmStatus?.operationStatus">
+      <div class="status-demand on-going" *ngSwitchCase="'ONGOING'">En cours</div>
+      <div class="status-demand completed" *ngSwitchCase="'COMPLETED'">Clôturée</div>
+      <div class="status-demand rejected" *ngSwitchCase="'ERROR'">Rejetée</div>
+      <div class="status-demand" *ngSwitchDefault></div>
+    </ng-container>
+  </div>
+
+  <div class="status-description scb-text-gray">
+    {{userOmStatus?.message}}
+  </div>
+</div>

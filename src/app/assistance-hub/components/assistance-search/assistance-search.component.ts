@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IonInput, NavController } from '@ionic/angular';
 import { OffreService } from 'src/app/models/offre-service.model';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-assistance-search',
@@ -14,11 +15,15 @@ export class AssistanceSearchComponent implements OnInit {
   listBesoinAides: OffreService[];
   listBesoinAidesAltered: OffreService[];
 
-  constructor(private navController: NavController) {}
+  constructor(private navController: NavController, private followAnalyticsService: FollowAnalyticsService) {}
 
   ngOnInit() {
     this.listBesoinAidesAltered = this.listBesoinAides =
       history.state.listBesoinAides;
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_search_page_affichage_success',
+      'event'
+    );
   }
 
   ngAfterViewInit() {

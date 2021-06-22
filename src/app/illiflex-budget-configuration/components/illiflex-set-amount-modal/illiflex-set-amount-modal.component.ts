@@ -111,7 +111,7 @@ export class IlliflexSetAmountModalComponent implements OnInit {
       this.error = `Le montant saisi doit être supérieur à ${this.minAmountIlliflex} F CFA`;
     } else if (amount > this.maxAmountIlliflex) {
       this.hasError = true;
-      this.error = `Le montant saisi doit être inférieur à ${this.minAmountIlliflex} F CFA`;
+      this.error = `Le montant saisi doit être inférieur à ${this.maxAmountIlliflex} F CFA`;
     } else {
       this.modalController.dismiss(amount);
     }

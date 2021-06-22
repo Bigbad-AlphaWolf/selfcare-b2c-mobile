@@ -23,6 +23,8 @@ import { ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { AppComponent } from 'src/app/app.component';
+import { environment } from 'src/environments/environment';
+const { AUTH_IMPLICIT_MSISDN } = environment;
 
 const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable()
@@ -82,7 +84,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (isReqWaitinForUIDandMSISDN(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
-      headers = headers.set('X-MSISDN', '221777917217');
+      headers = headers.set('X-MSISDN', AUTH_IMPLICIT_MSISDN);
       //delay to test slowness of network
       req = req.clone({
         headers,

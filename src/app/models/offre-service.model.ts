@@ -19,6 +19,7 @@ export interface OffreService {
   reasonDeactivation?: string;
   clicked?: boolean;
   newOffer?: boolean;
+  passUsage?: boolean;
   iconeBackground?: string;
   banniere?: string;
   besoinAide?: boolean;

@@ -5,7 +5,6 @@ import { NavController, Platform } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
-import { AssistancePage } from './assistance/assistance.page';
 import { Router } from '@angular/router';
 import * as SecureLS from 'secure-ls';
 import { DetailsConsoPage } from './details-conso/details-conso.page';
@@ -18,9 +17,9 @@ import { ImageLoaderConfigService } from 'ionic-image-loader';
 import { HttpHeaders } from '@angular/common/http';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { Uid } from '@ionic-native/uid/ngx';
-import { OperationRecapPage } from './operation-recap/operation-recap.page';
 import { DashboardPage } from './dashboard/dashboard.page';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { AssistanceHubPage } from './assistance-hub/assistance-hub.page';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -175,7 +174,7 @@ export class AppComponent {
         .routeWithNavController( this.navContr ,{
           '/buy-pass-internet': TransfertHubServicesPage,
           '/pass-internet/:ppi': BuyPassInternetPage,
-          '/assistance': AssistancePage,
+          '/assistance': AssistanceHubPage,
           '/buy-pass-illimix': TransfertHubServicesPage,
           '/pass-illimix/:ppi': BuyPassIllimixPage,
           '/buy-credit': TransfertHubServicesPage,

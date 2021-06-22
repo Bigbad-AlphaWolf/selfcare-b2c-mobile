@@ -26,7 +26,7 @@ export class IbouIonFabComponent implements OnInit {
   fabToggled() {
     this.fabOpened = !this.fabOpened;
     this.followAnalyticsService.registerEventFollow(
-      'click_on_Ibou',
+      'Dashboard_click_on_Ibou',
       'event',
       'clicked'
     );
@@ -50,7 +50,7 @@ export class IbouIonFabComponent implements OnInit {
   goToSatisfactionForm() {
     this.router.navigate(['/satisfaction-form']);
     this.followAnalyticsService.registerEventFollow(
-      'Formulaire_de_satisfaction_via_Ibou',
+      'Ibou_Formulaire_de_satisfaction_clic',
       'event',
       'clicked'
     );
@@ -59,7 +59,7 @@ export class IbouIonFabComponent implements OnInit {
   goToBesoinAide() {
     this.router.navigate(['/assistance-hub']);
     this.followAnalyticsService.registerEventFollow(
-      'assistanceHub_via_Ibou',
+      'Ibou_Assistance_Hub_clic',
       'event',
       'clicked'
     );
@@ -74,12 +74,22 @@ export class IbouIonFabComponent implements OnInit {
 
     this.socialSharing
       .share(postTitle, null, null, url)
-      .then()
+      .then(_ => {
+        this.followAnalyticsService.registerEventFollow(
+          'Ibou_open_native_share_application_success',
+          'event'
+        );
+      })
       .catch((err: any) => {
         console.log('Cannot open default sharing sheet' + err);
+        this.followAnalyticsService.registerEventFollow(
+          'Ibou_open_native_share_application_failed',
+          'error',
+          { error: err }
+        );
       });
     this.followAnalyticsService.registerEventFollow(
-      'share_application_via_Ibou',
+      'Ibou_share_application_clic',
       'event',
       'clicked'
     );
@@ -87,5 +97,10 @@ export class IbouIonFabComponent implements OnInit {
 
   goIbouPage() {
     this.router.navigate(['/contact-ibou-hub']);
+    this.followAnalyticsService.registerEventFollow(
+      'Ibou_talk_to_Ibou_clic',
+      'event',
+      'clicked'
+    );
   }
 }

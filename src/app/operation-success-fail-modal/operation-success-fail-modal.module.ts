@@ -28,6 +28,7 @@ const routes: Routes = [
     IonicModule,
     ComponentsModule,
     PipesModule,
+    SharedModule,
     RouterModule.forChild(routes),
   ],
   declarations: [OperationSuccessFailModalPage],

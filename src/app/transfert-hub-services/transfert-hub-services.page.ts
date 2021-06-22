@@ -32,17 +32,21 @@ import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.servic
 import { ListPassVoyagePage } from '../pages/list-pass-voyage/list-pass-voyage.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import { tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { FavoritePassOemModel } from '../models/favorite-pass-oem.model';
 import { FavorisService } from '../services/favoris/favoris.service';
 import { OperationService } from '../services/oem-operation/operation.service';
 import { OffreService } from '../models/offre-service.model';
-import { OPERATION_TRANSFERT_ARGENT } from '../utils/operations.constants';
+import {
+  OPERATION_TRANSFERT_ARGENT,
+  OPERATION_TYPE_PASS_USAGE,
+} from '../utils/operations.constants';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amount.page';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -54,6 +58,7 @@ export class TransfertHubServicesPage implements OnInit {
   OPERATION_TYPE_PASS_ILLIMIX = OPERATION_TYPE_PASS_ILLIMIX;
   pageTitle: string;
   options: OffreService[] = [];
+  passUsages: OffreService[] = [];
   lightOptions: OffreService[] = [
     {
       shortDescription: 'Pass',
@@ -112,13 +117,15 @@ export class TransfertHubServicesPage implements OnInit {
     private authService: AuthenticationService,
     private favService: FavorisService,
     private toastController: ToastController,
-    private operationService: OperationService
+    private operationService: OperationService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
     if (history && history.state) {
       this.purchaseType = history.state.purchaseType;
       this.isLightMod = history.state.isLightMod;
+      console.log('isLightMod', this.isLightMod);
     }
     if (this.purchaseType === 'TRANSFER') {
       this.pageTitle = 'Transférer argent ou crédit';
@@ -137,19 +144,35 @@ export class TransfertHubServicesPage implements OnInit {
     this.loadingServices = true;
     this.servicesHasError = false;
     this.operationService.getServicesByFormule(this.hubCode).subscribe(
-      (res: any) => {
+      (res) => {
         this.loadingServices = false;
-        console.log(res);
-
-        this.options = res;
+        this.options = res.filter((option) => !option.passUsage);
+        this.passUsages = res.filter((option) => option.passUsage);
         this.getUserActiveBonPlans();
         this.getUserActiveBoosterPromo();
         this.getFavoritePass();
         this.getUserInfos();
+        const followEvent =
+          this.purchaseType === 'TRANSFER'
+            ? 'Get_hub_transfert_services_success'
+            : 'Get_hub_achat_services_success';
+        this.followAnalyticsService.registerEventFollow(
+          followEvent,
+          'event',
+          this.currentPhone
+        );
       },
       (err) => {
         this.loadingServices = false;
         this.servicesHasError = true;
+        const followError =
+          this.purchaseType === 'TRANSFER'
+            ? 'Get_hub_transfert_services_failed'
+            : 'Get_hub_achat_services_failed';
+        this.followAnalyticsService.registerEventFollow(followError, 'error', {
+          msisdn: this.currentPhone,
+          error: err.status,
+        });
       }
     );
   }
@@ -170,7 +193,27 @@ export class TransfertHubServicesPage implements OnInit {
       toast.present();
       return;
     }
-
+    const followEvent =
+      (this.purchaseType === 'TRANSFER'
+        ? 'Hub_transfert_clic_'
+        : 'Hub_Achat_clic_') +
+      opt.code.toLocaleLowerCase() +
+      (this.isLightMod ? '_light' : '');
+    this.followAnalyticsService.registerEventFollow(
+      followEvent,
+      'event',
+      'clic'
+    );
+    if (opt.passUsage) {
+      this.bsService.openNumberSelectionBottomSheet(
+        NumberSelectionOption.WITH_MY_PHONES,
+        OPERATION_TYPE_PASS_USAGE,
+        'list-pass-usage',
+        false,
+        opt
+      );
+      return;
+    }
     switch (opt.code) {
       case OPERATION_TRANSFERT_ARGENT:
         this.showBeneficiaryModal();
@@ -289,7 +332,9 @@ export class TransfertHubServicesPage implements OnInit {
             PurchaseSetAmountPage.ROUTE_PATH
           )
           .subscribe((_) => {});
-        this.bsService.openModal(MerchantPaymentCodeComponent);
+        this.bsService.openModal(MerchantPaymentCodeComponent, {
+          omMsisdn: omSession.msisdn,
+        });
       } else {
         this.openPinpad();
       }
@@ -397,12 +442,29 @@ export class TransfertHubServicesPage implements OnInit {
       .pipe(
         tap((res: any) => {
           this.favoritesPass = res;
+          this.followAnalyticsService.registerEventFollow(
+            'Get_favorite_pass_success',
+            'event'
+          );
+        }),
+        catchError((err) => {
+          this.followAnalyticsService.registerEventFollow(
+            'Get_favorite_pass_error',
+            'error',
+            { msisdn: this.currentPhone, error: err.status }
+          );
+          return of(null);
         })
       )
       .subscribe();
   }
 
   choosePass(pass: any, opType: string) {
+    this.followAnalyticsService.registerEventFollow(
+      'Select_favorite_pass',
+      'event',
+      this.currentPhone
+    );
     let navigationExtras: NavigationExtras = {
       state: {
         pass,

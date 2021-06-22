@@ -112,7 +112,7 @@ export class LoginPage implements OnInit {
         this.followAnalyticsService.registerEventFollow(
           'login_failed',
           'error',
-          user.username
+          { login: user.username, status: err.status }
         );
         this.loading = false;
         this.showErrMessage = true;
@@ -146,12 +146,24 @@ export class LoginPage implements OnInit {
 
   doAction(action: 'register' | 'help' | 'password') {
     if (action === 'register') {
+      this.followAnalyticsService.registerEventFollow(
+        'Go_register_from_login',
+        'event'
+      );
       this.goRegisterPage();
     }
     if (action === 'help') {
+      this.followAnalyticsService.registerEventFollow(
+        'Open_help_modal_from_login',
+        'event'
+      );
       this.openHelpModal(HelpModalDefaultContent);
     }
     if (action === 'password') {
+      this.followAnalyticsService.registerEventFollow(
+        'Forgotten_pwd_from_login',
+        'event'
+      );
       this.router.navigate(['/forgotten-password']);
     }
   }

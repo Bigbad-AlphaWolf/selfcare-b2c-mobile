@@ -109,7 +109,7 @@
   </div>
 </div>
 <div class="pinpad-v3" *ngIf="userHasOmToken">
-  <ng-container *ngIf="operationType !== OPERATION_CHANGE_PIN_OM">
+  <ng-container *ngIf="operationType !== OPERATION_CHANGE_PIN_OM && operationType !== OPERATION_BLOCK_TRANSFER">
     <img src="/assets/images/password.png" alt="lock" />
     <div class="title">
       <span class="title-1" *ngIf="!canRetry">Mot de passe</span>
@@ -125,6 +125,13 @@
       <span class="subtitle scb-text-gray"
         >Le nouveau code secret doit être différent de votre date de naissance et les chiffres consécutifs ne sont pas autorisés</span
       >
+    </div>
+  </ng-container>
+  <ng-container *ngIf="operationType === OPERATION_BLOCK_TRANSFER">
+    <img src="/assets/images/block-transfer-ico.png" alt="lock" />
+    <div class="title">
+      <span class="title-1">Bloquer le transfert</span>
+      <span class="subtitle scb-text-gray">Entrer votre code secret pour confirmer le blocage temporaire de votre transfert de <span class="msisdn-bold scb-text-orange">{{(MATH.abs(transactionToBlock?.amount) + transactionToBlock.fees) + ' FCFA'}}</span> au <span class="msisdn-bold scb-text-full-black">{{transactionToBlock?.msisdnReceiver | phoneNumberDisplay}}</span></span>
     </div>
   </ng-container>
   <div class="bullet-container">

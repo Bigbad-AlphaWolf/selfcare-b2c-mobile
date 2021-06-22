@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as SecureLS from 'secure-ls';
@@ -9,6 +9,9 @@ import {
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NavController } from '@ionic/angular';
 import { PRO_MOBILE_ERROR_CODE } from 'src/shared';
+import { Network } from '@ionic-native/network/ngx';
+import { Uid } from '@ionic-native/uid/ngx';
+import { Subscription } from 'rxjs';
 const ls = new SecureLS({ encodingType: 'aes' });
 export interface Description {
   text: string;
@@ -19,7 +22,7 @@ export interface Description {
   templateUrl: './forgotten-password.page.html',
   styleUrls: ['./forgotten-password.page.scss'],
 })
-export class ForgottenPasswordPage implements OnInit {
+export class ForgottenPasswordPage implements OnInit, OnDestroy {
   resetPasswordPayload = { login: null, hmac: null, newPassword: null };
   formPassword: FormGroup;
   currentStep = 1;
@@ -39,13 +42,17 @@ export class ForgottenPasswordPage implements OnInit {
   phoneNumber: string;
   hmac: string;
   resetingPwd: boolean;
+  newtworkSubscription: Subscription;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private authServ: AuthenticationService,
     private ref: ChangeDetectorRef,
     private followAnalyticsService: FollowAnalyticsService,
-    private navController: NavController
+    private navController: NavController,
+    private uid: Uid,
+    private network: Network
   ) {}
 
   ngOnInit() {
@@ -54,6 +61,7 @@ export class ForgottenPasswordPage implements OnInit {
 
   getNumber() {
     this.error_message = '';
+    const startTime = Date.now();
     this.gettingNumber = true;
     this.ref.detectChanges();
     this.authServ.getMsisdnByNetwork().subscribe(
@@ -66,13 +74,23 @@ export class ForgottenPasswordPage implements OnInit {
               this.numberGot = true;
               this.phoneNumber = response.msisdn;
               this.hmac = response.hmac;
+              const endTime = Date.now();
+              const elapsedSeconds = endTime - startTime;
+              const duration = `${elapsedSeconds} ms`;
+              this.followAnalyticsService.registerEventFollow(
+                'Get_User_msisdn_pwd_forgot_success',
+                'event',
+                { msisdn: this.phoneNumber, duration }
+              );
             } else {
               this.error_message = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
+              this.logFollowError();
             }
             this.ref.detectChanges();
           },
           () => {
             this.error_message = `La récupération ne s'est pas bien passée. Cliquez ici pour réessayer`;
+            this.logFollowError();
             this.ref.detectChanges();
           }
         );
@@ -80,9 +98,25 @@ export class ForgottenPasswordPage implements OnInit {
       () => {
         this.gettingNumber = false;
         this.error_message = `La récupération ne s'est pas bien passée. Assurez d'activer vos données mobiles Orange puis réessayez`;
+        this.logFollowError();
         this.ref.detectChanges();
       }
     );
+  }
+
+  logFollowError() {
+    let connexion: string;
+    console.log('connexionType', connexion);
+    this.newtworkSubscription = this.network.onConnect().subscribe(() => {
+      setTimeout(() => {
+        connexion = this.network.type;
+        this.followAnalyticsService.registerEventFollow(
+          'Get_User_msisdn_pwd_forgot_failed',
+          'error',
+          { imei: this.uid.IMEI, connexion }
+        );
+      }, 3000);
+    });
   }
 
   goStepNewPassword() {
@@ -121,7 +155,11 @@ export class ForgottenPasswordPage implements OnInit {
     );
   }
 
-  ionViewWillLeave() {}
+  ngOnDestroy() {
+    if (this.newtworkSubscription) {
+      this.newtworkSubscription.unsubscribe();
+    }
+  }
 
   onSubmitPassword() {
     this.error_message = '';
@@ -141,7 +179,7 @@ export class ForgottenPasswordPage implements OnInit {
             this.followAnalyticsService.registerEventFollow(
               'Reset_password_success',
               'event',
-              'success'
+              this.phoneNumber
             );
             this.resetingPwd = false;
             this.router.navigate(['/login']);
@@ -150,7 +188,7 @@ export class ForgottenPasswordPage implements OnInit {
             this.followAnalyticsService.registerEventFollow(
               'Reset_password_failed',
               'error',
-              'error'
+              { msisdn: this.phoneNumber, status: err.status }
             );
             this.resetingPwd = false;
             if (err.status === 400) {

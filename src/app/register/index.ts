@@ -362,3 +362,5 @@ export const CGU = [
     ]
   }
 ];
+
+export const MSISDN_RECUPERATION_TIMEOUT = 10000;

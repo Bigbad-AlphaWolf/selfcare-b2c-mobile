@@ -12,6 +12,7 @@ import { CreditPassAmountPage } from 'src/app/pages/credit-pass-amount/credit-pa
 import { SargalRegistrationPage } from 'src/app/sargal/components/sargal-registration/sargal-registration.page';
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
 import { RattachedPhonesNumberPage } from 'src/app/pages/rattached-phones-number/rattached-phones-number.page';
+import { PurchaseModel } from 'src/app/models/purchase.model';
 
 @Injectable({
   providedIn: 'root',
@@ -149,5 +150,12 @@ export class ApplicationRoutingService {
 
   goToTransfertOMKirene() {
     this.route.navigate(['/transfer/orange-money']);
+  }
+
+  goToCancelTransactionOM(data: PurchaseModel) {
+    let navigationExtras: NavigationExtras = {
+      state: { transactionInfos: data },
+    };
+    this.route.navigate(['/om-self-operation/cancel-transaction'], navigationExtras);
   }
 }

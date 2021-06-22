@@ -21,6 +21,7 @@ import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-bills-hub',
@@ -40,7 +41,8 @@ export class BillsHubPage implements OnInit {
     private router: Router,
     private operationService: OperationService,
     private modalController: ModalController,
-    private orangeMoneyService: OrangeMoneyService
+    private orangeMoneyService: OrangeMoneyService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -56,15 +58,29 @@ export class BillsHubPage implements OnInit {
           return this.mapOffreServiceWithCodeOM(item);
         });
         this.loadingCompanies = false;
+        this.followAnalyticsService.registerEventFollow(
+          'Get_hub_payer_services_success',
+          'event'
+        );
       },
       (err) => {
         this.onCompaniesError = true;
         this.loadingCompanies = false;
+        this.followAnalyticsService.registerEventFollow(
+          'Get_hub_payer_services_failed',
+          'error',
+          { error: err.status }
+        );
       }
     );
   }
 
   async onCompanySelected(billCompany: OffreService) {
+    this.followAnalyticsService.registerEventFollow(
+      'hub_payer_services_'+billCompany.code.toLowerCase()+'_clic',
+      'event',
+      'clicked'
+    );
     if (!billCompany.activated) {
       const toast = await this.toastController.create({
         header: 'Service indisponible',
@@ -135,11 +151,6 @@ export class BillsHubPage implements OnInit {
   }
 
   isServiceHidden(company: OffreService) {
-    console.log(
-      company.libelle,
-      !company.activated &&
-        (!company.reasonDeactivation || company.reasonDeactivation === '')
-    );
     return (
       !company.activated &&
       (!company.reasonDeactivation || company.reasonDeactivation === '')
