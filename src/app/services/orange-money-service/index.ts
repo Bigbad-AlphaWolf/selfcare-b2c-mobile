@@ -107,7 +107,7 @@ export interface TransferOrangeMoneyModel {
   amount: number;
   send_fees: number;
   cashout_fees: number;
-  fees: number;
+  fees?: number;
   a_ma_charge: boolean;
   uuid: string;
   os: string;
@@ -117,6 +117,7 @@ export interface TransferOrangeMoneyModel {
   app_conf_version: string;
   user_type: string;
   service_version: string;
+  capping: boolean;
 }
 
 export interface TransferOMWithCodeModel {
@@ -187,6 +188,9 @@ export interface FeeModel {
   effective_fees: number;
   mode_calcul: 'pourcent' | 'fixe';
   old_fees: number;
+  old_mode_calcul: 'pourcent' | 'fixe';
+  transfer_fees: number;
+  cashout_fees: number;
 }
 
 export const ORANGE_MONEY_TRANSFER_FEES = [
