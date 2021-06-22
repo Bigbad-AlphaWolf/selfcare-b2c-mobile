@@ -16,7 +16,7 @@ export class AssistanceQuestionsComponent implements OnInit {
   constructor(private navController: NavController, private followAnalyticsService: FollowAnalyticsService) {}
 
   ngOnInit() {
-    this.listQuestions = history.state.listFaqs;
+    this.listQuestions =  history.state && history.state.listFaqs ? history.state.listFaqs : [];
     this.followAnalyticsService.registerEventFollow(
       'Assistance_faq_affichage_success',
       'event'

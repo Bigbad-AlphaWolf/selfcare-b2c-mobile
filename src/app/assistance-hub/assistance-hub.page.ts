@@ -136,8 +136,6 @@ export class AssistanceHubPage implements OnInit {
       return item.typeService === BesoinAideType.ACTE;
     });
     this.listActes = this.filterOMActesFollowingOMStatus(this.userOMStatus,this.listActes);
-    console.log('listActes', this.listActes);
-
     this.listFaqs = this.listBesoinAides.filter((item: OffreService) => {
       return item.typeService === BesoinAideType.FAQ;
     });

@@ -88,7 +88,7 @@ export class AssistanceActionsComponent implements OnInit {
   constructor(private navController: NavController, private followAnalyticsService: FollowAnalyticsService) {}
 
   ngOnInit() {
-    this.listActes = history.state.listActes;
+    this.listActes = history.state && history.state.listActes ? history.state.listActes : [];
     this.groudActesByCategorie();
   }
 

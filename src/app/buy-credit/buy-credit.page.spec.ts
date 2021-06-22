@@ -2,10 +2,13 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BuyCreditPage } from './buy-credit.page';
-import { Router } from '@angular/router';
+import { Router, UrlSerializer } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { ModalController } from '@ionic/angular';
+import { Location } from '@angular/common';
 
 describe('BuyCreditPage', () => {
 	let component: BuyCreditPage;
@@ -17,6 +20,18 @@ describe('BuyCreditPage', () => {
 			providers: [
 				{
 					provide: Router
+				},
+				{
+					provide: Location
+				},
+				{
+					provide: ModalController
+				},
+				{
+					provide: HttpClient
+				},
+				{
+					provide: UrlSerializer
 				},
 				{
 					provide: DashboardService,

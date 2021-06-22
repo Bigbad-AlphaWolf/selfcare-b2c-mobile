@@ -1,9 +1,11 @@
+import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, UrlSerializer } from '@angular/router';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { of } from 'rxjs';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
@@ -20,13 +22,27 @@ describe('AssistanceHubPage', () => {
       declarations: [ AssistanceHubPage ],
       providers: [
         {
-          provide: HttpClient
+          provide: HttpClient,
+          useValue: {
+            get: () => {
+              return of()
+            }
+          }
         },
         {
           provide: AppVersion
         },
         {
           provide: Router
+        },
+        {
+          provide: Location
+        },
+        {
+          provide: UrlSerializer
+        },
+        {
+          provide: InAppBrowser
         },
         {
           provide: DashboardService, useValue: {

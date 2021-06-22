@@ -12,7 +12,7 @@ export class SearchAssistancePipe implements PipeTransform {
   transform(listBas: any[], args?: string): any {
     let newValue = listBas;
     if (null != listBas) {
-      if (args.trim() != '') {
+      if (args && args.trim() != '') {
         let terms = args.trim().split(' ');
         if (terms.length > 0) {
           return listBas

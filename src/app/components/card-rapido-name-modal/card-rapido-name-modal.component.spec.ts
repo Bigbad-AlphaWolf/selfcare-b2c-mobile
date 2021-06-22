@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CardRapidoNameModalComponent } from './card-rapido-name-modal.component';
 
@@ -9,6 +10,7 @@ describe('CardRapidoNameModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule, FormsModule],
       declarations: [ CardRapidoNameModalComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })

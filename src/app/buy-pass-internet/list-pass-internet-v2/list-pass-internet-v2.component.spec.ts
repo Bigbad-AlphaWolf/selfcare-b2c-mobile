@@ -23,7 +23,9 @@ describe('ListPassInternetV2Component', () => {
           useValue: {
             setUserPhoneNumber: () => {},
             setPaymentMod: () => {},
-            queryListPassInternetOfUserByQuery: () => {},
+            queryListPassInternetOfUser: () => {
+              return of()
+            },
             getStatusPassLoaded: () => {
               return of();
             },
