@@ -1,5 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ModalController } from '@ionic/angular';
+import { of } from 'rxjs';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { PurchaseService } from 'src/app/services/purchase-service/purchase.service';
 
 import { HistorikTransactionByTypeModalComponent } from './historik-transaction-by-type-modal.component';
 
@@ -9,6 +13,25 @@ describe('HistorikTransactionByTypeModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: ModalController
+        },
+        {
+          provide: DashboardService,
+          useValue: {
+            getCurrentPhoneNumber:() => {}
+          }
+        },
+        {
+          provide: PurchaseService,
+          useValue: {
+            getAllTransactionByDay:() => {
+              return of()
+            }
+          }
+        }
+      ],
       declarations: [ HistorikTransactionByTypeModalComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })

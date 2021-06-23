@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
 
 import { ItemOmUserStatusCardInfosComponent } from './item-om-user-status-card-infos.component';
 
@@ -9,7 +10,7 @@ describe('ItemOmUserStatusCardInfosComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ItemOmUserStatusCardInfosComponent ],
+      declarations: [ ItemOmUserStatusCardInfosComponent, PhoneNumberDisplayPipe ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();

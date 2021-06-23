@@ -1,5 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ModalController } from '@ionic/angular';
+import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
 
 import { LinesComponent } from './lines.component';
 
@@ -9,7 +11,12 @@ describe('LinesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LinesComponent ],
+      providers: [
+        {
+          provide: ModalController
+        }
+      ],
+      declarations: [ LinesComponent, PhoneNumberDisplayPipe ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();

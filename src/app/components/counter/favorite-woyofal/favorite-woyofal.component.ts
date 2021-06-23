@@ -22,9 +22,8 @@ export class FavoriteWoyofalComponent implements OnInit {
 
   ngOnInit() {
     let type_favoris = 'compteur';
-    console.log(this.bsService.opXtras.billData);
 
-    let code = this.bsService.opXtras.billData.company.code;
+    let code = this.bsService && this.bsService.opXtras.billData.company.code ? this.bsService.opXtras.billData.company.code : null;
     this.woyofals$ = this.favoriService.fetchFavorites(type_favoris).pipe(
       map((favoris: FavorisOem[]) => {
         let results = [];
