@@ -1,0 +1,141 @@
+@import 'src/app/app';
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.28px;
+}
+
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+  padding: 0 10px;
+}
+
+.transfer-page {
+  height: 100%;
+  background-color: $grayDashboard;
+  position: relative;
+  padding-top: 10px;
+  .transfer-settings {
+    height: 100%;
+    background-color: $white;
+    padding: 20px 15px;
+    .recipient-block {
+      .recu-par {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 20px;
+        font-weight: bold;
+        line-height: 1.5;
+        margin-bottom: 20px;
+      }
+      .recipient {
+        padding: 15px;
+        border-radius: 5px;
+        background-color: $silver;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .rec-msisdn {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 16px;
+          line-height: 1.25;
+        }
+        .rec-name {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 12px;
+        }
+      }
+    }
+    .transfer-amount-block {
+      margin-top: 35px;
+      mat-form-field {
+        .suffix {
+          text-align: end;
+          .cfa-unit {
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 16px;
+            line-height: 1.88;
+          }
+          .send-fee {
+            display: flex;
+            align-items: center;
+            .send-fee-value,
+            .free-fees {
+              font-family: HelveticaNeueLTStd-Roman;
+              font-size: 12px;
+              line-height: 1.67;
+            }
+            .info-icon {
+              margin-left: 5px;
+              width: 12px;
+              height: 12px;
+            }
+          }
+        }
+      }
+      .free-fees-description {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        text-align: end;
+        margin-bottom: 20px;
+      }
+    }
+    .error-display {
+      font-size: 12px;
+    }
+    .cashout-fees-block {
+      .cashout-fees-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .cashout-title {
+          font-family: HelveticaNeueLTStd-Bd;
+          font-size: 14px;
+          line-height: 1.14;
+        }
+        .toggle-content {
+          display: flex;
+          align-items: center;
+          .cashout-fees-value {
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 12px;
+            line-height: 1.33;
+            margin-right: 10px;
+          }
+        }
+      }
+      .cashout-fees-description {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 12px;
+        line-height: 1.33;
+      }
+    }
+
+    .toggle-tac-block {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 20px 0;
+      .tac-title {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 14px;
+        line-height: 1.14;
+      }
+    }
+
+    .tac-recipient-sup-infos {
+      margin: 15px 0 50px;
+    }
+
+    .btn-container {
+      position: sticky;
+      bottom: 20px;
+      z-index: 10;
+      button {
+        border-radius: 10px;
+      }
+    }
+  }
+}

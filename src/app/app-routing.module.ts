@@ -269,7 +269,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'purchase-set-amount',
+    path: 'operation-set-amount',
     loadChildren:
       './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule',
     canActivate: [AuthGuard],
@@ -428,6 +428,11 @@ const routes: Routes = [
     path: 'om-self-operation',
     loadChildren:
       './orange-money-self-operation/orange-money-self-operation.module#OrangeMoneySelfOperationModule',
+  },
+  {
+    path: 'purchase-set-amount',
+    loadChildren:
+      './transfer-set-amount/transfer-set-amount.module#TransferSetAmountPageModule',
   },
 ];
 
