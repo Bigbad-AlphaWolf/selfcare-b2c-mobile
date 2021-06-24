@@ -39,6 +39,7 @@ import { BannierePubModel } from '../dashboard-service';
 import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
 import { OffreService } from 'src/app/models/offre-service.model';
 import { OPERATION_RECHARGE_CREDIT } from 'src/app/utils/operations.constants';
+import { TransferSetAmountPage } from 'src/app/transfer-set-amount/transfer-set-amount.page';
 
 @Injectable({
   providedIn: 'root',
@@ -144,7 +145,7 @@ export class BottomSheetService {
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data && response.data.recipientMsisdn) {
-        this.navCtl.navigateForward([PurchaseSetAmountPage.ROUTE_PATH], {
+        this.navCtl.navigateForward([TransferSetAmountPage.ROUTE_PATH], {
           state: response.data,
         });
       }

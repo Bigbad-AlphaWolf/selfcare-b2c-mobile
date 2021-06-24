@@ -357,7 +357,7 @@ export class TransfertHubServicesPage implements OnInit {
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data && response.data.recipientMsisdn) {
         const pageData = response.data;
-        this.appRouting.goSetAmountPage(pageData);
+        this.appRouting.goSetTransferAmountPage(pageData);
       }
     });
     return await modal.present();
