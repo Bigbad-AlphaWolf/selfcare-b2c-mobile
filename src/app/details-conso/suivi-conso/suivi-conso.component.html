@@ -7,35 +7,42 @@
     <div *ngFor="let consoDetail of consoDetails" class="category-container">
       <div class="title-conso">
         <span class="scb-categorie-txt">{{
-          consoDetail.categorie | formatSuiviConsoCategoryTitle
+          consoDetail.category | formatSuiviConsoCategoryTitle
         }}</span>
       </div>
   
       <div
         class="rechargelabel-rechargevalue-rechargejauge-and-expirationrechargedatetime-block item-conso-list"
-        *ngFor="let cosodetailconsommations of consoDetail.consommations"
+        *ngFor="let consodetailconsommations of consoDetail.consumations"
       >
         <div class="rechargelabel-rechargevalue-container">
           <div class="rechargelabel-container">
             <span class="scb-category-item">{{
-              cosodetailconsommations.compteur
+              consodetailconsommations.name
             }}</span>
           </div>
           <div class="rechargevalue-container">
             <span class="scb-category-item-value"
-              >{{ cosodetailconsommations.montantFormat }}
+              >{{ isCounterConsoActe(consodetailconsommations) ? consodetailconsommations.montantConsomme : consodetailconsommations.montantRestant }}
+              <span class="text-style-1" *ngIf="consodetailconsommations?.hasGauge">
+                / {{ consodetailconsommations.montantTotal }}
+              </span>
             </span>
           </div>
         </div>
+
+        <ng-container *ngIf="consodetailconsommations?.hasGauge">
+          <app-item-conso-gauge [conso]="consodetailconsommations"></app-item-conso-gauge>
+        </ng-container>
   
-        <div class="rechargejauge-expirationrechargedatetime-container">
-          <div class="rechargejauge-container"></div>
+        <div class="rechargejauge-expirationrechargedatetime-container" *ngIf="consodetailconsommations.dateExpiration">
           <div class="expirationrechargedatetime-container">
             <span class="scb-category-item-validity"
-              >Expire le {{ cosodetailconsommations.dateExpiration }}</span
+              >Expire le {{ consodetailconsommations.dateExpiration }}</span
             >
           </div>
         </div>
+        
       </div>
     </div>
   </ng-container>

@@ -1,6 +1,6 @@
 @import 'src/app/app';
 
-:host{
+:host {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -11,7 +11,7 @@
 .category-block {
   // margin-top: 98px;
 
-  .error{
+  .error {
     margin-top: 20px;
     text-align: center;
   }
@@ -20,16 +20,17 @@
     margin-bottom: 5px;
     padding: 30px percentage(10px / $baseWidthMobile2) 20px
       percentage(12px / $baseWidthMobile2);
-      margin-top: 10px;
-      .title-conso{
-        margin-bottom: 30px;
-        text-align: start;
+    margin-top: 10px;
+    .title-conso {
+      margin-bottom: 30px;
+      text-align: start;
+    }
+    .item-conso-list {
+      &:not(:last-child) {
+        border-bottom: 2px solid $grayDashboard;
+        padding-bottom: 2px;
       }
-      .item-conso-list{
-        &:not(:last-child){
-          border-bottom: 2px solid $grayDashboard;
-        }
-      }
+    }
   }
 
   .scb-categorie-txt {
@@ -39,10 +40,14 @@
   }
 
   .rechargelabel-rechargevalue-rechargejauge-and-expirationrechargedatetime-block {
-    .rechargelabel-rechargevalue-container,
-    .rechargejauge-expirationrechargedatetime-container {
+    .rechargelabel-rechargevalue-container {
       display: flex;
       justify-content: space-between;
+    }
+
+    .rechargejauge-expirationrechargedatetime-container {
+      display: flex;
+      justify-content: flex-end;
     }
 
     .rechargelabel-rechargevalue-container {
