@@ -8,6 +8,11 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
+import {
+  isCounterConsoActe,
+  NewUserConsoModel,
+  ProcessedConsoModel,
+} from 'src/app/services/user-cunsommation-service/user-conso-service.index';
 import { USER_CONS_CATEGORY_CALL, CREDIT_APPEL_CATEGORY } from 'src/shared';
 
 @Component({
@@ -16,13 +21,13 @@ import { USER_CONS_CATEGORY_CALL, CREDIT_APPEL_CATEGORY } from 'src/shared';
   styleUrls: ['./suivi-conso.component.scss'],
 })
 export class SuiviConsoComponent implements OnInit, OnChanges {
-  @Input() consoDetails;
+  @Input() consoDetails: ProcessedConsoModel[];
   @Input() isLoading: boolean;
   @Output() reloadConso = new EventEmitter();
   hasError: boolean;
   USER_CONS_CATEGORY_CALL = USER_CONS_CATEGORY_CALL;
   CREDIT_APPEL_CATEGORY = CREDIT_APPEL_CATEGORY;
-
+  Math = Math;
   constructor(private changeRef: ChangeDetectorRef) {}
 
   ngOnInit() {
@@ -42,6 +47,10 @@ export class SuiviConsoComponent implements OnInit, OnChanges {
     } else {
       this.hasError = false;
     }
+  }
+
+  isCounterConsoActe(counter: NewUserConsoModel) {
+    return isCounterConsoActe(counter);
   }
 
   getConso() {

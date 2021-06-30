@@ -5,10 +5,7 @@
       <div class="dashboard-block-conso">
         <div class="dashboard-block-conso-top-texts">
           <div><span class="suivi-conso">Suivi conso</span></div>
-          <div
-            (click)="goDetailsCom(1)"
-            class="voir-details-text scb-text-orange"
-          >
+          <div (click)="goDetailsCom(1)" class="voir-details-text scb-text-orange">
             Voir details
           </div>
         </div>
@@ -17,20 +14,15 @@
             <ion-slide>
               <div (click)="goDetailsCom()" class="scb-btn-blue scb-btn-credit">
                 <div class="scb-btn-top-block">
-                  <img
-                    class="scb-btn-top-block-icon"
-                    src="/assets/images/orange-dialler-white.svg"
-                    alt="curency-cfa-3-mob"
-                  />
+                  <img class="scb-btn-top-block-icon" src="/assets/images/orange-dialler-white.svg"
+                    alt="curency-cfa-3-mob" />
                   <div class="scb-btn-top-block-text">
                     <span class="text">Conso appel</span>
                   </div>
                 </div>
                 <div class="bottom-block">
-                  <span class="value"
-                    >{{ consumedAmount }}
-                    <span class="text-style-1"> FCFA </span></span
-                  >
+                  <span class="value">{{ consoActeVoix}}
+                    <span class="text-style-1"> FCFA </span></span>
                 </div>
                 <div class="validity-text" *ngIf="lastUpdateConso">
                   Mis à jour le {{ lastUpdateConso }}
@@ -43,81 +35,66 @@
             <ion-slide>
               <div (click)="goDetailsCom()" class="scb-btn-purple scb-btn-pass">
                 <div class="scb-btn-top-block">
-                  <img
-                    class="scb-btn-top-block-icon"
-                    src="/assets/images/data-services.svg"
-                    alt="curency-cfa-3-mob"
-                  />
+                  <img class="scb-btn-top-block-icon" src="/assets/images/data-services.svg" alt="curency-cfa-3-mob" />
                   <div class="scb-btn-top-block-text">
                     <span class="text">Conso internet</span>
                   </div>
                 </div>
                 <div class="bottom-block">
-                  <span class="value"
-                    >{{ consumedDataVolume | passVolumeDisplay }}
-                    <span class="text-style-1"></span
-                  ></span>
+                  <span class="value">{{ consoActeInternet | passVolumeDisplay }}
+                    <span class="text-style-1"></span></span>
                 </div>
-                <div
-                  class="validity-text"
-                  *ngIf="lastUpdateConso && consumedDataVolume"
-                >
+                <div class="validity-text" *ngIf="lastUpdateConso">
+                  Mis à jour le {{ lastUpdateConso }}
+                </div>
+              </div>
+            </ion-slide>
+            <ion-slide>
+              <div (click)="goDetailsCom()" class="scb-btn-light-blue scb-btn-pass">
+                <div class="scb-btn-top-block">
+                  <img class="scb-btn-top-block-icon" src="/assets/images/data-services.svg" alt="curency-cfa-3-mob" />
+                  <div class="scb-btn-top-block-text">
+                    <span class="text">Conso Sms</span>
+                  </div>
+                </div>
+                <div class="bottom-block">
+                  <span class="value">{{ consoActeSms }}
+                    <span class="text-style-1">Sms</span></span>
+                </div>
+                <div class="validity-text" *ngIf="lastUpdateConso">
                   Mis à jour le {{ lastUpdateConso }}
                 </div>
               </div>
             </ion-slide>
             <ion-slide *ngIf="!noSargalProfil">
-              <div
-                class="scb-btn-black scb-btn-sargal"
-                [ngClass]="{
-                'btn-disabled': sargalStatusUnavailable }"
-              >
-                <div
-                  (click)="makeSargalAction()"
-                  [ngClass]="{
+              <div class="scb-btn-black scb-btn-sargal" [ngClass]="{
+                'btn-disabled': sargalStatusUnavailable }">
+                <div (click)="makeSargalAction()" [ngClass]="{
                   'btn-no-action': sargalStatusUnavailable
-                }"
-                  class="btn-container"
-                >
+                }" class="btn-container">
                   <div class="scb-btn-top-block">
                     <div class="scb-btn-top-block-text">
                       <span class="text">Orange</span>
-                      <span
-                        [ngStyle]="{'color': sargalStatus === 'GOLD' ? 'gold' :  '#e5e4e2'}"
-                        class="status-sargal"
-                      >
-                        {{ sargalStatus }}</span
-                      >
+                      <span [ngStyle]="{'color': sargalStatus === 'GOLD' ? 'gold' :  '#e5e4e2'}" class="status-sargal">
+                        {{ sargalStatus }}</span>
                     </div>
                   </div>
                   <div *ngIf="!loadingStatus" class="scb-block-spinner">
-                    <mat-spinner
-                      mode="indeterminate"
-                      [diameter]="30"
-                    ></mat-spinner>
+                    <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
                   </div>
-                  <ng-container
-                    *ngIf="loadingStatus  && !sargalStatusUnavailable"
-                  >
+                  <ng-container *ngIf="loadingStatus  && !sargalStatusUnavailable">
                     <div class="bottom-block">
                       <span class="show-solde-info-text">Voir ma carte</span>
                     </div>
                   </ng-container>
-                  <ng-container
-                    *ngIf="loadingStatus  && sargalStatusUnavailable"
-                  >
+                  <ng-container *ngIf="loadingStatus  && sargalStatusUnavailable">
                     <div class="bottom-block">
-                      <span class="show-solde-info-text"
-                        >Service Indisponible</span
-                      >
+                      <span class="show-solde-info-text">Service Indisponible</span>
                     </div>
                   </ng-container>
                 </div>
 
-                <div
-                  (click)="getCustomerSargalStatus()"
-                  class="scb-data-reload"
-                >
+                <div (click)="getCustomerSargalStatus()" class="scb-data-reload">
                   <img src="/assets/images/reload.png" alt="reload-icon" />
                 </div>
               </div>
@@ -133,35 +110,18 @@
               Erreur Chargement Conso. Cliquer ici pour recharger
             </span>
           </div>
-          <ng-container *ngFor="let conso of userConsommations">
-            <div class="dashboard-block-conso-details-item">
+          <ng-container *ngFor="let conso of userConsumations">
+            <div class="dashboard-block-conso-details-item" *ngIf="!isCounterConsoActe(conso)">
               <div class="conso-name-value-line">
-                <span class="conso-name scb-text-gray"
-                  >{{ conso.compteur }}</span
-                >
+                <span class="conso-name scb-text-gray">{{ conso.name }}</span>
                 <span class="conso-value">
-                  <span>{{ conso.amount }} {{ conso?.unit }} </span>
-                  <span class="text-style-1" *ngIf="!conso?.dataFinished">
-                    / {{ conso.total }} {{ conso?.unit }}
+                  <span>{{ conso.montantRestant }}</span>
+                  <span class="text-style-1" *ngIf="conso?.hasGauge">
+                    / {{ conso.montantTotal }}
                   </span>
                 </span>
               </div>
-              <div class="conso-expiration-line" *ngIf="!conso?.dataFinished">
-                <span class="conso-expiration-date scb-text-light-black"
-                  >{{ conso.percent }}% de ma conso</span
-                >
-              </div>
-              <div class="gauge" *ngIf="!conso?.dataFinished">
-                <div
-                  class="left"
-                  [style.width.%]="conso.percent"
-                  [ngClass]="{ 'left-data': !conso.unit }"
-                ></div>
-                <div
-                  class="consumed"
-                  [style.width.%]="100 - conso.percent"
-                ></div>
-              </div>
+              <app-item-conso-gauge *ngIf="conso?.hasGauge" [conso]="conso"></app-item-conso-gauge>
             </div>
           </ng-container>
         </div>
@@ -185,13 +145,8 @@
           <div class="last-bill-title">
             <div class="scb-text-l-black title">Mes factures</div>
             <div class="more-bills">
-              <span class="scb-text-orange more" routerLink="/bills"
-                >Voir tout
+              <span class="scb-text-orange more" routerLink="/bills">Voir tout
               </span>
-              <!-- <img
-                src="/assets/images/arrow-right.svg"
-                alt="keyboard-arrow-right-orange-mob"
-              /> -->
             </div>
           </div>
           <div class="last-bill-infos">
@@ -201,87 +156,48 @@
               </div>
               <div class="bill-infos-container">
                 <div class="top-infos">
-                  <span
-                    >{{ months[bills[0]?.moisfact - 1] }} {{ bills[0]?.annefact
-                    }}</span
-                  >
-                  <span
-                    [ngClass]="{
+                  <span>{{ months[bills[0]?.moisfact - 1] }} {{ bills[0]?.annefact
+                    }}</span>
+                  <span [ngClass]="{
                     'paid-status': bills[0]?.statutFacture === 'paid',
                     'unpaid-status': bills[0]?.statutFacture === 'unpaid'
-                  }"
-                    >{{ bills[0]?.statutFacture === 'paid' ? 'Payée' : 'Impayée'
-                    }}</span
-                  >
+                  }">{{ bills[0]?.statutFacture === 'paid' ? 'Payée' : 'Impayée'
+                    }}</span>
                 </div>
                 <div class="bottom-infos">
-                  <span class="scb-text-item-offre-black emiss-text"
-                    >N° {{ bills[0]?.nfact | formatBillNum }}</span
-                  >
-                  <span class="price"
-                    >{{ bills[0]?.total | formatCurrency }} F</span
-                  >
+                  <span class="scb-text-item-offre-black emiss-text">N° {{ bills[0]?.nfact | formatBillNum }}</span>
+                  <span class="price">{{ bills[0]?.total | formatCurrency }} F</span>
                 </div>
               </div>
             </div>
             <div class="last-bill-infos-dates">
               <div class="emission-date">
-                <span class="scb-text-item-offre-black emiss-text"
-                  >Date d’emission {{ bills[0]?.dateFacture | formatBillDate
-                  }}</span
-                >
+                <span class="scb-text-item-offre-black emiss-text">Date d’emission {{ bills[0]?.dateFacture |
+                  formatBillDate
+                  }}</span>
               </div>
               <div class="echeance-date" #detail>
                 <span class="scb-text-item-offre-black emiss-text">
-                  Echéance {{ bills[0]?.dateEcheance | formatBillDate }}</span
-                >
-                <img
-                  alt=""
-                  src="/assets/images/keyboard-arrow-up-black.svg"
-                  *ngIf="detail.show"
-                  (click)="detail.show = !detail.show"
-                />
-                <img
-                  alt=""
-                  src="/assets/images/arrow-down.svg"
-                  *ngIf="!detail.show"
-                  (click)="detail.show = !detail.show"
-                />
+                  Echéance {{ bills[0]?.dateEcheance | formatBillDate }}</span>
+                <img alt="" src="/assets/images/keyboard-arrow-up-black.svg" *ngIf="detail.show"
+                  (click)="detail.show = !detail.show" />
+                <img alt="" src="/assets/images/arrow-down.svg" *ngIf="!detail.show"
+                  (click)="detail.show = !detail.show" />
               </div>
             </div>
             <div class="more-infos" *ngIf="detail.show">
-              <div
-                class="more-infos-item-block"
-                (click)="downloadBill(bills[0])"
-              >
-                <img
-                  alt=""
-                  src="/assets/images/pdf-file-2.svg"
-                  class="img-icon"
-                /><span class="scb-text-orange">Télécharger en PDF</span>
-                <mat-spinner
-                  mode="indeterminate"
-                  *ngIf="bills[0]?.downloading"
-                  [diameter]="17"
-                ></mat-spinner>
+              <div class="more-infos-item-block" (click)="downloadBill(bills[0])">
+                <img alt="" src="/assets/images/pdf-file-2.svg" class="img-icon" /><span
+                  class="scb-text-orange">Télécharger en PDF</span>
+                <mat-spinner mode="indeterminate" *ngIf="bills[0]?.downloading" [diameter]="17"></mat-spinner>
               </div>
-              <div
-                (click)="mailToCustomerService()"
-                class="more-infos-item-block"
-                *ngIf="0"
-              >
-                <img
-                  alt=""
-                  src="/assets/images/pdf-file-copy-4.svg"
-                  class="img-icon"
-                /><span class="scb-text-orange">Faire une réclamation</span>
+              <div (click)="mailToCustomerService()" class="more-infos-item-block" *ngIf="0">
+                <img alt="" src="/assets/images/pdf-file-copy-4.svg" class="img-icon" /><span
+                  class="scb-text-orange">Faire une réclamation</span>
               </div>
               <div *ngIf="0" class="more-infos-item-block">
-                <img
-                  alt=""
-                  src="/assets/images/pdf-file-copy-5.svg"
-                  class="img-icon"
-                /><span class="scb-text-orange">Payer par Orange Money</span>
+                <img alt="" src="/assets/images/pdf-file-copy-5.svg" class="img-icon" /><span
+                  class="scb-text-orange">Payer par Orange Money</span>
               </div>
             </div>
           </div>
@@ -289,8 +205,8 @@
       </div>
       <div *ngIf="listBanniere?.length" class="bons-plans">
         <div class="title">Bons plans</div>
-          <app-slide-banniere-dashboard [listBanniere]="listBanniere">
-          </app-slide-banniere-dashboard>
+        <app-slide-banniere-dashboard [listBanniere]="listBanniere">
+        </app-slide-banniere-dashboard>
       </div>
     </div>
   </div>
