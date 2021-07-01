@@ -36,6 +36,7 @@ import {
   CONSO_ACTE_REGEX,
   CONSO_ACTE_SMS,
   CONSO_ACTE_VOIX,
+  CONSO_POSTPAID_DASHBOARD_ITEMS_LIMIT,
   isCounterConsoActe,
   NewUserConsoModel,
 } from '../services/user-cunsommation-service/user-conso-service.index';
@@ -99,6 +100,7 @@ export class DashboardPostpaidPage implements OnInit {
   consoActeInternet = '0 Ko';
   consoActeSms = 0;
   Math = Math;
+  limit = CONSO_POSTPAID_DASHBOARD_ITEMS_LIMIT;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -248,6 +250,13 @@ export class DashboardPostpaidPage implements OnInit {
       .getUserCunsomation()
       .pipe(
         tap((userConsommation: NewUserConsoModel[]) => {
+          this.followAnalyticsService.registerEventFollow(
+            'dashboard_postpaid_get_conso_success',
+            'event',
+            {
+              msisdn: this.userPhoneNumber,
+            }
+          );
           this.userConsumations = userConsommation;
           const consoActeVoix = this.userConsumations.find(
               (x) => !!x.name.toLowerCase().match(CONSO_ACTE_VOIX)
@@ -273,6 +282,14 @@ export class DashboardPostpaidPage implements OnInit {
         catchError((err) => {
           this.dataLoaded = true;
           this.errorConso = true;
+          this.followAnalyticsService.registerEventFollow(
+            'dashboard_postpaid_get_conso_error',
+            'error',
+            {
+              msisdn: this.userPhoneNumber,
+              error: err.status,
+            }
+          );
           return throwError(err);
         })
       )
