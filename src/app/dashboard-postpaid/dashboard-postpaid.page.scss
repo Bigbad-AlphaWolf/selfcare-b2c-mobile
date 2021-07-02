@@ -200,6 +200,9 @@
             margin-bottom: 10px;
             padding-bottom: 9px;
             border-bottom: 1px solid $silver;
+            &.padded {
+              padding-bottom: 20px !important;
+            }
           }
 
           .conso-name-value-line {

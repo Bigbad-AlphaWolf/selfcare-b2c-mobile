@@ -64,6 +64,7 @@ import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/bann
 import { PassUsageItemComponent } from './pass-usage-item/pass-usage-item.component';
 import { BlockTransferSuccessPopupComponent } from './block-transfer-success-popup/block-transfer-success-popup.component';
 import { ItemConsoGaugeComponent } from './item-conso-gauge/item-conso-gauge.component';
+import { ConsoNameDisplayPipe } from './pipes/conso-name-display.pipe';
 
 @NgModule({
   declarations: [
@@ -117,6 +118,7 @@ import { ItemConsoGaugeComponent } from './item-conso-gauge/item-conso-gauge.com
     PassUsageItemComponent,
     BlockTransferSuccessPopupComponent,
     ItemConsoGaugeComponent,
+    ConsoNameDisplayPipe,
   ],
   imports: [
     CommonModule,
@@ -209,6 +211,7 @@ import { ItemConsoGaugeComponent } from './item-conso-gauge/item-conso-gauge.com
     PassUsageItemComponent,
     BlockTransferSuccessPopupComponent,
     ItemConsoGaugeComponent,
+    ConsoNameDisplayPipe,
   ],
   providers: [
     Contacts,

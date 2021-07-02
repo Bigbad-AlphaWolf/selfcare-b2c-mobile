@@ -111,13 +111,15 @@
             </span>
           </div>
           <ng-container *ngFor="let conso of userConsumations">
-            <div class="dashboard-block-conso-details-item" *ngIf="!isCounterConsoActe(conso)">
+            <div class="dashboard-block-conso-details-item" [ngClass]="{'padded': !conso.dateExpiration}"
+              *ngIf="!(userConsumations.length > limit && isCounterConsoActe(conso))">
               <div class="conso-name-value-line">
-                <span class="conso-name scb-text-gray">{{ conso.name }}</span>
+                <span class="conso-name scb-text-gray">{{ conso.name | consoNameDisplay }}</span>
                 <span class="conso-value">
-                  <span>{{ conso.montantRestant }}</span>
+                  <span>{{ isCounterConsoActe(conso) ? conso.montantConsomme : (conso.hasGauge ? (conso.montantRestant |
+                    passVolumeDisplay) : conso.montantRestant) }}</span>
                   <span class="text-style-1" *ngIf="conso?.hasGauge">
-                    / {{ conso.montantTotal }}
+                    / {{ conso.montantTotal | passVolumeDisplay }}
                   </span>
                 </span>
               </div>

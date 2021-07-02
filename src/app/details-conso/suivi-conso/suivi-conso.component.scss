@@ -40,6 +40,9 @@
   }
 
   .rechargelabel-rechargevalue-rechargejauge-and-expirationrechargedatetime-block {
+    &.with-padding {
+      padding-bottom: 15px !important;
+    }
     .rechargelabel-rechargevalue-container {
       display: flex;
       justify-content: space-between;
