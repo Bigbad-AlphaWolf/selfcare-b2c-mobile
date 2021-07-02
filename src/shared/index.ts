@@ -1184,7 +1184,7 @@ export const HelpModalRegisterOMContent: {
             'Les paramètres internet Orange sont: \nNom : Orange Internet \nAPN : internet \nLaisser tous les autres options en l’état puis sauvegarder',
         },
       ],
-    }
+    },
   ],
   showChecks: false,
 };
@@ -1367,4 +1367,10 @@ export enum TYPE_ACTION_ON_BANNER {
   MODAL = 'MODAL',
 }
 
-export const ANNULATION_TRANSFER_DEADLINE = "5 jours"
+export const ANNULATION_TRANSFER_DEADLINE = '5 jours';
+export const TRANSFER_BALANCE_INSUFFICIENT_ERROR =
+  'Le montant que vous voulez transférer est supérieur à votre solde.';
+export const TRANSFER_OM_BALANCE_NOT_ALLOWED =
+  "Le montant que vous avez saisi n'est pas dans la plage autorisée";
+export const FEES_ERROR =
+  'Erreur lors de la récupération des frais. Réactualisez';
