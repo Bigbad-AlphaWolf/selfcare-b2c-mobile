@@ -13,7 +13,8 @@ import { SargalRegistrationPage } from 'src/app/sargal/components/sargal-registr
 import { OfferPlan } from 'src/shared/models/offer-plan.model';
 import { RattachedPhonesNumberPage } from 'src/app/pages/rattached-phones-number/rattached-phones-number.page';
 import { PurchaseModel } from 'src/app/models/purchase.model';
-
+import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
+import { TransferSetAmountPage } from 'src/app/transfer-set-amount/transfer-set-amount.page';
 @Injectable({
   providedIn: 'root',
 })
@@ -106,7 +107,14 @@ export class ApplicationRoutingService {
     let navigationExtras: NavigationExtras = {
       state: purchaseInformation,
     };
-    this.route.navigate(['/purchase-set-amount'], navigationExtras);
+    this.route.navigate([PurchaseSetAmountPage.ROUTE_PATH], navigationExtras);
+  }
+
+  goSetTransferAmountPage(purchaseInformation?: any) {
+    let navigationExtras: NavigationExtras = {
+      state: purchaseInformation,
+    };
+    this.route.navigate([TransferSetAmountPage.ROUTE_PATH], navigationExtras);
   }
 
   goToPassRecapPage(purchaseInformation: {
@@ -156,6 +164,9 @@ export class ApplicationRoutingService {
     let navigationExtras: NavigationExtras = {
       state: { transactionInfos: data },
     };
-    this.route.navigate(['/om-self-operation/cancel-transaction'], navigationExtras);
+    this.route.navigate(
+      ['/om-self-operation/cancel-transaction'],
+      navigationExtras
+    );
   }
 }
