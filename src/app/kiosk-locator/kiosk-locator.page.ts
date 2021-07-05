@@ -1,20 +1,20 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { Geolocation } from "@ionic-native/geolocation/ngx";
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 declare var google: any;
 @Component({
-  selector: "app-kiosk-locator",
-  templateUrl: "./kiosk-locator.page.html",
-  styleUrls: ["./kiosk-locator.page.scss"],
+  selector: 'app-kiosk-locator',
+  templateUrl: './kiosk-locator.page.html',
+  styleUrls: ['./kiosk-locator.page.scss'],
 })
 export class KioskLocatorPage implements OnInit {
-  @ViewChild("map") mapElement: ElementRef;
+  @ViewChild('map') mapElement: ElementRef;
 
   map: any;
   mapInitialised: boolean = false;
-  apiKey = "AIzaSyAfqTLg3_OIhgZIWG3LZTlLA0sEMAdrMso";
+  apiKey = 'AIzaSyAfqTLg3_OIhgZIWG3LZTlLA0sEMAdrMso';
   kiosksArray = [
-    { name: "agence 1", lat: 14.735, long: -17.461 },
+    { name: 'agence 1', lat: 14.735, long: -17.461 },
     // { name: "agence 2", lat: 14.766, long: -17.429 },
     // { name: "agence 3", lat: 14.726, long: -17.442 },
     // { name: "agence 1", lat: 14.735, long: -17.461 },
@@ -29,15 +29,15 @@ export class KioskLocatorPage implements OnInit {
   }
 
   loadGoogleMaps() {
-    window["mapInit"] = () => {
+    window['mapInit'] = () => {
       this.initMap();
     };
-    let script = document.createElement("script");
-    script.id = "googleMaps";
+    let script = document.createElement('script');
+    script.id = 'googleMaps';
     script.src =
-      "http://maps.google.com/maps/api/js?key=" +
+      'http://maps.google.com/maps/api/js?key=' +
       this.apiKey +
-      "&callback=mapInit";
+      '&callback=mapInit';
     document.body.appendChild(script);
   }
 
@@ -67,13 +67,14 @@ export class KioskLocatorPage implements OnInit {
         this.getDistanceBetweenPoints(
           { lat: kiosk.lat, lng: kiosk.long },
           { lat: position.coords.latitude, lng: position.coords.longitude },
-          "km"
+          'km'
         )
       );
       this.distanceMatrix(
         { lat: kiosk.lat, lng: kiosk.long },
         { lat: position.coords.latitude, lng: position.coords.longitude }
       );
+      this.showDirections();
     }
     // });
   }
@@ -84,7 +85,7 @@ export class KioskLocatorPage implements OnInit {
     new google.maps.Marker({
       position: myLatLng,
       map,
-      title: "Hello World!",
+      title: 'Hello World!',
     });
   }
 
@@ -94,7 +95,7 @@ export class KioskLocatorPage implements OnInit {
       km: 6371,
     };
 
-    let R = earthRadius[units || "miles"];
+    let R = earthRadius[units || 'miles'];
     let lat1 = start.lat;
     let lon1 = start.lng;
     let lat2 = end.lat;
@@ -126,12 +127,45 @@ export class KioskLocatorPage implements OnInit {
       .getDistanceMatrix({
         origins: [origin],
         destinations: [dest],
-        travelMode: "DRIVING",
+        travelMode: 'DRIVING',
         avoidHighways: true,
         avoidTolls: true,
       })
       .then((res) => {
         console.log(res);
+      });
+  }
+
+  showDirections() {
+    const directionsService = new google.maps.DirectionsService();
+    const directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsRenderer.setMap(this.map);
+    this.calculateAndDisplayRoute(directionsService, directionsRenderer);
+    // const onChangeHandler = function () {
+    //   this.calculateAndDisplayRoute(directionsService, directionsRenderer);
+    // };
+    // (document.getElementById('start') as HTMLElement).addEventListener(
+    //   'change',
+    //   onChangeHandler
+    // );
+    // (document.getElementById('end') as HTMLElement).addEventListener(
+    //   'change',
+    //   onChangeHandler
+    // );
+  }
+
+  calculateAndDisplayRoute(directionsService, directionsRenderer) {
+    directionsService
+      .route({
+        origin: '14.758707199999998, -17.4358528',
+        destination: '14.735, -17.461',
+        travelMode: google.maps.TravelMode.DRIVING,
+      })
+      .then((response) => {
+        directionsRenderer.setDirections(response);
+      })
+      .catch((e) => {
+        console.log(e);
       });
   }
 }
