@@ -7,6 +7,8 @@ import { Geolocation } from "@ionic-native/geolocation/ngx";
 import { IonicModule } from "@ionic/angular";
 
 import { KioskLocatorPage } from "./kiosk-locator.page";
+import { KioskListModalComponent } from "./components/kiosk-list-modal/kiosk-list-modal.component";
+import { KioskCardComponent } from "./components/kiosk-card/kiosk-card.component";
 
 const routes: Routes = [
   {
@@ -23,7 +25,8 @@ const routes: Routes = [
     RouterModule.forChild(routes),
   ],
   schemas: [NO_ERRORS_SCHEMA],
-  declarations: [KioskLocatorPage],
+  declarations: [KioskLocatorPage, KioskListModalComponent, KioskCardComponent],
+  entryComponents: [KioskListModalComponent],
   providers: [Geolocation],
 })
 export class KioskLocatorPageModule {}

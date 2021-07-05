@@ -1,4 +1,34 @@
 <ion-content>
-  <div class="input-container"></div>
-  <div #map id="map"></div>  
+  <div class="input-container">
+    <div class="bloc-content">
+      <img class="arrow" src="assets/images/long-arrow-left-gray2.png" />
+      <ion-input class="" placeholder="Rechercher un kiosque"></ion-input>
+      <span class="toogle-view scb-text-orange" (click)="toggleView()">{{ 1 ? 'Vue liste' : 'Vue carte' }}</span>
+    </div>
+  </div>
+  <div #map id="map"></div>
+  <div class="fake-modal" *ngIf="listViewActive">
+    <app-kiosk-card></app-kiosk-card>
+    <app-kiosk-card></app-kiosk-card>
+    <app-kiosk-card></app-kiosk-card>
+    <app-kiosk-card></app-kiosk-card>
+    <app-kiosk-card></app-kiosk-card>
+    <app-kiosk-card></app-kiosk-card>
+  </div>
+  <div class="cards-container" *ngIf="!listViewActive">
+    <ion-slides [options]="slideOptions">
+      <ion-slide>
+        <app-kiosk-card></app-kiosk-card>
+      </ion-slide>
+      <ion-slide>
+        <app-kiosk-card></app-kiosk-card>
+      </ion-slide>
+      <ion-slide>
+        <app-kiosk-card></app-kiosk-card>
+      </ion-slide>
+      <ion-slide>
+        <app-kiosk-card></app-kiosk-card>
+      </ion-slide>
+    </ion-slides>
+  </div>
 </ion-content>
