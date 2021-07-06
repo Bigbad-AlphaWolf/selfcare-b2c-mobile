@@ -75,6 +75,7 @@ export class CancelTransactionOmPage implements OnInit {
       firstname: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required]],
       dateDelivrance: ['', [Validators.required]],
+      dateExpiration: ['', [Validators.required]],
       nIdentity: [null, [Validators.required]],
       identityType: ['CNI', [Validators.required]]
     });
@@ -220,6 +221,7 @@ export class CancelTransactionOmPage implements OnInit {
       dateTransaction: this.cancelTransactionOMInfos.value.dateTransfert,
       identityType: this.cancelTransactionOMInfos.value.identityType,
       dateDelivrance: this.cancelTransactionOMInfos.value.dateDelivrance,
+      dateExpiration: this.cancelTransactionOMInfos.value.dateExpiration,
       identityNumber: this.cancelTransactionOMInfos.value.nIdentity,
       montantTransfert: this.cancelTransactionOMInfos.value.montant,
       referenceTransaction: this.cancelTransactionOMInfos.value.transaction_id,

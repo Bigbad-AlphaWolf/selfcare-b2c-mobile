@@ -10,5 +10,6 @@ export interface CancelOmTransactionPayloadModel {
   referenceTransaction?: string;
   dateDelivrance?: string;
   dateTransaction?: string;
+  dateExpiration?: string;
   montantTransfert?: string;
 }
