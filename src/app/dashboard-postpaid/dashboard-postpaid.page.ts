@@ -116,7 +116,7 @@ export class DashboardPostpaidPage implements OnInit {
             'dashboard_postpaid_get_services_success',
             'event',
             {
-              msisdn: this.userPhoneNumber
+              msisdn: this.userPhoneNumber,
             }
           );
           const moreActionService: OffreService = {
@@ -126,6 +126,7 @@ export class DashboardPostpaidPage implements OnInit {
             fullDescription: 'Services',
             redirectionPath: 'oem-services',
             activated: true,
+            code: 'more_services',
           };
           const response: OffreService[] = res.slice(0, 4);
           response.push(moreActionService);
@@ -140,10 +141,10 @@ export class DashboardPostpaidPage implements OnInit {
             'error',
             {
               msisdn: this.userPhoneNumber,
-              error: err.status
+              error: err.status,
             }
           );
-          return of(err)
+          return of(err);
         })
       )
       .subscribe();
@@ -234,7 +235,7 @@ export class DashboardPostpaidPage implements OnInit {
           'dashboard_postpaid_get_conso_success',
           'event',
           {
-            msisdn : this.userPhoneNumber
+            msisdn: this.userPhoneNumber,
           }
         );
         this.getLastConsoUpdate();
@@ -246,8 +247,8 @@ export class DashboardPostpaidPage implements OnInit {
           'dashboard_postpaid_get_conso_error',
           'error',
           {
-            msisdn : this.userPhoneNumber,
-            error: err.status
+            msisdn: this.userPhoneNumber,
+            error: err.status,
           }
         );
       }
@@ -398,7 +399,7 @@ export class DashboardPostpaidPage implements OnInit {
       'dashboard_postpaid_voir_plus_clic',
       'event',
       'clicked'
-    )
+    );
     this.navCtl.navigateForward(['/oem-services']);
   }
 }
