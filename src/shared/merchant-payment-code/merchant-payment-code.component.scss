@@ -29,7 +29,17 @@
     .error {
       font-size: 12px;
     }
+    .loading-container {
+      height: 263px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .mat-spinner::ng-deep circle {
+        stroke: $orange;
+      }
+    }
     .recents {
+      height: 263px;
       .description {
         font-family: HelveticaNeueLTStd-Bd;
         font-size: 20px;

@@ -1374,3 +1374,5 @@ export const TRANSFER_OM_BALANCE_NOT_ALLOWED =
   "Le montant que vous avez saisi n'est pas dans la plage autorisée";
 export const FEES_ERROR =
   'Erreur lors de la récupération des frais. Réactualisez';
+
+export const NO_RECENTS_MSG = 'Pas de bénéficiaire récent pour cette opération';

@@ -165,7 +165,7 @@ export class BottomSheetService {
       componentProps: {
         data: { option, purchaseType, isLightMod, serviceUsage },
       },
-      cssClass: 'select-recipient-modal',
+      cssClass: ['select-recipient-modal'],
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data) {
