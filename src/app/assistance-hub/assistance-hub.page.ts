@@ -53,9 +53,9 @@ export class AssistanceHubPage implements OnInit {
       image: '/assets/images/04-boutons-01-illustrations-22-store-locator.svg'
     }
   ];
-  listBesoinAides: OffreService[];
-  listFaqs?: OffreService[];
-  listActes?: OffreService[];
+  listBesoinAides: OffreService[] = [];
+  listFaqs?: OffreService[] = [];
+  listActes?: OffreService[] = [];
   loadingHelpItems: boolean;
   displaySearchIcon: boolean = true;
   @ViewChild('searchInput') searchRef;
@@ -128,8 +128,6 @@ export class AssistanceHubPage implements OnInit {
       return item.typeService === BesoinAideType.ACTE;
     });
     this.listActes = this.filterOMActesFollowingOMStatus(this.userOMStatus, this.listActes);
-    console.log('listActes', this.listActes);
-
     this.listFaqs = this.listBesoinAides.filter((item: OffreService) => {
       return item.typeService === BesoinAideType.FAQ;
     });

@@ -114,6 +114,32 @@
 						<mat-label>Numéro de la pièce &nbsp;&nbsp;</mat-label>
 						<input formControlName="nIdentity" matInput [type]="radio.value === 'CNI' ? 'number': 'text' " />
 					</mat-form-field>
+					<ion-item lines="none">
+						<ion-label>
+							Date de délivrance
+						</ion-label>
+					</ion-item>
+					<ion-datetime
+					placeholder="DD / MM / YYYY"
+					displayFormat="DD / MM / YYYY"
+					doneText="Confirmer"
+					cancelText="Annuler"
+					formControlName="dateDelivrance"
+					display-timezone="utc"
+				></ion-datetime>
+					<ion-item lines="none">
+						<ion-label>
+							Date d'expiration
+						</ion-label>
+					</ion-item>
+					<ion-datetime
+					placeholder="DD / MM / YYYY"
+					displayFormat="DD / MM / YYYY"
+					doneText="Confirmer"
+					cancelText="Annuler"
+					formControlName="dateDelivrance"
+					display-timezone="utc"
+				></ion-datetime>
 					<div class="photo-button" [ngClass]="{'field-filled': rectoFilled}" (click)="takePicture('recto')">
 						<span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': rectoFilled}"
 							>{{rectoFilled ? rectoFileName : 'Scanner recto pièce d’identité'}}</span
