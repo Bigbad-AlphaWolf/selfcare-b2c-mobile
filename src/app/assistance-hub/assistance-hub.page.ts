@@ -95,8 +95,11 @@ export class AssistanceHubPage implements OnInit {
       response = actes.filter((item: OffreService) => {
         return item.code !== 'DEPLAFONNEMENT';
       });
+    } else if (!user.operation) {
+      response = actes.filter((item: OffreService) => {
+        return item.code !== 'OUVERTURE_OM_ACCOUNT' && item.code !== 'DEPLAFONNEMENT';
+      });
     }
-
     return response;
   }
 
