@@ -87,15 +87,15 @@ export class AssistanceHubPage implements OnInit {
 
   filterOMActesFollowingOMStatus(user: OMCustomerStatusModel, actes: OffreService[]) {
     let response = actes;
-    if (user.operation === 'DEPLAFONNEMENT' || user.operation === 'FULL') {
+    if (user && (user.operation === 'DEPLAFONNEMENT' || user.operation === 'FULL')) {
       response = actes.filter((item: OffreService) => {
         return item.code !== 'OUVERTURE_OM_ACCOUNT';
       });
-    } else if (user.operation === 'OUVERTURE_COMPTE') {
+    } else if (user && user.operation === 'OUVERTURE_COMPTE') {
       response = actes.filter((item: OffreService) => {
         return item.code !== 'DEPLAFONNEMENT';
       });
-    } else if (!user.operation) {
+    } else if (!user || !user.operation) {
       response = actes.filter((item: OffreService) => {
         return item.code !== 'OUVERTURE_OM_ACCOUNT' && item.code !== 'DEPLAFONNEMENT';
       });
