@@ -200,7 +200,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 1,
     maximum: 495,
     withoutCode: 25,
-    withCode: 25,
+    withCode: 25
   },
   {
     id: 2,
@@ -208,7 +208,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 496,
     maximum: 1100,
     withoutCode: 90,
-    withCode: 95,
+    withCode: 95
   },
   {
     id: 3,
@@ -216,7 +216,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 1101,
     maximum: 3000,
     withoutCode: 180,
-    withCode: 190,
+    withCode: 190
   },
   {
     id: 4,
@@ -224,7 +224,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 3001,
     maximum: 5000,
     withoutCode: 350,
-    withCode: 375,
+    withCode: 375
   },
   {
     id: 5,
@@ -232,7 +232,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 5001,
     maximum: 10000,
     withoutCode: 500,
-    withCode: 600,
+    withCode: 600
   },
   {
     id: 6,
@@ -240,7 +240,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 10001,
     maximum: 15000,
     withoutCode: 700,
-    withCode: 900,
+    withCode: 900
   },
   {
     id: 7,
@@ -248,7 +248,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 15001,
     maximum: 20000,
     withoutCode: 900,
-    withCode: 1000,
+    withCode: 1000
   },
   {
     id: 8,
@@ -256,7 +256,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 20001,
     maximum: 35000,
     withoutCode: 1400,
-    withCode: 1500,
+    withCode: 1500
   },
   {
     id: 9,
@@ -264,7 +264,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 35001,
     maximum: 60000,
     withoutCode: 1700,
-    withCode: 2000,
+    withCode: 2000
   },
   {
     id: 10,
@@ -272,7 +272,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 60001,
     maximum: 100000,
     withoutCode: 2600,
-    withCode: 3000,
+    withCode: 3000
   },
   {
     id: 11,
@@ -280,7 +280,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 100001,
     maximum: 175000,
     withoutCode: 3500,
-    withCode: 3750,
+    withCode: 3750
   },
   {
     id: 12,
@@ -288,8 +288,8 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 175001,
     maximum: 200000,
     withoutCode: 4500,
-    withCode: 4600,
-  },
+    withCode: 4600
+  }
 ];
 
 export const RECLAMATION_TRANSACTIONS_CONDITIONS =
@@ -318,21 +318,15 @@ export const LIST_DENIED_PIN_OM: string[] = [
   '4567',
   '5678',
   '6789',
-  '7890',
+  '7890'
 ];
-export const SUCCESS_MSG_OM_ACCOUNT_CREATION =
-  `Votre demande d’ouverture de compte
+export const SUCCESS_MSG_OM_ACCOUNT_CREATION = `Votre demande d’ouverture de compte
   Orange Money a été enregistré avec succés.
   Vous recevrez une confirmation d’ouverture.`;
 
-export const SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT =
-  `Votre demande de déplafonnement de votre compte
-  Orange Money a été enregistré avec succés.
-  Vous recevrez une confirmation`;
-export const ERROR_MSG_OM_CODE_OTP_INVALIDE =
-  `Le code renseigné est invalide. Veuillez entrez le bon code.`;
-export const SUCCESS_MSG_OM_CANCEL_TRANSACTION_OM =
-  `Elle sera traité sous un délai prévisionnel de 48H. Vous recevrez une notification après le traitement.`;
+export const SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT = `Vous recevrez sous 72h une confirmation par SMS sur votre numéro.`;
+export const ERROR_MSG_OM_CODE_OTP_INVALIDE = `Le code renseigné est invalide. Veuillez entrez le bon code.`;
+export const SUCCESS_MSG_OM_CANCEL_TRANSACTION_OM = `Elle sera traitée sous un délai prévisionnel de 48h. Vous recevrez un SMS après traitement de votre demande.`;
 export const SUCCESS_OM_STATUS_CODE = `Success-001`;
 
 export function getAge(dateString) {
@@ -341,7 +335,7 @@ export function getAge(dateString) {
   var age = today.getFullYear() - birthDate.getFullYear();
   var m = today.getMonth() - birthDate.getMonth();
   if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
+    age--;
   }
   return age;
 }
