@@ -9,16 +9,12 @@ import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.pa
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
-import {
-  FIND_AGENCE_EXTERNAL_URL,
-  CHECK_ELIGIBILITY_EXTERNAL_URL,
-  OPERATION_INIT_CHANGE_PIN_OM,
-} from 'src/shared';
+import { FIND_AGENCE_EXTERNAL_URL, CHECK_ELIGIBILITY_EXTERNAL_URL, OPERATION_INIT_CHANGE_PIN_OM } from 'src/shared';
 
 @Component({
   selector: 'app-action-item',
   templateUrl: './action-item.component.html',
-  styleUrls: ['./action-item.component.scss'],
+  styleUrls: ['./action-item.component.scss']
 })
 export class ActionItemComponent implements OnInit {
   @Input() action: OffreService;
@@ -35,9 +31,7 @@ export class ActionItemComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.imageUrl = this.action.icone
-      ? this.FILE_BASE_URL + '/' + this.action.icone
-      : null;
+    this.imageUrl = this.action.icone ? this.FILE_BASE_URL + '/' + this.action.icone : null;
   }
 
   doAction() {
@@ -60,11 +54,17 @@ export class ActionItemComponent implements OnInit {
       case 'DEPLAFONNEMENT':
         this.goDeplafonnement();
         break;
+      case 'DEPLAFONNEMENT_OLD':
+        this.goDeplafonnementOldVersion();
+        break;
       case 'TRANSACTION_ERROR':
         this.goReclamation();
         break;
       case 'OUVERTURE_OM_ACCOUNT':
         this.goCreateOMAccount();
+        break;
+      case 'OUVERTURE_OM_ACCOUNT_OLD':
+        this.goCreateOMAccountOldVersion();
         break;
       case 'SEARCH_AGENCY':
         this.goFindToAgenceWebSite();
@@ -82,38 +82,22 @@ export class ActionItemComponent implements OnInit {
 
   goIbouPage() {
     this.router.navigate(['/contact-ibou-hub']);
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_Hub_Ibou_card_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Assistance_Hub_Ibou_card_clic', 'event', 'clicked');
   }
 
   goFiberEligibility() {
     this.inAppBrowser.create(CHECK_ELIGIBILITY_EXTERNAL_URL, '_self');
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_actions_eligibilité_fibre_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Assistance_actions_eligibilité_fibre_clic', 'event', 'clicked');
   }
 
   goPuk() {
     this.router.navigate(['/control-center/puk']);
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_actions_Find_PUK_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Assistance_actions_Find_PUK_clic', 'event', 'clicked');
   }
 
   goChangeSeddo() {
     this.router.navigate(['/control-center/change-seddo-code']);
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_actions_Change_Seddo_PIN_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Assistance_actions_Change_Seddo_PIN_clic', 'event', 'clicked');
   }
 
   goInternet() {
@@ -127,48 +111,38 @@ export class ActionItemComponent implements OnInit {
   goCreateOMAccount() {
     this.router.navigate(['/om-self-operation/open-om-account']);
     // this.router.navigate(['/control-center/operation-om/creation-compte']);
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_actions_Creation_Compte_OM_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Assistance_actions_Creation_Compte_OM_clic', 'event', 'clicked');
+  }
+
+  goCreateOMAccountOldVersion() {
+    this.router.navigate(['/control-center/operation-om/creation-compte']);
+    this.followAnalyticsService.registerEventFollow('Assistance_actions_Creation_Compte_OM_clic', 'event', 'clicked');
   }
 
   goDeplafonnement() {
     // this.router.navigate(['/control-center/operation-om/deplafonnement']);
     this.router.navigate(['/om-self-operation/deplafonnement']);
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_actions_Deplafonnement_OM_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Assistance_actions_Deplafonnement_OM_clic', 'event', 'clicked');
+  }
+
+  goDeplafonnementOldVersion() {
+    this.router.navigate(['/control-center/operation-om/deplafonnement']);
+    this.followAnalyticsService.registerEventFollow('Assistance_actions_Deplafonnement_OM_clic', 'event', 'clicked');
   }
 
   goReclamation() {
     this.router.navigate(['/om-self-operation/cancel-transaction']);
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_actions_Reclamation_OM_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Assistance_actions_Reclamation_OM_clic', 'event', 'clicked');
   }
 
   onFollowUpRequests() {
     this.router.navigate(['follow-up-requests']);
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_actions_suivi_demande-fixe_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Assistance_actions_suivi_demande-fixe_clic', 'event', 'clicked');
   }
 
   goFindToAgenceWebSite() {
     this.inAppBrowser.create(FIND_AGENCE_EXTERNAL_URL, '_self');
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_hub_Trouver_agence_orange_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Assistance_hub_Trouver_agence_orange_clic', 'event', 'clicked');
   }
 
   async openPinpad() {
@@ -176,15 +150,11 @@ export class ActionItemComponent implements OnInit {
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
-        operationType: OPERATION_INIT_CHANGE_PIN_OM,
-      },
+        operationType: OPERATION_INIT_CHANGE_PIN_OM
+      }
     });
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_actions_change_pin_OM_clic',
-      'event',
-      'clicked'
-    );
-    modal.onDidDismiss().then((resp) => {
+    this.followAnalyticsService.registerEventFollow('Assistance_actions_change_pin_OM_clic', 'event', 'clicked');
+    modal.onDidDismiss().then(resp => {
       if (resp && resp.data && resp.data.success) {
         const omUserInfos = resp.data.omUserInfos;
         this.dashbServ
@@ -195,13 +165,13 @@ export class ActionItemComponent implements OnInit {
               if (birthDate) {
                 const year = birthDate.split('-')[0];
                 this.router.navigate(['/change-orange-money-pin'], {
-                  state: { omUserInfos, birthYear: year },
+                  state: { omUserInfos, birthYear: year }
                 });
               }
             }),
             catchError((err: any) => {
               this.router.navigate(['/change-orange-money-pin'], {
-                state: { omUserInfos },
+                state: { omUserInfos }
               });
               return of(err);
             })
