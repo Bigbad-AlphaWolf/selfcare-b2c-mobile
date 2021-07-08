@@ -219,7 +219,6 @@ const routes: Routes = [
     path: 'operation-recap',
     loadChildren:
       './operation-recap/operation-recap.module#OperationRecapPageModule',
-    canActivate: [AuthGuard],
   },
   {
     path: 'pass-illimix/:ppi',
@@ -266,7 +265,6 @@ const routes: Routes = [
     path: 'transfert-hub-services',
     loadChildren:
       './transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule',
-    canActivate: [AuthGuard],
   },
   {
     path: 'operation-set-amount',
