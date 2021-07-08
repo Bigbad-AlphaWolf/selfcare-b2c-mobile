@@ -1,9 +1,18 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { Geolocation } from "@ionic-native/geolocation/ngx";
-import { ModalController } from "@ionic/angular";
-import { KioskListModalComponent } from "./components/kiosk-list-modal/kiosk-list-modal.component";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { Coordinates, Geolocation } from "@ionic-native/geolocation/ngx";
+import { IonSlides } from "@ionic/angular";
+import { catchError, tap } from "rxjs/operators";
+import { KioskOMModel } from "../models/kiosk-om.model";
+import { KioskLocatorService } from "../services/kiosk-locator-service/kiosk-locator.service";
+import {
+  GOOGLE_MAPS_STYLES_OBJECT,
+  KIOSK_VIEW,
+  MAP_CARDS_SLIDES_OPTIONS,
+  SEARCH_SIZE,
+} from "../services/kiosk-locator-service/kiosk.utils";
 
-declare var google: any;
+// declare var google: any;
 @Component({
   selector: "app-kiosk-locator",
   templateUrl: "./kiosk-locator.page.html",
@@ -11,61 +20,85 @@ declare var google: any;
 })
 export class KioskLocatorPage implements OnInit {
   @ViewChild("map") mapElement: ElementRef;
-
-  map: any;
-  mapInitialised: boolean = false;
+  @ViewChild("slides") sliders: IonSlides;
+  map: google.maps.Map;
   apiKey = "AIzaSyAfqTLg3_OIhgZIWG3LZTlLA0sEMAdrMso";
-  kiosksArray = [
-    { name: "agence 1", lat: 14.735, long: -17.461 },
-    // { name: "agence 2", lat: 14.766, long: -17.429 },
-    // { name: "agence 3", lat: 14.726, long: -17.442 },
-    // { name: "agence 1", lat: 14.735, long: -17.461 },
-    // { name: "agence 1", lat: 14.735, long: -17.461 },
-    // { name: "agence 1", lat: 14.735, long: -17.461 },
-  ];
-
-  listViewActive = true;
-  cardViewActive: boolean;
-  slideOptions = {
-    slidesPerView: 1.2,
-    centeredSlides: true,
-    spaceBetween: 15,
-    speed: 600,
-    effect: "coverflow",
-  };
+  searchInput: string;
+  KIOSK_VIEW = KIOSK_VIEW;
+  currentView: KIOSK_VIEW = KIOSK_VIEW.VIEW_LIST;
+  currentKiosk: any;
+  slideOptions = MAP_CARDS_SLIDES_OPTIONS;
+  searchForm: FormGroup;
+  userPosition: Coordinates;
+  kiosksArray: KioskOMModel[] = [];
+  page = 0;
+  loadingKiosk = true;
+  markers: google.maps.Marker[] = [];
+  selectedKioskIndex: number;
+  directionsService: google.maps.DirectionsService;
+  directionsRenderer: google.maps.DirectionsRenderer;
 
   constructor(
     private geolocation: Geolocation,
-    private modalController: ModalController
+    private kioskLocatorService: KioskLocatorService,
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {
     this.loadGoogleMaps();
-    // this.openKioskListModal();
+    this.setForm();
   }
 
-  toggleView() {
-    this.listViewActive = !this.listViewActive;
-  }
-
-  async openKioskListModal() {
-    const modal = await this.modalController.create({
-      component: KioskListModalComponent,
-      cssClass: "select-recipient-modal",
-      showBackdrop: false,
-      backdropDismiss: false,
+  setForm() {
+    this.searchForm = this.formBuilder.group({
+      kioskInput: [""],
     });
-    modal.onWillDismiss().then((response: any) => {
-      if (response && response.data) {
-      }
-    });
-    return await modal.present();
   }
 
-  loadGoogleMaps() {
+  loadKiosk(isFirstLoad: boolean, event) {
+    const params = {
+      page: this.page,
+      size: SEARCH_SIZE,
+      latitude: this.userPosition.latitude,
+      longitude: this.userPosition.longitude,
+    };
+    this.kioskLocatorService
+      .getKiosks(params)
+      .pipe(
+        tap((kiosks: KioskOMModel[]) => {
+          if (isFirstLoad) {
+            this.loadingKiosk = false;
+          } else {
+            event.target.complete();
+          }
+          this.kiosksArray = this.kiosksArray.concat(kiosks);
+          for (let [i, kiosk] of kiosks.entries()) {
+            this.addMarker(kiosk, (i + 1).toString());
+          }
+          this.page++;
+        }),
+        catchError((err) => {
+          throw new Error(err);
+        })
+      )
+      .subscribe();
+  }
+
+  toggleView(view: KIOSK_VIEW) {
+    if (this.currentView === KIOSK_VIEW.VIEW_ITINERAIRE) {
+      this.markers.forEach((marker) => {
+        marker.setMap(this.map);
+      });
+      this.directionsRenderer.setMap(null);
+    }
+    this.currentView = view;
+  }
+
+  async loadGoogleMaps() {
     window["mapInit"] = () => {
       this.initMap();
     };
+    this.initMap();
     let script = document.createElement("script");
     script.id = "googleMaps";
     script.src =
@@ -76,184 +109,85 @@ export class KioskLocatorPage implements OnInit {
   }
 
   async initMap() {
-    this.mapInitialised = true;
-
     // Geolocation.getCurrentPosition().then((position) => {
     const position = await this.geolocation.getCurrentPosition();
-    console.log(position);
-    let latLng = new google.maps.LatLng(
+    this.userPosition = position.coords;
+    const latLng = new google.maps.LatLng(
       position.coords.latitude,
       position.coords.longitude
     );
-
-    let mapOptions = {
+    let mapOptions: google.maps.MapOptions = {
       center: latLng,
-      zoom: 15,
+      zoom: 13,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
-      styles: [
-        { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-        { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
-        { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
-        {
-          featureType: "administrative.locality",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#d59563" }],
-        },
-        {
-          featureType: "poi",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#d59563" }],
-        },
-        {
-          featureType: "poi.park",
-          elementType: "geometry",
-          stylers: [{ color: "#263c3f" }],
-        },
-        {
-          featureType: "poi.park",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#6b9a76" }],
-        },
-        {
-          featureType: "road",
-          elementType: "geometry",
-          stylers: [{ color: "#38414e" }],
-        },
-        {
-          featureType: "road",
-          elementType: "geometry.stroke",
-          stylers: [{ color: "#212a37" }],
-        },
-        {
-          featureType: "road",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#9ca5b3" }],
-        },
-        {
-          featureType: "road.highway",
-          elementType: "geometry",
-          stylers: [{ color: "#746855" }],
-        },
-        {
-          featureType: "road.highway",
-          elementType: "geometry.stroke",
-          stylers: [{ color: "#1f2835" }],
-        },
-        {
-          featureType: "road.highway",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#f3d19c" }],
-        },
-        {
-          featureType: "transit",
-          elementType: "geometry",
-          stylers: [{ color: "#2f3948" }],
-        },
-        {
-          featureType: "transit.station",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#d59563" }],
-        },
-        {
-          featureType: "water",
-          elementType: "geometry",
-          stylers: [{ color: "#17263c" }],
-        },
-        {
-          featureType: "water",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#515c6d" }],
-        },
-        {
-          featureType: "water",
-          elementType: "labels.text.stroke",
-          stylers: [{ color: "#17263c" }],
-        },
-      ],
+      styles: GOOGLE_MAPS_STYLES_OBJECT,
     };
-
     this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-    this.addMarker(position.coords.latitude, position.coords.longitude);
-    for (let kiosk of this.kiosksArray) {
-      this.addMarker(kiosk.lat, kiosk.long);
-      console.log(
-        this.getDistanceBetweenPoints(
-          { lat: kiosk.lat, lng: kiosk.long },
-          { lat: position.coords.latitude, lng: position.coords.longitude },
-          "km"
-        )
-      );
-      this.distanceMatrix(
-        { lat: kiosk.lat, lng: kiosk.long },
-        { lat: position.coords.latitude, lng: position.coords.longitude }
-      );
-      this.showDirections();
-    }
+    this.addUserMarker(position.coords.latitude, position.coords.longitude);
+    this.loadKiosk(true, {});
     // });
   }
 
-  addMarker(lat, lng) {
-    const myLatLng = { lat, lng };
-    const map = this.map;
-    new google.maps.Marker({
-      position: myLatLng,
-      map,
-      title: "Hello World!",
+  initDIrectionServices() {
+    this.directionsService = new google.maps.DirectionsService();
+    this.directionsRenderer = new google.maps.DirectionsRenderer({
+      suppressMarkers: true,
     });
   }
 
-  getDistanceBetweenPoints(start, end, units) {
-    let earthRadius = {
-      miles: 3958.8,
-      km: 6371,
-    };
-
-    let R = earthRadius[units || "miles"];
-    let lat1 = start.lat;
-    let lon1 = start.lng;
-    let lat2 = end.lat;
-    let lon2 = end.lng;
-
-    let dLat = this.toRad(lat2 - lat1);
-    let dLon = this.toRad(lon2 - lon1);
-    let a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.toRad(lat1)) *
-        Math.cos(this.toRad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    let d = R * c;
-
-    return d;
+  addUserMarker(lat, lng) {
+    const myLatLng = { lat, lng };
+    new google.maps.Marker({
+      position: myLatLng,
+      map: this.map,
+      icon: {
+        url: "http://maps.google.com/mapfiles/kml/paddle/wht-blank.png",
+      },
+    }).addListener("click", () => {
+      new google.maps.InfoWindow({
+        content: "<div>Ma position</div>",
+      }).open(this.map);
+    });
   }
 
-  toRad(x) {
-    return (x * Math.PI) / 180;
+  addMarker(kiosk: KioskOMModel, index?) {
+    const myLatLng = new google.maps.LatLng(kiosk.latitude, kiosk.longitude);
+    const marker = new google.maps.Marker({
+      position: myLatLng,
+      map: this.map,
+      label: index,
+      title: "Hello World!",
+    });
+    marker.addListener("click", () => {
+      this.onSelectKiosk(kiosk, index);
+    });
+    this.markers.push(marker);
   }
 
-  distanceMatrix(origin, dest) {
-    origin = new google.maps.LatLng(origin.lat, origin.lng);
-    dest = new google.maps.LatLng(dest.lat, dest.lng);
-    const service = new google.maps.DistanceMatrixService();
-    service
-      .getDistanceMatrix({
-        origins: [origin],
-        destinations: [dest],
-        travelMode: "DRIVING",
-        avoidHighways: true,
-        avoidTolls: true,
-      })
-      .then((res) => {
-        console.log(res);
-      });
+  clearAllMarkers() {
+    this.markers.forEach((marker: google.maps.Marker) => {
+      marker.setMap(null);
+    });
   }
 
-  showDirections() {
-    const directionsService = new google.maps.DirectionsService();
-    const directionsRenderer = new google.maps.DirectionsRenderer();
-    directionsRenderer.setMap(this.map);
-    this.calculateAndDisplayRoute(directionsService, directionsRenderer);
+  onSelectKiosk(kiosk: KioskOMModel, i: number) {
+    this.currentKiosk = kiosk;
+    this.selectedKioskIndex = i;
+    this.currentView = KIOSK_VIEW.VIEW_ITINERAIRE;
+    this.clearAllMarkers();
+    this.addMarker(kiosk, i.toString());
+    this.showDirections(kiosk, google.maps.TravelMode.DRIVING, "blue");
+    this.showDirections(kiosk, google.maps.TravelMode.WALKING, "pink");
+  }
+
+  showDirections(
+    kiosk: KioskOMModel,
+    travelMode: google.maps.TravelMode,
+    color?
+  ) {
+    this.initDIrectionServices();
+    this.directionsRenderer.setMap(this.map);
+    this.calculateAndDisplayRoute(kiosk, travelMode);
     // const onChangeHandler = function () {
     //   this.calculateAndDisplayRoute(directionsService, directionsRenderer);
     // };
@@ -267,18 +201,66 @@ export class KioskLocatorPage implements OnInit {
     // );
   }
 
-  calculateAndDisplayRoute(directionsService, directionsRenderer) {
-    directionsService
-      .route({
-        origin: "14.758707199999998, -17.4358528",
-        destination: "14.735, -17.461",
-        travelMode: google.maps.TravelMode.DRIVING,
-      })
-      .then((response) => {
-        directionsRenderer.setDirections(response);
-      })
-      .catch((e) => {
-        console.log(e);
+  calculateAndDisplayRoute(
+    kiosk: KioskOMModel,
+    travelMode: google.maps.TravelMode
+  ) {
+    const destination = `${kiosk.latitude}, ${kiosk.longitude}`;
+    const origin = `${this.userPosition.latitude}, ${this.userPosition.longitude}`;
+    this.directionsService.route(
+      {
+        origin,
+        destination,
+        travelMode,
+      },
+      (response) => {
+        this.directionsRenderer.setDirections(response);
+      }
+    );
+  }
+
+  onInput(event) {
+    const value = event.target.value;
+    this.searchInput = value;
+    if (!!value) {
+      this.currentView = KIOSK_VIEW.VIEW_SEARCH;
+    }
+  }
+
+  onSearchEmitted(selectedKiosk) {
+    if (selectedKiosk) {
+      this.currentView = KIOSK_VIEW.VIEW_ITINERAIRE;
+      this.currentKiosk = selectedKiosk;
+    } else {
+      this.currentView = KIOSK_VIEW.VIEW_CARDS;
+      this.searchForm.reset();
+    }
+  }
+
+  onSlideChanged(ev) {
+    this.sliders.getActiveIndex().then((index) => {
+      const correspondingKiosk = this.kiosksArray.find((kiosk, i) => {
+        return i === index;
       });
+      this.map.setZoom(16);
+      this.map.panTo(
+        new google.maps.LatLng(
+          correspondingKiosk.latitude,
+          correspondingKiosk.longitude
+        )
+      );
+    });
   }
 }
+
+// console.log(
+//   this.kioskLocatorService.getDistanceBetweenPoints(
+//     { lat: kiosk.latitude, lng: kiosk.longitude },
+//     { lat: position.coords.latitude, lng: position.coords.longitude }
+//   )
+// );
+// this.distanceMatrix(
+//   { lat: kiosk.lat, lng: kiosk.long },
+//   { lat: position.coords.latitude, lng: position.coords.longitude }
+// );
+// this.showDirections();

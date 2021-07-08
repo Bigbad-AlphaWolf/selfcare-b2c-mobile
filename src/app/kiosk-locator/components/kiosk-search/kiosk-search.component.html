@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title class="ion-no-padding">
+      <span class="title1">Recherche kiosque</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">Recherche kiosque</span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="search-page">
+    <form class="search-bar-block" [formGroup]="form">
+      <ion-item lines="none" class="item-has-value">
+        <ion-input formControlName="keyword" #searchInput placeholder="Rechercher un kiosque" (ionChange)="onInputChange($event)">
+        </ion-input>
+        <ion-icon name="search" slot="end" *ngIf="displaySearchIcon"></ion-icon>
+        <span class="effacer" *ngIf="!displaySearchIcon" (click)="onClear(searchInput)">Effacer</span>
+      </ion-item>
+    </form>
+
+    <div class="search-result">
+      <div class="result-count">Résultats(2)</div>
+      <div class="results-list">
+        <app-kiosk-card (click)="goBack()"></app-kiosk-card>
+        <app-kiosk-card (click)="goBack()"></app-kiosk-card>
+        <app-kiosk-card (click)="goBack()"></app-kiosk-card>
+        <app-kiosk-card (click)="goBack()"></app-kiosk-card>
+        <app-kiosk-card (click)="goBack()"></app-kiosk-card>
+        <app-kiosk-card (click)="goBack()"></app-kiosk-card>
+        <app-kiosk-card (click)="goBack()"></app-kiosk-card>
+        <app-kiosk-card (click)="goBack()"></app-kiosk-card>
+        <app-kiosk-card (click)="goBack()"></app-kiosk-card>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

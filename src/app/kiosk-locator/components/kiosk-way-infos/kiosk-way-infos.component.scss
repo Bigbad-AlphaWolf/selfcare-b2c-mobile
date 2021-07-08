@@ -1,0 +1,91 @@
+@import "src/app/app";
+
+.kiosk-infos-card {
+  padding: 30px 15px;
+  border-radius: 10px;
+  background-color: $white;
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    .my-way {
+      font-size: 24px;
+      line-height: 1.25;
+    }
+    .sortir {
+      font-size: 16px;
+      line-height: 1.88;
+    }
+  }
+  .position-bloc {
+    position: relative;
+    .fake-way {
+      position: absolute;
+      z-index: 1;
+      left: 11.25px;
+      top: 10%;
+      height: 80%;
+      border-left: dotted 2px $lightBlue;
+    }
+    .position {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+      .img-container {
+        z-index: 2;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        &-blue {
+          background-color: $lightBlue;
+          margin-right: 7.5px;
+          width: 25px;
+          height: 25px;
+        }
+        &-orange {
+          padding-top: 5px;
+          margin: 0 10px 0 2.5px;
+          background-color: $orange;
+          width: 20px;
+          height: 20px;
+          font-size: 14px;
+        }
+        .user-img {
+          width: 15px;
+          height: 15px;
+          border-radius: 50%;
+          border: solid 1px $white;
+        }
+      }
+      .place {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 16px;
+        line-height: 1.13;
+        padding-top: 6px;
+      }
+    }
+  }
+  .items-container {
+    display: flex;
+    .info-item {
+      display: flex;
+      align-items: center;
+      &:not(:last-child) {
+        margin-right: 50px;
+      }
+      .icone {
+        margin-right: 5px;
+      }
+      .duration {
+        padding-top: 5px;
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 14px;
+        line-height: 1.29;
+        white-space: nowrap;
+      }
+    }
+  }
+}
