@@ -530,7 +530,6 @@ body {
   .modal-wrapper {
     width: 100% !important;
     border-radius: 10px 10px 0 0 !important;
-    min-height: 500px;
     .ion-page {
       position: relative;
       contain: content;
@@ -543,7 +542,9 @@ body {
 }
 
 .recipient-modal-height {
-  --height: 500px;
+  .modal-wrapper {
+    min-height: 500px;
+  }
 }
 
 // css for modal in operation success or fail in operaction recap
