@@ -570,8 +570,7 @@ export class OperationRecapPage implements OnInit {
       msisdn: this.currentUserNumber,
       serviceId: this.opXtras.pass.serviceId,
       type: 'usage',
-      typePassUsage: this.opXtras.pass.typeUsage.code,
-      typeAbonnementPassUsage: this.opXtras.pass.typeAbonnement,
+      serviceType: this.opXtras.pass.typeUsage.code,
     };
     const logInfos: FollowOemlogPurchaseInfos = {
       sender: this.currentUserNumber,
