@@ -28,7 +28,7 @@
       </mat-radio-button>
     </mat-radio-group>
   </div>
-  <oem-phone-number-provider [hidden]="!showInput" (onPhoneSelected)="onPhoneSelected($event)">
+  <oem-phone-number-provider [hidden]="!showInput" [showInput]="showInput" (onPhoneSelected)="onPhoneSelected($event)">
   </oem-phone-number-provider>
   <div *ngIf="phoneIsNotValid" class="error-msg scb-text-red-error">
     Veuillez choisir un numéro de destinataire valide pour continuer

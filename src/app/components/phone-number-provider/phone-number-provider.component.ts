@@ -1,24 +1,35 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { formatPhoneNumber, REGEX_NUMBER_OM } from 'src/shared';
-import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
-import { Contacts, Contact } from '@ionic-native/contacts';
-import { MatDialog } from '@angular/material';
-import { OperationExtras } from 'src/app/models/operation-extras.model';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+  ElementRef,
+} from "@angular/core";
+import { formatPhoneNumber, REGEX_NUMBER_OM } from "src/shared";
+import { SelectNumberPopupComponent } from "src/shared/select-number-popup/select-number-popup.component";
+import { Contacts, Contact } from "@ionic-native/contacts";
+import { MatDialog, MatInput } from "@angular/material";
+import { OperationExtras } from "src/app/models/operation-extras.model";
+import { FollowAnalyticsService } from "src/app/services/follow-analytics/follow-analytics.service";
 
 @Component({
-  selector: 'oem-phone-number-provider',
-  templateUrl: './phone-number-provider.component.html',
-  styleUrls: ['./phone-number-provider.component.scss'],
+  selector: "oem-phone-number-provider",
+  templateUrl: "./phone-number-provider.component.html",
+  styleUrls: ["./phone-number-provider.component.scss"],
 })
-export class PhoneNumberProviderComponent implements OnInit {
-  @Output('onPhoneSelected')
-  onPhoneSelected: EventEmitter<OperationExtras> = new EventEmitter();
-
+export class PhoneNumberProviderComponent implements OnInit, OnChanges {
+  @Output("onPhoneSelected") onPhoneSelected: EventEmitter<OperationExtras> =
+    new EventEmitter();
+  @Input() showInput: boolean;
+  @ViewChild("numberInput") input: ElementRef;
   hasErrorGetContact: boolean;
   errorGetContact: any;
-  otherBeneficiaryNumber = '';
-  recipientContactInfos = '';
+  otherBeneficiaryNumber = "";
+  recipientContactInfos = "";
 
   opXtras: OperationExtras = {};
   constructor(
@@ -27,13 +38,22 @@ export class PhoneNumberProviderComponent implements OnInit {
     private followAnalyticsService: FollowAnalyticsService
   ) {}
 
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
+    if (changes.showInput.currentValue) {
+      setTimeout(() => {
+        this.input.nativeElement.focus();
+      }, 5);
+    }
+  }
+
   ngOnInit() {}
   onValueChange(value?: any) {
     this.onPhoneSelected.emit({ recipientMsisdn: value });
   }
 
   pickContact() {
-    this.followAnalyticsService.registerEventFollow('Access_contacts', 'event');
+    this.followAnalyticsService.registerEventFollow("Access_contacts", "event");
     this.hasErrorGetContact = false;
     this.errorGetContact = null;
     this.contacts
@@ -49,7 +69,7 @@ export class PhoneNumberProviderComponent implements OnInit {
         }
       })
       .catch((err) => {
-        console.log('err', err);
+        console.log("err", err);
       });
   }
 
@@ -73,7 +93,7 @@ export class PhoneNumberProviderComponent implements OnInit {
     } else {
       this.hasErrorGetContact = true;
       this.errorGetContact =
-        'Veuillez choisir un numéro de destinataire valide pour continuer';
+        "Veuillez choisir un numéro de destinataire valide pour continuer";
     }
   }
 
@@ -83,12 +103,12 @@ export class PhoneNumberProviderComponent implements OnInit {
 
   getContactFormattedName(contact: any) {
     const givenName = contact.name.givenName;
-    const familyName = contact.name.familyName ? contact.name.familyName : '';
+    const familyName = contact.name.familyName ? contact.name.familyName : "";
 
     this.recipientContactInfos =
       contact.name && contact.name.formatted
         ? contact.name.formatted
-        : givenName + ' ' + familyName;
+        : givenName + " " + familyName;
 
     this.opXtras.recipientName = this.recipientContactInfos;
     this.opXtras.recipientFirstname = givenName;
