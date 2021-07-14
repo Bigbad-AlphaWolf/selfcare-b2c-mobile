@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpErrorResponse,
-} from '@angular/common/http';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
 import * as SecureLS from 'secure-ls';
 import { tap, delay, retryWhen, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -14,10 +8,7 @@ import * as jwt_decode from 'jwt-decode';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { OM_SERVICE_VERSION } from '../orange-money-service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import {
-  checkUrlMatchOM,
-  checkUrlNotNeedAuthorization,
-} from 'src/app/utils/utils';
+import { checkUrlMatchOM, checkUrlNotNeedAuthorization } from 'src/app/utils/utils';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
@@ -38,10 +29,10 @@ export class AuthInterceptorService implements HttpInterceptor {
   ) {
     this.appVersion
       .getVersionNumber()
-      .then((value) => {
+      .then(value => {
         this.appVersionNumber = value;
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       });
   }
@@ -52,15 +43,15 @@ export class AuthInterceptorService implements HttpInterceptor {
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
-        operationType: null,
-      },
+        operationType: null
+      }
     });
     await modal.present();
     let result = await modal.onDidDismiss();
     if (result && result.data && result.data.success) return of(err);
     throw new HttpErrorResponse({
       error: { title: 'Pinpad cancled' },
-      status: 401,
+      status: 401
     });
   }
 
@@ -77,7 +68,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       }
 
       req = req.clone({
-        body: { ...req.body, uuid: x_uuid },
+        body: { ...req.body, uuid: x_uuid }
       });
     }
     const lightToken = ls.get('light-token');
@@ -87,21 +78,21 @@ export class AuthInterceptorService implements HttpInterceptor {
       headers = headers.set('X-MSISDN', AUTH_IMPLICIT_MSISDN);
       //delay to test slowness of network
       req = req.clone({
-        headers,
+        headers
       });
     }
     if (isReqWaitinForUID(req.url)) {
       let headers = req.headers;
       headers = headers.set('uuid', x_uuid);
       req = req.clone({
-        headers,
+        headers
       });
     }
     if (isReqWaitinForXUID(req.url)) {
       let headers = req.headers;
       headers = headers.set('X-UUID', x_uuid);
       req = req.clone({
-        headers,
+        headers
       });
     }
     if (req.headers.has(OmRequest)) {
@@ -118,18 +109,16 @@ export class AuthInterceptorService implements HttpInterceptor {
       return next.handle(req);
     }
     if (lightToken) {
-      let headers = req.headers
-        .set('X-Selfcare-UUID', x_uuid)
-        .set('Authorization', `Bearer ${lightToken}`);
+      let headers = req.headers.set('X-Selfcare-UUID', x_uuid).set('Authorization', `Bearer ${lightToken}`);
       req = req.clone({
-        headers,
+        headers
       });
     }
     if (imei) {
       let headers = req.headers;
       headers = headers.set('X-Selfcare-Device-Imei', imei);
       req = req.clone({
-        headers,
+        headers
       });
     }
     if (token) {
@@ -138,7 +127,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       headers = headers.set('Authorization', `Bearer ${token}`);
       headers = headers.set('Access-Control-Allow-Origin', '*');
       req = req.clone({
-        headers,
+        headers
       });
     }
     let deviceInfo = window['device'];
@@ -152,34 +141,29 @@ export class AuthInterceptorService implements HttpInterceptor {
       headers = headers.set('X-Selfcare-Os-Version', deviceInfo.version);
       headers = headers.set('X-Selfcare-Manufacturer', deviceInfo.manufacturer);
       headers = headers.set('X-Selfcare-Serial', deviceInfo.serial);
-      headers = headers.set(
-        'X-Selfcare-Isvirtual',
-        String(deviceInfo.isVirtual)
-      );
+      headers = headers.set('X-Selfcare-Isvirtual', String(deviceInfo.isVirtual));
 
-      if (this.appVersionNumber)
-        headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
+      if (this.appVersionNumber) headers = headers.set('X-Selfcare-App-Version', this.appVersionNumber);
 
       req = req.clone({
-        headers,
+        headers
       });
     }
+    let headers = req.headers.set('X-Selfcare-Uuid', x_uuid);
+    req = req.clone({
+      headers
+    });
     if (checkUrlNotNeedAuthorization(req.url)) {
       let headers = req.headers.delete('Authorization');
       req = req.clone({
-        headers,
+        headers
       });
     }
     return next.handle(req).pipe(
-      retryWhen((err) => {
+      retryWhen(err => {
         return err.pipe(
-          switchMap(async (err) => {
-            if (
-              err.status === 401 &&
-              checkUrlMatchOM(err.url) &&
-              !err.statusText
-            )
-              return await this.resetOmToken(err);
+          switchMap(async err => {
+            if (err.status === 401 && checkUrlMatchOM(err.url) && !err.statusText) return await this.resetOmToken(err);
             throw err;
           })
         );
@@ -213,24 +197,16 @@ export class AuthInterceptorService implements HttpInterceptor {
 }
 
 function isReqWaitinForUID(url: string) {
-  const urlGetMsisdn =
-    'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn';
-  const urlConfirmMsisdn =
-    'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn';
+  const urlGetMsisdn = 'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn';
+  const urlConfirmMsisdn = 'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn';
   return url.match(urlGetMsisdn) || url.match(urlConfirmMsisdn);
 }
 
 function isReqWaitinForXUID(url: string) {
-  const urlCheckNumber =
-    'selfcare-b2c-account-management/api/account-management/v2/check_number';
-  const urlRegister =
-    'selfcare-b2c-account-management/api/account-management/v2/register';
+  const urlCheckNumber = 'selfcare-b2c-account-management/api/account-management/v2/check_number';
+  const urlRegister = 'selfcare-b2c-account-management/api/account-management/v2/register';
   const urlResetPwd = 'selfcare-b2c-uaa/api/account/b2c/reset-password';
-  return (
-    url.match(urlCheckNumber) ||
-    url.match(urlRegister) ||
-    url.match(urlResetPwd)
-  );
+  return url.match(urlCheckNumber) || url.match(urlRegister) || url.match(urlResetPwd);
 }
 
 function isReqWaitinForUIDandMSISDN(url: string) {
