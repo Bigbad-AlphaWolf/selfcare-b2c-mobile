@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { Coordinates, Geolocation } from "@ionic-native/geolocation/ngx";
-import { IonSlides } from "@ionic/angular";
+import { IonSlides, Platform } from "@ionic/angular";
 import { catchError, tap } from "rxjs/operators";
 import { KioskOMModel } from "../models/kiosk-om.model";
 import { KioskLocatorService } from "../services/kiosk-locator-service/kiosk-locator.service";
@@ -25,7 +25,7 @@ export class KioskLocatorPage implements OnInit {
   apiKey = "AIzaSyAfqTLg3_OIhgZIWG3LZTlLA0sEMAdrMso";
   searchInput: string;
   KIOSK_VIEW = KIOSK_VIEW;
-  currentView: KIOSK_VIEW = KIOSK_VIEW.VIEW_LIST;
+  currentView: KIOSK_VIEW = KIOSK_VIEW.VIEW_CARDS;
   currentKiosk: any;
   slideOptions = MAP_CARDS_SLIDES_OPTIONS;
   searchForm: FormGroup;
@@ -41,11 +41,18 @@ export class KioskLocatorPage implements OnInit {
   constructor(
     private geolocation: Geolocation,
     private kioskLocatorService: KioskLocatorService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private platform: Platform
   ) {}
 
-  ngOnInit() {
+  async ionViewDidEnter() {
+    const ready = await this.platform.ready();
+    console.log(ready);
     this.loadGoogleMaps();
+  }
+
+  ngOnInit() {
+    // this.loadGoogleMaps();
     this.setForm();
   }
 
@@ -98,7 +105,6 @@ export class KioskLocatorPage implements OnInit {
     window["mapInit"] = () => {
       this.initMap();
     };
-    this.initMap();
     let script = document.createElement("script");
     script.id = "googleMaps";
     script.src =
@@ -109,12 +115,12 @@ export class KioskLocatorPage implements OnInit {
   }
 
   async initMap() {
-    // Geolocation.getCurrentPosition().then((position) => {
     const position = await this.geolocation.getCurrentPosition();
+    console.log(position);
     this.userPosition = position.coords;
     const latLng = new google.maps.LatLng(
-      position.coords.latitude,
-      position.coords.longitude
+      this.userPosition.latitude,
+      this.userPosition.longitude
     );
     let mapOptions: google.maps.MapOptions = {
       center: latLng,
@@ -123,9 +129,8 @@ export class KioskLocatorPage implements OnInit {
       styles: GOOGLE_MAPS_STYLES_OBJECT,
     };
     this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-    this.addUserMarker(position.coords.latitude, position.coords.longitude);
+    this.addUserMarker(this.userPosition.latitude, this.userPosition.longitude);
     this.loadKiosk(true, {});
-    // });
   }
 
   initDIrectionServices() {
@@ -227,12 +232,14 @@ export class KioskLocatorPage implements OnInit {
     }
   }
 
-  onSearchEmitted(selectedKiosk) {
-    if (selectedKiosk) {
-      this.currentView = KIOSK_VIEW.VIEW_ITINERAIRE;
-      this.currentKiosk = selectedKiosk;
+  onSearchEmitted(event) {
+    if (event.kiosk) {
+      this.onSelectKiosk(event.kiosk, event.index);
     } else {
       this.currentView = KIOSK_VIEW.VIEW_CARDS;
+      this.markers.forEach((marker) => {
+        marker.setMap(this.map);
+      });
       this.searchForm.reset();
     }
   }

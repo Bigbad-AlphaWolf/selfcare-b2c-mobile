@@ -40,7 +40,7 @@
       <app-kiosk-way-infos [index]="selectedKioskIndex" [kiosk]="currentKiosk" [userCurrentPosition]="userPosition"></app-kiosk-way-infos>
     </div>
     <div class="search-bloc-container" *ngSwitchCase="KIOSK_VIEW.VIEW_SEARCH">
-      <app-kiosk-search (back)="onSearchEmitted($event)" [searchInput]="searchInput"></app-kiosk-search>
+      <app-kiosk-search (back)="onSearchEmitted($event)" [searchInput]="searchInput" [userPosition]="userPosition"></app-kiosk-search>
     </div>
   </ng-container>
 </ion-content>

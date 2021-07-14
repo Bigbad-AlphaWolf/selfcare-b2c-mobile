@@ -41,5 +41,14 @@ ion-header {
       letter-spacing: normal;
       color: #666666;
     }
+
+    .spinner-bloc {
+      display: flex;
+      justify-content: center;
+      padding-top: 50px;
+      .mat-spinner::ng-deep circle {
+        stroke: $orange;
+      }
+    }
   }
 }

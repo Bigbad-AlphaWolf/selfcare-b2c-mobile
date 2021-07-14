@@ -1,12 +1,14 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { of } from "rxjs";
+import { delay } from "rxjs/operators";
 import { KioskOMModel } from "src/app/models/kiosk-om.model";
 import { environment } from "src/environments/environment";
 import { kioskMock } from "./kiosk.utils";
 // const { SERVER_API_URL } = environment;
 const SERVER_API_URL = "http://10.96.16.116:8718";
 const kiosksEndpoint = `${SERVER_API_URL}/api/kiosque-coordonate`;
+const kiosksKeyWorEndpoint = `${SERVER_API_URL}/api/kiosque-coordonate`;
 
 @Injectable({
   providedIn: "root",
@@ -21,12 +23,13 @@ export class KioskLocatorService {
     latitude: number;
     longitude: number;
   }) {
+    const endpoint = params.keyword ? kiosksKeyWorEndpoint : kiosksEndpoint;
     let queryParams = "?";
     for (let param in params) {
       queryParams += `${param}=${params[param]}&`;
     }
-    // return this.http.get<KioskOMModel[]>(`${kiosksEndpoint}/${queryParams}`);
-    return of(kioskMock);
+    // return this.http.get<KioskOMModel[]>(`${endpoint}/${queryParams}`);
+    return of(kioskMock).pipe(delay(2000));
   }
 
   // calculate in km the distance between two points (a vol d'oiseau)
