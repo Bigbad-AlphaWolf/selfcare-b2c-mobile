@@ -22,7 +22,8 @@ import {
   PAYMENT_MOD_CREDIT,
   PAYMENT_MOD_OM,
   OPERATION_TYPE_PASS_ILLIFLEX,
-  getActiveBoostersForSpecificPass
+  getActiveBoostersForSpecificPass,
+  CODE_PARTENAIRE_COUPON_TRACE_TV
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -43,7 +44,7 @@ import { FeeModel } from '../services/orange-money-service';
 import { FeesService } from '../services/fees/fees.service';
 import { OM_LABEL_SERVICES } from '../utils/bills.util';
 import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
-import { PurchaseService } from '../services/purchase-service/purchase.service';
+import { BoosterModel } from '../models/booster.model';
 
 @Component({
   selector: 'app-operation-recap',
@@ -115,7 +116,6 @@ export class OperationRecapPage implements OnInit {
   buyCreditPayload: any;
   offerPlan: OfferPlan;
   isLightMod: boolean;
-
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -130,8 +130,7 @@ export class OperationRecapPage implements OnInit {
     private illiflexService: IlliflexService,
     private passService: PassInternetService,
     private ref: ChangeDetectorRef,
-    private feeService: FeesService,
-    private purchaseService: PurchaseService
+    private feeService: FeesService
   ) {}
 
   ngOnInit() {
@@ -465,6 +464,13 @@ export class OperationRecapPage implements OnInit {
 
   getPassBoosters(pass: any) {
     return getActiveBoostersForSpecificPass(pass, BoosterService.lastBoostersList);
+  }
+
+  isBoosterTraceTV() {
+    const boosters = this.getPassBoosters(this.passChoosen);
+    return !!boosters.find((item: BoosterModel) => {
+      return item.gift.partner.code === CODE_PARTENAIRE_COUPON_TRACE_TV;
+    });
   }
 
   goBack() {

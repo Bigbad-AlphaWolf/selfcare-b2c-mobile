@@ -24,6 +24,9 @@
         <div *ngIf="type ==='novo-fees'" class="scb-text-blue-popup text">
           vous allez payer <span class="new_fees"> {{ +details?.sending_fees_Info?.effective_fees + details?.fee}}FCFA </span> de frais au lieu de <span class="old_fees"> {{ +details?.sending_fees_Info?.old_fees }} FCFA </span> grâce à nos nouveaux tarifs
         </div>
+        <div *ngIf="type ==='coupon-trace'" class="scb-text-blue-popup text">
+          Attention les frais de connexion internet sont à la charge de l'utilisateur
+        </div>
       </div>
     </div>
 </div>
