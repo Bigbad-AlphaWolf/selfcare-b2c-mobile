@@ -269,7 +269,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'purchase-set-amount',
+    path: 'operation-set-amount',
     loadChildren:
       './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule',
     canActivate: [AuthGuard],
@@ -419,21 +419,20 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'new-deplafonnement-om',
-    loadChildren:
-      './new-deplafonnement-om/new-deplafonnement-om.module#NewDeplafonnementOmPageModule',
-    canActivate: [AuthGuard],
-  },
-  {
     path: 'list-pass-usage',
     loadChildren:
       './list-pass-usage/list-pass-usage.module#ListPassUsagePageModule',
     canActivate: [AuthGuard],
   },
   {
-    path: 'cancel-transaction-om',
+    path: 'om-self-operation',
     loadChildren:
-      './cancel-transaction-om/cancel-transaction-om.module#CancelTransactionOmPageModule',
+      './orange-money-self-operation/orange-money-self-operation.module#OrangeMoneySelfOperationModule',
+  },
+  {
+    path: 'purchase-set-amount',
+    loadChildren:
+      './transfer-set-amount/transfer-set-amount.module#TransferSetAmountPageModule',
   },
 ];
 

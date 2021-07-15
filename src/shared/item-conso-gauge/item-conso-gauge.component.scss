@@ -1,0 +1,30 @@
+@import 'src/app/app';
+
+:host {
+  width: 100%;
+}
+
+.gauge-container {
+  .conso-percent-text {
+    text-align: right;
+    .remaining-percent {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 12px;
+    }
+  }
+  .gauge {
+    width: 70%;
+    display: flex;
+    align-items: center;
+    .left {
+      margin: 10px 0;
+      height: 5px;
+      //   background-color: $purple;
+    }
+    .consumed {
+      margin: 10px 0;
+      height: 3px;
+      background-color: $grey;
+    }
+  }
+}

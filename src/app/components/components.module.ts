@@ -23,6 +23,7 @@ import { ItemTransfertOmComponent } from './item-transfert-om/item-transfert-om.
 import { SlideBanniereDashboardComponent } from './slide-banniere-dashboard/slide-banniere-dashboard.component';
 import { TakePictureComponent } from './take-picture/take-picture.component';
 import { HistorikTransactionByTypeModalComponent } from './historik-transaction-by-type-modal/historik-transaction-by-type-modal.component';
+import { ItemOmUserStatusCardInfosComponent } from './item-om-user-status-card-infos/item-om-user-status-card-infos.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { HistorikTransactionByTypeModalComponent } from './historik-transaction-
     SlideBanniereDashboardComponent,
     HistorikTransactionByTypeModalComponent,
     TakePictureComponent,
-    ItemTransfertOmComponent
+    ItemTransfertOmComponent,
+    ItemOmUserStatusCardInfosComponent
   ],
   imports: [
     CommonModule,
@@ -72,7 +74,8 @@ import { HistorikTransactionByTypeModalComponent } from './historik-transaction-
     SlideBanniereDashboardComponent,
     HistorikTransactionByTypeModalComponent,
     TakePictureComponent,
-    ItemTransfertOmComponent
+    ItemTransfertOmComponent,
+    ItemOmUserStatusCardInfosComponent,
   ],
   entryComponents: [HistorikTransactionByTypeModalComponent],
 })

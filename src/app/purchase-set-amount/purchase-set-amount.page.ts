@@ -28,7 +28,7 @@ import { of } from 'rxjs';
   styleUrls: ['./purchase-set-amount.page.scss'],
 })
 export class PurchaseSetAmountPage implements OnInit {
-  static ROUTE_PATH: string = '/purchase-set-amount';
+  static ROUTE_PATH: string = '/operation-set-amount';
   title: string;
   subtitle: string;
   setAmountForm: FormGroup;
@@ -41,9 +41,14 @@ export class PurchaseSetAmountPage implements OnInit {
   hasError: boolean;
   error: string;
   fee = 0;
-  sending_fees_Info: { effective_fees: number; old_fees: number } = {
+  sending_fees_Info: {
+    effective_fees: number;
+    old_fees: number;
+    cashout_fees: number;
+  } = {
     effective_fees: 0,
     old_fees: 0,
+    cashout_fees: 0,
   };
   totalAmount: number = 0;
   transferFeesArray: { retrait: FeeModel[]; tac: FeeModel[] } = {
@@ -160,9 +165,6 @@ export class PurchaseSetAmountPage implements OnInit {
           break;
         case OPERATION_TRANSFER_OM:
         case OPERATION_TRANSFER_OM_WITH_CODE:
-          this.getOMTransferFees(
-            OM_LABEL_SERVICES.TRANSFERT_SANS_CODE
-          ).subscribe();
           this.getOMTransferFees(
             OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE
           ).subscribe();
@@ -324,27 +326,23 @@ export class PurchaseSetAmountPage implements OnInit {
       );
       if (!feeInfo.effective_fees) {
         this.error =
-          "Le montant que vous avez saisi n'est pas dans la plage autorisé";
+          "Le montant que vous avez saisi n'est pas dans la plage autorisée";
         return;
       }
       this.fee = feeInfo.effective_fees;
       console.log('totalCode', 'amount', amount, 'fee', this.fee);
     }
     if (amount && this.purchaseType === OPERATION_TRANSFER_OM) {
-      const fees = this.feeService.extractFees(
-        this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_SANS_CODE],
-        amount
-      );
       this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(
         this.transferFeesArray[OM_LABEL_SERVICES.TAF],
         amount
       );
-      if (!fees.effective_fees) {
+      if (!this.sending_fees_Info.cashout_fees) {
         this.error =
           "Le montant que vous avez saisi n'est pas dans la plage autorisé";
         return;
       }
-      this.fee = fees.effective_fees;
+      this.fee = this.sending_fees_Info.cashout_fees;
     }
   }
 
@@ -368,21 +366,17 @@ export class PurchaseSetAmountPage implements OnInit {
       this.totalAmount = +amount + this.fee;
     }
     if (this.purchaseType === OPERATION_TRANSFER_OM) {
-      const fee = this.feeService.extractFees(
-        this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_SANS_CODE],
-        amount
-      );
       this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(
         this.transferFeesArray[OM_LABEL_SERVICES.TAF],
         amount
       );
 
-      if (fee.effective_fees === null) {
+      if (this.sending_fees_Info.effective_fees === null) {
         this.error =
           "Le montant que vous avez saisi n'est pas dans la plage autorisé";
         return;
       }
-      this.fee = fee.effective_fees;
+      this.fee = this.sending_fees_Info.cashout_fees;
 
       this.includeFees
         ? (this.totalAmount =

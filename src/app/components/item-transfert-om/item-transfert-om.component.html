@@ -1,7 +1,7 @@
 <div class="item-container">
   <div class="tarifs-infos-amount-confirmed">
     <span class="value">
-      {{ !isFromHistory ? omTransfertInfos?.amount : MATH.abs(transferHistoryItem?.amount)}} FCFA
+      {{ !isFromHistory ? omTransfertInfos?.amount : MATH.abs(transferHistoryItem?.amount) + transferHistoryItem?.fees}} FCFA
     </span>
   </div>
   <div class="badge-promo" >

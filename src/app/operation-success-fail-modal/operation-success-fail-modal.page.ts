@@ -21,6 +21,7 @@ import {
   OPERATION_BLOCK_TRANSFER,
   OPERATION_OPEN_OM_ACCOUNT,
   OPERATION_CANCEL_TRANSFERT_OM,
+  OPERATION_DEPLAFONNEMENT_OM_ACCOUNT,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -43,6 +44,7 @@ import { CheckEligibilityModel } from '../services/orange-money-service';
 import { throwError } from 'rxjs';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { BlockTransferSuccessPopupComponent } from 'src/shared/block-transfer-success-popup/block-transfer-success-popup.component';
+import { FollowAnalyticsEventType } from '../services/follow-analytics/follow-analytics-event-type.enum';
 
 @Component({
   selector: 'app-operation-success-fail-modal',
@@ -65,6 +67,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TYPE_PASS_VOYAGE = OPERATION_TYPE_PASS_VOYAGE;
   OPERATION_TYPE_PASS_USAGE = OPERATION_TYPE_PASS_USAGE;
   OPERATION_OPEN_OM_ACCOUNT = OPERATION_OPEN_OM_ACCOUNT;
+  OPERATION_DEPLAFONNEMENT_OM_ACCOUNT = OPERATION_DEPLAFONNEMENT_OM_ACCOUNT;
   OPERATION_CANCEL_TRANSFERT_OM = OPERATION_CANCEL_TRANSFERT_OM;
   OPERATION_RAPIDO = OPERATION_RAPIDO;
   @Input() passBought: any;
@@ -111,6 +114,16 @@ export class OperationSuccessFailModalPage implements OnInit {
 
   checkTransferEligibility() {
     if (this.checkingEligibility) return true;
+    const eventName = this.isOpenedFromHistory
+      ? 'clic_block_transfer_from_history'
+      : 'clic_block_transfer_after_transfer';
+    this.followAnalyticsServ.registerEventFollow(
+      eventName,
+      FollowAnalyticsEventType.EVENT,
+      {
+        transaction: this.historyTransactionItem,
+      }
+    );
     this.checkingEligibility = true;
     this.eligibilityHasError = false;
     this.omService

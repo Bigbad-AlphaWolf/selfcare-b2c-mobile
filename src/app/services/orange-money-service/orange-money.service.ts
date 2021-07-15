@@ -58,6 +58,7 @@ import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
 import { IlliflexService } from '../illiflex-service/illiflex.service';
 import { CancelOmTransactionPayloadModel } from 'src/app/models/cancel-om-transaction-payload.model';
+import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-event-type.enum';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
@@ -143,6 +144,16 @@ export class OrangeMoneyService {
         },
         () => {
           return true;
+        }
+      )
+    );
+  }
+
+  checkUserHasAccountV2(msisdn: string): Observable<boolean> {
+    return this.http.get(`${checkOMAccountEndpoint2}/${msisdn}`).pipe(
+      map(
+        (hasOmAccount: boolean) => {
+          return hasOmAccount;
         }
       )
     );
@@ -411,10 +422,7 @@ export class OrangeMoneyService {
     );
   }
 
-  getUserStatus() {
-    return this.getOmMsisdn().pipe(
-      switchMap((msisdn) => {
-        if (msisdn === 'error') throw new Error('NO_OM_ACCOUNT');
+  getUserStatus(msisdn: string) {
         return this.http
           .get<OMCustomerStatusModel>(`${userStatusEndpoint}/${msisdn}`)
           .pipe(
@@ -423,8 +431,6 @@ export class OrangeMoneyService {
               return status;
             })
           );
-      })
-    );
   }
 
   initSelfOperationOtp(initOtpPayload: OmInitOtpModel) {
@@ -613,9 +619,32 @@ export class OrangeMoneyService {
   isTxnEligibleToBlock(transactionId: string) {
     return this.getOmMsisdn().pipe(
       switchMap((msisdn) => {
-        return this.http.get<CheckEligibilityModel>(
-          `${checkTxnBlockEligibilityEndpoint}/${msisdn}/${transactionId}`
-        );
+        return this.http
+          .get<CheckEligibilityModel>(
+            `${checkTxnBlockEligibilityEndpoint}/${msisdn}/${transactionId}`
+          )
+          .pipe(
+            tap((res) => {
+              res.eligible
+                ? this.followAnalyticsService.registerEventFollow(
+                    'check_txn_eligibility_true',
+                    FollowAnalyticsEventType.EVENT
+                  )
+                : this.followAnalyticsService.registerEventFollow(
+                    'check_txn_eligibility_false',
+                    FollowAnalyticsEventType.EVENT,
+                    {}
+                  );
+            }),
+            catchError((err) => {
+              this.followAnalyticsService.registerEventFollow(
+                'check_txn_eligibility_error',
+                FollowAnalyticsEventType.ERROR,
+                { error: err }
+              );
+              return throwError(err);
+            })
+          );
       })
     );
   }
@@ -623,17 +652,35 @@ export class OrangeMoneyService {
   blockTransfer(transaction) {
     return this.getOmMsisdn().pipe(
       switchMap((msisdn) => {
-        const { amount, txnid, msisdnReceiver } = transaction;
+        const { amount, txnid, msisdnReceiver, fees } = transaction;
         const payload = {
-          amount: Math.abs(amount),
+          amount: Math.abs(amount) + fees,
           txn_id: txnid,
           destinataire: msisdnReceiver,
           msisdn,
         };
-        return this.http.post<{ message: string; transactionNumber: string }>(
-          BlockTransferEndpoint,
-          payload
-        );
+        return this.http
+          .post<{ message: string; transactionNumber: string }>(
+            BlockTransferEndpoint,
+            payload
+          )
+          .pipe(
+            tap((res) => {
+              this.followAnalyticsService.registerEventFollow(
+                'block_transaction_success',
+                FollowAnalyticsEventType.EVENT,
+                { msisdn, transaction: payload }
+              );
+            }),
+            catchError((error) => {
+              this.followAnalyticsService.registerEventFollow(
+                'block_transaction_error',
+                FollowAnalyticsEventType.ERROR,
+                { msisdn, transaction: payload, error }
+              );
+              return throwError(error);
+            })
+          );
       })
     );
   }
@@ -643,10 +690,13 @@ export class OrangeMoneyService {
     fileRecto: any,
     fileVerso: any
   ) {
-    const payload: FormData = new FormData();
-    payload.append('erreurTransactionOmDTO', JSON.stringify(formInfos));
-    payload.append('recto', fileRecto);
-    payload.append('verso', fileVerso);
+    const payload = new FormData();
+    const erreurTransactionOmDTO = new Blob([JSON.stringify(formInfos)], {
+      type: 'application/json',
+    });
+    payload.append('erreurTransactionOmDTO', erreurTransactionOmDTO);
+    payload.append('recto', fileRecto, 'recto.png');
+    payload.append('verso', fileVerso, 'verso.png');
     return this.http.post(`${CANCEL_TRANSACTIONS_OM_Endpoint}`, payload);
   }
 }

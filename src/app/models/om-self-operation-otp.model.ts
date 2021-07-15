@@ -23,7 +23,7 @@ export interface OmCheckOtpModel {
   imageBase64: string;
   kyc: OmInitOtpModel;
   msisdn: string;
-  typeDemande: string;
+  typeDemande: 'UPGRADE' | 'INSCRIPTION';
   hmac: string
 }
 

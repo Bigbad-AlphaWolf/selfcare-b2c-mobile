@@ -1,4 +1,4 @@
- devsMail = 'mouhamadoubambambacke.sow@orange-sonatel.com, xx@orange-sonatel.com'
+ devsMail = 'Team.selfcare-b2c@orange-sonatel.com'
 
 pipeline {
   // agent any
@@ -47,12 +47,20 @@ pipeline {
           }
         }
     }
+    
+    
+     stage("Clean install") {
+      steps{
+        sh "clean:all:install"
+      }
+    }
+    
 
-    stage("Clean install") {
+   /* stage("Plugins install ionic cordova") {
       steps{
         sh "npm run clean:all:install" 
       }
-    }
+    }*/
 
 
 
@@ -84,12 +92,12 @@ pipeline {
           }
         }*/
 
-    stage("Create www && cp google-services") {
+   /* stage("Create www && cp google-services") {
       steps{
          sh "mkdir -p www/"
          sh "cp google-services.json www/"
       }
-    }
+    }*/
 
   /* stage("Prepare build  android") {
       steps{
@@ -107,21 +115,21 @@ pipeline {
     } 
 
 
-    stage('Android Build Signed') {
+   /* stage('Android Build Signed') {
       steps {
         echo "Build Android Signed"
-        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks -storepass 'azerty' platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk my-alias"
+        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -keystore ../../../../../../my-release-key.keystore -storepass 'b:[S_#3R7?nLs*yJd^6<y' app-release-unsigned.apk ovto && mv app-release-unsigned.apk ovto.apk"
       }
       post{
         success {
-          archiveArtifacts artifacts:  'platforms/android/app/build/outputs/apk/release/ovto.apk'
-          emailext attachmentsPattern: 'platforms/android/app/build/outputs/apk/release/ovto.apk',
+          archiveArtifacts artifacts:  'platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk'
+          emailext attachmentsPattern: 'platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk',
             body: 'Apk joint au mail.',
-            subject: '[RELEASE] Signed',
+            subject: '[RELEASE] O&M ANDROID APK Signed',
             to: devsMail
         }
        }
-    }
+    }*/
 
 
     stage("Remove node module") {

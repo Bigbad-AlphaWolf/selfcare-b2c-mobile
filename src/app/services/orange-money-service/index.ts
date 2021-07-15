@@ -107,7 +107,7 @@ export interface TransferOrangeMoneyModel {
   amount: number;
   send_fees: number;
   cashout_fees: number;
-  fees: number;
+  fees?: number;
   a_ma_charge: boolean;
   uuid: string;
   os: string;
@@ -117,6 +117,7 @@ export interface TransferOrangeMoneyModel {
   app_conf_version: string;
   user_type: string;
   service_version: string;
+  capping: boolean;
 }
 
 export interface TransferOMWithCodeModel {
@@ -187,6 +188,9 @@ export interface FeeModel {
   effective_fees: number;
   mode_calcul: 'pourcent' | 'fixe';
   old_fees: number;
+  old_mode_calcul: 'pourcent' | 'fixe';
+  transfer_fees: number;
+  cashout_fees: number;
 }
 
 export const ORANGE_MONEY_TRANSFER_FEES = [
@@ -320,3 +324,26 @@ export const SUCCESS_MSG_OM_ACCOUNT_CREATION =
   `Votre demande d’ouverture de compte
   Orange Money a été enregistré avec succés.
   Vous recevrez une confirmation d’ouverture.`;
+
+export const SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT =
+  `Votre demande de déplafonnement de votre compte
+  Orange Money a été enregistré avec succés.
+  Vous recevrez une confirmation`;
+export const ERROR_MSG_OM_CODE_OTP_INVALIDE =
+  `Le code renseigné est invalide. Veuillez entrez le bon code.`;
+export const SUCCESS_MSG_OM_CANCEL_TRANSACTION_OM =
+  `Elle sera traité sous un délai prévisionnel de 48H. Vous recevrez une notification après le traitement.`;
+export const SUCCESS_OM_STATUS_CODE = `Success-001`;
+
+export function getAge(dateString) {
+  var today = new Date();
+  var birthDate = new Date(dateString);
+  var age = today.getFullYear() - birthDate.getFullYear();
+  var m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+  }
+  return age;
+}
+
+export const ID_CARD_CARACTERS_MIN_LENGTH = 13;

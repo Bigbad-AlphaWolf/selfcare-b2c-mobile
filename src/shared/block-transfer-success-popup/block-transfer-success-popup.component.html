@@ -20,12 +20,12 @@
     </div>
     <div class="item">
       <div class="item-key">Montant</div>
-      <div class="item-value-amount scb-text-orange">{{transactionToBlock?.amount + ' FCFA'}}</div>
+      <div class="item-value-amount scb-text-orange">{{MATH.abs(transactionToBlock?.amount) + transactionToBlock?.fees + ' FCFA'}}</div>
     </div>
   </div>
   <div class="warning">
     <img src="assets/images/icon-warning.png" alt="" class="warning-ico">
-    Vous disposez de 48h pour remplir le formulaire d’annulation.
+    Vous disposez de {{annulationDeadline}} pour remplir le formulaire d’annulation.
   </div>
   <div class="btn-container">
     <button class="scb-btn scb-btn-white" (click)="goFillAnnulationForm()">Remplir le formulaire</button>

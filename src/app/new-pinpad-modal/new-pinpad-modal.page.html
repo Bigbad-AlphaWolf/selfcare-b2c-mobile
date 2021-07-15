@@ -131,7 +131,7 @@
     <img src="/assets/images/block-transfer-ico.png" alt="lock" />
     <div class="title">
       <span class="title-1">Bloquer le transfert</span>
-      <span class="subtitle scb-text-gray">Entrer votre code secret pour confirmer le blocage temporaire de votre transfert de <span class="msisdn-bold scb-text-orange">{{MATH.abs(transactionToBlock?.amount) + ' FCFA'}}</span> au <span class="msisdn-bold scb-text-full-black">{{transactionToBlock?.msisdnReceiver | phoneNumberDisplay}}</span></span>
+      <span class="subtitle scb-text-gray">Entrer votre code secret pour confirmer le blocage temporaire de votre transfert de <span class="msisdn-bold scb-text-orange">{{(MATH.abs(transactionToBlock?.amount) + transactionToBlock.fees) + ' FCFA'}}</span> au <span class="msisdn-bold scb-text-full-black">{{transactionToBlock?.msisdnReceiver | phoneNumberDisplay}}</span></span>
     </div>
   </ng-container>
   <div class="bullet-container">

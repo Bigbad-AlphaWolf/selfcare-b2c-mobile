@@ -50,6 +50,7 @@ import { RapidoService } from '../services/rapido/rapido.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
 import { IlliflexModel } from '../models/illiflex-pass.model';
+import { PurchaseModel } from '../models/purchase.model';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -73,7 +74,7 @@ export class NewPinpadModalPage implements OnInit {
     sequence: string;
     birthYear: string;
   };
-  @Input() transactionToBlock: any;
+  @Input() transactionToBlock: PurchaseModel;
   OPERATION_CHANGE_PIN_OM = OPERATION_CHANGE_PIN_OM;
   OPERATION_BLOCK_TRANSFER = OPERATION_BLOCK_TRANSFER;
   bullets = [0, 1, 2, 3];
@@ -487,7 +488,7 @@ export class NewPinpadModalPage implements OnInit {
               this.transferMoneyPayload,
               {
                 pin,
-                fees: 0,
+                fees: this.transferMoneyPayload.send_fees,
               }
             );
             this.transferMoney(transferMoneyPayload);
@@ -608,6 +609,8 @@ export class NewPinpadModalPage implements OnInit {
   }
 
   seeSolde(pin: string) {
+    console.log(this.transactionToBlock);
+
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     // get balance
@@ -818,6 +821,7 @@ export class NewPinpadModalPage implements OnInit {
     cashout_fees: number;
     a_ma_charge: boolean;
     fees: number;
+    capping?: boolean;
   }) {
     this.processingPin = true;
     this.canRetry = false;
@@ -826,7 +830,7 @@ export class NewPinpadModalPage implements OnInit {
     this.transactionToBlock = {
       amount: -params.amount,
       msisdnReceiver: params.msisdn2,
-      operationDate: new Date(),
+      operationDate: new Date().toString(),
     };
     const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
       this.omPhoneNumber
@@ -847,6 +851,7 @@ export class NewPinpadModalPage implements OnInit {
       app_conf_version: 'v1.0',
       user_type: 'user',
       service_version: OM_SERVICE_VERSION,
+      capping: params.capping,
     };
     const logInfos: FollowOemlogPurchaseInfos = {
       sender: omUser.msisdn,
@@ -985,6 +990,7 @@ export class NewPinpadModalPage implements OnInit {
           {
             pin: this.pin,
             fees: this.cappingFees,
+            capping: true,
           }
         );
         this.transferMoney(transferMoneyPayload);
@@ -1013,8 +1019,12 @@ export class NewPinpadModalPage implements OnInit {
       this.opXtras.sending_fees = this.cappingFees
         ? this.cappingFees
         : this.opXtras.sending_fees;
+      const totalFees = this.transferMoneyPayload.a_ma_charge
+        ? this.transferMoneyPayload.cashout_fees
+        : 0;
       this.transactionToBlock = Object.assign({}, this.transactionToBlock, {
         txnid: res.content.data.txn_id,
+        fees: totalFees,
       });
       this.modalController.dismiss({
         success: true,

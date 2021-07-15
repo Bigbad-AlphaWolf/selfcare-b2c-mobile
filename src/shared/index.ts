@@ -63,6 +63,7 @@ export const OPERATION_INIT_CHANGE_PIN_OM = 'INIT_CHANGE_PIN_OM';
 export const OPERATION_CHANGE_PIN_OM = 'CHANGE_PIN_OM';
 export const OPERATION_OPEN_OM_ACCOUNT = 'OPEN_OM_ACCOUNT';
 export const OPERATION_CANCEL_TRANSFERT_OM = 'CANCEL_TRANSFERT_OM';
+export const OPERATION_DEPLAFONNEMENT_OM_ACCOUNT = 'DEPLAFONNEMENT_OM_ACCOUNT';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -1104,6 +1105,90 @@ export const HelpModalDefaultContent: {
   showChecks: false,
 };
 
+export const HelpModalRegisterOMContent: {
+  popupTitle: string;
+  popupSubtitle: string;
+  options: {
+    title: string;
+    subtitle: string;
+    type: string;
+    url: string;
+    action: string;
+    subOptions?: { title: string; subtitle: string; icon?: string }[];
+  }[];
+  showChecks?: boolean;
+} = {
+  popupTitle: 'On a besoin de récupérer votre numéro à partir du réseau',
+  popupSubtitle: 'On a besoin de récupérer votre numéro à partir du réseau',
+  options: [
+    {
+      title: 'Mon numéro ne s’affiche pas',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: 'ERROR_AUTH_IMP',
+      url: '',
+      action: 'POPUP',
+      subOptions: [
+        {
+          title:
+            'Activez vos données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" />',
+          subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
+        },
+        {
+          title:
+            'Désactivez le Wifi &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
+          subtitle:
+            'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
+        },
+        {
+          title: 'Assurez vous d’être sur le bon APN (Point d’Accès Internet)',
+          subtitle:
+            'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+        },
+      ],
+    },
+    {
+      title: 'Comment configurer le bon APN (Point d’Accès Internet)',
+      subtitle: 'Suivez les instructions du tutoriel',
+      type: 'APN',
+      url: '',
+      action: '',
+      subOptions: [
+        {
+          title:
+            '<span>Accéder aux Paramètres &nbsp <img class="item-icon" src="/assets/images/parameters.png" /></span>',
+          subtitle:
+            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+          icon: 'settings',
+        },
+        {
+          title:
+            '<span>Sélectionner la partie Sans fil et réseau &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
+          subtitle:
+            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
+          icon: 'wifi',
+        },
+        {
+          title:
+            '<span>Choisissez ensuite Réseau mobile ou Réseau de données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" /></span>',
+          subtitle:
+            'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+        },
+        {
+          title: 'Allez sur Noms des points d’accès (APN)',
+          subtitle: 'Je saisis mon nouveau mot de passe et le confirme',
+        },
+        {
+          title:
+            'Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
+          subtitle:
+            'Les paramètres internet Orange sont: \nNom : Orange Internet \nAPN : internet \nLaisser tous les autres options en l’état puis sauvegarder',
+        },
+      ],
+    },
+  ],
+  showChecks: false,
+};
+
 export const HelpModalAuthErrorContent = {
   popupTitle: 'Assurez-vous :',
   popupSubtitle: '',
@@ -1281,3 +1366,11 @@ export enum TYPE_ACTION_ON_BANNER {
   REDIRECTION = 'REDIRECTION',
   MODAL = 'MODAL',
 }
+
+export const ANNULATION_TRANSFER_DEADLINE = '5 jours';
+export const TRANSFER_BALANCE_INSUFFICIENT_ERROR =
+  'Le montant que vous voulez transférer est supérieur à votre solde.';
+export const TRANSFER_OM_BALANCE_NOT_ALLOWED =
+  "Le montant que vous avez saisi n'est pas dans la plage autorisée";
+export const FEES_ERROR =
+  'Erreur lors de la récupération des frais. Réactualisez';

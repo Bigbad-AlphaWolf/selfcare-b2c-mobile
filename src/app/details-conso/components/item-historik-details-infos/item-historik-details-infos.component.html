@@ -79,7 +79,7 @@
 
       </div>
   </ng-container>
-  <ng-container *ngIf="userProfil !== 'POSTPAID' && purchaseInfos ">
+  <ng-container *ngIf="purchaseInfos">
       <div class="item-container-left-block">
         <div class="icon-category">
             <ng-container *ngIf="purchaseInfos.typeAchat && getPurchaseItemIcon(purchaseInfos)">
@@ -101,7 +101,7 @@
             </div>
             <div class="right-block-text">
               <div class="item-value">
-                  {{ purchaseInfos?.amount }} {{ isSargalTransaction(purchaseInfos) ? 'Pts' : 'FCFA'}}
+                  {{ purchaseInfos?.typeAchat === "TRANSFER" ? purchaseInfos?.amount - purchaseInfos?.fees : purchaseInfos?.amount }} {{ isSargalTransaction(purchaseInfos) ? 'Pts' : 'FCFA'}}
               </div>
               <div class="subtitle-1 datetime">
                   {{ purchaseInfos?.operationDate | date: 'short' }}
