@@ -5,23 +5,23 @@ import {
   OnInit,
   Output,
   ViewChild,
-} from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
-import { Coordinates } from "@ionic-native/geolocation/ngx";
-import { IonInput } from "@ionic/angular";
-import { catchError, tap } from "rxjs/operators";
-import { KioskOMModel } from "src/app/models/kiosk-om.model";
-import { KioskLocatorService } from "src/app/services/kiosk-locator-service/kiosk-locator.service";
-import { SEARCH_SIZE } from "src/app/services/kiosk-locator-service/kiosk.utils";
+} from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Coordinates } from '@ionic-native/geolocation/ngx';
+import { IonInput } from '@ionic/angular';
+import { catchError, tap } from 'rxjs/operators';
+import { KioskOMModel } from 'src/app/models/kiosk-om.model';
+import { KioskLocatorService } from 'src/app/services/kiosk-locator-service/kiosk-locator.service';
+import { SEARCH_SIZE } from 'src/app/services/kiosk-locator-service/kiosk.utils';
 
 @Component({
-  selector: "app-kiosk-search",
-  templateUrl: "./kiosk-search.component.html",
-  styleUrls: ["./kiosk-search.component.scss"],
+  selector: 'app-kiosk-search',
+  templateUrl: './kiosk-search.component.html',
+  styleUrls: ['./kiosk-search.component.scss'],
 })
 export class KioskSearchComponent implements OnInit {
   displaySearchIcon: boolean;
-  @ViewChild("searchInput") input: IonInput;
+  @ViewChild('searchInput') input: IonInput;
   @Input() searchInput: string;
   @Input() userPosition: Coordinates;
   @Output() back = new EventEmitter();
@@ -65,7 +65,9 @@ export class KioskSearchComponent implements OnInit {
       .subscribe();
   }
 
-  onInputChange($event) {}
+  onInputChange($event) {
+    this.loadKiosks();
+  }
 
   initForm() {
     this.form = this.formBuilder.group({

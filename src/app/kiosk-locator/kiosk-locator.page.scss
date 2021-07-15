@@ -1,4 +1,4 @@
-@import "src/app/app";
+@import 'src/app/app';
 
 .input-container {
   background-color: $white;
@@ -17,6 +17,9 @@
     .arrow {
       width: 25px;
       height: 15px;
+    }
+    .kiosk-input {
+      --padding-start: 5px;
     }
     .toogle-view {
       padding-top: 5px;

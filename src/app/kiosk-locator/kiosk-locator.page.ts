@@ -1,28 +1,28 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
-import { Coordinates, Geolocation } from "@ionic-native/geolocation/ngx";
-import { IonSlides, Platform } from "@ionic/angular";
-import { catchError, tap } from "rxjs/operators";
-import { KioskOMModel } from "../models/kiosk-om.model";
-import { KioskLocatorService } from "../services/kiosk-locator-service/kiosk-locator.service";
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Coordinates, Geolocation } from '@ionic-native/geolocation/ngx';
+import { IonSlides, NavController, Platform } from '@ionic/angular';
+import { catchError, tap } from 'rxjs/operators';
+import { KioskOMModel } from '../models/kiosk-om.model';
+import { KioskLocatorService } from '../services/kiosk-locator-service/kiosk-locator.service';
 import {
   GOOGLE_MAPS_STYLES_OBJECT,
   KIOSK_VIEW,
   MAP_CARDS_SLIDES_OPTIONS,
   SEARCH_SIZE,
-} from "../services/kiosk-locator-service/kiosk.utils";
+} from '../services/kiosk-locator-service/kiosk.utils';
 
 // declare var google: any;
 @Component({
-  selector: "app-kiosk-locator",
-  templateUrl: "./kiosk-locator.page.html",
-  styleUrls: ["./kiosk-locator.page.scss"],
+  selector: 'app-kiosk-locator',
+  templateUrl: './kiosk-locator.page.html',
+  styleUrls: ['./kiosk-locator.page.scss'],
 })
 export class KioskLocatorPage implements OnInit {
-  @ViewChild("map") mapElement: ElementRef;
-  @ViewChild("slides") sliders: IonSlides;
+  @ViewChild('map') mapElement: ElementRef;
+  @ViewChild('slides') sliders: IonSlides;
   map: google.maps.Map;
-  apiKey = "AIzaSyAfqTLg3_OIhgZIWG3LZTlLA0sEMAdrMso";
+  apiKey = 'AIzaSyAfqTLg3_OIhgZIWG3LZTlLA0sEMAdrMso';
   searchInput: string;
   KIOSK_VIEW = KIOSK_VIEW;
   currentView: KIOSK_VIEW = KIOSK_VIEW.VIEW_CARDS;
@@ -42,23 +42,22 @@ export class KioskLocatorPage implements OnInit {
     private geolocation: Geolocation,
     private kioskLocatorService: KioskLocatorService,
     private formBuilder: FormBuilder,
-    private platform: Platform
+    private platform: Platform,
+    private navController: NavController
   ) {}
 
   async ionViewDidEnter() {
     const ready = await this.platform.ready();
-    console.log(ready);
     this.loadGoogleMaps();
   }
 
   ngOnInit() {
-    // this.loadGoogleMaps();
     this.setForm();
   }
 
   setForm() {
     this.searchForm = this.formBuilder.group({
-      kioskInput: [""],
+      kioskInput: [''],
     });
   }
 
@@ -102,15 +101,15 @@ export class KioskLocatorPage implements OnInit {
   }
 
   async loadGoogleMaps() {
-    window["mapInit"] = () => {
+    window['mapInit'] = () => {
       this.initMap();
     };
-    let script = document.createElement("script");
-    script.id = "googleMaps";
+    let script = document.createElement('script');
+    script.id = 'googleMaps';
     script.src =
-      "http://maps.google.com/maps/api/js?key=" +
+      'http://maps.google.com/maps/api/js?key=' +
       this.apiKey +
-      "&callback=mapInit";
+      '&callback=mapInit';
     document.body.appendChild(script);
   }
 
@@ -124,7 +123,7 @@ export class KioskLocatorPage implements OnInit {
     );
     let mapOptions: google.maps.MapOptions = {
       center: latLng,
-      zoom: 13,
+      zoom: 15,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       styles: GOOGLE_MAPS_STYLES_OBJECT,
     };
@@ -146,11 +145,11 @@ export class KioskLocatorPage implements OnInit {
       position: myLatLng,
       map: this.map,
       icon: {
-        url: "http://maps.google.com/mapfiles/kml/paddle/wht-blank.png",
+        url: 'http://maps.google.com/mapfiles/kml/paddle/wht-blank.png',
       },
-    }).addListener("click", () => {
+    }).addListener('click', () => {
       new google.maps.InfoWindow({
-        content: "<div>Ma position</div>",
+        content: '<div>Ma position</div>',
       }).open(this.map);
     });
   }
@@ -161,9 +160,9 @@ export class KioskLocatorPage implements OnInit {
       position: myLatLng,
       map: this.map,
       label: index,
-      title: "Hello World!",
+      title: 'Hello World!',
     });
-    marker.addListener("click", () => {
+    marker.addListener('click', () => {
       this.onSelectKiosk(kiosk, index);
     });
     this.markers.push(marker);
@@ -181,8 +180,8 @@ export class KioskLocatorPage implements OnInit {
     this.currentView = KIOSK_VIEW.VIEW_ITINERAIRE;
     this.clearAllMarkers();
     this.addMarker(kiosk, i.toString());
-    this.showDirections(kiosk, google.maps.TravelMode.DRIVING, "blue");
-    this.showDirections(kiosk, google.maps.TravelMode.WALKING, "pink");
+    this.showDirections(kiosk, google.maps.TravelMode.DRIVING, 'blue');
+    this.showDirections(kiosk, google.maps.TravelMode.WALKING, 'pink');
   }
 
   showDirections(
@@ -257,6 +256,10 @@ export class KioskLocatorPage implements OnInit {
         )
       );
     });
+  }
+
+  leave() {
+    this.navController.pop();
   }
 }
 

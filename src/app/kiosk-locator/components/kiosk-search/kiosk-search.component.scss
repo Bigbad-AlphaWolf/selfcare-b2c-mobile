@@ -1,4 +1,4 @@
-@import "src/app/app";
+@import 'src/app/app';
 
 :host {
   height: 100%;
@@ -28,7 +28,7 @@ ion-header {
   .search-result {
     display: flex;
     flex-direction: column;
-    padding: 20px 0;
+    padding: 20px 0 50px;
     .app-action-item {
       width: 100%;
       margin-left: 0px;
