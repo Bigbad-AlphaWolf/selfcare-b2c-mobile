@@ -52,19 +52,19 @@ export class ActionItemComponent implements OnInit {
         this.onFollowUpRequests();
         break;
       case 'DEPLAFONNEMENT':
-        this.goDeplafonnement();
-        break;
-      case 'DEPLAFONNEMENT_OLD':
         this.goDeplafonnementOldVersion();
+        break;
+      case 'DEPLAFONNEMENT_NEW':
+        this.goDeplafonnement();
         break;
       case 'TRANSACTION_ERROR':
         this.goReclamation();
         break;
       case 'OUVERTURE_OM_ACCOUNT':
-        this.goCreateOMAccount();
-        break;
-      case 'OUVERTURE_OM_ACCOUNT_OLD':
         this.goCreateOMAccountOldVersion();
+        break;
+      case 'OUVERTURE_OM_ACCOUNT_NEW':
+        this.goCreateOMAccount();
         break;
       case 'SEARCH_AGENCY':
         this.goFindToAgenceWebSite();
@@ -111,7 +111,11 @@ export class ActionItemComponent implements OnInit {
   goCreateOMAccount() {
     this.router.navigate(['/om-self-operation/open-om-account']);
     // this.router.navigate(['/control-center/operation-om/creation-compte']);
-    this.followAnalyticsService.registerEventFollow('Assistance_actions_Creation_Compte_OM_clic', 'event', 'clicked');
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_actions_New_Creation_Compte_OM_clic',
+      'event',
+      'clicked'
+    );
   }
 
   goCreateOMAccountOldVersion() {
@@ -122,7 +126,11 @@ export class ActionItemComponent implements OnInit {
   goDeplafonnement() {
     // this.router.navigate(['/control-center/operation-om/deplafonnement']);
     this.router.navigate(['/om-self-operation/deplafonnement']);
-    this.followAnalyticsService.registerEventFollow('Assistance_actions_Deplafonnement_OM_clic', 'event', 'clicked');
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_actions_New_Deplafonnement_OM_clic',
+      'event',
+      'clicked'
+    );
   }
 
   goDeplafonnementOldVersion() {
