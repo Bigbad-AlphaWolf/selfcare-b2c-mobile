@@ -7,7 +7,7 @@ import {
   PAYMENT_MOD_CREDIT,
   CODE_KIRENE_Formule,
   PAYMENT_MOD_OM,
-  PassIllimixModel
+  PassIllimixModel,
 } from 'src/shared';
 import { MatDialog } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -27,7 +27,7 @@ declare var FollowAnalytics: any;
 @Component({
   selector: 'app-buy-pass-illimix',
   templateUrl: './buy-pass-illimix.page.html',
-  styleUrls: ['./buy-pass-illimix.page.scss']
+  styleUrls: ['./buy-pass-illimix.page.scss'],
 })
 export class BuyPassIllimixPage implements OnInit {
   OPERATION_TYPE_PASS_ILLIMIX = OPERATION_TYPE_PASS_ILLIMIX;
@@ -79,8 +79,7 @@ export class BuyPassIllimixPage implements OnInit {
    * step 5 message
    */
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ionViewWillEnter() {
     this.currentUserNumber = this.dashServ.getCurrentPhoneNumber();
@@ -89,7 +88,6 @@ export class BuyPassIllimixPage implements OnInit {
     this.checkUserIsPostPaid();
     this.pageAccessUrl = this.router.url;
   }
-
 
   checkUserIsPostPaid() {
     this.authServ
@@ -112,7 +110,7 @@ export class BuyPassIllimixPage implements OnInit {
               this.passIllimixChoosed = {
                 destinataire: this.destNumber,
                 pass,
-                paymentMod: this.choosedPaymentMod
+                paymentMod: this.choosedPaymentMod,
               };
               this.step = 0;
             });
@@ -126,10 +124,10 @@ export class BuyPassIllimixPage implements OnInit {
     this.goToNextStep();
     this.destNumber = destNumberInfos.destinataire;
     this.destCodeFormule = destNumberInfos.code;
-    if(this.destCodeFormule === CODE_KIRENE_Formule){
-      this.isKirene = true
-    }else{
-      this.isKirene = false
+    if (this.destCodeFormule === CODE_KIRENE_Formule) {
+      this.isKirene = true;
+    } else {
+      this.isKirene = false;
     }
     if (destNumberInfos.destinataire !== this.currentUserNumber) {
       this.followAnalyticsService.registerEventFollow(
@@ -173,7 +171,7 @@ export class BuyPassIllimixPage implements OnInit {
     this.passIllimixChoosed = {
       destinataire: this.destNumber,
       pass: passIllimix,
-      paymentMod: this.choosedPaymentMod
+      paymentMod: this.choosedPaymentMod,
     };
     this.passIllimixChosen = passIllimix;
     this.goToNextStep();
@@ -211,7 +209,7 @@ export class BuyPassIllimixPage implements OnInit {
       codeIN,
       amount,
       msisdn,
-      receiver
+      receiver,
     };
     this.dashServ.buyPassByCredit(payload).subscribe(
       (res: any) => {
@@ -230,7 +228,7 @@ export class BuyPassIllimixPage implements OnInit {
           const followDetails = {
             option_name: this.passIllimixChoosed.pass.nom,
             amount: this.passIllimixChoosed.pass.tarif,
-            plan: this.passIllimixChoosed.pass.price_plan_index
+            plan: this.passIllimixChoosed.pass.price_plan_index,
           };
           this.followAnalyticsService.registerEventFollow(
             'Credit_Buy_Pass_Illimix_Success',
@@ -257,7 +255,7 @@ export class BuyPassIllimixPage implements OnInit {
           {
             msisdn1: this.currentUserNumber,
             msisdn2: this.destNumber,
-            message: 'Service indisponible'
+            message: 'Service indisponible',
           }
         );
         this.goToSuccessStep();
@@ -284,11 +282,8 @@ export class BuyPassIllimixPage implements OnInit {
       cssClass: 'pin-pad-modal',
       componentProps: {
         operationType: OPERATION_TYPE_PASS_ILLIMIX,
-        buyPassPayload: {
-          destinataire: this.destNumber,
-          pass: this.passIllimixChoosed,
-        },
-        opXtras: this.opXtras
+        buyPassPayload: this.passIllimixChoosed,
+        opXtras: this.opXtras,
       },
     });
     modal.onDidDismiss().then((response) => {
@@ -298,8 +293,7 @@ export class BuyPassIllimixPage implements OnInit {
           success: true,
           msisdnBuyer: this.orangeMoneyService.getOrangeMoneyNumber(),
           buyForMe:
-            this.destNumber ===
-            this.orangeMoneyService.getOrangeMoneyNumber(),
+            this.destNumber === this.orangeMoneyService.getOrangeMoneyNumber(),
         });
       }
     });
@@ -310,7 +304,10 @@ export class BuyPassIllimixPage implements OnInit {
     params.passBought = this.passIllimixChoosed;
     params.paymentMod = this.choosedPaymentMod;
     params.recipientMsisdn = this.destNumber;
-    params.recipientName = this.recipientFirstName && this.recipientLastName ? this.recipientFirstName + ' ' + this.recipientLastName : null ;
+    params.recipientName =
+      this.recipientFirstName && this.recipientLastName
+        ? this.recipientFirstName + ' ' + this.recipientLastName
+        : null;
     params.purchaseType = OPERATION_TYPE_PASS_ILLIMIX;
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
@@ -327,11 +324,13 @@ export class BuyPassIllimixPage implements OnInit {
   }
 
   getCurrentSubscription() {
-    this.authServ.getSubscription(this.currentUserNumber).subscribe((res: any) => {
-      this.opXtras.code = res.code;
-      if (res.code === CODE_KIRENE_Formule) {
-        this.title = 'Acheter un  Mixel';
-      }
-    });
+    this.authServ
+      .getSubscription(this.currentUserNumber)
+      .subscribe((res: any) => {
+        this.opXtras.code = res.code;
+        if (res.code === CODE_KIRENE_Formule) {
+          this.title = 'Acheter un  Mixel';
+        }
+      });
   }
 }
