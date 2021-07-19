@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { NavController } from '@ionic/angular';
-import { switchMap } from 'rxjs/operators';
 import { FIND_AGENCE_EXTERNAL_URL } from 'src/shared';
 import { BesoinAideType } from '../models/enums/besoin-aide-type.enum';
 import { OffreService } from '../models/offre-service.model';
@@ -106,8 +105,8 @@ export class AssistanceHubPage implements OnInit {
   fetchAllHelpItems() {
     this.loadingHelpItems = true;
     this.operationService.getServicesByFormule(null, true).subscribe(
-      async res => {
-        this.userOMStatus = await this.checkStatus();
+      res => {
+        // this.userOMStatus = await this.checkStatus();
         this.listBesoinAides = res;
         this.loadingHelpItems = false;
         this.followAnalyticsService.registerEventFollow('Assistance_hub_affichage_success', 'event');
@@ -127,7 +126,7 @@ export class AssistanceHubPage implements OnInit {
     this.listActes = this.listBesoinAides.filter((item: OffreService) => {
       return item.typeService === BesoinAideType.ACTE;
     });
-    this.listActes = this.filterOMActesFollowingOMStatus(this.userOMStatus, this.listActes);
+    // this.listActes = this.filterOMActesFollowingOMStatus(this.userOMStatus, this.listActes);
     this.listFaqs = this.listBesoinAides.filter((item: OffreService) => {
       return item.typeService === BesoinAideType.FAQ;
     });
