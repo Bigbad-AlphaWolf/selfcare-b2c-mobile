@@ -618,8 +618,12 @@ export interface ItemBesoinAide {
 // this method removes prefix 221 +221 00221
 export function formatPhoneNumber(phoneNumber: string) {
   const phoneNumberWithoutSpaces = phoneNumber.replace(/\s/g, '');
-  const res = phoneNumberWithoutSpaces.slice(phoneNumberWithoutSpaces.length - 9, phoneNumberWithoutSpaces.length);
-  return res;
+  // const res = phoneNumberWithoutSpaces.slice(phoneNumberWithoutSpaces.length - 9, phoneNumberWithoutSpaces.length);
+  return phoneNumberWithoutSpaces;
+}
+
+export function parseIntoNationalNumberFormat(phoneNumber: string) {
+  return phoneNumber.slice(phoneNumber.length - 9, phoneNumber.length);
 }
 
 export interface SponseeModel {
