@@ -12,15 +12,15 @@
     <ion-list>
       <ion-radio-group [(ngModel)]="typeRattachement">
         <ion-item mode="md" lines="none">
-          <ion-label [ngClass]="{'selected': typeRattachement === 'CIN'} ">Par numéro CNI (Carte d’identité)</ion-label>
+          <ion-label [ngClass]="{'selected': typeRattachement === 'CIN'} ">Par l’identité (CNI ou Passport)</ion-label>
           <ion-radio mode="md" slot="start" [value]="'CIN'"></ion-radio>
         </ion-item>
-    
+
         <ion-item mode="md" lines="none">
           <ion-label [ngClass]="{'selected': typeRattachement === 'IDCLIENT'} ">Par numéro client (Facture fixe)</ion-label>
           <ion-radio mode="md" slot="start" [value]="'IDCLIENT'"></ion-radio>
         </ion-item>
-    
+
       </ion-radio-group>
     </ion-list>
   </div>
@@ -30,5 +30,5 @@
     </ion-button>
   </div>
 
-  
+
 </div>

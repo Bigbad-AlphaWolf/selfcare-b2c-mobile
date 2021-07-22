@@ -45,6 +45,7 @@ export class CancelTransactionOmPage implements OnInit {
     dateTransaction: null,
     recipientTransaction: null
   };
+  maxYear = new Date().getFullYear() + 30;
   constructor(
     private navCtrl: NavController,
     private formBuilder: FormBuilder,
