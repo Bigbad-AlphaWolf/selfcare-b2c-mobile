@@ -2,7 +2,7 @@
   <div class="icon-info">
     <img src="/assets/images/information.svg" alt="" />
   </div>
-  <div *ngIf="type !== 'novo-fees'" (click)="closeDialog()" class="icon-close">
+  <div *ngIf="type !== 'novo-fees' || type !== 'coupon-trace'" (click)="closeDialog()" class="icon-close">
     <img src="/assets/images/close-icon-blue.svg" alt="" />
   </div>
   <div class="container-text-avantages-body">

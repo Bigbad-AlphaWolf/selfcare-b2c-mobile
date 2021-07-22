@@ -467,10 +467,13 @@ export class OperationRecapPage implements OnInit {
   }
 
   isBoosterTraceTV() {
-    const boosters = this.getPassBoosters(this.passChoosen);
-    return !!boosters.find((item: BoosterModel) => {
-      return item.gift.partner.code === CODE_PARTENAIRE_COUPON_TRACE_TV;
-    });
+    if (this.passChoosen) {
+      const boosters = this.getPassBoosters(this.passChoosen);
+      return !!boosters.find((item: BoosterModel) => {
+        return item.gift.partner.code === CODE_PARTENAIRE_COUPON_TRACE_TV;
+      });
+    }
+    return null;
   }
 
   goBack() {
