@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  OnDestroy,
-} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
@@ -34,13 +27,12 @@ import {
   PAY_WITH_SARGAL,
   formatPhoneNumber,
   TRANSFER_BONUS_CREDIT_FEE,
+  parseIntoNationalNumberFormat
 } from '..';
 import { CancelOperationPopupComponent } from '../cancel-operation-popup/cancel-operation-popup.component';
 import { SoSModel } from 'src/app/services/sos-service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import {
-  FeeModel,
-} from 'src/app/services/orange-money-service';
+import { FeeModel } from 'src/app/services/orange-money-service';
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { validateNumber } from 'src/app/register';
 import { SelectNumberPopupComponent } from '../select-number-popup/select-number-popup.component';
@@ -49,7 +41,7 @@ import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow
 @Component({
   selector: 'app-operation-validation',
   templateUrl: './operation-validation.component.html',
-  styleUrls: ['./operation-validation.component.scss'],
+  styleUrls: ['./operation-validation.component.scss']
 })
 export class OperationValidationComponent implements OnInit, OnDestroy {
   dialogRef: MatDialogRef<CancelOperationPopupComponent, any>;
@@ -108,7 +100,8 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
     private dashServ: DashboardService,
     public dialog: MatDialog,
     private contacts: Contacts,
-    private followsServ: FollowAnalyticsService  ) {}
+    private followsServ: FollowAnalyticsService
+  ) {}
 
   ngOnInit() {
     if (this.operationType === OPERATION_TYPE_SEDDO_CREDIT) {
@@ -117,21 +110,12 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
     if (this.sargalGift) {
       if (this.sargalGift.nombreNumeroIllimtes > 1) {
         this.formNumeroIllimite = this.fb.group({
-          illimite1: [
-            '',
-            [Validators.required, Validators.pattern(REGEX_NUMBER)],
-          ],
-          illimite2: [
-            '',
-            [Validators.required, Validators.pattern(REGEX_NUMBER)],
-          ],
+          illimite1: ['', [Validators.required, Validators.pattern(REGEX_NUMBER)]],
+          illimite2: ['', [Validators.required, Validators.pattern(REGEX_NUMBER)]]
         });
       } else if (this.sargalGift.nombreNumeroIllimtes === 1) {
         this.formNumeroIllimite = this.fb.group({
-          illimite1: [
-            '',
-            [Validators.required, Validators.pattern(REGEX_NUMBER)],
-          ],
+          illimite1: ['', [Validators.required, Validators.pattern(REGEX_NUMBER)]]
         });
       }
     }
@@ -139,10 +123,7 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
 
   extractOMfees(fees: FeeModel[]) {
     for (let fee of fees) {
-      if (
-        this.amountToTransfer <= fee.max &&
-        this.amountToTransfer >= fee.min
-      ) {
+      if (this.amountToTransfer <= fee.max && this.amountToTransfer >= fee.min) {
         return fee.effective_fees;
       }
     }
@@ -152,11 +133,11 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
     let options = { width: '294px', height: '232px' };
     if (confirmSargalIllimite) {
       options = Object.assign(options, {
-        data: { confirmSargalIllimite: true },
+        data: { confirmSargalIllimite: true }
       });
     }
     this.dialogRef = this.dialog.open(CancelOperationPopupComponent, options);
-    this.dialogSub = this.dialogRef.afterClosed().subscribe((result) => {
+    this.dialogSub = this.dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const msg = this.formatFollowMsg(this.operationType);
         if (msg) {
@@ -198,13 +179,10 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
         lastName: this.form.value.nom,
         transferWithCode: this.transferWithCode,
         feesOnMyCharge: this.feesOnMyCharge,
-        amountToTransfer: this.amountToTransfer,
+        amountToTransfer: this.amountToTransfer
       };
       this.validate.emit(omTransferInfos);
-    } else if (
-      this.operationType === OPERATION_TYPE_SARGAL_CONVERSION &&
-      this.sargalGift.nombreNumeroIllimtes
-    ) {
+    } else if (this.operationType === OPERATION_TYPE_SARGAL_CONVERSION && this.sargalGift.nombreNumeroIllimtes) {
       const numeroIllimiteArray = [];
       const num1 = this.formNumeroIllimite.value.illimite1;
       numeroIllimiteArray.push(num1);
@@ -218,7 +196,6 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
       this.validate.emit();
     }
   }
-
 
   getPaymentModLabel(paymentMod: string) {
     switch (paymentMod) {
@@ -236,9 +213,7 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
   }
 
   getPassValidityText(pass: any) {
-    const category = pass.passPromo
-      ? pass.passPromo.categoriePass.libelle
-      : pass.categoriePass.libelle;
+    const category = pass.passPromo ? pass.passPromo.categoriePass.libelle : pass.categoriePass.libelle;
     const validity = pass.validitePass;
     switch (category) {
       case 'Jour':
@@ -257,17 +232,12 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
   pickContact(numeroChampIllimite: number) {
     // const testContacts = [{ value: '77 133 12 25' }, { value: '77 133 12 26' }];
     // this.openPickRecipientModal(testContacts);
-    numeroChampIllimite === 1
-      ? (this.showErrorMsg1 = false)
-      : (this.showErrorMsg2 = false);
+    numeroChampIllimite === 1 ? (this.showErrorMsg1 = false) : (this.showErrorMsg2 = false);
     this.contacts
       .pickContact()
       .then((contact: Contact) => {
         if (contact.phoneNumbers.length > 1) {
-          this.openPickRecipientModal(
-            contact.phoneNumbers,
-            numeroChampIllimite
-          );
+          this.openPickRecipientModal(contact.phoneNumbers, numeroChampIllimite);
         } else {
           const number = formatPhoneNumber(contact.phoneNumbers[0].value);
           this.fillNumeroIllimiteForm(numeroChampIllimite, number);
@@ -278,9 +248,9 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
 
   openPickRecipientModal(phoneNumbers: any[], numeroChampIllimite: number) {
     const dialogRef = this.dialog.open(SelectNumberPopupComponent, {
-      data: { phoneNumbers },
+      data: { phoneNumbers }
     });
-    dialogRef.afterClosed().subscribe((selectedNumber) => {
+    dialogRef.afterClosed().subscribe(selectedNumber => {
       const destNumber = formatPhoneNumber(selectedNumber);
       this.fillNumeroIllimiteForm(numeroChampIllimite, destNumber);
     });
@@ -288,31 +258,24 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
 
   fillNumeroIllimiteForm(numeroChampIllimite: number, phoneNumber: string) {
     if (validateNumber(phoneNumber)) {
-      if (
-        numeroChampIllimite === 1 &&
-        this.sargalGift.nombreNumeroIllimtes === 1
-      ) {
+      if (numeroChampIllimite === 1 && this.sargalGift.nombreNumeroIllimtes === 1) {
+        phoneNumber = parseIntoNationalNumberFormat(phoneNumber);
         this.formNumeroIllimite.setValue({ illimite1: phoneNumber });
-      } else if (
-        numeroChampIllimite === 1 &&
-        this.sargalGift.nombreNumeroIllimtes > 2
-      ) {
-        const number2 = this.formNumeroIllimite.value.illimite2;
+      } else if (numeroChampIllimite === 1 && this.sargalGift.nombreNumeroIllimtes > 2) {
+        const number2 = parseIntoNationalNumberFormat(this.formNumeroIllimite.value.illimite2);
         this.formNumeroIllimite.setValue({
           illimite1: phoneNumber,
-          illimite2: number2,
+          illimite2: number2
         });
       } else {
-        const number1 = this.formNumeroIllimite.value.illimite1;
+        const number1 = parseIntoNationalNumberFormat(this.formNumeroIllimite.value.illimite1);
         this.formNumeroIllimite.setValue({
           illimite1: number1,
-          illimite2: phoneNumber,
+          illimite2: phoneNumber
         });
       }
     } else {
-      numeroChampIllimite === 1
-        ? (this.showErrorMsg1 = true)
-        : (this.showErrorMsg2 = true);
+      numeroChampIllimite === 1 ? (this.showErrorMsg1 = true) : (this.showErrorMsg2 = true);
     }
   }
 
