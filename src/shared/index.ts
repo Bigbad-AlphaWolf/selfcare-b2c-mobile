@@ -151,6 +151,9 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   MERCHANT_PAYMENT: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
   RAPIDO: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
   SARGAL: `${IMAGES_DIRECTORY}transfert-icon.png`,
+  PASS_WIDO: `${IMAGES_DIRECTORY}icone_wido.png`,
+  PASS_PLAYVOD: `${IMAGES_DIRECTORY}icone_playvod.png`,
+  PASS_YOUSCRIBE: `${IMAGES_DIRECTORY}icone_youScribe.png`,
 };
 
 export const TYPE_QUESTION_SATISFACTION_FORM = {
