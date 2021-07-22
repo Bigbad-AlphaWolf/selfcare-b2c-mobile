@@ -139,6 +139,7 @@
 					cancelText="Annuler"
 					formControlName="dateExpiration"
 					display-timezone="utc"
+					[max]="maxYear"
 				></ion-datetime>
 					<div class="photo-button" [ngClass]="{'field-filled': rectoFilled}" (click)="takePicture('recto')">
 						<span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': rectoFilled}"
