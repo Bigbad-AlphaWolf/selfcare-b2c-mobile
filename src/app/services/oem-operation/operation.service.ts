@@ -3,23 +3,17 @@ import { Injectable } from '@angular/core';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { from, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import {
-  CategoryOffreServiceModel,
-  OffreService,
-} from 'src/app/models/offre-service.model';
+import { CategoryOffreServiceModel, OffreService } from 'src/app/models/offre-service.model';
+import { mapOffreServiceWithCodeOM } from 'src/app/utils/bills.util';
 import { SubscriptionModel } from 'src/shared';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { FILE_DOWNLOAD_ENDPOINT } from '../utils/file.endpoints';
 
-import {
-  OFFRE_SERVICES_ENDPOINT,
-  ALL_SERVICES_ENDPOINT,
-  OFFER_SERVICE_BY_CODE,
-} from '../utils/services.endpoints';
+import { OFFRE_SERVICES_ENDPOINT, ALL_SERVICES_ENDPOINT, OFFER_SERVICE_BY_CODE } from '../utils/services.endpoints';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class OperationService {
   offresServices: any[];
@@ -41,10 +35,10 @@ export class OperationService {
     return this.http.get(endpointOffresServices).pipe(
       switchMap((subcategories: CategoryOffreServiceModel[]) => {
         return this.getServicesByFormule().pipe(
-          map((services) => {
+          map(services => {
             let categories: CategoryOffreServiceModel[];
             // get array of array of parent categories (eg: [[cat1], [cat2], [cat3]])
-            const categoriesArray = subcategories.map((sub) => {
+            const categoriesArray = subcategories.map(sub => {
               return sub.categorieOffreServices;
             });
 
@@ -53,19 +47,16 @@ export class OperationService {
 
             // filter to remove duplicates
             categories = categories.filter(
-              (category, categoryIndex, array) =>
-                array.findIndex((t) => t.id === category.id) === categoryIndex
+              (category, categoryIndex, array) => array.findIndex(t => t.id === category.id) === categoryIndex
             );
 
             // insert into every parent category its subcategories
-            categories.forEach((element) => {
+            categories.forEach(element => {
               element.categorieOffreServices = [];
               for (let subCategory of subcategories) {
                 if (
                   subCategory.categorieOffreServices &&
-                  subCategory.categorieOffreServices
-                    .map((s) => s.id)
-                    .includes(element.id)
+                  subCategory.categorieOffreServices.map(s => s.id).includes(element.id)
                 ) {
                   element.categorieOffreServices.push(subCategory);
                 }
@@ -96,30 +87,36 @@ export class OperationService {
         if (category) queryParams += `&categorie=${category}`;
         if (isBesoinAide) queryParams += `&besoinAide=${isBesoinAide}`;
         return versionObservable.pipe(
-          switchMap((appVersion) => {
+          switchMap(appVersion => {
             queryParams += `&version=${appVersion}`;
-            return this.http
-              .get<OffreService[]>(`${OFFER_SERVICE_BY_CODE}${queryParams}`)
-              .pipe(
-                map((res) => {
-                  for (let offerService of res) {
-                    this.prefixServiceImgByFileServerUrl(offerService);
-                  }
-                  return res;
-                })
-              );
+            return this.http.get<OffreService[]>(`${OFFER_SERVICE_BY_CODE}${queryParams}`).pipe(
+              map(res => {
+                for (let offerService of res) {
+                  this.prefixServiceImgByFileServerUrl(offerService);
+                }
+                return res;
+              }),
+              map(res => {
+                return res.map((item: OffreService) => {
+                  return mapOffreServiceWithCodeOM(item);
+                });
+              })
+            );
           }),
           catchError(() => {
-            return this.http
-              .get<OffreService[]>(`${OFFER_SERVICE_BY_CODE}${queryParams}`)
-              .pipe(
-                map((res) => {
-                  for (let offerService of res) {
-                    this.prefixServiceImgByFileServerUrl(offerService);
-                  }
-                  return res;
-                })
-              );
+            return this.http.get<OffreService[]>(`${OFFER_SERVICE_BY_CODE}${queryParams}`).pipe(
+              map(res => {
+                for (let offerService of res) {
+                  this.prefixServiceImgByFileServerUrl(offerService);
+                }
+                return res;
+              }),
+              map(res => {
+                return res.map((item: OffreService) => {
+                  return mapOffreServiceWithCodeOM(item);
+                });
+              })
+            );
           })
         );
       })
@@ -127,12 +124,8 @@ export class OperationService {
   }
 
   prefixServiceImgByFileServerUrl(offerService: OffreService) {
-    offerService.icone = offerService.icone
-      ? `${this.FILE_MANAGER_BASE_URL}/${offerService.icone}`
-      : '';
-    offerService.banniere = offerService.banniere
-      ? `${this.FILE_MANAGER_BASE_URL}/${offerService.banniere}`
-      : '';
+    offerService.icone = offerService.icone ? `${this.FILE_MANAGER_BASE_URL}/${offerService.icone}` : '';
+    offerService.banniere = offerService.banniere ? `${this.FILE_MANAGER_BASE_URL}/${offerService.banniere}` : '';
     // offerService.iconeBackground = offerService.iconeBackground
     //   ? `${this.FILE_MANAGER_BASE_URL}/${offerService.iconeBackground}`
     //   : '';
