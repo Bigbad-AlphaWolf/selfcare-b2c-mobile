@@ -42,6 +42,10 @@ import {
   OmInitOtpModel,
 } from 'src/app/models/om-self-operation-otp.model';
 import {
+  ILLIFLEX_BY_OM_IDENTICAL_ERROR_CODE,
+  ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE,
+  OM_IDENTIC_TRANSACTION_CODE,
+  OM_UNKOWN_ERROR_CODE,
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TYPE_MERCHANT_PAYMENT,
@@ -151,11 +155,9 @@ export class OrangeMoneyService {
 
   checkUserHasAccountV2(msisdn: string): Observable<boolean> {
     return this.http.get(`${checkOMAccountEndpoint2}/${msisdn}`).pipe(
-      map(
-        (hasOmAccount: boolean) => {
-          return hasOmAccount;
-        }
-      )
+      map((hasOmAccount: boolean) => {
+        return hasOmAccount;
+      })
     );
   }
 
@@ -423,14 +425,14 @@ export class OrangeMoneyService {
   }
 
   getUserStatus(msisdn: string) {
-        return this.http
-          .get<OMCustomerStatusModel>(`${userStatusEndpoint}/${msisdn}`)
-          .pipe(
-            map((status) => {
-              status.omNumber = msisdn;
-              return status;
-            })
-          );
+    return this.http
+      .get<OMCustomerStatusModel>(`${userStatusEndpoint}/${msisdn}`)
+      .pipe(
+        map((status) => {
+          status.omNumber = msisdn;
+          return status;
+        })
+      );
   }
 
   initSelfOperationOtp(initOtpPayload: OmInitOtpModel) {
@@ -601,11 +603,16 @@ export class OrangeMoneyService {
           return mappedOmResponse;
         }),
         catchError((err) => {
-          const status = err.status;
-          const errorCode = status === 400 ? 'Erreur-019' : 'Erreur';
+          const status = err.error.statusCode;
+          const errorCode =
+            err.error.errorCode === ILLIFLEX_BY_OM_IDENTICAL_ERROR_CODE
+              ? OM_IDENTIC_TRANSACTION_CODE
+              : err.error.errorCode === ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE
+              ? OM_UNKOWN_ERROR_CODE
+              : err.error.errorCode;
           const message =
-            status === 400
-              ? `Vous n'avez pas assez de crédit de recharge pour effectuer cette opération`
+            status === 400 && errorCode !== ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE
+              ? err.error.message
               : 'Une erreur est survenue';
           const error = new HttpErrorResponse({
             error: { errorCode, status, message },
