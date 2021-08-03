@@ -281,10 +281,7 @@ export class BuyPassInternetPage implements OnInit {
       cssClass: 'pin-pad-modal',
       componentProps: {
         operationType: OPERATION_TYPE_PASS_INTERNET,
-        buyPassPayload: {
-          destinataire: this.destinataire,
-          pass: this.purchasePass.pass,
-        },
+        buyPassPayload: this.purchasePass,
         opXtras: this.opXtras,
       },
     });
