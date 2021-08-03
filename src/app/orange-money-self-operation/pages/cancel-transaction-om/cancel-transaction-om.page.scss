@@ -1,266 +1,275 @@
 @import 'src/app/app';
 
 .title {
-	font-family: HelveticaNeueLTStd-Bd;
-	font-size: 24px;
-	font-weight: bold;
-	letter-spacing: -0.28px;
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.28px;
 }
 
 .title1 {
-	font-family: HelveticaNeueLTStd-Bd;
-	font-size: 20px;
-	padding: 0 10px;
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+  padding: 0 10px;
 }
 
 .deplafonnement-body {
-	background-color: $grayDashboard;
-	min-height: 100%;
-	.banniere-container {
-		background-color: $white;
-		img {
-			width: 100%;
-			height: auto;
-		}
-	}
-	.all-informations-block {
-		.single-block {
-			padding: 30px percentage(15/375) 14px;
-			margin-top: 10px;
-			background-color: $white;
-			.block-title {
-				font-family: HelveticaNeueLTStd-Bd;
-				font-size: 20px;
-				line-height: 1.5;
-				margin-bottom: 10px;
-			}
-			.block-description {
-				font-family: HelveticaNeueLTStd-Roman;
-				font-size: 16px;
-				line-height: 1.25;
-			}
-			.form-block {
-				.om-number-block {
-					height: 60px;
-					border-radius: 6px;
-					border: solid 2px #eeeeee;
-					display: flex;
-					align-items: center;
-					margin-top: 30px;
-					padding: 15px;
-					.msisdn {
-						font-family: HelveticaNeueLTStd-Roman;
-					}
-				}
-				.error-block {
-					font-family: HelveticaNeueLTStd-Roman;
-					font-size: 14px;
-					line-height: 1.25;
-					margin-top: 15px;
-				}
-				.transaction-infos {
-					padding: 0 percentage(15/375);
-					.item-infos {
-						display: flex;
-						justify-content: space-between;
-						align-items: center;
-						padding-bottom: 10px;
-						margin-bottom: 10px;
-						&:not(:last-child) {
-							border-bottom: solid 1px $silver;
-						}
-						.infos-title {
-							font-family: HelveticaNeueLTStd-Bd;
-							font-size: 14px;
-							font-weight: normal;
-							font-stretch: normal;
-							font-style: normal;
-							line-height: 1.14;
-						}
-						.infos-value {
-							font-family: HelveticaNeueLTStd-Roman;
-							font-size: 12px;
-							font-weight: normal;
-							font-stretch: normal;
-							font-style: normal;
-							line-height: 1.33;
-							letter-spacing: normal;
-							&.amount {
-								font-family: HelveticaNeueLTStd-Bd;
-								font-size: 14px;
-								font-weight: normal;
-								font-stretch: normal;
-								font-style: normal;
-								line-height: 1.14;
-							}
-						}
-					}
-				}
-				.transactions_list {
-					padding-right: 5px;
-				}
-				.arrow-select {
-					width: 20px;
-					margin-top: -5px;
-				}
-				ion-item {
-					height: 60px;
-					border-radius: 6px;
-					border: solid 2px #eeeeee;
-					display: flex;
-					align-items: center;
-					margin-top: 20px;
-					ion-label {
-						font-family: HelveticaNeueLTStd-Roman;
-						font-size: 16px;
-						line-height: 1.25;
-					}
-					ion-select {
-						ion-select-option {
-							span {
-								font-size: 16px;
-								font-family: HelveticaNeueLTStd-Bd;
-							}
-						}
-					}
-					ion-icon {
-						font-size: 24px;
-						margin-top: 2px;
-					}
-				}
-			}
-			ion-radio-group {
-				margin-bottom: 20px;
-				display: flex;
-				ion-radio {
-					margin-right: 10px;
-				}
-				.radio-selected {
-					font-family: HelveticaNeueLTStd-Bd !important;
-					color: $fullBlack;
-				}
-			}
-			.photo-button {
-				width: 100%;
-				height: 60px;
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				padding: 0 15px;
-				border-radius: 6px;
-				border: solid 2px $orange;
-				background-color: rgba(255, 121, 0, 0.1);
-				&.field-filled {
-					border: solid 2px $greenSuccess;
-					background-color: rgba(50, 200, 50, 0.1);
-				}
-				&:not(:last-child) {
-					margin-bottom: 20px;
-				}
-				.pic-name {
-					font-family: HelveticaNeueLTStd-Roman;
-					font-size: 16px;
-					line-height: 1.25;
-				}
-				ion-icon {
-					font-size: 30px;
-					&.delete-icon {
-						z-index: 10;
-					}
-				}
-			}
-			.cgu-block {
-				display: flex;
-				margin-bottom: 30px;
-				.text {
-					font-family: HelveticaNeueLTStd-Roman;
-					font-size: 16px;
-					line-height: 1.25;
-					margin-left: 10px;
-					.cg {
-						font-family: HelveticaNeueLTStd-Bd;
-					}
-				}
-			}
-			button {
-				border-radius: 10px;
-				position: relative;
-				mat-spinner {
-					position: absolute;
-					top: 15px;
-					right: 10px;
-				}
-				.mat-spinner::ng-deep circle {
-					stroke: $white;
-				}
-			}
-		}
-	}
-	.operation-status {
-		padding: 20px 15px 30px;
-		background-color: $white;
-		width: percentage(345/375);
-		margin: 15px auto 0;
-		border-radius: 5px;
-		.status-header {
-			margin-bottom: 20px;
-			display: flex;
-			justify-content: space-between;
-			.numero-demand {
-				font-family: HelveticaNeueLTStd-Bd;
-				font-size: 16px;
-				line-height: 1.38;
-				display: flex;
-				align-items: center;
-			}
-			.status-demand {
-				font-family: HelveticaNeueLTStd-Bd;
-				font-size: 12px;
-				border-radius: 20px;
-				padding: 5px 15px;
-				height: 30px;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				.on-going {
-					border: solid 1px #ffcc00;
-					color: #ffcc00;
-					background-color: rgba(255, 204, 0, 0.15);
-				}
-				.completed {
-					border: solid 1px #32c832;
-					color: #32c832;
-					background-color: rgba(50, 200, 50, 0.15);
-				}
-				.rejected {
-					border: solid 1px #cd3c14;
-					color: #cd3c14;
-					background-color: rgba(205, 60, 20, 0.15);
-				}
-			}
-		}
-		.status-title {
-			font-family: HelveticaNeueLTStd-Bd;
-			font-size: 16px;
-			line-height: 1.38;
-			margin-bottom: 10px;
-		}
-		.status-description {
-			font-family: HelveticaNeueLTStd-Roman;
-			font-size: 14px;
-			line-height: 1.29;
-		}
-	}
-	.spinner-block {
-		padding-top: 50px;
-		mat-spinner {
-			margin: 0 auto;
-		}
-		.mat-spinner::ng-deep circle {
-			stroke: $orange;
-		}
-	}
-	.check-status-error {
-		padding: 15px;
-	}
+  background-color: $grayDashboard;
+  min-height: 100%;
+  .banniere-container {
+    background-color: $white;
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+  .all-informations-block {
+    .single-block {
+      padding: 30px percentage(15/375) 14px;
+      margin-top: 10px;
+      background-color: $white;
+      .block-title {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 20px;
+        line-height: 1.5;
+        margin-bottom: 10px;
+      }
+      .block-description {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 16px;
+        line-height: 1.25;
+      }
+      .form-block {
+        .om-number-block {
+          height: 60px;
+          border-radius: 6px;
+          border: solid 2px #eeeeee;
+          display: flex;
+          align-items: center;
+          margin-top: 30px;
+          padding: 15px;
+          .msisdn {
+            font-family: HelveticaNeueLTStd-Roman;
+          }
+        }
+        .error-block {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 14px;
+          line-height: 1.25;
+          margin-top: 15px;
+        }
+        .transaction-infos {
+          padding: 0 percentage(15/375);
+          .item-infos {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            &:not(:last-child) {
+              border-bottom: solid 1px $silver;
+            }
+            .infos-title {
+              font-family: HelveticaNeueLTStd-Bd;
+              font-size: 14px;
+              font-weight: normal;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.14;
+            }
+            .infos-value {
+              font-family: HelveticaNeueLTStd-Roman;
+              font-size: 12px;
+              font-weight: normal;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: 1.33;
+              letter-spacing: normal;
+              &.amount {
+                font-family: HelveticaNeueLTStd-Bd;
+                font-size: 14px;
+                font-weight: normal;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.14;
+              }
+            }
+          }
+        }
+        .transactions_list {
+          padding-right: 5px;
+        }
+        .arrow-select {
+          width: 20px;
+          margin-top: -5px;
+        }
+        ion-item {
+          height: 60px;
+          border-radius: 6px;
+          border: solid 2px #eeeeee;
+          display: flex;
+          align-items: center;
+          margin-top: 20px;
+          ion-label {
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 16px;
+            line-height: 1.25;
+          }
+          ion-select {
+            ion-select-option {
+              span {
+                font-size: 16px;
+                font-family: HelveticaNeueLTStd-Bd;
+              }
+            }
+          }
+          ion-icon {
+            font-size: 24px;
+            margin-top: 2px;
+          }
+        }
+      }
+      ion-radio-group {
+        margin-bottom: 20px;
+        display: flex;
+        ion-radio {
+          margin-right: 10px;
+        }
+        .radio-selected {
+          font-family: HelveticaNeueLTStd-Bd !important;
+          color: $fullBlack;
+        }
+      }
+      ion-item {
+        margin-bottom: 10px;
+        ion-label {
+          font-family: HelveticaNeueLTStd-Bd;
+        }
+      }
+      ion-datetime {
+        margin-bottom: 25px;
+      }
+      .photo-button {
+        width: 100%;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 15px;
+        border-radius: 6px;
+        border: solid 2px $orange;
+        background-color: rgba(255, 121, 0, 0.1);
+        &.field-filled {
+          border: solid 2px $greenSuccess;
+          background-color: rgba(50, 200, 50, 0.1);
+        }
+        &:not(:last-child) {
+          margin-bottom: 20px;
+        }
+        .pic-name {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
+          line-height: 1.25;
+        }
+        ion-icon {
+          font-size: 30px;
+          &.delete-icon {
+            z-index: 10;
+          }
+        }
+      }
+      .cgu-block {
+        display: flex;
+        margin-bottom: 30px;
+        .text {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
+          line-height: 1.25;
+          margin-left: 10px;
+          .cg {
+            font-family: HelveticaNeueLTStd-Bd;
+          }
+        }
+      }
+      button {
+        border-radius: 10px;
+        position: relative;
+        mat-spinner {
+          position: absolute;
+          top: 15px;
+          right: 10px;
+        }
+        .mat-spinner::ng-deep circle {
+          stroke: $white;
+        }
+      }
+    }
+  }
+  .operation-status {
+    padding: 20px 15px 30px;
+    background-color: $white;
+    width: percentage(345/375);
+    margin: 15px auto 0;
+    border-radius: 5px;
+    .status-header {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      .numero-demand {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        line-height: 1.38;
+        display: flex;
+        align-items: center;
+      }
+      .status-demand {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 12px;
+        border-radius: 20px;
+        padding: 5px 15px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .on-going {
+          border: solid 1px #ffcc00;
+          color: #ffcc00;
+          background-color: rgba(255, 204, 0, 0.15);
+        }
+        .completed {
+          border: solid 1px #32c832;
+          color: #32c832;
+          background-color: rgba(50, 200, 50, 0.15);
+        }
+        .rejected {
+          border: solid 1px #cd3c14;
+          color: #cd3c14;
+          background-color: rgba(205, 60, 20, 0.15);
+        }
+      }
+    }
+    .status-title {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 16px;
+      line-height: 1.38;
+      margin-bottom: 10px;
+    }
+    .status-description {
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 14px;
+      line-height: 1.29;
+    }
+  }
+  .spinner-block {
+    padding-top: 50px;
+    mat-spinner {
+      margin: 0 auto;
+    }
+    .mat-spinner::ng-deep circle {
+      stroke: $orange;
+    }
+  }
+  .check-status-error {
+    padding: 15px;
+  }
 }

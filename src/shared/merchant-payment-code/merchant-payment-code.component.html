@@ -24,6 +24,9 @@
     <div *ngIf="hasErrorOnCheckMerchant" class="error scb-text-red-error">
       {{ errorMsg }}
     </div>
+    <div class="loading-container" *ngIf="loadingRecents">
+      <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
+    </div>
     <div class="recents" *ngIf="recentMerchants$ | async as recentMerchants">
       <div class="description" *ngIf="recentMerchants.length">
         Récents

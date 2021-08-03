@@ -39,6 +39,7 @@
         <span class="scb-text-orange see-all" (click)="goAllActionsHub()">Voir tous les actes</span>
       </div>
       <div class="acts">
+        <ion-spinner *ngIf="loadingHelpItems" name="crescent"></ion-spinner>
         <app-action-item [action]="act" *ngFor="let act of listActes?.slice(0,3)"></app-action-item>
       </div>
     </div>
@@ -49,7 +50,7 @@
       </div>
       <div class="questions">
         <ng-container *ngFor="let question of listFaqs?.slice(0,3), let i=index">
-          <app-faq-item [question]="question"></app-faq-item> 
+          <app-faq-item [question]="question"></app-faq-item>
         </ng-container>
       </div>
     </div>

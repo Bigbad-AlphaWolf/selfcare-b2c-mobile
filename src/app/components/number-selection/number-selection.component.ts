@@ -11,6 +11,7 @@ import {
   OPERATION_TYPE_PASS_ILLIFLEX,
   OPERATION_TYPE_PASS_ALLO,
   OPERATION_TYPE_PASS_INTERNET,
+  NO_RECENTS_MSG
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -32,7 +33,7 @@ import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow
 @Component({
   selector: 'oem-number-selection',
   templateUrl: './number-selection.component.html',
-  styleUrls: ['./number-selection.component.scss'],
+  styleUrls: ['./number-selection.component.scss']
 })
 export class NumberSelectionComponent implements OnInit {
   numbers$: Observable<string[]>;
@@ -49,8 +50,7 @@ export class NumberSelectionComponent implements OnInit {
   opXtras: OperationExtras = {};
   isErrorProcessing: boolean = false;
   canNotRecieve: boolean;
-  canNotRecieveError =
-    'Le numéro de votre destinataire ne peut pas recevoir ce service';
+  canNotRecieveError = 'Le numéro de votre destinataire ne peut pas recevoir ce service';
   option: NumberSelectionOption = NumberSelectionOption.WITH_MY_PHONES;
   eligibilityChecked: boolean;
   isRecipientEligible = true;
@@ -59,6 +59,8 @@ export class NumberSelectionComponent implements OnInit {
   loadingNumbers: boolean;
   currentPhone: string = SessionOem.PHONE.trim();
   isLightMod: boolean;
+  loadingRecents: boolean;
+  NO_RECENTS_MSG = NO_RECENTS_MSG;
 
   constructor(
     private modalController: ModalController,
@@ -80,7 +82,7 @@ export class NumberSelectionComponent implements OnInit {
     if (!this.isLightMod) {
       this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
         delay(100),
-        tap((numbers) => {
+        tap(numbers => {
           this.loadingNumbers = false;
         }),
         share()
@@ -90,25 +92,35 @@ export class NumberSelectionComponent implements OnInit {
   }
 
   getRecents() {
-    this.recentsRecipients$ = this.recentsService
-      .fetchRecents(this.data.purchaseType, 2)
-      .pipe(
-        map((recents: RecentsOem[]) => {
-          let results = [];
-          recents.forEach((el) => {
-            results.push({
-              name: el.name,
-              msisdn: el.destinataire,
-            });
+    this.loadingRecents = true;
+    this.recentsRecipients$ = this.recentsService.fetchRecents(this.data.purchaseType, 2).pipe(
+      map((recents: RecentsOem[]) => {
+        this.loadingRecents = false;
+        let results = [];
+        recents.forEach(el => {
+          results.push({
+            name: el.name,
+            msisdn: el.destinataire
           });
-          return results;
-        }), tap( (res: {name: string, msisdn: string} [])=> {
-          this.followAnalyticsService.registerEventFollow('Get_recents_destinataire_OM_success', 'event', {operation: this.data.purchaseType, sender: this.opXtras.senderMsisdn });
-        }), catchError((err) => {
-          this.followAnalyticsService.registerEventFollow('Get_recents_destinataire_OM_error', 'error', {operation: this.data.purchaseType, sender: this.opXtras.senderMsisdn, error: err.status } );
-          return of(err)
-        })
-      );
+        });
+        return results;
+      }),
+      tap((res: { name: string; msisdn: string }[]) => {
+        this.followAnalyticsService.registerEventFollow('Get_recents_destinataire_OM_success', 'event', {
+          operation: this.data.purchaseType,
+          sender: this.opXtras.senderMsisdn
+        });
+      }),
+      catchError(err => {
+        this.loadingRecents = false;
+        this.followAnalyticsService.registerEventFollow('Get_recents_destinataire_OM_error', 'error', {
+          operation: this.data.purchaseType,
+          sender: this.opXtras.senderMsisdn,
+          error: err.status
+        });
+        return of(err);
+      })
+    );
   }
 
   async onContinue(phone?: string) {
@@ -116,31 +128,25 @@ export class NumberSelectionComponent implements OnInit {
     this.canNotRecieve = false;
     if (phone) {
       this.opXtras.recipientMsisdn = phone;
-      this.followAnalyticsService.registerEventFollow(
-        'Select_recents_buy',
-        'event',
-        { msisdn: this.currentPhone, recent: phone }
-      );
+      this.followAnalyticsService.registerEventFollow('Select_recents_buy', 'event', {
+        msisdn: this.currentPhone,
+        recent: phone
+      });
     }
-    if (
-      !(
-        REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn) ||
-        REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn)
-      )
-    ) {
+    if (!(REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn) || REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn))) {
       this.phoneIsNotValid = true;
       return;
     }
 
-    this.opXtras.destinataire = this.opXtras.recipientMsisdn = formatPhoneNumber(
-      this.opXtras.recipientMsisdn
-    );
+    this.opXtras.destinataire = this.opXtras.recipientMsisdn = formatPhoneNumber(this.opXtras.recipientMsisdn);
 
     this.opXtras.forSelf = !this.showInput;
 
-    if (!(await this.canRecieveCredit())) {
+    if (!await this.canRecieveCredit()) {
       this.canNotRecieve = true;
-      const data = Object.assign({}, this.opXtras, { error: this.eligibilityError });
+      const data = Object.assign({}, this.opXtras, {
+        error: this.eligibilityError
+      });
       this.logRecipientOnFollow('error', data, this.data.isLightMod);
       this.changeDetectorRef.detectChanges();
       return;
@@ -150,60 +156,55 @@ export class NumberSelectionComponent implements OnInit {
   }
 
   async isEligible() {
-    let isEligible = await this.authService
-      .checkUserEligibility(this.opXtras.recipientMsisdn)
-      .toPromise();
+    let isEligible = await this.authService.checkUserEligibility(this.opXtras.recipientMsisdn).toPromise();
     return isEligible;
   }
 
   dismissBottomSheet() {
     this.isProcessing = true;
-    this.authService
-      .getSubscriptionForTiers(this.opXtras.recipientMsisdn)
-      .subscribe(
-        async (res: SubscriptionModel) => {
-          this.isProcessing = false;
-          this.opXtras.code = res.code;
-          this.opXtras.profil = res.profil;
-          if (
-            res.code === CODE_KIRENE_Formule &&
-            this.data.purchaseType === OPERATION_TYPE_PASS_ILLIMIX
-          ) {
-            const eligibility: any = await this.isEligible();
-            this.eligibilityChecked = true;
-            if (eligibility && !eligibility.eligible) {
-              this.isRecipientEligible = false;
-              this.eligibilityError = eligibility.message;
-              const data = Object.assign({}, this.opXtras, { error: this.eligibilityError });
-              this.logRecipientOnFollow('error', data, this.data.isLightMod);
-              return;
-            }
-          }
-          if (
-            (res.code === CODE_KIRENE_Formule ||
-              res.code === CODE_FORMULE_FIX_PREPAID) &&
-            this.data.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX
-          ) {
-            this.eligibilityChecked = true;
+    this.authService.getSubscriptionForTiers(this.opXtras.recipientMsisdn).subscribe(
+      async (res: SubscriptionModel) => {
+        this.isProcessing = false;
+        this.opXtras.code = res.code;
+        this.opXtras.profil = res.profil;
+        if (res.code === CODE_KIRENE_Formule && this.data.purchaseType === OPERATION_TYPE_PASS_ILLIMIX) {
+          const eligibility: any = await this.isEligible();
+          this.eligibilityChecked = true;
+          if (eligibility && !eligibility.eligible) {
             this.isRecipientEligible = false;
-            this.eligibilityError =
-              'Le numéro du bénéficiaire ne peut pas bénéficier de pass';
-            const data = Object.assign({}, this.opXtras, { error: this.eligibilityError });
+            this.eligibilityError = eligibility.message;
+            const data = Object.assign({}, this.opXtras, {
+              error: this.eligibilityError
+            });
             this.logRecipientOnFollow('error', data, this.data.isLightMod);
             return;
           }
-          this.logRecipientOnFollow('event', this.opXtras, this.data.isLightMod);
-          this.modalController.dismiss(this.opXtras);
-          // this.bottomSheetRef.dismiss(this.opXtras);
-        },
-        (err: any) => {
-          this.isProcessing = false;
-          const data = Object.assign({}, this.opXtras, { error: err.status });
-          this.logRecipientOnFollow('error', data, this.data.isLightMod);
-          this.modalController.dismiss();
-          // this.bottomSheetRef.dismiss();
         }
-      );
+        if (
+          (res.code === CODE_KIRENE_Formule || res.code === CODE_FORMULE_FIX_PREPAID) &&
+          this.data.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX
+        ) {
+          this.eligibilityChecked = true;
+          this.isRecipientEligible = false;
+          this.eligibilityError = 'Le numéro du bénéficiaire ne peut pas bénéficier de pass';
+          const data = Object.assign({}, this.opXtras, {
+            error: this.eligibilityError
+          });
+          this.logRecipientOnFollow('error', data, this.data.isLightMod);
+          return;
+        }
+        this.logRecipientOnFollow('event', this.opXtras, this.data.isLightMod);
+        this.modalController.dismiss(this.opXtras);
+        // this.bottomSheetRef.dismiss(this.opXtras);
+      },
+      (err: any) => {
+        this.isProcessing = false;
+        const data = Object.assign({}, this.opXtras, { error: err.status });
+        this.logRecipientOnFollow('error', data, this.data.isLightMod);
+        this.modalController.dismiss();
+        // this.bottomSheetRef.dismiss();
+      }
+    );
   }
 
   onPhoneSelected(opContacts: OperationExtras) {
@@ -214,9 +215,7 @@ export class NumberSelectionComponent implements OnInit {
 
   onOptionChange(value: string) {
     this.showInput = value === 'AUTRE';
-    this.opXtras.recipientMsisdn = this.showInput
-      ? this.numberFromInput
-      : value;
+    this.opXtras.recipientMsisdn = this.showInput ? this.numberFromInput : value;
     this.disableErrorMessages();
   }
   disableErrorMessages() {
@@ -231,10 +230,7 @@ export class NumberSelectionComponent implements OnInit {
         this.isProcessing = false;
         this.changeDetectorRef.detectChanges();
 
-        if (
-          msisdn === 'error' &&
-          this.data.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT
-        ) {
+        if (msisdn === 'error' && this.data.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT) {
           //force user to have om account
           this.modalController.dismiss();
           this.openPinpad();
@@ -242,8 +238,7 @@ export class NumberSelectionComponent implements OnInit {
 
         if (msisdn !== 'error') {
           this.opXtras.senderMsisdn = msisdn;
-          if (OPERATION_TYPE_PASS_VOYAGE !== this.data.purchaseType)
-            this.getRecents();
+          if (OPERATION_TYPE_PASS_VOYAGE !== this.data.purchaseType) this.getRecents();
         }
       },
       () => {
@@ -273,10 +268,10 @@ export class NumberSelectionComponent implements OnInit {
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
-        operationType: null,
-      },
+        operationType: null
+      }
     });
-    modal.onDidDismiss().then((response) => {
+    modal.onDidDismiss().then(response => {
       if (response.data && response.data.success) {
         this.omSession.loginExpired = false;
       }
@@ -287,10 +282,14 @@ export class NumberSelectionComponent implements OnInit {
   logRecipientOnFollow(typeEvent: 'event' | 'error', infos: any, isLightMod?: boolean) {
     let followEventSucess: string;
     let followEventError: string;
-    let payload = { sender: infos.senderMsisdn, recipient: infos.recipientMsisdn, operation: this.data.purchaseType.toLowerCase() }
-    if (infos.error) {
-      payload = Object.assign({}, payload, {error: infos.error})
+    let payload = {
+      sender: infos.senderMsisdn,
+      recipient: infos.recipientMsisdn,
+      operation: this.data.purchaseType.toLowerCase()
     };
+    if (infos.error) {
+      payload = Object.assign({}, payload, { error: infos.error });
+    }
     switch (this.data.purchaseType) {
       case OPERATION_TYPE_RECHARGE_CREDIT:
         followEventSucess = 'Recharge_Credit_Select_Recipient_success';

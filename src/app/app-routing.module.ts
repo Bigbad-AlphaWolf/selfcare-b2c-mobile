@@ -1,438 +1,434 @@
-import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './services/auth-guard/auth.guard';
-import { AuthUpdateGuard } from './services/auth-update-guard/auth-update.guard';
+import { NgModule } from "@angular/core";
+import { PreloadAllModules, RouterModule, Routes } from "@angular/router";
+import { AuthGuard } from "./services/auth-guard/auth.guard";
+import { AuthUpdateGuard } from "./services/auth-update-guard/auth-update.guard";
 
 const routes: Routes = [
   {
-    path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
+    path: "",
+    redirectTo: "dashboard",
+    pathMatch: "full",
     canActivate: [AuthGuard],
   },
   {
-    path: 'home-v2',
-    loadChildren: './home-v2/home-v2.module#HomeV2PageModule',
+    path: "home-v2",
+    loadChildren: "./home-v2/home-v2.module#HomeV2PageModule",
     canActivate: [AuthUpdateGuard],
   },
   {
-    path: 'new-registration',
+    path: "new-registration",
     loadChildren:
-      './new-registration/new-registration.module#NewRegistrationPageModule',
+      "./new-registration/new-registration.module#NewRegistrationPageModule",
     canActivate: [AuthUpdateGuard],
   },
   {
-    path: 'home',
-    loadChildren: './home/home.module#HomePageModule',
+    path: "home",
+    loadChildren: "./home/home.module#HomePageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'login',
-    loadChildren: './login/login.module#LoginPageModule',
+    path: "login",
+    loadChildren: "./login/login.module#LoginPageModule",
     canActivate: [AuthGuard, AuthUpdateGuard],
   },
   {
-    path: 'dashboard',
-    loadChildren: './dashboard/dashboard.module#DashboardPageModule',
+    path: "dashboard",
+    loadChildren: "./dashboard/dashboard.module#DashboardPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'suivi-conso',
-    loadChildren: './dashboard/dashboard.module#DashboardPageModule',
+    path: "suivi-conso",
+    loadChildren: "./dashboard/dashboard.module#DashboardPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'buy-pass-internet',
+    path: "buy-pass-internet",
     loadChildren:
-      './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
+      "./buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'buy-pass-internet-by-credit',
+    path: "buy-pass-internet-by-credit",
     loadChildren:
-      './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
+      "./buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'buy-pass-internet-by-om',
+    path: "buy-pass-internet-by-om",
     loadChildren:
-      './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
+      "./buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'buy-pass-internet/:id',
+    path: "buy-pass-internet/:id",
     loadChildren:
-      './buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule',
+      "./buy-pass-internet/buy-pass-internet.module#BuyPassInternetPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'buy-credit',
-    loadChildren: './buy-credit/buy-credit.module#BuyCreditPageModule',
+    path: "buy-credit",
+    loadChildren: "./buy-credit/buy-credit.module#BuyCreditPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'details-conso',
-    loadChildren: './details-conso/details-conso.module#DetailsConsoPageModule',
+    path: "details-conso",
+    loadChildren: "./details-conso/details-conso.module#DetailsConsoPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'my-account',
-    loadChildren: './my-account/my-account.module#MyAccountPageModule',
+    path: "my-account",
+    loadChildren: "./my-account/my-account.module#MyAccountPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'buy-pass-illimix',
+    path: "buy-pass-illimix",
     loadChildren:
-      './buy-pass-illimix/buy-pass-illimix.module#BuyPassIllimixPageModule',
+      "./buy-pass-illimix/buy-pass-illimix.module#BuyPassIllimixPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'buy-pass-illimix/:id',
+    path: "buy-pass-illimix/:id",
     loadChildren:
-      './buy-pass-illimix/buy-pass-illimix.module#BuyPassIllimixPageModule',
+      "./buy-pass-illimix/buy-pass-illimix.module#BuyPassIllimixPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'buy-sos',
-    loadChildren: './buy-sos/buy-sos.module#BuySosPageModule',
+    path: "buy-sos",
+    loadChildren: "./buy-sos/buy-sos.module#BuySosPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'soscredit/:amount',
-    loadChildren: './buy-sos/buy-sos.module#BuySosPageModule',
+    path: "soscredit/:amount",
+    loadChildren: "./buy-sos/buy-sos.module#BuySosPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'sospass/:amount',
-    loadChildren: './buy-sos/buy-sos.module#BuySosPageModule',
+    path: "sospass/:amount",
+    loadChildren: "./buy-sos/buy-sos.module#BuySosPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'transfer/:type',
+    path: "transfer/:type",
     loadChildren:
-      './transfer-credit-bonus-om/transfer-credit-bonus-om.module#TransferCreditBonusOmPageModule',
+      "./transfer-credit-bonus-om/transfer-credit-bonus-om.module#TransferCreditBonusOmPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'control-center',
-    loadChildren: './emergencies/emergencies.module#EmergenciesPageModule',
+    path: "control-center",
+    loadChildren: "./emergencies/emergencies.module#EmergenciesPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'change-main-phone-number',
+    path: "change-main-phone-number",
     loadChildren:
-      './change-main-phone-number/change-main-phone-number.module#ChangeMainPhoneNumberPageModule',
+      "./change-main-phone-number/change-main-phone-number.module#ChangeMainPhoneNumberPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'my-formule',
-    loadChildren: './my-formule/my-formule.module#MyFormulePageModule',
+    path: "my-formule",
+    loadChildren: "./my-formule/my-formule.module#MyFormulePageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'sargal-dashboard',
-    loadChildren: './sargal/sargal.module#SargalPageModule',
+    path: "sargal-dashboard",
+    loadChildren: "./sargal/sargal.module#SargalPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'sargal-catalogue',
+    path: "sargal-catalogue",
     loadChildren:
-      './sargal/components/sargal-catalogue/sargal-catalogue.module#SargalCataloguePageModule',
+      "./sargal/components/sargal-catalogue/sargal-catalogue.module#SargalCataloguePageModule",
     canActivate: [AuthGuard],
   },
   // { path: 'bills', loadChildren: './bills/bills.module#BillsPageModule' },
   {
-    path: 'forgotten-password',
+    path: "forgotten-password",
     loadChildren:
-      './forgotten-password/forgotten-password.module#ForgottenPasswordPageModule',
+      "./forgotten-password/forgotten-password.module#ForgottenPasswordPageModule",
   },
   {
-    path: 'sargal-registration',
+    path: "sargal-registration",
     loadChildren:
-      './sargal/components/sargal-registration/sargal-registration.module#SargalRegistrationPageModule',
+      "./sargal/components/sargal-registration/sargal-registration.module#SargalRegistrationPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'apropos',
-    loadChildren: './apropos/apropos.module#AproposPageModule',
+    path: "apropos",
+    loadChildren: "./apropos/apropos.module#AproposPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'infolegales',
-    loadChildren: './infolegales/infolegales.module#InfolegalesPageModule',
+    path: "infolegales",
+    loadChildren: "./infolegales/infolegales.module#InfolegalesPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'parrainage',
-    loadChildren: './parrainage/parrainage.module#ParrainagePageModule',
+    path: "parrainage",
+    loadChildren: "./parrainage/parrainage.module#ParrainagePageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'sargal-status-card',
+    path: "sargal-status-card",
     loadChildren:
-      './sargal-status-card/sargal-status-card.module#SargalStatusCardPageModule',
+      "./sargal-status-card/sargal-status-card.module#SargalStatusCardPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'new-number',
+    path: "new-number",
     loadChildren:
-      './add-new-phone-number-v2/add-new-phone-number-v2.module#AddNewPhoneNumberV2PageModule',
+      "./add-new-phone-number-v2/add-new-phone-number-v2.module#AddNewPhoneNumberV2PageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'dashboard-home-prepaid',
+    path: "dashboard-home-prepaid",
     loadChildren:
-      './dashboard-home-prepaid/dashboard-home-prepaid.module#DashboardHomePrepaidPageModule',
+      "./dashboard-home-prepaid/dashboard-home-prepaid.module#DashboardHomePrepaidPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'dashboard-postpaid',
+    path: "dashboard-postpaid",
     loadChildren:
-      './dashboard-postpaid/dashboard-postpaid.module#DashboardPostpaidPageModule',
+      "./dashboard-postpaid/dashboard-postpaid.module#DashboardPostpaidPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'dashboard-kirene',
+    path: "dashboard-kirene",
     loadChildren:
-      './dashboard-kirene/dashboard-kirene.module#DashboardKirenePageModule',
+      "./dashboard-kirene/dashboard-kirene.module#DashboardKirenePageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'dashboard-postpaid-fixe',
+    path: "dashboard-postpaid-fixe",
     loadChildren:
-      './dashboard-postpaid-fixe/dashboard-postpaid-fixe.module#DashboardPostpaidFixePageModule',
+      "./dashboard-postpaid-fixe/dashboard-postpaid-fixe.module#DashboardPostpaidFixePageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'dashboard-prepaid-hybrid',
+    path: "dashboard-prepaid-hybrid",
     loadChildren:
-      './dashboard-prepaid-hybrid/dashboard-prepaid-hybrid.module#DashboardPrepaidHybridPageModule',
+      "./dashboard-prepaid-hybrid/dashboard-prepaid-hybrid.module#DashboardPrepaidHybridPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'my-offer-plans',
+    path: "my-offer-plans",
     loadChildren:
-      './pages/my-offer-plans/my-offer-plans.module#MyOfferPlansPageModule',
+      "./pages/my-offer-plans/my-offer-plans.module#MyOfferPlansPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'operation-recap',
+    path: "operation-recap",
     loadChildren:
-      './operation-recap/operation-recap.module#OperationRecapPageModule',
-    canActivate: [AuthGuard],
+      "./operation-recap/operation-recap.module#OperationRecapPageModule",
   },
   {
-    path: 'pass-illimix/:ppi',
+    path: "pass-illimix/:ppi",
     loadChildren:
-      './operation-recap/operation-recap.module#OperationRecapPageModule',
+      "./operation-recap/operation-recap.module#OperationRecapPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'pass-internet/:ppi',
+    path: "pass-internet/:ppi",
     loadChildren:
-      './operation-recap/operation-recap.module#OperationRecapPageModule',
+      "./operation-recap/operation-recap.module#OperationRecapPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'transfer-money/:msisdn/:amount',
+    path: "transfer-money/:msisdn/:amount",
     loadChildren:
-      './operation-recap/operation-recap.module#OperationRecapPageModule',
+      "./operation-recap/operation-recap.module#OperationRecapPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'new-pinpad-modal',
+    path: "new-pinpad-modal",
     loadChildren:
-      './new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule',
+      "./new-pinpad-modal/new-pinpad-modal.module#NewPinpadModalPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'operation-success-fail-modal',
+    path: "operation-success-fail-modal",
     loadChildren:
-      './operation-success-fail-modal/operation-success-fail-modal.module#OperationSuccessFailModalPageModule',
+      "./operation-success-fail-modal/operation-success-fail-modal.module#OperationSuccessFailModalPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'list-pass',
-    loadChildren: './pages/liste-pass/liste-pass.module#ListePassPageModule',
-    canActivate: [AuthGuard],
+    path: "list-pass",
+    loadChildren: "./pages/liste-pass/liste-pass.module#ListePassPageModule",
   },
   {
-    path: 'registration-success-modal',
+    path: "registration-success-modal",
     loadChildren:
-      './registration-success-modal/registration-success-modal.module#RegistrationSuccessModalPageModule',
+      "./registration-success-modal/registration-success-modal.module#RegistrationSuccessModalPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'transfert-hub-services',
+    path: "transfert-hub-services",
     loadChildren:
-      './transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule',
-    canActivate: [AuthGuard],
+      "./transfert-hub-services/transfert-hub-services.module#TransfertHubServicesPageModule",
   },
   {
-    path: 'operation-set-amount',
+    path: "operation-set-amount",
     loadChildren:
-      './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule',
+      "./purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'transfer-money/:msisdn',
+    path: "transfer-money/:msisdn",
     loadChildren:
-      './purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule',
+      "./purchase-set-amount/purchase-set-amount.module#PurchaseSetAmountPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'credit-pass-amount',
+    path: "credit-pass-amount",
     loadChildren:
-      './pages/credit-pass-amount/credit-pass-amount.module#CreditPassAmountPageModule',
+      "./pages/credit-pass-amount/credit-pass-amount.module#CreditPassAmountPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'bills-hub',
-    loadChildren: './pages/bills-hub/bills-hub.module#BillsHubPageModule',
+    path: "bills-hub",
+    loadChildren: "./pages/bills-hub/bills-hub.module#BillsHubPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'bill-amount',
-    loadChildren: './pages/bill-amount/bill-amount.module#BillAmountPageModule',
+    path: "bill-amount",
+    loadChildren: "./pages/bill-amount/bill-amount.module#BillAmountPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'oem-services',
+    path: "oem-services",
     loadChildren:
-      './pages/oem-services/oem-services.module#OemServicesPageModule',
+      "./pages/oem-services/oem-services.module#OemServicesPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'app-update',
-    loadChildren: './pages/app-update/app-update.module#AppUpdatePageModule',
+    path: "app-update",
+    loadChildren: "./pages/app-update/app-update.module#AppUpdatePageModule",
   },
   {
-    path: 'bills',
+    path: "bills",
     loadChildren:
-      './pages/orange-bills/orange-bills.module#OrangeBillsPageModule',
+      "./pages/orange-bills/orange-bills.module#OrangeBillsPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'orange-bills',
+    path: "orange-bills",
     loadChildren:
-      './pages/orange-bills/orange-bills.module#OrangeBillsPageModule',
+      "./pages/orange-bills/orange-bills.module#OrangeBillsPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'follow-up-requests',
+    path: "follow-up-requests",
     loadChildren:
-      './pages/follow-up-requests/follow-up-requests.module#FollowUpRequestsPageModule',
+      "./pages/follow-up-requests/follow-up-requests.module#FollowUpRequestsPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'request-status',
+    path: "request-status",
     loadChildren:
-      './pages/request-status/request-status.module#RequestStatusPageModule',
+      "./pages/request-status/request-status.module#RequestStatusPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'list-pass-voyage',
+    path: "list-pass-voyage",
     loadChildren:
-      './pages/list-pass-voyage/list-pass-voyage.module#ListPassVoyagePageModule',
-    canActivate: [AuthGuard],
+      "./pages/list-pass-voyage/list-pass-voyage.module#ListPassVoyagePageModule",
   },
   {
-    path: 'offres-services',
+    path: "offres-services",
     loadChildren:
-      './pages/offres-services/offres-services.module#OffresServicesPageModule',
+      "./pages/offres-services/offres-services.module#OffresServicesPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'dalal-tones',
-    loadChildren: './dalal-tones/dalal-tones.module#DalalTonesPageModule',
+    path: "dalal-tones",
+    loadChildren: "./dalal-tones/dalal-tones.module#DalalTonesPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'rapido-operation',
+    path: "rapido-operation",
     loadChildren:
-      './pages/rapido-operation/rapido-operation.module#RapidoOperationPageModule',
+      "./pages/rapido-operation/rapido-operation.module#RapidoOperationPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'dashboard-prepaid-light',
+    path: "dashboard-prepaid-light",
     loadChildren:
-      './dashboard-prepaid-light/dashboard-prepaid-light.module#DashboardPrepaidLightPageModule',
+      "./dashboard-prepaid-light/dashboard-prepaid-light.module#DashboardPrepaidLightPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'rattached-phones-number',
+    path: "rattached-phones-number",
     loadChildren:
-      './pages/rattached-phones-number/rattached-phones-number.module#RattachedPhonesNumberPageModule',
+      "./pages/rattached-phones-number/rattached-phones-number.module#RattachedPhonesNumberPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'select-illiflex-type',
+    path: "select-illiflex-type",
     loadChildren:
-      './select-illiflex-type/select-illiflex-type.module#SelectIlliflexTypePageModule',
+      "./select-illiflex-type/select-illiflex-type.module#SelectIlliflexTypePageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'illiflex-configuration',
+    path: "illiflex-configuration",
     loadChildren:
-      './illiflex-configuration/illiflex-configuration.module#IlliflexConfigurationPageModule',
+      "./illiflex-configuration/illiflex-configuration.module#IlliflexConfigurationPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'illiflex-budget-configuration',
+    path: "illiflex-budget-configuration",
     loadChildren:
-      './illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule',
+      "./illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'illiflex',
+    path: "illiflex",
     loadChildren:
-      './illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule',
+      "./illiflex-budget-configuration/illiflex-budget-configuration.module#IlliflexBudgetConfigurationPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'assistance-hub',
+    path: "assistance-hub",
     loadChildren:
-      './assistance-hub/assistance-hub.module#AssistanceHubPageModule',
+      "./assistance-hub/assistance-hub.module#AssistanceHubPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'contact-ibou-hub',
+    path: "contact-ibou-hub",
     loadChildren:
-      './contact-ibou-hub/contact-ibou-hub.module#ContactIbouHubPageModule',
+      "./contact-ibou-hub/contact-ibou-hub.module#ContactIbouHubPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'satisfaction-form',
+    path: "satisfaction-form",
     loadChildren:
-      './pages/satisfaction-form/satisfaction-form.module#SatisfactionFormPageModule',
+      "./pages/satisfaction-form/satisfaction-form.module#SatisfactionFormPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'change-orange-money-pin',
+    path: "change-orange-money-pin",
     loadChildren:
-      './change-orange-money-pin/change-orange-money-pin.module#ChangeOrangeMoneyPinPageModule',
+      "./change-orange-money-pin/change-orange-money-pin.module#ChangeOrangeMoneyPinPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'community',
-    loadChildren: './community/community.module#CommunityPageModule',
+    path: "community",
+    loadChildren: "./community/community.module#CommunityPageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'list-pass-usage',
+    path: "list-pass-usage",
     loadChildren:
-      './list-pass-usage/list-pass-usage.module#ListPassUsagePageModule',
+      "./list-pass-usage/list-pass-usage.module#ListPassUsagePageModule",
     canActivate: [AuthGuard],
   },
   {
-    path: 'om-self-operation',
+    path: "om-self-operation",
     loadChildren:
-      './orange-money-self-operation/orange-money-self-operation.module#OrangeMoneySelfOperationModule',
+      "./orange-money-self-operation/orange-money-self-operation.module#OrangeMoneySelfOperationModule",
   },
   {
-    path: 'purchase-set-amount',
+    path: "purchase-set-amount",
     loadChildren:
-      './transfer-set-amount/transfer-set-amount.module#TransferSetAmountPageModule',
+      "./transfer-set-amount/transfer-set-amount.module#TransferSetAmountPageModule",
   },
 ];
 

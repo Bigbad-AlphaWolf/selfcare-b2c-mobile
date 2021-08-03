@@ -85,6 +85,7 @@ export const JAMONO_NEW_SCOOL_CODE_FORMULE = '9131';
 export const JAMONO_ALLO_CODE_FORMULE = '9132';
 export const JAMONO_MAX_CODE_FORMULE = '9133';
 export const JAMONO_PRO_CODE_FORMULE = '9136';
+export const CODE_PARTENAIRE_COUPON_TRACE_TV = 'TRACE_TV';
 export const PRO_MOBILE_ERROR_CODE = 'userProMobile';
 export const CODE_COMPTEUR_CREDIT_MENSUEL_OFFERT = 8;
 export const MAIL_URL = 'mailto:serviceclient@orange-sonatel.com';
@@ -663,11 +664,12 @@ export interface ItemBesoinAide {
 // this method removes prefix 221 +221 00221
 export function formatPhoneNumber(phoneNumber: string) {
   const phoneNumberWithoutSpaces = phoneNumber.replace(/\s/g, '');
-  const res = phoneNumberWithoutSpaces.slice(
-    phoneNumberWithoutSpaces.length - 9,
-    phoneNumberWithoutSpaces.length
-  );
-  return res;
+  // const res = phoneNumberWithoutSpaces.slice(phoneNumberWithoutSpaces.length - 9, phoneNumberWithoutSpaces.length);
+  return phoneNumberWithoutSpaces;
+}
+
+export function parseIntoNationalNumberFormat(phoneNumber: string) {
+  return phoneNumber.slice(phoneNumber.length - 9, phoneNumber.length);
 }
 
 export interface SponseeModel {
@@ -1377,7 +1379,7 @@ export const TRANSFER_OM_BALANCE_NOT_ALLOWED =
   "Le montant que vous avez saisi n'est pas dans la plage autorisée";
 export const FEES_ERROR =
   'Erreur lors de la récupération des frais. Réactualisez';
-
+export const NO_RECENTS_MSG = 'Pas de bénéficiaire récent pour cette opération';
 export const ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE = '24';
 export const ILLIFLEX_BY_OM_IDENTICAL_ERROR_CODE = '2040';
 export const OM_IDENTIC_TRANSACTION_CODE = 'Erreur-045';
