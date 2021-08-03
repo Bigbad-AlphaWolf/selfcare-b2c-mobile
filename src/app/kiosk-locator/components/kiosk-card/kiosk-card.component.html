@@ -1,0 +1,17 @@
+<div class="kiosk-card">
+  <div class="kiosk-id scb-text-white">{{index}}</div>
+  <div class="kiosk-infos">
+    <div class="kiosk-infos-details">
+      <div class="name">{{kiosk?.name}}</div>
+      <div class="details-item">
+        <img src="assets/images/location-arrow.png" alt="">
+        <span class="scb-text-gray item-text">{{kiosk?.distance | distanceFormat }} de votre position</span>
+      </div>
+      <div class="details-item">
+        <ion-icon name="time" class="scb-text-orange-light"></ion-icon>
+        <span class="scb-text-orange-light item-text">Ferme à 20:30</span>
+      </div>
+    </div>
+    <div class="itineraire scb-text-orange">Itinéraire</div>
+  </div>
+</div>
