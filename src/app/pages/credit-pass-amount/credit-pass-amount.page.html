@@ -19,7 +19,7 @@
 </ion-header>
 <ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <div class="transferts-page">
-  
+
     <div class="amount-provider">
       <oem-amount-provider
         (onAmountSelected)="onAmountSelected($event)"
@@ -30,6 +30,7 @@
     <div class="btn-container">
       <button
         class="scb-btn scb-btn-orange scb-btn-full"
+        id="btn-validate-amount"
         [disabled]="!opXtras.amount || opXtras.amount<=0"
         (click)="onContinue()"
       >

@@ -74,11 +74,11 @@
     </div>
   </div>
   <div class="btn-continue">
-    <button mat-button [disabled]="isProcessing" (click)="onContinue()">
+    <button id="btn-validate-beneficiary" mat-button [disabled]="isProcessing" (click)="onContinue()">
       Continuer
     </button>
     <ion-spinner
-      *ngIf="isProcessing || (!isLightMod && !(numbers$ | async)?.length)"
+      *ngIf="isProcessing || loadingNumbers"
       name="crescent"
     ></ion-spinner>
   </div>

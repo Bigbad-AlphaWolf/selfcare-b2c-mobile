@@ -207,7 +207,7 @@
         <div class="more" (click)="onOffreClicked()" >Voir plus</div>
       </div>
       <div class="dashboard-block-offres-top3">
-        <div (click)="goToBuyPage()" class="dashboard-block-offres-top3-item">
+        <div id="btn-hub-credit-pass" (click)="goToBuyPage()" class="dashboard-block-offres-top3-item">
           <div
             class="badge-promo"
             *ngIf="hasPromoBooster?.promoPass || hasPromoBooster?.promoRecharge || hasPromoBooster?.promoPassIllimix || hasPromoPlanActive?.hasPassIllimix || hasPromoPlanActive?.hasPassInternet || hasPromoPlanActive?.hasRecharge"
@@ -233,6 +233,7 @@
           </div>
         </div>
         <div
+        id="btn-hub-transfert"
           (click)="goToTransfertsPage()"
           class="dashboard-block-offres-top3-item"
         >
@@ -252,6 +253,7 @@
           </div>
         </div>
         <div
+        id="btn-hub-payer-facture"
           (click)="onPayerFacture()"
           class="dashboard-block-offres-top3-item"
         >
@@ -271,6 +273,7 @@
           </div>
         </div>
         <div
+        id="btn-hub-paiement-marchand"
           (click)="goMerchantPayment()"
           class="dashboard-block-offres-top3-item"
           *ngIf="showMerchantPay"
@@ -288,6 +291,7 @@
           </div>
         </div>
         <div
+        id="btn-hub-convertir-sargal"
           *ngIf="!isHyBride && !isNotSubscribedToSargal(userSargalData?.status)"
           (click)="makeSargalAction()"
           class="dashboard-block-offres-top3-item"
@@ -306,6 +310,7 @@
         </div>
 
         <div
+          id="btn-hub-demander-sos"
           [ngClass]="{ 'disabled-block': !canDoSOS }"
           (click)="goToSOSPage()"
           class="dashboard-block-offres-top3-item"

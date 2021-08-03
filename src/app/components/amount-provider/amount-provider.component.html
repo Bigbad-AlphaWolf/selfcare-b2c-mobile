@@ -19,20 +19,20 @@
         <div>
           <ng-content select=".amount-error"></ng-content>
         </div>
-     
+
       </form>
     </div>
-  
+
   <div class="title1">Choix rapide</div>
-  
+
   <mat-button-toggle-group name="amount" (change)="onValueChange($event.value)">
-    <mat-button-toggle *ngFor="let amount of amounts" value="{{amount}}">
+    <mat-button-toggle *ngFor="let amount of amounts" value="{{amount}}" [id]="'montant_'+amount">
       <span class="amount">{{amount|formatCurrency}}</span>
       <span>FCFA</span>
     </mat-button-toggle>
-  
+
   </mat-button-toggle-group>
-  
-  
+
+
 </div>
 

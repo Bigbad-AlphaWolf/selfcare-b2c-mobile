@@ -12,7 +12,7 @@
   <div class="transferts-page">
     <div class="ion-cards-container" *ngIf="options?.length">
       <ng-container *ngFor="let opt of options">
-        <div class="card" *ngIf="!isServiceHidden(opt)" [ngClass]="{'disabled': !opt.activated}">
+        <div [id]="'btn_'+ opt?.code?.toLowerCase()" class="card" *ngIf="!isServiceHidden(opt)" [ngClass]="{'disabled': !opt.activated}">
           <ion-card (click)="goTo(opt)" class="card-content" button="true">
             <ion-card-content>
               <div class="icon">
@@ -47,17 +47,17 @@
         <div class="pass-usage-title">Autres pass</div>
         <div class="ion-cards-container">
           <ng-container *ngFor="let opt of passUsages">
-            <div class="card" *ngIf="!isServiceHidden(opt)" [ngClass]="{'disabled': !opt.activated}">
+            <div [id]="'btn_'+ opt?.code?.toLowerCase()" class="card" *ngIf="!isServiceHidden(opt)" [ngClass]="{'disabled': !opt.activated}">
               <ion-card (click)="goTo(opt)" class="card-content" button="true">
                 <ion-card-content>
                   <div class="icon">
-                    <img-loader [spinner]="true" class="img" [src]="opt.icone"
+                    <img-loader [spinner]="true" class="img" [src]="opt?.icone"
                       fallbackUrl="/assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg>
                     </img-loader>
                   </div>
                   <div class="text">
-                    <span class="title"> {{opt.shortDescription}} </span>
-                    <span class="subtitle"> {{opt.fullDescription}} </span>
+                    <span class="title"> {{opt?.shortDescription}} </span>
+                    <span class="subtitle"> {{opt?.fullDescription}} </span>
                   </div>
                 </ion-card-content>
               </ion-card>
