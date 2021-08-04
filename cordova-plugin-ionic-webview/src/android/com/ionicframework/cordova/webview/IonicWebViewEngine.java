@@ -131,7 +131,6 @@ public class IonicWebViewEngine extends SystemWebViewEngine {
       this.parser = parser;
     }
 
-    @Override
     public void onReceivedSslError(SslErrorHandler handler) {
       handler.proceed();
     }
