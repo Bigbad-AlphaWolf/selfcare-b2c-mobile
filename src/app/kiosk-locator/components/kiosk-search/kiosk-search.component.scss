@@ -1,0 +1,54 @@
+@import 'src/app/app';
+
+:host {
+  height: 100%;
+}
+
+ion-header {
+  background: $white;
+}
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: -0.34px;
+}
+
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+  padding: 0 10px;
+}
+
+.search-page {
+  min-height: 100%;
+  height: fit-content;
+  background-color: white;
+  .search-result {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0 50px;
+    .app-action-item {
+      width: 100%;
+      margin-left: 0px;
+    }
+
+    .result-count {
+      padding: 0 20px;
+      font-size: 16px;
+      line-height: 1.25;
+      letter-spacing: normal;
+      color: #666666;
+    }
+
+    .spinner-bloc {
+      display: flex;
+      justify-content: center;
+      padding-top: 50px;
+      .mat-spinner::ng-deep circle {
+        stroke: $orange;
+      }
+    }
+  }
+}
