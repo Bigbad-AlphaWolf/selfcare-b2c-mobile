@@ -1,0 +1,54 @@
+@import "src/app/app";
+
+:host {
+  width: 100%;
+}
+
+.kiosk-card {
+  position: relative;
+  padding: 20px 20px 0 45px;
+  background-color: $white;
+  border-radius: 10px;
+  text-align: left;
+  .kiosk-id {
+    font-size: 14px;
+    position: absolute;
+    top: 17px;
+    left: 17px;
+    padding-top: 5px;
+    width: 20px;
+    height: 20px;
+    background-color: $orange;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .kiosk-infos {
+    &-details {
+      border-bottom: solid 1px $silver;
+      padding-bottom: 20px;
+      .name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .details-item {
+        display: flex;
+        align-items: center;
+        .item-text {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 14px;
+          padding-top: 5px;
+          margin-left: 5px;
+        }
+      }
+    }
+    .itineraire {
+      position: absolute;
+      right: 20px;
+      bottom: 17px;
+      font-size: 16px;
+    }
+  }
+}
