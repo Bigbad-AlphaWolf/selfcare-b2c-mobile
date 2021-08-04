@@ -22,7 +22,7 @@ export interface OperationExtras {
   includeFee?: any;
   fee?: any;
   sending_fees?: any;
-  sending_fees_Info?: {effective_fees: number, old_fees: number};
+  sending_fees_Info?: { effective_fees: number; old_fees: number };
   code?: any;
   profil?: any;
 
@@ -42,4 +42,5 @@ export interface OperationExtras {
   isLightMod?: boolean;
   recipientCodeFormule?;
   serviceUsage?: OffreService;
+  fromPage?: string;
 }

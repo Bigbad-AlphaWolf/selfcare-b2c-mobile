@@ -5,7 +5,8 @@ import {
   REGEX_NUMBER,
   formatPhoneNumber,
   REGEX_FIX_NUMBER,
-  SubscriptionModel
+  SubscriptionModel,
+  parseIntoNationalNumberFormat
 } from '..';
 import { MatDialog } from '@angular/material';
 import { SelectNumberPopupComponent } from '../select-number-popup/select-number-popup.component';
@@ -84,19 +85,17 @@ export class SelectOtherRecipientComponent implements OnInit {
         } else {
           this.destNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
           if (this.validateNumber(this.destNumber)) {
-              this.authServ
-                .getSubscriptionForTiers(this.destNumber)
-                .subscribe((res: SubscriptionModel) => {
-                  if( res.profil === PROFILE_TYPE_POSTPAID && res.code !== KILIMANJARO_FORMULE ){
-                    this.showErrorMsg = true;
-                  }else {
-                    this.nextStepEmitter.emit({
-                      destinataire: this.destNumber,
-                      code: res.code
-                    });
-                  }
+            const formatedNumber = parseIntoNationalNumberFormat(this.destNumber);
+            this.authServ.getSubscriptionForTiers(formatedNumber).subscribe((res: SubscriptionModel) => {
+              if (res.profil === PROFILE_TYPE_POSTPAID && res.code !== KILIMANJARO_FORMULE) {
+                this.showErrorMsg = true;
+              } else {
+                this.nextStepEmitter.emit({
+                  destinataire: formatedNumber,
+                  code: res.code
                 });
-               
+              }
+            });
           } else {
             this.destNumber = '';
             this.showErrorMsg = true;
@@ -114,26 +113,23 @@ export class SelectOtherRecipientComponent implements OnInit {
     dialogRef.afterClosed().subscribe(selectedNumber => {
       this.destNumber = formatPhoneNumber(selectedNumber);
       if (this.validateNumber(this.destNumber)) {
-        this.authServ
-          .isPostpaid(this.destNumber)
-          .subscribe((isPostpaid: boolean) => {
-            if (isPostpaid) {
-              this.showErrorMsg = true;
-            } else {
-              this.authServ
-                .getSubscriptionForTiers(this.destNumber)
-                .subscribe((res: SubscriptionModel) => {
-                  if (res.code !== '0') {
-                    this.nextStepEmitter.emit({
-                      destinataire: this.destNumber,
-                      code: res.code
-                    });
-                  } else {
-                    this.showErrorMsg = true;
-                  }
+        const formatedNumber = parseIntoNationalNumberFormat(this.destNumber);
+        this.authServ.isPostpaid(formatedNumber).subscribe((isPostpaid: boolean) => {
+          if (isPostpaid) {
+            this.showErrorMsg = true;
+          } else {
+            this.authServ.getSubscriptionForTiers(formatedNumber).subscribe((res: SubscriptionModel) => {
+              if (res.code !== '0') {
+                this.nextStepEmitter.emit({
+                  destinataire: formatedNumber,
+                  code: res.code
                 });
-            }
-          });
+              } else {
+                this.showErrorMsg = true;
+              }
+            });
+          }
+        });
       } else {
         this.destNumber = '';
         this.showErrorMsg = true;

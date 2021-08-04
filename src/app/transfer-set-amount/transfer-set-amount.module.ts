@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { TransferSetAmountPage } from './transfer-set-amount.page';
 import { MatFormFieldModule, MatInputModule } from '@angular/material';
+import { SharedModule } from 'src/shared/shared.module';
 
 const routes: Routes = [
   {
@@ -22,6 +23,7 @@ const routes: Routes = [
     IonicModule,
     MatFormFieldModule,
     MatInputModule,
+    SharedModule,
     PipesModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes),

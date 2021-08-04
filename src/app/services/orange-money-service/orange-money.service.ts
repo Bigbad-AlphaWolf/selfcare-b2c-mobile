@@ -42,8 +42,13 @@ import {
   OmInitOtpModel,
 } from 'src/app/models/om-self-operation-otp.model';
 import {
+  ILLIFLEX_BY_OM_IDENTICAL_ERROR_CODE,
+  ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE,
+  OM_IDENTIC_TRANSACTION_CODE,
+  OM_UNKOWN_ERROR_CODE,
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
+  OPERATION_TYPE_BONS_PLANS,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_PASS_ALLO,
   OPERATION_TYPE_PASS_ILLIFLEX,
@@ -59,6 +64,7 @@ import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
 import { IlliflexService } from '../illiflex-service/illiflex.service';
 import { CancelOmTransactionPayloadModel } from 'src/app/models/cancel-om-transaction-payload.model';
 import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-event-type.enum';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
@@ -151,11 +157,9 @@ export class OrangeMoneyService {
 
   checkUserHasAccountV2(msisdn: string): Observable<boolean> {
     return this.http.get(`${checkOMAccountEndpoint2}/${msisdn}`).pipe(
-      map(
-        (hasOmAccount: boolean) => {
-          return hasOmAccount;
-        }
-      )
+      map((hasOmAccount: boolean) => {
+        return hasOmAccount;
+      })
     );
   }
 
@@ -347,7 +351,8 @@ export class OrangeMoneyService {
     res: any,
     type: string,
     operationType: string,
-    dataToLog: FollowOemlogPurchaseInfos
+    dataToLog: FollowOemlogPurchaseInfos,
+    opXtras: OperationExtras
   ) {
     switch (operationType) {
       case undefined:
@@ -356,8 +361,12 @@ export class OrangeMoneyService {
         errorKey = 'Voir_solde_OM_dashboard_error';
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
-        eventKey = 'Achat_credit_success';
-        errorKey = 'Achat_credit_failed';
+        eventKey = `Achat_credit_${
+          opXtras.fromPage === OPERATION_TYPE_BONS_PLANS ? 'bons_plans' : ''
+        }_success`;
+        errorKey = `Achat_credit_${
+          opXtras.fromPage === OPERATION_TYPE_BONS_PLANS ? 'bons_plans' : ''
+        }_failed`;
         value = dataToLog;
         break;
       case OPERATION_TYPE_PASS_VOYAGE:
@@ -377,8 +386,12 @@ export class OrangeMoneyService {
         } else if (operationType === OPERATION_TYPE_PASS_ILLIFLEX) {
           type_pass = 'illiflex';
         }
-        errorKey = `Achat_Pass_${type_pass}_Error`;
-        eventKey = `Achat_Pass_${type_pass}_Success`;
+        errorKey = `Achat_Pass_${type_pass}_${
+          opXtras.fromPage === OPERATION_TYPE_BONS_PLANS ? 'bons_plans' : ''
+        }_Error`;
+        eventKey = `Achat_Pass_${type_pass}_${
+          opXtras.fromPage === OPERATION_TYPE_BONS_PLANS ? 'bons_plans' : ''
+        }_Success`;
         value = dataToLog;
         break;
       case OPERATION_TRANSFER_OM:
@@ -423,14 +436,17 @@ export class OrangeMoneyService {
   }
 
   getUserStatus(msisdn: string) {
-        return this.http
-          .get<OMCustomerStatusModel>(`${userStatusEndpoint}/${msisdn}`)
-          .pipe(
-            map((status) => {
-              status.omNumber = msisdn;
-              return status;
-            })
-          );
+    return this.http
+      .get<OMCustomerStatusModel>(`${userStatusEndpoint}/${msisdn}`)
+      .pipe(
+        map((status) => {
+          status.omNumber = msisdn;
+          return status;
+        }),
+        catchError((err: any) => {
+          return of(null);
+        })
+      );
   }
 
   initSelfOperationOtp(initOtpPayload: OmInitOtpModel) {
@@ -601,11 +617,16 @@ export class OrangeMoneyService {
           return mappedOmResponse;
         }),
         catchError((err) => {
-          const status = err.status;
-          const errorCode = status === 400 ? 'Erreur-019' : 'Erreur';
+          const status = err.error.statusCode;
+          const errorCode =
+            err.error.errorCode === ILLIFLEX_BY_OM_IDENTICAL_ERROR_CODE
+              ? OM_IDENTIC_TRANSACTION_CODE
+              : err.error.errorCode === ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE
+              ? OM_UNKOWN_ERROR_CODE
+              : err.error.errorCode;
           const message =
-            status === 400
-              ? `Vous n'avez pas assez de crédit de recharge pour effectuer cette opération`
+            status === 400 && errorCode !== ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE
+              ? err.error.message
               : 'Une erreur est survenue';
           const error = new HttpErrorResponse({
             error: { errorCode, status, message },
@@ -676,7 +697,11 @@ export class OrangeMoneyService {
               this.followAnalyticsService.registerEventFollow(
                 'block_transaction_error',
                 FollowAnalyticsEventType.ERROR,
-                { msisdn, transaction: payload, error }
+                {
+                  msisdn,
+                  transaction: payload,
+                  error,
+                }
               );
               return throwError(error);
             })
