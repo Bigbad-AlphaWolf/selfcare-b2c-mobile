@@ -95,13 +95,13 @@
                 font-size: 18px;
               }
             }
-            .status-sargal{
+            .status-sargal {
               font-family: HelveticaNeueLTStd-Bd, sans-serif;
               font-size: 18px;
-              &.gold{
+              &.gold {
                 color: gold;
               }
-              &.platinum{
+              &.platinum {
                 color: #e5e4e2;
               }
             }
@@ -200,6 +200,9 @@
             margin-bottom: 10px;
             padding-bottom: 9px;
             border-bottom: 1px solid $silver;
+            &.padded {
+              padding-bottom: 20px !important;
+            }
           }
 
           .conso-name-value-line {
@@ -227,25 +230,6 @@
             .conso-expiration-date {
               font-family: HelveticaNeueLTStd-Roman, sans-serif;
               font-size: 12px;
-            }
-          }
-
-          .gauge {
-            width: 70%;
-            display: flex;
-            align-items: center;
-            .left {
-              margin: 10px 0;
-              height: 5px;
-              background-color: $green;
-              &-data {
-                background-color: $purple;
-              }
-            }
-            .consumed {
-              margin: 10px 0;
-              height: 3px;
-              background-color: $grey;
             }
           }
         }
@@ -512,5 +496,3 @@ ion-fab {
   width: 50px;
   height: 50px;
 }
-
-

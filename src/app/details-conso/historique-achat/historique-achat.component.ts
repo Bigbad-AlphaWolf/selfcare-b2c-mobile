@@ -37,7 +37,9 @@ export class HistoriqueAchatComponent implements OnInit {
     private followAnalyticsService: FollowAnalyticsService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.listTransactions);
+  }
 
   getTransactionByDay(day: number) {
     this.dateFilterSelected = day;

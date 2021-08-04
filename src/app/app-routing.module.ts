@@ -430,6 +430,7 @@ const routes: Routes = [
     loadChildren:
       "./transfer-set-amount/transfer-set-amount.module#TransferSetAmountPageModule",
   },
+  { path: 'kiosk-locator', loadChildren: './kiosk-locator/kiosk-locator.module#KioskLocatorPageModule' },
 ];
 
 @NgModule({

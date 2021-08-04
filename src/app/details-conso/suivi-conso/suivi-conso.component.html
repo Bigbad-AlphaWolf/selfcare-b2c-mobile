@@ -1,41 +1,47 @@
 <div class="category-block">
 
   <ng-container *ngIf="isLoading && !hasError">
-      <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
+    <mat-spinner mode="indeterminate" [diameter]="20"></mat-spinner>
   </ng-container>
   <ng-container *ngIf="!isLoading && !hasError">
     <div *ngFor="let consoDetail of consoDetails" class="category-container">
       <div class="title-conso">
         <span class="scb-categorie-txt">{{
-          consoDetail.categorie | formatSuiviConsoCategoryTitle
-        }}</span>
+          consoDetail.category | formatSuiviConsoCategoryTitle
+          }}</span>
       </div>
-  
-      <div
-        class="rechargelabel-rechargevalue-rechargejauge-and-expirationrechargedatetime-block item-conso-list"
-        *ngFor="let cosodetailconsommations of consoDetail.consommations"
-      >
+
+      <div class="rechargelabel-rechargevalue-rechargejauge-and-expirationrechargedatetime-block item-conso-list"
+        *ngFor="let consodetailconsommations of consoDetail.consumations"
+        [ngClass]="{'with-padding': !consodetailconsommations.dateExpiration}">
         <div class="rechargelabel-rechargevalue-container">
           <div class="rechargelabel-container">
             <span class="scb-category-item">{{
-              cosodetailconsommations.compteur
-            }}</span>
+              consodetailconsommations.name | consoNameDisplay
+              }}</span>
           </div>
           <div class="rechargevalue-container">
-            <span class="scb-category-item-value"
-              >{{ cosodetailconsommations.montantFormat }}
+            <span class="scb-category-item-value">{{ isCounterConsoActe(consodetailconsommations)
+              ? consodetailconsommations.montantConsomme
+              : (consodetailconsommations.hasGauge ? (consodetailconsommations.montantRestant | passVolumeDisplay) :
+              consodetailconsommations.montantRestant) }}
+              <span class="text-style-1" *ngIf="consodetailconsommations?.hasGauge">
+                / {{ consodetailconsommations.montantTotal }}
+              </span>
             </span>
           </div>
         </div>
-  
-        <div class="rechargejauge-expirationrechargedatetime-container">
-          <div class="rechargejauge-container"></div>
+
+        <ng-container *ngIf="consodetailconsommations?.hasGauge">
+          <app-item-conso-gauge [conso]="consodetailconsommations"></app-item-conso-gauge>
+        </ng-container>
+
+        <div class="rechargejauge-expirationrechargedatetime-container" *ngIf="consodetailconsommations.dateExpiration">
           <div class="expirationrechargedatetime-container">
-            <span class="scb-category-item-validity"
-              >Expire le {{ cosodetailconsommations.dateExpiration }}</span
-            >
+            <span class="scb-category-item-validity">Expire le {{ consodetailconsommations.dateExpiration }}</span>
           </div>
         </div>
+
       </div>
     </div>
   </ng-container>
@@ -45,7 +51,7 @@
       <span (click)="getConso()">
         Une erreur est survenue lors de la recupération de votre suivi de consommations. <br>
         <span class="scb-text-red-error">
-        Cliquer ici pour actualiser.</span>
+          Cliquer ici pour actualiser.</span>
       </span>
     </div>
   </ng-container>

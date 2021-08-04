@@ -1,0 +1,46 @@
+<ion-content>
+  <div class="input-container">
+    <form class="bloc-content" [formGroup]="searchForm">
+      <img class="arrow" src="assets/images/long-arrow-left-gray2.png" (click)="leave()"/>
+      <ion-input class="kiosk-input" #kioskInput formControlName="kioskInput" placeholder="Rechercher un kiosque" (input)="onInput($event)">
+      </ion-input>
+      <ng-container [ngSwitch]="currentView">
+        <span class="toogle-view scb-text-orange" (click)="toggleView(KIOSK_VIEW.VIEW_CARDS)"
+          *ngSwitchCase="KIOSK_VIEW.VIEW_LIST">Vue carte</span>
+        <span class="toogle-view scb-text-orange" (click)="toggleView(KIOSK_VIEW.VIEW_LIST)"
+          *ngSwitchCase="KIOSK_VIEW.VIEW_CARDS">Vue liste</span>
+        <span class="toogle-view scb-text-orange" (click)="toggleView(KIOSK_VIEW.VIEW_CARDS)"
+          *ngSwitchCase="KIOSK_VIEW.VIEW_ITINERAIRE">Annuler</span>
+      </ng-container>
+    </form>
+  </div>
+  <div #map id="map"></div>
+  <ng-container [ngSwitch]="currentView">
+    <div class="fake-modal" *ngSwitchCase="KIOSK_VIEW.VIEW_LIST">
+      <div class="modal-title">Kiosques à proximité</div>
+      <ion-content class="modal-content">
+        <ng-container *ngIf="loadingKiosk">
+          <div class="spinner-bloc">
+            <mat-spinner mode="indeterminate" [diameter]="40"></mat-spinner>
+          </div>
+        </ng-container>
+        <ion-list>
+          <app-kiosk-card (click)="onSelectKiosk(kiosk, i+1)" *ngFor="let kiosk of kiosksArray, let i = index" [kiosk]="kiosk" [index]="i+1"></app-kiosk-card>
+        </ion-list>
+      </ion-content>
+    </div>
+    <div class="cards-container" *ngSwitchCase="KIOSK_VIEW.VIEW_CARDS">
+      <ion-slides [options]="slideOptions" (ionSlideDidChange)="onSlideChanged($event)" #slides>
+        <ion-slide *ngFor="let kiosk of kiosksArray, let i = index">
+          <app-kiosk-card [kiosk]="kiosk" [index]="i+1" (click)="onSelectKiosk(kiosk, i+1)"></app-kiosk-card>
+        </ion-slide>
+      </ion-slides>
+    </div>
+    <div class="way-card-container" *ngSwitchCase="KIOSK_VIEW.VIEW_ITINERAIRE">
+      <app-kiosk-way-infos [index]="selectedKioskIndex" [kiosk]="currentKiosk" [userCurrentPosition]="userPosition"></app-kiosk-way-infos>
+    </div>
+    <div class="search-bloc-container" *ngSwitchCase="KIOSK_VIEW.VIEW_SEARCH">
+      <app-kiosk-search (back)="onSearchEmitted($event)" [searchInput]="searchInput" [userPosition]="userPosition"></app-kiosk-search>
+    </div>
+  </ng-container>
+</ion-content>
