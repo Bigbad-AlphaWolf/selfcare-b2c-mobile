@@ -136,7 +136,7 @@ export class DashboardPostpaidPage implements OnInit {
             fullDescription: 'Services',
             redirectionPath: 'oem-services',
             activated: true,
-            code: 'AUTRE_SERVICES'
+            code: 'more_services'
           };
           const response: OffreService[] = res.slice(0, 4);
           response.push(moreActionService);

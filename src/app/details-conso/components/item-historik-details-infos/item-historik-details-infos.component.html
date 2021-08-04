@@ -64,7 +64,7 @@
           </div>
           <div class="right-block-text">
             <div class="item-value" *ngIf="historikInfos.type !== 'data'">
-              {{ historikInfos?.cout !== 0 ? '0' : '-' + historikInfos?.cout }} FCFA
+              {{ historikInfos?.cout === 0 ? '0' : '-' + historikInfos?.cout }} FCFA
             </div>
             <div class="item-value" *ngIf="historikInfos.type === 'data'">
               - {{ formatVolumeData(historikInfos?.volume) }} Ko

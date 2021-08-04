@@ -541,6 +541,12 @@ body {
   }
 }
 
+.recipient-modal-height {
+  .modal-wrapper {
+    min-height: 500px;
+  }
+}
+
 // css for modal in operation success or fail in operaction recap
 .success-or-fail-modal {
   // align-items: flex-end !important;

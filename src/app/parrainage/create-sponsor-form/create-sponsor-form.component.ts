@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { REGEX_NUMBER, formatPhoneNumber, REGEX_NAME } from 'src/shared';
+import { REGEX_NUMBER, formatPhoneNumber, REGEX_NAME, parseIntoNationalNumberFormat } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { ParrainageService } from 'src/app/services/parrainage-service/parrainage.service';
 import { Contacts, Contact } from '@ionic-native/contacts';
@@ -30,10 +30,7 @@ export class CreateSponsorFormComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      sponseeMsisdn: [
-        '',
-        [Validators.required, Validators.pattern(REGEX_NUMBER)]
-      ],
+      sponseeMsisdn: ['', [Validators.required, Validators.pattern(REGEX_NUMBER)]],
       firstname: ['', [Validators.pattern(REGEX_NAME)]]
     });
   }
@@ -48,13 +45,7 @@ export class CreateSponsorFormComponent implements OnInit {
           this.openPickRecipientModal(contact.phoneNumbers);
         } else {
           this.destNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
-          if (this.validateNumber(this.destNumber)) {
-            this.contactGot();
-          } else {
-            this.destNumber = '';
-            this.showErrMessage = true;
-            this.errorMsg = 'Le numéro choisi n’est pas correct';
-          }
+          this.processSelecNumber(this.destNumber);
         }
       })
       .catch(err => {});
@@ -67,24 +58,25 @@ export class CreateSponsorFormComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(selectedNumber => {
       this.destNumber = formatPhoneNumber(selectedNumber);
-      if (this.validateNumber(this.destNumber)) {
-        this.contactGot();
-      } else {
-        this.destNumber = '';
-        this.showErrMessage = true;
-        this.errorMsg = 'Le numéro choisi n’est pas correct';
-      }
+      this.processSelecNumber(this.destNumber);
     });
+  }
+
+  processSelecNumber(selecNumber: string) {
+    if (this.validateNumber(selecNumber)) {
+      this.destNumber = parseIntoNationalNumberFormat(selecNumber);
+      this.contactGot();
+    } else {
+      this.destNumber = '';
+      this.showErrMessage = true;
+      this.errorMsg = 'Le numéro choisi n’est pas correct';
+    }
   }
 
   contactGot() {
     let recipientFirstName = this.contact.name.givenName;
-    const recipientLastName = this.contact.name.familyName
-      ? this.contact.name.familyName
-      : '';
-    recipientFirstName += this.contact.name.middleName
-      ? ` ${this.contact.name.middleName}`
-      : '';
+    const recipientLastName = this.contact.name.familyName ? this.contact.name.familyName : '';
+    recipientFirstName += this.contact.name.middleName ? ` ${this.contact.name.middleName}` : '';
     const name = `${recipientFirstName} ${recipientLastName}`;
     this.form.setValue({ sponseeMsisdn: this.destNumber, firstname: name });
   }

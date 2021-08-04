@@ -9,11 +9,8 @@
           <span>{{ currentPhone | phoneNumberDisplay }}</span>
         </div>
       </mat-radio-button>
-      <mat-radio-button
-        *ngFor="let number of numbers$ | async; index as i; count as size"
-        [value]="number"
-        [checked]="currentPhone === number && !showInput"
-      >
+      <mat-radio-button *ngFor="let number of numbers$ | async; index as i; count as size" [value]="number"
+        [checked]="currentPhone === number && !showInput">
         <div class="destination-number">
           <span> Mon numéro {{ size > 1 ? i + 1 : '' }} </span>
           <span>{{ number | phoneNumberDisplay }}</span>
@@ -31,37 +28,27 @@
       </mat-radio-button>
     </mat-radio-group>
   </div>
-  <oem-phone-number-provider
-    [hidden]="!showInput"
-    (onPhoneSelected)="onPhoneSelected($event)"
-  >
+  <oem-phone-number-provider [hidden]="!showInput" [showInput]="showInput" (onPhoneSelected)="onPhoneSelected($event)">
   </oem-phone-number-provider>
   <div *ngIf="phoneIsNotValid" class="error-msg scb-text-red-error">
     Veuillez choisir un numéro de destinataire valide pour continuer
   </div>
 
-  <div
-    [hidden]="!canNotRecieve"
-    class="error-msg scb-text-red-error"
-  >
+  <div [hidden]="!canNotRecieve" class="error-msg scb-text-red-error">
     {{canNotRecieveError}}
   </div>
-  <div
-    *ngIf="eligibilityChecked && !isRecipientEligible"
-    class="error-msg scb-text-red-error"
-  >
+  <div *ngIf="eligibilityChecked && !isRecipientEligible" class="error-msg scb-text-red-error">
     {{ eligibilityError }}
+  </div>
+  <div class="loading-container" *ngIf="loadingRecents">
+    <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
   </div>
   <div class="recents" *ngIf="recentsRecipients$ | async as recents">
     <div class="recent-description scb-text-full-black" *ngIf="recents.length">
       Récents
     </div>
-    <div
-      matRipple
-      class="oem-item"
-      (click)="onContinue(recent.msisdn)"
-      *ngFor="let recent of recents"
-    >
+    <div class="no-recent" *ngIf="!recents.length">{{NO_RECENTS_MSG}}</div>
+    <div matRipple class="oem-item" (click)="onContinue(recent.msisdn)" *ngFor="let recent of recents">
       <div class="logo scb-text-white">
         {{ recent.name ? (recent.name | acronym) : 'C' }}
       </div>
@@ -69,7 +56,7 @@
         <span class="name" *ngIf="recent.name">{{ recent.name }}</span>
         <span class="number scb-text-gray">{{
           recent.msisdn | phoneNumberDisplay
-        }}</span>
+          }}</span>
       </div>
     </div>
   </div>

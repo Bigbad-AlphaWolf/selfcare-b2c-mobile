@@ -10,7 +10,8 @@ import {
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_PASS_ILLIFLEX,
   OPERATION_TYPE_PASS_ALLO,
-  OPERATION_TYPE_PASS_INTERNET
+  OPERATION_TYPE_PASS_INTERNET,
+  NO_RECENTS_MSG
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -58,6 +59,8 @@ export class NumberSelectionComponent implements OnInit {
   loadingNumbers: boolean;
   currentPhone: string = SessionOem.PHONE.trim();
   isLightMod: boolean;
+  loadingRecents: boolean;
+  NO_RECENTS_MSG = NO_RECENTS_MSG;
 
   constructor(
     private modalController: ModalController,
@@ -93,8 +96,10 @@ export class NumberSelectionComponent implements OnInit {
   }
 
   getRecents() {
+    this.loadingRecents = true;
     this.recentsRecipients$ = this.recentsService.fetchRecents(this.data.purchaseType, 2).pipe(
       map((recents: RecentsOem[]) => {
+        this.loadingRecents = false;
         let results = [];
         recents.forEach(el => {
           results.push({
@@ -111,6 +116,7 @@ export class NumberSelectionComponent implements OnInit {
         });
       }),
       catchError(err => {
+        this.loadingRecents = false;
         this.followAnalyticsService.registerEventFollow('Get_recents_destinataire_OM_error', 'error', {
           operation: this.data.purchaseType,
           sender: this.opXtras.senderMsisdn,
@@ -142,7 +148,9 @@ export class NumberSelectionComponent implements OnInit {
 
     if (!await this.canRecieveCredit()) {
       this.canNotRecieve = true;
-      const data = Object.assign({}, this.opXtras, { error: this.eligibilityError });
+      const data = Object.assign({}, this.opXtras, {
+        error: this.eligibilityError
+      });
       this.logRecipientOnFollow('error', data, this.data.isLightMod);
       this.changeDetectorRef.detectChanges();
       return;
@@ -169,7 +177,9 @@ export class NumberSelectionComponent implements OnInit {
           if (eligibility && !eligibility.eligible) {
             this.isRecipientEligible = false;
             this.eligibilityError = eligibility.message;
-            const data = Object.assign({}, this.opXtras, { error: this.eligibilityError });
+            const data = Object.assign({}, this.opXtras, {
+              error: this.eligibilityError
+            });
             this.logRecipientOnFollow('error', data, this.data.isLightMod);
             return;
           }
@@ -181,7 +191,9 @@ export class NumberSelectionComponent implements OnInit {
           this.eligibilityChecked = true;
           this.isRecipientEligible = false;
           this.eligibilityError = 'Le numéro du bénéficiaire ne peut pas bénéficier de pass';
-          const data = Object.assign({}, this.opXtras, { error: this.eligibilityError });
+          const data = Object.assign({}, this.opXtras, {
+            error: this.eligibilityError
+          });
           this.logRecipientOnFollow('error', data, this.data.isLightMod);
           return;
         }

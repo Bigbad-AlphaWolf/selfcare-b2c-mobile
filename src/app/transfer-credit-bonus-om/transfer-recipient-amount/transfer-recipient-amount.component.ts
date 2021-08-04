@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { NoOMAccountPopupComponent } from 'src/shared/no-omaccount-popup/no-omaccount-popup.component';
@@ -17,6 +9,7 @@ import {
   BONUS,
   REGEX_NUMBER_OM,
   formatPhoneNumber,
+  parseIntoNationalNumberFormat
 } from 'src/shared';
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -32,7 +25,7 @@ import { AuthenticationService } from 'src/app/services/authentication-service/a
 @Component({
   selector: 'app-transfer-recipient-amount',
   templateUrl: './transfer-recipient-amount.component.html',
-  styleUrls: ['./transfer-recipient-amount.component.scss'],
+  styleUrls: ['./transfer-recipient-amount.component.scss']
 })
 export class TransferRecipientAmountComponent implements OnInit, OnChanges {
   formAmount: FormGroup = null;
@@ -77,27 +70,18 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     this.userCurrentNumber = this.dashService.getCurrentPhoneNumber();
     if (this.orangeMoney) {
       this.formAmount = this.formBuilder.group({
-        amount: [
-          '',
-          [Validators.required, Validators.min(1), Validators.max(2000000)],
-        ],
+        amount: ['', [Validators.required, Validators.min(1), Validators.max(2000000)]]
       });
       this.formDest = this.formBuilder.group({
-        phoneNumber: [
-          '',
-          [Validators.required, Validators.pattern(REGEX_NUMBER_OM)],
-        ],
+        phoneNumber: ['', [Validators.required, Validators.pattern(REGEX_NUMBER_OM)]]
       });
       this.getOmPhoneNumber();
     } else {
       this.formAmount = this.formBuilder.group({
-        amount: ['', [Validators.required, Validators.min(100)]],
+        amount: ['', [Validators.required, Validators.min(100)]]
       });
       this.formDest = this.formBuilder.group({
-        phoneNumber: [
-          '',
-          [Validators.required, Validators.pattern(REGEX_NUMBER)],
-        ],
+        phoneNumber: ['', [Validators.required, Validators.pattern(REGEX_NUMBER)]]
       });
     }
   }
@@ -106,41 +90,29 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     if (changes.consoDetails && changes.consoDetails.currentValue) {
       if (this.orangeMoney) {
         this.formAmount = this.formBuilder.group({
-          amount: [
-            '',
-            [Validators.required, Validators.min(1), Validators.max(2000000)],
-          ],
+          amount: ['', [Validators.required, Validators.min(1), Validators.max(2000000)]]
         });
         this.formDest = this.formBuilder.group({
-          phoneNumber: [
-            '',
-            [Validators.required, Validators.pattern(REGEX_NUMBER_OM)],
-          ],
+          phoneNumber: ['', [Validators.required, Validators.pattern(REGEX_NUMBER_OM)]]
         });
         this.getOmPhoneNumber();
       } else {
         this.formAmount = this.formBuilder.group({
-          amount: ['', [Validators.required, Validators.min(100)]],
+          amount: ['', [Validators.required, Validators.min(100)]]
         });
         this.formDest = this.formBuilder.group({
-          phoneNumber: [
-            '',
-            [Validators.required, Validators.pattern(REGEX_NUMBER)],
-          ],
+          phoneNumber: ['', [Validators.required, Validators.pattern(REGEX_NUMBER)]]
         });
       }
     }
   }
 
-  openModalNoOMAccount(recipientInfos: {
-    phoneNumber: string;
-    hasOMAccount: boolean;
-  }) {
+  openModalNoOMAccount(recipientInfos: { phoneNumber: string; hasOMAccount: boolean }) {
     this.noOMAccountModal = this.dialog.open(NoOMAccountPopupComponent, {
       disableClose: true,
-      data: { pageDesktop: false, otherDestinataire: true },
+      data: { pageDesktop: false, otherDestinataire: true }
     });
-    this.noOMAccountModal.afterClosed().subscribe((accepted) => {
+    this.noOMAccountModal.afterClosed().subscribe(accepted => {
       if (accepted) {
         this.nextStepEmitter.emit(recipientInfos);
         this.contactEmitter.emit(this.contactInfos);
@@ -149,7 +121,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
   }
 
   getOmPhoneNumber() {
-    this.omService.getOmMsisdn().subscribe((msisdn) => {
+    this.omService.getOmMsisdn().subscribe(msisdn => {
       if (msisdn !== 'error') {
         this.omPhoneNumber = msisdn;
         this.checkOMToken(msisdn);
@@ -164,11 +136,11 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
-        operationType: null,
-      },
+        operationType: null
+      }
     });
     modal.onDidDismiss().then((res: any) => {
-      if(res.data && res.data.balance) {
+      if (res.data && res.data.balance) {
         this.omBalanceVisible = true;
         this.omBalance = res.data.balance;
       }
@@ -183,7 +155,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
         this.checkingOMAmountToTransfer = true;
         this.showErrorAmount = false;
         this.omService.checkBalanceSufficiency(amount).subscribe(
-          (hasEnoughBalance) => {
+          hasEnoughBalance => {
             this.checkingOMAmountToTransfer = false;
             if (hasEnoughBalance) {
               this.nextStepEmitter.emit(amount);
@@ -203,12 +175,12 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     if (this.step === 'SAISIE_NUMBER') {
       const recipient = {
         phoneNumber: formatPhoneNumber(this.formDest.value.phoneNumber),
-        hasOMAccount: false,
+        hasOMAccount: false
       };
       this.errorMsg = '';
       if (this.orangeMoney) {
         this.contactInfos = null;
-        this.checkRecipientHasOMAccount();
+        this.checkRecipientHasOMAccount(this.formDest.value.phoneNumber);
       } else {
         this.nextStepEmitter.emit(recipient);
       }
@@ -242,56 +214,47 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
       .then(async (contact: Contact) => {
         this.contactInfos = contact;
         if (contact.phoneNumbers.length > 1) {
-          this.openPickRecipientModal(contact.phoneNumbers);
+          this.openPickRecipientModal(contact);
         } else {
           const destNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
-          this.recipientInfos.phoneNumber = destNumber;
-          this.formDest.setValue({ phoneNumber: destNumber });
-          if (this.orangeMoney) {
-            if (this.validateNumberOm(destNumber)) {
-              // this.contactEmitter.emit(contact);
-              this.checkRecipientHasOMAccount();
-            } else {
-              this.badNumberStep();
-            }
-          } else {
-            if (
-              this.validateNumber(destNumber) &&
-              (await this.checkRecipientCanRecieveCredit(destNumber))
-            ) {
-              this.nextStepEmitter.emit(this.recipientInfos);
-              this.contactEmitter.emit(contact);
-            } else {
-              this.badNumberStep();
-            }
-          }
+          this.processSelectedNumber(destNumber, contact);
         }
       })
       .catch(() => {});
   }
 
+  async processSelectedNumber(selectedNumber: string, contact?: any) {
+    if (this.validateNumber(selectedNumber)) {
+      this.recipientInfos.phoneNumber = parseIntoNationalNumberFormat(selectedNumber);
+      this.formDest.setValue({ phoneNumber: this.recipientInfos.phoneNumber });
+      if (this.orangeMoney) {
+        this.checkRecipientHasOMAccount(this.formDest.value.phoneNumber);
+      } else {
+        if (await this.checkRecipientCanRecieveCredit(this.recipientInfos.phoneNumber)) {
+          this.nextStepEmitter.emit(this.recipientInfos);
+          this.contactEmitter.emit(contact);
+        } else {
+          this.badNumberStep();
+        }
+      }
+    } else {
+      this.badNumberStep();
+    }
+  }
+
   async checkRecipientCanRecieveCredit(msisdn) {
-    let canRecieve = await this.authService
-      .canRecieveCredit(msisdn)
-      .toPromise();
+    let canRecieve = await this.authService.canRecieveCredit(msisdn).toPromise();
     return canRecieve;
   }
 
-  openPickRecipientModal(phoneNumbers: any[]) {
+  openPickRecipientModal(contact: any) {
     const dialogRef = this.dialog.open(SelectNumberPopupComponent, {
-      data: { phoneNumbers },
+      data: { phoneNumbers: contact.phoneNumbers }
     });
     dialogRef.afterClosed().subscribe((selectedNumber: string) => {
       if (selectedNumber) {
         selectedNumber = formatPhoneNumber(selectedNumber);
-        this.recipientInfos.phoneNumber = selectedNumber;
-        this.formDest.setValue({ phoneNumber: selectedNumber });
-        if (this.orangeMoney) {
-          this.checkRecipientHasOMAccount();
-        } else {
-          this.nextStepEmitter.emit(this.recipientInfos);
-          this.contactEmitter.emit(this.contactInfos);
-        }
+        this.processSelectedNumber(selectedNumber, contact);
       }
     });
   }
@@ -306,86 +269,63 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     return REGEX_NUMBER.test(phoneNumber);
   }
 
-  validateNumberOm(phoneNumber: string) {
-    return REGEX_NUMBER_OM.test(phoneNumber);
-  }
-
   checkOMToken(phoneNumber: string) {
     this.omService.GetUserAuthInfo(phoneNumber).subscribe((omUser: any) => {
       // If user already connected open pinpad
-      if (!omUser.hasApiKey || omUser.loginExpired ) {
+      if (!omUser.hasApiKey || omUser.loginExpired) {
         this.openPinpad();
       }
     });
   }
 
-  checkRecipientHasOMAccount() {
+  checkRecipientHasOMAccount(selectedNumber: string) {
     this.checkingOMAccount = true;
-    const phoneNumber = formatPhoneNumber(this.formDest.value.phoneNumber);
+    const phoneNumber = formatPhoneNumber(selectedNumber);
     this.recipientInfos = {
       phoneNumber,
-      hasOMAccount: false,
+      hasOMAccount: false
     };
-    this.omService
-      .checkUserHasAccount(this.recipientInfos.phoneNumber)
-      .subscribe(
-        (hasOMAccount: boolean) => {
-          this.checkingOMAccount = false;
-          if (hasOMAccount) {
-            this.recipientInfos.hasOMAccount = true;
-            this.nextStepEmitter.emit(this.recipientInfos);
-            if (this.contactInfos) {
-              this.contactEmitter.emit(this.contactInfos);
-            }
-            this.followAnalytics.registerEventFollow(
-              'destinataire_transfert_has_om_account_success',
-              'event',
-              {
-                transfert_om_numero_sender: this.userCurrentNumber,
-                transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
-                has_om: 'true',
-              }
-            );
-          } else {
-            this.followAnalytics.registerEventFollow(
-              'destinataire_transfert_has_om_account_success',
-              'event',
-              {
-                transfert_om_numero_sender: this.userCurrentNumber,
-                transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
-                has_om: 'false',
-              }
-            );
-            this.openModalNoOMAccount(this.recipientInfos);
+    this.omService.checkUserHasAccount(this.recipientInfos.phoneNumber).subscribe(
+      (hasOMAccount: boolean) => {
+        this.checkingOMAccount = false;
+        if (hasOMAccount) {
+          this.recipientInfos.hasOMAccount = true;
+          this.nextStepEmitter.emit(this.recipientInfos);
+          if (this.contactInfos) {
+            this.contactEmitter.emit(this.contactInfos);
           }
-        },
-        (err) => {
-          this.checkingOMAccount = false;
-          if (err.status === 400) {
-            this.openModalNoOMAccount(this.recipientInfos);
-            this.followAnalytics.registerEventFollow(
-              'destinataire_transfert_has_om_account',
-              'event',
-              {
-                transfert_om_numero_destinataire: this.recipientInfos
-                  .phoneNumber,
-                has_om: 'false',
-              }
-            );
-          } else {
-            this.followAnalytics.registerEventFollow(
-              'destinataire_transfert_has_om_account_error',
-              'error',
-              {
-                transfert_om_numero_sender: this.userCurrentNumber,
-                transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
-                error: 'Une error ' + err.status + ' est survenue',
-              }
-            );
-            this.errorMsg = 'Une erreur est survenue, veuillez reessayer';
-          }
+          this.followAnalytics.registerEventFollow('destinataire_transfert_has_om_account_success', 'event', {
+            transfert_om_numero_sender: this.userCurrentNumber,
+            transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
+            has_om: 'true'
+          });
+        } else {
+          this.followAnalytics.registerEventFollow('destinataire_transfert_has_om_account_success', 'event', {
+            transfert_om_numero_sender: this.userCurrentNumber,
+            transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
+            has_om: 'false'
+          });
+          this.openModalNoOMAccount(this.recipientInfos);
         }
-      );
+      },
+      err => {
+        this.checkingOMAccount = false;
+        if (err.status === 400) {
+          this.openModalNoOMAccount(this.recipientInfos);
+          this.followAnalytics.registerEventFollow('destinataire_transfert_has_om_account', 'event', {
+            transfert_om_numero_destinataire: this.recipientInfos.phoneNumber,
+            has_om: 'false'
+          });
+        } else {
+          this.followAnalytics.registerEventFollow('destinataire_transfert_has_om_account_error', 'error', {
+            transfert_om_numero_sender: this.userCurrentNumber,
+            transfert_om_numero_receiver: this.recipientInfos.phoneNumber,
+            error: 'Une error ' + err.status + ' est survenue'
+          });
+          this.errorMsg = 'Une erreur est survenue, veuillez reessayer';
+        }
+      }
+    );
   }
 
   async resetOmToken(err) {
@@ -393,15 +333,15 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
-        operationType: null,
-      },
+        operationType: null
+      }
     });
     await modal.present();
     let result = await modal.onDidDismiss();
     if (result && result.data && result.data.success) return of(err);
     throw new HttpErrorResponse({
       error: { title: 'Ping pad cancled' },
-      status: 401,
+      status: 401
     });
   }
 }
