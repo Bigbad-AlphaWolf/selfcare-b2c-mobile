@@ -212,7 +212,7 @@ export class BuyPassInternetPage implements OnInit {
         this.transactionSuccessful(res);
       },
       (err) => {
-        this.transactionFailure();
+        this.transactionFailure(err);
       }
     );
   }
@@ -350,18 +350,22 @@ export class BuyPassInternetPage implements OnInit {
     this.goToFinalStep();
   }
 
-  transactionFailure() {
+  transactionFailure(err) {
     this.buyingPass = false;
     this.failed = true;
     this.goToFinalStep();
-    this.errorMsg = 'Service indisponible. Veuillez réessayer ultérieurement';
+    if (err && err.error && err.error.message) {
+      this.errorMsg = err.error.message;
+    } else {
+      this.errorMsg = 'Service indisponible. Veuillez réessayer ultérieurement';
+    }
     this.followAnalyticsService.registerEventFollow(
       'Credit_Buy_Pass_Internet_Error',
       'error',
       {
         msisdn1: this.currentUserNumber,
         msisdn2: this.destinataire,
-        message: 'Service indisponible',
+        message: this.errorMsg,
       }
     );
   }
