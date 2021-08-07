@@ -37,7 +37,7 @@
       </ion-slides>
     </div>
     <div class="way-card-container" *ngSwitchCase="KIOSK_VIEW.VIEW_ITINERAIRE">
-      <app-kiosk-way-infos [index]="selectedKioskIndex" [kiosk]="currentKiosk" [userCurrentPosition]="userPosition"></app-kiosk-way-infos>
+      <app-kiosk-way-infos (leave)="toggleView(KIOSK_VIEW.VIEW_CARDS)" [index]="selectedKioskIndex" [kiosk]="currentKiosk" [userCurrentPosition]="userPosition"></app-kiosk-way-infos>
     </div>
     <div class="search-bloc-container" *ngSwitchCase="KIOSK_VIEW.VIEW_SEARCH">
       <app-kiosk-search (back)="onSearchEmitted($event)" [searchInput]="searchInput" [userPosition]="userPosition"></app-kiosk-search>
