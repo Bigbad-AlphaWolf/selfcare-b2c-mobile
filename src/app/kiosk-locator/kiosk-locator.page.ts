@@ -41,6 +41,7 @@ export class KioskLocatorPage implements OnInit {
   directionsService: google.maps.DirectionsService;
   directionsRenderer: google.maps.DirectionsRenderer;
   avatarUrl: string = NO_AVATAR_ICON_URL;
+  currentSlideIndex = 0;
 
   constructor(
     private geolocation: Geolocation,
@@ -157,7 +158,7 @@ export class KioskLocatorPage implements OnInit {
   }
 
   clearAllMarkers() {
-    this.markers.forEach((marker: google.maps.Marker) => {
+    this.markers.forEach((marker: google.maps.Marker, i) => {
       marker.setMap(null);
     });
   }
@@ -169,7 +170,6 @@ export class KioskLocatorPage implements OnInit {
     this.clearAllMarkers();
     this.markers[i - 1].setMap(this.map);
     this.showDirections(kiosk, google.maps.TravelMode.WALKING);
-    // this.showDirections(kiosk, google.maps.TravelMode.WALKING, 'pink');
   }
 
   showDirections(kiosk: KioskOMModel, travelMode: google.maps.TravelMode) {
@@ -217,10 +217,13 @@ export class KioskLocatorPage implements OnInit {
   }
 
   onSlideChanged(ev) {
+    this.markers[this.currentSlideIndex].removeClassCurrent();
     this.sliders.getActiveIndex().then((index) => {
       const correspondingKiosk = this.kiosksArray.find((kiosk, i) => {
+        this.currentSlideIndex = i;
         return i === index;
       });
+      this.markers[this.currentSlideIndex].setClassCurrent();
       this.map.setZoom(18);
       this.map.panTo(
         new google.maps.LatLng(

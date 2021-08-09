@@ -5,9 +5,9 @@ export const createHTMLMapMarker = (
   index?: number
 ) => {
   class HTMLMapMarker extends google.maps.OverlayView {
-    latlng: google.maps.LatLng;
-    html: string;
-    div: HTMLElement;
+    public latlng: google.maps.LatLng;
+    public html: string;
+    public div: HTMLElement;
 
     constructor(args?: {
       latlng?: google.maps.LatLng;
@@ -57,6 +57,14 @@ export const createHTMLMapMarker = (
       google.maps.event.addDomListener(this.div, 'click', (event) => {
         google.maps.event.trigger(this, 'click');
       });
+    }
+
+    removeClassCurrent() {
+      this.div.classList.remove('custom-marker-focused');
+    }
+
+    setClassCurrent() {
+      this.div.classList.add('custom-marker-focused');
     }
 
     appendDivToOverlay() {

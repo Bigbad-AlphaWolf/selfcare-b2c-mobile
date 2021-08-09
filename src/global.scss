@@ -894,8 +894,8 @@ ion-button {
   .circle {
     width: 34px !important;
     height: 34px !important;
-    background-color: $orange !important;
-    color: $white !important;
+    background-color: $white !important;
+    color: $orange !important;
     border-radius: 50%;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.8);
     display: flex;
@@ -911,6 +911,16 @@ ion-button {
     left: 12px;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
+    border-top: 8px solid $white;
+  }
+}
+
+.custom-marker-focused {
+  .circle {
+    background-color: $orange !important;
+    color: $white !important;
+  }
+  .arrow-down {
     border-top: 8px solid $orange;
   }
 }
