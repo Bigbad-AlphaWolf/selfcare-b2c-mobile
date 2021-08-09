@@ -159,6 +159,7 @@
     <div
       class="number scb-text-black"
       *ngFor="let number of randomDigits, let i = index"
+      [id]="'digit_'+i"
       (click)="type(number)"
     >
       <span *ngIf="i !== 9 && i !== 11" class="c-pointer"

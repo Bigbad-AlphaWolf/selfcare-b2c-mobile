@@ -85,5 +85,7 @@ export class KioskSearchComponent implements OnInit {
     this.back.emit({ kiosk: selectedKiosk, index });
   }
 
-  onClear() {}
+  onClear() {
+    this.form.patchValue({ keyword: '' });
+  }
 }

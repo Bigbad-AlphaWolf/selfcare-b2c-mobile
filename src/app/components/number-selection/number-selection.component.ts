@@ -76,14 +76,18 @@ export class NumberSelectionComponent implements OnInit {
     this.isLightMod = this.data.isLightMod;
     this.option = this.data.option;
     this.showInput = this.option === NumberSelectionOption.NONE;
-    this.loadingNumbers = true;
     this.opXtras.recipientMsisdn = this.currentPhone;
     this.opXtras.senderMsisdn = SessionOem.PHONE;
     if (!this.isLightMod) {
+      this.loadingNumbers = true;
       this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
         delay(100),
         tap(numbers => {
           this.loadingNumbers = false;
+        }),
+        catchError((err: any) => {
+          this.loadingNumbers = false;
+          return of(err);
         }),
         share()
       );

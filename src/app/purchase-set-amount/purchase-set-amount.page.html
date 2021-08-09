@@ -120,6 +120,7 @@
             type="submit"
             expand="block"
             (click)="goNext()"
+            id="btn-validate-amount"
             [disabled]="!setAmountForm?.valid || checkingAmount || error || isLoadingFees"
           >
             <span>Continuer ({{ totalAmount }} FCFA)</span>

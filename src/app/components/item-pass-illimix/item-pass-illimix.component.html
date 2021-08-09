@@ -1,4 +1,4 @@
-<div class="item-container" (click)="choosePass(passIllimix)">
+<div [id]="'pass_illimix_'+passIllimix?.id" class="item-container" (click)="choosePass(passIllimix)">
   <div class="item-pass-internet">
     <div *ngIf="subscription?.code !== KIRENE_SUBSCRIPTION_CODE_FORMULE || !subscription" class="top-block">
       <span *ngIf="!passIllimix?.passPromo" class="price scb-text-orange"> {{ +passIllimix?.tarif ? passIllimix?.tarif +

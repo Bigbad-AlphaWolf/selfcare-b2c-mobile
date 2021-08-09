@@ -354,6 +354,7 @@
     <button
       class="scb-btn scb-btn-orange"
       (click)="pay()"
+      id="btn-validate-purchase"
       [disabled]="buyingPass"
     >
       <ng-container [ngSwitch]="purchaseType">
