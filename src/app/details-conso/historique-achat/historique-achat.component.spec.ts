@@ -3,26 +3,51 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HistoriqueAchatComponent } from './historique-achat.component';
 import { MatMenuModule } from '@angular/material';
+import { ModalController } from '@ionic/angular';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { of } from 'rxjs';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
-describe('HistoriqueAchatComponent', () => {
-  let component: HistoriqueAchatComponent;
-  let fixture: ComponentFixture<HistoriqueAchatComponent>;
+describe( 'HistoriqueAchatComponent', () => {
+	let component: HistoriqueAchatComponent;
+	let fixture: ComponentFixture<HistoriqueAchatComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [HistoriqueAchatComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-      imports: [MatMenuModule],
-    }).compileComponents();
-  }));
+	beforeEach( async( () => {
+		TestBed.configureTestingModule( {
+			declarations: [HistoriqueAchatComponent],
+			providers: [
+				{
+					provide: ModalController
+				},
+				{
+					provide: OrangeMoneyService,
+					useValue: {
+						getOmMsisdn: () => {
+							return of()
+						}
+					}
+				},
+				{
+					provide: FollowAnalyticsService,
+					useValue: {
+						registerEventFollow: () => {
+							return {}
+						}
+					}
+				}
+			],
+			schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+			imports: [MatMenuModule],
+		} ).compileComponents();
+	} ) );
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HistoriqueAchatComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach( () => {
+		fixture = TestBed.createComponent( HistoriqueAchatComponent );
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	} );
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+	it( 'should create', () => {
+		expect( component ).toBeTruthy();
+	} );
+} );
