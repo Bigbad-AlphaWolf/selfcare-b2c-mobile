@@ -4,7 +4,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UrlSerializer } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ModalController } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { ImageService } from 'src/app/services/image-service/image.service';
@@ -58,7 +58,7 @@ describe( 'CancelTransactionOmPage', () => {
 					provide: UrlSerializer
 				}
 			],
-			imports: [ReactiveFormsModule, FormsModule, RouterTestingModule],
+			imports: [ReactiveFormsModule, FormsModule, RouterTestingModule, IonicModule],
 			schemas: [CUSTOM_ELEMENTS_SCHEMA],
 		} )
 			.compileComponents();

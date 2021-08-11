@@ -1,6 +1,8 @@
 import { Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { UrlSerializer } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Market } from '@ionic-native/market/ngx';
 
 import { AppUpdatePage } from './app-update.page';
@@ -11,6 +13,7 @@ describe( 'AppUpdatePage', () => {
 
 	beforeEach( async( () => {
 		TestBed.configureTestingModule( {
+			imports: [RouterTestingModule],
 			declarations: [AppUpdatePage],
 			providers: [
 				{
@@ -18,6 +21,9 @@ describe( 'AppUpdatePage', () => {
 				},
 				{
 					provide: Location
+				},
+				{
+					provide: UrlSerializer
 				}
 			],
 			schemas: [CUSTOM_ELEMENTS_SCHEMA],
