@@ -13,7 +13,7 @@
     </div>
     <div class="position">
       <div class="img-container img-container-orange scb-text-white">{{index}}</div>
-      <span class="place">{{kiosk?.name}}</span>
+      <span class="place kiosk-name">{{kiosk?.name}}</span>
     </div>
   </div>
   <div class="items-container">
@@ -21,13 +21,14 @@
       <img class="icone" src="assets/images/location-arrow.png" alt="loc">
       <span class="duration scb-text-gray">{{walkingMatrix?.rows[0]?.elements[0]?.distance?.text }}</span>
     </div>
-    <div class="info-item">
+    <div class="info-item" (click)="link.click()">
       <ion-icon class="icone scb-text-gray" name="walk"></ion-icon>
       <span class="duration scb-text-gray">{{walkingMatrix?.rows[0]?.elements[0]?.duration?.text}}</span>
     </div>
-    <div class="info-item">
+    <div class="info-item" (click)="link.click()">
       <ion-icon class="icone scb-text-gray" name="car"></ion-icon>
       <span class="duration scb-text-gray">{{drivingMatrix?.rows[0]?.elements[0]?.duration?.text}}</span>
     </div>
   </div>
+  <a [href]="url" #link class="a-link"></a>
 </div>

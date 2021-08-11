@@ -68,8 +68,8 @@ export const createHTMLMapMarker = (
     }
 
     appendDivToOverlay() {
-      const panes = this.getPanes();
-      panes.overlayLayer.appendChild(this.div);
+      const panes = this.getPanes().overlayMouseTarget;
+      panes.appendChild(this.div);
     }
 
     positionDiv() {
