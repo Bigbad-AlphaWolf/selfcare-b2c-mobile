@@ -61,7 +61,7 @@
 					<ion-list mode="ios">
 						<ion-item mode="ios" lines="none">
 							<ion-label mode="ios" class="scb-text-gray">Civilité</ion-label>
-							<ion-select interface="popover" noIonSelectArrow mode="ios" formControlName="civility">
+							<ion-select interface="popover" noIonSelectArrow mode="ios" formControlName="civility" value="">
 								<ion-select-option value="monsieur" mode="ios"><span>Monsieur</span></ion-select-option>
 								<ion-select-option value="madame" mode="ios"><span>Madame</span></ion-select-option>
 							</ion-select>
@@ -170,5 +170,3 @@
 		</div>
 	</div>
 </ion-content>
-
-<!-- [disabled]="(isSubmitting || !omMsisdn || !identityForm.valid || !personalInfosForm.valid || !rectoFilled || !versoFilled )" -->

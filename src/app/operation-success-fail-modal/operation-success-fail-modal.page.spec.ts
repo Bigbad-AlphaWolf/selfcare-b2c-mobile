@@ -5,30 +5,34 @@ import { OperationSuccessFailModalPage } from './operation-success-fail-modal.pa
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
+import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
+import { CodeFormatPipe } from '../pipes/code-format/code-format.pipe';
+import { RouterTestingModule } from '@angular/router/testing';
 
-describe('OperationSuccessFailModalPage', () => {
-  let component: OperationSuccessFailModalPage;
-  let fixture: ComponentFixture<OperationSuccessFailModalPage>;
+describe( 'OperationSuccessFailModalPage', () => {
+	let component: OperationSuccessFailModalPage;
+	let fixture: ComponentFixture<OperationSuccessFailModalPage>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [OperationSuccessFailModalPage],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        { provide: HttpClient },
-        { provide: Router },
-        { provide: ModalController },
-      ],
-    }).compileComponents();
-  }));
+	beforeEach( async( () => {
+		TestBed.configureTestingModule( {
+			declarations: [OperationSuccessFailModalPage, PhoneNumberDisplayPipe, CodeFormatPipe],
+			imports: [RouterTestingModule],
+			schemas: [CUSTOM_ELEMENTS_SCHEMA],
+			providers: [
+				{ provide: HttpClient },
+				{ provide: Location },
+				{ provide: ModalController },
+			],
+		} ).compileComponents();
+	} ) );
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(OperationSuccessFailModalPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach( () => {
+		fixture = TestBed.createComponent( OperationSuccessFailModalPage );
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	} );
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+	it( 'should create', () => {
+		expect( component ).toBeTruthy();
+	} );
+} );

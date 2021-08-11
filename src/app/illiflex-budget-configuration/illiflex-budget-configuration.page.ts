@@ -62,8 +62,10 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
 		if ( this.router.url && this.router.url.match( '/illiflex-budget-configuration' ) ) {
 			let payload = this.router.getCurrentNavigation().extras.state.payload;
 			payload = payload ? payload : history.state;
-			this.recipientMsisdn = payload.recipientMsisdn;
-			this.recipientOfferCode = payload.code;
+			if ( payload ) {
+				this.recipientMsisdn = payload.recipientMsisdn;
+				this.recipientOfferCode = payload.code;
+			}
 		} else {
 			this.checkIfDeeplink();
 		}
