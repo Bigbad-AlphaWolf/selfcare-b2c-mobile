@@ -8,159 +8,159 @@ import { FeesService } from 'src/app/services/fees/fees.service';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
-@Component({
-  selector: 'app-bill-amount',
-  templateUrl: './bill-amount.page.html',
-  styleUrls: ['./bill-amount.page.scss'],
-})
+@Component( {
+	selector: 'app-bill-amount',
+	templateUrl: './bill-amount.page.html',
+	styleUrls: ['./bill-amount.page.scss'],
+} )
 export class BillAmountPage implements OnInit {
-  static ROUTE_PATH: string = '/bill-amount';
-  amounts: string[] = ['2000', '5000', '10000', '15000', '20000', '30000'];
+	static ROUTE_PATH: string = '/bill-amount';
+	amounts: string[] = ['2000', '5000', '10000', '15000', '20000', '30000'];
 
-  title: string;
-  opXtras: OperationExtras = {};
-  initialAmount: number;
-  inputAmount: any;
-  fee: any = 0;
-  includeFees: any;
-  totalAmount: any;
-  isFee: boolean = true;
-  minimalAmount: number;
-  maximalAmount: number;
-  amountIsValid: boolean = false;
-  service: string;
-  feesArray: FeeModel[];
-  firstFees: FeeModel;
-  lastFees: FeeModel;
-  hasErrorOnRequest: boolean;
-  isLoadingFees:boolean;
-  constructor(
-    private navController: NavController,
-    private feeService: FeesService
-  ) {}
+	title: string;
+	opXtras: OperationExtras = {};
+	initialAmount: number;
+	inputAmount: any;
+	fee: any = 0;
+	includeFees: any;
+	totalAmount: any;
+	isFee: boolean = true;
+	minimalAmount: number;
+	maximalAmount: number;
+	amountIsValid: boolean = false;
+	service: string;
+	feesArray: FeeModel[];
+	firstFees: FeeModel;
+	lastFees: FeeModel;
+	hasErrorOnRequest: boolean;
+	isLoadingFees: boolean;
+	constructor(
+		private navController: NavController,
+		private feeService: FeesService
+	) { }
 
-  ngOnInit() {
-    this.opXtras = history.state;
-    this.service = this.opXtras.billData.company.codeOM.toLowerCase();
+	ngOnInit() {
+		this.opXtras = history.state;
+		if ( this.opXtras && this.opXtras.billData ) {
+			this.service = this.opXtras.billData.company.codeOM.toLowerCase();
+			this.title = getPageHeader( this.opXtras.purchaseType ).title;
+			this.queryFees();
+		}
+	}
 
-    this.title = getPageHeader(this.opXtras.purchaseType).title;
-    this.queryFees();
+	queryFees() {
+		this.hasErrorOnRequest = false;
+		this.isLoadingFees = true;
+		this.feeService.getFeesByOMService( this.service ).pipe(
+			tap( ( res: FeeModel[] ) => {
+				this.feesArray = res;
+				this.isLoadingFees = false;
+				if ( res.length ) {
+					this.firstFees = this.feesArray[0]
+					this.lastFees = this.feesArray[this.feesArray.length - 1]
+					this.minimalAmount = this.firstFees.min;
+					this.maximalAmount = this.lastFees.max;
+				} else {
+					this.hasErrorOnRequest = true;
+				}
+			} ),
+			catchError( ( err ) => {
+				this.hasErrorOnRequest = true;
+				this.isLoadingFees = false;
+				return of( err )
+			} ) ).subscribe()
+	}
 
-  }
+	ionViewWillEnter() {
+		this.opXtras.amount = this.inputAmount;
+		this.updateAmount( this.inputAmount );
+	}
 
-  queryFees() {
-    this.hasErrorOnRequest = false;
-    this.isLoadingFees = true;
-    this.feeService.getFeesByOMService(this.service).pipe(
-      tap((res: FeeModel[])=> {
-      this.feesArray = res;
-      this.isLoadingFees = false;
-      if(res.length) {
-        this.firstFees = this.feesArray[0]
-        this.lastFees = this.feesArray[this.feesArray.length -1]
-        this.minimalAmount = this.firstFees.min;
-        this.maximalAmount = this.lastFees.max;
-      } else {
-        this.hasErrorOnRequest = true;
-      }
-    }),
-    catchError((err) => {
-      this.hasErrorOnRequest = true;
-      this.isLoadingFees = false;
-        return of(err)
-    })).subscribe()
-  }
+	onAmountSelected( amount: string ) {
+		this.opXtras.amount = amount;
+		this.updateAmount( parseInt( amount ) );
+		this.onContinue();
+	}
 
-  ionViewWillEnter() {
-    this.opXtras.amount = this.inputAmount;
-    this.updateAmount(this.inputAmount);
-  }
+	onInputSelected( amount: string ) {
+		this.inputAmount = parseInt( amount );
+		this.updateAmount( this.inputAmount );
+	}
 
-  onAmountSelected(amount: string) {
-    this.opXtras.amount = amount;
-    this.updateAmount(parseInt(amount));
-    this.onContinue();
-  }
+	onContinue() {
+		const navExtras: NavigationExtras = { state: this.opXtras };
+		this.navController.navigateForward( ['/operation-recap'], navExtras );
+	}
 
-  onInputSelected(amount: string) {
-    this.inputAmount = parseInt(amount);
-    this.updateAmount(this.inputAmount);
-  }
+	inputAmountIsValid( amount: number ) {
+		if ( !amount ) return false;
 
-  onContinue() {
-    const navExtras: NavigationExtras = { state: this.opXtras };
-    this.navController.navigateForward(['/operation-recap'], navExtras);
-  }
+		return this.isFee
+			? this.amountExcludeFeeIsValid( amount )
+			: this.amountIncludeFeeIsValid( amount );
+	}
 
-  inputAmountIsValid(amount: number) {
-    if (!amount) return false;
-
-    return this.isFee
-      ? this.amountExcludeFeeIsValid(amount)
-      : this.amountIncludeFeeIsValid(amount);
-  }
-
-  amountIncludeFeeIsValid(amount: number) {
-    const feeInclude = true;
-    let feesIncludes = this.feeService.extractFees(this.feesArray,amount, feeInclude);
-    this.amountIsValid = !!feesIncludes;
-    return (
-      amount >= this.firstFees.min &&
-      amount <= this.lastFees.max
-    );
-  }
+	amountIncludeFeeIsValid( amount: number ) {
+		const feeInclude = true;
+		let feesIncludes = this.feeService.extractFees( this.feesArray, amount, feeInclude );
+		this.amountIsValid = !!feesIncludes;
+		return (
+			amount >= this.firstFees.min &&
+			amount <= this.lastFees.max
+		);
+	}
 
 
-  amountExcludeFeeIsValid(amount: number) {
-    return (
-      amount >= this.firstFees.min &&
-      amount <= this.lastFees.max
-    );
-  }
+	amountExcludeFeeIsValid( amount: number ) {
+		return (
+			amount >= this.firstFees.min &&
+			amount <= this.lastFees.max
+		);
+	}
 
-  toogleFee($event) {
-    this.isFee = $event.detail.checked;
-    this.updateAmount(this.inputAmount);
-  }
+	toogleFee( $event ) {
+		this.isFee = $event.detail.checked;
+		this.updateAmount( this.inputAmount );
+	}
 
-  updateAmount(amount: number) {
-    this.fee = this.opXtras.fee = 0;
-    if (!this.inputAmountIsValid(amount)) {
-      this.totalAmount = this.opXtras.amount = 0;
-      this.amountIsValid = false;
-      return;
-    }
+	updateAmount( amount: number ) {
+		this.fee = this.opXtras.fee = 0;
+		if ( !this.inputAmountIsValid( amount ) ) {
+			this.totalAmount = this.opXtras.amount = 0;
+			this.amountIsValid = false;
+			return;
+		}
 
-    this.amountIsValid = true;
-    if (this.isFee) {
-      const fee = this.feeService.extractFees(
-        this.feesArray,
-        amount
-      );
-      if (!fee) {
-        this.amountIsValid = false;
-        return
-      }
-      this.fee = this.opXtras.fee = fee.effective_fees
-      this.opXtras.amount = amount;
-      this.totalAmount = this.opXtras.amount + this.opXtras.fee;
-    } else {
-      const fee = this.feeService.extractFees(
-        this.feesArray,
-        amount
-      );
-      if (!fee) {
-        this.amountIsValid = false;
-        return
-      }
-      this.fee = this.opXtras.fee = fee.effective_fees;
-      this.opXtras.amount = amount - this.opXtras.fee;
-      this.totalAmount = this.opXtras.amount;
-    }
-  }
+		this.amountIsValid = true;
+		if ( this.isFee ) {
+			const fee = this.feeService.extractFees(
+				this.feesArray,
+				amount
+			);
+			if ( !fee ) {
+				this.amountIsValid = false;
+				return
+			}
+			this.fee = this.opXtras.fee = fee.effective_fees
+			this.opXtras.amount = amount;
+			this.totalAmount = this.opXtras.amount + this.opXtras.fee;
+		} else {
+			const fee = this.feeService.extractFees(
+				this.feesArray,
+				amount
+			);
+			if ( !fee ) {
+				this.amountIsValid = false;
+				return
+			}
+			this.fee = this.opXtras.fee = fee.effective_fees;
+			this.opXtras.amount = amount - this.opXtras.fee;
+			this.totalAmount = this.opXtras.amount;
+		}
+	}
 
-  goBack() {
-    this.navController.pop();
-  }
+	goBack() {
+		this.navController.pop();
+	}
 
 }
