@@ -24,6 +24,9 @@ describe( 'FollowUpRequestsPage', () => {
 					useValue: {
 						fetchFixedNumbers: () => {
 							return of()
+						},
+						getMainPhoneNumber: () => {
+							return ""
 						}
 					}
 				},
