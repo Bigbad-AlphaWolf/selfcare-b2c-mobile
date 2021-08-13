@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Coordinates, Geolocation } from '@ionic-native/geolocation/ngx';
 import { IonSlides, NavController, Platform } from '@ionic/angular';
@@ -15,6 +21,7 @@ import {
 } from '../services/kiosk-locator-service/kiosk.utils';
 import { createHTMLMapMarker } from './classes/overlay';
 import * as SecureLS from 'secure-ls';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-kiosk-locator',
@@ -32,7 +39,7 @@ export class KioskLocatorPage implements OnInit {
   currentKiosk: any;
   slideOptions = MAP_CARDS_SLIDES_OPTIONS;
   searchForm: FormGroup;
-  userPosition: Coordinates;
+  userPosition: Coordinates | any;
   kiosksArray: KioskOMModel[] = [];
   page = 0;
   loadingKiosk = true;
@@ -48,7 +55,9 @@ export class KioskLocatorPage implements OnInit {
     private kioskLocatorService: KioskLocatorService,
     private formBuilder: FormBuilder,
     private platform: Platform,
-    private navController: NavController
+    private navController: NavController,
+    private ref: ChangeDetectorRef,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   async ionViewDidEnter() {
@@ -90,8 +99,14 @@ export class KioskLocatorPage implements OnInit {
               null,
               i + 1
             );
+            marker.addListener('click', () => {
+              console.log('clicked');
+              this.sliders.slideTo(i);
+            });
             this.markers.push(marker);
           }
+          this.currentView = KIOSK_VIEW.VIEW_CARDS;
+          this.ref.detectChanges();
           this.page++;
         }),
         catchError((err) => {
@@ -109,6 +124,7 @@ export class KioskLocatorPage implements OnInit {
       this.directionsRenderer.setMap(null);
     }
     this.currentView = view;
+    this.ref.detectChanges();
   }
 
   async loadGoogleMaps() {
@@ -122,10 +138,28 @@ export class KioskLocatorPage implements OnInit {
       this.apiKey +
       '&callback=mapInit';
     document.body.appendChild(script);
+    this.followAnalyticsService.registerEventFollow(
+      'loaded_google_map_success',
+      'event'
+    );
   }
 
   async initMap() {
-    const position = await this.geolocation.getCurrentPosition();
+    const position = await this.geolocation
+      .getCurrentPosition()
+      .catch((err) => {
+        console.log(err);
+        this.followAnalyticsService.registerEventFollow(
+          'kiosk_locator_location_not_allowed',
+          'event'
+        );
+        this.leave();
+        return { coords: null };
+      });
+    this.followAnalyticsService.registerEventFollow(
+      'kiosk_locator_location_allowed',
+      'event'
+    );
     this.userPosition = position.coords;
     const latLng = new google.maps.LatLng(
       this.userPosition.latitude,
@@ -170,6 +204,7 @@ export class KioskLocatorPage implements OnInit {
     this.clearAllMarkers();
     this.markers[i - 1].setMap(this.map);
     this.showDirections(kiosk, google.maps.TravelMode.WALKING);
+    this.ref.detectChanges();
   }
 
   showDirections(kiosk: KioskOMModel, travelMode: google.maps.TravelMode) {
@@ -201,6 +236,7 @@ export class KioskLocatorPage implements OnInit {
     this.searchInput = value;
     if (!!value) {
       this.currentView = KIOSK_VIEW.VIEW_SEARCH;
+      this.ref.detectChanges();
     }
   }
 
@@ -213,6 +249,7 @@ export class KioskLocatorPage implements OnInit {
         marker.setMap(this.map);
       });
       this.searchForm.reset();
+      this.ref.detectChanges();
     }
   }
 

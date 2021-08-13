@@ -25,13 +25,14 @@
       z-index: 1;
       left: 11.25px;
       top: 10%;
-      height: 80%;
+      height: 55px;
       border-left: dotted 2px $lightBlue;
     }
     .position {
       display: flex;
       align-items: center;
       margin-bottom: 25px;
+      position: relative;
       .img-container {
         z-index: 2;
         border-radius: 50%;
@@ -46,12 +47,14 @@
           height: 25px;
         }
         &-orange {
-          padding-top: 5px;
+          position: absolute;
+          top: 11px;
+          padding-top: 4px;
           margin: 0 10px 0 2.5px;
           background-color: $orange;
           width: 20px;
           height: 20px;
-          font-size: 14px;
+          font-size: 11px;
         }
         .user-img {
           width: 15px;
@@ -65,9 +68,9 @@
         font-size: 16px;
         line-height: 1.13;
         padding-top: 6px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        max-width: 50%;
+        &.kiosk-name {
+          padding: 15px 0 0 30px;
+        }
       }
     }
   }
@@ -90,5 +93,9 @@
         white-space: nowrap;
       }
     }
+  }
+  .a-link {
+    width: 0;
+    height: 0;
   }
 }

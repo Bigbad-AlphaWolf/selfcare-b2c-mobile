@@ -1,4 +1,4 @@
-@import "src/app/app";
+@import 'src/app/app';
 
 :host {
   width: 100%;
@@ -11,11 +11,11 @@
   border-radius: 10px;
   text-align: left;
   .kiosk-id {
-    font-size: 14px;
+    font-size: 12px;
     position: absolute;
     top: 17px;
     left: 17px;
-    padding-top: 5px;
+    padding-top: 4px;
     width: 20px;
     height: 20px;
     background-color: $orange;
@@ -32,10 +32,12 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        margin-bottom: 10px;
       }
       .details-item {
         display: flex;
         align-items: center;
+        margin-bottom: 10px;
         .item-text {
           font-family: HelveticaNeueLTStd-Roman;
           font-size: 14px;
