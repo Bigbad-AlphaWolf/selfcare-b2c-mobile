@@ -3,6 +3,7 @@ import { BillsService } from './bills.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
+	MatDialog,
 	MatDialogRef
 } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -14,10 +15,11 @@ import { DashboardService } from '../dashboard-service/dashboard.service';
 import { File } from '@ionic-native/file/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { SharedModule } from 'src/shared/shared.module';
+import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 
-describe('BillsService', () => {
-	beforeEach(() => {
-		TestBed.configureTestingModule({
+describe( 'BillsService', () => {
+	beforeEach( () => {
+		TestBed.configureTestingModule( {
 			schemas: [NO_ERRORS_SCHEMA],
 			imports: [
 				BrowserAnimationsModule,
@@ -26,6 +28,7 @@ describe('BillsService', () => {
 			providers: [
 				{ provide: Router, useValue: {} },
 				{ provide: ActivatedRoute, useValue: {} },
+				{ provide: MatDialog },
 				{
 					provide: HttpClient,
 					useValue: {
@@ -45,7 +48,7 @@ describe('BillsService', () => {
 									statutFacture: 'NON PAYEE'
 								}
 							];
-							return of(bills);
+							return of( bills );
 						}
 					}
 				},
@@ -54,13 +57,19 @@ describe('BillsService', () => {
 				{ provide: FormGroup, useValue: {} },
 				{ provide: MatDialogRef, useValue: {} },
 				{
+					provide: FollowAnalyticsService,
+					useValue: {
+						registerEventFollow: () => { }
+					}
+				},
+				{
 					provide: DashboardService,
 					useValue: {
 						getBills: () => {
-							return { subscribe: () => {} };
+							return { subscribe: () => { } };
 						},
 						getCurrentPhoneNumber: () => {
-							return { subscribe: () => {} };
+							return { subscribe: () => { } };
 						}
 					}
 				},
@@ -71,12 +80,12 @@ describe('BillsService', () => {
 					provide: InAppBrowser
 				}
 			]
-		});
-	});
+		} );
+	} );
 
-	it('should be created', inject([BillsService], (service: BillsService) => {
-		expect(service).toBeDefined();
-	}));
+	it( 'should be created', inject( [BillsService], ( service: BillsService ) => {
+		expect( service ).toBeDefined();
+	} ) );
 	// it('download UserBill should work', inject(
 	// 	[BillsService],
 	// 	(service: BillsService) => {
@@ -91,4 +100,4 @@ describe('BillsService', () => {
 	// 		expect(bill.downloading).toEqual(true);
 	// 	}
 	// ));
-});
+} );

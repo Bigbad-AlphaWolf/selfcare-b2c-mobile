@@ -30,7 +30,11 @@ describe( 'RattachNumberModalComponent', () => {
 					useValue: {
 						registerNumberToAttach: () => {
 							return of()
-						}
+						},
+						getMainPhoneNumber: () => {
+							return ""
+						},
+
 					}
 				},
 				{
