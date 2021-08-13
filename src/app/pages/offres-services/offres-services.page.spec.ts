@@ -39,6 +39,9 @@ describe( 'OffresServicesPage', () => {
 					useValue: {
 						initServicesData: () => {
 							return of()
+						},
+						getSubscription: () => {
+							return of()
 						}
 					}
 				},

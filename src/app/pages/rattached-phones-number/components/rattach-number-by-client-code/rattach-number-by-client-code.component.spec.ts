@@ -1,27 +1,57 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ModalController } from '@ionic/angular';
+import { of } from 'rxjs';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 import { RattachNumberByClientCodeComponent } from './rattach-number-by-client-code.component';
 
-describe('RattachNumberByClientCodeComponent', () => {
-  let component: RattachNumberByClientCodeComponent;
-  let fixture: ComponentFixture<RattachNumberByClientCodeComponent>;
+describe( 'RattachNumberByClientCodeComponent', () => {
+	let component: RattachNumberByClientCodeComponent;
+	let fixture: ComponentFixture<RattachNumberByClientCodeComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ RattachNumberByClientCodeComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
-  }));
+	beforeEach( async( () => {
+		TestBed.configureTestingModule( {
+			declarations: [RattachNumberByClientCodeComponent],
+			imports: [ReactiveFormsModule, FormsModule],
+			providers: [
+				{
+					provide: ModalController
+				},
+				{
+					provide: DashboardService,
+					useValue: {
+						registerNumberByIdClient: () => {
+							return of()
+						},
+						getMainPhoneNumber: () => {
+							return ""
+						}
+					}
+				},
+				{
+					provide: FollowAnalyticsService,
+					useValue: {
+						registerEventFollow: () => {
+							return ""
+						}
+					}
+				}
+			],
+			schemas: [CUSTOM_ELEMENTS_SCHEMA],
+		} )
+			.compileComponents();
+	} ) );
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(RattachNumberByClientCodeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach( () => {
+		fixture = TestBed.createComponent( RattachNumberByClientCodeComponent );
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	} );
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+	it( 'should create', () => {
+		expect( component ).toBeTruthy();
+	} );
+} );
