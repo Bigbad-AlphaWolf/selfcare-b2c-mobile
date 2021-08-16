@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { off } from 'process';
-import { of } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { OM_LABEL_SERVICES } from 'src/app/utils/bills.util';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { FeeModel } from '../orange-money-service';
