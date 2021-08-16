@@ -10,6 +10,9 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { of } from 'rxjs';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { AcronymPipe } from 'src/shared/pipes/acronym.pipe';
+import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
+import { RouterTestingModule } from '@angular/router/testing';
+import { RecentsService } from 'src/app/services/recents-service/recents.service';
 
 describe( 'SelectBeneficiaryPopUpComponent', () => {
 	let component: SelectBeneficiaryPopUpComponent;
@@ -17,7 +20,8 @@ describe( 'SelectBeneficiaryPopUpComponent', () => {
 
 	beforeEach( async( () => {
 		TestBed.configureTestingModule( {
-			declarations: [SelectBeneficiaryPopUpComponent, AcronymPipe],
+			declarations: [SelectBeneficiaryPopUpComponent, AcronymPipe, PhoneNumberDisplayPipe],
+			imports: [RouterTestingModule],
 			schemas: [CUSTOM_ELEMENTS_SCHEMA],
 			providers: [
 				{
@@ -30,12 +34,17 @@ describe( 'SelectBeneficiaryPopUpComponent', () => {
 					provide: ModalController
 				},
 				{
-					provide: Router
-				},
-				{
 					provide: DashboardService,
 					useValue: {
 						getCurrentPhoneNumber: () => {
+							return ""
+						}
+					}
+				},
+				{
+					provide: RecentsService,
+					useValue: {
+						fetchRecents: () => {
 							return of()
 						}
 					}

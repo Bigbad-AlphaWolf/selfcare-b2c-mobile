@@ -2,14 +2,18 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TransferRecipientAmountComponent } from './transfer-recipient-amount.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { of } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { Contacts } from '@ionic-native/contacts';
-import { Router } from '@angular/router';
+import { Router, UrlSerializer } from '@angular/router';
 import { Location } from '@angular/common';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { ModalController } from '@ionic/angular';
 
 describe( 'TransferRecipientAmountComponent', () => {
 	let component: TransferRecipientAmountComponent;
@@ -17,7 +21,7 @@ describe( 'TransferRecipientAmountComponent', () => {
 
 	beforeEach( async( () => {
 		TestBed.configureTestingModule( {
-			imports: [ReactiveFormsModule],
+			imports: [ReactiveFormsModule, FormsModule, RouterTestingModule],
 			declarations: [TransferRecipientAmountComponent],
 			schemas: [CUSTOM_ELEMENTS_SCHEMA],
 			providers: [
@@ -28,7 +32,10 @@ describe( 'TransferRecipientAmountComponent', () => {
 					provide: Location
 				},
 				{
-					provide: Router
+					provide: ModalController
+				},
+				{
+					provide: UrlSerializer
 				},
 				{
 					provide: Contacts
@@ -37,6 +44,22 @@ describe( 'TransferRecipientAmountComponent', () => {
 					provide: DashboardService,
 					useValue: {
 						getCurrentPhoneNumber: () => {
+							return ""
+						}
+					}
+				},
+				{
+					provide: AuthenticationService,
+					useValue: {
+						canRecieveCredit: () => {
+							return of()
+						}
+					}
+				},
+				{
+					provide: FollowAnalyticsService,
+					useValue: {
+						registerEventFollow: () => {
 							return ""
 						}
 					}
