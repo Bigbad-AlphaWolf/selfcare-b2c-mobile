@@ -21,7 +21,7 @@ import { SEARCH_SIZE } from 'src/app/services/kiosk-locator-service/kiosk.utils'
 })
 export class KioskSearchComponent implements OnInit {
   displaySearchIcon: boolean;
-  @ViewChild('searchInput') input: IonInput;
+  @ViewChild('searchInput', { static: true }) input: IonInput;
   @Input() searchInput: string;
   @Input() userPosition: Coordinates;
   @Output() back = new EventEmitter();

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TransfertOmHubServicesPage } from './transfert-om-hub-services.page';
 import { Router } from '@angular/router';
@@ -9,7 +9,7 @@ describe('TransfertOmHubServicesPage', () => {
   let component: TransfertOmHubServicesPage;
   let fixture: ComponentFixture<TransfertOmHubServicesPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TransfertOmHubServicesPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

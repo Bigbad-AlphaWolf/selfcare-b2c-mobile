@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PhoneNumbersListComponent } from './phone-numbers-list.component';
 import { Router } from '@angular/router';
@@ -10,7 +10,7 @@ describe('PhoneNumbersListComponent', () => {
   let component: PhoneNumbersListComponent;
   let fixture: ComponentFixture<PhoneNumbersListComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [PhoneNumbersListComponent],
       providers: [

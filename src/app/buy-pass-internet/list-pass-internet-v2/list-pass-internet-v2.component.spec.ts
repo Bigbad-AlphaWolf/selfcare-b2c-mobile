@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { Router } from '@angular/router';
 import { PassInternetService } from 'src/app/services/pass-internet-service/pass-internet.service';
@@ -11,7 +11,7 @@ describe('ListPassInternetV2Component', () => {
   let component: ListPassInternetV2Component;
   let fixture: ComponentFixture<ListPassInternetV2Component>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ListPassInternetV2Component],
       providers: [

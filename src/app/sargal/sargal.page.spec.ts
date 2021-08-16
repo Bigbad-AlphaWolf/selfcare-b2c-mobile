@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SargalPage } from './sargal.page';
 import { FormatCurrencyPipe } from 'src/shared/pipes/format-currency.pipe';
@@ -13,7 +13,7 @@ describe('SargalPage', () => {
   let component: SargalPage;
   let fixture: ComponentFixture<SargalPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SargalPage, FormatCurrencyPipe ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

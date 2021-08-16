@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PinPadComponent } from './pin-pad.component';
 import { MatDialogModule } from '@angular/material';
@@ -11,7 +11,7 @@ describe('PinPadComponent', () => {
   let component: PinPadComponent;
   let fixture: ComponentFixture<PinPadComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PinPadComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

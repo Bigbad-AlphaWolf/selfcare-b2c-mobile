@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CancelTransactionOmPage } from './cancel-transaction-om.page';
 
@@ -7,7 +7,7 @@ describe('CancelTransactionOmPage', () => {
   let component: CancelTransactionOmPage;
   let fixture: ComponentFixture<CancelTransactionOmPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CancelTransactionOmPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

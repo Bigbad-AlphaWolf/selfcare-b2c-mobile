@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NumeroSeriePopupComponent } from './numero-serie-popup.component';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
@@ -8,7 +8,7 @@ describe('NumeroSeriePopupComponent', () => {
   let component: NumeroSeriePopupComponent;
   let fixture: ComponentFixture<NumeroSeriePopupComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [NumeroSeriePopupComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

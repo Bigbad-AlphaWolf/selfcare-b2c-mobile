@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TakePictureComponent } from './take-picture.component';
 
@@ -7,7 +7,7 @@ describe('TakePictureComponent', () => {
   let component: TakePictureComponent;
   let fixture: ComponentFixture<TakePictureComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TakePictureComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

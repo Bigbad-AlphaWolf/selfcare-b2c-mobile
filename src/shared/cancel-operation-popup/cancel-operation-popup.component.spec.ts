@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CancelOperationPopupComponent } from './cancel-operation-popup.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
@@ -10,7 +10,7 @@ describe('CancelOperationPopupComponent', () => {
   let component: CancelOperationPopupComponent;
   let fixture: ComponentFixture<CancelOperationPopupComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CancelOperationPopupComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

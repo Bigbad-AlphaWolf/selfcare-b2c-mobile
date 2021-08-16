@@ -12,7 +12,7 @@ export class AssistanceQuestionsComponent implements OnInit {
   listQuestions: OffreService[];
   loadingFAQ: boolean;
   displaySearchIcon: boolean = true;
-  @ViewChild('searchInput') searchRef;
+  @ViewChild('searchInput', { static: true }) searchRef;
   constructor(private navController: NavController, private followAnalyticsService: FollowAnalyticsService) {}
 
   ngOnInit() {

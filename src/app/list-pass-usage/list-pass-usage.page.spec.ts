@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ListPassUsagePage } from './list-pass-usage.page';
 
@@ -7,7 +7,7 @@ describe('ListPassUsagePage', () => {
   let component: ListPassUsagePage;
   let fixture: ComponentFixture<ListPassUsagePage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ListPassUsagePage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

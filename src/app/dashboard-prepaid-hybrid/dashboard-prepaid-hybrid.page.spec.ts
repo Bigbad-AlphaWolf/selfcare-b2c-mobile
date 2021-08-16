@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DashboardPrepaidHybridPage } from './dashboard-prepaid-hybrid.page';
 import { HttpClient } from '@angular/common/http';
@@ -17,7 +17,7 @@ describe('DashboardPrepaidHybridPage', () => {
   let component: DashboardPrepaidHybridPage;
   let fixture: ComponentFixture<DashboardPrepaidHybridPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         DashboardPrepaidHybridPage,

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { OperationSuccessOrFailComponent } from './operation-success-or-fail.component';
 import { MatDialogModule } from '@angular/material';
@@ -11,7 +11,7 @@ describe('OperationSuccessOrFailComponent', () => {
   let component: OperationSuccessOrFailComponent;
   let fixture: ComponentFixture<OperationSuccessOrFailComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ OperationSuccessOrFailComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

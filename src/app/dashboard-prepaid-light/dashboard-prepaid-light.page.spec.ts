@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DashboardPrepaidLightPage } from './dashboard-prepaid-light.page';
 
@@ -7,7 +7,7 @@ describe('DashboardPrepaidLightPage', () => {
   let component: DashboardPrepaidLightPage;
   let fixture: ComponentFixture<DashboardPrepaidLightPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DashboardPrepaidLightPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

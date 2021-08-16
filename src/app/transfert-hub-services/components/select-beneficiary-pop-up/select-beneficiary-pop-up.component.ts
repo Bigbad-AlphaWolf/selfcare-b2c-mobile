@@ -35,7 +35,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   otherBeneficiaryNumber = '';
   firstName: string;
   lastName: string;
-  @ViewChild('inputTel') htmlInput: ElementRef;
+  @ViewChild('inputTel', { static: true }) htmlInput: ElementRef;
   isProcessing: boolean;
   omPhoneNumber: string;
   errorMsg: string;

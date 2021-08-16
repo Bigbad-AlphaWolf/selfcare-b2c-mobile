@@ -5,7 +5,7 @@ import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow
 import { MatDialog, MatDialogModule } from '@angular/material';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AddNewPhoneNumberV2Page } from './add-new-phone-number-v2.page';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
@@ -15,7 +15,7 @@ describe('AddNewPhoneNumberV2Page', () => {
   let component: AddNewPhoneNumberV2Page;
   let fixture: ComponentFixture<AddNewPhoneNumberV2Page>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AddNewPhoneNumberV2Page ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

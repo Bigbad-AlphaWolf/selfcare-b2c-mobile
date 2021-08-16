@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HorizontalArticleItemComponent } from './horizontal-article-item.component';
 
@@ -7,7 +7,7 @@ describe('HorizontalArticleItemComponent', () => {
   let component: HorizontalArticleItemComponent;
   let fixture: ComponentFixture<HorizontalArticleItemComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ HorizontalArticleItemComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -19,7 +19,7 @@ import {
   styleUrls: ['./kiosk-locator.page.scss'],
 })
 export class KioskLocatorPage implements OnInit {
-  @ViewChild('map') mapElement: ElementRef;
+  @ViewChild('map', { static: true }) mapElement: ElementRef;
   @ViewChild('slides') sliders: IonSlides;
   map: google.maps.Map;
   apiKey = 'AIzaSyAfqTLg3_OIhgZIWG3LZTlLA0sEMAdrMso';

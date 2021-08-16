@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TransferCreditBonusOmPage } from './transfer-credit-bonus-om.page';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -11,7 +11,7 @@ describe('TransferCreditBonusOmPage', () => {
   let component: TransferCreditBonusOmPage;
   let fixture: ComponentFixture<TransferCreditBonusOmPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TransferCreditBonusOmPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RapidoSelectionComponent } from './rapido-selection.component';
 
@@ -7,7 +7,7 @@ describe('RapidoSelectionComponent', () => {
   let component: RapidoSelectionComponent;
   let fixture: ComponentFixture<RapidoSelectionComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ RapidoSelectionComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

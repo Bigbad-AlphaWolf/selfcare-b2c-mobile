@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SelectBeneficiaryPopUpComponent } from './select-beneficiary-pop-up.component';
 import { MatDialog } from '@angular/material';
@@ -14,7 +14,7 @@ describe('SelectBeneficiaryPopUpComponent', () => {
   let component: SelectBeneficiaryPopUpComponent;
   let fixture: ComponentFixture<SelectBeneficiaryPopUpComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SelectBeneficiaryPopUpComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

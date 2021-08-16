@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ItemIlliflexComponent } from './item-illiflex.component';
 
@@ -7,7 +7,7 @@ describe('ItemIlliflexComponent', () => {
   let component: ItemIlliflexComponent;
   let fixture: ComponentFixture<ItemIlliflexComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ItemIlliflexComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

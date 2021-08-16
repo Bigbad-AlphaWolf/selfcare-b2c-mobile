@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PhoneNumberProviderComponent } from './phone-number-provider.component';
 
@@ -7,7 +7,7 @@ describe('PhoneNumberProviderComponent', () => {
   let component: PhoneNumberProviderComponent;
   let fixture: ComponentFixture<PhoneNumberProviderComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PhoneNumberProviderComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

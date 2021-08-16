@@ -20,7 +20,7 @@ import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange
 })
 export class TypeOtpModalComponent implements OnInit, AfterViewInit {
   currentInput = 1;
-  @ViewChild('input') input: IonInput;
+  @ViewChild('input', { static: true }) input: IonInput;
   @Input() checkOtpPayload: OmCheckOtpModel;
   checkingOtp: boolean;
   errorCheckOtp: boolean;

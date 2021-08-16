@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ChangeAvatarPopupComponent } from './change-avatar-popup.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -14,7 +14,7 @@ describe('ChangeAvatarPopupComponent', () => {
   let component: ChangeAvatarPopupComponent;
   let fixture: ComponentFixture<ChangeAvatarPopupComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ChangeAvatarPopupComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

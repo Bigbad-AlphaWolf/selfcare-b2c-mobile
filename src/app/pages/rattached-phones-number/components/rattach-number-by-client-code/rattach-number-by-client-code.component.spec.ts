@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RattachNumberByClientCodeComponent } from './rattach-number-by-client-code.component';
 
@@ -7,7 +7,7 @@ describe('RattachNumberByClientCodeComponent', () => {
   let component: RattachNumberByClientCodeComponent;
   let fixture: ComponentFixture<RattachNumberByClientCodeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ RattachNumberByClientCodeComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

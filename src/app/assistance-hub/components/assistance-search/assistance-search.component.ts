@@ -10,7 +10,7 @@ import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow
 })
 export class AssistanceSearchComponent implements OnInit {
   displaySearchIcon: boolean = true;
-  @ViewChild('searchInput') searchRef: IonInput;
+  @ViewChild('searchInput', { static: true }) searchRef: IonInput;
   terms = '';
   listBesoinAides: OffreService[];
   listBesoinAidesAltered: OffreService[];

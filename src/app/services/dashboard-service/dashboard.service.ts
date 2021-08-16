@@ -14,7 +14,7 @@ import {
   USER_CONS_CATEGORY_CALL,
   ItemUserConso
 } from 'src/shared';
-import { DOCUMENT } from '@angular/platform-browser';
+import { DOCUMENT } from "@angular/common";
 import { SessionOem } from '../session-oem/session-oem.service';
 import { BoosterModel, BoosterTrigger } from 'src/app/models/booster.model';
 import { GiftType } from 'src/app/models/enums/gift-type.enum';

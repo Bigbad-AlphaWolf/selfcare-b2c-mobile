@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PurchaseSetAmountPage } from './purchase-set-amount.page';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ describe('PurchaseSetAmountPage', () => {
   let component: PurchaseSetAmountPage;
   let fixture: ComponentFixture<PurchaseSetAmountPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [PurchaseSetAmountPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

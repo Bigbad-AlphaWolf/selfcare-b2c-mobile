@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ChangeMainPhoneNumberPage } from './change-main-phone-number.page';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
@@ -11,7 +11,7 @@ describe('ChangeMainPhoneNumberPage', () => {
 	let component: ChangeMainPhoneNumberPage;
 	let fixture: ComponentFixture<ChangeMainPhoneNumberPage>;
 
-	beforeEach(async(() => {
+	beforeEach(waitForAsync(() => {
 		TestBed.configureTestingModule({
 			declarations: [ChangeMainPhoneNumberPage],
 			providers: [

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { IllimixListV2Component } from './illimix-list-v2.component';
 import { PassIllimixService } from 'src/app/services/pass-illimix-service/pass-illimix.service';
@@ -11,7 +11,7 @@ describe('IllimixListV2Component', () => {
   let component: IllimixListV2Component;
   let fixture: ComponentFixture<IllimixListV2Component>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [IllimixListV2Component],
       providers: [

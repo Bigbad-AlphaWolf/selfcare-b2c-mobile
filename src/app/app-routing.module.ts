@@ -4,12 +4,9 @@ import { AuthGuard } from "./services/auth-guard/auth.guard";
 import { AuthUpdateGuard } from "./services/auth-update-guard/auth-update.guard";
 
 const routes: Routes = [
-  {
-    path: "",
+  { path: "",
     redirectTo: "dashboard",
-    pathMatch: "full",
-    canActivate: [AuthGuard],
-  },
+    pathMatch: "full" },
   {
     path: "home-v2",
     loadChildren: "./home-v2/home-v2.module#HomeV2PageModule",
@@ -435,7 +432,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules, relativeLinkResolution: 'legacy' }),
   ],
   exports: [RouterModule],
 })

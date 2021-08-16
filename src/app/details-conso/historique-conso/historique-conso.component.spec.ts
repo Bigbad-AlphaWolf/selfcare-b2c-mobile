@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HistoriqueConsoComponent } from './historique-conso.component';
 import { MatMenuModule } from '@angular/material';
@@ -9,7 +9,7 @@ describe('HistoriqueConsoComponent', () => {
   let component: HistoriqueConsoComponent;
   let fixture: ComponentFixture<HistoriqueConsoComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HistoriqueConsoComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

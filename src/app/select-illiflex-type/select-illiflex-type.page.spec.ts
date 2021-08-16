@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SelectIlliflexTypePage } from './select-illiflex-type.page';
 
@@ -7,7 +7,7 @@ describe('SelectIlliflexTypePage', () => {
   let component: SelectIlliflexTypePage;
   let fixture: ComponentFixture<SelectIlliflexTypePage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SelectIlliflexTypePage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

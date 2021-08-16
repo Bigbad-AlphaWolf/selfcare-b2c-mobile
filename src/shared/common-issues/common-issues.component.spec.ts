@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CommonIssuesComponent } from './common-issues.component';
 import { MatDialogRef, MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
@@ -9,7 +9,7 @@ describe('CommonIssuesComponent', () => {
   let component: CommonIssuesComponent;
   let fixture: ComponentFixture<CommonIssuesComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CommonIssuesComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

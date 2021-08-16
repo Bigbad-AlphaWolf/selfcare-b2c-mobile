@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { BillsDetailsMobileComponent } from './bills-details-mobile.component';
 import { GetLabelLigneBillBordereauPipe } from 'src/shared/pipes/get-label-ligne-bill-bordereau.pipe';
@@ -15,7 +15,7 @@ describe('BillsDetailsMobileComponent', () => {
   let component: BillsDetailsMobileComponent;
   let fixture: ComponentFixture<BillsDetailsMobileComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         BillsDetailsMobileComponent,

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RegistrationSuccessModalPage } from './registration-success-modal.page';
 import { HttpClient } from '@angular/common/http';
@@ -11,7 +11,7 @@ describe('RegistrationSuccessModalPage', () => {
   let component: RegistrationSuccessModalPage;
   let fixture: ComponentFixture<RegistrationSuccessModalPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [RegistrationSuccessModalPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

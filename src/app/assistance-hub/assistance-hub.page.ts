@@ -57,7 +57,7 @@ export class AssistanceHubPage implements OnInit {
   listActes?: OffreService[] = [];
   loadingHelpItems: boolean;
   displaySearchIcon: boolean = true;
-  @ViewChild('searchInput') searchRef;
+  @ViewChild('searchInput', { static: true }) searchRef;
   current_user_msisdn = this.dashboardService.getCurrentPhoneNumber();
   checkingStatus: boolean;
   userOMStatus: OMCustomerStatusModel;

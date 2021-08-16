@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TransferSetAmountPage } from './transfer-set-amount.page';
 
@@ -7,7 +7,7 @@ describe('TransferSetAmountPage', () => {
   let component: TransferSetAmountPage;
   let fixture: ComponentFixture<TransferSetAmountPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TransferSetAmountPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

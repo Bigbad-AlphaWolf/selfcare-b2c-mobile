@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SetOperationAmountComponent } from './set-operation-amount.component';
 import { SharedModule } from '../shared.module';
@@ -13,7 +13,7 @@ describe('SetOperationAmountComponent', () => {
   let component: SetOperationAmountComponent;
   let fixture: ComponentFixture<SetOperationAmountComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule],
       declarations: [ SetOperationAmountComponent ],

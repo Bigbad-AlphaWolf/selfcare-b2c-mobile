@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DashboardKirenePage } from './dashboard-kirene.page';
 import { FormatCurrencyPipe } from 'src/shared/pipes/format-currency.pipe';
@@ -17,7 +17,7 @@ describe('DashboardKirenePage', () => {
   let component: DashboardKirenePage;
   let fixture: ComponentFixture<DashboardKirenePage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [DashboardKirenePage, FormatCurrencyPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

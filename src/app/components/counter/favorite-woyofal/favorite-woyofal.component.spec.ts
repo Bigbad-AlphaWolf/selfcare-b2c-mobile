@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FavoriteWoyofalComponent } from './favorite-woyofal.component';
 
@@ -7,7 +7,7 @@ describe('FavoriteCountersComponent', () => {
   let component: FavoriteWoyofalComponent;
   let fixture: ComponentFixture<FavoriteWoyofalComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ FavoriteWoyofalComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

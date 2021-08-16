@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ItemHistorikDetailsInfosComponent } from './item-historik-details-infos.component';
 import { FormatCalledNumberPipe } from 'src/shared/pipes/format-called-number.pipe';
@@ -10,7 +10,7 @@ describe('ItemHistorikDetailsInfosComponent', () => {
   let component: ItemHistorikDetailsInfosComponent;
   let fixture: ComponentFixture<ItemHistorikDetailsInfosComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         ItemHistorikDetailsInfosComponent,
