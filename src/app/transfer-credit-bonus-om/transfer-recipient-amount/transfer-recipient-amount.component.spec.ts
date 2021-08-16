@@ -9,63 +9,67 @@ import { of } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { Contacts } from '@ionic-native/contacts';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
-describe('TransferRecipientAmountComponent', () => {
-  let component: TransferRecipientAmountComponent;
-  let fixture: ComponentFixture<TransferRecipientAmountComponent>;
+describe( 'TransferRecipientAmountComponent', () => {
+	let component: TransferRecipientAmountComponent;
+	let fixture: ComponentFixture<TransferRecipientAmountComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [ TransferRecipientAmountComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: MatDialog
-        },
-        {
-          provide: Router
-        },
-        {
-          provide: Contacts
-        },
-        {
-          provide: DashboardService,
-          useValue: {
-            getCurrentPhoneNumber: () => {
-              return ""
-            }
-          }
-        },
-        {
-          provide: OrangeMoneyService,
-          useValue: {
-            getOmMsisdn: () => {
-              return of()
-            },
-            checkBalanceSufficiency: () => {
-              return of()
-            },
-            GetUserAuthInfo: () => {
-              return of()
-            },
-            checkUserHasAccount: () => {
-              return of()
-            }
-          }
-        }
-      ]
-    })
-    .compileComponents();
-  }));
+	beforeEach( async( () => {
+		TestBed.configureTestingModule( {
+			imports: [ReactiveFormsModule],
+			declarations: [TransferRecipientAmountComponent],
+			schemas: [CUSTOM_ELEMENTS_SCHEMA],
+			providers: [
+				{
+					provide: MatDialog
+				},
+				{
+					provide: Location
+				},
+				{
+					provide: Router
+				},
+				{
+					provide: Contacts
+				},
+				{
+					provide: DashboardService,
+					useValue: {
+						getCurrentPhoneNumber: () => {
+							return ""
+						}
+					}
+				},
+				{
+					provide: OrangeMoneyService,
+					useValue: {
+						getOmMsisdn: () => {
+							return of()
+						},
+						checkBalanceSufficiency: () => {
+							return of()
+						},
+						GetUserAuthInfo: () => {
+							return of()
+						},
+						checkUserHasAccount: () => {
+							return of()
+						}
+					}
+				}
+			]
+		} )
+			.compileComponents();
+	} ) );
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TransferRecipientAmountComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach( () => {
+		fixture = TestBed.createComponent( TransferRecipientAmountComponent );
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	} );
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+	it( 'should create', () => {
+		expect( component ).toBeTruthy();
+	} );
+} );
