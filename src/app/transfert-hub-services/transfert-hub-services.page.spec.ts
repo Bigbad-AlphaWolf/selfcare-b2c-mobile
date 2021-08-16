@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TransfertHubServicesPage } from './transfert-hub-services.page';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { Contacts } from '@ionic-native/contacts';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Location } from '@angular/common';
@@ -11,6 +11,12 @@ import { OfferPlansService } from '../services/offer-plans-service/offer-plans.s
 import { of } from 'rxjs';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { MatBottomSheet } from '@angular/material';
+import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { FavorisService } from '../services/favoris/favoris.service';
+import { OperationService } from '../services/oem-operation/operation.service';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
 describe( 'TransfertHubServicesPage', () => {
 	let component: TransfertHubServicesPage;
@@ -24,6 +30,9 @@ describe( 'TransfertHubServicesPage', () => {
 			providers: [
 				{
 					provide: ModalController
+				},
+				{
+					provide: ToastController
 				},
 				{
 					provide: Location
@@ -40,6 +49,36 @@ describe( 'TransfertHubServicesPage', () => {
 					}
 				},
 				{
+					provide: OperationService,
+					useValue: {
+						getServicesByFormule: () => {
+							return of()
+						}
+					}
+				},
+				{
+					provide: FollowAnalyticsService,
+					useValue: {
+						registerEventFollow: () => {
+							return ""
+						}
+					}
+				},
+				{
+					provide: FavorisService,
+					useValue: {
+						getFavoritePass: () => {
+							return of()
+						}
+					}
+				},
+				{
+					provide: BottomSheetService,
+					useValue: {
+						openNumberSelectionBottomSheet: () => { }
+					}
+				},
+				{
 					provide: DashboardService,
 					useValue: {
 						getCurrentPhoneNumber: () => {
@@ -47,6 +86,28 @@ describe( 'TransfertHubServicesPage', () => {
 						},
 						getActivePromoBooster: () => {
 							return of()
+						}
+					}
+				},
+				{
+					provide: OrangeMoneyService,
+					useValue: {
+						getOmMsisdn: () => {
+							return of()
+						},
+						omAccountSession: () => {
+							return of()
+						}
+					}
+				},
+				{
+					provide: AuthenticationService,
+					useValue: {
+						getSubscriptionForTiers: () => {
+							return of()
+						},
+						getHmac: () => {
+							return ""
 						}
 					}
 				},

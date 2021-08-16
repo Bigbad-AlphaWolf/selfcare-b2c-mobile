@@ -38,10 +38,20 @@ describe( 'SidemenuComponent', () => {
 					provide: MatBottomSheet
 				},
 				{
-					provide: AppVersion
+					provide: AppVersion,
+					useValue: {
+						getVersionNumber: () => {
+							return of().toPromise()
+						}
+					}
 				},
 				{
-					provide: SocialSharing
+					provide: SocialSharing,
+					useValue: {
+						share: () => {
+							return of().toPromise()
+						}
+					}
 				},
 				{
 					provide: AccountService,
