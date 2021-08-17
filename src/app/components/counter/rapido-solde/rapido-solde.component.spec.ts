@@ -1,5 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ModalController, NavController } from '@ionic/angular';
+import { of } from 'rxjs';
+import { RapidoService } from 'src/app/services/rapido/rapido.service';
 
 import { RapidoSoldeComponent } from './rapido-solde.component';
 
@@ -7,13 +10,30 @@ describe('RapidoSoldeComponent', () => {
   let component: RapidoSoldeComponent;
   let fixture: ComponentFixture<RapidoSoldeComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ RapidoSoldeComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        providers: [
+          {
+            provide: RapidoService,
+            useValue: {
+              getSolde: () => {
+                return of();
+              },
+            },
+          },
+          {
+            provide: NavController,
+          },
+          {
+            provide: ModalController,
+          },
+        ],
+        declarations: [RapidoSoldeComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RapidoSoldeComponent);

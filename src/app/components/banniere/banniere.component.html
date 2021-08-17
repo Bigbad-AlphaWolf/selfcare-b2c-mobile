@@ -3,7 +3,7 @@
   <div class="image">
     <img-loader  [spinner]="true" [src]="imageUrl" fallbackUrl="assets/images/default_ban.PNG" useImg></img-loader>
   </div>
-  <div class="banner-overlay" *ngIf="banniere.description && banniere.description.trim() !== ''">
+  <div class="banner-overlay" *ngIf="banniere?.description && banniere?.description?.trim() !== ''">
     <div class="banner-left">
         <div class="title" *ngIf="title">{{ title }}</div>
         <div class="details" *ngIf="details">{{ details }}</div>

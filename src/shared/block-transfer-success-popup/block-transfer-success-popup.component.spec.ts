@@ -1,5 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ModalController } from '@ionic/angular';
+import { PhoneNumberDisplayPipe } from '../pipes/phone-number-display.pipe';
 
 import { BlockTransferSuccessPopupComponent } from './block-transfer-success-popup.component';
 
@@ -7,13 +10,23 @@ describe('BlockTransferSuccessPopupComponent', () => {
   let component: BlockTransferSuccessPopupComponent;
   let fixture: ComponentFixture<BlockTransferSuccessPopupComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ BlockTransferSuccessPopupComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          BlockTransferSuccessPopupComponent,
+          PhoneNumberDisplayPipe,
+        ],
+        imports: [RouterTestingModule],
+        providers: [
+          {
+            provide: ModalController,
+          },
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(BlockTransferSuccessPopupComponent);

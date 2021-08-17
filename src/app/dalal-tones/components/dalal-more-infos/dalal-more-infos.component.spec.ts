@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ModalController } from '@ionic/angular';
 
 import { DalalMoreInfosComponent } from './dalal-more-infos.component';
 
@@ -7,13 +8,20 @@ describe('DalalMoreInfosComponent', () => {
   let component: DalalMoreInfosComponent;
   let fixture: ComponentFixture<DalalMoreInfosComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DalalMoreInfosComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        providers: [
+          {
+            provide: ModalController,
+            useValue: {},
+          },
+        ],
+        declarations: [DalalMoreInfosComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DalalMoreInfosComponent);

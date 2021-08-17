@@ -29,6 +29,9 @@ describe('ChangeMainPhoneNumberPage', () => {
 					useValue: {
 						getAttachedNumbers: () => {
 							return of();
+						},
+						attachedNumbers: () => {
+							return of();
 						}
 					}
 				},

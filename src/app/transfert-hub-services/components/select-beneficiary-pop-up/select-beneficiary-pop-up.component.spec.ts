@@ -5,58 +5,72 @@ import { SelectBeneficiaryPopUpComponent } from './select-beneficiary-pop-up.com
 import { MatDialog } from '@angular/material';
 import { Contacts } from '@ionic-native/contacts';
 import { ModalController } from '@ionic/angular';
-import { Router } from '@angular/router';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { of } from 'rxjs';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { AcronymPipe } from 'src/shared/pipes/acronym.pipe';
+import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
+import { RouterTestingModule } from '@angular/router/testing';
+import { RecentsService } from 'src/app/services/recents-service/recents.service';
 
 describe('SelectBeneficiaryPopUpComponent', () => {
   let component: SelectBeneficiaryPopUpComponent;
   let fixture: ComponentFixture<SelectBeneficiaryPopUpComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SelectBeneficiaryPopUpComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: MatDialog
-        },
-        {
-          provide: Contacts
-        },
-        {
-          provide: ModalController
-        },
-        {
-          provide: Router
-        },
-        {
-          provide: DashboardService,
-          useValue: {
-            getCurrentPhoneNumber: () => {
-              return of()
-            }
-          }
-        },
-        {
-          provide: OrangeMoneyService,
-          useValue: {
-            getOmMsisdn: () => {
-              return of()
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          SelectBeneficiaryPopUpComponent,
+          AcronymPipe,
+          PhoneNumberDisplayPipe,
+        ],
+        imports: [RouterTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: MatDialog,
+          },
+          {
+            provide: Contacts,
+          },
+          {
+            provide: ModalController,
+          },
+          {
+            provide: DashboardService,
+            useValue: {
+              getCurrentPhoneNumber: () => {
+                return '';
+              },
             },
-            checkUserHasAccount: () => {
-              return of()
+          },
+          {
+            provide: RecentsService,
+            useValue: {
+              fetchRecents: () => {
+                return of();
+              },
             },
-            GetUserAuthInfo: () => {
-              return of()
-            }
-          }
-        }
-      ]
+          },
+          {
+            provide: OrangeMoneyService,
+            useValue: {
+              getOmMsisdn: () => {
+                return of();
+              },
+              checkUserHasAccount: () => {
+                return of();
+              },
+              GetUserAuthInfo: () => {
+                return of();
+              },
+            },
+          },
+        ],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectBeneficiaryPopUpComponent);

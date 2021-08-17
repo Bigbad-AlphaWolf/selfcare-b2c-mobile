@@ -1,5 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 import { DashboardHeaderComponent } from './dashboard-header.component';
 
@@ -7,13 +10,28 @@ describe('DashboardHeaderComponent', () => {
   let component: DashboardHeaderComponent;
   let fixture: ComponentFixture<DashboardHeaderComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DashboardHeaderComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [DashboardHeaderComponent],
+        imports: [RouterTestingModule],
+        providers: [
+          {
+            provide: Location,
+          },
+          {
+            provide: FollowAnalyticsService,
+            useValue: {
+              registerEventFollow: () => {
+                return '';
+              },
+            },
+          },
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardHeaderComponent);

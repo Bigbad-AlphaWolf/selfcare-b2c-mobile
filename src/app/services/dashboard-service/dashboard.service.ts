@@ -1,7 +1,17 @@
 import { Injectable, RendererFactory2, Inject, Renderer2 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject, Observable, Subscription, of } from 'rxjs';
-import { tap, map, switchMap, catchError, share, take, retryWhen, delay, mergeMap } from 'rxjs/operators';
+import {
+  tap,
+  map,
+  switchMap,
+  catchError,
+  share,
+  take,
+  retryWhen,
+  delay,
+  mergeMap,
+} from 'rxjs/operators';
 import * as SecureLS from 'secure-ls';
 import { environment } from 'src/environments/environment';
 import { AuthenticationService } from '../authentication-service/authentication.service';
@@ -12,9 +22,9 @@ import {
   SubscriptionModel,
   REGEX_FIX_NUMBER,
   USER_CONS_CATEGORY_CALL,
-  ItemUserConso
+  ItemUserConso,
 } from 'src/shared';
-import { DOCUMENT } from "@angular/common";
+import { DOCUMENT } from '@angular/common';
 import { SessionOem } from '../session-oem/session-oem.service';
 import { BoosterModel, BoosterTrigger } from 'src/app/models/booster.model';
 import { GiftType } from 'src/app/models/enums/gift-type.enum';
@@ -28,7 +38,7 @@ const {
   ACCOUNT_MNGT_SERVICE,
   UAA_SERVICE,
   PURCHASES_SERVICE,
-  BOOSTER_SERVICE
+  BOOSTER_SERVICE,
 } = environment;
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -64,8 +74,6 @@ const listFormulesEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/formule-mob
 const initOTPReinitializeEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password/init`;
 const reinitializeEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password/finish`;
 
-const buyPassInternetForSomeoneByCreditEndpoint = `${SERVER_API_URL}/${PURCHASES_SERVICE}/api/achat/internet-for-other`;
-
 // Endpoint to get sargal balance
 const sargalBalanceEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/`;
 const welcomeStatusEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters`;
@@ -88,7 +96,7 @@ const listPassInternetEndpointLight = `${SERVER_API_URL}/${CONSO_SERVICE}/api/li
 const listPassIllimixEndpointLight = `${SERVER_API_URL}/${CONSO_SERVICE}/api/light/pass-illimix-by-formule`;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DashboardService {
   static CURRENT_DASHBOARD: string = '/dashboard';
@@ -112,7 +120,7 @@ export class DashboardService {
     private boosterService: BoosterService
   ) {
     this.renderer = rendererFactory.createRenderer(null, null);
-    authService.currentPhoneNumberSetSubject.subscribe(value => {
+    authService.currentPhoneNumberSetSubject.subscribe((value) => {
       if (value) {
         this.user = this.authService.getLocalUserInfos();
         this.setCurrentPhoneNumber(this.user.login);
@@ -135,7 +143,11 @@ export class DashboardService {
   getRattachmentlistUpdateInfo() {
     return this.updateRattachmentList.asObservable();
   }
-  reinitializePassword(payload: { otp: string; newPassword: string; login: string }) {
+  reinitializePassword(payload: {
+    otp: string;
+    newPassword: string;
+    login: string;
+  }) {
     return this.http.post(reinitializeEndpoint, payload);
   }
 
@@ -147,17 +159,21 @@ export class DashboardService {
   getUserCallCompteursInfos() {
     return this.getUserConsoInfosByCode().pipe(
       map((res: ItemUserConso[]) => {
-        return res.find(elt => elt.categorie === USER_CONS_CATEGORY_CALL);
+        return res.find((elt) => elt.categorie === USER_CONS_CATEGORY_CALL);
       })
     );
   }
 
   getCurrentDate() {
     const date = new Date();
-    const lastDate = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(
-      -2
-    )}/${date.getFullYear()}`;
-    const lastDateTime = `${date.getHours()}h` + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+    const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
+      '0' +
+      (date.getMonth() + 1)
+    ).slice(-2)}/${date.getFullYear()}`;
+    const lastDateTime =
+      `${date.getHours()}h` +
+      (date.getMinutes() < 10 ? '0' : '') +
+      date.getMinutes();
     return `${lastDate} à ${lastDateTime}`;
   }
 
@@ -168,10 +184,10 @@ export class DashboardService {
       map((res: any) => {
         return this.processConso(res, true);
       }),
-      retryWhen(errors => {
+      retryWhen((errors) => {
         return errors.pipe(
           delay(1000),
-          mergeMap(error => {
+          mergeMap((error) => {
             if (retries > 0) {
               retries--;
               return of(error);
@@ -185,7 +201,9 @@ export class DashboardService {
 
   getPostpaidConsoHistory(day) {
     this.msisdn = this.getCurrentPhoneNumber();
-    return this.http.get(`${postpaidUserHistoryEndpoint}/${this.msisdn}/${day}`);
+    return this.http.get(
+      `${postpaidUserHistoryEndpoint}/${this.msisdn}/${day}`
+    );
   }
 
   getMainPhoneNumberProfil() {
@@ -216,34 +234,45 @@ export class DashboardService {
   }
 
   // attach new mobile phone number
-  registerNumberToAttach(detailsToCheck: { numero: string; typeNumero: 'MOBILE' | 'FIXE' }) {
+  registerNumberToAttach(detailsToCheck: {
+    numero: string;
+    typeNumero: 'MOBILE' | 'FIXE';
+  }) {
     detailsToCheck = Object.assign(detailsToCheck, {
-      login: this.authService.getUserMainPhoneNumber()
+      login: this.authService.getUserMainPhoneNumber(),
     });
-    return this.http.post(`${attachMobileNumberEndpoint}/register`, detailsToCheck).pipe(
-      tap(() => {
-        DashboardService.rattachedNumbers = null;
-        this.attachedNumbers().pipe(take(1)).subscribe();
-        this.attachedNumbersChangedSubject.next();
-      })
-    );
+    return this.http
+      .post(`${attachMobileNumberEndpoint}/register`, detailsToCheck)
+      .pipe(
+        tap(() => {
+          DashboardService.rattachedNumbers = null;
+          this.attachedNumbers().pipe(take(1)).subscribe();
+          this.attachedNumbersChangedSubject.next();
+        })
+      );
   }
 
   get attachedNumbersChanged() {
     return this.attachedNumbersChangedSubject.asObservable();
   }
 
-  registerNumberByIdClient(payload: { numero: string; idClient: string; typeNumero: 'MOBILE' | 'FIXE' }) {
+  registerNumberByIdClient(payload: {
+    numero: string;
+    idClient: string;
+    typeNumero: 'MOBILE' | 'FIXE';
+  }) {
     payload = Object.assign(payload, {
-      login: this.authService.getUserMainPhoneNumber()
+      login: this.authService.getUserMainPhoneNumber(),
     });
-    return this.http.post(`${attachMobileNumberEndpoint}/fixe-register`, payload).pipe(
-      tap(() => {
-        DashboardService.rattachedNumbers = null;
-        this.attachedNumbers().pipe(take(1)).subscribe();
-        this.attachedNumbersChangedSubject.next();
-      })
-    );
+    return this.http
+      .post(`${attachMobileNumberEndpoint}/fixe-register`, payload)
+      .pipe(
+        tap(() => {
+          DashboardService.rattachedNumbers = null;
+          this.attachedNumbers().pipe(take(1)).subscribe();
+          this.attachedNumbersChangedSubject.next();
+        })
+      );
   }
 
   // check if fix number is already linked to an account
@@ -258,7 +287,8 @@ export class DashboardService {
   }
 
   attachedNumbers() {
-    if (DashboardService.rattachedNumbers) return of(DashboardService.rattachedNumbers);
+    if (DashboardService.rattachedNumbers)
+      return of(DashboardService.rattachedNumbers);
 
     return this.getAttachedNumbers().pipe(
       tap((elements: any) => {
@@ -271,11 +301,11 @@ export class DashboardService {
     const mainMsisdn = this.getMainPhoneNumber();
     let mainMsisdnInfos;
     return this.authService.getSubscription(mainMsisdn).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         mainMsisdnInfos = {
           msisdn: mainMsisdn,
           profil: res.profil,
-          formule: res.nomOffre
+          formule: res.nomOffre,
         };
         return this.getAttachedNumbers().pipe(
           map((res: any[]) => {
@@ -294,9 +324,11 @@ export class DashboardService {
     return this.getAttachedNumbers().pipe(
       map((elements: any) => {
         let numbers = [];
-        if (REGEX_FIX_NUMBER.test(SessionOem.MAIN_PHONE)) numbers.push(SessionOem.MAIN_PHONE);
+        if (REGEX_FIX_NUMBER.test(SessionOem.MAIN_PHONE))
+          numbers.push(SessionOem.MAIN_PHONE);
         elements.forEach((element: any) => {
-          if (REGEX_FIX_NUMBER.test(element.msisdn)) numbers.push(element.msisdn);
+          if (REGEX_FIX_NUMBER.test(element.msisdn))
+            numbers.push(element.msisdn);
         });
         return numbers;
       }),
@@ -372,9 +404,11 @@ export class DashboardService {
       const s: HTMLScriptElement = this.renderer.createElement('script');
       s.type = 'text/javascript';
       s.async = true;
-      s.src = 'https://sonatel.dimelochat.com/chat/b25dc90dcaed229e01ff8ffe/loader.js';
+      s.src =
+        'https://sonatel.dimelochat.com/chat/b25dc90dcaed229e01ff8ffe/loader.js';
       s.id = 'initDimelo';
-      const first: HTMLScriptElement = document.getElementsByTagName('script')[0];
+      const first: HTMLScriptElement =
+        document.getElementsByTagName('script')[0];
       first.parentNode.insertBefore(s, first);
     }
   }
@@ -383,7 +417,9 @@ export class DashboardService {
     this.removeScriptChatIbouIfExist();
     const s = this.renderer.createElement('script');
     s.type = 'text/javascript';
-    s.text = 'var trigger_id = "5f04681b0e69dc63aac7bb0e";' + 'loadChatTrigger(trigger_id)';
+    s.text =
+      'var trigger_id = "5f04681b0e69dc63aac7bb0e";' +
+      'loadChatTrigger(trigger_id)';
     s.id = 'ibou';
     this.renderer.appendChild(this._document.body, s);
   }
@@ -414,7 +450,7 @@ export class DashboardService {
     // filter by code not working on Orange VM so
     let queryParams = '';
     if (consoCodes && Array.isArray(consoCodes) && consoCodes.length) {
-      const params = consoCodes.map(code => `code=${code}`).join('&');
+      const params = consoCodes.map((code) => `code=${code}`).join('&');
       queryParams = `?${params}`;
     }
     if (hmac) {
@@ -425,10 +461,10 @@ export class DashboardService {
       map((res: any) => {
         return this.processConso(res);
       }),
-      retryWhen(errors => {
+      retryWhen((errors) => {
         return errors.pipe(
           delay(1000),
-          mergeMap(error => {
+          mergeMap((error) => {
             if (retries > 0) {
               retries--;
               return of(error);
@@ -464,7 +500,9 @@ export class DashboardService {
   }
 
   getListPassIllimix(codeFormule, category?: string, isLightMod?: boolean) {
-    let endpoint = isLightMod ? listPassIllimixEndpointLight : listPassIllimixEndpoint;
+    let endpoint = isLightMod
+      ? listPassIllimixEndpointLight
+      : listPassIllimixEndpoint;
     let url = `${endpoint}/${codeFormule}`;
     let queryParams = '';
     const hmac = this.authService.getHmac();
@@ -481,8 +519,14 @@ export class DashboardService {
     return this.http.get(url);
   }
 
-  getListPassInternet(codeFormule: string, isLighMod?: boolean, typeUsage = 'TOUS') {
-    const endpoint = isLighMod ? listPassInternetEndpointLight : listPassInternetEndpoint;
+  getListPassInternet(
+    codeFormule: string,
+    isLighMod?: boolean,
+    typeUsage = 'TOUS'
+  ) {
+    const endpoint = isLighMod
+      ? listPassInternetEndpointLight
+      : listPassInternetEndpoint;
     let queryParams = `?typeUsage=${typeUsage}`;
     const hmac = this.authService.getHmac();
     const currentNumber = this.getCurrentPhoneNumber();
@@ -531,42 +575,52 @@ export class DashboardService {
 
   getIdClient() {
     const phoneNumber = this.getCurrentPhoneNumber();
-    return this.authService.getSubscription(phoneNumber).pipe(map((response: any) => response.clientCode));
+    return this.authService
+      .getSubscription(phoneNumber)
+      .pipe(map((response: any) => response.clientCode));
   }
 
   getCodeFormuleOfMsisdn(msisdn: string) {
     let res: any;
-    this.authService.getSubscription(msisdn).subscribe((souscription: SubscriptionUserModel) => {
-      const codeFormule =
-        souscription.profil === 'HYBRID' || souscription.profil === 'ND' ? JAMONO_ALLO_CODE_FORMULE : souscription.code;
-      res = of(codeFormule);
-    });
+    this.authService
+      .getSubscription(msisdn)
+      .subscribe((souscription: SubscriptionUserModel) => {
+        const codeFormule =
+          souscription.profil === 'HYBRID' || souscription.profil === 'ND'
+            ? JAMONO_ALLO_CODE_FORMULE
+            : souscription.code;
+        res = of(codeFormule);
+      });
 
     return res;
   }
 
   getWelcomeStatus() {
     const currentPhoneNumber = this.getCurrentPhoneNumber();
-    return this.boosterService.getBoosters({ trigger: BoosterTrigger.FORM_INSCRIPTION }).pipe(
-      switchMap((res: BoosterModel[]) => {
-        const lastWelcomeBooster = res[0];
-        return this.http
-          .get(`${boosterTransactionEndpoint}/?msisdn=${currentPhoneNumber}&boosterId=${lastWelcomeBooster.id}`)
-          .pipe(
-            map((res: any) => {
-              const response = {
-                status: res.transactionStatus,
-                type: GiftType.RECHARGE,
-                value: {
-                  amount: res.transactionDetails.transactionValue,
-                  unit: 'F CFA'
-                }
-              };
-              return response;
-            })
-          );
-      })
-    );
+    return this.boosterService
+      .getBoosters({ trigger: BoosterTrigger.FORM_INSCRIPTION })
+      .pipe(
+        switchMap((res: BoosterModel[]) => {
+          const lastWelcomeBooster = res[0];
+          return this.http
+            .get(
+              `${boosterTransactionEndpoint}/?msisdn=${currentPhoneNumber}&boosterId=${lastWelcomeBooster.id}`
+            )
+            .pipe(
+              map((res: any) => {
+                const response = {
+                  status: res.transactionStatus,
+                  type: GiftType.RECHARGE,
+                  value: {
+                    amount: res.transactionDetails.transactionValue,
+                    unit: 'F CFA',
+                  },
+                };
+                return response;
+              })
+            );
+        })
+      );
   }
 
   getActivePromoBooster() {
@@ -577,22 +631,28 @@ export class DashboardService {
           .getBoosters({
             trigger: BoosterTrigger.TOUS,
             codeFormuleRecipient: res.code,
-            msisdn: currentPhoneNumber
+            msisdn: currentPhoneNumber,
           })
           .pipe(
             map((res: BoosterModel[]) => {
-              const promoPass = res.find(promo => promo.boosterTrigger === BoosterTrigger.PASS_INTERNET);
-              const promoRecharge = res.find(promo => promo.boosterTrigger === BoosterTrigger.RECHARGE);
-              const promoPassIllimix = res.find(promo => promo.boosterTrigger === BoosterTrigger.PASS_ILLIMIX);
+              const promoPass = res.find(
+                (promo) => promo.boosterTrigger === BoosterTrigger.PASS_INTERNET
+              );
+              const promoRecharge = res.find(
+                (promo) => promo.boosterTrigger === BoosterTrigger.RECHARGE
+              );
+              const promoPassIllimix = res.find(
+                (promo) => promo.boosterTrigger === BoosterTrigger.PASS_ILLIMIX
+              );
               return { promoPass, promoRecharge, promoPassIllimix };
             })
           );
       }),
-      catchError(_ => {
+      catchError((_) => {
         return of({
           promoPass: null,
           promoRecharge: null,
-          promoPassIllimix: null
+          promoPassIllimix: null,
         });
       })
     );
@@ -614,7 +674,7 @@ export class DashboardService {
     if (userInfos) return of(userInfos);
     const msisdn = this.getMainPhoneNumber();
     return this.http.get(`${userInfosEndpoint}/${msisdn}`).pipe(
-      map(infos => {
+      map((infos) => {
         ls.set('userInfos', infos);
         return infos;
       })
@@ -639,8 +699,11 @@ export class DashboardService {
 
   getFixPostpaidInfos() {
     const msisdn = this.getCurrentPhoneNumber();
-    return this.http.get(`${ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT}/${msisdn}/status`, {
-      responseType: 'text'
-    });
+    return this.http.get(
+      `${ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT}/${msisdn}/status`,
+      {
+        responseType: 'text',
+      }
+    );
   }
 }

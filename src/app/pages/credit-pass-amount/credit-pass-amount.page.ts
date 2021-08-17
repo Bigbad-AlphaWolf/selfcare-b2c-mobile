@@ -4,49 +4,49 @@ import { NavController } from "@ionic/angular";
 import { OperationExtras } from "src/app/models/operation-extras.model";
 import { getPageHeader } from 'src/app/utils/title.util';
 
-@Component({
-  selector: "app-credit-pass-amount",
-  templateUrl: "./credit-pass-amount.page.html",
-  styleUrls: ["./credit-pass-amount.page.scss"],
-})
+@Component( {
+	selector: "app-credit-pass-amount",
+	templateUrl: "./credit-pass-amount.page.html",
+	styleUrls: ["./credit-pass-amount.page.scss"],
+} )
 export class CreditPassAmountPage implements OnInit {
-  public static readonly PATH: string = "/credit-pass-amount";
+	public static readonly PATH: string = "/credit-pass-amount";
 
-  title: string;
-  opXtras: OperationExtras = {};
-  initialAmount : number ;
-  inputAmount : any ;
+	title: string;
+	opXtras: OperationExtras = {};
+	initialAmount: number;
+	inputAmount: any;
 
-  constructor(
-    private navController: NavController,
-  ) {}
+	constructor(
+		private navController: NavController,
+	) { }
 
 
-  ngOnInit() {
-    this.opXtras = history.state;
-    this.title = (getPageHeader(this.opXtras.purchaseType)).title;
-  }
+	ngOnInit() {
+		this.opXtras = history.state;
+		if ( this.opXtras ) this.title = ( getPageHeader( this.opXtras.purchaseType ) ).title;
+	}
 
-  ionViewWillEnter(){
-    this.opXtras.amount = this.inputAmount;
-  }
+	ionViewWillEnter() {
+		this.opXtras.amount = this.inputAmount;
+	}
 
-  onAmountSelected(amount: string) {
-    this.opXtras.amount = amount;
-    this.onContinue();
-  }
+	onAmountSelected( amount: string ) {
+		this.opXtras.amount = amount;
+		this.onContinue();
+	}
 
-  onInputSelected(amount: string) {
-    this.inputAmount = amount;
-    this.opXtras.amount = amount;
-  }
+	onInputSelected( amount: string ) {
+		this.inputAmount = amount;
+		this.opXtras.amount = amount;
+	}
 
-  onContinue() {
-    const navExtras: NavigationExtras = { state: this.opXtras };
-    this.navController.navigateForward(["/operation-recap"], navExtras);
-  }
+	onContinue() {
+		const navExtras: NavigationExtras = { state: this.opXtras };
+		this.navController.navigateForward( ["/operation-recap"], navExtras );
+	}
 
-  goBack() {
-    this.navController.pop();
-  }
+	goBack() {
+		this.navController.pop();
+	}
 }

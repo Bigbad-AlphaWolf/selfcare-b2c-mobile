@@ -18,7 +18,9 @@ describe('SosListComponent', () => {
 				{
 					provide: SosService,
 					useValue: {
-						getListSosByFormule: () => {}
+						getListSosByFormule: () => {
+							return of()
+						}
 					}
 				},
 				{

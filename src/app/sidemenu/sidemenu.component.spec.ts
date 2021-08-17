@@ -2,64 +2,102 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SidemenuComponent } from './sidemenu.component';
-import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { of } from 'rxjs';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import { MatDialog } from '@angular/material';
+import { MatBottomSheet, MatDialog } from '@angular/material';
 import { AccountService } from '../services/account-service/account.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
+import { Location } from '@angular/common';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AppVersion } from '@ionic-native/app-version/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 
 describe('SidemenuComponent', () => {
   let component: SidemenuComponent;
   let fixture: ComponentFixture<SidemenuComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SidemenuComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: Router
-        },
-        {
-          provide: MatDialog
-        },
-        {
-          provide: InAppBrowser
-        },
-        {
-          provide: AccountService,
-          useValue: {
-            launchInProgressPage:() => { },
-            userUrlAvatarSubject:  of()
-          }
-        },
-        {
-          provide: AuthenticationService,
-          useValue: {
-            getToken: () => {
-              return ""
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [RouterTestingModule],
+        declarations: [SidemenuComponent, PhoneNumberDisplayPipe],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: MatDialog,
+          },
+          {
+            provide: InAppBrowser,
+          },
+          {
+            provide: Location,
+          },
+          {
+            provide: MatBottomSheet,
+          },
+          {
+            provide: AppVersion,
+            useValue: {
+              getVersionNumber: () => {
+                return of().toPromise();
+              },
             },
-            getSubscription: () => {
-              return of()
+          },
+          {
+            provide: SocialSharing,
+            useValue: {
+              share: () => {
+                return of().toPromise();
+              },
             },
-            currentPhoneNumbersubscriptionUpdated:  of()
-          }
-        },
-        {
-          provide: DashboardService,
-          useValue: {
-            currentPhoneNumberChange:  of(),
-            getCurrentPhoneNumber: () => {
-              return ""
-            }
-          }
-        }
-      ]
+          },
+          {
+            provide: AccountService,
+            useValue: {
+              launchInProgressPage: () => {},
+              userUrlAvatarSubject: of(),
+              deletedPhoneNumbersEmit: () => {
+                return of();
+              },
+            },
+          },
+          {
+            provide: BottomSheetService,
+            useValue: {
+              openRattacheNumberModal: () => {},
+            },
+          },
+          {
+            provide: AuthenticationService,
+            useValue: {
+              getToken: () => {
+                return '';
+              },
+              getSubscription: () => {
+                return of();
+              },
+              currentPhoneNumbersubscriptionUpdated: of(),
+            },
+          },
+          {
+            provide: DashboardService,
+            useValue: {
+              currentPhoneNumberChange: of(),
+              getCurrentPhoneNumber: () => {
+                return '';
+              },
+              attachedNumbersChanged: of(),
+              getMainPhoneNumber: () => {},
+              setCurrentPhoneNumber: () => {},
+            },
+          },
+        ],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SidemenuComponent);

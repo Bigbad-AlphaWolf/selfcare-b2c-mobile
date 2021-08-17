@@ -11,7 +11,7 @@ import { of } from 'rxjs';
 @Component({
   selector: 'app-bill-amount',
   templateUrl: './bill-amount.page.html',
-  styleUrls: ['./bill-amount.page.scss']
+  styleUrls: ['./bill-amount.page.scss'],
 })
 export class BillAmountPage implements OnInit {
   static ROUTE_PATH: string = '/bill-amount';
@@ -34,11 +34,19 @@ export class BillAmountPage implements OnInit {
   lastFees: FeeModel;
   hasErrorOnRequest: boolean;
   isLoadingFees: boolean;
-  constructor(private navController: NavController, private feeService: FeesService) {}
+  constructor(
+    private navController: NavController,
+    private feeService: FeesService
+  ) {}
 
   ngOnInit() {
     this.opXtras = history.state;
-    if (this.opXtras && this.opXtras.billData && this.opXtras.billData.company && this.opXtras.billData.company.codeOM)
+    if (
+      this.opXtras &&
+      this.opXtras.billData &&
+      this.opXtras.billData.company &&
+      this.opXtras.billData.company.codeOM
+    )
       this.service = this.opXtras.billData.company.codeOM.toLowerCase();
 
     this.title = getPageHeader(this.opXtras.purchaseType).title;
@@ -63,7 +71,7 @@ export class BillAmountPage implements OnInit {
             this.hasErrorOnRequest = true;
           }
         }),
-        catchError(err => {
+        catchError((err) => {
           this.hasErrorOnRequest = true;
           this.isLoadingFees = false;
           return of(err);
@@ -96,12 +104,18 @@ export class BillAmountPage implements OnInit {
   inputAmountIsValid(amount: number) {
     if (!amount) return false;
 
-    return this.isFee ? this.amountExcludeFeeIsValid(amount) : this.amountIncludeFeeIsValid(amount);
+    return this.isFee
+      ? this.amountExcludeFeeIsValid(amount)
+      : this.amountIncludeFeeIsValid(amount);
   }
 
   amountIncludeFeeIsValid(amount: number) {
     const feeInclude = true;
-    let feesIncludes = this.feeService.extractFees(this.feesArray, amount, feeInclude);
+    let feesIncludes = this.feeService.extractFees(
+      this.feesArray,
+      amount,
+      feeInclude
+    );
     this.amountIsValid = !!feesIncludes;
     return amount >= this.firstFees.min && amount <= this.lastFees.max;
   }

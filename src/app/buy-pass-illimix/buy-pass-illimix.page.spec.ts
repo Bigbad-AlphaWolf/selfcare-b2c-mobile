@@ -8,6 +8,7 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { of } from 'rxjs';
 import { MatDialogRef, MatDialogModule } from '@angular/material';
+import { ModalController } from '@ionic/angular';
 
 describe('BuyPassIllimixPage', () => {
   let component: BuyPassIllimixPage;
@@ -20,6 +21,9 @@ describe('BuyPassIllimixPage', () => {
       providers: [
         {
           provide: Router
+        },
+        {
+          provide: ModalController
         },
         {
           provide: HttpClient

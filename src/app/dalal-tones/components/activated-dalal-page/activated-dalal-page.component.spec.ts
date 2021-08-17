@@ -1,5 +1,8 @@
+import { Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { UrlSerializer } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 
 import { ActivatedDalalPageComponent } from './activated-dalal-page.component';
 
@@ -7,13 +10,28 @@ describe('ActivatedDalalPageComponent', () => {
   let component: ActivatedDalalPageComponent;
   let fixture: ComponentFixture<ActivatedDalalPageComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ActivatedDalalPageComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        providers: [
+          {
+            provide: Location,
+            useValue: {},
+          },
+          {
+            provide: ModalController,
+            useValue: {},
+          },
+          {
+            provide: UrlSerializer,
+            useValue: {},
+          },
+        ],
+        declarations: [ActivatedDalalPageComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ActivatedDalalPageComponent);

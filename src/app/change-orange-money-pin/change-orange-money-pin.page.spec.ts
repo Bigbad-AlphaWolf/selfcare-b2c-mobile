@@ -1,5 +1,13 @@
+import { Location } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UrlSerializer } from '@angular/router';
+import { ModalController } from '@ionic/angular';
+import { of } from 'rxjs';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 
 import { ChangeOrangeMoneyPinPage } from './change-orange-money-pin.page';
 
@@ -7,13 +15,40 @@ describe('ChangeOrangeMoneyPinPage', () => {
   let component: ChangeOrangeMoneyPinPage;
   let fixture: ComponentFixture<ChangeOrangeMoneyPinPage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ChangeOrangeMoneyPinPage ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [FormsModule, ReactiveFormsModule],
+        providers: [
+          {
+            provide: ModalController,
+          },
+          {
+            provide: Location,
+          },
+          {
+            provide: UrlSerializer,
+          },
+          {
+            provide: OrangeMoneyService,
+            useValue: {
+              changePin: () => {
+                return of();
+              },
+            },
+          },
+          {
+            provide: FollowAnalyticsService,
+            useValue: {
+              registerEventFollow: () => {},
+            },
+          },
+        ],
+        declarations: [ChangeOrangeMoneyPinPage],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ChangeOrangeMoneyPinPage);

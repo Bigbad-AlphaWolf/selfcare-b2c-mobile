@@ -36,8 +36,8 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
       pin: ['', [Validators.required]],
       confirmPin: ['', [Validators.required]],
     });
-    this.omInfos = history.state.omUserInfos;
-    this.birthYear = history.state.birthYear;
+    this.omInfos = history.state && history.state.omUserInfos ? history.state.omUserInfos : null;
+    this.birthYear = history.state && history.state.birthYear ? history.state.birthYear: null;
 
     this.followAnalyticsService.registerEventFollow(
       'Change_Pin_OM_page',

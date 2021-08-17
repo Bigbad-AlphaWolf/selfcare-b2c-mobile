@@ -1,5 +1,10 @@
+import { Location } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatBottomSheet, MatDialog } from '@angular/material';
+import { UrlSerializer } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 
 import { OemOperationsComponent } from './oem-operations.component';
 
@@ -7,13 +12,40 @@ describe('OemOperationsComponent', () => {
   let component: OemOperationsComponent;
   let fixture: ComponentFixture<OemOperationsComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ OemOperationsComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        providers: [
+          {
+            provide: MatBottomSheet,
+            useValue: {},
+          },
+          {
+            provide: MatDialog,
+            useValue: {},
+          },
+          {
+            provide: HttpClient,
+            useValue: {},
+          },
+          {
+            provide: UrlSerializer,
+            useValue: {},
+          },
+          {
+            provide: Location,
+            useValue: {},
+          },
+          {
+            provide: ModalController,
+            useValue: {},
+          },
+        ],
+        declarations: [OemOperationsComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(OemOperationsComponent);

@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class FormatBillNumPipe implements PipeTransform {
   transform(billNumero: any, args?: any): any {
     const regexNumber = /\d{9}/;
-    billNumero = billNumero.replace(regexNumber, '');
+    billNumero = billNumero ? billNumero.replace(regexNumber, '') : '';
     return billNumero;
   }
 }

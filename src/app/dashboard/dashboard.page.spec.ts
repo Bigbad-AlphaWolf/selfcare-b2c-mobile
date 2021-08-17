@@ -7,32 +7,37 @@ import { Router } from '@angular/router';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { MatDialog } from '@angular/material';
+import { Location } from '@angular/common';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('DashboardPage', () => {
   let component: DashboardPage;
   let fixture: ComponentFixture<DashboardPage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [DashboardPage],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        { provide: HttpClient },
-        {
-          provide: Router,
-        },
-        {
-          provide: AppMinimize,
-        },
-        {
-          provide: AppVersion,
-        },
-        {
-          provide: MatDialog,
-        },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [DashboardPage],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [RouterTestingModule],
+        providers: [
+          { provide: HttpClient },
+          {
+            provide: AppMinimize,
+          },
+          {
+            provide: AppVersion,
+          },
+          {
+            provide: Location,
+          },
+          {
+            provide: MatDialog,
+          },
+        ],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardPage);

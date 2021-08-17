@@ -1,32 +1,37 @@
 import { Directive, ElementRef } from '@angular/core';
 
-@Directive({
-  selector: '[noIonSelectArrow]',
-})
+@Directive( {
+	selector: '[noIonSelectArrow]',
+} )
 export class NoIonSelectArrowDirective {
-  private observer: MutationObserver;
+	private observer: MutationObserver;
 
-  constructor(private el?: ElementRef) {
-    const node = this.el.nativeElement;
+	constructor( private el?: ElementRef ) {
+		let node;
+		if ( this.el ) {
+			node = this.el.nativeElement;
+		} else {
+			return
+		}
 
-    this.observer = new MutationObserver((mutations) => {
-      this.removeArrow();
-    });
+		this.observer = new MutationObserver( ( mutations ) => {
+			this.removeArrow();
+		} );
 
-    this.observer.observe(node, {
-      childList: true,
-    });
-  }
+		this.observer.observe( node, {
+			childList: true,
+		} );
+	}
 
-  private removeArrow() {
-    let icon: HTMLElement = this.el.nativeElement.shadowRoot.querySelector(
-      '.select-icon'
-    );
-    if (icon === null) {
-      return;
-    }
-    // This mutation has added the arrow. Remove it.
-    icon.setAttribute('style', 'display: none !important');
-    this.observer.disconnect();
-  }
+	private removeArrow() {
+		let icon: HTMLElement = this.el.nativeElement.shadowRoot.querySelector(
+			'.select-icon'
+		);
+		if ( icon === null ) {
+			return;
+		}
+		// This mutation has added the arrow. Remove it.
+		icon.setAttribute( 'style', 'display: none !important' );
+		this.observer.disconnect();
+	}
 }

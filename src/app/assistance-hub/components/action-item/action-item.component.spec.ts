@@ -1,5 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { ModalController } from '@ionic/angular';
 
 import { ActionItemComponent } from './action-item.component';
 
@@ -7,13 +11,28 @@ describe('ActionItemComponent', () => {
   let component: ActionItemComponent;
   let fixture: ComponentFixture<ActionItemComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ActionItemComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ActionItemComponent],
+        providers: [
+          {
+            provide: Router,
+          },
+          {
+            provide: ModalController,
+          },
+          {
+            provide: HttpClient,
+          },
+          {
+            provide: InAppBrowser,
+          },
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ActionItemComponent);

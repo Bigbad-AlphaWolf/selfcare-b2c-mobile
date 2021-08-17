@@ -15,42 +15,45 @@ import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ModalController } from '@ionic/angular';
+import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
 
 describe('NewPinpadModalPage', () => {
   let component: NewPinpadModalPage;
   let fixture: ComponentFixture<NewPinpadModalPage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [NewPinpadModalPage],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-      imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatInputModule,
-        MatSelectModule,
-        MatFormFieldModule,
-        BrowserAnimationsModule,
-      ],
-      providers: [
-        { provide: MatDialogRef, useValue: {} },
-        { provide: ModalController, useValue: {} },
-        { provide: MatDialog, useValue: {} },
-        { provide: Router, useValue: {} },
-        {
-          provide: HttpClient,
-          useValue: {
-            post: () => {
-              return of();
-            },
-            get: () => {
-              return of();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [NewPinpadModalPage, PhoneNumberDisplayPipe],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+        imports: [
+          FormsModule,
+          ReactiveFormsModule,
+          MatInputModule,
+          MatSelectModule,
+          MatFormFieldModule,
+          BrowserAnimationsModule,
+        ],
+        providers: [
+          { provide: MatDialogRef, useValue: {} },
+          { provide: ModalController, useValue: {} },
+          { provide: MatDialog, useValue: {} },
+          { provide: Router, useValue: {} },
+          {
+            provide: HttpClient,
+            useValue: {
+              post: () => {
+                return of();
+              },
+              get: () => {
+                return of();
+              },
             },
           },
-        },
-      ],
-    }).compileComponents();
-  }));
+        ],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NewPinpadModalPage);

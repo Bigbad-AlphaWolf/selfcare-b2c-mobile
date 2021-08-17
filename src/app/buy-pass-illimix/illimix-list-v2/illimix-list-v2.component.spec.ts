@@ -21,7 +21,9 @@ describe('IllimixListV2Component', () => {
             setUserCodeFormule: () => {},
             setPhoneNumber: () => {},
             setPaymentMod: () => {},
-            queryListPassIllimix: () => {},
+            queryListPassIllimix: () => {
+              return of()
+            },
             getStatusLoadingPass: () => {
               return of();
             },
