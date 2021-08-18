@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material';
 import { UrlSerializer } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IonicModule, ModalController } from '@ionic/angular';
@@ -64,6 +65,7 @@ describe('CancelTransactionOmPage', () => {
           FormsModule,
           RouterTestingModule,
           IonicModule,
+          MatCheckboxModule,
         ],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
       }).compileComponents();

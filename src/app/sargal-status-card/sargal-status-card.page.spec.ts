@@ -6,31 +6,34 @@ import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pi
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SargalStatusCardPage', () => {
   let component: SargalStatusCardPage;
   let fixture: ComponentFixture<SargalStatusCardPage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [SargalStatusCardPage, PhoneNumberDisplayPipe],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        { provide: Router },
-        {
-          provide: HttpClient,
-          useValue: {
-            get() {
-              return of();
-            },
-            post() {
-              return of();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [RouterTestingModule],
+        declarations: [SargalStatusCardPage, PhoneNumberDisplayPipe],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: HttpClient,
+            useValue: {
+              get() {
+                return of();
+              },
+              post() {
+                return of();
+              },
             },
           },
-        },
-      ],
-    }).compileComponents();
-  }));
+        ],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SargalStatusCardPage);

@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { Location } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AngularDelegate } from '@ionic/angular';
 
 describe('ListePassPage', () => {
   let component: ListePassPage;
@@ -19,7 +20,7 @@ describe('ListePassPage', () => {
         imports: [RouterTestingModule],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
-          { provide: ActivatedRoute },
+          AngularDelegate,
           { provide: Location },
           { provide: UrlSerializer },
           {

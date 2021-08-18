@@ -49,7 +49,7 @@ export class BillAmountPage implements OnInit {
     )
       this.service = this.opXtras.billData.company.codeOM.toLowerCase();
 
-    this.title = getPageHeader(this.opXtras.purchaseType).title;
+    this.title = getPageHeader(this.opXtras?.purchaseType)?.title;
     this.queryFees();
   }
 

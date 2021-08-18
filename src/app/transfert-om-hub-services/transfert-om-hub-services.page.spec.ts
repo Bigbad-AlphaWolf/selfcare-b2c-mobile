@@ -20,6 +20,7 @@ describe('TransfertOmHubServicesPage', () => {
           AngularDelegate,
           {
             provide: Router,
+            useValue: {},
           },
           {
             provide: ModalController,

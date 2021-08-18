@@ -17,12 +17,13 @@ describe('SargalPage', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [RouterTestingModule],
+        imports: [],
         declarations: [SargalPage, FormatCurrencyPipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {
             provide: Router,
+            useValue: {},
           },
           {
             provide: AuthenticationService,

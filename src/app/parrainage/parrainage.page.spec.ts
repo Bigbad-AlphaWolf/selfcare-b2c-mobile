@@ -5,35 +5,38 @@ import { ParrainagePage } from './parrainage.page';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { AngularDelegate, ModalController } from '@ionic/angular';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material';
 import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ParrainagePage', () => {
   let component: ParrainagePage;
   let fixture: ComponentFixture<ParrainagePage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ParrainagePage],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [ReactiveFormsModule],
-      providers: [
-        {
-          provide: HttpClient,
-          useValue: {
-            get() {
-              return of();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ParrainagePage],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [ReactiveFormsModule, MatDialogModule, RouterTestingModule],
+        providers: [
+          AngularDelegate,
+          {
+            provide: HttpClient,
+            useValue: {
+              get() {
+                return of();
+              },
             },
           },
-        },
-        { provide: Router },
-        { provide: ModalController },
-        { provide: MatDialog },
-        { provide: MatDialogRef },
-      ],
-    }).compileComponents();
-  }));
+          { provide: ModalController },
+          { provide: MatDialog },
+          { provide: MatDialogRef, useValue: {} },
+        ],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ParrainagePage);

@@ -5,30 +5,33 @@ import { RegistrationSuccessModalPage } from './registration-success-modal.page'
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 
 describe('RegistrationSuccessModalPage', () => {
   let component: RegistrationSuccessModalPage;
   let fixture: ComponentFixture<RegistrationSuccessModalPage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [RegistrationSuccessModalPage],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        { provide: Router },
-        { provide: ModalController },
-        {
-          provide: HttpClient,
-          useValue: {
-            post() {
-              return of();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [RegistrationSuccessModalPage],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          AngularDelegate,
+          { provide: Router, useValue: {} },
+          { provide: ModalController },
+          {
+            provide: HttpClient,
+            useValue: {
+              post() {
+                return of();
+              },
             },
           },
-        },
-      ],
-    }).compileComponents();
-  }));
+        ],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RegistrationSuccessModalPage);

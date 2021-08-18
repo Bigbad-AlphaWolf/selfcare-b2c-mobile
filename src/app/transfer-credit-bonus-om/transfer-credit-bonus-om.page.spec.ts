@@ -2,13 +2,13 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TransferCreditBonusOmPage } from './transfer-credit-bonus-om.page';
-import { ActivatedRoute, UrlSerializer } from '@angular/router';
+import { UrlSerializer } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { of } from 'rxjs';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { Location } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 
 describe('TransferCreditBonusOmPage', () => {
@@ -22,14 +22,12 @@ describe('TransferCreditBonusOmPage', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         imports: [RouterTestingModule],
         providers: [
+          AngularDelegate,
           {
             provide: UrlSerializer,
           },
           {
             provide: ModalController,
-          },
-          {
-            provide: ActivatedRoute,
           },
           {
             provide: Location,

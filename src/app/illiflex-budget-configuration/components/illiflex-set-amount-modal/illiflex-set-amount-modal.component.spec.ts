@@ -1,7 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 
 import { IlliflexSetAmountModalComponent } from './illiflex-set-amount-modal.component';
 
@@ -12,9 +13,10 @@ describe('IlliflexSetAmountModalComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [ReactiveFormsModule, FormsModule],
+        imports: [ReactiveFormsModule, FormsModule, RouterTestingModule],
         declarations: [IlliflexSetAmountModalComponent],
         providers: [
+          AngularDelegate,
           {
             provide: ModalController,
           },

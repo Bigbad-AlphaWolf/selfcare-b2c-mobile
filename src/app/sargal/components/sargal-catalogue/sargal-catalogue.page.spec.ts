@@ -12,28 +12,30 @@ describe('SargalCataloguePage', () => {
   let component: SargalCataloguePage;
   let fixture: ComponentFixture<SargalCataloguePage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [SargalCataloguePage, FormatCurrencyPipe],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-      imports: [MatMenuModule],
-      providers: [
-        { provide: Router },
-        { provide: ActivatedRoute },
-        {
-          provide: HttpClient,
-          useValue: {
-            get() {
-              return of();
-            },
-            post() {
-              return of();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [SargalCataloguePage, FormatCurrencyPipe],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+        imports: [MatMenuModule],
+        providers: [
+          { provide: Router, useValue: {} },
+          { provide: ActivatedRoute, useValue: {} },
+          {
+            provide: HttpClient,
+            useValue: {
+              get() {
+                return of();
+              },
+              post() {
+                return of();
+              },
             },
           },
-        },
-      ],
-    }).compileComponents();
-  }));
+        ],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SargalCataloguePage);

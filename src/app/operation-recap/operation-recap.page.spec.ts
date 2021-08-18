@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { OperationRecapPage } from './operation-recap.page';
 import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { ActivatedRoute, Router, UrlSerializer } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { of } from 'rxjs';
@@ -34,14 +34,9 @@ describe('OperationRecapPage', () => {
         imports: [RouterTestingModule],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
+          AngularDelegate,
           {
             provide: ModalController,
-          },
-          {
-            provide: ActivatedRoute,
-          },
-          {
-            provide: Router,
           },
           {
             provide: UrlSerializer,

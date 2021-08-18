@@ -46,9 +46,9 @@ export class KioskSearchComponent implements OnInit {
     const params = {
       page: this.page,
       size: SEARCH_SIZE,
-      latitude: this.userPosition.latitude,
-      longitude: this.userPosition.longitude,
-      keyword: this.form.value.keyword,
+      latitude: this.userPosition?.latitude,
+      longitude: this.userPosition?.longitude,
+      keyword: this.form?.value?.keyword,
     };
     this.kiosksService
       .getKiosks(params)

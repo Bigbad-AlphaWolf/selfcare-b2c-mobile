@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 
 import { BanniereDescriptionPage } from './banniere-description.page';
@@ -15,9 +14,7 @@ describe('BanniereDescriptionPage', () => {
       TestBed.configureTestingModule({
         declarations: [BanniereDescriptionPage],
         providers: [
-          {
-            provide: ActivatedRoute,
-          },
+          AngularDelegate,
           {
             provide: ModalController,
           },

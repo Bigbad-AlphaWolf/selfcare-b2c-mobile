@@ -13,7 +13,7 @@ describe('KioskLocatorPage', () => {
         declarations: [KioskLocatorPage],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         imports: [],
-        providers: [Geolocation, { provide: Geolocation, useValue: {} }],
+        providers: [Geolocation],
       }).compileComponents();
     })
   );

@@ -2,12 +2,13 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SargalRegistrationPage } from './sargal-registration.page';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material';
 import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 describe('SargalRegistrationPage', () => {
   let component: SargalRegistrationPage;
@@ -18,10 +19,10 @@ describe('SargalRegistrationPage', () => {
       TestBed.configureTestingModule({
         declarations: [SargalRegistrationPage],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        imports: [RouterTestingModule],
+        imports: [RouterTestingModule, OverlayModule, MatDialogModule],
         providers: [
           { provide: MatDialog },
-          { provide: MatDialogRef },
+          { provide: MatDialogRef, useValue: {} },
           {
             provide: SargalService,
             useValue: {
