@@ -2,7 +2,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatBottomSheet } from '@angular/material';
+import { MatBottomSheet, MatDialog, MatDialogModule } from '@angular/material';
 import { UrlSerializer } from '@angular/router';
 import { AngularDelegate, ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
@@ -15,82 +15,86 @@ import { RecentsService } from 'src/app/services/recents-service/recents.service
 
 import { RapidoSelectionComponent } from './rapido-selection.component';
 
-describe('RapidoSelectionComponent', () => {
-  let component: RapidoSelectionComponent;
-  let fixture: ComponentFixture<RapidoSelectionComponent>;
+describe( 'RapidoSelectionComponent', () => {
+	let component: RapidoSelectionComponent;
+	let fixture: ComponentFixture<RapidoSelectionComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        providers: [
-          AngularDelegate,
-          {
-            provide: MatBottomSheet,
-          },
-          {
-            provide: Overlay,
-          },
-          {
-            provide: OrangeMoneyService,
-            useValue: {
-              omAccountSession: () => {
-                return of();
-              },
-            },
-          },
-          {
-            provide: RecentsService,
-            useValue: {
-              fetchRecents: () => {
-                return of();
-              },
-            },
-          },
-          {
-            provide: FavorisService,
-            useValue: {
-              favoritesByService: () => {
-                return of();
-              },
-              saveRapidoFavorite: () => {
-                return of();
-              },
-            },
-          },
-          {
-            provide: DashboardService,
-            useValue: {
-              getCurrentPhoneNumber: () => {
-                return of();
-              },
-            },
-          },
-          {
-            provide: BottomSheetService,
-          },
-          {
-            provide: UrlSerializer,
-          },
-          {
-            provide: Location,
-          },
-          {
-            provide: ModalController,
-          },
-        ],
-        declarations: [RapidoSelectionComponent, CodeFormatPipe],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      }).compileComponents();
-    })
-  );
+	beforeEach(
+		waitForAsync( () => {
+			TestBed.configureTestingModule( {
+				imports: [MatDialogModule],
+				providers: [
+					AngularDelegate,
+					{
+						provide: MatBottomSheet,
+					},
+					{
+						provide: Overlay,
+					},
+					{
+						provide: MatDialog,
+					},
+					{
+						provide: OrangeMoneyService,
+						useValue: {
+							omAccountSession: () => {
+								return of();
+							},
+						},
+					},
+					{
+						provide: RecentsService,
+						useValue: {
+							fetchRecents: () => {
+								return of();
+							},
+						},
+					},
+					{
+						provide: FavorisService,
+						useValue: {
+							favoritesByService: () => {
+								return of();
+							},
+							saveRapidoFavorite: () => {
+								return of();
+							},
+						},
+					},
+					{
+						provide: DashboardService,
+						useValue: {
+							getCurrentPhoneNumber: () => {
+								return of();
+							},
+						},
+					},
+					{
+						provide: BottomSheetService,
+					},
+					{
+						provide: UrlSerializer,
+					},
+					{
+						provide: Location,
+					},
+					{
+						provide: ModalController,
+					},
+				],
+				declarations: [RapidoSelectionComponent, CodeFormatPipe],
+				schemas: [CUSTOM_ELEMENTS_SCHEMA],
+			} ).compileComponents();
+		} )
+	);
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(RapidoSelectionComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach( () => {
+		fixture = TestBed.createComponent( RapidoSelectionComponent );
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	} );
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+	it( 'should create', () => {
+		expect( component ).toBeTruthy();
+	} );
+} );
