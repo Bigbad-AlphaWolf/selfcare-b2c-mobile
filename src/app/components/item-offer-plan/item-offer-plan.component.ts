@@ -3,29 +3,30 @@ import { OfferPlan } from '../../../shared/models/offer-plan.model';
 import { CATEGORY_MPO } from 'src/app/utils/constants';
 
 @Component({
-  selector: 'app-item-offer-plan',
-  templateUrl: './item-offer-plan.component.html',
-  styleUrls: ['./item-offer-plan.component.scss'],
+	selector: 'app-item-offer-plan',
+	templateUrl: './item-offer-plan.component.html',
+	styleUrls: ['./item-offer-plan.component.scss'],
 })
 export class ItemOfferPlanComponent implements OnInit {
-  @Input() offerPlan: OfferPlan;
-  @Input() isChecking: boolean;
-  @Output() selectOfferPlans = new EventEmitter();
-  constructor() { }
+	@Input() offerPlan: OfferPlan;
+	@Input() isChecking: boolean;
+	@Output() selectOfferPlans = new EventEmitter();
+	constructor() {}
 
-  ngOnInit() {}
+	ngOnInit() {}
 
-  chooseOfferPlan(offer: OfferPlan){
-    this.selectOfferPlans.emit(offer);
-  }
+	chooseOfferPlan(offer: OfferPlan) {
+		this.selectOfferPlans.emit(offer);
+	}
 
-  formatOfferPlanInfos(offer: OfferPlan){
-    switch (offer.typeMPO.toLowerCase()) {
-      case CATEGORY_MPO.illimix:
-      case CATEGORY_MPO.internet:
-        return 'Achète un '+offer.bpTarget
-      default:
-        return offer.bpTarget;
-    }
-  }
+	formatOfferPlanInfos(offer: OfferPlan) {
+		if (offer)
+			switch (offer.typeMPO.toLowerCase()) {
+				case CATEGORY_MPO.illimix:
+				case CATEGORY_MPO.internet:
+					return 'Achète un ' + offer.bpTarget;
+				default:
+					return offer.bpTarget;
+			}
+	}
 }

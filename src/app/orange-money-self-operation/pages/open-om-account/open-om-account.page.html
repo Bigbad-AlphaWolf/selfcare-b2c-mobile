@@ -36,8 +36,8 @@
 							<ion-item mode="ios" lines="none">
 								<ion-label mode="ios" class="scb-text-gray">Civilité</ion-label>
 								<ion-select interface="popover" noIonSelectArrow mode="ios" formControlName="civility">
-									<ion-select-option value="monsieur" mode="ios"><span>Monsieur</span></ion-select-option>
-									<ion-select-option value="madame" mode="ios"><span>Madame</span></ion-select-option>
+									<ion-select-option [value]="'monsieur'" mode="ios"><span>Monsieur</span></ion-select-option>
+									<ion-select-option [value]="'madame'" mode="ios"><span>Madame</span></ion-select-option>
 								</ion-select>
 								<ion-icon name="arrow-down" mode="ios" slot="end"></ion-icon>
 							</ion-item>

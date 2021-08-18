@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { OrangeMoneyComponent } from './orange-money.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -14,7 +14,7 @@ describe('OrangeMoneyComponent', () => {
   let component: OrangeMoneyComponent;
   let fixture: ComponentFixture<OrangeMoneyComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [OrangeMoneyComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

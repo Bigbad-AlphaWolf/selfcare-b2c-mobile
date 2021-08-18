@@ -23,7 +23,7 @@ export class ListPassInternetV2Component implements OnInit, OnDestroy {
   @Input() destCodeFormule: string;
   @Input() paymentMode: string;
   @Output() getSelectedPassInternet = new EventEmitter();
-  @ViewChild('sliders') sliders: IonSlides;
+  @ViewChild('sliders', { static: true }) sliders: IonSlides;
   slideOpts = {
     initialSlide: 0,
     speed: 400,

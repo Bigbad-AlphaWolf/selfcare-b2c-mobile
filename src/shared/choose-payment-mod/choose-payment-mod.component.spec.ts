@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ChoosePaymentModComponent } from './choose-payment-mod.component';
 
@@ -7,7 +7,7 @@ describe('ChoosePaymentModComponent', () => {
   let component: ChoosePaymentModComponent;
   let fixture: ComponentFixture<ChoosePaymentModComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ChoosePaymentModComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

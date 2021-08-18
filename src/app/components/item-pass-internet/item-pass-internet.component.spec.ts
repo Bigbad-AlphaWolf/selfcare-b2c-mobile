@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ItemPassInternetComponent } from './item-pass-internet.component';
 
@@ -7,7 +7,7 @@ describe('ItemPassInternetComponent', () => {
   let component: ItemPassInternetComponent;
   let fixture: ComponentFixture<ItemPassInternetComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ItemPassInternetComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

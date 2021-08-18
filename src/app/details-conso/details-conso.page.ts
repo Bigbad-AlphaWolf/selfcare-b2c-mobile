@@ -67,7 +67,7 @@ export class DetailsConsoPage implements OnInit {
     DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
   userPhoneNumber: string;
   listCategoryPurchaseHistory: CategoryPurchaseHistory[] = [];
-  @ViewChild('consoTab') slideGroup: IonSlides;
+  @ViewChild('consoTab', { static: true }) slideGroup: IonSlides;
   slideSelected = 0;
   slideOpts = {
     speed: 400,

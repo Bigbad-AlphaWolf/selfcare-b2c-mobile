@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GetPukCodeComponent } from './get-puk-code.component';
 import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
@@ -10,7 +10,7 @@ describe('GetPukCodeComponent', () => {
   let component: GetPukCodeComponent;
   let fixture: ComponentFixture<GetPukCodeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [GetPukCodeComponent, PhoneNumberDisplayPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

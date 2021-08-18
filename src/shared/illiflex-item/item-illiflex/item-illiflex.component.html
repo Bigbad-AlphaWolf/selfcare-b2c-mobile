@@ -1,22 +1,22 @@
 <div class="illiflex-card">
-  <div class="price-block scb-text-orange">{{passIlliflex.amount}} FCFA</div>
+  <div class="price-block scb-text-orange">{{passIlliflex?.amount}} FCFA</div>
   <div class="details-block">
     <div class="bundle">
-      <div class="value">{{passIlliflex.data | dataVolume}}</div>
+      <div class="value">{{passIlliflex?.data | dataVolume}}</div>
       <div class="title scb-text-gray">Internet</div>
     </div>
     <div class="bundle">
-      <div class="value">{{passIlliflex.voice | illiflexVoice}}</div>
+      <div class="value">{{passIlliflex?.voice | illiflexVoice}}</div>
       <div class="title scb-text-gray">Appel*</div>
     </div>
-    <div class="bundle" *ngIf="passIlliflex.bonusSms">
-      <div class="value">{{passIlliflex.bonusSms}}</div>
+    <div class="bundle" *ngIf="passIlliflex?.bonusSms">
+      <div class="value">{{passIlliflex?.bonusSms}}</div>
       <div class="title scb-text-gray">Sms</div>
     </div>
   </div>
   <div class="validity-infos">
     <div class="text scb-text-gray">*Appel tous réseaux</div>
-    <div class="text scb-text-gray">{{getValidity(passIlliflex.validity)}}</div>
+    <div class="text scb-text-gray">{{getValidity(passIlliflex?.validity)}}</div>
   </div>
   <div class="promo-block" *ngIf="0">
     <span class="description scb-text-white">Pass cumulable</span>

@@ -23,7 +23,7 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
   requests$: Observable<RequestOem[]>;
   isInitRequests: boolean;
   header = getPageHeader(OPERATION_SEE_FOLLOW_UP_REQUESTS) ;
-  @ViewChild('numberInput') numberInput: ElementRef;
+  @ViewChild('numberInput', { static: true }) numberInput: ElementRef;
   isConfirm: boolean;
   noRequest: boolean;
   isNotValid: boolean;
