@@ -6,32 +6,27 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { SosService } from '../services/sos-service/sos.service';
 import { MatDialogModule, MatDialogRef } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
 
-describe('BuySosPage', () => {
+describe( 'BuySosPage', () => {
 	let component: BuySosPage;
 	let fixture: ComponentFixture<BuySosPage>;
 
-	beforeEach(waitForAsync(() => {
-		TestBed.configureTestingModule({
+	beforeEach( waitForAsync( () => {
+		TestBed.configureTestingModule( {
 			declarations: [BuySosPage],
-			imports: [MatDialogModule],
+			imports: [MatDialogModule, RouterTestingModule],
 			providers: [
-				{
-					provide: Router
-				},
-				{
-					provide: ActivatedRoute
-				},
 				{
 					provide: DashboardService,
 					useValue: {
-						getCurrentPhoneNumber: () => {}
+						getCurrentPhoneNumber: () => { }
 					}
 				},
 				{
 					provide: SosService,
 					useValue: {
-						subscribeToSos: () => {}
+						subscribeToSos: () => { }
 					}
 				},
 				{
@@ -39,16 +34,16 @@ describe('BuySosPage', () => {
 				}
 			],
 			schemas: [CUSTOM_ELEMENTS_SCHEMA]
-		}).compileComponents();
-	}));
+		} ).compileComponents();
+	} ) );
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(BuySosPage);
+	beforeEach( () => {
+		fixture = TestBed.createComponent( BuySosPage );
 		component = fixture.componentInstance;
 		fixture.detectChanges();
-	});
+	} );
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
-});
+	it( 'should create', () => {
+		expect( component ).toBeTruthy();
+	} );
+} );

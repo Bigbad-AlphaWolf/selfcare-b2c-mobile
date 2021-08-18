@@ -8,7 +8,7 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import { of } from 'rxjs';
 import { MatDialogModule, MatDialogRef } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe( 'BuyPassInternetPage', () => {
@@ -23,6 +23,9 @@ describe( 'BuyPassInternetPage', () => {
 				providers: [
 					{
 						provide: ModalController
+					},
+					{
+						provide: AngularDelegate
 					},
 					{
 						provide: DashboardService,
@@ -42,10 +45,6 @@ describe( 'BuyPassInternetPage', () => {
 					},
 					{
 						provide: MatDialogRef,
-						useValue: {}
-					},
-					{
-						provide: ActivatedRoute,
 						useValue: {}
 					},
 					{
