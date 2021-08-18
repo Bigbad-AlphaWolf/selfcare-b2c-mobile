@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { BillsService } from 'src/app/services/bill-service/bills.service';
 import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
@@ -18,6 +18,7 @@ describe('OrangeBillsPage', () => {
         declarations: [OrangeBillsPage, PhoneNumberDisplayPipe],
         imports: [RouterTestingModule],
         providers: [
+          AngularDelegate,
           {
             provide: BillsService,
             useValue: {

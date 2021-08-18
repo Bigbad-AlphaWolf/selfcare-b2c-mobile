@@ -3,7 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UrlSerializer } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { DataVolumePipe } from 'src/shared/pipes/data-volume.pipe';
 import { IlliflexVoicePipe } from 'src/shared/pipes/illiflex-voice.pipe';
@@ -27,6 +27,7 @@ describe('IlliflexBudgetConfigurationPage', () => {
           IlliflexVoicePipe,
         ],
         providers: [
+          AngularDelegate,
           {
             provide: Location,
           },

@@ -5,32 +5,36 @@ import { CancelOperationPopupComponent } from './cancel-operation-popup.componen
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Router } from '@angular/router';
 import { Market } from '@ionic-native/market/ngx';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('CancelOperationPopupComponent', () => {
   let component: CancelOperationPopupComponent;
   let fixture: ComponentFixture<CancelOperationPopupComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CancelOperationPopupComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: MAT_DIALOG_DATA
-        },
-        {
-          provide: MatDialogRef
-        },
-        {
-          provide: Router
-        },
-        {
-          provide: Market
-        }
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [FormsModule, ReactiveFormsModule],
+        declarations: [CancelOperationPopupComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: MAT_DIALOG_DATA,
+            useValue: {},
+          },
+          {
+            provide: MatDialogRef,
+          },
+          {
+            provide: Router,
+          },
+          {
+            provide: Market,
+          },
+        ],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CancelOperationPopupComponent);

@@ -4,6 +4,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material';
 import { Router, UrlSerializer } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { of } from 'rxjs';
@@ -19,7 +20,7 @@ describe('AssistanceHubPage', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [MatDialogModule],
+        imports: [MatDialogModule, RouterTestingModule],
         declarations: [AssistanceHubPage],
         providers: [
           {

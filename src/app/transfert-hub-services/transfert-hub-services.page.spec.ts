@@ -2,7 +2,11 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TransfertHubServicesPage } from './transfert-hub-services.page';
-import { ModalController, ToastController } from '@ionic/angular';
+import {
+  AngularDelegate,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 import { Contacts } from '@ionic-native/contacts';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Location } from '@angular/common';
@@ -28,6 +32,7 @@ describe('TransfertHubServicesPage', () => {
         imports: [RouterTestingModule],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
+          AngularDelegate,
           {
             provide: ModalController,
           },

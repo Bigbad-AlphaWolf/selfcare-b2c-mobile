@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -21,6 +21,7 @@ describe('TypeOtpModalComponent', () => {
           PhoneNumberDisplayPipe,
         ],
         providers: [
+          AngularDelegate,
           {
             provide: OrangeMoneyService,
             useValue: {

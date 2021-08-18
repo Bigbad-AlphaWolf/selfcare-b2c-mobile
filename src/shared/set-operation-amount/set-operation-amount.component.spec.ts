@@ -5,7 +5,7 @@ import { SetOperationAmountComponent } from './set-operation-amount.component';
 import { FormsModule } from '@angular/forms';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { of } from 'rxjs';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SetOperationAmountComponent', () => {
@@ -19,6 +19,7 @@ describe('SetOperationAmountComponent', () => {
         declarations: [SetOperationAmountComponent],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
+          AngularDelegate,
           {
             provide: OrangeMoneyService,
             useValue: {

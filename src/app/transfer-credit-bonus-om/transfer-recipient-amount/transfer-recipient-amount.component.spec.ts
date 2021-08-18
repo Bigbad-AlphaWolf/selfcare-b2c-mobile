@@ -14,6 +14,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { ModalController } from '@ionic/angular';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 describe('TransferRecipientAmountComponent', () => {
   let component: TransferRecipientAmountComponent;
@@ -22,7 +23,12 @@ describe('TransferRecipientAmountComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [ReactiveFormsModule, FormsModule, RouterTestingModule],
+        imports: [
+          ReactiveFormsModule,
+          FormsModule,
+          RouterTestingModule,
+          OverlayModule,
+        ],
         declarations: [TransferRecipientAmountComponent],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [

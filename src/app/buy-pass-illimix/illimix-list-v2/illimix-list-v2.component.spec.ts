@@ -6,45 +6,49 @@ import { PassIllimixService } from 'src/app/services/pass-illimix-service/pass-i
 import { of } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('IllimixListV2Component', () => {
   let component: IllimixListV2Component;
   let fixture: ComponentFixture<IllimixListV2Component>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [IllimixListV2Component],
-      providers: [
-        {
-          provide: PassIllimixService,
-          useValue: {
-            setUserCodeFormule: () => {},
-            setPhoneNumber: () => {},
-            setPaymentMod: () => {},
-            queryListPassIllimix: () => {
-              return of()
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [IllimixListV2Component],
+        providers: [
+          RouterTestingModule,
+          {
+            provide: PassIllimixService,
+            useValue: {
+              setUserCodeFormule: () => {},
+              setPhoneNumber: () => {},
+              setPaymentMod: () => {},
+              queryListPassIllimix: () => {
+                return of();
+              },
+              getStatusLoadingPass: () => {
+                return of();
+              },
+              getListPassIllimix: () => {},
+              getListPassIllimixShown: () => {},
+              getCategoryListPassIllimix: () => {},
             },
-            getStatusLoadingPass: () => {
-              return of();
+          },
+          {
+            provide: DashboardService,
+            useValue: {
+              getCurrentPhoneNumber: () => {},
             },
-            getListPassIllimix: () => {},
-            getListPassIllimixShown: () => {},
-            getCategoryListPassIllimix: () => {}
-          }
-        },
-        {
-          provide: DashboardService,
-          useValue: {
-            getCurrentPhoneNumber: () => {}
-          }
-        },
-        {
-          provide: Router
-        }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    }).compileComponents();
-  }));
+          },
+          {
+            provide: Router,
+          },
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(IllimixListV2Component);
