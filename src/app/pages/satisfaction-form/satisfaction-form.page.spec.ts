@@ -1,7 +1,8 @@
+import { OverlayModule } from '@angular/cdk/overlay';
 import { Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -17,7 +18,7 @@ describe('SatisfactionFormPage', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [SatisfactionFormPage],
-        imports: [RouterTestingModule],
+        imports: [RouterTestingModule, OverlayModule, MatDialogModule],
         providers: [
           {
             provide: Location,

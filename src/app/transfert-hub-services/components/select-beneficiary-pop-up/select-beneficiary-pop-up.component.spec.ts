@@ -2,9 +2,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SelectBeneficiaryPopUpComponent } from './select-beneficiary-pop-up.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogModule } from '@angular/material';
 import { Contacts } from '@ionic-native/contacts';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { of } from 'rxjs';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -12,6 +12,7 @@ import { AcronymPipe } from 'src/shared/pipes/acronym.pipe';
 import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 describe('SelectBeneficiaryPopUpComponent', () => {
   let component: SelectBeneficiaryPopUpComponent;
@@ -25,9 +26,10 @@ describe('SelectBeneficiaryPopUpComponent', () => {
           AcronymPipe,
           PhoneNumberDisplayPipe,
         ],
-        imports: [RouterTestingModule],
+        imports: [RouterTestingModule, OverlayModule, MatDialogModule],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
+          AngularDelegate,
           {
             provide: MatDialog,
           },

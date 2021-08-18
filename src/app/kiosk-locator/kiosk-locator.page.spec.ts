@@ -7,13 +7,16 @@ describe('KioskLocatorPage', () => {
   let component: KioskLocatorPage;
   let fixture: ComponentFixture<KioskLocatorPage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ KioskLocatorPage ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [KioskLocatorPage],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [],
+        providers: [Geolocation, { provide: Geolocation, useValue: {} }],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(KioskLocatorPage);

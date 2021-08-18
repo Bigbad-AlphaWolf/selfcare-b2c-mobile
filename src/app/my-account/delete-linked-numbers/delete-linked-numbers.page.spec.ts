@@ -6,7 +6,7 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('DeleteLinkedNumbersPage', () => {
@@ -20,6 +20,7 @@ describe('DeleteLinkedNumbersPage', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         imports: [RouterTestingModule],
         providers: [
+          AngularDelegate,
           { provide: MatDialogRef, useValue: {} },
           { provide: MatDialog, useValue: {} },
           { provide: ModalController },

@@ -1,9 +1,10 @@
+import { OverlayModule } from '@angular/cdk/overlay';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
@@ -18,8 +19,15 @@ describe('RattachNumberModalComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [RattachNumberModalComponent],
-        imports: [ReactiveFormsModule, FormsModule, RouterTestingModule],
+        imports: [
+          ReactiveFormsModule,
+          FormsModule,
+          RouterTestingModule,
+          OverlayModule,
+          MatDialogModule,
+        ],
         providers: [
+          AngularDelegate,
           {
             provide: MatDialog,
           },

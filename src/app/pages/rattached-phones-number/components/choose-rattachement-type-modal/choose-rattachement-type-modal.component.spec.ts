@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 
 import { ChooseRattachementTypeModalComponent } from './choose-rattachement-type-modal.component';
 
@@ -13,6 +13,7 @@ describe('ChooseRattachementTypeModalComponent', () => {
       TestBed.configureTestingModule({
         declarations: [ChooseRattachementTypeModalComponent],
         providers: [
+          AngularDelegate,
           {
             provide: ModalController,
           },

@@ -1,6 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, UrlSerializer } from '@angular/router';
 
 import { TransferSetAmountPage } from './transfer-set-amount.page';
 
@@ -11,9 +13,15 @@ describe('TransferSetAmountPage', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
+        imports: [ReactiveFormsModule],
         declarations: [TransferSetAmountPage],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [{ provide: ActivatedRoute, useValue: {} }],
+        providers: [
+          { provide: ActivatedRoute, useValue: {} },
+          { provide: HttpClient, useValue: {} },
+          { provide: FormBuilder, useValue: {} },
+          { provide: UrlSerializer, useValue: {} },
+        ],
       }).compileComponents();
     })
   );

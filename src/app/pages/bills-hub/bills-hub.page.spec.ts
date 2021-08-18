@@ -4,7 +4,11 @@ import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatBottomSheet, MatDialog } from '@angular/material';
 import { UrlSerializer } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ModalController, ToastController } from '@ionic/angular';
+import {
+  AngularDelegate,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 import { off } from 'process';
 import { of } from 'rxjs';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
@@ -22,6 +26,7 @@ describe('BillsHubPage', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         providers: [
+          AngularDelegate,
           {
             provide: MatBottomSheet,
           },

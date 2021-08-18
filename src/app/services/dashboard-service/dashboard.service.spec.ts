@@ -1,7 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { DashboardService } from './dashboard.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { AngularDelegate, ModalController } from '@ionic/angular';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { of } from 'rxjs';
@@ -11,9 +11,9 @@ describe('DashboardService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        DashboardService,
         AngularDelegate,
         { provide: HttpClient },
+        { provide: HttpHandler, useValue: {} },
         {
           provide: ModalController,
         },

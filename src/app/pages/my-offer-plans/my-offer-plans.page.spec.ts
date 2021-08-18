@@ -5,11 +5,12 @@ import { MyOfferPlansPage } from './my-offer-plans.page';
 import { of } from 'rxjs';
 import { Location } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogModule } from '@angular/material';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { OfferPlansService } from 'src/app/services/offer-plans-service/offer-plans.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 describe('MyOfferPlansPage', () => {
   let component: MyOfferPlansPage;
@@ -20,7 +21,7 @@ describe('MyOfferPlansPage', () => {
       TestBed.configureTestingModule({
         declarations: [MyOfferPlansPage],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        imports: [RouterTestingModule],
+        imports: [RouterTestingModule, OverlayModule, MatDialogModule],
         providers: [
           { provide: Location, useValue: {} },
           { provide: MatDialog },

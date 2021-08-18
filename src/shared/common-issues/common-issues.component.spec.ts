@@ -8,7 +8,7 @@ import {
   MatBottomSheetRef,
 } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 import { of } from 'rxjs';
 
@@ -23,6 +23,7 @@ describe('CommonIssuesComponent', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         imports: [RouterTestingModule],
         providers: [
+          AngularDelegate,
           {
             provide: MatDialogRef,
             useValue: {},

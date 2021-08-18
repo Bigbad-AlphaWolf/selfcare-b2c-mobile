@@ -10,7 +10,7 @@ import { AcronymPipe } from '../pipes/acronym.pipe';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('MerchantPaymentCodeComponent', () => {
@@ -24,6 +24,7 @@ describe('MerchantPaymentCodeComponent', () => {
         declarations: [MerchantPaymentCodeComponent, AcronymPipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
+          AngularDelegate,
           {
             provide: OrangeMoneyService,
             useValue: {

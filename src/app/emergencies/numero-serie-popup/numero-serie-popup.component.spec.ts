@@ -8,17 +8,19 @@ describe('NumeroSeriePopupComponent', () => {
   let component: NumeroSeriePopupComponent;
   let fixture: ComponentFixture<NumeroSeriePopupComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [NumeroSeriePopupComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MatDialog, useValue: {} },
-        { provide: MAT_DIALOG_DATA },
-      ],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [NumeroSeriePopupComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          { provide: MatDialogRef, useValue: {} },
+          { provide: MatDialog, useValue: {} },
+          { provide: MAT_DIALOG_DATA, useValue: {} },
+        ],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NumeroSeriePopupComponent);

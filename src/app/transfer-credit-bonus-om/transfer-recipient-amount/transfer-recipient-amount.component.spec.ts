@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TransferRecipientAmountComponent } from './transfer-recipient-amount.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogModule } from '@angular/material';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { of } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -13,7 +13,7 @@ import { Location } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 describe('TransferRecipientAmountComponent', () => {
@@ -28,10 +28,12 @@ describe('TransferRecipientAmountComponent', () => {
           FormsModule,
           RouterTestingModule,
           OverlayModule,
+          MatDialogModule,
         ],
         declarations: [TransferRecipientAmountComponent],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
+          AngularDelegate,
           {
             provide: MatDialog,
           },

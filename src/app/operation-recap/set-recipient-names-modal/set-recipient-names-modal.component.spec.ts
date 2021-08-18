@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 
 import { SetRecipientNamesModalComponent } from './set-recipient-names-modal.component';
 
@@ -15,6 +15,7 @@ describe('SetRecipientNamesModalComponent', () => {
         declarations: [SetRecipientNamesModalComponent],
         imports: [ReactiveFormsModule, FormsModule],
         providers: [
+          AngularDelegate,
           {
             provide: ModalController,
           },

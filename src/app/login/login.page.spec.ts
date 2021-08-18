@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 
 describe('LoginPage', () => {
   let component: LoginPage;
@@ -21,6 +21,7 @@ describe('LoginPage', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         imports: [ReactiveFormsModule, FormsModule, RouterTestingModule],
         providers: [
+          AngularDelegate,
           { provide: MatDialogRef, useValue: {} },
           { provide: MatDialog, useValue: {} },
           { provide: ModalController },

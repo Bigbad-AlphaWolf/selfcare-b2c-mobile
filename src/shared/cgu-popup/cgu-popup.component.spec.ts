@@ -9,24 +9,26 @@ describe('CguPopupComponent', () => {
   let component: CguPopupComponent;
   let fixture: ComponentFixture<CguPopupComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CguPopupComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: MatDialogRef
-        },
-        {
-          provide: MAT_DIALOG_DATA
-        },
-        {
-          provide: Router
-        }
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [CguPopupComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: MatDialogRef,
+            useValue: {},
+          },
+          {
+            provide: MAT_DIALOG_DATA,
+          },
+          {
+            provide: Router,
+          },
+        ],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CguPopupComponent);

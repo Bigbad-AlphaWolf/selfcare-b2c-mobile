@@ -8,53 +8,56 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { SargalService } from '../services/sargal-service/sargal.service';
 import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SargalPage', () => {
   let component: SargalPage;
   let fixture: ComponentFixture<SargalPage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SargalPage, FormatCurrencyPipe ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: Router
-        },
-        {
-          provide: AuthenticationService,
-          useValue: {
-            getLocalUserInfos:() => {
-              return {}
-            }
-          }
-        },
-        {
-          provide: DashboardService,
-          useValue: {
-            getCurrentPhoneNumber:() => {
-              return ""
-            }
-          }
-        },
-        {
-          provide: SargalService,
-          useValue: {
-            getSargalBalance:() => {
-              return of()
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [RouterTestingModule],
+        declarations: [SargalPage, FormatCurrencyPipe],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: Router,
+          },
+          {
+            provide: AuthenticationService,
+            useValue: {
+              getLocalUserInfos: () => {
+                return {};
+              },
             },
-            querySargalGiftCategories:() => {
-              return of()
+          },
+          {
+            provide: DashboardService,
+            useValue: {
+              getCurrentPhoneNumber: () => {
+                return '';
+              },
             },
-            getCustomerSargalStatus:() => {
-              return of()
-            }
-          }
-        }
-      ]
+          },
+          {
+            provide: SargalService,
+            useValue: {
+              getSargalBalance: () => {
+                return of();
+              },
+              querySargalGiftCategories: () => {
+                return of();
+              },
+              getCustomerSargalStatus: () => {
+                return of();
+              },
+            },
+          },
+        ],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SargalPage);

@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
@@ -18,6 +18,7 @@ describe('RattachNumberByClientCodeComponent', () => {
         declarations: [RattachNumberByClientCodeComponent],
         imports: [ReactiveFormsModule, FormsModule],
         providers: [
+          AngularDelegate,
           {
             provide: ModalController,
           },

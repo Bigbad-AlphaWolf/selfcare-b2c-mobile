@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 
 import { YesNoModalComponent } from './yes-no-modal.component';
 
@@ -13,6 +13,7 @@ describe('YesNoModalComponent', () => {
       TestBed.configureTestingModule({
         declarations: [YesNoModalComponent],
         providers: [
+          AngularDelegate,
           {
             provide: ModalController,
           },
