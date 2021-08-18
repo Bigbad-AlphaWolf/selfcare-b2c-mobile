@@ -11,6 +11,7 @@ import {
   MatFormFieldModule,
   MatOptionModule,
   MatInputModule,
+  MatDialogModule,
 } from '@angular/material';
 import { of } from 'rxjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -19,32 +20,35 @@ describe('ChangeSeddoCodeComponent', () => {
   let component: ChangeSeddoCodeComponent;
   let fixture: ComponentFixture<ChangeSeddoCodeComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ChangeSeddoCodeComponent, PhoneNumberDisplayPipe],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-      imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatSelectModule,
-        MatFormFieldModule,
-        MatOptionModule,
-        MatInputModule,
-        BrowserAnimationsModule,
-      ],
-      providers: [
-        {
-          provide: HttpClient,
-          useValue: {
-            get: () => {
-              return of();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ChangeSeddoCodeComponent, PhoneNumberDisplayPipe],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+        imports: [
+          FormsModule,
+          ReactiveFormsModule,
+          MatSelectModule,
+          MatFormFieldModule,
+          MatOptionModule,
+          MatInputModule,
+          BrowserAnimationsModule,
+          MatDialogModule,
+        ],
+        providers: [
+          {
+            provide: HttpClient,
+            useValue: {
+              get: () => {
+                return of();
+              },
             },
           },
-        },
-        { provide: MatDialog },
-      ],
-    }).compileComponents();
-  }));
+          { provide: MatDialog },
+        ],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ChangeSeddoCodeComponent);

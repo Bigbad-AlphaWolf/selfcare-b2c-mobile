@@ -6,14 +6,14 @@ import { KioskWayInfosComponent } from './kiosk-way-infos.component';
 describe('KioskWayInfosComponent', () => {
   let component: KioskWayInfosComponent;
   let fixture: ComponentFixture<KioskWayInfosComponent>;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ KioskWayInfosComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [KioskWayInfosComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(KioskWayInfosComponent);

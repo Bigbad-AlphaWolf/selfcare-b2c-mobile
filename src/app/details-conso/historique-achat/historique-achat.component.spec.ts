@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HistoriqueAchatComponent } from './historique-achat.component';
 import { MatMenuModule } from '@angular/material';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { of } from 'rxjs';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
@@ -17,6 +17,7 @@ describe('HistoriqueAchatComponent', () => {
       TestBed.configureTestingModule({
         declarations: [HistoriqueAchatComponent],
         providers: [
+          AngularDelegate,
           {
             provide: ModalController,
           },

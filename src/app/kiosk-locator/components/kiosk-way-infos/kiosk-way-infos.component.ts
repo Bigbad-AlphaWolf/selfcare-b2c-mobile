@@ -27,8 +27,10 @@ export class KioskWayInfosComponent implements OnInit {
       lng: this.userCurrentPosition?.longitude,
     };
     const dest = { lat: this.kiosk?.latitude, lng: this.kiosk?.longitude };
-    this.distanceMatrix(origin, dest, google.maps.TravelMode.DRIVING);
-    this.distanceMatrix(origin, dest, google.maps.TravelMode.WALKING);
+    if (window.google) {
+      this.distanceMatrix(origin, dest, google.maps.TravelMode?.DRIVING);
+      this.distanceMatrix(origin, dest, google.maps.TravelMode?.WALKING);
+    }
     let user = ls.get('user');
     if (user.imageProfil)
       this.avatarUrl = downloadAvatarEndpoint + user.imageProfil;
@@ -38,15 +40,14 @@ export class KioskWayInfosComponent implements OnInit {
     origin = new google.maps.LatLng(origin?.lat, origin?.lng);
     dest = new google.maps.LatLng(dest?.lat, dest?.lng);
     const service = new google.maps.DistanceMatrixService();
-    service.getDistanceMatrix(
+    service?.getDistanceMatrix(
       {
         origins: [origin],
         destinations: [dest],
         travelMode,
       },
       (res) => {
-        console.log(res);
-        if (travelMode === google.maps.TravelMode.DRIVING) {
+        if (travelMode === google.maps.TravelMode?.DRIVING) {
           this.drivingMatrix = res;
         } else {
           this.walkingMatrix = res;

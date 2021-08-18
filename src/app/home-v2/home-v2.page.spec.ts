@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 
@@ -17,6 +17,7 @@ describe('HomeV2Page', () => {
         declarations: [HomeV2Page],
         imports: [RouterTestingModule],
         providers: [
+          AngularDelegate,
           {
             provide: ModalController,
           },
