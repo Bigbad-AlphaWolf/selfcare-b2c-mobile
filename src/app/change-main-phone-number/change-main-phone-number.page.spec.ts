@@ -6,14 +6,16 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import { of } from 'rxjs';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
-describe('ChangeMainPhoneNumberPage', () => {
+describe( 'ChangeMainPhoneNumberPage', () => {
 	let component: ChangeMainPhoneNumberPage;
 	let fixture: ComponentFixture<ChangeMainPhoneNumberPage>;
 
-	beforeEach(waitForAsync(() => {
-		TestBed.configureTestingModule({
+	beforeEach( waitForAsync( () => {
+		TestBed.configureTestingModule( {
 			declarations: [ChangeMainPhoneNumberPage],
+			imports: [RouterTestingModule],
 			providers: [
 				{
 					provide: AuthenticationService,
@@ -21,7 +23,7 @@ describe('ChangeMainPhoneNumberPage', () => {
 						getSubscription: () => {
 							return of();
 						},
-						getUserMainPhoneNumber: () => {}
+						getUserMainPhoneNumber: () => { }
 					}
 				},
 				{
@@ -34,22 +36,19 @@ describe('ChangeMainPhoneNumberPage', () => {
 							return of();
 						}
 					}
-				},
-				{
-					provide: Router
 				}
 			],
 			schemas: [CUSTOM_ELEMENTS_SCHEMA]
-		}).compileComponents();
-	}));
+		} ).compileComponents();
+	} ) );
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(ChangeMainPhoneNumberPage);
+	beforeEach( () => {
+		fixture = TestBed.createComponent( ChangeMainPhoneNumberPage );
 		component = fixture.componentInstance;
 		fixture.detectChanges();
-	});
+	} );
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
-});
+	it( 'should create', () => {
+		expect( component ).toBeTruthy();
+	} );
+} );

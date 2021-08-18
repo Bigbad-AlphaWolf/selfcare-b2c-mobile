@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
@@ -8,59 +8,61 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { of } from 'rxjs';
 import { MatDialogRef, MatDialogModule } from '@angular/material';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
+import { RouterTestingModule } from '@angular/router/testing';
 
-describe('BuyPassIllimixPage', () => {
-  let component: BuyPassIllimixPage;
-  let fixture: ComponentFixture<BuyPassIllimixPage>;
+describe( 'BuyPassIllimixPage', () => {
+	let component: BuyPassIllimixPage;
+	let fixture: ComponentFixture<BuyPassIllimixPage>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [BuyPassIllimixPage],
-      imports: [MatDialogModule],
-      providers: [
-        {
-          provide: Router
-        },
-        {
-          provide: ModalController
-        },
-        {
-          provide: HttpClient
-        },
-        {
-          provide: ActivatedRoute
-        },
-        {
-          provide: DashboardService,
-          useValue: {
-            buyPassByCredit: () => {},
-            getCurrentPhoneNumber: () => {}
-          }
-        },
-        {
-          provide: AuthenticationService,
-          useValue: {
-            getSubscription: () => {
-              return of();
-            }
-          }
-        },
-        {
-          provide: MatDialogRef
-        }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    }).compileComponents();
-  }));
+	beforeEach( waitForAsync( () => {
+		TestBed.configureTestingModule( {
+			declarations: [BuyPassIllimixPage],
+			imports: [MatDialogModule, RouterTestingModule],
+			providers: [
+				{
+					provide: ModalController
+				},
+				{
+					provide: HttpClient
+				},
+				{
+					provide: HttpHandler
+				},
+				{
+					provide: AngularDelegate
+				},
+				{
+					provide: DashboardService,
+					useValue: {
+						buyPassByCredit: () => { },
+						getCurrentPhoneNumber: () => { }
+					}
+				},
+				{
+					provide: AuthenticationService,
+					useValue: {
+						getSubscription: () => {
+							return of();
+						}
+					}
+				},
+				{
+					provide: MatDialogRef,
+					useValue: {}
+				}
+			],
+			schemas: [CUSTOM_ELEMENTS_SCHEMA]
+		} ).compileComponents();
+	} ) );
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BuyPassIllimixPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach( () => {
+		fixture = TestBed.createComponent( BuyPassIllimixPage );
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	} );
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+	it( 'should create', () => {
+		expect( component ).toBeTruthy();
+	} );
+} );
