@@ -25,6 +25,7 @@ import {TakePictureComponent} from './take-picture/take-picture.component';
 import {HistorikTransactionByTypeModalComponent} from './historik-transaction-by-type-modal/historik-transaction-by-type-modal.component';
 import {ItemOmUserStatusCardInfosComponent} from './item-om-user-status-card-infos/item-om-user-status-card-infos.component';
 import {ListPreviewStoriesComponent} from './list-preview-stories/list-preview-stories.component';
+import {VisualizeStoriesComponent} from './visualize-stories/visualize-stories.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import {ListPreviewStoriesComponent} from './list-preview-stories/list-preview-s
     TakePictureComponent,
     ItemTransfertOmComponent,
     ItemOmUserStatusCardInfosComponent,
-    ListPreviewStoriesComponent
+    ListPreviewStoriesComponent,
+    VisualizeStoriesComponent
   ],
   imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule, IonicImageLoader],
   exports: [
@@ -72,7 +74,8 @@ import {ListPreviewStoriesComponent} from './list-preview-stories/list-preview-s
     TakePictureComponent,
     ItemTransfertOmComponent,
     ItemOmUserStatusCardInfosComponent,
-    ListPreviewStoriesComponent
+    ListPreviewStoriesComponent,
+    VisualizeStoriesComponent
   ],
   entryComponents: [HistorikTransactionByTypeModalComponent]
 })
