@@ -17,6 +17,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { Location } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
 
 describe( 'AppComponent', () => {
 	let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
@@ -62,7 +63,11 @@ describe( 'AppComponent', () => {
 				},
 				{
 					provide: AppVersion,
-					useValue: {},
+					useValue: {
+						getVersionNumber: () => {
+							return of().toPromise()
+						}
+					},
 				},
 				{
 					provide: AppMinimize,

@@ -30,7 +30,8 @@ describe( 'BuySosPage', () => {
 					}
 				},
 				{
-					provide: MatDialogRef
+					provide: MatDialogRef,
+					useValue: {}
 				}
 			],
 			schemas: [CUSTOM_ELEMENTS_SCHEMA]
