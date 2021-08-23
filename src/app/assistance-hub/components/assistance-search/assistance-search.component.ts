@@ -10,7 +10,7 @@ import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow
 })
 export class AssistanceSearchComponent implements OnInit {
   displaySearchIcon: boolean = true;
-  @ViewChild('searchInput') searchRef: IonInput;
+  @ViewChild('searchInput', { static: true }) searchRef: IonInput;
   terms = '';
   listBesoinAides: OffreService[];
   listBesoinAidesAltered: OffreService[];
@@ -19,15 +19,16 @@ export class AssistanceSearchComponent implements OnInit {
 
   ngOnInit() {
     this.listBesoinAidesAltered = this.listBesoinAides =
-      history.state.listBesoinAides;
+    history.state && history.state.listBesoinAides ? history.state.listBesoinAides: [];
     this.followAnalyticsService.registerEventFollow(
       'Assistance_search_page_affichage_success',
       'event'
     );
+    this.initSearchRef();
   }
 
-  ngAfterViewInit() {
-    const search = history.state.search;
+  initSearchRef() {
+    const search = history.state && history.state.search ? history.state.search : null;
     this.searchRef.value = search;
     this.displaySearchIcon = false;
     this.terms = search;

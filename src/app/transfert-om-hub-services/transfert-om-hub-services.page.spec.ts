@@ -1,29 +1,34 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TransfertOmHubServicesPage } from './transfert-om-hub-services.page';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('TransfertOmHubServicesPage', () => {
   let component: TransfertOmHubServicesPage;
   let fixture: ComponentFixture<TransfertOmHubServicesPage>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TransfertOmHubServicesPage ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: Router
-        },
-        {
-          provide: ModalController
-        }
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [RouterTestingModule],
+        declarations: [TransfertOmHubServicesPage],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          AngularDelegate,
+          {
+            provide: Router,
+            useValue: {},
+          },
+          {
+            provide: ModalController,
+          },
+        ],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TransfertOmHubServicesPage);

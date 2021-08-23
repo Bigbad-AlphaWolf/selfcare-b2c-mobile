@@ -12,14 +12,14 @@ import {
   SEARCH_SIZE,
 } from '../services/kiosk-locator-service/kiosk.utils';
 
-// declare var google: any;
+declare var google: any;
 @Component({
   selector: 'app-kiosk-locator',
   templateUrl: './kiosk-locator.page.html',
   styleUrls: ['./kiosk-locator.page.scss'],
 })
 export class KioskLocatorPage implements OnInit {
-  @ViewChild('map') mapElement: ElementRef;
+  @ViewChild('map', { static: true }) mapElement: ElementRef;
   @ViewChild('slides') sliders: IonSlides;
   map: google.maps.Map;
   apiKey = 'AIzaSyAfqTLg3_OIhgZIWG3LZTlLA0sEMAdrMso';

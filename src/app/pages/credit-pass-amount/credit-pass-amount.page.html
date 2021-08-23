@@ -3,7 +3,7 @@
     <ion-buttons>
       <ion-back-button
         (click)="goBack()"
-        icon=""
+        mode="md"
         class="oem-back-button"
       >
         <img src="/assets/images/arrow-left.png" alt="icon" />
@@ -31,7 +31,7 @@
       <button
         class="scb-btn scb-btn-orange scb-btn-full"
         id="btn-validate-amount"
-        [disabled]="!opXtras.amount || opXtras.amount<=0"
+        [disabled]="!opXtras?.amount || opXtras?.amount<=0"
         (click)="onContinue()"
       >
         <span>Continuer</span>

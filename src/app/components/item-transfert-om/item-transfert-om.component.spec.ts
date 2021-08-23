@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ItemTransfertOmComponent } from './item-transfert-om.component';
 
@@ -7,7 +7,7 @@ describe('ItemTransfertOmComponent', () => {
   let component: ItemTransfertOmComponent;
   let fixture: ComponentFixture<ItemTransfertOmComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ItemTransfertOmComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

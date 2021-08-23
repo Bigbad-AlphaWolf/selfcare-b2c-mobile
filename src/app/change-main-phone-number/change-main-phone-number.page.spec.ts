@@ -1,19 +1,21 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ChangeMainPhoneNumberPage } from './change-main-phone-number.page';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { of } from 'rxjs';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
-describe('ChangeMainPhoneNumberPage', () => {
+describe( 'ChangeMainPhoneNumberPage', () => {
 	let component: ChangeMainPhoneNumberPage;
 	let fixture: ComponentFixture<ChangeMainPhoneNumberPage>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
+	beforeEach( waitForAsync( () => {
+		TestBed.configureTestingModule( {
 			declarations: [ChangeMainPhoneNumberPage],
+			imports: [RouterTestingModule],
 			providers: [
 				{
 					provide: AuthenticationService,
@@ -21,7 +23,7 @@ describe('ChangeMainPhoneNumberPage', () => {
 						getSubscription: () => {
 							return of();
 						},
-						getUserMainPhoneNumber: () => {}
+						getUserMainPhoneNumber: () => { }
 					}
 				},
 				{
@@ -29,24 +31,24 @@ describe('ChangeMainPhoneNumberPage', () => {
 					useValue: {
 						getAttachedNumbers: () => {
 							return of();
+						},
+						attachedNumbers: () => {
+							return of();
 						}
 					}
-				},
-				{
-					provide: Router
 				}
 			],
 			schemas: [CUSTOM_ELEMENTS_SCHEMA]
-		}).compileComponents();
-	}));
+		} ).compileComponents();
+	} ) );
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(ChangeMainPhoneNumberPage);
+	beforeEach( () => {
+		fixture = TestBed.createComponent( ChangeMainPhoneNumberPage );
 		component = fixture.componentInstance;
 		fixture.detectChanges();
-	});
+	} );
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
-});
+	it( 'should create', () => {
+		expect( component ).toBeTruthy();
+	} );
+} );

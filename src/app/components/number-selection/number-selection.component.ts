@@ -73,8 +73,8 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.isLightMod = this.data.isLightMod;
-    this.option = this.data.option;
+    this.isLightMod = this.data && this.data.isLightMod ? this.data.isLightMod : null;
+    this.option = this.data && this.data.option ? this.data.option : NumberSelectionOption.NONE;
     this.showInput = this.option === NumberSelectionOption.NONE;
     this.opXtras.recipientMsisdn = this.currentPhone;
     this.opXtras.senderMsisdn = SessionOem.PHONE;

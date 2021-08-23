@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { InProgressPopupComponent } from './in-progress-popup.component';
 import { MatDialogRef } from '@angular/material';
@@ -8,7 +8,7 @@ describe('InProgressPopupComponent', () => {
   let component: InProgressPopupComponent;
   let fixture: ComponentFixture<InProgressPopupComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ InProgressPopupComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

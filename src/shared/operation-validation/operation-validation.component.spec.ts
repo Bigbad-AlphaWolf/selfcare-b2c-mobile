@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { OperationValidationComponent } from './operation-validation.component';
 import { PhoneNumberDisplayPipe } from '../pipes/phone-number-display.pipe';
@@ -14,7 +14,7 @@ describe('OperationValidationComponent', () => {
   let component: OperationValidationComponent;
   let fixture: ComponentFixture<OperationValidationComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FormsModule],
       declarations: [ OperationValidationComponent, PhoneNumberDisplayPipe ],

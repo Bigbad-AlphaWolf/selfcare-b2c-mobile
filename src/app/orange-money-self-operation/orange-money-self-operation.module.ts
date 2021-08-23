@@ -17,16 +17,16 @@ const routes: Routes = [
 	},
 	{
 		path: 'cancel-transaction',
-		loadChildren: './pages/cancel-transaction-om/cancel-transaction-om.module#CancelTransactionOmPageModule',
+		loadChildren: () => import('./pages/cancel-transaction-om/cancel-transaction-om.module').then(m => m.CancelTransactionOmPageModule),
 	},
 	{
 		path: 'deplafonnement',
-		loadChildren: './pages/new-deplafonnement-om/new-deplafonnement-om.module#NewDeplafonnementOmPageModule',
+		loadChildren: () => import('./pages/new-deplafonnement-om/new-deplafonnement-om.module').then(m => m.NewDeplafonnementOmPageModule),
 	},
 	{
 		path: 'open-om-account',
 		loadChildren:
-			'./pages/open-om-account/open-om-account.module#OpenOmAccountPageModule',
+			() => import('./pages/open-om-account/open-om-account.module').then(m => m.OpenOmAccountPageModule),
 	},
 	{
 		path: '**',

@@ -12,7 +12,7 @@ const routes: Routes = [
     path: '',
     component: AddNewPhoneNumberV2Page
   },
-  { path: 'id-client', loadChildren: './pages/add-number-by-id-client/add-number-by-id-client.module#AddNumberByIdClientPageModule' }
+  { path: 'id-client', loadChildren: () => import('./pages/add-number-by-id-client/add-number-by-id-client.module').then(m => m.AddNumberByIdClientPageModule) }
 ];
 
 @NgModule({

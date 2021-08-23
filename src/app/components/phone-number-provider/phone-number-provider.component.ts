@@ -24,7 +24,7 @@ import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow
 export class PhoneNumberProviderComponent implements OnInit, OnChanges {
   @Output('onPhoneSelected') onPhoneSelected: EventEmitter<OperationExtras> = new EventEmitter();
   @Input() showInput: boolean;
-  @ViewChild('numberInput') input: ElementRef;
+  @ViewChild('numberInput', { static: true }) input: ElementRef;
   hasErrorGetContact: boolean;
   errorGetContact: any;
   otherBeneficiaryNumber = '';

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AvantagePopupComponent } from './avantage-popup.component';
 
@@ -7,7 +7,7 @@ describe('AvantagePopupComponent', () => {
     let fixture: ComponentFixture<AvantagePopupComponent>;
 
     beforeEach(
-        async(() => {
+        waitForAsync(() => {
             TestBed.configureTestingModule({
                 declarations: [AvantagePopupComponent]
             }).compileComponents();

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DashboardHomePrepaidPage } from './dashboard-home-prepaid.page';
 import { PassVolumeDisplayPipe } from 'src/shared/pipes/pass-volume-display.pipe';
@@ -12,7 +12,7 @@ describe('DashboardHomePrepaidPage', () => {
   let component: DashboardHomePrepaidPage;
   let fixture: ComponentFixture<DashboardHomePrepaidPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [DashboardHomePrepaidPage, PassVolumeDisplayPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

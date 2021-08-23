@@ -12,9 +12,12 @@
     position: absolute;
     left: 15px;
     top: 14.5px;
-    .icon-menu {
-      width: 24px;
-      height: 21px;
+    ion-menu-button {
+      --border-radius: 0;
+      .icon-menu {
+        width: 24px;
+        height: 21px;
+      }
     }
   }
 
@@ -34,7 +37,7 @@
     right: 15px;
     top: 15px;
   }
-  .avatar{
+  .avatar {
     width: 40px;
     height: 40px;
     border: solid 1px #ff7900;
@@ -42,13 +45,12 @@
     position: absolute;
     right: 15px;
     top: 5px;
-    img{
+    img {
       border-radius: 50%;
       width: 38px;
       height: 38px;
       display: flex;
       align-items: center;
-      
     }
   }
 }

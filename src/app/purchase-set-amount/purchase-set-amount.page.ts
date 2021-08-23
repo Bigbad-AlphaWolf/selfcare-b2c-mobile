@@ -183,7 +183,10 @@ export class PurchaseSetAmountPage implements OnInit {
   }
 
   async checkTransferOMDeeplink() {
-    const msisdn = this.route.snapshot.paramMap.get('msisdn');
+    const msisdn =
+      this.route && this.route.snapshot
+        ? this.route.snapshot.paramMap.get('msisdn')
+        : null;
     if (msisdn) {
       this.purchasePayload = {
         recipientMsisdn: msisdn,

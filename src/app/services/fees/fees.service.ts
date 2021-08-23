@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { off } from 'process';
-import { of } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { OM_LABEL_SERVICES } from 'src/app/utils/bills.util';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { FeeModel } from '../orange-money-service';
@@ -136,15 +134,6 @@ export class FeesService {
             : Math.trunc((amount * fee.cashout_fees) / 100);
         const computedFee = { effective_fees, old_fees, cashout_fees };
         return computedFee;
-        // if (fee.mode_calcul === 'fixe') {
-        // 	return fee;
-        // } else if (fee.mode_calcul === 'pourcent') {
-        // 	const computedFee = {
-        // 		effective_fees: Math.trunc((amount * fee.effective_fees) / 100),
-        // 		old_fees: Math.trunc((amount * fee.old_fees) / 100)
-        // 	};
-        // 	return computedFee;
-        // }
       }
     }
     return { effective_fees: null, old_fees: null, cashout_fees: null };

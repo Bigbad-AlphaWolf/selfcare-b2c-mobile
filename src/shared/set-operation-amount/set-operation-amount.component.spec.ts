@@ -1,42 +1,43 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SetOperationAmountComponent } from './set-operation-amount.component';
-import { SharedModule } from '../shared.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { of } from 'rxjs';
+import { AngularDelegate, ModalController } from '@ionic/angular';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SetOperationAmountComponent', () => {
   let component: SetOperationAmountComponent;
   let fixture: ComponentFixture<SetOperationAmountComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [FormsModule],
-      declarations: [ SetOperationAmountComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: OrangeMoneyService, useValue: {
-            getOmMsisdn:() => {
-              return of()
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [FormsModule, RouterTestingModule],
+        declarations: [SetOperationAmountComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          AngularDelegate,
+          {
+            provide: OrangeMoneyService,
+            useValue: {
+              getOmMsisdn: () => {
+                return of();
+              },
+              checkBalanceSufficiency: () => {
+                return of();
+              },
             },
-            checkBalanceSufficiency:() => {
-              return of()
-            }
-          }
-        },
-        {
-          provide: Router, useValue: {}
-        }
-
-      ]
+          },
+          {
+            provide: ModalController,
+          },
+        ],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SetOperationAmountComponent);
