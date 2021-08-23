@@ -1,51 +1,50 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { BuySosPage } from './buy-sos.page';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { SosService } from '../services/sos-service/sos.service';
 import { MatDialogModule, MatDialogRef } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
 
-describe('BuySosPage', () => {
+describe( 'BuySosPage', () => {
 	let component: BuySosPage;
 	let fixture: ComponentFixture<BuySosPage>;
 
-	beforeEach(async(() => {
-		TestBed.configureTestingModule({
+	beforeEach( waitForAsync( () => {
+		TestBed.configureTestingModule( {
 			declarations: [BuySosPage],
-			imports: [MatDialogModule],
+			imports: [MatDialogModule, RouterTestingModule],
 			providers: [
-				{
-					provide: Router
-				},
 				{
 					provide: DashboardService,
 					useValue: {
-						getCurrentPhoneNumber: () => {}
+						getCurrentPhoneNumber: () => { }
 					}
 				},
 				{
 					provide: SosService,
 					useValue: {
-						subscribeToSos: () => {}
+						subscribeToSos: () => { }
 					}
 				},
 				{
-					provide: MatDialogRef
+					provide: MatDialogRef,
+					useValue: {}
 				}
 			],
 			schemas: [CUSTOM_ELEMENTS_SCHEMA]
-		}).compileComponents();
-	}));
+		} ).compileComponents();
+	} ) );
 
-	beforeEach(() => {
-		fixture = TestBed.createComponent(BuySosPage);
+	beforeEach( () => {
+		fixture = TestBed.createComponent( BuySosPage );
 		component = fixture.componentInstance;
 		fixture.detectChanges();
-	});
+	} );
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
-});
+	it( 'should create', () => {
+		expect( component ).toBeTruthy();
+	} );
+} );

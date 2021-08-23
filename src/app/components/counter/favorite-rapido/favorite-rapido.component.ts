@@ -15,7 +15,6 @@ export class FavoriteRapidoComponent implements OnInit {
   @Input() rapidosFavorites$: Observable<any[]>;
   @Input() operation: string;
   constructor(
-    private favoriService: FavorisService,
     private modalCtrl: ModalController
   ) {}
 
@@ -23,7 +22,7 @@ export class FavoriteRapidoComponent implements OnInit {
   }
 
   onFavoriteRapidoSlected(rapido: any) {
-    
+
     this.modalCtrl.dismiss({
       TYPE_BS: 'FAVORIES',
       ACTION: 'FORWARD',

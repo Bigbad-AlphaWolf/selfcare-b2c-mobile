@@ -73,14 +73,14 @@ export class AssistanceActionsComponent implements OnInit {
       ]
     ]
   ]);
-  @ViewChild('slides') slides: IonSlides;
+  @ViewChild('slides', { static: true }) slides: IonSlides;
   currentSlideIndex = 0;
   displaySearchIcon: boolean = true;
-  @ViewChild('searchInput') searchRef;
+  @ViewChild('searchInput', { static: true }) searchRef;
   constructor(private navController: NavController, private followAnalyticsService: FollowAnalyticsService) {}
 
   ngOnInit() {
-    this.listActes = history.state.listActes;
+    this.listActes = history.state && history.state.listActes ? history.state.listActes : [];
     this.groudActesByCategorie();
   }
 

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RechargeCardNumberComponent } from './recharge-card-number.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ describe('RechargeCardNumberComponent', () => {
   let component: RechargeCardNumberComponent;
   let fixture: ComponentFixture<RechargeCardNumberComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [RechargeCardNumberComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

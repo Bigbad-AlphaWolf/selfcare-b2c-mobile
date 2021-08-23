@@ -27,7 +27,7 @@ export class IlliflexSetAmountModalComponent implements OnInit {
   @Input() pricings: PalierModel[] = [];
   minAmountIlliflex: number = 500;
   maxAmountIlliflex: number = 15000;
-  @ViewChild('amountInput') input: ElementRef;
+  @ViewChild('amountInput', { static: true }) input: ElementRef;
   constructor(
     private fb: FormBuilder,
     private modalController: ModalController,

@@ -41,8 +41,10 @@ export class ListPreviewStoriesComponent implements OnInit {
 
     const modal = await this.modalController.create({
       component: VisualizeStoriesComponent,
-      enterAnimation,
-      leaveAnimation
+      //enterAnimation,
+      //leaveAnimation,
+      swipeToClose: true,
+      mode: 'ios'
     });
     return await modal.present();
   }

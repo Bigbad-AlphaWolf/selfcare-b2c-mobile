@@ -11,7 +11,5 @@ export class ItemConsoGaugeComponent implements OnInit {
   Math = Math;
   constructor() {}
 
-  ngOnInit() {
-    console.log(this.conso);
-  }
+  ngOnInit() {}
 }

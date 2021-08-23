@@ -1,5 +1,7 @@
+import { Location } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { UrlSerializer } from '@angular/router';
 
 import { CreditPassAmountPage } from './credit-pass-amount.page';
 
@@ -7,13 +9,22 @@ describe('CreditPassAmountPage', () => {
   let component: CreditPassAmountPage;
   let fixture: ComponentFixture<CreditPassAmountPage>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CreditPassAmountPage ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [CreditPassAmountPage],
+        providers: [
+          {
+            provide: Location,
+          },
+          {
+            provide: UrlSerializer,
+          },
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CreditPassAmountPage);

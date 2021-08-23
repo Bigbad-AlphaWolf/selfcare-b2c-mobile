@@ -1,22 +1,24 @@
-@import "src/app/app.scss"; // http://ionicframework.com/docs/theming/
-@import "~@ionic/angular/css/core.css";
-@import "~@ionic/angular/css/normalize.css";
-@import "~@ionic/angular/css/structure.css";
-@import "~@ionic/angular/css/typography.css";
-@import "~@ionic/angular/css/display.css";
-@import "~@ionic/angular/css/padding.css";
-@import "~@ionic/angular/css/float-elements.css";
-@import "~@ionic/angular/css/text-alignment.css";
-@import "~@ionic/angular/css/text-transformation.css";
-@import "~@ionic/angular/css/flex-utils.css";
+@import 'src/app/app.scss'; // http://ionicframework.com/docs/theming/
+@import '~@ionic/angular/css/core.css';
+@import '~@ionic/angular/css/normalize.css';
+@import '~@ionic/angular/css/structure.css';
+@import '~@ionic/angular/css/typography.css';
+@import '~@ionic/angular/css/display.css';
+@import '~@ionic/angular/css/padding.css';
+@import '~@ionic/angular/css/float-elements.css';
+@import '~@ionic/angular/css/text-alignment.css';
+@import '~@ionic/angular/css/text-transformation.css';
+@import '~@ionic/angular/css/flex-utils.css';
+@import '@vime/core/themes/default.css';
+
 @font-face {
-  font-family: "HelveticaNeueLTStd-Bd";
-  src: url("theme/HelveticaNeueLTStd-Bd.otf") format("opentype");
+  font-family: 'HelveticaNeueLTStd-Bd';
+  src: url('theme/HelveticaNeueLTStd-Bd.otf') format('opentype');
 }
 
 @font-face {
-  font-family: "HelveticaNeueLTStd-Roman";
-  src: url("theme/HelveticaNeueLTStd-Roman.otf") format("opentype");
+  font-family: 'HelveticaNeueLTStd-Roman';
+  src: url('theme/HelveticaNeueLTStd-Roman.otf') format('opentype');
 }
 
 ion-menu {
@@ -79,7 +81,7 @@ ion-menu {
         font-size: 16px;
         color: $grey;
         &::after {
-          content: " *";
+          content: ' *';
           color: red;
         }
       }
@@ -640,9 +642,7 @@ button {
   }
 }
 .mat-radio-button.mat-accent .mat-radio-inner-circle,
-.mat-radio-button.mat-accent
-  .mat-radio-ripple
-  .mat-ripple-element:not(.mat-radio-persistent-ripple),
+.mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple),
 .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-persistent-ripple,
 .mat-radio-button.mat-accent:active .mat-radio-persistent-ripple {
   background-color: #ff7900;
@@ -666,9 +666,7 @@ button {
   flex-direction: column;
 }
 
-.mat-button-toggle-group-appearance-standard
-  .mat-button-toggle
-  + .mat-button-toggle {
+.mat-button-toggle-group-appearance-standard .mat-button-toggle + .mat-button-toggle {
   border-left: none;
 }
 
@@ -708,14 +706,14 @@ button {
   align-items: center;
   justify-content: center;
   margin-bottom: 5px;
-  padding: 10px 15px;
+  // padding: 10px 15px;
   .button-native {
     display: none;
   }
 }
 .oem-back-button.md {
   @include oemBackButton();
-  padding: 20px 15px;
+  // padding: 20px 15px;
 }
 
 .oem-back-button.ios {
