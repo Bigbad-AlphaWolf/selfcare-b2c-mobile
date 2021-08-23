@@ -16,6 +16,9 @@
   position: relative;
   padding-bottom: 97px;
 
+  .top-dashboard {
+    padding: 30px 15px 20px 15px;
+  }
   .dashboard-block-offres {
     // padding: 0 15px;
 
@@ -319,11 +322,7 @@
         // background-image: url(/assets/images/background-sargal.svg);
         // background-size: cover;
         // position: relative;
-        background-image: radial-gradient(
-          circle at 77% 36%,
-          #72e4ab,
-          #3fad75 113%
-        );
+        background-image: radial-gradient(circle at 77% 36%, #72e4ab, #3fad75 113%);
         .btn-container {
           width: 100%;
           background: transparent;
@@ -342,11 +341,7 @@
       }
 
       .scb-btn-credit {
-        background-image: radial-gradient(
-          circle at 77% 36%,
-          #b1a8f0,
-          #4c77d7 113%
-        );
+        background-image: radial-gradient(circle at 77% 36%, #b1a8f0, #4c77d7 113%);
       }
     }
 
