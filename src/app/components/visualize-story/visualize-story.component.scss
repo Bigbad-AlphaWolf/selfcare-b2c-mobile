@@ -1,0 +1,31 @@
+@import "src/app/app";
+
+:host {
+  height: 100%;
+  width: 100%;
+}
+.story-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background-color: white;
+  img {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .hide {
+    visibility: hidden;
+  }
+  .story-content {
+    position: absolute;
+    bottom: 50px;
+    width: 95%;
+    left: 2.5%;
+  }
+  .btn {
+    color: $white;
+  }
+}

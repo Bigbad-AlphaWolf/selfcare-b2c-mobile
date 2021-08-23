@@ -1,0 +1,15 @@
+<div class="story-container">
+	<ng-container *ngIf="story.type !== 'VIDEO'">
+		<img [src]="story?.storyContent" alt="">
+		<vm-player #audioPlayer *ngIf="story?.audio" class="hide" autoplay muted controls>
+			<vm-audio cross-origin>
+				<source [src]="story?.audio" type="audio/mp3" />
+			</vm-audio>
+		</vm-player>
+		<div class="story-content" >
+			<ion-button class="btn" color="primary-contrast" expand="block" fill="outline">Tchater avec Tontoo</ion-button>
+		</div>
+
+	</ng-container>
+
+</div>

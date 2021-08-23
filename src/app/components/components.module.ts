@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {ItemOfferPlanComponent} from './item-offer-plan/item-offer-plan.component';
 import {ItemPassIllimixComponent} from './item-pass-illimix/item-pass-illimix.component';
 import {ItemPassInternetComponent} from './item-pass-internet/item-pass-internet.component';
@@ -26,6 +26,9 @@ import {HistorikTransactionByTypeModalComponent} from './historik-transaction-by
 import {ItemOmUserStatusCardInfosComponent} from './item-om-user-status-card-infos/item-om-user-status-card-infos.component';
 import {ListPreviewStoriesComponent} from './list-preview-stories/list-preview-stories.component';
 import {VisualizeStoriesComponent} from './visualize-stories/visualize-stories.component';
+import {StoriesProgressBarComponent} from './stories-progress-bar/stories-progress-bar.component';
+import {VisualizeStoryComponent} from './visualize-story/visualize-story.component';
+import {VimeModule} from '@vime/angular';
 
 @NgModule({
   declarations: [
@@ -50,9 +53,11 @@ import {VisualizeStoriesComponent} from './visualize-stories/visualize-stories.c
     ItemTransfertOmComponent,
     ItemOmUserStatusCardInfosComponent,
     ListPreviewStoriesComponent,
-    VisualizeStoriesComponent
+    VisualizeStoriesComponent,
+    StoriesProgressBarComponent,
+    VisualizeStoryComponent
   ],
-  imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule, IonicImageLoader],
+  imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule, IonicImageLoader, VimeModule],
   exports: [
     ItemOfferPlanComponent,
     ItemPassIllimixComponent,
@@ -75,8 +80,11 @@ import {VisualizeStoriesComponent} from './visualize-stories/visualize-stories.c
     ItemTransfertOmComponent,
     ItemOmUserStatusCardInfosComponent,
     ListPreviewStoriesComponent,
-    VisualizeStoriesComponent
+    VisualizeStoriesComponent,
+    StoriesProgressBarComponent,
+    VisualizeStoryComponent
   ],
-  entryComponents: [HistorikTransactionByTypeModalComponent]
+  entryComponents: [HistorikTransactionByTypeModalComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ComponentsModule {}

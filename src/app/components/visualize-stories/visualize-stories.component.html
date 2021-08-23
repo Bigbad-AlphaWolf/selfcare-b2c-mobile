@@ -1,3 +1,11 @@
-<p>
-  visualize-stories works!
-</p>
+	<div class="visualize-stories-container">
+		<div *ngFor="let item of stories; let i=index">
+			<app-stories-progress-bar (finish)="goToNextSlide()" ></app-stories-progress-bar>
+		</div>
+
+		<ion-slides #slides pager="false" [options]="slideOpts">
+			<ion-slide *ngFor="let item of stories">
+				<app-visualize-story [story]="item" ></app-visualize-story>
+			</ion-slide>
+		</ion-slides>
+	</div>
