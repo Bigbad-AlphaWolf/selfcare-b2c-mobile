@@ -49,6 +49,7 @@ export class KioskLocatorPage implements OnInit {
   directionsRenderer: google.maps.DirectionsRenderer;
   avatarUrl: string = NO_AVATAR_ICON_URL;
   currentSlideIndex = 0;
+  searchedMarker;
 
   constructor(
     private geolocation: Geolocation,
@@ -117,6 +118,9 @@ export class KioskLocatorPage implements OnInit {
   }
 
   toggleView(view: KIOSK_VIEW) {
+    if (this.searchedMarker) {
+      this.searchedMarker.setMap(null);
+    }
     if (this.currentView === KIOSK_VIEW.VIEW_ITINERAIRE) {
       this.markers.forEach((marker) => {
         marker.setMap(this.map);
@@ -243,6 +247,14 @@ export class KioskLocatorPage implements OnInit {
   onSearchEmitted(event) {
     if (event.kiosk) {
       this.onSelectKiosk(event.kiosk, event.index);
+      this.currentView = KIOSK_VIEW.VIEW_ITINERAIRE;
+      this.clearAllMarkers();
+      this.searchedMarker = createHTMLMapMarker(
+        new google.maps.LatLng(event.kiosk.latitude, event.kiosk.longitude),
+        this.map,
+        null,
+        event.index
+      );
     } else {
       this.currentView = KIOSK_VIEW.VIEW_CARDS;
       this.markers.forEach((marker) => {
