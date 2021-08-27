@@ -1,11 +1,12 @@
 	<div class="visualize-stories-container">
-		<div *ngFor="let item of stories; let i=index">
-			<app-stories-progress-bar (finish)="goToNextSlide()" ></app-stories-progress-bar>
+		<div class="progress-bar-list">
+		<ng-container *ngFor="let item of stories; let id=index">
+				<app-stories-progress-bar [isCurrentStory]="id === currentSlideIndex" [story]="item" [lastId]="stories?.length - 1"  [idStory]="currentSlideIndex" (idStoryChange)="onProgressFinish($event)" (finish)="close()" ></app-stories-progress-bar>
+			</ng-container>
 		</div>
-
-		<ion-slides #slides pager="false" [options]="slideOpts">
-			<ion-slide *ngFor="let item of stories">
-				<app-visualize-story [story]="item" ></app-visualize-story>
+		<ion-slides #slides pager="false" [options]="slideOpts" (ionSlideReachStart)="initAnimation()" (ionSlideTransitionEnd)="slideTransitionEnd()" (ionSlideWillChange)="slideHasChanged()" (ionSlideTransitionStart)="slideTransitionStart()">
+			<ion-slide *ngFor="let item of stories; let last = last; let id=index">
+				<app-visualize-story #story [isCurrentStory]="id === currentSlideIndex" [story]="item" (mediaDurationChange)="setProgressBarDuration($event, id)" ></app-visualize-story>
 			</ion-slide>
 		</ion-slides>
 	</div>

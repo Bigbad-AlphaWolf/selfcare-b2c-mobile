@@ -1,11 +1,39 @@
 <div class="story-container">
+	<!--<audio #audioOrVideo controls autoplay preload="auto" (loadstart)="loadStart($event)">
+		<source src="assets/audio.mp3" type="audio/mp3" />
+		Your browser does not support the audio tag.
+	</audio>-->
+	<!--<video id="videoTag" class="video" #audioOrVideo controls preload="auto"  (loadeddata)="canPlay($event)" (loadstart)="loadStart($event)">
+		<source src="https://media.vimejs.com/720p.mp4" type="video/mp4" />
+		Your browser does not support the audio tag.
+	</video>
+
+	<div (click)="audioOrVideo.pause()">
+		Pause
+	</div>
+	<div (click)="audioOrVideo.play()">
+		Play
+	</div>-->
+	<!--<vm-player #audioPlayer (vmPlaybackReady)="onPlaybackReady($event)" (vmError)="onError($event)" autoplay controls>
+		<vm-file cross-origin="true" viewType="ViewType.Audio" >-->
+			<!-- These are passed directly to the underlying HTML5 `<video>` element. -->
+			<!-- Why `data-src`? Lazy loading, you can always use `src` if you prefer.  -->
+			<!--<source data-src="assets/audio.mp3" type="audio/mp3" />-->
+
+		<!--</vm-file>-->
+		<!-- ... -->
+	<!--</vm-player>-->
 	<ng-container *ngIf="story.type !== 'VIDEO'">
 		<img [src]="story?.storyContent" alt="">
-		<vm-player #audioPlayer *ngIf="story?.audio" class="hide" autoplay muted controls>
+		<!--<vm-player #audioPlayer (vmPlaybackReady)="onPlaybackReady()" class="hide" autoplay controls>
 			<vm-audio cross-origin>
 				<source [src]="story?.audio" type="audio/mp3" />
 			</vm-audio>
-		</vm-player>
+		</vm-player>-->
+		<audio #audioOrVideo *ngIf="story?.audio" class="hide" preload="auto" (loadedmetadata)="getInfoMetaData($event)" (loadstart)="loadStart($event)">
+			<source [src]="story?.audio" type="audio/mp3" />
+			Your browser does not support the audio tag.
+		</audio>
 		<div class="story-content" >
 			<ion-button class="btn" color="primary-contrast" expand="block" fill="outline">Tchater avec Tontoo</ion-button>
 		</div>

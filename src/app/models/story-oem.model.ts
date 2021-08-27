@@ -13,4 +13,5 @@ export interface StoryOem {
   };
   audio: string;
   type: 'IMAGE' | 'VIDEO';
+  duration?: number;
 }

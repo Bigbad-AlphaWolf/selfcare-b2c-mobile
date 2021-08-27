@@ -1,11 +1,11 @@
 import * as SecureLS from 'secure-ls';
-import { HTTP } from '@ionic-native/http/ngx';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { PalierModel } from 'src/app/models/palier.model';
-import { BoosterModel } from 'src/app/models/booster.model';
+import {HTTP} from '@ionic-native/http/ngx';
+import {SplashScreen} from '@ionic-native/splash-screen/ngx';
+import {StatusBar} from '@ionic-native/status-bar/ngx';
+import {PalierModel} from 'src/app/models/palier.model';
+import {BoosterModel} from 'src/app/models/booster.model';
 
-const ls = new SecureLS({ encodingType: 'aes' });
+const ls = new SecureLS({encodingType: 'aes'});
 export const REGEX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
 export const REGEX_NUMBER_OM: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
 export const REGEX_FIX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(33) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
@@ -153,6 +153,10 @@ export const TYPE_QUESTION_SATISFACTION_FORM = {
   RECOMMENDATION: 'RECOMMENDATION',
   YES_NO: 'YES_NO',
   SELECT_ANSWER: 'SELECT_ANSWER_QUESTION'
+};
+
+export const STORIES_OEM_CONFIG = {
+  MAX_DURATION_BY_ELEMENT: 20000 // en millisecondes
 };
 
 export function getNOAvatartUrlImage() {
@@ -406,20 +410,20 @@ export function getListPassFilteredByLabelAndPaymentMod(
 export function arrangePassByCategory(listPass: any[], listCategory: string[]) {
   // arrange pass by category label
 
-  const result: { label: string; pass: any[] }[] = [];
+  const result: {label: string; pass: any[]}[] = [];
   listCategory.forEach((label: string) => {
-    result.push({ label, pass: [] });
+    result.push({label, pass: []});
   });
   listPass.forEach((pass: any) => {
     if (!pass.passPromo) {
       result
-        .find((item: { label: string; pass: any[] }) => {
+        .find((item: {label: string; pass: any[]}) => {
           return item.label === pass.categoriePass.libelle;
         })
         .pass.push(pass);
     } else {
       result
-        .find((item: { label: string; pass: any[] }) => {
+        .find((item: {label: string; pass: any[]}) => {
           return item.label === pass.passPromo.categoriePass.libelle;
         })
         .pass.push(pass);
@@ -427,7 +431,7 @@ export function arrangePassByCategory(listPass: any[], listCategory: string[]) {
   });
 
   //order pass by tarif
-  result.forEach((itemPassCategory: { label: string; pass: any[] }, index: number) => {
+  result.forEach((itemPassCategory: {label: string; pass: any[]}, index: number) => {
     result[index].pass = result[index].pass.sort((pass1: any, pass2: any) => {
       if (!pass1.passPromo && !pass2.passPromo) {
         return +pass1.tarif - +pass2.tarif;
@@ -447,7 +451,7 @@ export function computeConsoHistory(consos) {
   const result = [];
 
   consos.forEach(x => {
-    const { date, categorie, calledNumber, duration, charge1, charge2, chargeType1, chargeType2 } = x;
+    const {date, categorie, calledNumber, duration, charge1, charge2, chargeType1, chargeType2} = x;
     let conso1, conso2;
 
     if (charge1 || chargeType1.length > 0) {
@@ -492,13 +496,13 @@ export function generateUUID() {
 }
 
 export const listLibelleCodeOperationOM = [
-  { operationCode: 'operation-100', operationLibelle: 'deplafonnement' },
-  { operationCode: 'operation-200', operationLibelle: 'creation-compte' },
-  { operationCode: 'operation-300', operationLibelle: 'reclamation' }
+  {operationCode: 'operation-100', operationLibelle: 'deplafonnement'},
+  {operationCode: 'operation-200', operationLibelle: 'creation-compte'},
+  {operationCode: 'operation-300', operationLibelle: 'reclamation'}
 ];
 
 export function getOperationCodeActionOM(libelle: string) {
-  const itemFound = listLibelleCodeOperationOM.find((item: { operationCode: string; operationLibelle: string }) => {
+  const itemFound = listLibelleCodeOperationOM.find((item: {operationCode: string; operationLibelle: string}) => {
     return item.operationLibelle === libelle;
   });
 
@@ -727,7 +731,7 @@ export function isNewVersion(versionA: string, versionB: string) {
 export interface TarifZoningByCountryModel {
   name?: string;
   indicatif?: string;
-  zone?: { name: string; tarifFormule: { tarifAppel: any; tarifSms: any } };
+  zone?: {name: string; tarifFormule: {tarifAppel: any; tarifSms: any}};
 }
 
 export interface NotificationInfoModel {
@@ -833,7 +837,7 @@ export const HelpModalDefaultContent: {
     type: string;
     url: string;
     action: string;
-    subOptions?: { title: string; subtitle: string; icon?: string }[];
+    subOptions?: {title: string; subtitle: string; icon?: string}[];
   }[];
   showChecks?: boolean;
 } = {
@@ -1049,7 +1053,7 @@ export const HelpModalRegisterOMContent: {
     type: string;
     url: string;
     action: string;
-    subOptions?: { title: string; subtitle: string; icon?: string }[];
+    subOptions?: {title: string; subtitle: string; icon?: string}[];
   }[];
   showChecks?: boolean;
 } = {
@@ -1224,7 +1228,7 @@ export const ERROR_MSG_PASS = {
     'Diegalou, Mixel et Wotel sont temporairement indisponibles sur Orange et Moi. Tu peux continuer à souscrire au #220# ou au #144#. Bul xaar, souscris vite. Nio far !'
 };
 
-export function concatArtistsNames(artistsArray: { nom?: string }[]) {
+export function concatArtistsNames(artistsArray: {nom?: string}[]) {
   if (!artistsArray || !artistsArray.length) {
     return '';
   }
