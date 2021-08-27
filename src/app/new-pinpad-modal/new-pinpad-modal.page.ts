@@ -442,7 +442,7 @@ export class NewPinpadModalPage implements OnInit {
       this.omPhoneNumber
     );
     pin = this.orangeMoneyService.GetPin(omUser.sequence.split(''), pin);
-    if (!this.errorCode) {
+    if (this.errorCode !== OM_IDENTIC_TRANSACTION_CODE) {
       this.pin = pin;
     }
     if (omUser.msisdn === this.omPhoneNumber) {

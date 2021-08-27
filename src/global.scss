@@ -890,3 +890,31 @@ ion-button {
   display: none !important;
 }
 /********** google maps styling end **********/
+
+// new dashboard with tabs styling //
+
+.search-bloc {
+  ion-searchbar {
+    .searchbar-input {
+      font-family: 'HelveticaNeueLTStd-Roman';
+      // padding-left: 15px !important;
+      box-shadow: none !important;
+      background-color: $white;
+    }
+    .searchbar-search-icon {
+      // left: unset !important;
+      // right: 16px !important;
+    }
+  }
+}
+
+ion-tab-bar {
+  padding: 2px 0 10px;
+  .tab-selected {
+    ion-label {
+      color: $fullBlack !important;
+    }
+  }
+}
+
+// ------------- end ------------- //

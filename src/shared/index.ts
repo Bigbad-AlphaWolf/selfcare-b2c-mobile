@@ -4,6 +4,11 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { PalierModel } from 'src/app/models/palier.model';
 import { BoosterModel } from 'src/app/models/booster.model';
+import {
+  PROFILE_TYPE_HYBRID,
+  PROFILE_TYPE_HYBRID_1,
+  PROFILE_TYPE_HYBRID_2,
+} from 'src/app/dashboard';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER: RegExp =
@@ -1386,3 +1391,11 @@ export const FEES_ERROR =
   'Erreur lors de la récupération des frais. Réactualisez';
 
 export const NO_RECENTS_MSG = 'Pas de bénéficiaire récent pour cette opération';
+
+export const isProfileHybrid = (profile: string) => {
+  return (
+    profile === PROFILE_TYPE_HYBRID ||
+    profile === PROFILE_TYPE_HYBRID_1 ||
+    profile === PROFILE_TYPE_HYBRID_2
+  );
+};

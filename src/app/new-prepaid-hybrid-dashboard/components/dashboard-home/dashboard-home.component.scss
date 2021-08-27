@@ -1,0 +1,188 @@
+@import 'src/app/app';
+
+.dashboard-header {
+  padding: 17px 15px 21px;
+  .header-top-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .menu-btn-container {
+      .icon-menu {
+        width: 28px;
+        height: 24px;
+      }
+    }
+    .current-msisdn {
+      font-size: 18px;
+    }
+    .header-right-bloc {
+      display: flex;
+      align-items: center;
+      :not(:last-child) {
+        margin-right: 20px;
+      }
+      .search-icon {
+        font-size: 26px;
+      }
+    }
+  }
+  .search-bloc {
+    margin-top: 15px;
+    ion-searchbar {
+      border: solid 2px $grayDashboard;
+      border-radius: 10px;
+    }
+  }
+}
+
+.home-dashboard-content {
+  --ion-background-color: #f3f3f8;
+  --padding-bottom: 50px;
+  .stories-bloc {
+    height: 142px;
+    width: 100%;
+  }
+  .cards-bloc {
+    background: linear-gradient(to bottom, #fff, #f3f3f8);
+    width: 100%;
+    padding: 20px 0;
+    .text-bloc {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 15px 15px;
+      .suivi-conso {
+        font-size: 20px;
+        line-height: 1.5;
+      }
+      .voir-details {
+        font-size: 16px;
+        line-height: 1.88;
+      }
+    }
+    .conso-cards-bloc {
+      ion-slides {
+        width: 100%;
+        ion-slide {
+          padding-left: 15px;
+          display: flex;
+          align-items: flex-start;
+          .conso-card-loader {
+            position: relative;
+            width: 100%;
+            height: 105px;
+            border-radius: 20px;
+            margin: 0 !important;
+          }
+          &:last-child {
+            margin-right: 15px;
+          }
+          .conso-card {
+            position: relative;
+            width: 100%;
+            height: 105px;
+            border-radius: 20px;
+            padding: 15px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            &-credit {
+              background-image: radial-gradient(
+                circle at 77% 36%,
+                #b1a8f0,
+                #4c77d7 113%
+              );
+            }
+            &-sargal {
+              background-image: radial-gradient(
+                circle at 77% 36%,
+                #72e4ab,
+                #3fad75 113%
+              );
+            }
+            .conso-label {
+              font-family: 'HelveticaNeueLTStd-Roman';
+              font-size: 16px;
+            }
+            .conso-amount {
+              font-size: 24px;
+              .sign-up {
+                font-size: 16px;
+              }
+            }
+            .conso-date-exp {
+              font-family: 'HelveticaNeueLTStd-Roman';
+              font-size: 12px;
+            }
+            .conso-icon-transparent {
+              position: absolute;
+              right: 15px;
+              top: 10px;
+            }
+          }
+          app-om-button {
+            height: 105px;
+            width: 100%;
+          }
+        }
+      }
+    }
+    .actions-cards-bloc {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 15px 15px 5px;
+      .action-card {
+        width: percentage(105/345);
+        border-radius: 10px;
+        background-color: $white;
+        padding: 15px 5px;
+        text-align: center;
+        margin-bottom: 10px;
+        &:not(:nth-child(3n)) {
+          margin-right: percentage(15/345);
+        }
+        .action-icon-container {
+          .act-icon {
+            width: 39px;
+            height: 39px;
+          }
+        }
+        .action-title {
+          font-size: 16px;
+        }
+        .action-subtitle {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 12px;
+          line-height: 1.17;
+        }
+      }
+    }
+  }
+  .bons-plans-bloc {
+    padding: 0 15px 15px;
+    .text-bloc {
+      display: flex;
+      justify-content: space-between;
+      .suivi-conso {
+        font-size: 20px;
+        line-height: 1.5;
+      }
+      .voir-details {
+        font-size: 16px;
+        line-height: 1.88;
+      }
+    }
+  }
+  .empty-div-effect {
+    position: fixed;
+    bottom: -15px;
+    left: 0;
+    width: 100%;
+    height: 75px;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.1)
+    );
+  }
+}

@@ -1,0 +1,31 @@
+@import 'src/app/app';
+
+.dashboard-header {
+  padding: 17px 15px 21px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .menu-btn-container {
+    .icon-menu {
+      width: 28px;
+      height: 24px;
+    }
+  }
+  .current-msisdn {
+    font-size: 18px;
+  }
+  .header-right-bloc {
+    display: flex;
+    align-items: center;
+    :not(:last-child) {
+      margin-right: 20px;
+    }
+    .search-icon {
+      font-size: 26px;
+    }
+  }
+}
+
+.dashboard-page {
+  background-color: $grayDashboard;
+}

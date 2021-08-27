@@ -152,7 +152,7 @@ export class DetailsConsoPage implements OnInit {
       this.histPurchaseLoading = true;
       this.histPurchaseHasError = false;
       this.purchaseServ
-        .getCategoriesAndPurchaseHistory(this.userPhoneNumber, day)
+        .getCategoriesAndPurchaseHistory(this.userPhoneNumber, 100)
         .pipe(
           tap(
             (res: {

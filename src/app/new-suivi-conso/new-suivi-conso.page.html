@@ -1,0 +1,29 @@
+<ion-header class="suivi-conso-header">
+  <div class="header-top-block">
+    <div class="title">
+      Suivi conso
+    </div>
+    <ion-icon name="search-outline" class="search-icon" (click)="(0)"></ion-icon>
+  </div>
+  <div class="search-bloc" [appScrollVanish]="scrollArea">
+    <ion-searchbar placeholder="Rechercher un compteur"></ion-searchbar>
+  </div>
+  <div class="suivi-conso-custom-tabs">
+    <div class="conso-tab scb-text-light-black" *ngFor="let tab of tabs, let i = index" (click)="setSlidesIndex(i)" [ngClass]="{'active-tab': i === currentSlideIndex}">{{tab.label}}</div>
+  </div>
+</ion-header>
+
+<ion-content #scrollArea class="suivi-conso-content" [scrollEvents]="true">
+  <ion-slides [options]="slideOpts" #slides (ionSlideDidChange)="getCurrentSlide()">
+    <ion-slide>
+      <app-new-details-conso></app-new-details-conso>
+    </ion-slide>
+    <ion-slide>
+      <app-communication-historic></app-communication-historic>
+    </ion-slide>
+    <ion-slide>
+      <app-transactions-historic></app-transactions-historic>
+    </ion-slide>
+  </ion-slides>
+  <div class="empty-div-effect"></div>
+</ion-content>

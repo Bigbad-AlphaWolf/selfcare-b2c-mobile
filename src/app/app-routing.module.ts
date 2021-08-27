@@ -428,6 +428,22 @@ const routes: Routes = [
       () => import('./transfer-set-amount/transfer-set-amount.module').then(m => m.TransferSetAmountPageModule),
   },
   { path: 'kiosk-locator', loadChildren: () => import('./kiosk-locator/kiosk-locator.module').then(m => m.KioskLocatorPageModule) },
+  {
+    path: 'new-prepaid-hybrid-dashboard',
+    loadChildren: () => import('./new-prepaid-hybrid-dashboard/new-prepaid-hybrid-dashboard.module').then( m => m.NewPrepaidHybridDashboardPageModule)
+  },
+  {
+    path: 'new-suivi-conso',
+    loadChildren: () => import('./new-suivi-conso/new-suivi-conso.module').then( m => m.NewSuiviConsoPageModule)
+  },
+  {
+    path: 'new-services',
+    loadChildren: () => import('./new-services/new-services.module').then( m => m.NewServicesPageModule)
+  },
+  {
+    path: 'new-assistance-hub-v2',
+    loadChildren: () => import('./new-assistance-hub-v2/new-assistance-hub-v2.module').then( m => m.NewAssistanceHubV2PageModule)
+  },
 ];
 
 @NgModule({

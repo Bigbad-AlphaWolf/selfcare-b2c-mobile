@@ -1,0 +1,107 @@
+<ion-header class="dashboard-header">
+  <div class="header-top-block">
+    <ion-menu-button class="menu-btn-container">
+      <img class="icon-menu" src="/assets/images/menu@3x.png" alt="" />
+    </ion-menu-button>
+    <div class="current-msisdn">
+      {{currentMsisdn}}
+    </div>
+    <div class="header-right-bloc">
+      <ion-icon name="search-outline" class="search-icon" (click)="search()"></ion-icon>
+      <ion-icon name="notifications-outline" class="search-icon"></ion-icon>
+    </div>
+  </div>
+  <div class="search-bloc" [appScrollVanish]="scrollArea">
+    <ion-searchbar placeholder="Que souhaitez-vous ?"></ion-searchbar>
+  </div>
+</ion-header>
+
+<ion-content class="home-dashboard-content" #scrollArea [scrollEvents]="true">
+  <div class="stories-bloc"></div>
+  <div class="cards-bloc">
+    <div class="text-bloc">
+      <span class="suivi-conso">Suivi conso</span>
+      <span class="scb-text-orange voir-details" (click)="consultConsoDetails(1)">Voir détails</span>
+    </div>
+    <div class="conso-cards-bloc">
+      <ion-slides [options]="slideOpts">
+        <ion-slide>
+          <app-om-button></app-om-button>
+        </ion-slide>
+        <ion-slide>
+          <ng-container *ngIf="loadingConso else consoCard">
+            <ion-skeleton-text animated class="conso-card-loader"></ion-skeleton-text>
+          </ng-container>
+          <ng-template #consoCard>
+            <div class="conso-card conso-card-credit scb-text-white" (click)="consultConsoDetails()">
+              <div class="conso-label">Crédit Global</div>
+              <div class="conso-amount">{{creditGlobal}} Fcfa</div>
+              <div class="conso-date-exp">{{'Valable jusqu\'au ' + creditValidity}}</div>
+              <img src="assets/images/call-icon-transparent.png" class="conso-icon-transparent" alt="">
+            </div>
+          </ng-template>
+        </ion-slide>
+        <ion-slide *ngIf="currentProfil && !isHyBride">
+          <ng-container *ngIf="loadingSargal else sargalCard">
+            <ion-skeleton-text animated class="conso-card-loader"></ion-skeleton-text>
+          </ng-container>
+          <ng-template #sargalCard>
+            <ng-container
+              *ngIf="(sargalUnavailable || isNotSubscribedToSargal(userSargalData?.status)) else sargalData">
+              <div class="conso-card conso-card-sargal scb-text-white">
+                <div class="conso-label">Points Sargal</div>
+                <div class="conso-amount">
+                  <span class="sign-up">{{sargalUnavailable ? 'Service Indisponible' : 'M\'inscrire'}}</span>
+                </div>
+                <img src="assets/images/reward-icon-transparent.png" *ngIf="!sargalUnavailable" class="conso-icon-transparent" alt="">
+                <img src="/assets/images/reload.png" (click)="getSargalPoints()" *ngIf="sargalUnavailable" class="conso-icon-transparent" alt="">
+              </div>
+            </ng-container>
+            <ng-template #sargalData>
+              <div class="conso-card conso-card-sargal scb-text-white" (click)="onSargalCardClicked()">
+                <div class="conso-label">Points Sargal</div>
+                <div class="conso-amount">{{userSargalData?.totalPoints | formatCurrency}} Pts</div>
+                <div class="conso-date-exp">{{'Mis à jour le ' + sargalLastUpdate}}</div>
+                <img src="assets/images/reward-icon-transparent.png" class="conso-icon-transparent" alt="">
+              </div>
+            </ng-template>
+          </ng-template>
+        </ion-slide>
+        <ion-slide *ngIf="currentProfil && isHyBride && hasSargalProfile">
+          <ng-container *ngIf="loadingSargalStatus else sargalStatusCard">
+            <ion-skeleton-text animated class="conso-card-loader"></ion-skeleton-text>
+          </ng-container>
+          <ng-template #sargalStatusCard>
+            <div class="conso-card conso-card-sargal scb-text-white" (click)="seeSargalCard()">
+              <div class="conso-label">
+                Orange <span class="sargal-status"
+                  [ngStyle]="{'color': sargalStatus === 'GOLD' ? 'gold' :  '#e5e4e2'}">{{sargalStatus}}</span>
+              </div>
+              <div class="conso-amount">
+                <span class="sign-up">{{sargalStatusUnavailable ? 'Service Indisponible' : 'Voir ma carte'}}</span>
+              </div>
+              <img src="assets/images/reward-icon-transparent.png" *ngIf="!sargalStatusUnavailable" class="conso-icon-transparent" alt="">
+              <img src="/assets/images/reload.png" (click)="getCustomerSargalStatus()" *ngIf="sargalStatusUnavailable" class="conso-icon-transparent" alt="">
+            </div>
+          </ng-template>
+        </ion-slide>
+      </ion-slides>
+    </div>
+    <div class="actions-cards-bloc">
+      <div class="action-card" *ngFor="let action of actions">
+        <div class="action-icon-container">
+          <img [src]="'/assets/images/'+action.icon" alt="buy" class="act-icon">
+        </div>
+        <div class="action-title">{{action?.title}}</div>
+        <div class="action-subtitle scb-text-item-offre-black">{{action?.subtitle}}</div>
+      </div>
+    </div>
+  </div>
+  <div class="bons-plans-bloc" *ngIf="0">
+    <div class="text-bloc">
+      <span class="suivi-conso">Bons plans du jour</span>
+      <span class="scb-text-orange voir-details" (click)="consultConsoDetails(1)">Voir tout</span>
+    </div>
+  </div>
+  <div class="empty-div-effect"></div>
+</ion-content>

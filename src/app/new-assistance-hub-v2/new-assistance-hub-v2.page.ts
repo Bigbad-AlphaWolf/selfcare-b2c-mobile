@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { NavController } from '@ionic/angular';
@@ -12,17 +12,11 @@ import { OperationService } from '../services/oem-operation/operation.service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 
 @Component({
-  selector: 'app-assistance-hub',
-  templateUrl: './assistance-hub.page.html',
-  styleUrls: ['./assistance-hub.page.scss'],
+  selector: 'app-new-assistance-hub-v2',
+  templateUrl: './new-assistance-hub-v2.page.html',
+  styleUrls: ['./new-assistance-hub-v2.page.scss'],
 })
-export class AssistanceHubPage implements OnInit {
-  slideOpts = {
-    speed: 400,
-    slidesPerView: 1.14,
-    slideShadows: true,
-    loop: true,
-  };
+export class NewAssistanceHubV2Page implements OnInit {
   moreActions = [
     {
       act: 'IBOU_CONTACT',
@@ -39,12 +33,11 @@ export class AssistanceHubPage implements OnInit {
   listBesoinAides: OffreService[] = [];
   listFaqs?: OffreService[] = [];
   listActes?: OffreService[] = [];
-  loadingHelpItems: boolean;
-  displaySearchIcon: boolean = true;
-  @ViewChild('searchInput', { static: true }) searchRef;
-  current_user_msisdn = this.dashboardService.getCurrentPhoneNumber();
+  loadingHelpItems;
+  currentUserMsisdn = this.dashboardService.getCurrentPhoneNumber();
   checkingStatus: boolean;
   userOMStatus: OMCustomerStatusModel;
+
   constructor(
     private operationService: OperationService,
     private router: Router,
@@ -59,14 +52,10 @@ export class AssistanceHubPage implements OnInit {
     this.fetchAllHelpItems();
   }
 
-  ionViewDidEnter() {
-    this.searchRef.value = '';
-  }
-
   async checkStatus() {
     this.checkingStatus = true;
     return await this.orangeMoneyService
-      .getUserStatus(this.current_user_msisdn)
+      .getUserStatus(this.currentUserMsisdn)
       .toPromise();
   }
 
@@ -115,7 +104,7 @@ export class AssistanceHubPage implements OnInit {
           'Assistance_hub_affichage_error',
           'error',
           {
-            msisdn: this.current_user_msisdn,
+            msisdn: this.currentUserMsisdn,
             error: err.status,
           }
         );
@@ -155,10 +144,6 @@ export class AssistanceHubPage implements OnInit {
     );
   }
 
-  goBack() {
-    this.navController.pop();
-  }
-
   goFindToAgenceWebSite() {
     this.inAppBrowser.create(FIND_AGENCE_EXTERNAL_URL, '_self');
     this.followAnalyticsService.registerEventFollow(
@@ -186,26 +171,5 @@ export class AssistanceHubPage implements OnInit {
       'clicked'
     );
     this.router.navigate(['/contact-ibou-hub']);
-  }
-
-  onInputChange($event) {
-    const inputvalue = $event.detail.value;
-    this.displaySearchIcon = true;
-    if (inputvalue) {
-      this.navController.navigateForward(['/assistance-hub/search'], {
-        state: { listBesoinAides: this.listBesoinAides, search: inputvalue },
-      });
-      this.followAnalyticsService.registerEventFollow(
-        'Assistance_hub_recherche',
-        'event',
-        { keyword: inputvalue }
-      );
-      this.displaySearchIcon = false;
-    }
-  }
-
-  onClear(searchInput) {
-    const inputValue: string = searchInput.value;
-    searchInput.value = inputValue.slice(0, inputValue.length - 1);
   }
 }

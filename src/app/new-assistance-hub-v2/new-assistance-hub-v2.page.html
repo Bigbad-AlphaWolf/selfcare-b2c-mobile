@@ -1,0 +1,45 @@
+<ion-header class="assistance-header">
+  <div class="header-top-block">
+    <div class="title">
+      Assistance
+    </div>
+    <ion-icon name="search-outline" class="search-icon" (click)="(0)"></ion-icon>
+  </div>
+  <div class="search-bloc" [appScrollVanish]="scrollArea">
+    <ion-searchbar placeholder="Rechercher un service"></ion-searchbar>
+  </div>
+</ion-header>
+
+<ion-content #scrollArea class="assistance-content" [scrollEvents]="true">
+  <div class="actions-block">
+    <div class="block-title">
+      <span class="act">Top des actes</span>
+      <span class="scb-text-orange see-all" (click)="goAllActionsHub()">Voir tous les actes</span>
+    </div>
+    <div class="acts">
+      <ion-spinner *ngIf="loadingHelpItems" name="crescent"></ion-spinner>
+      <app-action-item [action]="act" *ngFor="let act of listActes?.slice(0,3)"></app-action-item>
+    </div>
+  </div>
+  <div class="questions-block" *ngIf="listFaqs && listFaqs.length">
+    <div class="block-title">
+      <span class="act">Questions fréquentes</span>
+      <span class="scb-text-orange see-all" (click)="goAllQuestionsHub()">Voir tout</span>
+    </div>
+    <div class="questions">
+      <ng-container *ngFor="let question of listFaqs?.slice(0,3), let i=index">
+        <app-faq-item [question]="question"></app-faq-item>
+      </ng-container>
+    </div>
+  </div>
+  <div class="more">
+    <span class="more-title">Je n’y arrive toujours pas</span>
+    <div class="more-actions">
+      <div class="action-item" *ngFor="let action of moreActions" (click)="goFastAction(action)">
+        <img [src]="action?.image" alt="act">
+        <div class="action-description scb-text-gray">{{action?.description}}</div>
+      </div>
+    </div>
+  </div>
+  <div class="empty-div-effect"></div>
+</ion-content>
