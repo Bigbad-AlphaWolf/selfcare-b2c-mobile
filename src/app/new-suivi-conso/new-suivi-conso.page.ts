@@ -16,6 +16,7 @@ export class NewSuiviConsoPage implements OnInit {
   slideOpts = {
     speed: 400,
     slideShadows: true,
+    spaceBetween: 10,
   };
   @ViewChild('slides') sliders: IonSlides;
 
