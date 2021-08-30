@@ -11,7 +11,8 @@ import {STORIES_OEM_CONFIG} from 'src/shared';
 export class StoriesProgressBarComponent implements OnInit, OnChanges {
   currentProgressValue = 0;
   @Input() story: StoryOem;
-  @Input() progressBarStepTime = 1000;
+  @Input() progressBarStepTime = 100;
+  @Input() stepValue = 0.01;
   @Input() idStory: number = -1;
   @Input() lastId: number = -1;
   @Input() isCurrentStory: boolean;
@@ -19,7 +20,6 @@ export class StoriesProgressBarComponent implements OnInit, OnChanges {
   @Output() finish = new EventEmitter();
   timeOutIds: any[] = [];
   totalSteps;
-  stepValue;
   constructor() {}
 
   ngOnInit() {}
@@ -35,6 +35,9 @@ export class StoriesProgressBarComponent implements OnInit, OnChanges {
   setProgressBarEvolution(index: number) {
     const idTimeOut = setTimeout(() => {
       this.currentProgressValue = Math.round(index * +this.stepValue * 100) / 100;
+
+      console.log('vcurrentProgressValue', this.currentProgressValue);
+
       if (index === this.totalSteps) {
         this.idStoryChange.emit(true);
       }
@@ -65,7 +68,7 @@ export class StoriesProgressBarComponent implements OnInit, OnChanges {
       this.story.duration = STORIES_OEM_CONFIG.MAX_DURATION_BY_ELEMENT;
     }
     if (this.story) {
-      this.stepValue = +(this.progressBarStepTime / this.story.duration).toFixed(2);
+      this.progressBarStepTime = +(this.stepValue * this.story.duration).toFixed(2);
       this.totalSteps = Math.trunc(this.story.duration / this.progressBarStepTime);
     }
   }
