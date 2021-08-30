@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
+import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish.directive';
 
 @Component({
   selector: 'app-new-suivi-conso',
@@ -16,9 +17,10 @@ export class NewSuiviConsoPage implements OnInit {
   slideOpts = {
     speed: 400,
     slideShadows: true,
-    spaceBetween: 10,
+    spaceBetween: 20,
   };
   @ViewChild('slides') sliders: IonSlides;
+  @ViewChildren(ScrollVanishDirective) dir;
 
   constructor() {}
 
@@ -32,5 +34,9 @@ export class NewSuiviConsoPage implements OnInit {
     this.sliders.getActiveIndex().then((index) => {
       this.currentSlideIndex = index;
     });
+  }
+
+  search() {
+    this.dir.first.show();
   }
 }

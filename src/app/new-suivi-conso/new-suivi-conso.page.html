@@ -1,11 +1,11 @@
-<ion-header class="suivi-conso-header">
+<ion-header class="suivi-conso-header" [appScrollVanish]="scrollArea">
   <div class="header-top-block">
     <div class="title">
       Suivi conso
     </div>
-    <ion-icon name="search-outline" class="search-icon" (click)="(0)"></ion-icon>
+    <ion-icon name="search-outline" #searchIcon class="search-icon" (click)="search()"></ion-icon>
   </div>
-  <div class="search-bloc" [appScrollVanish]="scrollArea">
+  <div class="search-bloc">
     <ion-searchbar placeholder="Rechercher un compteur"></ion-searchbar>
   </div>
   <div class="suivi-conso-custom-tabs">

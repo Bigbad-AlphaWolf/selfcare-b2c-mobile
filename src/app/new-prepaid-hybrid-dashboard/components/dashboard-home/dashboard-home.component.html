@@ -1,4 +1,4 @@
-<ion-header class="dashboard-header">
+<ion-header class="dashboard-header" [appScrollVanish]="scrollArea" [isDashboard]="true">
   <div class="header-top-block">
     <ion-menu-button class="menu-btn-container">
       <img class="icon-menu" src="/assets/images/menu@3x.png" alt="" />
@@ -11,7 +11,7 @@
       <ion-icon name="notifications-outline" class="search-icon"></ion-icon>
     </div>
   </div>
-  <div class="search-bloc" [appScrollVanish]="scrollArea">
+  <div class="search-bloc">
     <ion-searchbar placeholder="Que souhaitez-vous ?"></ion-searchbar>
   </div>
 </ion-header>

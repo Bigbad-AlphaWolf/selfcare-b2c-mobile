@@ -1,11 +1,11 @@
-<ion-header class="services-header">
+<ion-header class="services-header" [appScrollVanish]="scrollArea">
   <div class="header-top-block">
     <div class="title">
       Services
     </div>
     <ion-icon name="search-outline" class="search-icon" (click)="(0)"></ion-icon>
   </div>
-  <div class="search-bloc" [appScrollVanish]="scrollArea">
+  <div class="search-bloc">
     <ion-searchbar placeholder="Rechercher un service"></ion-searchbar>
   </div>
   <div class="services-custom-tabs">

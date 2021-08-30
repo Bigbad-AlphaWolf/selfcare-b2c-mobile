@@ -893,6 +893,33 @@ ion-button {
 
 // new dashboard with tabs styling //
 
+.ion-custom-header {
+  .search-bloc {
+    transition: 0.28s linear;
+    height: 60px;
+  }
+  &.with-searchbar {
+    .search-bloc {
+      height: 60px;
+      margin-top: 15px;
+      opacity: unset;
+      min-height: unset;
+      padding: unset;
+      visibility: visible;
+    }
+  }
+  &.without-searchbar {
+    .search-bloc {
+      min-height: 0;
+      height: 0;
+      opacity: 0;
+      padding: 0;
+      margin-top: 0 !important;
+      visibility: hidden;
+    }
+  }
+}
+
 .search-bloc {
   ion-searchbar {
     .searchbar-input {

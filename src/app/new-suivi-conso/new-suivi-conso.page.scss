@@ -54,6 +54,11 @@
   --padding-end: 15px;
   --padding-top: 15px;
   --padding-bottom: 50px;
+  ion-slides {
+    .swiper-slide:not(.swiper-slide-active) {
+      height: 1000px;
+    }
+  }
   .empty-div-effect {
     position: fixed;
     bottom: -15px;

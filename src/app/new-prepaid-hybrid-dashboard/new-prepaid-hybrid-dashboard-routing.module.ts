@@ -39,6 +39,11 @@ const routes: Routes = [
           ),
         canActivate: [AuthGuard],
       },
+      {
+        path: '',
+        redirectTo: 'dashboard-home',
+        pathMatch: 'full',
+      },
     ],
   },
 ];
