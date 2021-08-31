@@ -1,0 +1,52 @@
+@import 'src/app/app';
+
+.kiosk-locator-popup {
+  padding: 30px 15px 70px;
+  position: relative;
+  .kiosk-title {
+    font-size: 24px;
+    font-family: 'HelveticaNeueLTStd-Bd';
+    margin-bottom: 20px;
+  }
+  .kiosk-text {
+    .description {
+      font-family: 'HelveticaNeueLTStd-Roman';
+      font-size: 14px;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+    .warning {
+      position: relative;
+      padding: 12px 30px;
+      border-radius: 6px;
+      background-color: rgba(8, 94, 189, 0.2);
+      border: solid 1px $bluePopUp;
+      border-left: solid 5px $bluePopUp;
+      margin-bottom: 15px;
+      .icon-info {
+        position: absolute;
+        left: 10px;
+        top: 11px;
+        img {
+          width: 13px;
+          height: 13px;
+        }
+      }
+      .warning-text {
+        font-family: 'HelveticaNeueLTStd-Roman';
+        font-size: 13px;
+        color: $bluePopUp;
+      }
+    }
+  }
+  .btn-container {
+    position: absolute;
+    width: percentage(345/375);
+    bottom: 10px;
+    left: percentage(15/375);
+    button {
+      border-radius: 10px;
+      font-size: 16px;
+    }
+  }
+}
