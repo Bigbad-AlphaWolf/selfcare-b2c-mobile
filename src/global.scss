@@ -9,6 +9,8 @@
 @import '~@ionic/angular/css/text-alignment.css';
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
+@import '@vime/core/themes/default.css';
+
 @font-face {
   font-family: 'HelveticaNeueLTStd-Bd';
   src: url('theme/HelveticaNeueLTStd-Bd.otf') format('opentype');
@@ -640,9 +642,7 @@ button {
   }
 }
 .mat-radio-button.mat-accent .mat-radio-inner-circle,
-.mat-radio-button.mat-accent
-  .mat-radio-ripple
-  .mat-ripple-element:not(.mat-radio-persistent-ripple),
+.mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple),
 .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-persistent-ripple,
 .mat-radio-button.mat-accent:active .mat-radio-persistent-ripple {
   background-color: #ff7900;
@@ -666,9 +666,7 @@ button {
   flex-direction: column;
 }
 
-.mat-button-toggle-group-appearance-standard
-  .mat-button-toggle
-  + .mat-button-toggle {
+.mat-button-toggle-group-appearance-standard .mat-button-toggle + .mat-button-toggle {
   border-left: none;
 }
 
