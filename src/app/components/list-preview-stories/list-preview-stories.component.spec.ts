@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 
 import { ListPreviewStoriesComponent } from './list-preview-stories.component';
 
@@ -9,10 +10,17 @@ describe('ListPreviewStoriesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ListPreviewStoriesComponent ],
+      declarations: [ListPreviewStoriesComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+      providers: [
+        {
+          provide: ModalController,
+        },
+        {
+          provide: AngularDelegate,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

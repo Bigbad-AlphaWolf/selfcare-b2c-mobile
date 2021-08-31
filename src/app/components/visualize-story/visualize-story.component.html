@@ -23,7 +23,7 @@
 		<!--</vm-file>-->
 		<!-- ... -->
 	<!--</vm-player>-->
-	<ng-container *ngIf="story.type !== 'VIDEO'">
+	<ng-container *ngIf="story?.type !== 'VIDEO'">
 		<img [src]="story?.storyContent" alt="">
 		<!--<vm-player #audioPlayer (vmPlaybackReady)="onPlaybackReady()" class="hide" autoplay controls>
 			<vm-audio cross-origin>

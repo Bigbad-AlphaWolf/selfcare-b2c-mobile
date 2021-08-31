@@ -650,7 +650,7 @@ export class OrangeMoneyService {
               ? OM_UNKOWN_ERROR_CODE
               : err.error.errorCode;
           const message =
-            status === 400 && errorCode !== ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE
+            status === 400 && errorCode !== OM_UNKOWN_ERROR_CODE
               ? err.error.message
               : 'Une erreur est survenue';
           const error = new HttpErrorResponse({
