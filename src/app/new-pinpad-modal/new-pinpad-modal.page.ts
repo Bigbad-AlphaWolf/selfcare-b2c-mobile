@@ -1149,8 +1149,7 @@ export class NewPinpadModalPage implements OnInit {
     return (
       this.operationType === OPERATION_RAPIDO ||
       this.operationType === OPERATION_TYPE_RECHARGE_CREDIT ||
-      this.operationType === OPERATION_TRANSFER_OM ||
-      this.operationType === OPERATION_TYPE_MERCHANT_PAYMENT
+      this.operationType === OPERATION_TRANSFER_OM
     );
   }
 
