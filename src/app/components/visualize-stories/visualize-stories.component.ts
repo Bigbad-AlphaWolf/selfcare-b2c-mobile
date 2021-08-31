@@ -1,13 +1,19 @@
-import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {IonSlides, ModalController} from '@ionic/angular';
-import {StoryOem} from 'src/app/models/story-oem.model';
-import {StoriesProgressBarComponent} from '../stories-progress-bar/stories-progress-bar.component';
-import {VisualizeStoryComponent} from '../visualize-story/visualize-story.component';
+import {
+  Component,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { IonSlides, ModalController } from '@ionic/angular';
+import { StoryOem } from 'src/app/models/story-oem.model';
+import { StoriesProgressBarComponent } from '../stories-progress-bar/stories-progress-bar.component';
+import { VisualizeStoryComponent } from '../visualize-story/visualize-story.component';
 
 @Component({
   selector: 'app-visualize-stories',
   templateUrl: './visualize-stories.component.html',
-  styleUrls: ['./visualize-stories.component.scss']
+  styleUrls: ['./visualize-stories.component.scss'],
 })
 export class VisualizeStoriesComponent implements OnInit {
   slideOpts = {
@@ -111,10 +117,15 @@ export class VisualizeStoriesComponent implements OnInit {
       longLabel: 'longLabel',
       storyContent: 'assets/images/story-default.webp',
       categorieOffreService: null,
-      action: {label: 'Envoyer ', description: 'send money', url: null, typeAction: 'REDIRECTION'},
+      action: {
+        label: 'Envoyer ',
+        description: 'send money',
+        url: null,
+        typeAction: 'REDIRECTION',
+      },
       audio: null,
       type: 'IMAGE',
-      duration: 5000
+      duration: 5000,
     },
     {
       name: 'test 2',
@@ -123,10 +134,15 @@ export class VisualizeStoriesComponent implements OnInit {
       longLabel: 'longLabel',
       storyContent: 'assets/images/story-default-2.webp',
       categorieOffreService: null,
-      action: {label: 'Envoyer ', description: 'send money', url: null, typeAction: 'REDIRECTION'},
+      action: {
+        label: 'Envoyer ',
+        description: 'send money',
+        url: null,
+        typeAction: 'REDIRECTION',
+      },
       audio: null,
       type: 'IMAGE',
-      duration: 5000
+      duration: 5000,
     },
     {
       name: 'test 4',
@@ -135,10 +151,15 @@ export class VisualizeStoriesComponent implements OnInit {
       longLabel: 'longLabel',
       storyContent: 'assets/images/story-default-2.webp',
       categorieOffreService: null,
-      action: {label: 'Envoyer ', description: 'send money', url: null, typeAction: 'REDIRECTION'},
+      action: {
+        label: 'Envoyer ',
+        description: 'send money',
+        url: null,
+        typeAction: 'REDIRECTION',
+      },
       audio: 'assets/audio.mp3',
       type: 'IMAGE',
-      duration: 5000
+      duration: 5000,
     },
     {
       name: 'test 3',
@@ -147,16 +168,22 @@ export class VisualizeStoriesComponent implements OnInit {
       longLabel: 'longLabel',
       storyContent: 'assets/images/story-default.webp',
       categorieOffreService: null,
-      action: {label: 'Envoyer ', description: 'send money', url: null, typeAction: 'REDIRECTION'},
+      action: {
+        label: 'Envoyer ',
+        description: 'send money',
+        url: null,
+        typeAction: 'REDIRECTION',
+      },
       audio: null,
       type: 'IMAGE',
-      duration: 5000
-    }
+      duration: 5000,
+    },
   ];
   @ViewChild('slides') ionSlide: IonSlides;
-  @ViewChildren(StoriesProgressBarComponent, {emitDistinctChangesOnly: true})
+  @ViewChildren(StoriesProgressBarComponent, { emitDistinctChangesOnly: true })
   storiesProgressBarView: QueryList<StoriesProgressBarComponent>;
-  @ViewChildren(VisualizeStoryComponent) storiesView: QueryList<VisualizeStoryComponent>;
+  @ViewChildren(VisualizeStoryComponent)
+  storiesView: QueryList<VisualizeStoryComponent>;
   currentSlideIndex = 0;
   constructor(private modalCtrl: ModalController) {}
 
@@ -193,7 +220,7 @@ export class VisualizeStoriesComponent implements OnInit {
   }
 
   slideHasChanged() {
-    this.ionSlide.getActiveIndex().then(index => {
+    this.ionSlide.getActiveIndex().then((index) => {
       this.deactiveStoryMedia(this.currentSlideIndex);
       this.stopAnimateProgressBar(this.currentSlideIndex);
 
@@ -204,7 +231,8 @@ export class VisualizeStoriesComponent implements OnInit {
   }
 
   activeStoryMedia(index: number) {
-    const storyComponent: VisualizeStoryComponent = this.storiesView.toArray()[index];
+    const storyComponent: VisualizeStoryComponent =
+      this.storiesView.toArray()[index];
     if (storyComponent && storyComponent.story && storyComponent.story.audio) {
       //console.log('play');
       //storyComponent.playMedia();
@@ -213,25 +241,29 @@ export class VisualizeStoriesComponent implements OnInit {
 
   deactiveStoryMedia(index: number) {
     if (index < 0) return;
-    const storyComponent: VisualizeStoryComponent = this.storiesView.toArray()[index];
+    const storyComponent: VisualizeStoryComponent =
+      this.storiesView.toArray()[index];
 
     if (storyComponent && storyComponent.story && storyComponent.story.audio) {
     }
   }
 
   startAnimateProgressBar(index: number) {
-    const progressBarStory: StoriesProgressBarComponent = this.storiesProgressBarView.toArray()[index];
-    progressBarStory.startProgressBar();
+    const progressBarStory: StoriesProgressBarComponent =
+      this.storiesProgressBarView.toArray()[index];
+    progressBarStory?.startProgressBar();
   }
 
   stopAnimateProgressBar(index: number) {
     if (index < 0) return;
-    const progressBarStory: StoriesProgressBarComponent = this.storiesProgressBarView.toArray()[index];
+    const progressBarStory: StoriesProgressBarComponent =
+      this.storiesProgressBarView.toArray()[index];
     progressBarStory.resetProgressBar();
   }
 
   setProgressBarDuration(duration: number, index: number) {
-    const progressBarStory: StoriesProgressBarComponent = this.storiesProgressBarView.toArray()[index];
+    const progressBarStory: StoriesProgressBarComponent =
+      this.storiesProgressBarView.toArray()[index];
     progressBarStory.story.duration = duration;
     console.log('storyProgressBar', duration);
 
