@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ChooseTransferTypeComponent } from './choose-transfer-type.component';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -9,7 +9,7 @@ describe('ChooseTransferTypeComponent', () => {
   let component: ChooseTransferTypeComponent;
   let fixture: ComponentFixture<ChooseTransferTypeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ChooseTransferTypeComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

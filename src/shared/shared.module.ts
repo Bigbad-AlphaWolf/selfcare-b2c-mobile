@@ -63,6 +63,9 @@ import { SimpleOperationSuccessModalComponent } from './simple-operation-success
 import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
 import { PassUsageItemComponent } from './pass-usage-item/pass-usage-item.component';
 import { BlockTransferSuccessPopupComponent } from './block-transfer-success-popup/block-transfer-success-popup.component';
+import { ItemConsoGaugeComponent } from './item-conso-gauge/item-conso-gauge.component';
+import { ConsoNameDisplayPipe } from './pipes/conso-name-display.pipe';
+import { KioskLocatorPopupComponent } from 'src/app/components/kiosk-locator-popup/kiosk-locator-popup.component';
 
 @NgModule({
   declarations: [
@@ -115,6 +118,9 @@ import { BlockTransferSuccessPopupComponent } from './block-transfer-success-pop
     BanniereDescriptionPage,
     PassUsageItemComponent,
     BlockTransferSuccessPopupComponent,
+    ItemConsoGaugeComponent,
+    ConsoNameDisplayPipe,
+    KioskLocatorPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -157,6 +163,7 @@ import { BlockTransferSuccessPopupComponent } from './block-transfer-success-pop
     SimpleOperationSuccessModalComponent,
     BanniereDescriptionPage,
     BlockTransferSuccessPopupComponent,
+    KioskLocatorPopupComponent,
   ],
   exports: [
     BanniereComponent,
@@ -206,6 +213,8 @@ import { BlockTransferSuccessPopupComponent } from './block-transfer-success-pop
     SimpleOperationSuccessModalComponent,
     PassUsageItemComponent,
     BlockTransferSuccessPopupComponent,
+    ItemConsoGaugeComponent,
+    ConsoNameDisplayPipe,
   ],
   providers: [
     Contacts,

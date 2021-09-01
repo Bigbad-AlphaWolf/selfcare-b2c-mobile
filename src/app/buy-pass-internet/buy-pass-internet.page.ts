@@ -13,13 +13,11 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import {
   PROFILE_TYPE_POSTPAID,
   HOME_PREPAID_FORMULE,
-  CODE_FORMULE_KILIMANJARO,
   KILIMANJARO_FORMULE,
 } from '../dashboard';
 import { BuyPassModel } from '../services/dashboard-service';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
@@ -212,7 +210,7 @@ export class BuyPassInternetPage implements OnInit {
         this.transactionSuccessful(res);
       },
       (err) => {
-        this.transactionFailure();
+        this.transactionFailure(err);
       }
     );
   }
@@ -281,10 +279,7 @@ export class BuyPassInternetPage implements OnInit {
       cssClass: 'pin-pad-modal',
       componentProps: {
         operationType: OPERATION_TYPE_PASS_INTERNET,
-        buyPassPayload: {
-          destinataire: this.destinataire,
-          pass: this.purchasePass.pass,
-        },
+        buyPassPayload: this.purchasePass,
         opXtras: this.opXtras,
       },
     });
@@ -353,18 +348,22 @@ export class BuyPassInternetPage implements OnInit {
     this.goToFinalStep();
   }
 
-  transactionFailure() {
+  transactionFailure(err) {
     this.buyingPass = false;
     this.failed = true;
     this.goToFinalStep();
-    this.errorMsg = 'Service indisponible. Veuillez réessayer ultérieurement';
+    if (err && err.error && err.error.message) {
+      this.errorMsg = err.error.message;
+    } else {
+      this.errorMsg = 'Service indisponible. Veuillez réessayer ultérieurement';
+    }
     this.followAnalyticsService.registerEventFollow(
       'Credit_Buy_Pass_Internet_Error',
       'error',
       {
         msisdn1: this.currentUserNumber,
         msisdn2: this.destinataire,
-        message: 'Service indisponible',
+        message: this.errorMsg,
       }
     );
   }

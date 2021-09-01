@@ -7,6 +7,7 @@
 
 /* colors */
 $orange: #ff7900;
+$orange-light: #ffa726;
 $lBlack: #333333;
 $black: #333333;
 $yellow: #fdcc00;
@@ -24,7 +25,7 @@ $lGray: #d8d8d8;
 $lightBlue: #4bb4e6;
 $pink: #ff8ad4;
 
-$prefix: 'scb';
+$prefix: "scb";
 
 $purple: #a885d8;
 $white: #ffffff;
@@ -153,6 +154,11 @@ $baseHeightMobile5: 925px;
     color: $white;
     border-color: $purple;
   }
+  &-light-blue {
+    background-color: $lightBlue;
+    color: $white;
+    border-color: $lightBlue;
+  }
   &-transparent {
     background: none;
     color: $white;
@@ -263,6 +269,10 @@ body {
 
 .#{$prefix}-text-orange {
   color: $orange;
+}
+
+.#{$prefix}-text-orange-light {
+  color: $orange-light;
 }
 
 .#{$prefix}-text-yellow {

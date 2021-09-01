@@ -5,27 +5,33 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { of } from 'rxjs';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 
 describe('AuthInterceptorService', () => {
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			providers: [
-				AuthInterceptorService,
-				{ provide: Router, useValue: {} },
-				{ provide: HttpClient, useValue: {} },
-				{ provide: AppVersion, useValue: {
-					getVersionNumber:() => {
-						 return new Promise(()=> {} );
-					}
-				} }
-			]
-		});
-	});
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        AngularDelegate,
+        AuthInterceptorService,
+        { provide: Router, useValue: {} },
+        { provide: ModalController },
+        { provide: HttpClient, useValue: {} },
+        {
+          provide: AppVersion,
+          useValue: {
+            getVersionNumber: () => {
+              return new Promise(() => {});
+            },
+          },
+        },
+      ],
+    });
+  });
 
-	it('should be created', inject(
-		[AuthInterceptorService],
-		(service: AuthInterceptorService) => {
-			expect(service).toBeDefined();
-		}
-	));
+  it('should be created', inject(
+    [AuthInterceptorService],
+    (service: AuthInterceptorService) => {
+      expect(service).toBeDefined();
+    }
+  ));
 });

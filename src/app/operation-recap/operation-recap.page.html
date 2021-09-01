@@ -1,7 +1,7 @@
 <ion-header [oemIonHeaderParallax]="90">
   <ion-toolbar>
     <ion-buttons>
-      <ion-back-button (click)="goBack()" icon="" class="oem-back-button">
+      <ion-back-button mode="md" (click)="goBack()" class="oem-back-button">
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
@@ -345,12 +345,16 @@
         ></app-item-recharge-credit>
       </div>
     </ng-container>
-    <ng-container *ngIf="purchaseType === OPERATION_TRANSFER_OM && opXtras.includeFee">
+    <ng-container *ngIf="purchaseType === OPERATION_TRANSFER_OM && opXtras.includeFee && (+opXtras?.sending_fees_Info?.effective_fees + opXtras?.fee < +opXtras?.sending_fees_Info?.old_fees)">
       <scb-avantage-popup [type]="'novo-fees'" [details]="opXtras" ></scb-avantage-popup>
+    </ng-container>
+    <ng-container *ngIf="isBoosterTraceTV()">
+      <scb-avantage-popup [type]="'coupon-trace'" ></scb-avantage-popup>
     </ng-container>
     <button
       class="scb-btn scb-btn-orange"
       (click)="pay()"
+      id="btn-validate-purchase"
       [disabled]="buyingPass"
     >
       <ng-container [ngSwitch]="purchaseType">

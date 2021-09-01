@@ -4,6 +4,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { KioskLocatorPopupComponent } from 'src/app/components/kiosk-locator-popup/kiosk-locator-popup.component';
 import { OffreService } from 'src/app/models/offre-service.model';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -35,7 +36,7 @@ export class ActionItemComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.imageUrl = this.action.icone
+    this.imageUrl = this.action?.icone
       ? this.FILE_BASE_URL + '/' + this.action.icone
       : null;
   }
@@ -58,12 +59,18 @@ export class ActionItemComponent implements OnInit {
         this.onFollowUpRequests();
         break;
       case 'DEPLAFONNEMENT':
+        this.goDeplafonnementOldVersion();
+        break;
+      case 'DEPLAFONNEMENT_NEW':
         this.goDeplafonnement();
         break;
       case 'TRANSACTION_ERROR':
         this.goReclamation();
         break;
       case 'OUVERTURE_OM_ACCOUNT':
+        this.goCreateOMAccountOldVersion();
+        break;
+      case 'OUVERTURE_OM_ACCOUNT_NEW':
         this.goCreateOMAccount();
         break;
       case 'SEARCH_AGENCY':
@@ -75,9 +82,24 @@ export class ActionItemComponent implements OnInit {
       case 'IBOU_CONTACT':
         this.goIbouPage();
         break;
+      case 'KIOSK_LOCATOR':
+        this.openKioskLocatorModal();
+        break;
       default:
         break;
     }
+  }
+
+  async openKioskLocatorModal() {
+    this.followAnalyticsService.registerEventFollow(
+      'Kiosk_locator_clic',
+      'event'
+    );
+    const modal = await this.modalController.create({
+      component: KioskLocatorPopupComponent,
+      cssClass: 'select-recipient-modal',
+    });
+    return await modal.present();
   }
 
   goIbouPage() {
@@ -128,6 +150,15 @@ export class ActionItemComponent implements OnInit {
     this.router.navigate(['/om-self-operation/open-om-account']);
     // this.router.navigate(['/control-center/operation-om/creation-compte']);
     this.followAnalyticsService.registerEventFollow(
+      'Assistance_actions_New_Creation_Compte_OM_clic',
+      'event',
+      'clicked'
+    );
+  }
+
+  goCreateOMAccountOldVersion() {
+    this.router.navigate(['/control-center/operation-om/creation-compte']);
+    this.followAnalyticsService.registerEventFollow(
       'Assistance_actions_Creation_Compte_OM_clic',
       'event',
       'clicked'
@@ -137,6 +168,15 @@ export class ActionItemComponent implements OnInit {
   goDeplafonnement() {
     // this.router.navigate(['/control-center/operation-om/deplafonnement']);
     this.router.navigate(['/om-self-operation/deplafonnement']);
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_actions_New_Deplafonnement_OM_clic',
+      'event',
+      'clicked'
+    );
+  }
+
+  goDeplafonnementOldVersion() {
+    this.router.navigate(['/control-center/operation-om/deplafonnement']);
     this.followAnalyticsService.registerEventFollow(
       'Assistance_actions_Deplafonnement_OM_clic',
       'event',

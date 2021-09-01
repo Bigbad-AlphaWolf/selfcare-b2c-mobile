@@ -17,8 +17,7 @@ export interface BuyPassModel {
   msisdn: string;
   receiver: string;
   serviceId?: string;
-  typePassUsage?: string;
-  typeAbonnementPassUsage?: string;
+  serviceType?: string;
 }
 
 export interface BuyPassInternetModel {

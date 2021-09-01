@@ -64,7 +64,7 @@
           </div>
           <div class="right-block-text">
             <div class="item-value" *ngIf="historikInfos.type !== 'data'">
-              {{ historikInfos?.cout !== 0 ? '0' : '-' + historikInfos?.cout }} FCFA
+              {{ historikInfos?.cout === 0 ? '0' : '-' + historikInfos?.cout }} FCFA
             </div>
             <div class="item-value" *ngIf="historikInfos.type === 'data'">
               - {{ formatVolumeData(historikInfos?.volume) }} Ko
@@ -79,7 +79,7 @@
 
       </div>
   </ng-container>
-  <ng-container *ngIf="userProfil !== 'POSTPAID' && purchaseInfos ">
+  <ng-container *ngIf="purchaseInfos">
       <div class="item-container-left-block">
         <div class="icon-category">
             <ng-container *ngIf="purchaseInfos.typeAchat && getPurchaseItemIcon(purchaseInfos)">

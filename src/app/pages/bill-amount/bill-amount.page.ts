@@ -33,7 +33,7 @@ export class BillAmountPage implements OnInit {
   firstFees: FeeModel;
   lastFees: FeeModel;
   hasErrorOnRequest: boolean;
-  isLoadingFees:boolean;
+  isLoadingFees: boolean;
   constructor(
     private navController: NavController,
     private feeService: FeesService
@@ -41,34 +41,43 @@ export class BillAmountPage implements OnInit {
 
   ngOnInit() {
     this.opXtras = history.state;
-    this.service = this.opXtras.billData.company.codeOM.toLowerCase();
+    if (
+      this.opXtras &&
+      this.opXtras.billData &&
+      this.opXtras.billData.company &&
+      this.opXtras.billData.company.codeOM
+    )
+      this.service = this.opXtras.billData.company.codeOM.toLowerCase();
 
-    this.title = getPageHeader(this.opXtras.purchaseType).title;
+    this.title = getPageHeader(this.opXtras?.purchaseType)?.title;
     this.queryFees();
-
   }
 
   queryFees() {
     this.hasErrorOnRequest = false;
     this.isLoadingFees = true;
-    this.feeService.getFeesByOMService(this.service).pipe(
-      tap((res: FeeModel[])=> {
-      this.feesArray = res;
-      this.isLoadingFees = false;
-      if(res.length) {
-        this.firstFees = this.feesArray[0]
-        this.lastFees = this.feesArray[this.feesArray.length -1]
-        this.minimalAmount = this.firstFees.min;
-        this.maximalAmount = this.lastFees.max;
-      } else {
-        this.hasErrorOnRequest = true;
-      }
-    }),
-    catchError((err) => {
-      this.hasErrorOnRequest = true;
-      this.isLoadingFees = false;
-        return of(err)
-    })).subscribe()
+    this.feeService
+      .getFeesByOMService(this.service)
+      .pipe(
+        tap((res: FeeModel[]) => {
+          this.feesArray = res;
+          this.isLoadingFees = false;
+          if (res.length) {
+            this.firstFees = this.feesArray[0];
+            this.lastFees = this.feesArray[this.feesArray.length - 1];
+            this.minimalAmount = this.firstFees.min;
+            this.maximalAmount = this.lastFees.max;
+          } else {
+            this.hasErrorOnRequest = true;
+          }
+        }),
+        catchError((err) => {
+          this.hasErrorOnRequest = true;
+          this.isLoadingFees = false;
+          return of(err);
+        })
+      )
+      .subscribe();
   }
 
   ionViewWillEnter() {
@@ -102,20 +111,17 @@ export class BillAmountPage implements OnInit {
 
   amountIncludeFeeIsValid(amount: number) {
     const feeInclude = true;
-    let feesIncludes = this.feeService.extractFees(this.feesArray,amount, feeInclude);
-    this.amountIsValid = !!feesIncludes;
-    return (
-      amount >= this.firstFees.min &&
-      amount <= this.lastFees.max
+    let feesIncludes = this.feeService.extractFees(
+      this.feesArray,
+      amount,
+      feeInclude
     );
+    this.amountIsValid = !!feesIncludes;
+    return amount >= this.firstFees.min && amount <= this.lastFees.max;
   }
 
-
   amountExcludeFeeIsValid(amount: number) {
-    return (
-      amount >= this.firstFees.min &&
-      amount <= this.lastFees.max
-    );
+    return amount >= this.firstFees.min && amount <= this.lastFees.max;
   }
 
   toogleFee($event) {
@@ -133,25 +139,19 @@ export class BillAmountPage implements OnInit {
 
     this.amountIsValid = true;
     if (this.isFee) {
-      const fee = this.feeService.extractFees(
-        this.feesArray,
-        amount
-      );
+      const fee = this.feeService.extractFees(this.feesArray, amount);
       if (!fee) {
         this.amountIsValid = false;
-        return
+        return;
       }
-      this.fee = this.opXtras.fee = fee.effective_fees
+      this.fee = this.opXtras.fee = fee.effective_fees;
       this.opXtras.amount = amount;
       this.totalAmount = this.opXtras.amount + this.opXtras.fee;
     } else {
-      const fee = this.feeService.extractFees(
-        this.feesArray,
-        amount
-      );
+      const fee = this.feeService.extractFees(this.feesArray, amount);
       if (!fee) {
         this.amountIsValid = false;
-        return
+        return;
       }
       this.fee = this.opXtras.fee = fee.effective_fees;
       this.opXtras.amount = amount - this.opXtras.fee;
@@ -162,5 +162,4 @@ export class BillAmountPage implements OnInit {
   goBack() {
     this.navController.pop();
   }
-
 }

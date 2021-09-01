@@ -34,10 +34,14 @@
   <div *ngIf="hasErrorGetContact" class="error-msg scb-text-red-error">
     {{ errorGetContact }}
   </div>
+  <div class="loading-container" *ngIf="loadingRecents">
+    <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
+  </div>
   <div class="recents" *ngIf="recentsRecipients$ | async as recents">
     <div class="recent-description scb-text-full-black" *ngIf="recents.length">
       Récents
     </div>
+    <div class="no-recent" *ngIf="!recents.length">{{NO_RECENTS_MSG}}</div>
     <div
       matRipple
       class="oem-item"
@@ -60,6 +64,7 @@
       (click)="validateBeneficiary()"
       class="btn"
       expand="block"
+      id="btn-validate-beneficiary"
       >Continuer</ion-button
     >
     <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>

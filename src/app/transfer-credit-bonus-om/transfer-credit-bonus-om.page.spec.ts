@@ -1,56 +1,77 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { TransferCreditBonusOmPage } from './transfer-credit-bonus-om.page';
-import { Router, ActivatedRoute } from '@angular/router';
+import { UrlSerializer } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { of } from 'rxjs';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { Location } from '@angular/common';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AngularDelegate, ModalController } from '@ionic/angular';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 
 describe('TransferCreditBonusOmPage', () => {
   let component: TransferCreditBonusOmPage;
   let fixture: ComponentFixture<TransferCreditBonusOmPage>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TransferCreditBonusOmPage ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: Router
-        },
-        {
-          provide: ActivatedRoute
-        },
-        {
-          provide: DashboardService,
-          useValue: {
-            getCurrentPhoneNumber: () => {
-              return ""
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [TransferCreditBonusOmPage],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [RouterTestingModule],
+        providers: [
+          AngularDelegate,
+          {
+            provide: UrlSerializer,
+          },
+          {
+            provide: ModalController,
+          },
+          {
+            provide: Location,
+          },
+          {
+            provide: OrangeMoneyService,
+            useValue: {
+              getOrangeMoneyNumber: () => {
+                return of();
+              },
             },
-            transferBonus: () => {
-              return of()
+          },
+          {
+            provide: DashboardService,
+            useValue: {
+              getCurrentPhoneNumber: () => {
+                return '';
+              },
+              transferBonus: () => {
+                return of();
+              },
+              transferCredit: () => {
+                return of();
+              },
+              getUserConsoInfosByCode: () => {
+                return of();
+              },
             },
-            transferCredit: () => {
-              return of()
+          },
+          {
+            provide: AuthenticationService,
+            useValue: {
+              isPostpaid: () => {
+                return of();
+              },
+              getSubscription: () => {
+                return of();
+              },
             },
-            getUserConsoInfosByCode: () => {
-              return of()
-            }
-          }
-        },
-        {
-          provide: AuthenticationService,
-          useValue: {
-            isPostpaid: () => {
-              return of()
-            }
-          }
-        }
-      ]
+          },
+        ],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TransferCreditBonusOmPage);

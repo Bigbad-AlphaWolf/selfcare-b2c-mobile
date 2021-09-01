@@ -38,7 +38,17 @@
     font-family: HelveticaNeueLTStd-Roman;
     font-size: 12px;
   }
+  .loading-container {
+    height: 293px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .mat-spinner::ng-deep circle {
+      stroke: $orange;
+    }
+  }
   .recents {
+    height: 293px;
     margin-top: 15px;
     .recent-description {
       font-family: HelveticaNeueLTStd-Bd;

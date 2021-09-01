@@ -4,10 +4,13 @@
 
 export const environment = {
   production: false,
-  // SERVER_API_URL: 'https://orangeetmoi.orange.sn',
-  // SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
-  // SERVER_API_URL:  'http://selfcare-b2c-client-http-dsiselfcarebcorangeetmoi-rec.malaw.orange-sonatel.com',
-  SERVER_API_URL: 'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
+  SERVER_API_URL: 'https://orangeetmoi.orange.sn',
+  //SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
+  // SERVER_API_URL:
+  //   "http://selfcare-b2c-client-http-dsiselfcarebcorangeetmoi-rec.malaw.orange-sonatel.com",
+  // SERVER_API_URL:
+  //   'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
+  // SERVER_API_URL: 'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
   // SERVER_API_URL: 'https://selfcare-client-dsiselfcarebcorangeetmoi-prod.apps.paas.orange-sonatel.com',
   OM_URL: 'https://appom.orange-sonatel.com',
   SEDDO_SERVICE: 'selfcare-b2c-seddo',
@@ -27,7 +30,7 @@ export const environment = {
   COMMUNITY_MANAGEMENT_SERVICE: 'selfcare-b2c-community-management',
   BOOSTER_SERVICE: 'selfcare-b2c-booster-management',
   SARGAL_SERVICE: 'selfcare-b2c-sargal',
-  AUTH_IMPLICIT_MSISDN: '221772907339',
+  AUTH_IMPLICIT_MSISDN: '221771326617',
   GA_CONFIG: {
     trackingId: 'UA-92621294-1',
     trackPageviews: true
@@ -48,4 +51,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

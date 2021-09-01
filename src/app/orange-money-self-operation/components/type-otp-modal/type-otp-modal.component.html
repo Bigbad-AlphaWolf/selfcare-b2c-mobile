@@ -1,6 +1,6 @@
 <div class="type-otp-modal">
   <div class="title">Confirmez votre numéro</div>
-  <div class="sub-title scb-text-gray">Entrez le code reçu par SMS au {{ checkOtpPayload.msisdn | phoneNumberDisplay }}</div>
+  <div class="sub-title scb-text-gray">Entrez le code reçu par SMS au {{ checkOtpPayload?.msisdn | phoneNumberDisplay }}</div>
   <div class="input-block">
     <div class="fake-input-block">
       <div class="square" [ngClass]="{'active': input.value && input.value.length === 0}"></div>
@@ -8,12 +8,12 @@
       <div class="square" [ngClass]="{'active': input.value && input.value.length === 2}"></div>
       <div class="square" [ngClass]="{'active': input.value && input.value.length >= 3}"></div>
     </div>
-    <ion-input #input type="text" maxlength="4" [ngClass]="{'cursor-hidden': input.value.length === 4}"></ion-input>
+    <ion-input #input type="text" maxlength="4" [ngClass]="{'cursor-hidden': input.value?.length === 4}"></ion-input>
   </div>
   <div class="resend-block scb-text-gray"> Vous n’avez pas reçu de SMS ? <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="sendingOtp"></mat-spinner> <span (click)="sendCode()" class="scb-text-orange">Renvoyer</span>
   </div>
   <div class="scb-text-red-error error" *ngIf="errorCheckOtp">{{errorMsg}}</div>
-  <button class="scb-btn scb-btn-orange scb-btn-full" [disabled]="input.value.length < 4" (click)="checkOtp()">
+  <button class="scb-btn scb-btn-orange scb-btn-full" [disabled]="input.value?.length < 4" (click)="checkOtp()">
     <span>Continuer</span>
     <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="checkingOtp"></mat-spinner>
   </button>

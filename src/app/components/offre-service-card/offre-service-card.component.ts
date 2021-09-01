@@ -28,6 +28,7 @@ import { OPERATION_TYPE_PASS_USAGE } from 'src/app/utils/operations.constants';
 import { OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
 import { WoyofalSelectionComponent } from '../counter/woyofal-selection/woyofal-selection.component';
 import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
+import { KioskLocatorPopupComponent } from '../kiosk-locator-popup/kiosk-locator-popup.component';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -59,14 +60,14 @@ export class OffreServiceCardComponent implements OnInit {
   imageUrl: string;
 
   ngOnInit() {
-    this.imageUrl = this.service.icone;
+    this.imageUrl =
+      this.service && this.service.icone ? this.service.icone : null;
   }
 
   onClick() {
     const follow =
       'my_services_card_' + this.service.code.toLowerCase() + '_clic';
     this.followAnalyticsServ.registerEventFollow(follow, 'event', 'clic');
-    console.log('follow', follow);
 
     if (!this.service.activated) {
       this.showServiceUnavailableToast();
@@ -87,6 +88,11 @@ export class OffreServiceCardComponent implements OnInit {
       this.ofcService.loadOFC();
       return;
     }
+    if (this.service.code === 'KIOSK_LOCATOR') {
+      this.openKioskLocatorModal();
+      return;
+    }
+    this.bsService.opXtras.billData = { company: this.service };
     if (this.service.code === OPERATION_TYPE_MERCHANT_PAYMENT) {
       this.openMerchantBS();
       return;
@@ -155,6 +161,14 @@ export class OffreServiceCardComponent implements OnInit {
           this.openPinpad();
         }
       });
+  }
+
+  async openKioskLocatorModal() {
+    const modal = await this.modalController.create({
+      component: KioskLocatorPopupComponent,
+      cssClass: 'select-recipient-modal',
+    });
+    return await modal.present();
   }
 
   async openPinpad() {

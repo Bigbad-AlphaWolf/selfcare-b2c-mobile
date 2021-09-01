@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import { from, of } from 'rxjs';
+import { from } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import {
   CategoryOffreServiceModel,
   OffreService,
 } from 'src/app/models/offre-service.model';
+import { mapOffreServiceWithCodeOM } from 'src/app/utils/bills.util';
 import { SubscriptionModel } from 'src/shared';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
@@ -106,6 +107,11 @@ export class OperationService {
                     this.prefixServiceImgByFileServerUrl(offerService);
                   }
                   return res;
+                }),
+                map((res) => {
+                  return res.map((item: OffreService) => {
+                    return mapOffreServiceWithCodeOM(item);
+                  });
                 })
               );
           }),
@@ -118,6 +124,11 @@ export class OperationService {
                     this.prefixServiceImgByFileServerUrl(offerService);
                   }
                   return res;
+                }),
+                map((res) => {
+                  return res.map((item: OffreService) => {
+                    return mapOffreServiceWithCodeOM(item);
+                  });
                 })
               );
           })
@@ -133,8 +144,5 @@ export class OperationService {
     offerService.banniere = offerService.banniere
       ? `${this.FILE_MANAGER_BASE_URL}/${offerService.banniere}`
       : '';
-    // offerService.iconeBackground = offerService.iconeBackground
-    //   ? `${this.FILE_MANAGER_BASE_URL}/${offerService.iconeBackground}`
-    //   : '';
   }
 }

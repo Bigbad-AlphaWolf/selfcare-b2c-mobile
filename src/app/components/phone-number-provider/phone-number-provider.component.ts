@@ -1,20 +1,30 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { formatPhoneNumber, REGEX_NUMBER_OM } from 'src/shared';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
+import { formatPhoneNumber, parseIntoNationalNumberFormat, REGEX_NUMBER_OM } from 'src/shared';
 import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
 import { Contacts, Contact } from '@ionic-native/contacts';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatInput } from '@angular/material';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'oem-phone-number-provider',
   templateUrl: './phone-number-provider.component.html',
-  styleUrls: ['./phone-number-provider.component.scss'],
+  styleUrls: ['./phone-number-provider.component.scss']
 })
-export class PhoneNumberProviderComponent implements OnInit {
-  @Output('onPhoneSelected')
-  onPhoneSelected: EventEmitter<OperationExtras> = new EventEmitter();
-
+export class PhoneNumberProviderComponent implements OnInit, OnChanges {
+  @Output('onPhoneSelected') onPhoneSelected: EventEmitter<OperationExtras> = new EventEmitter();
+  @Input() showInput: boolean;
+  @ViewChild('numberInput', { static: true }) input: ElementRef;
   hasErrorGetContact: boolean;
   errorGetContact: any;
   otherBeneficiaryNumber = '';
@@ -26,6 +36,15 @@ export class PhoneNumberProviderComponent implements OnInit {
     private contacts: Contacts,
     private followAnalyticsService: FollowAnalyticsService
   ) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
+    if (changes.showInput.currentValue) {
+      setTimeout(() => {
+        this.input.nativeElement.focus();
+      }, 5);
+    }
+  }
 
   ngOnInit() {}
   onValueChange(value?: any) {
@@ -42,22 +61,20 @@ export class PhoneNumberProviderComponent implements OnInit {
         if (contact.phoneNumbers.length > 1) {
           this.openPickRecipientModal(contact);
         } else {
-          const selectedNumber = formatPhoneNumber(
-            contact.phoneNumbers[0].value
-          );
+          const selectedNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
           this.processGetContactInfos(contact, selectedNumber);
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log('err', err);
       });
   }
 
   openPickRecipientModal(contact: any) {
     const dialogRef = this.dialog.open(SelectNumberPopupComponent, {
-      data: { phoneNumbers: contact.phoneNumbers },
+      data: { phoneNumbers: contact.phoneNumbers }
     });
-    dialogRef.afterClosed().subscribe((selectedNumber) => {
+    dialogRef.afterClosed().subscribe(selectedNumber => {
       const choosedNumber = formatPhoneNumber(selectedNumber);
       this.processGetContactInfos(contact, choosedNumber);
     });
@@ -65,15 +82,15 @@ export class PhoneNumberProviderComponent implements OnInit {
 
   processGetContactInfos(contact: any, selectedNumber: any) {
     if (this.validateNumber(selectedNumber)) {
-      this.otherBeneficiaryNumber = selectedNumber;
+      const formatedNumber = parseIntoNationalNumberFormat(selectedNumber);
+      this.otherBeneficiaryNumber = formatedNumber;
       this.getContactFormattedName(contact);
       this.opXtras.recipientMsisdn = this.otherBeneficiaryNumber;
       this.opXtras.recipientFromContact = true;
       this.onPhoneSelected.emit(this.opXtras);
     } else {
       this.hasErrorGetContact = true;
-      this.errorGetContact =
-        'Veuillez choisir un numéro de destinataire valide pour continuer';
+      this.errorGetContact = `Veuillez choisir un numéro de destinataire valide pour continuer. Numéro Selectionné: ${selectedNumber} `;
     }
   }
 
@@ -86,9 +103,7 @@ export class PhoneNumberProviderComponent implements OnInit {
     const familyName = contact.name.familyName ? contact.name.familyName : '';
 
     this.recipientContactInfos =
-      contact.name && contact.name.formatted
-        ? contact.name.formatted
-        : givenName + ' ' + familyName;
+      contact.name && contact.name.formatted ? contact.name.formatted : givenName + ' ' + familyName;
 
     this.opXtras.recipientName = this.recipientContactInfos;
     this.opXtras.recipientFirstname = givenName;

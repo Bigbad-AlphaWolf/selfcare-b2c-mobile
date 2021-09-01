@@ -1,21 +1,22 @@
-import { Injectable } from '@angular/core';
-import { Router, NavigationExtras } from '@angular/router';
+import {Injectable} from '@angular/core';
+import {Router, NavigationExtras} from '@angular/router';
 import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_RECHARGE_CREDIT,
   IlliflexOption,
-  OPERATION_CHANGE_PIN_OM,
+  OPERATION_CHANGE_PIN_OM
 } from 'src/shared';
-import { OperationExtras } from 'src/app/models/operation-extras.model';
-import { CreditPassAmountPage } from 'src/app/pages/credit-pass-amount/credit-pass-amount.page';
-import { SargalRegistrationPage } from 'src/app/sargal/components/sargal-registration/sargal-registration.page';
-import { OfferPlan } from 'src/shared/models/offer-plan.model';
-import { RattachedPhonesNumberPage } from 'src/app/pages/rattached-phones-number/rattached-phones-number.page';
-import { PurchaseModel } from 'src/app/models/purchase.model';
-
+import {OperationExtras} from 'src/app/models/operation-extras.model';
+import {CreditPassAmountPage} from 'src/app/pages/credit-pass-amount/credit-pass-amount.page';
+import {SargalRegistrationPage} from 'src/app/sargal/components/sargal-registration/sargal-registration.page';
+import {OfferPlan} from 'src/shared/models/offer-plan.model';
+import {RattachedPhonesNumberPage} from 'src/app/pages/rattached-phones-number/rattached-phones-number.page';
+import {PurchaseModel} from 'src/app/models/purchase.model';
+import {PurchaseSetAmountPage} from 'src/app/purchase-set-amount/purchase-set-amount.page';
+import {TransferSetAmountPage} from 'src/app/transfer-set-amount/transfer-set-amount.page';
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ApplicationRoutingService {
   constructor(private route: Router) {}
@@ -26,24 +27,24 @@ export class ApplicationRoutingService {
 
   goToListPassInternet(data: any) {
     const payload = Object.assign(data, {
-      purchaseType: OPERATION_TYPE_PASS_INTERNET,
+      purchaseType: OPERATION_TYPE_PASS_INTERNET
     });
     let navigationExtras: NavigationExtras = {
       state: {
-        payload,
-      },
+        payload
+      }
     };
     this.route.navigate(['/list-pass'], navigationExtras);
   }
 
   goToListPassIllimix(data: any) {
     const payload = Object.assign(data, {
-      purchaseType: OPERATION_TYPE_PASS_ILLIMIX,
+      purchaseType: OPERATION_TYPE_PASS_ILLIMIX
     });
     let navigationExtras: NavigationExtras = {
       state: {
-        payload,
-      },
+        payload
+      }
     };
     this.route.navigate(['/list-pass'], navigationExtras);
   }
@@ -52,8 +53,8 @@ export class ApplicationRoutingService {
     let navigationExtras: NavigationExtras = {
       state: {
         purchaseType,
-        isLightMod,
-      },
+        isLightMod
+      }
     };
     this.route.navigate(['/transfert-hub-services'], navigationExtras);
   }
@@ -62,13 +63,10 @@ export class ApplicationRoutingService {
     let navigationExtras: NavigationExtras = {
       state: {
         type,
-        amount,
-      },
+        amount
+      }
     };
-    const routeUrl =
-      type === IlliflexOption.USAGE
-        ? '/illiflex-configuration'
-        : 'illiflex-budget-configuration';
+    const routeUrl = type === IlliflexOption.USAGE ? '/illiflex-configuration' : 'illiflex-budget-configuration';
     this.route.navigate([routeUrl], navigationExtras);
   }
 
@@ -85,8 +83,8 @@ export class ApplicationRoutingService {
         senderMsisdn: payload.senderMsisdn,
         recipientMsisdn: payload.recipientMsisdn,
         recipientFirstname: payload.recipientFirstname,
-        recipientLastname: payload.recipientLastname,
-      },
+        recipientLastname: payload.recipientLastname
+      }
     };
     this.route.navigate(['/transfert-om-set-amount'], navigationExtras);
   }
@@ -104,9 +102,16 @@ export class ApplicationRoutingService {
 
   goSetAmountPage(purchaseInformation?: any) {
     let navigationExtras: NavigationExtras = {
-      state: purchaseInformation,
+      state: purchaseInformation
     };
-    this.route.navigate(['/purchase-set-amount'], navigationExtras);
+    this.route.navigate([PurchaseSetAmountPage.ROUTE_PATH], navigationExtras);
+  }
+
+  goSetTransferAmountPage(purchaseInformation?: any) {
+    let navigationExtras: NavigationExtras = {
+      state: purchaseInformation
+    };
+    this.route.navigate([TransferSetAmountPage.ROUTE_PATH], navigationExtras);
   }
 
   goToPassRecapPage(purchaseInformation: {
@@ -118,18 +123,18 @@ export class ApplicationRoutingService {
     offerPlan?: OfferPlan;
   }) {
     let navigationExtras: NavigationExtras = {
-      state: purchaseInformation,
+      state: purchaseInformation
     };
     this.route.navigate(['/operation-recap'], navigationExtras);
   }
 
   goToBuyCreditSetAmount(opInfos: OperationExtras) {
-    opInfos = { purchaseType: OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos };
-    this.route.navigate([CreditPassAmountPage.PATH], { state: opInfos });
+    opInfos = {purchaseType: OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos};
+    this.route.navigate([CreditPassAmountPage.PATH], {state: opInfos});
   }
 
-  goToRegisterForSargal() {
-    this.route.navigate([SargalRegistrationPage.PATH]);
+  goToRegisterForSargal(from?: string) {
+    this.route.navigate([SargalRegistrationPage.PATH], {state: {previousPage: from}});
   }
 
   goToRattachementsPage() {
@@ -154,14 +159,14 @@ export class ApplicationRoutingService {
 
   goToCancelTransactionOM(data: PurchaseModel) {
     let navigationExtras: NavigationExtras = {
-      state: { transactionInfos: data },
+      state: {transactionInfos: data}
     };
-    this.route.navigate(['/cancel-transaction-om'], navigationExtras);
+    this.route.navigate(['/om-self-operation/cancel-transaction'], navigationExtras);
   }
 
   goToCreatePinOM(operationType = OPERATION_CHANGE_PIN_OM, payload?: any) {
     let navigationExtras: NavigationExtras = {
-      state: { operation: operationType, payload },
+      state: {operation: operationType, payload}
     };
     this.route.navigate(['/change-orange-money-pin'], navigationExtras);
   }

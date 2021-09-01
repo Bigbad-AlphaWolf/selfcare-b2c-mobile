@@ -24,6 +24,9 @@
     <div *ngIf="hasErrorOnCheckMerchant" class="error scb-text-red-error">
       {{ errorMsg }}
     </div>
+    <div class="loading-container" *ngIf="loadingRecents">
+      <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
+    </div>
     <div class="recents" *ngIf="recentMerchants$ | async as recentMerchants">
       <div class="description" *ngIf="recentMerchants.length">
         Récents
@@ -31,8 +34,9 @@
       <div
         matRipple
         class="oem-item"
+        [id]="'merchant_item_'+i"
         (click)="onRecentMerchantSelected(merchant)"
-        *ngFor="let merchant of recentMerchants"
+        *ngFor="let merchant of recentMerchants; let i = index"
       >
         <div class="logo scb-text-white">
           {{ merchant.name | acronym }}
@@ -46,6 +50,7 @@
     <button
       class="scb-btn scb-btn-orange scb-btn-full"
       [disabled]="chekingMerchant || !merchantCodeForm.valid"
+      id="btn-validate-merchant-code"
       type="submit"
     >
       <span>Continuer</span>

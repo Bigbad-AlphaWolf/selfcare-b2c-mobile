@@ -27,7 +27,6 @@ export class BlockTransferSuccessPopupComponent implements OnInit {
 
   close() {
     this.modalController.dismiss();
-    this.appRouting.goToCancelTransactionOM(this.transactionToBlock);
   }
 
   goFillAnnulationForm() {

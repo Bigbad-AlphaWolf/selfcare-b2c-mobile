@@ -172,7 +172,7 @@
 						</div>
 						<div class="init-otp-error" *ngIf="hasErrorsubmit">{{ msgSubmitError }}</div>
 						<button
-							[disabled]="(generatingOtp || !omMsisdn || checkingStatus )"
+							[disabled]="(generatingOtp || !omMsisdn || checkingStatus || !personalInfosForm.valid || !rectoFilled || !versoFilled || !selfieFilled || !acceptCGU )"
 							class="scb-btn scb-btn-full scb-btn-orange"
 							(click)="generateOtp()"
 						>
@@ -197,7 +197,7 @@
 		<div class="check-status-error scb-text-red-error" *ngIf="checkStatusError" (click)="checkStatus()">
 			Erreur récupération statut. Réactualisez ici.
 		</div>
-		<div class="check-status-error scb-text-red-error" *ngIf="isSelectedNumberValid || !gettingNumber" (click)="getNumber()">
+		<div class="check-status-error scb-text-red-error" *ngIf="!isSelectedNumberValid || !gettingNumber" (click)="getNumber()">
 			{{errorGettingNumber}}
 		</div>
 	</div>

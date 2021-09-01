@@ -23,6 +23,7 @@ import {
   PAYMENT_MOD_OM,
   OPERATION_TYPE_PASS_ILLIFLEX,
   getActiveBoostersForSpecificPass,
+  CODE_PARTENAIRE_COUPON_TRACE_TV,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -47,10 +48,7 @@ import { FeeModel } from '../services/orange-money-service';
 import { FeesService } from '../services/fees/fees.service';
 import { OM_LABEL_SERVICES } from '../utils/bills.util';
 import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
-import { OffreService } from '../models/offre-service.model';
-import { BuyPassUsageModel } from '../models/buy-pass-usage-payload.model';
-import { PurchaseService } from '../services/purchase-service/purchase.service';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { BoosterModel } from '../models/booster.model';
 
 @Component({
   selector: 'app-operation-recap',
@@ -122,7 +120,6 @@ export class OperationRecapPage implements OnInit {
   buyCreditPayload: any;
   offerPlan: OfferPlan;
   isLightMod: boolean;
-
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -137,8 +134,7 @@ export class OperationRecapPage implements OnInit {
     private illiflexService: IlliflexService,
     private passService: PassInternetService,
     private ref: ChangeDetectorRef,
-    private feeService: FeesService,
-    private purchaseService: PurchaseService
+    private feeService: FeesService
   ) {}
 
   ngOnInit() {
@@ -346,7 +342,6 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_VOYAGE:
       case OPERATION_TYPE_PASS_ILLIMIX:
       case OPERATION_TYPE_PASS_ALLO:
-      case OPERATION_TYPE_PASS_ILLIFLEX:
         if (this.isLightMod) {
           const hmac = this.authServ.getHmac();
           this.payWithCredit(hmac);
@@ -369,6 +364,9 @@ export class OperationRecapPage implements OnInit {
         break;
       case OPERATION_TYPE_PASS_USAGE:
         this.buyPassUsage();
+        break;
+      case OPERATION_TYPE_PASS_ILLIFLEX:
+        this.payIlliflex();
         break;
       default:
         break;
@@ -520,6 +518,16 @@ export class OperationRecapPage implements OnInit {
     );
   }
 
+  isBoosterTraceTV() {
+    if (this.passChoosen) {
+      const boosters = this.getPassBoosters(this.passChoosen);
+      return !!boosters.find((item: BoosterModel) => {
+        return item.gift.partner.code === CODE_PARTENAIRE_COUPON_TRACE_TV;
+      });
+    }
+    return null;
+  }
+
   goBack() {
     this.navController.pop();
   }
@@ -570,8 +578,7 @@ export class OperationRecapPage implements OnInit {
       msisdn: this.currentUserNumber,
       serviceId: this.opXtras.pass.serviceId,
       type: 'usage',
-      typePassUsage: this.opXtras.pass.typeUsage.code,
-      typeAbonnementPassUsage: this.opXtras.pass.typeAbonnement,
+      serviceType: this.opXtras.pass.typeUsage.code,
     };
     const logInfos: FollowOemlogPurchaseInfos = {
       sender: this.currentUserNumber,
@@ -714,6 +721,8 @@ export class OperationRecapPage implements OnInit {
       default:
         break;
     }
+    if (this.opXtras && this.opXtras.fromPage === OPERATION_TYPE_BONS_PLANS)
+      eventName += '_bons_plans';
     eventName += type === 'event' ? '_Success' : '_Error';
     console.log('followSuccess', logDetails, 'op', purchaseType, eventName);
     this.followAnalyticsService.registerEventFollow(

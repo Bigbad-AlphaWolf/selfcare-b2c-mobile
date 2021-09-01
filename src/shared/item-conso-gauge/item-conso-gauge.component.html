@@ -1,0 +1,18 @@
+<div class="gauge-container">
+  <div class="conso-percent-text">
+    <span class="remaining-percent scb-text-light-black"
+      >{{ Math.round(100*conso?.montantRestantBrut/conso?.montantTotalBrut) }}% de ma conso</span
+    >
+  </div>
+  <div class="gauge">
+    <div
+      class="left"
+      [style.width.%]="Math.round(100*conso?.montantRestantBrut/conso?.montantTotalBrut)"
+      [ngStyle]="{'background-color': conso?.gaugeColor}"
+    ></div>
+    <div
+      class="consumed"
+      [style.width.%]="100 - Math.round(100*conso?.montantRestantBrut/conso?.montantTotalBrut)"
+    ></div>
+  </div>
+</div>

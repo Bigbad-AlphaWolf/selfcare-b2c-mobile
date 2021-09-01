@@ -418,7 +418,6 @@ export class OpenOmAccountPage implements OnInit {
     this.isSelectedNumberValid = true;
     this.errorGettingNumber = `La récupération du numéro ne s'est pas bien passée. Cliquez ici pour réessayer`;
     let connexion: string;
-    console.log('connexionType', connexion);
     this.newtworkSubscription = this.network.onConnect().subscribe(() => {
       setTimeout(() => {
         connexion = this.network.type;

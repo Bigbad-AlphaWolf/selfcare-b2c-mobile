@@ -11,6 +11,7 @@ import {
   OPERATION_TYPE_PASS_ILLIFLEX,
   OPERATION_TYPE_PASS_ALLO,
   OPERATION_TYPE_PASS_INTERNET,
+  NO_RECENTS_MSG,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -59,6 +60,8 @@ export class NumberSelectionComponent implements OnInit {
   loadingNumbers: boolean;
   currentPhone: string = SessionOem.PHONE.trim();
   isLightMod: boolean;
+  loadingRecents: boolean;
+  NO_RECENTS_MSG = NO_RECENTS_MSG;
 
   constructor(
     private modalController: ModalController,
@@ -71,17 +74,21 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.isLightMod = this.data.isLightMod;
-    this.option = this.data.option;
+    this.isLightMod = this.data && this.data.isLightMod ? this.data.isLightMod : null;
+    this.option = this.data && this.data.option ? this.data.option : NumberSelectionOption.NONE;
     this.showInput = this.option === NumberSelectionOption.NONE;
-    this.loadingNumbers = true;
     this.opXtras.recipientMsisdn = this.currentPhone;
     this.opXtras.senderMsisdn = SessionOem.PHONE;
     if (!this.isLightMod) {
+      this.loadingNumbers = true;
       this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
         delay(100),
         tap((numbers) => {
           this.loadingNumbers = false;
+        }),
+        catchError((err: any) => {
+          this.loadingNumbers = false;
+          return of(err);
         }),
         share()
       );
@@ -90,10 +97,12 @@ export class NumberSelectionComponent implements OnInit {
   }
 
   getRecents() {
+    this.loadingRecents = true;
     this.recentsRecipients$ = this.recentsService
       .fetchRecents(this.data.purchaseType, 2)
       .pipe(
         map((recents: RecentsOem[]) => {
+          this.loadingRecents = false;
           let results = [];
           recents.forEach((el) => {
             results.push({
@@ -102,11 +111,29 @@ export class NumberSelectionComponent implements OnInit {
             });
           });
           return results;
-        }), tap( (res: {name: string, msisdn: string} [])=> {
-          this.followAnalyticsService.registerEventFollow('Get_recents_destinataire_OM_success', 'event', {operation: this.data.purchaseType, sender: this.opXtras.senderMsisdn });
-        }), catchError((err) => {
-          this.followAnalyticsService.registerEventFollow('Get_recents_destinataire_OM_error', 'error', {operation: this.data.purchaseType, sender: this.opXtras.senderMsisdn, error: err.status } );
-          return of(err)
+        }),
+        tap((res: { name: string; msisdn: string }[]) => {
+          this.followAnalyticsService.registerEventFollow(
+            'Get_recents_destinataire_OM_success',
+            'event',
+            {
+              operation: this.data.purchaseType,
+              sender: this.opXtras.senderMsisdn,
+            }
+          );
+        }),
+        catchError((err) => {
+          this.loadingRecents = false;
+          this.followAnalyticsService.registerEventFollow(
+            'Get_recents_destinataire_OM_error',
+            'error',
+            {
+              operation: this.data.purchaseType,
+              sender: this.opXtras.senderMsisdn,
+              error: err.status,
+            }
+          );
+          return of(err);
         })
       );
   }
@@ -119,7 +146,10 @@ export class NumberSelectionComponent implements OnInit {
       this.followAnalyticsService.registerEventFollow(
         'Select_recents_buy',
         'event',
-        { msisdn: this.currentPhone, recent: phone }
+        {
+          msisdn: this.currentPhone,
+          recent: phone,
+        }
       );
     }
     if (
@@ -132,15 +162,16 @@ export class NumberSelectionComponent implements OnInit {
       return;
     }
 
-    this.opXtras.destinataire = this.opXtras.recipientMsisdn = formatPhoneNumber(
-      this.opXtras.recipientMsisdn
-    );
+    this.opXtras.destinataire = this.opXtras.recipientMsisdn =
+      formatPhoneNumber(this.opXtras.recipientMsisdn);
 
     this.opXtras.forSelf = !this.showInput;
 
     if (!(await this.canRecieveCredit())) {
       this.canNotRecieve = true;
-      const data = Object.assign({}, this.opXtras, { error: this.eligibilityError });
+      const data = Object.assign({}, this.opXtras, {
+        error: this.eligibilityError,
+      });
       this.logRecipientOnFollow('error', data, this.data.isLightMod);
       this.changeDetectorRef.detectChanges();
       return;
@@ -174,7 +205,9 @@ export class NumberSelectionComponent implements OnInit {
             if (eligibility && !eligibility.eligible) {
               this.isRecipientEligible = false;
               this.eligibilityError = eligibility.message;
-              const data = Object.assign({}, this.opXtras, { error: this.eligibilityError });
+              const data = Object.assign({}, this.opXtras, {
+                error: this.eligibilityError,
+              });
               this.logRecipientOnFollow('error', data, this.data.isLightMod);
               return;
             }
@@ -188,11 +221,17 @@ export class NumberSelectionComponent implements OnInit {
             this.isRecipientEligible = false;
             this.eligibilityError =
               'Le numéro du bénéficiaire ne peut pas bénéficier de pass';
-            const data = Object.assign({}, this.opXtras, { error: this.eligibilityError });
+            const data = Object.assign({}, this.opXtras, {
+              error: this.eligibilityError,
+            });
             this.logRecipientOnFollow('error', data, this.data.isLightMod);
             return;
           }
-          this.logRecipientOnFollow('event', this.opXtras, this.data.isLightMod);
+          this.logRecipientOnFollow(
+            'event',
+            this.opXtras,
+            this.data.isLightMod
+          );
           this.modalController.dismiss(this.opXtras);
           // this.bottomSheetRef.dismiss(this.opXtras);
         },
@@ -229,7 +268,9 @@ export class NumberSelectionComponent implements OnInit {
     this.omService.getOmMsisdn().subscribe(
       (msisdn: any) => {
         this.isProcessing = false;
+        this.loadingNumbers = false;
         this.changeDetectorRef.detectChanges();
+        console.log(this.isProcessing, this.loadingNumbers);
 
         if (
           msisdn === 'error' &&
@@ -248,7 +289,9 @@ export class NumberSelectionComponent implements OnInit {
       },
       () => {
         this.modalController.dismiss();
+        this.isProcessing = false;
         this.isErrorProcessing = true;
+        console.log(this.isProcessing, this.loadingNumbers);
       }
     );
   }
@@ -284,13 +327,21 @@ export class NumberSelectionComponent implements OnInit {
     return await modal.present();
   }
 
-  logRecipientOnFollow(typeEvent: 'event' | 'error', infos: any, isLightMod?: boolean) {
+  logRecipientOnFollow(
+    typeEvent: 'event' | 'error',
+    infos: any,
+    isLightMod?: boolean
+  ) {
     let followEventSucess: string;
     let followEventError: string;
-    let payload = { sender: infos.senderMsisdn, recipient: infos.recipientMsisdn, operation: this.data.purchaseType.toLowerCase() }
-    if (infos.error) {
-      payload = Object.assign({}, payload, {error: infos.error})
+    let payload = {
+      sender: infos.senderMsisdn,
+      recipient: infos.recipientMsisdn,
+      operation: this.data.purchaseType.toLowerCase(),
     };
+    if (infos.error) {
+      payload = Object.assign({}, payload, { error: infos.error });
+    }
     switch (this.data.purchaseType) {
       case OPERATION_TYPE_RECHARGE_CREDIT:
         followEventSucess = 'Recharge_Credit_Select_Recipient_success';
@@ -312,11 +363,19 @@ export class NumberSelectionComponent implements OnInit {
     if (typeEvent === 'event') {
       console.log('follow', followEventSucess, payload);
 
-      this.followAnalyticsService.registerEventFollow(followEventSucess, 'event', payload);
+      this.followAnalyticsService.registerEventFollow(
+        followEventSucess,
+        'event',
+        payload
+      );
     } else {
       console.log('follow', followEventError, payload);
 
-      this.followAnalyticsService.registerEventFollow(followEventError, 'error', payload);
+      this.followAnalyticsService.registerEventFollow(
+        followEventError,
+        'error',
+        payload
+      );
     }
   }
 }

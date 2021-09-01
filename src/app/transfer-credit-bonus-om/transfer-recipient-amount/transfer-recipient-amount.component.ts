@@ -17,6 +17,7 @@ import {
   BONUS,
   REGEX_NUMBER_OM,
   formatPhoneNumber,
+  parseIntoNationalNumberFormat,
 } from 'src/shared';
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -68,7 +69,6 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     private contacts: Contacts,
     private dashService: DashboardService,
     private followAnalytics: FollowAnalyticsService,
-    private navControl: NavController,
     private pinpadOM: ModalController,
     private authService: AuthenticationService
   ) {}
@@ -168,7 +168,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
       },
     });
     modal.onDidDismiss().then((res: any) => {
-      if(res.data && res.data.balance) {
+      if (res.data && res.data.balance) {
         this.omBalanceVisible = true;
         this.omBalance = res.data.balance;
       }
@@ -208,7 +208,7 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
       this.errorMsg = '';
       if (this.orangeMoney) {
         this.contactInfos = null;
-        this.checkRecipientHasOMAccount();
+        this.checkRecipientHasOMAccount(this.formDest.value.phoneNumber);
       } else {
         this.nextStepEmitter.emit(recipient);
       }
@@ -242,32 +242,37 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
       .then(async (contact: Contact) => {
         this.contactInfos = contact;
         if (contact.phoneNumbers.length > 1) {
-          this.openPickRecipientModal(contact.phoneNumbers);
+          this.openPickRecipientModal(contact);
         } else {
           const destNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
-          this.recipientInfos.phoneNumber = destNumber;
-          this.formDest.setValue({ phoneNumber: destNumber });
-          if (this.orangeMoney) {
-            if (this.validateNumberOm(destNumber)) {
-              // this.contactEmitter.emit(contact);
-              this.checkRecipientHasOMAccount();
-            } else {
-              this.badNumberStep();
-            }
-          } else {
-            if (
-              this.validateNumber(destNumber) &&
-              (await this.checkRecipientCanRecieveCredit(destNumber))
-            ) {
-              this.nextStepEmitter.emit(this.recipientInfos);
-              this.contactEmitter.emit(contact);
-            } else {
-              this.badNumberStep();
-            }
-          }
+          this.processSelectedNumber(destNumber, contact);
         }
       })
       .catch(() => {});
+  }
+
+  async processSelectedNumber(selectedNumber: string, contact?: any) {
+    if (this.validateNumber(selectedNumber)) {
+      this.recipientInfos.phoneNumber =
+        parseIntoNationalNumberFormat(selectedNumber);
+      this.formDest.setValue({ phoneNumber: this.recipientInfos.phoneNumber });
+      if (this.orangeMoney) {
+        this.checkRecipientHasOMAccount(this.formDest.value.phoneNumber);
+      } else {
+        if (
+          await this.checkRecipientCanRecieveCredit(
+            this.recipientInfos.phoneNumber
+          )
+        ) {
+          this.nextStepEmitter.emit(this.recipientInfos);
+          this.contactEmitter.emit(contact);
+        } else {
+          this.badNumberStep();
+        }
+      }
+    } else {
+      this.badNumberStep();
+    }
   }
 
   async checkRecipientCanRecieveCredit(msisdn) {
@@ -277,21 +282,14 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     return canRecieve;
   }
 
-  openPickRecipientModal(phoneNumbers: any[]) {
+  openPickRecipientModal(contact: any) {
     const dialogRef = this.dialog.open(SelectNumberPopupComponent, {
-      data: { phoneNumbers },
+      data: { phoneNumbers: contact.phoneNumbers },
     });
     dialogRef.afterClosed().subscribe((selectedNumber: string) => {
       if (selectedNumber) {
         selectedNumber = formatPhoneNumber(selectedNumber);
-        this.recipientInfos.phoneNumber = selectedNumber;
-        this.formDest.setValue({ phoneNumber: selectedNumber });
-        if (this.orangeMoney) {
-          this.checkRecipientHasOMAccount();
-        } else {
-          this.nextStepEmitter.emit(this.recipientInfos);
-          this.contactEmitter.emit(this.contactInfos);
-        }
+        this.processSelectedNumber(selectedNumber, contact);
       }
     });
   }
@@ -306,22 +304,18 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
     return REGEX_NUMBER.test(phoneNumber);
   }
 
-  validateNumberOm(phoneNumber: string) {
-    return REGEX_NUMBER_OM.test(phoneNumber);
-  }
-
   checkOMToken(phoneNumber: string) {
     this.omService.GetUserAuthInfo(phoneNumber).subscribe((omUser: any) => {
       // If user already connected open pinpad
-      if (!omUser.hasApiKey || omUser.loginExpired ) {
+      if (!omUser.hasApiKey || omUser.loginExpired) {
         this.openPinpad();
       }
     });
   }
 
-  checkRecipientHasOMAccount() {
+  checkRecipientHasOMAccount(selectedNumber: string) {
     this.checkingOMAccount = true;
-    const phoneNumber = formatPhoneNumber(this.formDest.value.phoneNumber);
+    const phoneNumber = formatPhoneNumber(selectedNumber);
     this.recipientInfos = {
       phoneNumber,
       hasOMAccount: false,
@@ -367,8 +361,8 @@ export class TransferRecipientAmountComponent implements OnInit, OnChanges {
               'destinataire_transfert_has_om_account',
               'event',
               {
-                transfert_om_numero_destinataire: this.recipientInfos
-                  .phoneNumber,
+                transfert_om_numero_destinataire:
+                  this.recipientInfos.phoneNumber,
                 has_om: 'false',
               }
             );

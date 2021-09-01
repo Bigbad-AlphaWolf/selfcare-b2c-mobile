@@ -3,24 +3,23 @@ import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/selec
 import {
   formatPhoneNumber,
   REGEX_NUMBER_OM,
-  OPERATION_TYPE_TRANSFER_OM,
   OPERATION_TRANSFER_OM,
+  NO_RECENTS_MSG,
+  parseIntoNationalNumberFormat,
 } from 'src/shared';
 import { MatDialog } from '@angular/material';
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
-import { Router } from '@angular/router';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { NoOmAccountModalComponent } from 'src/shared/no-om-account-modal/no-om-account-modal.component';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
-import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
 
 @Component({
   selector: 'app-select-beneficiary-pop-up',
@@ -35,14 +34,15 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   otherBeneficiaryNumber = '';
   firstName: string;
   lastName: string;
-  @ViewChild('inputTel') htmlInput: ElementRef;
+  @ViewChild('inputTel', { static: true }) htmlInput: ElementRef;
   isProcessing: boolean;
   omPhoneNumber: string;
   errorMsg: string;
   dataPayload: any;
   senderMsisdn: string;
   recentsRecipients$: Observable<any[]>;
-
+  loadingRecents: boolean;
+  NO_RECENTS_MSG = NO_RECENTS_MSG;
   constructor(
     private dialog: MatDialog,
     private contacts: Contacts,
@@ -62,12 +62,13 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   }
 
   getRecents() {
+    this.loadingRecents = true;
     this.recentsRecipients$ = this.recentsService
       .fetchRecents(OPERATION_TRANSFER_OM, 3)
       .pipe(
         map((recents: RecentsOem[]) => {
+          this.loadingRecents = false;
           let results = [];
-          console.log(recents);
           recents.forEach((el) => {
             results.push({
               name: el.name,
@@ -75,6 +76,10 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
             });
           });
           return results;
+        }),
+        catchError((err) => {
+          this.loadingRecents = false;
+          throw new Error(err);
         })
       );
   }
@@ -112,12 +117,12 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
 
   processGetContactInfos(contact: any, selectedNumber: any) {
     if (this.validateNumber(selectedNumber)) {
-      this.otherBeneficiaryNumber = selectedNumber;
+      const res = parseIntoNationalNumberFormat(selectedNumber);
+      this.otherBeneficiaryNumber = res;
       this.getContactFormattedName(contact);
     } else {
       this.hasErrorGetContact = true;
-      this.errorGetContact =
-        'Veuillez choisir un numéro de destinataire valide pour continuer';
+      this.errorGetContact = `Veuillez choisir un numéro valide pour continuer. Numéro sélectionné: ${selectedNumber}`;
     }
   }
 
@@ -255,8 +260,8 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
             'event',
             {
               sender: this.omPhoneNumber,
-              receiver : payload.recipientMsisdn,
-              has_om: false
+              receiver: payload.recipientMsisdn,
+              has_om: false,
             }
           );
           this.openNoOMAccountModal(payload);
@@ -266,8 +271,8 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
             'error',
             {
               sender: userOMNumber,
-              receiver : payload.recipientMsisdn,
-              error: err.status
+              receiver: payload.recipientMsisdn,
+              error: err.status,
             }
           );
           this.errorMsg = 'Une erreur est survenue, veuillez reessayer';

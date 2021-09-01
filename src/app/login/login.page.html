@@ -1,6 +1,6 @@
 <div class="login-page">
   <div class="go-back">
-    <img (click)="goBack()" src="/assets/images/arrow-left.png" class="close-icon" alt="">
+    <img id="btn-go-back" (click)="goBack()" src="/assets/images/arrow-left.png" class="close-icon" alt="">
   </div>
   <div class="scb-text-orange voir-intro">
     <span (click)="goIntro()">Revoir l'intro</span>
@@ -56,12 +56,13 @@
       </div>
 
       <div class="password-forgotten">
-        <span routerLink="/forgotten-password" class="scb-text-gray">
+        <span id="btn-forgotten-pwd" routerLink="/forgotten-password" class="scb-text-gray">
           Mot de passe oublié ?
         </span>
       </div>
       <button
         type="submit"
+        id="btn-login"
         [disabled]="!form.valid || loading"
         class="scb-btn-full scb-btn-orange"
         mat-stroked-button
@@ -78,11 +79,12 @@
       <div
         class="nav-item"
         *ngFor="let item of navItems"
+        [id]="'btn-' + item?.action"
         (click)="doAction(item.action)"
       >
         <div class="left-block">
-          <div class="titre">{{item.title}}</div>
-          <div class="sous-titre scb-text-gray">{{item.subTitle}}</div>
+          <div class="titre">{{item?.title}}</div>
+          <div class="sous-titre scb-text-gray">{{ item?.subTitle }}</div>
         </div>
         <div class="right-block">
           <img src="/assets/images/long-arrow-right.png" alt="arrow-right" />

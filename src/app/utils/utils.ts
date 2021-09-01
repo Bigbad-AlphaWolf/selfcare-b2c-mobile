@@ -27,7 +27,7 @@ export function previousMonths(moisDispo: number, n: number = 6) {
 
     r.push({
       position: p < 10 ? '0' + p : p + '',
-      code: MONTHS[m].toLowerCase(),
+      code: MONTHS[m] ? MONTHS[m].toLowerCase() : null,
       name: MONTHS[m],
       year: date.getFullYear().toString()
     });
