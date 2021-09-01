@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./on-boarding.component.scss']
 })
 export class OnBoardingComponent implements OnInit {
-  @ViewChild('sliders') sliders: IonSlides;
+  @ViewChild('sliders', { static: true }) sliders: IonSlides;
   slideOpts = {
     initialSlide: 0,
     speed: 400,

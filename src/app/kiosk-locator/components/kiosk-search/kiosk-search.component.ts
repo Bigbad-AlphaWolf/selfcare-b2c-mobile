@@ -21,7 +21,7 @@ import { SEARCH_SIZE } from 'src/app/services/kiosk-locator-service/kiosk.utils'
 })
 export class KioskSearchComponent implements OnInit {
   displaySearchIcon: boolean;
-  @ViewChild('searchInput') input: IonInput;
+  @ViewChild('searchInput', { static: true }) input: IonInput;
   @Input() searchInput: string;
   @Input() userPosition: Coordinates;
   @Output() back = new EventEmitter();
@@ -46,9 +46,9 @@ export class KioskSearchComponent implements OnInit {
     const params = {
       page: this.page,
       size: SEARCH_SIZE,
-      latitude: this.userPosition.latitude,
-      longitude: this.userPosition.longitude,
-      keyword: this.form.value.keyword,
+      latitude: this.userPosition?.latitude,
+      longitude: this.userPosition?.longitude,
+      keyword: this.form?.value?.keyword,
     };
     this.kiosksService
       .getKiosks(params)
@@ -85,5 +85,7 @@ export class KioskSearchComponent implements OnInit {
     this.back.emit({ kiosk: selectedKiosk, index });
   }
 
-  onClear() {}
+  onClear() {
+    this.form.patchValue({ keyword: '' });
+  }
 }

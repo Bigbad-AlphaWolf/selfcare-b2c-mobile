@@ -7,7 +7,6 @@ import {
   PAYMENT_MOD_CREDIT,
   CODE_KIRENE_Formule,
   PAYMENT_MOD_OM,
-  PassIllimixModel,
 } from 'src/shared';
 import { MatDialog } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -241,13 +240,11 @@ export class BuyPassIllimixPage implements OnInit {
       (err: any) => {
         this.buyingPass = false;
         this.failed = true;
-        if (err.message) {
-          if (err.status === 500) {
-            this.errorMsg = 'Erreur réseau. Veuillez réessayer ultérieurement';
-          } else {
-            this.errorMsg =
-              'Service indisponible. Veuillez réessayer ultérieurement';
-          }
+        if (err && err.error && err.error.message) {
+          this.errorMsg = err.error.message;
+        } else {
+          this.errorMsg =
+            'Service indisponible. Veuillez réessayer ultérieurement';
         }
         this.followAnalyticsService.registerEventFollow(
           'Credit_Buy_Pass_Illimix_Error',
@@ -255,7 +252,7 @@ export class BuyPassIllimixPage implements OnInit {
           {
             msisdn1: this.currentUserNumber,
             msisdn2: this.destNumber,
-            message: 'Service indisponible',
+            message: this.errorMsg,
           }
         );
         this.goToSuccessStep();

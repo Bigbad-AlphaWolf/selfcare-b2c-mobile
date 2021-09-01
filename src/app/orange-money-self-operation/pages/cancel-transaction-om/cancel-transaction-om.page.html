@@ -29,11 +29,11 @@
 					<div class="form-block">
 						<mat-form-field class="scb-input-row ref-transaction" appearance="outline">
 							<mat-label>Référence de la transaction &nbsp;&nbsp;</mat-label>
-							<input (click)="selectTransaction()" matInput type="text" maxlength="20" readonly formControlName="transaction_id" />
+							<input (click)="selectTransaction()" ngDefaultControl name="transaction_id" matInput type="text" maxlength="20" readonly formControlName="transaction_id" />
 							<span (click)="selectTransaction()" class="transactions_list"> Choisir </span>
 							<img class="arrow-select" (click)="selectTransaction()" src="assets/images/arrow-down.svg" alt="" />
 						</mat-form-field>
-						<div *ngIf="transactionOMInfos.refTransaction" class="transaction-infos">
+						<div *ngIf="transactionOMInfos?.refTransaction" class="transaction-infos">
 							<div class="item-infos">
 								<span class="infos-title"> Bénéficiaire </span>
 								<span class="infos-value scb-text-gray">
@@ -61,16 +61,16 @@
 					<ion-list mode="ios">
 						<ion-item mode="ios" lines="none">
 							<ion-label mode="ios" class="scb-text-gray">Civilité</ion-label>
-							<ion-select interface="popover" noIonSelectArrow mode="ios" formControlName="civility">
-								<ion-select-option value="monsieur" mode="ios"><span>Monsieur</span></ion-select-option>
-								<ion-select-option value="madame" mode="ios"><span>Madame</span></ion-select-option>
+							<ion-select interface="popover" name="civility" noIonSelectArrow mode="ios" formControlName="civility" value="">
+								<ion-select-option [value]="'monsieur'" mode="ios"><span>Monsieur</span></ion-select-option>
+								<ion-select-option [value]="'madame'" mode="ios"><span>Madame</span></ion-select-option>
 							</ion-select>
 							<ion-icon name="arrow-down" mode="ios" slot="end"></ion-icon>
 						</ion-item>
 					</ion-list>
 					<mat-form-field class="scb-input-row" appearance="outline">
 						<mat-label>Nom &nbsp;&nbsp;</mat-label>
-						<input formControlName="lastname" matInput type="text" />
+						<input name="lastname" ngDefaultControl formControlName="lastname" matInput type="text" />
 						<small class="text-danger"
 							*ngIf="cancelTransactionOMInfos.get('lastname').hasError('minlength')">
         					Le nombre minimal de caractères pour ce champ est {{cancelTransactionOMInfos.get('lastname').errors.minlength.requiredLength}} caractères.
@@ -78,7 +78,7 @@
 					</mat-form-field>
 					<mat-form-field class="scb-input-row" appearance="outline">
 						<mat-label>Prénom &nbsp;&nbsp;</mat-label>
-						<input formControlName="firstname" matInput type="text" />
+						<input name="firstname" ngDefaultControl formControlName="firstname" matInput type="text" />
 						<small class="text-danger"
 							*ngIf="cancelTransactionOMInfos.get('firstname').hasError('minlength')">
         					Le nombre minimal de caractères pour ce champ est {{cancelTransactionOMInfos.get('firstname').errors.minlength.requiredLength}} caractères.
@@ -86,13 +86,13 @@
 					</mat-form-field>
 					<mat-form-field class="scb-input-row" appearance="outline">
 						<mat-label>Email &nbsp;&nbsp;</mat-label>
-						<input formControlName="email" matInput type="email" />
+						<input name="email" ngDefaultControl formControlName="email" matInput type="email" />
 					</mat-form-field>
 				</div>
 				<div class="single-block">
 					<div class="block-title">Identité</div>
 					<div class="radio-group">
-						<ion-radio-group #radio value="CNI" formControlName="identityType">
+						<ion-radio-group #radio name="identityType" value="CNI" formControlName="identityType">
 							<ion-item lines="none">
 								<ion-label class="identity-option scb-text-gray" [ngClass]="{'radio-selected': radio.value === 'CNI'}">
 									Carte d'identité</ion-label
@@ -112,7 +112,7 @@
 					</div>
 					<mat-form-field class="scb-input-row" appearance="outline">
 						<mat-label>Numéro de la pièce &nbsp;&nbsp;</mat-label>
-						<input formControlName="nIdentity" matInput [type]="radio.value === 'CNI' ? 'number': 'text' " />
+						<input name="nIdentity" ngDefaultControl formControlName="nIdentity" matInput [type]="radio.value === 'CNI' ? 'number': 'text' " />
 					</mat-form-field>
 					<ion-item lines="none">
 						<ion-label>
@@ -197,5 +197,3 @@
 		</div>
 	</div>
 </ion-content>
-
-<!-- [disabled]="(isSubmitting || !omMsisdn || !identityForm.valid || !personalInfosForm.valid || !rectoFilled || !versoFilled )" -->

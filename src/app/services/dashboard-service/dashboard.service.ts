@@ -24,7 +24,7 @@ import {
   USER_CONS_CATEGORY_CALL,
   ItemUserConso,
 } from 'src/shared';
-import { DOCUMENT } from '@angular/platform-browser';
+import { DOCUMENT } from '@angular/common';
 import { SessionOem } from '../session-oem/session-oem.service';
 import { BoosterModel, BoosterTrigger } from 'src/app/models/booster.model';
 import { GiftType } from 'src/app/models/enums/gift-type.enum';
@@ -73,8 +73,6 @@ const listFormulesEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/formule-mob
 // reinitialize passwords endpoints
 const initOTPReinitializeEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password/init`;
 const reinitializeEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password/finish`;
-
-const buyPassInternetForSomeoneByCreditEndpoint = `${SERVER_API_URL}/${PURCHASES_SERVICE}/api/achat/internet-for-other`;
 
 // Endpoint to get sargal balance
 const sargalBalanceEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/`;
@@ -313,6 +311,9 @@ export class DashboardService {
           map((res: any[]) => {
             res.splice(0, 0, mainMsisdnInfos);
             return res;
+          }),
+          catchError((err: any) => {
+            return of([mainMsisdnInfos]);
           })
         );
       })
@@ -347,6 +348,10 @@ export class DashboardService {
           }
         });
         return numbers;
+      }),
+      catchError((err: any) => {
+        const mainPhone = this.authService.getUserMainPhoneNumber();
+        return of([mainPhone.trim()]);
       })
     );
   }

@@ -254,8 +254,14 @@ export class OrangeMoneyService {
     return this.http.post(getBalanceEndpoint, getBalanceData);
   }
 
-  AchatCredit(achatCreditData: OmBuyCreditModel) {
-    return this.http.post(achatCreditEndpoint, achatCreditData);
+  AchatCredit(achatCreditData: OmBuyCreditModel, confirmPayload?) {
+    const queryParams = confirmPayload?.txnId
+      ? `?txnId=${confirmPayload?.txnId}`
+      : '';
+    return this.http.post(
+      `${achatCreditEndpoint}${queryParams}`,
+      achatCreditData
+    );
   }
   AchatPassInternet(achatPassData: OmBuyPassModel) {
     return this.http.post(achatPassEndpoint, achatPassData);
@@ -265,13 +271,19 @@ export class OrangeMoneyService {
     return this.http.post(achatIllimixEndpoint, achatIllimixData);
   }
 
-  transferOM(transferOMData: TransferOrangeMoneyModel) {
+  transferOM(transferOMData: TransferOrangeMoneyModel, confirmPayload?) {
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
     const uuid = ls.get('X-UUID');
     const os = isIOS ? 'iOS' : 'Android';
     transferOMData.uuid = uuid;
     transferOMData.os = os;
-    return this.http.post(transferOMEndpoint, transferOMData);
+    const queryParams = confirmPayload?.txnId
+      ? `?txnId=${confirmPayload?.txnId}`
+      : '';
+    return this.http.post(
+      `${transferOMEndpoint}${queryParams}`,
+      transferOMData
+    );
   }
 
   transferOMWithCode(transferOMData: TransferOMWithCodeModel) {
@@ -291,8 +303,14 @@ export class OrangeMoneyService {
     );
   }
 
-  payMerchantOM(merchantPaymentData: MerchantPaymentModel) {
-    return this.http.post(merchantPaymentEndpoint, merchantPaymentData);
+  payMerchantOM(merchantPaymentData: MerchantPaymentModel, confirmPayload?) {
+    const queryParams = confirmPayload?.txnId
+      ? `?txnId=${confirmPayload?.txnId}`
+      : '';
+    return this.http.post(
+      `${merchantPaymentEndpoint}${queryParams}`,
+      merchantPaymentData
+    );
   }
 
   getTransferFees(): Observable<FeeModel[]> {
@@ -483,48 +501,55 @@ export class OrangeMoneyService {
       const mainPhoneNumber = this.dashboardService.getMainPhoneNumber();
       allNumbers.push(mainPhoneNumber);
       return new Observable((obs) => {
-        this.dashboardService.getAttachedNumbers().subscribe(
-          (resp: any) => {
-            resp.forEach((element) => {
-              const msisdn = '' + element.msisdn;
-              // Avoid fix numbers
-              if (!msisdn.startsWith('33', 0)) {
-                allNumbers.push(element.msisdn);
-              }
-            });
-            // request orange money info for every number
-            const httpCalls = [];
-            allNumbers.forEach((number) => {
-              httpCalls.push(this.GetUserAuthInfo(number));
-            });
-            forkJoin(httpCalls).subscribe(
-              (data) => {
-                let numberOMFound = false;
-                for (const [index, element] of data.entries()) {
-                  // if the number is linked with OM, keep it and break out of the for loop
-                  if (element['hasApiKey'] && element['hasApiKey'] != null) {
-                    // set the orange Money number in localstorage and the key is nOrMo (numero Orange Money)
-                    OrangeMoneyMsisdn = allNumbers[index];
-                    ls.set('nOrMo', OrangeMoneyMsisdn);
-                    numberOMFound = true;
-                    obs.next(OrangeMoneyMsisdn);
-                    break;
+        this.dashboardService
+          .getAttachedNumbers()
+          .pipe(
+            catchError((err: any) => {
+              return of([]);
+            })
+          )
+          .subscribe(
+            (resp: any) => {
+              resp.forEach((element) => {
+                const msisdn = '' + element.msisdn;
+                // Avoid fix numbers
+                if (!msisdn.startsWith('33', 0)) {
+                  allNumbers.push(element.msisdn);
+                }
+              });
+              // request orange money info for every number
+              const httpCalls = [];
+              allNumbers.forEach((number) => {
+                httpCalls.push(this.GetUserAuthInfo(number));
+              });
+              forkJoin(httpCalls).subscribe(
+                (data) => {
+                  let numberOMFound = false;
+                  for (const [index, element] of data.entries()) {
+                    // if the number is linked with OM, keep it and break out of the for loop
+                    if (element['hasApiKey'] && element['hasApiKey'] != null) {
+                      // set the orange Money number in localstorage and the key is nOrMo (numero Orange Money)
+                      OrangeMoneyMsisdn = allNumbers[index];
+                      ls.set('nOrMo', OrangeMoneyMsisdn);
+                      numberOMFound = true;
+                      obs.next(OrangeMoneyMsisdn);
+                      break;
+                    }
                   }
-                }
-                if (!numberOMFound) {
+                  if (!numberOMFound) {
+                    obs.next('error');
+                  }
+                },
+                (err) => {
                   obs.next('error');
+                  console.error(err);
                 }
-              },
-              (err) => {
-                obs.next('error');
-                console.error(err);
-              }
-            );
-          },
-          () => {
-            obs.next('error');
-          }
-        );
+              );
+            },
+            () => {
+              obs.next('error');
+            }
+          );
       });
     }
   }
@@ -625,7 +650,7 @@ export class OrangeMoneyService {
               ? OM_UNKOWN_ERROR_CODE
               : err.error.errorCode;
           const message =
-            status === 400 && errorCode !== ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE
+            status === 400 && errorCode !== OM_UNKOWN_ERROR_CODE
               ? err.error.message
               : 'Une erreur est survenue';
           const error = new HttpErrorResponse({

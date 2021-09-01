@@ -1,7 +1,7 @@
 <div *ngIf="isType(itemQuestion, TYPE_QUESTION_SATISFACTION_FORM.NOTE)" class="item-container rating">
   <div class="question-label">
     <span class="text">
-      {{ itemQuestion.question }}
+      {{ itemQuestion?.question }}
     </span>
   </div>
   <div class="answer-input">
@@ -18,7 +18,7 @@
 <div *ngIf="isType(itemQuestion, TYPE_QUESTION_SATISFACTION_FORM.RECOMMENDATION)" class="item-container recommendation">
   <div class="question-label">
     <span class="text">
-      {{ itemQuestion.question }}
+      {{ itemQuestion?.question }}
     </span>
   </div>
   <div class="answer-input">
@@ -34,7 +34,7 @@
 <div *ngIf="isType(itemQuestion, TYPE_QUESTION_SATISFACTION_FORM.YES_NO)" class="item-container yes-no">
   <div class="question-label">
     <span class="text">
-      {{ itemQuestion.question }}
+      {{ itemQuestion?.question }}
     </span>
   </div>
   <div class="answer-input">
@@ -56,15 +56,15 @@
 <div *ngIf="isType(itemQuestion, TYPE_QUESTION_SATISFACTION_FORM.SELECT_ANSWER)" class="item-container select-answer">
   <div class="question-label">
     <span class="text">
-      {{ itemQuestion.question }}
+      {{ itemQuestion?.question }}
     </span>
   </div>
   <div class="answer-input">
     <div id="select-option" class="select-option">
-      <ion-item *ngIf="itemQuestion?.answers.length" class="select" lines="none">
+      <ion-item *ngIf="itemQuestion?.answers?.length" class="select" lines="none">
         <ion-label> Choisir</ion-label>
         <ion-select [multiple]="isMultiSelection()" (ionChange)="onAnswerSelectedFromSelection($event)" #select noIonSelectArrow [interfaceOptions]="customPopoverOptions" interface="popover" placeholder="Selectionner votre réponse">
-          <ion-select-option *ngFor="let el of itemQuestion?.answers" [value]="el.libelle"> {{ el?.libelle }} </ion-select-option>
+          <ion-select-option *ngFor="let el of itemQuestion?.answers" [value]="el?.libelle"> {{ el?.libelle }} </ion-select-option>
         </ion-select>
         <ion-icon src="assets/images/arrow-down.svg" slot="end"></ion-icon>
       </ion-item>
@@ -74,7 +74,7 @@
 <div *ngIf="isType(itemQuestion, TYPE_QUESTION_SATISFACTION_FORM.BASIC)" class="item-container basic">
   <div class="question-label">
     <span class="text">
-      {{ itemQuestion.question }}
+      {{ itemQuestion?.question }}
     </span>
   </div>
   <div class="answer-input">

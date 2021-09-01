@@ -111,6 +111,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   getAllAttachedNumbers() {
+    this.numbers = [];
     this.dashboardServ.getAllOemNumbers().subscribe(
       (res) => {
         this.numbers = res;
@@ -124,7 +125,10 @@ export class SidemenuComponent implements OnInit, OnDestroy {
         this.followAnalyticsService.registerEventFollow(
           'Recuperation_lignes_rattachees_menu_failed',
           'error',
-          { msisdn: this.msisdn, error: err.status }
+          {
+            msisdn: this.msisdn,
+            error: err.status,
+          }
         );
       }
     );

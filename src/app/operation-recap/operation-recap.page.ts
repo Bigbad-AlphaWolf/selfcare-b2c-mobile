@@ -342,7 +342,6 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_VOYAGE:
       case OPERATION_TYPE_PASS_ILLIMIX:
       case OPERATION_TYPE_PASS_ALLO:
-      case OPERATION_TYPE_PASS_ILLIFLEX:
         if (this.isLightMod) {
           const hmac = this.authServ.getHmac();
           this.payWithCredit(hmac);
@@ -365,6 +364,9 @@ export class OperationRecapPage implements OnInit {
         break;
       case OPERATION_TYPE_PASS_USAGE:
         this.buyPassUsage();
+        break;
+      case OPERATION_TYPE_PASS_ILLIFLEX:
+        this.payIlliflex();
         break;
       default:
         break;

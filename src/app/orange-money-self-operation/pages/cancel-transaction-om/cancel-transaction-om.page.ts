@@ -20,13 +20,26 @@ import { OrangeMoneyService } from '../../../services/orange-money-service/orang
 @Component({
   selector: 'app-cancel-transaction-om',
   templateUrl: './cancel-transaction-om.page.html',
-  styleUrls: ['./cancel-transaction-om.page.scss']
+  styleUrls: ['./cancel-transaction-om.page.scss'],
 })
 export class CancelTransactionOmPage implements OnInit {
   saveUserInfos: boolean = true;
   personalInfosForm: FormGroup;
   identityForm: FormGroup;
-  cancelTransactionOMInfos: FormGroup;
+  cancelTransactionOMInfos: FormGroup = this.formBuilder.group({
+    transaction_id: [null, [Validators.required]],
+    receiver: ['', [Validators.required]],
+    dateTransfert: ['', [Validators.required]],
+    montant: ['', [Validators.required]],
+    civility: ['', [Validators.required]],
+    lastname: ['', [Validators.required, Validators.minLength(2)]],
+    firstname: ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required]],
+    dateDelivrance: ['', [Validators.required]],
+    dateExpiration: ['', [Validators.required]],
+    nIdentity: [null, [Validators.required]],
+    identityType: ['CNI', [Validators.required]],
+  });
   omMsisdn: string;
   gettingOmNumber: boolean;
   getMsisdnHasError: boolean;
@@ -43,7 +56,7 @@ export class CancelTransactionOmPage implements OnInit {
     email: null,
     amountTransaction: null,
     dateTransaction: null,
-    recipientTransaction: null
+    recipientTransaction: null,
   };
   maxYear = new Date().getFullYear() + 30;
   constructor(
@@ -78,7 +91,7 @@ export class CancelTransactionOmPage implements OnInit {
       dateDelivrance: ['', [Validators.required]],
       dateExpiration: ['', [Validators.required]],
       nIdentity: [null, [Validators.required]],
-      identityType: ['CNI', [Validators.required]]
+      identityType: ['CNI', [Validators.required]],
     });
   }
 
@@ -86,13 +99,29 @@ export class CancelTransactionOmPage implements OnInit {
     this.dashbServ
       .getCustomerInformations()
       .pipe(
-        tap((res: { givenName?: string; familyName?: string; birthDate?: string; gender?: 'MALE' | 'FEMALE' }) => {
-          this.cancelTransactionOMInfos.patchValue({
-            civility: res.gender === 'MALE' ? 'monsieur' : res.gender === 'FEMALE' ? 'madame' : null
-          });
-          this.cancelTransactionOMInfos.patchValue({ firstname: res.givenName });
-          this.cancelTransactionOMInfos.patchValue({ lastname: res.familyName });
-        })
+        tap(
+          (res: {
+            givenName?: string;
+            familyName?: string;
+            birthDate?: string;
+            gender?: 'MALE' | 'FEMALE';
+          }) => {
+            this.cancelTransactionOMInfos.patchValue({
+              civility:
+                res.gender === 'MALE'
+                  ? 'monsieur'
+                  : res.gender === 'FEMALE'
+                  ? 'madame'
+                  : null,
+            });
+            this.cancelTransactionOMInfos.patchValue({
+              firstname: res.givenName,
+            });
+            this.cancelTransactionOMInfos.patchValue({
+              lastname: res.familyName,
+            });
+          }
+        )
       )
       .subscribe();
   }
@@ -128,9 +157,9 @@ export class CancelTransactionOmPage implements OnInit {
   async openPinpad() {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
-      cssClass: 'pin-pad-modal'
+      cssClass: 'pin-pad-modal',
     });
-    modal.onDidDismiss().then(resp => {
+    modal.onDidDismiss().then((resp) => {
       if (resp && resp.data && resp.data.success) {
         this.getOmMsisdn().subscribe();
       } else {
@@ -142,7 +171,7 @@ export class CancelTransactionOmPage implements OnInit {
 
   takePicture(step?: 'recto' | 'verso' | 'selfie') {
     this.router.navigate(['/om-self-operation/take-picture'], {
-      state: { step, operation: 'ANNULATION_TRANSFERT' }
+      state: { step, operation: 'ANNULATION_TRANSFERT' },
     });
   }
 
@@ -166,8 +195,8 @@ export class CancelTransactionOmPage implements OnInit {
       component: HistorikTransactionByTypeModalComponent,
       cssClass: 'select-recipient-modal',
       componentProps: {
-        typeTransaction: 'OM'
-      }
+        typeTransaction: 'OM',
+      },
     });
     modal.onDidDismiss().then((res: any) => {
       if (res && res.data) {
@@ -187,7 +216,7 @@ export class CancelTransactionOmPage implements OnInit {
       transaction_id: data.txnid,
       receiver: data.msisdnReceiver,
       dateTransfert: data.operationDate,
-      montant: Math.abs(data.amount)
+      montant: Math.abs(data.amount),
     });
   }
 
@@ -211,53 +240,71 @@ export class CancelTransactionOmPage implements OnInit {
   async submittingFormsInfos() {
     this.isSubmitting = true;
     this.errorMsg = null;
-    const fileRecto = await this.imgService.convertBase64ToBlob(this.rectoImage);
-    const fileVerso = await this.imgService.convertBase64ToBlob(this.rectoImage);
-    const dataForm: CancelOmTransactionPayloadModel = {
-      civility: this.cancelTransactionOMInfos.value.civility,
-      firstName: this.cancelTransactionOMInfos.value.firstname,
-      lastName: this.cancelTransactionOMInfos.value.lastname,
-      msisdnBeneficiaire: this.cancelTransactionOMInfos.value.receiver,
-      email: this.cancelTransactionOMInfos.value.email,
-      dateTransaction: this.cancelTransactionOMInfos.value.dateTransfert,
-      identityType: this.cancelTransactionOMInfos.value.identityType,
-      dateDelivrance: this.cancelTransactionOMInfos.value.dateDelivrance,
-      dateExpiration: this.cancelTransactionOMInfos.value.dateExpiration,
-      identityNumber: this.cancelTransactionOMInfos.value.nIdentity,
-      montantTransfert: this.cancelTransactionOMInfos.value.montant,
-      referenceTransaction: this.cancelTransactionOMInfos.value.transaction_id,
-      numero: this.omMsisdn
-    };
-    this.orangeMoneyService
-      .sendInfosCancelationTransfertOM(dataForm, fileRecto, fileVerso)
-      .pipe(
-        tap((res: any) => {
-          this.isSubmitting = false;
-          this.followAnalServ.registerEventFollow('cancel_transactions_om_success', 'event', {
-            trx_sender: dataForm.numero,
-            trx_receiver: dataForm.msisdnBeneficiaire,
-            amount: dataForm.montantTransfert,
-            trxID: dataForm.referenceTransaction
-          });
-          this.showModal({
-            purchaseType: OPERATION_CANCEL_TRANSFERT_OM,
-            textMsg: SUCCESS_MSG_OM_CANCEL_TRANSACTION_OM
-          });
-        }),
-        catchError((err: any) => {
-          this.isSubmitting = false;
-          this.errorMsg = 'Une erreur est survenue. Veuillez réesayer';
-          this.followAnalServ.registerEventFollow('cancel_transactions_om_error', 'error', {
-            trx_sender: dataForm.numero,
-            trx_receiver: dataForm.msisdnBeneficiaire,
-            amount: dataForm.montantTransfert,
-            trxID: dataForm.referenceTransaction,
-            error: err.error && err.error.status ? err.error.status : 'une erreur est survenue'
-          });
-          return of(err);
-        })
-      )
-      .subscribe();
+    const fileRecto = await this.imgService.convertBase64ToBlob(
+      this.rectoImage
+    );
+    const fileVerso = await this.imgService.convertBase64ToBlob(
+      this.rectoImage
+    );
+    if (this.cancelTransactionOMInfos.value) {
+      const dataForm: CancelOmTransactionPayloadModel = {
+        civility: this.cancelTransactionOMInfos.value.civility,
+        firstName: this.cancelTransactionOMInfos.value.firstname,
+        lastName: this.cancelTransactionOMInfos.value.lastname,
+        msisdnBeneficiaire: this.cancelTransactionOMInfos.value.receiver,
+        email: this.cancelTransactionOMInfos.value.email,
+        dateTransaction: this.cancelTransactionOMInfos.value.dateTransfert,
+        identityType: this.cancelTransactionOMInfos.value.identityType,
+        dateDelivrance: this.cancelTransactionOMInfos.value.dateDelivrance,
+        dateExpiration: this.cancelTransactionOMInfos.value.dateExpiration,
+        identityNumber: this.cancelTransactionOMInfos.value.nIdentity,
+        montantTransfert: this.cancelTransactionOMInfos.value.montant,
+        referenceTransaction:
+          this.cancelTransactionOMInfos.value.transaction_id,
+        numero: this.omMsisdn,
+      };
+      this.orangeMoneyService
+        .sendInfosCancelationTransfertOM(dataForm, fileRecto, fileVerso)
+        .pipe(
+          tap((res: any) => {
+            this.isSubmitting = false;
+            this.followAnalServ.registerEventFollow(
+              'cancel_transactions_om_success',
+              'event',
+              {
+                trx_sender: dataForm.numero,
+                trx_receiver: dataForm.msisdnBeneficiaire,
+                amount: dataForm.montantTransfert,
+                trxID: dataForm.referenceTransaction,
+              }
+            );
+            this.showModal({
+              purchaseType: OPERATION_CANCEL_TRANSFERT_OM,
+              textMsg: SUCCESS_MSG_OM_CANCEL_TRANSACTION_OM,
+            });
+          }),
+          catchError((err: any) => {
+            this.isSubmitting = false;
+            this.errorMsg = 'Une erreur est survenue. Veuillez réesayer';
+            this.followAnalServ.registerEventFollow(
+              'cancel_transactions_om_error',
+              'error',
+              {
+                trx_sender: dataForm.numero,
+                trx_receiver: dataForm.msisdnBeneficiaire,
+                amount: dataForm.montantTransfert,
+                trxID: dataForm.referenceTransaction,
+                error:
+                  err.error && err.error.status
+                    ? err.error.status
+                    : 'une erreur est survenue',
+              }
+            );
+            return of(err);
+          })
+        )
+        .subscribe();
+    }
   }
 
   goBack() {
@@ -269,7 +316,7 @@ export class CancelTransactionOmPage implements OnInit {
       component: OperationSuccessFailModalPage,
       cssClass: 'failed-modal',
       componentProps: data,
-      backdropDismiss: false
+      backdropDismiss: false,
     });
     modal.onDidDismiss().then(() => {});
     return await modal.present();

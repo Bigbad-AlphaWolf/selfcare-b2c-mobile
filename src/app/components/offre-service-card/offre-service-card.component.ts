@@ -1,8 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ModalController, NavController, ToastController } from '@ionic/angular';
+import {
+  ModalController,
+  NavController,
+  ToastController,
+} from '@ionic/angular';
 import { OffreService } from 'src/app/models/offre-service.model';
 import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
 import { OfcService } from 'src/app/services/ofc/ofc.service';
 import { ServiceCode } from 'src/app/models/enums/service-code.enum';
@@ -18,6 +28,7 @@ import { OPERATION_TYPE_PASS_USAGE } from 'src/app/utils/operations.constants';
 import { OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
 import { WoyofalSelectionComponent } from '../counter/woyofal-selection/woyofal-selection.component';
 import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
+import { KioskLocatorPopupComponent } from '../kiosk-locator-popup/kiosk-locator-popup.component';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -30,9 +41,9 @@ import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
 
       transition(':enter', [style({ opacity: 0 }), animate(400)]),
 
-      transition(':leave', animate(400, style({ opacity: 0 })))
-    ])
-  ]
+      transition(':leave', animate(400, style({ opacity: 0 }))),
+    ]),
+  ],
 })
 export class OffreServiceCardComponent implements OnInit {
   @Input('service') service: OffreService;
@@ -49,11 +60,13 @@ export class OffreServiceCardComponent implements OnInit {
   imageUrl: string;
 
   ngOnInit() {
-    this.imageUrl = this.service.icone;
+    this.imageUrl =
+      this.service && this.service.icone ? this.service.icone : null;
   }
 
   onClick() {
-    const follow = 'my_services_card_' + this.service.code.toLowerCase() + '_clic';
+    const follow =
+      'my_services_card_' + this.service.code.toLowerCase() + '_clic';
     this.followAnalyticsServ.registerEventFollow(follow, 'event', 'clic');
 
     if (!this.service.activated) {
@@ -75,6 +88,10 @@ export class OffreServiceCardComponent implements OnInit {
       this.ofcService.loadOFC();
       return;
     }
+    if (this.service.code === 'KIOSK_LOCATOR') {
+      this.openKioskLocatorModal();
+      return;
+    }
     this.bsService.opXtras.billData = { company: this.service };
     if (this.service.code === OPERATION_TYPE_MERCHANT_PAYMENT) {
       this.openMerchantBS();
@@ -82,24 +99,33 @@ export class OffreServiceCardComponent implements OnInit {
     }
     if (this.service.redirectionType === 'NAVIGATE')
       this.navCtrl.navigateForward([this.service.redirectionPath], {
-        state: { purchaseType: this.service.code }
+        state: { purchaseType: this.service.code },
       });
     if (this.service.code === OPERATION_WOYOFAL) {
       this.bsService
-        .initBsModal(WoyofalSelectionComponent, OPERATION_WOYOFAL, BillAmountPage.ROUTE_PATH)
-        .subscribe(_ => {});
+        .initBsModal(
+          WoyofalSelectionComponent,
+          OPERATION_WOYOFAL,
+          BillAmountPage.ROUTE_PATH
+        )
+        .subscribe((_) => {});
       this.bsService.openModal(WoyofalSelectionComponent);
       return;
     }
     if (this.bsService[this.service.redirectionType]) {
-      const params = [NumberSelectionOption.WITH_MY_PHONES, this.service.code, this.service.redirectionPath];
+      const params = [
+        NumberSelectionOption.WITH_MY_PHONES,
+        this.service.code,
+        this.service.redirectionPath,
+      ];
       this.bsService[this.service.redirectionType](...params);
       return;
     }
   }
 
   onErrorImg() {
-    this.imageUrl = 'assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg';
+    this.imageUrl =
+      'assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg';
   }
 
   async showServiceUnavailableToast() {
@@ -108,31 +134,47 @@ export class OffreServiceCardComponent implements OnInit {
       message: this.service.reasonDeactivation,
       duration: 3000,
       position: 'middle',
-      color: 'medium'
+      color: 'medium',
     });
     toast.present();
   }
 
   openMerchantBS() {
-    this.orangeMoneyService.omAccountSession().subscribe(async (omSession: any) => {
-      const omSessionValid = omSession
-        ? omSession.msisdn !== 'error' && omSession.hasApiKey && !omSession.loginExpired
-        : null;
-      if (omSessionValid) {
-        this.bsService
-          .initBsModal(MerchantPaymentCodeComponent, OPERATION_TYPE_MERCHANT_PAYMENT, PurchaseSetAmountPage.ROUTE_PATH)
-          .subscribe(_ => {});
-        this.bsService.openModal(MerchantPaymentCodeComponent);
-      } else {
-        this.openPinpad();
-      }
+    this.orangeMoneyService
+      .omAccountSession()
+      .subscribe(async (omSession: any) => {
+        const omSessionValid = omSession
+          ? omSession.msisdn !== 'error' &&
+            omSession.hasApiKey &&
+            !omSession.loginExpired
+          : null;
+        if (omSessionValid) {
+          this.bsService
+            .initBsModal(
+              MerchantPaymentCodeComponent,
+              OPERATION_TYPE_MERCHANT_PAYMENT,
+              PurchaseSetAmountPage.ROUTE_PATH
+            )
+            .subscribe((_) => {});
+          this.bsService.openModal(MerchantPaymentCodeComponent);
+        } else {
+          this.openPinpad();
+        }
+      });
+  }
+
+  async openKioskLocatorModal() {
+    const modal = await this.modalController.create({
+      component: KioskLocatorPopupComponent,
+      cssClass: 'select-recipient-modal',
     });
+    return await modal.present();
   }
 
   async openPinpad() {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
-      cssClass: 'pin-pad-modal'
+      cssClass: 'pin-pad-modal',
     });
     return await modal.present();
   }
