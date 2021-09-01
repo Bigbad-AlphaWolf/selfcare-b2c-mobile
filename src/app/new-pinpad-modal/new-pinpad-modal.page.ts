@@ -31,6 +31,7 @@ import {
   PAYMENT_MOD_OM,
   OPERATION_TYPE_PASS_ILLIFLEX,
   OPERATION_BLOCK_TRANSFER,
+  OPERATION_CREATE_PIN_OM,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material';
@@ -51,6 +52,7 @@ import { FollowAnalyticsService } from '../services/follow-analytics/follow-anal
 import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
 import { IlliflexModel } from '../models/illiflex-pass.model';
 import { PurchaseModel } from '../models/purchase.model';
+import { ConfirmMsisdnModel } from '../services/authentication-service/authentication.service';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -75,8 +77,10 @@ export class NewPinpadModalPage implements OnInit {
     birthYear: string;
   };
   @Input() transactionToBlock: PurchaseModel;
+  @Input() payloadCreatePin: ConfirmMsisdnModel;
   OPERATION_CHANGE_PIN_OM = OPERATION_CHANGE_PIN_OM;
   OPERATION_BLOCK_TRANSFER = OPERATION_BLOCK_TRANSFER;
+  OPERATION_CREATE_PIN_OM = OPERATION_CREATE_PIN_OM;
   bullets = [0, 1, 2, 3];
   codePin = [];
   uuid: string;
@@ -136,7 +140,11 @@ export class NewPinpadModalPage implements OnInit {
       transfertWithCodeInfos: this.transferMoneyWithCodePayload,
       merchantPaymentInfos: this.merchantPaymentPayload,
     };
-    this.getOMPhoneNumber();
+    if(this.operationType === OPERATION_CREATE_PIN_OM) {
+      this.getPinPadForCreationPIN();
+    }else {
+      this.getOMPhoneNumber();
+    }
     this.orangeMoneyService.gotPinPadSubject.subscribe((value) => {
       if (value.length) {
         this.randomDigits = this.orderPinpadArray(value);
@@ -145,6 +153,34 @@ export class NewPinpadModalPage implements OnInit {
         this.gettingPinpad = false;
       }
     });
+  }
+
+  getPinPadForCreationPIN() {
+    const pinpadData: any = {
+      msisdn: this.payloadCreatePin.msisdn,
+      os: 'Android',
+      app_version: 'v1.0',
+      app_conf_version: 'v1.0',
+      service_version: OM_SERVICE_VERSION,
+      uuid: this.uuid
+    };
+    this.userHasOmToken = true;
+    this.checkingToken = false;
+    this.gettingPinpad = true;
+    console.log('this.omInfosPINPAD', this.omInfos);
+
+    this.orangeMoneyService.GetPinPad(pinpadData, this.omInfos).subscribe(
+      (response: any) => {
+        this.omInfos.sequence = response.content.data.sequence;
+        this.omInfos.em = response.content.data.em;
+        this.gettingPinpad = false;
+      },
+      (err: any) => {
+        this.gettingPinpad = false;
+        this.pinHasError = true;
+        this.pinError = 'Une erreur est survenue. Veuillez réessayer';
+      }
+    );
   }
 
   orderPinpadArray(array: string[]) {
@@ -397,24 +433,9 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  processPin(pin: string) {
+  processPinOmUser(pin: string) {
     this.pinHasError = false;
     this.errorBulletActive = false;
-    if (this.operationType === OPERATION_CHANGE_PIN_OM) {
-      const { hasError, typeError } = this.isNewPinValid(pin);
-      if (hasError) {
-        this.resetPad();
-        if (typeError === 'BIRTHDATE') {
-          this.pinError =
-            DEFAULT_ERROR_MSG_CHANGE_PIN_WITH_BIRTH_DATE_VALIDATION;
-          this.pinHasError = true;
-        } else if (typeError === 'DENIED_PIN') {
-          this.pinError = DEFAULT_ERROR_MSG_CHANGE_PIN_VALIDATION;
-          this.pinHasError = true;
-        }
-        return;
-      }
-    }
     this.processingPin = true;
     let canalPromotion;
     if (
@@ -547,6 +568,30 @@ export class NewPinpadModalPage implements OnInit {
       this.pinHasError = false;
       this.pinError = '';
     }
+  }
+
+  processPin(pin: string) {
+    if (this.operationType === OPERATION_CHANGE_PIN_OM || this.operationType === OPERATION_CREATE_PIN_OM) {
+      const { hasError, typeError } = this.isNewPinValid(pin);
+      if (hasError) {
+        this.resetPad();
+        if (typeError === 'BIRTHDATE') {
+          this.pinError =
+            DEFAULT_ERROR_MSG_CHANGE_PIN_WITH_BIRTH_DATE_VALIDATION;
+          this.pinHasError = true;
+        } else if (typeError === 'DENIED_PIN') {
+          this.pinError = DEFAULT_ERROR_MSG_CHANGE_PIN_VALIDATION;
+          this.pinHasError = true;
+        }
+        return;
+      }
+    }
+    if(this.operationType === OPERATION_CREATE_PIN_OM) {
+      this.processPinFutureOmUser(pin);
+    } else {
+      this.processPinOmUser(pin)
+    }
+
   }
   payWoyofal(pin: string) {
     this.processingPin = true;
@@ -916,6 +961,21 @@ export class NewPinpadModalPage implements OnInit {
   setNewPinOM(pin: string) {
     this.modalController.dismiss({
       pin: pin,
+      success: true,
+    });
+  }
+
+  processPinFutureOmUser(pin: string) {
+    console.log('infos',{
+      omInfos: this.omInfos,
+      pin: pin,
+      success: true,
+    });
+
+    const formatedPin = this.orangeMoneyService.GetPin(this.omInfos.sequence.split(''), pin);
+    this.modalController.dismiss({
+      omInfos: this.omInfos,
+      pin: formatedPin,
       success: true,
     });
   }

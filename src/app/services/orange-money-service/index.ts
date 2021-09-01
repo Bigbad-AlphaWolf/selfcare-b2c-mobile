@@ -316,6 +316,7 @@ export const LIST_DENIED_PIN_OM: string[] = [
   '6789',
   '7890',
 ];
+export const ORANGE_MONEY_DEFAULT_PIN = '0000';
 export const SUCCESS_MSG_OM_ACCOUNT_CREATION =
   `Votre demande d’ouverture de compte
   Orange Money a été enregistré avec succés.

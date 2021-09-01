@@ -16,22 +16,13 @@
     </ion-toolbar>
   </ion-header>
   <div class="assistance-page-body">
-    <div class="search-bar-block" >
+    <div class="search-bar-block">
       <ion-item lines="none">
-        <ion-input #searchInput  placeholder="Comment pouvons-nous vous aider ?" (ionChange)="onInputChange($event)"></ion-input>
+        <ion-input #searchInput placeholder="Comment pouvons-nous vous aider ?" (ionChange)="onInputChange($event)">
+        </ion-input>
         <ion-icon name="search" slot="end" *ngIf="displaySearchIcon"></ion-icon>
         <span class="effacer" *ngIf="!displaySearchIcon" (click)="onClear(searchInput)">Effacer</span>
       </ion-item>
-    </div>
-    <div class="banner-block" *ngIf="0">
-      <ion-slides [options]="slideOpts">
-        <ion-slide>
-          <div class="ban"></div>
-        </ion-slide>
-        <ion-slide>
-          <div class="ban"></div>
-        </ion-slide>
-      </ion-slides>
     </div>
     <div class="actions-block">
       <div class="block-title">
@@ -39,6 +30,7 @@
         <span class="scb-text-orange see-all" (click)="goAllActionsHub()">Voir tous les actes</span>
       </div>
       <div class="acts">
+        <ion-spinner *ngIf="loadingHelpItems" name="crescent"></ion-spinner>
         <app-action-item [action]="act" *ngFor="let act of listActes?.slice(0,3)"></app-action-item>
       </div>
     </div>
@@ -49,7 +41,7 @@
       </div>
       <div class="questions">
         <ng-container *ngFor="let question of listFaqs?.slice(0,3), let i=index">
-          <app-faq-item [question]="question"></app-faq-item> 
+          <app-faq-item [question]="question"></app-faq-item>
         </ng-container>
       </div>
     </div>
@@ -63,4 +55,4 @@
       </div>
     </div>
   </div>
-  </ion-content>
+</ion-content>

@@ -3,9 +3,9 @@ import { Router, NavigationExtras } from '@angular/router';
 import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
-  OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_RECHARGE_CREDIT,
   IlliflexOption,
+  OPERATION_CHANGE_PIN_OM,
 } from 'src/shared';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { CreditPassAmountPage } from 'src/app/pages/credit-pass-amount/credit-pass-amount.page';
@@ -157,5 +157,12 @@ export class ApplicationRoutingService {
       state: { transactionInfos: data },
     };
     this.route.navigate(['/cancel-transaction-om'], navigationExtras);
+  }
+
+  goToCreatePinOM(operationType = OPERATION_CHANGE_PIN_OM, payload?: any) {
+    let navigationExtras: NavigationExtras = {
+      state: { operation: operationType, payload },
+    };
+    this.route.navigate(['/change-orange-money-pin'], navigationExtras);
   }
 }
