@@ -85,11 +85,9 @@ export class DashboardHomePrepaidPage implements OnInit {
     this.getPassInternetFixe();
     this.getUserInfos();
     this.getWelcomeStatus();
-    this.banniereServ
-      .getListBanniereByFormuleByZone()
-      .subscribe((res: any) => {
-          this.listBanniere = res;
-      });
+    this.banniereServ.getListBanniereByFormuleByZone().subscribe((res: any) => {
+      this.listBanniere = res;
+    });
   }
 
   ionViewWillEnter() {
@@ -173,13 +171,14 @@ export class DashboardHomePrepaidPage implements OnInit {
           this.passIntService.setUserCodeFormule(res.code);
           this.passIntService.queryListPassInternetOfUser(res.code).subscribe(
             (result: any) => {
-            if (result) {
+              if (result) {
                 this.listPass = this.passIntService.getListPassInternetOfUser();
+              }
+            },
+            (err: any) => {
+              console.log('error');
             }
-          }, (err: any) => {
-            console.log('error');
-
-          });
+          );
         }
       });
   }
@@ -296,14 +295,16 @@ export class DashboardHomePrepaidPage implements OnInit {
       (resp: any) => {
         ls.set('user', resp);
         if (!resp.tutoViewed) {
-          this.dashbdSrv.getWelcomeStatus().subscribe(
-            (res: WelcomeStatusModel) => {
-              if (res.status === 'SUCCESS') {
-                this.showWelcomePopup(res);
-              }
-            },
-            () => {}
-          );
+          this.dashbdSrv.getActivePromoBooster().subscribe((res: any) => {
+            this.dashbdSrv.getWelcomeStatus(res).subscribe(
+              (res: WelcomeStatusModel) => {
+                if (res.status === 'SUCCESS') {
+                  this.showWelcomePopup(res);
+                }
+              },
+              () => {}
+            );
+          });
         }
       },
       () => {}
