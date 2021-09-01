@@ -1,16 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { NavController } from '@ionic/angular';
-import { switchMap } from 'rxjs/operators';
-import { FIND_AGENCE_EXTERNAL_URL } from 'src/shared';
-import { BesoinAideType } from '../models/enums/besoin-aide-type.enum';
-import { OffreService } from '../models/offre-service.model';
-import { OMCustomerStatusModel } from '../models/om-customer-status.model';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { OperationService } from '../services/oem-operation/operation.service';
-import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Router} from '@angular/router';
+import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
+import {NavController} from '@ionic/angular';
+import {switchMap} from 'rxjs/operators';
+import {FIND_AGENCE_EXTERNAL_URL} from 'src/shared';
+import {BesoinAideType} from '../models/enums/besoin-aide-type.enum';
+import {OffreService} from '../models/offre-service.model';
+import {OMCustomerStatusModel} from '../models/om-customer-status.model';
+import {DashboardService} from '../services/dashboard-service/dashboard.service';
+import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
+import {OperationService} from '../services/oem-operation/operation.service';
+import {OrangeMoneyService} from '../services/orange-money-service/orange-money.service';
 
 @Component({
   selector: 'app-assistance-hub',
@@ -103,7 +103,7 @@ export class AssistanceHubPage implements OnInit {
     this.loadingHelpItems = true;
     this.operationService.getServicesByFormule(null, true).subscribe(
       async res => {
-        // this.userOMStatus = await this.checkStatus();
+        this.userOMStatus = await this.checkStatus();
         this.listBesoinAides = res;
         this.loadingHelpItems = false;
         this.followAnalyticsService.registerEventFollow('Assistance_hub_affichage_success', 'event');
@@ -123,7 +123,7 @@ export class AssistanceHubPage implements OnInit {
     this.listActes = this.listBesoinAides.filter((item: OffreService) => {
       return item.typeService === BesoinAideType.ACTE;
     });
-    // this.listActes = this.filterOMActesFollowingOMStatus(this.userOMStatus,this.listActes);
+    this.listActes = this.filterOMActesFollowingOMStatus(this.userOMStatus, this.listActes);
     console.log('listActes', this.listActes);
 
     this.listFaqs = this.listBesoinAides.filter((item: OffreService) => {
@@ -133,14 +133,14 @@ export class AssistanceHubPage implements OnInit {
 
   goAllActionsHub() {
     this.router.navigate(['/assistance-hub/actions'], {
-      state: { listActes: this.listActes }
+      state: {listActes: this.listActes}
     });
     this.followAnalyticsService.registerEventFollow('Assistance_hub_voir_toutes_actions_clic', 'event', 'clicked');
   }
 
   goAllQuestionsHub() {
     this.router.navigate(['/assistance-hub/questions'], {
-      state: { listFaqs: this.listFaqs }
+      state: {listFaqs: this.listFaqs}
     });
     this.followAnalyticsService.registerEventFollow('Assistance_hub_voir_tous_faq_clic', 'event', 'clicked');
   }
@@ -175,9 +175,9 @@ export class AssistanceHubPage implements OnInit {
     this.displaySearchIcon = true;
     if (inputvalue) {
       this.navController.navigateForward(['/assistance-hub/search'], {
-        state: { listBesoinAides: this.listBesoinAides, search: inputvalue }
+        state: {listBesoinAides: this.listBesoinAides, search: inputvalue}
       });
-      this.followAnalyticsService.registerEventFollow('Assistance_hub_recherche', 'event', { keyword: inputvalue });
+      this.followAnalyticsService.registerEventFollow('Assistance_hub_recherche', 'event', {keyword: inputvalue});
       this.displaySearchIcon = false;
     }
   }

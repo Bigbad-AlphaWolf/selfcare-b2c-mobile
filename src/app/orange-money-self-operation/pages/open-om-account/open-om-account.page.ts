@@ -325,12 +325,7 @@ export class OpenOmAccountPage implements OnInit {
   }
 
   isEligibleToSuiviOpenOMAccount(userStatus: OMCustomerStatusModel) {
-    return (
-      (userStatus &&
-        (userStatus.operation === 'OUVERTURE_COMPTE' || userStatus.operation === 'FULL') &&
-        userStatus.operationStatus !== 'NEW') ||
-      1
-    );
+    return userStatus && userStatus.operation === 'OUVERTURE_COMPTE' && userStatus.operationStatus !== 'NEW';
   }
 
   checkAge(event: any) {
