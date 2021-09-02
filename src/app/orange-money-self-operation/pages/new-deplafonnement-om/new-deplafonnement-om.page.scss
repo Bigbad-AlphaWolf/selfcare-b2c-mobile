@@ -39,6 +39,10 @@
         font-size: 16px;
         line-height: 1.25;
       }
+      .error {
+        margin-bottom: 10px;
+        font-size: 12px;
+      }
     }
     .form-block {
       .om-number-block {
@@ -105,6 +109,9 @@
             color: $fullBlack;
           }
         }
+      }
+      .margin-b-20 {
+        margin-bottom: 20px;
       }
       .photo-button {
         width: 100%;

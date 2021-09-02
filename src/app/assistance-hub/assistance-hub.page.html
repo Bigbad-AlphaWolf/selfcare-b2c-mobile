@@ -16,22 +16,13 @@
     </ion-toolbar>
   </ion-header>
   <div class="assistance-page-body">
-    <div class="search-bar-block" >
+    <div class="search-bar-block">
       <ion-item lines="none">
-        <ion-input #searchInput  placeholder="Comment pouvons-nous vous aider ?" (ionChange)="onInputChange($event)"></ion-input>
+        <ion-input #searchInput placeholder="Comment pouvons-nous vous aider ?" (ionChange)="onInputChange($event)">
+        </ion-input>
         <ion-icon name="search" slot="end" *ngIf="displaySearchIcon"></ion-icon>
         <span class="effacer" *ngIf="!displaySearchIcon" (click)="onClear(searchInput)">Effacer</span>
       </ion-item>
-    </div>
-    <div class="banner-block" *ngIf="0">
-      <ion-slides [options]="slideOpts">
-        <ion-slide>
-          <div class="ban"></div>
-        </ion-slide>
-        <ion-slide>
-          <div class="ban"></div>
-        </ion-slide>
-      </ion-slides>
     </div>
     <div class="actions-block">
       <div class="block-title">
@@ -64,4 +55,4 @@
       </div>
     </div>
   </div>
-  </ion-content>
+</ion-content>

@@ -35,14 +35,14 @@ export class KioskWayInfosComponent implements OnInit {
       lng: this.userCurrentPosition?.longitude,
     };
     const dest = { lat: this.kiosk?.latitude, lng: this.kiosk?.longitude };
-    if (window.google) {
+    if (window?.google) {
       this.distanceMatrix(origin, dest, google.maps.TravelMode?.DRIVING);
       this.distanceMatrix(origin, dest, google.maps.TravelMode?.WALKING);
+			this.openInGoogleMap(google.maps.TravelMode.WALKING);
     }
     let user = ls.get('user');
     if (user.imageProfil)
       this.avatarUrl = downloadAvatarEndpoint + user.imageProfil;
-    this.openInGoogleMap(google.maps.TravelMode.WALKING);
   }
 
   distanceMatrix(origin, dest, travelMode: google.maps.TravelMode) {
