@@ -1147,7 +1147,6 @@ export class NewPinpadModalPage implements OnInit {
 
   operationAllowIdenticalConfirmation() {
     return (
-      this.operationType === OPERATION_RAPIDO ||
       this.operationType === OPERATION_TYPE_RECHARGE_CREDIT ||
       this.operationType === OPERATION_TRANSFER_OM
     );
