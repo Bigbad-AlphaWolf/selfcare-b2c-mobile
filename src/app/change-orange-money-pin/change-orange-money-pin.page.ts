@@ -10,7 +10,7 @@ import {OrangeMoneyService} from '../services/orange-money-service/orange-money.
 import {UuidService} from '../services/uuid-service/uuid.service';
 import * as SecureLS from 'secure-ls';
 import {OperationSuccessFailModalPage} from '../operation-success-fail-modal/operation-success-fail-modal.page';
-import {ORANGE_MONEY_DEFAULT_PIN, SUCCESS_CHANGE_PIN_MSG} from '../services/orange-money-service';
+import {INITIALISE_PIN_OM_MSG, ORANGE_MONEY_DEFAULT_PIN, SUCCESS_CHANGE_PIN_MSG} from '../services/orange-money-service';
 import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
 import {getPageHeader} from '../utils/title.util';
 import {PageHeader} from '../models/page-header.model';
@@ -118,9 +118,8 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
   }
 
   createPinOM() {
-    console.log();
     if (this.isInputsValid()) {
-      console.log('data', this.omInfos, this.authImplicitInfos, this.form.value);
+			this.loading = true;
       const default_pin = this.omServ.GetPin(this.omInfos.sequence.split(''), ORANGE_MONEY_DEFAULT_PIN);
       const payload: CreatePinOM = {
         em: this.omInfos.em,
@@ -135,10 +134,20 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
         .pipe(
           tap(
             (res: any) => {
-              console.log('res', res);
+							this.loading = false;
+							this.showModal({purchaseType: OPERATION_CHANGE_PIN_OM, textMsg: INITIALISE_PIN_OM_MSG});
+							this.followAnalyticsService.registerEventFollow('Create_Pin_OM_success', 'event', {
+								msisdn: this.omInfos.msisdn
+							});
             },
             catchError(err => {
-              console.log('err', err);
+							this.loading = false;
+							this.hasError = true;
+              this.errorMsg = this.DEFAULT_ERROR_CHANGE_PIN_REQUEST;
+							this.followAnalyticsService.registerEventFollow('Create_Pin_OM_failed', 'error', {
+								msisdn: this.omInfos.msisdn,
+								error: err && err.error && err.error.message ? err.error.message : err.status
+							});
               return of(err);
             })
           )
