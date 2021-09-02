@@ -55,6 +55,7 @@ import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.servic
 import { OffresServicesPage } from '../pages/offres-services/offres-services.page';
 import { OperationService } from '../services/oem-operation/operation.service';
 import { OffreService } from '../models/offre-service.model';
+import { BoosterModel } from '../models/booster.model';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -138,7 +139,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getUserInfos();
-    this.getWelcomeStatus();
   }
 
   checkMerchantPayment() {
@@ -252,6 +252,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   getActivePromoBooster() {
     this.dashbordServ.getActivePromoBooster().subscribe((res: any) => {
       this.hasPromoBooster = res;
+      this.getWelcomeStatus(res);
     });
   }
 
@@ -482,13 +483,13 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     });
   }
 
-  getWelcomeStatus() {
+  getWelcomeStatus(boosters) {
     const number = this.dashbordServ.getMainPhoneNumber();
     this.dashbordServ.getAccountInfo(number).subscribe(
       (resp: any) => {
         ls.set('user', resp);
         if (!resp.tutoViewed) {
-          this.dashbordServ.getWelcomeStatus().subscribe(
+          this.dashbordServ.getWelcomeStatus(boosters).subscribe(
             (res: WelcomeStatusModel) => {
               if (res.status === 'SUCCESS') {
                 this.showWelcomePopup(res);
