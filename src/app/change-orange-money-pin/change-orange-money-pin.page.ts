@@ -139,18 +139,18 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
 							this.followAnalyticsService.registerEventFollow('Create_Pin_OM_success', 'event', {
 								msisdn: this.omInfos.msisdn
 							});
-            },
-            catchError(err => {
-							this.loading = false;
-							this.hasError = true;
-              this.errorMsg = this.DEFAULT_ERROR_CHANGE_PIN_REQUEST;
-							this.followAnalyticsService.registerEventFollow('Create_Pin_OM_failed', 'error', {
-								msisdn: this.omInfos.msisdn,
-								error: err && err.error && err.error.message ? err.error.message : err.status
-							});
-              return of(err);
-            })
-          )
+            }
+          ),
+					catchError(err => {
+						this.loading = false;
+						this.hasError = true;
+						this.errorMsg = this.DEFAULT_ERROR_CHANGE_PIN_REQUEST;
+						this.followAnalyticsService.registerEventFollow('Create_Pin_OM_failed', 'error', {
+							msisdn: this.omInfos.msisdn,
+							error: err && err.error && err.error.message ? err.error.message : err.status
+						});
+						return of(err);
+					})
         )
         .subscribe();
     }
