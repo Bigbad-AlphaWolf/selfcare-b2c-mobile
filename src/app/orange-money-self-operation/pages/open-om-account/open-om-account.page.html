@@ -118,7 +118,7 @@
 							display-timezone="utc"
 							[max]="maxYear"
 						></ion-datetime>
-						<label class="error scb-text-red-error"  *ngIf="(personalInfosForm.get('expiry_date').dirty || personalInfosForm.get('expiry_date').touched) && personalInfosForm?.errors?.dates">{{ personalInfosForm?.errors?.dates | json }} </label>
+						<label class="error scb-text-red-error"  *ngIf="(personalInfosForm.get('expiry_date').dirty || personalInfosForm.get('expiry_date').touched) && personalInfosForm?.errors?.dates"> La date d'expiration doit être supérieure à la date de délivrance </label>
 
 						<div class="photo-button" [ngClass]="{'field-filled': rectoFilled}" (click)="takePicture('recto')">
 							<span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': rectoFilled}"
