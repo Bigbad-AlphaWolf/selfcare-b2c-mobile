@@ -4,6 +4,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { KioskLocatorPopupComponent } from 'src/app/components/kiosk-locator-popup/kiosk-locator-popup.component';
 import { OffreService } from 'src/app/models/offre-service.model';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -35,10 +36,9 @@ export class ActionItemComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.imageUrl =
-      this.action && this.action.icone
-        ? this.FILE_BASE_URL + '/' + this.action.icone
-        : null;
+    this.imageUrl = this.action?.icone
+      ? this.FILE_BASE_URL + '/' + this.action.icone
+      : null;
   }
 
   doAction() {
@@ -82,9 +82,24 @@ export class ActionItemComponent implements OnInit {
       case 'IBOU_CONTACT':
         this.goIbouPage();
         break;
+      case 'KIOSK_LOCATOR':
+        this.openKioskLocatorModal();
+        break;
       default:
         break;
     }
+  }
+
+  async openKioskLocatorModal() {
+    this.followAnalyticsService.registerEventFollow(
+      'Kiosk_locator_clic',
+      'event'
+    );
+    const modal = await this.modalController.create({
+      component: KioskLocatorPopupComponent,
+      cssClass: 'select-recipient-modal',
+    });
+    return await modal.present();
   }
 
   goIbouPage() {

@@ -69,6 +69,7 @@ import { ScrollVanishDirective } from 'src/app/directives/scroll-vanish/scroll-v
 import { OffreServiceCardV2Component } from './offre-service-card-v2/offre-service-card-v2.component';
 import { FaqItemComponent } from './faq-item/faq-item.component';
 import { ActionItemComponent } from './action-item/action-item.component';
+import { KioskLocatorPopupComponent } from 'src/app/components/kiosk-locator-popup/kiosk-locator-popup.component';
 
 @NgModule({
   declarations: [
@@ -127,6 +128,7 @@ import { ActionItemComponent } from './action-item/action-item.component';
     OffreServiceCardV2Component,
     FaqItemComponent,
     ActionItemComponent,
+    KioskLocatorPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -169,6 +171,7 @@ import { ActionItemComponent } from './action-item/action-item.component';
     SimpleOperationSuccessModalComponent,
     BanniereDescriptionPage,
     BlockTransferSuccessPopupComponent,
+    KioskLocatorPopupComponent,
   ],
   exports: [
     BanniereComponent,

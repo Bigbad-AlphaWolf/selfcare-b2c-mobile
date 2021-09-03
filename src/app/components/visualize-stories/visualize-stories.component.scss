@@ -1,0 +1,14 @@
+@import "src/app/app";
+
+.visualize-stories-container {
+  height: 100%;
+  .swiper-container {
+    height: 100%;
+  }
+  .progress-bar-list {
+    //display: flex;
+    //flex-direction: row;
+    //gap: 5px;
+    width: 100%;
+  }
+}

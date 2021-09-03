@@ -1,23 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ModalController, NavController } from '@ionic/angular';
-import { of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
-import { OPERATION_DEPLAFONNEMENT_OM_ACCOUNT, OPERATION_OPEN_OM_ACCOUNT } from 'src/shared';
-import { OMCustomerStatusModel } from '../../../models/om-customer-status.model';
-import { OmCheckOtpModel, OmInitOtpModel } from '../../../models/om-self-operation-otp.model';
-import { NewPinpadModalPage } from '../../../new-pinpad-modal/new-pinpad-modal.page';
-import { OperationSuccessFailModalPage } from '../../../operation-success-fail-modal/operation-success-fail-modal.page';
-import { DashboardService } from '../../../services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from '../../../services/follow-analytics/follow-analytics.service';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {ModalController, NavController} from '@ionic/angular';
+import {of} from 'rxjs';
+import {catchError, tap} from 'rxjs/operators';
+import {ImageService} from 'src/app/services/image-service/image.service';
+import {dateValidatorLessThan, parseDate} from 'src/app/utils/utils';
+import {OPERATION_OPEN_OM_ACCOUNT} from 'src/shared';
+import {OMCustomerStatusModel} from '../../../models/om-customer-status.model';
+import {OmCheckOtpModel, OmInitOtpModel} from '../../../models/om-self-operation-otp.model';
+import {NewPinpadModalPage} from '../../../new-pinpad-modal/new-pinpad-modal.page';
+import {OperationSuccessFailModalPage} from '../../../operation-success-fail-modal/operation-success-fail-modal.page';
+import {DashboardService} from '../../../services/dashboard-service/dashboard.service';
+import {FollowAnalyticsService} from '../../../services/follow-analytics/follow-analytics.service';
 import {
   getAge,
   ID_CARD_CARACTERS_MIN_LENGTH,
   SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT
 } from '../../../services/orange-money-service';
-import { OrangeMoneyService } from '../../../services/orange-money-service/orange-money.service';
-import { TypeOtpModalComponent } from '../../components/type-otp-modal/type-otp-modal.component';
+import {OrangeMoneyService} from '../../../services/orange-money-service/orange-money.service';
+import {TypeOtpModalComponent} from '../../components/type-otp-modal/type-otp-modal.component';
 
 @Component({
   selector: 'app-new-deplafonnement-om',
@@ -25,7 +27,19 @@ import { TypeOtpModalComponent } from '../../components/type-otp-modal/type-otp-
   styleUrls: ['./new-deplafonnement-om.page.scss']
 })
 export class NewDeplafonnementOmPage implements OnInit {
-  personalInfosForm: FormGroup;
+  personalInfosForm: FormGroup = this.formBuilder.group(
+    {
+      civility: [null, [Validators.required]],
+      lastname: [null, [Validators.required, Validators.minLength(2)]],
+      firstname: [null, [Validators.required, Validators.minLength(2)]],
+      birthdate: [null, [Validators.required]],
+      nIdentity: [null, [Validators.required]],
+      identityType: ['CNI', [Validators.required]],
+      delivery_date: [null, [Validators.required]],
+      expiry_date: [null, [Validators.required]]
+    },
+    {validators: dateValidatorLessThan('delivery_date', 'expiry_date')}
+  );
   rectoFilled: boolean;
   rectoImage: any;
   rectoFileName = 'recto.jpg';
@@ -50,6 +64,7 @@ export class NewDeplafonnementOmPage implements OnInit {
   maxBirthYearAuthorized = (new Date().getFullYear() - 18).toString();
   isUserAgeInvalid: boolean;
   isUserIDInvalid: boolean;
+  maxYear = new Date().getFullYear() + 30;
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
@@ -57,7 +72,8 @@ export class NewDeplafonnementOmPage implements OnInit {
     private navController: NavController,
     private modalController: ModalController,
     private dashbServ: DashboardService,
-    private followAnalyticsServ: FollowAnalyticsService
+    private followAnalyticsServ: FollowAnalyticsService,
+    private imgServ: ImageService
   ) {}
 
   ngOnInit() {
@@ -68,34 +84,23 @@ export class NewDeplafonnementOmPage implements OnInit {
     this.getStepImage();
   }
 
-  initForms() {
-    this.personalInfosForm = this.formBuilder.group({
-      civility: [null, [Validators.required]],
-      lastname: [null, [Validators.required, Validators.minLength(2)]],
-      firstname: [null, [Validators.required, Validators.minLength(2)]],
-      birthdate: [null, [Validators.required]],
-      nIdentity: [null, [Validators.required]],
-      identityType: ['CNI', [Validators.required]]
-    });
-  }
-
   setUserInfos() {
     this.dashbServ
       .getCustomerInformations()
       .pipe(
-        tap((res: { givenName?: string; familyName?: string; birthDate?: string; gender?: 'MALE' | 'FEMALE' }) => {
+        tap((res: {givenName?: string; familyName?: string; birthDate?: string; gender?: 'MALE' | 'FEMALE'}) => {
           this.personalInfosForm.patchValue({
-            civility: res.gender === 'MALE' ? 'monsieur' : res.gender === 'FEMALE' ? 'madame' : null
+            civility: res.gender === 'MALE' ? 'MR' : res.gender === 'FEMALE' ? 'MRS' : null
           });
-          this.personalInfosForm.patchValue({ firstname: res.givenName });
-          this.personalInfosForm.patchValue({ lastname: res.familyName });
-          this.personalInfosForm.patchValue({ birthdate: new Date(res.birthDate).toISOString() });
+          this.personalInfosForm.patchValue({firstname: res.givenName});
+          this.personalInfosForm.patchValue({lastname: res.familyName});
+          this.personalInfosForm.patchValue({birthdate: new Date(res.birthDate).toISOString()});
         })
       )
       .subscribe();
   }
 
-  checkStatus(msisdn: string) {
+  checkStatus(msisdn = this.omMsisdn) {
     this.checkingStatus = true;
     this.checkStatusError = false;
     this.orangeMoneyService.getUserStatus(msisdn).subscribe(
@@ -139,24 +144,24 @@ export class NewDeplafonnementOmPage implements OnInit {
       tap((msisdn: string) => {
         this.gettingOmNumber = false;
         if (msisdn.match('error')) {
-          this.openPinpad();
+          //this.openPinpad();
+          this.omMsisdn = this.dashbServ.getCurrentPhoneNumber();
           this.getMsisdnHasError = true;
           this.followAnalyticsServ.registerEventFollow('deplafonnement_om_recuperation_numéro_msisdn_failed', 'error', {
             userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
             error: 'no om number registered'
           });
-          throw new Error();
+          //throw new Error();
         } else {
           this.omMsisdn = msisdn;
           this.followAnalyticsServ.registerEventFollow(
             'deplafonnement_om_recuperation_numéro_msisdn_success',
             'event',
-            { userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.omMsisdn }
+            {userMsisdn: this.dashbServ.getCurrentPhoneNumber(), omMsisdn: this.omMsisdn}
           );
-          this.checkStatus(msisdn);
-          this.initForms();
-          this.setUserInfos();
         }
+        this.checkStatus(this.omMsisdn);
+        this.setUserInfos();
       }),
       catchError((err: any) => {
         this.getMsisdnHasError = true;
@@ -190,15 +195,15 @@ export class NewDeplafonnementOmPage implements OnInit {
     switch (step) {
       case 'recto':
         this.rectoFilled = true;
-        this.rectoImage = state.image;
+        this.rectoImage = this.imgServ.removeBase64Prefix(state.image);
         break;
       case 'verso':
         this.versoFilled = true;
-        this.versoImage = state.image;
+        this.versoImage = this.imgServ.removeBase64Prefix(state.image);
         break;
       case 'selfie':
         this.selfieFilled = true;
-        this.selfieImage = state.image;
+        this.selfieImage = this.imgServ.removeBase64Prefix(state.image);
         break;
       default:
         break;
@@ -212,7 +217,7 @@ export class NewDeplafonnementOmPage implements OnInit {
         msisdn: this.omMsisdn,
         first_name: this.personalInfosForm.value.firstname,
         last_name: this.personalInfosForm.value.lastname,
-        birth_date: this.personalInfosForm.value.birthdate,
+        birth_date: parseDate(this.personalInfosForm.value.birthdate),
         civilite: this.personalInfosForm.value.civility,
         cniRectoBase64: this.rectoImage,
         cniVectoBase64: this.versoImage,
@@ -221,8 +226,8 @@ export class NewDeplafonnementOmPage implements OnInit {
         id_num: this.personalInfosForm.value.nIdentity,
         type_piece: this.personalInfosForm.value.identityType,
         adresse: 'adresse',
-        delivery_date: 'delivery_date',
-        expiry_date: 'expiry_date',
+        delivery_date: parseDate(this.personalInfosForm.value.delivery_date),
+        expiry_date: parseDate(this.personalInfosForm.value.expiry_date),
         hmac2: this.userOmStatus.hmac
       };
       this.generatingOtp = true;
@@ -266,7 +271,7 @@ export class NewDeplafonnementOmPage implements OnInit {
     const modal = await this.modalController.create({
       component: TypeOtpModalComponent,
       cssClass: 'select-recipient-modal',
-      componentProps: { checkOtpPayload }
+      componentProps: {checkOtpPayload}
     });
     modal.onDidDismiss().then(resp => {
       if (resp && resp.data && resp.data.accept) {
@@ -277,14 +282,11 @@ export class NewDeplafonnementOmPage implements OnInit {
   }
 
   clearInput() {
-    this.personalInfosForm.patchValue({ nIdentity: null });
+    this.personalInfosForm.patchValue({nIdentity: null});
   }
 
   openSuccessModal() {
-    this.showModal({
-      purchaseType: OPERATION_DEPLAFONNEMENT_OM_ACCOUNT,
-      textMsg: SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT
-    });
+    this.showModal({purchaseType: OPERATION_OPEN_OM_ACCOUNT, textMsg: SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT});
   }
 
   goBack() {
@@ -297,7 +299,7 @@ export class NewDeplafonnementOmPage implements OnInit {
 
   takePicture(step?: 'recto' | 'verso' | 'selfie') {
     this.router.navigate(['/om-self-operation/take-picture'], {
-      state: { step, operation: 'DEPLAFONNEMENT' }
+      state: {step, operation: 'DEPLAFONNEMENT'}
     });
   }
 
@@ -320,7 +322,7 @@ export class NewDeplafonnementOmPage implements OnInit {
     }
   }
 
-  async showModal(data: { purchaseType: string; textMsg: string }) {
+  async showModal(data: {purchaseType: string; textMsg: string}) {
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
       cssClass: 'failed-modal',
@@ -366,7 +368,7 @@ export class NewDeplafonnementOmPage implements OnInit {
         value.length < ID_CARD_CARACTERS_MIN_LENGTH
       ) {
         this.isUserIDInvalid = true;
-        this.personalInfosForm.controls['identityType'].setErrors({ incorrect: true });
+        this.personalInfosForm.controls['identityType'].setErrors({incorrect: true});
       } else {
         this.isUserIDInvalid = false;
         this.personalInfosForm.controls['identityType'].setErrors(null);

@@ -109,7 +109,7 @@
   </div>
 </div>
 <div class="pinpad-v3" *ngIf="userHasOmToken">
-  <ng-container *ngIf="operationType !== OPERATION_CHANGE_PIN_OM && operationType !== OPERATION_BLOCK_TRANSFER">
+  <ng-container *ngIf="operationType !== OPERATION_CHANGE_PIN_OM && operationType !== OPERATION_CREATE_PIN_OM && operationType !== OPERATION_BLOCK_TRANSFER">
     <img src="/assets/images/password.png" alt="lock" />
     <div class="title">
       <span class="title-1" *ngIf="!canRetry">Mot de passe</span>
@@ -118,7 +118,7 @@
       >
     </div>
   </ng-container>
-  <ng-container *ngIf="operationType === OPERATION_CHANGE_PIN_OM ">
+  <ng-container *ngIf="operationType === OPERATION_CHANGE_PIN_OM || operationType === OPERATION_CREATE_PIN_OM">
     <img src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="lock" />
     <div class="title">
       <span class="title-1">Nouveau code secret</span>

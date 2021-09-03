@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { NavController } from '@ionic/angular';
-import { FIND_AGENCE_EXTERNAL_URL } from 'src/shared';
+import { FIND_AGENCE_EXTERNAL_URL, REGEX_FIX_NUMBER } from 'src/shared';
 import { BesoinAideType } from '../models/enums/besoin-aide-type.enum';
 import { OffreService } from '../models/offre-service.model';
 import { OMCustomerStatusModel } from '../models/om-customer-status.model';
@@ -41,7 +41,8 @@ export class AssistanceHubPage implements OnInit {
   listActes?: OffreService[] = [];
   loadingHelpItems: boolean;
   displaySearchIcon: boolean = true;
-  @ViewChild('searchInput', { static: true }) searchRef;
+  @ViewChild('searchInput', { static: true })
+  searchRef;
   current_user_msisdn = this.dashboardService.getCurrentPhoneNumber();
   checkingStatus: boolean;
   userOMStatus: OMCustomerStatusModel;
@@ -75,21 +76,17 @@ export class AssistanceHubPage implements OnInit {
     actes: OffreService[]
   ) {
     let response = actes;
-    if (
-      user &&
-      (user.operation === 'DEPLAFONNEMENT' || user.operation === 'FULL')
-    ) {
-      response = actes.filter((item: OffreService) => {
-        return item.code !== 'OUVERTURE_OM_ACCOUNT';
-      });
-    } else if (user && user.operation === 'OUVERTURE_COMPTE') {
-      response = actes.filter((item: OffreService) => {
-        return item.code !== 'DEPLAFONNEMENT';
-      });
-    } else if (!user || !user.operation) {
+    if (user.operation === 'DEPLAFONNEMENT' || user.operation === 'FULL') {
       response = actes.filter((item: OffreService) => {
         return (
-          item.code !== 'OUVERTURE_OM_ACCOUNT' && item.code !== 'DEPLAFONNEMENT'
+          item.code !== 'OUVERTURE_OM_ACCOUNT' &&
+          item.code !== 'OUVERTURE_OM_ACCOUNT_NEW'
+        );
+      });
+    } else if (user.operation === 'OUVERTURE_COMPTE') {
+      response = actes.filter((item: OffreService) => {
+        return (
+          item.code !== 'DEPLAFONNEMENT' && item.code !== 'DEPLAFONNEMENT_NEW'
         );
       });
     }
@@ -99,8 +96,9 @@ export class AssistanceHubPage implements OnInit {
   fetchAllHelpItems() {
     this.loadingHelpItems = true;
     this.operationService.getServicesByFormule(null, true).subscribe(
-      (res) => {
-        // this.userOMStatus = await this.checkStatus();
+      async (res) => {
+        if (!REGEX_FIX_NUMBER.test(this.current_user_msisdn))
+          this.userOMStatus = await this.checkStatus();
         this.listBesoinAides = res;
         this.loadingHelpItems = false;
         this.followAnalyticsService.registerEventFollow(
@@ -127,7 +125,10 @@ export class AssistanceHubPage implements OnInit {
     this.listActes = this.listBesoinAides.filter((item: OffreService) => {
       return item.typeService === BesoinAideType.ACTE;
     });
-    // this.listActes = this.filterOMActesFollowingOMStatus(this.userOMStatus, this.listActes);
+    this.listActes = this.filterOMActesFollowingOMStatus(
+      this.userOMStatus,
+      this.listActes
+    );
     this.listFaqs = this.listBesoinAides.filter((item: OffreService) => {
       return item.typeService === BesoinAideType.FAQ;
     });

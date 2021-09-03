@@ -1,16 +1,9 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as SecureLS from 'secure-ls';
-import {
-  BehaviorSubject,
-  Subject,
-  of,
-  Observable,
-  forkJoin,
-  throwError,
-} from 'rxjs';
-import { tap, switchMap, map, catchError, delay } from 'rxjs/operators';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import {BehaviorSubject, Subject, of, Observable, forkJoin, throwError} from 'rxjs';
+import {tap, switchMap, map, catchError, delay} from 'rxjs/operators';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {environment} from 'src/environments/environment';
 import {
   OmUserInfo,
   OmRegisterClientModel,
@@ -24,23 +17,16 @@ import {
   TransferOMWithCodeModel,
   MerchantPaymentModel,
   FeeModel,
-  CheckEligibilityModel,
+  CheckEligibilityModel
 } from '.';
-import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
-import { DashboardService } from '../dashboard-service/dashboard.service';
-import { ErreurTransactionOmModel } from 'src/app/models/erreur-transaction-om.model';
-import {
-  OM_BUY_ILLIFLEX_ENDPOINT,
-  SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT,
-} from '../utils/om.endpoints';
-import { ChangePinOm } from 'src/app/models/change-pin-om.model';
-import { OM_CHANGE_PIN_ENDPOINT } from '../utils/om.endpoints';
-import { OMCustomerStatusModel } from 'src/app/models/om-customer-status.model';
-import {
-  checkOtpResponseModel,
-  OmCheckOtpModel,
-  OmInitOtpModel,
-} from 'src/app/models/om-self-operation-otp.model';
+import {FollowAnalyticsService} from '../follow-analytics/follow-analytics.service';
+import {DashboardService} from '../dashboard-service/dashboard.service';
+import {ErreurTransactionOmModel} from 'src/app/models/erreur-transaction-om.model';
+import {OM_BUY_ILLIFLEX_ENDPOINT, SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT} from '../utils/om.endpoints';
+import {ChangePinOm} from 'src/app/models/change-pin-om.model';
+import {OM_CHANGE_PIN_ENDPOINT} from '../utils/om.endpoints';
+import {OMCustomerStatusModel} from 'src/app/models/om-customer-status.model';
+import {checkOtpResponseModel, OmCheckOtpModel, OmInitOtpModel} from 'src/app/models/om-self-operation-otp.model';
 import {
   ILLIFLEX_BY_OM_IDENTICAL_ERROR_CODE,
   ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE,
@@ -56,7 +42,7 @@ import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_VOYAGE,
   OPERATION_TYPE_RECHARGE_CREDIT,
-  REGEX_IOS_SYSTEM,
+  REGEX_IOS_SYSTEM
 } from 'src/shared';
 import { FollowOemlogPurchaseInfos } from 'src/app/models/follow-log-oem-purchase-Infos.model';
 import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
@@ -65,9 +51,10 @@ import { IlliflexService } from '../illiflex-service/illiflex.service';
 import { CancelOmTransactionPayloadModel } from 'src/app/models/cancel-om-transaction-payload.model';
 import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-event-type.enum';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
+import { CreatePinOM } from 'src/app/models/create-pin-om.model';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
-const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
+const {OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE} = environment;
 const otpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/init-otp`;
 const registerClientEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/register-client`;
 const loginClientEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/login-client`;
@@ -95,13 +82,15 @@ const userStatusEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/custome
 const selfOperationInitOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-otp-init`;
 const selfOperationCheckOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-otp-check`;
 const CANCEL_TRANSACTIONS_OM_Endpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/urgence-depannage/v2/erreur-transaction`;
-const ls = new SecureLS({ encodingType: 'aes' });
+// CREATION PIN OM
+const CREATE_PIN_OM_Endpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/create-pin`;
+const ls = new SecureLS({encodingType: 'aes'});
 let eventKey = '';
 let errorKey = '';
 let value = {};
 let isIOS = false;
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class OrangeMoneyService {
   constructor(
@@ -122,22 +111,22 @@ export class OrangeMoneyService {
     // invalid pin or account locked
     if (!db.active) {
       const errorMsg = `Votre compte Orange Money actuel bloqué.`;
-      return { data: null, error: true, errorMsg };
+      return {data: null, error: true, errorMsg};
     } else {
       const soldeAfterPay = db.solde - +amont;
       if (soldeAfterPay < 0) {
         const errorMsg = `Votre solde Orange Money actuel ne vous permet pas d'effectuer cette opération.`;
-        return { data: null, error: true, errorMsg };
+        return {data: null, error: true, errorMsg};
       } else {
         const operationDetails = {
           newSolde: soldeAfterPay,
           soldeBefore: db.solde,
-          amountWithDrawn: amont,
+          amountWithDrawn: amont
         };
         db.solde = soldeAfterPay;
         db.history = [...db.history, operationDetails];
         this.updateAccount(phoneNumber, db);
-        return { data: operationDetails, error: false, errorMsg: null };
+        return {data: operationDetails, error: false, errorMsg: null};
       }
     }
   }
@@ -213,9 +202,9 @@ export class OrangeMoneyService {
   GetPinPad(
     pinPadData: OmPinPadModel,
     changePinInfos?: {
-      apiKey: string;
+      apiKey?: string;
       em: string;
-      loginToken: string;
+      loginToken?: string;
       msisdn: string;
       sequence: string;
     }
@@ -223,24 +212,18 @@ export class OrangeMoneyService {
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
     const os = isIOS ? 'iOS' : 'Android';
     if (pinPadData) pinPadData.os = os;
-    if (changePinInfos) {
-      const sequence = changePinInfos.sequence.replace(
-        new RegExp('-', 'g'),
-        ' '
-      );
+    if (changePinInfos.sequence && changePinInfos.em) {
+      const sequence = changePinInfos.sequence.replace(new RegExp('-', 'g'), ' ');
       this.gotPinPadSubject.next(sequence.split(''));
       return of({
         content: {
-          data: { sequence: changePinInfos.sequence, em: changePinInfos.em },
-        },
+          data: {sequence: changePinInfos.sequence, em: changePinInfos.em}
+        }
       });
     }
     return this.http.post(pinpadEndpoint, pinPadData).pipe(
       tap((res: any) => {
-        const sequence = res.content.data.sequence.replace(
-          new RegExp('-', 'g'),
-          ' '
-        );
+        const sequence = res.content.data.sequence.replace(new RegExp('-', 'g'), ' ');
         this.gotPinPadSubject.next(sequence.split(''));
       })
     );
@@ -297,7 +280,7 @@ export class OrangeMoneyService {
 
   getMerchantByCode(code: number) {
     return this.getOmMsisdn().pipe(
-      switchMap((msisdn) => {
+      switchMap(msisdn => {
         return this.http.get(`${getMerchantEndpoint}/${code}?msisdn=${msisdn}`);
       })
     );
@@ -437,7 +420,7 @@ export class OrangeMoneyService {
     if (type === 'event') {
       this.followAnalyticsService.registerEventFollow(eventKey, 'event', value);
     } else {
-      value = Object.assign({}, value, { error_code: res.status_code });
+      value = Object.assign({}, value, {error_code: res.status_code});
       this.followAnalyticsService.registerEventFollow(errorKey, 'error', value);
     }
   }
@@ -445,10 +428,8 @@ export class OrangeMoneyService {
   checkBalanceSufficiency(amount: number | string) {
     // return of(true).pipe(delay(2000));
     return this.getOmMsisdn().pipe(
-      switchMap((msisdn) => {
-        return this.http.get(
-          `${checkBalanceSufficiencyEndpoint}/${msisdn}?amount=${amount}`
-        );
+      switchMap(msisdn => {
+        return this.http.get(`${checkBalanceSufficiencyEndpoint}/${msisdn}?amount=${amount}`);
       })
     );
   }
@@ -468,27 +449,15 @@ export class OrangeMoneyService {
   }
 
   initSelfOperationOtp(initOtpPayload: OmInitOtpModel) {
-    console.log(
-      'url',
-      selfOperationCheckOtpEndpoint,
-      'payload',
-      initOtpPayload
-    );
+    console.log('url', selfOperationCheckOtpEndpoint, 'payload', initOtpPayload);
 
-    return this.http.post<checkOtpResponseModel>(
-      selfOperationInitOtpEndpoint,
-      initOtpPayload
-    );
+    return this.http.post<checkOtpResponseModel>(selfOperationInitOtpEndpoint, initOtpPayload);
   }
 
-  checkSelfOperationOtp(
-    checkOtpPayload: OmCheckOtpModel,
-    otpCode: string | number
-  ) {
-    return this.http.post<checkOtpResponseModel>(
-      `${selfOperationCheckOtpEndpoint}?otp=${otpCode}`,
-      checkOtpPayload
-    );
+  checkSelfOperationOtp(checkOtpPayload: OmCheckOtpModel, otpCode: string | number) {
+    console.log('checkOTP', checkOtpPayload, otpCode);
+
+    return this.http.post<checkOtpResponseModel>(`${selfOperationCheckOtpEndpoint}?otp=${otpCode}`, checkOtpPayload);
   }
 
   getOmMsisdn(): Observable<string> {
@@ -560,11 +529,11 @@ export class OrangeMoneyService {
 
   omAccountSession() {
     return this.getOmMsisdn().pipe(
-      switchMap((msisdn) => {
-        if (msisdn === 'error') return of({ msisdn: msisdn });
+      switchMap(msisdn => {
+        if (msisdn === 'error') return of({msisdn: msisdn});
         return this.GetUserAuthInfo(msisdn).pipe(
           map((infos: any) => {
-            return { msisdn: msisdn, ...infos };
+            return {msisdn: msisdn, ...infos};
           })
         );
       })
@@ -572,10 +541,7 @@ export class OrangeMoneyService {
   }
 
   sendRequestErreurTransactionOM(data: ErreurTransactionOmModel) {
-    return this.http.post(
-      `${SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT}`,
-      data
-    );
+    return this.http.post(`${SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT}`, data);
   }
 
   changePin(data: ChangePinOm) {
@@ -583,49 +549,47 @@ export class OrangeMoneyService {
   }
 
   buyIlliflexByOM(passIlliflex: IlliflexModel) {
-    const validity = this.illiflexService.getValidityName(
-      passIlliflex.validity
-    );
+    const validity = this.illiflexService.getValidityName(passIlliflex.validity);
     const buyIlliflexPayload = {
       buyer: {
         msisdn: passIlliflex.sender,
         em: passIlliflex.em,
-        encodedPin: passIlliflex.pin,
+        encodedPin: passIlliflex.pin
       },
       buyee: {
         msisdn: passIlliflex.recipient,
-        profile: passIlliflex.recipientOfferCode,
+        profile: passIlliflex.recipientOfferCode
       },
       bucket: {
         budget: {
           unit: 'XOF',
-          value: +passIlliflex.amount,
+          value: +passIlliflex.amount
         },
         dataBucket: {
           balance: {
             amount: passIlliflex.data * 1024,
-            unit: 'KO',
+            unit: 'KO'
           },
           validity,
-          usageType: 'DATA',
+          usageType: 'DATA'
         },
         voiceBucket: {
           balance: {
             amount: passIlliflex.voice * 60,
-            unit: 'SECOND',
+            unit: 'SECOND'
           },
           validity,
-          usageType: 'VOICE',
+          usageType: 'VOICE'
         },
         smsBucket: {
           balance: {
             amount: passIlliflex.bonusSms,
-            unit: 'SMS',
+            unit: 'SMS'
           },
           validity,
-          usageType: 'SMS',
-        },
-      },
+          usageType: 'SMS'
+        }
+      }
     };
     return this.http
       .post(`${OM_BUY_ILLIFLEX_ENDPOINT}`, buyIlliflexPayload)
@@ -650,7 +614,7 @@ export class OrangeMoneyService {
               ? OM_UNKOWN_ERROR_CODE
               : err.error.errorCode;
           const message =
-            status === 400 && errorCode !== ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE
+            status === 400 && errorCode !== OM_UNKOWN_ERROR_CODE
               ? err.error.message
               : 'Une erreur est survenue';
           const error = new HttpErrorResponse({
@@ -697,13 +661,13 @@ export class OrangeMoneyService {
 
   blockTransfer(transaction) {
     return this.getOmMsisdn().pipe(
-      switchMap((msisdn) => {
-        const { amount, txnid, msisdnReceiver, fees } = transaction;
+      switchMap(msisdn => {
+        const {amount, txnid, msisdnReceiver, fees} = transaction;
         const payload = {
           amount: Math.abs(amount) + fees,
           txn_id: txnid,
           destinataire: msisdnReceiver,
-          msisdn,
+          msisdn
         };
         return this.http
           .post<{ message: string; transactionNumber: string }>(
@@ -735,18 +699,30 @@ export class OrangeMoneyService {
     );
   }
 
-  sendInfosCancelationTransfertOM(
-    formInfos: CancelOmTransactionPayloadModel,
-    fileRecto: any,
-    fileVerso: any
-  ) {
+  sendInfosCancelationTransfertOM(formInfos: CancelOmTransactionPayloadModel, fileRecto: any, fileVerso: any) {
     const payload = new FormData();
     const erreurTransactionOmDTO = new Blob([JSON.stringify(formInfos)], {
-      type: 'application/json',
+      type: 'application/json'
     });
     payload.append('erreurTransactionOmDTO', erreurTransactionOmDTO);
     payload.append('recto', fileRecto, 'recto.png');
     payload.append('verso', fileVerso, 'verso.png');
     return this.http.post(`${CANCEL_TRANSACTIONS_OM_Endpoint}`, payload);
+  }
+
+  createFirstOmPin(payload: CreatePinOM, apiKey?: string) {
+    const os = REGEX_IOS_SYSTEM.test(navigator.userAgent) ? 'iOS' : 'Android';
+    const data = {
+      os: os,
+      channel: 'selfcare',
+      app_version: 'v1.0',
+      conf_version: 'v1.0',
+      service_version: 'v1.0',
+      type: 'CLIENT',
+      is_primo: true
+    };
+    const omData: CreatePinOM = Object.assign({}, payload, data);
+
+    return this.http.post(`${CREATE_PIN_OM_Endpoint}?apiKey=${apiKey}`, omData);
   }
 }

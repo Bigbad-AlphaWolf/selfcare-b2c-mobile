@@ -15,7 +15,16 @@
     "ci-e2e": "protractor --capabilities.chromeOptions.args=--headless --capabilities.chromeOptions.args=--no-sandbox protractor.conf.js",
     "sonar": "sonar-scanner",
     "clean:all:install": "rm -rf platforms plugins node_modules www && npm i",
-    "build:android:release": "ionic cordova build android --release --configuration production",
+    "build:android:release:rec": "ionic cordova build android --release --configuration rec",
+    "build:android:debug:rec": "ionic cordova build android --configuration rec",
+    "build:android:release:preprod": "ionic cordova build android --release --configuration rec",
+    "build:android:debug:preprod": "ionic cordova build android --configuration rec",
+    "build:android:release:master": "ionic cordova build android --release --configuration production",
+    "build:android:debug:master": "ionic cordova build android --configuration production",
+    "build:ios:release:master": "ionic cordova build ios --release --configuration production",
+    "build:ios:debug:master": "ionic cordova build ios --configuration production",
+    "build:android:release:dev": "ionic cordova build android --release",
+    "build:android:debug:dev": "ionic cordova build android",
     "build:android": "ionic cordova platform add android && ionic cordova build android",
     "run:android": "npm run build:android && native-run android --app platforms/android/app/build/outputs/apk/debug/app-debug.apk --device",
     "build:ios": "ionic cordova platform add ios && ionic cordova build ios",
@@ -57,6 +66,7 @@
     "@ionic-native/status-bar": "^5.28.0",
     "@ionic-native/uid": "^5.29.0",
     "@ionic/angular": "^5.6.13",
+    "@vime/angular": "^5.0.33",
     "@wdio/selenium-standalone-service": "^5.12.1",
     "codeceptjs": "^2.5.0",
     "cordova-android": "^8.1.0",
@@ -223,8 +233,6 @@
         "GPS_REQUIRED": "true"
       }
     },
-    "platforms": [
-      "android"
-    ]
+    "platforms": ["android"]
   }
 }

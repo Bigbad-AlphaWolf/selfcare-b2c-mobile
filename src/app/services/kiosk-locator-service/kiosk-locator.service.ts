@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 import { kioskMock } from './kiosk.utils';
 const { SERVER_API_URL, SERVICES_SERVICE } = environment;
 const kiosksEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/kiosque-coordonate`;
-const kiosksKeyWorEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/kiosque-coordonate`;
+const kiosksKeyWorEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/kiosque-keywords`;
 
 @Injectable({
   providedIn: 'root',

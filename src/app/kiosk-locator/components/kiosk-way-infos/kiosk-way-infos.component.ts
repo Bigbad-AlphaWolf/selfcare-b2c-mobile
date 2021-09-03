@@ -1,4 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { NO_AVATAR_ICON_URL } from 'src/shared';
 import * as SecureLS from 'secure-ls';
 import { downloadAvatarEndpoint } from 'src/app/services/dashboard-service/dashboard.service';
@@ -16,10 +23,11 @@ export class KioskWayInfosComponent implements OnInit {
   @Input() kiosk: KioskOMModel;
   @Input() index: number;
   @Input() userCurrentPosition: Coordinates;
+  @Output() leave: EventEmitter<any> = new EventEmitter<any>();
   walkingMatrix: google.maps.DistanceMatrixResponse;
   drivingMatrix: google.maps.DistanceMatrixResponse;
-
-  constructor() {}
+  url: string;
+  constructor(public ref: ChangeDetectorRef) {}
 
   ngOnInit() {
     const origin = {
@@ -27,9 +35,10 @@ export class KioskWayInfosComponent implements OnInit {
       lng: this.userCurrentPosition?.longitude,
     };
     const dest = { lat: this.kiosk?.latitude, lng: this.kiosk?.longitude };
-    if (window.google) {
+    if (window?.google) {
       this.distanceMatrix(origin, dest, google.maps.TravelMode?.DRIVING);
       this.distanceMatrix(origin, dest, google.maps.TravelMode?.WALKING);
+			this.openInGoogleMap(google.maps.TravelMode.WALKING);
     }
     let user = ls.get('user');
     if (user.imageProfil)
@@ -52,7 +61,19 @@ export class KioskWayInfosComponent implements OnInit {
         } else {
           this.walkingMatrix = res;
         }
+        this.ref.detectChanges();
       }
     );
+  }
+
+  sortir() {
+    this.leave.emit();
+  }
+
+  openInGoogleMap(travelMode: google.maps.TravelMode) {
+    const origin = `${this.userCurrentPosition.latitude},+${this.userCurrentPosition.longitude}`;
+    const dest = `${this.kiosk.latitude},+${this.kiosk.longitude}`;
+    const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}&travelmode=${travelMode}`;
+    this.url = url;
   }
 }
