@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import { catchError, tap } from 'rxjs/operators';
 import {
   SargalSubscriptionModel,
@@ -8,9 +9,15 @@ import {
   SARGAL_UNSUBSCRIPTION_ONGOING,
 } from 'src/app/dashboard';
 import { ScrollVanishDirective } from 'src/app/directives/scroll-vanish/scroll-vanish.directive';
+import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { BillsHubPage } from 'src/app/pages/bills-hub/bills-hub.page';
+import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
+import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import { NewUserConsoModel } from 'src/app/services/user-cunsommation-service/user-conso-service.index';
 import { UserConsoService } from 'src/app/services/user-cunsommation-service/user-conso.service';
@@ -18,9 +25,11 @@ import {
   formatCurrency,
   getLastUpdatedDateTimeText,
   isProfileHybrid,
+  OPERATION_TYPE_MERCHANT_PAYMENT,
   SargalStatusModel,
   SubscriptionModel,
 } from 'src/shared';
+import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -68,7 +77,7 @@ export class DashboardHomeComponent implements OnInit {
     {
       title: 'Demander',
       subtitle: 'un SOS',
-      code: 'SARGAL',
+      code: 'SOS',
       icon: '04-boutons-01-illustrations-06-demander-un-sos.svg',
     },
   ];
@@ -92,13 +101,19 @@ export class DashboardHomeComponent implements OnInit {
   sargalStatusUnavailable: boolean;
   sargalStatus: string;
 
+  canDoSOS: boolean;
+
   constructor(
     private dashboardService: DashboardService,
     private authService: AuthenticationService,
     private router: Router,
     private followAnalyticsService: FollowAnalyticsService,
     private consoService: UserConsoService,
-    private sargalService: SargalService
+    private sargalService: SargalService,
+    private appliRouting: ApplicationRoutingService,
+    private omService: OrangeMoneyService,
+    private modalController: ModalController,
+    private bsService: BottomSheetService
   ) {}
 
   ngOnInit() {}
@@ -173,14 +188,14 @@ export class DashboardHomeComponent implements OnInit {
 
   processConso(consumation: NewUserConsoModel[]) {
     this.getValidityDates(consumation);
-    const bonus1 = consumation.find((conso) => conso.codeCompteur === 1)
+    const bonus1 = consumation.find((conso) => conso.codeCompteur === 2)
       ?.montantRestantBrut
-      ? consumation.find((conso) => conso.codeCompteur === 1)
+      ? consumation.find((conso) => conso.codeCompteur === 2)
           ?.montantRestantBrut
       : 0;
-    const bonus2 = consumation.find((conso) => conso.codeCompteur === 1)
+    const bonus2 = consumation.find((conso) => conso.codeCompteur === 6)
       ?.montantRestantBrut
-      ? consumation.find((conso) => conso.codeCompteur === 1)
+      ? consumation.find((conso) => conso.codeCompteur === 6)
           ?.montantRestantBrut
       : 0;
     const forfaitBalance = consumation.find((conso) => conso.codeCompteur === 9)
@@ -191,10 +206,10 @@ export class DashboardHomeComponent implements OnInit {
     this.creditRechargement = consumation.find(
       (conso) => conso.codeCompteur === 1
     )?.montantRestantBrut;
+    this.canDoSOS = this.creditRechargement <= 4;
     this.creditGlobal = formatCurrency(
       bonus1 + bonus2 + forfaitBalance + this.creditRechargement
     );
-    console.log(this.creditGlobal);
   }
 
   getValidityDates(appelConso: any[]) {
@@ -311,5 +326,107 @@ export class DashboardHomeComponent implements OnInit {
       }
       this.router.navigate(['/sargal-dashboard']);
     }
+  }
+
+  onActionClick(action) {
+    switch (action?.code) {
+      case 'BUY':
+        this.goToBuyPage();
+        break;
+      case 'TRANSFER':
+        this.goToTransfertsPage();
+        break;
+      case 'BILLS':
+        this.onPayerFacture();
+        break;
+      case 'MERCHANT':
+        this.goMerchantPayment();
+        break;
+      case 'SARGAL':
+        this.onSargalCardClicked();
+        break;
+      case 'SOS':
+        this.goToSOSPage();
+        break;
+    }
+  }
+
+  goToTransfertsPage() {
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_hub_transfert_clic',
+      'event',
+      'clicked'
+    );
+    this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
+  }
+
+  goToBuyPage() {
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_hub_achat_clic',
+      'event',
+      'clicked'
+    );
+    this.appliRouting.goToTransfertHubServicesPage('BUY');
+  }
+
+  goToSOSPage() {
+    if (this.canDoSOS) {
+      this.followAnalyticsService.registerEventFollow(
+        'Dashboard_sos_clic',
+        'event',
+        'clicked'
+      );
+      this.router.navigate(['/buy-sos']);
+    }
+  }
+
+  goMerchantPayment() {
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_paiement_marchand_clic',
+      'event'
+    );
+    this.omService.omAccountSession().subscribe(async (omSession: any) => {
+      const omSessionValid = omSession
+        ? omSession.msisdn !== 'error' &&
+          omSession.hasApiKey &&
+          !omSession.loginExpired
+        : null;
+      if (omSessionValid) {
+        this.bsService
+          .initBsModal(
+            MerchantPaymentCodeComponent,
+            OPERATION_TYPE_MERCHANT_PAYMENT,
+            PurchaseSetAmountPage.ROUTE_PATH
+          )
+          .subscribe((_) => {});
+        this.bsService.openModal(MerchantPaymentCodeComponent, {
+          omMsisdn: omSession.msisdn,
+        });
+      } else {
+        this.openPinpad();
+      }
+    });
+  }
+
+  onPayerFacture() {
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_hub_facture_clic',
+      'event',
+      'clicked'
+    );
+    this.router.navigate([BillsHubPage.ROUTE_PATH]);
+  }
+
+  async openPinpad() {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+    });
+    modal.onDidDismiss().then((resp) => {
+      if (resp && resp.data && resp.data.success) {
+        this.goMerchantPayment();
+      }
+    });
+    return await modal.present();
   }
 }

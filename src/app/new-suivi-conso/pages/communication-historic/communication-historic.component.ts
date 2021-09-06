@@ -24,11 +24,7 @@ export class CommunicationHistoricComponent implements OnInit {
     this.getPrepaidUserHistory();
   }
 
-  ionViewDidEnter() {
-    this.getPrepaidUserHistory();
-  }
-
-  getPrepaidUserHistory() {
+  public getPrepaidUserHistory() {
     this.loadingComHistoric = true;
     this.hasError = false;
     this.emptyHistoric = false;

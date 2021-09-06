@@ -1,6 +1,9 @@
 import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
 import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish.directive';
+import { CommunicationHistoricComponent } from './pages/communication-historic/communication-historic.component';
+import { NewDetailsConsoComponent } from './pages/new-details-conso/new-details-conso.component';
+import { TransactionsHistoricComponent } from './pages/transactions-historic/transactions-historic.component';
 
 @Component({
   selector: 'app-new-suivi-conso',
@@ -9,9 +12,9 @@ import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish
 })
 export class NewSuiviConsoPage implements OnInit {
   tabs = [
-    { label: 'Ma conso' },
-    { label: 'Mes communications' },
-    { label: 'Mes souscriptions' },
+    { label: 'Conso' },
+    { label: 'Communications' },
+    { label: 'Transactions' },
   ];
   currentSlideIndex = 0;
   slideOpts = {
@@ -21,10 +24,33 @@ export class NewSuiviConsoPage implements OnInit {
   };
   @ViewChild('slides') sliders: IonSlides;
   @ViewChildren(ScrollVanishDirective) dir;
+  @ViewChild(NewDetailsConsoComponent) consoPage: NewDetailsConsoComponent;
+  @ViewChild(CommunicationHistoricComponent)
+  historicComPage: CommunicationHistoricComponent;
+  @ViewChild(TransactionsHistoricComponent)
+  transactionHistoricPage: TransactionsHistoricComponent;
 
   constructor() {}
 
   ngOnInit() {}
+
+  ionViewWillEnter() {
+    this.refreshData();
+  }
+
+  refreshData() {
+    switch (this.currentSlideIndex) {
+      case 0:
+        this.consoPage.getUserConsoInfos();
+        break;
+      case 1:
+        this.historicComPage.getPrepaidUserHistory();
+        break;
+      case 2:
+        this.transactionHistoricPage.getTransactionsHistoric();
+        break;
+    }
+  }
 
   setSlidesIndex(index) {
     this.sliders.slideTo(index);
@@ -33,6 +59,7 @@ export class NewSuiviConsoPage implements OnInit {
   getCurrentSlide() {
     this.sliders.getActiveIndex().then((index) => {
       this.currentSlideIndex = index;
+      // this.refreshData();
     });
   }
 

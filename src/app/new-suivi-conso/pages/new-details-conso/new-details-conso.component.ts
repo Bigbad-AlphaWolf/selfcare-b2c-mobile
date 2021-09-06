@@ -22,10 +22,6 @@ export class NewDetailsConsoComponent implements OnInit {
     this.getUserConsoInfos();
   }
 
-  ionViewDidEnter() {
-    this.getUserConsoInfos();
-  }
-
   getUserConsoInfos() {
     this.loadingConso = true;
     this.consoService

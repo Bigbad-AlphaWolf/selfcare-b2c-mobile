@@ -138,6 +138,9 @@
         padding: 15px 5px;
         text-align: center;
         margin-bottom: 15px;
+        &.disabled-card {
+          opacity: 0.4;
+        }
         &:not(:nth-child(3n)) {
           margin-right: percentage(15/345);
         }

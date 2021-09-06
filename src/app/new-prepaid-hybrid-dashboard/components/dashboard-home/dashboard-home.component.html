@@ -1,4 +1,4 @@
-<ion-header class="dashboard-header" [appScrollVanish]="scrollArea" [isDashboard]="true">
+<ion-header class="dashboard-header" [appScrollVanish]="scrollArea">
   <div class="header-top-block">
     <ion-menu-button class="menu-btn-container">
       <img class="icon-menu" src="/assets/images/menu@3x.png" alt="" />
@@ -53,8 +53,10 @@
                 <div class="conso-amount">
                   <span class="sign-up">{{sargalUnavailable ? 'Service Indisponible' : 'M\'inscrire'}}</span>
                 </div>
-                <img src="assets/images/reward-icon-transparent.png" *ngIf="!sargalUnavailable" class="conso-icon-transparent" alt="">
-                <img src="/assets/images/reload.png" (click)="getSargalPoints()" *ngIf="sargalUnavailable" class="conso-icon-transparent" alt="">
+                <img src="assets/images/reward-icon-transparent.png" *ngIf="!sargalUnavailable"
+                  class="conso-icon-transparent" alt="">
+                <img src="/assets/images/reload.png" (click)="getSargalPoints()" *ngIf="sargalUnavailable"
+                  class="conso-icon-transparent" alt="">
               </div>
             </ng-container>
             <ng-template #sargalData>
@@ -80,15 +82,18 @@
               <div class="conso-amount">
                 <span class="sign-up">{{sargalStatusUnavailable ? 'Service Indisponible' : 'Voir ma carte'}}</span>
               </div>
-              <img src="assets/images/reward-icon-transparent.png" *ngIf="!sargalStatusUnavailable" class="conso-icon-transparent" alt="">
-              <img src="/assets/images/reload.png" (click)="getCustomerSargalStatus()" *ngIf="sargalStatusUnavailable" class="conso-icon-transparent" alt="">
+              <img src="assets/images/reward-icon-transparent.png" *ngIf="!sargalStatusUnavailable"
+                class="conso-icon-transparent" alt="">
+              <img src="/assets/images/reload.png" (click)="getCustomerSargalStatus()" *ngIf="sargalStatusUnavailable"
+                class="conso-icon-transparent" alt="">
             </div>
           </ng-template>
         </ion-slide>
       </ion-slides>
     </div>
     <div class="actions-cards-bloc">
-      <div class="action-card" *ngFor="let action of actions">
+      <div class="action-card" *ngFor="let action of actions" (click)="onActionClick(action)"
+        [ngClass]="{'disabled-card': (action.code === 'SOS' && !canDoSOS)}">
         <div class="action-icon-container">
           <img [src]="'/assets/images/'+action.icon" alt="buy" class="act-icon">
         </div>
