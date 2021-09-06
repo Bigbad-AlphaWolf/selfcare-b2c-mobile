@@ -129,6 +129,7 @@ export class DashboardPostpaidPage implements OnInit {
       .getServicesByFormule()
       .pipe(
         map((res) => {
+          res = res.sort((r1, r2) => r1.ordre - r2.ordre);
           this.followAnalyticsService.registerEventFollow(
             'dashboard_postpaid_get_services_success',
             'event',
