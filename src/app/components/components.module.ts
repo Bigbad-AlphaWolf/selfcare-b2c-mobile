@@ -29,7 +29,7 @@ import {VisualizeStoriesComponent} from './visualize-stories/visualize-stories.c
 import {StoriesProgressBarComponent} from './stories-progress-bar/stories-progress-bar.component';
 import {VisualizeStoryComponent} from './visualize-story/visualize-story.component';
 import {VimeModule} from '@vime/angular';
-
+import {SwiperModule} from 'swiper/angular';
 @NgModule({
   declarations: [
     ItemOfferPlanComponent,
@@ -57,7 +57,15 @@ import {VimeModule} from '@vime/angular';
     StoriesProgressBarComponent,
     VisualizeStoryComponent
   ],
-  imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule, IonicImageLoader, VimeModule],
+  imports: [
+    CommonModule,
+    PipesModule,
+    MaterialComponentsModule,
+    IonicModule,
+    IonicImageLoader,
+    VimeModule,
+    SwiperModule
+  ],
   exports: [
     ItemOfferPlanComponent,
     ItemPassIllimixComponent,
@@ -82,7 +90,8 @@ import {VimeModule} from '@vime/angular';
     ListPreviewStoriesComponent,
     VisualizeStoriesComponent,
     StoriesProgressBarComponent,
-    VisualizeStoryComponent
+    VisualizeStoryComponent,
+    SwiperModule
   ],
   entryComponents: [HistorikTransactionByTypeModalComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -1,4 +1,13 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import {Subject} from 'rxjs';
 import {StoryOem} from 'src/app/models/story-oem.model';
 import {STORIES_OEM_CONFIG} from 'src/shared';
@@ -11,24 +20,23 @@ import {STORIES_OEM_CONFIG} from 'src/shared';
 export class StoriesProgressBarComponent implements OnInit, OnChanges {
   currentProgressValue = 0;
   @Input() story: StoryOem;
-  @Input() progressBarStepTime = 100;
   @Input() stepValue = 0.01;
-  @Input() idStory: number = -1;
-  @Input() lastId: number = -1;
+  @Input() isLast: boolean;
   @Input() isCurrentStory: boolean;
   @Output() idStoryChange = new EventEmitter<any>();
   @Output() finish = new EventEmitter();
+  progressBarStepTime = 100;
   timeOutIds: any[] = [];
-  totalSteps;
-  constructor() {}
+  totalSteps: number;
+  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit() {}
 
-  startProgressBar() {
+  startProgressBar(from: number = 1) {
     this.currentProgressValue = 0;
     this.initConfigProgressBar();
-    for (let index = 1; index <= this.totalSteps; index++) {
-      this.setProgressBarEvolution(index);
+    for (let from = 1; from <= this.totalSteps; from++) {
+      this.setProgressBarEvolution(from);
     }
   }
 
@@ -36,34 +44,36 @@ export class StoriesProgressBarComponent implements OnInit, OnChanges {
     const idTimeOut = setTimeout(() => {
       this.currentProgressValue = Math.round(index * +this.stepValue * 100) / 100;
 
-      console.log('vcurrentProgressValue', this.currentProgressValue);
-
       if (index === this.totalSteps) {
         this.idStoryChange.emit(true);
       }
-      if (this.idStory === this.lastId && index === this.totalSteps) {
-        this.finish.emit(this.idStory);
+      if (this.isLast && index === this.totalSteps) {
+        this.finish.emit(this.isLast);
       }
+
+      this.cd.detectChanges();
     }, this.progressBarStepTime * index);
     this.timeOutIds.push(idTimeOut);
   }
 
   resetProgressBar() {
-    this.currentProgressValue = 0;
     for (const id of this.timeOutIds) {
       clearTimeout(id);
     }
     this.timeOutIds = [];
   }
 
+  emptyProgressBar() {
+    this.currentProgressValue = 0;
+    this.cd.detectChanges();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes.isCurrentStory && !changes.isCurrentStory.currentValue) {
-      this.currentProgressValue = 0;
     }
   }
 
   initConfigProgressBar() {
-    console.log('initConfig', this.story);
     if (this.story.duration > STORIES_OEM_CONFIG.MAX_DURATION_BY_ELEMENT) {
       this.story.duration = STORIES_OEM_CONFIG.MAX_DURATION_BY_ELEMENT;
     }
@@ -71,5 +81,24 @@ export class StoriesProgressBarComponent implements OnInit, OnChanges {
       this.progressBarStepTime = +(this.stepValue * this.story.duration).toFixed(2);
       this.totalSteps = Math.trunc(this.story.duration / this.progressBarStepTime);
     }
+    this.cd.detectChanges();
+  }
+
+  getCurrentIndexProgress() {
+    return this.currentProgressValue * 100 / (100 * this.stepValue);
+  }
+
+  pauseStoryProgress() {
+    this.resetProgressBar();
+  }
+
+  fillProgressBar() {
+    this.currentProgressValue = 1;
+    this.cd.detectChanges();
+  }
+
+  playStoryProgress() {
+    const currentIndex = this.getCurrentIndexProgress();
+    this.startProgressBar(currentIndex);
   }
 }
