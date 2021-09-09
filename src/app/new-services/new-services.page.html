@@ -1,0 +1,54 @@
+<ion-header class="services-header">
+  <div class="header-top-block">
+    <div class="title">
+      Services
+    </div>
+    <ion-icon name="search-outline" class="search-icon search-icon3" (click)="search()" #searchIcon></ion-icon>
+  </div>
+</ion-header>
+<div class="absolute-block">
+  <div class="search-bloc search-bloc3">
+    <ion-searchbar placeholder="Rechercher un service"></ion-searchbar>
+  </div>
+  <div class="services-custom-tabs">
+    <div class="conso-tab scb-text-light-black" *ngFor="let tab of servicesByCategoriesArray, let i = index"
+      (click)="setSlidesIndex(i)" [ngClass]="{'active-tab': i === currentSlideIndex}">{{tab?.category?.libelle}}</div>
+  </div>
+</div>
+<ion-content #scrollArea class="services-content" [forceOverscroll]="true" [appScrollVanish]="scrollArea"
+  [scrollEvents]="true" [iconSearch]="'.search-icon3'" [searchBlock]="'.search-bloc3'">
+  <!-- <ion-refresher slot="fixed" (ionRefresh)="ionViewWillEnter($event)">
+    <ion-refresher-content pullingText="tirer pour rafraîchir" refreshingSpinner="circles">
+    </ion-refresher-content>
+  </ion-refresher> -->
+  <ng-container *ngIf="loadingServices else servicesList">
+    <div class="loader-container">
+      <ion-skeleton-text animated class="service-loader"></ion-skeleton-text>
+      <ion-skeleton-text animated class="service-loader"></ion-skeleton-text>
+      <ion-skeleton-text animated class="service-loader"></ion-skeleton-text>
+      <ion-skeleton-text animated class="service-loader"></ion-skeleton-text>
+    </div>
+  </ng-container>
+  <ng-template #servicesList>
+    <ion-slides [options]="slideOpts" #slides (ionSlideDidChange)="getCurrentSlide()">
+      <ion-slide *ngFor="let slide of servicesByCategoriesArray, let j = index">
+        <div class="services-list">
+          <ng-container *ngFor="let service of slide.services">
+            <app-offre-service-card-v2 *ngIf="!service.passUsage" [service]="service">
+            </app-offre-service-card-v2>
+          </ng-container>
+        </div>
+        <div class="pass-usage-bloc" *ngIf="containPassUsage(slide.services)">
+          <span class="usage-title">Autres</span>
+          <div class="services-list">
+            <ng-container *ngFor="let service of slide.services">
+              <app-offre-service-card-v2 *ngIf="service.passUsage" [service]="service">
+              </app-offre-service-card-v2>
+            </ng-container>
+          </div>
+        </div>
+      </ion-slide>
+    </ion-slides>
+  </ng-template>
+</ion-content>
+<div class="empty-div-effect"></div>

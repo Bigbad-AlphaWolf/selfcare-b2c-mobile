@@ -65,6 +65,10 @@ import { PassUsageItemComponent } from './pass-usage-item/pass-usage-item.compon
 import { BlockTransferSuccessPopupComponent } from './block-transfer-success-popup/block-transfer-success-popup.component';
 import { ItemConsoGaugeComponent } from './item-conso-gauge/item-conso-gauge.component';
 import { ConsoNameDisplayPipe } from './pipes/conso-name-display.pipe';
+import { ScrollVanishDirective } from 'src/app/directives/scroll-vanish/scroll-vanish.directive';
+import { OffreServiceCardV2Component } from './offre-service-card-v2/offre-service-card-v2.component';
+import { FaqItemComponent } from './faq-item/faq-item.component';
+import { ActionItemComponent } from './action-item/action-item.component';
 import { KioskLocatorPopupComponent } from 'src/app/components/kiosk-locator-popup/kiosk-locator-popup.component';
 
 @NgModule({
@@ -120,6 +124,10 @@ import { KioskLocatorPopupComponent } from 'src/app/components/kiosk-locator-pop
     BlockTransferSuccessPopupComponent,
     ItemConsoGaugeComponent,
     ConsoNameDisplayPipe,
+    ScrollVanishDirective,
+    OffreServiceCardV2Component,
+    FaqItemComponent,
+    ActionItemComponent,
     KioskLocatorPopupComponent,
   ],
   imports: [
@@ -215,6 +223,10 @@ import { KioskLocatorPopupComponent } from 'src/app/components/kiosk-locator-pop
     BlockTransferSuccessPopupComponent,
     ItemConsoGaugeComponent,
     ConsoNameDisplayPipe,
+    ScrollVanishDirective,
+    OffreServiceCardV2Component,
+    FaqItemComponent,
+    ActionItemComponent,
   ],
   providers: [
     Contacts,

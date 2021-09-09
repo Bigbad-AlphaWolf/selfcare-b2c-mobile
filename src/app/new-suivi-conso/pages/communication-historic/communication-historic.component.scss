@@ -1,0 +1,78 @@
+@import 'src/app/app';
+
+:host {
+  width: 100%;
+}
+
+.historic-com-page {
+  text-align: start;
+  .loader-container {
+    width: 100%;
+    .header-loader {
+      width: 40%;
+      height: 27px;
+      margin-bottom: 10px;
+      border-radius: 20px;
+    }
+    .conso-loader {
+      width: 100%;
+      height: 200px;
+      margin-bottom: 30px;
+      border-radius: 10px;
+    }
+  }
+  .grouped-by-date-item {
+    margin-bottom: 40px;
+    .group-date {
+      font-size: 20px;
+      line-height: 1.5;
+    }
+    .group-items-list {
+      background-color: $white;
+      border-radius: 10px;
+      padding: 30px 13px;
+      margin-top: 20px;
+      .historic-item {
+        position: relative;
+        padding-left: 27px;
+        &:not(:last-child) {
+          padding-bottom: 15px;
+          border-bottom: solid 2px $silver;
+        }
+        &:not(:first-child) {
+          margin-top: 15px;
+        }
+        .com-item-icon {
+          position: absolute;
+          width: 18px;
+          height: 18px;
+          left: 0;
+        }
+        .item-top-infos,
+        .item-mid-infos,
+        .item-bottom-infos {
+          display: flex;
+          justify-content: space-between;
+          .com-type,
+          .com-price {
+            font-family: 'HelveticaNeueLTStd-Roman';
+            font-size: 18px;
+          }
+          .com-interlocutor,
+          .com-date,
+          .com-duration,
+          .com-counter {
+            font-family: 'HelveticaNeueLTStd-Roman';
+            font-size: 12px;
+          }
+        }
+        .item-mid-infos {
+          margin-bottom: 3px;
+          span {
+            line-height: 1.5;
+          }
+        }
+      }
+    }
+  }
+}
