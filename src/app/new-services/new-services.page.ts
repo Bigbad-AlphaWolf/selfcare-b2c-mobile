@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { IonSlides } from '@ionic/angular';
 import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish.directive';
 import {
   CategoryOffreServiceModel,
   OffreService,
@@ -15,6 +16,8 @@ import { OperationService } from '../services/oem-operation/operation.service';
 })
 export class NewServicesPage implements OnInit {
   @ViewChild('slides') sliders: IonSlides;
+  @ViewChildren(ScrollVanishDirective) dir;
+
   categories: CategoryOffreServiceModel[];
   currentSlideIndex = 0;
   slideOpts = {
@@ -35,11 +38,15 @@ export class NewServicesPage implements OnInit {
 
   ngOnInit() {}
 
-  ionViewWillEnter() {
-    this.getServices();
+  ionViewWillEnter(event?) {
+    this.getServices(event);
   }
 
-  getServices() {
+  search() {
+    this.dir.first.show();
+  }
+
+  getServices(event?) {
     this.loadingServices = true;
     this.servicesHasError = false;
     this.servicesByCategoriesArray = [];
@@ -71,10 +78,12 @@ export class NewServicesPage implements OnInit {
           }
           console.log(this.services);
           this.loadingServices = false;
+          event ? event.target.complete() : '';
         }),
         catchError((err) => {
           this.servicesHasError = true;
           this.loadingServices = false;
+          event ? event.target.complete() : '';
           return throwError(err);
         })
       )

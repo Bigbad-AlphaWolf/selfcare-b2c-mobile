@@ -28,4 +28,14 @@
 
 .dashboard-page {
   background-color: $grayDashboard;
+  ion-tab-button {
+    &:not(.tab-selected) {
+      ion-label {
+        font-family: 'HelveticaNeueLTStd-Roman';
+      }
+    }
+    ion-label {
+      margin-top: 6px;
+    }
+  }
 }

@@ -1,19 +1,26 @@
-<ion-header class="suivi-conso-header" [appScrollVanish]="scrollArea">
+<ion-header class="suivi-conso-header">
   <div class="header-top-block">
     <div class="title">
       Suivi conso
     </div>
-    <ion-icon name="search-outline" #searchIcon class="search-icon" (click)="search()"></ion-icon>
+    <ion-icon name="search-outline" #searchIcon class="search-icon search-icon2" (click)="search()"></ion-icon>
   </div>
-  <div class="search-bloc">
+</ion-header>
+<div class="absolute-block">
+  <div class="search-bloc search-bloc2">
     <ion-searchbar placeholder="Rechercher un compteur"></ion-searchbar>
   </div>
   <div class="suivi-conso-custom-tabs">
-    <div class="conso-tab scb-text-light-black" *ngFor="let tab of tabs, let i = index" (click)="setSlidesIndex(i)" [ngClass]="{'active-tab': i === currentSlideIndex}">{{tab.label}}</div>
+    <div class="conso-tab scb-text-light-black" *ngFor="let tab of tabs, let i = index" (click)="setSlidesIndex(i)"
+      [ngClass]="{'active-tab': i === currentSlideIndex}">{{tab.label}}</div>
   </div>
-</ion-header>
-
-<ion-content #scrollArea class="suivi-conso-content" [scrollEvents]="true">
+</div>
+<ion-content #scrollArea class="suivi-conso-content" [appScrollVanish]="scrollArea" [scrollEvents]="true"
+  [iconSearch]="'.search-icon2'" [searchBlock]="'.search-bloc2'">
+  <!-- <ion-refresher slot="fixed" (ionRefresh)="ionViewWillEnter($event)">
+    <ion-refresher-content pullingText="tirer pour rafraîchir" refreshingSpinner="circles">
+    </ion-refresher-content>
+  </ion-refresher> -->
   <ion-slides [options]="slideOpts" #slides (ionSlideDidChange)="getCurrentSlide()">
     <ion-slide>
       <app-new-details-conso></app-new-details-conso>
@@ -25,5 +32,5 @@
       <app-transactions-historic></app-transactions-historic>
     </ion-slide>
   </ion-slides>
-  <div class="empty-div-effect"></div>
 </ion-content>
+<div class="empty-div-effect"></div>

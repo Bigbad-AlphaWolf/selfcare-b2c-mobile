@@ -452,7 +452,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goDetailsCom(number?: number) {
-    this.router.navigate(['/details-conso']);
+    this.router.navigate(['/new-prepaid-hybrid-dashboard']);
     number
       ? this.followAnalyticsService.registerEventFollow(
           'Voirs_details_dashboard',

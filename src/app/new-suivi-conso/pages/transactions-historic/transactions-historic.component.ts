@@ -40,7 +40,7 @@ export class TransactionsHistoricComponent implements OnInit {
     this.getTransactionsHistoric();
   }
 
-  getTransactionsHistoric() {
+  getTransactionsHistoric(event?) {
     this.loadingTransactions = true;
     this.transactionsHasError = false;
     this.transactionsEmpty = false;
@@ -53,9 +53,11 @@ export class TransactionsHistoricComponent implements OnInit {
           this.historicTransactions = this.processTransactions(
             res.listPurchase
           );
+          event ? event.target.complete() : '';
         }),
         catchError((err) => {
           this.loadingTransactions = false;
+          event ? event.target.complete() : '';
           throw new Error(err);
         })
       )

@@ -25,12 +25,6 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
       label: 'Services',
       route: 'my-services',
     },
-    // {
-    //   defaultIcon: 'people-outline',
-    //   activeIcon: 'people',
-    //   label: 'Communauté',
-    //   route: '',
-    // },
     {
       defaultIcon: 'help-buoy-outline',
       activeIcon: 'help-buoy',

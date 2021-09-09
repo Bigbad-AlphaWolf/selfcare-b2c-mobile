@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChildren } from '@angular/core';
+import {
+  Component,
+  NgZone,
+  OnInit,
+  AfterViewInit,
+  ViewChildren,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { catchError, tap } from 'rxjs/operators';
@@ -113,14 +119,21 @@ export class DashboardHomeComponent implements OnInit {
     private appliRouting: ApplicationRoutingService,
     private omService: OrangeMoneyService,
     private modalController: ModalController,
-    private bsService: BottomSheetService
+    private bsService: BottomSheetService,
+    private zone: NgZone
   ) {}
 
   ngOnInit() {}
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
+    this.zone.run(() => {
+      console.log('force update the screen');
+    });
+  }
+
+  ionViewWillEnter(event?) {
     this.getCurrentSubscription();
-    this.getUserConsommations();
+    this.getUserConsommations(event);
   }
 
   getCurrentSubscription() {
@@ -167,7 +180,7 @@ export class DashboardHomeComponent implements OnInit {
     );
   }
 
-  getUserConsommations() {
+  getUserConsommations(event?) {
     this.loadingConso = true;
     this.consoHasError = false;
     this.consoService
@@ -176,10 +189,12 @@ export class DashboardHomeComponent implements OnInit {
         tap((conso) => {
           this.loadingConso = false;
           conso.length ? this.processConso(conso) : (this.consoHasError = true);
+          event ? event.target.complete() : '';
         }),
         catchError((err) => {
           this.consoHasError = true;
           this.loadingConso = false;
+          event ? event.target.complete() : '';
           throw new Error(err);
         })
       )

@@ -22,7 +22,7 @@ export class NewDetailsConsoComponent implements OnInit {
     this.getUserConsoInfos();
   }
 
-  getUserConsoInfos() {
+  getUserConsoInfos(event?) {
     this.loadingConso = true;
     this.consoService
       .getUserCunsomation()
@@ -30,13 +30,20 @@ export class NewDetailsConsoComponent implements OnInit {
         tap((res) => {
           this.userConso = this.processDetailsConso(res);
           this.loadingConso = false;
+          event ? event.target.complete() : '';
         }),
         catchError((err) => {
           this.loadingConso = false;
+          event ? event.target.complete() : '';
           return throwError(err);
         })
       )
       .subscribe();
+  }
+
+  toCamelCase(categoryName: string) {
+    let first = categoryName.substr(0, 1).toUpperCase();
+    return first + categoryName.substr(1).toLowerCase();
   }
 
   processDetailsConso(conso: NewUserConsoModel[]) {

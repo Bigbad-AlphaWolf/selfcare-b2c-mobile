@@ -19,7 +19,7 @@ export const displayDate = (date) => {
         new Date(
           formattedDate[1] + '/' + formattedDate[0] + '/' + formattedDate[2]
         ),
-        'fullDate'
+        'd MMMM y'
       );
   }
 };

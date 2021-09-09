@@ -1,7 +1,7 @@
 @import 'src/app/app';
 
 .dashboard-header {
-  padding: 17px 15px 13px;
+  padding: 17px 15px 0;
   .header-top-block {
     display: flex;
     justify-content: space-between;
@@ -21,23 +21,19 @@
       :not(:last-child) {
         margin-right: 20px;
       }
-      .search-icon {
+      .search-icon,
+      .bell-icon {
         font-size: 26px;
       }
-    }
-  }
-  .search-bloc {
-    margin-top: 15px;
-    ion-searchbar {
-      border: solid 2px $grayDashboard;
-      border-radius: 10px;
     }
   }
 }
 
 .home-dashboard-content {
   --ion-background-color: #f3f3f8;
-  --padding-bottom: 50px;
+  --padding-bottom: 250px;
+  // --padding-top: 80px;
+  position: relative;
   .stories-bloc {
     height: 132px;
     width: 100%;
@@ -176,16 +172,35 @@
       }
     }
   }
-  .empty-div-effect {
-    position: fixed;
-    bottom: -15px;
-    left: 0;
-    width: 100%;
-    height: 75px;
-    background-image: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0),
-      rgba(0, 0, 0, 0.1)
-    );
+}
+
+.absolute-block {
+  position: fixed;
+  width: 100%;
+  top: 64px;
+  left: 0;
+  background-color: $white;
+  z-index: 10;
+  padding-bottom: 15px;
+  .search-bloc {
+    margin-top: 15px;
+    padding: 0 15px;
+    ion-searchbar {
+      background-color: $white;
+      border: solid 2px $grayDashboard;
+      border-radius: 10px;
+    }
   }
+}
+.empty-div-effect {
+  position: fixed;
+  bottom: -15px;
+  left: 0;
+  width: 100%;
+  height: 75px;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.1)
+  );
 }

@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { NavController } from '@ionic/angular';
 import { FIND_AGENCE_EXTERNAL_URL } from 'src/shared';
+import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish.directive';
 import { BesoinAideType } from '../models/enums/besoin-aide-type.enum';
 import { OffreService } from '../models/offre-service.model';
 import { OMCustomerStatusModel } from '../models/om-customer-status.model';
@@ -17,6 +18,7 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
   styleUrls: ['./new-assistance-hub-v2.page.scss'],
 })
 export class NewAssistanceHubV2Page implements OnInit {
+  @ViewChildren(ScrollVanishDirective) dir;
   moreActions = [
     {
       act: 'IBOU_CONTACT',
@@ -41,15 +43,20 @@ export class NewAssistanceHubV2Page implements OnInit {
   constructor(
     private operationService: OperationService,
     private router: Router,
-    private navController: NavController,
     private inAppBrowser: InAppBrowser,
     private followAnalyticsService: FollowAnalyticsService,
     private dashboardService: DashboardService,
     private orangeMoneyService: OrangeMoneyService
   ) {}
 
-  ngOnInit() {
-    this.fetchAllHelpItems();
+  ngOnInit() {}
+
+  ionViewWillEnter(event?) {
+    this.fetchAllHelpItems(event);
+  }
+
+  search() {
+    this.dir.first.show();
   }
 
   async checkStatus() {
@@ -85,7 +92,7 @@ export class NewAssistanceHubV2Page implements OnInit {
     return response;
   }
 
-  fetchAllHelpItems() {
+  fetchAllHelpItems(event?) {
     this.loadingHelpItems = true;
     this.operationService.getServicesByFormule(null, true).subscribe(
       (res) => {
@@ -97,9 +104,11 @@ export class NewAssistanceHubV2Page implements OnInit {
           'event'
         );
         this.splitHelpItemsByType();
+        event ? event.target.complete() : '';
       },
       (err) => {
         this.loadingHelpItems = false;
+        event ? event.target.complete() : '';
         this.followAnalyticsService.registerEventFollow(
           'Assistance_hub_affichage_error',
           'error',

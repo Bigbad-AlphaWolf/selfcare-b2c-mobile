@@ -1,4 +1,4 @@
-<ion-header class="dashboard-header" [appScrollVanish]="scrollArea">
+<ion-header class="dashboard-header">
   <div class="header-top-block">
     <ion-menu-button class="menu-btn-container">
       <img class="icon-menu" src="/assets/images/menu@3x.png" alt="" />
@@ -7,16 +7,23 @@
       {{currentMsisdn}}
     </div>
     <div class="header-right-bloc">
-      <ion-icon name="search-outline" class="search-icon" (click)="search()"></ion-icon>
-      <ion-icon name="notifications-outline" class="search-icon"></ion-icon>
+      <ion-icon name="search-outline" class="search-icon search-icon1" (click)="search()"></ion-icon>
+      <ion-icon name="notifications-outline" class="bell-icon"></ion-icon>
     </div>
-  </div>
-  <div class="search-bloc">
-    <ion-searchbar placeholder="Que souhaitez-vous ?"></ion-searchbar>
   </div>
 </ion-header>
 
-<ion-content class="home-dashboard-content" #scrollArea [scrollEvents]="true">
+<div class="absolute-block">
+  <div class="search-bloc search-bloc1">
+    <ion-searchbar placeholder="Que souhaitez-vous ?"></ion-searchbar>
+  </div>
+</div>
+<ion-content class="home-dashboard-content" #scrollArea [scrollEvents]="true" [appScrollVanish]="scrollArea"
+  [iconSearch]="'.search-icon1'" [searchBlock]="'.search-bloc1'" [homeDashboard]="true">
+  <!-- <ion-refresher slot="fixed" (ionRefresh)="ionViewWillEnter($event)">
+    <ion-refresher-content pullingText="tirer pour rafraîchir" refreshingSpinner="circles">
+    </ion-refresher-content>
+  </ion-refresher> -->
   <div class="stories-bloc"></div>
   <div class="cards-bloc">
     <div class="text-bloc">
@@ -108,5 +115,5 @@
       <span class="scb-text-orange voir-details" (click)="consultConsoDetails(1)">Voir tout</span>
     </div>
   </div>
-  <div class="empty-div-effect"></div>
 </ion-content>
+<div class="empty-div-effect"></div>

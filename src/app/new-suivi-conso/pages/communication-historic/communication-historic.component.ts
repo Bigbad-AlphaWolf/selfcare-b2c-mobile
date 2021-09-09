@@ -24,7 +24,7 @@ export class CommunicationHistoricComponent implements OnInit {
     this.getPrepaidUserHistory();
   }
 
-  public getPrepaidUserHistory() {
+  public getPrepaidUserHistory(event?) {
     this.loadingComHistoric = true;
     this.hasError = false;
     this.emptyHistoric = false;
@@ -33,9 +33,11 @@ export class CommunicationHistoricComponent implements OnInit {
         this.emptyHistoric = !res?.length;
         this.comHistoric = this.processCommunications(res);
         this.loadingComHistoric = false;
+        event ? event.target.complete() : '';
       },
       () => {
         this.hasError = true;
+        event ? event.target.complete() : '';
         this.loadingComHistoric = false;
       }
     );

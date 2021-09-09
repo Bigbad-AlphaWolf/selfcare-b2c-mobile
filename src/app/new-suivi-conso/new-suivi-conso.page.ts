@@ -29,25 +29,26 @@ export class NewSuiviConsoPage implements OnInit {
   historicComPage: CommunicationHistoricComponent;
   @ViewChild(TransactionsHistoricComponent)
   transactionHistoricPage: TransactionsHistoricComponent;
+  @ViewChild('searchIcon') iconToggleSearch;
 
   constructor() {}
 
   ngOnInit() {}
 
-  ionViewWillEnter() {
-    this.refreshData();
+  ionViewWillEnter(event?) {
+    this.refreshData(event);
   }
 
-  refreshData() {
+  refreshData(event?) {
     switch (this.currentSlideIndex) {
       case 0:
-        this.consoPage.getUserConsoInfos();
+        this.consoPage.getUserConsoInfos(event);
         break;
       case 1:
-        this.historicComPage.getPrepaidUserHistory();
+        this.historicComPage.getPrepaidUserHistory(event);
         break;
       case 2:
-        this.transactionHistoricPage.getTransactionsHistoric();
+        this.transactionHistoricPage.getTransactionsHistoric(event);
         break;
     }
   }

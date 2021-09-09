@@ -9,7 +9,7 @@
   </ng-container>
   <ng-template #consoDetails>
     <div class="conso-category-item" *ngFor="let categoryConso of userConso">
-      <span class="category-name">{{categoryConso?.category}}</span>
+      <span class="category-name">{{toCamelCase(categoryConso?.category)}}</span>
       <div class="category-counters">
         <div class="counter-item" *ngFor="let counter of categoryConso?.consumations">
           <div class="counter-top-bloc">
