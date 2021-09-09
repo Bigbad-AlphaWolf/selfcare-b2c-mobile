@@ -1,34 +1,10 @@
-<div class="list-preview-stories">
-	<div (click)="presentModal()" class="preview-story">
-		<div class="mask read">
+<div *ngIf="storiesByCategory?.length" class="list-preview-stories">
+	<div (click)="presentModal(storyCategorized?.stories)" *ngFor="let storyCategorized of storiesByCategory" class="preview-story">
+		<div class="mask">
 			<img src="assets/images/onboarding4.png" alt="">
 		</div>
 		<div class="title">
-			Promos
-		</div>
-	</div>
-	<div (click)="presentModal()" class="preview-story">
-		<div class="mask">
-			<img src="assets/images/article-img.png" alt="">
-		</div>
-		<div class="title">
-			Tutos
-		</div>
-	</div>
-	<div class="preview-story">
-		<div class="mask read">
-			<img src="assets/images/04-boutons-01-illustrations-21-ibou-assistance.png" alt="">
-		</div>
-		<div class="title">
-			Bons plans
-		</div>
-	</div>
-	<div class="preview-story">
-		<div class="mask">
-			<img src="assets/images/04-boutons-01-illustrations-21-ibou-assistance.png" alt="">
-		</div>
-		<div class="title">
-			Annonces
+			{{ storyCategorized?.categorie?.libelle }}
 		</div>
 	</div>
 </div>

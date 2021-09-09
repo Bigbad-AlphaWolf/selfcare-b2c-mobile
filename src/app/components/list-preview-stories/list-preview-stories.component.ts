@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {AnimationController, ModalController} from '@ionic/angular';
+import {tap} from 'rxjs/operators';
+import {Story, StoryOem} from 'src/app/models/story-oem.model';
+import {StoriesService} from 'src/app/services/stories-service/stories.service';
 import {VisualizeStoriesComponent} from '../visualize-stories/visualize-stories.component';
 
 @Component({
@@ -8,11 +11,34 @@ import {VisualizeStoriesComponent} from '../visualize-stories/visualize-stories.
   styleUrls: ['./list-preview-stories.component.scss']
 })
 export class ListPreviewStoriesComponent implements OnInit {
-  constructor(public modalController: ModalController, public animationCtrl: AnimationController) {}
+  storiesByCategory: {
+    categorie: {
+      libelle?: string;
+      ordre?: number;
+      code?: string;
+      zoneAffichage?: string;
+    };
+    stories: Story[];
+  }[];
+  constructor(public modalController: ModalController, public animationCtrl: AnimationController, private storiesService: StoriesService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.fetchUserStories();
+  }
 
-  async presentModal() {
+  fetchUserStories() {
+    this.storiesService
+      .getCurrentStories()
+      .pipe(
+        tap((res: any) => {
+          console.log('res', res);
+          console.log('groupeStoriesByCategory', this.storiesService.groupeStoriesByCategory(res));
+          this.storiesByCategory = this.storiesService.groupeStoriesByCategory(res);
+        })
+      )
+      .subscribe();
+  }
+  async presentModal(listStories: Story[]) {
     const enterAnimation = (baseEl: any) => {
       const backdropAnimation = this.animationCtrl
         .create()
@@ -22,10 +48,7 @@ export class ListPreviewStoriesComponent implements OnInit {
       const wrapperAnimation = this.animationCtrl
         .create()
         .addElement(baseEl.querySelector('.modal-wrapper')!)
-        .keyframes([
-          {offset: 0, opacity: '0', transform: 'scale(0)'},
-          {offset: 1, opacity: '0.99', transform: 'scale(1)'}
-        ]);
+        .keyframes([{offset: 0, opacity: '0', transform: 'scale(0)'}, {offset: 1, opacity: '0.99', transform: 'scale(1)'}]);
 
       return this.animationCtrl
         .create()
@@ -41,10 +64,11 @@ export class ListPreviewStoriesComponent implements OnInit {
 
     const modal = await this.modalController.create({
       component: VisualizeStoriesComponent,
-      //enterAnimation,
-      //leaveAnimation,
       swipeToClose: true,
-      mode: 'ios'
+      mode: 'ios',
+      componentProps: {
+        stories: listStories
+      }
     });
     return await modal.present();
   }

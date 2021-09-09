@@ -1,17 +1,22 @@
 import {
 	Component,
+  Input,
   OnDestroy,
   OnInit,
   QueryList,
   ViewChildren,
 } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { StoryOem } from 'src/app/models/story-oem.model';
 import { StoriesProgressBarComponent } from '../stories-progress-bar/stories-progress-bar.component';
 import { VisualizeStoryComponent } from '../visualize-story/visualize-story.component';
 
 import SwiperCore, { EffectCoverflow, EffectFade, EffectFlip, Navigation, Pagination } from 'swiper';
 import { IonicSwiper } from '@ionic/angular';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { TYPE_ACTION_ON_BANNER } from 'src/shared';
+import { tap } from 'rxjs/operators';
+import { StoriesService } from 'src/app/services/stories-service/stories.service';
 
 SwiperCore.use([IonicSwiper, Navigation, Pagination, EffectFade, EffectCoverflow, EffectCoverflow, EffectFlip]);
 
@@ -21,83 +26,14 @@ SwiperCore.use([IonicSwiper, Navigation, Pagination, EffectFade, EffectCoverflow
   styleUrls: ['./visualize-stories.component.scss'],
 })
 export class VisualizeStoriesComponent implements OnInit, OnDestroy {
-  stories: StoryOem[] = [
-    {
-      name: 'test 1',
-      description: 'etst',
-      shortlabel: 'shortLabel',
-      longLabel: 'longLabel',
-      storyContent: 'assets/images/story-default.webp',
-      categorieOffreService: null,
-      action: {
-        label: 'Envoyer ',
-        description: 'send money',
-        url: null,
-        typeAction: 'REDIRECTION',
-      },
-      audio: null,
-      type: 'IMAGE',
-      duration: 5000,
-    },
-    {
-      name: 'test 2',
-      description: 'etst',
-      shortlabel: 'shortLabel',
-      longLabel: 'longLabel',
-      storyContent: 'assets/images/story-default-2.webp',
-      categorieOffreService: null,
-      action: {
-        label: 'Envoyer ',
-        description: 'send money',
-        url: null,
-        typeAction: 'REDIRECTION',
-      },
-      audio: null,
-      type: 'IMAGE',
-      duration: 5000,
-    },
-    {
-      name: 'test 4',
-      description: 'etst',
-      shortlabel: 'shortLabel',
-      longLabel: 'longLabel',
-      storyContent: 'assets/images/story-default-2.webp',
-      categorieOffreService: null,
-      action: {
-        label: 'Envoyer ',
-        description: 'send money',
-        url: null,
-        typeAction: 'REDIRECTION',
-      },
-      audio: 'assets/audio.mp3',
-      type: 'IMAGE',
-      duration: 5000,
-    },
-    {
-      name: 'test 3',
-      description: 'etst',
-      shortlabel: 'shortLabel',
-      longLabel: 'longLabel',
-      storyContent: 'assets/images/story-default.webp',
-      categorieOffreService: null,
-      action: {
-        label: 'Envoyer ',
-        description: 'send money',
-        url: null,
-        typeAction: 'REDIRECTION',
-      },
-      audio: null,
-      type: 'IMAGE',
-      duration: 5000,
-    },
-  ];
+  @Input() stories: StoryOem[];
   private slides;
   @ViewChildren(StoriesProgressBarComponent, { emitDistinctChangesOnly: true })
   storiesProgressBarView: QueryList<StoriesProgressBarComponent>;
   @ViewChildren(VisualizeStoryComponent)
   storiesView: QueryList<VisualizeStoryComponent>;
   currentSlideIndex = 0;
-  constructor(private modalCtrl: ModalController) {}
+  constructor(private modalCtrl: ModalController, private navCtrl: NavController, private iab: InAppBrowser, private storiesServ: StoriesService) {}
 
   ngOnInit() {}
 
@@ -110,28 +46,28 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
     this.modalCtrl.dismiss();
   }
 
-
 	setSwiperInstance(ev) {
     this.slides = ev;
   }
 
   ngAfterViewInit() {
-    this.deactiveStoryMedia(this.currentSlideIndex - 1);
-    this.startAnimateProgressBar(this.currentSlideIndex);
-    this.activeStoryMedia(this.currentSlideIndex);
+    //this.deactiveStoryMedia(this.currentSlideIndex - 1);
+    //this.startAnimateProgressBar(this.currentSlideIndex);
+    //this.activeStoryMedia(this.currentSlideIndex);
   }
 
 	playStory(swiper: any, event?: any) {
-		//console.log('swiper', swiper, 'event', event);
-		//const progressBarStory: StoriesProgressBarComponent =
-		//this.storiesProgressBarView.toArray()[this.currentSlideIndex];
-		//	progressBarStory.playStoryProgress();
+		const progressBarStory: StoriesProgressBarComponent =
+		this.storiesProgressBarView.toArray()[this.currentSlideIndex];
+			progressBarStory.playStoryProgress();
 	}
 
-	pauseStory() {
-		//const progressBarStory: StoriesProgressBarComponent =
-		//this.storiesProgressBarView.toArray()[this.currentSlideIndex];
-		//progressBarStory.pauseStoryProgress();
+	pauseStory(event: any) {
+		console.log('PauseStory', event);
+
+		const progressBarStory: StoriesProgressBarComponent =
+		this.storiesProgressBarView.toArray()[this.slides?.activeIndex];
+		progressBarStory.pauseStoryProgress();
 	}
 
   onProgressFinish(event: any) {
@@ -145,24 +81,35 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
   slideChange() {
-		this.deactiveStoryMedia(this.currentSlideIndex);
-		this.stopAnimateProgressBar(this.currentSlideIndex);
+		this.seeStory()
 		if(this.currentSlideIndex > this.slides?.activeIndex ) {
 			this.emptyProgressBar(this.currentSlideIndex)
 		} else {
 			this.fillProgressBar(this.slides?.activeIndex);
 		}
+		this.deactiveStoryMedia(this.currentSlideIndex);
+		this.stopAnimateProgressBar(this.currentSlideIndex);
 		this.currentSlideIndex = this.slides?.activeIndex;
-		this.startAnimateProgressBar(this.currentSlideIndex);
-		this.activeStoryMedia(this.currentSlideIndex);
   }
+
+	seeStory() {
+		const storyComponent: VisualizeStoryComponent =
+      this.storiesView.toArray()[this.currentSlideIndex];
+			if(!storyComponent.story.read) {
+				this.storiesServ.seeStory(storyComponent.story).pipe(
+					tap((res: any) => {
+						storyComponent.userReadStory();
+					})
+				).subscribe()
+			}
+	}
 
 
   activeStoryMedia(index: number) {
     const storyComponent: VisualizeStoryComponent =
       this.storiesView.toArray()[index];
     if (storyComponent && storyComponent.story && storyComponent.story.audio) {
-
+			storyComponent.playMedia();
     }
   }
 
@@ -172,6 +119,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
       this.storiesView.toArray()[index];
 
     if (storyComponent && storyComponent.story && storyComponent.story.audio) {
+			storyComponent.pauseMedia();
     }
   }
 
@@ -203,11 +151,45 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   setProgressBarDuration(duration: number, index: number) {
     const progressBarStory: StoriesProgressBarComponent =
       this.storiesProgressBarView.toArray()[index];
-    progressBarStory.story.duration = duration;
+			progressBarStory.setProgressStoryDuration(duration);
   }
+
+	onAudioReady(event: any) {
+		this.activeStoryMedia(this.currentSlideIndex);
+		this.startAnimateProgressBar(this.currentSlideIndex);
+	}
+
+	onImageReady(isCurrentstory: any) {
+		if (isCurrentstory) {
+			if(!this.stories[this.currentSlideIndex].audio) {
+				this.startAnimateProgressBar(this.currentSlideIndex);
+			}
+		}
+	}
 
   slideTransitionStart() {
     //console.log('slideTransitionStart');
     //console.log(2);
   }
+
+	clickOnSlide(event: any) {
+		if(event?.btn) {
+			const action = event?.action;
+			this.close();
+			this.onActionBtnClicked(action);
+		}
+	}
+
+	onActionBtnClicked(data: { typeAction: string; description: string; url: string; label: string; }) {
+		switch (data.typeAction) {
+			case TYPE_ACTION_ON_BANNER.DEEPLINK:
+				this.navCtrl.navigateForward([data.url]);
+				break;
+			case TYPE_ACTION_ON_BANNER.REDIRECTION:
+				this.iab.create(data.url, '_blank');
+				break;
+			default:
+				break;
+		}
+	}
 }

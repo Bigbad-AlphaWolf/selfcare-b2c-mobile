@@ -4,7 +4,7 @@
 				<app-stories-progress-bar [isCurrentStory]="id === currentSlideIndex" [story]="item" [isLast]="last"  [idStory]="currentSlideIndex" (idStoryChange)="onProgressFinish($event)" (finish)="close()" ></app-stories-progress-bar>
 			</ng-container>
 		</div>
-		<swiper effect="coverflow" [slidesPerView]="1" (swiper)="setSwiperInstance($event)" #slides (slideChange)="slideChange()" (touchStart)="pauseStory()"  (touchEnd)="playStory($event)" >
-			<ng-template swiperSlide *ngFor="let item of stories; let last = last; let id=index"><app-visualize-story #story [isCurrentStory]="id === currentSlideIndex" [story]="item" (mediaDurationChange)="setProgressBarDuration($event, id)" ></app-visualize-story></ng-template>
+		<swiper effect="coverflow" [slidesPerView]="1" (swiper)="setSwiperInstance($event)" #slides (touchstart)="clickOnSlide($event);" (slideChange)="slideChange()"  >
+			<ng-template swiperSlide *ngFor="let item of stories; let last = last; let id=index"><app-visualize-story #story (touch)="clickOnSlide($event)" [isCurrentStory]="id === currentSlideIndex" [story]="item" (mediaDurationChange)="setProgressBarDuration($event, id)" (audioReady)="onAudioReady($event)" (imageReady)="onImageReady($event)" ></app-visualize-story></ng-template>
 		</swiper>
 	</div>

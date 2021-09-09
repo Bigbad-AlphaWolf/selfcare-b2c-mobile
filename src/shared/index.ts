@@ -157,7 +157,8 @@ export const TYPE_QUESTION_SATISFACTION_FORM = {
 };
 
 export const STORIES_OEM_CONFIG = {
-  MAX_DURATION_BY_ELEMENT: 20000 // en millisecondes
+  MAX_DURATION_BY_ELEMENT: 20000, // en millisecondes
+  DEFAULT_DURATION_BY_ELEMENT: 5000
 };
 
 export function getNOAvatartUrlImage() {
