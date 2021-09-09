@@ -4,6 +4,7 @@ import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {PalierModel} from 'src/app/models/palier.model';
 import {BoosterModel} from 'src/app/models/booster.model';
+import {PROFILE_TYPE_HYBRID, PROFILE_TYPE_HYBRID_1, PROFILE_TYPE_HYBRID_2} from 'src/app/dashboard';
 
 const ls = new SecureLS({encodingType: 'aes'});
 export const REGEX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
@@ -567,9 +568,7 @@ export interface ProfilModel {
 
 export function getLastUpdatedDateTimeText() {
   const date = new Date();
-  const lastDate = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(
-    -2
-  )}/${date.getFullYear()}`;
+  const lastDate = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
   const lastDateTime = `${date.getHours()}h` + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
   return `${lastDate} à ${lastDateTime}`;
 }
@@ -902,8 +901,7 @@ export const HelpModalDefaultContent: {
       subOptions: [
         {
           title: 'Rendez-vous sur la page d’accueil en mode connecté',
-          subtitle:
-            'Accédez à la page de connexion puis connectez-vous avec le compte ayant rattaché votre numéro en question'
+          subtitle: 'Accédez à la page de connexion puis connectez-vous avec le compte ayant rattaché votre numéro en question'
         },
         {
           title: 'Accédez au menu « Mon compte »',
@@ -963,14 +961,12 @@ export const HelpModalDefaultContent: {
       action: '',
       subOptions: [
         {
-          title:
-            '<span>Accéder aux Paramètres &nbsp <img class="item-icon" src="/assets/images/parameters.png" /></span>',
+          title: '<span>Accéder aux Paramètres &nbsp <img class="item-icon" src="/assets/images/parameters.png" /></span>',
           subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
           icon: 'settings'
         },
         {
-          title:
-            '<span>Sélectionner la partie Sans fil et réseau &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
+          title: '<span>Sélectionner la partie Sans fil et réseau &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
           subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
           icon: 'wifi'
         },
@@ -1003,15 +999,12 @@ export const HelpModalDefaultContent: {
           subtitle: 'Activez vos données mobile sur la Sim Orange'
         },
         {
-          title:
-            'Une fois connecté, cliquez sur le menu de gauche(trois traits), puis cliquez sur l’entrée "Mon compte"',
+          title: 'Une fois connecté, cliquez sur le menu de gauche(trois traits), puis cliquez sur l’entrée "Mon compte"',
           subtitle: 'Cliquez sur le menu en haut à gauche de l’écran puis sur "Mon compte"'
         },
         {
-          title:
-            'Une fois sur "Mon compte", cliquez sur "Rattachez une ligne" et saisissez votre numéro de téléphone fixe',
-          subtitle:
-            'Saisissez votre numéro de téléphone fixe pour pouvoir le lier à votre compte et suivre sa consommation'
+          title: 'Une fois sur "Mon compte", cliquez sur "Rattachez une ligne" et saisissez votre numéro de téléphone fixe',
+          subtitle: 'Saisissez votre numéro de téléphone fixe pour pouvoir le lier à votre compte et suivre sa consommation'
         },
         {
           title: 'Et enfin suivez les instructions',
@@ -1028,8 +1021,7 @@ export const HelpModalDefaultContent: {
       action: '',
       subOptions: [
         {
-          title:
-            'Une fois connecté, cliquez sur le bouton Ibou puis cliquez sur "Besoin d’aide" puis "Contacter l’assistance"',
+          title: 'Une fois connecté, cliquez sur le bouton Ibou puis cliquez sur "Besoin d’aide" puis "Contacter l’assistance"',
           subtitle: 'Suivre ces instructions'
         },
         {
@@ -1092,14 +1084,12 @@ export const HelpModalRegisterOMContent: {
       action: '',
       subOptions: [
         {
-          title:
-            '<span>Accéder aux Paramètres &nbsp <img class="item-icon" src="/assets/images/parameters.png" /></span>',
+          title: '<span>Accéder aux Paramètres &nbsp <img class="item-icon" src="/assets/images/parameters.png" /></span>',
           subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
           icon: 'settings'
         },
         {
-          title:
-            '<span>Sélectionner la partie Sans fil et réseau &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
+          title: '<span>Sélectionner la partie Sans fil et réseau &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
           subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
           icon: 'wifi'
         },
@@ -1202,8 +1192,7 @@ export const HelpModalConfigApnContent = {
     {
       title: '4) Allez sur Noms des points d’accès (APN)',
       subtitle:
-        'Accéder au menu « Réseaux mobiles »' +
-        '( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+        'Accéder au menu « Réseaux mobiles »' + '( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
       type: '',
       url: '',
       action: 'POPUP'
@@ -1295,3 +1284,7 @@ export const TRANSFER_OM_BALANCE_NOT_ALLOWED = "Le montant que vous avez saisi n
 export const FEES_ERROR = 'Erreur lors de la récupération des frais. Réactualisez';
 
 export const NO_RECENTS_MSG = 'Pas de bénéficiaire récent pour cette opération';
+
+export const isProfileHybrid = (profile: string) => {
+  return profile === PROFILE_TYPE_HYBRID || profile === PROFILE_TYPE_HYBRID_1 || profile === PROFILE_TYPE_HYBRID_2;
+};

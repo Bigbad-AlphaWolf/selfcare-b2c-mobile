@@ -1,0 +1,33 @@
+<div class="historic-com-page">
+  <ng-container *ngIf="loadingComHistoric else historyCom">
+    <div class="loader-container">
+      <ion-skeleton-text animated class="header-loader"></ion-skeleton-text>
+      <ion-skeleton-text animated class="conso-loader"></ion-skeleton-text>
+      <ion-skeleton-text animated class="header-loader"></ion-skeleton-text>
+      <ion-skeleton-text animated class="conso-loader"></ion-skeleton-text>
+    </div>
+  </ng-container>
+  <ng-template #historyCom>
+    <div class="grouped-by-date-item" *ngFor="let groupCom of comHistoric">
+      <span class="group-date">{{displayDate(groupCom?.key)}}</span>
+      <div class="group-items-list">
+        <div class="historic-item" *ngFor="let item of groupCom?.value">
+          <img [src]="getCommunicationType(item)?.icon" class="com-item-icon" alt="">
+          <div class="item-top-infos">
+            <span class="com-type">{{getCommunicationType(item)?.label}}</span>
+            <span class="com-price scb-text-orange">{{'- ' + formatPrice(item)}}</span>
+          </div>
+          <div class="item-mid-infos">
+            <span class="com-interlocutor scb-text-gray">{{formatCalledMsisdn(item?.calledNumber) |
+              phoneNumberDisplay}}</span>
+            <span class="com-date scb-text-gray">{{item?.date}}</span>
+          </div>
+          <div class="item-bottom-infos">
+            <span class="com-duration scb-text-gray">{{item?.duration | formatSecondDate}}</span>
+            <span class="com-counter scb-text-gray">{{item?.chargeType1}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

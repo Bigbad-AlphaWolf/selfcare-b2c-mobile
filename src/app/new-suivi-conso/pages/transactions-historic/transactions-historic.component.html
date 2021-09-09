@@ -1,0 +1,36 @@
+<div class="historic-transaction-page">
+  <ng-container *ngIf="loadingTransactions else transactionsList">
+    <div class="loader-container">
+      <ion-skeleton-text animated class="header-loader"></ion-skeleton-text>
+      <ion-skeleton-text animated class="conso-loader"></ion-skeleton-text>
+      <ion-skeleton-text animated class="header-loader"></ion-skeleton-text>
+      <ion-skeleton-text animated class="conso-loader"></ion-skeleton-text>
+    </div>
+  </ng-container>
+  <ng-template #transactionsList>
+    <div class="transaction-by-day" *ngFor="let transactionGroup of historicTransactions">
+      <div class="transaction-day-title">{{displayDate(transactionGroup?.key)}}</div>
+      <div class="day-transactions-content">
+        <div class="transaction-item" *ngFor="let transaction of transactionGroup?.value"
+          (click)="openTransactionModal(transaction)">
+          <img class="transaction-icon" [src]="getTransactionIcon(transaction)" alt="">
+          <div class="left-bloc">
+            <span class="transaction-type">{{transaction?.name}}</span>
+            <span class="light-text scb-text-gray">{{transaction?.channel}}</span>
+            <span class="light-text scb-text-gray">{{transaction?.msisdnReceiver | phoneNumberDisplay}}
+              {{transaction?.msisdnReceiver === currentMsisdn ? ' (moi)' : ''}}</span>
+          </div>
+          <div class="right-bloc">
+            <span class="transaction-price scb-text-orange">
+              {{ transaction?.typeAchat === "TRANSFER" ? transaction?.amount - transaction?.fees : transaction?.amount
+              }}
+              {{ transaction.typeAchat === "SARGAL" ? 'Pts' : 'FCFA'}}
+            </span>
+            <span class="light-text scb-text-gray">{{transaction?.operationDate | date : 'dd/MM/yy à h:mm'}}</span>
+            <span class="light-text scb-text-gray"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

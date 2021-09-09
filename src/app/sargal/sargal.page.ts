@@ -3,23 +3,24 @@ import {
   GiftSargalCategoryItem,
   NO_AVATAR_ICON_URL,
   getLastUpdatedDateTimeText,
-  SargalStatusModel
+  SargalStatusModel,
 } from 'src/shared';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import {
   DashboardService,
-  downloadAvatarEndpoint
+  downloadAvatarEndpoint,
 } from '../services/dashboard-service/dashboard.service';
 import { SargalService } from '../services/sargal-service/sargal.service';
 import { SargalSubscriptionModel } from '../dashboard';
 import * as SecureLS from 'secure-ls';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { NavController } from '@ionic/angular';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-sargal',
   templateUrl: './sargal.page.html',
-  styleUrls: ['./sargal.page.scss']
+  styleUrls: ['./sargal.page.scss'],
 })
 export class SargalPage implements OnInit {
   currentProfile: string;
@@ -44,7 +45,8 @@ export class SargalPage implements OnInit {
     private authService: AuthenticationService,
     private dashbordServ: DashboardService,
     private sargalServ: SargalService,
-    private followService: FollowAnalyticsService
+    private followService: FollowAnalyticsService,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -69,7 +71,7 @@ export class SargalPage implements OnInit {
 
           const sargal = {
             sargalPts: this.userSargalPoints,
-            lastUpdate: this.sargalLastUpdate
+            lastUpdate: this.sargalLastUpdate,
           };
           ls.set('sargalPoints', sargal);
         }
@@ -86,7 +88,9 @@ export class SargalPage implements OnInit {
     this.getCategories();
     this.getCustomerSargalStatus();
   }
-  goToPreviousStep() {}
+  goToPreviousStep() {
+    this.navController.pop();
+  }
 
   goToCataloguePage() {
     this.router.navigate(['/sargal-catalogue', 'all']);
@@ -98,7 +102,7 @@ export class SargalPage implements OnInit {
       'event',
       {
         page: pageTitle,
-        msisdn: this.currentNumber
+        msisdn: this.currentNumber,
       }
     );
     this.router.navigate(['/sargal-catalogue', codeCategory]);
