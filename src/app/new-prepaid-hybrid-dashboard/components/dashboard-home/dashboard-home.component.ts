@@ -2,11 +2,11 @@ import {
   Component,
   NgZone,
   OnInit,
-  AfterViewInit,
   ViewChildren,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
+import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {
   SargalSubscriptionModel,
@@ -15,6 +15,7 @@ import {
   SARGAL_UNSUBSCRIPTION_ONGOING,
 } from 'src/app/dashboard';
 import { ScrollVanishDirective } from 'src/app/directives/scroll-vanish/scroll-vanish.directive';
+import { Story } from 'src/app/models/story-oem.model';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { BillsHubPage } from 'src/app/pages/bills-hub/bills-hub.page';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
@@ -25,6 +26,7 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
+import { StoriesService } from 'src/app/services/stories-service/stories.service';
 import { NewUserConsoModel } from 'src/app/services/user-cunsommation-service/user-conso-service.index';
 import { UserConsoService } from 'src/app/services/user-cunsommation-service/user-conso.service';
 import {
@@ -109,6 +111,17 @@ export class DashboardHomeComponent implements OnInit {
 
   canDoSOS: boolean;
 
+	storiesByCategory: {
+    categorie: {
+      libelle?: string;
+      ordre?: number;
+      code?: string;
+      zoneAffichage?: string;
+    };
+    stories: Story[];
+  }[];
+  isLoadingStories: boolean;
+
   constructor(
     private dashboardService: DashboardService,
     private authService: AuthenticationService,
@@ -120,7 +133,8 @@ export class DashboardHomeComponent implements OnInit {
     private omService: OrangeMoneyService,
     private modalController: ModalController,
     private bsService: BottomSheetService,
-    private zone: NgZone
+    private zone: NgZone,
+		private storiesService: StoriesService
   ) {}
 
   ngOnInit() {}
@@ -134,6 +148,25 @@ export class DashboardHomeComponent implements OnInit {
   ionViewWillEnter(event?) {
     this.getCurrentSubscription();
     this.getUserConsommations(event);
+		this.fetchUserStories();
+  }
+
+	fetchUserStories() {
+    this.isLoadingStories = true;
+    this.storiesService
+      .getCurrentStories()
+      .pipe(
+        tap((res: any) => {
+          this.isLoadingStories = false;
+          console.log('groupeStoriesByCategory', this.storiesService.groupeStoriesByCategory(res));
+          this.storiesByCategory = this.storiesService.groupeStoriesByCategory(res);
+        }),
+        catchError(err => {
+          this.isLoadingStories = false;
+          return of(err);
+        })
+      )
+      .subscribe();
   }
 
   getCurrentSubscription() {

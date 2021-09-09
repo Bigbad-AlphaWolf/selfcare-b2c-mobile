@@ -24,7 +24,9 @@
     <ion-refresher-content pullingText="tirer pour rafraîchir" refreshingSpinner="circles">
     </ion-refresher-content>
   </ion-refresher> -->
-  <div class="stories-bloc"></div>
+  <div class="stories-bloc">
+		<app-list-preview-stories *ngIf="!isLoadingStories || storiesByCategory.length" [storiesByCategory]="storiesByCategory"></app-list-preview-stories>
+	</div>
   <div class="cards-bloc">
     <div class="text-bloc">
       <span class="suivi-conso">Suivi conso</span>

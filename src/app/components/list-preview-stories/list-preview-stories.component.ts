@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {AnimationController, ModalController} from '@ionic/angular';
 import {tap} from 'rxjs/operators';
 import {Story, StoryOem} from 'src/app/models/story-oem.model';
@@ -11,6 +11,7 @@ import {VisualizeStoriesComponent} from '../visualize-stories/visualize-stories.
   styleUrls: ['./list-preview-stories.component.scss']
 })
 export class ListPreviewStoriesComponent implements OnInit {
+  @Input()
   storiesByCategory: {
     categorie: {
       libelle?: string;
@@ -20,24 +21,9 @@ export class ListPreviewStoriesComponent implements OnInit {
     };
     stories: Story[];
   }[];
-  constructor(public modalController: ModalController, public animationCtrl: AnimationController, private storiesService: StoriesService) {}
+  constructor(public modalController: ModalController, public animationCtrl: AnimationController) {}
 
-  ngOnInit() {
-    this.fetchUserStories();
-  }
-
-  fetchUserStories() {
-    this.storiesService
-      .getCurrentStories()
-      .pipe(
-        tap((res: any) => {
-          console.log('res', res);
-          console.log('groupeStoriesByCategory', this.storiesService.groupeStoriesByCategory(res));
-          this.storiesByCategory = this.storiesService.groupeStoriesByCategory(res);
-        })
-      )
-      .subscribe();
-  }
+  ngOnInit() {}
   async presentModal(listStories: Story[]) {
     const enterAnimation = (baseEl: any) => {
       const backdropAnimation = this.animationCtrl
