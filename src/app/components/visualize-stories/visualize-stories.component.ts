@@ -162,7 +162,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
 	onAudioReady(event: any) {
-		//this.seeStory();
+		this.seeStory();
 		this.activeStoryMedia(this.currentSlideIndex);
 		this.startAnimateProgressBar(this.currentSlideIndex);
 	}
@@ -171,7 +171,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 		if (isCurrentstory) {
 			if(!this.stories[this.currentSlideIndex].audio) {
 				this.startAnimateProgressBar(this.currentSlideIndex);
-				//this.seeStory();
+				this.seeStory();
 			}
 		}
 	}
