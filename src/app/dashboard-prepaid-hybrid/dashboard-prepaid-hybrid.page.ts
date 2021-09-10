@@ -124,6 +124,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       zoneAffichage?: string;
     };
     stories: Story[];
+    readAll: boolean;
   }[];
   isLoadingStories: boolean;
   constructor(

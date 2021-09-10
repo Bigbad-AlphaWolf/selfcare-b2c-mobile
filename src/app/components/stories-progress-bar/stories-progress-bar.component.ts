@@ -25,11 +25,7 @@ export class StoriesProgressBarComponent implements OnInit {
 
   startProgressBar(from: number = 1) {
     this.initConfigProgressBar();
-    console.log('from', from, 'totalSteps', this.totalSteps);
-
     for (let index = from + 1; index <= this.totalSteps; index++) {
-      console.log('from', from);
-
       this.setProgressBarEvolution(index);
     }
   }
@@ -37,7 +33,6 @@ export class StoriesProgressBarComponent implements OnInit {
   setProgressBarEvolution(index: number) {
     const idTimeOut = setTimeout(() => {
       this.currentProgressValue = Math.round(index * +this.stepValue * 100) / 100;
-      console.log('index', index);
 
       if (index === this.totalSteps) {
         this.idStoryChange.emit(true);
@@ -54,7 +49,6 @@ export class StoriesProgressBarComponent implements OnInit {
   setProgressBarEvolutionV2(index: number) {
     const idTimeOut = setInterval(() => {
       this.currentProgressValue += +this.stepValue;
-      console.log('index', index);
 
       if (index === this.totalSteps) {
         this.idStoryChange.emit(true);

@@ -43,6 +43,7 @@ export class StoriesService {
       zoneAffichage?: string;
     };
     stories: Story[];
+    readAll: boolean;
   }[] {
     console.log('list', list);
     let result: {
@@ -53,6 +54,7 @@ export class StoriesService {
         zoneAffichage: string;
       };
       stories: Story[];
+      readAll: boolean;
     }[] = [];
     let categories: {
       libelle: string;
@@ -68,23 +70,29 @@ export class StoriesService {
           return element.categorie.libelle === elt.libelle;
         })
       ) {
+        const listStoriesFilteredByCat = list
+          .filter(value => {
+            return value.categorieOffreService.libelle === elt.libelle;
+          })
+          .sort((val1, val2) => {
+            return +val2.read - +val1.read;
+          });
         result.push({
           categorie: elt,
-          stories: list
-            .filter(value => {
-              return value.categorieOffreService.libelle === elt.libelle;
-            })
-            .map(story => {
-              story.duration = STORIES_OEM_CONFIG.DEFAULT_DURATION_BY_ELEMENT;
-              return story;
-            })
+          stories: listStoriesFilteredByCat.map(story => {
+            story.duration = STORIES_OEM_CONFIG.DEFAULT_DURATION_BY_ELEMENT;
+            return story;
+          }),
+          readAll: !listStoriesFilteredByCat.filter(item => {
+            return item.read === false;
+          }).length
         });
       }
     });
     result = result.sort((elt1, elt2) => {
       return elt1.categorie.ordre - elt2.categorie.ordre;
     });
-    console.log('categories', result);
+    console.log('categorieshhree', result);
 
     return result;
   }

@@ -1,10 +1,16 @@
 <div *ngIf="storiesByCategory?.length" class="list-preview-stories">
 	<div (click)="presentModal(storyCategorized?.stories)" *ngFor="let storyCategorized of storiesByCategory" class="preview-story">
-		<div class="mask">
+		<div class="mask" [ngClass]=" { 'read': storyCategorized?.readAll } ">
 			<img src="assets/images/onboarding4.png" alt="">
 		</div>
 		<div class="title">
 			{{ storyCategorized?.categorie?.libelle }}
 		</div>
 	</div>
+	<div *ngIf="isLoadingStories" class="preview-story">
+		<ion-spinner name="crescent"></ion-spinner>
+	</div>
+	<span *ngIf="hasError" (click)="fetchUserStories()" class="error scb-text-red-error" >
+		Réessayer
+	</span>
 </div>

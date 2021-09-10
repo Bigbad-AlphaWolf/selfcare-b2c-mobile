@@ -111,17 +111,6 @@ export class DashboardHomeComponent implements OnInit {
 
   canDoSOS: boolean;
 
-	storiesByCategory: {
-    categorie: {
-      libelle?: string;
-      ordre?: number;
-      code?: string;
-      zoneAffichage?: string;
-    };
-    stories: Story[];
-  }[];
-  isLoadingStories: boolean;
-
   constructor(
     private dashboardService: DashboardService,
     private authService: AuthenticationService,
@@ -133,8 +122,7 @@ export class DashboardHomeComponent implements OnInit {
     private omService: OrangeMoneyService,
     private modalController: ModalController,
     private bsService: BottomSheetService,
-    private zone: NgZone,
-		private storiesService: StoriesService
+    private zone: NgZone
   ) {}
 
   ngOnInit() {}
@@ -148,25 +136,6 @@ export class DashboardHomeComponent implements OnInit {
   ionViewWillEnter(event?) {
     this.getCurrentSubscription();
     this.getUserConsommations(event);
-		this.fetchUserStories();
-  }
-
-	fetchUserStories() {
-    this.isLoadingStories = true;
-    this.storiesService
-      .getCurrentStories()
-      .pipe(
-        tap((res: any) => {
-          this.isLoadingStories = false;
-          console.log('groupeStoriesByCategory', this.storiesService.groupeStoriesByCategory(res));
-          this.storiesByCategory = this.storiesService.groupeStoriesByCategory(res);
-        }),
-        catchError(err => {
-          this.isLoadingStories = false;
-          return of(err);
-        })
-      )
-      .subscribe();
   }
 
   getCurrentSubscription() {

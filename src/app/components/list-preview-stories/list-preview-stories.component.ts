@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {AnimationController, ModalController} from '@ionic/angular';
-import {tap} from 'rxjs/operators';
-import {Story, StoryOem} from 'src/app/models/story-oem.model';
+import {of} from 'rxjs';
+import {catchError, tap} from 'rxjs/operators';
+import {Story} from 'src/app/models/story-oem.model';
 import {StoriesService} from 'src/app/services/stories-service/stories.service';
 import {VisualizeStoriesComponent} from '../visualize-stories/visualize-stories.component';
 
@@ -20,10 +21,36 @@ export class ListPreviewStoriesComponent implements OnInit {
       zoneAffichage?: string;
     };
     stories: Story[];
+    readAll: boolean;
   }[];
-  constructor(public modalController: ModalController, public animationCtrl: AnimationController) {}
+  isLoadingStories: boolean;
+  hasError: boolean;
+  constructor(public modalController: ModalController, public animationCtrl: AnimationController, private storiesService: StoriesService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.fetchUserStories();
+  }
+
+  fetchUserStories() {
+    this.isLoadingStories = true;
+    this.hasError = false;
+    this.storiesService
+      .getCurrentStories()
+      .pipe(
+        tap((res: any) => {
+          this.isLoadingStories = false;
+          console.log('groupeStoriesByCategory', this.storiesService.groupeStoriesByCategory(res));
+          this.storiesByCategory = this.storiesService.groupeStoriesByCategory(res);
+        }),
+        catchError(err => {
+          this.isLoadingStories = false;
+          this.hasError = true;
+          return of(err);
+        })
+      )
+      .subscribe();
+  }
+
   async presentModal(listStories: Story[]) {
     const enterAnimation = (baseEl: any) => {
       const backdropAnimation = this.animationCtrl

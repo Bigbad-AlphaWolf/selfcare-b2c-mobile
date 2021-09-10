@@ -51,6 +51,8 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+	// const startIndex =	this.retrieveSlideStartingIndex() === -1 ? 0 : this.retrieveSlideStartingIndex();
+		//this.slides.initialSlide = startIndex;
     //this.deactiveStoryMedia(this.currentSlideIndex - 1);
     //this.startAnimateProgressBar(this.currentSlideIndex);
     //this.activeStoryMedia(this.currentSlideIndex);
@@ -79,6 +81,12 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   slide(index: number) {
     this.slides?.slideTo(index);
   }
+
+	retrieveSlideStartingIndex() {
+		return this.stories.findIndex((item) => {
+			return item.read === false;
+		})
+	}
 
   slideChange() {
 		if(this.currentSlideIndex > this.slides?.activeIndex ) {
@@ -154,7 +162,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
 	onAudioReady(event: any) {
-		this.seeStory();
+		//this.seeStory();
 		this.activeStoryMedia(this.currentSlideIndex);
 		this.startAnimateProgressBar(this.currentSlideIndex);
 	}
@@ -163,7 +171,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 		if (isCurrentstory) {
 			if(!this.stories[this.currentSlideIndex].audio) {
 				this.startAnimateProgressBar(this.currentSlideIndex);
-				this.seeStory();
+				//this.seeStory();
 			}
 		}
 	}
