@@ -40,6 +40,11 @@ export class ScrollVanishDirective {
         'all 0.28s linear'
       );
       if (this.isForDashboard) {
+        this.renderer.setStyle(
+          this.element.nativeElement.children[0],
+          'transition',
+          'all 0.28s linear'
+        );
         this.hide();
       }
       this.renderer.setStyle(
@@ -57,13 +62,18 @@ export class ScrollVanishDirective {
 
   hide() {
     this.domCtrl.write(() => {
-      // if (this.isForDashboard) {
-      this.renderer.setStyle(
-        document.querySelector(this.searchBlockClassName),
-        'margin-top',
-        '0px'
-      );
-      // }
+      if (this.isForDashboard) {
+        this.renderer.setStyle(
+          this.element.nativeElement.children[0],
+          'margin-top',
+          '30px'
+        );
+        this.renderer.setStyle(
+          document.querySelector(this.searchBlockClassName),
+          'margin-top',
+          '0px'
+        );
+      }
       this.renderer.setStyle(
         document.querySelector(this.searchBlockClassName).children[0],
         'min-height',
@@ -107,9 +117,9 @@ export class ScrollVanishDirective {
     this.domCtrl.write(() => {
       if (this.isForDashboard) {
         this.renderer.setStyle(
-          this.element.nativeElement.children[1],
+          this.element.nativeElement.children[0],
           'margin-top',
-          '80px'
+          '100px'
         );
       }
       this.renderer.setStyle(
