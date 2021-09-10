@@ -1,8 +1,13 @@
 <ion-content class="dashboard-page">
   <ion-tabs>
     <ion-tab-bar slot="bottom">
-      <ion-tab-button [tab]="mytab?.route" *ngFor="let mytab of tabs">
-        <ion-icon [name]="mytab.activeIcon"></ion-icon>
+      <ion-tab-button [tab]="mytab?.route" *ngFor="let mytab of tabs" (click)="onTabChanged(mytab)">
+        <ng-container>
+          <ion-icon [name]="mytab.activeIcon" *ngIf="activeRoute === mytab.route else notActive"></ion-icon>
+        </ng-container>
+        <ng-template #notActive>
+          <ion-icon [name]="mytab.defaultIcon"></ion-icon>
+        </ng-template>
         <ion-label>{{mytab?.label}}</ion-label>
       </ion-tab-button>
     </ion-tab-bar>
