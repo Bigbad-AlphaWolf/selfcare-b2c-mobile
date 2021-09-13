@@ -29,13 +29,20 @@
 .dashboard-page {
   background-color: $grayDashboard;
   ion-tab-button {
+    ion-icon {
+      font-size: 40px;
+    }
     &:not(.tab-selected) {
       ion-label {
         font-family: 'HelveticaNeueLTStd-Roman';
+        color: $gray;
+      }
+      ion-icon {
+        color: $gray;
       }
     }
     ion-label {
-      margin-top: 6px;
+      margin-top: 3px;
     }
   }
 }

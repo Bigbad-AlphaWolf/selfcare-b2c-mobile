@@ -32,10 +32,13 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
       route: 'assistance',
     },
   ];
+  activeRoute = this.tabs[0].route;
 
   constructor() {}
 
   ngOnInit() {}
 
-  openMenu() {}
+  onTabChanged(tab) {
+    this.activeRoute = tab.route;
+  }
 }

@@ -1,34 +1,16 @@
-<div class="list-preview-stories">
-	<div (click)="presentModal()" class="preview-story">
-		<div class="mask read">
+<div *ngIf="storiesByCategory?.length" class="list-preview-stories">
+	<div (click)="presentModal(storyCategorized?.stories)" *ngFor="let storyCategorized of storiesByCategory" class="preview-story">
+		<div class="mask" [ngClass]=" { 'read': storyCategorized?.readAll } ">
 			<img src="assets/images/onboarding4.png" alt="">
 		</div>
 		<div class="title">
-			Promos
+			{{ storyCategorized?.categorie?.libelle }}
 		</div>
 	</div>
-	<div (click)="presentModal()" class="preview-story">
-		<div class="mask">
-			<img src="assets/images/article-img.png" alt="">
-		</div>
-		<div class="title">
-			Tutos
-		</div>
+	<div *ngIf="isLoadingStories" class="preview-story">
+		<ion-spinner name="crescent"></ion-spinner>
 	</div>
-	<div class="preview-story">
-		<div class="mask read">
-			<img src="assets/images/04-boutons-01-illustrations-21-ibou-assistance.png" alt="">
-		</div>
-		<div class="title">
-			Bons plans
-		</div>
-	</div>
-	<div class="preview-story">
-		<div class="mask">
-			<img src="assets/images/04-boutons-01-illustrations-21-ibou-assistance.png" alt="">
-		</div>
-		<div class="title">
-			Annonces
-		</div>
-	</div>
+	<span *ngIf="hasError" (click)="fetchUserStories()" class="error scb-text-red-error" >
+		Réessayer
+	</span>
 </div>

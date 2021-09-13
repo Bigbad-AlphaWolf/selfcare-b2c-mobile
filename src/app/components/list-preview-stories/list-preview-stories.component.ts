@@ -1,5 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {AnimationController, ModalController} from '@ionic/angular';
+import {of} from 'rxjs';
+import {catchError, tap} from 'rxjs/operators';
+import {Story} from 'src/app/models/story-oem.model';
+import {StoriesService} from 'src/app/services/stories-service/stories.service';
 import {VisualizeStoriesComponent} from '../visualize-stories/visualize-stories.component';
 
 @Component({
@@ -8,11 +12,46 @@ import {VisualizeStoriesComponent} from '../visualize-stories/visualize-stories.
   styleUrls: ['./list-preview-stories.component.scss']
 })
 export class ListPreviewStoriesComponent implements OnInit {
-  constructor(public modalController: ModalController, public animationCtrl: AnimationController) {}
+  @Input()
+  storiesByCategory: {
+    categorie: {
+      libelle?: string;
+      ordre?: number;
+      code?: string;
+      zoneAffichage?: string;
+    };
+    stories: Story[];
+    readAll: boolean;
+  }[];
+  isLoadingStories: boolean;
+  hasError: boolean;
+  constructor(public modalController: ModalController, public animationCtrl: AnimationController, private storiesService: StoriesService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.fetchUserStories();
+  }
 
-  async presentModal() {
+  fetchUserStories() {
+    this.isLoadingStories = true;
+    this.hasError = false;
+    this.storiesService
+      .getCurrentStories()
+      .pipe(
+        tap((res: any) => {
+          this.isLoadingStories = false;
+          console.log('groupeStoriesByCategory', this.storiesService.groupeStoriesByCategory(res));
+          this.storiesByCategory = this.storiesService.groupeStoriesByCategory(res);
+        }),
+        catchError(err => {
+          this.isLoadingStories = false;
+          this.hasError = true;
+          return of(err);
+        })
+      )
+      .subscribe();
+  }
+
+  async presentModal(listStories: Story[]) {
     const enterAnimation = (baseEl: any) => {
       const backdropAnimation = this.animationCtrl
         .create()
@@ -22,10 +61,7 @@ export class ListPreviewStoriesComponent implements OnInit {
       const wrapperAnimation = this.animationCtrl
         .create()
         .addElement(baseEl.querySelector('.modal-wrapper')!)
-        .keyframes([
-          {offset: 0, opacity: '0', transform: 'scale(0)'},
-          {offset: 1, opacity: '0.99', transform: 'scale(1)'}
-        ]);
+        .keyframes([{offset: 0, opacity: '0', transform: 'scale(0)'}, {offset: 1, opacity: '0.99', transform: 'scale(1)'}]);
 
       return this.animationCtrl
         .create()
@@ -41,10 +77,11 @@ export class ListPreviewStoriesComponent implements OnInit {
 
     const modal = await this.modalController.create({
       component: VisualizeStoriesComponent,
-      //enterAnimation,
-      //leaveAnimation,
       swipeToClose: true,
-      mode: 'ios'
+      mode: 'ios',
+      componentProps: {
+        stories: listStories
+      }
     });
     return await modal.present();
   }
