@@ -9,6 +9,7 @@ import android.util.Log;
 import android.webkit.ServiceWorkerClient;
 import android.webkit.ServiceWorkerController;
 import android.webkit.SslErrorHandler;
+import android.net.http.SslError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -132,8 +133,11 @@ public class IonicWebViewEngine extends SystemWebViewEngine {
       this.parser = parser;
     }
 
-    public void onReceivedSslError(SslErrorHandler handler) {
+    @Override
+    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+      // handler.cancel();
       handler.proceed();
+      return;
     }
 
     @Override
