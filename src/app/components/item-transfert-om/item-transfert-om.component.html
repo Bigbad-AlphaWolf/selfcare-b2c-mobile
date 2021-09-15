@@ -4,7 +4,7 @@
       {{ !isFromHistory ? omTransfertInfos?.amount : MATH.abs(transferHistoryItem?.amount) + transferHistoryItem?.fees}} FCFA
     </span>
   </div>
-  <div class="badge-promo" >
+  <div class="badge-promo" *ngIf="!isForWoyofal">
     <div class="icon-container">
       <span class="new scb-text-white"> Nouveaux tarifs </span>
     </div>
@@ -13,7 +13,7 @@
   <div class="tarifs-infos-fees" *ngIf="!isFromHistory">
     <div class="item-fees">
       <span class="title">
-        Frais d'envoi
+        {{isForWoyofal ? 'Frais' : "Frais d'envoi"}}
       </span>
       <div class="value">
         <ng-container *ngIf="omTransfertInfos?.sending_fees else freeFees">
