@@ -135,8 +135,6 @@ public class IonicWebViewEngine extends SystemWebViewEngine {
 
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-      System.out.println(error);
-      System.out.println(error.getPrimaryError());
       switch (error.getPrimaryError()) {
         case SslError.SSL_UNTRUSTED:
         case SslError.SSL_EXPIRED:
