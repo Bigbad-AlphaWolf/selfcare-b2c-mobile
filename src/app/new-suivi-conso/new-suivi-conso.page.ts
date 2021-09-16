@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
-import { IonSlides } from '@ionic/angular';
+import { IonSlides, Platform } from '@ionic/angular';
 import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish.directive';
 import { CommunicationHistoricComponent } from './pages/communication-historic/communication-historic.component';
 import { NewDetailsConsoComponent } from './pages/new-details-conso/new-details-conso.component';
@@ -30,10 +30,15 @@ export class NewSuiviConsoPage implements OnInit {
   @ViewChild(TransactionsHistoricComponent)
   transactionHistoricPage: TransactionsHistoricComponent;
   @ViewChild('searchIcon') iconToggleSearch;
+  isIos: boolean;
 
-  constructor() {}
+  constructor(private platform: Platform) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.platform.ready().then(() => {
+      this.isIos = this.platform.is('ios');
+    });
+  }
 
   ionViewWillEnter(event?) {
     this.refreshData(event);

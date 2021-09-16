@@ -26,5 +26,6 @@ import { TransactionsHistoricComponent } from './pages/transactions-historic/tra
     NewDetailsConsoComponent,
     TransactionsHistoricComponent,
   ],
+  exports: [NewSuiviConsoPage],
 })
 export class NewSuiviConsoPageModule {}

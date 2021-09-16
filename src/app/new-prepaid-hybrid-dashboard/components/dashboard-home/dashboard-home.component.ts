@@ -1,11 +1,6 @@
-import {
-  Component,
-  NgZone,
-  OnInit,
-  ViewChildren,
-} from '@angular/core';
+import { Component, NgZone, OnInit, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {
@@ -110,6 +105,7 @@ export class DashboardHomeComponent implements OnInit {
   sargalStatus: string;
 
   canDoSOS: boolean;
+  isIos: boolean;
 
   constructor(
     private dashboardService: DashboardService,
@@ -122,10 +118,15 @@ export class DashboardHomeComponent implements OnInit {
     private omService: OrangeMoneyService,
     private modalController: ModalController,
     private bsService: BottomSheetService,
-    private zone: NgZone
+    private zone: NgZone,
+    private platform: Platform
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.platform.ready().then(() => {
+      this.isIos = this.platform.is('ios');
+    });
+  }
 
   ionViewDidEnter() {
     this.zone.run(() => {

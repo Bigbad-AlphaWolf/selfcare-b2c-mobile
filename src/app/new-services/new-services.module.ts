@@ -18,5 +18,6 @@ import { SharedModule } from 'src/shared/shared.module';
     NewServicesPageRoutingModule,
   ],
   declarations: [NewServicesPage],
+  exports: [NewServicesPage],
 })
 export class NewServicesPageModule {}

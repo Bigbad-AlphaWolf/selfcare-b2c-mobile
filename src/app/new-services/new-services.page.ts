@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
-import { IonSlides } from '@ionic/angular';
+import { IonSlides, Platform } from '@ionic/angular';
 import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish.directive';
@@ -33,10 +33,18 @@ export class NewServicesPage implements OnInit {
     category: CategoryOffreServiceModel;
     services: OffreService[];
   }[] = [];
+  isIos: boolean;
 
-  constructor(private operationService: OperationService) {}
+  constructor(
+    private operationService: OperationService,
+    private platform: Platform
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.platform.ready().then(() => {
+      this.isIos = this.platform.is('ios');
+    });
+  }
 
   ionViewWillEnter(event?) {
     this.getServices(event);

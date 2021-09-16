@@ -32,7 +32,7 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
       route: 'assistance',
     },
   ];
-  activeRoute = this.tabs[0].route;
+  currentSlideIndex = 0;
 
   constructor() {}
 

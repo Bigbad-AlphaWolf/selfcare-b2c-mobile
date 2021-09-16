@@ -1,5 +1,30 @@
-<ion-content class="dashboard-page">
-  <ion-tabs>
+<!-- <ion-content class="dashboard-page"> -->
+<ion-slides>
+  <ion-slide>
+    <app-dashboard-home></app-dashboard-home>
+  </ion-slide>
+  <ion-slide>
+    <app-new-suivi-conso></app-new-suivi-conso>
+  </ion-slide>
+  <ion-slide>
+    <app-new-services></app-new-services>
+  </ion-slide>
+  <ion-slide>
+    <app-new-assistance-hub-v2></app-new-assistance-hub-v2>
+  </ion-slide>
+</ion-slides>
+<div class="tabs">
+  <div class="custom-tab" *ngFor="let mytab of tabs" [ngClass]="{'tab-selected': mytab.route === activeRoute}">
+    <ng-container *ngIf="activeRoute === mytab.route else notActive">
+      <ion-icon class="scb-text-orange" [name]="mytab.activeIcon"></ion-icon>
+    </ng-container>
+    <ng-template #notActive>
+      <ion-icon [name]="mytab.defaultIcon"></ion-icon>
+    </ng-template>
+    <ion-label>{{mytab?.label}}</ion-label>
+  </div>
+</div>
+<!-- <ion-tabs>
     <ion-tab-bar slot="bottom">
       <ion-tab-button [tab]="mytab?.route" *ngFor="let mytab of tabs" (click)="onTabChanged(mytab)">
         <ng-container>
@@ -11,5 +36,5 @@
         <ion-label>{{mytab?.label}}</ion-label>
       </ion-tab-button>
     </ion-tab-bar>
-  </ion-tabs>
-</ion-content>
+  </ion-tabs> -->
+<!-- </ion-content> -->

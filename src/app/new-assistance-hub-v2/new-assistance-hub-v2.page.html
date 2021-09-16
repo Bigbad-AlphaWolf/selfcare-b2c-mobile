@@ -6,7 +6,7 @@
     <ion-icon name="search-outline" class="search-icon search-icon4" (click)="search()" #searchIcon></ion-icon>
   </div>
 </ion-header>
-<div class="absolute-block">
+<div class="absolute-block" [ngClass]="{'is-block-ios': isIos}">
   <div class="search-bloc search-bloc4">
     <ion-searchbar placeholder="Rechercher un service"></ion-searchbar>
   </div>
