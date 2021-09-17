@@ -115,7 +115,7 @@ pipeline {
     } 
 
 
-   /* stage('Android Build Signed') {
+    stage('Android Build Signed') {
       steps {
         echo "Build Android Signed"
         sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -keystore ../../../../../../my-release-key.keystore -storepass 'b:[S_#3R7?nLs*yJd^6<y' app-release-unsigned.apk ovto && mv app-release-unsigned.apk ovto.apk"
@@ -129,7 +129,7 @@ pipeline {
             to: devsMail
         }
        }
-    }*/
+    }
     
         stage('Execute mobile TAs') {    
           when { anyOf { branch 'master' } }
