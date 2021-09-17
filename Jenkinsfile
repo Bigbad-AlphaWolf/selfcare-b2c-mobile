@@ -130,6 +130,14 @@ pipeline {
         }
        }
     }*/
+    
+        stage('Execute mobile TAs') {    
+          when { anyOf { branch 'master' } }
+
+          steps {
+            build job: 'CI_CD_OrangeEtMoi', parameters: [stringParam(name: 'Tag', value: 'CICD')]
+            }
+      }
 
 
     stage("Remove node module") {
