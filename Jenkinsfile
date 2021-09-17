@@ -48,13 +48,13 @@ pipeline {
         }
     }
     
-   /* 
+   
      stage("Clean install") {
       steps{
         sh "clean:all:install"
       }
     }
-    */
+    
 
     stage("Clean install") {
       steps{
@@ -78,7 +78,7 @@ pipeline {
       }
     }
 
-  /*  stage("SonarQube Quality Gate") {
+     stage("SonarQube Quality Gate") {
           steps {
             script {
               timeout(time: 10, unit: 'MINUTES') {
@@ -90,22 +90,22 @@ pipeline {
               }
             }
           }
-        }*/
+        } 
 
-   /* stage("Create www && cp google-services") {
+     stage("Create www && cp google-services") {
       steps{
          sh "mkdir -p www/"
          sh "cp google-services.json www/"
       }
-    }*/
+    } 
 
-  /* stage("Prepare build  android") {
+    stage("Prepare build  android") {
       steps{
          sh "rm -rf platforms"
          sh "ionic cordova platform add android"
          sh "ionic cordova prepare android"
       }
-    }*/
+    } 
 
     stage('Android Build Unsigned') {
       steps {
