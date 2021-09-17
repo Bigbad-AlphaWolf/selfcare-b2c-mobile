@@ -49,12 +49,7 @@ pipeline {
     }
     
    
-     stage("Clean install") {
-      steps{
-        sh "clean:all:install"
-      }
-    }
-    
+ 
 
     stage("Clean install") {
       steps{
