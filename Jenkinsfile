@@ -48,19 +48,19 @@ pipeline {
         }
     }
     
-    
+   /* 
      stage("Clean install") {
       steps{
         sh "clean:all:install"
       }
     }
-    
+    */
 
-   /* stage("Plugins install ionic cordova") {
+    stage("Clean install") {
       steps{
         sh "npm run clean:all:install" 
       }
-    }*/
+    }
 
 
 
@@ -118,12 +118,12 @@ pipeline {
     stage('Android Build Signed') {
       steps {
         echo "Build Android Signed"
-        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -keystore ../../../../../../my-release-key.keystore -storepass 'b:[S_#3R7?nLs*yJd^6<y' app-release-unsigned.apk ovto && mv app-release-unsigned.apk ovto.apk"
+        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ./my-release-key.jks -storepass "azerty" platforms/android/app/build/outputs/apk/release/app-release.apk my-alias && mv app-release-unsigned.apk app-release-oem-signed.apk"
       }
       post{
         success {
-          archiveArtifacts artifacts:  'platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk'
-          emailext attachmentsPattern: 'platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk',
+          archiveArtifacts artifacts:  'platforms/android/app/build/outputs/apk/release/app-release-oem-signed.apk'
+          emailext attachmentsPattern: 'platforms/android/app/build/outputs/apk/release/app-release-oem-signed.apk',
             body: 'Apk joint au mail.',
             subject: '[RELEASE] O&M ANDROID APK Signed',
             to: devsMail
