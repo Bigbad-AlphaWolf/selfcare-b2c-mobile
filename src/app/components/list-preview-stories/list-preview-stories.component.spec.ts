@@ -1,6 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AngularDelegate, ModalController } from '@ionic/angular';
+import { of } from 'rxjs';
 
 import { ListPreviewStoriesComponent } from './list-preview-stories.component';
 
@@ -18,6 +20,14 @@ describe('ListPreviewStoriesComponent', () => {
         },
         {
           provide: AngularDelegate,
+        },
+        {
+          provide: HttpClient,
+          useValue: {
+            get: () => {
+              return of();
+            },
+          },
         },
       ],
     }).compileComponents();

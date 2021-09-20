@@ -44,8 +44,7 @@ export class OffreServiceCardV2Component implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.imageUrl =
-      this.service && this.service.icone ? this.service.icone : null;
+    this.imageUrl = this.service?.icone;
   }
 
   onClick() {
