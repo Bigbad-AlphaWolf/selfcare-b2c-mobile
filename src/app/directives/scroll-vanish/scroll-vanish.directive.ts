@@ -13,9 +13,9 @@ export class ScrollVanishDirective {
   private hidden: boolean = false;
 
   constructor(
-    private element: ElementRef,
-    private renderer: Renderer2,
-    private domCtrl: DomController
+    private element?: ElementRef,
+    private renderer?: Renderer2,
+    private domCtrl?: DomController
   ) {}
 
   ngOnInit() {
