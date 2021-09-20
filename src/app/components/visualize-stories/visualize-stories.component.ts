@@ -12,13 +12,13 @@ import { ModalController, NavController } from '@ionic/angular';
 import { Story } from 'src/app/models/story-oem.model';
 import { StoriesProgressBarComponent } from '../stories-progress-bar/stories-progress-bar.component';
 import { VisualizeStoryComponent } from '../visualize-story/visualize-story.component';
-
 import SwiperCore, { EffectCoverflow, EffectFade, EffectFlip, Navigation, Pagination, SwiperOptions } from 'swiper';
 import { IonicSwiper } from '@ionic/angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { TYPE_ACTION_ON_BANNER } from 'src/shared';
 import { StoriesService } from 'src/app/services/stories-service/stories.service';
 import { SwiperComponent } from 'swiper/angular';
+import { tap } from 'rxjs/operators';
 
 SwiperCore.use([IonicSwiper, Navigation, Pagination, EffectFade, EffectCoverflow, EffectCoverflow, EffectFlip]);
 
@@ -47,12 +47,23 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   currentSlideIndex = 0;
 	@ViewChild('slides', { static: false }) swiper?: SwiperComponent;
 	config: SwiperOptions = {
-		init: true
+		init: false
 	};
   constructor(private modalCtrl: ModalController, private navCtrl: NavController, private iab: InAppBrowser, private storiesServ: StoriesService, private cd: ChangeDetectorRef) {
 	}
 
   ngOnInit() {}
+	ngAfterViewInit() {
+		setTimeout(() => {
+			const startIndex = this.retrieveSlideStartingIndex();
+			this.fillAllPreviousProgressBar(startIndex);
+			this.setSwiperIndex(startIndex);
+		});
+	}
+
+	setSwiperIndex(index: number) {
+		this.swiper.setIndex(index);
+	}
 
   ngOnDestroy() {
 		this.deactiveStoryMedia(this.currentSlideIndex);
@@ -67,7 +78,6 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
     this.slides = ev;
   }
 
-  ngAfterViewInit() {}
 
 
 	playStory(event: any) {
@@ -121,12 +131,12 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 		const storyComponent: VisualizeStoryComponent =
       this.storiesView.toArray()[this.currentSlideIndex];
 			if(!storyComponent.story.read) {
-				//this.storiesServ.seeStory(storyComponent.story).pipe(
-				//	tap((res: any) => {
-				//		storyComponent.userReadStory();
-				//		this.setStoryReadAttribute();
-				//	})
-				//).subscribe()
+				this.storiesServ.seeStory(storyComponent.story).pipe(
+					tap((res: any) => {
+						storyComponent.userReadStory();
+						this.setStoryReadAttribute();
+					})
+				).subscribe()
 			}
 	}
 
@@ -179,7 +189,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 	}
 
 	fillAllPreviousProgressBar(index: number) {
-		if(index) {
+		if(index > 0) {
 			for (let i = 0; i<= index -1; i++) {
 				this.fillProgressBar(i);
 			}
