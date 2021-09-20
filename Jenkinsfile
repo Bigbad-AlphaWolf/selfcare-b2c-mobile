@@ -3,7 +3,7 @@
 pipeline {
   // agent any
   agent {
-    label 'mobile'
+    label 'gateway'
   }
   options {
         /* buildDiscarder(logRotator(numToKeepStr: '3')),*/
