@@ -14,65 +14,65 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
 
 import { AssistanceHubPage } from './assistance-hub.page';
 
-describe( 'AssistanceHubPage', () => {
-	let component: AssistanceHubPage;
-	let fixture: ComponentFixture<AssistanceHubPage>;
+describe('AssistanceHubPage', () => {
+  let component: AssistanceHubPage;
+  let fixture: ComponentFixture<AssistanceHubPage>;
 
-	beforeEach(
-		waitForAsync( () => {
-			TestBed.configureTestingModule( {
-				imports: [MatDialogModule, BrowserModule, RouterTestingModule],
-				declarations: [AssistanceHubPage],
-				providers: [
-					{
-						provide: HttpClient,
-						useValue: {
-							get: () => {
-								return of();
-							},
-						},
-					},
-					{
-						provide: AppVersion,
-					},
-					{
-						provide: Location,
-					},
-					{
-						provide: UrlSerializer,
-					},
-					{
-						provide: InAppBrowser,
-					},
-					{
-						provide: DashboardService,
-						useValue: {
-							getCurrentPhoneNumber: () => {
-								return '';
-							},
-						},
-					},
-					{
-						provide: OrangeMoneyService,
-						useValue: {
-							getUserStatus: () => {
-								return of();
-							},
-						},
-					},
-				],
-				schemas: [CUSTOM_ELEMENTS_SCHEMA],
-			} ).compileComponents();
-		} )
-	);
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [MatDialogModule, BrowserModule, RouterTestingModule],
+        declarations: [AssistanceHubPage],
+        providers: [
+          {
+            provide: HttpClient,
+            useValue: {
+              get: () => {
+                return of();
+              },
+            },
+          },
+          {
+            provide: AppVersion,
+          },
+          {
+            provide: Location,
+          },
+          {
+            provide: UrlSerializer,
+          },
+          {
+            provide: InAppBrowser,
+          },
+          {
+            provide: DashboardService,
+            useValue: {
+              getCurrentPhoneNumber: () => {
+                return '';
+              },
+            },
+          },
+          {
+            provide: OrangeMoneyService,
+            useValue: {
+              getUserStatus: () => {
+                return of();
+              },
+            },
+          },
+        ],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
+    })
+  );
 
-	beforeEach( () => {
-		fixture = TestBed.createComponent( AssistanceHubPage );
-		component = fixture.componentInstance;
-		fixture.detectChanges();
-	} );
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AssistanceHubPage);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-	it( 'should create', () => {
-		expect( component ).toBeTruthy();
-	} );
-} );
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
