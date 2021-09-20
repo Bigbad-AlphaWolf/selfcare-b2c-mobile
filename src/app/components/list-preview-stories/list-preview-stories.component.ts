@@ -23,16 +23,18 @@ export class ListPreviewStoriesComponent implements OnInit {
     stories: Story[];
     readAll: boolean;
   }[];
-  isLoadingStories: boolean;
-  hasError: boolean;
+  @Input() isLoadingStories: boolean;
+  @Input() hasError: boolean;
+	@Input() areDataLoadedExternally: boolean;
   constructor(public modalController: ModalController, public animationCtrl: AnimationController, private storiesService: StoriesService) {}
 
   ngOnInit() {
-    this.fetchUserStories();
+		if(!this.areDataLoadedExternally) this.fetchUserStories();
   }
 
   fetchUserStories() {
     this.isLoadingStories = true;
+		this.storiesByCategory = [];
     this.hasError = false;
     this.storiesService
       .getCurrentStories()
@@ -51,38 +53,59 @@ export class ListPreviewStoriesComponent implements OnInit {
       .subscribe();
   }
 
-  async presentModal(listStories: Story[]) {
-    const enterAnimation = (baseEl: any) => {
-      const backdropAnimation = this.animationCtrl
-        .create()
-        .addElement(baseEl.querySelector('ion-backdrop')!)
-        .fromTo('opacity', '0.01', 'var(--backdrop-opacity)');
-
-      const wrapperAnimation = this.animationCtrl
-        .create()
-        .addElement(baseEl.querySelector('.modal-wrapper')!)
-        .keyframes([{offset: 0, opacity: '0', transform: 'scale(0)'}, {offset: 1, opacity: '0.99', transform: 'scale(1)'}]);
-
-      return this.animationCtrl
-        .create()
-        .addElement(baseEl)
-        .easing('ease-out')
-        .duration(500)
-        .addAnimation([backdropAnimation, wrapperAnimation]);
-    };
-
-    const leaveAnimation = (baseEl: any) => {
-      return enterAnimation(baseEl).direction('reverse');
-    };
-
+  async presentModal(
+    item: {
+      categorie: {
+        libelle?: string;
+        ordre?: number;
+        code?: string;
+        zoneAffichage?: string;
+      };
+      stories: Story[];
+      readAll: boolean;
+    },
+    index: number
+  ) {
     const modal = await this.modalController.create({
       component: VisualizeStoriesComponent,
+      backdropDismiss: true,
       swipeToClose: true,
       mode: 'ios',
+      presentingElement: await this.modalController.getTop(),
       componentProps: {
-        stories: listStories
+        index,
+        storyByCategory: item
       }
     });
+    modal.onDidDismiss().then((res: {data: any}) => {
+      console.log('closeModal', res);
+			if(res?.data) {
+				this.updateInternalStoriesListe(res?.data?.index, res?.data?.storyByCategory)
+			} else {
+				this.fetchUserStories();
+			}
+    });
     return await modal.present();
+  }
+
+  updateInternalStoriesListe(
+    index: number,
+    item: {
+      categorie: {
+        libelle?: string;
+        ordre?: number;
+        code?: string;
+        zoneAffichage?: string;
+      };
+      stories: Story[];
+      readAll: boolean;
+    }
+  ) {
+    this.storiesByCategory[index] = item;
+    this.storiesByCategory[index].readAll = !this.storiesByCategory[index].stories.filter(elt => {
+      return elt.read === false;
+    }).length;
+
+    console.log('stories', this.storiesByCategory, 'this.storiesByCategory[index]', this.storiesByCategory[index], 'index', index);
   }
 }

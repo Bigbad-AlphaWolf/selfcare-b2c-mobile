@@ -1,5 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {Subject} from 'rxjs';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {StoryOem} from 'src/app/models/story-oem.model';
 import {STORIES_OEM_CONFIG} from 'src/shared';
 
@@ -13,7 +12,6 @@ export class StoriesProgressBarComponent implements OnInit {
   @Input() story: StoryOem;
   @Input() stepValue = 0.01;
   @Input() isLast: boolean;
-  @Input() isCurrentStory: boolean;
   @Output() idStoryChange = new EventEmitter<any>();
   @Output() finish = new EventEmitter();
   progressBarStepTime = 100;
@@ -23,11 +21,9 @@ export class StoriesProgressBarComponent implements OnInit {
 
   ngOnInit() {}
 
-  startProgressBar(from: number = 1) {
+  startProgressBar(from: number = 0) {
     this.initConfigProgressBar();
-    for (let index = from + 1; index <= this.totalSteps; index++) {
-      this.setProgressBarEvolution(index);
-    }
+    this.setProgressBarEvolutionV2(from);
   }
 
   setProgressBarEvolution(index: number) {
@@ -46,15 +42,16 @@ export class StoriesProgressBarComponent implements OnInit {
     this.timeOutIds.push(idTimeOut);
   }
 
-  setProgressBarEvolutionV2(index: number) {
+  setProgressBarEvolutionV2(startValue: number = 0) {
+    this.currentProgressValue = startValue;
     const idTimeOut = setInterval(() => {
       this.currentProgressValue += +this.stepValue;
 
-      if (index === this.totalSteps) {
+      if (this.currentProgressValue >= 1) {
         this.idStoryChange.emit(true);
-      }
-      if (this.isLast && index === this.totalSteps) {
-        this.finish.emit(this.isLast);
+        if (this.isLast) {
+          this.finish.emit(this.isLast);
+        }
       }
 
       this.cd.detectChanges();
@@ -99,19 +96,11 @@ export class StoriesProgressBarComponent implements OnInit {
   }
 
   playStoryProgress() {
-    console.log('timeIds', this.timeOutIds);
-
-    const currentIndex = this.getCurrentIndexProgress();
-    console.log('currentIndex', currentIndex);
-    this.currentProgressValue = 0.5;
-    console.log('currentIndex', this.currentProgressValue);
-    this.startProgressBar(currentIndex);
+    this.startProgressBar(this.currentProgressValue);
   }
 
   setProgressStoryDuration(duration: number) {
     this.story.duration = duration;
-    console.log('this.story.duration', this.story.duration);
-
     this.cd.detectChanges();
   }
 }
