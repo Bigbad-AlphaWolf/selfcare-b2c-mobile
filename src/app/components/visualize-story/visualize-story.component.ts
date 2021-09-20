@@ -77,10 +77,6 @@ export class VisualizeStoryComponent implements OnInit {
 			this.ref.detectChanges()
   }
 
-  onError(event: any) {
-    //console.log('event', event);
-  }
-
   imageLoaded(event: any) {
     this.isLoading = false;
     this.imageReady.emit(this.isCurrentStory);
