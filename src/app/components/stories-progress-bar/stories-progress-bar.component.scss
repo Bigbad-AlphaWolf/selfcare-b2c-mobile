@@ -3,6 +3,9 @@
 :host {
   min-width: initial;
   flex: 1 1 auto;
+  &:not(:first-child) {
+    margin-left: 5px;
+  }
 }
 .progress-bar {
   .custom-progress-bar {

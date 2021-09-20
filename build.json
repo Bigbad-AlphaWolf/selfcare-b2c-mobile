@@ -12,5 +12,13 @@
       "alias": "pushkitshowcase",
       "password": "azerty"
     }
+  },
+  "ios": {
+    "debug": {
+      "codeSignIdentity": "iPhone Developer",
+      "developmentTeam": "7AU6U768RW",
+      "packageType": "development",
+      "automaticProvisioning": true
+    }
   }
 }

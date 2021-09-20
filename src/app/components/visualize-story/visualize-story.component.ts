@@ -4,14 +4,12 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
-  SimpleChange,
-  SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {Player} from '@vime/angular';
+import { Platform } from '@ionic/angular';
+import { ImageAttribute } from 'ionic-image-loader';
 import {StoryOem} from 'src/app/models/story-oem.model';
 
 @Component({
@@ -29,7 +27,15 @@ export class VisualizeStoryComponent implements OnInit {
   mediaDuration: any;
   @ViewChild('audioOrVideo') media: ElementRef;
   isLoading: boolean = true;
-  constructor(private ref: ChangeDetectorRef) {}
+	isWeb: boolean;
+	imageAttributes: ImageAttribute[] = [{
+		element: 'class',
+		value: 'img-full-width'
+	}];
+
+  constructor(private ref: ChangeDetectorRef, private platform: Platform) {
+		this.isWeb = platform.is('mobileweb')
+	}
 
   ngOnInit() {
   }
@@ -64,7 +70,11 @@ export class VisualizeStoryComponent implements OnInit {
   }
 
   canPlay(event: any) {
+			if (this.media && this.media.nativeElement) {
+				this.media.nativeElement.pause();
+			}
 			this.audioReady.emit(true);
+			this.ref.detectChanges()
   }
 
   onError(event: any) {
@@ -74,7 +84,7 @@ export class VisualizeStoryComponent implements OnInit {
   imageLoaded(event: any) {
     this.isLoading = false;
     this.imageReady.emit(this.isCurrentStory);
-    //console.log('imageLoaded', event);
+		this.ref.detectChanges()
   }
 
 	makeAction(event:any) {

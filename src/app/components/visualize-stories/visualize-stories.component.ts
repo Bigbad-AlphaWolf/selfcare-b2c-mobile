@@ -1,22 +1,24 @@
 import {
+	ChangeDetectorRef,
 	Component,
   Input,
   OnDestroy,
   OnInit,
   QueryList,
+  ViewChild,
   ViewChildren,
 } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
-import { StoryOem } from 'src/app/models/story-oem.model';
+import { Story } from 'src/app/models/story-oem.model';
 import { StoriesProgressBarComponent } from '../stories-progress-bar/stories-progress-bar.component';
 import { VisualizeStoryComponent } from '../visualize-story/visualize-story.component';
 
-import SwiperCore, { EffectCoverflow, EffectFade, EffectFlip, Navigation, Pagination } from 'swiper';
+import SwiperCore, { EffectCoverflow, EffectFade, EffectFlip, Navigation, Pagination, SwiperOptions } from 'swiper';
 import { IonicSwiper } from '@ionic/angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { TYPE_ACTION_ON_BANNER } from 'src/shared';
-import { tap } from 'rxjs/operators';
 import { StoriesService } from 'src/app/services/stories-service/stories.service';
+import { SwiperComponent } from 'swiper/angular';
 
 SwiperCore.use([IonicSwiper, Navigation, Pagination, EffectFade, EffectCoverflow, EffectCoverflow, EffectFlip]);
 
@@ -26,14 +28,29 @@ SwiperCore.use([IonicSwiper, Navigation, Pagination, EffectFade, EffectCoverflow
   styleUrls: ['./visualize-stories.component.scss'],
 })
 export class VisualizeStoriesComponent implements OnInit, OnDestroy {
-  @Input() stories: StoryOem[];
+  @Input() storyByCategory: {
+		categorie: {
+			libelle?: string;
+			ordre?: number;
+			code?: string;
+			zoneAffichage?: string;
+		};
+		stories: Story[];
+		readAll: boolean;
+	};
+	@Input() index: number;
   private slides;
-  @ViewChildren(StoriesProgressBarComponent, { emitDistinctChangesOnly: true })
+  @ViewChildren(StoriesProgressBarComponent)
   storiesProgressBarView: QueryList<StoriesProgressBarComponent>;
   @ViewChildren(VisualizeStoryComponent)
   storiesView: QueryList<VisualizeStoryComponent>;
   currentSlideIndex = 0;
-  constructor(private modalCtrl: ModalController, private navCtrl: NavController, private iab: InAppBrowser, private storiesServ: StoriesService) {}
+	@ViewChild('slides', { static: false }) swiper?: SwiperComponent;
+	config: SwiperOptions = {
+		init: true
+	};
+  constructor(private modalCtrl: ModalController, private navCtrl: NavController, private iab: InAppBrowser, private storiesServ: StoriesService, private cd: ChangeDetectorRef) {
+	}
 
   ngOnInit() {}
 
@@ -43,38 +60,39 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 	}
 
   close() {
-    this.modalCtrl.dismiss();
+    this.modalCtrl.dismiss({ storyByCategory: this.storyByCategory, index: this.index});
   }
 
 	setSwiperInstance(ev) {
     this.slides = ev;
   }
 
-  ngAfterViewInit() {
-	// const startIndex =	this.retrieveSlideStartingIndex() === -1 ? 0 : this.retrieveSlideStartingIndex();
-		//this.slides.initialSlide = startIndex;
-    //this.deactiveStoryMedia(this.currentSlideIndex - 1);
-    //this.startAnimateProgressBar(this.currentSlideIndex);
-    //this.activeStoryMedia(this.currentSlideIndex);
-  }
+  ngAfterViewInit() {}
 
-	playStory(swiper: any, event?: any) {
+
+	playStory(event: any) {
+		this.resumeStory(this.currentSlideIndex);
+		if(this.storyByCategory?.stories[this.currentSlideIndex].audio) {
+			this.activeStoryMedia(this.currentSlideIndex);
+		}
+	}
+
+	resumeStory(index: number) {
 		const progressBarStory: StoriesProgressBarComponent =
-		this.storiesProgressBarView.toArray()[this.currentSlideIndex];
+		this.storiesProgressBarView.toArray()[index];
 			progressBarStory.playStoryProgress();
 	}
 
 	pauseStory(event: any) {
-		console.log('PauseStory', event);
-
-		const progressBarStory: StoriesProgressBarComponent =
-		this.storiesProgressBarView.toArray()[this.slides?.activeIndex];
-		progressBarStory.pauseStoryProgress();
+		this.stopAnimateProgressBar(this.currentSlideIndex)
+		if(this.storyByCategory?.stories[this.currentSlideIndex]?.audio) {
+			this.deactiveStoryMedia(this.currentSlideIndex);
+		}
 	}
 
   onProgressFinish(event: any) {
     if (this.slides) {
-      this.slides?.slideNext();
+      this.swiper?.swiperRef?.slideNext();
     }
   }
 
@@ -83,7 +101,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
 	retrieveSlideStartingIndex() {
-		return this.stories.findIndex((item) => {
+		return this.storyByCategory?.stories.findIndex((item) => {
 			return item.read === false;
 		})
 	}
@@ -92,7 +110,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 		if(this.currentSlideIndex > this.slides?.activeIndex ) {
 			this.emptyProgressBar(this.currentSlideIndex)
 		} else {
-			this.fillProgressBar(this.slides?.activeIndex);
+			this.fillProgressBar(this.currentSlideIndex);
 		}
 		this.deactiveStoryMedia(this.currentSlideIndex);
 		this.stopAnimateProgressBar(this.currentSlideIndex);
@@ -103,12 +121,17 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 		const storyComponent: VisualizeStoryComponent =
       this.storiesView.toArray()[this.currentSlideIndex];
 			if(!storyComponent.story.read) {
-				this.storiesServ.seeStory(storyComponent.story).pipe(
-					tap((res: any) => {
-						storyComponent.userReadStory();
-					})
-				).subscribe()
+				//this.storiesServ.seeStory(storyComponent.story).pipe(
+				//	tap((res: any) => {
+				//		storyComponent.userReadStory();
+				//		this.setStoryReadAttribute();
+				//	})
+				//).subscribe()
 			}
+	}
+
+	setStoryReadAttribute() {
+		if(this.storyByCategory.stories.length && this.storyByCategory.stories[this.currentSlideIndex])	this.storyByCategory.stories[this.currentSlideIndex].read = true;
 	}
 
 
@@ -145,14 +168,22 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 
 	emptyProgressBar(index: number) {
 			const progressBarStory: StoriesProgressBarComponent =
-			this.storiesProgressBarView.toArray()[this.currentSlideIndex];
+			this.storiesProgressBarView.toArray()[index];
 			progressBarStory.emptyProgressBar();
 	}
 
 	fillProgressBar(index: number) {
 			const progressBarStory: StoriesProgressBarComponent =
-			this.storiesProgressBarView.toArray()[this.currentSlideIndex];
+			this.storiesProgressBarView.toArray()[index];
 			progressBarStory.fillProgressBar();
+	}
+
+	fillAllPreviousProgressBar(index: number) {
+		if(index) {
+			for (let i = 0; i<= index -1; i++) {
+				this.fillProgressBar(i);
+			}
+		}
 	}
 
   setProgressBarDuration(duration: number, index: number) {
@@ -169,7 +200,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 
 	onImageReady(isCurrentstory: any) {
 		if (isCurrentstory) {
-			if(!this.stories[this.currentSlideIndex].audio) {
+			if(!this.storyByCategory?.stories[this.currentSlideIndex].audio) {
 				this.startAnimateProgressBar(this.currentSlideIndex);
 				this.seeStory();
 			}
@@ -186,6 +217,8 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 			const action = event?.action;
 			this.close();
 			this.onActionBtnClicked(action);
+		} else {
+			this.stopAnimateProgressBar(this.currentSlideIndex)
 		}
 	}
 
