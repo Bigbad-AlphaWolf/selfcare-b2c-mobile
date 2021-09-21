@@ -25,7 +25,7 @@
     </ion-refresher-content>
   </ion-refresher> -->
   <div class="stories-bloc">
-		<app-list-preview-stories></app-list-preview-stories>
+		<app-list-preview-stories [storiesByCategory]="storiesByCategory" [isLoadingStories]="isLoadingStories" [hasError]="hasError" [areDataLoadedExternally]="true" ></app-list-preview-stories>
 	</div>
   <div class="cards-bloc">
     <div class="text-bloc">

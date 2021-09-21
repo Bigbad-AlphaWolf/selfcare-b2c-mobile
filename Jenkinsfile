@@ -48,19 +48,14 @@ pipeline {
         }
     }
     
-    
-     stage("Clean install") {
-      steps{
-        sh "clean:all:install"
-      }
-    }
-    
+   
+ 
 
-   /* stage("Plugins install ionic cordova") {
+    stage("Clean install") {
       steps{
         sh "npm run clean:all:install" 
       }
-    }*/
+    }
 
 
 
@@ -78,7 +73,7 @@ pipeline {
       }
     }
 
-  /*  stage("SonarQube Quality Gate") {
+     /*stage("SonarQube Quality Gate") {
           steps {
             script {
               timeout(time: 10, unit: 'MINUTES') {
@@ -90,22 +85,22 @@ pipeline {
               }
             }
           }
-        }*/
+        } */
 
-   /* stage("Create www && cp google-services") {
+     stage("Create www && cp google-services") {
       steps{
          sh "mkdir -p www/"
          sh "cp google-services.json www/"
       }
-    }*/
+    } 
 
-  /* stage("Prepare build  android") {
+    stage("Prepare build  android") {
       steps{
          sh "rm -rf platforms"
          sh "ionic cordova platform add android"
          sh "ionic cordova prepare android"
       }
-    }*/
+    } 
 
     stage('Android Build Unsigned') {
       steps {
@@ -115,21 +110,29 @@ pipeline {
     } 
 
 
-   /* stage('Android Build Signed') {
+    stage('Android Build Signed') {
       steps {
         echo "Build Android Signed"
-        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -keystore ../../../../../../my-release-key.keystore -storepass 'b:[S_#3R7?nLs*yJd^6<y' app-release-unsigned.apk ovto && mv app-release-unsigned.apk ovto.apk"
+        sh "cd platforms/android/app/build/outputs/apk/release && jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ./my-release-key.jks -storepass 'azerty' platforms/android/app/build/outputs/apk/release/app-release.apk my-alias && mv app-release-unsigned.apk app-release-oem-signed.apk"
       }
       post{
         success {
-          archiveArtifacts artifacts:  'platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk'
-          emailext attachmentsPattern: 'platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk',
+          archiveArtifacts artifacts:  'platforms/android/app/build/outputs/apk/release/app-release-oem-signed.apk'
+          emailext attachmentsPattern: 'platforms/android/app/build/outputs/apk/release/app-release-oem-signed.apk',
             body: 'Apk joint au mail.',
             subject: '[RELEASE] O&M ANDROID APK Signed',
             to: devsMail
         }
        }
-    }*/
+    }
+    
+        stage('Execute mobile TAs') {    
+          when { anyOf { branch 'master' } }
+
+          steps {
+            build job: 'CI_CD_OrangeEtMoi', parameters: [stringParam(name: 'Tag', value: 'CICD')]
+            }
+      }
 
 
     stage("Remove node module") {

@@ -28,8 +28,8 @@ describe('TransfertHubServicesPage', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [TransfertHubServicesPage],
         imports: [RouterTestingModule],
+        declarations: [TransfertHubServicesPage],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           AngularDelegate,

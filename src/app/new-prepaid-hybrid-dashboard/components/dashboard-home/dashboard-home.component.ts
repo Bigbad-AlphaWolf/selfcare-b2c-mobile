@@ -107,6 +107,18 @@ export class DashboardHomeComponent implements OnInit {
   canDoSOS: boolean;
   isIos: boolean;
 
+  storiesByCategory: {
+    categorie: {
+      libelle?: string;
+      ordre?: number;
+      code?: string;
+      zoneAffichage?: string;
+    };
+    stories: Story[];
+    readAll: boolean;
+  }[];
+  isLoadingStories: boolean;
+  hasError: boolean;
   constructor(
     private dashboardService: DashboardService,
     private authService: AuthenticationService,
@@ -119,7 +131,8 @@ export class DashboardHomeComponent implements OnInit {
     private modalController: ModalController,
     private bsService: BottomSheetService,
     private zone: NgZone,
-    private platform: Platform
+    private platform: Platform,
+    private storiesService: StoriesService
   ) {}
 
   ngOnInit() {
@@ -137,6 +150,34 @@ export class DashboardHomeComponent implements OnInit {
   ionViewWillEnter(event?) {
     this.getCurrentSubscription();
     this.getUserConsommations(event);
+    this.fetchUserStories();
+  }
+
+  fetchUserStories() {
+    console.log('called');
+
+    this.isLoadingStories = true;
+    this.storiesByCategory = [];
+    this.hasError = false;
+    this.storiesService
+      .getCurrentStories()
+      .pipe(
+        tap((res: any) => {
+          this.isLoadingStories = false;
+          console.log(
+            'groupeStoriesByCategory',
+            this.storiesService.groupeStoriesByCategory(res)
+          );
+          this.storiesByCategory =
+            this.storiesService.groupeStoriesByCategory(res);
+        }),
+        catchError((err) => {
+          this.isLoadingStories = false;
+          this.hasError = true;
+          return of(err);
+        })
+      )
+      .subscribe();
   }
 
   getCurrentSubscription() {
@@ -198,7 +239,8 @@ export class DashboardHomeComponent implements OnInit {
           this.consoHasError = true;
           this.loadingConso = false;
           event ? event.target.complete() : '';
-          throw new Error(err);
+          //throw new Error(err);
+          return of(err);
         })
       )
       .subscribe();
