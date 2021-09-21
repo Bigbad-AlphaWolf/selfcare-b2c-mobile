@@ -6,6 +6,7 @@ const LOCAL_MSISDN_PREFIX = '22119';
 const LOCAL_FIX_NUMBER_PREFIX = '221';
 const LOCAL_NUMERO_VERT_PREFIX = '800';
 const SPECIFIC_LOCAL_NUMBERS = ['17', '18', '1413', '1441'];
+const FILTER_CATEGORY_ALL = 'Tous';
 @Component({
   selector: 'app-communication-historic',
   templateUrl: './communication-historic.component.html',
@@ -17,11 +18,30 @@ export class CommunicationHistoricComponent implements OnInit {
   emptyHistoric: boolean;
   comHistoric: any[];
   formatSecondDatePipe = new FormatSecondDatePipe();
+  selectedFilter = FILTER_CATEGORY_ALL;
+  filteredHistoric;
+  filters = [FILTER_CATEGORY_ALL];
 
   constructor(private dashboardService: DashboardService) {}
 
   ngOnInit() {
     this.getPrepaidUserHistory();
+  }
+
+  getTransactionByType(filterType: string) {
+    this.selectedFilter = filterType;
+    if (this.selectedFilter === FILTER_CATEGORY_ALL) {
+      this.filteredHistoric = this.comHistoric;
+      return;
+    }
+    this.filteredHistoric = this.comHistoric.filter((item) =>
+      item?.value.map((x) => x.chargeType1).includes(this.selectedFilter)
+    );
+    this.filteredHistoric.forEach((element) => {
+      element.value = element.value.filter(
+        (x) => x.chargeType1 === this.selectedFilter
+      );
+    });
   }
 
   public getPrepaidUserHistory(event?) {
@@ -31,7 +51,10 @@ export class CommunicationHistoricComponent implements OnInit {
     this.dashboardService.getUserConso(100).subscribe(
       (res: any) => {
         this.emptyHistoric = !res?.length;
+        this.filters = Array.from(new Set(res.map((x) => x.chargeType1)));
+        this.filters.splice(0, 0, FILTER_CATEGORY_ALL);
         this.comHistoric = this.processCommunications(res);
+        this.filteredHistoric = this.comHistoric;
         this.loadingComHistoric = false;
         event ? event.target.complete() : '';
       },
@@ -113,5 +136,18 @@ export class CommunicationHistoricComponent implements OnInit {
   displayDate(date: string) {
     const formattedDate = date.split(' ')[0];
     return displayDate(formattedDate);
+  }
+
+  displayFilterName(filter: string) {
+    switch (filter) {
+      case 'illiflex Voix fee':
+        return 'Minutes illiflex';
+      case 'Bonus Tous Reseaux Fee':
+        return 'Bonus Tous Réseaux';
+      case 'illiflex SMS fee':
+        return 'SMS illiflex';
+      default:
+        return filter;
+    }
   }
 }

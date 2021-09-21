@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
-import { IonSlides } from '@ionic/angular';
+import { IonSlides, Platform } from '@ionic/angular';
 import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish.directive';
@@ -33,10 +33,23 @@ export class NewServicesPage implements OnInit {
     category: CategoryOffreServiceModel;
     services: OffreService[];
   }[] = [];
+  isIos: boolean;
 
-  constructor(private operationService: OperationService) {}
+  constructor(
+    private operationService: OperationService,
+    private platform: Platform
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.platform.ready().then(() => {
+      this.isIos = this.platform.is('ios');
+    });
+  }
+
+  isCategoryToHide(category: CategoryOffreServiceModel) {
+    const HIDDEN_CATEGORIES_CODES = ['HUB_ACHAT', 'HUB_TRANSFER', 'HUB_BILLS'];
+    return HIDDEN_CATEGORIES_CODES.includes(category.code);
+  }
 
   ionViewWillEnter(event?) {
     this.getServices(event);
@@ -54,6 +67,7 @@ export class NewServicesPage implements OnInit {
       .getServicesByFormule()
       .pipe(
         tap((res) => {
+          this.servicesByCategoriesArray = [];
           this.services = res;
           const categoriesArray = res.map(
             (service) => service?.categorieOffreServices
@@ -63,7 +77,9 @@ export class NewServicesPage implements OnInit {
             (category, categoryIndex, array) =>
               array.findIndex((t) => t.id === category.id) === categoryIndex
           );
-          this.categories = categories;
+          this.categories = categories.filter((x) => {
+            return !this.isCategoryToHide(x);
+          });
           this.currentCategory = this.categories[0];
           this.services.forEach((service) => {
             service.categorieOffreServices = service.categorieOffreServices.map(
@@ -76,7 +92,9 @@ export class NewServicesPage implements OnInit {
             );
             this.servicesByCategoriesArray.push({ category, services });
           }
-          console.log(this.services);
+          this.servicesByCategoriesArray = this.servicesByCategoriesArray.sort(
+            (el1, el2) => el1.category.ordre - el2.category.ordre
+          );
           this.loadingServices = false;
           event ? event.target.complete() : '';
         }),

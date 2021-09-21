@@ -8,7 +8,38 @@
     </div>
   </ng-container>
   <ng-template #historyCom>
-    <div class="grouped-by-date-item" *ngFor="let groupCom of comHistoric">
+
+
+
+    <div class="filter-container">
+      <div class="purchase-content-filter sargal-content-filter">
+        <button class="filter-container" [ngClass]="{ selected: menuTrigType.menuOpen }" mat-button
+          #menuTrigType="matMenuTrigger" [matMenuTriggerFor]="categoriesAchats">
+          <div [ngClass]="{ 'scb-text-white': menuTrigType.menuOpen }" class="btn-filter">
+            <span>{{ displayFilterName(selectedFilter)}} </span>
+            <div class="arrows">
+              <img *ngIf="!menuTrigType.menuOpen" src="/assets/images/arrow-down.svg" class="arrow-down" alt="">
+              <img *ngIf="menuTrigType.menuOpen" src="/assets/images/keyboard-arrow-up-black.svg" class="arrow-up"
+                alt="">
+            </div>
+          </div>
+        </button>
+        <mat-menu [class]="'customize-mat-menu'" [backdropClass]="'cdk-overlay-pane-custom'" #categoriesAchats="matMenu"
+          class="leftSargal">
+          <ng-template matMenuContent>
+            <ng-container *ngFor="let filter of filters ">
+              <button (click)="getTransactionByType(filter)" class="categorie-label" mat-menu-item>
+                {{ displayFilterName(filter) }}
+              </button>
+            </ng-container>
+          </ng-template>
+        </mat-menu>
+      </div>
+    </div>
+
+
+
+    <div class="grouped-by-date-item" *ngFor="let groupCom of filteredHistoric">
       <span class="group-date">{{displayDate(groupCom?.key)}}</span>
       <div class="group-items-list">
         <div class="historic-item" *ngFor="let item of groupCom?.value">

@@ -18,5 +18,6 @@ import { SharedModule } from 'src/shared/shared.module';
     NewAssistanceHubV2PageRoutingModule,
   ],
   declarations: [NewAssistanceHubV2Page],
+  exports: [NewAssistanceHubV2Page],
 })
 export class NewAssistanceHubV2PageModule {}

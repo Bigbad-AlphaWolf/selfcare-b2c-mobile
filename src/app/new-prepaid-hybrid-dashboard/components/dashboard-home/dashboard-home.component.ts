@@ -1,11 +1,6 @@
-import {
-  Component,
-  NgZone,
-  OnInit,
-  ViewChildren,
-} from '@angular/core';
+import { Component, NgZone, OnInit, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {
@@ -110,19 +105,20 @@ export class DashboardHomeComponent implements OnInit {
   sargalStatus: string;
 
   canDoSOS: boolean;
+  isIos: boolean;
 
-storiesByCategory: {
-	categorie: {
-		libelle?: string;
-		ordre?: number;
-		code?: string;
-		zoneAffichage?: string;
-	};
-	stories: Story[];
-	readAll: boolean;
-}[];
-isLoadingStories: boolean;
-hasError: boolean
+  storiesByCategory: {
+    categorie: {
+      libelle?: string;
+      ordre?: number;
+      code?: string;
+      zoneAffichage?: string;
+    };
+    stories: Story[];
+    readAll: boolean;
+  }[];
+  isLoadingStories: boolean;
+  hasError: boolean;
   constructor(
     private dashboardService: DashboardService,
     private authService: AuthenticationService,
@@ -135,10 +131,15 @@ hasError: boolean
     private modalController: ModalController,
     private bsService: BottomSheetService,
     private zone: NgZone,
-		private storiesService: StoriesService
+    private platform: Platform,
+    private storiesService: StoriesService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.platform.ready().then(() => {
+      this.isIos = this.platform.is('ios');
+    });
+  }
 
   ionViewDidEnter() {
     this.zone.run(() => {
@@ -149,24 +150,28 @@ hasError: boolean
   ionViewWillEnter(event?) {
     this.getCurrentSubscription();
     this.getUserConsommations(event);
-		this.fetchUserStories()
+    this.fetchUserStories();
   }
 
-	fetchUserStories() {
-		console.log('called');
+  fetchUserStories() {
+    console.log('called');
 
     this.isLoadingStories = true;
-		this.storiesByCategory = [];
+    this.storiesByCategory = [];
     this.hasError = false;
     this.storiesService
       .getCurrentStories()
       .pipe(
         tap((res: any) => {
           this.isLoadingStories = false;
-          console.log('groupeStoriesByCategory', this.storiesService.groupeStoriesByCategory(res));
-          this.storiesByCategory = this.storiesService.groupeStoriesByCategory(res);
+          console.log(
+            'groupeStoriesByCategory',
+            this.storiesService.groupeStoriesByCategory(res)
+          );
+          this.storiesByCategory =
+            this.storiesService.groupeStoriesByCategory(res);
         }),
-        catchError(err => {
+        catchError((err) => {
           this.isLoadingStories = false;
           this.hasError = true;
           return of(err);
@@ -234,7 +239,7 @@ hasError: boolean
           this.consoHasError = true;
           this.loadingConso = false;
           event ? event.target.complete() : '';
-					return of(err)
+          return of(err);
         })
       )
       .subscribe();

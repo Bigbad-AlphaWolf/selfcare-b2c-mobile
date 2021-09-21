@@ -1,15 +1,27 @@
-<ion-content class="dashboard-page">
-  <ion-tabs>
-    <ion-tab-bar slot="bottom">
-      <ion-tab-button [tab]="mytab?.route" *ngFor="let mytab of tabs" (click)="onTabChanged(mytab)">
-        <ng-container>
-          <ion-icon [name]="mytab.activeIcon" *ngIf="activeRoute === mytab.route else notActive"></ion-icon>
-        </ng-container>
-        <ng-template #notActive>
-          <ion-icon [name]="mytab.defaultIcon"></ion-icon>
-        </ng-template>
-        <ion-label>{{mytab?.label}}</ion-label>
-      </ion-tab-button>
-    </ion-tab-bar>
-  </ion-tabs>
-</ion-content>
+<swiper [config]="swiperConfig" (slideChange)="onSwipe($event)" #swiper>
+  <ng-template swiperSlide>
+    <app-dashboard-home #dashHome></app-dashboard-home>
+  </ng-template>
+  <ng-template swiperSlide>
+    <app-new-suivi-conso></app-new-suivi-conso>
+  </ng-template>
+  <ng-template swiperSlide>
+    <app-new-services></app-new-services>
+  </ng-template>
+  <ng-template swiperSlide>
+    <app-new-assistance-hub-v2></app-new-assistance-hub-v2>
+  </ng-template>
+</swiper>
+<div class="tabs">
+  <div class="custom-tab" *ngFor="let mytab of tabs, let i = index"
+    [ngClass]="{'tab-selected': currentSlideIndex === i}" (click)="setSlide(i)">
+    <ng-container *ngIf="currentSlideIndex === i else notActive">
+      <ion-icon class="scb-text-orange" [name]="mytab.activeIcon"></ion-icon>
+    </ng-container>
+    <ng-template #notActive>
+      <ion-icon [name]="mytab.defaultIcon"></ion-icon>
+    </ng-template>
+    <ion-label>{{mytab?.label}}</ion-label>
+  </div>
+</div>
+<app-ibou-ion-fab *ngIf="currentSlideIndex !== 3"></app-ibou-ion-fab>

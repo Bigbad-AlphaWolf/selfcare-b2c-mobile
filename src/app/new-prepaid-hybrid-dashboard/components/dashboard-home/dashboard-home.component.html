@@ -13,7 +13,7 @@
   </div>
 </ion-header>
 
-<div class="absolute-block">
+<div class="absolute-block" [ngClass]="{'is-block-ios': isIos}">
   <div class="search-bloc search-bloc1">
     <ion-searchbar placeholder="Que souhaitez-vous ?"></ion-searchbar>
   </div>
