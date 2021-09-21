@@ -29,7 +29,8 @@ export class StoriesService {
   }
 
   seeStory(story: Story) {
-    const data = {msisdn: this.dashbService.getCurrentPhoneNumber(), storyId: story.id};
+    const msisdn = this.dashbService.getCurrentPhoneNumber();
+    const data = {msisdn, storyId: story.id};
     return this.http.post(`${SET_USER_READ_STORY_INFO_ENDPOINT}`, data);
   }
 
@@ -45,7 +46,6 @@ export class StoriesService {
     stories: Story[];
     readAll: boolean;
   }[] {
-    console.log('list', list);
     let result: {
       categorie: {
         libelle: string;
