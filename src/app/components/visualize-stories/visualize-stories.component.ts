@@ -217,10 +217,6 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 		}
 	}
 
-  slideTransitionStart() {
-    //console.log('slideTransitionStart');
-    //console.log(2);
-  }
 
 	clickOnSlide(event: any) {
 		if(event?.btn) {

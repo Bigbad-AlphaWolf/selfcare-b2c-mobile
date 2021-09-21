@@ -239,7 +239,6 @@ export class DashboardHomeComponent implements OnInit {
           this.consoHasError = true;
           this.loadingConso = false;
           event ? event.target.complete() : '';
-          //throw new Error(err);
           return of(err);
         })
       )
