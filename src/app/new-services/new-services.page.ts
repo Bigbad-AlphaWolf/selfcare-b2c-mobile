@@ -92,6 +92,9 @@ export class NewServicesPage implements OnInit {
             );
             this.servicesByCategoriesArray.push({ category, services });
           }
+          this.servicesByCategoriesArray = this.servicesByCategoriesArray.sort(
+            (el1, el2) => el1.category.ordre - el2.category.ordre
+          );
           this.loadingServices = false;
           event ? event.target.complete() : '';
         }),
