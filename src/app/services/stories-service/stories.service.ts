@@ -17,10 +17,10 @@ const SET_USER_READ_STORY_INFO_ENDPOINT = `${SERVER_API_URL}/${SERVICES_SERVICE}
   providedIn: 'root'
 })
 export class StoriesService {
-  currentMsisdn: string = this.dashbService.getCurrentPhoneNumber();
   constructor(private http: HttpClient, private dashbService: DashboardService, private authServ: AuthenticationService) {}
 
-  getCurrentStories(msisdn: string = this.currentMsisdn) {
+  getCurrentStories() {
+    const msisdn = this.dashbService.getCurrentPhoneNumber();
     return this.authServ.getSubscription(msisdn).pipe(
       switchMap((res: SubscriptionModel) => {
         return this.http.get<Story[]>(`${GET_USER_STORIES_ENDPOINT}/${msisdn}?code=${res.code}`);
@@ -29,7 +29,8 @@ export class StoriesService {
   }
 
   seeStory(story: Story) {
-    const data = {msisdn: this.currentMsisdn, storyId: story.id};
+    const msisdn = this.dashbService.getCurrentPhoneNumber();
+    const data = {msisdn, storyId: story.id};
     return this.http.post(`${SET_USER_READ_STORY_INFO_ENDPOINT}`, data);
   }
 
@@ -45,7 +46,6 @@ export class StoriesService {
     stories: Story[];
     readAll: boolean;
   }[] {
-    console.log('list', list);
     let result: {
       categorie: {
         libelle: string;
