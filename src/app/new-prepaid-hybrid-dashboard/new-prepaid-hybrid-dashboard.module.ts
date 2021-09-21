@@ -13,6 +13,7 @@ import { ComponentsModule } from '../components/components.module';
 import { NewSuiviConsoPageModule } from '../new-suivi-conso/new-suivi-conso.module';
 import { NewServicesPageModule } from '../new-services/new-services.module';
 import { NewAssistanceHubV2PageModule } from '../new-assistance-hub-v2/new-assistance-hub-v2.module';
+import { SwiperModule } from 'swiper/angular';
 
 @NgModule({
   imports: [
@@ -25,6 +26,7 @@ import { NewAssistanceHubV2PageModule } from '../new-assistance-hub-v2/new-assis
     NewSuiviConsoPageModule,
     NewServicesPageModule,
     NewAssistanceHubV2PageModule,
+    SwiperModule,
   ],
   declarations: [NewPrepaidHybridDashboardPage, DashboardHomeComponent],
 })

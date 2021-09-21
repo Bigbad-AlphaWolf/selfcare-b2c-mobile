@@ -41,6 +41,7 @@ export class NewSuiviConsoPage implements OnInit {
   }
 
   ionViewWillEnter(event?) {
+    console.log('exec');
     this.refreshData(event);
   }
 
@@ -60,6 +61,7 @@ export class NewSuiviConsoPage implements OnInit {
 
   setSlidesIndex(index) {
     this.sliders.slideTo(index);
+    // this.refreshData();
   }
 
   getCurrentSlide() {

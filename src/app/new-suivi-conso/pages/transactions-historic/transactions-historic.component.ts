@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { catchError, tap } from 'rxjs/operators';
+import { CategoryPurchaseHistory } from 'src/app/models/category-purchase-history.model';
 import { ModalSuccessModel } from 'src/app/models/modal-success-infos.model';
 import { PurchaseModel } from 'src/app/models/purchase.model';
 import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
@@ -10,6 +11,7 @@ import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { PurchaseService } from 'src/app/services/purchase-service/purchase.service';
 import {
+  DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY,
   LIST_ICON_PURCHASE_HISTORIK_ITEMS,
   OPERATION_TRANSFER_OM,
   PAYMENT_MOD_OM,
@@ -27,7 +29,11 @@ export class TransactionsHistoricComponent implements OnInit {
   transactionsHasError: boolean;
   transactionsEmpty: boolean;
   historicTransactions: any[];
+  filteredHistoric: any[];
+  categories: CategoryPurchaseHistory[];
   currentMsisdn = this.dashboardservice.getCurrentPhoneNumber();
+  selectedFilter: { label: string; typeAchat: string } =
+    DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
   constructor(
     private purchaseService: PurchaseService,
     private dashboardservice: DashboardService,
@@ -40,21 +46,50 @@ export class TransactionsHistoricComponent implements OnInit {
     this.getTransactionsHistoric();
   }
 
+  getTransactionByType(filterType: { label: string; typeAchat: string }) {
+    this.selectedFilter = filterType;
+    if (
+      this.selectedFilter.label ===
+      DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY.label
+    ) {
+      this.filteredHistoric = this.historicTransactions;
+    }
+    this.filteredHistoric = this.historicTransactions.filter((item) =>
+      item?.value
+        .map((x) => x.typeAchat)
+        .includes(this.selectedFilter.typeAchat)
+    );
+    this.filteredHistoric.forEach((element) => {
+      element.value = element.value.filter(
+        (x) => x.typeAchat === this.selectedFilter.typeAchat
+      );
+    });
+    console.log(this.filteredHistoric);
+  }
+
   getTransactionsHistoric(event?) {
     this.loadingTransactions = true;
     this.transactionsHasError = false;
     this.transactionsEmpty = false;
+    this.selectedFilter = DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
     this.purchaseService
       .getCategoriesAndPurchaseHistory(this.currentMsisdn, 30)
       .pipe(
-        tap((res: { listPurchase: PurchaseModel[] }) => {
-          this.loadingTransactions = false;
-          this.transactionsEmpty = !!res.listPurchase.length;
-          this.historicTransactions = this.processTransactions(
-            res.listPurchase
-          );
-          event ? event.target.complete() : '';
-        }),
+        tap(
+          (res: {
+            listPurchase: PurchaseModel[];
+            categories: CategoryPurchaseHistory[];
+          }) => {
+            this.loadingTransactions = false;
+            this.transactionsEmpty = !!res.listPurchase.length;
+            this.categories = res.categories;
+            this.historicTransactions = this.processTransactions(
+              res.listPurchase
+            );
+            this.filteredHistoric = this.historicTransactions;
+            event ? event.target.complete() : '';
+          }
+        ),
         catchError((err) => {
           this.loadingTransactions = false;
           event ? event.target.complete() : '';
@@ -85,8 +120,9 @@ export class TransactionsHistoricComponent implements OnInit {
     return displayDate(formattedDate);
   }
 
-  getTransactionIcon(item: PurchaseModel) {
-    const typeAchat = item.typeAchat;
+  getFiltered() {}
+
+  getTransactionIcon(typeAchat: string) {
     const icon = LIST_ICON_PURCHASE_HISTORIK_ITEMS[typeAchat];
     return icon ? icon : '/assets/images/ic-africa.svg';
   }

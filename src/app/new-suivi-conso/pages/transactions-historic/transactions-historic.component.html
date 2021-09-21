@@ -8,12 +8,49 @@
     </div>
   </ng-container>
   <ng-template #transactionsList>
-    <div class="transaction-by-day" *ngFor="let transactionGroup of historicTransactions">
+    <!-- <div class="filtered-categories" *ngIf="categories?.length">
+      <div class="category-item" *ngFor="let category of categories">
+        <img [src]="getTransactionIcon(category.typeAchat)" alt="icon">
+        <div class="cat-name">{{category?.label}}</div>
+      </div>
+    </div> -->
+
+
+
+    <div class="filter-container">
+      <div class="purchase-content-filter sargal-content-filter">
+        <button class="filter-container" [ngClass]="{ selected: menuTrigType.menuOpen }" mat-button
+          #menuTrigType="matMenuTrigger" [matMenuTriggerFor]="categoriesAchats">
+          <div [ngClass]="{ 'scb-text-white': menuTrigType.menuOpen }" class="btn-filter">
+            <span>{{ selectedFilter?.label}} </span>
+            <div class="arrows">
+              <img *ngIf="!menuTrigType.menuOpen" src="/assets/images/arrow-down.svg" class="arrow-down" alt="">
+              <img *ngIf="menuTrigType.menuOpen" src="/assets/images/keyboard-arrow-up-black.svg" class="arrow-up"
+                alt="">
+            </div>
+          </div>
+        </button>
+        <mat-menu [class]="'customize-mat-menu'" [backdropClass]="'cdk-overlay-pane-custom'" #categoriesAchats="matMenu"
+          class="leftSargal">
+          <ng-template matMenuContent>
+            <ng-container *ngFor="let category of categories ">
+              <button (click)="getTransactionByType(category)" class="categorie-label" mat-menu-item>
+                {{ category?.label }}
+              </button>
+            </ng-container>
+          </ng-template>
+        </mat-menu>
+      </div>
+    </div>
+
+
+
+    <div class="transaction-by-day" *ngFor="let transactionGroup of filteredHistoric">
       <div class="transaction-day-title">{{displayDate(transactionGroup?.key)}}</div>
       <div class="day-transactions-content">
         <div class="transaction-item" *ngFor="let transaction of transactionGroup?.value"
           (click)="openTransactionModal(transaction)">
-          <img class="transaction-icon" [src]="getTransactionIcon(transaction)" alt="">
+          <img class="transaction-icon" [src]="getTransactionIcon(transaction.typeAchat)" alt="">
           <div class="left-bloc">
             <span class="transaction-type">{{transaction?.name}}</span>
             <span class="light-text scb-text-gray">{{transaction?.channel}}</span>

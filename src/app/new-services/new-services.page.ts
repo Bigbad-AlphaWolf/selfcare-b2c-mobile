@@ -46,6 +46,11 @@ export class NewServicesPage implements OnInit {
     });
   }
 
+  isCategoryToHide(category: CategoryOffreServiceModel) {
+    const HIDDEN_CATEGORIES_CODES = ['HUB_ACHAT', 'HUB_TRANSFER', 'HUB_BILLS'];
+    return HIDDEN_CATEGORIES_CODES.includes(category.code);
+  }
+
   ionViewWillEnter(event?) {
     this.getServices(event);
   }
@@ -62,6 +67,7 @@ export class NewServicesPage implements OnInit {
       .getServicesByFormule()
       .pipe(
         tap((res) => {
+          this.servicesByCategoriesArray = [];
           this.services = res;
           const categoriesArray = res.map(
             (service) => service?.categorieOffreServices
@@ -71,7 +77,9 @@ export class NewServicesPage implements OnInit {
             (category, categoryIndex, array) =>
               array.findIndex((t) => t.id === category.id) === categoryIndex
           );
-          this.categories = categories;
+          this.categories = categories.filter((x) => {
+            return !this.isCategoryToHide(x);
+          });
           this.currentCategory = this.categories[0];
           this.services.forEach((service) => {
             service.categorieOffreServices = service.categorieOffreServices.map(
@@ -84,7 +92,6 @@ export class NewServicesPage implements OnInit {
             );
             this.servicesByCategoriesArray.push({ category, services });
           }
-          console.log(this.services);
           this.loadingServices = false;
           event ? event.target.complete() : '';
         }),

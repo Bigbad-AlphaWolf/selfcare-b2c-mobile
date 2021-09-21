@@ -20,6 +20,7 @@
     }
     .current-msisdn {
       font-size: 18px;
+      margin: 5px 0 0 -20px;
     }
     .header-right-bloc {
       display: flex;
@@ -30,6 +31,10 @@
       .search-icon,
       .bell-icon {
         font-size: 26px;
+      }
+      .search-icon {
+        position: absolute;
+        right: 30px;
       }
     }
   }
