@@ -7,11 +7,13 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
+import { ASSISTANCE, CONSO } from 'src/shared';
 import { SwiperOptions } from 'swiper';
 import { SwiperComponent } from 'swiper/angular';
 import { NewAssistanceHubV2Page } from '../new-assistance-hub-v2/new-assistance-hub-v2.page';
 import { NewServicesPage } from '../new-services/new-services.page';
 import { NewSuiviConsoPage } from '../new-suivi-conso/new-suivi-conso.page';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { DashboardHomeComponent } from './components/dashboard-home/dashboard-home.component';
 
 @Component({
@@ -55,9 +57,21 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
   swiperConfig: SwiperOptions = {
     slidesPerView: 1,
   };
-  constructor(private ref: ChangeDetectorRef) {}
+  constructor(
+    private ref: ChangeDetectorRef,
+    private dashboardService: DashboardService
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.dashboardService.listenToMenuClick().subscribe((menuItem) => {
+      console.log(menuItem);
+      if (menuItem === CONSO) {
+        this.setSlide(1);
+      } else if (menuItem === ASSISTANCE) {
+        this.setSlide(3);
+      }
+    });
+  }
 
   ionViewDidEnter() {
     this.refreshData();

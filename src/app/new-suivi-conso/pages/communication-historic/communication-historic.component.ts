@@ -30,11 +30,11 @@ export class CommunicationHistoricComponent implements OnInit {
 
   getTransactionByType(filterType: string) {
     this.selectedFilter = filterType;
+    this.filteredHistoric = JSON.parse(JSON.stringify(this.comHistoric));
     if (this.selectedFilter === FILTER_CATEGORY_ALL) {
-      this.filteredHistoric = this.comHistoric;
       return;
     }
-    this.filteredHistoric = this.comHistoric.filter((item) =>
+    this.filteredHistoric = this.filteredHistoric.filter((item) =>
       item?.value.map((x) => x.chargeType1).includes(this.selectedFilter)
     );
     this.filteredHistoric.forEach((element) => {
@@ -54,7 +54,7 @@ export class CommunicationHistoricComponent implements OnInit {
         this.filters = Array.from(new Set(res.map((x) => x.chargeType1)));
         this.filters.splice(0, 0, FILTER_CATEGORY_ALL);
         this.comHistoric = this.processCommunications(res);
-        this.filteredHistoric = this.comHistoric;
+        this.filteredHistoric = this.comHistoric.slice(0);
         this.loadingComHistoric = false;
         event ? event.target.complete() : '';
       },

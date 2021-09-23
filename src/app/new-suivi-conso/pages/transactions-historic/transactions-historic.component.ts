@@ -28,8 +28,8 @@ export class TransactionsHistoricComponent implements OnInit {
   loadingTransactions: boolean;
   transactionsHasError: boolean;
   transactionsEmpty: boolean;
-  historicTransactions: any[];
-  filteredHistoric: any[];
+  historicTransactions: { key: string; value: PurchaseModel[] }[];
+  filteredHistoric: { key: string; value: PurchaseModel[] }[] = [];
   categories: CategoryPurchaseHistory[];
   currentMsisdn = this.dashboardservice.getCurrentPhoneNumber();
   selectedFilter: { label: string; typeAchat: string } =
@@ -47,24 +47,28 @@ export class TransactionsHistoricComponent implements OnInit {
   }
 
   getTransactionByType(filterType: { label: string; typeAchat: string }) {
+    this.filteredHistoric = JSON.parse(
+      JSON.stringify(this.historicTransactions)
+    );
     this.selectedFilter = filterType;
     if (
       this.selectedFilter.label ===
       DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY.label
     ) {
-      this.filteredHistoric = this.historicTransactions;
+      return;
     }
-    this.filteredHistoric = this.historicTransactions.filter((item) =>
-      item?.value
+    this.filteredHistoric = this.filteredHistoric.filter((item) => {
+      return item?.value
         .map((x) => x.typeAchat)
-        .includes(this.selectedFilter.typeAchat)
-    );
+        .includes(this.selectedFilter.typeAchat);
+    });
+    console.log(this.filteredHistoric);
+
     this.filteredHistoric.forEach((element) => {
       element.value = element.value.filter(
         (x) => x.typeAchat === this.selectedFilter.typeAchat
       );
     });
-    console.log(this.filteredHistoric);
   }
 
   getTransactionsHistoric(event?) {
@@ -86,7 +90,7 @@ export class TransactionsHistoricComponent implements OnInit {
             this.historicTransactions = this.processTransactions(
               res.listPurchase
             );
-            this.filteredHistoric = this.historicTransactions;
+            this.filteredHistoric = this.historicTransactions.slice(0);
             event ? event.target.complete() : '';
           }
         ),
@@ -119,8 +123,6 @@ export class TransactionsHistoricComponent implements OnInit {
     const formattedDate = date.split('-').reverse().join('/');
     return displayDate(formattedDate);
   }
-
-  getFiltered() {}
 
   getTransactionIcon(typeAchat: string) {
     const icon = LIST_ICON_PURCHASE_HISTORIK_ITEMS[typeAchat];
