@@ -1,6 +1,6 @@
 <swiper [config]="swiperConfig" (slideChange)="onSwipe($event)" #swiper>
   <ng-template swiperSlide>
-    <app-dashboard-home #dashHome></app-dashboard-home>
+    <app-dashboard-home #dashHome (seeDetails)="setSlide(1)"></app-dashboard-home>
   </ng-template>
   <ng-template swiperSlide>
     <app-new-suivi-conso></app-new-suivi-conso>
@@ -24,4 +24,4 @@
     <ion-label>{{mytab?.label}}</ion-label>
   </div>
 </div>
-<app-ibou-ion-fab *ngIf="currentSlideIndex !== 3"></app-ibou-ion-fab>
+<app-ibou-ion-fab *ngIf="currentSlideIndex !== 3" (goTabAssistance)="setSlide(3)"></app-ibou-ion-fab>

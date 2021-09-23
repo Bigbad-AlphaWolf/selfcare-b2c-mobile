@@ -107,6 +107,7 @@ export class DashboardService {
   updateRattachmentList: Subject<any> = new Subject<any>();
   isSponsorSubject: Subject<any> = new Subject<boolean>();
   attachedNumbersChangedSubject: Subject<any> = new Subject<any>();
+  menuOptionClickedSubject: Subject<any> = new Subject<any>();
   user: any;
   msisdn: string;
   screenWatcher: Subscription;
@@ -143,6 +144,15 @@ export class DashboardService {
   getRattachmentlistUpdateInfo() {
     return this.updateRattachmentList.asObservable();
   }
+
+  listenToMenuClick() {
+    return this.menuOptionClickedSubject.asObservable();
+  }
+
+  menuOptionClickEmit(option) {
+    this.menuOptionClickedSubject.next(option);
+  }
+
   reinitializePassword(payload: {
     otp: string;
     newPassword: string;

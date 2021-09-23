@@ -1,4 +1,11 @@
-import { Component, NgZone, OnInit, ViewChildren } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  NgZone,
+  OnInit,
+  Output,
+  ViewChildren,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
 import { of } from 'rxjs';
@@ -41,6 +48,7 @@ import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/m
 })
 export class DashboardHomeComponent implements OnInit {
   @ViewChildren(ScrollVanishDirective) dir;
+  @Output() seeDetails: EventEmitter<any> = new EventEmitter();
   slideOpts = {
     speed: 400,
     slidesPerView: 1.58,
@@ -342,7 +350,8 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   consultConsoDetails(number?: number) {
-    this.router.navigate(['/details-conso']);
+    // this.router.navigate(['/details-conso']);
+    this.seeDetails.emit();
     number
       ? this.followAnalyticsService.registerEventFollow(
           'Voirs_details_dashboard',

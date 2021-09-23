@@ -18,6 +18,8 @@ import {
   NO_AVATAR_ICON_URL,
   getNOAvatartUrlImage,
   ASSISTANCE_URL,
+  CONSO,
+  ASSISTANCE,
 } from 'src/shared';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
@@ -28,6 +30,7 @@ import { ApplicationRoutingService } from '../services/application-routing/appli
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
+import { isPrepaidOrHybrid } from '../dashboard';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -139,12 +142,23 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goDetailsConso() {
-    this.followAnalyticsService.registerEventFollow(
-      'Details_conso_menu',
-      'event',
-      this.msisdn
-    );
-    this.router.navigate(['/details-conso']);
+    this.authServ.getSubscription(this.msisdn).subscribe((sub) => {
+      if (isPrepaidOrHybrid(sub)) {
+        this.followAnalyticsService.registerEventFollow(
+          'Details_conso_tab_from_menu',
+          'event',
+          this.msisdn
+        );
+        this.dashboardServ.menuOptionClickEmit(CONSO);
+        return;
+      }
+      this.followAnalyticsService.registerEventFollow(
+        'Details_conso_menu',
+        'event',
+        this.msisdn
+      );
+      this.router.navigate(['/details-conso']);
+    });
   }
 
   switchPhoneNumber(msisdn) {
@@ -251,12 +265,23 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goEmergencies() {
-    this.router.navigate(['/assistance-hub']);
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_menu',
-      'event',
-      'clicked'
-    );
+    this.authServ.getSubscription(this.msisdn).subscribe((sub) => {
+      if (isPrepaidOrHybrid(sub)) {
+        this.followAnalyticsService.registerEventFollow(
+          'Assistance_tab_from_menu',
+          'event',
+          this.msisdn
+        );
+        this.dashboardServ.menuOptionClickEmit(ASSISTANCE);
+        return;
+      }
+      this.router.navigate(['/assistance-hub']);
+      this.followAnalyticsService.registerEventFollow(
+        'Assistance_menu',
+        'event',
+        'clicked'
+      );
+    });
   }
 
   goToRattachedNumberPage() {
