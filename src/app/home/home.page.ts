@@ -9,7 +9,7 @@ declare var FollowAnalytics: any;
 })
 export class HomePage implements OnInit {
   slideOpts = {
-    initialSlide: 1,
+    initialSlide: 0,
     speed: 400,
     loop: true,
     zoom: false,
@@ -17,37 +17,35 @@ export class HomePage implements OnInit {
 
   slides = [
     {
-      imageSrc: '/assets/images/1.png',
-      text:
-        '<span>Dalal ak Jam <br/> Ci </span> <span class="scb-text-orange">Orange</span>',
+      imageSrc: '/assets/images/new-boarding-1.png',
+      text: 'Dalal ak Jam ci<br/> Orange et moi',
+      description: `L’application pour gérer vos offres internet et mobile facilement depuis votre mobile.`,
     },
     {
-      imageSrc: '/assets/images/2.png',
-      text:
-        '<span>Suivre ma </span> <br /><span class="scb-text-blue">conso</span>',
+      imageSrc: '/assets/images/new-boarding-2.png',
+      text: 'Suivre ma <br />consommation',
+      description: `Consultez vos soldes en temps réel (Crédit, internet, Orange Money et Sargal)`,
     },
     {
-      imageSrc: '/assets/images/3.png',
-      text:
-        '<span>Contacter </span> <br /> <span class="scb-text-green">l’assistance</span>',
+      imageSrc: '/assets/images/new-boarding-3.png',
+      text: 'Acheter du crédit <br /> et des pass',
+      description: `Retrouvez vos pass internet et illimix préférés et profitez des promos`,
     },
     {
-      imageSrc: '/assets/images/4.png',
-      text:
-        'Acheter du <span class="scb-text-purple">crédit</span> <br/> et des <span class="scb-text-purple">pass</span>',
+      imageSrc: '/assets/images/new-boarding-4.png',
+      text: `Transférer de <br/> l’argent`,
+      description: `Effectuez toutes vos opérations de transferts d’argent sans vous déplacer`,
     },
     {
-      imageSrc: '/assets/images/5.png',
-      text:
-        '<span>Gérer mes </span> <br /><span class="scb-text-yellow">offres</span>',
+      imageSrc: '/assets/images/new-boarding-3.png',
+      text: 'Payer vos <br />factures',
+      description: `Consultez et payer toutes vos factures en un seul lieu et en toute sécurité`,
     },
   ];
 
   currentIndex;
 
-  constructor(
-    private router: Router
-  ) {
+  constructor(private router: Router) {
     if (typeof FollowAnalytics !== 'undefined') {
       FollowAnalytics.logEvent('Home', 'success');
     }

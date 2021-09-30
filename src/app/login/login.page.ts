@@ -190,6 +190,6 @@ export class LoginPage implements OnInit {
     this.router.navigate(['/home']);
   }
   goBack() {
-    this.navController.navigateBack(['/home-v2']);
+    this.navController.navigateBack(['/home']);
   }
 }
