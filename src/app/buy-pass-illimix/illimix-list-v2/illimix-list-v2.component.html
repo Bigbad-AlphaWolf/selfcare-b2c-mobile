@@ -61,12 +61,12 @@
                 </div>
               </div>
             </div>
-            <div *ngIf="pass?.dureeAppel || pass?.passPromo?.dureeAppel" class="details-item">
+            <div *ngIf="pass?.dureeAppelSortant || pass?.passPromo?.dureeAppelSortant" class="details-item">
               <div class="details-item-icon">
                 <img src="/assets/images/appel.png" alt="internet-usage" class="icon" />
               </div>
               <div class="details-item-text">
-                <div class="text">{{ !pass?.passPromo ? pass?.dureeAppel : pass?.passPromo?.dureeAppel }}</div>
+                <div class="text">{{ !pass?.passPromo ? pass?.dureeAppelSortant : pass?.passPromo?.dureeAppelSortant }}</div>
                 <div class="category scb-text-dark-grey">
                   Appel
                 </div>

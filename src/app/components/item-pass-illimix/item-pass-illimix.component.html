@@ -33,9 +33,9 @@
             Appel entrant
           </span>
         </div>
-        <div *ngIf="passIllimix?.dureeAppel || passIllimix?.passPromo?.dureeAppel" class="infos left-side">
+        <div *ngIf="passIllimix?.dureeAppelSortant || passIllimix?.passPromo?.dureeAppelSortant" class="infos left-side">
           <span class="item-volume">
-            {{ !passIllimix?.passPromo ? passIllimix?.dureeAppel : passIllimix?.passPromo?.dureeAppel }}
+            {{ !passIllimix?.passPromo ? passIllimix?.dureeAppelSortant : passIllimix?.passPromo?.dureeAppelSortant }}
           </span>
           <span class="item-type scb-text-gray">
             {{passIllimix?.dureeAppelEntrant || passIllimix?.passPromo?.dureeAppelEntrant ?'Appel sortant*':'Appel*'}}
