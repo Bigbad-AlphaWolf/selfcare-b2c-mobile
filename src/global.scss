@@ -1021,3 +1021,20 @@ ion-tab-bar {
     text-align: left;
   }
 }
+
+.home-page {
+  .swiper-pagination-bullets {
+    top: 290px !important;
+    bottom: unset !important;
+  }
+  .swiper-pagination-bullet-active {
+    width: 8px !important;
+    height: 8px !important;
+    background-color: $orange;
+  }
+  .swiper-pagination-bullet {
+    background-color: rgba(255, 114, 0, 0.6);
+    width: 6px;
+    height: 6px;
+  }
+}
