@@ -489,8 +489,7 @@ export class DashboardService {
 
   getListPassInternet(codeFormule: string, isLighMod?: boolean, typeUsage = 'TOUS') {
     const endpoint = isLighMod ? listPassInternetEndpointLight : listPassInternetEndpoint;
-    const currentNumber = this.getCurrentPhoneNumber();
-    let queryParams = `?msisdn=${currentNumber}&typeUsage=${typeUsage}`;
+    let queryParams = `?&typeUsage=${typeUsage}`;
     const hmac = this.authService.getHmac();
     if (isLighMod) queryParams += `&hmac=${hmac}`;
     return this.http.get(`${endpoint}/${codeFormule}${queryParams}`);
