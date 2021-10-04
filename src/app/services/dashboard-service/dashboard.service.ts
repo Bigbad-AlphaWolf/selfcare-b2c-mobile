@@ -487,21 +487,21 @@ export class DashboardService {
     return this.http.get(url);
   }
 
+  getListPassInternet(codeFormule: string, isLighMod?: boolean, typeUsage = 'TOUS') {
+    const endpoint = isLighMod ? listPassInternetEndpointLight : listPassInternetEndpoint;
+    const currentNumber = this.getCurrentPhoneNumber();
+    let queryParams = `?msisdn=${currentNumber}&typeUsage=${typeUsage}`;
+    const hmac = this.authService.getHmac();
+    if (isLighMod) queryParams += `&hmac=${hmac}`;
+    return this.http.get(`${endpoint}/${codeFormule}${queryParams}`);
+  }
+
   getListPassByMsisdn(passType: 'INTERNET' | 'ILLIMIX', passRecipientNumber: string) {
     return this.http.get(`${listPassByMsisdnEndpoint}/${passRecipientNumber}?passType=${passType}`).pipe(
       catchError(_ => {
         return of([]);
       })
     );
-  }
-
-  getListPassInternet(codeFormule: string, isLighMod?: boolean, typeUsage = 'TOUS') {
-    const endpoint = isLighMod ? listPassInternetEndpointLight : listPassInternetEndpoint;
-    let queryParams = `?typeUsage=${typeUsage}`;
-    const hmac = this.authService.getHmac();
-    const currentNumber = this.getCurrentPhoneNumber();
-    if (isLighMod) queryParams += `&hmac=${hmac}&msisdn=${currentNumber}`;
-    return this.http.get(`${endpoint}/${codeFormule}${queryParams}`);
   }
 
   buyPassByCredit(payload: BuyPassModel, hmac?: string) {
