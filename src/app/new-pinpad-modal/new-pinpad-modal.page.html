@@ -142,8 +142,8 @@
         [ngClass]="{'bullet-filled': codePin.length >= i+1, 'bullet-error': errorBulletActive}"
       ></span>
     </div>
-    <div class="error-block scb-text-red-error" *ngIf="pinHasError" [ngClass]="{'big-text': canRetry}">
-      {{pinError}} <span *ngIf="erroCode === OM_CAPPING_ERROR">{{' ' + cappingFees + ' FCFA'}}</span>
+    <div (click)="redirectToPage()" class="error-block scb-text-red-error" *ngIf="pinHasError" [ngClass]="{'big-text': canRetry}">
+      {{pinError}} <span *ngIf="errorCode === OM_CAPPING_ERROR">{{' ' + cappingFees + ' FCFA'}}</span>
     </div>
     <div class="confirm-block" *ngIf="canRetry">
       <button class="scb-btn scb-btn-orange" [disabled]="processingPin" (click)="retry()">

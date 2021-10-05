@@ -33,7 +33,8 @@ import {
   OPERATION_BLOCK_TRANSFER,
   OM_IDENTIC_TRANSACTION_CODE,
   OM_CAPPING_ERROR,
-  OPERATION_CREATE_PIN_OM
+  OPERATION_CREATE_PIN_OM,
+	BLOCKED_PASS
 } from 'src/shared';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {MatDialogRef, MatDialog} from '@angular/material';
@@ -52,6 +53,7 @@ import {FollowOemlogPurchaseInfos} from '../models/follow-log-oem-purchase-Infos
 import {IlliflexModel} from '../models/illiflex-pass.model';
 import {PurchaseModel} from '../models/purchase.model';
 import {ConfirmMsisdnModel} from '../services/authentication-service/authentication.service';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -126,7 +128,8 @@ export class NewPinpadModalPage implements OnInit {
     public modalController: ModalController,
     private woyofal: WoyofalService,
     private rapido: RapidoService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+		private appRouting: ApplicationRoutingService
   ) {}
 
   ngOnInit() {
@@ -1176,5 +1179,16 @@ export class NewPinpadModalPage implements OnInit {
       result.typeError = 'DENIED_PIN';
     }
     return result;
+  }
+
+	redirectToPage() {
+    switch (this.errorCode) {
+      case BLOCKED_PASS:
+        this.appRouting.goToParainnagePage(this.opXtras?.recipientMsisdn);
+        this.modalController.dismiss();
+        break;
+      default:
+        break;
+    }
   }
 }

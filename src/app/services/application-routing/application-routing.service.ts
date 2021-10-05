@@ -157,6 +157,15 @@ export class ApplicationRoutingService {
     this.route.navigate(['/transfer/orange-money']);
   }
 
+  goToParainnagePage(sponseeMsisdn?: string) {
+    let navigationExtras: NavigationExtras = {
+      state: {
+        sponseeMsisdn
+      }
+    };
+    this.route.navigate(['/parrainage'], navigationExtras);
+  }
+
   goToCancelTransactionOM(data: PurchaseModel) {
     let navigationExtras: NavigationExtras = {
       state: {transactionInfos: data}

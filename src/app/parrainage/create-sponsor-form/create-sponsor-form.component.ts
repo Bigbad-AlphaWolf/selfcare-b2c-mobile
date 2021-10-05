@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { REGEX_NUMBER, formatPhoneNumber, REGEX_NAME, parseIntoNationalNumberFormat } from 'src/shared';
-import { ModalController } from '@ionic/angular';
-import { ParrainageService } from 'src/app/services/parrainage-service/parrainage.service';
-import { Contacts, Contact } from '@ionic-native/contacts';
-import { MatDialog } from '@angular/material';
-import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
+import {Component, Input, OnInit} from '@angular/core';
+import {Validators, FormGroup, FormBuilder} from '@angular/forms';
+import {REGEX_NUMBER, formatPhoneNumber, REGEX_NAME, parseIntoNationalNumberFormat} from 'src/shared';
+import {ModalController} from '@ionic/angular';
+import {ParrainageService} from 'src/app/services/parrainage-service/parrainage.service';
+import {Contacts, Contact} from '@ionic-native/contacts';
+import {MatDialog} from '@angular/material';
+import {SelectNumberPopupComponent} from 'src/shared/select-number-popup/select-number-popup.component';
 
 @Component({
   selector: 'app-create-sponsor-form',
@@ -20,6 +20,7 @@ export class CreateSponsorFormComponent implements OnInit {
   errorMsg: string;
   destNumber: string;
   contact: Contact;
+  @Input() defaultNumber: string = '';
   constructor(
     private fb: FormBuilder,
     public modalController: ModalController,
@@ -30,7 +31,7 @@ export class CreateSponsorFormComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      sponseeMsisdn: ['', [Validators.required, Validators.pattern(REGEX_NUMBER)]],
+      sponseeMsisdn: [this.defaultNumber, [Validators.required, Validators.pattern(REGEX_NUMBER)]],
       firstname: ['', [Validators.pattern(REGEX_NAME)]]
     });
   }
@@ -54,7 +55,7 @@ export class CreateSponsorFormComponent implements OnInit {
   openPickRecipientModal(phoneNumbers: any[]) {
     this.showErrMessage = false;
     const dialogRef = this.dialog.open(SelectNumberPopupComponent, {
-      data: { phoneNumbers }
+      data: {phoneNumbers}
     });
     dialogRef.afterClosed().subscribe(selectedNumber => {
       this.destNumber = formatPhoneNumber(selectedNumber);
@@ -78,7 +79,7 @@ export class CreateSponsorFormComponent implements OnInit {
     const recipientLastName = this.contact.name.familyName ? this.contact.name.familyName : '';
     recipientFirstName += this.contact.name.middleName ? ` ${this.contact.name.middleName}` : '';
     const name = `${recipientFirstName} ${recipientLastName}`;
-    this.form.setValue({ sponseeMsisdn: this.destNumber, firstname: name });
+    this.form.setValue({sponseeMsisdn: this.destNumber, firstname: name});
   }
 
   validateNumber(phoneNumber: string) {
@@ -91,7 +92,7 @@ export class CreateSponsorFormComponent implements OnInit {
     this.creatingSponsee = true;
     const msisdn = this.form.value.sponseeMsisdn;
     const firstName = this.form.value.firstname;
-    this.parrainageService.createSponsee({ msisdn, firstName }).subscribe(
+    this.parrainageService.createSponsee({msisdn, firstName}).subscribe(
       (res: any) => {
         this.creatingSponsee = false;
         this.showSuccessMessage = true;
