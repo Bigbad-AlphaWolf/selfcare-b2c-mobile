@@ -103,6 +103,9 @@ export const MAX_USER_AVATAR_UPLOAD_SIZE = 3072;
 // Maximum size of avatar image allowed in bytes : 5 Mo ou 5 * 1024Ko
 export const MAX_USER_FILE_UPLOAD_SIZE = 5120;
 
+// Code d'erreur for Achat Pass bloqué pour destinataires clients non Orange et Moi
+export const BLOCKED_PASS = 'BLOCKEDPASS';
+
 export const DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY = {
   label: 'Tous',
   typeAchat: undefined
