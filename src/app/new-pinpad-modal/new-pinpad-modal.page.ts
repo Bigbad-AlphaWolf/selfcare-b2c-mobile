@@ -40,7 +40,7 @@ import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {MatDialogRef, MatDialog} from '@angular/material';
 import {NoOMAccountPopupComponent} from 'src/shared/no-omaccount-popup/no-omaccount-popup.component';
 import {DashboardService} from '../services/dashboard-service/dashboard.service';
-import {ModalController} from '@ionic/angular';
+import {ModalController, NavController} from '@ionic/angular';
 import {catchError, tap} from 'rxjs/operators';
 import {HttpErrorResponse} from '@angular/common/http';
 import {of, throwError} from 'rxjs';
@@ -129,7 +129,8 @@ export class NewPinpadModalPage implements OnInit {
     private woyofal: WoyofalService,
     private rapido: RapidoService,
     private followAnalyticsService: FollowAnalyticsService,
-		private appRouting: ApplicationRoutingService
+		private appRouting: ApplicationRoutingService,
+		private navCtrl: NavController
   ) {}
 
   ngOnInit() {
@@ -1190,5 +1191,10 @@ export class NewPinpadModalPage implements OnInit {
       default:
         break;
     }
+  }
+
+	goBack() {
+		this.modalController.dismiss();
+    this.navCtrl.pop();
   }
 }
