@@ -667,6 +667,8 @@ export class OperationRecapPage implements OnInit {
       buyForMe:
         this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
       errorMsg: this.buyPassErrorMsg,
+			errorCode: res?.code,
+			recipientMsisdn: this.recipientMsisdn
     });
   }
 
@@ -687,6 +689,8 @@ export class OperationRecapPage implements OnInit {
       buyForMe:
         this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
       errorMsg: this.buyPassErrorMsg,
+			errorCode: err?.error?.code,
+			recipientMsisdn: this.recipientMsisdn
     });
   }
 

@@ -1,4 +1,4 @@
-<div class="success-page">
+<div *ngIf="errorCode !== 'BLOCKEDPASS'" class="success-page">
   <img
     (click)="terminer()"
     src="/assets/images/close.svg"
@@ -8,12 +8,11 @@
   <div class="top-block">
     <img *ngIf="success" src="/assets/images/confirmation.png" alt="checked" />
     <ng-container *ngIf="!success">
-      <img *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT].includes(purchaseType)" src="/assets/images/echec.png" alt="checked" />
+      <img *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT].includes(purchaseType) && errorCode !== 'BLOCKEDPASS'" src="/assets/images/echec.png" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_CHANGE_PIN_OM" src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_OPEN_OM_ACCOUNT" src="/assets/images/05-ic-nes-ouverture-compte-om.svg" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_CANCEL_TRANSFERT_OM" src="/assets/images/05-ic-nes-blocage-transfert.svg" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_DEPLAFONNEMENT_OM_ACCOUNT" src="/assets/images/05-ic-nes-ouverture-compte-om.svg" alt="checked" />
-
     </ng-container>
     <ng-container [ngSwitch]="purchaseType">
       <span class="title" *ngSwitchCase="OPERATION_TRANSFER_OM"
@@ -33,8 +32,7 @@
         *ngSwitchCase="'OPERATION_WOYOFAL'"
         style="white-space: pre-line;"
         >{{success ? 'Rechargement'+'\n'+'Woyofal effectué' :
-        'Echec'+'\n'+'rechargement Woyofal'}}</span
-      >
+        'Echec'+'\n'+'rechargement Woyofal'}}</span>
       <span
         class="title"
         *ngSwitchCase="OPERATION_RAPIDO"
@@ -359,5 +357,32 @@
 
   <div class="terminer scb-text-orange" (click)="terminer()">
     {{ success ? 'Terminer' : 'Retour à l\'accueil' }}
+  </div>
+  <div *ngIf="!success && errorCode === 'BLOCKEDPASS'" class="terminer padding-t-0 scb-text-orange" (click)="redirectToPage()">
+    Parrainer le numéro
+  </div>
+</div>
+<div *ngIf="errorCode === 'BLOCKEDPASS'" class="success-page">
+  <img
+    (click)="terminer()"
+    src="/assets/images/close.svg"
+    class="close-icon"
+    alt=""
+  />
+  <div class="top-block">
+		<span class="title"
+			>Ce client n'a pas de compte sur Orange et Moi</span
+		>
+
+    <span class="subtitle scb-text-gray">
+			<span> Parrainer ce contact pour lui permettre de bénéficier de ce pass</span>
+    </span>
+  </div>
+
+  <div class="terminer padding-t-0 scb-text-orange"  (click)="redirectToPage()">
+    Parrainer
+  </div>
+  <div *ngIf="!success && errorCode === 'BLOCKEDPASS'" class="terminer padding-t-0 scb-text-orange" (click)="goBack()">
+    Acheter un autre pass
   </div>
 </div>

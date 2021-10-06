@@ -105,7 +105,5 @@ export class ListPreviewStoriesComponent implements OnInit {
     this.storiesByCategory[index].readAll = !this.storiesByCategory[index].stories.filter(elt => {
       return elt.read === false;
     }).length;
-
-    console.log('stories', this.storiesByCategory, 'this.storiesByCategory[index]', this.storiesByCategory[index], 'index', index);
   }
 }

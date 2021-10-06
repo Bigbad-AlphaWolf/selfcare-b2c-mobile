@@ -70,20 +70,20 @@ const listPassIllimixEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-ill
 const listPassInternetEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-internets-by-formule`;
 const listFormulesEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/formule-mobiles`;
 
+// pass by msisdn
+const listPassByMsisdnEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-by-msisdn`;
+
 // reinitialize passwords endpoints
 const initOTPReinitializeEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password/init`;
 const reinitializeEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password/finish`;
 
 // Endpoint to get sargal balance
 const sargalBalanceEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/`;
-const welcomeStatusEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters`;
 
 // Endpoint promoBooster active
-const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters/active-boosters`;
 const boosterTransactionEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters/booster-promo-transaction`;
 
 // Endpoint to get the user's birthdate
-const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/birthDate`;
 const userInfosEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/infos-client`;
 // Endpoint to check allo feature status
 const showNewFeatureStateEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-allo-new`;
@@ -537,11 +537,25 @@ export class DashboardService {
     const endpoint = isLighMod
       ? listPassInternetEndpointLight
       : listPassInternetEndpoint;
-    let queryParams = `?typeUsage=${typeUsage}`;
+    let queryParams = `?&typeUsage=${typeUsage}`;
     const hmac = this.authService.getHmac();
-    const currentNumber = this.getCurrentPhoneNumber();
-    if (isLighMod) queryParams += `&hmac=${hmac}&msisdn=${currentNumber}`;
+    if (isLighMod) queryParams += `&hmac=${hmac}`;
     return this.http.get(`${endpoint}/${codeFormule}${queryParams}`);
+  }
+
+  getListPassByMsisdn(
+    passType: 'INTERNET' | 'ILLIMIX',
+    passRecipientNumber: string
+  ) {
+    return this.http
+      .get(
+        `${listPassByMsisdnEndpoint}/${passRecipientNumber}?passType=${passType}`
+      )
+      .pipe(
+        catchError((_) => {
+          return of([]);
+        })
+      );
   }
 
   buyPassByCredit(payload: BuyPassModel, hmac?: string) {

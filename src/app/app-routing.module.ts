@@ -38,38 +38,6 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'buy-pass-internet',
-    loadChildren: () =>
-      import('./buy-pass-internet/buy-pass-internet.module').then(
-        (m) => m.BuyPassInternetPageModule
-      ),
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'buy-pass-internet-by-credit',
-    loadChildren: () =>
-      import('./buy-pass-internet/buy-pass-internet.module').then(
-        (m) => m.BuyPassInternetPageModule
-      ),
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'buy-pass-internet-by-om',
-    loadChildren: () =>
-      import('./buy-pass-internet/buy-pass-internet.module').then(
-        (m) => m.BuyPassInternetPageModule
-      ),
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'buy-pass-internet/:id',
-    loadChildren: () =>
-      import('./buy-pass-internet/buy-pass-internet.module').then(
-        (m) => m.BuyPassInternetPageModule
-      ),
-    canActivate: [AuthGuard],
-  },
-  {
     path: 'buy-credit',
     loadChildren: () =>
       import('./buy-credit/buy-credit.module').then(
@@ -90,22 +58,6 @@ const routes: Routes = [
     loadChildren: () =>
       import('./my-account/my-account.module').then(
         (m) => m.MyAccountPageModule
-      ),
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'buy-pass-illimix',
-    loadChildren: () =>
-      import('./buy-pass-illimix/buy-pass-illimix.module').then(
-        (m) => m.BuyPassIllimixPageModule
-      ),
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'buy-pass-illimix/:id',
-    loadChildren: () =>
-      import('./buy-pass-illimix/buy-pass-illimix.module').then(
-        (m) => m.BuyPassIllimixPageModule
       ),
     canActivate: [AuthGuard],
   },
