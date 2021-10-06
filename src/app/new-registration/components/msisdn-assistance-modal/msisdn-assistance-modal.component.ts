@@ -57,7 +57,11 @@ export class MsisdnAssistanceModalComponent implements OnInit {
         this.wifiEnabled = await this.wifiWizard2.isWifiEnabled();
         this.buttonEnabled = !this.wifiEnabled;
       } else if (this.step === GET_MSISDN_ENUM.ENABLE_4G) {
-        if (this.network.type === '4g') {
+        if (
+          this.network.type === '4g' ||
+          this.network.type === '3g' ||
+          this.network.type === '2g'
+        ) {
           const msisdn = await this.getMsisdn();
         }
       }
