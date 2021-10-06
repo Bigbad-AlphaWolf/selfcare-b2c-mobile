@@ -60,7 +60,7 @@ export class HomePage implements OnInit {
   }
 
   goToRegistrationPage() {
-    this.router.navigate(['/register']);
+    this.router.navigate(['/new-registration']);
   }
 
   goToOrangeHomePage() {

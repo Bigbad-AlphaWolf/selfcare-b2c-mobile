@@ -73,7 +73,7 @@ pipeline {
       }
     }
 
-     /*stage("SonarQube Quality Gate") {
+     stage("SonarQube Quality Gate") {
           steps {
             script {
               timeout(time: 10, unit: 'MINUTES') {
@@ -85,7 +85,7 @@ pipeline {
               }
             }
           }
-        } */
+        } 
 
      stage("Create www && cp google-services") {
       steps{

@@ -5,6 +5,7 @@ import {
   UserConsommation,
   CODE_KIRENE_Formule,
 } from 'src/shared';
+import { BoosterModel } from '../models/booster.model';
 
 // differents profiles
 export const PROFILE_TYPE_PREPAID = 'PREPAID';
@@ -46,18 +47,19 @@ export interface SargalSubscriptionModel {
   msisdn?: string;
 }
 
-export const getConsoByCategory /* : { [k: string]: Array<UserConsommation> }  */ = (
-  userConsos: Array<{
-    categorie: string;
-    consommations: Array<UserConsommation>;
-  }>
-) => {
-  const consoByCategory = {};
-  userConsos.forEach((x) => {
-    consoByCategory[x.categorie] = x.consommations;
-  });
-  return consoByCategory;
-};
+export const getConsoByCategory /* : { [k: string]: Array<UserConsommation> }  */ =
+  (
+    userConsos: Array<{
+      categorie: string;
+      consommations: Array<UserConsommation>;
+    }>
+  ) => {
+    const consoByCategory = {};
+    userConsos.forEach((x) => {
+      consoByCategory[x.categorie] = x.consommations;
+    });
+    return consoByCategory;
+  };
 
 export interface BillModel {
   annee: number;
@@ -92,9 +94,10 @@ export interface SubscriptionModel {
 }
 
 export interface PromoBoosterActive {
-  promoPass: boolean;
-  promoRecharge: boolean;
-  promoPassIllimix: boolean;
+  promoPass?: BoosterModel;
+  promoRecharge?: BoosterModel;
+  promoPassIllimix?: BoosterModel;
+  boosterInscription?: BoosterModel;
 }
 
 export function isFixPostpaid(codeFormule: string) {

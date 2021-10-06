@@ -328,6 +328,12 @@ export class OperationRecapPage implements OnInit {
     return of(result.data).toPromise();
   }
 
+  mapWoyofalToTransferInput() {
+    const opxtras = this.opXtras;
+    opxtras.sending_fees = this.opXtras.fee;
+    return opxtras;
+  }
+
   getCurrentNumSubscription() {
     this.authServ
       .getSubscriptionForTiers(this.currentUserNumber)
