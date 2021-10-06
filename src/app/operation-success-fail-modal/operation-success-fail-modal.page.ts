@@ -273,4 +273,9 @@ export class OperationSuccessFailModalPage implements OnInit {
         break;
     }
   }
+
+  goBack() {
+    this.modalController.dismiss();
+    this.navCtrl.pop();
+  }
 }
