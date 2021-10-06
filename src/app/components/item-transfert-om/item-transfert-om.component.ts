@@ -9,6 +9,7 @@ export class ItemTransfertOmComponent implements OnInit {
   @Input() omTransfertInfos: any;
   @Input() isFromHistory: boolean;
   @Input() transferHistoryItem: any;
+  @Input() isForWoyofal: boolean;
   MATH = Math;
   constructor() {}
 

@@ -605,32 +605,30 @@ export class DashboardService {
     return res;
   }
 
-  getWelcomeStatus() {
+  getWelcomeStatus(boosters) {
     const currentPhoneNumber = this.getCurrentPhoneNumber();
-    return this.boosterService
-      .getBoosters({ trigger: BoosterTrigger.FORM_INSCRIPTION })
-      .pipe(
-        switchMap((res: BoosterModel[]) => {
-          const lastWelcomeBooster = res[0];
-          return this.http
-            .get(
-              `${boosterTransactionEndpoint}/?msisdn=${currentPhoneNumber}&boosterId=${lastWelcomeBooster.id}`
-            )
-            .pipe(
-              map((res: any) => {
-                const response = {
-                  status: res.transactionStatus,
-                  type: GiftType.RECHARGE,
-                  value: {
-                    amount: res.transactionDetails.transactionValue,
-                    unit: 'F CFA',
-                  },
-                };
-                return response;
-              })
-            );
-        })
-      );
+    console.log(boosters);
+    const lastWelcomeBooster = boosters.boosterInscription;
+    if (lastWelcomeBooster) {
+      return this.http
+        .get(
+          `${boosterTransactionEndpoint}/?msisdn=${currentPhoneNumber}&boosterId=${lastWelcomeBooster.id}`
+        )
+        .pipe(
+          map((res: any) => {
+            const response = {
+              status: res.transactionStatus,
+              type: GiftType.RECHARGE,
+              value: {
+                amount: res.transactionDetails.transactionValue,
+                unit: 'F CFA',
+              },
+            };
+            return response;
+          })
+        );
+    }
+    return of({});
   }
 
   getActivePromoBooster() {
@@ -654,7 +652,16 @@ export class DashboardService {
               const promoPassIllimix = res.find(
                 (promo) => promo.boosterTrigger === BoosterTrigger.PASS_ILLIMIX
               );
-              return { promoPass, promoRecharge, promoPassIllimix };
+              const boosterInscription = res.find(
+                (promo) =>
+                  promo.boosterTrigger === BoosterTrigger.FORM_INSCRIPTION
+              );
+              return {
+                promoPass,
+                promoRecharge,
+                promoPassIllimix,
+                boosterInscription,
+              };
             })
           );
       }),
@@ -663,6 +670,7 @@ export class DashboardService {
           promoPass: null,
           promoRecharge: null,
           promoPassIllimix: null,
+          boosterInscription: null,
         });
       })
     );

@@ -7,6 +7,7 @@ import { FeeModel } from 'src/app/services/orange-money-service';
 import { FeesService } from 'src/app/services/fees/fees.service';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
 
 @Component({
   selector: 'app-bill-amount',
@@ -15,7 +16,7 @@ import { of } from 'rxjs';
 })
 export class BillAmountPage implements OnInit {
   static ROUTE_PATH: string = '/bill-amount';
-  amounts: string[] = ['2000', '5000', '10000', '15000', '20000', '30000'];
+  amounts: string[] = ['1000', '2000', '5000', '10000', '15000', '20000'];
 
   title: string;
   opXtras: OperationExtras = {};
@@ -48,6 +49,7 @@ export class BillAmountPage implements OnInit {
       this.opXtras.billData.company.codeOM
     )
       this.service = this.opXtras.billData.company.codeOM.toLowerCase();
+    console.log(this.service);
 
     this.title = getPageHeader(this.opXtras?.purchaseType)?.title;
     this.queryFees();
@@ -65,7 +67,10 @@ export class BillAmountPage implements OnInit {
           if (res.length) {
             this.firstFees = this.feesArray[0];
             this.lastFees = this.feesArray[this.feesArray.length - 1];
-            this.minimalAmount = this.firstFees.min;
+            this.minimalAmount =
+              this.opXtras.billData.company.code === OPERATION_WOYOFAL
+                ? 1000
+                : this.firstFees.min;
             this.maximalAmount = this.lastFees.max;
           } else {
             this.hasErrorOnRequest = true;
@@ -98,12 +103,15 @@ export class BillAmountPage implements OnInit {
 
   onContinue() {
     const navExtras: NavigationExtras = { state: this.opXtras };
+
     this.navController.navigateForward(['/operation-recap'], navExtras);
   }
 
   inputAmountIsValid(amount: number) {
     if (!amount) return false;
-
+    if (this.opXtras.billData.company.code === OPERATION_WOYOFAL) {
+      return amount >= 1000;
+    }
     return this.isFee
       ? this.amountExcludeFeeIsValid(amount)
       : this.amountIncludeFeeIsValid(amount);
