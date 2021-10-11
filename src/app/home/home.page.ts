@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FORGOT_PWD_PAGE_URL } from 'src/shared';
 const ORANGE_HOME_PAGE_URL = 'http://orange.sn';
 declare var FollowAnalytics: any;
 @Component({
@@ -65,5 +66,9 @@ export class HomePage implements OnInit {
 
   goToOrangeHomePage() {
     window.location.href = ORANGE_HOME_PAGE_URL;
+  }
+
+  forgotPwd() {
+    this.router.navigate([FORGOT_PWD_PAGE_URL]);
   }
 }

@@ -6,7 +6,7 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 const ls = new SecureLS({ encodingType: 'aes' });
-import { HelpModalDefaultContent } from 'src/shared';
+import { FORGOT_PWD_PAGE_URL, HelpModalDefaultContent } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NavController, ModalController } from '@ionic/angular';
@@ -164,7 +164,7 @@ export class LoginPage implements OnInit {
         'Forgotten_pwd_from_login',
         'event'
       );
-      this.router.navigate(['/forgotten-password']);
+      this.navController.navigateRoot(FORGOT_PWD_PAGE_URL);
     }
   }
 

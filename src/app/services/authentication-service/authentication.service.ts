@@ -71,8 +71,11 @@ const checkCodeOtpEndpoint = `${otpBaseUrl}/check`;
 
 // new registrations endpoint
 const checkNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/check_number`;
+const checkNumberV3Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v3/check_number`;
 const registerEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/register`;
+const registerV3Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v3/register`;
 const resetPwdEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password`;
+const resetPwdV2Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v1/lite/reset-password`;
 
 const notificationInfoEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/notification-information`;
 // endpoint to get token
@@ -406,7 +409,7 @@ export class AuthenticationService {
     ls.remove('deviceInfo');
   }
 
-  private storeAuthenticationData(authenticationData: any, user: any) {
+  storeAuthenticationData(authenticationData: any, user: any) {
     ls.set('token', authenticationData.access_token);
     ls.set('mainPhoneNumber', user.username);
     ls.set('currentPhoneNumber', user.username);
@@ -452,6 +455,40 @@ export class AuthenticationService {
     );
   }
 
+  checkNumberAccountStatus(checkNumberPayload: {
+    msisdn: string;
+    hmac: string;
+  }) {
+    return this.getTokenFromBackend().pipe(
+      switchMap(() => {
+        const msisdn = checkNumberPayload.msisdn.substring(
+          checkNumberPayload.msisdn.length - 9
+        );
+        return this.getSubscriptionForTiers(msisdn).pipe(
+          switchMap((sub: SubscriptionModel) => {
+            const isProMobile = sub.code === JAMONO_PRO_CODE_FORMULE;
+            if (!isProMobile) {
+              return this.http.post<AccountStatusModel>(
+                checkNumberV3Endpoint,
+                checkNumberPayload
+              );
+            } else {
+              const error = {
+                status: 400,
+                errorKey: PRO_MOBILE_ERROR_CODE,
+                message: 'Ce numéro ne peut pas accéder à Orange et Moi',
+              };
+              return throwError(error);
+            }
+          }),
+          catchError((err) => {
+            return throwError(err);
+          })
+        );
+      })
+    );
+  }
+
   checkNumber(checkNumberPayload: { msisdn: string; hmac: string }) {
     return this.getTokenFromBackend().pipe(
       switchMap(() => {
@@ -484,8 +521,16 @@ export class AuthenticationService {
     return this.http.post(registerEndpoint, registerPayload);
   }
 
+  registerV3(registerPayload: RegistrationModel) {
+    return this.http.post(registerV3Endpoint, registerPayload);
+  }
+
   resetPassword(resetPwdPayload: ResetPwdModel) {
     return this.http.post(resetPwdEndpoint, resetPwdPayload);
+  }
+
+  resetPasswordV2(resetPwdPayload: ResetPwdModel) {
+    return this.http.put(resetPwdV2Endpoint, resetPwdPayload);
   }
 
   // Update Notification Info for user
@@ -554,4 +599,13 @@ export function http_retry(maxRetry = 10, delayMs = 10000) {
       })
     );
   };
+}
+
+export interface AccountStatusModel {
+  accountStatus: 'FULL' | 'LITE';
+}
+
+export enum AccountStatus {
+  FULL = 'FULL',
+  LITE = 'LITE',
 }
