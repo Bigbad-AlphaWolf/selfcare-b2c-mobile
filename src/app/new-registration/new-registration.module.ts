@@ -10,6 +10,7 @@ import { SharedModule } from 'src/shared/shared.module';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 import { MatBottomSheetModule, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 import { Network } from '@ionic-native/network/ngx';
+import { MsisdnAssistanceModalComponent } from './components/msisdn-assistance-modal/msisdn-assistance-modal.component';
 
 const routes: Routes = [
   {
@@ -27,7 +28,8 @@ const routes: Routes = [
     MatBottomSheetModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [NewRegistrationPage],
+  declarations: [NewRegistrationPage, MsisdnAssistanceModalComponent],
+  entryComponents: [MsisdnAssistanceModalComponent],
   providers: [OpenNativeSettings, Network],
 })
 export class NewRegistrationPageModule {}

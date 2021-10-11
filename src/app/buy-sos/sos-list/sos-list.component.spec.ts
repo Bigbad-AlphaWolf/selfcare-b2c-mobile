@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SosListComponent } from './sos-list.component';
 import { SosService } from 'src/app/services/sos-service/sos.service';
@@ -11,14 +11,16 @@ describe('SosListComponent', () => {
 	let component: SosListComponent;
 	let fixture: ComponentFixture<SosListComponent>;
 
-	beforeEach(async(() => {
+	beforeEach(waitForAsync(() => {
 		TestBed.configureTestingModule({
 			declarations: [SosListComponent],
 			providers: [
 				{
 					provide: SosService,
 					useValue: {
-						getListSosByFormule: () => {}
+						getListSosByFormule: () => {
+							return of()
+						}
 					}
 				},
 				{

@@ -13,7 +13,7 @@ export class InvoiceCardComponent implements OnInit {
   @Input('title') title:string;
   constructor(    private billsService: BillsService,
 
-    private followAnalyticsService: FollowAnalyticsService) { }
+  private followAnalyticsService: FollowAnalyticsService) { }
 
   ngOnInit() {}
 

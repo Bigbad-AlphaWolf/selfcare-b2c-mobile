@@ -59,11 +59,16 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
 
   ngOnInit() {
     this.getIlliflexPaliers();
-    if (this.router.url.match('/illiflex-budget-configuration')) {
+    if (
+      this.router.url &&
+      this.router.url.match('/illiflex-budget-configuration')
+    ) {
       let payload = this.router.getCurrentNavigation().extras.state.payload;
       payload = payload ? payload : history.state;
-      this.recipientMsisdn = payload.recipientMsisdn;
-      this.recipientOfferCode = payload.code;
+      if (payload) {
+        this.recipientMsisdn = payload.recipientMsisdn;
+        this.recipientOfferCode = payload?.code;
+      }
     } else {
       this.checkIfDeeplink();
     }
@@ -76,12 +81,12 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
       .toPromise();
     if (
       sub &&
-      (sub.code === CODE_KIRENE_Formule || sub.profil !== PROFILE_TYPE_PREPAID)
+      (sub?.code === CODE_KIRENE_Formule || sub.profil !== PROFILE_TYPE_PREPAID)
     ) {
       this.router.navigate(['/dashboard']);
     } else {
       this.recipientMsisdn = msisdn;
-      this.recipientOfferCode = sub.code;
+      this.recipientOfferCode = sub?.code;
     }
   }
 

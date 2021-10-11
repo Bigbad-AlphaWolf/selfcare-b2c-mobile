@@ -1,8 +1,18 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { environment } from 'src/environments/environment.prod';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { tap } from 'rxjs/operators';
+import { isPrepaidOrHybrid, SubscriptionModel } from 'src/app/dashboard';
 const { DIMELO_CHAT_MARKUP } = environment;
 @Component({
   selector: 'app-ibou-ion-fab',
@@ -12,14 +22,21 @@ const { DIMELO_CHAT_MARKUP } = environment;
 export class IbouIonFabComponent implements OnInit {
   fabOpened = false;
   DIMELO_CHAT_MARKUP = DIMELO_CHAT_MARKUP;
+  currentMsisdn: string;
+  @Output() goTabAssistance: EventEmitter<any> = new EventEmitter();
+
   constructor(
     private router: Router,
     private followAnalyticsService: FollowAnalyticsService,
     private socialSharing: SocialSharing,
-    private el: ElementRef
+    private el: ElementRef,
+    private dashboardServ: DashboardService,
+    private authServ: AuthenticationService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.currentMsisdn = this.dashboardServ.getCurrentPhoneNumber();
+  }
 
   ionViewWillEnter() {}
 
@@ -57,12 +74,28 @@ export class IbouIonFabComponent implements OnInit {
   }
 
   goToBesoinAide() {
-    this.router.navigate(['/assistance-hub']);
-    this.followAnalyticsService.registerEventFollow(
-      'Ibou_Assistance_Hub_clic',
-      'event',
-      'clicked'
-    );
+    this.authServ
+      .getSubscription(this.currentMsisdn)
+      .pipe(
+        tap((sub: SubscriptionModel) => {
+          if (isPrepaidOrHybrid(sub)) {
+            this.followAnalyticsService.registerEventFollow(
+              'Ibou_Assistance_Hub_clic_new_dashboard',
+              'event',
+              'clicked'
+            );
+            this.goTabAssistance.emit();
+          } else {
+            this.router.navigate(['/assistance-hub']);
+            this.followAnalyticsService.registerEventFollow(
+              'Ibou_Assistance_Hub_clic',
+              'event',
+              'clicked'
+            );
+          }
+        })
+      )
+      .subscribe();
   }
 
   defaulSharingSheet() {
@@ -74,7 +107,7 @@ export class IbouIonFabComponent implements OnInit {
 
     this.socialSharing
       .share(postTitle, null, null, url)
-      .then(_ => {
+      .then((_) => {
         this.followAnalyticsService.registerEventFollow(
           'Ibou_open_native_share_application_success',
           'event'

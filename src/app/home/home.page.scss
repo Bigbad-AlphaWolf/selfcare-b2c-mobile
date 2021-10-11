@@ -2,6 +2,8 @@
 
 :host {
   overflow-y: auto;
+  position: relative;
+  height: 100%;
 }
 .home-page {
   // height: 100%;
@@ -14,23 +16,34 @@
       ion-slide {
         width: 100% !important;
         display: block;
-        .text-container {
-          padding: 73px percentage(88/375) 31px;
-          font-size: 24px;
-        }
         .img-container {
-          width: 100%;
-          display: flex;
-          justify-content: space-around;
+          padding-top: 60px;
+          // width: percentage(200/375);
+          margin: 0 auto;
           img {
-            width: 80%;
+            width: 200px;
+            height: 205px;
           }
+        }
+        .text-container {
+          padding: 60px percentage(82/375) 0;
+          font-size: 24px;
+          text-align: center;
+        }
+        .desc {
+          width: 241px;
+          margin: 10px auto 20px;
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
+          line-height: 1.13;
+          text-align: center;
         }
       }
     }
   }
   .action-btn-container {
     height: 220px;
+    width: 100%;
     padding-top: 40px;
     .btn-container {
       width: 100%;
@@ -38,28 +51,23 @@
       justify-content: space-around;
       margin-bottom: 15px;
       button {
-        width: percentage(248/375);
+        width: percentage(287/375);
+        max-width: 287px;
+        border-radius: 10px;
       }
     }
-  }
-  .go-home-block {
-    background-color: $white;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-bottom: 25px;
-    padding-top: 10px;
-    // position: fixed;
-    // bottom: 0;
-    // left: 0;
-    .text {
-      font-size: 12px;
-      margin-left: 10px;
+    .forgot-pwd {
+      font-size: 16px;
+      line-height: 1.88;
+      text-align: center;
     }
   }
-}
-
-.on-boarding-container {
-  height: 100%;
+  @media screen and (min-height: 700px) {
+    .action-btn-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      padding-top: unset !important;
+    }
+  }
 }

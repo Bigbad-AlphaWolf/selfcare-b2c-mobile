@@ -9,6 +9,8 @@
 @import '~@ionic/angular/css/text-alignment.css';
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
+@import '@vime/core/themes/default.css';
+
 @font-face {
   font-family: 'HelveticaNeueLTStd-Bd';
   src: url('theme/HelveticaNeueLTStd-Bd.otf') format('opentype');
@@ -708,14 +710,14 @@ button {
   align-items: center;
   justify-content: center;
   margin-bottom: 5px;
-  padding: 10px 15px;
+  // padding: 10px 15px;
   .button-native {
     display: none;
   }
 }
 .oem-back-button.md {
   @include oemBackButton();
-  padding: 20px 15px;
+  // padding: 20px 15px;
 }
 
 .oem-back-button.ios {
@@ -958,3 +960,81 @@ ion-button {
   }
 }
 /********** google maps styling end **********/
+
+// new dashboard with tabs styling //
+
+.ion-custom-header {
+  .search-bloc {
+    transition: 0.28s linear;
+    height: 60px;
+  }
+  &.with-searchbar {
+    .search-bloc {
+      height: 60px;
+      margin-top: 15px;
+      opacity: unset;
+      min-height: unset;
+      padding: unset;
+      visibility: visible;
+    }
+  }
+  &.without-searchbar {
+    .search-bloc {
+      min-height: 0;
+      height: 0;
+      opacity: 0;
+      padding: 0;
+      margin-top: 0 !important;
+      visibility: hidden;
+    }
+  }
+}
+
+.search-bloc {
+  ion-searchbar {
+    .searchbar-input {
+      font-family: 'HelveticaNeueLTStd-Roman';
+      // padding-left: 15px !important;
+      box-shadow: none !important;
+      background-color: $white;
+    }
+    .searchbar-search-icon {
+      // left: unset !important;
+      // right: 16px !important;
+    }
+  }
+}
+
+ion-tab-bar {
+  padding: 2px 0 10px;
+  .tab-selected {
+    ion-label {
+      color: $fullBlack !important;
+    }
+  }
+}
+
+// ------------- end ------------- //
+
+.absolute-block {
+  .search-bloc {
+    text-align: left;
+  }
+}
+
+.home-page {
+  .swiper-pagination-bullets {
+    top: 290px !important;
+    bottom: unset !important;
+  }
+  .swiper-pagination-bullet-active {
+    width: 8px !important;
+    height: 8px !important;
+    background-color: $orange;
+  }
+  .swiper-pagination-bullet {
+    background-color: rgba(255, 114, 0, 0.6);
+    width: 6px;
+    height: 6px;
+  }
+}

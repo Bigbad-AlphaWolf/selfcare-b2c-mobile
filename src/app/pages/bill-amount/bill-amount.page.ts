@@ -51,7 +51,7 @@ export class BillAmountPage implements OnInit {
       this.service = this.opXtras.billData.company.codeOM.toLowerCase();
     console.log(this.service);
 
-    this.title = getPageHeader(this.opXtras.purchaseType).title;
+    this.title = getPageHeader(this.opXtras?.purchaseType)?.title;
     this.queryFees();
   }
 

@@ -4,7 +4,7 @@
 			<img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
 		</ion-buttons>
 		<ion-title class="ion-no-padding">
-			<span class="title1">Changer code secret OM</span>
+			<span class="title1">{{ pageInfos?.title }}</span>
 		</ion-title>
 	</ion-toolbar>
 </ion-header>
@@ -12,16 +12,15 @@
 <ion-content class="body-dalal-list">
 	<ion-header class="ion-padding-start" collapse="condense">
 		<ion-toolbar>
-			<span class="title">Changer code secret Orange Money</span>
+			<span class="title"> {{ pageInfos?.title }} </span>
 		</ion-toolbar>
 	</ion-header>
 	<div class="change-om-pin-page-body">
 		<div class="description scb-text-gray">
-			Le nouveau code secret doit être différent de votre date de naissance et les chiffres consécutifs ne sont pas
-			autorisés
+			{{ pageInfos?.subTtile }}
 		</div>
 		<div class="password-form">
-			<form [formGroup]="form" (ngSubmit)="changePinOM()" novalidate autocomplete="false">
+			<form [formGroup]="form" (ngSubmit)="processPageData()" novalidate autocomplete="false">
 				<mat-form-field (click)="openBasicPinpad('PIN')" class="scb-input-row" appearance="outline">
 					<mat-label>Nouveau code secret &nbsp;&nbsp;</mat-label>
 					<input formControlName="pin" [(ngModel)]="form.value.pin" matInput type="password" class="input-password" />

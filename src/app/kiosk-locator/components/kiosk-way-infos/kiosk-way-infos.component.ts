@@ -31,31 +31,32 @@ export class KioskWayInfosComponent implements OnInit {
 
   ngOnInit() {
     const origin = {
-      lat: this.userCurrentPosition.latitude,
-      lng: this.userCurrentPosition.longitude,
+      lat: this.userCurrentPosition?.latitude,
+      lng: this.userCurrentPosition?.longitude,
     };
-    const dest = { lat: this.kiosk.latitude, lng: this.kiosk.longitude };
-    this.distanceMatrix(origin, dest, google.maps.TravelMode.DRIVING);
-    this.distanceMatrix(origin, dest, google.maps.TravelMode.WALKING);
+    const dest = { lat: this.kiosk?.latitude, lng: this.kiosk?.longitude };
+    if (window?.google) {
+      this.distanceMatrix(origin, dest, google.maps.TravelMode?.DRIVING);
+      this.distanceMatrix(origin, dest, google.maps.TravelMode?.WALKING);
+			this.openInGoogleMap(google.maps.TravelMode.WALKING);
+    }
     let user = ls.get('user');
     if (user.imageProfil)
       this.avatarUrl = downloadAvatarEndpoint + user.imageProfil;
-    this.openInGoogleMap(google.maps.TravelMode.WALKING);
   }
 
   distanceMatrix(origin, dest, travelMode: google.maps.TravelMode) {
-    origin = new google.maps.LatLng(origin.lat, origin.lng);
-    dest = new google.maps.LatLng(dest.lat, dest.lng);
+    origin = new google.maps.LatLng(origin?.lat, origin?.lng);
+    dest = new google.maps.LatLng(dest?.lat, dest?.lng);
     const service = new google.maps.DistanceMatrixService();
-    service.getDistanceMatrix(
+    service?.getDistanceMatrix(
       {
         origins: [origin],
         destinations: [dest],
         travelMode,
       },
       (res) => {
-        console.log(res);
-        if (travelMode === google.maps.TravelMode.DRIVING) {
+        if (travelMode === google.maps.TravelMode?.DRIVING) {
           this.drivingMatrix = res;
         } else {
           this.walkingMatrix = res;

@@ -1,19 +1,20 @@
-import { Injectable } from '@angular/core';
-import { Router, NavigationExtras } from '@angular/router';
+import {Injectable} from '@angular/core';
+import {Router, NavigationExtras} from '@angular/router';
 import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_RECHARGE_CREDIT,
-  IlliflexOption
+  IlliflexOption,
+  OPERATION_CHANGE_PIN_OM
 } from 'src/shared';
-import { OperationExtras } from 'src/app/models/operation-extras.model';
-import { CreditPassAmountPage } from 'src/app/pages/credit-pass-amount/credit-pass-amount.page';
-import { SargalRegistrationPage } from 'src/app/sargal/components/sargal-registration/sargal-registration.page';
-import { OfferPlan } from 'src/shared/models/offer-plan.model';
-import { RattachedPhonesNumberPage } from 'src/app/pages/rattached-phones-number/rattached-phones-number.page';
-import { PurchaseModel } from 'src/app/models/purchase.model';
-import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
-import { TransferSetAmountPage } from 'src/app/transfer-set-amount/transfer-set-amount.page';
+import {OperationExtras} from 'src/app/models/operation-extras.model';
+import {CreditPassAmountPage} from 'src/app/pages/credit-pass-amount/credit-pass-amount.page';
+import {SargalRegistrationPage} from 'src/app/sargal/components/sargal-registration/sargal-registration.page';
+import {OfferPlan} from 'src/shared/models/offer-plan.model';
+import {RattachedPhonesNumberPage} from 'src/app/pages/rattached-phones-number/rattached-phones-number.page';
+import {PurchaseModel} from 'src/app/models/purchase.model';
+import {PurchaseSetAmountPage} from 'src/app/purchase-set-amount/purchase-set-amount.page';
+import {TransferSetAmountPage} from 'src/app/transfer-set-amount/transfer-set-amount.page';
 @Injectable({
   providedIn: 'root'
 })
@@ -128,12 +129,12 @@ export class ApplicationRoutingService {
   }
 
   goToBuyCreditSetAmount(opInfos: OperationExtras) {
-    opInfos = { purchaseType: OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos };
-    this.route.navigate([CreditPassAmountPage.PATH], { state: opInfos });
+    opInfos = {purchaseType: OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos};
+    this.route.navigate([CreditPassAmountPage.PATH], {state: opInfos});
   }
 
   goToRegisterForSargal(from?: string) {
-    this.route.navigate([SargalRegistrationPage.PATH], { state: { previousPage: from } });
+    this.route.navigate([SargalRegistrationPage.PATH], {state: {previousPage: from}});
   }
 
   goToRattachementsPage() {
@@ -156,10 +157,26 @@ export class ApplicationRoutingService {
     this.route.navigate(['/transfer/orange-money']);
   }
 
+  goToParainnagePage(sponseeMsisdn?: string) {
+    let navigationExtras: NavigationExtras = {
+      state: {
+        sponseeMsisdn
+      }
+    };
+    this.route.navigate(['/parrainage'], navigationExtras);
+  }
+
   goToCancelTransactionOM(data: PurchaseModel) {
     let navigationExtras: NavigationExtras = {
-      state: { transactionInfos: data }
+      state: {transactionInfos: data}
     };
     this.route.navigate(['/om-self-operation/cancel-transaction'], navigationExtras);
+  }
+
+  goToCreatePinOM(operationType = OPERATION_CHANGE_PIN_OM, payload?: any) {
+    let navigationExtras: NavigationExtras = {
+      state: {operation: operationType, payload}
+    };
+    this.route.navigate(['/change-orange-money-pin'], navigationExtras);
   }
 }

@@ -109,76 +109,99 @@
   </div>
 </div>
 <div class="pinpad-v3" *ngIf="userHasOmToken">
-  <ng-container *ngIf="operationType !== OPERATION_CHANGE_PIN_OM && operationType !== OPERATION_BLOCK_TRANSFER">
-    <img src="/assets/images/password.png" alt="lock" />
-    <div class="title">
-      <span class="title-1" *ngIf="!canRetry">Mot de passe</span>
-      <span class="subtitle scb-text-gray" *ngIf="!canRetry"
-        >Veuillez entrer votre code de sécurité Orange Money</span
-      >
-    </div>
-  </ng-container>
-  <ng-container *ngIf="operationType === OPERATION_CHANGE_PIN_OM ">
-    <img src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="lock" />
-    <div class="title">
-      <span class="title-1">Nouveau code secret</span>
-      <span class="subtitle scb-text-gray"
-        >Le nouveau code secret doit être différent de votre date de naissance et les chiffres consécutifs ne sont pas autorisés</span
-      >
-    </div>
-  </ng-container>
-  <ng-container *ngIf="operationType === OPERATION_BLOCK_TRANSFER">
-    <img src="/assets/images/block-transfer-ico.png" alt="lock" />
-    <div class="title">
-      <span class="title-1">Bloquer le transfert</span>
-      <span class="subtitle scb-text-gray">Entrer votre code secret pour confirmer le blocage temporaire de votre transfert de <span class="msisdn-bold scb-text-orange">{{(MATH.abs(transactionToBlock?.amount) + transactionToBlock.fees) + ' FCFA'}}</span> au <span class="msisdn-bold scb-text-full-black">{{transactionToBlock?.msisdnReceiver | phoneNumberDisplay}}</span></span>
-    </div>
-  </ng-container>
-  <div class="bullet-container">
-    <div class="bullets" *ngIf="!canRetry">
-      <span
-        class="bullet"
-        *ngFor="let bullet of bullets, let i = index"
-        [ngClass]="{'bullet-filled': codePin.length >= i+1, 'bullet-error': errorBulletActive}"
-      ></span>
-    </div>
-    <div class="error-block scb-text-red-error" *ngIf="pinHasError" [ngClass]="{'big-text': canRetry}">
-      {{pinError}} <span *ngIf="canRetry">{{' ' + cappingFees + ' FCFA'}}</span>
-    </div>
-    <div class="confirm-block" *ngIf="canRetry">
-      <button class="scb-btn scb-btn-orange" [disabled]="processingPin" (click)="retry('Capping-social-error')">
-        Confirmer
-      </button>
-      <button class="scb-btn scb-btn-white cancel">Annuler</button>
-    </div>
-  </div>
-  <div
-    class="numbers-table"
-    *ngIf="!processingPin && !recurrentOperation && !gettingPinpad"
-  >
-    <div
-      class="number scb-text-black"
-      *ngFor="let number of randomDigits, let i = index"
-      [id]="'digit_'+i"
-      (click)="type(number)"
-    >
-      <span *ngIf="i !== 9 && i !== 11" class="c-pointer"
-        >{{ digitPadIsActive ? number : '' }}</span
-      >
-      <img
-        *ngIf="i === 9"
-        src="/assets/images/backspace@2x.png"
-        alt="refresh"
-        (click)="delete()"
-      />
-      <img
-        *ngIf="i === 11"
-        src="/assets/images/redo@2x.png"
-        alt="clear"
-        (click)="reintializePinpad()"
-      />
-    </div>
-  </div>
+	<ng-container *ngIf="errorCode !== 'BLOCKEDPASS' ">
+		<ng-container *ngIf="operationType !== OPERATION_CHANGE_PIN_OM && operationType !== OPERATION_CREATE_PIN_OM && operationType !== OPERATION_BLOCK_TRANSFER">
+			<img src="/assets/images/password.png" alt="lock" />
+			<div class="title">
+				<span class="title-1" *ngIf="!canRetry">Mot de passe</span>
+				<span class="subtitle scb-text-gray" *ngIf="!canRetry"
+					>Veuillez entrer votre code de sécurité Orange Money</span
+				>
+			</div>
+		</ng-container>
+		<ng-container *ngIf="operationType === OPERATION_CHANGE_PIN_OM || operationType === OPERATION_CREATE_PIN_OM">
+			<img src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="lock" />
+			<div class="title">
+				<span class="title-1">Nouveau code secret</span>
+				<span class="subtitle scb-text-gray"
+					>Le nouveau code secret doit être différent de votre date de naissance et les chiffres consécutifs ne sont pas autorisés</span
+				>
+			</div>
+		</ng-container>
+		<ng-container *ngIf="operationType === OPERATION_BLOCK_TRANSFER">
+			<img src="/assets/images/block-transfer-ico.png" alt="lock" />
+			<div class="title">
+				<span class="title-1">Bloquer le transfert</span>
+				<span class="subtitle scb-text-gray">Entrer votre code secret pour confirmer le blocage temporaire de votre transfert de <span class="msisdn-bold scb-text-orange">{{(MATH.abs(transactionToBlock?.amount) + transactionToBlock.fees) + ' FCFA'}}</span> au <span class="msisdn-bold scb-text-full-black">{{transactionToBlock?.msisdnReceiver | phoneNumberDisplay}}</span></span>
+			</div>
+		</ng-container>
+		<div class="bullet-container">
+			<div class="bullets" *ngIf="!canRetry">
+				<span
+					class="bullet"
+					*ngFor="let bullet of bullets, let i = index"
+					[ngClass]="{'bullet-filled': codePin.length >= i+1, 'bullet-error': errorBulletActive}"
+				></span>
+			</div>
+			<div class="error-block scb-text-red-error" *ngIf="pinHasError" [ngClass]="{'big-text': canRetry}">
+				{{pinError}} <span *ngIf="errorCode === OM_CAPPING_ERROR">{{' ' + cappingFees + ' FCFA'}}</span>
+			</div>
+			<div class="confirm-block" *ngIf="canRetry">
+				<button class="scb-btn scb-btn-orange" [disabled]="processingPin" (click)="retry()">
+					Confirmer
+				</button>
+				<button class="scb-btn scb-btn-white cancel">Annuler</button>
+			</div>
+		</div>
+		<div
+			class="numbers-table"
+			*ngIf="!processingPin && !recurrentOperation && !gettingPinpad"
+		>
+			<div
+				class="number scb-text-black"
+				*ngFor="let number of randomDigits, let i = index"
+				[id]="'digit_'+i"
+				(click)="type(number)"
+			>
+				<span *ngIf="i !== 9 && i !== 11" class="c-pointer"
+					>{{ digitPadIsActive ? number : '' }}</span
+				>
+				<img
+					*ngIf="i === 9"
+					src="/assets/images/backspace@2x.png"
+					alt="refresh"
+					(click)="delete()"
+				/>
+				<img
+					*ngIf="i === 11"
+					src="/assets/images/redo@2x.png"
+					alt="clear"
+					(click)="reintializePinpad()"
+				/>
+			</div>
+		</div>
+	</ng-container>
+	<ng-container *ngIf="errorCode === 'BLOCKEDPASS' ">
+		<div class="title">
+			<span class="title-1">Ce client n'a pas de compte sur Orange et Moi</span>
+			<span class="subtitle scb-text-gray">Parrainer ce contact pour lui permettre de bénéficier de ce pass</span>
+		</div>
+		<div class="bullet-container">
+			<div class="bullets" *ngIf="!canRetry">
+				<span
+					class="bullet"
+					*ngFor="let bullet of bullets, let i = index"
+					[ngClass]="{'bullet-filled': codePin.length >= i+1, 'bullet-error': errorBulletActive}"
+				></span>
+			</div>
+			<div (click)="redirectToPage()" class="error-block font-size-18 scb-text-orange" >
+				Parrainer
+			</div>
+			<div (click)="goBack()" class="error-block font-size-18 scb-text-orange" >
+				Acheter un autre pass
+			</div>
+		</div>
+	</ng-container>
   <div class="loading" *ngIf="processingPin || gettingPinpad">
     <ion-spinner name="crescent">
     </ion-spinner>

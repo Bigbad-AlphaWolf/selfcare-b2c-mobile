@@ -1,0 +1,76 @@
+@import 'src/app/app';
+@import '~swiper/swiper';
+@import '~@ionic/angular/css/ionic-swiper';
+
+.swiper-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.dashboard-page {
+  background-color: $grayDashboard;
+  // ion-tab-button {
+  //   ion-icon {
+  //     font-size: 40px;
+  //   }
+  //   &:not(.tab-selected) {
+  //     ion-label {
+  //       font-family: 'HelveticaNeueLTStd-Roman';
+  //       color: $gray;
+  //     }
+  //     ion-icon {
+  //       color: $gray;
+  //     }
+  //   }
+  //   ion-label {
+  //     margin-top: 3px;
+  //   }
+  // }
+}
+
+// ion-slides {
+//   height: 100%;
+//   width: 100%;
+//   ion-slide {
+//     width: 100% !important;
+//   }
+// }
+
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 15px;
+  .custom-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    ion-icon {
+      font-size: 28px;
+    }
+    &.tab-selected {
+      ion-icon {
+        color: $orange;
+      }
+    }
+    &:not(.tab-selected) {
+      ion-label {
+        font-family: 'HelveticaNeueLTStd-Roman';
+        color: $gray;
+      }
+      ion-icon {
+        color: $gray;
+      }
+    }
+    ion-label {
+      margin-top: 3px;
+      font-size: 10px;
+    }
+  }
+}
+
+app-ibou-ion-fab {
+  position: absolute;
+  right: 10px;
+  bottom: 60px;
+}

@@ -39,11 +39,11 @@
         font-size: 16px;
         line-height: 1.25;
       }
-      .select{
+      .select {
         border: 2px solid $silver;
         border-radius: 10px;
         ion-icon {
-            width: 20px;
+          width: 20px;
         }
       }
     }
@@ -112,6 +112,9 @@
             color: $fullBlack;
           }
         }
+      }
+      .margin-b-20 {
+        margin-bottom: 20px;
       }
       .photo-button {
         width: 100%;

@@ -1,0 +1,21 @@
+@import "src/app/app";
+@import '~swiper/swiper';
+//@import '~swiper/swiper-bundle.min.css';
+@import '~@ionic/angular/css/ionic-swiper';
+
+.visualize-stories-container {
+  height: 100%;
+  .swiper-container {
+    height: 100%;
+  }
+  .progress-bar-list {
+    display: flex;
+    flex-direction: row;
+    width: 95%;
+    gap: 5px;
+    position: absolute;
+    top: 18px;
+    left: 2.5%;
+    z-index: 2;
+  }
+}

@@ -1,33 +1,31 @@
-import { BuyPassIllimixPage } from './buy-pass-illimix/buy-pass-illimix.page';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { Component } from '@angular/core';
-import { NavController, Platform } from '@ionic/angular';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { Deeplinks } from '@ionic-native/deeplinks/ngx';
-import { BuyPassInternetPage } from './buy-pass-internet/buy-pass-internet.page';
-import { Router } from '@angular/router';
+import {SplashScreen} from '@ionic-native/splash-screen/ngx';
+import {Component} from '@angular/core';
+import {NavController, Platform} from '@ionic/angular';
+import {StatusBar} from '@ionic-native/status-bar/ngx';
+import {Deeplinks} from '@ionic-native/deeplinks/ngx';
+import {Router} from '@angular/router';
 import * as SecureLS from 'secure-ls';
-import { DetailsConsoPage } from './details-conso/details-conso.page';
-import { AppMinimize } from '@ionic-native/app-minimize/ngx';
-import { v4 as uuidv4 } from 'uuid';
-import { TransfertHubServicesPage } from './transfert-hub-services/transfert-hub-services.page';
-import { ApplicationRoutingService } from './services/application-routing/application-routing.service';
-import { checkUrlMatch } from './utils/utils';
-import { ImageLoaderConfigService } from 'ionic-image-loader';
-import { HttpHeaders } from '@angular/common/http';
-import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
-import { Uid } from '@ionic-native/uid/ngx';
-import { DashboardPage } from './dashboard/dashboard.page';
-import { AppVersion } from '@ionic-native/app-version/ngx';
-import { AssistanceHubPage } from './assistance-hub/assistance-hub.page';
+import {DetailsConsoPage} from './details-conso/details-conso.page';
+import {AppMinimize} from '@ionic-native/app-minimize/ngx';
+import {v4 as uuidv4} from 'uuid';
+import {TransfertHubServicesPage} from './transfert-hub-services/transfert-hub-services.page';
+import {ApplicationRoutingService} from './services/application-routing/application-routing.service';
+import {checkUrlMatch} from './utils/utils';
+import {ImageLoaderConfigService} from 'ionic-image-loader';
+import {HttpHeaders} from '@angular/common/http';
+import {AndroidPermissions} from '@ionic-native/android-permissions/ngx';
+import {Uid} from '@ionic-native/uid/ngx';
+import {DashboardPage} from './dashboard/dashboard.page';
+import {AppVersion} from '@ionic-native/app-version/ngx';
+import {AssistanceHubPage} from './assistance-hub/assistance-hub.page';
 
-const ls = new SecureLS({ encodingType: 'aes' });
+const ls = new SecureLS({encodingType: 'aes'});
 
 declare var FollowAnalytics: any;
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html',
+  templateUrl: 'app.component.html'
 })
 export class AppComponent {
   appVersionNumber: any;
@@ -68,7 +66,7 @@ export class AppComponent {
   }
 
   async getVersion() {
-    this.appVersion.getVersionNumber().then((version) => {
+    this.appVersion.getVersionNumber().then(version => {
       this.appVersionNumber = version;
     });
   }
@@ -170,34 +168,34 @@ export class AppComponent {
   }
 
   checkDeeplinks() {
-      this.deeplinks
-        .routeWithNavController( this.navContr ,{
-          '/buy-pass-internet': TransfertHubServicesPage,
-          '/pass-internet/:ppi': BuyPassInternetPage,
-          '/assistance': AssistanceHubPage,
-          '/buy-pass-illimix': TransfertHubServicesPage,
-          '/pass-illimix/:ppi': BuyPassIllimixPage,
-          '/buy-credit': TransfertHubServicesPage,
-          '/details-conso': DetailsConsoPage,
-          '/suivi-conso': DashboardPage,
-          '/transfer-money/:msisdn/:amount': TransfertHubServicesPage,
-          '/transfer-money/:msisdn': TransfertHubServicesPage,
-          '/soscredit/:amount': '',
-          '/sospass/:amount': '',
-          '/illiflex': TransfertHubServicesPage,
-        })
-        .subscribe(
-          (matched) => {
-            const path = matched.$link.path ? matched.$link.path : matched.$link.host;
-            this.goToPage(path);
-            // this.router.navigate([matched.$link.path]);
-            console.log(matched);
-          },
-          () => {
-            // console.log(notMatched);
-            // console.log('deeplink not matched');
-          }
-        );
+    this.deeplinks
+      .routeWithNavController(this.navContr, {
+        '/buy-pass-internet': TransfertHubServicesPage,
+        //'/pass-internet/:ppi': BuyPassInternetPage,
+        '/assistance': AssistanceHubPage,
+        '/buy-pass-illimix': TransfertHubServicesPage,
+        //'/pass-illimix/:ppi': BuyPassIllimixPage,
+        '/buy-credit': TransfertHubServicesPage,
+        '/details-conso': DetailsConsoPage,
+        '/suivi-conso': DashboardPage,
+        '/transfer-money/:msisdn/:amount': TransfertHubServicesPage,
+        '/transfer-money/:msisdn': TransfertHubServicesPage,
+        '/soscredit/:amount': '',
+        '/sospass/:amount': '',
+        '/illiflex': TransfertHubServicesPage
+      })
+      .subscribe(
+        matched => {
+          const path = matched.$link.path ? matched.$link.path : matched.$link.host;
+          this.goToPage(path);
+          // this.router.navigate([matched.$link.path]);
+          console.log(matched);
+        },
+        () => {
+          // console.log(notMatched);
+          // console.log('deeplink not matched');
+        }
+      );
   }
 
   goToPage(path: string) {
@@ -210,15 +208,11 @@ export class AppComponent {
 
   async getImei() {
     console.log(this.uid);
-    const { hasPermission } = await this.androidPermissions.checkPermission(
-      this.androidPermissions.PERMISSION.READ_PHONE_STATE
-    );
+    const {hasPermission} = await this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE);
     if (!hasPermission) {
       console.log('hasPermission', hasPermission);
 
-      const result = await this.androidPermissions.requestPermission(
-        this.androidPermissions.PERMISSION.READ_PHONE_STATE
-      );
+      const result = await this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE);
       if (!result.hasPermission) {
         console.log('hasPermission2', hasPermission);
         throw new Error('Permissions required');

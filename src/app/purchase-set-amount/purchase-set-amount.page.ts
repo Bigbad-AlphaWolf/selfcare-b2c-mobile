@@ -18,7 +18,7 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
 import { NavController } from '@ionic/angular';
 import { OperationExtras } from '../models/operation-extras.model';
 import { FeesService } from '../services/fees/fees.service';
-import { BILLS_COMPANIES_DATA, OM_LABEL_SERVICES } from '../utils/bills.util';
+import { OM_LABEL_SERVICES } from '../utils/bills.util';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -183,7 +183,10 @@ export class PurchaseSetAmountPage implements OnInit {
   }
 
   async checkTransferOMDeeplink() {
-    const msisdn = this.route.snapshot.paramMap.get('msisdn');
+    const msisdn =
+      this.route && this.route.snapshot
+        ? this.route.snapshot.paramMap.get('msisdn')
+        : null;
     if (msisdn) {
       this.purchasePayload = {
         recipientMsisdn: msisdn,

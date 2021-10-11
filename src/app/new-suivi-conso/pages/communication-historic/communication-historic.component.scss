@@ -1,0 +1,127 @@
+@import 'src/app/app';
+
+:host {
+  width: 100%;
+}
+
+.historic-com-page {
+  text-align: start;
+  .loader-container {
+    width: 100%;
+    .header-loader {
+      width: 40%;
+      height: 27px;
+      margin-bottom: 10px;
+      border-radius: 20px;
+    }
+    .conso-loader {
+      width: 100%;
+      height: 200px;
+      margin-bottom: 30px;
+      border-radius: 10px;
+    }
+  }
+  .filter-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    .purchase-content-filter {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      // width: 48%;
+      margin-bottom: 15px;
+      .filter-container {
+        display: block;
+        width: 100%;
+        line-height: 40px;
+        border-radius: 20px;
+        border: solid 1px $black;
+        text-align: start;
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 17px;
+        min-width: 170px;
+        padding: 8px 5px 0px 5px;
+        .mat-button-wrapper {
+          width: 100%;
+          display: flex;
+        }
+        .btn-filter {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          padding-left: 15px;
+          span {
+            font-family: HelveticaNeueLTStd-Roman;
+          }
+        }
+        .arrows {
+          justify-content: flex-end;
+          width: 25px;
+          height: 25px;
+          margin-left: 5px;
+          .arrow-up {
+            color: $white;
+          }
+        }
+        &.selected {
+          background-color: $fullBlack;
+        }
+      }
+    }
+  }
+  .grouped-by-date-item {
+    margin-bottom: 40px;
+    .group-date {
+      font-size: 20px;
+      line-height: 1.5;
+    }
+    .group-items-list {
+      background-color: $white;
+      border-radius: 10px;
+      padding: 30px 13px;
+      margin-top: 20px;
+      .historic-item {
+        position: relative;
+        padding-left: 27px;
+        &:not(:last-child) {
+          padding-bottom: 15px;
+          border-bottom: solid 2px $silver;
+        }
+        &:not(:first-child) {
+          margin-top: 15px;
+        }
+        .com-item-icon {
+          position: absolute;
+          width: 18px;
+          height: 18px;
+          left: 0;
+        }
+        .item-top-infos,
+        .item-mid-infos,
+        .item-bottom-infos {
+          display: flex;
+          justify-content: space-between;
+          .com-type,
+          .com-price {
+            font-family: 'HelveticaNeueLTStd-Roman';
+            font-size: 18px;
+          }
+          .com-interlocutor,
+          .com-date,
+          .com-duration,
+          .com-counter {
+            font-family: 'HelveticaNeueLTStd-Roman';
+            font-size: 12px;
+          }
+        }
+        .item-mid-infos {
+          margin-bottom: 3px;
+          span {
+            line-height: 1.5;
+          }
+        }
+      }
+    }
+  }
+}

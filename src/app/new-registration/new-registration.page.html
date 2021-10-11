@@ -15,7 +15,7 @@
   </div>
   <div class="title">
     <span *ngIf="step === 'CHECK_NUMBER'">Numéro de téléphone</span>
-    <span *ngIf="step === 'PASSWORD'">Je m'inscris</span>
+    <span *ngIf="step === 'PASSWORD'">J'ai oublié mon mot de passe</span>
   </div>
   <div class="sub-title">
     <span class="scb-text-gray" *ngIf="step === 'CHECK_NUMBER'"
@@ -107,7 +107,7 @@
       <div *ngIf="showErrMessage" class="error-text">
         <span class="scb-text-red-error"> {{ errorMsg }} </span>
       </div>
-      <div class="accept-cgu scb-text-gray">
+      <div class="accept-cgu scb-text-gray" *ngIf="0">
         En cliquant sur le bouton M'inscrire, vous acceptez
         <span class="scb-text-orange bold" (click)="openCguDialog()"
           >les conditions générales d'utilisation</span
@@ -118,7 +118,7 @@
         type="submit"
         [disabled]="creatingAccount || !formPassword.valid"
       >
-        <span>M'inscrire</span>
+        <span>Réinitialiser</span>
         <mat-spinner
           mode="indeterminate"
           [diameter]="20"

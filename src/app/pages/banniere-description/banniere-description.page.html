@@ -3,16 +3,16 @@
     <div class="banner-background">
       <div class="banner-container">
         <div class="entete">
-          <div class="title">{{banniereService.title(banniere.description)}}</div>
-          <div class="details">{{banniereService.details(banniere.description)}}</div>
+          <div class="title">{{banniereService.title(banniere?.description)}}</div>
+          <div class="details">{{banniereService.details(banniere?.description)}}</div>
 
         </div>
-        <div class="autre">{{banniereService.autre(banniere.description)}}</div>
+        <div class="autre">{{banniereService.autre(banniere?.description)}}</div>
       </div>
     </div>
   </div>
   <div class="content">
-    <div class="description">{{banniere.action.description}}
+    <div class="description">{{banniere?.action?.description}}
       <div *ngIf="0" class="url" (click)="openUrl()">En savoir plus</div>
     </div>
 

@@ -55,7 +55,6 @@ export class BottomSheetService {
     private navCtl: NavController,
     private omService: OrangeMoneyService,
     private dialog: MatDialog,
-    private dashbServ: DashboardService,
     private followAnalyticsService: FollowAnalyticsService
   ) {}
 
@@ -166,6 +165,8 @@ export class BottomSheetService {
         data: { option, purchaseType, isLightMod, serviceUsage },
       },
       cssClass: ['select-recipient-modal'],
+      mode: 'ios',
+      swipeToClose: true,
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data) {

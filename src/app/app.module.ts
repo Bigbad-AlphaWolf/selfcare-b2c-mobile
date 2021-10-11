@@ -32,6 +32,7 @@ import { OperationSuccessFailModalPageModule } from './operation-success-fail-mo
 import { RegistrationSuccessModalPageModule } from './registration-success-modal/registration-success-modal.module';
 import { IonicImageLoader } from 'ionic-image-loader';
 import { Uid } from '@ionic-native/uid/ngx';
+import { WifiWizard2 } from '@ionic-native/wifi-wizard-2/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { PipesModule } from './pipes/pipes.module';
 import { Network } from '@ionic-native/network/ngx';
@@ -77,6 +78,7 @@ registerLocaleData(localeFr);
     Uid,
     AndroidPermissions,
     Network,
+    WifiWizard2,
   ],
   bootstrap: [AppComponent],
 })

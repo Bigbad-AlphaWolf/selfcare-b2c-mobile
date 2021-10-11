@@ -12,13 +12,13 @@ const routes: Routes = [
   {
     path: 'change-password',
     loadChildren:
-      './change-password/change-password.module#ChangePasswordPageModule',
+      () => import('./change-password/change-password.module').then(m => m.ChangePasswordPageModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'delete-number',
     loadChildren:
-      './delete-linked-numbers/delete-linked-numbers.module#DeleteLinkedNumbersPageModule',
+      () => import('./delete-linked-numbers/delete-linked-numbers.module').then(m => m.DeleteLinkedNumbersPageModule),
     canActivate: [AuthGuard]
   }
 ];

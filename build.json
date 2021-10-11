@@ -1,0 +1,24 @@
+{
+  "android": {
+    "debug": {
+      "keystore": "dev_hms_keystore.jks",
+      "storePassword": "azerty",
+      "alias": "pushkitshowcase",
+      "password": "azerty"
+    },
+    "release": {
+      "keystore": "dev_hms_keystore.jks",
+      "storePassword": "azerty",
+      "alias": "pushkitshowcase",
+      "password": "azerty"
+    }
+  },
+  "ios": {
+    "debug": {
+      "codeSignIdentity": "iPhone Developer",
+      "developmentTeam": "7AU6U768RW",
+      "packageType": "development",
+      "automaticProvisioning": true
+    }
+  }
+}

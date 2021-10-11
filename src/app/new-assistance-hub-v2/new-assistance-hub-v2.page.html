@@ -1,0 +1,55 @@
+<ion-header class="assistance-header">
+  <div class="header-top-block">
+    <div class="title">
+      Assistance
+    </div>
+    <ion-icon name="search-outline" class="search-icon search-icon4" (click)="search()" #searchIcon></ion-icon>
+  </div>
+</ion-header>
+<div class="absolute-block" [ngClass]="{'is-block-ios': isIos}">
+  <div class="search-bloc search-bloc4">
+    <ion-searchbar placeholder="Rechercher dans assistance"></ion-searchbar>
+  </div>
+</div>
+<ion-content #scrollArea class="assistance-content" [forceOverscroll]="true" [scrollEvents]="true"
+  [appScrollVanish]="scrollArea" [iconSearch]="'.search-icon4'" [searchBlock]="'.search-bloc4'">
+  <!-- <ion-refresher slot="fixed" (ionRefresh)="ionViewWillEnter($event)">
+    <ion-refresher-content pullingText="tirer pour rafraîchir" refreshingSpinner="circles">
+    </ion-refresher-content>
+  </ion-refresher> -->
+  <ion-slides [options]="{allowTouchMove:false}">
+    <ion-slide>
+      <div class="actions-block">
+        <div class="block-title">
+          <span class="act">Top des actes</span>
+          <span class="scb-text-orange see-all" (click)="goAllActionsHub()">Voir tous les actes</span>
+        </div>
+        <div class="acts">
+          <ion-spinner *ngIf="loadingHelpItems" name="crescent"></ion-spinner>
+          <app-action-item [action]="act" *ngFor="let act of listActes?.slice(0,3)"></app-action-item>
+        </div>
+      </div>
+      <div class="questions-block" *ngIf="listFaqs && listFaqs.length">
+        <div class="block-title">
+          <span class="act">Questions fréquentes</span>
+          <span class="scb-text-orange see-all" (click)="goAllQuestionsHub()">Voir tout</span>
+        </div>
+        <div class="questions">
+          <ng-container *ngFor="let question of listFaqs?.slice(0,3), let i=index">
+            <app-faq-item [question]="question"></app-faq-item>
+          </ng-container>
+        </div>
+      </div>
+      <div class="more">
+        <span class="more-title">Je n’y arrive toujours pas</span>
+        <div class="more-actions">
+          <div class="action-item" *ngFor="let action of moreActions" (click)="goFastAction(action)">
+            <img [src]="action?.image" alt="act">
+            <div class="action-description scb-text-gray">{{action?.description}}</div>
+          </div>
+        </div>
+      </div>
+    </ion-slide>
+  </ion-slides>
+</ion-content>
+<div class="empty-div-effect"></div>

@@ -1,69 +1,80 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SuccessFailPopupComponent } from './success-fail-popup.component';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { of } from 'rxjs';
-import { MatDialogRef, MatButtonModule, MatInputModule, MatCheckboxModule, MatDialogModule, MatIconModule, MatFormFieldModule, MAT_DIALOG_DATA } from '@angular/material';
+import {
+  MatDialogRef,
+  MatButtonModule,
+  MatInputModule,
+  MatCheckboxModule,
+  MatDialogModule,
+  MatIconModule,
+  MatFormFieldModule,
+  MAT_DIALOG_DATA,
+} from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SuccessFailPopupComponent', () => {
   let component: SuccessFailPopupComponent;
   let fixture: ComponentFixture<SuccessFailPopupComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SuccessFailPopupComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        BrowserAnimationsModule,
-        MatButtonModule,
-        MatInputModule,
-        MatCheckboxModule,
-        MatDialogModule,
-        MatIconModule,
-        MatFormFieldModule
-    ],
-      providers: [
-        {
-          provide: Router
-        },
-        {
-          provide: HttpClient
-        },
-        {
-          provide: ActivatedRoute
-        },
-        {
-          provide: DashboardService,
-          useValue: {
-            buyPassByCredit: () => {},
-            getCurrentPhoneNumber: () => {}
-          }
-        },
-        {
-          provide: AuthenticationService,
-          useValue: {
-            getSubscription: () => {
-              return of();
-            }
-          }
-        },
-        {
-          provide: MatDialogRef,
-          useValue: {disableClose: true}
-        },
-        {
-          provide: MAT_DIALOG_DATA,
-          useValue: {}
-        }
-      ],
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [SuccessFailPopupComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [
+          RouterTestingModule,
+          BrowserAnimationsModule,
+          MatButtonModule,
+          MatInputModule,
+          MatCheckboxModule,
+          MatDialogModule,
+          MatIconModule,
+          MatFormFieldModule,
+          RouterModule,
+        ],
+        providers: [
+          {
+            provide: Router,
+            useValue: {},
+          },
+          {
+            provide: HttpClient,
+          },
+          {
+            provide: DashboardService,
+            useValue: {
+              buyPassByCredit: () => {},
+              getCurrentPhoneNumber: () => {},
+            },
+          },
+          {
+            provide: AuthenticationService,
+            useValue: {
+              getSubscription: () => {
+                return of();
+              },
+            },
+          },
+          {
+            provide: MatDialogRef,
+            useValue: { disableClose: true },
+          },
+          {
+            provide: MAT_DIALOG_DATA,
+            useValue: {},
+          },
+        ],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SuccessFailPopupComponent);

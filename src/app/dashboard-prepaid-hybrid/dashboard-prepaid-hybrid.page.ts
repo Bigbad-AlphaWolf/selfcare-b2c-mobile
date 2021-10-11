@@ -49,13 +49,15 @@ import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
 import { BillsHubPage } from '../pages/bills-hub/bills-hub.page';
-import { map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amount.page';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 import { OffresServicesPage } from '../pages/offres-services/offres-services.page';
 import { OperationService } from '../services/oem-operation/operation.service';
 import { OffreService } from '../models/offre-service.model';
-import { BoosterModel } from '../models/booster.model';
+import { StoriesService } from '../services/stories-service/stories.service';
+import { Story } from '../models/story-oem.model';
+import { of } from 'rxjs';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -117,7 +119,17 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   sargalStatus: string;
   showMerchantPay: boolean;
   currentMsisdn = this.dashbordServ.getCurrentPhoneNumber();
-
+  storiesByCategory: {
+    categorie: {
+      libelle?: string;
+      ordre?: number;
+      code?: string;
+      zoneAffichage?: string;
+    };
+    stories: Story[];
+    readAll: boolean;
+  }[];
+  isLoadingStories: boolean;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -134,11 +146,34 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     private ref: ChangeDetectorRef,
     private bsService: BottomSheetService,
     private navCtrl: NavController,
-    private operationService: OperationService
+    private operationService: OperationService,
+    private storiesService: StoriesService
   ) {}
 
   ngOnInit() {
     this.getUserInfos();
+  }
+
+  fetchUserStories() {
+    this.isLoadingStories = true;
+    this.storiesService
+      .getCurrentStories()
+      .pipe(
+        tap((res: any) => {
+          this.isLoadingStories = false;
+          console.log(
+            'groupeStoriesByCategory',
+            this.storiesService.groupeStoriesByCategory(res)
+          );
+          this.storiesByCategory =
+            this.storiesService.groupeStoriesByCategory(res);
+        }),
+        catchError((err) => {
+          this.isLoadingStories = false;
+          return of(err);
+        })
+      )
+      .subscribe();
   }
 
   checkMerchantPayment() {
@@ -220,7 +255,10 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         this.followAnalyticsService.registerEventFollow(
           'Affichage_profil_sargal_error',
           'error',
-          { msisdn: this.currentMsisdn, error: err.status }
+          {
+            msisdn: this.currentMsisdn,
+            error: err.status,
+          }
         );
         this.isLoading = false;
         if (err.status === 400) {
@@ -306,7 +344,10 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         this.followAnalyticsService.registerEventFollow(
           'Affichage_solde_sargal_error',
           'error',
-          { msisdn: currentNumber, error: err.status }
+          {
+            msisdn: currentNumber,
+            error: err.status,
+          }
         );
         this.sargalDataLoaded = true;
         if (!this.userSargalData) {
@@ -453,7 +494,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goDetailsCom(number?: number) {
-    this.router.navigate(['/details-conso']);
+    this.router.navigate(['/new-prepaid-hybrid-dashboard']);
     number
       ? this.followAnalyticsService.registerEventFollow(
           'Voirs_details_dashboard',

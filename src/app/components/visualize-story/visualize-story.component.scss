@@ -1,0 +1,46 @@
+@import "src/app/app";
+
+:host {
+  height: 100%;
+  width: 100%;
+}
+.story-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background-color: white;
+  img-loader {
+    width: 100%;
+  }
+  .spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+  }
+  img {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .hide {
+    visibility: hidden;
+  }
+
+  .video {
+    width: 100%;
+    height: 100%;
+    background-color: $fullBlack;
+  }
+  .story-content {
+    position: absolute;
+    bottom: 50px;
+    width: 95%;
+    left: 2.5%;
+    z-index: 10;
+  }
+  .btn {
+    color: $white;
+  }
+}

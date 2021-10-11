@@ -83,7 +83,7 @@
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
-    <div class="item-option" (click)="goEmergencies()">
+    <div class="item-option" (click)="goEmergencies()" *ngIf="currentProfile">
       <ion-menu-toggle>
         <img src="/assets/images/icons-urgence-et-depannage.svg" alt="" class="option-img">
         <span class="option-text">Assistance</span>
