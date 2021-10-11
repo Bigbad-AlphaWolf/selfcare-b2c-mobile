@@ -22,7 +22,13 @@ export class BoosterService {
   }): Observable<BoosterModel[]> {
     let url = boosterPayload.trigger
       ? boostersEndpoint +
-        `?trigger=${boosterPayload.trigger}&msisdn=${boosterPayload.msisdn}&code=${boosterPayload.codeFormuleRecipient}`
+        `${boosterPayload.trigger ? '?trigger=' + boosterPayload.trigger : ''}${
+          boosterPayload.msisdn ? '&msisdn=' + boosterPayload.msisdn : ''
+        }${
+          boosterPayload.codeFormuleRecipient
+            ? '&code=' + boosterPayload.codeFormuleRecipient
+            : ''
+        }`
       : boostersEndpoint;
     return this.http.get(url).pipe(
       map((res: BoosterModel[]) => {

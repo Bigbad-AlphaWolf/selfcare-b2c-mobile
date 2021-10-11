@@ -1,12 +1,10 @@
 	<div class="visualize-stories-container">
 		<div class="progress-bar-list">
-		<ng-container *ngFor="let item of stories; let id=index">
-				<app-stories-progress-bar [isCurrentStory]="id === currentSlideIndex" [story]="item" [lastId]="stories?.length - 1"  [idStory]="currentSlideIndex" (idStoryChange)="onProgressFinish($event)" (finish)="close()" ></app-stories-progress-bar>
+		<ng-container *ngFor="let item of storyByCategory?.stories; let id=index; let last=last">
+				<app-stories-progress-bar [isCurrentStory]="id === currentSlideIndex" [story]="item" [isLast]="last"  [idStory]="currentSlideIndex" (idStoryChange)="onProgressFinish($event)" (finish)="close()" ></app-stories-progress-bar>
 			</ng-container>
 		</div>
-		<ion-slides #slides pager="false" [options]="slideOpts" (ionSlideReachStart)="initAnimation()" (ionSlideTransitionEnd)="slideTransitionEnd()" (ionSlideWillChange)="slideHasChanged()" (ionSlideTransitionStart)="slideTransitionStart()">
-			<ion-slide *ngFor="let item of stories; let last = last; let id=index">
-				<app-visualize-story #story [isCurrentStory]="id === currentSlideIndex" [story]="item" (mediaDurationChange)="setProgressBarDuration($event, id)" ></app-visualize-story>
-			</ion-slide>
-		</ion-slides>
+		<swiper [config]="config" effect="coverflow" [slidesPerView]="1" (swiper)="setSwiperInstance($event)" #slides (touchStart)="pauseStory($event)" (touchEnd)="playStory($event)" (slideChange)="slideChange()"  >
+			<ng-template swiperSlide *ngFor="let item of storyByCategory?.stories; let last = last; let id=index"><app-visualize-story #story (touch)="clickOnSlide($event)" [isCurrentStory]="id === currentSlideIndex" [story]="item" (mediaDurationChange)="setProgressBarDuration($event, id)" (audioReady)="onAudioReady($event)" (imageReady)="onImageReady($event)" ></app-visualize-story></ng-template>
+		</swiper>
 	</div>

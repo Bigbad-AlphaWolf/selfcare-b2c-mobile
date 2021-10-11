@@ -1,31 +1,26 @@
-<div class="home-page" *ngIf="0">
+<div class="home-page">
   <div class="slider-container">
     <ion-slides pager="true" [options]="slideOpts">
       <ion-slide *ngFor="let slide of slides; let i = index">
-        <div class="text-container" [innerHTML]="slide.text"></div>
-        <div>
-          <img
-            [src]="slide.imageSrc"
-            alt="slide"
-            style="width: 60vw !important;"
-          />
+        <div class="img-container">
+          <img [src]="slide.imageSrc" alt="slide" />
         </div>
+        <div class="text-container" [innerHTML]="slide.text"></div>
+        <div class="desc scb-text-gray">{{slide?.description}}</div>
       </ion-slide>
     </ion-slides>
   </div>
   <div class="action-btn-container">
     <div class="btn-container">
-      <button class="scb-btn scb-btn-orange" (click)="goToRegistrationPage()">
-        Je crée mon compte
-      </button>
-    </div>
-    <div class="btn-container">
       <button class="scb-btn scb-btn-white" (click)="goToLoginPage()">
         Je me connecte
       </button>
     </div>
+    <div class="btn-container">
+      <button class="scb-btn scb-btn-orange" (click)="goToRegistrationPage()">
+        J’acccéde directement
+      </button>
+    </div>
+    <div class="forgot-pwd scb-text-orange" (click)="forgotPwd()">J’ai oublié mon mot de passe</div>
   </div>
-</div>
-<div class="on-boarding-container">
-  <app-on-boarding></app-on-boarding>
 </div>

@@ -25,7 +25,7 @@ $lGray: #d8d8d8;
 $lightBlue: #4bb4e6;
 $pink: #ff8ad4;
 
-$prefix: "scb";
+$prefix: 'scb';
 
 $purple: #a885d8;
 $white: #ffffff;
@@ -449,4 +449,28 @@ $bluePopUp: #085ebd;
       width: 100% !important;
     }
   }
+}
+
+.assistance-content,
+.home-dashboard-content,
+.services-content,
+.suivi-conso-content {
+  &.ios {
+    .empty-div-effect {
+      position: fixed !important;
+      bottom: 62px !important;
+    }
+  }
+}
+
+.ios {
+  .empty-div-effect {
+    position: fixed !important;
+    bottom: 62px !important;
+  }
+}
+
+.img-full-width {
+  width: 100% !important;
+  height: 100% !important;
 }

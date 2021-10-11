@@ -1,5 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {Subject} from 'rxjs';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {StoryOem} from 'src/app/models/story-oem.model';
 import {STORIES_OEM_CONFIG} from 'src/shared';
 
@@ -8,62 +7,71 @@ import {STORIES_OEM_CONFIG} from 'src/shared';
   templateUrl: './stories-progress-bar.component.html',
   styleUrls: ['./stories-progress-bar.component.scss']
 })
-export class StoriesProgressBarComponent implements OnInit, OnChanges {
+export class StoriesProgressBarComponent implements OnInit {
   currentProgressValue = 0;
   @Input() story: StoryOem;
-  @Input() progressBarStepTime = 100;
   @Input() stepValue = 0.01;
-  @Input() idStory: number = -1;
-  @Input() lastId: number = -1;
-  @Input() isCurrentStory: boolean;
+  @Input() isLast: boolean;
   @Output() idStoryChange = new EventEmitter<any>();
   @Output() finish = new EventEmitter();
+  progressBarStepTime = 100;
   timeOutIds: any[] = [];
-  totalSteps;
-  constructor() {}
+  totalSteps: number;
+  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit() {}
 
-  startProgressBar() {
-    this.currentProgressValue = 0;
+  startProgressBar(from: number = 0) {
     this.initConfigProgressBar();
-    for (let index = 1; index <= this.totalSteps; index++) {
-      this.setProgressBarEvolution(index);
-    }
+    this.setProgressBarEvolutionV2(from);
   }
 
   setProgressBarEvolution(index: number) {
     const idTimeOut = setTimeout(() => {
       this.currentProgressValue = Math.round(index * +this.stepValue * 100) / 100;
 
-      console.log('vcurrentProgressValue', this.currentProgressValue);
-
       if (index === this.totalSteps) {
         this.idStoryChange.emit(true);
       }
-      if (this.idStory === this.lastId && index === this.totalSteps) {
-        this.finish.emit(this.idStory);
+      if (this.isLast && index === this.totalSteps) {
+        this.finish.emit(this.isLast);
       }
+
+      this.cd.detectChanges();
     }, this.progressBarStepTime * index);
     this.timeOutIds.push(idTimeOut);
   }
 
+  setProgressBarEvolutionV2(startValue: number = 0) {
+    this.currentProgressValue = startValue;
+    const idTimeOut = setInterval(() => {
+      this.currentProgressValue += +this.stepValue;
+
+      if (this.currentProgressValue >= 1) {
+        this.idStoryChange.emit(true);
+        if (this.isLast) {
+          this.finish.emit(this.isLast);
+        }
+      }
+
+      this.cd.detectChanges();
+    }, this.progressBarStepTime);
+    this.timeOutIds.push(idTimeOut);
+  }
+
   resetProgressBar() {
-    this.currentProgressValue = 0;
     for (const id of this.timeOutIds) {
       clearTimeout(id);
     }
     this.timeOutIds = [];
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.isCurrentStory && !changes.isCurrentStory.currentValue) {
-      this.currentProgressValue = 0;
-    }
+  emptyProgressBar() {
+    this.currentProgressValue = 0;
+    this.cd.detectChanges();
   }
 
   initConfigProgressBar() {
-    console.log('initConfig', this.story);
     if (this.story.duration > STORIES_OEM_CONFIG.MAX_DURATION_BY_ELEMENT) {
       this.story.duration = STORIES_OEM_CONFIG.MAX_DURATION_BY_ELEMENT;
     }
@@ -71,5 +79,28 @@ export class StoriesProgressBarComponent implements OnInit, OnChanges {
       this.progressBarStepTime = +(this.stepValue * this.story.duration).toFixed(2);
       this.totalSteps = Math.trunc(this.story.duration / this.progressBarStepTime);
     }
+    this.cd.detectChanges();
+  }
+
+  getCurrentIndexProgress() {
+    return this.currentProgressValue ? Math.round(this.currentProgressValue * 100 / (100 * this.stepValue)) : 1;
+  }
+
+  pauseStoryProgress() {
+    this.resetProgressBar();
+  }
+
+  fillProgressBar() {
+    this.currentProgressValue = 1;
+    this.cd.detectChanges();
+  }
+
+  playStoryProgress() {
+    this.startProgressBar(this.currentProgressValue);
+  }
+
+  setProgressStoryDuration(duration: number) {
+    this.story.duration = duration;
+    this.cd.detectChanges();
   }
 }

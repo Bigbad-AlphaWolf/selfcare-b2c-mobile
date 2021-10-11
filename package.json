@@ -19,8 +19,8 @@
     "build:android:debug:rec": "ionic cordova build android --configuration rec",
     "build:android:release:preprod": "ionic cordova build android --release --configuration rec",
     "build:android:debug:preprod": "ionic cordova build android --configuration rec",
-    "build:android:release:master": "ionic cordova build android --release --configuration production",
-    "build:android:debug:master": "ionic cordova build android --configuration production",
+    "build:android:release:prod": "ionic cordova build android --release --configuration production",
+    "build:android:debug:prod": "ionic cordova build android --configuration production",
     "build:ios:release:master": "ionic cordova build ios --release --configuration production",
     "build:ios:debug:master": "ionic cordova build ios --configuration production",
     "build:android:release:dev": "ionic cordova build android --release",
@@ -65,6 +65,7 @@
     "@ionic-native/splash-screen": "^5.28.0",
     "@ionic-native/status-bar": "^5.28.0",
     "@ionic-native/uid": "^5.29.0",
+    "@ionic-native/wifi-wizard-2": "^5.36.0",
     "@ionic/angular": "^5.6.13",
     "@vime/angular": "^5.0.33",
     "@wdio/selenium-standalone-service": "^5.12.1",
@@ -97,6 +98,7 @@
     "ngx-clipboard": "^12.2.0",
     "rxjs": "~6.5.1",
     "secure-ls": "^1.2.5",
+    "swiper": "^6.8.4",
     "tslib": "^2.0.0",
     "uuid": "^7.0.3",
     "zone.js": "~0.11.4"
@@ -126,6 +128,7 @@
     "cordova-plugin-geolocation": "^4.1.0",
     "cordova-plugin-inappbrowser": "file:cordova-plugin-inappbrowser",
     "cordova-plugin-ionic-webview": "file:cordova-plugin-ionic-webview",
+    "cordova-plugin-wifiwizard2": "^3.1.1",
     "cordova.plugin.followanalytics": "file:FACordovaPlugin",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
@@ -139,7 +142,8 @@
     "sonar-scanner": "^3.1.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "4.3.5"
+    "typescript": "4.3.5",
+    "wifiwizard2": "^3.1.1"
   },
   "description": "An Ionic project",
   "cordova": {
@@ -231,8 +235,12 @@
       "cordova-plugin-network-information": {},
       "cordova-plugin-geolocation": {
         "GPS_REQUIRED": "true"
-      }
+      },
+      "wifiwizard2": {}
     },
-    "platforms": ["android"]
+    "platforms": [
+      "android",
+      "ios"
+    ]
   }
 }

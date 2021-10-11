@@ -65,6 +65,7 @@ import { IlliflexService } from '../illiflex-service/illiflex.service';
 import { CancelOmTransactionPayloadModel } from 'src/app/models/cancel-om-transaction-payload.model';
 import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-event-type.enum';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
+import { CreatePinOM } from 'src/app/models/create-pin-om.model';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
@@ -95,6 +96,8 @@ const userStatusEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/custome
 const selfOperationInitOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-otp-init`;
 const selfOperationCheckOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/register/customer-otp-check`;
 const CANCEL_TRANSACTIONS_OM_Endpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/urgence-depannage/v2/erreur-transaction`;
+// CREATION PIN OM
+const CREATE_PIN_OM_Endpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/create-pin`;
 const ls = new SecureLS({ encodingType: 'aes' });
 let eventKey = '';
 let errorKey = '';
@@ -213,9 +216,9 @@ export class OrangeMoneyService {
   GetPinPad(
     pinPadData: OmPinPadModel,
     changePinInfos?: {
-      apiKey: string;
+      apiKey?: string;
       em: string;
-      loginToken: string;
+      loginToken?: string;
       msisdn: string;
       sequence: string;
     }
@@ -223,7 +226,7 @@ export class OrangeMoneyService {
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
     const os = isIOS ? 'iOS' : 'Android';
     if (pinPadData) pinPadData.os = os;
-    if (changePinInfos) {
+    if (changePinInfos?.sequence && changePinInfos?.em) {
       const sequence = changePinInfos.sequence.replace(
         new RegExp('-', 'g'),
         ' '
@@ -485,6 +488,8 @@ export class OrangeMoneyService {
     checkOtpPayload: OmCheckOtpModel,
     otpCode: string | number
   ) {
+    console.log('checkOTP', checkOtpPayload, otpCode);
+
     return this.http.post<checkOtpResponseModel>(
       `${selfOperationCheckOtpEndpoint}?otp=${otpCode}`,
       checkOtpPayload
@@ -748,5 +753,21 @@ export class OrangeMoneyService {
     payload.append('recto', fileRecto, 'recto.png');
     payload.append('verso', fileVerso, 'verso.png');
     return this.http.post(`${CANCEL_TRANSACTIONS_OM_Endpoint}`, payload);
+  }
+
+  createFirstOmPin(payload: CreatePinOM, apiKey?: string) {
+    const os = REGEX_IOS_SYSTEM.test(navigator.userAgent) ? 'iOS' : 'Android';
+    const data = {
+      os: os,
+      channel: 'selfcare',
+      app_version: 'v1.0',
+      conf_version: 'v1.0',
+      service_version: 'v1.0',
+      type: 'CLIENT',
+      is_primo: true,
+    };
+    const omData: CreatePinOM = Object.assign({}, payload, data);
+
+    return this.http.post(`${CREATE_PIN_OM_Endpoint}?apiKey=${apiKey}`, omData);
   }
 }

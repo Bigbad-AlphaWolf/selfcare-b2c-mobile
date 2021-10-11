@@ -12,6 +12,8 @@ import {
   OPERATION_SEE_FOLLOW_UP_REQUESTS,
   OPERATION_SEE_RATTACHED_NUMBERS,
   OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM,
+  OPERATION_CHANGE_PIN_OM,
+  OPERATION_CREATE_PIN_OM,
 } from 'src/shared';
 import { PageHeader } from '../models/page-header.model';
 import { OPERATION_RAPIDO, OPERATION_WOYOFAL } from './operations.constants';
@@ -87,6 +89,16 @@ export const titles: PageHeader[] = [
   {
     typeOperation: OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM,
     title: "Déclarer une erreur de transaction",
+  },
+  {
+    typeOperation: OPERATION_CHANGE_PIN_OM,
+    title: "Changer code secret Orange Money",
+    subTtile: "Le nouveau code secret doit être différent de votre date de naissance et les chiffres consécutifs ne sont pas autorisés"
+  },
+  {
+    typeOperation: OPERATION_CREATE_PIN_OM,
+    title: "Crééer votre code secret Orange Money",
+    subTtile: "Le code secret doit être différent de votre date de naissance et les chiffres consécutifs ne sont pas autorisés"
   },
 ];
 

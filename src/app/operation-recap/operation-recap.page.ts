@@ -328,6 +328,12 @@ export class OperationRecapPage implements OnInit {
     return of(result.data).toPromise();
   }
 
+  mapWoyofalToTransferInput() {
+    const opxtras = this.opXtras;
+    opxtras.sending_fees = this.opXtras.fee;
+    return opxtras;
+  }
+
   getCurrentNumSubscription() {
     this.authServ
       .getSubscriptionForTiers(this.currentUserNumber)
@@ -661,6 +667,8 @@ export class OperationRecapPage implements OnInit {
       buyForMe:
         this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
       errorMsg: this.buyPassErrorMsg,
+			errorCode: res?.code,
+			recipientMsisdn: this.recipientMsisdn
     });
   }
 
@@ -681,6 +689,8 @@ export class OperationRecapPage implements OnInit {
       buyForMe:
         this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
       errorMsg: this.buyPassErrorMsg,
+			errorCode: err?.error?.code,
+			recipientMsisdn: this.recipientMsisdn
     });
   }
 

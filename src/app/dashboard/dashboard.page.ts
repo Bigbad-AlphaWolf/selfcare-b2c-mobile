@@ -150,7 +150,7 @@ export class DashboardPage implements OnInit, OnDestroy {
           };
           let currentDashboard = '/dashboard';
           if (isPrepaidOrHybrid(souscription)) {
-            currentDashboard = '/dashboard-prepaid-hybrid';
+            currentDashboard = '/new-prepaid-hybrid-dashboard';
           } else if (isKirene(souscription)) {
             currentDashboard = '/dashboard-kirene';
           } else if (isPostpaidMobile(souscription)) {

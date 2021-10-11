@@ -9,6 +9,7 @@ import android.util.Log;
 import android.webkit.ServiceWorkerClient;
 import android.webkit.ServiceWorkerController;
 import android.webkit.SslErrorHandler;
+import android.net.http.SslError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -25,6 +26,9 @@ import org.apache.cordova.engine.SystemWebView;
 import org.apache.cordova.engine.SystemWebViewClient;
 import org.apache.cordova.engine.SystemWebViewEngine;
 import android.os.Build;
+import android.net.http.SslError;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class IonicWebViewEngine extends SystemWebViewEngine {
   public static final String TAG = "IonicWebViewEngine";
@@ -34,6 +38,8 @@ public class IonicWebViewEngine extends SystemWebViewEngine {
   private String scheme;
   private static final String LAST_BINARY_VERSION_CODE = "lastBinaryVersionCode";
   private static final String LAST_BINARY_VERSION_NAME = "lastBinaryVersionName";
+	private static final String LOAD_ERROR_EVENT = "loaderror";
+  protected static final String LOG_TAG = "InAppBrowser";
 
   /**
    * Used when created via reflection.
@@ -132,8 +138,43 @@ public class IonicWebViewEngine extends SystemWebViewEngine {
       this.parser = parser;
     }
 
-    public void onReceivedSslError(SslErrorHandler handler) {
-      handler.proceed();
+    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+      super.onReceivedSslError(view, handler, error);
+            try {
+                JSONObject obj = new JSONObject();
+                obj.put("type", LOAD_ERROR_EVENT);
+                obj.put("url", error.getUrl());
+                obj.put("code", 0);
+                obj.put("sslerror", error.getPrimaryError());
+                String message;
+                switch (error.getPrimaryError()) {
+                case SslError.SSL_DATE_INVALID:
+                    message = "The date of the certificate is invalid";
+                    break;
+                case SslError.SSL_EXPIRED:
+                    message = "The certificate has expired";
+                    break;
+                case SslError.SSL_IDMISMATCH:
+                    message = "Hostname mismatch";
+                    break;
+                default:
+                case SslError.SSL_INVALID:
+                    message = "A generic error occurred";
+                    break;
+                case SslError.SSL_NOTYETVALID:
+                    message = "The certificate is not yet valid";
+                    break;
+                case SslError.SSL_UNTRUSTED:
+                    message = "The certificate authority is not trusted";
+                    break;
+                }
+                obj.put("message", message);
+
+            } catch (JSONException ex) {
+                Log.d(LOG_TAG, "Should never happen");
+            }
+            handler.cancel();
+						return;
     }
 
     @Override

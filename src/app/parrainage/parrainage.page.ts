@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
-import { ModalController } from '@ionic/angular';
-import { CreateSponsorFormComponent } from './create-sponsor-form/create-sponsor-form.component';
-import { SponseeModel } from 'src/shared';
-import { ParrainageService } from '../services/parrainage-service/parrainage.service';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material';
+import {ModalController} from '@ionic/angular';
+import {CreateSponsorFormComponent} from './create-sponsor-form/create-sponsor-form.component';
+import {SponseeModel} from 'src/shared';
+import {ParrainageService} from '../services/parrainage-service/parrainage.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-parrainage',
@@ -17,53 +17,6 @@ export class ParrainagePage implements OnInit {
   loadingSponsees = false;
   hasLoadingError = false;
   selectedFilter: 'NONE' | 'NON_INSCRITS' | 'INSCRITS' = 'NONE';
-  mockData: SponseeModel[] = [
-    {
-      id: 1,
-      msisdn: '775896287',
-      firstName: 'Pape Abdoulaye',
-      lastName: 'KEBE',
-      effective: true,
-      createdDate: '',
-      enabled: true
-    },
-    {
-      id: 2,
-      msisdn: '771331225',
-      firstName: 'Momar',
-      lastName: 'KEBE',
-      effective: false,
-      createdDate: '',
-      enabled: true
-    },
-    {
-      id: 3,
-      msisdn: '775109027',
-      firstName: 'Mor Talla',
-      lastName: 'KEBE',
-      effective: true,
-      createdDate: '',
-      enabled: true
-    },
-    {
-      id: 4,
-      msisdn: '771022835',
-      firstName: 'Fatou Bintou',
-      lastName: 'KEBE',
-      effective: false,
-      createdDate: '',
-      enabled: true
-    },
-    {
-      id: 5,
-      msisdn: '777559155',
-      firstName: 'Ndeye Astou',
-      lastName: 'KEBE',
-      effective: true,
-      createdDate: '',
-      enabled: true
-    }
-  ];
   effectiveNumber = 0;
   notEffectiveNumber = 0;
   constructor(
@@ -75,6 +28,11 @@ export class ParrainagePage implements OnInit {
 
   ngOnInit() {
     this.getAllSponsees();
+  }
+
+  ngAfterViewInit() {
+		const sponseeMsisdn =  history?.state?.sponseeMsisdn;
+		if(sponseeMsisdn)  this.presentModal(sponseeMsisdn);
   }
 
   getAllSponsees() {
@@ -102,9 +60,16 @@ export class ParrainagePage implements OnInit {
     });
   }
 
-  async presentModal() {
+  async presentModal(sponseeMsisdn?: string) {
     const modal = await this.modalController.create({
-      component: CreateSponsorFormComponent
+      component: CreateSponsorFormComponent,
+      backdropDismiss: true,
+      swipeToClose: true,
+      mode: 'ios',
+      componentProps: {
+        defaultNumber: sponseeMsisdn
+      },
+      presentingElement: await this.modalController.getTop()
     });
     modal.onDidDismiss().then(() => {
       this.getAllSponsees();
@@ -113,10 +78,7 @@ export class ParrainagePage implements OnInit {
   }
 
   filterBy(sponseeStatus: 'NONE' | 'NON_INSCRITS' | 'INSCRITS') {
-    if (
-      this.selectedFilter !== 'NONE' &&
-      this.selectedFilter === sponseeStatus
-    ) {
+    if (this.selectedFilter !== 'NONE' && this.selectedFilter === sponseeStatus) {
       this.selectedFilter = 'NONE';
       this.listSponseeShown = this.listSponsee;
     } else {
@@ -160,6 +122,6 @@ export class ParrainagePage implements OnInit {
   }
 
   openModalNewSponsee() {
-    this.presentModal();
+			this.presentModal();
   }
 }

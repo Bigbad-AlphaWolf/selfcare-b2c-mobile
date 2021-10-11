@@ -70,20 +70,20 @@ const listPassIllimixEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-ill
 const listPassInternetEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-internets-by-formule`;
 const listFormulesEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/formule-mobiles`;
 
+// pass by msisdn
+const listPassByMsisdnEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-by-msisdn`;
+
 // reinitialize passwords endpoints
 const initOTPReinitializeEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password/init`;
 const reinitializeEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password/finish`;
 
 // Endpoint to get sargal balance
 const sargalBalanceEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/`;
-const welcomeStatusEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters`;
 
 // Endpoint promoBooster active
-const promoBoosterActiveEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters/active-boosters`;
 const boosterTransactionEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters/booster-promo-transaction`;
 
 // Endpoint to get the user's birthdate
-const userBirthDateEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/birthDate`;
 const userInfosEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/infos-client`;
 // Endpoint to check allo feature status
 const showNewFeatureStateEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pass-allo-new`;
@@ -107,6 +107,7 @@ export class DashboardService {
   updateRattachmentList: Subject<any> = new Subject<any>();
   isSponsorSubject: Subject<any> = new Subject<boolean>();
   attachedNumbersChangedSubject: Subject<any> = new Subject<any>();
+  menuOptionClickedSubject: Subject<any> = new Subject<any>();
   user: any;
   msisdn: string;
   screenWatcher: Subscription;
@@ -143,6 +144,15 @@ export class DashboardService {
   getRattachmentlistUpdateInfo() {
     return this.updateRattachmentList.asObservable();
   }
+
+  listenToMenuClick() {
+    return this.menuOptionClickedSubject.asObservable();
+  }
+
+  menuOptionClickEmit(option) {
+    this.menuOptionClickedSubject.next(option);
+  }
+
   reinitializePassword(payload: {
     otp: string;
     newPassword: string;
@@ -527,11 +537,25 @@ export class DashboardService {
     const endpoint = isLighMod
       ? listPassInternetEndpointLight
       : listPassInternetEndpoint;
-    let queryParams = `?typeUsage=${typeUsage}`;
+    let queryParams = `?&typeUsage=${typeUsage}`;
     const hmac = this.authService.getHmac();
-    const currentNumber = this.getCurrentPhoneNumber();
-    if (isLighMod) queryParams += `&hmac=${hmac}&msisdn=${currentNumber}`;
+    if (isLighMod) queryParams += `&hmac=${hmac}`;
     return this.http.get(`${endpoint}/${codeFormule}${queryParams}`);
+  }
+
+  getListPassByMsisdn(
+    passType: 'INTERNET' | 'ILLIMIX',
+    passRecipientNumber: string
+  ) {
+    return this.http
+      .get(
+        `${listPassByMsisdnEndpoint}/${passRecipientNumber}?passType=${passType}`
+      )
+      .pipe(
+        catchError((_) => {
+          return of([]);
+        })
+      );
   }
 
   buyPassByCredit(payload: BuyPassModel, hmac?: string) {
@@ -595,32 +619,30 @@ export class DashboardService {
     return res;
   }
 
-  getWelcomeStatus() {
+  getWelcomeStatus(boosters) {
     const currentPhoneNumber = this.getCurrentPhoneNumber();
-    return this.boosterService
-      .getBoosters({ trigger: BoosterTrigger.FORM_INSCRIPTION })
-      .pipe(
-        switchMap((res: BoosterModel[]) => {
-          const lastWelcomeBooster = res[0];
-          return this.http
-            .get(
-              `${boosterTransactionEndpoint}/?msisdn=${currentPhoneNumber}&boosterId=${lastWelcomeBooster.id}`
-            )
-            .pipe(
-              map((res: any) => {
-                const response = {
-                  status: res.transactionStatus,
-                  type: GiftType.RECHARGE,
-                  value: {
-                    amount: res.transactionDetails.transactionValue,
-                    unit: 'F CFA',
-                  },
-                };
-                return response;
-              })
-            );
-        })
-      );
+    console.log(boosters);
+    const lastWelcomeBooster = boosters.boosterInscription;
+    if (lastWelcomeBooster) {
+      return this.http
+        .get(
+          `${boosterTransactionEndpoint}/?msisdn=${currentPhoneNumber}&boosterId=${lastWelcomeBooster.id}`
+        )
+        .pipe(
+          map((res: any) => {
+            const response = {
+              status: res.transactionStatus,
+              type: GiftType.RECHARGE,
+              value: {
+                amount: res.transactionDetails.transactionValue,
+                unit: 'F CFA',
+              },
+            };
+            return response;
+          })
+        );
+    }
+    return of({});
   }
 
   getActivePromoBooster() {
@@ -644,7 +666,16 @@ export class DashboardService {
               const promoPassIllimix = res.find(
                 (promo) => promo.boosterTrigger === BoosterTrigger.PASS_ILLIMIX
               );
-              return { promoPass, promoRecharge, promoPassIllimix };
+              const boosterInscription = res.find(
+                (promo) =>
+                  promo.boosterTrigger === BoosterTrigger.FORM_INSCRIPTION
+              );
+              return {
+                promoPass,
+                promoRecharge,
+                promoPassIllimix,
+                boosterInscription,
+              };
             })
           );
       }),
@@ -653,6 +684,7 @@ export class DashboardService {
           promoPass: null,
           promoRecharge: null,
           promoPassIllimix: null,
+          boosterInscription: null,
         });
       })
     );

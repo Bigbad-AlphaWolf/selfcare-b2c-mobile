@@ -1,0 +1,17 @@
+@import "src/app/app";
+
+:host {
+  min-width: initial;
+  flex: 1 1 auto;
+  &:not(:first-child) {
+    margin-left: 5px;
+  }
+}
+.progress-bar {
+  .custom-progress-bar {
+    --background: #999;
+    --progress-background: #fff;
+    border-radius: 4.5px;
+    height: 5px;
+  }
+}

@@ -1,4 +1,4 @@
-import { OperationExtras } from './operation-extras.model';
+import {OperationExtras} from './operation-extras.model';
 
 export interface ModalSuccessModel {
   purchaseType?: string;
@@ -10,6 +10,7 @@ export interface ModalSuccessModel {
   paymentMod?: string;
   msisdnBuyer?: string;
   errorMsg?: string;
+  errorCode?: string;
   amount?: number;
   merchantName?: string;
   merchantCode?: number;

@@ -4,14 +4,12 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
-  SimpleChange,
-  SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {Player} from '@vime/angular';
+import { Platform } from '@ionic/angular';
+import { ImageAttribute } from 'ionic-image-loader';
 import {StoryOem} from 'src/app/models/story-oem.model';
 
 @Component({
@@ -19,57 +17,48 @@ import {StoryOem} from 'src/app/models/story-oem.model';
   templateUrl: './visualize-story.component.html',
   styleUrls: ['./visualize-story.component.scss']
 })
-export class VisualizeStoryComponent implements OnInit, OnChanges {
+export class VisualizeStoryComponent implements OnInit {
   @Input() story: StoryOem;
   @Input() isCurrentStory: boolean;
   @Output() mediaDurationChange = new EventEmitter();
+  @Output() imageReady = new EventEmitter();
+  @Output() audioReady = new EventEmitter();
+  @Output() touch = new EventEmitter();
   mediaDuration: any;
-  @ViewChild('audioOrVideo') mediaTag: HTMLAudioElement;
   @ViewChild('audioOrVideo') media: ElementRef;
-  constructor(private ref: ChangeDetectorRef) {}
+  isLoading: boolean = true;
+	isWeb: boolean;
+	imageAttributes: ImageAttribute[] = [{
+		element: 'class',
+		value: 'img-full-width'
+	}];
 
-  ngOnInit() {}
+  constructor(private ref: ChangeDetectorRef, private platform: Platform) {
+		this.isWeb = platform.is('mobileweb')
+	}
+
+  ngOnInit() {
+  }
 
   getInfoMetaData(event: any) {
-    if (event && event.srcElement) {
+    if (event && event?.srcElement) {
       this.mediaDuration = event.srcElement.duration * 1000;
       this.story.duration = this.mediaDuration;
       this.mediaDurationChange.emit(this.mediaDuration);
     }
+		this.ref.detectChanges()
   }
 
-  ngAfterViewInit() {
+  loadMedia() {
     if (this.media && this.media.nativeElement && this.story.audio) {
       this.media.nativeElement.load();
-      if (this.isCurrentStory) {
-        this.playMedia();
-      }
-      //console.log('this.media.nativeElement', this.media.nativeElement);
+      this.ref.detectChanges();
     }
   }
 
-  ngOnChanges(simple: SimpleChanges) {
-    //console.log('simple', simple);
-
-    if (this.story.audio) {
-      if (simple.isCurrentStory.currentValue === true) {
-        this.playMedia();
-      } else {
-        this.pauseMedia();
-      }
-    }
-  }
-
-  loadStart(event: any) {
-    //console.log('evennnnt', event.target.duration);
-    //this.canPlayMedia.emit(true);
-  }
 
   playMedia() {
-    //console.log('this.media', this.media);
-
     if (this.media && this.media.nativeElement) {
-      this.media.nativeElement.load();
       this.media.nativeElement.play();
     }
   }
@@ -81,11 +70,25 @@ export class VisualizeStoryComponent implements OnInit, OnChanges {
   }
 
   canPlay(event: any) {
-    //console.log('canPlay', event);
-    //this.media.nativeElement.play();
+			if (this.media && this.media.nativeElement) {
+				this.media.nativeElement.pause();
+			}
+			this.audioReady.emit(true);
+			this.ref.detectChanges()
   }
 
-  onError(event: any) {
-    //console.log('event', event);
+  imageLoaded(event: any) {
+    this.isLoading = false;
+    this.imageReady.emit(this.isCurrentStory);
+		this.ref.detectChanges()
   }
+
+	makeAction(event:any) {
+		this.touch.emit({ slide: event, btn: true, action: this.story?.action });
+	}
+
+	userReadStory() {
+		this.story.read = true;
+		this.ref.detectChanges();
+	}
 }

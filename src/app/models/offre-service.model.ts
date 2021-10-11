@@ -38,4 +38,5 @@ export interface CategoryOffreServiceModel {
   niveau?: string;
   offreServices?: OffreService;
   ordre?: number;
+  code?: string;
 }

@@ -36,8 +36,8 @@
 							<ion-item mode="ios" lines="none">
 								<ion-label mode="ios" class="scb-text-gray">Civilité</ion-label>
 								<ion-select interface="popover" noIonSelectArrow mode="ios" formControlName="civility">
-									<ion-select-option [value]="'monsieur'" mode="ios"><span>Monsieur</span></ion-select-option>
-									<ion-select-option [value]="'madame'" mode="ios"><span>Madame</span></ion-select-option>
+									<ion-select-option value="MR" mode="ios"><span>Monsieur</span></ion-select-option>
+									<ion-select-option value="MRS" mode="ios"><span>Madame</span></ion-select-option>
 								</ion-select>
 								<ion-icon name="arrow-down" mode="ios" slot="end"></ion-icon>
 							</ion-item>
@@ -45,24 +45,25 @@
 						<mat-form-field class="scb-input-row" appearance="outline">
 							<mat-label>Nom &nbsp;&nbsp;</mat-label>
 							<input formControlName="lastname" matInput type="text" />
-							<small class="text-danger" *ngIf="personalInfosForm.get('lastname').hasError('minlength')">
+							<small class="text-danger" *ngIf="personalInfosForm?.get('lastname')?.hasError('minlength')">
 								Le nombre minimal de caractères pour ce champ est
-								{{personalInfosForm.get('lastname').errors.minlength.requiredLength}} caractères.
+								{{personalInfosForm?.get('lastname')?.errors?.minlength?.requiredLength}} caractères.
 							</small>
 						</mat-form-field>
 						<mat-form-field class="scb-input-row" appearance="outline">
 							<mat-label>Prénom &nbsp;&nbsp;</mat-label>
 							<input formControlName="firstname" matInput type="text" />
-							<small class="text-danger" *ngIf="personalInfosForm.get('firstname').hasError('minlength')">
+							<small class="text-danger" *ngIf="personalInfosForm?.get('firstname')?.hasError('minlength')">
 								Le nombre minimal de caractères pour ce champ est
-								{{personalInfosForm.get('firstname').errors.minlength.requiredLength}} caractères.
+								{{personalInfosForm?.get('firstname')?.errors?.minlength?.requiredLength}} caractères.
 							</small>
 						</mat-form-field>
 						<ion-datetime
 							placeholder="Date de naissance"
-							displayFormat="DD / MM / YYYY"
+							displayFormat="DD/MM/YYYY"
 							doneText="Confirmer"
 							cancelText="Annuler"
+							pickerFormat=""
 							formControlName="birthdate"
 							display-timezone="utc"
 							(ionChange)="checkAge($event)"
@@ -98,6 +99,27 @@
 						<div class="error scb-text-red-error" *ngIf="isUserIDInvalid && cni.checked">
 							Le champ numéro de CNI devra contenir au moins 13 caractères
 						</div>
+						<ion-datetime
+						class="margin-b-20"
+							placeholder="Date de délivrance"
+							displayFormat="DD/MM/YYYY"
+							doneText="Confirmer"
+							cancelText="Annuler"
+							formControlName="delivery_date"
+							display-timezone="utc"
+						></ion-datetime>
+						<ion-datetime
+						class="margin-b-20"
+							placeholder="Date d'expiration"
+							displayFormat="DD/MM/YYYY"
+							doneText="Confirmer"
+							cancelText="Annuler"
+							formControlName="expiry_date"
+							display-timezone="utc"
+							[max]="maxYear"
+						></ion-datetime>
+						<label class="error scb-text-red-error"  *ngIf="(personalInfosForm.get('expiry_date').dirty || personalInfosForm.get('expiry_date').touched) && personalInfosForm?.errors?.dates"> La date d'expiration doit être supérieure à la date de délivrance </label>
+
 						<div class="photo-button" [ngClass]="{'field-filled': rectoFilled}" (click)="takePicture('recto')">
 							<span class="pic-name scb-text-orange" [ngClass]="{'scb-text-green-success': rectoFilled}"
 								>{{rectoFilled ? rectoFileName : 'Scanner recto pièce d’identité'}}</span
@@ -164,6 +186,7 @@
 		<app-item-om-user-status-card-infos
 			*ngIf="isEligibleToSuiviOpenOMAccount(userOmStatus)"
 			[userOmStatus]="userOmStatus"
+			[payload]="userAuthImplicitInfos"
 			[typeDemande]="'OUVERTURE_COMPTE'"
 		>
 		</app-item-om-user-status-card-infos>

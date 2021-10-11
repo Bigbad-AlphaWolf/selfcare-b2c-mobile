@@ -2,10 +2,16 @@
 
 .list-preview-stories {
   display: flex;
-  justify-content: space-between;
+  flex: 1 1 24%;
   .preview-story {
     width: 70px;
     height: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    &:not(:first-child) {
+      margin-left: 10px;
+    }
     .mask {
       height: 100%;
       width: 100%;
@@ -32,6 +38,10 @@
       letter-spacing: normal;
       text-align: center;
       color: $gray;
+      white-space: nowrap;
     }
+  }
+  .error {
+    font-size: 12px;
   }
 }

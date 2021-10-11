@@ -1,0 +1,24 @@
+<div class="new-details-page">
+  <ng-container *ngIf="loadingConso else consoDetails">
+    <div class="loader-container">
+      <ion-skeleton-text animated class="header-loader"></ion-skeleton-text>
+      <ion-skeleton-text animated class="conso-loader"></ion-skeleton-text>
+      <ion-skeleton-text animated class="header-loader"></ion-skeleton-text>
+      <ion-skeleton-text animated class="conso-loader"></ion-skeleton-text>
+    </div>
+  </ng-container>
+  <ng-template #consoDetails>
+    <div class="conso-category-item" *ngFor="let categoryConso of userConso">
+      <span class="category-name">{{toCamelCase(categoryConso?.category)}}</span>
+      <div class="category-counters">
+        <div class="counter-item" *ngFor="let counter of categoryConso?.consumations">
+          <div class="counter-top-bloc">
+            <span class="counter-name scb-text-gray">{{counter?.name}}</span>
+            <span class="counter-value scb-text-orange">{{counter?.montantRestant}}</span>
+          </div>
+          <div class="counter-exp-date scb-text-gray">{{'Expire le ' + counter?.dateExpiration}}</div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

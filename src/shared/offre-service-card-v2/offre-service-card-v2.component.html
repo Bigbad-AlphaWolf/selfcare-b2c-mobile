@@ -1,0 +1,12 @@
+<div class="offre-service-item" (click)="onClick()">
+  <img-loader [spinner]="true" class="icone" [src]="service?.icone"
+      fallbackUrl="assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
+  <span class="title scb-text-gray">{{service?.shortDescription}}</span>
+  <span class="subtitle">{{service?.fullDescription}}</span>
+  <div class="badge-promo" *ngIf="service?.newOffer">
+    <div class="icon-container">
+      <span class="new scb-text-white"> Nouveau </span>
+    </div>
+    <div class="triangle"></div>
+  </div>
+</div>
