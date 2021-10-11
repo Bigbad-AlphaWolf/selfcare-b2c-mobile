@@ -881,3 +881,80 @@ ion-button {
     }
   }
 }
+
+/************* google maps styling ************/
+.gmnoprint {
+  display: none !important;
+}
+.gm-fullscreen-control {
+  display: none !important;
+}
+.custom-marker {
+  position: relative;
+  .circle {
+    width: 34px !important;
+    height: 34px !important;
+    background-color: $white !important;
+    color: $orange !important;
+    border-radius: 50%;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    padding-top: 5px;
+  }
+  .arrow-down {
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: 12px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 8px solid $white;
+  }
+}
+
+.custom-marker-focused {
+  .circle {
+    background-color: $orange !important;
+    color: $white !important;
+  }
+  .arrow-down {
+    border-top: 8px solid $orange;
+  }
+}
+
+@keyframes breathe {
+  0% {
+    box-shadow: 0 0 0 1px rgba(188, 237, 243, 0.3);
+    border-radius: 50%;
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(188, 237, 243, 0.3);
+    border-radius: 50%;
+  }
+  100% {
+    box-shadow: 0 0 0 1px rgba(188, 237, 243, 0.3);
+    border-radius: 50%;
+  }
+}
+
+.user-marker {
+  animation: breathe 4.5s linear infinite;
+  .img-container {
+    z-index: 2;
+    border-radius: 50%;
+    background-color: $lightBlue;
+    width: 34px;
+    height: 34px;
+    padding: 4px 0 0 4px;
+    .user-img {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: solid 1px $white;
+    }
+  }
+}
+/********** google maps styling end **********/

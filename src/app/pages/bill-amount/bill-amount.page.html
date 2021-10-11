@@ -51,7 +51,7 @@
             FCFA</span
           >
           <span *ngIf="!amountIsValid"
-            >Le montant ne doit pas être inférieur à {{minimalAmount}} FCFA ni dépasser {{ maximalAmount }} FCFA </span
+            >Le montant ne doit pas être inférieur à {{minimalAmount}} FCFA</span
           >
         </div>
       </div>
@@ -59,6 +59,7 @@
         <button
           class="scb-btn scb-btn-orange scb-btn-full"
           [disabled]="!amountIsValid"
+          id="btn-validate-amount"
           (click)="onContinue()"
         >
           <span>Continuer</span>

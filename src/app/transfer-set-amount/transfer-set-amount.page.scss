@@ -130,11 +130,18 @@
     }
 
     .btn-container {
-      position: sticky;
-      bottom: 20px;
       z-index: 10;
       button {
         border-radius: 10px;
+        position: relative;
+        mat-spinner {
+          position: absolute;
+          top: 15px;
+          right: 10px;
+        }
+        .mat-spinner::ng-deep circle {
+          stroke: $white;
+        }
       }
     }
   }

@@ -35,6 +35,7 @@
       matRipple
       class="oem-item"
       (click)="onRecentRapidoSlected(rapido)"
+      [id]="'carte_rapido_'+i"
       *ngFor="let rapido of rapidos ; index as i; count as size"
     >
       <div class="logo">
@@ -51,7 +52,7 @@
     {{ errorMsg }}
   </div>
   <div class="btn-continue">
-    <button mat-button [disabled]="isProcessing || !rapidoNumberIsValid" (click)="onContinue()">
+    <button id="btn-validate-numero-carte-rapido" mat-button [disabled]="isProcessing || !rapidoNumberIsValid" (click)="onContinue()">
       Continuer
     </button>
     <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>

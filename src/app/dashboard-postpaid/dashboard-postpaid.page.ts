@@ -29,7 +29,17 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { OperationService } from '../services/oem-operation/operation.service';
 import { OffreService } from '../models/offre-service.model';
 import { IMAGES_DIR_PATH } from '../utils/constants';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { UserConsoService } from '../services/user-cunsommation-service/user-conso.service';
+import {
+  CONSO_ACTE_INTERNET,
+  CONSO_ACTE_REGEX,
+  CONSO_ACTE_SMS,
+  CONSO_ACTE_VOIX,
+  CONSO_POSTPAID_DASHBOARD_ITEMS_LIMIT,
+  isCounterConsoActe,
+  NewUserConsoModel,
+} from '../services/user-cunsommation-service/user-conso-service.index';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid',
@@ -85,6 +95,12 @@ export class DashboardPostpaidPage implements OnInit {
   isKilimanjaroPostpaid: boolean;
   operations: OffreService[];
   sargalStatus: string;
+  userConsumations: NewUserConsoModel[];
+  consoActeVoix = 0;
+  consoActeInternet = '0 Ko';
+  consoActeSms = 0;
+  Math = Math;
+  limit = CONSO_POSTPAID_DASHBOARD_ITEMS_LIMIT;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -98,7 +114,8 @@ export class DashboardPostpaidPage implements OnInit {
     private banniereServ: BanniereService,
     private navCtl: NavController,
     private omServ: OrangeMoneyService,
-    private operationService: OperationService
+    private operationService: OperationService,
+    private userConsoService: UserConsoService
   ) {}
 
   ngOnInit() {
@@ -112,6 +129,7 @@ export class DashboardPostpaidPage implements OnInit {
       .getServicesByFormule()
       .pipe(
         map((res) => {
+          res = res.sort((r1, r2) => r1.ordre - r2.ordre);
           this.followAnalyticsService.registerEventFollow(
             'dashboard_postpaid_get_services_success',
             'event',
@@ -168,7 +186,6 @@ export class DashboardPostpaidPage implements OnInit {
       .getOmMsisdn()
       .pipe(
         map((omNumber) => {
-          console.log(omNumber);
           if (omNumber !== 'error') {
             this.dashbordServ.swapOMCard();
           }
@@ -225,71 +242,60 @@ export class DashboardPostpaidPage implements OnInit {
     this.firstName = user.firstName;
   }
 
-  getConsoPostpaid() {
-    this.errorConso = false;
-    this.dashbordServ.getPostpaidUserConsoInfos().subscribe(
-      (res: any) => {
-        this.dataLoaded = true;
-        this.userConsommations = this.computeUserConso(res);
-        this.followAnalyticsService.registerEventFollow(
-          'dashboard_postpaid_get_conso_success',
-          'event',
-          {
-            msisdn: this.userPhoneNumber,
-          }
-        );
-        this.getLastConsoUpdate();
-      },
-      (err) => {
-        this.dataLoaded = true;
-        this.errorConso = true;
-        this.followAnalyticsService.registerEventFollow(
-          'dashboard_postpaid_get_conso_error',
-          'error',
-          {
-            msisdn: this.userPhoneNumber,
-            error: err.status,
-          }
-        );
-      }
-    );
+  isCounterConsoActe(counter: NewUserConsoModel) {
+    return isCounterConsoActe(counter);
   }
 
-  computeUserConso(userconsommations: any) {
-    if (userconsommations) {
-      const totalVoix =
-        userconsommations.iinitalAmount + userconsommations.iusedAmount;
-      let totalData =
-        userconsommations.ivolumeInitialGprs + userconsommations.iusedvolume;
-      this.consumedAmount = userconsommations.iusedAmount;
-      this.consumedDataVolume = formatDataVolume(userconsommations.iusedvolume);
-      const conso = [];
-      const consoVoix = userconsommations.iinitalAmount;
-      const consoInt = userconsommations.ivolumeInitialGprs;
-      const percentConsoVoix = Math.round((consoVoix * 100) / totalVoix);
-      const percentConsoInt = Math.round((consoInt * 100) / totalData);
-      const formatConsoInt = this.passVolumeDisplayPipe.transform(
-        formatDataVolume(consoInt)
-      );
-      totalData = this.passVolumeDisplayPipe.transform(
-        formatDataVolume(totalData)
-      );
-      conso.push({
-        compteur: 'Solde Restant Appels',
-        amount: consoVoix,
-        percent: percentConsoVoix,
-        total: totalVoix,
-        unit: 'F',
-      });
-      conso.push({
-        compteur: 'Solde Restant Internet',
-        amount: formatConsoInt,
-        percent: percentConsoInt,
-        total: totalData,
-        dataFinished: consoInt < 0,
-      });
-      return conso;
-    }
+  getConsoPostpaid() {
+    this.errorConso = false;
+    this.userConsoService
+      .getUserCunsomation()
+      .pipe(
+        tap((userConsommation: NewUserConsoModel[]) => {
+          this.followAnalyticsService.registerEventFollow(
+            'dashboard_postpaid_get_conso_success',
+            'event',
+            {
+              msisdn: this.userPhoneNumber,
+            }
+          );
+          this.userConsumations = userConsommation;
+          const consoActeVoix = this.userConsumations.find(
+              (x) => !!x.name.toLowerCase().match(CONSO_ACTE_VOIX)
+            ),
+            consoActeInternet = this.userConsumations.find(
+              (x) => !!x.name.toLowerCase().match(CONSO_ACTE_INTERNET)
+            ),
+            consoActeSms = this.userConsumations.find(
+              (x) => !!x.name.toLowerCase().match(CONSO_ACTE_SMS)
+            );
+          this.consoActeVoix = consoActeVoix
+            ? consoActeVoix.montantConsommeBrut
+            : 0;
+          this.consoActeInternet = consoActeInternet
+            ? consoActeInternet.montantConsomme
+            : '0 Ko';
+          this.consoActeSms = consoActeSms
+            ? consoActeSms.montantConsommeBrut
+            : 0;
+          this.getLastConsoUpdate();
+          this.dataLoaded = true;
+        }),
+        catchError((err) => {
+          this.dataLoaded = true;
+          this.errorConso = true;
+          this.followAnalyticsService.registerEventFollow(
+            'dashboard_postpaid_get_conso_error',
+            'error',
+            {
+              msisdn: this.userPhoneNumber,
+              error: err.status,
+            }
+          );
+          return throwError(err);
+        })
+      )
+      .subscribe();
   }
 
   logOut() {
@@ -373,14 +379,16 @@ export class DashboardPostpaidPage implements OnInit {
       (resp: any) => {
         ls.set('user', resp);
         if (!resp.tutoViewed) {
-          this.dashbordServ.getWelcomeStatus().subscribe(
-            (res: WelcomeStatusModel) => {
-              if (res.status === 'SUCCESS') {
-                this.showWelcomePopup(res);
-              }
-            },
-            () => {}
-          );
+          this.dashbordServ.getActivePromoBooster().subscribe((res: any) => {
+            this.dashbordServ.getWelcomeStatus(res).subscribe(
+              (res: WelcomeStatusModel) => {
+                if (res.status === 'SUCCESS') {
+                  this.showWelcomePopup(res);
+                }
+              },
+              () => {}
+            );
+          });
         }
       },
       () => {}

@@ -123,7 +123,7 @@
 		</div>
 		<div class="dashboard-block-offres">
 			<div class="dashboard-block-offres-top3">
-				<div (click)="goBuyCredit()" class="dashboard-block-offres-top3-item">
+				<div id="btn-kirene-buy-credit" (click)="goBuyCredit()" class="dashboard-block-offres-top3-item">
 					<div class="item-icon">
 						<img src="/assets/images/recharge-credit-om-unique_kirene.png" alt="credit-mob" />
 					</div>
@@ -142,7 +142,7 @@
 						>
 					</div>
 				</div>
-				<div (click)="goBuyPassInternet()" class="dashboard-block-offres-top3-item">
+				<div id="btn-kirene-buy-pass-internet" (click)="goBuyPassInternet()" class="dashboard-block-offres-top3-item">
 					<div class="item-icon">
 						<img src="/assets/images/achat-pass-internet_kirene.png" alt="pass-internet-mob" />
 					</div>
@@ -159,7 +159,7 @@
 						<span *ngIf="hasPromoBooster?.promoPass  || hasPromoPlanActive?.hasPassInternet">Pass Internet</span>
 					</div>
 				</div>
-				<div (click)="goToIllimixPage()" class="dashboard-block-offres-top3-item">
+				<div id="btn-kirene-buy-pass-illimix" (click)="goToIllimixPage()" class="dashboard-block-offres-top3-item">
 					<div class="item-icon">
 						<img src="/assets/images/wotel-konectel.png" alt="credit-mob.svg" />
 					</div>
@@ -207,6 +207,7 @@
 				<div
 					[ngClass]="{ 'disabled-block': canDoSOS && !canTransferBonus }"
 					(click)="transferCreditOrPass()"
+					id="btn-kirene-transfert-credit-bonus"
 					class="dashboard-block-offres-top3-item"
 				>
 					<div class="item-icon">
@@ -220,6 +221,7 @@
 				<div
 					[ngClass]="{ 'disabled-block': !canDoSOS }"
 					(click)="openSosCreditPage()"
+					id="btn-kirene-sos-credit-pass"
 					class="dashboard-block-offres-top3-item"
 				>
 					<div class="item-icon">
@@ -232,7 +234,7 @@
 						</span>
 					</div>
 				</div>
-				<div (click)="goToTransfertOM()" class="dashboard-block-offres-top3-item">
+				<div id="btn-kirene-transfert-money" (click)="goToTransfertOM()" class="dashboard-block-offres-top3-item">
 					<div class="item-icon">
 						<img src="/assets/images/orange-money_kirene.png" alt="group-6" />
 					</div>

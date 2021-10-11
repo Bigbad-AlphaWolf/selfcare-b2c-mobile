@@ -141,7 +141,10 @@ export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   PAIEMENT_MARCHAND: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
   MERCHANT_PAYMENT: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
   RAPIDO: `${IMAGES_DIRECTORY}ic-orange-money-qr.png`,
-  SARGAL: `${IMAGES_DIRECTORY}transfert-icon.png`
+  SARGAL: `${IMAGES_DIRECTORY}transfert-icon.png`,
+  PASS_WIDO: `${IMAGES_DIRECTORY}icone_wido.png`,
+  PASS_PLAYVOD: `${IMAGES_DIRECTORY}icone_playvod.png`,
+  PASS_YOUSCRIBE: `${IMAGES_DIRECTORY}icone_youScribe.png`
 };
 
 export const TYPE_QUESTION_SATISFACTION_FORM = {
@@ -1276,6 +1279,10 @@ export enum TYPE_ACTION_ON_BANNER {
 }
 
 export const ANNULATION_TRANSFER_DEADLINE = '5 jours';
+export const ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE = '24';
+export const ILLIFLEX_BY_OM_IDENTICAL_ERROR_CODE = '2040';
+export const OM_IDENTIC_TRANSACTION_CODE = 'Erreur-045';
+export const OM_UNKOWN_ERROR_CODE = 'Erreur-019';
 export const TRANSFER_BALANCE_INSUFFICIENT_ERROR = 'Le montant que vous voulez transférer est supérieur à votre solde.';
 export const TRANSFER_OM_BALANCE_NOT_ALLOWED = "Le montant que vous avez saisi n'est pas dans la plage autorisée";
 export const FEES_ERROR = 'Erreur lors de la récupération des frais. Réactualisez';

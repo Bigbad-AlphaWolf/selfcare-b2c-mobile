@@ -95,9 +95,14 @@
         </mat-form-field>
       </div>
       <div class="btn-container">
-        <button class="scb-btn scb-btn-full scb-btn-orange" (click)="goNext()"
+        <button id="btn-validate-amount-transfert" class="scb-btn scb-btn-full scb-btn-orange" (click)="goNext()"
           [disabled]="!setAmountForm?.valid || checkingAmount || error || loadingFees">
           <span>Continuer ({{ totalAmount }} FCFA)</span>
+            <mat-spinner
+              mode="indeterminate"
+              [diameter]="20"
+              *ngIf="checkingAmount"
+            ></mat-spinner>
         </button>
       </div>
     </form>

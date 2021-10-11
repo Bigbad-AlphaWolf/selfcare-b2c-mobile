@@ -149,7 +149,7 @@ export class TransfertHubServicesPage implements OnInit {
         this.options = res.filter((option) => !option.passUsage);
         this.passUsages = res.filter((option) => option.passUsage);
         this.getUserActiveBonPlans();
-        this.getUserActiveBoosterPromo();
+        if (this.purchaseType === 'BUY') this.getUserActiveBoosterPromo();
         this.getFavoritePass();
         this.getUserInfos();
         const followEvent =
@@ -405,11 +405,11 @@ export class TransfertHubServicesPage implements OnInit {
     if (boosterActive)
       switch (opt.code) {
         case OPERATION_TYPE_RECHARGE_CREDIT:
-          return boosterActive.promoRecharge;
+          return !!boosterActive.promoRecharge;
         case OPERATION_TYPE_PASS_ILLIMIX:
-          return boosterActive.promoPassIllimix;
+          return !!boosterActive.promoPassIllimix;
         case OPERATION_TYPE_PASS_INTERNET:
-          return boosterActive.promoPass;
+          return !!boosterActive.promoPass;
         default:
           break;
       }
