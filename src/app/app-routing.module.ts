@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { FORGOT_PWD_PAGE_URL } from 'src/shared';
 import { AuthGuard } from './services/auth-guard/auth.guard';
 import { AuthUpdateGuard } from './services/auth-update-guard/auth-update.guard';
 
@@ -7,6 +8,14 @@ const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   {
     path: 'new-registration',
+    loadChildren: () =>
+      import('./new-registration/new-registration.module').then(
+        (m) => m.NewRegistrationPageModule
+      ),
+    canActivate: [AuthUpdateGuard],
+  },
+  {
+    path: FORGOT_PWD_PAGE_URL,
     loadChildren: () =>
       import('./new-registration/new-registration.module').then(
         (m) => m.NewRegistrationPageModule

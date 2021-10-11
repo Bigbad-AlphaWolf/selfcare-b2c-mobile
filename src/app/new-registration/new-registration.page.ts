@@ -5,10 +5,11 @@ import {
   NgZone,
   OnDestroy,
 } from '@angular/core';
-import { Subscription, timer, Subject, of } from 'rxjs';
+import { Subscription, timer, Subject, of, throwError } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
+  AccountStatus,
   AuthenticationService,
   ConfirmMsisdnModel,
   RegistrationModel,
@@ -33,6 +34,7 @@ import {
   PRO_MOBILE_ERROR_CODE,
   LIGHT_DASHBOARD_EVENT,
   REGISTRATION_PASSWORD_STEP,
+  FORGOT_PWD_PAGE_URL,
 } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { ModalController, NavController } from '@ionic/angular';
@@ -79,16 +81,16 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
       subTitle: 'Je me connecte',
       action: 'login',
     },
-    {
-      title: 'J’ai oublié mon mot de passe',
-      subTitle: 'Je le réinitialise',
-      action: 'password',
-    },
-    {
-      title: 'J’ai besoin d’aide',
-      subTitle: "J'ai des difficultés pour me connecter",
-      action: 'help',
-    },
+    // {
+    //   title: 'J’ai oublié mon mot de passe',
+    //   subTitle: 'Je le réinitialise',
+    //   action: 'password',
+    // },
+    // {
+    //   title: 'J’ai besoin d’aide',
+    //   subTitle: "J'ai des difficultés pour me connecter",
+    //   action: 'help',
+    // },
   ];
   //Temps d'attente pour la recuperation automatique du numero -> 10 secondes
   MSISDN_RECUPERATION_TIMEOUT = MSISDN_RECUPERATION_TIMEOUT;
@@ -97,6 +99,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
   firstCallMsisdn: string;
   isNumberAttachedError: boolean;
   newtworkSubscription: Subscription;
+  isResetPasswordAction: boolean;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -131,6 +134,10 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
+    console.log(this.router.url.match(FORGOT_PWD_PAGE_URL));
+    if (this.router.url.match(FORGOT_PWD_PAGE_URL)) {
+      this.isResetPasswordAction = true;
+    }
     const step = history.state.step;
     if (step === REGISTRATION_PASSWORD_STEP) {
       this.step = 'PASSWORD';
@@ -143,7 +150,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
       'event',
       'clic'
     );
-    this.router.navigate(['/home']);
+    this.navController.navigateRoot(FORGOT_PWD_PAGE_URL);
   }
 
   ngOnInit() {
@@ -232,46 +239,111 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
   }
 
   checkNumber() {
-    const event = history.state.event;
-    if (event === LIGHT_DASHBOARD_EVENT) {
-      this.router.navigate(['dashboard-prepaid-light']);
-      return;
-    }
     this.checkingNumber = true;
     const payload = { msisdn: this.phoneNumber, hmac: this.hmac };
-    this.checkNumberSubscription = this.authServ.checkNumber(payload).subscribe(
-      () => {
-        // Go to registration page
-        this.checkingNumber = false;
-        this.step = 'PASSWORD';
-      },
-      (err: any) => {
-        this.checkingNumber = false;
-
-        if (err.status === 400) {
-          if (err && err.error && err.error.errorKey === 'userRattached') {
-            // this.showErrMessage = true;
-            this.errorMsg = err.error.title;
-            this.isNumberAttachedError = true;
-          } else if (err.errorKey === PRO_MOBILE_ERROR_CODE) {
-            this.errorMsg = err.message;
-            this.isNumberAttachedError = true;
-          } else {
-            // err.error.errorKey === 'userexists'
-            // Go to login page
-            this.goLoginPage();
+    this.checkNumberSubscription = this.authServ
+      .checkNumberAccountStatus(payload)
+      .subscribe(
+        (status) => {
+          // Go to registration page
+          if (this.isResetPasswordAction) {
+            this.step = 'PASSWORD';
+            return;
           }
-        } else if (err.status === 404) {
-          this.errorMsg =
-            'Orange et moi est disponible uniquement pour les numéros Orange et Kirene avec Orange';
-          this.isNumberAttachedError = true;
-        } else {
+          if (status.accountStatus === AccountStatus.FULL) {
+            this.checkingNumber = false;
+            this.router.navigate(['/login']);
+          } else if (status.accountStatus === AccountStatus.LITE) {
+            this.resetPwdLight();
+          }
+          // this.step = 'PASSWORD';
+        },
+        (err: any) => {
+          if (err.status === 400) {
+            this.checkingNumber = false;
+            if (err && err.error && err.error.errorKey === 'userRattached') {
+              // this.showErrMessage = true;
+              this.errorMsg = err.error.title;
+              this.isNumberAttachedError = true;
+            } else if (err.errorKey === PRO_MOBILE_ERROR_CODE) {
+              this.errorMsg = err.message;
+              this.isNumberAttachedError = true;
+            } else {
+              // err.error.errorKey === 'userexists'
+              // Go to login page
+              this.goLoginPage();
+            }
+          } else if (err.status === 404) {
+            this.registerLight();
+          } else {
+            this.checkingNumber = false;
+            this.showErrMessage = true;
+            this.errorMsg =
+              'Oups!!! Une erreur est survenue, veuillez réessayer plus tard. Merci';
+          }
+        }
+      );
+  }
+
+  resetPwdLight() {
+    const payload = {
+      newPassword: 'Motdepasse10',
+      hmac: this.hmac,
+      login: this.phoneNumber,
+    };
+    this.authServ
+      .resetPasswordV2(payload)
+      .pipe(
+        tap((res: any) => {
+          this.redirectDashboardAfterLightLogin(res);
+        }),
+        catchError((err) => {
+          this.checkingNumber = false;
           this.showErrMessage = true;
           this.errorMsg =
             'Oups!!! Une erreur est survenue, veuillez réessayer plus tard. Merci';
-        }
-      }
-    );
+          return throwError(err);
+        })
+      )
+      .subscribe();
+  }
+
+  registerLight() {
+    const userInfo: RegistrationModel = {
+      login: this.phoneNumber,
+      password: 'OrangeEtMoi10',
+      firstName: '',
+      lastName: '',
+      email: null,
+      hmac: this.hmac,
+      clientId: hash53(this.phoneNumber),
+    };
+    this.authServ
+      .registerV3(userInfo)
+      .pipe(
+        tap((res: any) => {
+          this.redirectDashboardAfterLightLogin(res);
+        }),
+        catchError((err) => {
+          this.checkingNumber = false;
+          this.showErrMessage = true;
+          this.errorMsg =
+            'Oups!!! Une erreur est survenue, veuillez réessayer plus tard. Merci';
+          return throwError(err);
+        })
+      )
+      .subscribe();
+  }
+
+  redirectDashboardAfterLightLogin(res) {
+    this.checkingNumber = false;
+    const username =
+      this.phoneNumber && this.phoneNumber.startsWith('221')
+        ? this.phoneNumber.substring(3)
+        : this.phoneNumber;
+    const authData = { access_token: res.access_token };
+    this.authServ.storeAuthenticationData(authData, { username });
+    this.router.navigate(['/']);
   }
 
   changePasswordVisibility(fieldName: string) {
@@ -345,7 +417,8 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
     const confirmPwd = this.formPassword.value.confirmPassword;
     if (pwd === confirmPwd) {
       if (pwd.length > 4) {
-        this.goSuccess();
+        // this.goSuccess();
+        this.resetPassword();
       } else {
         this.showErrMessage = true;
         this.errorMsg = 'le mot de passe doit avoir au minumum 5 caractères';
@@ -354,6 +427,40 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
       this.showErrMessage = true;
       this.errorMsg = 'les mots de passe ne sont pas identiques';
     }
+  }
+
+  resetPassword() {
+    this.creatingAccount = true;
+    const resetPwdPayload = {
+      newPassword: this.formPassword.value.confirmPassword,
+      hmac: this.hmac,
+      login: this.phoneNumber,
+    };
+    this.authServ
+      .resetPassword(resetPwdPayload)
+      .pipe(
+        tap((res) => {
+          this.creatingAccount = false;
+          this.followAnalyticsService.registerEventFollow(
+            'Reset_password_success',
+            'event',
+            this.phoneNumber
+          );
+          this.openSuccessModal();
+        }),
+        catchError((err) => {
+          this.creatingAccount = false;
+          this.followAnalyticsService.registerEventFollow(
+            'Reset_password_failed',
+            'error',
+            { msisdn: this.phoneNumber, status: err.status }
+          );
+          this.showErrMessage = true;
+          this.errorMsg = 'Une erreur est survenue';
+          return throwError(err);
+        })
+      )
+      .subscribe();
   }
 
   openCguDialog() {
@@ -391,7 +498,9 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
         'Forgotten_pwd_from_register',
         'event'
       );
-      this.router.navigate(['/forgotten-password']);
+      if (!this.checkingNumber) {
+        this.step = 'PASSWORD';
+      }
     }
   }
 
@@ -444,9 +553,9 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
       componentProps: { userCredential },
     });
     modal.onDidDismiss().then((response) => {
-      // if (!response.data) {
-      //   this.goLoginPage();
-      // }
+      if (!response?.data) {
+        this.goLoginPage();
+      }
     });
     return await modal.present();
   }
