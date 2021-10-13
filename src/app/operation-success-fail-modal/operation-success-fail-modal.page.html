@@ -234,7 +234,7 @@
         <div class="left-block">Date d'achat</div>
         <div class="right-block scb-text-gray">
           <span class="numero" *ngIf="!isOpenedFromHistory">{{dateAchat}}</span>
-          <span class="numero" *ngIf="isOpenedFromHistory">{{formatDate(historyTransactionItem?.operationDate) | date:'shortDate'}} à {{formatDate(historyTransactionItem?.operationDate) | date:'hh:mm'}}</span>
+          <span class="numero" *ngIf="isOpenedFromHistory">{{formatDate(historyTransactionItem?.operationDate) | date:'dd-MM-yyyy à hh:mm'}}</span>
         </div>
       </div>
     </div>

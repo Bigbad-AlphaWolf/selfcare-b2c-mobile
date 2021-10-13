@@ -9,13 +9,15 @@ import {
   MatInputModule,
   MatSelectModule,
   MatFormFieldModule,
+  MatDialogModule,
 } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, UrlSerializer } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 
 describe('NewPinpadModalPage', () => {
   let component: NewPinpadModalPage;
@@ -32,13 +34,20 @@ describe('NewPinpadModalPage', () => {
           MatInputModule,
           MatSelectModule,
           MatFormFieldModule,
+          MatDialogModule,
           BrowserAnimationsModule,
         ],
         providers: [
+          { provide: ApplicationRoutingService, useValue: {} },
+          {
+            provide: UrlSerializer,
+            useValue: {},
+          },
           { provide: MatDialogRef, useValue: {} },
           { provide: ModalController, useValue: {} },
           { provide: MatDialog, useValue: {} },
           { provide: Router, useValue: {} },
+          { provide: NavController, useValue: {} },
           {
             provide: HttpClient,
             useValue: {

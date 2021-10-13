@@ -1,35 +1,31 @@
 <div class="select-beneficiary-container">
   <div class="title">
-    Choix du bénéficiaire
+    {{!isForTransferBlocking ?'Choix du bénéficiaire' : 'Référence transaction'}}
   </div>
-  <div class="description">
+  <div class="description" *ngIf="!isForTransferBlocking">
     Renseigner le numéro du bénéficiaire
   </div>
   <div class="beneficiary-number">
     <form novalidate autocomplete="false">
       <mat-form-field class="scb-input-row" appearance="outline">
-        <mat-label>N° du bénéficiaire&nbsp;&nbsp;</mat-label>
-        <input
-          #inputTel
-          matInput
-          type="tel"
-          [value]="
+        <mat-label>
+          {{!isForTransferBlocking ? 'N° du bénéficiaire' : 'Saisir le numéro de référence'}}&nbsp;&nbsp;
+        </mat-label>
+        <input #inputTel matInput type="tel" [value]="
             recipientContactInfos
               ? recipientContactInfos
               : otherBeneficiaryNumber
-          "
-          maxlength="20"
-        />
+          " maxlength="20" />
       </mat-form-field>
     </form>
     <!-- <ion-item lines="full">
       <ion-label position="floating">Numéro du bénéficiaire</ion-label>
       <ion-input maxlength="20" #inputTel inputmode="tel" clearInput [value]="recipientContactInfos ? recipientContactInfos : otherBeneficiaryNumber"></ion-input>
     </ion-item> -->
-    <img class="icon" src="/assets/images/address-book.png" alt="" />
-    <span (click)="pickContact()" class="btn-contact scb-text-orange"
-      >Mes contacts</span
-    >
+    <ng-container *ngIf="!isForTransferBlocking">
+      <img class="icon" src="/assets/images/address-book.png" alt="" />
+      <span (click)="pickContact()" class="btn-contact scb-text-orange">Mes contacts</span>
+    </ng-container>
   </div>
   <div *ngIf="hasErrorGetContact" class="error-msg scb-text-red-error">
     {{ errorGetContact }}
@@ -42,31 +38,35 @@
       Récents
     </div>
     <div class="no-recent" *ngIf="!recents.length">{{NO_RECENTS_MSG}}</div>
-    <div
-      matRipple
-      class="oem-item"
-      (click)="validateBeneficiary(recent.msisdn)"
-      *ngFor="let recent of recents"
-    >
-      <div class="logo scb-text-white">
-        {{ recent.name ? (recent.name | acronym) : 'C' }}
-      </div>
-      <div class="labels">
-        <span class="name"> {{ recent.name }}</span>
-        <span class="number scb-text-gray">{{ recent.msisdn | phoneNumberDisplay}}</span>
-      </div>
+    <div matRipple class="oem-item" *ngFor="let recent of recents"
+      (click)="!isForTransferBlocking ? validateBeneficiary(recent.msisdn) : validateBeneficiary(recent)">
+      <ng-container *ngIf="!isForTransferBlocking else recentTransfer">
+        <div class="logo scb-text-white">
+          {{ recent.name ? (recent.name | acronym) : 'C' }}
+        </div>
+        <div class="labels">
+          <span class="name"> {{ recent.name }}</span>
+          <span class="number scb-text-gray">{{ recent.msisdn | phoneNumberDisplay}}</span>
+        </div>
+      </ng-container>
+      <ng-template #recentTransfer>
+        <div class="transaction-item">
+          <img src="/assets/images/ic-orange-money-transactions.png" alt="" class="transfer-ico">
+          <div class="transfer-info-blc">
+            <span class="rec-msisdn">{{recent?.msisdn | phoneNumberDisplay}}</span>
+            <span class="op-ref scb-text-orange">{{recent?.txnid}}</span>
+          </div>
+          <div class="transfer-info-blc">
+            <!-- <span class="rec-msisdn scb-text-orange"></span> -->
+            <span class="op-ref scb-text-gray">{{recent?.date | date : 'dd/MM/yyyy à hh:mm'}}</span>
+          </div>
+        </div>
+      </ng-template>
     </div>
   </div>
   <div class="confirm-btn">
-    <ion-button
-      [disabled]="isProcessing"
-      shape="round"
-      (click)="validateBeneficiary()"
-      class="btn"
-      expand="block"
-      id="btn-validate-beneficiary"
-      >Continuer</ion-button
-    >
+    <ion-button [disabled]="isProcessing || !htmlInput?.nativeElement?.value" shape="round"
+      (click)="validateBeneficiary()" class="btn" expand="block" id="btn-validate-beneficiary">Continuer</ion-button>
     <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
   </div>
 </div>

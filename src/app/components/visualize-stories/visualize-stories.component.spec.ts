@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { UrlSerializer } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { IonicModule } from '@ionic/angular';
+import { SwiperModule } from 'swiper/angular';
 
 import { VisualizeStoriesComponent } from './visualize-stories.component';
 
@@ -14,7 +15,7 @@ describe('VisualizeStoriesComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [VisualizeStoriesComponent],
-        imports: [IonicModule.forRoot()],
+        imports: [IonicModule.forRoot(), SwiperModule],
         providers: [
           {
             provide: UrlSerializer,
