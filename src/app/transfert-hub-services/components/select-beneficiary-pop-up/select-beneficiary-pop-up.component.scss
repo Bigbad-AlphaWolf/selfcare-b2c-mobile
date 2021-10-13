@@ -91,6 +91,33 @@
           line-height: 1.33;
         }
       }
+      .transaction-item {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        padding-left: 35px;
+        width: 100%;
+        .transfer-ico {
+          position: absolute;
+          width: 25px;
+          height: 25px;
+          top: 0;
+          left: 0;
+        }
+        .transfer-info-blc {
+          display: flex;
+          flex-direction: column;
+          .rec-msisdn {
+            font-size: 18px;
+            font-family: 'HelveticaNeueLTStd-Roman';
+            margin-bottom: 5px;
+          }
+          .op-ref {
+            font-size: 12px;
+            font-family: 'HelveticaNeueLTStd-Roman';
+          }
+        }
+      }
     }
   }
   .confirm-btn {

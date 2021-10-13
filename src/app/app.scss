@@ -249,6 +249,10 @@ app-root > div {
   }
 }
 
+ion-header {
+  background-color: $white !important;
+}
+
 body * {
   font-family: HelveticaNeueLTStd-Bd;
   font-weight: normal;
@@ -457,16 +461,16 @@ $bluePopUp: #085ebd;
 .suivi-conso-content {
   &.ios {
     .empty-div-effect {
-      position: fixed !important;
-      bottom: 62px !important;
+      // position: fixed !important;
+      // bottom: 62px !important;
     }
   }
 }
 
 .ios {
   .empty-div-effect {
-    position: fixed !important;
-    bottom: 62px !important;
+    // position: fixed !important;
+    // bottom: 62px !important;
   }
 }
 
