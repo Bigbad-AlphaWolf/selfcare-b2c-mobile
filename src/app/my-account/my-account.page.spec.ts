@@ -1,13 +1,13 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { MyAccountPage } from './my-account.page';
-import { MatDialogRef, MatDialog, MatBottomSheet } from '@angular/material';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { ModalController } from '@ionic/angular';
-import { RouterTestingModule } from '@angular/router/testing';
+import {MyAccountPage} from './my-account.page';
+import {MatDialogRef, MatDialog, MatBottomSheet} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {of} from 'rxjs';
+import {ModalController} from '@ionic/angular';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('MyAccountPage', () => {
   let component: MyAccountPage;
@@ -20,10 +20,10 @@ describe('MyAccountPage', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         imports: [RouterTestingModule],
         providers: [
-          { provide: MatDialogRef, useValue: {} },
-          { provide: MatDialog, useValue: {} },
-          { provide: ModalController, useValue: {} },
-          { provide: MatBottomSheet, useValue: {} },
+          {provide: MatDialogRef, useValue: {}},
+          {provide: MatDialog, useValue: {}},
+          {provide: ModalController, useValue: {}},
+          {provide: MatBottomSheet, useValue: {}},
           {
             provide: HttpClient,
             useValue: {
@@ -32,10 +32,10 @@ describe('MyAccountPage', () => {
               },
               get: () => {
                 return of();
-              },
-            },
-          },
-        ],
+              }
+            }
+          }
+        ]
       }).compileComponents();
     })
   );

@@ -1,14 +1,14 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { CreateSponsorFormComponent } from './create-sponsor-form.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, HttpHandler } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { AngularDelegate, ModalController } from '@ionic/angular';
-import { Contacts } from '@ionic-native/contacts';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material';
-import { OverlayModule } from '@angular/cdk/overlay';
+import {CreateSponsorFormComponent} from './create-sponsor-form.component';
+import {ReactiveFormsModule} from '@angular/forms';
+import {HttpClient, HttpHandler} from '@angular/common/http';
+import {Router} from '@angular/router';
+import {AngularDelegate, ModalController} from '@ionic/angular';
+import {Contacts} from '@ionic-native/contacts';
+import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {OverlayModule} from '@angular/cdk/overlay';
 
 describe('CreateSponsorFormComponent', () => {
   let component: CreateSponsorFormComponent;
@@ -22,14 +22,14 @@ describe('CreateSponsorFormComponent', () => {
         imports: [ReactiveFormsModule, OverlayModule, MatDialogModule],
         providers: [
           AngularDelegate,
-          { provide: HttpClient },
-          { provide: HttpHandler },
-          { provide: Router },
-          { provide: ModalController },
-          { provide: Contacts },
-          { provide: MatDialog },
-          { provide: MatDialogRef, useValue: {} },
-        ],
+          {provide: HttpClient},
+          {provide: HttpHandler},
+          {provide: Router},
+          {provide: ModalController},
+          {provide: Contacts},
+          {provide: MatDialog},
+          {provide: MatDialogRef, useValue: {}}
+        ]
       }).compileComponents();
     })
   );

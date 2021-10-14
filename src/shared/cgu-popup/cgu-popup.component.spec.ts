@@ -1,14 +1,10 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { CguPopupComponent } from './cgu-popup.component';
-import {
-  MatDialogModule,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import {CguPopupComponent} from './cgu-popup.component';
+import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('CguPopupComponent', () => {
   let component: CguPopupComponent;
@@ -23,13 +19,13 @@ describe('CguPopupComponent', () => {
         providers: [
           {
             provide: MatDialogRef,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: MAT_DIALOG_DATA,
-            useValue: {},
-          },
-        ],
+            useValue: {}
+          }
+        ]
       }).compileComponents();
     })
   );

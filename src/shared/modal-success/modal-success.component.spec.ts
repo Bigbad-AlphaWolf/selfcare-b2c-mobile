@@ -1,12 +1,12 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { ModalSuccessComponent } from './modal-success.component';
-import { Router } from '@angular/router';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { Location } from '@angular/common';
-import { RouterTestingModule } from '@angular/router/testing';
+import {ModalSuccessComponent} from './modal-success.component';
+import {Router} from '@angular/router';
+import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
+import {Location} from '@angular/common';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('ModalSuccessComponent', () => {
   let component: ModalSuccessComponent;
@@ -20,25 +20,25 @@ describe('ModalSuccessComponent', () => {
         imports: [RouterTestingModule],
         providers: [
           {
-            provide: Location,
+            provide: Location
           },
           {
             provide: MatDialogRef,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: MAT_DIALOG_DATA,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: DashboardService,
             useValue: {
               getCurrentPhoneNumber: () => {
                 return '';
-              },
-            },
-          },
-        ],
+              }
+            }
+          }
+        ]
       }).compileComponents();
     })
   );

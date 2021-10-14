@@ -1,19 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { SoSModel } from '../services/sos-service';
-import {
-  OPERATION_TYPE_SOS,
-  PAY_WITH_CREDIT,
-  PAYMENT_MOD_NEXT_RECHARGE,
-} from 'src/shared';
-import { MatDialog } from '@angular/material';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { SosService } from '../services/sos-service/sos.service';
+import {Component, OnInit} from '@angular/core';
+import {SoSModel} from '../services/sos-service';
+import {OPERATION_TYPE_SOS, PAY_WITH_CREDIT, PAYMENT_MOD_NEXT_RECHARGE} from 'src/shared';
+import {MatDialog} from '@angular/material/dialog';
+import {ActivatedRoute, Router} from '@angular/router';
+import {DashboardService} from '../services/dashboard-service/dashboard.service';
+import {SosService} from '../services/sos-service/sos.service';
 
 @Component({
   selector: 'app-buy-sos',
   templateUrl: './buy-sos.page.html',
-  styleUrls: ['./buy-sos.page.scss'],
+  styleUrls: ['./buy-sos.page.scss']
 })
 export class BuySosPage implements OnInit {
   title = 'Sos Crédit et Pass';
@@ -50,13 +46,9 @@ export class BuySosPage implements OnInit {
     if (!amount) return 0;
     const route = this.router.url;
     if (!route.match('soscredit') && !route.match('sospass')) return;
-    const typeSos = route.match('soscredit')
-      ? 'SOS CREDIT'
-      : 'SOS Pass Internet';
+    const typeSos = route.match('soscredit') ? 'SOS CREDIT' : 'SOS Pass Internet';
     const allSos = await this.sosService.getListSosByFormule().toPromise();
-    const currentSos = allSos.find(
-      (sos) => sos.montant === amount && sos.typeSOS.nom === typeSos
-    );
+    const currentSos = allSos.find(sos => sos.montant === amount && sos.typeSOS.nom === typeSos);
     console.log(currentSos);
     if (currentSos) {
       this.step = 1;
@@ -90,24 +82,23 @@ export class BuySosPage implements OnInit {
   subscribeSos() {
     this.loading = true;
     const msisdn = this.currentNumber;
-    const typeCredit: 'data' | 'credit' =
-      this.selectedSos.typeSOS.nom === 'SOS CREDIT' ? 'credit' : 'data';
+    const typeCredit: 'data' | 'credit' = this.selectedSos.typeSOS.nom === 'SOS CREDIT' ? 'credit' : 'data';
     const amount = this.selectedSos.montant;
-    const sosPayload = { msisdn, typeCredit, amount };
+    const sosPayload = {msisdn, typeCredit, amount};
     this.sosService.subscribeToSos(sosPayload).subscribe(
-      (res: { message: string; code: string }) => {
+      (res: {message: string; code: string}) => {
         this.loading = false;
         const response_msg = res.message;
         const response_code = res.code;
         if (response_code === '0') {
           const followDetails = {
             amount: `${amount} FCFA`,
-            fees: `${this.selectedSos.frais} FCFA`,
+            fees: `${this.selectedSos.frais} FCFA`
           };
           // FollowAnalytics.logEvent('EmergencyCredit_Success', followDetails);
           this.step = 2;
         } else {
-          const followDetails = { error_code: response_msg };
+          const followDetails = {error_code: response_msg};
           // FollowAnalytics.logError('EmergencyCredit_Error', followDetails);
           this.failed = true;
           this.errorMsg = response_msg;
@@ -116,7 +107,7 @@ export class BuySosPage implements OnInit {
       },
       (err: any) => {
         this.loading = false;
-        const followDetails = { error_code: err.message };
+        const followDetails = {error_code: err.message};
         // FollowAnalytics.logError('EmergencyCredit_Error', followDetails);
         this.failed = true;
         this.step = 2;

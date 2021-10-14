@@ -1,17 +1,13 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { CancelOperationPopupComponent } from './cancel-operation-popup.component';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-  MatDialogModule,
-} from '@angular/material';
-import { Router } from '@angular/router';
-import { Market } from '@ionic-native/market/ngx';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AngularDelegate } from '@ionic/angular';
+import {CancelOperationPopupComponent} from './cancel-operation-popup.component';
+import {MAT_DIALOG_DATA, MatDialogRef, MatDialogModule} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {Market} from '@ionic-native/market/ngx';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {RouterTestingModule} from '@angular/router/testing';
+import {AngularDelegate} from '@ionic/angular';
 
 describe('CancelOperationPopupComponent', () => {
   let component: CancelOperationPopupComponent;
@@ -20,32 +16,27 @@ describe('CancelOperationPopupComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [
-          RouterTestingModule,
-          MatDialogModule,
-          FormsModule,
-          ReactiveFormsModule,
-        ],
+        imports: [RouterTestingModule, MatDialogModule, FormsModule, ReactiveFormsModule],
         declarations: [CancelOperationPopupComponent],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           AngularDelegate,
           {
             provide: MAT_DIALOG_DATA,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: MatDialogRef,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: Router,
-            useValue: {},
+            useValue: {}
           },
           {
-            provide: Market,
-          },
-        ],
+            provide: Market
+          }
+        ]
       }).compileComponents();
     })
   );

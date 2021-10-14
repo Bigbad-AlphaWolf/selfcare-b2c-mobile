@@ -1,14 +1,14 @@
-import { OverlayModule } from '@angular/cdk/overlay';
-import { Location } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogModule } from '@angular/material';
-import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { FormulaireSatisfactionService } from 'src/app/services/formulaire-satisfaction-service/formulaire-satisfaction.service';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {Location} from '@angular/common';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {RouterTestingModule} from '@angular/router/testing';
+import {of} from 'rxjs';
+import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
+import {FormulaireSatisfactionService} from 'src/app/services/formulaire-satisfaction-service/formulaire-satisfaction.service';
 
-import { SatisfactionFormPage } from './satisfaction-form.page';
+import {SatisfactionFormPage} from './satisfaction-form.page';
 
 describe('SatisfactionFormPage', () => {
   let component: SatisfactionFormPage;
@@ -21,10 +21,10 @@ describe('SatisfactionFormPage', () => {
         imports: [RouterTestingModule, OverlayModule, MatDialogModule],
         providers: [
           {
-            provide: Location,
+            provide: Location
           },
           {
-            provide: MatDialog,
+            provide: MatDialog
           },
           {
             provide: FormulaireSatisfactionService,
@@ -34,19 +34,19 @@ describe('SatisfactionFormPage', () => {
               },
               submitSurvey: () => {
                 return of();
-              },
-            },
+              }
+            }
           },
           {
             provide: DashboardService,
             useValue: {
               getCurrentPhoneNumber: () => {
                 return '';
-              },
-            },
-          },
+              }
+            }
+          }
         ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
     })
   );

@@ -1,20 +1,13 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { ChangeSeddoCodeComponent } from './change-seddo-code.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
-import { HttpClient } from '@angular/common/http';
-import {
-  MatDialog,
-  MatSelectModule,
-  MatFormFieldModule,
-  MatOptionModule,
-  MatInputModule,
-  MatDialogModule,
-} from '@angular/material';
-import { of } from 'rxjs';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {ChangeSeddoCodeComponent} from './change-seddo-code.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {PhoneNumberDisplayPipe} from 'src/shared/pipes/phone-number-display.pipe';
+import {HttpClient} from '@angular/common/http';
+import {MatDialog, MatSelectModule, MatFormFieldModule, MatOptionModule, MatInputModule, MatDialogModule} from '@angular/material/dialog';
+import {of} from 'rxjs';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 describe('ChangeSeddoCodeComponent', () => {
   let component: ChangeSeddoCodeComponent;
@@ -33,7 +26,7 @@ describe('ChangeSeddoCodeComponent', () => {
           MatOptionModule,
           MatInputModule,
           BrowserAnimationsModule,
-          MatDialogModule,
+          MatDialogModule
         ],
         providers: [
           {
@@ -41,11 +34,11 @@ describe('ChangeSeddoCodeComponent', () => {
             useValue: {
               get: () => {
                 return of();
-              },
-            },
+              }
+            }
           },
-          { provide: MatDialog },
-        ],
+          {provide: MatDialog}
+        ]
       }).compileComponents();
     })
   );

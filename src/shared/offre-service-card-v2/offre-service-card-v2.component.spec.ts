@@ -1,12 +1,12 @@
-import { HttpClientModule } from '@angular/common/http';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UrlSerializer } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
-import { HTTP } from '@ionic-native/http/ngx';
-import { OffreServiceCardV2Component } from './offre-service-card-v2.component';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { MatBottomSheet, MatDialog, MatDialogModule } from '@angular/material';
-import { OverlayModule } from '@angular/cdk/overlay';
+import {HttpClientModule} from '@angular/common/http';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {UrlSerializer} from '@angular/router';
+import {IonicModule} from '@ionic/angular';
+import {HTTP} from '@ionic-native/http/ngx';
+import {OffreServiceCardV2Component} from './offre-service-card-v2.component';
+import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
+import {MatBottomSheet, MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {OverlayModule} from '@angular/cdk/overlay';
 
 describe('OffreServiceCardV2Component', () => {
   let component: OffreServiceCardV2Component;
@@ -16,31 +16,26 @@ describe('OffreServiceCardV2Component', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [OffreServiceCardV2Component],
-        imports: [
-          IonicModule.forRoot(),
-          HttpClientModule,
-          OverlayModule,
-          MatDialogModule,
-        ],
+        imports: [IonicModule.forRoot(), HttpClientModule, OverlayModule, MatDialogModule],
         providers: [
           {
             provide: UrlSerializer,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: HTTP,
-            useValue: {},
+            useValue: {}
           },
           {
-            provide: InAppBrowser,
+            provide: InAppBrowser
           },
           {
-            provide: MatBottomSheet,
+            provide: MatBottomSheet
           },
           {
-            provide: MatDialog,
-          },
-        ],
+            provide: MatDialog
+          }
+        ]
       }).compileComponents();
 
       fixture = TestBed.createComponent(OffreServiceCardV2Component);
