@@ -40,6 +40,7 @@ export class NewAssistanceHubV2Page implements OnInit {
   checkingStatus: boolean;
   userOMStatus: OMCustomerStatusModel;
   isIos: boolean;
+  slideOpts = { slidesPerView: 2.4, spaceBetween: 15 };
 
   constructor(
     private operationService: OperationService,

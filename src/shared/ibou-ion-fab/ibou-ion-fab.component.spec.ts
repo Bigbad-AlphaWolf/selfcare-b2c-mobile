@@ -1,4 +1,5 @@
 import { Location } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -18,6 +19,10 @@ describe('IbouIonFabComponent', () => {
         declarations: [IbouIonFabComponent],
         imports: [RouterTestingModule],
         providers: [
+          {
+            provide: HttpClient,
+            useValue: {},
+          },
           {
             provide: Location,
           },
