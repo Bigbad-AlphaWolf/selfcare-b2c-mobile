@@ -4,7 +4,7 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {OperationValidationComponent} from './operation-validation.component';
 import {PhoneNumberDisplayPipe} from '../pipes/phone-number-display.pipe';
 import {ReactiveFormsModule, FormsModule} from '@angular/forms';
-import {MatSlideToggle, MatSlideToggleModule, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {OrangeMoneyService} from 'src/app/services/orange-money-service/orange-money.service';
 import {of} from 'rxjs';
 import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';

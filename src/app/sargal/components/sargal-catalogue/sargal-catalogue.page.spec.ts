@@ -6,7 +6,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
 import {FormatCurrencyPipe} from 'src/shared/pipes/format-currency.pipe';
-import {MatMenuModule} from '@angular/material/dialog';
+import {MatMenuModule} from '@angular/material/menu';
 
 describe('SargalCataloguePage', () => {
   let component: SargalCataloguePage;

@@ -1,6 +1,7 @@
 import {OverlayModule} from '@angular/cdk/overlay';
 import {TestBed} from '@angular/core/testing';
-import {MatBottomSheet, MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AngularDelegate, ModalController} from '@ionic/angular';
 import {of} from 'rxjs';

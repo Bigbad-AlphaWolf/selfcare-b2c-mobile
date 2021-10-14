@@ -2,7 +2,8 @@ import {Location} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
-import {MatBottomSheet, MatDialog} from '@angular/material/dialog';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {MatDialog} from '@angular/material/dialog';
 import {UrlSerializer} from '@angular/router';
 import {ModalController} from '@ionic/angular';
 

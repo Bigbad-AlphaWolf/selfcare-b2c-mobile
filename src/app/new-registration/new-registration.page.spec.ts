@@ -3,7 +3,7 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {NewRegistrationPage} from './new-registration.page';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatInputModule, MatSelectModule, MatFormFieldModule, MatDialogRef, MatDialog} from '@angular/material/dialog';
+import {MatDialogRef, MatDialog} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ModalController} from '@ionic/angular';
 import {Router} from '@angular/router';
@@ -14,6 +14,7 @@ import {Location} from '@angular/common';
 import {Uid} from '@ionic-native/uid/ngx';
 import {Network} from '@ionic-native/network/ngx';
 import {CodeFormatPipe} from '../pipes/code-format/code-format.pipe';
+import {MaterialComponentsModule} from '../material-components/material-components.module';
 
 describe('NewRegistrationPage', () => {
   let component: NewRegistrationPage;
@@ -24,15 +25,7 @@ describe('NewRegistrationPage', () => {
       TestBed.configureTestingModule({
         declarations: [NewRegistrationPage, CodeFormatPipe],
         schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-        imports: [
-          FormsModule,
-          ReactiveFormsModule,
-          MatInputModule,
-          MatSelectModule,
-          MatFormFieldModule,
-          BrowserAnimationsModule,
-          RouterTestingModule
-        ],
+        imports: [FormsModule, ReactiveFormsModule, MaterialComponentsModule, BrowserAnimationsModule, RouterTestingModule],
         providers: [
           {provide: MatDialogRef, useValue: {}},
           {provide: ModalController, useValue: {}},

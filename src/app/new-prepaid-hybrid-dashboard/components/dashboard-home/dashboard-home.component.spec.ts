@@ -1,6 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import {MatBottomSheet, MatDialog} from '@angular/material/dialog';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {MatDialog} from '@angular/material/dialog';
 import {RouterTestingModule} from '@angular/router/testing';
 import {IonicModule} from '@ionic/angular';
 import {of} from 'rxjs';

@@ -2,12 +2,13 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {MyAccountPage} from './my-account.page';
-import {MatDialogRef, MatDialog, MatBottomSheet} from '@angular/material/dialog';
+import {MatDialogRef, MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
 import {ModalController} from '@ionic/angular';
 import {RouterTestingModule} from '@angular/router/testing';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
 
 describe('MyAccountPage', () => {
   let component: MyAccountPage;

@@ -9,7 +9,7 @@ import {DashboardService} from 'src/app/services/dashboard-service/dashboard.ser
 import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
 import {of} from 'rxjs';
 import {MaterialComponentsModule} from 'src/app/material-components/material-components.module';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 describe('SelectRecipientComponent', () => {
   let component: SelectRecipientComponent;
@@ -46,6 +46,10 @@ describe('SelectRecipientComponent', () => {
           },
           {
             provide: MatDialogRef,
+            useValue: {}
+          },
+          {
+            provide: MatDialog,
             useValue: {}
           },
           {

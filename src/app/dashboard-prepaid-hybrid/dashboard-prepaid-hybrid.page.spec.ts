@@ -5,7 +5,7 @@ import {DashboardPrepaidHybridPage} from './dashboard-prepaid-hybrid.page';
 import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
 import {Router, UrlSerializer} from '@angular/router';
-import {MatBottomSheet, MatDialog} from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {PassVolumeDisplayPipe} from 'src/shared/pipes/pass-volume-display.pipe';
 import {FormatBillNumPipe} from 'src/shared/pipes/format-bill-num.pipe';
 import {FormatCurrencyPipe} from 'src/shared/pipes/format-currency.pipe';
@@ -18,6 +18,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {AppVersion} from '@ionic-native/app-version/ngx';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {Overlay} from '@angular/cdk/overlay';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
 
 describe('DashboardPrepaidHybridPage', () => {
   let component: DashboardPrepaidHybridPage;

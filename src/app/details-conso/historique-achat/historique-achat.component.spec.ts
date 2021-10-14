@@ -2,11 +2,11 @@ import {CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {HistoriqueAchatComponent} from './historique-achat.component';
-import {MatMenuModule} from '@angular/material/dialog';
 import {AngularDelegate, ModalController} from '@ionic/angular';
 import {OrangeMoneyService} from 'src/app/services/orange-money-service/orange-money.service';
 import {of} from 'rxjs';
 import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
+import {MatMenuModule} from '@angular/material/menu';
 
 describe('HistoriqueAchatComponent', () => {
   let component: HistoriqueAchatComponent;

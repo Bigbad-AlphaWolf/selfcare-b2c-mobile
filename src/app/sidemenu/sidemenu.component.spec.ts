@@ -5,7 +5,7 @@ import {SidemenuComponent} from './sidemenu.component';
 import {DashboardService} from '../services/dashboard-service/dashboard.service';
 import {of} from 'rxjs';
 import {AuthenticationService} from '../services/authentication-service/authentication.service';
-import {MatBottomSheet, MatDialog} from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {AccountService} from '../services/account-service/account.service';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {PhoneNumberDisplayPipe} from 'src/shared/pipes/phone-number-display.pipe';
@@ -14,6 +14,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {AppVersion} from '@ionic-native/app-version/ngx';
 import {SocialSharing} from '@ionic-native/social-sharing/ngx';
 import {BottomSheetService} from '../services/bottom-sheet/bottom-sheet.service';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
 
 describe('SidemenuComponent', () => {
   let component: SidemenuComponent;

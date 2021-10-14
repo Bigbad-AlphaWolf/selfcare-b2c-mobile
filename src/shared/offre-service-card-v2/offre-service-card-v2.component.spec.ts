@@ -5,8 +5,9 @@ import {IonicModule} from '@ionic/angular';
 import {HTTP} from '@ionic-native/http/ngx';
 import {OffreServiceCardV2Component} from './offre-service-card-v2.component';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
-import {MatBottomSheet, MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {OverlayModule} from '@angular/cdk/overlay';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
 
 describe('OffreServiceCardV2Component', () => {
   let component: OffreServiceCardV2Component;
