@@ -10,6 +10,7 @@ import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.pa
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
+import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import {
   FIND_AGENCE_EXTERNAL_URL,
   CHECK_ELIGIBILITY_EXTERNAL_URL,
@@ -85,6 +86,9 @@ export class ActionItemComponent implements OnInit {
       case 'KIOSK_LOCATOR':
         this.openKioskLocatorModal();
         break;
+      case 'BLOCK_TRANSFER':
+        this.openBlockTransferModal();
+        break;
       default:
         break;
     }
@@ -97,6 +101,21 @@ export class ActionItemComponent implements OnInit {
     );
     const modal = await this.modalController.create({
       component: KioskLocatorPopupComponent,
+      cssClass: 'select-recipient-modal',
+    });
+    return await modal.present();
+  }
+
+  async openBlockTransferModal() {
+    this.followAnalyticsService.registerEventFollow(
+      'block_transfer_clic',
+      'event'
+    );
+    const modal = await this.modalController.create({
+      component: SelectBeneficiaryPopUpComponent,
+      componentProps: {
+        isForTransferBlocking: true,
+      },
       cssClass: 'select-recipient-modal',
     });
     return await modal.present();

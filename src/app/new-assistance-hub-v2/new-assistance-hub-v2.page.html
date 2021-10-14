@@ -26,7 +26,11 @@
         </div>
         <div class="acts">
           <ion-spinner *ngIf="loadingHelpItems" name="crescent"></ion-spinner>
-          <app-action-item [action]="act" *ngFor="let act of listActes?.slice(0,3)"></app-action-item>
+          <ion-slides [options]="slideOpts">
+            <ion-slide *ngFor="let act of listActes?.slice(0,3)">
+              <app-action-item [action]="act"></app-action-item>
+            </ion-slide>
+          </ion-slides>
         </div>
       </div>
       <div class="questions-block" *ngIf="listFaqs && listFaqs.length">
@@ -52,4 +56,4 @@
     </ion-slide>
   </ion-slides>
 </ion-content>
-<div class="empty-div-effect"></div>
+<div class="empty-div-effect" [ngClass]="{'is-for-ios': isIos}"></div>
