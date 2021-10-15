@@ -1,0 +1,20 @@
+<div class="om-status-modal-page">
+  <div class="title">Vérification statut OM</div>
+  <ng-container *ngIf="checkingStatus else statusContent">
+    <div class="spinner-block">
+      <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
+    </div>
+  </ng-container>
+  <ng-template #statusContent>
+    <div class="modal-content">
+      <div class="description scb-text-gray">
+        {{getStatusText()}}
+      </div>
+      <div class="btn-container" *ngIf="isButtonShown()">
+        <button class="scb-btn scb-btn-orange scb-btn-full" (click)="continue()" [disabled]="!isButtonEnabled()">
+          {{getButtonText()}}
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</div>

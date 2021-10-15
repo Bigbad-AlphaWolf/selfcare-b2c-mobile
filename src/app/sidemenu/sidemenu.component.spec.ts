@@ -14,6 +14,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
+import { AngularDelegate, ModalController } from '@ionic/angular';
 
 describe('SidemenuComponent', () => {
   let component: SidemenuComponent;
@@ -28,6 +29,12 @@ describe('SidemenuComponent', () => {
         providers: [
           {
             provide: MatDialog,
+          },
+          {
+            provide: AngularDelegate,
+          },
+          {
+            provide: ModalController,
           },
           {
             provide: InAppBrowser,
