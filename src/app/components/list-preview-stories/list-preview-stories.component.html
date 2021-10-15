@@ -1,7 +1,7 @@
 <div *ngIf="storiesByCategory?.length" class="list-preview-stories">
 	<div (click)="presentModal(storyCategorized, i)" *ngFor="let storyCategorized of storiesByCategory; let i=index" class="preview-story">
 		<div class="mask" [ngClass]=" { 'read': storyCategorized?.readAll } ">
-			<img src="assets/images/onboarding4.png" alt="">
+			<img src="assets/images/04-boutons-01-illustrations-21-ibou-assistance.png" alt="">
 		</div>
 		<div class="title">
 			{{ storyCategorized?.categorie?.libelle }}
