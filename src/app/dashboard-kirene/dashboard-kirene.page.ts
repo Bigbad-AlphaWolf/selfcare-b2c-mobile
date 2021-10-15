@@ -14,7 +14,10 @@ import {
   WelcomeStatusModel,
   SubscriptionModel,
   getBanniereTitle,
-  getBanniereDescription
+  getBanniereDescription,
+  OPERATION_TYPE_PASS_INTERNET,
+  OPERATION_TYPE_PASS_ILLIMIX,
+  OPERATION_TYPE_RECHARGE_CREDIT
 } from 'src/shared';
 import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
 import {
@@ -34,6 +37,9 @@ import {map} from 'rxjs/operators';
 import {SelectBeneficiaryPopUpComponent} from '../transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import {ModalController} from '@ionic/angular';
 import {ApplicationRoutingService} from '../services/application-routing/application-routing.service';
+import {BottomSheetService} from '../services/bottom-sheet/bottom-sheet.service';
+import {NumberSelectionOption} from '../models/enums/number-selection-option.enum';
+import {CreditPassAmountPage} from '../pages/credit-pass-amount/credit-pass-amount.page';
 const ls = new SecureLS({encodingType: 'aes'});
 @Component({
   selector: 'app-dashboard-kirene',
@@ -94,7 +100,8 @@ export class DashboardKirenePage implements OnInit {
     private offerPlanServ: OfferPlansService,
     private omServ: OrangeMoneyService,
     private modalController: ModalController,
-    private appRouting: ApplicationRoutingService
+    private appRouting: ApplicationRoutingService,
+    private bsService: BottomSheetService
   ) {}
 
   ngOnInit() {
@@ -315,7 +322,8 @@ export class DashboardKirenePage implements OnInit {
   }
 
   goToIllimixPage() {
-    this.router.navigate(['/buy-pass-illimix']);
+    this.followsAnalytics.registerEventFollow('Achat_Mixel_from_dashboard', 'event', 'clicked');
+    this.openModalPassNumberSelection(OPERATION_TYPE_PASS_ILLIMIX, 'list-pass');
   }
 
   transferCreditOrPass() {
@@ -346,13 +354,17 @@ export class DashboardKirenePage implements OnInit {
   }
 
   goBuyCredit() {
-    this.router.navigate(['/buy-credit']);
+    this.openModalPassNumberSelection(OPERATION_TYPE_RECHARGE_CREDIT, CreditPassAmountPage.PATH);
     this.followsAnalytics.registerEventFollow('Recharge_dashboard', 'event', 'clicked');
   }
 
   goBuyPassInternet() {
     this.followsAnalytics.registerEventFollow('Pass_internet_dashboard', 'event', 'clicked');
-    this.router.navigate(['/buy-pass-internet']);
+    this.openModalPassNumberSelection(OPERATION_TYPE_PASS_INTERNET, 'list-pass');
+  }
+
+  openModalPassNumberSelection(operation: string, routePath: string) {
+    this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, operation, routePath, false);
   }
 
   onError(input: {el: HTMLElement; display: boolean}[]) {
