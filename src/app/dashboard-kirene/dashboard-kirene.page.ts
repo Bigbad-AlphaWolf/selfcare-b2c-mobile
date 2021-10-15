@@ -27,7 +27,7 @@ import {
   SARGAL_UNSUBSCRIPTION_ONGOING,
   PromoBoosterActive
 } from '../dashboard';
-import {MatDialog} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
 import {WelcomePopupComponent} from 'src/shared/welcome-popup/welcome-popup.component';
 import {AssistanceService} from '../services/assistance.service';
 import {OfferPlansService} from '../services/offer-plans-service/offer-plans.service';

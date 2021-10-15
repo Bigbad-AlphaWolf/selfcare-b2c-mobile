@@ -1,14 +1,15 @@
-import { Location } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatBottomSheet, MatDialog } from '@angular/material';
-import { UrlSerializer } from '@angular/router';
-import { HTTP } from '@ionic-native/http/ngx';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { ModalController } from '@ionic/angular';
+import {Location} from '@angular/common';
+import {HttpClient} from '@angular/common/http';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {MatDialog} from '@angular/material/dialog';
+import {UrlSerializer} from '@angular/router';
+import {HTTP} from '@ionic-native/http/ngx';
+import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
+import {ModalController} from '@ionic/angular';
 
-import { OffreServiceCardComponent } from './offre-service-card.component';
+import {OffreServiceCardComponent} from './offre-service-card.component';
 
 describe('OffreServiceCardComponent', () => {
   let component: OffreServiceCardComponent;
@@ -20,39 +21,39 @@ describe('OffreServiceCardComponent', () => {
         providers: [
           {
             provide: Location,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: MatDialog,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: HttpClient,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: ModalController,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: MatBottomSheet,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: InAppBrowser,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: HTTP,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: UrlSerializer,
-            useValue: {},
-          },
+            useValue: {}
+          }
         ],
         declarations: [OffreServiceCardComponent],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
     })
   );

@@ -1,27 +1,27 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { LoadingController, NavController } from '@ionic/angular';
-import { OperationExtras } from '../models/operation-extras.model';
-import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
-import { OM_LABEL_SERVICES } from '../utils/bills.util';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {NavigationExtras, ActivatedRoute} from '@angular/router';
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {LoadingController, NavController} from '@ionic/angular';
+import {OperationExtras} from '../models/operation-extras.model';
+import {OrangeMoneyService} from '../services/orange-money-service/orange-money.service';
+import {OM_LABEL_SERVICES} from '../utils/bills.util';
 import {
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
   TRANSFER_BALANCE_INSUFFICIENT_ERROR,
   TRANSFER_OM_BALANCE_NOT_ALLOWED,
   REGEX_IS_DIGIT,
-  FEES_ERROR,
+  FEES_ERROR
 } from '../../../src/shared';
-import { FeeModel } from '../services/orange-money-service';
-import { FeesService } from '../services/fees/fees.service';
-import { catchError, switchMap, tap } from 'rxjs/operators';
-import { from, of } from 'rxjs';
+import {FeeModel} from '../services/orange-money-service';
+import {FeesService} from '../services/fees/fees.service';
+import {catchError, switchMap, tap} from 'rxjs/operators';
+import {from, of} from 'rxjs';
 
 @Component({
   selector: 'app-transfer-set-amount',
   templateUrl: './transfer-set-amount.page.html',
-  styleUrls: ['./transfer-set-amount.page.scss'],
+  styleUrls: ['./transfer-set-amount.page.scss']
 })
 export class TransferSetAmountPage implements OnInit {
   static ROUTE_PATH: string = '/purchase-set-amount';
@@ -49,11 +49,11 @@ export class TransferSetAmountPage implements OnInit {
   } = {
     effective_fees: 0,
     old_fees: 0,
-    cashout_fees: 0,
+    cashout_fees: 0
   };
-  transferFeesArray: { retrait: FeeModel[]; tac: FeeModel[] } = {
+  transferFeesArray: {retrait: FeeModel[]; tac: FeeModel[]} = {
     tac: [],
-    retrait: [],
+    retrait: []
   };
 
   constructor(
@@ -82,7 +82,7 @@ export class TransferSetAmountPage implements OnInit {
       this.recipientLastname = this.purchasePayload.recipientLastname;
       this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE)
         .pipe(
-          switchMap((res) => {
+          switchMap(res => {
             return this.getOMTransferFees(OM_LABEL_SERVICES.TAF);
           })
         )
@@ -109,18 +109,12 @@ export class TransferSetAmountPage implements OnInit {
       this.purchasePayload = {
         recipientMsisdn: msisdn,
         recipientFirstname: '',
-        recipientLastname: '',
+        recipientLastname: ''
       };
-      const msisdnHasOM = await this.omService
-        .checkUserHasAccount(msisdn)
-        .toPromise();
-      this.purchaseType = msisdnHasOM
-        ? OPERATION_TRANSFER_OM
-        : OPERATION_TRANSFER_OM_WITH_CODE;
+      const msisdnHasOM = await this.omService.checkUserHasAccount(msisdn).toPromise();
+      this.purchaseType = msisdnHasOM ? OPERATION_TRANSFER_OM : OPERATION_TRANSFER_OM_WITH_CODE;
       this.userHasNoOmAccount = !msisdnHasOM;
-      this.userHasNoOmAccount
-        ? this.initTransferWithCodeForm()
-        : this.initForm(1);
+      this.userHasNoOmAccount ? this.initTransferWithCodeForm() : this.initForm(1);
       this.ref.detectChanges();
       return 1;
     }
@@ -130,28 +124,14 @@ export class TransferSetAmountPage implements OnInit {
   initTransferWithCodeForm(initialValue?: number) {
     this.setAmountForm = this.fb.group({
       amount: [initialValue, [Validators.required, Validators.min(1)]],
-      recipientFirstname: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.pattern('[a-zA-Z ]*'),
-        ],
-      ],
-      recipientLastname: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(2),
-          Validators.pattern('[a-zA-Z ]*'),
-        ],
-      ],
+      recipientFirstname: ['', [Validators.required, Validators.minLength(3), Validators.pattern('[a-zA-Z ]*')]],
+      recipientLastname: ['', [Validators.required, Validators.minLength(2), Validators.pattern('[a-zA-Z ]*')]]
     });
   }
 
   initForm(minValue: number, initialValue?: number) {
     this.setAmountForm = this.fb.group({
-      amount: [initialValue, [Validators.required, Validators.min(minValue)]],
+      amount: [initialValue, [Validators.required, Validators.min(minValue)]]
     });
   }
 
@@ -164,10 +144,8 @@ export class TransferSetAmountPage implements OnInit {
     this.purchasePayload.sending_fees = this.sending_fees_Info.effective_fees;
     this.purchasePayload.sending_fees_Info = this.sending_fees_Info;
     if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
-      this.purchasePayload.recipientFirstname =
-        this.setAmountForm.value['recipientFirstname'];
-      this.purchasePayload.recipientLastname =
-        this.setAmountForm.value['recipientLastname'];
+      this.purchasePayload.recipientFirstname = this.setAmountForm.value['recipientFirstname'];
+      this.purchasePayload.recipientLastname = this.setAmountForm.value['recipientLastname'];
     }
     this.checkOMBalanceSuffiency(this.totalAmount);
   }
@@ -175,7 +153,7 @@ export class TransferSetAmountPage implements OnInit {
   checkOMBalanceSuffiency(amount) {
     this.checkingAmount = true;
     this.omService.checkBalanceSufficiency(amount).subscribe(
-      (hasEnoughBalance) => {
+      hasEnoughBalance => {
         this.checkingAmount = false;
         if (hasEnoughBalance) {
           this.redirectRecapPage(this.purchasePayload);
@@ -183,7 +161,7 @@ export class TransferSetAmountPage implements OnInit {
           this.error = TRANSFER_BALANCE_INSUFFICIENT_ERROR;
         }
       },
-      (err) => {
+      err => {
         this.checkingAmount = false;
         this.redirectRecapPage(this.purchasePayload);
       }
@@ -191,29 +169,27 @@ export class TransferSetAmountPage implements OnInit {
   }
 
   redirectRecapPage(payload: any) {
-    const navExtras: NavigationExtras = { state: payload };
+    const navExtras: NavigationExtras = {state: payload};
     this.navController.navigateForward(['/operation-recap'], navExtras);
   }
 
   getOMTransferFees(om_service: string) {
     this.hasError = false;
     this.loadingFees = true;
-    return this.feeService
-      .getFeesByOMService(om_service, this.purchasePayload.recipientMsisdn)
-      .pipe(
-        tap((fees: FeeModel[]) => {
-          this.loadingFees = false;
-          this.transferFeesArray[om_service] = fees;
-          if (!fees.length) {
-            this.hasError = true;
-          }
-        }),
-        catchError((err: any) => {
+    return this.feeService.getFeesByOMService(om_service, this.purchasePayload.recipientMsisdn).pipe(
+      tap((fees: FeeModel[]) => {
+        this.loadingFees = false;
+        this.transferFeesArray[om_service] = fees;
+        if (!fees.length) {
           this.hasError = true;
-          this.loadingFees = false;
-          return of(err);
-        })
-      );
+        }
+      }),
+      catchError((err: any) => {
+        this.hasError = true;
+        this.loadingFees = false;
+        return of(err);
+      })
+    );
   }
 
   toggleTransferWithCode(event, amountInputValue) {
@@ -227,20 +203,16 @@ export class TransferSetAmountPage implements OnInit {
       this.purchaseType = OPERATION_TRANSFER_OM;
     }
     this.getCurrentFee(amount);
-    this.onAmountChanged({ target: { value: amount } });
+    this.onAmountChanged({target: {value: amount}});
   }
 
   handleFees(event, amountInputValue) {
     if (this.purchaseType === OPERATION_TRANSFER_OM) {
       const amount = +amountInputValue;
-      this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(
-        this.transferFeesArray[OM_LABEL_SERVICES.TAF],
-        amount
-      );
+      this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(this.transferFeesArray[OM_LABEL_SERVICES.TAF], amount);
       this.includeFees = event.detail.checked;
       this.includeFees
-        ? (this.totalAmount =
-            amount + this.fee + this.sending_fees_Info.effective_fees)
+        ? (this.totalAmount = amount + this.fee + this.sending_fees_Info.effective_fees)
         : (this.totalAmount = amount + this.sending_fees_Info.effective_fees);
     }
   }
@@ -248,10 +220,7 @@ export class TransferSetAmountPage implements OnInit {
   getCurrentFee(amount) {
     this.error = null;
     if (amount && this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
-      const feeInfo = this.feeService.extractFees(
-        this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE],
-        amount
-      );
+      const feeInfo = this.feeService.extractFees(this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE], amount);
       if (!feeInfo.effective_fees) {
         this.error = TRANSFER_OM_BALANCE_NOT_ALLOWED;
         return;
@@ -259,10 +228,7 @@ export class TransferSetAmountPage implements OnInit {
       this.fee = feeInfo.effective_fees;
     }
     if (amount && this.purchaseType === OPERATION_TRANSFER_OM) {
-      this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(
-        this.transferFeesArray[OM_LABEL_SERVICES.TAF],
-        amount
-      );
+      this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(this.transferFeesArray[OM_LABEL_SERVICES.TAF], amount);
       if (!this.sending_fees_Info.cashout_fees) {
         this.error = TRANSFER_OM_BALANCE_NOT_ALLOWED;
         return;
@@ -277,10 +243,7 @@ export class TransferSetAmountPage implements OnInit {
     this.updateInput(event);
     this.error = null;
     if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
-      const fee = this.feeService.extractFees(
-        this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE],
-        amount
-      );
+      const fee = this.feeService.extractFees(this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE], amount);
       if (fee.effective_fees === null) {
         this.error = TRANSFER_OM_BALANCE_NOT_ALLOWED;
         return;
@@ -289,21 +252,16 @@ export class TransferSetAmountPage implements OnInit {
       this.totalAmount = +amount + this.fee;
     }
     if (this.purchaseType === OPERATION_TRANSFER_OM) {
-      this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(
-        this.transferFeesArray[OM_LABEL_SERVICES.TAF],
-        amount
-      );
+      this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(this.transferFeesArray[OM_LABEL_SERVICES.TAF], amount);
 
       if (this.sending_fees_Info.effective_fees === null) {
-        this.error =
-          "Le montant que vous avez saisi n'est pas dans la plage autorisée";
+        this.error = "Le montant que vous avez saisi n'est pas dans la plage autorisée";
         return;
       }
       this.fee = this.sending_fees_Info.cashout_fees;
 
       this.includeFees
-        ? (this.totalAmount =
-            +amount + this.fee + this.sending_fees_Info.effective_fees)
+        ? (this.totalAmount = +amount + this.fee + this.sending_fees_Info.effective_fees)
         : (this.totalAmount = +amount + this.sending_fees_Info.effective_fees);
     }
   }

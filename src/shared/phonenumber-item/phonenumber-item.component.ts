@@ -1,14 +1,5 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  Output,
-  EventEmitter,
-  Input,
-  SimpleChanges,
-  OnChanges
-} from '@angular/core';
-import { MatCheckbox } from '@angular/material';
+import {Component, OnInit, ViewChild, Output, EventEmitter, Input, SimpleChanges, OnChanges} from '@angular/core';
+import {MatCheckbox} from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-phonenumber-item',
@@ -21,7 +12,7 @@ export class PhonenumberItemComponent implements OnInit, OnChanges {
   @Input() phoneNumber = '';
   @Input() selected = false;
   number = '';
-  profile: { name: string; icon: string };
+  profile: {name: string; icon: string};
   @Input() selectable = false;
   @Input() simple = true;
   iconBaseUrl = '/assets/images/';
@@ -56,10 +47,7 @@ export class PhonenumberItemComponent implements OnInit, OnChanges {
     if (changes.phoneNumber) {
       const thePhoneNumber = changes.phoneNumber.currentValue;
       this.number = thePhoneNumber.msisdn;
-      if (
-        thePhoneNumber.profil === 'HYBRID' ||
-        thePhoneNumber.profil === 'ND'
-      ) {
+      if (thePhoneNumber.profil === 'HYBRID' || thePhoneNumber.profil === 'ND') {
         this.profile = {
           name: thePhoneNumber.formule,
           icon: `${this.iconBaseUrl}jamono-initial.svg`

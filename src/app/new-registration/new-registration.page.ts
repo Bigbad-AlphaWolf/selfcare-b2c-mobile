@@ -14,7 +14,7 @@ import {
   ConfirmMsisdnModel,
   RegistrationModel,
 } from '../services/authentication-service/authentication.service';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import * as SecureLS from 'secure-ls';
 import { CguPopupComponent } from 'src/shared/cgu-popup/cgu-popup.component';
 const ls = new SecureLS({ encodingType: 'aes' });

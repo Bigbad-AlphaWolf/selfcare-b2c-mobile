@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { WelcomeStatusModel } from '..';
+import {Component, OnInit, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {WelcomeStatusModel} from '..';
 
 @Component({
   selector: 'app-welcome-popup',
@@ -8,10 +8,7 @@ import { WelcomeStatusModel } from '..';
   styleUrls: ['./welcome-popup.component.scss']
 })
 export class WelcomePopupComponent implements OnInit {
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: WelcomeStatusModel,
-    private dialogRef: MatDialogRef<WelcomePopupComponent>
-  ) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: WelcomeStatusModel, private dialogRef: MatDialogRef<WelcomePopupComponent>) {}
 
   ngOnInit() {}
 

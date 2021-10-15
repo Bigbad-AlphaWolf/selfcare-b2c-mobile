@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject, NgZone } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
+import {Component, OnInit, Inject, NgZone} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {OpenNativeSettings} from '@ionic-native/open-native-settings/ngx';
 
 @Component({
   selector: 'app-settings-popup',
@@ -20,10 +20,7 @@ export class SettingsPopupComponent implements OnInit {
   goSettings() {
     this.ngZone.run(() => {
       this.dialogRef.close(true);
-      this.openNativeSettings
-        .open('settings')
-        .then(res => {})
-        .catch(err => {});
+      this.openNativeSettings.open('settings').then(res => {}).catch(err => {});
     });
   }
 

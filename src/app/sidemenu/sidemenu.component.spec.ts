@@ -1,19 +1,20 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { SidemenuComponent } from './sidemenu.component';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { of } from 'rxjs';
-import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import { MatBottomSheet, MatDialog } from '@angular/material';
-import { AccountService } from '../services/account-service/account.service';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
-import { Location } from '@angular/common';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AppVersion } from '@ionic-native/app-version/ngx';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
+import {SidemenuComponent} from './sidemenu.component';
+import {DashboardService} from '../services/dashboard-service/dashboard.service';
+import {of} from 'rxjs';
+import {AuthenticationService} from '../services/authentication-service/authentication.service';
+import {MatDialog} from '@angular/material/dialog';
+import {AccountService} from '../services/account-service/account.service';
+import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
+import {PhoneNumberDisplayPipe} from 'src/shared/pipes/phone-number-display.pipe';
+import {Location} from '@angular/common';
+import {RouterTestingModule} from '@angular/router/testing';
+import {AppVersion} from '@ionic-native/app-version/ngx';
+import {SocialSharing} from '@ionic-native/social-sharing/ngx';
+import {BottomSheetService} from '../services/bottom-sheet/bottom-sheet.service';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
 
 describe('SidemenuComponent', () => {
   let component: SidemenuComponent;
@@ -27,32 +28,32 @@ describe('SidemenuComponent', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           {
-            provide: MatDialog,
+            provide: MatDialog
           },
           {
-            provide: InAppBrowser,
+            provide: InAppBrowser
           },
           {
-            provide: Location,
+            provide: Location
           },
           {
-            provide: MatBottomSheet,
+            provide: MatBottomSheet
           },
           {
             provide: AppVersion,
             useValue: {
               getVersionNumber: () => {
                 return of().toPromise();
-              },
-            },
+              }
+            }
           },
           {
             provide: SocialSharing,
             useValue: {
               share: () => {
                 return of().toPromise();
-              },
-            },
+              }
+            }
           },
           {
             provide: AccountService,
@@ -61,14 +62,14 @@ describe('SidemenuComponent', () => {
               userUrlAvatarSubject: of(),
               deletedPhoneNumbersEmit: () => {
                 return of();
-              },
-            },
+              }
+            }
           },
           {
             provide: BottomSheetService,
             useValue: {
-              openRattacheNumberModal: () => {},
-            },
+              openRattacheNumberModal: () => {}
+            }
           },
           {
             provide: AuthenticationService,
@@ -79,8 +80,8 @@ describe('SidemenuComponent', () => {
               getSubscription: () => {
                 return of();
               },
-              currentPhoneNumbersubscriptionUpdated: of(),
-            },
+              currentPhoneNumbersubscriptionUpdated: of()
+            }
           },
           {
             provide: DashboardService,
@@ -91,10 +92,10 @@ describe('SidemenuComponent', () => {
               },
               attachedNumbersChanged: of(),
               getMainPhoneNumber: () => {},
-              setCurrentPhoneNumber: () => {},
-            },
-          },
-        ],
+              setCurrentPhoneNumber: () => {}
+            }
+          }
+        ]
       }).compileComponents();
     })
   );

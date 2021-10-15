@@ -4,7 +4,7 @@ import {ChoosePaymentModComponent} from './choose-payment-mod/choose-payment-mod
 import {OperationValidationComponent} from './operation-validation/operation-validation.component';
 import {PinPadComponent} from './pin-pad/pin-pad.component';
 import {SelectRecipientComponent} from './select-recipient/select-recipient.component';
-import {MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA} from '@angular/material';
+import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
 import {ModalSuccessComponent} from './modal-success/modal-success.component';
 import {NoOMAccountPopupComponent} from './no-omaccount-popup/no-omaccount-popup.component';
 import {CancelOperationPopupComponent} from './cancel-operation-popup/cancel-operation-popup.component';
@@ -221,7 +221,7 @@ import {KioskLocatorPopupComponent} from 'src/app/components/kiosk-locator-popup
     FaqItemComponent,
     ActionItemComponent
   ],
-  providers: [Contacts, SocialSharing, {provide: MatBottomSheetRef, useValue: {}}, {provide: MAT_BOTTOM_SHEET_DATA, useValue: {}}],
+  providers: [Contacts, SocialSharing, {provide: MAT_BOTTOM_SHEET_DATA, useValue: {}}],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule {}

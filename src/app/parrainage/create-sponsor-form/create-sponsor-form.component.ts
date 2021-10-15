@@ -4,7 +4,7 @@ import {REGEX_NUMBER, formatPhoneNumber, REGEX_NAME, parseIntoNationalNumberForm
 import {ModalController} from '@ionic/angular';
 import {ParrainageService} from 'src/app/services/parrainage-service/parrainage.service';
 import {Contacts, Contact} from '@ionic-native/contacts';
-import {MatDialog} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
 import {SelectNumberPopupComponent} from 'src/shared/select-number-popup/select-number-popup.component';
 
 @Component({

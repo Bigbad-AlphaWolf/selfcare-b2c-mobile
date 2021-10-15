@@ -1,12 +1,13 @@
-import { Location } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatBottomSheet, MatDialog } from '@angular/material';
-import { UrlSerializer } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import {Location} from '@angular/common';
+import {HttpClient} from '@angular/common/http';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {MatDialog} from '@angular/material/dialog';
+import {UrlSerializer} from '@angular/router';
+import {ModalController} from '@ionic/angular';
 
-import { OemOperationsComponent } from './oem-operations.component';
+import {OemOperationsComponent} from './oem-operations.component';
 
 describe('OemOperationsComponent', () => {
   let component: OemOperationsComponent;
@@ -18,31 +19,31 @@ describe('OemOperationsComponent', () => {
         providers: [
           {
             provide: MatBottomSheet,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: MatDialog,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: HttpClient,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: UrlSerializer,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: Location,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: ModalController,
-            useValue: {},
-          },
+            useValue: {}
+          }
         ],
         declarations: [OemOperationsComponent],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
     })
   );
