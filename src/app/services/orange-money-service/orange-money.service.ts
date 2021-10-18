@@ -463,9 +463,6 @@ export class OrangeMoneyService {
         map((status) => {
           status.omNumber = msisdn;
           return status;
-        }),
-        catchError((err: any) => {
-          return of(null);
         })
       );
   }
