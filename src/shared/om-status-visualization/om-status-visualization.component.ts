@@ -25,6 +25,7 @@ export class OmStatusVisualizationComponent implements OnInit {
   notRegisteredInOeM: boolean;
   hasError: boolean;
   OMStatusOperationEnum = OMStatusOperationEnum;
+  omMsisdn: string;
   constructor(
     private orangeMoneyService: OrangeMoneyService,
     private dashboardService: DashboardService,
@@ -44,12 +45,16 @@ export class OmStatusVisualizationComponent implements OnInit {
       .pipe(
         switchMap((omMsisdn) => {
           if (!omMsisdn || omMsisdn === 'error') {
-            omMsisdn = this.dashboardService.getCurrentPhoneNumber();
+            this.omMsisdn = this.dashboardService.getCurrentPhoneNumber();
+          } else {
+            this.omMsisdn = omMsisdn;
           }
-          return this.orangeMoneyService.getUserStatus(omMsisdn).pipe(
+          return this.orangeMoneyService.getUserStatus(this.omMsisdn).pipe(
             map((status: OMCustomerStatusModel) => {
               this.status = status;
               this.checkingStatus = false;
+              this.getStatusText();
+              this.getButtonText();
             }),
             catchError((err) => {
               this.checkingStatus = false;
@@ -85,25 +90,33 @@ export class OmStatusVisualizationComponent implements OnInit {
       case OMStatusOperationEnum.DEPLAFONNEMENT:
         switch (this.status?.operationStatus) {
           case CustomerOperationStatus.new:
-            return OM_STATUS_TEXTS.CAPPED_ACCOUNT;
+            this.statusText = OM_STATUS_TEXTS.CAPPED_ACCOUNT;
+            break;
           case CustomerOperationStatus.ongoing:
-            return OM_STATUS_TEXTS.DECAPPING_ACCOUNT;
+            this.statusText = OM_STATUS_TEXTS.DECAPPING_ACCOUNT;
+            break;
           case CustomerOperationStatus.completed:
-            return OM_STATUS_TEXTS.DECAPPED_ACCOUNT;
+            this.statusText = OM_STATUS_TEXTS.DECAPPED_ACCOUNT;
+            break;
           case CustomerOperationStatus.error:
-            return OM_STATUS_TEXTS.ERROR_DECAPPING_ACCOUNT;
+            this.statusText = OM_STATUS_TEXTS.ERROR_DECAPPING_ACCOUNT;
+            break;
         }
         break;
       case OMStatusOperationEnum.OUVERTURE_COMPTE:
         switch (this.status?.operationStatus) {
           case CustomerOperationStatus.new:
-            return OM_STATUS_TEXTS.NO_ACCOUNT;
+            this.statusText = OM_STATUS_TEXTS.NO_ACCOUNT;
+            break;
           case CustomerOperationStatus.ongoing:
-            return OM_STATUS_TEXTS.OPENING_ACCOUNT;
+            this.statusText = OM_STATUS_TEXTS.OPENING_ACCOUNT;
+            break;
           case CustomerOperationStatus.completed:
-            return OM_STATUS_TEXTS.OPENED_ACCOUNT;
+            this.statusText = OM_STATUS_TEXTS.OPENED_ACCOUNT;
+            break;
           case CustomerOperationStatus.error:
-            return OM_STATUS_TEXTS.ERROR_OPENING_ACCOUNT;
+            this.statusText = OM_STATUS_TEXTS.ERROR_OPENING_ACCOUNT;
+            break;
         }
         break;
       case OMStatusOperationEnum.FULL:
@@ -119,7 +132,7 @@ export class OmStatusVisualizationComponent implements OnInit {
           case CustomerOperationStatus.ongoing:
           case CustomerOperationStatus.completed:
           case CustomerOperationStatus.error:
-            return OM_STATUS_TEXTS.DECAP_ACCOUNT;
+            this.buttonText = OM_STATUS_TEXTS.DECAP_ACCOUNT;
         }
         break;
       case OMStatusOperationEnum.OUVERTURE_COMPTE:
@@ -127,9 +140,11 @@ export class OmStatusVisualizationComponent implements OnInit {
           case CustomerOperationStatus.new:
           case CustomerOperationStatus.ongoing:
           case CustomerOperationStatus.error:
-            return OM_STATUS_TEXTS.OPEN_ACCOUNT;
+            this.buttonText = OM_STATUS_TEXTS.OPEN_ACCOUNT;
+            break;
           case CustomerOperationStatus.completed:
-            return OM_STATUS_TEXTS.CREATE_PIN;
+            this.buttonText = OM_STATUS_TEXTS.CREATE_PIN;
+            break;
         }
         break;
     }

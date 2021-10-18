@@ -1,5 +1,8 @@
 <div class="om-status-modal-page">
-  <div class="title">Vérification statut OM</div>
+  <div class="title">
+    Vérification statut OM
+    <span *ngIf="omMsisdn" class="om-number">{{'(' + omMsisdn + ')'}}</span>
+  </div>
   <ng-container *ngIf="checkingStatus else statusContent">
     <div class="spinner-block">
       <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
@@ -8,11 +11,11 @@
   <ng-template #statusContent>
     <div class="modal-content">
       <div class="description scb-text-gray">
-        {{getStatusText()}}
+        {{statusText}}
       </div>
       <div class="btn-container" *ngIf="isButtonShown()">
         <button class="scb-btn scb-btn-orange scb-btn-full" (click)="continue()" [disabled]="!isButtonEnabled()">
-          {{getButtonText()}}
+          {{buttonText}}
         </button>
       </div>
     </div>
