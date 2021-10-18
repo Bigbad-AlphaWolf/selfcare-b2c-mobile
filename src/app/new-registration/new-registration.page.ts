@@ -252,7 +252,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
           }
           if (status.accountStatus === AccountStatus.FULL) {
             this.checkingNumber = false;
-            this.router.navigate(['/login']);
+            this.goLoginPage();
           } else if (status.accountStatus === AccountStatus.LITE) {
             this.resetPwdLight();
           }
