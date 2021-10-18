@@ -117,6 +117,9 @@ export class OmStatusVisualizationComponent implements OnInit {
           case CustomerOperationStatus.error:
             this.statusText = OM_STATUS_TEXTS.ERROR_OPENING_ACCOUNT;
             break;
+          case CustomerOperationStatus.password_creation:
+            this.statusText = OM_STATUS_TEXTS.CREATE_PIN_TEXT;
+            break;
         }
         break;
       case OMStatusOperationEnum.FULL:
@@ -143,6 +146,7 @@ export class OmStatusVisualizationComponent implements OnInit {
             this.buttonText = OM_STATUS_TEXTS.OPEN_ACCOUNT;
             break;
           case CustomerOperationStatus.completed:
+          case CustomerOperationStatus.password_creation:
             this.buttonText = OM_STATUS_TEXTS.CREATE_PIN;
             break;
         }

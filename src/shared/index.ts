@@ -1420,6 +1420,7 @@ export enum OM_STATUS_TEXTS {
   DECAP_ACCOUNT = `Déplafonner mon compte`,
   OPEN_ACCOUNT = `Ouvrir compte OM`,
   CREATE_PIN = `Créer mon pin OM`,
+  CREATE_PIN_TEXT = `Votre compte a été créé avec succès. Veuillez créer votre code PIN OM`,
   DECAPPED_ACCOUNT = `Votre compte est déplafonné (Pas de plafond)`,
   OPENED_ACCOUNT = `Votre ouverture de compte est effectué avec succès`,
   OPENING_ACCOUNT = `Votre demande de d'ouverture de compte est en cours`,
