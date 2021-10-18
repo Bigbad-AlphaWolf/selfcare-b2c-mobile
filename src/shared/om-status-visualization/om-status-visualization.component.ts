@@ -123,7 +123,7 @@ export class OmStatusVisualizationComponent implements OnInit {
         }
         break;
       case OMStatusOperationEnum.FULL:
-        return OM_STATUS_TEXTS.DECAPPED_ACCOUNT;
+        this.statusText = OM_STATUS_TEXTS.DECAPPED_ACCOUNT;
     }
   }
 
