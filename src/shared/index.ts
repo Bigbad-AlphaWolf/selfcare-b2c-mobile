@@ -1415,3 +1415,18 @@ export enum GET_MSISDN_ENUM {
   ENABLE_4G = 'enable4G',
 }
 export const FORGOT_PWD_PAGE_URL = 'forgot-pwd';
+
+export enum OM_STATUS_TEXTS {
+  DECAP_ACCOUNT = `Déplafonner mon compte`,
+  OPEN_ACCOUNT = `Ouvrir compte OM`,
+  CREATE_PIN = `Créer mon pin OM`,
+  CREATE_PIN_TEXT = `Votre compte a été créé avec succès. Veuillez créer votre code PIN OM`,
+  DECAPPED_ACCOUNT = `Votre compte est déplafonné (Pas de plafond)`,
+  OPENED_ACCOUNT = `Votre ouverture de compte est effectué avec succès`,
+  OPENING_ACCOUNT = `Votre demande de d'ouverture de compte est en cours`,
+  ERROR_OPENING_ACCOUNT = `Une erreur est survenue lors du traitement de votre demande d'ouverture de compte`,
+  NO_ACCOUNT = `Votre numéro n'a pas de compte OM`,
+  DECAPPING_ACCOUNT = `Votre demande de déplafonnement est en cours`,
+  CAPPED_ACCOUNT = `Votre compte est plafonné à un cumul de transactions à 200.000F`,
+  ERROR_DECAPPING_ACCOUNT = `Une erreur est survenue lors du traitement de votre demande de déplafonnement`,
+}

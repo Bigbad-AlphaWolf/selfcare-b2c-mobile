@@ -24,13 +24,14 @@ import {
 const ls = new SecureLS({ encodingType: 'aes' });
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { NavController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { OffresServicesPage } from '../pages/offres-services/offres-services.page';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 import { isPrepaidOrHybrid } from '../dashboard';
+import { OmStatusVisualizationComponent } from 'src/shared/om-status-visualization/om-status-visualization.component';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -60,7 +61,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     private appVersion: AppVersion,
     private socialSharing: SocialSharing,
     private appRout: ApplicationRoutingService,
-    private bsService: BottomSheetService
+    private bsService: BottomSheetService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -329,5 +331,13 @@ export class SidemenuComponent implements OnInit, OnDestroy {
       .catch((err: any) => {
         console.log('Cannot open default sharing sheet' + err);
       });
+  }
+
+  async openOMStatus() {
+    const modal = await this.modalController.create({
+      component: OmStatusVisualizationComponent,
+      cssClass: 'select-recipient-modal',
+    });
+    return await modal.present();
   }
 }
