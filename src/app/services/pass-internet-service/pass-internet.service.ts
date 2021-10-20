@@ -60,14 +60,13 @@ export class PassInternetService {
           // get from all pass the diffent categories
           const list = resp.map(x => {
             if (x.pass) {
-              return x.pass.categoriePass;
+              return x.pass?.categoriePass;
             } else if (x.promoPass) {
-              return x.promoPass.passPromo.categoriePass;
+              return x.promoPass.passPromo?.categoriePass;
             }
           });
 
           this.listCategoryPassInternet = getOrderedListCategory(list);
-          this.listPassInternetShown = getListPassFilteredByLabelAndPaymentMod(this.listCategoryPassInternet[0], this.listPassInternet);
           return list;
         }
       })
