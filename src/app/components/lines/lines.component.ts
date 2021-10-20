@@ -55,11 +55,7 @@ export class LinesComponent implements OnInit {
           map((results: SubscriptionModel[]) => {
             let fNumbers = [];
             results.forEach((sub: SubscriptionModel, i: number) => {
-              const sousc: ModelOfSouscription = {
-                profil: sub.profil,
-                formule: sub.nomOffre,
-                codeFormule: sub.code,
-              };
+              const sousc = sub;
               if (this.phoneType === 'FIXE') {
                 if (this.isFixeNumber(numbers[i], sousc)) {
                   fNumbers.push({
@@ -87,7 +83,7 @@ export class LinesComponent implements OnInit {
     );
   }
 
-  isLineNumber(phone: string, souscription: ModelOfSouscription) {
+  isLineNumber(phone: string, souscription: SubscriptionModel) {
     return (
       (REGEX_FIX_NUMBER.test(phone) && isPostpaidFix(souscription)) ||
       (!REGEX_FIX_NUMBER.test(phone) && isPostpaidMobile(souscription)) ||
@@ -97,7 +93,7 @@ export class LinesComponent implements OnInit {
     );
   }
 
-  isFixeNumber(phone: string, souscription: ModelOfSouscription) {
+  isFixeNumber(phone: string, souscription: SubscriptionModel) {
     return REGEX_FIX_NUMBER.test(phone) && isPostpaidFix(souscription);
   }
 
