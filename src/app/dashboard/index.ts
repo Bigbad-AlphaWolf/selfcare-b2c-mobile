@@ -126,33 +126,33 @@ export function isPrepaidOrHybrid(souscription: SubscriptionModel): boolean {
     souscription.nomOffre !== HOME_PREPAID_FORMULE
   );
 }
-export function isPostpaidMobile(souscription: ModelOfSouscription): boolean {
+export function isPostpaidMobile(souscription: SubscriptionModel): boolean {
   return (
     souscription.profil === PROFILE_TYPE_POSTPAID &&
-    !REGEX_POSTPAID_FIXE.test(souscription.formule) &&
-    !REGEX_PREPAID_FIXE.test(souscription.formule)
+    !REGEX_POSTPAID_FIXE.test(souscription.nomOffre) &&
+    !REGEX_PREPAID_FIXE.test(souscription.nomOffre)
   );
 }
 
-export function isKirene(souscription: ModelOfSouscription): boolean {
+export function isKirene(souscription: SubscriptionModel): boolean {
   return (
     souscription.profil === PROFILE_TYPE_PREPAID &&
-    souscription.codeFormule === CODE_KIRENE_Formule
+    souscription.code === CODE_KIRENE_Formule
   );
 }
 
-export function isPostpaidFix(souscription: ModelOfSouscription): boolean {
+export function isPostpaidFix(souscription: SubscriptionModel): boolean {
   return (
     souscription.profil === PROFILE_TYPE_POSTPAID &&
-    REGEX_POSTPAID_FIXE.test(souscription.formule)
+    REGEX_POSTPAID_FIXE.test(souscription.nomOffre)
   );
 }
 
-export function isPrepaidFix(souscription: ModelOfSouscription): boolean {
+export function isPrepaidFix(souscription: SubscriptionModel): boolean {
   return (
     souscription.profil === PROFILE_TYPE_PREPAID &&
-    (REGEX_PREPAID_FIXE.test(souscription.formule) ||
-      souscription.codeFormule === CODE_FORMULE_FIX_PREPAID)
+    (REGEX_PREPAID_FIXE.test(souscription.nomOffre) ||
+      souscription.code === CODE_FORMULE_FIX_PREPAID)
   );
 }
 
