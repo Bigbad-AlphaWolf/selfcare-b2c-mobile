@@ -57,7 +57,7 @@
           <ng-template #sargalCard>
             <ng-container
               *ngIf="(sargalUnavailable || isNotSubscribedToSargal(userSargalData?.status)) else sargalData">
-              <div class="conso-card conso-card-sargal scb-text-white">
+              <div class="conso-card conso-card-sargal scb-text-white" (click)="onSargalCardClicked()">
                 <div class="conso-label">Points Sargal</div>
                 <div class="conso-amount">
                   <span class="sign-up">{{sargalUnavailable ? 'Service Indisponible' : 'M\'inscrire'}}</span>
