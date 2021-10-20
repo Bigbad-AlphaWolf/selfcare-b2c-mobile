@@ -116,14 +116,14 @@ export interface ModelOfSouscription {
   codeFormule?: string;
 }
 
-export function isPrepaidOrHybrid(souscription: ModelOfSouscription): boolean {
+export function isPrepaidOrHybrid(souscription: SubscriptionModel): boolean {
   return (
     (souscription.profil === PROFILE_TYPE_PREPAID ||
       souscription.profil === PROFILE_TYPE_HYBRID ||
       souscription.profil === PROFILE_TYPE_HYBRID_1 ||
       souscription.profil === PROFILE_TYPE_HYBRID_2) &&
-    souscription.codeFormule !== CODE_KIRENE_Formule &&
-    souscription.formule !== HOME_PREPAID_FORMULE
+    souscription.code !== CODE_KIRENE_Formule &&
+    souscription.nomOffre !== HOME_PREPAID_FORMULE
   );
 }
 export function isPostpaidMobile(souscription: ModelOfSouscription): boolean {

@@ -143,11 +143,7 @@ export class DashboardPage implements OnInit, OnDestroy {
           this.currentProfile = res.profil;
           this.currentFormule = res.nomOffre;
           this.currentCodeFormule = res.code;
-          const souscription = {
-            profil: this.currentProfile,
-            formule: this.currentFormule,
-            codeFormule: this.currentCodeFormule,
-          };
+          const souscription = res;
           let currentDashboard = '/dashboard';
           if (isPrepaidOrHybrid(souscription)) {
             currentDashboard = '/new-prepaid-hybrid-dashboard';
