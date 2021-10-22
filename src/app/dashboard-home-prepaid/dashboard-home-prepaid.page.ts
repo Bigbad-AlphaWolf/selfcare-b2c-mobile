@@ -3,7 +3,7 @@ import * as SecureLS from 'secure-ls';
 import {BannierePubModel} from 'src/app/services/dashboard-service';
 import {PassInternetService} from 'src/app/services/pass-internet-service/pass-internet.service';
 import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
-import {Router} from '@angular/router';
+import {NavigationExtras, Router} from '@angular/router';
 import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
 import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
 import {
@@ -17,7 +17,8 @@ import {
   SubscriptionModel,
   WelcomeStatusModel,
   getBanniereTitle,
-  getBanniereDescription
+  getBanniereDescription,
+	OPERATION_TYPE_PASS_INTERNET
 } from 'src/shared';
 import {getConsoByCategory, CODE_COMPTEUR_VOLUME_NUIT_1, CODE_COMPTEUR_VOLUME_NUIT_2, CODE_COMPTEUR_VOLUME_NUIT_3} from '../dashboard';
 import {MatDialog} from '@angular/material/dialog';
@@ -59,6 +60,7 @@ export class DashboardHomePrepaidPage implements OnInit {
   firstName: string;
   lastName: string;
   isBanniereLoaded: boolean;
+	currentUserCodeFormule: string;
   constructor(
     private passIntService: PassInternetService,
     private dashbdSrv: DashboardService,
@@ -145,6 +147,7 @@ export class DashboardHomePrepaidPage implements OnInit {
   getPassInternetFixe() {
     const userPhoneNumber = this.dashbdSrv.getCurrentPhoneNumber();
     this.authServ.getSubscription(userPhoneNumber).subscribe((res: SubscriptionModel) => {
+			this.currentUserCodeFormule = res?.code;
       if (res.code !== '0') {
         this.passIntService.setUserCodeFormule(res.code);
         this.passIntService.queryListPassInternetOfUser(res.code, userPhoneNumber).subscribe(
@@ -222,9 +225,24 @@ export class DashboardHomePrepaidPage implements OnInit {
       : this.followsAnalytics.registerEventFollow('Voirs_details_card_dashboard', 'event', 'clicked');
   }
 
-  selectPass(id: number) {
-    this.followsAnalytics.registerEventFollow('Pass_internet_dashboard_fix', 'event', 'clicked');
-    this.router.navigate([`/buy-pass-internet/${id}`]);
+  //selectPass(id: number) {
+  //  this.followsAnalytics.registerEventFollow('Pass_internet_dashboard_fix', 'event', 'clicked');
+  //  this.router.navigate([`/buy-pass-internet/${id}`]);
+  //}
+
+	choosePass(pass: any) {
+		this.followsAnalytics.registerEventFollow('Pass_internet_dashboard_fix', 'event', 'clicked');
+		const userPhoneNumber = this.dashbdSrv.getCurrentPhoneNumber();
+    let navigationExtras: NavigationExtras = {
+      state: {
+        pass,
+        recipientMsisdn: userPhoneNumber,
+        recipientCodeFormule: this.currentUserCodeFormule,
+        purchaseType: OPERATION_TYPE_PASS_INTERNET,
+        isLightMod: false
+      }
+    };
+    this.router.navigate(['/operation-recap'], navigationExtras);
   }
 
   onError(input: {el: HTMLElement; display: boolean}[]) {
