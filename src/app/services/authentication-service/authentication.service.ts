@@ -12,7 +12,7 @@ import {
   isFixPostpaid,
   PROFILE_TYPE_POSTPAID,
   KILIMANJARO_FORMULE,
-  isPrepaidFix
+  isPostpaidFix
 } from 'src/app/dashboard';
 import {
   JAMONO_ALLO_CODE_FORMULE,
@@ -255,9 +255,8 @@ export class AuthenticationService {
       map((res: SubscriptionModel) => {
         const codeFormule = res.code;
         const profil = res.profil;
-        console.log('res', res);
 
-        if ((profil === PROFILE_TYPE_POSTPAID && codeFormule != KILIMANJARO_FORMULE) || !isPrepaidFix(res)) {
+        if ((profil === PROFILE_TYPE_POSTPAID && codeFormule != KILIMANJARO_FORMULE) || isPostpaidFix(res)) {
           return false;
         }
         return true;
