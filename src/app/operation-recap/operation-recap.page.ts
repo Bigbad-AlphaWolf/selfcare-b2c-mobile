@@ -348,10 +348,12 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_VOYAGE:
       case OPERATION_TYPE_PASS_ILLIMIX:
       case OPERATION_TYPE_PASS_ALLO:
+      case OPERATION_TYPE_PASS_ILLIFLEX:
         if (this.isLightMod) {
           const hmac = this.authServ.getHmac();
           this.payWithCredit(hmac);
         } else if (this.subscriptionInfos.profil === PROFILE_TYPE_POSTPAID) {
+          this.paymentMod = PAYMENT_MOD_OM;
           this.openPinpad();
         } else {
           this.setPaymentMod();
@@ -370,9 +372,6 @@ export class OperationRecapPage implements OnInit {
         break;
       case OPERATION_TYPE_PASS_USAGE:
         this.buyPassUsage();
-        break;
-      case OPERATION_TYPE_PASS_ILLIFLEX:
-        this.payIlliflex();
         break;
       default:
         break;
@@ -667,8 +666,8 @@ export class OperationRecapPage implements OnInit {
       buyForMe:
         this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
       errorMsg: this.buyPassErrorMsg,
-			errorCode: res?.code,
-			recipientMsisdn: this.recipientMsisdn
+      errorCode: res?.code,
+      recipientMsisdn: this.recipientMsisdn,
     });
   }
 
@@ -689,8 +688,8 @@ export class OperationRecapPage implements OnInit {
       buyForMe:
         this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
       errorMsg: this.buyPassErrorMsg,
-			errorCode: err?.error?.code,
-			recipientMsisdn: this.recipientMsisdn
+      errorCode: err?.error?.code,
+      recipientMsisdn: this.recipientMsisdn,
     });
   }
 
