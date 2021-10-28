@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
-import { MatDialogRef, MatDialog } from '@angular/material';
-import { SargalService } from 'src/app/services/sargal-service/sargal.service';
-import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
-import { NavController } from '@ionic/angular';
-import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
-import { OPERATION_TYPE_BONS_PLANS } from 'src/shared';
+import {Component, OnInit} from '@angular/core';
+import {CancelOperationPopupComponent} from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
+import {MatDialogRef, MatDialog} from '@angular/material/dialog';
+import {SargalService} from 'src/app/services/sargal-service/sargal.service';
+import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
+import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
+import {NavController} from '@ionic/angular';
+import {ModalSuccessComponent} from 'src/shared/modal-success/modal-success.component';
+import {OPERATION_TYPE_BONS_PLANS} from 'src/shared';
 
 @Component({
   selector: 'app-sargal-registration',
@@ -42,7 +42,7 @@ export class SargalRegistrationPage implements OnInit {
 
   goToRegisterSargal() {
     this.confirmDialog = this.matDialog.open(CancelOperationPopupComponent, {
-      data: { cancelDialogRegister: true },
+      data: {cancelDialogRegister: true},
       maxWidth: '92%'
     });
     this.confirmDialog.afterClosed().subscribe((status: any) => {
@@ -52,9 +52,7 @@ export class SargalRegistrationPage implements OnInit {
         this.sargalServ.registerToSargal(this.currentPhoneNumber).subscribe(
           () => {
             this.isProcessing = false;
-            const eventName = `Registration_Sargal${this.from === OPERATION_TYPE_BONS_PLANS
-              ? '_bons_plans'
-              : ''}_Success`;
+            const eventName = `Registration_Sargal${this.from === OPERATION_TYPE_BONS_PLANS ? '_bons_plans' : ''}_Success`;
             this.followService.registerEventFollow(eventName, 'event', {
               msisdn: this.currentPhoneNumber
             });
@@ -63,9 +61,7 @@ export class SargalRegistrationPage implements OnInit {
             // this.goBack();
           },
           (err: any) => {
-            const eventName = `Registration_Sargal${this.from === OPERATION_TYPE_BONS_PLANS
-              ? '_bons_plans'
-              : ''}_Error`;
+            const eventName = `Registration_Sargal${this.from === OPERATION_TYPE_BONS_PLANS ? '_bons_plans' : ''}_Error`;
             this.followService.registerEventFollow(eventName, 'error', {
               msisdn: this.currentPhoneNumber,
               error: err && err.status ? err.status : 'Une erreur est survenue durant le traitement de la requête'
@@ -82,7 +78,7 @@ export class SargalRegistrationPage implements OnInit {
 
   openPopUpDialog(type: string) {
     const dialogRef = this.matDialog.open(ModalSuccessComponent, {
-      data: { type }
+      data: {type}
     });
   }
 }

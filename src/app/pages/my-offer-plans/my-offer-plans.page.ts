@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { OfferPlansService } from '../../services/offer-plans-service/offer-plans.service';
-import { OfferPlan } from 'src/shared/models/offer-plan.model';
-import { ApplicationRoutingService } from '../../services/application-routing/application-routing.service';
-import { DashboardService } from '../../services/dashboard-service/dashboard.service';
-import { AuthenticationService } from '../../services/authentication-service/authentication.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {OfferPlansService} from '../../services/offer-plans-service/offer-plans.service';
+import {OfferPlan} from 'src/shared/models/offer-plan.model';
+import {ApplicationRoutingService} from '../../services/application-routing/application-routing.service';
+import {DashboardService} from '../../services/dashboard-service/dashboard.service';
+import {AuthenticationService} from '../../services/authentication-service/authentication.service';
 import {
   SubscriptionModel,
   BONS_PLANS,
@@ -12,17 +12,17 @@ import {
   listRegisterSargalBonPlanText,
   OPERATION_TYPE_BONS_PLANS
 } from 'src/shared';
-import { HttpErrorResponse } from '@angular/common/http';
-import { NavController, IonSlides } from '@ionic/angular';
-import { getPageHeader } from '../../utils/title.util';
-import { OperationExtras } from 'src/app/models/operation-extras.model';
-import { take, map } from 'rxjs/operators';
-import { CATEGORY_MPO } from 'src/app/utils/constants';
-import { SargalService } from 'src/app/services/sargal-service/sargal.service';
-import { SargalSubscriptionModel, SARGAL_NOT_SUBSCRIBED, SARGAL_UNSUBSCRIPTION_ONGOING } from 'src/app/dashboard';
-import { MatDialog } from '@angular/material';
-import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {NavController, IonSlides} from '@ionic/angular';
+import {getPageHeader} from '../../utils/title.util';
+import {OperationExtras} from 'src/app/models/operation-extras.model';
+import {take, map} from 'rxjs/operators';
+import {CATEGORY_MPO} from 'src/app/utils/constants';
+import {SargalService} from 'src/app/services/sargal-service/sargal.service';
+import {SargalSubscriptionModel, SARGAL_NOT_SUBSCRIBED, SARGAL_UNSUBSCRIPTION_ONGOING} from 'src/app/dashboard';
+import {MatDialog} from '@angular/material/dialog';
+import {ModalSuccessComponent} from 'src/shared/modal-success/modal-success.component';
+import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-my-offer-plans',
@@ -47,10 +47,10 @@ export class MyOfferPlansPage implements OnInit {
   payloadNavigation: {
     recipientMsisdn: string;
     recipientCodeFormule: string;
-  } = { recipientMsisdn: null, recipientCodeFormule: null };
+  } = {recipientMsisdn: null, recipientCodeFormule: null};
   hasNoOfferPlans: boolean;
   fullList: {
-    category: { label: string; value: string };
+    category: {label: string; value: string};
     offersPlans: OfferPlan[];
   }[];
   hasErrorProcessingMPO: boolean;
@@ -143,9 +143,9 @@ export class MyOfferPlansPage implements OnInit {
       });
   }
 
-  arrangeOfferPlansByCategory(listOffer: OfferPlan[], listCategories: { label: string; value: string }[]) {
-    this.fullList = listCategories.map((category: { label: string; value: string }) => {
-      const value = { category, offersPlans: [] };
+  arrangeOfferPlansByCategory(listOffer: OfferPlan[], listCategories: {label: string; value: string}[]) {
+    this.fullList = listCategories.map((category: {label: string; value: string}) => {
+      const value = {category, offersPlans: []};
       value.offersPlans = listOffer.filter(offerPlanUncategorized => {
         return offerPlanUncategorized.typeMPO.toLowerCase() === category.value.toLowerCase();
       });
@@ -171,7 +171,7 @@ export class MyOfferPlansPage implements OnInit {
   openPopUpSargalError(type: string) {
     this.matDialog.open(ModalSuccessComponent, {
       width: '300px',
-      data: { type }
+      data: {type}
     });
   }
 
@@ -284,13 +284,9 @@ export class MyOfferPlansPage implements OnInit {
       case CATEGORY_MPO.sargal:
         for (const text of listRegisterSargalBonPlanText) {
           if (offer.bpTarget.toLowerCase().includes(text)) {
-            this.followAnalyticsServ.registerEventFollow(
-              'page_bons_plans_Redirection_page_inscription_sargal',
-              'event',
-              {
-                bonPlan: offer
-              }
-            );
+            this.followAnalyticsServ.registerEventFollow('page_bons_plans_Redirection_page_inscription_sargal', 'event', {
+              bonPlan: offer
+            });
             this.appliRout.goToRegisterForSargal(OPERATION_TYPE_BONS_PLANS);
             break;
           }

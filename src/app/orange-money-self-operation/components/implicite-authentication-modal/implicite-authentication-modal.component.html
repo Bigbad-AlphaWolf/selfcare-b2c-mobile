@@ -1,0 +1,47 @@
+<div *ngIf="step === 'AUTH_IMPLICIT'" class="type-otp-modal">
+  <div class="title">Récupération du numéro sur le réseau</div>
+  <div class="sub-title scb-text-gray">Merci de patienter pendant que nous récupérons votre numéro </div>
+  <div class="input-block">
+		<div class="form-get-number">
+      <div *ngIf="gettingNumber" class="scb-text-gray get-number">
+        Récupération en cours...
+      </div>
+      <div
+        *ngIf="!gettingNumber"
+        class="scb-text-gray numero-container"
+      >
+        <div class="phonenumber scb-text-full-black">{{ selectedNumber }}</div>
+        <div class="refresh" (click)="getNumber()">
+          <span class="scb-text-orange">Rafraichir</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="scb-text-red-error error" (click)="getNumber()" *ngIf="showErrMessage">{{errorGettingNumber}}</div>
+  <button class="scb-btn scb-btn-orange scb-btn-full" [disabled]="showErrMessage" (click)="proceed(userAuthImplicitInfos)">
+    <span>Continuer</span>
+  </button>
+</div>
+<div *ngIf="step === 'INFOS'" class="kiosk-locator-popup">
+  <div class="kiosk-title">Ouverture Compte OM</div>
+  <div class="kiosk-text">
+    <div class="description scb-text-gray">
+      L'ouverture de compte Orange money requiert une récupération de votre numéro.
+    </div>
+    <div class="warning">
+      <div class="icon-info">
+        <img src="/assets/images/information.svg" />
+      </div>
+      <div class="warning-text">
+        Veuillez activer les données mobile de la SIM avec laquelle vous voulez ouvir le compte OM.
+      </div>
+    </div>
+  </div>
+  <div class="btn-container">
+    <button class="scb-btn scb-btn-orange scb-btn-full" (click)="next()">
+      Continuer
+    </button>
+  </div>
+</div>

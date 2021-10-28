@@ -25,8 +25,9 @@
     </ion-refresher-content>
   </ion-refresher> -->
   <div class="stories-bloc">
-		<app-list-preview-stories [storiesByCategory]="storiesByCategory" [isLoadingStories]="isLoadingStories" [hasError]="hasError" [areDataLoadedExternally]="true" ></app-list-preview-stories>
-	</div>
+    <app-list-preview-stories [storiesByCategory]="storiesByCategory" [isLoadingStories]="isLoadingStories"
+      [hasError]="hasError" [areDataLoadedExternally]="true"></app-list-preview-stories>
+  </div>
   <div class="cards-bloc">
     <div class="text-bloc">
       <span class="suivi-conso">Suivi conso</span>
@@ -57,7 +58,7 @@
           <ng-template #sargalCard>
             <ng-container
               *ngIf="(sargalUnavailable || isNotSubscribedToSargal(userSargalData?.status)) else sargalData">
-              <div class="conso-card conso-card-sargal scb-text-white">
+              <div class="conso-card conso-card-sargal scb-text-white" (click)="onSargalCardClicked()">
                 <div class="conso-label">Points Sargal</div>
                 <div class="conso-amount">
                   <span class="sign-up">{{sargalUnavailable ? 'Service Indisponible' : 'M\'inscrire'}}</span>
@@ -103,6 +104,13 @@
     <div class="actions-cards-bloc">
       <div class="action-card" *ngFor="let action of actions" (click)="onActionClick(action)"
         [ngClass]="{'disabled-card': (action.code === 'SOS' && !canDoSOS)}">
+        <div class="badge-promo"
+          *ngIf="(action?.code === BUY_ACTION) && (hasPromoBooster?.promoPass || hasPromoBooster?.promoRecharge || hasPromoBooster?.promoPassIllimix || hasPromoPlanActive?.hasPassIllimix || hasPromoPlanActive?.hasPassInternet || hasPromoPlanActive?.hasRecharge)">
+          <div class="icon-container">
+            <span class="percent scb-text-white"> % </span>
+          </div>
+          <div class="triangle"></div>
+        </div>
         <div class="action-icon-container">
           <img [src]="'/assets/images/'+action.icon" alt="buy" class="act-icon">
         </div>

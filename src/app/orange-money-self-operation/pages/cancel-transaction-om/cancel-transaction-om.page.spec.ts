@@ -1,18 +1,18 @@
-import { Location } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatCheckboxModule } from '@angular/material';
-import { UrlSerializer } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { IonicModule, ModalController } from '@ionic/angular';
-import { of } from 'rxjs';
-import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { ImageService } from 'src/app/services/image-service/image.service';
-import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
-import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
+import {Location} from '@angular/common';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {UrlSerializer} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {IonicModule, ModalController} from '@ionic/angular';
+import {of} from 'rxjs';
+import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
+import {ImageService} from 'src/app/services/image-service/image.service';
+import {OrangeMoneyService} from 'src/app/services/orange-money-service/orange-money.service';
+import {PhoneNumberDisplayPipe} from 'src/shared/pipes/phone-number-display.pipe';
 
-import { CancelTransactionOmPage } from './cancel-transaction-om.page';
+import {CancelTransactionOmPage} from './cancel-transaction-om.page';
 
 describe('CancelTransactionOmPage', () => {
   let component: CancelTransactionOmPage;
@@ -24,10 +24,10 @@ describe('CancelTransactionOmPage', () => {
         declarations: [CancelTransactionOmPage, PhoneNumberDisplayPipe],
         providers: [
           {
-            provide: Location,
+            provide: Location
           },
           {
-            provide: ModalController,
+            provide: ModalController
           },
           {
             provide: OrangeMoneyService,
@@ -37,37 +37,31 @@ describe('CancelTransactionOmPage', () => {
               },
               sendInfosCancelationTransfertOM: () => {
                 return of();
-              },
-            },
+              }
+            }
           },
           {
             provide: DashboardService,
             useValue: {
               getCustomerInformations: () => {
                 return of();
-              },
-            },
+              }
+            }
           },
           {
             provide: ImageService,
             useValue: {
               convertBase64ToBlob: () => {
                 return of().toPromise();
-              },
-            },
+              }
+            }
           },
           {
-            provide: UrlSerializer,
-          },
+            provide: UrlSerializer
+          }
         ],
-        imports: [
-          ReactiveFormsModule,
-          FormsModule,
-          RouterTestingModule,
-          IonicModule,
-          MatCheckboxModule,
-        ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        imports: [ReactiveFormsModule, FormsModule, RouterTestingModule, IonicModule, MatCheckboxModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
     })
   );

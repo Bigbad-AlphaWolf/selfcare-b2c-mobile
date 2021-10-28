@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import {Component, OnInit, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-change-avatar-popup',
@@ -8,10 +8,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 })
 export class ChangeAvatarPopupComponent implements OnInit {
   imgSrc: any;
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<ChangeAvatarPopupComponent>
-  ) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, public dialogRef: MatDialogRef<ChangeAvatarPopupComponent>) {}
 
   confirm() {
     this.dialogRef.close(true);

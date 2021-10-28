@@ -1,15 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { AccountService } from 'src/app/services/account-service/account.service';
-import { MatDialog } from '@angular/material';
-import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { NavController } from '@ionic/angular';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {AccountService} from 'src/app/services/account-service/account.service';
+import {MatDialog} from '@angular/material/dialog';
+import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
+import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
+import {NavController} from '@ionic/angular';
 
 @Component({
   selector: 'app-delete-linked-numbers',
   templateUrl: './delete-linked-numbers.page.html',
-  styleUrls: ['./delete-linked-numbers.page.scss'],
+  styleUrls: ['./delete-linked-numbers.page.scss']
 })
 export class DeleteLinkedNumbersPage implements OnInit, OnDestroy {
   dialogSub: Subscription;
@@ -26,7 +26,7 @@ export class DeleteLinkedNumbersPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getUserAttachedPhoneNumber();
-    this.accountService.deletedPhoneNumbersEmit().subscribe((res) => {
+    this.accountService.deletedPhoneNumbersEmit().subscribe(res => {
       this.cpt = 0;
       this.getUserAttachedPhoneNumber();
       this.changeCurrentPhoneNumber();
@@ -43,13 +43,9 @@ export class DeleteLinkedNumbersPage implements OnInit, OnDestroy {
   }
 
   changeCurrentPhoneNumber() {
-    const result = this.phoneNumbersToDelete.find(
-      (x) => x === this.dashboardservice.getCurrentPhoneNumber()
-    );
+    const result = this.phoneNumbersToDelete.find(x => x === this.dashboardservice.getCurrentPhoneNumber());
     if (result) {
-      this.dashboardservice.setCurrentPhoneNumber(
-        this.authService.getUserMainPhoneNumber()
-      );
+      this.dashboardservice.setCurrentPhoneNumber(this.authService.getUserMainPhoneNumber());
     }
   }
   getUserAttachedPhoneNumber() {

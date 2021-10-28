@@ -1,13 +1,12 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {Routes, RouterModule} from '@angular/router';
 
-import { IonicModule } from '@ionic/angular';
+import {IonicModule} from '@ionic/angular';
 
-import { ChangePasswordPage } from './change-password.page';
-import { MatInputModule, MatFormFieldModule } from '@angular/material';
-import { SharedModule } from 'src/shared/shared.module';
+import {ChangePasswordPage} from './change-password.page';
+import {SharedModule} from 'src/shared/shared.module';
 
 const routes: Routes = [
   {
@@ -17,13 +16,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SharedModule,
-    RouterModule.forChild(routes)
-  ],
+  imports: [CommonModule, FormsModule, IonicModule, SharedModule, RouterModule.forChild(routes)],
   declarations: [ChangePasswordPage]
 })
 export class ChangePasswordPageModule {}

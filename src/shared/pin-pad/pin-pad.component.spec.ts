@@ -1,13 +1,13 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { PinPadComponent } from './pin-pad.component';
-import { MatDialogModule } from '@angular/material';
-import { Router, RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { AppVersion } from '@ionic-native/app-version/ngx';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AngularDelegate } from '@ionic/angular';
+import {PinPadComponent} from './pin-pad.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import {Router, RouterModule} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {AppVersion} from '@ionic-native/app-version/ngx';
+import {RouterTestingModule} from '@angular/router/testing';
+import {AngularDelegate} from '@ionic/angular';
 
 describe('PinPadComponent', () => {
   let component: PinPadComponent;
@@ -21,16 +21,16 @@ describe('PinPadComponent', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           AngularDelegate,
-          { provide: Router, useValue: {} },
+          {provide: Router, useValue: {}},
           {
             provide: HttpClient,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: AppVersion,
-            useValue: {},
-          },
-        ],
+            useValue: {}
+          }
+        ]
       }).compileComponents();
     })
   );
