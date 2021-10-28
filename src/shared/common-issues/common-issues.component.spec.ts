@@ -1,16 +1,13 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { CommonIssuesComponent } from './common-issues.component';
-import {
-  MatDialogRef,
-  MAT_BOTTOM_SHEET_DATA,
-  MatBottomSheetRef,
-} from '@angular/material';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AngularDelegate, ModalController } from '@ionic/angular';
-import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
-import { of } from 'rxjs';
+import {CommonIssuesComponent} from './common-issues.component';
+import {MatDialogRef} from '@angular/material/dialog';
+import {RouterTestingModule} from '@angular/router/testing';
+import {AngularDelegate, ModalController} from '@ionic/angular';
+import {OpenNativeSettings} from '@ionic-native/open-native-settings/ngx';
+import {of} from 'rxjs';
+import {MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
 
 describe('CommonIssuesComponent', () => {
   let component: CommonIssuesComponent;
@@ -26,28 +23,28 @@ describe('CommonIssuesComponent', () => {
           AngularDelegate,
           {
             provide: MatDialogRef,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: MAT_BOTTOM_SHEET_DATA,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: MatBottomSheetRef,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: OpenNativeSettings,
             useValue: {
               open: () => {
                 return of().toPromise();
-              },
-            },
+              }
+            }
           },
           {
-            provide: ModalController,
-          },
-        ],
+            provide: ModalController
+          }
+        ]
       }).compileComponents();
     })
   );

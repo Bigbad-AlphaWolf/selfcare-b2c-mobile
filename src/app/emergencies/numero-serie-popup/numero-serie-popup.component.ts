@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import {Component, OnInit, Inject} from '@angular/core';
+import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-numero-serie-popup',
@@ -7,10 +7,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
   styleUrls: ['./numero-serie-popup.component.scss']
 })
 export class NumeroSeriePopupComponent implements OnInit {
-  constructor(
-    public dialogRef: MatDialogRef<NumeroSeriePopupComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
+  constructor(public dialogRef: MatDialogRef<NumeroSeriePopupComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {}
 
   ngOnInit() {}
 

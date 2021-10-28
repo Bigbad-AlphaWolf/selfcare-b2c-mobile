@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { Router } from '@angular/router';
-import { Market } from '@ionic-native/market/ngx';
+import {Component, OnInit, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {Market} from '@ionic-native/market/ngx';
 @Component({
   selector: 'app-cancel-operation-popup',
   templateUrl: './cancel-operation-popup.component.html',

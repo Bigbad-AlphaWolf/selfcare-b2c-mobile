@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { MatDialog, MatDialogRef } from '@angular/material';
-import { Subscription } from 'rxjs';
+import {Component, OnInit, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
+import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {Subscription} from 'rxjs';
 import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
@@ -29,14 +29,14 @@ import {
   TRANSFER_BONUS_CREDIT_FEE,
   parseIntoNationalNumberFormat
 } from '..';
-import { CancelOperationPopupComponent } from '../cancel-operation-popup/cancel-operation-popup.component';
-import { SoSModel } from 'src/app/services/sos-service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { FeeModel } from 'src/app/services/orange-money-service';
-import { Contacts, Contact } from '@ionic-native/contacts';
-import { validateNumber } from 'src/app/register';
-import { SelectNumberPopupComponent } from '../select-number-popup/select-number-popup.component';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import {CancelOperationPopupComponent} from '../cancel-operation-popup/cancel-operation-popup.component';
+import {SoSModel} from 'src/app/services/sos-service';
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {FeeModel} from 'src/app/services/orange-money-service';
+import {Contacts, Contact} from '@ionic-native/contacts';
+import {validateNumber} from 'src/app/register';
+import {SelectNumberPopupComponent} from '../select-number-popup/select-number-popup.component';
+import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-operation-validation',
@@ -130,10 +130,10 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
   }
 
   openConfirmationDialog(confirmSargalIllimite?: boolean, sargalPayload?: any) {
-    let options = { width: '294px', height: '232px' };
+    let options = {width: '294px', height: '232px'};
     if (confirmSargalIllimite) {
       options = Object.assign(options, {
-        data: { confirmSargalIllimite: true }
+        data: {confirmSargalIllimite: true}
       });
     }
     this.dialogRef = this.dialog.open(CancelOperationPopupComponent, options);
@@ -248,7 +248,7 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
 
   openPickRecipientModal(phoneNumbers: any[], numeroChampIllimite: number) {
     const dialogRef = this.dialog.open(SelectNumberPopupComponent, {
-      data: { phoneNumbers }
+      data: {phoneNumbers}
     });
     dialogRef.afterClosed().subscribe(selectedNumber => {
       const destNumber = formatPhoneNumber(selectedNumber);
@@ -260,7 +260,7 @@ export class OperationValidationComponent implements OnInit, OnDestroy {
     if (validateNumber(phoneNumber)) {
       if (numeroChampIllimite === 1 && this.sargalGift.nombreNumeroIllimtes === 1) {
         phoneNumber = parseIntoNationalNumberFormat(phoneNumber);
-        this.formNumeroIllimite.setValue({ illimite1: phoneNumber });
+        this.formNumeroIllimite.setValue({illimite1: phoneNumber});
       } else if (numeroChampIllimite === 1 && this.sargalGift.nombreNumeroIllimtes > 2) {
         const number2 = parseIntoNationalNumberFormat(this.formNumeroIllimite.value.illimite2);
         this.formNumeroIllimite.setValue({

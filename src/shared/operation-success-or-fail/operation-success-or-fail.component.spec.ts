@@ -1,13 +1,13 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { OperationSuccessOrFailComponent } from './operation-success-or-fail.component';
-import { MatDialogModule } from '@angular/material';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { AppVersion } from '@ionic-native/app-version/ngx';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AngularDelegate } from '@ionic/angular';
+import {OperationSuccessOrFailComponent} from './operation-success-or-fail.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {AppVersion} from '@ionic-native/app-version/ngx';
+import {RouterTestingModule} from '@angular/router/testing';
+import {AngularDelegate} from '@ionic/angular';
 
 describe('OperationSuccessOrFailComponent', () => {
   let component: OperationSuccessOrFailComponent;
@@ -21,16 +21,16 @@ describe('OperationSuccessOrFailComponent', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           AngularDelegate,
-          { provide: Router, useValue: {} },
+          {provide: Router, useValue: {}},
           {
             provide: HttpClient,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: AppVersion,
-            useValue: {},
-          },
-        ],
+            useValue: {}
+          }
+        ]
       }).compileComponents();
     })
   );

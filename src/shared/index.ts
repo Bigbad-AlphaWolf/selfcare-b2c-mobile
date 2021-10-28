@@ -427,9 +427,9 @@ export function getListPassFilteredByLabelAndPaymentMod(
   let listPassFiltered = [];
   listPassFiltered = listPass.filter((pass: any) => {
     if (!pass.passPromo) {
-      return pass.categoriePass.libelle === selectedLabel;
+      return pass.categoriePass?.libelle === selectedLabel;
     } else {
-      return pass.passPromo.categoriePass.libelle === selectedLabel;
+      return pass.passPromo?.categoriePass?.libelle === selectedLabel;
     }
   });
 
@@ -447,15 +447,15 @@ export function arrangePassByCategory(listPass: any[], listCategory: string[]) {
     if (!pass.passPromo) {
       result
         .find((item: { label: string; pass: any[] }) => {
-          return item.label === pass.categoriePass.libelle;
+          return item.label === pass?.categoriePass?.libelle;
         })
-        .pass.push(pass);
+        ?.pass.push(pass);
     } else {
       result
         .find((item: { label: string; pass: any[] }) => {
-          return item.label === pass.passPromo.categoriePass.libelle;
+          return item.label === pass.passPromo?.categoriePass?.libelle;
         })
-        .pass.push(pass);
+        ?.pass.push(pass);
     }
   });
 

@@ -5,10 +5,11 @@ import {
   PAY_WITH_CREDIT,
   PAYMENT_MOD_NEXT_RECHARGE,
 } from 'src/shared';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { SosService } from '../services/sos-service/sos.service';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'app-buy-sos',
@@ -32,7 +33,8 @@ export class BuySosPage implements OnInit {
     private dashServ: DashboardService,
     public dialog: MatDialog,
     private sosService: SosService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {}
@@ -104,11 +106,19 @@ export class BuySosPage implements OnInit {
             amount: `${amount} FCFA`,
             fees: `${this.selectedSos.frais} FCFA`,
           };
-          // FollowAnalytics.logEvent('EmergencyCredit_Success', followDetails);
+          this.followAnalyticsService.registerEventFollow(
+            'EmergencyCredit_Success',
+            'event',
+            followDetails
+          );
           this.step = 2;
         } else {
           const followDetails = { error_code: response_msg };
-          // FollowAnalytics.logError('EmergencyCredit_Error', followDetails);
+          this.followAnalyticsService.registerEventFollow(
+            'EmergencyCredit_Error',
+            'error',
+            followDetails
+          );
           this.failed = true;
           this.errorMsg = response_msg;
           this.step = 2;

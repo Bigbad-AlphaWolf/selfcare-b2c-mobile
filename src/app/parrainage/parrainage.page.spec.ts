@@ -1,14 +1,14 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { ParrainagePage } from './parrainage.page';
-import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { AngularDelegate, ModalController } from '@ionic/angular';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material';
-import { of } from 'rxjs';
-import { RouterTestingModule } from '@angular/router/testing';
+import {ParrainagePage} from './parrainage.page';
+import {ReactiveFormsModule} from '@angular/forms';
+import {HttpClient} from '@angular/common/http';
+import {Router} from '@angular/router';
+import {AngularDelegate, ModalController} from '@ionic/angular';
+import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {of} from 'rxjs';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('ParrainagePage', () => {
   let component: ParrainagePage;
@@ -27,13 +27,13 @@ describe('ParrainagePage', () => {
             useValue: {
               get() {
                 return of();
-              },
-            },
+              }
+            }
           },
-          { provide: ModalController },
-          { provide: MatDialog },
-          { provide: MatDialogRef, useValue: {} },
-        ],
+          {provide: ModalController},
+          {provide: MatDialog},
+          {provide: MatDialogRef, useValue: {}}
+        ]
       }).compileComponents();
     })
   );

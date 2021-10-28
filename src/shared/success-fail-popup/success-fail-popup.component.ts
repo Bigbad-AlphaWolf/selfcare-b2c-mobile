@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Router } from '@angular/router';
-import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import {Component, OnInit, Inject} from '@angular/core';
+import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
 
 @Component({
   selector: 'app-success-fail-popup',

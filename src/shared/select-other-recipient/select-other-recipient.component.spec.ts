@@ -1,46 +1,47 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { SelectOtherRecipientComponent } from './select-other-recipient.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { of } from 'rxjs';
-import { Contacts } from '@ionic-native/contacts';
-import { MatDialog } from '@angular/material';
+import {SelectOtherRecipientComponent} from './select-other-recipient.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
+import {of} from 'rxjs';
+import {Contacts} from '@ionic-native/contacts';
+import {MatDialog} from '@angular/material/dialog';
 
 describe('SelectOtherRecipientComponent', () => {
   let component: SelectOtherRecipientComponent;
   let fixture: ComponentFixture<SelectOtherRecipientComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule],
-      declarations: [ SelectOtherRecipientComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: AuthenticationService,
-          useValue: {
-            isPostpaid:() => {
-              return of()
-            },
-            getSubscription:() => {
-              return of()
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ReactiveFormsModule],
+        declarations: [SelectOtherRecipientComponent],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          {
+            provide: AuthenticationService,
+            useValue: {
+              isPostpaid: () => {
+                return of();
+              },
+              getSubscription: () => {
+                return of();
+              }
             }
+          },
+          {
+            provide: Contacts,
+            useValue: {}
+          },
+          {
+            provide: MatDialog,
+            useValue: {}
           }
-        },
-        {
-          provide: Contacts,
-          useValue: {}
-        },
-        {
-          provide: MatDialog,
-          useValue: {}
-        }
-      ]
+        ]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectOtherRecipientComponent);

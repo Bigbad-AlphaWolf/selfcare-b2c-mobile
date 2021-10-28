@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
 import {ModalController} from '@ionic/angular';
 import {CreateSponsorFormComponent} from './create-sponsor-form/create-sponsor-form.component';
 import {SponseeModel} from 'src/shared';
