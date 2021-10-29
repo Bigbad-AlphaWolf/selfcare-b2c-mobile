@@ -1,12 +1,14 @@
 <div class="act-item" (click)="doAction()" *ngIf="!search">
   <img-loader [spinner]="true" class="img" [src]="imageUrl" fallbackUrl="assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
 
-  <div class="act-description scb-text-gray">{{action?.shortDescription}}</div>
+  <div *ngIf="action?.besoinAide" class="act-description scb-text-gray">{{action?.shortDescription}}</div>
+  <div *ngIf="!action?.besoinAide" class="act-description scb-text-gray">{{action?.titre + ' ' + action?.description}}</div>
 </div>
 
 
 <div class="item-action" (click)="doAction()" *ngIf="search">
     <img-loader [spinner]="true" class="action-img" [src]="imageUrl" fallbackUrl="assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
-    <span class="action-text">{{action?.shortDescription}}</span>
+    <span *ngIf="action?.besoinAide" class="action-text">{{action?.shortDescription}}</span>
+    <span *ngIf="!action?.besoinAide" class="action-text">{{action?.titre + ' ' + action?.description}}</span>
     <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
 </div>
