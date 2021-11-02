@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { UrlSerializer } from '@angular/router';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { IonicModule } from '@ionic/angular';
 import { of } from 'rxjs';
@@ -19,6 +20,7 @@ describe('NewServicesPage', () => {
           {
             provide: AppVersion,
           },
+          { provide: UrlSerializer, useValue: {} },
           {
             provide: HttpClient,
             useValue: {

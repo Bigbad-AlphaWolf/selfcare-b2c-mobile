@@ -1,26 +1,39 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { ModalController, NavController } from '@ionic/angular';
+import {
+  ModalController,
+  NavController,
+  ToastController,
+} from '@ionic/angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { WoyofalSelectionComponent } from 'src/app/components/counter/woyofal-selection/woyofal-selection.component';
 import { KioskLocatorPopupComponent } from 'src/app/components/kiosk-locator-popup/kiosk-locator-popup.component';
+import { NumberSelectionOption } from 'src/app/models/enums/number-selection-option.enum';
 import { OffreService } from 'src/app/models/offre-service.model';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
+import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
 import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
+import {
+  OPERATION_TYPE_PASS_USAGE,
+  OPERATION_WOYOFAL,
+} from 'src/app/utils/operations.constants';
 import {
   FIND_AGENCE_EXTERNAL_URL,
   CHECK_ELIGIBILITY_EXTERNAL_URL,
   OPERATION_INIT_CHANGE_PIN_OM,
-	OPERATION_RATTACH_NUMBER,
+  OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_RATTACH_NUMBER,
 } from 'src/shared';
+import { MerchantPaymentCodeComponent } from '../merchant-payment-code/merchant-payment-code.component';
 import { OmStatusVisualizationComponent } from '../om-status-visualization/om-status-visualization.component';
-
-
 @Component({
   selector: 'app-action-item',
   templateUrl: './action-item.component.html',
@@ -38,8 +51,10 @@ export class ActionItemComponent implements OnInit {
     private inAppBrowser: InAppBrowser,
     private modalController: ModalController,
     private dashbServ: DashboardService,
-		private navController: NavController,
-		private bsService: BottomSheetService
+    private toastController: ToastController,
+    private bsService: BottomSheetService,
+    private orangeMoneyService: OrangeMoneyService,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -48,7 +63,88 @@ export class ActionItemComponent implements OnInit {
       : null;
   }
 
+  async showServiceUnavailableToast() {
+    const toast = await this.toastController.create({
+      header: 'Service indisponible',
+      message: this.action.reasonDeactivation,
+      duration: 3000,
+      position: 'middle',
+      color: 'medium',
+    });
+    toast.present();
+  }
+
+  openMerchantBS() {
+    this.orangeMoneyService
+      .omAccountSession()
+      .subscribe(async (omSession: any) => {
+        const omSessionValid = omSession
+          ? omSession.msisdn !== 'error' &&
+            omSession.hasApiKey &&
+            !omSession.loginExpired
+          : null;
+        if (omSessionValid) {
+          this.bsService
+            .initBsModal(
+              MerchantPaymentCodeComponent,
+              OPERATION_TYPE_MERCHANT_PAYMENT,
+              PurchaseSetAmountPage.ROUTE_PATH
+            )
+            .subscribe((_) => {});
+          this.bsService.openModal(MerchantPaymentCodeComponent);
+        } else {
+          this.openPinpad();
+        }
+      });
+  }
+
   doAction() {
+    if (!this.action.activated) {
+      this.showServiceUnavailableToast();
+      // this.service.clicked = !this.service.clicked;
+      return;
+    }
+    if (this.action.passUsage) {
+      this.bsService.openNumberSelectionBottomSheet(
+        NumberSelectionOption.WITH_MY_PHONES,
+        OPERATION_TYPE_PASS_USAGE,
+        'list-pass-usage',
+        false,
+        this.action
+      );
+      return;
+    }
+    this.bsService.opXtras.billData = { company: this.action };
+    if (this.action.code === OPERATION_TYPE_MERCHANT_PAYMENT) {
+      this.openMerchantBS();
+      return;
+    }
+    if (this.action.redirectionType === 'NAVIGATE') {
+      this.navController.navigateForward([this.action.redirectionPath], {
+        state: { purchaseType: this.action.code },
+      });
+      return;
+    }
+    if (this.action.code === OPERATION_WOYOFAL) {
+      this.bsService
+        .initBsModal(
+          WoyofalSelectionComponent,
+          OPERATION_WOYOFAL,
+          BillAmountPage.ROUTE_PATH
+        )
+        .subscribe((_) => {});
+      this.bsService.openModal(WoyofalSelectionComponent);
+      return;
+    }
+    if (this.bsService[this.action.redirectionType]) {
+      const params = [
+        NumberSelectionOption.WITH_MY_PHONES,
+        this.action.code,
+        this.action.redirectionPath,
+      ];
+      this.bsService[this.action.redirectionType](...params);
+      return;
+    }
     switch (this.action.code) {
       case 'FIBRE_OPTIC':
         this.goFiberEligibility();
@@ -101,24 +197,24 @@ export class ActionItemComponent implements OnInit {
       case 'SHARE_THE_APP':
         this.bsService.defaulSharingSheet();
         break;
-			case OPERATION_RATTACH_NUMBER:
-				this.bsService.openRattacheNumberModal();
-				break;
-			default:
-					if (this.action?.redirectionType === 'NAVIGATE') {
-						this.followAnalyticsService.registerEventFollow(
-						 'Offre_service_' +	this.action?.code + '_clic',
-							'event'
-						);
-						this.navController.navigateForward([this.action.redirectionPath], {
-							state: { purchaseType: this.action?.code },
-						});
-					}
-					break;
+      case OPERATION_RATTACH_NUMBER:
+        this.bsService.openRattacheNumberModal();
+        break;
+      default:
+        if (this.action?.redirectionType === 'NAVIGATE') {
+          this.followAnalyticsService.registerEventFollow(
+            'Offre_service_' + this.action?.code + '_clic',
+            'event'
+          );
+          this.navController.navigateForward([this.action.redirectionPath], {
+            state: { purchaseType: this.action?.code },
+          });
+        }
+        break;
     }
   }
 
-	async openOMStatus() {
+  async openOMStatus() {
     const modal = await this.modalController.create({
       component: OmStatusVisualizationComponent,
       cssClass: 'select-recipient-modal',

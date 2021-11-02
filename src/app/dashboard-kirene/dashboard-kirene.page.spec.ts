@@ -1,18 +1,20 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import {DashboardKirenePage} from './dashboard-kirene.page';
-import {FormatCurrencyPipe} from 'src/shared/pipes/format-currency.pipe';
-import {HttpClient} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {MatDialog} from '@angular/material/dialog';
-import {of} from 'rxjs';
-import {DashboardService} from '../services/dashboard-service/dashboard.service';
-import {AuthenticationService} from '../services/authentication-service/authentication.service';
-import {BanniereService} from '../services/banniere-service/banniere.service';
-import {AssistanceService} from '../services/assistance.service';
-import {SargalService} from '../services/sargal-service/sargal.service';
-import {ModalController} from '@ionic/angular';
+import { DashboardKirenePage } from './dashboard-kirene.page';
+import { FormatCurrencyPipe } from 'src/shared/pipes/format-currency.pipe';
+import { HttpClient } from '@angular/common/http';
+import { Router, UrlSerializer } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { of } from 'rxjs';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { BanniereService } from '../services/banniere-service/banniere.service';
+import { AssistanceService } from '../services/assistance.service';
+import { SargalService } from '../services/sargal-service/sargal.service';
+import { ModalController } from '@ionic/angular';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 
 describe('DashboardKirenePage', () => {
   let component: DashboardKirenePage;
@@ -44,8 +46,8 @@ describe('DashboardKirenePage', () => {
               },
               getMainPhoneNumber: () => {
                 return '';
-              }
-            }
+              },
+            },
           },
           {
             provide: AuthenticationService,
@@ -53,8 +55,8 @@ describe('DashboardKirenePage', () => {
               getSubscription: () => {
                 return of({});
               },
-              logout: () => {}
-            }
+              logout: () => {},
+            },
           },
           {
             provide: BanniereService,
@@ -64,41 +66,42 @@ describe('DashboardKirenePage', () => {
               },
               setListBanniereByFormule: () => {},
               getListBanniereByFormule: () => {
-                return {};
+                return of({});
               },
               getListBanniereByFormuleByZone: () => {
-                return of();
-              }
-            }
+                return of({});
+              },
+            },
           },
           {
             provide: AssistanceService,
             useValue: {
               tutoViewed: () => {
                 return of({});
-              }
-            }
+              },
+            },
           },
           {
             provide: SargalService,
             useValue: {
               getSargalBalance: () => {
                 return of({});
-              }
-            }
+              },
+            },
           },
-          {provide: Router, useValue: {}},
-          {provide: MatDialog, useValue: {}},
-          {provide: Router, useValue: {}},
+          { provide: Router, useValue: {} },
+          { provide: UrlSerializer },
+          { provide: MatBottomSheet, useValue: {} },
+          { provide: MatDialog, useValue: {} },
           {
             provide: HttpClient,
-            useValue: {}
+            useValue: {},
           },
           {
             provide: ModalController,
-            useValue: {}
-          }
-        ]
+            useValue: {},
+          },
+        ],
       }).compileComponents();
     })
   );
