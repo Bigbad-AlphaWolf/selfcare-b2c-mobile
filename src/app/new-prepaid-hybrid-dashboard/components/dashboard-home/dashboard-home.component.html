@@ -15,7 +15,7 @@
 
 <div class="absolute-block" [ngClass]="{'is-block-ios': isIos}">
   <div class="search-bloc search-bloc1">
-    <ion-searchbar placeholder="Que souhaitez-vous ?"></ion-searchbar>
+    <app-services-search-bar [source]="'DASHBOARD'"></app-services-search-bar>
   </div>
 </div>
 <ion-content class="home-dashboard-content" #scrollArea [scrollEvents]="true" [appScrollVanish]="scrollArea"

@@ -30,9 +30,10 @@ import {
   CHECK_ELIGIBILITY_EXTERNAL_URL,
   OPERATION_INIT_CHANGE_PIN_OM,
   OPERATION_TYPE_MERCHANT_PAYMENT,
+  OPERATION_RATTACH_NUMBER,
 } from 'src/shared';
 import { MerchantPaymentCodeComponent } from '../merchant-payment-code/merchant-payment-code.component';
-
+import { OmStatusVisualizationComponent } from '../om-status-visualization/om-status-visualization.component';
 @Component({
   selector: 'app-action-item',
   templateUrl: './action-item.component.html',
@@ -190,9 +191,35 @@ export class ActionItemComponent implements OnInit {
       case 'BLOCK_TRANSFER':
         this.openBlockTransferModal();
         break;
+      case 'OM_PLAFOND_INFOS':
+        this.openOMStatus();
+        break;
+      case 'SHARE_THE_APP':
+        this.bsService.defaulSharingSheet();
+        break;
+      case OPERATION_RATTACH_NUMBER:
+        this.bsService.openRattacheNumberModal();
+        break;
       default:
+        if (this.action?.redirectionType === 'NAVIGATE') {
+          this.followAnalyticsService.registerEventFollow(
+            'Offre_service_' + this.action?.code + '_clic',
+            'event'
+          );
+          this.navController.navigateForward([this.action.redirectionPath], {
+            state: { purchaseType: this.action?.code },
+          });
+        }
         break;
     }
+  }
+
+  async openOMStatus() {
+    const modal = await this.modalController.create({
+      component: OmStatusVisualizationComponent,
+      cssClass: 'select-recipient-modal',
+    });
+    return await modal.present();
   }
 
   async openKioskLocatorModal() {
