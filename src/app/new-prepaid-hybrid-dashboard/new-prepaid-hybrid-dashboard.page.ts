@@ -1,17 +1,17 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {ASSISTANCE, CONSO} from 'src/shared';
-import {SwiperOptions} from 'swiper';
-import {SwiperComponent} from 'swiper/angular';
-import {NewAssistanceHubV2Page} from '../new-assistance-hub-v2/new-assistance-hub-v2.page';
-import {NewServicesPage} from '../new-services/new-services.page';
-import {NewSuiviConsoPage} from '../new-suivi-conso/new-suivi-conso.page';
-import {DashboardService} from '../services/dashboard-service/dashboard.service';
-import {DashboardHomeComponent} from './components/dashboard-home/dashboard-home.component';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ASSISTANCE, CONSO, SERVICES } from 'src/shared';
+import { SwiperOptions } from 'swiper';
+import { SwiperComponent } from 'swiper/angular';
+import { NewAssistanceHubV2Page } from '../new-assistance-hub-v2/new-assistance-hub-v2.page';
+import { NewServicesPage } from '../new-services/new-services.page';
+import { NewSuiviConsoPage } from '../new-suivi-conso/new-suivi-conso.page';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { DashboardHomeComponent } from './components/dashboard-home/dashboard-home.component';
 
 @Component({
   selector: 'app-new-prepaid-hybrid-dashboard',
   templateUrl: './new-prepaid-hybrid-dashboard.page.html',
-  styleUrls: ['./new-prepaid-hybrid-dashboard.page.scss']
+  styleUrls: ['./new-prepaid-hybrid-dashboard.page.scss'],
 })
 export class NewPrepaidHybridDashboardPage implements OnInit {
   tabs = [
@@ -19,46 +19,57 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
       defaultIcon: 'home-outline',
       activeIcon: 'home',
       label: 'Accueil',
-      route: 'dashboard-home'
+      route: 'dashboard-home',
     },
     {
       defaultIcon: 'pie-chart-outline',
       activeIcon: 'pie-chart',
       label: 'Conso',
-      route: 'suivi-conso'
+      route: 'suivi-conso',
     },
     {
       defaultIcon: 'bag-outline',
       activeIcon: 'bag',
       label: 'Services',
-      route: 'my-services'
+      route: 'my-services',
     },
     {
       defaultIcon: 'help-buoy-outline',
       activeIcon: 'help-buoy',
       label: 'Assistance',
-      route: 'assistance'
-    }
+      route: 'assistance',
+    },
   ];
   currentSlideIndex = 0;
-  @ViewChild('swiper', {static: false})
+  @ViewChild('swiper', { static: false })
   swiper: SwiperComponent;
   @ViewChild(DashboardHomeComponent) dashboarHome: DashboardHomeComponent;
   @ViewChild(NewSuiviConsoPage) newSuiviConsoPage: NewSuiviConsoPage;
   @ViewChild(NewServicesPage) newServicesPage: NewServicesPage;
   @ViewChild(NewAssistanceHubV2Page) newAssistancePage: NewAssistanceHubV2Page;
   swiperConfig: SwiperOptions = {
-    slidesPerView: 1
+    slidesPerView: 1,
   };
-  constructor(private ref: ChangeDetectorRef, private dashboardService: DashboardService) {}
+  constructor(
+    private ref: ChangeDetectorRef,
+    private dashboardService: DashboardService
+  ) {}
 
   ngOnInit() {
-    this.dashboardService.listenToMenuClick().subscribe(menuItem => {
+    this.dashboardService.listenToMenuClick().subscribe((menuItem) => {
       console.log(menuItem);
-      if (menuItem === CONSO) {
-        this.setSlide(1);
-      } else if (menuItem === ASSISTANCE) {
-        this.setSlide(3);
+      switch (menuItem) {
+        case CONSO:
+          this.setSlide(1);
+          break;
+        case SERVICES:
+          this.setSlide(2);
+          break;
+        case ASSISTANCE:
+          this.setSlide(3);
+          break;
+        default:
+          break;
       }
     });
   }
