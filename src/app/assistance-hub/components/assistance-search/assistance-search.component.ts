@@ -35,6 +35,7 @@ export class AssistanceSearchComponent implements OnInit {
   ngOnInit() {
     //this.listBesoinAidesAltered = this.listBesoinAides =
     //  history.state && history.state.listBesoinAides ? history.state.listBesoinAides : [];
+    this.initSearchRef();
     this.followAnalyticsService.registerEventFollow('Assistance_search_page_affichage_success', 'event');
   }
 
