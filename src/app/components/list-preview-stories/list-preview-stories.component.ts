@@ -1,9 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {AnimationController, ModalController} from '@ionic/angular';
+import {AnimationController, ModalController, Platform} from '@ionic/angular';
 import {of} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
 import {Story} from 'src/app/models/story-oem.model';
 import {StoriesService} from 'src/app/services/stories-service/stories.service';
+import { VisualizeStoriesByCategoriesComponent } from '../visualize-stories-by-categories/visualize-stories-by-categories.component';
 import {VisualizeStoriesComponent} from '../visualize-stories/visualize-stories.component';
 
 @Component({
@@ -19,6 +20,7 @@ export class ListPreviewStoriesComponent implements OnInit {
       ordre?: number;
       code?: string;
       zoneAffichage?: string;
+			image?: string;
     };
     stories: Story[];
     readAll: boolean;
@@ -26,7 +28,10 @@ export class ListPreviewStoriesComponent implements OnInit {
   @Input() isLoadingStories: boolean;
   @Input() hasError: boolean;
 	@Input() areDataLoadedExternally: boolean;
-  constructor(public modalController: ModalController, public animationCtrl: AnimationController, private storiesService: StoriesService) {}
+	isWeb: boolean;
+  constructor(public modalController: ModalController, public animationCtrl: AnimationController, private storiesService: StoriesService, private platform: Platform) {
+		this.isWeb = platform.is('mobileweb')
+	}
 
   ngOnInit() {
 		if(!this.areDataLoadedExternally) this.fetchUserStories();
@@ -66,19 +71,32 @@ export class ListPreviewStoriesComponent implements OnInit {
     },
     index: number
   ) {
-    const modal = await this.modalController.create({
-      component: VisualizeStoriesComponent,
-      backdropDismiss: true,
-      swipeToClose: true,
-      mode: 'ios',
-      presentingElement: await this.modalController.getTop(),
-      componentProps: {
-        index,
-        storyByCategory: item
-      }
-    });
+		let modal;
+		if(item?.readAll) {
+			modal = await this.modalController.create({
+				component: VisualizeStoriesComponent,
+				backdropDismiss: true,
+				swipeToClose: true,
+				mode: 'ios',
+				presentingElement: await this.modalController.getTop(),
+				componentProps: {
+					index,
+					storyByCategory: item
+				}
+			});
+		} else {
+			modal = await this.modalController.create({
+				component: VisualizeStoriesByCategoriesComponent,
+				backdropDismiss: true,
+				swipeToClose: true,
+				mode: 'ios',
+				presentingElement: await this.modalController.getTop(),
+				componentProps: {
+					allStories: this.storiesByCategory
+				}
+			});
+		}
     modal.onDidDismiss().then((res: {data: any}) => {
-      console.log('closeModal', res);
 			if(res?.data) {
 				this.updateInternalStoriesListe(res?.data?.index, res?.data?.storyByCategory)
 			} else {

@@ -1,9 +1,11 @@
 import {
 	ChangeDetectorRef,
 	Component,
+  EventEmitter,
   Input,
   OnDestroy,
   OnInit,
+  Output,
   QueryList,
   ViewChild,
   ViewChildren,
@@ -39,6 +41,8 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 		readAll: boolean;
 	};
 	@Input() index: number;
+	@Input() view: 'SINGLE_CATEGORY' | 'ALL_CATEGORIES' = 'SINGLE_CATEGORY';
+	@Output() action = new EventEmitter();
   private slides;
   @ViewChildren(StoriesProgressBarComponent)
   storiesProgressBarView: QueryList<StoriesProgressBarComponent>;
@@ -47,7 +51,15 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   currentSlideIndex = 0;
 	@ViewChild('slides', { static: false }) swiper?: SwiperComponent;
 	config: SwiperOptions = {
-		init: false
+		init: false,
+		effect: 'fade',
+		fadeEffect: {
+			crossFade: true
+		},
+		navigation: {
+			nextEl: '.right',
+			prevEl: '.left'
+		}
 	};
   constructor(private modalCtrl: ModalController, private navCtrl: NavController, private iab: InAppBrowser, private storiesServ: StoriesService, private cd: ChangeDetectorRef) {
 	}
@@ -71,7 +83,13 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 	}
 
   close() {
-    this.modalCtrl.dismiss({ storyByCategory: this.storyByCategory, index: this.index});
+		if(this.view === 'SINGLE_CATEGORY') {
+			this.modalCtrl.dismiss({ storyByCategory: this.storyByCategory, index: this.index})
+		} else {
+			this.action.emit({
+				finish: true
+			})
+		}
   }
 
 	setSwiperInstance(ev) {
@@ -130,8 +148,8 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 	seeStory() {
 		const storyComponent: VisualizeStoryComponent =
       this.storiesView.toArray()[this.currentSlideIndex];
-			if(!storyComponent.story.read) {
-				this.storiesServ.seeStory(storyComponent.story).pipe(
+			if(!storyComponent?.story?.read) {
+				this.storiesServ.seeStory(storyComponent?.story).pipe(
 					tap((res: any) => {
 						storyComponent.userReadStory();
 						this.setStoryReadAttribute();

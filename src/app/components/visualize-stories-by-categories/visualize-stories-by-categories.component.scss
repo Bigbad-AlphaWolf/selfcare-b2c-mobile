@@ -1,0 +1,15 @@
+@import "src/app/app";
+@import '~swiper/swiper';
+@import '~@ionic/angular/css/ionic-swiper';
+
+.container {
+  height: 100%;
+  .swiper-container {
+    height: 100%;
+    app-visualize-stories {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}

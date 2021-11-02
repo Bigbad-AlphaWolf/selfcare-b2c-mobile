@@ -42,6 +42,7 @@ export class StoriesService {
       ordre?: number;
       code?: string;
       zoneAffichage?: string;
+      image: string;
     };
     stories: Story[];
     readAll: boolean;
@@ -52,6 +53,7 @@ export class StoriesService {
         ordre: number;
         code: string;
         zoneAffichage: string;
+        image: string;
       };
       stories: Story[];
       readAll: boolean;
@@ -61,6 +63,7 @@ export class StoriesService {
       ordre: number;
       code: string;
       zoneAffichage: string;
+      image: string;
     }[] = list.map(item => {
       return item.categorieOffreService;
     });

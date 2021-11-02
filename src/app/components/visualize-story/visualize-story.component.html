@@ -3,9 +3,11 @@
 
 	<ng-container *ngIf="isCurrentStory">
 		<ng-container *ngIf="story?.type !== 'VIDEO'">
-			<img *ngIf="isWeb" [src]="story?.storyContent | displayFileManagerImage" alt="" (load)="imageLoaded($event)">
-			<img-loader *ngIf="!isWeb" [src]="story?.storyContent | displayFileManagerImage" (load)="imageLoaded($event)" [imgAttributes]="imageAttributes" useImg ></img-loader>
-
+			<img *ngIf="isWeb" [src]="story?.storyContent | displayFileManagerImage" alt="" (error)="handleErrorLoading($event)" (load)="imageLoaded($event)">
+			<img-loader *ngIf="!isWeb" [src]="story?.storyContent | displayFileManagerImage" (error)="handleErrorLoading($event)" (load)="imageLoaded($event)" [imgAttributes]="imageAttributes" useImg ></img-loader>
+			<div class="error" *ngIf="hasErrorLoading">
+				Impossible de charger l'image
+			</div>
 			<audio #audioOrVideo *ngIf="story?.audio" class="hide" preload="metadata" (loadedmetadata)="getInfoMetaData($event)" (canplay)="canPlay($event)" autoplay>
 				<source [src]="story?.audio | displayFileManagerImage" type="audio/mp3" />
 				Your browser does not support the audio tag.

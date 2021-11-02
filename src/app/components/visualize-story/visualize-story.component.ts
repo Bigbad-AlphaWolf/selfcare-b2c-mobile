@@ -32,7 +32,7 @@ export class VisualizeStoryComponent implements OnInit {
 		element: 'class',
 		value: 'img-full-width'
 	}];
-
+	hasErrorLoading: boolean;
   constructor(private ref: ChangeDetectorRef, private platform: Platform) {
 		this.isWeb = platform.is('mobileweb')
 	}
@@ -78,6 +78,7 @@ export class VisualizeStoryComponent implements OnInit {
   }
 
   imageLoaded(event: any) {
+		this.hasErrorLoading = false;
     this.isLoading = false;
     this.imageReady.emit(this.isCurrentStory);
 		this.ref.detectChanges()
@@ -90,5 +91,11 @@ export class VisualizeStoryComponent implements OnInit {
 	userReadStory() {
 		this.story.read = true;
 		this.ref.detectChanges();
+	}
+
+	handleErrorLoading(event: any) {
+		this.hasErrorLoading = true;
+		this.isLoading = false;
+		this.ref.detectChanges()
 	}
 }
