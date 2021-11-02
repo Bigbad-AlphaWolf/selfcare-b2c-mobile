@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {ModalController, NavController} from '@ionic/angular';
 import {MatDialog} from '@angular/material/dialog';
 import {SelectBeneficiaryPopUpComponent} from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
-import {PurchaseSetAmountPage} from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import {NumberSelectionOption} from 'src/app/models/enums/number-selection-option.enum';
 import {NumberSelectionComponent} from 'src/app/components/number-selection/number-selection.component';
 import {OperationExtras} from 'src/app/models/operation-extras.model';
@@ -26,7 +25,6 @@ import {RattachNumberModalComponent} from 'src/app/pages/rattached-phones-number
 import {RattachNumberByIdCardComponent} from 'src/app/pages/rattached-phones-number/components/rattach-number-by-id-card/rattach-number-by-id-card.component';
 import {ModalSuccessComponent} from 'src/shared/modal-success/modal-success.component';
 import {RattachNumberByClientCodeComponent} from 'src/app/pages/rattached-phones-number/components/rattach-number-by-client-code/rattach-number-by-client-code.component';
-import {DashboardService} from '../dashboard-service/dashboard.service';
 import {FollowAnalyticsService} from '../follow-analytics/follow-analytics.service';
 import {IdentifiedNumbersListComponent} from 'src/app/pages/rattached-phones-number/components/identified-numbers-list/identified-numbers-list.component';
 import {RattachedNumber} from 'src/app/models/rattached-number.model';
@@ -34,9 +32,9 @@ import {ChooseRattachementTypeModalComponent} from 'src/app/pages/rattached-phon
 import {BannierePubModel} from '../dashboard-service';
 import {BanniereDescriptionPage} from 'src/app/pages/banniere-description/banniere-description.page';
 import {OffreService} from 'src/app/models/offre-service.model';
-import {OPERATION_RECHARGE_CREDIT} from 'src/app/utils/operations.constants';
 import {TransferSetAmountPage} from 'src/app/transfer-set-amount/transfer-set-amount.page';
 import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet';
+import {SocialSharing} from '@ionic-native/social-sharing/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +50,8 @@ export class BottomSheetService {
     private navCtl: NavController,
     private omService: OrangeMoneyService,
     private dialog: MatDialog,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private socialSharing: SocialSharing
   ) {}
 
   initBsModal(comp: any, purchaseType: string, routePath: string) {
@@ -205,6 +204,7 @@ export class BottomSheetService {
   }
 
   async openRattacheNumberModal(phoneNumber?: string) {
+		this.followAnalyticsService.registerEventFollow('Ouverture_modal_rattachement_numéros', 'event');
     const modal = await this.modalCtrl.create({
       component: RattachNumberModalComponent,
       componentProps: {
@@ -215,9 +215,9 @@ export class BottomSheetService {
 
     modal.onDidDismiss().then((res: any) => {
       res = res.data;
-      if (res && res.direction === 'ORANGE_NUMBERS') {
+      if (res && res?.direction === 'ORANGE_NUMBERS') {
         this.openIdentifiedNumbersList();
-      } else if (res.direction === 'FORWARD') {
+      } else if (res?.direction === 'FORWARD') {
         const numero = res.numeroToRattach;
         const typeRattachment = res.typeRattachment;
         if (typeRattachment === 'FIXE') {
@@ -400,5 +400,19 @@ export class BottomSheetService {
     console.log('follow', followEvent, payload);
 
     this.followAnalyticsService.registerEventFollow(followEvent, 'event', payload);
+  }
+
+  defaulSharingSheet() {
+    this.followAnalyticsService.registerEventFollow('Partager_app_menu', 'event');
+    const url = 'http://bit.ly/2NHn5aS';
+    const postTitle =
+      "Comme moi télécharge et connecte toi gratuitement sur l'application " +
+      'Orange et Moi Fi rek la http://onelink.to/6h78t2 ou sur www.orangeetmoi.sn ' +
+      'Bu ande ak simplicité ak réseau mo gën #WaawKay';
+    const hashtag = '#WaawKay';
+
+    this.socialSharing.share(postTitle, null, null, url).then().catch((err: any) => {
+      console.log('Cannot open default sharing sheet' + err);
+    });
   }
 }

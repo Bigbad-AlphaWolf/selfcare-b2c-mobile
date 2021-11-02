@@ -177,8 +177,6 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   fetchUserStories() {
-    console.log('called');
-
     this.isLoadingStories = true;
     this.storiesByCategory = [];
     this.hasError = false;
@@ -187,10 +185,6 @@ export class DashboardHomeComponent implements OnInit {
       .pipe(
         tap((res: any) => {
           this.isLoadingStories = false;
-          console.log(
-            'groupeStoriesByCategory',
-            this.storiesService.groupeStoriesByCategory(res)
-          );
           this.storiesByCategory =
             this.storiesService.groupeStoriesByCategory(res);
         }),

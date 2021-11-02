@@ -71,6 +71,7 @@ import {FaqItemComponent} from './faq-item/faq-item.component';
 import {ActionItemComponent} from './action-item/action-item.component';
 import {KioskLocatorPopupComponent} from 'src/app/components/kiosk-locator-popup/kiosk-locator-popup.component';
 import {OmStatusVisualizationComponent} from './om-status-visualization/om-status-visualization.component';
+import {ServicesSearchBarComponent} from './services-search-bar/services-search-bar.component';
 
 @NgModule({
   declarations: [
@@ -130,7 +131,8 @@ import {OmStatusVisualizationComponent} from './om-status-visualization/om-statu
     FaqItemComponent,
     ActionItemComponent,
     KioskLocatorPopupComponent,
-    OmStatusVisualizationComponent
+    OmStatusVisualizationComponent,
+    ServicesSearchBarComponent
   ],
   imports: [CommonModule, IonicImageLoader, RouterModule, ComponentsModule, MaterialComponentsModule, PipesModule],
   entryComponents: [
@@ -222,7 +224,8 @@ import {OmStatusVisualizationComponent} from './om-status-visualization/om-statu
     OffreServiceCardV2Component,
     FaqItemComponent,
     ActionItemComponent,
-    OmStatusVisualizationComponent
+    OmStatusVisualizationComponent,
+    ServicesSearchBarComponent
   ],
   providers: [Contacts, SocialSharing, {provide: MAT_BOTTOM_SHEET_DATA, useValue: {}}],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

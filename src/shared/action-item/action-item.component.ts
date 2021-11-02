@@ -1,12 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { KioskLocatorPopupComponent } from 'src/app/components/kiosk-locator-popup/kiosk-locator-popup.component';
 import { OffreService } from 'src/app/models/offre-service.model';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
@@ -15,7 +16,10 @@ import {
   FIND_AGENCE_EXTERNAL_URL,
   CHECK_ELIGIBILITY_EXTERNAL_URL,
   OPERATION_INIT_CHANGE_PIN_OM,
+	OPERATION_RATTACH_NUMBER,
 } from 'src/shared';
+import { OmStatusVisualizationComponent } from '../om-status-visualization/om-status-visualization.component';
+
 
 @Component({
   selector: 'app-action-item',
@@ -33,7 +37,9 @@ export class ActionItemComponent implements OnInit {
     private followAnalyticsService: FollowAnalyticsService,
     private inAppBrowser: InAppBrowser,
     private modalController: ModalController,
-    private dashbServ: DashboardService
+    private dashbServ: DashboardService,
+		private navController: NavController,
+		private bsService: BottomSheetService
   ) {}
 
   ngOnInit() {
@@ -89,9 +95,35 @@ export class ActionItemComponent implements OnInit {
       case 'BLOCK_TRANSFER':
         this.openBlockTransferModal();
         break;
-      default:
+      case 'OM_PLAFOND_INFOS':
+        this.openOMStatus();
         break;
+      case 'SHARE_THE_APP':
+        this.bsService.defaulSharingSheet();
+        break;
+			case OPERATION_RATTACH_NUMBER:
+				this.bsService.openRattacheNumberModal();
+				break;
+			default:
+					if (this.action?.redirectionType === 'NAVIGATE') {
+						this.followAnalyticsService.registerEventFollow(
+						 'Offre_service_' +	this.action?.code + '_clic',
+							'event'
+						);
+						this.navController.navigateForward([this.action.redirectionPath], {
+							state: { purchaseType: this.action?.code },
+						});
+					}
+					break;
     }
+  }
+
+	async openOMStatus() {
+    const modal = await this.modalController.create({
+      component: OmStatusVisualizationComponent,
+      cssClass: 'select-recipient-modal',
+    });
+    return await modal.present();
   }
 
   async openKioskLocatorModal() {
