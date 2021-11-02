@@ -1,11 +1,11 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatBottomSheet } from '@angular/material';
-import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {RouterTestingModule} from '@angular/router/testing';
+import {of} from 'rxjs';
+import {BottomSheetService} from 'src/app/services/bottom-sheet/bottom-sheet.service';
 
-import { RapidoOperationPage } from './rapido-operation.page';
+import {RapidoOperationPage} from './rapido-operation.page';
 
 describe('RapidoOperationPage', () => {
   let component: RapidoOperationPage;
@@ -18,7 +18,7 @@ describe('RapidoOperationPage', () => {
         imports: [RouterTestingModule],
         providers: [
           {
-            provide: MatBottomSheet,
+            provide: MatBottomSheet
           },
           {
             provide: BottomSheetService,
@@ -28,11 +28,11 @@ describe('RapidoOperationPage', () => {
               },
               openModal: () => {
                 return '';
-              },
-            },
-          },
+              }
+            }
+          }
         ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
     })
   );

@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ChildrenOutletContexts, UrlSerializer } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -20,6 +21,10 @@ describe('NewPrepaidHybridDashboardPage', () => {
             useValue: {
               serialize: () => {},
             },
+          },
+          {
+            provide: HttpClient,
+            useValue: {},
           },
         ],
       }).compileComponents();

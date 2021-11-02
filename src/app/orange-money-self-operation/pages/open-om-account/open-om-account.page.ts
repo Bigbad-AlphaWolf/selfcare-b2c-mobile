@@ -1,5 +1,4 @@
-import {DatePipe} from '@angular/common';
-import {Component, NgZone, OnInit} from '@angular/core';
+import {Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {Network} from '@ionic-native/network/ngx';
@@ -27,6 +26,7 @@ import {OrangeMoneyService} from 'src/app/services/orange-money-service/orange-m
 import {dateValidatorLessThan, parseDate} from 'src/app/utils/utils';
 import {HelpModalRegisterOMContent, OPERATION_OPEN_OM_ACCOUNT} from 'src/shared';
 import {CommonIssuesComponent} from 'src/shared/common-issues/common-issues.component';
+import { ImpliciteAuthenticationModalComponent } from '../../components/implicite-authentication-modal/implicite-authentication-modal.component';
 import {TypeOtpModalComponent} from '../../components/type-otp-modal/type-otp-modal.component';
 
 @Component({
@@ -34,7 +34,7 @@ import {TypeOtpModalComponent} from '../../components/type-otp-modal/type-otp-mo
   templateUrl: './open-om-account.page.html',
   styleUrls: ['./open-om-account.page.scss']
 })
-export class OpenOmAccountPage implements OnInit {
+export class OpenOmAccountPage implements OnInit, OnDestroy {
   personalInfosForm: FormGroup = this.formBuilder.group(
     {
       civility: [null, [Validators.required]],
@@ -105,7 +105,13 @@ export class OpenOmAccountPage implements OnInit {
   }
 
   ngOnInit() {
-    this.getNumber();
+    this.openAuthenticationImplicitModal();
+  }
+
+	ngOnDestroy() {
+    if (this.newtworkSubscription) {
+      this.newtworkSubscription.unsubscribe();
+    }
   }
 
   ionViewWillEnter() {
@@ -180,17 +186,14 @@ export class OpenOmAccountPage implements OnInit {
       case 'recto':
         this.rectoFilled = true;
         this.rectoImage = this.imgServ.removeBase64Prefix(state.image);
-        console.log(this.rectoImage);
         break;
       case 'verso':
         this.versoFilled = true;
         this.versoImage = this.imgServ.removeBase64Prefix(state.image);
-        console.log(this.versoImage);
         break;
       case 'selfie':
         this.selfieFilled = true;
         this.selfieImage = this.imgServ.removeBase64Prefix(state.image);
-        console.log(this.selfieImage);
         break;
       default:
         break;
@@ -268,6 +271,24 @@ export class OpenOmAccountPage implements OnInit {
     return await modal.present();
   }
 
+  async openAuthenticationImplicitModal() {
+    const modal = await this.modalController.create({
+      component: ImpliciteAuthenticationModalComponent,
+      cssClass: 'select-recipient-modal'
+    });
+    modal.onDidDismiss().then((resp) => {
+      if (resp && resp.data && resp.data) {
+
+				this.userAuthImplicitInfos = resp?.data?.infosAuthImplicit;
+				this.selectedNumber = this.userAuthImplicitInfos?.msisdn;
+        this.initPage();
+      } else {
+				this.goBack()
+			}
+    });
+    return await modal.present();
+  }
+
   clearInput() {
     this.personalInfosForm.patchValue({nIdentity: null});
   }
@@ -325,7 +346,7 @@ export class OpenOmAccountPage implements OnInit {
   }
 
   isEligibleToSuiviOpenOMAccount(userStatus: OMCustomerStatusModel) {
-    return userStatus && userStatus.operation === 'OUVERTURE_COMPTE' && userStatus.operationStatus !== 'NEW';
+    return userStatus && (userStatus.operation === 'OUVERTURE_COMPTE' || userStatus?.operation === 'FULL') && userStatus.operationStatus !== 'NEW';
   }
 
   checkAge(event: any) {

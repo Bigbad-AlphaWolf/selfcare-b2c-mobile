@@ -1,18 +1,18 @@
-import { TestBed, inject } from '@angular/core/testing';
-import { BillsService } from './bills.service';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import {TestBed, inject} from '@angular/core/testing';
+import {BillsService} from './bills.service';
+import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {Router, ActivatedRoute} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {FormBuilder, Validators, FormGroup} from '@angular/forms';
 
-import { of } from 'rxjs';
-import { DashboardService } from '../dashboard-service/dashboard.service';
-import { File } from '@ionic-native/file/ngx';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { SharedModule } from 'src/shared/shared.module';
-import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
+import {of} from 'rxjs';
+import {DashboardService} from '../dashboard-service/dashboard.service';
+import {File} from '@ionic-native/file/ngx';
+import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
+import {SharedModule} from 'src/shared/shared.module';
+import {FollowAnalyticsService} from '../follow-analytics/follow-analytics.service';
 
 describe('BillsService', () => {
   beforeEach(() => {
@@ -20,9 +20,9 @@ describe('BillsService', () => {
       schemas: [NO_ERRORS_SCHEMA],
       imports: [BrowserAnimationsModule, SharedModule, MatDialogModule],
       providers: [
-        { provide: Router, useValue: {} },
-        { provide: ActivatedRoute, useValue: {} },
-        { provide: MatDialog },
+        {provide: Router, useValue: {}},
+        {provide: ActivatedRoute, useValue: {}},
+        {provide: MatDialog},
         {
           provide: HttpClient,
           useValue: {
@@ -39,47 +39,50 @@ describe('BillsService', () => {
                   dateEcheance: '2019-05-27',
                   montantFacture: 21000,
                   montantTVA: 3194,
-                  statutFacture: 'NON PAYEE',
-                },
+                  statutFacture: 'NON PAYEE'
+                }
               ];
               return of(bills);
-            },
-          },
+            }
+          }
         },
         FormBuilder,
-        { provide: Validators, useValue: {} },
-        { provide: FormGroup, useValue: {} },
-        { provide: MatDialogRef, useValue: {} },
+        {provide: Validators, useValue: {}},
+        {provide: FormGroup, useValue: {}},
+        {provide: MatDialogRef, useValue: {}},
         {
           provide: FollowAnalyticsService,
           useValue: {
-            registerEventFollow: () => {},
-          },
+            registerEventFollow: () => {}
+          }
         },
         {
           provide: DashboardService,
           useValue: {
             getBills: () => {
-              return { subscribe: () => {} };
+              return {subscribe: () => {}};
             },
             getCurrentPhoneNumber: () => {
-              return { subscribe: () => {} };
-            },
-          },
+              return {subscribe: () => {}};
+            }
+          }
         },
         {
-          provide: File,
+          provide: File
         },
         {
-          provide: InAppBrowser,
-        },
-      ],
+          provide: InAppBrowser
+        }
+      ]
     });
   });
 
-  it('should be created', inject([BillsService], (service: BillsService) => {
-    expect(service).toBeDefined();
-  }));
+  it(
+    'should be created',
+    inject([BillsService], (service: BillsService) => {
+      expect(service).toBeDefined();
+    })
+  );
   // it('download UserBill should work', inject(
   // 	[BillsService],
   // 	(service: BillsService) => {

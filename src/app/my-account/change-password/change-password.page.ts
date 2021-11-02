@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AccountService } from 'src/app/services/account-service/account.service';
-import { MatDialog } from '@angular/material';
-import { REGEX_PASSWORD2 } from 'src/shared';
+import {Component, OnInit} from '@angular/core';
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {AccountService} from 'src/app/services/account-service/account.service';
+import {MatDialog} from '@angular/material/dialog';
+import {REGEX_PASSWORD2} from 'src/shared';
 
 @Component({
   selector: 'app-change-password',
@@ -13,29 +13,16 @@ export class ChangePasswordPage implements OnInit {
   actualPwdVisible = false;
   newPwdVisible = false;
   confirmNewPwdVisible = false;
-  pwdVisibility = { true: 'text', false: 'password' };
+  pwdVisibility = {true: 'text', false: 'password'};
   form: FormGroup;
   loading;
   error = '';
 
-  constructor(
-    private accountService: AccountService,
-    private fb: FormBuilder,
-    public dialog: MatDialog
-  ) {
+  constructor(private accountService: AccountService, private fb: FormBuilder, public dialog: MatDialog) {
     this.form = this.fb.group({
-      oldPassword: [
-        '',
-        [Validators.required]
-      ],
-      newPassword: [
-        '',
-        [Validators.required]
-      ],
-      confirmPassword: [
-        '',
-        [Validators.required]
-      ]
+      oldPassword: ['', [Validators.required]],
+      newPassword: ['', [Validators.required]],
+      confirmPassword: ['', [Validators.required]]
     });
   }
 

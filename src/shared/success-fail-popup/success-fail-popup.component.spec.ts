@@ -1,24 +1,16 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { SuccessFailPopupComponent } from './success-fail-popup.component';
-import { Router, RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { of } from 'rxjs';
-import {
-  MatDialogRef,
-  MatButtonModule,
-  MatInputModule,
-  MatCheckboxModule,
-  MatDialogModule,
-  MatIconModule,
-  MatFormFieldModule,
-  MAT_DIALOG_DATA,
-} from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import {SuccessFailPopupComponent} from './success-fail-popup.component';
+import {Router, RouterModule} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
+import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
+import {of} from 'rxjs';
+import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {RouterTestingModule} from '@angular/router/testing';
+import {MaterialComponentsModule} from 'src/app/material-components/material-components.module';
 
 describe('SuccessFailPopupComponent', () => {
   let component: SuccessFailPopupComponent;
@@ -29,49 +21,39 @@ describe('SuccessFailPopupComponent', () => {
       TestBed.configureTestingModule({
         declarations: [SuccessFailPopupComponent],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        imports: [
-          RouterTestingModule,
-          BrowserAnimationsModule,
-          MatButtonModule,
-          MatInputModule,
-          MatCheckboxModule,
-          MatDialogModule,
-          MatIconModule,
-          MatFormFieldModule,
-          RouterModule,
-        ],
+        imports: [RouterTestingModule, BrowserAnimationsModule, MaterialComponentsModule, RouterModule],
         providers: [
           {
             provide: Router,
-            useValue: {},
+            useValue: {}
           },
           {
-            provide: HttpClient,
+            provide: HttpClient
           },
           {
             provide: DashboardService,
             useValue: {
               buyPassByCredit: () => {},
-              getCurrentPhoneNumber: () => {},
-            },
+              getCurrentPhoneNumber: () => {}
+            }
           },
           {
             provide: AuthenticationService,
             useValue: {
               getSubscription: () => {
                 return of();
-              },
-            },
+              }
+            }
           },
           {
             provide: MatDialogRef,
-            useValue: { disableClose: true },
+            useValue: {disableClose: true}
           },
           {
             provide: MAT_DIALOG_DATA,
-            useValue: {},
-          },
-        ],
+            useValue: {}
+          }
+        ]
       }).compileComponents();
     })
   );

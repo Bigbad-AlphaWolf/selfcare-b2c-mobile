@@ -2,9 +2,12 @@ import { Component, OnInit, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { NavController, Platform } from '@ionic/angular';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { FIND_AGENCE_EXTERNAL_URL, REGEX_FIX_NUMBER } from 'src/shared';
 import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish.directive';
 import { BesoinAideType } from '../models/enums/besoin-aide-type.enum';
+import { CustomerOperationStatus } from '../models/enums/om-customer-status.enum';
 import { OffreService } from '../models/offre-service.model';
 import { OMCustomerStatusModel } from '../models/om-customer-status.model';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
@@ -40,6 +43,7 @@ export class NewAssistanceHubV2Page implements OnInit {
   checkingStatus: boolean;
   userOMStatus: OMCustomerStatusModel;
   isIos: boolean;
+  slideOpts = { slidesPerView: 2.4, spaceBetween: 15 };
 
   constructor(
     private operationService: OperationService,
@@ -48,7 +52,8 @@ export class NewAssistanceHubV2Page implements OnInit {
     private followAnalyticsService: FollowAnalyticsService,
     private dashboardService: DashboardService,
     private orangeMoneyService: OrangeMoneyService,
-    private platform: Platform
+    private platform: Platform,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -59,6 +64,7 @@ export class NewAssistanceHubV2Page implements OnInit {
 
   ionViewWillEnter(event?) {
     this.fetchAllHelpItems(event);
+    console.log(this.currentUserMsisdn);
   }
 
   search() {
@@ -69,6 +75,11 @@ export class NewAssistanceHubV2Page implements OnInit {
     this.checkingStatus = true;
     return await this.orangeMoneyService
       .getUserStatus(this.currentUserMsisdn)
+      .pipe(
+        catchError((err: any) => {
+          return of(null);
+        })
+      )
       .toPromise();
   }
 
@@ -84,7 +95,12 @@ export class NewAssistanceHubV2Page implements OnInit {
           item.code !== 'OUVERTURE_OM_ACCOUNT_NEW'
         );
       });
-    } else if (user.operation === 'OUVERTURE_COMPTE') {
+    } else if (
+      user.operation === 'OUVERTURE_COMPTE' &&
+      user.operationStatus === CustomerOperationStatus.password_creation
+    ) {
+      response = actes;
+    } else {
       response = actes.filter((item: OffreService) => {
         return (
           item.code !== 'DEPLAFONNEMENT' && item.code !== 'DEPLAFONNEMENT_NEW'
@@ -186,5 +202,19 @@ export class NewAssistanceHubV2Page implements OnInit {
       'clicked'
     );
     this.router.navigate(['/contact-ibou-hub']);
+  }
+
+  onInputChange($event) {
+    const inputvalue = $event.detail.value;
+    if (inputvalue) {
+      this.navController.navigateForward(['/assistance-hub/search'], {
+        state: { listBesoinAides: this.listBesoinAides, search: inputvalue },
+      });
+      this.followAnalyticsService.registerEventFollow(
+        'Assistance_hub_recherche',
+        'event',
+        { keyword: inputvalue }
+      );
+    }
   }
 }

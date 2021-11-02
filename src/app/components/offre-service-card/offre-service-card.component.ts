@@ -97,7 +97,7 @@ export class OffreServiceCardComponent implements OnInit {
       this.openMerchantBS();
       return;
     }
-    if (this.service.redirectionType === 'NAVIGATE')
+    if (this.service.redirectionType === 'NAVIGATE' && this.service?.redirectionPath)
       this.navCtrl.navigateForward([this.service.redirectionPath], {
         state: { purchaseType: this.service.code },
       });

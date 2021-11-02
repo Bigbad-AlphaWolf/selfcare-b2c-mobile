@@ -1,17 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import {
-  REGEX_NUMBER,
-  formatPhoneNumber,
-  REGEX_FIX_NUMBER,
-  SubscriptionModel,
-  parseIntoNationalNumberFormat
-} from '..';
-import { MatDialog } from '@angular/material';
-import { SelectNumberPopupComponent } from '../select-number-popup/select-number-popup.component';
-import { Contacts, Contact } from '@ionic-native/contacts';
-import { PROFILE_TYPE_POSTPAID, KILIMANJARO_FORMULE } from 'src/app/dashboard';
+import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
+import {REGEX_NUMBER, formatPhoneNumber, REGEX_FIX_NUMBER, SubscriptionModel, parseIntoNationalNumberFormat} from '..';
+import {MatDialog} from '@angular/material/dialog';
+import {SelectNumberPopupComponent} from '../select-number-popup/select-number-popup.component';
+import {Contacts, Contact} from '@ionic-native/contacts';
+import {PROFILE_TYPE_POSTPAID, KILIMANJARO_FORMULE} from 'src/app/dashboard';
 
 @Component({
   selector: 'app-select-other-recipient',
@@ -108,7 +102,7 @@ export class SelectOtherRecipientComponent implements OnInit {
   openPickRecipientModal(phoneNumbers: any[]) {
     this.showErrorMsg = false;
     const dialogRef = this.dialog.open(SelectNumberPopupComponent, {
-      data: { phoneNumbers }
+      data: {phoneNumbers}
     });
     dialogRef.afterClosed().subscribe(selectedNumber => {
       this.destNumber = formatPhoneNumber(selectedNumber);

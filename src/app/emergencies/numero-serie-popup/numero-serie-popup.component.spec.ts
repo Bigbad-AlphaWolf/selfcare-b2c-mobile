@@ -1,8 +1,8 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { NumeroSeriePopupComponent } from './numero-serie-popup.component';
-import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material';
+import {NumeroSeriePopupComponent} from './numero-serie-popup.component';
+import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 describe('NumeroSeriePopupComponent', () => {
   let component: NumeroSeriePopupComponent;
@@ -13,11 +13,7 @@ describe('NumeroSeriePopupComponent', () => {
       TestBed.configureTestingModule({
         declarations: [NumeroSeriePopupComponent],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [
-          { provide: MatDialogRef, useValue: {} },
-          { provide: MatDialog, useValue: {} },
-          { provide: MAT_DIALOG_DATA, useValue: {} },
-        ],
+        providers: [{provide: MatDialogRef, useValue: {}}, {provide: MatDialog, useValue: {}}, {provide: MAT_DIALOG_DATA, useValue: {}}]
       }).compileComponents();
     })
   );

@@ -15,10 +15,11 @@ import {
   SargalStatusModel,
   getBanniereTitle,
   getBanniereDescription,
+  OTHER_CATEGORIES,
 } from 'src/shared';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { PassVolumeDisplayPipe } from 'src/shared/pipes/pass-volume-display.pipe';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
 import { SargalService } from '../services/sargal-service/sargal.service';
@@ -129,6 +130,12 @@ export class DashboardPostpaidPage implements OnInit {
       .getServicesByFormule()
       .pipe(
         map((res) => {
+          res = res.filter((service) => {
+            const categories = service.categorieOffreServices.map(
+              (cat) => cat.code
+            );
+            return categories.includes(OTHER_CATEGORIES);
+          });
           res = res.sort((r1, r2) => r1.ordre - r2.ordre);
           this.followAnalyticsService.registerEventFollow(
             'dashboard_postpaid_get_services_success',

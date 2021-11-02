@@ -1,10 +1,10 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material';
-import { Contacts } from '@ionic-native/contacts';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
+import {Contacts} from '@ionic-native/contacts';
 
-import { PhoneNumberProviderComponent } from './phone-number-provider.component';
+import {PhoneNumberProviderComponent} from './phone-number-provider.component';
 
 describe('PhoneNumberProviderComponent', () => {
   let component: PhoneNumberProviderComponent;
@@ -17,15 +17,15 @@ describe('PhoneNumberProviderComponent', () => {
         providers: [
           {
             provide: MatDialog,
-            useValue: {},
+            useValue: {}
           },
           {
             provide: Contacts,
-            useValue: {},
-          },
+            useValue: {}
+          }
         ],
         declarations: [PhoneNumberProviderComponent],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA]
       }).compileComponents();
     })
   );

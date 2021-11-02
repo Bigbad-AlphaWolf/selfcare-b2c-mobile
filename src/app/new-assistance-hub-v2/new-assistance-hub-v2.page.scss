@@ -37,6 +37,7 @@
           display: flex;
           width: 100%;
           overflow-x: auto;
+          padding-left: 15px;
           ion-spinner {
             margin-left: 20px;
           }
@@ -136,4 +137,7 @@
     rgba(0, 0, 0, 0),
     rgba(0, 0, 0, 0.1)
   );
+  &.is-for-ios {
+    left: 300%;
+  }
 }

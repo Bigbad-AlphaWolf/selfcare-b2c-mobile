@@ -1,13 +1,13 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { EmergenciesPage } from './emergencies.page';
-import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { RouterTestingModule } from '@angular/router/testing';
+import {EmergenciesPage} from './emergencies.page';
+import {HttpClient} from '@angular/common/http';
+import {of} from 'rxjs';
+import {MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('EmergenciesPage', () => {
   let component: EmergenciesPage;
@@ -25,12 +25,12 @@ describe('EmergenciesPage', () => {
             useValue: {
               get: () => {
                 return of();
-              },
-            },
+              }
+            }
           },
-          { provide: MatDialog },
-          { provide: InAppBrowser },
-        ],
+          {provide: MatDialog},
+          {provide: InAppBrowser}
+        ]
       }).compileComponents();
     })
   );

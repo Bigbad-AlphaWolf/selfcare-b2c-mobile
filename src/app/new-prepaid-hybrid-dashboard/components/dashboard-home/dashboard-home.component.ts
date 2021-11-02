@@ -11,6 +11,7 @@ import { ModalController, Platform } from '@ionic/angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {
+  PromoBoosterActive,
   SargalSubscriptionModel,
   SARGAL_NOT_SUBSCRIBED,
   SARGAL_NOT_SUBSCRIBED_STATUS,
@@ -38,8 +39,15 @@ import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
   SargalStatusModel,
   SubscriptionModel,
+  WelcomeStatusModel,
 } from 'src/shared';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
+import * as SecureLS from 'secure-ls';
+import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
+import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AssistanceService } from 'src/app/services/assistance.service';
+const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
   selector: 'app-dashboard-home',
@@ -95,7 +103,7 @@ export class DashboardHomeComponent implements OnInit {
   currentMsisdn = this.dashboardService.getCurrentPhoneNumber();
   currentProfil: string;
   isHyBride: boolean;
-
+  BUY_ACTION = 'BUY';
   loadingConso: boolean;
   consoHasError: boolean;
   creditRechargement;
@@ -127,6 +135,9 @@ export class DashboardHomeComponent implements OnInit {
   }[];
   isLoadingStories: boolean;
   hasError: boolean;
+  hasPromoBooster: PromoBoosterActive = null;
+  hasPromoPlanActive: OfferPlanActive = null;
+
   constructor(
     private dashboardService: DashboardService,
     private authService: AuthenticationService,
@@ -140,7 +151,9 @@ export class DashboardHomeComponent implements OnInit {
     private bsService: BottomSheetService,
     private zone: NgZone,
     private platform: Platform,
-    private storiesService: StoriesService
+    private storiesService: StoriesService,
+    private shareDialog: MatDialog,
+    private assistanceService: AssistanceService
   ) {}
 
   ngOnInit() {
@@ -158,12 +171,12 @@ export class DashboardHomeComponent implements OnInit {
   ionViewWillEnter(event?) {
     this.getCurrentSubscription();
     this.getUserConsommations(event);
+    // this.getUserActiveBonPlans();
+    this.getActivePromoBooster();
     this.fetchUserStories();
   }
 
   fetchUserStories() {
-    console.log('called');
-
     this.isLoadingStories = true;
     this.storiesByCategory = [];
     this.hasError = false;
@@ -172,10 +185,6 @@ export class DashboardHomeComponent implements OnInit {
       .pipe(
         tap((res: any) => {
           this.isLoadingStories = false;
-          console.log(
-            'groupeStoriesByCategory',
-            this.storiesService.groupeStoriesByCategory(res)
-          );
           this.storiesByCategory =
             this.storiesService.groupeStoriesByCategory(res);
         }),
@@ -363,6 +372,43 @@ export class DashboardHomeComponent implements OnInit {
           'event',
           'clicked'
         );
+  }
+
+  getActivePromoBooster() {
+    this.dashboardService.getActivePromoBooster().subscribe((res: any) => {
+      this.hasPromoBooster = res;
+      this.getWelcomeStatus(res);
+    });
+  }
+
+  getWelcomeStatus(boosters) {
+    const number = this.dashboardService.getMainPhoneNumber();
+    this.dashboardService.getAccountInfo(number).subscribe(
+      (resp: any) => {
+        ls.set('user', resp);
+        if (!resp.tutoViewed) {
+          this.dashboardService.getWelcomeStatus(boosters).subscribe(
+            (res: WelcomeStatusModel) => {
+              if (res.status === 'SUCCESS') {
+                this.showWelcomePopup(res);
+              }
+            },
+            () => {}
+          );
+        }
+      },
+      () => {}
+    );
+  }
+
+  showWelcomePopup(data: WelcomeStatusModel) {
+    const dialog = this.shareDialog.open(WelcomePopupComponent, {
+      data,
+      panelClass: 'gift-popup-class',
+    });
+    dialog.afterClosed().subscribe(() => {
+      this.assistanceService.tutoViewed().subscribe(() => {});
+    });
   }
 
   onSargalCardClicked(origin?: string) {

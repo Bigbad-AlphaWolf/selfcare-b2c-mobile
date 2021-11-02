@@ -8,7 +8,7 @@
 </ion-header>
 <div class="absolute-block" [ngClass]="{'is-block-ios': isIos}">
   <div class="search-bloc search-bloc3">
-    <ion-searchbar placeholder="Rechercher un service"></ion-searchbar>
+    <ion-searchbar placeholder="Rechercher un service" (ionChange)="onInputChange($event)"></ion-searchbar>
   </div>
   <div class="services-custom-tabs">
     <div class="conso-tab scb-text-light-black" *ngFor="let tab of servicesByCategoriesArray, let i = index"
@@ -51,4 +51,4 @@
     </ion-slides>
   </ng-template>
 </ion-content>
-<div class="empty-div-effect"></div>
+<div class="empty-div-effect" [ngClass]="{'is-for-ios': isIos}"></div>
