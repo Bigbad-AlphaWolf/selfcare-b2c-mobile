@@ -22,6 +22,7 @@ export class AssistanceSearchComponent implements OnInit {
   searchRef: IonInput;
   terms = '';
   listBesoinAides: OffreService[];
+  listBesoinAidesAltered: OffreService[];
   isLoading: boolean;
   currentPhoneNumber = this.dashbServ.getCurrentPhoneNumber();
   constructor(
