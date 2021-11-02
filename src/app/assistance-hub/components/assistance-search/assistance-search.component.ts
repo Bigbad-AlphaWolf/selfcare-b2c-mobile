@@ -14,12 +14,19 @@ export class AssistanceSearchComponent implements OnInit {
   terms = '';
   listBesoinAides: OffreService[];
   listBesoinAidesAltered: OffreService[];
+  title = 'Recherche assistance';
 
-  constructor(private navController: NavController, private followAnalyticsService: FollowAnalyticsService) {}
+  constructor(
+    private navController: NavController,
+    private followAnalyticsService: FollowAnalyticsService
+  ) {}
 
   ngOnInit() {
-    this.listBesoinAidesAltered = this.listBesoinAides =
-    history.state && history.state.listBesoinAides ? history.state.listBesoinAides: [];
+    this.listBesoinAidesAltered = this.listBesoinAides = history?.state
+      ?.listBesoinAides
+      ? history.state.listBesoinAides
+      : [];
+    this.title = history?.state?.title;
     this.followAnalyticsService.registerEventFollow(
       'Assistance_search_page_affichage_success',
       'event'
@@ -28,7 +35,8 @@ export class AssistanceSearchComponent implements OnInit {
   }
 
   initSearchRef() {
-    const search = history.state && history.state.search ? history.state.search : null;
+    const search =
+      history.state && history.state.search ? history.state.search : null;
     this.searchRef.value = search;
     this.displaySearchIcon = false;
     this.terms = search;

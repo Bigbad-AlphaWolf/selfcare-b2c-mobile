@@ -1430,3 +1430,5 @@ export enum OM_STATUS_TEXTS {
   CAPPED_ACCOUNT = `Votre compte est plafonné à un cumul de transactions à 200.000F`,
   ERROR_DECAPPING_ACCOUNT = `Une erreur est survenue lors du traitement de votre demande de déplafonnement`,
 }
+
+export const OTHER_CATEGORIES = 'OTHER_CATEGORIES';

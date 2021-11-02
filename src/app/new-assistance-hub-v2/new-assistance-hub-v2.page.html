@@ -8,7 +8,7 @@
 </ion-header>
 <div class="absolute-block" [ngClass]="{'is-block-ios': isIos}">
   <div class="search-bloc search-bloc4">
-    <ion-searchbar placeholder="Rechercher dans assistance"></ion-searchbar>
+    <ion-searchbar placeholder="Rechercher dans assistance" (ionChange)="onInputChange($event)"></ion-searchbar>
   </div>
 </div>
 <ion-content #scrollArea class="assistance-content" [forceOverscroll]="true" [scrollEvents]="true"
