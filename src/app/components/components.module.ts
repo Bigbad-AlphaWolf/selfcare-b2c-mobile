@@ -28,7 +28,6 @@ import {ListPreviewStoriesComponent} from './list-preview-stories/list-preview-s
 import {VisualizeStoriesComponent} from './visualize-stories/visualize-stories.component';
 import {StoriesProgressBarComponent} from './stories-progress-bar/stories-progress-bar.component';
 import {VisualizeStoryComponent} from './visualize-story/visualize-story.component';
-import {VimeModule} from '@vime/angular';
 import {SwiperModule} from 'swiper/angular';
 import {VisualizeStoriesByCategoriesComponent} from './visualize-stories-by-categories/visualize-stories-by-categories.component';
 @NgModule({
@@ -59,7 +58,7 @@ import {VisualizeStoriesByCategoriesComponent} from './visualize-stories-by-cate
     VisualizeStoryComponent,
     VisualizeStoriesByCategoriesComponent
   ],
-  imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule, IonicImageLoader, VimeModule, SwiperModule],
+  imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule, IonicImageLoader, SwiperModule],
   exports: [
     ItemOfferPlanComponent,
     ItemPassIllimixComponent,

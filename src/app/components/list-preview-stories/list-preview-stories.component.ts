@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {AnimationController, ModalController, Platform} from '@ionic/angular';
+import { ImageAttribute } from 'ionic-image-loader';
 import {of} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
 import {Story} from 'src/app/models/story-oem.model';
@@ -29,6 +30,10 @@ export class ListPreviewStoriesComponent implements OnInit {
   @Input() hasError: boolean;
 	@Input() areDataLoadedExternally: boolean;
 	isWeb: boolean;
+	imageAttributes: ImageAttribute[] = [{
+		element: 'class',
+		value: 'img-rounded'
+	}];
   constructor(public modalController: ModalController, public animationCtrl: AnimationController, private storiesService: StoriesService, private platform: Platform) {
 		this.isWeb = platform.is('mobileweb')
 	}
