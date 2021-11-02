@@ -25,6 +25,7 @@
     </div>
 
     <div class="search-result">
+			<ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
       <ng-container *ngIf="listBesoinAides | searchAssistance : terms as filtredBas">
 
         <div class="result-count">Résultats({{filtredBas?.length}})</div>

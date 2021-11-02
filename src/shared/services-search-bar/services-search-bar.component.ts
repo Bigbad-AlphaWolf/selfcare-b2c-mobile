@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {NavController} from '@ionic/angular';
 import {of} from 'rxjs';
 import {catchError, switchMap} from 'rxjs/operators';
@@ -20,6 +20,7 @@ export class ServicesSearchBarComponent implements OnInit {
   listBesoinAides: OffreService[] = [];
   currentMsisdn = this.dashbServ.getCurrentPhoneNumber();
   userOMStatus: any;
+  @Input() source: 'DASHBOARD' | null = 'DASHBOARD';
   constructor(
     private navController: NavController,
     private followAnalyticsService: FollowAnalyticsService,
@@ -28,15 +29,18 @@ export class ServicesSearchBarComponent implements OnInit {
     private orangeMoneyService: OrangeMoneyService
   ) {}
 
-  ngOnInit() {
-    this.fetchAllHelpItems();
-  }
+  ngOnInit() {}
+
+  //ionViewWillEnter() {
+  //  console.log('search ionViewWillEnter');
+  //  this.fetchAllHelpItems();
+  //}
 
   onInputChange($event) {
     const inputvalue: string = $event.detail.value.toString();
     if (inputvalue.length >= 3) {
       this.navController.navigateForward(['/assistance-hub/search'], {
-        state: {listBesoinAides: this.listBesoinAides, search: inputvalue}
+        state: {listBesoinAides: this.listBesoinAides, search: inputvalue, source: this.source}
       });
       this.followAnalyticsService.registerEventFollow('Assistance_hub_recherche', 'event', {keyword: inputvalue});
     }
