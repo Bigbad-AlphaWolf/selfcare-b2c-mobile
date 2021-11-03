@@ -14,6 +14,7 @@ import { NumberSelectionOption } from 'src/app/models/enums/number-selection-opt
 import { OffreService } from 'src/app/models/offre-service.model';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
+import { RapidoOperationPage } from 'src/app/pages/rapido-operation/rapido-operation.page';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
@@ -22,6 +23,7 @@ import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange
 import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
 import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import {
+  OPERATION_RAPIDO,
   OPERATION_TYPE_PASS_USAGE,
   OPERATION_WOYOFAL,
 } from 'src/app/utils/operations.constants';
@@ -199,6 +201,9 @@ export class ActionItemComponent implements OnInit {
         break;
       case OPERATION_RATTACH_NUMBER:
         this.bsService.openRattacheNumberModal();
+        break;
+      case OPERATION_RAPIDO:
+        this.navController.navigateForward(RapidoOperationPage.ROUTE_PATH);
         break;
       default:
         if (this.action?.redirectionType === 'NAVIGATE') {
