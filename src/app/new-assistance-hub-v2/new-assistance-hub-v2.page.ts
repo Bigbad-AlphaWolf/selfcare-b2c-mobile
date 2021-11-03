@@ -204,17 +204,13 @@ export class NewAssistanceHubV2Page implements OnInit {
     this.router.navigate(['/contact-ibou-hub']);
   }
 
-  onInputChange($event) {
-    const inputvalue = $event.detail.value;
-    if (inputvalue) {
-      this.navController.navigateForward(['/assistance-hub/search'], {
-        state: { listBesoinAides: this.listBesoinAides, search: inputvalue },
-      });
-      this.followAnalyticsService.registerEventFollow(
-        'Assistance_hub_recherche',
-        'event',
-        { keyword: inputvalue }
-      );
-    }
+  onInputFocus() {
+    this.navController.navigateForward(['/assistance-hub/search'], {
+      state: { listBesoinAides: this.listBesoinAides },
+    });
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_hub_recherche',
+      'event'
+    );
   }
 }
