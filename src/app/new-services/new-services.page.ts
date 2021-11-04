@@ -133,8 +133,7 @@ export class NewServicesPage implements OnInit {
     return services.find((service) => service.passUsage);
   }
 
-  onInputChange($event) {
-    const inputvalue = $event.detail.value;
+  onInputFocus() {
     const listeItems: OffreService[] = JSON.parse(
       JSON.stringify(this.services)
     ).map((x) => {
@@ -142,20 +141,15 @@ export class NewServicesPage implements OnInit {
       return x;
     });
     console.log(listeItems);
-
-    if (inputvalue) {
-      this.navController.navigateForward(['/assistance-hub/search'], {
-        state: {
-          listBesoinAides: listeItems,
-          search: inputvalue,
-          title: 'Recherche service',
-        },
-      });
-      this.followAnalyticsService.registerEventFollow(
-        'Assistance_hub_recherche',
-        'event',
-        { keyword: inputvalue }
-      );
-    }
+    this.navController.navigateForward(['/assistance-hub/search'], {
+      state: {
+        listBesoinAides: listeItems,
+        title: 'Recherche service',
+      },
+    });
+    this.followAnalyticsService.registerEventFollow(
+      'Services_hub_recherche',
+      'event'
+    );
   }
 }

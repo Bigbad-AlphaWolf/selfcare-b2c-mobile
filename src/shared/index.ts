@@ -1412,6 +1412,8 @@ export const isProfileHybrid = (profile: string) => {
 
 export const CONSO = 'SUIVI_CONSO';
 export const ASSISTANCE = 'ASSISTANCE';
+export const SERVICES = 'SERVICES';
+
 export enum GET_MSISDN_ENUM {
   DISABLE_WIFI = 'disableWifi',
   ENABLE_4G = 'enable4G',
