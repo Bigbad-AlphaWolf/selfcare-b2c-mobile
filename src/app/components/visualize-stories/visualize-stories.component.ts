@@ -3,10 +3,12 @@ import {
 	Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChild,
   ViewChildren,
 } from '@angular/core';
@@ -39,8 +41,9 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 		};
 		stories: Story[];
 		readAll: boolean;
-	};
+	} = null;
 	@Input() index: number;
+	@Input() isVisibleForHigherView: boolean;
 	@Input() view: 'SINGLE_CATEGORY' | 'ALL_CATEGORIES' = 'SINGLE_CATEGORY';
 	@Output() action = new EventEmitter();
   private slides;
@@ -53,9 +56,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 	config: SwiperOptions = {
 		init: false,
 		effect: 'fade',
-		fadeEffect: {
-			crossFade: true
-		},
+		lazy: true,
 		navigation: {
 			nextEl: '.right',
 			prevEl: '.left'
@@ -66,11 +67,21 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {}
 	ngAfterViewInit() {
+		this.loadLastStoriesState();
+	}
+
+	loadLastStoriesState(index?: number) {
 		setTimeout(() => {
-			const startIndex = this.retrieveSlideStartingIndex();
+			const startIndex = !index ? this.retrieveSlideStartingIndex() : index;
 			this.fillAllPreviousProgressBar(startIndex);
 			this.setSwiperIndex(startIndex);
 		});
+	}
+
+	resetListStoriesState(index?: number) {
+			const startIndex = !index ? this.retrieveSlideStartingIndex() : index;
+			this.fillAllPreviousProgressBar(startIndex);
+			this.setSwiperIndex(startIndex);
 	}
 
 	setSwiperIndex(index: number) {
@@ -105,6 +116,17 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 		}
 	}
 
+	loadStoryMedia(index: number = this.currentSlideIndex) {
+		const storyComponent: VisualizeStoryComponent =
+      this.storiesView.toArray()[index];
+			if(storyComponent) {
+				if(storyComponent?.mediaLoaded) {
+					this.onImageReady(true)
+					this.onAudioReady(null)
+				}
+			}
+	}
+
 	resumeStory(index: number) {
 		const progressBarStory: StoriesProgressBarComponent =
 		this.storiesProgressBarView.toArray()[index];
@@ -119,6 +141,8 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 	}
 
   onProgressFinish(event: any) {
+		console.log('next');
+
     if (this.slides) {
       this.swiper?.swiperRef?.slideNext();
     }
@@ -137,12 +161,13 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   slideChange() {
 		if(this.currentSlideIndex > this.slides?.activeIndex ) {
 			this.emptyProgressBar(this.currentSlideIndex)
-		} else {
+		} else if(this.currentSlideIndex < this.slides?.activeIndex) {
 			this.fillProgressBar(this.currentSlideIndex);
 		}
 		this.deactiveStoryMedia(this.currentSlideIndex);
 		this.stopAnimateProgressBar(this.currentSlideIndex);
 		this.currentSlideIndex = this.slides?.activeIndex;
+		this.loadStoryMedia(this.currentSlideIndex);
   }
 
 	seeStory() {
@@ -171,7 +196,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
     }
   }
 
-  deactiveStoryMedia(index: number) {
+  deactiveStoryMedia(index: number = this.currentSlideIndex) {
     if (index < 0) return;
     const storyComponent: VisualizeStoryComponent =
       this.storiesView.toArray()[index];
@@ -187,14 +212,14 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
     progressBarStory?.startProgressBar();
   }
 
-  stopAnimateProgressBar(index: number) {
+  stopAnimateProgressBar(index: number = this.currentSlideIndex) {
     if (index < 0) return;
     const progressBarStory: StoriesProgressBarComponent =
       this.storiesProgressBarView.toArray()[index];
 			progressBarStory.resetProgressBar();
   }
 
-	emptyProgressBar(index: number) {
+	emptyProgressBar(index: number = this.currentSlideIndex) {
 			const progressBarStory: StoriesProgressBarComponent =
 			this.storiesProgressBarView.toArray()[index];
 			progressBarStory.emptyProgressBar();

@@ -1,7 +1,7 @@
 <div class="container">
-	<swiper effect="coverflow" [slidesPerView]="1" (swiper)="setSwiperInstance($event)" #slide (slideChange)="slideChange()"  >
+	<swiper [config]="config" [slidesPerView]="1" (swiper)="setSwiperInstance($event)" #slide (slideChange)="slideChange()"  >
 		<ng-template *ngFor="let item of allStories; let id = index" swiperSlide>
-			<app-visualize-stories *ngIf="currentSlideIndex === id" [storyByCategory]="item" (action)="goNext($event)" [view]="'ALL_CATEGORIES'" >
+			<app-visualize-stories [isVisibleForHigherView]="allStories[currentSlideIndex].categorie.id === item?.categorie?.id" [storyByCategory]="item" (action)="goNext($event)" [view]="'ALL_CATEGORIES'" >
 			</app-visualize-stories>
 		</ng-template>
 	</swiper>

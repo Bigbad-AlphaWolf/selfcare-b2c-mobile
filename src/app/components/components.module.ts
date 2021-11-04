@@ -30,6 +30,7 @@ import {StoriesProgressBarComponent} from './stories-progress-bar/stories-progre
 import {VisualizeStoryComponent} from './visualize-story/visualize-story.component';
 import {SwiperModule} from 'swiper/angular';
 import {VisualizeStoriesByCategoriesComponent} from './visualize-stories-by-categories/visualize-stories-by-categories.component';
+import {LazyLoadDirective} from '../directives/lazy-load-img/lazy-load-image.directive';
 @NgModule({
   declarations: [
     ItemOfferPlanComponent,
@@ -56,7 +57,8 @@ import {VisualizeStoriesByCategoriesComponent} from './visualize-stories-by-cate
     VisualizeStoriesComponent,
     StoriesProgressBarComponent,
     VisualizeStoryComponent,
-    VisualizeStoriesByCategoriesComponent
+    VisualizeStoriesByCategoriesComponent,
+    LazyLoadDirective
   ],
   imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule, IonicImageLoader, SwiperModule],
   exports: [
@@ -85,7 +87,8 @@ import {VisualizeStoriesByCategoriesComponent} from './visualize-stories-by-cate
     StoriesProgressBarComponent,
     VisualizeStoryComponent,
     SwiperModule,
-    VisualizeStoriesByCategoriesComponent
+    VisualizeStoriesByCategoriesComponent,
+    LazyLoadDirective
   ],
   entryComponents: [HistorikTransactionByTypeModalComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

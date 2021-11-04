@@ -38,6 +38,7 @@ export class StoriesService {
     list: StoryOem[]
   ): {
     categorie: {
+      id?: string;
       libelle?: string;
       ordre?: number;
       code?: string;
@@ -49,6 +50,7 @@ export class StoriesService {
   }[] {
     let result: {
       categorie: {
+        id?: string;
         libelle: string;
         ordre: number;
         code: string;
@@ -59,6 +61,7 @@ export class StoriesService {
       readAll: boolean;
     }[] = [];
     let categories: {
+      id?: string;
       libelle: string;
       ordre: number;
       code: string;

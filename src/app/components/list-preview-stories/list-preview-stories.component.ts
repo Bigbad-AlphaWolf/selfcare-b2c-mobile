@@ -77,7 +77,7 @@ export class ListPreviewStoriesComponent implements OnInit {
     index: number
   ) {
 		let modal;
-		if(item?.readAll) {
+		if(!item?.readAll) {
 			modal = await this.modalController.create({
 				component: VisualizeStoriesComponent,
 				backdropDismiss: true,
