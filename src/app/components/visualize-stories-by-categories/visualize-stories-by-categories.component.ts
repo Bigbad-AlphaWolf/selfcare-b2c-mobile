@@ -23,6 +23,17 @@ export class VisualizeStoriesByCategoriesComponent implements OnInit {
     stories: Story[];
     readAll: boolean;
   }[] = [];
+	@Input() currentItem :{
+    categorie: {
+			id?: string;
+      libelle?: string;
+      ordre?: number;
+      code?: string;
+      zoneAffichage?: string;
+    };
+    stories: Story[];
+    readAll: boolean;
+  };
   private slides;
 	currentSlideIndex = 0;
 	@ViewChild('slide', { static: false }) swiper?: SwiperComponent;
@@ -33,6 +44,28 @@ export class VisualizeStoriesByCategoriesComponent implements OnInit {
   constructor(private modalCtrl: ModalController) {}
 
   ngOnInit() {}
+
+	ngAfterViewInit() {
+		this.initSwiperIndex();
+	}
+
+	initSwiperIndex() {
+		const index = this.retrieveStartIndex() === -1 ? 0 : this.retrieveStartIndex();
+		setTimeout(() => {
+			console.log('index', index);
+			this.setSwiperIndex(index);
+		});
+	}
+
+	setSwiperIndex(index: number) {
+		this.swiper.setIndex(index);
+	}
+
+	retrieveStartIndex() {
+		return	this.allStories.findIndex((item) => {
+			return item.categorie.id === this.currentItem.categorie.id
+		})
+	}
 
   setSwiperInstance(ev) {
     this.slides = ev;

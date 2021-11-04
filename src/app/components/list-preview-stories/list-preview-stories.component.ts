@@ -77,19 +77,20 @@ export class ListPreviewStoriesComponent implements OnInit {
     index: number
   ) {
 		let modal;
-		if(!item?.readAll) {
-			modal = await this.modalController.create({
-				component: VisualizeStoriesComponent,
-				backdropDismiss: true,
-				swipeToClose: true,
-				mode: 'ios',
-				presentingElement: await this.modalController.getTop(),
-				componentProps: {
-					index,
-					storyByCategory: item
-				}
-			});
-		} else {
+		//if(item?.readAll) {
+		//	modal = await this.modalController.create({
+		//		component: VisualizeStoriesComponent,
+		//		backdropDismiss: true,
+		//		swipeToClose: true,
+		//		mode: 'ios',
+		//		presentingElement: await this.modalController.getTop(),
+		//		componentProps: {
+		//			index,
+		//			storyByCategory: item,
+		//			isVisibleForHigherView: true
+		//		}
+		//	});
+		//} else {
 			modal = await this.modalController.create({
 				component: VisualizeStoriesByCategoriesComponent,
 				backdropDismiss: true,
@@ -97,10 +98,11 @@ export class ListPreviewStoriesComponent implements OnInit {
 				mode: 'ios',
 				presentingElement: await this.modalController.getTop(),
 				componentProps: {
-					allStories: this.storiesByCategory
+					allStories: this.storiesByCategory,
+					currentItem: item
 				}
 			});
-		}
+		//}
     modal.onDidDismiss().then((res: {data: any}) => {
 			if(res?.data) {
 				this.updateInternalStoriesListe(res?.data?.index, res?.data?.storyByCategory)

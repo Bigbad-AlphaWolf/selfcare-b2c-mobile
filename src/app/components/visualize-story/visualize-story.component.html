@@ -3,7 +3,7 @@
 	<ng-container *ngIf="1">
 		<ng-container *ngIf="story?.type !== 'VIDEO'">
 			<!--<img-loader #image [spinner]="isLoading" [data-src]="story?.storyContent | displayFileManagerImage" (error)="handleErrorLoading($event)" (load)="imageLoaded($event)" [imgAttributes]="imageAttributes" useImg ></img-loader>-->
-			<img #image appLazyLoad [inViewport]="isVisible" [src]="story?.storyContent | displayFileManagerImage" (error)="handleErrorLoading($event)" (load)="imageLoaded($event)" useImg >
+			<img #image appLazyLoad [inViewport]="isVisible" [src]="story?.storyContent | displayFileManagerImage" (error)="handleErrorLoading($event)" (load)="imageLoaded($event)" >
 			<div class="error" *ngIf="hasErrorLoading">
 				Impossible de charger l'image
 			</div>
