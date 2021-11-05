@@ -1,7 +1,8 @@
 <div *ngIf="storiesByCategory?.length" class="list-preview-stories">
 	<div (click)="presentModal(storyCategorized, i)" *ngFor="let storyCategorized of storiesByCategory; let i=index" class="preview-story">
 		<div class="mask" [ngClass]=" { 'read': storyCategorized?.readAll } ">
-			<img src="assets/images/04-boutons-01-illustrations-21-ibou-assistance.png" alt="">
+			<img *ngIf="!isWeb" [src]="storyCategorized?.categorie?.image ? (storyCategorized.categorie.image | displayFileManagerImage) : 'assets/images/04-boutons-01-illustrations-21-ibou-assistance.png' " alt="" >
+			<img-loader *ngIf="isWeb" [src]="storyCategorized?.categorie?.image | displayFileManagerImage" [imgAttributes]="imageAttributes" fallbackUrl="assets/images/04-boutons-01-illustrations-21-ibou-assistance.png" useImg ></img-loader>
 		</div>
 		<div class="title">
 			{{ storyCategorized?.categorie?.libelle }}

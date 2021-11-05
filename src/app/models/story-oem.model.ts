@@ -12,6 +12,7 @@ export interface StoryOem {
     ordre: number;
     code: string;
     zoneAffichage: string;
+    image: string;
   };
   action?: {
     typeAction: string;
