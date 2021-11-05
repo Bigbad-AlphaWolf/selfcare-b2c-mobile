@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    </ion-buttons>
+    <ion-title>
+      <span class="title1">
+        Achat pass international
+      </span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">
+        Achat pass international
+      </span>
+    </ion-toolbar>
+  </ion-header>
+  <div class="list-pass-body">
+    <div class="header-image">
+      <img src="/assets/images/pass-allo-banniere.png" alt="" />
+    </div>
+    <div class="list-pass-body-main-content">
+      <ng-container *ngIf="loading else passesList">
+        <div class="profil-spinner">
+          <mat-spinner mode="indeterminate" [diameter]="40"></mat-spinner>
+        </div>
+      </ng-container>
+      <ng-template #passesList>
+        <ng-container *ngIf="(passAfric?.length || passWorld?.length) else noPass">
+          <div class="list-pass-body">
+            <div class="tab-header">
+              <div *ngFor="let filter of filters; let i=index" (click)="changeCategory(i)" class="tab-header-item"
+                [ngClass]="{  'selected' : i === activeIndex} ">
+                <span class="scb-text-light-black"> {{ filter?.label }}</span>
+              </div>
+            </div>
+            <div class="main-content">
+              <ion-slides #sliders (ionSlideDidChange)="slideChanged()" [options]="slideOpts">
+                <ion-slide>
+                  <div class="filtered-list-pass">
+                    <app-item-pass-illimix *ngFor="let pass of passWorld" [passIllimix]="pass"
+                      (selectPass)="choosePass($event)"></app-item-pass-illimix>
+                  </div>
+                </ion-slide>
+                <ion-slide>
+                  <div class="filtered-list-pass">
+                    <app-item-pass-illimix *ngFor="let pass of passAfric" [passIllimix]="pass"
+                      (selectPass)="choosePass($event)"></app-item-pass-illimix>
+                  </div>
+                </ion-slide>
+              </ion-slides>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #noPass></ng-template>
+      </ng-template>
+    </div>
+  </div>
+</ion-content>
