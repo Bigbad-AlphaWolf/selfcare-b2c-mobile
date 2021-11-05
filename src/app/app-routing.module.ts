@@ -550,6 +550,10 @@ const routes: Routes = [
         (m) => m.NewAssistanceHubV2PageModule
       ),
   },
+  {
+    path: 'list-pass-international',
+    loadChildren: () => import('./pages/list-pass-international/list-pass-international.module').then( m => m.ListPassInternationalPageModule)
+  },
 ];
 
 @NgModule({
