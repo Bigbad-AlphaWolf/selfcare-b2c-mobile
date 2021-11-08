@@ -134,7 +134,7 @@ export class DashboardPostpaidPage implements OnInit {
             const categories = service.categorieOffreServices.map(
               (cat) => cat.code
             );
-            return categories.includes(OTHER_CATEGORIES);
+            return !categories.includes(OTHER_CATEGORIES);
           });
           res = res.sort((r1, r2) => r1.ordre - r2.ordre);
           this.followAnalyticsService.registerEventFollow(
