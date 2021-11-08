@@ -20,9 +20,9 @@ import {
   OPERATION_TYPE_PASS_USAGE,
   OPERATION_WOYOFAL,
 } from 'src/app/utils/operations.constants';
-import { OPERATION_TYPE_MERCHANT_PAYMENT } from '..';
+import { OPERATION_CHECK_OM_ACCOUNT_STATUS, OPERATION_RATTACH_NUMBER, OPERATION_SHARE_THE_APP, OPERATION_TYPE_MERCHANT_PAYMENT } from '..';
 import { MerchantPaymentCodeComponent } from '../merchant-payment-code/merchant-payment-code.component';
-
+import { OmStatusVisualizationComponent } from '../om-status-visualization/om-status-visualization.component';
 @Component({
   selector: 'app-offre-service-card-v2',
   templateUrl: './offre-service-card-v2.component.html',
@@ -76,7 +76,7 @@ export class OffreServiceCardV2Component implements OnInit {
       this.openMerchantBS();
       return;
     }
-    if (this.service.redirectionType === 'NAVIGATE')
+    if (this.service?.redirectionType === 'NAVIGATE' && this.service?.redirectionPath)
       this.navCtrl.navigateForward([this.service.redirectionPath], {
         state: { purchaseType: this.service.code },
       });
@@ -100,6 +100,31 @@ export class OffreServiceCardV2Component implements OnInit {
       this.bsService[this.service.redirectionType](...params);
       return;
     }
+		switch (this.service?.code) {
+			case OPERATION_CHECK_OM_ACCOUNT_STATUS:
+				this.openOMStatus();
+				break;
+			case OPERATION_SHARE_THE_APP:
+				this.bsService.defaulSharingSheet();
+				break;
+			case OPERATION_SHARE_THE_APP:
+    		this.bsService.openRattacheNumberModal();
+				break;
+			case OPERATION_RATTACH_NUMBER:
+    		this.bsService.openRattacheNumberModal();
+				break;
+			default:
+				break;
+		}
+  }
+
+
+	async openOMStatus() {
+    const modal = await this.modalController.create({
+      component: OmStatusVisualizationComponent,
+      cssClass: 'select-recipient-modal'
+    });
+    return await modal.present();
   }
 
   onErrorImg() {

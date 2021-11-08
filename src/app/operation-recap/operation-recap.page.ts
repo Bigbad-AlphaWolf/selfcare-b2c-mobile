@@ -24,6 +24,7 @@ import {
   OPERATION_TYPE_PASS_ILLIFLEX,
   getActiveBoostersForSpecificPass,
   CODE_PARTENAIRE_COUPON_TRACE_TV,
+  OPERATION_TYPE_PASS_INTERNATIONAL,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -113,6 +114,7 @@ export class OperationRecapPage implements OnInit {
   OPERATION_ENABLE_DALAL = OPERATION_ENABLE_DALAL;
   OPERATION_ILLIFLEX = OPERATION_TYPE_PASS_ILLIFLEX;
   OPERATION_TYPE_PASS_VOYAGE = OPERATION_TYPE_PASS_VOYAGE;
+  OPERATION_TYPE_PASS_INTERNATIONAL = OPERATION_TYPE_PASS_INTERNATIONAL;
   OPERATION_TYPE_PASS_USAGE = OPERATION_TYPE_PASS_USAGE;
   OPERATION_RAPIDO = OPERATION_RAPIDO;
   DALAL_TARIF = MONTHLY_DALAL_TARIF;
@@ -167,6 +169,7 @@ export class OperationRecapPage implements OnInit {
               this.offerPlan = this.opXtras.offerPlan;
               break;
             case OPERATION_TYPE_PASS_VOYAGE:
+            case OPERATION_TYPE_PASS_INTERNATIONAL:
               this.recipientName = this.opXtras.recipientFromContact
                 ? this.opXtras.recipientFirstname +
                   ' ' +
@@ -346,6 +349,7 @@ export class OperationRecapPage implements OnInit {
     switch (this.purchaseType) {
       case OPERATION_TYPE_PASS_INTERNET:
       case OPERATION_TYPE_PASS_VOYAGE:
+      case OPERATION_TYPE_PASS_INTERNATIONAL:
       case OPERATION_TYPE_PASS_ILLIMIX:
       case OPERATION_TYPE_PASS_ALLO:
       case OPERATION_TYPE_PASS_ILLIFLEX:

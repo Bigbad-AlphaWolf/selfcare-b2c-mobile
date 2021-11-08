@@ -9,6 +9,13 @@
   width: 100%;
   position: relative;
   background-color: white;
+  .error {
+    position: absolute;
+    text-align: center;
+    color: red;
+    margin-top: 100px;
+    width: 100%;
+  }
   img-loader {
     width: 100%;
   }

@@ -28,8 +28,9 @@ import {ListPreviewStoriesComponent} from './list-preview-stories/list-preview-s
 import {VisualizeStoriesComponent} from './visualize-stories/visualize-stories.component';
 import {StoriesProgressBarComponent} from './stories-progress-bar/stories-progress-bar.component';
 import {VisualizeStoryComponent} from './visualize-story/visualize-story.component';
-import {VimeModule} from '@vime/angular';
 import {SwiperModule} from 'swiper/angular';
+import {VisualizeStoriesByCategoriesComponent} from './visualize-stories-by-categories/visualize-stories-by-categories.component';
+import {LazyLoadDirective} from '../directives/lazy-load-img/lazy-load-image.directive';
 @NgModule({
   declarations: [
     ItemOfferPlanComponent,
@@ -55,17 +56,11 @@ import {SwiperModule} from 'swiper/angular';
     ListPreviewStoriesComponent,
     VisualizeStoriesComponent,
     StoriesProgressBarComponent,
-    VisualizeStoryComponent
+    VisualizeStoryComponent,
+    VisualizeStoriesByCategoriesComponent,
+    LazyLoadDirective
   ],
-  imports: [
-    CommonModule,
-    PipesModule,
-    MaterialComponentsModule,
-    IonicModule,
-    IonicImageLoader,
-    VimeModule,
-    SwiperModule
-  ],
+  imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule, IonicImageLoader, SwiperModule],
   exports: [
     ItemOfferPlanComponent,
     ItemPassIllimixComponent,
@@ -91,7 +86,9 @@ import {SwiperModule} from 'swiper/angular';
     VisualizeStoriesComponent,
     StoriesProgressBarComponent,
     VisualizeStoryComponent,
-    SwiperModule
+    SwiperModule,
+    VisualizeStoriesByCategoriesComponent,
+    LazyLoadDirective
   ],
   entryComponents: [HistorikTransactionByTypeModalComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

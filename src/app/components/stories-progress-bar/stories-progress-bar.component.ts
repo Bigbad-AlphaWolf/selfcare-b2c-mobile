@@ -48,6 +48,7 @@ export class StoriesProgressBarComponent implements OnInit {
       this.currentProgressValue += +this.stepValue;
 
       if (this.currentProgressValue >= 1) {
+        this.resetProgressBar();
         this.idStoryChange.emit(true);
         if (this.isLast) {
           this.finish.emit(this.isLast);

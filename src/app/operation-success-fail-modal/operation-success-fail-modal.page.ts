@@ -23,6 +23,7 @@ import {
   OPERATION_CANCEL_TRANSFERT_OM,
   OPERATION_DEPLAFONNEMENT_OM_ACCOUNT,
   BLOCKED_PASS,
+  OPERATION_TYPE_PASS_INTERNATIONAL,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -70,6 +71,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_DEPLAFONNEMENT_OM_ACCOUNT = OPERATION_DEPLAFONNEMENT_OM_ACCOUNT;
   OPERATION_CANCEL_TRANSFERT_OM = OPERATION_CANCEL_TRANSFERT_OM;
   OPERATION_RAPIDO = OPERATION_RAPIDO;
+  OPERATION_TYPE_PASS_INTERNATIONAL = OPERATION_TYPE_PASS_INTERNATIONAL;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;

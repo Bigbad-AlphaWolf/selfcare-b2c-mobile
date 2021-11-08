@@ -1,4 +1,5 @@
 export enum PassVoyage {
-    APPEL = 'APPEL',
-    DATA = 'DATA'
+  APPEL = 'APPEL',
+  DATA = 'DATA',
+  TOUS = 'TOUS',
 }

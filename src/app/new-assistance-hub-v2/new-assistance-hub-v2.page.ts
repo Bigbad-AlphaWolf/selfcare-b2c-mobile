@@ -52,7 +52,8 @@ export class NewAssistanceHubV2Page implements OnInit {
     private followAnalyticsService: FollowAnalyticsService,
     private dashboardService: DashboardService,
     private orangeMoneyService: OrangeMoneyService,
-    private platform: Platform
+    private platform: Platform,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -201,5 +202,15 @@ export class NewAssistanceHubV2Page implements OnInit {
       'clicked'
     );
     this.router.navigate(['/contact-ibou-hub']);
+  }
+
+  onInputFocus() {
+    this.navController.navigateForward(['/assistance-hub/search'], {
+      state: { listBesoinAides: this.listBesoinAides },
+    });
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_hub_recherche',
+      'event'
+    );
   }
 }

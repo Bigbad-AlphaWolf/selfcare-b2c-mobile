@@ -1,12 +1,13 @@
 <div class="story-container">
 <ion-spinner class="spinner" *ngIf="isLoading" name="crescent"></ion-spinner>
-
-	<ng-container *ngIf="isCurrentStory">
+	<ng-container *ngIf="1">
 		<ng-container *ngIf="story?.type !== 'VIDEO'">
-			<img *ngIf="isWeb" [src]="story?.storyContent | displayFileManagerImage" alt="" (load)="imageLoaded($event)">
-			<img-loader *ngIf="!isWeb" [src]="story?.storyContent | displayFileManagerImage" (load)="imageLoaded($event)" [imgAttributes]="imageAttributes" useImg ></img-loader>
-
-			<audio #audioOrVideo *ngIf="story?.audio" class="hide" preload="metadata" (loadedmetadata)="getInfoMetaData($event)" (canplay)="canPlay($event)" autoplay>
+			<!--<img-loader #image [spinner]="isLoading" [data-src]="story?.storyContent | displayFileManagerImage" (error)="handleErrorLoading($event)" (load)="imageLoaded($event)" [imgAttributes]="imageAttributes" useImg ></img-loader>-->
+			<img #image appLazyLoad [inViewport]="isVisible" [src]="story?.storyContent | displayFileManagerImage" (error)="handleErrorLoading($event)" (load)="imageLoaded($event)" >
+			<div class="error" *ngIf="hasErrorLoading">
+				Impossible de charger l'image
+			</div>
+			<audio #audioOrVideo *ngIf="story?.audio && isVisible" class="hide" preload="metadata" (loadedmetadata)="getInfoMetaData($event)" (canplay)="canPlay($event)" autoplay>
 				<source [src]="story?.audio | displayFileManagerImage" type="audio/mp3" />
 				Your browser does not support the audio tag.
 			</audio>

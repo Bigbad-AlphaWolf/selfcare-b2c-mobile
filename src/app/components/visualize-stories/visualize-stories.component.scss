@@ -19,3 +19,17 @@
     z-index: 2;
   }
 }
+
+.navigation-custom {
+  position: fixed;
+  width: 30%;
+  height: 100%;
+  top: 10%;
+  z-index: 2;
+  &.left {
+    left: 0;
+  }
+  &.right {
+    right: 0;
+  }
+}

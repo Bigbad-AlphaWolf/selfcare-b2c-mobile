@@ -1,12 +1,14 @@
 import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
-import { IonSlides, Platform } from '@ionic/angular';
+import { IonSlides, NavController, Platform } from '@ionic/angular';
 import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { OTHER_CATEGORIES } from 'src/shared';
 import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish.directive';
 import {
   CategoryOffreServiceModel,
   OffreService,
 } from '../models/offre-service.model';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { OperationService } from '../services/oem-operation/operation.service';
 
 @Component({
@@ -37,7 +39,9 @@ export class NewServicesPage implements OnInit {
 
   constructor(
     private operationService: OperationService,
-    private platform: Platform
+    private platform: Platform,
+    private followAnalyticsService: FollowAnalyticsService,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -47,7 +51,12 @@ export class NewServicesPage implements OnInit {
   }
 
   isCategoryToHide(category: CategoryOffreServiceModel) {
-    const HIDDEN_CATEGORIES_CODES = ['HUB_ACHAT', 'HUB_TRANSFER', 'HUB_BILLS'];
+    const HIDDEN_CATEGORIES_CODES = [
+      'HUB_ACHAT',
+      'HUB_TRANSFER',
+      'HUB_BILLS',
+      OTHER_CATEGORIES,
+    ];
     return HIDDEN_CATEGORIES_CODES.includes(category.code);
   }
 
@@ -122,5 +131,25 @@ export class NewServicesPage implements OnInit {
 
   containPassUsage(services: OffreService[]) {
     return services.find((service) => service.passUsage);
+  }
+
+  onInputFocus() {
+    const listeItems: OffreService[] = JSON.parse(
+      JSON.stringify(this.services)
+    ).map((x) => {
+      x.shortDescription = x.titre + ' ' + x.description;
+      return x;
+    });
+    console.log(listeItems);
+    this.navController.navigateForward(['/assistance-hub/search'], {
+      state: {
+        listBesoinAides: listeItems,
+        title: 'Recherche service',
+      },
+    });
+    this.followAnalyticsService.registerEventFollow(
+      'Services_hub_recherche',
+      'event'
+    );
   }
 }

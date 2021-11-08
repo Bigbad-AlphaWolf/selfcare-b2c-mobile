@@ -38,29 +38,35 @@ export class StoriesService {
     list: StoryOem[]
   ): {
     categorie: {
+      id?: string;
       libelle?: string;
       ordre?: number;
       code?: string;
       zoneAffichage?: string;
+      image: string;
     };
     stories: Story[];
     readAll: boolean;
   }[] {
     let result: {
       categorie: {
+        id?: string;
         libelle: string;
         ordre: number;
         code: string;
         zoneAffichage: string;
+        image: string;
       };
       stories: Story[];
       readAll: boolean;
     }[] = [];
     let categories: {
+      id?: string;
       libelle: string;
       ordre: number;
       code: string;
       zoneAffichage: string;
+      image: string;
     }[] = list.map(item => {
       return item.categorieOffreService;
     });
