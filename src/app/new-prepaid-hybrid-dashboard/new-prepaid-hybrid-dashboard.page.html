@@ -12,7 +12,7 @@
     <app-new-assistance-hub-v2></app-new-assistance-hub-v2>
   </ng-template>
 </swiper>
-<div class="tabs">
+<div class="tabs" [ngClass]="{'tabs-ios': isIos}">
   <div class="custom-tab" *ngFor="let mytab of tabs, let i = index"
     [ngClass]="{'tab-selected': currentSlideIndex === i}" (click)="setSlide(i)">
     <ng-container *ngIf="currentSlideIndex === i else notActive">
