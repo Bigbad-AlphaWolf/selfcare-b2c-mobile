@@ -1,3 +1,4 @@
 export enum FavoriteType {
-    RAPIDO = 'RAPIDO'
+  RAPIDO = 'RAPIDO',
+  WOYOFAL = 'WOYOFAL'
 }
