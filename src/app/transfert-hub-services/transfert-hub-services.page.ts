@@ -239,7 +239,7 @@ export class TransfertHubServicesPage implements OnInit {
         break;
       case OPERATION_TYPE_PASS_INTERNATIONAL:
         this.openModalPassNumberSelection(
-          OPERATION_TYPE_PASS_INTERNET,
+          OPERATION_TYPE_PASS_INTERNATIONAL,
           'list-pass-international'
         );
         break;
