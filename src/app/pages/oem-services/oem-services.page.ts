@@ -40,7 +40,7 @@ export class OemServicesPage implements OnInit {
           const categories = service.categorieOffreServices.map(
             (cat) => cat.code
           );
-          return categories.includes(OTHER_CATEGORIES);
+          return !categories.includes(OTHER_CATEGORIES);
         });
         this.loadingServices = false;
         this.followAnalyticsService.registerEventFollow(
