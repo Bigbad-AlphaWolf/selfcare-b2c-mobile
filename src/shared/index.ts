@@ -37,6 +37,7 @@ export const OPERATION_TYPE_PASS_INTERNET = 'PASS_INTERNET';
 export const OPERATION_TYPE_PASS_ILLIMIX = 'PASS_ILLIMIX';
 export const OPERATION_TYPE_PASS_ALLO = 'PASS_ALLO';
 export const OPERATION_TYPE_PASS_VOYAGE = 'OPERATION_TYPE_PASS_VOYAGE';
+export const OPERATION_TYPE_PASS_INTERNATIONAL = 'PASS_INTERNATIONAL';
 export const OPERATION_TYPE_PASS_ILLIFLEX = 'PASS_ILLIFLEX';
 export const OPERATION_TYPE_MERCHANT_PAYMENT = 'MERCHANT_PAYMENT';
 export const OPERATION_TYPE_SOS = 'SOS';
@@ -70,6 +71,8 @@ export const OPERATION_CREATE_PIN_OM = 'CREATE_PIN_OM';
 export const OPERATION_OPEN_OM_ACCOUNT = 'OPEN_OM_ACCOUNT';
 export const OPERATION_CANCEL_TRANSFERT_OM = 'CANCEL_TRANSFERT_OM';
 export const OPERATION_DEPLAFONNEMENT_OM_ACCOUNT = 'DEPLAFONNEMENT_OM_ACCOUNT';
+export const OPERATION_CHECK_OM_ACCOUNT_STATUS = 'OM_PLAFOND_INFOS';
+export const OPERATION_SHARE_THE_APP = 'SHARE_THE_APP';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -427,9 +430,9 @@ export function getListPassFilteredByLabelAndPaymentMod(
   let listPassFiltered = [];
   listPassFiltered = listPass.filter((pass: any) => {
     if (!pass.passPromo) {
-      return pass.categoriePass.libelle === selectedLabel;
+      return pass.categoriePass?.libelle === selectedLabel;
     } else {
-      return pass.passPromo.categoriePass.libelle === selectedLabel;
+      return pass.passPromo?.categoriePass?.libelle === selectedLabel;
     }
   });
 
@@ -447,15 +450,15 @@ export function arrangePassByCategory(listPass: any[], listCategory: string[]) {
     if (!pass.passPromo) {
       result
         .find((item: { label: string; pass: any[] }) => {
-          return item.label === pass.categoriePass.libelle;
+          return item.label === pass?.categoriePass?.libelle;
         })
-        .pass.push(pass);
+        ?.pass.push(pass);
     } else {
       result
         .find((item: { label: string; pass: any[] }) => {
-          return item.label === pass.passPromo.categoriePass.libelle;
+          return item.label === pass.passPromo?.categoriePass?.libelle;
         })
-        .pass.push(pass);
+        ?.pass.push(pass);
     }
   });
 
@@ -1410,8 +1413,37 @@ export const isProfileHybrid = (profile: string) => {
 
 export const CONSO = 'SUIVI_CONSO';
 export const ASSISTANCE = 'ASSISTANCE';
+export const SERVICES = 'SERVICES';
+
 export enum GET_MSISDN_ENUM {
   DISABLE_WIFI = 'disableWifi',
   ENABLE_4G = 'enable4G',
 }
 export const FORGOT_PWD_PAGE_URL = 'forgot-pwd';
+
+export enum OM_STATUS_TEXTS {
+  DECAP_ACCOUNT = `Déplafonner mon compte`,
+  OPEN_ACCOUNT = `Ouvrir compte OM`,
+  CREATE_PIN = `Créer mon pin OM`,
+  CREATE_PIN_TEXT = `Votre compte a été créé avec succès. Veuillez créer votre code PIN OM`,
+  DECAPPED_ACCOUNT = `Votre compte est déplafonné (Pas de plafond)`,
+  OPENED_ACCOUNT = `Votre ouverture de compte est effectué avec succès`,
+  OPENING_ACCOUNT = `Votre demande de d'ouverture de compte est en cours`,
+  ERROR_OPENING_ACCOUNT = `Une erreur est survenue lors du traitement de votre demande d'ouverture de compte`,
+  NO_ACCOUNT = `Votre numéro n'a pas de compte OM`,
+  DECAPPING_ACCOUNT = `Votre demande de déplafonnement est en cours`,
+  CAPPED_ACCOUNT = `Votre compte est plafonné à un cumul de transactions à 200.000F`,
+  ERROR_DECAPPING_ACCOUNT = `Une erreur est survenue lors du traitement de votre demande de déplafonnement`,
+}
+
+export const OTHER_CATEGORIES = 'OTHER_CATEGORIES';
+
+export enum CountriesIndicatif {
+  WORLD = 'WORLD',
+  AFRICA = 'AFRICA',
+}
+
+export const INTERNATIONAL_PASSES_INDICATIF_ARRAY: string[] = [
+  CountriesIndicatif.WORLD,
+  CountriesIndicatif.AFRICA,
+];

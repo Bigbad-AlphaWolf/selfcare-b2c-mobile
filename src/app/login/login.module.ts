@@ -1,26 +1,21 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {Routes, RouterModule} from '@angular/router';
 
-import { IonicModule } from '@ionic/angular';
+import {IonicModule} from '@ionic/angular';
 
-import { LoginPage } from './login.page';
+import {LoginPage} from './login.page';
 
-import {
-  MatCheckboxModule,
-  MatProgressSpinnerModule,
-  MatInputModule,
-  MatBottomSheetModule,
-} from '@angular/material';
-import { SharedModule } from 'src/shared/shared.module';
-import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
+import {SharedModule} from 'src/shared/shared.module';
+import {OpenNativeSettings} from '@ionic-native/open-native-settings/ngx';
+import {MaterialComponentsModule} from '../material-components/material-components.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: LoginPage,
-  },
+    component: LoginPage
+  }
 ];
 
 @NgModule({
@@ -28,15 +23,12 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatCheckboxModule,
-    MatProgressSpinnerModule,
-    MatInputModule,
     IonicModule,
     SharedModule,
-    MatBottomSheetModule,
-    RouterModule.forChild(routes),
+    MaterialComponentsModule,
+    RouterModule.forChild(routes)
   ],
   declarations: [LoginPage],
-  providers: [OpenNativeSettings],
+  providers: [OpenNativeSettings]
 })
 export class LoginPageModule {}

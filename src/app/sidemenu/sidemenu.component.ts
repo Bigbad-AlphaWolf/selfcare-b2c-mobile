@@ -20,17 +20,19 @@ import {
   ASSISTANCE_URL,
   CONSO,
   ASSISTANCE,
+  SERVICES,
 } from 'src/shared';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { NavController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { OffresServicesPage } from '../pages/offres-services/offres-services.page';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 import { isPrepaidOrHybrid } from '../dashboard';
+import { OmStatusVisualizationComponent } from 'src/shared/om-status-visualization/om-status-visualization.component';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -60,7 +62,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     private appVersion: AppVersion,
     private socialSharing: SocialSharing,
     private appRout: ApplicationRoutingService,
-    private bsService: BottomSheetService
+    private bsService: BottomSheetService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -216,11 +219,22 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   ngOnDestroy() {}
 
   onOffreClicked() {
-    this.followAnalyticsService.registerEventFollow(
-      'Offres_services_menu',
-      'event'
-    );
-    this.navCtrl.navigateForward(OffresServicesPage.ROUTE_PATH);
+    this.authServ.getSubscription(this.msisdn).subscribe((sub) => {
+      if (isPrepaidOrHybrid(sub)) {
+        this.followAnalyticsService.registerEventFollow(
+          'services_tab_from_menu',
+          'event',
+          this.msisdn
+        );
+        this.dashboardServ.menuOptionClickEmit(SERVICES);
+        return;
+      }
+      this.followAnalyticsService.registerEventFollow(
+        'Offres_services_menu',
+        'event'
+      );
+      this.navCtrl.navigateForward(OffresServicesPage.ROUTE_PATH);
+    });
   }
 
   goToMyOfferPlans() {
@@ -312,22 +326,14 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   defaulSharingSheet() {
-    this.followAnalyticsService.registerEventFollow(
-      'Partager_app_menu',
-      'event'
-    );
-    const url = 'http://bit.ly/2NHn5aS';
-    const postTitle =
-      "Comme moi télécharge et connecte toi gratuitement sur l'application " +
-      'Orange et Moi Fi rek la http://onelink.to/6h78t2 ou sur www.orangeetmoi.sn ' +
-      'Bu ande ak simplicité ak réseau mo gën #WaawKay';
-    const hashtag = '#WaawKay';
+    this.bsService.defaulSharingSheet();
+  }
 
-    this.socialSharing
-      .share(postTitle, null, null, url)
-      .then()
-      .catch((err: any) => {
-        console.log('Cannot open default sharing sheet' + err);
-      });
+  async openOMStatus() {
+    const modal = await this.modalController.create({
+      component: OmStatusVisualizationComponent,
+      cssClass: 'select-recipient-modal',
+    });
+    return await modal.present();
   }
 }

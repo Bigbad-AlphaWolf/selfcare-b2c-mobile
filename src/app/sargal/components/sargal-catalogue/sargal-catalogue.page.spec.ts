@@ -1,12 +1,12 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { SargalCataloguePage } from './sargal-catalogue.page';
-import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { FormatCurrencyPipe } from 'src/shared/pipes/format-currency.pipe';
-import { MatMenuModule } from '@angular/material';
+import {SargalCataloguePage} from './sargal-catalogue.page';
+import {Router, ActivatedRoute} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {of} from 'rxjs';
+import {FormatCurrencyPipe} from 'src/shared/pipes/format-currency.pipe';
+import {MatMenuModule} from '@angular/material/menu';
 
 describe('SargalCataloguePage', () => {
   let component: SargalCataloguePage;
@@ -19,8 +19,8 @@ describe('SargalCataloguePage', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
         imports: [MatMenuModule],
         providers: [
-          { provide: Router, useValue: {} },
-          { provide: ActivatedRoute, useValue: {} },
+          {provide: Router, useValue: {}},
+          {provide: ActivatedRoute, useValue: {}},
           {
             provide: HttpClient,
             useValue: {
@@ -29,10 +29,10 @@ describe('SargalCataloguePage', () => {
               },
               post() {
                 return of();
-              },
-            },
-          },
-        ],
+              }
+            }
+          }
+        ]
       }).compileComponents();
     })
   );

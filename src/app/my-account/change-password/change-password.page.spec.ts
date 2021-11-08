@@ -1,14 +1,14 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { ChangePasswordPage } from './change-password.page';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { ModalController } from '@ionic/angular';
-import { RouterTestingModule } from '@angular/router/testing';
+import {ChangePasswordPage} from './change-password.page';
+import {ReactiveFormsModule} from '@angular/forms';
+import {MatDialogRef, MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {of} from 'rxjs';
+import {ModalController} from '@ionic/angular';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('ChangePasswordPage', () => {
   let component: ChangePasswordPage;
@@ -21,9 +21,9 @@ describe('ChangePasswordPage', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         imports: [ReactiveFormsModule, RouterTestingModule],
         providers: [
-          { provide: MatDialogRef, useValue: {} },
-          { provide: MatDialog, useValue: {} },
-          { provide: ModalController, useValue: {} },
+          {provide: MatDialogRef, useValue: {}},
+          {provide: MatDialog, useValue: {}},
+          {provide: ModalController, useValue: {}},
           {
             provide: HttpClient,
             useValue: {
@@ -32,10 +32,10 @@ describe('ChangePasswordPage', () => {
               },
               get: () => {
                 return of();
-              },
-            },
-          },
-        ],
+              }
+            }
+          }
+        ]
       }).compileComponents();
     })
   );

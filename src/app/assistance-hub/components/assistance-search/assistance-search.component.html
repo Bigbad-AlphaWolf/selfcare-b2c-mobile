@@ -4,7 +4,7 @@
       <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
     </ion-buttons>
     <ion-title class="ion-no-padding">
-      <span class="title1">Recherche assistance</span>
+      <span class="title1">Recherche</span>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,7 +12,7 @@
 <ion-content>
   <ion-header class="ion-padding-start" collapse="condense">
     <ion-toolbar>
-      <span class="title">Recherche assistance</span>
+      <span class="title">Recherche</span>
     </ion-toolbar>
   </ion-header>
   <div class="search-page">
@@ -25,6 +25,7 @@
     </div>
 
     <div class="search-result">
+			<ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
       <ng-container *ngIf="listBesoinAides | searchAssistance : terms as filtredBas">
 
         <div class="result-count">Résultats({{filtredBas?.length}})</div>

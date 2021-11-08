@@ -1,38 +1,30 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
-import { environment } from 'src/environments/environment';
-import { Subject, Subscription } from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {environment} from 'src/environments/environment';
+import {Subject, Subscription} from 'rxjs';
 import * as SecureLS from 'secure-ls';
-import { AuthenticationService } from '../authentication-service/authentication.service';
-import {
-  DashboardService,
-  downloadAvatarEndpoint,
-} from '../dashboard-service/dashboard.service';
-import { DeleteNumberPopupComponent } from 'src/app/my-account/delete-number-popup/delete-number-popup.component';
-import { ChangeAvatarPopupComponent } from 'src/app/my-account/change-avatar-popup/change-avatar-popup.component';
-import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
-import { SuccessFailPopupComponent } from 'src/shared/success-fail-popup/success-fail-popup.component';
-import { generateUUID, OPERATION_CONFIRM_DELETE_RATTACH_NUMBER } from 'src/shared';
-import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
-import { ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT, ACCOUNT_IDENTIFIED_NUMBERS_ENDPOINT } from '../utils/account.endpoints';
-import { map, take, tap } from 'rxjs/operators';
-import { ModalController } from '@ionic/angular';
-import { YesNoModalComponent } from 'src/shared/yes-no-modal/yes-no-modal.component';
-const {
-  FILE_SERVICE,
-  ACCOUNT_MNGT_SERVICE,
-  SERVER_API_URL,
-  UAA_SERVICE,
-} = environment;
+import {AuthenticationService} from '../authentication-service/authentication.service';
+import {DashboardService, downloadAvatarEndpoint} from '../dashboard-service/dashboard.service';
+import {DeleteNumberPopupComponent} from 'src/app/my-account/delete-number-popup/delete-number-popup.component';
+import {ChangeAvatarPopupComponent} from 'src/app/my-account/change-avatar-popup/change-avatar-popup.component';
+import {InProgressPopupComponent} from 'src/shared/in-progress-popup/in-progress-popup.component';
+import {SuccessFailPopupComponent} from 'src/shared/success-fail-popup/success-fail-popup.component';
+import {generateUUID, OPERATION_CONFIRM_DELETE_RATTACH_NUMBER} from 'src/shared';
+import {FollowAnalyticsService} from '../follow-analytics/follow-analytics.service';
+import {ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT, ACCOUNT_IDENTIFIED_NUMBERS_ENDPOINT} from '../utils/account.endpoints';
+import {map, take, tap} from 'rxjs/operators';
+import {ModalController} from '@ionic/angular';
+import {YesNoModalComponent} from 'src/shared/yes-no-modal/yes-no-modal.component';
+const {FILE_SERVICE, ACCOUNT_MNGT_SERVICE, SERVER_API_URL, UAA_SERVICE} = environment;
 const uploadAvatarEndpoint = `${SERVER_API_URL}/${FILE_SERVICE}/api/upload`;
 const accountManagementEndPoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/account-b-2-cs`;
 const changePasswordEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/change-password`;
 const deleteLinkedPhoneNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/rattachement-lignes/delete-multiple`;
-const ls = new SecureLS({ encodingType: 'aes' });
+const ls = new SecureLS({encodingType: 'aes'});
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AccountService {
   changePasswordSubject: Subject<any> = new Subject<any>();
@@ -53,33 +45,27 @@ export class AccountService {
     private modal: ModalController
   ) {}
 
-  changePassword(payload: { currentPassword: string; newPassword: string }) {
+  changePassword(payload: {currentPassword: string; newPassword: string}) {
     return this.http.post(changePasswordEndpoint, payload);
   }
 
   changeUserPassword(currentPassword: string, newPassword: string) {
-    const changePasswordPayload = { currentPassword, newPassword };
+    const changePasswordPayload = {currentPassword, newPassword};
     this.changePassword(changePasswordPayload).subscribe(
-      (res) => {
+      res => {
         this.openSuccessDialog('changePassword');
       },
-      (err) => {
+      err => {
         if (err.status === 400) {
           if (err.error.msg === 'invalidcurrentpassword') {
             // this.error = 'L actuel mot de passe saisi est incorrect';
-            this.changePasswordSubject.next(
-              'L actuel mot de passe saisi est incorrect'
-            );
+            this.changePasswordSubject.next('L actuel mot de passe saisi est incorrect');
           } else {
             // this.error = 'Le nouveau mot de passe saisi n est pas autorisé';
-            this.changePasswordSubject.next(
-              "Le nouveau mot de passe saisi n'est pas autorisé"
-            );
+            this.changePasswordSubject.next("Le nouveau mot de passe saisi n'est pas autorisé");
           }
         } else {
-          this.changePasswordSubject.next(
-            'Une erreur est survenue. Veuillez réessayer plus tard'
-          );
+          this.changePasswordSubject.next('Une erreur est survenue. Veuillez réessayer plus tard');
         }
       }
     );
@@ -92,16 +78,16 @@ export class AccountService {
   openSuccessDialog(type: string) {
     const dialogRef = this.dialog.open(SuccessFailPopupComponent, {
       width: '400px',
-      data: { type },
+      data: {type}
     });
-    dialogRef.afterClosed().subscribe((confirmresult) => {});
+    dialogRef.afterClosed().subscribe(confirmresult => {});
   }
 
   deleteLinkedPhoneNumbers(listMsisdn: any[]) {
     const login = this.authService.getUserMainPhoneNumber();
     return this.http.post(deleteLinkedPhoneNumberEndpoint, {
       listMsisdn,
-      login,
+      login
     });
   }
 
@@ -109,36 +95,27 @@ export class AccountService {
     const modal = await this.modal.create({
       component: YesNoModalComponent,
       componentProps: {
-        'typeModal': OPERATION_CONFIRM_DELETE_RATTACH_NUMBER,
-        'numero': phoneNumbersToDelete[0]
+        typeModal: OPERATION_CONFIRM_DELETE_RATTACH_NUMBER,
+        numero: phoneNumbersToDelete[0]
       },
       cssClass: 'select-recipient-modal'
     });
 
     modal.onDidDismiss().then((res: any) => {
-      res = res.data;      
+      res = res.data;
       if (res.continue) {
         this.deleteLinkedPhoneNumbers(phoneNumbersToDelete).subscribe(
           () => {
             this.deleteLinkedPhoneNumberSubject.next();
             this.dashbServ.attachedNumbersChangedSubject.next();
-            this.followService.registerEventFollow(
-              'delete_phoneNumber_success',
-              'event',
-              { phoneNumbersToDelete }
-            );
+            this.followService.registerEventFollow('delete_phoneNumber_success', 'event', {phoneNumbersToDelete});
           },
           () => {
-            this.followService.registerEventFollow(
-              'delete_phoneNumber_error',
-              'error',
-              { phoneNumbersToDelete }
-            );
+            this.followService.registerEventFollow('delete_phoneNumber_error', 'error', {phoneNumbersToDelete});
           }
         );
       }
-      
-    })
+    });
     return await modal.present();
   }
 
@@ -149,9 +126,9 @@ export class AccountService {
   openPrevizualisationDialog(fileInput: any, imgExtension: string) {
     this.dialogImgRef = this.dialog.open(ChangeAvatarPopupComponent, {
       width: '300px',
-      data: { selectedImg: fileInput },
+      data: {selectedImg: fileInput}
     });
-    this.dialogSub = this.dialogImgRef.afterClosed().subscribe((res) => {
+    this.dialogSub = this.dialogImgRef.afterClosed().subscribe(res => {
       if (res) {
         // Uncomment upload method when endpoint will be merged
         // this.upload(file);
@@ -159,7 +136,7 @@ export class AccountService {
         const imageId = generateUUID();
         this.userImgName = imageId + '.' + imgExtension;
         formData.append('file', fileInput, this.userImgName);
-        this.updateAvatarSubject.next({status: false, error: false})
+        this.updateAvatarSubject.next({status: false, error: false});
         this.uploadUserAvatar(formData);
       }
     });
@@ -167,16 +144,19 @@ export class AccountService {
 
   uploadAvatar(formData: any) {
     return this.http.post(`${uploadAvatarEndpoint}`, formData, {
-      responseType: 'text',
+      responseType: 'text'
     });
   }
 
   uploadUserAvatar(formData: any) {
-    this.uploadAvatar(formData).subscribe(() => {
-      this.saveUserImgProfil(this.userImgName);
-    }, ()=>{
-      this.updateAvatarSubject.next({status: true, error: true})
-    });
+    this.uploadAvatar(formData).subscribe(
+      () => {
+        this.saveUserImgProfil(this.userImgName);
+      },
+      () => {
+        this.updateAvatarSubject.next({status: true, error: true});
+      }
+    );
   }
 
   getStatusAvatarLoaded() {
@@ -190,15 +170,18 @@ export class AccountService {
   }
 
   saveUserImgProfil(userImageProfil) {
-    this.saveImgProfil(userImageProfil).subscribe((response: any) => {
-      this.updateAvatarSubject.next({status: true, error: false})
-      if (response && response.imageProfil) {
-        ls.set('user', response);
-        this.changeUserAvatarUrl(downloadAvatarEndpoint + response.imageProfil);
+    this.saveImgProfil(userImageProfil).subscribe(
+      (response: any) => {
+        this.updateAvatarSubject.next({status: true, error: false});
+        if (response && response.imageProfil) {
+          ls.set('user', response);
+          this.changeUserAvatarUrl(downloadAvatarEndpoint + response.imageProfil);
+        }
+      },
+      () => {
+        this.updateAvatarSubject.next({status: true, error: true});
       }
-    },()=>{
-      this.updateAvatarSubject.next({status: true, error: true})
-    });
+    );
   }
 
   changeUserAvatarUrl(url) {
@@ -214,14 +197,14 @@ export class AccountService {
     this.dialog.open(InProgressPopupComponent, {
       width: '330px',
       maxWidth: '100%',
-      hasBackdrop: true,
+      hasBackdrop: true
     });
   }
 
-  attachNumberByIdCard( data: { identificationId: string, login: string, numero: string }) {
-    const payload = { identificationId: data.identificationId, login: data.login, numero: data.numero, typeNumero: 'MOBILE' }
+  attachNumberByIdCard(data: {identificationId: string; login: string; numero: string}) {
+    const payload = {identificationId: data.identificationId, login: data.login, numero: data.numero, typeNumero: 'MOBILE'};
     return this.http.post(ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT, payload).pipe(
-      tap((r) => {
+      tap(r => {
         DashboardService.rattachedNumbers = null;
         this.dashbServ.attachedNumbers().pipe(take(1)).subscribe();
         this.dashbServ.attachedNumbersChangedSubject.next();
@@ -231,8 +214,10 @@ export class AccountService {
 
   fetchIdentifiedNumbers() {
     const mainNumber = this.dashbServ.getMainPhoneNumber();
-    return this.http.get(`${ACCOUNT_IDENTIFIED_NUMBERS_ENDPOINT}/${mainNumber}`).pipe(map((list: string[])=>{
-      return list.filter((val: string) => val !== mainNumber );
-    }));
+    return this.http.get(`${ACCOUNT_IDENTIFIED_NUMBERS_ENDPOINT}/${mainNumber}`).pipe(
+      map((list: string[]) => {
+        return list.filter((val: string) => val !== mainNumber);
+      })
+    );
   }
 }

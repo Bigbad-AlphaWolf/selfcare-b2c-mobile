@@ -1,13 +1,5 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  QueryList,
-  ViewChild,
-  ViewChildren,
-} from '@angular/core';
-import { ASSISTANCE, CONSO } from 'src/shared';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ASSISTANCE, CONSO, SERVICES } from 'src/shared';
 import { SwiperOptions } from 'swiper';
 import { SwiperComponent } from 'swiper/angular';
 import { NewAssistanceHubV2Page } from '../new-assistance-hub-v2/new-assistance-hub-v2.page';
@@ -49,7 +41,8 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
     },
   ];
   currentSlideIndex = 0;
-  @ViewChild('swiper', { static: false }) swiper: SwiperComponent;
+  @ViewChild('swiper', { static: false })
+  swiper: SwiperComponent;
   @ViewChild(DashboardHomeComponent) dashboarHome: DashboardHomeComponent;
   @ViewChild(NewSuiviConsoPage) newSuiviConsoPage: NewSuiviConsoPage;
   @ViewChild(NewServicesPage) newServicesPage: NewServicesPage;
@@ -65,10 +58,18 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
   ngOnInit() {
     this.dashboardService.listenToMenuClick().subscribe((menuItem) => {
       console.log(menuItem);
-      if (menuItem === CONSO) {
-        this.setSlide(1);
-      } else if (menuItem === ASSISTANCE) {
-        this.setSlide(3);
+      switch (menuItem) {
+        case CONSO:
+          this.setSlide(1);
+          break;
+        case SERVICES:
+          this.setSlide(2);
+          break;
+        case ASSISTANCE:
+          this.setSlide(3);
+          break;
+        default:
+          break;
       }
     });
   }

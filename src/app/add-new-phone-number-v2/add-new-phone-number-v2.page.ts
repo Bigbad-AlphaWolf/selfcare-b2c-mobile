@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef, MatDialog } from '@angular/material';
-import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { REGEX_FIX_NUMBER, REGEX_NUMBER } from 'src/shared';
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {MatDialogRef, MatDialog} from '@angular/material/dialog';
+import {ModalSuccessComponent} from 'src/shared/modal-success/modal-success.component';
+import {DashboardService} from '../services/dashboard-service/dashboard.service';
+import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
+import {REGEX_FIX_NUMBER, REGEX_NUMBER} from 'src/shared';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-add-new-phone-number-v2',
@@ -25,10 +25,9 @@ export class AddNewPhoneNumberV2Page implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.currentUserNumber = this.dashboardServ.getCurrentPhoneNumber();
   }
   validNumber(msisdn: string) {
@@ -59,7 +58,7 @@ export class AddNewPhoneNumberV2Page implements OnInit {
         this.isProcessing = false;
         this.followAttachmentIssues(payload, 'event');
         this.successDialog = this.dialog.open(ModalSuccessComponent, {
-          data: { type: 'rattachment-success' },
+          data: {type: 'rattachment-success'},
           width: '95%',
           maxWidth: '375px'
         });
@@ -67,11 +66,11 @@ export class AddNewPhoneNumberV2Page implements OnInit {
       (err: any) => {
         this.isProcessing = false;
         this.hasError = true;
-        if(payload.typeNumero === 'FIXE'){
-          this.router.navigate(['/new-number/id-client'],  { queryParams: { numero: payload.numero } })
-        }else{
+        if (payload.typeNumero === 'FIXE') {
+          this.router.navigate(['/new-number/id-client'], {queryParams: {numero: payload.numero}});
+        } else {
           this.successDialog = this.dialog.open(ModalSuccessComponent, {
-            data: { type: 'rattachment-failed' },
+            data: {type: 'rattachment-failed'},
             width: '95%',
             maxWidth: '375px'
           });
@@ -82,36 +81,21 @@ export class AddNewPhoneNumberV2Page implements OnInit {
     );
   }
 
-  followAttachmentIssues(
-    payload: { login: string; numero: string; typeNumero: string },
-    eventType: 'error' | 'event'
-  ) {
+  followAttachmentIssues(payload: {login: string; numero: string; typeNumero: string}, eventType: 'error' | 'event') {
     if (eventType === 'event') {
       const infosFollow = {
         attached_number: payload.numero,
         login: payload.login
       };
-      const eventName = `rattachment_${
-        payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'
-      }_success`;
-      this.followAnalyticsService.registerEventFollow(
-        eventName,
-        eventType,
-        infosFollow
-      );
+      const eventName = `rattachment_${payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'}_success`;
+      this.followAnalyticsService.registerEventFollow(eventName, eventType, infosFollow);
     } else {
       const infosFollow = {
         number_to_attach: payload.numero,
         login: payload.login
       };
-      const errorName = `rattachment_${
-        payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'
-      }_failed`;
-      this.followAnalyticsService.registerEventFollow(
-        errorName,
-        eventType,
-        infosFollow
-      );
+      const errorName = `rattachment_${payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'}_failed`;
+      this.followAnalyticsService.registerEventFollow(errorName, eventType, infosFollow);
     }
   }
 }

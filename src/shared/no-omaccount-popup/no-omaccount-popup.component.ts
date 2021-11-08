@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { Router } from '@angular/router';
+import {Component, OnInit, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-no-omaccount-popup',
@@ -31,7 +31,7 @@ export class NoOMAccountPopupComponent implements OnInit {
       this.router.navigate(['/dashboard/orange-money-desktop/creation-compte']);
     } else {
       this.close();
-      this.router.navigate(['/control-center/operation-om/creation-compte']);
+      this.router.navigate(['/om-self-operation/open-om-account']);
     }
   }
 }

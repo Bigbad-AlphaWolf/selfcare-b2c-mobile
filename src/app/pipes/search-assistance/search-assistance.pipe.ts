@@ -50,14 +50,19 @@ export class SearchAssistancePipe implements PipeTransform {
 
     return ba;
   }
+
   countFieldMachedTerm(ba: OffreService, term) {
     let countMached = 0;
-    const regTerm = new RegExp(term, 'i');
     this.searchfields.forEach((f) => {
-      if (ba[f] && regTerm.test(ba[f])) {
+      const regexTermWithoutAccent = new RegExp(this.ignoreAccent(term), 'i');
+      if (ba[f] && regexTermWithoutAccent.test(this.ignoreAccent(ba[f]))) {
         countMached++;
       }
     });
     return countMached;
+  }
+
+  ignoreAccent(string: string) {
+    return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 }

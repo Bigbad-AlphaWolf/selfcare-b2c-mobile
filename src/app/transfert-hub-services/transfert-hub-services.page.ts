@@ -22,7 +22,7 @@ import {
   OPERATION_TYPE_SEDDO_BONUS,
   OPERATION_TYPE_SEDDO_CREDIT,
   OPERATION_TYPE_MERCHANT_PAYMENT,
-  OPERATION_TYPE_SOS_ILLIMIX,
+  OPERATION_TYPE_PASS_INTERNATIONAL,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -32,7 +32,7 @@ import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.servic
 import { ListPassVoyagePage } from '../pages/list-pass-voyage/list-pass-voyage.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { catchError, tap } from 'rxjs/operators';
@@ -237,6 +237,12 @@ export class TransfertHubServicesPage implements OnInit {
           'list-pass'
         );
         break;
+      case OPERATION_TYPE_PASS_INTERNATIONAL:
+        this.openModalPassNumberSelection(
+          OPERATION_TYPE_PASS_INTERNATIONAL,
+          'list-pass-international'
+        );
+        break;
       case OPERATION_TYPE_PASS_ILLIMIX:
         this.openModalPassNumberSelection(
           OPERATION_TYPE_PASS_ILLIMIX,
@@ -264,7 +270,7 @@ export class TransfertHubServicesPage implements OnInit {
       case OPERATION_TYPE_MERCHANT_PAYMENT:
         this.openMerchantBS();
       default:
-        if (opt.redirectionType === 'NAVIGATE')
+        if (opt.redirectionType === 'NAVIGATE' && opt?.redirectionPath)
           this.navController.navigateForward([opt.redirectionPath], {
             state: { purchaseType: opt.code },
           });
@@ -451,7 +457,10 @@ export class TransfertHubServicesPage implements OnInit {
           this.followAnalyticsService.registerEventFollow(
             'Get_favorite_pass_error',
             'error',
-            { msisdn: this.currentPhone, error: err.status }
+            {
+              msisdn: this.currentPhone,
+              error: err.status,
+            }
           );
           return of(null);
         })
