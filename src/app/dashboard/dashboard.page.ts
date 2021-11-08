@@ -1,35 +1,28 @@
-import { Subscription } from 'rxjs';
-import { AppMinimize } from '@ionic-native/app-minimize/ngx';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  SubscriptionModel,
-  hash53,
-  isPrepaidOrHybrid,
-  isPostpaidMobile,
-  isPostpaidFix,
-  isPrepaidFix,
-  isKirene,
-} from '.';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import {Subscription} from 'rxjs';
+import {AppMinimize} from '@ionic-native/app-minimize/ngx';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {SubscriptionModel, hash53, isPrepaidOrHybrid, isPostpaidMobile, isPostpaidFix, isPrepaidFix, isKirene} from '.';
+import {DashboardService} from '../services/dashboard-service/dashboard.service';
+import {AuthenticationService} from '../services/authentication-service/authentication.service';
 import * as SecureLS from 'secure-ls';
-import { Router } from '@angular/router';
-import { getCurrentDate, isNewVersion } from 'src/shared';
-import { AssistanceService } from '../services/assistance.service';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { Platform, NavController } from '@ionic/angular';
-import { AppVersion } from '@ionic-native/app-version/ngx';
-import { AppUpdatePage } from '../pages/app-update/app-update.page';
-import { map, take } from 'rxjs/operators';
-import { PROFIL, CODE_CLIENT, CODE_FORMULE, FORMULE } from '../utils/constants';
-const ls = new SecureLS({ encodingType: 'aes' });
+import {Router} from '@angular/router';
+import {getCurrentDate, isNewVersion} from 'src/shared';
+import {AssistanceService} from '../services/assistance.service';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
+import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
+import {Platform, NavController} from '@ionic/angular';
+import {AppVersion} from '@ionic-native/app-version/ngx';
+import {AppUpdatePage} from '../pages/app-update/app-update.page';
+import {map, take} from 'rxjs/operators';
+import {PROFIL, CODE_CLIENT, CODE_FORMULE, FORMULE} from '../utils/constants';
+import {BatchAnalyticsService} from '../services/batch-analytics/batch-analytics.service';
+const ls = new SecureLS({encodingType: 'aes'});
 
 @AutoUnsubscribe()
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
-  styleUrls: ['./dashboard.page.scss'],
+  styleUrls: ['./dashboard.page.scss']
 })
 export class DashboardPage implements OnInit, OnDestroy {
   userSubscription;
@@ -60,7 +53,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     private platform: Platform,
     private appMinimize: AppMinimize,
     private appVersion: AppVersion,
-    private navCtl: NavController
+    private navCtl: NavController,
+    private batch: BatchAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -77,24 +71,17 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.currentAppVersion = await this.appVersion.getVersionNumber();
 
     if (this.appId && this.currentAppVersion)
-      this.assistanceService
-        .getAppVersionPublished()
-        .subscribe((version: any) => {
-          const versionAndroid = version.android;
-          const versionIos = version.ios;
-          if (versionAndroid || versionIos) {
-            if (
-              isNewVersion(
-                this.isIOS ? versionIos : versionAndroid,
-                this.currentAppVersion
-              )
-            ) {
-              this.navCtl.navigateForward([AppUpdatePage.ROUTE_PATH], {
-                state: { appId: this.appId },
-              });
-            }
+      this.assistanceService.getAppVersionPublished().subscribe((version: any) => {
+        const versionAndroid = version.android;
+        const versionIos = version.ios;
+        if (versionAndroid || versionIos) {
+          if (isNewVersion(this.isIOS ? versionIos : versionAndroid, this.currentAppVersion)) {
+            this.navCtl.navigateForward([AppUpdatePage.ROUTE_PATH], {
+              state: {appId: this.appId}
+            });
           }
-        });
+        }
+      });
   }
 
   ngOnDestroy() {}
@@ -160,16 +147,12 @@ export class DashboardPage implements OnInit, OnDestroy {
           this.saveAttachedNumbers();
           this.router.navigate([DashboardService.CURRENT_DASHBOARD]);
           this.checkForUpdate();
-          this.followAnalyticsService.registerEventFollow(
-            'Dashboard_displayed',
-            'event',
-            {
-              msisdn: currentNumber,
-              profil: this.currentProfile,
-              formule: this.currentFormule,
-              date,
-            }
-          );
+          this.followAnalyticsService.registerEventFollow('Dashboard_displayed', 'event', {
+            msisdn: currentNumber,
+            profil: this.currentProfile,
+            formule: this.currentFormule,
+            date
+          });
           this.followAnalyticsService.setString('profil', this.currentProfile);
           this.followAnalyticsService.setString('formule', this.currentFormule);
           this.getUserInfosNlogBirthDateOnFollow();
@@ -180,13 +163,11 @@ export class DashboardPage implements OnInit, OnDestroy {
           const hashedNumber = hash53(msisdn).toString();
           try {
             this.followAnalyticsService.registerId(hashedNumber);
+            this.batch.registerID(hashedNumber);
           } catch (error) {
+            this.batch.registerID(hashedNumber);
             this.followAnalyticsService.registerId(hashedNumber);
-            this.followAnalyticsService.registerEventFollow(
-              'hash_error',
-              'error',
-              error
-            );
+            this.followAnalyticsService.registerEventFollow('hash_error', 'error', error);
           }
         },
         (err: any) => {
@@ -205,10 +186,10 @@ export class DashboardPage implements OnInit, OnDestroy {
     const userInfosAlreadySet = !!ls.get('userInfos');
     if (!userInfosAlreadySet)
       this.dashboardServ.getCustomerInformations().subscribe(
-        (res) => {
+        res => {
           this.followAnalyticsService.logUserBirthDate(res.birthDate);
         },
-        (err) => {
+        err => {
           console.log(err);
         }
       );

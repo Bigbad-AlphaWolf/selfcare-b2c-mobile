@@ -25,5 +25,6 @@ export const environment = {
   },
   GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
   CONFIRM_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/confirm-msisdn',
-  DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_b7ba58e0175d1f96e1eca4e3'
+  DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_b7ba58e0175d1f96e1eca4e3',
+	BATCH_ANDROID_API_KEY: 'DEV61813D3A6EA950E313FCC9F0C03'
 };

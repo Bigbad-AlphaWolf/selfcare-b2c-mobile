@@ -18,10 +18,9 @@ import {Uid} from '@ionic-native/uid/ngx';
 import {DashboardPage} from './dashboard/dashboard.page';
 import {AppVersion} from '@ionic-native/app-version/ngx';
 import {AssistanceHubPage} from './assistance-hub/assistance-hub.page';
+import {BatchAnalyticsService} from './services/batch-analytics/batch-analytics.service';
 
 const ls = new SecureLS({encodingType: 'aes'});
-
-declare var FollowAnalytics: any;
 
 @Component({
   selector: 'app-root',
@@ -44,7 +43,8 @@ export class AppComponent {
     private uid: Uid,
     private androidPermissions: AndroidPermissions,
     private appVersion: AppVersion,
-    private navContr: NavController
+    private navContr: NavController,
+    private batch: BatchAnalyticsService
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -75,6 +75,7 @@ export class AppComponent {
     this.platform.ready().then(() => {
       // Initialize BackButton Eevent.
       this.getVersion();
+      this.batch.initBatchConfig();
       if (this.platform && this.platform.backButton) {
         this.platform.backButton.subscribe(() => {
           this.navContr.pop();
