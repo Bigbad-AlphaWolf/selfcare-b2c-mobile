@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { Platform } from '@ionic/angular';
 import { ASSISTANCE, CONSO, SERVICES } from 'src/shared';
 import { SwiperOptions } from 'swiper';
 import { SwiperComponent } from 'swiper/angular';
@@ -50,12 +51,18 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
   swiperConfig: SwiperOptions = {
     slidesPerView: 1,
   };
+  isIos: boolean;
+
   constructor(
     private ref: ChangeDetectorRef,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private platform: Platform
   ) {}
 
   ngOnInit() {
+    this.platform.ready().then(() => {
+      this.isIos = this.platform.is('ios');
+    });
     this.dashboardService.listenToMenuClick().subscribe((menuItem) => {
       console.log(menuItem);
       switch (menuItem) {
