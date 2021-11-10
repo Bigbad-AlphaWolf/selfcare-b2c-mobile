@@ -1130,7 +1130,7 @@ export class NewPinpadModalPage implements OnInit {
         cappingFee: this.cappingFees,
         transferToBlock: this.transactionToBlock,
       });
-    } else if (res === null || res.status_code === null) {
+    } else if (res === null || res.status_code === null || !res.status_code.match('Success') ) {
       this.pinError =
         "Une erreur s'est produite. Veuillez ressayer ultérieurement";
       this.pinHasError = true;

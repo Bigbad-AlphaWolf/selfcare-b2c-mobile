@@ -468,6 +468,8 @@ export class OperationRecapPage implements OnInit {
   async openPinpad() {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
+			backdropDismiss: true,
+			swipeToClose: true,
       cssClass: 'pin-pad-modal',
       componentProps: {
         operationType: this.purchaseType,
