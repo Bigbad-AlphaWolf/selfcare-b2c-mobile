@@ -75,7 +75,7 @@ export class AppComponent {
     this.platform.ready().then(() => {
       // Initialize BackButton Eevent.
       this.getVersion();
-      this.batch.initBatchConfig();
+      this.batch.initBatchConfig(this.platform.is('ios'));
       if (this.platform && this.platform.backButton) {
         this.platform.backButton.subscribe(() => {
           this.navContr.pop();
