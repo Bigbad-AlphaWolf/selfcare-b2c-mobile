@@ -35,6 +35,7 @@ import {
   OM_CAPPING_ERROR,
   OPERATION_CREATE_PIN_OM,
   BLOCKED_PASS,
+  OPERATION_TYPE_PASS_INTERNATIONAL,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
@@ -508,6 +509,7 @@ export class NewPinpadModalPage implements OnInit {
           case OPERATION_TYPE_PASS_VOYAGE:
           case OPERATION_TYPE_PASS_ILLIMIX:
           case OPERATION_TYPE_PASS_ALLO:
+          case OPERATION_TYPE_PASS_INTERNATIONAL:
             const dataIllimixOM = {
               msisdn2: this.buyPassPayload.destinataire,
               pin,
