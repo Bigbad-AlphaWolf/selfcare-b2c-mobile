@@ -20,7 +20,7 @@ export class NoOMAccountPopupComponent implements OnInit {
     if (this.data && this.data.otherDestinataire) {
       this.dialogRef.close(accepted);
     } else {
-      this.dialogRef.close();
+      this.dialogRef.close(accepted);
       this.router.navigate(['/dashboard']);
     }
   }
@@ -30,8 +30,8 @@ export class NoOMAccountPopupComponent implements OnInit {
       this.close();
       this.router.navigate(['/dashboard/orange-money-desktop/creation-compte']);
     } else {
-      this.close();
-      this.router.navigate(['/om-self-operation/open-om-account']);
+      this.close(true);
+      //this.router.navigate(['/om-self-operation/open-om-account']);
     }
   }
 }

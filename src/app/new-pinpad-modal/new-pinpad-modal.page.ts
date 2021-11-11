@@ -58,6 +58,7 @@ import { IlliflexModel } from '../models/illiflex-pass.model';
 import { PurchaseModel } from '../models/purchase.model';
 import { ConfirmMsisdnModel } from '../services/authentication-service/authentication.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -134,7 +135,8 @@ export class NewPinpadModalPage implements OnInit {
     private rapido: RapidoService,
     private followAnalyticsService: FollowAnalyticsService,
     private appRouting: ApplicationRoutingService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -344,8 +346,9 @@ export class NewPinpadModalPage implements OnInit {
       disableClose: true,
       data: { pageDesktop: false },
     });
-    this.noOMAccountModal.afterClosed().subscribe(() => {
+    this.noOMAccountModal.afterClosed().subscribe((res) => {
       this.modalController.dismiss();
+			if(res) this.router.navigate(['/om-self-operation/open-om-account']);
     });
   }
 
