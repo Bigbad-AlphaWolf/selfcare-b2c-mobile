@@ -429,7 +429,8 @@ body {
 
 .pin-pad-modal {
   align-items: flex-end !important;
-  .modal-wrapper {
+  .modal-wrapper,
+  .modal-shadow {
     height: percentage(672/812) !important;
     width: 100% !important;
     border-radius: 10px 10px 0 0 !important;
