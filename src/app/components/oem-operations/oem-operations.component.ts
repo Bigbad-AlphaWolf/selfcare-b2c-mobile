@@ -1,8 +1,6 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {BottomSheetService} from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import {NavController, ModalController, ToastController} from '@ionic/angular';
-import {WOYOFAL} from 'src/app/utils/bills.util';
-import {IMAGES_DIR_PATH} from 'src/app/utils/constants';
 import {WoyofalSelectionComponent} from '../counter/woyofal-selection/woyofal-selection.component';
 import {OPERATION_RAPIDO, OPERATION_WOYOFAL} from 'src/app/utils/operations.constants';
 import {BillAmountPage} from 'src/app/pages/bill-amount/bill-amount.page';
@@ -47,7 +45,6 @@ export class OemOperationsComponent implements OnInit {
       toast.present();
       return;
     }
-    console.log(op, 'opp');
 
     this.bsService.opXtras.billData = {company: op};
     if (op.redirectionType === 'NAVIGATE') this.navCtl.navigateForward([op.redirectionPath]);
@@ -75,15 +72,9 @@ export class OemOperationsComponent implements OnInit {
   }
 
   openCounterBS() {
-    this.bsService.opXtras.billData = {
-      company: {
-        name: 'Woyofal',
-        code: WOYOFAL,
-        logo: `${IMAGES_DIR_PATH}/woyofal@3x.png`
-      }
-    };
     this.bsService.initBsModal(WoyofalSelectionComponent, OPERATION_WOYOFAL, BillAmountPage.ROUTE_PATH).subscribe(_ => {});
     this.bsService.openModal(WoyofalSelectionComponent);
+    return;
   }
 
   openMerchantBS() {
