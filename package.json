@@ -124,8 +124,6 @@
     "cordova-plugin-androidx": "^3.0.0",
     "cordova-plugin-androidx-adapter": "^1.1.3",
     "cordova-plugin-contacts": "file:cordova-plugin-contacts",
-    "cordova-plugin-firebase-analytics": "^6.1.0",
-    "cordova-plugin-firebase-messaging": "^6.1.0",
     "cordova-plugin-geolocation": "^4.1.0",
     "cordova-plugin-inappbrowser": "file:cordova-plugin-inappbrowser",
     "cordova-plugin-ionic-webview": "file:cordova-plugin-ionic-webview",
@@ -212,10 +210,6 @@
       "@batch.com/cordova-plugin": {
         "BATCHSDK_ANDROID_VERSION": "1.17.+",
         "BATCHSDK_ANDROID_LOCALBROADCAST_VERSION": "1.0.0"
-      },
-      "cordova-plugin-firebase-messaging": {
-        "ANDROID_FIREBASE_MESSAGING_VERSION": "21.1.0",
-        "ANDROIDX_CORE_VERSION": "1.6.+"
       }
     },
     "platforms": [

@@ -38,6 +38,8 @@
             <application android:usesCleartextTraffic="true" />
         </edit-config>
         <resource-file src="google-services.json" target="app/google-services.json" />
+        <preference name="GradlePluginGoogleServicesEnabled" value="true" />
+        <preference name="GradlePluginGoogleServicesVersion" value="4.3.3" />
         <resource-file src="resources/android/xml/network_security_config.xml" target="app/src/main/res/xml/network_security_config.xml" />
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
