@@ -34,6 +34,13 @@ export class TransactionsHistoricComponent implements OnInit {
   currentMsisdn = this.dashboardservice.getCurrentPhoneNumber();
   selectedFilter: { label: string; typeAchat: string } =
     DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
+  dateFilters = [
+    { label: '2 jours', value: 2 },
+    { label: '3 jours', value: 3 },
+    { label: '5 jours', value: 5 },
+    { label: '7 jours', value: 7 },
+  ];
+  selectedDateFilter = this.dateFilters[0];
   constructor(
     private purchaseService: PurchaseService,
     private dashboardservice: DashboardService,
@@ -43,6 +50,11 @@ export class TransactionsHistoricComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.getTransactionsHistoric();
+  }
+
+  filterByDate(dateFilter) {
+    this.selectedDateFilter = dateFilter;
     this.getTransactionsHistoric();
   }
 
@@ -77,7 +89,10 @@ export class TransactionsHistoricComponent implements OnInit {
     this.transactionsEmpty = false;
     this.selectedFilter = DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
     this.purchaseService
-      .getCategoriesAndPurchaseHistory(this.currentMsisdn, 30)
+      .getCategoriesAndPurchaseHistory(
+        this.currentMsisdn,
+        this.selectedDateFilter.value
+      )
       .pipe(
         tap(
           (res: {
