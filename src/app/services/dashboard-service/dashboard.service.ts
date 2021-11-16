@@ -60,7 +60,7 @@ export const downloadEndpoint = `${SERVER_API_URL}/${FILE_SERVICE}/api/download/
 const userAccountInfos = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/account`;
 
 // transfers endpoints
-const transferCreditEndpoint = `${SERVER_API_URL}/${SEDDO_SERVICE}/api/seddo/transfert-credit`;
+const transferCreditEndpoint = `${SERVER_API_URL}/${PURCHASES_SERVICE}/api/seddo/transfert-credit`;
 const transferbonusEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/transfert-bonus`;
 
 // buy pass by credit endpoints
