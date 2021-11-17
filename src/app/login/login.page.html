@@ -28,6 +28,7 @@
           matInput
           [(ngModel)]="subscribedNumber"
           type="tel"
+					id="login"
         />
       </mat-form-field>
       <mat-form-field class="scb-input-row" appearance="outline">
@@ -40,6 +41,7 @@
           value=""
           autocomplete="off"
           class="input-password"
+					id="password"
         />
         <span
           *ngIf="password.value"
