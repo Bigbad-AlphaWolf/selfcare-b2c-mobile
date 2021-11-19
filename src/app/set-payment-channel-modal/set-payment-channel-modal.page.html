@@ -6,7 +6,7 @@
       (click)="setPaymentChannel('CREDIT')"
       *ngIf="(passIlliflex) || (!pass?.passPromo ? pass?.price_plan_index : pass?.passPromo?.price_plan_index)"
     >
-      <mat-radio-button id="credit" [checked]="selectedPaymentChannel === 'CREDIT'">
+      <mat-radio-button [id]="'credit' | generateIdForTA" [checked]="selectedPaymentChannel === 'CREDIT'">
       </mat-radio-button>
       <div class="payment-mod-detail">
         <div
@@ -26,7 +26,7 @@
       (click)="setPaymentChannel('ORANGE_MONEY')"
       *ngIf="(passIlliflex) || (!pass?.passPromo ? pass?.price_plan_index_om : pass?.passPromo?.price_plan_index_om)"
     >
-      <mat-radio-button id="orange-money" [checked]="selectedPaymentChannel === 'ORANGE_MONEY'">
+      <mat-radio-button [id]="'orange-money' | generateIdForTA" [checked]="selectedPaymentChannel === 'ORANGE_MONEY'">
       </mat-radio-button>
       <div class="payment-mod-detail">
         <div
@@ -42,7 +42,7 @@
   <button
     class="scb-btn scb-btn-orange"
     (click)="validateChannel()"
-    id="btn-validate-payment-mod"
+    [id]="'btn-validate-payment-mod' | generateIdForTA"
     [disabled]="false"
   >
     <span class="text"

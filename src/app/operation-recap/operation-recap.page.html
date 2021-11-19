@@ -215,7 +215,7 @@
     <ng-container *ngIf="isBoosterTraceTV()">
       <scb-avantage-popup [type]="'coupon-trace'"></scb-avantage-popup>
     </ng-container>
-    <button class="scb-btn scb-btn-orange" (click)="pay()" id="btn-validate-purchase" [disabled]="buyingPass">
+    <button class="scb-btn scb-btn-orange" (click)="pay()" [id]="'btn-validate-purchase' | generateIdForTA" [disabled]="buyingPass">
       <ng-container [ngSwitch]="purchaseType">
         <span class="text" *ngSwitchCase="OPERATION_ILLIMIX_TYPE">Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif
           :

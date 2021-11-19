@@ -5,7 +5,7 @@
     </span>
   </div>
   <div class="answer-input">
-    <div id="rating" class="rating">
+    <div [id]="'rating' | generateIdForTA" class="rating">
       <ion-item lines="none" class="starts">
         <ion-icon *ngFor="let note of BASE_NOTATIONS_RATING" (click)="rate(note)" class="star" [name]="coloreStar(note)"></ion-icon>
       </ion-item>
@@ -22,7 +22,7 @@
     </span>
   </div>
   <div class="answer-input">
-    <div id="recommedation" class="recommedation">
+    <div [id]="'recommedation' | generateIdForTA" class="recommedation">
       <div class="note-block">
         <span *ngFor="let note of BASE_NOTATIONS_RECOMENDATION_RATING" (click)="rateRecommendation(note)" [ngClass]="{'colored': colorRecommendationIndex(note) } " class="note" >
           {{ note }}
@@ -38,7 +38,7 @@
     </span>
   </div>
   <div class="answer-input">
-    <div id="radio" class="radio-button">
+    <div [id]="'radio' | generateIdForTA" class="radio-button">
       <ion-radio-group (ionChange)="onAnswerSelected($event)" placeholder="Selectionner votre réponse">
         <ion-item lines="none">
           <ion-label>Oui</ion-label>
@@ -60,7 +60,7 @@
     </span>
   </div>
   <div class="answer-input">
-    <div id="select-option" class="select-option">
+    <div [id]="'select-option' | generateIdForTA" class="select-option">
       <ion-item *ngIf="itemQuestion?.answers?.length" class="select" lines="none">
         <ion-label> Choisir</ion-label>
         <ion-select [multiple]="isMultiSelection()" (ionChange)="onAnswerSelectedFromSelection($event)" #select noIonSelectArrow [interfaceOptions]="customPopoverOptions" interface="popover" placeholder="Selectionner votre réponse">

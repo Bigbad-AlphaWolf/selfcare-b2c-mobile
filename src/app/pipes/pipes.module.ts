@@ -17,6 +17,7 @@ import {PublicationDateFormatPipe} from 'src/shared/pipes/publication-date-forma
 import {SearchAssistancePipe} from './search-assistance/search-assistance.pipe';
 import {DistanceFormatPipe} from 'src/shared/pipes/distance-format.pipe';
 import {DisplayFileManagerImagePipe} from 'src/shared/pipes/display-file-manager-image.pipe';
+import {GenerateIdForTAPipe} from 'src/shared/pipes/generate-id-for-ta.pipe';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import {DisplayFileManagerImagePipe} from 'src/shared/pipes/display-file-manager
     PublicationDateFormatPipe,
     SearchAssistancePipe,
     DistanceFormatPipe,
-    DisplayFileManagerImagePipe
+    DisplayFileManagerImagePipe,
+    GenerateIdForTAPipe
   ],
   imports: [CommonModule],
   exports: [
@@ -57,7 +59,8 @@ import {DisplayFileManagerImagePipe} from 'src/shared/pipes/display-file-manager
     IlliflexVoicePipe,
     PublicationDateFormatPipe,
     DistanceFormatPipe,
-    DisplayFileManagerImagePipe
+    DisplayFileManagerImagePipe,
+    GenerateIdForTAPipe
   ],
   providers: [PassVolumeDisplayPipe, DatePipe]
 })

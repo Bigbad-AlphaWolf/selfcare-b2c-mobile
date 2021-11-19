@@ -40,7 +40,7 @@
 			<div class="user-name-bold">{{ userInfos?.firstName }} {{ userInfos?.lastName}}</div>
 		</div>
 		<div class="my-account-menu-block">
-			<div id="my-account-menu">
+			<div [id]="'my-account-menu' | generateIdForTA">
 				<div class="my-account-menu-item" routerLink="/my-account/change-password">
 					<span>Modifier mon mot de passe</span>
 					<div class="my-account-menu-item-icon">

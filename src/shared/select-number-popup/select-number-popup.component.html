@@ -11,7 +11,7 @@
       [ngClass]="{ 'item-selected': selectedNumber === item.value }"
     >
       <span>{{ item?.value }}</span>
-      <mat-radio-button [id]="'number-'+i"
+      <mat-radio-button [id]="('number-'+i) | generateIdForTA"
         [checked]="selectedNumber === item.value"
       ></mat-radio-button>
       <!-- <input type="radio" formControlName="gender" [value]="item?.value" /> -->
@@ -20,7 +20,7 @@
       <button
         class="scb-btn scb-btn-orange"
         [disabled]="!selectedNumber"
-				id="confirm-btn"
+				[id]="'confirm-btn' | generateIdForTA"
         (click)="validateNumber()"
       >
         Continuer
