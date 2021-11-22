@@ -20,7 +20,7 @@
 
 
   <div class="btn-continue">
-    <ion-button id="btn-recharge-rapido" mat-butto expand="block" (click)="onRecharge()">
+    <ion-button [id]="'btn-recharge-rapido' | generateIdForTA" mat-butto expand="block" (click)="onRecharge()">
       Recharger
     </ion-button>
   </div>

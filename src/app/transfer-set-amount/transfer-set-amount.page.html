@@ -95,7 +95,7 @@
         </mat-form-field>
       </div>
       <div class="btn-container">
-        <button id="btn-validate-amount-transfert" class="scb-btn scb-btn-full scb-btn-orange" (click)="goNext()"
+        <button [id]="'btn-validate-amount-transfert' | generateIdForTA" class="scb-btn scb-btn-full scb-btn-orange" (click)="goNext()"
           [disabled]="!setAmountForm?.valid || checkingAmount || error || loadingFees">
           <span>Continuer ({{ totalAmount }} FCFA)</span>
             <mat-spinner

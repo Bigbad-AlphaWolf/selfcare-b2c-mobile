@@ -120,7 +120,7 @@
             type="submit"
             expand="block"
             (click)="goNext()"
-            id="btn-validate-amount"
+            [id]="'btn-validate-amount' | generateIdForTA"
             [disabled]="!setAmountForm?.valid || checkingAmount || error || isLoadingFees"
           >
             <span>Continuer ({{ totalAmount }} FCFA)</span>

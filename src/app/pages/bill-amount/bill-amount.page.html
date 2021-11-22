@@ -59,7 +59,7 @@
         <button
           class="scb-btn scb-btn-orange scb-btn-full"
           [disabled]="!amountIsValid"
-          id="btn-validate-amount"
+          [id]="'btn-validate-amount' | generateIdForTA"
           (click)="onContinue()"
         >
           <span>Continuer</span>

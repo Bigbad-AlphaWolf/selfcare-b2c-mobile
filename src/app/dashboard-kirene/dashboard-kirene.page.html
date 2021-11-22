@@ -9,7 +9,7 @@
 				<div routerLink="/details-conso" class="voir-details-text scb-text-orange">Voir details</div>
 			</div>
 			<div class="dashboard-block-conso-btns">
-				<ion-slides [options]="slideOpts" id="slides">
+				<ion-slides [options]="slideOpts" [id]="'slides' | generateIdForTA">
 					<ion-slide>
 						<div routerLink="/details-conso" class="scb-btn-yellow scb-btn-credit">
 							<div class="scb-btn-top-block">
