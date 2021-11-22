@@ -19,12 +19,24 @@ export class CommunicationHistoricComponent implements OnInit {
   comHistoric: any[];
   formatSecondDatePipe = new FormatSecondDatePipe();
   selectedFilter = FILTER_CATEGORY_ALL;
+  dateFilters = [
+    { label: '2 jours', value: 2 },
+    { label: '3 jours', value: 3 },
+    { label: '5 jours', value: 5 },
+    { label: '7 jours', value: 7 },
+  ];
+  selectedDateFilter = this.dateFilters[0];
   filteredHistoric;
   filters = [FILTER_CATEGORY_ALL];
 
   constructor(private dashboardService: DashboardService) {}
 
   ngOnInit() {
+    this.getPrepaidUserHistory();
+  }
+
+  filterByDate(dateFilter) {
+    this.selectedDateFilter = dateFilter;
     this.getPrepaidUserHistory();
   }
 
@@ -48,7 +60,7 @@ export class CommunicationHistoricComponent implements OnInit {
     this.loadingComHistoric = true;
     this.hasError = false;
     this.emptyHistoric = false;
-    this.dashboardService.getUserConso(100).subscribe(
+    this.dashboardService.getUserConso(this.selectedDateFilter.value).subscribe(
       (res: any) => {
         this.emptyHistoric = !res?.length;
         this.filters = Array.from(new Set(res.map((x) => x.chargeType1)));
