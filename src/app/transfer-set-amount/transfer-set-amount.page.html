@@ -40,10 +40,10 @@
             <span class="cfa-unit scb-text-gray">F CFA</span>
             <ng-container *ngIf="purchaseType === OPERATION_TRANSFER_OM else feesTac">
               <div class="send-fee">
-                <span class="send-fee-value scb-text-gray" *ngIf="+sending_fees_Info.effective_fees">
+                <span class="send-fee-value scb-text-gray" *ngIf="+amountInput?.value">
                   Frais d'envoi {{sending_fees_Info.effective_fees}} F CFA</span>
                 <span class="free-fees"
-                  *ngIf="+sending_fees_Info.effective_fees === 0 && setAmountForm?.value?.amount !== null">
+                  *ngIf="(+sending_fees_Info.effective_fees === 0 && setAmountForm?.value?.amount !== null) && 0">
                   Gratuit <span class="asterisk scb-text-red-error">*</span>
                 </span>
                 <ion-icon name="information-circle" class="info-icon" *ngIf="setAmountForm?.value?.amount !== null">
@@ -59,8 +59,7 @@
             </ng-template>
           </div>
         </mat-form-field>
-        <div class="free-fees-description scb-text-red-error"
-          *ngIf="purchaseType === OPERATION_TRANSFER_OM && +sending_fees_Info.effective_fees === 0 && setAmountForm?.value?.amount !== null">
+        <div class="free-fees-description scb-text-red-error" *ngIf="0">
           Dans la limite de 2 transferts par jour
         </div>
       </div>
@@ -98,11 +97,7 @@
         <button id="btn-validate-amount-transfert" class="scb-btn scb-btn-full scb-btn-orange" (click)="goNext()"
           [disabled]="!setAmountForm?.valid || checkingAmount || error || loadingFees">
           <span>Continuer ({{ totalAmount }} FCFA)</span>
-            <mat-spinner
-              mode="indeterminate"
-              [diameter]="20"
-              *ngIf="checkingAmount"
-            ></mat-spinner>
+          <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="checkingAmount"></mat-spinner>
         </button>
       </div>
     </form>
