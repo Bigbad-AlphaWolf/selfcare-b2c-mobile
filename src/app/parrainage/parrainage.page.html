@@ -1,14 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button mode="md" (click)="goBack()" class="oem-back-button">
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Parrainage
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true">
+	<ion-header class="ion-padding-start" collapse="condense">
+		<ion-toolbar>
+			<span class="title">
+				Parrainage
+			</span>
+		</ion-toolbar>
+	</ion-header>
+
 <div class="parrainage-page">
-  <div class="parrainage-page-header">
-    <div class="img-container" (click)="goBack()">
-      <img src="/assets/images/arrow-left.png" alt="arrow">
-    </div>
-    <span>Parrainage</span>
-  </div>
+	<div class="banner-container">
+		<img src="/assets/images/parrainage-banner.png" alt="banniere">
+	</div>
   <div class="parrainage-page-body">
-    <div class="banner-container">
-      <img src="/assets/images/parrainage-banner.png" alt="banniere">
-    </div>
     <div class="description">
       Invite tes proches à télécharger et créer un compte sur l’appli Orange et Moi.
     </div>
@@ -71,3 +86,4 @@
   <button class="scb-btn scb-btn-orange scb-btn-full" (click)="openModalNewSponsee()">Parrainer un nouveau
     contact</button>
 </div>
+</ion-content>

@@ -18,6 +18,7 @@ import {Uid} from '@ionic-native/uid/ngx';
 import {DashboardPage} from './dashboard/dashboard.page';
 import {AppVersion} from '@ionic-native/app-version/ngx';
 import {AssistanceHubPage} from './assistance-hub/assistance-hub.page';
+import {ParrainagePage} from './parrainage/parrainage.page';
 
 const ls = new SecureLS({encodingType: 'aes'});
 
@@ -182,7 +183,8 @@ export class AppComponent {
         '/transfer-money/:msisdn': TransfertHubServicesPage,
         '/soscredit/:amount': '',
         '/sospass/:amount': '',
-        '/illiflex': TransfertHubServicesPage
+        '/illiflex': TransfertHubServicesPage,
+        '/parrainage': ParrainagePage
       })
       .subscribe(
         matched => {
