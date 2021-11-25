@@ -56,7 +56,7 @@
     <div class="factures"  *ngIf="(factures$|async) as factures">
       <ng-container *ngIf="factures.length">
         <div class="title">Factures</div>
-        <invoice-card *ngFor="let facture of factures" [invoice]="facture" ></invoice-card>
+        <invoice-card *ngFor="let facture of factures" [canPayBills]="canPayBills" [invoice]="facture" ></invoice-card>
       </ng-container>
     </div>
   </div>
