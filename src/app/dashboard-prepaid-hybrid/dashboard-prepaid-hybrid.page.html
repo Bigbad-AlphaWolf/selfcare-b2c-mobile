@@ -15,7 +15,7 @@
         </div>
       </div>
       <div class="dashboard-block-conso-btns">
-        <ion-slides [options]="slideOpts" id="slides">
+        <ion-slides [options]="slideOpts" [id]="'slides' | generateIdForTA">
           <ion-slide>
             <div (click)="goDetailsCom()" class="scb-btn-green scb-btn-credit">
               <div class="scb-btn-top-block">
@@ -39,7 +39,7 @@
               </div>
             </div>
           </ion-slide>
-          <ion-slide id="omCard">
+          <ion-slide [id]="'omCard' | generateIdForTA">
             <app-om-button></app-om-button>
           </ion-slide>
           <ion-slide *ngIf="currentProfil && !isHyBride">
@@ -210,7 +210,7 @@
         <div class="more" (click)="onOffreClicked()" >Voir plus</div>
       </div>
       <div class="dashboard-block-offres-top3">
-        <div id="btn-hub-credit-pass" (click)="goToBuyPage()" class="dashboard-block-offres-top3-item">
+        <div [id]="'btn-hub-credit-pass' | generateIdForTA" (click)="goToBuyPage()" class="dashboard-block-offres-top3-item">
           <div
             class="badge-promo"
             *ngIf="hasPromoBooster?.promoPass || hasPromoBooster?.promoRecharge || hasPromoBooster?.promoPassIllimix || hasPromoPlanActive?.hasPassIllimix || hasPromoPlanActive?.hasPassInternet || hasPromoPlanActive?.hasRecharge"
@@ -236,7 +236,7 @@
           </div>
         </div>
         <div
-        id="btn-hub-transfert"
+        [id]="'btn-hub-transfert' | generateIdForTA"
           (click)="goToTransfertsPage()"
           class="dashboard-block-offres-top3-item"
         >
@@ -256,7 +256,7 @@
           </div>
         </div>
         <div
-        id="btn-hub-payer-facture"
+        [id]="'btn-hub-payer-facture' | generateIdForTA"
           (click)="onPayerFacture()"
           class="dashboard-block-offres-top3-item"
         >
@@ -276,7 +276,7 @@
           </div>
         </div>
         <div
-        id="btn-hub-paiement-marchand"
+        [id]="'btn-hub-paiement-marchand' | generateIdForTA"
           (click)="goMerchantPayment()"
           class="dashboard-block-offres-top3-item"
           *ngIf="showMerchantPay"
@@ -313,7 +313,7 @@
         </div>
 
         <div
-          id="btn-hub-demander-sos"
+          [id]="'btn-hub-demander-sos' | generateIdForTA"
           [ngClass]="{ 'disabled-block': !canDoSOS }"
           (click)="goToSOSPage()"
           class="dashboard-block-offres-top3-item"

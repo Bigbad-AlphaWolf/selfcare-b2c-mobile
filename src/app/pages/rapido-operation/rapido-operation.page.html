@@ -23,12 +23,12 @@
   [scrollEvents]="true"
 >
   <div class="operations">
-    <div id="btn-solde-rapido" matRipple (click)="onOpSolde()" class="operation">
+    <div [id]="'btn-solde-rapido' | generateIdForTA" matRipple (click)="onOpSolde()" class="operation">
       <img src="assets/images/ic-gauge-counter@2x.png" class="oem-img" />
       <div class="name">Voir solde</div>
       <div class="description">Consulter mon solde Rapido restant</div>
     </div>
-    <div id="btn-recharge-rapido" matRipple (click)="onOpRecharge()" class="operation">
+    <div [id]="'btn-recharge-rapido' | generateIdForTA" matRipple (click)="onOpRecharge()" class="operation">
       <img src="assets/images/ic-barcode-reader@2x.png" class="oem-img" />
       <div class="name">Recharger</div>
       <div class="description">Recharger ma carte Rapido</div>

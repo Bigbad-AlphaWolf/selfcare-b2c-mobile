@@ -1,23 +1,17 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  OnInit,
-  Output,
-} from '@angular/core';
-import { Router } from '@angular/router';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import { environment } from 'src/environments/environment.prod';
-import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { tap } from 'rxjs/operators';
-import { isPrepaidOrHybrid, SubscriptionModel } from 'src/app/dashboard';
-const { DIMELO_CHAT_MARKUP } = environment;
+import {Component, ElementRef, EventEmitter, OnInit, Output} from '@angular/core';
+import {Router} from '@angular/router';
+import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
+import {SocialSharing} from '@ionic-native/social-sharing/ngx';
+import {environment} from 'src/environments/environment.prod';
+import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
+import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
+import {tap} from 'rxjs/operators';
+import {isPrepaidOrHybrid, SubscriptionModel} from 'src/app/dashboard';
+const {DIMELO_CHAT_MARKUP} = environment;
 @Component({
   selector: 'app-ibou-ion-fab',
   templateUrl: './ibou-ion-fab.component.html',
-  styleUrls: ['./ibou-ion-fab.component.scss'],
+  styleUrls: ['./ibou-ion-fab.component.scss']
 })
 export class IbouIonFabComponent implements OnInit {
   fabOpened = false;
@@ -41,36 +35,25 @@ export class IbouIonFabComponent implements OnInit {
   ionViewWillEnter() {}
 
   fabToggled() {
-    this.fabOpened = !this.fabOpened;
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_click_on_Ibou',
-      'event',
-      'clicked'
-    );
+    //this.fabOpened = !this.fabOpened;
+    this.followAnalyticsService.registerEventFollow('Dashboard_click_on_Ibou', 'event', 'clicked');
+    this.goIbouPage();
   }
 
   hideChatBlock() {
-    const chatBlock = this.el.nativeElement.querySelectorAll(
-      '.dimelo_chat_item_markup'
-    )[0];
+    const chatBlock = this.el.nativeElement.querySelectorAll('.dimelo_chat_item_markup')[0];
     chatBlock.setAttribute('display', 'none');
     chatBlock.style.display = 'none';
   }
 
   chatWithIbou() {
-    const btn = this.el.nativeElement.querySelectorAll(
-      '.contact-container-body-block-btn'
-    )[0];
+    const btn = this.el.nativeElement.querySelectorAll('.contact-container-body-block-btn')[0];
     if (btn) btn.click();
   }
 
   goToSatisfactionForm() {
     this.router.navigate(['/satisfaction-form']);
-    this.followAnalyticsService.registerEventFollow(
-      'Ibou_Formulaire_de_satisfaction_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Ibou_Formulaire_de_satisfaction_clic', 'event', 'clicked');
   }
 
   goToBesoinAide() {
@@ -79,19 +62,11 @@ export class IbouIonFabComponent implements OnInit {
       .pipe(
         tap((sub: SubscriptionModel) => {
           if (isPrepaidOrHybrid(sub)) {
-            this.followAnalyticsService.registerEventFollow(
-              'Ibou_Assistance_Hub_clic_new_dashboard',
-              'event',
-              'clicked'
-            );
+            this.followAnalyticsService.registerEventFollow('Ibou_Assistance_Hub_clic_new_dashboard', 'event', 'clicked');
             this.goTabAssistance.emit();
           } else {
             this.router.navigate(['/assistance-hub']);
-            this.followAnalyticsService.registerEventFollow(
-              'Ibou_Assistance_Hub_clic',
-              'event',
-              'clicked'
-            );
+            this.followAnalyticsService.registerEventFollow('Ibou_Assistance_Hub_clic', 'event', 'clicked');
           }
         })
       )
@@ -107,33 +82,18 @@ export class IbouIonFabComponent implements OnInit {
 
     this.socialSharing
       .share(postTitle, null, null, url)
-      .then((_) => {
-        this.followAnalyticsService.registerEventFollow(
-          'Ibou_open_native_share_application_success',
-          'event'
-        );
+      .then(_ => {
+        this.followAnalyticsService.registerEventFollow('Ibou_open_native_share_application_success', 'event');
       })
       .catch((err: any) => {
         console.log('Cannot open default sharing sheet' + err);
-        this.followAnalyticsService.registerEventFollow(
-          'Ibou_open_native_share_application_failed',
-          'error',
-          { error: err }
-        );
+        this.followAnalyticsService.registerEventFollow('Ibou_open_native_share_application_failed', 'error', {error: err});
       });
-    this.followAnalyticsService.registerEventFollow(
-      'Ibou_share_application_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Ibou_share_application_clic', 'event', 'clicked');
   }
 
   goIbouPage() {
     this.router.navigate(['/contact-ibou-hub']);
-    this.followAnalyticsService.registerEventFollow(
-      'Ibou_talk_to_Ibou_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Ibou_talk_to_Ibou_clic', 'event', 'clicked');
   }
 }

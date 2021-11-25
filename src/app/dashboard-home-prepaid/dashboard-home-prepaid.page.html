@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="dashboard-block-conso-btns">
-        <ion-slides [options]="slideOpts" id="slides">
+        <ion-slides [options]="slideOpts" [id]="'slides' | generateIdForTA">
           <ion-slide>
             <div (click)="goDetailsCom()" class="scb-btn-purple scb-btn-pass">
               <div class="scb-btn-top-block">
@@ -39,7 +39,7 @@
               </div>
             </div>
           </ion-slide>
-          <ion-slide id="omCard">
+          <ion-slide [id]="'omCard' | generateIdForTA">
             <app-om-button></app-om-button>
           </ion-slide>
           <ion-slide>

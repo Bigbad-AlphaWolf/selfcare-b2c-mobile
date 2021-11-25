@@ -12,7 +12,7 @@
   <div class="transferts-page">
     <div class="ion-cards-container" *ngIf="options?.length">
       <ng-container *ngFor="let opt of options">
-        <div [id]="'btn_'+ opt?.code?.toLowerCase()" class="card" *ngIf="!isServiceHidden(opt)" [ngClass]="{'disabled': !opt.activated}">
+        <div [id]="('btn_'+ opt?.code?.toLowerCase()) | generateIdForTA" class="card" *ngIf="!isServiceHidden(opt)" [ngClass]="{'disabled': !opt.activated}">
           <ion-card (click)="goTo(opt)" class="card-content" button="true">
             <ion-card-content>
               <div class="icon">
@@ -47,7 +47,7 @@
         <div class="pass-usage-title">Autres pass</div>
         <div class="ion-cards-container">
           <ng-container *ngFor="let opt of passUsages">
-            <div [id]="'btn_'+ opt?.code?.toLowerCase()" class="card" *ngIf="!isServiceHidden(opt)" [ngClass]="{'disabled': !opt.activated}">
+            <div [id]="('btn_'+ opt?.code?.toLowerCase()) | generateIdForTA" class="card" *ngIf="!isServiceHidden(opt)" [ngClass]="{'disabled': !opt.activated}">
               <ion-card (click)="goTo(opt)" class="card-content" button="true">
                 <ion-card-content>
                   <div class="icon">

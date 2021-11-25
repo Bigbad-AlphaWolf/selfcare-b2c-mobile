@@ -468,6 +468,8 @@ export class OperationRecapPage implements OnInit {
   async openPinpad() {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
+      backdropDismiss: true,
+      swipeToClose: true,
       cssClass: 'pin-pad-modal',
       componentProps: {
         operationType: this.purchaseType,
@@ -531,7 +533,7 @@ export class OperationRecapPage implements OnInit {
     if (this.passChoosen) {
       const boosters = this.getPassBoosters(this.passChoosen);
       return !!boosters.find((item: BoosterModel) => {
-        return item.gift.partner.code === CODE_PARTENAIRE_COUPON_TRACE_TV;
+        return item?.gift?.partner?.code === CODE_PARTENAIRE_COUPON_TRACE_TV;
       });
     }
     return null;

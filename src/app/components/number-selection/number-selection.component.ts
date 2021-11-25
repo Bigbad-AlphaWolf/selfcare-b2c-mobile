@@ -12,6 +12,7 @@ import {
   OPERATION_TYPE_PASS_ALLO,
   OPERATION_TYPE_PASS_INTERNET,
   NO_RECENTS_MSG,
+  OPERATION_TYPE_PASS_INTERNATIONAL,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -74,8 +75,12 @@ export class NumberSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.isLightMod = this.data && this.data.isLightMod ? this.data.isLightMod : null;
-    this.option = this.data && this.data.option ? this.data.option : NumberSelectionOption.NONE;
+    this.isLightMod =
+      this.data && this.data.isLightMod ? this.data.isLightMod : null;
+    this.option =
+      this.data && this.data.option
+        ? this.data.option
+        : NumberSelectionOption.NONE;
     this.showInput = this.option === NumberSelectionOption.NONE;
     this.opXtras.recipientMsisdn = this.currentPhone;
     this.opXtras.senderMsisdn = SessionOem.PHONE;
@@ -213,9 +218,11 @@ export class NumberSelectionComponent implements OnInit {
             }
           }
           if (
-            (res.code === CODE_KIRENE_Formule ||
+            ((res.code === CODE_KIRENE_Formule ||
               res.code === CODE_FORMULE_FIX_PREPAID) &&
-            this.data.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX
+              this.data.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX) ||
+            (res.code === CODE_FORMULE_FIX_PREPAID &&
+              this.data.purchaseType === OPERATION_TYPE_PASS_INTERNATIONAL)
           ) {
             this.eligibilityChecked = true;
             this.isRecipientEligible = false;

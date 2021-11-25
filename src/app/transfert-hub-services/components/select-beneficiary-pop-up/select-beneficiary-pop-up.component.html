@@ -11,7 +11,7 @@
         <mat-label>
           {{!isForTransferBlocking ? 'N° du bénéficiaire' : 'Saisir le numéro de référence'}}&nbsp;&nbsp;
         </mat-label>
-        <input #inputTel matInput type="tel" [value]="
+        <input [id]="'numero' | generateIdForTA" #inputTel matInput type="tel" [value]="
             recipientContactInfos
               ? recipientContactInfos
               : otherBeneficiaryNumber
@@ -66,7 +66,7 @@
   </div>
   <div class="confirm-btn">
     <ion-button [disabled]="isProcessing || !htmlInput?.nativeElement?.value" shape="round"
-      (click)="validateBeneficiary()" class="btn" expand="block" id="btn-validate-beneficiary">Continuer</ion-button>
+      (click)="validateBeneficiary()" class="btn" expand="block" [id]="'btn-validate' | generateIdForTA">Continuer</ion-button>
     <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
   </div>
 </div>

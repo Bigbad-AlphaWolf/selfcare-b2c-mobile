@@ -47,6 +47,8 @@ import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AssistanceService } from 'src/app/services/assistance.service';
+import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
+import { BannierePubModel } from 'src/app/services/dashboard-service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -137,6 +139,7 @@ export class DashboardHomeComponent implements OnInit {
   hasError: boolean;
   hasPromoBooster: PromoBoosterActive = null;
   hasPromoPlanActive: OfferPlanActive = null;
+  listBanniere: BannierePubModel[] = [];
 
   constructor(
     private dashboardService: DashboardService,
@@ -153,7 +156,8 @@ export class DashboardHomeComponent implements OnInit {
     private platform: Platform,
     private storiesService: StoriesService,
     private shareDialog: MatDialog,
-    private assistanceService: AssistanceService
+    private assistanceService: AssistanceService,
+    private banniereService: BanniereService
   ) {}
 
   ngOnInit() {
@@ -174,6 +178,11 @@ export class DashboardHomeComponent implements OnInit {
     // this.getUserActiveBonPlans();
     this.getActivePromoBooster();
     this.fetchUserStories();
+    this.banniereService
+      .getListBanniereByFormuleByZone()
+      .subscribe((res: any) => {
+        this.listBanniere = res;
+      });
   }
 
   fetchUserStories() {

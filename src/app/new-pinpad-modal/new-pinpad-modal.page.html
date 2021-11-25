@@ -17,7 +17,7 @@
     <div class="title-1 scb-text-gray">Choisir Le Numéro Orange Money</div>
     <div class="dropdown-numero">
       <mat-form-field>
-        <mat-select [(ngModel)]="omPhoneNumber">
+        <mat-select [id]="'select-number' | generateIdForTA" [(ngModel)]="omPhoneNumber">
           <mat-option
             *ngFor="let number of allNumbers; let i = index"
             [value]="number"
@@ -31,6 +31,7 @@
     <button
       [disabled]="sendingOtp"
       class="confirm-btn scb-btn-full scb-btn-orange"
+			[id]="'confirm-btn' | generateIdForTA"
       (click)="sendOTPCode()"
     >
       <span>Confirmer</span>
@@ -73,6 +74,7 @@
             matInput
             placeholder="Entrez le code reçu"
             required
+						[id]="'otp' | generateIdForTA"
           />
         </mat-form-field>
         <div class="btn-info scb-text-white">
@@ -80,7 +82,7 @@
         </div>
       </div>
 
-      <ion-button expand="block" *ngIf="!userHasOmToken" [disabled]="!form.valid || registering" class="confirm-btn" (click)="userRegisterOM()"
+      <ion-button id="confirm-otp" expand="block" *ngIf="!userHasOmToken" [disabled]="!form.valid || registering" class="confirm-btn" (click)="userRegisterOM()"
       >
         <span>Confirmer</span>
         <mat-spinner
@@ -93,6 +95,7 @@
         (click)="sendOTPCode()"
         [disabled]="sendingOtp"
         *ngIf="resendCode"
+				[id]="'send-otp' | generateIdForTA"
         class="scb-btn scb-btn-orange resend-code"
       >
         Renvoyer le code
@@ -147,10 +150,10 @@
 				{{pinError}} <span *ngIf="errorCode === OM_CAPPING_ERROR">{{' ' + cappingFees + ' FCFA'}}</span>
 			</div>
 			<div class="confirm-block" *ngIf="canRetry">
-				<button class="scb-btn scb-btn-orange" [disabled]="processingPin" (click)="retry()">
+				<button [id]="'confirm-btn' | generateIdForTA" class="scb-btn scb-btn-orange" [disabled]="processingPin" (click)="retry()">
 					Confirmer
 				</button>
-				<button class="scb-btn scb-btn-white cancel">Annuler</button>
+				<button [id]="'cancel-btn' | generateIdForTA" class="scb-btn scb-btn-white cancel">Annuler</button>
 			</div>
 		</div>
 		<div
@@ -160,7 +163,7 @@
 			<div
 				class="number scb-text-black"
 				*ngFor="let number of randomDigits, let i = index"
-				[id]="'digit_'+i"
+				[id]="('digit_'+i) | generateIdForTA"
 				(click)="type(number)"
 			>
 				<span *ngIf="i !== 9 && i !== 11" class="c-pointer"

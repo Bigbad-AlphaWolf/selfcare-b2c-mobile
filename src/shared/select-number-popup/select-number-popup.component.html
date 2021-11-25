@@ -6,12 +6,12 @@
   <form [formGroup]="form">
     <div
       class="item"
-      *ngFor="let item of data?.phoneNumbers"
+      *ngFor="let item of data?.phoneNumbers; let i=index"
       (click)="selectNumber(item.value)"
       [ngClass]="{ 'item-selected': selectedNumber === item.value }"
     >
       <span>{{ item?.value }}</span>
-      <mat-radio-button
+      <mat-radio-button [id]="('number-'+i) | generateIdForTA"
         [checked]="selectedNumber === item.value"
       ></mat-radio-button>
       <!-- <input type="radio" formControlName="gender" [value]="item?.value" /> -->
@@ -20,6 +20,7 @@
       <button
         class="scb-btn scb-btn-orange"
         [disabled]="!selectedNumber"
+				[id]="'confirm-btn' | generateIdForTA"
         (click)="validateNumber()"
       >
         Continuer

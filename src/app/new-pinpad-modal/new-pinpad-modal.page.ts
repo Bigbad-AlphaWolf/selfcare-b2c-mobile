@@ -35,6 +35,7 @@ import {
   OM_CAPPING_ERROR,
   OPERATION_CREATE_PIN_OM,
   BLOCKED_PASS,
+  OPERATION_TYPE_PASS_INTERNATIONAL,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
@@ -57,6 +58,7 @@ import { IlliflexModel } from '../models/illiflex-pass.model';
 import { PurchaseModel } from '../models/purchase.model';
 import { ConfirmMsisdnModel } from '../services/authentication-service/authentication.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -133,7 +135,8 @@ export class NewPinpadModalPage implements OnInit {
     private rapido: RapidoService,
     private followAnalyticsService: FollowAnalyticsService,
     private appRouting: ApplicationRoutingService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -343,8 +346,9 @@ export class NewPinpadModalPage implements OnInit {
       disableClose: true,
       data: { pageDesktop: false },
     });
-    this.noOMAccountModal.afterClosed().subscribe(() => {
+    this.noOMAccountModal.afterClosed().subscribe((res) => {
       this.modalController.dismiss();
+			if(res) this.router.navigate(['/om-self-operation/open-om-account']);
     });
   }
 
@@ -508,6 +512,7 @@ export class NewPinpadModalPage implements OnInit {
           case OPERATION_TYPE_PASS_VOYAGE:
           case OPERATION_TYPE_PASS_ILLIMIX:
           case OPERATION_TYPE_PASS_ALLO:
+          case OPERATION_TYPE_PASS_INTERNATIONAL:
             const dataIllimixOM = {
               msisdn2: this.buyPassPayload.destinataire,
               pin,
@@ -1130,7 +1135,7 @@ export class NewPinpadModalPage implements OnInit {
         cappingFee: this.cappingFees,
         transferToBlock: this.transactionToBlock,
       });
-    } else if (res === null || res.status_code === null) {
+    } else if (res === null || res.status_code === null || !res.status_code.match('Success') ) {
       this.pinError =
         "Une erreur s'est produite. Veuillez ressayer ultérieurement";
       this.pinHasError = true;

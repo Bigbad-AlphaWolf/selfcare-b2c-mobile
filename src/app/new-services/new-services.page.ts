@@ -61,6 +61,7 @@ export class NewServicesPage implements OnInit {
   }
 
   ionViewWillEnter(event?) {
+    this.currentSlideIndex = 0;
     this.getServices(event);
   }
 

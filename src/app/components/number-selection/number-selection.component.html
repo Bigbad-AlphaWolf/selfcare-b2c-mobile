@@ -3,20 +3,20 @@
   <div class="description">Sélecionnez le bénéficiaire</div>
   <div *ngIf="option === 'WITH_MY_PHONES'" class="number-options">
     <mat-radio-group (change)="onOptionChange($event.value)">
-      <mat-radio-button *ngIf="loadingNumbers" [value]="currentPhone" checked>
+      <mat-radio-button [id]="'select-my-number' | generateIdForTA" *ngIf="loadingNumbers" [value]="currentPhone" checked>
         <div class="destination-number">
           <span> Mon numéro </span>
           <span>{{ currentPhone | phoneNumberDisplay }}</span>
         </div>
       </mat-radio-button>
-      <mat-radio-button *ngFor="let number of numbers$ | async; index as i; count as size" [value]="number"
+      <mat-radio-button [id]="('number-'+i) | generateIdForTA" *ngFor="let number of numbers$ | async; index as i; count as size" [value]="number"
         [checked]="currentPhone === number && !showInput">
         <div class="destination-number">
           <span> Mon numéro {{ size > 1 ? i + 1 : '' }} </span>
           <span>{{ number | phoneNumberDisplay }}</span>
         </div>
       </mat-radio-button>
-      <mat-radio-button [value]="'AUTRE'">
+      <mat-radio-button [id]="'other-number' | generateIdForTA" [value]="'AUTRE'">
         <div class="destination-number autre-number">
           <span> Offrir à un autre </span>
           <span>
@@ -61,7 +61,7 @@
     </div>
   </div>
   <div class="btn-continue">
-    <button id="btn-validate-beneficiary" mat-button [disabled]="isProcessing" (click)="onContinue()">
+    <button [id]="'btn-validate-beneficiary' | generateIdForTA" mat-button [disabled]="isProcessing" (click)="onContinue()">
       Continuer
     </button>
     <ion-spinner
