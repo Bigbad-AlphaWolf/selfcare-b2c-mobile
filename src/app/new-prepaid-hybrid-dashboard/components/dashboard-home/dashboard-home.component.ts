@@ -49,6 +49,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AssistanceService } from 'src/app/services/assistance.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
+import { FirebaseAnalytics } from '@ionic-native/firebase-analytics/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -157,7 +158,8 @@ export class DashboardHomeComponent implements OnInit {
     private storiesService: StoriesService,
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
-    private banniereService: BanniereService
+    private banniereService: BanniereService,
+    private firebaseAnalytics: FirebaseAnalytics
   ) {}
 
   ngOnInit() {
@@ -421,6 +423,11 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   onSargalCardClicked(origin?: string) {
+    this.firebaseAnalytics
+      .logEvent('SARGAL_CARD_CLICKED', { msisdn: this.currentMsisdn })
+      .then((res) => {
+        console.log('ELEMENT_LOGGUE', res);
+      });
     if (
       this.userSargalData &&
       (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED ||
@@ -484,6 +491,11 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   goToBuyPage() {
+    this.firebaseAnalytics
+      .logEvent('Dashboard_hub_achat_clic', { msisdn: this.currentMsisdn })
+      .then((res) => {
+        console.log('ELEMENT_LOGGUE', res);
+      });
     this.followAnalyticsService.registerEventFollow(
       'Dashboard_hub_achat_clic',
       'event',
@@ -504,6 +516,13 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   goMerchantPayment() {
+    this.firebaseAnalytics
+      .logEvent('Dashboard_paiement_marchand_clic', {
+        msisdn: this.currentMsisdn,
+      })
+      .then((res) => {
+        console.log('ELEMENT_LOGGUE', res);
+      });
     this.followAnalyticsService.registerEventFollow(
       'Dashboard_paiement_marchand_clic',
       'event'
@@ -532,6 +551,13 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   onPayerFacture() {
+    this.firebaseAnalytics
+      .logEvent('Dashboard_paiement_factures_clic', {
+        msisdn: this.currentMsisdn,
+      })
+      .then((res) => {
+        console.log('ELEMENT_LOGGUE', res);
+      });
     this.followAnalyticsService.registerEventFollow(
       'Dashboard_hub_facture_clic',
       'event',

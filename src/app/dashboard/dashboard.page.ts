@@ -23,6 +23,7 @@ import { AppVersion } from '@ionic-native/app-version/ngx';
 import { AppUpdatePage } from '../pages/app-update/app-update.page';
 import { map, take } from 'rxjs/operators';
 import { PROFIL, CODE_CLIENT, CODE_FORMULE, FORMULE } from '../utils/constants';
+import { FirebaseAnalytics } from '@ionic-native/firebase-analytics/ngx';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()
@@ -60,7 +61,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     private platform: Platform,
     private appMinimize: AppMinimize,
     private appVersion: AppVersion,
-    private navCtl: NavController
+    private navCtl: NavController,
+    private firebaseAnalytics: FirebaseAnalytics
   ) {}
 
   ngOnInit() {
@@ -178,16 +180,58 @@ export class DashboardPage implements OnInit, OnDestroy {
           this.followAnalyticsService.setLastName(user.lastName);
           const msisdn = this.authServ.getUserMainPhoneNumber();
           const hashedNumber = hash53(msisdn).toString();
-          try {
-            this.followAnalyticsService.registerId(hashedNumber);
-          } catch (error) {
-            this.followAnalyticsService.registerId(hashedNumber);
-            this.followAnalyticsService.registerEventFollow(
-              'hash_error',
-              'error',
-              error
-            );
-          }
+          this.firebaseAnalytics
+            .setUserId(this.currentPhoneNumber)
+            .then((res) => {
+              console.log('dashboard_firebase', res);
+            })
+            .catch((err) => {
+              console.log('error_dashboard_firebase', err);
+            });
+          this.firebaseAnalytics
+            .logEvent('TESTONS_FIREBASE', {
+              msisdn: this.currentPhoneNumber,
+              appli: 'OeM',
+              country: 'Senegal',
+            })
+            .then((res) => {
+              console.log('ELEMENT_LOGGUE', res);
+            });
+          // try {
+          //   this.followAnalyticsService.registerId(this.currentPhoneNumber);
+          //   this.firebaseAnalytics
+          //     .setUserId(this.currentPhoneNumber)
+          //     .then((res) => {
+          //       console.log('dashboard_firebase', res);
+          //     })
+          //     .catch((err) => {
+          //       console.log('error_dashboard_firebase', err);
+          //     });
+          //   this.firebaseAnalytics
+          //     .logEvent('TESTONS_FIREBASE', {
+          //       msisdn: this.currentPhoneNumber,
+          //       appli: 'OeM',
+          //       country: 'Senegal',
+          //     })
+          //     .then((res) => {
+          //       console.log('ELEMENT_LOGGUE', res);
+          //     });
+          // } catch (error) {
+          //   this.followAnalyticsService.registerId(hashedNumber);
+          //   this.firebaseAnalytics
+          //     .setUserId('FIREBASE_ID_TEST')
+          //     .then((res) => {
+          //       console.log('dashboard_firebase', res);
+          //     })
+          //     .catch((err) => {
+          //       console.log('error_dashboard_firebase', err);
+          //     });
+          //   this.followAnalyticsService.registerEventFollow(
+          //     'hash_error',
+          //     'error',
+          //     error
+          //   );
+          // }
         },
         (err: any) => {
           this.isLoading = false;
