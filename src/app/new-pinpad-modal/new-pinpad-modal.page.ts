@@ -60,6 +60,9 @@ import { PurchaseModel } from '../models/purchase.model';
 import { ConfirmMsisdnModel } from '../services/authentication-service/authentication.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { Router } from '@angular/router';
+import { BillsService } from '../services/bill-service/bills.service';
+import { BillPaymentModel, PAYMENT_BILLS_CATEGORY } from '../models/bill-payment.model';
+import { SessionOem } from '../services/session-oem/session-oem.service';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -137,7 +140,8 @@ export class NewPinpadModalPage implements OnInit {
     private followAnalyticsService: FollowAnalyticsService,
     private appRouting: ApplicationRoutingService,
     private navCtrl: NavController,
-    private router: Router
+    private router: Router,
+		private billsService: BillsService
   ) {}
 
   ngOnInit() {
@@ -900,7 +904,24 @@ export class NewPinpadModalPage implements OnInit {
       montant: this.opXtras.invoice?.montantFacture,
       mod_paiement: PAYMENT_MOD_OM,
     };
-		//http request for payment
+		const payload: BillPaymentModel = {
+			billingAccountId: SessionOem.CODE_CLIENT,
+			payementAmount: this.opXtras.invoice?.montantFacture,
+			payerEm: db.em,
+			payerEncodedPin: pin,
+			payerMsisdn: db.msisdn,
+			paymentCategory: PAYMENT_BILLS_CATEGORY.FIXE
+		}
+		console.log('payBillPayload', payload);
+
+		this.billsService.payBill(payload).subscribe(
+      (res: any) => {
+        this.processResult(res, db, logInfos);
+      },
+      (err) => {
+        this.processError(err, logInfos);
+      }
+    );
 	}
 
   transferMoney(params: {
