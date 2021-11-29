@@ -7,7 +7,7 @@
   </div>
 </ion-header>
 <div class="absolute-block" [ngClass]="{'is-block-ios': isIos}">
-  <div class="search-bloc search-bloc4">
+  <div [id]="'search-container' | generateIdForTA" class="search-bloc search-bloc4">
     <ion-searchbar placeholder="Rechercher dans assistance" (ionFocus)="onInputFocus()"></ion-searchbar>
   </div>
 </div>
@@ -22,7 +22,7 @@
       <div class="actions-block">
         <div class="block-title">
           <span class="act">Top des actes</span>
-          <span class="scb-text-orange see-all" (click)="goAllActionsHub()">Voir tous les actes</span>
+          <span class="scb-text-orange see-all" [id]="'voir-toute-assistance' | generateIdForTA" (click)="goAllActionsHub()">Voir tous les actes</span>
         </div>
         <div class="acts">
           <ion-spinner *ngIf="loadingHelpItems" name="crescent"></ion-spinner>
@@ -36,7 +36,7 @@
       <div class="questions-block" *ngIf="listFaqs && listFaqs.length">
         <div class="block-title">
           <span class="act">Questions fréquentes</span>
-          <span class="scb-text-orange see-all" (click)="goAllQuestionsHub()">Voir tout</span>
+          <span class="scb-text-orange see-all" [id]="'voir-tout-questions' | generateIdForTA" (click)="goAllQuestionsHub()">Voir tout</span>
         </div>
         <div class="questions">
           <ng-container *ngFor="let question of listFaqs?.slice(0,3), let i=index">

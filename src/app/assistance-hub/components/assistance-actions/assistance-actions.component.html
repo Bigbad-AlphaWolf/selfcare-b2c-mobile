@@ -24,7 +24,7 @@
       </ion-item>
     </div>
     <div class="tabs-block">
-      <div class="tab-item scb-text-light-black" (click)="slide(i)" *ngFor="let actTypes of acts | keyvalue, let i = index" [ngClass]="{'active': i === currentSlideIndex}">{{actTypes.key}}</div>
+      <div class="tab-item scb-text-light-black" (click)="slide(i)" *ngFor="let actTypes of acts | keyvalue, let i = index" [id]="'tab-assistance-'+i" [ngClass]="{'active': i === currentSlideIndex}">{{actTypes.key}}</div>
     </div>
     <ion-slides #slides (ionSlideDidChange)="slideChanged()">
       <ion-slide *ngFor="let actTypes of acts | keyvalue, let i = index">

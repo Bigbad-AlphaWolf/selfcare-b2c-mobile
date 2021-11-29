@@ -1,4 +1,4 @@
-<div class="question-item" (click)="display.show = !display.show" #display>
+<div class="question-item" [id]="'item-faq-'+question?.id" (click)="display.show = !display.show" #display>
   <div class="top-block">
     <span>{{question?.question}}</span>
     <img *ngIf="!display.show" src="/assets/images/open-orange.svg" alt="icon open-icon" />
