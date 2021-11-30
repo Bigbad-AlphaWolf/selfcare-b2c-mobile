@@ -36,6 +36,7 @@ import {
   OPERATION_CREATE_PIN_OM,
   BLOCKED_PASS,
   OPERATION_TYPE_PASS_INTERNATIONAL,
+	OPERATION_PAY_ORANGE_BILLS,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
@@ -59,6 +60,9 @@ import { PurchaseModel } from '../models/purchase.model';
 import { ConfirmMsisdnModel } from '../services/authentication-service/authentication.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { Router } from '@angular/router';
+import { BillsService } from '../services/bill-service/bills.service';
+import { BillPaymentModel, PAYMENT_BILLS_CATEGORY } from '../models/bill-payment.model';
+import { SessionOem } from '../services/session-oem/session-oem.service';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -136,7 +140,8 @@ export class NewPinpadModalPage implements OnInit {
     private followAnalyticsService: FollowAnalyticsService,
     private appRouting: ApplicationRoutingService,
     private navCtrl: NavController,
-    private router: Router
+    private router: Router,
+		private billsService: BillsService
   ) {}
 
   ngOnInit() {
@@ -569,6 +574,9 @@ export class NewPinpadModalPage implements OnInit {
           case OPERATION_TYPE_PASS_ILLIFLEX:
             this.buyIlliflex(pin);
             break;
+          case OPERATION_PAY_ORANGE_BILLS:
+            this.payOrangeBills(pin);
+            break;
           default:
             this.seeSolde(pin);
             break;
@@ -889,6 +897,33 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
+	payOrangeBills(pin) {
+		const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
+		const logInfos: FollowOemlogPurchaseInfos = {
+      sender: db.msisdn,
+      montant: this.opXtras.invoice?.montantFacture,
+      mod_paiement: PAYMENT_MOD_OM,
+    };
+		const payload: BillPaymentModel = {
+			billingAccountId: SessionOem.CODE_CLIENT,
+			payementAmount: this.opXtras.invoice?.montantFacture,
+			payerEm: db.em,
+			payerEncodedPin: pin,
+			payerMsisdn: db.msisdn,
+			paymentCategory: PAYMENT_BILLS_CATEGORY.FIXE
+		}
+		console.log('payBillPayload', payload);
+
+		this.billsService.payBill(payload).subscribe(
+      (res: any) => {
+        this.processResult(res, db, logInfos);
+      },
+      (err) => {
+        this.processError(err, logInfos);
+      }
+    );
+	}
+
   transferMoney(params: {
     msisdn2: string;
     pin: any;
@@ -1126,7 +1161,7 @@ export class NewPinpadModalPage implements OnInit {
           ? this.transferMoneyPayload.cashout_fees
           : 0;
       this.transactionToBlock = Object.assign({}, this.transactionToBlock, {
-        txnid: res.content.data.txn_id,
+        txnid: res?.content?.data?.txn_id,
         fees: totalFees,
       });
       this.modalController.dismiss({
@@ -1162,7 +1197,7 @@ export class NewPinpadModalPage implements OnInit {
       this.opXtras
     );
     // erreur métiers
-    if (err && err.error && err.error.status === 400) {
+    if (err && err?.error && err?.error?.status === 400) {
       this.errorCode = err.error.errorCode;
       if (err.error.errorCode.match('Erreur-045')) {
         this.recurrentOperation = true;
@@ -1211,7 +1246,7 @@ export class NewPinpadModalPage implements OnInit {
       }
     } else {
       this.pinError =
-        err && err.error && err.error.message
+        err && err?.error && err?.error?.message
           ? err.error.message
           : "Une erreur s'est produite. Veuillez ressayer ultérieurement";
       this.pinHasError = true;

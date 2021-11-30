@@ -46,6 +46,7 @@ import {
   ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE,
   OM_IDENTIC_TRANSACTION_CODE,
   OM_UNKOWN_ERROR_CODE,
+  OPERATION_PAY_ORANGE_BILLS,
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TYPE_BONS_PLANS,
@@ -432,6 +433,11 @@ export class OrangeMoneyService {
       case OPERATION_RAPIDO:
         errorKey = 'Recharge_Rapido_Error';
         eventKey = 'Recharge_Rapido_Success';
+        value = dataToLog;
+        break;
+      case OPERATION_PAY_ORANGE_BILLS:
+        errorKey = 'Payment_Fixe_bills_Error';
+        eventKey = 'Payment_Fixe_bills_Success';
         value = dataToLog;
         break;
       default:

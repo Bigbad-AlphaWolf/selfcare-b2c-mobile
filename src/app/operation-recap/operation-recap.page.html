@@ -20,6 +20,7 @@
         <span *ngSwitchCase="OPERATION_TYPE_PASS_INTERNATIONAL">Pass selectionné</span>
         <span *ngSwitchCase="OPERATION_ENABLE_DALAL">Souscription Dalal Tones</span>
         <span *ngSwitchCase="OPERATION_ILLIFLEX">{{opXtras?.title}}</span>
+        <span *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS"> Mes factures </span>
         <span *ngSwitchCase="OPERATION_TYPE_PASS_USAGE">Achat de pass {{opXtras?.serviceUsage?.fullDescription}}</span>
       </ng-container>
     </ion-title>
@@ -52,6 +53,9 @@
         alt="header-illiflex" class="banniere" />
       <img-loader *ngSwitchCase="OPERATION_TYPE_PASS_USAGE" class="icone" [src]="opXtras?.serviceUsage?.banniere"
         fallbackUrl="/assets/images/pass-internet-page-header.svg" useImg></img-loader>
+      <img-loader *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS" class="icone" src="assets/images/pass-allo-banniere.png"
+       useImg></img-loader>
+
     </ng-container>
   </div>
 </ion-header>
@@ -120,6 +124,9 @@
         <span class="pass">Pass Sélectionné</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
       </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS">
+        <span class="pass">Facture à payer</span>
+      </div>
     </ng-container>
     <div class="card-container bill">
       <ng-container [ngSwitch]="purchaseType">
@@ -159,14 +166,15 @@
         </app-dalal-card-item>
         <app-pass-usage-item [passUsage]="opXtras?.pass" [serviceUsage]="opXtras?.serviceUsage"
           *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"></app-pass-usage-item>
+        <invoice-card *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS" [componentStyle]="'v2'"  [invoice]="opXtras?.invoice" ></invoice-card>
       </ng-container>
     </div>
-    <div class="amount-to-transfer" *ngIf="purchaseType !== OPERATION_ENABLE_DALAL">
+    <div class="amount-to-transfer" *ngIf="purchaseType !== OPERATION_ENABLE_DALAL && purchaseType !== OPERATION_PAY_ORANGE_BILLS">
       <span class="pass">Bénéficiaire</span>
       <span class="modifier scb-text-orange"
         *ngIf="purchaseType !== OPERATION_ILLIMIX_TYPE && purchaseType !== OPERATION_INTERNET_TYPE && 0">Modifier</span>
     </div>
-    <div class="recipient-information" *ngIf="purchaseType !== OPERATION_ENABLE_DALAL">
+    <div class="recipient-information" *ngIf="purchaseType !== OPERATION_ENABLE_DALAL && purchaseType !== OPERATION_PAY_ORANGE_BILLS">
       <div class="top-block">
         <span class="title">{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT ? merchantCode :
           recipientMsisdn | phoneNumberDisplay}} {{([ 'OPERATION_WOYOFAL',
@@ -246,6 +254,7 @@
         <span class="text" *ngSwitchCase="OPERATION_ENABLE_DALAL">Confirmer ({{DALAL_TARIF}})</span>
         <span class="text" *ngSwitchCase="OPERATION_ILLIFLEX">Confirmer ({{opXtras.amount}} FCFA)</span>
         <span class="text" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE">Confirmer ({{opXtras?.pass?.tarif}} FCFA)</span>
+        <span class="text" *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
       </ng-container>
       <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="buyingPass"></mat-spinner>
     </button>
