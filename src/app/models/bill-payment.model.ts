@@ -4,6 +4,7 @@ export interface BillPaymentModel {
   payerEm: string;
   payerEncodedPin: string;
   payerMsisdn: string;
+  billNumber: string;
   paymentCategory: PAYMENT_BILLS_CATEGORY;
 }
 

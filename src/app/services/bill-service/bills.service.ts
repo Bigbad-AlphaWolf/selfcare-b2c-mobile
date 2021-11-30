@@ -74,7 +74,7 @@ export class BillsService {
   invoices(codeClient: string, type: string, phone?: string, month?: MonthOem): Observable<InvoiceOrange[]> {
     return this.http
       .get<InvoiceOrange[]>(
-        `${INVOICE_ENDPOINT}/${codeClient}?type=${type}&search=${type === 'MOBILE'
+        `${INVOICE_ENDPOINT}/${codeClient}?type=${type}&line=${phone}&search=${type === 'MOBILE'
           ? 'phoneNumber:' + phone + ','
           : ''}year:${month.year},month:${month.position}`
       )

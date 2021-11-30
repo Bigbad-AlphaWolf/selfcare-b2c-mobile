@@ -905,8 +905,9 @@ export class NewPinpadModalPage implements OnInit {
       mod_paiement: PAYMENT_MOD_OM,
     };
 		const payload: BillPaymentModel = {
-			billingAccountId: SessionOem.CODE_CLIENT,
+			billingAccountId: this.opXtras?.invoice?.numeroTelephone,
 			payementAmount: this.opXtras.invoice?.montantFacture,
+			billNumber: this.opXtras?.invoice?.nfact,
 			payerEm: db.em,
 			payerEncodedPin: pin,
 			payerMsisdn: db.msisdn,
