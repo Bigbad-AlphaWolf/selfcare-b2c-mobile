@@ -10,6 +10,7 @@
           <input
             #amountInput
             matInput
+						[id]="'amount' | generateIdForTA"
             type="number"
             (input)="onInputAmount($event)"
             [value]="initValue"
@@ -26,7 +27,7 @@
   <div class="title1">Choix rapide</div>
 
   <mat-button-toggle-group name="amount" (change)="onValueChange($event.value)">
-    <mat-button-toggle *ngFor="let amount of amounts" value="{{amount}}" [id]="'montant_'+amount">
+    <mat-button-toggle *ngFor="let amount of amounts" value="{{amount}}" [id]="('montant_'+amount) | generateIdForTA">
       <span class="amount">{{amount|formatCurrency}}</span>
       <span>FCFA</span>
     </mat-button-toggle>

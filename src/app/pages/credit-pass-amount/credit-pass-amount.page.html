@@ -30,7 +30,7 @@
     <div class="btn-container">
       <button
         class="scb-btn scb-btn-orange scb-btn-full"
-        id="btn-validate-amount"
+        [id]="'btn-validate-amount' | generateIdForTA"
         [disabled]="!opXtras?.amount || opXtras?.amount<=0"
         (click)="onContinue()"
       >

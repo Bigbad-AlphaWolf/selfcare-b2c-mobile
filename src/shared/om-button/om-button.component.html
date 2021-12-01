@@ -1,4 +1,4 @@
-<div class="scb-btn-orange scb-btn-om" [ngClass]="{ 'btn-om-kirene': isKirene }" (click)="showSoldeOM()">
+<div class="scb-btn-orange scb-btn-om" [id]="'om-btn' | generateIdForTA" [ngClass]="{ 'btn-om-kirene': isKirene }" (click)="showSoldeOM()">
     <img src="/assets/images/om_background_icon.png" alt="om-icon" class="om-icon"/>
   <div class="om-title">
     Orange Money

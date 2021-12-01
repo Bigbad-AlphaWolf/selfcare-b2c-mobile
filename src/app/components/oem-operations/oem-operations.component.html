@@ -1,7 +1,7 @@
 <ion-grid>
   <ion-row>
     <ng-container *ngFor="let operation of operations">
-      <div [id]="'btn_' + operation?.code?.toLowerCase()" matRipple (click)="onOperation(operation)" class="operation" [ngClass]="{'disabled': !operation.activated}"
+      <div [id]="('btn_' + operation?.code?.toLowerCase()) | generateIdForTA" matRipple (click)="onOperation(operation)" class="operation" [ngClass]="{'disabled': !operation.activated}"
         *ngIf="!isServiceHidden(operation)">
         <img-loader [spinner]="true" class="operation-img" [src]="operation.icone" fallbackUrl="assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
         <div class="operation-text">

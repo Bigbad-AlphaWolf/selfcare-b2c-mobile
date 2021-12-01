@@ -1,6 +1,6 @@
 <div class="login-page">
   <div class="go-back">
-    <img id="btn-go-back" (click)="goBack()" src="/assets/images/arrow-left.png" class="close-icon" alt="">
+    <img [id]="'btn-go-back' | generateIdForTA" (click)="goBack()" src="/assets/images/arrow-left.png" class="close-icon" alt="">
   </div>
   <div class="scb-text-orange voir-intro">
     <span (click)="goBack()">Revoir l'intro</span>
@@ -28,6 +28,7 @@
           matInput
           [(ngModel)]="subscribedNumber"
           type="tel"
+					[id]="'login' | generateIdForTA"
         />
       </mat-form-field>
       <mat-form-field class="scb-input-row" appearance="outline">
@@ -40,6 +41,7 @@
           value=""
           autocomplete="off"
           class="input-password"
+					[id]="'password' | generateIdForTA"
         />
         <span
           *ngIf="password.value"
@@ -56,13 +58,13 @@
       </div>
 
       <div class="password-forgotten">
-        <span id="btn-forgotten-pwd" (click)="doAction('password')" class="scb-text-gray">
+        <span [id]="'btn-forgotten-pwd' | generateIdForTA" (click)="doAction('password')" class="scb-text-gray">
           Mot de passe oublié ?
         </span>
       </div>
       <button
         type="submit"
-        id="btn-login"
+        [id]="'btn-login' | generateIdForTA"
         [disabled]="!form.valid || loading"
         class="scb-btn-full scb-btn-orange"
         mat-stroked-button
@@ -79,7 +81,7 @@
       <div
         class="nav-item"
         *ngFor="let item of navItems"
-        [id]="'btn-' + item?.action"
+        [id]="('btn-' + item?.action) | generateIdForTA"
         (click)="doAction(item.action)"
       >
         <div class="left-block">

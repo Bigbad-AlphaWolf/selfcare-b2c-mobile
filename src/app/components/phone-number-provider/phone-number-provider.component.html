@@ -8,6 +8,7 @@
           matInput
           type="tel"
           maxlength=20
+					[id]="'recipient-input' | generateIdForTA"
           [(ngModel)]="recipientContactInfos && recipientContactInfos.length > 0 ? recipientContactInfos : otherBeneficiaryNumber"
           (ngModelChange) = "onValueChange($event)"
         />
@@ -15,7 +16,7 @@
   </form>
   <div class="contact">
     <img class="icon" src="/assets/images/address-book.png" alt="">
-    <span (click)="pickContact()" class="btn-contact scb-text-orange">Mes contacts</span>
+    <span [id]="'btn-my-contacts' | generateIdForTA" (click)="pickContact()" class="btn-contact scb-text-orange">Mes contacts</span>
   </div>
 </div>
 <div *ngIf="hasErrorGetContact" class="error-msg scb-text-red-error">

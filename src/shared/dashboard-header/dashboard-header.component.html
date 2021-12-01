@@ -1,6 +1,6 @@
 <ion-header class="dashboard-top-block">
   <div class="dashboard-top-block-menu">
-    <ion-menu-button (click)="openMenu()"
+    <ion-menu-button [id]="'menu-icon' | generateIdForTA" (click)="openMenu()"
       ><img class="icon-menu" src="/assets/images/menu@3x.png" alt=""
     /></ion-menu-button>
   </div>

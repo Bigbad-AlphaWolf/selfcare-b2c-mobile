@@ -1,11 +1,6 @@
-import { Subject } from 'rxjs';
-import {
-  REGEX_POSTPAID_FIXE,
-  REGEX_PREPAID_FIXE,
-  UserConsommation,
-  CODE_KIRENE_Formule,
-} from 'src/shared';
-import { BoosterModel } from '../models/booster.model';
+import {Subject} from 'rxjs';
+import {REGEX_POSTPAID_FIXE, REGEX_PREPAID_FIXE, UserConsommation, CODE_KIRENE_Formule} from 'src/shared';
+import {BoosterModel} from '../models/booster.model';
 
 // differents profiles
 export const PROFILE_TYPE_PREPAID = 'PREPAID';
@@ -47,19 +42,18 @@ export interface SargalSubscriptionModel {
   msisdn?: string;
 }
 
-export const getConsoByCategory /* : { [k: string]: Array<UserConsommation> }  */ =
-  (
-    userConsos: Array<{
-      categorie: string;
-      consommations: Array<UserConsommation>;
-    }>
-  ) => {
-    const consoByCategory = {};
-    userConsos.forEach((x) => {
-      consoByCategory[x.categorie] = x.consommations;
-    });
-    return consoByCategory;
-  };
+export const getConsoByCategory /* : { [k: string]: Array<UserConsommation> }  */ = (
+  userConsos: Array<{
+    categorie: string;
+    consommations: Array<UserConsommation>;
+  }>
+) => {
+  const consoByCategory = {};
+  userConsos.forEach(x => {
+    consoByCategory[x.categorie] = x.consommations;
+  });
+  return consoByCategory;
+};
 
 export interface BillModel {
   annee: number;
@@ -100,8 +94,8 @@ export interface PromoBoosterActive {
   boosterInscription?: BoosterModel;
 }
 
-export function isFixPostpaid(codeFormule: string) {
-  return REGEX_POSTPAID_FIXE.test(codeFormule);
+export function isFixPostpaid(nomFormule: string) {
+  return REGEX_POSTPAID_FIXE.test(nomFormule);
 }
 
 export function isFixPrepaid(codeFormule: string) {
@@ -135,29 +129,22 @@ export function isPostpaidMobile(souscription: SubscriptionModel): boolean {
 }
 
 export function isKirene(souscription: SubscriptionModel): boolean {
-  return (
-    souscription.profil === PROFILE_TYPE_PREPAID &&
-    souscription.code === CODE_KIRENE_Formule
-  );
+  return souscription.profil === PROFILE_TYPE_PREPAID && souscription.code === CODE_KIRENE_Formule;
 }
 
 export function isPostpaidFix(souscription: SubscriptionModel): boolean {
-  return (
-    souscription.profil === PROFILE_TYPE_POSTPAID &&
-    REGEX_POSTPAID_FIXE.test(souscription.nomOffre)
-  );
+  return souscription.profil === PROFILE_TYPE_POSTPAID && REGEX_POSTPAID_FIXE.test(souscription.nomOffre);
 }
 
 export function isPrepaidFix(souscription: SubscriptionModel): boolean {
   return (
     souscription.profil === PROFILE_TYPE_PREPAID &&
-    (REGEX_PREPAID_FIXE.test(souscription.nomOffre) ||
-      souscription.code === CODE_FORMULE_FIX_PREPAID)
+    (REGEX_PREPAID_FIXE.test(souscription.nomOffre) || souscription.code === CODE_FORMULE_FIX_PREPAID)
   );
 }
 
 // tslint:disable-next-line: only-arrow-functions
-export const hash53 = function (str, seed = 0) {
+export const hash53 = function(str, seed = 0) {
   // tslint:disable-next-line: no-bitwise
   let h1 = 0xdeadbeef ^ seed,
     // tslint:disable-next-line: no-bitwise
@@ -183,7 +170,4 @@ export const hash53 = function (str, seed = 0) {
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
 
-export const SARGAL_NOT_SUBSCRIBED_STATUS = [
-  SARGAL_NOT_SUBSCRIBED,
-  SARGAL_UNSUBSCRIPTION_ONGOING,
-];
+export const SARGAL_NOT_SUBSCRIBED_STATUS = [SARGAL_NOT_SUBSCRIBED, SARGAL_UNSUBSCRIPTION_ONGOING];

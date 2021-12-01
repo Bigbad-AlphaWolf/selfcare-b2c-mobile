@@ -31,7 +31,7 @@
   <div class="cards-bloc">
     <div class="text-bloc">
       <span class="suivi-conso">Suivi conso</span>
-      <span class="scb-text-orange voir-details" (click)="consultConsoDetails(1)">Voir détails</span>
+      <span class="scb-text-orange voir-details" [id]="'details-conso' | generateIdForTA" (click)="consultConsoDetails(1)">Voir détails</span>
     </div>
     <div class="conso-cards-bloc">
       <ion-slides [options]="slideOpts">
@@ -43,7 +43,7 @@
             <ion-skeleton-text animated class="conso-card-loader"></ion-skeleton-text>
           </ng-container>
           <ng-template #consoCard>
-            <div class="conso-card conso-card-credit scb-text-white" (click)="consultConsoDetails()">
+            <div class="conso-card conso-card-credit scb-text-white" [id]="'credit-btn' | generateIdForTA" (click)="consultConsoDetails()">
               <div class="conso-label">Crédit Global</div>
               <div class="conso-amount">{{creditGlobal}} Fcfa</div>
               <div class="conso-date-exp">{{'Valable jusqu\'au ' + creditValidity}}</div>
@@ -58,7 +58,7 @@
           <ng-template #sargalCard>
             <ng-container
               *ngIf="(sargalUnavailable || isNotSubscribedToSargal(userSargalData?.status)) else sargalData">
-              <div class="conso-card conso-card-sargal scb-text-white" (click)="onSargalCardClicked()">
+              <div class="conso-card conso-card-sargal scb-text-white" [id]="'sargal-card' | generateIdForTA" (click)="onSargalCardClicked()">
                 <div class="conso-label">Points Sargal</div>
                 <div class="conso-amount">
                   <span class="sign-up">{{sargalUnavailable ? 'Service Indisponible' : 'M\'inscrire'}}</span>
@@ -70,7 +70,7 @@
               </div>
             </ng-container>
             <ng-template #sargalData>
-              <div class="conso-card conso-card-sargal scb-text-white" (click)="onSargalCardClicked()">
+              <div class="conso-card conso-card-sargal scb-text-white" [id]="'sargal-card-pts' | generateIdForTA" (click)="onSargalCardClicked()">
                 <div class="conso-label">Points Sargal</div>
                 <div class="conso-amount">{{userSargalData?.totalPoints | formatCurrency}} Pts</div>
                 <div class="conso-date-exp">{{'Mis à jour le ' + sargalLastUpdate}}</div>
@@ -84,7 +84,7 @@
             <ion-skeleton-text animated class="conso-card-loader"></ion-skeleton-text>
           </ng-container>
           <ng-template #sargalStatusCard>
-            <div class="conso-card conso-card-sargal scb-text-white" (click)="seeSargalCard()">
+            <div class="conso-card conso-card-sargal scb-text-white" [id]="'sargal-card-profil' | generateIdForTA" (click)="seeSargalCard()">
               <div class="conso-label">
                 Orange <span class="sargal-status"
                   [ngStyle]="{'color': sargalStatus === 'GOLD' ? 'gold' :  '#e5e4e2'}">{{sargalStatus}}</span>
@@ -102,7 +102,7 @@
       </ion-slides>
     </div>
     <div class="actions-cards-bloc">
-      <div class="action-card" *ngFor="let action of actions" (click)="onActionClick(action)"
+      <div class="action-card" [id]="('action-btn-'+action?.code?.toLowerCase()) | generateIdForTA" *ngFor="let action of actions" (click)="onActionClick(action)"
         [ngClass]="{'disabled-card': (action.code === 'SOS' && !canDoSOS)}">
         <div class="badge-promo"
           *ngIf="(action?.code === BUY_ACTION) && (hasPromoBooster?.promoPass || hasPromoBooster?.promoRecharge || hasPromoBooster?.promoPassIllimix || hasPromoPlanActive?.hasPassIllimix || hasPromoPlanActive?.hasPassInternet || hasPromoPlanActive?.hasRecharge)">

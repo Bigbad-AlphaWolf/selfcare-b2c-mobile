@@ -11,3 +11,9 @@ export interface InvoiceOrange {
   statutFacture?: string;
   url: string;
 }
+
+export enum BILL_STATUS {
+  PAID = 'paid',
+  UNPAID = 'unpaid',
+  IN_PROGRESS = 'in_progress'
+}

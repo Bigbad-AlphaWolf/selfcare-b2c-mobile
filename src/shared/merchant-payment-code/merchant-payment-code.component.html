@@ -34,7 +34,7 @@
       <div
         matRipple
         class="oem-item"
-        [id]="'merchant_item_'+i"
+        [id]="('merchant_item_'+i) | generateIdForTA"
         (click)="onRecentMerchantSelected(merchant)"
         *ngFor="let merchant of recentMerchants; let i = index"
       >
@@ -50,7 +50,7 @@
     <button
       class="scb-btn scb-btn-orange scb-btn-full"
       [disabled]="chekingMerchant || !merchantCodeForm.valid"
-      id="btn-validate-merchant-code"
+      [id]="'btn-validate-merchant-code' | generateIdForTA"
       type="submit"
     >
       <span>Continuer</span>

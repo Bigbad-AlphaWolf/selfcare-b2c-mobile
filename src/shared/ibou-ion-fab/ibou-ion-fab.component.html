@@ -1,15 +1,13 @@
-<div id="fab-background" *ngIf="fabOpened"></div>
+<div [id]="'fab-background' | generateIdForTA" *ngIf="fabOpened"></div>
 <ion-fab vertical="bottom" horizontal="end" slot="fixed" (click)="fabToggled()">
   <ion-fab-button>
     <img
       class="ibou-icon"
       src="/assets/images/04-boutons-01-illustrations-21-ibou-assistance.png"
       alt=""
-      (tap)="fabToggled()"
     />
   </ion-fab-button>
-
-  <ion-fab-list side="top">
+  <!--<ion-fab-list side="top">
     <div (click)="goToSatisfactionForm()" class="fab-item-block">
       <div class="description">
         <span class="title scb-text-white">Donnez nous votre avis</span>
@@ -38,5 +36,5 @@
       </div>
       <img src="/assets/images/emergency_help_fab_icon.svg" alt="">
     </div>
-  </ion-fab-list>
+  </ion-fab-list>-->
 </ion-fab>
