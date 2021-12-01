@@ -1,6 +1,6 @@
 <div class="scb-menu-mobile-container">
   <div class="menu-close-icon">
-    <ion-menu-toggle>
+    <ion-menu-toggle [id]="'close-menu' | generateIdForTA">
       <img src="/assets/images/close-ic-menu.svg" alt="">
     </ion-menu-toggle>
   </div>
@@ -10,7 +10,7 @@
     </div>
     <div class="user-name">{{ firstName }} {{ lastName }}</div>
     <div>
-      <span class="edit-account scb-text-orange" (click)="goMyAccount()">
+      <span class="edit-account scb-text-orange" [id]="'edit-account-btn' | generateIdForTA" (click)="goMyAccount()">
         <ion-menu-toggle>Editer mon compte</ion-menu-toggle>
       </span>
     </div>
@@ -18,7 +18,7 @@
   <div class="gerer-mes-lignes">
     <div class="text">
       <span class="mes-lignes">Mes lignes</span>
-      <span class="scb-text-orange gerer" (click)="goToRattachedNumberPage()">
+      <span class="scb-text-orange gerer" [id]="'rattached-lines-btn' | generateIdForTA" (click)="goToRattachedNumberPage()">
         <ion-menu-toggle>Gérer mes lignes</ion-menu-toggle>
       </span>
     </div>
@@ -41,56 +41,56 @@
     </div>
   </div>
   <div class="menu-items">
-    <div class="item-option" (click)="goDetailsConso()">
+    <div class="item-option" [id]="'conso-entry' | generateIdForTA" (click)="goDetailsConso()">
       <ion-menu-toggle>
         <img src="/assets/images/icons-suivi-conso.svg" alt="" class="option-img">
         <span class="option-text">Détails suivi conso</span>
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
-    <div class="item-option" (click)="openOMStatus()">
+    <div class="item-option" [id]="'om-infos' | generateIdForTA" (click)="openOMStatus()">
       <ion-menu-toggle>
         <img src="/assets/images/ic-orange-money-transactions.png" alt="" class="option-img">
         <span class="option-text">Vérifier votre plafond</span>
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
-    <div class="item-option" (click)="goFormule()">
+    <div class="item-option" [id]="'my-formule-entry' | generateIdForTA" (click)="goFormule()">
       <ion-menu-toggle>
         <img src="/assets/images/icon-formule.svg" alt="" class="option-img">
         <span class="option-text">Formule</span>
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
-    <div class="item-option" (click)="onOffreClicked()" *ngIf="currentProfile !== 'POSTPAID'">
+    <div class="item-option" [id]="'my-services-entry' | generateIdForTA" (click)="onOffreClicked()" *ngIf="currentProfile !== 'POSTPAID'">
       <ion-menu-toggle>
         <img src="/assets/images/icons-offres-service.svg" alt="" class="option-img">
         <span class="option-text">Offres et services</span>
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
-    <div class="item-option" (click)="goFacture()" *ngIf="currentProfile !== 'PREPAID' && currentProfile">
+    <div class="item-option" [id]="'bills-entry' | generateIdForTA" (click)="goFacture()" *ngIf="currentProfile !== 'PREPAID' && currentProfile">
       <ion-menu-toggle>
         <img src="/assets/images/icons-facture.svg" alt="" class="option-img">
         <span class="option-text">Factures</span>
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
-    <div class="item-option" (click)="goParrainage()">
+    <div class="item-option" [id]="'sponsor-entry' | generateIdForTA" (click)="goParrainage()">
       <ion-menu-toggle>
         <img src="/assets/images/icons-parrainage.svg" alt="" class="option-img">
         <span class="option-text">Parrainages</span>
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
-    <div class="item-option" (click)="goToMyOfferPlans()" *ngIf="currentProfile === 'PREPAID'">
+    <div class="item-option" [id]="'samay-sargal-entry' | generateIdForTA" (click)="goToMyOfferPlans()" *ngIf="currentProfile === 'PREPAID'">
       <ion-menu-toggle>
         <img src="/assets/images/icons-bons-plan.svg" alt="" class="option-img">
         <span class="option-text">Samay Sargal</span>
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
-    <div class="item-option" (click)="goEmergencies()" *ngIf="currentProfile">
+    <div class="item-option" [id]="'assistance-entry' | generateIdForTA" (click)="goEmergencies()" *ngIf="currentProfile">
       <ion-menu-toggle>
         <img src="/assets/images/icons-urgence-et-depannage.svg" alt="" class="option-img">
         <span class="option-text">Assistance</span>
@@ -104,7 +104,7 @@
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
-    <div class="item-option" (click)="defaulSharingSheet()">
+    <div class="item-option" [id]="'share-app-entry' | generateIdForTA" (click)="defaulSharingSheet()">
       <ion-menu-toggle>
         <img src="/assets/images/icons-partage.svg" alt="" class="option-img">
         <span class="option-text">Partager l’application</span>
@@ -120,7 +120,7 @@
         <span class="scb-text-gray version">{{currentAppVersion}}</span>
       </ion-menu-toggle>
     </div>
-    <div class="item-option" (click)="goToAbout()">
+    <div class="item-option" [id]="'about-the-app-entry' | generateIdForTA" (click)="goToAbout()">
       <ion-menu-toggle>
         <span class="option-text">Informations générales</span>
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
