@@ -32,6 +32,15 @@
         line-height: 1.43;
       }
     }
+    .icone {
+      position: relative;
+      .orange-icon {
+        width: 71px;
+        position: absolute;
+        margin-left: -25px;
+        margin-top: 15px;
+      }
+    }
   }
   .pass-block {
     background-color: $grayDashboard;

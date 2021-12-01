@@ -8,10 +8,10 @@ import {OM_LABEL_SERVICES} from '../utils/bills.util';
 import {
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
-  TRANSFER_BALANCE_INSUFFICIENT_ERROR,
   TRANSFER_OM_BALANCE_NOT_ALLOWED,
   REGEX_IS_DIGIT,
-  FEES_ERROR
+  FEES_ERROR,
+  BALANCE_INSUFFICIENT_ERROR
 } from '../../../src/shared';
 import {FeeModel} from '../services/orange-money-service';
 import {FeesService} from '../services/fees/fees.service';
@@ -158,7 +158,7 @@ export class TransferSetAmountPage implements OnInit {
         if (hasEnoughBalance) {
           this.redirectRecapPage(this.purchasePayload);
         } else {
-          this.error = TRANSFER_BALANCE_INSUFFICIENT_ERROR;
+          this.error = BALANCE_INSUFFICIENT_ERROR;
         }
       },
       err => {

@@ -5,6 +5,7 @@
 			src="/assets/images/arrow-left.svg"
 			class="scb-arrow-left-update-password"
 			alt="arrow-left"
+			[id]="'goBackBtn' | generateIdForTA"
 		/>
 		<div class="scb-my-account-header-label scb-text-full-black">Mon compte</div>
 	</div>
@@ -41,7 +42,7 @@
 		</div>
 		<div class="my-account-menu-block">
 			<div [id]="'my-account-menu' | generateIdForTA">
-				<div class="my-account-menu-item" routerLink="/my-account/change-password">
+				<div class="my-account-menu-item" [id]="'change-pwd' | generateIdForTA" routerLink="/my-account/change-password">
 					<span>Modifier mon mot de passe</span>
 					<div class="my-account-menu-item-icon">
 						<img
@@ -51,22 +52,7 @@
 						/>
 					</div>
 				</div>
-				<div *ngIf="0" class="my-account-menu-item" (click)="launchInProgressPage()">
-					<span>{{ emailTitle ? emailTitle : 'Modifier mon adresse email' }}</span>
-					<div class="my-account-menu-item-icon">
-						<img
-							src="/assets/images/keyboard-arrow-right-black.svg"
-							class="scb-my-account-arrow-right"
-							alt="arrow-right"
-						/>
-					</div>
-					<div *ngIf="emailState === 1" class="email-state-container">
-						<span>Votre email {{ userInfos?.email }} n'a pas été confirmé .</span>
-						<span class="link"> Renvoyer l'email</span> ou
-						<span class="link">Retirer l'email</span>
-					</div>
-				</div>
-				<div (click)="goToRattachmentPage()" class="my-account-menu-item">
+				<div [id]="'add-number' | generateIdForTA" (click)="goToRattachmentPage()" class="my-account-menu-item">
 					<span>Rattacher une ligne</span>
 					<div class="my-account-menu-item-icon">
 						<img
@@ -76,7 +62,7 @@
 						/>
 					</div>
 				</div>
-				<div routerLink="/my-account/delete-number" class="my-account-menu-item">
+				<div [id]="'delete-number' | generateIdForTA" routerLink="/my-account/delete-number" class="my-account-menu-item">
 					<span>Supprimer une ligne</span>
 					<div class="my-account-menu-item-icon">
 						<img
@@ -87,7 +73,7 @@
 					</div>
 				</div>
 				<div class="logout-menu-item">
-					<span (click)="logOut()">Je me déconnecte</span>
+					<span [id]="'logout-btn' | generateIdForTA" (click)="logOut()">Je me déconnecte</span>
 				</div>
 			</div>
 		</div>

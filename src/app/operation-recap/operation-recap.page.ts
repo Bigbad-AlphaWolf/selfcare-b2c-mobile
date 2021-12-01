@@ -25,6 +25,8 @@ import {
   getActiveBoostersForSpecificPass,
   CODE_PARTENAIRE_COUPON_TRACE_TV,
   OPERATION_TYPE_PASS_INTERNATIONAL,
+	OPERATION_PAY_ORANGE_BILLS,
+	BALANCE_INSUFFICIENT_ERROR,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -117,11 +119,14 @@ export class OperationRecapPage implements OnInit {
   OPERATION_TYPE_PASS_INTERNATIONAL = OPERATION_TYPE_PASS_INTERNATIONAL;
   OPERATION_TYPE_PASS_USAGE = OPERATION_TYPE_PASS_USAGE;
   OPERATION_RAPIDO = OPERATION_RAPIDO;
+  OPERATION_PAY_ORANGE_BILLS = OPERATION_PAY_ORANGE_BILLS;
   DALAL_TARIF = MONTHLY_DALAL_TARIF;
   subscriptionInfos: SubscriptionModel;
   buyCreditPayload: any;
   offerPlan: OfferPlan;
   isLightMod: boolean;
+	checkingAmount: boolean;
+	error: string;
   constructor(
     public modalController: ModalController,
     private route: ActivatedRoute,
@@ -234,6 +239,7 @@ export class OperationRecapPage implements OnInit {
             case OPERATION_WOYOFAL:
             case OPERATION_ENABLE_DALAL:
             case OPERATION_TYPE_PASS_USAGE:
+            case OPERATION_PAY_ORANGE_BILLS:
               break;
             default:
               this.appRouting.goToDashboard();
@@ -377,6 +383,8 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_USAGE:
         this.buyPassUsage();
         break;
+			case OPERATION_PAY_ORANGE_BILLS:
+				this.checkOMBalanceSuffiency(this.opXtras?.invoice?.montantFacture);
       default:
         break;
     }
@@ -744,6 +752,25 @@ export class OperationRecapPage implements OnInit {
       eventName,
       type,
       logDetails
+    );
+  }
+
+	checkOMBalanceSuffiency(amount) {
+    this.checkingAmount = true;
+		this.error = null;
+    this.orangeMoneyService.checkBalanceSufficiency(amount).subscribe(
+      hasEnoughBalance => {
+        this.checkingAmount = false;
+        if (hasEnoughBalance) {
+          this.openPinpad();
+        } else {
+          this.error = BALANCE_INSUFFICIENT_ERROR;
+        }
+      },
+      err => {
+        this.checkingAmount = false;
+        this.openPinpad();
+      }
     );
   }
 }

@@ -180,7 +180,7 @@ export class MyOfferPlansPage implements OnInit {
     this.followAnalyticsServ.registerEventFollow('page_bons_plans_Clic_bon_plan', 'event', {
       bonPlan: offer
     });
-    if (offer.typeMPO.toLocaleLowerCase() === CATEGORY_MPO.sargal) {
+    if (offer.typeMPO.toLowerCase() === CATEGORY_MPO.sargal) {
       for (const text of listRegisterSargalBonPlanText) {
         if (offer.bpTarget.toLowerCase().includes(text)) {
           const isRegistered = await this.isUserSargalRegistered();

@@ -18,6 +18,7 @@ import {SearchAssistancePipe} from './search-assistance/search-assistance.pipe';
 import {DistanceFormatPipe} from 'src/shared/pipes/distance-format.pipe';
 import {DisplayFileManagerImagePipe} from 'src/shared/pipes/display-file-manager-image.pipe';
 import {GenerateIdForTAPipe} from 'src/shared/pipes/generate-id-for-ta.pipe';
+import {StatusBillPaymentPipe} from 'src/shared/pipes/status-bill-payment.pipe';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import {GenerateIdForTAPipe} from 'src/shared/pipes/generate-id-for-ta.pipe';
     SearchAssistancePipe,
     DistanceFormatPipe,
     DisplayFileManagerImagePipe,
-    GenerateIdForTAPipe
+    GenerateIdForTAPipe,
+    StatusBillPaymentPipe
   ],
   imports: [CommonModule],
   exports: [
@@ -60,7 +62,8 @@ import {GenerateIdForTAPipe} from 'src/shared/pipes/generate-id-for-ta.pipe';
     PublicationDateFormatPipe,
     DistanceFormatPipe,
     DisplayFileManagerImagePipe,
-    GenerateIdForTAPipe
+    GenerateIdForTAPipe,
+    StatusBillPaymentPipe
   ],
   providers: [PassVolumeDisplayPipe, DatePipe]
 })

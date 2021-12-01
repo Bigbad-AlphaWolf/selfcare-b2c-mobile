@@ -197,7 +197,7 @@ export class TransfertHubServicesPage implements OnInit {
       (this.purchaseType === 'TRANSFER'
         ? 'Hub_transfert_clic_'
         : 'Hub_Achat_clic_') +
-      opt.code.toLocaleLowerCase() +
+      opt.code.toLowerCase() +
       (this.isLightMod ? '_light' : '');
     this.followAnalyticsService.registerEventFollow(
       followEvent,

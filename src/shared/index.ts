@@ -73,6 +73,7 @@ export const OPERATION_CANCEL_TRANSFERT_OM = 'CANCEL_TRANSFERT_OM';
 export const OPERATION_DEPLAFONNEMENT_OM_ACCOUNT = 'DEPLAFONNEMENT_OM_ACCOUNT';
 export const OPERATION_CHECK_OM_ACCOUNT_STATUS = 'OM_PLAFOND_INFOS';
 export const OPERATION_SHARE_THE_APP = 'SHARE_THE_APP';
+export const OPERATION_PAY_ORANGE_BILLS = 'PAY_ORANGE_BILLS';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -1396,6 +1397,8 @@ export const OM_UNKOWN_ERROR_CODE = 'Erreur-019';
 export const OM_CAPPING_ERROR = 'Capping-social-error';
 export const TRANSFER_BALANCE_INSUFFICIENT_ERROR =
   'Le montant que vous voulez transférer est supérieur à votre solde.';
+export const BALANCE_INSUFFICIENT_ERROR =
+  'Le montant de votre solde est insuffisant pour effectuer cette opération.';
 export const TRANSFER_OM_BALANCE_NOT_ALLOWED =
   "Le montant que vous avez saisi n'est pas dans la plage autorisée";
 export const FEES_ERROR =
