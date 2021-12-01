@@ -256,7 +256,11 @@
         <span class="text" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE">Confirmer ({{opXtras?.pass?.tarif}} FCFA)</span>
         <span class="text" *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
       </ng-container>
-      <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="buyingPass"></mat-spinner>
+      <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="buyingPass || checkingAmount"></mat-spinner>
     </button>
+
+		<div *ngIf="purchaseType === OPERATION_PAY_ORANGE_BILLS && error " class="scb-text-error">
+			{{ error }}
+		</div>
   </div>
 </ion-content>

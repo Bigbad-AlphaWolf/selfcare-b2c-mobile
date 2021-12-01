@@ -40,7 +40,9 @@ export class OrangeBillsPage implements OnInit {
   ngOnInit() {
     this.phone = SessionOem.PHONE;
     this.codeClient = SessionOem.CODE_CLIENT;
-    this.canPayBills = isFixPostpaid(SessionOem.CODE_CLIENT);
+    this.canPayBills = isFixPostpaid(SessionOem.FORMULE);
+    console.log('canPayBills', this.canPayBills);
+
     this.updatePhoneType();
     this.initData();
   }

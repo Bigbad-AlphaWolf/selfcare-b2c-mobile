@@ -12,7 +12,7 @@
 		<div class="path"></div>
 		<div class="section2">
 			<div class="download s2-text" matRipple (click)="downloadBill(invoice) ">Télécharger</div>
-			<div (click)="payBill(invoice)" *ngIf="canPayBills && invoice?.statutFacture !== billStatus.PAID" class="pay s2-text"> {{ invoice?.statutFacture === 'unpaid' ? 'Payer la facture' : 'Paiement en cours de traitement' }} </div>
+			<div (click)="payBill(invoice)" *ngIf="canPayBills" class="pay s2-text font-size-14"> {{ invoice?.statutFacture | statusBillPayment }} </div>
 		</div>
 	</ng-container>
 	<ng-container *ngIf="componentStyle === 'v2' ">
