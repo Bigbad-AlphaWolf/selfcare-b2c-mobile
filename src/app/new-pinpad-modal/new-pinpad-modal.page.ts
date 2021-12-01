@@ -1198,7 +1198,7 @@ export class NewPinpadModalPage implements OnInit {
       this.opXtras
     );
     // erreur métiers
-    if (err && err?.error && err?.error?.status === 400) {
+    if (err && err?.error && +err?.error?.status === 400) {
       this.errorCode = err.error.errorCode;
       if (err.error.errorCode.match('Erreur-045')) {
         this.recurrentOperation = true;
@@ -1224,7 +1224,8 @@ export class NewPinpadModalPage implements OnInit {
         this.cappingFees = +err.error.fees;
       } else if (
         err.error.errorCode.match('Erreur-015') ||
-        err.error.errorCode.match('Erreur-016')
+        err.error.errorCode.match('Erreur-016') ||
+				!!err.error.errorCode.match('2408') && !!err.error.message.match('Code secret errone')
       ) {
         const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
           this.omPhoneNumber

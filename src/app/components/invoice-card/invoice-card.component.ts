@@ -33,12 +33,14 @@ export class InvoiceCardComponent implements OnInit {
     this.billsService.downloadBill(bill);
   }
 
-  payBill(invoice: any) {
-    const opXtras: OperationExtras = {
-      purchaseType: OPERATION_PAY_ORANGE_BILLS,
-      invoice
-    };
-    const navExtras: NavigationExtras = {state: opXtras};
-    this.navController.navigateForward(['/operation-recap'], navExtras);
+  payBill(invoice: InvoiceOrange) {
+		if(invoice?.statutFacture === BILL_STATUS.UNPAID) {
+			const opXtras: OperationExtras = {
+				purchaseType: OPERATION_PAY_ORANGE_BILLS,
+				invoice
+			};
+			const navExtras: NavigationExtras = {state: opXtras};
+			this.navController.navigateForward(['/operation-recap'], navExtras);
+		}
   }
 }

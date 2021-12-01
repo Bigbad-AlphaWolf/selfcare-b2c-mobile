@@ -1397,6 +1397,8 @@ export const OM_UNKOWN_ERROR_CODE = 'Erreur-019';
 export const OM_CAPPING_ERROR = 'Capping-social-error';
 export const TRANSFER_BALANCE_INSUFFICIENT_ERROR =
   'Le montant que vous voulez transférer est supérieur à votre solde.';
+export const BALANCE_INSUFFICIENT_ERROR =
+  'Le montant de votre solde est insuffisant pour effectuer cette opération.';
 export const TRANSFER_OM_BALANCE_NOT_ALLOWED =
   "Le montant que vous avez saisi n'est pas dans la plage autorisée";
 export const FEES_ERROR =
