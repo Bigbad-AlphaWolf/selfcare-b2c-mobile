@@ -359,6 +359,7 @@ export class NumberSelectionComponent implements OnInit {
       case OPERATION_TYPE_PASS_ILLIFLEX:
       case OPERATION_TYPE_PASS_VOYAGE:
       case OPERATION_TYPE_PASS_ALLO:
+      case OPERATION_TYPE_PASS_INTERNATIONAL:
         followEventSucess = 'Achat_pass_Select_Recipient_success';
         followEventError = 'Achat_pass_Select_Recipient_error';
         break;
