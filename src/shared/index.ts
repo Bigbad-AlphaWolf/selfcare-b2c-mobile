@@ -145,6 +145,7 @@ export const IMAGES_DIRECTORY = '/assets/images/';
 
 export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   PASS_INTERNET: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
+  PASS_ILLIFLEX: `${IMAGES_DIRECTORY}ic-africa.svg`,
   PASS_ILLIMIX: `${IMAGES_DIRECTORY}ic-unlimited-calls.png`,
   CREDIT: `${IMAGES_DIRECTORY}ic-orange-phone.svg`,
   TRANSFERT_BONUS: `${IMAGES_DIRECTORY}transfert-icon.png`,
