@@ -19,6 +19,7 @@ import {DashboardPage} from './dashboard/dashboard.page';
 import {AppVersion} from '@ionic-native/app-version/ngx';
 import {AssistanceHubPage} from './assistance-hub/assistance-hub.page';
 import {ParrainagePage} from './parrainage/parrainage.page';
+import {MyOfferPlansPage} from './pages/my-offer-plans/my-offer-plans.page';
 
 const ls = new SecureLS({encodingType: 'aes'});
 
@@ -185,7 +186,7 @@ export class AppComponent {
         '/sospass/:amount': '',
         '/illiflex': TransfertHubServicesPage,
         '/parrainage': ParrainagePage,
-        '/bonplan': ParrainagePage
+        '/bonplan': MyOfferPlansPage
       })
       .subscribe(
         matched => {

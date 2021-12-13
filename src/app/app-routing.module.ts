@@ -124,7 +124,7 @@ const routes: Routes = [
   },
   {
     path: 'bonplan',
-    loadChildren: () => import('./parrainage/parrainage.module').then(m => m.ParrainagePageModule),
+    loadChildren: () => import('./pages/my-offer-plans/my-offer-plans.module').then(m => m.MyOfferPlansPageModule),
     canActivate: [AuthGuard]
   },
   {
