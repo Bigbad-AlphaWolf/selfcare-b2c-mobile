@@ -14,6 +14,7 @@ export class NewSuiviConsoPage implements OnInit {
   tabs = [
     { label: 'Conso' },
     { label: 'Communications' },
+    { label: 'Internet' },
     { label: 'Transactions' },
   ];
   currentSlideIndex = 0;
