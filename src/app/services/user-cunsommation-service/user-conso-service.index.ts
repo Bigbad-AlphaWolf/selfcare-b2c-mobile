@@ -17,6 +17,18 @@ export interface NewUserConsoModel {
   gaugeColor?: string;
 }
 
+export interface InternetConsoModel {
+  charge1: string | number;
+  chargeType: string;
+  duration: string;
+  durationInSeconds: number;
+  endDate: string;
+  internetHistoryDetail: { rawDataConsumed: number; dataConsumed: any };
+  startDate: string;
+  date: string;
+  type: string;
+}
+
 export interface ProcessedConsoModel {
   category: string;
   consumations: NewUserConsoModel[];

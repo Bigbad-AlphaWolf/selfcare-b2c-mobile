@@ -59,24 +59,30 @@
       border-radius: 10px;
     }
   }
-  .suivi-conso-custom-tabs {
-    display: flex;
-    overflow-y: auto;
-    margin-top: 15px;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-    .conso-tab {
-      padding: 15px 0;
-      margin: 0 15px;
-      white-space: nowrap;
-      font-family: 'HelveticaNeueLTStd-Roman';
-      font-size: 18px;
-      line-height: 1.11;
-      &.active-tab {
-        color: $orange;
-        font-family: 'HelveticaNeueLTStd-Bd';
-        border-bottom: solid 3px $orange;
+  .tabs-container {
+    padding: 0 20px;
+    .suivi-conso-custom-tabs {
+      display: flex;
+      overflow-y: auto;
+      margin-top: 15px;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      .conso-tab {
+        padding: 15px 0;
+        margin: 0 15px;
+        white-space: nowrap;
+        font-family: 'HelveticaNeueLTStd-Roman';
+        font-size: 18px;
+        line-height: 1.11;
+        &:first-child {
+          margin-left: 0 !important;
+        }
+        &.active-tab {
+          color: $orange;
+          font-family: 'HelveticaNeueLTStd-Bd';
+          border-bottom: solid 3px $orange;
+        }
       }
     }
   }
