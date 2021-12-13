@@ -184,7 +184,8 @@ export class AppComponent {
         '/soscredit/:amount': '',
         '/sospass/:amount': '',
         '/illiflex': TransfertHubServicesPage,
-        '/parrainage': ParrainagePage
+        '/parrainage': ParrainagePage,
+        '/bonplan': ParrainagePage
       })
       .subscribe(
         matched => {
