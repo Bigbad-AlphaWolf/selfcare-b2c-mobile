@@ -1,17 +1,18 @@
-import {Pipe, PipeTransform} from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
+import { BILL_STATUS } from 'src/app/models/invoice-orange.model';
 
 @Pipe({
-  name: 'statusBillPayment'
+  name: 'statusBillPayment',
 })
 export class StatusBillPaymentPipe implements PipeTransform {
-  transform(status_payment: 'paid' | 'unpaid' | 'initialized', ...args: unknown[]): unknown {
+  transform(status_payment: BILL_STATUS, ...args: unknown[]): unknown {
     switch (status_payment.toLowerCase()) {
-      case 'paid':
-        return 'Payée';
+      case BILL_STATUS.PAID:
+        return 'Paiement effectué';
       case 'unpaid':
-        return 'Payer la facture';
+        return BILL_STATUS.UNPAID;
       default:
-        return 'Paiement en cours de traitement';
+        return 'En cours de traitement …';
     }
   }
 }
