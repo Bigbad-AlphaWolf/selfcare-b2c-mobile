@@ -432,7 +432,6 @@ export class BillsService {
   }
 
   payBill(data: BillPaymentModel) {
-    return of({ status_code: 'Success' });
     return this.http.post(`${paybillsEndpoint}`, data);
   }
 
