@@ -121,12 +121,12 @@ export class BillsHubPage implements OnInit {
       return;
     }
 
-    if (billCompany.code === OPERATION_RAPIDO) {
+    if (billCompany.code === OPERATION_TYPE_PAY_BILL) {
       this.openPayBillModal();
       return;
     }
 
-    if (billCompany.code === OPERATION_TYPE_PAY_BILL) {
+    if (billCompany.code === OPERATION_RAPIDO) {
       this.navCtrl.navigateForward(RapidoOperationPage.ROUTE_PATH);
       return;
     }
