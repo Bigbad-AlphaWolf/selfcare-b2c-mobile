@@ -1,62 +1,58 @@
-<ion-header [oemIonHeaderParallax]="90" >
-  <ion-toolbar >
-      <ion-buttons>
-        <ion-back-button mode="md" defaultHref="/dashboard" class="oem-back-button" >
-            <img src="/assets/images/arrow-left.png" alt="icon" />
-        </ion-back-button>
-      </ion-buttons>
-      <ion-title >Mes factures</ion-title>
+<ion-header [oemIonHeaderParallax]="90">
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-back-button mode="md" defaultHref="/dashboard" class="oem-back-button">
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ !payForOtherInput?.ligne ? 'Mes factures' : 'Payer une facture'}}</ion-title>
   </ion-toolbar>
   <div class="top">
 
     <div class="banner-image">
-      <div class="banner-background">
-        <div class="banner-container">
-          <div class="number">{{phone|phoneNumberDisplay}}</div>
-          <div class="change" (click)="onChangeLine()" matRipple>Changer</div>
-        </div>
-      </div>
+      <img src="assets/images/bills_banniere.png" alt="bills_banniere" class="bill-banniere">
     </div>
-    <div class="month-selection" *ngIf="months && months.length">
+    <div class="month-selection" *ngIf="0 && months && months.length">
       <ion-list mode="ios">
         <ion-item mode="ios" lines="none">
           <ion-label mode="ios">Choisir un mois</ion-label>
-          <ion-select
-            [value]="months[0].position"
-            interface="popover"
-            noIonSelectArrow
-            mode="ios"
-            (ionChange)="onMonthChanged($event)"
-          >
-            <ion-select-option
-              [value]="month.position"
-              *ngFor="let month of months"
-              mode="ios"
-              ><span>{{month.name}} {{month.year}}</span></ion-select-option
-            >
+          <ion-select [value]="months[0].position" interface="popover" noIonSelectArrow mode="ios"
+            (ionChange)="onMonthChanged($event)">
+            <ion-select-option [value]="month.position" *ngFor="let month of months" mode="ios"><span>{{month.name}}
+                {{month.year}}</span></ion-select-option>
           </ion-select>
           <ion-icon name="chevron-down-outline" mode="ios" slot="end"></ion-icon>
         </ion-item>
       </ion-list>
 
     </div>
-    <div *ngIf="isFactureLoading || isBordereauLoading"  class="spinner-wrapper">
+    <div class="select-ligne-block" (click)="openLinesModal()" *ngIf="!payForOtherInput?.ligne">
+      <span class="ligne-title scb-text-gray">Choisir la ligne</span>
+      <span class="choosen-ligne">{{phone|phoneNumberDisplay}}</span>
+      <ion-icon name="chevron-down-outline" class="ligne-icon"></ion-icon>
+    </div>
+    <div *ngIf="isFactureLoading" class="spinner-wrapper">
       <ion-spinner name="crescent"></ion-spinner>
     </div>
   </div>
 </ion-header>
-<ion-content  no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" mode="ios"  [scrollEvents]="true">
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" mode="ios" [scrollEvents]="true">
   <div class="content">
-    <div class="s2-text" matRipple (click)="mailToCustomerService()">Demande d'assistance</div>
+    <div class="s2-text" matRipple (click)="mailToCustomerService()" *ngIf="0">Demande d'assistance</div>
 
-    <div class="bordereau" *ngIf="invoiceType === 'LANDLINE' && (bordereau$|async) as bordereau">
+    <div class="bordereau" *ngIf="0 && invoiceType === 'LANDLINE' && (bordereau$|async) as bordereau">
       <div class="title">Bordereau</div>
       <invoice-card [invoice]="bordereau" [title]="'Facture globale'"></invoice-card>
     </div>
-    <div class="factures"  *ngIf="(factures$|async) as factures">
+    <div class="factures" *ngIf="factures">
       <ng-container *ngIf="factures.length">
-        <div class="title">Factures</div>
-        <invoice-card *ngFor="let facture of factures" [canPayBills]="canPayBills" [invoice]="facture" ></invoice-card>
+        <div class="title" *ngIf="0">Factures</div>
+        <div class="filters-block" *ngIf="!payForOtherInput?.ligne">
+          <div class="filter" *ngFor="let filter of filters" (click)="selectFilter(filter)"
+            [ngClass]="{'selected': selectedFilter?.value === filter?.value}">{{filter.label}}</div>
+        </div>
+        <invoice-card *ngFor="let facture of filteredFactures" [numberToRegister]="payForOtherInput?.ligne"
+          [canPayBills]="canPayBills" [invoice]="facture" [allBills]="factures"></invoice-card>
       </ng-container>
     </div>
   </div>

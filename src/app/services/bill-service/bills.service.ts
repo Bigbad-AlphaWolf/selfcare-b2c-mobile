@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject, of, Observable } from 'rxjs';
 import { DashboardService } from '../dashboard-service/dashboard.service';
-import { MAIL_URL } from 'src/shared';
+import { isDelayedBill, MAIL_URL, UNKNOWN_ECHEANCE } from 'src/shared';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import * as SecureLS from 'secure-ls';
 import { Platform } from '@ionic/angular';
@@ -24,7 +24,7 @@ const INVOICE_MOIS_DISPO_ENDPOINT = `${SERVER_API_URL}/${BILL_SERVICE}/api/get-l
 const billsEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bordereau`;
 const billsDetailEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
 const paybillsEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bill-payment`;
-const unpaidBillEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/unpaid-bill/338279573?category=FIXE`;
+const unpaidBillEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/unpaid-bill`;
 @Injectable({
   providedIn: 'root',
 })
@@ -110,9 +110,13 @@ export class BillsService {
       .get<InvoiceOrange[]>(
         `${INVOICE_ENDPOINT}/${codeClient}?type=${type}&line=${phone}&search=${
           type === 'MOBILE' ? 'phoneNumber:' + phone + ',' : ''
-        }year:${month.year},month:${month.position}`
+        }`
       )
       .pipe(
+        map((res) => {
+          res.forEach((bill) => (bill.isDelayed = isDelayedBill(bill)));
+          return res;
+        }),
         tap(
           () =>
             this.followServ.registerEventFollow(
@@ -428,10 +432,30 @@ export class BillsService {
   }
 
   payBill(data: BillPaymentModel) {
+    return of({ status_code: 'Success' });
     return this.http.post(`${paybillsEndpoint}`, data);
   }
 
-  getNumberUnpaidBills(category) {
-    return this.http.get(`${unpaidBillEndpoint}?category=${category}`);
+  getNumberUnpaidBills(payload: { ligne: string; type: string }) {
+    return this.http
+      .get<InvoiceOrange[]>(
+        `${unpaidBillEndpoint}/${payload.ligne}?category=${payload.type}`
+      )
+      .pipe(
+        map((res) => {
+          res.forEach((bill) => {
+            bill.statutFacture = bill.statutFacture.toLowerCase();
+            const dates = bill.dateEmissionfacture
+              .split('-')
+              .map((date) => +date);
+            const month = dates[1];
+            const year = dates[0];
+            bill.annee = month === 1 ? year - 1 : year;
+            bill.mois = month === 1 ? 12 : month - 1;
+            bill.dateEcheance = UNKNOWN_ECHEANCE;
+          });
+          return res;
+        })
+      );
   }
 }

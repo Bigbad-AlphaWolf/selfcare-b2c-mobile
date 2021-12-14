@@ -36,7 +36,7 @@ import {
   OPERATION_CREATE_PIN_OM,
   BLOCKED_PASS,
   OPERATION_TYPE_PASS_INTERNATIONAL,
-	OPERATION_PAY_ORANGE_BILLS,
+  OPERATION_PAY_ORANGE_BILLS,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
@@ -61,7 +61,10 @@ import { ConfirmMsisdnModel } from '../services/authentication-service/authentic
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { Router } from '@angular/router';
 import { BillsService } from '../services/bill-service/bills.service';
-import { BillPaymentModel, PAYMENT_BILLS_CATEGORY } from '../models/bill-payment.model';
+import {
+  BillPaymentModel,
+  PAYMENT_BILLS_CATEGORY,
+} from '../models/bill-payment.model';
 import { SessionOem } from '../services/session-oem/session-oem.service';
 
 @Component({
@@ -141,7 +144,7 @@ export class NewPinpadModalPage implements OnInit {
     private appRouting: ApplicationRoutingService,
     private navCtrl: NavController,
     private router: Router,
-		private billsService: BillsService
+    private billsService: BillsService
   ) {}
 
   ngOnInit() {
@@ -353,7 +356,7 @@ export class NewPinpadModalPage implements OnInit {
     });
     this.noOMAccountModal.afterClosed().subscribe((res) => {
       this.modalController.dismiss();
-			if(res) this.router.navigate(['/om-self-operation/open-om-account']);
+      if (res) this.router.navigate(['/om-self-operation/open-om-account']);
     });
   }
 
@@ -897,25 +900,25 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-	payOrangeBills(pin) {
-		const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
-		const logInfos: FollowOemlogPurchaseInfos = {
+  payOrangeBills(pin) {
+    const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
+    const logInfos: FollowOemlogPurchaseInfos = {
       sender: db.msisdn,
       montant: this.opXtras.invoice?.montantFacture,
       mod_paiement: PAYMENT_MOD_OM,
     };
-		const payload: BillPaymentModel = {
-			billingAccountId: this.opXtras?.invoice?.numeroTelephone,
-			payementAmount: this.opXtras.invoice?.montantFacture,
-			billNumber: this.opXtras?.invoice?.nfact,
-			payerEm: db.em,
-			payerEncodedPin: pin,
-			payerMsisdn: db.msisdn,
-			paymentCategory: PAYMENT_BILLS_CATEGORY.FIXE
-		}
-		console.log('payBillPayload', payload);
+    const payload: BillPaymentModel = {
+      billingAccountId: this.opXtras?.invoice?.numeroTelephone,
+      payementAmount: this.opXtras.invoice?.montantFacture,
+      billNumber: this.opXtras?.invoice?.nfact,
+      payerEm: db.em,
+      payerEncodedPin: pin,
+      payerMsisdn: db.msisdn,
+      paymentCategory: PAYMENT_BILLS_CATEGORY.FIXE,
+    };
+    console.log('payBillPayload', payload);
 
-		this.billsService.payBill(payload).subscribe(
+    this.billsService.payBill(payload).subscribe(
       (res: any) => {
         this.processResult(res, db, logInfos);
       },
@@ -923,7 +926,7 @@ export class NewPinpadModalPage implements OnInit {
         this.processError(err, logInfos);
       }
     );
-	}
+  }
 
   transferMoney(params: {
     msisdn2: string;
@@ -1145,6 +1148,8 @@ export class NewPinpadModalPage implements OnInit {
       (res && res.content.data.status_code === '200')
     ) {
       // valid pin
+      console.log(this.opXtras);
+
       db.pinFailed = 0; // reset the pinfailed
       this.orangeMoneyService.SaveOrangeMoneyUser(db);
       this.orangeMoneyService.logWithFollowAnalytics(
@@ -1171,7 +1176,11 @@ export class NewPinpadModalPage implements OnInit {
         cappingFee: this.cappingFees,
         transferToBlock: this.transactionToBlock,
       });
-    } else if (res === null || res.status_code === null || !res.status_code.match('Success') ) {
+    } else if (
+      res === null ||
+      res.status_code === null ||
+      !res.status_code.match('Success')
+    ) {
       this.pinError =
         "Une erreur s'est produite. Veuillez ressayer ultérieurement";
       this.pinHasError = true;
@@ -1225,7 +1234,8 @@ export class NewPinpadModalPage implements OnInit {
       } else if (
         err.error.errorCode.match('Erreur-015') ||
         err.error.errorCode.match('Erreur-016') ||
-				!!err.error.errorCode.match('2408') && !!err.error.message.match('Code secret errone')
+        (!!err.error.errorCode.match('2408') &&
+          !!err.error.message.match('Code secret errone'))
       ) {
         const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
           this.omPhoneNumber

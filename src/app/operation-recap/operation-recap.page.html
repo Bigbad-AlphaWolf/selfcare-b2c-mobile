@@ -53,7 +53,7 @@
         alt="header-illiflex" class="banniere" />
       <img-loader *ngSwitchCase="OPERATION_TYPE_PASS_USAGE" class="icone" [src]="opXtras?.serviceUsage?.banniere"
         fallbackUrl="/assets/images/pass-internet-page-header.svg" useImg></img-loader>
-      <img-loader *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS" class="icone" src="assets/images/pass-allo-banniere.png"
+      <img-loader *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS" class="icone" src="assets/images/bills_banniere.png"
        useImg></img-loader>
 
     </ng-container>
@@ -61,7 +61,7 @@
 </ion-header>
 <ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <div *ngIf="operationTypeRecap" class="recap-text">Récapitulatif</div>
-  <div class="recap-title" *ngIf="!operationTypeRecap && ![OPERATION_TRANSFER_OM].includes(purchaseType)">
+  <div class="recap-title" *ngIf="!operationTypeRecap && ![OPERATION_TRANSFER_OM, OPERATION_PAY_ORANGE_BILLS].includes(purchaseType)">
     <span class="text-1">Récapitulatif</span>
     <ng-container [ngSwitch]="purchaseType">
       <span *ngSwitchCase="OPERATION_INTERNET_TYPE" class="text-2 scb-text-gray">Vous allez recharger</span>
@@ -125,7 +125,7 @@
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
       </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS">
-        <span class="pass">Facture à payer</span>
+        <span class="pass">Facture sélectionnée</span>
       </div>
     </ng-container>
     <div class="card-container bill">
@@ -166,7 +166,7 @@
         </app-dalal-card-item>
         <app-pass-usage-item [passUsage]="opXtras?.pass" [serviceUsage]="opXtras?.serviceUsage"
           *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"></app-pass-usage-item>
-        <invoice-card *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS" [componentStyle]="'v2'"  [invoice]="opXtras?.invoice" ></invoice-card>
+        <invoice-card *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS" [hideDownloadBlock]="true" [invoice]="opXtras?.invoice" ></invoice-card>
       </ng-container>
     </div>
     <div class="amount-to-transfer" *ngIf="purchaseType !== OPERATION_ENABLE_DALAL && purchaseType !== OPERATION_PAY_ORANGE_BILLS">

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { isFixPostpaid, PROFILE_TYPE_POSTPAID } from 'src/app/dashboard';
+import { isFixPostpaid, POSTPAID_TERANGA_OFFERS_ID } from 'src/app/dashboard';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import {
   REGEX_FIX_NUMBER,
@@ -32,7 +33,8 @@ export class SelectNumberForBillComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {}
@@ -63,11 +65,14 @@ export class SelectNumberForBillComponent implements OnInit {
             this.checking = false;
             if (
               (this.selectedOption.value === 'MOBILE' &&
-                res.profil === PROFILE_TYPE_POSTPAID) ||
+                POSTPAID_TERANGA_OFFERS_ID.includes(res.code)) ||
               (this.selectedOption.value === 'FIXE' &&
                 isFixPostpaid(res.nomOffre))
             ) {
-              this.router.navigate(['/bills']);
+              this.modalController.dismiss();
+              this.router.navigate(['/bills'], {
+                state: { ligne: numero, type: this.selectedOption.value },
+              });
             } else {
               this.hasError = true;
               this.errorMessage = `Vous ne pouvez pas payer de facture pour ce numéro`;

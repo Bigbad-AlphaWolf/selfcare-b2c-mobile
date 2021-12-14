@@ -9,6 +9,7 @@ import {
   PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
 } from 'src/app/dashboard';
+import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER: RegExp =
@@ -1451,3 +1452,17 @@ export const INTERNATIONAL_PASSES_INDICATIF_ARRAY: string[] = [
   CountriesIndicatif.WORLD,
   CountriesIndicatif.AFRICA,
 ];
+
+export const UNKNOWN_ECHEANCE = 'non renseignée';
+
+// return true if bill is unpaid && due date otherwise return false
+export function isDelayedBill(bill: InvoiceOrange) {
+  if (bill.dateEcheance === UNKNOWN_ECHEANCE) {
+    return false;
+  }
+  const today = new Date();
+  const billDate = new Date(bill.dateEcheance);
+  return (
+    billDate.getTime() < today.getTime() && bill.statutFacture === 'unpaid'
+  );
+}

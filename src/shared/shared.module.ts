@@ -75,6 +75,7 @@ import { ServicesSearchBarComponent } from './services-search-bar/services-searc
 import { FormatDataVolume2Pipe } from './pipes/format-data-volume-2.pipe';
 import { FormatDuration2Pipe } from './pipes/format-duration-2.pipe';
 import { SelectNumberForBillComponent } from 'src/app/components/select-number-for-bill/select-number-for-bill.component';
+import { UnpaidBillModalComponent } from 'src/app/components/unpaid-bill-modal/unpaid-bill-modal.component';
 
 @NgModule({
   declarations: [
@@ -139,6 +140,7 @@ import { SelectNumberForBillComponent } from 'src/app/components/select-number-f
     FormatDataVolume2Pipe,
     FormatDuration2Pipe,
     SelectNumberForBillComponent,
+    UnpaidBillModalComponent,
   ],
   imports: [
     CommonModule,
@@ -183,6 +185,7 @@ import { SelectNumberForBillComponent } from 'src/app/components/select-number-f
     BlockTransferSuccessPopupComponent,
     KioskLocatorPopupComponent,
     SelectNumberForBillComponent,
+    UnpaidBillModalComponent,
   ],
   exports: [
     BanniereComponent,
@@ -243,6 +246,7 @@ import { SelectNumberForBillComponent } from 'src/app/components/select-number-f
     FormatDataVolume2Pipe,
     FormatDuration2Pipe,
     SelectNumberForBillComponent,
+    UnpaidBillModalComponent,
   ],
   providers: [
     Contacts,
