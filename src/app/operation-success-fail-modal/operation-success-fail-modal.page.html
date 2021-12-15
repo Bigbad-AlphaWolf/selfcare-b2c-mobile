@@ -393,6 +393,9 @@
         <ng-container *ngSwitchCase="OPERATION_ENABLE_DALAL">
           Activer un autre dalal
         </ng-container>
+        <ng-container *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS">
+          {{opXtras?.numberToRegister && isNumberNotRattached ? 'Rattacher le ' + opXtras?.numberToRegister : 'Payer une autre facture'}}
+        </ng-container>
         <ng-container *ngSwitchDefault>
           Faire une autre operation
         </ng-container>

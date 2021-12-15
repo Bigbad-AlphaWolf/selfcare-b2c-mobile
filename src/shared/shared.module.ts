@@ -74,6 +74,8 @@ import { OmStatusVisualizationComponent } from './om-status-visualization/om-sta
 import { ServicesSearchBarComponent } from './services-search-bar/services-search-bar.component';
 import { FormatDataVolume2Pipe } from './pipes/format-data-volume-2.pipe';
 import { FormatDuration2Pipe } from './pipes/format-duration-2.pipe';
+import { SelectNumberForBillComponent } from 'src/app/components/select-number-for-bill/select-number-for-bill.component';
+import { UnpaidBillModalComponent } from 'src/app/components/unpaid-bill-modal/unpaid-bill-modal.component';
 
 @NgModule({
   declarations: [
@@ -137,6 +139,8 @@ import { FormatDuration2Pipe } from './pipes/format-duration-2.pipe';
     ServicesSearchBarComponent,
     FormatDataVolume2Pipe,
     FormatDuration2Pipe,
+    SelectNumberForBillComponent,
+    UnpaidBillModalComponent,
   ],
   imports: [
     CommonModule,
@@ -180,6 +184,8 @@ import { FormatDuration2Pipe } from './pipes/format-duration-2.pipe';
     BanniereDescriptionPage,
     BlockTransferSuccessPopupComponent,
     KioskLocatorPopupComponent,
+    SelectNumberForBillComponent,
+    UnpaidBillModalComponent,
   ],
   exports: [
     BanniereComponent,
@@ -239,6 +245,8 @@ import { FormatDuration2Pipe } from './pipes/format-duration-2.pipe';
     ServicesSearchBarComponent,
     FormatDataVolume2Pipe,
     FormatDuration2Pipe,
+    SelectNumberForBillComponent,
+    UnpaidBillModalComponent,
   ],
   providers: [
     Contacts,
