@@ -35,6 +35,7 @@ export const POSTPAID_TERANGA_OFFERS_ID = [
   '8100',
   '9126',
   'OCS_TERANGA_LIBERTY',
+  'OCS_RPE_TERANGA_PREMIUM',
 ];
 export const dashboardOpened = new Subject<string>();
 export const dashboardFixePrepaidOpened = new Subject<string>();

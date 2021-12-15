@@ -25,8 +25,8 @@ export class SelectNumberForBillComponent implements OnInit {
     { label: 'ligne mobile', value: 'MOBILE' },
     { label: 'ligne fixe', value: 'FIXE' },
   ];
-  selectedOption;
-  step: 'SET_LIGNE_TYPE' | 'TYPE_NUMBER' = 'SET_LIGNE_TYPE';
+  selectedOption = { label: 'ligne fixe', value: 'FIXE' };
+  step: 'SET_LIGNE_TYPE' | 'TYPE_NUMBER' = 'TYPE_NUMBER';
   hasError: boolean;
   errorMessage: string;
 
@@ -37,7 +37,9 @@ export class SelectNumberForBillComponent implements OnInit {
     private modalController: ModalController
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.goStepTypeNumber();
+  }
 
   selectOption(option) {
     this.selectedOption = option;
@@ -89,6 +91,7 @@ export class SelectNumberForBillComponent implements OnInit {
       this.errorMessage = `Le numéro saisi n'est pas une ligne ${
         this.selectedOption.value === 'FIXE' ? 'fixe' : 'mobile'
       } valide`;
+      this.checking = false;
     }
   }
 }
