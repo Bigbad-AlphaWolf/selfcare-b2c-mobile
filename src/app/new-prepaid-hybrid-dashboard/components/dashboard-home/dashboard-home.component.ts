@@ -47,6 +47,7 @@ import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AssistanceService } from 'src/app/services/assistance.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -143,6 +144,7 @@ export class DashboardHomeComponent implements OnInit {
     private authService: AuthenticationService,
     private router: Router,
     private followAnalyticsService: FollowAnalyticsService,
+		private oemLogging: OemLoggingService,
     private consoService: UserConsoService,
     private sargalService: SargalService,
     private appliRouting: ApplicationRoutingService,
@@ -226,6 +228,8 @@ export class DashboardHomeComponent implements OnInit {
           'event',
           currentNumber
         );
+				this.oemLogging.registerEvent('Affichage_solde_sargal_success', [{dataName: 'currentNumber', dataValue: currentNumber}]);
+				this.oemLogging.setUserAttribute({keyAttribute: 'solde_sargal',valueAttribute: res.totalPoints})
       },
       (err) => {
         this.followAnalyticsService.registerEventFollow(
@@ -233,6 +237,7 @@ export class DashboardHomeComponent implements OnInit {
           'error',
           { msisdn: currentNumber, error: err.status }
         );
+				this.oemLogging.registerEvent('Affichage_solde_sargal_error',[{dataName: 'msisdn', dataValue: currentNumber}, {dataName: 'error', dataValue: err.status}])
         this.loadingSargal = false;
         if (!this.userSargalData) {
           this.sargalUnavailable = true;
@@ -361,17 +366,21 @@ export class DashboardHomeComponent implements OnInit {
   consultConsoDetails(number?: number) {
     // this.router.navigate(['/details-conso']);
     this.seeDetails.emit();
-    number
-      ? this.followAnalyticsService.registerEventFollow(
-          'Voirs_details_dashboard',
-          'event',
-          'clicked'
-        )
-      : this.followAnalyticsService.registerEventFollow(
-          'Voirs_details_card_dashboard',
-          'event',
-          'clicked'
-        );
+		if(number) {
+			this.followAnalyticsService.registerEventFollow(
+				'Voirs_details_dashboard',
+				'event',
+				'clicked'
+			);
+			this.oemLogging.registerEvent('dashboard_conso_details_click',null)
+		}else {
+			this.followAnalyticsService.registerEventFollow(
+				'Voirs_details_card_dashboard',
+				'event',
+				'clicked'
+			);
+			this.oemLogging.registerEvent('dashboard_conso_card_click', null)
+		}
   }
 
   getActivePromoBooster() {
