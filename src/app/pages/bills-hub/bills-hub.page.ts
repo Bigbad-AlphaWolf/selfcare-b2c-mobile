@@ -11,6 +11,7 @@ import {
 } from '@ionic/angular';
 import {
   OPERATION_RAPIDO,
+  OPERATION_TYPE_PAY_BILL,
   OPERATION_WOYOFAL,
 } from 'src/app/utils/operations.constants';
 import { BillAmountPage } from '../bill-amount/bill-amount.page';
@@ -30,6 +31,7 @@ import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/m
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { SelectNumberForBillComponent } from 'src/app/components/select-number-for-bill/select-number-for-bill.component';
 
 @Component({
   selector: 'app-bills-hub',
@@ -119,11 +121,30 @@ export class BillsHubPage implements OnInit {
       return;
     }
 
+    if (billCompany.code === OPERATION_TYPE_PAY_BILL) {
+      this.openPayBillModal();
+      return;
+    }
+
     if (billCompany.code === OPERATION_RAPIDO) {
       this.navCtrl.navigateForward(RapidoOperationPage.ROUTE_PATH);
       return;
     }
     //this will change
+  }
+
+  async openPayBillModal() {
+    const modal = await this.modalController.create({
+      component: SelectNumberForBillComponent,
+      cssClass: 'select-recipient-modal',
+    });
+    modal.onWillDismiss().then((response: any) => {
+      if (response && response.data && response.data.recipientMsisdn) {
+        const pageData = response.data;
+        // this.appRouting.goSetTransferAmountPage(pageData);
+      }
+    });
+    return await modal.present();
   }
 
   openMerchantBS() {

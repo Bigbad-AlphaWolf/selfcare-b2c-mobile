@@ -1,25 +1,34 @@
-<div class="invoice-card">
+<div class="invoice-card" [ngClass]="{'with-border': withBorder}">
 	<ng-container *ngIf="componentStyle === 'v1' ">
 		<div class="section1">
 			<div class="infos">
 				<div class="title" *ngIf="title">{{ title }}</div>
-				<div class="title" *ngIf="!title">{{invoice?.numeroTelephone | getLabelLigneBillBordereau}}</div>
-				<div class="facture">N° {{ invoice?.nfact  | formatBillNum }}</div>
-				<div class="date"> Echéance {{ invoice?.dateEcheance | formatBillDate }}</div>
+				<div class="title" *ngIf="!title">{{MONTHS[invoice?.mois-1] + ' ' + invoice?.annee}}</div>
+				<div class="facture">N° {{ invoice?.nfact | formatBillNum }}</div>
+				<div class="price-and-echeance">
+					<div class="date" *ngIf="!invoice?.isDelayed"> Echéance {{ invoice?.dateEcheance | formatBillDate }}
+					</div>
+					<div class="date echeance-depasse" *ngIf="invoice?.isDelayed"> Echéance dépassée depuis le {{
+						invoice?.dateEcheance | formatBillDate }}</div>
+					<div class="bill-price scb-text-orange">{{invoice?.montantFacture + ' F CFA'}}</div>
+				</div>
 			</div>
 			<img class="logo" src="/assets/images/orange@3x.png" alt="">
 		</div>
-		<div class="path"></div>
-		<div class="section2">
+		<div class="path" *ngIf="!hideDownloadBlock"></div>
+		<div class="section2" *ngIf="!hideDownloadBlock">
 			<div class="download s2-text" matRipple (click)="downloadBill(invoice) ">Télécharger</div>
-			<div (click)="payBill(invoice)" *ngIf="canPayBills" class="pay s2-text font-size-14"> {{ invoice?.statutFacture | statusBillPayment }} </div>
+			<div (click)="payBill(invoice)" *ngIf="canPayBills"
+				[ngClass]="{'paid': invoice?.statutFacture === 'paid', 'unpaid': invoice?.statutFacture === 'unpaid'}"
+				class="pay s2-text font-size-14"> {{
+				invoice?.statutFacture | statusBillPayment }} </div>
 		</div>
 	</ng-container>
 	<ng-container *ngIf="componentStyle === 'v2' ">
 		<div class="section1">
 			<div class="infos">
-				<div class="title" >{{invoice?.numeroTelephone | getLabelLigneBillBordereau}}</div>
-				<div class="facture">N° {{ invoice?.nfact  | formatBillNum }}</div>
+				<div class="title">{{invoice?.numeroTelephone | getLabelLigneBillBordereau}}</div>
+				<div class="facture">N° {{ invoice?.nfact | formatBillNum }}</div>
 				<div class="date"> </div>
 			</div>
 			<img class="logo" src="/assets/images/orange@3x.png" alt="">

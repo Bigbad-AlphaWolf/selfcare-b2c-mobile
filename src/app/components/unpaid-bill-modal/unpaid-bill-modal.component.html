@@ -1,0 +1,10 @@
+<div class="modal-unpaid-bill">
+  <div class="title">Payer vos impayés</div>
+  <div class="desc scb-text-gray">Vous avez {{unpaidBills.length}} facture(s) à régler avant celle choisie. Payer d’abord cette facture.</div>
+  <div class="bill-container">
+    <invoice-card [canPayBills]="false" [invoice]="unpaidBills[0]" [hideDownloadBlock]="true" [withBorder]="true"></invoice-card>
+  </div>
+  <div class="btn-container">
+    <button class="scb-btn scb-btn-full scb-btn-orange" (click)="pay()">Payer</button>
+  </div>
+</div>
