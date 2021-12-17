@@ -420,7 +420,8 @@ body {
 
 .set-channel-payment-modal {
   align-items: flex-end !important;
-  .modal-wrapper {
+  .modal-wrapper,
+  .modal-shadow {
     height: 375px !important;
     width: 100% !important;
     border-radius: 10px 10px 0 0 !important;
