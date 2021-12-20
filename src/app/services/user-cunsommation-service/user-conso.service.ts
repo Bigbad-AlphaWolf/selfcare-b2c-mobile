@@ -46,6 +46,7 @@ export class UserConsoService {
       )
       .pipe(
         map((res) => {
+          res = res.filter((consoItem) => consoItem.chargeType);
           res.forEach((conso) => {
             conso.date = conso.startDate.split('à')[0];
             conso.charge1 = +conso.charge1;

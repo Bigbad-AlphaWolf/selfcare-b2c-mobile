@@ -1371,10 +1371,10 @@ export function getActiveBoostersForSpecificPass(
   boosters: BoosterModel[]
 ) {
   const passPPI = pass.passPromo
-    ? pass.passPromo.price_plan_index
-    : pass.price_plan_index;
+    ? pass.passPromo?.price_plan_index
+    : pass?.price_plan_index;
   const boostersArray = boosters.filter((booster) =>
-    booster.pricePlanIndexes.includes(passPPI.toString())
+    booster.pricePlanIndexes.includes(passPPI?.toString())
   );
   return boostersArray;
 }
