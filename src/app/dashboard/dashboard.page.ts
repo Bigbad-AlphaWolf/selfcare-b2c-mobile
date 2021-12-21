@@ -24,6 +24,7 @@ import { AppUpdatePage } from '../pages/app-update/app-update.page';
 import { map, take } from 'rxjs/operators';
 import { PROFIL, CODE_CLIENT, CODE_FORMULE, FORMULE } from '../utils/constants';
 import { FirebaseAnalytics } from '@ionic-native/firebase-analytics/ngx';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @AutoUnsubscribe()
@@ -62,7 +63,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     private appMinimize: AppMinimize,
     private appVersion: AppVersion,
     private navCtl: NavController,
-    private firebaseAnalytics: FirebaseAnalytics
+    private firebaseAnalytics: FirebaseAnalytics,
+    private oemLogging: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -172,12 +174,39 @@ export class DashboardPage implements OnInit, OnDestroy {
               date,
             }
           );
+          this.oemLogging.registerEvent('Dashboard_displayed', [
+            { dataName: 'msisdn', dataValue: currentNumber },
+            { dataName: 'profil', dataValue: this.currentProfile },
+            { dataName: 'formule', dataValue: this.currentFormule },
+            { dataName: 'date', dataValue: new Date() },
+          ]);
+
           this.followAnalyticsService.setString('profil', this.currentProfile);
+          this.oemLogging.setUserAttribute({
+            keyAttribute: 'profil',
+            valueAttribute: this.currentProfile,
+          });
+
           this.followAnalyticsService.setString('formule', this.currentFormule);
+          this.oemLogging.setUserAttribute({
+            keyAttribute: 'formule',
+            valueAttribute: this.currentFormule,
+          });
+
           this.getUserInfosNlogBirthDateOnFollow();
           const user = ls.get('user');
           this.followAnalyticsService.setFirstName(user.firstName);
+          this.oemLogging.setUserAttribute({
+            keyAttribute: 'prenom',
+            valueAttribute: user.firstName,
+          });
+
           this.followAnalyticsService.setLastName(user.lastName);
+          this.oemLogging.setUserAttribute({
+            keyAttribute: 'nom',
+            valueAttribute: user.lastName,
+          });
+
           const msisdn = this.authServ.getUserMainPhoneNumber();
           const hashedNumber = hash53(msisdn).toString();
           this.firebaseAnalytics
@@ -251,6 +280,17 @@ export class DashboardPage implements OnInit, OnDestroy {
       this.dashboardServ.getCustomerInformations().subscribe(
         (res) => {
           this.followAnalyticsService.logUserBirthDate(res.birthDate);
+          console.log('res.birth', res.birthDate.split('-'));
+          this.oemLogging.setUserAttribute({
+            keyAttribute: 'date_of_birth',
+            valueAttribute: new Date(
+              Date.UTC(
+                res.birthDate.split('-')[0],
+                res.birthDate.split('-')[1],
+                res.birthDate.split('-')[2]
+              )
+            ),
+          });
         },
         (err) => {
           console.log(err);

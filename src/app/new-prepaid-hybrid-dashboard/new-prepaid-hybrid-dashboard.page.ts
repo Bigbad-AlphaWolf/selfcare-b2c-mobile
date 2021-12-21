@@ -8,6 +8,7 @@ import { NewServicesPage } from '../new-services/new-services.page';
 import { NewSuiviConsoPage } from '../new-suivi-conso/new-suivi-conso.page';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { DashboardHomeComponent } from './components/dashboard-home/dashboard-home.component';
+import { BatchAnalyticsService } from '../services/batch-analytics/batch-analytics.service';
 
 @Component({
   selector: 'app-new-prepaid-hybrid-dashboard',
@@ -56,7 +57,8 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
   constructor(
     private ref: ChangeDetectorRef,
     private dashboardService: DashboardService,
-    private platform: Platform
+    private platform: Platform,
+    private batch: BatchAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -102,10 +104,32 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
     }
   }
 
+  registerClicAction() {
+    switch (this.currentSlideIndex) {
+      case 0:
+        this.batch.registerTag('click', 'click_dashboard_page');
+        this.batch.registerEvent('see_dashboard_page');
+        break;
+      case 1:
+        this.batch.registerTag('click', 'click_conso_page');
+        this.batch.registerEvent('see_conso_page');
+        break;
+      case 2:
+        this.batch.registerTag('click', 'click_services_page');
+        this.batch.registerEvent('see_services_page');
+        break;
+      case 3:
+        this.batch.registerTag('click', 'click_assistance_page');
+        this.batch.registerEvent('see_assistance_page');
+        break;
+    }
+  }
+
   setSlide(index) {
     this.currentSlideIndex = index;
     this.swiper.swiperRef.slideTo(index);
     this.refreshData();
+    this.registerClicAction();
   }
 
   onSwipe(event) {

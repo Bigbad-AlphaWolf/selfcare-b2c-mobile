@@ -10,6 +10,7 @@ import {FORGOT_PWD_PAGE_URL, HelpModalDefaultContent} from 'src/shared';
 import {CommonIssuesComponent} from 'src/shared/common-issues/common-issues.component';
 import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
 import {NavController, ModalController} from '@ionic/angular';
+import {OemLoggingService} from '../services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'app-login',
@@ -54,7 +55,8 @@ export class LoginPage implements OnInit {
     public dialog: MatDialog,
     private followAnalyticsService: FollowAnalyticsService,
     private navController: NavController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private oemLogging: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -83,6 +85,7 @@ export class LoginPage implements OnInit {
     const value = this.form.value;
     this.rememberMe = true;
     this.UserLogin(value);
+    this.oemLogging.registerEvent('login_click', null);
   }
 
   UserLogin(user: any) {

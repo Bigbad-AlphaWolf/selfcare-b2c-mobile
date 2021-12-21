@@ -22,11 +22,11 @@ export const environment = {
   AUTH_IMPLICIT_MSISDN: '221785898096',
   GA_CONFIG: {
     trackingId: 'UA-92621294-1',
-    trackPageviews: true,
+    trackPageviews: true
   },
-  GET_MSISDN_BY_NETWORK_URL:
-    'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
-  CONFIRM_MSISDN_BY_NETWORK_URL:
-    'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
+  GET_MSISDN_BY_NETWORK_URL: 'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
+  CONFIRM_MSISDN_BY_NETWORK_URL: 'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
   DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_b7ba58e0175d1f96e1eca4e3',
+  BATCH_ANDROID_API_KEY: '61813D3A6E7BA264B743E3AB77C142',
+  BATCH_IOS_API_KEY: '618BECF7C6B66754930AD9CD527147'
 };
