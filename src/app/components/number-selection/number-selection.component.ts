@@ -13,6 +13,7 @@ import {
   OPERATION_TYPE_PASS_INTERNET,
   NO_RECENTS_MSG,
   OPERATION_TYPE_PASS_INTERNATIONAL,
+  OPERATION_TYPE_PASS_LAMBJ,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -363,8 +364,12 @@ export class NumberSelectionComponent implements OnInit {
         followEventSucess = 'Achat_pass_Select_Recipient_success';
         followEventError = 'Achat_pass_Select_Recipient_error';
         break;
-
+      case OPERATION_TYPE_PASS_LAMBJ:
+        followEventSucess = 'Achat_pass_lamb_Select_Recipient_success';
+        followEventError = 'Achat_pass_lamb_Select_Recipient_error';
       default:
+        followEventSucess = 'Achat_Select_Recipient_success';
+        followEventError = 'Achat_Select_Recipient_error';
         break;
     }
 
