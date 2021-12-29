@@ -49,7 +49,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { AssistanceService } from 'src/app/services/assistance.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
-import { FirebaseAnalytics } from '@ionic-native/firebase-analytics/ngx';
 import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -160,8 +159,7 @@ export class DashboardHomeComponent implements OnInit {
     private storiesService: StoriesService,
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
-    private banniereService: BanniereService,
-    private firebaseAnalytics: FirebaseAnalytics
+    private banniereService: BanniereService
   ) {}
 
   ngOnInit() {
@@ -273,6 +271,9 @@ export class DashboardHomeComponent implements OnInit {
       .pipe(
         tap((conso) => {
           this.loadingConso = false;
+          this.oemLogging.registerEvent('Dashboard_get_user_conso_success', [
+            { dataName: 'msisdn', dataValue: this.currentMsisdn },
+          ]);
           conso.length ? this.processConso(conso) : (this.consoHasError = true);
           event ? event.target.complete() : '';
         }),
@@ -440,11 +441,9 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   onSargalCardClicked(origin?: string) {
-    this.firebaseAnalytics
-      .logEvent('SARGAL_CARD_CLICKED', { msisdn: this.currentMsisdn })
-      .then((res) => {
-        console.log('ELEMENT_LOGGUE', res);
-      });
+    this.oemLogging.registerEvent('SARGAL_CARD_CLICKED', [
+      { dataName: 'msisdn', dataValue: this.currentMsisdn },
+    ]);
     if (
       this.userSargalData &&
       (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED ||
@@ -504,15 +503,16 @@ export class DashboardHomeComponent implements OnInit {
       'event',
       'clicked'
     );
+    this.oemLogging.registerEvent('Dashboard_hub_transfert_clic', [
+      { dataName: 'msisdn', dataValue: this.currentMsisdn },
+    ]);
     this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
   }
 
   goToBuyPage() {
-    this.firebaseAnalytics
-      .logEvent('Dashboard_hub_achat_clic', { msisdn: this.currentMsisdn })
-      .then((res) => {
-        console.log('ELEMENT_LOGGUE', res);
-      });
+    this.oemLogging.registerEvent('Dashboard_hub_achat_clic', [
+      { dataName: 'msisdn', dataValue: this.currentMsisdn },
+    ]);
     this.followAnalyticsService.registerEventFollow(
       'Dashboard_hub_achat_clic',
       'event',
@@ -528,18 +528,17 @@ export class DashboardHomeComponent implements OnInit {
         'event',
         'clicked'
       );
+      this.oemLogging.registerEvent('Dashboard_sos_clic', [
+        { dataName: 'msisdn', dataValue: this.currentMsisdn },
+      ]);
       this.router.navigate(['/buy-sos']);
     }
   }
 
   goMerchantPayment() {
-    this.firebaseAnalytics
-      .logEvent('Dashboard_paiement_marchand_clic', {
-        msisdn: this.currentMsisdn,
-      })
-      .then((res) => {
-        console.log('ELEMENT_LOGGUE', res);
-      });
+    this.oemLogging.registerEvent('Dashboard_paiement_marchand_clic', [
+      { dataName: 'msisdn', dataValue: this.currentMsisdn },
+    ]);
     this.followAnalyticsService.registerEventFollow(
       'Dashboard_paiement_marchand_clic',
       'event'
@@ -568,13 +567,9 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   onPayerFacture() {
-    this.firebaseAnalytics
-      .logEvent('Dashboard_paiement_factures_clic', {
-        msisdn: this.currentMsisdn,
-      })
-      .then((res) => {
-        console.log('ELEMENT_LOGGUE', res);
-      });
+    this.oemLogging.registerEvent('Dashboard_paiement_factures_clic', [
+      { dataName: 'msisdn', dataValue: this.currentMsisdn },
+    ]);
     this.followAnalyticsService.registerEventFollow(
       'Dashboard_hub_facture_clic',
       'event',
