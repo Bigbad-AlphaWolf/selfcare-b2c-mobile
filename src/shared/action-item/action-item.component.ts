@@ -19,6 +19,7 @@ import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
 import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
@@ -56,7 +57,8 @@ export class ActionItemComponent implements OnInit {
     private toastController: ToastController,
     private bsService: BottomSheetService,
     private orangeMoneyService: OrangeMoneyService,
-    private navController: NavController
+    private navController: NavController,
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -149,51 +151,78 @@ export class ActionItemComponent implements OnInit {
     }
     switch (this.action.code) {
       case 'FIBRE_OPTIC':
+        this.oemLoggingService.registerEvent(
+          'help_fibre_eligibility_click',
+          []
+        );
         this.goFiberEligibility();
         break;
       case 'CODE_PUK':
+        this.oemLoggingService.registerEvent('help_code_puk_click', []);
         this.goPuk();
         break;
       case 'SET_INTERNET':
         this.goInternet();
         break;
       case 'SEDDO_CODE':
+        this.oemLoggingService.registerEvent(
+          'help_change_seddo_code_click',
+          []
+        );
         this.goChangeSeddo();
         break;
       case 'SUIVI_DEMANDE':
+        this.oemLoggingService.registerEvent('help_suivi_demande_click', []);
         this.onFollowUpRequests();
         break;
       case 'DEPLAFONNEMENT':
+        this.oemLoggingService.registerEvent('help_upgrade_om_click', []);
         this.goDeplafonnementOldVersion();
         break;
       case 'DEPLAFONNEMENT_NEW':
+        this.oemLoggingService.registerEvent('help_upgrade_om_click', []);
         this.goDeplafonnement();
         break;
       case 'TRANSACTION_ERROR':
+        this.oemLoggingService.registerEvent(
+          'help_erreur_transaction_om_click',
+          []
+        );
         this.goReclamation();
         break;
       case 'OUVERTURE_OM_ACCOUNT':
+        this.oemLoggingService.registerEvent('help_open_om_account_click', []);
         this.goCreateOMAccountOldVersion();
         break;
       case 'OUVERTURE_OM_ACCOUNT_NEW':
+        this.oemLoggingService.registerEvent('help_open_om_account_click', []);
         this.goCreateOMAccount();
         break;
       case 'SEARCH_AGENCY':
+        this.oemLoggingService.registerEvent('help_agency_click', []);
         this.goFindToAgenceWebSite();
         break;
       case 'CHANGE_PIN_OM':
+        this.oemLoggingService.registerEvent('help_change_code_om_click', []);
         this.openPinpad();
         break;
       case 'IBOU_CONTACT':
+        this.oemLoggingService.registerEvent('help_contact_ibou_click', []);
         this.goIbouPage();
         break;
       case 'KIOSK_LOCATOR':
+        this.oemLoggingService.registerEvent('help_kiosk_locator_click', []);
         this.openKioskLocatorModal();
         break;
       case 'BLOCK_TRANSFER':
+        this.oemLoggingService.registerEvent(
+          'help_block_transfer_om_click',
+          []
+        );
         this.openBlockTransferModal();
         break;
       case 'OM_PLAFOND_INFOS':
+        this.oemLoggingService.registerEvent('help_infos_om_account_click', []);
         this.openOMStatus();
         break;
       case 'SHARE_THE_APP':

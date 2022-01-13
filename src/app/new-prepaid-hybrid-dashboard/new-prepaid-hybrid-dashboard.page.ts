@@ -9,6 +9,7 @@ import { NewSuiviConsoPage } from '../new-suivi-conso/new-suivi-conso.page';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { DashboardHomeComponent } from './components/dashboard-home/dashboard-home.component';
 import { BatchAnalyticsService } from '../services/batch-analytics/batch-analytics.service';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'app-new-prepaid-hybrid-dashboard',
@@ -58,7 +59,7 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
     private ref: ChangeDetectorRef,
     private dashboardService: DashboardService,
     private platform: Platform,
-    private batch: BatchAnalyticsService
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -66,16 +67,15 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
       this.isIos = this.platform.is('ios');
     });
     this.dashboardService.listenToMenuClick().subscribe((menuItem) => {
-      console.log(menuItem);
       switch (menuItem) {
         case CONSO:
-          this.setSlide(1);
+          this.setSlide(1, true);
           break;
         case SERVICES:
-          this.setSlide(2);
+          this.setSlide(2, true);
           break;
         case ASSISTANCE:
-          this.setSlide(3);
+          this.setSlide(3, true);
           break;
         default:
           break;
@@ -104,32 +104,39 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
     }
   }
 
-  registerClicAction() {
-    switch (this.currentSlideIndex) {
-      case 0:
-        this.batch.registerTag('click', 'click_dashboard_page');
-        this.batch.registerEvent('see_dashboard_page');
-        break;
-      case 1:
-        this.batch.registerTag('click', 'click_conso_page');
-        this.batch.registerEvent('see_conso_page');
-        break;
-      case 2:
-        this.batch.registerTag('click', 'click_services_page');
-        this.batch.registerEvent('see_services_page');
-        break;
-      case 3:
-        this.batch.registerTag('click', 'click_assistance_page');
-        this.batch.registerEvent('see_assistance_page');
-        break;
-    }
-  }
-
-  setSlide(index) {
+  setSlide(index, isFromMenu?: boolean) {
     this.currentSlideIndex = index;
     this.swiper.swiperRef.slideTo(index);
     this.refreshData();
-    this.registerClicAction();
+    let eventName;
+    switch (index) {
+      case 0:
+        eventName = isFromMenu
+          ? 'sidemenu_dashboard_click'
+          : 'dashboard_tabbar_accueil';
+        break;
+      case 1:
+        eventName = isFromMenu
+          ? 'sidemenu_details_conso'
+          : 'dashboard_tabbar_conso';
+        break;
+      case 2:
+        eventName = isFromMenu
+          ? 'sidemenu_services_click'
+          : 'dashboard_tabbar_services	';
+        break;
+      case 3:
+        eventName = isFromMenu
+          ? 'sidemenu_assistance_click'
+          : 'dashboard_tabbar_assistance';
+        break;
+    }
+    this.oemLoggingService.registerEvent(eventName, [
+      {
+        dataName: 'msisdn',
+        dataValue: this.dashboardService.getCurrentPhoneNumber(),
+      },
+    ]);
   }
 
   onSwipe(event) {

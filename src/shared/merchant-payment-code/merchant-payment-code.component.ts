@@ -12,6 +12,7 @@ import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/
 import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'app-merchant-payment-code',
@@ -34,7 +35,8 @@ export class MerchantPaymentCodeComponent implements OnInit {
     private bsService: BottomSheetService,
     private recentsService: RecentsService,
     private modalController: ModalController,
-    private followAnalyticService: FollowAnalyticsService
+    private followAnalyticService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -117,11 +119,10 @@ export class MerchantPaymentCodeComponent implements OnInit {
       purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
       merchant: merchant,
     };
-    this.loginfosFollow('event', {
-      sender: this.omMsisdn,
-      receiver: merchant.merchantCode,
-      operation: OPERATION_TYPE_MERCHANT_PAYMENT,
-    });
+    this.oemLoggingService.registerEvent('merchant_payment_favorite_click', [
+      { dataName: 'codeMarchand', dataValue: merchant.merchantCode },
+      { dataName: 'msisdn', dataValue: this.omMsisdn },
+    ]);
     this.applicationRoutingService.goSetAmountPage(payload);
     this.modalController.dismiss();
   }
@@ -136,8 +137,8 @@ export class MerchantPaymentCodeComponent implements OnInit {
           let results = [];
           recents.forEach((el) => {
             results.push({
-              name: JSON.parse(el.payload).nom_marchand,
-              merchantCode: el.destinataire,
+              name: JSON.parse(el.payload)?.nom_marchand,
+              merchantCode: el?.destinataire,
             });
           });
           return results;

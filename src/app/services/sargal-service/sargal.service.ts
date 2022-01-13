@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject, of, Observable } from 'rxjs';
+import { Subject, of, Observable, throwError } from 'rxjs';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { environment } from 'src/environments/environment';
 import {
@@ -9,8 +9,9 @@ import {
   SubscriptionModel,
 } from 'src/shared';
 import { AuthenticationService } from '../authentication-service/authentication.service';
-import { delay, map } from 'rxjs/operators';
+import { catchError, delay, map, tap } from 'rxjs/operators';
 import * as SecureLS from 'secure-ls';
+import { OemLoggingService } from '../oem-logging/oem-logging.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 const { SARGAL_SERVICE, SERVER_API_URL } = environment;
@@ -49,7 +50,8 @@ export class SargalService {
   constructor(
     private http: HttpClient,
     private dashbService: DashboardService,
-    private authServ: AuthenticationService
+    private authServ: AuthenticationService,
+    private oemLoggingService: OemLoggingService
   ) {}
 
   getSargalBalance(msisdn: string, hmac?: string) {
@@ -59,20 +61,18 @@ export class SargalService {
       endpoint = sargalBalanceEndpointLight;
       queryParam += `?hmac=${hmac}`;
     }
-    return this.http
-      .get(`${endpoint}/${msisdn}${queryParam}`)
-      .pipe(
-        map(
-          (sargalStatus) => {
-            ls.set(`lastSargalData_${msisdn}`, sargalStatus);
-            return sargalStatus;
-          },
-          (err) => {
-            const sargalData = ls.get(`lastSargalData_${msisdn}`);
-            return sargalData;
-          }
-        )
-      );
+    return this.http.get(`${endpoint}/${msisdn}${queryParam}`).pipe(
+      map(
+        (sargalStatus) => {
+          ls.set(`lastSargalData_${msisdn}`, sargalStatus);
+          return sargalStatus;
+        },
+        (err) => {
+          const sargalData = ls.get(`lastSargalData_${msisdn}`);
+          return sargalData;
+        }
+      )
+    );
   }
 
   querySargalGiftCategories() {
@@ -180,10 +180,30 @@ export class SargalService {
   convertToGift(gift: GiftSargalItem, numerosIllimite: string[]) {
     const msisdn = this.dashbService.getCurrentPhoneNumber();
     const numeros = numerosIllimite ? numerosIllimite.join() : null;
-    return this.http.post(
-      `${convertGiftEndpoint}/${msisdn}?giftId=${gift.giftId}&fellowType=${gift.fellowType}&fellowNumbers=${numeros}&serviceId=${gift.serviceId}`,
-      null
-    );
+    return this.http
+      .post(
+        `${convertGiftEndpoint}/${msisdn}?giftId=${gift.giftId}&fellowType=${gift.fellowType}&fellowNumbers=${numeros}&serviceId=${gift.serviceId}`,
+        null
+      )
+      .pipe(
+        tap((res) => {
+          this.oemLoggingService.registerEvent('sargal_convert_success', [
+            { dataName: 'msisdn', dataValue: msisdn },
+            { dataName: 'giftId', dataValue: gift.id },
+            { dataName: 'giftName', dataValue: gift.nom },
+            { dataName: 'giftPrice', dataValue: gift.prix },
+          ]);
+        }),
+        catchError((err) => {
+          this.oemLoggingService.registerEvent('sargal_convert_error', [
+            { dataName: 'msisdn', dataValue: msisdn },
+            { dataName: 'giftId', dataValue: gift.id },
+            { dataName: 'giftName', dataValue: gift.nom },
+            { dataName: 'giftPrice', dataValue: gift.prix },
+          ]);
+          return throwError(err);
+        })
+      );
   }
 
   registerToSargal(msisdn: string) {

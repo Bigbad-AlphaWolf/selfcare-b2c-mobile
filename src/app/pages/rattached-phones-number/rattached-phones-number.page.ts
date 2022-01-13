@@ -7,6 +7,7 @@ import { RattachedNumber } from 'src/app/models/rattached-number.model';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { NavController } from '@ionic/angular';
 import { AccountService } from 'src/app/services/account-service/account.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'app-rattached-phones-number',
@@ -14,13 +15,22 @@ import { AccountService } from 'src/app/services/account-service/account.service
   styleUrls: ['./rattached-phones-number.page.scss'],
 })
 export class RattachedPhonesNumberPage implements OnInit {
-  public static readonly PATH = "rattached-phones-number";
+  public static readonly PATH = 'rattached-phones-number';
   title = getPageHeader(OPERATION_SEE_RATTACHED_NUMBERS).title;
-  listRattachedNumbers: { current: RattachedNumber, others: RattachedNumber[] } = { current: null, others: [] };
+  listRattachedNumbers: {
+    current: RattachedNumber;
+    others: RattachedNumber[];
+  } = { current: null, others: [] };
   isLoading: boolean;
   editable: boolean;
   hasError: boolean;
-  constructor(private dashbServ: DashboardService, private bsService: BottomSheetService, private navCon: NavController, private accountService: AccountService) { }
+  constructor(
+    private dashbServ: DashboardService,
+    private bsService: BottomSheetService,
+    private navCon: NavController,
+    private accountService: AccountService,
+    private oemLoggingService: OemLoggingService
+  ) {}
 
   ngOnInit() {
     this.fetchingNumbers();
@@ -29,26 +39,42 @@ export class RattachedPhonesNumberPage implements OnInit {
     });
   }
 
-  fetchingNumbers(){
+  fetchingNumbers() {
     this.isLoading = true;
     this.hasError = false;
     const currentNumber = this.dashbServ.getCurrentPhoneNumber();
-    this.dashbServ.getAllOemNumbers().pipe(take(1),
+    this.dashbServ
+      .getAllOemNumbers()
+      .pipe(
+        take(1),
         tap((list: RattachedNumber[]) => {
-          this.listRattachedNumbers.current = list.find((val: RattachedNumber) => { return  val.msisdn === currentNumber });
-          this.listRattachedNumbers.others = list.filter((val: RattachedNumber) => { return  val.msisdn !== currentNumber });
-
-        })).subscribe( () => { 
+          this.listRattachedNumbers.current = list.find(
+            (val: RattachedNumber) => {
+              return val.msisdn === currentNumber;
+            }
+          );
+          this.listRattachedNumbers.others = list.filter(
+            (val: RattachedNumber) => {
+              return val.msisdn !== currentNumber;
+            }
+          );
+        })
+      )
+      .subscribe(
+        () => {
           this.isLoading = false;
-          this.hasError = false; },
-         () => { 
-           this.isLoading = false;
-           this.hasError = true;
-      })
+          this.hasError = false;
+        },
+        () => {
+          this.isLoading = false;
+          this.hasError = true;
+        }
+      );
   }
 
   openModalRattachNumber() {
     this.bsService.openRattacheNumberModal();
+    this.oemLoggingService.registerEvent('lines_new_click', []);
   }
   goBack() {
     this.navCon.pop();
@@ -56,10 +82,11 @@ export class RattachedPhonesNumberPage implements OnInit {
 
   deleteRattachment() {
     this.editable = !this.editable;
+    this.oemLoggingService.registerEvent('lines_edit_click', []);
   }
 
   performAction(numero: string) {
-    if(this.editable) {
+    if (this.editable) {
       const line = [numero];
       this.accountService.deleteUserLinkedPhoneNumbers(line);
     } else {

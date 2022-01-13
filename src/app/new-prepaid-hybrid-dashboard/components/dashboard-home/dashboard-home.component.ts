@@ -367,6 +367,9 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   search() {
+    this.oemLogging.registerEvent('dashboard_search_click', [
+      { dataName: 'msisdn', dataValue: this.currentMsisdn },
+    ]);
     this.dir.first.show();
   }
 
@@ -387,18 +390,8 @@ export class DashboardHomeComponent implements OnInit {
     // this.router.navigate(['/details-conso']);
     this.seeDetails.emit();
     if (number) {
-      this.followAnalyticsService.registerEventFollow(
-        'Voirs_details_dashboard',
-        'event',
-        'clicked'
-      );
       this.oemLogging.registerEvent('dashboard_conso_details_click', null);
     } else {
-      this.followAnalyticsService.registerEventFollow(
-        'Voirs_details_card_dashboard',
-        'event',
-        'clicked'
-      );
       this.oemLogging.registerEvent('dashboard_conso_card_click', null);
     }
   }
@@ -441,7 +434,7 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   onSargalCardClicked(origin?: string) {
-    this.oemLogging.registerEvent('SARGAL_CARD_CLICKED', [
+    this.oemLogging.registerEvent('dashboard_sargal_card_click', [
       { dataName: 'msisdn', dataValue: this.currentMsisdn },
     ]);
     if (
@@ -450,25 +443,19 @@ export class DashboardHomeComponent implements OnInit {
         this.userSargalData.status === SARGAL_UNSUBSCRIPTION_ONGOING) &&
       !this.loadingSargal
     ) {
-      this.followAnalyticsService.registerEventFollow(
-        'Sargal_registration_card_clic',
-        'event',
-        'clicked'
-      );
+      this.oemLogging.registerEvent('dashboard_sargal_register_click', [
+        { dataName: 'msisdn', dataValue: this.currentMsisdn },
+      ]);
       this.router.navigate(['/sargal-registration']);
     } else if (!this.sargalUnavailable && !this.loadingSargal) {
       if (origin === 'card') {
-        this.followAnalyticsService.registerEventFollow(
-          'Sargal_dashboard_card_clic',
-          'event',
-          'clicked'
-        );
+        this.oemLogging.registerEvent('dashboard_sargal_card_click', [
+          { dataName: 'msisdn', dataValue: this.currentMsisdn },
+        ]);
       } else {
-        this.followAnalyticsService.registerEventFollow(
-          'Dashboard_Convertir_Sargal_clic',
-          'event',
-          'clicked'
-        );
+        this.oemLogging.registerEvent('dashboard_convertir_click', [
+          { dataName: 'msisdn', dataValue: this.currentMsisdn },
+        ]);
       }
       this.router.navigate(['/sargal-dashboard']);
     }
@@ -498,37 +485,22 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   goToTransfertsPage() {
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_hub_transfert_clic',
-      'event',
-      'clicked'
-    );
-    this.oemLogging.registerEvent('Dashboard_hub_transfert_clic', [
+    this.oemLogging.registerEvent('dashboard_transferer_click', [
       { dataName: 'msisdn', dataValue: this.currentMsisdn },
     ]);
     this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
   }
 
   goToBuyPage() {
-    this.oemLogging.registerEvent('Dashboard_hub_achat_clic', [
+    this.oemLogging.registerEvent('dashboard_acheter_click', [
       { dataName: 'msisdn', dataValue: this.currentMsisdn },
     ]);
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_hub_achat_clic',
-      'event',
-      'clicked'
-    );
     this.appliRouting.goToTransfertHubServicesPage('BUY');
   }
 
   goToSOSPage() {
     if (this.canDoSOS) {
-      this.followAnalyticsService.registerEventFollow(
-        'Dashboard_sos_clic',
-        'event',
-        'clicked'
-      );
-      this.oemLogging.registerEvent('Dashboard_sos_clic', [
+      this.oemLogging.registerEvent('dashboard_sos_click', [
         { dataName: 'msisdn', dataValue: this.currentMsisdn },
       ]);
       this.router.navigate(['/buy-sos']);
@@ -536,13 +508,9 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   goMerchantPayment() {
-    this.oemLogging.registerEvent('Dashboard_paiement_marchand_clic', [
+    this.oemLogging.registerEvent('dashboard_marchand_click', [
       { dataName: 'msisdn', dataValue: this.currentMsisdn },
     ]);
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_paiement_marchand_clic',
-      'event'
-    );
     this.omService.omAccountSession().subscribe(async (omSession: any) => {
       const omSessionValid = omSession
         ? omSession.msisdn !== 'error' &&
@@ -567,14 +535,9 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   onPayerFacture() {
-    this.oemLogging.registerEvent('Dashboard_paiement_factures_clic', [
+    this.oemLogging.registerEvent('dashboard_payer_click', [
       { dataName: 'msisdn', dataValue: this.currentMsisdn },
     ]);
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_hub_facture_clic',
-      'event',
-      'clicked'
-    );
     this.router.navigate([BillsHubPage.ROUTE_PATH]);
   }
 

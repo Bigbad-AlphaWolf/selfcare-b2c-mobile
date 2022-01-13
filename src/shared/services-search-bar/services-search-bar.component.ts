@@ -7,6 +7,7 @@ import { OffreService } from 'src/app/models/offre-service.model';
 import { OMCustomerStatusModel } from 'src/app/models/om-customer-status.model';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { REGEX_FIX_NUMBER } from '..';
@@ -26,7 +27,8 @@ export class ServicesSearchBarComponent implements OnInit {
     private followAnalyticsService: FollowAnalyticsService,
     private operationService: OperationService,
     private dashbServ: DashboardService,
-    private orangeMoneyService: OrangeMoneyService
+    private orangeMoneyService: OrangeMoneyService,
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {}
@@ -40,10 +42,15 @@ export class ServicesSearchBarComponent implements OnInit {
     this.navController.navigateForward(['/assistance-hub/search'], {
       state: { listBesoinAides: this.listBesoinAides, source: this.source },
     });
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_hub_recherche',
-      'event'
-    );
+    const eventName =
+      this.source === 'DASHBOARD'
+        ? 'dashboard_search_focus_click'
+        : this.source === 'SERVICES'
+        ? ''
+        : '';
+    this.oemLoggingService.registerEvent(eventName, [
+      { dataName: 'msisdn', dataValue: this.currentMsisdn },
+    ]);
   }
 
   async checkStatus() {

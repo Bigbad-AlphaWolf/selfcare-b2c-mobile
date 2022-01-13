@@ -8,6 +8,7 @@ import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-mo
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { FollowAnalyticsEventType } from 'src/app/services/follow-analytics/follow-analytics-event-type.enum';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { PurchaseService } from 'src/app/services/purchase-service/purchase.service';
 import {
@@ -46,7 +47,8 @@ export class TransactionsHistoricComponent implements OnInit {
     private dashboardservice: DashboardService,
     private omService: OrangeMoneyService,
     private modalController: ModalController,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -55,6 +57,9 @@ export class TransactionsHistoricComponent implements OnInit {
 
   filterByDate(dateFilter) {
     this.selectedDateFilter = dateFilter;
+    this.oemLoggingService.registerEvent('conso_transactions_filter', [
+      { dataName: 'date', dataValue: dateFilter?.label },
+    ]);
     this.getTransactionsHistoric();
   }
 
@@ -63,6 +68,9 @@ export class TransactionsHistoricComponent implements OnInit {
       JSON.stringify(this.historicTransactions)
     );
     this.selectedFilter = filterType;
+    this.oemLoggingService.registerEvent('conso_transactions_filter', [
+      { dataName: 'date', dataValue: filterType?.label },
+    ]);
     if (
       this.selectedFilter.label ===
       DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY.label

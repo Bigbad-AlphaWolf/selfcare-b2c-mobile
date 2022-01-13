@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  // SERVER_API_URL: 'https://orangeetmoi.orange.sn',
+  SERVER_API_URL: 'https://orangeetmoi.orange.sn',
   //SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
-  SERVER_API_URL: 'http://selfcare-b2c-client-http-dsiselfcarebcorangeetmoi-rec.malaw.orange-sonatel.com',
+  // SERVER_API_URL: 'http://selfcare-b2c-client-http-dsiselfcarebcorangeetmoi-rec.malaw.orange-sonatel.com',
   //SERVER_API_URL: 'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
   // SERVER_API_URL: 'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
   // SERVER_API_URL: 'https://selfcare-client-dsiselfcarebcorangeetmoi-prod.apps.paas.orange-sonatel.com',
@@ -31,17 +31,18 @@ export const environment = {
   AUTH_IMPLICIT_MSISDN: '221781521490',
   GA_CONFIG: {
     trackingId: 'UA-92621294-1',
-    trackPageviews: true
+    trackPageviews: true,
   },
   // GET_MSISDN_BY_NETWORK_URL:
   //   'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
   // CONFIRM_MSISDN_BY_NETWORK_URL:
   //   'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
   GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
-  CONFIRM_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/confirm-msisdn',
+  CONFIRM_MSISDN_BY_NETWORK_URL:
+    'http://10.100.99.116:1494/api/v1/confirm-msisdn',
   DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_95fb0f8745090d63e5acebaa',
   BATCH_ANDROID_API_KEY: 'DEV61813D3A6EA950E313FCC9F0C03',
-  BATCH_IOS_API_KEY: 'DEV618BECF7C73F1F256E94EDAFFA2'
+  BATCH_IOS_API_KEY: 'DEV618BECF7C73F1F256E94EDAFFA2',
 };
 
 /*

@@ -58,12 +58,10 @@ export class DashboardPage implements OnInit, OnDestroy {
     private authServ: AuthenticationService,
     private assistanceService: AssistanceService,
     private router: Router,
-    private followAnalyticsService: FollowAnalyticsService,
     private platform: Platform,
     private appMinimize: AppMinimize,
     private appVersion: AppVersion,
     private navCtl: NavController,
-    private firebaseAnalytics: FirebaseAnalytics,
     private oemLogging: OemLoggingService
   ) {}
 
@@ -164,30 +162,18 @@ export class DashboardPage implements OnInit, OnDestroy {
           this.saveAttachedNumbers();
           this.router.navigate([DashboardService.CURRENT_DASHBOARD]);
           this.checkForUpdate();
-          this.followAnalyticsService.registerEventFollow(
-            'Dashboard_displayed',
-            'event',
-            {
-              msisdn: currentNumber,
-              profil: this.currentProfile,
-              formule: this.currentFormule,
-              date,
-            }
-          );
-          this.oemLogging.registerEvent('Dashboard_displayed', [
+          this.oemLogging.registerEvent('dashboard_displayed', [
             { dataName: 'msisdn', dataValue: currentNumber },
             { dataName: 'profil', dataValue: this.currentProfile },
             { dataName: 'formule', dataValue: this.currentFormule },
             { dataName: 'date', dataValue: new Date() },
           ]);
 
-          this.followAnalyticsService.setString('profil', this.currentProfile);
           this.oemLogging.setUserAttribute({
             keyAttribute: 'profil',
             valueAttribute: this.currentProfile,
           });
 
-          this.followAnalyticsService.setString('formule', this.currentFormule);
           this.oemLogging.setUserAttribute({
             keyAttribute: 'formule',
             valueAttribute: this.currentFormule,
@@ -195,13 +181,11 @@ export class DashboardPage implements OnInit, OnDestroy {
 
           this.getUserInfosNlogBirthDateOnFollow();
           const user = ls.get('user');
-          this.followAnalyticsService.setFirstName(user.firstName);
           this.oemLogging.setUserAttribute({
             keyAttribute: 'prenom',
             valueAttribute: user.firstName,
           });
 
-          this.followAnalyticsService.setLastName(user.lastName);
           this.oemLogging.setUserAttribute({
             keyAttribute: 'nom',
             valueAttribute: user.lastName,
@@ -209,58 +193,12 @@ export class DashboardPage implements OnInit, OnDestroy {
 
           const msisdn = this.authServ.getUserMainPhoneNumber();
           const hashedNumber = hash53(msisdn).toString();
-          this.firebaseAnalytics
-            .setUserId(this.currentPhoneNumber)
-            .then((res) => {
-              console.log('dashboard_firebase', res);
-            })
-            .catch((err) => {
-              console.log('error_dashboard_firebase', err);
-            });
-          this.firebaseAnalytics
-            .logEvent('TESTONS_FIREBASE', {
-              msisdn: this.currentPhoneNumber,
-              appli: 'OeM',
-              country: 'Senegal',
-            })
-            .then((res) => {
-              console.log('ELEMENT_LOGGUE', res);
-            });
-          // try {
-          //   this.followAnalyticsService.registerId(this.currentPhoneNumber);
-          //   this.firebaseAnalytics
-          //     .setUserId(this.currentPhoneNumber)
-          //     .then((res) => {
-          //       console.log('dashboard_firebase', res);
-          //     })
-          //     .catch((err) => {
-          //       console.log('error_dashboard_firebase', err);
-          //     });
-          //   this.firebaseAnalytics
-          //     .logEvent('TESTONS_FIREBASE', {
-          //       msisdn: this.currentPhoneNumber,
-          //       appli: 'OeM',
-          //       country: 'Senegal',
-          //     })
-          //     .then((res) => {
-          //       console.log('ELEMENT_LOGGUE', res);
-          //     });
-          // } catch (error) {
-          //   this.followAnalyticsService.registerId(hashedNumber);
-          //   this.firebaseAnalytics
-          //     .setUserId('FIREBASE_ID_TEST')
-          //     .then((res) => {
-          //       console.log('dashboard_firebase', res);
-          //     })
-          //     .catch((err) => {
-          //       console.log('error_dashboard_firebase', err);
-          //     });
-          //   this.followAnalyticsService.registerEventFollow(
-          //     'hash_error',
-          //     'error',
-          //     error
-          //   );
-          // }
+          this.oemLogging.registerUserID(hashedNumber);
+          try {
+            this.oemLogging.registerUserID(hashedNumber);
+          } catch (error) {
+            this.oemLogging.registerUserID(msisdn);
+          }
         },
         (err: any) => {
           this.isLoading = false;
@@ -279,8 +217,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     if (!userInfosAlreadySet)
       this.dashboardServ.getCustomerInformations().subscribe(
         (res) => {
-          this.followAnalyticsService.logUserBirthDate(res.birthDate);
-          console.log('res.birth', res.birthDate.split('-'));
           this.oemLogging.setUserAttribute({
             keyAttribute: 'date_of_birth',
             valueAttribute: new Date(

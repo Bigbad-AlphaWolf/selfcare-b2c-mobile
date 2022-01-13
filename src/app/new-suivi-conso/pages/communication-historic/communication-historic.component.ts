@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { FormatSecondDatePipe } from 'src/shared/pipes/format-second-date.pipe';
 import { displayDate } from '../../new-suivi-conso.utils';
 const LOCAL_MSISDN_PREFIX = '22119';
@@ -29,7 +30,10 @@ export class CommunicationHistoricComponent implements OnInit {
   filteredHistoric;
   filters = [FILTER_CATEGORY_ALL];
 
-  constructor(private dashboardService: DashboardService) {}
+  constructor(
+    private dashboardService: DashboardService,
+    private oemLoggingService: OemLoggingService
+  ) {}
 
   ngOnInit() {
     this.getPrepaidUserHistory();
@@ -37,11 +41,17 @@ export class CommunicationHistoricComponent implements OnInit {
 
   filterByDate(dateFilter) {
     this.selectedDateFilter = dateFilter;
+    this.oemLoggingService.registerEvent('conso_communications_filter', [
+      { dataName: 'date', dataValue: dateFilter?.label },
+    ]);
     this.getPrepaidUserHistory();
   }
 
   getTransactionByType(filterType: string) {
     this.selectedFilter = filterType;
+    this.oemLoggingService.registerEvent('conso_communications_filter', [
+      { dataName: 'type', dataValue: filterType },
+    ]);
     this.filteredHistoric = JSON.parse(JSON.stringify(this.comHistoric));
     if (this.selectedFilter === FILTER_CATEGORY_ALL) {
       return;

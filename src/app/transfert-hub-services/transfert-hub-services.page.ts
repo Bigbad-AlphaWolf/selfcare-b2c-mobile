@@ -23,6 +23,7 @@ import {
   OPERATION_TYPE_SEDDO_CREDIT,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_PASS_INTERNATIONAL,
+  getServiceEventLoggingName,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -47,6 +48,7 @@ import {
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amount.page';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -118,7 +120,8 @@ export class TransfertHubServicesPage implements OnInit {
     private favService: FavorisService,
     private toastController: ToastController,
     private operationService: OperationService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -194,16 +197,10 @@ export class TransfertHubServicesPage implements OnInit {
       return;
     }
     const followEvent =
-      (this.purchaseType === 'TRANSFER'
-        ? 'Hub_transfert_clic_'
-        : 'Hub_Achat_clic_') +
-      opt.code.toLocaleLowerCase() +
-      (this.isLightMod ? '_light' : '');
-    this.followAnalyticsService.registerEventFollow(
-      followEvent,
-      'event',
-      'clic'
-    );
+      (this.purchaseType === 'TRANSFER' ? 'hubtransfert_' : 'hubachat_') +
+      getServiceEventLoggingName(opt) +
+      '_click';
+    this.oemLoggingService.registerEvent(followEvent, []);
     if (opt.passUsage) {
       this.bsService.openNumberSelectionBottomSheet(
         NumberSelectionOption.WITH_MY_PHONES,

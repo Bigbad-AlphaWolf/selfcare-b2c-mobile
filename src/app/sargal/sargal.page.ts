@@ -16,6 +16,7 @@ import { SargalSubscriptionModel } from '../dashboard';
 import * as SecureLS from 'secure-ls';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NavController } from '@ionic/angular';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-sargal',
@@ -46,7 +47,8 @@ export class SargalPage implements OnInit {
     private dashbordServ: DashboardService,
     private sargalServ: SargalService,
     private followService: FollowAnalyticsService,
-    private navController: NavController
+    private navController: NavController,
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -93,19 +95,36 @@ export class SargalPage implements OnInit {
   }
 
   goToCataloguePage() {
+    this.oemLoggingService.registerEvent('hubsargal_all_gilfts_click', []);
     this.router.navigate(['/sargal-catalogue', 'all']);
   }
 
-  goToCategorySargal(codeCategory: number, pageTitle?: string) {
-    this.followService.registerEventFollow(
-      'sargal-gift-page-clicked',
-      'event',
-      {
-        page: pageTitle,
-        msisdn: this.currentNumber,
-      }
-    );
-    this.router.navigate(['/sargal-catalogue', codeCategory]);
+  goToCategorySargal(codeCategory: GiftSargalCategoryItem, pageTitle?: string) {
+    let event = 'hubsargal_';
+    switch (true) {
+      case codeCategory.nom.toLowerCase().includes('minutes'):
+        event += 'minutes_appels_click';
+        break;
+      case codeCategory.nom.toLowerCase().includes('internet'):
+        event += 'pass_internet_click';
+        break;
+      case codeCategory.nom.toLowerCase().includes('illimix'):
+        event += 'pass_illimix_click';
+        break;
+      case codeCategory.nom.toLowerCase().includes('sms'):
+        event += 'sms_click';
+        break;
+      case codeCategory.nom.toLowerCase().includes('bons'):
+        event += 'bons_click';
+        break;
+      case codeCategory.nom.toLowerCase().includes('illimité'):
+        event += 'illimites_click';
+        break;
+    }
+    this.oemLoggingService.registerEvent(event, [
+      { dataName: 'msisdn', dataValue: this.currentNumber },
+    ]);
+    this.router.navigate(['/sargal-catalogue', codeCategory?.id]);
   }
 
   getCategories() {

@@ -66,6 +66,7 @@ import { CancelOmTransactionPayloadModel } from 'src/app/models/cancel-om-transa
 import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-event-type.enum';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { CreatePinOM } from 'src/app/models/create-pin-om.model';
+import { OemLoggingService } from '../oem-logging/oem-logging.service';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
@@ -111,7 +112,8 @@ export class OrangeMoneyService {
     private http: HttpClient,
     private followAnalyticsService: FollowAnalyticsService,
     private dashboardService: DashboardService,
-    private illiflexService: IlliflexService
+    private illiflexService: IlliflexService,
+    private oemLoggingService: OemLoggingService
   ) {}
   pinPadDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b'];
   gotPinPadSubject = new BehaviorSubject<string[]>([]);
@@ -310,10 +312,27 @@ export class OrangeMoneyService {
     const queryParams = confirmPayload?.txnId
       ? `?txnId=${confirmPayload?.txnId}`
       : '';
-    return this.http.post(
-      `${merchantPaymentEndpoint}${queryParams}`,
-      merchantPaymentData
-    );
+    return this.http
+      .post(`${merchantPaymentEndpoint}${queryParams}`, merchantPaymentData)
+      .pipe(
+        tap((res) => {
+          this.oemLoggingService.registerEvent('merchant_payment_success', [
+            {
+              dataName: 'codeMarchand',
+              dataValue: merchantPaymentData.code_marchand,
+            },
+            { dataName: 'msisdn', dataValue: merchantPaymentData.msisdn },
+            {
+              dataName: 'montant',
+              dataValue: merchantPaymentData.amount.toString(),
+            },
+          ]);
+        }),
+        catchError((err) => {
+          this.oemLoggingService.registerEvent('merchant_payment_error', []);
+          return throwError(err);
+        })
+      );
   }
 
   getTransferFees(): Observable<FeeModel[]> {

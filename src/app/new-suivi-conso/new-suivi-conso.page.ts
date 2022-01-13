@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { IonSlides, Platform } from '@ionic/angular';
 import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish.directive';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 import { CommunicationHistoricComponent } from './pages/communication-historic/communication-historic.component';
 import { NewDetailsConsoComponent } from './pages/new-details-conso/new-details-conso.component';
 import { TransactionsHistoricComponent } from './pages/transactions-historic/transactions-historic.component';
@@ -32,7 +34,11 @@ export class NewSuiviConsoPage implements OnInit {
   @ViewChild('searchIcon') iconToggleSearch;
   isIos: boolean;
 
-  constructor(private platform: Platform) {}
+  constructor(
+    private platform: Platform,
+    private oemLoggingService: OemLoggingService,
+    private dashboardService: DashboardService
+  ) {}
 
   ngOnInit() {
     this.platform.ready().then(() => {
@@ -61,6 +67,27 @@ export class NewSuiviConsoPage implements OnInit {
 
   setSlidesIndex(index) {
     this.sliders.slideTo(index);
+    let event = '';
+    switch (index) {
+      case 0:
+        event = 'conso_details_click';
+        break;
+      case 1:
+        event = 'conso_communications_click';
+        break;
+      case 2:
+        event = 'conso_internet_click';
+        break;
+      case 3:
+        event = 'conso_transactions_click';
+        break;
+    }
+    this.oemLoggingService.registerEvent(event, [
+      {
+        dataName: 'msisdn',
+        dataValue: this.dashboardService.getCurrentPhoneNumber(),
+      },
+    ]);
     // this.refreshData();
   }
 

@@ -33,6 +33,7 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 import { isPrepaidOrHybrid } from '../dashboard';
 import { OmStatusVisualizationComponent } from 'src/shared/om-status-visualization/om-status-visualization.component';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -63,7 +64,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     private socialSharing: SocialSharing,
     private appRout: ApplicationRoutingService,
     private bsService: BottomSheetService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -99,6 +101,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   openModalRattachNumber() {
+    this.oemLoggingService.registerEvent('sidemenu_add_line', []);
     this.bsService.openRattacheNumberModal();
   }
 
@@ -167,11 +170,10 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   switchPhoneNumber(msisdn) {
     if (this.msisdn === msisdn) return;
     const mainMsisdn = this.dashboardServ.getMainPhoneNumber();
-    this.followAnalyticsService.registerEventFollow(
-      'Switch_msisdn_menu',
-      'event',
-      { main: mainMsisdn, msisdn }
-    );
+    this.oemLoggingService.registerEvent('sidemenu_switch_line', [
+      { dataName: 'mainMsisdn', dataValue: mainMsisdn },
+      { dataName: 'msisdn', dataValue: msisdn },
+    ]);
     this.dashboardServ.setCurrentPhoneNumber(msisdn);
     this.closeMenu();
     this.router.navigate(['/dashboard']);
@@ -238,44 +240,28 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goToMyOfferPlans() {
-    this.followAnalyticsService.registerEventFollow('Bons_plans_menu', 'event');
+    this.oemLoggingService.registerEvent('side_samay_sargal_click', []);
     this.router.navigate(['/my-offer-plans']);
   }
 
   goFormule() {
+    this.oemLoggingService.registerEvent('sidemenu_formule_click', []);
     this.router.navigate(['/my-formule']);
-    this.followAnalyticsService.registerEventFollow(
-      'Ma_formule_menu',
-      'event',
-      'clicked'
-    );
   }
 
   goFacture() {
+    this.oemLoggingService.registerEvent('sidemenu_factures_click', []);
     this.router.navigate(['/bills']);
-    this.followAnalyticsService.registerEventFollow(
-      'Factures_menu',
-      'event',
-      'clicked'
-    );
   }
 
   goMyAccount() {
+    this.oemLoggingService.registerEvent('sidemenu_edit_account_click', []);
     this.router.navigate(['/my-account']);
-    this.followAnalyticsService.registerEventFollow(
-      'Mon_compte_menu',
-      'event',
-      'clicked'
-    );
   }
 
   goParrainage() {
+    this.oemLoggingService.registerEvent('sidemenu_parrainage_click', []);
     this.router.navigate(['/parrainage']);
-    this.followAnalyticsService.registerEventFollow(
-      'Mes_parrainages_menu',
-      'event',
-      'clicked'
-    );
   }
 
   goEmergencies() {
@@ -299,12 +285,8 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goToRattachedNumberPage() {
+    this.oemLoggingService.registerEvent('sidemenu_manage_lines_click', []);
     this.appRout.goToRattachementsPage();
-    this.followAnalyticsService.registerEventFollow(
-      'Gérer_mes_lignes_menu',
-      'event',
-      'clicked'
-    );
   }
 
   setImgAvatarToDefault() {
@@ -312,24 +294,22 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   closeMenu() {
-    this.followAnalyticsService.registerEventFollow(
-      'closed_menu',
-      'event',
-      'closed'
-    );
+    this.oemLoggingService.registerEvent('sidemenu_close_click', []);
     this.close.emit();
   }
 
   goToAbout() {
-    this.followAnalyticsService.registerEventFollow('A_propos_menu', 'event');
+    this.oemLoggingService.registerEvent('sidemenu_informations_click', []);
     this.router.navigate(['/apropos']);
   }
 
   defaulSharingSheet() {
+    this.oemLoggingService.registerEvent('sidemenu_share_app_click', []);
     this.bsService.defaulSharingSheet();
   }
 
   async openOMStatus() {
+    this.oemLoggingService.registerEvent('sidemenu_grade_om_click', []);
     const modal = await this.modalController.create({
       component: OmStatusVisualizationComponent,
       cssClass: 'select-recipient-modal',

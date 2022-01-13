@@ -13,6 +13,7 @@ import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { OfcService } from 'src/app/services/ofc/ofc.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
@@ -20,7 +21,12 @@ import {
   OPERATION_TYPE_PASS_USAGE,
   OPERATION_WOYOFAL,
 } from 'src/app/utils/operations.constants';
-import { OPERATION_CHECK_OM_ACCOUNT_STATUS, OPERATION_RATTACH_NUMBER, OPERATION_SHARE_THE_APP, OPERATION_TYPE_MERCHANT_PAYMENT } from '..';
+import {
+  OPERATION_CHECK_OM_ACCOUNT_STATUS,
+  OPERATION_RATTACH_NUMBER,
+  OPERATION_SHARE_THE_APP,
+  OPERATION_TYPE_MERCHANT_PAYMENT,
+} from '..';
 import { MerchantPaymentCodeComponent } from '../merchant-payment-code/merchant-payment-code.component';
 import { OmStatusVisualizationComponent } from '../om-status-visualization/om-status-visualization.component';
 @Component({
@@ -40,7 +46,7 @@ export class OffreServiceCardV2Component implements OnInit {
     private bsService: BottomSheetService,
     private modalController: ModalController,
     private orangeMoneyService: OrangeMoneyService,
-    private followAnalyticsServ: FollowAnalyticsService
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -48,10 +54,8 @@ export class OffreServiceCardV2Component implements OnInit {
   }
 
   onClick() {
-    const follow =
-      'my_services_card_' + this.service.code.toLowerCase() + '_clic';
-    this.followAnalyticsServ.registerEventFollow(follow, 'event', 'clic');
-
+    const event = 'services' + this.service.code.toLowerCase() + '_click';
+    this.oemLoggingService.registerEvent(event, []);
     if (!this.service.activated) {
       this.showServiceUnavailableToast();
       // this.service.clicked = !this.service.clicked;
@@ -76,7 +80,10 @@ export class OffreServiceCardV2Component implements OnInit {
       this.openMerchantBS();
       return;
     }
-    if (this.service?.redirectionType === 'NAVIGATE' && this.service?.redirectionPath)
+    if (
+      this.service?.redirectionType === 'NAVIGATE' &&
+      this.service?.redirectionPath
+    )
       this.navCtrl.navigateForward([this.service.redirectionPath], {
         state: { purchaseType: this.service.code },
       });
@@ -100,29 +107,28 @@ export class OffreServiceCardV2Component implements OnInit {
       this.bsService[this.service.redirectionType](...params);
       return;
     }
-		switch (this.service?.code) {
-			case OPERATION_CHECK_OM_ACCOUNT_STATUS:
-				this.openOMStatus();
-				break;
-			case OPERATION_SHARE_THE_APP:
-				this.bsService.defaulSharingSheet();
-				break;
-			case OPERATION_SHARE_THE_APP:
-    		this.bsService.openRattacheNumberModal();
-				break;
-			case OPERATION_RATTACH_NUMBER:
-    		this.bsService.openRattacheNumberModal();
-				break;
-			default:
-				break;
-		}
+    switch (this.service?.code) {
+      case OPERATION_CHECK_OM_ACCOUNT_STATUS:
+        this.openOMStatus();
+        break;
+      case OPERATION_SHARE_THE_APP:
+        this.bsService.defaulSharingSheet();
+        break;
+      case OPERATION_SHARE_THE_APP:
+        this.bsService.openRattacheNumberModal();
+        break;
+      case OPERATION_RATTACH_NUMBER:
+        this.bsService.openRattacheNumberModal();
+        break;
+      default:
+        break;
+    }
   }
 
-
-	async openOMStatus() {
+  async openOMStatus() {
     const modal = await this.modalController.create({
       component: OmStatusVisualizationComponent,
-      cssClass: 'select-recipient-modal'
+      cssClass: 'select-recipient-modal',
     });
     return await modal.present();
   }

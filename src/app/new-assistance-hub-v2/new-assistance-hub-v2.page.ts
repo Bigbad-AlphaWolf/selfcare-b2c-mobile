@@ -12,6 +12,7 @@ import { OffreService } from '../models/offre-service.model';
 import { OMCustomerStatusModel } from '../models/om-customer-status.model';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 import { OperationService } from '../services/oem-operation/operation.service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 
@@ -53,7 +54,8 @@ export class NewAssistanceHubV2Page implements OnInit {
     private dashboardService: DashboardService,
     private orangeMoneyService: OrangeMoneyService,
     private platform: Platform,
-    private navController: NavController
+    private navController: NavController,
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -157,22 +159,14 @@ export class NewAssistanceHubV2Page implements OnInit {
     this.router.navigate(['/assistance-hub/actions'], {
       state: { listActes: this.listActes },
     });
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_hub_voir_toutes_actions_clic',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('help_all_acts_click', []);
   }
 
   goAllQuestionsHub() {
     this.router.navigate(['/assistance-hub/questions'], {
       state: { listFaqs: this.listFaqs },
     });
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_hub_voir_tous_faq_clic',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('help_see_all_faq_click', []);
   }
 
   goFindToAgenceWebSite() {

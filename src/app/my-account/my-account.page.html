@@ -41,7 +41,7 @@
 		</div>
 		<div class="my-account-menu-block">
 			<div [id]="'my-account-menu' | generateIdForTA">
-				<div class="my-account-menu-item" routerLink="/my-account/change-password">
+				<div class="my-account-menu-item" (click)="goChangePwd()">
 					<span>Modifier mon mot de passe</span>
 					<div class="my-account-menu-item-icon">
 						<img
@@ -76,7 +76,7 @@
 						/>
 					</div>
 				</div>
-				<div routerLink="/my-account/delete-number" class="my-account-menu-item">
+				<div class="my-account-menu-item" (click)="goDeleteLine()">
 					<span>Supprimer une ligne</span>
 					<div class="my-account-menu-item-icon">
 						<img

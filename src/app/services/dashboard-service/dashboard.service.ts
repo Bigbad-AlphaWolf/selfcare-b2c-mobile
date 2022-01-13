@@ -1,6 +1,6 @@
 import { Injectable, RendererFactory2, Inject, Renderer2 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject, Observable, Subscription, of } from 'rxjs';
+import { Subject, Observable, Subscription, of, throwError } from 'rxjs';
 import {
   tap,
   map,
@@ -30,6 +30,7 @@ import { BoosterModel, BoosterTrigger } from 'src/app/models/booster.model';
 import { GiftType } from 'src/app/models/enums/gift-type.enum';
 import { BoosterService } from '../booster.service';
 import { ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT } from '../utils/account.endpoints';
+import { OemLoggingService } from '../oem-logging/oem-logging.service';
 const {
   SERVER_API_URL,
   SEDDO_SERVICE,
@@ -118,7 +119,8 @@ export class DashboardService {
     @Inject(DOCUMENT) private _document,
     private http: HttpClient,
     private authService: AuthenticationService,
-    private boosterService: BoosterService
+    private boosterService: BoosterService,
+    private oemLoggingService: OemLoggingService
   ) {
     this.renderer = rendererFactory.createRenderer(null, null);
     authService.currentPhoneNumberSetSubject.subscribe((value) => {
@@ -255,9 +257,27 @@ export class DashboardService {
       .post(`${attachMobileNumberEndpoint}/register`, detailsToCheck)
       .pipe(
         tap(() => {
+          this.oemLoggingService.registerEvent('lines_new_success', [
+            {
+              dataName: 'mainMsisdn',
+              dataValue: this.authService.getUserMainPhoneNumber(),
+            },
+            { dataName: 'msisdn', dataValue: detailsToCheck.numero },
+          ]);
           DashboardService.rattachedNumbers = null;
           this.attachedNumbers().pipe(take(1)).subscribe();
           this.attachedNumbersChangedSubject.next();
+        }),
+        catchError((err) => {
+          this.oemLoggingService.registerEvent('lines_new_error', [
+            {
+              dataName: 'mainMsisdn',
+              dataValue: this.authService.getUserMainPhoneNumber(),
+            },
+            { dataName: 'msisdn', dataValue: detailsToCheck.numero },
+            { dataName: 'errorStatus', dataValue: err.status },
+          ]);
+          return throwError(err);
         })
       );
   }

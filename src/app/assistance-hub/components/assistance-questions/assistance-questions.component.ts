@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { OffreService } from 'src/app/models/offre-service.model';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'app-assistance-questions',
@@ -13,10 +14,15 @@ export class AssistanceQuestionsComponent implements OnInit {
   loadingFAQ: boolean;
   displaySearchIcon: boolean = true;
   @ViewChild('searchInput', { static: true }) searchRef;
-  constructor(private navController: NavController, private followAnalyticsService: FollowAnalyticsService) {}
+  constructor(
+    private navController: NavController,
+    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService
+  ) {}
 
   ngOnInit() {
-    this.listQuestions =  history.state && history.state.listFaqs ? history.state.listFaqs : [];
+    this.listQuestions =
+      history.state && history.state.listFaqs ? history.state.listFaqs : [];
     this.followAnalyticsService.registerEventFollow(
       'Assistance_faq_affichage_success',
       'event'
@@ -37,6 +43,12 @@ export class AssistanceQuestionsComponent implements OnInit {
   onClear(searchInput) {
     const inputValue: string = searchInput.value;
     searchInput.value = inputValue.slice(0, inputValue.length - 1);
+  }
+
+  logFaQClick(question: OffreService) {
+    this.oemLoggingService.registerEvent('help_faq_click', [
+      { dataName: 'question', dataValue: question?.question },
+    ]);
   }
 
   goBack() {

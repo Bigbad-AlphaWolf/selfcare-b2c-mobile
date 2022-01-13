@@ -44,6 +44,7 @@ import { Uid } from '@ionic-native/uid/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { MSISDN_RECUPERATION_TIMEOUT } from '../register';
 import { MsisdnAssistanceModalComponent } from './components/msisdn-assistance-modal/msisdn-assistance-modal.component';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'app-new-registration',
@@ -111,7 +112,8 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
     private navController: NavController,
     private ngZone: NgZone,
     private uid: Uid,
-    private network: Network
+    private network: Network,
+    private oemLoggingService: OemLoggingService
   ) {
     this.authErrorDetected.subscribe({
       next: () => {
@@ -134,7 +136,6 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-    console.log(this.router.url.match(FORGOT_PWD_PAGE_URL));
     if (this.router.url.match(FORGOT_PWD_PAGE_URL)) {
       this.isResetPasswordAction = true;
     }
@@ -145,11 +146,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
   }
 
   goIntro() {
-    this.followAnalyticsService.registerEventFollow(
-      'Voir_Intro',
-      'event',
-      'clic'
-    );
+    this.oemLoggingService.registerEvent('Voir_Intro', []);
     this.navController.navigateRoot(FORGOT_PWD_PAGE_URL);
   }
 
@@ -206,6 +203,10 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
                       duration,
                     }
                   );
+                  this.oemLoggingService.registerEvent('get_msisdn_success', [
+                    { dataName: 'msisdn', dataValue: this.phoneNumber },
+                    { dataName: 'duration', dataValue: duration },
+                  ]);
                 } else {
                   this.displayMsisdnError();
                 }
@@ -300,6 +301,9 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
         catchError((err) => {
           this.checkingNumber = false;
           this.showErrMessage = true;
+          this.oemLoggingService.registerEvent('login_direct_error', [
+            { dataName: 'msisdn', dataValue: this.phoneNumber },
+          ]);
           this.errorMsg =
             'Oups!!! Une erreur est survenue, veuillez réessayer plus tard. Merci';
           return throwError(err);
@@ -329,6 +333,9 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
           this.showErrMessage = true;
           this.errorMsg =
             'Oups!!! Une erreur est survenue, veuillez réessayer plus tard. Merci';
+          this.oemLoggingService.registerEvent('login_direct_error', [
+            { dataName: 'msisdn', dataValue: this.phoneNumber },
+          ]);
           return throwError(err);
         })
       )
@@ -341,6 +348,9 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
       this.phoneNumber && this.phoneNumber.startsWith('221')
         ? this.phoneNumber.substring(3)
         : this.phoneNumber;
+    this.oemLoggingService.registerEvent('login_direct_success', [
+      { dataName: 'msisdn', dataValue: username },
+    ]);
     const authData = { access_token: res.access_token };
     this.authServ.storeAuthenticationData(authData, { username });
     this.router.navigate(['/']);
@@ -531,6 +541,10 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
             connexion,
           }
         );
+        this.oemLoggingService.registerEvent('get_msisdn_error', [
+          { dataName: 'imei', dataValue: this.uid.IMEI },
+          { dataName: 'connexion', dataValue: connexion },
+        ]);
       }, 3000);
     });
     if (!this.ref['destroyed']) this.ref.detectChanges();

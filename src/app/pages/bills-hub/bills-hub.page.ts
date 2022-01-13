@@ -20,6 +20,7 @@ import { OperationService } from 'src/app/services/oem-operation/operation.servi
 import { Router } from '@angular/router';
 import { OffreService } from 'src/app/models/offre-service.model';
 import {
+  getServiceEventLoggingName,
   HUB_ACTIONS,
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
@@ -30,6 +31,7 @@ import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/m
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'app-bills-hub',
@@ -50,7 +52,8 @@ export class BillsHubPage implements OnInit {
     private operationService: OperationService,
     private modalController: ModalController,
     private orangeMoneyService: OrangeMoneyService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -84,10 +87,9 @@ export class BillsHubPage implements OnInit {
   }
 
   async onCompanySelected(billCompany: OffreService) {
-    this.followAnalyticsService.registerEventFollow(
-      'hub_payer_services_' + billCompany.code.toLowerCase() + '_clic',
-      'event',
-      'clicked'
+    this.oemLoggingService.registerEvent(
+      'hubpayer' + getServiceEventLoggingName(billCompany) + '_click',
+      []
     );
     if (!billCompany.activated) {
       const toast = await this.toastController.create({

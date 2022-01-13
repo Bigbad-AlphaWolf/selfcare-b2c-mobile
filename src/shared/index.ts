@@ -9,6 +9,12 @@ import {
   PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
 } from 'src/app/dashboard';
+import { OffreService } from 'src/app/models/offre-service.model';
+import {
+  OPERATION_RAPIDO,
+  OPERATION_TRANSFERT_ARGENT,
+  OPERATION_WOYOFAL,
+} from 'src/app/utils/operations.constants';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER: RegExp =
@@ -1447,3 +1453,38 @@ export const INTERNATIONAL_PASSES_INDICATIF_ARRAY: string[] = [
   CountriesIndicatif.WORLD,
   CountriesIndicatif.AFRICA,
 ];
+
+export function getServiceEventLoggingName(service: OffreService) {
+  switch (service.code) {
+    case OPERATION_TRANSFERT_ARGENT:
+      return 'transfert_argent';
+    case OPERATION_TYPE_SEDDO_CREDIT:
+      return 'transfert_credit';
+    case OPERATION_TYPE_SEDDO_BONUS:
+      return 'transfert_bonus';
+    case OPERATION_TYPE_RECHARGE_CREDIT:
+      return 'recharge_credit';
+    case OPERATION_TYPE_PASS_INTERNET:
+      return 'pass_internet';
+    case OPERATION_TYPE_PASS_INTERNATIONAL:
+      return 'pass_international';
+    case OPERATION_TYPE_PASS_ILLIMIX:
+      return 'pass_illimix';
+    case OPERATION_TYPE_PASS_VOYAGE:
+      return 'pass_voyage';
+    case OPERATION_TYPE_PASS_ALLO:
+      return 'pass_allo';
+    case OPERATION_TYPE_PASS_ILLIFLEX:
+      return 'pass_illiflex';
+    case OPERATION_TYPE_MERCHANT_PAYMENT:
+      return 'marchand';
+    case OPERATION_WOYOFAL:
+      return 'woyofal';
+    case OPERATION_RAPIDO:
+      return 'rapido';
+    case 'PAY_BILLS':
+      return 'facture_sonatel';
+    default:
+      return service.code.toLowerCase();
+  }
+}
