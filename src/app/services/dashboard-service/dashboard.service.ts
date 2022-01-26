@@ -1,6 +1,6 @@
 import { Injectable, RendererFactory2, Inject, Renderer2 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject, Observable, Subscription, of } from 'rxjs';
+import { Subject, Observable, Subscription, of, throwError } from 'rxjs';
 import {
   tap,
   map,
@@ -583,7 +583,25 @@ export class DashboardService {
   }
 
   transferBonus(transfertbonnus: TransfertBonnus) {
-    return this.http.post(`${transferbonusEndpoint}`, transfertbonnus);
+    return this.http.post(`${transferbonusEndpoint}`, transfertbonnus).pipe(
+      map((res: any) => {
+        if (res?.message === 'Successful') {
+          return { code: '0' };
+        } else {
+          return {
+            code: 'unkown',
+            message: res?.message ? res.message : 'Une erreur est survenue',
+          };
+        }
+      }),
+      catchError((err) => {
+        const error = err?.error
+          ? err.error
+          : { message: 'Une erreur est survenue' };
+        !error?.message ? (error['message'] = error?.detail) : '';
+        return throwError(error);
+      })
+    );
   }
 
   transferCredit(transferPayload: TransferCreditModel) {
