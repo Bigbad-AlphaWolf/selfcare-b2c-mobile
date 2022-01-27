@@ -17,7 +17,7 @@
 		</div>
 		<div class="path" *ngIf="!hideDownloadBlock"></div>
 		<div class="section2" *ngIf="!hideDownloadBlock">
-			<div class="download s2-text" matRipple (click)="downloadBill(invoice) ">Télécharger</div>
+			<div class="download s2-text" matRipple (click)="downloadBill(invoice)">{{ numberToRegister ? '' : 'Télécharger' }}</div>
 			<div (click)="payBill(invoice)" *ngIf="canPayBills"
 				[ngClass]="{'paid': invoice?.statutFacture === 'paid', 'unpaid': invoice?.statutFacture === 'unpaid'}"
 				class="pay s2-text font-size-14"> {{

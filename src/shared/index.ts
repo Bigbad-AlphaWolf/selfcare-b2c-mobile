@@ -39,6 +39,7 @@ export const OPERATION_TYPE_PASS_ILLIMIX = 'PASS_ILLIMIX';
 export const OPERATION_TYPE_PASS_ALLO = 'PASS_ALLO';
 export const OPERATION_TYPE_PASS_VOYAGE = 'OPERATION_TYPE_PASS_VOYAGE';
 export const OPERATION_TYPE_PASS_INTERNATIONAL = 'PASS_INTERNATIONAL';
+export const OPERATION_TYPE_PASS_LAMBJ = 'LAMB_J';
 export const OPERATION_TYPE_PASS_ILLIFLEX = 'PASS_ILLIFLEX';
 export const OPERATION_TYPE_MERCHANT_PAYMENT = 'MERCHANT_PAYMENT';
 export const OPERATION_TYPE_SOS = 'SOS';
@@ -1371,10 +1372,10 @@ export function getActiveBoostersForSpecificPass(
   boosters: BoosterModel[]
 ) {
   const passPPI = pass.passPromo
-    ? pass.passPromo.price_plan_index
-    : pass.price_plan_index;
+    ? pass.passPromo?.price_plan_index
+    : pass?.price_plan_index;
   const boostersArray = boosters.filter((booster) =>
-    booster.pricePlanIndexes.includes(passPPI.toString())
+    booster.pricePlanIndexes.includes(passPPI?.toString())
   );
   return boostersArray;
 }

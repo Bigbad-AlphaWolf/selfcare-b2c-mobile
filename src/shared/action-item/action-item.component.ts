@@ -60,9 +60,7 @@ export class ActionItemComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.imageUrl = this.action?.icone
-      ? this.FILE_BASE_URL + '/' + this.action.icone
-      : null;
+    this.imageUrl = this.action?.icone ? this.action.icone : null;
   }
 
   async showServiceUnavailableToast() {
