@@ -65,8 +65,8 @@
     </div>
   </div>
   <div class="confirm-btn">
-    <ion-button [disabled]="isProcessing || !htmlInput?.nativeElement?.value" shape="round"
-      (click)="validateBeneficiary()" class="btn" expand="block" [id]="'btn-validate' | generateIdForTA">Continuer</ion-button>
+    <button [disabled]="isProcessing || !htmlInput?.nativeElement?.value" shape="round"
+      (click)="validateBeneficiary()" class="btn" expand="block" [id]="'btn-validate' | generateIdForTA">Continuer</button>
     <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
   </div>
 </div>

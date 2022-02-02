@@ -7,6 +7,9 @@ import { CustomContact } from 'src/app/models/customized-contact.model';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { OM_RECENT_TYPES } from 'src/app/utils/constants';
 import { of } from 'rxjs';
+import { SERVICES_TO_MATCH_CONTACTS } from '.';
+import { ContactsService } from '../contacts-service/contacts.service';
+import { Platform } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +17,12 @@ import { of } from 'rxjs';
 export class RecentsService {
   constructor(
     private http: HttpClient,
-    private omService: OrangeMoneyService // private contactService: ContactsService
-  ) {}
+    private omService: OrangeMoneyService,
+    private contactService: ContactsService,
+    private platform: Platform
+  ) {
+    console.log(this.platform.is('mobileweb'));
+  }
 
   recentType(opType: string) {
     let recentType = OM_RECENT_TYPES.find(
@@ -33,23 +40,25 @@ export class RecentsService {
             `${OM_RECENTS_ENDPOINT}/${omPhonenumber.trim()}?service=${service}`
           )
           .pipe(
-            map((response: any) => {
+            switchMap((response: any) => {
               const recents: RecentsOem[] = this.parseRecentsResponse(
                 response,
                 numberToDisplay
               );
-              return recents;
+              if (this.platform.is('mobileweb')) {
+                return of(recents);
+              }
               // if (!SERVICES_TO_MATCH_CONTACTS.includes(service))
-              // return this.contactService.getAllContacts().pipe(
-              //   map((contacts: CustomContact[]) => {
-              //     const res = this.mapRecentsToContacts(recents, contacts);
-              //     return res;
-              //   }),
-              //   catchError((err) => {
-              //     console.log('caught error', err);
-              //     return of(recents);
-              //   })
-              // );
+              return this.contactService.getAllContacts().pipe(
+                map((contacts: CustomContact[]) => {
+                  const res = this.mapRecentsToContacts(recents, contacts);
+                  return res;
+                }),
+                catchError((err) => {
+                  console.log('caught error', err);
+                  return recents;
+                })
+              );
             }),
             catchError((err) => {
               return of([]);
