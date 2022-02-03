@@ -90,13 +90,37 @@ export class RecentsService {
   mapRecentsToContacts(recents: RecentsOem[], contacts: CustomContact[]) {
     recents.forEach((recent) => {
       const msisdn = recent.destinataire;
-      for (let j = 0; j < contacts.length; j++) {
-        if (contacts[j].numbers.includes(msisdn)) {
-          recent.name = contacts[j].name.formatted;
+      for (let contact of contacts) {
+        if (this.checkContactNumbersContainsMsisdn(contact.numbers, msisdn)) {
+          recent.name = contact.name.formatted;
           break;
         }
       }
     });
     return recents;
+  }
+
+  checkContactNumbersContainsMsisdn(numbers: string[], msisdn) {
+    const nums = [];
+    for (let number of numbers) {
+      let num;
+      switch (true) {
+        case number.startsWith('+221'):
+          num = number.substring(4);
+          break;
+        case number.startsWith('221'):
+          num = number.substring(3);
+          break;
+        case number.startsWith('00221'):
+          num = number.substring(5);
+          break;
+        default:
+          num = number;
+          break;
+      }
+      nums.push(num);
+    }
+    console.log(nums);
+    return nums.includes(msisdn);
   }
 }
