@@ -9,6 +9,7 @@ import {IonicModule} from '@ionic/angular';
 import {MaterialComponentsModule} from '../material-components/material-components.module';
 import {PipesModule} from '../pipes/pipes.module';
 import {ImpliciteAuthenticationModalComponent} from './components/implicite-authentication-modal/implicite-authentication-modal.component';
+import {ModalForUnblockAccountOmComponent} from './components/modal-for-unblock-account-om/modal-for-unblock-account-om.component';
 
 const routes: Routes = [
   {
@@ -38,9 +39,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [TypeOtpModalComponent, ImpliciteAuthenticationModalComponent],
+  declarations: [TypeOtpModalComponent, ImpliciteAuthenticationModalComponent, ModalForUnblockAccountOmComponent],
   imports: [CommonModule, IonicModule, MaterialComponentsModule, PipesModule, ComponentsModule, RouterModule.forChild(routes)],
   providers: [CameraPreview],
-  entryComponents: [TypeOtpModalComponent, ImpliciteAuthenticationModalComponent]
+  entryComponents: [TypeOtpModalComponent, ImpliciteAuthenticationModalComponent, ModalForUnblockAccountOmComponent]
 })
 export class OrangeMoneySelfOperationModule {}

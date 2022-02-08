@@ -1,9 +1,35 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>unblock-my-account-om</ion-title>
-  </ion-toolbar>
+	<ion-toolbar>
+		<ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+			<img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+		</ion-buttons>
+		<ion-title class="ion-no-padding">
+			<span class="title1">Débloquer mon compte	Orange Money</span>
+		</ion-title>
+	</ion-toolbar>
 </ion-header>
-
 <ion-content>
+	<ion-header class="ion-padding-start" collapse="condense">
+		<ion-toolbar>
+			<span class="title">
+				Débloquer mon compte	Orange Money
+			</span>
+		</ion-toolbar>
+	</ion-header>
 
+
+	<div class="page-container">
+		<div class="content">
+			<span class="conditions scb-text-orange">
+				Lire les conditions de déblocage.
+			</span>
+			<div class="header">
+				Pour vous authentifier, veuillez nous indiquer votre nom, prénom, date de naissance et numéro de pièce d’identité.
+			</div>
+
+			<div class="om-choice-liste">
+
+			</div>
+		</div>
+	</div>
 </ion-content>
