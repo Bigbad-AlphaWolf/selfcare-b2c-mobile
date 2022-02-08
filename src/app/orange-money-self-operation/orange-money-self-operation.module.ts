@@ -28,6 +28,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/open-om-account/open-om-account.module').then(m => m.OpenOmAccountPageModule)
   },
   {
+    path: 'unblock-om-account',
+    loadChildren: () => import('./pages/unblock-my-account-om/unblock-my-account-om.module').then(m => m.UnblockMyAccountOmPageModule)
+  },
+  {
     path: '**',
     redirectTo: 'open-om-account'
   }
