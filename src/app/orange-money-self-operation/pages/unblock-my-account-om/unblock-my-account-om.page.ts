@@ -31,6 +31,7 @@ export class UnblockMyAccountOmPage implements OnInit {
     }
   ];
   isLoading: boolean;
+	isformInvalid: boolean = true;
   constructor(private navController: NavController, private modalController: ModalController) {}
 
   ngOnInit() {}
@@ -48,16 +49,24 @@ export class UnblockMyAccountOmPage implements OnInit {
       backdropDismiss: false,
       cssClass: 'select-recipient-modal'
     });
+    modal.onDidDismiss().then((res: any) => {
+			if(res?.data) {
+				this.setValue(typeInfos, res?.data[typeInfos.toLowerCase()]);
+			}
+    });
     return await modal.present();
+  }
+
+  setValue(typeInfos: 'CONDITIONS' | 'LASTNAME' | 'FIRSTNAME' | 'BIRTHDATE' | 'CNI', value: any) {
+    this.listItem.forEach((res: {label: string; value: string; code: string}) => {
+      if (res.code.toLowerCase() === typeInfos.toLowerCase()) {
+        res.value = value;
+      }
+    });
+		const nullItemValue: {label: string, value: string, code: string} = this.listItem.find((res: {label: string, value: string, code: string}) => !res.value );
+		this.isformInvalid = nullItemValue?.value === null ? !!!nullItemValue?.value : false;
   }
 
   process() {}
 
-  get invalidForm() {
-    console.log('called');
-
-    return !!this.listItem.find(item => {
-      return !item.value;
-    });
-  }
 }

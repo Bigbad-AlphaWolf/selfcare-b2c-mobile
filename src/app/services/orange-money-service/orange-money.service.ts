@@ -773,4 +773,19 @@ export class OrangeMoneyService {
 
     return this.http.post(`${CREATE_PIN_OM_Endpoint}?apiKey=${apiKey}`, omData);
   }
+
+	getUnblockOMAccountChoices(typeChoice: 'CONDITIONS' | 'LASTNAME' | 'FIRSTNAME' | 'BIRTHDATE' | 'CNI') {
+		switch (typeChoice) {
+			case "FIRSTNAME":
+				return of( {label: "firstname", choices: ["Diop", "NDiaye", "Diouf", "Ngom"] });
+			case "LASTNAME":
+				return of( {label: "lastname", choices: ["Mohamed", "Daouda", "Moustapha", "Serigne Mbaye"] });
+			case "BIRTHDATE":
+				return of({label: "birthdate", choices: ["12-06-1991", "10-12-1993", "10-09-2001", "10-01-2022"] });
+			case "CNI":
+				return of({label: "cni", choices: ["1751100239113", "16512345678881", "3939919931313", "13131311311"] } );
+			default:
+				return of({});
+		}
+	}
 }

@@ -43,7 +43,7 @@
 				</div>
 			</div>
 			<div class="btn-continue">
-				<ion-button expand="block" (click)="process()" [disabled]="isLoading">
+				<ion-button expand="block" (click)="process()" [disabled]="isLoading || isformInvalid">
 					Continuer
 				</ion-button>
 				<ion-spinner *ngIf="isLoading"
