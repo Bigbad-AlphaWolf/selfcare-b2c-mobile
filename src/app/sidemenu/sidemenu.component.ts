@@ -33,6 +33,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   avatarUrl: string;
   numbers: any[] = [];
   @Input() currentAppVersion;
+  displayPopUpOM = true;
 
   constructor(
     private router: Router,
@@ -252,5 +253,9 @@ export class SidemenuComponent implements OnInit, OnDestroy {
       cssClass: 'select-recipient-modal'
     });
     return await modal.present();
+  }
+
+  closePopUpOM() {
+    this.displayPopUpOM = false;
   }
 }

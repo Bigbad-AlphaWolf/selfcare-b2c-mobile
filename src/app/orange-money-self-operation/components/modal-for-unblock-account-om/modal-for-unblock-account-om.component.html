@@ -1,3 +1,19 @@
-<p>
-  modal-for-unblock-account-om works!
-</p>
+<div class="modal-unblock-container oem-bottomsheet-container">
+  <div  class="arrow-left" (click)="goBack()">
+    <img alt="" src="/assets/images/arrow-left.png" />
+  </div>
+  <div class="title">
+    {{ titles[typeInfos] }}
+  </div>
+
+	<div *ngIf="typeInfos === 'CONDITIONS'" class="content conditions">
+		<ul>
+			<li class="text">Vous avez droit à 1 tentative par heure et 3 par mois.</li>
+			<li class="text"> Les clients OMBA et ceux ayant un solde supérieur à 25000 ne sont pas autorisés à utiliser ce service.</li>
+			<li class="text"> Les clients ayant effectués un changement de SIM de moins de 48h ne sont pas autorisés à utiliser ce service.</li>
+		</ul>
+	</div>
+
+	<ion-button (click)="goBack()" mode="ios" color="dark" expand="block" fill="outline">J’ai compris</ion-button>
+
+</div>

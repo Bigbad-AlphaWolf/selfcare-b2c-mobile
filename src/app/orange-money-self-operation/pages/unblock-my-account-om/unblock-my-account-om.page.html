@@ -4,7 +4,7 @@
 			<img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
 		</ion-buttons>
 		<ion-title class="ion-no-padding">
-			<span class="title1">Débloquer mon compte	Orange Money</span>
+			<span class="title1">Débloquer mon compte	OM</span>
 		</ion-title>
 	</ion-toolbar>
 </ion-header>
@@ -20,7 +20,7 @@
 
 	<div class="page-container">
 		<div class="content">
-			<span class="conditions scb-text-orange">
+			<span (click)="presentModal('CONDITIONS')" class="conditions scb-text-orange">
 				Lire les conditions de déblocage.
 			</span>
 			<div class="header">
@@ -28,7 +28,27 @@
 			</div>
 
 			<div class="om-choice-liste">
-
+				<div *ngFor="let item of listItem" (click)="presentModal(item.code)" class="item-choice">
+					<span class="label">
+						{{ item.label }}
+					</span>
+					<span class="value">
+						<span class="value-content">
+							{{ item?.value ? item?.value : 'Choisir' }}
+						</span>
+						<div class="icon">
+							<img src="assets/images/arrow-down.svg" alt="">
+						</div>
+					</span>
+				</div>
+			</div>
+			<div class="btn-continue">
+				<ion-button expand="block" (click)="process()" [disabled]="isLoading">
+					Continuer
+				</ion-button>
+				<ion-spinner *ngIf="isLoading"
+					name="crescent"
+				></ion-spinner>
 			</div>
 		</div>
 	</div>

@@ -15,7 +15,7 @@
       </span>
     </div>
   </div>
-	<app-pop-up-compte-om-bloqued></app-pop-up-compte-om-bloqued>
+	<app-pop-up-compte-om-bloqued *ngIf="displayPopUpOM" (close)="closePopUpOM()"></app-pop-up-compte-om-bloqued>
   <div class="gerer-mes-lignes">
     <div class="text">
       <span class="mes-lignes">Mes lignes</span>

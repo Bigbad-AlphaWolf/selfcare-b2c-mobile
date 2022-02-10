@@ -8,6 +8,29 @@ import {ModalForUnblockAccountOmComponent} from '../../components/modal-for-unbl
   styleUrls: ['./unblock-my-account-om.page.scss']
 })
 export class UnblockMyAccountOmPage implements OnInit {
+  listItem = [
+    {
+      label: 'Nom',
+      value: null,
+      code: 'FIRSTNAME'
+    },
+    {
+      label: 'Prénom',
+      value: null,
+      code: 'LASTNAME'
+    },
+    {
+      label: 'Date de naissance',
+      value: null,
+      code: 'BIRTHDATE'
+    },
+    {
+      label: "Numéro Pièce d'identité",
+      value: null,
+      code: 'CNI'
+    }
+  ];
+  isLoading: boolean;
   constructor(private navController: NavController, private modalController: ModalController) {}
 
   ngOnInit() {}
@@ -16,10 +39,25 @@ export class UnblockMyAccountOmPage implements OnInit {
     this.navController.pop();
   }
 
-  async presentModal() {
+  async presentModal(typeInfos: 'CONDITIONS' | 'LASTNAME' | 'FIRSTNAME' | 'BIRTHDATE' | 'CNI') {
     const modal = await this.modalController.create({
-      component: ModalForUnblockAccountOmComponent
+      component: ModalForUnblockAccountOmComponent,
+      componentProps: {
+        typeInfos
+      },
+      backdropDismiss: false,
+      cssClass: 'select-recipient-modal'
     });
     return await modal.present();
+  }
+
+  process() {}
+
+  get invalidForm() {
+    console.log('called');
+
+    return !!this.listItem.find(item => {
+      return !item.value;
+    });
   }
 }

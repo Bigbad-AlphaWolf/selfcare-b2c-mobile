@@ -1,0 +1,35 @@
+@import 'src/app/app';
+@import "src/app/styles/bottomsheet.style";
+
+.modal-unblock-container {
+  .title {
+    margin-bottom: 30px;
+  }
+  .content {
+    margin-bottom: 32px;
+    &.conditions {
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 16px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.25;
+      letter-spacing: normal;
+      color: #666;
+      .text {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 16px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.25;
+        &:not(:last-child) {
+          margin-bottom: 20px;
+        }
+        &::marker {
+          font-size: 25px;
+        }
+      }
+    }
+  }
+}
