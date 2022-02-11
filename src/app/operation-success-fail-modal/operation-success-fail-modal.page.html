@@ -11,8 +11,9 @@
 			<img *ngIf="purchaseType === OPERATION_PAY_ORANGE_BILLS" class="orange-icon" src="/assets/images/orange@3x.png" alt="checked" />
 		</div>
     <ng-container *ngIf="!success">
-      <img *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT].includes(purchaseType) && errorCode !== 'BLOCKEDPASS'" src="/assets/images/echec.png" alt="checked" />
+      <img *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT, OPERATION_UNBLOCK_OM_ACCOUNT].includes(purchaseType) && errorCode !== 'BLOCKEDPASS'" src="/assets/images/echec.png" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_CHANGE_PIN_OM" src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="checked" />
+      <img *ngIf="purchaseType === OPERATION_UNBLOCK_OM_ACCOUNT" src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_OPEN_OM_ACCOUNT" src="/assets/images/05-ic-nes-ouverture-compte-om.svg" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_CANCEL_TRANSFERT_OM" src="/assets/images/05-ic-nes-blocage-transfert.svg" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_DEPLAFONNEMENT_OM_ACCOUNT" src="/assets/images/05-ic-nes-ouverture-compte-om.svg" alt="checked" />
@@ -81,11 +82,14 @@
       <span class="title" *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS"
         >{{ success ? "Paiement facture	Orange effectuée" : 'Echec du paiement de la facture'}}</span
       >
+			<span class="title" *ngSwitchCase="OPERATION_UNBLOCK_OM_ACCOUNT"
+        >Bravo !</span
+      >
     </ng-container>
     <span class="subtitle scb-text-gray">
       <ng-container *ngIf="!success">
-        <span *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT].includes(purchaseType)" >{{errorMsg}}</span>
-        <span class="custom-font" *ngIf="[OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT].includes(purchaseType)" >{{textMsg}}</span>
+        <span *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT, OPERATION_UNBLOCK_OM_ACCOUNT].includes(purchaseType)" >{{errorMsg}}</span>
+        <span class="custom-font" *ngIf="[OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT, OPERATION_UNBLOCK_OM_ACCOUNT].includes(purchaseType)" >{{textMsg}}</span>
 
       </ng-container>
       <ng-container *ngIf="success" [ngSwitch]="purchaseType">

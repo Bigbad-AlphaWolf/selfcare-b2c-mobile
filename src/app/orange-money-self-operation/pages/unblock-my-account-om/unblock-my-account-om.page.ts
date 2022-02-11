@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ModalController, NavController} from '@ionic/angular';
+import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
+import { OPERATION_UNBLOCK_OM_ACCOUNT } from 'src/shared';
 import {ModalForUnblockAccountOmComponent} from '../../components/modal-for-unblock-account-om/modal-for-unblock-account-om.component';
 
 @Component({
@@ -67,6 +69,19 @@ export class UnblockMyAccountOmPage implements OnInit {
 		this.isformInvalid = nullItemValue?.value === null ? !!!nullItemValue?.value : false;
   }
 
-  process() {}
+  process() {
+		this.showModal({purchaseType: OPERATION_UNBLOCK_OM_ACCOUNT, textMsg: 'Votre compte Orange Money a été débloqué'});
+	}
+
+	async showModal(data: {purchaseType: string; textMsg: string}) {
+    const modal = await this.modalController.create({
+      component: OperationSuccessFailModalPage,
+      cssClass: 'failed-modal',
+      componentProps: data,
+      backdropDismiss: false
+    });
+    modal.onDidDismiss().then(() => {});
+    return await modal.present();
+  }
 
 }
