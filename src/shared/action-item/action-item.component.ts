@@ -203,6 +203,9 @@ export class ActionItemComponent implements OnInit {
       case OPERATION_RAPIDO:
         this.navController.navigateForward(RapidoOperationPage.ROUTE_PATH);
         break;
+			case 'UNBLOCK_OM_ACCOUNT':
+				this.goToUnblockOMAccount();
+				break;
       default:
         if (this.action?.redirectionType === 'NAVIGATE') {
           this.followAnalyticsService.registerEventFollow(
@@ -256,6 +259,15 @@ export class ActionItemComponent implements OnInit {
     this.router.navigate(['/contact-ibou-hub']);
     this.followAnalyticsService.registerEventFollow(
       'Assistance_Hub_Ibou_card_clic',
+      'event',
+      'clicked'
+    );
+  }
+
+  goToUnblockOMAccount() {
+    this.router.navigate(['/om-self-operation/unblock-om-account']);
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_actions_deblocage_comtpe_om_clic',
       'event',
       'clicked'
     );
