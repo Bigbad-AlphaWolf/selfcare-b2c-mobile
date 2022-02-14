@@ -14,6 +14,7 @@ export class BatchAnalyticsService {
     batch.setConfig({androidAPIKey: BATCH_ANDROID_API_KEY, iOSAPIKey: BATCH_IOS_API_KEY});
     batch.start();
     if (isIOS) {
+      batch.push.setiOSShowForegroundNotifications(true);
       batch.push.registerForRemoteNotifications();
     }
   }
