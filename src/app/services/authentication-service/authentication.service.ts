@@ -45,7 +45,7 @@ const SUBSCRIPTION_ENDPOINT_FOR_TIER = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE
 const userSubscriptionIsPostpaidEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/is-postpaid`;
 const abonneInfoWithOTP = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/information-abonne`;
 const loginEndpoint = `${SERVER_API_URL}/api/auth/login`;
-const logoutEndpoint = `${SERVER_API_URL}/auth/logout`;
+const logoutEndpoint = `${SERVER_API_URL}/api/auth/logout`;
 const captchaEndpoint = `${SERVER_API_URL}/auth/captcha`;
 // Code OTP`
 const otpBaseUrl = `${SERVER_API_URL}/${CODE_OTP_SERVICE}/api/code-otp-infos`;
