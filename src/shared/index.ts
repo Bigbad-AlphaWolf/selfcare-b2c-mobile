@@ -1432,7 +1432,7 @@ export enum OM_STATUS_TEXTS {
   OPEN_ACCOUNT = `Ouvrir compte OM`,
   CREATE_PIN = `Créer mon pin OM`,
   CREATE_PIN_TEXT = `Votre compte a été créé avec succès. Veuillez créer votre code PIN OM`,
-  DECAPPED_ACCOUNT = `Votre compte est déplafonné (Pas de plafond)`,
+  DECAPPED_ACCOUNT = `Votre compte a été déplafonné. Vous pouvez effectuer des opérations jusqu'a 2.000.000 FCFA`,
   OPENED_ACCOUNT = `Votre ouverture de compte est effectué avec succès`,
   OPENING_ACCOUNT = `Votre demande de d'ouverture de compte est en cours`,
   ERROR_OPENING_ACCOUNT = `Une erreur est survenue lors du traitement de votre demande d'ouverture de compte`,
