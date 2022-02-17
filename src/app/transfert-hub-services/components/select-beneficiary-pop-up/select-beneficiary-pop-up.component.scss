@@ -39,7 +39,7 @@
     font-size: 12px;
   }
   .loading-container {
-    height: 293px;
+    height: 215px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -48,7 +48,7 @@
     }
   }
   .recents {
-    height: 293px;
+    height: 215px;
     margin-top: 15px;
     .recent-description {
       font-family: HelveticaNeueLTStd-Bd;
@@ -118,6 +118,15 @@
           }
         }
       }
+    }
+  }
+  .access-recents {
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 12px;
+    margin: 20px 0 40px;
+    .link {
+      text-decoration: underline;
+      font-family: HelveticaNeueLTStd-Bd;
     }
   }
   .confirm-btn {

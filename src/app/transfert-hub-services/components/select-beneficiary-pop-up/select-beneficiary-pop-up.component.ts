@@ -6,7 +6,6 @@ import {
   OPERATION_TRANSFER_OM,
   NO_RECENTS_MSG,
   parseIntoNationalNumberFormat,
-  OPERATION_BLOCK_TRANSFER,
   PAYMENT_MOD_OM,
   THREE_DAYS_DURATION_IN_MILLISECONDS,
 } from 'src/shared';
@@ -20,12 +19,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { NoOmAccountModalComponent } from 'src/shared/no-om-account-modal/no-om-account-modal.component';
 import { catchError, map, tap } from 'rxjs/operators';
-import { of, Observable, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
-import { BlockTransferSuccessPopupComponent } from 'src/shared/block-transfer-success-popup/block-transfer-success-popup.component';
 import { ModalSuccessModel } from 'src/app/models/modal-success-infos.model';
 import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { PermissionSettingsPopupComponent } from 'src/app/components/permission-settings-popup/permission-settings-popup.component';
 
 @Component({
   selector: 'app-select-beneficiary-pop-up',
@@ -51,6 +51,10 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   recentsRecipients$: Observable<any[]>;
   loadingRecents: boolean;
   NO_RECENTS_MSG = NO_RECENTS_MSG;
+  showRecentMessage: boolean;
+  recentMessage: string;
+  hideRecentsList: boolean;
+
   constructor(
     private dialog: MatDialog,
     private contacts: Contacts,
@@ -58,11 +62,13 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     private omService: OrangeMoneyService,
     private followAnalytics: FollowAnalyticsService,
     private dashbServ: DashboardService,
-    private recentsService: RecentsService
+    private recentsService: RecentsService,
+    private diagnostic: Diagnostic
   ) {}
 
   ngOnInit() {
     this.getRecents();
+    this.checkContactsAuthorizationStatus();
   }
 
   ionViewWillEnter() {
@@ -99,6 +105,38 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
           throw new Error(err);
         })
       );
+  }
+
+  checkContactsAuthorizationStatus() {
+    this.diagnostic.getContactsAuthorizationStatus().then(
+      (contactStatus) => {
+        if (
+          contactStatus === this.diagnostic.permissionStatus.NOT_REQUESTED ||
+          contactStatus === this.diagnostic.permissionStatus.DENIED_ALWAYS
+        ) {
+          this.showRecentMessage = true;
+          this.recentMessage =
+            "Pour afficher vos contacts/bénéficiaires récents, vous devez autoriser l'accés à vos contacts.";
+        }
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+
+  handleInputFocus(event) {
+    this.hideRecentsList = event;
+  }
+
+  async openSettingsPopup() {
+    await this.modalController.dismiss();
+    const modal = await this.modalController.create({
+      component: PermissionSettingsPopupComponent,
+      cssClass: 'success-or-fail-modal',
+    });
+    modal.onDidDismiss().then((response) => {});
+    return modal.present();
   }
 
   pickContact() {
