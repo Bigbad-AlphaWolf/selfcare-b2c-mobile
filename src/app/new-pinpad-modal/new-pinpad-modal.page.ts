@@ -43,7 +43,7 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { NoOMAccountPopupComponent } from 'src/shared/no-omaccount-popup/no-omaccount-popup.component';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { ModalController, NavController } from '@ionic/angular';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import {
@@ -65,7 +65,8 @@ import {
   BillPaymentModel,
   PAYMENT_BILLS_CATEGORY,
 } from '../models/bill-payment.model';
-import { SessionOem } from '../services/session-oem/session-oem.service';
+import { OMCustomerStatusModel } from '../models/om-customer-status.model';
+import { CustomerOperationStatus } from '../models/enums/om-customer-status.enum';
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -1094,14 +1095,34 @@ export class NewPinpadModalPage implements OnInit {
       );
   }
 
+	getUserOMStatus() {
+    return this.orangeMoneyService.getUserStatus(this.omPhoneNumber).pipe(
+      map((status: OMCustomerStatusModel) => {
+        if (
+          status.operation === 'FULL' ||
+          (status.operation === 'DEPLAFONNEMENT' && status.operationStatus === CustomerOperationStatus.completed)
+        ) {
+          return true;
+        }
+        return false;
+      }),
+			catchError((err) => {
+				return of(false)
+			})
+    );
+  }
+
   blockTransfer() {
     this.processingPin = true;
     this.orangeMoneyService
       .blockTransfer(this.transactionToBlock)
       .pipe(
+				switchMap((response) => {
+					return this.getUserOMStatus()
+				}),
         tap((res) => {
           this.processingPin = false;
-          this.modalController.dismiss({ success: true });
+          this.modalController.dismiss({ success: true, hasOMStatusFull: res });
         }),
         catchError((err) => {
           this.processingPin = false;
