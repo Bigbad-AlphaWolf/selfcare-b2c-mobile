@@ -4,19 +4,23 @@
   </div>
 
   <div class="number-options">
-    <mat-radio-group (change)="onOptionChange($event.value)">
-      <mat-radio-button
-        *ngFor="let phoneItem of phones$ | async; index as i; count as size"
-        [value]="phoneItem"
-        [checked]=" phone ? phone === phoneItem.phone : i === 0 "
-      >
-        <div class="destination-number" [ngClass]="i===(size-1)?'last-number':''">
-          <span> Mon numéro {{ size > 1 ? i + 1 : "" }} </span>
-          <span>{{ phoneItem.phone | phoneNumberDisplay }}</span>
-        </div>
-      </mat-radio-button>
-     
-    </mat-radio-group>
+    <ng-container *ngIf="phones$ | async as phones">
+      <mat-radio-group (change)="onOptionChange($event.value)" *ngIf="phones?.length else elseBlock">
+        <mat-radio-button
+          *ngFor="let phoneItem of phones$ | async as phones; index as i; count as size"
+          [value]="phoneItem"
+          [checked]=" phone ? phone === phoneItem.phone : i === 0 "
+        >
+          <div class="destination-number" [ngClass]="i===(size-1)?'last-number':''">
+            <span> Mon numéro {{ size > 1 ? i + 1 : "" }} </span>
+            <span>{{ phoneItem.phone | phoneNumberDisplay }}</span>
+          </div>
+        </mat-radio-button>
+      </mat-radio-group>
+      <ng-template #elseBlock>
+        <div class="no-number">Pas de ligne {{phoneType=== 'MOBILE' ? ' mobile' : ''}} rattachée</div>
+      </ng-template>
+    </ng-container>
   </div>
 
   <div class="btn-continue">

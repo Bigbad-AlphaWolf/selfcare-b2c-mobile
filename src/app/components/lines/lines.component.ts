@@ -4,7 +4,7 @@ import { Observable, forkJoin } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { ModalController } from '@ionic/angular';
 import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
-import { REGEX_FIX_NUMBER, SubscriptionModel } from 'src/shared';
+import { REGEX_FIX_NUMBER, REGEX_NUMBER, SubscriptionModel } from 'src/shared';
 import {
   isPostpaidFix,
   isPostpaidMobile,
@@ -12,6 +12,7 @@ import {
   PROFILE_TYPE_HYBRID,
   PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
+  PROFILE_TYPE_POSTPAID,
 } from 'src/app/dashboard';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 
@@ -63,6 +64,13 @@ export class LinesComponent implements OnInit {
                     codeClient: sub.clientCode,
                   });
                 }
+              } else if (this.phoneType === 'MOBILE') {
+                if (this.isMobilePostpaidOrHybrid(sub, numbers[i])) {
+                  fNumbers.push({
+                    phone: numbers[i],
+                    codeClient: sub.clientCode,
+                  });
+                }
               } else {
                 if (this.isLineNumber(numbers[i], sousc))
                   fNumbers.push({
@@ -80,6 +88,19 @@ export class LinesComponent implements OnInit {
         );
       }),
       share()
+    );
+  }
+
+  isMobilePostpaidOrHybrid(subscription: SubscriptionModel, msisdn: string) {
+    const postpaidProfiles = [
+      PROFILE_TYPE_HYBRID,
+      PROFILE_TYPE_HYBRID_1,
+      PROFILE_TYPE_HYBRID_2,
+      PROFILE_TYPE_POSTPAID,
+    ];
+    return (
+      postpaidProfiles.includes(subscription.profil) &&
+      msisdn.match(REGEX_NUMBER)
     );
   }
 

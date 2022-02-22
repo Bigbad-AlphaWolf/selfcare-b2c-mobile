@@ -37,6 +37,7 @@ import {
   BLOCKED_PASS,
   OPERATION_TYPE_PASS_INTERNATIONAL,
   OPERATION_PAY_ORANGE_BILLS,
+  REGEX_FIX_NUMBER,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
@@ -914,7 +915,11 @@ export class NewPinpadModalPage implements OnInit {
       payerEm: db.em,
       payerEncodedPin: pin,
       payerMsisdn: db.msisdn,
-      paymentCategory: PAYMENT_BILLS_CATEGORY.FIXE,
+      paymentCategory: REGEX_FIX_NUMBER.test(
+        this.opXtras?.invoice?.numeroTelephone
+      )
+        ? PAYMENT_BILLS_CATEGORY.FIXE
+        : PAYMENT_BILLS_CATEGORY.MOBILE,
     };
     console.log('payBillPayload', payload);
 
