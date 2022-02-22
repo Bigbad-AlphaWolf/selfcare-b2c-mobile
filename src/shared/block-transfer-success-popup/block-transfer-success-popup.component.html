@@ -23,11 +23,23 @@
       <div class="item-value-amount scb-text-orange">{{MATH.abs(transactionToBlock?.amount) + transactionToBlock?.fees + ' FCFA'}}</div>
     </div>
   </div>
-  <div class="warning">
-    <img src="assets/images/icon-warning.png" alt="" class="warning-ico">
-    Vous disposez de {{annulationDeadline}} pour remplir le formulaire d’annulation.
-  </div>
-  <div class="btn-container">
-    <button class="scb-btn scb-btn-white" (click)="goFillAnnulationForm()">Remplir le formulaire</button>
-  </div>
+	<ng-container *ngIf="isUserOMFull; else elseTemplate">
+		<div class="warning">
+			<img src="assets/images/icon-warning.png" alt="" class="warning-ico">
+			Votre transaction de {{ MATH.abs(transactionToBlock?.amount) + transactionToBlock?.fees}}FCFA a été annulée. Le montant a été credité sur le compte Orange Money du numero client .
+		</div>
+		<div class="btn-container">
+			<button class="scb-btn scb-btn-white" (click)="goToDashboard()">Retour à l'accueil</button>
+		</div>
+	</ng-container>
+	<ng-template #elseTemplate>
+		<div class="warning">
+			<img src="assets/images/icon-warning.png" alt="" class="warning-ico">
+			Vous disposez de {{annulationDeadline}} pour remplir le formulaire d’annulation.
+		</div>
+		<div class="btn-container">
+			<button class="scb-btn scb-btn-white" (click)="goFillAnnulationForm()">Remplir le formulaire</button>
+		</div>
+
+	</ng-template>
 </div>
