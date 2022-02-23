@@ -40,7 +40,12 @@ export class OrangeBillsPage implements OnInit {
   selectedFilter;
   factures: InvoiceOrange[];
   filteredFactures: InvoiceOrange[];
-  payForOtherInput: { ligne: string; type: string; clientCode: string };
+  payForOtherInput: {
+    ligne: string;
+    type: string;
+    clientCode: string;
+    inputPhone: string;
+  };
   constructor(
     private billsService: BillsService,
     private navCtl: NavController,
@@ -65,8 +70,6 @@ export class OrangeBillsPage implements OnInit {
 
   ngOnInit() {
     this.payForOtherInput = history.state;
-    console.log(this.payForOtherInput);
-
     if (
       this.payForOtherInput?.ligne &&
       this.payForOtherInput?.type === 'FIXE'
@@ -86,10 +89,15 @@ export class OrangeBillsPage implements OnInit {
         .subscribe();
       return;
     }
+    const inputPhone = this.payForOtherInput?.inputPhone;
     this.phone = this.payForOtherInput?.ligne
       ? this.payForOtherInput.ligne
+      : inputPhone
+      ? inputPhone
       : SessionOem.PHONE;
     this.codeClient = this.payForOtherInput?.ligne
+      ? this.payForOtherInput.clientCode
+      : inputPhone
       ? this.payForOtherInput.clientCode
       : SessionOem.CODE_CLIENT;
     // this.canPayBills =
@@ -161,7 +169,7 @@ export class OrangeBillsPage implements OnInit {
       },
     });
     modal.onDidDismiss().then((response) => {
-      if (response && response.data) {
+      if (response?.data) {
         this.phone = response.data.phone;
         this.codeClient = response.data.codeClient;
         this.updatePhoneType();

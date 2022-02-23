@@ -4,7 +4,12 @@ import { Observable, forkJoin } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { ModalController } from '@ionic/angular';
 import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
-import { REGEX_FIX_NUMBER, REGEX_NUMBER, SubscriptionModel } from 'src/shared';
+import {
+  MSISDN_TYPE,
+  REGEX_FIX_NUMBER,
+  REGEX_NUMBER,
+  SubscriptionModel,
+} from 'src/shared';
 import {
   isPostpaidFix,
   isPostpaidMobile,
@@ -26,10 +31,11 @@ export class LinesComponent implements OnInit {
 
   isProcessing: boolean;
 
-  @Input() phone: string;
+  @Input() phone: any;
   @Input() phoneType: string;
   codeClient: String;
   currentPhoneSelected: string;
+  MSISDN_TYPE_MOBILE = MSISDN_TYPE.MOBILE;
   constructor(
     private modalController: ModalController,
     private dashbServ: DashboardService,
@@ -57,14 +63,14 @@ export class LinesComponent implements OnInit {
             let fNumbers = [];
             results.forEach((sub: SubscriptionModel, i: number) => {
               const sousc = sub;
-              if (this.phoneType === 'FIXE') {
+              if (this.phoneType === MSISDN_TYPE.FIXE) {
                 if (this.isFixeNumber(numbers[i], sousc)) {
                   fNumbers.push({
                     phone: numbers[i],
                     codeClient: sub.clientCode,
                   });
                 }
-              } else if (this.phoneType === 'MOBILE') {
+              } else if (this.phoneType === MSISDN_TYPE.MOBILE) {
                 if (this.isMobilePostpaidOrHybrid(sub, numbers[i])) {
                   fNumbers.push({
                     phone: numbers[i],

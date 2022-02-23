@@ -39,7 +39,6 @@ export const NO_TOKEN_URLS = [
   '/auth/login',
   '/api/v1/get-msisdn',
   '/api/v1/confirm-msisdn',
-  ':8715/api/abonne/v2/customerOffer/770999786',
 ];
 export const OM_RECENT_TYPES = [
   {
