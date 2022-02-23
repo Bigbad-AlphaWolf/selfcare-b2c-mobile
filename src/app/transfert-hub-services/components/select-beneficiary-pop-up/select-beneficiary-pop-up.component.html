@@ -11,7 +11,7 @@
         <mat-label>
           {{!isForTransferBlocking ? 'N° du bénéficiaire' : 'Saisir le numéro de référence'}}&nbsp;&nbsp;
         </mat-label>
-        <input [id]="'numero' | generateIdForTA" #inputTel matInput type="tel" [value]="
+        <input (focus)="handleInputFocus(true)" (focusout)="handleInputFocus(false)" [id]="'numero' | generateIdForTA" #inputTel matInput type="tel" [value]="
             recipientContactInfos
               ? recipientContactInfos
               : otherBeneficiaryNumber
@@ -33,7 +33,7 @@
   <div class="loading-container" *ngIf="loadingRecents">
     <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
   </div>
-  <div class="recents" *ngIf="recentsRecipients$ | async as recents">
+  <div class="recents" *ngIf="!hideRecentsList && recentsRecipients$ | async as recents">
     <div class="recent-description scb-text-full-black" *ngIf="recents.length">
       Récents
     </div>
@@ -64,9 +64,13 @@
       </ng-template>
     </div>
   </div>
+  <div class="access-recents" *ngIf="showRecentMessage && !hideRecentsList">
+    {{recentMessage}}
+    <span class="link" (click)="openSettingsPopup()">Pour autoriser, cliquez ici</span>
+  </div>
   <div class="confirm-btn">
-    <ion-button [disabled]="isProcessing || !htmlInput?.nativeElement?.value" shape="round"
-      (click)="validateBeneficiary()" class="btn" expand="block" [id]="'btn-validate' | generateIdForTA">Continuer</ion-button>
+    <button [disabled]="isProcessing || !htmlInput?.nativeElement?.value" shape="round"
+      (click)="validateBeneficiary()" class="btn" expand="block" [id]="'btn-validate' | generateIdForTA">Continuer</button>
     <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
   </div>
 </div>
