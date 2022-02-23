@@ -1467,3 +1467,9 @@ export function isDelayedBill(bill: InvoiceOrange) {
     billDate.getTime() < today.getTime() && bill.statutFacture === 'unpaid'
   );
 }
+
+// mobile or fixe
+export enum MSISDN_TYPE {
+  MOBILE = 'MOBILE',
+  FIXE = 'FIXE',
+}
