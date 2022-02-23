@@ -34,6 +34,7 @@ import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_RATTACH_NUMBER,
 	OPERATION_UNBLOCK_OM_ACCOUNT,
+	OPERATION_RESET_PIN_OM,
 } from 'src/shared';
 import { MerchantPaymentCodeComponent } from '../merchant-payment-code/merchant-payment-code.component';
 import { OmStatusVisualizationComponent } from '../om-status-visualization/om-status-visualization.component';
@@ -207,6 +208,9 @@ export class ActionItemComponent implements OnInit {
 			case OPERATION_UNBLOCK_OM_ACCOUNT:
 				this.goToUnblockOMAccount();
 				break;
+			case OPERATION_RESET_PIN_OM:
+				this.goToResetOMAccount();
+				break;
       default:
         if (this.action?.redirectionType === 'NAVIGATE') {
           this.followAnalyticsService.registerEventFollow(
@@ -268,7 +272,16 @@ export class ActionItemComponent implements OnInit {
   goToUnblockOMAccount() {
     this.router.navigate(['/om-self-operation/unblock-om-account']);
     this.followAnalyticsService.registerEventFollow(
-      'Assistance_actions_deblocage_comtpe_om_clic',
+      'Assistance_actions_deblocage_compte_om_clic',
+      'event',
+      'clicked'
+    );
+  }
+
+  goToResetOMAccount() {
+    this.router.navigate(['/om-self-operation/unblock-om-account/reset-pin']);
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_actions_reset_pin_compte_om_clic',
       'event',
       'clicked'
     );

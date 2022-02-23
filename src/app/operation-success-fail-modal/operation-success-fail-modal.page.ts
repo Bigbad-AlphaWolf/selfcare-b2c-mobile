@@ -26,6 +26,7 @@ import {
   OPERATION_TYPE_PASS_INTERNATIONAL,
   OPERATION_PAY_ORANGE_BILLS,
 	OPERATION_UNBLOCK_OM_ACCOUNT,
+	OPERATION_RESET_PIN_OM,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -76,6 +77,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TYPE_PASS_INTERNATIONAL = OPERATION_TYPE_PASS_INTERNATIONAL;
   OPERATION_PAY_ORANGE_BILLS = OPERATION_PAY_ORANGE_BILLS;
   OPERATION_UNBLOCK_OM_ACCOUNT = OPERATION_UNBLOCK_OM_ACCOUNT;
+  OPERATION_RESET_OM_ACCOUNT = OPERATION_RESET_PIN_OM;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;

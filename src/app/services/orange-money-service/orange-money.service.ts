@@ -47,6 +47,7 @@ import {
   OM_IDENTIC_TRANSACTION_CODE,
   OM_UNKOWN_ERROR_CODE,
   OPERATION_PAY_ORANGE_BILLS,
+  OPERATION_RESET_PIN_OM,
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TYPE_BONS_PLANS,
@@ -67,6 +68,7 @@ import { CancelOmTransactionPayloadModel } from 'src/app/models/cancel-om-transa
 import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-event-type.enum';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { CreatePinOM } from 'src/app/models/create-pin-om.model';
+import { ValidateChallengeOMOEM } from 'src/app/models/challenge-answers-om-oem.model';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
@@ -99,6 +101,11 @@ const selfOperationCheckOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/regis
 const CANCEL_TRANSACTIONS_OM_Endpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/urgence-depannage/v2/erreur-transaction`;
 // CREATION PIN OM
 const CREATE_PIN_OM_Endpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/create-pin`;
+
+// CHALLENGE RESET/REACTIVE OM ACCOUNT
+const CHALLENGE_OM_ACCOUNT = `${SERVER_API_URL}/${OM_SERVICE}/api/unlock/v1`;
+const VALIDATE_CHALLENGE_OM_ACCOUNT = `${SERVER_API_URL}/${OM_SERVICE}/api/unlock/v1/challenge`;
+
 const ls = new SecureLS({ encodingType: 'aes' });
 let eventKey = '';
 let errorKey = '';
@@ -774,18 +781,12 @@ export class OrangeMoneyService {
     return this.http.post(`${CREATE_PIN_OM_Endpoint}?apiKey=${apiKey}`, omData);
   }
 
-	getUnblockOMAccountChoices(typeChoice: 'CONDITIONS' | 'LASTNAME' | 'FIRSTNAME' | 'BIRTHDATE' | 'CNI') {
-		switch (typeChoice) {
-			case "FIRSTNAME":
-				return of( {label: "firstname", choices: ["Diop", "NDiaye", "Diouf", "Ngom"] });
-			case "LASTNAME":
-				return of( {label: "lastname", choices: ["Mohamed", "Daouda", "Moustapha", "Serigne Mbaye"] });
-			case "BIRTHDATE":
-				return of({label: "birthdate", choices: ["12-06-1991", "10-12-1993", "10-09-2001", "10-01-2022"] });
-			case "CNI":
-				return of({label: "cni", choices: ["1751100239113", "16512345678881", "3939919931313", "13131311311"] } );
-			default:
-				return of({});
-		}
+
+	fetchOMChallengeForUnlockAndReset(omMsisdn: string) {
+		return this.http.get(`${CHALLENGE_OM_ACCOUNT}/${omMsisdn}/eligible`)
+	}
+
+	validateOMChallengeForUnlockAndResetOMAccount(omMsisdn: string, type: string, payload: ValidateChallengeOMOEM) {
+		return	this.http.post(`${VALIDATE_CHALLENGE_OM_ACCOUNT}/${omMsisdn}/${type === OPERATION_RESET_PIN_OM ? 'resetpin' : 'unblock'}`, payload);
 	}
 }

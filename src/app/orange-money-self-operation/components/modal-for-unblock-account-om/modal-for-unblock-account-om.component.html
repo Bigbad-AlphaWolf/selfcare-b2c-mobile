@@ -6,7 +6,7 @@
 		{{ titles[typeInfos] }}
 	</div>
 
-	<div *ngIf="typeInfos === 'CONDITIONS'" class="content conditions">
+	<div *ngIf="typeInfos === 'conditions'" class="content conditions">
 		<ul>
 			<li class="text">Vous avez droit à 1 tentative par heure et 3 par mois.</li>
 			<li class="text"> Les clients OMBA et ceux ayant un solde supérieur à 25000 ne sont pas autorisés à utiliser ce
@@ -15,13 +15,13 @@
 				utiliser ce service.</li>
 		</ul>
 	</div>
-	<form *ngIf="typeInfos !== 'CONDITIONS'" [formGroup]="form" (ngSubmit)="process()" novalidate autocomplete="false">
+	<form *ngIf="typeInfos !== 'conditions'" [formGroup]="form" (ngSubmit)="process()" novalidate autocomplete="false">
 		<div class="content">
-			<ion-radio-group #radioGroup [formControlName]="listChoices.label">
-				<div *ngFor="let item of listChoices.choices" class="item-choice">
+			<ion-radio-group #radioGroup [formControlName]="typeInfos">
+				<div *ngFor="let item of listChoices; let i=index" class="item-choice">
 					<ion-item [ngClass]=" { 'is-checked': radioGroup.value === item} ">
 						<ion-label> {{ item }} </ion-label>
-						<ion-radio mode="md" slot="start" [value]="item"></ion-radio>
+						<ion-radio mode="md" slot="start" [value]="i"></ion-radio>
 					</ion-item>
 				</div>
 			</ion-radio-group>
@@ -29,6 +29,6 @@
 		<ion-button type="submit" class="confirm-btn" expand="block"> Continuer </ion-button>
 	</form>
 
-	<ion-button *ngIf="typeInfos === 'CONDITIONS'" (click)="goBack()" mode="ios" color="dark" expand="block"
+	<ion-button *ngIf="typeInfos === 'conditions'" (click)="goBack()" mode="ios" color="dark" expand="block"
 		fill="outline">J’ai compris</ion-button>
 </div>

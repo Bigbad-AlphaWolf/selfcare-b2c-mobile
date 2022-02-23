@@ -12,10 +12,10 @@ import {ModalController, NavController} from '@ionic/angular';
 import {OffresServicesPage} from '../pages/offres-services/offres-services.page';
 import {ApplicationRoutingService} from '../services/application-routing/application-routing.service';
 import {AppVersion} from '@ionic-native/app-version/ngx';
-import {SocialSharing} from '@ionic-native/social-sharing/ngx';
 import {BottomSheetService} from '../services/bottom-sheet/bottom-sheet.service';
 import {isPrepaidOrHybrid} from '../dashboard';
 import {OmStatusVisualizationComponent} from 'src/shared/om-status-visualization/om-status-visualization.component';
+import {OrangeMoneyService} from '../services/orange-money-service/orange-money.service';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -33,6 +33,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   avatarUrl: string;
   numbers: any[] = [];
   @Input() currentAppVersion;
+  @Input() omUserInfos;
   displayPopUpOM = true;
 
   constructor(
@@ -44,7 +45,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     private followAnalyticsService: FollowAnalyticsService,
     private navCtrl: NavController,
     private appVersion: AppVersion,
-    private socialSharing: SocialSharing,
+    private orangeMoneyServ: OrangeMoneyService,
     private appRout: ApplicationRoutingService,
     private bsService: BottomSheetService,
     private modalController: ModalController
@@ -257,5 +258,9 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   closePopUpOM() {
     this.displayPopUpOM = false;
+  }
+
+  getUserOMInfos() {
+    console.log('omInfos', this.orangeMoneyServ.GetOrangeMoneyUser(this.dashboardServ.getCurrentPhoneNumber()));
   }
 }

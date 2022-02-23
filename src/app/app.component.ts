@@ -20,6 +20,7 @@ import {AppVersion} from '@ionic-native/app-version/ngx';
 import {AssistanceHubPage} from './assistance-hub/assistance-hub.page';
 import {ParrainagePage} from './parrainage/parrainage.page';
 import {MyOfferPlansPage} from './pages/my-offer-plans/my-offer-plans.page';
+import {OrangeMoneyService} from './services/orange-money-service/orange-money.service';
 
 const ls = new SecureLS({encodingType: 'aes'});
 
@@ -34,11 +35,12 @@ export class AppComponent {
   isIOS = false;
   appId: string;
   static IMEI: string;
+  omUserInfos: any;
   constructor(
     private platform: Platform,
     private statusBar: StatusBar,
     private splash: SplashScreen,
-    private appMinimize: AppMinimize,
+    private orangeMoneyServ: OrangeMoneyService,
     private router: Router,
     private deeplinks: Deeplinks,
     private appRout: ApplicationRoutingService,
@@ -71,6 +73,11 @@ export class AppComponent {
     this.appVersion.getVersionNumber().then(version => {
       this.appVersionNumber = version;
     });
+  }
+
+  setInfos(event: any) {
+    const omNumber = this.orangeMoneyServ.getOrangeMoneyNumber();
+    this.omUserInfos = this.orangeMoneyServ.GetOrangeMoneyUser(omNumber);
   }
 
   initializeApp() {

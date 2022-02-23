@@ -4,7 +4,7 @@
 			<img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
 		</ion-buttons>
 		<ion-title class="ion-no-padding">
-			<span class="title1">Débloquer mon compte	OM</span>
+			<span class="title1">{{title}}</span>
 		</ion-title>
 	</ion-toolbar>
 </ion-header>
@@ -12,7 +12,7 @@
 	<ion-header class="ion-padding-start" collapse="condense">
 		<ion-toolbar>
 			<span class="title">
-				Débloquer mon compte	Orange Money
+				{{subtitle}}
 			</span>
 		</ion-toolbar>
 	</ion-header>
@@ -20,7 +20,7 @@
 
 	<div class="page-container">
 		<div class="content">
-			<span (click)="presentModal('CONDITIONS')" class="conditions scb-text-orange">
+			<span (click)="presentModal('conditions')" class="conditions scb-text-orange">
 				Lire les conditions de déblocage.
 			</span>
 			<div class="header">
@@ -28,19 +28,27 @@
 			</div>
 
 			<div class="om-choice-liste">
-				<div *ngFor="let item of listItem" (click)="presentModal(item.code)" class="item-choice">
-					<span class="label">
-						{{ item.label }}
-					</span>
-					<span class="value">
-						<span class="value-content">
-							{{ item?.value ? item?.value : 'Choisir' }}
+				<ng-container *ngIf="listItem?.length && !isLoadingChallenge && isElligible">
+					<div *ngFor="let item of listItem" (click)="presentModal(item.code, item.listChoices, item.valueIndex)" class="item-choice">
+						<span class="label">
+							{{ item.label }}
 						</span>
-						<div class="icon">
-							<img src="assets/images/arrow-down.svg" alt="">
-						</div>
-					</span>
-				</div>
+						<span class="value">
+							<span class="value-content">
+								{{ item?.value ? item?.value : 'Choisir' }}
+							</span>
+							<div class="icon">
+								<img src="assets/images/arrow-down.svg" alt="">
+							</div>
+						</span>
+					</div>
+				</ng-container>
+					<ion-spinner *ngIf="isLoadingChallenge" name="crescent"></ion-spinner>
+				<ng-container *ngIf="errorLoadingChallengeMsg">
+					<div class="error-msg">
+						{{errorLoadingChallengeMsg}}
+					</div>
+				</ng-container>
 			</div>
 			<div class="btn-continue">
 				<ion-button expand="block" (click)="process()" [disabled]="isLoading || isformInvalid">

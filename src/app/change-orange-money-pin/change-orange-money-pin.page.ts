@@ -3,14 +3,14 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController, NavController} from '@ionic/angular';
 import {of} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
-import {OPERATION_CHANGE_PIN_OM, OPERATION_CREATE_PIN_OM, REGEX_IOS_SYSTEM} from 'src/shared';
+import {OPERATION_CHANGE_PIN_OM, OPERATION_CREATE_PIN_OM, OPERATION_RESET_PIN_OM, REGEX_IOS_SYSTEM} from 'src/shared';
 import {ChangePinOm} from '../models/change-pin-om.model';
 import {NewPinpadModalPage} from '../new-pinpad-modal/new-pinpad-modal.page';
 import {OrangeMoneyService} from '../services/orange-money-service/orange-money.service';
 import {UuidService} from '../services/uuid-service/uuid.service';
 import * as SecureLS from 'secure-ls';
 import {OperationSuccessFailModalPage} from '../operation-success-fail-modal/operation-success-fail-modal.page';
-import {INITIALISE_PIN_OM_MSG, ORANGE_MONEY_DEFAULT_PIN, SUCCESS_CHANGE_PIN_MSG} from '../services/orange-money-service';
+import {INITIALISE_PIN_OM_MSG, ORANGE_MONEY_DEFAULT_PIN, RESET_PIN_OM_MSG, SUCCESS_CHANGE_PIN_MSG} from '../services/orange-money-service';
 import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
 import {getPageHeader} from '../utils/title.util';
 import {PageHeader} from '../models/page-header.model';
@@ -69,18 +69,19 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
     this.pageInfos = getPageHeader(this.operationType);
   }
 
-  changePinOM() {
+  changePinOM(resetPin?: boolean) {
     this.loading = true;
     let isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
 
     const newPin = this.form.value.pin;
     const confirmNewPin = this.form.value.confirmPin;
+    const pin = resetPin ? this.omServ.GetPin(this.omInfos.sequence.split(''), ORANGE_MONEY_DEFAULT_PIN) : this.omInfos.pin;
     const uuid = this.uuidServ.getUuid();
     const os = isIOS ? 'iOS' : 'Android';
 
     const data: ChangePinOm = {
       msisdn: this.omInfos.msisdn,
-      pin: this.omInfos.pin,
+      pin,
       new_pin: newPin,
       confirm_pin: confirmNewPin,
       em: this.omInfos.em,
@@ -98,8 +99,8 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
       .pipe(
         tap(() => {
           this.loading = false;
-          this.showModal({purchaseType: OPERATION_CHANGE_PIN_OM, textMsg: SUCCESS_CHANGE_PIN_MSG});
-          this.followAnalyticsService.registerEventFollow('Change_Pin_OM_success', 'event', {
+          this.showModal({purchaseType: this.operationType, textMsg: this.operationType === OPERATION_CHANGE_PIN_OM ? SUCCESS_CHANGE_PIN_MSG : RESET_PIN_OM_MSG});
+          this.followAnalyticsService.registerEventFollow(`${resetPin ? 'Reset' : 'Change'}_Pin_OM_success`, 'event', {
             msisdn: this.omInfos.msisdn
           });
         }),
@@ -107,7 +108,7 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
           this.loading = false;
           this.hasError = true;
           this.errorMsg = this.DEFAULT_ERROR_CHANGE_PIN_REQUEST;
-          this.followAnalyticsService.registerEventFollow('Change_Pin_OM_failed', 'error', {
+          this.followAnalyticsService.registerEventFollow(`${resetPin ? 'Reset' : 'Change'}_Pin_OM_failed`, 'error', {
             msisdn: this.omInfos.msisdn,
             error: err && err.error && err.error.message ? err.error.message : err.status
           });
@@ -126,8 +127,8 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
         confirm_pin: this.form.value.confirmPin,
         new_pin: this.form.value.pin,
         pin: default_pin,
-        hmac: this.authImplicitInfos.hmac,
-        msisdn: this.authImplicitInfos.msisdn
+        hmac: this.authImplicitInfos?.hmac,
+        msisdn: this.authImplicitInfos?.msisdn
       };
       this.omServ
         .createFirstOmPin(payload, this.authImplicitInfos.api_key)
@@ -162,6 +163,9 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
       switch (this.operationType) {
         case OPERATION_CHANGE_PIN_OM:
           this.changePinOM();
+          break;
+				case OPERATION_RESET_PIN_OM:
+          this.changePinOM(true);
           break;
         case OPERATION_CREATE_PIN_OM:
           this.createPinOM();

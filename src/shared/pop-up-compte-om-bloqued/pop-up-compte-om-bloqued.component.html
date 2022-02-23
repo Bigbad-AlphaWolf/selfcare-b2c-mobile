@@ -8,7 +8,9 @@
 		</div>
 		<div class="text">
 			Pour continuer à utiliser les services d’Orange Money, merci d’entamer la procédure de déblocage.<br />
-Il vous reste encore 2 tentatives…
+ <span *ngIf="0">
+	Il vous reste encore 2 tentatives…
+ </span>
 		</div>
 		<ion-menu-toggle>
 			<span (click)="goToUnbblockOMAccountPage()" class="link scb-text-orange">

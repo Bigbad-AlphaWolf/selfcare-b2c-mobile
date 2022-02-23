@@ -9,7 +9,9 @@ import {OrangeMoneyService} from 'src/app/services/orange-money-service/orange-m
   styleUrls: ['./modal-for-unblock-account-om.component.scss']
 })
 export class ModalForUnblockAccountOmComponent implements OnInit {
-  @Input() typeInfos: 'CONDITIONS' | 'LASTNAME' | 'FIRSTNAME' | 'BIRTHDATE' | 'CNI';
+  @Input() typeInfos: 'conditions' | 'nom' | 'prenom' | 'date_naissance' | 'cni';
+  @Input() listChoices: string[];
+	@Input() selectedIndex: number = 0;
   titles = {
     CONDITIONS: 'Conditions de déblocage',
     FIRSTNAME: 'Choix du nom',
@@ -17,16 +19,12 @@ export class ModalForUnblockAccountOmComponent implements OnInit {
     BIRTHDATE: 'Choix de la date de naissance',
     CNI: 'Choix du numéro de CNI'
   };
-  listChoices: {label: string; choices: string[]} = null;
   form: FormGroup = new FormGroup({});
-  constructor(private modalCtrl: ModalController, private omService: OrangeMoneyService, private fb: FormBuilder) {}
+  constructor(private modalCtrl: ModalController) {}
 
   ngOnInit() {
-    this.omService.getUnblockOMAccountChoices(this.typeInfos).subscribe((res: {label: string; choices: string[]}) => {
-      this.listChoices = res;
-      if (this.listChoices?.choices?.length)
-        this.form.addControl(this.listChoices.label, new FormControl(this.listChoices.choices[0], Validators.required));
-    });
+		if (this.listChoices?.length)
+			this.form.addControl(this.typeInfos, new FormControl(this.selectedIndex === null ? 0 : this.selectedIndex, Validators.required));
   }
 
   goBack() {
