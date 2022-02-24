@@ -39,6 +39,7 @@ import {
   OPERATION_TYPE_PASS_INTERNATIONAL,
   OPERATION_PAY_ORANGE_BILLS,
   formatCountryCallId,
+  OPERATION_RESET_PIN_OM,
   REGEX_FIX_NUMBER,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -166,7 +167,10 @@ export class NewPinpadModalPage implements OnInit {
       transfertWithCodeInfos: this.transferMoneyWithCodePayload,
       merchantPaymentInfos: this.merchantPaymentPayload,
     };
-    if (this.operationType === OPERATION_CREATE_PIN_OM) {
+    if (
+      this.operationType === OPERATION_CREATE_PIN_OM ||
+      this.operationType === OPERATION_RESET_PIN_OM
+    ) {
       this.getPinPadForCreationPIN();
     } else {
       this.getOMPhoneNumber();
@@ -194,6 +198,10 @@ export class NewPinpadModalPage implements OnInit {
     this.checkingToken = false;
     this.gettingPinpad = true;
     console.log('this.omInfosPINPAD', this.omInfos);
+    console.log(
+      'this.orange.GetOrangeMoneyUser',
+      this.orangeMoneyService.GetOrangeMoneyUser(this.payloadCreatePin.msisdn)
+    );
 
     this.orangeMoneyService.GetPinPad(pinpadData, this.omInfos).subscribe(
       (response: any) => {
@@ -615,7 +623,8 @@ export class NewPinpadModalPage implements OnInit {
   processPin(pin: string) {
     if (
       this.operationType === OPERATION_CHANGE_PIN_OM ||
-      this.operationType === OPERATION_CREATE_PIN_OM
+      this.operationType === OPERATION_CREATE_PIN_OM ||
+      this.operationType === OPERATION_RESET_PIN_OM
     ) {
       const { hasError, typeError } = this.isNewPinValid(pin);
       if (hasError) {
@@ -631,7 +640,10 @@ export class NewPinpadModalPage implements OnInit {
         return;
       }
     }
-    if (this.operationType === OPERATION_CREATE_PIN_OM) {
+    if (
+      this.operationType === OPERATION_CREATE_PIN_OM ||
+      this.operationType === OPERATION_RESET_PIN_OM
+    ) {
       this.processPinFutureOmUser(pin);
     } else {
       this.processPinOmUser(pin);
@@ -1327,12 +1339,12 @@ export class NewPinpadModalPage implements OnInit {
         );
         omUser.pinFailed++;
         this.resetPad();
-        if (omUser.pinFailed >= 3) {
+        if (omUser.pinFailed >= 5) {
           omUser.active = false;
           this.pinError = `Code secret est invalide. Vous venez de bloquer votre compte Orange Money. Veuillez passer dans une de nos agences pour le reactiver!`;
         } else {
           this.pinError = `Code secret est invalide. Il vous reste ${
-            3 - ~~omUser.pinFailed
+            5 - ~~omUser.pinFailed
           } tentatives!`;
         }
         this.orangeMoneyService.SaveOrangeMoneyUser(omUser);

@@ -81,6 +81,7 @@ import { SelectCountryModalComponent } from 'src/app/transfert-hub-services/comp
 import { SelectElementModalComponent } from './select-element-modal/select-element-modal.component';
 import { PermissionSettingsPopupComponent } from 'src/app/components/permission-settings-popup/permission-settings-popup.component';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
+import { PopUpCompteOmBloquedComponent } from './pop-up-compte-om-bloqued/pop-up-compte-om-bloqued.component';
 
 @NgModule({
   declarations: [
@@ -149,6 +150,7 @@ import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
     UnpaidBillModalComponent,
     SelectCountryModalComponent,
     SelectElementModalComponent,
+    PopUpCompteOmBloquedComponent,
     PermissionSettingsPopupComponent,
   ],
   imports: [
@@ -199,6 +201,7 @@ import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
     SelectCountryModalComponent,
     SelectElementModalComponent,
     PermissionSettingsPopupComponent,
+    PopUpCompteOmBloquedComponent,
   ],
   exports: [
     BanniereComponent,
@@ -264,6 +267,7 @@ import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
     SelectCountryModalComponent,
     SelectElementModalComponent,
     PermissionSettingsPopupComponent,
+    PopUpCompteOmBloquedComponent,
   ],
   providers: [
     Contacts,

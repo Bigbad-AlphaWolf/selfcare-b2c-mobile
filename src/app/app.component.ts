@@ -1,46 +1,48 @@
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { Component } from '@angular/core';
-import { NavController, Platform } from '@ionic/angular';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { Deeplinks } from '@ionic-native/deeplinks/ngx';
-import { Router } from '@angular/router';
+import {SplashScreen} from '@ionic-native/splash-screen/ngx';
+import {Component} from '@angular/core';
+import {NavController, Platform} from '@ionic/angular';
+import {StatusBar} from '@ionic-native/status-bar/ngx';
+import {Deeplinks} from '@ionic-native/deeplinks/ngx';
+import {Router} from '@angular/router';
 import * as SecureLS from 'secure-ls';
-import { DetailsConsoPage } from './details-conso/details-conso.page';
-import { AppMinimize } from '@ionic-native/app-minimize/ngx';
-import { v4 as uuidv4 } from 'uuid';
-import { TransfertHubServicesPage } from './transfert-hub-services/transfert-hub-services.page';
-import { ApplicationRoutingService } from './services/application-routing/application-routing.service';
-import { checkUrlMatch } from './utils/utils';
-import { ImageLoaderConfigService } from 'ionic-image-loader';
-import { HttpHeaders } from '@angular/common/http';
-import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
-import { Uid } from '@ionic-native/uid/ngx';
-import { DashboardPage } from './dashboard/dashboard.page';
-import { AppVersion } from '@ionic-native/app-version/ngx';
-import { AssistanceHubPage } from './assistance-hub/assistance-hub.page';
-import { ParrainagePage } from './parrainage/parrainage.page';
-import { MyOfferPlansPage } from './pages/my-offer-plans/my-offer-plans.page';
-import { Diagnostic } from '@ionic-native/diagnostic/ngx';
-import { ContactsService } from './services/contacts-service/contacts.service';
+import {DetailsConsoPage} from './details-conso/details-conso.page';
+import {AppMinimize} from '@ionic-native/app-minimize/ngx';
+import {v4 as uuidv4} from 'uuid';
+import {TransfertHubServicesPage} from './transfert-hub-services/transfert-hub-services.page';
+import {ApplicationRoutingService} from './services/application-routing/application-routing.service';
+import {checkUrlMatch} from './utils/utils';
+import {ImageLoaderConfigService} from 'ionic-image-loader';
+import {HttpHeaders} from '@angular/common/http';
+import {AndroidPermissions} from '@ionic-native/android-permissions/ngx';
+import {Uid} from '@ionic-native/uid/ngx';
+import {DashboardPage} from './dashboard/dashboard.page';
+import {AppVersion} from '@ionic-native/app-version/ngx';
+import {AssistanceHubPage} from './assistance-hub/assistance-hub.page';
+import {ParrainagePage} from './parrainage/parrainage.page';
+import {MyOfferPlansPage} from './pages/my-offer-plans/my-offer-plans.page';
+import {Diagnostic} from '@ionic-native/diagnostic/ngx';
+import {ContactsService} from './services/contacts-service/contacts.service';
+import {OrangeMoneyService} from './services/orange-money-service/orange-money.service';
 
-const ls = new SecureLS({ encodingType: 'aes' });
+const ls = new SecureLS({encodingType: 'aes'});
 
 declare var FollowAnalytics: any;
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html',
+  templateUrl: 'app.component.html'
 })
 export class AppComponent {
   appVersionNumber: any;
   isIOS = false;
   appId: string;
   static IMEI: string;
+  omUserInfos: any;
   constructor(
     private platform: Platform,
     private statusBar: StatusBar,
     private splash: SplashScreen,
-    private appMinimize: AppMinimize,
+    private orangeMoneyServ: OrangeMoneyService,
     private router: Router,
     private deeplinks: Deeplinks,
     private appRout: ApplicationRoutingService,
@@ -72,7 +74,7 @@ export class AppComponent {
 
   loadContacts() {
     this.diagnostic.getContactsAuthorizationStatus().then(
-      (contactStatus) => {
+      contactStatus => {
         if (
           contactStatus === this.diagnostic.permissionStatus.GRANTED ||
           contactStatus === this.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE
@@ -80,16 +82,21 @@ export class AppComponent {
           this.contactService.getAllContacts().subscribe();
         }
       },
-      (err) => {
+      err => {
         console.log(err);
       }
     );
   }
 
   async getVersion() {
-    this.appVersion.getVersionNumber().then((version) => {
+    this.appVersion.getVersionNumber().then(version => {
       this.appVersionNumber = version;
     });
+  }
+
+  setInfos(event: any) {
+    const omNumber = this.orangeMoneyServ.getOrangeMoneyNumber();
+    this.omUserInfos = this.orangeMoneyServ.GetOrangeMoneyUser(omNumber);
   }
 
   initializeApp() {
@@ -206,13 +213,11 @@ export class AppComponent {
         '/sospass/:amount': '',
         '/illiflex': TransfertHubServicesPage,
         '/parrainage': ParrainagePage,
-        '/bonplan': MyOfferPlansPage,
+        '/bonplan': MyOfferPlansPage
       })
       .subscribe(
-        (matched) => {
-          const path = matched.$link.path
-            ? matched.$link.path
-            : matched.$link.host;
+        matched => {
+          const path = matched.$link.path ? matched.$link.path : matched.$link.host;
           this.goToPage(path);
           // this.router.navigate([matched.$link.path]);
           console.log(matched);
@@ -234,15 +239,11 @@ export class AppComponent {
 
   async getImei() {
     console.log(this.uid);
-    const { hasPermission } = await this.androidPermissions.checkPermission(
-      this.androidPermissions.PERMISSION.READ_PHONE_STATE
-    );
+    const {hasPermission} = await this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE);
     if (!hasPermission) {
       console.log('hasPermission', hasPermission);
 
-      const result = await this.androidPermissions.requestPermission(
-        this.androidPermissions.PERMISSION.READ_PHONE_STATE
-      );
+      const result = await this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE);
       if (!result.hasPermission) {
         console.log('hasPermission2', hasPermission);
         throw new Error('Permissions required');
