@@ -11,7 +11,7 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { getPageHeader } from 'src/app/utils/title.util';
-import { OPERATION_RESET_PIN_OM } from 'src/shared';
+import { ERROR_MSG_DEPLAFONNEMENT_ON_INIT_UNBLOCK_OM, OPERATION_RESET_PIN_OM } from 'src/shared';
 import {ModalForUnblockAccountOmComponent} from '../../components/modal-for-unblock-account-om/modal-for-unblock-account-om.component';
 
 export enum ChoiceType {
@@ -20,6 +20,7 @@ export enum ChoiceType {
 	BIRTHDATE = 'date_naissance',
 	CNI = 'cni'
 }
+
 @Component({
   selector: 'app-unblock-my-account-om',
   templateUrl: './unblock-my-account-om.page.html',
@@ -131,6 +132,7 @@ export class UnblockMyAccountOmPage implements OnInit {
 				if(this.type === OPERATION_RESET_PIN_OM) {
 					this.goToResetPinOM()
 				} else {
+					this.resetLocalOMUserinfos();
 					this.showModal({purchaseType: this.type, textMsg: 'Votre compte Orange Money a été débloqué. Veuillez réessayer plus tard'});
 				}
 			},
@@ -176,8 +178,7 @@ export class UnblockMyAccountOmPage implements OnInit {
       tap((msisdn: string) => {
         this.gettingOmNumber = false;
         if (msisdn.match('error')) {
-          //this.openPinpad();
-          this.omMsisdn = this.dashbServ.getCurrentPhoneNumber();
+          this.openPinpad();
           this.getMsisdnHasError = true;
           this.followAnalyticsServ.registerEventFollow(
             'deblocage_reset_pin_om_recuperation_numéro_msisdn_failed',
@@ -189,6 +190,7 @@ export class UnblockMyAccountOmPage implements OnInit {
           );
         } else {
           this.omMsisdn = msisdn;
+					this.fetchOMChallenge();
           this.followAnalyticsServ.registerEventFollow(
             'deblocage_reset_pin_om_recuperation_numéro_msisdn_success',
             'event',
@@ -198,7 +200,7 @@ export class UnblockMyAccountOmPage implements OnInit {
             }
           );
         }
-				this.fetchOMChallenge();
+
       }),
       catchError((err: any) => {
         this.getMsisdnHasError = true;
@@ -240,6 +242,9 @@ export class UnblockMyAccountOmPage implements OnInit {
 
 				if(err?.error.messageDescriptionList?.length) {
 					this.errorLoadingChallengeMsg = err?.error?.messageDescriptionList.join(' .');
+					if(this.errorLoadingChallengeMsg.includes('Déplafonnez')) {
+						this.errorLoadingChallengeMsg = ERROR_MSG_DEPLAFONNEMENT_ON_INIT_UNBLOCK_OM;
+					}
 				} else {
 					this.errorLoadingChallengeMsg = err?.error?.message;
 				}
@@ -272,5 +277,12 @@ export class UnblockMyAccountOmPage implements OnInit {
 	goToResetPinOM() {
     this.appRouting.goToCreatePinOM(OPERATION_RESET_PIN_OM, { msisdn: this.omMsisdn });
   }
+
+	resetLocalOMUserinfos() {
+		const omUser = this.omService.GetOrangeMoneyUser(this.omMsisdn);
+		omUser.active = true;
+		omUser.pinFailed = 0;
+		this.omService.SaveOrangeMoneyUser(omUser);
+	}
 
 }
