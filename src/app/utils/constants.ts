@@ -7,7 +7,11 @@ import {
   OPERATION_TRANSFER_OM,
   OPERATION_TYPE_PASS_ALLO,
 } from 'src/shared';
-import { OPERATION_RAPIDO, OPERATION_WOYOFAL } from './operations.constants';
+import {
+  OPERATION_RAPIDO,
+  OPERATION_TYPE_INTERNATIONAL_TRANSFER,
+  OPERATION_WOYOFAL,
+} from './operations.constants';
 
 export const IMAGES_DIR_PATH = '/assets/images';
 export const MONTHS: string[] = [
@@ -81,3 +85,40 @@ export const CATEGORY_MPO = {
   recharge: 'recharge',
   sargal: 'sargal',
 };
+
+export const TRANSFER_OM_INTERNATIONAL_COUNTRIES = [
+  // {
+  //   countryName: 'Sénégal',
+  //   flagIcon: 'assets/flags/.png',
+  // },
+  {
+    countryName: "Côte d'Ivoire",
+    callId: '+225',
+    flagIcon: 'assets/flags/ivory.png',
+    code: 'cod',
+  },
+  {
+    countryName: 'Burkina Faso',
+    callId: '+226',
+    flagIcon: 'assets/flags/burkina.png',
+    code: 'burkina',
+  },
+  {
+    countryName: 'Mali',
+    callId: '+223',
+    flagIcon: 'assets/flags/mali.png',
+    code: 'mali',
+  },
+  {
+    countryName: 'Niger',
+    callId: '+227',
+    flagIcon: 'assets/flags/niger.png',
+    code: 'niger',
+  },
+  {
+    countryName: 'Guinée-Bissau',
+    callId: '+245',
+    flagIcon: 'assets/flags/bissau.png',
+    code: 'bissau',
+  },
+];

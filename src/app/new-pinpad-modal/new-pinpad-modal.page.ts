@@ -16,6 +16,7 @@ import {
   LIST_DENIED_PIN_OM,
   DEFAULT_ERROR_MSG_CHANGE_PIN_WITH_BIRTH_DATE_VALIDATION,
   DEFAULT_ERROR_MSG_CHANGE_PIN_VALIDATION,
+  TransferIRTModel,
 } from '../services/orange-money-service';
 import {
   OPERATION_TYPE_PASS_INTERNET,
@@ -37,6 +38,7 @@ import {
   BLOCKED_PASS,
   OPERATION_TYPE_PASS_INTERNATIONAL,
   OPERATION_PAY_ORANGE_BILLS,
+  formatCountryCallId,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
@@ -48,6 +50,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import {
   OPERATION_RAPIDO,
+  OPERATION_TYPE_INTERNATIONAL_TRANSFER,
   OPERATION_WOYOFAL,
 } from '../utils/operations.constants';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -485,17 +488,6 @@ export class NewPinpadModalPage implements OnInit {
     if (omUser.msisdn === this.omPhoneNumber) {
       // the account is active
       if (omUser.active) {
-        // login and get balance
-        const loginPayload: OmLoginClientModel = {
-          msisdn: omUser.msisdn,
-          pin,
-          em: omUser.em,
-          app_version: 'v1.0',
-          app_conf_version: 'v1.0',
-          user_type: 'user',
-          uuid: this.uuid,
-          service_version: OM_SERVICE_VERSION,
-        };
         switch (this.operationType) {
           case OPERATION_TYPE_RECHARGE_CREDIT:
             const creditToBuy = Object.assign({}, this.buyCreditPayload, {
@@ -553,6 +545,19 @@ export class NewPinpadModalPage implements OnInit {
               { pin }
             );
             this.transferMoneyWithCode(transferPayload);
+            break;
+          case OPERATION_TYPE_INTERNATIONAL_TRANSFER:
+            const transferIRTPayload = Object.assign(
+              {},
+              this.transferMoneyPayload,
+              {
+                pin: this.pin,
+                fees: this.transferMoneyPayload.send_fees,
+                country: this.transferMoneyPayload?.country?.callId,
+                reason: this.transferMoneyPayload?.reason,
+              }
+            );
+            this.transferMoneyInternational(transferIRTPayload);
             break;
           case OPERATION_TYPE_MERCHANT_PAYMENT:
             const merchantPaymentPayload = Object.assign(
@@ -1028,6 +1033,61 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
+  transferMoneyInternational(params: {
+    msisdn2: string;
+    pin: any;
+    amount: number;
+    send_fees: number;
+    fees: number;
+    country;
+    reason?: string;
+  }) {
+    this.processingPin = true;
+    this.canRetry = false;
+    this.pinHasError = false;
+    this.errorBulletActive = false;
+    // this.transactionToBlock = {
+    //   amount: -params.amount,
+    //   msisdnReceiver: params.msisdn2,
+    //   operationDate: new Date().toString(),
+    // };
+    const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
+      this.omPhoneNumber
+    );
+    const transferOMPayload: TransferIRTModel = {
+      msisdn: omUser.msisdn,
+      msisdn2: params.msisdn2,
+      amount: params.amount,
+      fees: params.send_fees,
+      uuid: 'uuid',
+      os: 'mobile',
+      pin: params.pin,
+      em: omUser.em,
+      app_version: 'v1.0',
+      app_conf_version: 'v1.0',
+      user_type: 'user',
+      service_version: OM_SERVICE_VERSION,
+      country: formatCountryCallId(params?.country),
+      reason: 'Achat de bien et service',
+    };
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: omUser.msisdn,
+      receiver: params.msisdn2,
+      montant: params.amount,
+    };
+
+    this.orangeMoneyService
+      .transferIRT(transferOMPayload, { txnId: this.transactionId })
+      .subscribe(
+        (res: any) => {
+          this.processResult(res, omUser, logInfos);
+        },
+        (err) => {
+          this.processError(err, logInfos);
+        }
+      );
+  }
+
   initOperationChangePinOM(pin: string) {
     this.seeSolde(pin);
   }
@@ -1148,8 +1208,6 @@ export class NewPinpadModalPage implements OnInit {
       (res && res.content.data.status_code === '200')
     ) {
       // valid pin
-      console.log(this.opXtras);
-
       db.pinFailed = 0; // reset the pinfailed
       this.orangeMoneyService.SaveOrangeMoneyUser(db);
       this.orangeMoneyService.logWithFollowAnalytics(

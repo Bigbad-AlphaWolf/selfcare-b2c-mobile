@@ -1,0 +1,55 @@
+@import 'src/app/app';
+
+.select-element-container {
+  padding: 30px 15px;
+  --height: 300px;
+  .arrow-container {
+    padding-bottom: 20px;
+  }
+  .title {
+    font-size: 24px;
+    font-family: 'HelveticaNeueLTStd-Bd';
+    line-height: 1.25;
+    color: $fullBlack;
+    margin-bottom: 40px;
+  }
+  .items-list {
+    .element-item {
+      display: flex;
+      margin-bottom: 15px;
+      .mat-radio-button {
+        margin-top: -3px !important;
+      }
+      .item-details {
+        &.item-selected {
+          color: $fullBlack !important;
+          font-family: 'HelveticaNeueLTStd-Bd' !important;
+        }
+        padding-bottom: 15px;
+        flex-grow: 1;
+        margin-left: 15px;
+        display: flex;
+        justify-content: space-between;
+        font-family: 'HelveticaNeueLTStd-Roman';
+      }
+      &:not(:last-child) {
+        .item-details {
+          border-bottom: solid 1px $silver;
+        }
+      }
+    }
+  }
+  .confirm-btn {
+    border-radius: 10px;
+    position: relative;
+    margin-top: 10px !important;
+    mat-spinner {
+      position: absolute;
+      top: 15px;
+      right: 10px;
+    }
+    .mat-spinner::ng-deep circle {
+      stroke: $white;
+    }
+  }
+}

@@ -13,6 +13,7 @@
         <span *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT">Paiement Marchand</span>
         <span *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">Transfert d'argent</span>
         <span *ngSwitchCase="OPERATION_TRANSFER_OM">Transfert d'argent</span>
+        <span *ngSwitchCase="OPERATION_TYPE_INTERNATIONAL_TRANSFER">Transfert d'argent</span>
         <span *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
         <span *ngSwitchCase="'OPERATION_WOYOFAL'">Rechargement Woyofal</span>
         <span *ngSwitchCase="OPERATION_RAPIDO">Rechargement Rapido</span>
@@ -31,18 +32,16 @@
         class="banniere" />
       <img *ngSwitchCase="OPERATION_ILLIMIX_TYPE" src="assets/images/banniere-illimix.png" alt="banniere"
         class="banniere" />
-      <img *ngSwitchCase="OPERATION_ALLO_TYPE" src="assets/images/pass-allo-banniere.png" alt="banniere"
-        class="banniere" />
-        <img *ngSwitchCase="OPERATION_TYPE_PASS_INTERNATIONAL" src="assets/images/pass-allo-banniere.png" alt="banniere"
+      <img *ngSwitchCase="OPERATION_ALLO_TYPE" src="assets/images/pass-allo-banniere.png" alt="banniere" class="banniere" />
+      <img *ngSwitchCase="OPERATION_TYPE_PASS_INTERNATIONAL" src="assets/images/pass-allo-banniere.png" alt="banniere"
         class="banniere" />
       <img *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT" src="assets/images/banniere-payment.png" alt="banniere"
         class="banniere" />
-      <img *ngSwitchCase="OPERATION_TRANSFER_OM" src="assets/images/achat-de-credit.png" alt="banniere"
-        class="banniere" />
+      <img *ngSwitchCase="OPERATION_TRANSFER_OM" src="assets/images/transfer-money-banniere.png" alt="banniere" class="banniere" />
+      <img *ngSwitchCase="OPERATION_TYPE_INTERNATIONAL_TRANSFER" src="assets/images/transfer-money-banniere.png" alt="banniere" class="banniere" />
       <img *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE" src="assets/images/achat-de-credit.png" alt="banniere"
         class="banniere" />
-      <img *ngSwitchCase="'RECHARGEMENT_CREDIT'" src="assets/images/achat-de-credit.svg" alt="banniere"
-        class="banniere" />
+      <img *ngSwitchCase="'RECHARGEMENT_CREDIT'" src="assets/images/achat-de-credit.svg" alt="banniere" class="banniere" />
       <img *ngSwitchCase="'OPERATION_WOYOFAL'" src="assets/images/recharge-bill.svg" alt="banniere" class="banniere" />
       <img *ngSwitchCase="OPERATION_RAPIDO" src="assets/images/recharge-bill.svg" alt="banniere" class="banniere" />
       <img *ngSwitchCase="OPERATION_TYPE_PASS_VOYAGE" src="assets/images/achat-de-pass-voyage@2x.png" alt="banniere"
@@ -53,9 +52,9 @@
         alt="header-illiflex" class="banniere" />
       <img-loader *ngSwitchCase="OPERATION_TYPE_PASS_USAGE" class="icone" [src]="opXtras?.serviceUsage?.banniere"
         fallbackUrl="/assets/images/pass-internet-page-header.svg" useImg></img-loader>
-      <img-loader *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS" class="icone" src="assets/images/bills_banniere.png"
-       useImg></img-loader>
-
+      <img-loader *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS" class="icone" src="assets/images/bills_banniere.png" useImg>
+      </img-loader>
+    
     </ng-container>
   </div>
 </ion-header>
@@ -80,6 +79,9 @@
         <span class="pass">Montant à transférer</span><span *ngIf="0" class="modifier scb-text-orange">modifier</span>
       </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_TRANSFER_OM">
+        <span class="pass">Montant à transférer</span><span *ngIf="0" class="modifier scb-text-orange">modifier</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_TYPE_INTERNATIONAL_TRANSFER">
         <span class="pass">Montant à transférer</span><span *ngIf="0" class="modifier scb-text-orange">modifier</span>
       </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT">
@@ -132,10 +134,10 @@
       <ng-container [ngSwitch]="purchaseType">
         <app-item-recharge-credit [amount]="amount" *ngSwitchCase="OPERATION_TYPE_MERCHANT_PAYMENT">
         </app-item-recharge-credit>
-        <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM">
-          <app-item-transfert-om [omTransfertInfos]="opXtras">
-          </app-item-transfert-om>
-        </ng-container>
+        <app-item-transfert-om [omTransfertInfos]="opXtras" *ngSwitchCase="OPERATION_TRANSFER_OM">
+        </app-item-transfert-om>
+        <app-item-transfert-om [omTransfertInfos]="opXtras" *ngSwitchCase="OPERATION_TYPE_INTERNATIONAL_TRANSFER">
+        </app-item-transfert-om>
         <app-item-recharge-credit [amount]="amount" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">
         </app-item-recharge-credit>
         <app-item-pass-internet [passInternet]="passChoosen" [subscription]="subscriptionInfos"
@@ -175,7 +177,11 @@
         *ngIf="purchaseType !== OPERATION_ILLIMIX_TYPE && purchaseType !== OPERATION_INTERNET_TYPE && 0">Modifier</span>
     </div>
     <div class="recipient-information" *ngIf="purchaseType !== OPERATION_ENABLE_DALAL && purchaseType !== OPERATION_PAY_ORANGE_BILLS">
-      <div class="top-block">
+      <div class="top-block" [ngClass]="{'with-padding': purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER}">
+        <div class="country-block" *ngIf="purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER">
+          <img class="country-flag" [src]="opXtras?.country?.flagIcon" alt="">
+          <span class="title">({{opXtras?.country?.callId}})</span>
+        </div>
         <span class="title">{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT ? merchantCode :
           recipientMsisdn | phoneNumberDisplay}} {{([ 'OPERATION_WOYOFAL',
           OPERATION_RAPIDO].includes(purchaseType)?opXtras.billData.counter.counterNumber
@@ -185,6 +191,14 @@
           OPERATION_RAPIDO].includes(purchaseType)?opXtras.billData.counter.name:''}}</span>
       </div>
     </div>
+    <ng-container *ngIf="purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER">
+      <div class="amount-to-transfer">
+        <span class="pass">Raison</span>
+      </div>
+      <div class="recipient-information">
+        <span class="title scb-text-orange">{{opXtras?.reason}}</span>
+      </div>
+    </ng-container>
     <ng-container *ngIf="purchaseType === OPERATION_TRANSFER_OM_WITH_CODE">
       <div class="amount-to-transfer">
         <span class="pass">Type de transfert</span>
@@ -244,6 +258,10 @@
           opXtras?.sending_fees_Info?.effective_fees : amount + opXtras?.sending_fees_Info?.effective_fees +
           opXtras.fee}}
           FCFA)</span>
+          <span class="text" *ngSwitchCase="OPERATION_TYPE_INTERNATIONAL_TRANSFER">Transférer ({{!transferOMPayload.a_ma_charge ? amount +
+            opXtras?.sending_fees_Info?.effective_fees : amount + opXtras?.sending_fees_Info?.effective_fees +
+            opXtras.fee}}
+            FCFA)</span>
         <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">Transférer ({{amount}} FCFA)</span>
         <span class="text" *ngSwitchCase="'RECHARGEMENT_CREDIT'">Confirmer ({{amount|formatCurrency}} FCFA)</span>
         <span class="text" *ngSwitchCase="OPERATION_RAPIDO">Confirmer ({{(opXtras.amount + opXtras.fee)|formatCurrency}}

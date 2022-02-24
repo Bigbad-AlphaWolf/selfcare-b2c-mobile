@@ -30,6 +30,7 @@ import { ApplicationRoutingService } from '../services/application-routing/appli
 import { OperationExtras } from '../models/operation-extras.model';
 import {
   OPERATION_RAPIDO,
+  OPERATION_TYPE_INTERNATIONAL_TRANSFER,
   OPERATION_TYPE_PASS_USAGE,
   OPERATION_WOYOFAL,
 } from '../utils/operations.constants';
@@ -74,6 +75,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_RAPIDO = OPERATION_RAPIDO;
   OPERATION_TYPE_PASS_INTERNATIONAL = OPERATION_TYPE_PASS_INTERNATIONAL;
   OPERATION_PAY_ORANGE_BILLS = OPERATION_PAY_ORANGE_BILLS;
+  OPERATION_TYPE_INTERNATIONAL_TRANSFER = OPERATION_TYPE_INTERNATIONAL_TRANSFER;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;
@@ -285,6 +287,7 @@ export class OperationSuccessFailModalPage implements OnInit {
         this.appRouting.goToDashboard();
         break;
       case OPERATION_TRANSFER_OM:
+      case OPERATION_TYPE_INTERNATIONAL_TRANSFER:
         this.followAnalyticsServ.registerEventFollow(
           'OM_transfert_recap_renouvellement',
           'event',

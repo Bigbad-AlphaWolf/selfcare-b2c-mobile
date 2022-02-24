@@ -47,4 +47,6 @@ export interface OperationExtras {
 
   invoice?: InvoiceOrange;
   numberToRegister?: string;
+  country?: any;
+  reason?: string;
 }

@@ -1,0 +1,19 @@
+<div class="select-element-container">
+  <div class="arrow-container">
+    <img src="/assets/images/arrow-left.png" alt="icon" (click)="closeModal()" />
+  </div>
+  <div class="title">
+    {{title}}
+  </div>
+  <div class="items-list">
+    <div class="element-item" *ngFor="let item of items; let i=index" (click)="selectItem(item)">
+      <mat-radio-button [checked]="selectedItem?.id === item?.id"></mat-radio-button>
+      <div class="item-details scb-text-gray" [ngClass]="{'item-selected': selectedItem?.id === item?.id}">
+        {{item?.value}}</div>
+    </div>
+  </div>
+  <button class="confirm-btn scb-btn-full scb-btn-orange" mat-stroked-button (click)="closeModal(selectedItem)"
+    [disabled]="!selectedItem">
+    <span>Confirmer</span>
+  </button>
+</div>

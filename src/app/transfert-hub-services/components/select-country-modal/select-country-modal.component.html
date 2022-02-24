@@ -1,0 +1,22 @@
+<div class="select-country-container">
+  <div class="arrow-container">
+    <img src="/assets/images/arrow-left.png" alt="icon" (click)="closeModal()" />
+  </div>
+  <div class="title">
+    Choix du pays
+  </div>
+  <div class="countries-list">
+    <div class="country-item" *ngFor="let countryItem of countries; let i=index" (click)="selectCountry(countryItem)"
+      [ngClass]="{ 'country-selected': country.callId === countryItem.callId }">
+      <mat-radio-button [checked]="country.callId === countryItem.callId"></mat-radio-button>
+      <div class="country-details">
+        <span class="country-name scb-text-gray">{{ countryItem?.countryName + ' (' + countryItem?.callId + ')'}}</span>
+        <img [src]="countryItem.flagIcon" alt="">
+      </div>
+    </div>
+  </div>
+  <button class="confirm-btn scb-btn-full scb-btn-orange" mat-stroked-button (click)="closeModal()"
+    [disabled]="!country">
+    <span>Confirmer</span>
+  </button>
+</div>

@@ -76,6 +76,9 @@ import { FormatDataVolume2Pipe } from './pipes/format-data-volume-2.pipe';
 import { FormatDuration2Pipe } from './pipes/format-duration-2.pipe';
 import { SelectNumberForBillComponent } from 'src/app/components/select-number-for-bill/select-number-for-bill.component';
 import { UnpaidBillModalComponent } from 'src/app/components/unpaid-bill-modal/unpaid-bill-modal.component';
+import { SelectIrtRecipientPopupComponent } from 'src/app/transfert-hub-services/components/select-irt-recipient-popup/select-irt-recipient-popup.component';
+import { SelectCountryModalComponent } from 'src/app/transfert-hub-services/components/select-country-modal/select-country-modal.component';
+import { SelectElementModalComponent } from './select-element-modal/select-element-modal.component';
 
 @NgModule({
   declarations: [
@@ -87,6 +90,7 @@ import { UnpaidBillModalComponent } from 'src/app/components/unpaid-bill-modal/u
     NoIonSelectArrowDirective,
     OemOperationsComponent,
     SelectBeneficiaryPopUpComponent,
+    SelectIrtRecipientPopupComponent,
     RapidoSelectionComponent,
     WoyofalSelectionComponent,
     FavoriteWoyofalComponent,
@@ -141,6 +145,8 @@ import { UnpaidBillModalComponent } from 'src/app/components/unpaid-bill-modal/u
     FormatDuration2Pipe,
     SelectNumberForBillComponent,
     UnpaidBillModalComponent,
+    SelectCountryModalComponent,
+    SelectElementModalComponent,
   ],
   imports: [
     CommonModule,
@@ -186,6 +192,9 @@ import { UnpaidBillModalComponent } from 'src/app/components/unpaid-bill-modal/u
     KioskLocatorPopupComponent,
     SelectNumberForBillComponent,
     UnpaidBillModalComponent,
+    SelectIrtRecipientPopupComponent,
+    SelectCountryModalComponent,
+    SelectElementModalComponent,
   ],
   exports: [
     BanniereComponent,
@@ -247,6 +256,9 @@ import { UnpaidBillModalComponent } from 'src/app/components/unpaid-bill-modal/u
     FormatDuration2Pipe,
     SelectNumberForBillComponent,
     UnpaidBillModalComponent,
+    SelectIrtRecipientPopupComponent,
+    SelectCountryModalComponent,
+    SelectElementModalComponent,
   ],
   providers: [
     Contacts,
