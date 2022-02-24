@@ -23,6 +23,9 @@
       <span class="title" *ngSwitchCase="OPERATION_TRANSFER_OM"
         >{{success ? 'Transfert effectué' : 'Echec Transfert'}}</span
       >
+      <span class="title" *ngSwitchCase="OPERATION_TYPE_INTERNATIONAL_TRANSFER"
+        >{{success ? 'Transfert effectué' : 'Echec Transfert'}}</span
+      >
       <span class="title" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
         >{{success ? 'Transfert effectué' : 'Echec Transfert'}}</span
       >
@@ -182,6 +185,13 @@
           *ngSwitchCase="OPERATION_TRANSFER_OM"
         >
         </app-item-transfert-om>
+        <app-item-transfert-om
+          [omTransfertInfos]="opXtras"
+          [isFromHistory]="isOpenedFromHistory"
+          [transferHistoryItem]="historyTransactionItem"
+          *ngSwitchCase="OPERATION_TYPE_INTERNATIONAL_TRANSFER"
+        >
+        </app-item-transfert-om>
         <app-item-recharge-credit
           [modifiable]="false"
           [amount]="amount"
@@ -231,7 +241,8 @@
         >
           <div class="left-block">Bénéficiaire</div>
           <div class="right-block scb-text-gray">
-            <span class="numero">{{recipientMsisdn|phoneNumberDisplay}}</span>
+            <span class="numero">{{ purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER ? '(' + opXtras?.country?.callId + ') '
+              : ''}} {{recipientMsisdn|phoneNumberDisplay}}</span>
             <span class="name">
               {{buyForMe ? 'Moi même' : recipientName ? recipientName : 'Autre'}}
             </span>
@@ -245,7 +256,7 @@
           </div>
         </ng-template>
       </div>
-      <div class="details">
+      <div class="details" *ngIf="purchaseType !== OPERATION_TYPE_INTERNATIONAL_TRANSFER">
         <div class="left-block">Paiement par</div>
         <div class="right-block scb-text-gray">
           <span class="numero">
@@ -262,10 +273,33 @@
           <div class="right-block scb-text-gray">
             <span class="numero">350 FCFA</span>
             <span class="name">Tous les 30 jours</span>
-          </div></div>
+          </div>
+        </div>
 			</ng-container>
+      <div class="details details-pays" *ngIf="purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER">
+        <div class="left-block">Pays</div>
+        <div class="right-block inline scb-text-gray">
+          <img [src]="opXtras?.country?.flagIcon" class="flag" alt="">
+          <span class="numero">{{opXtras?.country?.countryName}}</span>
+        </div>
+      </div>
       <div class="details details-date">
-        <div class="left-block">Date d'achat</div>
+        <div class="left-block">
+          <ng-container [ngSwitch]="purchaseType">
+            <ng-container *ngSwitchCase="OPERATION_TYPE_INTERNATIONAL_TRANSFER">
+              Date de transfert
+            </ng-container>
+            <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">
+              Date de transfert
+            </ng-container>
+            <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM">
+              Date de transfert
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              Date d'achat
+            </ng-container>
+          </ng-container>
+        </div>
         <div class="right-block scb-text-gray">
           <span class="numero" *ngIf="!isOpenedFromHistory">{{dateAchat}}</span>
           <span class="numero" *ngIf="isOpenedFromHistory">{{formatDate(historyTransactionItem?.operationDate) | date:'dd-MM-yyyy à hh:mm'}}</span>
@@ -384,6 +418,9 @@
           Faire un autre achat de pass</ng-container
         >
         <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM">
+          Faire un autre transfert
+        </ng-container>
+        <ng-container *ngSwitchCase="OPERATION_TYPE_INTERNATIONAL_TRANSFER">
           Faire un autre transfert
         </ng-container>
         <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">

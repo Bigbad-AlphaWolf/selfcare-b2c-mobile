@@ -1470,6 +1470,25 @@ export function isDelayedBill(bill: InvoiceOrange) {
   );
 }
 
+export const IRT_TRANSFER_REASONS = [
+  { value: 'Achat de bien et service', id: 1 },
+  { value: 'Assistance familiale', id: 2 },
+  { value: 'Epargne', id: 3 },
+  { value: 'Frais médicaux', id: 4 },
+  { value: 'Frais scolaires', id: 5 },
+  { value: 'Investissement', id: 6 },
+  { value: 'Oeuvres et dons', id: 7 },
+];
+
+export function formatCountryCallId(callId: string) {
+  if (callId.startsWith('+')) {
+    return callId.substring(1);
+  } else if (callId.startsWith('00')) {
+    return callId.substring(2);
+  }
+  return callId;
+}
+
 // mobile or fixe
 export enum MSISDN_TYPE {
   MOBILE = 'MOBILE',

@@ -147,11 +147,26 @@ ion-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
+      &.with-padding {
+        padding-left: 83px;
+      }
+      .country-block {
+        position: absolute;
+        left: 0;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        .country-flag {
+          margin-right: 6px;
+        }
+      }
       .title {
         font-family: HelveticaNeueLTStd-Bd;
         font-size: 16px;
         line-height: 1.5;
         display: block;
+        margin-bottom: -3px;
       }
       .recipient {
         font-family: HelveticaNeueLTStd-Roman;
@@ -176,6 +191,9 @@ ion-content {
         display: block;
         white-space: nowrap;
       }
+    }
+    .irt-reason {
+      // font-family: 'HelveticaNeueLTStd-Roman' !important;
     }
   }
 
