@@ -1,0 +1,24 @@
+<div class="popup-container">
+	<div class="icon">
+		<img src="assets/images/icons-warning.svg" alt="">
+	</div>
+	<div class="popup-container-text">
+		<div class="header">
+			Compte Orange Money bloqué
+		</div>
+		<div class="text">
+			Pour continuer à utiliser les services d’Orange Money, merci d’entamer la procédure de déblocage.<br />
+ <span *ngIf="0">
+	Il vous reste encore 2 tentatives…
+ </span>
+		</div>
+		<ion-menu-toggle>
+			<span (click)="goToUnbblockOMAccountPage()" class="link scb-text-orange">
+				Débloquer mon compte
+			</span>
+		</ion-menu-toggle>
+	</div>
+	<div (click)="closePopUp()" class="close">
+		<img src="assets/images/close.svg" alt="">
+	</div>
+</div>

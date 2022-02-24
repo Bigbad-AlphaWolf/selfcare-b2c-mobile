@@ -1,0 +1,58 @@
+@import 'src/app/app';
+
+.popup-container {
+  width: 90%;
+  margin: 0 auto;
+  border-radius: 6px;
+  border: solid 1px #fc0;
+  background-color: rgba(255, 204, 0, 0.2);
+  border-left: 6px solid #fc0;
+  padding: 20px 15px;
+  position: relative;
+  margin-top: 10px;
+  .icon {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 10px;
+  }
+  .popup-container-text {
+    display: inline-block;
+    width: 80%;
+    .header {
+      //display: block;
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 16px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      margin-bottom: 5px;
+    }
+    .text {
+      //display: block;
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 14px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.29;
+      letter-spacing: normal;
+    }
+    .link {
+      display: block;
+      font-family: HelveticaNeue;
+      font-size: 16px;
+      font-weight: bold;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.88;
+      letter-spacing: normal;
+    }
+  }
+  .close {
+    position: absolute;
+    right: 15px;
+    top: 20px;
+  }
+}

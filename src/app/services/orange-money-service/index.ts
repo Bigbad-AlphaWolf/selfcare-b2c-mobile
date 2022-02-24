@@ -294,14 +294,14 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
 
 export const RECLAMATION_TRANSACTIONS_CONDITIONS =
   'Je demande la correction de cette erreur de saisie par une récupération du montant ci-dessus. Je reconnais que OFMS n’a aucune obligation de résultat pour la récupération du montant de la transaction envoyé par erreur notamment si tout ou partie dudit montant n’est plus disponible. Je certifie que mes déclarations ci-dessus sont complètes, authentiques et faites de bonne foi. Je certifie être pleinement conscient que toute déclaration mensongère ou fausse est susceptible de déclencher une mise en œuvre de ma responsabilité civile et pénale devant les juridictions compétentes. Je reste entièrement responsable de tout préjudice direct ou indirect occasionné par mes déclarations effectuées dans le présent formulaire';
-export const DEFAULT_ERROR_MSG_CHANGE_PIN_WITH_BIRTH_DATE_VALIDATION =
-  'Le code ne doit pas être votre date de naissance.';
-export const DEFAULT_ERROR_MSG_CHANGE_PIN_VALIDATION =
-  'Le code ne doit pas comporter des chiffres consécutifs. Ex. (1111, 1234, …)';
+export const DEFAULT_ERROR_MSG_CHANGE_PIN_WITH_BIRTH_DATE_VALIDATION = 'Le code ne doit pas être votre date de naissance.';
+export const DEFAULT_ERROR_MSG_CHANGE_PIN_VALIDATION = 'Le code ne doit pas comporter des chiffres consécutifs. Ex. (1111, 1234, …)';
 export const SUCCESS_CHANGE_PIN_MSG =
   'Vous venez de changer votre code secret Orange Money. Ne le communiquez à personne, ce code reste confidentiel.';
 export const INITIALISE_PIN_OM_MSG =
   'Vous venez de crééer votre code secret Orange Money. Ne le communiquez à personne, ce code reste confidentiel.';
+export const RESET_PIN_OM_MSG =
+  'Vous venez de réinitialiser votre code secret Orange Money. Ne le communiquez à personne, ce code reste confidentiel.';
 export const LIST_DENIED_PIN_OM: string[] = [
   '1111',
   '2222',

@@ -4,10 +4,10 @@
   </div>
 
   <div class="number-options">
-    <ng-container *ngIf="phones$ | async as phones">
+    <ng-container *ngIf="phones">
       <mat-radio-group (change)="onOptionChange($event.value)" *ngIf="phones?.length else elseBlock">
         <mat-radio-button
-          *ngFor="let phoneItem of phones$ | async as phones; index as i; count as size"
+          *ngFor="let phoneItem of phones; index as i; count as size"
           [value]="phoneItem"
           [checked]=" phone ? phone === phoneItem.phone : i === 0 "
         >
