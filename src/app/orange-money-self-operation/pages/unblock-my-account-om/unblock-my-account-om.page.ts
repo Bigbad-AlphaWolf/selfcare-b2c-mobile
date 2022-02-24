@@ -239,7 +239,7 @@ export class UnblockMyAccountOmPage implements OnInit {
 				this.errorLoadingChallengeMsg = 'Une erreur est survenue. Veuillez réessayer';
 
 				if(err?.error.messageDescriptionList?.length) {
-					this.errorLoadingChallengeMsg = err?.error?.messageDescriptionList.join(' ');
+					this.errorLoadingChallengeMsg = err?.error?.messageDescriptionList.join(' .');
 				} else {
 					this.errorLoadingChallengeMsg = err?.error?.message;
 				}

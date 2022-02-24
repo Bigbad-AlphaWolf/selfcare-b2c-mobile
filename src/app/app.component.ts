@@ -20,6 +20,8 @@ import {AppVersion} from '@ionic-native/app-version/ngx';
 import {AssistanceHubPage} from './assistance-hub/assistance-hub.page';
 import {ParrainagePage} from './parrainage/parrainage.page';
 import {MyOfferPlansPage} from './pages/my-offer-plans/my-offer-plans.page';
+import {Diagnostic} from '@ionic-native/diagnostic/ngx';
+import {ContactsService} from './services/contacts-service/contacts.service';
 import {OrangeMoneyService} from './services/orange-money-service/orange-money.service';
 
 const ls = new SecureLS({encodingType: 'aes'});
@@ -48,7 +50,9 @@ export class AppComponent {
     private uid: Uid,
     private androidPermissions: AndroidPermissions,
     private appVersion: AppVersion,
-    private navContr: NavController
+    private navContr: NavController,
+    private diagnostic: Diagnostic,
+    private contactService: ContactsService
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -65,8 +69,23 @@ export class AppComponent {
     // headers.set(':authority','orangeetmoi.orange.sn')
 
     this.imageLoaderConfig.setHttpHeaders(headers);
-
     this.initializeApp();
+  }
+
+  loadContacts() {
+    this.diagnostic.getContactsAuthorizationStatus().then(
+      contactStatus => {
+        if (
+          contactStatus === this.diagnostic.permissionStatus.GRANTED ||
+          contactStatus === this.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE
+        ) {
+          this.contactService.getAllContacts().subscribe();
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 
   async getVersion() {
@@ -83,6 +102,7 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       // Initialize BackButton Eevent.
+      this.loadContacts();
       this.getVersion();
       if (this.platform && this.platform.backButton) {
         this.platform.backButton.subscribe(() => {

@@ -3,6 +3,8 @@
     <mat-form-field class="scb-input-row" appearance="outline">
         <mat-label>N° bénéficiaire &nbsp;&nbsp;</mat-label>
         <input
+        (focus)="onFocus($event)"
+        (focusout)="onFocusOut($event)"
         [ngModelOptions]="{standalone: true}"
           #numberInput
           matInput

@@ -192,19 +192,21 @@ export class OperationSuccessFailModalPage implements OnInit {
     modal.onDidDismiss().then(async (response) => {
       if (response.data && response.data.success) {
         await this.modalController.dismiss();
-        this.openBlockTxnModalSuccess();
+				const hasOMStatusFull = response?.data?.hasOMStatusFull;
+        this.openBlockTxnModalSuccess(hasOMStatusFull);
       }
     });
     return await modal.present();
   }
 
-  async openBlockTxnModalSuccess() {
+  async openBlockTxnModalSuccess(userHasOmStatusFull?: boolean) {
     const modal = await this.modalController.create({
       component: BlockTransferSuccessPopupComponent,
       cssClass: 'success-or-fail-modal',
       backdropDismiss: false,
       componentProps: {
         transactionToBlock: this.historyTransactionItem,
+				isUserOMFull: userHasOmStatusFull
       },
     });
     return await modal.present();

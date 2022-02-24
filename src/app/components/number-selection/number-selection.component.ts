@@ -31,6 +31,9 @@ import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
 import { CODE_FORMULE_FIX_PREPAID } from 'src/app/dashboard';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
+import { PermissionSettingsPopupComponent } from '../permission-settings-popup/permission-settings-popup.component';
 
 @Component({
   selector: 'oem-number-selection',
@@ -64,6 +67,9 @@ export class NumberSelectionComponent implements OnInit {
   isLightMod: boolean;
   loadingRecents: boolean;
   NO_RECENTS_MSG = NO_RECENTS_MSG;
+  showRecentMessage: boolean;
+  recentMessage: string;
+  hideRecentsList: boolean;
 
   constructor(
     private modalController: ModalController,
@@ -72,7 +78,9 @@ export class NumberSelectionComponent implements OnInit {
     private authService: AuthenticationService,
     private changeDetectorRef: ChangeDetectorRef,
     private recentsService: RecentsService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private diagnostic: Diagnostic,
+    private contactService: ContactsService
   ) {}
 
   ngOnInit() {
@@ -99,6 +107,7 @@ export class NumberSelectionComponent implements OnInit {
         share()
       );
       this.checkOmAccount();
+      this.checkContactsAuthorizationStatus();
     }
   }
 
@@ -142,6 +151,38 @@ export class NumberSelectionComponent implements OnInit {
           return of(err);
         })
       );
+  }
+
+  checkContactsAuthorizationStatus() {
+    this.diagnostic.getContactsAuthorizationStatus().then(
+      (contactStatus) => {
+        if (
+          contactStatus === this.diagnostic.permissionStatus.NOT_REQUESTED ||
+          contactStatus === this.diagnostic.permissionStatus.DENIED_ALWAYS
+        ) {
+          this.showRecentMessage = true;
+          this.recentMessage =
+            "Pour afficher vos contacts/bénéficiaires récents, vous devez autoriser l'accés à vos contacts.";
+        }
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+
+  handleInputFocus(event) {
+    this.hideRecentsList = event;
+  }
+
+  async openSettingsPopup() {
+    await this.modalController.dismiss();
+    const modal = await this.modalController.create({
+      component: PermissionSettingsPopupComponent,
+      cssClass: 'success-or-fail-modal',
+    });
+    modal.onDidDismiss().then((response) => {});
+    return modal.present();
   }
 
   async onContinue(phone?: string) {
@@ -278,8 +319,6 @@ export class NumberSelectionComponent implements OnInit {
         this.isProcessing = false;
         this.loadingNumbers = false;
         this.changeDetectorRef.detectChanges();
-        console.log(this.isProcessing, this.loadingNumbers);
-
         if (
           msisdn === 'error' &&
           this.data.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT
@@ -299,7 +338,6 @@ export class NumberSelectionComponent implements OnInit {
         this.modalController.dismiss();
         this.isProcessing = false;
         this.isErrorProcessing = true;
-        console.log(this.isProcessing, this.loadingNumbers);
       }
     );
   }
@@ -374,16 +412,12 @@ export class NumberSelectionComponent implements OnInit {
     }
 
     if (typeEvent === 'event') {
-      console.log('follow', followEventSucess, payload);
-
       this.followAnalyticsService.registerEventFollow(
         followEventSucess,
         'event',
         payload
       );
     } else {
-      console.log('follow', followEventError, payload);
-
       this.followAnalyticsService.registerEventFollow(
         followEventError,
         'error',

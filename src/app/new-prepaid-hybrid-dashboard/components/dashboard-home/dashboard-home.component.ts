@@ -11,6 +11,7 @@ import { ModalController, Platform } from '@ionic/angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {
+  PROFILE_TYPE_PREPAID,
   PromoBoosterActive,
   SargalSubscriptionModel,
   SARGAL_NOT_SUBSCRIBED,
@@ -124,6 +125,7 @@ export class DashboardHomeComponent implements OnInit {
 
   canDoSOS: boolean;
   isIos: boolean;
+  PROFILE_TYPE_PREPAID = PROFILE_TYPE_PREPAID;
 
   storiesByCategory: {
     categorie: {

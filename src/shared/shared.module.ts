@@ -76,6 +76,8 @@ import {FormatDataVolume2Pipe} from './pipes/format-data-volume-2.pipe';
 import {FormatDuration2Pipe} from './pipes/format-duration-2.pipe';
 import {SelectNumberForBillComponent} from 'src/app/components/select-number-for-bill/select-number-for-bill.component';
 import {UnpaidBillModalComponent} from 'src/app/components/unpaid-bill-modal/unpaid-bill-modal.component';
+import {PermissionSettingsPopupComponent} from 'src/app/components/permission-settings-popup/permission-settings-popup.component';
+import {OpenNativeSettings} from '@ionic-native/open-native-settings/ngx';
 import {PopUpCompteOmBloquedComponent} from './pop-up-compte-om-bloqued/pop-up-compte-om-bloqued.component';
 
 @NgModule({
@@ -142,7 +144,8 @@ import {PopUpCompteOmBloquedComponent} from './pop-up-compte-om-bloqued/pop-up-c
     FormatDuration2Pipe,
     SelectNumberForBillComponent,
     UnpaidBillModalComponent,
-    PopUpCompteOmBloquedComponent
+    PopUpCompteOmBloquedComponent,
+    PermissionSettingsPopupComponent
   ],
   imports: [CommonModule, IonicImageLoader, RouterModule, ComponentsModule, MaterialComponentsModule, PipesModule],
   entryComponents: [
@@ -180,7 +183,8 @@ import {PopUpCompteOmBloquedComponent} from './pop-up-compte-om-bloqued/pop-up-c
     BlockTransferSuccessPopupComponent,
     KioskLocatorPopupComponent,
     SelectNumberForBillComponent,
-    UnpaidBillModalComponent
+    UnpaidBillModalComponent,
+    PermissionSettingsPopupComponent
   ],
   exports: [
     BanniereComponent,
@@ -242,9 +246,10 @@ import {PopUpCompteOmBloquedComponent} from './pop-up-compte-om-bloqued/pop-up-c
     FormatDuration2Pipe,
     SelectNumberForBillComponent,
     UnpaidBillModalComponent,
+    PermissionSettingsPopupComponent,
     PopUpCompteOmBloquedComponent
   ],
-  providers: [Contacts, SocialSharing, {provide: MAT_BOTTOM_SHEET_DATA, useValue: {}}],
+  providers: [Contacts, SocialSharing, OpenNativeSettings, {provide: MAT_BOTTOM_SHEET_DATA, useValue: {}}],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule {}
