@@ -1328,7 +1328,16 @@ export class NewPinpadModalPage implements OnInit {
         this.pinError = err.error.message;
         this.canRetry = true;
         this.cappingFees = +err.error.fees;
-      } else if (
+      }  else if(err.error.errorCode.match('Erreur-017')) {
+				const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
+					this.omPhoneNumber
+				);
+				omUser.active = false;
+				this.pinError = `Code secret est invalide. Vous venez de bloquer votre compte Orange Money. Veuillez passer dans une de nos agences pour le reactiver!`;
+				this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
+					this.pinHasError = true;
+					this.errorBulletActive = true;
+			} else if (
         err.error.errorCode.match('Erreur-015') ||
         err.error.errorCode.match('Erreur-016') ||
         (!!err.error.errorCode.match('2408') &&

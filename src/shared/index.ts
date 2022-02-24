@@ -1444,6 +1444,9 @@ export enum OM_STATUS_TEXTS {
   ERROR_DECAPPING_ACCOUNT = `Une erreur est survenue lors du traitement de votre demande de déplafonnement`,
 }
 
+export const ERROR_MSG_DEPLAFONNEMENT_ON_INIT_UNBLOCK_OM = "Déplafonnez votre compte via l'appli Orange & Moi ou dans notre réseau d’agence Orange et Kiosque avant de pouvoir utiliser ce service.";
+
+
 export const OTHER_CATEGORIES = 'OTHER_CATEGORIES';
 
 export enum CountriesIndicatif {
