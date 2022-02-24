@@ -16,13 +16,16 @@
     </div>
   </ng-container>
   <ng-template #selectMsisdn>
-    <div class="title">Payer une facture Sonatel</div>
-    <div class="desc scb-text-gray">Veuillez saisir le numéro de la ligne fixe</div>
+    <div class="title">Payer une facture {{operation === OPERATION_TYPE_PAY_BILL ? 'Sonatel' : 'Teranga'}}</div>
+    <div class="desc scb-text-gray">Veuillez saisir le numéro de la ligne {{operation === OPERATION_TYPE_PAY_BILL ? 'fixe' : 'mobile'}}</div>
     <div class="beneficiary-number">
       <form novalidate autocomplete="false" [formGroup]="form">
         <mat-form-field class="scb-input-row" appearance="outline">
           <mat-label>N° de la ligne</mat-label>
           <input #inputTel matInput type="tel" [value]="phoneNumber" maxlength="20" formControlName="number" />
+          <span (click)="openLinesModal($event)" matSuffix class="scb-text-orange my-nums">
+            Mes Numéros
+          </span>
         </mat-form-field>
       </form>
     </div>

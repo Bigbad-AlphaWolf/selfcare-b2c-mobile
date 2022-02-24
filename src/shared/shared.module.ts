@@ -79,6 +79,8 @@ import { UnpaidBillModalComponent } from 'src/app/components/unpaid-bill-modal/u
 import { SelectIrtRecipientPopupComponent } from 'src/app/transfert-hub-services/components/select-irt-recipient-popup/select-irt-recipient-popup.component';
 import { SelectCountryModalComponent } from 'src/app/transfert-hub-services/components/select-country-modal/select-country-modal.component';
 import { SelectElementModalComponent } from './select-element-modal/select-element-modal.component';
+import { PermissionSettingsPopupComponent } from 'src/app/components/permission-settings-popup/permission-settings-popup.component';
+import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 
 @NgModule({
   declarations: [
@@ -147,6 +149,7 @@ import { SelectElementModalComponent } from './select-element-modal/select-eleme
     UnpaidBillModalComponent,
     SelectCountryModalComponent,
     SelectElementModalComponent,
+    PermissionSettingsPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -195,6 +198,7 @@ import { SelectElementModalComponent } from './select-element-modal/select-eleme
     SelectIrtRecipientPopupComponent,
     SelectCountryModalComponent,
     SelectElementModalComponent,
+    PermissionSettingsPopupComponent,
   ],
   exports: [
     BanniereComponent,
@@ -259,10 +263,12 @@ import { SelectElementModalComponent } from './select-element-modal/select-eleme
     SelectIrtRecipientPopupComponent,
     SelectCountryModalComponent,
     SelectElementModalComponent,
+    PermissionSettingsPopupComponent,
   ],
   providers: [
     Contacts,
     SocialSharing,
+    OpenNativeSettings,
     { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} },
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -1486,3 +1486,9 @@ export function formatCountryCallId(callId: string) {
   }
   return callId;
 }
+
+// mobile or fixe
+export enum MSISDN_TYPE {
+  MOBILE = 'MOBILE',
+  FIXE = 'FIXE',
+}

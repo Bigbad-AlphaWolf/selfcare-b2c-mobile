@@ -8,7 +8,7 @@ import {
   forkJoin,
   throwError,
 } from 'rxjs';
-import { tap, switchMap, map, catchError, delay } from 'rxjs/operators';
+import { tap, switchMap, map, catchError } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {

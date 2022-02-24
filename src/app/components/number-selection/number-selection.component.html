@@ -28,7 +28,7 @@
       </mat-radio-button>
     </mat-radio-group>
   </div>
-  <oem-phone-number-provider [hidden]="!showInput" [showInput]="showInput" (onPhoneSelected)="onPhoneSelected($event)">
+  <oem-phone-number-provider (onFocused)="handleInputFocus($event)" [hidden]="!showInput" [showInput]="showInput" (onPhoneSelected)="onPhoneSelected($event)">
   </oem-phone-number-provider>
   <div *ngIf="phoneIsNotValid" class="error-msg scb-text-red-error">
     Veuillez choisir un numéro de destinataire valide pour continuer
@@ -43,7 +43,7 @@
   <div class="loading-container" *ngIf="loadingRecents">
     <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
   </div>
-  <div class="recents" *ngIf="recentsRecipients$ | async as recents">
+  <div class="recents" *ngIf="!hideRecentsList && recentsRecipients$ | async as recents">
     <div class="recent-description scb-text-full-black" *ngIf="recents.length">
       Récents
     </div>
@@ -59,6 +59,10 @@
           }}</span>
       </div>
     </div>
+  </div>
+  <div class="access-recents" *ngIf="showRecentMessage && !hideRecentsList">
+    {{recentMessage}}
+    <span class="link" (click)="openSettingsPopup()">Pour autoriser, cliquez ici</span>
   </div>
   <div class="btn-continue">
     <button [id]="'btn-validate-beneficiary' | generateIdForTA" mat-button [disabled]="isProcessing" (click)="onContinue()">
