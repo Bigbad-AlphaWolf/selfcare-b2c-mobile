@@ -80,7 +80,7 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
     const os = isIOS ? 'iOS' : 'Android';
 
     const data: ChangePinOm = {
-      msisdn: this.omInfos.msisdn,
+      msisdn: this.operationType === OPERATION_RESET_PIN_OM ? this.authImplicitInfos.msisdn : this.omInfos.msisdn,
       pin,
       new_pin: newPin,
       confirm_pin: confirmNewPin,

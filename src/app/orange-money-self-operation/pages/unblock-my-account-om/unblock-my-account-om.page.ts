@@ -239,7 +239,6 @@ export class UnblockMyAccountOmPage implements OnInit {
 			catchError((err) => {
 				this.isLoadingChallenge = false;
 				this.errorLoadingChallengeMsg = 'Une erreur est survenue. Veuillez réessayer';
-
 				if(err?.error.messageDescriptionList?.length) {
 					this.errorLoadingChallengeMsg = err?.error?.messageDescriptionList.join(' .');
 					if(this.errorLoadingChallengeMsg.includes('Déplafonnez')) {
