@@ -21,6 +21,28 @@
     margin-top: 10px;
     margin-bottom: 20px;
 
+    .country-block {
+      width: 53px;
+      height: 1px;
+      .country-block-container {
+        display: flex;
+        position: absolute;
+        top: -22px;
+        .flag-icon {
+          margin-right: 10px;
+        }
+      }
+    }
+
+    input {
+      font-family: HelveticaNeueLTStd-Roman !important;
+      height: 25px;
+      padding-left: 12px;
+      &.empty {
+        height: unset !important;
+      }
+    }
+
     .icon {
       position: absolute;
       right: 122px;

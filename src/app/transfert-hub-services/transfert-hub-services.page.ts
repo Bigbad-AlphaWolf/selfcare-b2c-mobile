@@ -48,7 +48,6 @@ import {
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amount.page';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { SelectIrtRecipientPopupComponent } from './components/select-irt-recipient-popup/select-irt-recipient-popup.component';
 import { TRANSFER_OM_INTERNATIONAL_COUNTRIES } from '../utils/constants';
 @Component({
   selector: 'app-transfert-hub-services',
@@ -218,9 +217,6 @@ export class TransfertHubServicesPage implements OnInit {
       return;
     }
     switch (opt.code) {
-      case OPERATION_TYPE_INTERNATIONAL_TRANSFER:
-        this.showBeneficiaryModal(SelectIrtRecipientPopupComponent);
-        break;
       case OPERATION_TRANSFERT_ARGENT:
         this.showBeneficiaryModal();
         break;
@@ -369,15 +365,7 @@ export class TransfertHubServicesPage implements OnInit {
         country: TRANSFER_OM_INTERNATIONAL_COUNTRIES[0],
       },
     });
-    modal.onWillDismiss().then((response: any) => {
-      if (
-        response?.data?.recipientMsisdn &&
-        response?.data?.purchaseType !== OPERATION_TYPE_INTERNATIONAL_TRANSFER
-      ) {
-        const pageData = response.data;
-        this.appRouting.goSetTransferAmountPage(pageData);
-      }
-    });
+    modal.onWillDismiss().then((response) => {});
     return await modal.present();
   }
 
