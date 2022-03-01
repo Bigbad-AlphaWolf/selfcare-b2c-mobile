@@ -215,12 +215,10 @@
       },
       "@batch.com/cordova-plugin": {
         "BATCHSDK_ANDROID_VERSION": "1.18.+",
-        "BATCHSDK_ANDROID_LOCALBROADCAST_VERSION": "1.0.0"
+        "BATCHSDK_ANDROID_LOCALBROADCAST_VERSION": "1.0.0",
+        "BATCHSDK_IOS_VERSION": "~> 1.17"
       }
     },
-    "platforms": [
-      "android",
-      "ios"
-    ]
+    "platforms": ["android", "ios"]
   }
 }
