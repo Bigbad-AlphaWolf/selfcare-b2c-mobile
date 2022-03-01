@@ -76,7 +76,6 @@ import { FormatDataVolume2Pipe } from './pipes/format-data-volume-2.pipe';
 import { FormatDuration2Pipe } from './pipes/format-duration-2.pipe';
 import { SelectNumberForBillComponent } from 'src/app/components/select-number-for-bill/select-number-for-bill.component';
 import { UnpaidBillModalComponent } from 'src/app/components/unpaid-bill-modal/unpaid-bill-modal.component';
-import { SelectIrtRecipientPopupComponent } from 'src/app/transfert-hub-services/components/select-irt-recipient-popup/select-irt-recipient-popup.component';
 import { SelectCountryModalComponent } from 'src/app/transfert-hub-services/components/select-country-modal/select-country-modal.component';
 import { SelectElementModalComponent } from './select-element-modal/select-element-modal.component';
 import { PermissionSettingsPopupComponent } from 'src/app/components/permission-settings-popup/permission-settings-popup.component';
@@ -93,7 +92,6 @@ import { PopUpCompteOmBloquedComponent } from './pop-up-compte-om-bloqued/pop-up
     NoIonSelectArrowDirective,
     OemOperationsComponent,
     SelectBeneficiaryPopUpComponent,
-    SelectIrtRecipientPopupComponent,
     RapidoSelectionComponent,
     WoyofalSelectionComponent,
     FavoriteWoyofalComponent,
@@ -197,7 +195,6 @@ import { PopUpCompteOmBloquedComponent } from './pop-up-compte-om-bloqued/pop-up
     KioskLocatorPopupComponent,
     SelectNumberForBillComponent,
     UnpaidBillModalComponent,
-    SelectIrtRecipientPopupComponent,
     SelectCountryModalComponent,
     SelectElementModalComponent,
     PermissionSettingsPopupComponent,
@@ -263,7 +260,6 @@ import { PopUpCompteOmBloquedComponent } from './pop-up-compte-om-bloqued/pop-up
     FormatDuration2Pipe,
     SelectNumberForBillComponent,
     UnpaidBillModalComponent,
-    SelectIrtRecipientPopupComponent,
     SelectCountryModalComponent,
     SelectElementModalComponent,
     PermissionSettingsPopupComponent,

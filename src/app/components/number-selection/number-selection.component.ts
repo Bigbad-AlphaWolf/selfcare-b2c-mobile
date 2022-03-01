@@ -42,8 +42,7 @@ import { PermissionSettingsPopupComponent } from '../permission-settings-popup/p
 })
 export class NumberSelectionComponent implements OnInit {
   numbers$: Observable<string[]>;
-  recentsRecipients$: Observable<any[]>;
-
+  recents: any[];
   numberSelected: string = '';
   numberFromInput: string = '';
 
@@ -113,7 +112,7 @@ export class NumberSelectionComponent implements OnInit {
 
   getRecents() {
     this.loadingRecents = true;
-    this.recentsRecipients$ = this.recentsService
+    this.recentsService
       .fetchRecents(this.data.purchaseType, 2)
       .pipe(
         map((recents: RecentsOem[]) => {
@@ -128,6 +127,7 @@ export class NumberSelectionComponent implements OnInit {
           return results;
         }),
         tap((res: { name: string; msisdn: string }[]) => {
+          this.recents = res;
           this.followAnalyticsService.registerEventFollow(
             'Get_recents_destinataire_OM_success',
             'event',
@@ -148,9 +148,11 @@ export class NumberSelectionComponent implements OnInit {
               error: err.status,
             }
           );
-          return of(err);
-        })
-      );
+          return of([]);
+        }),
+        share()
+      )
+      .subscribe();
   }
 
   checkContactsAuthorizationStatus() {

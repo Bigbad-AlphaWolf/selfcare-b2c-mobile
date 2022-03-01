@@ -87,10 +87,12 @@ export const CATEGORY_MPO = {
 };
 
 export const TRANSFER_OM_INTERNATIONAL_COUNTRIES = [
-  // {
-  //   countryName: 'Sénégal',
-  //   flagIcon: 'assets/flags/.png',
-  // },
+  {
+    countryName: 'Sénégal',
+    flagIcon: 'assets/flags/senegal.png',
+    callId: '+221',
+    code: 'senegal',
+  },
   {
     countryName: "Côte d'Ivoire",
     callId: '+225',

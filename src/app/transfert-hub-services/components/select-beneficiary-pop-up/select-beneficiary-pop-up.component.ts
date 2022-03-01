@@ -26,6 +26,10 @@ import { ModalSuccessModel } from 'src/app/models/modal-success-infos.model';
 import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { PermissionSettingsPopupComponent } from 'src/app/components/permission-settings-popup/permission-settings-popup.component';
+import { TRANSFER_OM_INTERNATIONAL_COUNTRIES } from 'src/app/utils/constants';
+import { OPERATION_TYPE_INTERNATIONAL_TRANSFER } from 'src/app/utils/operations.constants';
+import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
+import { SelectCountryModalComponent } from '../select-country-modal/select-country-modal.component';
 
 @Component({
   selector: 'app-select-beneficiary-pop-up',
@@ -48,12 +52,13 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   errorMsg: string;
   dataPayload: any;
   senderMsisdn: string;
-  recentsRecipients$: Observable<any[]>;
+  recents: any[];
   loadingRecents: boolean;
   NO_RECENTS_MSG = NO_RECENTS_MSG;
   showRecentMessage: boolean;
   recentMessage: string;
   hideRecentsList: boolean;
+  @Input() country;
 
   constructor(
     private dialog: MatDialog,
@@ -63,7 +68,8 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     private followAnalytics: FollowAnalyticsService,
     private dashbServ: DashboardService,
     private recentsService: RecentsService,
-    private diagnostic: Diagnostic
+    private diagnostic: Diagnostic,
+    private appRouting: ApplicationRoutingService
   ) {}
 
   ngOnInit() {
@@ -77,7 +83,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
 
   getRecents() {
     this.loadingRecents = true;
-    this.recentsRecipients$ = this.recentsService
+    this.recentsService
       .fetchRecents(OPERATION_TRANSFER_OM, 2)
       .pipe(
         map((recents: RecentsOem[]) => {
@@ -100,11 +106,15 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
           });
           return results;
         }),
+        tap((res: { name: string; msisdn: string }[]) => {
+          this.recents = res;
+        }),
         catchError((err) => {
           this.loadingRecents = false;
           throw new Error(err);
         })
-      );
+      )
+      .subscribe();
   }
 
   checkContactsAuthorizationStatus() {
@@ -171,9 +181,54 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   }
 
   processGetContactInfos(contact: any, selectedNumber: any) {
+    switch (true) {
+      case selectedNumber.startsWith('+221') ||
+        selectedNumber.startsWith('00221'):
+        this.country = TRANSFER_OM_INTERNATIONAL_COUNTRIES[0];
+        selectedNumber.startsWith('+221')
+          ? (selectedNumber = selectedNumber.substring(4))
+          : (selectedNumber = selectedNumber.substring(5));
+        break;
+      case selectedNumber.startsWith('+225') ||
+        selectedNumber.startsWith('00225'):
+        this.country = TRANSFER_OM_INTERNATIONAL_COUNTRIES[1];
+        selectedNumber.startsWith('+225')
+          ? (selectedNumber = selectedNumber.substring(4))
+          : (selectedNumber = selectedNumber.substring(5));
+        break;
+      case selectedNumber.startsWith('+226') ||
+        selectedNumber.startsWith('00226'):
+        this.country = TRANSFER_OM_INTERNATIONAL_COUNTRIES[2];
+        selectedNumber.startsWith('+226')
+          ? (selectedNumber = selectedNumber.substring(4))
+          : (selectedNumber = selectedNumber.substring(5));
+        break;
+      case selectedNumber.startsWith('+223') ||
+        selectedNumber.startsWith('00223'):
+        this.country = TRANSFER_OM_INTERNATIONAL_COUNTRIES[3];
+        selectedNumber.startsWith('+223')
+          ? (selectedNumber = selectedNumber.substring(4))
+          : (selectedNumber = selectedNumber.substring(5));
+        break;
+      case selectedNumber.startsWith('+227') ||
+        selectedNumber.startsWith('00227'):
+        this.country = TRANSFER_OM_INTERNATIONAL_COUNTRIES[4];
+        selectedNumber.startsWith('+227')
+          ? (selectedNumber = selectedNumber.substring(4))
+          : (selectedNumber = selectedNumber.substring(5));
+        break;
+      case selectedNumber.startsWith('+245') ||
+        selectedNumber.startsWith('00245'):
+        this.country = TRANSFER_OM_INTERNATIONAL_COUNTRIES[5];
+        selectedNumber.startsWith('+245')
+          ? (selectedNumber = selectedNumber.substring(4))
+          : (selectedNumber = selectedNumber.substring(5));
+        break;
+      default:
+        break;
+    }
     if (this.validateNumber(selectedNumber)) {
-      const res = parseIntoNationalNumberFormat(selectedNumber);
-      this.otherBeneficiaryNumber = res;
+      this.otherBeneficiaryNumber = selectedNumber;
       this.getContactFormattedName(contact);
     } else {
       this.hasErrorGetContact = true;
@@ -182,7 +237,18 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   }
 
   validateNumber(phoneNumber: string) {
-    return REGEX_NUMBER_OM.test(phoneNumber);
+    switch (this.country?.callId) {
+      case TRANSFER_OM_INTERNATIONAL_COUNTRIES[0].callId: // Senegal
+        return REGEX_NUMBER_OM.test(phoneNumber);
+      case TRANSFER_OM_INTERNATIONAL_COUNTRIES[1].callId: // Côte d'Ivoire
+        return phoneNumber.length === 10;
+      case TRANSFER_OM_INTERNATIONAL_COUNTRIES[2].callId: // Burkina
+      case TRANSFER_OM_INTERNATIONAL_COUNTRIES[3].callId: // Mali
+      case TRANSFER_OM_INTERNATIONAL_COUNTRIES[4].callId: // Niger
+        return phoneNumber.length === 8;
+      case TRANSFER_OM_INTERNATIONAL_COUNTRIES[5].callId: // Bissau
+        return phoneNumber.length === 9;
+    }
   }
 
   getContactFormattedName(contact: any) {
@@ -219,10 +285,13 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       const payload = {
         senderMsisdn: '',
         recipientMsisdn: this.recipientNumber,
-        recipientFirstname: '',
-        recipientLastname: '',
+        recipientFirstname: this.firstName ? this.firstName : '',
+        recipientLastname: this.lastName ? this.lastName : '',
+        recipientName: `${this.firstName ? this.firstName + ' ' : ''} ${
+          this.lastName ? this.lastName : ''
+        }`,
       };
-      this.getOmPhoneNumberAndCheckrecipientHasOMAccount(payload);
+      this.checkTransferType(payload);
     } else if (this.otherBeneficiaryNumber && this.recipientContactInfos) {
       this.recipientNumber = this.otherBeneficiaryNumber;
       const payload = {
@@ -230,8 +299,9 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
         recipientMsisdn: this.recipientNumber,
         recipientFirstname: this.firstName,
         recipientLastname: this.lastName,
+        recipientName: this.firstName + ' ' + this.lastName,
       };
-      this.getOmPhoneNumberAndCheckrecipientHasOMAccount(payload);
+      this.checkTransferType(payload);
     } else if (recentNumber) {
       const payload = {
         senderMsisdn: '',
@@ -244,6 +314,21 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       this.hasErrorGetContact = true;
       this.errorGetContact =
         'Veuillez choisir un numéro de destinataire valide pour continuer';
+    }
+  }
+
+  checkTransferType(payload: any) {
+    if (
+      this.country?.callId === TRANSFER_OM_INTERNATIONAL_COUNTRIES[0].callId
+    ) {
+      this.getOmPhoneNumberAndCheckrecipientHasOMAccount(payload);
+    } else {
+      const pageData = Object.assign(payload, {
+        purchaseType: OPERATION_TYPE_INTERNATIONAL_TRANSFER,
+        country: this.country,
+      });
+      this.modalController.dismiss(pageData);
+      this.appRouting.goSetTransferAmountPage(pageData);
     }
   }
 
@@ -348,7 +433,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
             purchaseType: 'TRANSFER_MONEY',
           });
           this.modalController.dismiss(pageData);
-          // this.appRouting.goSetAmountPage(pageData);
+          this.appRouting.goSetTransferAmountPage(pageData);
           this.followAnalytics.registerEventFollow(
             'transfert_om_select_beneficiary_success',
             'event',
@@ -436,6 +521,43 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
         });
         this.modalController.dismiss(pageData);
       }
+    });
+    return await modal.present();
+  }
+
+  async openSelectCountryModal(ev: MouseEvent) {
+    ev.stopPropagation();
+    await this.modalController.dismiss();
+    const modal = await this.modalController.create({
+      component: SelectCountryModalComponent,
+      cssClass: 'select-recipient-modal',
+      componentProps: {
+        country: this.country
+          ? this.country
+          : TRANSFER_OM_INTERNATIONAL_COUNTRIES[0],
+      },
+    });
+    modal.onWillDismiss().then(async (response) => {
+      const country = response?.data;
+      switch (country?.callId) {
+        case undefined:
+          break;
+        default:
+          await modal.dismiss();
+          this.reOpenRecipientModal(country);
+          break;
+      }
+    });
+    return await modal.present();
+  }
+
+  async reOpenRecipientModal(country?) {
+    const modal = await this.modalController.create({
+      component: SelectBeneficiaryPopUpComponent,
+      cssClass: 'select-recipient-modal',
+      componentProps: {
+        country,
+      },
     });
     return await modal.present();
   }

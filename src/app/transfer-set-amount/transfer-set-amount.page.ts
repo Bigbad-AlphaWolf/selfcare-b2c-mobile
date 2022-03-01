@@ -178,7 +178,7 @@ export class TransferSetAmountPage implements OnInit {
     this.purchasePayload.purchaseType = this.purchaseType;
     this.purchasePayload.sending_fees = this.sending_fees_Info.effective_fees;
     this.purchasePayload.sending_fees_Info = this.sending_fees_Info;
-    this.purchasePayload.reason = this.reason.value;
+    this.purchasePayload.reason = this.reason?.value;
     if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
       this.purchasePayload.recipientFirstname =
         this.setAmountForm.value['recipientFirstname'];
