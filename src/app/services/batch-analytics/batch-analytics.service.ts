@@ -15,6 +15,7 @@ export class BatchAnalyticsService {
     batch.start();
     if (isIOS) {
       batch.push.registerForRemoteNotifications();
+      batch.push.setiOSShowForegroundNotifications(true);
     }
   }
 

@@ -111,7 +111,7 @@
     "@angular/compiler": "~12.2.1",
     "@angular/compiler-cli": "~12.2.1",
     "@angular/language-service": "~12.2.1",
-    "@batch.com/cordova-plugin": "^5.1.0",
+    "@batch.com/cordova-plugin": "5.0.1",
     "@hmscore/cordova-plugin-hms-analytics": "file:cordova-plugin-hms-analytics",
     "@hmscore/cordova-plugin-hms-push": "file:cordova-plugin-hms-push",
     "@ionic/angular-toolkit": "^4.0.0",
