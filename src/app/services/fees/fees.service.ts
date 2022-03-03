@@ -100,7 +100,7 @@ export class FeesService {
             return fee;
           } else if (fee.mode_calcul === 'pourcent') {
             const computedFee = {
-              effective_fees: Math.trunc((amount * fee.effective_fees) / 100),
+              effective_fees: Math.round(amount * fee.effective_fees) / 100,
             };
             return computedFee;
           }
@@ -123,15 +123,15 @@ export class FeesService {
         const effective_fees =
           fee.mode_calcul === 'fixe'
             ? fee.effective_fees
-            : Math.trunc((amount * fee.effective_fees) / 100);
+            : Math.round(amount * fee.effective_fees) / 100;
         const old_fees =
           fee.old_mode_calcul === 'fixe'
             ? fee.old_fees
-            : Math.trunc((amount * fee.old_fees) / 100);
+            : Math.round(amount * fee.old_fees) / 100;
         const cashout_fees =
           fee.mode_calcul === 'fixe'
             ? fee.cashout_fees
-            : Math.trunc((amount * fee.cashout_fees) / 100);
+            : Math.round(amount * fee.cashout_fees) / 100;
         const computedFee = { effective_fees, old_fees, cashout_fees };
         return computedFee;
       }

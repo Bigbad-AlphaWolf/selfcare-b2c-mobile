@@ -67,7 +67,7 @@
         {{error}}
       </div>
       <div class="cashout-fees-block"
-        *ngIf="purchaseType === OPERATION_TRANSFER_OM && setAmountForm?.value?.amount !== null">
+        *ngIf="0 && (purchaseType === OPERATION_TRANSFER_OM && setAmountForm?.value?.amount !== null)">
         <div class="cashout-fees-details">
           <div class="cashout-title">Ajouter les frais de retrait</div>
           <div class="toggle-content">

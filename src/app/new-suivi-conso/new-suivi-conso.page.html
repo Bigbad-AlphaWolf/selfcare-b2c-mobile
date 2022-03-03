@@ -10,9 +10,12 @@
   <div [id]="'search-container' | generateIdForTA" class="search-bloc search-bloc2">
     <ion-searchbar placeholder="Rechercher un compteur"></ion-searchbar>
   </div>
-  <div class="suivi-conso-custom-tabs">
-    <div class="conso-tab scb-text-light-black" *ngFor="let tab of tabs, let i = index" [id]="'tab-'+tab?.label.toLowerCase()" (click)="setSlidesIndex(i)"
-      [ngClass]="{'active-tab': i === currentSlideIndex}">{{tab.label}}</div>
+  <div class="tabs-container">
+    <div class="suivi-conso-custom-tabs swiper-no-swiping">
+      <div class="conso-tab scb-text-light-black" *ngFor="let tab of tabs, let i = index"
+        [id]="'tab-'+tab?.label.toLowerCase()" (click)="setSlidesIndex(i)"
+        [ngClass]="{'active-tab': i === currentSlideIndex}">{{tab.label}}</div>
+    </div>
   </div>
 </div>
 <ion-content #scrollArea class="suivi-conso-content" [appScrollVanish]="scrollArea" [scrollEvents]="true"
@@ -27,6 +30,9 @@
     </ion-slide>
     <ion-slide>
       <app-communication-historic></app-communication-historic>
+    </ion-slide>
+    <ion-slide>
+      <app-internet-historic></app-internet-historic>
     </ion-slide>
     <ion-slide>
       <app-transactions-historic></app-transactions-historic>

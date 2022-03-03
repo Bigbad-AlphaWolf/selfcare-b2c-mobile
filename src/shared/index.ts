@@ -9,6 +9,7 @@ import {
   PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
 } from 'src/app/dashboard';
+import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER: RegExp =
@@ -38,6 +39,7 @@ export const OPERATION_TYPE_PASS_ILLIMIX = 'PASS_ILLIMIX';
 export const OPERATION_TYPE_PASS_ALLO = 'PASS_ALLO';
 export const OPERATION_TYPE_PASS_VOYAGE = 'OPERATION_TYPE_PASS_VOYAGE';
 export const OPERATION_TYPE_PASS_INTERNATIONAL = 'PASS_INTERNATIONAL';
+export const OPERATION_TYPE_PASS_LAMBJ = 'LAMB_J';
 export const OPERATION_TYPE_PASS_ILLIFLEX = 'PASS_ILLIFLEX';
 export const OPERATION_TYPE_MERCHANT_PAYMENT = 'MERCHANT_PAYMENT';
 export const OPERATION_TYPE_SOS = 'SOS';
@@ -145,6 +147,7 @@ export const IMAGES_DIRECTORY = '/assets/images/';
 
 export const LIST_ICON_PURCHASE_HISTORIK_ITEMS = {
   PASS_INTERNET: `${IMAGES_DIRECTORY}ic-internet-usage.png`,
+  PASS_ILLIFLEX: `${IMAGES_DIRECTORY}ic-africa.svg`,
   PASS_ILLIMIX: `${IMAGES_DIRECTORY}ic-unlimited-calls.png`,
   CREDIT: `${IMAGES_DIRECTORY}ic-orange-phone.svg`,
   TRANSFERT_BONUS: `${IMAGES_DIRECTORY}transfert-icon.png`,
@@ -1369,10 +1372,10 @@ export function getActiveBoostersForSpecificPass(
   boosters: BoosterModel[]
 ) {
   const passPPI = pass.passPromo
-    ? pass.passPromo.price_plan_index
-    : pass.price_plan_index;
+    ? pass.passPromo?.price_plan_index
+    : pass?.price_plan_index;
   const boostersArray = boosters.filter((booster) =>
-    booster.pricePlanIndexes.includes(passPPI.toString())
+    booster.pricePlanIndexes.includes(passPPI?.toString())
   );
   return boostersArray;
 }
@@ -1450,3 +1453,17 @@ export const INTERNATIONAL_PASSES_INDICATIF_ARRAY: string[] = [
   CountriesIndicatif.WORLD,
   CountriesIndicatif.AFRICA,
 ];
+
+export const UNKNOWN_ECHEANCE = 'non renseignée';
+
+// return true if bill is unpaid && due date otherwise return false
+export function isDelayedBill(bill: InvoiceOrange) {
+  if (bill.dateEcheance === UNKNOWN_ECHEANCE) {
+    return false;
+  }
+  const today = new Date();
+  const billDate = new Date(bill.dateEcheance);
+  return (
+    billDate.getTime() < today.getTime() && bill.statutFacture === 'unpaid'
+  );
+}

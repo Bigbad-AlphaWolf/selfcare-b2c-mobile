@@ -1,3 +1,5 @@
+@import 'src/app/app';
+
 .invoice-card {
   border-radius: 5px;
   box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.05);
@@ -7,6 +9,9 @@
   flex-direction: column;
   padding: 15px;
   margin: 15px 0px;
+  &.with-border {
+    border: solid 1px #ddd;
+  }
   .section1 {
     display: flex;
     padding-bottom: 15px;
@@ -15,6 +20,7 @@
       flex-direction: column;
       flex-grow: 1;
       justify-content: center;
+      margin-top: 5px;
       .title {
         font-family: HelveticaNeueLTStd-Bd;
         font-size: 16px;
@@ -35,16 +41,34 @@
         line-height: 1.33;
         letter-spacing: normal;
         color: #666666;
+        margin-top: 10px;
       }
-      .date {
-        font-family: HelveticaNeueLTStd-Roman;
-        font-size: 12px;
-        font-weight: normal;
-        font-stretch: normal;
-        font-style: normal;
-        line-height: 1.33;
-        letter-spacing: normal;
-        color: #666666;
+      .price-and-echeance {
+        display: flex;
+        justify-content: space-between;
+        width: calc(100% + 50px);
+        margin-top: 5px;
+        align-items: flex-end;
+        .date {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 12px;
+          font-weight: normal;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.33;
+          letter-spacing: normal;
+          color: #666666;
+          margin-top: 2px;
+          &.echeance-depasse {
+            color: $redError !important;
+            font-family: HelveticaNeueLTStd-Bd;
+            max-width: 40%;
+          }
+        }
+        .bill-price {
+          font-size: 20px;
+          line-height: 1.1;
+        }
       }
     }
     .logo {
@@ -73,6 +97,15 @@
       line-height: 1.88;
       letter-spacing: normal;
       color: #ff7900;
+    }
+    .pay {
+      color: $yellow;
+      &.paid {
+        color: $greenSuccess !important;
+      }
+      &.unpaid {
+        color: $orange !important;
+      }
     }
     .font-size-14 {
       font-size: 14px;

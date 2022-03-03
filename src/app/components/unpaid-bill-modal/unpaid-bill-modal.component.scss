@@ -1,0 +1,22 @@
+.modal-unpaid-bill {
+  padding: 30px 15px 50px;
+  .title {
+    font-size: 24px;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+  .desc {
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 16px;
+    line-height: 1.25;
+    margin-bottom: 25px;
+  }
+  .bill-container {
+    margin-bottom: 30px;
+  }
+  .btn-container {
+    button {
+      border-radius: 10px;
+    }
+  }
+}
