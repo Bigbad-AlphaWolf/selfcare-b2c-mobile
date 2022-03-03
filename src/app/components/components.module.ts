@@ -31,6 +31,7 @@ import {VisualizeStoryComponent} from './visualize-story/visualize-story.compone
 import {SwiperModule} from 'swiper/angular';
 import {VisualizeStoriesByCategoriesComponent} from './visualize-stories-by-categories/visualize-stories-by-categories.component';
 import {LazyLoadDirective} from '../directives/lazy-load-img/lazy-load-image.directive';
+import {IonMediaCacheModule} from 'ion-media-cache';
 @NgModule({
   declarations: [
     ItemOfferPlanComponent,
@@ -60,7 +61,7 @@ import {LazyLoadDirective} from '../directives/lazy-load-img/lazy-load-image.dir
     VisualizeStoriesByCategoriesComponent,
     LazyLoadDirective
   ],
-  imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule, IonicImageLoader, SwiperModule],
+  imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule, IonicImageLoader, SwiperModule, IonMediaCacheModule],
   exports: [
     ItemOfferPlanComponent,
     ItemPassIllimixComponent,

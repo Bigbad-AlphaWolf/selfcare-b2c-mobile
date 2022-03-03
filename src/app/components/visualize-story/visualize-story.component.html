@@ -6,7 +6,7 @@
 				Impossible de charger l'image
 			</div>
 			<div *ngIf="story?.storyContent" class="img-container">
-				<img #image appLazyLoad [inViewport]="isVisible" [src]="story?.storyContent | displayFileManagerImage" (error)="handleErrorLoading($event)" (load)="imageLoaded($event)" >
+				<img #image appLazyLoad [inViewport]="isVisible" [src]="story?.storyContent | displayFileManagerImage" (error)="handleErrorLoading($event)" (load)="imageLoaded($event)" [customCache]="{fallbackUrl: '/assets/img/default.png'}" >
 			</div>
 
 			<audio #audioOrVideo *ngIf="story?.audio && isVisible" class="hide" preload="metadata" (loadedmetadata)="getInfoMetaData($event)" (canplay)="canPlay($event)" autoplay>
