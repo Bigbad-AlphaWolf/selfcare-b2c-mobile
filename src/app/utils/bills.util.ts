@@ -213,7 +213,7 @@ export const OM_LABEL_SERVICES = {
   EDUCATION: 'education',
   BISSAU: 'bissau',
   SONATEL_FIXE: 'sonatel_fixe',
-  NIGER: 'NIGER',
+  NIGER: 'niger',
   PAIEMENT_MARCHAND: 'paiement_marchand',
   OOLU_SOLAR: 'oolu_solar',
   TRANSFERT_SANS_CODE: 'retrait',

@@ -536,7 +536,7 @@ body {
     .ion-page {
       position: relative;
       contain: content;
-      max-height: 90vh;
+      // max-height: 90vh;
       .modal-content {
         overflow: auto;
       }
@@ -643,7 +643,9 @@ button {
   }
 }
 .mat-radio-button.mat-accent .mat-radio-inner-circle,
-.mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple),
+.mat-radio-button.mat-accent
+  .mat-radio-ripple
+  .mat-ripple-element:not(.mat-radio-persistent-ripple),
 .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-persistent-ripple,
 .mat-radio-button.mat-accent:active .mat-radio-persistent-ripple {
   background-color: #ff7900;
@@ -667,7 +669,9 @@ button {
   flex-direction: column;
 }
 
-.mat-button-toggle-group-appearance-standard .mat-button-toggle + .mat-button-toggle {
+.mat-button-toggle-group-appearance-standard
+  .mat-button-toggle
+  + .mat-button-toggle {
   border-left: none;
 }
 

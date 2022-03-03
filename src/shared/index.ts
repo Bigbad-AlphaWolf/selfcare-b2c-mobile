@@ -76,6 +76,8 @@ export const OPERATION_DEPLAFONNEMENT_OM_ACCOUNT = 'DEPLAFONNEMENT_OM_ACCOUNT';
 export const OPERATION_CHECK_OM_ACCOUNT_STATUS = 'OM_PLAFOND_INFOS';
 export const OPERATION_SHARE_THE_APP = 'SHARE_THE_APP';
 export const OPERATION_PAY_ORANGE_BILLS = 'PAY_ORANGE_BILLS';
+export const OPERATION_UNBLOCK_OM_ACCOUNT = 'UNBLOCK_OM_ACCOUNT';
+export const OPERATION_RESET_PIN_OM = 'RESET_OM_ACCOUNT';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -1432,7 +1434,7 @@ export enum OM_STATUS_TEXTS {
   OPEN_ACCOUNT = `Ouvrir compte OM`,
   CREATE_PIN = `Créer mon pin OM`,
   CREATE_PIN_TEXT = `Votre compte a été créé avec succès. Veuillez créer votre code PIN OM`,
-  DECAPPED_ACCOUNT = `Votre compte est déplafonné (Pas de plafond)`,
+  DECAPPED_ACCOUNT = `Votre compte a été déplafonné. Vous pouvez effectuer des opérations jusqu'a 2.000.000 FCFA`,
   OPENED_ACCOUNT = `Votre ouverture de compte est effectué avec succès`,
   OPENING_ACCOUNT = `Votre demande de d'ouverture de compte est en cours`,
   ERROR_OPENING_ACCOUNT = `Une erreur est survenue lors du traitement de votre demande d'ouverture de compte`,
@@ -1441,6 +1443,9 @@ export enum OM_STATUS_TEXTS {
   CAPPED_ACCOUNT = `Votre compte est plafonné à un cumul de transactions à 200.000F`,
   ERROR_DECAPPING_ACCOUNT = `Une erreur est survenue lors du traitement de votre demande de déplafonnement`,
 }
+
+export const ERROR_MSG_DEPLAFONNEMENT_ON_INIT_UNBLOCK_OM = "Déplafonnez votre compte via l'appli Orange & Moi ou dans notre réseau d’agence Orange et Kiosque avant de pouvoir utiliser ce service.";
+
 
 export const OTHER_CATEGORIES = 'OTHER_CATEGORIES';
 
@@ -1466,4 +1471,29 @@ export function isDelayedBill(bill: InvoiceOrange) {
   return (
     billDate.getTime() < today.getTime() && bill.statutFacture === 'unpaid'
   );
+}
+
+export const IRT_TRANSFER_REASONS = [
+  { value: 'Achat de bien et service', id: 1 },
+  { value: 'Assistance familiale', id: 2 },
+  { value: 'Epargne', id: 3 },
+  { value: 'Frais médicaux', id: 4 },
+  { value: 'Frais scolaires', id: 5 },
+  { value: 'Investissement', id: 6 },
+  { value: 'Oeuvres et dons', id: 7 },
+];
+
+export function formatCountryCallId(callId: string) {
+  if (callId.startsWith('+')) {
+    return callId.substring(1);
+  } else if (callId.startsWith('00')) {
+    return callId.substring(2);
+  }
+  return callId;
+}
+
+// mobile or fixe
+export enum MSISDN_TYPE {
+  MOBILE = 'MOBILE',
+  FIXE = 'FIXE',
 }

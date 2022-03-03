@@ -11,12 +11,8 @@ import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
 import { REGEX_FIX_NUMBER } from 'src/shared';
 import { LinesComponent } from 'src/app/components/lines/lines.component';
 import { NavController, ModalController } from '@ionic/angular';
-import { tap } from 'rxjs/operators';
-import {
-  isFixPostpaid,
-  POSTPAID_TERANGA_OFFERS_ID,
-  PROFILE_TYPE_POSTPAID,
-} from 'src/app/dashboard';
+import { map, tap } from 'rxjs/operators';
+import { isFixPostpaid, POSTPAID_TERANGA_OFFERS_ID } from 'src/app/dashboard';
 
 @Component({
   selector: 'app-orange-bills',
@@ -44,7 +40,12 @@ export class OrangeBillsPage implements OnInit {
   selectedFilter;
   factures: InvoiceOrange[];
   filteredFactures: InvoiceOrange[];
-  payForOtherInput: { ligne: string; type: string };
+  payForOtherInput: {
+    ligne: string;
+    type: string;
+    clientCode: string;
+    inputPhone: string;
+  };
   constructor(
     private billsService: BillsService,
     private navCtl: NavController,
@@ -69,7 +70,10 @@ export class OrangeBillsPage implements OnInit {
 
   ngOnInit() {
     this.payForOtherInput = history.state;
-    if (this.payForOtherInput?.ligne) {
+    if (
+      this.payForOtherInput?.ligne &&
+      this.payForOtherInput?.type === 'FIXE'
+    ) {
       this.canPayBills = true;
       this.isFactureLoading = true;
       this.billsService
@@ -85,11 +89,21 @@ export class OrangeBillsPage implements OnInit {
         .subscribe();
       return;
     }
-    this.phone = SessionOem.PHONE;
-    this.codeClient = SessionOem.CODE_CLIENT;
-    this.canPayBills =
-      isFixPostpaid(SessionOem.FORMULE) ||
-      POSTPAID_TERANGA_OFFERS_ID.includes(SessionOem.CODE_FORMULE);
+    const inputPhone = this.payForOtherInput?.inputPhone;
+    this.phone = this.payForOtherInput?.ligne
+      ? this.payForOtherInput.ligne
+      : inputPhone
+      ? inputPhone
+      : SessionOem.PHONE;
+    this.codeClient = this.payForOtherInput?.ligne
+      ? this.payForOtherInput.clientCode
+      : inputPhone
+      ? this.payForOtherInput.clientCode
+      : SessionOem.CODE_CLIENT;
+    // this.canPayBills =
+    //   isFixPostpaid(SessionOem.FORMULE) ||
+    //   POSTPAID_TERANGA_OFFERS_ID.includes(SessionOem.CODE_FORMULE);
+    this.canPayBills = true;
     this.updatePhoneType();
     this.initData();
   }
@@ -120,6 +134,18 @@ export class OrangeBillsPage implements OnInit {
     this.factures$ = this.billsService
       .invoices(this.codeClient, this.invoiceType, this.phone, this.month)
       .pipe(
+        map((res) => {
+          if (this.payForOtherInput?.ligne) {
+            const resp = res.filter((bill) => {
+              return bill.statutFacture === BILL_STATUS.UNPAID;
+            });
+            resp.forEach((billEl) => {
+              billEl.nfact = billEl.nfact.substring(9);
+            });
+            return resp;
+          }
+          return res;
+        }),
         tap((r) => {
           this.selectedFilter = null;
           this.factures = r;
@@ -143,7 +169,7 @@ export class OrangeBillsPage implements OnInit {
       },
     });
     modal.onDidDismiss().then((response) => {
-      if (response && response.data) {
+      if (response?.data) {
         this.phone = response.data.phone;
         this.codeClient = response.data.codeClient;
         this.updatePhoneType();

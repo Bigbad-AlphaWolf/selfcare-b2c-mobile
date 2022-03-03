@@ -1,28 +1,47 @@
-import {Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges, ViewChild, ElementRef} from '@angular/core';
-import {formatPhoneNumber, parseIntoNationalNumberFormat, REGEX_NUMBER_OM} from 'src/shared';
-import {SelectNumberPopupComponent} from 'src/shared/select-number-popup/select-number-popup.component';
-import {Contacts, Contact} from '@ionic-native/contacts';
-import {MatDialog} from '@angular/material/dialog';
-import {OperationExtras} from 'src/app/models/operation-extras.model';
-import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
+import {
+  formatPhoneNumber,
+  parseIntoNationalNumberFormat,
+  REGEX_NUMBER_OM,
+} from 'src/shared';
+import { SelectNumberPopupComponent } from 'src/shared/select-number-popup/select-number-popup.component';
+import { Contacts, Contact } from '@ionic-native/contacts';
+import { MatDialog } from '@angular/material/dialog';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 @Component({
   selector: 'oem-phone-number-provider',
   templateUrl: './phone-number-provider.component.html',
-  styleUrls: ['./phone-number-provider.component.scss']
+  styleUrls: ['./phone-number-provider.component.scss'],
 })
 export class PhoneNumberProviderComponent implements OnInit, OnChanges {
-  @Output('onPhoneSelected') onPhoneSelected: EventEmitter<OperationExtras> = new EventEmitter();
+  @Output('onPhoneSelected') onPhoneSelected: EventEmitter<OperationExtras> =
+    new EventEmitter();
   @Input() showInput: boolean;
-  @ViewChild('numberInput', {static: true})
+  @ViewChild('numberInput', { static: true })
   input: ElementRef;
   hasErrorGetContact: boolean;
   errorGetContact: any;
   otherBeneficiaryNumber = '';
   recipientContactInfos = '';
-
+  @Output() onFocused: EventEmitter<any> = new EventEmitter();
   opXtras: OperationExtras = {};
-  constructor(private dialog: MatDialog, private contacts: Contacts, private followAnalyticsService: FollowAnalyticsService) {}
+  constructor(
+    private dialog: MatDialog,
+    private contacts: Contacts,
+    private followAnalyticsService: FollowAnalyticsService
+  ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     console.log(changes);
@@ -35,7 +54,7 @@ export class PhoneNumberProviderComponent implements OnInit, OnChanges {
 
   ngOnInit() {}
   onValueChange(value?: any) {
-    this.onPhoneSelected.emit({recipientMsisdn: value});
+    this.onPhoneSelected.emit({ recipientMsisdn: value });
   }
 
   pickContact() {
@@ -48,20 +67,22 @@ export class PhoneNumberProviderComponent implements OnInit, OnChanges {
         if (contact.phoneNumbers.length > 1) {
           this.openPickRecipientModal(contact);
         } else {
-          const selectedNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
+          const selectedNumber = formatPhoneNumber(
+            contact.phoneNumbers[0].value
+          );
           this.processGetContactInfos(contact, selectedNumber);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('err', err);
       });
   }
 
   openPickRecipientModal(contact: any) {
     const dialogRef = this.dialog.open(SelectNumberPopupComponent, {
-      data: {phoneNumbers: contact.phoneNumbers}
+      data: { phoneNumbers: contact.phoneNumbers },
     });
-    dialogRef.afterClosed().subscribe(selectedNumber => {
+    dialogRef.afterClosed().subscribe((selectedNumber) => {
       const choosedNumber = formatPhoneNumber(selectedNumber);
       this.processGetContactInfos(contact, choosedNumber);
     });
@@ -89,10 +110,21 @@ export class PhoneNumberProviderComponent implements OnInit, OnChanges {
     const givenName = contact.name.givenName;
     const familyName = contact.name.familyName ? contact.name.familyName : '';
 
-    this.recipientContactInfos = contact.name && contact.name.formatted ? contact.name.formatted : givenName + ' ' + familyName;
+    this.recipientContactInfos =
+      contact.name && contact.name.formatted
+        ? contact.name.formatted
+        : givenName + ' ' + familyName;
 
     this.opXtras.recipientName = this.recipientContactInfos;
     this.opXtras.recipientFirstname = givenName;
     this.opXtras.recipientLastname = familyName;
+  }
+
+  onFocus(event) {
+    this.onFocused.emit(true);
+  }
+
+  onFocusOut(event) {
+    this.onFocused.emit(false);
   }
 }
