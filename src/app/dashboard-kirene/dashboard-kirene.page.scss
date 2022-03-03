@@ -12,8 +12,7 @@
     height: 50px;
     width: 100%;
     position: relative;
-    padding: 17px percentage(40px / $baseWidthMobile2) 15px
-      percentage(40px / $baseWidthMobile2);
+    padding: 17px percentage(40px / $baseWidthMobile2) 15px percentage(40px / $baseWidthMobile2);
     text-align: center;
 
     &-menu {
@@ -39,7 +38,11 @@
       top: 16px;
     }
   }
-
+  .stories-bloc {
+    padding: 20px 0 20px 15px;
+    width: 100%;
+    overflow-x: auto;
+  }
   .dashboard-block-offres {
     //margin-top: -59px;
     margin-top: -50px;
@@ -81,7 +84,6 @@
               letter-spacing: normal;
               color: $fullBlack;
             }
-
           }
         }
 
