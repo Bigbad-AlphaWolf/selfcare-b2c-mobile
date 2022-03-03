@@ -1,0 +1,14 @@
+repositories {
+    mavenCentral()
+    maven {
+        url "https://maven.google.com"
+    }
+}
+dependencies {
+    implementation "androidx.appcompat:appcompat:1.2.+"
+    implementation "com.google.firebase:firebase-messaging:21.0.+"
+    // Uncomment this line if you want Advertising ID support
+    //implementation "com.google.android.gms:play-services-ads-identifier:+"
+    // Uncomment this line if you use firebase-messaging 22 or greater
+    //implementation "com.google.firebase:firebase-iid:21.1.0"
+}
