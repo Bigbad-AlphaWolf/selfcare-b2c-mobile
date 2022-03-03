@@ -6,9 +6,9 @@ import { OfferPlan } from 'src/shared/models/offer-plan.model';
 import { of } from 'rxjs';
 import { LIST_CATEGORY_BONS_PLANS } from 'src/shared';
 import { switchMap, catchError } from 'rxjs/operators';
-const { PURCHASES_SERVICE, SERVER_API_URL, SARGAL_SERVICE } = environment;
+const { SERVER_API_URL, SARGAL_SERVICE } = environment;
 
-const getCurrentUserOfferPlansEndpoint = `${SERVER_API_URL}/${PURCHASES_SERVICE}/api/get-mpo`;
+const getCurrentUserOfferPlansEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/get-mpo`;
 const mpoProductOrderEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/mpo-product-order`;
 
 @Injectable({

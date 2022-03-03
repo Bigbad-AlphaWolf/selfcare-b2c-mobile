@@ -40,6 +40,12 @@ export class ListPassVoyagePage implements OnInit {
     //1 Get countries
     this.isLoading = true;
     this.countries$ = this.passVoyageService.fetchCountries().pipe(
+      map((res: CountryPass[]) => {
+        return res.filter(
+          (country) =>
+            !INTERNATIONAL_PASSES_INDICATIF_ARRAY.includes(country.indicatif)
+        );
+      }),
       tap((countries: any) => {
         this.isLoading = false;
         if (countries.length) {
@@ -48,12 +54,6 @@ export class ListPassVoyagePage implements OnInit {
           //3 initi all pass[appel, internet]
           this.initAllPass();
         }
-      }),
-      map((res: CountryPass[]) => {
-        return res.filter(
-          (country) =>
-            !INTERNATIONAL_PASSES_INDICATIF_ARRAY.includes(country.indicatif)
-        );
       })
     );
 

@@ -519,7 +519,8 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
           userHasNoOmAccount: true,
           purchaseType: 'TRANSFER_MONEY_WITH_CODE',
         });
-        this.modalController.dismiss(pageData);
+        this.modalController.dismiss();
+        this.appRouting.goSetTransferAmountPage(pageData);
       }
     });
     return await modal.present();
