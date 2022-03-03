@@ -16,7 +16,7 @@ export class OemLoggingService {
   setUserAttribute(data: { keyAttribute: string; valueAttribute: any }) {
     this.batchService.setUserAttribute(data);
     this.firebaseAnalytics
-      .setUserProperty(data.keyAttribute, data.valueAttribute)
+      .setUserProperty(data.keyAttribute, data.valueAttribute.toString())
       .then((res) => {
         console.log(res);
       });
