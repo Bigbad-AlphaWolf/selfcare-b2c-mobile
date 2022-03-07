@@ -8,7 +8,7 @@ import {
   forkJoin,
   throwError,
 } from 'rxjs';
-import { tap, switchMap, map, catchError, delay } from 'rxjs/operators';
+import { tap, switchMap, map, catchError } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {
@@ -25,6 +25,7 @@ import {
   MerchantPaymentModel,
   FeeModel,
   CheckEligibilityModel,
+  TransferIRTModel,
 } from '.';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
@@ -47,6 +48,7 @@ import {
   OM_IDENTIC_TRANSACTION_CODE,
   OM_UNKOWN_ERROR_CODE,
   OPERATION_PAY_ORANGE_BILLS,
+  OPERATION_RESET_PIN_OM,
   OPERATION_TRANSFER_OM,
   OPERATION_TRANSFER_OM_WITH_CODE,
   OPERATION_TYPE_BONS_PLANS,
@@ -60,13 +62,17 @@ import {
   REGEX_IOS_SYSTEM,
 } from 'src/shared';
 import { FollowOemlogPurchaseInfos } from 'src/app/models/follow-log-oem-purchase-Infos.model';
-import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
+import {
+  OPERATION_RAPIDO,
+  OPERATION_TYPE_INTERNATIONAL_TRANSFER,
+} from 'src/app/utils/operations.constants';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
 import { IlliflexService } from '../illiflex-service/illiflex.service';
 import { CancelOmTransactionPayloadModel } from 'src/app/models/cancel-om-transaction-payload.model';
 import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-event-type.enum';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { CreatePinOM } from 'src/app/models/create-pin-om.model';
+import { ValidateChallengeOMOEM } from 'src/app/models/challenge-answers-om-oem.model';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
@@ -85,6 +91,7 @@ const achatCreditEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/buy-c
 const achatIllimixEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/buy-illimix`;
 const achatPassEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/purchases/buy-pass`;
 const transferOMEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/v2/transfer-p2p`;
+const IRTEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/v1/transfert-irt`;
 const transferOMWithCodeEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/transfer-avec-code`;
 const merchantPaymentEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/merchant/payment`;
 const getMerchantEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/merchant/naming`;
@@ -99,6 +106,11 @@ const selfOperationCheckOtpEndpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/regis
 const CANCEL_TRANSACTIONS_OM_Endpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/urgence-depannage/v2/erreur-transaction`;
 // CREATION PIN OM
 const CREATE_PIN_OM_Endpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/authentication/create-pin`;
+
+// CHALLENGE RESET/REACTIVE OM ACCOUNT
+const CHALLENGE_OM_ACCOUNT = `${SERVER_API_URL}/${OM_SERVICE}/api/unlock/v1`;
+const VALIDATE_CHALLENGE_OM_ACCOUNT = `${SERVER_API_URL}/${OM_SERVICE}/api/unlock/v1/challenge`;
+
 const ls = new SecureLS({ encodingType: 'aes' });
 let eventKey = '';
 let errorKey = '';
@@ -290,6 +302,32 @@ export class OrangeMoneyService {
     );
   }
 
+  transferIRT(transferOMData: TransferIRTModel, confirmPayload?) {
+    console.log('payload', transferOMData);
+    // const mock = {
+    //   content: {
+    //     data: {
+    //       mapping_code: '200',
+    //       txn_id: 'PP220211.0805.B15687',
+    //       status_code: '200',
+    //       status_wording: 'Success',
+    //     },
+    //   },
+    //   status_code: 'Success-001',
+    //   status_wording: 'Transaction successfull',
+    // };
+    // return of(mock).pipe(delay(1000));
+    isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
+    const uuid = ls.get('X-UUID');
+    const os = isIOS ? 'iOS' : 'Android';
+    transferOMData.uuid = uuid;
+    transferOMData.os = os;
+    const queryParams = confirmPayload?.txnId
+      ? `?txnId=${confirmPayload?.txnId}`
+      : '';
+    return this.http.post(`${IRTEndpoint}${queryParams}`, transferOMData);
+  }
+
   transferOMWithCode(transferOMData: TransferOMWithCodeModel) {
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
     const uuid = ls.get('X-UUID');
@@ -440,6 +478,10 @@ export class OrangeMoneyService {
         eventKey = 'Payment_Fixe_bills_Success';
         value = dataToLog;
         break;
+      case OPERATION_TYPE_INTERNATIONAL_TRANSFER:
+        errorKey = 'Irt_Error';
+        eventKey = 'Irt_Success';
+        value = dataToLog;
       default:
         break;
     }
@@ -773,4 +815,13 @@ export class OrangeMoneyService {
 
     return this.http.post(`${CREATE_PIN_OM_Endpoint}?apiKey=${apiKey}`, omData);
   }
+
+
+	fetchOMChallengeForUnlockAndReset(omMsisdn: string) {
+		return this.http.get(`${CHALLENGE_OM_ACCOUNT}/${omMsisdn}/eligible`)
+	}
+
+	validateOMChallengeForUnlockAndResetOMAccount(omMsisdn: string, type: string, payload: ValidateChallengeOMOEM) {
+		return	this.http.post(`${VALIDATE_CHALLENGE_OM_ACCOUNT}/${omMsisdn}/${type === OPERATION_RESET_PIN_OM ? 'resetpin' : 'unblock'}`, payload);
+	}
 }

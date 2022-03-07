@@ -1,0 +1,73 @@
+@import 'src/app/app';
+@import "src/app/styles/bottomsheet.style";
+
+.modal-unblock-container {
+  .title {
+    margin-bottom: 30px;
+  }
+  .content {
+    margin-bottom: 32px;
+    &.conditions {
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 16px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.25;
+      letter-spacing: normal;
+      color: #666;
+      .text {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 16px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.25;
+        &:not(:last-child) {
+          margin-bottom: 20px;
+        }
+        &::marker {
+          font-size: 25px;
+        }
+      }
+    }
+    .item-choice {
+      ion-radio {
+        --color: #ff7900;
+      }
+      ion-item {
+        ion-label {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
+          font-weight: normal;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.38;
+          letter-spacing: normal;
+          color: $gray;
+        }
+        &.is-checked {
+          ion-label {
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 16px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.38;
+            color: #000;
+          }
+        }
+      }
+    }
+    .confirm-btn {
+      height: 50px;
+      &ion-button {
+        height: 100%;
+        width: 100%;
+        --background-activated: black;
+        --color-activated: black;
+        --border-radius: 10px;
+      }
+    }
+  }
+}

@@ -21,6 +21,28 @@
     margin-top: 10px;
     margin-bottom: 20px;
 
+    .country-block {
+      width: 53px;
+      height: 1px;
+      .country-block-container {
+        display: flex;
+        position: absolute;
+        top: -22px;
+        .flag-icon {
+          margin-right: 10px;
+        }
+      }
+    }
+
+    input {
+      font-family: HelveticaNeueLTStd-Roman !important;
+      height: 25px;
+      padding-left: 12px;
+      &.empty {
+        height: unset !important;
+      }
+    }
+
     .icon {
       position: absolute;
       right: 122px;
@@ -39,7 +61,7 @@
     font-size: 12px;
   }
   .loading-container {
-    height: 293px;
+    height: 215px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -48,7 +70,7 @@
     }
   }
   .recents {
-    height: 293px;
+    height: 215px;
     margin-top: 15px;
     .recent-description {
       font-family: HelveticaNeueLTStd-Bd;
@@ -120,12 +142,37 @@
       }
     }
   }
+  .access-recents {
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 12px;
+    margin: 20px 0 40px;
+    .link {
+      text-decoration: underline;
+      font-family: HelveticaNeueLTStd-Bd;
+    }
+  }
   .confirm-btn {
     // position: relative;
     position: absolute;
     width: percentage(345/375);
     bottom: 10px;
     // left: percentage(15/375);
+    button {
+      height: 50px;
+      border-radius: 10px;
+      background-color: #ff7900;
+      text-transform: capitalize;
+      font-family: HelveticaNeueLTStd-Roman !important;
+      font-size: 16px;
+      margin: 0px;
+      color: white;
+      width: 100%;
+      font-weight: bold;
+      &[disabled][disabled] {
+        color: #ffffff;
+        background-color: #cccccc;
+      }
+    }
     ion-button {
       height: 50px;
       --border-radius: 10px;

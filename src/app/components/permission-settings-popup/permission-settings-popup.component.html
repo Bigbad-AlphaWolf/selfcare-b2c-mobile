@@ -1,0 +1,26 @@
+<div class="settings-popup">
+  <img (click)="close()" src="/assets/images/close.svg" class="close-icon" alt="" />
+  <div class="icon-container">
+    <ion-icon name="settings-outline"></ion-icon>
+  </div>
+  <div class="title">Autoriser les contacts</div>
+  <div class="text scb-text-gray">
+    <ng-container *ngIf="isIos else android">
+      Pour autoriser les contacts, veuillez aller sur <span>Réglages</span> <img class="arrow" src="/assets/images/arrow-down.svg" />
+      <span class="bold">Confidentialité</span>
+      <img class="arrow" src="/assets/images/arrow-down.svg" /> <span class="bold">Contacts</span> puis cliquer sur <span
+        class="bold">Orange et moi</span> et <span class="bold">autoriser les contacts</span>
+    </ng-container>
+    <ng-template #android>
+      Pour autoriser les contacts, veuillez aller sur <span class="bold">Réglages</span><img
+        class="arrow" src="/assets/images/arrow-down.svg" />
+      <span class="bold">Confidentialité</span><img class="arrow" src="/assets/images/arrow-down.svg" /><span
+        class="bold">Gestionnaire d'autorisations</span><img class="arrow" src="/assets/images/arrow-down.svg" /><span
+        class="bold">Contacts</span> puis cliquer sur <span class="bold">Orange et moi</span> et <span
+        class="bold">autoriser les contacts</span>
+    </ng-template>
+  </div>
+  <div class="btn-container">
+    <button class="scb-btn scb-btn-full scb-btn-orange" (click)="goSettings()">Aller aux réglages</button>
+  </div>
+</div>

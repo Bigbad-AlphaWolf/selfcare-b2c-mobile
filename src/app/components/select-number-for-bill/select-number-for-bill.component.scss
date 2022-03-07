@@ -17,6 +17,12 @@
     margin-bottom: 10px;
   }
   .beneficiary-number {
+    .my-nums {
+      position: absolute;
+      right: 0;
+      top: -19px;
+      z-index: 100;
+    }
     .item {
       display: flex;
       align-items: center;

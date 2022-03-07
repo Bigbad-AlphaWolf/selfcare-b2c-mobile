@@ -37,10 +37,21 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        .rec-msisdn {
-          font-family: HelveticaNeueLTStd-Bd;
-          font-size: 16px;
-          line-height: 1.25;
+        .msisdn-id-block {
+          display: flex;
+          align-items: center;
+          img {
+            margin-right: 10px;
+          }
+          .rec-msisdn {
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 16px;
+            line-height: 1.25;
+            padding-top: 3px;
+          }
+          .id-msisdn {
+            margin-right: 5px;
+          }
         }
         .rec-name {
           font-family: HelveticaNeueLTStd-Roman;
@@ -84,6 +95,7 @@
     }
     .error-display {
       font-size: 12px;
+      margin-bottom: 10px;
     }
     .cashout-fees-block {
       .cashout-fees-details {
@@ -112,7 +124,28 @@
         line-height: 1.33;
       }
     }
-
+    .irt-reason-block {
+      border-radius: 10px;
+      border: solid 2px $silver;
+      background-color: $white;
+      display: flex;
+      padding: 0px percentage(15/345);
+      height: 50px;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      .reason-title {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+      }
+      .transfer-reason {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+      }
+    }
     .toggle-tac-block {
       display: flex;
       align-items: center;

@@ -1,0 +1,63 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
+			<img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+		</ion-buttons>
+		<ion-title class="ion-no-padding">
+			<span class="title1">{{title}}</span>
+		</ion-title>
+	</ion-toolbar>
+</ion-header>
+<ion-content>
+	<ion-header class="ion-padding-start" collapse="condense">
+		<ion-toolbar>
+			<span class="title">
+				{{subtitle}}
+			</span>
+		</ion-toolbar>
+	</ion-header>
+
+
+	<div class="page-container">
+		<div class="content">
+			<span (click)="presentModal('conditions')" class="conditions scb-text-orange">
+				Lire les conditions de déblocage.
+			</span>
+			<div class="header">
+				Pour vous authentifier, veuillez nous indiquer votre nom, prénom, date de naissance et numéro de pièce d’identité.
+			</div>
+
+			<div class="om-choice-liste">
+				<ng-container *ngIf="listItem?.length && !isLoadingChallenge && isElligible">
+					<div *ngFor="let item of listItem" (click)="presentModal(item.code, item.listChoices, item.valueIndex)" class="item-choice">
+						<span class="label">
+							{{ item.label }}
+						</span>
+						<span class="value">
+							<span class="value-content">
+								{{ item?.value ? item?.value : 'Choisir' }}
+							</span>
+							<div class="icon">
+								<img src="assets/images/arrow-down.svg" alt="">
+							</div>
+						</span>
+					</div>
+				</ng-container>
+					<ion-spinner *ngIf="isLoadingChallenge" name="crescent"></ion-spinner>
+				<ng-container *ngIf="errorLoadingChallengeMsg">
+					<div class="error-msg">
+						{{errorLoadingChallengeMsg}}
+					</div>
+				</ng-container>
+			</div>
+			<div class="btn-continue">
+				<ion-button expand="block" (click)="process()" [disabled]="isLoading || isformInvalid">
+					Continuer
+				</ion-button>
+				<ion-spinner *ngIf="isLoading"
+					name="crescent"
+				></ion-spinner>
+			</div>
+		</div>
+	</div>
+</ion-content>

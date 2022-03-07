@@ -11,14 +11,19 @@
 			<img *ngIf="purchaseType === OPERATION_PAY_ORANGE_BILLS" class="orange-icon" src="/assets/images/orange@3x.png" alt="checked" />
 		</div>
     <ng-container *ngIf="!success">
-      <img *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT].includes(purchaseType) && errorCode !== 'BLOCKEDPASS'" src="/assets/images/echec.png" alt="checked" />
+      <img *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT, OPERATION_UNBLOCK_OM_ACCOUNT, OPERATION_RESET_OM_ACCOUNT].includes(purchaseType) && errorCode !== 'BLOCKEDPASS'" src="/assets/images/echec.png" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_CHANGE_PIN_OM" src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="checked" />
+      <img *ngIf="purchaseType === OPERATION_UNBLOCK_OM_ACCOUNT" src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="checked" />
+      <img *ngIf="purchaseType === OPERATION_RESET_OM_ACCOUNT" src="/assets/images/05-ic-nes-note-appli-copy.svg" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_OPEN_OM_ACCOUNT" src="/assets/images/05-ic-nes-ouverture-compte-om.svg" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_CANCEL_TRANSFERT_OM" src="/assets/images/05-ic-nes-blocage-transfert.svg" alt="checked" />
       <img *ngIf="purchaseType === OPERATION_DEPLAFONNEMENT_OM_ACCOUNT" src="/assets/images/05-ic-nes-ouverture-compte-om.svg" alt="checked" />
     </ng-container>
     <ng-container [ngSwitch]="purchaseType">
       <span class="title" *ngSwitchCase="OPERATION_TRANSFER_OM"
+        >{{success ? 'Transfert effectué' : 'Echec Transfert'}}</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_TYPE_INTERNATIONAL_TRANSFER"
         >{{success ? 'Transfert effectué' : 'Echec Transfert'}}</span
       >
       <span class="title" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
@@ -81,11 +86,17 @@
       <span class="title" *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS"
         >{{ success ? "Paiement facture	Orange effectuée" : 'Echec du paiement de la facture'}}</span
       >
+			<span class="title" *ngSwitchCase="OPERATION_UNBLOCK_OM_ACCOUNT"
+        >Bravo !</span
+      >
+			<span class="title" *ngSwitchCase="OPERATION_RESET_OM_ACCOUNT"
+        >Bravo !</span
+      >
     </ng-container>
     <span class="subtitle scb-text-gray">
       <ng-container *ngIf="!success">
-        <span *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT].includes(purchaseType)" >{{errorMsg}}</span>
-        <span class="custom-font" *ngIf="[OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT].includes(purchaseType)" >{{textMsg}}</span>
+        <span *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT, OPERATION_UNBLOCK_OM_ACCOUNT, OPERATION_RESET_OM_ACCOUNT].includes(purchaseType)" >{{errorMsg}}</span>
+        <span class="custom-font" *ngIf="[OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT, OPERATION_UNBLOCK_OM_ACCOUNT, OPERATION_RESET_OM_ACCOUNT].includes(purchaseType)" >{{textMsg}}</span>
 
       </ng-container>
       <ng-container *ngIf="success" [ngSwitch]="purchaseType">
@@ -174,6 +185,13 @@
           *ngSwitchCase="OPERATION_TRANSFER_OM"
         >
         </app-item-transfert-om>
+        <app-item-transfert-om
+          [omTransfertInfos]="opXtras"
+          [isFromHistory]="isOpenedFromHistory"
+          [transferHistoryItem]="historyTransactionItem"
+          *ngSwitchCase="OPERATION_TYPE_INTERNATIONAL_TRANSFER"
+        >
+        </app-item-transfert-om>
         <app-item-recharge-credit
           [modifiable]="false"
           [amount]="amount"
@@ -223,7 +241,8 @@
         >
           <div class="left-block">Bénéficiaire</div>
           <div class="right-block scb-text-gray">
-            <span class="numero">{{recipientMsisdn|phoneNumberDisplay}}</span>
+            <span class="numero">{{ purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER ? '(' + opXtras?.country?.callId + ') '
+              : ''}} {{recipientMsisdn|phoneNumberDisplay}}</span>
             <span class="name">
               {{buyForMe ? 'Moi même' : recipientName ? recipientName : 'Autre'}}
             </span>
@@ -237,7 +256,7 @@
           </div>
         </ng-template>
       </div>
-      <div class="details">
+      <div class="details" *ngIf="purchaseType !== OPERATION_TYPE_INTERNATIONAL_TRANSFER">
         <div class="left-block">Paiement par</div>
         <div class="right-block scb-text-gray">
           <span class="numero">
@@ -254,10 +273,33 @@
           <div class="right-block scb-text-gray">
             <span class="numero">350 FCFA</span>
             <span class="name">Tous les 30 jours</span>
-          </div></div>
+          </div>
+        </div>
 			</ng-container>
+      <div class="details details-pays" *ngIf="purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER">
+        <div class="left-block">Pays</div>
+        <div class="right-block inline scb-text-gray">
+          <img [src]="opXtras?.country?.flagIcon" class="flag" alt="">
+          <span class="numero">{{opXtras?.country?.countryName}}</span>
+        </div>
+      </div>
       <div class="details details-date">
-        <div class="left-block">Date d'achat</div>
+        <div class="left-block">
+          <ng-container [ngSwitch]="purchaseType">
+            <ng-container *ngSwitchCase="OPERATION_TYPE_INTERNATIONAL_TRANSFER">
+              Date de transfert
+            </ng-container>
+            <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">
+              Date de transfert
+            </ng-container>
+            <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM">
+              Date de transfert
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              Date d'achat
+            </ng-container>
+          </ng-container>
+        </div>
         <div class="right-block scb-text-gray">
           <span class="numero" *ngIf="!isOpenedFromHistory">{{dateAchat}}</span>
           <span class="numero" *ngIf="isOpenedFromHistory">{{formatDate(historyTransactionItem?.operationDate) | date:'dd-MM-yyyy à hh:mm'}}</span>
@@ -376,6 +418,9 @@
           Faire un autre achat de pass</ng-container
         >
         <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM">
+          Faire un autre transfert
+        </ng-container>
+        <ng-container *ngSwitchCase="OPERATION_TYPE_INTERNATIONAL_TRANSFER">
           Faire un autre transfert
         </ng-container>
         <ng-container *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">

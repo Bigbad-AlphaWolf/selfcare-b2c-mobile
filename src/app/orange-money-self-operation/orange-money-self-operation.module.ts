@@ -9,6 +9,7 @@ import {IonicModule} from '@ionic/angular';
 import {MaterialComponentsModule} from '../material-components/material-components.module';
 import {PipesModule} from '../pipes/pipes.module';
 import {ImpliciteAuthenticationModalComponent} from './components/implicite-authentication-modal/implicite-authentication-modal.component';
+import {ModalForUnblockAccountOmComponent} from './components/modal-for-unblock-account-om/modal-for-unblock-account-om.component';
 
 const routes: Routes = [
   {
@@ -28,15 +29,19 @@ const routes: Routes = [
     loadChildren: () => import('./pages/open-om-account/open-om-account.module').then(m => m.OpenOmAccountPageModule)
   },
   {
+    path: 'unblock-om-account',
+    loadChildren: () => import('./pages/unblock-my-account-om/unblock-my-account-om.module').then(m => m.UnblockMyAccountOmPageModule)
+  },
+  {
     path: '**',
     redirectTo: 'open-om-account'
   }
 ];
 
 @NgModule({
-  declarations: [TypeOtpModalComponent, ImpliciteAuthenticationModalComponent],
+  declarations: [TypeOtpModalComponent, ImpliciteAuthenticationModalComponent, ModalForUnblockAccountOmComponent],
   imports: [CommonModule, IonicModule, MaterialComponentsModule, PipesModule, ComponentsModule, RouterModule.forChild(routes)],
   providers: [CameraPreview],
-  entryComponents: [TypeOtpModalComponent, ImpliciteAuthenticationModalComponent]
+  entryComponents: [TypeOtpModalComponent, ImpliciteAuthenticationModalComponent, ModalForUnblockAccountOmComponent]
 })
 export class OrangeMoneySelfOperationModule {}
