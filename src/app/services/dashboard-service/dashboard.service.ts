@@ -583,25 +583,7 @@ export class DashboardService {
   }
 
   transferBonus(transfertbonnus: TransfertBonnus) {
-    return this.http.post(`${transferbonusEndpoint}`, transfertbonnus).pipe(
-      map((res: any) => {
-        if (res?.message === 'Successful') {
-          return { code: '0' };
-        } else {
-          return {
-            code: 'unkown',
-            message: res?.message ? res.message : 'Une erreur est survenue',
-          };
-        }
-      }),
-      catchError((err) => {
-        const error = err?.error
-          ? err.error
-          : { message: 'Une erreur est survenue' };
-        !error?.message ? (error['message'] = error?.detail) : '';
-        return throwError(error);
-      })
-    );
+    return this.http.post(`${transferbonusEndpoint}`, transfertbonnus);
   }
 
   transferCredit(transferPayload: TransferCreditModel) {

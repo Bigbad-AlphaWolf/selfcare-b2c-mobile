@@ -132,7 +132,7 @@ export class BillsHubPage implements OnInit {
     }
   }
 
-  async openPayBillModal(operation) {
+  async openPayBillModal(operation: string) {
     const modal = await this.modalController.create({
       component: SelectNumberForBillComponent,
       cssClass: 'select-recipient-modal',
