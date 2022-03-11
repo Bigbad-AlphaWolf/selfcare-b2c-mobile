@@ -81,6 +81,7 @@ import { SelectElementModalComponent } from './select-element-modal/select-eleme
 import { PermissionSettingsPopupComponent } from 'src/app/components/permission-settings-popup/permission-settings-popup.component';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 import { PopUpCompteOmBloquedComponent } from './pop-up-compte-om-bloqued/pop-up-compte-om-bloqued.component';
+import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-request-modal.component';
 
 @NgModule({
   declarations: [
@@ -150,6 +151,7 @@ import { PopUpCompteOmBloquedComponent } from './pop-up-compte-om-bloqued/pop-up
     SelectElementModalComponent,
     PopUpCompteOmBloquedComponent,
     PermissionSettingsPopupComponent,
+    FaceIdRequestModalComponent
   ],
   imports: [
     CommonModule,
@@ -199,6 +201,7 @@ import { PopUpCompteOmBloquedComponent } from './pop-up-compte-om-bloqued/pop-up
     SelectElementModalComponent,
     PermissionSettingsPopupComponent,
     PopUpCompteOmBloquedComponent,
+    FaceIdRequestModalComponent
   ],
   exports: [
     BanniereComponent,
@@ -264,6 +267,7 @@ import { PopUpCompteOmBloquedComponent } from './pop-up-compte-om-bloqued/pop-up
     SelectElementModalComponent,
     PermissionSettingsPopupComponent,
     PopUpCompteOmBloquedComponent,
+    FaceIdRequestModalComponent
   ],
   providers: [
     Contacts,

@@ -15,7 +15,8 @@
       </span>
     </div>
   </div>
-		<app-pop-up-compte-om-bloqued *ngIf="omUserInfos?.active === false" (close)="closePopUpOM()"></app-pop-up-compte-om-bloqued>
+  <app-face-id-alert-popup *ngIf="isBiometricAvailable && userBiometricStatus !== FACE_ID_PERMISSION_ALLOWED && userBiometricStatus !== FACE_ID_PERMISSION_DENIED"></app-face-id-alert-popup>
+	<app-pop-up-compte-om-bloqued *ngIf="omUserInfos?.active === false" (close)="closePopUpOM()"></app-pop-up-compte-om-bloqued>
   <div class="gerer-mes-lignes">
     <div class="text">
       <span class="mes-lignes">Mes lignes</span>
@@ -111,6 +112,30 @@
         <span class="option-text">Partager l’application</span>
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
+    </div>
+  </div>
+  <div class="menu-items">
+    <div class="submenu-title">Sécurité</div>
+    <div class="item-option">
+      <div class="item-container">
+        <img src="/assets/images/icons-faceid.png" alt="" class="option-img">
+        <div class="option-text">
+          <span class="title1">Face ID/ Touch ID</span>
+          <span class="text1 scb-text-gray">{{ isBiometricAvailable ? 'Activer/Désactiver FaceID' : 'Non disponible sur votre téléphone'}}</span>
+        </div>
+        <ion-toggle mode="ios" class="biometric-toggle" [disabled]="!isBiometricAvailable" (ionChange)="onChangedStatus($event)"
+          [checked]="isBiometricAvailable && userBiometricStatus === FACE_ID_PERMISSION_ALLOWED"></ion-toggle>
+      </div>
+    </div>
+    <div class="item-option" [id]="'about-the-app-entry' | generateIdForTA" (click)="goToAbout()">
+      <div class="item-container">
+        <img src="/assets/images/icons-mon-compte.png" alt="" class="option-img">
+        <div class="option-text">
+          <span class="title1">Mot de passe</span>
+          <span class="text1 scb-text-gray">Changer mon mot de passe</span>
+        </div>
+        <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
+      </div>
     </div>
   </div>
   <div class="menu-items">
