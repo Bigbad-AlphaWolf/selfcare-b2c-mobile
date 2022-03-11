@@ -1,25 +1,31 @@
-import { HttpResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
-import { ModalController, NavController, ToastController } from '@ionic/angular';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { ItemUserConso, OPERATION_ENABLE_DALAL, SubscriptionModel, UserConsommation } from 'src/shared';
-import { DalalTonesGenreModel } from '../models/dalal-tones-genre.model';
-import { DalalTonesSousGenreModel } from '../models/dalal-tones-sous-genre.model';
-import { DalalTonesModel } from '../models/dalal-tones.model';
-import { OperationExtras } from '../models/operation-extras.model';
-import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
-import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import { DalalTonesService } from '../services/dalal-tones-service/dalal-tones.service';
-import { DashboardService, downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
-import { DalalDisablePopupComponent } from './components/dalal-disable-popup/dalal-disable-popup.component';
-import { DalalMoreInfosComponent } from './components/dalal-more-infos/dalal-more-infos.component';
+import {HttpResponse} from '@angular/common/http';
+import {Component, OnInit} from '@angular/core';
+import {NavigationExtras, Router} from '@angular/router';
+import {ModalController, NavController, ToastController} from '@ionic/angular';
+import {Observable} from 'rxjs';
+import {tap} from 'rxjs/operators';
+import {
+  ItemUserConso,
+  MINIMUM_REQUIRED_RECHARGEMENT_SOLDE_TO_ACTIVATE_DALAL,
+  OPERATION_ENABLE_DALAL,
+  SubscriptionModel,
+  UserConsommation
+} from 'src/shared';
+import {DalalTonesGenreModel} from '../models/dalal-tones-genre.model';
+import {DalalTonesSousGenreModel} from '../models/dalal-tones-sous-genre.model';
+import {DalalTonesModel} from '../models/dalal-tones.model';
+import {OperationExtras} from '../models/operation-extras.model';
+import {ApplicationRoutingService} from '../services/application-routing/application-routing.service';
+import {AuthenticationService} from '../services/authentication-service/authentication.service';
+import {DalalTonesService} from '../services/dalal-tones-service/dalal-tones.service';
+import {DashboardService, downloadAvatarEndpoint} from '../services/dashboard-service/dashboard.service';
+import {DalalDisablePopupComponent} from './components/dalal-disable-popup/dalal-disable-popup.component';
+import {DalalMoreInfosComponent} from './components/dalal-more-infos/dalal-more-infos.component';
 const SINGLE_REQUEST_SIZE = 10;
 @Component({
   selector: 'app-dalal-tones',
   templateUrl: './dalal-tones.page.html',
-  styleUrls: ['./dalal-tones.page.scss'],
+  styleUrls: ['./dalal-tones.page.scss']
 })
 export class DalalTonesPage implements OnInit {
   static ROUTE_PATH = '/dalal-tones';
@@ -56,37 +62,37 @@ export class DalalTonesPage implements OnInit {
     this.getGenresDalal();
     this.getDalalTones(true, '');
     this.getCurrentActiveDalal();
-    this.dashbService.getUserCallCompteursInfos().pipe(
-      tap((res: ItemUserConso) => {
-        if(res) {
-          const rechargementCompteur = res.consommations.find((x: UserConsommation) => {
-             return x.code === this.RECHARGEMENT_COMPTEUR_CODE
-          })
-          this.rechargementSolde = rechargementCompteur.montant;
-        }
-      })
-    ).subscribe();
+    this.dashbService
+      .getUserCallCompteursInfos()
+      .pipe(
+        tap((res: ItemUserConso) => {
+          if (res) {
+            const rechargementCompteur = res.consommations.find((x: UserConsommation) => {
+              return x.code === this.RECHARGEMENT_COMPTEUR_CODE;
+            });
+            this.rechargementSolde = rechargementCompteur.montant;
+          }
+        })
+      )
+      .subscribe();
     this.currentPhoneNumber = this.dashbService.getCurrentPhoneNumber();
-    this.authServ
-      .getSubscription(this.currentPhoneNumber)
-      .subscribe((res: SubscriptionModel) => {
-        this.currentCodeFormulePhoneNumber = res.code;
-      });
+    this.authServ.getSubscription(this.currentPhoneNumber).subscribe((res: SubscriptionModel) => {
+      this.currentCodeFormulePhoneNumber = res.code;
+    });
   }
 
   getCurrentActiveDalal() {
     this.dalalTonesService.getActiveDalal().subscribe(
       (res: any) => {
-        if (res && res.serviceCharacteristic)
-          this.currentActiveDalals = res.serviceCharacteristic;
+        if (res && res.serviceCharacteristic) this.currentActiveDalals = res.serviceCharacteristic;
       },
-      (err) => {}
+      err => {}
     );
   }
 
   getGenresDalal() {
     this.genres$ = this.dalalTonesService.fetchDalalGenres().pipe(
-      tap((allGenres) => {
+      tap(allGenres => {
         this.allGenres = allGenres;
       })
     );
@@ -96,8 +102,8 @@ export class DalalTonesPage implements OnInit {
     this.loadingError = false;
     this.infiniteScrollDisabled = false;
     reqParams = {
-      ...{ size: SINGLE_REQUEST_SIZE, page: this.page_number },
-      ...reqParams,
+      ...{size: SINGLE_REQUEST_SIZE, page: this.page_number},
+      ...reqParams
     };
     this.dalalTonesService.fetchDalalTones(reqParams).subscribe(
       (dalalTonesRes: HttpResponse<DalalTonesModel[]>) => {
@@ -115,7 +121,7 @@ export class DalalTonesPage implements OnInit {
           this.page_number++;
         }
       },
-      (err) => {
+      err => {
         this.loadingError = isFirstLoad;
         this.loadingDalal = false;
       }
@@ -125,7 +131,7 @@ export class DalalTonesPage implements OnInit {
   doInfinite(event) {
     let params = {};
     if (this.selectedSousGenres.length) {
-      params = { code: this.selectedSousGenres.join(',') };
+      params = {code: this.selectedSousGenres.join(',')};
     }
     this.getDalalTones(false, event, params);
   }
@@ -138,8 +144,7 @@ export class DalalTonesPage implements OnInit {
     this.loadingDalal = true;
     this.dalalTones = [];
     let params = {};
-    if (this.selectedSousGenres.length)
-      params = { code: this.selectedSousGenres.join(',') };
+    if (this.selectedSousGenres.length) params = {code: this.selectedSousGenres.join(',')};
     this.page_number = 0;
     this.getDalalTones(true, '', params);
   }
@@ -148,19 +153,19 @@ export class DalalTonesPage implements OnInit {
     if (!this.selectedGenres.includes(genre.nom)) {
       this.selectedGenres.push(genre.nom);
     }
-    const index = this.allGenres.map((genre) => genre.nom).indexOf(genre.nom);
+    const index = this.allGenres.map(genre => genre.nom).indexOf(genre.nom);
     this.selectedSousGenres[index] = sousGenreCode;
     this.reloadDalalTones();
   }
 
   goDalalActivationRecapPage(dalal: DalalTonesModel) {
-    if(this.rechargementSolde < dalal.tarif) {
-      this.presentToastErrorMsg()
+    if (this.rechargementSolde < MINIMUM_REQUIRED_RECHARGEMENT_SOLDE_TO_ACTIVATE_DALAL) {
+      this.presentToastErrorMsg();
     } else {
       let state: OperationExtras = {};
       state.purchaseType = OPERATION_ENABLE_DALAL;
       state.dalal = dalal;
-      const navExtras: NavigationExtras = { state };
+      const navExtras: NavigationExtras = {state};
       this.navController.navigateForward(['/operation-recap'], navExtras);
     }
   }
@@ -169,7 +174,7 @@ export class DalalTonesPage implements OnInit {
     const modal = await this.modalController.create({
       component: DalalMoreInfosComponent,
       cssClass: 'dalal-success-modal',
-      backdropDismiss: true,
+      backdropDismiss: true
     });
     return await modal.present();
   }
@@ -179,7 +184,7 @@ export class DalalTonesPage implements OnInit {
       component: DalalDisablePopupComponent,
       cssClass: 'select-recipient-modal',
       backdropDismiss: true,
-      componentProps: { dalal },
+      componentProps: {dalal}
     });
     modal.onDidDismiss().then(() => {});
     return await modal.present();
@@ -191,7 +196,7 @@ export class DalalTonesPage implements OnInit {
 
   goActivatedDalalPage() {
     this.router.navigate(['/dalal-tones/activated-dalal'], {
-      state: { activeDalal: this.currentActiveDalals },
+      state: {activeDalal: this.currentActiveDalals}
     });
   }
 
@@ -202,7 +207,7 @@ export class DalalTonesPage implements OnInit {
       position: 'top',
       duration: 3000,
       buttons: [
-       {
+        {
           text: 'Recharger',
           handler: () => {
             this.goToPageSetAmountForRechargeCredit();

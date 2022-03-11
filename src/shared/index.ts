@@ -1497,3 +1497,6 @@ export enum MSISDN_TYPE {
   MOBILE = 'MOBILE',
   FIXE = 'FIXE',
 }
+
+// Dalal Tones Requirements
+export const MINIMUM_REQUIRED_RECHARGEMENT_SOLDE_TO_ACTIVATE_DALAL = 12;
