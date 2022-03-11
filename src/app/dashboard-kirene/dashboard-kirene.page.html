@@ -1,6 +1,10 @@
 <app-dashboard-header [firstName]="firstName"></app-dashboard-header>
 <ion-content>
 	<div class="dashboard-container-mobile">
+		<div class="stories-bloc">
+			<app-list-preview-stories [storiesByCategory]="storiesByCategory" [isLoadingStories]="isLoadingStories"
+				[hasError]="hasError" [areDataLoadedExternally]="true"></app-list-preview-stories>
+		</div>
 		<div class="dashboard-block-conso">
 			<div class="dashboard-block-conso-top-texts">
 				<div>
