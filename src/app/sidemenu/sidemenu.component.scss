@@ -147,12 +147,18 @@
       padding: 20px 0 4px;
     }
     .item-option {
-      ion-menu-toggle {
+      ion-menu-toggle, .item-container {
         display: flex;
         align-items: center;
         position: relative;
         padding: 18px 0;
         width: 100%;
+        .biometric-toggle {
+          position: absolute;
+          right: 0;
+          top: 20px;
+          --background-checked: #32c832;
+        }
       }
       &:not(:last-child) {
         border-bottom: solid 1px $silver;
@@ -166,6 +172,16 @@
         font-family: HelveticaNeueLTStd-Roman;
         font-size: 16px;
         line-height: 1.25;
+        display: flex;
+        flex-direction: column;
+        .title1, .text1 {
+          font-family: HelveticaNeueLTStd-Roman;
+          font-size: 16px;
+          line-height: 1.67;
+        }
+        .text1 {
+          font-size: 12px !important;
+        }
       }
       .arrow-right {
         position: absolute;

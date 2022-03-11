@@ -37,10 +37,12 @@ import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { PipesModule } from './pipes/pipes.module';
 import { Network } from '@ionic-native/network/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
+import { FaceIdAlertPopupComponent } from './sidemenu/face-id-alert-popup/face-id-alert-popup.component';
 
 registerLocaleData(localeFr);
 @NgModule({
-  declarations: [AppComponent, SidemenuComponent],
+  declarations: [AppComponent, SidemenuComponent, FaceIdAlertPopupComponent],
   imports: [
     HttpClientModule,
     MatDialogModule,
@@ -60,6 +62,7 @@ registerLocaleData(localeFr);
     AppVersion,
     StatusBar,
     SplashScreen,
+    FingerprintAIO,
     WebView,
     { provide: LOCALE_ID, useValue: 'fr-FR' },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
