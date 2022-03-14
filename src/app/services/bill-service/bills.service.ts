@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject, of, Observable } from 'rxjs';
 import { DashboardService } from '../dashboard-service/dashboard.service';
-import { isDelayedBill, MAIL_URL, UNKNOWN_ECHEANCE } from 'src/shared';
+import { isDelayedBill, MAIL_URL, MAXIMUM_PAYABLE_BILL_AMOUNT, UNKNOWN_ECHEANCE } from 'src/shared';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import * as SecureLS from 'secure-ls';
 import { Platform } from '@ionic/angular';
@@ -25,6 +25,7 @@ const billsEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bordereau`;
 const billsDetailEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
 const paybillsEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bill-payment`;
 const unpaidBillEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/unpaid-bill`;
+const billAmountLimitEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/bill-amount-limit`;
 @Injectable({
   providedIn: 'root',
 })
@@ -269,6 +270,14 @@ export class BillsService {
           )
         );
     }
+  }
+
+  getBillAmountLimit() {
+    return this.http.get<number>(`${billAmountLimitEndpoint}`).pipe(
+      catchError(_ => {
+        return of(MAXIMUM_PAYABLE_BILL_AMOUNT);
+      })
+    )
   }
 
   getUserBillsDetail(payload: {
