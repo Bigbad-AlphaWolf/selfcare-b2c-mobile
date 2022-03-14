@@ -316,7 +316,7 @@ export class NewPinpadModalPage implements OnInit {
             );
             const omStoredInfos = eval(ls.get(FACE_ID_OM_INFOS));
             const successRegex = 'success';
-            if (faceMatched.toLowerCase().includes(successRegex)) {
+            if (faceMatched?.toLowerCase().includes(successRegex)) {
               this.processPinOmUser(omStoredInfos.pin, true);
               return;
             }
