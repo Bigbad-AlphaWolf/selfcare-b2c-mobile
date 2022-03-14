@@ -864,7 +864,9 @@ export class OrangeMoneyService {
   }
 
   async checkFaceIdStatus() {
-    const biometricAvailability = await this.faio.isAvailable();
+    const biometricAvailability = await this.faio.isAvailable().catch(err => {
+      return of(null).toPromise()
+    });
     console.log('check biometric availability', biometricAvailability);
     const status = this.getFaceIdState();
     return biometricAvailability
