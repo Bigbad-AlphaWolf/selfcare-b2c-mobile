@@ -45,6 +45,10 @@ export class VisualizeStoriesByCategoriesComponent implements OnInit {
 
   ngOnInit() {}
 
+  close() {
+	  this.modalCtrl.dismiss()
+  }
+
 	ngAfterViewInit() {
 		this.initSwiperIndex();
 	}
