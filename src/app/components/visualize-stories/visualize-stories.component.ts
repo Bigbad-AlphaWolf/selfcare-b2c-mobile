@@ -34,6 +34,7 @@ SwiperCore.use([IonicSwiper, Navigation, Pagination, EffectFade, EffectCoverflow
   styleUrls: ["./visualize-stories.component.scss"],
 })
 export class VisualizeStoriesComponent implements OnInit, OnDestroy {
+	@Output() leaveStories = new EventEmitter();
   @Input() storyByCategory: {
     categorie: {
       libelle?: string;
@@ -294,6 +295,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }) {
     switch (data.typeAction) {
       case TYPE_ACTION_ON_BANNER.DEEPLINK:
+		  this.leaveStories.emit('close')
         this.navCtrl.navigateForward([data.url]);
         break;
       case TYPE_ACTION_ON_BANNER.REDIRECTION:
