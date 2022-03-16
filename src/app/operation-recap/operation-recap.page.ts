@@ -30,7 +30,7 @@ import {
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
-import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { FACE_ID_PERMISSIONS, OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { OperationExtras } from '../models/operation-extras.model';
 import {
@@ -53,6 +53,7 @@ import { FeesService } from '../services/fees/fees.service';
 import { OM_LABEL_SERVICES } from '../utils/bills.util';
 import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
 import { BoosterModel } from '../models/booster.model';
+import { FaceIdRequestModalComponent } from 'src/shared/face-id-request-modal/face-id-request-modal.component';
 
 @Component({
   selector: 'app-operation-recap',
@@ -514,13 +515,13 @@ export class OperationRecapPage implements OnInit {
           buyForMe:
             this.recipientMsisdn ===
             this.orangeMoneyService.getOrangeMoneyNumber(),
-        });
+        }, response.data.operationPayload);
       }
     });
     return await modal.present();
   }
 
-  async openSuccessFailModal(params: ModalSuccessModel) {
+  async openSuccessFailModal(params: ModalSuccessModel, orangeMoneyData?: any) {
     params.passBought = this.passChoosen;
     params.paymentMod = this.paymentMod;
     params.recipientMsisdn = this.recipientMsisdn;
@@ -537,8 +538,26 @@ export class OperationRecapPage implements OnInit {
       componentProps: params,
       backdropDismiss: false,
     });
-    modal.onDidDismiss().then(() => {});
+    modal.onDidDismiss().then((res) => {
+      if (orangeMoneyData) {
+        this.suggestFaceId(orangeMoneyData);
+      }
+    });
     return await modal.present();
+  }
+
+  async suggestFaceId(operationData?) {
+    const status = await this.orangeMoneyService.checkFaceIdStatus();
+    if (status === FACE_ID_PERMISSIONS.LATER || !status) {
+      const modal = await this.modalController.create({
+        component: FaceIdRequestModalComponent,
+        cssClass: "select-recipient-modal",
+        backdropDismiss: true,
+        componentProps: {operationData}
+      });
+      modal.onDidDismiss().then(() => {});
+      return await modal.present();
+    }
   }
 
   getPassBoosters(pass: any) {

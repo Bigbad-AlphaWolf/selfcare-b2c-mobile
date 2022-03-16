@@ -8,7 +8,7 @@
   height: 100%;
   width: 100%;
   position: relative;
-  background-color: white;
+  background-color: black;
   .error {
     position: absolute;
     text-align: center;
@@ -24,12 +24,20 @@
     left: 50%;
     top: 50%;
   }
-  img {
+  .img-container {
+    margin: auto;
     height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  img {
+    max-height: 100%;
+    max-width: 100%;
+    //position: absolute;
+    //top: 10%;
+    //left: 0;
+    //margin: auto;
   }
   .hide {
     visibility: hidden;
