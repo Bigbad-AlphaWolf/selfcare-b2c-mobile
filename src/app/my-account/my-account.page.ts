@@ -1,21 +1,31 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as SecureLS from 'secure-ls';
-import {MatDialogRef, MatDialog} from '@angular/material/dialog';
-import {ChangeAvatarPopupComponent} from './change-avatar-popup/change-avatar-popup.component';
-import {Subscription} from 'rxjs';
-import {AuthenticationService} from '../services/authentication-service/authentication.service';
-import {Router} from '@angular/router';
-import {AccountService} from '../services/account-service/account.service';
-import {DashboardService, downloadAvatarEndpoint} from '../services/dashboard-service/dashboard.service';
-import {NO_AVATAR_ICON_URL, isExtensionImageValid, isSizeAvatarValid, MAX_USER_AVATAR_UPLOAD_SIZE, getNOAvatartUrlImage} from 'src/shared';
-import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
-import {InProgressPopupComponent} from 'src/shared/in-progress-popup/in-progress-popup.component';
-import {BottomSheetService} from '../services/bottom-sheet/bottom-sheet.service';
-const ls = new SecureLS({encodingType: 'aes'});
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { ChangeAvatarPopupComponent } from './change-avatar-popup/change-avatar-popup.component';
+import { Subscription } from 'rxjs';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { Router } from '@angular/router';
+import { AccountService } from '../services/account-service/account.service';
+import {
+  DashboardService,
+  downloadAvatarEndpoint,
+} from '../services/dashboard-service/dashboard.service';
+import {
+  NO_AVATAR_ICON_URL,
+  isExtensionImageValid,
+  isSizeAvatarValid,
+  MAX_USER_AVATAR_UPLOAD_SIZE,
+  getNOAvatartUrlImage,
+} from 'src/shared';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
+import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
+import { NavController } from '@ionic/angular';
+const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-my-account',
   templateUrl: './my-account.page.html',
-  styleUrls: ['./my-account.page.scss']
+  styleUrls: ['./my-account.page.scss'],
 })
 export class MyAccountPage implements OnInit {
   userInfos: any = {};
@@ -40,7 +50,8 @@ export class MyAccountPage implements OnInit {
     private accountService: AccountService,
     private followAnalyticsService: FollowAnalyticsService,
     private bsService: BottomSheetService,
-    private dashbServ: DashboardService
+    private dashbServ: DashboardService,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -50,24 +61,30 @@ export class MyAccountPage implements OnInit {
     } else {
       this.userAvatarUrl = NO_AVATAR_ICON_URL;
     }
-    this.accountService.userAvatarEmit().subscribe(url => {
+    this.accountService.userAvatarEmit().subscribe((url) => {
       this.userAvatarUrl = url;
     });
   }
 
   logOut() {
-    this.followAnalyticsService.registerEventFollow('Deconnexion', 'event', 'clicked');
+    this.followAnalyticsService.registerEventFollow(
+      'Deconnexion',
+      'event',
+      'clicked'
+    );
     this.authServ.logout();
     this.dashbServ.cleanAddedScript(['ibou', 'userDimelo']);
-    this.router.navigate(['/']);
+    this.navController.navigateRoot(['/']);
   }
 
   changeAvatar(userImg) {
     this.accountService.openPrevizualisationDialog(userImg, this.imgExtension);
-    this.accountService.getStatusAvatarLoaded().subscribe((res: {status: boolean; error: boolean}) => {
-      this.hasLoadedAvatar = res.status;
-      this.hasErrorLoadingAvatar = res.error;
-    });
+    this.accountService
+      .getStatusAvatarLoaded()
+      .subscribe((res: { status: boolean; error: boolean }) => {
+        this.hasLoadedAvatar = res.status;
+        this.hasErrorLoadingAvatar = res.error;
+      });
   }
 
   onAvatarSelected(valueChange: any) {
@@ -79,7 +96,8 @@ export class MyAccountPage implements OnInit {
 
       if (!isExtensionImageValid(this.imgExtension)) {
         this.errorImageFormat = true;
-        this.errorMsg = 'Les extensions de fichiers acceptés sont: JPG, PNG, JPEG';
+        this.errorMsg =
+          'Les extensions de fichiers acceptés sont: JPG, PNG, JPEG';
       } else if (!isSizeAvatarValid(this.imgSizeinKO)) {
         this.errorImageFormat = true;
         this.errorMsg = `La taille de l'/'image doit être inférieur à ${MAX_USER_AVATAR_UPLOAD_SIZE}Ko`;
@@ -93,7 +111,7 @@ export class MyAccountPage implements OnInit {
     this.dialog.open(InProgressPopupComponent, {
       width: '330px',
       maxWidth: '100%',
-      hasBackdrop: true
+      hasBackdrop: true,
     });
   }
   setImgAvatarToDefault() {
@@ -101,6 +119,10 @@ export class MyAccountPage implements OnInit {
   }
   goToRattachmentPage() {
     this.bsService.openRattacheNumberModal();
-    this.followAnalyticsService.registerEventFollow('Sidemenu_rattacher_une_ligne', 'event', 'clicked');
+    this.followAnalyticsService.registerEventFollow(
+      'Sidemenu_rattacher_une_ligne',
+      'event',
+      'clicked'
+    );
   }
 }

@@ -38,6 +38,7 @@ import {
   MatBottomSheetRef,
 } from '@angular/material/bottom-sheet';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { TRANSFER_OM_INTERNATIONAL_COUNTRIES } from 'src/app/utils/constants';
 
 @Injectable({
   providedIn: 'root',
@@ -140,6 +141,9 @@ export class BottomSheetService {
     const modal = await this.modalCtrl.create({
       component: SelectBeneficiaryPopUpComponent,
       cssClass: 'select-recipient-modal',
+      componentProps: {
+        country: TRANSFER_OM_INTERNATIONAL_COUNTRIES[0],
+      },
     });
     modal.onWillDismiss().then((response: any) => {
       if (response && response.data && response.data.recipientMsisdn) {

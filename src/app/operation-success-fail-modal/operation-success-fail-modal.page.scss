@@ -58,6 +58,10 @@
       border-bottom: 2px solid $silver;
       &-date {
         border-bottom: none;
+        padding-top: 14px;
+      }
+      &-pays {
+        padding: 14px 0 !important;
       }
       .left-block {
         font-family: HelveticaNeueLTStd-Bd;
@@ -65,6 +69,18 @@
       }
       .right-block {
         text-align: right;
+        &.inline {
+          display: flex;
+          align-items: center;
+          span {
+            font-size: 12px !important;
+            margin-bottom: -4px;
+          }
+        }
+        .flag {
+          margin-right: 5px;
+          width: 14px;
+        }
         span {
           font-family: HelveticaNeueLTStd-Roman;
           font-size: 14px;

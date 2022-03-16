@@ -76,6 +76,12 @@ import { FormatDataVolume2Pipe } from './pipes/format-data-volume-2.pipe';
 import { FormatDuration2Pipe } from './pipes/format-duration-2.pipe';
 import { SelectNumberForBillComponent } from 'src/app/components/select-number-for-bill/select-number-for-bill.component';
 import { UnpaidBillModalComponent } from 'src/app/components/unpaid-bill-modal/unpaid-bill-modal.component';
+import { SelectCountryModalComponent } from 'src/app/transfert-hub-services/components/select-country-modal/select-country-modal.component';
+import { SelectElementModalComponent } from './select-element-modal/select-element-modal.component';
+import { PermissionSettingsPopupComponent } from 'src/app/components/permission-settings-popup/permission-settings-popup.component';
+import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
+import { PopUpCompteOmBloquedComponent } from './pop-up-compte-om-bloqued/pop-up-compte-om-bloqued.component';
+import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-request-modal.component';
 
 @NgModule({
   declarations: [
@@ -141,6 +147,11 @@ import { UnpaidBillModalComponent } from 'src/app/components/unpaid-bill-modal/u
     FormatDuration2Pipe,
     SelectNumberForBillComponent,
     UnpaidBillModalComponent,
+    SelectCountryModalComponent,
+    SelectElementModalComponent,
+    PopUpCompteOmBloquedComponent,
+    PermissionSettingsPopupComponent,
+    FaceIdRequestModalComponent
   ],
   imports: [
     CommonModule,
@@ -186,6 +197,11 @@ import { UnpaidBillModalComponent } from 'src/app/components/unpaid-bill-modal/u
     KioskLocatorPopupComponent,
     SelectNumberForBillComponent,
     UnpaidBillModalComponent,
+    SelectCountryModalComponent,
+    SelectElementModalComponent,
+    PermissionSettingsPopupComponent,
+    PopUpCompteOmBloquedComponent,
+    FaceIdRequestModalComponent
   ],
   exports: [
     BanniereComponent,
@@ -247,10 +263,16 @@ import { UnpaidBillModalComponent } from 'src/app/components/unpaid-bill-modal/u
     FormatDuration2Pipe,
     SelectNumberForBillComponent,
     UnpaidBillModalComponent,
+    SelectCountryModalComponent,
+    SelectElementModalComponent,
+    PermissionSettingsPopupComponent,
+    PopUpCompteOmBloquedComponent,
+    FaceIdRequestModalComponent
   ],
   providers: [
     Contacts,
     SocialSharing,
+    OpenNativeSettings,
     { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} },
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

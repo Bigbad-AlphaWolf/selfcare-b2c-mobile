@@ -1,0 +1,44 @@
+@import 'src/app/app';
+
+.settings-popup {
+  padding: 40px 15px 20px;
+  position: relative;
+  .close-icon {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+  }
+  .icon-container {
+    display: flex;
+    justify-content: center;
+    ion-icon {
+      font-size: 50px;
+    }
+  }
+  .title {
+    text-align: center;
+    margin: 20px 0 15px;
+    font-size: 20px;
+  }
+  .text {
+    font-family: 'HelveticaNeueLTStd-Roman';
+    font-size: 14px;
+    line-height: 1.3;
+    .bold {
+      font-family: 'HelveticaNeueLTStd-Bd';
+      color: $fullBlack;
+    }
+    .arrow {
+      margin: 0 5px;
+      transform: rotate(-90deg);
+    }
+  }
+  .btn-container {
+    margin-top: 20px;
+    button {
+      border-radius: 5px;
+      min-height: 40px !important;
+      line-height: 1 !important;
+    }
+  }
+}

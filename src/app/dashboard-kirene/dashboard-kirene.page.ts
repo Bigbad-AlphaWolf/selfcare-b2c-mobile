@@ -33,13 +33,17 @@ import {AssistanceService} from '../services/assistance.service';
 import {OfferPlansService} from '../services/offer-plans-service/offer-plans.service';
 import {OfferPlanActive} from 'src/shared/models/offer-plan-active.model';
 import {OrangeMoneyService} from '../services/orange-money-service/orange-money.service';
-import {map} from 'rxjs/operators';
+import {catchError, map, tap} from 'rxjs/operators';
 import {SelectBeneficiaryPopUpComponent} from '../transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import {ModalController} from '@ionic/angular';
 import {ApplicationRoutingService} from '../services/application-routing/application-routing.service';
 import {BottomSheetService} from '../services/bottom-sheet/bottom-sheet.service';
 import {NumberSelectionOption} from '../models/enums/number-selection-option.enum';
 import {CreditPassAmountPage} from '../pages/credit-pass-amount/credit-pass-amount.page';
+import {TRANSFER_OM_INTERNATIONAL_COUNTRIES} from '../utils/constants';
+import {Story} from '../models/story-oem.model';
+import {of} from 'rxjs';
+import {StoriesService} from '../services/stories-service/stories.service';
 const ls = new SecureLS({encodingType: 'aes'});
 @Component({
   selector: 'app-dashboard-kirene',
@@ -58,15 +62,12 @@ export class DashboardKirenePage implements OnInit {
   userConsommationsCategories = [];
   userInfos: any = {};
   globalCredit = '';
-  isHyBride = false;
   error = false;
   dataLoaded = false;
 
   creditRechargement: number;
   canDoSOS = false;
   creditValidity;
-
-  pictures = [{image: '/assets/images/banniere-promo-mob.png'}, {image: '/assets/images/banniere-promo-fibre.png'}];
 
   soldebonus: number;
   canTransferBonus: boolean;
@@ -87,6 +88,18 @@ export class DashboardKirenePage implements OnInit {
   hasPromoBooster: PromoBoosterActive = null;
   currentProfil: string;
   hasPromoPlanActive: OfferPlanActive = null;
+  storiesByCategory: {
+    categorie: {
+      libelle?: string;
+      ordre?: number;
+      code?: string;
+      zoneAffichage?: string;
+    };
+    stories: Story[];
+    readAll: boolean;
+  }[];
+  isLoadingStories: boolean;
+  hasError: boolean;
 
   constructor(
     private dashbordServ: DashboardService,
@@ -100,7 +113,7 @@ export class DashboardKirenePage implements OnInit {
     private offerPlanServ: OfferPlansService,
     private omServ: OrangeMoneyService,
     private modalController: ModalController,
-    private appRouting: ApplicationRoutingService,
+    private storiesService: StoriesService,
     private bsService: BottomSheetService
   ) {}
 
@@ -119,6 +132,27 @@ export class DashboardKirenePage implements OnInit {
     this.getUserActiveBonPlans();
     this.getActivePromoBooster();
     this.checkOMNumber();
+    this.fetchUserStories();
+  }
+
+  fetchUserStories() {
+    this.isLoadingStories = true;
+    this.storiesByCategory = [];
+    this.hasError = false;
+    this.storiesService
+      .getCurrentStories()
+      .pipe(
+        tap((res: any) => {
+          this.isLoadingStories = false;
+          this.storiesByCategory = this.storiesService.groupeStoriesByCategory(res);
+        }),
+        catchError(err => {
+          this.isLoadingStories = false;
+          this.hasError = true;
+          return of(err);
+        })
+      )
+      .subscribe();
   }
 
   checkOMNumber() {
@@ -341,13 +375,9 @@ export class DashboardKirenePage implements OnInit {
   async showBeneficiaryModal() {
     const modal = await this.modalController.create({
       component: SelectBeneficiaryPopUpComponent,
-      cssClass: 'select-recipient-modal'
-    });
-    modal.onWillDismiss().then((response: any) => {
-      if (response && response.data && response.data.recipientMsisdn) {
-        const pageData = response.data;
-        this.appRouting.goSetTransferAmountPage(pageData);
-        // this.getOmPhoneNumberAndCheckrecipientHasOMAccount(this.dataPayload);
+      cssClass: 'select-recipient-modal',
+      componentProps: {
+        country: TRANSFER_OM_INTERNATIONAL_COUNTRIES[0]
       }
     });
     return await modal.present();

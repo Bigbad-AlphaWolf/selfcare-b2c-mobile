@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { of, from, Observable, throwError } from 'rxjs';
-import { Contacts, Contact } from '@ionic-native/contacts';
+import { of, from, Observable } from 'rxjs';
+import { Contacts } from '@ionic-native/contacts';
 import { map, catchError } from 'rxjs/operators';
 import { formatPhoneNumber } from 'src/shared';
+import { Platform } from '@ionic/angular';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 
 @Injectable({
   providedIn: 'root',
@@ -49,10 +51,9 @@ export class ContactsService {
       phoneNumbers: [{ value: '781040956' }],
     },
   ];
-  constructor(private contacts: Contacts) {}
+  constructor(private contacts: Contacts, private diagnostic: Diagnostic) {}
 
   getAllContacts(): Observable<any> {
-    // return of(this.mockContacts);
     if (ContactsService.allContacts) {
       return of(ContactsService.allContacts);
     }
@@ -73,10 +74,12 @@ export class ContactsService {
           return { name, numbers: [] };
         });
         ContactsService.allContacts = result;
+        console.log(result);
+
         return result;
       }),
       catchError((err) => {
-        return throwError(err);
+        return of([]);
       })
     );
   }

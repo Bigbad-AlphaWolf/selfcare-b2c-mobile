@@ -12,6 +12,7 @@ import {
 import {
   OPERATION_RAPIDO,
   OPERATION_TYPE_PAY_BILL,
+  OPERATION_TYPE_TERANGA_BILL,
   OPERATION_WOYOFAL,
 } from 'src/app/utils/operations.constants';
 import { BillAmountPage } from '../bill-amount/bill-amount.page';
@@ -104,46 +105,47 @@ export class BillsHubPage implements OnInit {
     }
 
     this.bsService.opXtras.billData = { company: billCompany };
-    if (billCompany.code === OPERATION_WOYOFAL) {
-      this.bsService
-        .initBsModal(
-          WoyofalSelectionComponent,
-          OPERATION_WOYOFAL,
-          BillAmountPage.ROUTE_PATH
-        )
-        .subscribe((_) => {});
-      this.bsService.openModal(WoyofalSelectionComponent);
-      return;
-    }
 
-    if (billCompany.code === OPERATION_TYPE_MERCHANT_PAYMENT) {
-      this.openMerchantBS();
-      return;
+    switch (billCompany.code) {
+      case OPERATION_WOYOFAL:
+        this.bsService
+          .initBsModal(
+            WoyofalSelectionComponent,
+            OPERATION_WOYOFAL,
+            BillAmountPage.ROUTE_PATH
+          )
+          .subscribe((_) => {});
+        this.bsService.openModal(WoyofalSelectionComponent);
+        break;
+      case OPERATION_RAPIDO:
+        this.navCtrl.navigateForward(RapidoOperationPage.ROUTE_PATH);
+        break;
+      case OPERATION_TYPE_PAY_BILL:
+        this.openPayBillModal(OPERATION_TYPE_PAY_BILL);
+        break;
+      case OPERATION_TYPE_TERANGA_BILL:
+        this.openPayBillModal(OPERATION_TYPE_TERANGA_BILL);
+        break;
+      case OPERATION_TYPE_MERCHANT_PAYMENT:
+        this.openMerchantBS();
+        break;
     }
-
-    if (billCompany.code === OPERATION_TYPE_PAY_BILL) {
-      this.openPayBillModal();
-      return;
-    }
-
-    if (billCompany.code === OPERATION_RAPIDO) {
-      this.navCtrl.navigateForward(RapidoOperationPage.ROUTE_PATH);
-      return;
-    }
-    //this will change
   }
 
-  async openPayBillModal() {
+  async openPayBillModal(operation: string) {
     const modal = await this.modalController.create({
       component: SelectNumberForBillComponent,
       cssClass: 'select-recipient-modal',
+      componentProps: {
+        operation,
+      },
     });
-    modal.onWillDismiss().then((response: any) => {
-      if (response && response.data && response.data.recipientMsisdn) {
-        const pageData = response.data;
-        // this.appRouting.goSetTransferAmountPage(pageData);
-      }
-    });
+    // modal.onWillDismiss().then((response: any) => {
+    // if (response && response.data && response.data.recipientMsisdn) {
+    //   const pageData = response.data;
+    //   this.appRouting.goSetTransferAmountPage(pageData);
+    // }
+    // });
     return await modal.present();
   }
 
