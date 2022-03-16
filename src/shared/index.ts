@@ -1500,3 +1500,5 @@ export enum MSISDN_TYPE {
 }
 
 export const MAXIMUM_PAYABLE_BILL_AMOUNT = 150000;
+// Dalal Tones Requirements
+export const MINIMUM_REQUIRED_RECHARGEMENT_SOLDE_TO_ACTIVATE_DALAL = 12;
