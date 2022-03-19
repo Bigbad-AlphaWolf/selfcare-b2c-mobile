@@ -423,6 +423,14 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   onSargalCardClicked(origin?: string) {
+    // @ts-ignore
+    cordova.exec((res) => {
+      console.log("Dimelo Plugin res", res);
+    }, (err) => {
+      console.log("Dimelo Plugin err", err);
+      
+    }, "DimeloCordovaPlugin", "testPlugin");
+    return
     if (
       this.userSargalData &&
       (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED ||
