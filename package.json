@@ -129,6 +129,7 @@
     "cordova-plugin-androidx": "^3.0.0",
     "cordova-plugin-androidx-adapter": "^1.1.3",
     "cordova-plugin-contacts": "file:cordova-plugin-contacts",
+    "cordova-plugin-contacts-phonenumbers": "0.0.12",
     "cordova-plugin-fingerprint-aio": "^5.0.1",
     "cordova-plugin-geolocation": "^4.1.0",
     "cordova-plugin-inappbrowser": "file:cordova-plugin-inappbrowser",
@@ -249,7 +250,8 @@
       },
       "cordova-plugin-fingerprint-aio": {
         "FACEID_USAGE_DESCRIPTION": " "
-      }
+      },
+      "cordova-plugin-contacts-phonenumbers": {}
     },
     "platforms": [
       "android",
