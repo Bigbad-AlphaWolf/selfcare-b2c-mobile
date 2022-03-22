@@ -92,7 +92,7 @@ export class RecentsService {
       const msisdn = recent.destinataire;
       for (let contact of contacts) {
         if (this.checkContactNumbersContainsMsisdn(contact.numbers, msisdn)) {
-          recent.name = contact.name.formatted;
+          recent.name = contact.displayName;
           break;
         }
       }
