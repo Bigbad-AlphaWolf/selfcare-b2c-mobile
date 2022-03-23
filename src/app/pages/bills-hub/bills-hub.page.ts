@@ -13,7 +13,7 @@ import {
   OPERATION_RAPIDO,
   OPERATION_TYPE_PAY_BILL,
   OPERATION_TYPE_TERANGA_BILL,
-  OPERATION_WOYOFAL,
+  OPERATION_WOYOFAL, OPERATION_XEWEUL,
 } from 'src/app/utils/operations.constants';
 import { BillAmountPage } from '../bill-amount/bill-amount.page';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
@@ -33,6 +33,7 @@ import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { SelectNumberForBillComponent } from 'src/app/components/select-number-for-bill/select-number-for-bill.component';
+import {XeweulOperationPage} from '../xeweul-operation/xeweul-operation.page';
 
 @Component({
   selector: 'app-bills-hub',
@@ -119,6 +120,9 @@ export class BillsHubPage implements OnInit {
         break;
       case OPERATION_RAPIDO:
         this.navCtrl.navigateForward(RapidoOperationPage.ROUTE_PATH);
+        break;
+      case OPERATION_XEWEUL:
+        this.navCtrl.navigateForward(XeweulOperationPage.ROUTE_PATH);
         break;
       case OPERATION_TYPE_PAY_BILL:
         this.openPayBillModal(OPERATION_TYPE_PAY_BILL);

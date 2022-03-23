@@ -1,0 +1,60 @@
+<div class="oem-bottomsheet-container">
+  <div class="title">
+    {{ getPageTitle(operation) }}
+  </div>
+  <div class="description">
+    Renseignez le numéro de la carte
+  </div>
+
+  <div class="xeweul-number">
+    <form novalidate autocomplete="false">
+      <mat-form-field class="scb-input-row" appearance="outline">
+        <mat-label>Numéro de carte &nbsp;&nbsp;</mat-label>
+        <input
+          #numberInput
+          matInput
+          type="number"
+          maxlength="20"
+          (keyup)="onInputChange(numberInput.value)"
+        />
+      </mat-form-field>
+    </form>
+    <div class="card" (click)="onMyFavorites()" >
+      <img class="icon" src="/assets/images/credit-card-front.png" alt="" />
+      <span class="btn-card scb-text-orange"
+        >Mes cartes</span
+      >
+    </div>
+  </div>
+
+  <div class="recents" *ngIf="(xeweuls$|async) as xeweuls">
+    <div class="description" *ngIf="xeweuls.length">
+      Récents
+    </div>
+    <div
+      matRipple
+      class="oem-item"
+      (click)="onRecentXeweulSlected(xeweul)"
+      [id]="('carte_xeweul_'+i) | generateIdForTA"
+      *ngFor="let xeweul of xeweuls ; index as i; count as size"
+    >
+      <div class="logo">
+        <img src="assets/images/rapido@3x.png" />
+      </div>
+      <div class="labels" [ngClass]="i + 1 == size ? 'last-label' : ''">
+        <span class="name"> {{ xeweul.name }}</span>
+        <span class="number">{{ xeweul.counterNumber |codeFormat:2 }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="error-msg" *ngIf="errorMsg">
+    {{ errorMsg }}
+  </div>
+  <div class="btn-continue">
+    <button [id]="'btn-validate-numero-carte-xeweul' | generateIdForTA" mat-button [disabled]="isProcessing || !xeweulNumberIsValid" (click)="onContinue()">
+      Continuer
+    </button>
+    <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
+  </div>
+</div>

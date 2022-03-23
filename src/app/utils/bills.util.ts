@@ -6,7 +6,7 @@ import {
 import { BillCompany } from '../models/bill-company.model';
 import { OffreService } from '../models/offre-service.model';
 import { IMAGES_DIR_PATH } from './constants';
-import { OPERATION_RAPIDO, OPERATION_WOYOFAL } from './operations.constants';
+import {OPERATION_RAPIDO, OPERATION_WOYOFAL, OPERATION_XEWEUL} from './operations.constants';
 
 export const WOYOFAL = 'WOYOFAL';
 export const RAPIDO = 'RAPIDO';
@@ -207,6 +207,7 @@ export const FEES_INCLUDES = {
 
 export const OM_LABEL_SERVICES = {
   RAPIDO: 'rapido',
+  XEWEUL: 'xeweul',
   ISM: 'ism',
   SENELEC: 'senelec',
   MALI: 'mali',
@@ -235,6 +236,9 @@ export function mapOffreServiceWithCodeOM(offre: OffreService) {
       case OPERATION_RAPIDO:
         offre.codeOM = OM_LABEL_SERVICES.RAPIDO;
         return offre;
+      case OPERATION_XEWEUL:
+            offre.codeOM = OM_LABEL_SERVICES.XEWEUL;
+            return offre;
       case OPERATION_WOYOFAL:
         offre.codeOM = OM_LABEL_SERVICES.WOYOFAL;
         return offre;

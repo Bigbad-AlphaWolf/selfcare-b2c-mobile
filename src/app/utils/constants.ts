@@ -10,7 +10,7 @@ import {
 import {
   OPERATION_RAPIDO,
   OPERATION_TYPE_INTERNATIONAL_TRANSFER,
-  OPERATION_WOYOFAL,
+  OPERATION_WOYOFAL, OPERATION_XEWEUL,
 } from './operations.constants';
 
 export const IMAGES_DIR_PATH = '/assets/images';
@@ -43,6 +43,8 @@ export const NO_TOKEN_URLS = [
   '/auth/login',
   '/api/v1/get-msisdn',
   '/api/v1/confirm-msisdn',
+  '/api/xeweul/cards/782363572',
+  '/api/xeweul/cards',
 ];
 export const OM_RECENT_TYPES = [
   {
@@ -52,6 +54,10 @@ export const OM_RECENT_TYPES = [
   {
     operationType: OPERATION_RAPIDO,
     recentType: RecentType.paiement_rapido,
+  },
+  {
+    operationType: OPERATION_XEWEUL,
+    recentType: RecentType.paiement_xeweul,
   },
   {
     operationType: OPERATION_TYPE_MERCHANT_PAYMENT,

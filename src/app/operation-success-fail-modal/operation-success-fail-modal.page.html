@@ -48,6 +48,13 @@
         >{{success ? 'Rechargement'+'\n'+'Rapido effectué' :
         'Echec'+'\n'+'rechargement Rapido'}}</span
       >
+      <span
+        class="title"
+        *ngSwitchCase="OPERATION_XEWEUL"
+        style="white-space: pre-line;"
+        >{{success ? 'Rechargement'+'\n'+'Xeweul effectué' :
+        'Echec'+'\n'+'rechargement Xeweul'}}</span
+      >
       <span class="title" *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
@@ -210,6 +217,11 @@
         ></app-item-recharge-credit>
         <app-item-recharge-credit
           [modifiable]="false"
+          [amount]="opXtras.amount + opXtras.fee"
+          *ngSwitchCase="OPERATION_XEWEUL"
+        ></app-item-recharge-credit>
+        <app-item-recharge-credit
+          [modifiable]="false"
           [amount]="amount"
           *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
         >
@@ -233,7 +245,7 @@
     </div>
     <div
       class="bottom-block"
-      *ngIf="success &&  !(['OPERATION_WOYOFAL', OPERATION_RAPIDO, OPERATION_PAY_ORANGE_BILLS].includes(purchaseType))"
+      *ngIf="success &&  !(['OPERATION_WOYOFAL',OPERATION_XEWEUL, OPERATION_RAPIDO, OPERATION_PAY_ORANGE_BILLS].includes(purchaseType))"
     >
       <div class="details">
         <ng-container
@@ -366,6 +378,33 @@
     </div>
     <div
       class="bottom-block"
+      *ngIf="success && OPERATION_XEWEUL === purchaseType"
+    >
+      <div class="details">
+        <div class="left-block">Carte rechargée</div>
+        <div class="right-block scb-text-gray">
+          <span class="numero"
+            >{{opXtras.billData.counter.counterNumber|codeFormat:2}}</span
+          >
+          <span class="name"> {{opXtras.billData.counter.name}} </span>
+        </div>
+      </div>
+      <div class="details">
+        <div class="left-block">Paiement par</div>
+        <div class="right-block scb-text-gray">
+          <span class="numero"> Orange Money </span>
+          <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
+        </div>
+      </div>
+      <div class="details details-date">
+        <div class="left-block">Date de recharge</div>
+        <div class="right-block scb-text-gray">
+          <span class="numero">{{dateAchat}}</span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="bottom-block"
       *ngIf="success && purchaseType === OPERATION_PAY_ORANGE_BILLS "
     >
       <div class="details">
@@ -433,6 +472,9 @@
           Faire une autre recharge
         </ng-container>
         <ng-container *ngSwitchCase="OPERATION_RAPIDO">
+          Faire une autre recharge
+        </ng-container>
+        <ng-container *ngSwitchCase="OPERATION_XEWEUL">
           Faire une autre recharge
         </ng-container>
         <ng-container *ngSwitchCase="OPERATION_ENABLE_DALAL">

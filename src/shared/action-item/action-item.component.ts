@@ -24,6 +24,7 @@ import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
 import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import {
   OPERATION_RAPIDO,
+  OPERATION_XEWEUL,
   OPERATION_TYPE_PASS_USAGE,
   OPERATION_WOYOFAL,
 } from 'src/app/utils/operations.constants';
@@ -38,6 +39,7 @@ import {
 } from 'src/shared';
 import { MerchantPaymentCodeComponent } from '../merchant-payment-code/merchant-payment-code.component';
 import { OmStatusVisualizationComponent } from '../om-status-visualization/om-status-visualization.component';
+import {XeweulOperationPage} from '../../app/pages/xeweul-operation/xeweul-operation.page';
 @Component({
   selector: 'app-action-item',
   templateUrl: './action-item.component.html',
@@ -204,6 +206,9 @@ export class ActionItemComponent implements OnInit {
         break;
       case OPERATION_RAPIDO:
         this.navController.navigateForward(RapidoOperationPage.ROUTE_PATH);
+        break;
+      case OPERATION_XEWEUL:
+        this.navController.navigateForward(XeweulOperationPage.ROUTE_PATH);
         break;
 			case OPERATION_UNBLOCK_OM_ACCOUNT:
 				this.goToUnblockOMAccount();
