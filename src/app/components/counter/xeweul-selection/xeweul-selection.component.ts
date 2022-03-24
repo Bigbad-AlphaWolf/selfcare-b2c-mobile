@@ -1,42 +1,39 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import {Component, OnInit, Input} from '@angular/core';
+import {Observable, throwError} from 'rxjs';
 
-import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
-import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
-import { ModalController } from '@ionic/angular';
-import { RecentsService } from 'src/app/services/recents-service/recents.service';
-import { map, catchError } from 'rxjs/operators';
-import { RecentsOem } from 'src/app/models/recents-oem.model';
-import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
-import { OPERATION_XEWEUL } from 'src/app/utils/operations.constants';
-import { FavoriteXeweulComponent } from '../favorite-xeweul/favorite-xeweul.component';
-import { FavorisService } from 'src/app/services/favoris/favoris.service';
-import { FavoriteType } from 'src/app/models/enums/om-favori-type.enum';
-import { FavorisOem } from 'src/app/models/favoris-oem.model';
-import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { STATUS_ERROR_CODE_OM_CARD_RAPIDO_NOT_FOUND } from 'src/app/utils/errors.utils';
-import { getPageHeader } from 'src/app/utils/title.util';
-import { XeweulCounter } from 'src/app/models/xeweul/xeweul.model';
-import { CardXeweulNameModalComponent } from '../../card-xeweul-name-modal/card-xeweul-name-modal.component';
+import {NewPinpadModalPage} from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
+import {OrangeMoneyService} from 'src/app/services/orange-money-service/orange-money.service';
+import {ModalController} from '@ionic/angular';
+import {RecentsService} from 'src/app/services/recents-service/recents.service';
+import {map, catchError} from 'rxjs/operators';
+import {RecentsOem} from 'src/app/models/recents-oem.model';
+import {BottomSheetService} from 'src/app/services/bottom-sheet/bottom-sheet.service';
+import {OPERATION_XEWEUL} from 'src/app/utils/operations.constants';
+import {FavoriteXeweulComponent} from '../favorite-xeweul/favorite-xeweul.component';
+import {FavorisService} from 'src/app/services/favoris/favoris.service';
+import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
+import {STATUS_ERROR_CODE_OM_CARD_RAPIDO_NOT_FOUND} from 'src/app/utils/errors.utils';
+import {getPageHeader} from 'src/app/utils/title.util';
+import {XeweulCounter} from 'src/app/models/xeweul/xeweul.model';
+import {CardXeweulNameModalComponent} from '../../card-xeweul-name-modal/card-xeweul-name-modal.component';
 import {XeweulService} from '../../../services/xeweul/xeweul.service';
-import {HttpResponse} from "@angular/common/http";
-import {IXeweulCard} from "../../../models/xeweul/card.model";
+import {IXeweulCard, XeweulCard} from '../../../models/xeweul/card.model';
 
 @Component({
   selector: 'app-xeweul-selection',
   templateUrl: './xeweul-selection.component.html',
-  styleUrls: ['./xeweul-selection.component.scss'],
+  styleUrls: ['./xeweul-selection.component.scss']
 })
 export class XeweulSelectionComponent implements OnInit {
   @Input() operation: string = OPERATION_XEWEUL;
   isProcessing = false;
   inputXeweulNumber = '';
   xeweuls$: Observable<any[]>;
-  xeweulsFavorites$: Observable<any[]>;
+  xeweulsFavorites$: Observable<IXeweulCard[]>;
   isFavoriteCarteXeweul: boolean;
   currentUserNumber = this.dashbServ.getCurrentPhoneNumber();
   errorMsg = null;
-  xeweulCards?: IXeweulCard[];
+  xeweulCards?: Observable<IXeweulCard[]>;
 
   constructor(
     private bsService: BottomSheetService,
@@ -49,59 +46,34 @@ export class XeweulSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // this.checkOmAccountSession();
-    this.getXeweulCards();
+    this.checkOmAccountSession();
   }
 
   getPageTitle(operationType: string) {
     return getPageHeader(operationType).title;
   }
 
-  getFavoritesXeweul() {
-    this.xeweulsFavorites$ = this.favoriService
-      .favoritesByService(FavoriteType.XEWEUL)
-      .pipe(
-        map((favoris: FavorisOem[]) => {
-          let results = [];
-          favoris = favoris.slice(0, 5);
-          favoris.forEach((el) => {
-            results.push({ name: el.ref_label, counterNumber: el.ref_num });
-          });
-          return results;
-        })
-      );
-  }
-
   getXeweulCards() {
-    this.xeweulService
-        .favoritesByService()
-        .subscribe({
-          next: (res: HttpResponse<IXeweulCard[]>) => {
-            console.log('cards ok ');
-            console.log(res.body);
-            this.xeweulCards = res.body ?? [];
-            console.log('cards');
-            console.log(this.xeweulCards);
-            console.log('cards');
-          },
-          error: (err) => {
-            console.log('cards pas ok ');
-            console.log(err);
-          },
-        });
+    this.xeweulsFavorites$ = this.xeweulService.favoritesByService();
   }
 
   async isFavoriteXeweul(carteXeweul: any) {
     this.isProcessing = true;
     return await this.xeweulsFavorites$
       .pipe(
-        map((res: { name: string; counterNumber: string }[]) => {
+        map((res: XeweulCard[]) => {
+          return res.map((item: XeweulCard) => {
+            return {
+              counterNumber: item.id,
+              name: item.label
+            };
+          });
+        }),
+        map((res: {name: string; counterNumber: string}[]) => {
           this.isProcessing = false;
-          const carte = res.find(
-            (c: { name: string; counterNumber: string }) => {
-              return c.counterNumber === carteXeweul;
-            }
-          );
+          const carte = res.find((c: {name: string; counterNumber: string}) => {
+            return c.counterNumber === carteXeweul;
+          });
           return carte;
         }),
         catchError((err: any) => {
@@ -116,10 +88,10 @@ export class XeweulSelectionComponent implements OnInit {
     this.xeweuls$ = this.recentService.fetchRecents(OPERATION_XEWEUL, 3).pipe(
       map((recents: RecentsOem[]) => {
         let results = [];
-        recents.forEach((el) => {
+        recents.forEach(el => {
           results.push({
             name: el.titre,
-            counterNumber: JSON.parse(el.payload).numero_carte,
+            counterNumber: JSON.parse(el.payload).numero_carte
           });
         });
         return results;
@@ -127,15 +99,12 @@ export class XeweulSelectionComponent implements OnInit {
     );
   }
 
-  onRecentXeweulSlected(xeweul: XeweulCounter) {
-    this.onContinue(xeweul);
-  }
-
-  async onContinue(xeweul?: XeweulCounter) {
+  async onContinue() {
     this.errorMsg = null;
-    let counterXeweul = xeweul ? xeweul.counterNumber : this.inputXeweulNumber;
-
-    if (!this.xeweulNumberIsValid && !xeweul) { return; }
+    let counterXeweul = this.inputXeweulNumber.padStart(16, '0');
+    if (!this.xeweulNumberIsValid) {
+      return;
+    }
     const favoriteXeweul: XeweulCounter = await this.isFavoriteXeweul(counterXeweul);
     if (!favoriteXeweul) {
       this.openCardXeweulNameModal(counterXeweul);
@@ -143,8 +112,8 @@ export class XeweulSelectionComponent implements OnInit {
       this.modalCtrl.dismiss({
         TYPE_BS: 'INPUT',
         ACTION: 'FORWARD',
-        counter: { name: favoriteXeweul.name, counterNumber: counterXeweul },
-        operation: this.operation,
+        counter: {name: favoriteXeweul.name, counterNumber: counterXeweul},
+        operation: this.operation
       });
     }
   }
@@ -159,19 +128,19 @@ export class XeweulSelectionComponent implements OnInit {
     });
     modal.onDidDismiss().then((res: any) => {
       res = res.data;
-      if (res.label_carte) {
+      if (res?.label_carte) {
         const data = {
           msisdn: this.currentUserNumber,
           card_num: counter,
-          card_label: res.label_carte,
+          card_label: res.label_carte
         };
         this.saveCardXeweulFavorite(data).subscribe(() => {
           this.isProcessing = false;
           this.modalCtrl.dismiss({
             TYPE_BS: 'INPUT',
             ACTION: 'FORWARD',
-            counter: { name: data.card_label, counterNumber: counter },
-            operation: this.operation,
+            counter: {name: data.card_label, counterNumber: counter},
+            operation: this.operation
           });
         });
       }
@@ -180,21 +149,13 @@ export class XeweulSelectionComponent implements OnInit {
     return await modal.present();
   }
 
-  saveCardXeweulFavorite(data: {
-    msisdn: string;
-    card_num: string;
-    card_label: string;
-  }) {
+  saveCardXeweulFavorite(data: {msisdn: string; card_num: string; card_label: string}) {
     this.isProcessing = true;
     return this.favoriService.saveXeweulFavorite(data).pipe(
       catchError((err: any) => {
         this.isProcessing = false;
         console.log(err);
-        if (
-          err &&
-          err.error &&
-          err.error.errorCode === STATUS_ERROR_CODE_OM_CARD_RAPIDO_NOT_FOUND
-        ) {
+        if (err && err.error && err.error.errorCode === STATUS_ERROR_CODE_OM_CARD_RAPIDO_NOT_FOUND) {
           this.errorMsg = err.error.message;
         } else {
           this.errorMsg = 'Une erreur est survenue';
@@ -207,8 +168,8 @@ export class XeweulSelectionComponent implements OnInit {
   onMyFavorites() {
     this.modalCtrl.dismiss();
     this.bsService.openModal(FavoriteXeweulComponent, {
-      xeweulsFavorites$: this.xeweulCards,
-      operation: this.operation,
+      xeweulsFavorites$: this.xeweulsFavorites$,
+      operation: this.operation
     });
   }
 
@@ -217,11 +178,7 @@ export class XeweulSelectionComponent implements OnInit {
   }
 
   get xeweulNumberIsValid() {
-    return (
-      this.inputXeweulNumber &&
-      this.inputXeweulNumber.length >= 9 &&
-      /^\d+$/.test(this.inputXeweulNumber)
-    );
+    return this.inputXeweulNumber && this.inputXeweulNumber.length >= 2 && /^\d+$/.test(this.inputXeweulNumber);
   }
 
   checkOmAccountSession() {
@@ -229,17 +186,13 @@ export class XeweulSelectionComponent implements OnInit {
     this.omService.omAccountSession().subscribe(
       (omSession: any) => {
         this.isProcessing = false;
-        if (
-          omSession.msisdn === 'error' ||
-          !omSession.hasApiKey ||
-          omSession.loginExpired
-        ) {
+        if (omSession.msisdn === 'error' || !omSession.hasApiKey || omSession.loginExpired) {
           this.openPinpad();
         }
         if (omSession.msisdn !== 'error') {
-          this.initRecents();
+          //this.initRecents();
           this.bsService.opXtras.senderMsisdn = omSession.msisdn;
-          this.getFavoritesXeweul();
+          //this.getFavoritesXeweul();
           this.getXeweulCards();
         }
       },
@@ -254,10 +207,10 @@ export class XeweulSelectionComponent implements OnInit {
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
-        operationType: null,
-      },
+        operationType: null
+      }
     });
-    modal.onDidDismiss().then((response) => {
+    modal.onDidDismiss().then(response => {
       if (response.data && response.data.success) {
         this.bsService.opXtras.omSession.loginExpired = false;
       } else {
@@ -266,5 +219,4 @@ export class XeweulSelectionComponent implements OnInit {
     });
     return await modal.present();
   }
-
 }

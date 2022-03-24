@@ -9,8 +9,8 @@
     Choisissez sur la liste
   </div>
 
-    <div class="recents content" *ngIf="xeweulsFavorites$ as xeweuls else spinnerBlock">
-      <div 
+    <div class="recents content" *ngIf="(xeweulsFavorites$ | async) as xeweuls else spinnerBlock">
+      <div
         matRipple
         class="oem-item"
         (click)="onFavoriteXeweulSlected(xeweul)"
