@@ -7,36 +7,28 @@ import {BillAmountPage} from '../bill-amount/bill-amount.page';
 import {OPERATION_SEE_SOLDE_XEWEUL} from 'src/shared';
 
 @Component({
-    selector: 'app-xeweul-operation',
-    templateUrl: './xeweul-operation.page.html',
-    styleUrls: ['./xeweul-operation.page.scss'],
+  selector: 'app-xeweul-operation',
+  templateUrl: './xeweul-operation.page.html',
+  styleUrls: ['./xeweul-operation.page.scss']
 })
 export class XeweulOperationPage implements OnInit {
-    static ROUTE_PATH = '/xeweul-operation';
+  static ROUTE_PATH = '/xeweul-operation';
 
-    constructor(private bsService: BottomSheetService, private navCtrl: NavController) {
-    }
+  constructor(private bsService: BottomSheetService, private navCtrl: NavController) {}
 
-    ngOnInit() {
-        this.bsService
-            .initBsModal(
-                XeweulSelectionComponent,
-                OPERATION_RAPIDO,
-                BillAmountPage.ROUTE_PATH
-            )
-            .subscribe((_) => {
-            });
-    }
+  ngOnInit() {
+    this.bsService.initBsModal(XeweulSelectionComponent, OPERATION_XEWEUL, BillAmountPage.ROUTE_PATH).subscribe(_ => {});
+  }
 
-    onOpSolde() {
-        this.bsService.openModal(XeweulSelectionComponent, {operation: OPERATION_SEE_SOLDE_XEWEUL});
-    }
+  onOpSolde() {
+    this.bsService.openModal(XeweulSelectionComponent, {operation: OPERATION_SEE_SOLDE_XEWEUL});
+  }
 
-    onOpRecharge() {
-        this.bsService.openModal(XeweulSelectionComponent, {operation: OPERATION_XEWEUL});
-    }
+  onOpRecharge() {
+    this.bsService.openModal(XeweulSelectionComponent, {operation: OPERATION_XEWEUL});
+  }
 
-    goBack() {
-        this.navCtrl.pop();
-    }
+  goBack() {
+    this.navCtrl.pop();
+  }
 }
