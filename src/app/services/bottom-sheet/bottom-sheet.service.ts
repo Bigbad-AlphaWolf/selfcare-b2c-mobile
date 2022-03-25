@@ -64,6 +64,8 @@ export class BottomSheetService {
     return this.bsModalEl.pipe(
       map((el) => {
         el.onDidDismiss().then((result: any) => {
+          console.log(result);
+          
           result = result.data;
           let fromFavorites =
             result && result.TYPE_BS === 'FAVORIES' && result.ACTION === 'BACK';
@@ -82,6 +84,14 @@ export class BottomSheetService {
               : '';
 
             this.opXtras.merchant = result.merchant;
+
+            // for SENELEC & SENEAU payment
+            this.opXtras['operationType'] = purchaseType;
+            this.opXtras["ligne"] = result?.ligne;
+            this.opXtras["type"] = result?.type;
+            console.log(this.opXtras);
+            // END
+            
             this.navCtl.navigateForward([routePath], {
               state: this.opXtras,
             });

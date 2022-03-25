@@ -6,9 +6,7 @@ import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {
   isFixPostpaid,
-  POSTPAID_TERANGA_OFFERS_ID,
   PROFILE_TYPE_HYBRID,
-  PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
   PROFILE_TYPE_POSTPAID,
 } from 'src/app/dashboard';
@@ -100,6 +98,7 @@ export class SelectNumberForBillComponent implements OnInit {
                   ligne: numero,
                   type: this.selectedOption.value,
                   clientCode,
+                  operationType: this.operation
                 },
               });
             } else {
@@ -140,6 +139,7 @@ export class SelectNumberForBillComponent implements OnInit {
           state: {
             inputPhone: response.data?.phone,
             clientCode: response.data?.codeClient,
+            operationType: this.operation
           },
         });
       }

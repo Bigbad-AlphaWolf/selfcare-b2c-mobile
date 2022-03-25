@@ -6,6 +6,8 @@ import {OrangeMoneyService} from '../orange-money-service/orange-money.service';
 import {DashboardService} from '../dashboard-service/dashboard.service';
 import {FAVORITE_PASS_ENDPOINT, FAVORITE_PASS_ENDPOINT_LIGHT} from '../utils/conso.endpoint';
 import {FavoritePassOemModel} from 'src/app/models/favorite-pass-oem.model';
+import { OPERATION_TYPE_SENEAU_BILLS, OPERATION_TYPE_SENELEC_BILLS } from 'src/app/utils/operations.constants';
+import { FavoriteType } from 'src/app/models/enums/om-favori-type.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -85,5 +87,14 @@ export class FavorisService {
       });
     }
     return result;
+  }
+
+  getFavoriteCode(operation) {
+    switch (operation) {
+      case OPERATION_TYPE_SENELEC_BILLS:
+        return FavoriteType.SENELEC;
+      case OPERATION_TYPE_SENEAU_BILLS:
+        return FavoriteType.SENEAU;
+    }
   }
 }

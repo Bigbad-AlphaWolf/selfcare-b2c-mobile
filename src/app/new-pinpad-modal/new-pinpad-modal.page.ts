@@ -52,6 +52,10 @@ import { of, throwError } from 'rxjs';
 import {
   OPERATION_RAPIDO,
   OPERATION_TYPE_INTERNATIONAL_TRANSFER,
+  OPERATION_TYPE_PAY_BILL,
+  OPERATION_TYPE_SENEAU_BILLS,
+  OPERATION_TYPE_SENELEC_BILLS,
+  OPERATION_TYPE_TERANGA_BILL,
   OPERATION_WOYOFAL,
 } from '../utils/operations.constants';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -619,7 +623,10 @@ export class NewPinpadModalPage implements OnInit {
           case OPERATION_TYPE_PASS_ILLIFLEX:
             this.buyIlliflex(pin);
             break;
-          case OPERATION_PAY_ORANGE_BILLS:
+          case OPERATION_TYPE_PAY_BILL:
+          case OPERATION_TYPE_TERANGA_BILL:
+          case OPERATION_TYPE_SENELEC_BILLS:
+          case OPERATION_TYPE_SENEAU_BILLS:
             this.payOrangeBills(pin);
             break;
           default:
@@ -961,11 +968,7 @@ export class NewPinpadModalPage implements OnInit {
       payerEm: db.em,
       payerEncodedPin: pin,
       payerMsisdn: db.msisdn,
-      paymentCategory: REGEX_FIX_NUMBER.test(
-        this.opXtras?.invoice?.numeroTelephone
-      )
-        ? PAYMENT_BILLS_CATEGORY.FIXE
-        : PAYMENT_BILLS_CATEGORY.MOBILE,
+      paymentCategory: this.orangeMoneyService.getPaymentCategoryByPurchaseType(this.opXtras.purchaseType),
     };
     console.log("payBillPayload", payload);
 

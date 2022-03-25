@@ -1,0 +1,40 @@
+<div class="favorite-page">
+  <div class="arrow-left">
+    <img alt="" src="/assets/images/arrow-left.png" (click)="navigateBack()"/>
+  </div>
+  <div class="title">
+    Sélectionner un compteur
+  </div>
+  <div class="description">
+    Choisissez sur la liste
+  </div>
+  <div class="favorite-list">
+    <ng-container *ngIf="fetchingFavorites else favoritesBlock">
+      <div class="loading-block">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+    </ng-container>
+
+    <ng-template #favoritesBlock>
+      <div class="list">
+        <ng-container *ngIf="!favorites?.length else favoriteCounters">
+          <div class="empty-fav">
+            Aucun favori enregistré
+          </div>
+        </ng-container>
+        <ng-template #favoriteCounters>
+          <div matRipple class="favorite-item" *ngFor="let fav of favorites" (click)="selectFav(fav)">
+            <ng-container [ngSwitch]="operationType">
+              <img *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS" src="assets/images/senelec.png" alt="" class="service-icon">
+              <img *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS" src="assets/images/seneau.png" alt="" class="service-icon">
+            </ng-container>
+            <div class="favorite-info-block">
+              <span class="fav-name">{{fav?.name}}</span>
+              <span class="fav-counter scb-text-gray">{{fav?.counterNumber}}</span>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </ng-template>
+  </div>
+</div>

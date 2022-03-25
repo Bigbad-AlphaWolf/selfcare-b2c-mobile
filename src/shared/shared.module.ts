@@ -82,6 +82,9 @@ import { PermissionSettingsPopupComponent } from 'src/app/components/permission-
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 import { PopUpCompteOmBloquedComponent } from './pop-up-compte-om-bloqued/pop-up-compte-om-bloqued.component';
 import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-request-modal.component';
+import { TypeCounterModalComponent } from 'src/app/components/type-counter-modal/type-counter-modal.component';
+import { FavoriteServiceCountersComponent } from 'src/app/components/counter/favorite-service-counters/favorite-service-counters.component';
+import { FavoriteCounterNameModalComponent } from 'src/app/components/favorite-counter-name-modal/favorite-counter-name-modal.component';
 
 @NgModule({
   declarations: [
@@ -151,7 +154,10 @@ import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-req
     SelectElementModalComponent,
     PopUpCompteOmBloquedComponent,
     PermissionSettingsPopupComponent,
-    FaceIdRequestModalComponent
+    FaceIdRequestModalComponent,
+    TypeCounterModalComponent,
+    FavoriteServiceCountersComponent,
+    FavoriteCounterNameModalComponent
   ],
   imports: [
     CommonModule,
@@ -201,7 +207,10 @@ import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-req
     SelectElementModalComponent,
     PermissionSettingsPopupComponent,
     PopUpCompteOmBloquedComponent,
-    FaceIdRequestModalComponent
+    FaceIdRequestModalComponent,
+    TypeCounterModalComponent,
+    FavoriteServiceCountersComponent,
+    FavoriteCounterNameModalComponent
   ],
   exports: [
     BanniereComponent,
@@ -267,7 +276,10 @@ import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-req
     SelectElementModalComponent,
     PermissionSettingsPopupComponent,
     PopUpCompteOmBloquedComponent,
-    FaceIdRequestModalComponent
+    FaceIdRequestModalComponent,
+    TypeCounterModalComponent,
+    FavoriteServiceCountersComponent,
+    FavoriteCounterNameModalComponent
   ],
   providers: [
     Contacts,
