@@ -35,6 +35,7 @@ import { AuthenticationService } from '../services/authentication-service/authen
 import { OperationExtras } from '../models/operation-extras.model';
 import {
   OPERATION_RAPIDO,
+  OPERATION_XEWEUL,
   OPERATION_TYPE_INTERNATIONAL_TRANSFER,
   OPERATION_TYPE_PASS_USAGE,
   OPERATION_WOYOFAL,
@@ -123,6 +124,7 @@ export class OperationRecapPage implements OnInit {
   OPERATION_TYPE_PASS_INTERNATIONAL = OPERATION_TYPE_PASS_INTERNATIONAL;
   OPERATION_TYPE_PASS_USAGE = OPERATION_TYPE_PASS_USAGE;
   OPERATION_RAPIDO = OPERATION_RAPIDO;
+  OPERATION_XEWEUL = OPERATION_XEWEUL;
   OPERATION_PAY_ORANGE_BILLS = OPERATION_PAY_ORANGE_BILLS;
   OPERATION_TYPE_INTERNATIONAL_TRANSFER = OPERATION_TYPE_INTERNATIONAL_TRANSFER;
   DALAL_TARIF = MONTHLY_DALAL_TARIF;
@@ -247,6 +249,7 @@ export class OperationRecapPage implements OnInit {
               this.offerPlan = this.opXtras.offerPlan;
               break;
             case OPERATION_RAPIDO:
+            case OPERATION_XEWEUL:
             case OPERATION_WOYOFAL:
             case OPERATION_ENABLE_DALAL:
             case OPERATION_TYPE_PASS_USAGE:
@@ -385,6 +388,7 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TRANSFER_OM:
       case OPERATION_TRANSFER_OM_WITH_CODE:
       case OPERATION_RAPIDO:
+      case OPERATION_XEWEUL:
       case OPERATION_WOYOFAL:
       case OPERATION_TYPE_INTERNATIONAL_TRANSFER:
         this.openPinpad();
@@ -743,6 +747,7 @@ export class OperationRecapPage implements OnInit {
       OPERATION_TYPE_PASS_VOYAGE,
       'OPERATION_WOYOFAL',
       OPERATION_RAPIDO,
+      OPERATION_XEWEUL
     ].includes(this.purchaseType);
   }
 

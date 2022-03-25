@@ -8,6 +8,7 @@ import {
 import { WoyofalSelectionComponent } from '../counter/woyofal-selection/woyofal-selection.component';
 import {
   OPERATION_RAPIDO,
+  OPERATION_XEWEUL,
   OPERATION_TYPE_PAY_BILL,
   OPERATION_TYPE_TERANGA_BILL,
   OPERATION_WOYOFAL,
@@ -22,6 +23,7 @@ import { OffreService } from 'src/app/models/offre-service.model';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { RapidoOperationPage } from 'src/app/pages/rapido-operation/rapido-operation.page';
 import { SelectNumberForBillComponent } from '../select-number-for-bill/select-number-for-bill.component';
+import {XeweulOperationPage} from '../../pages/xeweul-operation/xeweul-operation.page';
 
 @Component({
   selector: 'oem-operations',
@@ -76,6 +78,11 @@ export class OemOperationsComponent implements OnInit {
 
     if (op.code === OPERATION_RAPIDO) {
       this.navCtl.navigateForward(RapidoOperationPage.ROUTE_PATH);
+      return;
+    }
+
+    if (op.code === OPERATION_XEWEUL) {
+      this.navCtl.navigateForward(XeweulOperationPage.ROUTE_PATH);
       return;
     }
 

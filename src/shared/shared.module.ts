@@ -82,6 +82,10 @@ import { PermissionSettingsPopupComponent } from 'src/app/components/permission-
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 import { PopUpCompteOmBloquedComponent } from './pop-up-compte-om-bloqued/pop-up-compte-om-bloqued.component';
 import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-request-modal.component';
+import {XeweulSelectionComponent} from '../app/components/counter/xeweul-selection/xeweul-selection.component';
+import {CardXeweulNameModalComponent} from '../app/components/card-xeweul-name-modal/card-xeweul-name-modal.component';
+import {XeweulSoldeComponent} from '../app/components/counter/xeweul-solde/xeweul-solde.component';
+import {FavoriteXeweulComponent} from "../app/components/counter/favorite-xeweul/favorite-xeweul.component";
 
 @NgModule({
   declarations: [
@@ -94,9 +98,11 @@ import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-req
     OemOperationsComponent,
     SelectBeneficiaryPopUpComponent,
     RapidoSelectionComponent,
+    XeweulSelectionComponent,
     WoyofalSelectionComponent,
     FavoriteWoyofalComponent,
     FavoriteRapidoComponent,
+    FavoriteXeweulComponent,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
     AmountProviderComponent,
@@ -129,6 +135,7 @@ import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-req
     FavoriteMerchantComponent,
     IbouIonFabComponent,
     RapidoSoldeComponent,
+    XeweulSoldeComponent,
     YesNoModalComponent,
     SimpleOperationSuccessModalComponent,
     BanniereDescriptionPage,
@@ -167,8 +174,10 @@ import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-req
     NumberSelectionComponent,
     FavoriteWoyofalComponent,
     FavoriteRapidoComponent,
+    FavoriteXeweulComponent,
     WoyofalSelectionComponent,
     RapidoSelectionComponent,
+    XeweulSelectionComponent,
     ModalSuccessComponent,
     NoOMAccountPopupComponent,
     CancelOperationPopupComponent,
@@ -184,10 +193,12 @@ import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-req
     NoOmAccountModalComponent,
     FavoriteMerchantComponent,
     RapidoSoldeComponent,
+    XeweulSoldeComponent,
     RattachNumberModalComponent,
     RattachNumberByIdCardComponent,
     RattachNumberByClientCodeComponent,
     CardRapidoNameModalComponent,
+    CardXeweulNameModalComponent,
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
     YesNoModalComponent,
@@ -214,8 +225,10 @@ import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-req
     SelectBeneficiaryPopUpComponent,
     WoyofalSelectionComponent,
     RapidoSelectionComponent,
+    XeweulSelectionComponent,
     FavoriteWoyofalComponent,
     FavoriteRapidoComponent,
+    FavoriteXeweulComponent,
     OemIonHeaderParallaxDirective,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
@@ -245,6 +258,7 @@ import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-req
     FavoriteMerchantComponent,
     IbouIonFabComponent,
     RapidoSoldeComponent,
+    XeweulSoldeComponent,
     MaterialComponentsModule,
     PipesModule,
     YesNoModalComponent,

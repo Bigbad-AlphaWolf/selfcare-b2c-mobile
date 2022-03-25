@@ -1,0 +1,23 @@
+@import "src/app/app";
+@import "src/app/styles/bottomsheet.style";
+
+.xeweul-solde{
+    position: relative;
+    background-color: $grayDashboard;
+    border-radius: 10px;
+    height: 80px;
+    margin-bottom: 30px;
+    .value{
+        position: absolute;
+        top: 25px;
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 26px;
+        span {
+            display: block;
+        }
+        .date{
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 13px;
+        }
+    }
+}
