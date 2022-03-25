@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { from, of, throwError } from 'rxjs';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import {
   isFixPostpaid,
   POSTPAID_TERANGA_OFFERS_ID,
@@ -14,6 +14,7 @@ import {
 } from 'src/app/dashboard';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { BillsService } from 'src/app/services/bill-service/bills.service';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import {
   OPERATION_TYPE_PAY_BILL,
   OPERATION_TYPE_TERANGA_BILL,
@@ -54,7 +55,8 @@ export class SelectNumberForBillComponent implements OnInit {
     private authService: AuthenticationService,
     private router: Router,
     private modalController: ModalController,
-    private billsService: BillsService
+    private billsService: BillsService,
+    private dashboardService: DashboardService,
   ) {}
 
   ngOnInit() {
@@ -105,22 +107,31 @@ export class SelectNumberForBillComponent implements OnInit {
                     .pipe(
                       switchMap(res => {
                         return this.billsService.getBillAmountLimit().pipe(
-                          tap((amountLimit) => {
+                          switchMap((amountLimit) => {
                             const hasBillMoreThan150K = res.find(
                               (bill) => bill.montantFacture >= amountLimit
                             );
                             if (hasBillMoreThan150K) {
-                              this.modalController.dismiss();
-                              this.suggestAttachement(numero);
+                              return this.dashboardService.attachedNumbers().pipe(
+                                map((numbers: any[]) => {
+                                  const isRattached = numbers.map(el => el.msisdn).includes(numero);
+                                  if (isRattached) {
+                                    this.modalController.dismiss();
+                                    this.router.navigate(["/bills"], {
+                                      state: {
+                                        inputPhone: numero,
+                                        clientCode,
+                                      },
+                                    });
+                                  } else {
+                                    this.modalController.dismiss();
+                                    this.suggestAttachement(numero);
+                                  }
+                                  return numbers
+                                })
+                              )
                             } else {
-                              this.modalController.dismiss();
-                              this.router.navigate(["/bills"], {
-                                state: {
-                                  ligne: numero,
-                                  type: this.selectedOption.value,
-                                  clientCode,
-                                },
-                              });
+                              return of(sub)
                             }
                           })
                         )
