@@ -1,16 +1,26 @@
 <div class="select-beneficiary-container">
   <div *ngIf="typeModal === OPERATION_CONFIRM_DELETE_RATTACH_NUMBER" class="title">
-     Supression de ligne rattachée
+    Supression de ligne rattachée
   </div>
-  <div class="description">
-    Etes-vous sûr de vouloir supprimer cette ligne 
+  <div *ngIf="typeModal === OPERATION_SUGGEST_RATTACH_NUMBER" class="title">
+    Rattacher la ligne
+  </div>
+  <div class="description" *ngIf="typeModal === OPERATION_CONFIRM_DELETE_RATTACH_NUMBER">
+    Etes-vous sûr de vouloir supprimer cette ligne
     <span class="custom">
       {{ numero }}
     </span>
-     de votre compte Orange et Moi
+    de votre compte Orange et Moi
+  </div>
+  <div class="description" *ngIf="typeModal === OPERATION_SUGGEST_RATTACH_NUMBER">
+    Pour pouvoir payer les factures pour la ligne
+    <span class="custom">
+      {{ numero }}
+    </span>
+    , vous devrez la rattacher.
   </div>
   <div class="confirm-btn">
-      <ion-button shape="round" (click)="process(true)" class="btn btn-confirm" expand="block" >Oui, Continuer</ion-button>
-      <ion-button shape="round" (click)="process(false)" class="btn btn-cancel" expand="block" >Non , annuler</ion-button>
+    <ion-button shape="round" (click)="process(true)" class="btn btn-confirm" expand="block">Oui, Continuer</ion-button>
+    <ion-button shape="round" (click)="process(false)" class="btn btn-cancel" expand="block">Non , annuler</ion-button>
   </div>
 </div>
