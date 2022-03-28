@@ -82,6 +82,9 @@ import { PermissionSettingsPopupComponent } from 'src/app/components/permission-
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 import { PopUpCompteOmBloquedComponent } from './pop-up-compte-om-bloqued/pop-up-compte-om-bloqued.component';
 import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-request-modal.component';
+import { TypeCounterModalComponent } from 'src/app/components/type-counter-modal/type-counter-modal.component';
+import { FavoriteServiceCountersComponent } from 'src/app/components/counter/favorite-service-counters/favorite-service-counters.component';
+import { FavoriteCounterNameModalComponent } from 'src/app/components/favorite-counter-name-modal/favorite-counter-name-modal.component';
 import {XeweulSelectionComponent} from '../app/components/counter/xeweul-selection/xeweul-selection.component';
 import {CardXeweulNameModalComponent} from '../app/components/card-xeweul-name-modal/card-xeweul-name-modal.component';
 import {XeweulSoldeComponent} from '../app/components/counter/xeweul-solde/xeweul-solde.component';
@@ -158,7 +161,10 @@ import {FavoriteXeweulComponent} from "../app/components/counter/favorite-xeweul
     SelectElementModalComponent,
     PopUpCompteOmBloquedComponent,
     PermissionSettingsPopupComponent,
-    FaceIdRequestModalComponent
+    FaceIdRequestModalComponent,
+    TypeCounterModalComponent,
+    FavoriteServiceCountersComponent,
+    FavoriteCounterNameModalComponent
   ],
   imports: [
     CommonModule,
@@ -212,7 +218,10 @@ import {FavoriteXeweulComponent} from "../app/components/counter/favorite-xeweul
     SelectElementModalComponent,
     PermissionSettingsPopupComponent,
     PopUpCompteOmBloquedComponent,
-    FaceIdRequestModalComponent
+    FaceIdRequestModalComponent,
+    TypeCounterModalComponent,
+    FavoriteServiceCountersComponent,
+    FavoriteCounterNameModalComponent
   ],
   exports: [
     BanniereComponent,
@@ -281,7 +290,10 @@ import {FavoriteXeweulComponent} from "../app/components/counter/favorite-xeweul
     SelectElementModalComponent,
     PermissionSettingsPopupComponent,
     PopUpCompteOmBloquedComponent,
-    FaceIdRequestModalComponent
+    FaceIdRequestModalComponent,
+    TypeCounterModalComponent,
+    FavoriteServiceCountersComponent,
+    FavoriteCounterNameModalComponent
   ],
   providers: [
     Contacts,

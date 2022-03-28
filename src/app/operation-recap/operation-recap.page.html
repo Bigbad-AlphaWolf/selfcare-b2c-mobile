@@ -22,7 +22,10 @@
         <span *ngSwitchCase="OPERATION_TYPE_PASS_INTERNATIONAL">Pass selectionné</span>
         <span *ngSwitchCase="OPERATION_ENABLE_DALAL">Souscription Dalal Tones</span>
         <span *ngSwitchCase="OPERATION_ILLIFLEX">{{opXtras?.title}}</span>
-        <span *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS"> Mes factures </span>
+        <span *ngSwitchCase="OPERATION_TYPE_TERANGA_BILL"> Payer facture Teranga</span>
+        <span *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS"> Payer facture SENELEC</span>
+        <span *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS"> Payer facture SENEAU </span>
+        <span *ngSwitchCase="OPERATION_TYPE_PAY_BILL"> Payer Facture Sonatel </span>
         <span *ngSwitchCase="OPERATION_TYPE_PASS_USAGE">Achat de pass {{opXtras?.serviceUsage?.fullDescription}}</span>
       </ng-container>
     </ion-title>
@@ -54,7 +57,13 @@
         alt="header-illiflex" class="banniere" />
       <img-loader *ngSwitchCase="OPERATION_TYPE_PASS_USAGE" class="icone" [src]="opXtras?.serviceUsage?.banniere"
         fallbackUrl="/assets/images/pass-internet-page-header.svg" useImg></img-loader>
-      <img-loader *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS" class="icone" src="assets/images/bills_banniere.png" useImg>
+      <img-loader *ngSwitchCase="OPERATION_TYPE_PAY_BILL" class="icone" src="assets/images/bills_banniere.png" useImg>
+      </img-loader>
+      <img-loader *ngSwitchCase="OPERATION_TYPE_TERANGA_BILL" class="icone" src="assets/images/bills_banniere.png" useImg>
+      </img-loader>
+      <img-loader *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS" class="icone" src="assets/images/bills_banniere.png" useImg>
+      </img-loader>
+      <img-loader *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS" class="icone" src="assets/images/bills_banniere.png" useImg>
       </img-loader>
     
     </ng-container>
@@ -62,7 +71,7 @@
 </ion-header>
 <ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <div *ngIf="operationTypeRecap" class="recap-text">Récapitulatif</div>
-  <div class="recap-title" *ngIf="!operationTypeRecap && ![OPERATION_TRANSFER_OM, OPERATION_PAY_ORANGE_BILLS].includes(purchaseType)">
+  <div class="recap-title" *ngIf="!operationTypeRecap && ![OPERATION_TRANSFER_OM, OPERATION_TYPE_PAY_BILL, OPERATION_TYPE_TERANGA_BILL, OPERATION_TYPE_SENELEC_BILLS, OPERATION_TYPE_SENEAU_BILLS].includes(purchaseType)">
     <span class="text-1">Récapitulatif</span>
     <ng-container [ngSwitch]="purchaseType">
       <span *ngSwitchCase="OPERATION_INTERNET_TYPE" class="text-2 scb-text-gray">Vous allez recharger</span>
@@ -132,7 +141,16 @@
         <span class="pass">Pass Sélectionné</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
       </div>
-      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS">
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_TYPE_PAY_BILL">
+        <span class="pass">Facture sélectionnée</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_TYPE_TERANGA_BILL">
+        <span class="pass">Facture sélectionnée</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS">
+        <span class="pass">Facture sélectionnée</span>
+      </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS">
         <span class="pass">Facture sélectionnée</span>
       </div>
     </ng-container>
@@ -176,15 +194,24 @@
         </app-dalal-card-item>
         <app-pass-usage-item [passUsage]="opXtras?.pass" [serviceUsage]="opXtras?.serviceUsage"
           *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"></app-pass-usage-item>
-        <invoice-card *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS" [hideDownloadBlock]="true" [invoice]="opXtras?.invoice" ></invoice-card>
+        <invoice-card *ngSwitchCase="OPERATION_TYPE_PAY_BILL" [hideDownloadBlock]="true" [invoice]="opXtras?.invoice" [operation]="purchaseType">
+        </invoice-card>
+        <invoice-card *ngSwitchCase="OPERATION_TYPE_TERANGA_BILL" [hideDownloadBlock]="true" [invoice]="opXtras?.invoice" [operation]="purchaseType">
+        </invoice-card>
+        <invoice-card *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS" [hideDownloadBlock]="true" [invoice]="opXtras?.invoice" [operation]="purchaseType">
+        </invoice-card>
+        <invoice-card *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS" [hideDownloadBlock]="true" [invoice]="opXtras?.invoice" [operation]="purchaseType">
+        </invoice-card>
       </ng-container>
     </div>
-    <div class="amount-to-transfer" *ngIf="purchaseType !== OPERATION_ENABLE_DALAL && purchaseType !== OPERATION_PAY_ORANGE_BILLS">
+    <div class="amount-to-transfer"
+      *ngIf="purchaseType !== OPERATION_ENABLE_DALAL && purchaseType !== OPERATION_TYPE_PAY_BILL && purchaseType !== OPERATION_TYPE_TERANGA_BILL && purchaseType !== OPERATION_TYPE_SENELEC_BILLS && purchaseType !== OPERATION_TYPE_SENEAU_BILLS">
       <span class="pass">Bénéficiaire</span>
       <span class="modifier scb-text-orange"
         *ngIf="purchaseType !== OPERATION_ILLIMIX_TYPE && purchaseType !== OPERATION_INTERNET_TYPE && 0">Modifier</span>
     </div>
-    <div class="recipient-information" *ngIf="purchaseType !== OPERATION_ENABLE_DALAL && purchaseType !== OPERATION_PAY_ORANGE_BILLS">
+    <div class="recipient-information"
+      *ngIf="purchaseType !== OPERATION_ENABLE_DALAL && purchaseType !== OPERATION_TYPE_PAY_BILL && purchaseType !== OPERATION_TYPE_TERANGA_BILL && purchaseType !== OPERATION_TYPE_SENELEC_BILLS && purchaseType !== OPERATION_TYPE_SENEAU_BILLS">
       <div class="top-block" [ngClass]="{'with-padding': purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER}">
         <div class="country-block" *ngIf="purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER">
           <img class="country-flag" [src]="opXtras?.country?.flagIcon" alt="">
@@ -285,13 +312,18 @@
         <span class="text" *ngSwitchCase="OPERATION_ENABLE_DALAL">Confirmer ({{DALAL_TARIF}})</span>
         <span class="text" *ngSwitchCase="OPERATION_ILLIFLEX">Confirmer ({{opXtras.amount}} FCFA)</span>
         <span class="text" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE">Confirmer ({{opXtras?.pass?.tarif}} FCFA)</span>
-        <span class="text" *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
+        <span class="text" *ngSwitchCase="OPERATION_TYPE_PAY_BILL">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
+        <span class="text" *ngSwitchCase="OPERATION_TYPE_TERANGA_BILL">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
+        <span class="text" *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
+        <span class="text" *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
       </ng-container>
       <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="buyingPass || checkingAmount"></mat-spinner>
     </button>
 
-		<div *ngIf="purchaseType === OPERATION_PAY_ORANGE_BILLS && error " class="scb-text-error">
-			{{ error }}
-		</div>
+    <div
+      *ngIf="(purchaseType === OPERATION_TYPE_PAY_BILL || purchaseType === OPERATION_TYPE_TERANGA_BILL || purchaseType === OPERATION_TYPE_SENELEC_BILLS || purchaseType === OPERATION_TYPE_SENEAU_BILLS) && error "
+      class="scb-text-error">
+      {{ error }}
+    </div>
   </div>
 </ion-content>

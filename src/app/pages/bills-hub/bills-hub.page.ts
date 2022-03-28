@@ -4,6 +4,8 @@ import {ModalController, NavController, ToastController} from '@ionic/angular';
 import {
   OPERATION_RAPIDO,
   OPERATION_TYPE_PAY_BILL,
+  OPERATION_TYPE_SENEAU_BILLS,
+  OPERATION_TYPE_SENELEC_BILLS,
   OPERATION_TYPE_TERANGA_BILL,
   OPERATION_WOYOFAL,
   OPERATION_XEWEUL
@@ -22,6 +24,7 @@ import {NewPinpadModalPage} from 'src/app/new-pinpad-modal/new-pinpad-modal.page
 import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
 import {SelectNumberForBillComponent} from 'src/app/components/select-number-for-bill/select-number-for-bill.component';
 import {XeweulOperationPage} from '../xeweul-operation/xeweul-operation.page';
+import { TypeCounterModalComponent } from 'src/app/components/type-counter-modal/type-counter-modal.component';
 
 @Component({
   selector: 'app-bills-hub',
@@ -95,13 +98,16 @@ export class BillsHubPage implements OnInit {
         this.navCtrl.navigateForward(XeweulOperationPage.ROUTE_PATH);
         break;
       case OPERATION_TYPE_PAY_BILL:
-        this.openPayBillModal(OPERATION_TYPE_PAY_BILL);
-        break;
       case OPERATION_TYPE_TERANGA_BILL:
-        this.openPayBillModal(OPERATION_TYPE_TERANGA_BILL);
+        this.openPayBillModal(billCompany.code);
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
         this.openMerchantBS();
+        break;
+      case OPERATION_TYPE_SENEAU_BILLS:
+      case OPERATION_TYPE_SENELEC_BILLS:
+        this.bsService.initBsModal(TypeCounterModalComponent, billCompany.code, "/bills").subscribe();
+        this.bsService.openModal(TypeCounterModalComponent, {operation: billCompany.code});
         break;
     }
   }
@@ -114,12 +120,6 @@ export class BillsHubPage implements OnInit {
         operation
       }
     });
-    // modal.onWillDismiss().then((response: any) => {
-    // if (response && response.data && response.data.recipientMsisdn) {
-    //   const pageData = response.data;
-    //   this.appRouting.goSetTransferAmountPage(pageData);
-    // }
-    // });
     return await modal.present();
   }
 
