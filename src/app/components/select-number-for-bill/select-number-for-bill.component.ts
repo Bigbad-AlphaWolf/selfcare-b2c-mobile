@@ -2,26 +2,29 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
-import { throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { from, of, throwError } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import {
   isFixPostpaid,
-  POSTPAID_TERANGA_OFFERS_ID,
   PROFILE_TYPE_HYBRID,
-  PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
   PROFILE_TYPE_POSTPAID,
 } from 'src/app/dashboard';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { BillsService } from 'src/app/services/bill-service/bills.service';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import {
   OPERATION_TYPE_PAY_BILL,
   OPERATION_TYPE_TERANGA_BILL,
 } from 'src/app/utils/operations.constants';
+import { previousMonths } from 'src/app/utils/utils';
 import {
+  OPERATION_SUGGEST_RATTACH_NUMBER,
   REGEX_FIX_NUMBER,
   REGEX_NUMBER_OM,
   SubscriptionModel,
 } from 'src/shared';
+import { YesNoModalComponent } from 'src/shared/yes-no-modal/yes-no-modal.component';
 import { LinesComponent } from '../lines/lines.component';
 
 @Component({
@@ -49,7 +52,9 @@ export class SelectNumberForBillComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthenticationService,
     private router: Router,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private billsService: BillsService,
+    private dashboardService: DashboardService,
   ) {}
 
   ngOnInit() {
@@ -83,6 +88,57 @@ export class SelectNumberForBillComponent implements OnInit {
       this.authService
         .getSubscriptionForTiers(numero)
         .pipe(
+          switchMap((sub: SubscriptionModel) => {
+            if (this.selectedOption.value === "FIXE") {
+              return of(sub);
+            } else {
+              // if the numero is mobile, we should get all his bills and check if there is at least one bill with amount > 150.000 FCFA
+              const { clientCode } = sub;
+              return from(
+                this.billsService.moisDisponible(clientCode, "MOBILE", numero)
+              ).pipe(
+                switchMap((moisDispo) => {
+                  const months = previousMonths(moisDispo);
+                  const month = months[0];
+                  return this.billsService
+                    .invoices(clientCode, "MOBILE", numero, month)
+                    .pipe(
+                      switchMap(res => {
+                        return this.billsService.getBillAmountLimit().pipe(
+                          switchMap((amountLimit) => {
+                            const hasBillMoreThan150K = res.find(
+                              (bill) => bill.montantFacture >= amountLimit
+                            );
+                            if (hasBillMoreThan150K) {
+                              return this.dashboardService.attachedNumbers().pipe(
+                                map((numbers: any[]) => {
+                                  const isRattached = numbers.map(el => el.msisdn).includes(numero);
+                                  if (isRattached) {
+                                    this.modalController.dismiss();
+                                    this.router.navigate(["/bills"], {
+                                      state: {
+                                        inputPhone: numero,
+                                        clientCode,
+                                      },
+                                    });
+                                  } else {
+                                    this.modalController.dismiss();
+                                    this.suggestAttachement(numero);
+                                  }
+                                  return numbers
+                                })
+                              )
+                            } else {
+                              return of(sub)
+                            }
+                          })
+                        )
+                      })
+                    );
+                })
+              );
+            }
+          }),
           tap((res: SubscriptionModel) => {
             this.checking = false;
             const clientCode = res.clientCode;
@@ -100,6 +156,7 @@ export class SelectNumberForBillComponent implements OnInit {
                   ligne: numero,
                   type: this.selectedOption.value,
                   clientCode,
+                  operationType: this.operation
                 },
               });
             } else {
@@ -140,10 +197,31 @@ export class SelectNumberForBillComponent implements OnInit {
           state: {
             inputPhone: response.data?.phone,
             clientCode: response.data?.codeClient,
+            operationType: this.operation
           },
         });
       }
     });
     return await modal.present();
   }
+
+  async suggestAttachement(msisdn) {
+    const modal = await this.modalController.create({
+      component: YesNoModalComponent,
+      cssClass: 'select-recipient-modal',
+      componentProps: {
+        typeModal: OPERATION_SUGGEST_RATTACH_NUMBER,
+        numero: msisdn,
+      },
+    });
+    modal.onDidDismiss().then((response) => {
+      if (response?.data?.continue) {
+        this.router.navigate(['rattached-phones-number'], {
+          state: { numberToRegister: msisdn },
+        })
+      }
+    })
+    return await modal.present();
+  }
+
 }

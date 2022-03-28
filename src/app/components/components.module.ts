@@ -31,6 +31,7 @@ import {VisualizeStoryComponent} from './visualize-story/visualize-story.compone
 import {SwiperModule} from 'swiper/angular';
 import {VisualizeStoriesByCategoriesComponent} from './visualize-stories-by-categories/visualize-stories-by-categories.component';
 import {LazyLoadDirective} from '../directives/lazy-load-img/lazy-load-image.directive';
+import {CardXeweulNameModalComponent} from "./card-xeweul-name-modal/card-xeweul-name-modal.component";
 @NgModule({
   declarations: [
     ItemOfferPlanComponent,
@@ -44,6 +45,7 @@ import {LazyLoadDirective} from '../directives/lazy-load-img/lazy-load-image.dir
     DalalCardItemComponent,
     DashboardHeaderComponent,
     CardRapidoNameModalComponent,
+    CardXeweulNameModalComponent,
     ItemIlliflexComponent,
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
@@ -73,6 +75,7 @@ import {LazyLoadDirective} from '../directives/lazy-load-img/lazy-load-image.dir
     DalalCardItemComponent,
     DashboardHeaderComponent,
     CardRapidoNameModalComponent,
+    CardXeweulNameModalComponent,
     ItemIlliflexComponent,
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,

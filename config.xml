@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-packageName="com.orange.myorange.osn" id="com.orange.mobile.myorangesn" ios-CFBundleIdentifier="com.orange.mobile.myorangesn" version="6.3.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-packageName="com.orange.myorange.osn" id="com.orange.mobile.myorangesn" ios-CFBundleIdentifier="com.orange.mobile.myorangesn" version="6.5.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Orange Et Moi</name>
     <description>Tout Orange En Un Click</description>
     <author email="serviceclient@orange-sonatel.com" href="https://orange.sn/">Orange Sonatel Team</author>
-    <content original-src="index.html" src="http://localhost:8101" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="http://10.137.52.31:8712/*" />
@@ -18,7 +18,7 @@
     <preference name="WKWebViewOnly" value="true" />
     <preference name="orientation" value="portrait" />
     <preference name="ScrollEnabled" value="false" />
-    <preference name="android-minSdkVersion" value="19" />
+    <preference name="android-minSdkVersion" value="23" />
     <preference name="android-targetSdkVersion" value="30" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashScreenDelay" value="15000" />

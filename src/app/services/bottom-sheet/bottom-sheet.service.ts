@@ -12,7 +12,7 @@ import { LinesComponent } from 'src/app/components/lines/lines.component';
 import { BillCompany } from 'src/app/models/bill-company.model';
 import { Subject } from 'rxjs';
 import {
-  OPERATION_SEE_SOLDE_RAPIDO,
+  OPERATION_SEE_SOLDE_RAPIDO, OPERATION_SEE_SOLDE_XEWEUL,
   OPERATION_TYPE_PASS_ALLO,
   OPERATION_TYPE_PASS_ILLIFLEX,
   OPERATION_TYPE_PASS_ILLIMIX,
@@ -39,6 +39,7 @@ import {
 } from '@angular/material/bottom-sheet';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { TRANSFER_OM_INTERNATIONAL_COUNTRIES } from 'src/app/utils/constants';
+import {XeweulSoldeComponent} from '../../components/counter/xeweul-solde/xeweul-solde.component';
 
 @Injectable({
   providedIn: 'root',
@@ -64,6 +65,8 @@ export class BottomSheetService {
     return this.bsModalEl.pipe(
       map((el) => {
         el.onDidDismiss().then((result: any) => {
+          console.log(result);
+          
           result = result.data;
           let fromFavorites =
             result && result.TYPE_BS === 'FAVORIES' && result.ACTION === 'BACK';
@@ -74,7 +77,8 @@ export class BottomSheetService {
           if (
             result &&
             result.ACTION === 'FORWARD' &&
-            result.operation !== OPERATION_SEE_SOLDE_RAPIDO
+            result.operation !== OPERATION_SEE_SOLDE_RAPIDO &&
+              result.operation !== OPERATION_SEE_SOLDE_XEWEUL
           ) {
             this.opXtras.purchaseType = purchaseType;
             this.opXtras.billData
@@ -82,6 +86,14 @@ export class BottomSheetService {
               : '';
 
             this.opXtras.merchant = result.merchant;
+
+            // for SENELEC & SENEAU payment
+            this.opXtras['operationType'] = purchaseType;
+            this.opXtras["ligne"] = result?.ligne;
+            this.opXtras["type"] = result?.type;
+            console.log(this.opXtras);
+            // END
+            
             this.navCtl.navigateForward([routePath], {
               state: this.opXtras,
             });
@@ -92,6 +104,16 @@ export class BottomSheetService {
             result.ACTION === 'FORWARD'
           ) {
             this.openModalSoldeRapido(RapidoSoldeComponent, {
+              ...result,
+              opXtras: this.opXtras,
+            });
+          }
+          if (
+              result &&
+              result.operation === OPERATION_SEE_SOLDE_XEWEUL &&
+              result.ACTION === 'FORWARD'
+          ) {
+            this.openModalSoldeRapido(XeweulSoldeComponent, {
               ...result,
               opXtras: this.opXtras,
             });

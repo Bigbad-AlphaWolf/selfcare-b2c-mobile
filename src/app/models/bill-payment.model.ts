@@ -5,7 +5,7 @@ export interface BillPaymentModel {
   payerEncodedPin: string;
   payerMsisdn: string;
   billNumber: string;
-  paymentCategory: PAYMENT_BILLS_CATEGORY;
+  paymentCategory: PAYMENT_BILLS_CATEGORY | string;
 }
 
 export enum PAYMENT_BILLS_CATEGORY {
