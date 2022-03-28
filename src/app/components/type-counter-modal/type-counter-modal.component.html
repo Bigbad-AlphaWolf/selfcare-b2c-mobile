@@ -1,0 +1,24 @@
+<div class="select-type-ligne-modal">
+  <ng-container #selectMsisdn>
+    <div class="title">Payer une facture {{operation === OPERATION_TYPE_SENELEC_BILLS ? 'SENELEC' : 'SENEAU'}}</div>
+    <div class="desc scb-text-gray">Veuillez saisir le numéro du compteur {{operation === OPERATION_TYPE_SENELEC_BILLS ? 'SENELEC' : 'SENEAU'}}</div>
+    <div class="beneficiary-number">
+      <form novalidate autocomplete="false" [formGroup]="form">
+        <mat-form-field class="scb-input-row" appearance="outline">
+          <mat-label>N° du compteur</mat-label>
+          <input #inputCounter matInput type="number" [value]="counter" maxlength="20" formControlName="counter" />
+          <span (click)="openFavorites($event)" matSuffix class="scb-text-orange my-nums">
+            Mes compteurs
+          </span>
+        </mat-form-field>
+      </form>
+    </div>
+    <div class="error-block scb-text-red-error" *ngIf="hasError">{{errorMessage}}</div>
+    <div class="btn-container">
+      <button class="scb-btn scb-btn-orange scb-btn-full" [disabled]="!form.valid || checking"
+        (click)="checkCounter()">Continuer
+        <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="checking"></mat-spinner>
+      </button>
+    </div>
+  </ng-container>
+</div>

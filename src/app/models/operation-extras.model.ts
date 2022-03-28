@@ -49,4 +49,6 @@ export interface OperationExtras {
   numberToRegister?: string;
   country?: any;
   reason?: string;
+
+  counterToFav?: boolean
 }

@@ -1,0 +1,39 @@
+@import "src/app/app";
+
+.type-name-modal {
+    padding: 30px 15px;
+    .title {
+        font-size: 24px;
+        font-family: HelveticaNeueLTStd-Bd;
+        line-height: 1.25;
+        color: $fullBlack;
+        margin-bottom: 10px;
+    }
+    .description {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 16px;
+        line-height: 1.25;
+        color: $gray;
+        padding-bottom: 25px;
+    }
+    button {
+        border-radius: 10px;
+        position: relative;
+        mat-spinner {
+          position: absolute;
+          top: 15px;
+          right: 10px;
+        }
+        .mat-spinner::ng-deep circle {
+          stroke: $white;
+        }
+    }
+    .success-text {
+        margin-top: 10px;
+        .counter-name {
+            font-size: 14px;
+        }
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 13px;
+    }
+}

@@ -5,6 +5,7 @@ import { map, catchError } from 'rxjs/operators';
 import { formatPhoneNumber } from 'src/shared';
 import { Platform } from '@ionic/angular';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+declare var navigator: any
 
 @Injectable({
   providedIn: 'root',
@@ -58,20 +59,19 @@ export class ContactsService {
       return of(ContactsService.allContacts);
     }
     return from(
-      this.contacts.find(['displayName', 'name', 'phoneNumbers', 'emails'], {
-        filter: '',
-        multiple: true,
-      })
+      this.getAll()
     ).pipe(
       map((contacts: any[]) => {
-        const result = contacts.map(({ name, phoneNumbers, ...left }) => {
+        console.log("our result", contacts);
+        const result = contacts.map(({ displayName, phoneNumbers, ...left }) => {
           if (phoneNumbers) {
             const numbers = phoneNumbers.map((element) => {
-              return formatPhoneNumber(element.value);
+              return formatPhoneNumber(element.number);
             });
-            return { name, numbers };
+            console.log({ displayName, numbers });
+            return { displayName, numbers };
           }
-          return { name, numbers: [] };
+          return { displayName, numbers: [] };
         });
         ContactsService.allContacts = result;
         console.log(result);
@@ -82,5 +82,14 @@ export class ContactsService {
         return of([]);
       })
     );
+  }
+
+  getAll() {
+    return new Promise<any[]>((resolve, reject) => {
+      navigator.contactsPhoneNumbers.list((contacts: any[]) => {
+        console.log(contacts);
+        resolve(contacts)
+      })
+    })
   }
 }

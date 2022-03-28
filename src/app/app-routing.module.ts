@@ -285,6 +285,11 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'xeweul-operation',
+    loadChildren: () => import('./pages/xeweul-operation/xeweul-operation.module').then(m => m.XeweulOperationPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'dashboard-prepaid-light',
     loadChildren: () => import('./dashboard-prepaid-light/dashboard-prepaid-light.module').then(m => m.DashboardPrepaidLightPageModule),
     canActivate: [AuthGuard]
