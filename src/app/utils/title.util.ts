@@ -15,10 +15,10 @@ import {
   OPERATION_CHANGE_PIN_OM,
   OPERATION_CREATE_PIN_OM,
   OPERATION_UNBLOCK_OM_ACCOUNT,
-  OPERATION_RESET_PIN_OM
+  OPERATION_RESET_PIN_OM, OPERATION_SEE_SOLDE_XEWEUL
 } from 'src/shared';
 import {PageHeader} from '../models/page-header.model';
-import {OPERATION_RAPIDO, OPERATION_WOYOFAL} from './operations.constants';
+import {OPERATION_RAPIDO, OPERATION_WOYOFAL, OPERATION_XEWEUL} from './operations.constants';
 import {IMAGES_DIR_PATH} from './constants';
 
 export const titles: PageHeader[] = [
@@ -73,12 +73,20 @@ export const titles: PageHeader[] = [
     title: 'Rechargement Rapido'
   },
   {
+    typeOperation: OPERATION_XEWEUL,
+    title: 'Rechargement Xeweul'
+  },
+  {
     typeOperation: BONS_PLANS,
     title: 'Bons plans - Samay Sargal'
   },
   {
     typeOperation: OPERATION_SEE_SOLDE_RAPIDO,
     title: 'Solde de la carte Rapido'
+  },
+  {
+    typeOperation: OPERATION_SEE_SOLDE_XEWEUL,
+    title: 'Solde de la carte Xeweul'
   },
   {
     typeOperation: OPERATION_SEE_FOLLOW_UP_REQUESTS,

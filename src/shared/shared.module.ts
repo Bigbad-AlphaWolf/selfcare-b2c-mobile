@@ -85,6 +85,10 @@ import { FaceIdRequestModalComponent } from './face-id-request-modal/face-id-req
 import { TypeCounterModalComponent } from 'src/app/components/type-counter-modal/type-counter-modal.component';
 import { FavoriteServiceCountersComponent } from 'src/app/components/counter/favorite-service-counters/favorite-service-counters.component';
 import { FavoriteCounterNameModalComponent } from 'src/app/components/favorite-counter-name-modal/favorite-counter-name-modal.component';
+import {XeweulSelectionComponent} from '../app/components/counter/xeweul-selection/xeweul-selection.component';
+import {CardXeweulNameModalComponent} from '../app/components/card-xeweul-name-modal/card-xeweul-name-modal.component';
+import {XeweulSoldeComponent} from '../app/components/counter/xeweul-solde/xeweul-solde.component';
+import {FavoriteXeweulComponent} from "../app/components/counter/favorite-xeweul/favorite-xeweul.component";
 
 @NgModule({
   declarations: [
@@ -97,9 +101,11 @@ import { FavoriteCounterNameModalComponent } from 'src/app/components/favorite-c
     OemOperationsComponent,
     SelectBeneficiaryPopUpComponent,
     RapidoSelectionComponent,
+    XeweulSelectionComponent,
     WoyofalSelectionComponent,
     FavoriteWoyofalComponent,
     FavoriteRapidoComponent,
+    FavoriteXeweulComponent,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
     AmountProviderComponent,
@@ -132,6 +138,7 @@ import { FavoriteCounterNameModalComponent } from 'src/app/components/favorite-c
     FavoriteMerchantComponent,
     IbouIonFabComponent,
     RapidoSoldeComponent,
+    XeweulSoldeComponent,
     YesNoModalComponent,
     SimpleOperationSuccessModalComponent,
     BanniereDescriptionPage,
@@ -173,8 +180,10 @@ import { FavoriteCounterNameModalComponent } from 'src/app/components/favorite-c
     NumberSelectionComponent,
     FavoriteWoyofalComponent,
     FavoriteRapidoComponent,
+    FavoriteXeweulComponent,
     WoyofalSelectionComponent,
     RapidoSelectionComponent,
+    XeweulSelectionComponent,
     ModalSuccessComponent,
     NoOMAccountPopupComponent,
     CancelOperationPopupComponent,
@@ -190,10 +199,12 @@ import { FavoriteCounterNameModalComponent } from 'src/app/components/favorite-c
     NoOmAccountModalComponent,
     FavoriteMerchantComponent,
     RapidoSoldeComponent,
+    XeweulSoldeComponent,
     RattachNumberModalComponent,
     RattachNumberByIdCardComponent,
     RattachNumberByClientCodeComponent,
     CardRapidoNameModalComponent,
+    CardXeweulNameModalComponent,
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
     YesNoModalComponent,
@@ -223,8 +234,10 @@ import { FavoriteCounterNameModalComponent } from 'src/app/components/favorite-c
     SelectBeneficiaryPopUpComponent,
     WoyofalSelectionComponent,
     RapidoSelectionComponent,
+    XeweulSelectionComponent,
     FavoriteWoyofalComponent,
     FavoriteRapidoComponent,
+    FavoriteXeweulComponent,
     OemIonHeaderParallaxDirective,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
@@ -254,6 +267,7 @@ import { FavoriteCounterNameModalComponent } from 'src/app/components/favorite-c
     FavoriteMerchantComponent,
     IbouIonFabComponent,
     RapidoSoldeComponent,
+    XeweulSoldeComponent,
     MaterialComponentsModule,
     PipesModule,
     YesNoModalComponent,

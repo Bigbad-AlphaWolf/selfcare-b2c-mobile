@@ -17,6 +17,7 @@
         <span *ngSwitchCase="'RECHARGEMENT_CREDIT'">Achat de crédit</span>
         <span *ngSwitchCase="'OPERATION_WOYOFAL'">Rechargement Woyofal</span>
         <span *ngSwitchCase="OPERATION_RAPIDO">Rechargement Rapido</span>
+        <span *ngSwitchCase="OPERATION_XEWEUL">Rechargement Xeweul</span>
         <span *ngSwitchCase="'OPERATION_TYPE_PASS_VOYAGE'">Pass selectionné</span>
         <span *ngSwitchCase="OPERATION_TYPE_PASS_INTERNATIONAL">Pass selectionné</span>
         <span *ngSwitchCase="OPERATION_ENABLE_DALAL">Souscription Dalal Tones</span>
@@ -47,6 +48,7 @@
       <img *ngSwitchCase="'RECHARGEMENT_CREDIT'" src="assets/images/achat-de-credit.svg" alt="banniere" class="banniere" />
       <img *ngSwitchCase="'OPERATION_WOYOFAL'" src="assets/images/recharge-bill.svg" alt="banniere" class="banniere" />
       <img *ngSwitchCase="OPERATION_RAPIDO" src="assets/images/recharge-bill.svg" alt="banniere" class="banniere" />
+      <img *ngSwitchCase="OPERATION_XEWEUL" src="assets/images/recharge-bill.svg" alt="banniere" class="banniere" />
       <img *ngSwitchCase="OPERATION_TYPE_PASS_VOYAGE" src="assets/images/achat-de-pass-voyage@2x.png" alt="banniere"
         class="banniere" />
       <img *ngSwitchCase="OPERATION_ENABLE_DALAL" src="assets/images/dalal-tones-banniere.png" alt="banniere"
@@ -120,6 +122,10 @@
         <span class="pass">Montant à recharger</span>
         <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
       </div>
+      <div class="amount-to-transfer" *ngSwitchCase="OPERATION_XEWEUL">
+        <span class="pass">Montant à recharger</span>
+        <span *ngIf="0" class="modifier scb-text-orange">Modifier</span>
+      </div>
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_TYPE_PASS_VOYAGE">
         <span class="pass">Pass sélectionné</span>
       </div>
@@ -182,6 +188,8 @@
         </app-item-transfert-om>
         <app-item-recharge-credit [amount]="opXtras.amount + opXtras.fee" *ngSwitchCase="OPERATION_RAPIDO">
         </app-item-recharge-credit>
+        <app-item-recharge-credit [amount]="opXtras.amount + opXtras.fee" *ngSwitchCase="OPERATION_XEWEUL">
+        </app-item-recharge-credit>
         <app-dalal-card-item [dalal]="opXtras?.dalal" *ngSwitchCase="OPERATION_ENABLE_DALAL">
         </app-dalal-card-item>
         <app-pass-usage-item [passUsage]="opXtras?.pass" [serviceUsage]="opXtras?.serviceUsage"
@@ -211,11 +219,12 @@
         </div>
         <span class="title">{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT ? merchantCode :
           recipientMsisdn | phoneNumberDisplay}} {{([ 'OPERATION_WOYOFAL',
-          OPERATION_RAPIDO].includes(purchaseType)?opXtras.billData.counter.counterNumber
+          OPERATION_RAPIDO,OPERATION_XEWEUL].includes(purchaseType)?opXtras.billData.counter.counterNumber
           :'')|codeFormat:2}}</span>
         <span class="recipient">{{purchaseType === OPERATION_TYPE_MERCHANT_PAYMENT
           ?merchantName:recipientName}}{{ [ 'OPERATION_WOYOFAL',
-          OPERATION_RAPIDO].includes(purchaseType)?opXtras.billData.counter.name:''}}</span>
+          OPERATION_RAPIDO,OPERATION_XEWEUL].includes(purchaseType)?opXtras.billData.counter.name:''}}
+        </span>
       </div>
     </div>
     <ng-container *ngIf="purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER">
@@ -292,7 +301,11 @@
         <span class="text" *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE">Transférer ({{amount}} FCFA)</span>
         <span class="text" *ngSwitchCase="'RECHARGEMENT_CREDIT'">Confirmer ({{amount|formatCurrency}} FCFA)</span>
         <span class="text" *ngSwitchCase="OPERATION_RAPIDO">Confirmer ({{(opXtras.amount + opXtras.fee)|formatCurrency}}
-          FCFA)</span>
+          FCFA)
+        </span>
+        <span class="text" *ngSwitchCase="OPERATION_XEWEUL">Confirmer ({{(opXtras.amount + opXtras.fee)|formatCurrency}}
+          FCFA)
+        </span>
         <span class="text" *ngSwitchCase="'OPERATION_WOYOFAL'">Confirmer ({{(opXtras.amount +
           opXtras.fee)|formatCurrency}}
           FCFA)</span>

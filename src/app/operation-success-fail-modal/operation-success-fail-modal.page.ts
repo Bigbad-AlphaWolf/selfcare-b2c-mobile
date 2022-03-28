@@ -32,6 +32,7 @@ import { ApplicationRoutingService } from '../services/application-routing/appli
 import { OperationExtras } from '../models/operation-extras.model';
 import {
   OPERATION_RAPIDO,
+  OPERATION_XEWEUL,
   OPERATION_TYPE_INTERNATIONAL_TRANSFER,
   OPERATION_TYPE_PASS_USAGE,
   OPERATION_TYPE_PAY_BILL,
@@ -80,6 +81,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_DEPLAFONNEMENT_OM_ACCOUNT = OPERATION_DEPLAFONNEMENT_OM_ACCOUNT;
   OPERATION_CANCEL_TRANSFERT_OM = OPERATION_CANCEL_TRANSFERT_OM;
   OPERATION_RAPIDO = OPERATION_RAPIDO;
+  OPERATION_XEWEUL = OPERATION_XEWEUL;
   OPERATION_TYPE_PASS_INTERNATIONAL = OPERATION_TYPE_PASS_INTERNATIONAL;
   OPERATION_PAY_ORANGE_BILLS = OPERATION_PAY_ORANGE_BILLS;
   OPERATION_TYPE_INTERNATIONAL_TRANSFER = OPERATION_TYPE_INTERNATIONAL_TRANSFER;
@@ -337,6 +339,7 @@ export class OperationSuccessFailModalPage implements OnInit {
         );
         this.navCtrl.navigateBack(BillsHubPage.ROUTE_PATH);
         break;
+      case OPERATION_XEWEUL:
       case OPERATION_RAPIDO:
         this.followAnalyticsServ.registerEventFollow(
           "Recharge_rapido_recap_renouvellement",

@@ -2,5 +2,6 @@ export enum FavoriteType {
   RAPIDO = 'RAPIDO',
   WOYOFAL = 'WOYOFAL',
   SENELEC = 'SEN',
-  SENEAU = 'SDE'
+  SENEAU = 'SDE',
+  XEWEUL = 'XEWEUL',
 }
