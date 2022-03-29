@@ -8,7 +8,10 @@
   <div class="top-block">
 		<div class="icone">
 			<img *ngIf="success" src="/assets/images/confirmation.png" alt="checked" />
-			<img *ngIf="purchaseType === OPERATION_PAY_ORANGE_BILLS" class="orange-icon" src="/assets/images/orange@3x.png" alt="checked" />
+			<img *ngIf="purchaseType === OPERATION_TYPE_PAY_BILL" class="orange-icon" src="/assets/images/orange@3x.png" alt="checked" />
+			<img *ngIf="purchaseType === OPERATION_TYPE_TERANGA_BILL" class="orange-icon" src="/assets/images/orange@3x.png" alt="checked" />
+			<img *ngIf="purchaseType === OPERATION_TYPE_SENELEC_BILLS" class="orange-icon" src="/assets/images/05-ic-nes-partenaires-senelec@3x.png" alt="checked" />
+			<img *ngIf="purchaseType === OPERATION_TYPE_SENEAU_BILLS" class="orange-icon" src="/assets/images/05-ic-nes-partenaires-sen-eau@3x.png" alt="checked" />
 		</div>
     <ng-container *ngIf="!success">
       <img *ngIf="![OPERATION_CHANGE_PIN_OM, OPERATION_OPEN_OM_ACCOUNT, OPERATION_CANCEL_TRANSFERT_OM, OPERATION_DEPLAFONNEMENT_OM_ACCOUNT, OPERATION_UNBLOCK_OM_ACCOUNT, OPERATION_RESET_OM_ACCOUNT].includes(purchaseType) && errorCode !== 'BLOCKEDPASS'" src="/assets/images/echec.png" alt="checked" />
@@ -48,6 +51,13 @@
         >{{success ? 'Rechargement'+'\n'+'Rapido effectué' :
         'Echec'+'\n'+'rechargement Rapido'}}</span
       >
+      <span
+        class="title"
+        *ngSwitchCase="OPERATION_XEWEUL"
+        style="white-space: pre-line;"
+        >{{success ? 'Rechargement'+'\n'+'Xeweul effectué' :
+        'Echec'+'\n'+'rechargement Xeweul'}}</span
+      >
       <span class="title" *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
@@ -83,8 +93,17 @@
       <span class="title" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"
         >{{ success ? 'Achat pass effectué' : 'Echec achat de pass'}}</span
       >
-      <span class="title" *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS"
+      <span class="title" *ngSwitchCase="OPERATION_TYPE_PAY_BILL"
+        >{{ success ? "Paiement facture	Sonatel effectuée" : 'Echec du paiement de la facture'}}</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_TYPE_TERANGA_BILL"
         >{{ success ? "Paiement facture	Orange effectuée" : 'Echec du paiement de la facture'}}</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS"
+        >{{ success ? "Paiement facture	SENELEC effectuée" : 'Echec du paiement de la facture'}}</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS"
+        >{{ success ? "Paiement facture	SENEAU effectuée" : 'Echec du paiement de la facture'}}</span
       >
 			<span class="title" *ngSwitchCase="OPERATION_UNBLOCK_OM_ACCOUNT"
         >Bravo !</span
@@ -142,7 +161,16 @@
         <span *ngSwitchCase="OPERATION_TYPE_PASS_USAGE"
           >Vous avez acheté le pass {{opXtras?.serviceUsage?.fullDescription}}</span
         >
-        <span *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS"
+        <span *ngSwitchCase="OPERATION_TYPE_PAY_BILL"
+          >Vous avez payé un montant de  </span
+        >
+        <span *ngSwitchCase="OPERATION_TYPE_TERANGA_BILL"
+          >Vous avez payé un montant de  </span
+        >
+        <span *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS"
+          >Vous avez payé un montant de  </span
+        >
+        <span *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS"
           >Vous avez payé un montant de  </span
         >
       </ng-container>
@@ -210,6 +238,11 @@
         ></app-item-recharge-credit>
         <app-item-recharge-credit
           [modifiable]="false"
+          [amount]="opXtras.amount + opXtras.fee"
+          *ngSwitchCase="OPERATION_XEWEUL"
+        ></app-item-recharge-credit>
+        <app-item-recharge-credit
+          [modifiable]="false"
           [amount]="amount"
           *ngSwitchCase="OPERATION_TRANSFER_OM_WITH_CODE"
         >
@@ -223,17 +256,23 @@
         <app-item-illiflex *ngSwitchCase="OPERATION_ILLIFLEX_TYPE" [passIlliflex]="passBought"></app-item-illiflex>
         <app-dalal-card-item *ngSwitchCase="OPERATION_ENABLE_DALAL" [dalal]="dalal"></app-dalal-card-item>
         <app-pass-usage-item *ngSwitchCase="OPERATION_TYPE_PASS_USAGE" [serviceUsage]="opXtras.serviceUsage" [passUsage]="opXtras.pass"></app-pass-usage-item>
-				<app-item-recharge-credit
-				[modifiable]="false"
-				[amount]="opXtras?.invoice?.montantFacture"
-				*ngSwitchCase="OPERATION_PAY_ORANGE_BILLS"
-			>
-			</app-item-recharge-credit>
+        <app-item-recharge-credit [modifiable]="false" [amount]="opXtras?.invoice?.montantFacture"
+          *ngSwitchCase="OPERATION_TYPE_PAY_BILL">
+        </app-item-recharge-credit>
+        <app-item-recharge-credit [modifiable]="false" [amount]="opXtras?.invoice?.montantFacture"
+          *ngSwitchCase="OPERATION_TYPE_TERANGA_BILL">
+        </app-item-recharge-credit>
+        <app-item-recharge-credit [modifiable]="false" [amount]="opXtras?.invoice?.montantFacture"
+          *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS">
+        </app-item-recharge-credit>
+        <app-item-recharge-credit [modifiable]="false" [amount]="opXtras?.invoice?.montantFacture"
+          *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS">
+        </app-item-recharge-credit>
       </ng-container>
     </div>
     <div
       class="bottom-block"
-      *ngIf="success &&  !(['OPERATION_WOYOFAL', OPERATION_RAPIDO, OPERATION_PAY_ORANGE_BILLS].includes(purchaseType))"
+      *ngIf="success &&  !(['OPERATION_WOYOFAL', OPERATION_XEWEUL, OPERATION_RAPIDO, OPERATION_TYPE_PAY_BILL, OPERATION_TYPE_TERANGA_BILL, OPERATION_TYPE_SENELEC_BILLS, OPERATION_TYPE_SENEAU_BILLS].includes(purchaseType))"
     >
       <div class="details">
         <ng-container
@@ -364,16 +403,34 @@
         </div>
       </div>
     </div>
-    <div
-      class="bottom-block"
-      *ngIf="success && purchaseType === OPERATION_PAY_ORANGE_BILLS "
-    >
+    <div class="bottom-block" *ngIf="success && OPERATION_XEWEUL === purchaseType">
+      <div class="details">
+        <div class="left-block">Carte rechargée</div>
+        <div class="right-block scb-text-gray">
+          <span class="numero">{{opXtras.billData.counter.counterNumber|codeFormat:2}}</span>
+          <span class="name"> {{opXtras.billData.counter.name}} </span>
+        </div>
+      </div>
+      <div class="details">
+        <div class="left-block">Paiement par</div>
+        <div class="right-block scb-text-gray">
+          <span class="numero"> Orange Money </span>
+          <span class="name">{{msisdnBuyer|phoneNumberDisplay}}</span>
+        </div>
+      </div>
+      <div class="details details-date">
+        <div class="left-block">Date de recharge</div>
+        <div class="right-block scb-text-gray">
+          <span class="numero">{{dateAchat}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-block"
+      *ngIf="success && (purchaseType === OPERATION_TYPE_PAY_BILL || purchaseType === OPERATION_TYPE_TERANGA_BILL || purchaseType === OPERATION_TYPE_SENELEC_BILLS || purchaseType === OPERATION_TYPE_SENEAU_BILLS)">
       <div class="details">
         <div class="left-block">Période</div>
         <div class="right-block scb-text-gray">
-          <span class="numero"
-            >{{opXtras.invoice?.dateEmissionfacture | date: 'MMMM YYYY'}}</span
-          >
+          <span class="numero">{{opXtras.invoice?.dateEmissionfacture | date: 'MMMM YYYY'}}</span>
         </div>
       </div>
       <div class="details">
@@ -435,11 +492,21 @@
         <ng-container *ngSwitchCase="OPERATION_RAPIDO">
           Faire une autre recharge
         </ng-container>
+        <ng-container *ngSwitchCase="OPERATION_XEWEUL">
+          Faire une autre recharge
+        </ng-container>
         <ng-container *ngSwitchCase="OPERATION_ENABLE_DALAL">
           Activer un autre dalal
         </ng-container>
-        <ng-container *ngSwitchCase="OPERATION_PAY_ORANGE_BILLS">
+        <ng-container *ngSwitchCase="OPERATION_TYPE_PAY_BILL">
           {{opXtras?.numberToRegister && isNumberNotRattached ? 'Rattacher le ' + opXtras?.numberToRegister : 'Payer une autre facture'}}
+        </ng-container>
+        <ng-container *ngSwitchCase="OPERATION_TYPE_TERANGA_BILL">Payer une autre facture</ng-container>
+        <ng-container *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS">
+          {{opXtras?.counterToFav ? 'Ajouter le compteur aux favoris' : 'Payer une autre facture'}}
+        </ng-container>
+        <ng-container *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS">
+          {{opXtras?.counterToFav ? 'Ajouter le compteur aux favoris' : 'Payer une autre facture'}}
         </ng-container>
         <ng-container *ngSwitchDefault>
           Faire une autre operation

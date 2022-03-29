@@ -4,7 +4,7 @@
 			<div class="infos">
 				<div class="title" *ngIf="title">{{ title }}</div>
 				<div class="title" *ngIf="!title">{{MONTHS[invoice?.mois-1] + ' ' + invoice?.annee}}</div>
-				<div class="facture">N° {{ invoice?.nfact | formatBillNum }}</div>
+				<div class="facture">N° {{ operation ? invoice?.nfact : invoice?.nfact | formatBillNum }}</div>
 				<div class="price-and-echeance">
 					<div class="date" *ngIf="!invoice?.isDelayed"> Echéance {{ invoice?.dateEcheance | formatBillDate }}
 					</div>
@@ -13,11 +13,16 @@
 					<div class="bill-price scb-text-orange">{{invoice?.montantFacture + ' F CFA'}}</div>
 				</div>
 			</div>
-			<img class="logo" src="/assets/images/orange@3x.png" alt="">
+			<ng-container [ngSwitch]="operation">
+				<img *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS" class="logo" src="/assets/images/senelec.png" alt="">
+				<img *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS" class="logo" src="/assets/images/seneau.png" alt="">
+				<img *ngSwitchDefault class="logo" src="/assets/images/orange@3x.png" alt="">
+			</ng-container>
 		</div>
 		<div class="path" *ngIf="!hideDownloadBlock"></div>
 		<div class="section2" *ngIf="!hideDownloadBlock">
-			<div class="download s2-text" matRipple (click)="downloadBill(invoice)">{{ numberToRegister ? '' : 'Télécharger' }}</div>
+			<div class="download s2-text" matRipple (click)="downloadBill(invoice)">{{ numberToRegister ? '' :
+				'Télécharger' }}</div>
 			<div (click)="payBill(invoice)" *ngIf="canPayBills"
 				[ngClass]="{'paid': invoice?.statutFacture === 'paid', 'unpaid': invoice?.statutFacture === 'unpaid'}"
 				class="pay s2-text font-size-14"> {{

@@ -51,7 +51,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import {
   OPERATION_RAPIDO,
+  OPERATION_XEWEUL,
   OPERATION_TYPE_INTERNATIONAL_TRANSFER,
+  OPERATION_TYPE_PAY_BILL,
+  OPERATION_TYPE_SENEAU_BILLS,
+  OPERATION_TYPE_SENELEC_BILLS,
+  OPERATION_TYPE_TERANGA_BILL,
   OPERATION_WOYOFAL,
 } from '../utils/operations.constants';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -73,6 +78,7 @@ import { OMCustomerStatusModel } from '../models/om-customer-status.model';
 import { CustomerOperationStatus } from '../models/enums/om-customer-status.enum';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
 import * as SecureLS from 'secure-ls';
+import {XeweulService} from '../services/xeweul/xeweul.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -141,7 +147,7 @@ export class NewPinpadModalPage implements OnInit {
   MATH = Math;
   OM_CAPPING_ERROR = OM_CAPPING_ERROR;
   faceIdAuthCanceled: boolean;
-  
+
   constructor(
     private orangeMoneyService: OrangeMoneyService,
     private fb: FormBuilder,
@@ -150,6 +156,7 @@ export class NewPinpadModalPage implements OnInit {
     public modalController: ModalController,
     private woyofal: WoyofalService,
     private rapido: RapidoService,
+    private xeweulService: XeweulService,
     private followAnalyticsService: FollowAnalyticsService,
     private appRouting: ApplicationRoutingService,
     private navCtrl: NavController,
@@ -610,6 +617,9 @@ export class NewPinpadModalPage implements OnInit {
           case OPERATION_RAPIDO:
             this.payRapido(this.pin);
             break;
+          case OPERATION_XEWEUL:
+            this.payXeweul(this.pin);
+            break;
           case OPERATION_INIT_CHANGE_PIN_OM:
             this.initOperationChangePinOM(pin);
             break;
@@ -619,7 +629,10 @@ export class NewPinpadModalPage implements OnInit {
           case OPERATION_TYPE_PASS_ILLIFLEX:
             this.buyIlliflex(pin);
             break;
-          case OPERATION_PAY_ORANGE_BILLS:
+          case OPERATION_TYPE_PAY_BILL:
+          case OPERATION_TYPE_TERANGA_BILL:
+          case OPERATION_TYPE_SENELEC_BILLS:
+          case OPERATION_TYPE_SENEAU_BILLS:
             this.payOrangeBills(pin);
             break;
           default:
@@ -734,6 +747,36 @@ export class NewPinpadModalPage implements OnInit {
         this.processingPin = false;
         this.processError(err, logInfos);
       }
+    );
+  }
+
+  payXeweul(pin: string) {
+    this.canRetry = false;
+    this.processingPin = true;
+    const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
+    const body = {
+      amount: this.opXtras.amount,
+      em: db.em,
+      fees: this.opXtras.fee,
+      msisdn: db.msisdn,
+      numeroCarte: this.opXtras.billData.counter.counterNumber,
+      pin,
+    };
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: db.msisdn,
+      receiver: body.numeroCarte,
+      montant: body.amount,
+      mod_paiement: PAYMENT_MOD_OM,
+    };
+
+    this.xeweulService.chargeCard(body).subscribe(
+        (res: any) => {
+          this.processResult(res, db, logInfos, body);
+        },
+        (err: any) => {
+          this.processingPin = false;
+          this.processError(err, logInfos);
+        }
     );
   }
 
@@ -961,11 +1004,7 @@ export class NewPinpadModalPage implements OnInit {
       payerEm: db.em,
       payerEncodedPin: pin,
       payerMsisdn: db.msisdn,
-      paymentCategory: REGEX_FIX_NUMBER.test(
-        this.opXtras?.invoice?.numeroTelephone
-      )
-        ? PAYMENT_BILLS_CATEGORY.FIXE
-        : PAYMENT_BILLS_CATEGORY.MOBILE,
+      paymentCategory: this.orangeMoneyService.getPaymentCategoryByPurchaseType(this.opXtras.purchaseType),
     };
     console.log("payBillPayload", payload);
 
