@@ -87,6 +87,16 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'changement-formule',
+    loadChildren: () => import('./my-formule/my-formule.module').then(m => m.MyFormulePageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'changement-formule/:codeFormule',
+    loadChildren: () => import('./my-formule/my-formule.module').then(m => m.MyFormulePageModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'sargal-dashboard',
     loadChildren: () => import('./sargal/sargal.module').then(m => m.SargalPageModule),
     canActivate: [AuthGuard]
