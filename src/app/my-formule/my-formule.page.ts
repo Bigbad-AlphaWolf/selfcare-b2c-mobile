@@ -1,23 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import {
   CODE_KIRENE_Formule,
   FormuleMobileModel,
+  JAMONO_NEW_SCOOL_CODE,
+  JAMONO_NEW_SCOOL_CODE_FORMULE,
   LOCAL_ZONE,
+  SubscriptionUserModel,
   TarifZoningByCountryModel,
 } from 'src/shared';
 import { FormuleService } from '../services/formule-service/formule.service';
 import {
   SubscriptionModel,
-  dashboardOpened,
   PROFILE_TYPE_PREPAID,
 } from '../dashboard';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { ModalController, Platform } from '@ionic/angular';
 import { ChangeOfferPopupComponent } from './change-offer-popup/change-offer-popup.component';
 import { SimpleOperationSuccessModalComponent } from 'src/shared/simple-operation-success-modal/simple-operation-success-modal.component';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-my-formule',
@@ -68,6 +71,7 @@ export class MyFormulePage implements OnInit {
   LOCAL_ZONE = LOCAL_ZONE;
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private formuleService: FormuleService,
     private authServ: AuthenticationService,
     private dashbdServ: DashboardService,
@@ -79,6 +83,32 @@ export class MyFormulePage implements OnInit {
   ngOnInit() {
     if (this.platform.is('ios')) {
       this.isIOS = true;
+    }
+  }
+
+  async checkChangeFormuleDeeplink() {
+    const changeFormule = this.route.snapshot.paramMap.get('codeFormule');
+    if (changeFormule === JAMONO_NEW_SCOOL_CODE) {
+      this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
+      this.authServ
+        .getSubscription(this.currentNumber)
+        .pipe(
+          tap((sub: SubscriptionUserModel) => {
+            if (sub.profil === PROFILE_TYPE_PREPAID) {
+              const formule = this.formulesArray.find(
+                (formule) => formule?.code === JAMONO_NEW_SCOOL_CODE_FORMULE
+              );
+              if (sub.code !== JAMONO_NEW_SCOOL_CODE_FORMULE) {
+                this.openChangeFormuleModal(formule);
+              }
+            } else {
+              this.router.navigate(['/']);
+            }
+          })
+        )
+        .subscribe();
+    } else {
+      this.router.navigate(['/']);
     }
   }
 
@@ -126,6 +156,7 @@ export class MyFormulePage implements OnInit {
               this.error = 'Problème de chargement';
             } else {
               this.getCurrentAndOthersFormules();
+              this.checkChangeFormuleDeeplink();
             }
           },
           (error: any) => {
@@ -207,6 +238,8 @@ export class MyFormulePage implements OnInit {
   }
 
   async openChangeFormuleModal(formule) {
+    console.log(formule);
+
     const banner = this.getBannerByFormule(formule);
     const modal = await this.modalController.create({
       component: ChangeOfferPopupComponent,
