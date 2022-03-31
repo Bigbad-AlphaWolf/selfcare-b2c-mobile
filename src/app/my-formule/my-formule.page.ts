@@ -5,6 +5,7 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import {
   CODE_KIRENE_Formule,
   FormuleMobileModel,
+  JAMONO_NEW_SCOOL_CODE,
   JAMONO_NEW_SCOOL_CODE_FORMULE,
   LOCAL_ZONE,
   SubscriptionUserModel,
@@ -87,7 +88,7 @@ export class MyFormulePage implements OnInit {
 
   async checkChangeFormuleDeeplink() {
     const changeFormule = this.route.snapshot.paramMap.get('codeFormule');
-    if (changeFormule) {
+    if (changeFormule === JAMONO_NEW_SCOOL_CODE) {
       this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
       this.authServ
         .getSubscription(this.currentNumber)
