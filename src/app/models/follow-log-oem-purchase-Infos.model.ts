@@ -4,4 +4,5 @@ export interface FollowOemlogPurchaseInfos {
 	montant?: any;
 	mod_paiement?: string;
 	ppi?: string;
+	withTouchID?: boolean
 }
