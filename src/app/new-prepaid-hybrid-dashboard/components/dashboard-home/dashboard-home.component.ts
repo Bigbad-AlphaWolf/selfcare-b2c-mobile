@@ -429,7 +429,7 @@ export class DashboardHomeComponent implements OnInit {
     }, (err) => {
       console.log("Dimelo Plugin err", err);
       
-    }, "DimeloCordovaPlugin", "testPlugin");
+    }, "DimeloCordovaPlugin", "openChat");
     return
     if (
       this.userSargalData &&

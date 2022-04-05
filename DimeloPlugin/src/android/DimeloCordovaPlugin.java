@@ -19,41 +19,42 @@ import org.json.JSONObject;
 
 public class DimeloCordovaPlugin extends CordovaPlugin {
 
+    Dimelo dimelo;
+
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-        System.out.println("hahahaha plugin initializeed");
         this.initDimelo();
     }
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if ("testPlugin".equals(action)) {
-            System.out.println("haha u can smile Papa");
+        if ("openChat".equals(action)) {
+            this.openChat(args);
             return true;
         }
         return false;
     }
 
     public void initDimelo() {
+        System.out.println("dimelo plugin initialized");
         Context context = this.cordova.getActivity().getApplicationContext();
-        Dimelo dimelo = Dimelo.setup(context);
-        dimelo.initWithApiSecret("bb1e6f640bebc7e05863ff1117d44bc0def05726c9d6a3d503dddfcd50cf16d1", "sonatel", null);
-        dimelo.setUserName("John Doe");
+        this.dimelo = Dimelo.setup(context);
+        this.dimelo.initWithApiSecret("bb1e6f640bebc7e05863ff1117d44bc0def05726c9d6a3d503dddfcd50cf16d1", "sonatel", null);
+    }
 
-
-
+    public void openChat(String[] args) {
+        System.out.println("dimelo chat opened");
+        String username = args[0];
+        String customerId = args[1];
+        this.dimelo.setUserName(username);
         JSONObject authInfo = new JSONObject();
         try {
-            authInfo.put("CustomerId", "0123456789");
-            authInfo.put("Dimelo", "Rocks!");
+            authInfo.put("CustomerId", customerId);
+            // authInfo.put("Dimelo", "Rocks!");
         } catch (JSONException e) {}
-
-        dimelo.setAuthenticationInfo(authInfo);
-
+        this.dimelo.setAuthenticationInfo(authInfo);
         Dimelo.getInstance().openRcActivity(this.cordova.getActivity());
-
-        System.out.println(dimelo);
     }
 
 }

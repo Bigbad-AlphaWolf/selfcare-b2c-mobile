@@ -25,4 +25,26 @@
         </config-file>
         <source-file src="src/android/DimeloCordovaPlugin.java" target-dir="src/cordova/plugin/dimelo/" />
     </platform>
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="DimeloCordovaPlugin">
+                <param name="ios-package" value="CDVWKDimelo" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <source-file src="src/ios/CDVWKDimelo.h" />
+        <source-file src="src/ios/CDVWKDimelo.m" />
+
+        <podspec>
+            <config>
+                <source url="https://github.com/dimelo/Dimelo-iOS"/>
+            </config>
+            <pods use-frameworks="true">
+                <pod name="Dimelo-iOS" git="https://github.com/dimelo/Dimelo-iOS"/>
+            </pods>
+        </podspec>
+    </platform>
+
 </plugin>
