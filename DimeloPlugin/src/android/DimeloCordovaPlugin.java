@@ -30,7 +30,9 @@ public class DimeloCordovaPlugin extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if ("openChat".equals(action)) {
-            this.openChat(args);
+            String username = args.getString(0);
+            String customerId = args.getString(1);
+            openChat(username, customerId);
             return true;
         }
         return false;
@@ -43,10 +45,10 @@ public class DimeloCordovaPlugin extends CordovaPlugin {
         this.dimelo.initWithApiSecret("bb1e6f640bebc7e05863ff1117d44bc0def05726c9d6a3d503dddfcd50cf16d1", "sonatel", null);
     }
 
-    public void openChat(String[] args) {
+    public void openChat(String username, String customerId) {
         System.out.println("dimelo chat opened");
-        String username = args[0];
-        String customerId = args[1];
+        // final String username = params.getString(0);
+        // final String customerId = params.getString(1);
         this.dimelo.setUserName(username);
         JSONObject authInfo = new JSONObject();
         try {
