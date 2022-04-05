@@ -19,7 +19,9 @@ Dimelo* dimelo;
 {
     NSString *username = [command.arguments objectAtIndex:0];
     NSString *customerId = [command.arguments objectAtIndex:1];
+    NSDictionary *authInfo = @{ @"CustomerId" : customerId};
     NSLog(@"Hello, plugin initialized!");
+    dimelo.authenticationInfo = authInfo;
     dimelo.userName = username;
     dimelo.userIdentifier = customerId;
     dimelo.developmentAPNS = NO;
