@@ -11,6 +11,7 @@ import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { OPERATION_PAY_ORANGE_BILLS } from 'src/shared';
 import { MONTHS } from 'src/app/utils/constants';
 import { UnpaidBillModalComponent } from '../unpaid-bill-modal/unpaid-bill-modal.component';
+import { OPERATION_TYPE_SENEAU_BILLS, OPERATION_TYPE_SENELEC_BILLS } from 'src/app/utils/operations.constants';
 
 @Component({
   selector: 'invoice-card',
@@ -26,8 +27,12 @@ export class InvoiceCardComponent implements OnInit {
   @Input() hideDownloadBlock: boolean;
   @Input() withBorder: boolean;
   @Input() numberToRegister: string;
+  @Input() operation: string;
+  @Input() counterToFav: boolean;
   billStatus = BILL_STATUS;
   MONTHS = MONTHS;
+  OPERATION_TYPE_SENELEC_BILLS = OPERATION_TYPE_SENELEC_BILLS;
+  OPERATION_TYPE_SENEAU_BILLS = OPERATION_TYPE_SENEAU_BILLS;
   constructor(
     private billsService: BillsService,
     private followAnalyticsService: FollowAnalyticsService,
@@ -55,9 +60,10 @@ export class InvoiceCardComponent implements OnInit {
         return;
       }
       const opXtras: OperationExtras = {
-        purchaseType: OPERATION_PAY_ORANGE_BILLS,
+        purchaseType: this.operation,
         invoice,
         numberToRegister: this.numberToRegister,
+        counterToFav: this.counterToFav
       };
       const navExtras: NavigationExtras = { state: opXtras };
       this.navController.navigateForward(['/operation-recap'], navExtras);
@@ -87,7 +93,7 @@ export class InvoiceCardComponent implements OnInit {
     modal.onDidDismiss().then((response) => {
       if (response?.data) {
         const opXtras: OperationExtras = {
-          purchaseType: OPERATION_PAY_ORANGE_BILLS,
+          purchaseType: this.operation,
           invoice: unpaidBills[0],
         };
         const navExtras: NavigationExtras = { state: opXtras };

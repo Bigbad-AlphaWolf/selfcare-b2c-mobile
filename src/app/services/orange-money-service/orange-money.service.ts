@@ -65,6 +65,11 @@ import { FollowOemlogPurchaseInfos } from 'src/app/models/follow-log-oem-purchas
 import {
   OPERATION_RAPIDO,
   OPERATION_TYPE_INTERNATIONAL_TRANSFER,
+  OPERATION_TYPE_PAY_BILL,
+  OPERATION_TYPE_SENEAU_BILLS,
+  OPERATION_TYPE_SENELEC_BILLS,
+  OPERATION_TYPE_TERANGA_BILL,
+	OPERATION_XEWEUL,
 } from 'src/app/utils/operations.constants';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
 import { IlliflexService } from '../illiflex-service/illiflex.service';
@@ -73,8 +78,8 @@ import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-e
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { CreatePinOM } from 'src/app/models/create-pin-om.model';
 import { ValidateChallengeOMOEM } from 'src/app/models/challenge-answers-om-oem.model';
-import { Platform } from '@ionic/angular';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
+import { PAYMENT_BILLS_CATEGORY } from 'src/app/models/bill-payment.model';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
@@ -122,7 +127,6 @@ let isIOS = false;
   providedIn: "root",
 })
 export class OrangeMoneyService {
-
   biometricStatusSubject: Subject<any> = new Subject<any>();
 
   constructor(
@@ -130,7 +134,6 @@ export class OrangeMoneyService {
     private followAnalyticsService: FollowAnalyticsService,
     private dashboardService: DashboardService,
     private illiflexService: IlliflexService,
-    private platform: Platform,
     private faio: FingerprintAIO
   ) {}
   pinPadDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b"];
@@ -310,20 +313,6 @@ export class OrangeMoneyService {
   }
 
   transferIRT(transferOMData: TransferIRTModel, confirmPayload?) {
-    console.log("payload", transferOMData);
-    // const mock = {
-    //   content: {
-    //     data: {
-    //       mapping_code: '200',
-    //       txn_id: 'PP220211.0805.B15687',
-    //       status_code: '200',
-    //       status_wording: 'Success',
-    //     },
-    //   },
-    //   status_code: 'Success-001',
-    //   status_wording: 'Transaction successfull',
-    // };
-    // return of(mock).pipe(delay(1000));
     isIOS = REGEX_IOS_SYSTEM.test(navigator.userAgent);
     const uuid = ls.get("X-UUID");
     const os = isIOS ? "iOS" : "Android";
@@ -476,8 +465,12 @@ export class OrangeMoneyService {
         eventKey = "OM_Paiement_Marchand_Success";
         value = dataToLog;
       case OPERATION_RAPIDO:
-        errorKey = "Recharge_Rapido_Error";
+        errorKey = "Recharge_Xeweul_Error";
         eventKey = "Recharge_Rapido_Success";
+        value = dataToLog;
+      case OPERATION_XEWEUL:
+        errorKey = "Recharge_Xeweul_Error";
+        eventKey = "Recharge_Xeweul_Success";
         value = dataToLog;
         break;
       case OPERATION_PAY_ORANGE_BILLS:
@@ -613,6 +606,19 @@ export class OrangeMoneyService {
 
   checkMerchantCode(code: number) {
     return this.http.get(`/${code}`);
+  }
+
+  getPaymentCategoryByPurchaseType(purchase: string) {
+    switch (purchase) {
+      case OPERATION_TYPE_PAY_BILL:
+        return PAYMENT_BILLS_CATEGORY.FIXE;
+      case OPERATION_TYPE_TERANGA_BILL:
+        return PAYMENT_BILLS_CATEGORY.MOBILE;
+      case OPERATION_TYPE_SENELEC_BILLS:
+        return PAYMENT_BILLS_CATEGORY.SENELEC;
+      case OPERATION_TYPE_SENEAU_BILLS:
+        return PAYMENT_BILLS_CATEGORY.SENEAU;
+    }
   }
 
   omAccountSession() {
@@ -851,12 +857,12 @@ export class OrangeMoneyService {
 
   askFaceIdLater() {
     ls.set(FACE_ID_STORAGE_KEY, FACE_ID_PERMISSIONS.LATER);
-    this.biometricStatusSubject.next(FACE_ID_PERMISSIONS.LATER)
+    this.biometricStatusSubject.next(FACE_ID_PERMISSIONS.LATER);
   }
 
   denyFaceId() {
     ls.set(FACE_ID_STORAGE_KEY, FACE_ID_PERMISSIONS.NEVER);
-    this.biometricStatusSubject.next(FACE_ID_PERMISSIONS.NEVER)
+    this.biometricStatusSubject.next(FACE_ID_PERMISSIONS.NEVER);
   }
 
   getFaceIdState() {
@@ -864,10 +870,10 @@ export class OrangeMoneyService {
   }
 
   async checkFaceIdStatus() {
-    const biometricAvailability = await this.faio.isAvailable().catch(err => {
-      return of(null).toPromise()
+    const biometricAvailability = await this.faio.isAvailable().catch((err) => {
+      return of(null).toPromise();
     });
-    console.log('check biometric availability', biometricAvailability);
+    console.log("check biometric availability", biometricAvailability);
     const status = this.getFaceIdState();
     return biometricAvailability
       ? of(status).toPromise()

@@ -1,0 +1,34 @@
+<div class="favorite-page oem-bottomsheet-container">
+  <div  class="arrow-left" (click)="navigateBack()">
+    <img alt="" src="/assets/images/arrow-left.png" />
+  </div>
+  <div class="title">
+    Sélectionner une carte
+  </div>
+  <div class="description">
+    Choisissez sur la liste
+  </div>
+
+    <div class="recents content" *ngIf="(xeweulsFavorites$ | async) as xeweuls else spinnerBlock">
+      <div
+        matRipple
+        class="oem-item"
+        (click)="onFavoriteXeweulSlected(xeweul)"
+        *ngFor="let xeweul of xeweuls; index as i; count as size"
+      >
+        <div class="logo">
+          <img src="assets/images/rapido@3x.png" />
+        </div>
+        <div class="labels" [ngClass]="i + 1 == size ? 'last-label' : ''">
+          <span class="name"> {{ xeweul.label }}</span>
+          <span class="number">{{ xeweul.id |codeFormat:2}}</span>
+        </div>
+      </div>
+      <div *ngIf="xeweuls.length==0" >Aucune carte xeweul enregistrée</div>
+    </div>
+    <ng-template #spinnerBlock>
+      <div style="width: 100%; display: flex; justify-content: center;">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+    </ng-template>
+</div>

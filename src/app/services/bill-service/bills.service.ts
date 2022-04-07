@@ -5,7 +5,12 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject, of, Observable } from 'rxjs';
 import { DashboardService } from '../dashboard-service/dashboard.service';
-import { isDelayedBill, MAIL_URL, UNKNOWN_ECHEANCE } from 'src/shared';
+import {
+  isDelayedBill,
+  MAIL_URL,
+  MAXIMUM_PAYABLE_BILL_AMOUNT,
+  UNKNOWN_ECHEANCE,
+} from 'src/shared';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import * as SecureLS from 'secure-ls';
 import { Platform } from '@ionic/angular';
@@ -14,7 +19,10 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { tap, map, catchError } from 'rxjs/operators';
 import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
 import { MonthOem } from 'src/app/models/month.model';
-import { BillPaymentModel } from 'src/app/models/bill-payment.model';
+import {
+  BillPaymentModel,
+} from 'src/app/models/bill-payment.model';
+import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-event-type.enum';
 const ls = new SecureLS({ encodingType: 'aes' });
 const { BILL_SERVICE, SERVER_API_URL } = environment;
 const lastSlipEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/last-bordereau`;
@@ -25,6 +33,7 @@ const billsEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bordereau`;
 const billsDetailEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
 const paybillsEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bill-payment`;
 const unpaidBillEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/unpaid-bill`;
+const billAmountLimitEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/bill-amount-limit`;
 @Injectable({
   providedIn: 'root',
 })
@@ -271,6 +280,14 @@ export class BillsService {
     }
   }
 
+  getBillAmountLimit() {
+    return this.http.get<number>(`${billAmountLimitEndpoint}`).pipe(
+      catchError((_) => {
+        return of(MAXIMUM_PAYABLE_BILL_AMOUNT);
+      })
+    );
+  }
+
   getUserBillsDetail(payload: {
     numClient: string;
     groupage: string;
@@ -432,7 +449,28 @@ export class BillsService {
   }
 
   payBill(data: BillPaymentModel) {
-    return this.http.post(`${paybillsEndpoint}`, data);
+    return this.http.post(`${paybillsEndpoint}`, data).pipe(
+      tap((success) => {
+        const eventName = `PAIEMENT_FACTURES_${data.paymentCategory}_SUCCESS`;
+        const { payerEncodedPin, payerEm, ...followParams } = data;
+        this.followServ.registerEventFollow(
+          eventName,
+          FollowAnalyticsEventType.EVENT,
+          followParams
+        );
+      }),
+      catchError((err) => {
+        const errorName = `PAIEMENT_FACTURES_${data.paymentCategory}_FAILED`;
+        const { payerEncodedPin, payerEm, ...followParams } = data;
+        followParams['error'] = err;
+        this.followServ.registerEventFollow(
+          errorName,
+          FollowAnalyticsEventType.ERROR,
+          followParams
+        );
+        throw new Error(err);
+      })
+    );
   }
 
   getNumberUnpaidBills(payload: { ligne: string; type: string }) {

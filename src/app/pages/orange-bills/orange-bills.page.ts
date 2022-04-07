@@ -13,11 +13,12 @@ import { LinesComponent } from 'src/app/components/lines/lines.component';
 import { NavController, ModalController } from '@ionic/angular';
 import { map, tap } from 'rxjs/operators';
 import { isFixPostpaid, POSTPAID_TERANGA_OFFERS_ID } from 'src/app/dashboard';
+import { OPERATION_TYPE_SENEAU_BILLS, OPERATION_TYPE_SENELEC_BILLS } from 'src/app/utils/operations.constants';
 
 @Component({
-  selector: 'app-orange-bills',
-  templateUrl: './orange-bills.page.html',
-  styleUrls: ['./orange-bills.page.scss'],
+  selector: "app-orange-bills",
+  templateUrl: "./orange-bills.page.html",
+  styleUrls: ["./orange-bills.page.scss"],
 })
 export class OrangeBillsPage implements OnInit {
   months: MonthOem[] = [];
@@ -33,9 +34,9 @@ export class OrangeBillsPage implements OnInit {
   moisDispo: number;
   canPayBills: boolean;
   filters = [
-    { label: 'Impayée', value: BILL_STATUS?.UNPAID },
-    { label: 'Payée', value: BILL_STATUS?.PAID },
-    { label: 'En traitement', value: BILL_STATUS?.INITIALIZED },
+    { label: "Impayée", value: BILL_STATUS?.UNPAID },
+    { label: "Payée", value: BILL_STATUS?.PAID },
+    { label: "En traitement", value: BILL_STATUS?.INITIALIZED },
   ];
   selectedFilter;
   factures: InvoiceOrange[];
@@ -45,7 +46,10 @@ export class OrangeBillsPage implements OnInit {
     type: string;
     clientCode: string;
     inputPhone: string;
+    operationType: string;
+    counterToRattach: boolean
   };
+  operationType: string;
   constructor(
     private billsService: BillsService,
     private navCtl: NavController,
@@ -70,9 +74,14 @@ export class OrangeBillsPage implements OnInit {
 
   ngOnInit() {
     this.payForOtherInput = history.state;
-    if (
-      this.payForOtherInput?.ligne &&
-      this.payForOtherInput?.type === 'FIXE'
+    this.operationType = this.payForOtherInput?.operationType;
+    console.log(this.payForOtherInput);
+    
+      if (
+      (this.payForOtherInput?.ligne &&
+        this.payForOtherInput?.type === "FIXE") ||
+        this.operationType === OPERATION_TYPE_SENELEC_BILLS ||
+        this.operationType === OPERATION_TYPE_SENEAU_BILLS
     ) {
       this.canPayBills = true;
       this.isFactureLoading = true;
@@ -110,8 +119,8 @@ export class OrangeBillsPage implements OnInit {
 
   updatePhoneType() {
     REGEX_FIX_NUMBER.test(this.phone)
-      ? (this.invoiceType = 'LANDLINE')
-      : (this.invoiceType = 'MOBILE');
+      ? (this.invoiceType = "LANDLINE")
+      : (this.invoiceType = "MOBILE");
   }
 
   async initData() {
@@ -163,7 +172,7 @@ export class OrangeBillsPage implements OnInit {
   async openLinesModal() {
     const modal = await this.modalController.create({
       component: LinesComponent,
-      cssClass: 'select-recipient-modal',
+      cssClass: "select-recipient-modal",
       componentProps: {
         phone: this.phone,
       },

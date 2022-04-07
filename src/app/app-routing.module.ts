@@ -87,6 +87,16 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'changement-formule',
+    loadChildren: () => import('./my-formule/my-formule.module').then(m => m.MyFormulePageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'changement-formule/:codeFormule',
+    loadChildren: () => import('./my-formule/my-formule.module').then(m => m.MyFormulePageModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'sargal-dashboard',
     loadChildren: () => import('./sargal/sargal.module').then(m => m.SargalPageModule),
     canActivate: [AuthGuard]
@@ -282,6 +292,11 @@ const routes: Routes = [
   {
     path: 'rapido-operation',
     loadChildren: () => import('./pages/rapido-operation/rapido-operation.module').then(m => m.RapidoOperationPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'xeweul-operation',
+    loadChildren: () => import('./pages/xeweul-operation/xeweul-operation.module').then(m => m.XeweulOperationPageModule),
     canActivate: [AuthGuard]
   },
   {
