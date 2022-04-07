@@ -1,5 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ToastController } from "@ionic/angular";
+import { DashboardService } from "src/app/services/dashboard-service/dashboard.service";
+import { FollowAnalyticsEventType } from "src/app/services/follow-analytics/follow-analytics-event-type.enum";
+import { FollowAnalyticsService } from "src/app/services/follow-analytics/follow-analytics.service";
 import { OrangeMoneyService } from "src/app/services/orange-money-service/orange-money.service";
 
 @Component({
@@ -10,7 +13,9 @@ import { OrangeMoneyService } from "src/app/services/orange-money-service/orange
 export class FaceIdAlertPopupComponent implements OnInit {
   constructor(
     private omService: OrangeMoneyService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private followAnalyticsService: FollowAnalyticsService,
+    private dashboardService: DashboardService,
   ) {}
 
   ngOnInit() {}
@@ -20,6 +25,8 @@ export class FaceIdAlertPopupComponent implements OnInit {
   }
 
   async activate() {
+    const msisdn = this.dashboardService.getCurrentPhoneNumber();
+    this.followAnalyticsService.registerEventFollow('Activate_Face_Id_From_Menu_Alert', FollowAnalyticsEventType.EVENT, {msisdn})
     this.omService.allowFaceId();
     const toast = await this.toastController.create({
       header: "Activation FaceID/TouchID",

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { switchMap } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { FavorisService } from 'src/app/services/favoris/favoris.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 
@@ -15,6 +16,7 @@ export class FavoriteCounterNameModalComponent implements OnInit {
   saveSuccess: boolean;
   @Input() counter;
   @Input() purchaseType;
+  error: boolean;
 
   constructor(
     private modal: ModalController,
@@ -25,16 +27,31 @@ export class FavoriteCounterNameModalComponent implements OnInit {
   ngOnInit() {}
 
   save() {
-    // this.saving = true;
-    // this.omService.getOmMsisdn().pipe(
-    //   switchMap(msisdn => {
-    //     const payload = {
-    //       msisdn,
-    //       card_num: this.counter,
-
-    //     }
-    //     return this.favorisService.saveRapidoFavorite()
-    //   })
-    // )
+    this.saving = true;
+    this.error = false;
+    this.omService.getOmMsisdn().pipe(
+      switchMap(msisdn => {
+        const payload = {
+          msisdn,
+          ref_num: this.counter,
+          ref_label: this.name,
+          service_code: this.favorisService.getFavoriteCode(this.purchaseType)
+        }
+        return this.favorisService.saveFavorite(payload);
+      })
+    ).pipe(
+      tap(res => {
+        this.saveSuccess = true;
+        this.saving = false;
+        setTimeout(() => {
+          this.modal.dismiss();
+        }, 3000)
+      }),
+      catchError(err => {
+        this.saving = false;
+        this.error = true;
+        return throwError(err)
+      })
+    ).subscribe()
   }
 }

@@ -391,12 +391,13 @@ export class OperationSuccessFailModalPage implements OnInit {
   async openAddCounterToFavoriteModal() {
     this.router.navigate(["/"]);
     await this.modalController.dismiss();
-    return;
+    // return;
     const modal = await this.modalController.create({
       component: FavoriteCounterNameModalComponent,
       cssClass: "success-or-fail-modal",
       componentProps: {
         counter: this.opXtras?.numberToRegister,
+        purchaseType: this.purchaseType
       },
     });
     modal.onDidDismiss().then((response) => {});
