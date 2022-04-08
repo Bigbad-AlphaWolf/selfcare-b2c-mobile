@@ -149,7 +149,9 @@ export class AppComponent {
         '/illiflex': TransfertHubServicesPage,
         '/parrainage': ParrainagePage,
         '/bonplan': MyOfferPlansPage,
-        '/access/:hmac': NewRegistrationPage
+        '/access/:hmac': NewRegistrationPage,
+        '/changement-formule/:codeFormule': TransfertHubServicesPage,
+        '/changement-formule': TransfertHubServicesPage
       })
       .subscribe(
         matched => {
