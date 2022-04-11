@@ -1,0 +1,31 @@
+{
+    "name": "cordova.plugin.dimelo",
+    "version": "1.0.0",
+    "description": "Dimelo Cordova SDK",
+    "author": "KEBE Tm",
+    "license": "ISC",
+    "homepage": "http://dev.followanalytics.com/sdks/phonegap/documentation/",
+    "cordova": {
+      "id": "cordova.plugin.dimelo",
+      "platforms": [
+        "android",
+        "ios"
+      ]
+    },
+    "keywords": [
+      "dimelo",
+      "ecosystem:cordova",
+      "cordova-android",
+      "cordova-ios"
+    ],
+    "cordovaDependencies": {
+      "7.2.0": {
+        "cordova": ">=7.0.1",
+        "cordova-android": ">=7.0.0",
+        "cordova-ios": ">=4.5.0",
+        "xcode": "1.1.0",
+        "q": "1.5.1"
+      }
+    }
+  }
+  

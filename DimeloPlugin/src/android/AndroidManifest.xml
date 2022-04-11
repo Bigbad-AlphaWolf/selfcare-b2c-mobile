@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cordova.plugin.dimelo"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- <activity android:name="com.dimelo.dimelosdk.main.ChatActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
+    <activity android:name="com.dimelo.dimelosdk.main.ThreadsListActivity" android:theme="@style/DimeloTheme">
+        <meta-data  android:name="android.support.PARENT_ACTIVITY" />
+    </activity> -->
+</manifest>

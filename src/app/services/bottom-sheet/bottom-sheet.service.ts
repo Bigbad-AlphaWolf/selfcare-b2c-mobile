@@ -19,6 +19,7 @@ import {
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_VOYAGE,
   OPERATION_TYPE_RECHARGE_CREDIT,
+	STEPS_ACCESS_BY_OTP,
 } from 'src/shared';
 import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
 import { RattachNumberModalComponent } from 'src/app/pages/rattached-phones-number/components/rattach-number-modal/rattach-number-modal.component';
@@ -40,6 +41,8 @@ import {
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { TRANSFER_OM_INTERNATIONAL_COUNTRIES } from 'src/app/utils/constants';
 import {XeweulSoldeComponent} from '../../components/counter/xeweul-solde/xeweul-solde.component';
+import { TypePhoneNumberManuallyComponent } from 'src/app/new-registration/components/type-phone-number-manually/type-phone-number-manually.component';
+import { NavigationExtras, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -66,7 +69,7 @@ export class BottomSheetService {
       map((el) => {
         el.onDidDismiss().then((result: any) => {
           console.log(result);
-          
+
           result = result.data;
           let fromFavorites =
             result && result.TYPE_BS === 'FAVORIES' && result.ACTION === 'BACK';
@@ -93,7 +96,6 @@ export class BottomSheetService {
             this.opXtras["type"] = result?.type;
             console.log(this.opXtras);
             // END
-            
             this.navCtl.navigateForward([routePath], {
               state: this.opXtras,
             });
@@ -502,4 +504,31 @@ export class BottomSheetService {
         console.log('Cannot open default sharing sheet' + err);
       });
   }
+
+	async enterUserPhoneNumber(phone?: string, step?: STEPS_ACCESS_BY_OTP, hmacExpired?: boolean) {
+		const isModalOpened = this.modalCtrl.getTop();
+    if (isModalOpened) this.modalCtrl.dismiss();
+		const modal = await this.modalCtrl.create({
+      component: TypePhoneNumberManuallyComponent,
+      cssClass: 'select-recipient-modal',
+			componentProps: {
+				phoneNumber: phone,
+				step,
+				hmacExpired
+			},
+			presentingElement: await this.modalCtrl.getTop(),
+      backdropDismiss: true,
+    });
+    modal.onDidDismiss().then((response) => {
+			if(response.data?.success) {
+				const navExtras: NavigationExtras = {
+					state: {
+						fromOTPSMS: true
+					}
+				};
+				this.navCtl.navigateRoot(['/new-registration'], navExtras);
+			}
+    });
+    return await modal.present();
+	}
 }
