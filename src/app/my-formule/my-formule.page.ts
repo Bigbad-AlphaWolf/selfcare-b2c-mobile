@@ -107,8 +107,6 @@ export class MyFormulePage implements OnInit {
           })
         )
         .subscribe();
-    } else {
-      this.router.navigate(['/']);
     }
   }
 
