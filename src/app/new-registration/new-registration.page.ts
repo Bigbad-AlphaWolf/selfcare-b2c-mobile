@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { Subscription, timer, Subject, of, throwError } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   AccountStatus,
   AuthenticationService,
@@ -30,20 +30,23 @@ import {
 } from 'rxjs/operators';
 import {
   HelpModalDefaultContent,
-  HelpModalAuthErrorContent,
   PRO_MOBILE_ERROR_CODE,
-  LIGHT_DASHBOARD_EVENT,
   REGISTRATION_PASSWORD_STEP,
   FORGOT_PWD_PAGE_URL,
+	LOCAL_STORAGE_KEYS,
 } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
-import { ModalController, NavController } from '@ionic/angular';
+import { ModalController, NavController, Platform } from '@ionic/angular';
 import { RegistrationSuccessModalPage } from '../registration-success-modal/registration-success-modal.page';
 import { hash53 } from '../dashboard';
 import { Uid } from '@ionic-native/uid/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { MSISDN_RECUPERATION_TIMEOUT } from '../register';
 import { MsisdnAssistanceModalComponent } from './components/msisdn-assistance-modal/msisdn-assistance-modal.component';
+import { TypePhoneNumberManuallyComponent } from './components/type-phone-number-manually/type-phone-number-manually.component';
+import { LocalStorageService } from '../services/localStorage-service/local-storage.service';
+import { OtpService } from '../services/otp-service/otp.service';
+import { CheckOtpOem } from '../models/check-otp-oem.model';
 
 @Component({
   selector: 'app-new-registration',
@@ -75,23 +78,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
     title: string;
     subTitle: string;
     action: 'help' | 'login' | 'password' | 'register';
-  }[] = [
-    {
-      title: "J'ai déja un compte",
-      subTitle: 'Je me connecte',
-      action: 'login',
-    },
-    // {
-    //   title: 'J’ai oublié mon mot de passe',
-    //   subTitle: 'Je le réinitialise',
-    //   action: 'password',
-    // },
-    // {
-    //   title: 'J’ai besoin d’aide',
-    //   subTitle: "J'ai des difficultés pour me connecter",
-    //   action: 'help',
-    // },
-  ];
+  }[] = [];
   //Temps d'attente pour la recuperation automatique du numero -> 10 secondes
   MSISDN_RECUPERATION_TIMEOUT = MSISDN_RECUPERATION_TIMEOUT;
   authErrorDetected = new Subject<any>();
@@ -100,6 +87,8 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
   isNumberAttachedError: boolean;
   newtworkSubscription: Subscription;
   isResetPasswordAction: boolean;
+	hideRefresh: boolean;
+	isHmacValid: boolean;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -111,7 +100,11 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
     private navController: NavController,
     private ngZone: NgZone,
     private uid: Uid,
-    private network: Network
+    private network: Network,
+		private route: ActivatedRoute,
+		private localServ: LocalStorageService,
+		private otpService: OtpService,
+		public platform: Platform
   ) {
     this.authErrorDetected.subscribe({
       next: () => {
@@ -133,15 +126,51 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
     }
   }
 
-  async ionViewWillEnter() {
-    console.log(this.router.url.match(FORGOT_PWD_PAGE_URL));
-    if (this.router.url.match(FORGOT_PWD_PAGE_URL)) {
-      this.isResetPasswordAction = true;
-    }
-    const step = history.state.step;
-    if (step === REGISTRATION_PASSWORD_STEP) {
-      this.step = 'PASSWORD';
-    }
+  ionViewWillEnter() {
+		if (this.router.url.match(FORGOT_PWD_PAGE_URL)) {
+			this.isResetPasswordAction = true;
+		}
+		const step = history.state.step;
+		if (step === REGISTRATION_PASSWORD_STEP) {
+			this.step = 'PASSWORD';
+		}
+		const fromOTPMsg = history.state.fromOTPSMS;
+
+		if(fromOTPMsg) {
+			OtpService.isChecking.asObservable().subscribe(
+				(res: boolean) => {
+					this.hmac = this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.HMAC_FROM_OTP);
+					this.phoneNumber = this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION);
+					this.hideRefresh = true;
+					this.showErrMessage = false;
+					this.numberGot = true;
+				}
+			)
+		}
+		this.platform.resume.subscribe(
+			(res) => {
+				OtpService.isChecking.asObservable().subscribe((isChecking: boolean) => {
+
+					if(!isChecking) {
+						if(this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION) && this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.IS_HMAC_FROM_OTP_VALID) && !this.numberGot) {
+								this.hmac = this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.HMAC_FROM_OTP);
+								this.phoneNumber =  '221'+this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION);
+								this.hideRefresh = true;
+								this.showErrMessage = false;
+								this.numberGot = true;
+
+						} else if(this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION) && !this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.IS_HMAC_FROM_OTP_VALID) && !this.numberGot) {
+								console.log('isCheking', isChecking);
+								this.errorMsg = 'Désolé, le lien a expiré. Veuillez renvoyer un autre SMS';
+								this.phoneNumber = null;
+								this.showErrMessage = true;
+								this.numberGot = false;
+						}
+
+					}
+				})
+			}
+		)
   }
 
   goIntro() {
@@ -159,7 +188,11 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
       password: ['', [Validators.required]],
       confirmPassword: ['', [Validators.required]],
     });
-    this.getNumber();
+		const accessFromOTP = history.state.fromOTPSMS;
+		if(!accessFromOTP){
+			this.getNumber();
+			this.hideRefresh = false;
+		};
   }
 
   getNumber() {
@@ -177,7 +210,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
         finalize(() => {
           // this.displayMsisdnError();
           if (!this.firstCallMsisdn && !this.showErrMessage) {
-            this.handleGetMsisdnError();
+            //this.handleGetMsisdnError();
             this.displayMsisdnError();
             // this.authErrorDetected.next(HelpModalAuthErrorContent);
             // console.log('http call is not successful');
@@ -218,7 +251,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
           );
         }),
         catchError(() => {
-          this.handleGetMsisdnError();
+          //this.handleGetMsisdnError();
           this.displayMsisdnError();
           return of();
         })
@@ -226,17 +259,17 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  async handleGetMsisdnError() {
-    const modal = await this.modalController.create({
-      component: MsisdnAssistanceModalComponent,
-      cssClass: 'select-recipient-modal',
-      backdropDismiss: false,
-    });
-    modal.onDidDismiss().then((response) => {
-      this.getNumber();
-    });
-    return await modal.present();
-  }
+  //async handleGetMsisdnError() {
+  //  const modal = await this.modalController.create({
+  //    component: MsisdnAssistanceModalComponent,
+  //    cssClass: 'select-recipient-modal',
+  //    backdropDismiss: false,
+  //  });
+  //  modal.onDidDismiss().then((response) => {
+  //    this.getNumber();
+  //  });
+  //  return await modal.present();
+  //}
 
   checkNumber() {
     this.checkingNumber = true;
@@ -561,6 +594,44 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
   }
 
   goBack() {
-    this.navController.navigateBack(['/home']);
+    this.navController.navigateRoot(['/home']);
   }
+
+	async enterUserPhoneNumber(phone?: string) {
+		const modal = await this.modalController.create({
+      component: TypePhoneNumberManuallyComponent,
+      cssClass: 'select-recipient-modal',
+			componentProps: {
+				phoneNumber: phone
+			},
+      backdropDismiss: true,
+    });
+    modal.onDidDismiss().then((response) => {
+
+    });
+    return await modal.present();
+	}
+
+	checkIfAccessByOTP() {
+		const accessHmac = this.route.snapshot.paramMap.get('hmac');
+		const optAccessUserNumber = this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION);
+		console.log('accessHmac', accessHmac);
+
+		if(optAccessUserNumber === '' || !optAccessUserNumber) {
+			this.enterUserPhoneNumber();
+			return
+		}
+		if(accessHmac) {
+			this.showErrMessage = false;
+			this.gettingNumber = true;
+			const data: CheckOtpOem = {
+				hmac:accessHmac
+			}
+			this.otpService.checkOTPSMS(data).subscribe(
+				(res) => {
+
+				}
+			)
+		}
+	}
 }

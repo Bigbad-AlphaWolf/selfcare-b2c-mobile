@@ -4,11 +4,10 @@
 
 export const environment = {
   production: false,
-  SERVER_API_URL: 'https://orangeetmoi.orange.sn',
-  // SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
-  // SERVER_API_URL:
-  //   'http://selfcareb2c-client-http-dsidacdifdsorangeetmoi-rec.apps.malaaw-rec.orange-sonatel.com',
-  //SERVER_API_URL: 'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
+  //SERVER_API_URL: 'https://orangeetmoi.orange.sn',
+  //SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
+  SERVER_API_URL: 'http://selfcareb2c-client-http-dsidacdifdsorangeetmoi-rec.apps.malaaw-rec.orange-sonatel.com',
+  // SERVER_API_URL: 'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
   // SERVER_API_URL: 'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
   // SERVER_API_URL: 'https://selfcare-client-dsiselfcarebcorangeetmoi-prod.apps.paas.orange-sonatel.com',
   OM_URL: 'https://appom.orange-sonatel.com',
@@ -22,26 +21,23 @@ export const environment = {
   B2B_BILL_SERVICE: 'selfcare-facture',
   FACTURE_SERVICE: 'selfcare-b2c-facture',
   GATEWAY_SERVICE: 'selfcare-gateway',
-  CODE_OTP_SERVICE: 'selfcare-otp',
+  OTP_SERVICE: 'selfcare-otp',
   UAA_SERVICE: 'selfcare-b2c-uaa',
   OM_SERVICE: 'selfcare-b2c-om',
   PURCHASES_SERVICE: 'selfcare-b2c-purchases',
   COMMUNITY_MANAGEMENT_SERVICE: 'selfcare-b2c-community-management',
   BOOSTER_SERVICE: 'selfcare-b2c-booster-management',
   SARGAL_SERVICE: 'selfcare-b2c-sargal',
-  AUTH_IMPLICIT_MSISDN: '221786393906',
+  AUTH_IMPLICIT_MSISDN: '221775303013',
   GA_CONFIG: {
     trackingId: 'UA-92621294-1',
-    trackPageviews: true,
+    trackPageviews: true
   },
-  // GET_MSISDN_BY_NETWORK_URL:
-  //   'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
-  // CONFIRM_MSISDN_BY_NETWORK_URL:
-  //   'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
+  //GET_MSISDN_BY_NETWORK_URL: 'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
+  //CONFIRM_MSISDN_BY_NETWORK_URL: 'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
   GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
-  CONFIRM_MSISDN_BY_NETWORK_URL:
-    'http://10.100.99.116:1494/api/v1/confirm-msisdn',
-  DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_95fb0f8745090d63e5acebaa',
+  CONFIRM_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/confirm-msisdn',
+  DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_95fb0f8745090d63e5acebaa'
 };
 
 /*

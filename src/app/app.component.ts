@@ -1,12 +1,11 @@
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {Component} from '@angular/core';
-import {NavController, Platform} from '@ionic/angular';
+import {LoadingController, ModalController, NavController, Platform} from '@ionic/angular';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {Deeplinks} from '@ionic-native/deeplinks/ngx';
 import {Router} from '@angular/router';
 import * as SecureLS from 'secure-ls';
 import {DetailsConsoPage} from './details-conso/details-conso.page';
-import {AppMinimize} from '@ionic-native/app-minimize/ngx';
 import {v4 as uuidv4} from 'uuid';
 import {TransfertHubServicesPage} from './transfert-hub-services/transfert-hub-services.page';
 import {ApplicationRoutingService} from './services/application-routing/application-routing.service';
@@ -23,6 +22,14 @@ import {MyOfferPlansPage} from './pages/my-offer-plans/my-offer-plans.page';
 import {Diagnostic} from '@ionic-native/diagnostic/ngx';
 import {ContactsService} from './services/contacts-service/contacts.service';
 import {OrangeMoneyService} from './services/orange-money-service/orange-money.service';
+import {catchError, tap} from 'rxjs/operators';
+import {AuthenticationService} from './services/authentication-service/authentication.service';
+import {OtpService} from './services/otp-service/otp.service';
+import {throwError} from 'rxjs';
+import {NewRegistrationPage} from './new-registration/new-registration.page';
+import {LocalStorageService} from './services/localStorage-service/local-storage.service';
+import {LOCAL_STORAGE_KEYS, PATH_ACCESS_BY_OTP, STEPS_ACCESS_BY_OTP} from 'src/shared';
+import {BottomSheetService} from './services/bottom-sheet/bottom-sheet.service';
 
 const ls = new SecureLS({encodingType: 'aes'});
 
@@ -52,7 +59,12 @@ export class AppComponent {
     private appVersion: AppVersion,
     private navContr: NavController,
     private diagnostic: Diagnostic,
-    private contactService: ContactsService
+    private contactService: ContactsService,
+    private authServ: AuthenticationService,
+    private loadingController: LoadingController,
+    private otpService: OtpService,
+    private localStorage: LocalStorageService,
+    private bottomSheetServ: BottomSheetService
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -60,14 +72,6 @@ export class AppComponent {
     this.imageLoaderConfig.enableDebugMode();
     const token = ls.get('token');
     const headers = new HttpHeaders();
-    // .set("Authorization", `Bearer ${token}`);
-    // headers.set( 'Access-Control-Allow-Origin','*');
-    // headers.set('Access-Control-Allow-Methods','GET, POST, PATCH, PUT, DELETE, OPTIONS')
-    // headers.set('Access-Control-Allow-Headers','Origin, Content-Type, X-Auth-Token, Accept')
-    // headers.set('Accept','image/avif,image/webp,image/apng,image/*,*/*;q=0.8')
-    // headers.set('sec-fetch-mode','no-cors')
-    // headers.set(':authority','orangeetmoi.orange.sn')
-
     this.imageLoaderConfig.setHttpHeaders(headers);
     this.initializeApp();
   }
@@ -112,43 +116,6 @@ export class AppComponent {
         if (this.platform.is('android')) {
           this.statusBar.backgroundColorByHexString('#FFFFFF');
           this.getImei();
-          //getPermission is for getting the IMEI
-          //this.getPermission();getPermission() {
-          //   this.androidPermissions
-          //     .checkPermission(this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE)
-          //     .then((res) => {
-          //       if (res.hasPermission) {
-          //       } else {
-          //         this.androidPermissions
-          //           .requestPermission(
-          //             this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE
-          //           )
-          //           .then((res) => {
-          //             // console.log('Persmission Granted!');
-          //           })
-          //           .catch((error) => {
-          //             // console.log('Error! ' + error);
-          //           });
-          //       }
-          //     })
-          //     .catch((error) => {
-          //       console.log('Error! ' + error);
-          //     });
-          // }
-
-          // getID_UID(type) {
-          //   if (type === 'IMEI') {
-          //     return this.uid.IMEI;
-          //   } else if (type === 'ICCID') {
-          //     return this.uid.ICCID;
-          //   } else if (type === 'IMSI') {
-          //     return this.uid.IMSI;
-          //   } else if (type === 'MAC') {
-          //     return this.uid.MAC;
-          //   } else if (type === 'UUID') {
-          //     return this.uid.UUID;
-          //   }
-          // }
         }
       }
       if (this.statusBar) {
@@ -161,38 +128,6 @@ export class AppComponent {
 
       this.checkDeeplinks();
       this.setUUidValue();
-      // Get firebase id for notifications
-      // this.fcm
-      //   .getToken()
-      //   .then(token => {
-      //     ls.set('firebaseId', token);
-      //     // console.log(token);
-      //   })
-      //   .catch(err => console.log(err));
-
-      // if (this.platform.is('ios')) {
-      //   this.fcm
-      //     .hasPermission()
-      //     .then(hasPermission =>
-      //       console.log(hasPermission ? 'notification permission granted' : 'notification permission denied')
-      //     );
-      // }
-
-      // this.fcm
-      //   .onNotification()
-      //   .subscribe(data => {
-      //     // console.log(data);
-      //     if (data.wasTapped) {
-      //       console.log('Notification received in background');
-      //     } else {
-      //       console.log('Notification received in foreground');
-      //     }
-      //   });
-
-      // this.fcm.onTokenRefresh().subscribe(fcmToken => {
-      //   //console.log(fcmToken);
-      //   ls.set('firebaseId', fcmToken);
-      // });
     });
   }
 
@@ -214,13 +149,19 @@ export class AppComponent {
         '/illiflex': TransfertHubServicesPage,
         '/parrainage': ParrainagePage,
         '/bonplan': MyOfferPlansPage,
+        '/access/:hmac': NewRegistrationPage,
         '/changement-formule/:codeFormule': TransfertHubServicesPage,
         '/changement-formule': TransfertHubServicesPage
       })
       .subscribe(
         matched => {
           const path = matched.$link.path ? matched.$link.path : matched.$link.host;
-          this.goToPage(path);
+          const isAccessByOTPPath = (path + '').includes(PATH_ACCESS_BY_OTP);
+          if (isAccessByOTPPath) {
+            this.processAccessByOtp(path);
+          } else {
+            this.goToPage(path);
+          }
           // this.router.navigate([matched.$link.path]);
           console.log(matched);
         },
@@ -236,6 +177,32 @@ export class AppComponent {
       this.appRout.goToTransfertHubServicesPage('BUY');
     } else {
       this.router.navigate([path]);
+    }
+  }
+
+  async processAccessByOtp(path: string) {
+    const hmac_hashe = path.split(PATH_ACCESS_BY_OTP).length === 2 ? path.split(PATH_ACCESS_BY_OTP)[1] : '';
+    const userHasLogin = !!this.authServ.getToken();
+
+    if (!userHasLogin) {
+      const optAccessUserNumber = this.localStorage.getFromLocalStorage(LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION);
+      const loader = await this.presentLoadingWithOptions();
+      loader.present();
+      this.otpService
+        .checkOTPSMS({hmac: hmac_hashe})
+        .pipe(
+          tap((res: {hmac: string; check: boolean}) => {
+            loader.dismiss();
+            this.bottomSheetServ.enterUserPhoneNumber(optAccessUserNumber, STEPS_ACCESS_BY_OTP.PROCESS_OTP, !res.check);
+          }),
+          catchError(err => {
+            loader.dismiss();
+            this.bottomSheetServ.enterUserPhoneNumber(optAccessUserNumber, STEPS_ACCESS_BY_OTP.PROCESS_OTP, true);
+
+            return throwError(err);
+          })
+        )
+        .subscribe();
     }
   }
 
@@ -257,48 +224,22 @@ export class AppComponent {
     return imei;
   }
 
-  // getPermission() {
-  //   this.androidPermissions
-  //     .checkPermission(this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE)
-  //     .then((res) => {
-  //       if (res.hasPermission) {
-  //       } else {
-  //         this.androidPermissions
-  //           .requestPermission(
-  //             this.androidPermissions.PERMISSION.READ_PRIVILEGED_PHONE_STATE
-  //           )
-  //           .then((res) => {
-  //             // console.log('Persmission Granted!');
-  //           })
-  //           .catch((error) => {
-  //             // console.log('Error! ' + error);
-  //           });
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log('Error! ' + error);
-  //     });
-  // }
-
-  // getID_UID(type) {
-  //   if (type === 'IMEI') {
-  //     return this.uid.IMEI;
-  //   } else if (type === 'ICCID') {
-  //     return this.uid.ICCID;
-  //   } else if (type === 'IMSI') {
-  //     return this.uid.IMSI;
-  //   } else if (type === 'MAC') {
-  //     return this.uid.MAC;
-  //   } else if (type === 'UUID') {
-  //     return this.uid.UUID;
-  //   }
-  // }
-
   setUUidValue() {
     const x_uuid = ls.get('X-UUID');
     if (!x_uuid || x_uuid === '') {
       const uuidV4 = uuidv4();
       ls.set('X-UUID', uuidV4);
     }
+  }
+
+  async presentLoadingWithOptions() {
+    const loading = await this.loadingController.create({
+      spinner: 'crescent',
+      message: 'Veuillez patienter',
+      translucent: true,
+      cssClass: 'custom-class custom-loading',
+      backdropDismiss: false
+    });
+    return loading;
   }
 }
