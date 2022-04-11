@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
-  SERVER_API_URL: 'http://selfcareb2c-client-http-dsidacdifdsorangeetmoi-rec.apps.malaaw-rec.orange-sonatel.com',
+  SERVER_API_URL:
+    'http://selfcareb2c-client-http-dsidacdifdsorangeetmoi-rec.apps.malaaw-rec.orange-sonatel.com',
   // SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
   OM_URL: 'https://appom.orange-sonatel.com',
   SEDDO_SERVICE: 'selfcare-b2c-seddo',
@@ -22,9 +23,10 @@ export const environment = {
   AUTH_IMPLICIT_MSISDN: '221785898096',
   GA_CONFIG: {
     trackingId: 'UA-92621294-1',
-    trackPageviews: true
+    trackPageviews: true,
   },
   GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
-  CONFIRM_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/confirm-msisdn',
-  DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_b7ba58e0175d1f96e1eca4e3'
+  CONFIRM_MSISDN_BY_NETWORK_URL:
+    'http://10.100.99.116:1494/api/v1/confirm-msisdn',
+  DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_b7ba58e0175d1f96e1eca4e3',
 };

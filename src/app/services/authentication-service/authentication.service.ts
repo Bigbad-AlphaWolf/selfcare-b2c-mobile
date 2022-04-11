@@ -43,8 +43,8 @@ const userSubscriptionEndpoint2 = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api
 const SUBSCRIPTION_ENDPOINT_FOR_TIER = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/v2/customerOffer`;
 const userSubscriptionIsPostpaidEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/is-postpaid`;
 const abonneInfoWithOTP = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/information-abonne`;
-const loginEndpoint = `${SERVER_API_URL}/auth/login`;
-const logoutEndpoint = `${SERVER_API_URL}/auth/logout`;
+const loginEndpoint = `${SERVER_API_URL}/api/auth/login`;
+const logoutEndpoint = `${SERVER_API_URL}/api/auth/logout`;
 const captchaEndpoint = `${SERVER_API_URL}/auth/captcha`;
 
 // new registrations endpoint
@@ -52,12 +52,12 @@ const checkNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/accou
 const checkNumberV3Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v3/check_number`;
 const registerEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/register`;
 const registerV3Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v3/register`;
-const resetPwdEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password`;
+const resetPwdEndpoint = `${SERVER_API_URL}/api/account/b2c/reset-password`;
 const resetPwdV2Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v1/lite/reset-password`;
 
 const checkNumberIsOrangeEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/v1/is-orange-number`;
 // endpoint to get token
-const tokenEndpoint = `${SERVER_API_URL}/auth/get-service-token`;
+const tokenEndpoint = `${SERVER_API_URL}/api/auth/get-service-token`;
 // eligibility to recieve pass internet & illimix endpoint
 const eligibilityRecievePassEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/check-conditions`;
 @Injectable({
@@ -467,10 +467,12 @@ export class AuthenticationService {
   }
 
   resetPassword(resetPwdPayload: ResetPwdModel) {
+    resetPwdPayload.login = resetPwdPayload.login.startsWith('221') ? resetPwdPayload.login.substring(3) : resetPwdPayload.login;
     return this.http.post(resetPwdEndpoint, resetPwdPayload);
   }
 
   resetPasswordV2(resetPwdPayload: ResetPwdModel) {
+    resetPwdPayload.login = resetPwdPayload.login.startsWith('221') ? resetPwdPayload.login.substring(3) : resetPwdPayload.login;
     return this.http.put(resetPwdV2Endpoint, resetPwdPayload);
   }
 
