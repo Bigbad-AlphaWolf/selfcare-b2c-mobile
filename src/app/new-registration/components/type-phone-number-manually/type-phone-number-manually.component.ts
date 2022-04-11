@@ -42,7 +42,7 @@ export class TypePhoneNumberManuallyComponent implements OnInit {
       const isOrange = await this.checkIfIsOrangeUser();
       if (!isOrange) {
         this.hasError = true;
-        this.msgError = 'Veuillez renseigné un numéro orange pour pouvoir continuer';
+        this.msgError = 'Veuillez renseigner un numéro orange pour pouvoir continuer';
       } else {
         this.saveToStorage();
         this.sendOTP();
