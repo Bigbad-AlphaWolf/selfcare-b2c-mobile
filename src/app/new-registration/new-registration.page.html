@@ -64,7 +64,7 @@
         ></mat-spinner>
       </button>
       <button
-        *ngIf="showErrMessage"
+        *ngIf="showErrMessage && !numberGot"
         (click)="enterUserPhoneNumber()"
         class="scb-btn scb-btn-full scb-btn-orange"
       >

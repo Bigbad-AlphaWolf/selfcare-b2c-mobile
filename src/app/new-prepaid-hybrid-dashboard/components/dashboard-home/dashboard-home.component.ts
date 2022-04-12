@@ -50,6 +50,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AssistanceService } from 'src/app/services/assistance.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
+import { QrScannerService } from 'src/app/services/qr-scanner-service/qr-scanner.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -159,7 +160,8 @@ export class DashboardHomeComponent implements OnInit {
     private storiesService: StoriesService,
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
-    private banniereService: BanniereService
+    private banniereService: BanniereService,
+		private qrScan: QrScannerService
   ) {}
 
   ngOnInit() {
@@ -554,4 +556,8 @@ export class DashboardHomeComponent implements OnInit {
     });
     return await modal.present();
   }
+
+	launchQrCode() {
+		this.qrScan.startScan();
+	}
 }
