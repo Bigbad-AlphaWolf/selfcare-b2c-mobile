@@ -1503,3 +1503,6 @@ export enum MSISDN_TYPE {
 export const MAXIMUM_PAYABLE_BILL_AMOUNT = 150000;
 // Dalal Tones Requirements
 export const MINIMUM_REQUIRED_RECHARGEMENT_SOLDE_TO_ACTIVATE_DALAL = 12;
+
+export const MSG_XEWEUL_CARD_INVALID = 'Service non disponble pour cette carte. Ageroute vous invite à la renouveler gratuitement au niveau de ses espaces clients.';
+export const ERROR_CODE_INVALID_XEWEUL_CARD = '3019'
