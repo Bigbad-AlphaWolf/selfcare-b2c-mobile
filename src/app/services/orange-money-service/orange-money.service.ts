@@ -465,7 +465,7 @@ export class OrangeMoneyService {
         eventKey = "OM_Paiement_Marchand_Success";
         value = dataToLog;
       case OPERATION_RAPIDO:
-        errorKey = "Recharge_Xeweul_Error";
+        errorKey = "Recharge_Rapido_Error";
         eventKey = "Recharge_Rapido_Success";
         value = dataToLog;
       case OPERATION_XEWEUL:
