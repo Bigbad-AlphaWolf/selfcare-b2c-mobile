@@ -13,7 +13,7 @@ export const environment = {
   OM_URL: 'https://appom.orange-sonatel.com',
   SEDDO_SERVICE: 'services/selfcare-b2c-seddo',
   CONSO_SERVICE: 'services/selfcare-b2c-conso',
-  LOCAL_OM: 'services/http://localhost:8720',
+  LOCAL_OM: 'http://localhost:8720',
   SERVICES_SERVICE: 'services/selfcare-b2c-services',
   ACCOUNT_MNGT_SERVICE: 'services/selfcare-b2c-account-management',
   FILE_SERVICE: 'services/selfcare-b2c-file-manager',

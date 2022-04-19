@@ -36,10 +36,10 @@ import {
   OPERATION_CREATE_PIN_OM,
   BLOCKED_PASS,
   OPERATION_TYPE_PASS_INTERNATIONAL,
-  OPERATION_PAY_ORANGE_BILLS,
   formatCountryCallId,
   OPERATION_RESET_PIN_OM,
-  REGEX_FIX_NUMBER,
+	ERROR_CODE_INVALID_XEWEUL_CARD,
+	MSG_XEWEUL_CARD_INVALID,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
@@ -1359,7 +1359,7 @@ export class NewPinpadModalPage implements OnInit {
         transferToBlock: this.transactionToBlock,
         operationPayload
       });
-      
+
     } else if (
       res === null ||
       res.status_code === null ||
@@ -1415,6 +1415,8 @@ export class NewPinpadModalPage implements OnInit {
         this.pinError = err.error.message;
         this.canRetry = true;
         this.cappingFees = +err.error.fees;
+      } else if (err.error.errorCode.match(ERROR_CODE_INVALID_XEWEUL_CARD)) {
+        this.pinError = MSG_XEWEUL_CARD_INVALID;
       } else if (err.error.errorCode.match("Erreur-017")) {
         const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
           this.omPhoneNumber
