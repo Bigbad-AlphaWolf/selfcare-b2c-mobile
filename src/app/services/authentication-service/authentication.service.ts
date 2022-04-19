@@ -43,7 +43,7 @@ const userSubscriptionEndpoint2 = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api
 const SUBSCRIPTION_ENDPOINT_FOR_TIER = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/v2/customerOffer`;
 const userSubscriptionIsPostpaidEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/is-postpaid`;
 const abonneInfoWithOTP = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/information-abonne`;
-const loginEndpoint = `${SERVER_API_URL}/api/auth/login`;
+const loginEndpoint = `${SERVER_API_URL}/auth/login`;
 const logoutEndpoint = `${SERVER_API_URL}/api/auth/logout`;
 const captchaEndpoint = `${SERVER_API_URL}/auth/captcha`;
 
@@ -57,7 +57,7 @@ const resetPwdV2Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/accoun
 
 const checkNumberIsOrangeEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/v1/is-orange-number`;
 // endpoint to get token
-const tokenEndpoint = `${SERVER_API_URL}/api/auth/get-service-token`;
+const tokenEndpoint = `${SERVER_API_URL}/auth/get-service-token`;
 // eligibility to recieve pass internet & illimix endpoint
 const eligibilityRecievePassEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/check-conditions`;
 @Injectable({
@@ -396,8 +396,10 @@ export class AuthenticationService {
 
   getTokenFromBackend() {
     const lighToken = ls.get('light-token');
-    if (lighToken && lighToken !== '') {
-      return new BehaviorSubject<string>(lighToken).asObservable();
+    const expiredDate = lighToken ? jwt_decode(lighToken).exp * 1000 : 0;
+    const hasExpired = expiredDate < new Date().getTime();
+    if (!hasExpired && lighToken && lighToken !== '') {
+      return of(lighToken);
     }
     return this.http.get(tokenEndpoint).pipe(
       tap((res: any) => {
