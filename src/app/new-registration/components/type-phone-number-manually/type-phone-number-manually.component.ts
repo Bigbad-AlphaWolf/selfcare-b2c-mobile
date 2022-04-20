@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import {Component, Input, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {of} from 'rxjs';
@@ -19,6 +20,7 @@ export class TypePhoneNumberManuallyComponent implements OnInit {
   @Input() hmacExpired: boolean;
   STEPS = STEPS_ACCESS_BY_OTP;
   hasError: boolean;
+  maxAttemptsReached: boolean;
   isInputValid: boolean;
   msgError: string;
   isLoading: boolean;
@@ -37,12 +39,13 @@ export class TypePhoneNumberManuallyComponent implements OnInit {
     console.log('input', this.phoneNumber);
     this.hasError = false;
     this.msgError = null;
-
+    this.isLoading = true;
     if (this.isInputValid) {
       const isOrange = await this.checkIfIsOrangeUser();
       if (!isOrange) {
         this.hasError = true;
         this.msgError = 'Veuillez renseigner un numéro orange pour pouvoir continuer';
+        this.isLoading = false;
       } else {
         this.saveToStorage();
         this.sendOTP();
@@ -71,6 +74,7 @@ export class TypePhoneNumberManuallyComponent implements OnInit {
   }
 
   sendOTP() {
+    this.maxAttemptsReached = false;
     const data: GenerateOtpOem = {
       msisdn: this.phoneNumber
     };
@@ -78,10 +82,16 @@ export class TypePhoneNumberManuallyComponent implements OnInit {
     this.otpService.generateOTPBySMS(data).subscribe(
       res => {
         this.isLoading = false;
+        this.hasError = false;
         this.onOtpSent();
       },
-      err => {
+      (err: HttpErrorResponse) => {
         this.isLoading = false;
+        if (err.status === 400) {
+          this.hasError = true;
+          this.maxAttemptsReached = true;
+          this.msgError = err?.error?.title;
+        }
       }
     );
   }
