@@ -396,8 +396,10 @@ export class AuthenticationService {
 
   getTokenFromBackend() {
     const lighToken = ls.get('light-token');
-    if (lighToken && lighToken !== '') {
-      return new BehaviorSubject<string>(lighToken).asObservable();
+    const expiredDate = lighToken ? jwt_decode(lighToken).exp * 1000 : 0;
+    const hasExpired = expiredDate < new Date().getTime();
+    if (!hasExpired && lighToken && lighToken !== '') {
+      return of(lighToken);
     }
     return this.http.get(tokenEndpoint).pipe(
       tap((res: any) => {
