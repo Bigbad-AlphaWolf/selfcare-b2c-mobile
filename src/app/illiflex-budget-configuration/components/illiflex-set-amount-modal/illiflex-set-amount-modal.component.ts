@@ -39,7 +39,7 @@ export class IlliflexSetAmountModalComponent implements OnInit {
     this.getMinAndMax();
     setTimeout(() => {
       this.input.nativeElement.focus();
-    }, 300);
+    }, 500);
   }
 
   getMinAndMax() {
