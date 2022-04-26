@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, delay, map, mergeMap, retryWhen, switchMap, tap } from 'rxjs/operators';
 import { SubscriptionModel } from 'src/app/dashboard';
 import { BestOfferIlliflexModel } from 'src/app/models/best-offer-illiflex.model';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
@@ -15,9 +15,13 @@ import { AuthenticationService } from '../authentication-service/authentication.
 const { CONSO_SERVICE, SERVER_API_URL, PURCHASES_SERVICE } = environment;
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
+import * as SecureLS from 'secure-ls';
 const paliersEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pricings`;
 const buyIlliflexEndpoint = `${SERVER_API_URL}/${PURCHASES_SERVICE}/api/buy-pass-illiflex`;
 const bestOfferEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/prepay-balance/best-offer`;
+const ls = new SecureLS({ encodingType: 'aes' });
+export const ILLIFLEX_SEGMENTS_LS_KEY = 'illiflex_segments';
+const ILLIFLEX_CACHE_DURATION_LS_KEY = 'illiflex_cache_date';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +38,12 @@ export class IlliflexService {
   }
 
   getIlliflexPaliers(): Observable<PalierModel[]> {
+    let retries = 3;
+    const elapsedTime = Date.now() - ls.get(ILLIFLEX_CACHE_DURATION_LS_KEY);
+    // 86.400.000 ms = 86.400 s = 24 * 3600 s = 24 * 60 min = 1 jour // illiflex cache duration
+    if (elapsedTime < 86400000 && ls.get(ILLIFLEX_SEGMENTS_LS_KEY)) {
+      return of(ls.get(ILLIFLEX_SEGMENTS_LS_KEY));
+    }
     return this.http.get(`${paliersEndpoint}`).pipe(
       map((res: PalierModel[]) => {
         res.map((palier) => {
@@ -57,7 +67,22 @@ export class IlliflexService {
           'event',
           { msisdn: this.currentMsisdn }
         );
+        ls.set(ILLIFLEX_SEGMENTS_LS_KEY, res)
+        ls.set(ILLIFLEX_CACHE_DURATION_LS_KEY, Date.now());
         return res;
+      }),
+      retryWhen((errors) => {
+        return errors.pipe(
+          delay(1000),
+          mergeMap((error) => {
+            if (retries > 0) {
+              retries--;
+              return of(error);
+            }
+            // throw new Error();
+            return of(ls.get(ILLIFLEX_SEGMENTS_LS_KEY));
+          })
+        );
       }),
       catchError((err) => {
         this.followAnalyticsService.registerEventFollow(
