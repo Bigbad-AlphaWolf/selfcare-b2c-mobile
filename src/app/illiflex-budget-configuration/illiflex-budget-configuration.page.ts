@@ -48,6 +48,7 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
   BASE_MULTIPLE = BASE_MULTIPLE;
   maxAmountIlliflex = 15000;
   minAmountIlliflex = 500;
+  loadingPricings: boolean;
   constructor(
     private navController: NavController,
     private illiflexService: IlliflexService,
@@ -91,9 +92,11 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
   }
 
   getIlliflexPaliers() {
+    this.loadingPricings = true;
     this.illiflexService.getIlliflexPaliers().subscribe((res: any[]) => {
       this.paliers = res;
       this.getMinAndMax();
+      this.loadingPricings = false;
     });
   }
 
@@ -161,6 +164,9 @@ export class IlliflexBudgetConfigurationPage implements OnInit {
   }
 
   async openModalSetAmount() {
+    if(!this.paliers.length) {
+      return;
+    }
     const modal = await this.modalController.create({
       component: IlliflexSetAmountModalComponent,
       cssClass: 'select-recipient-modal',
