@@ -151,15 +151,15 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
 			(res) => {
 				OtpService.isChecking.asObservable().subscribe((isChecking: boolean) => {
 
-					if(!isChecking) {
-						if(this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION) && this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.IS_HMAC_FROM_OTP_VALID) && !this.numberGot) {
+					if(!isChecking && !this.numberGot) {
+						if(this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION) && this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.IS_HMAC_FROM_OTP_VALID)) {
 								this.hmac = this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.HMAC_FROM_OTP);
 								this.phoneNumber =  '221'+this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION);
 								this.hideRefresh = true;
 								this.showErrMessage = false;
 								this.numberGot = true;
 
-						} else if(this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION) && !this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.IS_HMAC_FROM_OTP_VALID) && !this.numberGot) {
+						} else if(this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION) && !this.localServ.getFromLocalStorage(LOCAL_STORAGE_KEYS.IS_HMAC_FROM_OTP_VALID) ) {
 								console.log('isCheking', isChecking);
 								this.errorMsg = 'Désolé, le lien a expiré. Veuillez renvoyer un autre SMS';
 								this.phoneNumber = null;

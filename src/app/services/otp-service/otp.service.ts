@@ -26,6 +26,8 @@ export class OtpService {
   checkOTPSMS(data: CheckOtpOem) {
     data.msisdn = this.localStorage.getFromLocalStorage(LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION);
     data.uuid = this.localStorage.getFromLocalStorage(LOCAL_STORAGE_KEYS.X_UUID);
+    this.localStorage.clearFromLocalStorage(LOCAL_STORAGE_KEYS.HMAC_FROM_OTP);
+    this.localStorage.clearFromLocalStorage(LOCAL_STORAGE_KEYS.IS_HMAC_FROM_OTP_VALID);
     OtpService.isChecking.next(true);
     return this.http.post(`${checkOTPEndpoint}`, data).pipe(
       tap((res: {hmac: string; check: boolean}) => {
