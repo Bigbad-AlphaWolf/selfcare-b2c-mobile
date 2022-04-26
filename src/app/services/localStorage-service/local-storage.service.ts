@@ -12,6 +12,10 @@ export class LocalStorageService {
     ls.set(key, data);
   }
 
+  clearFromLocalStorage(key: string) {
+    ls.remove(key);
+  }
+
   getFromLocalStorage(key: string) {
     return ls.get(key);
   }

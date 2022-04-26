@@ -122,6 +122,7 @@ export class TypePhoneNumberManuallyComponent implements OnInit {
   }
 
   closeModal() {
+		this.stopCountDown();
     this.modCtrl.dismiss({
       success: true
     });
