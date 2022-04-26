@@ -50,6 +50,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AssistanceService } from 'src/app/services/assistance.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
+import { IlliflexService } from 'src/app/services/illiflex-service/illiflex.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -159,7 +160,8 @@ export class DashboardHomeComponent implements OnInit {
     private storiesService: StoriesService,
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
-    private banniereService: BanniereService
+    private banniereService: BanniereService,
+    private illiflexService: IlliflexService
   ) {}
 
   ngOnInit() {
@@ -185,6 +187,7 @@ export class DashboardHomeComponent implements OnInit {
       .subscribe((res: any) => {
         this.listBanniere = res;
       });
+    this.illiflexService.getIlliflexPaliers().subscribe();
   }
 
   fetchUserStories() {
