@@ -179,4 +179,11 @@ export class ApplicationRoutingService {
     };
     this.route.navigate(['/change-orange-money-pin'], navigationExtras);
   }
+
+  goToSelectBeneficiaryPage(operationType?: string, payload?: any) {
+    let navigationExtras: NavigationExtras = {
+      state: {operation: operationType, payload}
+    };
+    this.route.navigate(['/new-select-beneficiary'], navigationExtras);
+  }
 }

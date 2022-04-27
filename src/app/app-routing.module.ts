@@ -386,6 +386,10 @@ const routes: Routes = [
     path: 'list-pass-international',
     loadChildren: () =>
       import('./pages/list-pass-international/list-pass-international.module').then(m => m.ListPassInternationalPageModule)
+  },
+  {
+    path: 'new-select-beneficiary',
+    loadChildren: () => import('./new-select-beneficiary/new-select-beneficiary.module').then( m => m.NewSelectBeneficiaryPageModule)
   }
 ];
 

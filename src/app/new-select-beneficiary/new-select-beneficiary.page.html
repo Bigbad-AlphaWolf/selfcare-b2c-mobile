@@ -1,0 +1,91 @@
+<ion-header [oemIonHeaderParallax]="90">
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-back-button [id]="'goBackBtn' | generateIdForTA" defaultHref="/" mode="md" class="oem-back-button">
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title> Choix du bénéficiaire </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
+	<div class="page-content">
+		<ion-item class="input-field" lines="none" type="text" >
+			<ion-input placeholder="Numéro, Nom"></ion-input>
+		</ion-item>
+
+		<div class="my-numbers">
+			<span class="title">
+				Mes numéros favoris
+			</span>
+
+			<div class="list">
+				<div class="item">
+					<img src="assets/images/user.svg" alt="">
+					<div class="text">
+						<span class="name">
+							My Father
+						</span>
+						<span class="tel">
+							77 923 08 02
+						</span>
+					</div>
+				</div>
+				<div class="item">
+					<img src="assets/images/user.svg" alt="">
+					<div class="text">
+						<span class="name">
+							My Father
+						</span>
+						<span class="tel">
+							77 923 08 02
+						</span>
+					</div>
+				</div>
+				<div class="item">
+					<img src="assets/images/user.svg" alt="">
+					<div class="text">
+						<span class="name">
+							My Father
+						</span>
+						<span class="tel">
+							77 923 08 02
+						</span>
+					</div>
+				</div>
+				<div class="item">
+					<img src="assets/images/user.svg" alt="">
+					<div class="text">
+						<span class="name">
+							My Father
+						</span>
+						<span class="tel">
+							77 923 08 02
+						</span>
+					</div>
+				</div>
+				<div class="item">
+					<img src="assets/images/user.svg" alt="">
+					<div class="text">
+						<span class="name">
+							My Father
+						</span>
+						<span class="tel">
+							77 923 08 02
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="list-contacts">
+			<span class="title">
+				Mes contacts
+			</span>
+			<app-recipient-item-contact *ngFor="let item of listContact" [item]="item"></app-recipient-item-contact>
+
+
+		</div>
+	</div>
+
+</ion-content>
