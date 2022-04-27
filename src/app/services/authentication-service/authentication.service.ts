@@ -14,13 +14,7 @@ import {
   KILIMANJARO_FORMULE,
   isPostpaidFix
 } from 'src/app/dashboard';
-import {
-  JAMONO_ALLO_CODE_FORMULE,
-  NotificationInfoModel,
-  SubscriptionModel,
-  JAMONO_PRO_CODE_FORMULE,
-  PRO_MOBILE_ERROR_CODE
-} from 'src/shared';
+import {JAMONO_ALLO_CODE_FORMULE, SubscriptionModel, JAMONO_PRO_CODE_FORMULE, PRO_MOBILE_ERROR_CODE} from 'src/shared';
 
 const {
   SERVER_API_URL,
@@ -28,7 +22,7 @@ const {
   CONSO_SERVICE,
   GET_MSISDN_BY_NETWORK_URL,
   CONFIRM_MSISDN_BY_NETWORK_URL,
-  UAA_SERVICE
+  CUSTOMER_OFFER_CACHE_DURATION
 } = environment;
 const ls = new SecureLS({encodingType: 'aes'});
 
@@ -71,7 +65,6 @@ export class AuthenticationService {
   userInfo: any;
   private SubscriptionHttpCache: Map<string, Observable<any>> = new Map<string, Observable<any>>();
   subscriptionUpdatedSubject: Subject<any> = new Subject<any>();
-
   constructor(private http: HttpClient) {}
 
   get currentPhoneNumbersubscriptionUpdated() {
@@ -114,12 +107,13 @@ export class AuthenticationService {
   // get msisdn subscription
   getSubscription(msisdn: string) {
     const lsKey = 'sub' + msisdn;
-    this.checkSubscriptionHasExpired(lsKey);
+    const hasExpired = this.checkSubscriptionHasExpired(lsKey);
     const savedData = ls.get(lsKey);
-    if (savedData) {
+    if (!hasExpired && savedData) {
       return of(savedData).pipe(take(1));
     } else {
       return this.getCustomerOfferRefact(msisdn).pipe(
+        share(),
         map((res: any) => {
           const subscription = {
             clientCode: res.clientCode,
@@ -142,6 +136,10 @@ export class AuthenticationService {
           ls.set(lsKey, subscription);
           this.subscriptionUpdatedSubject.next(subscription);
           return subscription;
+        }),
+        catchError(err => {
+          if (savedData) return of(savedData);
+          return throwError(err);
         })
       );
     }
@@ -180,7 +178,7 @@ export class AuthenticationService {
         const lsLastUpdateKey = lsKey + '_last_update';
         ls.set(lsLastUpdateKey, Date.now());
         ls.set(lsKey, subscription);
-        this.subscriptionUpdatedSubject.next(subscription);
+        //this.subscriptionUpdatedSubject.next(subscription);
         return subscription;
       })
     );
@@ -188,9 +186,9 @@ export class AuthenticationService {
 
   getSubscriptionForTiers(msisdn: string): Observable<any> {
     const lsKey = 'subtiers' + msisdn;
-    this.checkSubscriptionHasExpired(lsKey);
+    const hasExpired = this.checkSubscriptionHasExpired(lsKey);
     const savedData = ls.get(lsKey);
-    if (savedData) {
+    if (!hasExpired && savedData) {
       return of(savedData);
     } else {
       return this.getSubscriptionCustomerOfferForTiers(msisdn).pipe(share());
@@ -209,8 +207,8 @@ export class AuthenticationService {
     const elapsedTime = currentDate - lastUpdateTime;
     // 1.800.000 ms = 1.800 s = 30 min subscription cache duration
     // multiply by an int to extend storage duration in the cache (eg. 1800000 * 48)
-    const hasExpired = elapsedTime > 1800000;
-    if (hasExpired) ls.remove(subscriptionKey);
+    const hasExpired = elapsedTime > CUSTOMER_OFFER_CACHE_DURATION;
+    //if (hasExpired) ls.remove(subscriptionKey);
     return hasExpired;
   }
 
