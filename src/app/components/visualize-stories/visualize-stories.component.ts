@@ -18,23 +18,24 @@ import { StoriesProgressBarComponent } from '../stories-progress-bar/stories-pro
 import { VisualizeStoryComponent } from '../visualize-story/visualize-story.component';
 import SwiperCore, { EffectCoverflow, EffectFade, EffectFlip, Navigation, Pagination, SwiperOptions } from 'swiper';
 import { IonicSwiper } from '@ionic/angular';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
 import { TYPE_ACTION_ON_BANNER } from 'src/shared';
 import { StoriesService } from 'src/app/services/stories-service/stories.service';
 import { SwiperComponent } from 'swiper/angular';
 import { tap } from 'rxjs/operators';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { Platform} from '@ionic/angular';
 
 SwiperCore.use([IonicSwiper, Navigation, Pagination, EffectFade, EffectCoverflow, EffectCoverflow, EffectFlip]);
 
 @Component({
-  selector: "app-visualize-stories",
-  templateUrl: "./visualize-stories.component.html",
-  styleUrls: ["./visualize-stories.component.scss"],
+  selector: 'app-visualize-stories',
+  templateUrl: './visualize-stories.component.html',
+  styleUrls: ['./visualize-stories.component.scss'],
 })
 export class VisualizeStoriesComponent implements OnInit, OnDestroy {
-	@Output() leaveStories = new EventEmitter();
+  @Output() leaveStories = new EventEmitter();
   @Input() storyByCategory: {
     categorie: {
       libelle?: string;
@@ -47,7 +48,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   } = null;
   @Input() index: number;
   @Input() isVisibleForHigherView: boolean;
-  @Input() view: "SINGLE_CATEGORY" | "ALL_CATEGORIES" = "SINGLE_CATEGORY";
+  @Input() view: 'SINGLE_CATEGORY' | 'ALL_CATEGORIES' = 'SINGLE_CATEGORY';
   @Output() action = new EventEmitter();
   private slides;
   @ViewChildren(StoriesProgressBarComponent)
@@ -55,25 +56,30 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   @ViewChildren(VisualizeStoryComponent)
   storiesView: QueryList<VisualizeStoryComponent>;
   currentSlideIndex = 0;
-  @ViewChild("slides", { static: false }) swiper?: SwiperComponent;
+  @ViewChild('slides', { static: false }) swiper?: SwiperComponent;
   config: SwiperOptions = {
     init: false,
-    effect: "fade",
+    effect: 'fade',
     lazy: true,
     navigation: {
-      nextEl: ".right",
-      prevEl: ".left",
+      nextEl: '.right',
+      prevEl: '.left',
     },
   };
+  isIos: boolean;
+
   constructor(
     private modalCtrl: ModalController,
     private navCtrl: NavController,
     private iab: InAppBrowser,
     private storiesServ: StoriesService,
     private cd: ChangeDetectorRef,
-	private followAnalyticsService: FollowAnalyticsService,
-	private dashService: DashboardService
-  ) {}
+    private followAnalyticsService: FollowAnalyticsService,
+    private dashService: DashboardService,
+    private platform: Platform
+  ) {
+    this.isIos = this.platform.is('ios');
+  }
 
   ngOnInit() {}
   ngAfterViewInit() {
@@ -104,7 +110,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
   close() {
-    if (this.view === "SINGLE_CATEGORY") {
+    if (this.view === 'SINGLE_CATEGORY') {
       this.modalCtrl.dismiss({
         storyByCategory: this.storyByCategory,
         index: this.index,
@@ -152,7 +158,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
   onProgressFinish(event: any) {
-    console.log("next");
+    console.log('next');
 
     if (this.slides) {
       this.swiper?.swiperRef?.slideNext();
@@ -295,21 +301,31 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }) {
     switch (data.typeAction) {
       case TYPE_ACTION_ON_BANNER.DEEPLINK:
-		  this.leaveStories.emit('close')
+        this.leaveStories.emit('close');
         this.navCtrl.navigateForward([data.url]);
         break;
       case TYPE_ACTION_ON_BANNER.REDIRECTION:
-        this.iab.create(data.url, "_blank");
+        const options: InAppBrowserOptions = this.isIos ? {
+          location: 'no',
+          toolbar: 'yes',
+          toolbarcolor: '#CCCCCC',
+          toolbarposition: 'top',
+          toolbartranslucent: 'no',
+          closebuttoncolor: '#000000',
+          closebuttoncaption: 'Fermer',
+          hidespinner: 'yes',
+        } : {};
+        this.iab.create(data.url, '_blank', options);
         break;
       default:
         break;
     }
   }
 
-  navigateStory(side: "next" | "prev") {
+  navigateStory(side: 'next' | 'prev') {
     const msisdn = this.dashService.getCurrentPhoneNumber();
-    const evName = side === "next" ? "story_next" : "story_back";
-    this.followAnalyticsService.registerEventFollow(evName, "event", {
+    const evName = side === 'next' ? 'story_next' : 'story_back';
+    this.followAnalyticsService.registerEventFollow(evName, 'event', {
       msisdn,
     });
   }

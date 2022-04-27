@@ -17,6 +17,7 @@ import {isPrepaidOrHybrid} from '../dashboard';
 import {OmStatusVisualizationComponent} from 'src/shared/om-status-visualization/om-status-visualization.component';
 import {FACE_ID_PERMISSIONS, FACE_ID_STORAGE_KEY, OrangeMoneyService} from '../services/orange-money-service/orange-money.service';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
+import { FollowAnalyticsEventType } from '../services/follow-analytics/follow-analytics-event-type.enum';
 @Component({
   selector: "app-sidemenu",
   templateUrl: "./sidemenu.component.html",
@@ -110,10 +111,13 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   onChangedStatus(event) {
-    console.log(event?.detail?.checked);
-    event?.detail?.checked
-      ? this.orangeMoneyServ.allowFaceId()
-      : this.orangeMoneyServ.askFaceIdLater();
+    if (event?.detail?.checked) {
+      this.followAnalyticsService.registerEventFollow('Allow_Face_ID_Toggle', FollowAnalyticsEventType.EVENT, {msisdn: this.msisdn})
+      this.orangeMoneyServ.allowFaceId();
+    } else {
+      this.followAnalyticsService.registerEventFollow('Disable_Face_ID_Toggle', FollowAnalyticsEventType.EVENT, {msisdn: this.msisdn})
+      this.orangeMoneyServ.askFaceIdLater();
+    }
   }
 
   async getVersion() {

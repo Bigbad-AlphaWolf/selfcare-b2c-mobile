@@ -32,6 +32,10 @@
         </div>
         <button class="scb-text-full-black" (click)="openMoreInfosPopup()">En savoir plus</button>
       </div>
+      <div class="dalal-search-block">
+        <ion-searchbar placeholder="Chercher un titre" [formControl]="searchControl">
+        </ion-searchbar>
+      </div>
     </div>
     <div class="filters-block">
       <ion-list>
@@ -68,7 +72,11 @@
         <app-dalal-card-item [dalal]="currentActiveDalals[0]" (click)="goActivatedDalalPage()"></app-dalal-card-item>
       </div>
       <div *ngIf="loadingDalal" class="loading-dalal-spinner">
-        <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner>
+        <ion-skeleton-text animated class="title-loader"></ion-skeleton-text>
+        <ion-skeleton-text animated class="dalal-loader"></ion-skeleton-text>
+        <ion-skeleton-text animated class="dalal-loader"></ion-skeleton-text>
+        <ion-skeleton-text animated class="dalal-loader"></ion-skeleton-text>
+        <!-- <mat-spinner mode="indeterminate" [diameter]="60"></mat-spinner> -->
       </div>
       <ion-list *ngIf="!loadingDalal && dalalTones && dalalTones.length">
         <div class="list-dalal-title">Dalal disponibles</div>

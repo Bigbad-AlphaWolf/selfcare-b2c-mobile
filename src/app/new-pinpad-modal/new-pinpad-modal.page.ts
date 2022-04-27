@@ -36,10 +36,10 @@ import {
   OPERATION_CREATE_PIN_OM,
   BLOCKED_PASS,
   OPERATION_TYPE_PASS_INTERNATIONAL,
-  OPERATION_PAY_ORANGE_BILLS,
   formatCountryCallId,
   OPERATION_RESET_PIN_OM,
-  REGEX_FIX_NUMBER,
+	ERROR_CODE_INVALID_XEWEUL_CARD,
+	MSG_XEWEUL_CARD_INVALID,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
@@ -537,7 +537,7 @@ export class NewPinpadModalPage implements OnInit {
             const creditToBuy = Object.assign({}, this.buyCreditPayload, {
               pin: this.pin,
             });
-            this.buyCredit(creditToBuy);
+            this.buyCredit(creditToBuy, isFromFaceId);
             break;
           case OPERATION_TYPE_PASS_INTERNET:
             const dataPassOM = {
@@ -551,7 +551,7 @@ export class NewPinpadModalPage implements OnInit {
                 ? this.buyPassPayload.pass.passPromo.tarif
                 : this.buyPassPayload.pass.tarif,
             };
-            this.buyPass(dataPassOM);
+            this.buyPass(dataPassOM, isFromFaceId);
             break;
           case OPERATION_TYPE_PASS_VOYAGE:
           case OPERATION_TYPE_PASS_ILLIMIX:
@@ -569,7 +569,7 @@ export class NewPinpadModalPage implements OnInit {
                 : this.buyPassPayload.pass.tarif,
             };
 
-            this.buyIllimix(dataIllimixOM);
+            this.buyIllimix(dataIllimixOM, isFromFaceId);
             break;
           case OPERATION_TRANSFER_OM:
             const transferMoneyPayload = Object.assign(
@@ -580,7 +580,7 @@ export class NewPinpadModalPage implements OnInit {
                 fees: this.transferMoneyPayload.send_fees,
               }
             );
-            this.transferMoney(transferMoneyPayload);
+            this.transferMoney(transferMoneyPayload, isFromFaceId);
             break;
           case OPERATION_TRANSFER_OM_WITH_CODE:
             const transferPayload = Object.assign(
@@ -588,7 +588,7 @@ export class NewPinpadModalPage implements OnInit {
               this.transferMoneyWithCodePayload,
               { pin }
             );
-            this.transferMoneyWithCode(transferPayload);
+            this.transferMoneyWithCode(transferPayload, isFromFaceId);
             break;
           case OPERATION_TYPE_INTERNATIONAL_TRANSFER:
             const transferIRTPayload = Object.assign(
@@ -601,7 +601,7 @@ export class NewPinpadModalPage implements OnInit {
                 reason: this.transferMoneyPayload?.reason,
               }
             );
-            this.transferMoneyInternational(transferIRTPayload);
+            this.transferMoneyInternational(transferIRTPayload, isFromFaceId);
             break;
           case OPERATION_TYPE_MERCHANT_PAYMENT:
             const merchantPaymentPayload = Object.assign(
@@ -609,34 +609,34 @@ export class NewPinpadModalPage implements OnInit {
               this.merchantPaymentPayload,
               { pin: this.pin }
             );
-            this.payMerchant(merchantPaymentPayload);
+            this.payMerchant(merchantPaymentPayload, isFromFaceId);
             break;
           case OPERATION_WOYOFAL:
-            this.payWoyofal(pin);
+            this.payWoyofal(pin, isFromFaceId);
             break;
           case OPERATION_RAPIDO:
-            this.payRapido(this.pin);
+            this.payRapido(this.pin, isFromFaceId);
             break;
           case OPERATION_XEWEUL:
-            this.payXeweul(this.pin);
+            this.payXeweul(this.pin, isFromFaceId);
             break;
           case OPERATION_INIT_CHANGE_PIN_OM:
-            this.initOperationChangePinOM(pin);
+            this.initOperationChangePinOM(pin, isFromFaceId);
             break;
           case OPERATION_CHANGE_PIN_OM:
             this.setNewPinOM(pin);
             break;
           case OPERATION_TYPE_PASS_ILLIFLEX:
-            this.buyIlliflex(pin);
+            this.buyIlliflex(pin, isFromFaceId);
             break;
           case OPERATION_TYPE_PAY_BILL:
           case OPERATION_TYPE_TERANGA_BILL:
           case OPERATION_TYPE_SENELEC_BILLS:
           case OPERATION_TYPE_SENEAU_BILLS:
-            this.payOrangeBills(pin);
+            this.payOrangeBills(pin, isFromFaceId);
             break;
           default:
-            this.seeSolde(pin);
+            this.seeSolde(pin, isFromFaceId);
             break;
         }
       } else {
@@ -689,7 +689,7 @@ export class NewPinpadModalPage implements OnInit {
       this.processPinOmUser(pin);
     }
   }
-  payWoyofal(pin: string) {
+  payWoyofal(pin: string, withTouchID?: boolean) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     let body = {
@@ -705,6 +705,7 @@ export class NewPinpadModalPage implements OnInit {
       receiver: body.numero_compteur,
       montant: body.amount,
       mod_paiement: PAYMENT_MOD_OM,
+      withTouchID
     };
 
     this.woyofal.pay(body).subscribe(
@@ -720,7 +721,7 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  payRapido(pin: string) {
+  payRapido(pin: string, withTouchID?: boolean) {
     this.canRetry = false;
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
@@ -737,6 +738,7 @@ export class NewPinpadModalPage implements OnInit {
       receiver: body.numero_carte,
       montant: body.amount,
       mod_paiement: PAYMENT_MOD_OM,
+      withTouchID
     };
 
     this.rapido.pay(body).subscribe(
@@ -750,7 +752,7 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  payXeweul(pin: string) {
+  payXeweul(pin: string, withTouchID?: boolean) {
     this.canRetry = false;
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
@@ -767,6 +769,7 @@ export class NewPinpadModalPage implements OnInit {
       receiver: body.numeroCarte,
       montant: body.amount,
       mod_paiement: PAYMENT_MOD_OM,
+      withTouchID
     };
 
     this.xeweulService.chargeCard(body).subscribe(
@@ -780,7 +783,7 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  seeSolde(pin: string) {
+  seeSolde(pin: string, withTouchID?: boolean) {
     console.log(this.transactionToBlock);
 
     this.processingPin = true;
@@ -796,7 +799,7 @@ export class NewPinpadModalPage implements OnInit {
       service_version: OM_SERVICE_VERSION,
       uuid: this.uuid,
     };
-    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn };
+    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn, withTouchID };
 
     this.orangeMoneyService.GetBalance(balancePayload).subscribe(
       (res: any) => {
@@ -854,7 +857,7 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  buyCredit(params: { msisdn2: string; pin: any; amount: number }) {
+  buyCredit(params: { msisdn2: string; pin: any; amount: number }, withTouchID?: boolean) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     // get balance
@@ -875,6 +878,7 @@ export class NewPinpadModalPage implements OnInit {
       receiver: params.msisdn2,
       montant: params.amount,
       mod_paiement: PAYMENT_MOD_OM,
+      withTouchID
     };
     const txnIdForConfirmation = { txnId: this.transactionId };
     this.orangeMoneyService
@@ -889,7 +893,7 @@ export class NewPinpadModalPage implements OnInit {
       );
   }
 
-  buyPass(params: BuyPassPayload) {
+  buyPass(params: BuyPassPayload, withTouchID?: boolean) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     // get balance
@@ -915,6 +919,7 @@ export class NewPinpadModalPage implements OnInit {
       montant: params.amount,
       mod_paiement: PAYMENT_MOD_OM,
       ppi: params.price_plan_index,
+      withTouchID
     };
 
     this.orangeMoneyService.AchatPassInternet(buyPassPayload).subscribe(
@@ -929,7 +934,7 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  buyIllimix(params: BuyPassPayload) {
+  buyIllimix(params: BuyPassPayload, withTouchID?: boolean) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     // get balance
@@ -955,6 +960,7 @@ export class NewPinpadModalPage implements OnInit {
       montant: params.amount,
       mod_paiement: PAYMENT_MOD_OM,
       ppi: params.price_plan_index,
+      withTouchID
     };
 
     this.orangeMoneyService.AchatIllimix(buyPassPayload).subscribe(
@@ -967,7 +973,7 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  buyIlliflex(pin) {
+  buyIlliflex(pin, withTouchID?: boolean) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     this.illiflexPayload.sender = this.omPhoneNumber;
@@ -978,6 +984,7 @@ export class NewPinpadModalPage implements OnInit {
       receiver: this.illiflexPayload.recipient,
       montant: this.illiflexPayload.amount,
       mod_paiement: PAYMENT_MOD_OM,
+      withTouchID
     };
 
     this.orangeMoneyService.buyIlliflexByOM(this.illiflexPayload).subscribe(
@@ -990,12 +997,13 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  payOrangeBills(pin) {
+  payOrangeBills(pin, withTouchID?: boolean) {
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     const logInfos: FollowOemlogPurchaseInfos = {
       sender: db.msisdn,
       montant: this.opXtras.invoice?.montantFacture,
       mod_paiement: PAYMENT_MOD_OM,
+      withTouchID
     };
     const payload: BillPaymentModel = {
       billingAccountId: this.opXtras?.invoice?.numeroTelephone,
@@ -1027,7 +1035,7 @@ export class NewPinpadModalPage implements OnInit {
     a_ma_charge: boolean;
     fees: number;
     capping?: boolean;
-  }) {
+  }, withTouchID?: boolean) {
     this.processingPin = true;
     this.canRetry = false;
     this.pinHasError = false;
@@ -1062,6 +1070,7 @@ export class NewPinpadModalPage implements OnInit {
       sender: omUser.msisdn,
       receiver: params.msisdn2,
       montant: params.amount,
+      withTouchID
     };
 
     this.orangeMoneyService
@@ -1082,7 +1091,7 @@ export class NewPinpadModalPage implements OnInit {
     amount: number;
     nom_receiver: string;
     prenom_receiver: string;
-  }) {
+  }, withTouchID) {
     this.processingPin = true;
     const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
       this.omPhoneNumber
@@ -1106,6 +1115,7 @@ export class NewPinpadModalPage implements OnInit {
       sender: omUser.msisdn,
       receiver: params.msisdn2,
       montant: params.amount,
+      withTouchID
     };
 
     this.orangeMoneyService.transferOMWithCode(transferOMPayload).subscribe(
@@ -1126,7 +1136,7 @@ export class NewPinpadModalPage implements OnInit {
     fees: number;
     country;
     reason?: string;
-  }) {
+  }, withTouchID?: boolean) {
     this.processingPin = true;
     this.canRetry = false;
     this.pinHasError = false;
@@ -1159,6 +1169,7 @@ export class NewPinpadModalPage implements OnInit {
       sender: omUser.msisdn,
       receiver: params.msisdn2,
       montant: params.amount,
+      withTouchID
     };
 
     this.orangeMoneyService
@@ -1173,7 +1184,7 @@ export class NewPinpadModalPage implements OnInit {
       );
   }
 
-  initOperationChangePinOM(pin: string) {
+  initOperationChangePinOM(pin: string, withTouchID?:boolean) {
     this.seeSolde(pin);
   }
 
@@ -1207,7 +1218,7 @@ export class NewPinpadModalPage implements OnInit {
     code_marchand: number;
     nom_marchand: string;
     pin: string;
-  }) {
+  }, withTouchID?: boolean) {
     this.processingPin = true;
     const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
       this.omPhoneNumber
@@ -1226,6 +1237,7 @@ export class NewPinpadModalPage implements OnInit {
       receiver: params.code_marchand,
       montant: params.amount,
       mod_paiement: PAYMENT_MOD_OM,
+      withTouchID
     };
     this.orangeMoneyService
       .payMerchantOM(payMerchantPayload, { txnId: this.transactionId })
@@ -1347,7 +1359,7 @@ export class NewPinpadModalPage implements OnInit {
         transferToBlock: this.transactionToBlock,
         operationPayload
       });
-      
+
     } else if (
       res === null ||
       res.status_code === null ||
@@ -1403,6 +1415,8 @@ export class NewPinpadModalPage implements OnInit {
         this.pinError = err.error.message;
         this.canRetry = true;
         this.cappingFees = +err.error.fees;
+      } else if (err.error.errorCode.match(ERROR_CODE_INVALID_XEWEUL_CARD)) {
+        this.pinError = MSG_XEWEUL_CARD_INVALID;
       } else if (err.error.errorCode.match("Erreur-017")) {
         const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
           this.omPhoneNumber

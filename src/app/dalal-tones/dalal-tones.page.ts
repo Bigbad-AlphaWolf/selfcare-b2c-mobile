@@ -1,9 +1,10 @@
 import {HttpResponse} from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
+import { FormControl } from '@angular/forms';
 import {NavigationExtras, Router} from '@angular/router';
 import {ModalController, NavController, ToastController} from '@ionic/angular';
 import {Observable} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import {debounceTime, tap} from 'rxjs/operators';
 import {
   ItemUserConso,
   MINIMUM_REQUIRED_RECHARGEMENT_SOLDE_TO_ACTIVATE_DALAL,
@@ -22,6 +23,7 @@ import {DashboardService, downloadAvatarEndpoint} from '../services/dashboard-se
 import {DalalDisablePopupComponent} from './components/dalal-disable-popup/dalal-disable-popup.component';
 import {DalalMoreInfosComponent} from './components/dalal-more-infos/dalal-more-infos.component';
 const SINGLE_REQUEST_SIZE = 10;
+const MIN_SEARCH_LENGTH = 3;
 @Component({
   selector: 'app-dalal-tones',
   templateUrl: './dalal-tones.page.html',
@@ -47,6 +49,10 @@ export class DalalTonesPage implements OnInit {
   RECHARGEMENT_COMPTEUR_CODE = 1;
   currentPhoneNumber: string;
   currentCodeFormulePhoneNumber: string;
+  searchControl: FormControl = new FormControl();
+  lastSearchLength: number;
+  search: string;
+
   constructor(
     private dalalTonesService: DalalTonesService,
     private modalController: ModalController,
@@ -79,6 +85,12 @@ export class DalalTonesPage implements OnInit {
     this.authServ.getSubscription(this.currentPhoneNumber).subscribe((res: SubscriptionModel) => {
       this.currentCodeFormulePhoneNumber = res.code;
     });
+    this.searchControl.valueChanges.pipe(debounceTime(600)).subscribe(
+      search => {
+        console.log(search);
+        this.onSearch(search)
+      }
+    )
   }
 
   getCurrentActiveDalal() {
@@ -133,6 +145,7 @@ export class DalalTonesPage implements OnInit {
     if (this.selectedSousGenres.length) {
       params = {code: this.selectedSousGenres.join(',')};
     }
+    params['search'] = this.search ? this.search : '';
     this.getDalalTones(false, event, params);
   }
 
@@ -229,5 +242,18 @@ export class DalalTonesPage implements OnInit {
       recipientCodeFormule: this.currentCodeFormulePhoneNumber
     };
     this.appRouting.goToBuyCreditSetAmount(opBuyCreditSetAmountPayload);
+  }
+
+  onSearch(search: string) {
+    if (search?.length >= MIN_SEARCH_LENGTH) {
+      this.dalalTones = [];
+      this.page_number = 0;
+      this.loadingDalal = true;
+      this.search = search;
+      this.getDalalTones(true, null, {search});
+    } else if (!search?.length) {
+      this.search = '';
+      this.reloadDalalTones()
+    }
   }
 }

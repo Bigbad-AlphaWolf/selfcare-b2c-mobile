@@ -8,7 +8,7 @@ import {
   forkJoin,
   throwError,
 } from 'rxjs';
-import { tap, switchMap, map, catchError, delay } from 'rxjs/operators';
+import { tap, switchMap, map, catchError } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import {
@@ -69,6 +69,7 @@ import {
   OPERATION_TYPE_SENEAU_BILLS,
   OPERATION_TYPE_SENELEC_BILLS,
   OPERATION_TYPE_TERANGA_BILL,
+	OPERATION_XEWEUL,
 } from 'src/app/utils/operations.constants';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
 import { IlliflexService } from '../illiflex-service/illiflex.service';
@@ -77,7 +78,6 @@ import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-e
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { CreatePinOM } from 'src/app/models/create-pin-om.model';
 import { ValidateChallengeOMOEM } from 'src/app/models/challenge-answers-om-oem.model';
-import { Platform } from '@ionic/angular';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
 import { PAYMENT_BILLS_CATEGORY } from 'src/app/models/bill-payment.model';
 
@@ -134,7 +134,6 @@ export class OrangeMoneyService {
     private followAnalyticsService: FollowAnalyticsService,
     private dashboardService: DashboardService,
     private illiflexService: IlliflexService,
-    private platform: Platform,
     private faio: FingerprintAIO
   ) {}
   pinPadDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b"];
@@ -468,6 +467,10 @@ export class OrangeMoneyService {
       case OPERATION_RAPIDO:
         errorKey = "Recharge_Rapido_Error";
         eventKey = "Recharge_Rapido_Success";
+        value = dataToLog;
+      case OPERATION_XEWEUL:
+        errorKey = "Recharge_Xeweul_Error";
+        eventKey = "Recharge_Xeweul_Success";
         value = dataToLog;
         break;
       case OPERATION_PAY_ORANGE_BILLS:
