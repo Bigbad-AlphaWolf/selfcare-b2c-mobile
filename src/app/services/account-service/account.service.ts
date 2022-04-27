@@ -19,7 +19,7 @@ import {YesNoModalComponent} from 'src/shared/yes-no-modal/yes-no-modal.componen
 const {FILE_SERVICE, ACCOUNT_MNGT_SERVICE, SERVER_API_URL, UAA_SERVICE} = environment;
 const uploadAvatarEndpoint = `${SERVER_API_URL}/${FILE_SERVICE}/api/upload`;
 const accountManagementEndPoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/account-b-2-cs`;
-const changePasswordEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/change-password`;
+const changePasswordEndpoint = `${SERVER_API_URL}/api/account/b2c/change-password`;
 const deleteLinkedPhoneNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/rattachement-lignes/delete-multiple`;
 const ls = new SecureLS({encodingType: 'aes'});
 
@@ -45,12 +45,12 @@ export class AccountService {
     private modal: ModalController
   ) {}
 
-  changePassword(payload: {currentPassword: string; newPassword: string}) {
+  changePassword(payload: {login: string; newPassword: string}) {
     return this.http.post(changePasswordEndpoint, payload);
   }
 
-  changeUserPassword(currentPassword: string, newPassword: string) {
-    const changePasswordPayload = {currentPassword, newPassword};
+  changeUserPassword(login: string, newPassword: string) {
+    const changePasswordPayload = {login, newPassword};
     this.changePassword(changePasswordPayload).subscribe(
       res => {
         this.openSuccessDialog('changePassword');
