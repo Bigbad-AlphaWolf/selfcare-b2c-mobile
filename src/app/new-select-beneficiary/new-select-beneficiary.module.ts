@@ -9,9 +9,17 @@ import {NewSelectBeneficiaryPageRoutingModule} from './new-select-beneficiary-ro
 import {NewSelectBeneficiaryPage} from './new-select-beneficiary.page';
 import {SharedModule} from 'src/shared/shared.module';
 import {RecipientItemContactComponent} from './components/recipient-item-contact/recipient-item-contact.component';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, SharedModule, NewSelectBeneficiaryPageRoutingModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    SharedModule,
+    NewSelectBeneficiaryPageRoutingModule,
+    ScrollingModule
+  ],
   declarations: [NewSelectBeneficiaryPage, RecipientItemContactComponent]
 })
 export class NewSelectBeneficiaryPageModule {}

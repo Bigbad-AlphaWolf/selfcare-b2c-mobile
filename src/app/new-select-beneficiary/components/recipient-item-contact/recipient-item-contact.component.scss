@@ -5,9 +5,14 @@
   align-items: center;
   border-bottom: 2px solid #eeeeee;
   margin-right: 45px;
+  position: relative;
   img {
     margin-right: 15px;
     margin-bottom: 10px;
+  }
+  ion-img {
+    position: absolute;
+    right: 0;
   }
   .text {
     display: flex;

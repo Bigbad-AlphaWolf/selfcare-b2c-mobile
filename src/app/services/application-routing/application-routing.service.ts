@@ -109,7 +109,7 @@ export class ApplicationRoutingService {
 
   goSetTransferAmountPage(purchaseInformation?: any) {
     let navigationExtras: NavigationExtras = {
-      state: purchaseInformation
+      state: {...purchaseInformation, checkRecipient: true}
     };
     this.route.navigate([TransferSetAmountPage.ROUTE_PATH], navigationExtras);
   }

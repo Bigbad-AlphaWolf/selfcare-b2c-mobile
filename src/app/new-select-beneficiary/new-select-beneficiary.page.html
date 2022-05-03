@@ -9,69 +9,30 @@
   </ion-toolbar>
 </ion-header>
 <ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
+	<cdk-virtual-scroll-viewport itemSize="70" minBufferPx="700" maxBufferPx="1000">
+
 	<div class="page-content">
 		<ion-item class="input-field" lines="none" type="text" >
-			<ion-input placeholder="Numéro, Nom"></ion-input>
+			<ion-input #ionInput placeholder="Numéro, Nom" (ionChange)="searchTerm$.next($event.target.value.trim()); searchValue = $event.target.value.trim()" clearInput></ion-input>
 		</ion-item>
 
 		<div class="my-numbers">
 			<span class="title">
-				Mes numéros favoris
+				Mes transferts récents
 			</span>
 
 			<div class="list">
-				<div class="item">
-					<img src="assets/images/user.svg" alt="">
-					<div class="text">
-						<span class="name">
-							My Father
-						</span>
-						<span class="tel">
-							77 923 08 02
-						</span>
-					</div>
+				<div *ngIf="!recents?.length">
+					Aucun transferts récents
 				</div>
-				<div class="item">
+				<div *ngFor="let item of recents" (click)="onContactSelected(item)" class="item">
 					<img src="assets/images/user.svg" alt="">
 					<div class="text">
 						<span class="name">
-							My Father
+						 	{{ item?.displayName }}
 						</span>
 						<span class="tel">
-							77 923 08 02
-						</span>
-					</div>
-				</div>
-				<div class="item">
-					<img src="assets/images/user.svg" alt="">
-					<div class="text">
-						<span class="name">
-							My Father
-						</span>
-						<span class="tel">
-							77 923 08 02
-						</span>
-					</div>
-				</div>
-				<div class="item">
-					<img src="assets/images/user.svg" alt="">
-					<div class="text">
-						<span class="name">
-							My Father
-						</span>
-						<span class="tel">
-							77 923 08 02
-						</span>
-					</div>
-				</div>
-				<div class="item">
-					<img src="assets/images/user.svg" alt="">
-					<div class="text">
-						<span class="name">
-							My Father
-						</span>
-						<span class="tel">
-							77 923 08 02
+							{{item?.formatedPhoneNumber | phoneNumberDisplay}}
 						</span>
 					</div>
 				</div>
@@ -82,10 +43,21 @@
 			<span class="title">
 				Mes contacts
 			</span>
-			<app-recipient-item-contact *ngFor="let item of listContact" [item]="item"></app-recipient-item-contact>
+			<span class="error-msg scb-text-red-error" *ngIf="errorMsg">
+				{{errorMsg}}
+			</span>
+			<ng-container *ngIf="!contactError && listFilteredContacts.length">
+					<ion-list>
+						<app-recipient-item-contact *cdkVirtualFor="let item of listFilteredContacts" [item]="item" (selected)="onContactSelected($event)"></app-recipient-item-contact>
+					</ion-list>
 
+				</ng-container>
 
+			</div>
 		</div>
+	</cdk-virtual-scroll-viewport>
+	<div *ngIf="listFilteredContacts.length === 1" (click)="confirm()" class="confirm-btn">
+		<ion-button expand="block" shape="round" class="scb-btn-ion">Suivant</ion-button>
 	</div>
 
 </ion-content>
