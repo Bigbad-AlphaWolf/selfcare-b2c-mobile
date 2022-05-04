@@ -220,7 +220,11 @@ export class AuthenticationService {
           profil: subscription.profil ? subscription.profil.toString().toUpperCase() : subscription.profil,
           code: subscription.code
         };
-        if (result.profil === PROFILE_TYPE_HYBRID || result.profil === PROFILE_TYPE_HYBRID_1 || result.profil === PROFILE_TYPE_HYBRID_2) {
+        if (
+          result.profil === PROFILE_TYPE_HYBRID ||
+          result.profil === PROFILE_TYPE_HYBRID_1 ||
+          result.profil === PROFILE_TYPE_HYBRID_2
+        ) {
           result.code = JAMONO_ALLO_CODE_FORMULE;
         }
         const lsKey = 'sub' + msisdn;
@@ -467,12 +471,16 @@ export class AuthenticationService {
   }
 
   resetPassword(resetPwdPayload: ResetPwdModel) {
-    resetPwdPayload.login = resetPwdPayload.login.startsWith('221') ? resetPwdPayload.login.substring(3) : resetPwdPayload.login;
+    resetPwdPayload.login = resetPwdPayload.login.startsWith('221')
+      ? resetPwdPayload.login.substring(3)
+      : resetPwdPayload.login;
     return this.http.post(resetPwdEndpoint, resetPwdPayload);
   }
 
   resetPasswordV2(resetPwdPayload: ResetPwdModel) {
-    resetPwdPayload.login = resetPwdPayload.login.startsWith('221') ? resetPwdPayload.login.substring(3) : resetPwdPayload.login;
+    resetPwdPayload.login = resetPwdPayload.login.startsWith('221')
+      ? resetPwdPayload.login.substring(3)
+      : resetPwdPayload.login;
     return this.http.put(resetPwdV2Endpoint, resetPwdPayload);
   }
 

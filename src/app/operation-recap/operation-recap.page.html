@@ -1,7 +1,7 @@
 <ion-header [oemIonHeaderParallax]="90">
   <ion-toolbar>
     <ion-buttons>
-      <ion-back-button mode="md" (click)="goBack()" class="oem-back-button">
+      <ion-back-button mode="md" defaultHref="/" class="oem-back-button">
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
@@ -65,7 +65,7 @@
       </img-loader>
       <img-loader *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS" class="icone" src="assets/images/bills_banniere.png" useImg>
       </img-loader>
-    
+
     </ng-container>
   </div>
 </ion-header>

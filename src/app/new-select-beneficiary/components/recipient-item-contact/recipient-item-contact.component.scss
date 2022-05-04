@@ -1,0 +1,41 @@
+.item {
+  height: 68px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 2px solid #eeeeee;
+  margin-right: 45px;
+  position: relative;
+  img {
+    margin-right: 15px;
+    margin-bottom: 10px;
+  }
+  ion-img {
+    position: absolute;
+    right: 0;
+  }
+  .text {
+    display: flex;
+    flex-direction: column;
+    .name {
+      font-family: HelveticaNeueLTStd-Bd;
+      font-size: 14px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #000;
+    }
+    .tel {
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 12px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #666;
+    }
+  }
+}

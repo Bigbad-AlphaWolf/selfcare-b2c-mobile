@@ -1,0 +1,164 @@
+@import 'src/app/app';
+
+cdk-virtual-scroll-viewport {
+  height: 100%;
+  width: 100%;
+  background-color: #f2f2f7;
+}
+
+.page-content {
+  background-color: #f2f2f7;
+  height: 100%;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  //ion-input {
+  //  &:focus {
+  //    .input-field {
+  //      border: 2px solid #ff7900;
+  //    }
+  //  }
+  //}
+  .input-field {
+    margin: 0 15px;
+    border-radius: 6px;
+    border: solid 2px #eee;
+    background-color: #fff;
+    font-size: 16px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.25;
+    letter-spacing: normal;
+    height: 60px;
+    display: flex;
+    margin-bottom: 30px;
+    position: relative;
+    &:focus-within() {
+      border: 2px solid #ff7900;
+    }
+    .suffix {
+      position: absolute;
+      right: 5px;
+    }
+    .clear {
+      font-size: 16px;
+      font-weight: bold;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.88;
+      letter-spacing: normal;
+      text-align: right;
+      color: #ff7900;
+    }
+  }
+
+  .title {
+    margin: 0 15px;
+    font-size: 20px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    color: #000;
+    display: block;
+    margin-bottom: 15px;
+  }
+  .my-numbers {
+    margin-bottom: 20px;
+    .list {
+      margin-left: 15px;
+      width: 100%;
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      .item {
+        flex: 1 0 auto;
+        width: 120px;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        border-radius: 10px;
+        border: solid 1px #eee;
+        background-color: #fff;
+        align-items: center;
+        max-width: 120px;
+        &:last-child {
+          margin-right: 35px;
+        }
+        img {
+          width: 40px;
+          margin-bottom: 15px;
+        }
+        .text {
+          .name,
+          .tel {
+            display: block;
+          }
+          .name {
+            font-family: HelveticaNeueLTStd-Bd;
+            font-size: 12px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            text-align: center;
+            color: #000;
+          }
+          .tel {
+            font-family: HelveticaNeueLTStd-Roman;
+            font-size: 12px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            text-align: center;
+            color: #999;
+          }
+        }
+      }
+    }
+  }
+
+  .list-contacts {
+    background-color: #fff;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+    .title {
+      padding-top: 30px;
+      margin-left: 0;
+      margin-bottom: 15px;
+    }
+  }
+
+  .error-msg {
+    margin-top: 10px;
+    font-family: HelveticaNeueLTStd-Roman;
+    font-size: 12px;
+  }
+}
+.confirm-btn {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  background-color: white;
+  padding: 20px;
+  .scb-btn-ion {
+    //margin: auto;
+    height: 50px;
+    width: 100%;
+    --border-radius: 4px;
+    --background-activated: $orange;
+  }
+  mat-spinner {
+    position: absolute;
+    right: 5px;
+    top: 12px;
+  }
+}

@@ -85,28 +85,10 @@ export class TransferSetAmountPage implements OnInit {
     const isDeeplinkTransferOM = await this.checkTransferOMDeeplink();
     if (isDeeplinkTransferOM) return;
     this.purchasePayload = history.state;
+		console.log('from initFees', this.purchasePayload);
+
     if (this.purchasePayload && this.purchasePayload.purchaseType) {
-      this.purchaseType = this.purchasePayload.purchaseType;
-      this.userHasNoOmAccount = this.purchasePayload.userHasNoOmAccount;
-      const initialAmount = this.purchasePayload.amount;
-      this.recipientFirstname = this.purchasePayload.recipientFirstname;
-      this.recipientLastname = this.purchasePayload.recipientLastname;
-      this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE)
-        .pipe(
-          switchMap((res) => {
-            return this.getOMTransferFees(OM_LABEL_SERVICES.TAF);
-          })
-        )
-        .subscribe();
-      if (this.purchaseType === OPERATION_TRANSFER_OM) {
-        this.initForm(1, initialAmount);
-      } else if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
-        this.initTransferWithCodeForm(null);
-      } else if (this.purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER) {
-        this.initForm(1000);
-        this.country = this.purchasePayload.country;
-        this.getOMTransferFees(this.country?.code).subscribe();
-      }
+			this.processInfosFromBeneficiaryPage();
     }
   }
 
@@ -135,6 +117,46 @@ export class TransferSetAmountPage implements OnInit {
       this.userHasNoOmAccount = !msisdnHasOM;
       this.userHasNoOmAccount
         ? this.initTransferWithCodeForm()
+        : this.initForm(1);
+      this.ref.detectChanges();
+      return 1;
+    }
+    return 0;
+  }
+
+  async processInfosFromBeneficiaryPage() {
+    const checkRecipient = history.state.checkRecipient;
+		console.log('history.state', history.state);
+    if (checkRecipient) {
+
+			this.purchasePayload = history.state;
+			this.purchaseType = this.purchasePayload.purchaseType;
+			if (this.purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER) {
+        this.initForm(1000);
+        this.country = this.purchasePayload.country;
+        this.getOMTransferFees(this.country?.code).subscribe();
+				return;
+      }
+			this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE)
+        .pipe(
+          switchMap((res) => {
+            return this.getOMTransferFees(OM_LABEL_SERVICES.TAF);
+          })
+        )
+        .subscribe();
+      const msisdnHasOM = await this.omService
+        .checkUserHasAccount(this.purchasePayload.recipientMsisdn).pipe(
+					catchError((_) => {
+						return of(true)
+					})
+				)
+        .toPromise();
+      this.purchaseType = msisdnHasOM
+        ? OPERATION_TRANSFER_OM
+        : OPERATION_TRANSFER_OM_WITH_CODE;
+      this.userHasNoOmAccount = !msisdnHasOM;
+      this.userHasNoOmAccount
+        ? this.initTransferWithCodeForm(1)
         : this.initForm(1);
       this.ref.detectChanges();
       return 1;

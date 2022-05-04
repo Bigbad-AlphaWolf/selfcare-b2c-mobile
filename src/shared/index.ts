@@ -12,6 +12,10 @@ import {
 import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
 
 const ls = new SecureLS({ encodingType: 'aes' });
+export const REGEX_NUMBER_ALLOWED_COUNTRY_CODE_SHORT: RegExp =
+	/^((\+221|\+225|\+223|\+227|\+245))/;
+export const REGEX_NUMBER_ALLOWED_COUNTRY_CODE_LONG: RegExp =
+	/^((\00221|00221|00227|00245))/;
 export const REGEX_NUMBER: RegExp =
   /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
 export const REGEX_NUMBER_OM: RegExp =
@@ -438,10 +442,10 @@ export function getListPassFilteredByLabelAndPaymentMod(
 ) {
   let listPassFiltered = [];
   listPassFiltered = listPass.filter((pass: any) => {
-    if (!pass.passPromo) {
-      return pass.categoriePass?.libelle === selectedLabel;
+    if (!pass?.passPromo) {
+      return pass?.categoriePass?.libelle === selectedLabel;
     } else {
-      return pass.passPromo?.categoriePass?.libelle === selectedLabel;
+      return pass?.passPromo?.categoriePass?.libelle === selectedLabel;
     }
   });
 
