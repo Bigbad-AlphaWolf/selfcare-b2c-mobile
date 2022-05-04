@@ -98,14 +98,9 @@ export class ContactsService {
       debounceTime(600),
       distinctUntilChanged(),
       switchMap(term => {
-        console.log('term', term);
-
         if (term.length) {
-          console.log('term', term);
-
           return of(this.searchOnContacts(term, formattedContact));
         } else {
-          console.log('no filter term', term, 'formattedContact', formattedContact);
           return of(formattedContact);
         }
       })

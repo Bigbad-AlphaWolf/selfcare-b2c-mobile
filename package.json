@@ -256,7 +256,9 @@
       "cordova-plugin-fingerprint-aio": {
         "FACEID_USAGE_DESCRIPTION": " "
       },
-      "cordova-plugin-contacts-phonenumbers": {},
+      "cordova-plugin-contacts-phonenumbers": {
+        "CONTACTS_USAGE_DESCRIPTION": "This app needs contacts access"
+      },
       "phonegap-plugin-barcodescanner": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
