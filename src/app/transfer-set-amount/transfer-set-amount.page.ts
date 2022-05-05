@@ -65,7 +65,7 @@ export class TransferSetAmountPage implements OnInit {
   OPERATION_TYPE_INTERNATIONAL_TRANSFER = OPERATION_TYPE_INTERNATIONAL_TRANSFER;
   country: any;
   reason: any;
-
+	loading: boolean;
   constructor(
     private route: ActivatedRoute,
     private omService: OrangeMoneyService,
@@ -144,9 +144,14 @@ export class TransferSetAmountPage implements OnInit {
           })
         )
         .subscribe();
+			this.loading = true;
       const msisdnHasOM = await this.omService
         .checkUserHasAccount(this.purchasePayload.recipientMsisdn).pipe(
+					tap(_ => {
+						this.loading = false;
+					}),
 					catchError((_) => {
+						this.loading = false;
 						return of(true)
 					})
 				)

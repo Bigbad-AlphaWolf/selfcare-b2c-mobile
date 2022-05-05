@@ -84,11 +84,11 @@ export class NewSelectBeneficiaryPage implements OnInit {
 	}
 
 	retrievContacts(refresh?: boolean) {
+		this.listFilteredContacts = this.listContact = [];
 		this.contactService
 			.getAllContacts(refresh)
 			.pipe(
 				tap( ( res: ContactOem[] ) => {
-					if(refresh)	this.listFilteredContacts = this.listContact = [];
 					this.getRecents();
 					res.forEach( item => {
 						if ( item.numbers.length > 1 ) {
@@ -109,7 +109,7 @@ export class NewSelectBeneficiaryPage implements OnInit {
 					this.listContact = this.listContact.filter((item) => {
 						return !!item?.country
 					});
-					const sortedContact = this.listContact.sort( ( a, b ) => a?.displayName[0].localeCompare( b?.displayName[0] ) );
+					const sortedContact = this.listContact.sort( ( a, b ) => a?.displayName[0]?.localeCompare( b?.displayName[0] ) );
 					this.listFilteredContacts = sortedContact;
 					this.listContact = sortedContact;
 					this.activeSearchContact();
@@ -122,8 +122,6 @@ export class NewSelectBeneficiaryPage implements OnInit {
 	}
 
 	formatPhoneNumber(phoneNumber: string) {
-		console.log('format', phoneNumber);
-
 		if(REGEX_NUMBER_ALLOWED_COUNTRY_CODE_SHORT.test(phoneNumber)) {
 			return phoneNumber.substring(4);
 		} else if(REGEX_NUMBER_ALLOWED_COUNTRY_CODE_LONG.test(phoneNumber)) {
