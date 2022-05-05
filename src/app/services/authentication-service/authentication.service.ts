@@ -150,9 +150,9 @@ export class AuthenticationService {
   // get msisdn subscription
   getSubscription(msisdn: string) {
     const lsKey = 'sub' + msisdn;
-    this.checkSubscriptionHasExpired(lsKey);
+    const hasExpired = this.checkSubscriptionHasExpired(lsKey);
     const savedData = ls.get(lsKey);
-    if (savedData) {
+    if (savedData && !hasExpired) {
       return of(savedData).pipe(take(1));
     } else {
       return this.getCustomerOfferRefact(msisdn).pipe(
@@ -178,6 +178,10 @@ export class AuthenticationService {
           ls.set(lsKey, subscription);
           this.subscriptionUpdatedSubject.next(subscription);
           return subscription;
+        }),
+        catchError(err => {
+          if (savedData) return of(savedData);
+          return throwError(err);
         })
       );
     }
@@ -218,15 +222,21 @@ export class AuthenticationService {
         ls.set(lsKey, subscription);
         this.subscriptionUpdatedSubject.next(subscription);
         return subscription;
+      }),
+      catchError(err => {
+        const lsKey = 'subtiers' + msisdn;
+        const savedData = ls.get(lsKey);
+        if (savedData) return of(savedData);
+        return throwError(err);
       })
     );
   }
 
   getSubscriptionForTiers(msisdn: string): Observable<any> {
     const lsKey = 'subtiers' + msisdn;
-    this.checkSubscriptionHasExpired(lsKey);
+    const hasExpired = this.checkSubscriptionHasExpired(lsKey);
     const savedData = ls.get(lsKey);
-    if (savedData) {
+    if (savedData && !hasExpired) {
       return of(savedData);
     } else {
       return this.getSubscriptionCustomerOfferForTiers(msisdn).pipe(share());
@@ -246,7 +256,7 @@ export class AuthenticationService {
     // 1.800.000 ms = 1.800 s = 30 min subscription cache duration
     // multiply by an int to extend storage duration in the cache (eg. 1800000 * 48)
     const hasExpired = elapsedTime > 1800000;
-    if (hasExpired) ls.remove(subscriptionKey);
+    // if (hasExpired) ls.remove(subscriptionKey);
     return hasExpired;
   }
 
