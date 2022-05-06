@@ -1,16 +1,20 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, of, throwError} from 'rxjs';
+import {BehaviorSubject, throwError} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
 import {CheckOtpOem} from 'src/app/models/check-otp-oem.model';
 import {GenerateOtpOem} from 'src/app/models/generate-otp-oem.model';
 import {environment} from 'src/environments/environment';
 import {LOCAL_STORAGE_KEYS} from 'src/shared';
 import {LocalStorageService} from '../localStorage-service/local-storage.service';
+import { nanoid } from 'nanoid'
+
 const {OTP_SERVICE, SERVER_API_URL} = environment;
 
 const generateOTPEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-link/generate`;
 const checkOTPEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-link/check`;
+const generateOTPCodeEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-infos/generate`;
+const validateRattachByOTPCodeEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-infos/check`;
 @Injectable({
   providedIn: 'root'
 })
@@ -42,4 +46,19 @@ export class OtpService {
       })
     );
   }
+
+	generateOTPCode(msisdn: string) {
+		const data = {
+			token: nanoid(5),
+			msisdn
+		};
+		return this.http.post(`${generateOTPCodeEndpoint}`, data);
+	}
+
+	rattachNumberByOTPCode(msisdn: string, code: string) {
+		const data = {
+			msisdn, code
+		}
+		return this.http.post(`${validateRattachByOTPCodeEndpoint}`, data);
+	}
 }

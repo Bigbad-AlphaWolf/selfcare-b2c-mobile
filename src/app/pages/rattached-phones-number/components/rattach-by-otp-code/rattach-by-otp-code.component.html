@@ -1,0 +1,39 @@
+<div class="rattach-by-id-card oem-bottomsheet-container">
+  <div  class="arrow-left" (click)="goBack()">
+    <img alt="" src="/assets/images/arrow-left.png" />
+  </div>
+  <div class="title">
+    Code OTP
+  </div>
+  <div class="description">
+    Renseigner le code OTP reçu sur le numéro {{ number }}
+  </div>
+  <div class="id-card-input">
+    <form novalidate autocomplete="false">
+      <mat-form-field class="scb-input-row" appearance="outline">
+          <mat-label>Code OTP</mat-label>
+          <input
+          [ngModelOptions]="{standalone: true}"
+            matInput
+            type="text"
+            maxlength=20
+            [(ngModel)]="otpCode"
+          />
+        </mat-form-field>
+    </form>
+    <div *ngIf="hasError" class="error-msg scb-text-red-error">
+      Code invalide
+    </div>
+  </div>
+
+  <div class="btn-continue">
+    <ion-button expand="block" (click)="processRattachment()" [disabled]="isLoading || !otpCode?.length">
+      Continuer
+    </ion-button>
+    <ion-spinner *ngIf="isLoading"
+      name="crescent"
+    ></ion-spinner>
+  </div>
+
+
+</div>
