@@ -13,10 +13,10 @@
 
 	<div class="page-content">
 		<ion-item class="input-field" lines="none" type="text" >
-			<ion-input #ionInput placeholder="Numéro, Nom" (ionChange)="searchTerm$.next($event.target.value.trim()); searchValue = $event.target.value.trim()" clearInput></ion-input>
+			<ion-input (ionFocus)="inputFocused = true" (ionBlur)="inputFocused = false" placeholder="Numéro, Nom" (ionChange)="searchTerm$.next($event.target.value.trim()); searchValue = $event.target.value.trim()" clearInput></ion-input>
 		</ion-item>
 
-		<div class="my-numbers">
+		<div *ngIf="!inputFocused || !searchValue?.length" class="my-numbers">
 			<span class="title">
 				Mes transferts récents
 			</span>

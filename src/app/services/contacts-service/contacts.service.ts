@@ -108,8 +108,10 @@ export class ContactsService {
   }
 
   searchOnContacts(term: string, formattedContact: ContactOem[]) {
+		// remove accent on accentued caracter. Ex: replace ètre by etre
+		const termWithoutAccent = term.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     let result = formattedContact.filter(item => {
-      return item.displayName.toLowerCase().includes(term) || item.phoneNumber.toLowerCase().includes(term);
+      return item.displayName.toLowerCase().includes(termWithoutAccent.toLowerCase()) || item.displayName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes(termWithoutAccent) || item.phoneNumber.toLowerCase().includes(termWithoutAccent.toLowerCase());
     });
     if (!result.length && REGEX_NUMBER_OM.test(term)) {
       const item: ContactOem = {
