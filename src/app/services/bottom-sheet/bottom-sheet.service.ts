@@ -353,17 +353,19 @@ export class BottomSheetService {
       if (res?.direction === 'BACK') {
         this.openRattacheNumberModal()
       } else {
-        if (res.rattached) {
-          const numero = res.numeroToRattach;
-          this.openSuccessDialog('rattachment-success', numero);
-        } else {
-          this.openSuccessDialog(
-            'rattachment-failed',
-            null,
-            res.errorMsg,
-            res.errorStatus
-          );
-        }
+				if(res) {
+					if (res?.rattached) {
+						const numero = res.numeroToRattach;
+						this.openSuccessDialog('rattachment-success', numero);
+					} else {
+						this.openSuccessDialog(
+							'rattachment-failed',
+							null,
+							res.errorMsg,
+							res.errorStatus
+						);
+					}
+				}
       }
     });
     return await modal.present();
@@ -379,21 +381,23 @@ export class BottomSheetService {
     });
     modal.onDidDismiss().then((res: any) => {
       res = res.data;
-      if (res?.direction === 'BACK') {
-        this.openSelectRattachmentType(number);
-      } else {
-        if (res.rattached) {
-          const numero = res.numeroToRattach;
-          this.openSuccessDialog('rattachment-success', numero);
-        } else {
-          this.openSuccessDialog(
-            'rattachment-failed',
-            null,
-            res.errorMsg,
-            res.errorStatus
-          );
-        }
-      }
+			if(res) {
+				if (res?.direction === 'BACK') {
+					this.openSelectRattachmentType(number);
+				} else {
+					if (res?.rattached) {
+						const numero = res.numeroToRattach;
+						this.openSuccessDialog('rattachment-success', numero);
+					} else {
+						this.openSuccessDialog(
+							'rattachment-failed',
+							null,
+							res.errorMsg,
+							res.errorStatus
+						);
+					}
+				}
+			}
     });
 
     return await modal.present();

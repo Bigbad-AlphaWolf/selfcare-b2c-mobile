@@ -9,12 +9,12 @@ import {LOCAL_STORAGE_KEYS} from 'src/shared';
 import {LocalStorageService} from '../localStorage-service/local-storage.service';
 import { nanoid } from 'nanoid'
 
-const {OTP_SERVICE, SERVER_API_URL} = environment;
+const {OTP_SERVICE, ACCOUNT_MNGT_SERVICE, SERVER_API_URL} = environment;
 
 const generateOTPEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-link/generate`;
 const checkOTPEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-link/check`;
 const generateOTPCodeEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-infos/generate`;
-const validateRattachByOTPCodeEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-infos/check`;
+const validateRattachByOTPCodeEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/v1/rattachement-lignes/register/by-otp`;
 @Injectable({
   providedIn: 'root'
 })
@@ -55,9 +55,9 @@ export class OtpService {
 		return this.http.post(`${generateOTPCodeEndpoint}`, data);
 	}
 
-	rattachNumberByOTPCode(msisdn: string, code: string) {
+	rattachNumberByOTPCode(msisdn: string, code: string, login: string) {
 		const data = {
-			msisdn, code
+			numero: msisdn, identificationId: code, login, typeNumero: "MOBILE"
 		}
 		return this.http.post(`${validateRattachByOTPCodeEndpoint}`, data);
 	}
