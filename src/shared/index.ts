@@ -1525,3 +1525,5 @@ export enum STEPS_ACCESS_BY_OTP {
 }
 
 export const PATH_ACCESS_BY_OTP = '/access/';
+
+export const RATTACHMENT_ERROR_MAX_COUNT = 3;

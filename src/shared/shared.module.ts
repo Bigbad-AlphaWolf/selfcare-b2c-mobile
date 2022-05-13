@@ -89,6 +89,7 @@ import {XeweulSelectionComponent} from '../app/components/counter/xeweul-selecti
 import {CardXeweulNameModalComponent} from '../app/components/card-xeweul-name-modal/card-xeweul-name-modal.component';
 import {XeweulSoldeComponent} from '../app/components/counter/xeweul-solde/xeweul-solde.component';
 import {FavoriteXeweulComponent} from '../app/components/counter/favorite-xeweul/favorite-xeweul.component';
+import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
 
 @NgModule({
   declarations: [
@@ -214,7 +215,8 @@ import {FavoriteXeweulComponent} from '../app/components/counter/favorite-xeweul
     FaceIdRequestModalComponent,
     TypeCounterModalComponent,
     FavoriteServiceCountersComponent,
-    FavoriteCounterNameModalComponent
+    FavoriteCounterNameModalComponent,
+		RattachByOtpCodeComponent
   ],
   exports: [
     BanniereComponent,

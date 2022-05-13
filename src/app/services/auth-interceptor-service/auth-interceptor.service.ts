@@ -110,7 +110,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     }
     // Not send token for dev endpoints
     if (
-      req.url.match('selfcare-otp') ||
+      //req.url.match('selfcare-otp') ||
       req.url.match('selfcare-b2c-account/api/account-management/account') ||
       req.url.match('auth/login')
     ) {

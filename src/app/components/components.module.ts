@@ -32,6 +32,7 @@ import {SwiperModule} from 'swiper/angular';
 import {VisualizeStoriesByCategoriesComponent} from './visualize-stories-by-categories/visualize-stories-by-categories.component';
 import {LazyLoadDirective} from '../directives/lazy-load-img/lazy-load-image.directive';
 import {CardXeweulNameModalComponent} from "./card-xeweul-name-modal/card-xeweul-name-modal.component";
+import { RattachByOtpCodeComponent } from '../pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
 @NgModule({
   declarations: [
     ItemOfferPlanComponent,
@@ -60,7 +61,8 @@ import {CardXeweulNameModalComponent} from "./card-xeweul-name-modal/card-xeweul
     StoriesProgressBarComponent,
     VisualizeStoryComponent,
     VisualizeStoriesByCategoriesComponent,
-    LazyLoadDirective
+    LazyLoadDirective,
+		RattachByOtpCodeComponent
   ],
   imports: [CommonModule, PipesModule, MaterialComponentsModule, IonicModule, IonicImageLoader, SwiperModule],
   exports: [
@@ -91,7 +93,8 @@ import {CardXeweulNameModalComponent} from "./card-xeweul-name-modal/card-xeweul
     VisualizeStoryComponent,
     SwiperModule,
     VisualizeStoriesByCategoriesComponent,
-    LazyLoadDirective
+    LazyLoadDirective,
+		RattachByOtpCodeComponent
   ],
   entryComponents: [HistorikTransactionByTypeModalComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
