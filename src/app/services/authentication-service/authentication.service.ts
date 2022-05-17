@@ -135,7 +135,7 @@ export class AuthenticationService {
     const lsKey = 'sub' + msisdn;
     const hasExpired = this.checkSubscriptionHasExpired(lsKey);
     const savedData = ls.get(lsKey);
-    if (!hasExpired && savedData) {
+    if (savedData && !hasExpired) {
       return of(savedData).pipe(take(1));
     } else {
       return this.getCustomerOfferRefact(msisdn).pipe(
@@ -206,6 +206,12 @@ export class AuthenticationService {
         ls.set(lsKey, subscription);
         //this.subscriptionUpdatedSubject.next(subscription);
         return subscription;
+      }),
+      catchError(err => {
+        const lsKey = 'subtiers' + msisdn;
+        const savedData = ls.get(lsKey);
+        if (savedData) return of(savedData);
+        return throwError(err);
       })
     );
   }
@@ -214,7 +220,7 @@ export class AuthenticationService {
     const lsKey = 'subtiers' + msisdn;
     const hasExpired = this.checkSubscriptionHasExpired(lsKey);
     const savedData = ls.get(lsKey);
-    if (!hasExpired && savedData) {
+    if (savedData && !hasExpired) {
       return of(savedData);
     } else {
       return this.getSubscriptionCustomerOfferForTiers(msisdn).pipe(share());

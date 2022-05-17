@@ -5,6 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { PalierModel } from 'src/app/models/palier.model';
 import { BoosterModel } from 'src/app/models/booster.model';
 import {
+  isPostpaidFix,
   PROFILE_TYPE_HYBRID,
   PROFILE_TYPE_HYBRID_1,
   PROFILE_TYPE_HYBRID_2,
@@ -666,6 +667,10 @@ export interface SubscriptionModel {
   profil: string;
   code: string;
   clientCode?: string;
+}
+
+export function isFixeNumber(phone: string, souscription: SubscriptionModel) {
+  return REGEX_FIX_NUMBER.test(phone) && isPostpaidFix(souscription);
 }
 
 export interface ItemBesoinAide {
