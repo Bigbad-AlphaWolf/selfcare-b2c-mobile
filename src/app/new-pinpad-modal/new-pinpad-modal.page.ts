@@ -317,7 +317,8 @@ export class NewPinpadModalPage implements OnInit {
           this.pinError = null;
           if (
             this.operationType !== OPERATION_CREATE_PIN_OM &&
-            this.operationType !== OPERATION_RESET_PIN_OM
+            this.operationType !== OPERATION_RESET_PIN_OM &&
+            this.operationType !== OPERATION_CHANGE_PIN_OM
           ) {
             const faceIdStatus =
               await this.orangeMoneyService.checkFaceIdStatus();
