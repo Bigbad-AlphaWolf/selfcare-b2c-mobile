@@ -1,8 +1,24 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Subject, Observable, of, interval, throwError} from 'rxjs';
-import {tap, map, delay, retryWhen, flatMap, switchMap, catchError, share, take} from 'rxjs/operators';
-import {HttpClient} from '@angular/common/http';
-import {environment} from 'src/environments/environment';
+import { Injectable } from '@angular/core';
+import {
+  BehaviorSubject,
+  Subject,
+  Observable,
+  of,
+  interval,
+  throwError,
+} from 'rxjs';
+import {
+  tap,
+  map,
+  retryWhen,
+  flatMap,
+  switchMap,
+  catchError,
+  share,
+  take,
+} from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 import * as jwt_decode from 'jwt-decode';
 import * as SecureLS from 'secure-ls';
 import {
@@ -12,9 +28,14 @@ import {
   isFixPostpaid,
   PROFILE_TYPE_POSTPAID,
   KILIMANJARO_FORMULE,
-  isPostpaidFix
+  isPostpaidFix,
 } from 'src/app/dashboard';
-import {JAMONO_ALLO_CODE_FORMULE, SubscriptionModel, JAMONO_PRO_CODE_FORMULE, PRO_MOBILE_ERROR_CODE} from 'src/shared';
+import {
+  JAMONO_ALLO_CODE_FORMULE,
+  SubscriptionModel,
+  JAMONO_PRO_CODE_FORMULE,
+  PRO_MOBILE_ERROR_CODE,
+} from 'src/shared';
 
 const {
   SERVER_API_URL,
@@ -22,9 +43,9 @@ const {
   CONSO_SERVICE,
   GET_MSISDN_BY_NETWORK_URL,
   CONFIRM_MSISDN_BY_NETWORK_URL,
-  CUSTOMER_OFFER_CACHE_DURATION
+  CUSTOMER_OFFER_CACHE_DURATION,
 } = environment;
-const ls = new SecureLS({encodingType: 'aes'});
+const ls = new SecureLS({ encodingType: 'aes' });
 
 // Account & msisdn infos
 const accountBaseUrl = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management`;
@@ -46,7 +67,7 @@ const checkNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/accou
 const checkNumberV3Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v3/check_number`;
 const registerEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/register`;
 const registerV3Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v3/register`;
-const resetPwdEndpoint = `${SERVER_API_URL}/api/account/b2c/reset-password`;
+const resetPwdEndpoint = `${SERVER_API_URL}/account/b2c/reset-password`;
 const resetPwdV2Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v1/lite/reset-password`;
 
 const checkNumberIsOrangeEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/v1/is-orange-number`;
@@ -55,7 +76,7 @@ const tokenEndpoint = `${SERVER_API_URL}/auth/get-service-token`;
 // eligibility to recieve pass internet & illimix endpoint
 const eligibilityRecievePassEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/check-conditions`;
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthenticationService {
   currentPhoneNumberSetSubject = new BehaviorSubject<boolean>(false);
@@ -63,7 +84,10 @@ export class AuthenticationService {
   scrollToBottomSubject: Subject<string> = new Subject<string>();
   acceptCookieSubject = new Subject<string>();
   userInfo: any;
-  private SubscriptionHttpCache: Map<string, Observable<any>> = new Map<string, Observable<any>>();
+  private SubscriptionHttpCache: Map<string, Observable<any>> = new Map<
+    string,
+    Observable<any>
+  >();
   subscriptionUpdatedSubject: Subject<any> = new Subject<any>();
   constructor(private http: HttpClient) {}
 
@@ -83,7 +107,7 @@ export class AuthenticationService {
 
   // check if user has account or not or is linked with another account
   checkUserStatus(msisdn: string, token: string) {
-    return this.http.post(checkUserExistEndpoint, {msisdn, token});
+    return this.http.post(checkUserExistEndpoint, { msisdn, token });
   }
 
   getInfosAbonneWithOTP(msisdn: string, codeOTP: string) {
@@ -101,7 +125,9 @@ export class AuthenticationService {
   }
 
   getCustomerOfferRefact(msisdn: string) {
-    return this.http.get(`${userSubscriptionEndpoint2}/${msisdn}`).pipe(share());
+    return this.http
+      .get(`${userSubscriptionEndpoint2}/${msisdn}`)
+      .pipe(share());
   }
 
   // get msisdn subscription
@@ -109,7 +135,7 @@ export class AuthenticationService {
     const lsKey = 'sub' + msisdn;
     const hasExpired = this.checkSubscriptionHasExpired(lsKey);
     const savedData = ls.get(lsKey);
-    if (!hasExpired && savedData) {
+    if (savedData && !hasExpired) {
       return of(savedData).pipe(take(1));
     } else {
       return this.getCustomerOfferRefact(msisdn).pipe(
@@ -119,7 +145,7 @@ export class AuthenticationService {
             clientCode: res.clientCode,
             nomOffre: res.offerName,
             profil: res.offerType,
-            code: res.offerId
+            code: res.offerId,
           };
           if (
             subscription.profil === PROFILE_TYPE_HYBRID ||
@@ -162,7 +188,7 @@ export class AuthenticationService {
           nomOffre: res.offerName,
           profil: res.offerType,
           code: res.offerId,
-          clientCode: res.clientCode
+          clientCode: res.clientCode,
         };
         if (
           subscription.profil === PROFILE_TYPE_HYBRID ||
@@ -180,6 +206,12 @@ export class AuthenticationService {
         ls.set(lsKey, subscription);
         //this.subscriptionUpdatedSubject.next(subscription);
         return subscription;
+      }),
+      catchError(err => {
+        const lsKey = 'subtiers' + msisdn;
+        const savedData = ls.get(lsKey);
+        if (savedData) return of(savedData);
+        return throwError(err);
       })
     );
   }
@@ -188,7 +220,7 @@ export class AuthenticationService {
     const lsKey = 'subtiers' + msisdn;
     const hasExpired = this.checkSubscriptionHasExpired(lsKey);
     const savedData = ls.get(lsKey);
-    if (!hasExpired && savedData) {
+    if (savedData && !hasExpired) {
       return of(savedData);
     } else {
       return this.getSubscriptionCustomerOfferForTiers(msisdn).pipe(share());
@@ -217,10 +249,16 @@ export class AuthenticationService {
       map((subscription: any) => {
         const result = {
           nomOffre: subscription.nomOffre,
-          profil: subscription.profil ? subscription.profil.toString().toUpperCase() : subscription.profil,
-          code: subscription.code
+          profil: subscription.profil
+            ? subscription.profil.toString().toUpperCase()
+            : subscription.profil,
+          code: subscription.code,
         };
-        if (result.profil === PROFILE_TYPE_HYBRID || result.profil === PROFILE_TYPE_HYBRID_1 || result.profil === PROFILE_TYPE_HYBRID_2) {
+        if (
+          result.profil === PROFILE_TYPE_HYBRID ||
+          result.profil === PROFILE_TYPE_HYBRID_1 ||
+          result.profil === PROFILE_TYPE_HYBRID_2
+        ) {
           result.code = JAMONO_ALLO_CODE_FORMULE;
         }
         const lsKey = 'sub' + msisdn;
@@ -241,7 +279,11 @@ export class AuthenticationService {
         const codeFormule = res.code;
         const profil = res.profil;
 
-        if ((profil === PROFILE_TYPE_POSTPAID && codeFormule != KILIMANJARO_FORMULE) || isPostpaidFix(res)) {
+        if (
+          (profil === PROFILE_TYPE_POSTPAID &&
+            codeFormule != KILIMANJARO_FORMULE) ||
+          isPostpaidFix(res)
+        ) {
           return false;
         }
         return true;
@@ -271,7 +313,9 @@ export class AuthenticationService {
   // isPostpaid
   isPostpaid(msisdn: string) {
     const mainPhoneNumber = this.getUserMainPhoneNumber();
-    return this.http.get(`${userSubscriptionIsPostpaidEndpoint}/${mainPhoneNumber}/${msisdn}`);
+    return this.http.get(
+      `${userSubscriptionIsPostpaidEndpoint}/${mainPhoneNumber}/${msisdn}`
+    );
   }
 
   hasToken() {
@@ -286,7 +330,11 @@ export class AuthenticationService {
     return ls.get('light-token');
   }
 
-  login(credential: {username: string; password: string; rememberMe?: boolean}) {
+  login(credential: {
+    username: string;
+    password: string;
+    rememberMe?: boolean;
+  }) {
     return this.http.post(loginEndpoint, credential).pipe(
       tap((res: any) => {
         this.storeAuthenticationData(res, credential);
@@ -309,7 +357,10 @@ export class AuthenticationService {
   }
 
   captcha(token: string, ip: string) {
-    return this.http.post(captchaEndpoint + '?token=' + token + '&ip=' + ip, null);
+    return this.http.post(
+      captchaEndpoint + '?token=' + token + '&ip=' + ip,
+      null
+    );
   }
 
   cleanCache() {
@@ -327,7 +378,7 @@ export class AuthenticationService {
   }
 
   checkEmailAlreadyUsed(email: string) {
-    const data = {email};
+    const data = { email };
     return this.http.post(checkEmailEndpoint, data);
   }
 
@@ -406,20 +457,28 @@ export class AuthenticationService {
     );
   }
 
-  checkNumberAccountStatus(checkNumberPayload: {msisdn: string; hmac: string}) {
+  checkNumberAccountStatus(checkNumberPayload: {
+    msisdn: string;
+    hmac: string;
+  }) {
     return this.getTokenFromBackend().pipe(
       switchMap(() => {
-        const msisdn = checkNumberPayload.msisdn.substring(checkNumberPayload.msisdn.length - 9);
+        const msisdn = checkNumberPayload.msisdn.substring(
+          checkNumberPayload.msisdn.length - 9
+        );
         return this.getSubscriptionForTiers(msisdn).pipe(
           switchMap((sub: SubscriptionModel) => {
             const isProMobile = sub.code === JAMONO_PRO_CODE_FORMULE;
             if (!isProMobile) {
-              return this.http.post<AccountStatusModel>(checkNumberV3Endpoint, checkNumberPayload);
+              return this.http.post<AccountStatusModel>(
+                checkNumberV3Endpoint,
+                checkNumberPayload
+              );
             } else {
               const error = {
                 status: 400,
                 errorKey: PRO_MOBILE_ERROR_CODE,
-                message: 'Ce numéro ne peut pas accéder à Orange et Moi'
+                message: 'Ce numéro ne peut pas accéder à Orange et Moi',
               };
               return throwError(error);
             }
@@ -432,10 +491,12 @@ export class AuthenticationService {
     );
   }
 
-  checkNumber(checkNumberPayload: {msisdn: string; hmac: string}) {
+  checkNumber(checkNumberPayload: { msisdn: string; hmac: string }) {
     return this.getTokenFromBackend().pipe(
       switchMap(() => {
-        const msisdn = checkNumberPayload.msisdn.substring(checkNumberPayload.msisdn.length - 9);
+        const msisdn = checkNumberPayload.msisdn.substring(
+          checkNumberPayload.msisdn.length - 9
+        );
         return this.getSubscriptionForTiers(msisdn).pipe(
           switchMap((sub: SubscriptionModel) => {
             const isProMobile = sub.code === JAMONO_PRO_CODE_FORMULE;
@@ -445,7 +506,7 @@ export class AuthenticationService {
               const error = {
                 status: 400,
                 errorKey: PRO_MOBILE_ERROR_CODE,
-                message: 'Ce numéro ne peut pas accéder à Orange et Moi'
+                message: 'Ce numéro ne peut pas accéder à Orange et Moi',
               };
               return throwError(error);
             }
@@ -467,12 +528,16 @@ export class AuthenticationService {
   }
 
   resetPassword(resetPwdPayload: ResetPwdModel) {
-    resetPwdPayload.login = resetPwdPayload.login.startsWith('221') ? resetPwdPayload.login.substring(3) : resetPwdPayload.login;
+    resetPwdPayload.login = resetPwdPayload.login.startsWith('221')
+      ? resetPwdPayload.login.substring(3)
+      : resetPwdPayload.login;
     return this.http.post(resetPwdEndpoint, resetPwdPayload);
   }
 
   resetPasswordV2(resetPwdPayload: ResetPwdModel) {
-    resetPwdPayload.login = resetPwdPayload.login.startsWith('221') ? resetPwdPayload.login.substring(3) : resetPwdPayload.login;
+    resetPwdPayload.login = resetPwdPayload.login.startsWith('221')
+      ? resetPwdPayload.login.substring(3)
+      : resetPwdPayload.login;
     return this.http.put(resetPwdV2Endpoint, resetPwdPayload);
   }
 
@@ -528,7 +593,11 @@ export function http_retry(maxRetry = 10, delayMs = 10000) {
   return (src: Observable<any>) => {
     return src.pipe(
       retryWhen(_ => {
-        return interval(delayMs).pipe(flatMap(count => (count === maxRetry ? throwError('Giving up') : of(count))));
+        return interval(delayMs).pipe(
+          flatMap(count =>
+            count === maxRetry ? throwError('Giving up') : of(count)
+          )
+        );
       })
     );
   };
@@ -540,5 +609,5 @@ export interface AccountStatusModel {
 
 export enum AccountStatus {
   FULL = 'FULL',
-  LITE = 'LITE'
+  LITE = 'LITE',
 }
