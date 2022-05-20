@@ -61,6 +61,9 @@
       <span class="title" *ngSwitchCase="OPERATION_ILLIMIX_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
+			<span class="title" *ngSwitchCase="OPERATION_ABONNEMENT_WIDO"
+        >{{success ? 'Abonnement effectué' : 'Echec Abonnement'}}</span
+      >
       <span class="title" *ngSwitchCase="OPERATION_ALLO_TYPE"
         >{{success ? 'Achat effectué' : 'Echec Achat'}}</span
       >
@@ -173,6 +176,9 @@
         <span *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS"
           >Vous avez payé un montant de  </span
         >
+				<span *ngSwitchCase="OPERATION_ABONNEMENT_WIDO"
+          >Vous avez acheté le pass abonnement Wido</span
+        >
       </ng-container>
     </span>
   </div>
@@ -268,6 +274,10 @@
         <app-item-recharge-credit [modifiable]="false" [amount]="opXtras?.invoice?.montantFacture"
           *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS">
         </app-item-recharge-credit>
+				<app-item-pass-wido
+          [passWido]="passBought"
+          *ngSwitchCase="OPERATION_ABONNEMENT_WIDO"
+        ></app-item-pass-wido>
       </ng-container>
     </div>
     <div
