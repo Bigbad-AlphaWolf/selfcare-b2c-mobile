@@ -193,7 +193,7 @@ const routes: Routes = [
   },
   {
     path: 'transfer-money/:msisdn/:amount',
-    loadChildren: () => import('./operation-recap/operation-recap.module').then(m => m.OperationRecapPageModule),
+    loadChildren: () => import('./transfer-set-amount/transfer-set-amount.module').then(m => m.TransferSetAmountPageModule),
     canActivate: [AuthGuard]
   },
   {
@@ -228,7 +228,7 @@ const routes: Routes = [
   },
   {
     path: 'transfer-money/:msisdn',
-    loadChildren: () => import('./purchase-set-amount/purchase-set-amount.module').then(m => m.PurchaseSetAmountPageModule),
+    loadChildren: () => import('./transfer-set-amount/transfer-set-amount.module').then(m => m.TransferSetAmountPageModule),
     canActivate: [AuthGuard]
   },
   {
