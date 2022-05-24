@@ -13,9 +13,9 @@ import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER_ALLOWED_COUNTRY_CODE_SHORT: RegExp =
-	/^((\+221|\+225|\+223|\+227|\+245))/;
+  /^((\+221|\+225|\+223|\+227|\+245))/;
 export const REGEX_NUMBER_ALLOWED_COUNTRY_CODE_LONG: RegExp =
-	/^((\00221|00221|00227|00245))/;
+  /^((\00221|00221|00227|00245))/;
 export const REGEX_NUMBER: RegExp =
   /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
 export const REGEX_NUMBER_OM: RegExp =
@@ -70,7 +70,7 @@ export const OPERATION_SEE_RATTACHED_NUMBERS = 'RATTACHED_NUMBERS';
 export const OPERATION_RATTACH_NUMBER = 'RATTACHE_NUMBER';
 export const OPERATION_CONFIRM_DELETE_RATTACH_NUMBER =
   'CONFIRM_DELETE_RATTACHE_NUMBER';
-export const OPERATION_SUGGEST_RATTACH_NUMBER = "SUGGEST_RATTACH_NUMBER";
+export const OPERATION_SUGGEST_RATTACH_NUMBER = 'SUGGEST_RATTACH_NUMBER';
 export const OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM =
   'ERREUR_TRANSACTION_OM';
 export const OPERATION_INIT_CHANGE_PIN_OM = 'INIT_CHANGE_PIN_OM';
@@ -84,6 +84,7 @@ export const OPERATION_SHARE_THE_APP = 'SHARE_THE_APP';
 export const OPERATION_PAY_ORANGE_BILLS = 'PAY_ORANGE_BILLS';
 export const OPERATION_UNBLOCK_OM_ACCOUNT = 'UNBLOCK_OM_ACCOUNT';
 export const OPERATION_RESET_PIN_OM = 'RESET_OM_ACCOUNT';
+export const OPERATION_ABONNEMENT_WIDO = 'ABONNEMENT_WIDO';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -200,7 +201,7 @@ export function getNOAvatartUrlImage() {
 }
 
 export function isExtensionImageValid(fileType: string) {
-  const result = VALID_IMG_EXTENSIONS.filter((x) => {
+  const result = VALID_IMG_EXTENSIONS.filter(x => {
     return x === fileType;
   });
 
@@ -397,7 +398,7 @@ export function getOrderedListCategory(
     (elt1: CategoryPassInternet, elt2: CategoryPassInternet) =>
       elt1.ordre - elt2.ordre
   );
-  listCategoryFiltered = [...new Set(unorderedList.map((x) => x.libelle))];
+  listCategoryFiltered = [...new Set(unorderedList.map(x => x.libelle))];
 
   return listCategoryFiltered;
 }
@@ -497,7 +498,7 @@ export function arrangePassByCategory(listPass: any[], listCategory: string[]) {
 export function computeConsoHistory(consos) {
   const result = [];
 
-  consos.forEach((x) => {
+  consos.forEach(x => {
     const {
       date,
       categorie,
@@ -545,7 +546,7 @@ export function generateUUID() {
   ) {
     d += performance.now(); // use high-precision timer if available
   }
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     // tslint:disable-next-line: no-bitwise
     const r = (d + Math.random() * 16) % 16 | 0;
     d = Math.floor(d / 16);
@@ -810,7 +811,7 @@ export interface NotificationInfoModel {
 
 export class PlatformMock {
   public ready(): Promise<string> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       resolve('READY');
     });
   }
@@ -1336,7 +1337,7 @@ export function concatArtistsNames(artistsArray: { nom?: string }[]) {
   if (!artistsArray || !artistsArray.length) {
     return '';
   }
-  return artistsArray.map((artist) => artist.nom).join(', ');
+  return artistsArray.map(artist => artist.nom).join(', ');
 }
 export const MONTHLY_DALAL_TARIF = '350 FCFA /mois';
 export const DAILY_DALAL_TARIF = '12 FCFA /jour';
@@ -1355,8 +1356,8 @@ export function getMaxDataVolumeOrVoiceOfPaliers(
   paliers: PalierModel[],
   dataOrVoice: 'data' | 'voice'
 ) {
-  const maxAmount = Math.max(...paliers.map((palier) => palier.maxPalier));
-  const palier = paliers.find((palier) => palier.maxPalier === maxAmount);
+  const maxAmount = Math.max(...paliers.map(palier => palier.maxPalier));
+  const palier = paliers.find(palier => palier.maxPalier === maxAmount);
   const unitPrice =
     dataOrVoice === 'data' ? palier.dataPrice : palier.voicePrice;
   const maxPercentage = 0.8;
@@ -1367,8 +1368,8 @@ export function getMinDataVolumeOrVoiceOfPaliers(
   paliers: PalierModel[],
   dataOrVoice: 'data' | 'voice'
 ) {
-  const minAmount = Math.min(...paliers.map((palier) => palier.minPalier));
-  const palier = paliers.find((palier) => palier.minPalier === minAmount);
+  const minAmount = Math.min(...paliers.map(palier => palier.minPalier));
+  const palier = paliers.find(palier => palier.minPalier === minAmount);
   const unitPrice =
     dataOrVoice === 'data' ? palier.dataPrice : palier.voicePrice;
   const minPercentage = 0.2;
@@ -1383,7 +1384,7 @@ export function getActiveBoostersForSpecificPass(
   const passPPI = pass.passPromo
     ? pass.passPromo?.price_plan_index
     : pass?.price_plan_index;
-  const boostersArray = boosters.filter((booster) =>
+  const boostersArray = boosters.filter(booster =>
     booster.pricePlanIndexes.includes(passPPI?.toString())
   );
   return boostersArray;
@@ -1451,8 +1452,8 @@ export enum OM_STATUS_TEXTS {
   ERROR_DECAPPING_ACCOUNT = `Une erreur est survenue lors du traitement de votre demande de déplafonnement`,
 }
 
-export const ERROR_MSG_DEPLAFONNEMENT_ON_INIT_UNBLOCK_OM = "Déplafonnez votre compte via l'appli Orange & Moi ou dans notre réseau d’agence Orange et Kiosque avant de pouvoir utiliser ce service.";
-
+export const ERROR_MSG_DEPLAFONNEMENT_ON_INIT_UNBLOCK_OM =
+  "Déplafonnez votre compte via l'appli Orange & Moi ou dans notre réseau d’agence Orange et Kiosque avant de pouvoir utiliser ce service.";
 
 export const OTHER_CATEGORIES = 'OTHER_CATEGORIES';
 
@@ -1509,19 +1510,20 @@ export const MAXIMUM_PAYABLE_BILL_AMOUNT = 150000;
 // Dalal Tones Requirements
 export const MINIMUM_REQUIRED_RECHARGEMENT_SOLDE_TO_ACTIVATE_DALAL = 12;
 
-export const MSG_XEWEUL_CARD_INVALID = 'Service non disponble pour cette carte. Ageroute vous invite à la renouveler gratuitement au niveau de ses espaces clients.';
+export const MSG_XEWEUL_CARD_INVALID =
+  'Service non disponble pour cette carte. Ageroute vous invite à la renouveler gratuitement au niveau de ses espaces clients.';
 export const ERROR_CODE_INVALID_XEWEUL_CARD = '3019';
 export const LOCAL_STORAGE_KEYS = {
-	NUMBER_FOR_OTP_REGISTRATION: "numberOTPRegistration",
-	X_UUID: "X-UUID",
-	HMAC_FROM_OTP: "hmacOTP",
-	IS_HMAC_FROM_OTP_VALID: "isHmacOTPVallid"
-}
+  NUMBER_FOR_OTP_REGISTRATION: 'numberOTPRegistration',
+  X_UUID: 'X-UUID',
+  HMAC_FROM_OTP: 'hmacOTP',
+  IS_HMAC_FROM_OTP_VALID: 'isHmacOTPVallid',
+};
 
 export enum STEPS_ACCESS_BY_OTP {
   ENTER_PHONE_NUMBER = 'ENTER_PHONE_NUMBER',
   OPT_SENT = 'OPT_SENT',
-  PROCESS_OTP = 'NUMBER_IDENTIFIED'
+  PROCESS_OTP = 'NUMBER_IDENTIFIED',
 }
 
 export const PATH_ACCESS_BY_OTP = '/access/';

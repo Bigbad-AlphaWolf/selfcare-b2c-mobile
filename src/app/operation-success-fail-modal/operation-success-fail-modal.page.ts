@@ -27,6 +27,7 @@ import {
   OPERATION_PAY_ORANGE_BILLS,
   OPERATION_UNBLOCK_OM_ACCOUNT,
   OPERATION_RESET_PIN_OM,
+  OPERATION_ABONNEMENT_WIDO,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -58,9 +59,9 @@ import { FollowAnalyticsEventType } from '../services/follow-analytics/follow-an
 import { FavoriteCounterNameModalComponent } from '../components/favorite-counter-name-modal/favorite-counter-name-modal.component';
 
 @Component({
-  selector: "app-operation-success-fail-modal",
-  templateUrl: "./operation-success-fail-modal.page.html",
-  styleUrls: ["./operation-success-fail-modal.page.scss"],
+  selector: 'app-operation-success-fail-modal',
+  templateUrl: './operation-success-fail-modal.page.html',
+  styleUrls: ['./operation-success-fail-modal.page.scss'],
 })
 export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
@@ -91,6 +92,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TYPE_TERANGA_BILL = OPERATION_TYPE_TERANGA_BILL;
   OPERATION_TYPE_SENELEC_BILLS = OPERATION_TYPE_SENELEC_BILLS;
   OPERATION_TYPE_SENEAU_BILLS = OPERATION_TYPE_SENEAU_BILLS;
+  OPERATION_ABONNEMENT_WIDO = OPERATION_ABONNEMENT_WIDO;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;
@@ -144,13 +146,13 @@ export class OperationSuccessFailModalPage implements OnInit {
       this.dashboardService
         .getAllOemNumbers()
         .pipe(
-          map((res) => {
-            res = res.map((x) => x.msisdn);
+          map(res => {
+            res = res.map(x => x.msisdn);
             return res;
           }),
           tap((res: string[]) => {
             console.log(res);
-            
+
             this.isNumberNotRattached = !res.includes(
               this.opXtras.numberToRegister
             );
@@ -163,8 +165,8 @@ export class OperationSuccessFailModalPage implements OnInit {
   checkTransferEligibility() {
     if (this.checkingEligibility) return true;
     const eventName = this.isOpenedFromHistory
-      ? "clic_block_transfer_from_history"
-      : "clic_block_transfer_after_transfer";
+      ? 'clic_block_transfer_from_history'
+      : 'clic_block_transfer_after_transfer';
     this.followAnalyticsServ.registerEventFollow(
       eventName,
       FollowAnalyticsEventType.EVENT,
@@ -186,10 +188,10 @@ export class OperationSuccessFailModalPage implements OnInit {
             this.eligibilityError = res.message;
           }
         }),
-        catchError((err) => {
+        catchError(err => {
           this.checkingEligibility = false;
           this.eligibilityHasError = true;
-          this.eligibilityError = "Une erreur est survenue";
+          this.eligibilityError = 'Une erreur est survenue';
           return throwError(err);
         })
       )
@@ -199,13 +201,13 @@ export class OperationSuccessFailModalPage implements OnInit {
   async openPinPadToBlock() {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
-      cssClass: "pin-pad-modal",
+      cssClass: 'pin-pad-modal',
       componentProps: {
         transactionToBlock: this.historyTransactionItem,
         operationType: OPERATION_BLOCK_TRANSFER,
       },
     });
-    modal.onDidDismiss().then(async (response) => {
+    modal.onDidDismiss().then(async response => {
       if (response.data && response.data.success) {
         await this.modalController.dismiss();
         const hasOMStatusFull = response?.data?.hasOMStatusFull;
@@ -218,7 +220,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   async openBlockTxnModalSuccess(userHasOmStatusFull?: boolean) {
     const modal = await this.modalController.create({
       component: BlockTransferSuccessPopupComponent,
-      cssClass: "success-or-fail-modal",
+      cssClass: 'success-or-fail-modal',
       backdropDismiss: false,
       componentProps: {
         transactionToBlock: this.historyTransactionItem,
@@ -244,9 +246,9 @@ export class OperationSuccessFailModalPage implements OnInit {
     this.modalController.dismiss();
     if (this.isOpenedFromHistory) return;
     if (this.opXtras && this.opXtras.isLightMod) {
-      this.router.navigate(["/dashboard-prepaid-light"]);
+      this.router.navigate(['/dashboard-prepaid-light']);
     } else {
-      this.router.navigate(["/dashboard"]);
+      this.router.navigate(['/dashboard']);
     }
   }
 
@@ -260,127 +262,129 @@ export class OperationSuccessFailModalPage implements OnInit {
   goToPage() {
     switch (this.purchaseType) {
       case OPERATION_TYPE_PASS_ALLO:
-        this.appRouting.goToTransfertHubServicesPage("BUY");
+        this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       case OPERATION_TYPE_PASS_ILLIMIX:
         this.followAnalyticsServ.registerEventFollow(
-          "Achat_pass_illimix_recap_renouvellement",
-          "event",
-          "clicked"
+          'Achat_pass_illimix_recap_renouvellement',
+          'event',
+          'clicked'
         );
         if (this.opXtras.recipientCodeFormule === CODE_KIRENE_Formule) {
           this.appRouting.goToBuyPassIllimixKirene();
         } else {
-          this.appRouting.goToTransfertHubServicesPage("BUY");
+          this.appRouting.goToTransfertHubServicesPage('BUY');
         }
         break;
       case OPERATION_TYPE_PASS_INTERNET:
         this.followAnalyticsServ.registerEventFollow(
-          "Achat_pass_internet_recap_renouvellement",
-          "event",
-          "clicked"
+          'Achat_pass_internet_recap_renouvellement',
+          'event',
+          'clicked'
         );
         if (this.opXtras.recipientCodeFormule === CODE_KIRENE_Formule) {
           this.appRouting.goToBuyPassInternetKirene();
         } else {
-          this.appRouting.goToTransfertHubServicesPage("BUY");
+          this.appRouting.goToTransfertHubServicesPage('BUY');
         }
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
         this.followAnalyticsServ.registerEventFollow(
-          "Achat_credit_recap_renouvellement",
-          "event",
-          "clicked"
+          'Achat_credit_recap_renouvellement',
+          'event',
+          'clicked'
         );
         if (this.opXtras.code === CODE_KIRENE_Formule) {
           this.appRouting.goBuyCredit();
         } else {
-          this.appRouting.goToTransfertHubServicesPage("BUY");
+          this.appRouting.goToTransfertHubServicesPage('BUY');
         }
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
         this.followAnalyticsServ.registerEventFollow(
-          "Paiement_marchand_recap_renouvellement",
-          "event",
-          "clicked"
+          'Paiement_marchand_recap_renouvellement',
+          'event',
+          'clicked'
         );
         this.appRouting.goToDashboard();
         break;
       case OPERATION_TRANSFER_OM:
       case OPERATION_TYPE_INTERNATIONAL_TRANSFER:
         this.followAnalyticsServ.registerEventFollow(
-          "OM_transfert_recap_renouvellement",
-          "event",
-          "clicked"
+          'OM_transfert_recap_renouvellement',
+          'event',
+          'clicked'
         );
         if (this.opXtras && this.opXtras.code === CODE_KIRENE_Formule) {
           this.navCtrl.pop();
         } else {
-          this.appRouting.goToTransfertHubServicesPage("TRANSFER");
+          this.appRouting.goToTransfertHubServicesPage('TRANSFER');
         }
         break;
       case OPERATION_TRANSFER_OM_WITH_CODE:
         this.followAnalyticsServ.registerEventFollow(
-          "OM_transfert_recap_renouvellement",
-          "event",
-          "clicked"
+          'OM_transfert_recap_renouvellement',
+          'event',
+          'clicked'
         );
         if (this.opXtras.code === CODE_KIRENE_Formule) {
           this.navCtrl.pop();
         } else {
-          this.appRouting.goToTransfertHubServicesPage("TRANSFER");
+          this.appRouting.goToTransfertHubServicesPage('TRANSFER');
         }
         break;
       case OPERATION_WOYOFAL:
         this.followAnalyticsServ.registerEventFollow(
-          "Achat_woyofal_recap_renouvellement",
-          "event",
-          "clicked"
+          'Achat_woyofal_recap_renouvellement',
+          'event',
+          'clicked'
         );
         this.navCtrl.navigateBack(BillsHubPage.ROUTE_PATH);
         break;
       case OPERATION_XEWEUL:
       case OPERATION_RAPIDO:
         this.followAnalyticsServ.registerEventFollow(
-          "Recharge_rapido_recap_renouvellement",
-          "event",
-          "clicked"
+          'Recharge_rapido_recap_renouvellement',
+          'event',
+          'clicked'
         );
         this.navCtrl.navigateBack(RapidoOperationPage.ROUTE_PATH);
         break;
       case OPERATION_ENABLE_DALAL:
         this.followAnalyticsServ.registerEventFollow(
-          "Dalal_activation_recap_renouvellement",
-          "event",
-          "clicked"
+          'Dalal_activation_recap_renouvellement',
+          'event',
+          'clicked'
         );
         this.navCtrl.navigateBack(DalalTonesPage.ROUTE_PATH);
         break;
       case OPERATION_TYPE_PASS_ILLIFLEX:
         this.followAnalyticsServ.registerEventFollow(
-          "Achat_pass_illiflex_recap_renouvellement",
-          "event",
-          "clicked"
+          'Achat_pass_illiflex_recap_renouvellement',
+          'event',
+          'clicked'
         );
-        this.appRouting.goToTransfertHubServicesPage("BUY");
+        this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       case OPERATION_TYPE_PAY_BILL:
         this.followAnalyticsServ.registerEventFollow(
-          "pay_factures_recap_renouvellement",
-          "event",
-          "clicked"
+          'pay_factures_recap_renouvellement',
+          'event',
+          'clicked'
         );
         this.opXtras?.numberToRegister && this.isNumberNotRattached
-          ? this.router.navigate(["rattached-phones-number"], {
+          ? this.router.navigate(['rattached-phones-number'], {
               state: { numberToRegister: this.opXtras?.numberToRegister },
             })
-          : this.router.navigate(["bills"]);
+          : this.router.navigate(['bills']);
         break;
       case OPERATION_TYPE_TERANGA_BILL:
-        this.router.navigate(["bills"]);
+        this.router.navigate(['bills']);
       case OPERATION_TYPE_SENEAU_BILLS:
       case OPERATION_TYPE_SENELEC_BILLS:
-        this.opXtras?.counterToFav ? this.openAddCounterToFavoriteModal() : this.router.navigate(["bills"]);
+        this.opXtras?.counterToFav
+          ? this.openAddCounterToFavoriteModal()
+          : this.router.navigate(['bills']);
         return;
       default:
         break;
@@ -389,18 +393,18 @@ export class OperationSuccessFailModalPage implements OnInit {
   }
 
   async openAddCounterToFavoriteModal() {
-    this.router.navigate(["/"]);
+    this.router.navigate(['/']);
     await this.modalController.dismiss();
     // return;
     const modal = await this.modalController.create({
       component: FavoriteCounterNameModalComponent,
-      cssClass: "success-or-fail-modal",
+      cssClass: 'success-or-fail-modal',
       componentProps: {
         counter: this.opXtras?.numberToRegister,
-        purchaseType: this.purchaseType
+        purchaseType: this.purchaseType,
       },
     });
-    modal.onDidDismiss().then((response) => {});
+    modal.onDidDismiss().then(response => {});
     return await modal.present();
   }
 
