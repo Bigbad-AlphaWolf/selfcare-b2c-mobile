@@ -7,6 +7,8 @@ import {DashboardService} from 'src/app/services/dashboard-service/dashboard.ser
 import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
 import {tap} from 'rxjs/operators';
 import {isPrepaidOrHybrid, SubscriptionModel} from 'src/app/dashboard';
+import * as SecureLS from 'secure-ls';
+const ls = new SecureLS({encodingType: 'aes'});
 const {DIMELO_CHAT_MARKUP} = environment;
 @Component({
   selector: 'app-ibou-ion-fab',
@@ -37,7 +39,20 @@ export class IbouIonFabComponent implements OnInit {
   fabToggled() {
     //this.fabOpened = !this.fabOpened;
     this.followAnalyticsService.registerEventFollow('Dashboard_click_on_Ibou', 'event', 'clicked');
-    this.goIbouPage();
+    this.openDimeloChat();
+  }
+
+  openDimeloChat() {
+    const user = ls.get("user");
+    const username = `${user.firstName} ${user.lastName}`;
+    const msisdn = this.dashboardServ.getMainPhoneNumber();
+    // @ts-ignore
+    cordova.exec((res) => {
+      console.log("Dimelo Plugin res", res);
+    }, (err) => {
+      console.log("Dimelo Plugin err", err);
+      
+    }, "DimeloCordovaPlugin", "openChat", [username, msisdn]);
   }
 
   hideChatBlock() {

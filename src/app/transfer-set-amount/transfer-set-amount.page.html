@@ -1,14 +1,14 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
-      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
-    </ion-buttons>
+    <ion-back-button [id]="'goBackBtn' | generateIdForTA" defaultHref="/" mode="md" slot="start">
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
     <ion-title class="ion-no-padding">
       <span class="title1">
         Transfert d’argent
       </span>
     </ion-title>
-    <ion-spinner *ngIf="loadingFees" name="crescent" slot="end"></ion-spinner>
+    <ion-spinner *ngIf="loadingFees || loading" name="crescent" slot="end"></ion-spinner>
   </ion-toolbar>
 </ion-header>
 

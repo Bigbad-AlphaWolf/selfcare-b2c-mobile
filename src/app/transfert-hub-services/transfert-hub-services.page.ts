@@ -120,7 +120,8 @@ export class TransfertHubServicesPage implements OnInit {
     private favService: FavorisService,
     private toastController: ToastController,
     private operationService: OperationService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private appRoutingServ: ApplicationRoutingService
   ) {}
 
   ngOnInit() {
@@ -358,6 +359,8 @@ export class TransfertHubServicesPage implements OnInit {
   }
 
   async showBeneficiaryModal(component?: any) {
+		this.appRouting.goToSelectBeneficiaryPage();
+		return
     const modal = await this.modalController.create({
       component: component ? component : SelectBeneficiaryPopUpComponent,
       cssClass: 'select-recipient-modal',

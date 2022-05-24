@@ -84,38 +84,38 @@ export const CATEGORY_MPO = {
 export const TRANSFER_OM_INTERNATIONAL_COUNTRIES = [
   {
     countryName: 'Sénégal',
-    flagIcon: 'assets/flags/senegal.png',
+    flagIcon: 'assets/flags/senegal.svg',
     callId: '+221',
     code: 'senegal'
   },
   {
     countryName: "Côte d'Ivoire",
     callId: '+225',
-    flagIcon: 'assets/flags/ivory.png',
+    flagIcon: 'assets/flags/ivory.svg',
     code: 'cod'
   },
   {
     countryName: 'Burkina Faso',
     callId: '+226',
-    flagIcon: 'assets/flags/burkina.png',
+    flagIcon: 'assets/flags/burkina.svg',
     code: 'burkina'
   },
   {
     countryName: 'Mali',
     callId: '+223',
-    flagIcon: 'assets/flags/mali.png',
+    flagIcon: 'assets/flags/mali.svg',
     code: 'mali'
   },
   {
     countryName: 'Niger',
     callId: '+227',
-    flagIcon: 'assets/flags/niger.png',
+    flagIcon: 'assets/flags/niger.svg',
     code: 'niger'
   },
   {
     countryName: 'Guinée-Bissau',
     callId: '+245',
-    flagIcon: 'assets/flags/bissau.png',
+    flagIcon: 'assets/flags/bissau.svg',
     code: 'bissau'
   }
 ];

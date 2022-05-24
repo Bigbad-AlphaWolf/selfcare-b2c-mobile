@@ -13,6 +13,10 @@ import {
 import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
 
 const ls = new SecureLS({ encodingType: 'aes' });
+export const REGEX_NUMBER_ALLOWED_COUNTRY_CODE_SHORT: RegExp =
+	/^((\+221|\+225|\+223|\+227|\+245))/;
+export const REGEX_NUMBER_ALLOWED_COUNTRY_CODE_LONG: RegExp =
+	/^((\00221|00221|00227|00245))/;
 export const REGEX_NUMBER: RegExp =
   /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
 export const REGEX_NUMBER_OM: RegExp =
@@ -99,6 +103,7 @@ export const PAY_WITH_SARGAL = 'Points Sargal';
 export const KIRENE_Formule = 'New Kirene Avec Orange';
 export const CODE_KIRENE_Formule = '9134';
 export const JAMONO_NEW_SCOOL_CODE_FORMULE = '9131';
+export const JAMONO_NEW_SCOOL_CODE = 'scool';
 export const JAMONO_ALLO_CODE_FORMULE = '9132';
 export const JAMONO_MAX_CODE_FORMULE = '9133';
 export const JAMONO_PRO_CODE_FORMULE = '9136';
@@ -438,10 +443,10 @@ export function getListPassFilteredByLabelAndPaymentMod(
 ) {
   let listPassFiltered = [];
   listPassFiltered = listPass.filter((pass: any) => {
-    if (!pass.passPromo) {
-      return pass.categoriePass?.libelle === selectedLabel;
+    if (!pass?.passPromo) {
+      return pass?.categoriePass?.libelle === selectedLabel;
     } else {
-      return pass.passPromo?.categoriePass?.libelle === selectedLabel;
+      return pass?.passPromo?.categoriePass?.libelle === selectedLabel;
     }
   });
 
@@ -1508,3 +1513,22 @@ export enum MSISDN_TYPE {
 export const MAXIMUM_PAYABLE_BILL_AMOUNT = 150000;
 // Dalal Tones Requirements
 export const MINIMUM_REQUIRED_RECHARGEMENT_SOLDE_TO_ACTIVATE_DALAL = 12;
+
+export const MSG_XEWEUL_CARD_INVALID = 'Service non disponble pour cette carte. Ageroute vous invite à la renouveler gratuitement au niveau de ses espaces clients.';
+export const ERROR_CODE_INVALID_XEWEUL_CARD = '3019';
+export const LOCAL_STORAGE_KEYS = {
+	NUMBER_FOR_OTP_REGISTRATION: "numberOTPRegistration",
+	X_UUID: "X-UUID",
+	HMAC_FROM_OTP: "hmacOTP",
+	IS_HMAC_FROM_OTP_VALID: "isHmacOTPVallid"
+}
+
+export enum STEPS_ACCESS_BY_OTP {
+  ENTER_PHONE_NUMBER = 'ENTER_PHONE_NUMBER',
+  OPT_SENT = 'OPT_SENT',
+  PROCESS_OTP = 'NUMBER_IDENTIFIED'
+}
+
+export const PATH_ACCESS_BY_OTP = '/access/';
+
+export const RATTACHMENT_ERROR_MAX_COUNT = 3;

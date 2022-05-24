@@ -2,7 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {environment} from 'src/environments/environment';
-import {Subject, Subscription} from 'rxjs';
+import {of, Subject, Subscription} from 'rxjs';
 import * as SecureLS from 'secure-ls';
 import {AuthenticationService} from '../authentication-service/authentication.service';
 import {DashboardService, downloadAvatarEndpoint} from '../dashboard-service/dashboard.service';
@@ -12,14 +12,14 @@ import {InProgressPopupComponent} from 'src/shared/in-progress-popup/in-progress
 import {SuccessFailPopupComponent} from 'src/shared/success-fail-popup/success-fail-popup.component';
 import {generateUUID, OPERATION_CONFIRM_DELETE_RATTACH_NUMBER} from 'src/shared';
 import {FollowAnalyticsService} from '../follow-analytics/follow-analytics.service';
-import {ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT, ACCOUNT_IDENTIFIED_NUMBERS_ENDPOINT} from '../utils/account.endpoints';
-import {map, take, tap} from 'rxjs/operators';
+import {ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT, ACCOUNT_IDENTIFIED_NUMBERS_ENDPOINT, CHECK_NUMBER_IS_CORPORATE_ENDPOINT} from '../utils/account.endpoints';
+import {catchError, map, take, tap} from 'rxjs/operators';
 import {ModalController} from '@ionic/angular';
 import {YesNoModalComponent} from 'src/shared/yes-no-modal/yes-no-modal.component';
 const {FILE_SERVICE, ACCOUNT_MNGT_SERVICE, SERVER_API_URL, UAA_SERVICE} = environment;
 const uploadAvatarEndpoint = `${SERVER_API_URL}/${FILE_SERVICE}/api/upload`;
 const accountManagementEndPoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/account-b-2-cs`;
-const changePasswordEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/change-password`;
+const changePasswordEndpoint = `${SERVER_API_URL}/api/account/b2c/change-password`;
 const deleteLinkedPhoneNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/rattachement-lignes/delete-multiple`;
 const ls = new SecureLS({encodingType: 'aes'});
 
@@ -45,12 +45,12 @@ export class AccountService {
     private modal: ModalController
   ) {}
 
-  changePassword(payload: {currentPassword: string; newPassword: string}) {
+  changePassword(payload: {login: string; newPassword: string}) {
     return this.http.post(changePasswordEndpoint, payload);
   }
 
-  changeUserPassword(currentPassword: string, newPassword: string) {
-    const changePasswordPayload = {currentPassword, newPassword};
+  changeUserPassword(login: string, newPassword: string) {
+    const changePasswordPayload = {login, newPassword};
     this.changePassword(changePasswordPayload).subscribe(
       res => {
         this.openSuccessDialog('changePassword');
@@ -219,5 +219,12 @@ export class AccountService {
         return list.filter((val: string) => val !== mainNumber);
       })
     );
+  }
+  checkIsCoorporateNumber(msisdn: string) {
+    return this.http.get(`${CHECK_NUMBER_IS_CORPORATE_ENDPOINT}/${msisdn}`).pipe(
+			catchError( _ => {
+				return of(false)
+			})
+		);
   }
 }

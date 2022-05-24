@@ -94,17 +94,19 @@ export class NumberSelectionComponent implements OnInit {
     this.opXtras.senderMsisdn = SessionOem.PHONE;
     if (!this.isLightMod) {
       this.loadingNumbers = true;
-      this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
-        delay(100),
-        tap(numbers => {
-          this.loadingNumbers = false;
-        }),
-        catchError((err: any) => {
-          this.loadingNumbers = false;
-          return of(err);
-        }),
-        share()
-      );
+      this.numbers$ = this.dashbServ
+        .fetchOemNumbers(this.data.purchaseType)
+        .pipe(
+          delay(100),
+          tap(numbers => {
+            this.loadingNumbers = false;
+          }),
+          catchError((err: any) => {
+            this.loadingNumbers = false;
+            return of(err);
+          }),
+          share()
+        );
       this.checkOmAccount();
       this.checkContactsAuthorizationStatus();
     }
