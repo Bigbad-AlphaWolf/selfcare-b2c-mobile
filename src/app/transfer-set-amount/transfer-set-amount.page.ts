@@ -5,6 +5,7 @@ import {
   LoadingController,
   ModalController,
   NavController,
+  Platform,
 } from '@ionic/angular';
 import { OperationExtras } from '../models/operation-extras.model';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
@@ -17,13 +18,17 @@ import {
   FEES_ERROR,
   BALANCE_INSUFFICIENT_ERROR,
   IRT_TRANSFER_REASONS,
+  OPERATION_TRANSACTION_STATUS,
 } from '../../../src/shared';
 import { FeeModel } from '../services/orange-money-service';
 import { FeesService } from '../services/fees/fees.service';
 import { catchError, switchMap, tap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { OPERATION_TYPE_INTERNATIONAL_TRANSFER } from '../utils/operations.constants';
+import { of, throwError } from 'rxjs';
+import { OPERATION_TYPE_CARD_TO_WALLET, OPERATION_TYPE_INTERNATIONAL_TRANSFER } from '../utils/operations.constants';
 import { SelectElementModalComponent } from 'src/shared/select-element-modal/select-element-modal.component';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { ModalSuccessModel } from '../models/modal-success-infos.model';
+import { TransactionFinalityModalComponent } from 'src/shared/transaction-finality-modal/transaction-finality-modal.component';
 
 @Component({
   selector: 'app-transfer-set-amount',
@@ -48,6 +53,7 @@ export class TransferSetAmountPage implements OnInit {
   recipientLastname: string;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
+  OPERATION_TYPE_CARD_TO_WALLET = OPERATION_TYPE_CARD_TO_WALLET;
   FEES_ERROR = FEES_ERROR;
   sending_fees_Info: {
     effective_fees: number;
@@ -65,7 +71,9 @@ export class TransferSetAmountPage implements OnInit {
   OPERATION_TYPE_INTERNATIONAL_TRANSFER = OPERATION_TYPE_INTERNATIONAL_TRANSFER;
   country: any;
   reason: any;
-	loading: boolean;
+  loading: boolean;
+  title: string;
+  isIos: boolean;
   constructor(
     private route: ActivatedRoute,
     private omService: OrangeMoneyService,
@@ -74,21 +82,23 @@ export class TransferSetAmountPage implements OnInit {
     private navController: NavController,
     private feeService: FeesService,
     public loadingController: LoadingController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private iab: InAppBrowser,
+    private platform: Platform
   ) {}
 
   ngOnInit() {
     this.initFees();
+    this.isIos = this.platform.is('ios');
   }
 
   async initFees() {
     const isDeeplinkTransferOM = await this.checkTransferOMDeeplink();
     if (isDeeplinkTransferOM) return;
     this.purchasePayload = history.state;
-		console.log('from initFees', this.purchasePayload);
-
+    this.purchaseType = this.purchasePayload?.purchaseType;
     if (this.purchasePayload && this.purchasePayload.purchaseType) {
-			this.processInfosFromBeneficiaryPage();
+      this.processInfosFromBeneficiaryPage();
     }
   }
 
@@ -125,48 +135,45 @@ export class TransferSetAmountPage implements OnInit {
   }
 
   async processInfosFromBeneficiaryPage() {
-    const checkRecipient = history.state.checkRecipient;
-		console.log('history.state', history.state);
-    if (checkRecipient) {
-
-			this.purchasePayload = history.state;
-			this.purchaseType = this.purchasePayload.purchaseType;
-			if (this.purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER) {
-        this.initForm(1000);
-        this.country = this.purchasePayload.country;
-        this.getOMTransferFees(this.country?.code).subscribe();
-				return;
-      }
-			this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE)
-        .pipe(
-          switchMap((res) => {
-            return this.getOMTransferFees(OM_LABEL_SERVICES.TAF);
-          })
-        )
-        .subscribe();
-			this.loading = true;
-      const msisdnHasOM = await this.omService
-        .checkUserHasAccount(this.purchasePayload.recipientMsisdn).pipe(
-					tap(_ => {
-						this.loading = false;
-					}),
-					catchError((_) => {
-						this.loading = false;
-						return of(true)
-					})
-				)
-        .toPromise();
-      this.purchaseType = msisdnHasOM
-        ? OPERATION_TRANSFER_OM
-        : OPERATION_TRANSFER_OM_WITH_CODE;
-      this.userHasNoOmAccount = !msisdnHasOM;
-      this.userHasNoOmAccount
-        ? this.initTransferWithCodeForm(1)
-        : this.initForm(1);
-      this.ref.detectChanges();
-      return 1;
+    if (this.purchaseType === OPERATION_TYPE_CARD_TO_WALLET) {
+      this.initForm(5000);
+      this.getOMTransferFees(OM_LABEL_SERVICES.CARD_TO_WALLET).subscribe();
+      return;
     }
-    return 0;
+    if (this.purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER) {
+      this.initForm(1000);
+      this.country = this.purchasePayload.country;
+      this.getOMTransferFees(this.country?.code).subscribe();
+      return;
+    }
+    this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE)
+      .pipe(
+        switchMap((res) => {
+          return this.getOMTransferFees(OM_LABEL_SERVICES.TAF);
+        })
+      )
+      .subscribe();
+    this.loading = true;
+    const msisdnHasOM = await this.omService
+      .checkUserHasAccount(this.purchasePayload.recipientMsisdn)
+      .pipe(
+        tap((_) => {
+          this.loading = false;
+        }),
+        catchError((_) => {
+          this.loading = false;
+          return of(true);
+        })
+      )
+      .toPromise();
+    this.purchaseType = msisdnHasOM
+      ? OPERATION_TRANSFER_OM
+      : OPERATION_TRANSFER_OM_WITH_CODE;
+    this.userHasNoOmAccount = !msisdnHasOM;
+    this.userHasNoOmAccount
+      ? this.initTransferWithCodeForm(1)
+      : this.initForm(1);
+    this.ref.detectChanges();
   }
 
   initTransferWithCodeForm(initialValue?: number) {
@@ -212,7 +219,67 @@ export class TransferSetAmountPage implements OnInit {
       this.purchasePayload.recipientLastname =
         this.setAmountForm.value['recipientLastname'];
     }
+    if (this.purchaseType === OPERATION_TYPE_CARD_TO_WALLET) {
+      this.checkingAmount = true;
+      const payload = {
+        amount,
+        receiverMsisdn: this.purchasePayload?.recipientMsisdn,
+        senderMsisdn: this.purchasePayload?.senderMsisdn,
+      };
+      this.omService
+        .initCardToWallet(payload)
+        .pipe(
+          tap((res) => {
+            this.checkingAmount = false;
+            this.openC2WInAppBrowser(res.paymentUrl);
+          }),
+          catchError((err) => {
+            this.checkingAmount = false;
+            this.error = err?.error?.message
+              ? err.error.message
+              : `Une erreur s'est produite. Veuillez réessayer plus tard`;
+            return throwError(err);
+          })
+        )
+        .subscribe();
+      return;
+    }
     this.checkOMBalanceSuffiency(this.totalAmount);
+  }
+
+  openC2WInAppBrowser(url: string) {
+    const options: InAppBrowserOptions = this.isIos
+      ? {
+          location: 'no',
+          toolbar: 'yes',
+          toolbarcolor: '#CCCCCC',
+          toolbarposition: 'top',
+          toolbartranslucent: 'no',
+          closebuttoncolor: '#000000',
+          closebuttoncaption: 'Fermer',
+          hidespinner: 'yes',
+        }
+      : {};
+    this.iab.create(url, '_blank', options).on('exit').subscribe(event => {
+      this.openSuccessFailModal({})
+    });
+  }
+
+  async openSuccessFailModal(params: ModalSuccessModel) {
+    params.msisdnBuyer = this.purchasePayload?.senderMsisdn;
+    params.amount = this.setAmountForm.value['amount'];
+    params.recipientMsisdn = this.purchasePayload?.recipientMsisdn;
+    params.purchaseType = this.purchaseType;
+    params.buyForMe = this.purchasePayload?.senderMsisdn === this.purchasePayload?.recipientMsisdn;
+    params.operationStatus = OPERATION_TRANSACTION_STATUS.PROCESSING;
+    const modal = await this.modalController.create({
+      component: TransactionFinalityModalComponent,
+      cssClass: "success-or-fail-modal",
+      componentProps: params,
+      backdropDismiss: false,
+    });
+    modal.onDidDismiss().then((res) => {});
+    return await modal.present();
   }
 
   checkOMBalanceSuffiency(amount) {
@@ -319,9 +386,16 @@ export class TransferSetAmountPage implements OnInit {
     this.totalAmount = +amount;
     this.updateInput(event);
     this.error = null;
-    if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
+    if (
+      this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ||
+      this.purchaseType === OPERATION_TYPE_CARD_TO_WALLET
+    ) {
+      const feeService =
+        this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE
+          ? OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE
+          : OM_LABEL_SERVICES.CARD_TO_WALLET;
       const fee = this.feeService.extractFees(
-        this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE],
+        this.transferFeesArray[feeService],
         amount
       );
       if (fee.effective_fees === null) {
@@ -384,6 +458,8 @@ export class TransferSetAmountPage implements OnInit {
   }
 
   goBack() {
+    console.log('clicked');
+
     this.navController.pop();
   }
 }

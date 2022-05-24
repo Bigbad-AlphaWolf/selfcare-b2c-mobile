@@ -55,6 +55,7 @@ export class NewServicesPage implements OnInit {
       'HUB_ACHAT',
       'HUB_TRANSFER',
       'HUB_BILLS',
+      'HUB_OM',
       OTHER_CATEGORIES,
     ];
     return HIDDEN_CATEGORIES_CODES.includes(category.code);

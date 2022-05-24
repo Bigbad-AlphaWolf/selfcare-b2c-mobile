@@ -89,6 +89,8 @@ import {XeweulSelectionComponent} from '../app/components/counter/xeweul-selecti
 import {CardXeweulNameModalComponent} from '../app/components/card-xeweul-name-modal/card-xeweul-name-modal.component';
 import {XeweulSoldeComponent} from '../app/components/counter/xeweul-solde/xeweul-solde.component';
 import {FavoriteXeweulComponent} from '../app/components/counter/favorite-xeweul/favorite-xeweul.component';
+import { TransactionItemComponent } from './transaction-item/transaction-item.component';
+import { TransactionFinalityModalComponent } from './transaction-finality-modal/transaction-finality-modal.component';
 
 @NgModule({
   declarations: [
@@ -164,7 +166,9 @@ import {FavoriteXeweulComponent} from '../app/components/counter/favorite-xeweul
     FaceIdRequestModalComponent,
     TypeCounterModalComponent,
     FavoriteServiceCountersComponent,
-    FavoriteCounterNameModalComponent
+    FavoriteCounterNameModalComponent,
+    TransactionItemComponent,
+    TransactionFinalityModalComponent
   ],
   imports: [CommonModule, IonicImageLoader, RouterModule, ComponentsModule, MaterialComponentsModule, PipesModule],
   entryComponents: [
@@ -214,7 +218,8 @@ import {FavoriteXeweulComponent} from '../app/components/counter/favorite-xeweul
     FaceIdRequestModalComponent,
     TypeCounterModalComponent,
     FavoriteServiceCountersComponent,
-    FavoriteCounterNameModalComponent
+    FavoriteCounterNameModalComponent,
+    TransactionFinalityModalComponent
   ],
   exports: [
     BanniereComponent,
@@ -286,7 +291,9 @@ import {FavoriteXeweulComponent} from '../app/components/counter/favorite-xeweul
     FaceIdRequestModalComponent,
     TypeCounterModalComponent,
     FavoriteServiceCountersComponent,
-    FavoriteCounterNameModalComponent
+    FavoriteCounterNameModalComponent,
+    TransactionItemComponent,
+    TransactionFinalityModalComponent
   ],
   providers: [Contacts, SocialSharing, OpenNativeSettings, {provide: MAT_BOTTOM_SHEET_DATA, useValue: {}}],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

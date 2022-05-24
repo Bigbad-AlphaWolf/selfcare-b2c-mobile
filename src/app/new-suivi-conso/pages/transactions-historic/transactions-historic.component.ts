@@ -1,22 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { CategoryPurchaseHistory } from 'src/app/models/category-purchase-history.model';
-import { ModalSuccessModel } from 'src/app/models/modal-success-infos.model';
 import { PurchaseModel } from 'src/app/models/purchase.model';
-import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { FollowAnalyticsEventType } from 'src/app/services/follow-analytics/follow-analytics-event-type.enum';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
-import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { PurchaseService } from 'src/app/services/purchase-service/purchase.service';
 import {
   DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY,
-  LIST_ICON_PURCHASE_HISTORIK_ITEMS,
-  OPERATION_TRANSFER_OM,
-  PAYMENT_MOD_OM,
-  THREE_DAYS_DURATION_IN_MILLISECONDS,
 } from 'src/shared';
 import { displayDate } from '../../new-suivi-conso.utils';
 
@@ -45,9 +35,6 @@ export class TransactionsHistoricComponent implements OnInit {
   constructor(
     private purchaseService: PurchaseService,
     private dashboardservice: DashboardService,
-    private omService: OrangeMoneyService,
-    private modalController: ModalController,
-    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -75,8 +62,6 @@ export class TransactionsHistoricComponent implements OnInit {
         .map((x) => x.typeAchat)
         .includes(this.selectedFilter.typeAchat);
     });
-    console.log(this.filteredHistoric);
-
     this.filteredHistoric.forEach((element) => {
       element.value = element.value.filter(
         (x) => x.typeAchat === this.selectedFilter.typeAchat
@@ -140,40 +125,4 @@ export class TransactionsHistoricComponent implements OnInit {
     return displayDate(formattedDate);
   }
 
-  getTransactionIcon(typeAchat: string) {
-    const icon = LIST_ICON_PURCHASE_HISTORIK_ITEMS[typeAchat];
-    return icon ? icon : '/assets/images/ic-africa.svg';
-  }
-
-  async openTransactionModal(transaction) {
-    // date difference in ms
-    const dateDifference =
-      new Date(transaction.currentDate).getTime() -
-      new Date(transaction.operationDate).getTime();
-    const isLessThan72h = dateDifference < THREE_DAYS_DURATION_IN_MILLISECONDS;
-    if (!isLessThan72h || transaction.typeAchat !== 'TRANSFER') return;
-    const omMsisdn = await this.omService.getOmMsisdn().toPromise();
-    this.followAnalyticsService.registerEventFollow(
-      'clic_transfer_from_history',
-      FollowAnalyticsEventType.EVENT,
-      { msisdn: omMsisdn, transaction }
-    );
-    if (!omMsisdn || omMsisdn === 'error') return;
-    const params: ModalSuccessModel = {};
-    params.paymentMod = PAYMENT_MOD_OM;
-    params.recipientMsisdn = transaction.msisdnReceiver;
-    params.msisdnBuyer = omMsisdn;
-    params.purchaseType = OPERATION_TRANSFER_OM;
-    params.historyTransactionItem = transaction;
-    params.success = true;
-    params.isOpenedFromHistory = true;
-    const modal = await this.modalController.create({
-      component: OperationSuccessFailModalPage,
-      cssClass: 'success-or-fail-modal',
-      componentProps: params,
-      backdropDismiss: true,
-    });
-    modal.onDidDismiss().then(() => {});
-    return await modal.present();
-  }
 }

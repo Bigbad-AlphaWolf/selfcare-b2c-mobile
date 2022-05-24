@@ -1,0 +1,18 @@
+<div class="transaction-item" (click)="openTransactionModal()">
+  <img class="transaction-icon" [src]="getTransactionIcon()" alt="">
+  <div class="left-bloc">
+    <span class="transaction-type">{{transaction?.name}}</span>
+    <span class="light-text scb-text-gray">{{transaction?.channel}}</span>
+    <span class="light-text scb-text-gray">{{transaction?.msisdnReceiver | phoneNumberDisplay}}
+      {{transaction?.msisdnReceiver === currentMsisdn ? ' (moi)' : ''}}</span>
+  </div>
+  <div class="right-bloc">
+    <span class="transaction-price scb-text-orange">
+      {{ transaction?.typeAchat === "TRANSFER" ? transaction?.amount - transaction?.fees : transaction?.amount
+      }}
+      {{ transaction.typeAchat === "SARGAL" ? 'Pts' : 'FCFA'}}
+    </span>
+    <span class="light-text scb-text-gray">{{transaction?.operationDate | date : 'dd/MM/yy à HH:mm'}}</span>
+    <span class="light-text scb-text-gray"></span>
+  </div>
+</div>

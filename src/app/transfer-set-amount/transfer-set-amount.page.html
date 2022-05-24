@@ -1,27 +1,23 @@
-<ion-header>
+<ion-header [oemIonHeaderParallax]="90">
   <ion-toolbar>
-    <ion-back-button [id]="'goBackBtn' | generateIdForTA" defaultHref="/" mode="md" slot="start">
+    <ion-buttons>
+      <ion-back-button [id]="'goBackBtn' | generateIdForTA" mode="md" slot="start" (click)="goBack()" class="oem-back-button">
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
+    </ion-buttons>
     <ion-title class="ion-no-padding">
-      <span class="title1">
-        Transfert d’argent
-      </span>
+      <div class="title1">
+        {{ purchaseType === OPERATION_TYPE_CARD_TO_WALLET ? 'Recharger son compte Orange Money par carte bancaire' : 'Transfert d’argent'}}
+      </div>
     </ion-title>
-    <ion-spinner *ngIf="loadingFees || loading" name="crescent" slot="end"></ion-spinner>
+    <!-- <ion-spinner *ngIf="loadingFees || loading" name="crescent" slot="end"></ion-spinner> -->
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-header class="ion-padding-start" collapse="condense">
-    <ion-toolbar>
-      <span class="title">
-        Transfert d’argent
-      </span>
-    </ion-toolbar>
-  </ion-header>
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
   <div class="banniere-container">
-    <img src="/assets/images/transfer-money-banniere.png" alt="header-transfer" />
+    <img *ngIf="purchaseType !== OPERATION_TYPE_CARD_TO_WALLET" src="/assets/images/transfer-money-banniere.png" alt="header-transfer" />
+    <img *ngIf="purchaseType === OPERATION_TYPE_CARD_TO_WALLET" src="/assets/images/banner_OM.svg" alt="header-transfer" />
   </div>
   <div class="transfer-page">
     <form class="transfer-settings" [formGroup]="setAmountForm" *ngIf="setAmountForm && !hasError">
@@ -36,13 +32,16 @@
           <div class="rec-name">{{purchasePayload?.recipientName}}</div>
         </div>
       </div>
+      <div class="operation-description scb-text-gray">
+        Renseignez le montant à recharger sur le compte Orange money. Vous allez être redirigé vers la plateforme BICIS pour terminer l’opération.
+      </div>
       <div class="transfer-amount-block">
         <mat-form-field class="scb-input-row amount-input" appearance="outline">
           <mat-label>Saisir le montant reçu&nbsp;&nbsp;</mat-label>
           <input #amountInput formControlName="amount" matInput type="number" (input)="onAmountChanged($event)" />
           <div matSuffix class="scb-text-gray suffix">
             <span class="cfa-unit scb-text-gray">F CFA</span>
-            <ng-container *ngIf="purchaseType !== OPERATION_TRANSFER_OM_WITH_CODE else feesTac">
+            <ng-container *ngIf="(purchaseType !== OPERATION_TRANSFER_OM_WITH_CODE && purchaseType !== OPERATION_TYPE_CARD_TO_WALLET) else feesTac">
               <div class="send-fee">
                 <span class="send-fee-value scb-text-gray" *ngIf="+amountInput?.value">
                   Frais d'envoi {{sending_fees_Info.effective_fees}} F CFA</span>
@@ -56,7 +55,7 @@
             </ng-container>
             <ng-template #feesTac>
               <div class="send-fee">
-                <span class="send-fee-value scb-text-gray">Frais d'envoi {{+fee | number}} F CFA</span>
+                <span class="send-fee-value scb-text-gray">{{ purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ? 'Frais d\'envoi' : 'Frais'}} {{+fee | number}} F CFA</span>
                 <ion-icon name="information-circle" class="info-icon" *ngIf="setAmountForm?.value?.amount !== null">
                 </ion-icon>
               </div>
@@ -85,7 +84,7 @@
         <span class="reason-title scb-text-gray">Raison</span>
         <span class="transfer-reason">{{ reason ? reason?.value : 'Choisir une raison'}}</span>
       </div>
-      <div class="toggle-tac-block" *ngIf="purchaseType !== OPERATION_TYPE_INTERNATIONAL_TRANSFER">
+      <div class="toggle-tac-block" *ngIf="purchaseType !== OPERATION_TYPE_INTERNATIONAL_TRANSFER && purchaseType !== OPERATION_TYPE_CARD_TO_WALLET">
         <span class="tac-title">Transfert avec code</span>
         <ion-toggle #transfertOMTypeToggle [disabled]="userHasNoOmAccount"
           (ionChange)="toggleTransferWithCode($event, amountInput.value)" [checked]="userHasNoOmAccount" slot="end">

@@ -26,6 +26,55 @@ export interface OmRegisterClientModel {
   service_version: string;
 }
 
+export interface InitC2WPayload {
+    amount: number;
+    receiverMsisdn: string;
+    senderMsisdn: string;
+}
+
+export interface InitC2WResponseModel {
+  paymentCancelUrl: string;
+  paymentUrl: string;
+  statusCode: string;
+}
+
+export interface GetBalanceWPPayloadModel {
+  msisdn: string;
+  type: GetBalanceTypeEnum,
+  walletType: GetBalanceWalletEnum
+}
+
+export enum GetBalanceTypeEnum {
+  CUSTOMER = 'customer',
+  RETAILER = 'retailer'
+}
+
+export enum GetBalanceWalletEnum {
+  PRINCIPAL = 'principal',
+  INTERNATIONAL = 'international',
+  BONUS = 'bonus',
+  SALAIRE = 'salaire',
+}
+
+export interface getOMTransactionsInputModel {
+  page?: number;
+  pageSize?: number;
+}
+
+export interface OMTransactionsResponseModel {
+    amount: number,
+    channel: string,
+    details: string[],
+    msisdnReceiver: string,
+    name: string,
+    nomReceiver: string,
+    operationDate: string,
+    operationType: string,
+    prenomReceiver: string,
+    txnid: string,
+    typeAchat: string
+}
+
 export interface OmLoginClientModel {
   msisdn: string;
   pin: string;

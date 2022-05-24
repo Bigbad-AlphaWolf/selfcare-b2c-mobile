@@ -7,7 +7,7 @@ import {
   OPERATION_TRANSFER_OM,
   OPERATION_TYPE_PASS_ALLO
 } from 'src/shared';
-import {OPERATION_RAPIDO, OPERATION_WOYOFAL, OPERATION_XEWEUL} from './operations.constants';
+import {OPERATION_RAPIDO, OPERATION_TYPE_CARD_TO_WALLET, OPERATION_WOYOFAL, OPERATION_XEWEUL} from './operations.constants';
 
 export const IMAGES_DIR_PATH = '/assets/images';
 export const MONTHS: string[] = [
@@ -71,7 +71,11 @@ export const OM_RECENT_TYPES = [
   {
     operationType: OPERATION_TRANSFER_OM,
     recentType: RecentType.transfert_avec_code
-  }
+  },
+  {
+    operationType: OPERATION_TYPE_CARD_TO_WALLET,
+    recentType: RecentType.card_to_wallet
+  },
 ];
 
 export const CATEGORY_MPO = {

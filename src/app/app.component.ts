@@ -30,6 +30,9 @@ import {NewRegistrationPage} from './new-registration/new-registration.page';
 import {LocalStorageService} from './services/localStorage-service/local-storage.service';
 import {LOCAL_STORAGE_KEYS, PATH_ACCESS_BY_OTP, STEPS_ACCESS_BY_OTP} from 'src/shared';
 import {BottomSheetService} from './services/bottom-sheet/bottom-sheet.service';
+import { FCM } from 'cordova-plugin-fcm-with-dependecy-updated/ionic/ngx';
+import { AccountService } from './services/account-service/account.service';
+import { NotificationService } from './services/notification.service';
 
 const ls = new SecureLS({encodingType: 'aes'});
 
@@ -37,7 +40,7 @@ declare var FollowAnalytics: any;
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html'
+  templateUrl: 'app.component.html',
 })
 export class AppComponent {
   appVersionNumber: any;
@@ -64,7 +67,9 @@ export class AppComponent {
     private loadingController: LoadingController,
     private otpService: OtpService,
     private localStorage: LocalStorageService,
-    private bottomSheetServ: BottomSheetService
+    private bottomSheetServ: BottomSheetService,
+    private fcm: FCM,
+    private notificationService: NotificationService
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -78,7 +83,7 @@ export class AppComponent {
 
   loadContacts() {
     this.diagnostic.getContactsAuthorizationStatus().then(
-      contactStatus => {
+      (contactStatus) => {
         if (
           contactStatus === this.diagnostic.permissionStatus.GRANTED ||
           contactStatus === this.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE
@@ -86,14 +91,14 @@ export class AppComponent {
           this.contactService.getAllContacts().subscribe();
         }
       },
-      err => {
+      (err) => {
         console.log(err);
       }
     );
   }
 
   async getVersion() {
-    this.appVersion.getVersionNumber().then(version => {
+    this.appVersion.getVersionNumber().then((version) => {
       this.appVersionNumber = version;
     });
   }
@@ -123,12 +128,31 @@ export class AppComponent {
         this.statusBar.styleDefault();
       }
       // #AARRGGBB where AA is an alpha value RR is red, GG is green and BB is blue
-
       this.splash.hide();
-
       this.checkDeeplinks();
       this.setUUidValue();
+      this.setupFCMNotifications()
     });
+  }
+
+  async setupFCMNotifications() {
+    const permission = await this.fcm.requestPushPermission();
+    this.fcm.onNotification().subscribe((data) => {
+      console.log('received', data);
+      if (data.wasTapped) {
+        console.log('Received in background');
+      } else {
+        console.log('Received in foreground');
+      }
+      this.notificationService.handleNotification(data);
+    });
+    // Get firebase id for notifications
+    this.fcm
+      .getToken()
+      .then((token) => {
+        console.log('Your FIREBASE TOKEN', token);
+      })
+      .catch((err) => console.log('error setting firebase', err));
   }
 
   checkDeeplinks() {
@@ -151,11 +175,13 @@ export class AppComponent {
         '/bonplan': MyOfferPlansPage,
         '/access/:hmac': NewRegistrationPage,
         '/changement-formule/:codeFormule': TransfertHubServicesPage,
-        '/changement-formule': TransfertHubServicesPage
+        '/changement-formule': TransfertHubServicesPage,
       })
       .subscribe(
-        matched => {
-          const path = matched.$link.path ? matched.$link.path : matched.$link.host;
+        (matched) => {
+          const path = matched.$link.path
+            ? matched.$link.path
+            : matched.$link.host;
           const isAccessByOTPPath = (path + '').includes(PATH_ACCESS_BY_OTP);
           if (isAccessByOTPPath) {
             this.processAccessByOtp(path);
@@ -181,23 +207,36 @@ export class AppComponent {
   }
 
   async processAccessByOtp(path: string) {
-    const hmac_hashe = path.split(PATH_ACCESS_BY_OTP).length === 2 ? path.split(PATH_ACCESS_BY_OTP)[1] : '';
+    const hmac_hashe =
+      path.split(PATH_ACCESS_BY_OTP).length === 2
+        ? path.split(PATH_ACCESS_BY_OTP)[1]
+        : '';
     const userHasLogin = !!this.authServ.getToken();
 
     if (!userHasLogin) {
-      const optAccessUserNumber = this.localStorage.getFromLocalStorage(LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION);
+      const optAccessUserNumber = this.localStorage.getFromLocalStorage(
+        LOCAL_STORAGE_KEYS.NUMBER_FOR_OTP_REGISTRATION
+      );
       const loader = await this.presentLoadingWithOptions();
       loader.present();
       this.otpService
-        .checkOTPSMS({hmac: hmac_hashe})
+        .checkOTPSMS({ hmac: hmac_hashe })
         .pipe(
-          tap((res: {hmac: string; check: boolean}) => {
+          tap((res: { hmac: string; check: boolean }) => {
             loader.dismiss();
-            this.bottomSheetServ.enterUserPhoneNumber(optAccessUserNumber, STEPS_ACCESS_BY_OTP.PROCESS_OTP, !res.check);
+            this.bottomSheetServ.enterUserPhoneNumber(
+              optAccessUserNumber,
+              STEPS_ACCESS_BY_OTP.PROCESS_OTP,
+              !res.check
+            );
           }),
-          catchError(err => {
+          catchError((err) => {
             loader.dismiss();
-            this.bottomSheetServ.enterUserPhoneNumber(optAccessUserNumber, STEPS_ACCESS_BY_OTP.PROCESS_OTP, true);
+            this.bottomSheetServ.enterUserPhoneNumber(
+              optAccessUserNumber,
+              STEPS_ACCESS_BY_OTP.PROCESS_OTP,
+              true
+            );
 
             return throwError(err);
           })
@@ -208,11 +247,15 @@ export class AppComponent {
 
   async getImei() {
     console.log(this.uid);
-    const {hasPermission} = await this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE);
+    const { hasPermission } = await this.androidPermissions.checkPermission(
+      this.androidPermissions.PERMISSION.READ_PHONE_STATE
+    );
     if (!hasPermission) {
       console.log('hasPermission', hasPermission);
 
-      const result = await this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE);
+      const result = await this.androidPermissions.requestPermission(
+        this.androidPermissions.PERMISSION.READ_PHONE_STATE
+      );
       if (!result.hasPermission) {
         console.log('hasPermission2', hasPermission);
         throw new Error('Permissions required');
@@ -238,7 +281,7 @@ export class AppComponent {
       message: 'Veuillez patienter',
       translucent: true,
       cssClass: 'custom-class custom-loading',
-      backdropDismiss: false
+      backdropDismiss: false,
     });
     return loading;
   }

@@ -1393,6 +1393,7 @@ export enum HUB_ACTIONS {
   ACHAT = 'HUB_ACHAT',
   TRANSFERT = 'HUB_TRANSFER',
   FACTURES = 'HUB_BILLS',
+  OM = 'HUB_OM'
 }
 
 export enum TYPE_ACTION_ON_BANNER {
@@ -1429,6 +1430,7 @@ export const isProfileHybrid = (profile: string) => {
 export const CONSO = 'SUIVI_CONSO';
 export const ASSISTANCE = 'ASSISTANCE';
 export const SERVICES = 'SERVICES';
+export const HUB_OM_TAB = 'HUB_OM_TAB';
 
 export enum GET_MSISDN_ENUM {
   DISABLE_WIFI = 'disableWifi',
@@ -1525,3 +1527,9 @@ export enum STEPS_ACCESS_BY_OTP {
 }
 
 export const PATH_ACCESS_BY_OTP = '/access/';
+
+export enum OPERATION_TRANSACTION_STATUS {
+  SUCCESS = 'success',
+  FAILED = 'failed',
+  PROCESSING = 'processing'
+}

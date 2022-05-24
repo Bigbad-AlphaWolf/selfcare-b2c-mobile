@@ -2,9 +2,9 @@
   <div class="face-icon-container">
     <img src="assets/images/face-i-dispo.png" class="face-id-icon" alt="">
   </div>
-  <div class="title">Valider avec Face-ID</div>
+  <div class="title">{{ forActivated ? 'Face-ID activé' : 'Valider avec Face-ID'}}</div>
   <div class="text scb-text-gray">Désormais vous pouvez valider vos opérations Orange Money sans saisir de code</div>
-  <div class="btn-container">
+  <div class="btn-container" *ngIf="!forActivated">
     <button class="scb-btn scb-btn-white" (click)="askLaterFaceId()">
       Plus tard
     </button>
@@ -12,5 +12,10 @@
       Activer
     </button>
   </div>
-  <div class="ne-plus-demander scb-text-orange" (click)="denyFaceId()">Ne plus demander</div>
+  <div class="full-btn-container" *ngIf="forActivated">
+    <button class="scb-btn scb-btn-full scb-btn-orange" (click)="close()">
+      Fermer
+    </button>
+  </div>
+  <div *ngIf="!forActivated" class="ne-plus-demander scb-text-orange" (click)="denyFaceId()">Ne plus demander</div>
 </div>
