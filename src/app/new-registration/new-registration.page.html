@@ -7,14 +7,14 @@
       alt=""
     />
   </div>
-  <div class="scb-text-orange voir-intro" *ngIf="step === 'CHECK_NUMBER'">
-    <span (click)="goIntro()">Voir l'intro</span>
+  <div class="scb-text-orange voir-intro" *ngIf="step === 'CHECK_NUMBER' || 0">
+    <!--<span (click)="goIntro()">Voir l'intro</span>-->
   </div>
   <div class="img-container">
     <img src="/assets/images/sim-icon.svg" alt="" />
   </div>
   <div class="title">
-    <span *ngIf="step === 'CHECK_NUMBER'">Numéro de téléphone</span>
+    <span *ngIf="step === 'CHECK_NUMBER'">Numéro de téléphone </span>
     <span *ngIf="step === 'PASSWORD'">J'ai oublié mon mot de passe</span>
   </div>
   <div class="sub-title">
@@ -35,7 +35,7 @@
         class="scb-text-gray numero-container"
       >
         <div class="phonenumber scb-text-full-black">{{ phoneNumber }}</div>
-        <div class="refresh" (click)="getNumber()">
+        <div *ngIf="!hideRefresh" class="refresh" (click)="getNumber()">
           <span class="scb-text-orange">Rafraichir</span>
         </div>
       </div>
@@ -57,6 +57,18 @@
         [disabled]="!numberGot || checkingNumber || gettingNumber"
       >
         <span>Suivant</span>
+        <mat-spinner
+          mode="indeterminate"
+          [diameter]="20"
+          *ngIf="checkingNumber"
+        ></mat-spinner>
+      </button>
+      <button
+        *ngIf="showErrMessage && !numberGot"
+        (click)="enterUserPhoneNumber()"
+        class="scb-btn scb-btn-full scb-btn-orange"
+      >
+        <span>Entrer votre numéro</span>
         <mat-spinner
           mode="indeterminate"
           [diameter]="20"

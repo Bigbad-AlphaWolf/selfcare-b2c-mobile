@@ -87,6 +87,16 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'changement-formule',
+    loadChildren: () => import('./my-formule/my-formule.module').then(m => m.MyFormulePageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'changement-formule/:codeFormule',
+    loadChildren: () => import('./my-formule/my-formule.module').then(m => m.MyFormulePageModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'sargal-dashboard',
     loadChildren: () => import('./sargal/sargal.module').then(m => m.SargalPageModule),
     canActivate: [AuthGuard]
@@ -183,7 +193,7 @@ const routes: Routes = [
   },
   {
     path: 'transfer-money/:msisdn/:amount',
-    loadChildren: () => import('./operation-recap/operation-recap.module').then(m => m.OperationRecapPageModule),
+    loadChildren: () => import('./transfer-set-amount/transfer-set-amount.module').then(m => m.TransferSetAmountPageModule),
     canActivate: [AuthGuard]
   },
   {
@@ -218,7 +228,7 @@ const routes: Routes = [
   },
   {
     path: 'transfer-money/:msisdn',
-    loadChildren: () => import('./purchase-set-amount/purchase-set-amount.module').then(m => m.PurchaseSetAmountPageModule),
+    loadChildren: () => import('./transfer-set-amount/transfer-set-amount.module').then(m => m.TransferSetAmountPageModule),
     canActivate: [AuthGuard]
   },
   {
@@ -376,6 +386,10 @@ const routes: Routes = [
     path: 'list-pass-international',
     loadChildren: () =>
       import('./pages/list-pass-international/list-pass-international.module').then(m => m.ListPassInternationalPageModule)
+  },
+  {
+    path: 'new-select-beneficiary',
+    loadChildren: () => import('./new-select-beneficiary/new-select-beneficiary.module').then( m => m.NewSelectBeneficiaryPageModule)
   }
 ];
 

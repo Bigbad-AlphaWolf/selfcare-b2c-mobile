@@ -1,0 +1,63 @@
+<ion-header [oemIonHeaderParallax]="90">
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-back-button [id]="'goBackBtn' | generateIdForTA" defaultHref="/" mode="md" class="oem-back-button">
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title> Choix du bénéficiaire </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
+	<cdk-virtual-scroll-viewport itemSize="70" minBufferPx="700" maxBufferPx="1000">
+
+	<div class="page-content">
+		<ion-item class="input-field" lines="none" type="text" >
+			<ion-input (ionFocus)="inputFocused = true" (ionBlur)="inputFocused = false" placeholder="Numéro, Nom" (ionChange)="searchTerm$.next($event.target.value.trim()); searchValue = $event.target.value.trim()" clearInput></ion-input>
+		</ion-item>
+
+		<div *ngIf="!inputFocused && !searchValue?.length" class="my-numbers">
+			<span class="title">
+				Mes transferts récents
+			</span>
+
+			<div class="list">
+				<div *ngIf="!recents?.length">
+					Aucun transferts récents
+				</div>
+				<div *ngFor="let item of recents" (click)="onContactSelected(item)" class="item">
+					<img src="assets/images/user.svg" alt="">
+					<div class="text">
+						<span class="name">
+						 	{{ item?.displayName }}
+						</span>
+						<span class="tel">
+							{{item?.formatedPhoneNumber | phoneNumberDisplay}}
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="list-contacts">
+			<span class="title">
+				Mes contacts
+			</span>
+			<span class="error-msg scb-text-red-error" *ngIf="errorMsg">
+				{{errorMsg}}
+			</span>
+			<ng-container *ngIf="!contactError && listFilteredContacts.length">
+					<ion-list>
+						<app-recipient-item-contact *cdkVirtualFor="let item of listFilteredContacts" [item]="item" (selected)="onContactSelected($event)"></app-recipient-item-contact>
+					</ion-list>
+
+				</ng-container>
+
+			</div>
+		</div>
+	</cdk-virtual-scroll-viewport>
+	<div *ngIf="listFilteredContacts.length === 1" (click)="confirm()" class="confirm-btn">
+		<ion-button expand="block" shape="round" class="scb-btn-ion">Suivant</ion-button>
+	</div>
+
+</ion-content>

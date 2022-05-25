@@ -1,0 +1,12 @@
+repositories {
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url "https://raw.github.com/ringcentral/engage-digital-messaging-android/master"
+    }
+}
+dependencies {
+    implementation 'com.dimelo.dimelosdk:dimelosdk:2.1.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+}

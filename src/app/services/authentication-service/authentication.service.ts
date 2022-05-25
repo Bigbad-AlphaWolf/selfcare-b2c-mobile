@@ -33,7 +33,6 @@ import {
 } from 'src/app/dashboard';
 import {
   JAMONO_ALLO_CODE_FORMULE,
-  NotificationInfoModel,
   SubscriptionModel,
   JAMONO_PRO_CODE_FORMULE,
   PRO_MOBILE_ERROR_CODE,
@@ -42,11 +41,10 @@ import {
 const {
   SERVER_API_URL,
   ACCOUNT_MNGT_SERVICE,
-  CODE_OTP_SERVICE,
   CONSO_SERVICE,
   GET_MSISDN_BY_NETWORK_URL,
   CONFIRM_MSISDN_BY_NETWORK_URL,
-  UAA_SERVICE,
+  CUSTOMER_OFFER_CACHE_DURATION,
 } = environment;
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -64,20 +62,16 @@ const abonneInfoWithOTP = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/
 const loginEndpoint = `${SERVER_API_URL}/auth/login`;
 const logoutEndpoint = `${SERVER_API_URL}/auth/logout`;
 const captchaEndpoint = `${SERVER_API_URL}/auth/captcha`;
-// Code OTP`
-const otpBaseUrl = `${SERVER_API_URL}/${CODE_OTP_SERVICE}/api/code-otp-infos`;
-const generateCodeOtpEndpoint = `${otpBaseUrl}/generate`;
-const checkCodeOtpEndpoint = `${otpBaseUrl}/check`;
 
 // new registrations endpoint
 const checkNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/check_number`;
 const checkNumberV3Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v3/check_number`;
 const registerEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/register`;
 const registerV3Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v3/register`;
-const resetPwdEndpoint = `${SERVER_API_URL}/${UAA_SERVICE}/api/account/b2c/reset-password`;
+const resetPwdEndpoint = `${SERVER_API_URL}/api/account/b2c/reset-password`;
 const resetPwdV2Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v1/lite/reset-password`;
 
-const notificationInfoEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/notification-information`;
+const checkNumberIsOrangeEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/v1/is-orange-number`;
 // endpoint to get token
 const tokenEndpoint = `${SERVER_API_URL}/auth/get-service-token`;
 // eligibility to recieve pass internet & illimix endpoint
@@ -96,7 +90,6 @@ export class AuthenticationService {
     Observable<any>
   >();
   subscriptionUpdatedSubject: Subject<any> = new Subject<any>();
-
   constructor(private http: HttpClient) {}
 
   get currentPhoneNumbersubscriptionUpdated() {
@@ -118,15 +111,6 @@ export class AuthenticationService {
     return this.http.post(checkUserExistEndpoint, { msisdn, token });
   }
 
-  // send OTP to user
-  generateUserOtp(msisdn: string, token: string) {
-    return this.http.post(generateCodeOtpEndpoint, { msisdn, token });
-  }
-
-  // check OTP sent by user
-  checkOtp(verificationData: { msisdn: string; code: string }) {
-    return this.http.post(checkCodeOtpEndpoint, verificationData);
-  }
   getInfosAbonneWithOTP(msisdn: string, codeOTP: string) {
     return this.http.get(`${abonneInfoWithOTP}/${msisdn}/${codeOTP}`);
   }
@@ -156,6 +140,7 @@ export class AuthenticationService {
       return of(savedData).pipe(take(1));
     } else {
       return this.getCustomerOfferRefact(msisdn).pipe(
+        share(),
         map((res: any) => {
           const subscription = {
             clientCode: res.clientCode,
@@ -220,7 +205,7 @@ export class AuthenticationService {
         const lsLastUpdateKey = lsKey + '_last_update';
         ls.set(lsLastUpdateKey, Date.now());
         ls.set(lsKey, subscription);
-        this.subscriptionUpdatedSubject.next(subscription);
+        //this.subscriptionUpdatedSubject.next(subscription);
         return subscription;
       }),
       catchError(err => {
@@ -255,8 +240,8 @@ export class AuthenticationService {
     const elapsedTime = currentDate - lastUpdateTime;
     // 1.800.000 ms = 1.800 s = 30 min subscription cache duration
     // multiply by an int to extend storage duration in the cache (eg. 1800000 * 48)
-    const hasExpired = elapsedTime > 1800000;
-    // if (hasExpired) ls.remove(subscriptionKey);
+    const hasExpired = elapsedTime > CUSTOMER_OFFER_CACHE_DURATION;
+    //if (hasExpired) ls.remove(subscriptionKey);
     return hasExpired;
   }
 
@@ -460,6 +445,12 @@ export class AuthenticationService {
   }
 
   getTokenFromBackend() {
+    const lighToken = ls.get('light-token');
+    const expiredDate = lighToken ? jwt_decode(lighToken).exp * 1000 : 0;
+    const hasExpired = expiredDate < new Date().getTime();
+    if (!hasExpired && lighToken && lighToken !== '') {
+      return of(lighToken);
+    }
     return this.http.get(tokenEndpoint).pipe(
       tap((res: any) => {
         ls.set('light-token', res.access_token);
@@ -493,7 +484,7 @@ export class AuthenticationService {
               return throwError(error);
             }
           }),
-          catchError((err) => {
+          catchError(err => {
             return throwError(err);
           })
         );
@@ -521,7 +512,7 @@ export class AuthenticationService {
               return throwError(error);
             }
           }),
-          catchError((err) => {
+          catchError(err => {
             return throwError(err);
           })
         );
@@ -538,25 +529,17 @@ export class AuthenticationService {
   }
 
   resetPassword(resetPwdPayload: ResetPwdModel) {
+    resetPwdPayload.login = resetPwdPayload.login.startsWith('221')
+      ? resetPwdPayload.login.substring(3)
+      : resetPwdPayload.login;
     return this.http.post(resetPwdEndpoint, resetPwdPayload);
   }
 
   resetPasswordV2(resetPwdPayload: ResetPwdModel) {
+    resetPwdPayload.login = resetPwdPayload.login.startsWith('221')
+      ? resetPwdPayload.login.substring(3)
+      : resetPwdPayload.login;
     return this.http.put(resetPwdV2Endpoint, resetPwdPayload);
-  }
-
-  // Update Notification Info for user
-  UpdateNotificationInfo() {
-    delay(10000);
-    const info = {} as NotificationInfoModel;
-    info.firebaseId = ls.get('firebaseId');
-    info.msisdn = this.getUserMainPhoneNumber();
-    const lsKey = 'sub' + info.msisdn;
-    const savedData = ls.get(lsKey);
-    info.codeFormule = savedData.code;
-    if (info.msisdn && info.codeFormule) {
-      this.http.put(notificationInfoEndpoint, info).subscribe();
-    }
   }
 
   setHmacOnLs(hmac: string) {
@@ -565,6 +548,14 @@ export class AuthenticationService {
 
   getHmac() {
     return ls.get('hmac');
+  }
+
+  checkIfOrangeNumber(phoneNumber: string) {
+    return this.getTokenFromBackend().pipe(
+      switchMap(_ => {
+        return this.http.get(`${checkNumberIsOrangeEndpoint}/${phoneNumber}`);
+      })
+    );
   }
 }
 
@@ -602,9 +593,9 @@ export interface ResetPwdModel {
 export function http_retry(maxRetry = 10, delayMs = 10000) {
   return (src: Observable<any>) => {
     return src.pipe(
-      retryWhen((_) => {
+      retryWhen(_ => {
         return interval(delayMs).pipe(
-          flatMap((count) =>
+          flatMap(count =>
             count === maxRetry ? throwError('Giving up') : of(count)
           )
         );

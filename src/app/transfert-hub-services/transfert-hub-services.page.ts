@@ -23,6 +23,7 @@ import {
   OPERATION_TYPE_SEDDO_CREDIT,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_PASS_INTERNATIONAL,
+  OPERATION_ABONNEMENT_WIDO,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -120,7 +121,8 @@ export class TransfertHubServicesPage implements OnInit {
     private favService: FavorisService,
     private toastController: ToastController,
     private operationService: OperationService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private appRoutingServ: ApplicationRoutingService
   ) {}
 
   ngOnInit() {
@@ -146,10 +148,10 @@ export class TransfertHubServicesPage implements OnInit {
     this.loadingServices = true;
     this.servicesHasError = false;
     this.operationService.getServicesByFormule(this.hubCode).subscribe(
-      (res) => {
+      res => {
         this.loadingServices = false;
-        this.options = res.filter((option) => !option.passUsage);
-        this.passUsages = res.filter((option) => option.passUsage);
+        this.options = res.filter(option => !option.passUsage);
+        this.passUsages = res.filter(option => option.passUsage);
         this.getUserActiveBonPlans();
         if (this.purchaseType === 'BUY') this.getUserActiveBoosterPromo();
         this.getFavoritePass();
@@ -164,7 +166,7 @@ export class TransfertHubServicesPage implements OnInit {
           this.currentPhone
         );
       },
-      (err) => {
+      err => {
         this.loadingServices = false;
         this.servicesHasError = true;
         const followError =
@@ -269,6 +271,9 @@ export class TransfertHubServicesPage implements OnInit {
           'illiflex-budget-configuration'
         );
         break;
+      case OPERATION_ABONNEMENT_WIDO:
+        this.goToListPassWido(OPERATION_ABONNEMENT_WIDO, 'list-pass');
+        break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
         this.openMerchantBS();
       default:
@@ -308,6 +313,19 @@ export class TransfertHubServicesPage implements OnInit {
     }
   }
 
+  goToListPassWido(operation: string, routePath: string) {
+    const opInfos = {
+      senderMsisdn: this.currentPhone,
+      destinataire: this.currentPhone,
+      purchaseType: operation,
+      isLightMod: false,
+      recipientMsisdn: this.currentPhone,
+    };
+    this.navController.navigateForward([routePath], {
+      state: opInfos,
+    });
+  }
+
   checkOmAccount() {
     this.omService.getOmMsisdn().subscribe((msisdn: string) => {
       if (msisdn !== 'error') {
@@ -339,7 +357,7 @@ export class TransfertHubServicesPage implements OnInit {
             OPERATION_TYPE_MERCHANT_PAYMENT,
             PurchaseSetAmountPage.ROUTE_PATH
           )
-          .subscribe((_) => {});
+          .subscribe(_ => {});
         this.bsService.openModal(MerchantPaymentCodeComponent, {
           omMsisdn: omSession.msisdn,
         });
@@ -358,6 +376,8 @@ export class TransfertHubServicesPage implements OnInit {
   }
 
   async showBeneficiaryModal(component?: any) {
+    this.appRouting.goToSelectBeneficiaryPage();
+    return;
     const modal = await this.modalController.create({
       component: component ? component : SelectBeneficiaryPopUpComponent,
       cssClass: 'select-recipient-modal',
@@ -365,7 +385,7 @@ export class TransfertHubServicesPage implements OnInit {
         country: TRANSFER_OM_INTERNATIONAL_COUNTRIES[0],
       },
     });
-    modal.onWillDismiss().then((response) => {});
+    modal.onWillDismiss().then(response => {});
     return await modal.present();
   }
 
@@ -453,7 +473,7 @@ export class TransfertHubServicesPage implements OnInit {
             'event'
           );
         }),
-        catchError((err) => {
+        catchError(err => {
           this.followAnalyticsService.registerEventFollow(
             'Get_favorite_pass_error',
             'error',

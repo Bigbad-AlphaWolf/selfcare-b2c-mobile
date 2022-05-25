@@ -26,7 +26,7 @@
   }
   .description {
     background-color: $white;
-    padding: 20px percentage(10/375);
+    padding: 20px percentage(10/375) 0;
     .text {
       font-family: HelveticaNeueLTStd-Roman;
       font-size: 16px;
@@ -40,6 +40,7 @@
       justify-content: space-between;
       align-items: center;
       margin-top: 15px;
+      margin-bottom: 10px;
       .tarifs-infos {
         display: flex;
         flex-direction: column;
@@ -57,13 +58,17 @@
         }
       }
       button {
-        border: 2px solid $fullBlack;
+        border: 1px solid $fullBlack;
         border-radius: 10px;
         font-size: 16px;
         height: 40px;
         background: none;
         padding: 0 20px;
       }
+    }
+    ion-searchbar {
+      padding: 15px 0 !important;
+      --background: #ffffff;
     }
   }
   .filters-block {
@@ -120,7 +125,20 @@
     .loading-dalal-spinner {
       width: 100%;
       display: flex;
+      flex-direction: column;
       justify-content: center;
+      .title-loader {
+        width: 40%;
+        height: 30px;
+        margin: 15px 0;
+        border-radius: 10px;
+      }
+      .dalal-loader {
+        width: 100%;
+        height: 110px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+      }
       .mat-spinner::ng-deep circle {
         stroke: $orange;
       }

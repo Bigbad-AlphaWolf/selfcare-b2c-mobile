@@ -1,0 +1,12 @@
+<div (click)="choose()" class="item">
+	<img src="assets/images/user.svg" alt="">
+	<div class="text">
+		<span class="name">
+			{{item?.displayName}}
+		</span>
+		<ion-img *ngIf="item?.country?.flagIcon" [src]="item?.country?.flagIcon"></ion-img>
+		<span class="tel">
+			{{item?.phoneNumber}}
+		</span>
+	</div>
+</div>

@@ -1,36 +1,29 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
-import { BoosterModel, BoosterTrigger } from '../models/booster.model';
-const { SERVER_API_URL, BOOSTER_SERVICE } = environment;
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable, of, throwError} from 'rxjs';
+import {catchError, map, share} from 'rxjs/operators';
+import {environment} from 'src/environments/environment';
+import {BoosterModel, BoosterTrigger} from '../models/booster.model';
+const {SERVER_API_URL, BOOSTER_SERVICE} = environment;
 const boostersEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters/active-boosters`;
 const boosterTransactionEndpoint = `${SERVER_API_URL}/${BOOSTER_SERVICE}/api/boosters/booster-promo-transaction`;
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class BoosterService {
   static lastBoostersList: BoosterModel[] = [];
   constructor(private http: HttpClient) {}
 
-  getBoosters(boosterPayload: {
-    trigger: BoosterTrigger;
-    codeFormuleRecipient?: string;
-    msisdn?: string;
-  }): Observable<BoosterModel[]> {
+  getBoosters(boosterPayload: {trigger: BoosterTrigger; codeFormuleRecipient?: string; msisdn?: string}): Observable<BoosterModel[]> {
     let url = boosterPayload.trigger
       ? boostersEndpoint +
-        `${boosterPayload.trigger ? '?trigger=' + boosterPayload.trigger : ''}${
-          boosterPayload.msisdn ? '&msisdn=' + boosterPayload.msisdn : ''
-        }${
-          boosterPayload.codeFormuleRecipient
-            ? '&code=' + boosterPayload.codeFormuleRecipient
-            : ''
-        }`
+        `${boosterPayload.trigger ? '?trigger=' + boosterPayload.trigger : ''}${boosterPayload.msisdn
+          ? '&msisdn=' + boosterPayload.msisdn
+          : ''}${boosterPayload.codeFormuleRecipient ? '&code=' + boosterPayload.codeFormuleRecipient : ''}`
       : boostersEndpoint;
     return this.http.get(url).pipe(
+      share(),
       map((res: BoosterModel[]) => {
         return res;
       })
@@ -38,24 +31,16 @@ export class BoosterService {
   }
 
   getCoupon(recipientMsisdn: string, boosterId: number) {
-    return this.http
-      .get(
-        `${boosterTransactionEndpoint}?msisdn=${recipientMsisdn}&boosterId=${boosterId}`
-      )
-      .pipe(
-        map((res: any) => {
-          if (
-            res &&
-            res.transactionDetails &&
-            res.transactionDetails.transactionValue
-          ) {
-            return res.transactionDetails.transactionValue;
-          }
-          return null;
-        }),
-        catchError((err) => {
-          return throwError(err);
-        })
-      );
+    return this.http.get(`${boosterTransactionEndpoint}?msisdn=${recipientMsisdn}&boosterId=${boosterId}`).pipe(
+      map((res: any) => {
+        if (res && res.transactionDetails && res.transactionDetails.transactionValue) {
+          return res.transactionDetails.transactionValue;
+        }
+        return null;
+      }),
+      catchError(err => {
+        return throwError(err);
+      })
+    );
   }
 }
