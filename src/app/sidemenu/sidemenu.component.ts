@@ -4,7 +4,7 @@ import {AuthenticationService} from '../services/authentication-service/authenti
 import {DashboardService, downloadAvatarEndpoint} from '../services/dashboard-service/dashboard.service';
 import {AccountService} from '../services/account-service/account.service';
 import * as SecureLS from 'secure-ls';
-import {NO_AVATAR_ICON_URL, getNOAvatartUrlImage, ASSISTANCE_URL, CONSO, ASSISTANCE, SERVICES} from 'src/shared';
+import {NO_AVATAR_ICON_URL, getNOAvatartUrlImage, ASSISTANCE_URL, CONSO, ASSISTANCE, SERVICES, isFixeNumber} from 'src/shared';
 const ls = new SecureLS({encodingType: 'aes'});
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
@@ -18,10 +18,11 @@ import {OmStatusVisualizationComponent} from 'src/shared/om-status-visualization
 import {FACE_ID_PERMISSIONS, FACE_ID_STORAGE_KEY, OrangeMoneyService} from '../services/orange-money-service/orange-money.service';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
 import { FollowAnalyticsEventType } from '../services/follow-analytics/follow-analytics-event-type.enum';
+import { OPERATION_TYPE_PAY_BILL, OPERATION_TYPE_TERANGA_BILL } from '../utils/operations.constants';
 @Component({
-  selector: "app-sidemenu",
-  templateUrl: "./sidemenu.component.html",
-  styleUrls: ["./sidemenu.component.scss"],
+  selector: 'app-sidemenu',
+  templateUrl: './sidemenu.component.html',
+  styleUrls: ['./sidemenu.component.scss'],
 })
 export class SidemenuComponent implements OnInit, OnDestroy {
   userSubscription;
@@ -112,10 +113,18 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   onChangedStatus(event) {
     if (event?.detail?.checked) {
-      this.followAnalyticsService.registerEventFollow('Allow_Face_ID_Toggle', FollowAnalyticsEventType.EVENT, {msisdn: this.msisdn})
+      this.followAnalyticsService.registerEventFollow(
+        'Allow_Face_ID_Toggle',
+        FollowAnalyticsEventType.EVENT,
+        { msisdn: this.msisdn }
+      );
       this.orangeMoneyServ.allowFaceId();
     } else {
-      this.followAnalyticsService.registerEventFollow('Disable_Face_ID_Toggle', FollowAnalyticsEventType.EVENT, {msisdn: this.msisdn})
+      this.followAnalyticsService.registerEventFollow(
+        'Disable_Face_ID_Toggle',
+        FollowAnalyticsEventType.EVENT,
+        { msisdn: this.msisdn }
+      );
       this.orangeMoneyServ.askFaceIdLater();
     }
   }
@@ -148,15 +157,15 @@ export class SidemenuComponent implements OnInit, OnDestroy {
       (res) => {
         this.numbers = res;
         this.followAnalyticsService.registerEventFollow(
-          "Recuperation_lignes_rattachees_menu_success",
-          "event",
+          'Recuperation_lignes_rattachees_menu_success',
+          'event',
           this.msisdn
         );
       },
       (err) => {
         this.followAnalyticsService.registerEventFollow(
-          "Recuperation_lignes_rattachees_menu_failed",
-          "error",
+          'Recuperation_lignes_rattachees_menu_failed',
+          'error',
           {
             msisdn: this.msisdn,
             error: err.status,
@@ -174,19 +183,19 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.authServ.getSubscription(this.msisdn).subscribe((sub) => {
       if (isPrepaidOrHybrid(sub)) {
         this.followAnalyticsService.registerEventFollow(
-          "Details_conso_tab_from_menu",
-          "event",
+          'Details_conso_tab_from_menu',
+          'event',
           this.msisdn
         );
         this.dashboardServ.menuOptionClickEmit(CONSO);
         return;
       }
       this.followAnalyticsService.registerEventFollow(
-        "Details_conso_menu",
-        "event",
+        'Details_conso_menu',
+        'event',
         this.msisdn
       );
-      this.router.navigate(["/details-conso"]);
+      this.router.navigate(['/details-conso']);
     });
   }
 
@@ -194,25 +203,25 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     if (this.msisdn === msisdn) return;
     const mainMsisdn = this.dashboardServ.getMainPhoneNumber();
     this.followAnalyticsService.registerEventFollow(
-      "Switch_msisdn_menu",
-      "event",
+      'Switch_msisdn_menu',
+      'event',
       { main: mainMsisdn, msisdn }
     );
     this.dashboardServ.setCurrentPhoneNumber(msisdn);
     this.closeMenu();
-    this.router.navigate(["/dashboard"]);
+    this.router.navigate(['/dashboard']);
   }
 
   attachLine() {
     this.followAnalyticsService.registerEventFollow(
-      "Attach_msisdn_menu",
-      "event"
+      'Attach_msisdn_menu',
+      'event'
     );
-    this.router.navigate(["/new-number"]);
+    this.router.navigate(['/new-number']);
   }
 
   extractData() {
-    this.userInfos = ls.get("user");
+    this.userInfos = ls.get('user');
     if (this.userInfos.imageProfil) {
       this.avatarUrl = downloadAvatarEndpoint + this.userInfos.imageProfil;
     } else {
@@ -226,7 +235,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   getUserNames() {
-    const user = ls.get("user");
+    const user = ls.get('user');
     this.firstName = user.firstName;
     this.lastName = user.lastName;
   }
@@ -234,11 +243,11 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   goToAssistancePage() {
     // this.router.navigate(['/community']);
     // return;
-    this.iab.create(ASSISTANCE_URL, "_self");
+    this.iab.create(ASSISTANCE_URL, '_self');
     this.followAnalyticsService.registerEventFollow(
-      "Sidemenu_Assistance",
-      "event",
-      "clicked"
+      'Sidemenu_Assistance',
+      'event',
+      'clicked'
     );
   }
 
@@ -248,59 +257,66 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.authServ.getSubscription(this.msisdn).subscribe((sub) => {
       if (isPrepaidOrHybrid(sub)) {
         this.followAnalyticsService.registerEventFollow(
-          "services_tab_from_menu",
-          "event",
+          'services_tab_from_menu',
+          'event',
           this.msisdn
         );
         this.dashboardServ.menuOptionClickEmit(SERVICES);
         return;
       }
       this.followAnalyticsService.registerEventFollow(
-        "Offres_services_menu",
-        "event"
+        'Offres_services_menu',
+        'event'
       );
       this.navCtrl.navigateForward(OffresServicesPage.ROUTE_PATH);
     });
   }
 
   goToMyOfferPlans() {
-    this.followAnalyticsService.registerEventFollow("Bons_plans_menu", "event");
-    this.router.navigate(["/my-offer-plans"]);
+    this.followAnalyticsService.registerEventFollow('Bons_plans_menu', 'event');
+    this.router.navigate(['/my-offer-plans']);
   }
 
   goFormule() {
-    this.router.navigate(["/my-formule"]);
+    this.router.navigate(['/my-formule']);
     this.followAnalyticsService.registerEventFollow(
-      "Ma_formule_menu",
-      "event",
-      "clicked"
+      'Ma_formule_menu',
+      'event',
+      'clicked'
     );
   }
 
   goFacture() {
-    this.router.navigate(["/bills"]);
+    const operationType = isFixeNumber(this.msisdn, this.userSubscription)
+      ? OPERATION_TYPE_PAY_BILL
+      : OPERATION_TYPE_TERANGA_BILL;
+    this.router.navigate(['/bills'], {
+      state: {
+        operationType,
+      },
+    });
     this.followAnalyticsService.registerEventFollow(
-      "Factures_menu",
-      "event",
-      "clicked"
+      'Factures_menu',
+      'event',
+      'clicked'
     );
   }
 
   goMyAccount() {
-    this.router.navigate(["/my-account"]);
+    this.router.navigate(['/my-account']);
     this.followAnalyticsService.registerEventFollow(
-      "Mon_compte_menu",
-      "event",
-      "clicked"
+      'Mon_compte_menu',
+      'event',
+      'clicked'
     );
   }
 
   goParrainage() {
-    this.router.navigate(["/parrainage"]);
+    this.router.navigate(['/parrainage']);
     this.followAnalyticsService.registerEventFollow(
-      "Mes_parrainages_menu",
-      "event",
-      "clicked"
+      'Mes_parrainages_menu',
+      'event',
+      'clicked'
     );
   }
 
@@ -308,18 +324,18 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.authServ.getSubscription(this.msisdn).subscribe((sub) => {
       if (isPrepaidOrHybrid(sub)) {
         this.followAnalyticsService.registerEventFollow(
-          "Assistance_tab_from_menu",
-          "event",
+          'Assistance_tab_from_menu',
+          'event',
           this.msisdn
         );
         this.dashboardServ.menuOptionClickEmit(ASSISTANCE);
         return;
       }
-      this.router.navigate(["/assistance-hub"]);
+      this.router.navigate(['/assistance-hub']);
       this.followAnalyticsService.registerEventFollow(
-        "Assistance_menu",
-        "event",
-        "clicked"
+        'Assistance_menu',
+        'event',
+        'clicked'
       );
     });
   }
@@ -327,9 +343,9 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   goToRattachedNumberPage() {
     this.appRout.goToRattachementsPage();
     this.followAnalyticsService.registerEventFollow(
-      "Gérer_mes_lignes_menu",
-      "event",
-      "clicked"
+      'Gérer_mes_lignes_menu',
+      'event',
+      'clicked'
     );
   }
 
@@ -339,16 +355,16 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   closeMenu() {
     this.followAnalyticsService.registerEventFollow(
-      "closed_menu",
-      "event",
-      "closed"
+      'closed_menu',
+      'event',
+      'closed'
     );
     this.close.emit();
   }
 
   goToAbout() {
-    this.followAnalyticsService.registerEventFollow("A_propos_menu", "event");
-    this.router.navigate(["/apropos"]);
+    this.followAnalyticsService.registerEventFollow('A_propos_menu', 'event');
+    this.router.navigate(['/apropos']);
   }
 
   defaulSharingSheet() {
@@ -358,7 +374,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   async openOMStatus() {
     const modal = await this.modalController.create({
       component: OmStatusVisualizationComponent,
-      cssClass: "select-recipient-modal",
+      cssClass: 'select-recipient-modal',
     });
     return await modal.present();
   }
@@ -369,7 +385,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   getUserOMInfos() {
     console.log(
-      "omInfos",
+      'omInfos',
       this.orangeMoneyServ.GetOrangeMoneyUser(
         this.dashboardServ.getCurrentPhoneNumber()
       )
