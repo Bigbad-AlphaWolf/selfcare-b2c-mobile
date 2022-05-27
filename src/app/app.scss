@@ -389,9 +389,9 @@ $bluePopUp: #085ebd;
       height: 20px;
     }
   }
-  ion-slides {
+  .swiper-container {
     width: 100%;
-    ion-slide {
+    .swiper-slide {
       width: 100%;
       .description {
         width: percentage(163/355);

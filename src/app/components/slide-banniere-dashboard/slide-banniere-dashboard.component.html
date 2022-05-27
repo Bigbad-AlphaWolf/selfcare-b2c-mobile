@@ -1,23 +1,21 @@
 <div *ngIf="listBanniere?.length" class="dashboard-img-promo slide-container">
-  <ion-slides pager>
-    <ng-container *ngFor="let banniere of listBanniere">
-      <ion-slide (click)="onBannerClicked(banniere)">
-        <span #error class="error-slide scb-text-full-black">
-          Erreur lors du chargement de l'image</span
-        >
-        <div class="description" #description>
-          <div class="desc-title scb-text-white">
-            {{getBanniereTitle(banniere.description)}}
-          </div>
-          <div class="desc-text scb-text-white">
-            {{getBanniereDescription(banniere.description)}}
-          </div>
-        </div>
-        <div class="img-container" #imageContainer>
-          <img-loader [spinner]="true" class="icone" [src]="banniere.image" useImg></img-loader>
-        </div>
-      </ion-slide>
-    </ng-container>
-  </ion-slides>
+	<swiper [autoplay]="{	delay: 7000 }" [pagination]="{	type: 'bullets',	clickable: true }"   [slidesPerView]="1">
+		<ng-template swiperSlide *ngFor="let banniere of listBanniere">
+			<span #error class="error-slide scb-text-full-black">
+				Erreur lors du chargement de l'image</span
+			>
+			<div class="description" #description>
+				<div class="desc-title scb-text-white">
+					{{ banniere.description | getBannerTitle}}
+				</div>
+				<div class="desc-text scb-text-white">
+					{{ banniere.description | getBannerDescription}}
+				</div>
+			</div>
+			<div class="img-container" #imageContainer>
+				<img-loader [spinner]="true" class="icone" [src]="banniere.image" useImg></img-loader>
+			</div>
+		</ng-template>
+	</swiper>
 
 </div>
