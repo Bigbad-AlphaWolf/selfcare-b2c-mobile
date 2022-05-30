@@ -30,7 +30,7 @@ import {
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
-import { FACE_ID_PERMISSIONS, OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { FACE_ID_PERMISSIONS, OM_FEES_CALCUL_MODE, OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { OperationExtras } from '../models/operation-extras.model';
 import {
@@ -136,6 +136,7 @@ export class OperationRecapPage implements OnInit {
   OPERATION_TYPE_SENELEC_BILLS = OPERATION_TYPE_SENELEC_BILLS;
   OPERATION_TYPE_SENEAU_BILLS = OPERATION_TYPE_SENEAU_BILLS;
   DALAL_TARIF = MONTHLY_DALAL_TARIF;
+  OM_FEES_CALCUL_MODE = OM_FEES_CALCUL_MODE;
   subscriptionInfos: SubscriptionModel;
   buyCreditPayload: any;
   offerPlan: OfferPlan;
@@ -415,7 +416,13 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_TERANGA_BILL:
       case OPERATION_TYPE_SENELEC_BILLS:
       case OPERATION_TYPE_SENEAU_BILLS:
-        this.checkOMBalanceSuffiency(this.opXtras?.invoice?.montantFacture);
+        const amountTocheck =
+          this.purchaseType === OPERATION_TYPE_SENELEC_BILLS ||
+          this.purchaseType === OPERATION_TYPE_SENEAU_BILLS
+            ? this.opXtras?.invoice?.montantFacture +
+              this.opXtras?.fee?.effective_fees
+            : this.opXtras?.invoice?.montantFacture;
+        this.checkOMBalanceSuffiency(amountTocheck);
       default:
         break;
     }
