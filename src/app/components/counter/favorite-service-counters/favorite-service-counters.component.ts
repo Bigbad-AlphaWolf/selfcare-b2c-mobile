@@ -36,7 +36,7 @@ export class FavoriteServiceCountersComponent implements OnInit {
       .pipe(
         map((favoris: FavorisOem[]) => {
           let results = [];
-          favoris = favoris.slice(0, 3);
+          // favoris = favoris.slice(0, 3);
           favoris.forEach((el) => {
             results.push({ name: el.ref_label, counterNumber: el.ref_num });
           });
@@ -65,6 +65,6 @@ export class FavoriteServiceCountersComponent implements OnInit {
   }
 
   navigateBack() {
-    this.modalController.dismiss({TYPE_BS: 'FAVORIES', ACTION: 'BACK'});
+    this.modalController.dismiss({TYPE_BS: 'FAVORIES', ACTION: 'BACK', operation: this.operationType});
   }
 }

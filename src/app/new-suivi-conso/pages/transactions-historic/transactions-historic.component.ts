@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { CategoryPurchaseHistory } from 'src/app/models/category-purchase-history.model';
 import { ModalSuccessModel } from 'src/app/models/modal-success-infos.model';
@@ -112,7 +113,7 @@ export class TransactionsHistoricComponent implements OnInit {
         catchError((err) => {
           this.loadingTransactions = false;
           event ? event.target.complete() : '';
-          throw new Error(err);
+          return throwError(err);
         })
       )
       .subscribe();
