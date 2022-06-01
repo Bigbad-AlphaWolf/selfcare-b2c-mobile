@@ -31,7 +31,7 @@ ion-spinner {
 }
 
 .transferts-page {
-  height: 120%;
+  min-height: 100%;
   background-color: $grayDashboard;
   padding: 15px percentage(15/375);
   .ion-cards-container {
@@ -154,7 +154,7 @@ ion-spinner {
 }
 
 .favorite-pass-container {
-  margin: 30px 0;
+  margin: 10px 0;
   .title {
     margin-bottom: 15px;
     .text {
@@ -167,4 +167,16 @@ ion-spinner {
       color: $fullBlack;
     }
   }
+	.list-pass {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		gap: 10px;
+		overflow-x: auto;
+		padding-bottom: 13px;
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
 }

@@ -34,6 +34,7 @@ import { LazyLoadDirective } from '../directives/lazy-load-img/lazy-load-image.d
 import { CardXeweulNameModalComponent } from './card-xeweul-name-modal/card-xeweul-name-modal.component';
 import { RattachByOtpCodeComponent } from '../pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
 import { ItemPassWidoComponent } from './item-pass-wido/item-pass-wido.component';
+import { ItemFavoritePassComponent } from './item-favorite-pass/item-favorite-pass.component';
 @NgModule({
   declarations: [
     ItemOfferPlanComponent,
@@ -65,6 +66,7 @@ import { ItemPassWidoComponent } from './item-pass-wido/item-pass-wido.component
     LazyLoadDirective,
     RattachByOtpCodeComponent,
     ItemPassWidoComponent,
+    ItemFavoritePassComponent,
   ],
   imports: [
     CommonModule,
@@ -105,6 +107,7 @@ import { ItemPassWidoComponent } from './item-pass-wido/item-pass-wido.component
     LazyLoadDirective,
     RattachByOtpCodeComponent,
     ItemPassWidoComponent,
+    ItemFavoritePassComponent,
   ],
   entryComponents: [HistorikTransactionByTypeModalComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
