@@ -27,6 +27,8 @@ const customerSargalStatusEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/cl
 // Endpoint Light get Sargal Balance
 const sargalBalanceEndpointLight = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/sargal/v1/light/subscription-status`;
 
+const fellowsMsisdnEndpoint = `${SERVER_API_URL}/${SARGAL_SERVICE}/api/fellows/v1`;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -46,11 +48,17 @@ export class SargalService {
   hasError: boolean;
 
   hasErrorSubject: Subject<any> = new Subject<any>();
+
   constructor(
     private http: HttpClient,
     private dashbService: DashboardService,
     private authServ: AuthenticationService
   ) {}
+
+  getFellowsMsisdn() {
+    const msisdn = this.dashbService.getCurrentPhoneNumber();
+    return this.http.get(`${fellowsMsisdnEndpoint}/${msisdn}/list`);
+  }
 
   getSargalBalance(msisdn: string, hmac?: string) {
     let queryParam = '';

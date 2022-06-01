@@ -16,7 +16,8 @@
             <span class="counter-name scb-text-gray">{{counter?.name}}</span>
             <span class="counter-value scb-text-orange">{{counter?.montantRestant}}</span>
           </div>
-          <div class="counter-exp-date scb-text-gray">{{'Expire le ' + counter?.dateExpiration}}</div>
+          <div class="counter-exp-date scb-text-gray">{{counter?.typeCompteur !== COUNTER_TYPE_FELLOW ? 'Expire le ' +
+            counter?.dateExpiration : counter?.dateExpiration}}</div>
         </div>
       </div>
     </div>
