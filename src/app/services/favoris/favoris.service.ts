@@ -81,11 +81,11 @@ export class FavorisService {
     return this.http.post(`${OM_FAVORITES_ENDPOINT}`, data);
   }
 
-  getFavoritePass(isLightMod?: boolean, hmac?: string) {
+  getFavoritePass() {
     const userPhoneNumber = this.dashbService.getCurrentPhoneNumber();
     let endpointFavoritePass = FAVORITE_PASS_ENDPOINT;
     const favoritePassLastUpdateTime = this.locStorageService.getFromLocalStorage(
-      LOCAL_STORAGE_KEYS.FAVORITE_PASS_CACHE_SET_TIME
+      LOCAL_STORAGE_KEYS.FAVORITE_PASS_CACHE_SET_TIME + `_${userPhoneNumber}`
     );
     const favoriteCacheExpired = Date.now() - favoritePassLastUpdateTime > FAVORITE_PASS_CACHE_DURATION;
     if (favoriteCacheExpired) {
@@ -99,14 +99,22 @@ export class FavorisService {
             result.passIllimixes = this.returnValidPassItems(res.passIllimixes);
           }
           if (result.passInternets.length || result.passIllimixes.length) {
-            this.locStorageService.saveToLocalStorage(LOCAL_STORAGE_KEYS.FAVORITE_PASS_CACHE_SET_TIME, Date.now());
-            this.locStorageService.saveToLocalStorage(LOCAL_STORAGE_KEYS.FAVORITE_PASS_DATA, result);
+            this.locStorageService.saveToLocalStorage(
+              LOCAL_STORAGE_KEYS.FAVORITE_PASS_CACHE_SET_TIME + `_${userPhoneNumber}`,
+              Date.now()
+            );
+            this.locStorageService.saveToLocalStorage(
+              LOCAL_STORAGE_KEYS.FAVORITE_PASS_DATA + `_${userPhoneNumber}`,
+              result
+            );
           }
           return result;
         })
       );
     } else {
-      const data = this.locStorageService.getFromLocalStorage(LOCAL_STORAGE_KEYS.FAVORITE_PASS_DATA);
+      const data = this.locStorageService.getFromLocalStorage(
+        LOCAL_STORAGE_KEYS.FAVORITE_PASS_DATA + `_${userPhoneNumber}`
+      );
       return of(data);
     }
   }

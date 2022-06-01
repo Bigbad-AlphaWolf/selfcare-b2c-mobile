@@ -392,7 +392,7 @@ export class TransfertHubServicesPage implements OnInit {
   getFavoritePass() {
     const hmac = this.authService.getHmac();
     return this.favService
-      .getFavoritePass(this.isLightMod, hmac)
+      .getFavoritePass()
       .pipe(
         tap((res: any) => {
           this.favoritesPass = res;
