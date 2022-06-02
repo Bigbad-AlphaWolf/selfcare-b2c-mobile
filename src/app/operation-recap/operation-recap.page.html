@@ -27,7 +27,8 @@
         <span *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS"> Payer facture SENEAU </span>
         <span *ngSwitchCase="OPERATION_TYPE_PAY_BILL"> Payer Facture Sonatel </span>
         <span *ngSwitchCase="OPERATION_TYPE_PASS_USAGE">Achat de pass {{opXtras?.serviceUsage?.fullDescription}}</span>
-      </ng-container>
+				<span *ngSwitchCase="OPERATION_ABONNEMENT_WIDO"> Abonnement Wido </span>
+			</ng-container>
     </ion-title>
   </ion-toolbar>
   <div class="banner-container">
@@ -65,7 +66,8 @@
       </img-loader>
       <img-loader *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS" class="icone" src="assets/images/bills_banniere.png" useImg>
       </img-loader>
-    
+			<img-loader *ngSwitchCase="OPERATION_ABONNEMENT_WIDO" class="icone" src="assets/images/pass-allo-banniere.png" useImg>
+		</img-loader>
     </ng-container>
   </div>
 </ion-header>
@@ -153,6 +155,9 @@
       <div class="amount-to-transfer" *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS">
         <span class="pass">Facture sélectionnée</span>
       </div>
+			<div class="amount-to-transfer" *ngSwitchCase="OPERATION_ABONNEMENT_WIDO">
+        <span class="pass">Pass sélectionné</span>
+      </div>
     </ng-container>
     <div class="card-container bill">
       <ng-container [ngSwitch]="purchaseType">
@@ -202,6 +207,8 @@
         </invoice-card>
         <invoice-card *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS" [hideDownloadBlock]="true" [invoice]="opXtras?.invoice" [operation]="purchaseType">
         </invoice-card>
+				<app-item-pass-wido [passWido]="passChoosen" *ngSwitchCase="OPERATION_ABONNEMENT_WIDO">
+        </app-item-pass-wido>
       </ng-container>
     </div>
     <div class="amount-to-transfer"
@@ -316,7 +323,8 @@
         <span class="text" *ngSwitchCase="OPERATION_TYPE_TERANGA_BILL">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
         <span class="text" *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
         <span class="text" *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
-      </ng-container>
+				<span class="text" *ngSwitchCase="OPERATION_ABONNEMENT_WIDO">Payer ( {{ passChoosen?.tarif }} FCFA)</span>
+			</ng-container>
       <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="buyingPass || checkingAmount"></mat-spinner>
     </button>
 
