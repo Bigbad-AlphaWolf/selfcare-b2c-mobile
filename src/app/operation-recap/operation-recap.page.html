@@ -252,7 +252,7 @@
       <div class="amount-to-transfer">
         <span class="pass">
           Frais paiement
-          <span class="fee-percent">({{opXtras?.fee?.mode_calcul === OM_FEES_CALCUL_MODE.PERCENT ?
+          <span class="fee-percent" *ngIf="0">({{opXtras?.fee?.mode_calcul === OM_FEES_CALCUL_MODE.PERCENT ?
             opXtras?.fee?.percentFeesValue + '%' : opXtras?.fee?.effective_fees + ' FCFA' }})</span>
         </span>
       </div>

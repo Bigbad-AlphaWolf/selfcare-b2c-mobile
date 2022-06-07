@@ -79,8 +79,10 @@ export class IlliflexService {
               retries--;
               return of(error);
             }
-            // throw new Error();
-            return of(ls.get(ILLIFLEX_SEGMENTS_LS_KEY));
+            if (ls.get(ILLIFLEX_SEGMENTS_LS_KEY)) {
+              return of(ls.get(ILLIFLEX_SEGMENTS_LS_KEY));
+            }
+            return throwError(error);
           })
         );
       }),

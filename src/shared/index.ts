@@ -99,6 +99,7 @@ export const PAY_WITH_SARGAL = 'Points Sargal';
 export const KIRENE_Formule = 'New Kirene Avec Orange';
 export const CODE_KIRENE_Formule = '9134';
 export const JAMONO_NEW_SCOOL_CODE_FORMULE = '9131';
+export const JAMONO_NEW_SCOOL_CODE = 'scool';
 export const JAMONO_ALLO_CODE_FORMULE = '9132';
 export const JAMONO_MAX_CODE_FORMULE = '9133';
 export const JAMONO_PRO_CODE_FORMULE = '9136';
