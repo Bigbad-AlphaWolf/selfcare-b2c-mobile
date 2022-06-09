@@ -14,7 +14,6 @@ import {
 import { FormuleService } from '../services/formule-service/formule.service';
 import {
   SubscriptionModel,
-  dashboardOpened,
   PROFILE_TYPE_PREPAID,
 } from '../dashboard';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
@@ -237,6 +236,8 @@ export class MyFormulePage implements OnInit {
   }
 
   async openChangeFormuleModal(formule) {
+    console.log(formule);
+
     const banner = this.getBannerByFormule(formule);
     const modal = await this.modalController.create({
       component: ChangeOfferPopupComponent,
