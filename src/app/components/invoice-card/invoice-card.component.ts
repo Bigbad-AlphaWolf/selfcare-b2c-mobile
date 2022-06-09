@@ -100,13 +100,24 @@ export class InvoiceCardComponent implements OnInit {
       cssClass: 'select-recipient-modal',
       componentProps: {
         unpaidBills,
+        operation: this.operation
       },
     });
     modal.onDidDismiss().then((response) => {
       if (response?.data) {
+        let fee;
+        const invoice = unpaidBills[0]
+        if (
+          this.operation === OPERATION_TYPE_SENELEC_BILLS ||
+          this.operation === OPERATION_TYPE_SENEAU_BILLS
+        ) {
+          fee = this.feeService.extractFees(this.fees, invoice?.montantFacture);
+          fee.effective_fees = Math.round(fee.effective_fees);
+        }
         const opXtras: OperationExtras = {
           purchaseType: this.operation,
-          invoice: unpaidBills[0],
+          invoice,
+          fee
         };
         const navExtras: NavigationExtras = { state: opXtras };
         this.navController.navigateForward(['/operation-recap'], navExtras);

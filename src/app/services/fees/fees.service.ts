@@ -81,7 +81,7 @@ export class FeesService {
           if (fee.mode_calcul === 'fixe') {
             return fee;
           } else if (fee.mode_calcul === 'pourcent') {
-            const computedFee = fee;
+            const computedFee = { ...fee };
             computedFee.percentFeesValue = fee.effective_fees;
             computedFee.effective_fees = Math.round(amount * fee.effective_fees) / 100;
             return computedFee;
