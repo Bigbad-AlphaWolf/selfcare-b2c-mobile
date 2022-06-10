@@ -25,7 +25,7 @@ export class QrScannerService {
       resultDisplayDuration: 0
     };
     this.qrScanner.scan(barcodeScannerOptions).then(async (value: QrPaymentMarchandResponseModel) => {
-      const payload: QrPaymentMarchandTextResponseModel = JSON.parse(value?.text);
+      const payload: QrPaymentMarchandTextResponseModel = value?.text ? JSON.parse(value?.text) : null;
 			if(payload?.merchant_code) {
 				this.appRouting.goSetAmountPage({
 					purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,

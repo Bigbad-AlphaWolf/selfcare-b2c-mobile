@@ -109,7 +109,7 @@ export class ApplicationRoutingService {
 
   goSetTransferAmountPage(purchaseInformation?: any) {
     let navigationExtras: NavigationExtras = {
-      state: purchaseInformation
+      state: {...purchaseInformation, checkRecipient: true}
     };
     this.route.navigate([TransferSetAmountPage.ROUTE_PATH], navigationExtras);
   }
@@ -178,5 +178,12 @@ export class ApplicationRoutingService {
       state: {operation: operationType, payload}
     };
     this.route.navigate(['/change-orange-money-pin'], navigationExtras);
+  }
+
+  goToSelectBeneficiaryPage(operationType?: string, payload?: any) {
+    let navigationExtras: NavigationExtras = {
+      state: {operation: operationType, payload}
+    };
+    this.route.navigate(['/new-select-beneficiary'], navigationExtras);
   }
 }

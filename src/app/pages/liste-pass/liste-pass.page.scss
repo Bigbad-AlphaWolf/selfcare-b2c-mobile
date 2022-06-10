@@ -15,6 +15,7 @@
   height: 100%;
   .header-image {
     width: 100%;
+    display: flex;
     img {
       width: 100%;
     }
@@ -71,13 +72,13 @@
         }
       }
     }
-    .profil-spinner {
-      position: fixed;
-      top: 5px;
-      right: 10px;
-      .mat-spinner::ng-deep circle {
-        stroke: $orange;
-      }
-    }
+    //.profil-spinner {
+    //  position: fixed;
+    //  top: 5px;
+    //  right: 10px;
+    //  .mat-spinner::ng-deep circle {
+    //    stroke: $orange;
+    //  }
+    //}
   }
 }

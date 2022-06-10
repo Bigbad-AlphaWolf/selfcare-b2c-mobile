@@ -4,8 +4,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import { ModalController } from '@ionic/angular';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { AccountService } from 'src/app/services/account-service/account.service';
+import { OtpService } from 'src/app/services/otp-service/otp.service';
+import { of, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-rattach-number-modal',
@@ -23,6 +26,8 @@ export class RattachNumberModalComponent implements OnInit {
     private dialog: MatDialog,
     private modalCon: ModalController,
     private dashbServ: DashboardService,
+    private accService: AccountService,
+    private otpService: OtpService,
     private followAnalyticsService: FollowAnalyticsService
   ) {}
 
@@ -75,7 +80,7 @@ export class RattachNumberModalComponent implements OnInit {
 
           this.followAttachmentIssues(payload, 'event');
         },
-        (err: any) => {
+        async (err: any) => {
           this.isLoading = false;
           this.hasError = true;
           this.followAttachmentIssues(payload, 'error');
@@ -88,16 +93,56 @@ export class RattachNumberModalComponent implements OnInit {
               ? err.error.title
               : "Impossible d'effectuer le rattachement de la ligne ";
           } else {
-            this.nextStepRattachement(
-              false,
-              'FORWARD',
-              this.phoneNumber,
-              payload.typeNumero
-            );
+						let nextStep = 'FORWARD';
+						let otpSent: boolean;
+						if(payload.typeNumero === 'MOBILE') {
+							const isCorporate = await	this.checkIfMsisdnIsCoorporate(payload.numero);
+							console.log('isCorporate', isCorporate);
+
+							if(isCorporate) {
+								//send OTP MSG
+								this.isLoading = true;
+								otpSent = await this.otpService.generateOTPCode(payload.numero).pipe(
+									map(_ => {
+										return true;
+									}), catchError( _ => {
+										this.isLoading = false;
+										return of(false);
+									}), tap(_ => {
+										this.isLoading = false;
+									})
+								).toPromise();
+								nextStep = 'SENT_OTP';
+							}
+						}
+						if( nextStep && !otpSent) {
+							this.hasError = true;
+							this.msgError = 'Ce rattachement ne peut être fait pour le moment. Veuillez réessayer plus tard';
+						}
+						if(nextStep === 'FORWARD' || nextStep === 'SENT_OTP' && otpSent) {
+							this.nextStepRattachement(
+								false,
+								nextStep,
+								this.phoneNumber,
+								payload.typeNumero
+							);
+						}
           }
         }
       );
   }
+
+	async checkIfMsisdnIsCoorporate(msisdn: string) {
+		this.isLoading = true;
+	 return	this.accService.checkIsCoorporateNumber(msisdn).pipe(
+		 tap(_ => {
+			 this.isLoading = false;
+		 }), catchError( (err) => {
+			this.isLoading = false;
+			return throwError(err);
+		 })
+	 ).toPromise();
+	}
 
   openSuccessDialog(phoneNumber?: string) {
     this.dialog.open(ModalSuccessComponent, {
@@ -107,7 +152,7 @@ export class RattachNumberModalComponent implements OnInit {
     });
   }
 
-  nextStepRattachement(
+nextStepRattachement(
     status: boolean,
     direction: string,
     numeroToRattach?: string,

@@ -4,23 +4,16 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { PalierModel } from 'src/app/models/palier.model';
 import { BoosterModel } from 'src/app/models/booster.model';
-import {
-  isPostpaidFix,
-  PROFILE_TYPE_HYBRID,
-  PROFILE_TYPE_HYBRID_1,
-  PROFILE_TYPE_HYBRID_2,
-} from 'src/app/dashboard';
+import { isPostpaidFix, PROFILE_TYPE_HYBRID, PROFILE_TYPE_HYBRID_1, PROFILE_TYPE_HYBRID_2 } from 'src/app/dashboard';
 import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
 
 const ls = new SecureLS({ encodingType: 'aes' });
-export const REGEX_NUMBER: RegExp =
-  /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
-export const REGEX_NUMBER_OM: RegExp =
-  /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
-export const REGEX_FIX_NUMBER: RegExp =
-  /^((\+221|00221|221) ?)?(33) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
-export const REGEX_PASSWORD: RegExp =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$/;
+export const REGEX_NUMBER_ALLOWED_COUNTRY_CODE_SHORT: RegExp = /^((\+221|\+225|\+223|\+227|\+245))/;
+export const REGEX_NUMBER_ALLOWED_COUNTRY_CODE_LONG: RegExp = /^((\00221|00221|00227|00245))/;
+export const REGEX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
+export const REGEX_NUMBER_OM: RegExp = /^((\+221|00221|221) ?)?(7(0|6|7|8){1}) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
+export const REGEX_FIX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(33) ?([0-9]{3}) ?([0-9]{2}) ?([0-9]{2})$/;
+export const REGEX_PASSWORD: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$/;
 export const REGEX_PASSWORD2: RegExp = /^.{5,19}$/;
 export const REGEX_NAME = /^([^0-9_!¡?÷?¿/+=,.@#$%ˆ&*(){}|~<>;:\]\[-]){1,}$/;
 export const REGEX_EMAIL =
@@ -65,11 +58,9 @@ export const OPERATION_SEE_SOLDE_XEWEUL = 'SOLDE_XEWEUL';
 export const OPERATION_SEE_FOLLOW_UP_REQUESTS = 'FOLLOW_UP_REQUESTS';
 export const OPERATION_SEE_RATTACHED_NUMBERS = 'RATTACHED_NUMBERS';
 export const OPERATION_RATTACH_NUMBER = 'RATTACHE_NUMBER';
-export const OPERATION_CONFIRM_DELETE_RATTACH_NUMBER =
-  'CONFIRM_DELETE_RATTACHE_NUMBER';
+export const OPERATION_CONFIRM_DELETE_RATTACH_NUMBER = 'CONFIRM_DELETE_RATTACHE_NUMBER';
 export const OPERATION_SUGGEST_RATTACH_NUMBER = 'SUGGEST_RATTACH_NUMBER';
-export const OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM =
-  'ERREUR_TRANSACTION_OM';
+export const OPERATION_RECLAMATION_ERREUR_TRANSACTION_OM = 'ERREUR_TRANSACTION_OM';
 export const OPERATION_INIT_CHANGE_PIN_OM = 'INIT_CHANGE_PIN_OM';
 export const OPERATION_CHANGE_PIN_OM = 'CHANGE_PIN_OM';
 export const OPERATION_CREATE_PIN_OM = 'CREATE_PIN_OM';
@@ -81,6 +72,7 @@ export const OPERATION_SHARE_THE_APP = 'SHARE_THE_APP';
 export const OPERATION_PAY_ORANGE_BILLS = 'PAY_ORANGE_BILLS';
 export const OPERATION_UNBLOCK_OM_ACCOUNT = 'UNBLOCK_OM_ACCOUNT';
 export const OPERATION_RESET_PIN_OM = 'RESET_OM_ACCOUNT';
+export const OPERATION_ABONNEMENT_WIDO = 'ABONNEMENT_WIDO';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -110,14 +102,11 @@ export const MAIL_URL = 'mailto:serviceclient@orange-sonatel.com';
 export const NO_AVATAR_ICON_URL = '/assets/images/profil-mob.png';
 export const ASSISTANCE_URL = 'https://assistance.orange.sn';
 export const FACEBOOK_URL = 'https://m.me/165622776799685';
-export const TWITTER_URL =
-  'https://twitter.com/messages/compose?recipient_id=733327435299729408';
-export const INSTAGRAM_URL =
-  'https://instagram.com/orange_senegal?igshid=7xv78qwpivfm';
+export const TWITTER_URL = 'https://twitter.com/messages/compose?recipient_id=733327435299729408';
+export const INSTAGRAM_URL = 'https://instagram.com/orange_senegal?igshid=7xv78qwpivfm';
 
 export const FIND_AGENCE_EXTERNAL_URL = 'https://agence.orange.sn/';
-export const CHECK_ELIGIBILITY_EXTERNAL_URL =
-  'https://www.orange.sn/test-fibre';
+export const CHECK_ELIGIBILITY_EXTERNAL_URL = 'https://www.orange.sn/test-fibre';
 export const VALID_IMG_EXTENSIONS = ['jpg', 'jpeg', 'png'];
 
 export const CREDIT = 'crédit';
@@ -383,17 +372,12 @@ export interface SubscriptionUserModel {
   code: string;
 }
 
-export function getOrderedListCategory(
-  unorderedList: CategoryPassInternet[]
-): CategoryPassInternet[] {
+export function getOrderedListCategory(unorderedList: CategoryPassInternet[]): CategoryPassInternet[] {
   let listCategoryFiltered = [];
   unorderedList = unorderedList.filter((elt: any) => {
     return !!elt;
   });
-  unorderedList.sort(
-    (elt1: CategoryPassInternet, elt2: CategoryPassInternet) =>
-      elt1.ordre - elt2.ordre
-  );
+  unorderedList.sort((elt1: CategoryPassInternet, elt2: CategoryPassInternet) => elt1.ordre - elt2.ordre);
   listCategoryFiltered = [...new Set(unorderedList.map(x => x.libelle))];
 
   return listCategoryFiltered;
@@ -416,33 +400,28 @@ export function getTrioConsoUser(consoSummary: UserConsommations) {
 
 export function arrangeCompteurByOrdre(listConso: UserConsommations) {
   listConso.forEach((detailConso: ItemUserConso) => {
-    detailConso.consommations.sort(
-      (conso1: UserConsommation, conso2: UserConsommation) => {
-        if (conso1 && conso2 && conso1.ordre && conso2.ordre) {
-          return conso1.ordre - conso2.ordre;
-        } else if (conso1 && conso2 && conso1.ordre === null && conso2.ordre) {
-          return +conso2.ordre;
-        } else if (conso1 && conso2 && conso2.ordre === null && conso1.ordre) {
-          return -conso1.ordre;
-        }
+    detailConso.consommations.sort((conso1: UserConsommation, conso2: UserConsommation) => {
+      if (conso1 && conso2 && conso1.ordre && conso2.ordre) {
+        return conso1.ordre - conso2.ordre;
+      } else if (conso1 && conso2 && conso1.ordre === null && conso2.ordre) {
+        return +conso2.ordre;
+      } else if (conso1 && conso2 && conso2.ordre === null && conso1.ordre) {
+        return -conso1.ordre;
       }
-    );
+    });
   });
   return listConso;
 }
 export function getListPassFilteredByLabelAndPaymentMod(
   selectedLabel: string,
-  listPass: (
-    | (PassInfoModel | PromoPassModel)
-    | (PassIllimModel | PromoPassIllimModel)
-  )[]
+  listPass: ((PassInfoModel | PromoPassModel) | (PassIllimModel | PromoPassIllimModel))[]
 ) {
   let listPassFiltered = [];
   listPassFiltered = listPass.filter((pass: any) => {
-    if (!pass.passPromo) {
-      return pass.categoriePass?.libelle === selectedLabel;
+    if (!pass?.passPromo) {
+      return pass?.categoriePass?.libelle === selectedLabel;
     } else {
-      return pass.passPromo?.categoriePass?.libelle === selectedLabel;
+      return pass?.passPromo?.categoriePass?.libelle === selectedLabel;
     }
   });
 
@@ -473,21 +452,19 @@ export function arrangePassByCategory(listPass: any[], listCategory: string[]) {
   });
 
   //order pass by tarif
-  result.forEach(
-    (itemPassCategory: { label: string; pass: any[] }, index: number) => {
-      result[index].pass = result[index].pass.sort((pass1: any, pass2: any) => {
-        if (!pass1.passPromo && !pass2.passPromo) {
-          return +pass1.tarif - +pass2.tarif;
-        } else if (!pass1.passPromo && pass2.passPromo) {
-          return +pass1.tarif - +pass2.passPromo.tarif;
-        } else if (pass1.passPromo && !pass2.passPromo) {
-          return +pass1.passPromo.tarif - +pass2.tarif;
-        } else {
-          return +pass1.passPromo.tarif - +pass2.passPromo.tarif;
-        }
-      });
-    }
-  );
+  result.forEach((itemPassCategory: { label: string; pass: any[] }, index: number) => {
+    result[index].pass = result[index].pass.sort((pass1: any, pass2: any) => {
+      if (!pass1.passPromo && !pass2.passPromo) {
+        return +pass1.tarif - +pass2.tarif;
+      } else if (!pass1.passPromo && pass2.passPromo) {
+        return +pass1.tarif - +pass2.passPromo.tarif;
+      } else if (pass1.passPromo && !pass2.passPromo) {
+        return +pass1.passPromo.tarif - +pass2.tarif;
+      } else {
+        return +pass1.passPromo.tarif - +pass2.passPromo.tarif;
+      }
+    });
+  });
   return result;
 }
 
@@ -495,16 +472,7 @@ export function computeConsoHistory(consos) {
   const result = [];
 
   consos.forEach(x => {
-    const {
-      date,
-      categorie,
-      calledNumber,
-      duration,
-      charge1,
-      charge2,
-      chargeType1,
-      chargeType2,
-    } = x;
+    const { date, categorie, calledNumber, duration, charge1, charge2, chargeType1, chargeType2 } = x;
     let conso1, conso2;
 
     if (charge1 || chargeType1.length > 0) {
@@ -536,10 +504,7 @@ export function computeConsoHistory(consos) {
 
 export function generateUUID() {
   let d = new Date().getTime();
-  if (
-    typeof performance !== 'undefined' &&
-    typeof performance.now === 'function'
-  ) {
+  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
     d += performance.now(); // use high-precision timer if available
   }
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -558,21 +523,16 @@ export const listLibelleCodeOperationOM = [
 ];
 
 export function getOperationCodeActionOM(libelle: string) {
-  const itemFound = listLibelleCodeOperationOM.find(
-    (item: { operationCode: string; operationLibelle: string }) => {
-      return item.operationLibelle === libelle;
-    }
-  );
+  const itemFound = listLibelleCodeOperationOM.find((item: { operationCode: string; operationLibelle: string }) => {
+    return item.operationLibelle === libelle;
+  });
 
   return itemFound ? itemFound.operationCode : null;
 }
 
-export const FILENAME_OPEN_OM_ACCOUNT =
-  'formulaire_inscription_om_original.pdf';
-export const FILENAME_DEPLAFONNEMENT_OM_ACCOUNT =
-  'formulaire_deplafonnement_original.pdf';
-export const FILENAME_ERROR_TRANSACTION_OM =
-  'formulaire_erreur_transaction_original.pdf';
+export const FILENAME_OPEN_OM_ACCOUNT = 'formulaire_inscription_om_original.pdf';
+export const FILENAME_DEPLAFONNEMENT_OM_ACCOUNT = 'formulaire_deplafonnement_original.pdf';
+export const FILENAME_ERROR_TRANSACTION_OM = 'formulaire_erreur_transaction_original.pdf';
 
 export interface GiftSargalCategoryItem {
   id: number;
@@ -626,14 +586,10 @@ export interface ProfilModel {
 
 export function getLastUpdatedDateTimeText() {
   const date = new Date();
-  const lastDate = `${('0' + date.getDate()).slice(-2)}/${(
-    '0' +
-    (date.getMonth() + 1)
-  ).slice(-2)}/${date.getFullYear()}`;
-  const lastDateTime =
-    `${date.getHours()}h` +
-    (date.getMinutes() < 10 ? '0' : '') +
-    date.getMinutes();
+  const lastDate = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(
+    -2
+  )}/${date.getFullYear()}`;
+  const lastDateTime = `${date.getHours()}h` + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
   return `${lastDate} à ${lastDateTime}`;
 }
 
@@ -849,11 +805,7 @@ export class PlatformMock {
     return callback;
   }
 
-  public registerListener(
-    ele: any,
-    eventName: string,
-    callback: any
-  ): Function {
+  public registerListener(ele: any, eventName: string, callback: any): Function {
     return () => true;
   }
 
@@ -894,15 +846,11 @@ export function getBanniereTitle(banniereDescription: string) {
   if (!banniereDescription) return;
   const semiColonIndex = banniereDescription.indexOf(';');
   if (semiColonIndex < 1) return banniereDescription;
-  return banniereDescription
-    ? banniereDescription.substring(0, banniereDescription.indexOf(';'))
-    : '';
+  return banniereDescription ? banniereDescription.substring(0, banniereDescription.indexOf(';')) : '';
 }
 
 export function getBanniereDescription(banniereDescription: string) {
-  return banniereDescription
-    ? banniereDescription.substring(banniereDescription.indexOf(';') + 1)
-    : '';
+  return banniereDescription ? banniereDescription.substring(banniereDescription.indexOf(';') + 1) : '';
 }
 
 export const HelpModalDefaultContent: {
@@ -929,15 +877,12 @@ export const HelpModalDefaultContent: {
       action: 'POPUP',
       subOptions: [
         {
-          title:
-            'Activez vos données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" />',
+          title: 'Activez vos données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" />',
           subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
         },
         {
-          title:
-            'Désactivez le Wifi &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
-          subtitle:
-            'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
+          title: 'Désactivez le Wifi &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
+          subtitle: 'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
         },
         {
           title: 'Assurez vous d’être sur le bon APN (Point d’Accès Internet)',
@@ -954,20 +899,16 @@ export const HelpModalDefaultContent: {
       action: 'REDIRECT',
       subOptions: [
         {
-          title:
-            'Activez vos données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" />',
+          title: 'Activez vos données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" />',
           subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
         },
         {
-          title:
-            'Désactivez le Wifi &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
-          subtitle:
-            'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
+          title: 'Désactivez le Wifi &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
+          subtitle: 'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
         },
         {
           title: 'Une fois identifié, je clique sur suivant',
-          subtitle:
-            'Si votre numéro s’affiche, cliquez sur le bouton « Suivant »',
+          subtitle: 'Si votre numéro s’affiche, cliquez sur le bouton « Suivant »',
         },
         {
           title: 'Saisissez votre nouveau mot de passe',
@@ -989,13 +930,11 @@ export const HelpModalDefaultContent: {
         },
         {
           title: 'Accédez au menu « Mon compte »',
-          subtitle:
-            'Depuis l’accueil, cliquez sur le menu de gauche puis sur « Mon compte »',
+          subtitle: 'Depuis l’accueil, cliquez sur le menu de gauche puis sur « Mon compte »',
         },
         {
           title: 'Supprimez le numéro rattaché',
-          subtitle:
-            'Cliquez sur « Supprimer une ligne », choisissez la ligne à supprimer puis confirmer',
+          subtitle: 'Cliquez sur « Supprimer une ligne », choisissez la ligne à supprimer puis confirmer',
         },
       ],
     },
@@ -1008,13 +947,11 @@ export const HelpModalDefaultContent: {
       subOptions: [
         {
           title: 'Rendez vous sur la page de création de compte',
-          subtitle:
-            'A l’ouverture de l’application, cliquez sur la première rubrique « C’est ma première visite »',
+          subtitle: 'A l’ouverture de l’application, cliquez sur la première rubrique « C’est ma première visite »',
         },
         {
           title: 'Une fois identifié, cliquez sur "Suivant"',
-          subtitle:
-            'Si votre numéro s’affiche, cliquez sur le bouton « Suivant »',
+          subtitle: 'Si votre numéro s’affiche, cliquez sur le bouton « Suivant »',
         },
         {
           title: 'Vous serez redirigé vers la page adéquate',
@@ -1036,10 +973,8 @@ export const HelpModalDefaultContent: {
           subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
         },
         {
-          title:
-            'Si vous êtes sur le Wifi, assurez vous d’avoir une connexion internet',
-          subtitle:
-            'Accéder au menu « Wifi » depuis vos « Paramètres » pour vous connecter à un réseau Wifi',
+          title: 'Si vous êtes sur le Wifi, assurez vous d’avoir une connexion internet',
+          subtitle: 'Accéder au menu « Wifi » depuis vos « Paramètres » pour vous connecter à un réseau Wifi',
         },
       ],
     },
@@ -1053,15 +988,13 @@ export const HelpModalDefaultContent: {
         {
           title:
             '<span>Accéder aux Paramètres &nbsp <img class="item-icon" src="/assets/images/parameters.png" /></span>',
-          subtitle:
-            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+          subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
           icon: 'settings',
         },
         {
           title:
             '<span>Sélectionner la partie Sans fil et réseau &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
-          subtitle:
-            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
+          subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
           icon: 'wifi',
         },
         {
@@ -1075,8 +1008,7 @@ export const HelpModalDefaultContent: {
           subtitle: 'Je saisis mon nouveau mot de passe et le confirme',
         },
         {
-          title:
-            'Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
+          title: 'Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
           subtitle:
             'Les paramètres internet Orange sont: \nNom : Orange Internet \nAPN : internet \nLaisser tous les autres options en l’état puis sauvegarder',
         },
@@ -1096,8 +1028,7 @@ export const HelpModalDefaultContent: {
         {
           title:
             'Une fois connecté, cliquez sur le menu de gauche(trois traits), puis cliquez sur l’entrée "Mon compte"',
-          subtitle:
-            'Cliquez sur le menu en haut à gauche de l’écran puis sur "Mon compte"',
+          subtitle: 'Cliquez sur le menu en haut à gauche de l’écran puis sur "Mon compte"',
         },
         {
           title:
@@ -1129,10 +1060,8 @@ export const HelpModalDefaultContent: {
           subtitle: 'Cliquez sur le canal de communication qui vous convient',
         },
         {
-          title:
-            'Décrire brièvement le souci rencontré, si possible y joindre une capture ou le message d’erreur',
-          subtitle:
-            'Bien expliquer son souci pour un meilleur traitement de celui-ci',
+          title: 'Décrire brièvement le souci rencontré, si possible y joindre une capture ou le message d’erreur',
+          subtitle: 'Bien expliquer son souci pour un meilleur traitement de celui-ci',
         },
       ],
     },
@@ -1164,15 +1093,12 @@ export const HelpModalRegisterOMContent: {
       action: 'POPUP',
       subOptions: [
         {
-          title:
-            'Activez vos données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" />',
+          title: 'Activez vos données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" />',
           subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
         },
         {
-          title:
-            'Désactivez le Wifi &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
-          subtitle:
-            'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
+          title: 'Désactivez le Wifi &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
+          subtitle: 'Accéder au menu « Wifi » depuis vos « Paramètres » et décochez la case « Wifi »',
         },
         {
           title: 'Assurez vous d’être sur le bon APN (Point d’Accès Internet)',
@@ -1191,15 +1117,13 @@ export const HelpModalRegisterOMContent: {
         {
           title:
             '<span>Accéder aux Paramètres &nbsp <img class="item-icon" src="/assets/images/parameters.png" /></span>',
-          subtitle:
-            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+          subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
           icon: 'settings',
         },
         {
           title:
             '<span>Sélectionner la partie Sans fil et réseau &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
-          subtitle:
-            'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
+          subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
           icon: 'wifi',
         },
         {
@@ -1213,8 +1137,7 @@ export const HelpModalRegisterOMContent: {
           subtitle: 'Je saisis mon nouveau mot de passe et le confirme',
         },
         {
-          title:
-            'Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
+          title: 'Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
           subtitle:
             'Les paramètres internet Orange sont: \nNom : Orange Internet \nAPN : internet \nLaisser tous les autres options en l’état puis sauvegarder',
         },
@@ -1279,16 +1202,14 @@ export const HelpModalConfigApnContent = {
   options: [
     {
       title: '1) Accéder aux Paramètres',
-      subtitle:
-        'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+      subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
       type: '',
       url: '',
       action: 'POPUP',
     },
     {
       title: '2) Sélectionner la partie Sans fil et réseau',
-      subtitle:
-        'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
+      subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
       type: '',
       url: '',
       action: 'POPUP',
@@ -1311,8 +1232,7 @@ export const HelpModalConfigApnContent = {
       action: 'POPUP',
     },
     {
-      title:
-        '5) Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
+      title: '5) Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
       subtitle:
         'Les paramètres internet Orange sont: \n' +
         'Nom : Orange Internet\n' +
@@ -1352,41 +1272,26 @@ export enum IlliflexOption {
   USAGE = 'USAGE',
 }
 
-export function getMaxDataVolumeOrVoiceOfPaliers(
-  paliers: PalierModel[],
-  dataOrVoice: 'data' | 'voice'
-) {
+export function getMaxDataVolumeOrVoiceOfPaliers(paliers: PalierModel[], dataOrVoice: 'data' | 'voice') {
   const maxAmount = Math.max(...paliers.map(palier => palier.maxPalier));
   const palier = paliers.find(palier => palier.maxPalier === maxAmount);
-  const unitPrice =
-    dataOrVoice === 'data' ? palier.dataPrice : palier.voicePrice;
+  const unitPrice = dataOrVoice === 'data' ? palier.dataPrice : palier.voicePrice;
   const maxPercentage = 0.8;
   return (maxPercentage * maxAmount) / (unitPrice * 1.239);
 }
 
-export function getMinDataVolumeOrVoiceOfPaliers(
-  paliers: PalierModel[],
-  dataOrVoice: 'data' | 'voice'
-) {
+export function getMinDataVolumeOrVoiceOfPaliers(paliers: PalierModel[], dataOrVoice: 'data' | 'voice') {
   const minAmount = Math.min(...paliers.map(palier => palier.minPalier));
   const palier = paliers.find(palier => palier.minPalier === minAmount);
-  const unitPrice =
-    dataOrVoice === 'data' ? palier.dataPrice : palier.voicePrice;
+  const unitPrice = dataOrVoice === 'data' ? palier.dataPrice : palier.voicePrice;
   const minPercentage = 0.2;
   return (minPercentage * minAmount) / (unitPrice * 1.239);
 }
 
 // method to get boosters array for a specific pass
-export function getActiveBoostersForSpecificPass(
-  pass,
-  boosters: BoosterModel[]
-) {
-  const passPPI = pass.passPromo
-    ? pass.passPromo?.price_plan_index
-    : pass?.price_plan_index;
-  const boostersArray = boosters.filter(booster =>
-    booster.pricePlanIndexes.includes(passPPI?.toString())
-  );
+export function getActiveBoostersForSpecificPass(pass, boosters: BoosterModel[]) {
+  const passPPI = pass.passPromo ? pass.passPromo?.price_plan_index : pass?.price_plan_index;
+  const boostersArray = boosters.filter(booster => booster.pricePlanIndexes.includes(passPPI?.toString()));
   return boostersArray;
 }
 
@@ -1408,23 +1313,15 @@ export const ILLIFLEX_BY_OM_IDENTICAL_ERROR_CODE = '2040';
 export const OM_IDENTIC_TRANSACTION_CODE = 'Erreur-045';
 export const OM_UNKOWN_ERROR_CODE = 'Erreur-019';
 export const OM_CAPPING_ERROR = 'Capping-social-error';
-export const TRANSFER_BALANCE_INSUFFICIENT_ERROR =
-  'Le montant que vous voulez transférer est supérieur à votre solde.';
-export const BALANCE_INSUFFICIENT_ERROR =
-  'Le montant de votre solde est insuffisant pour effectuer cette opération.';
-export const TRANSFER_OM_BALANCE_NOT_ALLOWED =
-  "Le montant que vous avez saisi n'est pas dans la plage autorisée";
-export const FEES_ERROR =
-  'Erreur lors de la récupération des frais. Réactualisez';
+export const TRANSFER_BALANCE_INSUFFICIENT_ERROR = 'Le montant que vous voulez transférer est supérieur à votre solde.';
+export const BALANCE_INSUFFICIENT_ERROR = 'Le montant de votre solde est insuffisant pour effectuer cette opération.';
+export const TRANSFER_OM_BALANCE_NOT_ALLOWED = "Le montant que vous avez saisi n'est pas dans la plage autorisée";
+export const FEES_ERROR = 'Erreur lors de la récupération des frais. Réactualisez';
 
 export const NO_RECENTS_MSG = 'Pas de bénéficiaire récent pour cette opération';
 
 export const isProfileHybrid = (profile: string) => {
-  return (
-    profile === PROFILE_TYPE_HYBRID ||
-    profile === PROFILE_TYPE_HYBRID_1 ||
-    profile === PROFILE_TYPE_HYBRID_2
-  );
+  return profile === PROFILE_TYPE_HYBRID || profile === PROFILE_TYPE_HYBRID_1 || profile === PROFILE_TYPE_HYBRID_2;
 };
 
 export const CONSO = 'SUIVI_CONSO';
@@ -1462,10 +1359,7 @@ export enum CountriesIndicatif {
   AFRICA = 'AFRICA',
 }
 
-export const INTERNATIONAL_PASSES_INDICATIF_ARRAY: string[] = [
-  CountriesIndicatif.WORLD,
-  CountriesIndicatif.AFRICA,
-];
+export const INTERNATIONAL_PASSES_INDICATIF_ARRAY: string[] = [CountriesIndicatif.WORLD, CountriesIndicatif.AFRICA];
 
 export const UNKNOWN_ECHEANCE = 'non renseignée';
 
@@ -1476,9 +1370,7 @@ export function isDelayedBill(bill: InvoiceOrange) {
   }
   const today = new Date();
   const billDate = new Date(bill.dateEcheance);
-  return (
-    billDate.getTime() < today.getTime() && bill.statutFacture === 'unpaid'
-  );
+  return billDate.getTime() < today.getTime() && bill.statutFacture === 'unpaid';
 }
 
 export const IRT_TRANSFER_REASONS = [
@@ -1521,6 +1413,8 @@ export const LOCAL_STORAGE_KEYS = {
   X_UUID: 'X-UUID',
   HMAC_FROM_OTP: 'hmacOTP',
   IS_HMAC_FROM_OTP_VALID: 'isHmacOTPVallid',
+  FAVORITE_PASS_DATA: 'favorite_pass_data',
+  FAVORITE_PASS_CACHE_SET_TIME: 'favorite_pass_cache_set_time',
 };
 
 export enum STEPS_ACCESS_BY_OTP {
@@ -1530,3 +1424,5 @@ export enum STEPS_ACCESS_BY_OTP {
 }
 
 export const PATH_ACCESS_BY_OTP = '/access/';
+
+export const RATTACHMENT_ERROR_MAX_COUNT = 3;

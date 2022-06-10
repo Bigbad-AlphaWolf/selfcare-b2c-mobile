@@ -94,17 +94,19 @@ export class NumberSelectionComponent implements OnInit {
     this.opXtras.senderMsisdn = SessionOem.PHONE;
     if (!this.isLightMod) {
       this.loadingNumbers = true;
-      this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
-        delay(100),
-        tap((numbers) => {
-          this.loadingNumbers = false;
-        }),
-        catchError((err: any) => {
-          this.loadingNumbers = false;
-          return of(err);
-        }),
-        share()
-      );
+      this.numbers$ = this.dashbServ
+        .fetchOemNumbers(this.data.purchaseType)
+        .pipe(
+          delay(100),
+          tap(numbers => {
+            this.loadingNumbers = false;
+          }),
+          catchError((err: any) => {
+            this.loadingNumbers = false;
+            return of(err);
+          }),
+          share()
+        );
       this.checkOmAccount();
       this.checkContactsAuthorizationStatus();
     }
@@ -118,7 +120,7 @@ export class NumberSelectionComponent implements OnInit {
         map((recents: RecentsOem[]) => {
           this.loadingRecents = false;
           let results = [];
-          recents.forEach((el) => {
+          recents.forEach(el => {
             results.push({
               name: el.name,
               msisdn: el.destinataire,
@@ -137,7 +139,7 @@ export class NumberSelectionComponent implements OnInit {
             }
           );
         }),
-        catchError((err) => {
+        catchError(err => {
           this.loadingRecents = false;
           this.followAnalyticsService.registerEventFollow(
             'Get_recents_destinataire_OM_error',
@@ -157,7 +159,7 @@ export class NumberSelectionComponent implements OnInit {
 
   checkContactsAuthorizationStatus() {
     this.diagnostic.getContactsAuthorizationStatus().then(
-      (contactStatus) => {
+      contactStatus => {
         if (
           contactStatus === this.diagnostic.permissionStatus.NOT_REQUESTED ||
           contactStatus === this.diagnostic.permissionStatus.DENIED_ALWAYS
@@ -167,7 +169,7 @@ export class NumberSelectionComponent implements OnInit {
             "Pour afficher vos contacts/bénéficiaires récents, vous devez autoriser l'accés à vos contacts.";
         }
       },
-      (err) => {
+      err => {
         console.log(err);
       }
     );
@@ -183,7 +185,7 @@ export class NumberSelectionComponent implements OnInit {
       component: PermissionSettingsPopupComponent,
       cssClass: 'success-or-fail-modal',
     });
-    modal.onDidDismiss().then((response) => {});
+    modal.onDidDismiss().then(response => {});
     return modal.present();
   }
 
@@ -201,13 +203,8 @@ export class NumberSelectionComponent implements OnInit {
         }
       );
     }
-    if (
-      !(
-        REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn) ||
-        REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn)
-      )
-    ) {
-      this.phoneIsNotValid = true;
+    if (this.checkIfIsRecipientInvalid()) {
+      this.canNotRecieve = true;
       return;
     }
 
@@ -227,6 +224,20 @@ export class NumberSelectionComponent implements OnInit {
     }
 
     this.dismissBottomSheet();
+  }
+
+  checkIfIsRecipientInvalid() {
+    if (
+      (this.data.purchaseType === OPERATION_TYPE_PASS_ILLIMIX &&
+        REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn)) ||
+      !(
+        REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn) ||
+        REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn)
+      )
+    ) {
+      return true;
+    }
+    return false;
   }
 
   async isEligible() {
@@ -367,7 +378,7 @@ export class NumberSelectionComponent implements OnInit {
         operationType: null,
       },
     });
-    modal.onDidDismiss().then((response) => {
+    modal.onDidDismiss().then(response => {
       if (response.data && response.data.success) {
         this.omSession.loginExpired = false;
       }

@@ -31,4 +31,5 @@ export const environment = {
     'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
   DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_b7ba58e0175d1f96e1eca4e3',
   CUSTOMER_OFFER_CACHE_DURATION: 1800000,
+  FAVORITE_PASS_CACHE_DURATION: 30 * 24 * 60 * 60 * 1000,
 };

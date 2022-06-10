@@ -7,10 +7,12 @@ import {
 } from 'src/shared';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { NavController } from '@ionic/angular';
-import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import SwiperCore, { Autoplay, Pagination } from 'swiper';
+
+SwiperCore.use([Autoplay, Pagination]);
 
 @Component({
   selector: 'app-slide-banniere-dashboard',

@@ -172,6 +172,7 @@ export class OrangeMoneyService {
     return this.http.get(`${checkOMAccountEndpoint2}/${msisdn}`).pipe(
       map(
         (hasOmAccount: boolean) => {
+					if(hasOmAccount === null) return true
           return hasOmAccount;
         },
         () => {

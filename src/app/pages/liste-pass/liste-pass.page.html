@@ -13,6 +13,9 @@
       <span *ngIf="purchaseType === OPERATION_ALLO_TYPE" class="title1">
         Achat pass Allo
       </span>
+      <span *ngIf="purchaseType === OPERATION_ABONNEMENT_WIDO" class="title1">
+        Abonnement WIDO
+      </span>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -27,6 +30,9 @@
       </span>
       <span *ngIf="purchaseType === OPERATION_ALLO_TYPE" class="title">
         Achat pass Allo
+      </span>
+      <span *ngIf="purchaseType === OPERATION_ABONNEMENT_WIDO" class="title1">
+        Abonnement WIDO
       </span>
     </ion-toolbar>
   </ion-header>
@@ -48,15 +54,20 @@
         *ngIf="purchaseType === OPERATION_ALLO_TYPE"
         alt=""
       />
+      <img
+        src="/assets/images/pass-allo-banniere.png"
+        *ngIf="purchaseType === OPERATION_ABONNEMENT_WIDO"
+        alt=""
+      />
     </div>
     <div class="list-pass-body-main-content">
       <!-- loader -->
       <div *ngIf="!isLoaded" class="profil-spinner">
-        <mat-spinner mode="indeterminate" [diameter]="25"></mat-spinner>
+        <ion-spinner name="crescent" ></ion-spinner>
       </div>
 
       <div *ngIf="isLoaded && listPass.length" class="list-pass-body">
-        <div class="tab-header" *ngIf="purchaseType !== OPERATION_ALLO_TYPE">
+        <div class="tab-header" *ngIf="purchaseType !== OPERATION_ALLO_TYPE && purchaseType !== OPERATION_ABONNEMENT_WIDO">
           <div
             *ngFor="let slide of fullListPass; let i=index"
             (click)="changeCategory(i)"
@@ -124,6 +135,20 @@
               </ng-container>
             </ion-slides>
           </ng-container>
+					<ng-container *ngIf="purchaseType === OPERATION_ABONNEMENT_WIDO">
+						<div class="filtered-list-pass">
+							<ng-container *ngIf="listPass?.length">
+								<app-item-pass-wido
+									*ngFor="let pass of listPass"
+									[passWido]="pass"
+									(selectPass)="choosePass($event)"
+								></app-item-pass-wido>
+							</ng-container>
+							<ng-container *ngIf="!listPass.length">
+								{{ getErrorMessageNoPass() }}
+							</ng-container>
+						</div>
+					</ng-container>
         </div>
       </div>
     </div>

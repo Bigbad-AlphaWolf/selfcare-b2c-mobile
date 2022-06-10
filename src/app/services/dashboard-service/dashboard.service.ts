@@ -12,7 +12,9 @@ import {
   SubscriptionModel,
   REGEX_FIX_NUMBER,
   USER_CONS_CATEGORY_CALL,
-  ItemUserConso
+  ItemUserConso,
+	REGEX_PREPAID_FIXE,
+	OPERATION_TYPE_PASS_INTERNET
 } from 'src/shared';
 import {DOCUMENT} from '@angular/common';
 import {SessionOem} from '../session-oem/session-oem.service';
@@ -301,14 +303,14 @@ export class DashboardService {
     );
   }
 
-  fetchOemNumbers() {
+  fetchOemNumbers(operationType?: string) {
     return this.attachedNumbers().pipe(
       map((elements: any) => {
         const mainPhone = this.authService.getUserMainPhoneNumber();
         let numbers = [mainPhone.trim()];
         elements.forEach((element: any) => {
           const msisdn = '' + element.msisdn;
-          if (!msisdn.startsWith('33', 0)) {
+          if (!msisdn.startsWith('33', 0) || REGEX_PREPAID_FIXE.test(element?.formule) && operationType === OPERATION_TYPE_PASS_INTERNET) {
             numbers.push(element.msisdn);
           }
         });

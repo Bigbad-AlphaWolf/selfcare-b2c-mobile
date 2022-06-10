@@ -43,6 +43,7 @@ import { TRANSFER_OM_INTERNATIONAL_COUNTRIES } from 'src/app/utils/constants';
 import {XeweulSoldeComponent} from '../../components/counter/xeweul-solde/xeweul-solde.component';
 import { TypePhoneNumberManuallyComponent } from 'src/app/new-registration/components/type-phone-number-manually/type-phone-number-manually.component';
 import { NavigationExtras, Router } from '@angular/router';
+import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
 
 @Injectable({
   providedIn: 'root',
@@ -274,7 +275,9 @@ export class BottomSheetService {
         } else {
           this.openRattacheNumberByIdCardModal(numero);
         }
-      }
+      } else if(res?.direction === 'SENT_OTP') {
+				this.openRattacheNumberByOTPModal(res.numeroToRattach);
+			}
     });
     return await modal.present();
   }
@@ -337,6 +340,36 @@ export class BottomSheetService {
     });
     return await modal.present();
   }
+  async openRattacheNumberByOTPModal(number: string) {
+    const modal = await this.modalCtrl.create({
+      component: RattachByOtpCodeComponent,
+      componentProps: {
+        number,
+      },
+      cssClass: 'select-recipient-modal',
+    });
+    modal.onDidDismiss().then((res: any) => {
+      res = res.data;
+      if (res?.direction === 'BACK') {
+        this.openRattacheNumberModal()
+      } else {
+				if(res) {
+					if (res?.rattached) {
+						const numero = res.numeroToRattach;
+						this.openSuccessDialog('rattachment-success', numero);
+					} else {
+						this.openSuccessDialog(
+							'rattachment-failed',
+							null,
+							res.errorMsg,
+							res.errorStatus
+						);
+					}
+				}
+      }
+    });
+    return await modal.present();
+  }
 
   async openRattacheNumberByCustomerIdModal(number: string) {
     const modal = await this.modalCtrl.create({
@@ -348,21 +381,23 @@ export class BottomSheetService {
     });
     modal.onDidDismiss().then((res: any) => {
       res = res.data;
-      if (res?.direction === 'BACK') {
-        this.openSelectRattachmentType(number);
-      } else {
-        if (res.rattached) {
-          const numero = res.numeroToRattach;
-          this.openSuccessDialog('rattachment-success', numero);
-        } else {
-          this.openSuccessDialog(
-            'rattachment-failed',
-            null,
-            res.errorMsg,
-            res.errorStatus
-          );
-        }
-      }
+			if(res) {
+				if (res?.direction === 'BACK') {
+					this.openSelectRattachmentType(number);
+				} else {
+					if (res?.rattached) {
+						const numero = res.numeroToRattach;
+						this.openSuccessDialog('rattachment-success', numero);
+					} else {
+						this.openSuccessDialog(
+							'rattachment-failed',
+							null,
+							res.errorMsg,
+							res.errorStatus
+						);
+					}
+				}
+			}
     });
 
     return await modal.present();
