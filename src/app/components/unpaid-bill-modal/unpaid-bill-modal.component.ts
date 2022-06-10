@@ -9,6 +9,7 @@ import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
 })
 export class UnpaidBillModalComponent implements OnInit {
   @Input() unpaidBills: InvoiceOrange[];
+  @Input() operation: string;
   constructor(private modalController: ModalController) {}
 
   ngOnInit() {}

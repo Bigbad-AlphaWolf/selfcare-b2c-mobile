@@ -1404,7 +1404,10 @@ export const MINIMUM_REQUIRED_RECHARGEMENT_SOLDE_TO_ACTIVATE_DALAL = 12;
 
 export const MSG_XEWEUL_CARD_INVALID =
   'Service non disponble pour cette carte. Ageroute vous invite à la renouveler gratuitement au niveau de ses espaces clients.';
+export const MSG_XEWEUL_CARD_INVALID_AMOUNT_TO_RECHARGE =
+  'Vous ne pouvez recharger un montant inférieur à 500 Fcfa';
 export const ERROR_CODE_INVALID_XEWEUL_CARD = '3019';
+export const ERROR_CODE_INVALID_AMOUNT_TO_RECHARGE_XEWEUL_CARD = '3020';
 export const LOCAL_STORAGE_KEYS = {
   NUMBER_FOR_OTP_REGISTRATION: 'numberOTPRegistration',
   X_UUID: 'X-UUID',

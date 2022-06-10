@@ -53,7 +53,7 @@
         </div>
         <invoice-card *ngFor="let facture of filteredFactures" [numberToRegister]="payForOtherInput?.ligne"
           [canPayBills]="canPayBills" [invoice]="facture" [counterToFav]="payForOtherInput?.counterToRattach"
-          [allBills]="factures" [operation]="operationType"></invoice-card>
+          [allBills]="factures" [operation]="operationType" [fees]="fees"></invoice-card>
       </ng-container>
       <ng-container *ngIf="!filteredFactures?.length">
         <div class="no-bills-block">{{!payForOtherInput?.ligne ? 'Pas de factures': 'Ce numéro ne possède pas de factures impayées'}}</div>
