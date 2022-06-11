@@ -18,7 +18,7 @@ import {
   OPERATION_TYPE_SEDDO_CREDIT,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_PASS_INTERNATIONAL,
-  OPERATION_ABONNEMENT_WIDO,
+	OPERATION_ABONNEMENT_WIDO,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -186,14 +186,18 @@ export class TransfertHubServicesPage implements OnInit {
       (this.isLightMod ? '_light' : '');
     this.followAnalyticsService.registerEventFollow(followEvent, 'event', 'clic');
     if (opt.passUsage) {
-      this.bsService.openNumberSelectionBottomSheet(
-        NumberSelectionOption.WITH_MY_PHONES,
-        OPERATION_TYPE_PASS_USAGE,
-        'list-pass-usage',
-        false,
-        opt
-      );
-      return;
+			if(opt.code === OPERATION_ABONNEMENT_WIDO) {
+				this.goToListPassWido(OPERATION_ABONNEMENT_WIDO, 'list-pass-usage', opt);
+			} else {
+				this.bsService.openNumberSelectionBottomSheet(
+					NumberSelectionOption.WITH_MY_PHONES,
+					OPERATION_TYPE_PASS_USAGE,
+					'list-pass-usage',
+					false,
+					opt
+				);
+				return;
+			}
     }
     switch (opt.code) {
       case OPERATION_TRANSFERT_ARGENT:
@@ -230,9 +234,9 @@ export class TransfertHubServicesPage implements OnInit {
       case OPERATION_TYPE_PASS_ILLIFLEX:
         this.openModalPassNumberSelection(OPERATION_TYPE_PASS_ILLIFLEX, 'illiflex-budget-configuration');
         break;
-      case OPERATION_ABONNEMENT_WIDO:
-        this.goToListPassWido(OPERATION_ABONNEMENT_WIDO, 'list-pass');
-        break;
+      //case OPERATION_ABONNEMENT_WIDO:
+      //  this.goToListPassWido(OPERATION_ABONNEMENT_WIDO, 'list-pass');
+      //  break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
         this.openMerchantBS();
       default:
@@ -242,6 +246,20 @@ export class TransfertHubServicesPage implements OnInit {
           });
         break;
     }
+  }
+
+	goToListPassWido(operation: string, routePath: string, opt: OffreService) {
+    const opInfos = {
+      senderMsisdn: this.currentPhone,
+      destinataire: this.currentPhone,
+      purchaseType: operation,
+      isLightMod: false,
+      recipientMsisdn: this.currentPhone,
+			serviceUsage: opt
+    };
+    this.navController.navigateForward([routePath], {
+      state: opInfos,
+    });
   }
 
   openModalPassNumberSelection(operation: string, routePath: string) {
@@ -268,19 +286,6 @@ export class TransfertHubServicesPage implements OnInit {
         this.isLightMod
       );
     }
-  }
-
-  goToListPassWido(operation: string, routePath: string) {
-    const opInfos = {
-      senderMsisdn: this.currentPhone,
-      destinataire: this.currentPhone,
-      purchaseType: operation,
-      isLightMod: false,
-      recipientMsisdn: this.currentPhone,
-    };
-    this.navController.navigateForward([routePath], {
-      state: opInfos,
-    });
   }
 
   checkOmAccount() {
