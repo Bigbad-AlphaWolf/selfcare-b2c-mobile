@@ -22,14 +22,15 @@ import {MyOfferPlansPage} from './pages/my-offer-plans/my-offer-plans.page';
 import {Diagnostic} from '@ionic-native/diagnostic/ngx';
 import {ContactsService} from './services/contacts-service/contacts.service';
 import {OrangeMoneyService} from './services/orange-money-service/orange-money.service';
-import {catchError, tap} from 'rxjs/operators';
+import {catchError, switchMap, tap} from 'rxjs/operators';
 import {AuthenticationService} from './services/authentication-service/authentication.service';
 import {OtpService} from './services/otp-service/otp.service';
-import {throwError} from 'rxjs';
+import {from, throwError} from 'rxjs';
 import {NewRegistrationPage} from './new-registration/new-registration.page';
 import {LocalStorageService} from './services/localStorage-service/local-storage.service';
 import {LOCAL_STORAGE_KEYS, PATH_ACCESS_BY_OTP, STEPS_ACCESS_BY_OTP} from 'src/shared';
 import {BottomSheetService} from './services/bottom-sheet/bottom-sheet.service';
+import { EyesonSdkService } from './services/eyeson-service/eyeson-sdk.service';
 
 const ls = new SecureLS({encodingType: 'aes'});
 
@@ -64,7 +65,8 @@ export class AppComponent {
     private loadingController: LoadingController,
     private otpService: OtpService,
     private localStorage: LocalStorageService,
-    private bottomSheetServ: BottomSheetService
+    private bottomSheetServ: BottomSheetService,
+		private sdkEyesOn: EyesonSdkService
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -217,8 +219,8 @@ export class AppComponent {
         console.log('hasPermission2', hasPermission);
         throw new Error('Permissions required');
       }
-      return;
     }
+		this.initAndStartEyesOnPlugin(this.platform.is('android'))
     const imei = this.uid.IMEI;
     AppComponent.IMEI = imei;
     return imei;
@@ -242,4 +244,13 @@ export class AppComponent {
     });
     return loading;
   }
+
+	initAndStartEyesOnPlugin(isAndroid: boolean) {
+		if(isAndroid) {
+			console.log('called');
+			this.sdkEyesOn.initAgent().then((res) => {}).catch((err) => {
+				console.log('Init And Start err', err);
+			})
+		}
+	}
 }

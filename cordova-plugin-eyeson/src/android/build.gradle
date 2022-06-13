@@ -1,0 +1,18 @@
+allprojects {
+    repositories {
+		maven { url "https://jitpack.io" }
+        maven {
+            credentials {
+                username "orangesenegal"
+                password "OxjP1!EK6t"
+          }
+          //noinspection GroovyAssignabilityCheck
+          url     "https://delivery.v3d.fr/nexus/content/repositories/v3d_releases/"
+        }
+    }
+}
+
+
+dependencies {
+    implementation(group: 'com.v3d.android', name: 'eqcore', version: '9.7.1.6')
+}

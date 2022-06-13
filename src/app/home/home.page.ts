@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Platform } from '@ionic/angular';
 import { FORGOT_PWD_PAGE_URL } from 'src/shared';
+import { EyesonSdkService } from '../services/eyeson-service/eyeson-sdk.service';
 const ORANGE_HOME_PAGE_URL = 'http://orange.sn';
 declare var FollowAnalytics: any;
 @Component({
@@ -46,15 +48,13 @@ export class HomePage implements OnInit {
 
   currentIndex;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private sdkEyesOn: EyesonSdkService, private platform: Platform) {
     if (typeof FollowAnalytics !== 'undefined') {
       FollowAnalytics.logEvent('Home', 'success');
     }
   }
 
-  ngOnInit() {
-    //  this.open();
-  }
+  ngOnInit() {}
 
   goToLoginPage() {
     this.router.navigate(['/login']);

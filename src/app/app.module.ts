@@ -40,6 +40,7 @@ import {Diagnostic} from '@ionic-native/diagnostic/ngx';
 import {FingerprintAIO} from '@ionic-native/fingerprint-aio/ngx';
 import {FaceIdAlertPopupComponent} from './sidemenu/face-id-alert-popup/face-id-alert-popup.component';
 import {BarcodeScanner} from '@awesome-cordova-plugins/barcode-scanner/ngx';
+import { EyesOn } from 'cordova-plugin-eyeson/ngx';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -60,6 +61,7 @@ registerLocaleData(localeFr);
     PipesModule
   ],
   providers: [
+		EyesOn,
     AppVersion,
     StatusBar,
     SplashScreen,

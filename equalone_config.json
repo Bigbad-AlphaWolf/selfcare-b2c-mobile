@@ -1,0 +1,8 @@
+{
+	"baseUrl": "https://vc.orange.sn",
+	"folder": "orangeetmoi",
+	"anonymous": false,
+	"dataCollect": false,
+	"batteryProtection" : false,
+	"foregroundNotification": true
+	}
