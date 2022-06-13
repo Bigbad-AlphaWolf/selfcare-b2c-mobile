@@ -15,11 +15,12 @@ import {
   OPERATION_CHANGE_PIN_OM,
   OPERATION_CREATE_PIN_OM,
   OPERATION_UNBLOCK_OM_ACCOUNT,
-  OPERATION_RESET_PIN_OM, OPERATION_SEE_SOLDE_XEWEUL
+  OPERATION_RESET_PIN_OM, OPERATION_SEE_SOLDE_XEWEUL, OPERATION_ABONNEMENT_WIDO
 } from 'src/shared';
 import {PageHeader} from '../models/page-header.model';
 import {OPERATION_RAPIDO, OPERATION_WOYOFAL, OPERATION_XEWEUL} from './operations.constants';
 import {IMAGES_DIR_PATH} from './constants';
+import { OffreService } from '../models/offre-service.model';
 
 export const titles: PageHeader[] = [
   {
@@ -119,9 +120,17 @@ export const titles: PageHeader[] = [
     typeOperation: OPERATION_RESET_PIN_OM,
     title: 'Réinitialiser mon code pin	OM',
     subTtile: 'Réinitialiser mon code pin	OM'
+  },
+  {
+    typeOperation: OPERATION_ABONNEMENT_WIDO,
+    title: 'Abonnement WIDO',
+    subTtile: 'Souscription Abonnement WIDO'
   }
 ];
 
-export function getPageHeader(typeOp: string) {
+export function getPageHeader(typeOp: string, offService?: OffreService) {
+	if(offService.passUsage && typeOp !== OPERATION_ABONNEMENT_WIDO) {
+		return { typeOperation: offService.code, title: `Achat de Pass ${offService.fullDescription}` }
+	}
   return titles.find(pt => pt.typeOperation === typeOp);
 }

@@ -6,14 +6,16 @@ import {
   BILL_STATUS,
   InvoiceOrange,
 } from 'src/app/models/invoice-orange.model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
 import { REGEX_FIX_NUMBER } from 'src/shared';
 import { LinesComponent } from 'src/app/components/lines/lines.component';
 import { NavController, ModalController } from '@ionic/angular';
-import { map, tap } from 'rxjs/operators';
-import { isFixPostpaid, POSTPAID_TERANGA_OFFERS_ID } from 'src/app/dashboard';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { OPERATION_TYPE_SENEAU_BILLS, OPERATION_TYPE_SENELEC_BILLS } from 'src/app/utils/operations.constants';
+import { FeesService } from 'src/app/services/fees/fees.service';
+import { OM_LABEL_SERVICES } from 'src/app/utils/bills.util';
+import { FeeModel } from 'src/app/services/orange-money-service';
 
 @Component({
   selector: "app-orange-bills",
@@ -50,8 +52,10 @@ export class OrangeBillsPage implements OnInit {
     counterToRattach: boolean
   };
   operationType: string;
+  fees: FeeModel[] = [];
   constructor(
     private billsService: BillsService,
+    private feesService: FeesService,
     private navCtl: NavController,
     private modalController: ModalController
   ) {}
@@ -88,6 +92,25 @@ export class OrangeBillsPage implements OnInit {
       this.billsService
         .getNumberUnpaidBills(this.payForOtherInput)
         .pipe(
+          switchMap((unpaidBills) => {
+            if (
+              this.operationType === OPERATION_TYPE_SENELEC_BILLS ||
+              this.operationType === OPERATION_TYPE_SENEAU_BILLS
+            ) {
+              const service =
+                this.operationType === OPERATION_TYPE_SENELEC_BILLS
+                  ? OM_LABEL_SERVICES.SENELEC
+                  : OM_LABEL_SERVICES.SDE;
+              return this.feesService.getFeesByOMService(service).pipe(
+                switchMap((fees) => {
+                  this.fees = fees;
+                  return of(unpaidBills);
+                })
+              );
+            } else {
+              return of(unpaidBills);
+            }
+          }),
           tap((res) => {
             this.selectedFilter = null;
             this.factures = res;

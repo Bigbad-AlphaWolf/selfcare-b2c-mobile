@@ -257,6 +257,20 @@
         </div>
       </div>
     </ng-container>
+    <ng-container *ngIf="purchaseType === OPERATION_TYPE_SENEAU_BILLS || purchaseType === OPERATION_TYPE_SENELEC_BILLS">
+      <div class="amount-to-transfer">
+        <span class="pass">
+          Frais paiement
+          <span class="fee-percent" *ngIf="0">({{opXtras?.fee?.mode_calcul === OM_FEES_CALCUL_MODE.PERCENT ?
+            opXtras?.fee?.percentFeesValue + '%' : opXtras?.fee?.effective_fees + ' FCFA' }})</span>
+        </span>
+      </div>
+      <div class="recipient-information">
+        <div class="top-block-transfert">
+          <span class="title scb-text-orange"> {{opXtras?.fee?.effective_fees + ' FCFA'}} </span>
+        </div>
+      </div>
+    </ng-container>
     <ng-container *ngIf="offerPlan">
       <div class="amount-to-transfer">
         <span class="pass">Infos additionnelles</span>
@@ -323,9 +337,10 @@
         <span class="text" *ngSwitchCase="OPERATION_TYPE_PASS_USAGE">Confirmer ({{opXtras?.pass?.tarif}} FCFA)</span>
         <span class="text" *ngSwitchCase="OPERATION_TYPE_PAY_BILL">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
         <span class="text" *ngSwitchCase="OPERATION_TYPE_TERANGA_BILL">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
-        <span class="text" *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
-        <span class="text" *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS">Confirmer ( {{ opXtras?.invoice?.montantFacture | formatCurrency }} FCFA)</span>
-        <span class="text" *ngSwitchCase="OPERATION_ABONNEMENT_WIDO">Payer ( {{ passChoosen?.tarif }} FCFA)</span>
+        <span class="text" *ngSwitchCase="OPERATION_TYPE_SENELEC_BILLS">Confirmer ( {{ opXtras?.invoice?.montantFacture + opXtras?.fee?.effective_fees | formatCurrency }} FCFA)</span>
+        <span class="text" *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS">Confirmer ( {{ opXtras?.invoice?.montantFacture + opXtras?.fee?.effective_fees | formatCurrency }} FCFA)</span>
+				<span class="text" *ngSwitchCase="OPERATION_ABONNEMENT_WIDO">Payer ( {{ passChoosen?.tarif }} FCFA)</span>
+
       </ng-container>
       <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="buyingPass || checkingAmount"></mat-spinner>
     </button>

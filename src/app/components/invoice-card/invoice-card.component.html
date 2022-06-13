@@ -6,10 +6,12 @@
 				<div class="title" *ngIf="!title">{{MONTHS[invoice?.mois-1] + ' ' + invoice?.annee}}</div>
 				<div class="facture">N° {{ operation ? invoice?.nfact : invoice?.nfact | formatBillNum }}</div>
 				<div class="price-and-echeance">
-					<div class="date" *ngIf="!invoice?.isDelayed"> Echéance {{ invoice?.dateEcheance | formatBillDate }}
-					</div>
-					<div class="date echeance-depasse" *ngIf="invoice?.isDelayed"> Echéance dépassée depuis le {{
-						invoice?.dateEcheance | formatBillDate }}</div>
+					<ng-container *ngIf="operation !== OPERATION_TYPE_SENELEC_BILLS && operation !== OPERATION_TYPE_SENEAU_BILLS">
+						<div class="date" *ngIf="!invoice?.isDelayed"> Echéance {{ invoice?.dateEcheance | formatBillDate }}
+						</div>
+						<div class="date echeance-depasse" *ngIf="invoice?.isDelayed"> Echéance dépassée depuis le {{
+							invoice?.dateEcheance | formatBillDate }}</div>
+					</ng-container>
 					<div class="bill-price scb-text-orange">{{invoice?.montantFacture + ' F CFA'}}</div>
 				</div>
 			</div>

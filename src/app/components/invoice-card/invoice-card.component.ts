@@ -8,10 +8,11 @@ import { BillsService } from 'src/app/services/bill-service/bills.service';
 import { NavigationExtras } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
-import { OPERATION_PAY_ORANGE_BILLS } from 'src/shared';
 import { MONTHS } from 'src/app/utils/constants';
 import { UnpaidBillModalComponent } from '../unpaid-bill-modal/unpaid-bill-modal.component';
 import { OPERATION_TYPE_SENEAU_BILLS, OPERATION_TYPE_SENELEC_BILLS } from 'src/app/utils/operations.constants';
+import { FeeModel } from 'src/app/services/orange-money-service';
+import { FeesService } from 'src/app/services/fees/fees.service';
 
 @Component({
   selector: 'invoice-card',
@@ -29,6 +30,7 @@ export class InvoiceCardComponent implements OnInit {
   @Input() numberToRegister: string;
   @Input() operation: string;
   @Input() counterToFav: boolean;
+  @Input() fees: FeeModel[];
   billStatus = BILL_STATUS;
   MONTHS = MONTHS;
   OPERATION_TYPE_SENELEC_BILLS = OPERATION_TYPE_SENELEC_BILLS;
@@ -37,7 +39,8 @@ export class InvoiceCardComponent implements OnInit {
     private billsService: BillsService,
     private followAnalyticsService: FollowAnalyticsService,
     private navController: NavController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private feeService: FeesService
   ) {}
 
   ngOnInit() {}
@@ -59,11 +62,20 @@ export class InvoiceCardComponent implements OnInit {
         this.openModalUnpaidBill(unpaidBills);
         return;
       }
+      let fee;
+      if (
+        this.operation === OPERATION_TYPE_SENELEC_BILLS ||
+        this.operation === OPERATION_TYPE_SENEAU_BILLS
+      ) {
+        fee = this.feeService.extractFees(this.fees, invoice?.montantFacture);
+        fee.effective_fees = Math.round(fee.effective_fees);
+      }
       const opXtras: OperationExtras = {
         purchaseType: this.operation,
         invoice,
         numberToRegister: this.numberToRegister,
-        counterToFav: this.counterToFav
+        counterToFav: this.counterToFav,
+        fee
       };
       const navExtras: NavigationExtras = { state: opXtras };
       this.navController.navigateForward(['/operation-recap'], navExtras);
@@ -88,13 +100,24 @@ export class InvoiceCardComponent implements OnInit {
       cssClass: 'select-recipient-modal',
       componentProps: {
         unpaidBills,
+        operation: this.operation
       },
     });
     modal.onDidDismiss().then((response) => {
       if (response?.data) {
+        let fee;
+        const invoice = unpaidBills[0]
+        if (
+          this.operation === OPERATION_TYPE_SENELEC_BILLS ||
+          this.operation === OPERATION_TYPE_SENEAU_BILLS
+        ) {
+          fee = this.feeService.extractFees(this.fees, invoice?.montantFacture);
+          fee.effective_fees = Math.round(fee.effective_fees);
+        }
         const opXtras: OperationExtras = {
           purchaseType: this.operation,
-          invoice: unpaidBills[0],
+          invoice,
+          fee
         };
         const navExtras: NavigationExtras = { state: opXtras };
         this.navController.navigateForward(['/operation-recap'], navExtras);

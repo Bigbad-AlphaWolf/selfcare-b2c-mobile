@@ -10,7 +10,6 @@ import {
 import {
   tap,
   map,
-  delay,
   retryWhen,
   flatMap,
   switchMap,
@@ -68,7 +67,7 @@ const checkNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/accou
 const checkNumberV3Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v3/check_number`;
 const registerEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/register`;
 const registerV3Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v3/register`;
-const resetPwdEndpoint = `${SERVER_API_URL}/api/account/b2c/reset-password`;
+const resetPwdEndpoint = `${SERVER_API_URL}/account/b2c/reset-password`;
 const resetPwdV2Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v1/lite/reset-password`;
 
 const checkNumberIsOrangeEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/v1/is-orange-number`;

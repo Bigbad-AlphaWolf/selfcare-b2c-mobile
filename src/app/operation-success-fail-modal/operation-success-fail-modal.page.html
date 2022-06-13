@@ -274,9 +274,7 @@
         <app-item-recharge-credit [modifiable]="false" [amount]="opXtras?.invoice?.montantFacture"
           *ngSwitchCase="OPERATION_TYPE_SENEAU_BILLS">
         </app-item-recharge-credit>
-				<app-item-pass-wido
-          [passWido]="passBought"
-          *ngSwitchCase="OPERATION_ABONNEMENT_WIDO"
+				<app-item-pass-wido  [passWido]="passBought"  *ngSwitchCase="OPERATION_ABONNEMENT_WIDO"
         ></app-item-pass-wido>
       </ng-container>
     </div>

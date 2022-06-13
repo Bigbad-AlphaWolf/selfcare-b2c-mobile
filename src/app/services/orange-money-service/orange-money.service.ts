@@ -890,3 +890,8 @@ export const enum FACE_ID_PERMISSIONS {
 
 export const FACE_ID_STORAGE_KEY = 'FACE_ID_PERMISSION'
 export const FACE_ID_OM_INFOS = 'FACE_ID_INFOS'
+
+export enum OM_FEES_CALCUL_MODE {
+  PERCENT = 'pourcent',
+  FIXE = 'fixe',
+}
