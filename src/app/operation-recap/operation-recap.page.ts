@@ -60,8 +60,8 @@ import { OM_LABEL_SERVICES } from '../utils/bills.util';
 import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
 import { BoosterModel } from '../models/booster.model';
 import { FaceIdRequestModalComponent } from 'src/shared/face-id-request-modal/face-id-request-modal.component';
-import { PassAbonnnementWidoService } from '../services/pass-abonnement-wido-service /pass-abonnnement-wido.service';
 import { catchError, tap } from 'rxjs/operators';
+import { PassAbonnementWidoService } from '../services/pass-abonnement-wido-service /pass-abonnement-wido.service';
 
 @Component({
   selector: 'app-operation-recap',
@@ -162,7 +162,7 @@ export class OperationRecapPage implements OnInit {
     private passService: PassInternetService,
     private ref: ChangeDetectorRef,
     private feeService: FeesService,
-    private passAbonnementWido: PassAbonnnementWidoService
+    private passAbonnementWido: PassAbonnementWidoService
   ) {}
 
   ngOnInit() {

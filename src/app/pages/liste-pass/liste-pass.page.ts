@@ -16,9 +16,9 @@ import {
 import { PassIllimixService } from '../../services/pass-illimix-service/pass-illimix.service';
 import { BoosterService } from 'src/app/services/booster.service';
 import { BoosterModel, BoosterTrigger } from 'src/app/models/booster.model';
-import { PassAbonnnementWidoService } from 'src/app/services/pass-abonnement-wido-service /pass-abonnnement-wido.service';
 import { catchError, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { PassAbonnementWidoService } from 'src/app/services/pass-abonnement-wido-service /pass-abonnement-wido.service';
 
 @Component({
   selector: 'app-liste-pass',
@@ -55,9 +55,7 @@ export class ListePassPage implements OnInit {
     private passIntService: PassInternetService,
     private passIllimixServ: PassIllimixService,
     private boosterService: BoosterService,
-    private navCtl: NavController,
-    private passAbonnementWido: PassAbonnnementWidoService
-  ) {}
+    private navCtl: NavController  ) {}
 
   ngOnInit() {
     // this.route.queryParams.subscribe((params) => {
@@ -108,21 +106,6 @@ export class ListePassPage implements OnInit {
               this.isLoaded = true;
             }
           );
-      } else if (this.purchaseType === OPERATION_ABONNEMENT_WIDO) {
-        this.isLoaded = false;
-        this.passAbonnementWido
-          .getListPassAbonnementWido(this.userNumber)
-          .pipe(
-            tap((res: PassInternetModel[]) => {
-              this.isLoaded = true;
-              this.listPass = res;
-            }),
-            catchError(err => {
-              this.isLoaded = true;
-              return throwError(err);
-            })
-          )
-          .subscribe();
       } else {
         boosterPayload.trigger = BoosterTrigger.PASS_ILLIMIX;
         const category =
