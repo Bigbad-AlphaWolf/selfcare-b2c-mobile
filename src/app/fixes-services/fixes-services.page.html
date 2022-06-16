@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons class="ion-padding-start" slot="start">
+			<ion-back-button mode="md" defaultHref="/" class="oem-back-button">
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <span class="title1">
+        {{ pageInfos?.title }}
+      </span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">
+        {{ pageInfos?.title }}
+      </span>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="content-page">
+    <div class="header-image">
+      <img-loader class="icone" [src]="pageInfos?.banniere"
+        fallbackUrl="/assets/images/pass-internet-page-header.svg" useImg></img-loader>
+    </div>
+		<div class="body">
+
+		</div>
+  </div>
+</ion-content>

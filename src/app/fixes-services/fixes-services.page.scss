@@ -1,0 +1,31 @@
+@import 'src/app/app';
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.28px;
+}
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+}
+
+.content-page {
+	min-height: 100%;
+  background-color: $grayDashboard;
+  .header-image {
+    width: 100%;
+    background-color: $white;
+    display: flex;
+    img-loader {
+      width: 100% !important;
+      img {
+        width: 100% !important;
+      }
+    }
+  }
+	.body {
+		padding: 20px 15px;
+	}
+}
