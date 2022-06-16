@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { ModalController, NavController, ToastController } from '@ionic/angular';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { NumberSelectionComponent } from '../components/number-selection/number-selection.component';
 import { NumberSelectionOption } from '../models/enums/number-selection-option.enum';
@@ -28,7 +28,7 @@ import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.servic
 import { ListPassVoyagePage } from '../pages/list-pass-voyage/list-pass-voyage.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
-import { of, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { catchError, tap } from 'rxjs/operators';

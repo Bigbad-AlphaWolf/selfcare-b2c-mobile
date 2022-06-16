@@ -798,6 +798,9 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_ENABLE_DALAL:
         eventName = 'Dalal_activation';
         break;
+      case OPERATION_ABONNEMENT_WIDO:
+        eventName = 'Achat_abonnement_wido';
+        break;
       default:
         break;
     }
