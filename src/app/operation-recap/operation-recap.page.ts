@@ -373,10 +373,11 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_ILLIMIX:
       case OPERATION_TYPE_PASS_ALLO:
       case OPERATION_TYPE_PASS_ILLIFLEX:
+			case	OPERATION_ABONNEMENT_WIDO:
         if (this.isLightMod) {
           const hmac = this.authServ.getHmac();
           this.payWithCredit(hmac);
-        } else if (this.subscriptionInfos.profil === PROFILE_TYPE_POSTPAID) {
+        } else if (this.subscriptionInfos?.profil === PROFILE_TYPE_POSTPAID) {
           this.paymentMod = PAYMENT_MOD_OM;
           this.openPinpad();
         } else {
@@ -410,40 +411,19 @@ export class OperationRecapPage implements OnInit {
               this.opXtras?.fee?.effective_fees
             : this.opXtras?.invoice?.montantFacture;
         this.checkOMBalanceSuffiency(amountTocheck);
-			case OPERATION_ABONNEMENT_WIDO:
-				this.suscribeToWido(
-					this.buyPassPayload.destinataire,
-					this.buyPassPayload?.pass?.price_plan_index
-				);
-				break;
       default:
         break;
     }
   }
 
-  suscribeToWido(recipientMsisdn: string, ppi: string) {
-    this.buyingPass = true;
-    const codeIN = this.passChoosen.price_plan_index
-      ? this.passChoosen?.price_plan_index
-      : this.passChoosen?.price_plan_index_om;
-    const amount = this.passChoosen.tarif;
-    const msisdn = this.currentUserNumber;
-    const receiver = this.recipientMsisdn;
-    const logInfos: FollowOemlogPurchaseInfos = {
-      sender: msisdn,
-      receiver: receiver,
-      montant: amount,
-      ppi: codeIN,
-    };
+  suscribeToWido(recipientMsisdn: string, ppi: string, logInfos: any) {
     this.passAbonnementWido
       .suscribeToWido({ msisdn: recipientMsisdn, packId: +ppi })
       .pipe(
         tap(res => {
-          this.buyingPass = false;
           this.transactionSuccessful({ code: '0' }, logInfos);
         }),
         catchError(err => {
-          this.buyingPass = false;
           this.transactionFailure(err, logInfos);
           return throwError(err);
         })
@@ -496,6 +476,7 @@ export class OperationRecapPage implements OnInit {
       cssClass: 'set-channel-payment-modal',
       componentProps: {
         pass: this.passChoosen,
+				purchaseType: this.purchaseType,
         passIlliflex,
       },
     });
@@ -650,14 +631,21 @@ export class OperationRecapPage implements OnInit {
       montant: amount,
       ppi: codeIN,
     };
-    this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
-      (res: any) => {
-        this.transactionSuccessful(res, logInfos);
-      },
-      (err: any) => {
-        this.transactionFailure(err, logInfos);
-      }
-    );
+		switch (this.purchaseType) {
+			case OPERATION_ABONNEMENT_WIDO:
+				this.suscribeToWido(payload.receiver, payload.codeIN, logInfos)
+				break;
+			default:
+				this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
+					(res: any) => {
+						this.transactionSuccessful(res, logInfos);
+					},
+					(err: any) => {
+						this.transactionFailure(err, logInfos);
+					}
+				);
+				break;
+		}
   }
 
   buyPassUsage() {

@@ -6,7 +6,7 @@ import { tap, catchError } from 'rxjs/operators';
 import { OPERATION_ABONNEMENT_WIDO, PassInternetModel } from 'src/shared';
 import { OffreService } from '../models/offre-service.model';
 import { PageHeader } from '../models/page-header.model';
-import { PassAbonnementWidoService } from '../services/pass-abonnement-wido-service/pass-abonnement-wido.service';
+import { PassAbonnementWidoService } from '../services/pass-abonnement-wido-service /pass-abonnement-wido.service';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
 import { getPageHeader } from '../utils/title.util';
 

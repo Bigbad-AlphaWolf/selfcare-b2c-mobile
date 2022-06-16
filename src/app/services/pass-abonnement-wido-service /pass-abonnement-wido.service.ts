@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 const { SERVER_API_URL, SERVICES_SERVICE } = environment;
 
@@ -14,14 +13,7 @@ export class PassAbonnementWidoService {
   constructor(private http: HttpClient) {}
 
   getListPassAbonnementWido(recipientMsisdn: string) {
-    return this.http.get(`${passAbonnementWidoEndpoint}/${recipientMsisdn}`).pipe(
-			map((res: any[]) => {
-        return res.map((item) => {
-          item['price_plan_index_om'] = item.price_plan_index;
-          return item
-        })
-      })
-		);
+    return this.http.get(`${passAbonnementWidoEndpoint}/${recipientMsisdn}`);
   }
 
   suscribeToWido(data: { msisdn: string; packId: number }) {
