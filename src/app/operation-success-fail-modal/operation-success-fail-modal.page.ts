@@ -27,7 +27,7 @@ import {
   OPERATION_PAY_ORANGE_BILLS,
   OPERATION_UNBLOCK_OM_ACCOUNT,
   OPERATION_RESET_PIN_OM,
-	OPERATION_ABONNEMENT_WIDO,
+  OPERATION_ABONNEMENT_WIDO,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -92,7 +92,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TYPE_TERANGA_BILL = OPERATION_TYPE_TERANGA_BILL;
   OPERATION_TYPE_SENELEC_BILLS = OPERATION_TYPE_SENELEC_BILLS;
   OPERATION_TYPE_SENEAU_BILLS = OPERATION_TYPE_SENEAU_BILLS;
-	OPERATION_ABONNEMENT_WIDO = OPERATION_ABONNEMENT_WIDO;
+  OPERATION_ABONNEMENT_WIDO = OPERATION_ABONNEMENT_WIDO;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;

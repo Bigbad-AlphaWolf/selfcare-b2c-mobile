@@ -60,9 +60,8 @@ import { OM_LABEL_SERVICES } from '../utils/bills.util';
 import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
 import { BoosterModel } from '../models/booster.model';
 import { FaceIdRequestModalComponent } from 'src/shared/face-id-request-modal/face-id-request-modal.component';
-import { PassAbonnnementWidoService } from '../services/pass-abonnement-wido-service /pass-abonnnement-wido.service';
 import { catchError, tap } from 'rxjs/operators';
-import { PassAbonnementWidoService } from '../services/pass-abonnement-wido-service/pass-abonnement-wido.service';
+import { PassAbonnementWidoService } from '../services/pass-abonnement-wido-service /pass-abonnement-wido.service';
 
 @Component({
   selector: 'app-operation-recap',
@@ -201,7 +200,9 @@ export class OperationRecapPage implements OnInit {
             case OPERATION_TYPE_PASS_VOYAGE:
             case OPERATION_TYPE_PASS_INTERNATIONAL:
               this.recipientName = this.opXtras.recipientFromContact
-                ? this.opXtras.recipientFirstname + ' ' + this.opXtras.recipientLastname
+                ? this.opXtras.recipientFirstname +
+                  ' ' +
+                  this.opXtras.recipientLastname
                 : '';
               this.buyPassPayload = {
                 destinataire: this.recipientMsisdn,
@@ -218,7 +219,8 @@ export class OperationRecapPage implements OnInit {
               this.transferOMWithCodePayload.nom_receiver = this.opXtras.recipientLastname;
               this.recipientFirstName = this.opXtras.recipientFirstname;
               this.recipientLastName = this.opXtras.recipientLastname;
-              this.recipientName = this.recipientFirstName + ' ' + this.recipientLastName;
+              this.recipientName =
+                this.recipientFirstName + ' ' + this.recipientLastName;
               this.paymentMod = PAYMENT_MOD_OM;
               break;
             case OPERATION_TRANSFER_OM:
@@ -232,7 +234,10 @@ export class OperationRecapPage implements OnInit {
               this.transferOMPayload.country = this.opXtras.country;
               this.transferOMPayload.reason = this.opXtras.reason;
               if (this.purchaseType === OPERATION_TRANSFER_OM)
-                this.recipientName = this.opXtras.recipientFirstname + ' ' + this.opXtras.recipientLastname;
+                this.recipientName =
+                  this.opXtras.recipientFirstname +
+                  ' ' +
+                  this.opXtras.recipientLastname;
               this.paymentMod = PAYMENT_MOD_OM;
               break;
             case OPERATION_TYPE_MERCHANT_PAYMENT:
@@ -250,7 +255,9 @@ export class OperationRecapPage implements OnInit {
               this.amount = this.opXtras.amount;
               this.paymentMod = PAYMENT_MOD_OM;
               this.recipientName = this.opXtras.recipientFromContact
-                ? this.opXtras.recipientFirstname + ' ' + this.opXtras.recipientLastname
+                ? this.opXtras.recipientFirstname +
+                  ' ' +
+                  this.opXtras.recipientLastname
                 : '';
               this.offerPlan = this.opXtras.offerPlan;
               break;
@@ -319,7 +326,8 @@ export class OperationRecapPage implements OnInit {
         this.transferOMWithCodePayload.nom_receiver = response.recipientLastname;
         this.recipientFirstName = response.recipientFirstname;
         this.recipientLastName = response.recipientLastname;
-        this.recipientName = this.recipientFirstName + ' ' + this.recipientLastName;
+        this.recipientName =
+          this.recipientFirstName + ' ' + this.recipientLastName;
         this.ref.detectChanges();
         return of(response).toPromise();
       } else {
@@ -365,10 +373,11 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_ILLIMIX:
       case OPERATION_TYPE_PASS_ALLO:
       case OPERATION_TYPE_PASS_ILLIFLEX:
+			case	OPERATION_ABONNEMENT_WIDO:
         if (this.isLightMod) {
           const hmac = this.authServ.getHmac();
           this.payWithCredit(hmac);
-        } else if (this.subscriptionInfos.profil === PROFILE_TYPE_POSTPAID) {
+        } else if (this.subscriptionInfos?.profil === PROFILE_TYPE_POSTPAID) {
           this.paymentMod = PAYMENT_MOD_OM;
           this.openPinpad();
         } else {
@@ -402,40 +411,19 @@ export class OperationRecapPage implements OnInit {
               this.opXtras?.fee?.effective_fees
             : this.opXtras?.invoice?.montantFacture;
         this.checkOMBalanceSuffiency(amountTocheck);
-			case OPERATION_ABONNEMENT_WIDO:
-				this.suscribeToWido(
-					this.buyPassPayload.destinataire,
-					this.buyPassPayload?.pass?.price_plan_index
-				);
-				break;
       default:
         break;
     }
   }
 
-  suscribeToWido(recipientMsisdn: string, ppi: string) {
-    this.buyingPass = true;
-    const codeIN = this.passChoosen.price_plan_index
-      ? this.passChoosen?.price_plan_index
-      : this.passChoosen?.price_plan_index_om;
-    const amount = this.passChoosen.tarif;
-    const msisdn = this.currentUserNumber;
-    const receiver = this.recipientMsisdn;
-    const logInfos: FollowOemlogPurchaseInfos = {
-      sender: msisdn,
-      receiver: receiver,
-      montant: amount,
-      ppi: codeIN,
-    };
+  suscribeToWido(recipientMsisdn: string, ppi: string, logInfos: any) {
     this.passAbonnementWido
       .suscribeToWido({ msisdn: recipientMsisdn, packId: +ppi })
       .pipe(
         tap(res => {
-          this.buyingPass = false;
           this.transactionSuccessful({ code: '0' }, logInfos);
         }),
         catchError(err => {
-          this.buyingPass = false;
           this.transactionFailure(err, logInfos);
           return throwError(err);
         })
@@ -464,7 +452,9 @@ export class OperationRecapPage implements OnInit {
       err => {
         this.buyingPass = false;
         const activationErrorMsg =
-          err && err.error && err.error.message ? err.error.message : 'Une erreur est survenue';
+          err && err.error && err.error.message
+            ? err.error.message
+            : 'Une erreur est survenue';
         const followDetails = Object.assign({}, logInfos, {
           error_code: err.status,
         });
@@ -486,12 +476,15 @@ export class OperationRecapPage implements OnInit {
       cssClass: 'set-channel-payment-modal',
       componentProps: {
         pass: this.passChoosen,
+				purchaseType: this.purchaseType,
         passIlliflex,
       },
     });
     modal.onDidDismiss().then(response => {
       let eventName =
-        this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX ? 'Buy_illiflex_payment_mod' : 'Buy_pass_payment_mod';
+        this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX
+          ? 'Buy_illiflex_payment_mod'
+          : 'Buy_pass_payment_mod';
       if (response.data && response.data.paymentMod === PAYMENT_MOD_CREDIT) {
         this.paymentMod = PAYMENT_MOD_CREDIT;
         if (this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX) {
@@ -500,12 +493,20 @@ export class OperationRecapPage implements OnInit {
           // pass internet, illimix, allo, ...
           this.payWithCredit();
         }
-        this.followAnalyticsService.registerEventFollow(eventName, 'event', PAYMENT_MOD_CREDIT);
+        this.followAnalyticsService.registerEventFollow(
+          eventName,
+          'event',
+          PAYMENT_MOD_CREDIT
+        );
       }
       if (response.data && response.data.paymentMod === PAYMENT_MOD_OM) {
         this.paymentMod = PAYMENT_MOD_OM;
         this.openPinpad();
-        this.followAnalyticsService.registerEventFollow(eventName, 'event', PAYMENT_MOD_OM);
+        this.followAnalyticsService.registerEventFollow(
+          eventName,
+          'event',
+          PAYMENT_MOD_OM
+        );
       }
     });
     return await modal.present();
@@ -613,7 +614,10 @@ export class OperationRecapPage implements OnInit {
     const amount = this.passChoosen.passPromo ? +this.passChoosen.passPromo.tarif : +this.passChoosen.tarif;
     const msisdn = this.currentUserNumber;
     const receiver = this.recipientMsisdn;
-    const type = this.purchaseType === OPERATION_TYPE_PASS_INTERNET ? 'internet' : 'illimix';
+    const type =
+      this.purchaseType === OPERATION_TYPE_PASS_INTERNET
+        ? 'internet'
+        : 'illimix';
     const payload: BuyPassModel = {
       type,
       codeIN,
@@ -627,14 +631,21 @@ export class OperationRecapPage implements OnInit {
       montant: amount,
       ppi: codeIN,
     };
-    this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
-      (res: any) => {
-        this.transactionSuccessful(res, logInfos);
-      },
-      (err: any) => {
-        this.transactionFailure(err, logInfos);
-      }
-    );
+		switch (this.purchaseType) {
+			case OPERATION_ABONNEMENT_WIDO:
+				this.suscribeToWido(payload.receiver, payload.codeIN, logInfos)
+				break;
+			default:
+				this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
+					(res: any) => {
+						this.transactionSuccessful(res, logInfos);
+					},
+					(err: any) => {
+						this.transactionFailure(err, logInfos);
+					}
+				);
+				break;
+		}
   }
 
   buyPassUsage() {
@@ -762,7 +773,11 @@ export class OperationRecapPage implements OnInit {
     ].includes(this.purchaseType);
   }
 
-  sendFollowLogs(type: 'event' | 'error', purchaseType: string, logDetails: any) {
+  sendFollowLogs(
+    type: 'event' | 'error',
+    purchaseType: string,
+    logDetails: any
+  ) {
     let eventName;
     switch (purchaseType) {
       case OPERATION_TYPE_PASS_INTERNET:
@@ -783,13 +798,21 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_ENABLE_DALAL:
         eventName = 'Dalal_activation';
         break;
+      case OPERATION_ABONNEMENT_WIDO:
+        eventName = 'Achat_abonnement_wido';
+        break;
       default:
         break;
     }
-    if (this.opXtras && this.opXtras.fromPage === OPERATION_TYPE_BONS_PLANS) eventName += '_bons_plans';
+    if (this.opXtras && this.opXtras.fromPage === OPERATION_TYPE_BONS_PLANS)
+      eventName += '_bons_plans';
     eventName += type === 'event' ? '_Success' : '_Error';
     console.log('followSuccess', logDetails, 'op', purchaseType, eventName);
-    this.followAnalyticsService.registerEventFollow(eventName, type, logDetails);
+    this.followAnalyticsService.registerEventFollow(
+      eventName,
+      type,
+      logDetails
+    );
   }
 
   checkOMBalanceSuffiency(amount) {

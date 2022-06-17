@@ -26,7 +26,7 @@
       (click)="setPaymentChannel('ORANGE_MONEY')"
       *ngIf="(passIlliflex) || (!pass?.passPromo ? pass?.price_plan_index_om : pass?.passPromo?.price_plan_index_om)"
     >
-      <mat-radio-button [id]="'orange-money' | generateIdForTA" [checked]="selectedPaymentChannel === 'ORANGE_MONEY'">
+      <mat-radio-button *ngIf="!errorMsg" #omChoice [id]="'orange-money' | generateIdForTA" [checked]="selectedPaymentChannel === 'ORANGE_MONEY'" >
       </mat-radio-button>
       <div class="payment-mod-detail">
         <div
@@ -35,7 +35,9 @@
         >
           Orange Money
         </div>
-        <div class="balance-information"></div>
+        <div class="balance-information" *ngIf="!!errorMsg">
+					<span class="balance-title scb-text-gray">Solde Orange Money insuffisant</span>
+				</div>
       </div>
     </div>
   </div>
@@ -43,11 +45,12 @@
     class="scb-btn scb-btn-orange"
     (click)="validateChannel()"
     [id]="'btn-validate-payment-mod' | generateIdForTA"
-    [disabled]="false"
+    [disabled]="checkingAmount"
   >
     <span class="text"
       >Valider ({{passIlliflex ? passIlliflex?.amount : (!pass?.passPromo ? pass?.tarif : pass?.passPromo?.tarif)}}
       FCFA)</span
     >
+		<ion-spinner *ngIf="checkingAmount" name="crescent"></ion-spinner>
   </button>
 </div>

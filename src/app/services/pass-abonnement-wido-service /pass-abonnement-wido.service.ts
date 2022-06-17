@@ -17,6 +17,16 @@ export class PassAbonnementWidoService {
   }
 
   suscribeToWido(data: { msisdn: string; packId: number }) {
-    return this.http.post(`${suscriptionWidoEndpoint}/${data?.msisdn}?packId=${data.packId}`, null);
+    return this.http.post(
+      `${suscriptionWidoEndpoint}/${data?.msisdn}?packId=${data.packId}`,
+      null
+    );
+  }
+
+  suscribeToWidoByOMoney(data: { msisdn: string; packId: number }, omInfos: { pin: string, em: string, amount: string }) {
+    return this.http.post(
+      `${suscriptionWidoEndpoint}/${data?.msisdn}/omoney?packId=${data.packId}`,
+      omInfos
+    );
   }
 }
