@@ -290,7 +290,7 @@ export class DashboardService {
   }
 
   fetchFixedNumbers() {
-    return this.getAttachedNumbers().pipe(
+    return this.attachedNumbers().pipe(
       map((elements: any) => {
         let numbers = [];
         if (REGEX_FIX_NUMBER.test(SessionOem.MAIN_PHONE)) numbers.push(SessionOem.MAIN_PHONE);

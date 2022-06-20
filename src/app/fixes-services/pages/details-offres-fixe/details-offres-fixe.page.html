@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-			<ion-back-button mode="md" defaultHref="/" class="oem-back-button">
+			<ion-back-button mode="md" defaultHref="/fixes-services" class="oem-back-button">
         <img src="/assets/images/arrow-left.png" alt="icon" />
       </ion-back-button>
     </ion-buttons>
@@ -26,15 +26,10 @@
     <div class="header-image">
       <img-loader class="icone" [src]="pageInfos?.banniere"
         fallbackUrl="/assets/images/pass-internet-page-header.svg" useImg></img-loader>
-					<div class="select-ligne-block" (click)="openLinesModal()" >
-						<span class="ligne-title scb-text-gray">Choisir la ligne</span>
-						<span class="choosen-ligne">{{phone|phoneNumberDisplay}}</span>
-						<ion-icon name="chevron-down-outline" class="ligne-icon"></ion-icon>
-					</div>
     </div>
 		<div class="body">
 			<div class="list-offer">
-				<app-offre-service-card-v2 *ngFor="let offer of listOffres" [phone]="phone" [currentPhoneOffer]="currentPhoneOffer"  [service]="offer" [style]="'v2'" ></app-offre-service-card-v2>
+				<app-offre-service-card-v2 *ngFor="let offer of listOffres" [service]="offer" [style]="'v2'" ></app-offre-service-card-v2>
 				<ion-spinner class="spinner" *ngIf="loadingServices" name="crescent"></ion-spinner>
 				<span class="error-msg" *ngIf="errorMsg && !loadingServices">
 					{{errorMsg}}

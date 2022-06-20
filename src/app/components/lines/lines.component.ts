@@ -35,61 +35,62 @@ export class LinesComponent implements OnInit {
   constructor(private modalController: ModalController, private dashbServ: DashboardService, private authServ: AuthenticationService) {}
 
   ngOnInit() {
-    this.isProcessing = true;
-    this.dashbServ
-      .attachedNumbers()
-      .pipe(
-        switchMap((elements: any) => {
-          let numbers = [];
-          let oemSouscriptions: Observable<any>[] = [];
-          oemSouscriptions.push(this.authServ.getSubscription(SessionOem.MAIN_PHONE));
-          numbers.push(SessionOem.MAIN_PHONE);
+			this.isProcessing = true;
+			this.dashbServ
+				.attachedNumbers()
+				.pipe(
+					switchMap((elements: any) => {
+						let numbers = [];
+						let oemSouscriptions: Observable<any>[] = [];
+						oemSouscriptions.push(this.authServ.getSubscription(SessionOem.MAIN_PHONE));
+						numbers.push(SessionOem.MAIN_PHONE);
 
-          elements.forEach((element: any) => {
-            const msisdn = '' + element.msisdn;
-            oemSouscriptions.push(this.authServ.getSubscription(msisdn));
-            numbers.push(msisdn);
-          });
-          return forkJoin(oemSouscriptions).pipe(
-            map((results: SubscriptionModel[]) => {
-              let fNumbers = [];
-              results.forEach((sub: SubscriptionModel, i: number) => {
-                const sousc = sub;
-                if (this.phoneType === MSISDN_TYPE.FIXE) {
-                  if (this.isFixeNumber(numbers[i], sousc)) {
-                    fNumbers.push({
-                      phone: numbers[i],
-                      codeClient: sub.clientCode
-                    });
-                  }
-                } else if (this.phoneType === MSISDN_TYPE.MOBILE) {
-                  if (this.isMobilePostpaidOrHybrid(sub, numbers[i])) {
-                    fNumbers.push({
-                      phone: numbers[i],
-                      codeClient: sub.clientCode
-                    });
-                  }
-                } else {
-                  if (this.isLineNumber(numbers[i], sousc))
-                    fNumbers.push({
-                      phone: numbers[i],
-                      codeClient: sub.clientCode
-                    });
-                }
-              });
-              if (fNumbers.length && !this.phone) {
-                this.phone = fNumbers[0];
-              }
-              this.isProcessing = false;
-              return fNumbers;
-            })
-          );
-        }),
-        tap(res => {
-          this.phones = res;
-        })
-      )
-      .subscribe();
+						elements.forEach((element: any) => {
+							const msisdn = '' + element.msisdn;
+							oemSouscriptions.push(this.authServ.getSubscription(msisdn));
+							numbers.push(msisdn);
+						});
+						return forkJoin(oemSouscriptions).pipe(
+							map((results: SubscriptionModel[]) => {
+								let fNumbers = [];
+								results.forEach((sub: SubscriptionModel, i: number) => {
+									const sousc = sub;
+									if (this.phoneType === MSISDN_TYPE.FIXE) {
+										if (this.isFixeNumber(numbers[i], sousc)) {
+											fNumbers.push({
+												phone: numbers[i],
+												codeClient: sub.clientCode,
+												souscription: sousc
+											});
+										}
+									} else if (this.phoneType === MSISDN_TYPE.MOBILE) {
+										if (this.isMobilePostpaidOrHybrid(sub, numbers[i])) {
+											fNumbers.push({
+												phone: numbers[i],
+												codeClient: sub.clientCode
+											});
+										}
+									} else {
+										if (this.isLineNumber(numbers[i], sousc))
+											fNumbers.push({
+												phone: numbers[i],
+												codeClient: sub.clientCode
+											});
+									}
+								});
+								if (fNumbers.length && !this.phone) {
+									this.phone = fNumbers[0];
+								}
+								this.isProcessing = false;
+								return fNumbers;
+							})
+						);
+					}),
+					tap(res => {
+						this.phones = res;
+					})
+				)
+				.subscribe();
   }
 
   isMobilePostpaidOrHybrid(subscription: SubscriptionModel, msisdn: string) {

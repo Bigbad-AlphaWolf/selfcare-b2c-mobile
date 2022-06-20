@@ -15,7 +15,7 @@ import {
   OPERATION_CHANGE_PIN_OM,
   OPERATION_CREATE_PIN_OM,
   OPERATION_UNBLOCK_OM_ACCOUNT,
-  OPERATION_RESET_PIN_OM, OPERATION_SEE_SOLDE_XEWEUL, OPERATION_ABONNEMENT_WIDO, FIXES_SERVICES_PAGE
+  OPERATION_RESET_PIN_OM, OPERATION_SEE_SOLDE_XEWEUL, OPERATION_ABONNEMENT_WIDO, FIXES_SERVICES_PAGE, OFFRES_FIXES_SERVICES_PAGE
 } from 'src/shared';
 import {PageHeader} from '../models/page-header.model';
 import {OPERATION_RAPIDO, OPERATION_WOYOFAL, OPERATION_XEWEUL} from './operations.constants';
@@ -131,6 +131,12 @@ export const titles: PageHeader[] = [
     title: 'Offres fixes',
     subTtile: 'Offres fixes',
 		banniere: `${IMAGES_DIR_PATH}/pass-internet-banniere.png`
+  },
+  {
+    typeOperation: OFFRES_FIXES_SERVICES_PAGE,
+    title: 'Offres fixes',
+    subTtile: 'Offres fixes',
+		banniere: `${IMAGES_DIR_PATH}/details-offres-fixes.svg`
   }
 ];
 

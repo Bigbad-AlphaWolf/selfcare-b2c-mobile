@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: FixesServicesPage
+  },
+  {
+    path: 'details-offres-fixe',
+    loadChildren: () => import('./pages/details-offres-fixe/details-offres-fixe.module').then( m => m.DetailsOffresFixePageModule)
   }
 ];
 
