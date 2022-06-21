@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { FIXES_SERVICES_PAGE, HUB_ACTIONS, MSISDN_TYPE, SubscriptionModel } from 'src/shared';
+import { SuiviConsoLigneComponent } from 'src/shared/suivi-conso-ligne/suivi-conso-ligne.component';
 import { LinesComponent } from '../components/lines/lines.component';
 import { OffreService } from '../models/offre-service.model';
 import { PageHeader } from '../models/page-header.model';
@@ -17,7 +18,7 @@ import { getPageHeader } from '../utils/title.util';
   templateUrl: './fixes-services.page.html',
   styleUrls: ['./fixes-services.page.scss'],
 })
-export class FixesServicesPage implements OnInit {
+export class FixesServicesPage implements OnInit, AfterViewInit {
 	pageInfos: PageHeader;
 	loadingServices: boolean;
 	servicesHasError: boolean;
@@ -26,6 +27,7 @@ export class FixesServicesPage implements OnInit {
 	currentPhoneOffer: SubscriptionModel;
 	isInitRequests: boolean;
 	errorMsg: string;
+	@ViewChild(SuiviConsoLigneComponent) suiviConsoFixe: SuiviConsoLigneComponent;
   constructor(private operationService: OperationService, private modalController: ModalController, private dashboardService: DashboardService,
 		private authServ: AuthenticationService) { }
 
@@ -34,6 +36,11 @@ export class FixesServicesPage implements OnInit {
 		//this.getServices();
 		this.fetchFixNumbers();
   }
+
+	ngAfterViewInit(): void {
+		console.log('suiviConsoFixe', this.suiviConsoFixe);
+
+	}
 
 	getServices() {
 		this.loadingServices = true;
@@ -68,10 +75,12 @@ export class FixesServicesPage implements OnInit {
       },
     });
     modal.onDidDismiss().then((response) => {
+
       if (response?.data) {
 				console.log('response', response);
-
         this.phone = response.data.phone;
+				console.log('suiviConsoFixe', this.suiviConsoFixe);
+				this.suiviConsoFixe.getUserConsoInfos(this.phone);
 				this.currentPhoneOffer = response.data?.souscription;
 
       }
@@ -82,13 +91,10 @@ export class FixesServicesPage implements OnInit {
 
 	async fetchFixNumbers() {
     this.loadingServices = true;
-		console.log('called');
-
     const listFixeLinked = await this.dashboardService
       .fetchFixedNumbers()
       .pipe(
         tap((numbers) => {
-          // numbers = ['338239614'];
 					console.log('number', numbers);
 					this.loadingServices = false;
         }),

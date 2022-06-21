@@ -1,41 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CustomContact } from 'src/app/models/customized-contact.model';
 import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
-import {
-  NewUserConsoModel,
-  ProcessedConsoModel,
-} from 'src/app/services/user-cunsommation-service/user-conso-service.index';
+import { NewUserConsoModel, ProcessedConsoModel } from 'src/app/services/user-cunsommation-service/user-conso-service.index';
 import { UserConsoService } from 'src/app/services/user-cunsommation-service/user-conso.service';
-import { COUNTER_TYPE_FELLOW } from 'src/shared';
-@Component({
-  selector: 'app-new-details-conso',
-  templateUrl: './new-details-conso.component.html',
-  styleUrls: ['./new-details-conso.component.scss'],
-})
-export class NewDetailsConsoComponent implements OnInit {
-  loadingConso: boolean;
-  userConso;
-  COUNTER_TYPE_FELLOW = COUNTER_TYPE_FELLOW;
+import { COUNTER_TYPE_FELLOW } from '..';
 
-  constructor(
-    private consoService: UserConsoService,
-    private sargalService: SargalService,
-    private contactService: ContactsService,
-    private recentsService: RecentsService
-  ) {}
+@Component({
+  selector: 'app-suivi-conso-ligne',
+  templateUrl: './suivi-conso-ligne.component.html',
+  styleUrls: ['./suivi-conso-ligne.component.scss'],
+})
+export class SuiviConsoLigneComponent implements OnInit {
+	@Input() ligneNumber: string;
+	@Input() hideCategoryTitle: boolean
+	loadingConso: boolean;
+	userConso: any;
+
+  constructor(private consoService: UserConsoService, private sargalService: SargalService, private recentsService : RecentsService,
+		private contactService: ContactsService) { }
 
   ngOnInit() {
-    this.getUserConsoInfos();
-  }
+		this.getUserConsoInfos();
+	}
 
-  getUserConsoInfos(event?) {
+	getUserConsoInfos(msisdn = this.ligneNumber) {
     this.loadingConso = true;
     this.consoService
-      .getUserCunsomation()
+      .getUserCunsomation(msisdn)
       .pipe(
         switchMap(resp => {
           return this.sargalService.getFellowsMsisdn().pipe(
@@ -47,7 +42,6 @@ export class NewDetailsConsoComponent implements OnInit {
                 fell['counterName'] = fellow?.name;
                 mappedFellowArray.push(fell)
               }
-              console.log('mappedFellowArray', mappedFellowArray);
               return this.contactService.getAllContacts().pipe(
                 map((contacts: CustomContact[]) => {
                   const fellowMsisdnWithContacts = this.recentsService.mapRecentsToContacts(mappedFellowArray, contacts);
@@ -72,23 +66,16 @@ export class NewDetailsConsoComponent implements OnInit {
         tap(res => {
           this.userConso = this.processDetailsConso(res);
           this.loadingConso = false;
-          event ? event.target.complete() : '';
         }),
         catchError(err => {
           this.loadingConso = false;
-          event ? event.target.complete() : '';
           return throwError(err);
         })
       )
       .subscribe();
   }
 
-  toCamelCase(categoryName: string) {
-    let first = categoryName.substr(0, 1).toUpperCase();
-    return first + categoryName.substr(1).toLowerCase();
-  }
-
-  processDetailsConso(conso: NewUserConsoModel[]) {
+	processDetailsConso(conso: NewUserConsoModel[]) {
     const categoriesWithDuplicates = conso.map(
       (consoItem) => consoItem.typeCompteur
     );
@@ -104,4 +91,6 @@ export class NewDetailsConsoComponent implements OnInit {
     }
     return processedConso;
   }
+
+
 }

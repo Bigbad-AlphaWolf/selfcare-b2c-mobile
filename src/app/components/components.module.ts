@@ -35,6 +35,8 @@ import { CardXeweulNameModalComponent } from './card-xeweul-name-modal/card-xewe
 import { RattachByOtpCodeComponent } from '../pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
 import { ItemPassWidoComponent } from './item-pass-wido/item-pass-wido.component';
 import { ItemFavoritePassComponent } from './item-favorite-pass/item-favorite-pass.component';
+import { InfosLigneFixeComponent } from 'src/shared/infos-ligne-fixe/infos-ligne-fixe.component';
+import { SuiviConsoLigneComponent } from 'src/shared/suivi-conso-ligne/suivi-conso-ligne.component';
 @NgModule({
   declarations: [
     ItemOfferPlanComponent,
@@ -67,6 +69,8 @@ import { ItemFavoritePassComponent } from './item-favorite-pass/item-favorite-pa
     RattachByOtpCodeComponent,
     ItemPassWidoComponent,
     ItemFavoritePassComponent,
+		InfosLigneFixeComponent,
+		SuiviConsoLigneComponent
   ],
   imports: [
     CommonModule,
@@ -108,6 +112,8 @@ import { ItemFavoritePassComponent } from './item-favorite-pass/item-favorite-pa
     RattachByOtpCodeComponent,
     ItemPassWidoComponent,
     ItemFavoritePassComponent,
+		InfosLigneFixeComponent,
+		SuiviConsoLigneComponent
   ],
   entryComponents: [HistorikTransactionByTypeModalComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

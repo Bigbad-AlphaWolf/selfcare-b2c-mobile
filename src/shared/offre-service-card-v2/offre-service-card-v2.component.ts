@@ -19,11 +19,10 @@ import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange
 import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
 import {
   OPERATION_TYPE_PASS_USAGE,
-  OPERATION_TYPE_PAY_BILL,
   OPERATION_WOYOFAL,
 } from 'src/app/utils/operations.constants';
 import { isExternallURL } from 'src/app/utils/utils';
-import { OPERATION_CHECK_OM_ACCOUNT_STATUS, OPERATION_PAY_ORANGE_BILLS, OPERATION_RATTACH_NUMBER, OPERATION_SHARE_THE_APP, OPERATION_TYPE_MERCHANT_PAYMENT, SubscriptionModel } from '..';
+import { INFOS_ABONNEMENT_FIXE, OPERATION_CHECK_OM_ACCOUNT_STATUS, OPERATION_RATTACH_NUMBER, OPERATION_SHARE_THE_APP, OPERATION_TYPE_MERCHANT_PAYMENT, SubscriptionModel } from '..';
 import { MerchantPaymentCodeComponent } from '../merchant-payment-code/merchant-payment-code.component';
 import { OmStatusVisualizationComponent } from '../om-status-visualization/om-status-visualization.component';
 import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
@@ -149,6 +148,9 @@ export class OffreServiceCardV2Component implements OnInit {
 				break;
 			case OPERATION_RATTACH_NUMBER:
     		this.bsService.openRattacheNumberModal();
+				break;
+			case INFOS_ABONNEMENT_FIXE:
+    		this.bsService.openInfosLigneFixe(this.phone, this.currentPhoneOffer);
 				break;
 			default:
 				break;

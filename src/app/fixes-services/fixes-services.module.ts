@@ -9,12 +9,14 @@ import { FixesServicesPageRoutingModule } from './fixes-services-routing.module'
 import { FixesServicesPage } from './fixes-services.page';
 import { SharedModule } from 'src/shared/shared.module';
 import { IonicImageLoader } from 'ionic-image-loader';
+import { ComponentsModule } from '../components/components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+		ComponentsModule,
 		SharedModule,
 		IonicImageLoader,
     FixesServicesPageRoutingModule

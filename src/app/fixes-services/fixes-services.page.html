@@ -40,6 +40,13 @@
 					{{errorMsg}}
 				</span>
 			</div>
+
+			<div *ngIf="phone" class="conso-fixe">
+				<div class="title">
+					Suivi Conso
+				</div>
+				<app-suivi-conso-ligne #suiviConsoFixe [hideCategoryTitle]="true"  [ligneNumber]="phone" ></app-suivi-conso-ligne>
+			</div>
 		</div>
   </div>
 </ion-content>

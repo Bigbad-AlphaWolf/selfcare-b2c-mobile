@@ -64,12 +64,24 @@
 			display: flex;
 			flex-wrap: wrap;
 			gap: 15px;
+			margin-bottom: 40px;
 			app-offre-service-card-v2 {
 				width: 47%;
 			}
 			.error-msg {
 				color: $gray;
 				font-size: 15px;
+			}
+		}
+		.conso-fixe {
+			.title {
+				font-family: HelveticaNeueLTStd-Bd;
+				font-size: 20px;
+				font-weight: bold;
+				font-stretch: normal;
+				font-style: normal;
+				line-height: 1.5;
+				margin-bottom: 20px;
 			}
 		}
 	}

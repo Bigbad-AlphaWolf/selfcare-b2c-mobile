@@ -647,8 +647,7 @@ export class DashboardService {
     }
   }
 
-  getFixPostpaidInfos() {
-    const msisdn = this.getCurrentPhoneNumber();
+  getFixPostpaidInfos(msisdn = this.getCurrentPhoneNumber()) {
     return this.http.get(`${ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT}/${msisdn}/status`, {
       responseType: 'text'
     });
