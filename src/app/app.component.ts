@@ -215,7 +215,11 @@ export class AppComponent {
         '/parrainage': ParrainagePage,
         '/bonplan': MyOfferPlansPage,
         '/changement-formule/:codeFormule': TransfertHubServicesPage,
-        '/changement-formule': TransfertHubServicesPage
+        '/changement-formule': TransfertHubServicesPage,
+        '/payer-sonatel': TransfertHubServicesPage,
+        '/payer-teranga': TransfertHubServicesPage,
+        '/payer-sonatel/:msisdn': TransfertHubServicesPage,
+        '/payer-teranga/:msisdn': TransfertHubServicesPage,
       })
       .subscribe(
         matched => {
