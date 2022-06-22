@@ -390,6 +390,10 @@ const routes: Routes = [
   {
     path: 'new-select-beneficiary',
     loadChildren: () => import('./new-select-beneficiary/new-select-beneficiary.module').then( m => m.NewSelectBeneficiaryPageModule)
+  },
+  {
+    path: 'fixes-services',
+    loadChildren: () => import('./fixes-services/fixes-services.module').then( m => m.FixesServicesPageModule)
   }
 ];
 

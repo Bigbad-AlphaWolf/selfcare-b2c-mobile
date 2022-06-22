@@ -68,16 +68,6 @@ export class DashboardPostpaidFixePage implements OnInit {
     this.banniereServ.getListBanniereByFormuleByZone().subscribe((res: any) => {
       this.listBanniere = res;
     });
-    this.dashbordServ
-      .getFixPostpaidInfos()
-      .pipe(
-        tap((status: string) => {
-          if (status === 'ACTIVATED') {
-            this.isNumberActivated = true;
-          }
-        })
-      )
-      .subscribe();
     this.getBordereau();
   }
 

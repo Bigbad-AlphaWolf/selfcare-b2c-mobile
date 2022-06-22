@@ -104,3 +104,7 @@ export function getCountryInfos(phoneNumber: string) {
       break;
   }
 }
+
+export function isExternallURL(url: string) {
+	return url.startsWith("https://") || url.startsWith("http://")
+}

@@ -20,6 +20,7 @@ import {
   OPERATION_TYPE_PASS_VOYAGE,
   OPERATION_TYPE_RECHARGE_CREDIT,
 	STEPS_ACCESS_BY_OTP,
+	SubscriptionModel,
 } from 'src/shared';
 import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
 import { RattachNumberModalComponent } from 'src/app/pages/rattached-phones-number/components/rattach-number-modal/rattach-number-modal.component';
@@ -44,6 +45,7 @@ import {XeweulSoldeComponent} from '../../components/counter/xeweul-solde/xeweul
 import { TypePhoneNumberManuallyComponent } from 'src/app/new-registration/components/type-phone-number-manually/type-phone-number-manually.component';
 import { NavigationExtras, Router } from '@angular/router';
 import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
+import { InfosLigneFixeComponent } from 'src/shared/infos-ligne-fixe/infos-ligne-fixe.component';
 
 @Injectable({
   providedIn: 'root',
@@ -566,4 +568,18 @@ export class BottomSheetService {
     });
     return await modal.present();
 	}
+
+	async openInfosLigneFixe(ligneNumber: string, customerOfferInfos: SubscriptionModel) {
+    const modal = await this.modalCtrl.create({
+      component: InfosLigneFixeComponent,
+      componentProps: {
+        ligneNumber,
+				customerOfferInfos,
+				showClose: true
+      },
+      cssClass: 'select-recipient-modal',
+    });
+
+    return await modal.present();
+  }
 }

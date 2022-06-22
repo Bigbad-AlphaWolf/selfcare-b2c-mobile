@@ -73,6 +73,9 @@ export const OPERATION_PAY_ORANGE_BILLS = 'PAY_ORANGE_BILLS';
 export const OPERATION_UNBLOCK_OM_ACCOUNT = 'UNBLOCK_OM_ACCOUNT';
 export const OPERATION_RESET_PIN_OM = 'RESET_OM_ACCOUNT';
 export const OPERATION_ABONNEMENT_WIDO = 'ABONNEMENT_WIDO';
+export const FIXES_SERVICES_PAGE = 'FIXES_SERVICES_PAGE';
+export const OFFRES_FIXES_SERVICES_PAGE = 'OFFRES_FIXES_SERVICES_PAGE';
+export const INFOS_ABONNEMENT_FIXE = 'INFOS_FIXES';
 
 export const PAYMENT_MOD_CREDIT = 'CREDIT';
 export const PAYMENT_MOD_OM = 'ORANGE_MONEY';
@@ -108,6 +111,8 @@ export const INSTAGRAM_URL = 'https://instagram.com/orange_senegal?igshid=7xv78q
 export const FIND_AGENCE_EXTERNAL_URL = 'https://agence.orange.sn/';
 export const CHECK_ELIGIBILITY_EXTERNAL_URL = 'https://www.orange.sn/test-fibre';
 export const VALID_IMG_EXTENSIONS = ['jpg', 'jpeg', 'png'];
+
+export const COUNTER_TYPE_FELLOW = "Numéros illimités";
 
 export const CREDIT = 'crédit';
 export const BONUS = 'bonus';
@@ -1299,6 +1304,8 @@ export enum HUB_ACTIONS {
   ACHAT = 'HUB_ACHAT',
   TRANSFERT = 'HUB_TRANSFER',
   FACTURES = 'HUB_BILLS',
+  FIXES = 'HUB_FIXE',
+  OFFRES_FIXES = 'HUB_OFFRES_FIXE',
 }
 
 export enum TYPE_ACTION_ON_BANNER {
