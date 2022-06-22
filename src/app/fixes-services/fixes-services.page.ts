@@ -1,16 +1,16 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { ModalController, NavController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { FIXES_SERVICES_PAGE, HUB_ACTIONS, MSISDN_TYPE, SubscriptionModel } from 'src/shared';
+import { FIXES_SERVICES_PAGE, HUB_ACTIONS, INFOS_ABONNEMENT_FIXE, MSISDN_TYPE, SubscriptionModel } from 'src/shared';
 import { SuiviConsoLigneComponent } from 'src/shared/suivi-conso-ligne/suivi-conso-ligne.component';
 import { LinesComponent } from '../components/lines/lines.component';
 import { OffreService } from '../models/offre-service.model';
 import { PageHeader } from '../models/page-header.model';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { OperationService } from '../services/oem-operation/operation.service';
+import { OPERATION_TYPE_PAY_BILL } from '../utils/operations.constants';
 import { getPageHeader } from '../utils/title.util';
 
 @Component({
@@ -50,6 +50,9 @@ export class FixesServicesPage implements OnInit, AfterViewInit {
 				console.log('res', res);
 				this.loadingServices = false;
 				this.listOffres = res;
+				if(!this.phone) {
+					this.removeOfferServicesWhereFixeNumberRequired();
+				}
         //this.followAnalyticsService.registerEventFollow(followEvent, 'event', this.currentPhone);
       }),
 			catchError( err => {
@@ -104,16 +107,21 @@ export class FixesServicesPage implements OnInit, AfterViewInit {
         }))
       .toPromise();
 		if(listFixeLinked.length) {
-			this.getServices();
 			this.phone = listFixeLinked[0];
 			this.getSubscription(this.phone);
-		} else {
-			this.errorMsg = 'Aucune Ligne Fixe présente'
 		}
+		this.getServices();
+
   }
 
 	async getSubscription(number: string){
 		this.currentPhoneOffer = await this.authServ.getSubscription(number).toPromise();
+	}
+
+	removeOfferServicesWhereFixeNumberRequired() {
+		this.listOffres =	this.listOffres.filter((elt) => {
+			return elt.code !== OPERATION_TYPE_PAY_BILL && elt.code !== INFOS_ABONNEMENT_FIXE
+		})
 	}
 
 }

@@ -130,7 +130,7 @@ export const titles: PageHeader[] = [
     typeOperation: FIXES_SERVICES_PAGE,
     title: 'Offres fixes',
     subTtile: 'Offres fixes',
-		banniere: `${IMAGES_DIR_PATH}/pass-internet-banniere.png`
+		banniere: `${IMAGES_DIR_PATH}/offre-fixe-banner.svg`
   },
   {
     typeOperation: OFFRES_FIXES_SERVICES_PAGE,
