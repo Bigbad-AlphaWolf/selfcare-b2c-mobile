@@ -297,7 +297,7 @@ export class NewPinpadModalPage implements OnInit {
       .pipe(
         catchError((er: HttpErrorResponse) => {
           if (er.status === 401) this.modalController.dismiss();
-          return of(er);
+          return throwError(er);
         })
       )
       .subscribe(async omUser => {
