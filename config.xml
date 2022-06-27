@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-packageName="com.orange.myorange.osn" id="com.orange.mobile.myorangesn" ios-CFBundleIdentifier="com.orange.mobile.myorangesn" version="6.6.5" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-packageName="com.orange.myorange.osn" id="com.orange.mobile.myorangesn" ios-CFBundleIdentifier="com.orange.mobile.myorangesn" version="7.0.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Orange Et Moi</name>
     <description>Tout Orange En Un Click</description>
     <author email="serviceclient@orange-sonatel.com" href="https://orange.sn/">Orange Sonatel Team</author>
@@ -36,6 +36,7 @@
             <application android:networkSecurityConfig="@xml/network_security_config" />
             <application android:usesCleartextTraffic="true" />
         </edit-config>
+        <custom-preference name="android-manifest/application/activity/@android:exported" value="true" />
         <custom-preference delete="true" name="android-manifest/uses-feature[@android:name='android.hardware.camera']" />
         <resource-file src="resources/android/xml/network_security_config.xml" target="app/src/main/res/xml/network_security_config.xml" />
         <allow-intent href="market:*" />
