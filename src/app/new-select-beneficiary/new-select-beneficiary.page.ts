@@ -92,6 +92,7 @@ export class NewSelectBeneficiaryPage implements OnInit {
 					this.getRecents();
 					res.forEach( item => {
 						if ( item.numbers.length > 1 ) {
+							item.numbers = [...new Set(item.numbers)];
 							const contacts: ContactOem[] = item.numbers.map( elt => {
 								return { displayName: item.displayName, phoneNumber: elt, country: getCountryInfos(elt), formatedPhoneNumber: this.formatPhoneNumber(elt), thumbnail: item.thumbnail };
 							} );
