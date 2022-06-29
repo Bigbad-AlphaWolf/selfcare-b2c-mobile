@@ -66,6 +66,9 @@ export class NewDetailsConsoComponent implements OnInit {
                   return of(resp);
                 })
               );
+            }),
+            catchError(err => {
+              return of(resp);
             })
           );
         }),

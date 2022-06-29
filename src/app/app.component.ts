@@ -151,7 +151,11 @@ export class AppComponent {
         '/bonplan': MyOfferPlansPage,
         '/access/:hmac': NewRegistrationPage,
         '/changement-formule/:codeFormule': TransfertHubServicesPage,
-        '/changement-formule': TransfertHubServicesPage
+        '/changement-formule': TransfertHubServicesPage,
+        '/payer-sonatel': TransfertHubServicesPage,
+        '/payer-teranga': TransfertHubServicesPage,
+        '/payer-sonatel/:msisdn': TransfertHubServicesPage,
+        '/payer-teranga/:msisdn': TransfertHubServicesPage,
       })
       .subscribe(
         matched => {

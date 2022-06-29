@@ -194,7 +194,7 @@ export class AuthInterceptorService implements HttpInterceptor {
           if (err instanceof HttpErrorResponse) {
             if (err.status === 401 && !checkUrlMatchOM(err.url)) {
               that.authServ.cleanCache();
-              that.router.navigate(['login']);
+              that.router.navigate(['']);
             }
             if (err.status === 403) {
               // check if token is expired, if yes go to login page

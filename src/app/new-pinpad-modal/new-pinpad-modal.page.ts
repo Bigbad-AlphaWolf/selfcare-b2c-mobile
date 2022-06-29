@@ -300,7 +300,7 @@ export class NewPinpadModalPage implements OnInit {
       .pipe(
         catchError((er: HttpErrorResponse) => {
           if (er.status === 401) this.modalController.dismiss();
-          return of(er);
+          return throwError(er);
         })
       )
       .subscribe(async omUser => {
@@ -335,7 +335,7 @@ export class NewPinpadModalPage implements OnInit {
                   console.log('errrror check biometric rejected', err);
                 });
               console.log('face Matching', faceMatched);
-              const omStoredInfos = eval(ls.get(FACE_ID_OM_INFOS));
+              const omStoredInfos = ls.get(FACE_ID_OM_INFOS);
               const successRegex = 'success';
               if (faceMatched?.toLowerCase().includes(successRegex)) {
                 this.processPinOmUser(omStoredInfos.pin, true);
