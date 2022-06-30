@@ -127,7 +127,7 @@
           [checked]="isBiometricAvailable && userBiometricStatus === FACE_ID_PERMISSION_ALLOWED"></ion-toggle>
       </div>
     </div>
-    <div class="item-option" [id]="'about-the-app-entry' | generateIdForTA" (click)="goToAbout()">
+    <div class="item-option" *ngIf="0" [id]="'about-the-app-entry' | generateIdForTA" (click)="goToAbout()">
       <div class="item-container">
         <img src="/assets/images/icons-mon-compte.png" alt="" class="option-img">
         <div class="option-text">

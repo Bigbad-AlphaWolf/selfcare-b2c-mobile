@@ -16,7 +16,7 @@ import {RapidoOperationPage} from '../rapido-operation/rapido-operation.page';
 import {OperationService} from 'src/app/services/oem-operation/operation.service';
 import {Router} from '@angular/router';
 import {OffreService} from 'src/app/models/offre-service.model';
-import {HUB_ACTIONS, OPERATION_TYPE_MERCHANT_PAYMENT} from 'src/shared';
+import {DEEPLINK_FIXE_BILL_BASE_URL, DEEPLINK_MOBILE_BILL_BASE_URL, HUB_ACTIONS, OPERATION_TYPE_MERCHANT_PAYMENT} from 'src/shared';
 import {OrangeMoneyService} from 'src/app/services/orange-money-service/orange-money.service';
 import {MerchantPaymentCodeComponent} from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import {PurchaseSetAmountPage} from 'src/app/purchase-set-amount/purchase-set-amount.page';
@@ -44,14 +44,21 @@ export class BillsHubPage implements OnInit {
     private operationService: OperationService,
     private modalController: ModalController,
     private orangeMoneyService: OrangeMoneyService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.getCompanies();
   }
 
-  getCompanies() {
+  async getCompanies() {
+    const deeplink = this.router.url;
+    if (deeplink.match(DEEPLINK_MOBILE_BILL_BASE_URL)) {
+      this.openPayBillModal(OPERATION_TYPE_TERANGA_BILL);
+    } else if (deeplink.match(DEEPLINK_FIXE_BILL_BASE_URL)) {
+      this.openPayBillModal(OPERATION_TYPE_PAY_BILL);
+    }
     this.onCompaniesError = false;
     this.loadingCompanies = true;
     this.operationService.getServicesByFormule(HUB_ACTIONS.FACTURES).subscribe(

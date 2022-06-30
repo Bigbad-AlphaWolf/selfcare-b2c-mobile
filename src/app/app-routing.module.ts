@@ -242,6 +242,16 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'payer-sonatel',
+    loadChildren: () => import('./pages/bills-hub/bills-hub.module').then(m => m.BillsHubPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'payer-teranga',
+    loadChildren: () => import('./pages/bills-hub/bills-hub.module').then(m => m.BillsHubPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'bill-amount',
     loadChildren: () => import('./pages/bill-amount/bill-amount.module').then(m => m.BillAmountPageModule),
     canActivate: [AuthGuard]
@@ -257,6 +267,16 @@ const routes: Routes = [
   },
   {
     path: 'bills',
+    loadChildren: () => import('./pages/orange-bills/orange-bills.module').then(m => m.OrangeBillsPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'payer-sonatel/:msisdn',
+    loadChildren: () => import('./pages/orange-bills/orange-bills.module').then(m => m.OrangeBillsPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'payer-teranga/:msisdn',
     loadChildren: () => import('./pages/orange-bills/orange-bills.module').then(m => m.OrangeBillsPageModule),
     canActivate: [AuthGuard]
   },

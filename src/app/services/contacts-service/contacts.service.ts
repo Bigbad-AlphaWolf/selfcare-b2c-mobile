@@ -122,13 +122,13 @@ export class ContactsService {
       .replace(/[\u0300-\u036f]/g, '');
     let result = formattedContact.filter(item => {
       return (
-        item.displayName.toLowerCase().includes(term.toLowerCase()) ||
-        item.displayName
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .includes(termWithoutAccent) ||
-        item.phoneNumber.toLowerCase().includes(termWithoutAccent.toLowerCase())
+        item?.displayName?.toLowerCase()?.includes(term.toLowerCase()) ||
+        item?.displayName
+          ?.toLowerCase()
+          ?.normalize('NFD')
+          ?.replace(/[\u0300-\u036f]/g, '')
+          ?.includes(termWithoutAccent) ||
+        item.phoneNumber?.toLowerCase()?.includes(termWithoutAccent.toLowerCase())
       );
     });
     if (!result.length && REGEX_NUMBER_OM.test(term)) {

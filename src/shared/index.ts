@@ -1433,3 +1433,5 @@ export enum STEPS_ACCESS_BY_OTP {
 export const PATH_ACCESS_BY_OTP = '/access/';
 
 export const RATTACHMENT_ERROR_MAX_COUNT = 3;
+export const DEEPLINK_MOBILE_BILL_BASE_URL = 'payer-teranga';
+export const DEEPLINK_FIXE_BILL_BASE_URL = 'payer-sonatel';
