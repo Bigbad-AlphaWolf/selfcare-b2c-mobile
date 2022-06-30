@@ -1,12 +1,12 @@
 <div class="story-container">
 <ion-spinner class="spinner" *ngIf="isLoading" name="crescent"></ion-spinner>
 		<ng-container *ngIf="story?.type !== 'VIDEO'">
-			<!--<img-loader #image [spinner]="isLoading" [data-src]="story?.storyContent | displayFileManagerImage" (error)="handleErrorLoading($event)" (load)="imageLoaded($event)" [imgAttributes]="imageAttributes" useImg ></img-loader>-->
 			<div class="error" *ngIf="hasErrorLoading">
 				Impossible de charger l'image
 			</div>
 			<div *ngIf="story?.storyContent" class="img-container">
-				<img #image appLazyLoad [inViewport]="isVisible" [src]="story?.storyContent | displayFileManagerImage" (error)="handleErrorLoading($event)" (load)="imageLoaded($event)" [customCache]="{fallbackUrl: '/assets/img/default.png'}" >
+				<img *ngIf="isWeb" #image appLazyLoad [inViewport]="isVisible" [src]="story?.storyContent | displayFileManagerImage" (error)="handleErrorLoading($event)" (load)="imageLoaded($event)" >
+				<img-loader *ngIf="!isWeb && isVisible" [spinner]="true"  [src]="story?.storyContent | displayFileManagerImageForImageLoader" (error)="handleErrorLoading($event)" (load)="imageLoaded($event)" fallbackUrl="assets/images/redo@2x.png" useImg> </img-loader>
 			</div>
 
 			<audio #audioOrVideo *ngIf="story?.audio && isVisible" class="hide" preload="metadata" (loadedmetadata)="getInfoMetaData($event)" (canplay)="canPlay($event)" autoplay>
