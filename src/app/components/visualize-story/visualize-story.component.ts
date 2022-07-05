@@ -4,11 +4,8 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
-  SimpleChange,
-  SimpleChanges,
   ViewChild
 } from '@angular/core';
 import { Platform } from '@ionic/angular';
@@ -48,15 +45,11 @@ export class VisualizeStoryComponent implements OnInit {
     private followAnalytics: FollowAnalyticsService,
     private dashService: DashboardService
   ) {
-    this.isWeb = platform.is("mobileweb");
+    this.isWeb = this.platform.is("mobileweb");
   }
 
   ngOnInit() {
     console.log("Init on nG");
-  }
-
-  loadMediaV2() {
-    console.log("image", this.image);
   }
 
   ngAfterViewInit() {}
