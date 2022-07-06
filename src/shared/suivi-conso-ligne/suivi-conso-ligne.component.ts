@@ -60,7 +60,10 @@ export class SuiviConsoLigneComponent implements OnInit {
                   return of(resp);
                 })
               );
-            })
+            }),
+						catchError(() => {
+							return of(resp);
+						})
           );
         }),
         tap(res => {
