@@ -1422,6 +1422,7 @@ export const LOCAL_STORAGE_KEYS = {
   IS_HMAC_FROM_OTP_VALID: 'isHmacOTPVallid',
   FAVORITE_PASS_DATA: 'favorite_pass_data',
   FAVORITE_PASS_CACHE_SET_TIME: 'favorite_pass_cache_set_time',
+  ENCRYPTION_KEY_WIDO_BY_OM: 'encryption_key_wido_by_om',
 };
 
 export enum STEPS_ACCESS_BY_OTP {
