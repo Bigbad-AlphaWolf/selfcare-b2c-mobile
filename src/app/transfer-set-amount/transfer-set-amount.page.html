@@ -1,12 +1,20 @@
 <ion-header>
   <ion-toolbar>
     <ion-back-button [id]="'goBackBtn' | generateIdForTA" defaultHref="/" mode="md" slot="start">
-        <img src="/assets/images/arrow-left.png" alt="icon" />
-      </ion-back-button>
+      <img src="/assets/images/arrow-left.png" alt="icon" />
+    </ion-back-button>
     <ion-title class="ion-no-padding">
-      <span class="title1">
-        Transfert d’argent
-      </span>
+      <ng-container [ngSwitch]="purchaseType">
+        <span class="title1" *ngSwitchCase="OPERATION_TYPE_SEDDO_BONUS">
+          Transfert de bonus
+        </span>
+        <span class="title1" *ngSwitchCase="OPERATION_TYPE_SEDDO_CREDIT">
+          Transfert de crédit
+        </span>
+        <span class="title1" *ngSwitchDefault>
+          Transfert d’argent
+        </span>
+      </ng-container>
     </ion-title>
     <ion-spinner *ngIf="loadingFees || loading" name="crescent" slot="end"></ion-spinner>
   </ion-toolbar>
@@ -15,9 +23,17 @@
 <ion-content>
   <ion-header class="ion-padding-start" collapse="condense">
     <ion-toolbar>
-      <span class="title">
-        Transfert d’argent
-      </span>
+      <ng-container [ngSwitch]="purchaseType">
+        <span class="title" *ngSwitchCase="OPERATION_TYPE_SEDDO_BONUS">
+          Transfert de bonus
+        </span>
+        <span class="title" *ngSwitchCase="OPERATION_TYPE_SEDDO_CREDIT">
+          Transfert de crédit
+        </span>
+        <span class="title" *ngSwitchDefault>
+          Transfert d’argent
+        </span>
+      </ng-container>
     </ion-toolbar>
   </ion-header>
   <div class="banniere-container">
@@ -30,7 +46,8 @@
         <div class="recipient">
           <div class="msisdn-id-block">
             <img [src]="country?.flagIcon" alt="" *ngIf="purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER">
-            <div class="rec-msisdn id-msisdn" *ngIf="purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER">({{ purchasePayload?.country?.callId}})</div>
+            <div class="rec-msisdn id-msisdn" *ngIf="purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER">({{
+              purchasePayload?.country?.callId}})</div>
             <div class="rec-msisdn">{{ purchasePayload?.recipientMsisdn | phoneNumberDisplay}}</div>
           </div>
           <div class="rec-name">{{purchasePayload?.recipientName}}</div>
@@ -81,11 +98,13 @@
         </div>
         <div class="cashout-fees-description scb-text-gray">Je prends en charge les frais de retrait</div>
       </div>
-      <div class="irt-reason-block" *ngIf="purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER" (click)="openReasonModal()">
+      <div class="irt-reason-block" *ngIf="purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER"
+        (click)="openReasonModal()">
         <span class="reason-title scb-text-gray">Raison</span>
         <span class="transfer-reason">{{ reason ? reason?.value : 'Choisir une raison'}}</span>
       </div>
-      <div class="toggle-tac-block" *ngIf="purchaseType !== OPERATION_TYPE_INTERNATIONAL_TRANSFER">
+      <div class="toggle-tac-block"
+        *ngIf="purchaseType !== OPERATION_TYPE_INTERNATIONAL_TRANSFER && purchaseType !== OPERATION_TYPE_SEDDO_BONUS && purchaseType !== OPERATION_TYPE_SEDDO_CREDIT">
         <span class="tac-title">Transfert avec code</span>
         <ion-toggle #transfertOMTypeToggle [disabled]="userHasNoOmAccount"
           (ionChange)="toggleTransferWithCode($event, amountInput.value)" [checked]="userHasNoOmAccount" slot="end">
@@ -104,7 +123,7 @@
       <div class="btn-container">
         <button [id]="'btn-validate-amount-transfert' | generateIdForTA" class="scb-btn scb-btn-full scb-btn-orange"
           (click)="goNext()"
-          [disabled]="!setAmountForm?.valid || checkingAmount || error || loadingFees || (purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER && !reason)">
+          [disabled]="!setAmountForm?.valid || checkingAmount || loadingFees || (purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER && !reason)">
           <span>Continuer ({{ totalAmount }} FCFA)</span>
           <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="checkingAmount"></mat-spinner>
         </button>

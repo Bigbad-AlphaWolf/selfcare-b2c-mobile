@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { NavigationExtras, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import {
   LoadingController,
@@ -21,6 +21,17 @@ import {
   BALANCE_INSUFFICIENT_ERROR,
   IRT_TRANSFER_REASONS,
   PAYMENT_MOD_OM,
+  OPERATION_TYPE_SEDDO_BONUS,
+  OPERATION_TYPE_SEDDO_CREDIT,
+  RECHARGEMENT_COMPTEUR_CODE,
+  BONUS_COMPTEUR_CODE,
+  BONUS_ALL_DEST_COMPTEUR_CODE,
+  TRANSFER_BONUS_CREDIT_FEE,
+  CREDIT_FEE_INSUFFICIENT_ERROR,
+  MIN_BONUS_REMAINING_AMOUNT,
+  BONUS_INSUFFICIENT_ERROR,
+  PAYMENT_MOD_BONUS,
+  PAYMENT_MOD_CREDIT,
 } from '../../../src/shared';
 import { FeeModel } from '../services/orange-money-service';
 import { FeesService } from '../services/fees/fees.service';
@@ -32,6 +43,13 @@ import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { ModalSuccessModel } from '../models/modal-success-infos.model';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
 import { FaceIdRequestModalComponent } from 'src/shared/face-id-request-modal/face-id-request-modal.component';
+import { OperationService } from '../services/oem-operation/operation.service';
+import { TransfertBonnus } from '../services/dashboard-service';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
+import { UserConsoService } from '../services/user-cunsommation-service/user-conso.service';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { PinPadComponent } from 'src/shared/pin-pad/pin-pad.component';
 
 @Component({
   selector: 'app-transfer-set-amount',
@@ -56,6 +74,8 @@ export class TransferSetAmountPage implements OnInit {
   recipientLastname: string;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
+  OPERATION_TYPE_SEDDO_BONUS = OPERATION_TYPE_SEDDO_BONUS;
+  OPERATION_TYPE_SEDDO_CREDIT = OPERATION_TYPE_SEDDO_CREDIT;
   FEES_ERROR = FEES_ERROR;
   sending_fees_Info: {
     effective_fees: number;
@@ -81,8 +101,13 @@ export class TransferSetAmountPage implements OnInit {
     private ref: ChangeDetectorRef,
     private navController: NavController,
     private feeService: FeesService,
+    private operationService: OperationService,
     public loadingController: LoadingController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private dashboardService: DashboardService,
+    private authService: AuthenticationService,
+    private consoService: UserConsoService,
+    private followAnalyticsService: FollowAnalyticsService
   ) {}
 
   ngOnInit() {
@@ -93,8 +118,6 @@ export class TransferSetAmountPage implements OnInit {
     const isDeeplinkTransferOM = await this.checkTransferOMDeeplink();
     if (isDeeplinkTransferOM) return;
     this.purchasePayload = history.state;
-    console.log('from initFees', this.purchasePayload);
-
     if (this.purchasePayload && this.purchasePayload.purchaseType) {
       this.processInfosFromBeneficiaryPage();
     }
@@ -119,21 +142,15 @@ export class TransferSetAmountPage implements OnInit {
       };
       await this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE)
         .pipe(
-          switchMap((res) => {
+          switchMap(res => {
             return this.getOMTransferFees(OM_LABEL_SERVICES.TAF);
           })
         )
         .toPromise();
-      const msisdnHasOM = await this.omService
-        .checkUserHasAccount(msisdn)
-        .toPromise();
-      this.purchaseType = msisdnHasOM
-        ? OPERATION_TRANSFER_OM
-        : OPERATION_TRANSFER_OM_WITH_CODE;
+      const msisdnHasOM = await this.omService.checkUserHasAccount(msisdn).toPromise();
+      this.purchaseType = msisdnHasOM ? OPERATION_TRANSFER_OM : OPERATION_TRANSFER_OM_WITH_CODE;
       this.userHasNoOmAccount = !msisdnHasOM;
-      this.userHasNoOmAccount
-        ? this.initTransferWithCodeForm(amount)
-        : this.initForm(1, amount);
+      this.userHasNoOmAccount ? this.initTransferWithCodeForm(amount) : this.initForm(1, amount);
       this.onAmountChanged({ target: { value: amount } });
       this.ref.detectChanges();
       return 1;
@@ -142,75 +159,75 @@ export class TransferSetAmountPage implements OnInit {
   }
 
   async processInfosFromBeneficiaryPage() {
-    const checkRecipient = history.state.checkRecipient;
-    console.log('history.state', history.state);
-    if (checkRecipient) {
-      this.purchasePayload = history.state;
-      this.purchaseType = this.purchasePayload.purchaseType;
-      if (this.purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER) {
-        this.initForm(1000);
-        this.country = this.purchasePayload.country;
-        this.getOMTransferFees(this.country?.code).subscribe();
-        return;
-      }
-      this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE)
-        .pipe(
-          switchMap((res) => {
-            return this.getOMTransferFees(OM_LABEL_SERVICES.TAF);
-          })
-        )
-        .subscribe();
-      this.loading = true;
-      const msisdnHasOM = await this.omService
-        .checkUserHasAccount(this.purchasePayload.recipientMsisdn)
-        .pipe(
-          tap((_) => {
-            this.loading = false;
-          }),
-          catchError((_) => {
-            this.loading = false;
-            return of(true);
-          })
-        )
-        .toPromise();
-      this.purchaseType = msisdnHasOM
-        ? OPERATION_TRANSFER_OM
-        : OPERATION_TRANSFER_OM_WITH_CODE;
-      this.userHasNoOmAccount = !msisdnHasOM;
-      this.userHasNoOmAccount
-        ? this.initTransferWithCodeForm(1)
-        : this.initForm(1);
-      this.ref.detectChanges();
-      return 1;
+    this.purchasePayload = history.state;
+    this.purchaseType = this.purchasePayload.purchaseType;
+    if (this.purchaseType === OPERATION_TYPE_SEDDO_CREDIT) {
+      this.sending_fees_Info.effective_fees = TRANSFER_BONUS_CREDIT_FEE;
+      this.initForm(100);
+      return;
     }
-    return 0;
+    if (this.purchaseType === OPERATION_TYPE_SEDDO_BONUS) {
+      this.processTransferBonusInfos();
+      return;
+    }
+    if (this.purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER) {
+      this.initForm(1000);
+      this.country = this.purchasePayload.country;
+      this.getOMTransferFees(this.country?.code).subscribe();
+      return;
+    }
+    this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE)
+      .pipe(
+        switchMap(res => {
+          return this.getOMTransferFees(OM_LABEL_SERVICES.TAF);
+        })
+      )
+      .subscribe();
+    this.loading = true;
+    const msisdnHasOM = await this.omService
+      .checkUserHasAccount(this.purchasePayload.recipientMsisdn)
+      .pipe(
+        tap(_ => {
+          this.loading = false;
+        }),
+        catchError(_ => {
+          this.loading = false;
+          return of(true);
+        })
+      )
+      .toPromise();
+    this.purchaseType = msisdnHasOM ? OPERATION_TRANSFER_OM : OPERATION_TRANSFER_OM_WITH_CODE;
+    this.userHasNoOmAccount = !msisdnHasOM;
+    this.userHasNoOmAccount ? this.initTransferWithCodeForm(1) : this.initForm(1);
+    this.ref.detectChanges();
+    return 1;
+  }
+
+  processTransferBonusInfos() {
+    this.sending_fees_Info.effective_fees = TRANSFER_BONUS_CREDIT_FEE;
+    this.loadingFees = true;
+    this.operationService
+      .getTransferBonusMinMaxAmount()
+      .pipe(
+        tap(thresholds => {
+          this.initForm(thresholds.minTransferBonusAmount, null, thresholds.maxTransferBonusAmount);
+          this.loadingFees = false;
+        })
+      )
+      .subscribe();
   }
 
   initTransferWithCodeForm(initialValue?: number) {
     this.setAmountForm = this.fb.group({
       amount: [initialValue, [Validators.required, Validators.min(1)]],
-      recipientFirstname: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.pattern('[a-zA-Z ]*'),
-        ],
-      ],
-      recipientLastname: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(2),
-          Validators.pattern('[a-zA-Z ]*'),
-        ],
-      ],
+      recipientFirstname: ['', [Validators.required, Validators.minLength(3), Validators.pattern('[a-zA-Z ]*')]],
+      recipientLastname: ['', [Validators.required, Validators.minLength(2), Validators.pattern('[a-zA-Z ]*')]],
     });
   }
 
-  initForm(minValue: number, initialValue?: number) {
+  initForm(minValue: number, initialValue?: number, maxValue?: number) {
     this.setAmountForm = this.fb.group({
-      amount: [initialValue, [Validators.required, Validators.min(minValue)]],
+      amount: [initialValue, [Validators.required, Validators.min(minValue), Validators.max(maxValue)]],
     });
   }
 
@@ -223,59 +240,158 @@ export class TransferSetAmountPage implements OnInit {
     this.purchasePayload.sending_fees = this.sending_fees_Info.effective_fees;
     this.purchasePayload.sending_fees_Info = this.sending_fees_Info;
     this.purchasePayload.reason = this.reason?.value;
+    if (this.purchaseType === OPERATION_TYPE_SEDDO_CREDIT) {
+      this.transferCredit();
+      return;
+    }
+    if (this.purchaseType === OPERATION_TYPE_SEDDO_BONUS) {
+      this.transferBonus();
+      return;
+    }
     if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
-      this.purchasePayload.recipientFirstname =
-        this.setAmountForm.value['recipientFirstname'];
-      this.purchasePayload.recipientLastname =
-        this.setAmountForm.value['recipientLastname'];
+      this.purchasePayload.recipientFirstname = this.setAmountForm.value['recipientFirstname'];
+      this.purchasePayload.recipientLastname = this.setAmountForm.value['recipientLastname'];
     }
     this.checkOMBalanceSuffiency(this.totalAmount);
+  }
+
+  async transferCredit() {
+    this.checkingAmount = true;
+    this.consoService
+      .getUserCunsomation()
+      .pipe(
+        switchMap(async conso => {
+          this.checkingAmount = false;
+          const creditBalance = conso.find(c => c.codeCompteur === RECHARGEMENT_COMPTEUR_CODE)?.montantRestantBrut;
+          if (creditBalance - MIN_BONUS_REMAINING_AMOUNT < this.purchasePayload.amount) {
+            this.error = CREDIT_FEE_INSUFFICIENT_ERROR;
+            return of(conso);
+          }
+          const modal = await this.modalController.create({
+            component: PinPadComponent,
+            cssClass: 'pin-pad-modal',
+          });
+          modal.present();
+          const response = await modal.onDidDismiss();
+          const pin = response?.data;
+          if (!pin) return of(conso);
+          const transferPayload = {
+            msisdn: this.dashboardService.getCurrentPhoneNumber(),
+            msisdn2: this.purchasePayload?.recipientMsisdn,
+            pin,
+            amount: this.purchasePayload?.amount,
+          };
+          const transferRequestResponse = await this.dashboardService.transferCredit(transferPayload).pipe(
+            tap((res: any) => {
+              this.checkingAmount = false;
+              if (res.status === '200') {
+                const { pin, ...followDetails } = transferPayload;
+                this.openSuccessFailModal({
+                  paymentMod: PAYMENT_MOD_CREDIT,
+                  success: true,
+                  msisdnBuyer: transferPayload?.msisdn,
+                });
+                this.followAnalyticsService.registerEventFollow('Transfer_Credit_Success', 'event', followDetails);
+              } else {
+                this.error = res.message;
+                const followDetails = {
+                  code_error: res.status,
+                  msisdn: this.dashboardService.getCurrentPhoneNumber(),
+                  msisdn2: this.purchasePayload?.recipientMsisdn,
+                  message: this.error,
+                };
+                this.followAnalyticsService.registerEventFollow('Transfer_Credit_Error', 'error', followDetails);
+              }
+            })
+          ).toPromise();
+          return transferRequestResponse;
+        })
+      )
+      .subscribe();
+  }
+
+  transferBonus() {
+    this.checkingAmount = true;
+    const transfertbonusPayload: TransfertBonnus = {
+      amount: this.purchasePayload.amount,
+      dmsisdn: this.purchasePayload.recipientMsisdn,
+      smsisdn: this.dashboardService.getCurrentPhoneNumber(),
+    };
+    this.consoService
+      .getUserCunsomation()
+      .pipe(
+        switchMap(conso => {
+          const bonusBalance = conso.find(c => c.codeCompteur === BONUS_COMPTEUR_CODE)?.montantRestantBrut,
+            bonusTteDestBalance = conso.find(c => c.codeCompteur === BONUS_ALL_DEST_COMPTEUR_CODE)?.montantRestantBrut,
+            creditBalance = conso.find(c => c.codeCompteur === RECHARGEMENT_COMPTEUR_CODE)?.montantRestantBrut;
+          if (!creditBalance || creditBalance < TRANSFER_BONUS_CREDIT_FEE) {
+            this.checkingAmount = false;
+            this.error = CREDIT_FEE_INSUFFICIENT_ERROR;
+            return of(conso);
+          } else if (
+            (!bonusBalance && !bonusTteDestBalance) ||
+            bonusBalance + bonusTteDestBalance - MIN_BONUS_REMAINING_AMOUNT < this.purchasePayload.amount
+          ) {
+            this.checkingAmount = false;
+            this.error = BONUS_INSUFFICIENT_ERROR;
+            return of(conso);
+          }
+          return this.dashboardService.transferBonus(transfertbonusPayload).pipe(
+            tap((res: any) => {
+              if (res.code === '0') {
+                this.followAnalyticsService.registerEventFollow('Transfer_Bonus_Success', 'event', transfertbonusPayload);
+                this.openSuccessFailModal({
+                  paymentMod: PAYMENT_MOD_BONUS,
+                  success: true,
+                  msisdnBuyer: transfertbonusPayload.smsisdn,
+                });
+              } else {
+                this.error = res.message;
+                const followDetails = { error_code: `${res.code}` };
+                this.followAnalyticsService.registerEventFollow('Transfer_Bonus_Error', 'error', followDetails);
+              }
+            })
+          );
+        })
+      )
+      .subscribe();
   }
 
   checkOMBalanceSuffiency(amount) {
     this.checkingAmount = true;
     this.omService.checkBalanceSufficiency(amount).subscribe(
-      (hasEnoughBalance) => {
+      hasEnoughBalance => {
         this.checkingAmount = false;
         if (hasEnoughBalance) {
-          // this.redirectRecapPage(this.purchasePayload);
           this.openPinpad();
         } else {
           this.error = BALANCE_INSUFFICIENT_ERROR;
         }
       },
-      (err) => {
+      err => {
         this.checkingAmount = false;
-        // this.redirectRecapPage(this.purchasePayload);
         this.openPinpad();
       }
     );
   }
 
-  redirectRecapPage(payload: any) {
-    const navExtras: NavigationExtras = { state: payload };
-    this.navController.navigateForward(['/operation-recap'], navExtras);
-  }
-
   getOMTransferFees(om_service: string) {
     this.hasError = false;
     this.loadingFees = true;
-    return this.feeService
-      .getFeesByOMService(om_service, this.purchasePayload.recipientMsisdn)
-      .pipe(
-        tap((fees: FeeModel[]) => {
-          this.loadingFees = false;
-          this.transferFeesArray[om_service] = fees;
-          if (!fees.length) {
-            this.hasError = true;
-          }
-        }),
-        catchError((err: any) => {
+    return this.feeService.getFeesByOMService(om_service, this.purchasePayload.recipientMsisdn).pipe(
+      tap((fees: FeeModel[]) => {
+        this.loadingFees = false;
+        this.transferFeesArray[om_service] = fees;
+        if (!fees.length) {
           this.hasError = true;
-          this.loadingFees = false;
-          return of(err);
-        })
-      );
+        }
+      }),
+      catchError((err: any) => {
+        this.hasError = true;
+        this.loadingFees = false;
+        return of(err);
+      })
+    );
   }
 
   toggleTransferWithCode(event, amountInputValue) {
@@ -295,14 +411,10 @@ export class TransferSetAmountPage implements OnInit {
   handleFees(event, amountInputValue) {
     if (this.purchaseType === OPERATION_TRANSFER_OM) {
       const amount = +amountInputValue;
-      this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(
-        this.transferFeesArray[OM_LABEL_SERVICES.TAF],
-        amount
-      );
+      this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(this.transferFeesArray[OM_LABEL_SERVICES.TAF], amount);
       this.includeFees = event.detail.checked;
       this.includeFees
-        ? (this.totalAmount =
-            amount + this.fee + this.sending_fees_Info.effective_fees)
+        ? (this.totalAmount = amount + this.fee + this.sending_fees_Info.effective_fees)
         : (this.totalAmount = amount + this.sending_fees_Info.effective_fees);
     }
   }
@@ -310,10 +422,7 @@ export class TransferSetAmountPage implements OnInit {
   getCurrentFee(amount) {
     this.error = null;
     if (amount && this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
-      const feeInfo = this.feeService.extractFees(
-        this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE],
-        amount
-      );
+      const feeInfo = this.feeService.extractFees(this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE], amount);
       if (!feeInfo.effective_fees) {
         this.error = TRANSFER_OM_BALANCE_NOT_ALLOWED;
         return;
@@ -321,10 +430,7 @@ export class TransferSetAmountPage implements OnInit {
       this.fee = feeInfo.effective_fees;
     }
     if (amount && this.purchaseType === OPERATION_TRANSFER_OM) {
-      this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(
-        this.transferFeesArray[OM_LABEL_SERVICES.TAF],
-        amount
-      );
+      this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(this.transferFeesArray[OM_LABEL_SERVICES.TAF], amount);
       if (!this.sending_fees_Info.cashout_fees) {
         this.error = TRANSFER_OM_BALANCE_NOT_ALLOWED;
         return;
@@ -338,11 +444,12 @@ export class TransferSetAmountPage implements OnInit {
     this.totalAmount = +amount;
     this.updateInput(event);
     this.error = null;
+    if (this.purchaseType === OPERATION_TYPE_SEDDO_BONUS || this.purchaseType === OPERATION_TYPE_SEDDO_CREDIT) {
+      this.totalAmount = +amount + this.sending_fees_Info.effective_fees;
+      return;
+    }
     if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
-      const fee = this.feeService.extractFees(
-        this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE],
-        amount
-      );
+      const fee = this.feeService.extractFees(this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE], amount);
       if (fee.effective_fees === null) {
         this.error = TRANSFER_OM_BALANCE_NOT_ALLOWED;
         return;
@@ -350,29 +457,17 @@ export class TransferSetAmountPage implements OnInit {
       this.fee = fee.effective_fees;
       this.totalAmount = +amount + this.fee;
     }
-    if (
-      this.purchaseType === OPERATION_TRANSFER_OM ||
-      this.purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER
-    ) {
-      const serviceCode =
-        this.purchaseType === OPERATION_TRANSFER_OM
-          ? OM_LABEL_SERVICES.TAF
-          : this.country?.code;
-      this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(
-        this.transferFeesArray[serviceCode],
-        amount
-      );
-      console.log(this.sending_fees_Info);
+    if (this.purchaseType === OPERATION_TRANSFER_OM || this.purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER) {
+      const serviceCode = this.purchaseType === OPERATION_TRANSFER_OM ? OM_LABEL_SERVICES.TAF : this.country?.code;
+      this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(this.transferFeesArray[serviceCode], amount);
       if (this.sending_fees_Info.effective_fees === null) {
-        this.error =
-          "Le montant que vous avez saisi n'est pas dans la plage autorisée";
+        this.error = "Le montant que vous avez saisi n'est pas dans la plage autorisée";
         return;
       }
       this.fee = this.sending_fees_Info.cashout_fees;
 
       this.includeFees
-        ? (this.totalAmount =
-            +amount + this.fee + this.sending_fees_Info.effective_fees)
+        ? (this.totalAmount = +amount + this.fee + this.sending_fees_Info.effective_fees)
         : (this.totalAmount = +amount + this.sending_fees_Info.effective_fees);
     }
   }
@@ -394,7 +489,7 @@ export class TransferSetAmountPage implements OnInit {
         items: IRT_TRANSFER_REASONS,
       },
     });
-    modal.onWillDismiss().then((response) => {
+    modal.onWillDismiss().then(response => {
       if (response?.data) {
         this.reason = response?.data;
       }
@@ -430,17 +525,16 @@ export class TransferSetAmountPage implements OnInit {
         transferMoneyWithCodePayload: transferOMWithCodePayload,
       },
     });
-    modal.onDidDismiss().then((response) => {
+    modal.onDidDismiss().then(response => {
       if (response.data && response.data.success) {
         this.openSuccessFailModal(
           {
+            paymentMod: PAYMENT_MOD_OM,
             opXtras: response.data.opXtras,
             historyTransactionItem: response.data.transferToBlock,
             success: true,
             msisdnBuyer: this.omService.getOrangeMoneyNumber(),
-            buyForMe:
-              this.purchasePayload?.recipientMsisdn ===
-              this.omService.getOrangeMoneyNumber(),
+            buyForMe: this.purchasePayload?.recipientMsisdn === this.omService.getOrangeMoneyNumber(),
           },
           response.data.operationPayload
         );
@@ -450,7 +544,6 @@ export class TransferSetAmountPage implements OnInit {
   }
 
   async openSuccessFailModal(params: ModalSuccessModel, orangeMoneyData?: any) {
-    params.paymentMod = PAYMENT_MOD_OM;
     params.recipientMsisdn = this.purchasePayload?.recipientMsisdn;
     params.recipientName = this.purchasePayload?.recipientName;
     params.purchaseType = this.purchaseType;
@@ -462,7 +555,7 @@ export class TransferSetAmountPage implements OnInit {
       componentProps: params,
       backdropDismiss: false,
     });
-    modal.onDidDismiss().then((res) => {
+    modal.onDidDismiss().then(res => {
       if (orangeMoneyData) {
         this.suggestFaceId(orangeMoneyData);
       }

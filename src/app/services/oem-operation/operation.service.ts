@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import { from } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { from, of, throwError } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { BonusTransferThresholdModel, BONUS_TRANSFER_THRESHOLD_STORAGE_KEY, DEFAULT_BONUS_TRANSFER_THRESHOLD } from 'src/app/models/bonus-transfer-threshold.model';
 import {
   CategoryOffreServiceModel,
   OffreService,
@@ -17,8 +18,10 @@ import {
   OFFRE_SERVICES_ENDPOINT,
   ALL_SERVICES_ENDPOINT,
   OFFER_SERVICE_BY_CODE,
+  TRANSFER_BONUS_THRESHOLD_ENDPOINT
 } from '../utils/services.endpoints';
-
+import * as SecureLS from 'secure-ls';
+const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable({
   providedIn: 'root',
 })
@@ -42,10 +45,10 @@ export class OperationService {
     return this.http.get(endpointOffresServices).pipe(
       switchMap((subcategories: CategoryOffreServiceModel[]) => {
         return this.getServicesByFormule().pipe(
-          map((services) => {
+          map(services => {
             let categories: CategoryOffreServiceModel[];
             // get array of array of parent categories (eg: [[cat1], [cat2], [cat3]])
-            const categoriesArray = subcategories.map((sub) => {
+            const categoriesArray = subcategories.map(sub => {
               return sub.categorieOffreServices;
             });
 
@@ -54,20 +57,14 @@ export class OperationService {
 
             // filter to remove duplicates
             categories = categories.filter(
-              (category, categoryIndex, array) =>
-                array.findIndex((t) => t.id === category.id) === categoryIndex
+              (category, categoryIndex, array) => array.findIndex(t => t.id === category.id) === categoryIndex
             );
 
             // insert into every parent category its subcategories
-            categories.forEach((element) => {
+            categories.forEach(element => {
               element.categorieOffreServices = [];
               for (let subCategory of subcategories) {
-                if (
-                  subCategory.categorieOffreServices &&
-                  subCategory.categorieOffreServices
-                    .map((s) => s.id)
-                    .includes(element.id)
-                ) {
+                if (subCategory.categorieOffreServices && subCategory.categorieOffreServices.map(s => s.id).includes(element.id)) {
                   element.categorieOffreServices.push(subCategory);
                 }
               }
@@ -97,40 +94,36 @@ export class OperationService {
         if (category) queryParams += `&categorie=${category}`;
         if (isBesoinAide) queryParams += `&besoinAide=${isBesoinAide}`;
         return versionObservable.pipe(
-          switchMap((appVersion) => {
+          switchMap(appVersion => {
             queryParams += `&version=${appVersion}`;
-            return this.http
-              .get<OffreService[]>(`${OFFER_SERVICE_BY_CODE}${queryParams}`)
-              .pipe(
-                map((res) => {
-                  for (let offerService of res) {
-                    this.prefixServiceImgByFileServerUrl(offerService);
-                  }
-                  return res;
-                }),
-                map((res) => {
-                  return res.map((item: OffreService) => {
-                    return mapOffreServiceWithCodeOM(item);
-                  });
-                })
-              );
+            return this.http.get<OffreService[]>(`${OFFER_SERVICE_BY_CODE}${queryParams}`).pipe(
+              map(res => {
+                for (let offerService of res) {
+                  this.prefixServiceImgByFileServerUrl(offerService);
+                }
+                return res;
+              }),
+              map(res => {
+                return res.map((item: OffreService) => {
+                  return mapOffreServiceWithCodeOM(item);
+                });
+              })
+            );
           }),
           catchError(() => {
-            return this.http
-              .get<OffreService[]>(`${OFFER_SERVICE_BY_CODE}${queryParams}`)
-              .pipe(
-                map((res) => {
-                  for (let offerService of res) {
-                    this.prefixServiceImgByFileServerUrl(offerService);
-                  }
-                  return res;
-                }),
-                map((res) => {
-                  return res.map((item: OffreService) => {
-                    return mapOffreServiceWithCodeOM(item);
-                  });
-                })
-              );
+            return this.http.get<OffreService[]>(`${OFFER_SERVICE_BY_CODE}${queryParams}`).pipe(
+              map(res => {
+                for (let offerService of res) {
+                  this.prefixServiceImgByFileServerUrl(offerService);
+                }
+                return res;
+              }),
+              map(res => {
+                return res.map((item: OffreService) => {
+                  return mapOffreServiceWithCodeOM(item);
+                });
+              })
+            );
           })
         );
       })
@@ -138,11 +131,37 @@ export class OperationService {
   }
 
   prefixServiceImgByFileServerUrl(offerService: OffreService) {
-    offerService.icone = offerService.icone
-      ? `${this.FILE_MANAGER_BASE_URL}/${offerService.icone}`
-      : '';
-    offerService.banniere = offerService.banniere
-      ? `${this.FILE_MANAGER_BASE_URL}/${offerService.banniere}`
-      : '';
+    offerService.icone = offerService.icone ? `${this.FILE_MANAGER_BASE_URL}/${offerService.icone}` : '';
+    offerService.banniere = offerService.banniere ? `${this.FILE_MANAGER_BASE_URL}/${offerService.banniere}` : '';
+  }
+
+  checkStorageElementHasExpired(storageKey: string, cacheDuration: number = 86400) {
+    const storageElement = ls.get(storageKey);
+    if (!storageElement) return true;
+    const lsLastUpdateKey = storageKey + '_last_update';
+    const lastUpdateTime = ls.get(lsLastUpdateKey);
+    const currentDate = Date.now();
+    const elapsedTime = currentDate - lastUpdateTime;
+    const hasExpired = elapsedTime > cacheDuration;
+    return hasExpired;
+  }
+
+  getTransferBonusMinMaxAmount() {
+    const hasThresholdInStorageExpired = this.checkStorageElementHasExpired(BONUS_TRANSFER_THRESHOLD_STORAGE_KEY);
+    const transferBonusThreshold: BonusTransferThresholdModel = ls.get(BONUS_TRANSFER_THRESHOLD_STORAGE_KEY);
+    if (!hasThresholdInStorageExpired) {
+      return of(transferBonusThreshold);
+    }
+    return this.http.get<BonusTransferThresholdModel>(TRANSFER_BONUS_THRESHOLD_ENDPOINT).pipe(
+      tap((thresholds: BonusTransferThresholdModel) => {
+        ls.set(BONUS_TRANSFER_THRESHOLD_STORAGE_KEY, thresholds);
+        ls.set(BONUS_TRANSFER_THRESHOLD_STORAGE_KEY + '_last_update', Date.now());
+        return thresholds;
+      }),
+      catchError(err => {
+        if (transferBonusThreshold) return of(transferBonusThreshold)
+        return of(DEFAULT_BONUS_TRANSFER_THRESHOLD)
+      })
+    );
   }
 }
