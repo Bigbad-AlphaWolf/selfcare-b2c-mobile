@@ -120,7 +120,7 @@ export class RecentsService {
       }
       nums.push(num);
     }
-    console.log(nums);
+    //console.log(nums);
     return nums.includes(msisdn);
   }
 }

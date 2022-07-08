@@ -88,7 +88,7 @@ export class NewSelectBeneficiaryPage implements OnInit {
 			.pipe(
 				tap( ( res: ContactOem[] ) => {
 					console.log(res);
-					
+
 					this.getRecents();
 					res.forEach( item => {
 						if ( item.numbers.length > 1 ) {
@@ -112,8 +112,6 @@ export class NewSelectBeneficiaryPage implements OnInit {
 					});
 					const sortedContact = this.listContact.sort( ( a, b ) => {
 						if ( a.displayName && b.displayName ) {
-							console.log('a contact', a.displayName);
-							console.log('b contact', b.displayName);
 							return a?.displayName[0]?.localeCompare( b?.displayName[0] )
 						}
 						return -1;

@@ -67,21 +67,21 @@ export class ContactsService {
     }
     return from(this.getAll()).pipe(
       map((contacts: any[]) => {
-        console.log('our result', contacts);
+        console.log('our inital result', contacts);
         const result = contacts.map(
           ({ displayName, phoneNumbers, thumbnail, ...left }) => {
             if (phoneNumbers) {
               const numbers = phoneNumbers.map(element => {
-                return formatPhoneNumber(element.number);
+                return formatPhoneNumber(element.normalizedNumber);
               });
-              console.log({ displayName, numbers, thumbnail });
+              //console.log({ displayName, numbers, thumbnail });
               return { displayName, numbers, thumbnail };
             }
             return { displayName, thumbnail, numbers: [] };
           }
         );
         ContactsService.allContacts = result;
-        console.log(result);
+        console.log('our final result',result);
 
         return result;
       }),
@@ -95,7 +95,7 @@ export class ContactsService {
   getAll() {
     return new Promise<any[]>((resolve, reject) => {
       navigator.contactsPhoneNumbers.list((contacts: any[]) => {
-        console.log(contacts);
+        //console.log(contacts);
         resolve(contacts);
       });
     });
