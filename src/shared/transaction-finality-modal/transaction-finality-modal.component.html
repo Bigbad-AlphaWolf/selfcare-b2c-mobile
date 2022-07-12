@@ -1,0 +1,103 @@
+<div class="success-page">
+  <img (click)="terminer()" src="/assets/images/close.svg" class="close-icon" alt="icon-close" />
+  <div class="top-block">
+    <div class="icone">
+      <ng-container [ngSwitch]="operationStatus">
+        <img *ngSwitchCase="OPERATION_TRANSACTION_STATUS.SUCCESS" src="/assets/images/confirmation.png" alt="checked" />
+        <img *ngSwitchCase="OPERATION_TRANSACTION_STATUS.FAILED" src="/assets/images/echec.png" alt="checked" />
+        <img *ngSwitchDefault src="/assets/images/confirmation.png" alt="checked" />
+      </ng-container>
+    </div>
+
+    <ng-container [ngSwitch]="purchaseType">
+      <ng-container *ngSwitchCase="OPERATION_TYPE_CARD_TO_WALLET" [ngSwitch]="operationStatus">
+        <span class="title" *ngSwitchCase="OPERATION_TRANSACTION_STATUS.SUCCESS">
+          Recharge effectué avec succès
+        </span>
+        <span class="title" *ngSwitchCase="OPERATION_TRANSACTION_STATUS.FAILED">
+          Échec Recharge
+        </span>
+        <span class="title" *ngSwitchCase="OPERATION_TRANSACTION_STATUS.PROCESSING">
+          Recharge en cours
+        </span>
+      </ng-container>
+      <span class="title" *ngSwitchDefault>{{operationStatus ? 'Transfert effectué' : 'Echec Transfert'}}</span>
+    </ng-container>
+
+    <span class="subtitle scb-text-gray">
+      <ng-container [ngSwitch]="purchaseType">
+        <ng-container *ngSwitchCase="OPERATION_TYPE_CARD_TO_WALLET" [ngSwitch]="operationStatus">
+          <span class="custom-font" *ngSwitchCase="OPERATION_TRANSACTION_STATUS.SUCCESS">Votre recharge par carte bancaire a été effectuée avec succès</span>
+          <span class="custom-font" *ngSwitchCase="OPERATION_TRANSACTION_STATUS.FAILED">Votre recharge par carte bancaire ne s'est pas bien passé</span>
+          <span class="custom-font" *ngSwitchCase="OPERATION_TRANSACTION_STATUS.PROCESSING">Votre recharge par carte bancaire est en cours de validation. Veuillez patienter. Vous serez notifié dans quelques instants.</span>
+        </ng-container>
+      </ng-container>
+    </span>
+  </div>
+
+  <div class="pass-block">
+    <ng-container [ngSwitch]="purchaseType">
+      <app-item-recharge-credit [modifiable]="false" [amount]="amount" *ngSwitchCase="OPERATION_TYPE_CARD_TO_WALLET">
+      </app-item-recharge-credit>
+    </ng-container>
+  </div>
+
+  <div class="bottom-block">
+    <div class="details">
+      <div class="left-block">Bénéficiaire</div>
+      <div class="right-block scb-text-gray">
+        <span class="numero">{{recipientMsisdn | phoneNumberDisplay}}</span>
+        <span class="name">
+          {{buyForMe ? 'Moi même' : recipientName ? recipientName : 'Autre'}}
+        </span>
+      </div>
+    </div>
+
+    <div class="details">
+      <div class="left-block">Paiement par</div>
+      <div class="right-block scb-text-gray">
+        <ng-container [ngSwitch]="purchaseType">
+          <span class="numero" *ngSwitchCase="OPERATION_TYPE_CARD_TO_WALLET">
+            Carte Bancaire
+          </span>
+          <span class="numero" *ngSwitchDefault>
+            {{paymentMod === 'ORANGE_MONEY' ? 'Orange Money' : 'Crédit Recharge'}}
+          </span>
+        </ng-container>
+        <span class="name">{{msisdnBuyer | phoneNumberDisplay}}</span>
+      </div>
+    </div>
+
+    <div class="details details-date">
+      <div class="left-block">
+        <ng-container [ngSwitch]="purchaseType">
+          <ng-container *ngSwitchCase="OPERATION_TYPE_CARD_TO_WALLET">
+            Date de Recharge
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            Date d'achat
+          </ng-container>
+        </ng-container>
+      </div>
+      <div class="right-block scb-text-gray">
+        <span class="numero">{{dateAchat}}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="confirm-btn" *ngIf="0">
+    <ion-button (click)="goToPage()" shape="round" class="btn btn-cancel" expand="block">
+      <ng-container [ngSwitch]="purchaseType">
+        <ng-container *ngSwitchCase="OPERATION_TYPE_CARD_TO_WALLET">
+          Faire une autre recharge
+        </ng-container>
+      </ng-container>
+    </ion-button>
+  </div>
+
+  <div class="terminer scb-text-orange" (click)="terminer()">
+    Retour à l'accueil
+  </div>
+
+</div>

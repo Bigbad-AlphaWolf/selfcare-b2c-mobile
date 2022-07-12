@@ -7,11 +7,44 @@
 
 .act-item {
   min-height: 100px;
+  height: 100%;
   background-color: $white;
   border-radius: 10px;
   padding: 20px 15px;
   flex-shrink: 0;
   text-align: left;
+  position: relative;
+  .badge-promo {
+    position: absolute;
+    top: 15px;
+    right: -5px;
+    .icon-container {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+      font-size: 10px;
+      background-color: $lightBlue;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 5px 10px;
+      width: 100%;
+      border-radius: 7% 0 0 7%;
+      .percent {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 16px;
+      }
+      .new {
+        font-family: HelveticaNeueLTStd-Bd;
+        font-size: 10px;
+      }
+    }
+    .triangle {
+      width: 0;
+      height: 0;
+      border-top: 5px solid $bluePopUp;
+      border-right: 5px solid transparent;
+      float: right;
+    }
+  }
   .img {
     width: percentage(47/135);
     margin-bottom: 3px;

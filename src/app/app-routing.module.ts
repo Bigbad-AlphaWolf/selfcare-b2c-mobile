@@ -390,6 +390,10 @@ const routes: Routes = [
     loadChildren: () => import('./new-suivi-conso/new-suivi-conso.module').then(m => m.NewSuiviConsoPageModule)
   },
   {
+    path: 'om-hub',
+    loadChildren: () => import('./om-universe/om-universe.module').then(m => m.OmUniverseModule)
+  },
+  {
     path: 'new-services',
     loadChildren: () => import('./new-services/new-services.module').then(m => m.NewServicesPageModule)
   },

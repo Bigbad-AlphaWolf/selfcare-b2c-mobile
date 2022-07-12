@@ -14,6 +14,7 @@ import {NewSuiviConsoPageModule} from '../new-suivi-conso/new-suivi-conso.module
 import {NewServicesPageModule} from '../new-services/new-services.module';
 import {NewAssistanceHubV2PageModule} from '../new-assistance-hub-v2/new-assistance-hub-v2.module';
 import {SwiperModule} from 'swiper/angular';
+import { OmUniverseModule } from '../om-universe/om-universe.module';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import {SwiperModule} from 'swiper/angular';
     NewSuiviConsoPageModule,
     NewServicesPageModule,
     NewAssistanceHubV2PageModule,
+    OmUniverseModule,
     SwiperModule
   ],
   declarations: [NewPrepaidHybridDashboardPage, DashboardHomeComponent]

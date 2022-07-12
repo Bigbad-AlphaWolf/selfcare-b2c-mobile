@@ -1,11 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { ASSISTANCE, CONSO, SERVICES } from 'src/shared';
+import { ASSISTANCE, CONSO, HUB_OM_TAB, SERVICES } from 'src/shared';
 import { SwiperOptions } from 'swiper';
 import { SwiperComponent } from 'swiper/angular';
 import { NewAssistanceHubV2Page } from '../new-assistance-hub-v2/new-assistance-hub-v2.page';
 import { NewServicesPage } from '../new-services/new-services.page';
 import { NewSuiviConsoPage } from '../new-suivi-conso/new-suivi-conso.page';
+import { OmUniverseComponent } from '../om-universe/om-universe.component';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { DashboardHomeComponent } from './components/dashboard-home/dashboard-home.component';
 
@@ -29,6 +30,12 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
       route: 'suivi-conso',
     },
     {
+      defaultIcon: 'swap-horizontal-outline',
+      activeIcon: 'swap-horizontal',
+      label: 'O.M',
+      route: 'om-hub',
+    },
+    {
       defaultIcon: 'bag-outline',
       activeIcon: 'bag',
       label: 'Services',
@@ -48,6 +55,7 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
   @ViewChild(NewSuiviConsoPage) newSuiviConsoPage: NewSuiviConsoPage;
   @ViewChild(NewServicesPage) newServicesPage: NewServicesPage;
   @ViewChild(NewAssistanceHubV2Page) newAssistancePage: NewAssistanceHubV2Page;
+  @ViewChild(OmUniverseComponent) omUniversPage: OmUniverseComponent;
   swiperConfig: SwiperOptions = {
     slidesPerView: 1,
   };
@@ -69,11 +77,14 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
         case CONSO:
           this.setSlide(1);
           break;
-        case SERVICES:
+        case HUB_OM_TAB:
           this.setSlide(2);
           break;
-        case ASSISTANCE:
+        case SERVICES:
           this.setSlide(3);
+          break;
+        case ASSISTANCE:
+          this.setSlide(4);
           break;
         default:
           break;
@@ -94,9 +105,12 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
         this.newSuiviConsoPage.ionViewWillEnter();
         break;
       case 2:
-        this.newServicesPage.ionViewWillEnter();
+        this.omUniversPage.ionViewWillEnter();
         break;
       case 3:
+        this.newServicesPage.ionViewWillEnter();
+        break;
+      case 4:
         this.newAssistancePage.ionViewWillEnter();
         break;
     }
@@ -105,7 +119,6 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
   setSlide(index) {
     this.currentSlideIndex = index;
     this.swiper.swiperRef.slideTo(index);
-    this.refreshData();
   }
 
   onSwipe(event) {

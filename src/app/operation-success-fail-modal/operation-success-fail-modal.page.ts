@@ -238,11 +238,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   terminer() {
     this.modalController.dismiss();
     if (this.isOpenedFromHistory) return;
-    if (this.opXtras && this.opXtras.isLightMod) {
-      this.router.navigate(['/dashboard-prepaid-light']);
-    } else {
-      this.router.navigate(['/dashboard']);
-    }
+    this.router.navigate(['/dashboard']);
   }
 
   getPassBoosters(pass: any) {

@@ -89,6 +89,8 @@ import {XeweulSelectionComponent} from '../app/components/counter/xeweul-selecti
 import {CardXeweulNameModalComponent} from '../app/components/card-xeweul-name-modal/card-xeweul-name-modal.component';
 import {XeweulSoldeComponent} from '../app/components/counter/xeweul-solde/xeweul-solde.component';
 import {FavoriteXeweulComponent} from '../app/components/counter/favorite-xeweul/favorite-xeweul.component';
+import { TransactionItemComponent } from './transaction-item/transaction-item.component';
+import { TransactionFinalityModalComponent } from './transaction-finality-modal/transaction-finality-modal.component';
 import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
 
 @NgModule({
@@ -165,7 +167,9 @@ import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number
     FaceIdRequestModalComponent,
     TypeCounterModalComponent,
     FavoriteServiceCountersComponent,
-    FavoriteCounterNameModalComponent
+    FavoriteCounterNameModalComponent,
+    TransactionItemComponent,
+    TransactionFinalityModalComponent
   ],
   imports: [CommonModule, IonicImageLoader, RouterModule, ComponentsModule, MaterialComponentsModule, PipesModule],
   entryComponents: [
@@ -216,6 +220,7 @@ import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number
     TypeCounterModalComponent,
     FavoriteServiceCountersComponent,
     FavoriteCounterNameModalComponent,
+    TransactionFinalityModalComponent,
 		RattachByOtpCodeComponent,
     PinPadComponent
   ],
@@ -289,7 +294,9 @@ import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number
     FaceIdRequestModalComponent,
     TypeCounterModalComponent,
     FavoriteServiceCountersComponent,
-    FavoriteCounterNameModalComponent
+    FavoriteCounterNameModalComponent,
+    TransactionItemComponent,
+    TransactionFinalityModalComponent
   ],
   providers: [Contacts, SocialSharing, OpenNativeSettings, {provide: MAT_BOTTOM_SHEET_DATA, useValue: {}}],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -71,25 +71,8 @@
     <div class="transaction-by-day" *ngFor="let transactionGroup of filteredHistoric">
       <div class="transaction-day-title">{{displayDate(transactionGroup?.key)}}</div>
       <div class="day-transactions-content">
-        <div class="transaction-item" *ngFor="let transaction of transactionGroup?.value"
-          (click)="openTransactionModal(transaction)">
-          <img class="transaction-icon" [src]="getTransactionIcon(transaction.typeAchat)" alt="">
-          <div class="left-bloc">
-            <span class="transaction-type">{{transaction?.name}}</span>
-            <span class="light-text scb-text-gray">{{transaction?.channel}}</span>
-            <span class="light-text scb-text-gray">{{transaction?.msisdnReceiver | phoneNumberDisplay}}
-              {{transaction?.msisdnReceiver === currentMsisdn ? ' (moi)' : ''}}</span>
-          </div>
-          <div class="right-bloc">
-            <span class="transaction-price scb-text-orange">
-              {{ transaction?.typeAchat === "TRANSFER" ? transaction?.amount - transaction?.fees : transaction?.amount
-              }}
-              {{ transaction.typeAchat === "SARGAL" ? 'Pts' : 'FCFA'}}
-            </span>
-            <span class="light-text scb-text-gray">{{transaction?.operationDate | date : 'dd/MM/yy à HH:mm'}}</span>
-            <span class="light-text scb-text-gray"></span>
-          </div>
-        </div>
+        <app-transaction-item [transaction]="transaction" *ngFor="let transaction of transactionGroup?.value">
+        </app-transaction-item>
       </div>
     </div>
   </ng-template>

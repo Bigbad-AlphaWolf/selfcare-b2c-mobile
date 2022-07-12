@@ -102,41 +102,15 @@
       border-radius: 10px;
       padding: 30px 15px;
       margin-top: 20px;
-      .transaction-item {
+      display: flex;
+      flex-direction: column;
+      app-transaction-item {
         &:not(:first-child) {
           padding-top: 15px;
         }
         &:not(:last-child) {
           border-bottom: solid 2px $silver;
           padding-bottom: 15px;
-        }
-        padding-left: 25px;
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        .transaction-icon {
-          position: absolute;
-          width: 18px;
-          height: 18px;
-          left: 0;
-        }
-        .right-bloc {
-          text-align: right;
-        }
-        .left-bloc,
-        .right-bloc {
-          display: flex;
-          flex-direction: column;
-          .transaction-type,
-          .transaction-price {
-            font-family: 'HelveticaNeueLTStd-Roman';
-            font-size: 18px;
-          }
-          .light-text {
-            font-family: 'HelveticaNeueLTStd-Roman';
-            font-size: 12px;
-            line-height: 1.5;
-          }
         }
       }
     }

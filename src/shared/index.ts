@@ -1308,6 +1308,7 @@ export enum HUB_ACTIONS {
   ACHAT = 'HUB_ACHAT',
   TRANSFERT = 'HUB_TRANSFER',
   FACTURES = 'HUB_BILLS',
+  OM = 'HUB_OM',
   FIXES = 'HUB_FIXE',
   OFFRES_FIXES = 'HUB_OFFRES_FIXE',
 }
@@ -1340,6 +1341,7 @@ export const isProfileHybrid = (profile: string) => {
 export const CONSO = 'SUIVI_CONSO';
 export const ASSISTANCE = 'ASSISTANCE';
 export const SERVICES = 'SERVICES';
+export const HUB_OM_TAB = 'HUB_OM_TAB';
 
 export enum GET_MSISDN_ENUM {
   DISABLE_WIFI = 'disableWifi',
@@ -1438,6 +1440,11 @@ export enum STEPS_ACCESS_BY_OTP {
 
 export const PATH_ACCESS_BY_OTP = '/access/';
 
+export enum OPERATION_TRANSACTION_STATUS {
+  SUCCESS = 'success',
+  FAILED = 'failed',
+  PROCESSING = 'processing'
+}
 export const RATTACHMENT_ERROR_MAX_COUNT = 3;
 export const DEEPLINK_MOBILE_BILL_BASE_URL = 'payer-teranga';
 export const DEEPLINK_FIXE_BILL_BASE_URL = 'payer-sonatel';

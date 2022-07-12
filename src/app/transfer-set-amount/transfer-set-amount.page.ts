@@ -5,6 +5,7 @@ import {
   LoadingController,
   ModalController,
   NavController,
+  Platform,
 } from '@ionic/angular';
 import { OperationExtras } from '../models/operation-extras.model';
 import {
@@ -20,6 +21,7 @@ import {
   FEES_ERROR,
   BALANCE_INSUFFICIENT_ERROR,
   IRT_TRANSFER_REASONS,
+  OPERATION_TRANSACTION_STATUS,
   PAYMENT_MOD_OM,
   OPERATION_TYPE_SEDDO_BONUS,
   OPERATION_TYPE_SEDDO_CREDIT,
@@ -36,9 +38,11 @@ import {
 import { FeeModel } from '../services/orange-money-service';
 import { FeesService } from '../services/fees/fees.service';
 import { catchError, switchMap, tap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { OPERATION_TYPE_INTERNATIONAL_TRANSFER } from '../utils/operations.constants';
+import { of, throwError } from 'rxjs';
+import { OPERATION_TYPE_CARD_TO_WALLET, OPERATION_TYPE_INTERNATIONAL_TRANSFER } from '../utils/operations.constants';
 import { SelectElementModalComponent } from 'src/shared/select-element-modal/select-element-modal.component';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { TransactionFinalityModalComponent } from 'src/shared/transaction-finality-modal/transaction-finality-modal.component';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { ModalSuccessModel } from '../models/modal-success-infos.model';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
@@ -74,6 +78,7 @@ export class TransferSetAmountPage implements OnInit {
   recipientLastname: string;
   OPERATION_TRANSFER_OM = OPERATION_TRANSFER_OM;
   OPERATION_TRANSFER_OM_WITH_CODE = OPERATION_TRANSFER_OM_WITH_CODE;
+  OPERATION_TYPE_CARD_TO_WALLET = OPERATION_TYPE_CARD_TO_WALLET;
   OPERATION_TYPE_SEDDO_BONUS = OPERATION_TYPE_SEDDO_BONUS;
   OPERATION_TYPE_SEDDO_CREDIT = OPERATION_TYPE_SEDDO_CREDIT;
   FEES_ERROR = FEES_ERROR;
@@ -94,6 +99,8 @@ export class TransferSetAmountPage implements OnInit {
   country: any;
   reason: any;
   loading: boolean;
+  title: string;
+  isIos: boolean;
   constructor(
     private route: ActivatedRoute,
     private omService: OrangeMoneyService,
@@ -104,6 +111,8 @@ export class TransferSetAmountPage implements OnInit {
     private operationService: OperationService,
     public loadingController: LoadingController,
     private modalController: ModalController,
+    private iab: InAppBrowser,
+    private platform: Platform,
     private dashboardService: DashboardService,
     private authService: AuthenticationService,
     private consoService: UserConsoService,
@@ -112,12 +121,14 @@ export class TransferSetAmountPage implements OnInit {
 
   ngOnInit() {
     this.initFees();
+    this.isIos = this.platform.is('ios');
   }
 
   async initFees() {
     const isDeeplinkTransferOM = await this.checkTransferOMDeeplink();
     if (isDeeplinkTransferOM) return;
     this.purchasePayload = history.state;
+    this.purchaseType = this.purchasePayload?.purchaseType;
     if (this.purchasePayload && this.purchasePayload.purchaseType) {
       this.processInfosFromBeneficiaryPage();
     }
@@ -161,6 +172,11 @@ export class TransferSetAmountPage implements OnInit {
   async processInfosFromBeneficiaryPage() {
     this.purchasePayload = history.state;
     this.purchaseType = this.purchasePayload.purchaseType;
+    if (this.purchaseType === OPERATION_TYPE_CARD_TO_WALLET) {
+      this.initForm(5000);
+      this.getOMTransferFees(OM_LABEL_SERVICES.CARD_TO_WALLET).subscribe();
+      return;
+    }
     if (this.purchaseType === OPERATION_TYPE_SEDDO_CREDIT) {
       this.sending_fees_Info.effective_fees = TRANSFER_BONUS_CREDIT_FEE;
       this.initForm(100);
@@ -178,7 +194,7 @@ export class TransferSetAmountPage implements OnInit {
     }
     this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE)
       .pipe(
-        switchMap(res => {
+        switchMap((res) => {
           return this.getOMTransferFees(OM_LABEL_SERVICES.TAF);
         })
       )
@@ -252,9 +268,69 @@ export class TransferSetAmountPage implements OnInit {
       this.purchasePayload.recipientFirstname = this.setAmountForm.value['recipientFirstname'];
       this.purchasePayload.recipientLastname = this.setAmountForm.value['recipientLastname'];
     }
+    if (this.purchaseType === OPERATION_TYPE_CARD_TO_WALLET) {
+      this.checkingAmount = true;
+      const payload = {
+        amount,
+        receiverMsisdn: this.purchasePayload?.recipientMsisdn,
+        senderMsisdn: this.purchasePayload?.senderMsisdn,
+      };
+      this.omService
+        .initCardToWallet(payload)
+        .pipe(
+          tap((res) => {
+            this.checkingAmount = false;
+            this.openC2WInAppBrowser(res.paymentUrl);
+          }),
+          catchError((err) => {
+            this.checkingAmount = false;
+            this.error = err?.error?.message
+              ? err.error.message
+              : `Une erreur s'est produite. Veuillez réessayer plus tard`;
+            return throwError(err);
+          })
+        )
+        .subscribe();
+      return;
+    }
     this.checkOMBalanceSuffiency(this.totalAmount);
   }
 
+  openC2WInAppBrowser(url: string) {
+    const options: InAppBrowserOptions = this.isIos
+      ? {
+          location: 'no',
+          toolbar: 'yes',
+          toolbarcolor: '#CCCCCC',
+          toolbarposition: 'top',
+          toolbartranslucent: 'no',
+          closebuttoncolor: '#000000',
+          closebuttoncaption: 'Fermer',
+          hidespinner: 'yes',
+        }
+      : {};
+    this.iab.create(url, '_blank', options).on('exit').subscribe(event => {
+      this.openC2WSuccess({
+        msisdnBuyer: this.purchasePayload?.senderMsisdn,
+        amount: this.setAmountForm.value['amount'],
+        recipientMsisdn: this.purchasePayload?.recipientMsisdn,
+        purchaseType: this.purchaseType,
+        buyForMe: this.purchasePayload?.senderMsisdn === this.purchasePayload?.recipientMsisdn,
+        operationStatus: OPERATION_TRANSACTION_STATUS.PROCESSING,
+      });
+    });
+  }
+
+  async openC2WSuccess(params: ModalSuccessModel) {
+    const modal = await this.modalController.create({
+      component: TransactionFinalityModalComponent,
+      cssClass: "success-or-fail-modal",
+      componentProps: params,
+      backdropDismiss: false,
+    });
+    modal.onDidDismiss().then((res) => {});
+    return await modal.present();
+  }
   async transferCredit() {
     this.checkingAmount = true;
     this.consoService
@@ -448,8 +524,18 @@ export class TransferSetAmountPage implements OnInit {
       this.totalAmount = +amount + this.sending_fees_Info.effective_fees;
       return;
     }
-    if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE) {
-      const fee = this.feeService.extractFees(this.transferFeesArray[OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE], amount);
+    if (
+      this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ||
+      this.purchaseType === OPERATION_TYPE_CARD_TO_WALLET
+    ) {
+      const feeService =
+        this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE
+          ? OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE
+          : OM_LABEL_SERVICES.CARD_TO_WALLET;
+      const fee = this.feeService.extractFees(
+        this.transferFeesArray[feeService],
+        amount
+      );
       if (fee.effective_fees === null) {
         this.error = TRANSFER_OM_BALANCE_NOT_ALLOWED;
         return;
@@ -578,6 +664,8 @@ export class TransferSetAmountPage implements OnInit {
   }
 
   goBack() {
+    console.log('clicked');
+
     this.navController.pop();
   }
 }
