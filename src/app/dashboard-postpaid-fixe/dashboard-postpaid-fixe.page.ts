@@ -16,12 +16,13 @@ import {Observable, of} from 'rxjs';
 import {InvoiceOrange} from '../models/invoice-orange.model';
 import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
 import {CODE_COMPTEUR_VOLUME_NUIT_1, CODE_COMPTEUR_VOLUME_NUIT_2, CODE_COMPTEUR_VOLUME_NUIT_3} from '../dashboard';
+import { OPERATION_TYPE_PAY_BILL } from '../utils/operations.constants';
 
 const ls = new SecureLS({encodingType: 'aes'});
 @Component({
   selector: 'app-dashboard-postpaid-fixe',
   templateUrl: './dashboard-postpaid-fixe.page.html',
-  styleUrls: ['./dashboard-postpaid-fixe.page.scss']
+  styleUrls: ['./dashboard-postpaid-fixe.page.scss'],
 })
 export class DashboardPostpaidFixePage implements OnInit {
   firstName;
@@ -67,16 +68,6 @@ export class DashboardPostpaidFixePage implements OnInit {
     this.banniereServ.getListBanniereByFormuleByZone().subscribe((res: any) => {
       this.listBanniere = res;
     });
-    this.dashbordServ
-      .getFixPostpaidInfos()
-      .pipe(
-        tap((status: string) => {
-          if (status === 'ACTIVATED') {
-            this.isNumberActivated = true;
-          }
-        })
-      )
-      .subscribe();
     this.getBordereau();
   }
 
@@ -100,7 +91,10 @@ export class DashboardPostpaidFixePage implements OnInit {
         this.dataLoaded = true;
         if (res.length) {
           res = arrangeCompteurByOrdre(res);
-          const appelConso = res.length ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL).consommations : null;
+          const appelConso = res.length
+            ? res.find((x) => x.categorie === USER_CONS_CATEGORY_CALL)
+                .consommations
+            : null;
           const CMO_INFOS = appelConso.find((x: any) => {
             return x.code === 8;
           });
@@ -126,8 +120,8 @@ export class DashboardPostpaidFixePage implements OnInit {
     this.router.navigate(['/details-conso']);
   }
 
-  onError(input: {el: HTMLElement; display: boolean}[]) {
-    input.forEach((item: {el: HTMLElement; display: boolean}) => {
+  onError(input: { el: HTMLElement; display: boolean }[]) {
+    input.forEach((item: { el: HTMLElement; display: boolean }) => {
       item.el.style.display = item.display ? 'block' : 'none';
     });
   }
@@ -135,7 +129,7 @@ export class DashboardPostpaidFixePage implements OnInit {
   showWelcomePopup(data: WelcomeStatusModel) {
     const dialog = this.shareDialog.open(WelcomePopupComponent, {
       data,
-      panelClass: 'gift-popup-class'
+      panelClass: 'gift-popup-class',
     });
     dialog.afterClosed().subscribe(() => {
       this.assistanceService.tutoViewed().subscribe(() => {});
@@ -168,24 +162,28 @@ export class DashboardPostpaidFixePage implements OnInit {
     this.hasErrorBordereau = false;
     this.isLoading = true;
     const invoiceType = 'LANDLINE';
-    const moisDispo = await this.billsService.moisDisponible(codeClient, invoiceType, this.currentNumber).catch(_ => {
-      this.isLoading = false;
-      this.hasErrorBordereau = true;
-    });
+    const moisDispo = await this.billsService
+      .moisDisponible(codeClient, invoiceType, this.currentNumber)
+      .catch((_) => {
+        this.isLoading = false;
+        this.hasErrorBordereau = true;
+      });
     if (moisDispo) {
       const months = previousMonths(moisDispo);
       const last_month = months[0];
 
-      this.bordereau$ = this.billsService.bordereau(codeClient, invoiceType, this.currentNumber, last_month).pipe(
-        tap((res: any) => {
-          this.isLoading = false;
-        }),
-        catchError((err: any) => {
-          this.hasErrorBordereau = true;
-          this.isLoading = false;
-          return of(err);
-        })
-      );
+      this.bordereau$ = this.billsService
+        .bordereau(codeClient, invoiceType, this.currentNumber, last_month)
+        .pipe(
+          tap((res: any) => {
+            this.isLoading = false;
+          }),
+          catchError((err: any) => {
+            this.hasErrorBordereau = true;
+            this.isLoading = false;
+            return of(err);
+          })
+        );
     } else {
       this.isLoading = false;
       this.hasErrorBordereau = true;
@@ -193,7 +191,15 @@ export class DashboardPostpaidFixePage implements OnInit {
   }
 
   goFacture() {
-    this.router.navigate(['/bills']);
-    this.followAnalyticsService.registerEventFollow('Dashboard_Fixe_Mobile', 'event', 'clicked');
+    this.router.navigate(['/bills'], {
+      state: {
+        operationType: OPERATION_TYPE_PAY_BILL,
+      },
+    });
+    this.followAnalyticsService.registerEventFollow(
+      'Dashboard_Fixe_Mobile_voir_tout_facture',
+      'event',
+      'clicked'
+    );
   }
 }

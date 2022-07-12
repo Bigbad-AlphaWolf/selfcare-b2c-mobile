@@ -118,7 +118,7 @@ export class BillsService {
     return this.http
       .get<InvoiceOrange[]>(
         `${INVOICE_ENDPOINT}/${codeClient}?type=${type}&line=${phone}&search=${
-          type === 'MOBILE' ? 'phoneNumber:' + phone + ',' : ''
+          phone ? 'phoneNumber:' + phone + ',' : ''
         }`
       )
       .pipe(

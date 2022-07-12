@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { of, throwError } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { CustomContact } from 'src/app/models/customized-contact.model';
+import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
+import { RecentsService } from 'src/app/services/recents-service/recents.service';
+import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import {
   NewUserConsoModel,
   ProcessedConsoModel,
 } from 'src/app/services/user-cunsommation-service/user-conso-service.index';
 import { UserConsoService } from 'src/app/services/user-cunsommation-service/user-conso.service';
-
+import { COUNTER_TYPE_FELLOW } from 'src/shared';
 @Component({
   selector: 'app-new-details-conso',
   templateUrl: './new-details-conso.component.html',
@@ -15,8 +19,14 @@ import { UserConsoService } from 'src/app/services/user-cunsommation-service/use
 export class NewDetailsConsoComponent implements OnInit {
   loadingConso: boolean;
   userConso;
+  COUNTER_TYPE_FELLOW = COUNTER_TYPE_FELLOW;
 
-  constructor(private consoService: UserConsoService) {}
+  constructor(
+    private consoService: UserConsoService,
+    private sargalService: SargalService,
+    private contactService: ContactsService,
+    private recentsService: RecentsService
+  ) {}
 
   ngOnInit() {
     this.getUserConsoInfos();
@@ -27,12 +37,47 @@ export class NewDetailsConsoComponent implements OnInit {
     this.consoService
       .getUserCunsomation()
       .pipe(
-        tap((res) => {
+        switchMap(resp => {
+          return this.sargalService.getFellowsMsisdn().pipe(
+            switchMap((fellowsMsisdn: any[]) => {
+              const mappedFellowArray = [];
+              for (let fellow of fellowsMsisdn) {
+                const fell = {};
+                fell['destinataire'] = fellow?.msisdn;
+                fell['counterName'] = fellow?.name;
+                mappedFellowArray.push(fell)
+              }
+              console.log('mappedFellowArray', mappedFellowArray);
+              return this.contactService.getAllContacts().pipe(
+                map((contacts: CustomContact[]) => {
+                  const fellowMsisdnWithContacts = this.recentsService.mapRecentsToContacts(mappedFellowArray, contacts);
+                  for (let castedFellow of fellowMsisdnWithContacts) {
+                    const mappedFellow: NewUserConsoModel = {
+                      montantRestant: castedFellow?.destinataire,
+                      dateExpiration: castedFellow?.name,
+                      name: castedFellow['counterName'],
+                      typeCompteur: COUNTER_TYPE_FELLOW,
+                    };
+                    resp.push(mappedFellow);
+                  }
+                  return resp;
+                }),
+                catchError(err => {
+                  return of(resp);
+                })
+              );
+            }),
+            catchError(err => {
+              return of(resp);
+            })
+          );
+        }),
+        tap(res => {
           this.userConso = this.processDetailsConso(res);
           this.loadingConso = false;
           event ? event.target.complete() : '';
         }),
-        catchError((err) => {
+        catchError(err => {
           this.loadingConso = false;
           event ? event.target.complete() : '';
           return throwError(err);

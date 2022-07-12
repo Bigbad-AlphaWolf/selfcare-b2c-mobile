@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>
       <span class="title1">
-        Achat de pass {{serviceUsage?.fullDescription}}
+        {{ pageInfos?.title }}
       </span>
     </ion-title>
   </ion-toolbar>
@@ -15,7 +15,7 @@
   <ion-header class="ion-padding-start" collapse="condense">
     <ion-toolbar>
       <span class="title">
-        Achat de pass {{serviceUsage?.fullDescription}}
+        {{ pageInfos?.title }}
       </span>
     </ion-toolbar>
   </ion-header>
@@ -30,7 +30,12 @@
     </div>
     <div class="error scb-text-red-error" *ngIf="errorLoadingPass" (click)="loadPass()">Erreur lors du chargement. Récatualisez</div>
     <div class="pass-list" *ngIf="listPass?.length">
-      <app-pass-usage-item [serviceUsage]="serviceUsage" [passUsage]="pass" (click)="choosePass(pass)" *ngFor="let pass of listPass"></app-pass-usage-item>
+			<ng-container *ngIf="serviceUsage.code !== OPERATION_ABONNEMENT_WIDO">
+				<app-pass-usage-item [serviceUsage]="serviceUsage" [passUsage]="pass" (click)="choosePass(pass)" *ngFor="let pass of listPass"></app-pass-usage-item>
+			</ng-container>
+			<ng-container *ngIf="serviceUsage.code === OPERATION_ABONNEMENT_WIDO">
+				<app-item-pass-wido *ngFor="let pass of listPass"	[passWido]="pass"	(selectPass)="choosePass($event)" ></app-item-pass-wido>
+			</ng-container>
     </div>
   </div>
 </ion-content>

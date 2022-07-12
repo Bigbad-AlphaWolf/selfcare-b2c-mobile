@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
-import { IonInput, ModalController, Platform } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { from, Subject, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { OPERATION_TRANSFER_OM, REGEX_NUMBER_ALLOWED_COUNTRY_CODE_LONG, REGEX_NUMBER_ALLOWED_COUNTRY_CODE_SHORT, REGEX_NUMBER_OM } from 'src/shared';
@@ -37,7 +37,7 @@ export class NewSelectBeneficiaryPage implements OnInit {
 	searchValue: string;
 	currentNumber = this.dashboardServ.getCurrentPhoneNumber();
 	loadingRecents: boolean;
-	@ViewChild('ionInput') input: IonInput;
+	inputFocused: boolean;
 	constructor(
 		private diagnostic: Diagnostic,
 		private dashboardServ: DashboardService,
@@ -63,8 +63,6 @@ export class NewSelectBeneficiaryPage implements OnInit {
 		this.errorMsg = null;
 		await from( this.diagnostic.getContactsAuthorizationStatus() ).pipe(
 			tap( contactStatus => {
-				console.log( 'contactStatus', contactStatus );
-
 				if (
 					contactStatus === this.diagnostic.permissionStatus.NOT_REQUESTED ||
 					contactStatus === this.diagnostic.permissionStatus.DENIED_ALWAYS
@@ -89,9 +87,12 @@ export class NewSelectBeneficiaryPage implements OnInit {
 			.getAllContacts(refresh)
 			.pipe(
 				tap( ( res: ContactOem[] ) => {
+					console.log(res);
+					
 					this.getRecents();
 					res.forEach( item => {
 						if ( item.numbers.length > 1 ) {
+							item.numbers = [...new Set(item.numbers)];
 							const contacts: ContactOem[] = item.numbers.map( elt => {
 								return { displayName: item.displayName, phoneNumber: elt, country: getCountryInfos(elt), formatedPhoneNumber: this.formatPhoneNumber(elt), thumbnail: item.thumbnail };
 							} );
@@ -109,7 +110,14 @@ export class NewSelectBeneficiaryPage implements OnInit {
 					this.listContact = this.listContact.filter((item) => {
 						return !!item?.country
 					});
-					const sortedContact = this.listContact.sort( ( a, b ) => a?.displayName[0]?.localeCompare( b?.displayName[0] ) );
+					const sortedContact = this.listContact.sort( ( a, b ) => {
+						if ( a.displayName && b.displayName ) {
+							console.log('a contact', a.displayName);
+							console.log('b contact', b.displayName);
+							return a?.displayName[0]?.localeCompare( b?.displayName[0] )
+						}
+						return -1;
+					} );
 					this.listFilteredContacts = sortedContact;
 					this.listContact = sortedContact;
 					this.activeSearchContact();
@@ -290,10 +298,6 @@ export class NewSelectBeneficiaryPage implements OnInit {
       )
       .subscribe();
   }
-
-	clearInput() {
-		if(this.input) this.input.value = '';
-	}
 
 	onAppResume() {
 		this.platform.resume.subscribe(

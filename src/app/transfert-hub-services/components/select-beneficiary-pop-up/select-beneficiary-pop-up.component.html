@@ -8,7 +8,7 @@
   <div class="beneficiary-number">
     <form novalidate autocomplete="false">
       <mat-form-field class="scb-input-row" appearance="outline">
-        <div matPrefix class="country-block" (click)="openSelectCountryModal($event)">
+        <div *ngIf="!isForTransferBlocking" matPrefix class="country-block" (click)="openSelectCountryModal($event)">
           <div class="country-block-container">
             <img [src]="country?.flagIcon" alt="" class="flag-icon">
             <img src="/assets/images/arrow-down.svg" alt="">
@@ -17,8 +17,9 @@
         <mat-label>
           {{!isForTransferBlocking ? 'N° du bénéficiaire' : 'Saisir le numéro de référence'}}&nbsp;&nbsp;
         </mat-label>
-        <input [ngClass]="{'empty': !inputTel.value}" (focus)="handleInputFocus(true)" (focusout)="handleInputFocus(false)"
-          [id]="'numero' | generateIdForTA" #inputTel matInput type="tel" [value]="otherBeneficiaryNumber" maxlength="20" />
+        <input [ngClass]="{'empty': !inputTel.value}" (focus)="handleInputFocus(true)"
+          (focusout)="handleInputFocus(false)" [id]="'numero' | generateIdForTA" #inputTel matInput type="tel"
+          [value]="otherBeneficiaryNumber" maxlength="20" />
       </mat-form-field>
     </form>
     <!-- <ion-item lines="full">
@@ -72,8 +73,8 @@
     <span class="link" (click)="openSettingsPopup()">Pour autoriser, cliquez ici</span>
   </div>
   <div class="confirm-btn">
-    <button [disabled]="isProcessing || !htmlInput?.nativeElement?.value" shape="round"
-      (click)="validateBeneficiary()" class="btn" expand="block" [id]="'btn-validate' | generateIdForTA">Continuer</button>
+    <button [disabled]="isProcessing || !htmlInput?.nativeElement?.value" shape="round" (click)="validateBeneficiary()"
+      class="btn" expand="block" [id]="'btn-validate' | generateIdForTA">Continuer</button>
     <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
   </div>
 </div>

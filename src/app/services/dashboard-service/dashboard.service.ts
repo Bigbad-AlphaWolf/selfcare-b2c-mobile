@@ -290,7 +290,7 @@ export class DashboardService {
   }
 
   fetchFixedNumbers() {
-    return this.getAttachedNumbers().pipe(
+    return this.attachedNumbers().pipe(
       map((elements: any) => {
         let numbers = [];
         if (REGEX_FIX_NUMBER.test(SessionOem.MAIN_PHONE)) numbers.push(SessionOem.MAIN_PHONE);
@@ -647,8 +647,7 @@ export class DashboardService {
     }
   }
 
-  getFixPostpaidInfos() {
-    const msisdn = this.getCurrentPhoneNumber();
+  getFixPostpaidInfos(msisdn = this.getCurrentPhoneNumber()) {
     return this.http.get(`${ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT}/${msisdn}/status`, {
       responseType: 'text'
     });

@@ -176,6 +176,10 @@ export class AppComponent {
         '/access/:hmac': NewRegistrationPage,
         '/changement-formule/:codeFormule': TransfertHubServicesPage,
         '/changement-formule': TransfertHubServicesPage,
+        '/payer-sonatel': TransfertHubServicesPage,
+        '/payer-teranga': TransfertHubServicesPage,
+        '/payer-sonatel/:msisdn': TransfertHubServicesPage,
+        '/payer-teranga/:msisdn': TransfertHubServicesPage,
       })
       .subscribe(
         (matched) => {

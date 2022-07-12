@@ -8,7 +8,10 @@ import {
   Platform,
 } from '@ionic/angular';
 import { OperationExtras } from '../models/operation-extras.model';
-import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import {
+  FACE_ID_PERMISSIONS,
+  OrangeMoneyService,
+} from '../services/orange-money-service/orange-money.service';
 import { OM_LABEL_SERVICES } from '../utils/bills.util';
 import {
   OPERATION_TRANSFER_OM,
@@ -19,6 +22,7 @@ import {
   BALANCE_INSUFFICIENT_ERROR,
   IRT_TRANSFER_REASONS,
   OPERATION_TRANSACTION_STATUS,
+  PAYMENT_MOD_OM,
 } from '../../../src/shared';
 import { FeeModel } from '../services/orange-money-service';
 import { FeesService } from '../services/fees/fees.service';
@@ -27,8 +31,11 @@ import { of, throwError } from 'rxjs';
 import { OPERATION_TYPE_CARD_TO_WALLET, OPERATION_TYPE_INTERNATIONAL_TRANSFER } from '../utils/operations.constants';
 import { SelectElementModalComponent } from 'src/shared/select-element-modal/select-element-modal.component';
 import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
-import { ModalSuccessModel } from '../models/modal-success-infos.model';
 import { TransactionFinalityModalComponent } from 'src/shared/transaction-finality-modal/transaction-finality-modal.component';
+import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
+import { ModalSuccessModel } from '../models/modal-success-infos.model';
+import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
+import { FaceIdRequestModalComponent } from 'src/shared/face-id-request-modal/face-id-request-modal.component';
 
 @Component({
   selector: 'app-transfer-set-amount',
@@ -112,12 +119,20 @@ export class TransferSetAmountPage implements OnInit {
 
   async checkTransferOMDeeplink() {
     const msisdn = this.route.snapshot.paramMap.get('msisdn');
+    const amount = this.route.snapshot.paramMap.get('amount') ? +this.route.snapshot.paramMap.get('amount') : null;
     if (msisdn) {
       this.purchasePayload = {
         recipientMsisdn: msisdn,
         recipientFirstname: '',
         recipientLastname: '',
       };
+      await this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE)
+        .pipe(
+          switchMap((res) => {
+            return this.getOMTransferFees(OM_LABEL_SERVICES.TAF);
+          })
+        )
+        .toPromise();
       const msisdnHasOM = await this.omService
         .checkUserHasAccount(msisdn)
         .toPromise();
@@ -126,8 +141,9 @@ export class TransferSetAmountPage implements OnInit {
         : OPERATION_TRANSFER_OM_WITH_CODE;
       this.userHasNoOmAccount = !msisdnHasOM;
       this.userHasNoOmAccount
-        ? this.initTransferWithCodeForm()
-        : this.initForm(1);
+        ? this.initTransferWithCodeForm(amount)
+        : this.initForm(1, amount);
+      this.onAmountChanged({ target: { value: amount } });
       this.ref.detectChanges();
       return 1;
     }
@@ -139,6 +155,47 @@ export class TransferSetAmountPage implements OnInit {
       this.initForm(5000);
       this.getOMTransferFees(OM_LABEL_SERVICES.CARD_TO_WALLET).subscribe();
       return;
+    }
+    const checkRecipient = history.state.checkRecipient;
+    console.log('history.state', history.state);
+    if (checkRecipient) {
+      this.purchasePayload = history.state;
+      this.purchaseType = this.purchasePayload.purchaseType;
+      if (this.purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER) {
+        this.initForm(1000);
+        this.country = this.purchasePayload.country;
+        this.getOMTransferFees(this.country?.code).subscribe();
+        return;
+      }
+      this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE)
+        .pipe(
+          switchMap((res) => {
+            return this.getOMTransferFees(OM_LABEL_SERVICES.TAF);
+          })
+        )
+        .subscribe();
+      this.loading = true;
+      const msisdnHasOM = await this.omService
+        .checkUserHasAccount(this.purchasePayload.recipientMsisdn)
+        .pipe(
+          tap((_) => {
+            this.loading = false;
+          }),
+          catchError((_) => {
+            this.loading = false;
+            return of(true);
+          })
+        )
+        .toPromise();
+      this.purchaseType = msisdnHasOM
+        ? OPERATION_TRANSFER_OM
+        : OPERATION_TRANSFER_OM_WITH_CODE;
+      this.userHasNoOmAccount = !msisdnHasOM;
+      this.userHasNoOmAccount
+        ? this.initTransferWithCodeForm(1)
+        : this.initForm(1);
+      this.ref.detectChanges();
+      return 1;
     }
     if (this.purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER) {
       this.initForm(1000);
@@ -261,17 +318,18 @@ export class TransferSetAmountPage implements OnInit {
         }
       : {};
     this.iab.create(url, '_blank', options).on('exit').subscribe(event => {
-      this.openSuccessFailModal({})
+      this.openC2WSuccess({
+        msisdnBuyer: this.purchasePayload?.senderMsisdn,
+        amount: this.setAmountForm.value['amount'],
+        recipientMsisdn: this.purchasePayload?.recipientMsisdn,
+        purchaseType: this.purchaseType,
+        buyForMe: this.purchasePayload?.senderMsisdn === this.purchasePayload?.recipientMsisdn,
+        operationStatus: OPERATION_TRANSACTION_STATUS.PROCESSING,
+      });
     });
   }
 
-  async openSuccessFailModal(params: ModalSuccessModel) {
-    params.msisdnBuyer = this.purchasePayload?.senderMsisdn;
-    params.amount = this.setAmountForm.value['amount'];
-    params.recipientMsisdn = this.purchasePayload?.recipientMsisdn;
-    params.purchaseType = this.purchaseType;
-    params.buyForMe = this.purchasePayload?.senderMsisdn === this.purchasePayload?.recipientMsisdn;
-    params.operationStatus = OPERATION_TRANSACTION_STATUS.PROCESSING;
+  async openC2WSuccess(params: ModalSuccessModel) {
     const modal = await this.modalController.create({
       component: TransactionFinalityModalComponent,
       cssClass: "success-or-fail-modal",
@@ -288,14 +346,16 @@ export class TransferSetAmountPage implements OnInit {
       (hasEnoughBalance) => {
         this.checkingAmount = false;
         if (hasEnoughBalance) {
-          this.redirectRecapPage(this.purchasePayload);
+          // this.redirectRecapPage(this.purchasePayload);
+          this.openPinpad();
         } else {
           this.error = BALANCE_INSUFFICIENT_ERROR;
         }
       },
       (err) => {
         this.checkingAmount = false;
-        this.redirectRecapPage(this.purchasePayload);
+        // this.redirectRecapPage(this.purchasePayload);
+        this.openPinpad();
       }
     );
   }
@@ -455,6 +515,88 @@ export class TransferSetAmountPage implements OnInit {
       }
     });
     return await modal.present();
+  }
+
+  async openPinpad() {
+    const transferOMPayload = {
+      amount: this.purchasePayload?.amount,
+      msisdn2: this.purchasePayload?.recipientMsisdn,
+      a_ma_charge: this.purchasePayload?.includeFee,
+      send_fees: this.purchasePayload?.sending_fees,
+      cashout_fees: this.purchasePayload?.fee,
+      country: this.purchasePayload?.country,
+      reason: this.purchasePayload?.reason,
+    };
+    const transferOMWithCodePayload = {
+      amount: this.purchasePayload?.amount,
+      msisdn2: this.purchasePayload?.recipientMsisdn,
+      nom_receiver: this.purchasePayload?.recipientLastname,
+      prenom_receiver: this.purchasePayload?.recipientFirstname,
+    };
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      backdropDismiss: true,
+      swipeToClose: true,
+      cssClass: 'pin-pad-modal',
+      componentProps: {
+        operationType: this.purchaseType,
+        opXtras: this.purchasePayload,
+        transferMoneyPayload: transferOMPayload,
+        transferMoneyWithCodePayload: transferOMWithCodePayload,
+      },
+    });
+    modal.onDidDismiss().then((response) => {
+      if (response.data && response.data.success) {
+        this.openSuccessFailModal(
+          {
+            opXtras: response.data.opXtras,
+            historyTransactionItem: response.data.transferToBlock,
+            success: true,
+            msisdnBuyer: this.omService.getOrangeMoneyNumber(),
+            buyForMe:
+              this.purchasePayload?.recipientMsisdn ===
+              this.omService.getOrangeMoneyNumber(),
+          },
+          response.data.operationPayload
+        );
+      }
+    });
+    return await modal.present();
+  }
+
+  async openSuccessFailModal(params: ModalSuccessModel, orangeMoneyData?: any) {
+    params.paymentMod = PAYMENT_MOD_OM;
+    params.recipientMsisdn = this.purchasePayload?.recipientMsisdn;
+    params.recipientName = this.purchasePayload?.recipientName;
+    params.purchaseType = this.purchaseType;
+    params.amount = this.purchasePayload?.amount;
+    params.opXtras = this.purchasePayload;
+    const modal = await this.modalController.create({
+      component: OperationSuccessFailModalPage,
+      cssClass: 'success-or-fail-modal',
+      componentProps: params,
+      backdropDismiss: false,
+    });
+    modal.onDidDismiss().then((res) => {
+      if (orangeMoneyData) {
+        this.suggestFaceId(orangeMoneyData);
+      }
+    });
+    return await modal.present();
+  }
+
+  async suggestFaceId(operationData?) {
+    const status = await this.omService.checkFaceIdStatus();
+    if (status === FACE_ID_PERMISSIONS.LATER || !status) {
+      const modal = await this.modalController.create({
+        component: FaceIdRequestModalComponent,
+        cssClass: 'select-recipient-modal',
+        backdropDismiss: true,
+        componentProps: { operationData },
+      });
+      modal.onDidDismiss().then(() => {});
+      return await modal.present();
+    }
   }
 
   goBack() {

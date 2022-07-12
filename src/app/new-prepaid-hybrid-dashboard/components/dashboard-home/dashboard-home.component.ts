@@ -93,11 +93,17 @@ export class DashboardHomeComponent implements OnInit {
       icon: '04-boutons-01-illustrations-03-payer-ma-facture.svg',
     },
     {
-      title: 'Convertir',
-      subtitle: 'Points Sargal',
-      code: 'SARGAL',
+      title: 'Gérer',
+      subtitle: 'mon Fixe',
+      code: 'FIXES',
       icon: '04-boutons-01-illustrations-05-convertire-mes-points-sargal.svg',
     },
+    //{
+    //  title: 'Convertir',
+    //  subtitle: 'Points Sargal',
+    //  code: 'SARGAL',
+    //  icon: '04-boutons-01-illustrations-05-convertire-mes-points-sargal.svg',
+    //},
     {
       title: 'Demander',
       subtitle: 'un SOS',
@@ -162,7 +168,7 @@ export class DashboardHomeComponent implements OnInit {
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
     private banniereService: BanniereService,
-		private qrScan: QrScannerService,
+    private qrScan: QrScannerService,
     private illiflexService: IlliflexService
   ) {}
 
@@ -204,7 +210,7 @@ export class DashboardHomeComponent implements OnInit {
           this.storiesByCategory =
             this.storiesService.groupeStoriesByCategory(res);
         }),
-        catchError((err) => {
+        catchError(err => {
           this.isLoadingStories = false;
           this.hasError = true;
           return of(err);
@@ -243,7 +249,7 @@ export class DashboardHomeComponent implements OnInit {
           currentNumber
         );
       },
-      (err) => {
+      err => {
         this.followAnalyticsService.registerEventFollow(
           'Affichage_solde_sargal_error',
           'error',
@@ -263,12 +269,12 @@ export class DashboardHomeComponent implements OnInit {
     this.consoService
       .getUserCunsomation()
       .pipe(
-        tap((conso) => {
+        tap(conso => {
           this.loadingConso = false;
           conso.length ? this.processConso(conso) : (this.consoHasError = true);
           event ? event.target.complete() : '';
         }),
-        catchError((err) => {
+        catchError(err => {
           this.consoHasError = true;
           this.loadingConso = false;
           event ? event.target.complete() : '';
@@ -280,23 +286,20 @@ export class DashboardHomeComponent implements OnInit {
 
   processConso(consumation: NewUserConsoModel[]) {
     this.getValidityDates(consumation);
-    const bonus1 = consumation.find((conso) => conso.codeCompteur === 2)
+    const bonus1 = consumation.find(conso => conso.codeCompteur === 2)
       ?.montantRestantBrut
-      ? consumation.find((conso) => conso.codeCompteur === 2)
-          ?.montantRestantBrut
+      ? consumation.find(conso => conso.codeCompteur === 2)?.montantRestantBrut
       : 0;
-    const bonus2 = consumation.find((conso) => conso.codeCompteur === 6)
+    const bonus2 = consumation.find(conso => conso.codeCompteur === 6)
       ?.montantRestantBrut
-      ? consumation.find((conso) => conso.codeCompteur === 6)
-          ?.montantRestantBrut
+      ? consumation.find(conso => conso.codeCompteur === 6)?.montantRestantBrut
       : 0;
-    const forfaitBalance = consumation.find((conso) => conso.codeCompteur === 9)
+    const forfaitBalance = consumation.find(conso => conso.codeCompteur === 9)
       ?.montantRestantBrut
-      ? consumation.find((conso) => conso.codeCompteur === 9)
-          ?.montantRestantBrut
+      ? consumation.find(conso => conso.codeCompteur === 9)?.montantRestantBrut
       : 0;
     this.creditRechargement = consumation.find(
-      (conso) => conso.codeCompteur === 1
+      conso => conso.codeCompteur === 1
     )?.montantRestantBrut;
     this.canDoSOS = this.creditRechargement <= 4;
     this.creditGlobal = formatCurrency(
@@ -306,7 +309,7 @@ export class DashboardHomeComponent implements OnInit {
 
   getValidityDates(appelConso: any[]) {
     let longestDate = 0;
-    appelConso.forEach((conso) => {
+    appelConso.forEach(conso => {
       const dateDMY = conso.dateExpiration.substring(0, 10);
       const date = this.processDateDMY(dateDMY);
       if (date > longestDate) {
@@ -478,6 +481,9 @@ export class DashboardHomeComponent implements OnInit {
       case 'SOS':
         this.goToSOSPage();
         break;
+      case 'FIXES':
+        this.goTAllFixeServices();
+        break;
     }
   }
 
@@ -510,6 +516,15 @@ export class DashboardHomeComponent implements OnInit {
     }
   }
 
+  goTAllFixeServices() {
+      this.followAnalyticsService.registerEventFollow(
+        'gerer_mon_fixe_clic',
+        'event',
+        'clicked'
+      );
+      this.router.navigate(['/fixes-services']);
+  }
+
   goMerchantPayment() {
     this.followAnalyticsService.registerEventFollow(
       'Dashboard_paiement_marchand_clic',
@@ -528,7 +543,7 @@ export class DashboardHomeComponent implements OnInit {
             OPERATION_TYPE_MERCHANT_PAYMENT,
             PurchaseSetAmountPage.ROUTE_PATH
           )
-          .subscribe((_) => {});
+          .subscribe(_ => {});
         this.bsService.openModal(MerchantPaymentCodeComponent, {
           omMsisdn: omSession.msisdn,
         });
@@ -552,7 +567,7 @@ export class DashboardHomeComponent implements OnInit {
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
     });
-    modal.onDidDismiss().then((resp) => {
+    modal.onDidDismiss().then(resp => {
       if (resp && resp.data && resp.data.success) {
         this.goMerchantPayment();
       }
@@ -560,7 +575,7 @@ export class DashboardHomeComponent implements OnInit {
     return await modal.present();
   }
 
-	launchQrCode() {
-		this.qrScan.startScan();
-	}
+  launchQrCode() {
+    this.qrScan.startScan();
+  }
 }

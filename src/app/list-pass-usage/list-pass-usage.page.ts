@@ -1,8 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
+import { throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
+import { OPERATION_ABONNEMENT_WIDO, PassInternetModel } from 'src/shared';
 import { OffreService } from '../models/offre-service.model';
+import { PageHeader } from '../models/page-header.model';
+import { PassAbonnementWidoService } from '../services/pass-abonnement-wido-service /pass-abonnement-wido.service';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
+import { getPageHeader } from '../utils/title.util';
 
 @Component( {
 	selector: 'app-list-pass-usage',
@@ -16,11 +22,13 @@ export class ListPassUsagePage implements OnInit {
 	serviceUsage: OffreService;
 	recipientMsisdn: string;
 	state: any;
-
+	pageInfos: PageHeader;
+	OPERATION_ABONNEMENT_WIDO = OPERATION_ABONNEMENT_WIDO;
 	constructor(
 		private router: Router,
 		private navController: NavController,
-		private passService: PassInternetService
+		private passService: PassInternetService,
+		private passAbonnementWido: PassAbonnementWidoService
 	) { }
 
 	ngOnInit() {
@@ -34,6 +42,7 @@ export class ListPassUsagePage implements OnInit {
 			console.log( this.state );
 			this.serviceUsage = state.serviceUsage;
 			this.recipientMsisdn = state.recipientMsisdn;
+			this.pageInfos =	getPageHeader(this.serviceUsage.code, this.serviceUsage)
 			this.loadPass();
 		}
 	}
@@ -42,18 +51,35 @@ export class ListPassUsagePage implements OnInit {
 		this.loadingPass = true;
 		this.errorLoadingPass = false;
 		if ( this.serviceUsage ) {
-			this.passService
-				.getPassUsage( this.serviceUsage.code, this.recipientMsisdn )
-				.subscribe(
-					( res ) => {
-						this.loadingPass = false;
-						this.listPass = res;
-					},
-					( err ) => {
-						this.loadingPass = false;
-						this.errorLoadingPass = true;
-					}
-				);
+			if(this.serviceUsage.code === OPERATION_ABONNEMENT_WIDO) {
+				this.passAbonnementWido
+          .getListPassAbonnementWido(this.recipientMsisdn)
+          .pipe(
+            tap((res: PassInternetModel[]) => {
+              this.loadingPass = false;
+              this.listPass = res;
+            }),
+            catchError(err => {
+              this.loadingPass = false;
+							this.errorLoadingPass = true;
+              return throwError(err);
+            })
+          )
+          .subscribe();
+			} else {
+				this.passService
+					.getPassUsage( this.serviceUsage.code, this.recipientMsisdn )
+					.subscribe(
+						( res ) => {
+							this.loadingPass = false;
+							this.listPass = res;
+						},
+						( err ) => {
+							this.loadingPass = false;
+							this.errorLoadingPass = true;
+						}
+					);
+			}
 		}
 	}
 

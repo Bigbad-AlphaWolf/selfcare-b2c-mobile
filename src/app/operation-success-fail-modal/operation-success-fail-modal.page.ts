@@ -27,6 +27,7 @@ import {
   OPERATION_PAY_ORANGE_BILLS,
   OPERATION_UNBLOCK_OM_ACCOUNT,
   OPERATION_RESET_PIN_OM,
+  OPERATION_ABONNEMENT_WIDO,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -91,6 +92,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   OPERATION_TYPE_TERANGA_BILL = OPERATION_TYPE_TERANGA_BILL;
   OPERATION_TYPE_SENELEC_BILLS = OPERATION_TYPE_SENELEC_BILLS;
   OPERATION_TYPE_SENEAU_BILLS = OPERATION_TYPE_SENEAU_BILLS;
+  OPERATION_ABONNEMENT_WIDO = OPERATION_ABONNEMENT_WIDO;
   @Input() passBought: any;
   @Input() success: boolean;
   @Input() recipientMsisdn: string;
@@ -144,8 +146,8 @@ export class OperationSuccessFailModalPage implements OnInit {
       this.dashboardService
         .getAllOemNumbers()
         .pipe(
-          map((res) => {
-            res = res.map((x) => x.msisdn);
+          map(res => {
+            res = res.map(x => x.msisdn);
             return res;
           }),
           tap((res: string[]) => {
@@ -186,7 +188,7 @@ export class OperationSuccessFailModalPage implements OnInit {
             this.eligibilityError = res.message;
           }
         }),
-        catchError((err) => {
+        catchError(err => {
           this.checkingEligibility = false;
           this.eligibilityHasError = true;
           this.eligibilityError = 'Une erreur est survenue';
@@ -205,7 +207,7 @@ export class OperationSuccessFailModalPage implements OnInit {
         operationType: OPERATION_BLOCK_TRANSFER,
       },
     });
-    modal.onDidDismiss().then(async (response) => {
+    modal.onDidDismiss().then(async response => {
       if (response.data && response.data.success) {
         await this.modalController.dismiss();
         const hasOMStatusFull = response?.data?.hasOMStatusFull;
@@ -398,7 +400,7 @@ export class OperationSuccessFailModalPage implements OnInit {
         purchaseType: this.purchaseType,
       },
     });
-    modal.onDidDismiss().then((response) => {});
+    modal.onDidDismiss().then(response => {});
     return await modal.present();
   }
 

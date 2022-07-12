@@ -91,6 +91,7 @@ import {XeweulSoldeComponent} from '../app/components/counter/xeweul-solde/xeweu
 import {FavoriteXeweulComponent} from '../app/components/counter/favorite-xeweul/favorite-xeweul.component';
 import { TransactionItemComponent } from './transaction-item/transaction-item.component';
 import { TransactionFinalityModalComponent } from './transaction-finality-modal/transaction-finality-modal.component';
+import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
 
 @NgModule({
   declarations: [
@@ -219,7 +220,8 @@ import { TransactionFinalityModalComponent } from './transaction-finality-modal/
     TypeCounterModalComponent,
     FavoriteServiceCountersComponent,
     FavoriteCounterNameModalComponent,
-    TransactionFinalityModalComponent
+    TransactionFinalityModalComponent,
+		RattachByOtpCodeComponent
   ],
   exports: [
     BanniereComponent,

@@ -12,7 +12,7 @@ import {
   isFixPostpaid,
   PROFILE_TYPE_POSTPAID,
   KILIMANJARO_FORMULE,
-  isPostpaidFix
+  isPostpaidFix,
 } from 'src/app/dashboard';
 import {JAMONO_ALLO_CODE_FORMULE, SubscriptionModel, JAMONO_PRO_CODE_FORMULE, PRO_MOBILE_ERROR_CODE} from 'src/shared';
 import { FCM } from 'cordova-plugin-fcm-with-dependecy-updated/ionic/ngx';
@@ -23,9 +23,9 @@ const {
   CONSO_SERVICE,
   GET_MSISDN_BY_NETWORK_URL,
   CONFIRM_MSISDN_BY_NETWORK_URL,
-  CUSTOMER_OFFER_CACHE_DURATION
+  CUSTOMER_OFFER_CACHE_DURATION,
 } = environment;
-const ls = new SecureLS({encodingType: 'aes'});
+const ls = new SecureLS({ encodingType: 'aes' });
 
 // Account & msisdn infos
 const accountBaseUrl = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management`;
@@ -47,7 +47,7 @@ const checkNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/accou
 const checkNumberV3Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v3/check_number`;
 const registerEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v2/register`;
 const registerV3Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v3/register`;
-const resetPwdEndpoint = `${SERVER_API_URL}/api/account/b2c/reset-password`;
+const resetPwdEndpoint = `${SERVER_API_URL}/account/b2c/reset-password`;
 const resetPwdV2Endpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/v1/lite/reset-password`;
 
 const checkNumberIsOrangeEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/abonne/v1/is-orange-number`;
@@ -116,7 +116,7 @@ export class AuthenticationService {
     const lsKey = 'sub' + msisdn;
     const hasExpired = this.checkSubscriptionHasExpired(lsKey);
     const savedData = ls.get(lsKey);
-    if (!hasExpired && savedData) {
+    if (savedData && !hasExpired) {
       return of(savedData).pipe(take(1));
     } else {
       return this.getCustomerOfferRefact(msisdn).pipe(
@@ -187,6 +187,12 @@ export class AuthenticationService {
         ls.set(lsKey, subscription);
         //this.subscriptionUpdatedSubject.next(subscription);
         return subscription;
+      }),
+      catchError(err => {
+        const lsKey = 'subtiers' + msisdn;
+        const savedData = ls.get(lsKey);
+        if (savedData) return of(savedData);
+        return throwError(err);
       })
     );
   }
@@ -195,7 +201,7 @@ export class AuthenticationService {
     const lsKey = 'subtiers' + msisdn;
     const hasExpired = this.checkSubscriptionHasExpired(lsKey);
     const savedData = ls.get(lsKey);
-    if (!hasExpired && savedData) {
+    if (savedData && !hasExpired) {
       return of(savedData);
     } else {
       return this.getSubscriptionCustomerOfferForTiers(msisdn).pipe(share());
@@ -591,7 +597,11 @@ export function http_retry(maxRetry = 10, delayMs = 10000) {
   return (src: Observable<any>) => {
     return src.pipe(
       retryWhen(_ => {
-        return interval(delayMs).pipe(flatMap(count => (count === maxRetry ? throwError('Giving up') : of(count))));
+        return interval(delayMs).pipe(
+          flatMap(count =>
+            count === maxRetry ? throwError('Giving up') : of(count)
+          )
+        );
       })
     );
   };
@@ -603,5 +613,5 @@ export interface AccountStatusModel {
 
 export enum AccountStatus {
   FULL = 'FULL',
-  LITE = 'LITE'
+  LITE = 'LITE',
 }

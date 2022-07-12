@@ -1,4 +1,4 @@
-<div class="offre-service-item" [id]="('item-'+service?.code.toLowerCase()) | generateIdForTA" (click)="onClick()">
+<div [ngClass]="{'v2' : style === 'v2'} " class="offre-service-item" [id]="('item-'+service?.code.toLowerCase()) | generateIdForTA" (click)="onClick()">
   <img-loader [spinner]="true" class="icone" [src]="service?.icone"
       fallbackUrl="assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
   <span class="title scb-text-gray">{{service?.shortDescription}}</span>

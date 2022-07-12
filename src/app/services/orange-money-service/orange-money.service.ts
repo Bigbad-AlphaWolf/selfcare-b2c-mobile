@@ -52,6 +52,7 @@ import {
   ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE,
   OM_IDENTIC_TRANSACTION_CODE,
   OM_UNKOWN_ERROR_CODE,
+  OPERATION_ABONNEMENT_WIDO,
   OPERATION_PAY_ORANGE_BILLS,
   OPERATION_RESET_PIN_OM,
   OPERATION_TRANSFER_OM,
@@ -441,6 +442,7 @@ export class OrangeMoneyService {
       case OPERATION_TYPE_PASS_ALLO:
       case OPERATION_TYPE_PASS_INTERNET:
       case OPERATION_TYPE_PASS_ILLIFLEX:
+      case OPERATION_ABONNEMENT_WIDO:
         let type_pass;
         if (operationType === OPERATION_TYPE_PASS_ALLO) {
           type_pass = 'allo';
@@ -451,7 +453,9 @@ export class OrangeMoneyService {
         } else if (operationType === OPERATION_TYPE_PASS_INTERNET) {
           type_pass = 'internet';
         } else if (operationType === OPERATION_TYPE_PASS_ILLIFLEX) {
-          type_pass = 'illiflex';
+          type_pass = "illiflex";
+        } else if (operationType === OPERATION_ABONNEMENT_WIDO) {
+          type_pass = "abonnement_wido";
         }
         errorKey = `Achat_Pass_${type_pass}_${
           opXtras.fromPage === OPERATION_TYPE_BONS_PLANS ? 'bons_plans' : ''
@@ -935,3 +939,8 @@ export const enum FACE_ID_PERMISSIONS {
 
 export const FACE_ID_STORAGE_KEY = 'FACE_ID_PERMISSION'
 export const FACE_ID_OM_INFOS = 'FACE_ID_INFOS'
+
+export enum OM_FEES_CALCUL_MODE {
+  PERCENT = 'pourcent',
+  FIXE = 'fixe',
+}

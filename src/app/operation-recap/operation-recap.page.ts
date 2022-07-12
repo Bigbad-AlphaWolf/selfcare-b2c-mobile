@@ -27,10 +27,11 @@ import {
   OPERATION_TYPE_PASS_INTERNATIONAL,
   OPERATION_PAY_ORANGE_BILLS,
   BALANCE_INSUFFICIENT_ERROR,
+  OPERATION_ABONNEMENT_WIDO,
 } from 'src/shared';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
-import { FACE_ID_PERMISSIONS, OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { FACE_ID_PERMISSIONS, OM_FEES_CALCUL_MODE, OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { OperationExtras } from '../models/operation-extras.model';
 import {
@@ -51,7 +52,7 @@ import { IlliflexService } from '../services/illiflex-service/illiflex.service';
 import { PassInternetService } from '../services/pass-internet-service/pass-internet.service';
 import { ModalSuccessModel } from '../models/modal-success-infos.model';
 import { SetRecipientNamesModalComponent } from './set-recipient-names-modal/set-recipient-names-modal.component';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { BoosterService } from '../services/booster.service';
 import { FeeModel } from '../services/orange-money-service';
 import { FeesService } from '../services/fees/fees.service';
@@ -59,14 +60,16 @@ import { OM_LABEL_SERVICES } from '../utils/bills.util';
 import { FollowOemlogPurchaseInfos } from '../models/follow-log-oem-purchase-Infos.model';
 import { BoosterModel } from '../models/booster.model';
 import { FaceIdRequestModalComponent } from 'src/shared/face-id-request-modal/face-id-request-modal.component';
+import { catchError, tap } from 'rxjs/operators';
+import { PassAbonnementWidoService } from '../services/pass-abonnement-wido-service /pass-abonnement-wido.service';
 
 @Component({
-  selector: "app-operation-recap",
-  templateUrl: "./operation-recap.page.html",
-  styleUrls: ["./operation-recap.page.scss"],
+  selector: 'app-operation-recap',
+  templateUrl: './operation-recap.page.html',
+  styleUrls: ['./operation-recap.page.scss'],
 })
 export class OperationRecapPage implements OnInit {
-  static ROUTE_PATH = "/operation-recap";
+  static ROUTE_PATH = '/operation-recap';
   opXtras: OperationExtras = {};
   passChoosen: any;
   recipientMsisdn: string;
@@ -135,7 +138,9 @@ export class OperationRecapPage implements OnInit {
   OPERATION_TYPE_TERANGA_BILL = OPERATION_TYPE_TERANGA_BILL;
   OPERATION_TYPE_SENELEC_BILLS = OPERATION_TYPE_SENELEC_BILLS;
   OPERATION_TYPE_SENEAU_BILLS = OPERATION_TYPE_SENEAU_BILLS;
+  OPERATION_ABONNEMENT_WIDO = OPERATION_ABONNEMENT_WIDO;
   DALAL_TARIF = MONTHLY_DALAL_TARIF;
+  OM_FEES_CALCUL_MODE = OM_FEES_CALCUL_MODE;
   subscriptionInfos: SubscriptionModel;
   buyCreditPayload: any;
   offerPlan: OfferPlan;
@@ -156,7 +161,8 @@ export class OperationRecapPage implements OnInit {
     private illiflexService: IlliflexService,
     private passService: PassInternetService,
     private ref: ChangeDetectorRef,
-    private feeService: FeesService
+    private feeService: FeesService,
+    private passAbonnementWido: PassAbonnementWidoService
   ) {}
 
   ngOnInit() {
@@ -182,6 +188,7 @@ export class OperationRecapPage implements OnInit {
             case OPERATION_TYPE_PASS_ILLIMIX:
             case OPERATION_TYPE_PASS_ALLO:
             case OPERATION_TYPE_PASS_ILLIFLEX:
+            case OPERATION_ABONNEMENT_WIDO:
               this.passChoosen = this.opXtras.pass;
               this.recipientCodeFormule = this.opXtras.recipientCodeFormule;
               this.buyPassPayload = {
@@ -194,9 +201,9 @@ export class OperationRecapPage implements OnInit {
             case OPERATION_TYPE_PASS_INTERNATIONAL:
               this.recipientName = this.opXtras.recipientFromContact
                 ? this.opXtras.recipientFirstname +
-                  " " +
+                  ' ' +
                   this.opXtras.recipientLastname
-                : "";
+                : '';
               this.buyPassPayload = {
                 destinataire: this.recipientMsisdn,
                 pass: this.opXtras.pass,
@@ -208,14 +215,12 @@ export class OperationRecapPage implements OnInit {
               this.amount = this.opXtras.amount + this.opXtras.fee;
               this.transferOMWithCodePayload.amount = this.opXtras.amount;
               this.transferOMWithCodePayload.msisdn2 = this.recipientMsisdn;
-              this.transferOMWithCodePayload.prenom_receiver =
-                this.opXtras.recipientFirstname;
-              this.transferOMWithCodePayload.nom_receiver =
-                this.opXtras.recipientLastname;
+              this.transferOMWithCodePayload.prenom_receiver = this.opXtras.recipientFirstname;
+              this.transferOMWithCodePayload.nom_receiver = this.opXtras.recipientLastname;
               this.recipientFirstName = this.opXtras.recipientFirstname;
               this.recipientLastName = this.opXtras.recipientLastname;
               this.recipientName =
-                this.recipientFirstName + " " + this.recipientLastName;
+                this.recipientFirstName + ' ' + this.recipientLastName;
               this.paymentMod = PAYMENT_MOD_OM;
               break;
             case OPERATION_TRANSFER_OM:
@@ -231,7 +236,7 @@ export class OperationRecapPage implements OnInit {
               if (this.purchaseType === OPERATION_TRANSFER_OM)
                 this.recipientName =
                   this.opXtras.recipientFirstname +
-                  " " +
+                  ' ' +
                   this.opXtras.recipientLastname;
               this.paymentMod = PAYMENT_MOD_OM;
               break;
@@ -251,9 +256,9 @@ export class OperationRecapPage implements OnInit {
               this.paymentMod = PAYMENT_MOD_OM;
               this.recipientName = this.opXtras.recipientFromContact
                 ? this.opXtras.recipientFirstname +
-                  " " +
+                  ' ' +
                   this.opXtras.recipientLastname
-                : "";
+                : '';
               this.offerPlan = this.opXtras.offerPlan;
               break;
             case OPERATION_RAPIDO:
@@ -277,24 +282,17 @@ export class OperationRecapPage implements OnInit {
   }
 
   async checkBuyPassDeeplink(): Promise<any> {
-    const pricePlanIndex = +this.route.snapshot.paramMap.get("ppi");
+    const pricePlanIndex = +this.route.snapshot.paramMap.get('ppi');
     if (pricePlanIndex) {
-      const passByPPi: any = await this.passService.getPassByPPI(
-        pricePlanIndex
-      );
+      const passByPPi: any = await this.passService.getPassByPPI(pricePlanIndex);
       if (passByPPi.error) {
         this.appRouting.goToDashboard();
         return;
       }
       this.recipientMsisdn = this.currentUserNumber;
       this.purchaseType =
-        passByPPi.passType === "INTERNET"
-          ? OPERATION_TYPE_PASS_INTERNET
-          : OPERATION_TYPE_PASS_ILLIMIX;
-      this.passChoosen =
-        passByPPi.passType === "INTERNET"
-          ? passByPPi.passInternet
-          : passByPPi.passIllimix;
+        passByPPi.passType === 'INTERNET' ? OPERATION_TYPE_PASS_INTERNET : OPERATION_TYPE_PASS_ILLIMIX;
+      this.passChoosen = passByPPi.passType === 'INTERNET' ? passByPPi.passInternet : passByPPi.passIllimix;
       this.buyPassPayload = {
         destinataire: this.recipientMsisdn,
         pass: this.passChoosen,
@@ -307,37 +305,29 @@ export class OperationRecapPage implements OnInit {
   }
 
   async checkTransferOMDeeplink() {
-    let amount = +this.route.snapshot.paramMap.get("amount");
-    const msisdn = this.route.snapshot.paramMap.get("msisdn");
+    let amount = +this.route.snapshot.paramMap.get('amount');
+    const msisdn = this.route.snapshot.paramMap.get('msisdn');
     if (msisdn) {
-      const msisdnHasOM = await this.orangeMoneyService
-        .checkUserHasAccount(msisdn)
-        .toPromise();
-      this.purchaseType = msisdnHasOM
-        ? OPERATION_TRANSFER_OM
-        : OPERATION_TRANSFER_OM_WITH_CODE;
+      const msisdnHasOM = await this.orangeMoneyService.checkUserHasAccount(msisdn).toPromise();
+      this.purchaseType = msisdnHasOM ? OPERATION_TRANSFER_OM : OPERATION_TRANSFER_OM_WITH_CODE;
       this.recipientMsisdn = msisdn;
       this.paymentMod = PAYMENT_MOD_OM;
       if (!msisdnHasOM) {
         const fees = await this.feeService
           .getFeesByOMService(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE, msisdn)
           .toPromise();
-        const fee = fees.find(
-          (fee: FeeModel) => amount <= fee.max && amount >= fee.min
-        );
+        const fee = fees.find((fee: FeeModel) => amount <= fee.max && amount >= fee.min);
         amount = fee ? amount + fee.effective_fees : amount;
         const response = await this.openSetRecipientNamesModal();
         this.amount = amount;
         this.transferOMWithCodePayload.amount = amount;
         this.transferOMWithCodePayload.msisdn2 = msisdn;
-        this.transferOMWithCodePayload.prenom_receiver =
-          response.recipientFirstname;
-        this.transferOMWithCodePayload.nom_receiver =
-          response.recipientLastname;
+        this.transferOMWithCodePayload.prenom_receiver = response.recipientFirstname;
+        this.transferOMWithCodePayload.nom_receiver = response.recipientLastname;
         this.recipientFirstName = response.recipientFirstname;
         this.recipientLastName = response.recipientLastname;
         this.recipientName =
-          this.recipientFirstName + " " + this.recipientLastName;
+          this.recipientFirstName + ' ' + this.recipientLastName;
         this.ref.detectChanges();
         return of(response).toPromise();
       } else {
@@ -345,7 +335,7 @@ export class OperationRecapPage implements OnInit {
         this.transferOMPayload.amount = this.amount;
         this.transferOMPayload.msisdn2 = this.recipientMsisdn;
         this.ref.detectChanges();
-        return of("hasOM").toPromise();
+        return of('hasOM').toPromise();
       }
     } else {
       return of(null).toPromise();
@@ -355,7 +345,7 @@ export class OperationRecapPage implements OnInit {
   async openSetRecipientNamesModal(): Promise<any> {
     const modal = await this.modalController.create({
       component: SetRecipientNamesModalComponent,
-      cssClass: "select-recipient-modal",
+      cssClass: 'select-recipient-modal',
       backdropDismiss: false,
     });
     await modal.present();
@@ -370,11 +360,9 @@ export class OperationRecapPage implements OnInit {
   }
 
   getCurrentNumSubscription() {
-    this.authServ
-      .getSubscriptionForTiers(this.currentUserNumber)
-      .subscribe((res: SubscriptionModel) => {
-        this.subscriptionInfos = res;
-      });
+    this.authServ.getSubscriptionForTiers(this.currentUserNumber).subscribe((res: SubscriptionModel) => {
+      this.subscriptionInfos = res;
+    });
   }
 
   pay() {
@@ -385,10 +373,11 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_PASS_ILLIMIX:
       case OPERATION_TYPE_PASS_ALLO:
       case OPERATION_TYPE_PASS_ILLIFLEX:
+			case	OPERATION_ABONNEMENT_WIDO:
         if (this.isLightMod) {
           const hmac = this.authServ.getHmac();
           this.payWithCredit(hmac);
-        } else if (this.subscriptionInfos.profil === PROFILE_TYPE_POSTPAID) {
+        } else if (this.subscriptionInfos?.profil === PROFILE_TYPE_POSTPAID) {
           this.paymentMod = PAYMENT_MOD_OM;
           this.openPinpad();
         } else {
@@ -415,10 +404,31 @@ export class OperationRecapPage implements OnInit {
       case OPERATION_TYPE_TERANGA_BILL:
       case OPERATION_TYPE_SENELEC_BILLS:
       case OPERATION_TYPE_SENEAU_BILLS:
-        this.checkOMBalanceSuffiency(this.opXtras?.invoice?.montantFacture);
+        const amountTocheck =
+          this.purchaseType === OPERATION_TYPE_SENELEC_BILLS ||
+          this.purchaseType === OPERATION_TYPE_SENEAU_BILLS
+            ? this.opXtras?.invoice?.montantFacture +
+              this.opXtras?.fee?.effective_fees
+            : this.opXtras?.invoice?.montantFacture;
+        this.checkOMBalanceSuffiency(amountTocheck);
       default:
         break;
     }
+  }
+
+  suscribeToWido(recipientMsisdn: string, ppi: string, logInfos: any) {
+    this.passAbonnementWido
+      .suscribeToWido({ msisdn: recipientMsisdn, packId: +ppi })
+      .pipe(
+        tap(res => {
+          this.transactionSuccessful({ code: '0' }, logInfos);
+        }),
+        catchError(err => {
+          this.transactionFailure(err, logInfos);
+          return throwError(err);
+        })
+      )
+      .subscribe();
   }
 
   activateDalal() {
@@ -432,23 +442,23 @@ export class OperationRecapPage implements OnInit {
     this.dalalTonesService.activateDalal(this.opXtras.dalal).subscribe(
       () => {
         this.buyingPass = false;
-        this.sendFollowLogs("event", this.purchaseType, logInfos);
+        this.sendFollowLogs('event', this.purchaseType, logInfos);
         this.openSuccessFailModal({
           success: true,
           msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
           buyForMe: true,
         });
       },
-      (err) => {
+      err => {
         this.buyingPass = false;
         const activationErrorMsg =
           err && err.error && err.error.message
             ? err.error.message
-            : "Une erreur est survenue";
+            : 'Une erreur est survenue';
         const followDetails = Object.assign({}, logInfos, {
           error_code: err.status,
         });
-        this.sendFollowLogs("error", this.purchaseType, followDetails);
+        this.sendFollowLogs('error', this.purchaseType, followDetails);
         this.openSuccessFailModal({
           success: false,
           msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
@@ -460,23 +470,21 @@ export class OperationRecapPage implements OnInit {
   }
 
   async setPaymentMod() {
-    let passIlliflex =
-      this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX
-        ? this.passChoosen
-        : null;
+    let passIlliflex = this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX ? this.passChoosen : null;
     const modal = await this.modalController.create({
       component: SetPaymentChannelModalPage,
-      cssClass: "set-channel-payment-modal",
+      cssClass: 'set-channel-payment-modal',
       componentProps: {
         pass: this.passChoosen,
+				purchaseType: this.purchaseType,
         passIlliflex,
       },
     });
-    modal.onDidDismiss().then((response) => {
+    modal.onDidDismiss().then(response => {
       let eventName =
         this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX
-          ? "Buy_illiflex_payment_mod"
-          : "Buy_pass_payment_mod";
+          ? 'Buy_illiflex_payment_mod'
+          : 'Buy_pass_payment_mod';
       if (response.data && response.data.paymentMod === PAYMENT_MOD_CREDIT) {
         this.paymentMod = PAYMENT_MOD_CREDIT;
         if (this.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX) {
@@ -487,7 +495,7 @@ export class OperationRecapPage implements OnInit {
         }
         this.followAnalyticsService.registerEventFollow(
           eventName,
-          "event",
+          'event',
           PAYMENT_MOD_CREDIT
         );
       }
@@ -496,7 +504,7 @@ export class OperationRecapPage implements OnInit {
         this.openPinpad();
         this.followAnalyticsService.registerEventFollow(
           eventName,
-          "event",
+          'event',
           PAYMENT_MOD_OM
         );
       }
@@ -509,7 +517,7 @@ export class OperationRecapPage implements OnInit {
       component: NewPinpadModalPage,
       backdropDismiss: true,
       swipeToClose: true,
-      cssClass: "pin-pad-modal",
+      cssClass: 'pin-pad-modal',
       componentProps: {
         operationType: this.purchaseType,
         buyPassPayload: this.buyPassPayload,
@@ -524,7 +532,7 @@ export class OperationRecapPage implements OnInit {
         illiflexPayload: this.passChoosen,
       },
     });
-    modal.onDidDismiss().then((response) => {
+    modal.onDidDismiss().then(response => {
       if (response.data && response.data.success) {
         this.openSuccessFailModal(
           {
@@ -532,9 +540,7 @@ export class OperationRecapPage implements OnInit {
             historyTransactionItem: response.data.transferToBlock,
             success: true,
             msisdnBuyer: this.orangeMoneyService.getOrangeMoneyNumber(),
-            buyForMe:
-              this.recipientMsisdn ===
-              this.orangeMoneyService.getOrangeMoneyNumber(),
+            buyForMe: this.recipientMsisdn === this.orangeMoneyService.getOrangeMoneyNumber(),
           },
           response.data.operationPayload
         );
@@ -556,11 +562,11 @@ export class OperationRecapPage implements OnInit {
     params.opXtras = this.opXtras;
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
-      cssClass: "success-or-fail-modal",
+      cssClass: 'success-or-fail-modal',
       componentProps: params,
       backdropDismiss: false,
     });
-    modal.onDidDismiss().then((res) => {
+    modal.onDidDismiss().then(res => {
       if (orangeMoneyData) {
         this.suggestFaceId(orangeMoneyData);
       }
@@ -573,7 +579,7 @@ export class OperationRecapPage implements OnInit {
     if (status === FACE_ID_PERMISSIONS.LATER || !status) {
       const modal = await this.modalController.create({
         component: FaceIdRequestModalComponent,
-        cssClass: "select-recipient-modal",
+        cssClass: 'select-recipient-modal',
         backdropDismiss: true,
         componentProps: { operationData },
       });
@@ -583,10 +589,7 @@ export class OperationRecapPage implements OnInit {
   }
 
   getPassBoosters(pass: any) {
-    return getActiveBoostersForSpecificPass(
-      pass,
-      BoosterService.lastBoostersList
-    );
+    return getActiveBoostersForSpecificPass(pass, BoosterService.lastBoostersList);
   }
 
   isBoosterTraceTV() {
@@ -608,15 +611,13 @@ export class OperationRecapPage implements OnInit {
     const codeIN = this.passChoosen.passPromo
       ? this.passChoosen.passPromo.price_plan_index
       : this.passChoosen.price_plan_index;
-    const amount = this.passChoosen.passPromo
-      ? +this.passChoosen.passPromo.tarif
-      : +this.passChoosen.tarif;
+    const amount = this.passChoosen.passPromo ? +this.passChoosen.passPromo.tarif : +this.passChoosen.tarif;
     const msisdn = this.currentUserNumber;
     const receiver = this.recipientMsisdn;
     const type =
       this.purchaseType === OPERATION_TYPE_PASS_INTERNET
-        ? "internet"
-        : "illimix";
+        ? 'internet'
+        : 'illimix';
     const payload: BuyPassModel = {
       type,
       codeIN,
@@ -630,14 +631,21 @@ export class OperationRecapPage implements OnInit {
       montant: amount,
       ppi: codeIN,
     };
-    this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
-      (res: any) => {
-        this.transactionSuccessful(res, logInfos);
-      },
-      (err: any) => {
-        this.transactionFailure(err, logInfos);
-      }
-    );
+		switch (this.purchaseType) {
+			case OPERATION_ABONNEMENT_WIDO:
+				this.suscribeToWido(payload.receiver, payload.codeIN, logInfos)
+				break;
+			default:
+				this.dashboardService.buyPassByCredit(payload, hmac).subscribe(
+					(res: any) => {
+						this.transactionSuccessful(res, logInfos);
+					},
+					(err: any) => {
+						this.transactionFailure(err, logInfos);
+					}
+				);
+				break;
+		}
   }
 
   buyPassUsage() {
@@ -648,7 +656,7 @@ export class OperationRecapPage implements OnInit {
       receiver: this.opXtras.recipientMsisdn,
       msisdn: this.currentUserNumber,
       serviceId: this.opXtras.pass.serviceId,
-      type: "usage",
+      type: 'usage',
       serviceType: this.opXtras.pass.typeUsage.code,
     };
     const logInfos: FollowOemlogPurchaseInfos = {
@@ -658,10 +666,10 @@ export class OperationRecapPage implements OnInit {
       ppi: this.opXtras.pass.price_plan_index,
     };
     this.dashboardService.buyPassByCredit(payload).subscribe(
-      (res) => {
+      res => {
         this.transactionSuccessful(res, logInfos);
       },
-      (err) => {
+      err => {
         this.transactionFailure(err, logInfos);
       }
     );
@@ -678,16 +686,14 @@ export class OperationRecapPage implements OnInit {
     this.illiflexService.buyIlliflex(this.passChoosen).subscribe(
       () => {
         this.buyingPass = false;
-        this.sendFollowLogs("event", this.purchaseType, logInfos);
+        this.sendFollowLogs('event', this.purchaseType, logInfos);
         this.openSuccessFailModal({
           success: true,
           msisdnBuyer: this.recipientMsisdn,
-          buyForMe:
-            this.recipientMsisdn ===
-            this.dashboardService.getCurrentPhoneNumber(),
+          buyForMe: this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
         });
       },
-      (err) => {
+      err => {
         this.buyingPass = false;
         let errorMsg;
         if (err.status && err.status === 400) {
@@ -698,7 +704,7 @@ export class OperationRecapPage implements OnInit {
         const followDetails = Object.assign({}, logInfos, {
           error_code: err.status,
         });
-        this.sendFollowLogs("error", this.purchaseType, followDetails);
+        this.sendFollowLogs('error', this.purchaseType, followDetails);
         this.openSuccessFailModal({
           success: false,
           msisdnBuyer: this.recipientMsisdn,
@@ -714,23 +720,22 @@ export class OperationRecapPage implements OnInit {
 
   transactionSuccessful(res: any, logInfos: FollowOemlogPurchaseInfos) {
     this.buyingPass = false;
-    if (res.code !== "0") {
+    if (res.code !== '0') {
       this.buyPassFailed = true;
       this.buyPassErrorMsg = res.message;
       const followDetails = Object.assign({}, logInfos, {
         error_code: res.code,
       });
-      this.sendFollowLogs("error", this.purchaseType, followDetails);
+      this.sendFollowLogs('error', this.purchaseType, followDetails);
     } else {
       this.buyPassFailed = false;
       const followDetails = logInfos;
-      this.sendFollowLogs("event", this.purchaseType, followDetails);
+      this.sendFollowLogs('event', this.purchaseType, followDetails);
     }
     this.openSuccessFailModal({
       success: !this.buyPassFailed,
       msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
-      buyForMe:
-        this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
+      buyForMe: this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
       errorMsg: this.buyPassErrorMsg,
       errorCode: res?.code,
       recipientMsisdn: this.recipientMsisdn,
@@ -739,20 +744,19 @@ export class OperationRecapPage implements OnInit {
 
   transactionFailure(err: any, logInfos: FollowOemlogPurchaseInfos) {
     this.buyingPass = false;
-    // this.openSuccessFailModal({ success: false });
     this.buyPassErrorMsg =
-      err.error && err.error.message
-        ? err.error.message
-        : "Service indisponible. Veuillez réessayer ultérieurement";
+      err.error && err.error.message ? err.error.message || err?.error?.respMsg : 'Service indisponible. Veuillez réessayer ultérieurement';
+		if(err?.error?.respMsg) {
+			this.buyPassErrorMsg = err?.error?.respMsg;
+		}
     const followDetails = Object.assign({}, logInfos, {
       error_code: err.status,
     });
-    this.sendFollowLogs("error", this.purchaseType, followDetails);
+    this.sendFollowLogs('error', this.purchaseType, followDetails);
     this.openSuccessFailModal({
       success: false,
       msisdnBuyer: this.dashboardService.getCurrentPhoneNumber(),
-      buyForMe:
-        this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
+      buyForMe: this.recipientMsisdn === this.dashboardService.getCurrentPhoneNumber(),
       errorMsg: this.buyPassErrorMsg,
       errorCode: err?.error?.code,
       recipientMsisdn: this.recipientMsisdn,
@@ -761,46 +765,49 @@ export class OperationRecapPage implements OnInit {
 
   get operationTypeRecap() {
     return [
-      "RECHARGEMENT_CREDIT",
+      'RECHARGEMENT_CREDIT',
       OPERATION_TYPE_PASS_VOYAGE,
-      "OPERATION_WOYOFAL",
+      'OPERATION_WOYOFAL',
       OPERATION_RAPIDO,
-      OPERATION_XEWEUL
+      OPERATION_XEWEUL,
     ].includes(this.purchaseType);
   }
 
   sendFollowLogs(
-    type: "event" | "error",
+    type: 'event' | 'error',
     purchaseType: string,
     logDetails: any
   ) {
     let eventName;
     switch (purchaseType) {
       case OPERATION_TYPE_PASS_INTERNET:
-        eventName = "Achat_Pass_internet";
+        eventName = 'Achat_Pass_internet';
         break;
       case OPERATION_TYPE_PASS_USAGE:
         eventName = `Achat_Pass_usage_${this.opXtras.serviceUsage.code.toLowerCase()}`;
         break;
       case OPERATION_TYPE_PASS_ILLIMIX:
-        eventName = "Achat_Pass_illimix";
+        eventName = 'Achat_Pass_illimix';
         break;
       case OPERATION_TYPE_PASS_VOYAGE:
-        eventName = "Achat_Pass_voyage";
+        eventName = 'Achat_Pass_voyage';
         break;
       case OPERATION_TYPE_PASS_ILLIFLEX:
-        eventName = "Achat_Pass_illiflex";
+        eventName = 'Achat_Pass_illiflex';
         break;
       case OPERATION_ENABLE_DALAL:
-        eventName = "Dalal_activation";
+        eventName = 'Dalal_activation';
+        break;
+      case OPERATION_ABONNEMENT_WIDO:
+        eventName = 'Achat_abonnement_wido';
         break;
       default:
         break;
     }
     if (this.opXtras && this.opXtras.fromPage === OPERATION_TYPE_BONS_PLANS)
-      eventName += "_bons_plans";
-    eventName += type === "event" ? "_Success" : "_Error";
-    console.log("followSuccess", logDetails, "op", purchaseType, eventName);
+      eventName += '_bons_plans';
+    eventName += type === 'event' ? '_Success' : '_Error';
+    console.log('followSuccess', logDetails, 'op', purchaseType, eventName);
     this.followAnalyticsService.registerEventFollow(
       eventName,
       type,
@@ -812,7 +819,7 @@ export class OperationRecapPage implements OnInit {
     this.checkingAmount = true;
     this.error = null;
     this.orangeMoneyService.checkBalanceSufficiency(amount).subscribe(
-      (hasEnoughBalance) => {
+      hasEnoughBalance => {
         this.checkingAmount = false;
         if (hasEnoughBalance) {
           this.openPinpad();
@@ -820,7 +827,7 @@ export class OperationRecapPage implements OnInit {
           this.error = BALANCE_INSUFFICIENT_ERROR;
         }
       },
-      (err) => {
+      err => {
         this.checkingAmount = false;
         this.openPinpad();
       }

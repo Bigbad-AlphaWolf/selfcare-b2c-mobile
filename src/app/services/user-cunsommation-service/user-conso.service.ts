@@ -14,8 +14,7 @@ const urlConsoInternet = `${SERVER_API_URL}/${CONSO_SERVICE}/api/history-communi
 export class UserConsoService {
   constructor(private http: HttpClient, private dashboardService: DashboardService) {}
 
-  getUserCunsomation() {
-    const msisdn = this.dashboardService.getCurrentPhoneNumber();
+  getUserCunsomation(msisdn = this.dashboardService.getCurrentPhoneNumber()) {
     let gaugeIndex = 0;
     return this.http.get<NewUserConsoModel[]>(`${urlConso}/${msisdn}`).pipe(
       share(),

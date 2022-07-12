@@ -38,10 +38,10 @@ export class AuthInterceptorService implements HttpInterceptor {
   ) {
     this.appVersion
       .getVersionNumber()
-      .then((value) => {
+      .then(value => {
         this.appVersionNumber = value;
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       });
   }
@@ -110,9 +110,9 @@ export class AuthInterceptorService implements HttpInterceptor {
     }
     // Not send token for dev endpoints
     if (
-      req.url.match('selfcare-otp') ||
-      req.url.match('selfcare-b2c-account/api/account-management/account') ||
-      req.url.match('auth/login')
+      //req.url.match('selfcare-otp') ||
+      req.url.match('selfcare-b2c-account/api/account-management/account')
+      //req.url.match('auth/login')
     ) {
       req.headers.set('X-Selfcare-Source', 'mobile');
       return next.handle(req);
@@ -175,9 +175,9 @@ export class AuthInterceptorService implements HttpInterceptor {
       });
     }
     return next.handle(req).pipe(
-      retryWhen((err) => {
+      retryWhen(err => {
         return err.pipe(
-          switchMap(async (err) => {
+          switchMap(async err => {
             if (
               err.status === 401 &&
               checkUrlMatchOM(err.url) &&
@@ -194,7 +194,7 @@ export class AuthInterceptorService implements HttpInterceptor {
           if (err instanceof HttpErrorResponse) {
             if (err.status === 401 && !checkUrlMatchOM(err.url)) {
               that.authServ.cleanCache();
-              that.router.navigate(['login']);
+              that.router.navigate(['']);
             }
             if (err.status === 403) {
               // check if token is expired, if yes go to login page

@@ -81,37 +81,7 @@
             </div>
           </div>
       </div>
-      <div class="offre-infos">
-        <span class="title" > Mes infos clients </span>
-        <div class="infos-item">
-          <span class="label">
-            Numéro client (NCLI)
-          </span>
-          <span class="value">
-            {{ customerOfferInfos?.clientCode }}
-          </span>
-        </div>
-        <div class="infos-item">
-          <span class="label">
-            Etat de la ligne
-          </span>
-          <span class="value">
-            <span class="text">
-              {{ isNumberActivated ? 'Actif' : 'Inactif' }}&nbsp;
-            </span>
-            <span class="icone" [ngClass]="{ 'actif': isNumberActivated }">
-            </span>
-          </span>
-        </div>
-        <div class="infos-item">
-          <span class="label">
-            Offre en cours
-          </span>
-          <span class="value">
-            {{ customerOfferInfos?.nomOffre }}
-          </span>
-        </div>
-      </div>
+      <app-infos-ligne-fixe [customerOfferInfos]="customerOfferInfos" ></app-infos-ligne-fixe>
     </div>
   </div>
 </ion-content>

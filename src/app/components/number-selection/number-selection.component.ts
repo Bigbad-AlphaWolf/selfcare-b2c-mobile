@@ -203,13 +203,8 @@ export class NumberSelectionComponent implements OnInit {
         }
       );
     }
-    if (
-      !(
-        REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn) ||
-        REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn)
-      )
-    ) {
-      this.phoneIsNotValid = true;
+    if (this.checkIfIsRecipientInvalid()) {
+      this.canNotRecieve = true;
       return;
     }
 
@@ -229,6 +224,20 @@ export class NumberSelectionComponent implements OnInit {
     }
 
     this.dismissBottomSheet();
+  }
+
+  checkIfIsRecipientInvalid() {
+    if (
+      (this.data.purchaseType === OPERATION_TYPE_PASS_ILLIMIX &&
+        REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn)) ||
+      !(
+        REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn) ||
+        REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn)
+      )
+    ) {
+      return true;
+    }
+    return false;
   }
 
   async isEligible() {
