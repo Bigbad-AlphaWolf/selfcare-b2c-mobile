@@ -4,3 +4,4 @@ export const OFFRE_SERVICES_ENDPOINT = `${SERVICES_PATH}/v2/categorie-offre-serv
 export const ALL_SERVICES_ENDPOINT = `${SERVICES_PATH}/offre-services`;
 export const ASSISTANCE_ENDPOINT = `${SERVICES_PATH}/besoin-aides`;
 export const OFFER_SERVICE_BY_CODE = `${SERVICES_PATH}/offre-services-by-formule`;
+export const TRANSFER_BONUS_THRESHOLD_ENDPOINT = `${SERVICES_PATH}/v1/transfer-bonus-threshold`;

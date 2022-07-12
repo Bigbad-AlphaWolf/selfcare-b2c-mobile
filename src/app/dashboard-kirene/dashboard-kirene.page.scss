@@ -47,7 +47,7 @@
     //margin-top: -59px;
     margin-top: -50px;
     //padding-top: 19px;
-    &-top3 {
+    &-top3, &-top4 {
       min-height: 154px;
       margin-bottom: 10px;
       display: flex;
@@ -98,6 +98,11 @@
           }
         }
       }
+    }
+
+    &-top4 {
+      justify-content: flex-start !important;
+      padding-left: percentage(16.5/375);
     }
 
     &-top2 {

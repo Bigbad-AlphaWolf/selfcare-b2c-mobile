@@ -1,15 +1,9 @@
-<div
-  class="page-om-mobile-wrapper"
-  [ngClass]="{ 'custom-style-desktop': desktopPinPad }"
->
+<div class="page-om-mobile-wrapper">
   <div class="lock-image-container">
     <img src="/assets/images/fill-1.svg" alt="lock" />
   </div>
   <div class="unlock-info-text-block">
-    <span
-      [innerHTML]="infosText"
-      class="unlock-info-text scb-text-full-black"
-    ></span>
+    <span [innerHTML]="infosText" class="unlock-info-text scb-text-full-black"></span>
   </div>
 
   <div class="spinner" *ngIf="loading">
@@ -28,77 +22,44 @@
 
   <div class="digit-pad-block" *ngIf="!loading && !recurrentOperation">
     <div class="code-pin-block">
-      <span
-        class="pin-container"
-        [ngClass]="{
+      <span class="pin-container" [ngClass]="{
           'prev-pin': codePin.length > 1,
           'active-pin': codePin.length == 1,
           'current-pin': codePin.length === 0
-        }"
-      >
+        }">
         <span class="code-pin"></span>
       </span>
 
-      <span
-        class="pin-container"
-        [ngClass]="{
+      <span class="pin-container" [ngClass]="{
           'prev-pin': codePin.length > 2,
           'active-pin': codePin.length == 2,
           'current-pin': codePin.length === 1
-        }"
-      >
+        }">
         <span class="code-pin"></span>
       </span>
 
-      <span
-        class="pin-container"
-        [ngClass]="{
+      <span class="pin-container" [ngClass]="{
           'prev-pin': codePin.length > 3,
           'active-pin': codePin.length == 3,
           'current-pin': codePin.length === 2
-        }"
-      >
+        }">
         <span class="code-pin"></span>
       </span>
-      <span
-        class="pin-container"
-        [ngClass]="{
+      <span class="pin-container" [ngClass]="{
           'prev-pin': codePin.length == 4,
           'current-pin': codePin.length === 3
-        }"
-      >
+        }">
         <span class="code-pin"> </span>
       </span>
     </div>
-    <div
-      fxLayout="row wrap"
-      fxLayoutAlign="space-between"
-      class="pad-numbers-block"
-    >
-      <span
-        fxFlex="21%"
-        (click)="type(digit)"
-        *ngFor="let digit of randomDigits"
-        class="digit-pad c-pointer"
-        >{{ digitPadIsActive ? digit : '' }}</span
-      >
+    <div fxLayout="row wrap" fxLayoutAlign="space-between" class="pad-numbers-block">
+      <span fxFlex="21%" (click)="type(digit)" *ngFor="let digit of randomDigits" class="digit-pad c-pointer">{{
+        digitPadIsActive ? digit : '' }}</span>
     </div>
 
     <div class="options">
-      <span
-        *ngIf="digitPadIsActive && !notOrangeMoney"
-        (click)="generateRandomDigitPad()"
-        class="digit-pad erase-last-digit scb-text-white"
-      >
-        <img src="/assets/images/reload.png" alt="icon" class="options-icon"
-      /></span>
-
-      <span (click)="delete()" class="digit-pad scb-text-white reload"
-        ><img
-          src="/assets/images/delete-icon.png"
-          alt="icon"
-          class="options-icon"
-        />
+      <span (click)="delete()" class="digit-pad scb-text-white reload"><img src="/assets/images/delete-icon.png"
+          alt="icon" class="options-icon" />
       </span>
     </div>
   </div>
