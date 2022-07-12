@@ -67,11 +67,6 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'transfer/:type',
-    loadChildren: () => import('./transfer-credit-bonus-om/transfer-credit-bonus-om.module').then(m => m.TransferCreditBonusOmPageModule),
-    canActivate: [AuthGuard]
-  },
-  {
     path: 'control-center',
     loadChildren: () => import('./emergencies/emergencies.module').then(m => m.EmergenciesPageModule),
     canActivate: [AuthGuard]

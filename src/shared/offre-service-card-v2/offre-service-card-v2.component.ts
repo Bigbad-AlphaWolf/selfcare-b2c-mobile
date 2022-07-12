@@ -22,7 +22,7 @@ import {
   OPERATION_WOYOFAL,
 } from 'src/app/utils/operations.constants';
 import { isExternallURL } from 'src/app/utils/utils';
-import { INFOS_ABONNEMENT_FIXE, OPERATION_CHECK_OM_ACCOUNT_STATUS, OPERATION_RATTACH_NUMBER, OPERATION_SHARE_THE_APP, OPERATION_TYPE_MERCHANT_PAYMENT, SubscriptionModel } from '..';
+import { INFOS_ABONNEMENT_FIXE, OPERATION_CHECK_OM_ACCOUNT_STATUS, OPERATION_RATTACH_NUMBER, OPERATION_SHARE_THE_APP, OPERATION_TYPE_MERCHANT_PAYMENT, OPERATION_TYPE_SEDDO_BONUS, OPERATION_TYPE_SEDDO_CREDIT, SubscriptionModel } from '..';
 import { MerchantPaymentCodeComponent } from '../merchant-payment-code/merchant-payment-code.component';
 import { OmStatusVisualizationComponent } from '../om-status-visualization/om-status-visualization.component';
 import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
@@ -137,6 +137,10 @@ export class OffreServiceCardV2Component implements OnInit {
       return;
     }
 		switch (this.service?.code) {
+      case OPERATION_TYPE_SEDDO_BONUS:
+      case OPERATION_TYPE_SEDDO_CREDIT:
+        this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.NONE, this.service.code, 'purchase-set-amount');
+        break;
 			case OPERATION_CHECK_OM_ACCOUNT_STATUS:
 				this.openOMStatus();
 				break;

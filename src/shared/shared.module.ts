@@ -221,7 +221,8 @@ import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number
     FavoriteServiceCountersComponent,
     FavoriteCounterNameModalComponent,
     TransactionFinalityModalComponent,
-		RattachByOtpCodeComponent
+		RattachByOtpCodeComponent,
+    PinPadComponent
   ],
   exports: [
     BanniereComponent,
