@@ -129,7 +129,6 @@ let isIOS = false;
 })
 export class OrangeMoneyService {
   biometricStatusSubject: Subject<any> = new Subject<any>();
-
   constructor(
     private http: HttpClient,
     private followAnalyticsService: FollowAnalyticsService,
@@ -370,6 +369,15 @@ export class OrangeMoneyService {
     pin[3] = this.pinPadDigits[pinPad.indexOf(pin[3])];
     return pin.join("");
   }
+
+	decryptOmPin(pinPadResponse: any[], encryptedPin) {
+    encryptedPin = encryptedPin.split("");
+		encryptedPin[0] = pinPadResponse[this.pinPadDigits.indexOf(encryptedPin[0])];
+		encryptedPin[1] = pinPadResponse[this.pinPadDigits.indexOf(encryptedPin[1])];
+		encryptedPin[2] = pinPadResponse[this.pinPadDigits.indexOf(encryptedPin[2])];
+		encryptedPin[3] = pinPadResponse[this.pinPadDigits.indexOf(encryptedPin[3])];
+		return encryptedPin.join("");
+	}
 
   GetOrangeMoneyUser(msisdn: string): OmUserInfo {
     const accountId = this.getAccountId(msisdn);
