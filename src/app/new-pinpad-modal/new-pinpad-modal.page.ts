@@ -218,11 +218,6 @@ export class NewPinpadModalPage implements OnInit {
     this.userHasOmToken = true;
     this.checkingToken = false;
     this.gettingPinpad = true;
-    console.log('this.omInfosPINPAD', this.omInfos);
-    console.log(
-      'this.orange.GetOrangeMoneyUser',
-      this.orangeMoneyService.GetOrangeMoneyUser(this.payloadCreatePin.msisdn)
-    );
 
     this.orangeMoneyService.GetPinPad(pinpadData, this.omInfos).subscribe(
       (response: any) => {
@@ -527,6 +522,7 @@ export class NewPinpadModalPage implements OnInit {
     this.canRetry = false;
     this.errorBulletActive = false;
     this.processingPin = true;
+		const omPin = pin;
     let canalPromotion;
     if (
       this.buyPassPayload &&
@@ -590,7 +586,7 @@ export class NewPinpadModalPage implements OnInit {
 					case OPERATION_ABONNEMENT_WIDO:
 						const payloadWido = {
               msisdn2: this.buyPassPayload.destinataire,
-              pin,
+              pin: omPin,
               price_plan_index: this.buyPassPayload.pass.price_plan_index_om,
               amount: this.buyPassPayload.pass.tarif,
             };
@@ -991,8 +987,7 @@ export class NewPinpadModalPage implements OnInit {
       withTouchID,
     };
 
-    this.abonnementwido.suscribeToWidoByOMoney({msisdn: buyPassPayload.msisdn2, packId: +buyPassPayload.price_plan_index},
-			{amount: buyPassPayload.amount.toString(), em: buyPassPayload.em, pin: buyPassPayload.pin}).subscribe(
+    this.abonnementwido.suscribeToWidoByOMoney({msisdn: buyPassPayload.msisdn2, packId: +buyPassPayload.price_plan_index, omPin: buyPassPayload.pin}).subscribe(
       (res: any) => {
         this.processResult(res, db, logInfos, buyPassPayload);
       },
