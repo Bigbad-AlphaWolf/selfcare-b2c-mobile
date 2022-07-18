@@ -67,11 +67,6 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'transfer/:type',
-    loadChildren: () => import('./transfer-credit-bonus-om/transfer-credit-bonus-om.module').then(m => m.TransferCreditBonusOmPageModule),
-    canActivate: [AuthGuard]
-  },
-  {
     path: 'control-center',
     loadChildren: () => import('./emergencies/emergencies.module').then(m => m.EmergenciesPageModule),
     canActivate: [AuthGuard]
@@ -393,6 +388,10 @@ const routes: Routes = [
   {
     path: 'new-suivi-conso',
     loadChildren: () => import('./new-suivi-conso/new-suivi-conso.module').then(m => m.NewSuiviConsoPageModule)
+  },
+  {
+    path: 'om-hub',
+    loadChildren: () => import('./om-universe/om-universe.module').then(m => m.OmUniverseModule)
   },
   {
     path: 'new-services',

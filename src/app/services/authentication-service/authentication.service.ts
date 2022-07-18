@@ -1,24 +1,8 @@
-import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  Subject,
-  Observable,
-  of,
-  interval,
-  throwError,
-} from 'rxjs';
-import {
-  tap,
-  map,
-  retryWhen,
-  flatMap,
-  switchMap,
-  catchError,
-  share,
-  take,
-} from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Subject, Observable, of, interval, throwError, from} from 'rxjs';
+import {tap, map, delay, retryWhen, flatMap, switchMap, catchError, share, take} from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
+import {environment} from 'src/environments/environment';
 import * as jwt_decode from 'jwt-decode';
 import * as SecureLS from 'secure-ls';
 import {
@@ -30,12 +14,8 @@ import {
   KILIMANJARO_FORMULE,
   isPostpaidFix,
 } from 'src/app/dashboard';
-import {
-  JAMONO_ALLO_CODE_FORMULE,
-  SubscriptionModel,
-  JAMONO_PRO_CODE_FORMULE,
-  PRO_MOBILE_ERROR_CODE,
-} from 'src/shared';
+import {JAMONO_ALLO_CODE_FORMULE, SubscriptionModel, JAMONO_PRO_CODE_FORMULE, PRO_MOBILE_ERROR_CODE} from 'src/shared';
+import { FCM } from 'cordova-plugin-fcm-with-dependecy-updated/ionic/ngx';
 
 const {
   SERVER_API_URL,
@@ -75,6 +55,7 @@ const checkNumberIsOrangeEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/a
 const tokenEndpoint = `${SERVER_API_URL}/auth/get-service-token`;
 // eligibility to recieve pass internet & illimix endpoint
 const eligibilityRecievePassEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/check-conditions`;
+const setFirebaseIdEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/notification-information`;
 @Injectable({
   providedIn: 'root',
 })
@@ -89,7 +70,7 @@ export class AuthenticationService {
     Observable<any>
   >();
   subscriptionUpdatedSubject: Subject<any> = new Subject<any>();
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private fcm: FCM) {}
 
   get currentPhoneNumbersubscriptionUpdated() {
     return this.subscriptionUpdatedSubject.asObservable();
@@ -163,7 +144,7 @@ export class AuthenticationService {
           this.subscriptionUpdatedSubject.next(subscription);
           return subscription;
         }),
-        catchError(err => {
+        catchError((err) => {
           if (savedData) return of(savedData);
           return throwError(err);
         })
@@ -483,7 +464,7 @@ export class AuthenticationService {
               return throwError(error);
             }
           }),
-          catchError(err => {
+          catchError((err) => {
             return throwError(err);
           })
         );
@@ -511,7 +492,7 @@ export class AuthenticationService {
               return throwError(error);
             }
           }),
-          catchError(err => {
+          catchError((err) => {
             return throwError(err);
           })
         );
@@ -524,7 +505,11 @@ export class AuthenticationService {
   }
 
   registerV3(registerPayload: RegistrationModel) {
-    return this.http.post(registerV3Endpoint, registerPayload);
+    return this.http.post(registerV3Endpoint, registerPayload).pipe(
+      tap((_) => {
+        this.setUserFirebaseId(registerPayload.login).subscribe();
+      })
+    );
   }
 
   resetPassword(resetPwdPayload: ResetPwdModel) {
@@ -534,11 +519,30 @@ export class AuthenticationService {
     return this.http.post(resetPwdEndpoint, resetPwdPayload);
   }
 
+  setUserFirebaseId(msisdn) {
+    return this.getSubscriptionForTiers(msisdn).pipe(
+      switchMap((sub) => {
+        console.log('sub in firebase', sub);
+        return from(this.fcm.getToken()).pipe(
+          switchMap((firebaseId) => {
+            const codeFormule = sub?.code;
+            const payload = { firebaseId, msisdn, codeFormule };
+            return this.http.put(setFirebaseIdEndpoint, payload);
+          })
+        );
+      })
+    );
+  }
+
   resetPasswordV2(resetPwdPayload: ResetPwdModel) {
     resetPwdPayload.login = resetPwdPayload.login.startsWith('221')
       ? resetPwdPayload.login.substring(3)
       : resetPwdPayload.login;
-    return this.http.put(resetPwdV2Endpoint, resetPwdPayload);
+    return this.http.put(resetPwdV2Endpoint, resetPwdPayload).pipe(
+      tap((_) => {
+        this.setUserFirebaseId(resetPwdPayload.login).subscribe();
+      })
+    );
   }
 
   setHmacOnLs(hmac: string) {
@@ -551,7 +555,7 @@ export class AuthenticationService {
 
   checkIfOrangeNumber(phoneNumber: string) {
     return this.getTokenFromBackend().pipe(
-      switchMap(_ => {
+      switchMap((_) => {
         return this.http.get(`${checkNumberIsOrangeEndpoint}/${phoneNumber}`);
       })
     );

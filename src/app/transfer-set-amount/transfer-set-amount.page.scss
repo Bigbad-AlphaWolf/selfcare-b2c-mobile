@@ -13,6 +13,12 @@
   padding: 0 10px;
 }
 
+.banniere-container {
+  img {
+    width: 100%;
+  }
+}
+
 .transfer-page {
   height: 100%;
   background-color: $grayDashboard;
@@ -58,6 +64,12 @@
           font-size: 12px;
         }
       }
+    }
+    .operation-description {
+      font-family: HelveticaNeueLTStd-Roman;
+      font-size: 16px;
+      line-height: 1.25;
+      padding-top: 30px;
     }
     .transfer-amount-block {
       margin-top: 35px;

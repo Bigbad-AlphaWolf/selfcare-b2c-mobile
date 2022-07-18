@@ -17,7 +17,11 @@ import {
   getBanniereDescription,
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_ILLIMIX,
-  OPERATION_TYPE_RECHARGE_CREDIT
+  OPERATION_TYPE_RECHARGE_CREDIT,
+  MIN_BONUS_REMAINING_AMOUNT,
+  TRANSFER_BONUS_CREDIT_FEE,
+  OPERATION_TYPE_SEDDO_BONUS,
+  OPERATION_TYPE_SEDDO_CREDIT
 } from 'src/shared';
 import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
 import {
@@ -48,7 +52,7 @@ const ls = new SecureLS({encodingType: 'aes'});
 @Component({
   selector: 'app-dashboard-kirene',
   templateUrl: './dashboard-kirene.page.html',
-  styleUrls: ['./dashboard-kirene.page.scss']
+  styleUrls: ['./dashboard-kirene.page.scss'],
 })
 export class DashboardKirenePage implements OnInit {
   showPromoBarner = ls.get('banner');
@@ -71,12 +75,13 @@ export class DashboardKirenePage implements OnInit {
 
   soldebonus: number;
   canTransferBonus: boolean;
+  canTrasnferCredit: boolean;
   listBanniere: BannierePubModel[] = [];
   isBanniereLoaded: boolean;
   slideOpts = {
     speed: 400,
     slidesPerView: 1.5,
-    slideShadows: true
+    slideShadows: true,
   };
   userSargalData: SargalSubscriptionModel;
   sargalDataLoaded: boolean;
@@ -313,13 +318,14 @@ export class DashboardKirenePage implements OnInit {
       // Check if eligible for SOS
       this.canDoSOS = +this.creditRechargement < 489;
       // Check if eligible for bonus transfer
-      this.canTransferBonus = this.creditRechargement > 20 && this.soldebonus > 1;
+      this.canTransferBonus = this.creditRechargement > 20;
+      this.canTrasnferCredit = this.creditRechargement > MIN_BONUS_REMAINING_AMOUNT + TRANSFER_BONUS_CREDIT_FEE;
     }
 
     return {
       globalCredit: formatCurrency(globalCredit),
       balance: formatCurrency(balance),
-      isHybrid
+      isHybrid,
     };
   }
 
@@ -377,8 +383,8 @@ export class DashboardKirenePage implements OnInit {
       component: SelectBeneficiaryPopUpComponent,
       cssClass: 'select-recipient-modal',
       componentProps: {
-        country: TRANSFER_OM_INTERNATIONAL_COUNTRIES[0]
-      }
+        country: TRANSFER_OM_INTERNATIONAL_COUNTRIES[0],
+      },
     });
     return await modal.present();
   }
@@ -397,8 +403,8 @@ export class DashboardKirenePage implements OnInit {
     this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, operation, routePath, false);
   }
 
-  onError(input: {el: HTMLElement; display: boolean}[]) {
-    input.forEach((item: {el: HTMLElement; display: boolean}) => {
+  onError(input: { el: HTMLElement; display: boolean }[]) {
+    input.forEach((item: { el: HTMLElement; display: boolean }) => {
       item.el.style.display = item.display ? 'block' : 'none';
     });
   }
@@ -406,7 +412,7 @@ export class DashboardKirenePage implements OnInit {
   showWelcomePopup(data: WelcomeStatusModel) {
     const dialog = this.shareDialog.open(WelcomePopupComponent, {
       data,
-      panelClass: 'gift-popup-class'
+      panelClass: 'gift-popup-class',
     });
     dialog.afterClosed().subscribe(() => {
       this.assistanceService.tutoViewed().subscribe(() => {});
@@ -441,5 +447,13 @@ export class DashboardKirenePage implements OnInit {
 
   getBanniereDescription(description: string) {
     return getBanniereDescription(description);
+  }
+
+  transferBonus() {
+    this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.NONE, OPERATION_TYPE_SEDDO_BONUS, 'purchase-set-amount');
+  }
+
+  transferCredit() {
+    this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.NONE, OPERATION_TYPE_SEDDO_CREDIT, 'purchase-set-amount');
   }
 }

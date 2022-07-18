@@ -3,6 +3,12 @@
 
   <div *ngIf="action?.besoinAide" class="act-description scb-text-gray">{{action?.shortDescription}}</div>
   <div *ngIf="!action?.besoinAide" class="act-description scb-text-gray">{{action?.titre + ' ' + action?.description}}</div>
+  <div class="badge-promo" *ngIf="action?.newOffer">
+    <div class="icon-container">
+      <span class="new scb-text-white"> Nouveau </span>
+    </div>
+    <div class="triangle"></div>
+  </div>
 </div>
 
 

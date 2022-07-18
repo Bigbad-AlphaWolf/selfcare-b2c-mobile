@@ -1252,6 +1252,10 @@ export const HelpModalConfigApnContent = {
 };
 
 export const TRANSFER_BONUS_CREDIT_FEE = 20;
+export const RECHARGEMENT_COMPTEUR_CODE = 1;
+export const BONUS_COMPTEUR_CODE = 2;
+export const BONUS_ALL_DEST_COMPTEUR_CODE = 6;
+
 export const ERROR_MSG_PASS = {
   LIST_EMPTY: "Aucun pass n'a été trouvé pour ce profil",
   LIST_EMPTY_FOR_KIRENE:
@@ -1304,6 +1308,7 @@ export enum HUB_ACTIONS {
   ACHAT = 'HUB_ACHAT',
   TRANSFERT = 'HUB_TRANSFER',
   FACTURES = 'HUB_BILLS',
+  OM = 'HUB_OM',
   FIXES = 'HUB_FIXE',
   OFFRES_FIXES = 'HUB_OFFRES_FIXE',
 }
@@ -1322,9 +1327,11 @@ export const OM_UNKOWN_ERROR_CODE = 'Erreur-019';
 export const OM_CAPPING_ERROR = 'Capping-social-error';
 export const TRANSFER_BALANCE_INSUFFICIENT_ERROR = 'Le montant que vous voulez transférer est supérieur à votre solde.';
 export const BALANCE_INSUFFICIENT_ERROR = 'Le montant de votre solde est insuffisant pour effectuer cette opération.';
+export const CREDIT_FEE_INSUFFICIENT_ERROR = 'Vous devez avoir au moins 20F de crédit recharge pour couvrir les frais.';
+export const BONUS_INSUFFICIENT_ERROR = 'Votre solde bonus est insuffisant pour effectuer ce transfert.';
 export const TRANSFER_OM_BALANCE_NOT_ALLOWED = "Le montant que vous avez saisi n'est pas dans la plage autorisée";
 export const FEES_ERROR = 'Erreur lors de la récupération des frais. Réactualisez';
-
+export const MIN_BONUS_REMAINING_AMOUNT = 489;
 export const NO_RECENTS_MSG = 'Pas de bénéficiaire récent pour cette opération';
 
 export const isProfileHybrid = (profile: string) => {
@@ -1334,6 +1341,7 @@ export const isProfileHybrid = (profile: string) => {
 export const CONSO = 'SUIVI_CONSO';
 export const ASSISTANCE = 'ASSISTANCE';
 export const SERVICES = 'SERVICES';
+export const HUB_OM_TAB = 'HUB_OM_TAB';
 
 export enum GET_MSISDN_ENUM {
   DISABLE_WIFI = 'disableWifi',
@@ -1422,6 +1430,7 @@ export const LOCAL_STORAGE_KEYS = {
   IS_HMAC_FROM_OTP_VALID: 'isHmacOTPVallid',
   FAVORITE_PASS_DATA: 'favorite_pass_data',
   FAVORITE_PASS_CACHE_SET_TIME: 'favorite_pass_cache_set_time',
+  ENCRYPTION_KEY_WIDO_BY_OM: 'encryption_key_wido_by_om',
 };
 
 export enum STEPS_ACCESS_BY_OTP {
@@ -1432,6 +1441,11 @@ export enum STEPS_ACCESS_BY_OTP {
 
 export const PATH_ACCESS_BY_OTP = '/access/';
 
+export enum OPERATION_TRANSACTION_STATUS {
+  SUCCESS = 'success',
+  FAILED = 'failed',
+  PROCESSING = 'processing'
+}
 export const RATTACHMENT_ERROR_MAX_COUNT = 3;
 export const DEEPLINK_MOBILE_BILL_BASE_URL = 'payer-teranga';
 export const DEEPLINK_FIXE_BILL_BASE_URL = 'payer-sonatel';

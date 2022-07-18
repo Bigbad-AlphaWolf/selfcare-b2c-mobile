@@ -55,6 +55,7 @@ export class NewServicesPage implements OnInit {
       'HUB_ACHAT',
       'HUB_TRANSFER',
       'HUB_BILLS',
+      'HUB_OM',
 			'HUB_FIXE',
 			'HUB_OFFRES_FIXE',
       OTHER_CATEGORIES,
