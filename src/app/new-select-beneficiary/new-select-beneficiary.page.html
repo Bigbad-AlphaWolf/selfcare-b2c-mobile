@@ -45,14 +45,15 @@
 			</span>
 			<span class="error-msg scb-text-red-error" *ngIf="errorMsg">
 				{{errorMsg}}
+				<span class="link" (click)="openSettingsPopup()">Pour autoriser, cliquez ici</span>
 			</span>
-			<ng-container *ngIf="!contactError && listFilteredContacts.length">
+			<ng-container *ngIf="!contactError && listFilteredContacts.length && !isLoadingContacts">
 					<ion-list>
 						<app-recipient-item-contact *cdkVirtualFor="let item of listFilteredContacts" [item]="item" (selected)="onContactSelected($event)"></app-recipient-item-contact>
 					</ion-list>
 
-				</ng-container>
-
+			</ng-container>
+			<ion-spinner *ngIf="isLoadingContacts" name="crescent"></ion-spinner>
 			</div>
 		</div>
 	</cdk-virtual-scroll-viewport>

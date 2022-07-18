@@ -47,7 +47,6 @@ export class NewDetailsConsoComponent implements OnInit {
                 fell['counterName'] = fellow?.name;
                 mappedFellowArray.push(fell)
               }
-              console.log('mappedFellowArray', mappedFellowArray);
               return this.contactService.getAllContacts().pipe(
                 map((contacts: CustomContact[]) => {
                   const fellowMsisdnWithContacts = this.recentsService.mapRecentsToContacts(mappedFellowArray, contacts);

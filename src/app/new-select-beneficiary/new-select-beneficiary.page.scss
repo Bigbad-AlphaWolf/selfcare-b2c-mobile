@@ -141,6 +141,10 @@ cdk-virtual-scroll-viewport {
     margin-top: 10px;
     font-family: HelveticaNeueLTStd-Roman;
     font-size: 12px;
+		.link {
+      text-decoration: underline;
+      font-family: HelveticaNeueLTStd-Bd;
+    }
   }
 }
 .confirm-btn {

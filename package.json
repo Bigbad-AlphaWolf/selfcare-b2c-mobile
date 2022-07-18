@@ -14,7 +14,7 @@
     "fixlint": "ng lint --fix=true",
     "ci-e2e": "protractor --capabilities.chromeOptions.args=--headless --capabilities.chromeOptions.args=--no-sandbox protractor.conf.js",
     "sonar": "sonar-scanner",
-    "clean:all:install": "rm -rf platforms plugins node_modules www && npm i",
+    "clean:all:install": "rm -rf platforms plugins node_modules package-lock.json www && npm i",
     "build:android:release:rec": "ionic cordova build android --release --configuration rec",
     "build:android:debug:rec": "ionic cordova build android --configuration rec",
     "build:android:release:preprod": "ionic cordova build android --release --configuration preprod",

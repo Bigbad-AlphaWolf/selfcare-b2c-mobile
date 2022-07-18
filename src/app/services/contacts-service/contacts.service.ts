@@ -19,6 +19,7 @@ declare var navigator: any;
 })
 export class ContactsService {
   public static allContacts: any[];
+	previousResult: ContactOem[] = [];
   mockContactsProcessed = [
     {
       name: {
@@ -120,18 +121,20 @@ export class ContactsService {
       .toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
-    let result = formattedContact.filter(item => {
+    this.previousResult = this.previousResult.length ? this.previousResult.filter(item => {
       return (
-        item?.displayName?.toLowerCase()?.includes(term.toLowerCase()) ||
-        item?.displayName
-          ?.toLowerCase()
-          ?.normalize('NFD')
-          ?.replace(/[\u0300-\u036f]/g, '')
-          ?.includes(termWithoutAccent) ||
+				this.searchingTerm(item?.displayName?.toLowerCase(),term.toLowerCase()) ||
+				this.searchingTerm(item?.displayName?.toLowerCase()?.normalize('NFD')?.replace(/[\u0300-\u036f]/g, ''), termWithoutAccent) ||
+        item.phoneNumber?.toLowerCase()?.includes(termWithoutAccent.toLowerCase())
+      );
+    }) : formattedContact.filter(item => {
+      return (
+				this.searchingTerm(item?.displayName?.toLowerCase(),term.toLowerCase()) ||
+				this.searchingTerm(item?.displayName?.toLowerCase()?.normalize('NFD')?.replace(/[\u0300-\u036f]/g, ''), termWithoutAccent) ||
         item.phoneNumber?.toLowerCase()?.includes(termWithoutAccent.toLowerCase())
       );
     });
-    if (!result.length && REGEX_NUMBER_OM.test(term)) {
+    if (!this.previousResult.length && REGEX_NUMBER_OM.test(term)) {
       const item: ContactOem = {
         displayName: '',
         phoneNumber: term,
@@ -140,6 +143,17 @@ export class ContactsService {
       };
       return [item];
     }
-    return result;
+    return this.previousResult;
   }
+
+	searchingTerm(text: string, searchTerm: string) {
+		return text.includes(searchTerm) || this.searchingTermsGroup(text,searchTerm);
+	}
+	searchingTermsGroup(text: string, searchingTermgroup: string) {
+		const regex = searchingTermgroup.split(" ")
+        .map(word => "(?=.*\\b" + word + "\\b)")
+        .join('');
+    const searchExp = new RegExp(regex, "gi");
+    return searchExp.test(text);
+	}
 }

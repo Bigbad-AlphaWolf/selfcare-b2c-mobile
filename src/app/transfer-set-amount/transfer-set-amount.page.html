@@ -26,7 +26,7 @@
   <div class="transfer-page">
     <form class="transfer-settings" [formGroup]="setAmountForm" *ngIf="setAmountForm && !hasError">
       <div class="recipient-block">
-        <div class="recu-par">Montant reçu par</div>
+        <div class="recu-par">Montant envoyé à</div>
         <div class="recipient">
           <div class="msisdn-id-block">
             <img [src]="country?.flagIcon" alt="" *ngIf="purchaseType === OPERATION_TYPE_INTERNATIONAL_TRANSFER">
@@ -38,7 +38,7 @@
       </div>
       <div class="transfer-amount-block">
         <mat-form-field class="scb-input-row amount-input" appearance="outline">
-          <mat-label>Saisir le montant reçu&nbsp;&nbsp;</mat-label>
+          <mat-label>Montant à envoyer</mat-label>
           <input #amountInput formControlName="amount" matInput type="number" (input)="onAmountChanged($event)" />
           <div matSuffix class="scb-text-gray suffix">
             <span class="cfa-unit scb-text-gray">F CFA</span>
