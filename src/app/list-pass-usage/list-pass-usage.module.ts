@@ -9,6 +9,7 @@ import {ListPassUsagePage} from './list-pass-usage.page';
 import {IonicImageLoader} from 'ionic-image-loader';
 import {SharedModule} from 'src/shared/shared.module';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { ComponentsModule } from '../components/components.module';
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     IonicImageLoader,
     MatProgressSpinnerModule,
+		ComponentsModule,
     SharedModule
   ],
   declarations: [ListPassUsagePage]

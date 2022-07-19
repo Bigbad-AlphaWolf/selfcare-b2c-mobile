@@ -228,6 +228,7 @@ export const OM_LABEL_SERVICES = {
   COTE_D_IVOIRE: 'cod',
   CANAL: 'canal',
   TAF: 'taf',
+  CARD_TO_WALLET: 'taf'
 };
 
 export function mapOffreServiceWithCodeOM(offre: OffreService) {

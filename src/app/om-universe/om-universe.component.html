@@ -1,0 +1,58 @@
+<ion-header class="om-hub-header">
+  <div class="header-top-block">
+    <div class="title">
+      Orange Money
+    </div>
+  </div>
+</ion-header>
+
+<app-om-button [isFullWidthButton]="true"></app-om-button>
+
+<ion-content class="universe-om-content">
+  <div class="om-hub-actions">
+    <ng-container *ngIf="loadingServices && !omServices?.length else servicesBlock">
+      <div class="actions-loader-block">
+        <ion-skeleton-text animated class="action-loader"></ion-skeleton-text>
+        <ion-skeleton-text animated class="action-loader"></ion-skeleton-text>
+        <ion-skeleton-text animated class="action-loader"></ion-skeleton-text>
+        <ion-skeleton-text animated class="action-loader"></ion-skeleton-text>
+      </div>
+    </ng-container>
+    <ng-template #servicesBlock>
+      <ng-container *ngIf="omServices?.length else errorBlock">
+        <div class="om-services-list">
+          <app-action-item *ngFor="let omService of omServices" [action]="omService"></app-action-item>
+        </div>
+      </ng-container>
+      <ng-template #errorBlock>
+        <div class="no-services" *ngIf="!loadingServicesHasError">
+          Pas de service actif pour le moment
+        </div>
+        <div class="services-error" *ngIf="loadingServicesHasError">
+          Erreur lors de la récupération des services
+        </div>
+      </ng-template>
+    </ng-template>
+  </div>
+
+  <div class="recent-transactions">
+    <div class="title-recent">Transactions récentes</div>
+    <ng-container *ngIf="loadingTransactions && !omTransactions?.length else transactionsBlock">
+      <div class="transactions-loader-block">
+        <div class="line-divs-block">
+          <div class="line-div"></div>
+          <div class="line-div"></div>
+          <div class="line-div"></div>
+        </div>
+        <ion-skeleton-text animated class="transaction-loader"></ion-skeleton-text>
+      </div>
+    </ng-container>
+    <ng-template #transactionsBlock>
+      <ng-container *ngIf="omTransactions?.length else transactionErrorBlock">
+        <div class="om-transactions-list">
+          <app-transaction-item *ngFor="let transaction of omTransactions" [transaction]="transaction"></app-transaction-item>
+        </div>
+      </ng-container>
+    </ng-template>
+  </div>
+</ion-content>

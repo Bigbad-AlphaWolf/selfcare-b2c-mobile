@@ -21,6 +21,7 @@ import { GenerateIdForTAPipe } from 'src/shared/pipes/generate-id-for-ta.pipe';
 import { StatusBillPaymentPipe } from 'src/shared/pipes/status-bill-payment.pipe';
 import { GetBannerTitlePipe } from './get-banner-title/get-banner-title.pipe';
 import { GetBannerDescriptionPipe } from './get-banner-description/get-banner-description.pipe';
+import { DisplayFileManagerImageForImageLoaderPipe } from 'src/shared/pipes/display-file-manager-image-for-image-loader.pipe';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { GetBannerDescriptionPipe } from './get-banner-description/get-banner-de
     StatusBillPaymentPipe,
     GetBannerTitlePipe,
     GetBannerDescriptionPipe,
+		DisplayFileManagerImageForImageLoaderPipe
   ],
   imports: [CommonModule],
   exports: [
@@ -70,6 +72,7 @@ import { GetBannerDescriptionPipe } from './get-banner-description/get-banner-de
     StatusBillPaymentPipe,
     GetBannerTitlePipe,
     GetBannerDescriptionPipe,
+		DisplayFileManagerImageForImageLoaderPipe
   ],
   providers: [PassVolumeDisplayPipe, DatePipe],
 })

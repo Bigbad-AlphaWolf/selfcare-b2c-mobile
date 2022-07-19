@@ -17,6 +17,7 @@ const ls = new SecureLS({ encodingType: 'aes' });
 })
 export class FaceIdRequestModalComponent implements OnInit {
   @Input() operationData;
+  @Input() forActivated: boolean;
   msisdn: string;
 
   constructor(
@@ -28,6 +29,10 @@ export class FaceIdRequestModalComponent implements OnInit {
 
   ngOnInit() {
     this.msisdn = this.dashboardService.getCurrentPhoneNumber();
+  }
+
+  close() {
+    this.modalController.dismiss();
   }
 
   allowFaceId() {

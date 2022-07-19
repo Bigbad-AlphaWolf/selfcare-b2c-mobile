@@ -164,16 +164,11 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
         if (err.status === 400) {
           this.checkingNumber = false;
           if (err && err.error && err.error.errorKey === 'userRattached') {
-            // this.showErrMessage = true;
             this.errorMsg = err.error.title;
             this.isNumberAttachedError = true;
           } else if (err.errorKey === PRO_MOBILE_ERROR_CODE) {
             this.errorMsg = err.message;
             this.isNumberAttachedError = true;
-          } else {
-            // err.error.errorKey === 'userexists'
-            // Go to login page
-            this.goLoginPage();
           }
         } else if (err.status === 404) {
           this.registerLight();

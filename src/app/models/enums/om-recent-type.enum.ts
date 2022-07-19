@@ -6,5 +6,6 @@ export enum RecentType {
     achat_credit = 'achat_credit',
     achat_pass_data = 'achat_pass_data',
     achat_pass_illimix = 'achat_pass_illimix',
-    transfert_avec_code = 'transfert_avec_code'
+    transfert_avec_code = 'transfert_avec_code',
+    card_to_wallet = 'c2w'
 }
