@@ -19,7 +19,7 @@ declare var navigator: any;
 })
 export class ContactsService {
   public static allContacts: any[];
-	previousResult: ContactOem[] = [];
+	previousSearchContactResult: ContactOem[] = [];
   mockContactsProcessed = [
     {
       name: {
@@ -121,20 +121,8 @@ export class ContactsService {
       .toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
-    this.previousResult = this.previousResult.length ? this.previousResult.filter(item => {
-      return (
-				this.searchingTerm(item?.displayName?.toLowerCase(),term.toLowerCase()) ||
-				this.searchingTerm(item?.displayName?.toLowerCase()?.normalize('NFD')?.replace(/[\u0300-\u036f]/g, ''), termWithoutAccent) ||
-        item.phoneNumber?.toLowerCase()?.includes(termWithoutAccent.toLowerCase())
-      );
-    }) : formattedContact.filter(item => {
-      return (
-				this.searchingTerm(item?.displayName?.toLowerCase(),term.toLowerCase()) ||
-				this.searchingTerm(item?.displayName?.toLowerCase()?.normalize('NFD')?.replace(/[\u0300-\u036f]/g, ''), termWithoutAccent) ||
-        item.phoneNumber?.toLowerCase()?.includes(termWithoutAccent.toLowerCase())
-      );
-    });
-    if (!this.previousResult.length && REGEX_NUMBER_OM.test(term)) {
+    this.previousSearchContactResult = this.previousSearchContactResult.length ? this.applyFilter(this.previousSearchContactResult, term, termWithoutAccent) : this.applyFilter(formattedContact, term, termWithoutAccent);
+    if (!this.previousSearchContactResult.length && REGEX_NUMBER_OM.test(term)) {
       const item: ContactOem = {
         displayName: '',
         phoneNumber: term,
@@ -143,8 +131,19 @@ export class ContactsService {
       };
       return [item];
     }
-    return this.previousResult;
+
+    return this.previousSearchContactResult;
   }
+
+	applyFilter(list: ContactOem[], term: string, termWithoutAccent: string) {
+		return	list.filter(item => {
+      return (
+				this.searchingTerm(item?.displayName?.toLowerCase(),term.toLowerCase()) ||
+				this.searchingTerm(item?.displayName?.toLowerCase()?.normalize('NFD')?.replace(/[\u0300-\u036f]/g, ''), termWithoutAccent) ||
+        item.phoneNumber?.toLowerCase()?.includes(termWithoutAccent.toLowerCase())
+      );
+    })
+	}
 
 	searchingTerm(text: string, searchTerm: string) {
 		return text.includes(searchTerm) || this.searchingTermsGroup(text,searchTerm);
