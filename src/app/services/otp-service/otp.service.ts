@@ -2,7 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, throwError} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
-import {CheckOtpOem} from 'src/app/models/check-otp-oem.model';
+import {CheckOtpCodeModel, CheckOtpOem} from 'src/app/models/check-otp-oem.model';
 import {GenerateOtpOem} from 'src/app/models/generate-otp-oem.model';
 import {environment} from 'src/environments/environment';
 import {LOCAL_STORAGE_KEYS} from 'src/shared';
@@ -13,6 +13,7 @@ const {OTP_SERVICE, ACCOUNT_MNGT_SERVICE, SERVER_API_URL} = environment;
 
 const generateOTPEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-link/generate`;
 const checkOTPEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-link/check`;
+const checkOTPCodeEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-infos/check`;
 const generateOTPCodeEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-infos/generate`;
 const validateRattachByOTPCodeEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/v1/rattachement-lignes/register/by-otp`;
 @Injectable({
@@ -45,6 +46,11 @@ export class OtpService {
         return throwError(err);
       })
     );
+  }
+
+  checkOtpCode(payload: CheckOtpCodeModel) {
+    payload.uuid = this.localStorage.getFromLocalStorage(LOCAL_STORAGE_KEYS.X_UUID);
+    return this.http.post<CheckOtpCodeModel>(checkOTPCodeEndpoint, payload);
   }
 
 	generateOTPCode(msisdn: string) {

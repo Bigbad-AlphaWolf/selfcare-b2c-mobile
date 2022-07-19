@@ -115,6 +115,21 @@
       }
     }
     form {
+      .scb-input-row {
+        font-size: 24px;
+        mat-label {
+          font-size: 16px;
+        }
+        .show-hide-text {
+          font-size: 14px;
+        }
+      }
+      ::ng-deep .mat-form-field-infix {
+        padding: 15px 0 !important;
+      }
+      ::ng-deep .mat-form-field-suffix {
+        top: -5px !important;
+      }
       .text-info {
         text-align: center;
         font-family: HelveticaNeueLTStd-Roman;

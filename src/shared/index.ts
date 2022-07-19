@@ -6,6 +6,7 @@ import { PalierModel } from 'src/app/models/palier.model';
 import { BoosterModel } from 'src/app/models/booster.model';
 import { isPostpaidFix, PROFILE_TYPE_HYBRID, PROFILE_TYPE_HYBRID_1, PROFILE_TYPE_HYBRID_2 } from 'src/app/dashboard';
 import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
+import parsePhoneNumber from 'libphonenumber-js'
 
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER_ALLOWED_COUNTRY_CODE_SHORT: RegExp = /^((\+221|\+225|\+223|\+227|\+245))/;
@@ -1428,3 +1429,9 @@ export const PATH_ACCESS_BY_OTP = '/access/';
 export const RATTACHMENT_ERROR_MAX_COUNT = 3;
 export const DEEPLINK_MOBILE_BILL_BASE_URL = 'payer-teranga';
 export const DEEPLINK_FIXE_BILL_BASE_URL = 'payer-sonatel';
+
+export function parsedMsisdn(msisdn: string) {
+  const phonenumber = parsePhoneNumber(msisdn, 'SN');
+  console.log(phonenumber);
+  return phonenumber.nationalNumber;
+}

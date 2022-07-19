@@ -1,44 +1,32 @@
 <div class="creation-steps">
   <div class="go-back">
-    <img
-      (click)="goBack()"
-      src="/assets/images/arrow-left.png"
-      class="close-icon"
-      alt=""
-    />
-  </div>
-  <div class="scb-text-orange voir-intro" *ngIf="step === 'CHECK_NUMBER' || 0">
-    <!--<span (click)="goIntro()">Voir l'intro</span>-->
+    <img (click)="goBack()" src="/assets/images/arrow-left.png" class="close-icon" alt="" />
   </div>
   <div class="img-container">
     <img src="/assets/images/sim-icon.svg" alt="" />
   </div>
   <div class="title">
-    <span *ngIf="step === 'CHECK_NUMBER'">Numéro de téléphone </span>
-    <span *ngIf="step === 'PASSWORD'">J'ai oublié mon mot de passe</span>
+    <span>Numéro de téléphone </span>
   </div>
   <div class="sub-title">
-    <span class="scb-text-gray" *ngIf="step === 'CHECK_NUMBER'"
-      >Merci de patienter pendant que nous récupérons votre numéro
-    </span>
-    <span class="scb-text-gray" *ngIf="step === 'PASSWORD'"
-      >Créer un nouveau mot de passe
+    <span class="scb-text-gray">Veuillez saisir votre numéro de téléphone
     </span>
   </div>
   <div class="form-container">
-    <div *ngIf="step === 'CHECK_NUMBER'" class="form-get-number">
-      <div *ngIf="gettingNumber" class="scb-text-gray get-number">
-        Récupération en cours...
-      </div>
-      <div
-        *ngIf="numberGot && !gettingNumber"
-        class="scb-text-gray numero-container"
-      >
+    <div class="form-get-number">
+      <form [formGroup]="form" (ngSubmit)="checkNumber()" novalidate autocomplete="false">
+        <mat-form-field class="scb-input-row" appearance="outline">
+          <mat-label>Numéro de téléphone &nbsp;&nbsp;</mat-label>
+          <input formControlName="msisdn" matInput type="tel" [id]="'login' | generateIdForTA" />
+          <span matSuffix class="show-hide-text c-pointer" (click)="getNumber($event)">Rafraîchir</span>
+        </mat-form-field>
+      </form>
+      <!-- <div *ngIf="numberGot && !gettingNumber" class="scb-text-gray numero-container">
         <div class="phonenumber scb-text-full-black">{{ phoneNumber }}</div>
         <div *ngIf="!hideRefresh" class="refresh" (click)="getNumber()">
           <span class="scb-text-orange">Rafraichir</span>
         </div>
-      </div>
+      </div> -->
       <div *ngIf="showErrMessage" class="error-text">
         <span class="scb-text-red-error" (click)="getNumber()">
           {{ errorMsg }}
@@ -49,109 +37,11 @@
           {{ errorMsg }}
         </span>
       </div>
-      <button
-        *ngIf="!showErrMessage"
-        (click)="checkNumber()"
-        class="scb-btn scb-btn-full scb-btn-orange"
-        type="submit"
-        [disabled]="!numberGot || checkingNumber || gettingNumber"
-      >
+      <button *ngIf="!showErrMessage" (click)="checkNumber()" class="scb-btn scb-btn-full scb-btn-orange" type="submit"
+        [disabled]="!numberGot || checkingNumber || gettingNumber || !form?.valid">
         <span>Suivant</span>
-        <mat-spinner
-          mode="indeterminate"
-          [diameter]="20"
-          *ngIf="checkingNumber"
-        ></mat-spinner>
+        <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="checkingNumber"></mat-spinner>
       </button>
-      <button
-        *ngIf="showErrMessage && !numberGot"
-        (click)="enterUserPhoneNumber()"
-        class="scb-btn scb-btn-full scb-btn-orange"
-      >
-        <span>Entrer votre numéro</span>
-        <mat-spinner
-          mode="indeterminate"
-          [diameter]="20"
-          *ngIf="checkingNumber"
-        ></mat-spinner>
-      </button>
-    </div>
-    <form
-      [formGroup]="formPassword"
-      (submit)="createAccount()"
-      *ngIf="step === 'PASSWORD'"
-    >
-      <mat-form-field class="scb-input-row" appearance="outline">
-        <mat-label>Créez mot de passe &nbsp;&nbsp;</mat-label>
-        <input
-          formControlName="password"
-          matInput
-          [attr.type]="fields['password'].fieldType"
-          #password
-        />
-        <span
-          *ngIf="password.value"
-          (click)="changePasswordVisibility('password')"
-          matSuffix
-          class="show-hide-text c-pointer"
-        >
-          {{ fields['password'].fieldType === 'text' ? 'Cacher' : 'Afficher' }}
-        </span>
-      </mat-form-field>
-      <mat-form-field class="scb-input-row" appearance="outline">
-        <mat-label>Confirmez le mot de passe &nbsp;&nbsp;</mat-label>
-        <input
-          formControlName="confirmPassword"
-          matInput
-          [attr.type]="fields['confirmPassword'].fieldType"
-          #confirmPassword
-        />
-        <span
-          *ngIf="confirmPassword.value"
-          (click)="changePasswordVisibility('confirmPassword')"
-          matSuffix
-          class="show-hide-text c-pointer"
-        >
-          {{ fields['confirmPassword'].fieldType === 'text' ? 'Cacher' :
-          'Afficher' }}
-        </span>
-      </mat-form-field>
-      <div *ngIf="showErrMessage" class="error-text">
-        <span class="scb-text-red-error"> {{ errorMsg }} </span>
-      </div>
-      <div class="accept-cgu scb-text-gray" *ngIf="0">
-        En cliquant sur le bouton M'inscrire, vous acceptez
-        <span class="scb-text-orange bold" (click)="openCguDialog()"
-          >les conditions générales d'utilisation</span
-        >
-      </div>
-      <button
-        class="scb-btn scb-btn-full scb-btn-orange"
-        type="submit"
-        [disabled]="creatingAccount || !formPassword.valid"
-      >
-        <span>Réinitialiser</span>
-        <mat-spinner
-          mode="indeterminate"
-          [diameter]="20"
-          *ngIf="creatingAccount"
-        ></mat-spinner>
-      </button>
-    </form>
-    <div class="bottom-block">
-      <div
-        class="nav-item"
-        *ngFor="let item of navItems"
-        (click)="doAction(item.action)"
-      >
-        <div class="left-block">
-          <div class="titre">{{item.title}}</div>
-          <div class="sous-titre scb-text-gray">{{item.subTitle}}</div>
-        </div>
-        <div class="right-block">
-          <img src="/assets/images/long-arrow-right.png" alt="arrow-right" />
-        </div>
-      </div>
     </div>
   </div>
 </div>
