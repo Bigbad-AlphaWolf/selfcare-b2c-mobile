@@ -3,3 +3,11 @@ export interface CheckOtpOem {
   msisdn?: string;
   uuid?: any;
 }
+
+export interface CheckOtpCodeModel {
+  code?: string;
+  msisdn?: string;
+  valid?: boolean;
+  uuid?: string;
+  hmac?: string;
+}

@@ -99,6 +99,7 @@
     "ionic-image-loader": "^7.0.0-beta.2",
     "ionic-plugin-deeplinks": "^1.0.20",
     "jwt-decode": "^2.2.0",
+    "libphonenumber-js": "^1.10.8",
     "ngx-auto-unsubscribe": "^3.0.1",
     "ngx-clipboard": "^12.2.0",
     "rxjs": "~6.5.1",
