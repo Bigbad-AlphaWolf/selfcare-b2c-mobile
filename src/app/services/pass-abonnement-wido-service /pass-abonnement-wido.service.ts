@@ -35,11 +35,10 @@ export class PassAbonnementWidoService {
 				packId: data.packId
 			}
     ).pipe(catchError((err) => {
-			if(err && err.error && err.error.message) return throwError({
-				respMsg: err.error.message
-			})
-			return throwError({
-				respMsg: "Service indisponible, veuillez réessayer plus tard"
+			if(err) return throwError({
+				error : {
+					message: err?.error?.message
+				}
 			})
 		} ));
   }
@@ -60,7 +59,7 @@ export class PassAbonnementWidoService {
 				return throwError(
 					{
 						error: {
-							message: 'Veuillez réessayer plus tard'
+							message: err?.error?.message
 						}
 					}
 				)

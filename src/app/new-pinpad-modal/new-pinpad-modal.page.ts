@@ -522,7 +522,6 @@ export class NewPinpadModalPage implements OnInit {
     this.canRetry = false;
     this.errorBulletActive = false;
     this.processingPin = true;
-		const omPin = pin;
     let canalPromotion;
     if (
       this.buyPassPayload &&
@@ -586,7 +585,7 @@ export class NewPinpadModalPage implements OnInit {
 					case OPERATION_ABONNEMENT_WIDO:
 						const payloadWido = {
               msisdn2: this.buyPassPayload.destinataire,
-              pin: omPin,
+              pin: this.orangeMoneyService.decryptOmPin(omUser.sequence.split(''), pin),
               price_plan_index: this.buyPassPayload.pass.price_plan_index_om,
               amount: this.buyPassPayload.pass.tarif,
             };

@@ -21,6 +21,10 @@
       ::ng-deep .mat-radio-button.mat-accent .mat-radio-inner-circle {
         background-color: $orange;
       }
+			&.disableElt {
+				pointer-events: none;
+				color: $gray;
+			}
       .payment-mod-detail {
         display: flex;
         justify-content: space-between;
@@ -45,6 +49,11 @@
           .balance-title {
             font-family: HelveticaNeueLTStd-Roman, sans-serif;
             font-size: 12px;
+            line-height: 1.33;
+          }
+          .balance-title-2 {
+            font-family: HelveticaNeueLTStd-Bd, sans-serif;
+            font-size: 16px;
             line-height: 1.33;
           }
         }

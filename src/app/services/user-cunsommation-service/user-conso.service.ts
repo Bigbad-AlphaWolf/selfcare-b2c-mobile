@@ -1,7 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {map, share} from 'rxjs/operators';
+import {map, share, tap} from 'rxjs/operators';
 import {environment} from 'src/environments/environment';
 import {DashboardService} from '../dashboard-service/dashboard.service';
 import {CONSO_GAUGE_COLORS, InternetConsoModel, NewUserConsoModel} from './user-conso-service.index';
@@ -12,6 +11,8 @@ const urlConsoInternet = `${SERVER_API_URL}/${CONSO_SERVICE}/api/history-communi
   providedIn: 'root'
 })
 export class UserConsoService {
+	static lastUserConsumtionsInfos: any[] = [];
+	static lastRechargementCompteurValue: number;
   constructor(private http: HttpClient, private dashboardService: DashboardService) {}
 
   getUserCunsomation(msisdn = this.dashboardService.getCurrentPhoneNumber()) {
@@ -28,7 +29,11 @@ export class UserConsoService {
           counter.hasGauge = hasGauge;
         });
         return res;
-      })
+      }),
+			tap((res: NewUserConsoModel[]) => {
+				UserConsoService.lastUserConsumtionsInfos = res;
+				UserConsoService.lastRechargementCompteurValue = res.find((elt) => { return elt.codeCompteur === 1 })?.montantRestantBrut;
+			})
     );
   }
 
