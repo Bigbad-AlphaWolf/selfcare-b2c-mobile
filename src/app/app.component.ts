@@ -180,6 +180,7 @@ export class AppComponent {
         '/payer-teranga': TransfertHubServicesPage,
         '/payer-sonatel/:msisdn': TransfertHubServicesPage,
         '/payer-teranga/:msisdn': TransfertHubServicesPage,
+        '/login': TransfertHubServicesPage
       })
       .subscribe(
         (matched) => {

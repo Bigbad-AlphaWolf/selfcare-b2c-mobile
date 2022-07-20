@@ -22,6 +22,7 @@ import {BoosterModel, BoosterTrigger} from 'src/app/models/booster.model';
 import {GiftType} from 'src/app/models/enums/gift-type.enum';
 import {BoosterService} from '../booster.service';
 import {ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT} from '../utils/account.endpoints';
+import { UserConsoService } from '../user-cunsommation-service/user-conso.service';
 const {SERVER_API_URL, CONSO_SERVICE, FILE_SERVICE, ACCOUNT_MNGT_SERVICE, UAA_SERVICE, PURCHASES_SERVICE, BOOSTER_SERVICE} = environment;
 const ls = new SecureLS({encodingType: 'aes'});
 
@@ -424,6 +425,12 @@ export class DashboardService {
       map((res: any) => {
         return this.processConso(res);
       }),
+			tap((res) => {
+				const appelConso = res.find((x) => x.categorie === 'APPEL');
+        UserConsoService.lastRechargementCompteurValue = appelConso.consommations.find(
+          (x) => x.code === 1
+        ).montant;
+			}),
       retryWhen(errors => {
         return errors.pipe(
           delay(1000),

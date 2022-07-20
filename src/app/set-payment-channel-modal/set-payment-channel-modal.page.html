@@ -3,10 +3,11 @@
   <div class="choice-block">
     <div
       class="item"
+			[ngClass]="{'disableElt' : soldeCredit - pass?.tarif < 0 || soldeCredit - passIlliflex?.amount < 0 }"
       (click)="setPaymentChannel('CREDIT')"
       *ngIf="(passIlliflex) || (!pass?.passPromo ? pass?.price_plan_index : pass?.passPromo?.price_plan_index)"
     >
-      <mat-radio-button [id]="'credit' | generateIdForTA" [checked]="selectedPaymentChannel === 'CREDIT'">
+      <mat-radio-button [id]="'credit' | generateIdForTA" [checked]="selectedPaymentChannel === 'CREDIT'" >
       </mat-radio-button>
       <div class="payment-mod-detail">
         <div
@@ -18,6 +19,7 @@
         <div class="balance-information" *ngIf="soldeCredit || soldeCredit===0">
           <span class="balance-value">{{soldeCredit}} FCFA</span>
           <span class="balance-title scb-text-gray">Solde crédit restant</span>
+          <span *ngIf="soldeCredit - pass?.tarif < 0 || soldeCredit - passIlliflex?.amount < 0" class="balance-title-2 scb-text-orange">Solde crédit Insuffisant </span>
         </div>
       </div>
     </div>
