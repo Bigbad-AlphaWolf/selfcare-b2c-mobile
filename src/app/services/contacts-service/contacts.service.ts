@@ -121,8 +121,8 @@ export class ContactsService {
       .toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
-    this.previousSearchContactResult = this.previousSearchContactResult.length ? this.applyFilter(this.previousSearchContactResult, term, termWithoutAccent) : this.applyFilter(formattedContact, term, termWithoutAccent);
-    if (!this.previousSearchContactResult.length && REGEX_NUMBER_OM.test(term)) {
+    const result = this.applyFilter(formattedContact, term, termWithoutAccent);
+    if (!result.length && REGEX_NUMBER_OM.test(term)) {
       const item: ContactOem = {
         displayName: '',
         phoneNumber: term,
@@ -132,7 +132,7 @@ export class ContactsService {
       return [item];
     }
 
-    return this.previousSearchContactResult;
+    return result;
   }
 
 	applyFilter(list: ContactOem[], term: string, termWithoutAccent: string) {

@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  //SERVER_API_URL: 'https://orangeetmoi.orange.sn',
+  SERVER_API_URL: 'https://orangeetmoi.orange.sn',
   // SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
-  SERVER_API_URL:  'http://selfcareb2c-client-http-dsidacdifdsorangeetmoi-dev.apps.malaaw-rec.orange-sonatel.com',
+  //SERVER_API_URL:  'http://selfcareb2c-client-http-dsidacdifdsorangeetmoi-dev.apps.malaaw-rec.orange-sonatel.com',
   // SERVER_API_URL: 'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
   // SERVER_API_URL: 'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
   // SERVER_API_URL: 'https://selfcare-client-dsiselfcarebcorangeetmoi-prod.apps.paas.orange-sonatel.com',
@@ -41,7 +41,7 @@ export const environment = {
   DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_95fb0f8745090d63e5acebaa',
   CUSTOMER_OFFER_CACHE_DURATION: 30 * 60 * 1000, // 1.800.000 ms = 1.800 s = 30 min subscription cache duration
   FAVORITE_PASS_CACHE_DURATION: 30 * 24 * 60 * 60 * 1000, // 30 Jrs
-  DEFAULT_DATA_CACHE_DURATION: 30 * 24 * 60 * 60 * 1000, // 30 Jrs
+  DEFAULT_DATA_CACHE_DURATION: 1 * 1 * 30 * 60 * 1000, // 30 mn
 };
 
 /*
