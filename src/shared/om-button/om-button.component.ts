@@ -86,6 +86,11 @@ export class OmButtonComponent implements OnInit, OnDestroy {
       .getOmMsisdn()
       .pipe(
         switchMap((msisdn) => {
+          if (msisdn === 'error') {
+            this.openPinpad();
+            this.loadingBalance = false;
+            return;
+          }
           const payload: GetBalanceWPPayloadModel = {
             msisdn,
             type: GetBalanceTypeEnum.CUSTOMER,
