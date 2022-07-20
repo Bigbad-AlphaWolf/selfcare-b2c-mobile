@@ -26,24 +26,6 @@
 </ion-header>
 
 <ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
-  <ion-header class="ion-padding-start" collapse="condense">
-    <ion-toolbar>
-      <ng-container [ngSwitch]="purchaseType">
-        <span class="title" *ngSwitchCase="OPERATION_TYPE_SEDDO_BONUS">
-          Transfert de bonus
-        </span>
-        <span class="title" *ngSwitchCase="OPERATION_TYPE_SEDDO_CREDIT">
-          Transfert de crédit
-        </span>
-        <span class="title" *ngSwitchCase="OPERATION_TYPE_CARD_TO_WALLET">
-          Recharger son compte Orange Money par carte bancaire
-        </span>
-        <span class="title" *ngSwitchDefault>
-          Transfert d’argent
-        </span>
-      </ng-container>
-    </ion-toolbar>
-  </ion-header>
   <div class="banniere-container">
     <img *ngIf="purchaseType !== OPERATION_TYPE_CARD_TO_WALLET" src="/assets/images/transfer-money-banniere.png" alt="header-transfer" />
     <img *ngIf="purchaseType === OPERATION_TYPE_CARD_TO_WALLET" src="/assets/images/banner_OM.svg" alt="header-transfer" />
@@ -63,7 +45,11 @@
         </div>
       </div>
       <div class="operation-description scb-text-gray">
-        Renseignez le montant à recharger sur le compte Orange money. Vous allez être redirigé vers la plateforme BICIS pour terminer l’opération.
+        <ng-container [ngSwitch]="purchaseType">
+          <ng-container *ngSwitchCase="OPERATION_TYPE_CARD_TO_WALLET">Renseignez le montant à recharger sur le compte Orange
+            money. Vous allez être redirigé vers la plateforme BICIS pour terminer l’opération.</ng-container>
+          <ng-container *ngSwitchDefault>Renseignez le montant à transférer </ng-container>
+        </ng-container>
       </div>
       <div class="transfer-amount-block">
         <mat-form-field class="scb-input-row amount-input" appearance="outline">

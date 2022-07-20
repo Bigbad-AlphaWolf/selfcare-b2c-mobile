@@ -38,7 +38,7 @@
         </span>
       </div>
       <button *ngIf="!showErrMessage" (click)="checkNumber()" class="scb-btn scb-btn-full scb-btn-orange" type="submit"
-        [disabled]="!numberGot || checkingNumber || gettingNumber || !form?.valid">
+        [disabled]="checkingNumber || !form?.valid">
         <span>Suivant</span>
         <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="checkingNumber"></mat-spinner>
       </button>
