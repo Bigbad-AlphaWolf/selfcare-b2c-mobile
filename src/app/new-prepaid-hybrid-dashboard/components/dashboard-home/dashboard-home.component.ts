@@ -93,11 +93,17 @@ export class DashboardHomeComponent implements OnInit {
       icon: '04-boutons-01-illustrations-03-payer-ma-facture.svg',
     },
     {
-      title: 'Convertir',
-      subtitle: 'Points Sargal',
-      code: 'SARGAL',
+      title: 'Gérer',
+      subtitle: 'mon Fixe',
+      code: 'FIXES',
       icon: '04-boutons-01-illustrations-05-convertire-mes-points-sargal.svg',
     },
+    //{
+    //  title: 'Convertir',
+    //  subtitle: 'Points Sargal',
+    //  code: 'SARGAL',
+    //  icon: '04-boutons-01-illustrations-05-convertire-mes-points-sargal.svg',
+    //},
     {
       title: 'Demander',
       subtitle: 'un SOS',
@@ -475,6 +481,9 @@ export class DashboardHomeComponent implements OnInit {
       case 'SOS':
         this.goToSOSPage();
         break;
+      case 'FIXES':
+        this.goTAllFixeServices();
+        break;
     }
   }
 
@@ -505,6 +514,15 @@ export class DashboardHomeComponent implements OnInit {
       );
       this.router.navigate(['/buy-sos']);
     }
+  }
+
+  goTAllFixeServices() {
+      this.followAnalyticsService.registerEventFollow(
+        'gerer_mon_fixe_clic',
+        'event',
+        'clicked'
+      );
+      this.router.navigate(['/fixes-services']);
   }
 
   goMerchantPayment() {

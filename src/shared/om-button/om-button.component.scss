@@ -16,6 +16,18 @@
   height: 100%;
   padding: 15px;
   border-radius: 20px;
+  &.btn-loading {
+    opacity: 0.6;
+  }
+  .loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 20px;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+  }
   &.btn-om-kirene {
     background-image: none;
     background-color: #d03c34;
@@ -51,16 +63,89 @@
     display: inline-block;
     margin-top: 27px;
   }
-  .om-solde-visibility {
-    position: absolute;
-    bottom: 12px;
-    right: 12px;
-    .refresh-icon {
-      width: 16px;
-      height: 16px;
+  .show-details-info-text {
+    position: relative;
+    font-family: HelveticaNeueLTStd-Bd, sans-serif;
+    font-size: 12px;
+    line-height: 1.14;
+    display: inline-block;
+    text-decoration: underline;
+    .arrow-right {
+      position: absolute;
+      bottom: 3px;
     }
   }
   .arrow-right {
     margin-left: 5px;
+  }
+}
+
+.om-solde-visibility {
+  height: 24px;
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  backdrop-filter: blur(21px);
+  background-color: rgba(255, 255, 255, 0.3);
+  .refresh-icon {
+    width: 16px;
+    height: 12px;
+  }
+}
+
+
+
+
+.om-full-width-card-balance {
+  position: relative;
+  padding: 15px;
+  background-image: radial-gradient(circle at 75% -20%, #ffac62, #ff7900 111%);
+  text-align: left;
+  min-height: 111px;
+  &.btn-loading {
+    opacity: 0.6;
+  }
+  .loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+  }
+  .om-solde-visibility {
+    right: unset !important;
+    left: 142px !important;
+    top: 15px !important;
+  }
+  .balance-title {
+      font-family: 'HelveticaNeueLTStd-Roman';
+      font-size: 16px;
+      line-height: 1.88;
+      margin-bottom: 5px;
+  }
+  .ico-om {
+      position: absolute;
+      top: 25px;
+      right: 15px;
+  }
+  .available-balance {
+      font-size: 24px;
+      font-weight: bold;
+      line-height: 0.67;
+  }
+  .update-date {
+      font-family: 'HelveticaNeueLTStd-Roman';
+      font-size: 12px;
+      line-height: 2.5;
+  }
+  .show-details-info-text {
+    margin-top: 25px;
+    // text-decoration: underline;
   }
 }

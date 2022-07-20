@@ -3,10 +3,11 @@
   <div class="choice-block">
     <div
       class="item"
+			[ngClass]="{'disableElt' : soldeCredit - pass?.tarif < 0 || soldeCredit - passIlliflex?.amount < 0 }"
       (click)="setPaymentChannel('CREDIT')"
       *ngIf="(passIlliflex) || (!pass?.passPromo ? pass?.price_plan_index : pass?.passPromo?.price_plan_index)"
     >
-      <mat-radio-button [id]="'credit' | generateIdForTA" [checked]="selectedPaymentChannel === 'CREDIT'">
+      <mat-radio-button [id]="'credit' | generateIdForTA" [checked]="selectedPaymentChannel === 'CREDIT'" >
       </mat-radio-button>
       <div class="payment-mod-detail">
         <div
@@ -18,6 +19,7 @@
         <div class="balance-information" *ngIf="soldeCredit || soldeCredit===0">
           <span class="balance-value">{{soldeCredit}} FCFA</span>
           <span class="balance-title scb-text-gray">Solde crédit restant</span>
+          <span *ngIf="soldeCredit - pass?.tarif < 0 || soldeCredit - passIlliflex?.amount < 0" class="balance-title-2 scb-text-orange">Solde crédit Insuffisant </span>
         </div>
       </div>
     </div>
@@ -26,7 +28,7 @@
       (click)="setPaymentChannel('ORANGE_MONEY')"
       *ngIf="(passIlliflex) || (!pass?.passPromo ? pass?.price_plan_index_om : pass?.passPromo?.price_plan_index_om)"
     >
-      <mat-radio-button [id]="'orange-money' | generateIdForTA" [checked]="selectedPaymentChannel === 'ORANGE_MONEY'">
+      <mat-radio-button *ngIf="!errorMsg" #omChoice [id]="'orange-money' | generateIdForTA" [checked]="selectedPaymentChannel === 'ORANGE_MONEY'" >
       </mat-radio-button>
       <div class="payment-mod-detail">
         <div
@@ -35,7 +37,9 @@
         >
           Orange Money
         </div>
-        <div class="balance-information"></div>
+        <div class="balance-information" *ngIf="!!errorMsg">
+					<span class="balance-title scb-text-gray">Solde Orange Money insuffisant</span>
+				</div>
       </div>
     </div>
   </div>
@@ -43,11 +47,12 @@
     class="scb-btn scb-btn-orange"
     (click)="validateChannel()"
     [id]="'btn-validate-payment-mod' | generateIdForTA"
-    [disabled]="false"
+    [disabled]="checkingAmount"
   >
     <span class="text"
       >Valider ({{passIlliflex ? passIlliflex?.amount : (!pass?.passPromo ? pass?.tarif : pass?.passPromo?.tarif)}}
       FCFA)</span
     >
+		<ion-spinner *ngIf="checkingAmount" name="crescent"></ion-spinner>
   </button>
 </div>

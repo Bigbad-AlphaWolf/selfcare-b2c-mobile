@@ -46,6 +46,7 @@ import {
   MSG_XEWEUL_CARD_INVALID,
   ERROR_CODE_INVALID_AMOUNT_TO_RECHARGE_XEWEUL_CARD,
   MSG_XEWEUL_CARD_INVALID_AMOUNT_TO_RECHARGE,
+	OPERATION_ABONNEMENT_WIDO,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
@@ -85,6 +86,7 @@ import { CustomerOperationStatus } from '../models/enums/om-customer-status.enum
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
 import * as SecureLS from 'secure-ls';
 import { XeweulService } from '../services/xeweul/xeweul.service';
+import { PassAbonnementWidoService } from '../services/pass-abonnement-wido-service /pass-abonnement-wido.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -168,7 +170,8 @@ export class NewPinpadModalPage implements OnInit {
     private navCtrl: NavController,
     private router: Router,
     private billsService: BillsService,
-    private faio: FingerprintAIO
+    private faio: FingerprintAIO,
+		private abonnementwido: PassAbonnementWidoService
   ) {}
 
   ngOnInit() {
@@ -215,11 +218,6 @@ export class NewPinpadModalPage implements OnInit {
     this.userHasOmToken = true;
     this.checkingToken = false;
     this.gettingPinpad = true;
-    console.log('this.omInfosPINPAD', this.omInfos);
-    console.log(
-      'this.orange.GetOrangeMoneyUser',
-      this.orangeMoneyService.GetOrangeMoneyUser(this.payloadCreatePin.msisdn)
-    );
 
     this.orangeMoneyService.GetPinPad(pinpadData, this.omInfos).subscribe(
       (response: any) => {
@@ -584,6 +582,15 @@ export class NewPinpadModalPage implements OnInit {
 
             this.buyIllimix(dataIllimixOM, isFromFaceId);
             break;
+					case OPERATION_ABONNEMENT_WIDO:
+						const payloadWido = {
+              msisdn2: this.buyPassPayload.destinataire,
+              pin: this.orangeMoneyService.decryptOmPin(omUser.sequence.split(''), pin),
+              price_plan_index: this.buyPassPayload.pass.price_plan_index_om,
+              amount: this.buyPassPayload.pass.tarif,
+            };
+						this.suscribeWidoByOMoney(payloadWido, isFromFaceId);
+						break;
           case OPERATION_TRANSFER_OM:
             const transferMoneyPayload = Object.assign(
               {},
@@ -953,6 +960,41 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
+  suscribeWidoByOMoney(params: BuyPassPayload, withTouchID?: boolean) {
+    this.processingPin = true;
+    const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
+    // get balance
+    const buyPassPayload: OmBuyIllimixModel = {
+      msisdn: db.msisdn,
+      msisdn2: params.msisdn2,
+      pin: params.pin,
+      price_plan_index: params.price_plan_index,
+      em: db.em,
+      app_version: 'v1.0',
+      app_conf_version: 'v1.0',
+      user_type: 'user',
+      service_version: OM_SERVICE_VERSION,
+      amount: params.amount,
+      uuid: this.uuid,
+    };
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: db.msisdn,
+      receiver: params.msisdn2,
+      montant: params.amount,
+      mod_paiement: PAYMENT_MOD_OM,
+      ppi: params.price_plan_index,
+      withTouchID,
+    };
+
+    this.abonnementwido.suscribeToWidoByOMoney({msisdn: buyPassPayload.msisdn2, packId: +buyPassPayload.price_plan_index, omPin: buyPassPayload.pin}).subscribe(
+      (res: any) => {
+        this.processResult(res, db, logInfos, buyPassPayload);
+      },
+      err => {
+        this.processError(err, logInfos);
+      }
+    );
+  }
   buyIllimix(params: BuyPassPayload, withTouchID?: boolean) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
@@ -1035,8 +1077,6 @@ export class NewPinpadModalPage implements OnInit {
         this.opXtras.purchaseType
       ),
     };
-    console.log('payBillPayload', payload);
-
     this.billsService.payBill(payload).subscribe(
       (res: any) => {
         this.processResult(res, db, logInfos, payload);

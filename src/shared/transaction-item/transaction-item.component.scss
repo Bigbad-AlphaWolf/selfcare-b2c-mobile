@@ -1,0 +1,35 @@
+@import 'src/app/app';
+
+.transaction-item {
+    padding-left: 25px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    .transaction-icon {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 0;
+    }
+    .right-bloc {
+      text-align: right;
+    }
+    .left-bloc {
+      text-align: left;
+    }
+    .left-bloc,
+    .right-bloc {
+      display: flex;
+      flex-direction: column;
+      .transaction-type,
+      .transaction-price {
+        font-family: 'HelveticaNeueLTStd-Roman';
+        font-size: 18px;
+      }
+      .light-text {
+        font-family: 'HelveticaNeueLTStd-Roman';
+        font-size: 12px;
+        line-height: 1.5;
+      }
+    }
+  }

@@ -10,7 +10,7 @@ import {
   ProcessedConsoModel,
 } from 'src/app/services/user-cunsommation-service/user-conso-service.index';
 import { UserConsoService } from 'src/app/services/user-cunsommation-service/user-conso.service';
-const COUNTER_TYPE_FELLOW = "Numéros illimités";
+import { COUNTER_TYPE_FELLOW } from 'src/shared';
 @Component({
   selector: 'app-new-details-conso',
   templateUrl: './new-details-conso.component.html',

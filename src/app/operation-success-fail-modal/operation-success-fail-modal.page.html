@@ -114,6 +114,12 @@
 			<span class="title" *ngSwitchCase="OPERATION_RESET_OM_ACCOUNT"
         >Bravo !</span
       >
+      <span class="title" *ngSwitchCase="OPERATION_TYPE_SEDDO_BONUS"
+        >Transfert de bonus effectué !</span
+      >
+      <span class="title" *ngSwitchCase="OPERATION_TYPE_SEDDO_CREDIT"
+        >Transfert de crédit effectué !</span
+      >
     </ng-container>
     <span class="subtitle scb-text-gray">
       <ng-container *ngIf="!success">
@@ -179,6 +185,12 @@
 				<span *ngSwitchCase="OPERATION_ABONNEMENT_WIDO"
           >Vous avez acheté le pass abonnement Wido</span
         >
+        <span *ngSwitchCase="OPERATION_TYPE_SEDDO_BONUS"
+          >Vous avez transféré un bonus d'un montant de</span
+        >
+        <span *ngSwitchCase="OPERATION_TYPE_SEDDO_CREDIT"
+        >Vous avez transféré du crédit d'un montant de</span
+      >
       </ng-container>
     </span>
   </div>
@@ -278,6 +290,18 @@
           [passWido]="passBought"
           *ngSwitchCase="OPERATION_ABONNEMENT_WIDO"
         ></app-item-pass-wido>
+        <app-item-recharge-credit
+          [modifiable]="false"
+          [amount]="amount"
+          *ngSwitchCase="OPERATION_TYPE_SEDDO_BONUS"
+        >
+        </app-item-recharge-credit>
+        <app-item-recharge-credit
+          [modifiable]="false"
+          [amount]="amount"
+          *ngSwitchCase="OPERATION_TYPE_SEDDO_CREDIT"
+        >
+        </app-item-recharge-credit>
       </ng-container>
     </div>
     <div

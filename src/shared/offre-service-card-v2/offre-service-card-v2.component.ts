@@ -3,6 +3,7 @@ import {
   NavController,
   ToastController,
   ModalController,
+	Platform,
 } from '@ionic/angular';
 import { WoyofalSelectionComponent } from 'src/app/components/counter/woyofal-selection/woyofal-selection.component';
 import { NumberSelectionOption } from 'src/app/models/enums/number-selection-option.enum';
@@ -20,9 +21,12 @@ import {
   OPERATION_TYPE_PASS_USAGE,
   OPERATION_WOYOFAL,
 } from 'src/app/utils/operations.constants';
-import { OPERATION_CHECK_OM_ACCOUNT_STATUS, OPERATION_RATTACH_NUMBER, OPERATION_SHARE_THE_APP, OPERATION_TYPE_MERCHANT_PAYMENT } from '..';
+import { isExternallURL } from 'src/app/utils/utils';
+import { INFOS_ABONNEMENT_FIXE, OPERATION_CHECK_OM_ACCOUNT_STATUS, OPERATION_RATTACH_NUMBER, OPERATION_SHARE_THE_APP, OPERATION_TYPE_MERCHANT_PAYMENT, OPERATION_TYPE_SEDDO_BONUS, OPERATION_TYPE_SEDDO_CREDIT, SubscriptionModel } from '..';
 import { MerchantPaymentCodeComponent } from '../merchant-payment-code/merchant-payment-code.component';
 import { OmStatusVisualizationComponent } from '../om-status-visualization/om-status-visualization.component';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+
 @Component({
   selector: 'app-offre-service-card-v2',
   templateUrl: './offre-service-card-v2.component.html',
@@ -30,9 +34,12 @@ import { OmStatusVisualizationComponent } from '../om-status-visualization/om-st
 })
 export class OffreServiceCardV2Component implements OnInit {
   @Input() service: OffreService;
-  FILE_BASE_URL: string = FILE_DOWNLOAD_ENDPOINT;
-  imageUrl: string;
+  @Input() style: 'v1' | 'v2' = 'v1';
+	FILE_BASE_URL: string = FILE_DOWNLOAD_ENDPOINT;
 
+  imageUrl: string;
+	@Input() phone: string;
+	@Input() currentPhoneOffer: SubscriptionModel;
   constructor(
     private navCtrl: NavController,
     private toastController: ToastController,
@@ -40,7 +47,9 @@ export class OffreServiceCardV2Component implements OnInit {
     private bsService: BottomSheetService,
     private modalController: ModalController,
     private orangeMoneyService: OrangeMoneyService,
-    private followAnalyticsServ: FollowAnalyticsService
+    private followAnalyticsServ: FollowAnalyticsService,
+		private iab: InAppBrowser,
+		private platform: Platform
   ) {}
 
   ngOnInit() {
@@ -76,10 +85,37 @@ export class OffreServiceCardV2Component implements OnInit {
       this.openMerchantBS();
       return;
     }
-    if (this.service?.redirectionType === 'NAVIGATE' && this.service?.redirectionPath)
-      this.navCtrl.navigateForward([this.service.redirectionPath], {
-        state: { purchaseType: this.service.code },
-      });
+    if (this.service?.redirectionType === 'NAVIGATE' && this.service?.redirectionPath) {
+			const isExternalUrl = isExternallURL(this.service?.redirectionPath);
+			if(!isExternalUrl){
+				this.navCtrl.navigateForward([this.service.redirectionPath], {
+					state: { purchaseType: this.service.code, ...{
+						inputPhone: this.phone,
+						//ligne: this.phone,
+						clientCode: this.currentPhoneOffer?.clientCode,
+						operationType: this.service.code,
+						type: "FIXE"
+					} }
+				});
+			} else {
+				const options: InAppBrowserOptions = this.platform.is("ios") ? {
+          location: 'no',
+          toolbar: 'yes',
+          toolbarcolor: '#CCCCCC',
+          toolbarposition: 'top',
+          toolbartranslucent: 'no',
+          closebuttoncolor: '#000000',
+          closebuttoncaption: 'Fermer',
+          hidespinner: 'yes',
+        } : {};
+				this.iab.create(this.service?.redirectionPath, '_blank', options);
+			}
+			this.followAnalyticsServ.registerEventFollow(
+				'offer_service_'+this.service?.code?.toLowerCase()+'_click',
+				'event',
+				'clicked'
+			);
+		}
     if (this.service.code === OPERATION_WOYOFAL) {
       this.bsService
         .initBsModal(
@@ -101,6 +137,10 @@ export class OffreServiceCardV2Component implements OnInit {
       return;
     }
 		switch (this.service?.code) {
+      case OPERATION_TYPE_SEDDO_BONUS:
+      case OPERATION_TYPE_SEDDO_CREDIT:
+        this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.NONE, this.service.code, 'purchase-set-amount');
+        break;
 			case OPERATION_CHECK_OM_ACCOUNT_STATUS:
 				this.openOMStatus();
 				break;
@@ -112,6 +152,9 @@ export class OffreServiceCardV2Component implements OnInit {
 				break;
 			case OPERATION_RATTACH_NUMBER:
     		this.bsService.openRattacheNumberModal();
+				break;
+			case INFOS_ABONNEMENT_FIXE:
+    		this.bsService.openInfosLigneFixe(this.phone, this.currentPhoneOffer);
 				break;
 			default:
 				break;

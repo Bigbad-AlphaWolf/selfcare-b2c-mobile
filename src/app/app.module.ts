@@ -40,6 +40,7 @@ import {Diagnostic} from '@ionic-native/diagnostic/ngx';
 import {FingerprintAIO} from '@ionic-native/fingerprint-aio/ngx';
 import {FaceIdAlertPopupComponent} from './sidemenu/face-id-alert-popup/face-id-alert-popup.component';
 import {BarcodeScanner} from '@awesome-cordova-plugins/barcode-scanner/ngx';
+import { FCM } from 'cordova-plugin-fcm-with-dependecy-updated/ionic/ngx';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -85,7 +86,8 @@ registerLocaleData(localeFr);
     Network,
     WifiWizard2,
     Diagnostic,
-    BarcodeScanner
+    BarcodeScanner,
+    FCM
   ],
   bootstrap: [AppComponent]
 })

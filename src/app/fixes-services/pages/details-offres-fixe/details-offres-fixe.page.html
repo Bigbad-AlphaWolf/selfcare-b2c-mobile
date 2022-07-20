@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+			<ion-back-button mode="md" defaultHref="/fixes-services" class="oem-back-button">
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <span class="title1">
+        {{ pageInfos?.title }}
+      </span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+  <ion-header class="ion-padding-start" collapse="condense">
+    <ion-toolbar>
+      <span class="title">
+        {{ pageInfos?.title }}
+      </span>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="content-page">
+    <div class="header-image">
+      <img-loader class="icone" [src]="pageInfos?.banniere"
+        fallbackUrl="/assets/images/pass-internet-page-header.svg" useImg></img-loader>
+    </div>
+		<div class="body">
+			<div class="list-offer">
+				<app-offre-service-card-v2 *ngFor="let offer of listOffres" [service]="offer" [style]="'v2'" ></app-offre-service-card-v2>
+				<ion-spinner class="spinner" *ngIf="loadingServices" name="crescent"></ion-spinner>
+				<span class="error-msg" *ngIf="errorMsg && !loadingServices">
+					{{errorMsg}}
+				</span>
+			</div>
+		</div>
+  </div>
+</ion-content>

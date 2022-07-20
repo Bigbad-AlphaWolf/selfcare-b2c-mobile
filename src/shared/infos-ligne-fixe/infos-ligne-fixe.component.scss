@@ -1,0 +1,58 @@
+@import 'src/app/app';
+
+.offre-infos{
+	background-color: $white;
+	padding: 30px 15px;
+	position: relative;
+	.close-icon {
+		position: absolute;
+		top: 25px;
+    right: 18px;
+	}
+	.title{
+		font-family: HelveticaNeueLTStd-Bd, sans-serif;
+		font-size: 24px;
+		font-weight: bold;
+		font-stretch: normal;
+		font-style: normal;
+		line-height: 1.25;
+	}
+	.infos-item{
+		display: flex;
+		justify-content: space-between;
+		padding-bottom: 15px;
+		margin-top: 15px;
+		&:not(:last-child) {
+			border-bottom: solid 1px $silver;
+		}
+		.label {
+			font-family: HelveticaNeueLTStd-Roman;
+			font-size: 16px;
+			font-weight: normal;
+			font-stretch: normal;
+			font-style: normal;
+			line-height: 1.38;
+			color: $gray;
+		}
+		.value {
+			font-family: HelveticaNeueLTStd-Roman;
+			font-size: 16px;
+			font-weight: normal;
+			font-stretch: normal;
+			font-style: normal;
+			line-height: 1.38;
+			color: $fullBlack;
+			display: flex;
+			.icone {
+				display: block;
+				border-radius: 50%;
+				width: 12px;
+				height: 12px;
+				background-color: red;
+				&.actif{
+					background-color: #32c832;
+				}
+			}
+		}
+	}
+}

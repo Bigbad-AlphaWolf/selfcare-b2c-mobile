@@ -117,7 +117,7 @@
   background-color: #f3f3f8;
   z-index: 10;
   &.is-block-ios {
-    left: 200% !important;
+    left: 300% !important;
   }
   .search-bloc {
     margin-top: 15px;
@@ -162,6 +162,6 @@
     rgba(0, 0, 0, 0.1)
   );
   &.is-for-ios {
-    left: 200%;
+    left: 300%;
   }
 }

@@ -18,4 +18,5 @@ export interface ModalSuccessModel {
   dalal?: any;
   historyTransactionItem?: any;
   isOpenedFromHistory?: boolean;
+  operationStatus?: string;
 }

@@ -1,4 +1,4 @@
-import {AfterViewInit, Directive, ElementRef, HostBinding, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {AfterViewInit, Directive, ElementRef, HostBinding, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 
 @Directive({
   selector: '[appLazyLoad]'

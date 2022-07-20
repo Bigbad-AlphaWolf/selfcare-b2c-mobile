@@ -36,6 +36,8 @@ import {
   OPERATION_RATTACH_NUMBER,
 	OPERATION_UNBLOCK_OM_ACCOUNT,
 	OPERATION_RESET_PIN_OM,
+  OPERATION_TYPE_SEDDO_BONUS,
+  OPERATION_TYPE_SEDDO_CREDIT,
 } from 'src/shared';
 import { MerchantPaymentCodeComponent } from '../merchant-payment-code/merchant-payment-code.component';
 import { OmStatusVisualizationComponent } from '../om-status-visualization/om-status-visualization.component';
@@ -150,6 +152,10 @@ export class ActionItemComponent implements OnInit {
       return;
     }
     switch (this.action.code) {
+      case OPERATION_TYPE_SEDDO_BONUS:
+      case OPERATION_TYPE_SEDDO_CREDIT:
+        this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.NONE, this.action.code, 'purchase-set-amount');
+        break;
       case 'FIBRE_OPTIC':
         this.goFiberEligibility();
         break;
@@ -210,18 +216,15 @@ export class ActionItemComponent implements OnInit {
       case OPERATION_XEWEUL:
         this.navController.navigateForward(XeweulOperationPage.ROUTE_PATH);
         break;
-			case OPERATION_UNBLOCK_OM_ACCOUNT:
-				this.goToUnblockOMAccount();
-				break;
-			case OPERATION_RESET_PIN_OM:
-				this.goToResetOMAccount();
-				break;
+      case OPERATION_UNBLOCK_OM_ACCOUNT:
+        this.goToUnblockOMAccount();
+        break;
+      case OPERATION_RESET_PIN_OM:
+        this.goToResetOMAccount();
+        break;
       default:
         if (this.action?.redirectionType === 'NAVIGATE') {
-          this.followAnalyticsService.registerEventFollow(
-            'Offre_service_' + this.action?.code + '_clic',
-            'event'
-          );
+          this.followAnalyticsService.registerEventFollow('Offre_service_' + this.action?.code + '_clic', 'event');
           this.navController.navigateForward([this.action.redirectionPath], {
             state: { purchaseType: this.action?.code },
           });
