@@ -94,7 +94,7 @@ export class DashboardHomeComponent implements OnInit {
     },
     {
       title: 'Gérer',
-      subtitle: 'mon Fixe',
+      subtitle: 'Fibre, Adsl, Box',
       code: 'FIXES',
       icon: '04-boutons-01-illustrations-05-convertire-mes-points-sargal.svg',
     },
