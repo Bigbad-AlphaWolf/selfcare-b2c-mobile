@@ -117,11 +117,8 @@ export class ContactsService {
 
   searchOnContacts(term: string, formattedContact: ContactOem[]) {
     // remove accent on accentued caracter. Ex: replace ètre by etre
-    const termWithoutAccent = term
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
-    const result = this.applyFilter(formattedContact, term, termWithoutAccent);
+
+    const result = this.applyFilter(formattedContact, term);
     if (!result.length && REGEX_NUMBER_OM.test(term)) {
       const item: ContactOem = {
         displayName: '',
@@ -135,7 +132,11 @@ export class ContactsService {
     return result;
   }
 
-	applyFilter(list: ContactOem[], term: string, termWithoutAccent: string) {
+	applyFilter(list: ContactOem[], term: string) {
+		const termWithoutAccent = term
+		.toLowerCase()
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '');
 		return	list.filter(item => {
       return (
 				this.searchingTerm(item?.displayName?.toLowerCase(),term.toLowerCase()) ||
