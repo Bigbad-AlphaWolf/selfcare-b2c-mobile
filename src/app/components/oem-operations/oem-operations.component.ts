@@ -12,6 +12,8 @@ import {
   OPERATION_TYPE_PAY_BILL,
   OPERATION_TYPE_TERANGA_BILL,
   OPERATION_WOYOFAL,
+  OPERATION_TYPE_SENEAU_BILLS,
+  OPERATION_TYPE_SENELEC_BILLS,
 } from 'src/app/utils/operations.constants';
 import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
 import { OPERATION_TYPE_MERCHANT_PAYMENT } from 'src/shared';
@@ -24,6 +26,7 @@ import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow
 import { RapidoOperationPage } from 'src/app/pages/rapido-operation/rapido-operation.page';
 import { SelectNumberForBillComponent } from '../select-number-for-bill/select-number-for-bill.component';
 import {XeweulOperationPage} from '../../pages/xeweul-operation/xeweul-operation.page';
+import { TypeCounterModalComponent } from '../type-counter-modal/type-counter-modal.component';
 
 @Component({
   selector: 'oem-operations',
@@ -94,11 +97,18 @@ export class OemOperationsComponent implements OnInit {
       return;
     }
 
+    if (op.code === OPERATION_TYPE_SENEAU_BILLS || op.code === OPERATION_TYPE_SENELEC_BILLS) {
+      this.bsService.initBsModal(TypeCounterModalComponent, op.code, "/bills").subscribe();
+      this.bsService.openModal(TypeCounterModalComponent, {operation: op.code});
+      return;
+    }
+
     if (this.bsService[op.redirectionType]) {
       const params = ['NONE', op.code, op.redirectionPath];
       this.bsService[op.redirectionType](...params);
       return;
     }
+
   }
 
   async openPayBillModal(operation: string) {

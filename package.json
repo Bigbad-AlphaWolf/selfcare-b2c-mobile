@@ -101,6 +101,7 @@
     "ionic-image-loader": "^7.0.0-beta.2",
     "ionic-plugin-deeplinks": "^1.0.20",
     "jwt-decode": "^2.2.0",
+    "libphonenumber-js": "^1.10.8",
     "ngx-auto-unsubscribe": "^3.0.1",
     "ngx-clipboard": "^12.2.0",
     "rxjs": "~6.5.1",
@@ -119,8 +120,8 @@
     "@angular/compiler": "~12.2.1",
     "@angular/compiler-cli": "~12.2.1",
     "@angular/language-service": "~12.2.1",
-    "@hmscore/cordova-plugin-hms-analytics": "^6.3.2-301",
-    "@hmscore/cordova-plugin-hms-push": "^6.3.0-304",
+    "@hmscore/cordova-plugin-hms-analytics": "file:cordova-plugin-hms-analytics",
+    "@hmscore/cordova-plugin-hms-push": "file:cordova-plugin-hms-push",
     "@ionic/angular-toolkit": "^4.0.0",
     "@ionic/lab": "^2.0.10",
     "@types/googlemaps": "^3.43.3",
@@ -271,7 +272,12 @@
         "IOS_FIREBASE_MESSAGING_VERSION": "~> 7.4.0",
         "ANDROID_FCM_VERSION": "21.0.0"
       },
-      "cordova-custom-config": {}
+      "cordova-custom-config": {},
+      "cordova-plugin-hms-analytics": {
+        "AGC_ROUTE_POLICY": "default",
+        "IS_ANALYTICS_ENABLED": "true"
+      },
+      "cordova-plugin-hms-push": {}
     },
     "platforms": [
       "android",

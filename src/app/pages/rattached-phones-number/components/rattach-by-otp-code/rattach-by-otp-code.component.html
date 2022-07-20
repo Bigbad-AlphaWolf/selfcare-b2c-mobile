@@ -26,17 +26,17 @@
     </div>
   </div>
 
-	<div *ngIf="showSendOtpBtn" class="scb-text-red-error">
-		Si vous n'avez pas reçu le code par SMS. Cliquer sur le bouton pour renvoyer.
-	</div>
-	<div *ngIf="showSendOtpBtn" class="send-otp-btn">
-		<ion-button expand="block" (click)="sendOtpCode()" [disabled]="isSendingOtp">
-      Renvoyer le code
-			<ion-spinner *ngIf="isSendingOtp"
-      name="crescent"
-    ></ion-spinner>
-    </ion-button>
-	</div>
+  <div class="resend-block">
+    <div *ngIf="showSendOtpBtn" class="scb-text-red-error">
+      Si vous n'avez pas reçu le code par SMS. Cliquer sur le bouton pour renvoyer.
+    </div>
+    <div *ngIf="showSendOtpBtn" class="send-otp-btn">
+      <ion-button expand="block" (click)="sendOtpCode()" [disabled]="isSendingOtp">
+        Renvoyer le code
+        <ion-spinner *ngIf="isSendingOtp" name="crescent"></ion-spinner>
+      </ion-button>
+    </div>
+  </div>
 	<div *ngIf="hasErrorSendingOtp" class="error-msg scb-text-red-error">
 		Vous ne pouvez pas recevoir de code en ce moment. Veuillez patienter avant de réessayer.
 	</div>
