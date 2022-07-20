@@ -19,6 +19,7 @@ declare var navigator: any;
 })
 export class ContactsService {
   public static allContacts: any[];
+	previousSearchContactResult: ContactOem[] = [];
   mockContactsProcessed = [
     {
       name: {
@@ -67,21 +68,21 @@ export class ContactsService {
     }
     return from(this.getAll()).pipe(
       map((contacts: any[]) => {
-        console.log('our result', contacts);
+        console.log('our inital result', contacts);
         const result = contacts.map(
           ({ displayName, phoneNumbers, thumbnail, ...left }) => {
             if (phoneNumbers) {
               const numbers = phoneNumbers.map(element => {
-                return formatPhoneNumber(element.number);
+                return formatPhoneNumber(element.normalizedNumber);
               });
-              console.log({ displayName, numbers, thumbnail });
+              //console.log({ displayName, numbers, thumbnail });
               return { displayName, numbers, thumbnail };
             }
             return { displayName, thumbnail, numbers: [] };
           }
         );
         ContactsService.allContacts = result;
-        console.log(result);
+        console.log('our final result',result);
 
         return result;
       }),
@@ -95,7 +96,7 @@ export class ContactsService {
   getAll() {
     return new Promise<any[]>((resolve, reject) => {
       navigator.contactsPhoneNumbers.list((contacts: any[]) => {
-        console.log(contacts);
+        //console.log(contacts);
         resolve(contacts);
       });
     });
@@ -116,21 +117,8 @@ export class ContactsService {
 
   searchOnContacts(term: string, formattedContact: ContactOem[]) {
     // remove accent on accentued caracter. Ex: replace ètre by etre
-    const termWithoutAccent = term
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
-    let result = formattedContact.filter(item => {
-      return (
-        item?.displayName?.toLowerCase()?.includes(term.toLowerCase()) ||
-        item?.displayName
-          ?.toLowerCase()
-          ?.normalize('NFD')
-          ?.replace(/[\u0300-\u036f]/g, '')
-          ?.includes(termWithoutAccent) ||
-        item.phoneNumber?.toLowerCase()?.includes(termWithoutAccent.toLowerCase())
-      );
-    });
+
+    const result = this.applyFilter(formattedContact, term);
     if (!result.length && REGEX_NUMBER_OM.test(term)) {
       const item: ContactOem = {
         displayName: '',
@@ -140,6 +128,32 @@ export class ContactsService {
       };
       return [item];
     }
+
     return result;
   }
+
+	applyFilter(list: ContactOem[], term: string) {
+		const termWithoutAccent = term
+		.toLowerCase()
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '');
+		return	list.filter(item => {
+      return (
+				this.searchingTerm(item?.displayName?.toLowerCase(),term.toLowerCase()) ||
+				this.searchingTerm(item?.displayName?.toLowerCase()?.normalize('NFD')?.replace(/[\u0300-\u036f]/g, ''), termWithoutAccent) ||
+        item.phoneNumber?.toLowerCase()?.includes(termWithoutAccent.toLowerCase())
+      );
+    })
+	}
+
+	searchingTerm(text: string, searchTerm: string) {
+		return text.includes(searchTerm) || this.searchingTermsGroup(text,searchTerm);
+	}
+	searchingTermsGroup(text: string, searchingTermgroup: string) {
+		const regex = searchingTermgroup.split(" ")
+        .map(word => "(?=.*\\b" + word + "\\b)")
+        .join('');
+    const searchExp = new RegExp(regex, "gi");
+    return searchExp.test(text);
+	}
 }

@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 import { SERVICES_TO_MATCH_CONTACTS } from '.';
 import { ContactsService } from '../contacts-service/contacts.service';
 import { Platform } from '@ionic/angular';
+import { trace } from 'console';
 
 @Injectable({
   providedIn: 'root',
@@ -59,6 +60,35 @@ export class RecentsService {
                   return recents;
                 })
               );
+            }),
+            catchError((err) => {
+              return of([]);
+            })
+          );
+      })
+    );
+
+  }
+  fetchRecentsV2(op: string, numberToDisplay: number, listContact: any[]) {
+    let service = this.recentType(op);
+    return this.omService.getOmMsisdn().pipe(
+      switchMap((omPhonenumber) => {
+        return this.http
+          .get(
+            `${OM_RECENTS_ENDPOINT}/${omPhonenumber.trim()}?service=${service}`
+          )
+          .pipe(
+            switchMap((response: any) => {
+              const recents: RecentsOem[] = this.parseRecentsResponse(
+                response,
+                numberToDisplay
+              );
+              if (this.platform.is('mobileweb')) {
+                return of(recents);
+              }
+              // if (!SERVICES_TO_MATCH_CONTACTS.includes(service))
+							return of(this.mapRecentsToContacts(recents, listContact));
+
             }),
             catchError((err) => {
               return of([]);
@@ -120,7 +150,7 @@ export class RecentsService {
       }
       nums.push(num);
     }
-    console.log(nums);
+    //console.log(nums);
     return nums.includes(msisdn);
   }
 }
