@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
-import { ModalController, Platform } from '@ionic/angular';
-import { from, Subject, throwError } from 'rxjs';
+import { ModalController } from '@ionic/angular';
+import { from, of, Subject, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { OPERATION_TRANSFER_OM, REGEX_NUMBER_ALLOWED_COUNTRY_CODE_LONG, REGEX_NUMBER_ALLOWED_COUNTRY_CODE_SHORT, REGEX_NUMBER_OM } from 'src/shared';
 import { NoOmAccountModalComponent } from 'src/shared/no-om-account-modal/no-om-account-modal.component';
+import { PermissionSettingsPopupComponent } from '../components/permission-settings-popup/permission-settings-popup.component';
 import { ContactOem } from '../models/contact-oem.model';
 import { CountryOem } from '../models/country-oem.model';
 import { RecentsOem } from '../models/recents-oem.model';
@@ -38,6 +39,7 @@ export class NewSelectBeneficiaryPage implements OnInit {
 	currentNumber = this.dashboardServ.getCurrentPhoneNumber();
 	loadingRecents: boolean;
 	inputFocused: boolean;
+	isLoadingContacts: boolean;
 	constructor(
 		private diagnostic: Diagnostic,
 		private dashboardServ: DashboardService,
@@ -46,12 +48,10 @@ export class NewSelectBeneficiaryPage implements OnInit {
 		private appRouting: ApplicationRoutingService,
 		private omService: OrangeMoneyService,
 		private modalController: ModalController,
-		private recentsService: RecentsService,
-		private platform: Platform
-	) { }
+		private recentsService: RecentsService	) { }
 
 	ngOnInit() {
-		this.onAppResume();
+		this.checkContactsAuthorizationStatus();
 	}
 
 	ionViewWillEnter() {
@@ -63,14 +63,19 @@ export class NewSelectBeneficiaryPage implements OnInit {
 		this.errorMsg = null;
 		await from( this.diagnostic.getContactsAuthorizationStatus() ).pipe(
 			tap( contactStatus => {
+				console.log('authorization', contactStatus);
+
 				if (
 					contactStatus === this.diagnostic.permissionStatus.NOT_REQUESTED ||
 					contactStatus === this.diagnostic.permissionStatus.DENIED_ALWAYS
 				) {
+					this.isLoadingContacts = false;
 					this.contactError = true;
 					this.errorMsg =
 						"Pour afficher vos contacts/bénéficiaires récents, vous devez autoriser l'accés à vos contacts.";
 				}
+				console.log('contactStatus', contactStatus);
+
 			} ),
 			catchError( err => {
 				this.contactError = true;
@@ -82,14 +87,16 @@ export class NewSelectBeneficiaryPage implements OnInit {
 	}
 
 	retrievContacts(refresh?: boolean) {
+		this.isLoadingContacts = true;
 		this.listFilteredContacts = this.listContact = [];
 		this.contactService
 			.getAllContacts(refresh)
 			.pipe(
 				tap( ( res: ContactOem[] ) => {
-					console.log(res);
-					
-					this.getRecents();
+					this.isLoadingContacts = false;
+					console.log('called here', res);
+
+					this.getRecents(res);
 					res.forEach( item => {
 						if ( item.numbers.length > 1 ) {
 							item.numbers = [...new Set(item.numbers)];
@@ -112,8 +119,6 @@ export class NewSelectBeneficiaryPage implements OnInit {
 					});
 					const sortedContact = this.listContact.sort( ( a, b ) => {
 						if ( a.displayName && b.displayName ) {
-							console.log('a contact', a.displayName);
-							console.log('b contact', b.displayName);
 							return a?.displayName[0]?.localeCompare( b?.displayName[0] )
 						}
 						return -1;
@@ -124,7 +129,12 @@ export class NewSelectBeneficiaryPage implements OnInit {
 					if ( !res.length ) {
 						this.checkContactsAuthorizationStatus();
 					}
-				} )
+				} ),
+				catchError((err) => {
+					console.log('err', err);
+					this.isLoadingContacts = false;
+					return of([])
+				})
 			)
 			.subscribe();
 	}
@@ -262,14 +272,15 @@ export class NewSelectBeneficiaryPage implements OnInit {
 		this.appRouting.goSetTransferAmountPage(payload);
 	}
 
-	getRecents() {
+	getRecents(listContact: ContactOem[]) {
     this.loadingRecents = true;
     this.recentsService
-      .fetchRecents(OPERATION_TRANSFER_OM, 2)
+      .fetchRecentsV2(OPERATION_TRANSFER_OM, 5, listContact)
       .pipe(
         map((recents: RecentsOem[]) => {
           this.loadingRecents = false;
           let results: ContactOem[] = [];
+
           recents.forEach((el) => {
             results.push({
               displayName: el.name,
@@ -299,11 +310,14 @@ export class NewSelectBeneficiaryPage implements OnInit {
       .subscribe();
   }
 
-	onAppResume() {
-		this.platform.resume.subscribe(
-			(res) => {
-			this.retrievContacts(true);
-			}
-		)
-	}
+	async openSettingsPopup() {
+    await this.modalController.dismiss();
+    const modal = await this.modalController.create({
+      component: PermissionSettingsPopupComponent,
+      cssClass: 'success-or-fail-modal',
+    });
+    modal.onDidDismiss().then((response) => {});
+    return modal.present();
+  }
+
 }

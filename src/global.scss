@@ -1048,3 +1048,7 @@ ion-tab-bar {
     }
   }
 }
+
+.cdk-virtual-scroll-orientation-vertical .cdk-virtual-scroll-content-wrapper {
+	width: 100%;
+}
