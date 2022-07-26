@@ -7,6 +7,7 @@ import {
   FormuleMobileModel,
   JAMONO_NEW_SCOOL_CODE,
   JAMONO_NEW_SCOOL_CODE_FORMULE,
+  JAMONO_NEW_SCOOL_SWAP_FORMULE_PATH,
   LOCAL_ZONE,
   SubscriptionUserModel,
   TarifZoningByCountryModel,
@@ -88,7 +89,8 @@ export class MyFormulePage implements OnInit {
 
   async checkChangeFormuleDeeplink() {
     const changeFormule = this.route.snapshot.paramMap.get('codeFormule');
-    if (changeFormule === JAMONO_NEW_SCOOL_CODE) {
+		const currentRoute = this.router.url.split('/').join("");
+    if (changeFormule === JAMONO_NEW_SCOOL_CODE || currentRoute === JAMONO_NEW_SCOOL_SWAP_FORMULE_PATH) {
       this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
       this.authServ
         .getSubscription(this.currentNumber)
