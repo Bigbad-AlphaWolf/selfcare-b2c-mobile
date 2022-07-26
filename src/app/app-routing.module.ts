@@ -418,6 +418,10 @@ const routes: Routes = [
   {
     path: 'fixes-services',
     loadChildren: () => import('./fixes-services/fixes-services.module').then( m => m.FixesServicesPageModule)
+  },
+  {
+    path: 'custom-sargal-profile',
+    loadChildren: () => import('./custom-sargal-profile/custom-sargal-profile.module').then( m => m.CustomSargalProfilePageModule)
   }
 ];
 

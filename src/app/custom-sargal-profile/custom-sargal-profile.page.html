@@ -1,0 +1,52 @@
+<ion-header [oemIonHeaderParallax]="90">
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-back-button [id]="'goBackBtn'" defaultHref="/" mode="md" class="oem-back-button">
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title> Sargal Scool </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
+  <div class="card-container">
+    <app-custom-sargal-card></app-custom-sargal-card>
+  </div>
+  <div class="sargal-filters-block">
+    <ng-container *ngIf="loadingCategories else filters">
+      <ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
+      <ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
+      <ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
+      <ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
+    </ng-container>
+    <ng-template #filters>
+      <div class="sargal-filter-category" [ngClass]="{'active': selectedCategoryFilterIndex === i}"
+        *ngFor="let categoryPartner of bpSargalCategories, let i = index" (click)="selectCategory(i)">
+        {{categoryPartner?.nomCategorie}}
+      </div>
+    </ng-template>
+  </div>
+  <div class="sargal-bons-plans-content">
+    <div class="sargal-content-top-block">
+      <span class="bons-plans-count">
+        {{bpCount}} {{bpCount > 1 ? "offres" : "offre"}}
+      </span>
+    </div>
+    <div class="sargal-reductions-list">
+      <ng-container *ngIf="loadingOffers else offers">
+        <ion-skeleton-text class="sargal-offer-loader" animated></ion-skeleton-text>
+        <ion-skeleton-text class="sargal-offer-loader" animated></ion-skeleton-text>
+        <ion-skeleton-text class="sargal-offer-loader" animated></ion-skeleton-text>
+        <ion-skeleton-text class="sargal-offer-loader" animated></ion-skeleton-text>
+      </ng-container>
+      <ng-template #offers>
+        <app-sargal-reduction-card></app-sargal-reduction-card>
+        <app-sargal-reduction-card></app-sargal-reduction-card>
+        <app-sargal-reduction-card></app-sargal-reduction-card>
+        <app-sargal-reduction-card></app-sargal-reduction-card>
+        <app-sargal-reduction-card></app-sargal-reduction-card>
+        <app-sargal-reduction-card></app-sargal-reduction-card>
+      </ng-template>
+    </div>
+  </div>
+</ion-content>

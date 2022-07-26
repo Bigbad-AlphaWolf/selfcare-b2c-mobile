@@ -1,0 +1,79 @@
+@import 'src/app/app';
+
+ion-content {
+    --background: #f3f3f8;
+
+    .card-container {
+        background-color: $white;
+        padding: 10px 19px 0;
+    }
+
+    .sargal-filters-block {
+        background-color: $white;
+        padding: 20px 0;
+        display: flex;
+        overflow-x: auto;
+
+        .sargal-category-loader {
+            width: 86px;
+            height: 40px;
+            border-radius: 5px;
+            margin-left: 15px;
+        }
+
+        .sargal-filter-category {
+            font-family: 'HelveticaNeueLTStd-Roman';
+            font-size: 14px;
+            line-height: 1.14;
+            letter-spacing: -0.1px;
+            flex-shrink: 0;
+            margin-left: 22px;
+            padding: 12px 0;
+
+            &.active {
+                font-family: 'HelveticaNeueLTStd-Bd';
+                background-color: $orange;
+                border-radius: 10px;
+                color: $white;
+                padding: 12px 20px;
+            }
+
+            &:first-child() {
+                margin-left: 20px !important;
+            }
+        }
+    }
+
+    .sargal-bons-plans-content {
+        padding: 28px 15px;
+
+        .sargal-content-top-block {
+            display: flex;
+            padding-bottom: 28px;
+
+            .bons-plans-count {
+                font-size: 20px;
+                line-height: 1.1;
+                letter-spacing: -0.4px;
+            }
+        }
+
+        .sargal-reductions-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+
+            app-sargal-reduction-card {
+                width: percentage(165/345);
+                margin-bottom: 15px;
+            }
+
+            .sargal-offer-loader {
+                width: percentage(165/345);
+                height: 270px;
+                margin-bottom: 15px;
+                border-radius: 10px;
+            }
+        }
+    }
+}

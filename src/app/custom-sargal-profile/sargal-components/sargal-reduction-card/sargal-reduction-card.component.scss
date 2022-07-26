@@ -1,0 +1,63 @@
+@import 'src/app/app';
+
+:host {}
+
+.bon-plan-reduction-card {
+    border-radius: 10px;
+
+    &.v1 {
+        .reduction-image-container {
+            height: 140px;
+
+            img {
+                height: 100%;
+                width: 100%;
+            }
+        }
+
+        .reduction-details {
+            position: relative;
+            background-color: $white;
+            padding-top: 60px;
+            border-radius: 10px;
+            margin-top: -10px;
+
+            .partner-logo {
+                position: absolute;
+                width: 99px;
+                height: 99px;
+                border-radius: 50%;
+                top: -49.5px;
+                left: calc((100% - 99px) / 2);
+            }
+
+            .reduction-infos {
+                padding: 0 15px 20px;
+                text-align: center;
+
+                .info-1 {
+                    font-size: 16px;
+                    line-height: 1.13;
+                    letter-spacing: -0.1px;
+                    padding-bottom: 10px;
+                }
+
+                .info-2 {
+                    font-family: HelveticaNeueLTStd-Roman;
+                    font-size: 12px;
+                    line-height: 1.33;
+                    color: $greenSuccess;
+
+                    .price-tag-icon {
+                        color: $greenSuccess;
+                        font-size: 15px;
+                        margin: 0 5px -2px 0;
+                        transform: rotate(-90deg);
+                    }
+                }
+            }
+        }
+    }
+
+    &.v2 {}
+}
