@@ -391,4 +391,9 @@ export class SidemenuComponent implements OnInit, OnDestroy {
       )
     );
   }
+
+	goToSatisfactionForm() {
+    this.router.navigate(['/satisfaction-form']);
+    this.followAnalyticsService.registerEventFollow('Ibou_Formulaire_de_satisfaction_clic', 'event', 'clicked');
+  }
 }
