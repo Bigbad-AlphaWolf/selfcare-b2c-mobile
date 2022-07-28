@@ -28,7 +28,7 @@ export const environment = {
   COMMUNITY_MANAGEMENT_SERVICE: 'services/selfcare-b2c-community-management',
   BOOSTER_SERVICE: 'services/selfcare-b2c-booster-management',
   SARGAL_SERVICE: 'services/selfcare-b2c-sargal',
-  AUTH_IMPLICIT_MSISDN: '221782954881',
+  AUTH_IMPLICIT_MSISDN: '221782363572',
   GA_CONFIG: {
     trackingId: 'UA-92621294-1',
     trackPageviews: true,

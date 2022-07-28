@@ -134,7 +134,7 @@
           <div class="title">Je souhaite</div>
           <div class="more" (click)="onVoirPlus()">Voir plus</div>
         </div>
-        <oem-operations [operations]="operations" *ngIf="operations?.length"></oem-operations>
+        <oem-operations [operations]="operations" *ngIf="operations?.length" [currentPhoneOffer]="currentSubscription"></oem-operations>
       </div>
 
       <div class="dashboard-block-bill">
