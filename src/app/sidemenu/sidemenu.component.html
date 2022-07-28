@@ -92,6 +92,13 @@
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
+    <div class="item-option" [id]="'bon-plan-sargal-entry' | generateIdForTA" (click)="goBPSargal()" *ngIf="currentProfile">
+      <ion-menu-toggle>
+        <img src="/assets/images/icons-urgence-et-depannage.svg" alt="" class="option-img">
+        <span class="option-text">Bons plans Sargal</span>
+        <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
+      </ion-menu-toggle>
+    </div>
     <div class="item-option" [id]="'assistance-entry' | generateIdForTA" (click)="goEmergencies()" *ngIf="currentProfile">
       <ion-menu-toggle>
         <img src="/assets/images/icons-urgence-et-depannage.svg" alt="" class="option-img">

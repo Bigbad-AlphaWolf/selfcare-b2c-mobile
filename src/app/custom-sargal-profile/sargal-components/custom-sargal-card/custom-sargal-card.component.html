@@ -1,10 +1,10 @@
-<div class="custom-sargal-card">
-  <div class="colored-layer"></div>
+<div class="custom-sargal-card" [ngStyle]="{'background-image': 'url(' + downloadAvatarEndpoint + sargalCard?.imagePath + ')'}">
+  <div class="colored-layer" *ngIf="0"></div>
   <div class="card-infos">
     <div class="card-profile">
       <span class="profile-title scb-text-white">Ma carte Sargal</span>
-      <span class="profile-name scb-text-white">S'COOL</span>
+      <span class="profile-name scb-text-white">{{sargalCard?.nom}}</span>
     </div>
-    <span class="card-owner scb-text-white">Papa Abdoulaye KEBE</span>
+    <span class="card-owner scb-text-white">{{name}}</span>
   </div>
 </div>

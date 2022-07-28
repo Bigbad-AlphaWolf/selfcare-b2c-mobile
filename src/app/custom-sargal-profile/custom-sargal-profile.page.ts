@@ -1,7 +1,8 @@
+import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { throwError } from 'rxjs';
-import { catchError, switchMap, tap } from 'rxjs/operators';
-import { BonPlanSargalCategoryModel, BonPlanSargalModel } from '../models/bons-plans-sargal.model';
+import { catchError, tap } from 'rxjs/operators';
+import { BonPlanSargalCategoryModel, BonPlanSargalModel, PartnerReductionModel } from '../models/bons-plans-sargal.model';
 import { BonsPlansSargalService } from '../services/bons-plans-sargal/bons-plans-sargal.service';
 
 @Component({
@@ -13,8 +14,8 @@ export class CustomSargalProfilePage implements OnInit {
   loadingCategories: boolean;
   loadingOffers: boolean;
   bpSargalCategories: BonPlanSargalCategoryModel[];
-  bpSargal: BonPlanSargalModel[];
-  bpCount: number = 0;
+  bpSargal: PartnerReductionModel[];
+  sargalCard: BonPlanSargalModel;
   selectedCategoryFilterIndex = 0;
 
   constructor(private bpSargalService: BonsPlansSargalService) {}
@@ -25,9 +26,11 @@ export class CustomSargalProfilePage implements OnInit {
   }
 
   selectCategory(i) {
+    if (this.selectedCategoryFilterIndex === i) return;
     this.selectedCategoryFilterIndex = i;
+    this.fetchOffers();
   }
-
+  
   fetchCategories() {
     this.loadingCategories = true;
     this.bpSargalService
@@ -50,16 +53,19 @@ export class CustomSargalProfilePage implements OnInit {
   }
 
   fetchOffers() {
-    // this.loadingOffers = true;
+    this.loadingOffers = true;
+    this.bpSargal = [];
+    const categoryId = this.bpSargalCategories?.[this.selectedCategoryFilterIndex]?.id;
     this.bpSargalService
-      .getBonsPlansSargal()
+      .getBonsPlansSargal(categoryId)
       .pipe(
-        tap(bonsPlansSargal => {
-          this.bpSargal = bonsPlansSargal;
-          // this.loadingOffers = false;
+        tap((bonsPlansSargal: HttpResponse<BonPlanSargalModel[]>) => {
+          this.sargalCard = this.sargalCard ? this.sargalCard : bonsPlansSargal.body[0];
+          this.bpSargal = bonsPlansSargal.body[0]?.partnerReductions || [];
+          this.loadingOffers = false;
         }),
         catchError(err => {
-          // this.loadingOffers = false;
+          this.loadingOffers = false;
           return throwError(err);
         })
       )
