@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { PartnerReductionModel } from 'src/app/models/bons-plans-sargal.model';
 
 @Component({
   selector: 'app-sargal-reduction-card',
@@ -6,11 +7,13 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./sargal-reduction-card.component.scss'],
 })
 export class SargalReductionCardComponent implements OnInit {
-
   @Input() displayVersion: 'v1' | 'v2' = 'v1';
+  @Input() bonPlan: PartnerReductionModel;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.bonPlan);
+  }
 
 }

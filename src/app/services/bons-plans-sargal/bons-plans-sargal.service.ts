@@ -16,13 +16,16 @@ const BONS_PLANS_SARGAL_URL = `${BONS_PLANS_SARGAL_BASE_URL}/bon-plan-sargal`;
 export class BonsPlansSargalService {
   constructor(private http: HttpClient, private dashboardService: DashboardService, private authService: AuthenticationService) {}
 
-  getBonsPlansSargal() {
+  getBonsPlansSargal(categoryId?) {
+    const categoryQueryParam = categoryId ? `&category=${categoryId}` : "";
     const msisdn = this.dashboardService.getCurrentPhoneNumber();
     return this.authService.getSubscription(msisdn).pipe(
       switchMap(sub => {
-        return this.http.get<BonPlanSargalModel[]>(`${BONS_PLANS_SARGAL_URL}/${msisdn}/alll?formules=${sub?.code}`);
+        return this.http.get<BonPlanSargalModel[]>(`${BONS_PLANS_SARGAL_URL}/${msisdn}/all?formules=${sub?.code}${categoryQueryParam}`, {
+          observe: 'response',
+        });
       })
-    )
+    );
   }
 
   getBonsPlansSargalCategories() {

@@ -240,8 +240,11 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.lastName = user.lastName;
   }
 
+  goBPSargal() {
+    this.router.navigate(['/custom-sargal-profile']);
+  }
+
   goToAssistancePage() {
-    // this.router.navigate(['/community']);
     // return;
     this.iab.create(ASSISTANCE_URL, '_self');
     this.followAnalyticsService.registerEventFollow(

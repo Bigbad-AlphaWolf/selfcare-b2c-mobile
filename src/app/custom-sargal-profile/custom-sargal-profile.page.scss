@@ -6,6 +6,12 @@ ion-content {
     .card-container {
         background-color: $white;
         padding: 10px 19px 0;
+
+        .sargal-card-loader {
+            width: 100%;
+            height: 175px;
+            border-radius: 10px;
+        }
     }
 
     .sargal-filters-block {
@@ -13,6 +19,9 @@ ion-content {
         padding: 20px 0;
         display: flex;
         overflow-x: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        min-height: 79.95px;
 
         .sargal-category-loader {
             width: 86px;
@@ -44,6 +53,10 @@ ion-content {
         }
     }
 
+    .sargal-filters-block::-webkit-scrollbar {
+        display: none;
+    }
+
     .sargal-bons-plans-content {
         padding: 28px 15px;
 
@@ -62,6 +75,7 @@ ion-content {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
+            background: transparent;
 
             app-sargal-reduction-card {
                 width: percentage(165/345);
@@ -73,6 +87,11 @@ ion-content {
                 height: 270px;
                 margin-bottom: 15px;
                 border-radius: 10px;
+            }
+
+            .no-bp-block {
+                font-family: 'HelveticaNeueLTStd-Roman';
+                font-size: 16px;
             }
         }
     }
