@@ -71,7 +71,6 @@
     "@ionic-native/splash-screen": "^5.28.0",
     "@ionic-native/status-bar": "^5.28.0",
     "@ionic-native/uid": "^5.29.0",
-    "@ionic-native/wifi-wizard-2": "^5.36.0",
     "@ionic/angular": "^5.6.13",
     "@wdio/selenium-standalone-service": "^5.12.1",
     "codeceptjs": "^3.3.0",
@@ -93,10 +92,8 @@
     "cordova-plugin-statusbar": "2.2.0",
     "cordova-plugin-uid": "^1.3.0",
     "cordova-plugin-whitelist": "1.3.4",
-    "cordova-plugin-x-socialsharing": "5.6.8",
     "core-js": "^2.5.4",
     "crypto-js": "^4.1.1",
-    "es6-promise-plugin": "^4.2.2",
     "ion-media-cache": "^0.1.8",
     "ionic-image-loader": "^7.0.0-beta.2",
     "ionic-plugin-deeplinks": "^1.0.20",
@@ -140,10 +137,11 @@
     "cordova-plugin-geolocation": "^4.1.0",
     "cordova-plugin-inappbrowser": "file:cordova-plugin-inappbrowser",
     "cordova-plugin-ionic-webview": "file:cordova-plugin-ionic-webview",
-    "cordova-plugin-wifiwizard2": "^3.1.1",
+    "cordova-plugin-x-socialsharing": "file:SocialSharing-PhoneGap-Plugin",
     "cordova.plugin.dimelo": "file:DimeloPlugin",
     "cordova.plugin.followanalytics": "file:FACordovaPlugin",
     "cordova.plugins.diagnostic": "^6.1.1",
+    "es6-promise-plugin": "^4.1.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "^6.3.17",
@@ -157,8 +155,7 @@
     "sonar-scanner": "^3.1.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "4.3.5",
-    "wifiwizard2": "^3.1.1"
+    "typescript": "4.3.5"
   },
   "description": "An Ionic project",
   "cordova": {
@@ -198,11 +195,6 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "cordova-plugin-splashscreen": {},
-      "cordova-plugin-x-socialsharing": {
-        "PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION": "This app requires photo library access to function properly.",
-        "PHOTO_LIBRARY_USAGE_DESCRIPTION": "This app requires photo library access to function properly.",
-        "ANDROID_SUPPORT_V4_VERSION": "24.1.1+"
-      },
       "cordova-android-firebase-gradle-release": {
         "FIREBASE-CORE": "17.0.0",
         "FIREBASE-ADS": "18.0.0",
@@ -250,7 +242,6 @@
       "cordova-plugin-geolocation": {
         "GPS_REQUIRED": "true"
       },
-      "wifiwizard2": {},
       "cordova.plugins.diagnostic": {
         "ANDROIDX_VERSION": "1.0.0",
         "ANDROIDX_APPCOMPAT_VERSION": "1.3.1"
@@ -277,7 +268,8 @@
         "AGC_ROUTE_POLICY": "default",
         "IS_ANALYTICS_ENABLED": "true"
       },
-      "cordova-plugin-hms-push": {}
+      "cordova-plugin-hms-push": {},
+      "cordova-plugin-x-socialsharing": {}
     },
     "platforms": [
       "android",

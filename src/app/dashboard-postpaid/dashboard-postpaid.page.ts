@@ -14,7 +14,8 @@ import {
   SargalStatusModel,
   getBanniereTitle,
   getBanniereDescription,
-  OTHER_CATEGORIES
+  OTHER_CATEGORIES,
+	HUB_ACTIONS
 } from 'src/shared';
 import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
 import {PassVolumeDisplayPipe} from 'src/shared/pipes/pass-volume-display.pipe';
@@ -101,6 +102,7 @@ export class DashboardPostpaidPage implements OnInit {
   consoActeSms = 0;
   Math = Math;
   limit = CONSO_POSTPAID_DASHBOARD_ITEMS_LIMIT;
+	currentSubscription: SubscriptionModel;
   constructor(
     private dashbordServ: DashboardService,
     private router: Router,
@@ -133,7 +135,7 @@ export class DashboardPostpaidPage implements OnInit {
             const categories = service.categorieOffreServices.map(
               (cat) => cat.code
             );
-            return !categories.includes(OTHER_CATEGORIES);
+            return !categories.includes(OTHER_CATEGORIES) && !categories.includes(HUB_ACTIONS.OFFRES_FIXES) && !categories.includes(HUB_ACTIONS.FIXES);
           });
           res = res.sort((r1, r2) => r1.ordre - r2.ordre);
           this.followAnalyticsService.registerEventFollow(
@@ -152,7 +154,17 @@ export class DashboardPostpaidPage implements OnInit {
             activated: true,
             code: 'more_services',
           };
+          const souxateOfferService: OffreService = {
+            redirectionType: 'NAVIGATE',
+            shortDescription: 'Gérer',
+            icone: `04-boutons-01-illustrations-05-convertire-mes-points-sargal.svg`,
+            fullDescription: 'Fibre, Adsl, Box',
+            redirectionPath: 'fixes-services',
+            activated: true,
+            code: 'FIXES',
+          };
           const response: OffreService[] = res.slice(0, 4);
+          response.push(souxateOfferService);
           response.push(moreActionService);
           return response;
         }),
@@ -205,6 +217,7 @@ export class DashboardPostpaidPage implements OnInit {
     this.authServ
       .getSubscription(this.userPhoneNumber)
       .subscribe((subscription: SubscriptionModel) => {
+				this.currentSubscription = subscription;
         this.isKilimanjaroPostpaid = subscription.code === KILIMANJARO_FORMULE;
       });
   }

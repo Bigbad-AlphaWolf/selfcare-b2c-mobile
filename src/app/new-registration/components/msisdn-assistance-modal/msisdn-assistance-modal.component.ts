@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { GET_MSISDN_ENUM } from 'src/shared';
-import { WifiWizard2 } from '@ionic-native/wifi-wizard-2/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 import { ModalController, Platform } from '@ionic/angular';
@@ -25,7 +24,7 @@ export class MsisdnAssistanceModalComponent implements OnInit {
   listener: any;
 
   constructor(
-    private wifiWizard2: WifiWizard2,
+    //private wifiWizard2: WifiWizard2,
     private network: Network,
     private platform: Platform,
     private openNativeSettings: OpenNativeSettings,
@@ -42,19 +41,19 @@ export class MsisdnAssistanceModalComponent implements OnInit {
   }
 
   async checkStatus() {
-    this.wifiEnabled = await this.wifiWizard2.isWifiEnabled();
-    if (this.wifiEnabled) {
-      this.step = GET_MSISDN_ENUM.DISABLE_WIFI;
-    } else {
-      this.step = GET_MSISDN_ENUM.ENABLE_4G;
-    }
+    //this.wifiEnabled = await this.wifiWizard2.isWifiEnabled();
+    //if (this.wifiEnabled) {
+    //  this.step = GET_MSISDN_ENUM.DISABLE_WIFI;
+    //} else {
+    //  this.step = GET_MSISDN_ENUM.ENABLE_4G;
+    //}
   }
 
   listenSettingsChanged() {
     this.listener = setInterval(async () => {
       console.log('called');
       if (this.step === GET_MSISDN_ENUM.DISABLE_WIFI) {
-        this.wifiEnabled = await this.wifiWizard2.isWifiEnabled();
+        //this.wifiEnabled = await this.wifiWizard2.isWifiEnabled();
         this.buttonEnabled = !this.wifiEnabled;
       } else if (this.step === GET_MSISDN_ENUM.ENABLE_4G) {
         if (
