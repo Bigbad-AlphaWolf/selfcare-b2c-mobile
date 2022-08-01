@@ -136,6 +136,9 @@ export const DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY = {
 // 72 hours duration in milliseconds (72h = 72 * 3600 s = 72 * 3600 * 1000 ms = 259.200.000)
 export const THREE_DAYS_DURATION_IN_MILLISECONDS = 259200000;
 
+// 120 hours duration in milliseconds (120h = 120 * 3600 s = 120 * 3600 * 1000 ms = 259.200.000)
+export const FIVE_DAYS_DURATION_IN_MILLISECONDS = 432000000;
+
 export const listRegisterSargalBonPlanText = ['inscription', 'inscris'];
 export const LIST_CATEGORY_BONS_PLANS = {
   internet: 'INTERNET',
