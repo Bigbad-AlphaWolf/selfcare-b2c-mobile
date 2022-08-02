@@ -9,28 +9,30 @@
 </ion-header>
 
 <ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
-  <div class="card-container">
-    <ion-skeleton-text class="sargal-card-loader" animated *ngIf="(loadingOffers && !sargalCard) else card"></ion-skeleton-text>
-    <ng-template #card>
-      <app-custom-sargal-card [sargalCard]="sargalCard"></app-custom-sargal-card>
-    </ng-template>
-  </div>
-  <div class="sargal-filters-block">
-    <ng-container *ngIf="loadingCategories else filters">
-      <ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
-      <ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
-      <ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
-      <ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
-    </ng-container>
-    <ng-template #filters>
-      <ng-container *ngIf="sargalCard">
-        <div class="sargal-filter-category" [ngClass]="{'active': selectedCategoryFilterIndex === i}"
-          *ngFor="let categoryPartner of bpSargalCategories, let i = index" (click)="selectCategory(i)">
-          {{categoryPartner?.nomCategorie}}
-        </div>
-      </ng-container>
-    </ng-template>
-  </div>
+	<ng-container *ngIf="bpSargal?.length">
+		<div class="card-container">
+			<ion-skeleton-text class="sargal-card-loader" animated *ngIf="(loadingOffers && !sargalCard) else card"></ion-skeleton-text>
+			<ng-template #card>
+				<app-custom-sargal-card [sargalCard]="sargalCard"></app-custom-sargal-card>
+			</ng-template>
+		</div>
+		<div class="sargal-filters-block">
+			<ng-container *ngIf="loadingCategories else filters">
+				<ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
+				<ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
+				<ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
+				<ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
+			</ng-container>
+			<ng-template #filters>
+				<ng-container *ngIf="sargalCard">
+					<div class="sargal-filter-category" [ngClass]="{'active': selectedCategoryFilterIndex === i}"
+						*ngFor="let categoryPartner of bpSargalCategories, let i = index" (click)="selectCategory(i)">
+						{{categoryPartner?.nomCategorie}}
+					</div>
+				</ng-container>
+			</ng-template>
+		</div>
+	</ng-container>
   <div class="sargal-bons-plans-content">
     <div class="sargal-content-top-block">
       <span class="bons-plans-count">
