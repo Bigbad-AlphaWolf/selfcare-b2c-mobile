@@ -4,6 +4,7 @@ import {
   NavController,
   ModalController,
   ToastController,
+	Platform,
 } from '@ionic/angular';
 import { WoyofalSelectionComponent } from '../counter/woyofal-selection/woyofal-selection.component';
 import {
@@ -14,9 +15,10 @@ import {
   OPERATION_WOYOFAL,
   OPERATION_TYPE_SENEAU_BILLS,
   OPERATION_TYPE_SENELEC_BILLS,
+	OPERATION_TRANSFERT_ARGENT,
 } from 'src/app/utils/operations.constants';
 import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
-import { OPERATION_TYPE_MERCHANT_PAYMENT } from 'src/shared';
+import { OPERATION_TYPE_MERCHANT_PAYMENT, SubscriptionModel } from 'src/shared';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -27,6 +29,9 @@ import { RapidoOperationPage } from 'src/app/pages/rapido-operation/rapido-opera
 import { SelectNumberForBillComponent } from '../select-number-for-bill/select-number-for-bill.component';
 import {XeweulOperationPage} from '../../pages/xeweul-operation/xeweul-operation.page';
 import { TypeCounterModalComponent } from '../type-counter-modal/type-counter-modal.component';
+import { isExternallURL } from 'src/app/utils/utils';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
 
 @Component({
   selector: 'oem-operations',
@@ -36,13 +41,17 @@ import { TypeCounterModalComponent } from '../type-counter-modal/type-counter-mo
 export class OemOperationsComponent implements OnInit {
   @Input('operations') operations: OffreService[] = [];
   @Input('showMore') showMore: boolean = true;
+	@Input() currentPhoneOffer: SubscriptionModel;
   constructor(
     private bsService: BottomSheetService,
     private navCtl: NavController,
     private omService: OrangeMoneyService,
     private modalController: ModalController,
     private toastController: ToastController,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+		private platform: Platform,
+		private iab: InAppBrowser,
+		private appRouting: ApplicationRoutingService
   ) {}
 
   ngOnInit() {}
@@ -66,8 +75,8 @@ export class OemOperationsComponent implements OnInit {
     }
 
     this.bsService.opXtras.billData = { company: op };
-    if (op.redirectionType === 'NAVIGATE')
-      this.navCtl.navigateForward([op.redirectionPath]);
+    //if (op.redirectionType === 'NAVIGATE')
+    //  this.navCtl.navigateForward([op.redirectionPath]);
 
     if (op.code === OPERATION_WOYOFAL) {
       this.openCounterBS();
@@ -88,6 +97,10 @@ export class OemOperationsComponent implements OnInit {
       this.navCtl.navigateForward(XeweulOperationPage.ROUTE_PATH);
       return;
     }
+    if (op.code === OPERATION_TRANSFERT_ARGENT) {
+			this.appRouting.goToSelectBeneficiaryPage();
+      return;
+    }
 
     if (
       op.code === OPERATION_TYPE_PAY_BILL ||
@@ -102,6 +115,24 @@ export class OemOperationsComponent implements OnInit {
       this.bsService.openModal(TypeCounterModalComponent, {operation: op.code});
       return;
     }
+		if (op?.redirectionType === 'NAVIGATE' && op?.redirectionPath) {
+			const isExternalUrl = isExternallURL(op?.redirectionPath);
+			if(isExternalUrl){
+				const options: InAppBrowserOptions = this.platform.is("ios") ? {
+          location: 'no',
+          toolbar: 'yes',
+          toolbarcolor: '#CCCCCC',
+          toolbarposition: 'top',
+          toolbartranslucent: 'no',
+          closebuttoncolor: '#000000',
+          closebuttoncaption: 'Fermer',
+          hidespinner: 'yes',
+        } : {};
+				this.iab.create(op?.redirectionPath, '_blank', options);
+			} else {
+				this.navCtl.navigateForward([op.redirectionPath]);
+			}
+		}
 
     if (this.bsService[op.redirectionType]) {
       const params = ['NONE', op.code, op.redirectionPath];

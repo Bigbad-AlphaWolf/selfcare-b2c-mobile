@@ -4,7 +4,7 @@ import {OffreService} from 'src/app/models/offre-service.model';
 import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
 import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
 import {OperationService} from 'src/app/services/oem-operation/operation.service';
-import {OTHER_CATEGORIES} from 'src/shared';
+import {HUB_ACTIONS, OTHER_CATEGORIES} from 'src/shared';
 
 @Component({
   selector: 'app-oem-services',
@@ -36,7 +36,7 @@ export class OemServicesPage implements OnInit {
       res => {
         this.operations = res.filter(service => {
           const categories = service.categorieOffreServices.map(cat => cat.code);
-          return !categories.includes(OTHER_CATEGORIES);
+          return !categories.includes(OTHER_CATEGORIES) && !categories.includes(HUB_ACTIONS.OFFRES_FIXES) && !categories.includes(HUB_ACTIONS.FIXES);;
         });
 
         this.loadingServices = false;

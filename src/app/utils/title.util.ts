@@ -62,7 +62,7 @@ export const titles: PageHeader[] = [
   },
   {
     typeOperation: BONS_PLANS,
-    title: 'Bons plans - Samay Sargal'
+    title: 'Samay Xewël'
   },
 
   {
