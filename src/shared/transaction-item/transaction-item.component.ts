@@ -10,7 +10,7 @@ import {
   LIST_ICON_PURCHASE_HISTORIK_ITEMS,
   OPERATION_TRANSFER_OM,
   PAYMENT_MOD_OM,
-  THREE_DAYS_DURATION_IN_MILLISECONDS,
+  FIVE_DAYS_DURATION_IN_MILLISECONDS
 } from '..';
 
 @Component({
@@ -35,7 +35,7 @@ export class TransactionItemComponent implements OnInit {
     const dateDifference =
       new Date(this.transaction.currentDate).getTime() -
       new Date(this.transaction.operationDate).getTime();
-    const isLessThan72h = dateDifference < THREE_DAYS_DURATION_IN_MILLISECONDS;
+    const isLessThan72h = dateDifference < FIVE_DAYS_DURATION_IN_MILLISECONDS;
     if (!isLessThan72h || this.transaction.typeAchat !== 'TRANSFER') return;
     const omMsisdn = await this.omService.getOmMsisdn().toPromise();
     this.followAnalyticsService.registerEventFollow(

@@ -1,0 +1,57 @@
+<ion-header [oemIonHeaderParallax]="90">
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-back-button [id]="'goBackBtn'" defaultHref="/" mode="md" class="oem-back-button">
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title> Sargal Scool </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
+  <div class="card-container">
+    <ion-skeleton-text class="sargal-card-loader" animated *ngIf="(loadingOffers && !sargalCard) else card"></ion-skeleton-text>
+    <ng-template #card>
+      <app-custom-sargal-card [sargalCard]="sargalCard"></app-custom-sargal-card>
+    </ng-template>
+  </div>
+  <div class="sargal-filters-block">
+    <ng-container *ngIf="loadingCategories else filters">
+      <ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
+      <ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
+      <ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
+      <ion-skeleton-text class="sargal-category-loader" animated></ion-skeleton-text>
+    </ng-container>
+    <ng-template #filters>
+      <ng-container *ngIf="sargalCard">
+        <div class="sargal-filter-category" [ngClass]="{'active': selectedCategoryFilterIndex === i}"
+          *ngFor="let categoryPartner of bpSargalCategories, let i = index" (click)="selectCategory(i)">
+          {{categoryPartner?.nomCategorie}}
+        </div>
+      </ng-container>
+    </ng-template>
+  </div>
+  <div class="sargal-bons-plans-content">
+    <div class="sargal-content-top-block">
+      <span class="bons-plans-count">
+        {{bpSargal?.length}} {{bpSargal?.length > 1 ? "offres" : "offre"}}
+      </span>
+    </div>
+    <ion-list class="sargal-reductions-list">
+      <ng-container *ngIf="loadingOffers else offers">
+        <ion-skeleton-text class="sargal-offer-loader" animated></ion-skeleton-text>
+        <ion-skeleton-text class="sargal-offer-loader" animated></ion-skeleton-text>
+        <ion-skeleton-text class="sargal-offer-loader" animated></ion-skeleton-text>
+        <ion-skeleton-text class="sargal-offer-loader" animated></ion-skeleton-text>
+      </ng-container>
+      <ng-template #offers>
+        <ng-container *ngIf="bpSargal?.length else noBP">
+          <app-sargal-reduction-card *ngFor="let bonPlan of bpSargal" [bonPlan]="bonPlan"></app-sargal-reduction-card>
+        </ng-container>
+        <ng-template #noBP>
+          <div class="no-bp-block">Pas de bon plan disponible pour cette catégorie</div>
+        </ng-template>
+      </ng-template>
+    </ion-list>
+  </div>
+</ion-content>

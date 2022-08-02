@@ -240,8 +240,11 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.lastName = user.lastName;
   }
 
+  goBPSargal() {
+    this.router.navigate(['/custom-sargal-profile']);
+  }
+
   goToAssistancePage() {
-    // this.router.navigate(['/community']);
     // return;
     this.iab.create(ASSISTANCE_URL, '_self');
     this.followAnalyticsService.registerEventFollow(
@@ -390,5 +393,10 @@ export class SidemenuComponent implements OnInit, OnDestroy {
         this.dashboardServ.getCurrentPhoneNumber()
       )
     );
+  }
+
+	goToSatisfactionForm() {
+    this.router.navigate(['/satisfaction-form']);
+    this.followAnalyticsService.registerEventFollow('Ibou_Formulaire_de_satisfaction_clic', 'event', 'clicked');
   }
 }

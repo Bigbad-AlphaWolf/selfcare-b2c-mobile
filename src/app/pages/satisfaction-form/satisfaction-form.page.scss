@@ -14,7 +14,10 @@ ion-header {
   font-size: 20px;
   padding-left: 50px;
 }
-
+.content-page {
+	min-height: 100%;
+	padding-bottom: 50px;
+}
 .banner-container {
     width: 100%;
     display: flex;

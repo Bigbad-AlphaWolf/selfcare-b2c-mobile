@@ -7,7 +7,7 @@ import {
   NO_RECENTS_MSG,
   parseIntoNationalNumberFormat,
   PAYMENT_MOD_OM,
-  THREE_DAYS_DURATION_IN_MILLISECONDS,
+  FIVE_DAYS_DURATION_IN_MILLISECONDS,
 } from 'src/shared';
 import { MatDialog } from '@angular/material/dialog';
 import { Contacts, Contact } from '@ionic-native/contacts';
@@ -93,7 +93,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
             const dateDifference =
               new Date().getTime() - new Date(el.date).getTime();
             const isLessThan72h =
-              dateDifference < THREE_DAYS_DURATION_IN_MILLISECONDS;
+              dateDifference < FIVE_DAYS_DURATION_IN_MILLISECONDS;
             if (!isLessThan72h && this.isForTransferBlocking) {
               return;
             }
