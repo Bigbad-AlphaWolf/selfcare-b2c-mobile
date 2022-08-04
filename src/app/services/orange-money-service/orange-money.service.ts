@@ -867,14 +867,14 @@ export class OrangeMoneyService {
   initCardToWallet(
     initC2WPayload: InitC2WPayload
   ): Observable<InitC2WResponseModel> {
-    const mock = {
-      statusCode: 'INITIALIZED',
-      paymentUrl:
-        'https://paypage.sandbox.orabank.ngenius-payments.com/?code=5f58b0e1e502b35a%22',
-      paymentCancelUrl:
-        'https://api-gateway.sandbox.orabank.ngenius-payments.com/transactions/outlets/c2a32aef-8cbc-4a2e-be9b-f1e74054ff0b/orders/327dbdd2-85df-42c2-949c-50feca63fe92/cancel',
-    };
-    return of(mock);
+    //const mock = {
+    //  statusCode: 'INITIALIZED',
+    //  paymentUrl:
+    //    'https://paypage.sandbox.orabank.ngenius-payments.com/?code=5f58b0e1e502b35a%22',
+    //  paymentCancelUrl:
+    //    'https://api-gateway.sandbox.orabank.ngenius-payments.com/transactions/outlets/c2a32aef-8cbc-4a2e-be9b-f1e74054ff0b/orders/327dbdd2-85df-42c2-949c-50feca63fe92/cancel',
+    //};
+    //return of(mock);
     return this.http.post<InitC2WResponseModel>(
       `${GET_CARD_TO_WALLET_BANK_URL}`,
       initC2WPayload
