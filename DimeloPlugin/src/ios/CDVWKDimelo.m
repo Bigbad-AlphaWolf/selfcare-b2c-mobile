@@ -11,7 +11,7 @@ Dimelo* dimelo;
     dimelo = [Dimelo sharedInstance];
     dimelo.delegate = self;
     //Authentify using build-in authentification
-    NSString* secret = @"bb1e6f640bebc7e05863ff1117d44bc0def05726c9d6a3d503dddfcd50cf16d1";
+    NSString* secret = @"65537b4ddf7eea735bad06e7d4a7e4dffa4935ce97736cdf40cb1e8318b68987";
     [dimelo initWithApiSecret:secret domainName:@"sonatel" delegate:self];
 }
 
