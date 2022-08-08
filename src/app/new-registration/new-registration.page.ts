@@ -1,9 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { Subscription, timer, Subject, of, throwError } from 'rxjs';
+import { Subscription, timer, of, throwError } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  AccountStatus,
   AuthenticationService,
   ConfirmMsisdnModel,
   RegistrationModel,
@@ -13,8 +12,8 @@ import * as SecureLS from 'secure-ls';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { takeUntil, finalize, catchError, switchMap, take, tap } from 'rxjs/operators';
-import { PRO_MOBILE_ERROR_CODE, FORGOT_PWD_PAGE_URL, LOCAL_STORAGE_KEYS, REGEX_NUMBER, REGEX_NUMBER_OM, parsedMsisdn } from 'src/shared';
+import { takeUntil, catchError, switchMap, take, tap } from 'rxjs/operators';
+import { PRO_MOBILE_ERROR_CODE, FORGOT_PWD_PAGE_URL, REGEX_NUMBER_OM, parsedMsisdn } from 'src/shared';
 import { ModalController, NavController, Platform } from '@ionic/angular';
 import { hash53 } from '../dashboard';
 import { Uid } from '@ionic-native/uid/ngx';
@@ -22,8 +21,8 @@ import { MSISDN_RECUPERATION_TIMEOUT } from '../register';
 import { TypePhoneNumberManuallyComponent } from './components/type-phone-number-manually/type-phone-number-manually.component';
 import { LocalStorageService } from '../services/localStorage-service/local-storage.service';
 import { OtpService } from '../services/otp-service/otp.service';
-import { CheckOtpOem } from '../models/check-otp-oem.model';
 import { RattachByOtpCodeComponent } from '../pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
 
 @Component({
   selector: 'app-new-registration',
@@ -62,11 +61,9 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
     private followAnalyticsService: FollowAnalyticsService,
     private modalController: ModalController,
     private navController: NavController,
-    private uid: Uid,
-    private route: ActivatedRoute,
-    private localServ: LocalStorageService,
     private otpService: OtpService,
-    public platform: Platform
+    public platform: Platform,
+    private dashboardService: DashboardService
   ) {}
 
   ngOnDestroy() {}
@@ -252,15 +249,9 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
     this.checkingNumber = false;
     const username = this.phoneNumber && this.phoneNumber.startsWith('221') ? this.phoneNumber.substring(3) : this.phoneNumber;
     const authData = { access_token: res.access_token };
+    this.dashboardService.setCurrentPhoneNumber(username);
     this.authServ.storeAuthenticationData(authData, { username });
     this.router.navigate(['/']);
-  }
-
-  goLoginPage() {
-    let login: string;
-    this.phoneNumber && this.phoneNumber.startsWith('221') ? (login = this.phoneNumber.substring(3)) : (login = this.phoneNumber);
-    ls.set('subscribedNumber', login);
-    this.router.navigate(['/login']);
   }
 
   displayMsisdnError() {
@@ -271,18 +262,5 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
 
   goBack() {
     this.navController.navigateRoot(['/home']);
-  }
-
-  async enterUserPhoneNumber(phone?: string) {
-    const modal = await this.modalController.create({
-      component: TypePhoneNumberManuallyComponent,
-      cssClass: 'select-recipient-modal',
-      componentProps: {
-        phoneNumber: phone,
-      },
-      backdropDismiss: true,
-    });
-    modal.onDidDismiss().then(response => {});
-    return await modal.present();
   }
 }

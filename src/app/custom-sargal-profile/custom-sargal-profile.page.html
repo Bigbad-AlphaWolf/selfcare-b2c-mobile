@@ -9,7 +9,7 @@
 </ion-header>
 
 <ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
-	<ng-container *ngIf="bpSargal?.length">
+	<ng-container>
 		<div class="card-container">
 			<ion-skeleton-text class="sargal-card-loader" animated *ngIf="(loadingOffers && !sargalCard) else card"></ion-skeleton-text>
 			<ng-template #card>
