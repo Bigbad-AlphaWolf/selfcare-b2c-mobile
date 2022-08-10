@@ -51,10 +51,7 @@ export class TransactionsHistoricComponent implements OnInit {
       JSON.stringify(this.historicTransactions)
     );
     this.selectedFilter = filterType;
-    if (
-      this.selectedFilter.label ===
-      DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY.label
-    ) {
+    if ( this.selectedFilter.label ===  DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY.label) {
       return;
     }
     this.filteredHistoric = this.filteredHistoric.filter((item) => {
@@ -88,6 +85,8 @@ export class TransactionsHistoricComponent implements OnInit {
             this.loadingTransactions = false;
             this.transactionsEmpty = !!res.listPurchase.length;
             this.categories = res.categories;
+						console.log('res', res);
+
             this.historicTransactions = this.processTransactions(
               res.listPurchase
             );
