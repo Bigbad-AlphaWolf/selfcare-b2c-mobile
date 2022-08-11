@@ -10,7 +10,7 @@ import { ComponentsModule } from 'src/app/components/components.module';
 import { MaterialComponentsModule } from 'src/app/material-components/material-components.module';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { SharedModule } from 'src/shared/shared.module';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 
 const routes: Routes = [

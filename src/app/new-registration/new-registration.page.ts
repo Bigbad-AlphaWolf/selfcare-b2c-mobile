@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Subscription, timer, of, throwError } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   AuthenticationService,
   ConfirmMsisdnModel,
@@ -16,10 +16,7 @@ import { takeUntil, catchError, switchMap, take, tap } from 'rxjs/operators';
 import { PRO_MOBILE_ERROR_CODE, FORGOT_PWD_PAGE_URL, REGEX_NUMBER_OM, parsedMsisdn } from 'src/shared';
 import { ModalController, NavController, Platform } from '@ionic/angular';
 import { hash53 } from '../dashboard';
-import { Uid } from '@ionic-native/uid/ngx';
 import { MSISDN_RECUPERATION_TIMEOUT } from '../register';
-import { TypePhoneNumberManuallyComponent } from './components/type-phone-number-manually/type-phone-number-manually.component';
-import { LocalStorageService } from '../services/localStorage-service/local-storage.service';
 import { OtpService } from '../services/otp-service/otp.service';
 import { RattachByOtpCodeComponent } from '../pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
@@ -150,7 +147,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
       return;
     }
     if (hmacFromOTP) {
-      this.phoneNumber = payload.msisdn = parsedMsisdn(this.form.get('msisdn').value); 
+      this.phoneNumber = payload.msisdn = parsedMsisdn(this.form.get('msisdn').value);
       this.hmac = payload.hmac = hmacFromOTP;
     }
     this.checkNumberSubscription = this.authServ.checkNumberAccountStatus(payload).subscribe(

@@ -1,6 +1,6 @@
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {Component} from '@angular/core';
-import {LoadingController, ModalController, NavController, Platform} from '@ionic/angular';
+import {LoadingController, ModalController, NavController, Platform, ToastController} from '@ionic/angular';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {Deeplinks} from '@ionic-native/deeplinks/ngx';
 import {Router} from '@angular/router';
@@ -11,7 +11,7 @@ import {TransfertHubServicesPage} from './transfert-hub-services/transfert-hub-s
 import {ApplicationRoutingService} from './services/application-routing/application-routing.service';
 import {checkUrlMatch} from './utils/utils';
 import {ImageLoaderConfigService} from 'ionic-image-loader';
-import {HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AndroidPermissions} from '@ionic-native/android-permissions/ngx';
 import {Uid} from '@ionic-native/uid/ngx';
 import {DashboardPage} from './dashboard/dashboard.page';
@@ -31,8 +31,9 @@ import {LocalStorageService} from './services/localStorage-service/local-storage
 import {LOCAL_STORAGE_KEYS, PATH_ACCESS_BY_OTP, STEPS_ACCESS_BY_OTP} from 'src/shared';
 import {BottomSheetService} from './services/bottom-sheet/bottom-sheet.service';
 import { FCM } from 'cordova-plugin-fcm-with-dependecy-updated/ionic/ngx';
-import { AccountService } from './services/account-service/account.service';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { NotificationService } from './services/notification.service';
+import { HTTP } from '@ionic-native/http/ngx';
 
 const ls = new SecureLS({encodingType: 'aes'});
 
@@ -69,7 +70,10 @@ export class AppComponent {
     private localStorage: LocalStorageService,
     private bottomSheetServ: BottomSheetService,
     private fcm: FCM,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+		private network: Network,
+		private httpNative: HTTP,
+		private toastController: ToastController
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -79,6 +83,7 @@ export class AppComponent {
     const headers = new HttpHeaders();
     this.imageLoaderConfig.setHttpHeaders(headers);
     this.initializeApp();
+		this.checkNetworkAccess();
   }
 
   loadContacts() {
@@ -290,4 +295,86 @@ export class AppComponent {
     });
     return loading;
   }
+
+	async checkNetworkAccess() {
+		let hasResponse;
+		let toast;
+		this.network.onChange().subscribe((res) => {
+			console.log('res', res, 'status', this.network);
+			hasResponse = false;
+			//let toast = this.createToastErrorMsg();
+			this.httpNative.setServerTrustMode('nocheck');
+			if(res === 'disconnected') {
+				this.presentToastErrorMsg();
+			} else {
+				const timeOutID = setTimeout(async () => {
+					if(!hasResponse) {
+						toast = await this.toastController.create({
+							header: 'Connexion Réseau',
+							message: "Vous n'avez pas d'accès au reseau internet ou au réseau d'Orange",
+							position: 'top',
+						});
+						toast.present();
+					} else {
+						toast.dismis();
+					}
+				}, 5000)
+					this.httpNative.get('https://orangeetmoi.sn', null, null).then((res) => {
+						console.log('connected to Orange', res);
+						hasResponse = true;
+						clearTimeout(timeOutID);
+						toast.dismiss();
+					}).catch(async (err) => {
+						console.log('err', err);
+						hasResponse = true;
+						clearTimeout(timeOutID);
+						toast = await this.toastController.create({
+							header: 'Connexion Réseau',
+							message: "Vous n'avez pas d'accès au reseau internet ou au réseau d'Orange",
+							position: 'top',
+						});
+						toast.present();
+					})
+
+			}
+		})
+	}
+
+	async presentToastErrorMsg() {
+    const toast = await this.toastController.create({
+      header: 'Connexion Réseau',
+      message: "Vous n'avez pas d'accès au reseau internet ou au réseau d'Orange",
+      position: 'top',
+      duration: 3000,
+      //buttons: [
+      //  {
+      //    text: 'Recharger',
+      //    handler: () => {
+      //      this.goToPageSetAmountForRechargeCredit();
+      //    }
+      //  }
+      //]
+    });
+    return toast.present();
+  }
+	async createToastErrorMsg() {
+    return await this.toastController.create({
+      header: 'Connexion Réseau',
+      message: "Vous n'avez pas d'accès au reseau internet ou au réseau d'Orange",
+      position: 'top',
+      duration: 3000,
+      //buttons: [
+      //  {
+      //    text: 'Recharger',
+      //    handler: () => {
+      //      this.goToPageSetAmountForRechargeCredit();
+      //    }
+      //  }
+      //]
+    });
+  }
+
+	dismissToast(toast: any) {
+		toast?.dismiss();
+	}
 }
