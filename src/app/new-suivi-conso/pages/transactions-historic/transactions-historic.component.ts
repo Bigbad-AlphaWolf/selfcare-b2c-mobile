@@ -85,7 +85,6 @@ export class TransactionsHistoricComponent implements OnInit {
             this.loadingTransactions = false;
             this.transactionsEmpty = !!res.listPurchase.length;
             this.categories = res.categories;
-						console.log('res', res);
 
             this.historicTransactions = this.processTransactions(
               res.listPurchase
