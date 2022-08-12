@@ -34,7 +34,7 @@ import {IonicImageLoader} from 'ionic-image-loader';
 import {Uid} from '@ionic-native/uid/ngx';
 import {WebView} from '@ionic-native/ionic-webview/ngx';
 import {PipesModule} from './pipes/pipes.module';
-import {Network} from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import {Diagnostic} from '@ionic-native/diagnostic/ngx';
 import {FingerprintAIO} from '@ionic-native/fingerprint-aio/ngx';
 import {FaceIdAlertPopupComponent} from './sidemenu/face-id-alert-popup/face-id-alert-popup.component';

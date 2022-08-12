@@ -85,16 +85,16 @@
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
-    <div class="item-option" [id]="'samay-sargal-entry' | generateIdForTA" (click)="goToMyOfferPlans()" *ngIf="1">
+    <div class="item-option" [id]="'samay-sargal-entry' | generateIdForTA" (click)="goToMyOfferPlans()" *ngIf="userSubscription?.code === SCOOL_CODE_FORMULE">
       <ion-menu-toggle>
         <img src="/assets/images/icons-bons-plan.svg" alt="" class="option-img">
-        <span class="option-text">Samay Xewël</span>
+        <span class="option-text">Samay Xeweel</span>
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>
     </div>
-    <div class="item-option" [id]="'bon-plan-sargal-entry' | generateIdForTA" (click)="goBPSargal()" *ngIf="currentProfile">
+    <div class="item-option" [id]="'bon-plan-sargal-entry' | generateIdForTA" (click)="goBPSargal()" *ngIf="showBonPlanSargal">
       <ion-menu-toggle>
-        <img src="/assets/images/icons-urgence-et-depannage.svg" alt="" class="option-img">
+        <img src="/assets/images/icons-offres-service.svg" alt="" class="option-img">
         <span class="option-text">Bons plans Sargal</span>
         <img src="/assets/images/chevron-forward-outline.svg" alt="" class="arrow-right">
       </ion-menu-toggle>

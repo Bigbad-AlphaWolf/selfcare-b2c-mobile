@@ -108,10 +108,6 @@ const routes: Routes = [
   },
   // { path: 'bills', loadChildren: './bills/bills.module#BillsPageModule' },
   {
-    path: 'forgotten-password',
-    loadChildren: () => import('./forgotten-password/forgotten-password.module').then(m => m.ForgottenPasswordPageModule)
-  },
-  {
     path: 'sargal-registration',
     loadChildren: () =>
       import('./sargal/components/sargal-registration/sargal-registration.module').then(m => m.SargalRegistrationPageModule),

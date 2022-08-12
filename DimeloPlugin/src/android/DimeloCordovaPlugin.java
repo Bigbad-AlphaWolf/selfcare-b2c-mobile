@@ -42,7 +42,7 @@ public class DimeloCordovaPlugin extends CordovaPlugin {
         System.out.println("dimelo plugin initialized");
         Context context = this.cordova.getActivity().getApplicationContext();
         this.dimelo = Dimelo.setup(context);
-        this.dimelo.initWithApiSecret("bb1e6f640bebc7e05863ff1117d44bc0def05726c9d6a3d503dddfcd50cf16d1", "sonatel", null);
+        this.dimelo.initWithApiSecret("65537b4ddf7eea735bad06e7d4a7e4dffa4935ce97736cdf40cb1e8318b68987", "sonatel", null);
     }
 
     public void openChat(String username, String customerId) {

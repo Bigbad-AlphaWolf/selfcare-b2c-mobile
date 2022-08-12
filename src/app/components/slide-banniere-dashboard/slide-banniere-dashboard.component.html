@@ -1,10 +1,10 @@
-<div *ngIf="listBanniere?.length" class="dashboard-img-promo slide-container">
+<div *ngIf="listBanniere?.length" class="dashboard-img-promo slide-container" >
 	<swiper [autoplay]="{	delay: 7000 }" [pagination]="{	type: 'bullets',	clickable: true }"   [slidesPerView]="1">
 		<ng-template swiperSlide *ngFor="let banniere of listBanniere">
 			<span #error class="error-slide scb-text-full-black">
 				Erreur lors du chargement de l'image</span
 			>
-			<div class="description" #description>
+			<div (click)="onBannerClicked(banniere)" class="description" #description>
 				<div class="desc-title scb-text-white">
 					{{ banniere.description | getBannerTitle}}
 				</div>
@@ -12,7 +12,7 @@
 					{{ banniere.description | getBannerDescription}}
 				</div>
 			</div>
-			<div class="img-container" #imageContainer>
+			<div (click)="onBannerClicked(banniere)" class="img-container" #imageContainer>
 				<img-loader [spinner]="true" class="icone" [src]="banniere.image" useImg></img-loader>
 			</div>
 		</ng-template>

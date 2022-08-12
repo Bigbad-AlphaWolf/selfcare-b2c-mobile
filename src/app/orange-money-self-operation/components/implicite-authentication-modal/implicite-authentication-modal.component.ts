@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Network} from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import {Uid} from '@ionic-native/uid/ngx';
 import {ModalController} from '@ionic/angular';
 import {of, Subscription, timer} from 'rxjs';

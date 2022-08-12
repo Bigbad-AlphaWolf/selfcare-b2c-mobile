@@ -1,7 +1,7 @@
 import {Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {Network} from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import {Uid} from '@ionic-native/uid/ngx';
 import {NavController, ModalController} from '@ionic/angular';
 import {of, Subject, Subscription, timer} from 'rxjs';

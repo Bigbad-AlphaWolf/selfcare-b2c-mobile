@@ -198,8 +198,8 @@ export class DashboardService {
   }
 
   // change the active number
-  setCurrentPhoneNumber(msisdn: string) {
-    ls.set('currentPhoneNumber', msisdn);
+  async setCurrentPhoneNumber(msisdn: string) {
+    await ls.set('currentPhoneNumber', msisdn);
     this.currentPhoneNumberChangeSubject.next(msisdn);
   }
 

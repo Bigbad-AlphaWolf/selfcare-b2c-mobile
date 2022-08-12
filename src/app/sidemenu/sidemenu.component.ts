@@ -4,7 +4,7 @@ import {AuthenticationService} from '../services/authentication-service/authenti
 import {DashboardService, downloadAvatarEndpoint} from '../services/dashboard-service/dashboard.service';
 import {AccountService} from '../services/account-service/account.service';
 import * as SecureLS from 'secure-ls';
-import {NO_AVATAR_ICON_URL, getNOAvatartUrlImage, ASSISTANCE_URL, CONSO, ASSISTANCE, SERVICES, isFixeNumber} from 'src/shared';
+import {NO_AVATAR_ICON_URL, getNOAvatartUrlImage, ASSISTANCE_URL, CONSO, ASSISTANCE, SERVICES, isFixeNumber, JAMONO_NEW_SCOOL_CODE_FORMULE} from 'src/shared';
 const ls = new SecureLS({encodingType: 'aes'});
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
@@ -15,10 +15,12 @@ import {AppVersion} from '@ionic-native/app-version/ngx';
 import {BottomSheetService} from '../services/bottom-sheet/bottom-sheet.service';
 import {isPrepaidOrHybrid} from '../dashboard';
 import {OmStatusVisualizationComponent} from 'src/shared/om-status-visualization/om-status-visualization.component';
-import {FACE_ID_PERMISSIONS, FACE_ID_STORAGE_KEY, OrangeMoneyService} from '../services/orange-money-service/orange-money.service';
+import {FACE_ID_PERMISSIONS, OrangeMoneyService} from '../services/orange-money-service/orange-money.service';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
 import { FollowAnalyticsEventType } from '../services/follow-analytics/follow-analytics-event-type.enum';
 import { OPERATION_TYPE_PAY_BILL, OPERATION_TYPE_TERANGA_BILL } from '../utils/operations.constants';
+import { BonsPlansSargalService } from '../services/bons-plans-sargal/bons-plans-sargal.service';
+import { tap } from 'rxjs/operators';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -42,10 +44,13 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   userBiometricStatus: FACE_ID_PERMISSIONS;
   FACE_ID_PERMISSION_ALLOWED = FACE_ID_PERMISSIONS.ALLOWED;
   FACE_ID_PERMISSION_DENIED = FACE_ID_PERMISSIONS.NEVER;
+	SCOOL_CODE_FORMULE = JAMONO_NEW_SCOOL_CODE_FORMULE;
+  showBonPlanSargal: boolean;
 
   constructor(
     private router: Router,
     private authServ: AuthenticationService,
+    private bpSargalService: BonsPlansSargalService,
     private dashboardServ: DashboardService,
     private accountService: AccountService,
     private iab: InAppBrowser,
@@ -66,11 +71,13 @@ export class SidemenuComponent implements OnInit, OnDestroy {
       this.getSouscription();
       this.getAllAttachedNumbers();
       this.extractData();
+      this.getBonsPlansSargal();
     }
     this.dashboardServ.currentPhoneNumberChange.subscribe(() => {
       this.getSouscription();
       this.getAllAttachedNumbers();
       this.extractData();
+      this.getBonsPlansSargal();
     });
     this.authServ.currentPhoneNumbersubscriptionUpdated.subscribe(() => {
       this.getSouscription();
@@ -87,6 +94,14 @@ export class SidemenuComponent implements OnInit, OnDestroy {
       this.getAllAttachedNumbers();
     });
     this.checkFingerprintAvailability();
+  }
+
+  getBonsPlansSargal() {
+    this.bpSargalService.getBonsPlansSargal().pipe(
+      tap(bonPlanResponse => {
+        this.showBonPlanSargal = !!bonPlanResponse?.body?.length;
+      })
+    ).subscribe()
   }
 
   checkFingerprintAvailability() {
