@@ -34,10 +34,10 @@ import { FCM } from 'cordova-plugin-fcm-with-dependecy-updated/ionic/ngx';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { NotificationService } from './services/notification.service';
 import { HTTP } from '@ionic-native/http/ngx';
+import { environment } from 'src/environments/environment';
+const { SERVER_API_URL } = environment;
 
 const ls = new SecureLS({encodingType: 'aes'});
-
-declare var FollowAnalytics: any;
 
 @Component({
   selector: 'app-root',
@@ -79,7 +79,6 @@ export class AppComponent {
     this.imageLoaderConfig.enableSpinner(false);
     // this could be useful while trying to debug issues with the component
     this.imageLoaderConfig.enableDebugMode();
-    const token = ls.get('token');
     const headers = new HttpHeaders();
     this.imageLoaderConfig.setHttpHeaders(headers);
     this.initializeApp();
@@ -108,7 +107,7 @@ export class AppComponent {
     });
   }
 
-  setInfos(event: any) {
+  setInfos() {
     const omNumber = this.orangeMoneyServ.getOrangeMoneyNumber();
     this.omUserInfos = this.orangeMoneyServ.GetOrangeMoneyUser(omNumber);
   }
@@ -141,7 +140,6 @@ export class AppComponent {
   }
 
   async setupFCMNotifications() {
-    const permission = await this.fcm.requestPushPermission();
     this.fcm.onNotification().subscribe((data) => {
       console.log('received', data);
       if (data.wasTapped) {
@@ -297,42 +295,28 @@ export class AppComponent {
   }
 
 	async checkNetworkAccess() {
-		let hasResponse;
-		let toast;
-		this.network.onChange().subscribe((res) => {
-			console.log('res', res, 'status', this.network);
-			hasResponse = false;
-			//let toast = this.createToastErrorMsg();
+		let toast = await this.createToastErrorMsg();
+		this.network.onChange().subscribe(async (res) => {
+			let	hasResponse = false;
 			this.httpNative.setServerTrustMode('nocheck');
 			if(res === 'disconnected') {
-				this.presentToastErrorMsg();
+				toast.present();
 			} else {
 				const timeOutID = setTimeout(async () => {
 					if(!hasResponse) {
-						toast = await this.toastController.create({
-							header: 'Connexion Réseau',
-							message: "Vous n'avez pas d'accès au reseau internet ou au réseau d'Orange",
-							position: 'top',
-						});
 						toast.present();
-					} else {
-						toast.dismis();
 					}
 				}, 5000)
-					this.httpNative.get('https://orangeetmoi.sn', null, null).then((res) => {
-						console.log('connected to Orange', res);
+					this.httpNative.get(`${SERVER_API_URL}`, null, null).then(async () => {
 						hasResponse = true;
 						clearTimeout(timeOutID);
 						toast.dismiss();
+						toast = await this.createToastErrorMsg();
+						this.toastConnected()
 					}).catch(async (err) => {
 						console.log('err', err);
 						hasResponse = true;
 						clearTimeout(timeOutID);
-						toast = await this.toastController.create({
-							header: 'Connexion Réseau',
-							message: "Vous n'avez pas d'accès au reseau internet ou au réseau d'Orange",
-							position: 'top',
-						});
 						toast.present();
 					})
 
@@ -340,41 +324,23 @@ export class AppComponent {
 		})
 	}
 
-	async presentToastErrorMsg() {
-    const toast = await this.toastController.create({
-      header: 'Connexion Réseau',
+	createToastErrorMsg() {
+    return this.toastController.create({
+      header: 'Echec Connexion Réseau',
       message: "Vous n'avez pas d'accès au reseau internet ou au réseau d'Orange",
-      position: 'top',
-      duration: 3000,
-      //buttons: [
-      //  {
-      //    text: 'Recharger',
-      //    handler: () => {
-      //      this.goToPageSetAmountForRechargeCredit();
-      //    }
-      //  }
-      //]
-    });
-    return toast.present();
-  }
-	async createToastErrorMsg() {
-    return await this.toastController.create({
-      header: 'Connexion Réseau',
-      message: "Vous n'avez pas d'accès au reseau internet ou au réseau d'Orange",
-      position: 'top',
-      duration: 3000,
-      //buttons: [
-      //  {
-      //    text: 'Recharger',
-      //    handler: () => {
-      //      this.goToPageSetAmountForRechargeCredit();
-      //    }
-      //  }
-      //]
+      position: 'top'
     });
   }
 
-	dismissToast(toast: any) {
-		toast?.dismiss();
-	}
+	async toastConnected() {
+    const toast = await this.toastController.create({
+      header: 'Connexion Réseau Réussie',
+      message: "Vous êtes connectés !",
+      position: 'top',
+			duration: 3000
+    });
+
+		return toast.present()
+  }
+
 }
