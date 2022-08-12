@@ -1,4 +1,7 @@
 <div class="new-details-page">
+  <ng-container *ngIf="!loadingConso && userConso?.length">
+    <div class="updated-at">Mis à jour {{ lastUpdateDate | publicationDateFormat }}</div>
+  </ng-container>
   <ng-container *ngIf="loadingConso else consoDetails">
     <div class="loader-container">
       <ion-skeleton-text animated class="header-loader"></ion-skeleton-text>

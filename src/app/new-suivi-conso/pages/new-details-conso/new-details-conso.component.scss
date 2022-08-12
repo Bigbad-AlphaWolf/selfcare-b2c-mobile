@@ -6,6 +6,13 @@
 
 .new-details-page {
   text-align: left;
+  .updated-at {
+    width: 100%;
+    font-family: 'HelveticaNeueLTStd-Roman';
+    font-size: 14px;
+    text-align: end;
+    margin-bottom: -20px;
+  }
   .loader-container {
     width: 100%;
     .header-loader {

@@ -104,7 +104,6 @@ export class StoriesService {
     result = result.sort((elt1, elt2) => {
       return elt1.categorie.ordre - elt2.categorie.ordre;
     });
-    console.log('categorieshhree', result);
 
     return result;
   }
