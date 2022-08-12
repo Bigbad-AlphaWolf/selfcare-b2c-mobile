@@ -8,8 +8,8 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
-import { of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { of, timer } from 'rxjs';
+import { catchError, delay, finalize, takeUntil, tap } from 'rxjs/operators';
 import {
   PROFILE_TYPE_PREPAID,
   PromoBoosterActive,
@@ -32,10 +32,11 @@ import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import { StoriesService } from 'src/app/services/stories-service/stories.service';
 import { NewUserConsoModel } from 'src/app/services/user-cunsommation-service/user-conso-service.index';
-import { UserConsoService } from 'src/app/services/user-cunsommation-service/user-conso.service';
+import { UserConsoService, USER_CONSO_REQUEST_TIMEOUT, USER_CONSO_STORAGE_KEY } from 'src/app/services/user-cunsommation-service/user-conso.service';
 import {
   formatCurrency,
   getLastUpdatedDateTimeText,
+  HUB_ACTIONS,
   isProfileHybrid,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   SargalStatusModel,
@@ -52,6 +53,8 @@ import { BanniereService } from 'src/app/services/banniere-service/banniere.serv
 import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { QrScannerService } from 'src/app/services/qr-scanner-service/qr-scanner.service';
 import { IlliflexService } from 'src/app/services/illiflex-service/illiflex.service';
+import { OperationService } from 'src/app/services/oem-operation/operation.service';
+import { LocalStorageService } from 'src/app/services/localStorage-service/local-storage.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -169,7 +172,9 @@ export class DashboardHomeComponent implements OnInit {
     private assistanceService: AssistanceService,
     private banniereService: BanniereService,
     private qrScan: QrScannerService,
-    private illiflexService: IlliflexService
+    private illiflexService: IlliflexService,
+    private operationService: OperationService,
+    private storageService: LocalStorageService
   ) {}
 
   ngOnInit() {
@@ -190,12 +195,20 @@ export class DashboardHomeComponent implements OnInit {
     // this.getUserActiveBonPlans();
     this.getActivePromoBooster();
     this.fetchUserStories();
-    this.banniereService
-      .getListBanniereByFormuleByZone()
-      .subscribe((res: any) => {
-        this.listBanniere = res;
-      });
+    this.banniereService.getListBanniereByFormuleByZone().subscribe((res: any) => {
+      this.listBanniere = res;
+    });
     this.illiflexService.getIlliflexPaliers().subscribe();
+    this.preloadServices();
+  }
+
+  preloadServices() {
+    this.operationService.getServicesByFormule().subscribe();
+    this.operationService.getServicesByFormule(HUB_ACTIONS.TRANSFERT).subscribe();
+    this.operationService.getServicesByFormule(HUB_ACTIONS.ACHAT).subscribe();
+    this.operationService.getServicesByFormule(HUB_ACTIONS.OM).subscribe();
+    this.operationService.getServicesByFormule(HUB_ACTIONS.FACTURES).subscribe();
+    this.operationService.getServicesByFormule(null, true).subscribe();
   }
 
   fetchUserStories() {
@@ -207,8 +220,7 @@ export class DashboardHomeComponent implements OnInit {
       .pipe(
         tap((res: any) => {
           this.isLoadingStories = false;
-          this.storiesByCategory =
-            this.storiesService.groupeStoriesByCategory(res);
+          this.storiesByCategory = this.storiesService.groupeStoriesByCategory(res);
         }),
         catchError(err => {
           this.isLoadingStories = false;
@@ -243,18 +255,13 @@ export class DashboardHomeComponent implements OnInit {
         this.userSargalData = res;
         this.sargalLastUpdate = getLastUpdatedDateTimeText();
         this.loadingSargal = false;
-        this.followAnalyticsService.registerEventFollow(
-          'Affichage_solde_sargal_success',
-          'event',
-          currentNumber
-        );
+        this.followAnalyticsService.registerEventFollow('Affichage_solde_sargal_success', 'event', currentNumber);
       },
       err => {
-        this.followAnalyticsService.registerEventFollow(
-          'Affichage_solde_sargal_error',
-          'error',
-          { msisdn: currentNumber, error: err.status }
-        );
+        this.followAnalyticsService.registerEventFollow('Affichage_solde_sargal_error', 'error', {
+          msisdn: currentNumber,
+          error: err.status,
+        });
         this.loadingSargal = false;
         if (!this.userSargalData) {
           this.sargalUnavailable = true;
@@ -269,14 +276,26 @@ export class DashboardHomeComponent implements OnInit {
     this.consoService
       .getUserCunsomation()
       .pipe(
-        tap(conso => {
+        finalize( () => {
           this.loadingConso = false;
+        }),
+        takeUntil(timer(USER_CONSO_REQUEST_TIMEOUT).pipe(tap(_ => {
+          const msisdn = this.dashboardService.getCurrentPhoneNumber();
+          this.consoService.getUserCunsomation(msisdn).subscribe({
+            next: (response) => {
+              response.length && this.processConso(response)
+            }
+          });
+          const key = `${USER_CONSO_STORAGE_KEY}_${msisdn}`;
+          const storedData: NewUserConsoModel[] = this.storageService.getFromLocalStorage(key);
+          storedData.length ? this.processConso(storedData) : (this.consoHasError = true);
+        }))),
+        tap((conso: NewUserConsoModel[]) => {
           conso.length ? this.processConso(conso) : (this.consoHasError = true);
           event ? event.target.complete() : '';
         }),
         catchError(err => {
           this.consoHasError = true;
-          this.loadingConso = false;
           event ? event.target.complete() : '';
           return of(err);
         })
@@ -286,25 +305,18 @@ export class DashboardHomeComponent implements OnInit {
 
   processConso(consumation: NewUserConsoModel[]) {
     this.getValidityDates(consumation);
-    const bonus1 = consumation.find(conso => conso.codeCompteur === 2)
-      ?.montantRestantBrut
+    const bonus1 = consumation.find(conso => conso.codeCompteur === 2)?.montantRestantBrut
       ? consumation.find(conso => conso.codeCompteur === 2)?.montantRestantBrut
       : 0;
-    const bonus2 = consumation.find(conso => conso.codeCompteur === 6)
-      ?.montantRestantBrut
+    const bonus2 = consumation.find(conso => conso.codeCompteur === 6)?.montantRestantBrut
       ? consumation.find(conso => conso.codeCompteur === 6)?.montantRestantBrut
       : 0;
-    const forfaitBalance = consumation.find(conso => conso.codeCompteur === 9)
-      ?.montantRestantBrut
+    const forfaitBalance = consumation.find(conso => conso.codeCompteur === 9)?.montantRestantBrut
       ? consumation.find(conso => conso.codeCompteur === 9)?.montantRestantBrut
       : 0;
-    this.creditRechargement = consumation.find(
-      conso => conso.codeCompteur === 1
-    )?.montantRestantBrut;
+    this.creditRechargement = consumation.find(conso => conso.codeCompteur === 1)?.montantRestantBrut;
     this.canDoSOS = this.creditRechargement <= 4;
-    this.creditGlobal = formatCurrency(
-      bonus1 + bonus2 + forfaitBalance + this.creditRechargement
-    );
+    this.creditGlobal = formatCurrency(bonus1 + bonus2 + forfaitBalance + this.creditRechargement);
   }
 
   getValidityDates(appelConso: any[]) {
@@ -321,11 +333,7 @@ export class DashboardHomeComponent implements OnInit {
 
   processDateDMY(date: string) {
     const tab = date.split('/');
-    const newDate = new Date(
-      Number(tab[2]),
-      Number(tab[1]) - 1,
-      Number(tab[0])
-    );
+    const newDate = new Date(Number(tab[2]), Number(tab[1]) - 1, Number(tab[0]));
     return newDate.getTime();
   }
 
@@ -335,11 +343,7 @@ export class DashboardHomeComponent implements OnInit {
     this.sargalService.getCustomerSargalStatus().subscribe(
       (sargalStatus: SargalStatusModel) => {
         this.hasSargalProfile = true;
-        this.followAnalyticsService.registerEventFollow(
-          'Affichage_profil_sargal_success',
-          'event',
-          this.currentMsisdn
-        );
+        this.followAnalyticsService.registerEventFollow('Affichage_profil_sargal_success', 'event', this.currentMsisdn);
         if (!sargalStatus.valid) {
           this.sargalStatusUnavailable = true;
         }
@@ -347,11 +351,10 @@ export class DashboardHomeComponent implements OnInit {
         this.loadingSargalStatus = false;
       },
       (err: any) => {
-        this.followAnalyticsService.registerEventFollow(
-          'Affichage_profil_sargal_error',
-          'error',
-          { msisdn: this.currentMsisdn, error: err.status }
-        );
+        this.followAnalyticsService.registerEventFollow('Affichage_profil_sargal_error', 'error', {
+          msisdn: this.currentMsisdn,
+          error: err.status,
+        });
         this.loadingSargalStatus = false;
         if (err.status !== 400) {
           this.sargalStatusUnavailable = true;
@@ -369,11 +372,7 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   seeSargalCard() {
-    this.followAnalyticsService.registerEventFollow(
-      'Sargal_profil',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Sargal_profil', 'event', 'clicked');
     this.router.navigate(['/sargal-status-card']);
   }
 
@@ -381,16 +380,8 @@ export class DashboardHomeComponent implements OnInit {
     // this.router.navigate(['/details-conso']);
     this.seeDetails.emit();
     number
-      ? this.followAnalyticsService.registerEventFollow(
-          'Voirs_details_dashboard',
-          'event',
-          'clicked'
-        )
-      : this.followAnalyticsService.registerEventFollow(
-          'Voirs_details_card_dashboard',
-          'event',
-          'clicked'
-        );
+      ? this.followAnalyticsService.registerEventFollow('Voirs_details_dashboard', 'event', 'clicked')
+      : this.followAnalyticsService.registerEventFollow('Voirs_details_card_dashboard', 'event', 'clicked');
   }
 
   getActivePromoBooster() {
@@ -433,29 +424,16 @@ export class DashboardHomeComponent implements OnInit {
   onSargalCardClicked(origin?: string) {
     if (
       this.userSargalData &&
-      (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED ||
-        this.userSargalData.status === SARGAL_UNSUBSCRIPTION_ONGOING) &&
+      (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED || this.userSargalData.status === SARGAL_UNSUBSCRIPTION_ONGOING) &&
       !this.loadingSargal
     ) {
-      this.followAnalyticsService.registerEventFollow(
-        'Sargal_registration_card_clic',
-        'event',
-        'clicked'
-      );
+      this.followAnalyticsService.registerEventFollow('Sargal_registration_card_clic', 'event', 'clicked');
       this.router.navigate(['/sargal-registration']);
     } else if (!this.sargalUnavailable && !this.loadingSargal) {
       if (origin === 'card') {
-        this.followAnalyticsService.registerEventFollow(
-          'Sargal_dashboard_card_clic',
-          'event',
-          'clicked'
-        );
+        this.followAnalyticsService.registerEventFollow('Sargal_dashboard_card_clic', 'event', 'clicked');
       } else {
-        this.followAnalyticsService.registerEventFollow(
-          'Dashboard_Convertir_Sargal_clic',
-          'event',
-          'clicked'
-        );
+        this.followAnalyticsService.registerEventFollow('Dashboard_Convertir_Sargal_clic', 'event', 'clicked');
       }
       this.router.navigate(['/sargal-dashboard']);
     }
@@ -488,61 +466,34 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   goToTransfertsPage() {
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_hub_transfert_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Dashboard_hub_transfert_clic', 'event', 'clicked');
     this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
   }
 
   goToBuyPage() {
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_hub_achat_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Dashboard_hub_achat_clic', 'event', 'clicked');
     this.appliRouting.goToTransfertHubServicesPage('BUY');
   }
 
   goToSOSPage() {
     if (this.canDoSOS) {
-      this.followAnalyticsService.registerEventFollow(
-        'Dashboard_sos_clic',
-        'event',
-        'clicked'
-      );
+      this.followAnalyticsService.registerEventFollow('Dashboard_sos_clic', 'event', 'clicked');
       this.router.navigate(['/buy-sos']);
     }
   }
 
   goTAllFixeServices() {
-      this.followAnalyticsService.registerEventFollow(
-        'gerer_mon_fixe_clic',
-        'event',
-        'clicked'
-      );
-      this.router.navigate(['/fixes-services']);
+    this.followAnalyticsService.registerEventFollow('gerer_mon_fixe_clic', 'event', 'clicked');
+    this.router.navigate(['/fixes-services']);
   }
 
   goMerchantPayment() {
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_paiement_marchand_clic',
-      'event'
-    );
+    this.followAnalyticsService.registerEventFollow('Dashboard_paiement_marchand_clic', 'event');
     this.omService.omAccountSession().subscribe(async (omSession: any) => {
-      const omSessionValid = omSession
-        ? omSession.msisdn !== 'error' &&
-          omSession.hasApiKey &&
-          !omSession.loginExpired
-        : null;
+      const omSessionValid = omSession ? omSession.msisdn !== 'error' && omSession.hasApiKey && !omSession.loginExpired : null;
       if (omSessionValid) {
         this.bsService
-          .initBsModal(
-            MerchantPaymentCodeComponent,
-            OPERATION_TYPE_MERCHANT_PAYMENT,
-            PurchaseSetAmountPage.ROUTE_PATH
-          )
+          .initBsModal(MerchantPaymentCodeComponent, OPERATION_TYPE_MERCHANT_PAYMENT, PurchaseSetAmountPage.ROUTE_PATH)
           .subscribe(_ => {});
         this.bsService.openModal(MerchantPaymentCodeComponent, {
           omMsisdn: omSession.msisdn,
@@ -554,11 +505,7 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   onPayerFacture() {
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_hub_facture_clic',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Dashboard_hub_facture_clic', 'event', 'clicked');
     this.router.navigate([BillsHubPage.ROUTE_PATH]);
   }
 

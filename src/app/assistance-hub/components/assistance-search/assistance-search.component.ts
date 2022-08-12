@@ -81,10 +81,10 @@ export class AssistanceSearchComponent implements OnInit {
   fetchAllHelpItems() {
     this.isLoading = true;
     this.operationService
-      .getServicesByFormule(null, true)
+      .getServicesByFormule(null, true, true)
       .pipe(
         switchMap(async (res: OffreService[]) => {
-          const offres: OffreService[] = await this.operationService.getServicesByFormule().toPromise();
+          const offres: OffreService[] = await this.operationService.getServicesByFormule(null, null, true).toPromise();
           return [...offres, ...res];
         })
       )

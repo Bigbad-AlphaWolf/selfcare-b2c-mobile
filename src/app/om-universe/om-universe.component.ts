@@ -39,7 +39,7 @@ export class OmUniverseComponent implements OnInit {
     this.loadingServicesHasError = false;
     this.loadingServices = true;
     this.operationService
-      .getServicesByFormule(HUB_ACTIONS.OM)
+      .getServicesByFormule(HUB_ACTIONS.OM, null, true)
       .pipe(
         tap((services: OffreService[]) => {
           this.loadingServices = false;

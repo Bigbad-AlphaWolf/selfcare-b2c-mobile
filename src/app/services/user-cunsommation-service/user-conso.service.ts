@@ -1,39 +1,42 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {map, share, tap} from 'rxjs/operators';
+import { of, throwError } from 'rxjs';
+import {catchError, map, share, tap} from 'rxjs/operators';
 import {environment} from 'src/environments/environment';
 import {DashboardService} from '../dashboard-service/dashboard.service';
-import {CONSO_GAUGE_COLORS, InternetConsoModel, NewUserConsoModel} from './user-conso-service.index';
+import { LocalStorageService } from '../localStorage-service/local-storage.service';
+import {InternetConsoModel, NewUserConsoModel} from './user-conso-service.index';
 const {SERVER_API_URL, CONSO_SERVICE} = environment;
 const urlConso = `${SERVER_API_URL}/${CONSO_SERVICE}/api/suivi-conso`;
 const urlConsoInternet = `${SERVER_API_URL}/${CONSO_SERVICE}/api/history-communication`;
+export const USER_CONSO_STORAGE_KEY = 'USER_CONSO_MSISDN';
+export const USER_CONSO_REQUEST_TIMEOUT = 2000;
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserConsoService {
-	static lastUserConsumtionsInfos: any[] = [];
-	static lastRechargementCompteurValue: number;
-  constructor(private http: HttpClient, private dashboardService: DashboardService) {}
+  static lastUserConsumtionsInfos: any[] = [];
+  static lastRechargementCompteurValue: number;
+  constructor(private http: HttpClient, private dashboardService: DashboardService, private storageService: LocalStorageService) {}
 
   getUserCunsomation(msisdn = this.dashboardService.getCurrentPhoneNumber()) {
-    let gaugeIndex = 0;
+    const key = `${USER_CONSO_STORAGE_KEY}_${msisdn}`;
+    const storedData: NewUserConsoModel[] = this.storageService.getFromLocalStorage(key);
     return this.http.get<NewUserConsoModel[]>(`${urlConso}/${msisdn}`).pipe(
       share(),
-      map(res => {
-        res.forEach((counter, i) => {
-          const hasGauge = !!counter.montantTotalBrut;
-          if (hasGauge) {
-            counter.gaugeColor = CONSO_GAUGE_COLORS[gaugeIndex % 3];
-            gaugeIndex++;
-          }
-          counter.hasGauge = hasGauge;
-        });
-        return res;
+      tap((res: NewUserConsoModel[]) => {
+        this.storageService.saveToLocalStorage(key, res);
+        this.storageService.saveToLocalStorage(`${key}_last_update`, Date.now());
+        UserConsoService.lastUserConsumtionsInfos = res;
+        UserConsoService.lastRechargementCompteurValue = res.find(elt => {
+          return elt.codeCompteur === 1;
+        })?.montantRestantBrut;
       }),
-			tap((res: NewUserConsoModel[]) => {
-				UserConsoService.lastUserConsumtionsInfos = res;
-				UserConsoService.lastRechargementCompteurValue = res.find((elt) => { return elt.codeCompteur === 1 })?.montantRestantBrut;
-			})
+      catchError(err => {
+        if (storedData) return of(storedData);
+        throwError(err);
+      })
     );
   }
 
