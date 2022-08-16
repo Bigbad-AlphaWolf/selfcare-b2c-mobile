@@ -82,6 +82,11 @@
           .arrow-up {
             color: $white;
           }
+					&.reload  {
+						position: absolute;
+						top: 5px;
+						right: 10px;
+					}
         }
         &.selected {
           background-color: $fullBlack;
