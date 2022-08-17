@@ -273,7 +273,7 @@ export class TransferSetAmountPage implements OnInit {
       const payload = {
         amount,
         receiverMsisdn: this.purchasePayload?.recipientMsisdn,
-        senderMsisdn: this.purchasePayload?.senderMsisdn,
+        senderMsisdn: this.dashboardService?.getCurrentPhoneNumber(),
       };
       this.omService
         .initCardToWallet(payload)

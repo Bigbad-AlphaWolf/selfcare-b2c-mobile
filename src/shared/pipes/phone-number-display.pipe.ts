@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { REGEX_DIGIT } from '..';
 
 @Pipe({
   name: 'phoneNumberDisplay',
@@ -6,7 +7,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class PhoneNumberDisplayPipe implements PipeTransform {
   transform(phoneNumber: string, args?: any): any {
     let result = phoneNumber;
-    if (phoneNumber) {
+    if (phoneNumber && phoneNumber.match(REGEX_DIGIT)) {
       if (phoneNumber.length === 9) {
         result =
           phoneNumber.slice(0, 2) +

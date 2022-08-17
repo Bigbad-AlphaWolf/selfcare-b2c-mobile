@@ -118,12 +118,12 @@
                 <span class="conso-value">
                   <span>{{ isCounterConsoActe(conso) ? conso.montantConsomme : (conso.hasGauge ? (conso.montantRestant |
                     passVolumeDisplay) : conso.montantRestant) }}</span>
-                  <span class="text-style-1" *ngIf="conso?.hasGauge">
+                  <!--<span class="text-style-1" *ngIf="conso?.hasGauge">
                     / {{ conso.montantTotal | passVolumeDisplay }}
-                  </span>
+                  </span>-->
                 </span>
               </div>
-              <app-item-conso-gauge *ngIf="conso?.hasGauge" [conso]="conso"></app-item-conso-gauge>
+              <!--<app-item-conso-gauge *ngIf="conso?.hasGauge" [conso]="conso"></app-item-conso-gauge>-->
             </div>
           </ng-container>
         </div>

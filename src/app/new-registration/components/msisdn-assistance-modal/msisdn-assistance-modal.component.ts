@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { GET_MSISDN_ENUM } from 'src/shared';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings/ngx';
 import { ModalController, Platform } from '@ionic/angular';
 import {

@@ -18,7 +18,7 @@ export class PurchaseService {
   constructor(private http: HttpClient) {}
 
   getAllTransactionByDay(msisdn: string, day: number, filterType?: string) {
-    let endpoint = `${listPurchase}/${msisdn}?numberDays=${day}`;
+    let endpoint = `${listPurchase}/${msisdn}?numberDays=10`;
     if (filterType) {
       endpoint += `&typeAchat=${filterType}`;
     }
@@ -58,7 +58,7 @@ export class PurchaseService {
     for (const item of listPurchase) {
       const values: CategoryPurchaseHistory = {
         typeAchat: item.typeAchat,
-        label: item.label,
+        label: item.typeAchat === 'ALL' ? 'Autres' : item.label,
       };
       if (
         categories.some(

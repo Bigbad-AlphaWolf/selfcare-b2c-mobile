@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { of, throwError } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { of, throwError, timer } from 'rxjs';
+import { catchError, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { CustomContact } from 'src/app/models/customized-contact.model';
 import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { LocalStorageService } from 'src/app/services/localStorage-service/local-storage.service';
 import { RecentsService } from 'src/app/services/recents-service/recents.service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import {
   NewUserConsoModel,
   ProcessedConsoModel,
 } from 'src/app/services/user-cunsommation-service/user-conso-service.index';
-import { UserConsoService } from 'src/app/services/user-cunsommation-service/user-conso.service';
+import { UserConsoService, USER_CONSO_REQUEST_TIMEOUT, USER_CONSO_STORAGE_KEY } from 'src/app/services/user-cunsommation-service/user-conso.service';
 import { COUNTER_TYPE_FELLOW } from 'src/shared';
 @Component({
   selector: 'app-new-details-conso',
@@ -20,12 +22,16 @@ export class NewDetailsConsoComponent implements OnInit {
   loadingConso: boolean;
   userConso;
   COUNTER_TYPE_FELLOW = COUNTER_TYPE_FELLOW;
+  lastUpdateDate;
+  msisdn = this.dashboardService.getCurrentPhoneNumber();
 
   constructor(
     private consoService: UserConsoService,
     private sargalService: SargalService,
     private contactService: ContactsService,
-    private recentsService: RecentsService
+    private recentsService: RecentsService,
+    private dashboardService: DashboardService,
+    private storageService: LocalStorageService
   ) {}
 
   ngOnInit() {
@@ -37,6 +43,17 @@ export class NewDetailsConsoComponent implements OnInit {
     this.consoService
       .getUserCunsomation()
       .pipe(
+        takeUntil(timer(USER_CONSO_REQUEST_TIMEOUT).pipe(tap(_ => {
+          this.loadingConso = false;
+          const key = `${USER_CONSO_STORAGE_KEY}_${this.msisdn}`;
+          const storedData: NewUserConsoModel[] = this.storageService.getFromLocalStorage(key);
+          storedData.length && this.processDetailsConso(storedData);
+          this.consoService.getUserCunsomation(this.msisdn).subscribe({
+            next: (response) => {
+              response.length ? this.processDetailsConso(response) : null;
+            }
+          });
+        }))),
         switchMap(resp => {
           return this.sargalService.getFellowsMsisdn().pipe(
             switchMap((fellowsMsisdn: any[]) => {
@@ -91,6 +108,8 @@ export class NewDetailsConsoComponent implements OnInit {
   }
 
   processDetailsConso(conso: NewUserConsoModel[]) {
+    const updateDateKey = `${USER_CONSO_STORAGE_KEY}_${this.msisdn}_last_update`;
+    this.lastUpdateDate = this.storageService.getFromLocalStorage(updateDateKey);
     const categoriesWithDuplicates = conso.map(
       (consoItem) => consoItem.typeCompteur
     );
