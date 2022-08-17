@@ -40,7 +40,7 @@ function addDependencies(buildGradle) {
 function addRepositories(buildGradle) {
   // line to match
   var match = buildGradle.match(/^(\s*)jcenter\(\)/m);
-  var whitespace = match[1];
+  var whitespace = match?.[1];
 
     // update projects grouping
   var allProjectsIndex = buildGradle.indexOf('allprojects');
@@ -52,7 +52,7 @@ function addRepositories(buildGradle) {
     // Add google() to allprojects section of the string
     match = secondHalfOfFile.match(/^(\s*)jcenter\(\)/m);
     var googleMavenRepo = whitespace + 'google() // Google\'s Maven repository from cordova-plugin-firebase';
-    modifiedLine = match[0] + '\n' + googleMavenRepo;
+    modifiedLine = match?.[0] + '\n' + googleMavenRepo;
     // modify the part of the string after 'allprojects'
     secondHalfOfFile = secondHalfOfFile.replace(/^(\s*)jcenter\(\)/m, modifiedLine);
 
@@ -62,7 +62,7 @@ function addRepositories(buildGradle) {
     // shouldn't happen. this should not happen, but if it does, we should try to add the dependency to the buildscript
     match = buildGradle.match(/^(\s*)jcenter\(\)/m);
     var googleMavenRepo = whitespace + 'google() // Google\'s Maven repository from cordova-plugin-firebase';
-    modifiedLine = match[0] + '\n' + googleMavenRepo;
+    modifiedLine = match?.[0] + '\n' + googleMavenRepo;
     // modify the part of the string that is after 'allprojects'
     buildGradle = buildGradle.replace(/^(\s*)jcenter\(\)/m, modifiedLine);
   }
@@ -85,7 +85,7 @@ module.exports = {
     }
 
     var buildGradle = readProjectBuildGradle();
-
+		//console.log('----------gradle--------', buildGradle);
     // Add Google Play Services Dependency
     buildGradle = addDependencies(buildGradle);
 

@@ -9,7 +9,7 @@ import {
   OffreService,
 } from 'src/app/models/offre-service.model';
 import { mapOffreServiceWithCodeOM } from 'src/app/utils/bills.util';
-import { SubscriptionModel } from 'src/shared';
+import { checkStorageElementHasExpired, SubscriptionModel } from 'src/shared';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { FILE_DOWNLOAD_ENDPOINT } from '../utils/file.endpoints';
@@ -21,6 +21,7 @@ import {
   TRANSFER_BONUS_THRESHOLD_ENDPOINT
 } from '../utils/services.endpoints';
 import * as SecureLS from 'secure-ls';
+import { LocalStorageService } from '../localStorage-service/local-storage.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Injectable({
   providedIn: 'root',
@@ -34,17 +35,18 @@ export class OperationService {
     private http: HttpClient,
     private appVersion: AppVersion,
     private dashboardService: DashboardService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private localStorageService: LocalStorageService
   ) {}
 
-  initServicesData(codeFormule?: string) {
+  initServicesData(codeFormule?: string, getFromLocalStorage?: boolean){
     let endpointOffresServices = OFFRE_SERVICES_ENDPOINT;
     if (codeFormule) {
       endpointOffresServices += `/${codeFormule}?typeResearch=FORMULE`;
     }
     return this.http.get(endpointOffresServices).pipe(
       switchMap((subcategories: CategoryOffreServiceModel[]) => {
-        return this.getServicesByFormule().pipe(
+        return this.getServicesByFormule(null, null, getFromLocalStorage).pipe(
           map(services => {
             let categories: CategoryOffreServiceModel[];
             // get array of array of parent categories (eg: [[cat1], [cat2], [cat3]])
@@ -85,8 +87,14 @@ export class OperationService {
     return this.http.get(`${ALL_SERVICES_ENDPOINT}?page=0&size=100`);
   }
 
-  getServicesByFormule(category?: string, isBesoinAide?: boolean) {
+  getServicesByFormule(category?: string, isBesoinAide?: boolean, getFromLocalStorage?: boolean) {
     const msisdn = this.dashboardService.getCurrentPhoneNumber();
+    const key = `${msisdn}_${category ? category : ''}_${isBesoinAide ? 'ASSISTANCE_' : ''}OFFERS_SERVICES_STORAGE_KEY`;
+    const dataFromStorage = this.localStorageService.getFromLocalStorage(key);
+    const hasExpired = checkStorageElementHasExpired(key, 10 * 60 * 1000);
+    if ((getFromLocalStorage && dataFromStorage) || !hasExpired) {
+      return of(dataFromStorage);
+    }
     return this.authenticationService.getSubscription(msisdn).pipe(
       switchMap((customerOffer: SubscriptionModel) => {
         const versionObservable = from(this.appVersion.getVersionNumber());
@@ -104,9 +112,16 @@ export class OperationService {
                 return res;
               }),
               map(res => {
-                return res.map((item: OffreService) => {
+                const resp = res.map((item: OffreService) => {
                   return mapOffreServiceWithCodeOM(item);
                 });
+                this.localStorageService.saveToLocalStorage(`${key}_last_update`, Date.now());
+                this.localStorageService.saveToLocalStorage(key, resp);
+                return resp;
+              }),
+              catchError(err => {
+                if (dataFromStorage) return of(dataFromStorage);
+                return throwError(err);
               })
             );
           }),
@@ -119,9 +134,12 @@ export class OperationService {
                 return res;
               }),
               map(res => {
-                return res.map((item: OffreService) => {
+                const resp = res.map((item: OffreService) => {
                   return mapOffreServiceWithCodeOM(item);
                 });
+                this.localStorageService.saveToLocalStorage(`${key}_last_update`, Date.now());
+                this.localStorageService.saveToLocalStorage(key, resp);
+                return resp;
               })
             );
           })
@@ -135,19 +153,8 @@ export class OperationService {
     offerService.banniere = offerService.banniere ? `${this.FILE_MANAGER_BASE_URL}/${offerService.banniere}` : '';
   }
 
-  checkStorageElementHasExpired(storageKey: string, cacheDuration: number = 86400) {
-    const storageElement = ls.get(storageKey);
-    if (!storageElement) return true;
-    const lsLastUpdateKey = storageKey + '_last_update';
-    const lastUpdateTime = ls.get(lsLastUpdateKey);
-    const currentDate = Date.now();
-    const elapsedTime = currentDate - lastUpdateTime;
-    const hasExpired = elapsedTime > cacheDuration;
-    return hasExpired;
-  }
-
   getTransferBonusMinMaxAmount() {
-    const hasThresholdInStorageExpired = this.checkStorageElementHasExpired(BONUS_TRANSFER_THRESHOLD_STORAGE_KEY);
+    const hasThresholdInStorageExpired = checkStorageElementHasExpired(BONUS_TRANSFER_THRESHOLD_STORAGE_KEY);
     const transferBonusThreshold: BonusTransferThresholdModel = ls.get(BONUS_TRANSFER_THRESHOLD_STORAGE_KEY);
     if (!hasThresholdInStorageExpired) {
       return of(transferBonusThreshold);
@@ -159,8 +166,8 @@ export class OperationService {
         return thresholds;
       }),
       catchError(err => {
-        if (transferBonusThreshold) return of(transferBonusThreshold)
-        return of(DEFAULT_BONUS_TRANSFER_THRESHOLD)
+        if (transferBonusThreshold) return of(transferBonusThreshold);
+        return of(DEFAULT_BONUS_TRANSFER_THRESHOLD);
       })
     );
   }

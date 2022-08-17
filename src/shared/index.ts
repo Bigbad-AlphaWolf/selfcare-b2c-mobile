@@ -1460,3 +1460,14 @@ export function parsedMsisdn(msisdn: string) {
   console.log(phonenumber);
   return phonenumber.nationalNumber;
 }
+
+export function checkStorageElementHasExpired(storageKey: string, cacheDuration: number = 86400000) {
+  const storageElement = ls.get(storageKey);
+  if (!storageElement) return true;
+  const lsLastUpdateKey = storageKey + '_last_update';
+  const lastUpdateTime = ls.get(lsLastUpdateKey);
+  const currentDate = Date.now();
+  const elapsedTime = currentDate - lastUpdateTime;
+  const hasExpired = elapsedTime > cacheDuration;
+  return hasExpired;
+}

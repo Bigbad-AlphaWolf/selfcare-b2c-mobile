@@ -48,6 +48,7 @@ import {
   OmInitOtpModel,
 } from 'src/app/models/om-self-operation-otp.model';
 import {
+  checkStorageElementHasExpired,
   ILLIFLEX_BY_OM_IDENTICAL_ERROR_CODE,
   ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE,
   OM_IDENTIC_TRANSACTION_CODE,
@@ -86,6 +87,7 @@ import { CreatePinOM } from 'src/app/models/create-pin-om.model';
 import { ValidateChallengeOMOEM } from 'src/app/models/challenge-answers-om-oem.model';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
 import { PAYMENT_BILLS_CATEGORY } from 'src/app/models/bill-payment.model';
+import { LocalStorageService } from '../localStorage-service/local-storage.service';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
@@ -129,6 +131,8 @@ const GET_CARD_TO_WALLET_BANK_URL = `${SERVER_API_URL}/${OM_SERVICE}/api/ekalpay
 const GET_BALANCE_URL = `${SERVER_API_URL}/${OM_SERVICE}/api/ekalpay/v1/account`;
 const GET_OM_TRANSACTIONS_URL = `${SERVER_API_URL}/${OM_SERVICE}/api/payment/transactions`;
 
+const OM_STATUS_KEY = 'USER_OM_STATUS';
+
 const ls = new SecureLS({ encodingType: 'aes' });
 let eventKey = '';
 let errorKey = '';
@@ -144,7 +148,8 @@ export class OrangeMoneyService {
     private followAnalyticsService: FollowAnalyticsService,
     private dashboardService: DashboardService,
     private illiflexService: IlliflexService,
-    private faio: FingerprintAIO
+    private faio: FingerprintAIO,
+    private localStorageService: LocalStorageService
   ) {}
   pinPadDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b'];
   gotPinPadSubject = new BehaviorSubject<string[]>([]);
@@ -528,11 +533,19 @@ export class OrangeMoneyService {
   }
 
   getUserStatus(msisdn: string) {
+    const key = `${OM_STATUS_KEY}_${msisdn}`;
+    const hasExpired = checkStorageElementHasExpired(key, 60 * 60 * 1000);
+    if (!hasExpired) {
+      const storedData = this.localStorageService.getFromLocalStorage(key);
+      return of(storedData)
+    }
     return this.http
       .get<OMCustomerStatusModel>(`${userStatusEndpoint}/${msisdn}`)
       .pipe(
         map((status) => {
           status.omNumber = msisdn;
+          this.localStorageService.saveToLocalStorage(key, status);
+          this.localStorageService.saveToLocalStorage(`${key}_last_update`, Date.now())
           return status;
         })
       );

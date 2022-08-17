@@ -77,7 +77,7 @@ export class NewServicesPage implements OnInit {
     this.servicesHasError = false;
     this.servicesByCategoriesArray = [];
     this.operationService
-      .getServicesByFormule()
+      .getServicesByFormule(null, null, true)
       .pipe(
         tap((res) => {
           this.servicesByCategoriesArray = [];

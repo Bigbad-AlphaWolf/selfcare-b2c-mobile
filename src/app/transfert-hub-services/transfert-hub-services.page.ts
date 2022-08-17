@@ -3,7 +3,6 @@ import { ApplicationRoutingService } from '../services/application-routing/appli
 import { ModalController, NavController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { NumberSelectionComponent } from '../components/number-selection/number-selection.component';
 import { NumberSelectionOption } from '../models/enums/number-selection-option.enum';
 import {
   OPERATION_TYPE_RECHARGE_CREDIT,
@@ -70,7 +69,6 @@ export class TransfertHubServicesPage implements OnInit {
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
     private navController: NavController,
-    private router: Router,
     private offerPlanServ: OfferPlansService,
     private dashbServ: DashboardService,
     private bsService: BottomSheetService,
@@ -103,7 +101,7 @@ export class TransfertHubServicesPage implements OnInit {
   getServices() {
     this.loadingServices = true;
     this.servicesHasError = false;
-    this.operationService.getServicesByFormule(this.hubCode).subscribe(
+    this.operationService.getServicesByFormule(this.hubCode, null, true).subscribe(
       res => {
         this.loadingServices = false;
         this.options = res.filter(option => !option.passUsage);
