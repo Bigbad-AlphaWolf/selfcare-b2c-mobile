@@ -1,5 +1,5 @@
 <ion-app>
-  <ion-menu (ionWillOpen)="setInfos($event)" contentId="content" id="menu" [swipeGesture]="false">
+  <ion-menu (ionWillOpen)="setInfos()" contentId="content" id="menu" [swipeGesture]="false">
     <app-sidemenu [omUserInfos]="omUserInfos" [currentAppVersion]="appVersionNumber" (close)="(0)"></app-sidemenu>
   </ion-menu>
   <ion-router-outlet animated="false" id="content"></ion-router-outlet>
