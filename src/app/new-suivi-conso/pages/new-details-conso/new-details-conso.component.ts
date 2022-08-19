@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { of, throwError, timer } from 'rxjs';
 import { catchError, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { CustomContact } from 'src/app/models/customized-contact.model';
@@ -31,7 +31,8 @@ export class NewDetailsConsoComponent implements OnInit {
     private contactService: ContactsService,
     private recentsService: RecentsService,
     private dashboardService: DashboardService,
-    private storageService: LocalStorageService
+    private storageService: LocalStorageService,
+    private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -48,9 +49,11 @@ export class NewDetailsConsoComponent implements OnInit {
           const key = `${USER_CONSO_STORAGE_KEY}_${this.msisdn}`;
           const storedData: NewUserConsoModel[] = this.storageService.getFromLocalStorage(key);
           storedData.length && this.processDetailsConso(storedData);
+          this.ref.detectChanges();
           this.consoService.getUserCunsomation(this.msisdn).subscribe({
             next: (response) => {
-              response.length ? this.processDetailsConso(response) : null;
+              this.userConso = response.length ? this.processDetailsConso(response) : null;
+              this.ref.detectChanges();
             }
           });
         }))),
@@ -92,10 +95,12 @@ export class NewDetailsConsoComponent implements OnInit {
           this.userConso = this.processDetailsConso(res);
           this.loadingConso = false;
           event ? event.target.complete() : '';
+          this.ref.detectChanges();
         }),
         catchError(err => {
           this.loadingConso = false;
           event ? event.target.complete() : '';
+          this.ref.detectChanges();
           return throwError(err);
         })
       )
@@ -109,7 +114,7 @@ export class NewDetailsConsoComponent implements OnInit {
 
   processDetailsConso(conso: NewUserConsoModel[]) {
     const updateDateKey = `${USER_CONSO_STORAGE_KEY}_${this.msisdn}_last_update`;
-    this.lastUpdateDate = this.storageService.getFromLocalStorage(updateDateKey);
+    this.lastUpdateDate = new Date(this.storageService.getFromLocalStorage(updateDateKey));
     const categoriesWithDuplicates = conso.map(
       (consoItem) => consoItem.typeCompteur
     );
