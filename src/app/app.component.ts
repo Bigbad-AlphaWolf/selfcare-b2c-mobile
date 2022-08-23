@@ -326,16 +326,16 @@ export class AppComponent {
 
 	createToastErrorMsg() {
     return this.toastController.create({
-      header: 'Echec Connexion Réseau',
-      message: "Vous n'avez pas d'accès au reseau internet ou au réseau d'Orange",
+      header: 'Votre connexion internet n’est pas activée',
+      message: "Veuillez-vous connecter pour avoir vos données à jour et effectuer des transactions.",
       position: 'top'
     });
   }
 
 	async toastConnected() {
     const toast = await this.toastController.create({
-      header: 'Connexion Réseau Réussie',
-      message: "Vous êtes connectés !",
+      header: 'Vous êtes à nouveau connecté',
+      message: "Vos données sont à jour.",
       position: 'top',
 			duration: 3000
     });
