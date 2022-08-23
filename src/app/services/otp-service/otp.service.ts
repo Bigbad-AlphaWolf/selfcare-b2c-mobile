@@ -15,6 +15,7 @@ const generateOTPEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-link/
 const checkOTPEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-link/check`;
 const checkOTPCodeEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-infos/check`;
 const generateOTPCodeEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/code-otp-infos/generate`;
+const generateOTPCodeWithCaptchaEndpoint = `${SERVER_API_URL}/${OTP_SERVICE}/api/v2/code-otp-infos/generate`;
 const validateRattachByOTPCodeEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/v1/rattachement-lignes/register/by-otp`;
 @Injectable({
   providedIn: 'root'
@@ -59,6 +60,15 @@ export class OtpService {
 			msisdn
 		};
 		return this.http.post(`${generateOTPCodeEndpoint}`, data);
+	}
+
+	generateOTPCaptchaCode(msisdn: string, token: string) {
+		const data = {
+			token,
+			msisdn
+		};
+
+		return this.http.post(`${generateOTPCodeWithCaptchaEndpoint}`, data);
 	}
 
 	rattachNumberByOTPCode(msisdn: string, code: string, login: string) {
