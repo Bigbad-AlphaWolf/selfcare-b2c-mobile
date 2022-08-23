@@ -60,10 +60,6 @@ export const titles: PageHeader[] = [
     typeOperation: OPERATION_TRANSFER_OM_WITH_CODE,
     title: "Transfert d'argent"
   },
-  {
-    typeOperation: BONS_PLANS,
-    title: 'Samay Xewël'
-  },
 
   {
     typeOperation: OPERATION_WOYOFAL,
@@ -79,7 +75,7 @@ export const titles: PageHeader[] = [
   },
   {
     typeOperation: BONS_PLANS,
-    title: 'Bons plans - Samay Sargal'
+    title: 'Bons plans - Samay Xeweel'
   },
   {
     typeOperation: OPERATION_SEE_SOLDE_RAPIDO,
