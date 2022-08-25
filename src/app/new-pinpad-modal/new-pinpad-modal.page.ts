@@ -1129,6 +1129,7 @@ export class NewPinpadModalPage implements OnInit {
       user_type: 'user',
       service_version: OM_SERVICE_VERSION,
       capping: params.capping,
+			viaQr: this.opXtras?.viaQr
     };
     const logInfos: FollowOemlogPurchaseInfos = {
       sender: omUser.msisdn,

@@ -168,6 +168,7 @@ export interface TransferOrangeMoneyModel {
   service_version: string;
   capping?: boolean;
   country?: string;
+	viaQr?: boolean;
 }
 
 export interface TransferOMWithCodeModel {

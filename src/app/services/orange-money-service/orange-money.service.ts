@@ -131,6 +131,9 @@ const GET_CARD_TO_WALLET_BANK_URL = `${SERVER_API_URL}/${OM_SERVICE}/api/ekalpay
 const GET_BALANCE_URL = `${SERVER_API_URL}/${OM_SERVICE}/api/ekalpay/v1/account`;
 const GET_OM_TRANSACTIONS_URL = `${SERVER_API_URL}/${OM_SERVICE}/api/payment/transactions`;
 
+// ekalpay endpoints
+const get_card_marchand_endpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/check-card`;
+
 const OM_STATUS_KEY = 'USER_OM_STATUS';
 
 const ls = new SecureLS({ encodingType: 'aes' });
@@ -294,6 +297,10 @@ export class OrangeMoneyService {
 
   GetBalance(getBalanceData: OmBalanceModel) {
     return this.http.post(getBalanceEndpoint, getBalanceData);
+  }
+
+  checkMarchandLiteCarteInfos(idCard: string) {
+    return this.http.get(`${get_card_marchand_endpoint}/${idCard}`);
   }
 
   AchatCredit(achatCreditData: OmBuyCreditModel, confirmPayload?) {

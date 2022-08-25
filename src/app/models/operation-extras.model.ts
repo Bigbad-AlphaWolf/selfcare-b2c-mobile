@@ -17,6 +17,7 @@ export interface OperationExtras {
   recipientFromContact?: boolean;
   purchaseType?: string;
   forSelf?: boolean;
+	viaQr?: boolean;
 
   userHasNoOmAccount?: boolean;
   amount?: any;

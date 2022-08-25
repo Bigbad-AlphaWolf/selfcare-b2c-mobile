@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
 import { of, from, Observable } from 'rxjs';
-import { Contacts } from '@ionic-native/contacts';
 import {
   map,
   catchError,
   debounceTime,
-  distinctUntilChanged,
   switchMap,
 } from 'rxjs/operators';
 import { formatPhoneNumber, REGEX_NUMBER_OM } from 'src/shared';
-import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { ContactOem } from 'src/app/models/contact-oem.model';
 import { getCountryInfos } from 'src/app/utils/utils';
 declare var navigator: any;
@@ -19,48 +16,7 @@ declare var navigator: any;
 })
 export class ContactsService {
   public static allContacts: any[];
-	previousSearchContactResult: ContactOem[] = [];
-  mockContactsProcessed = [
-    {
-      name: {
-        familyName: 'KEBE',
-        givenName: 'Papa Abdoulaye',
-        formatted: 'Papa Abdoulaye KEBE',
-      },
-      phoneNumbers: ['776148081'],
-    },
-    {
-      name: {
-        familyName: 'DIOP',
-        givenName: 'Abdoul Karim',
-        formatted: 'Abdoul Karim DIOP',
-      },
-      phoneNumbers: ['781210942'],
-    },
-    {
-      name: {
-        familyName: 'KEBE',
-        givenName: 'Aminata',
-        formatted: 'Aminata KEBE',
-      },
-      phoneNumbers: ['777559155', '775109027'],
-    },
-  ];
-  mockContacts = [
-    {
-      name: { familyName: 'string', formatted: 'TEST 1', givenName: 'string' },
-      phoneNumbers: [{ value: '781210942' }],
-    },
-    {
-      name: { familyName: 'string', formatted: 'TEST 2', givenName: 'string' },
-      phoneNumbers: [{ value: '776148081' }],
-    },
-    {
-      name: { familyName: 'string', formatted: 'TEST 3', givenName: 'string' },
-      phoneNumbers: [{ value: '781040956' }],
-    },
-  ];
-  constructor(private contacts: Contacts, private diagnostic: Diagnostic) {}
+  constructor() {}
 
   getAllContacts(refresh?: boolean): Observable<any> {
     if (ContactsService.allContacts && !refresh) {
@@ -68,14 +24,13 @@ export class ContactsService {
     }
     return from(this.getAll()).pipe(
       map((contacts: any[]) => {
-        console.log('our inital result', contacts);
         const result = contacts.map(
-          ({ displayName, phoneNumbers, thumbnail, ...left }) => {
+          ({ displayName, phoneNumbers, thumbnail }) => {
             if (phoneNumbers) {
-              const numbers = phoneNumbers.map(element => {
+              let numbers = phoneNumbers.map(element => {
                 return formatPhoneNumber(element.normalizedNumber);
               });
-              //console.log({ displayName, numbers, thumbnail });
+							numbers = [...new Set(numbers)];
               return { displayName, numbers, thumbnail };
             }
             return { displayName, thumbnail, numbers: [] };
@@ -86,7 +41,7 @@ export class ContactsService {
 
         return result;
       }),
-      catchError(err => {
+      catchError(() => {
         if (ContactsService.allContacts) return of(ContactsService.allContacts);
         return of([]);
       })
@@ -94,7 +49,7 @@ export class ContactsService {
   }
 
   getAll() {
-    return new Promise<any[]>((resolve, reject) => {
+    return new Promise<any[]>((resolve) => {
       navigator.contactsPhoneNumbers.list((contacts: any[]) => {
         //console.log(contacts);
         resolve(contacts);
@@ -155,5 +110,13 @@ export class ContactsService {
         .join('');
     const searchExp = new RegExp(regex, "gi");
     return searchExp.test(text);
+	}
+
+	findContact(msisdn: string): ContactOem {
+		return ContactsService.allContacts.find( (contact: ContactOem) => {
+			return contact.numbers.find((number) => {
+				return number.includes(msisdn);
+			});
+		} )
 	}
 }
