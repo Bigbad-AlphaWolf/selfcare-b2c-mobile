@@ -9,7 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
 import { of, timer } from 'rxjs';
-import { catchError, delay, finalize, takeUntil, tap } from 'rxjs/operators';
+import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
 import {
   PROFILE_TYPE_PREPAID,
   PromoBoosterActive,
@@ -55,6 +55,7 @@ import { QrScannerService } from 'src/app/services/qr-scanner-service/qr-scanner
 import { IlliflexService } from 'src/app/services/illiflex-service/illiflex.service';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
 import { LocalStorageService } from 'src/app/services/localStorage-service/local-storage.service';
+import { DemandeAnnulationTransfertModel } from 'src/app/models/demande-annulation-transfert.model';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -153,7 +154,8 @@ export class DashboardHomeComponent implements OnInit {
   hasPromoBooster: PromoBoosterActive = null;
   hasPromoPlanActive: OfferPlanActive = null;
   listBanniere: BannierePubModel[] = [];
-
+	listAnnulationTrx: DemandeAnnulationTransfertModel[] = [];
+	isFechingListAnnulationTrx: boolean;
   constructor(
     private dashboardService: DashboardService,
     private authService: AuthenticationService,
@@ -174,7 +176,8 @@ export class DashboardHomeComponent implements OnInit {
     private qrScan: QrScannerService,
     private illiflexService: IlliflexService,
     private operationService: OperationService,
-    private storageService: LocalStorageService
+    private storageService: LocalStorageService,
+    private bottomSheetService: BottomSheetService,
   ) {}
 
   ngOnInit() {
@@ -195,6 +198,7 @@ export class DashboardHomeComponent implements OnInit {
     // this.getUserActiveBonPlans();
     this.getActivePromoBooster();
     this.fetchUserStories();
+		this.fetchOMMarchandLiteAnnulationTrx();
     this.banniereService.getListBanniereByFormuleByZone().subscribe((res: any) => {
       this.listBanniere = res;
     });
@@ -210,6 +214,25 @@ export class DashboardHomeComponent implements OnInit {
     this.operationService.getServicesByFormule(HUB_ACTIONS.FACTURES).subscribe();
     this.operationService.getServicesByFormule(null, true).subscribe();
   }
+
+	fetchOMMarchandLiteAnnulationTrx() {
+		this.isFechingListAnnulationTrx = true;
+		this.omService.getAnnulationTrxMarchandLite().subscribe(((res: any) => {
+			this.isFechingListAnnulationTrx = false;
+			this.listAnnulationTrx = res?.content?.data?.content;
+		}),
+		(err) => {
+			this.isFechingListAnnulationTrx = false;
+		})
+	}
+
+	async goToListAnnulationTrxMarchandLite() {
+		const modal = await	this.bottomSheetService.openListeAnnulationTrxForMLite(this.omService.mapToHistorikAchat(this.listAnnulationTrx));
+		modal.present();
+		modal.onDidDismiss().then((res: any) => {
+			this.fetchOMMarchandLiteAnnulationTrx();
+    });
+	}
 
   fetchUserStories() {
     this.isLoadingStories = true;

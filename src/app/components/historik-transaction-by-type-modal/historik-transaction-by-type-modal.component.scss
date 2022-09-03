@@ -3,4 +3,11 @@
 
 .oem-bottomsheet-container{
     overflow-y: auto;
+		position: relative;
+		.close-icon {
+			position: absolute;
+			right: 10px;
+			top: 10px;
+			width: 30px;
+		}
 }

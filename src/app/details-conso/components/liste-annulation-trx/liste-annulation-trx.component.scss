@@ -1,0 +1,32 @@
+@import 'src/app/app';
+@import "src/app/styles/bottomsheet.style";
+
+:host {
+  width: 100%;
+}
+
+.historic-transaction-page {
+  padding: 15px;
+	.list-annulation {
+		.label {
+			display: block;
+		}
+		.list {
+			background-color: $white;
+			border-radius: 10px;
+			padding: 30px 15px;
+			margin-top: 20px;
+			display: flex;
+			flex-direction: column;
+				app-transaction-item {
+					&:not(:first-child) {
+						padding-top: 15px;
+					}
+					&:not(:last-child) {
+						border-bottom: solid 2px $silver;
+						padding-bottom: 15px;
+					}
+				}
+		}
+	}
+}

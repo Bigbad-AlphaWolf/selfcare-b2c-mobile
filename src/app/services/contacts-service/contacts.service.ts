@@ -113,10 +113,10 @@ export class ContactsService {
 	}
 
 	findContact(msisdn: string): ContactOem {
-		return ContactsService.allContacts.find( (contact: ContactOem) => {
+		return ContactsService.allContacts?.length ? ContactsService.allContacts.find( (contact: ContactOem) => {
 			return contact.numbers.find((number) => {
 				return number.includes(msisdn);
 			});
-		} )
+		} ) : null;
 	}
 }

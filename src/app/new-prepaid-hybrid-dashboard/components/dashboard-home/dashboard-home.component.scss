@@ -126,6 +126,19 @@
           }
         }
       }
+			.om-transactions-list-cancel {
+				border-radius: 6px;
+				background-color: rgba(8, 94, 189, 0.2);
+				display: flex;
+				justify-content: space-between;
+				padding: 5px;
+				margin: 15px;
+				height: 40px;
+				align-items: center;
+				.text {
+					font-size: 16px;
+				}
+			}
     }
     .actions-cards-bloc {
       display: flex;

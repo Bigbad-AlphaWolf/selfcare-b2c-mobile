@@ -1,4 +1,13 @@
 <div class="historic-transaction-page">
+	<div *ngIf="!isFetchingListAnnulationTrx && listAnnulationTrx?.length" class="list-annulation">
+		<span class="label">
+			Demande(s) d'annulation
+		</span>
+		<div class="list">
+			<app-transaction-item *ngFor="let item of listAnnulationTrx" [transaction]="item" [typeTransaction]="'ANNULATION_TRX'" (onClick)="openConfirmModal(item)">
+			</app-transaction-item>
+		</div>
+	</div>
   <ng-container *ngIf="loadingTransactions else transactionsList">
     <div class="loader-container">
       <ion-skeleton-text animated class="header-loader"></ion-skeleton-text>
