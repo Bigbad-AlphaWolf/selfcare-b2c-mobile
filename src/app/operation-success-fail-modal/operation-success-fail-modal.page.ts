@@ -206,13 +206,14 @@ export class OperationSuccessFailModalPage implements OnInit {
       if (response.data && response.data.success) {
         await this.modalController.dismiss();
         const hasOMStatusFull = response?.data?.hasOMStatusFull;
-        this.openBlockTxnModalSuccess(hasOMStatusFull);
+        const isMarchandLite = response?.data?.annulationResponse?.marchandLite;
+        this.openBlockTxnModalSuccess(hasOMStatusFull, isMarchandLite);
       }
     });
     return await modal.present();
   }
 
-  async openBlockTxnModalSuccess(userHasOmStatusFull?: boolean) {
+  async openBlockTxnModalSuccess(userHasOmStatusFull?: boolean, isMLite?: boolean) {
     const modal = await this.modalController.create({
       component: BlockTransferSuccessPopupComponent,
       cssClass: 'success-or-fail-modal',
@@ -220,6 +221,7 @@ export class OperationSuccessFailModalPage implements OnInit {
       componentProps: {
         transactionToBlock: this.historyTransactionItem,
         isUserOMFull: userHasOmStatusFull,
+				isMLite
       },
     });
     return await modal.present();
