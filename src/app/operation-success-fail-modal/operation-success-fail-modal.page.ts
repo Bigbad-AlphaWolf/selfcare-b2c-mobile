@@ -248,6 +248,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   goToPage() {
     switch (this.purchaseType) {
       case OPERATION_TYPE_PASS_ALLO:
+      case OPERATION_ABONNEMENT_WIDO:
         this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       case OPERATION_TYPE_PASS_ILLIMIX:

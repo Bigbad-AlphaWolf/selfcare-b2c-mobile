@@ -16,9 +16,6 @@ import {
 import { PassIllimixService } from '../../services/pass-illimix-service/pass-illimix.service';
 import { BoosterService } from 'src/app/services/booster.service';
 import { BoosterModel, BoosterTrigger } from 'src/app/models/booster.model';
-import { catchError, tap } from 'rxjs/operators';
-import { throwError } from 'rxjs';
-import { PassAbonnementWidoService } from 'src/app/services/pass-abonnement-wido-service /pass-abonnement-wido.service';
 
 @Component({
   selector: 'app-liste-pass',

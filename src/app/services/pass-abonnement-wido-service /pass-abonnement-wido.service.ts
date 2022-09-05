@@ -13,6 +13,8 @@ const passAbonnementWidoEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/wi
 const suscriptionWidoEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/widotv/v1/subscribe`;
 const encryptionKeyEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/widotv/v1/private-key`;
 
+const passPPVWidoEndpoint = `${SERVER_API_URL}/${SERVICES_SERVICE}/api/widotv/v1/ppv-list`;
+
 enum PAYMENT_MODE_WIDO {
 	AIRTIME = "AIRTIME",
 	ORANGEMONEY = "ORANGEMONEY"
@@ -27,13 +29,23 @@ export class PassAbonnementWidoService {
     return this.http.get(`${passAbonnementWidoEndpoint}/${recipientMsisdn}`);
   }
 
-  suscribeToWido(data: { msisdn: string; packId: number }) {
+  getListPassPPVWido(recipientMsisdn: string) {
+    return this.http.get(`${passPPVWidoEndpoint}/${recipientMsisdn}`);
+  }
+
+  suscribeToWido(data: { msisdn: string; packId: number, contentId?: number}) {
+		let endpoint = `${suscriptionWidoEndpoint}/${data?.msisdn}`;
+		const payload = {
+			paymentMode: PAYMENT_MODE_WIDO.AIRTIME,
+			packId: data.packId
+		};
+		if(data?.contentId) {
+			payload['contentId'] = data?.contentId;
+			endpoint += '?subsciptionTypes=PPV';
+		}
     return this.http.post(
-      `${suscriptionWidoEndpoint}/${data?.msisdn}`,
-      {
-				paymentMode: PAYMENT_MODE_WIDO.AIRTIME,
-				packId: data.packId
-			}
+      `${endpoint}`,
+      payload
     ).pipe(catchError((err) => {
 			if(err) return throwError({
 				error : {
@@ -43,7 +55,14 @@ export class PassAbonnementWidoService {
 		} ));
   }
 
-  suscribeToWidoByOMoney(data: { msisdn: string; packId: number,  omPin: string }) {
+
+  suscribeToWidoByOMoney(data: { msisdn: string; packId: number,  omPin: string, contentId?: number }) {
+		const payload = {omPin: data?.omPin , paymentMode: PAYMENT_MODE_WIDO.ORANGEMONEY, packId: data.packId};
+		let endpoint = `${suscriptionWidoEndpoint}/${data?.msisdn}`;
+		if(data?.contentId) {
+			payload['contentId'] = data?.contentId;
+			endpoint += '?subsciptionTypes=PPV';
+		}
     return this.getEncryptionKey().pipe(
 			switchMap((res: {value: string, lastUpdate: any}) => {
 				console.log('pin', data.omPin);
@@ -51,8 +70,8 @@ export class PassAbonnementWidoService {
 				console.log('pinEncrypted', data.omPin);
 
 				return this.http.post(
-					`${suscriptionWidoEndpoint}/${data?.msisdn}`,
-					{omPin: data?.omPin , paymentMode: PAYMENT_MODE_WIDO.ORANGEMONEY, packId: data.packId}
+					`${endpoint}`,
+					payload
 				);
 			}),
 			catchError((err) => {

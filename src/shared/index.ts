@@ -311,6 +311,9 @@ export interface PassInfoModel {
   typePassInternet: any;
   price_plan_index: number;
   price_plan_index_om: number;
+	contentId?: number;
+	thumbnailLandscape?: string;
+	thumbnailPortrait?: string;
 }
 
 export interface PromoPassModel {
