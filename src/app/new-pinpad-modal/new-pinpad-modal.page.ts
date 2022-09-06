@@ -588,6 +588,7 @@ export class NewPinpadModalPage implements OnInit {
               pin: this.orangeMoneyService.decryptOmPin(omUser.sequence.split(''), pin),
               price_plan_index: this.buyPassPayload.pass.price_plan_index_om,
               amount: this.buyPassPayload.pass.tarif,
+              contentId: this.buyPassPayload.pass.contentId
             };
 						this.suscribeWidoByOMoney(payloadWido, isFromFaceId);
 						break;
@@ -976,6 +977,7 @@ export class NewPinpadModalPage implements OnInit {
       service_version: OM_SERVICE_VERSION,
       amount: params.amount,
       uuid: this.uuid,
+			contentId: params?.contentId
     };
     const logInfos: FollowOemlogPurchaseInfos = {
       sender: db.msisdn,
@@ -986,7 +988,7 @@ export class NewPinpadModalPage implements OnInit {
       withTouchID,
     };
 
-    this.abonnementwido.suscribeToWidoByOMoney({msisdn: buyPassPayload.msisdn2, packId: +buyPassPayload.price_plan_index, omPin: buyPassPayload.pin}).subscribe(
+    this.abonnementwido.suscribeToWidoByOMoney({msisdn: buyPassPayload.msisdn2, packId: +buyPassPayload.price_plan_index, contentId:+buyPassPayload?.contentId,  omPin: buyPassPayload.pin}).subscribe(
       (res: any) => {
         this.processResult(res, db, logInfos, buyPassPayload);
       },

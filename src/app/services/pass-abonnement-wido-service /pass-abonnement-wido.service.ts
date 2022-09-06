@@ -66,7 +66,7 @@ export class PassAbonnementWidoService {
     return this.getEncryptionKey().pipe(
 			switchMap((res: {value: string, lastUpdate: any}) => {
 				console.log('pin', data.omPin);
-				data.omPin = this.getEncryptionAESUsingKey(data.omPin, res.value);
+				payload.omPin = this.getEncryptionAESUsingKey(data.omPin, res.value);
 				console.log('pinEncrypted', data.omPin);
 
 				return this.http.post(

@@ -148,6 +148,7 @@ export interface OmBuyIllimixModel {
   canal?: string;
   amount: number;
   uuid: string;
+	contentId?: number;
 }
 
 export interface TransferOrangeMoneyModel {
@@ -213,6 +214,7 @@ export interface BuyPassPayload {
   price_plan_index: string;
   canalPromotion?: string;
   amount: number;
+  contentId?: number;
 }
 
 export interface MerchantPaymentModel {
