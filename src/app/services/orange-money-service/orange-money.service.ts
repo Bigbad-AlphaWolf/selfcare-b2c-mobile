@@ -595,7 +595,7 @@ export class OrangeMoneyService {
       allNumbers.push(mainPhoneNumber);
       return new Observable((obs) => {
         this.dashboardService
-          .getAttachedNumbers()
+          .attachedNumbers()
           .pipe(
             catchError((err: any) => {
               return of([]);
