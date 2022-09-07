@@ -1,7 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
-      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    <ion-buttons slot="start">
+      <ion-back-button mode="md" defaultHref="/" class="oem-back-button">
+        <img src="/assets/images/arrow-left.png" alt="icon" />
+      </ion-back-button>
     </ion-buttons>
     <ion-title>
       <span class="title1">
@@ -28,13 +30,27 @@
     <div class="spinner-block" *ngIf="loadingPass">
       <mat-spinner mode="indeterminate" [diameter]="50"></mat-spinner>
     </div>
-    <div class="error scb-text-red-error" *ngIf="errorLoadingPass" (click)="loadPass()">Erreur lors du chargement. Récatualisez</div>
+    <div class="error scb-text-red-error" *ngIf="errorLoadingPass" (click)="loadPass()">Erreur lors du chargement. Réactualisez</div>
+		<div class="tab-header" *ngIf="!loadingPass && !loadingPassPPV && serviceUsage?.code === OPERATION_ABONNEMENT_WIDO">
+			<div
+				*ngFor="let cat of categories"
+				(click)="changeCategory(cat?.value)"
+				class="tab-header-item"
+				[ngClass]="{  'selected' : cat?.value === selectedCategory} "
+			>
+				<span class="scb-text-light-black"> {{ cat?.label }}</span>
+			</div>
+		</div>
     <div class="pass-list" *ngIf="listPass?.length">
-			<ng-container *ngIf="serviceUsage.code !== OPERATION_ABONNEMENT_WIDO">
+			<ng-container *ngIf="serviceUsage?.code !== OPERATION_ABONNEMENT_WIDO">
 				<app-pass-usage-item [serviceUsage]="serviceUsage" [passUsage]="pass" (click)="choosePass(pass)" *ngFor="let pass of listPass"></app-pass-usage-item>
 			</ng-container>
-			<ng-container *ngIf="serviceUsage.code === OPERATION_ABONNEMENT_WIDO">
+
+			<ng-container *ngIf="serviceUsage?.code === OPERATION_ABONNEMENT_WIDO && selectedCategory === 'ABONNEMENT' ">
 				<app-item-pass-wido *ngFor="let pass of listPass"	[passWido]="pass"	(selectPass)="choosePass($event)" ></app-item-pass-wido>
+			</ng-container>
+			<ng-container *ngIf="!loadingPassPPV && serviceUsage?.code === OPERATION_ABONNEMENT_WIDO && selectedCategory === 'PPV'">
+				<app-item-pass-wido *ngFor="let pass of listPassPPV"	[passWido]="pass"	(selectPass)="choosePass($event)" ></app-item-pass-wido>
 			</ng-container>
     </div>
   </div>

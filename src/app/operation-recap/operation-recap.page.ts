@@ -418,7 +418,7 @@ export class OperationRecapPage implements OnInit {
 
   suscribeToWido(recipientMsisdn: string, ppi: string, logInfos: any) {
     this.passAbonnementWido
-      .suscribeToWido({ msisdn: recipientMsisdn, packId: +ppi })
+      .suscribeToWido({ msisdn: recipientMsisdn, packId: +ppi, contentId: +this.passChoosen?.contentId })
       .pipe(
         tap(res => {
           this.transactionSuccessful({ code: '0' }, logInfos);
