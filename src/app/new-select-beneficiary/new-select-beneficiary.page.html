@@ -13,7 +13,7 @@
 
 	<div class="page-content">
 		<ion-item class="input-field" lines="none" type="text" >
-			<ion-input (ionFocus)="inputFocused = true" (ionBlur)="inputFocused = false" placeholder="Numéro, Nom" (ionChange)="searchTerm$.next($event.target.value.trim()); searchValue = $event.target.value.trim()" clearInput></ion-input>
+			<ion-input [(ngModel)]="searchValue" (ionFocus)="inputFocused = true" (ionBlur)="inputFocused = false" placeholder="Numéro, Nom" (ionChange)="onValueChange($event)" clearInput></ion-input>
 		</ion-item>
 
 		<div *ngIf="!inputFocused && !searchValue?.length" class="my-numbers">

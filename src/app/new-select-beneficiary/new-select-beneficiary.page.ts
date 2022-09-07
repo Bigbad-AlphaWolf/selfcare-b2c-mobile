@@ -3,7 +3,7 @@ import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { ModalController } from '@ionic/angular';
 import { from, of, Subject, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { OPERATION_TRANSFER_OM, REGEX_NUMBER_ALLOWED_COUNTRY_CODE_LONG, REGEX_NUMBER_ALLOWED_COUNTRY_CODE_SHORT, REGEX_NUMBER_OM } from 'src/shared';
+import { OPERATION_TRANSFER_OM, REGEX_DIGIT, REGEX_NUMBER_ALLOWED_COUNTRY_CODE_LONG, REGEX_NUMBER_ALLOWED_COUNTRY_CODE_SHORT, REGEX_NUMBER_OM } from 'src/shared';
 import { NoOmAccountModalComponent } from 'src/shared/no-om-account-modal/no-om-account-modal.component';
 import { PermissionSettingsPopupComponent } from '../components/permission-settings-popup/permission-settings-popup.component';
 import { ContactOem } from '../models/contact-oem.model';
@@ -18,7 +18,7 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
 import { RecentsService } from '../services/recents-service/recents.service';
 import { TRANSFER_OM_INTERNATIONAL_COUNTRIES } from '../utils/constants';
 import { OPERATION_TYPE_INTERNATIONAL_TRANSFER } from '../utils/operations.constants';
-import { getCountryInfos } from '../utils/utils';
+import { getCountryInfos, replaceWhiteSpaceWithCaracter } from '../utils/utils';
 
 
 @Component( {
@@ -162,7 +162,7 @@ export class NewSelectBeneficiaryPage implements OnInit {
 	}
 
 	confirm() {
-		const item: ContactOem = {displayName: '', formatedPhoneNumber: this.searchValue, country: getCountryInfos(this.searchValue)}
+		const [item] = this.listFilteredContacts;
 		this.processInfos(item);
 	}
 
@@ -320,4 +320,10 @@ export class NewSelectBeneficiaryPage implements OnInit {
     return modal.present();
   }
 
+	onValueChange(event) {
+		const typedValue = event.target.value.trim();
+		const value = REGEX_DIGIT.test(typedValue) ? replaceWhiteSpaceWithCaracter(event.target.value.trim(), '') : typedValue;
+		this.searchTerm$.next(value);
+		this.searchValue = value;
+	}
 }

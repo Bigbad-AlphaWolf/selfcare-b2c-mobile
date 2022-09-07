@@ -108,3 +108,7 @@ export function getCountryInfos(phoneNumber: string) {
 export function isExternallURL(url: string) {
 	return url.startsWith("https://") || url.startsWith("http://")
 }
+
+export function replaceWhiteSpaceWithCaracter(textWithSpace: string, caracterReplacement: string): string {
+  return textWithSpace.replace(/[^a-zA-Z0-9.]/g, caracterReplacement);
+}

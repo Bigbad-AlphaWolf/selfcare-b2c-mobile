@@ -15,7 +15,8 @@
           matInput
           type="number"
           maxlength="20"
-          (keyup)="onInputChange(numberInput.value)"
+					[(ngModel)]="inputWoyofalNumber"
+          (change)="onInputChange(numberInput.value)"
         />
       </mat-form-field>
     </form>
