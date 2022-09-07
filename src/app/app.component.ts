@@ -311,8 +311,6 @@ export class AppComponent {
 						hasResponse = true;
 						clearTimeout(timeOutID);
 						toast.dismiss();
-						toast = await this.createToastErrorMsg();
-						this.toastConnected()
 					}).catch(async (err) => {
 						console.log('err', err);
 						hasResponse = true;
@@ -330,17 +328,6 @@ export class AppComponent {
       message: "Veuillez-vous connecter pour avoir vos données à jour et effectuer des transactions.",
       position: 'top'
     });
-  }
-
-	async toastConnected() {
-    const toast = await this.toastController.create({
-      header: 'Vous êtes à nouveau connecté',
-      message: "Vos données sont à jour.",
-      position: 'top',
-			duration: 3000
-    });
-
-		return toast.present()
   }
 
 }

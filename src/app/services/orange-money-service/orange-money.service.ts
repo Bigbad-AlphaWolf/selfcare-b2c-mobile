@@ -88,6 +88,8 @@ import { ValidateChallengeOMOEM } from 'src/app/models/challenge-answers-om-oem.
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
 import { PAYMENT_BILLS_CATEGORY } from 'src/app/models/bill-payment.model';
 import { LocalStorageService } from '../localStorage-service/local-storage.service';
+import { DemandeAnnulationTransfertModel } from 'src/app/models/demande-annulation-transfert.model';
+import { PurchaseModel } from 'src/app/models/purchase.model';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
@@ -131,8 +133,10 @@ const GET_CARD_TO_WALLET_BANK_URL = `${SERVER_API_URL}/${OM_SERVICE}/api/ekalpay
 const GET_BALANCE_URL = `${SERVER_API_URL}/${OM_SERVICE}/api/ekalpay/v1/account`;
 const GET_OM_TRANSACTIONS_URL = `${SERVER_API_URL}/${OM_SERVICE}/api/payment/transactions`;
 
-// ekalpay endpoints
+// marchand lite endpoints
 const get_card_marchand_endpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/check-card`;
+const get_marchand_lite_annulations_endpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/cancelation-requests`;
+const post_confirm_marchand_lite_annulations_endpoint = `${SERVER_API_URL}/${OM_SERVICE}/api/transfers/confirm-cancelation`;
 
 const OM_STATUS_KEY = 'USER_OM_STATUS';
 
@@ -301,6 +305,21 @@ export class OrangeMoneyService {
 
   checkMarchandLiteCarteInfos(idCard: string) {
     return this.http.get(`${get_card_marchand_endpoint}/${idCard}`);
+  }
+
+  getAnnulationTrxMarchandLite() {
+    return this.http.get(`${get_marchand_lite_annulations_endpoint}/${this.dashboardService.getCurrentPhoneNumber()}?page=0&pageSize=100`);
+  }
+
+	mapToHistorikAchat(listAnnulationTrx: DemandeAnnulationTransfertModel[]) {
+		return listAnnulationTrx.map((elt) => {
+			const eltMapped: PurchaseModel = {...elt, msisdnReceiver: elt.msisdn, amount: elt?.montant, operationDate: elt.date, name: elt?.titre }
+			return eltMapped;
+		});
+	}
+
+  validateAnnulationTrxMarchandLite(data: { txnId: string, confirm: number }) {
+    return this.http.post(`${post_confirm_marchand_lite_annulations_endpoint}`, data);
   }
 
   AchatCredit(achatCreditData: OmBuyCreditModel, confirmPayload?) {

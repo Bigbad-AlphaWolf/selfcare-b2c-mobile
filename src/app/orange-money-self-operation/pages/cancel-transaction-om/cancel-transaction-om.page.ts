@@ -193,7 +193,7 @@ export class CancelTransactionOmPage implements OnInit {
   async selectTransaction() {
     const modal = await this.modalController.create({
       component: HistorikTransactionByTypeModalComponent,
-      cssClass: 'select-recipient-modal',
+      //cssClass: 'select-recipient-modal',
       componentProps: {
         typeTransaction: 'OM',
       },

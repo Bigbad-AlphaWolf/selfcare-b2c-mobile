@@ -92,6 +92,8 @@ import {FavoriteXeweulComponent} from '../app/components/counter/favorite-xeweul
 import { TransactionItemComponent } from './transaction-item/transaction-item.component';
 import { TransactionFinalityModalComponent } from './transaction-finality-modal/transaction-finality-modal.component';
 import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
+import { ListeAnnulationTrxComponent } from 'src/app/details-conso/components/liste-annulation-trx/liste-annulation-trx.component';
+import { AnnulationSuccessPopupComponent } from 'src/app/details-conso/components/annulation-success-popup/annulation-success-popup.component';
 
 @NgModule({
   declarations: [
@@ -169,7 +171,9 @@ import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number
     FavoriteServiceCountersComponent,
     FavoriteCounterNameModalComponent,
     TransactionItemComponent,
-    TransactionFinalityModalComponent
+    TransactionFinalityModalComponent,
+		ListeAnnulationTrxComponent,
+		AnnulationSuccessPopupComponent
   ],
   imports: [CommonModule, IonicImageLoader, RouterModule, ComponentsModule, MaterialComponentsModule, PipesModule],
   entryComponents: [
@@ -296,7 +300,9 @@ import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number
     FavoriteServiceCountersComponent,
     FavoriteCounterNameModalComponent,
     TransactionItemComponent,
-    TransactionFinalityModalComponent
+    TransactionFinalityModalComponent,
+		ListeAnnulationTrxComponent,
+		AnnulationSuccessPopupComponent
   ],
   providers: [Contacts, SocialSharing, OpenNativeSettings, {provide: MAT_BOTTOM_SHEET_DATA, useValue: {}}],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
