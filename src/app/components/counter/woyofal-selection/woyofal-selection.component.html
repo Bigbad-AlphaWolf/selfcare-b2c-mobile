@@ -15,8 +15,7 @@
           matInput
           type="number"
           maxlength="20"
-					[(ngModel)]="inputWoyofalNumber"
-          (change)="onInputChange(numberInput.value)"
+          (input)="onInputChange(numberInput.value)"
         />
       </mat-form-field>
     </form>
@@ -49,7 +48,7 @@
   </div>
 
   <div class="btn-continue">
-    <button mat-button [disabled]="isProcessing || !woyofalNumberIsValid" (click)="onContinue()">
+    <button mat-button [disabled]="isProcessing || !isValid" (click)="onContinue()">
       Continuer
     </button>
     <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
