@@ -16,10 +16,11 @@ import { takeUntil, catchError, switchMap, take, tap } from 'rxjs/operators';
 import { PRO_MOBILE_ERROR_CODE, FORGOT_PWD_PAGE_URL, REGEX_NUMBER_OM, parsedMsisdn } from 'src/shared';
 import { ModalController, NavController, Platform } from '@ionic/angular';
 import { hash53 } from '../dashboard';
-import { MSISDN_RECUPERATION_TIMEOUT } from '../register';
+import { captchaSiteKey, MSISDN_RECUPERATION_TIMEOUT } from '../register';
 import { OtpService } from '../services/otp-service/otp.service';
 import { RattachByOtpCodeComponent } from '../pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { ReCaptchaV3Service } from 'ngx-captcha';
 
 @Component({
   selector: 'app-new-registration',
@@ -48,7 +49,9 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
   hideRefresh: boolean;
   isHmacValid: boolean;
   form: FormGroup;
-
+	public action = 'login';
+  public token?: string;
+  public recaptchaScore = 0;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -60,7 +63,8 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
     private navController: NavController,
     private otpService: OtpService,
     public platform: Platform,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+		private reCaptchaV3Service: ReCaptchaV3Service
   ) {}
 
   ngOnDestroy() {}
@@ -133,18 +137,41 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
 
   checkNumber(hmacFromOTP?: string) {
     this.checkingNumber = true;
+		this.showErrMessage = false;
     const payload = { msisdn: this.phoneNumber, hmac: this.hmac };
     if (!hmacFromOTP && (!this.phoneNumber || parsedMsisdn(this.phoneNumber) !== parsedMsisdn(this.form.get('msisdn').value))) {
-      this.otpService
-        .generateOTPCode(this.form.get('msisdn').value)
+      this.reCaptchaV3Service.execute(
+				captchaSiteKey,
+				this.action,
+				tokenResp => {
+					this.token = tokenResp;
+					// call backend with Captcha  Token
+					this.otpService
+        .generateOTPCaptchaCode(this.form.get('msisdn').value, this.token)
         .pipe(
           tap(codeSent => {
             this.checkingNumber = false;
             this.openTypeOtpModal(parsedMsisdn(this.form.get('msisdn').value));
-          })
+          }),
+					catchError((err) => {
+						this.checkingNumber = false;
+						this.showErrMessage = true;
+						if(err?.error?.title) {
+							this.errorMsg = err?.error?.title;
+						} else {
+							this.errorMsg = "Désolé !!! Impossible d'accéder à votre demande pour le moment. Veuillez réessayer plus tard. Merci";
+						}
+						return throwError(err);
+					})
         )
         .subscribe();
-      return;
+
+				},
+				{
+					useGlobalDomain: false
+				}
+			);
+			return;
     }
     if (hmacFromOTP) {
       this.phoneNumber = payload.msisdn = parsedMsisdn(this.form.get('msisdn').value);

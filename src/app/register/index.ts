@@ -1,3 +1,4 @@
+import { environment } from 'src/environments/environment';
 import {
   REGEX_NUMBER,
   REGEX_PASSWORD2,
@@ -5,6 +6,7 @@ import {
   REGEX_DIGIT,
   REGEX_NAME
 } from 'src/shared';
+const { GOOGLE_CAPTCHA_SITE_KEY } = environment;
 
 export const registrationSteps = {
   PHONE_NUMBER: {
@@ -162,7 +164,7 @@ export function isOTPValid(code: string) {
   return String(code).length === 6;
 }
 
-export const captchaSiteKey = '6Lee1KAUAAAAAIwaBjYgxXgKgiAauUO3mQcyuVh6';
+export const captchaSiteKey = GOOGLE_CAPTCHA_SITE_KEY;
 
 export function userFriendlyTime(seconds: number): string {
   let hh: number;

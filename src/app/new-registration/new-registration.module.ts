@@ -11,6 +11,7 @@ import {OpenNativeSettings} from '@ionic-native/open-native-settings/ngx';
 import {MsisdnAssistanceModalComponent} from './components/msisdn-assistance-modal/msisdn-assistance-modal.component';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {TypePhoneNumberManuallyComponent} from './components/type-phone-number-manually/type-phone-number-manually.component';
+import { NgxCaptchaModule } from 'ngx-captcha';
 
 const routes: Routes = [
   {
@@ -20,7 +21,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, SharedModule, MatBottomSheetModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, FormsModule, IonicModule, SharedModule, MatBottomSheetModule,NgxCaptchaModule, RouterModule.forChild(routes)],
   declarations: [NewRegistrationPage, MsisdnAssistanceModalComponent, TypePhoneNumberManuallyComponent],
   entryComponents: [MsisdnAssistanceModalComponent],
   providers: [OpenNativeSettings]
