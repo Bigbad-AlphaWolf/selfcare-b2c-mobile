@@ -21,6 +21,7 @@ export class WoyofalSelectionComponent implements OnInit {
   isProcessing: boolean = false;
   inputWoyofalNumber: string = '';
   woyofals$: Observable<any[]>;
+	isValid: boolean;
   constructor(
     private bsService: BottomSheetService,
     private omService: OrangeMoneyService,
@@ -74,14 +75,17 @@ export class WoyofalSelectionComponent implements OnInit {
   onInputChange(woyofalNumber) {
 		woyofalNumber = replaceWhiteSpaceWithCaracter(woyofalNumber, '');
     this.inputWoyofalNumber = woyofalNumber;
+		console.log('change');
+
+		this.isValid = this.woyofalNumberIsValid();
   }
 
-  get woyofalNumberIsValid() {
-    return (
+  woyofalNumberIsValid() {
+  	return this.isValid =
       this.inputWoyofalNumber &&
       this.inputWoyofalNumber.length >= 11 &&
       /^\d+$/.test(this.inputWoyofalNumber)
-    );
+    ;
   }
 
   checkOmAccount() {
