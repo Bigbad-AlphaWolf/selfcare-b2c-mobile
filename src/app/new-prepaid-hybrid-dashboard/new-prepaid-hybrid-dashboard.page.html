@@ -1,6 +1,6 @@
 <swiper [config]="swiperConfig" (slideChange)="onSwipe($event)" #swiper>
   <ng-template swiperSlide>
-    <app-dashboard-home #dashHome (seeDetails)="setSlide(1)"></app-dashboard-home>
+    <app-dashboard-home #dashHome (seeDetails)="setSlide(1)" (goToSlide)="goTo($event)"></app-dashboard-home>
   </ng-template>
   <ng-template swiperSlide>
     <app-new-suivi-conso></app-new-suivi-conso>
