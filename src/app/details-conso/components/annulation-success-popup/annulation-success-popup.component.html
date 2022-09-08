@@ -3,6 +3,7 @@
     <img src="assets/images/confirmation.png" class="face-id-icon" alt="">
   </div>
   <div class="title"> Demande Annulation</div>
-  <div class="text scb-text-gray">L'annulation a bien été effectué. Les fonds seront crédités sur le compte Orange Money du client</div>
+  <div *ngIf="acceptAnnulation" class="text scb-text-gray">L'annulation a bien été effectué. Les fonds seront crédités sur le compte Orange Money du client</div>
+  <div *ngIf="!acceptAnnulation" class="text scb-text-gray">L'annulation a bien été rejetée. <br /> Merci</div>
 	<div class="ne-plus-demander scb-text-orange" (click)="close()">Fermer</div>
 </div>

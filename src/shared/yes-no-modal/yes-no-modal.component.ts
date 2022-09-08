@@ -31,7 +31,7 @@ export class YesNoModalComponent implements OnInit {
 			this.omService.validateAnnulationTrxMarchandLite({txnId: this.transaction?.txnid, confirm: +yesOrNo}).subscribe((res) => {
 				console.log('res', res);
 				this.isLoading = false;
-				this.successModalAnnulationTrxLite();
+				this.successModalAnnulationTrxLite(yesOrNo);
 			}, (err) => {
 				this.isLoading = false;
 				this.hasErrorMsg = 'Votre requête ne peux être traitée pour le moment. Veuillez réessayer.'
@@ -46,7 +46,7 @@ export class YesNoModalComponent implements OnInit {
 
   }
 
-	async successModalAnnulationTrxLite() {
+	async successModalAnnulationTrxLite(accept: boolean) {
 		this.modal.dismiss({
 			'continue': true
 		})
@@ -54,6 +54,9 @@ export class YesNoModalComponent implements OnInit {
       component: AnnulationSuccessPopupComponent,
       cssClass: 'select-recipient-modal',
       backdropDismiss: true,
+			componentProps: {
+				acceptAnnulation: accept
+			}
     });
     modalSuccess.onDidDismiss().then(() => {
 		});
