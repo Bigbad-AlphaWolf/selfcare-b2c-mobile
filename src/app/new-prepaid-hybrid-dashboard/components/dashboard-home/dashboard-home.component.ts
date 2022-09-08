@@ -56,8 +56,18 @@ import { IlliflexService } from 'src/app/services/illiflex-service/illiflex.serv
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
 import { LocalStorageService } from 'src/app/services/localStorage-service/local-storage.service';
 import { DemandeAnnulationTransfertModel } from 'src/app/models/demande-annulation-transfert.model';
+import { TABS_SERVICES } from 'src/app/new-services/new-services.page';
 const ls = new SecureLS({ encodingType: 'aes' });
 
+enum TABS_DASHBOARD {
+	HOME, CONSO, OM, SERVICES, ASSISTANCE
+}
+interface Action {
+		title: string,
+		subtitle: string,
+		code: string,
+		icon: string
+}
 @Component({
   selector: 'app-dashboard-home',
   templateUrl: './dashboard-home.component.html',
@@ -66,12 +76,13 @@ const ls = new SecureLS({ encodingType: 'aes' });
 export class DashboardHomeComponent implements OnInit {
   @ViewChildren(ScrollVanishDirective) dir;
   @Output() seeDetails: EventEmitter<any> = new EventEmitter();
+  @Output() goToSlide: EventEmitter<any> = new EventEmitter();
   slideOpts = {
     speed: 400,
     slidesPerView: 1.58,
     slideShadows: true,
   };
-  actions = [
+  actions: Action[] = [
     {
       title: 'Acheter',
       subtitle: 'Crédit, pass',
@@ -94,7 +105,7 @@ export class DashboardHomeComponent implements OnInit {
       title: 'Payer',
       subtitle: 'un marchand',
       code: 'MERCHANT',
-      icon: '04-boutons-01-illustrations-03-payer-ma-facture.svg',
+      icon: '04-boutons-01-illustrations-03-payer-ma-facture.svg'
     },
     {
       title: 'Gérer',
@@ -115,6 +126,7 @@ export class DashboardHomeComponent implements OnInit {
       icon: '04-boutons-01-illustrations-06-demander-un-sos.svg',
     },
   ];
+	DEFAULT_LIST_ACTIONS = this.actions;
   currentMsisdn = this.dashboardService.getCurrentPhoneNumber();
   currentProfil: string;
   isHyBride: boolean;
@@ -213,7 +225,26 @@ export class DashboardHomeComponent implements OnInit {
     this.operationService.getServicesByFormule(HUB_ACTIONS.OM).subscribe();
     this.operationService.getServicesByFormule(HUB_ACTIONS.FACTURES).subscribe();
     this.operationService.getServicesByFormule(null, true).subscribe();
+		this.addNewHubSeDivertir();
   }
+
+	addNewHubSeDivertir() {
+		const hubSeDivertir: Action = {
+			title: 'Se Divertir',
+			subtitle: '',
+			code: 'SE_DIVERTIR',
+			icon: '04-boutons-01-illustrations-05-convertire-mes-points-sargal.svg',
+		};
+		this.actions = this.DEFAULT_LIST_ACTIONS;
+		this.actions = this.actions.filter((elt) => {
+				if(isProfileHybrid) {
+						return	elt.code !== 'SOS'
+				} else {
+					return	elt.code !== 'MERCHANT'
+				}
+			})
+			this.actions.push(hubSeDivertir);
+	}
 
 	fetchOMMarchandLiteAnnulationTrx() {
 		this.isFechingListAnnulationTrx = true;
@@ -484,6 +515,8 @@ export class DashboardHomeComponent implements OnInit {
         break;
       case 'FIXES':
         this.goTAllFixeServices();
+      case 'SE_DIVERTIR':
+        this.goToNewServicesPage(TABS_SERVICES.LOISIR);
         break;
     }
   }
@@ -508,6 +541,14 @@ export class DashboardHomeComponent implements OnInit {
   goTAllFixeServices() {
     this.followAnalyticsService.registerEventFollow('gerer_mon_fixe_clic', 'event', 'clicked');
     this.router.navigate(['/fixes-services']);
+  }
+
+  goToNewServicesPage(tab: TABS_SERVICES) {
+    this.followAnalyticsService.registerEventFollow('se_divertir_clic', 'event', 'clicked');
+		this.goToSlide.emit( {
+			slideTo: TABS_DASHBOARD.SERVICES,
+			tab: tab
+		})
   }
 
   goMerchantPayment() {
