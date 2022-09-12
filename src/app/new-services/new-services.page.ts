@@ -11,6 +11,9 @@ import {
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { OperationService } from '../services/oem-operation/operation.service';
 
+export enum TABS_SERVICES {
+	APPEL = 'APPEL', INTERNET = 'INTERNET', LOISIR = 'LOISIR', VOYAGE = 'VOYAGE'
+}
 @Component({
   selector: 'app-new-services',
   templateUrl: './new-services.page.html',
@@ -36,7 +39,6 @@ export class NewServicesPage implements OnInit {
     services: OffreService[];
   }[] = [];
   isIos: boolean;
-
   constructor(
     private operationService: OperationService,
     private platform: Platform,

@@ -40,6 +40,9 @@ export class HistorikTransactionByTypeModalComponent implements OnInit {
 			})
       this.isProcessing = false;
       this.hasError = false;
+			res = res.filter((elt) => {
+				return elt?.operationType === 'DEBIT'
+			});
       this.listTransactionsFiltered = res;
     }),catchError((err: any) => {
       this.isProcessing = false;
@@ -53,5 +56,9 @@ export class HistorikTransactionByTypeModalComponent implements OnInit {
       'purchaseInfos': purchase
     })
   }
+
+	close() {
+		this.mdCtrl.dismiss();
+	}
 
 }

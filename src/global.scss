@@ -586,6 +586,12 @@ body {
   }
 }
 
+.beneficiary-number {
+  .mat-form-field-suffix {
+    top: unset !important;
+  }
+}
+
 .modalRecipientSelection {
   align-items: flex-end !important;
   --height: auto;

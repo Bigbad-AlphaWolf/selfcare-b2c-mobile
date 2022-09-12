@@ -1,0 +1,44 @@
+@import 'src/app/app';
+
+.face-id-request-modal {
+    text-align: center;
+    padding: 30px 15px;
+    .face-icon-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+        .face-id-icon {
+            display: block;
+        }
+    }
+    .title {
+        font-size: 24px;
+        line-height: 1.25;
+        margin-bottom: 10px;
+    }
+    .text {
+        font-family: HelveticaNeueLTStd-Roman;
+        font-size: 16px;
+        line-height: 1.25;
+        margin-bottom: 30px;
+    }
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+        button {
+            width: 47.5%;
+            border-radius: 10px;
+        }
+    }
+    .full-btn-container {
+        width: 100%;
+        button {
+            border-radius: 10px;
+        }
+    }
+    .ne-plus-demander {
+        margin: 30px 0 20px;
+        font-size: 16px;
+        line-height: 1.88;
+    }
+}

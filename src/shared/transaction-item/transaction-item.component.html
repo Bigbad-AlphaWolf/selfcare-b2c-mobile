@@ -3,7 +3,7 @@
   <div class="left-bloc">
     <span class="transaction-type">{{transaction?.name}}</span>
     <span class="light-text scb-text-gray">{{transaction?.channel}}</span>
-    <span class="light-text scb-text-gray">{{transaction?.msisdnReceiver | phoneNumberDisplay}}
+    <span class="light-text scb-text-gray">{{(transaction?.msisdnReceiver | displayInfosContact) &&  transaction?.msisdnReceiver !== currentMsisdn ? (transaction?.msisdnReceiver | displayInfosContact)?.displayName : transaction?.msisdnReceiver | phoneNumberDisplay}}
       {{transaction?.msisdnReceiver === currentMsisdn ? ' (moi)' : ''}}</span>
   </div>
   <div class="right-bloc">

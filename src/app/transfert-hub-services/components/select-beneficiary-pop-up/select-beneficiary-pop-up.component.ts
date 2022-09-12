@@ -8,6 +8,7 @@ import {
   parseIntoNationalNumberFormat,
   PAYMENT_MOD_OM,
   FIVE_DAYS_DURATION_IN_MILLISECONDS,
+	OPERATION_BLOCK_TRANSFER,
 } from 'src/shared';
 import { MatDialog } from '@angular/material/dialog';
 import { Contacts, Contact } from '@ionic-native/contacts';
@@ -30,7 +31,12 @@ import { TRANSFER_OM_INTERNATIONAL_COUNTRIES } from 'src/app/utils/constants';
 import { OPERATION_TYPE_INTERNATIONAL_TRANSFER } from 'src/app/utils/operations.constants';
 import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
 import { SelectCountryModalComponent } from '../select-country-modal/select-country-modal.component';
+import { HistorikTransactionByTypeModalComponent } from 'src/app/components/historik-transaction-by-type-modal/historik-transaction-by-type-modal.component';
+import { BlockTransferSuccessPopupComponent } from 'src/shared/block-transfer-success-popup/block-transfer-success-popup.component';
 
+enum InputTypeEnum {
+	tel='tel', text='text'
+}
 @Component({
   selector: 'app-select-beneficiary-pop-up',
   templateUrl: './select-beneficiary-pop-up.component.html',
@@ -59,11 +65,12 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   recentMessage: string;
   hideRecentsList: boolean;
   @Input() country;
-
+	@Input() inputType: InputTypeEnum = InputTypeEnum.tel;
   constructor(
     private dialog: MatDialog,
     private contacts: Contacts,
     private modalController: ModalController,
+    private modalTrxController: ModalController,
     private omService: OrangeMoneyService,
     private followAnalytics: FollowAnalyticsService,
     private dashbServ: DashboardService,
@@ -73,8 +80,10 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getRecents();
-    this.checkContactsAuthorizationStatus();
+		if(!this.isForTransferBlocking) {
+			this.getRecents();
+			this.checkContactsAuthorizationStatus();
+		}
   }
 
   ionViewWillEnter() {
@@ -332,27 +341,33 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     }
   }
 
-  validateReference(recentReference?) {
+  validateReference(trxInfos?, transactionModal?: any) {
     this.isProcessing = true;
-    recentReference = recentReference
-      ? recentReference.txnid
+		this.hasErrorGetContact = false;
+    const txnid = trxInfos
+      ? trxInfos.txnid
       : this.htmlInput.nativeElement.value;
     this.omService
-      .isTxnEligibleToBlock(recentReference)
+      .isTxnEligibleToBlock(txnid)
       .pipe(
         tap(async (res) => {
           this.isProcessing = false;
+					console.log('res', res);
+
           if (!res.eligible) {
             this.hasErrorGetContact = true;
             this.errorGetContact = res.message;
-          } else {
+
+					} else {
             await this.modalController.dismiss();
-            this.openTransactionModal(res.transactionDetails);
+            this.openPinPadToBlock(trxInfos,res.transactionDetails);
           }
         }),
         catchError((err) => {
           this.isProcessing = false;
           this.hasErrorGetContact = true;
+					console.log('err', err);
+
           this.errorGetContact =
             'Veuillez saisir une référence valide pour continuer';
           return throwError(err);
@@ -384,6 +399,41 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       backdropDismiss: true,
     });
     modal.onDidDismiss().then(() => {});
+    return await modal.present();
+  }
+
+	async openPinPadToBlock(transactionItem: any, cancelTrxPayload: any) {
+    const modal = await this.modalController.create({
+      component: NewPinpadModalPage,
+      cssClass: 'pin-pad-modal',
+      componentProps: {
+        transactionToBlock: transactionItem,
+        opXtras: { blockTrxOMPayload: cancelTrxPayload},
+        operationType: OPERATION_BLOCK_TRANSFER,
+      },
+    });
+    modal.onDidDismiss().then(async response => {
+      if (response.data && response.data.success) {
+        await this.modalController.dismiss();
+        const hasOMStatusFull = response?.data?.hasOMStatusFull;
+        const isMarchandLite = response?.data?.annulationResponse?.marchandLite;
+        this.openBlockTxnModalSuccess(transactionItem, hasOMStatusFull, isMarchandLite);
+      }
+    });
+    return await modal.present();
+  }
+
+	async openBlockTxnModalSuccess(transactionItem: any, userHasOmStatusFull?: boolean, isMLite?: boolean) {
+    const modal = await this.modalController.create({
+      component: BlockTransferSuccessPopupComponent,
+      cssClass: 'success-or-fail-modal',
+      backdropDismiss: false,
+      componentProps: {
+        transactionToBlock: transactionItem,
+        isUserOMFull: userHasOmStatusFull,
+				isMLite
+      },
+    });
     return await modal.present();
   }
 
@@ -562,4 +612,20 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     });
     return await modal.present();
   }
+
+	async selectTransaction() {
+    const modal = await this.modalTrxController.create({
+      component: HistorikTransactionByTypeModalComponent,
+      //cssClass: 'select-recipient-modal',
+      componentProps: {
+        typeTransaction: 'OM',
+      },
+    });
+    modal.onDidDismiss().then((res: any) => {
+      if (res && res.data) {
+				this.validateReference(res?.data?.purchaseInfos)
+      }
+    });
+    return await modal.present();
+	}
 }

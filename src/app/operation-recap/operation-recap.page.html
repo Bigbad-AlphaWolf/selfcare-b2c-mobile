@@ -296,6 +296,17 @@
     <ng-container *ngIf="isBoosterTraceTV()">
       <scb-avantage-popup [type]="'coupon-trace'"></scb-avantage-popup>
     </ng-container>
+		<ng-container *ngIf="purchaseType === OPERATION_ABONNEMENT_WIDO && passChoosen?.description">
+      <div class="amount-to-transfer">
+        <span class="pass">Infos additionnelles</span>
+      </div>
+      <div class="recipient-information offer-desc wido">
+        <div class="top-block-transfert">
+          <span class="title"> {{ passChoosen?.description }} </span>
+        </div>
+				<img *ngIf="passChoosen?.thumbnailLandscape" [src]="passChoosen?.thumbnailLandscape" alt="">
+      </div>
+    </ng-container>
     <button class="scb-btn scb-btn-orange" (click)="pay()" [id]="'btn-validate-purchase' | generateIdForTA" [disabled]="buyingPass">
       <ng-container [ngSwitch]="purchaseType">
         <span class="text" *ngSwitchCase="OPERATION_ILLIMIX_TYPE">Payer ({{!passChoosen?.passPromo ? passChoosen?.tarif

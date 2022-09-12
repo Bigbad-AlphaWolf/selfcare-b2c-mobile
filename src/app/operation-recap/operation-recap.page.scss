@@ -195,6 +195,24 @@ ion-content {
         white-space: nowrap;
       }
     }
+		&.wido {
+			.top-block-transfert {
+				.title {
+					font-family: HelveticaNeueLTStd-Roman;
+					font-size: 16px;
+					line-height: 1.5;
+					color: $gray;
+				}
+				.recipient {
+					font-family: HelveticaNeueLTStd-Roman;
+					font-size: 12px;
+					line-height: 1.33;
+					text-align: right;
+					display: block;
+					white-space: nowrap;
+				}
+			}
+		}
     .irt-reason {
       // font-family: 'HelveticaNeueLTStd-Roman' !important;
     }

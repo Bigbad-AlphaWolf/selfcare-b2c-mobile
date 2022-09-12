@@ -1,4 +1,21 @@
 <div class="select-beneficiary-container">
+	<ng-container *ngIf="typeModal === OPERATION_CANCEL_TRX_MLITE">
+		<div class="title">
+			Demande Annulation Transaction
+		</div>
+		<div class="description" >
+			Veuillez valider ou Rejeter cette demande d'annulation de la transaction:
+		</div>
+		<app-transaction-item [transaction]="transaction"></app-transaction-item>
+		<div *ngIf="!isLoading" class="confirm-btn">
+			<ion-button shape="round" (click)="process(true)" class="btn btn-confirm" expand="block">Oui, Je valide </ion-button>
+			<ion-button shape="round" (click)="process(false)" class="btn btn-cancel" expand="block">Non , Je rejete</ion-button>
+		</div>
+		<ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+		<span *ngIf="hasErrorMsg" class="scb-text-red-error">
+			{{hasErrorMsg}}
+		</span>
+	</ng-container>
   <div *ngIf="typeModal === OPERATION_CONFIRM_DELETE_RATTACH_NUMBER" class="title">
     Supression de ligne rattachée
   </div>
@@ -19,7 +36,7 @@
     </span>
     , vous devrez la rattacher.
   </div>
-  <div class="confirm-btn">
+  <div *ngIf="typeModal !== OPERATION_CANCEL_TRX_MLITE" class="confirm-btn">
     <ion-button shape="round" (click)="process(true)" class="btn btn-confirm" expand="block">Oui, Continuer</ion-button>
     <ion-button shape="round" (click)="process(false)" class="btn btn-cancel" expand="block">Non , annuler</ion-button>
   </div>

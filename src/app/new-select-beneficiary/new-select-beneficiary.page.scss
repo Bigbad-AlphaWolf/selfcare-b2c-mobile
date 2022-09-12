@@ -129,10 +129,12 @@ cdk-virtual-scroll-viewport {
   }
 
   .list-contacts {
-    background-color: #fff;
+    //background-color: #fff;
     padding-left: 15px;
     display: flex;
     flex-direction: column;
+		height: 100%;
+		background-color: #f2f2f7;
     .title {
       padding-top: 30px;
       margin-left: 0;
