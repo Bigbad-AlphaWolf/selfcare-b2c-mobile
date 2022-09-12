@@ -325,7 +325,5 @@ export class NewSelectBeneficiaryPage implements OnInit {
 		const value = REGEX_DIGIT.test(typedValue) ? replaceWhiteSpaceWithCaracter(event.target.value.trim(), '') : typedValue;
 		this.searchTerm$.next(value);
 		this.searchValue = value;
-		console.log('searchValue', this.searchValue);
-
 	}
 }
