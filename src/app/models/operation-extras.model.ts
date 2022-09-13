@@ -54,4 +54,5 @@ export interface OperationExtras {
   counterToFav?: boolean;
 
   checkRecipient?: boolean;
+  blockTrxOMPayload?: any;
 }

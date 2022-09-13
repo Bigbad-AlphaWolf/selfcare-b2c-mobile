@@ -23,12 +23,12 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
 export class NewAssistanceHubV2Page implements OnInit {
   @ViewChildren(ScrollVanishDirective) dir;
   moreActions = [
-    {
-      act: 'IBOU_CONTACT',
-      description: 'Contacter votre assistant Ibou',
-      image:
-        '/assets/images/04-boutons-01-illustrations-21-ibou-assistance.png',
-    },
+    //{
+    //  act: 'IBOU_CONTACT',
+    //  description: 'Contacter votre assistant Ibou',
+    //  image:
+    //    '/assets/images/04-boutons-01-illustrations-21-ibou-assistance.png',
+    //},
     {
       act: 'AGENCE_LOCATOR',
       description: 'Trouver l’agence la plus proche',

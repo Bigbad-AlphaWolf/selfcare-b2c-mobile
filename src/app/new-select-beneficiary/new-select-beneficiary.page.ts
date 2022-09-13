@@ -153,7 +153,7 @@ export class NewSelectBeneficiaryPage implements OnInit {
 
 	activeSearchContact() {
 		this.contactService.searchTermChanged(this.searchTerm$, this.listContact).subscribe((res: ContactOem[]) => {
-			this.listFilteredContacts = res;
+			this.listFilteredContacts = [...res];
 		})
 	}
 

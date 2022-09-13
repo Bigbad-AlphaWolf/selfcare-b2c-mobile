@@ -39,7 +39,7 @@ export class TransactionItemComponent implements OnInit {
       new Date(this.transaction.currentDate).getTime() -
       new Date(this.transaction.operationDate).getTime();
     const isLessThan72h = dateDifference < FIVE_DAYS_DURATION_IN_MILLISECONDS;
-    if (!isLessThan72h || this.transaction.typeAchat !== 'TRANSFER') return;
+    if (!isLessThan72h && this.transaction.typeAchat !== 'TRANSFER' && this.transaction.typeAchat !== 'TRANSFERT_ARGENT' && this.transaction.operationType !== 'DEBIT') return;
     const omMsisdn = await this.omService.getOmMsisdn().toPromise();
     this.followAnalyticsService.registerEventFollow(
       'clic_transfer_from_history',

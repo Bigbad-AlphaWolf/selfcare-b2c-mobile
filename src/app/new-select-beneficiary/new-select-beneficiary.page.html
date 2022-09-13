@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content no-bounce has-bouncing="false" forceOverscroll="false" fullscreen="true" [scrollEvents]="true">
-	<cdk-virtual-scroll-viewport itemSize="70" minBufferPx="700" maxBufferPx="1000">
+
 
 	<div class="page-content">
 		<ion-item class="input-field" lines="none" type="text" >
@@ -47,16 +47,18 @@
 				{{errorMsg}}
 				<span class="link" (click)="openSettingsPopup()">Pour autoriser, cliquez ici</span>
 			</span>
-			<ng-container *ngIf="!contactError && listFilteredContacts.length && !isLoadingContacts">
+			<ng-container *ngIf="!contactError && listFilteredContacts?.length && !isLoadingContacts">
+				<cdk-virtual-scroll-viewport itemSize="70" minBufferPx="700" maxBufferPx="1000">
+
 					<ion-list>
 						<app-recipient-item-contact *cdkVirtualFor="let item of listFilteredContacts" [item]="item" (selected)="onContactSelected($event)"></app-recipient-item-contact>
 					</ion-list>
 
+				</cdk-virtual-scroll-viewport>
 			</ng-container>
 			<ion-spinner *ngIf="isLoadingContacts" name="crescent"></ion-spinner>
 			</div>
 		</div>
-	</cdk-virtual-scroll-viewport>
 	<div *ngIf="listFilteredContacts.length === 1" (click)="confirm()" class="confirm-btn">
 		<ion-button expand="block" shape="round" class="scb-btn-ion">Suivant</ion-button>
 	</div>

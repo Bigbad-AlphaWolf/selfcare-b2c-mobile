@@ -1349,7 +1349,7 @@ export class NewPinpadModalPage implements OnInit {
     this.processingPin = true;
 		let cancelTrxResponse: any;
     this.orangeMoneyService
-      .blockTransfer(this.transactionToBlock)
+      .blockTransfer(this.opXtras?.blockTrxOMPayload)
       .pipe(
         switchMap(response => {
 					cancelTrxResponse = response

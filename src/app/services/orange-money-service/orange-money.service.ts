@@ -823,11 +823,11 @@ export class OrangeMoneyService {
   blockTransfer(transaction) {
     return this.getOmMsisdn().pipe(
       switchMap((msisdn) => {
-        const { amount, txnid, msisdnReceiver, fees } = transaction;
+        const { amount, txnid, destinataire, fees } = transaction;
         const payload = {
-          amount: Math.abs(amount) + fees,
+          amount: +amount,
           txn_id: txnid,
-          destinataire: msisdnReceiver,
+          destinataire,
           msisdn,
         };
         return this.http

@@ -177,7 +177,7 @@ export class OperationSuccessFailModalPage implements OnInit {
         tap((res: CheckEligibilityModel) => {
           this.checkingEligibility = false;
           if (res.eligible) {
-            this.openPinPadToBlock();
+            this.openPinPadToBlock(res?.transactionDetails);
           } else {
             this.eligibilityHasError = true;
             this.eligibilityError = res.message;
@@ -193,13 +193,14 @@ export class OperationSuccessFailModalPage implements OnInit {
       .subscribe();
   }
 
-  async openPinPadToBlock() {
+  async openPinPadToBlock(blockTrxOMPayload?: any) {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
         transactionToBlock: this.historyTransactionItem,
         operationType: OPERATION_BLOCK_TRANSFER,
+				opXtras: {...this.opXtras, blockTrxOMPayload}
       },
     });
     modal.onDidDismiss().then(async response => {
