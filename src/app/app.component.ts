@@ -160,12 +160,12 @@ export class AppComponent {
 
   checkDeeplinks() {
     this.deeplinks
-      .routeWithNavController(this.navContr, {
+      .route({
         '/buy-pass-internet': TransfertHubServicesPage,
-        //'/pass-internet/:ppi': BuyPassInternetPage,
+        '/pass-internet/:ppi': TransfertHubServicesPage,
         '/assistance': AssistanceHubPage,
         '/buy-pass-illimix': TransfertHubServicesPage,
-        //'/pass-illimix/:ppi': BuyPassIllimixPage,
+        '/pass-illimix/:ppi': TransfertHubServicesPage,
         '/buy-credit': TransfertHubServicesPage,
         '/details-conso': DetailsConsoPage,
         '/suivi-conso': DashboardPage,
@@ -199,8 +199,8 @@ export class AppComponent {
           // this.router.navigate([matched.$link.path]);
           console.log(matched);
         },
-        () => {
-          // console.log(notMatched);
+        (err) => {
+           console.log('notMatched', err);
           // console.log('deeplink not matched');
         }
       );
