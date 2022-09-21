@@ -35,6 +35,7 @@ import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { NotificationService } from './services/notification.service';
 import { HTTP } from '@ionic-native/http/ngx';
 import { environment } from 'src/environments/environment';
+import { OperationRecapPage } from './operation-recap/operation-recap.page';
 const { SERVER_API_URL } = environment;
 
 const ls = new SecureLS({encodingType: 'aes'});
@@ -160,19 +161,22 @@ export class AppComponent {
 
   checkDeeplinks() {
     this.deeplinks
-      .routeWithNavController(this.navContr, {
+      .route({
         '/buy-pass-internet': TransfertHubServicesPage,
-        //'/pass-internet/:ppi': BuyPassInternetPage,
+        '/pass-internet/:ppi': TransfertHubServicesPage,
         '/assistance': AssistanceHubPage,
         '/buy-pass-illimix': TransfertHubServicesPage,
-        //'/pass-illimix/:ppi': BuyPassIllimixPage,
+        '/pass-illimix/:ppi': TransfertHubServicesPage,
         '/buy-credit': TransfertHubServicesPage,
         '/details-conso': DetailsConsoPage,
         '/suivi-conso': DashboardPage,
         '/transfer-money/:msisdn/:amount': TransfertHubServicesPage,
         '/transfer-money/:msisdn': TransfertHubServicesPage,
+        '/transfer-money': TransfertHubServicesPage,
         '/soscredit/:amount': '',
+        '/soscredit': '',
         '/sospass/:amount': '',
+        '/sospass': '',
         '/illiflex': TransfertHubServicesPage,
         '/parrainage': ParrainagePage,
         '/bonplan': MyOfferPlansPage,
@@ -183,6 +187,8 @@ export class AppComponent {
         '/payer-teranga': TransfertHubServicesPage,
         '/payer-sonatel/:msisdn': TransfertHubServicesPage,
         '/payer-teranga/:msisdn': TransfertHubServicesPage,
+        '/pass-internet': OperationRecapPage,
+        '/pass-illimix': OperationRecapPage,
         '/login': TransfertHubServicesPage
       })
       .subscribe(
@@ -194,23 +200,25 @@ export class AppComponent {
           if (isAccessByOTPPath) {
             this.processAccessByOtp(path);
           } else {
-            this.goToPage(path);
+            this.goToPage(path, matched?.$args);
           }
           // this.router.navigate([matched.$link.path]);
           console.log(matched);
         },
-        () => {
-          // console.log(notMatched);
+        (err) => {
+           console.log('notMatched', err);
           // console.log('deeplink not matched');
         }
       );
   }
 
-  goToPage(path: string) {
+  goToPage(path: string, options?: any) {
     if (checkUrlMatch(path)) {
       this.appRout.goToTransfertHubServicesPage('BUY');
     } else {
-      this.router.navigate([path]);
+      this.router.navigate([path], {
+				state: options
+			});
     }
   }
 

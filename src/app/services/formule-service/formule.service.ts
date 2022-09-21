@@ -34,11 +34,11 @@ export class FormuleService {
         // logic to bring local zone country at first index
         let countriesArray = res;
         const local_zone_country = res.find(
-          (country) => country.zone.name === LOCAL_ZONE
+          (country) => country?.zone?.name === LOCAL_ZONE
         );
         if (local_zone_country) {
           const index = res
-            .map((pays) => pays.name)
+            .map((pays) => pays?.name)
             .indexOf(local_zone_country.name);
           countriesArray.splice(index, 1);
           countriesArray.unshift(local_zone_country);

@@ -47,7 +47,7 @@ export class BuySosPage implements OnInit {
   }
 
   async checkDeeplinkSos() {
-    const amount = +this.route.snapshot.paramMap.get('amount');
+    const amount = +this.route.snapshot.paramMap.get('amount') || +history?.state?.amount;
     console.log(amount);
     if (!amount) return 0;
     const route = this.router.url;
