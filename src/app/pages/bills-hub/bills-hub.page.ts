@@ -55,9 +55,17 @@ export class BillsHubPage implements OnInit {
   async getCompanies() {
     const deeplink = this.router.url;
     if (deeplink.match(DEEPLINK_MOBILE_BILL_BASE_URL)) {
-      this.openPayBillModal(OPERATION_TYPE_TERANGA_BILL);
+			if(history?.state?.ligne) {
+				this.router.navigate([`/payer-teranga/${history?.state?.ligne}`]);
+			} else {
+				this.openPayBillModal(OPERATION_TYPE_TERANGA_BILL);
+			}
     } else if (deeplink.match(DEEPLINK_FIXE_BILL_BASE_URL)) {
-      this.openPayBillModal(OPERATION_TYPE_PAY_BILL);
+			if(history?.state?.ligne) {
+				this.router.navigate([`/payer-sonatel/${history?.state?.ligne}`]);
+			} else {
+				this.openPayBillModal(OPERATION_TYPE_PAY_BILL);
+			}
     }
     this.onCompaniesError = false;
     this.loadingCompanies = true;
