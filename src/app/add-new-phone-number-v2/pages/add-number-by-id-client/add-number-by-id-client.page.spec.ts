@@ -3,7 +3,6 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {AddNumberByIdClientPage} from './add-number-by-id-client.page';
 import {ActivatedRoute} from '@angular/router';
-import {Deeplinks} from '@ionic-native/deeplinks/ngx';
 import {HttpClient} from '@angular/common/http';
 import {AppMinimize} from '@ionic-native/app-minimize/ngx';
 import {MatDialogModule} from '@angular/material/dialog';
@@ -21,7 +20,6 @@ describe('AddNumberByIdClientPage', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         imports: [MatDialogModule, RouterTestingModule],
         providers: [
-          {provide: Deeplinks},
           {
             provide: HttpClient,
             useValue: {}

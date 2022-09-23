@@ -2,7 +2,6 @@ import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {Component} from '@angular/core';
 import {LoadingController, NavController, Platform, ToastController} from '@ionic/angular';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
-import {Deeplinks} from '@ionic-native/deeplinks/ngx';
 import {Router} from '@angular/router';
 import * as SecureLS from 'secure-ls';
 import {v4 as uuidv4} from 'uuid';
@@ -50,7 +49,6 @@ export class AppComponent {
     private splash: SplashScreen,
     private orangeMoneyServ: OrangeMoneyService,
     private router: Router,
-    private deeplinks: Deeplinks,
     private appRout: ApplicationRoutingService,
     private imageLoaderConfig: ImageLoaderConfigService,
     private uid: Uid,
@@ -159,10 +157,10 @@ export class AppComponent {
 				(res: any) => {
 					const result :{deepLink: string, minimumAppVersion: number}  = res;
 					if(result?.deepLink) {
-						const path = result?.deepLink.replace('https://myorangesn.page.link/','')
+						const path = result?.deepLink.replace('https://myorangesn.page.link','')
 						this.goToPage(path);
+						console.log('res onDynamicLink', path);
 					}
-					console.log('res onDynamicLink');
 					console.log(res);
 				},
 				 (error:any) => {
@@ -173,6 +171,7 @@ export class AppComponent {
 
   goToPage(path: string, options?: any) {
     if (checkUrlMatch(path)) {
+			console.log('path', path);
       this.appRout.goToTransfertHubServicesPage('BUY');
     } else {
       this.router.navigate([path], {

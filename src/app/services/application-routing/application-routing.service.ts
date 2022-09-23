@@ -56,6 +56,8 @@ export class ApplicationRoutingService {
         isLightMod
       }
     };
+		console.log('navigationExtras', navigationExtras);
+
     this.route.navigate(['/transfert-hub-services'], navigationExtras);
   }
 
