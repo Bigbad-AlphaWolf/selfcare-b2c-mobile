@@ -5,7 +5,6 @@ import {AproposPage} from './apropos.page';
 import {MatDialogModule} from '@angular/material/dialog';
 import {Platform} from '@ionic/angular';
 import {Router} from '@angular/router';
-import {Deeplinks} from '@ionic-native/deeplinks/ngx';
 import {AppVersion} from '@ionic-native/app-version/ngx';
 import {File} from '@ionic-native/file/ngx';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
@@ -24,7 +23,6 @@ describe('AproposPage', () => {
         imports: [MatDialogModule, BrowserModule, RouterTestingModule],
         providers: [
           {provide: Platform, useValue: {}},
-          {provide: Deeplinks},
           {
             provide: AppVersion,
             useValue: {

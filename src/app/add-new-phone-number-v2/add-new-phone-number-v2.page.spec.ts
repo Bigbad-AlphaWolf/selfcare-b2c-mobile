@@ -5,7 +5,6 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {AddNewPhoneNumberV2Page} from './add-new-phone-number-v2.page';
-import {Deeplinks} from '@ionic-native/deeplinks/ngx';
 import {AppMinimize} from '@ionic-native/app-minimize/ngx';
 import {RouterTestingModule} from '@angular/router/testing';
 
@@ -20,7 +19,6 @@ describe('AddNewPhoneNumberV2Page', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         imports: [MatDialogModule, RouterTestingModule],
         providers: [
-          {provide: Deeplinks},
           {
             provide: HttpClient,
             useValue: {}

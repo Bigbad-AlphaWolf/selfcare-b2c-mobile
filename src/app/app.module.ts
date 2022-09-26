@@ -19,7 +19,6 @@ import {FileOpener} from '@ionic-native/file-opener/ngx';
 import {File} from '@ionic-native/file/ngx';
 import {AppMinimize} from '@ionic-native/app-minimize/ngx';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
-import {Deeplinks} from '@ionic-native/deeplinks/ngx';
 import {registerLocaleData} from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import {AppVersion} from '@ionic-native/app-version/ngx';
@@ -40,6 +39,7 @@ import {FingerprintAIO} from '@ionic-native/fingerprint-aio/ngx';
 import {FaceIdAlertPopupComponent} from './sidemenu/face-id-alert-popup/face-id-alert-popup.component';
 import {BarcodeScanner} from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { FCM } from 'cordova-plugin-fcm-with-dependecy-updated/ionic/ngx';
+import { FirebaseDynamicLinks } from '@awesome-cordova-plugins/firebase-dynamic-links/ngx';
 
 registerLocaleData(localeFr);
 @NgModule({
@@ -76,8 +76,8 @@ registerLocaleData(localeFr);
     File,
     FileOpener,
     AppMinimize,
+		FirebaseDynamicLinks,
     InAppBrowser,
-    Deeplinks,
     Market,
     Device,
     Uid,
