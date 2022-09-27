@@ -552,20 +552,20 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   goMerchantPayment() {
-    this.followAnalyticsService.registerEventFollow('Dashboard_paiement_marchand_clic', 'event');
-    this.omService.omAccountSession().subscribe(async (omSession: any) => {
-      const omSessionValid = omSession ? omSession.msisdn !== 'error' && omSession.hasApiKey && !omSession.loginExpired : null;
-      if (omSessionValid) {
-        this.bsService
-          .initBsModal(MerchantPaymentCodeComponent, OPERATION_TYPE_MERCHANT_PAYMENT, PurchaseSetAmountPage.ROUTE_PATH)
-          .subscribe(_ => {});
-        this.bsService.openModal(MerchantPaymentCodeComponent, {
-          omMsisdn: omSession.msisdn,
-        });
-      } else {
-        this.openPinpad();
-      }
-    });
+    this.followAnalyticsService.registerEventFollow( 'Dashboard_paiement_marchand_clic', 'event' );
+		this.bsService.initBsModal( MerchantPaymentCodeComponent, OPERATION_TYPE_MERCHANT_PAYMENT, PurchaseSetAmountPage.ROUTE_PATH ).subscribe( _ => { } );
+		this.omService
+			.getOmMsisdn()
+			.pipe(
+				tap( omNumber => {
+					if ( omNumber !== 'error' ) {
+						this.bsService.openModal( MerchantPaymentCodeComponent, {
+							omMsisdn: omNumber,
+						} );
+					}
+				} )
+			)
+			.subscribe();
   }
 
   onPayerFacture() {
