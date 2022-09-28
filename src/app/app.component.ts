@@ -22,7 +22,6 @@ import {throwError} from 'rxjs';
 import {LocalStorageService} from './services/localStorage-service/local-storage.service';
 import {LOCAL_STORAGE_KEYS, PATH_ACCESS_BY_OTP, STEPS_ACCESS_BY_OTP} from 'src/shared';
 import {BottomSheetService} from './services/bottom-sheet/bottom-sheet.service';
-import { FCM } from 'cordova-plugin-fcm-with-dependecy-updated/ionic/ngx';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { NotificationService } from './services/notification.service';
 import { HTTP } from '@ionic-native/http/ngx';
@@ -62,7 +61,6 @@ export class AppComponent {
     private otpService: OtpService,
     private localStorage: LocalStorageService,
     private bottomSheetServ: BottomSheetService,
-    private fcm: FCM,
     private notificationService: NotificationService,
 		private network: Network,
 		private httpNative: HTTP,
@@ -134,22 +132,22 @@ export class AppComponent {
   }
 
   async setupFCMNotifications() {
-    this.fcm.onNotification().subscribe((data) => {
-      console.log('received', data);
-      if (data.wasTapped) {
-        console.log('Received in background');
-      } else {
-        console.log('Received in foreground');
-      }
-      this.notificationService.handleNotification(data);
-    });
-    // Get firebase id for notifications
-    this.fcm
-      .getToken()
-      .then((token) => {
-        console.log('Your FIREBASE TOKEN', token);
-      })
-      .catch((err) => console.log('error setting firebase', err));
+    //this.fcm.onNotification().subscribe((data) => {
+    //  console.log('received', data);
+    //  if (data.wasTapped) {
+    //    console.log('Received in background');
+    //  } else {
+    //    console.log('Received in foreground');
+    //  }
+    //  this.notificationService.handleNotification(data);
+    //});
+    //// Get firebase id for notifications
+    //this.fcm
+    //  .getToken()
+    //  .then((token) => {
+    //    console.log('Your FIREBASE TOKEN', token);
+    //  })
+    //  .catch((err) => console.log('error setting firebase', err));
   }
 
   checkDeeplinks() {
