@@ -333,17 +333,6 @@ export class DashboardHomeComponent implements OnInit {
         finalize( () => {
           this.loadingConso = false;
         }),
-        takeUntil(timer(USER_CONSO_REQUEST_TIMEOUT).pipe(tap(_ => {
-          const msisdn = this.dashboardService.getCurrentPhoneNumber();
-          this.consoService.getUserCunsomation(msisdn).subscribe({
-            next: (response) => {
-              response.length && this.processConso(response)
-            }
-          });
-          const key = `${USER_CONSO_STORAGE_KEY}_${msisdn}`;
-          const storedData: NewUserConsoModel[] = this.storageService.getFromLocalStorage(key);
-          storedData.length ? this.processConso(storedData) : (this.consoHasError = true);
-        }))),
         tap((conso: NewUserConsoModel[]) => {
           conso.length ? this.processConso(conso) : (this.consoHasError = true);
           event ? event.target.complete() : '';
