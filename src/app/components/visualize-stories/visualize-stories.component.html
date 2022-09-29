@@ -10,6 +10,7 @@
 				</div>
 				<div class="navigation-custom right next" (click)="navigateStory('next')">
 				</div>
-				<app-visualize-story #story (touch)="clickOnSlide($event)" [isVisible]="storyByCategory?.stories[currentSlideIndex]?.id === item?.id && isVisibleForHigherView" [story]="item" (mediaDurationChange)="setProgressBarDuration($event, id)" (audioReady)="onAudioReady($event)" (imageReady)="onImageReady($event)" ></app-visualize-story></ng-template>
+				<app-visualize-story #story (touch)="clickOnSlide($event)" [isVisible]="storyByCategory?.stories[currentSlideIndex]?.id === item?.id && isVisibleForHigherView" [story]="item" (mediaDurationChange)="setProgressBarDuration($event, id)" (audioReady)="onAudioReady($event)" (imageReady)="onImageReady($event)" ></app-visualize-story>
+			</ng-template>
 		</swiper>
 	</div>
