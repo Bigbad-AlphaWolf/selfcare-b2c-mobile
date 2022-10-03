@@ -299,9 +299,9 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
     url: string;
     label: string;
   }) {
-    switch (data.typeAction) {
-      case TYPE_ACTION_ON_BANNER.DEEPLINK:
-        this.leaveStories.emit('close');
+		this.leaveStories.emit('close');
+		switch (data.typeAction) {
+			case TYPE_ACTION_ON_BANNER.DEEPLINK:
         this.navCtrl.navigateForward([data.url]);
         break;
       case TYPE_ACTION_ON_BANNER.REDIRECTION:

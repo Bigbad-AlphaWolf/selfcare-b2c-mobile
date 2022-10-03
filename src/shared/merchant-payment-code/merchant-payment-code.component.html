@@ -27,26 +27,28 @@
     <div class="loading-container" *ngIf="loadingRecents">
       <mat-spinner mode="indeterminate" [diameter]="30"></mat-spinner>
     </div>
-    <div class="recents" *ngIf="recentMerchants$ | async as recentMerchants">
-      <div class="description" *ngIf="recentMerchants.length">
-        Récents
-      </div>
-      <div
-        matRipple
-        class="oem-item"
-        [id]="('merchant_item_'+i) | generateIdForTA"
-        (click)="onRecentMerchantSelected(merchant)"
-        *ngFor="let merchant of recentMerchants; let i = index"
-      >
-        <div class="logo scb-text-white">
-          {{ merchant.name | acronym }}
-        </div>
-        <div class="labels">
-          <span class="name"> {{ merchant.name }}</span>
-          <span class="number scb-text-gray">{{ merchant.merchantCode }}</span>
-        </div>
-      </div>
-    </div>
+		<ng-container *ngIf="(recentMerchants$ | async) as recentMerchants">
+			<div *ngIf="recentMerchants?.length" class="recents">
+				<div class="description" >
+					Récents
+				</div>
+				<div
+					matRipple
+					class="oem-item"
+					[id]="('merchant_item_'+i) | generateIdForTA"
+					(click)="onRecentMerchantSelected(merchant)"
+					*ngFor="let merchant of recentMerchants; let i = index"
+				>
+					<div class="logo scb-text-white">
+						{{ merchant.name | acronym }}
+					</div>
+					<div class="labels">
+						<span class="name"> {{ merchant.name }}</span>
+						<span class="number scb-text-gray">{{ merchant.merchantCode }}</span>
+					</div>
+				</div>
+			</div>
+		</ng-container>
     <button
       class="scb-btn scb-btn-orange scb-btn-full"
       [disabled]="chekingMerchant || !merchantCodeForm.valid"
