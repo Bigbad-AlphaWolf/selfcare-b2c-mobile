@@ -32,7 +32,6 @@ import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
 import { CODE_FORMULE_FIX_PREPAID } from 'src/app/dashboard';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
-import { ContactsService } from 'src/app/services/contacts-service/contacts.service';
 import { PermissionSettingsPopupComponent } from '../permission-settings-popup/permission-settings-popup.component';
 
 @Component({
@@ -76,8 +75,7 @@ export class NumberSelectionComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     private recentsService: RecentsService,
     private followAnalyticsService: FollowAnalyticsService,
-    private diagnostic: Diagnostic,
-    private contactService: ContactsService
+    private diagnostic: Diagnostic
   ) {}
 
   ngOnInit() {
@@ -86,7 +84,7 @@ export class NumberSelectionComponent implements OnInit {
     this.opXtras.recipientMsisdn = this.currentPhone;
     this.opXtras.senderMsisdn = SessionOem.PHONE;
     this.loadingNumbers = true;
-    this.numbers$ = this.dashbServ.fetchOemNumbers(this.data.purchaseType).pipe(
+    this.numbers$ = this.dashbServ.fetchOemNumbers(this.data.purchaseType, this.data?.opXtras).pipe(
       delay(100),
       tap(numbers => {
         this.loadingNumbers = false;
@@ -310,7 +308,7 @@ export class NumberSelectionComponent implements OnInit {
     // if (this.opXtras.forSelf) return true;
 
     let canRecieve = await this.authService
-      .canRecieveCredit(this.opXtras.recipientMsisdn)
+      .canRecieveCredit(this.opXtras.recipientMsisdn, this.data.opXtras)
       .pipe(
         catchError((er: HttpErrorResponse) => {
           if (er.status === 401) this.modalController.dismiss();

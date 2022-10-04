@@ -153,7 +153,6 @@ export class TransfertHubServicesPage implements OnInit {
           NumberSelectionOption.WITH_MY_PHONES,
           OPERATION_TYPE_PASS_USAGE,
           'list-pass-usage',
-          false,
           opt
         );
         return;
@@ -219,8 +218,8 @@ export class TransfertHubServicesPage implements OnInit {
     });
   }
 
-  openModalPassNumberSelection(operation: string, routePath: string) {
-    this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, operation, routePath);
+  openModalPassNumberSelection(operation: string, routePath: string, opXtras?: OperationExtras) {
+    this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, operation, routePath, null, opXtras);
   }
 
   checkOmAccount() {
@@ -332,11 +331,13 @@ export class TransfertHubServicesPage implements OnInit {
     const opXtras: OperationExtras = {
       pass: { ...pass, isFavoritePass: true },
       recipientCodeFormule: this.userInfos.code,
+      recipientFormule: this.userInfos.nomOffre,
       purchaseType: opType,
       recipientMsisdn: this.currentPhone,
     };
-    this.operationRecapLogigService.initRecapInfos(opXtras);
-    this.operationRecapLogigService.setPaymentMod();
+		this.openModalPassNumberSelection(opType, 'operation-recap', opXtras);
+    //this.operationRecapLogigService.initRecapInfos(opXtras);
+    //this.operationRecapLogigService.setPaymentMod();
   }
 
   getUserInfos() {
