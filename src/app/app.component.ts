@@ -1,24 +1,17 @@
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {Component} from '@angular/core';
-import {LoadingController, ModalController, NavController, Platform, ToastController} from '@ionic/angular';
+import {LoadingController, NavController, Platform, ToastController} from '@ionic/angular';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
-import {Deeplinks} from '@ionic-native/deeplinks/ngx';
 import {Router} from '@angular/router';
 import * as SecureLS from 'secure-ls';
-import {DetailsConsoPage} from './details-conso/details-conso.page';
 import {v4 as uuidv4} from 'uuid';
-import {TransfertHubServicesPage} from './transfert-hub-services/transfert-hub-services.page';
 import {ApplicationRoutingService} from './services/application-routing/application-routing.service';
 import {checkUrlMatch} from './utils/utils';
 import {ImageLoaderConfigService} from 'ionic-image-loader';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpHeaders} from '@angular/common/http';
 import {AndroidPermissions} from '@ionic-native/android-permissions/ngx';
 import {Uid} from '@ionic-native/uid/ngx';
-import {DashboardPage} from './dashboard/dashboard.page';
 import {AppVersion} from '@ionic-native/app-version/ngx';
-import {AssistanceHubPage} from './assistance-hub/assistance-hub.page';
-import {ParrainagePage} from './parrainage/parrainage.page';
-import {MyOfferPlansPage} from './pages/my-offer-plans/my-offer-plans.page';
 import {Diagnostic} from '@ionic-native/diagnostic/ngx';
 import {ContactsService} from './services/contacts-service/contacts.service';
 import {OrangeMoneyService} from './services/orange-money-service/orange-money.service';
@@ -26,15 +19,15 @@ import {catchError, tap} from 'rxjs/operators';
 import {AuthenticationService} from './services/authentication-service/authentication.service';
 import {OtpService} from './services/otp-service/otp.service';
 import {throwError} from 'rxjs';
-import {NewRegistrationPage} from './new-registration/new-registration.page';
 import {LocalStorageService} from './services/localStorage-service/local-storage.service';
 import {LOCAL_STORAGE_KEYS, PATH_ACCESS_BY_OTP, STEPS_ACCESS_BY_OTP} from 'src/shared';
 import {BottomSheetService} from './services/bottom-sheet/bottom-sheet.service';
-import { FCM } from 'cordova-plugin-fcm-with-dependecy-updated/ionic/ngx';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { NotificationService } from './services/notification.service';
 import { HTTP } from '@ionic-native/http/ngx';
 import { environment } from 'src/environments/environment';
+import { FirebaseDynamicLinks } from '@awesome-cordova-plugins/firebase-dynamic-links/ngx';
+
 const { SERVER_API_URL } = environment;
 
 const ls = new SecureLS({encodingType: 'aes'});
@@ -55,7 +48,6 @@ export class AppComponent {
     private splash: SplashScreen,
     private orangeMoneyServ: OrangeMoneyService,
     private router: Router,
-    private deeplinks: Deeplinks,
     private appRout: ApplicationRoutingService,
     private imageLoaderConfig: ImageLoaderConfigService,
     private uid: Uid,
@@ -69,11 +61,11 @@ export class AppComponent {
     private otpService: OtpService,
     private localStorage: LocalStorageService,
     private bottomSheetServ: BottomSheetService,
-    private fcm: FCM,
     private notificationService: NotificationService,
 		private network: Network,
 		private httpNative: HTTP,
-		private toastController: ToastController
+		private toastController: ToastController,
+		private firebaseDynamicLinks: FirebaseDynamicLinks
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -140,77 +132,49 @@ export class AppComponent {
   }
 
   async setupFCMNotifications() {
-    this.fcm.onNotification().subscribe((data) => {
-      console.log('received', data);
-      if (data.wasTapped) {
-        console.log('Received in background');
-      } else {
-        console.log('Received in foreground');
-      }
-      this.notificationService.handleNotification(data);
-    });
-    // Get firebase id for notifications
-    this.fcm
-      .getToken()
-      .then((token) => {
-        console.log('Your FIREBASE TOKEN', token);
-      })
-      .catch((err) => console.log('error setting firebase', err));
+    //this.fcm.onNotification().subscribe((data) => {
+    //  console.log('received', data);
+    //  if (data.wasTapped) {
+    //    console.log('Received in background');
+    //  } else {
+    //    console.log('Received in foreground');
+    //  }
+    //  this.notificationService.handleNotification(data);
+    //});
+    //// Get firebase id for notifications
+    //this.fcm
+    //  .getToken()
+    //  .then((token) => {
+    //    console.log('Your FIREBASE TOKEN', token);
+    //  })
+    //  .catch((err) => console.log('error setting firebase', err));
   }
 
   checkDeeplinks() {
-    this.deeplinks
-      .routeWithNavController(this.navContr, {
-        '/buy-pass-internet': TransfertHubServicesPage,
-        //'/pass-internet/:ppi': BuyPassInternetPage,
-        '/assistance': AssistanceHubPage,
-        '/buy-pass-illimix': TransfertHubServicesPage,
-        //'/pass-illimix/:ppi': BuyPassIllimixPage,
-        '/buy-credit': TransfertHubServicesPage,
-        '/details-conso': DetailsConsoPage,
-        '/suivi-conso': DashboardPage,
-        '/transfer-money/:msisdn/:amount': TransfertHubServicesPage,
-        '/transfer-money/:msisdn': TransfertHubServicesPage,
-        '/soscredit/:amount': '',
-        '/sospass/:amount': '',
-        '/illiflex': TransfertHubServicesPage,
-        '/parrainage': ParrainagePage,
-        '/bonplan': MyOfferPlansPage,
-        '/access/:hmac': NewRegistrationPage,
-        '/changement-formule/:codeFormule': TransfertHubServicesPage,
-        '/changement-formule': TransfertHubServicesPage,
-        '/payer-sonatel': TransfertHubServicesPage,
-        '/payer-teranga': TransfertHubServicesPage,
-        '/payer-sonatel/:msisdn': TransfertHubServicesPage,
-        '/payer-teranga/:msisdn': TransfertHubServicesPage,
-        '/login': TransfertHubServicesPage
-      })
-      .subscribe(
-        (matched) => {
-          const path = matched.$link.path
-            ? matched.$link.path
-            : matched.$link.host;
-          const isAccessByOTPPath = (path + '').includes(PATH_ACCESS_BY_OTP);
-          if (isAccessByOTPPath) {
-            this.processAccessByOtp(path);
-          } else {
-            this.goToPage(path);
-          }
-          // this.router.navigate([matched.$link.path]);
-          console.log(matched);
-        },
-        () => {
-          // console.log(notMatched);
-          // console.log('deeplink not matched');
-        }
-      );
+			this.firebaseDynamicLinks.onDynamicLink().subscribe(
+				(res: any) => {
+					const result :{deepLink: string, minimumAppVersion: number}  = res;
+					if(result?.deepLink) {
+						const path = result?.deepLink.replace('https://myorangesn.page.link','')
+						this.goToPage(path);
+						console.log('res onDynamicLink', path);
+					}
+					console.log(res);
+				},
+				 (error:any) => {
+					console.log('error onDynamicLink')
+					console.log(error)
+				});
   }
 
-  goToPage(path: string) {
+  goToPage(path: string, options?: any) {
     if (checkUrlMatch(path)) {
+			console.log('path', path);
       this.appRout.goToTransfertHubServicesPage('BUY');
     } else {
-      this.router.navigate([path]);
+      this.router.navigate([path], {
+				state: options
+			});
     }
   }
 
@@ -311,8 +275,6 @@ export class AppComponent {
 						hasResponse = true;
 						clearTimeout(timeOutID);
 						toast.dismiss();
-						toast = await this.createToastErrorMsg();
-						this.toastConnected()
 					}).catch(async (err) => {
 						console.log('err', err);
 						hasResponse = true;
@@ -330,17 +292,6 @@ export class AppComponent {
       message: "Veuillez-vous connecter pour avoir vos données à jour et effectuer des transactions.",
       position: 'top'
     });
-  }
-
-	async toastConnected() {
-    const toast = await this.toastController.create({
-      header: 'Vous êtes à nouveau connecté',
-      message: "Vos données sont à jour.",
-      position: 'top',
-			duration: 3000
-    });
-
-		return toast.present()
   }
 
 }

@@ -10,4 +10,5 @@ export interface QrPaymentMarchandTextResponseModel {
   amount: number;
   merchant_name: string;
   merchant_code: string;
+	id?: string;
 }

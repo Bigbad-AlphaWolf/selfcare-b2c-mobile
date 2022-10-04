@@ -5,7 +5,7 @@
   <div class="description">
     Choix de la transaction
   </div>
-
+	<img src="/assets/images/close.svg" class="close-icon"  alt="close-ico" (click)="close()"/>
   <div class="recents">
     <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
 
@@ -21,5 +21,4 @@
   <div class="error-msg" *ngIf="!isProcessing && hasError">
     {{ errorMsg }}
   </div>
-  
 </div>

@@ -15,7 +15,6 @@ import {
   isPostpaidFix,
 } from 'src/app/dashboard';
 import {JAMONO_ALLO_CODE_FORMULE, SubscriptionModel, JAMONO_PRO_CODE_FORMULE, PRO_MOBILE_ERROR_CODE} from 'src/shared';
-import { FCM } from 'cordova-plugin-fcm-with-dependecy-updated/ionic/ngx';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 
 const {
@@ -71,7 +70,7 @@ export class AuthenticationService {
     Observable<any>
   >();
   subscriptionUpdatedSubject: Subject<any> = new Subject<any>();
-  constructor(private http: HttpClient, private fcm: FCM) {}
+  constructor(private http: HttpClient) {}
 
   get currentPhoneNumbersubscriptionUpdated() {
     return this.subscriptionUpdatedSubject.asObservable();
@@ -508,7 +507,7 @@ export class AuthenticationService {
   registerV3(registerPayload: RegistrationModel) {
     return this.http.post(registerV3Endpoint, registerPayload).pipe(
       tap((_) => {
-        this.setUserFirebaseId(registerPayload.login).subscribe();
+        //this.setUserFirebaseId(registerPayload.login).subscribe();
       })
     );
   }
@@ -521,18 +520,19 @@ export class AuthenticationService {
   }
 
   setUserFirebaseId(msisdn) {
-    return this.getSubscriptionForTiers(msisdn).pipe(
-      switchMap((sub) => {
-        console.log('sub in firebase', sub);
-        return from(this.fcm.getToken()).pipe(
-          switchMap((firebaseId) => {
-            const codeFormule = sub?.code;
-            const payload = { firebaseId, msisdn, codeFormule };
-            return this.http.put(setFirebaseIdEndpoint, payload);
-          })
-        );
-      })
-    );
+		return of();
+    //return this.getSubscriptionForTiers(msisdn).pipe(
+    //  switchMap((sub) => {
+    //    console.log('sub in firebase', sub);
+    //    return from(this.fcm.getToken()).pipe(
+    //      switchMap((firebaseId) => {
+    //        const codeFormule = sub?.code;
+    //        const payload = { firebaseId, msisdn, codeFormule };
+    //        return this.http.put(setFirebaseIdEndpoint, payload);
+    //      })
+    //    );
+    //  })
+    //);
   }
 
   resetPasswordV2(resetPwdPayload: ResetPwdModel) {

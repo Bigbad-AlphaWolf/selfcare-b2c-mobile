@@ -43,9 +43,10 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { TRANSFER_OM_INTERNATIONAL_COUNTRIES } from 'src/app/utils/constants';
 import {XeweulSoldeComponent} from '../../components/counter/xeweul-solde/xeweul-solde.component';
 import { TypePhoneNumberManuallyComponent } from 'src/app/new-registration/components/type-phone-number-manually/type-phone-number-manually.component';
-import { NavigationExtras, Router } from '@angular/router';
+import { NavigationExtras } from '@angular/router';
 import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
 import { InfosLigneFixeComponent } from 'src/shared/infos-ligne-fixe/infos-ligne-fixe.component';
+import { ListeAnnulationTrxComponent } from 'src/app/details-conso/components/liste-annulation-trx/liste-annulation-trx.component';
 
 @Injectable({
   providedIn: 'root',
@@ -583,5 +584,15 @@ export class BottomSheetService {
     });
 
     return await modal.present();
+  }
+
+	async openListeAnnulationTrxForMLite(listAnnulationTrx?: any) {
+    return this.modalCtrl.create({
+      component: ListeAnnulationTrxComponent,
+      componentProps: {
+        listAnnulationTrx
+      },
+      cssClass: 'select-recipient-modal',
+    });
   }
 }

@@ -13,9 +13,13 @@ import { map } from 'rxjs/operators';
 export class PassVoyageService {
   constructor(private http: HttpClient) {}
 
-  fetchPassVoyage(country: CountryPass, type?: string) {
+  fetchPassVoyage(country: CountryPass, type?: string, codeFormule?: string) {
+		let url = `${CONSO_PASS_VOYAGE_PATH}?countryID=${country?.id}&passVoyageType=${type}`;
+		if(codeFormule) {
+			url += `&codeFormule=${codeFormule}`;
+		}
     return this.http.get(
-      `${CONSO_PASS_VOYAGE_PATH}?countryID=${country?.id}&passVoyageType=${type}`
+      `${url}`
     );
   }
 

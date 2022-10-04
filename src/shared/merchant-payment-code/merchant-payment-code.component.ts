@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { OPERATION_TYPE_MERCHANT_PAYMENT, REGEX_IS_DIGIT } from '..';
 import { ModalController } from '@ionic/angular';
@@ -144,7 +144,7 @@ export class MerchantPaymentCodeComponent implements OnInit {
         }),
         catchError((err) => {
           this.loadingRecents = false;
-          throw new Error(err);
+          return of([]);
         })
       );
   }

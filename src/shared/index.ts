@@ -74,6 +74,7 @@ export const OPERATION_PAY_ORANGE_BILLS = 'PAY_ORANGE_BILLS';
 export const OPERATION_UNBLOCK_OM_ACCOUNT = 'UNBLOCK_OM_ACCOUNT';
 export const OPERATION_RESET_PIN_OM = 'RESET_OM_ACCOUNT';
 export const OPERATION_ABONNEMENT_WIDO = 'ABONNEMENT_WIDO';
+export const OPERATION_CANCEL_TRX_MLITE = 'OPERATION_CANCEL_TRX_MLITE';
 export const FIXES_SERVICES_PAGE = 'FIXES_SERVICES_PAGE';
 export const OFFRES_FIXES_SERVICES_PAGE = 'OFFRES_FIXES_SERVICES_PAGE';
 export const INFOS_ABONNEMENT_FIXE = 'INFOS_FIXES';
@@ -311,6 +312,9 @@ export interface PassInfoModel {
   typePassInternet: any;
   price_plan_index: number;
   price_plan_index_om: number;
+	contentId?: number;
+	thumbnailLandscape?: string;
+	thumbnailPortrait?: string;
 }
 
 export interface PromoPassModel {

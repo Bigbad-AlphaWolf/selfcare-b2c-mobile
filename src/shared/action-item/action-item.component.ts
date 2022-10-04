@@ -261,6 +261,7 @@ export class ActionItemComponent implements OnInit {
       component: SelectBeneficiaryPopUpComponent,
       componentProps: {
         isForTransferBlocking: true,
+				inputType: 'text'
       },
       cssClass: 'select-recipient-modal',
     });

@@ -588,6 +588,7 @@ export class NewPinpadModalPage implements OnInit {
               pin: this.orangeMoneyService.decryptOmPin(omUser.sequence.split(''), pin),
               price_plan_index: this.buyPassPayload.pass.price_plan_index_om,
               amount: this.buyPassPayload.pass.tarif,
+              contentId: this.buyPassPayload.pass.contentId
             };
 						this.suscribeWidoByOMoney(payloadWido, isFromFaceId);
 						break;
@@ -976,6 +977,7 @@ export class NewPinpadModalPage implements OnInit {
       service_version: OM_SERVICE_VERSION,
       amount: params.amount,
       uuid: this.uuid,
+			contentId: params?.contentId
     };
     const logInfos: FollowOemlogPurchaseInfos = {
       sender: db.msisdn,
@@ -986,7 +988,7 @@ export class NewPinpadModalPage implements OnInit {
       withTouchID,
     };
 
-    this.abonnementwido.suscribeToWidoByOMoney({msisdn: buyPassPayload.msisdn2, packId: +buyPassPayload.price_plan_index, omPin: buyPassPayload.pin}).subscribe(
+    this.abonnementwido.suscribeToWidoByOMoney({msisdn: buyPassPayload.msisdn2, packId: +buyPassPayload.price_plan_index, contentId:+buyPassPayload?.contentId,  omPin: buyPassPayload.pin}).subscribe(
       (res: any) => {
         this.processResult(res, db, logInfos, buyPassPayload);
       },
@@ -1129,6 +1131,7 @@ export class NewPinpadModalPage implements OnInit {
       user_type: 'user',
       service_version: OM_SERVICE_VERSION,
       capping: params.capping,
+			viaQr: this.opXtras?.viaQr
     };
     const logInfos: FollowOemlogPurchaseInfos = {
       sender: omUser.msisdn,
@@ -1344,15 +1347,17 @@ export class NewPinpadModalPage implements OnInit {
 
   blockTransfer() {
     this.processingPin = true;
+		let cancelTrxResponse: any;
     this.orangeMoneyService
-      .blockTransfer(this.transactionToBlock)
+      .blockTransfer(this.opXtras?.blockTrxOMPayload)
       .pipe(
         switchMap(response => {
+					cancelTrxResponse = response
           return this.getUserOMStatus();
         }),
         tap(res => {
           this.processingPin = false;
-          this.modalController.dismiss({ success: true, hasOMStatusFull: res });
+          this.modalController.dismiss({ success: true, hasOMStatusFull: res, annulationResponse: cancelTrxResponse });
         }),
         catchError(err => {
           this.processingPin = false;

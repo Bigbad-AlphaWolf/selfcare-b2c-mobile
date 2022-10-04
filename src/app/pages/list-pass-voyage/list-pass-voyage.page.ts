@@ -86,8 +86,8 @@ export class ListPassVoyagePage implements OnInit {
 
   constructPassRequests() {
     return [
-      this.passVoyageService.fetchPassVoyage(this.country, PassVoyage.APPEL),
-      this.passVoyageService.fetchPassVoyage(this.country, PassVoyage.DATA),
+      this.passVoyageService.fetchPassVoyage(this.country, PassVoyage.APPEL, this.opXtras.code),
+      this.passVoyageService.fetchPassVoyage(this.country, PassVoyage.DATA, this.opXtras.code),
     ];
   }
 

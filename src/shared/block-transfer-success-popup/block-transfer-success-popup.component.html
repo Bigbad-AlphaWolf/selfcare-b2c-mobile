@@ -26,8 +26,15 @@
 	<ng-container *ngIf="isUserOMFull; else elseTemplate">
 		<div class="warning">
 			<img src="assets/images/icon-warning.png" alt="" class="warning-ico">
-			Votre transaction de {{ MATH.abs(transactionToBlock?.amount) + transactionToBlock?.fees}}FCFA a été annulée. Le montant a été credité sur le compte Orange Money du numero client .
+			<ng-container *ngIf="isMLite; else noMLite">
+				Votre demande d'annulation de la transaction de {{ MATH.abs(transactionToBlock?.amount) + transactionToBlock?.fees}} FCFA a été envoyée. Le montant sera credité sur votre compte Orange Money aprés <span> validation du marchand </span>.
+			</ng-container>
+			<ng-template #noMLite>
+				Votre transaction de {{ MATH.abs(transactionToBlock?.amount) + transactionToBlock?.fees}}FCFA a été annulée.
+				Le montant a été credité sur le compte Orange Money du numero client .
+			</ng-template>
 		</div>
+
 		<div class="btn-container">
 			<button class="scb-btn scb-btn-white" (click)="goToDashboard()">Retour à l'accueil</button>
 		</div>

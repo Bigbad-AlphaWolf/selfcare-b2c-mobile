@@ -9,7 +9,7 @@
       >Bienvenue <span class="user-name">{{ firstName?.split(' ')[0] }}</span></span
     >
   </div>
-  <div (click)="goToMyAccount()" class="avatar">
-    <img [src]="avatarUrl" alt="profil-mob" (error)="onErrorImgAvatar()" />
+  <div (click)="launchQrCode()" class="avatar">
+		<ion-icon name="qr-code-outline" class="bell-icon"></ion-icon>
   </div>
 </ion-header>

@@ -4,6 +4,7 @@ import { NO_AVATAR_ICON_URL } from '..';
 import { downloadAvatarEndpoint } from 'src/app/services/dashboard-service/dashboard.service';
 import { NavController } from '@ionic/angular';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { QrScannerService } from 'src/app/services/qr-scanner-service/qr-scanner.service';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -18,7 +19,8 @@ export class DashboardHeaderComponent implements OnInit {
 
   constructor(
     private navCont: NavController,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+		private qrScan: QrScannerService
   ) {}
 
   ngOnInit() {
@@ -38,4 +40,8 @@ export class DashboardHeaderComponent implements OnInit {
   goToMyAccount() {
     this.navCont.navigateForward(['/my-account']);
   }
+
+	launchQrCode() {
+		this.qrScan.startScan();
+	}
 }

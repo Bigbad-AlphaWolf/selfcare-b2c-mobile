@@ -4,7 +4,7 @@ import { ASSISTANCE, CONSO, HUB_OM_TAB, SERVICES } from 'src/shared';
 import { SwiperOptions } from 'swiper';
 import { SwiperComponent } from 'swiper/angular';
 import { NewAssistanceHubV2Page } from '../new-assistance-hub-v2/new-assistance-hub-v2.page';
-import { NewServicesPage } from '../new-services/new-services.page';
+import { NewServicesPage, TABS_SERVICES } from '../new-services/new-services.page';
 import { NewSuiviConsoPage } from '../new-suivi-conso/new-suivi-conso.page';
 import { OmUniverseComponent } from '../om-universe/om-universe.component';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
@@ -120,6 +120,18 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
     this.currentSlideIndex = index;
     this.swiper.swiperRef.slideTo(index);
   }
+
+	goTo(event: any) {
+		console.log('event', event);
+		const index = event.slideTo;
+		const tab = event.tab;
+		this.setSlide(index);
+		console.log('tab', tab);
+
+		if(tab === TABS_SERVICES.LOISIR) {
+			this.newServicesPage.setSlidesIndex(Object.keys(TABS_SERVICES).indexOf(TABS_SERVICES.LOISIR));
+		}
+	}
 
   onSwipe(event) {
     this.currentSlideIndex = event.activeIndex;

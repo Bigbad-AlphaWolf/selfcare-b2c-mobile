@@ -1,0 +1,18 @@
+<div class="historic-transaction-page rattach-by-id-card oem-bottomsheet-container">
+	<div class="title">
+		Demande(s) d'annulation
+	</div>
+	<div class="list-annulation">
+		<div class="list">
+			<ng-container  *ngIf="!isLoading">
+				<app-transaction-item *ngFor="let item of listAnnulationTrx" [transaction]="item" [typeTransaction]="'ANNULATION_TRX'" (onClick)="openConfirmModal($event)">
+				</app-transaction-item>
+				<span *ngIf="!listAnnulationTrx?.length">
+					Pas de demandes annulations pour le moment
+				</span>
+			</ng-container>
+			<ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+		</div>
+	</div>
+
+</div>
