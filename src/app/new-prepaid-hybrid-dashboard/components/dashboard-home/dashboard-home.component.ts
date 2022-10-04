@@ -290,11 +290,8 @@ export class DashboardHomeComponent implements OnInit {
       (res: SubscriptionModel) => {
         this.currentProfil = res.profil;
         this.isHyBride = isProfileHybrid(this.currentProfil);
-        if (this.isHyBride) {
-          this.getCustomerSargalStatus();
-        } else {
-          this.getSargalPoints();
-        }
+				this.getSargalPoints();
+				this.getCustomerSargalStatus()
       },
       () => {}
     );
@@ -347,17 +344,23 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   processConso(consumation: NewUserConsoModel[]) {
-    this.getValidityDates(consumation);
-    const bonus1 = consumation.find(conso => conso.codeCompteur === 2)?.montantRestantBrut
-      ? consumation.find(conso => conso.codeCompteur === 2)?.montantRestantBrut
+		const appelCompteur = consumation.filter((item) => {
+			return item.typeCompteur === 'APPEL'
+		})
+		this.getValidityDates(appelCompteur);
+    const bonus1 = appelCompteur.find(conso => conso.codeCompteur === 2)?.montantRestantBrut
+      ? appelCompteur.find(conso => conso.codeCompteur === 2)?.montantRestantBrut
       : 0;
-    const bonus2 = consumation.find(conso => conso.codeCompteur === 6)?.montantRestantBrut
-      ? consumation.find(conso => conso.codeCompteur === 6)?.montantRestantBrut
+
+    const bonus2 = appelCompteur.find(conso => conso.codeCompteur === 6)?.montantRestantBrut
+      ? appelCompteur.find(conso => conso.codeCompteur === 6)?.montantRestantBrut
       : 0;
-    const forfaitBalance = consumation.find(conso => conso.codeCompteur === 9)?.montantRestantBrut
-      ? consumation.find(conso => conso.codeCompteur === 9)?.montantRestantBrut
+
+    const forfaitBalance = appelCompteur.find(conso => conso.codeCompteur === 9)?.montantRestantBrut
+      ? appelCompteur.find(conso => conso.codeCompteur === 9)?.montantRestantBrut
       : 0;
-    this.creditRechargement = consumation.find(conso => conso.codeCompteur === 1)?.montantRestantBrut;
+
+    this.creditRechargement = appelCompteur.find(conso => conso.codeCompteur === 1)?.montantRestantBrut;
     this.canDoSOS = this.creditRechargement <= 4;
     this.creditGlobal = formatCurrency(bonus1 + bonus2 + forfaitBalance + this.creditRechargement);
   }
@@ -365,7 +368,7 @@ export class DashboardHomeComponent implements OnInit {
   getValidityDates(appelConso: any[]) {
     let longestDate = 0;
     appelConso.forEach(conso => {
-      const dateDMY = conso.dateExpiration.substring(0, 10);
+      const dateDMY = conso?.dateExpiration.substring(0, 10);
       const date = this.processDateDMY(dateDMY);
       if (date > longestDate) {
         longestDate = date;
