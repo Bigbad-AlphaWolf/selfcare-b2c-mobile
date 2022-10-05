@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-packageName="com.orange.myorange.osn" id="com.orange.mobile.myorangesn" ios-CFBundleIdentifier="com.orange.mobile.myorangesn" version="7.2.2" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-packageName="com.orange.myorange.osn" id="com.orange.mobile.myorangesn" ios-CFBundleIdentifier="com.orange.mobile.myorangesn" version="7.4.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Orange Et Moi</name>
     <description>Tout Orange En Un Click</description>
     <author email="serviceclient@orange-sonatel.com" href="https://orange.sn/">Orange Sonatel Team</author>
@@ -149,24 +149,6 @@
     <plugin name="cordova-plugin-device" spec="^2.0.3" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.2.0" />
     <plugin name="cordova-open-native-settings" spec="^1.5.2" />
-    <plugin name="ionic-plugin-deeplinks" spec="^1.0.20">
-        <variable name="URL_SCHEME" value="orangeetmoi" />
-        <variable name="DEEPLINK_SCHEME" value="https" />
-        <variable name="DEEPLINK_HOST" value="orangeetmoi.sn" />
-        <variable name="ANDROID_PATH_PREFIX" value="/" />
-        <variable name="ANDROID_2_PATH_PREFIX" value="/" />
-        <variable name="ANDROID_3_PATH_PREFIX" value="/" />
-        <variable name="ANDROID_4_PATH_PREFIX" value="/" />
-        <variable name="ANDROID_5_PATH_PREFIX" value="/" />
-        <variable name="DEEPLINK_2_SCHEME" value="https" />
-        <variable name="DEEPLINK_2_HOST" value="myorangesn.page.link" />
-        <variable name="DEEPLINK_3_SCHEME" value=" " />
-        <variable name="DEEPLINK_3_HOST" value=" " />
-        <variable name="DEEPLINK_4_SCHEME" value=" " />
-        <variable name="DEEPLINK_4_HOST" value=" " />
-        <variable name="DEEPLINK_5_SCHEME" value=" " />
-        <variable name="DEEPLINK_5_HOST" value=" " />
-    </plugin>
     <allow-navigation href="http://localhost:8101" sessionid="1afeb6e0" />
     <allow-navigation href="http://localhost:8100" sessionid="67780af4" />
 </widget>

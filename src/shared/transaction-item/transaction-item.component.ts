@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { ModalSuccessModel } from 'src/app/models/modal-success-infos.model';
 import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
@@ -20,6 +20,8 @@ import {
 })
 export class TransactionItemComponent implements OnInit {
   @Input() transaction: any;
+	@Input() typeTransaction: string;
+	@Output() onClick = new EventEmitter();
   currentMsisdn = this.dashboardService.getCurrentPhoneNumber();
   constructor(
     private omService: OrangeMoneyService,
@@ -32,11 +34,12 @@ export class TransactionItemComponent implements OnInit {
 
   async openTransactionModal() {
     // date difference in ms
+		this.onClick.emit(this.transaction);
     const dateDifference =
       new Date(this.transaction.currentDate).getTime() -
       new Date(this.transaction.operationDate).getTime();
     const isLessThan72h = dateDifference < FIVE_DAYS_DURATION_IN_MILLISECONDS;
-    if (!isLessThan72h || this.transaction.typeAchat !== 'TRANSFER') return;
+    if (!isLessThan72h && this.transaction.typeAchat !== 'TRANSFER' && this.transaction.typeAchat !== 'TRANSFERT_ARGENT' && this.transaction.operationType !== 'DEBIT') return;
     const omMsisdn = await this.omService.getOmMsisdn().toPromise();
     this.followAnalyticsService.registerEventFollow(
       'clic_transfer_from_history',

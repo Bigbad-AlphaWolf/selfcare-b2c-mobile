@@ -21,6 +21,9 @@
     margin-top: 10px;
     margin-bottom: 20px;
 
+		.transactions-label {
+
+		}
     .country-block {
       width: 53px;
       height: 1px;
@@ -153,8 +156,8 @@
   }
   .confirm-btn {
     // position: relative;
-    position: absolute;
-    width: percentage(345/375);
+    //position: absolute;
+    width: 100%;
     bottom: 10px;
     // left: percentage(15/375);
     button {

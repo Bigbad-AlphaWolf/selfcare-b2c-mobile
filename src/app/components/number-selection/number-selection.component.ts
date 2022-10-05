@@ -14,6 +14,8 @@ import {
   NO_RECENTS_MSG,
   OPERATION_TYPE_PASS_INTERNATIONAL,
   OPERATION_TYPE_PASS_LAMBJ,
+	OPERATION_TYPE_SEDDO_CREDIT,
+	OPERATION_TYPE_SEDDO_BONUS,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -76,8 +78,7 @@ export class NumberSelectionComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     private recentsService: RecentsService,
     private followAnalyticsService: FollowAnalyticsService,
-    private diagnostic: Diagnostic,
-    private contactService: ContactsService
+    private diagnostic: Diagnostic
   ) {}
 
   ngOnInit() {
@@ -97,7 +98,9 @@ export class NumberSelectionComponent implements OnInit {
       }),
       share()
     );
-    this.checkOmAccount();
+		if(this.data.purchaseType !== OPERATION_TYPE_SEDDO_CREDIT && this.data.purchaseType !== OPERATION_TYPE_SEDDO_BONUS) {
+			this.checkOmAccount();
+		}
     this.checkContactsAuthorizationStatus();
   }
 

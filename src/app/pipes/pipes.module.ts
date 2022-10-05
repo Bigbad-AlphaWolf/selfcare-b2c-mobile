@@ -22,6 +22,7 @@ import { StatusBillPaymentPipe } from 'src/shared/pipes/status-bill-payment.pipe
 import { GetBannerTitlePipe } from './get-banner-title/get-banner-title.pipe';
 import { GetBannerDescriptionPipe } from './get-banner-description/get-banner-description.pipe';
 import { DisplayFileManagerImageForImageLoaderPipe } from 'src/shared/pipes/display-file-manager-image-for-image-loader.pipe';
+import { DisplayInfosContactPipe } from 'src/shared/pipes/display-infos-contact.pipe';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { DisplayFileManagerImageForImageLoaderPipe } from 'src/shared/pipes/disp
     StatusBillPaymentPipe,
     GetBannerTitlePipe,
     GetBannerDescriptionPipe,
-		DisplayFileManagerImageForImageLoaderPipe
+		DisplayFileManagerImageForImageLoaderPipe,
+		DisplayInfosContactPipe
   ],
   imports: [CommonModule],
   exports: [
@@ -72,7 +74,8 @@ import { DisplayFileManagerImageForImageLoaderPipe } from 'src/shared/pipes/disp
     StatusBillPaymentPipe,
     GetBannerTitlePipe,
     GetBannerDescriptionPipe,
-		DisplayFileManagerImageForImageLoaderPipe
+		DisplayFileManagerImageForImageLoaderPipe,
+		DisplayInfosContactPipe
   ],
   providers: [PassVolumeDisplayPipe, DatePipe],
 })

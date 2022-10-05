@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { CategoryPurchaseHistory } from 'src/app/models/category-purchase-history.model';
 import { PurchaseModel } from 'src/app/models/purchase.model';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { PurchaseService } from 'src/app/services/purchase-service/purchase.service';
 import {
-  DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY,
+  DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY, OPERATION_CANCEL_TRX_MLITE,
 } from 'src/shared';
+import { YesNoModalComponent } from 'src/shared/yes-no-modal/yes-no-modal.component';
 import { displayDate } from '../../new-suivi-conso.utils';
 
 @Component({
@@ -32,13 +35,18 @@ export class TransactionsHistoricComponent implements OnInit {
     { label: '7 jours', value: 7 },
   ];
   selectedDateFilter = this.dateFilters[0];
+	listAnnulationTrx : PurchaseModel[] = [];
+	isFetchingListAnnulationTrx: boolean;
   constructor(
     private purchaseService: PurchaseService,
     private dashboardservice: DashboardService,
+    private omService: OrangeMoneyService,
+		private modalController: ModalController
   ) {}
 
   ngOnInit() {
     this.getTransactionsHistoric();
+		this.fetchAnnulationTrx();
   }
 
   filterByDate(dateFilter) {
@@ -102,6 +110,12 @@ export class TransactionsHistoricComponent implements OnInit {
       .subscribe();
   }
 
+	fetchAnnulationTrx() {
+		this.omService.getAnnulationTrxMarchandLite().subscribe((res: any) => {
+			this.listAnnulationTrx =	this.omService.mapToHistorikAchat(res?.content?.data?.content);
+		})
+	}
+
   processTransactions(historicArray: any[]) {
     const groups = historicArray.reduce((groupedHistoric, comItem) => {
       const date = comItem.operationDate.substring(0, 10);
@@ -122,5 +136,28 @@ export class TransactionsHistoricComponent implements OnInit {
     const formattedDate = date.split('-').reverse().join('/');
     return displayDate(formattedDate);
   }
+
+	async openConfirmModal(transaction: PurchaseModel) {
+		const modalCtrl = await this.modalController.create({
+			component: YesNoModalComponent,
+			componentProps: {
+				typeModal: OPERATION_CANCEL_TRX_MLITE,
+				transaction
+			},
+			cssClass: 'select-recipient-modal'
+		});
+
+		modalCtrl.onDidDismiss().then((res: any) => {
+			res = res.data;
+			if (res?.continue) {
+				this.isFetchingListAnnulationTrx = true;
+				this.omService.getAnnulationTrxMarchandLite().subscribe((res: any) => {
+					this.isFetchingListAnnulationTrx = false;
+					this.listAnnulationTrx = this.omService.mapToHistorikAchat(res?.content?.data?.content);
+				})
+			}
+		});
+		return await modalCtrl.present();
+	}
 
 }

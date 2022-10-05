@@ -44,21 +44,11 @@ export class NewDetailsConsoComponent implements OnInit {
     this.consoService
       .getUserCunsomation()
       .pipe(
-        takeUntil(timer(USER_CONSO_REQUEST_TIMEOUT).pipe(tap(_ => {
+        tap(res => {
+          this.userConso = this.processDetailsConso(res);
           this.loadingConso = false;
-          const key = `${USER_CONSO_STORAGE_KEY}_${this.msisdn}`;
-          const storedData: NewUserConsoModel[] = this.storageService.getFromLocalStorage(key);
-          storedData.length && this.processDetailsConso(storedData);
-          this.ref.detectChanges();
-          this.consoService.getUserCunsomation(this.msisdn).subscribe({
-            next: (response) => {
-              this.userConso = response.length ? this.processDetailsConso(response) : null;
-              this.ref.detectChanges();
-            }
-          });
-        }))),
-        switchMap(resp => {
-          return this.sargalService.getFellowsMsisdn().pipe(
+          event ? event.target.complete() : '';
+          this.sargalService.getFellowsMsisdn().pipe(
             switchMap((fellowsMsisdn: any[]) => {
               const mappedFellowArray = [];
               for (let fellow of fellowsMsisdn) {
@@ -77,24 +67,15 @@ export class NewDetailsConsoComponent implements OnInit {
                       name: castedFellow['counterName'],
                       typeCompteur: COUNTER_TYPE_FELLOW,
                     };
-                    resp.push(mappedFellow);
+                    res.push(mappedFellow);
                   }
-                  return resp;
-                }),
-                catchError(err => {
-                  return of(resp);
+                  this.userConso = this.processDetailsConso(res)
+                  this.ref.detectChanges();
+                  return res;
                 })
               );
-            }),
-            catchError(err => {
-              return of(resp);
             })
-          );
-        }),
-        tap(res => {
-          this.userConso = this.processDetailsConso(res);
-          this.loadingConso = false;
-          event ? event.target.complete() : '';
+          ).subscribe();
           this.ref.detectChanges();
         }),
         catchError(err => {

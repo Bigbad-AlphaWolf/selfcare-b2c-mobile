@@ -177,7 +177,7 @@ export class OperationSuccessFailModalPage implements OnInit {
         tap((res: CheckEligibilityModel) => {
           this.checkingEligibility = false;
           if (res.eligible) {
-            this.openPinPadToBlock();
+            this.openPinPadToBlock(res?.transactionDetails);
           } else {
             this.eligibilityHasError = true;
             this.eligibilityError = res.message;
@@ -193,26 +193,28 @@ export class OperationSuccessFailModalPage implements OnInit {
       .subscribe();
   }
 
-  async openPinPadToBlock() {
+  async openPinPadToBlock(blockTrxOMPayload?: any) {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
         transactionToBlock: this.historyTransactionItem,
         operationType: OPERATION_BLOCK_TRANSFER,
+				opXtras: {...this.opXtras, blockTrxOMPayload}
       },
     });
     modal.onDidDismiss().then(async response => {
       if (response.data && response.data.success) {
         await this.modalController.dismiss();
         const hasOMStatusFull = response?.data?.hasOMStatusFull;
-        this.openBlockTxnModalSuccess(hasOMStatusFull);
+        const isMarchandLite = response?.data?.annulationResponse?.marchandLite;
+        this.openBlockTxnModalSuccess(hasOMStatusFull, isMarchandLite);
       }
     });
     return await modal.present();
   }
 
-  async openBlockTxnModalSuccess(userHasOmStatusFull?: boolean) {
+  async openBlockTxnModalSuccess(userHasOmStatusFull?: boolean, isMLite?: boolean) {
     const modal = await this.modalController.create({
       component: BlockTransferSuccessPopupComponent,
       cssClass: 'success-or-fail-modal',
@@ -220,6 +222,7 @@ export class OperationSuccessFailModalPage implements OnInit {
       componentProps: {
         transactionToBlock: this.historyTransactionItem,
         isUserOMFull: userHasOmStatusFull,
+				isMLite
       },
     });
     return await modal.present();
@@ -248,6 +251,7 @@ export class OperationSuccessFailModalPage implements OnInit {
   goToPage() {
     switch (this.purchaseType) {
       case OPERATION_TYPE_PASS_ALLO:
+      case OPERATION_ABONNEMENT_WIDO:
         this.appRouting.goToTransfertHubServicesPage('BUY');
         break;
       case OPERATION_TYPE_PASS_ILLIMIX:

@@ -105,6 +105,13 @@
           </ng-template>
         </ion-slide>
       </ion-slides>
+			<div *ngIf="!isFechingListAnnulationTrx && listAnnulationTrx?.length" (click)="goToListAnnulationTrxMarchandLite()" class="om-transactions-list-cancel">
+				<img src="assets/images/information.svg" alt="" />
+				<div class="scb-text-blue-popup text">
+          Vous avez ({{listAnnulationTrx?.length}}) demande(s) d'annulation.
+        </div>
+				<img alt="" src="/assets/images/keyboard-arrow-right-black.svg"/>
+			</div>
     </div>
     <div class="actions-cards-bloc">
       <ng-container *ngFor="let action of actions">

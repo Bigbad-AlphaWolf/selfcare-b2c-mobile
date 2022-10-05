@@ -1,45 +1,48 @@
 <div [id]="'pass_wido_' + passWido?.nom | generateIdForTA" class="item-container" (click)="choosePass(passWido)">
   <div class="item-pass-internet">
-    <div class="top-block">
-      <span class="price scb-text-orange"> {{ +passWido?.tarif + ' FCFA' }} </span>
-    </div>
-    <div class="bottom-block">
-      <div class="left-side">
-        <span class="item-volume">
-          {{ passWido?.nom }}
-        </span>
-        <span class="item-type scb-text-gray"> Streaming </span>
-      </div>
-      <div class="right-side">
-        <span class="item-validity scb-text-gray">
-          Valable
-          <ng-container
-            [ngSwitch]=" passWido?.categoriePass?.libelle"
-          >
-            <ng-container *ngSwitchCase="'Jour'"
-              >{{ passWido?.validitePass ? passWido?.validitePass : '1 jour.' }}
-            </ng-container>
-            <ng-container *ngSwitchCase="'Semaine'"
-              >{{ passWido?.validitePass ? passWido?.validitePass : '7 jours.' }}
-            </ng-container>
-            <ng-container *ngSwitchCase="'Mois'">
-              {{ passWido?.validitePass ? passWido?.validitePass : '30 jours.' }}</ng-container
-            >
-            <ng-container *ngSwitchCase="'Nuit'">
-              {{
-                passWido?.validitePass ? passWido?.validitePass : 'de 00h à 08h.'
-              }}</ng-container
-            >
-            <ng-container *ngSwitchDefault
-              >{{ passWido?.validitePass ? passWido?.validitePass : '' }}
-            </ng-container>
-          </ng-container>
-        </span>
-      </div>
-    </div>
-    <div *ngIf="passWido?.passPromo" class="promo-block">
-      <span class="description scb-text-white"> {{ passWido?.description }}</span>
-      <span class="arrow"></span>
-    </div>
+		<img *ngIf="passWido?.thumbnailPortrait" [src]="passWido?.thumbnailPortrait" alt="">
+		<div class="content">
+			<div class="top-block">
+				<span class="price scb-text-orange"> {{ +passWido?.tarif + ' FCFA' }} </span>
+			</div>
+			<div class="bottom-block">
+				<div class="left-side">
+					<span class="item-volume">
+						{{ passWido?.nom }}
+					</span>
+					<span class="item-type scb-text-gray"> Streaming </span>
+				</div>
+				<div class="right-side">
+					<span class="item-validity scb-text-gray">
+						Valable
+						<ng-container
+							[ngSwitch]=" passWido?.categoriePass?.libelle"
+						>
+							<ng-container *ngSwitchCase="'Jour'"
+								>{{ passWido?.validitePass ? passWido?.validitePass : '1 jour.' }}
+							</ng-container>
+							<ng-container *ngSwitchCase="'Semaine'"
+								>{{ passWido?.validitePass ? passWido?.validitePass : '7 jours.' }}
+							</ng-container>
+							<ng-container *ngSwitchCase="'Mois'">
+								{{ passWido?.validitePass ? passWido?.validitePass : '30 jours.' }}</ng-container
+							>
+							<ng-container *ngSwitchCase="'Nuit'">
+								{{
+									passWido?.validitePass ? passWido?.validitePass : 'de 00h à 08h.'
+								}}</ng-container
+							>
+							<ng-container *ngSwitchDefault
+								>{{ passWido?.validitePass ? passWido?.validitePass : '' }}
+							</ng-container>
+						</ng-container>
+					</span>
+				</div>
+			</div>
+			<div *ngIf="passWido?.passPromo" class="promo-block">
+				<span class="description scb-text-white"> {{ passWido?.description }}</span>
+				<span class="arrow"></span>
+			</div>
+		</div>
   </div>
 </div>

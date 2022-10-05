@@ -114,7 +114,6 @@ export class TransferSetAmountPage implements OnInit {
     private iab: InAppBrowser,
     private platform: Platform,
     private dashboardService: DashboardService,
-    private authService: AuthenticationService,
     private consoService: UserConsoService,
     private followAnalyticsService: FollowAnalyticsService
   ) {}
@@ -143,8 +142,8 @@ export class TransferSetAmountPage implements OnInit {
   }
 
   async checkTransferOMDeeplink() {
-    const msisdn = this.route.snapshot.paramMap.get('msisdn');
-    const amount = this.route.snapshot.paramMap.get('amount') ? +this.route.snapshot.paramMap.get('amount') : null;
+    const msisdn = this.route.snapshot.paramMap.get('msisdn') || history?.state?.msisdn;
+    const amount = +this.route.snapshot.paramMap.get('amount') || +history?.state?.amount;
     if (msisdn) {
       this.purchasePayload = {
         recipientMsisdn: msisdn,

@@ -1,5 +1,14 @@
 @import 'src/app/app';
 
+.ibou-icon {
+	position: fixed;
+    width: 60px;
+    height: 60px;
+    right: 20px;
+    bottom: 90px;
+    z-index: 1;
+    flex: 1;
+}
 ion-fab-button {
   margin-left: 140px;
   overflow: visible;

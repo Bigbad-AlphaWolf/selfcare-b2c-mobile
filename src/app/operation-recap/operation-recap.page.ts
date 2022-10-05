@@ -282,7 +282,7 @@ export class OperationRecapPage implements OnInit {
   }
 
   async checkBuyPassDeeplink(): Promise<any> {
-    const pricePlanIndex = +this.route.snapshot.paramMap.get('ppi');
+    const pricePlanIndex = +this.route.snapshot.paramMap.get('ppi') || history?.state?.ppi;
     if (pricePlanIndex) {
       const passByPPi: any = await this.passService.getPassByPPI(pricePlanIndex);
       if (passByPPi.error) {
@@ -418,7 +418,7 @@ export class OperationRecapPage implements OnInit {
 
   suscribeToWido(recipientMsisdn: string, ppi: string, logInfos: any) {
     this.passAbonnementWido
-      .suscribeToWido({ msisdn: recipientMsisdn, packId: +ppi })
+      .suscribeToWido({ msisdn: recipientMsisdn, packId: +ppi, contentId: +this.passChoosen?.contentId })
       .pipe(
         tap(res => {
           this.transactionSuccessful({ code: '0' }, logInfos);

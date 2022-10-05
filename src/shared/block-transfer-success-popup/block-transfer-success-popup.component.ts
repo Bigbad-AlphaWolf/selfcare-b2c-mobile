@@ -14,6 +14,7 @@ import { ANNULATION_TRANSFER_DEADLINE } from '..';
 export class BlockTransferSuccessPopupComponent implements OnInit {
   @Input() transactionToBlock: PurchaseModel;
   @Input() isUserOMFull: boolean;
+  @Input() isMLite: boolean;
   annulationDeadline = ANNULATION_TRANSFER_DEADLINE;
   MATH = Math;
 

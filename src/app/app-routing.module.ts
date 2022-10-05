@@ -62,6 +62,16 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'soscredit',
+    loadChildren: () => import('./buy-sos/buy-sos.module').then(m => m.BuySosPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'sospass',
+    loadChildren: () => import('./buy-sos/buy-sos.module').then(m => m.BuySosPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'sospass/:amount',
     loadChildren: () => import('./buy-sos/buy-sos.module').then(m => m.BuySosPageModule),
     canActivate: [AuthGuard]
@@ -188,7 +198,22 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'pass-illimix',
+    loadChildren: () => import('./operation-recap/operation-recap.module').then(m => m.OperationRecapPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'pass-internet',
+    loadChildren: () => import('./operation-recap/operation-recap.module').then(m => m.OperationRecapPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'transfer-money/:msisdn/:amount',
+    loadChildren: () => import('./transfer-set-amount/transfer-set-amount.module').then(m => m.TransferSetAmountPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'transfer-money',
     loadChildren: () => import('./transfer-set-amount/transfer-set-amount.module').then(m => m.TransferSetAmountPageModule),
     canActivate: [AuthGuard]
   },
