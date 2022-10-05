@@ -21,9 +21,7 @@ export class BonsPlansSargalService {
     const msisdn = this.dashboardService.getCurrentPhoneNumber();
     return this.authService.getSubscription(msisdn).pipe(
       switchMap(sub => {
-        return this.http.get<BonPlanSargalModel[]>(`${BONS_PLANS_SARGAL_URL}/${msisdn}/all?formules=${sub?.code}${categoryQueryParam}`, {
-          observe: 'response',
-        });
+        return this.http.get<BonPlanSargalModel[]>(`${BONS_PLANS_SARGAL_URL}/${msisdn}/all?formules=${sub?.code}${categoryQueryParam}`);
       })
     );
   }

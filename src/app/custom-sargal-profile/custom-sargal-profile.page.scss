@@ -50,6 +50,9 @@ ion-content {
             &:first-child() {
                 margin-left: 20px !important;
             }
+						&:last-child() {
+							margin-right: 20px;
+						}
         }
     }
 
