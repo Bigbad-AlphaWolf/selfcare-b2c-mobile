@@ -400,7 +400,7 @@ export class DashboardKirenePage implements OnInit {
   }
 
   openModalPassNumberSelection(operation: string, routePath: string) {
-    this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, operation, routePath, false);
+    this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, operation, routePath);
   }
 
   onError(input: { el: HTMLElement; display: boolean }[]) {
