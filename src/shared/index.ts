@@ -1336,6 +1336,7 @@ export const OM_UNKOWN_ERROR_CODE = 'Erreur-019';
 export const OM_CAPPING_ERROR = 'Capping-social-error';
 export const TRANSFER_BALANCE_INSUFFICIENT_ERROR = 'Le montant que vous voulez transférer est supérieur à votre solde.';
 export const BALANCE_INSUFFICIENT_ERROR = 'Le montant de votre solde est insuffisant pour effectuer cette opération.';
+export const BALANCE_INSUFFICIENT_FOR_TRANSFERT_CREDIT_ERROR = 'Le montant de votre solde est insuffisant pour effectuer cette opération. Vous devez avoir au moins 490Fcfa de crédit recharge restant aprés votre opération';
 export const CREDIT_FEE_INSUFFICIENT_ERROR = 'Vous devez avoir au moins 20F de crédit recharge pour couvrir les frais.';
 export const BONUS_INSUFFICIENT_ERROR = 'Votre solde bonus est insuffisant pour effectuer ce transfert.';
 export const TRANSFER_OM_BALANCE_NOT_ALLOWED = "Le montant que vous avez saisi n'est pas dans la plage autorisée";
