@@ -27,6 +27,7 @@ import { NotificationService } from './services/notification.service';
 import { HTTP } from '@ionic-native/http/ngx';
 import { environment } from 'src/environments/environment';
 import { FirebaseDynamicLinks } from '@awesome-cordova-plugins/firebase-dynamic-links/ngx';
+import { BonsPlansSargalService } from './services/bons-plans-sargal/bons-plans-sargal.service';
 
 const { SERVER_API_URL } = environment;
 
@@ -42,6 +43,7 @@ export class AppComponent {
   appId: string;
   static IMEI: string;
   omUserInfos: any;
+	showBonPlanSargal: boolean;
   constructor(
     private platform: Platform,
     private statusBar: StatusBar,
@@ -65,7 +67,8 @@ export class AppComponent {
 		private network: Network,
 		private httpNative: HTTP,
 		private toastController: ToastController,
-		private firebaseDynamicLinks: FirebaseDynamicLinks
+		private firebaseDynamicLinks: FirebaseDynamicLinks,
+		private bpSargalService: BonsPlansSargalService
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -99,9 +102,20 @@ export class AppComponent {
     });
   }
 
-  setInfos() {
+
+
+  setInfosForSidemenu() {
     const omNumber = this.orangeMoneyServ.getOrangeMoneyNumber();
     this.omUserInfos = this.orangeMoneyServ.GetOrangeMoneyUser(omNumber);
+		this.getBonsPlansSargal();
+  }
+
+	getBonsPlansSargal() {
+    this.bpSargalService.getBonsPlansSargal().pipe(
+      tap(bonPlanResponse => {
+        this.showBonPlanSargal = !!bonPlanResponse?.length;
+      })
+    ).subscribe()
   }
 
   initializeApp() {

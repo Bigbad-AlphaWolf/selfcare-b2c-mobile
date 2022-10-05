@@ -45,7 +45,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   FACE_ID_PERMISSION_ALLOWED = FACE_ID_PERMISSIONS.ALLOWED;
   FACE_ID_PERMISSION_DENIED = FACE_ID_PERMISSIONS.NEVER;
 	SCOOL_CODE_FORMULE = JAMONO_NEW_SCOOL_CODE_FORMULE;
-  showBonPlanSargal: boolean;
+  @Input() showBonPlanSargal: boolean;
 
   constructor(
     private router: Router,
@@ -71,13 +71,11 @@ export class SidemenuComponent implements OnInit, OnDestroy {
       this.getSouscription();
       this.getAllAttachedNumbers();
       this.extractData();
-      this.getBonsPlansSargal();
     }
     this.dashboardServ.currentPhoneNumberChange.subscribe(() => {
       this.getSouscription();
       this.getAllAttachedNumbers();
       this.extractData();
-      this.getBonsPlansSargal();
     });
     this.authServ.currentPhoneNumbersubscriptionUpdated.subscribe(() => {
       this.getSouscription();
@@ -99,7 +97,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   getBonsPlansSargal() {
     this.bpSargalService.getBonsPlansSargal().pipe(
       tap(bonPlanResponse => {
-        this.showBonPlanSargal = !!bonPlanResponse?.body?.length;
+        this.showBonPlanSargal = !!bonPlanResponse?.length;
       })
     ).subscribe()
   }

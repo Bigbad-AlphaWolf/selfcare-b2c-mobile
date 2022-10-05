@@ -15,53 +15,38 @@ export class CustomSargalProfilePage implements OnInit {
   loadingOffers: boolean;
   bpSargalCategories: BonPlanSargalCategoryModel[];
   bpSargal: PartnerReductionModel[];
+  allBpSargal: PartnerReductionModel[];
   sargalCard: BonPlanSargalModel;
-  selectedCategoryFilterIndex = 0;
-
+	ALL_FILTER_CATEGORY: BonPlanSargalCategoryModel = {  nomCategorie: 'Tout', id: null  };
+  selectedCategoryFilter: BonPlanSargalCategoryModel = this.ALL_FILTER_CATEGORY;
   constructor(private bpSargalService: BonsPlansSargalService) {}
 
   ngOnInit() {
-    this.fetchCategories();
     this.fetchOffers();
   }
 
-  selectCategory(i) {
-    if (this.selectedCategoryFilterIndex === i) return;
-    this.selectedCategoryFilterIndex = i;
-    this.fetchOffers();
-  }
-  
-  fetchCategories() {
-    this.loadingCategories = true;
-    this.bpSargalService
-      .getBonsPlansSargalCategories()
-      .pipe(
-        tap(categories => {
-          this.bpSargalCategories = categories;
-          const ALL_FILTER_CATEGORY: BonPlanSargalCategoryModel = {
-            nomCategorie: 'Tout',
-          };
-          this.bpSargalCategories.splice(0, 0, ALL_FILTER_CATEGORY);
-          this.loadingCategories = false;
-        }),
-        catchError(err => {
-          this.loadingCategories = false;
-          return throwError(err);
-        })
-      )
-      .subscribe();
+  selectCategory(category: BonPlanSargalCategoryModel) {
+		this.selectedCategoryFilter = category;
+		if(category?.id) {
+			this.bpSargal = this.allBpSargal.filter((item) => {
+				return item.partner.categoryPartner.id === category?.id
+			});
+		} else {
+			this.bpSargal = this.allBpSargal;
+		}
   }
 
   fetchOffers() {
     this.loadingOffers = true;
-    this.bpSargal = [];
-    const categoryId = this.bpSargalCategories?.[this.selectedCategoryFilterIndex]?.id;
+    this.allBpSargal = [];
     this.bpSargalService
-      .getBonsPlansSargal(categoryId)
+      .getBonsPlansSargal()
       .pipe(
-        tap((bonsPlansSargal: HttpResponse<BonPlanSargalModel[]>) => {
-          this.sargalCard = this.sargalCard ? this.sargalCard : bonsPlansSargal.body[0];
-          this.bpSargal = bonsPlansSargal.body[0]?.partnerReductions || [];
+        tap((bonsPlansSargal: BonPlanSargalModel[]) => {
+          this.sargalCard = this.sargalCard ? this.sargalCard : bonsPlansSargal[0];
+          this.allBpSargal = this.bpSargal = bonsPlansSargal[0]?.partnerReductions || [];
+					this.bpSargalCategories = this.getCategoryList(this.sargalCard);
+					[this.selectedCategoryFilter, ] = this.bpSargalCategories;
           this.loadingOffers = false;
         }),
         catchError(err => {
@@ -71,4 +56,14 @@ export class CustomSargalProfilePage implements OnInit {
       )
       .subscribe();
   }
+
+	getCategoryList(sargalCard: BonPlanSargalModel) {
+		const categoryList = this.sargalCard.partnerReductions.map((item) => {
+			return item.partner.categoryPartner;
+		});
+
+		const	responseWithoutDuplication = categoryList.filter((item, index, a) => a.findIndex(t => t?.id === item?.id) === index);
+		return responseWithoutDuplication;
+
+	}
 }
