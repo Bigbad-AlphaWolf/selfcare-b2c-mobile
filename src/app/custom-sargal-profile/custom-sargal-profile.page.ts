@@ -5,6 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { BonPlanSargalCategoryModel, BonPlanSargalModel, PartnerReductionModel } from '../models/bons-plans-sargal.model';
 import { BonsPlansSargalService } from '../services/bons-plans-sargal/bons-plans-sargal.service';
 
+const ALL_FILTER_CATEGORY: BonPlanSargalCategoryModel = {  nomCategorie: 'Tout', id: null  };
 @Component({
   selector: 'app-custom-sargal-profile',
   templateUrl: './custom-sargal-profile.page.html',
@@ -17,8 +18,7 @@ export class CustomSargalProfilePage implements OnInit {
   bpSargal: PartnerReductionModel[];
   allBpSargal: PartnerReductionModel[];
   sargalCard: BonPlanSargalModel;
-	ALL_FILTER_CATEGORY: BonPlanSargalCategoryModel = {  nomCategorie: 'Tout', id: null  };
-  selectedCategoryFilter: BonPlanSargalCategoryModel = this.ALL_FILTER_CATEGORY;
+  selectedCategoryFilter: BonPlanSargalCategoryModel = ALL_FILTER_CATEGORY;
   constructor(private bpSargalService: BonsPlansSargalService) {}
 
   ngOnInit() {
@@ -63,7 +63,7 @@ export class CustomSargalProfilePage implements OnInit {
 		});
 
 		const	responseWithoutDuplication = categoryList.filter((item, index, a) => a.findIndex(t => t?.id === item?.id) === index);
-		return responseWithoutDuplication;
+		return [ALL_FILTER_CATEGORY, ...responseWithoutDuplication ];
 
 	}
 }
