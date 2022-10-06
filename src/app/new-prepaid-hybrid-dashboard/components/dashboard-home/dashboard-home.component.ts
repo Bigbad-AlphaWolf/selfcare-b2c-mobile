@@ -237,7 +237,7 @@ export class DashboardHomeComponent implements OnInit {
 		};
 		this.actions = this.DEFAULT_LIST_ACTIONS;
 		this.actions = this.actions.filter((elt) => {
-				if(isProfileHybrid) {
+				if(this.isHyBride) {
 						return	elt.code !== 'SOS'
 				} else {
 					return	elt.code !== 'MERCHANT'
