@@ -353,6 +353,7 @@ export interface PassIllimModel {
   price_plan_index_om: number;
   dureeAppel: string;
   nombreSms: string;
+  dureeAppelEntrant?: string;
 }
 
 export interface PromoPassIllimModel {
@@ -386,7 +387,7 @@ export interface SubscriptionUserModel {
   code: string;
 }
 
-export function getOrderedListCategory(unorderedList: CategoryPassInternet[]): CategoryPassInternet[] {
+export function getOrderedListCategory(unorderedList: CategoryPassInternet[]): string[] {
   let listCategoryFiltered = [];
   unorderedList = unorderedList.filter((elt: any) => {
     return !!elt;
