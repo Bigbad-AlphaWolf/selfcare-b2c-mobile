@@ -7,8 +7,11 @@ import { PassVoyage } from 'src/app/models/enums/pass-voyage.enum';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { PassVoyageService } from 'src/app/services/pass-voyage/pass-voyage.service';
 import {
-  CountriesIndicatif,
+	arrangePassByCategory,
+	CountriesIndicatif,
+  getOrderedListCategory,
   INTERNATIONAL_PASSES_INDICATIF_ARRAY,
+	PassIllimModel,
 } from 'src/shared';
 
 @Component({
@@ -25,6 +28,9 @@ export class ListPassInternationalPage implements OnInit {
   passAfric;
   passWorld;
   @ViewChild('sliders') sliders: IonSlides;
+	listCategory: string[] = [];
+	filteredList: PassIllimModel[] = [];
+	fullList: {label: string, pass: PassIllimModel[]}[] = [];
   opXtras: OperationExtras;
 
   constructor(
@@ -63,6 +69,11 @@ export class ListPassInternationalPage implements OnInit {
               this.loading = false;
               this.passAfric = passAfrica;
               this.passWorld = passWorld;
+							this.listCategory = this.getCategoryPass([...this.passAfric,...this.passWorld]);
+							this.fullList = arrangePassByCategory(
+                [...this.passAfric,...this.passWorld],
+                this.listCategory
+              );
               this.opXtras = history.state;
             }),
             catchError((err) => {
@@ -91,6 +102,14 @@ export class ListPassInternationalPage implements OnInit {
       this.activeIndex = index;
     });
   }
+
+	getCategoryPass(listPass: PassIllimModel[]) {
+		const categories = listPass.map((item) => {
+			return item?.categoriePass
+		});
+		const responseWithoutDuplication = getOrderedListCategory(categories);
+		return responseWithoutDuplication;
+	}
 
   goBack() {
     this.navController.pop();

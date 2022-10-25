@@ -1,7 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import {
-  OmLoginClientModel,
+  FACE_ID_OM_INFOS,
+  FACE_ID_PERMISSIONS,
+  OrangeMoneyService,
+} from '../services/orange-money-service/orange-money.service';
+import {
   OM_SERVICE_VERSION,
   OmRegisterClientModel,
   OmUserInfo,
@@ -16,6 +19,7 @@ import {
   LIST_DENIED_PIN_OM,
   DEFAULT_ERROR_MSG_CHANGE_PIN_WITH_BIRTH_DATE_VALIDATION,
   DEFAULT_ERROR_MSG_CHANGE_PIN_VALIDATION,
+  TransferIRTModel,
 } from '../services/orange-money-service';
 import {
   OPERATION_TYPE_PASS_INTERNET,
@@ -36,17 +40,30 @@ import {
   OPERATION_CREATE_PIN_OM,
   BLOCKED_PASS,
   OPERATION_TYPE_PASS_INTERNATIONAL,
+  formatCountryCallId,
+  OPERATION_RESET_PIN_OM,
+  ERROR_CODE_INVALID_XEWEUL_CARD,
+  MSG_XEWEUL_CARD_INVALID,
+  ERROR_CODE_INVALID_AMOUNT_TO_RECHARGE_XEWEUL_CARD,
+  MSG_XEWEUL_CARD_INVALID_AMOUNT_TO_RECHARGE,
+	OPERATION_ABONNEMENT_WIDO,
 } from 'src/shared';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { NoOMAccountPopupComponent } from 'src/shared/no-omaccount-popup/no-omaccount-popup.component';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { ModalController, NavController } from '@ionic/angular';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import {
   OPERATION_RAPIDO,
+  OPERATION_XEWEUL,
+  OPERATION_TYPE_INTERNATIONAL_TRANSFER,
+  OPERATION_TYPE_PAY_BILL,
+  OPERATION_TYPE_SENEAU_BILLS,
+  OPERATION_TYPE_SENELEC_BILLS,
+  OPERATION_TYPE_TERANGA_BILL,
   OPERATION_WOYOFAL,
 } from '../utils/operations.constants';
 import { OperationExtras } from '../models/operation-extras.model';
@@ -59,6 +76,18 @@ import { PurchaseModel } from '../models/purchase.model';
 import { ConfirmMsisdnModel } from '../services/authentication-service/authentication.service';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { Router } from '@angular/router';
+import { BillsService } from '../services/bill-service/bills.service';
+import {
+  BillPaymentModel,
+  PAYMENT_BILLS_CATEGORY,
+} from '../models/bill-payment.model';
+import { OMCustomerStatusModel } from '../models/om-customer-status.model';
+import { CustomerOperationStatus } from '../models/enums/om-customer-status.enum';
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
+import * as SecureLS from 'secure-ls';
+import { XeweulService } from '../services/xeweul/xeweul.service';
+import { PassAbonnementWidoService } from '../services/pass-abonnement-wido-service /pass-abonnement-wido.service';
+const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
   selector: 'app-new-pinpad-modal',
@@ -125,6 +154,8 @@ export class NewPinpadModalPage implements OnInit {
   gettingPinpad: boolean;
   MATH = Math;
   OM_CAPPING_ERROR = OM_CAPPING_ERROR;
+  faceIdAuthCanceled: boolean;
+
   constructor(
     private orangeMoneyService: OrangeMoneyService,
     private fb: FormBuilder,
@@ -133,10 +164,14 @@ export class NewPinpadModalPage implements OnInit {
     public modalController: ModalController,
     private woyofal: WoyofalService,
     private rapido: RapidoService,
+    private xeweulService: XeweulService,
     private followAnalyticsService: FollowAnalyticsService,
     private appRouting: ApplicationRoutingService,
     private navCtrl: NavController,
-    private router: Router
+    private router: Router,
+    private billsService: BillsService,
+    private faio: FingerprintAIO,
+		private abonnementwido: PassAbonnementWidoService
   ) {}
 
   ngOnInit() {
@@ -153,12 +188,15 @@ export class NewPinpadModalPage implements OnInit {
       transfertWithCodeInfos: this.transferMoneyWithCodePayload,
       merchantPaymentInfos: this.merchantPaymentPayload,
     };
-    if (this.operationType === OPERATION_CREATE_PIN_OM) {
+    if (
+      this.operationType === OPERATION_CREATE_PIN_OM ||
+      this.operationType === OPERATION_RESET_PIN_OM
+    ) {
       this.getPinPadForCreationPIN();
     } else {
       this.getOMPhoneNumber();
     }
-    this.orangeMoneyService.gotPinPadSubject.subscribe((value) => {
+    this.orangeMoneyService.gotPinPadSubject.subscribe(value => {
       if (value.length) {
         this.randomDigits = this.orderPinpadArray(value);
         this.orangeMoneyService.randomPinPadDigits = value;
@@ -180,7 +218,6 @@ export class NewPinpadModalPage implements OnInit {
     this.userHasOmToken = true;
     this.checkingToken = false;
     this.gettingPinpad = true;
-    console.log('this.omInfosPINPAD', this.omInfos);
 
     this.orangeMoneyService.GetPinPad(pinpadData, this.omInfos).subscribe(
       (response: any) => {
@@ -229,7 +266,7 @@ export class NewPinpadModalPage implements OnInit {
         })
       )
       .subscribe(
-        (omMsisdn) => {
+        omMsisdn => {
           if (omMsisdn && omMsisdn !== 'error') {
             this.omPhoneNumber = omMsisdn;
             this.checkUserHasOMToken();
@@ -237,7 +274,7 @@ export class NewPinpadModalPage implements OnInit {
             this.omPhoneNumber = this.mainPhoneNumber;
             this.allNumbers.push(this.mainPhoneNumber);
             this.dashboardService.getAttachedNumbers().subscribe((res: any) => {
-              res.forEach((element) => {
+              res.forEach(element => {
                 const msisdn = '' + element.msisdn;
                 if (!msisdn.startsWith('33', 0)) {
                   this.allNumbers.push(element.msisdn);
@@ -258,10 +295,10 @@ export class NewPinpadModalPage implements OnInit {
       .pipe(
         catchError((er: HttpErrorResponse) => {
           if (er.status === 401) this.modalController.dismiss();
-          return of(er);
+          return throwError(er);
         })
       )
-      .subscribe((omUser) => {
+      .subscribe(async omUser => {
         this.pinpadData = {
           msisdn: this.omPhoneNumber,
           os: 'Android',
@@ -276,6 +313,33 @@ export class NewPinpadModalPage implements OnInit {
           this.gettingPinpad = true;
           this.pinHasError = false;
           this.pinError = null;
+          if (
+            this.operationType !== OPERATION_CREATE_PIN_OM &&
+            this.operationType !== OPERATION_RESET_PIN_OM &&
+            this.operationType !== OPERATION_CHANGE_PIN_OM
+          ) {
+            const faceIdStatus =
+              await this.orangeMoneyService.checkFaceIdStatus();
+            if (
+              faceIdStatus === FACE_ID_PERMISSIONS.ALLOWED &&
+              ls.get(FACE_ID_OM_INFOS)
+            ) {
+              const faceMatched: string = await this.faio
+                .show({ disableBackup: true })
+                .catch(err => {
+                  console.log('errrror check biometric rejected', err);
+                });
+              console.log('face Matching', faceMatched);
+              const omStoredInfos = ls.get(FACE_ID_OM_INFOS);
+              const successRegex = 'success';
+              if (faceMatched?.toLowerCase().includes(successRegex)) {
+                this.processPinOmUser(omStoredInfos.pin, true);
+                return;
+              }
+            }
+            ls.remove(FACE_ID_OM_INFOS);
+          }
+
           this.orangeMoneyService
             .GetPinPad(this.pinpadData, this.omInfos)
             .subscribe(
@@ -321,7 +385,7 @@ export class NewPinpadModalPage implements OnInit {
         this.resendCode = false;
         this.showResendCodeBtn(30);
       },
-      (err) => {
+      err => {
         this.userNotRegisteredInOm = true;
         this.checkingToken = false;
         this.sendingOtp = false;
@@ -346,9 +410,9 @@ export class NewPinpadModalPage implements OnInit {
       disableClose: true,
       data: { pageDesktop: false },
     });
-    this.noOMAccountModal.afterClosed().subscribe((res) => {
+    this.noOMAccountModal.afterClosed().subscribe(res => {
       this.modalController.dismiss();
-			if(res) this.router.navigate(['/om-self-operation/open-om-account']);
+      if (res) this.router.navigate(['/om-self-operation/open-om-account']);
     });
   }
 
@@ -433,7 +497,7 @@ export class NewPinpadModalPage implements OnInit {
           );
         }
       },
-      (err) => {
+      err => {
         this.otpValidation = true;
         this.registering = false;
         this.otpHasError = true;
@@ -453,7 +517,7 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  processPinOmUser(pin: string) {
+  processPinOmUser(pin: string, isFromFaceId?: boolean) {
     this.pinHasError = false;
     this.canRetry = false;
     this.errorBulletActive = false;
@@ -470,30 +534,21 @@ export class NewPinpadModalPage implements OnInit {
     const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
       this.omPhoneNumber
     );
-    pin = this.orangeMoneyService.GetPin(omUser.sequence.split(''), pin);
+    if (!isFromFaceId) {
+      pin = this.orangeMoneyService.GetPin(omUser.sequence.split(''), pin);
+    }
     if (this.errorCode !== OM_IDENTIC_TRANSACTION_CODE) {
       this.pin = pin;
     }
     if (omUser.msisdn === this.omPhoneNumber) {
       // the account is active
       if (omUser.active) {
-        // login and get balance
-        const loginPayload: OmLoginClientModel = {
-          msisdn: omUser.msisdn,
-          pin,
-          em: omUser.em,
-          app_version: 'v1.0',
-          app_conf_version: 'v1.0',
-          user_type: 'user',
-          uuid: this.uuid,
-          service_version: OM_SERVICE_VERSION,
-        };
         switch (this.operationType) {
           case OPERATION_TYPE_RECHARGE_CREDIT:
             const creditToBuy = Object.assign({}, this.buyCreditPayload, {
               pin: this.pin,
             });
-            this.buyCredit(creditToBuy);
+            this.buyCredit(creditToBuy, isFromFaceId);
             break;
           case OPERATION_TYPE_PASS_INTERNET:
             const dataPassOM = {
@@ -507,7 +562,7 @@ export class NewPinpadModalPage implements OnInit {
                 ? this.buyPassPayload.pass.passPromo.tarif
                 : this.buyPassPayload.pass.tarif,
             };
-            this.buyPass(dataPassOM);
+            this.buyPass(dataPassOM, isFromFaceId);
             break;
           case OPERATION_TYPE_PASS_VOYAGE:
           case OPERATION_TYPE_PASS_ILLIMIX:
@@ -525,8 +580,18 @@ export class NewPinpadModalPage implements OnInit {
                 : this.buyPassPayload.pass.tarif,
             };
 
-            this.buyIllimix(dataIllimixOM);
+            this.buyIllimix(dataIllimixOM, isFromFaceId);
             break;
+					case OPERATION_ABONNEMENT_WIDO:
+						const payloadWido = {
+              msisdn2: this.buyPassPayload.destinataire,
+              pin: this.orangeMoneyService.decryptOmPin(omUser.sequence.split(''), pin),
+              price_plan_index: this.buyPassPayload.pass.price_plan_index_om,
+              amount: this.buyPassPayload.pass.tarif,
+              contentId: this.buyPassPayload.pass.contentId
+            };
+						this.suscribeWidoByOMoney(payloadWido, isFromFaceId);
+						break;
           case OPERATION_TRANSFER_OM:
             const transferMoneyPayload = Object.assign(
               {},
@@ -536,7 +601,7 @@ export class NewPinpadModalPage implements OnInit {
                 fees: this.transferMoneyPayload.send_fees,
               }
             );
-            this.transferMoney(transferMoneyPayload);
+            this.transferMoney(transferMoneyPayload, isFromFaceId);
             break;
           case OPERATION_TRANSFER_OM_WITH_CODE:
             const transferPayload = Object.assign(
@@ -544,7 +609,20 @@ export class NewPinpadModalPage implements OnInit {
               this.transferMoneyWithCodePayload,
               { pin }
             );
-            this.transferMoneyWithCode(transferPayload);
+            this.transferMoneyWithCode(transferPayload, isFromFaceId);
+            break;
+          case OPERATION_TYPE_INTERNATIONAL_TRANSFER:
+            const transferIRTPayload = Object.assign(
+              {},
+              this.transferMoneyPayload,
+              {
+                pin: this.pin,
+                fees: this.transferMoneyPayload.send_fees,
+                country: this.transferMoneyPayload?.country?.callId,
+                reason: this.transferMoneyPayload?.reason,
+              }
+            );
+            this.transferMoneyInternational(transferIRTPayload, isFromFaceId);
             break;
           case OPERATION_TYPE_MERCHANT_PAYMENT:
             const merchantPaymentPayload = Object.assign(
@@ -552,25 +630,34 @@ export class NewPinpadModalPage implements OnInit {
               this.merchantPaymentPayload,
               { pin: this.pin }
             );
-            this.payMerchant(merchantPaymentPayload);
+            this.payMerchant(merchantPaymentPayload, isFromFaceId);
             break;
           case OPERATION_WOYOFAL:
-            this.payWoyofal(pin);
+            this.payWoyofal(pin, isFromFaceId);
             break;
           case OPERATION_RAPIDO:
-            this.payRapido(this.pin);
+            this.payRapido(this.pin, isFromFaceId);
+            break;
+          case OPERATION_XEWEUL:
+            this.payXeweul(this.pin, isFromFaceId);
             break;
           case OPERATION_INIT_CHANGE_PIN_OM:
-            this.initOperationChangePinOM(pin);
+            this.initOperationChangePinOM(pin, isFromFaceId);
             break;
           case OPERATION_CHANGE_PIN_OM:
             this.setNewPinOM(pin);
             break;
           case OPERATION_TYPE_PASS_ILLIFLEX:
-            this.buyIlliflex(pin);
+            this.buyIlliflex(pin, isFromFaceId);
+            break;
+          case OPERATION_TYPE_PAY_BILL:
+          case OPERATION_TYPE_TERANGA_BILL:
+          case OPERATION_TYPE_SENELEC_BILLS:
+          case OPERATION_TYPE_SENEAU_BILLS:
+            this.payOrangeBills(pin, isFromFaceId);
             break;
           default:
-            this.seeSolde(pin);
+            this.seeSolde(pin, isFromFaceId);
             break;
         }
       } else {
@@ -597,7 +684,8 @@ export class NewPinpadModalPage implements OnInit {
   processPin(pin: string) {
     if (
       this.operationType === OPERATION_CHANGE_PIN_OM ||
-      this.operationType === OPERATION_CREATE_PIN_OM
+      this.operationType === OPERATION_CREATE_PIN_OM ||
+      this.operationType === OPERATION_RESET_PIN_OM
     ) {
       const { hasError, typeError } = this.isNewPinValid(pin);
       if (hasError) {
@@ -613,13 +701,16 @@ export class NewPinpadModalPage implements OnInit {
         return;
       }
     }
-    if (this.operationType === OPERATION_CREATE_PIN_OM) {
+    if (
+      this.operationType === OPERATION_CREATE_PIN_OM ||
+      this.operationType === OPERATION_RESET_PIN_OM
+    ) {
       this.processPinFutureOmUser(pin);
     } else {
       this.processPinOmUser(pin);
     }
   }
-  payWoyofal(pin: string) {
+  payWoyofal(pin: string, withTouchID?: boolean) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     let body = {
@@ -635,13 +726,14 @@ export class NewPinpadModalPage implements OnInit {
       receiver: body.numero_compteur,
       montant: body.amount,
       mod_paiement: PAYMENT_MOD_OM,
+      withTouchID,
     };
 
     this.woyofal.pay(body).subscribe(
       (res: any) => {
         this.opXtras.billData.codeRecharge = res.content.data.code_woyofal;
         this.opXtras.billData.kw = res.content.data.valeur_recharge;
-        this.processResult(res, db, logInfos);
+        this.processResult(res, db, logInfos, body);
       },
       (err: any) => {
         this.processingPin = false;
@@ -650,7 +742,7 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  payRapido(pin: string) {
+  payRapido(pin: string, withTouchID?: boolean) {
     this.canRetry = false;
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
@@ -667,11 +759,12 @@ export class NewPinpadModalPage implements OnInit {
       receiver: body.numero_carte,
       montant: body.amount,
       mod_paiement: PAYMENT_MOD_OM,
+      withTouchID,
     };
 
     this.rapido.pay(body).subscribe(
       (res: any) => {
-        this.processResult(res, db, logInfos);
+        this.processResult(res, db, logInfos, body);
       },
       (err: any) => {
         this.processingPin = false;
@@ -680,7 +773,38 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  seeSolde(pin: string) {
+  payXeweul(pin: string, withTouchID?: boolean) {
+    this.canRetry = false;
+    this.processingPin = true;
+    const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
+    const body = {
+      amount: this.opXtras.amount,
+      em: db.em,
+      fees: this.opXtras.fee,
+      msisdn: db.msisdn,
+      numeroCarte: this.opXtras.billData.counter.counterNumber,
+      pin,
+    };
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: db.msisdn,
+      receiver: body.numeroCarte,
+      montant: body.amount,
+      mod_paiement: PAYMENT_MOD_OM,
+      withTouchID,
+    };
+
+    this.xeweulService.chargeCard(body).subscribe(
+      (res: any) => {
+        this.processResult(res, db, logInfos, body);
+      },
+      (err: any) => {
+        this.processingPin = false;
+        this.processError(err, logInfos);
+      }
+    );
+  }
+
+  seeSolde(pin: string, withTouchID?: boolean) {
     console.log(this.transactionToBlock);
 
     this.processingPin = true;
@@ -696,13 +820,17 @@ export class NewPinpadModalPage implements OnInit {
       service_version: OM_SERVICE_VERSION,
       uuid: this.uuid,
     };
-    const logInfos: FollowOemlogPurchaseInfos = { sender: db.msisdn };
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: db.msisdn,
+      withTouchID,
+    };
 
     this.orangeMoneyService.GetBalance(balancePayload).subscribe(
       (res: any) => {
         this.processingPin = false;
         // check response status
         if (res.status_code.match('Success')) {
+          ls.set(FACE_ID_OM_INFOS, balancePayload);
           // valid pin
           if (this.operationType === OPERATION_BLOCK_TRANSFER) {
             this.blockTransfer();
@@ -747,13 +875,16 @@ export class NewPinpadModalPage implements OnInit {
           );
         }
       },
-      (err) => {
+      err => {
         this.processError(err, logInfos);
       }
     );
   }
 
-  buyCredit(params: { msisdn2: string; pin: any; amount: number }) {
+  buyCredit(
+    params: { msisdn2: string; pin: any; amount: number },
+    withTouchID?: boolean
+  ) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     // get balance
@@ -774,21 +905,22 @@ export class NewPinpadModalPage implements OnInit {
       receiver: params.msisdn2,
       montant: params.amount,
       mod_paiement: PAYMENT_MOD_OM,
+      withTouchID,
     };
     const txnIdForConfirmation = { txnId: this.transactionId };
     this.orangeMoneyService
       .AchatCredit(buyCreditPayload, txnIdForConfirmation)
       .subscribe(
         (res: any) => {
-          this.processResult(res, db, logInfos);
+          this.processResult(res, db, logInfos, buyCreditPayload);
         },
-        (err) => {
+        err => {
           this.processError(err, logInfos);
         }
       );
   }
 
-  buyPass(params: BuyPassPayload) {
+  buyPass(params: BuyPassPayload, withTouchID?: boolean) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     // get balance
@@ -814,13 +946,14 @@ export class NewPinpadModalPage implements OnInit {
       montant: params.amount,
       mod_paiement: PAYMENT_MOD_OM,
       ppi: params.price_plan_index,
+      withTouchID,
     };
 
     this.orangeMoneyService.AchatPassInternet(buyPassPayload).subscribe(
       (res: any) => {
-        this.processResult(res, db, logInfos);
+        this.processResult(res, db, logInfos, buyPassPayload);
       },
-      (err) => {
+      err => {
         console.log(err, err.error);
 
         this.processError(err, logInfos);
@@ -828,7 +961,43 @@ export class NewPinpadModalPage implements OnInit {
     );
   }
 
-  buyIllimix(params: BuyPassPayload) {
+  suscribeWidoByOMoney(params: BuyPassPayload, withTouchID?: boolean) {
+    this.processingPin = true;
+    const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
+    // get balance
+    const buyPassPayload: OmBuyIllimixModel = {
+      msisdn: db.msisdn,
+      msisdn2: params.msisdn2,
+      pin: params.pin,
+      price_plan_index: params.price_plan_index,
+      em: db.em,
+      app_version: 'v1.0',
+      app_conf_version: 'v1.0',
+      user_type: 'user',
+      service_version: OM_SERVICE_VERSION,
+      amount: params.amount,
+      uuid: this.uuid,
+			contentId: params?.contentId
+    };
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: db.msisdn,
+      receiver: params.msisdn2,
+      montant: params.amount,
+      mod_paiement: PAYMENT_MOD_OM,
+      ppi: params.price_plan_index,
+      withTouchID,
+    };
+
+    this.abonnementwido.suscribeToWidoByOMoney({msisdn: buyPassPayload.msisdn2, packId: +buyPassPayload.price_plan_index, contentId:+buyPassPayload?.contentId,  omPin: buyPassPayload.pin}).subscribe(
+      (res: any) => {
+        this.processResult(res, db, logInfos, buyPassPayload);
+      },
+      err => {
+        this.processError(err, logInfos);
+      }
+    );
+  }
+  buyIllimix(params: BuyPassPayload, withTouchID?: boolean) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     // get balance
@@ -854,19 +1023,20 @@ export class NewPinpadModalPage implements OnInit {
       montant: params.amount,
       mod_paiement: PAYMENT_MOD_OM,
       ppi: params.price_plan_index,
+      withTouchID,
     };
 
     this.orangeMoneyService.AchatIllimix(buyPassPayload).subscribe(
       (res: any) => {
-        this.processResult(res, db, logInfos);
+        this.processResult(res, db, logInfos, buyPassPayload);
       },
-      (err) => {
+      err => {
         this.processError(err, logInfos);
       }
     );
   }
 
-  buyIlliflex(pin) {
+  buyIlliflex(pin, withTouchID?: boolean) {
     this.processingPin = true;
     const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
     this.illiflexPayload.sender = this.omPhoneNumber;
@@ -877,28 +1047,61 @@ export class NewPinpadModalPage implements OnInit {
       receiver: this.illiflexPayload.recipient,
       montant: this.illiflexPayload.amount,
       mod_paiement: PAYMENT_MOD_OM,
+      withTouchID,
     };
 
     this.orangeMoneyService.buyIlliflexByOM(this.illiflexPayload).subscribe(
       (res: any) => {
-        this.processResult(res, db, logInfos);
+        this.processResult(res, db, logInfos, this.illiflexPayload);
       },
-      (err) => {
+      err => {
         this.processError(err, logInfos);
       }
     );
   }
 
-  transferMoney(params: {
-    msisdn2: string;
-    pin: any;
-    amount: number;
-    send_fees: number;
-    cashout_fees: number;
-    a_ma_charge: boolean;
-    fees: number;
-    capping?: boolean;
-  }) {
+  payOrangeBills(pin, withTouchID?: boolean) {
+    const db = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: db.msisdn,
+      montant: this.opXtras.invoice?.montantFacture,
+      mod_paiement: PAYMENT_MOD_OM,
+      withTouchID,
+    };
+    const payload: BillPaymentModel = {
+      billingAccountId: this.opXtras?.invoice?.numeroTelephone,
+      payementAmount: this.opXtras.invoice?.montantFacture,
+      billNumber: this.opXtras?.invoice?.nfact,
+      payerEm: db.em,
+      payerEncodedPin: pin,
+      payerMsisdn: db.msisdn,
+      paymentCategory: this.orangeMoneyService.getPaymentCategoryByPurchaseType(
+        this.opXtras.purchaseType
+      ),
+    };
+    this.billsService.payBill(payload).subscribe(
+      (res: any) => {
+        this.processResult(res, db, logInfos, payload);
+      },
+      err => {
+        this.processError(err, logInfos);
+      }
+    );
+  }
+
+  transferMoney(
+    params: {
+      msisdn2: string;
+      pin: any;
+      amount: number;
+      send_fees: number;
+      cashout_fees: number;
+      a_ma_charge: boolean;
+      fees: number;
+      capping?: boolean;
+    },
+    withTouchID?: boolean
+  ) {
     this.processingPin = true;
     this.canRetry = false;
     this.pinHasError = false;
@@ -928,32 +1131,37 @@ export class NewPinpadModalPage implements OnInit {
       user_type: 'user',
       service_version: OM_SERVICE_VERSION,
       capping: params.capping,
+			viaQr: this.opXtras?.viaQr
     };
     const logInfos: FollowOemlogPurchaseInfos = {
       sender: omUser.msisdn,
       receiver: params.msisdn2,
       montant: params.amount,
+      withTouchID,
     };
 
     this.orangeMoneyService
       .transferOM(transferOMPayload, { txnId: this.transactionId })
       .subscribe(
         (res: any) => {
-          this.processResult(res, omUser, logInfos);
+          this.processResult(res, omUser, logInfos, transferOMPayload);
         },
-        (err) => {
+        err => {
           this.processError(err, logInfos);
         }
       );
   }
 
-  transferMoneyWithCode(params: {
-    msisdn2: string;
-    pin: any;
-    amount: number;
-    nom_receiver: string;
-    prenom_receiver: string;
-  }) {
+  transferMoneyWithCode(
+    params: {
+      msisdn2: string;
+      pin: any;
+      amount: number;
+      nom_receiver: string;
+      prenom_receiver: string;
+    },
+    withTouchID
+  ) {
     this.processingPin = true;
     const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
       this.omPhoneNumber
@@ -977,19 +1185,79 @@ export class NewPinpadModalPage implements OnInit {
       sender: omUser.msisdn,
       receiver: params.msisdn2,
       montant: params.amount,
+      withTouchID,
     };
 
     this.orangeMoneyService.transferOMWithCode(transferOMPayload).subscribe(
       (res: any) => {
-        this.processResult(res, omUser, logInfos);
+        this.processResult(res, omUser, logInfos, transferOMPayload);
       },
-      (err) => {
+      err => {
         this.processError(err, logInfos);
       }
     );
   }
 
-  initOperationChangePinOM(pin: string) {
+  transferMoneyInternational(
+    params: {
+      msisdn2: string;
+      pin: any;
+      amount: number;
+      send_fees: number;
+      fees: number;
+      country;
+      reason?: string;
+    },
+    withTouchID?: boolean
+  ) {
+    this.processingPin = true;
+    this.canRetry = false;
+    this.pinHasError = false;
+    this.errorBulletActive = false;
+    // this.transactionToBlock = {
+    //   amount: -params.amount,
+    //   msisdnReceiver: params.msisdn2,
+    //   operationDate: new Date().toString(),
+    // };
+    const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
+      this.omPhoneNumber
+    );
+    const transferOMPayload: TransferIRTModel = {
+      msisdn: omUser.msisdn,
+      msisdn2: params.msisdn2,
+      amount: params.amount,
+      fees: params.send_fees,
+      uuid: 'uuid',
+      os: 'mobile',
+      pin: params.pin,
+      em: omUser.em,
+      app_version: 'v1.0',
+      app_conf_version: 'v1.0',
+      user_type: 'user',
+      service_version: OM_SERVICE_VERSION,
+      country: formatCountryCallId(params?.country),
+      reason: 'Achat de bien et service',
+    };
+    const logInfos: FollowOemlogPurchaseInfos = {
+      sender: omUser.msisdn,
+      receiver: params.msisdn2,
+      montant: params.amount,
+      withTouchID,
+    };
+
+    this.orangeMoneyService
+      .transferIRT(transferOMPayload, { txnId: this.transactionId })
+      .subscribe(
+        (res: any) => {
+          this.processResult(res, omUser, logInfos, transferOMPayload);
+        },
+        err => {
+          this.processError(err, logInfos);
+        }
+      );
+  }
+
+  initOperationChangePinOM(pin: string, withTouchID?: boolean) {
     this.seeSolde(pin);
   }
 
@@ -1018,12 +1286,15 @@ export class NewPinpadModalPage implements OnInit {
     });
   }
 
-  payMerchant(params: {
-    amount: number;
-    code_marchand: number;
-    nom_marchand: string;
-    pin: string;
-  }) {
+  payMerchant(
+    params: {
+      amount: number;
+      code_marchand: number;
+      nom_marchand: string;
+      pin: string;
+    },
+    withTouchID?: boolean
+  ) {
     this.processingPin = true;
     const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
       this.omPhoneNumber
@@ -1042,29 +1313,53 @@ export class NewPinpadModalPage implements OnInit {
       receiver: params.code_marchand,
       montant: params.amount,
       mod_paiement: PAYMENT_MOD_OM,
+      withTouchID,
     };
     this.orangeMoneyService
       .payMerchantOM(payMerchantPayload, { txnId: this.transactionId })
       .subscribe(
         (res: any) => {
-          this.processResult(res, omUser, logInfos);
+          this.processResult(res, omUser, logInfos, payMerchantPayload);
         },
-        (err) => {
+        err => {
           this.processError(err, logInfos);
         }
       );
   }
 
+  getUserOMStatus() {
+    return this.orangeMoneyService.getUserStatus(this.omPhoneNumber).pipe(
+      map((status: OMCustomerStatusModel) => {
+        if (
+          status.operation === 'FULL' ||
+          (status.operation === 'DEPLAFONNEMENT' &&
+            status.operationStatus === CustomerOperationStatus.completed)
+        ) {
+          return true;
+        }
+        return false;
+      }),
+      catchError(err => {
+        return of(false);
+      })
+    );
+  }
+
   blockTransfer() {
     this.processingPin = true;
+		let cancelTrxResponse: any;
     this.orangeMoneyService
-      .blockTransfer(this.transactionToBlock)
+      .blockTransfer(this.opXtras?.blockTrxOMPayload)
       .pipe(
-        tap((res) => {
-          this.processingPin = false;
-          this.modalController.dismiss({ success: true });
+        switchMap(response => {
+					cancelTrxResponse = response
+          return this.getUserOMStatus();
         }),
-        catchError((err) => {
+        tap(res => {
+          this.processingPin = false;
+          this.modalController.dismiss({ success: true, hasOMStatusFull: res, annulationResponse: cancelTrxResponse });
+        }),
+        catchError(err => {
           this.processingPin = false;
           this.pinHasError = true;
           this.resetPad();
@@ -1101,7 +1396,12 @@ export class NewPinpadModalPage implements OnInit {
     }
   }
 
-  processResult(res: any, db: any, logInfos: FollowOemlogPurchaseInfos) {
+  processResult(
+    res: any,
+    db: any,
+    logInfos: FollowOemlogPurchaseInfos,
+    operationPayload?: any
+  ) {
     // check response status
     this.processingPin = false;
     if (
@@ -1126,16 +1426,22 @@ export class NewPinpadModalPage implements OnInit {
           ? this.transferMoneyPayload.cashout_fees
           : 0;
       this.transactionToBlock = Object.assign({}, this.transactionToBlock, {
-        txnid: res.content.data.txn_id,
+        txnid: res?.content?.data?.txn_id,
         fees: totalFees,
       });
+      ls.set(FACE_ID_OM_INFOS, operationPayload);
       this.modalController.dismiss({
         success: true,
         opXtras: this.opXtras,
         cappingFee: this.cappingFees,
         transferToBlock: this.transactionToBlock,
+        operationPayload,
       });
-    } else if (res === null || res.status_code === null || !res.status_code.match('Success') ) {
+    } else if (
+      res === null ||
+      res.status_code === null ||
+      !res.status_code.match('Success')
+    ) {
       this.pinError =
         "Une erreur s'est produite. Veuillez ressayer ultérieurement";
       this.pinHasError = true;
@@ -1162,7 +1468,7 @@ export class NewPinpadModalPage implements OnInit {
       this.opXtras
     );
     // erreur métiers
-    if (err && err.error && err.error.status === 400) {
+    if (err && err?.error && +err?.error?.status === 400) {
       this.errorCode = err.error.errorCode;
       if (err.error.errorCode.match('Erreur-045')) {
         this.recurrentOperation = true;
@@ -1186,21 +1492,40 @@ export class NewPinpadModalPage implements OnInit {
         this.pinError = err.error.message;
         this.canRetry = true;
         this.cappingFees = +err.error.fees;
+      } else if (err.error.errorCode.match(ERROR_CODE_INVALID_XEWEUL_CARD)) {
+        this.pinError = MSG_XEWEUL_CARD_INVALID;
+      } else if (
+        err.error.errorCode.match(
+          ERROR_CODE_INVALID_AMOUNT_TO_RECHARGE_XEWEUL_CARD
+        )
+      ) {
+        this.pinError = MSG_XEWEUL_CARD_INVALID_AMOUNT_TO_RECHARGE;
+      } else if (err.error.errorCode.match('Erreur-017')) {
+        const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
+          this.omPhoneNumber
+        );
+        omUser.active = false;
+        this.pinError = `Code secret est invalide. Vous venez de bloquer votre compte Orange Money. Veuillez passer dans une de nos agences pour le reactiver!`;
+        this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
+        this.pinHasError = true;
+        this.errorBulletActive = true;
       } else if (
         err.error.errorCode.match('Erreur-015') ||
-        err.error.errorCode.match('Erreur-016')
+        err.error.errorCode.match('Erreur-016') ||
+        (!!err.error.errorCode.match('2408') &&
+          !!err.error.message.match('Code secret errone'))
       ) {
         const omUser = this.orangeMoneyService.GetOrangeMoneyUser(
           this.omPhoneNumber
         );
         omUser.pinFailed++;
         this.resetPad();
-        if (omUser.pinFailed >= 3) {
+        if (omUser.pinFailed >= 5) {
           omUser.active = false;
           this.pinError = `Code secret est invalide. Vous venez de bloquer votre compte Orange Money. Veuillez passer dans une de nos agences pour le reactiver!`;
         } else {
           this.pinError = `Code secret est invalide. Il vous reste ${
-            3 - ~~omUser.pinFailed
+            5 - ~~omUser.pinFailed
           } tentatives!`;
         }
         this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
@@ -1211,7 +1536,7 @@ export class NewPinpadModalPage implements OnInit {
       }
     } else {
       this.pinError =
-        err && err.error && err.error.message
+        err && err?.error && err?.error?.message
           ? err.error.message
           : "Une erreur s'est produite. Veuillez ressayer ultérieurement";
       this.pinHasError = true;

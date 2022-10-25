@@ -24,6 +24,7 @@ export class RattachedPhonesNumberPage implements OnInit {
   isLoading: boolean;
   editable: boolean;
   hasError: boolean;
+  givenNumberToRegister: string;
   constructor(
     private dashbServ: DashboardService,
     private bsService: BottomSheetService,
@@ -37,6 +38,12 @@ export class RattachedPhonesNumberPage implements OnInit {
     this.dashbServ.attachedNumbersChanged.subscribe(() => {
       this.fetchingNumbers();
     });
+    console.log(history.state);
+
+    this.givenNumberToRegister = history.state?.numberToRegister;
+    if (this.givenNumberToRegister) {
+      this.openModalRattachNumber(this.givenNumberToRegister);
+    }
   }
 
   fetchingNumbers() {
@@ -48,16 +55,12 @@ export class RattachedPhonesNumberPage implements OnInit {
       .pipe(
         take(1),
         tap((list: RattachedNumber[]) => {
-          this.listRattachedNumbers.current = list.find(
-            (val: RattachedNumber) => {
-              return val.msisdn === currentNumber;
-            }
-          );
-          this.listRattachedNumbers.others = list.filter(
-            (val: RattachedNumber) => {
-              return val.msisdn !== currentNumber;
-            }
-          );
+          this.listRattachedNumbers.current = list.find((val: RattachedNumber) => {
+            return val.msisdn === currentNumber;
+          });
+          this.listRattachedNumbers.others = list.filter((val: RattachedNumber) => {
+            return val.msisdn !== currentNumber;
+          });
         })
       )
       .subscribe(
@@ -72,9 +75,9 @@ export class RattachedPhonesNumberPage implements OnInit {
       );
   }
 
-  openModalRattachNumber() {
-    this.bsService.openRattacheNumberModal();
+  openModalRattachNumber(phoneNumber?: string) {
     this.oemLoggingService.registerEvent('lines_new_click', []);
+    this.bsService.openRattacheNumberModal(phoneNumber);
   }
   goBack() {
     this.navCon.pop();

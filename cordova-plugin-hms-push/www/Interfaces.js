@@ -1,8 +1,6 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Visibility = exports.RepeatType = exports.Priority = exports.Importance = exports.Attr = void 0;
 /*
-    Copyright 2020. Huawei Technologies Co., Ltd. All rights reserved.
+    Copyright 2020-2022. Huawei Technologies Co., Ltd. All rights reserved.
 
     Licensed under the Apache License, Version 2.0 (the "License")
     you may not use this file except in compliance with the License.
@@ -16,7 +14,14 @@ exports.Visibility = exports.RepeatType = exports.Priority = exports.Importance 
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Visibility =
+  exports.RepeatType =
+  exports.Priority =
+  exports.Importance =
+  exports.RemoteMessageBuilder =
+  exports.Attr =
+    void 0;
 var Attr;
 (function (Attr) {
   Attr["id"] = "id";
@@ -55,7 +60,22 @@ var Attr;
   Attr["priority"] = "priority";
   Attr["importance"] = "importance";
   Attr["visibility"] = "visibility";
+  Attr["data"] = "data";
 })((Attr = exports.Attr || (exports.Attr = {})));
+var RemoteMessageBuilder;
+(function (RemoteMessageBuilder) {
+  RemoteMessageBuilder["TO"] = "to";
+  RemoteMessageBuilder["MESSAGE_ID"] = "messageId";
+  RemoteMessageBuilder["MESSAGE_TYPE"] = "messageType";
+  RemoteMessageBuilder["TTL"] = "ttl";
+  RemoteMessageBuilder["COLLAPSE_KEY"] = "collapseKey";
+  RemoteMessageBuilder["RECEIPT_MODE"] = "receiptMode";
+  RemoteMessageBuilder["SEND_MODE"] = "sendMode";
+  RemoteMessageBuilder["DATA"] = "data";
+})(
+  (RemoteMessageBuilder =
+    exports.RemoteMessageBuilder || (exports.RemoteMessageBuilder = {}))
+);
 var Importance;
 (function (Importance) {
   Importance["MAX"] = "max";

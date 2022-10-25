@@ -1,8 +1,6 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.asyncExec = void 0;
 /*
-    Copyright 2020. Huawei Technologies Co., Ltd. All rights reserved.
+    Copyright 2020-2022. Huawei Technologies Co., Ltd. All rights reserved.
 
     Licensed under the Apache License, Version 2.0 (the "License")
     you may not use this file except in compliance with the License.
@@ -16,18 +14,15 @@ exports.asyncExec = void 0;
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.asyncExec = void 0;
 const cordova_1 = require("cordova");
-initHms();
-function asyncExec(className, funcName, args = []) {
+function asyncExec(clazz, reference, args = []) {
   return new Promise((resolve, reject) => {
-    cordova_1.exec(resolve, reject, className, funcName, args);
+    cordova_1.exec(resolve, reject, clazz, reference, args);
   });
 }
 exports.asyncExec = asyncExec;
-function initHms() {
-  initEventHandler();
-}
 function initEventHandler() {
   if (window.hmsEventHandler != null) {
     return;
@@ -60,4 +55,5 @@ function initEventHandler() {
     }
   };
 }
+initEventHandler();
 //# sourceMappingURL=utils.js.map

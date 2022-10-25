@@ -1,8 +1,14 @@
-<div class="act-item" (click)="doAction()" *ngIf="!search">
+<div class="act-item" [id]="('item-assistance-'+action?.code.toLowerCase()) | generateIdForTA" (click)="doAction()" *ngIf="!search">
   <img-loader [spinner]="true" class="img" [src]="imageUrl" fallbackUrl="assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg" useImg></img-loader>
 
   <div *ngIf="action?.besoinAide" class="act-description scb-text-gray">{{action?.shortDescription}}</div>
   <div *ngIf="!action?.besoinAide" class="act-description scb-text-gray">{{action?.titre + ' ' + action?.description}}</div>
+  <div class="badge-promo" *ngIf="action?.newOffer">
+    <div class="icon-container">
+      <span class="new scb-text-white"> Nouveau </span>
+    </div>
+    <div class="triangle"></div>
+  </div>
 </div>
 
 

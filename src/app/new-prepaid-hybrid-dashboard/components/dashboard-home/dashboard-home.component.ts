@@ -1,16 +1,10 @@
-import {
-  Component,
-  EventEmitter,
-  NgZone,
-  OnInit,
-  Output,
-  ViewChildren,
-} from '@angular/core';
+import { Component, EventEmitter, NgZone, OnInit, Output, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalController, Platform } from '@ionic/angular';
-import { of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { of, timer } from 'rxjs';
+import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
 import {
+  PROFILE_TYPE_PREPAID,
   PromoBoosterActive,
   SargalSubscriptionModel,
   SARGAL_NOT_SUBSCRIBED,
@@ -31,10 +25,11 @@ import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import { StoriesService } from 'src/app/services/stories-service/stories.service';
 import { NewUserConsoModel } from 'src/app/services/user-cunsommation-service/user-conso-service.index';
-import { UserConsoService } from 'src/app/services/user-cunsommation-service/user-conso.service';
+import { UserConsoService, USER_CONSO_REQUEST_TIMEOUT, USER_CONSO_STORAGE_KEY } from 'src/app/services/user-cunsommation-service/user-conso.service';
 import {
   formatCurrency,
   getLastUpdatedDateTimeText,
+  HUB_ACTIONS,
   isProfileHybrid,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   SargalStatusModel,
@@ -50,8 +45,27 @@ import { AssistanceService } from 'src/app/services/assistance.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
 import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { QrScannerService } from 'src/app/services/qr-scanner-service/qr-scanner.service';
+import { IlliflexService } from 'src/app/services/illiflex-service/illiflex.service';
+import { OperationService } from 'src/app/services/oem-operation/operation.service';
+import { LocalStorageService } from 'src/app/services/localStorage-service/local-storage.service';
+import { DemandeAnnulationTransfertModel } from 'src/app/models/demande-annulation-transfert.model';
+import { TABS_SERVICES } from 'src/app/new-services/new-services.page';
 const ls = new SecureLS({ encodingType: 'aes' });
 
+enum TABS_DASHBOARD {
+  HOME,
+  CONSO,
+  OM,
+  SERVICES,
+  ASSISTANCE,
+}
+interface Action {
+  title: string;
+  subtitle: string;
+  code: string;
+  icon: string;
+}
 @Component({
   selector: 'app-dashboard-home',
   templateUrl: './dashboard-home.component.html',
@@ -60,12 +74,13 @@ const ls = new SecureLS({ encodingType: 'aes' });
 export class DashboardHomeComponent implements OnInit {
   @ViewChildren(ScrollVanishDirective) dir;
   @Output() seeDetails: EventEmitter<any> = new EventEmitter();
+  @Output() goToSlide: EventEmitter<any> = new EventEmitter();
   slideOpts = {
     speed: 400,
     slidesPerView: 1.58,
     slideShadows: true,
   };
-  actions = [
+  actions: Action[] = [
     {
       title: 'Acheter',
       subtitle: 'Crédit, pass',
@@ -91,11 +106,17 @@ export class DashboardHomeComponent implements OnInit {
       icon: '04-boutons-01-illustrations-03-payer-ma-facture.svg',
     },
     {
-      title: 'Convertir',
-      subtitle: 'Points Sargal',
-      code: 'SARGAL',
+      title: 'Gérer',
+      subtitle: 'Fibre, Adsl, Box',
+      code: 'FIXES',
       icon: '04-boutons-01-illustrations-05-convertire-mes-points-sargal.svg',
     },
+    //{
+    //  title: 'Convertir',
+    //  subtitle: 'Points Sargal',
+    //  code: 'SARGAL',
+    //  icon: '04-boutons-01-illustrations-05-convertire-mes-points-sargal.svg',
+    //},
     {
       title: 'Demander',
       subtitle: 'un SOS',
@@ -103,6 +124,7 @@ export class DashboardHomeComponent implements OnInit {
       icon: '04-boutons-01-illustrations-06-demander-un-sos.svg',
     },
   ];
+  DEFAULT_LIST_ACTIONS = this.actions;
   currentMsisdn = this.dashboardService.getCurrentPhoneNumber();
   currentProfil: string;
   isHyBride: boolean;
@@ -125,6 +147,7 @@ export class DashboardHomeComponent implements OnInit {
 
   canDoSOS: boolean;
   isIos: boolean;
+  PROFILE_TYPE_PREPAID = PROFILE_TYPE_PREPAID;
 
   storiesByCategory: {
     categorie: {
@@ -141,7 +164,8 @@ export class DashboardHomeComponent implements OnInit {
   hasPromoBooster: PromoBoosterActive = null;
   hasPromoPlanActive: OfferPlanActive = null;
   listBanniere: BannierePubModel[] = [];
-
+  listAnnulationTrx: DemandeAnnulationTransfertModel[] = [];
+  isFechingListAnnulationTrx: boolean;
   constructor(
     private dashboardService: DashboardService,
     private authService: AuthenticationService,
@@ -159,7 +183,12 @@ export class DashboardHomeComponent implements OnInit {
     private storiesService: StoriesService,
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
-    private banniereService: BanniereService
+    private banniereService: BanniereService,
+    private qrScan: QrScannerService,
+    private illiflexService: IlliflexService,
+    private operationService: OperationService,
+    private storageService: LocalStorageService,
+    private bottomSheetService: BottomSheetService
   ) {}
 
   ngOnInit() {
@@ -180,11 +209,61 @@ export class DashboardHomeComponent implements OnInit {
     // this.getUserActiveBonPlans();
     this.getActivePromoBooster();
     this.fetchUserStories();
-    this.banniereService
-      .getListBanniereByFormuleByZone()
-      .subscribe((res: any) => {
-        this.listBanniere = res;
-      });
+    this.fetchOMMarchandLiteAnnulationTrx();
+    this.banniereService.getListBanniereByFormuleByZone().subscribe((res: any) => {
+      this.listBanniere = res;
+    });
+    this.illiflexService.getIlliflexPaliers().subscribe();
+    this.preloadServices();
+  }
+
+  preloadServices() {
+    this.operationService.getServicesByFormule().subscribe();
+    this.operationService.getServicesByFormule(HUB_ACTIONS.TRANSFERT).subscribe();
+    this.operationService.getServicesByFormule(HUB_ACTIONS.ACHAT).subscribe();
+    this.operationService.getServicesByFormule(HUB_ACTIONS.OM).subscribe();
+    this.operationService.getServicesByFormule(HUB_ACTIONS.FACTURES).subscribe();
+    this.operationService.getServicesByFormule(null, true).subscribe();
+    this.addNewHubSeDivertir();
+  }
+
+  addNewHubSeDivertir() {
+    const hubSeDivertir: Action = {
+      title: 'Se Divertir',
+      subtitle: '',
+      code: 'SE_DIVERTIR',
+      icon: '04-boutons-01-illustrations-05-convertire-mes-points-sargal.svg',
+    };
+    this.actions = this.DEFAULT_LIST_ACTIONS;
+    this.actions = this.actions.filter(elt => {
+      if (isProfileHybrid) {
+        return elt.code !== 'SOS';
+      } else {
+        return elt.code !== 'MERCHANT';
+      }
+    });
+    this.actions.push(hubSeDivertir);
+  }
+
+  fetchOMMarchandLiteAnnulationTrx() {
+    this.isFechingListAnnulationTrx = true;
+    this.omService.getAnnulationTrxMarchandLite().subscribe(
+      (res: any) => {
+        this.isFechingListAnnulationTrx = false;
+        this.listAnnulationTrx = res?.content?.data?.content;
+      },
+      err => {
+        this.isFechingListAnnulationTrx = false;
+      }
+    );
+  }
+
+  async goToListAnnulationTrxMarchandLite() {
+    const modal = await this.bottomSheetService.openListeAnnulationTrxForMLite(this.omService.mapToHistorikAchat(this.listAnnulationTrx));
+    modal.present();
+    modal.onDidDismiss().then((res: any) => {
+      this.fetchOMMarchandLiteAnnulationTrx();
+    });
   }
 
   fetchUserStories() {
@@ -196,10 +275,9 @@ export class DashboardHomeComponent implements OnInit {
       .pipe(
         tap((res: any) => {
           this.isLoadingStories = false;
-          this.storiesByCategory =
-            this.storiesService.groupeStoriesByCategory(res);
+          this.storiesByCategory = this.storiesService.groupeStoriesByCategory(res);
         }),
-        catchError((err) => {
+        catchError(err => {
           this.isLoadingStories = false;
           this.hasError = true;
           return of(err);
@@ -213,11 +291,8 @@ export class DashboardHomeComponent implements OnInit {
       (res: SubscriptionModel) => {
         this.currentProfil = res.profil;
         this.isHyBride = isProfileHybrid(this.currentProfil);
-        if (this.isHyBride) {
-          this.getCustomerSargalStatus();
-        } else {
-          this.getSargalPoints();
-        }
+        this.getSargalPoints();
+        this.getCustomerSargalStatus();
       },
       () => {}
     );
@@ -232,25 +307,14 @@ export class DashboardHomeComponent implements OnInit {
         this.userSargalData = res;
         this.sargalLastUpdate = getLastUpdatedDateTimeText();
         this.loadingSargal = false;
-        this.followAnalyticsService.registerEventFollow(
-          'Affichage_solde_sargal_success',
-          'event',
-          currentNumber
-        );
-        this.oemLogging.registerEvent('Affichage_solde_sargal_success', [
-          { dataName: 'currentNumber', dataValue: currentNumber },
-        ]);
+        this.followAnalyticsService.registerEventFollow('Affichage_solde_sargal_success', 'event', currentNumber);
+        this.oemLogging.registerEvent('Affichage_solde_sargal_success', [{ dataName: 'currentNumber', dataValue: currentNumber }]);
         this.oemLogging.setUserAttribute({
           keyAttribute: 'solde_sargal',
-          valueAttribute: res.totalPoints,
+          valueAttribute: +res.totalPoints,
         });
       },
-      (err) => {
-        this.followAnalyticsService.registerEventFollow(
-          'Affichage_solde_sargal_error',
-          'error',
-          { msisdn: currentNumber, error: err.status }
-        );
+      err => {
         this.oemLogging.registerEvent('Affichage_solde_sargal_error', [
           { dataName: 'msisdn', dataValue: currentNumber },
           { dataName: 'error', dataValue: err.status },
@@ -269,17 +333,16 @@ export class DashboardHomeComponent implements OnInit {
     this.consoService
       .getUserCunsomation()
       .pipe(
-        tap((conso) => {
+        finalize(() => {
           this.loadingConso = false;
-          this.oemLogging.registerEvent('Dashboard_get_user_conso_success', [
-            { dataName: 'msisdn', dataValue: this.currentMsisdn },
-          ]);
+          this.oemLogging.registerEvent('Dashboard_get_user_conso_success', [{ dataName: 'msisdn', dataValue: this.currentMsisdn }]);
+        }),
+        tap((conso: NewUserConsoModel[]) => {
           conso.length ? this.processConso(conso) : (this.consoHasError = true);
           event ? event.target.complete() : '';
         }),
-        catchError((err) => {
+        catchError(err => {
           this.consoHasError = true;
-          this.loadingConso = false;
           event ? event.target.complete() : '';
           return of(err);
         })
@@ -288,35 +351,27 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   processConso(consumation: NewUserConsoModel[]) {
-    this.getValidityDates(consumation);
-    const bonus1 = consumation.find((conso) => conso.codeCompteur === 2)
-      ?.montantRestantBrut
-      ? consumation.find((conso) => conso.codeCompteur === 2)
-          ?.montantRestantBrut
+    const appelCompteur = consumation.filter(item => {
+      return item.typeCompteur === 'APPEL';
+    });
+    this.getValidityDates(appelCompteur);
+    const bonus1 = appelCompteur.find(conso => conso.codeCompteur === 2)?.montantRestantBrut ? appelCompteur.find(conso => conso.codeCompteur === 2)?.montantRestantBrut : 0;
+
+    const bonus2 = appelCompteur.find(conso => conso.codeCompteur === 6)?.montantRestantBrut ? appelCompteur.find(conso => conso.codeCompteur === 6)?.montantRestantBrut : 0;
+
+    const forfaitBalance = appelCompteur.find(conso => conso.codeCompteur === 9)?.montantRestantBrut
+      ? appelCompteur.find(conso => conso.codeCompteur === 9)?.montantRestantBrut
       : 0;
-    const bonus2 = consumation.find((conso) => conso.codeCompteur === 6)
-      ?.montantRestantBrut
-      ? consumation.find((conso) => conso.codeCompteur === 6)
-          ?.montantRestantBrut
-      : 0;
-    const forfaitBalance = consumation.find((conso) => conso.codeCompteur === 9)
-      ?.montantRestantBrut
-      ? consumation.find((conso) => conso.codeCompteur === 9)
-          ?.montantRestantBrut
-      : 0;
-    this.creditRechargement = consumation.find(
-      (conso) => conso.codeCompteur === 1
-    )?.montantRestantBrut;
+
+    this.creditRechargement = appelCompteur.find(conso => conso.codeCompteur === 1)?.montantRestantBrut;
     this.canDoSOS = this.creditRechargement <= 4;
-    this.creditGlobal = formatCurrency(
-      bonus1 + bonus2 + forfaitBalance + this.creditRechargement
-    );
+    this.creditGlobal = formatCurrency(bonus1 + bonus2 + forfaitBalance + this.creditRechargement);
   }
 
   getValidityDates(appelConso: any[]) {
     let longestDate = 0;
-    appelConso.forEach((conso) => {
-      const dateDMY = conso.dateExpiration.substring(0, 10);
+    appelConso.forEach(conso => {
+      const dateDMY = conso?.dateExpiration.substring(0, 10);
       const date = this.processDateDMY(dateDMY);
       if (date > longestDate) {
         longestDate = date;
@@ -327,11 +382,7 @@ export class DashboardHomeComponent implements OnInit {
 
   processDateDMY(date: string) {
     const tab = date.split('/');
-    const newDate = new Date(
-      Number(tab[2]),
-      Number(tab[1]) - 1,
-      Number(tab[0])
-    );
+    const newDate = new Date(Number(tab[2]), Number(tab[1]) - 1, Number(tab[0]));
     return newDate.getTime();
   }
 
@@ -341,11 +392,7 @@ export class DashboardHomeComponent implements OnInit {
     this.sargalService.getCustomerSargalStatus().subscribe(
       (sargalStatus: SargalStatusModel) => {
         this.hasSargalProfile = true;
-        this.followAnalyticsService.registerEventFollow(
-          'Affichage_profil_sargal_success',
-          'event',
-          this.currentMsisdn
-        );
+        this.followAnalyticsService.registerEventFollow('Affichage_profil_sargal_success', 'event', this.currentMsisdn);
         if (!sargalStatus.valid) {
           this.sargalStatusUnavailable = true;
         }
@@ -353,11 +400,10 @@ export class DashboardHomeComponent implements OnInit {
         this.loadingSargalStatus = false;
       },
       (err: any) => {
-        this.followAnalyticsService.registerEventFollow(
-          'Affichage_profil_sargal_error',
-          'error',
-          { msisdn: this.currentMsisdn, error: err.status }
-        );
+        this.followAnalyticsService.registerEventFollow('Affichage_profil_sargal_error', 'error', {
+          msisdn: this.currentMsisdn,
+          error: err.status,
+        });
         this.loadingSargalStatus = false;
         if (err.status !== 400) {
           this.sargalStatusUnavailable = true;
@@ -367,9 +413,7 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   search() {
-    this.oemLogging.registerEvent('dashboard_search_click', [
-      { dataName: 'msisdn', dataValue: this.currentMsisdn },
-    ]);
+    this.oemLogging.registerEvent('dashboard_search_click', [{ dataName: 'msisdn', dataValue: this.currentMsisdn }]);
     this.dir.first.show();
   }
 
@@ -378,11 +422,7 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   seeSargalCard() {
-    this.followAnalyticsService.registerEventFollow(
-      'Sargal_profil',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Sargal_profil', 'event', 'clicked');
     this.router.navigate(['/sargal-status-card']);
   }
 
@@ -390,9 +430,9 @@ export class DashboardHomeComponent implements OnInit {
     // this.router.navigate(['/details-conso']);
     this.seeDetails.emit();
     if (number) {
-      this.oemLogging.registerEvent('dashboard_conso_details_click', null);
+      this.oemLogging.registerEvent('dashboard_conso_details_click', null, true);
     } else {
-      this.oemLogging.registerEvent('dashboard_conso_card_click', null);
+      this.oemLogging.registerEvent('dashboard_conso_card_click', null, true);
     }
   }
 
@@ -434,28 +474,15 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   onSargalCardClicked(origin?: string) {
-    this.oemLogging.registerEvent('dashboard_sargal_card_click', [
-      { dataName: 'msisdn', dataValue: this.currentMsisdn },
-    ]);
-    if (
-      this.userSargalData &&
-      (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED ||
-        this.userSargalData.status === SARGAL_UNSUBSCRIPTION_ONGOING) &&
-      !this.loadingSargal
-    ) {
-      this.oemLogging.registerEvent('dashboard_sargal_register_click', [
-        { dataName: 'msisdn', dataValue: this.currentMsisdn },
-      ]);
+    this.oemLogging.registerEvent('dashboard_sargal_card_click', [{ dataName: 'msisdn', dataValue: this.currentMsisdn }]);
+    if (this.userSargalData && (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED || this.userSargalData.status === SARGAL_UNSUBSCRIPTION_ONGOING) && !this.loadingSargal) {
+      this.oemLogging.registerEvent('Sargal_registration_card_clic', [{ dataName: 'msisdn', dataValue: this.currentMsisdn }]);
       this.router.navigate(['/sargal-registration']);
     } else if (!this.sargalUnavailable && !this.loadingSargal) {
       if (origin === 'card') {
-        this.oemLogging.registerEvent('dashboard_sargal_card_click', [
-          { dataName: 'msisdn', dataValue: this.currentMsisdn },
-        ]);
+        this.oemLogging.registerEvent('Sargal_dashboard_card_clic', [{ dataName: 'msisdn', dataValue: this.currentMsisdn }]);
       } else {
-        this.oemLogging.registerEvent('dashboard_convertir_click', [
-          { dataName: 'msisdn', dataValue: this.currentMsisdn },
-        ]);
+        this.oemLogging.registerEvent('Dashboard_Convertir_Sargal_clic', [{ dataName: 'msisdn', dataValue: this.currentMsisdn }]);
       }
       this.router.navigate(['/sargal-dashboard']);
     }
@@ -481,50 +508,50 @@ export class DashboardHomeComponent implements OnInit {
       case 'SOS':
         this.goToSOSPage();
         break;
+      case 'FIXES':
+        this.goTAllFixeServices();
+      case 'SE_DIVERTIR':
+        this.goToNewServicesPage(TABS_SERVICES.LOISIR);
+        break;
     }
   }
 
   goToTransfertsPage() {
-    this.oemLogging.registerEvent('dashboard_transferer_click', [
-      { dataName: 'msisdn', dataValue: this.currentMsisdn },
-    ]);
+    this.oemLogging.registerEvent('Dashboard_hub_transfert_clic', [{ dataName: 'msisdn', dataValue: this.currentMsisdn }]);
     this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
   }
 
   goToBuyPage() {
-    this.oemLogging.registerEvent('dashboard_acheter_click', [
-      { dataName: 'msisdn', dataValue: this.currentMsisdn },
-    ]);
+    this.oemLogging.registerEvent('Dashboard_hub_achat_clic', [{ dataName: 'msisdn', dataValue: this.currentMsisdn }]);
     this.appliRouting.goToTransfertHubServicesPage('BUY');
   }
 
   goToSOSPage() {
     if (this.canDoSOS) {
-      this.oemLogging.registerEvent('dashboard_sos_click', [
-        { dataName: 'msisdn', dataValue: this.currentMsisdn },
-      ]);
+      this.oemLogging.registerEvent('Dashboard_sos_clic', [{ dataName: 'msisdn', dataValue: this.currentMsisdn }]);
       this.router.navigate(['/buy-sos']);
     }
   }
 
+  goTAllFixeServices() {
+    this.followAnalyticsService.registerEventFollow('gerer_mon_fixe_clic', 'event', 'clicked');
+    this.router.navigate(['/fixes-services']);
+  }
+
+  goToNewServicesPage(tab: TABS_SERVICES) {
+    this.followAnalyticsService.registerEventFollow('se_divertir_clic', 'event', 'clicked');
+    this.goToSlide.emit({
+      slideTo: TABS_DASHBOARD.SERVICES,
+      tab: tab,
+    });
+  }
+
   goMerchantPayment() {
-    this.oemLogging.registerEvent('dashboard_marchand_click', [
-      { dataName: 'msisdn', dataValue: this.currentMsisdn },
-    ]);
+    this.oemLogging.registerEvent('Dashboard_paiement_marchand_clic', [{ dataName: 'msisdn', dataValue: this.currentMsisdn }]);
     this.omService.omAccountSession().subscribe(async (omSession: any) => {
-      const omSessionValid = omSession
-        ? omSession.msisdn !== 'error' &&
-          omSession.hasApiKey &&
-          !omSession.loginExpired
-        : null;
+      const omSessionValid = omSession ? omSession.msisdn !== 'error' && omSession.hasApiKey && !omSession.loginExpired : null;
       if (omSessionValid) {
-        this.bsService
-          .initBsModal(
-            MerchantPaymentCodeComponent,
-            OPERATION_TYPE_MERCHANT_PAYMENT,
-            PurchaseSetAmountPage.ROUTE_PATH
-          )
-          .subscribe((_) => {});
+        this.bsService.initBsModal(MerchantPaymentCodeComponent, OPERATION_TYPE_MERCHANT_PAYMENT, PurchaseSetAmountPage.ROUTE_PATH).subscribe(_ => {});
         this.bsService.openModal(MerchantPaymentCodeComponent, {
           omMsisdn: omSession.msisdn,
         });
@@ -535,9 +562,7 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   onPayerFacture() {
-    this.oemLogging.registerEvent('dashboard_payer_click', [
-      { dataName: 'msisdn', dataValue: this.currentMsisdn },
-    ]);
+    this.oemLogging.registerEvent('Dashboard_hub_facture_clic', [{ dataName: 'msisdn', dataValue: this.currentMsisdn }]);
     this.router.navigate([BillsHubPage.ROUTE_PATH]);
   }
 
@@ -546,11 +571,15 @@ export class DashboardHomeComponent implements OnInit {
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
     });
-    modal.onDidDismiss().then((resp) => {
+    modal.onDidDismiss().then(resp => {
       if (resp && resp.data && resp.data.success) {
         this.goMerchantPayment();
       }
     });
     return await modal.present();
+  }
+
+  launchQrCode() {
+    this.qrScan.startScan();
   }
 }

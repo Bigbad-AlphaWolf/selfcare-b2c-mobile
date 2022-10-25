@@ -1,22 +1,21 @@
-import {Injectable} from '@angular/core';
-import {environment} from 'src/environments/environment';
+import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
-const {BATCH_ANDROID_API_KEY, BATCH_IOS_API_KEY} = environment;
+const { BATCH_ANDROID_API_KEY, BATCH_IOS_API_KEY } = environment;
 declare var batch;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BatchAnalyticsService {
   constructor() {}
 
   initBatchConfig(isIOS?: boolean) {
-    batch.setConfig({androidAPIKey: BATCH_ANDROID_API_KEY, iOSAPIKey: BATCH_IOS_API_KEY});
+    batch.setConfig({ androidAPIKey: BATCH_ANDROID_API_KEY, iOSAPIKey: BATCH_IOS_API_KEY });
     batch.start();
     if (isIOS) {
       batch.push.setiOSShowForegroundNotifications(true);
       batch.push.registerForRemoteNotifications();
-      batch.push.setiOSShowForegroundNotifications(true);
     }
   }
 
@@ -29,7 +28,7 @@ export class BatchAnalyticsService {
     }
   }
 
-  setUserAttribute(payload: {keyAttribute: string; valueAttribute: any}) {
+  setUserAttribute(payload: { keyAttribute: string; valueAttribute: any }) {
     if (batch) {
       batch.user
         .getEditor()
@@ -47,7 +46,7 @@ export class BatchAnalyticsService {
     }
   }
 
-  registerEvent(eventName: string, label?: string, infos?: {dataName: string; dataValue: string}[]) {
+  registerEvent(eventName: string, label?: string, infos?: { dataName: string; dataValue: string }[]) {
     if (batch) {
       let data = new batch.user.eventData();
       infos.forEach(item => {

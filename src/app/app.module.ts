@@ -19,7 +19,6 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { AppVersion } from '@ionic-native/app-version/ngx';
@@ -32,15 +31,19 @@ import { OperationSuccessFailModalPageModule } from './operation-success-fail-mo
 import { RegistrationSuccessModalPageModule } from './registration-success-modal/registration-success-modal.module';
 import { IonicImageLoader } from 'ionic-image-loader';
 import { Uid } from '@ionic-native/uid/ngx';
-import { WifiWizard2 } from '@ionic-native/wifi-wizard-2/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { PipesModule } from './pipes/pipes.module';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
+import { FaceIdAlertPopupComponent } from './sidemenu/face-id-alert-popup/face-id-alert-popup.component';
+import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
+import { FirebaseDynamicLinks } from '@awesome-cordova-plugins/firebase-dynamic-links/ngx';
 import { FirebaseAnalytics } from '@ionic-native/firebase-analytics/ngx';
 
 registerLocaleData(localeFr);
 @NgModule({
-  declarations: [AppComponent, SidemenuComponent],
+  declarations: [AppComponent, SidemenuComponent, FaceIdAlertPopupComponent],
   imports: [
     HttpClientModule,
     MatDialogModule,
@@ -60,6 +63,7 @@ registerLocaleData(localeFr);
     AppVersion,
     StatusBar,
     SplashScreen,
+    FingerprintAIO,
     WebView,
     { provide: LOCALE_ID, useValue: 'fr-FR' },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -72,14 +76,15 @@ registerLocaleData(localeFr);
     File,
     FileOpener,
     AppMinimize,
+    FirebaseDynamicLinks,
     InAppBrowser,
-    Deeplinks,
     Market,
     Device,
     Uid,
     AndroidPermissions,
     Network,
-    WifiWizard2,
+    Diagnostic,
+    BarcodeScanner,
     FirebaseAnalytics,
   ],
   bootstrap: [AppComponent],

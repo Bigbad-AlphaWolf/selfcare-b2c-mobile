@@ -420,7 +420,8 @@ body {
 
 .set-channel-payment-modal {
   align-items: flex-end !important;
-  .modal-wrapper {
+  .modal-wrapper,
+  .modal-shadow {
     height: 375px !important;
     width: 100% !important;
     border-radius: 10px 10px 0 0 !important;
@@ -535,7 +536,7 @@ body {
     .ion-page {
       position: relative;
       contain: content;
-      max-height: 90vh;
+      // max-height: 90vh;
       .modal-content {
         overflow: auto;
       }
@@ -581,6 +582,12 @@ body {
   border-radius: 10px 10px 0 0;
   .mat-form-field-suffix {
     bottom: 5px !important;
+    top: unset !important;
+  }
+}
+
+.beneficiary-number {
+  .mat-form-field-suffix {
     top: unset !important;
   }
 }
@@ -642,7 +649,9 @@ button {
   }
 }
 .mat-radio-button.mat-accent .mat-radio-inner-circle,
-.mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple),
+.mat-radio-button.mat-accent
+  .mat-radio-ripple
+  .mat-ripple-element:not(.mat-radio-persistent-ripple),
 .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-persistent-ripple,
 .mat-radio-button.mat-accent:active .mat-radio-persistent-ripple {
   background-color: #ff7900;
@@ -666,7 +675,9 @@ button {
   flex-direction: column;
 }
 
-.mat-button-toggle-group-appearance-standard .mat-button-toggle + .mat-button-toggle {
+.mat-button-toggle-group-appearance-standard
+  .mat-button-toggle
+  + .mat-button-toggle {
   border-left: none;
 }
 
@@ -1033,4 +1044,17 @@ ion-tab-bar {
     width: 6px;
     height: 6px;
   }
+}
+
+.dalal-search-block {
+  .searchbar-input-container {
+    .searchbar-input {
+      border: solid 1px #888888;
+      height: 40px;
+    }
+  }
+}
+
+.cdk-virtual-scroll-orientation-vertical .cdk-virtual-scroll-content-wrapper {
+	width: 100%;
 }

@@ -8,9 +8,10 @@ import {IonicModule} from '@ionic/angular';
 import {NewRegistrationPage} from './new-registration.page';
 import {SharedModule} from 'src/shared/shared.module';
 import {OpenNativeSettings} from '@ionic-native/open-native-settings/ngx';
-import {Network} from '@ionic-native/network/ngx';
 import {MsisdnAssistanceModalComponent} from './components/msisdn-assistance-modal/msisdn-assistance-modal.component';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import {TypePhoneNumberManuallyComponent} from './components/type-phone-number-manually/type-phone-number-manually.component';
+import { NgxCaptchaModule } from 'ngx-captcha';
 
 const routes: Routes = [
   {
@@ -20,9 +21,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, SharedModule, MatBottomSheetModule, RouterModule.forChild(routes)],
-  declarations: [NewRegistrationPage, MsisdnAssistanceModalComponent],
+  imports: [CommonModule, FormsModule, IonicModule, SharedModule, MatBottomSheetModule,NgxCaptchaModule, RouterModule.forChild(routes)],
+  declarations: [NewRegistrationPage, MsisdnAssistanceModalComponent, TypePhoneNumberManuallyComponent],
   entryComponents: [MsisdnAssistanceModalComponent],
-  providers: [OpenNativeSettings, Network]
+  providers: [OpenNativeSettings]
 })
 export class NewRegistrationPageModule {}

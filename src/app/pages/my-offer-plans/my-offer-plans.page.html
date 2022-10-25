@@ -49,14 +49,11 @@
               </ion-slides>
           </div>
         </div>
-        <div *ngIf="hasError" class="has-error">
-          Une erreur est survenue, veuillez recharger les données de la page en cliquant <span (click)="getUserOfferPlans()"> ici </span>
-        </div>
-        <div *ngIf="hasNoOfferPlans" (click)="getUserOfferPlans()" class="has-error">
-          Vous n’avez pas de bon plan ce jour
+        <div *ngIf="hasError || hasNoOfferPlans" (click)="getUserOfferPlans()" class="has-error">
+          Aucun bon plan disponible aujourd’hui
         </div>
         <div *ngIf="hasErrorProcessingMPO" (click)="processMPO(selectedOfferPlan)" class="has-error">
-          Une erreur est survenue. Veuillez cliquer ici pour réessayer
+          Une erreur est survenue. Veuillez réessayer
         </div>
       </ng-container>
     </div>

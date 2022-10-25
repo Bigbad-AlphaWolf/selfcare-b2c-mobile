@@ -1,38 +1,26 @@
-import {
-  Component,
-  OnInit,
-  EventEmitter,
-  Output,
-  OnDestroy,
-  Input,
-} from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, OnDestroy, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import {
-  DashboardService,
-  downloadAvatarEndpoint,
-} from '../services/dashboard-service/dashboard.service';
+import { DashboardService, downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
 import { AccountService } from '../services/account-service/account.service';
 import * as SecureLS from 'secure-ls';
-import {
-  NO_AVATAR_ICON_URL,
-  getNOAvatartUrlImage,
-  ASSISTANCE_URL,
-  CONSO,
-  ASSISTANCE,
-  SERVICES,
-} from 'src/shared';
+import { NO_AVATAR_ICON_URL, getNOAvatartUrlImage, ASSISTANCE_URL, CONSO, ASSISTANCE, SERVICES, isFixeNumber, JAMONO_NEW_SCOOL_CODE_FORMULE } from 'src/shared';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { ModalController, NavController } from '@ionic/angular';
+import { ModalController, NavController, Platform } from '@ionic/angular';
 import { OffresServicesPage } from '../pages/offres-services/offres-services.page';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { AppVersion } from '@ionic-native/app-version/ngx';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 import { isPrepaidOrHybrid } from '../dashboard';
 import { OmStatusVisualizationComponent } from 'src/shared/om-status-visualization/om-status-visualization.component';
+import { FACE_ID_PERMISSIONS, OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
+import { FollowAnalyticsEventType } from '../services/follow-analytics/follow-analytics-event-type.enum';
+import { OPERATION_TYPE_PAY_BILL, OPERATION_TYPE_TERANGA_BILL } from '../utils/operations.constants';
+import { BonsPlansSargalService } from '../services/bons-plans-sargal/bons-plans-sargal.service';
+import { tap } from 'rxjs/operators';
 import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 @Component({
   selector: 'app-sidemenu',
@@ -51,20 +39,31 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   avatarUrl: string;
   numbers: any[] = [];
   @Input() currentAppVersion;
+  @Input() omUserInfos;
+  displayPopUpOM = true;
+  isBiometricAvailable: boolean;
+  userBiometricStatus: FACE_ID_PERMISSIONS;
+  FACE_ID_PERMISSION_ALLOWED = FACE_ID_PERMISSIONS.ALLOWED;
+  FACE_ID_PERMISSION_DENIED = FACE_ID_PERMISSIONS.NEVER;
+  SCOOL_CODE_FORMULE = JAMONO_NEW_SCOOL_CODE_FORMULE;
+  @Input() showBonPlanSargal: boolean;
 
   constructor(
     private router: Router,
     private authServ: AuthenticationService,
+    private bpSargalService: BonsPlansSargalService,
     private dashboardServ: DashboardService,
     private accountService: AccountService,
     private iab: InAppBrowser,
     private followAnalyticsService: FollowAnalyticsService,
     private navCtrl: NavController,
     private appVersion: AppVersion,
-    private socialSharing: SocialSharing,
+    private orangeMoneyServ: OrangeMoneyService,
     private appRout: ApplicationRoutingService,
     private bsService: BottomSheetService,
     private modalController: ModalController,
+    private faio: FingerprintAIO,
+    private platform: Platform,
     private oemLoggingService: OemLoggingService
   ) {}
 
@@ -94,6 +93,48 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.accountService.deletedPhoneNumbersEmit().subscribe(() => {
       this.getAllAttachedNumbers();
     });
+    this.checkFingerprintAvailability();
+  }
+
+  getBonsPlansSargal() {
+    this.bpSargalService
+      .getBonsPlansSargal()
+      .pipe(
+        tap(bonPlanResponse => {
+          this.showBonPlanSargal = !!bonPlanResponse?.length;
+        })
+      )
+      .subscribe();
+  }
+
+  checkFingerprintAvailability() {
+    this.userBiometricStatus = this.orangeMoneyServ.getFaceIdState();
+    this.orangeMoneyServ.faceIdStatusChanged().subscribe((status: FACE_ID_PERMISSIONS) => {
+      this.userBiometricStatus = status;
+    });
+    this.platform.ready().then(res => {
+      this.faio
+        .isAvailable()
+        .then(faioType => {
+          console.log(faioType);
+          if (faioType) {
+            this.isBiometricAvailable = true;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+  }
+
+  onChangedStatus(event) {
+    if (event?.detail?.checked) {
+      this.followAnalyticsService.registerEventFollow('Allow_Face_ID_Toggle', FollowAnalyticsEventType.EVENT, { msisdn: this.msisdn });
+      this.orangeMoneyServ.allowFaceId();
+    } else {
+      this.followAnalyticsService.registerEventFollow('Disable_Face_ID_Toggle', FollowAnalyticsEventType.EVENT, { msisdn: this.msisdn });
+      this.orangeMoneyServ.askFaceIdLater();
+    }
   }
 
   async getVersion() {
@@ -110,7 +151,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     const userHasLogin = !!this.authServ.getToken();
     if (userHasLogin) {
       setTimeout(() => {
-        this.authServ.getSubscription(this.msisdn).subscribe((souscription) => {
+        this.authServ.getSubscription(this.msisdn).subscribe(souscription => {
           this.userSubscription = souscription;
           this.currentProfile = souscription.profil;
           this.currentFormule = souscription.nomOffre;
@@ -122,23 +163,15 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   getAllAttachedNumbers() {
     this.numbers = [];
     this.dashboardServ.getAllOemNumbers().subscribe(
-      (res) => {
+      res => {
         this.numbers = res;
-        this.followAnalyticsService.registerEventFollow(
-          'Recuperation_lignes_rattachees_menu_success',
-          'event',
-          this.msisdn
-        );
+        this.followAnalyticsService.registerEventFollow('Recuperation_lignes_rattachees_menu_success', 'event', this.msisdn);
       },
-      (err) => {
-        this.followAnalyticsService.registerEventFollow(
-          'Recuperation_lignes_rattachees_menu_failed',
-          'error',
-          {
-            msisdn: this.msisdn,
-            error: err.status,
-          }
-        );
+      err => {
+        this.followAnalyticsService.registerEventFollow('Recuperation_lignes_rattachees_menu_failed', 'error', {
+          msisdn: this.msisdn,
+          error: err.status,
+        });
       }
     );
   }
@@ -148,21 +181,13 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goDetailsConso() {
-    this.authServ.getSubscription(this.msisdn).subscribe((sub) => {
+    this.authServ.getSubscription(this.msisdn).subscribe(sub => {
       if (isPrepaidOrHybrid(sub)) {
-        this.followAnalyticsService.registerEventFollow(
-          'Details_conso_tab_from_menu',
-          'event',
-          this.msisdn
-        );
+        this.followAnalyticsService.registerEventFollow('Details_conso_tab_from_menu', 'event', this.msisdn);
         this.dashboardServ.menuOptionClickEmit(CONSO);
         return;
       }
-      this.followAnalyticsService.registerEventFollow(
-        'Details_conso_menu',
-        'event',
-        this.msisdn
-      );
+      this.followAnalyticsService.registerEventFollow('Details_conso_menu', 'event', this.msisdn);
       this.router.navigate(['/details-conso']);
     });
   }
@@ -180,10 +205,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   attachLine() {
-    this.followAnalyticsService.registerEventFollow(
-      'Attach_msisdn_menu',
-      'event'
-    );
+    this.followAnalyticsService.registerEventFollow('Attach_msisdn_menu', 'event');
     this.router.navigate(['/new-number']);
   }
 
@@ -207,34 +229,26 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     this.lastName = user.lastName;
   }
 
+  goBPSargal() {
+    this.router.navigate(['/custom-sargal-profile']);
+  }
+
   goToAssistancePage() {
-    // this.router.navigate(['/community']);
     // return;
     this.iab.create(ASSISTANCE_URL, '_self');
-    this.followAnalyticsService.registerEventFollow(
-      'Sidemenu_Assistance',
-      'event',
-      'clicked'
-    );
+    this.followAnalyticsService.registerEventFollow('Sidemenu_Assistance', 'event', 'clicked');
   }
 
   ngOnDestroy() {}
 
   onOffreClicked() {
-    this.authServ.getSubscription(this.msisdn).subscribe((sub) => {
+    this.authServ.getSubscription(this.msisdn).subscribe(sub => {
       if (isPrepaidOrHybrid(sub)) {
-        this.followAnalyticsService.registerEventFollow(
-          'services_tab_from_menu',
-          'event',
-          this.msisdn
-        );
+        this.followAnalyticsService.registerEventFollow('services_tab_from_menu', 'event', this.msisdn);
         this.dashboardServ.menuOptionClickEmit(SERVICES);
         return;
       }
-      this.followAnalyticsService.registerEventFollow(
-        'Offres_services_menu',
-        'event'
-      );
+      this.followAnalyticsService.registerEventFollow('Offres_services_menu', 'event');
       this.navCtrl.navigateForward(OffresServicesPage.ROUTE_PATH);
     });
   }
@@ -250,8 +264,13 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goFacture() {
-    this.oemLoggingService.registerEvent('sidemenu_factures_click', []);
-    this.router.navigate(['/bills']);
+    const operationType = isFixeNumber(this.msisdn, this.userSubscription) ? OPERATION_TYPE_PAY_BILL : OPERATION_TYPE_TERANGA_BILL;
+    this.router.navigate(['/bills'], {
+      state: {
+        operationType,
+      },
+    });
+    this.oemLoggingService.registerEvent('Factures_menu_click', []);
   }
 
   goMyAccount() {
@@ -265,22 +284,14 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   goEmergencies() {
-    this.authServ.getSubscription(this.msisdn).subscribe((sub) => {
+    this.authServ.getSubscription(this.msisdn).subscribe(sub => {
       if (isPrepaidOrHybrid(sub)) {
-        this.followAnalyticsService.registerEventFollow(
-          'Assistance_tab_from_menu',
-          'event',
-          this.msisdn
-        );
+        this.followAnalyticsService.registerEventFollow('Assistance_tab_from_menu', 'event', this.msisdn);
         this.dashboardServ.menuOptionClickEmit(ASSISTANCE);
         return;
       }
       this.router.navigate(['/assistance-hub']);
-      this.followAnalyticsService.registerEventFollow(
-        'Assistance_menu',
-        'event',
-        'clicked'
-      );
+      this.followAnalyticsService.registerEventFollow('Assistance_menu', 'event', 'clicked');
     });
   }
 
@@ -315,5 +326,18 @@ export class SidemenuComponent implements OnInit, OnDestroy {
       cssClass: 'select-recipient-modal',
     });
     return await modal.present();
+  }
+
+  closePopUpOM() {
+    this.displayPopUpOM = false;
+  }
+
+  getUserOMInfos() {
+    console.log('omInfos', this.orangeMoneyServ.GetOrangeMoneyUser(this.dashboardServ.getCurrentPhoneNumber()));
+  }
+
+  goToSatisfactionForm() {
+    this.router.navigate(['/satisfaction-form']);
+    this.followAnalyticsService.registerEventFollow('Ibou_Formulaire_de_satisfaction_clic', 'event', 'clicked');
   }
 }

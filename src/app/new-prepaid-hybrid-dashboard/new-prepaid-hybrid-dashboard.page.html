@@ -1,9 +1,12 @@
 <swiper [config]="swiperConfig" (slideChange)="onSwipe($event)" #swiper>
   <ng-template swiperSlide>
-    <app-dashboard-home #dashHome (seeDetails)="setSlide(1)"></app-dashboard-home>
+    <app-dashboard-home #dashHome (seeDetails)="setSlide(1)" (goToSlide)="goTo($event)"></app-dashboard-home>
   </ng-template>
   <ng-template swiperSlide>
     <app-new-suivi-conso></app-new-suivi-conso>
+  </ng-template>
+  <ng-template swiperSlide>
+    <app-om-universe></app-om-universe>
   </ng-template>
   <ng-template swiperSlide>
     <app-new-services></app-new-services>
@@ -14,7 +17,8 @@
 </swiper>
 <div class="tabs" [ngClass]="{'tabs-ios': isIos}">
   <div class="custom-tab" *ngFor="let mytab of tabs, let i = index"
-    [ngClass]="{'tab-selected': currentSlideIndex === i}" (click)="setSlide(i)">
+    [ngClass]="{'tab-selected': currentSlideIndex === i}" [id]="('tab-bar-'+mytab?.route) | generateIdForTA"
+    (click)="setSlide(i)">
     <ng-container *ngIf="currentSlideIndex === i else notActive">
       <ion-icon class="scb-text-orange" [name]="mytab.activeIcon"></ion-icon>
     </ng-container>

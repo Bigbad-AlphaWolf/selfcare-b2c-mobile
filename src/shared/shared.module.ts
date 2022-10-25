@@ -72,6 +72,28 @@ import {ActionItemComponent} from './action-item/action-item.component';
 import {KioskLocatorPopupComponent} from 'src/app/components/kiosk-locator-popup/kiosk-locator-popup.component';
 import {OmStatusVisualizationComponent} from './om-status-visualization/om-status-visualization.component';
 import {ServicesSearchBarComponent} from './services-search-bar/services-search-bar.component';
+import {FormatDataVolume2Pipe} from './pipes/format-data-volume-2.pipe';
+import {FormatDuration2Pipe} from './pipes/format-duration-2.pipe';
+import {SelectNumberForBillComponent} from 'src/app/components/select-number-for-bill/select-number-for-bill.component';
+import {UnpaidBillModalComponent} from 'src/app/components/unpaid-bill-modal/unpaid-bill-modal.component';
+import {SelectCountryModalComponent} from 'src/app/transfert-hub-services/components/select-country-modal/select-country-modal.component';
+import {SelectElementModalComponent} from './select-element-modal/select-element-modal.component';
+import {PermissionSettingsPopupComponent} from 'src/app/components/permission-settings-popup/permission-settings-popup.component';
+import {OpenNativeSettings} from '@ionic-native/open-native-settings/ngx';
+import {PopUpCompteOmBloquedComponent} from './pop-up-compte-om-bloqued/pop-up-compte-om-bloqued.component';
+import {FaceIdRequestModalComponent} from './face-id-request-modal/face-id-request-modal.component';
+import {TypeCounterModalComponent} from 'src/app/components/type-counter-modal/type-counter-modal.component';
+import {FavoriteServiceCountersComponent} from 'src/app/components/counter/favorite-service-counters/favorite-service-counters.component';
+import {FavoriteCounterNameModalComponent} from 'src/app/components/favorite-counter-name-modal/favorite-counter-name-modal.component';
+import {XeweulSelectionComponent} from '../app/components/counter/xeweul-selection/xeweul-selection.component';
+import {CardXeweulNameModalComponent} from '../app/components/card-xeweul-name-modal/card-xeweul-name-modal.component';
+import {XeweulSoldeComponent} from '../app/components/counter/xeweul-solde/xeweul-solde.component';
+import {FavoriteXeweulComponent} from '../app/components/counter/favorite-xeweul/favorite-xeweul.component';
+import { TransactionItemComponent } from './transaction-item/transaction-item.component';
+import { TransactionFinalityModalComponent } from './transaction-finality-modal/transaction-finality-modal.component';
+import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
+import { ListeAnnulationTrxComponent } from 'src/app/details-conso/components/liste-annulation-trx/liste-annulation-trx.component';
+import { AnnulationSuccessPopupComponent } from 'src/app/details-conso/components/annulation-success-popup/annulation-success-popup.component';
 
 @NgModule({
   declarations: [
@@ -84,9 +106,11 @@ import {ServicesSearchBarComponent} from './services-search-bar/services-search-
     OemOperationsComponent,
     SelectBeneficiaryPopUpComponent,
     RapidoSelectionComponent,
+    XeweulSelectionComponent,
     WoyofalSelectionComponent,
     FavoriteWoyofalComponent,
     FavoriteRapidoComponent,
+    FavoriteXeweulComponent,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
     AmountProviderComponent,
@@ -119,6 +143,7 @@ import {ServicesSearchBarComponent} from './services-search-bar/services-search-
     FavoriteMerchantComponent,
     IbouIonFabComponent,
     RapidoSoldeComponent,
+    XeweulSoldeComponent,
     YesNoModalComponent,
     SimpleOperationSuccessModalComponent,
     BanniereDescriptionPage,
@@ -132,7 +157,23 @@ import {ServicesSearchBarComponent} from './services-search-bar/services-search-
     ActionItemComponent,
     KioskLocatorPopupComponent,
     OmStatusVisualizationComponent,
-    ServicesSearchBarComponent
+    ServicesSearchBarComponent,
+    FormatDataVolume2Pipe,
+    FormatDuration2Pipe,
+    SelectNumberForBillComponent,
+    UnpaidBillModalComponent,
+    SelectCountryModalComponent,
+    SelectElementModalComponent,
+    PopUpCompteOmBloquedComponent,
+    PermissionSettingsPopupComponent,
+    FaceIdRequestModalComponent,
+    TypeCounterModalComponent,
+    FavoriteServiceCountersComponent,
+    FavoriteCounterNameModalComponent,
+    TransactionItemComponent,
+    TransactionFinalityModalComponent,
+		ListeAnnulationTrxComponent,
+		AnnulationSuccessPopupComponent
   ],
   imports: [CommonModule, IonicImageLoader, RouterModule, ComponentsModule, MaterialComponentsModule, PipesModule],
   entryComponents: [
@@ -141,8 +182,10 @@ import {ServicesSearchBarComponent} from './services-search-bar/services-search-
     NumberSelectionComponent,
     FavoriteWoyofalComponent,
     FavoriteRapidoComponent,
+    FavoriteXeweulComponent,
     WoyofalSelectionComponent,
     RapidoSelectionComponent,
+    XeweulSelectionComponent,
     ModalSuccessComponent,
     NoOMAccountPopupComponent,
     CancelOperationPopupComponent,
@@ -158,17 +201,32 @@ import {ServicesSearchBarComponent} from './services-search-bar/services-search-
     NoOmAccountModalComponent,
     FavoriteMerchantComponent,
     RapidoSoldeComponent,
+    XeweulSoldeComponent,
     RattachNumberModalComponent,
     RattachNumberByIdCardComponent,
     RattachNumberByClientCodeComponent,
     CardRapidoNameModalComponent,
+    CardXeweulNameModalComponent,
     IdentifiedNumbersListComponent,
     ChooseRattachementTypeModalComponent,
     YesNoModalComponent,
     SimpleOperationSuccessModalComponent,
     BanniereDescriptionPage,
     BlockTransferSuccessPopupComponent,
-    KioskLocatorPopupComponent
+    KioskLocatorPopupComponent,
+    SelectNumberForBillComponent,
+    UnpaidBillModalComponent,
+    SelectCountryModalComponent,
+    SelectElementModalComponent,
+    PermissionSettingsPopupComponent,
+    PopUpCompteOmBloquedComponent,
+    FaceIdRequestModalComponent,
+    TypeCounterModalComponent,
+    FavoriteServiceCountersComponent,
+    FavoriteCounterNameModalComponent,
+    TransactionFinalityModalComponent,
+		RattachByOtpCodeComponent,
+    PinPadComponent
   ],
   exports: [
     BanniereComponent,
@@ -181,8 +239,10 @@ import {ServicesSearchBarComponent} from './services-search-bar/services-search-
     SelectBeneficiaryPopUpComponent,
     WoyofalSelectionComponent,
     RapidoSelectionComponent,
+    XeweulSelectionComponent,
     FavoriteWoyofalComponent,
     FavoriteRapidoComponent,
+    FavoriteXeweulComponent,
     OemIonHeaderParallaxDirective,
     PhoneNumberProviderComponent,
     NumberSelectionComponent,
@@ -212,6 +272,7 @@ import {ServicesSearchBarComponent} from './services-search-bar/services-search-
     FavoriteMerchantComponent,
     IbouIonFabComponent,
     RapidoSoldeComponent,
+    XeweulSoldeComponent,
     MaterialComponentsModule,
     PipesModule,
     YesNoModalComponent,
@@ -225,9 +286,25 @@ import {ServicesSearchBarComponent} from './services-search-bar/services-search-
     FaqItemComponent,
     ActionItemComponent,
     OmStatusVisualizationComponent,
-    ServicesSearchBarComponent
+    ServicesSearchBarComponent,
+    FormatDataVolume2Pipe,
+    FormatDuration2Pipe,
+    SelectNumberForBillComponent,
+    UnpaidBillModalComponent,
+    SelectCountryModalComponent,
+    SelectElementModalComponent,
+    PermissionSettingsPopupComponent,
+    PopUpCompteOmBloquedComponent,
+    FaceIdRequestModalComponent,
+    TypeCounterModalComponent,
+    FavoriteServiceCountersComponent,
+    FavoriteCounterNameModalComponent,
+    TransactionItemComponent,
+    TransactionFinalityModalComponent,
+		ListeAnnulationTrxComponent,
+		AnnulationSuccessPopupComponent
   ],
-  providers: [Contacts, SocialSharing, {provide: MAT_BOTTOM_SHEET_DATA, useValue: {}}],
+  providers: [Contacts, SocialSharing, OpenNativeSettings, {provide: MAT_BOTTOM_SHEET_DATA, useValue: {}}],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule {}

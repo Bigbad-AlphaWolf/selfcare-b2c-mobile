@@ -12,6 +12,7 @@ export interface PurchaseModel {
   msisdnReceiver?: string;
   txnid?: string;
   fees?: number;
+	msisdnSender?: string;
   transactionMetadata?: {
     a_ma_charge?: string;
     amount?: string;

@@ -1,0 +1,96 @@
+<div class="rattach-by-id-card oem-bottomsheet-container">
+	<div *ngIf="step !== STEPS.PROCESS_OTP" class="arrow-left" (click)="goBack()">
+		<img alt="" src="/assets/images/arrow-left.png" />
+	</div>
+	<ng-container *ngIf="step === STEPS.ENTER_PHONE_NUMBER">
+		<div class="title">
+			Entrer votre numéro
+		</div>
+		<div class="description">
+			Vous allez recevoir un lien par SMS, merci de cliquer dessus pour confirmer votre identité
+		</div>
+		<div class="id-card-input">
+			<form novalidate autocomplete="false">
+				<mat-form-field class="scb-input-row" appearance="outline">
+					<mat-label>Numéro du téléphone &nbsp;</mat-label>
+					<input [ngModelOptions]="{standalone: true}" matInput type="tel" [(ngModel)]="phoneNumber"
+						(input)="isValid(phoneNumber)" autocomplete="off" />
+				</mat-form-field>
+			</form>
+			<div *ngIf="hasError" class="error-msg scb-text-red-error">
+				{{ msgError}}
+			</div>
+		</div>
+		<div class="infos">
+			<img src="assets/images/icon-warning.png" alt="">
+			<span class="text">
+				Assurez vous d'avoir votre numéro de téléphone avec vous. Nous allons vous envoyer un SMS qui vous
+				permettra de vérifier votre identité afin de pouvoir accéder au tableau de bord.
+			</span>
+		</div>
+
+		<div class="btn-continue">
+			<ion-button expand="block" (click)="process()" [disabled]="isLoading || maxAttemptsReached">
+				Continuer
+			</ion-button>
+			<ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+		</div>
+	</ng-container>
+	<ng-container *ngIf="step === STEPS.OPT_SENT">
+		<div class="title">
+			Vous avez reçu un sms
+		</div>
+		<div class="description">
+			Vous avez reçu un lien par SMS, merci de cliquer dessus pour confirmer votre identité. <br>
+			Le lien dans le SMS n'est valide que pour 60 secondes.
+		</div>
+		<div class="countdown-section">
+			<span class="value scb-text-orange">
+				{{counter}}
+			</span>
+			<span class="unit">
+				secondes
+			</span>
+			<ion-spinner *ngIf="counter !== 0" name="bubbles"></ion-spinner>
+		</div>
+		<div *ngIf="counter === 0" class="btn">
+			<ion-button [disabled]="maxAttemptsReached || isLoading" (click)="sendOTP()" expand="block">
+				Renvoyer le SMS
+			</ion-button>
+		</div>
+		<div *ngIf="hasError" class="error-msg scb-text-red-error">{{msgError}}</div>
+	</ng-container>
+	<ng-container *ngIf="step === STEPS.PROCESS_OTP">
+		<div class="title">
+			Récupération du numéro
+		</div>
+		<ng-container *ngIf="hmacExpired">
+			<div class="description">
+				Le lien reçu par SMS a expiré, merci de renvoyer le sms pour confirmer votre identité. <br>
+			</div>
+			<div class="btn">
+				<ion-button [disabled]="isLoading" (click)="sendOTP()" expand="block">
+					Renvoyer le SMS
+				</ion-button>
+				<ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+			</div>
+		</ng-container>
+		<ng-container *ngIf="!hmacExpired">
+			<div class="description">
+				Ceci est le numéro identifié par SMS <br>
+			</div>
+			<div class="countdown-section">
+				<span class="value scb-text-orange">
+					{{phoneNumber}}
+				</span>
+			</div>
+			<div class="btn">
+				<ion-button (click)="closeModal()" expand="block">
+					J'accède
+				</ion-button>
+			</div>
+		</ng-container>
+	</ng-container>
+
+
+</div>

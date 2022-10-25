@@ -79,7 +79,6 @@ export class OffreServiceCardComponent implements OnInit {
         NumberSelectionOption.WITH_MY_PHONES,
         OPERATION_TYPE_PASS_USAGE,
         'list-pass-usage',
-        false,
         this.service
       );
       return;

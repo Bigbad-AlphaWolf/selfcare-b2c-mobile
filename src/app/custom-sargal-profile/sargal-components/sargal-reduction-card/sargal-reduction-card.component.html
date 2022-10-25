@@ -1,0 +1,22 @@
+<div class="bon-plan-reduction-card v1" *ngIf="displayVersion === 'v1'">
+  <div class="reduction-image-container">
+    <img-loader [spinner]="true" class="reduction-img" [src]="bonPlan?.imagePath | displayFileManagerImageForImageLoader" useImg>
+    </img-loader>
+  </div>
+  <div class="reduction-details">
+    <img-loader [spinner]="true" class="partner-logo" [src]="bonPlan?.partner?.imagePartner | displayFileManagerImageForImageLoader"
+      useImg>
+    </img-loader>
+    <div class="reduction-infos">
+      <div class="info-1">{{ bonPlan?.reduction?.description | getBannerTitle}}</div>
+      <div class="info-2">
+        <ion-icon name="pricetag" class="price-tag-icon"></ion-icon>{{ bonPlan?.reduction?.description |
+        getBannerDescription}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bon-plan-reduction-card v2" *ngIf="displayVersion === 'v1'">
+
+</div>

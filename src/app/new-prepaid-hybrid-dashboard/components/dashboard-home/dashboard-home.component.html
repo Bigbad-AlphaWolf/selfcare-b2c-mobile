@@ -1,6 +1,6 @@
 <ion-header class="dashboard-header">
   <div class="header-top-block">
-    <ion-menu-button class="menu-btn-container">
+    <ion-menu-button [id]="'menu' | generateIdForTA" class="menu-btn-container">
       <img class="icon-menu" src="/assets/images/menu@3x.png" alt="" />
     </ion-menu-button>
     <div class="current-msisdn">
@@ -8,7 +8,7 @@
     </div>
     <div class="header-right-bloc">
       <ion-icon name="search-outline" class="search-icon search-icon1" (click)="search()"></ion-icon>
-      <ion-icon name="notifications-outline" class="bell-icon"></ion-icon>
+			<ion-icon (click)="launchQrCode()" name="qr-code-outline" class="bell-icon"></ion-icon>
     </div>
   </div>
 </ion-header>
@@ -31,7 +31,8 @@
   <div class="cards-bloc">
     <div class="text-bloc">
       <span class="suivi-conso">Suivi conso</span>
-      <span class="scb-text-orange voir-details" (click)="consultConsoDetails(1)">Voir détails</span>
+      <span class="scb-text-orange voir-details" [id]="'details-conso' | generateIdForTA"
+        (click)="consultConsoDetails(1)">Voir détails</span>
     </div>
     <div class="conso-cards-bloc">
       <ion-slides [options]="slideOpts">
@@ -43,7 +44,8 @@
             <ion-skeleton-text animated class="conso-card-loader"></ion-skeleton-text>
           </ng-container>
           <ng-template #consoCard>
-            <div class="conso-card conso-card-credit scb-text-white" (click)="consultConsoDetails()">
+            <div class="conso-card conso-card-credit scb-text-white" [id]="'credit-btn' | generateIdForTA"
+              (click)="consultConsoDetails()">
               <div class="conso-label">Crédit Global</div>
               <div class="conso-amount">{{creditGlobal}} Fcfa</div>
               <div class="conso-date-exp">{{'Valable jusqu\'au ' + creditValidity}}</div>
@@ -51,14 +53,15 @@
             </div>
           </ng-template>
         </ion-slide>
-        <ion-slide *ngIf="currentProfil && !isHyBride">
+        <ion-slide>
           <ng-container *ngIf="loadingSargal else sargalCard">
             <ion-skeleton-text animated class="conso-card-loader"></ion-skeleton-text>
           </ng-container>
           <ng-template #sargalCard>
             <ng-container
               *ngIf="(sargalUnavailable || isNotSubscribedToSargal(userSargalData?.status)) else sargalData">
-              <div class="conso-card conso-card-sargal scb-text-white" (click)="onSargalCardClicked()">
+              <div class="conso-card conso-card-sargal scb-text-white" [id]="'sargal-card' | generateIdForTA"
+                (click)="onSargalCardClicked()">
                 <div class="conso-label">Points Sargal</div>
                 <div class="conso-amount">
                   <span class="sign-up">{{sargalUnavailable ? 'Service Indisponible' : 'M\'inscrire'}}</span>
@@ -70,7 +73,8 @@
               </div>
             </ng-container>
             <ng-template #sargalData>
-              <div class="conso-card conso-card-sargal scb-text-white" (click)="onSargalCardClicked()">
+              <div class="conso-card conso-card-sargal scb-text-white" [id]="'sargal-card-pts' | generateIdForTA"
+                (click)="onSargalCardClicked()">
                 <div class="conso-label">Points Sargal</div>
                 <div class="conso-amount">{{userSargalData?.totalPoints | formatCurrency}} Pts</div>
                 <div class="conso-date-exp">{{'Mis à jour le ' + sargalLastUpdate}}</div>
@@ -79,12 +83,13 @@
             </ng-template>
           </ng-template>
         </ion-slide>
-        <ion-slide *ngIf="currentProfil && isHyBride && hasSargalProfile">
+        <ion-slide *ngIf="hasSargalProfile">
           <ng-container *ngIf="loadingSargalStatus else sargalStatusCard">
             <ion-skeleton-text animated class="conso-card-loader"></ion-skeleton-text>
           </ng-container>
           <ng-template #sargalStatusCard>
-            <div class="conso-card conso-card-sargal scb-text-white" (click)="seeSargalCard()">
+            <div class="conso-card conso-card-sargal scb-text-white" [id]="'sargal-card-profil' | generateIdForTA"
+              (click)="seeSargalCard()">
               <div class="conso-label">
                 Orange <span class="sargal-status"
                   [ngStyle]="{'color': sargalStatus === 'GOLD' ? 'gold' :  '#e5e4e2'}">{{sargalStatus}}</span>
@@ -100,23 +105,32 @@
           </ng-template>
         </ion-slide>
       </ion-slides>
+			<div *ngIf="!isFechingListAnnulationTrx && listAnnulationTrx?.length" (click)="goToListAnnulationTrxMarchandLite()" class="om-transactions-list-cancel">
+				<img src="assets/images/information.svg" alt="" />
+				<div class="scb-text-blue-popup text">
+          Vous avez ({{listAnnulationTrx?.length}}) demande(s) d'annulation.
+        </div>
+				<img alt="" src="/assets/images/keyboard-arrow-right-black.svg"/>
+			</div>
     </div>
     <div class="actions-cards-bloc">
-      <div class="action-card" *ngFor="let action of actions" (click)="onActionClick(action)"
-        [ngClass]="{'disabled-card': (action.code === 'SOS' && !canDoSOS)}">
-        <div class="badge-promo"
-          *ngIf="(action?.code === BUY_ACTION) && (hasPromoBooster?.promoPass || hasPromoBooster?.promoRecharge || hasPromoBooster?.promoPassIllimix || hasPromoPlanActive?.hasPassIllimix || hasPromoPlanActive?.hasPassInternet || hasPromoPlanActive?.hasRecharge)">
-          <div class="icon-container">
-            <span class="percent scb-text-white"> % </span>
+      <ng-container *ngFor="let action of actions">
+        <div *ngIf="action.code !== 'SARGAL' || currentProfil === PROFILE_TYPE_PREPAID" class="action-card" [id]="('action-btn-'+action?.code?.toLowerCase()) | generateIdForTA"
+          (click)="onActionClick(action)" [ngClass]="{'disabled-card': (action.code === 'SOS' && !canDoSOS)}">
+          <div class="badge-promo"
+            *ngIf="(action?.code === BUY_ACTION) && (hasPromoBooster?.promoPass || hasPromoBooster?.promoRecharge || hasPromoBooster?.promoPassIllimix || hasPromoPlanActive?.hasPassIllimix || hasPromoPlanActive?.hasPassInternet || hasPromoPlanActive?.hasRecharge)">
+            <div class="icon-container">
+              <span class="percent scb-text-white"> % </span>
+            </div>
+            <div class="triangle"></div>
           </div>
-          <div class="triangle"></div>
+          <div class="action-icon-container">
+            <img [src]="'/assets/images/'+action.icon" alt="buy" class="act-icon">
+          </div>
+          <div class="action-title">{{action?.title}}</div>
+          <div class="action-subtitle scb-text-item-offre-black">{{action?.subtitle}}</div>
         </div>
-        <div class="action-icon-container">
-          <img [src]="'/assets/images/'+action.icon" alt="buy" class="act-icon">
-        </div>
-        <div class="action-title">{{action?.title}}</div>
-        <div class="action-subtitle scb-text-item-offre-black">{{action?.subtitle}}</div>
-      </div>
+      </ng-container>
     </div>
   </div>
   <div class="bons-plans-bloc" *ngIf="0">

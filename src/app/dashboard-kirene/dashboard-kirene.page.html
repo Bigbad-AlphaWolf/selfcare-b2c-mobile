@@ -1,6 +1,10 @@
 <app-dashboard-header [firstName]="firstName"></app-dashboard-header>
 <ion-content>
 	<div class="dashboard-container-mobile">
+		<div class="stories-bloc">
+			<app-list-preview-stories [storiesByCategory]="storiesByCategory" [isLoadingStories]="isLoadingStories"
+				[hasError]="hasError" [areDataLoadedExternally]="true"></app-list-preview-stories>
+		</div>
 		<div class="dashboard-block-conso">
 			<div class="dashboard-block-conso-top-texts">
 				<div>
@@ -174,39 +178,10 @@
 					</div>
 				</div>
 			</div>
-			<div *ngIf="0" class="row" class="dashboard-block-offres-top2">
-				<div
-					[ngClass]="{ 'disabled-block': canDoSOS && !canTransferBonus }"
-					class="dashboard-block-offres-top2-item"
-					(click)="transferCreditOrPass()"
-				>
-					<div class="item-icon">
-						<img src="/assets/images/transfert-de-credit-et-pass_kirene.png" alt="group-56" />
-					</div>
-					<div class="item-text scb-text-item-offre-black">
-						<span class="transfert text">Transfert <span class="text-style-1">crédit et bonus</span> </span>
-					</div>
-				</div>
-				<div
-					[ngClass]="{ 'disabled-block': !canDoSOS }"
-					(click)="openSosCreditPage()"
-					class="dashboard-block-offres-top2-item"
-				>
-					<div class="item-icon">
-						<img src="/assets/images/new_sos-credit-et-pass_mob.svg" alt="group-55" />
-					</div>
-					<div class="item-text scb-text-item-offre-black">
-						<span class="sos text"
-							>SOS <br />
-							<span class="text-style-1">crédit et pass</span>
-						</span>
-					</div>
-				</div>
-			</div>
 			<div class="dashboard-block-offres-top3">
 				<div
-					[ngClass]="{ 'disabled-block': canDoSOS && !canTransferBonus }"
-					(click)="transferCreditOrPass()"
+					[ngClass]="{ 'disabled-block': !canTransferBonus }"
+					(click)="transferBonus()"
 					id="btn-kirene-transfert-credit-bonus"
 					class="dashboard-block-offres-top3-item"
 				>
@@ -214,7 +189,7 @@
 						<img src="/assets/images/transfert-de-credit-et-pass_kirene.png" alt="group-56" />
 					</div>
 					<div class="item-text scb-text-item-offre-black">
-						<span class="transfert text">Transfert <span class="text-style-1">crédit et bonus</span> </span>
+						<span class="transfert text">Transfert <span class="text-style-1">de bonus</span> </span>
 					</div>
 				</div>
 
@@ -240,6 +215,21 @@
 					</div>
 					<div class="item-text scb-text-item-offre-black">
 						<span>Transfert <span class="text-style-1"> d’argent OM</span></span>
+					</div>
+				</div>
+			</div>
+			<div class="dashboard-block-offres-top4">
+				<div
+					[ngClass]="{ 'disabled-block': !canTrasnferCredit }"
+					(click)="transferCredit()"
+					id="btn-kirene-transfert-credit-bonus"
+					class="dashboard-block-offres-top3-item"
+				>
+					<div class="item-icon">
+						<img src="/assets/images/transfert-de-credit-et-pass_kirene.png" alt="group-56" />
+					</div>
+					<div class="item-text scb-text-item-offre-black">
+						<span class="transfert text">Transfert <span class="text-style-1">de crédit</span> </span>
 					</div>
 				</div>
 			</div>

@@ -26,6 +26,55 @@ export interface OmRegisterClientModel {
   service_version: string;
 }
 
+export interface InitC2WPayload {
+    amount: number;
+    receiverMsisdn: string;
+    senderMsisdn: string;
+}
+
+export interface InitC2WResponseModel {
+  paymentCancelUrl: string;
+  paymentUrl: string;
+  statusCode: string;
+}
+
+export interface GetBalanceWPPayloadModel {
+  msisdn: string;
+  type: GetBalanceTypeEnum,
+  walletType: GetBalanceWalletEnum
+}
+
+export enum GetBalanceTypeEnum {
+  CUSTOMER = 'customer',
+  RETAILER = 'retailer'
+}
+
+export enum GetBalanceWalletEnum {
+  PRINCIPAL = 'principal',
+  INTERNATIONAL = 'international',
+  BONUS = 'bonus',
+  SALAIRE = 'salaire',
+}
+
+export interface getOMTransactionsInputModel {
+  page?: number;
+  pageSize?: number;
+}
+
+export interface OMTransactionsResponseModel {
+    amount: number,
+    channel: string,
+    details: string[],
+    msisdnReceiver: string,
+    name: string,
+    nomReceiver: string,
+    operationDate: string,
+    operationType: string,
+    prenomReceiver: string,
+    txnid: string,
+    typeAchat: string
+}
+
 export interface OmLoginClientModel {
   msisdn: string;
   pin: string;
@@ -99,6 +148,7 @@ export interface OmBuyIllimixModel {
   canal?: string;
   amount: number;
   uuid: string;
+	contentId?: number;
 }
 
 export interface TransferOrangeMoneyModel {
@@ -117,7 +167,9 @@ export interface TransferOrangeMoneyModel {
   app_conf_version: string;
   user_type: string;
   service_version: string;
-  capping: boolean;
+  capping?: boolean;
+  country?: string;
+	viaQr?: boolean;
 }
 
 export interface TransferOMWithCodeModel {
@@ -139,12 +191,30 @@ export interface TransferOMWithCodeModel {
   fees?: number;
   a_ma_charge?: boolean;
 }
+
+export interface TransferIRTModel {
+  msisdn: string;
+  msisdn2: string;
+  amount: number;
+  fees?: number;
+  uuid: string;
+  os: string;
+  pin: string;
+  em: string;
+  app_version: string;
+  app_conf_version: string;
+  user_type: string;
+  service_version: string;
+  country?: string;
+  reason?: string;
+}
 export interface BuyPassPayload {
   msisdn2: string;
   pin: any;
   price_plan_index: string;
   canalPromotion?: string;
   amount: number;
+  contentId?: number;
 }
 
 export interface MerchantPaymentModel {
@@ -191,6 +261,7 @@ export interface FeeModel {
   old_mode_calcul: 'pourcent' | 'fixe';
   transfer_fees: number;
   cashout_fees: number;
+  percentFeesValue?: number;
 }
 
 export const ORANGE_MONEY_TRANSFER_FEES = [
@@ -200,7 +271,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 1,
     maximum: 495,
     withoutCode: 25,
-    withCode: 25
+    withCode: 25,
   },
   {
     id: 2,
@@ -208,7 +279,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 496,
     maximum: 1100,
     withoutCode: 90,
-    withCode: 95
+    withCode: 95,
   },
   {
     id: 3,
@@ -216,7 +287,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 1101,
     maximum: 3000,
     withoutCode: 180,
-    withCode: 190
+    withCode: 190,
   },
   {
     id: 4,
@@ -224,7 +295,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 3001,
     maximum: 5000,
     withoutCode: 350,
-    withCode: 375
+    withCode: 375,
   },
   {
     id: 5,
@@ -232,7 +303,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 5001,
     maximum: 10000,
     withoutCode: 500,
-    withCode: 600
+    withCode: 600,
   },
   {
     id: 6,
@@ -240,7 +311,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 10001,
     maximum: 15000,
     withoutCode: 700,
-    withCode: 900
+    withCode: 900,
   },
   {
     id: 7,
@@ -248,7 +319,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 15001,
     maximum: 20000,
     withoutCode: 900,
-    withCode: 1000
+    withCode: 1000,
   },
   {
     id: 8,
@@ -256,7 +327,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 20001,
     maximum: 35000,
     withoutCode: 1400,
-    withCode: 1500
+    withCode: 1500,
   },
   {
     id: 9,
@@ -264,7 +335,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 35001,
     maximum: 60000,
     withoutCode: 1700,
-    withCode: 2000
+    withCode: 2000,
   },
   {
     id: 10,
@@ -272,7 +343,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 60001,
     maximum: 100000,
     withoutCode: 2600,
-    withCode: 3000
+    withCode: 3000,
   },
   {
     id: 11,
@@ -280,7 +351,7 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 100001,
     maximum: 175000,
     withoutCode: 3500,
-    withCode: 3750
+    withCode: 3750,
   },
   {
     id: 12,
@@ -288,20 +359,20 @@ export const ORANGE_MONEY_TRANSFER_FEES = [
     minimum: 175001,
     maximum: 200000,
     withoutCode: 4500,
-    withCode: 4600
-  }
+    withCode: 4600,
+  },
 ];
 
 export const RECLAMATION_TRANSACTIONS_CONDITIONS =
   'Je demande la correction de cette erreur de saisie par une récupération du montant ci-dessus. Je reconnais que OFMS n’a aucune obligation de résultat pour la récupération du montant de la transaction envoyé par erreur notamment si tout ou partie dudit montant n’est plus disponible. Je certifie que mes déclarations ci-dessus sont complètes, authentiques et faites de bonne foi. Je certifie être pleinement conscient que toute déclaration mensongère ou fausse est susceptible de déclencher une mise en œuvre de ma responsabilité civile et pénale devant les juridictions compétentes. Je reste entièrement responsable de tout préjudice direct ou indirect occasionné par mes déclarations effectuées dans le présent formulaire';
-export const DEFAULT_ERROR_MSG_CHANGE_PIN_WITH_BIRTH_DATE_VALIDATION =
-  'Le code ne doit pas être votre date de naissance.';
-export const DEFAULT_ERROR_MSG_CHANGE_PIN_VALIDATION =
-  'Le code ne doit pas comporter des chiffres consécutifs. Ex. (1111, 1234, …)';
+export const DEFAULT_ERROR_MSG_CHANGE_PIN_WITH_BIRTH_DATE_VALIDATION = 'Le code ne doit pas être votre date de naissance.';
+export const DEFAULT_ERROR_MSG_CHANGE_PIN_VALIDATION = 'Le code ne doit pas comporter des chiffres consécutifs. Ex. (1111, 1234, …)';
 export const SUCCESS_CHANGE_PIN_MSG =
   'Vous venez de changer votre code secret Orange Money. Ne le communiquez à personne, ce code reste confidentiel.';
 export const INITIALISE_PIN_OM_MSG =
   'Vous venez de crééer votre code secret Orange Money. Ne le communiquez à personne, ce code reste confidentiel.';
+export const RESET_PIN_OM_MSG =
+  'Vous venez de réinitialiser votre code secret Orange Money. Ne le communiquez à personne, ce code reste confidentiel.';
 export const LIST_DENIED_PIN_OM: string[] = [
   '1111',
   '2222',
@@ -320,7 +391,7 @@ export const LIST_DENIED_PIN_OM: string[] = [
   '4567',
   '5678',
   '6789',
-  '7890'
+  '7890',
 ];
 export const ORANGE_MONEY_DEFAULT_PIN = '0000';
 export const SUCCESS_MSG_OM_ACCOUNT_CREATION = `Votre demande d’ouverture de compte

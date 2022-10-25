@@ -25,6 +25,7 @@ import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
 import { SelectBeneficiaryPopUpComponent } from 'src/app/transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
 import {
   OPERATION_RAPIDO,
+  OPERATION_XEWEUL,
   OPERATION_TYPE_PASS_USAGE,
   OPERATION_WOYOFAL,
 } from 'src/app/utils/operations.constants';
@@ -34,9 +35,14 @@ import {
   OPERATION_INIT_CHANGE_PIN_OM,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_RATTACH_NUMBER,
+	OPERATION_UNBLOCK_OM_ACCOUNT,
+	OPERATION_RESET_PIN_OM,
+  OPERATION_TYPE_SEDDO_BONUS,
+  OPERATION_TYPE_SEDDO_CREDIT,
 } from 'src/shared';
 import { MerchantPaymentCodeComponent } from '../merchant-payment-code/merchant-payment-code.component';
 import { OmStatusVisualizationComponent } from '../om-status-visualization/om-status-visualization.component';
+import {XeweulOperationPage} from '../../app/pages/xeweul-operation/xeweul-operation.page';
 @Component({
   selector: 'app-action-item',
   templateUrl: './action-item.component.html',
@@ -62,9 +68,7 @@ export class ActionItemComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.imageUrl = this.action?.icone
-      ? this.FILE_BASE_URL + '/' + this.action.icone
-      : null;
+    this.imageUrl = this.action?.icone ? this.action.icone : null;
   }
 
   async showServiceUnavailableToast() {
@@ -113,7 +117,6 @@ export class ActionItemComponent implements OnInit {
         NumberSelectionOption.WITH_MY_PHONES,
         OPERATION_TYPE_PASS_USAGE,
         'list-pass-usage',
-        false,
         this.action
       );
       return;
@@ -150,6 +153,10 @@ export class ActionItemComponent implements OnInit {
       return;
     }
     switch (this.action.code) {
+      case OPERATION_TYPE_SEDDO_BONUS:
+      case OPERATION_TYPE_SEDDO_CREDIT:
+        this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.NONE, this.action.code, 'purchase-set-amount');
+        break;
       case 'FIBRE_OPTIC':
         this.oemLoggingService.registerEvent(
           'help_fibre_eligibility_click',
@@ -234,12 +241,18 @@ export class ActionItemComponent implements OnInit {
       case OPERATION_RAPIDO:
         this.navController.navigateForward(RapidoOperationPage.ROUTE_PATH);
         break;
+      case OPERATION_XEWEUL:
+        this.navController.navigateForward(XeweulOperationPage.ROUTE_PATH);
+        break;
+      case OPERATION_UNBLOCK_OM_ACCOUNT:
+        this.goToUnblockOMAccount();
+        break;
+      case OPERATION_RESET_PIN_OM:
+        this.goToResetOMAccount();
+        break;
       default:
         if (this.action?.redirectionType === 'NAVIGATE') {
-          this.followAnalyticsService.registerEventFollow(
-            'Offre_service_' + this.action?.code + '_clic',
-            'event'
-          );
+          this.followAnalyticsService.registerEventFollow('Offre_service_' + this.action?.code + '_clic', 'event');
           this.navController.navigateForward([this.action.redirectionPath], {
             state: { purchaseType: this.action?.code },
           });
@@ -277,6 +290,7 @@ export class ActionItemComponent implements OnInit {
       component: SelectBeneficiaryPopUpComponent,
       componentProps: {
         isForTransferBlocking: true,
+				inputType: 'text'
       },
       cssClass: 'select-recipient-modal',
     });
@@ -287,6 +301,24 @@ export class ActionItemComponent implements OnInit {
     this.router.navigate(['/contact-ibou-hub']);
     this.followAnalyticsService.registerEventFollow(
       'Assistance_Hub_Ibou_card_clic',
+      'event',
+      'clicked'
+    );
+  }
+
+  goToUnblockOMAccount() {
+    this.router.navigate(['/om-self-operation/unblock-om-account']);
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_actions_deblocage_compte_om_clic',
+      'event',
+      'clicked'
+    );
+  }
+
+  goToResetOMAccount() {
+    this.router.navigate(['/om-self-operation/unblock-om-account/reset-pin']);
+    this.followAnalyticsService.registerEventFollow(
+      'Assistance_actions_reset_pin_compte_om_clic',
       'event',
       'clicked'
     );

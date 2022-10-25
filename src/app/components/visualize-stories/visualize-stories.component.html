@@ -6,10 +6,11 @@
 		</div>
 		<swiper [config]="config" [slidesPerView]="1" (swiper)="setSwiperInstance($event)" #slides (touchStart)="pauseStory($event)" (touchEnd)="playStory($event)" (slideChange)="slideChange()" >
 			<ng-template swiperSlide *ngFor="let item of storyByCategory?.stories; let last = last; let id=index">
-				<div class="navigation-custom left prev">
+				<div class="navigation-custom left prev" (click)="navigateStory('prev')">
 				</div>
-				<div class="navigation-custom right next">
+				<div class="navigation-custom right next" (click)="navigateStory('next')">
 				</div>
-				<app-visualize-story #story (touch)="clickOnSlide($event)" [isVisible]="storyByCategory?.stories[currentSlideIndex]?.id === item?.id && isVisibleForHigherView" [story]="item" (mediaDurationChange)="setProgressBarDuration($event, id)" (audioReady)="onAudioReady($event)" (imageReady)="onImageReady($event)" ></app-visualize-story></ng-template>
+				<app-visualize-story #story (touch)="clickOnSlide($event)" [isVisible]="storyByCategory?.stories[currentSlideIndex]?.id === item?.id && isVisibleForHigherView" [story]="item" (mediaDurationChange)="setProgressBarDuration($event, id)" (audioReady)="onAudioReady($event)" (imageReady)="onImageReady($event)" ></app-visualize-story>
+			</ng-template>
 		</swiper>
 	</div>

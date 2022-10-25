@@ -1,0 +1,23 @@
+<div class="type-name-modal">
+  <div class="title">
+    Compteur favori
+  </div>
+  <div class="description">
+    Veuillez saisir le nom sur lequel vous souhaitez enregistrer le compteur
+  </div>
+  <mat-form-field class="scb-input-row" appearance="outline">
+    <mat-label>Nom du compteur &nbsp;&nbsp;</mat-label>
+    <input matInput type="text" [(ngModel)]="name" />
+  </mat-form-field>
+  <button (click)="save()" [disabled]="saving || saveSuccess || name?.length < 3" class="scb-btn-full scb-btn-orange"
+    mat-stroked-button>
+    <span>Enregistrer</span>
+    <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="saving"></mat-spinner>
+  </button>
+  <div class="success-text scb-text-green-success" *ngIf="saveSuccess">
+    <span class="counter-name scb-text-green-success">{{name}}</span> bien enregistré aux favoris.
+  </div>
+  <div class="success-text scb-text-red-error" *ngIf="error">
+    Une erreur est survenue
+  </div>
+</div>

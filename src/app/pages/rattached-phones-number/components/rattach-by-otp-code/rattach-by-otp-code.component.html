@@ -1,0 +1,53 @@
+<div class="rattach-by-id-card oem-bottomsheet-container">
+  <div  class="arrow-left" (click)="goBack()">
+    <img alt="" src="/assets/images/arrow-left.png" />
+  </div>
+  <div class="title">
+    Code OTP
+  </div>
+  <div class="description">
+    Renseigner le code OTP reçu sur le numéro {{ number }}
+  </div>
+  <div class="id-card-input">
+    <form novalidate autocomplete="false">
+      <mat-form-field class="scb-input-row" appearance="outline">
+          <mat-label>Code OTP</mat-label>
+          <input
+          [ngModelOptions]="{standalone: true}"
+            matInput
+            type="text"
+            maxlength=20
+            [(ngModel)]="otpCode"
+          />
+        </mat-form-field>
+    </form>
+    <div *ngIf="hasError" class="error-msg scb-text-red-error">
+      {{errorMsg}}
+    </div>
+  </div>
+
+  <div class="resend-block">
+    <div *ngIf="showSendOtpBtn" class="scb-text-red-error">
+      Si vous n'avez pas reçu le code par SMS. Cliquer sur le bouton pour renvoyer.
+    </div>
+    <div *ngIf="showSendOtpBtn" class="send-otp-btn">
+      <ion-button expand="block" (click)="sendOtpCode()" [disabled]="isSendingOtp">
+        Renvoyer le code
+        <ion-spinner *ngIf="isSendingOtp" name="crescent"></ion-spinner>
+      </ion-button>
+    </div>
+  </div>
+	<div *ngIf="hasErrorSendingOtp" class="error-msg scb-text-red-error">
+		Vous ne pouvez pas recevoir de code en ce moment. Veuillez patienter avant de réessayer.
+	</div>
+  <div class="btn-continue">
+    <ion-button expand="block" (click)="processRattachment()" [disabled]="isLoading || !otpCode?.length">
+      Continuer
+    </ion-button>
+    <ion-spinner *ngIf="isLoading"
+      name="crescent"
+    ></ion-spinner>
+  </div>
+
+
+</div>

@@ -1,7 +1,7 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {IonSlides, NavController} from '@ionic/angular';
-import {Router, NavigationExtras} from '@angular/router';
-import {PassInternetService} from '../../services/pass-internet-service/pass-internet.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { IonSlides, NavController } from '@ionic/angular';
+import { Router, NavigationExtras } from '@angular/router';
+import { PassInternetService } from '../../services/pass-internet-service/pass-internet.service';
 import {
   arrangePassByCategory,
   OPERATION_TYPE_PASS_INTERNET,
@@ -9,16 +9,18 @@ import {
   CODE_KIRENE_Formule,
   ERROR_MSG_PASS,
   OPERATION_TYPE_PASS_ALLO,
-  getActiveBoostersForSpecificPass
+  getActiveBoostersForSpecificPass,
+  OPERATION_ABONNEMENT_WIDO,
+  PassInternetModel,
 } from 'src/shared';
-import {PassIllimixService} from '../../services/pass-illimix-service/pass-illimix.service';
-import {BoosterService} from 'src/app/services/booster.service';
-import {BoosterModel, BoosterTrigger} from 'src/app/models/booster.model';
+import { PassIllimixService } from '../../services/pass-illimix-service/pass-illimix.service';
+import { BoosterService } from 'src/app/services/booster.service';
+import { BoosterModel, BoosterTrigger } from 'src/app/models/booster.model';
 
 @Component({
   selector: 'app-liste-pass',
   templateUrl: './liste-pass.page.html',
-  styleUrls: ['./liste-pass.page.scss']
+  styleUrls: ['./liste-pass.page.scss'],
 })
 export class ListePassPage implements OnInit {
   static ROUTE_PATH: string = '/list-pass';
@@ -33,23 +35,24 @@ export class ListePassPage implements OnInit {
   slideOpts = {
     speed: 400,
     slidesPerView: 1,
-    slideShadows: true
+    slideShadows: true,
   };
-  fullListPass: {label: string; pass: any[]}[];
+  fullListPass: { label: string; pass: any[] }[];
+  listPassWidos: PassInternetModel[] = [];
   recipientName: string;
   purchaseType: string;
   isLightMod: boolean;
   OPERATION_INTERNET_TYPE = OPERATION_TYPE_PASS_INTERNET;
   OPERATION_ILLIMIX_TYPE = OPERATION_TYPE_PASS_ILLIMIX;
   OPERATION_ALLO_TYPE = OPERATION_TYPE_PASS_ALLO;
+  OPERATION_ABONNEMENT_WIDO = OPERATION_ABONNEMENT_WIDO;
   boosters: BoosterModel[] = [];
   constructor(
     private router: Router,
     private passIntService: PassInternetService,
     private passIllimixServ: PassIllimixService,
     private boosterService: BoosterService,
-    private navCtl: NavController
-  ) {}
+    private navCtl: NavController  ) {}
 
   ngOnInit() {
     // this.route.queryParams.subscribe((params) => {
@@ -71,42 +74,64 @@ export class ListePassPage implements OnInit {
       let boosterPayload = {
         trigger: null,
         codeFormuleRecipient: this.userCodeFormule,
-        msisdn: this.userNumber
+        msisdn: this.userNumber,
       };
       if (this.purchaseType === OPERATION_TYPE_PASS_INTERNET) {
         boosterPayload.trigger = BoosterTrigger.PASS_INTERNET;
         this.passIntService.setUserCodeFormule(this.userCodeFormule);
-        this.passIntService.queryListPassInternetOfUser(this.userCodeFormule, this.userNumber, this.isLightMod).subscribe(
-          () => {
-            this.isLoaded = true;
-            this.listCategory = this.passIntService.getListCategoryPassInternet();
-            this.listPass = this.passIntService.getListPassInternetOfUser();
-            if (this.isLightMod) {
-              this.filterPassForLightMod();
+        this.passIntService
+          .queryListPassInternetOfUser(
+            this.userCodeFormule,
+            this.userNumber,
+            this.isLightMod
+          )
+          .subscribe(
+            () => {
+              this.isLoaded = true;
+              this.listCategory =
+                this.passIntService.getListCategoryPassInternet();
+              this.listPass = this.passIntService.getListPassInternetOfUser();
+              if (this.isLightMod) {
+                this.filterPassForLightMod();
+              }
+              this.fullListPass = arrangePassByCategory(
+                this.listPass,
+                this.listCategory
+              );
+            },
+            () => {
+              this.isLoaded = true;
             }
-            this.fullListPass = arrangePassByCategory(this.listPass, this.listCategory);
-          },
-          () => {
-            this.isLoaded = true;
-          }
-        );
+          );
       } else {
         boosterPayload.trigger = BoosterTrigger.PASS_ILLIMIX;
-        const category = this.purchaseType === OPERATION_TYPE_PASS_ALLO ? 'allo' : null;
-        this.passIllimixServ.queryListPassIllimix(this.userCodeFormule, this.userNumber, category, this.isLightMod).subscribe(
-          () => {
-            this.isLoaded = true;
-            this.listCategory = this.passIllimixServ.getCategoryListPassIllimix();
-            this.listPass = this.passIllimixServ.getListPassIllimix();
-            if (this.isLightMod) {
-              this.filterPassForLightMod();
+        const category =
+          this.purchaseType === OPERATION_TYPE_PASS_ALLO ? 'allo' : null;
+        this.passIllimixServ
+          .queryListPassIllimix(
+            this.userCodeFormule,
+            this.userNumber,
+            category,
+            this.isLightMod
+          )
+          .subscribe(
+            () => {
+              this.isLoaded = true;
+              this.listCategory =
+                this.passIllimixServ.getCategoryListPassIllimix();
+              this.listPass = this.passIllimixServ.getListPassIllimix();
+              if (this.isLightMod) {
+                this.filterPassForLightMod();
+              }
+              this.fullListPass = arrangePassByCategory(
+                this.listPass,
+                this.listCategory
+              );
+            },
+            () => {
+              this.isLoaded = true;
             }
-            this.fullListPass = arrangePassByCategory(this.listPass, this.listCategory);
-          },
-          () => {
-            this.isLoaded = true;
-          }
-        );
+          );
       }
       this.boosterService.getBoosters(boosterPayload).subscribe(boosters => {
         this.boosters = boosters;
@@ -122,7 +147,10 @@ export class ListePassPage implements OnInit {
   // filter listPass with pass with price_plan_index credit set
   filterPassForLightMod() {
     this.listPass = this.listPass.filter(pass => {
-      return (pass && pass.price_plan_index) || (pass.passParent && pass.passParent.price_plan_index);
+      return (
+        (pass && pass.price_plan_index) ||
+        (pass.passParent && pass.passParent.price_plan_index)
+      );
     });
   }
 
@@ -149,8 +177,8 @@ export class ListePassPage implements OnInit {
         recipientCodeFormule: this.userCodeFormule,
         recipientName: this.recipientName,
         purchaseType: this.purchaseType,
-        isLightMod: this.isLightMod
-      }
+        isLightMod: this.isLightMod,
+      },
     };
     this.router.navigate(['/operation-recap'], navigationExtras);
   }

@@ -80,7 +80,7 @@ ion-content {
 }
 
 .recap-title {
-  height: 100px;
+  //height: 100px;
   width: 100%;
   padding: 20px 15px;
   .text-1 {
@@ -125,6 +125,9 @@ ion-content {
       line-height: 1.88;
       display: block;
     }
+    .fee-percent {
+      font-family: HelveticaNeueLTStd-Roman, sans-serif;
+    }
   }
   .title {
     font-size: 20px;
@@ -147,11 +150,26 @@ ion-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
+      &.with-padding {
+        padding-left: 83px;
+      }
+      .country-block {
+        position: absolute;
+        left: 0;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        .country-flag {
+          margin-right: 6px;
+        }
+      }
       .title {
         font-family: HelveticaNeueLTStd-Bd;
         font-size: 16px;
         line-height: 1.5;
         display: block;
+        margin-bottom: -3px;
       }
       .recipient {
         font-family: HelveticaNeueLTStd-Roman;
@@ -176,6 +194,27 @@ ion-content {
         display: block;
         white-space: nowrap;
       }
+    }
+		&.wido {
+			.top-block-transfert {
+				.title {
+					font-family: HelveticaNeueLTStd-Roman;
+					font-size: 16px;
+					line-height: 1.5;
+					color: $gray;
+				}
+				.recipient {
+					font-family: HelveticaNeueLTStd-Roman;
+					font-size: 12px;
+					line-height: 1.33;
+					text-align: right;
+					display: block;
+					white-space: nowrap;
+				}
+			}
+		}
+    .irt-reason {
+      // font-family: 'HelveticaNeueLTStd-Roman' !important;
     }
   }
 

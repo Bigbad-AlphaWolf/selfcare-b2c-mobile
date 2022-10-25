@@ -24,12 +24,12 @@ import { OrangeMoneyService } from '../services/orange-money-service/orange-mone
 export class NewAssistanceHubV2Page implements OnInit {
   @ViewChildren(ScrollVanishDirective) dir;
   moreActions = [
-    {
-      act: 'IBOU_CONTACT',
-      description: 'Contacter votre assistant Ibou',
-      image:
-        '/assets/images/04-boutons-01-illustrations-21-ibou-assistance.png',
-    },
+    //{
+    //  act: 'IBOU_CONTACT',
+    //  description: 'Contacter votre assistant Ibou',
+    //  image:
+    //    '/assets/images/04-boutons-01-illustrations-21-ibou-assistance.png',
+    //},
     {
       act: 'AGENCE_LOCATOR',
       description: 'Trouver l’agence la plus proche',
@@ -114,7 +114,7 @@ export class NewAssistanceHubV2Page implements OnInit {
 
   fetchAllHelpItems(event?) {
     this.loadingHelpItems = true;
-    this.operationService.getServicesByFormule(null, true).subscribe(
+    this.operationService.getServicesByFormule(null, true, true).subscribe(
       async (res) => {
         if (!REGEX_FIX_NUMBER.test(this.currentUserMsisdn))
           this.userOMStatus = await this.checkStatus();

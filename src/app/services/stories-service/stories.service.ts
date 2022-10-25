@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {switchMap} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 import {CategoryOffreServiceModel} from 'src/app/models/offre-service.model';
 import {Story, StoryOem} from 'src/app/models/story-oem.model';
 import {environment} from 'src/environments/environment';
@@ -23,7 +23,13 @@ export class StoriesService {
     const msisdn = this.dashbService.getCurrentPhoneNumber();
     return this.authServ.getSubscription(msisdn).pipe(
       switchMap((res: SubscriptionModel) => {
-        return this.http.get<Story[]>(`${GET_USER_STORIES_ENDPOINT}/${msisdn}?code=${res.code}`);
+        return this.http.get<Story[]>(`${GET_USER_STORIES_ENDPOINT}/${msisdn}?code=${res.code}`).pipe(
+          map((res: Story[]) => {
+            return res.sort((a: Story, b: Story) => {
+              return a.id - b.id;
+            });
+          })
+        );
       })
     );
   }
@@ -98,7 +104,6 @@ export class StoriesService {
     result = result.sort((elt1, elt2) => {
       return elt1.categorie.ordre - elt2.categorie.ordre;
     });
-    console.log('categorieshhree', result);
 
     return result;
   }

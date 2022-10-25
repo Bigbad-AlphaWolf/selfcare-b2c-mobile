@@ -1,6 +1,6 @@
 "use strict";
 /*
-    Copyright 2020. Huawei Technologies Co., Ltd. All rights reserved.
+    Copyright 2020-2022. Huawei Technologies Co., Ltd. All rights reserved.
 
     Licensed under the Apache License, Version 2.0 (the "License")
     you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
-
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CordovaRemoteMessage = void 0;
 class CordovaRemoteMessage {
@@ -102,6 +101,12 @@ class CordovaRemoteMessage {
    */
   getToken() {
     return this.remoteMsg[CordovaRemoteMessage.TOKEN];
+  }
+  getAnalyticInfo() {
+    return this.remoteMsg[CordovaRemoteMessage.ANALYTICINFO];
+  }
+  getAnalyticInfoMap() {
+    return this.remoteMsg[CordovaRemoteMessage.ANALYTICINFOMAP];
   }
   /*
    * Notification:getTitle() Obtains the title of a message
@@ -297,6 +302,8 @@ CordovaRemoteMessage.SENTTIME = "sentTime";
 CordovaRemoteMessage.TO = "to";
 CordovaRemoteMessage.FROM = "from";
 CordovaRemoteMessage.TOKEN = "token";
+CordovaRemoteMessage.ANALYTICINFO = "analyticInfo";
+CordovaRemoteMessage.ANALYTICINFOMAP = "analyticInfoMap";
 CordovaRemoteMessage.NOTIFICATION = {
   TITLE: "title",
   TITLELOCALIZATIONKEY: "titleLocalizationKey",

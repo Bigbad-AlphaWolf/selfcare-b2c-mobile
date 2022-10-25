@@ -1,0 +1,40 @@
+<div class="select-type-ligne-modal">
+  <ng-container *ngIf="step === 'SET_LIGNE_TYPE' else selectMsisdn">
+    <div class="title">Payer une facture Sonatel</div>
+    <div class="desc scb-text-gray">Choisir le type de ligne</div>
+    <div class="beneficiary-number">
+      <div class="item" *ngFor="let option of options; let i=index" (click)="selectOption(option)"
+        [ngClass]="{ 'item-selected': selectedOption?.value === option?.value }">
+        <mat-radio-button [checked]="selectedOption?.value === option.value">
+        </mat-radio-button>
+        <span [ngClass]="{'scb-text-orange': selectedOption?.value === option?.value}">{{ option.label }}</span>
+      </div>
+    </div>
+    <div class="btn-container">
+      <button class="scb-btn scb-btn-orange scb-btn-full" (click)="goStepTypeNumber()"
+        [disabled]="!selectedOption">Continuer</button>
+    </div>
+  </ng-container>
+  <ng-template #selectMsisdn>
+    <div class="title">Payer une facture {{operation === OPERATION_TYPE_PAY_BILL ? 'Sonatel' : 'Teranga'}}</div>
+    <div class="desc scb-text-gray">Veuillez saisir le numéro de la ligne {{operation === OPERATION_TYPE_PAY_BILL ? 'fixe' : 'mobile'}}</div>
+    <div class="beneficiary-number">
+      <form novalidate autocomplete="false" [formGroup]="form">
+        <mat-form-field class="scb-input-row" appearance="outline">
+          <mat-label>N° de la ligne</mat-label>
+          <input #inputTel matInput type="tel" [value]="phoneNumber" maxlength="20" formControlName="number" />
+          <span (click)="openLinesModal($event)" matSuffix class="scb-text-orange my-nums">
+            Mes Numéros
+          </span>
+        </mat-form-field>
+      </form>
+    </div>
+    <div class="error-block scb-text-red-error" *ngIf="hasError">{{errorMessage}}</div>
+    <div class="btn-container">
+      <button class="scb-btn scb-btn-orange scb-btn-full" [disabled]="!form.valid || checking"
+        (click)="checkNumero()">Continuer
+        <mat-spinner mode="indeterminate" [diameter]="20" *ngIf="checking"></mat-spinner>
+      </button>
+    </div>
+  </ng-template>
+</div>

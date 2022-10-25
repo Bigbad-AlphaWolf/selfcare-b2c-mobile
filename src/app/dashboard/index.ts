@@ -28,7 +28,15 @@ export const OPERATION_TYPE_SARGAL_CONVERSION = 'SARGAL_CONVERSION';
 export const PAYMENT_MOD_SARGAL = 'SARGAL';
 export const SARGAL_NOT_SUBSCRIBED = 'NOT_SUBSCRIBED';
 export const SARGAL_UNSUBSCRIPTION_ONGOING = 'UNSUBSCRIPTION_ONGOING';
-
+export const POSTPAID_TERANGA_OFFERS_ID = [
+  '9128',
+  '9210',
+  'OCS_TERANGA_MAX',
+  '8100',
+  '9126',
+  'OCS_TERANGA_LIBERTY',
+  'OCS_RPE_TERANGA_PREMIUM',
+];
 export const dashboardOpened = new Subject<string>();
 export const dashboardFixePrepaidOpened = new Subject<string>();
 export const dashboardFixePostpaidOpened = new Subject<string>();
@@ -100,8 +108,8 @@ export interface PromoBoosterActive {
   boosterInscription?: BoosterModel;
 }
 
-export function isFixPostpaid(codeFormule: string) {
-  return REGEX_POSTPAID_FIXE.test(codeFormule);
+export function isFixPostpaid(nomFormule: string) {
+  return REGEX_POSTPAID_FIXE.test(nomFormule);
 }
 
 export function isFixPrepaid(codeFormule: string) {

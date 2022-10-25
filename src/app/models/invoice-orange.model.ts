@@ -10,4 +10,12 @@ export interface InvoiceOrange {
   numeroTelephone: string;
   statutFacture?: string;
   url: string;
+  isDelayed?: boolean;
+}
+
+export enum BILL_STATUS {
+  PAID = 'paid',
+  UNPAID = 'unpaid',
+  IN_PROGRESS = 'in_progress',
+  INITIALIZED = 'INITIALIZED',
 }

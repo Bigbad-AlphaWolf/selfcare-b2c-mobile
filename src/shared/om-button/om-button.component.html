@@ -1,5 +1,7 @@
-<div class="scb-btn-orange scb-btn-om" [ngClass]="{ 'btn-om-kirene': isKirene }" (click)="showSoldeOM()">
-    <img src="/assets/images/om_background_icon.png" alt="om-icon" class="om-icon"/>
+<div *ngIf="!isFullWidthButton" class="scb-btn-orange scb-btn-om" [id]="'om-btn' | generateIdForTA"
+  [ngClass]="{ 'btn-om-kirene': isKirene, 'btn-loading': loadingBalance }" (click)="showSoldeOM()">
+  <ion-skeleton-text animated class="loader" *ngIf="loadingBalance"></ion-skeleton-text>
+  <img *ngIf="!balanceIsAvailable" src="/assets/images/om_background_icon.png" alt="om-icon" class="om-icon" />
   <div class="om-title">
     Orange Money
   </div>
@@ -9,10 +11,29 @@
       <img src="/assets/images/keyboard-arrow-right-white-mob.svg" alt="arrow-right" class="arrow-right" />
     </span>
   </div>
-  <div class="om-last-check" *ngIf="balanceIsAvailable && lastUpdateOM && lastTimeUpdateOM">
+  <div class="om-last-check" *ngIf="0 && (balanceIsAvailable && lastUpdateOM && lastTimeUpdateOM)">
     Mis à jour le {{ lastUpdateOM }} à {{ lastTimeUpdateOM }}
   </div>
-  <div class="om-solde-visibility">
-    <img *ngIf="balanceIsAvailable && 0" src="/assets/images/eye.png" alt="refresh-icon" />
+  <div *ngIf="balanceIsAvailable" class="om-solde-visibility">
+    <img src="/assets/images/shape.svg" alt="refresh-icon" class="refresh-icon" />
+  </div>
+  <span *ngIf="balanceIsAvailable" class="show-details-info-text" (click)="goHubOM($event)">Voir les Détails
+    <img src="/assets/images/keyboard-arrow-right-white-mob.svg" alt="arrow-right" class="arrow-right" />
+  </span>
+</div>
+
+
+<div class="om-full-width-card-balance" *ngIf="isFullWidthButton" [ngClass]="{ 'btn-loading': loadingBalance }">
+  <ion-skeleton-text animated class="loader" *ngIf="loadingBalance"></ion-skeleton-text>
+  <div *ngIf="balanceIsAvailable" class="om-solde-visibility" (click)="showSoldeOM()">
+    <img src="/assets/images/shape.svg" alt="refresh-icon" class="refresh-icon" />
+  </div>
+  <div class="balance-title scb-text-white">{{ balanceIsAvailable ? 'Solde disponible' : 'Orange Money'}}</div>
+  <img src="assets/images/ico-om-medium.svg" alt="ico-om" class="ico-om">
+  <div class="available-balance scb-text-white" *ngIf="balanceIsAvailable">{{ balance }} FCFA</div>
+  <div class="update-date scb-text-white" *ngIf="balanceIsAvailable && lastUpdateOM && lastTimeUpdateOM">Mise à
+    jour le {{ lastUpdateOM }} à {{ lastTimeUpdateOM }}</div>
+  <div *ngIf="!balanceIsAvailable" class="show-details-info-text scb-text-white" (click)="showSoldeOM()">Afficher mon solde
+    <img src="/assets/images/keyboard-arrow-right-white-mob.svg" alt="arrow-right" class="arrow-right" />
   </div>
 </div>

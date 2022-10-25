@@ -1,0 +1,76 @@
+@import 'src/app/app';
+
+.title {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -0.28px;
+}
+.title1 {
+  font-family: HelveticaNeueLTStd-Bd;
+  font-size: 20px;
+}
+
+.content-page {
+	min-height: 100%;
+  background-color: $grayDashboard;
+  .header-image {
+    width: 100%;
+    background-color: $white;
+    display: flex;
+		flex-direction: column;
+		padding-bottom: 20px;
+    img-loader {
+      width: 100% !important;
+      img {
+        width: 100% !important;
+      }
+    }
+		.select-ligne-block {
+			position: relative;
+			border-radius: 10px;
+			border: solid 2px $silver;
+			background-color: $white;
+			display: flex;
+			padding: 5px 40px 0 15px;
+			height: 50px;
+			justify-content: space-between;
+			width: calc(100% - 30px);
+			margin: 20px 0 0 15px;
+			.ligne-title {
+				font-family: HelveticaNeueLTStd-Roman;
+				font-size: 16px;
+				display: flex;
+				align-items: center;
+			}
+			.choosen-ligne {
+				font-family: HelveticaNeueLTStd-Bd;
+				font-size: 16px;
+				display: flex;
+				align-items: center;
+			}
+			.ligne-icon {
+				position: absolute;
+				font-size: 20px;
+				top: 13px;
+				right: 10px;
+			}
+		}
+  }
+	.body {
+		padding: 20px 15px;
+		.list-offer {
+			height: 100%;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 15px;
+			app-offre-service-card-v2 {
+				width: 47%;
+			}
+			.error-msg {
+				color: $gray;
+				font-size: 15px;
+			}
+		}
+	}
+}

@@ -4,7 +4,7 @@
     [ngClass]="{'sargal-mobile-header-white': sargalStatus}"
   >
     <div class="arrow-left">
-      <img
+      <img [id]="'goBackBtn' | generateIdForTA"
         src="/assets/images/arrow-left.png"
         (click)="goToPreviousStep()"
         alt=""
@@ -55,6 +55,7 @@
     </div>
     <div
       class="card-informations"
+			[id]="'carte-infos' | generateIdForTA"
       *ngIf="sargalStatus"
       (click)="goStatusSargal()"
     >
@@ -82,7 +83,7 @@
     <div>
       <span class="title">Je convertis</span>
     </div>
-    <div (click)="goToCataloguePage()" class="show-catalog">
+    <div [id]="'see-catalogue-btn' | generateIdForTA" (click)="goToCataloguePage()" class="show-catalog">
       <span class="voir-details scb-text-orange">Voir tous les cadeaux </span>
       <img
         src="/assets/images/arrow-right.svg"
@@ -101,7 +102,8 @@
     <ng-container *ngIf="dataLoaded && !hasError">
       <div class="sargal-mobile-offers-top3">
         <div
-          *ngFor="let item of sargalCategories"
+          *ngFor="let item of sargalCategories; let i=index"
+					[id]="('item-sargal-'+i) | generateIdForTA"
           class="sargal-mobile-offers-top3-item"
           (click)="goToCategorySargal(item)"
         >

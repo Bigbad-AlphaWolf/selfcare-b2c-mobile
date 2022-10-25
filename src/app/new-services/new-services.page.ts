@@ -11,6 +11,9 @@ import {
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { OperationService } from '../services/oem-operation/operation.service';
 
+export enum TABS_SERVICES {
+	APPEL = 'APPEL', INTERNET = 'INTERNET', LOISIR = 'LOISIR', VOYAGE = 'VOYAGE'
+}
 @Component({
   selector: 'app-new-services',
   templateUrl: './new-services.page.html',
@@ -36,7 +39,6 @@ export class NewServicesPage implements OnInit {
     services: OffreService[];
   }[] = [];
   isIos: boolean;
-
   constructor(
     private operationService: OperationService,
     private platform: Platform,
@@ -55,6 +57,9 @@ export class NewServicesPage implements OnInit {
       'HUB_ACHAT',
       'HUB_TRANSFER',
       'HUB_BILLS',
+      'HUB_OM',
+			'HUB_FIXE',
+			'HUB_OFFRES_FIXE',
       OTHER_CATEGORIES,
     ];
     return HIDDEN_CATEGORIES_CODES.includes(category.code);
@@ -74,7 +79,7 @@ export class NewServicesPage implements OnInit {
     this.servicesHasError = false;
     this.servicesByCategoriesArray = [];
     this.operationService
-      .getServicesByFormule()
+      .getServicesByFormule(null, null, true)
       .pipe(
         tap((res) => {
           this.servicesByCategoriesArray = [];

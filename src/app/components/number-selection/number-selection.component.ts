@@ -13,6 +13,9 @@ import {
   OPERATION_TYPE_PASS_INTERNET,
   NO_RECENTS_MSG,
   OPERATION_TYPE_PASS_INTERNATIONAL,
+  OPERATION_TYPE_PASS_LAMBJ,
+	OPERATION_TYPE_SEDDO_CREDIT,
+	OPERATION_TYPE_SEDDO_BONUS,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -30,6 +33,8 @@ import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
 import { CODE_FORMULE_FIX_PREPAID } from 'src/app/dashboard';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { Diagnostic } from '@ionic-native/diagnostic/ngx';
+import { PermissionSettingsPopupComponent } from '../permission-settings-popup/permission-settings-popup.component';
 
 @Component({
   selector: 'oem-number-selection',
@@ -38,8 +43,7 @@ import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow
 })
 export class NumberSelectionComponent implements OnInit {
   numbers$: Observable<string[]>;
-  recentsRecipients$: Observable<any[]>;
-
+  recents: any[];
   numberSelected: string = '';
   numberFromInput: string = '';
 
@@ -51,8 +55,7 @@ export class NumberSelectionComponent implements OnInit {
   opXtras: OperationExtras = {};
   isErrorProcessing: boolean = false;
   canNotRecieve: boolean;
-  canNotRecieveError =
-    'Le numéro de votre destinataire ne peut pas recevoir ce service';
+  canNotRecieveError = 'Le numéro de votre destinataire ne peut pas recevoir ce service';
   option: NumberSelectionOption = NumberSelectionOption.WITH_MY_PHONES;
   eligibilityChecked: boolean;
   isRecipientEligible = true;
@@ -60,9 +63,11 @@ export class NumberSelectionComponent implements OnInit {
   @Input() data;
   loadingNumbers: boolean;
   currentPhone: string = SessionOem.PHONE.trim();
-  isLightMod: boolean;
   loadingRecents: boolean;
   NO_RECENTS_MSG = NO_RECENTS_MSG;
+  showRecentMessage: boolean;
+  recentMessage: string;
+  hideRecentsList: boolean;
 
   constructor(
     private modalController: ModalController,
@@ -71,45 +76,42 @@ export class NumberSelectionComponent implements OnInit {
     private authService: AuthenticationService,
     private changeDetectorRef: ChangeDetectorRef,
     private recentsService: RecentsService,
-    private followAnalyticsService: FollowAnalyticsService
+    private followAnalyticsService: FollowAnalyticsService,
+    private diagnostic: Diagnostic
   ) {}
 
   ngOnInit() {
-    this.isLightMod =
-      this.data && this.data.isLightMod ? this.data.isLightMod : null;
-    this.option =
-      this.data && this.data.option
-        ? this.data.option
-        : NumberSelectionOption.NONE;
+    this.option = this.data && this.data.option ? this.data.option : NumberSelectionOption.NONE;
     this.showInput = this.option === NumberSelectionOption.NONE;
     this.opXtras.recipientMsisdn = this.currentPhone;
     this.opXtras.senderMsisdn = SessionOem.PHONE;
-    if (!this.isLightMod) {
-      this.loadingNumbers = true;
-      this.numbers$ = this.dashbServ.fetchOemNumbers().pipe(
-        delay(100),
-        tap((numbers) => {
-          this.loadingNumbers = false;
-        }),
-        catchError((err: any) => {
-          this.loadingNumbers = false;
-          return of(err);
-        }),
-        share()
-      );
-      this.checkOmAccount();
-    }
+    this.loadingNumbers = true;
+    this.numbers$ = this.dashbServ.fetchOemNumbers(this.data.purchaseType, this.data?.opXtras).pipe(
+      delay(100),
+      tap(numbers => {
+        this.loadingNumbers = false;
+      }),
+      catchError((err: any) => {
+        this.loadingNumbers = false;
+        return of(err);
+      }),
+      share()
+    );
+		if(this.data.purchaseType !== OPERATION_TYPE_SEDDO_CREDIT && this.data.purchaseType !== OPERATION_TYPE_SEDDO_BONUS) {
+			this.checkOmAccount();
+		}
+    this.checkContactsAuthorizationStatus();
   }
 
   getRecents() {
     this.loadingRecents = true;
-    this.recentsRecipients$ = this.recentsService
+    this.recentsService
       .fetchRecents(this.data.purchaseType, 2)
       .pipe(
         map((recents: RecentsOem[]) => {
           this.loadingRecents = false;
           let results = [];
-          recents.forEach((el) => {
+          recents.forEach(el => {
             results.push({
               name: el.name,
               msisdn: el.destinataire,
@@ -118,29 +120,55 @@ export class NumberSelectionComponent implements OnInit {
           return results;
         }),
         tap((res: { name: string; msisdn: string }[]) => {
-          this.followAnalyticsService.registerEventFollow(
-            'Get_recents_destinataire_OM_success',
-            'event',
-            {
-              operation: this.data.purchaseType,
-              sender: this.opXtras.senderMsisdn,
-            }
-          );
+          this.recents = res;
+          this.followAnalyticsService.registerEventFollow('Get_recents_destinataire_OM_success', 'event', {
+            operation: this.data.purchaseType,
+            sender: this.opXtras.senderMsisdn,
+          });
         }),
-        catchError((err) => {
+        catchError(err => {
           this.loadingRecents = false;
-          this.followAnalyticsService.registerEventFollow(
-            'Get_recents_destinataire_OM_error',
-            'error',
-            {
-              operation: this.data.purchaseType,
-              sender: this.opXtras.senderMsisdn,
-              error: err.status,
-            }
-          );
-          return of(err);
-        })
-      );
+          this.followAnalyticsService.registerEventFollow('Get_recents_destinataire_OM_error', 'error', {
+            operation: this.data.purchaseType,
+            sender: this.opXtras.senderMsisdn,
+            error: err.status,
+          });
+          return of([]);
+        }),
+        share()
+      )
+      .subscribe();
+  }
+
+  checkContactsAuthorizationStatus() {
+    this.diagnostic.getContactsAuthorizationStatus().then(
+      contactStatus => {
+        if (
+          contactStatus === this.diagnostic.permissionStatus.NOT_REQUESTED ||
+          contactStatus === this.diagnostic.permissionStatus.DENIED_ALWAYS
+        ) {
+          this.showRecentMessage = true;
+          this.recentMessage = "Pour afficher vos contacts/bénéficiaires récents, vous devez autoriser l'accés à vos contacts.";
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+
+  handleInputFocus(event) {
+    this.hideRecentsList = event;
+  }
+
+  async openSettingsPopup() {
+    await this.modalController.dismiss();
+    const modal = await this.modalController.create({
+      component: PermissionSettingsPopupComponent,
+      cssClass: 'success-or-fail-modal',
+    });
+    modal.onDidDismiss().then(response => {});
+    return modal.present();
   }
 
   async onContinue(phone?: string) {
@@ -148,27 +176,17 @@ export class NumberSelectionComponent implements OnInit {
     this.canNotRecieve = false;
     if (phone) {
       this.opXtras.recipientMsisdn = phone;
-      this.followAnalyticsService.registerEventFollow(
-        'Select_recents_buy',
-        'event',
-        {
-          msisdn: this.currentPhone,
-          recent: phone,
-        }
-      );
+      this.followAnalyticsService.registerEventFollow('Select_recents_buy', 'event', {
+        msisdn: this.currentPhone,
+        recent: phone,
+      });
     }
-    if (
-      !(
-        REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn) ||
-        REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn)
-      )
-    ) {
-      this.phoneIsNotValid = true;
+    if (this.checkIfIsRecipientInvalid()) {
+      this.canNotRecieve = true;
       return;
     }
 
-    this.opXtras.destinataire = this.opXtras.recipientMsisdn =
-      formatPhoneNumber(this.opXtras.recipientMsisdn);
+    this.opXtras.destinataire = this.opXtras.recipientMsisdn = formatPhoneNumber(this.opXtras.recipientMsisdn);
 
     this.opXtras.forSelf = !this.showInput;
 
@@ -185,71 +203,67 @@ export class NumberSelectionComponent implements OnInit {
     this.dismissBottomSheet();
   }
 
+  checkIfIsRecipientInvalid() {
+    if (
+      (this.data.purchaseType === OPERATION_TYPE_PASS_ILLIMIX && REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn)) ||
+      !(REGEX_NUMBER_OM.test(this.opXtras.recipientMsisdn) || REGEX_FIX_NUMBER.test(this.opXtras.recipientMsisdn))
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   async isEligible() {
-    let isEligible = await this.authService
-      .checkUserEligibility(this.opXtras.recipientMsisdn)
-      .toPromise();
+    let isEligible = await this.authService.checkUserEligibility(this.opXtras.recipientMsisdn).toPromise();
     return isEligible;
   }
 
   dismissBottomSheet() {
     this.isProcessing = true;
-    this.authService
-      .getSubscriptionForTiers(this.opXtras.recipientMsisdn)
-      .subscribe(
-        async (res: SubscriptionModel) => {
-          this.isProcessing = false;
-          this.opXtras.code = res.code;
-          this.opXtras.profil = res.profil;
-          if (
-            res.code === CODE_KIRENE_Formule &&
-            this.data.purchaseType === OPERATION_TYPE_PASS_ILLIMIX
-          ) {
-            const eligibility: any = await this.isEligible();
-            this.eligibilityChecked = true;
-            if (eligibility && !eligibility.eligible) {
-              this.isRecipientEligible = false;
-              this.eligibilityError = eligibility.message;
-              const data = Object.assign({}, this.opXtras, {
-                error: this.eligibilityError,
-              });
-              this.logRecipientOnFollow('error', data, this.data.isLightMod);
-              return;
-            }
-          }
-          if (
-            ((res.code === CODE_KIRENE_Formule ||
-              res.code === CODE_FORMULE_FIX_PREPAID) &&
-              this.data.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX) ||
-            (res.code === CODE_FORMULE_FIX_PREPAID &&
-              this.data.purchaseType === OPERATION_TYPE_PASS_INTERNATIONAL)
-          ) {
-            this.eligibilityChecked = true;
+    this.authService.getSubscriptionForTiers(this.opXtras.recipientMsisdn).subscribe(
+      async (res: SubscriptionModel) => {
+        this.isProcessing = false;
+        this.opXtras.code = res.code;
+        this.opXtras.profil = res.profil;
+        if (res.code === CODE_KIRENE_Formule && this.data.purchaseType === OPERATION_TYPE_PASS_ILLIMIX) {
+          const eligibility: any = await this.isEligible();
+          this.eligibilityChecked = true;
+          if (eligibility && !eligibility.eligible) {
             this.isRecipientEligible = false;
-            this.eligibilityError =
-              'Le numéro du bénéficiaire ne peut pas bénéficier de pass';
+            this.eligibilityError = eligibility.message;
             const data = Object.assign({}, this.opXtras, {
               error: this.eligibilityError,
             });
             this.logRecipientOnFollow('error', data, this.data.isLightMod);
             return;
           }
-          this.logRecipientOnFollow(
-            'event',
-            this.opXtras,
-            this.data.isLightMod
-          );
-          this.modalController.dismiss(this.opXtras);
-          // this.bottomSheetRef.dismiss(this.opXtras);
-        },
-        (err: any) => {
-          this.isProcessing = false;
-          const data = Object.assign({}, this.opXtras, { error: err.status });
-          this.logRecipientOnFollow('error', data, this.data.isLightMod);
-          this.modalController.dismiss();
-          // this.bottomSheetRef.dismiss();
         }
-      );
+        if (
+          ((res.code === CODE_KIRENE_Formule || res.code === CODE_FORMULE_FIX_PREPAID) &&
+            this.data.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX) ||
+          (res.code === CODE_FORMULE_FIX_PREPAID && this.data.purchaseType === OPERATION_TYPE_PASS_INTERNATIONAL)
+        ) {
+          this.eligibilityChecked = true;
+          this.isRecipientEligible = false;
+          this.eligibilityError = 'Le numéro du bénéficiaire ne peut pas bénéficier de pass';
+          const data = Object.assign({}, this.opXtras, {
+            error: this.eligibilityError,
+          });
+          this.logRecipientOnFollow('error', data, this.data.isLightMod);
+          return;
+        }
+        this.logRecipientOnFollow('event', this.opXtras, this.data.isLightMod);
+        this.modalController.dismiss(this.opXtras);
+        // this.bottomSheetRef.dismiss(this.opXtras);
+      },
+      (err: any) => {
+        this.isProcessing = false;
+        const data = Object.assign({}, this.opXtras, { error: err.status });
+        this.logRecipientOnFollow('error', data, this.data.isLightMod);
+        this.modalController.dismiss();
+        // this.bottomSheetRef.dismiss();
+      }
+    );
   }
 
   onPhoneSelected(opContacts: OperationExtras) {
@@ -260,9 +274,7 @@ export class NumberSelectionComponent implements OnInit {
 
   onOptionChange(value: string) {
     this.showInput = value === 'AUTRE';
-    this.opXtras.recipientMsisdn = this.showInput
-      ? this.numberFromInput
-      : value;
+    this.opXtras.recipientMsisdn = this.showInput ? this.numberFromInput : value;
     this.disableErrorMessages();
   }
   disableErrorMessages() {
@@ -277,12 +289,7 @@ export class NumberSelectionComponent implements OnInit {
         this.isProcessing = false;
         this.loadingNumbers = false;
         this.changeDetectorRef.detectChanges();
-        console.log(this.isProcessing, this.loadingNumbers);
-
-        if (
-          msisdn === 'error' &&
-          this.data.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT
-        ) {
+        if (msisdn === 'error' && this.data.purchaseType === OPERATION_TYPE_RECHARGE_CREDIT) {
           //force user to have om account
           this.modalController.dismiss();
           this.openPinpad();
@@ -290,15 +297,13 @@ export class NumberSelectionComponent implements OnInit {
 
         if (msisdn !== 'error') {
           this.opXtras.senderMsisdn = msisdn;
-          if (OPERATION_TYPE_PASS_VOYAGE !== this.data.purchaseType)
-            this.getRecents();
+          if (OPERATION_TYPE_PASS_VOYAGE !== this.data.purchaseType) this.getRecents();
         }
       },
       () => {
         this.modalController.dismiss();
         this.isProcessing = false;
         this.isErrorProcessing = true;
-        console.log(this.isProcessing, this.loadingNumbers);
       }
     );
   }
@@ -307,7 +312,7 @@ export class NumberSelectionComponent implements OnInit {
     // if (this.opXtras.forSelf) return true;
 
     let canRecieve = await this.authService
-      .canRecieveCredit(this.opXtras.recipientMsisdn)
+      .canRecieveCredit(this.opXtras.recipientMsisdn, this.data.opXtras)
       .pipe(
         catchError((er: HttpErrorResponse) => {
           if (er.status === 401) this.modalController.dismiss();
@@ -326,7 +331,7 @@ export class NumberSelectionComponent implements OnInit {
         operationType: null,
       },
     });
-    modal.onDidDismiss().then((response) => {
+    modal.onDidDismiss().then(response => {
       if (response.data && response.data.success) {
         this.omSession.loginExpired = false;
       }
@@ -334,11 +339,7 @@ export class NumberSelectionComponent implements OnInit {
     return await modal.present();
   }
 
-  logRecipientOnFollow(
-    typeEvent: 'event' | 'error',
-    infos: any,
-    isLightMod?: boolean
-  ) {
+  logRecipientOnFollow(typeEvent: 'event' | 'error', infos: any, isLightMod?: boolean) {
     let followEventSucess: string;
     let followEventError: string;
     let payload = {
@@ -359,30 +360,23 @@ export class NumberSelectionComponent implements OnInit {
       case OPERATION_TYPE_PASS_ILLIFLEX:
       case OPERATION_TYPE_PASS_VOYAGE:
       case OPERATION_TYPE_PASS_ALLO:
+      case OPERATION_TYPE_PASS_INTERNATIONAL:
         followEventSucess = 'Achat_pass_Select_Recipient_success';
         followEventError = 'Achat_pass_Select_Recipient_error';
         break;
-
+      case OPERATION_TYPE_PASS_LAMBJ:
+        followEventSucess = 'Achat_pass_lamb_Select_Recipient_success';
+        followEventError = 'Achat_pass_lamb_Select_Recipient_error';
       default:
+        followEventSucess = 'Achat_Select_Recipient_success';
+        followEventError = 'Achat_Select_Recipient_error';
         break;
     }
 
     if (typeEvent === 'event') {
-      console.log('follow', followEventSucess, payload);
-
-      this.followAnalyticsService.registerEventFollow(
-        followEventSucess,
-        'event',
-        payload
-      );
+      this.followAnalyticsService.registerEventFollow(followEventSucess, 'event', payload);
     } else {
-      console.log('follow', followEventError, payload);
-
-      this.followAnalyticsService.registerEventFollow(
-        followEventError,
-        'error',
-        payload
-      );
+      this.followAnalyticsService.registerEventFollow(followEventError, 'error', payload);
     }
   }
 }

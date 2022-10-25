@@ -11,6 +11,7 @@ import { SharedModule } from 'src/shared/shared.module';
 import { CommunicationHistoricComponent } from './pages/communication-historic/communication-historic.component';
 import { NewDetailsConsoComponent } from './pages/new-details-conso/new-details-conso.component';
 import { TransactionsHistoricComponent } from './pages/transactions-historic/transactions-historic.component';
+import { InternetHistoricComponent } from './pages/internet-historic/internet-historic.component';
 
 @NgModule({
   imports: [
@@ -25,6 +26,7 @@ import { TransactionsHistoricComponent } from './pages/transactions-historic/tra
     CommunicationHistoricComponent,
     NewDetailsConsoComponent,
     TransactionsHistoricComponent,
+    InternetHistoricComponent,
   ],
   exports: [NewSuiviConsoPage],
 })

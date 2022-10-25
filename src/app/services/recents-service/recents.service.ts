@@ -7,6 +7,10 @@ import { CustomContact } from 'src/app/models/customized-contact.model';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { OM_RECENT_TYPES } from 'src/app/utils/constants';
 import { of } from 'rxjs';
+import { SERVICES_TO_MATCH_CONTACTS } from '.';
+import { ContactsService } from '../contacts-service/contacts.service';
+import { Platform } from '@ionic/angular';
+import { trace } from 'console';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +18,12 @@ import { of } from 'rxjs';
 export class RecentsService {
   constructor(
     private http: HttpClient,
-    private omService: OrangeMoneyService // private contactService: ContactsService
-  ) {}
+    private omService: OrangeMoneyService,
+    private contactService: ContactsService,
+    private platform: Platform
+  ) {
+    console.log(this.platform.is('mobileweb'));
+  }
 
   recentType(opType: string) {
     let recentType = OM_RECENT_TYPES.find(
@@ -33,23 +41,54 @@ export class RecentsService {
             `${OM_RECENTS_ENDPOINT}/${omPhonenumber.trim()}?service=${service}`
           )
           .pipe(
-            map((response: any) => {
+            switchMap((response: any) => {
               const recents: RecentsOem[] = this.parseRecentsResponse(
                 response,
                 numberToDisplay
               );
-              return recents;
+              if (this.platform.is('mobileweb')) {
+                return of(recents);
+              }
               // if (!SERVICES_TO_MATCH_CONTACTS.includes(service))
-              // return this.contactService.getAllContacts().pipe(
-              //   map((contacts: CustomContact[]) => {
-              //     const res = this.mapRecentsToContacts(recents, contacts);
-              //     return res;
-              //   }),
-              //   catchError((err) => {
-              //     console.log('caught error', err);
-              //     return of(recents);
-              //   })
-              // );
+              return this.contactService.getAllContacts().pipe(
+                map((contacts: CustomContact[]) => {
+                  const res = this.mapRecentsToContacts(recents, contacts);
+                  return res;
+                }),
+                catchError((err) => {
+                  console.log('caught error', err);
+                  return recents;
+                })
+              );
+            }),
+            catchError((err) => {
+              return of([]);
+            })
+          );
+      })
+    );
+
+  }
+  fetchRecentsV2(op: string, numberToDisplay: number, listContact: any[]) {
+    let service = this.recentType(op);
+    return this.omService.getOmMsisdn().pipe(
+      switchMap((omPhonenumber) => {
+        return this.http
+          .get(
+            `${OM_RECENTS_ENDPOINT}/${omPhonenumber.trim()}?service=${service}`
+          )
+          .pipe(
+            switchMap((response: any) => {
+              const recents: RecentsOem[] = this.parseRecentsResponse(
+                response,
+                numberToDisplay
+              );
+              if (this.platform.is('mobileweb')) {
+                return of(recents);
+              }
+              // if (!SERVICES_TO_MATCH_CONTACTS.includes(service))
+							return of(this.mapRecentsToContacts(recents, listContact));
+
             }),
             catchError((err) => {
               return of([]);
@@ -81,13 +120,37 @@ export class RecentsService {
   mapRecentsToContacts(recents: RecentsOem[], contacts: CustomContact[]) {
     recents.forEach((recent) => {
       const msisdn = recent.destinataire;
-      for (let j = 0; j < contacts.length; j++) {
-        if (contacts[j].numbers.includes(msisdn)) {
-          recent.name = contacts[j].name.formatted;
+      for (let contact of contacts) {
+        if (this.checkContactNumbersContainsMsisdn(contact.numbers, msisdn)) {
+          recent.name = contact.displayName;
           break;
         }
       }
     });
     return recents;
+  }
+
+  checkContactNumbersContainsMsisdn(numbers: string[], msisdn) {
+    const nums = [];
+    for (let number of numbers) {
+      let num;
+      switch (true) {
+        case number.startsWith('+221'):
+          num = number.substring(4);
+          break;
+        case number.startsWith('221'):
+          num = number.substring(3);
+          break;
+        case number.startsWith('00221'):
+          num = number.substring(5);
+          break;
+        default:
+          num = number;
+          break;
+      }
+      nums.push(num);
+    }
+    //console.log(nums);
+    return nums.includes(msisdn);
   }
 }

@@ -35,8 +35,14 @@ export class HistorikTransactionByTypeModalComponent implements OnInit {
     this.hasError = false;
     this.purchServ.getAllTransactionByDay(this.currentPhoneNumber,7,'TRANSFER').pipe(
       tap((res: PurchaseModel[]) => {
+			res = res.filter((elt) => {
+			 return	elt.operationType === 'DEBIT'
+			})
       this.isProcessing = false;
       this.hasError = false;
+			res = res.filter((elt) => {
+				return elt?.operationType === 'DEBIT'
+			});
       this.listTransactionsFiltered = res;
     }),catchError((err: any) => {
       this.isProcessing = false;
@@ -50,5 +56,9 @@ export class HistorikTransactionByTypeModalComponent implements OnInit {
       'purchaseInfos': purchase
     })
   }
+
+	close() {
+		this.mdCtrl.dismiss();
+	}
 
 }

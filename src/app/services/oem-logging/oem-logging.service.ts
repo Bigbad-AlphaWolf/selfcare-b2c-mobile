@@ -7,25 +7,19 @@ import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.ser
   providedIn: 'root',
 })
 export class OemLoggingService {
-  constructor(
-    private batchService: BatchAnalyticsService,
-    private firebaseAnalytics: FirebaseAnalytics,
-    private followAnalytics: FollowAnalyticsService
-  ) {}
+  constructor(private batchService: BatchAnalyticsService, private firebaseAnalytics: FirebaseAnalytics, private followAnalytics: FollowAnalyticsService) {}
 
   setUserAttribute(data: { keyAttribute: string; valueAttribute: any }) {
     this.batchService.setUserAttribute(data);
-    this.firebaseAnalytics
-      .setUserProperty(data.keyAttribute, data.valueAttribute.toString())
-      .then((res) => {
-        console.log(res);
-      });
+    this.firebaseAnalytics.setUserProperty(data.keyAttribute, data.valueAttribute.toString()).then(res => {
+      console.log(res);
+    });
     this.followAnalytics.setString(data.keyAttribute, data.valueAttribute);
   }
 
   registerUserID(hashName: string) {
     this.batchService.registerID(hashName);
-    this.firebaseAnalytics.setUserId(hashName).then((res) => {
+    this.firebaseAnalytics.setUserId(hashName).then(res => {
       console.log(res);
     });
     this.followAnalytics.registerId(hashName);
@@ -44,13 +38,13 @@ export class OemLoggingService {
     if (tagWithBatch) {
       this.batchService.registerEvent(eventName, null, infos);
     }
-    if (tagWithFollow) {
-      const data = {};
-      infos?.forEach((element) => {
-        data[element.dataName] = element.dataValue;
-      });
-      this.followAnalytics.registerEventFollow(eventName, 'event', data);
-    }
+    //if (tagWithFollow) {
+    //  const data = {};
+    //  infos?.forEach(element => {
+    //    data[element.dataName] = element.dataValue;
+    //  });
+    //  this.followAnalytics.registerEventFollow(eventName, 'event', data);
+    //}
     this.registerEventWithFirebase(eventName, infos);
   }
 
@@ -62,9 +56,9 @@ export class OemLoggingService {
     }[] = []
   ) {
     const content = {};
-    infos?.forEach((item) => {
+    infos?.forEach(item => {
       content[item.dataName] = item.dataValue;
     });
-    this.firebaseAnalytics.logEvent(eventName, content).then((res) => {});
+    this.firebaseAnalytics.logEvent(eventName, content).then(res => {});
   }
 }

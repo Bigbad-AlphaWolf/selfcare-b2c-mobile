@@ -24,27 +24,14 @@
       </mat-menu>
   </div>
   <div class="purchase-content-filter sargal-content-filter">
-    <button class="filter-container" [ngClass]="{ selected: menuTrigDate.menuOpen }" mat-button
-        #menuTrigDate="matMenuTrigger" [matMenuTriggerFor]="dateInterval">
-        <div [ngClass]="{ 'scb-text-white': menuTrigDate.menuOpen }" class="btn-filter">
-            <span> {{ dateFilterSelected ? dateFilterSelected + ' derniers jours' : 'Date' }} </span>
+    <button class="filter-container" >
+        <div class="btn-filter">
+            <span> Actualiser </span>
             <div class="arrows">
-                    <img *ngIf="!menuTrigDate.menuOpen" src="/assets/images/arrow-down.svg" class="arrow-down" alt="">
-                    <img *ngIf="menuTrigDate.menuOpen" src="/assets/images/keyboard-arrow-up-black.svg" class="arrow-up" alt="">
+                    <img src="/assets/images/reload.png" class="arrow-down" alt="">
                 </div>
         </div>
     </button>
-
-    <mat-menu [class]="'customize-mat-menu'" [backdropClass]="'cdk-overlay-pane-custom'"
-        #dateInterval="matMenu" class="leftSargal">
-        <ng-template matMenuContent>
-            <ng-container *ngFor="let day of listDateFilter">
-                <button (click)="getTransactionByDay(day)" class="categorie-label" mat-menu-item>
-                    {{ day + ' derniers jours' }}
-                </button>
-            </ng-container>
-        </ng-template>
-    </mat-menu>
 </div>
 
  </div>

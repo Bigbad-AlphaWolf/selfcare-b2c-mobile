@@ -18,11 +18,14 @@ import { StoriesProgressBarComponent } from '../stories-progress-bar/stories-pro
 import { VisualizeStoryComponent } from '../visualize-story/visualize-story.component';
 import SwiperCore, { EffectCoverflow, EffectFade, EffectFlip, Navigation, Pagination, SwiperOptions } from 'swiper';
 import { IonicSwiper } from '@ionic/angular';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
 import { TYPE_ACTION_ON_BANNER } from 'src/shared';
 import { StoriesService } from 'src/app/services/stories-service/stories.service';
 import { SwiperComponent } from 'swiper/angular';
 import { tap } from 'rxjs/operators';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { Platform} from '@ionic/angular';
 
 SwiperCore.use([IonicSwiper, Navigation, Pagination, EffectFade, EffectCoverflow, EffectCoverflow, EffectFlip]);
 
@@ -32,116 +35,130 @@ SwiperCore.use([IonicSwiper, Navigation, Pagination, EffectFade, EffectCoverflow
   styleUrls: ['./visualize-stories.component.scss'],
 })
 export class VisualizeStoriesComponent implements OnInit, OnDestroy {
+  @Output() leaveStories = new EventEmitter();
   @Input() storyByCategory: {
-		categorie: {
-			libelle?: string;
-			ordre?: number;
-			code?: string;
-			zoneAffichage?: string;
-		};
-		stories: Story[];
-		readAll: boolean;
-	} = null;
-	@Input() index: number;
-	@Input() isVisibleForHigherView: boolean;
-	@Input() view: 'SINGLE_CATEGORY' | 'ALL_CATEGORIES' = 'SINGLE_CATEGORY';
-	@Output() action = new EventEmitter();
+    categorie: {
+      libelle?: string;
+      ordre?: number;
+      code?: string;
+      zoneAffichage?: string;
+    };
+    stories: Story[];
+    readAll: boolean;
+  } = null;
+  @Input() index: number;
+  @Input() isVisibleForHigherView: boolean;
+  @Input() view: 'SINGLE_CATEGORY' | 'ALL_CATEGORIES' = 'SINGLE_CATEGORY';
+  @Output() action = new EventEmitter();
   private slides;
   @ViewChildren(StoriesProgressBarComponent)
   storiesProgressBarView: QueryList<StoriesProgressBarComponent>;
   @ViewChildren(VisualizeStoryComponent)
   storiesView: QueryList<VisualizeStoryComponent>;
   currentSlideIndex = 0;
-	@ViewChild('slides', { static: false }) swiper?: SwiperComponent;
-	config: SwiperOptions = {
-		init: false,
-		effect: 'fade',
-		lazy: true,
-		navigation: {
-			nextEl: '.right',
-			prevEl: '.left'
-		}
-	};
-  constructor(private modalCtrl: ModalController, private navCtrl: NavController, private iab: InAppBrowser, private storiesServ: StoriesService, private cd: ChangeDetectorRef) {
-	}
+  @ViewChild('slides', { static: false }) swiper?: SwiperComponent;
+  config: SwiperOptions = {
+    init: false,
+    effect: 'fade',
+    lazy: true,
+    navigation: {
+      nextEl: '.right',
+      prevEl: '.left',
+    },
+  };
+  isIos: boolean;
 
-  ngOnInit() {}
-	ngAfterViewInit() {
-		this.loadLastStoriesState();
-	}
-
-	loadLastStoriesState(index?: number) {
-		setTimeout(() => {
-			const startIndex = !index ? this.retrieveSlideStartingIndex() : index;
-			this.fillAllPreviousProgressBar(startIndex);
-			this.setSwiperIndex(startIndex);
-		});
-	}
-
-	resetListStoriesState(index?: number) {
-			const startIndex = !index ? this.retrieveSlideStartingIndex() : index;
-			this.fillAllPreviousProgressBar(startIndex);
-			this.setSwiperIndex(startIndex);
-	}
-
-	setSwiperIndex(index: number) {
-		this.swiper.setIndex(index);
-	}
-
-  ngOnDestroy() {
-		this.deactiveStoryMedia(this.currentSlideIndex);
-		this.stopAnimateProgressBar(this.currentSlideIndex);
-	}
-
-  close() {
-		if(this.view === 'SINGLE_CATEGORY') {
-			this.modalCtrl.dismiss({ storyByCategory: this.storyByCategory, index: this.index})
-		} else {
-			this.action.emit({
-				finish: true
-			})
-		}
+  constructor(
+    private modalCtrl: ModalController,
+    private navCtrl: NavController,
+    private iab: InAppBrowser,
+    private storiesServ: StoriesService,
+    private cd: ChangeDetectorRef,
+    private followAnalyticsService: FollowAnalyticsService,
+    private dashService: DashboardService,
+    private platform: Platform
+  ) {
+    this.isIos = this.platform.is('ios');
   }
 
-	setSwiperInstance(ev) {
+  ngOnInit() {}
+  ngAfterViewInit() {
+    this.loadLastStoriesState();
+  }
+
+  loadLastStoriesState(index?: number) {
+    setTimeout(() => {
+      const startIndex = !index ? this.retrieveSlideStartingIndex() : index;
+      this.fillAllPreviousProgressBar(startIndex);
+      this.setSwiperIndex(startIndex);
+    });
+  }
+
+  resetListStoriesState(index?: number) {
+    const startIndex = !index ? this.retrieveSlideStartingIndex() : index;
+    this.fillAllPreviousProgressBar(startIndex);
+    this.setSwiperIndex(startIndex);
+  }
+
+  setSwiperIndex(index: number) {
+    this.swiper.setIndex(index);
+  }
+
+  ngOnDestroy() {
+    this.deactiveStoryMedia(this.currentSlideIndex);
+    this.stopAnimateProgressBar(this.currentSlideIndex);
+  }
+
+  close() {
+    if (this.view === 'SINGLE_CATEGORY') {
+      this.modalCtrl.dismiss({
+        storyByCategory: this.storyByCategory,
+        index: this.index,
+      });
+    } else {
+      this.action.emit({
+        finish: true,
+      });
+    }
+  }
+
+  setSwiperInstance(ev) {
     this.slides = ev;
   }
 
+  playStory(event: any) {
+    this.resumeStory(this.currentSlideIndex);
+    if (this.storyByCategory?.stories[this.currentSlideIndex].audio) {
+      this.activeStoryMedia(this.currentSlideIndex);
+    }
+  }
 
-
-	playStory(event: any) {
-		this.resumeStory(this.currentSlideIndex);
-		if(this.storyByCategory?.stories[this.currentSlideIndex].audio) {
-			this.activeStoryMedia(this.currentSlideIndex);
-		}
-	}
-
-	loadStoryMedia(index: number = this.currentSlideIndex) {
-		const storyComponent: VisualizeStoryComponent =
+  loadStoryMedia(index: number = this.currentSlideIndex) {
+    const storyComponent: VisualizeStoryComponent =
       this.storiesView.toArray()[index];
-			if(storyComponent) {
-				if(storyComponent?.mediaLoaded) {
-					this.onImageReady(true)
-					this.onAudioReady(null)
-				}
-			}
-	}
+    if (storyComponent) {
+      if (storyComponent?.mediaLoaded) {
+        this.onImageReady(true);
+        this.onAudioReady(null);
+      }
+    }
+  }
 
-	resumeStory(index: number) {
-		const progressBarStory: StoriesProgressBarComponent =
-		this.storiesProgressBarView.toArray()[index];
-			progressBarStory.playStoryProgress();
-	}
+  resumeStory(index: number) {
+    const progressBarStory: StoriesProgressBarComponent =
+      this.storiesProgressBarView.toArray()[index];
+    progressBarStory.playStoryProgress();
+  }
 
-	pauseStory(event: any) {
-		this.stopAnimateProgressBar(this.currentSlideIndex)
-		if(this.storyByCategory?.stories[this.currentSlideIndex]?.audio) {
-			this.deactiveStoryMedia(this.currentSlideIndex);
-		}
-	}
+  pauseStory(event: any) {
+    this.stopAnimateProgressBar(this.currentSlideIndex);
+    if (this.storyByCategory?.stories[this.currentSlideIndex]?.audio) {
+      this.deactiveStoryMedia(this.currentSlideIndex);
+    }
+  }
 
   onProgressFinish(event: any) {
-		console.log('next');
+    console.log('next');
 
     if (this.slides) {
       this.swiper?.swiperRef?.slideNext();
@@ -152,47 +169,53 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
     this.slides?.slideTo(index);
   }
 
-	retrieveSlideStartingIndex() {
-		return this.storyByCategory?.stories.findIndex((item) => {
-			return item.read === false;
-		})
-	}
-
-  slideChange() {
-		if(this.currentSlideIndex > this.slides?.activeIndex ) {
-			this.emptyProgressBar(this.currentSlideIndex)
-		} else if(this.currentSlideIndex < this.slides?.activeIndex) {
-			this.fillProgressBar(this.currentSlideIndex);
-		}
-		this.deactiveStoryMedia(this.currentSlideIndex);
-		this.stopAnimateProgressBar(this.currentSlideIndex);
-		this.currentSlideIndex = this.slides?.activeIndex;
-		this.loadStoryMedia(this.currentSlideIndex);
+  retrieveSlideStartingIndex() {
+    return this.storyByCategory?.stories.findIndex((item) => {
+      return item.read === false;
+    });
   }
 
-	seeStory() {
-		const storyComponent: VisualizeStoryComponent =
+  slideChange() {
+    if (this.currentSlideIndex > this.slides?.activeIndex) {
+      this.emptyProgressBar(this.currentSlideIndex);
+    } else if (this.currentSlideIndex < this.slides?.activeIndex) {
+      this.fillProgressBar(this.currentSlideIndex);
+    }
+    this.deactiveStoryMedia(this.currentSlideIndex);
+    this.stopAnimateProgressBar(this.currentSlideIndex);
+    this.currentSlideIndex = this.slides?.activeIndex;
+    this.loadStoryMedia(this.currentSlideIndex);
+  }
+
+  seeStory() {
+    const storyComponent: VisualizeStoryComponent =
       this.storiesView.toArray()[this.currentSlideIndex];
-			if(!storyComponent?.story?.read) {
-				this.storiesServ.seeStory(storyComponent?.story).pipe(
-					tap((res: any) => {
-						storyComponent.userReadStory();
-						this.setStoryReadAttribute();
-					})
-				).subscribe()
-			}
-	}
+    if (!storyComponent?.story?.read) {
+      this.storiesServ
+        .seeStory(storyComponent?.story)
+        .pipe(
+          tap((res: any) => {
+            storyComponent.userReadStory();
+            this.setStoryReadAttribute();
+          })
+        )
+        .subscribe();
+    }
+  }
 
-	setStoryReadAttribute() {
-		if(this.storyByCategory.stories.length && this.storyByCategory.stories[this.currentSlideIndex])	this.storyByCategory.stories[this.currentSlideIndex].read = true;
-	}
-
+  setStoryReadAttribute() {
+    if (
+      this.storyByCategory.stories.length &&
+      this.storyByCategory.stories[this.currentSlideIndex]
+    )
+      this.storyByCategory.stories[this.currentSlideIndex].read = true;
+  }
 
   activeStoryMedia(index: number) {
     const storyComponent: VisualizeStoryComponent =
       this.storiesView.toArray()[index];
     if (storyComponent && storyComponent.story && storyComponent.story.audio) {
-			storyComponent.playMedia();
+      storyComponent.playMedia();
     }
   }
 
@@ -202,7 +225,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
       this.storiesView.toArray()[index];
 
     if (storyComponent && storyComponent.story && storyComponent.story.audio) {
-			storyComponent.pauseMedia();
+      storyComponent.pauseMedia();
     }
   }
 
@@ -216,71 +239,94 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
     if (index < 0) return;
     const progressBarStory: StoriesProgressBarComponent =
       this.storiesProgressBarView.toArray()[index];
-			progressBarStory.resetProgressBar();
+    progressBarStory.resetProgressBar();
   }
 
-	emptyProgressBar(index: number = this.currentSlideIndex) {
-			const progressBarStory: StoriesProgressBarComponent =
-			this.storiesProgressBarView.toArray()[index];
-			progressBarStory.emptyProgressBar();
-	}
+  emptyProgressBar(index: number = this.currentSlideIndex) {
+    const progressBarStory: StoriesProgressBarComponent =
+      this.storiesProgressBarView.toArray()[index];
+    progressBarStory.emptyProgressBar();
+  }
 
-	fillProgressBar(index: number) {
-			const progressBarStory: StoriesProgressBarComponent =
-			this.storiesProgressBarView.toArray()[index];
-			progressBarStory.fillProgressBar();
-	}
+  fillProgressBar(index: number) {
+    const progressBarStory: StoriesProgressBarComponent =
+      this.storiesProgressBarView.toArray()[index];
+    progressBarStory.fillProgressBar();
+  }
 
-	fillAllPreviousProgressBar(index: number) {
-		if(index > 0) {
-			for (let i = 0; i<= index -1; i++) {
-				this.fillProgressBar(i);
-			}
-		}
-	}
+  fillAllPreviousProgressBar(index: number) {
+    if (index > 0) {
+      for (let i = 0; i <= index - 1; i++) {
+        this.fillProgressBar(i);
+      }
+    }
+  }
 
   setProgressBarDuration(duration: number, index: number) {
     const progressBarStory: StoriesProgressBarComponent =
       this.storiesProgressBarView.toArray()[index];
-			progressBarStory.setProgressStoryDuration(duration);
+    progressBarStory.setProgressStoryDuration(duration);
   }
 
-	onAudioReady(event: any) {
-		this.seeStory();
-		this.activeStoryMedia(this.currentSlideIndex);
-		this.startAnimateProgressBar(this.currentSlideIndex);
-	}
+  onAudioReady(event: any) {
+    this.seeStory();
+    this.activeStoryMedia(this.currentSlideIndex);
+    this.startAnimateProgressBar(this.currentSlideIndex);
+  }
 
-	onImageReady(isCurrentstory: any) {
-		if (isCurrentstory) {
-			if(!this.storyByCategory?.stories[this.currentSlideIndex].audio) {
-				this.startAnimateProgressBar(this.currentSlideIndex);
-				this.seeStory();
-			}
-		}
-	}
+  onImageReady(isCurrentstory: any) {
+    if (isCurrentstory) {
+      if (!this.storyByCategory?.stories[this.currentSlideIndex].audio) {
+        this.startAnimateProgressBar(this.currentSlideIndex);
+        this.seeStory();
+      }
+    }
+  }
 
+  clickOnSlide(event: any) {
+    if (event?.btn) {
+      const action = event?.action;
+      this.close();
+      this.onActionBtnClicked(action);
+    } else {
+      this.stopAnimateProgressBar(this.currentSlideIndex);
+    }
+  }
 
-	clickOnSlide(event: any) {
-		if(event?.btn) {
-			const action = event?.action;
-			this.close();
-			this.onActionBtnClicked(action);
-		} else {
-			this.stopAnimateProgressBar(this.currentSlideIndex)
-		}
-	}
-
-	onActionBtnClicked(data: { typeAction: string; description: string; url: string; label: string; }) {
+  onActionBtnClicked(data: {
+    typeAction: string;
+    description: string;
+    url: string;
+    label: string;
+  }) {
+		this.leaveStories.emit('close');
 		switch (data.typeAction) {
 			case TYPE_ACTION_ON_BANNER.DEEPLINK:
-				this.navCtrl.navigateForward([data.url]);
-				break;
-			case TYPE_ACTION_ON_BANNER.REDIRECTION:
-				this.iab.create(data.url, '_blank');
-				break;
-			default:
-				break;
-		}
-	}
+        this.navCtrl.navigateForward([data.url]);
+        break;
+      case TYPE_ACTION_ON_BANNER.REDIRECTION:
+        const options: InAppBrowserOptions = this.isIos ? {
+          location: 'no',
+          toolbar: 'yes',
+          toolbarcolor: '#CCCCCC',
+          toolbarposition: 'top',
+          toolbartranslucent: 'no',
+          closebuttoncolor: '#000000',
+          closebuttoncaption: 'Fermer',
+          hidespinner: 'yes',
+        } : {};
+        this.iab.create(data.url, '_blank', options);
+        break;
+      default:
+        break;
+    }
+  }
+
+  navigateStory(side: 'next' | 'prev') {
+    const msisdn = this.dashService.getCurrentPhoneNumber();
+    const evName = side === 'next' ? 'story_next' : 'story_back';
+    this.followAnalyticsService.registerEventFollow(evName, 'event', {
+      msisdn,
+    });
+  }
 }

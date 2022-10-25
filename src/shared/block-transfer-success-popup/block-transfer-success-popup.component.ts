@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { PurchaseModel } from 'src/app/models/purchase.model';
 import { ApplicationRoutingService } from 'src/app/services/application-routing/application-routing.service';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { ANNULATION_TRANSFER_DEADLINE } from '..';
 
 @Component({
@@ -11,12 +13,15 @@ import { ANNULATION_TRANSFER_DEADLINE } from '..';
 })
 export class BlockTransferSuccessPopupComponent implements OnInit {
   @Input() transactionToBlock: PurchaseModel;
+  @Input() isUserOMFull: boolean;
+  @Input() isMLite: boolean;
   annulationDeadline = ANNULATION_TRANSFER_DEADLINE;
   MATH = Math;
 
   constructor(
     public modalController: ModalController,
-    private appRouting: ApplicationRoutingService
+    private appRouting: ApplicationRoutingService,
+    private router: Router
   ) {}
 
   ngOnInit() {}
@@ -27,6 +32,11 @@ export class BlockTransferSuccessPopupComponent implements OnInit {
 
   close() {
     this.modalController.dismiss();
+  }
+
+  goToDashboard() {
+    this.close();
+    this.router.navigate(['/dashboard']);
   }
 
   goFillAnnulationForm() {

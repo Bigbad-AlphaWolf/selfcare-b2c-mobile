@@ -1,15 +1,7 @@
 import { Subscription } from 'rxjs';
 import { AppMinimize } from '@ionic-native/app-minimize/ngx';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  SubscriptionModel,
-  hash53,
-  isPrepaidOrHybrid,
-  isPostpaidMobile,
-  isPostpaidFix,
-  isPrepaidFix,
-  isKirene,
-} from '.';
+import { SubscriptionModel, hash53, isPrepaidOrHybrid, isPostpaidMobile, isPostpaidFix, isPrepaidFix, isKirene } from '.';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import * as SecureLS from 'secure-ls';
@@ -72,31 +64,23 @@ export class DashboardPage implements OnInit, OnDestroy {
     } else if (this.platform.is('android')) {
       this.appId = 'com.orange.myorange.osn';
     }
-    this.dashboardServ.initScriptDimelo();
   }
 
   async checkForUpdate() {
     this.currentAppVersion = await this.appVersion.getVersionNumber();
 
     if (this.appId && this.currentAppVersion)
-      this.assistanceService
-        .getAppVersionPublished()
-        .subscribe((version: any) => {
-          const versionAndroid = version.android;
-          const versionIos = version.ios;
-          if (versionAndroid || versionIos) {
-            if (
-              isNewVersion(
-                this.isIOS ? versionIos : versionAndroid,
-                this.currentAppVersion
-              )
-            ) {
-              this.navCtl.navigateForward([AppUpdatePage.ROUTE_PATH], {
-                state: { appId: this.appId },
-              });
-            }
+      this.assistanceService.getAppVersionPublished().subscribe((version: any) => {
+        const versionAndroid = version.android;
+        const versionIos = version.ios;
+        if (versionAndroid || versionIos) {
+          if (isNewVersion(this.isIOS ? versionIos : versionAndroid, this.currentAppVersion)) {
+            this.navCtl.navigateForward([AppUpdatePage.ROUTE_PATH], {
+              state: { appId: this.appId },
+            });
           }
-        });
+        }
+      });
   }
 
   ngOnDestroy() {}
@@ -181,15 +165,16 @@ export class DashboardPage implements OnInit, OnDestroy {
 
           this.getUserInfosNlogBirthDateOnFollow();
           const user = ls.get('user');
-          this.oemLogging.setUserAttribute({
-            keyAttribute: 'prenom',
-            valueAttribute: user.firstName,
-          });
-
-          this.oemLogging.setUserAttribute({
-            keyAttribute: 'nom',
-            valueAttribute: user.lastName,
-          });
+          if (user) {
+            this.oemLogging.setUserAttribute({
+              keyAttribute: 'prenom',
+              valueAttribute: user?.firstName,
+            });
+            this.oemLogging.setUserAttribute({
+              keyAttribute: 'nom',
+              valueAttribute: user?.lastName,
+            });
+          }
 
           const msisdn = this.authServ.getUserMainPhoneNumber();
           const hashedNumber = hash53(msisdn).toString();
@@ -216,19 +201,13 @@ export class DashboardPage implements OnInit, OnDestroy {
     const userInfosAlreadySet = !!ls.get('userInfos');
     if (!userInfosAlreadySet)
       this.dashboardServ.getCustomerInformations().subscribe(
-        (res) => {
+        res => {
           this.oemLogging.setUserAttribute({
             keyAttribute: 'date_of_birth',
-            valueAttribute: new Date(
-              Date.UTC(
-                res.birthDate.split('-')[0],
-                res.birthDate.split('-')[1],
-                res.birthDate.split('-')[2]
-              )
-            ),
+            valueAttribute: new Date(Date.UTC(res.birthDate.split('-')[0], res.birthDate.split('-')[1], res.birthDate.split('-')[2])),
           });
         },
-        (err) => {
+        err => {
           console.log(err);
         }
       );

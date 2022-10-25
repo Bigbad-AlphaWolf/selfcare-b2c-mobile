@@ -5,12 +5,14 @@ import {
   getBanniereTitle,
   TYPE_ACTION_ON_BANNER,
 } from 'src/shared';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { NavController } from '@ionic/angular';
-import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { NavController, Platform } from '@ionic/angular';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import SwiperCore, { Autoplay, Pagination } from 'swiper';
+
+SwiperCore.use([Autoplay, Pagination]);
 
 @Component({
   selector: 'app-slide-banniere-dashboard',
@@ -25,7 +27,8 @@ export class SlideBanniereDashboardComponent implements OnInit {
     private navCtrl: NavController,
     private bottomSheetServ: BottomSheetService,
     private followAnalyticsService: FollowAnalyticsService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+		private platform: Platform
   ) {}
 
   ngOnInit() {
@@ -51,7 +54,17 @@ export class SlideBanniereDashboardComponent implements OnInit {
         this.navCtrl.navigateForward([item.action.url]);
         break;
       case TYPE_ACTION_ON_BANNER.REDIRECTION:
-        this.iab.create(item.action.url, '_blank');
+				const config: InAppBrowserOptions = this.platform.is("ios") ? {
+          location: 'no',
+          toolbar: 'yes',
+          toolbarcolor: '#CCCCCC',
+          toolbarposition: 'top',
+          toolbartranslucent: 'no',
+          closebuttoncolor: '#000000',
+          closebuttoncaption: 'Fermer',
+          hidespinner: 'yes',
+        } : {};
+        this.iab.create(item.action.url, '_blank', config);
         break;
       case TYPE_ACTION_ON_BANNER.MODAL:
         if (item.action.description) {

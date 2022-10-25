@@ -1,24 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { CategoryPurchaseHistory } from 'src/app/models/category-purchase-history.model';
-import { ModalSuccessModel } from 'src/app/models/modal-success-infos.model';
 import { PurchaseModel } from 'src/app/models/purchase.model';
-import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { FollowAnalyticsEventType } from 'src/app/services/follow-analytics/follow-analytics-event-type.enum';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
-import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { PurchaseService } from 'src/app/services/purchase-service/purchase.service';
-import {
-  DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY,
-  LIST_ICON_PURCHASE_HISTORIK_ITEMS,
-  OPERATION_TRANSFER_OM,
-  PAYMENT_MOD_OM,
-  THREE_DAYS_DURATION_IN_MILLISECONDS,
-} from 'src/shared';
+import { DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY, OPERATION_CANCEL_TRX_MLITE } from 'src/shared';
+import { YesNoModalComponent } from 'src/shared/yes-no-modal/yes-no-modal.component';
 import { displayDate } from '../../new-suivi-conso.utils';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'app-transactions-historic',
@@ -33,8 +25,7 @@ export class TransactionsHistoricComponent implements OnInit {
   filteredHistoric: { key: string; value: PurchaseModel[] }[] = [];
   categories: CategoryPurchaseHistory[];
   currentMsisdn = this.dashboardservice.getCurrentPhoneNumber();
-  selectedFilter: { label: string; typeAchat: string } =
-    DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
+  selectedFilter: { label: string; typeAchat: string } = DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
   dateFilters = [
     { label: '2 jours', value: 2 },
     { label: '3 jours', value: 3 },
@@ -42,52 +33,39 @@ export class TransactionsHistoricComponent implements OnInit {
     { label: '7 jours', value: 7 },
   ];
   selectedDateFilter = this.dateFilters[0];
+  listAnnulationTrx: PurchaseModel[] = [];
+  isFetchingListAnnulationTrx: boolean;
   constructor(
     private purchaseService: PurchaseService,
     private dashboardservice: DashboardService,
     private omService: OrangeMoneyService,
     private modalController: ModalController,
-    private followAnalyticsService: FollowAnalyticsService,
     private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
     this.getTransactionsHistoric();
+    this.fetchAnnulationTrx();
   }
 
   filterByDate(dateFilter) {
     this.selectedDateFilter = dateFilter;
-    this.oemLoggingService.registerEvent('conso_transactions_filter', [
-      { dataName: 'date', dataValue: dateFilter?.label },
-    ]);
+    this.oemLoggingService.registerEvent('conso_transactions_filter', [{ dataName: 'date', dataValue: dateFilter?.label }]);
     this.getTransactionsHistoric();
   }
 
   getTransactionByType(filterType: { label: string; typeAchat: string }) {
-    this.filteredHistoric = JSON.parse(
-      JSON.stringify(this.historicTransactions)
-    );
+    this.filteredHistoric = JSON.parse(JSON.stringify(this.historicTransactions));
     this.selectedFilter = filterType;
-    this.oemLoggingService.registerEvent('conso_transactions_filter', [
-      { dataName: 'date', dataValue: filterType?.label },
-    ]);
-    if (
-      this.selectedFilter.label ===
-      DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY.label
-    ) {
+    this.oemLoggingService.registerEvent('conso_transactions_filter', [{ dataName: 'date', dataValue: filterType?.label }]);
+    if (this.selectedFilter.label === DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY.label) {
       return;
     }
-    this.filteredHistoric = this.filteredHistoric.filter((item) => {
-      return item?.value
-        .map((x) => x.typeAchat)
-        .includes(this.selectedFilter.typeAchat);
+    this.filteredHistoric = this.filteredHistoric.filter(item => {
+      return item?.value.map(x => x.typeAchat).includes(this.selectedFilter.typeAchat);
     });
-    console.log(this.filteredHistoric);
-
-    this.filteredHistoric.forEach((element) => {
-      element.value = element.value.filter(
-        (x) => x.typeAchat === this.selectedFilter.typeAchat
-      );
+    this.filteredHistoric.forEach(element => {
+      element.value = element.value.filter(x => x.typeAchat === this.selectedFilter.typeAchat);
     });
   }
 
@@ -97,33 +75,30 @@ export class TransactionsHistoricComponent implements OnInit {
     this.transactionsEmpty = false;
     this.selectedFilter = DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
     this.purchaseService
-      .getCategoriesAndPurchaseHistory(
-        this.currentMsisdn,
-        this.selectedDateFilter.value
-      )
+      .getCategoriesAndPurchaseHistory(this.currentMsisdn, this.selectedDateFilter.value)
       .pipe(
-        tap(
-          (res: {
-            listPurchase: PurchaseModel[];
-            categories: CategoryPurchaseHistory[];
-          }) => {
-            this.loadingTransactions = false;
-            this.transactionsEmpty = !!res.listPurchase.length;
-            this.categories = res.categories;
-            this.historicTransactions = this.processTransactions(
-              res.listPurchase
-            );
-            this.filteredHistoric = this.historicTransactions.slice(0);
-            event ? event.target.complete() : '';
-          }
-        ),
-        catchError((err) => {
+        tap((res: { listPurchase: PurchaseModel[]; categories: CategoryPurchaseHistory[] }) => {
+          this.loadingTransactions = false;
+          this.transactionsEmpty = !!res.listPurchase.length;
+          this.categories = res.categories;
+
+          this.historicTransactions = this.processTransactions(res.listPurchase);
+          this.filteredHistoric = this.historicTransactions.slice(0);
+          event ? event.target.complete() : '';
+        }),
+        catchError(err => {
           this.loadingTransactions = false;
           event ? event.target.complete() : '';
-          throw new Error(err);
+          return throwError(err);
         })
       )
       .subscribe();
+  }
+
+  fetchAnnulationTrx() {
+    this.omService.getAnnulationTrxMarchandLite().subscribe((res: any) => {
+      this.listAnnulationTrx = this.omService.mapToHistorikAchat(res?.content?.data?.content);
+    });
   }
 
   processTransactions(historicArray: any[]) {
@@ -147,40 +122,26 @@ export class TransactionsHistoricComponent implements OnInit {
     return displayDate(formattedDate);
   }
 
-  getTransactionIcon(typeAchat: string) {
-    const icon = LIST_ICON_PURCHASE_HISTORIK_ITEMS[typeAchat];
-    return icon ? icon : '/assets/images/ic-africa.svg';
-  }
-
-  async openTransactionModal(transaction) {
-    // date difference in ms
-    const dateDifference =
-      new Date(transaction.currentDate).getTime() -
-      new Date(transaction.operationDate).getTime();
-    const isLessThan72h = dateDifference < THREE_DAYS_DURATION_IN_MILLISECONDS;
-    if (!isLessThan72h || transaction.typeAchat !== 'TRANSFER') return;
-    const omMsisdn = await this.omService.getOmMsisdn().toPromise();
-    this.followAnalyticsService.registerEventFollow(
-      'clic_transfer_from_history',
-      FollowAnalyticsEventType.EVENT,
-      { msisdn: omMsisdn, transaction }
-    );
-    if (!omMsisdn || omMsisdn === 'error') return;
-    const params: ModalSuccessModel = {};
-    params.paymentMod = PAYMENT_MOD_OM;
-    params.recipientMsisdn = transaction.msisdnReceiver;
-    params.msisdnBuyer = omMsisdn;
-    params.purchaseType = OPERATION_TRANSFER_OM;
-    params.historyTransactionItem = transaction;
-    params.success = true;
-    params.isOpenedFromHistory = true;
-    const modal = await this.modalController.create({
-      component: OperationSuccessFailModalPage,
-      cssClass: 'success-or-fail-modal',
-      componentProps: params,
-      backdropDismiss: true,
+  async openConfirmModal(transaction: PurchaseModel) {
+    const modalCtrl = await this.modalController.create({
+      component: YesNoModalComponent,
+      componentProps: {
+        typeModal: OPERATION_CANCEL_TRX_MLITE,
+        transaction,
+      },
+      cssClass: 'select-recipient-modal',
     });
-    modal.onDidDismiss().then(() => {});
-    return await modal.present();
+
+    modalCtrl.onDidDismiss().then((res: any) => {
+      res = res.data;
+      if (res?.continue) {
+        this.isFetchingListAnnulationTrx = true;
+        this.omService.getAnnulationTrxMarchandLite().subscribe((res: any) => {
+          this.isFetchingListAnnulationTrx = false;
+          this.listAnnulationTrx = this.omService.mapToHistorikAchat(res?.content?.data?.content);
+        });
+      }
+    });
+    return await modalCtrl.present();
   }
 }

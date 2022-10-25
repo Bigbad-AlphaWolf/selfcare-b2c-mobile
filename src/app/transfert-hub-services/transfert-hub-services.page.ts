@@ -1,14 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
-import {
-  ModalController,
-  NavController,
-  ToastController,
-} from '@ionic/angular';
-import { SelectBeneficiaryPopUpComponent } from './components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
-import { NavigationExtras, Router } from '@angular/router';
+import { ModalController, NavController, ToastController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { NumberSelectionComponent } from '../components/number-selection/number-selection.component';
 import { NumberSelectionOption } from '../models/enums/number-selection-option.enum';
 import {
   OPERATION_TYPE_RECHARGE_CREDIT,
@@ -24,6 +18,7 @@ import {
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_PASS_INTERNATIONAL,
   getServiceEventLoggingName,
+  OPERATION_ABONNEMENT_WIDO,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
 import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
@@ -33,7 +28,7 @@ import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.servic
 import { ListPassVoyagePage } from '../pages/list-pass-voyage/list-pass-voyage.page';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
-import { of } from 'rxjs';
+import { throwError } from 'rxjs';
 
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { catchError, tap } from 'rxjs/operators';
@@ -41,14 +36,13 @@ import { FavoritePassOemModel } from '../models/favorite-pass-oem.model';
 import { FavorisService } from '../services/favoris/favoris.service';
 import { OperationService } from '../services/oem-operation/operation.service';
 import { OffreService } from '../models/offre-service.model';
-import {
-  OPERATION_TRANSFERT_ARGENT,
-  OPERATION_TYPE_PASS_USAGE,
-} from '../utils/operations.constants';
+import { OPERATION_TRANSFERT_ARGENT, OPERATION_TYPE_PASS_USAGE } from '../utils/operations.constants';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amount.page';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
+import { OperationRecapLogicService } from '../services/operation-recap-logic/operation-recap-logic.service';
+import { OperationExtras } from '../models/operation-extras.model';
 @Component({
   selector: 'app-transfert-hub-services',
   templateUrl: './transfert-hub-services.page.html',
@@ -61,46 +55,12 @@ export class TransfertHubServicesPage implements OnInit {
   pageTitle: string;
   options: OffreService[] = [];
   passUsages: OffreService[] = [];
-  lightOptions: OffreService[] = [
-    {
-      shortDescription: 'Pass',
-      fullDescription: 'internet',
-      icone:
-        '/assets/images/04-boutons-01-illustrations-18-acheter-pass-internet.svg',
-      code: OPERATION_TYPE_PASS_INTERNET,
-      activated: true,
-    },
-    {
-      shortDescription: 'Pass',
-      fullDescription: 'illimix',
-      icone:
-        '/assets/images/04-boutons-01-illustrations-16-acheter-pass-illimix.svg',
-      code: OPERATION_TYPE_PASS_ILLIMIX,
-      activated: true,
-    },
-    {
-      shortDescription: 'Pass',
-      fullDescription: 'Allo',
-      icone: '/assets/images/ic-call-forward@2x.png',
-      code: OPERATION_TYPE_PASS_ALLO,
-      activated: true,
-    },
-    {
-      shortDescription: 'Pass',
-      fullDescription: 'voyage',
-      icone:
-        '/assets/images/04-boutons-01-illustrations-09-acheter-pass-voyage.svg',
-      code: OPERATION_TYPE_PASS_VOYAGE,
-      activated: true,
-    },
-  ];
   omPhoneNumber: string;
   isProcessing: boolean;
   errorMsg: string;
   userInfos: SubscriptionModel;
   hasPromoPlanActive: OfferPlanActive = null;
   hasBoosterPromoActive: PromoBoosterActive = null;
-  isLightMod: boolean; //boolean to tell if user is in connected or not connected mod
   currentPhone = this.dashbServ.getCurrentPhoneNumber();
   purchaseType: 'BUY' | 'TRANSFER';
   favoritesPass: FavoritePassOemModel;
@@ -111,7 +71,6 @@ export class TransfertHubServicesPage implements OnInit {
     private appRouting: ApplicationRoutingService,
     private modalController: ModalController,
     private navController: NavController,
-    private router: Router,
     private offerPlanServ: OfferPlansService,
     private dashbServ: DashboardService,
     private bsService: BottomSheetService,
@@ -121,14 +80,13 @@ export class TransfertHubServicesPage implements OnInit {
     private toastController: ToastController,
     private operationService: OperationService,
     private followAnalyticsService: FollowAnalyticsService,
-    private oemLoggingService: OemLoggingService
+    private oemLoggingService: OemLoggingService,
+    private operationRecapLogigService: OperationRecapLogicService
   ) {}
 
   ngOnInit() {
     if (history && history.state) {
       this.purchaseType = history.state.purchaseType;
-      this.isLightMod = history.state.isLightMod;
-      console.log('isLightMod', this.isLightMod);
     }
     if (this.purchaseType === 'TRANSFER') {
       this.pageTitle = 'Transférer argent ou crédit';
@@ -137,7 +95,7 @@ export class TransfertHubServicesPage implements OnInit {
     } else if (this.purchaseType === 'BUY') {
       this.pageTitle = 'Acheter crédit ou pass';
       this.hubCode = HUB_ACTIONS.ACHAT;
-      this.isLightMod ? (this.options = this.lightOptions) : this.getServices();
+      this.getServices();
     } else {
       this.navController.navigateBack('/dashboard');
     }
@@ -146,32 +104,24 @@ export class TransfertHubServicesPage implements OnInit {
   getServices() {
     this.loadingServices = true;
     this.servicesHasError = false;
-    this.operationService.getServicesByFormule(this.hubCode).subscribe(
-      (res) => {
+    this.operationService.getServicesByFormule(this.hubCode, null, true).subscribe(
+      res => {
         this.loadingServices = false;
-        this.options = res.filter((option) => !option.passUsage);
-        this.passUsages = res.filter((option) => option.passUsage);
+        this.options = res.filter(option => !option.passUsage);
+        this.passUsages = res.filter(option => option.passUsage);
         this.getUserActiveBonPlans();
-        if (this.purchaseType === 'BUY') this.getUserActiveBoosterPromo();
-        this.getFavoritePass();
+        if (this.purchaseType === 'BUY') {
+          this.getUserActiveBoosterPromo();
+          this.getFavoritePass();
+        }
         this.getUserInfos();
-        const followEvent =
-          this.purchaseType === 'TRANSFER'
-            ? 'Get_hub_transfert_services_success'
-            : 'Get_hub_achat_services_success';
-        this.followAnalyticsService.registerEventFollow(
-          followEvent,
-          'event',
-          this.currentPhone
-        );
+        const followEvent = this.purchaseType === 'TRANSFER' ? 'Get_hub_transfert_services_success' : 'Get_hub_achat_services_success';
+        this.followAnalyticsService.registerEventFollow(followEvent, 'event', this.currentPhone);
       },
-      (err) => {
+      err => {
         this.loadingServices = false;
         this.servicesHasError = true;
-        const followError =
-          this.purchaseType === 'TRANSFER'
-            ? 'Get_hub_transfert_services_failed'
-            : 'Get_hub_achat_services_failed';
+        const followError = this.purchaseType === 'TRANSFER' ? 'Get_hub_transfert_services_failed' : 'Get_hub_achat_services_failed';
         this.followAnalyticsService.registerEventFollow(followError, 'error', {
           msisdn: this.currentPhone,
           error: err.status,
@@ -196,73 +146,46 @@ export class TransfertHubServicesPage implements OnInit {
       toast.present();
       return;
     }
-    const followEvent =
-      (this.purchaseType === 'TRANSFER' ? 'hubtransfert_' : 'hubachat_') +
-      getServiceEventLoggingName(opt) +
-      '_click';
+    const followEvent = (this.purchaseType === 'TRANSFER' ? 'Hub_transfert_clic_' : 'Hub_Achat_clic_') + getServiceEventLoggingName(opt);
     this.oemLoggingService.registerEvent(followEvent, []);
     if (opt.passUsage) {
-      this.bsService.openNumberSelectionBottomSheet(
-        NumberSelectionOption.WITH_MY_PHONES,
-        OPERATION_TYPE_PASS_USAGE,
-        'list-pass-usage',
-        false,
-        opt
-      );
-      return;
+      if (opt.code === OPERATION_ABONNEMENT_WIDO) {
+        this.goToListPassWido(OPERATION_ABONNEMENT_WIDO, 'list-pass-usage', opt);
+      } else {
+        this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, OPERATION_TYPE_PASS_USAGE, 'list-pass-usage', opt);
+        return;
+      }
     }
     switch (opt.code) {
       case OPERATION_TRANSFERT_ARGENT:
         this.showBeneficiaryModal();
         break;
       case OPERATION_TYPE_SEDDO_CREDIT:
-        this.appRouting.goToTransfertCreditPage();
+        this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.NONE, OPERATION_TYPE_SEDDO_CREDIT, 'purchase-set-amount');
         break;
       case OPERATION_TYPE_SEDDO_BONUS:
-        this.appRouting.goToTransfertBonusPage();
+        this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.NONE, OPERATION_TYPE_SEDDO_BONUS, 'purchase-set-amount');
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
-        this.bsService.openNumberSelectionBottomSheet(
-          NumberSelectionOption.WITH_MY_PHONES,
-          OPERATION_TYPE_RECHARGE_CREDIT,
-          CreditPassAmountPage.PATH
-        );
+        this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, OPERATION_TYPE_RECHARGE_CREDIT, CreditPassAmountPage.PATH);
         break;
       case OPERATION_TYPE_PASS_INTERNET:
-        this.openModalPassNumberSelection(
-          OPERATION_TYPE_PASS_INTERNET,
-          'list-pass'
-        );
+        this.openModalPassNumberSelection(OPERATION_TYPE_PASS_INTERNET, 'list-pass');
         break;
       case OPERATION_TYPE_PASS_INTERNATIONAL:
-        this.openModalPassNumberSelection(
-          OPERATION_TYPE_PASS_INTERNATIONAL,
-          'list-pass-international'
-        );
+        this.openModalPassNumberSelection(OPERATION_TYPE_PASS_INTERNATIONAL, 'list-pass-international');
         break;
       case OPERATION_TYPE_PASS_ILLIMIX:
-        this.openModalPassNumberSelection(
-          OPERATION_TYPE_PASS_ILLIMIX,
-          'list-pass'
-        );
+        this.openModalPassNumberSelection(OPERATION_TYPE_PASS_ILLIMIX, 'list-pass');
         break;
       case OPERATION_TYPE_PASS_VOYAGE:
-        this.openModalPassNumberSelection(
-          OPERATION_TYPE_PASS_VOYAGE,
-          ListPassVoyagePage.ROUTE_PATH
-        );
+        this.openModalPassNumberSelection(OPERATION_TYPE_PASS_VOYAGE, ListPassVoyagePage.ROUTE_PATH);
         break;
       case OPERATION_TYPE_PASS_ALLO:
-        this.openModalPassNumberSelection(
-          OPERATION_TYPE_PASS_ALLO,
-          'list-pass'
-        );
+        this.openModalPassNumberSelection(OPERATION_TYPE_PASS_ALLO, 'list-pass');
         break;
       case OPERATION_TYPE_PASS_ILLIFLEX:
-        this.openModalPassNumberSelection(
-          OPERATION_TYPE_PASS_ILLIFLEX,
-          'illiflex-budget-configuration'
-        );
+        this.openModalPassNumberSelection(OPERATION_TYPE_PASS_ILLIFLEX, 'illiflex-budget-configuration');
         break;
       case OPERATION_TYPE_MERCHANT_PAYMENT:
         this.openMerchantBS();
@@ -275,32 +198,22 @@ export class TransfertHubServicesPage implements OnInit {
     }
   }
 
-  openModalPassNumberSelection(operation: string, routePath: string) {
-    if (this.isLightMod) {
-      this.authService
-        .getSubscriptionForTiers(this.currentPhone)
-        .subscribe((res: SubscriptionModel) => {
-          const opInfos = {
-            code: res.code,
-            profil: res.profil,
-            senderMsisdn: this.currentPhone,
-            destinataire: this.currentPhone,
-            purchaseType: operation,
-            isLightMod: true,
-            recipientMsisdn: this.currentPhone,
-          };
-          this.navController.navigateForward([routePath], {
-            state: opInfos,
-          });
-        });
-    } else {
-      this.bsService.openNumberSelectionBottomSheet(
-        NumberSelectionOption.WITH_MY_PHONES,
-        operation,
-        routePath,
-        this.isLightMod
-      );
-    }
+  goToListPassWido(operation: string, routePath: string, opt: OffreService) {
+    const opInfos = {
+      senderMsisdn: this.currentPhone,
+      destinataire: this.currentPhone,
+      purchaseType: operation,
+      isLightMod: false,
+      recipientMsisdn: this.currentPhone,
+      serviceUsage: opt,
+    };
+    this.navController.navigateForward([routePath], {
+      state: opInfos,
+    });
+  }
+
+  openModalPassNumberSelection(operation: string, routePath: string, opXtras?: OperationExtras) {
+    this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, operation, routePath, null, opXtras);
   }
 
   checkOmAccount() {
@@ -314,27 +227,14 @@ export class TransfertHubServicesPage implements OnInit {
   }
 
   isServiceHidden(service: OffreService) {
-    return (
-      !service.activated &&
-      (!service.reasonDeactivation || service.reasonDeactivation === '')
-    );
+    return !service.activated && (!service.reasonDeactivation || service.reasonDeactivation === '');
   }
 
   openMerchantBS() {
     this.omService.omAccountSession().subscribe(async (omSession: any) => {
-      const omSessionValid = omSession
-        ? omSession.msisdn !== 'error' &&
-          omSession.hasApiKey &&
-          !omSession.loginExpired
-        : null;
+      const omSessionValid = omSession ? omSession.msisdn !== 'error' && omSession.hasApiKey && !omSession.loginExpired : null;
       if (omSessionValid) {
-        this.bsService
-          .initBsModal(
-            MerchantPaymentCodeComponent,
-            OPERATION_TYPE_MERCHANT_PAYMENT,
-            PurchaseSetAmountPage.ROUTE_PATH
-          )
-          .subscribe((_) => {});
+        this.bsService.initBsModal(MerchantPaymentCodeComponent, OPERATION_TYPE_MERCHANT_PAYMENT, PurchaseSetAmountPage.ROUTE_PATH).subscribe(_ => {});
         this.bsService.openModal(MerchantPaymentCodeComponent, {
           omMsisdn: omSession.msisdn,
         });
@@ -352,58 +252,23 @@ export class TransfertHubServicesPage implements OnInit {
     return await modal.present();
   }
 
-  async showBeneficiaryModal() {
-    const modal = await this.modalController.create({
-      component: SelectBeneficiaryPopUpComponent,
-      cssClass: 'select-recipient-modal',
-    });
-    modal.onWillDismiss().then((response: any) => {
-      if (response && response.data && response.data.recipientMsisdn) {
-        const pageData = response.data;
-        this.appRouting.goSetTransferAmountPage(pageData);
-      }
-    });
-    return await modal.present();
-  }
-
-  async openNumberSelectionBottomSheet(option?: NumberSelectionOption) {
-    const modal = await this.modalController.create({
-      component: NumberSelectionComponent,
-      cssClass: 'modalRecipientSelection',
-      componentProps: { option },
-    });
-    modal.onDidDismiss().then((response: any) => {
-      let opInfos;
-      if (response && response.data) {
-        opInfos = response.data;
-        if (!opInfos || !opInfos.recipientMsisdn) return;
-        opInfos = { purchaseType: OPERATION_TYPE_RECHARGE_CREDIT, ...opInfos };
-        this.router.navigate([CreditPassAmountPage.PATH], { state: opInfos });
-      }
-    });
-    return await modal.present();
+  showBeneficiaryModal() {
+    this.appRouting.goToSelectBeneficiaryPage();
   }
 
   getUserActiveBonPlans() {
-    this.offerPlanServ
-      .getUserTypeOfferPlans()
-      .subscribe((res: OfferPlanActive) => {
-        this.hasPromoPlanActive = res;
-      });
+    this.offerPlanServ.getUserTypeOfferPlans().subscribe((res: OfferPlanActive) => {
+      this.hasPromoPlanActive = res;
+    });
   }
 
   getUserActiveBoosterPromo() {
-    this.dashbServ
-      .getActivePromoBooster()
-      .subscribe((res: PromoBoosterActive) => {
-        this.hasBoosterPromoActive = res;
-      });
+    this.dashbServ.getActivePromoBooster().subscribe((res: PromoBoosterActive) => {
+      this.hasBoosterPromoActive = res;
+    });
   }
 
-  displayBadgeBoosterPromoInOptionsForCategory(
-    boosterActive: PromoBoosterActive,
-    opt: OffreService
-  ): boolean {
+  displayBadgeBoosterPromoInOptionsForCategory(boosterActive: PromoBoosterActive, opt: OffreService): boolean {
     let result: boolean;
     if (boosterActive)
       switch (opt.code) {
@@ -419,10 +284,7 @@ export class TransfertHubServicesPage implements OnInit {
     return result;
   }
 
-  displayBadgeOfferPlanForInOptionsCategory(
-    offerPlan: OfferPlanActive,
-    opt: OffreService
-  ): boolean {
+  displayBadgeOfferPlanForInOptionsCategory(offerPlan: OfferPlanActive, opt: OffreService): boolean {
     let result: boolean;
     if (offerPlan)
       switch (opt.code) {
@@ -441,53 +303,38 @@ export class TransfertHubServicesPage implements OnInit {
   getFavoritePass() {
     const hmac = this.authService.getHmac();
     return this.favService
-      .getFavoritePass(this.isLightMod, hmac)
+      .getFavoritePass()
       .pipe(
         tap((res: any) => {
           this.favoritesPass = res;
-          this.followAnalyticsService.registerEventFollow(
-            'Get_favorite_pass_success',
-            'event'
-          );
         }),
-        catchError((err) => {
-          this.followAnalyticsService.registerEventFollow(
-            'Get_favorite_pass_error',
-            'error',
-            {
-              msisdn: this.currentPhone,
-              error: err.status,
-            }
-          );
-          return of(null);
+        catchError(err => {
+          return throwError(err);
         })
       )
       .subscribe();
   }
 
   choosePass(pass: any, opType: string) {
-    this.followAnalyticsService.registerEventFollow(
-      'Select_favorite_pass',
-      'event',
-      this.currentPhone
-    );
-    let navigationExtras: NavigationExtras = {
-      state: {
-        pass,
-        recipientCodeFormule: this.userInfos.code,
-        purchaseType: opType,
-        recipientMsisdn: this.currentPhone,
-        isLightMod: this.isLightMod,
-      },
+    this.followAnalyticsService.registerEventFollow('Select_favorite_pass_click', 'event', {
+      recipient: this.currentPhone,
+      pass: pass,
+    });
+    const opXtras: OperationExtras = {
+      pass: { ...pass, isFavoritePass: true },
+      recipientCodeFormule: this.userInfos.code,
+      recipientFormule: this.userInfos.nomOffre,
+      purchaseType: opType,
+      recipientMsisdn: this.currentPhone,
     };
-    this.router.navigate(['/operation-recap'], navigationExtras);
+    this.openModalPassNumberSelection(opType, 'operation-recap', opXtras);
+    //this.operationRecapLogigService.initRecapInfos(opXtras);
+    //this.operationRecapLogigService.setPaymentMod();
   }
 
   getUserInfos() {
-    this.authService
-      .getSubscriptionForTiers(this.currentPhone)
-      .subscribe((res: SubscriptionModel) => {
-        this.userInfos = res;
-      });
+    this.authService.getSubscriptionForTiers(this.currentPhone).subscribe((res: SubscriptionModel) => {
+      this.userInfos = res;
+    });
   }
 }

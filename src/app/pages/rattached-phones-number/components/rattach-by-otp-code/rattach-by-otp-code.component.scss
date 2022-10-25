@@ -1,0 +1,37 @@
+@import 'src/app/app';
+@import 'src/app/styles/bottomsheet.style';
+.rattach-by-id-card {
+  padding-bottom: 60px;
+
+  .resend-block {
+    height: 90px;
+  }
+}
+.scb-text-red-error {
+  font-size: 14px;
+}
+.error-msg {
+  margin-bottom: 18px;
+}
+.send-otp-btn {
+  width: 45%;
+  margin-bottom: 10px;
+}
+.btn-continue {
+  position: absolute;
+  bottom: 15px;
+  height: 50px;
+  width: 90%;
+  ion-button {
+    height: 100%;
+    width: 100%;
+    --background-activated: black;
+    --color-activated: black;
+    --border-radius: 10px;
+  }
+  ion-spinner {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+  }
+}

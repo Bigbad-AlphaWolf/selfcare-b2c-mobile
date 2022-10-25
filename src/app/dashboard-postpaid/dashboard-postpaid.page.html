@@ -118,12 +118,12 @@
                 <span class="conso-value">
                   <span>{{ isCounterConsoActe(conso) ? conso.montantConsomme : (conso.hasGauge ? (conso.montantRestant |
                     passVolumeDisplay) : conso.montantRestant) }}</span>
-                  <span class="text-style-1" *ngIf="conso?.hasGauge">
+                  <!--<span class="text-style-1" *ngIf="conso?.hasGauge">
                     / {{ conso.montantTotal | passVolumeDisplay }}
-                  </span>
+                  </span>-->
                 </span>
               </div>
-              <app-item-conso-gauge *ngIf="conso?.hasGauge" [conso]="conso"></app-item-conso-gauge>
+              <!--<app-item-conso-gauge *ngIf="conso?.hasGauge" [conso]="conso"></app-item-conso-gauge>-->
             </div>
           </ng-container>
         </div>
@@ -134,7 +134,7 @@
           <div class="title">Je souhaite</div>
           <div class="more" (click)="onVoirPlus()">Voir plus</div>
         </div>
-        <oem-operations [operations]="operations" *ngIf="operations?.length"></oem-operations>
+        <oem-operations [operations]="operations" *ngIf="operations?.length" [currentPhoneOffer]="currentSubscription"></oem-operations>
       </div>
 
       <div class="dashboard-block-bill">
@@ -147,7 +147,7 @@
           <div class="last-bill-title">
             <div class="scb-text-l-black title">Mes factures</div>
             <div class="more-bills">
-              <span class="scb-text-orange more" routerLink="/bills">Voir tout
+              <span class="scb-text-orange more" (click)="goBills()">Voir tout
               </span>
             </div>
           </div>

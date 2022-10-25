@@ -3,6 +3,7 @@ import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {AccountService} from 'src/app/services/account-service/account.service';
 import {MatDialog} from '@angular/material/dialog';
 import {REGEX_PASSWORD2} from 'src/shared';
+import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
 
 @Component({
   selector: 'app-change-password',
@@ -18,9 +19,13 @@ export class ChangePasswordPage implements OnInit {
   loading;
   error = '';
 
-  constructor(private accountService: AccountService, private fb: FormBuilder, public dialog: MatDialog) {
+  constructor(
+    private accountService: AccountService,
+    private fb: FormBuilder,
+    public dialog: MatDialog,
+    private authServ: AuthenticationService
+  ) {
     this.form = this.fb.group({
-      oldPassword: ['', [Validators.required]],
       newPassword: ['', [Validators.required]],
       confirmPassword: ['', [Validators.required]]
     });
@@ -51,7 +56,7 @@ export class ChangePasswordPage implements OnInit {
 
   changePassword() {
     this.error = '';
-    const currentPassword = this.form.value.oldPassword;
+    const login = this.authServ.getUserMainPhoneNumber();
     const newPassword = this.form.value.newPassword;
     const confirmPwd = this.form.value.confirmPassword;
     if (confirmPwd === newPassword) {
@@ -59,7 +64,7 @@ export class ChangePasswordPage implements OnInit {
         this.error = 'le mot de passe doit avoir au minumum 5 caractères';
       } else {
         this.loading = true;
-        this.accountService.changeUserPassword(currentPassword, newPassword);
+        this.accountService.changeUserPassword(login, newPassword);
       }
     } else {
       this.error = 'Les mots de passe saisis ne sont pas identiques';

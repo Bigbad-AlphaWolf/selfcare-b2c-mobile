@@ -3,21 +3,25 @@ import { IonSlides, Platform } from '@ionic/angular';
 import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish.directive';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
+import { DemandeAnnulationTransfertModel } from '../models/demande-annulation-transfert.model';
 import { CommunicationHistoricComponent } from './pages/communication-historic/communication-historic.component';
+import { InternetHistoricComponent } from './pages/internet-historic/internet-historic.component';
 import { NewDetailsConsoComponent } from './pages/new-details-conso/new-details-conso.component';
 import { TransactionsHistoricComponent } from './pages/transactions-historic/transactions-historic.component';
 
+export const enum CONSO_TABS {
+  CONSO = 'CONSO',
+  COMMUNICATIONS = 'COMMUNICATIONS',
+  INTERNET = 'INTERNET',
+  TRANSACTIONS = 'TRANSACTIONS',
+}
 @Component({
   selector: 'app-new-suivi-conso',
   templateUrl: './new-suivi-conso.page.html',
   styleUrls: ['./new-suivi-conso.page.scss'],
 })
 export class NewSuiviConsoPage implements OnInit {
-  tabs = [
-    { label: 'Conso' },
-    { label: 'Communications' },
-    { label: 'Transactions' },
-  ];
+  tabs = [{ label: 'Conso' }, { label: 'Communications' }, { label: 'Internet' }, { label: 'Transactions' }];
   currentSlideIndex = 0;
   slideOpts = {
     speed: 400,
@@ -29,16 +33,14 @@ export class NewSuiviConsoPage implements OnInit {
   @ViewChild(NewDetailsConsoComponent) consoPage: NewDetailsConsoComponent;
   @ViewChild(CommunicationHistoricComponent)
   historicComPage: CommunicationHistoricComponent;
+  @ViewChild(InternetHistoricComponent)
+  historicInternet: InternetHistoricComponent;
   @ViewChild(TransactionsHistoricComponent)
   transactionHistoricPage: TransactionsHistoricComponent;
   @ViewChild('searchIcon') iconToggleSearch;
   isIos: boolean;
-
-  constructor(
-    private platform: Platform,
-    private oemLoggingService: OemLoggingService,
-    private dashboardService: DashboardService
-  ) {}
+  listAnnulationTrx: DemandeAnnulationTransfertModel[] = [];
+  constructor(private platform: Platform, private oemLoggingService: OemLoggingService, private dashboardService: DashboardService) {}
 
   ngOnInit() {
     this.platform.ready().then(() => {
@@ -60,7 +62,11 @@ export class NewSuiviConsoPage implements OnInit {
         this.historicComPage.getPrepaidUserHistory(event);
         break;
       case 2:
+        this.historicInternet.getConsoData();
+        break;
+      case 3:
         this.transactionHistoricPage.getTransactionsHistoric(event);
+        this.transactionHistoricPage.fetchAnnulationTrx();
         break;
     }
   }
@@ -92,7 +98,7 @@ export class NewSuiviConsoPage implements OnInit {
   }
 
   getCurrentSlide() {
-    this.sliders.getActiveIndex().then((index) => {
+    this.sliders.getActiveIndex().then(index => {
       this.currentSlideIndex = index;
       // this.refreshData();
     });

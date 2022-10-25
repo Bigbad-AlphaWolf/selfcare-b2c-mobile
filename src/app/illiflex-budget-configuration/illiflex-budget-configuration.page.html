@@ -33,8 +33,8 @@
         <span class="choosen-amount">{{amount ? amount + ' FCFA' :'Choisir le montant'}}</span>
       </div>
       <div class="gauge-block">
-        <mat-spinner mode="indeterminate" [diameter]="25" *ngIf="gettingBestOffer"></mat-spinner>
-        <div class="gauge-item" [ngClass]="{'gauge-disabled': !amount || !paliers.length || gettingBestOffer}">
+        <mat-spinner mode="indeterminate" [diameter]="25" *ngIf="gettingBestOffer || loadingPricings"></mat-spinner>
+        <div class="gauge-item" [ngClass]="{'gauge-disabled': !amount || !paliers.length || gettingBestOffer || loadingPricings}">
           <div class="gauge-godet">
             <span>Internet</span>
             <span>Appels</span>

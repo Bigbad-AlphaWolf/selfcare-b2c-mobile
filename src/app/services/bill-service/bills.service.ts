@@ -1,34 +1,41 @@
-import {Injectable} from '@angular/core';
-import {environment} from 'src/environments/environment';
-import {HttpClient} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 
-import {MatDialog} from '@angular/material/dialog';
-import {Subject, of, Observable} from 'rxjs';
-import {DashboardService} from '../dashboard-service/dashboard.service';
-import {MAIL_URL} from 'src/shared';
-import {ModalSuccessComponent} from 'src/shared/modal-success/modal-success.component';
-import {FileOpener} from '@ionic-native/file-opener/ngx';
-import {File} from '@ionic-native/file/ngx';
+import { MatDialog } from '@angular/material/dialog';
+import { Subject, of, Observable } from 'rxjs';
+import { DashboardService } from '../dashboard-service/dashboard.service';
+import {
+  isDelayedBill,
+  MAIL_URL,
+  MAXIMUM_PAYABLE_BILL_AMOUNT,
+  UNKNOWN_ECHEANCE,
+} from 'src/shared';
+import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import * as SecureLS from 'secure-ls';
-import {Platform} from '@ionic/angular';
-import {FollowAnalyticsService} from '../follow-analytics/follow-analytics.service';
-import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
-import {tap, map, catchError} from 'rxjs/operators';
-import {SessionOem} from '../session-oem/session-oem.service';
-import {InvoiceOrange} from 'src/app/models/invoice-orange.model';
-import {MonthOem} from 'src/app/models/month.model';
-const ls = new SecureLS({encodingType: 'aes'});
-const {BILL_SERVICE, SERVER_API_URL} = environment;
-const billsPackageDownloadEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/download-bordereau-fixe`;
+import { Platform } from '@ionic/angular';
+import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { tap, map, catchError } from 'rxjs/operators';
+import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
+import { MonthOem } from 'src/app/models/month.model';
+import {
+  BillPaymentModel,
+} from 'src/app/models/bill-payment.model';
+import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-event-type.enum';
+const ls = new SecureLS({ encodingType: 'aes' });
+const { BILL_SERVICE, SERVER_API_URL } = environment;
 const lastSlipEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/last-bordereau`;
 const BORDEREAU_ENDPOINT = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bordereau`;
 const INVOICE_ENDPOINT = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
 const INVOICE_MOIS_DISPO_ENDPOINT = `${SERVER_API_URL}/${BILL_SERVICE}/api/get-last-month`;
 const billsEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bordereau`;
 const billsDetailEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/facture`;
-
+const paybillsEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/bill-payment`;
+const unpaidBillEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/v1/unpaid-bill`;
+const billAmountLimitEndpoint = `${SERVER_API_URL}/${BILL_SERVICE}/api/bill-amount-limit`;
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BillsService {
   getBillsSubject: Subject<any> = new Subject<any>();
@@ -50,21 +57,50 @@ export class BillsService {
   getBillsMobile(numClient: string) {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
     return this.http
-      .get(`${INVOICE_ENDPOINT}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`)
+      .get(
+        `${INVOICE_ENDPOINT}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=MOBILE&size=20&page=0`
+      )
       .pipe(
         tap(
-          el => this.followServ.registerEventFollow('Bordereaux_Mobile_Success', 'event', this.currentNumber),
-          err => this.followServ.registerEventFollow('Bordereaux_Mobile_Error', 'error', this.currentNumber)
+          () =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Success',
+              'event',
+              this.currentNumber
+            ),
+          () =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Error',
+              'error',
+              this.currentNumber
+            )
         )
       );
   }
-  bordereau(codeClient: string, type: string, phone?: string, month?: MonthOem): Observable<InvoiceOrange> {
+  bordereau(
+    codeClient: string,
+    type: string,
+    phone?: string,
+    month?: MonthOem
+  ): Observable<InvoiceOrange> {
     return this.http
-      .get(`${BORDEREAU_ENDPOINT}/${codeClient}?type=${type}&search=summaryYear:${month.year},summaryMonth:${month.position}`)
+      .get(
+        `${BORDEREAU_ENDPOINT}/${codeClient}?type=${type}&search=summaryYear:${month.year},summaryMonth:${month.position}`
+      )
       .pipe(
         tap(
-          el => this.followServ.registerEventFollow('Bordereaux_Mobile_Success', 'event', phone),
-          err => this.followServ.registerEventFollow('Bordereaux_Mobile_Error', 'error', phone)
+          () =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Success',
+              'event',
+              phone
+            ),
+          () =>
+            this.followServ.registerEventFollow(
+              'Bordereaux_Mobile_Error',
+              'error',
+              phone
+            )
         ),
         map((rs: any) => {
           if (rs.length) return rs[0];
@@ -73,26 +109,49 @@ export class BillsService {
       );
   }
 
-  invoices(codeClient: string, type: string, phone?: string, month?: MonthOem): Observable<InvoiceOrange[]> {
+  invoices(
+    codeClient: string,
+    type: string,
+    phone?: string,
+    month?: MonthOem
+  ): Observable<InvoiceOrange[]> {
     return this.http
       .get<InvoiceOrange[]>(
-        `${INVOICE_ENDPOINT}/${codeClient}?type=${type}&search=${type === 'MOBILE'
-          ? 'phoneNumber:' + phone + ','
-          : ''}year:${month.year},month:${month.position}`
+        `${INVOICE_ENDPOINT}/${codeClient}?type=${type}&line=${phone}&search=${
+          phone ? 'phoneNumber:' + phone + ',' : ''
+        }`
       )
       .pipe(
+        map((res) => {
+          res.forEach((bill) => (bill.isDelayed = isDelayedBill(bill)));
+          return res;
+        }),
         tap(
-          el => this.followServ.registerEventFollow('Facture_Mobile_Success', 'event', phone),
-          err => this.followServ.registerEventFollow('Facture_Mobile_Error', 'error', phone)
+          () =>
+            this.followServ.registerEventFollow(
+              'Facture_Mobile_Success',
+              'event',
+              phone
+            ),
+          () =>
+            this.followServ.registerEventFollow(
+              'Facture_Mobile_Error',
+              'error',
+              phone
+            )
         )
       );
   }
 
   async moisDisponible(codeClient: string, type: string, phone?: string) {
     return await this.http
-      .get<string>(`${INVOICE_MOIS_DISPO_ENDPOINT}/${codeClient}?type=${type}${type === 'MOBILE' ? '&search=phoneNumber:' + phone : ''}`)
+      .get<string>(
+        `${INVOICE_MOIS_DISPO_ENDPOINT}/${codeClient}?type=${type}${
+          type === 'MOBILE' ? '&search=phoneNumber:' + phone : ''
+        }`
+      )
       .pipe(
-        catchError(err => {
+        catchError(() => {
           return of(null);
         })
       )
@@ -100,35 +159,55 @@ export class BillsService {
   }
   getBillsPackage(numClient: string) {
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
-    return this.http.get(`${billsEndpoint}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=LANDLINE&size=20&page=0`).pipe(
-      tap(
-        (billsPackage: any) => {
-          if (billsPackage && billsPackage.length) {
-            this.followServ.registerEventFollow('Bordereaux_Fixe_Success', 'event', this.currentNumber);
-            ls.set(`lastBillsPackage_${this.currentNumber}`, billsPackage);
-            return billsPackage;
-          } else {
-            const lastLoadedBillsPackage = ls.get(`lastBillsPackage_${this.currentNumber}`);
-            return lastLoadedBillsPackage;
-          }
-        },
-        err => {
-          this.followServ.registerEventFollow('Birdereaux_Fixe_Error', 'error', this.currentNumber);
-        }
+    return this.http
+      .get(
+        `${billsEndpoint}/${numClient}?sort=summaryYear,desc&sort=summaryMonth,desc&type=LANDLINE&size=20&page=0`
       )
-    );
+      .pipe(
+        tap(
+          (billsPackage: any) => {
+            if (billsPackage && billsPackage.length) {
+              this.followServ.registerEventFollow(
+                'Bordereaux_Fixe_Success',
+                'event',
+                this.currentNumber
+              );
+              ls.set(`lastBillsPackage_${this.currentNumber}`, billsPackage);
+              return billsPackage;
+            } else {
+              const lastLoadedBillsPackage = ls.get(
+                `lastBillsPackage_${this.currentNumber}`
+              );
+              return lastLoadedBillsPackage;
+            }
+          },
+          () => {
+            this.followServ.registerEventFollow(
+              'Birdereaux_Fixe_Error',
+              'error',
+              this.currentNumber
+            );
+          }
+        )
+      );
   }
 
   getFactureMobile(numClient: string) {
     // api/v1/facture/365915?type=MOBILE&search=year:2019,month:11
     this.currentNumber = this.dashboardService.getCurrentPhoneNumber();
     return this.http
-      .get(`${INVOICE_ENDPOINT}/${numClient}?type=MOBILE&search=phoneNumber:${this.currentNumber}&sort=year,desc&sort=month,desc`)
+      .get(
+        `${INVOICE_ENDPOINT}/${numClient}?type=MOBILE&search=phoneNumber:${this.currentNumber}&sort=year,desc&sort=month,desc`
+      )
       .pipe(
         map(
           (bills: any) => {
             if (bills && bills.length) {
-              this.followServ.registerEventFollow('Factures_Mobile_Success', 'event', this.currentNumber);
+              this.followServ.registerEventFollow(
+                'Factures_Mobile_Success',
+                'event',
+                this.currentNumber
+              );
               ls.set(`lastBills_${this.currentNumber}`, bills);
               return bills;
             } else {
@@ -136,41 +215,87 @@ export class BillsService {
               return lastLoadedBills;
             }
           },
-          err => {
-            this.followServ.registerEventFollow('Factures_Mobile_Error', 'error', this.currentNumber);
+          () => {
+            this.followServ.registerEventFollow(
+              'Factures_Mobile_Error',
+              'error',
+              this.currentNumber
+            );
           }
         )
       );
   }
 
-  getBillsDetail(payload: {numClient: string; groupage: string; mois: number; annee: number}) {
+  getBillsDetail(payload: {
+    numClient: string;
+    groupage: string;
+    mois: number;
+    annee: number;
+  }) {
     // api/v1/facture/365915?type=MOBILE&search=year:2019,month:11
     if (!payload) return of({});
 
     if (this.currentNumber.startsWith('33')) {
       return this.http
-        .get(`${billsDetailEndpoint}/${payload.numClient}?type=LANDLINE&search=year:${payload.annee},month:${payload.mois}`)
+        .get(
+          `${billsDetailEndpoint}/${payload.numClient}?type=LANDLINE&search=year:${payload.annee},month:${payload.mois}`
+        )
         .pipe(
           tap(
-            el => this.followServ.registerEventFollow('Factures_Fixe_Success', 'event', this.currentNumber),
-            err => this.followServ.registerEventFollow('Factures_Fixe_Error', 'error', this.currentNumber)
+            () =>
+              this.followServ.registerEventFollow(
+                'Factures_Fixe_Success',
+                'event',
+                this.currentNumber
+              ),
+            () =>
+              this.followServ.registerEventFollow(
+                'Factures_Fixe_Error',
+                'error',
+                this.currentNumber
+              )
           )
         );
     } else {
       return this.http
-        .get(`${billsDetailEndpoint}/${payload.numClient}?type=MOBILE&search=year:${payload.annee},month:${payload.mois}`)
+        .get(
+          `${billsDetailEndpoint}/${payload.numClient}?type=MOBILE&search=year:${payload.annee},month:${payload.mois}`
+        )
         .pipe(
           tap(
-            el => this.followServ.registerEventFollow('Factures_Mobile_Success', 'event', this.currentNumber),
-            err => this.followServ.registerEventFollow('Factures_Mobile_Error', 'error', this.currentNumber)
+            () =>
+              this.followServ.registerEventFollow(
+                'Factures_Mobile_Success',
+                'event',
+                this.currentNumber
+              ),
+            () =>
+              this.followServ.registerEventFollow(
+                'Factures_Mobile_Error',
+                'error',
+                this.currentNumber
+              )
           )
         );
     }
   }
 
-  getUserBillsDetail(payload: {numClient: string; groupage: string; mois: number; annee: number}) {
+  getBillAmountLimit() {
+    return this.http.get<number>(`${billAmountLimitEndpoint}`).pipe(
+      catchError((_) => {
+        return of(MAXIMUM_PAYABLE_BILL_AMOUNT);
+      })
+    );
+  }
+
+  getUserBillsDetail(payload: {
+    numClient: string;
+    groupage: string;
+    mois: number;
+    annee: number;
+  }) {
     this.getBillsDetail(payload).subscribe(
-      res => {
+      (res) => {
         this.getBillsDetailSubject.next(res);
       },
       () => {
@@ -184,9 +309,17 @@ export class BillsService {
       if (this.platform.is('ios')) {
       }
       this.inAppBrowser.create(bill.url, '_system');
-      this.followServ.registerEventFollow('download_bill_success', 'event', 'success');
+      this.followServ.registerEventFollow(
+        'download_bill_success',
+        'event',
+        'success'
+      );
     } else {
-      this.followServ.registerEventFollow('download_bill_error', 'error', 'error');
+      this.followServ.registerEventFollow(
+        'download_bill_error',
+        'error',
+        'error'
+      );
       this.openNotAvailableDialog();
     }
   }
@@ -223,7 +356,7 @@ export class BillsService {
       const byteArray = new Uint8Array(byteNumbers);
       byteArrays.push(byteArray);
     }
-    return new Blob(byteArrays, {type: contentType});
+    return new Blob(byteArrays, { type: contentType });
   }
 
   getBillsEmit() {
@@ -241,7 +374,7 @@ export class BillsService {
   openNotAvailableDialog() {
     const type = 'facture';
     const dialogRef = this.dialog.open(ModalSuccessComponent, {
-      data: {type}
+      data: { type },
     });
     dialogRef.afterClosed().subscribe(() => {});
   }
@@ -313,5 +446,53 @@ export class BillsService {
 
   getLastSlip(idClient: any) {
     return this.http.get(`${lastSlipEndpoint}/${idClient}`);
+  }
+
+  payBill(data: BillPaymentModel) {
+    return this.http.post(`${paybillsEndpoint}`, data).pipe(
+      tap((success) => {
+        const eventName = `PAIEMENT_FACTURES_${data.paymentCategory}_SUCCESS`;
+        const { payerEncodedPin, payerEm, ...followParams } = data;
+        this.followServ.registerEventFollow(
+          eventName,
+          FollowAnalyticsEventType.EVENT,
+          followParams
+        );
+      }),
+      catchError((err) => {
+        const errorName = `PAIEMENT_FACTURES_${data.paymentCategory}_FAILED`;
+        const { payerEncodedPin, payerEm, ...followParams } = data;
+        followParams['error'] = err;
+        this.followServ.registerEventFollow(
+          errorName,
+          FollowAnalyticsEventType.ERROR,
+          followParams
+        );
+        throw new Error(err);
+      })
+    );
+  }
+
+  getNumberUnpaidBills(payload: { ligne: string; type: string }) {
+    return this.http
+      .get<InvoiceOrange[]>(
+        `${unpaidBillEndpoint}/${payload.ligne}?category=${payload.type}`
+      )
+      .pipe(
+        map((res) => {
+          res.forEach((bill) => {
+            bill.statutFacture = bill.statutFacture.toLowerCase();
+            const dates = bill.dateEmissionfacture
+              .split('-')
+              .map((date) => +date);
+            const month = dates[1];
+            const year = dates[0];
+            bill.annee = month === 1 ? year - 1 : year;
+            bill.mois = month === 1 ? 12 : month - 1;
+            bill.dateEcheance = UNKNOWN_ECHEANCE;
+          });
+          return res;
+        })
+      );
   }
 }

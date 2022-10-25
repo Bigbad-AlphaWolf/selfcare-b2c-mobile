@@ -1,0 +1,96 @@
+<div [id]="'pass_favori_' + pass?.id | generateIdForTA" class="item-container" (click)="choosePass(pass)">
+  <ng-container *ngIf="type === 'internet'">
+    <div class="item-pass-internet">
+      <div class="top-block">
+        <div class="item-type scb-text-gray">Internet</div>
+        <span class="price scb-text-orange"> {{ pass?.volumeInternet }} </span>
+      </div>
+      <div class="bottom-block">
+        <div class="item-details">
+          <div *ngIf="pass?.volumeInternet" class="infos left-side">
+            <span class="item-volume">
+              {{ +pass?.tarif || +pass?.tarif === 0 ? pass?.tarif + ' FCFA' : pass?.tarif }}
+            </span>
+          </div>
+        </div>
+        <!--<div class="item-sub-details">
+          <div class="right-side">
+            <span *ngIf="pass" class="item-validity scb-text-gray">
+              Valable
+              <ng-container [ngSwitch]="pass?.categoriePass?.libelle">
+                <ng-container *ngSwitchCase="'Jour'"
+                  >{{ pass?.validitePass ? pass?.validitePass : '1 jour.' }}
+                </ng-container>
+                <ng-container *ngSwitchCase="'Semaine'"
+                  >{{ pass?.validitePass ? pass?.validitePass : '7 jours.' }}
+                </ng-container>
+                <ng-container *ngSwitchCase="'Mois'">
+                  {{ pass?.validitePass ? pass?.validitePass : '30 jours.' }}</ng-container
+                >
+                <ng-container *ngSwitchCase="'Nuit'">
+                  {{ pass?.validitePass ? pass?.validitePass : 'de 00h à 08h.' }}</ng-container
+                >
+                <ng-container *ngSwitchDefault>{{ pass?.validitePass ? pass?.validitePass : '' }} </ng-container>
+              </ng-container>
+            </span>
+          </div>
+        </div>-->
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="type === 'illimix'">
+    <div class="item-pass-internet">
+      <div class="top-block">
+        <span class="price scb-text-orange">
+          {{ +pass?.tarif || +pass?.tarif === 0 ? pass?.tarif + ' FCFA' : pass?.tarif }}
+        </span>
+        <div class="item-type scb-text-gray">Illimix</div>
+      </div>
+      <div class="bottom-block">
+        <div class="item-details">
+          <div *ngIf="pass?.volumeInternet" class="infos left-side">
+            <span class="item-volume">
+              {{ pass?.volumeInternet }}
+            </span>
+          </div>
+          <div *ngIf="pass?.dureeAppelEntrant" class="infos left-side">
+            <span class="item-volume">
+              {{ pass?.dureeAppelEntrant }}
+            </span>
+            <!--<span class="item-type scb-text-gray"> mn </span>-->
+          </div>
+          <div *ngIf="pass?.dureeAppel" class="infos left-side">
+            <span class="item-volume">
+              {{ pass?.dureeAppel }}
+            </span>
+          </div>
+          <div *ngIf="pass?.nombreSms" class="infos left-side">
+            <span class="item-volume"> {{ pass?.nombreSms }}SMS </span>
+          </div>
+        </div>
+        <!--<div class="item-sub-details">
+          <div class="right-side">
+            <span *ngIf="pass" class="item-validity scb-text-gray">
+              Valable
+              <ng-container [ngSwitch]="pass?.categoriePass?.libelle">
+                <ng-container *ngSwitchCase="'Jour'"
+                  >{{ pass?.validitePass ? pass?.validitePass : '1 jour.' }}
+                </ng-container>
+                <ng-container *ngSwitchCase="'Semaine'"
+                  >{{ pass?.validitePass ? pass?.validitePass : '7 jours.' }}
+                </ng-container>
+                <ng-container *ngSwitchCase="'Mois'">
+                  {{ pass?.validitePass ? pass?.validitePass : '30 jours.' }}</ng-container
+                >
+                <ng-container *ngSwitchCase="'Nuit'">
+                  {{ pass?.validitePass ? pass?.validitePass : 'de 00h à 08h.' }}</ng-container
+                >
+                <ng-container *ngSwitchDefault>{{ pass?.validitePass ? pass?.validitePass : '' }} </ng-container>
+              </ng-container>
+            </span>
+          </div>
+        </div>-->
+      </div>
+    </div>
+  </ng-container>
+</div>

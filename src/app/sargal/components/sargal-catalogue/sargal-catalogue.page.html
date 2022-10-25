@@ -1,6 +1,6 @@
 <div class="sargal-catalogue-container" [ngClass]="{ 'sargal-catalogue-container-white': step === 'SUCCESS' }">
   <div class="sargal-catalogue-container-header" *ngIf="step !== 'SUCCESS'">
-    <div class="arrow" (click)="goBack()">
+    <div [id]="'goBackBtn' | generateIdForTA" class="arrow" (click)="goBack()">
       <img src="/assets/images/arrow-left.png" alt="" />
     </div>
     <div class="text scb-text-black">
