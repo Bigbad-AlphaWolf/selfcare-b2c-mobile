@@ -9,8 +9,7 @@ import { NewSuiviConsoPage } from '../new-suivi-conso/new-suivi-conso.page';
 import { OmUniverseComponent } from '../om-universe/om-universe.component';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { DashboardHomeComponent } from './components/dashboard-home/dashboard-home.component';
-import { BatchAnalyticsService } from '../services/batch-analytics/batch-analytics.service';
-import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
+import { ANALYTICS_PROVIDER, OemLoggingService } from '../services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'app-new-prepaid-hybrid-dashboard',
@@ -87,6 +86,7 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
           break;
       }
     });
+    this.oemLoggingService.registerEvent('dashboard_displayed', [{ dataName: 'msisdn', dataValue: this.dashboardService.getCurrentPhoneNumber() }], ANALYTICS_PROVIDER.ALL);
   }
 
   ionViewDidEnter() {

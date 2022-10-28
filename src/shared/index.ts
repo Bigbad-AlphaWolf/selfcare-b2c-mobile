@@ -5,7 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { PalierModel } from 'src/app/models/palier.model';
 import { BoosterModel } from 'src/app/models/booster.model';
 import { OffreService } from 'src/app/models/offre-service.model';
-import { OPERATION_RAPIDO, OPERATION_TRANSFERT_ARGENT, OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
+import { OPERATION_RAPIDO, OPERATION_TRANSFERT_ARGENT, OPERATION_TYPE_PAY_BILL, OPERATION_TYPE_TERANGA_BILL, OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
 import { isPostpaidFix, PROFILE_TYPE_HYBRID, PROFILE_TYPE_HYBRID_1, PROFILE_TYPE_HYBRID_2 } from 'src/app/dashboard';
 import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
 import parsePhoneNumber from 'libphonenumber-js';
@@ -1388,13 +1388,15 @@ export function getServiceEventLoggingName(service: OffreService) {
     case OPERATION_TYPE_PASS_ILLIFLEX:
       return 'pass_illiflex';
     case OPERATION_TYPE_MERCHANT_PAYMENT:
-      return 'marchand';
+      return 'paiement_marchand';
     case OPERATION_WOYOFAL:
       return 'woyofal';
     case OPERATION_RAPIDO:
       return 'rapido';
-    case 'PAY_BILLS':
-      return 'facture_sonatel';
+    case OPERATION_TYPE_PAY_BILL:
+      return 'sonatel_fixe';
+    case OPERATION_TYPE_TERANGA_BILL:
+      return 'sonatel_teranga';
     default:
       return service.code.toLowerCase();
   }

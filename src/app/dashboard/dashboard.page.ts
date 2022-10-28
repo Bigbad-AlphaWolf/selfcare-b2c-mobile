@@ -164,26 +164,10 @@ export class DashboardPage implements OnInit, OnDestroy {
           });
 
           this.getUserInfosNlogBirthDateOnFollow();
-          const user = ls.get('user');
-          if (user) {
-            this.oemLogging.setUserAttribute({
-              keyAttribute: 'prenom',
-              valueAttribute: user?.firstName,
-            });
-            this.oemLogging.setUserAttribute({
-              keyAttribute: 'nom',
-              valueAttribute: user?.lastName,
-            });
-          }
 
           const msisdn = this.authServ.getUserMainPhoneNumber();
           const hashedNumber = hash53(msisdn).toString();
           this.oemLogging.registerUserID(hashedNumber);
-          try {
-            this.oemLogging.registerUserID(hashedNumber);
-          } catch (error) {
-            this.oemLogging.registerUserID(msisdn);
-          }
         },
         (err: any) => {
           this.isLoading = false;
@@ -201,10 +185,18 @@ export class DashboardPage implements OnInit, OnDestroy {
     const userInfosAlreadySet = !!ls.get('userInfos');
     if (!userInfosAlreadySet)
       this.dashboardServ.getCustomerInformations().subscribe(
-        res => {
+        (res: { birthDate: string; familyName: string; givenName: string; gender: string }) => {
           this.oemLogging.setUserAttribute({
             keyAttribute: 'date_of_birth',
-            valueAttribute: new Date(Date.UTC(res.birthDate.split('-')[0], res.birthDate.split('-')[1], res.birthDate.split('-')[2])),
+            valueAttribute: new Date(Date.UTC(+res.birthDate.split('-')[0], +res.birthDate.split('-')[1] - 1, +res.birthDate.split('-')[2])),
+          });
+          this.oemLogging.setUserAttribute({
+            keyAttribute: 'prenom',
+            valueAttribute: res?.givenName,
+          });
+          this.oemLogging.setUserAttribute({
+            keyAttribute: 'nom',
+            valueAttribute: res?.familyName,
           });
         },
         err => {

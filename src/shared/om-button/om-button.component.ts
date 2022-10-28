@@ -97,6 +97,12 @@ export class OmButtonComponent implements OnInit, OnDestroy {
           this.omServ.SaveOrangeMoneyUser(omuser);
           this.dashboardService.balanceAvailableSubject.next(res?.balance);
           this.showSolde(res?.balance);
+          if (omuser?.solde) {
+            this.oemLogging.setUserAttribute({
+              keyAttribute: 'om_solde',
+              valueAttribute: +omuser?.solde,
+            });
+          }
         }),
         catchError(err => {
           this.loadingBalance = false;

@@ -21,7 +21,7 @@ import { FollowAnalyticsEventType } from '../services/follow-analytics/follow-an
 import { OPERATION_TYPE_PAY_BILL, OPERATION_TYPE_TERANGA_BILL } from '../utils/operations.constants';
 import { BonsPlansSargalService } from '../services/bons-plans-sargal/bons-plans-sargal.service';
 import { tap } from 'rxjs/operators';
-import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
+import { ANALYTICS_PROVIDER, OemLoggingService } from '../services/oem-logging/oem-logging.service';
 @Component({
   selector: 'app-sidemenu',
   templateUrl: './sidemenu.component.html',
@@ -55,7 +55,6 @@ export class SidemenuComponent implements OnInit, OnDestroy {
     private dashboardServ: DashboardService,
     private accountService: AccountService,
     private iab: InAppBrowser,
-    private followAnalyticsService: FollowAnalyticsService,
     private navCtrl: NavController,
     private appVersion: AppVersion,
     private orangeMoneyServ: OrangeMoneyService,
@@ -129,10 +128,24 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   onChangedStatus(event) {
     if (event?.detail?.checked) {
-      this.followAnalyticsService.registerEventFollow('Allow_Face_ID_Toggle', FollowAnalyticsEventType.EVENT, { msisdn: this.msisdn });
+      this.oemLoggingService.registerEvent('Allow_Face_ID_Toggle', [
+        {
+          dataName: 'msisdn',
+          dataValue: this.msisdn,
+        },
+      ]);
       this.orangeMoneyServ.allowFaceId();
     } else {
-      this.followAnalyticsService.registerEventFollow('Disable_Face_ID_Toggle', FollowAnalyticsEventType.EVENT, { msisdn: this.msisdn });
+      this.oemLoggingService.registerEvent(
+        'Disable_Face_ID_Toggle',
+        [
+          {
+            dataName: 'msisdn',
+            dataValue: this.msisdn,
+          },
+        ],
+        ANALYTICS_PROVIDER.FIREBASE_ANALYTICS
+      );
       this.orangeMoneyServ.askFaceIdLater();
     }
   }
@@ -163,15 +176,39 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   getAllAttachedNumbers() {
     this.numbers = [];
     this.dashboardServ.getAllOemNumbers().subscribe(
-      res => {
+      (res: { msisdn: string; profil: string; formule: string }[]) => {
+        if (this.dashboardServ.getCurrentPhoneNumber() === this.dashboardServ.getMainPhoneNumber()) {
+          console.log('rattacched Numbers', res);
+          const loggedNumber = [...res];
+          loggedNumber.shift();
+          for (const elt of loggedNumber) {
+            this.oemLoggingService.addValueToCollectionTag('lignes_rattachees', elt.msisdn);
+          }
+        }
+
         this.numbers = res;
-        this.followAnalyticsService.registerEventFollow('Recuperation_lignes_rattachees_menu_success', 'event', this.msisdn);
+        this.oemLoggingService.registerEvent('Recuperation_lignes_rattachees_menu_success', [
+          {
+            dataName: 'msisdn',
+            dataValue: this.msisdn,
+          },
+        ]);
       },
       err => {
-        this.followAnalyticsService.registerEventFollow('Recuperation_lignes_rattachees_menu_failed', 'error', {
-          msisdn: this.msisdn,
-          error: err.status,
-        });
+        this.oemLoggingService.registerEvent(
+          'Recuperation_lignes_rattachees_menu_failed',
+          [
+            {
+              dataName: 'msisdn',
+              dataValue: this.msisdn,
+            },
+            {
+              dataName: 'error',
+              dataValue: err.status,
+            },
+          ],
+          ANALYTICS_PROVIDER.FIREBASE_ANALYTICS
+        );
       }
     );
   }
@@ -183,11 +220,21 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   goDetailsConso() {
     this.authServ.getSubscription(this.msisdn).subscribe(sub => {
       if (isPrepaidOrHybrid(sub)) {
-        this.followAnalyticsService.registerEventFollow('Details_conso_tab_from_menu', 'event', this.msisdn);
+        this.oemLoggingService.registerEvent('Details_conso_tab_from_menu', [
+          {
+            dataName: 'msisdn',
+            dataValue: this.msisdn,
+          },
+        ]);
         this.dashboardServ.menuOptionClickEmit(CONSO);
         return;
       }
-      this.followAnalyticsService.registerEventFollow('Details_conso_menu', 'event', this.msisdn);
+      this.oemLoggingService.registerEvent('Details_conso_menu', [
+        {
+          dataName: 'msisdn',
+          dataValue: this.msisdn,
+        },
+      ]);
       this.router.navigate(['/details-conso']);
     });
   }
@@ -205,7 +252,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   attachLine() {
-    this.followAnalyticsService.registerEventFollow('Attach_msisdn_menu', 'event');
+    this.oemLoggingService.registerEvent('Attach_msisdn_menu', null);
     this.router.navigate(['/new-number']);
   }
 
@@ -236,7 +283,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   goToAssistancePage() {
     // return;
     this.iab.create(ASSISTANCE_URL, '_self');
-    this.followAnalyticsService.registerEventFollow('Sidemenu_Assistance', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('Sidemenu_Assistance');
   }
 
   ngOnDestroy() {}
@@ -244,22 +291,32 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   onOffreClicked() {
     this.authServ.getSubscription(this.msisdn).subscribe(sub => {
       if (isPrepaidOrHybrid(sub)) {
-        this.followAnalyticsService.registerEventFollow('services_tab_from_menu', 'event', this.msisdn);
+        this.oemLoggingService.registerEvent('services_tab_from_menu', [
+          {
+            dataName: 'msisdn',
+            dataValue: this.msisdn,
+          },
+        ]);
         this.dashboardServ.menuOptionClickEmit(SERVICES);
         return;
       }
-      this.followAnalyticsService.registerEventFollow('Offres_services_menu', 'event');
+      this.oemLoggingService.registerEvent('Offres_services_menu', [
+        {
+          dataName: 'msisdn',
+          dataValue: this.msisdn,
+        },
+      ]);
       this.navCtrl.navigateForward(OffresServicesPage.ROUTE_PATH);
     });
   }
 
   goToMyOfferPlans() {
-    this.oemLoggingService.registerEvent('side_samay_sargal_click', []);
+    this.oemLoggingService.registerEvent('side_samay_sargal_click');
     this.router.navigate(['/my-offer-plans']);
   }
 
   goFormule() {
-    this.oemLoggingService.registerEvent('sidemenu_formule_click', []);
+    this.oemLoggingService.registerEvent('sidemenu_formule_click');
     this.router.navigate(['/my-formule']);
   }
 
@@ -270,33 +327,43 @@ export class SidemenuComponent implements OnInit, OnDestroy {
         operationType,
       },
     });
-    this.oemLoggingService.registerEvent('Factures_menu_click', []);
+    this.oemLoggingService.registerEvent('Factures_menu_click');
   }
 
   goMyAccount() {
-    this.oemLoggingService.registerEvent('sidemenu_edit_account_click', []);
+    this.oemLoggingService.registerEvent('sidemenu_edit_account_click');
     this.router.navigate(['/my-account']);
   }
 
   goParrainage() {
-    this.oemLoggingService.registerEvent('sidemenu_parrainage_click', []);
+    this.oemLoggingService.registerEvent('sidemenu_parrainage_click');
     this.router.navigate(['/parrainage']);
   }
 
   goEmergencies() {
     this.authServ.getSubscription(this.msisdn).subscribe(sub => {
       if (isPrepaidOrHybrid(sub)) {
-        this.followAnalyticsService.registerEventFollow('Assistance_tab_from_menu', 'event', this.msisdn);
+        this.oemLoggingService.registerEvent('Assistance_tab_from_menu', [
+          {
+            dataName: 'msisdn',
+            dataValue: this.msisdn,
+          },
+        ]);
         this.dashboardServ.menuOptionClickEmit(ASSISTANCE);
         return;
       }
       this.router.navigate(['/assistance-hub']);
-      this.followAnalyticsService.registerEventFollow('Assistance_menu', 'event', 'clicked');
+      this.oemLoggingService.registerEvent('Assistance_menu', [
+        {
+          dataName: 'msisdn',
+          dataValue: this.msisdn,
+        },
+      ]);
     });
   }
 
   goToRattachedNumberPage() {
-    this.oemLoggingService.registerEvent('sidemenu_manage_lines_click', []);
+    this.oemLoggingService.registerEvent('sidemenu_manage_lines_click');
     this.appRout.goToRattachementsPage();
   }
 
@@ -305,22 +372,22 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   closeMenu() {
-    this.oemLoggingService.registerEvent('sidemenu_close_click', []);
+    this.oemLoggingService.registerEvent('sidemenu_close_click');
     this.close.emit();
   }
 
   goToAbout() {
-    this.oemLoggingService.registerEvent('sidemenu_informations_click', []);
+    this.oemLoggingService.registerEvent('sidemenu_informations_click');
     this.router.navigate(['/apropos']);
   }
 
   defaulSharingSheet() {
-    this.oemLoggingService.registerEvent('sidemenu_share_app_click', []);
+    this.oemLoggingService.registerEvent('sidemenu_share_app_click');
     this.bsService.defaulSharingSheet();
   }
 
   async openOMStatus() {
-    this.oemLoggingService.registerEvent('sidemenu_grade_om_click', []);
+    this.oemLoggingService.registerEvent('sidemenu_grade_om_click');
     const modal = await this.modalController.create({
       component: OmStatusVisualizationComponent,
       cssClass: 'select-recipient-modal',
@@ -338,6 +405,6 @@ export class SidemenuComponent implements OnInit, OnDestroy {
 
   goToSatisfactionForm() {
     this.router.navigate(['/satisfaction-form']);
-    this.followAnalyticsService.registerEventFollow('Ibou_Formulaire_de_satisfaction_clic', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('Ibou_Formulaire_de_satisfaction_clic');
   }
 }

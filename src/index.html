@@ -6,10 +6,7 @@
 
     <base href="/" />
 
-    <meta
-      name="viewport"
-      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
+    <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
 
@@ -18,18 +15,8 @@
     <!-- add to homescreen for ios -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap"
-      rel="preload"
-      as="style"
-      onload="this.rel='stylesheet'"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="preload"
-      as="style"
-      onload="this.rel='stylesheet'"
-    />
+    <link href="assets/font-google.css" rel="preload" as="style" onload="this.rel='stylesheet'" />
+    <link href="assets/material-icon.css" rel="preload" as="style" onload="this.rel='stylesheet'" />
   </head>
 
   <body>
@@ -64,9 +51,7 @@
       });
       if (target_trigger.length > 0) {
         // Hack - Activate a dedicated trigger
-        Dimelo.Messaging.Manager.ChatQLoader.manager.activateTrigger(
-          target_trigger[0]
-        );
+        Dimelo.Messaging.Manager.ChatQLoader.manager.activateTrigger(target_trigger[0]);
       }
     };
   </script>

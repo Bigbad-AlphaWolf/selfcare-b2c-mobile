@@ -44,7 +44,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AssistanceService } from 'src/app/services/assistance.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import { BannierePubModel } from 'src/app/services/dashboard-service';
-import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { ANALYTICS_PROVIDER, OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { QrScannerService } from 'src/app/services/qr-scanner-service/qr-scanner.service';
 import { IlliflexService } from 'src/app/services/illiflex-service/illiflex.service';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
@@ -310,8 +310,12 @@ export class DashboardHomeComponent implements OnInit {
         this.followAnalyticsService.registerEventFollow('Affichage_solde_sargal_success', 'event', currentNumber);
         this.oemLogging.registerEvent('Affichage_solde_sargal_success', [{ dataName: 'currentNumber', dataValue: currentNumber }]);
         this.oemLogging.setUserAttribute({
-          keyAttribute: 'solde_sargal',
+          keyAttribute: 'sargal_solde',
           valueAttribute: +res.totalPoints,
+        });
+        this.oemLogging.setUserAttribute({
+          keyAttribute: 'sargal_statut',
+          valueAttribute: !this.isNotSubscribedToSargal(this.userSargalData?.status),
         });
       },
       err => {
@@ -366,6 +370,12 @@ export class DashboardHomeComponent implements OnInit {
     this.creditRechargement = appelCompteur.find(conso => conso.codeCompteur === 1)?.montantRestantBrut;
     this.canDoSOS = this.creditRechargement <= 4;
     this.creditGlobal = formatCurrency(bonus1 + bonus2 + forfaitBalance + this.creditRechargement);
+    if (this.dashboardService.getCurrentPhoneNumber() === this.dashboardService.getMainPhoneNumber()) {
+      this.oemLogging.setUserAttribute({
+        keyAttribute: 'rechargement_solde',
+        valueAttribute: +this.creditRechargement,
+      });
+    }
   }
 
   getValidityDates(appelConso: any[]) {
@@ -392,12 +402,22 @@ export class DashboardHomeComponent implements OnInit {
     this.sargalService.getCustomerSargalStatus().subscribe(
       (sargalStatus: SargalStatusModel) => {
         this.hasSargalProfile = true;
-        this.followAnalyticsService.registerEventFollow('Affichage_profil_sargal_success', 'event', this.currentMsisdn);
+        this.oemLogging.registerEvent('Affichage_profil_sargal_success', [
+          {
+            dataName: 'msisdn',
+            dataValue: this.currentMsisdn,
+          },
+        ]);
         if (!sargalStatus.valid) {
           this.sargalStatusUnavailable = true;
+          this.oemLogging.removeUserAttribute('sargal_profil');
         }
         this.sargalStatus = sargalStatus.profilClient;
         this.loadingSargalStatus = false;
+        this.oemLogging.setUserAttribute({
+          keyAttribute: 'sargal_profil',
+          valueAttribute: this.sargalStatus,
+        });
       },
       (err: any) => {
         this.followAnalyticsService.registerEventFollow('Affichage_profil_sargal_error', 'error', {
@@ -430,9 +450,9 @@ export class DashboardHomeComponent implements OnInit {
     // this.router.navigate(['/details-conso']);
     this.seeDetails.emit();
     if (number) {
-      this.oemLogging.registerEvent('dashboard_conso_details_click', null, true);
+      this.oemLogging.registerEvent('dashboard_conso_details_click', null, ANALYTICS_PROVIDER.FIREBASE_ANALYTICS);
     } else {
-      this.oemLogging.registerEvent('dashboard_conso_card_click', null, true);
+      this.oemLogging.registerEvent('dashboard_conso_card_click', null, ANALYTICS_PROVIDER.FIREBASE_ANALYTICS);
     }
   }
 
@@ -547,7 +567,7 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   goMerchantPayment() {
-    this.oemLogging.registerEvent('Dashboard_paiement_marchand_clic', [{ dataName: 'msisdn', dataValue: this.currentMsisdn }]);
+    this.oemLogging.registerEvent('paiement_marchand_clic', [{ dataName: 'msisdn', dataValue: this.currentMsisdn }], ANALYTICS_PROVIDER.ALL);
     this.omService.omAccountSession().subscribe(async (omSession: any) => {
       const omSessionValid = omSession ? omSession.msisdn !== 'error' && omSession.hasApiKey && !omSession.loginExpired : null;
       if (omSessionValid) {
