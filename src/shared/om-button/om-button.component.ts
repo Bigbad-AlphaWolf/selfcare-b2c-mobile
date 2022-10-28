@@ -6,7 +6,6 @@ import { DashboardService } from 'src/app/services/dashboard-service/dashboard.s
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { formatCurrency, HUB_OM_TAB } from 'src/shared';
 const ls = new SecureLS({ encodingType: 'aes' });
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
 import { ModalController } from '@ionic/angular';
 import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';

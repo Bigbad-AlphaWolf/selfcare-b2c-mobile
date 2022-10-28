@@ -8,7 +8,6 @@ import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.pa
 import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { OfcService } from 'src/app/services/ofc/ofc.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -49,7 +48,6 @@ export class OffreServiceCardV2Component implements OnInit {
     private bsService: BottomSheetService,
     private modalController: ModalController,
     private orangeMoneyService: OrangeMoneyService,
-    private followAnalyticsServ: FollowAnalyticsService,
     private iab: InAppBrowser,
     private platform: Platform,
     private oemLoggingService: OemLoggingService
@@ -110,7 +108,7 @@ export class OffreServiceCardV2Component implements OnInit {
           : {};
         this.iab.create(this.service?.redirectionPath, '_blank', options);
       }
-      this.followAnalyticsServ.registerEventFollow('offer_service_' + this.service?.code?.toLowerCase() + '_click', 'event', 'clicked');
+      this.oemLoggingService.registerEvent('offer_service_' + this.service?.code?.toLowerCase() + '_click');
     }
     if (this.service.code === OPERATION_WOYOFAL) {
       this.bsService.initBsModal(WoyofalSelectionComponent, OPERATION_WOYOFAL, BillAmountPage.ROUTE_PATH).subscribe(_ => {});

@@ -21,11 +21,11 @@ import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { SelectNumberForBillComponent } from 'src/app/components/select-number-for-bill/select-number-for-bill.component';
 import { XeweulOperationPage } from '../xeweul-operation/xeweul-operation.page';
 import { TypeCounterModalComponent } from 'src/app/components/type-counter-modal/type-counter-modal.component';
 import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-bills-hub',
@@ -45,7 +45,6 @@ export class BillsHubPage implements OnInit {
     private operationService: OperationService,
     private modalController: ModalController,
     private orangeMoneyService: OrangeMoneyService,
-    private followAnalyticsService: FollowAnalyticsService,
     private oemLoggingService: OemLoggingService,
     private router: Router
   ) {}
@@ -75,14 +74,17 @@ export class BillsHubPage implements OnInit {
       (companies: OffreService[]) => {
         this.companies = companies;
         this.loadingCompanies = false;
-        this.followAnalyticsService.registerEventFollow('Get_hub_payer_services_success', 'event');
+        this.oemLoggingService.registerEvent('Get_hub_payer_services_success');
       },
       err => {
         this.onCompaniesError = true;
         this.loadingCompanies = false;
-        this.followAnalyticsService.registerEventFollow('Get_hub_payer_services_failed', 'error', {
-          error: err.status,
-        });
+        this.oemLoggingService.registerEvent(
+          'Get_hub_payer_services_failed',
+          convertObjectToLoggingPayload({
+            error: err.status,
+          })
+        );
       }
     );
   }

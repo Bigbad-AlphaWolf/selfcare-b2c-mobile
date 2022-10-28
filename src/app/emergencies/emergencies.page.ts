@@ -3,14 +3,14 @@ import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FIND_AGENCE_EXTERNAL_URL } from 'src/shared';
 import { NavController } from '@ionic/angular';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 @Component({
   selector: 'app-emergencies',
   templateUrl: './emergencies.page.html',
-  styleUrls: ['./emergencies.page.scss']
+  styleUrls: ['./emergencies.page.scss'],
 })
 export class EmergenciesPage implements OnInit {
   userProfile;
@@ -19,7 +19,7 @@ export class EmergenciesPage implements OnInit {
     private router: Router,
     private dashbordServ: DashboardService,
     private authServ: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private inAppBrowser: InAppBrowser,
     private navControler: NavController
   ) {}
@@ -30,83 +30,47 @@ export class EmergenciesPage implements OnInit {
 
   goPuk() {
     this.router.navigate(['/control-center/puk']);
-    this.followAnalyticsService.registerEventFollow(
-      'Find_PUK',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('Find_PUK');
   }
 
   goChangeSeddo() {
     this.router.navigate(['/control-center/change-seddo-code']);
-    this.followAnalyticsService.registerEventFollow(
-      'Seddo_PIN',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('Seddo_PIN');
   }
 
   goInternet() {
     this.router.navigate(['/control-center/internet-mobile']);
-    this.followAnalyticsService.registerEventFollow(
-      'Parametrage_Internet_Mobile',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('Parametrage_Internet_Mobile');
   }
 
   goCarteRecharge() {
     this.router.navigate(['/control-center/carte-recharge']);
-    this.followAnalyticsService.registerEventFollow(
-      'Carte_Recharge',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('Carte_Recharge');
   }
 
   goCreateOMAccount() {
     this.router.navigate(['/control-center/operation-om/creation-compte']);
-    this.followAnalyticsService.registerEventFollow(
-      'Creation_Compte_OM',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('Creation_Compte_OM');
   }
 
   goDeplafonnement() {
     this.router.navigate(['/control-center/operation-om/deplafonnement']);
-    this.followAnalyticsService.registerEventFollow(
-      'Deplafonnement_OM',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('Deplafonnement_OM');
   }
 
   goReclamation() {
     this.router.navigate(['/control-center/operation-om/reclamation']);
-    this.followAnalyticsService.registerEventFollow(
-      'Reclamation_OM',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('Reclamation_OM');
   }
 
   onFollowUpRequests() {
     this.router.navigate(['follow-up-requests']);
-    this.followAnalyticsService.registerEventFollow(
-      'suivi_demande-fixe',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('suivi_demande-fixe');
   }
 
   goFindToAgenceWebSite() {
     this.inAppBrowser.create(FIND_AGENCE_EXTERNAL_URL, '_self');
-    this.followAnalyticsService.registerEventFollow(
-      'Trouver_agence_orange',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('Trouver_agence_orange');
   }
 
   getCurrentProfile() {

@@ -6,22 +6,15 @@ import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { CustomerOperationStatus } from 'src/app/models/enums/om-customer-status.enum';
 import { ImageService } from 'src/app/services/image-service/image.service';
-import { dateValidatorLessThan, parseDate } from 'src/app/utils/utils';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload, dateValidatorLessThan, parseDate } from 'src/app/utils/utils';
 import { OPERATION_OPEN_OM_ACCOUNT } from 'src/shared';
 import { OMCustomerStatusModel } from '../../../models/om-customer-status.model';
-import {
-  OmCheckOtpModel,
-  OmInitOtpModel,
-} from '../../../models/om-self-operation-otp.model';
+import { OmCheckOtpModel, OmInitOtpModel } from '../../../models/om-self-operation-otp.model';
 import { NewPinpadModalPage } from '../../../new-pinpad-modal/new-pinpad-modal.page';
 import { OperationSuccessFailModalPage } from '../../../operation-success-fail-modal/operation-success-fail-modal.page';
 import { DashboardService } from '../../../services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from '../../../services/follow-analytics/follow-analytics.service';
-import {
-  getAge,
-  ID_CARD_CARACTERS_MIN_LENGTH,
-  SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT,
-} from '../../../services/orange-money-service';
+import { getAge, ID_CARD_CARACTERS_MIN_LENGTH, SUCCESS_MSG_OM_ACCOUNT_DEPLAFONNEMENT } from '../../../services/orange-money-service';
 import { OrangeMoneyService } from '../../../services/orange-money-service/orange-money.service';
 import { TypeOtpModalComponent } from '../../components/type-otp-modal/type-otp-modal.component';
 
@@ -76,7 +69,7 @@ export class NewDeplafonnementOmPage implements OnInit {
     private navController: NavController,
     private modalController: ModalController,
     private dashbServ: DashboardService,
-    private followAnalyticsServ: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private imgServ: ImageService
   ) {}
 
@@ -92,28 +85,16 @@ export class NewDeplafonnementOmPage implements OnInit {
     this.dashbServ
       .getCustomerInformations()
       .pipe(
-        tap(
-          (res: {
-            givenName?: string;
-            familyName?: string;
-            birthDate?: string;
-            gender?: 'MALE' | 'FEMALE';
-          }) => {
-            this.personalInfosForm.patchValue({
-              civility:
-                res.gender === 'MALE'
-                  ? 'MR'
-                  : res.gender === 'FEMALE'
-                  ? 'MRS'
-                  : null,
-            });
-            this.personalInfosForm.patchValue({ firstname: res.givenName });
-            this.personalInfosForm.patchValue({ lastname: res.familyName });
-            this.personalInfosForm.patchValue({
-              birthdate: new Date(res.birthDate).toISOString(),
-            });
-          }
-        )
+        tap((res: { givenName?: string; familyName?: string; birthDate?: string; gender?: 'MALE' | 'FEMALE' }) => {
+          this.personalInfosForm.patchValue({
+            civility: res.gender === 'MALE' ? 'MR' : res.gender === 'FEMALE' ? 'MRS' : null,
+          });
+          this.personalInfosForm.patchValue({ firstname: res.givenName });
+          this.personalInfosForm.patchValue({ lastname: res.familyName });
+          this.personalInfosForm.patchValue({
+            birthdate: new Date(res.birthDate).toISOString(),
+          });
+        })
       )
       .subscribe();
   }
@@ -122,44 +103,41 @@ export class NewDeplafonnementOmPage implements OnInit {
     this.checkingStatus = true;
     this.checkStatusError = false;
     this.orangeMoneyService.getUserStatus(msisdn).subscribe(
-      (status) => {
+      status => {
         this.omMsisdn = status.omNumber;
         this.userOmStatus = status;
         this.checkingStatus = false;
         if (this.isElligibleToDeplafonnement(status)) {
-          this.followAnalyticsServ.registerEventFollow(
+          this.oemLoggingService.registerEvent(
             'deplafonnement_om_affichage_formulaire',
-            'event',
-            {
+            convertObjectToLoggingPayload({
               userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
               omMsisdn: this.omMsisdn,
               typeDemande: status.operation,
               status: status.operationStatus,
-            }
+            })
           );
         } else if (this.isElligibleToSuiviDeplafonnement(status)) {
-          this.followAnalyticsServ.registerEventFollow(
+          this.oemLoggingService.registerEvent(
             'deplafonnement_om_affichage_suivi_deplafonnement',
-            'event',
-            {
+            convertObjectToLoggingPayload({
               userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
               omMsisdn: this.omMsisdn,
               status: status.operationStatus,
               typeDemande: status.operation,
-            }
+            })
           );
         }
       },
-      (err) => {
+      err => {
         this.checkingStatus = false;
-        this.followAnalyticsServ.registerEventFollow(
+        this.oemLoggingService.registerEvent(
           'deplafonnement_om_affichage_error',
-          'error',
-          {
+          convertObjectToLoggingPayload({
             userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
             omMsisdn: this.omMsisdn,
             error: err,
-          }
+          })
         );
         if (err === 'NO_OM_ACCOUNT') this.openPinpad();
         this.checkStatusError = true;
@@ -177,24 +155,22 @@ export class NewDeplafonnementOmPage implements OnInit {
           //this.openPinpad();
           this.omMsisdn = this.dashbServ.getCurrentPhoneNumber();
           this.getMsisdnHasError = true;
-          this.followAnalyticsServ.registerEventFollow(
+          this.oemLoggingService.registerEvent(
             'deplafonnement_om_recuperation_numéro_msisdn_failed',
-            'error',
-            {
+            convertObjectToLoggingPayload({
               userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
               error: 'no om number registered',
-            }
+            })
           );
           //throw new Error();
         } else {
           this.omMsisdn = msisdn;
-          this.followAnalyticsServ.registerEventFollow(
+          this.oemLoggingService.registerEvent(
             'deplafonnement_om_recuperation_numéro_msisdn_success',
-            'event',
-            {
+            convertObjectToLoggingPayload({
               userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
               omMsisdn: this.omMsisdn,
-            }
+            })
           );
         }
         this.checkStatus(this.omMsisdn);
@@ -202,13 +178,12 @@ export class NewDeplafonnementOmPage implements OnInit {
       }),
       catchError((err: any) => {
         this.getMsisdnHasError = true;
-        this.followAnalyticsServ.registerEventFollow(
+        this.oemLoggingService.registerEvent(
           'deplafonnement_om_recuperation_numéro_msisdn_failed',
-          'error',
-          {
+          convertObjectToLoggingPayload({
             userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
             error: err,
-          }
+          })
         );
         return of(err);
       })
@@ -220,7 +195,7 @@ export class NewDeplafonnementOmPage implements OnInit {
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
     });
-    modal.onDidDismiss().then((resp) => {
+    modal.onDidDismiss().then(resp => {
       if (resp && resp.data && resp.data.success) {
         this.getOmMsisdn().subscribe();
       } else {
@@ -253,13 +228,7 @@ export class NewDeplafonnementOmPage implements OnInit {
 
   generateOtp() {
     this.hasErrorsubmit = false;
-    if (
-      this.personalInfosForm.valid &&
-      this.rectoFilled &&
-      this.versoFilled &&
-      this.selfieFilled &&
-      this.acceptCGU
-    ) {
+    if (this.personalInfosForm.valid && this.rectoFilled && this.versoFilled && this.selfieFilled && this.acceptCGU) {
       let otpPayload: OmInitOtpModel = {
         msisdn: this.omMsisdn,
         first_name: this.personalInfosForm.value.firstname,
@@ -281,35 +250,32 @@ export class NewDeplafonnementOmPage implements OnInit {
       this.orangeMoneyService.initSelfOperationOtp(otpPayload).subscribe(
         (res: any) => {
           this.generatingOtp = false;
-          this.followAnalyticsServ.registerEventFollow(
+          this.oemLoggingService.registerEvent(
             'deplafonnement_om_init_otp_success',
-            'event',
-            {
+            convertObjectToLoggingPayload({
               userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
               omMsisdn: this.omMsisdn,
-            }
+            })
           );
           this.openTypeOtpModal(otpPayload, res.content.data.hmac);
         },
-        (err) => {
+        err => {
           this.hasErrorsubmit = true;
           this.generatingOtp = false;
-          this.followAnalyticsServ.registerEventFollow(
+          this.oemLoggingService.registerEvent(
             'deplafonnement_om_init_otp_failed',
-            'error',
-            {
+            convertObjectToLoggingPayload({
               userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
               omMsisdn: this.omMsisdn,
               error: err,
-            }
+            })
           );
           this.msgSubmitError = 'Une erreur est survenue';
         }
       );
     } else {
       this.hasErrorsubmit = true;
-      this.msgSubmitError =
-        'Veuillez remplir correctement toutes les infos avant de valider';
+      this.msgSubmitError = 'Veuillez remplir correctement toutes les infos avant de valider';
     }
   }
 
@@ -329,7 +295,7 @@ export class NewDeplafonnementOmPage implements OnInit {
       cssClass: 'select-recipient-modal',
       componentProps: { checkOtpPayload },
     });
-    modal.onDidDismiss().then((resp) => {
+    modal.onDidDismiss().then(resp => {
       if (resp && resp.data && resp.data.accept) {
         this.openSuccessModal();
       }
@@ -393,20 +359,11 @@ export class NewDeplafonnementOmPage implements OnInit {
   }
 
   isElligibleToDeplafonnement(userStatus: OMCustomerStatusModel) {
-    return (
-      (userStatus?.operation === 'DEPLAFONNEMENT' &&
-        userStatus?.operationStatus === 'NEW') ||
-      userStatus?.operationStatus === CustomerOperationStatus.password_creation
-    );
+    return (userStatus?.operation === 'DEPLAFONNEMENT' && userStatus?.operationStatus === 'NEW') || userStatus?.operationStatus === CustomerOperationStatus.password_creation;
   }
 
   isElligibleToSuiviDeplafonnement(userStatus: OMCustomerStatusModel) {
-    return (
-      userStatus &&
-      (userStatus.operation === 'DEPLAFONNEMENT' ||
-        userStatus.operation === 'FULL') &&
-      userStatus.operationStatus !== 'NEW'
-    );
+    return userStatus && (userStatus.operation === 'DEPLAFONNEMENT' || userStatus.operation === 'FULL') && userStatus.operationStatus !== 'NEW';
   }
 
   checkAge(event: any) {
@@ -426,11 +383,7 @@ export class NewDeplafonnementOmPage implements OnInit {
     this.isUserIDInvalid = false;
     if (event.target) {
       const value = event.srcElement.value.toString();
-      if (
-        this.personalInfosForm.value.identityType === 'CNI' &&
-        value.length &&
-        value.length < ID_CARD_CARACTERS_MIN_LENGTH
-      ) {
+      if (this.personalInfosForm.value.identityType === 'CNI' && value.length && value.length < ID_CARD_CARACTERS_MIN_LENGTH) {
         this.isUserIDInvalid = true;
         this.personalInfosForm.controls['identityType'].setErrors({
           incorrect: true,

@@ -9,13 +9,11 @@ import { Router } from '@angular/router';
 import { getCurrentDate, isNewVersion } from 'src/shared';
 import { AssistanceService } from '../services/assistance.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { Platform, NavController } from '@ionic/angular';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { AppUpdatePage } from '../pages/app-update/app-update.page';
 import { map, take } from 'rxjs/operators';
 import { PROFIL, CODE_CLIENT, CODE_FORMULE, FORMULE } from '../utils/constants';
-import { FirebaseAnalytics } from '@ionic-native/firebase-analytics/ngx';
 import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 

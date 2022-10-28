@@ -20,7 +20,6 @@ import { ApplicationRoutingService } from 'src/app/services/application-routing/
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import { StoriesService } from 'src/app/services/stories-service/stories.service';
@@ -51,6 +50,7 @@ import { OperationService } from 'src/app/services/oem-operation/operation.servi
 import { LocalStorageService } from 'src/app/services/localStorage-service/local-storage.service';
 import { DemandeAnnulationTransfertModel } from 'src/app/models/demande-annulation-transfert.model';
 import { TABS_SERVICES } from 'src/app/new-services/new-services.page';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 enum TABS_DASHBOARD {
@@ -170,7 +170,6 @@ export class DashboardHomeComponent implements OnInit {
     private dashboardService: DashboardService,
     private authService: AuthenticationService,
     private router: Router,
-    private followAnalyticsService: FollowAnalyticsService,
     private oemLogging: OemLoggingService,
     private consoService: UserConsoService,
     private sargalService: SargalService,
@@ -307,7 +306,6 @@ export class DashboardHomeComponent implements OnInit {
         this.userSargalData = res;
         this.sargalLastUpdate = getLastUpdatedDateTimeText();
         this.loadingSargal = false;
-        this.followAnalyticsService.registerEventFollow('Affichage_solde_sargal_success', 'event', currentNumber);
         this.oemLogging.registerEvent('Affichage_solde_sargal_success', [{ dataName: 'currentNumber', dataValue: currentNumber }]);
         this.oemLogging.setUserAttribute({
           keyAttribute: 'sargal_solde',
@@ -420,10 +418,13 @@ export class DashboardHomeComponent implements OnInit {
         });
       },
       (err: any) => {
-        this.followAnalyticsService.registerEventFollow('Affichage_profil_sargal_error', 'error', {
-          msisdn: this.currentMsisdn,
-          error: err.status,
-        });
+        this.oemLogging.registerEvent(
+          'Affichage_profil_sargal_error',
+          convertObjectToLoggingPayload({
+            msisdn: this.currentMsisdn,
+            error: err.status,
+          })
+        );
         this.loadingSargalStatus = false;
         if (err.status !== 400) {
           this.sargalStatusUnavailable = true;
@@ -442,7 +443,7 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   seeSargalCard() {
-    this.followAnalyticsService.registerEventFollow('Sargal_profil', 'event', 'clicked');
+    this.oemLogging.registerEvent('Sargal_profil');
     this.router.navigate(['/sargal-status-card']);
   }
 
@@ -554,12 +555,12 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   goTAllFixeServices() {
-    this.followAnalyticsService.registerEventFollow('gerer_mon_fixe_clic', 'event', 'clicked');
+    this.oemLogging.registerEvent('gerer_mon_fixe_clic');
     this.router.navigate(['/fixes-services']);
   }
 
   goToNewServicesPage(tab: TABS_SERVICES) {
-    this.followAnalyticsService.registerEventFollow('se_divertir_clic', 'event', 'clicked');
+    this.oemLogging.registerEvent('se_divertir_clic');
     this.goToSlide.emit({
       slideTo: TABS_DASHBOARD.SERVICES,
       tab: tab,

@@ -133,7 +133,7 @@
     "cordova-plugin-contacts": "file:cordova-plugin-contacts",
     "cordova-plugin-contacts-phonenumbers": "0.0.12",
     "cordova-plugin-fingerprint-aio": "^5.0.1",
-		"cordova-plugin-firebase-analytics": "file:cordova-plugin-firebase-analytics-6.1.0",
+    "cordova-plugin-firebase-analytics": "file:cordova-plugin-firebase-analytics-6.1.0",
     "cordova-plugin-firebase-dynamiclinks": "^6.1.0",
     "cordova-plugin-geolocation": "^4.1.0",
     "cordova-plugin-inappbrowser": "file:cordova-plugin-inappbrowser",
@@ -142,7 +142,6 @@
     "cordova-plugin-x-socialsharing": "file:SocialSharing-PhoneGap-Plugin",
     "cordova-support-android-plugin": "^1.0.2",
     "cordova.plugin.dimelo": "file:DimeloPlugin",
-    "cordova.plugin.followanalytics": "file:FACordovaPlugin",
     "cordova.plugins.diagnostic": "^6.1.1",
     "es6-promise-plugin": "^4.1.0",
     "jasmine-core": "~3.6.0",
@@ -199,7 +198,7 @@
         "BATCHSDK_ANDROID_VERSION": "1.18.+",
         "BATCHSDK_ANDROID_LOCALBROADCAST_VERSION": "1.0.0",
         "BATCHSDK_IOS_VERSION": "~> 1.17"
-			},
+      },
       "cordova.plugins.diagnostic": {
         "ANDROIDX_VERSION": "1.0.0",
         "ANDROIDX_APPCOMPAT_VERSION": "1.3.1"
@@ -233,6 +232,9 @@
         "IOS_FIREBASE_POD_VERSION": "~> 8.8.0"
       }
     },
-    "platforms": ["android", "ios"]
+    "platforms": [
+      "android",
+      "ios"
+    ]
   }
 }

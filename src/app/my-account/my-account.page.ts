@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { AccountService } from '../services/account-service/account.service';
 import { DashboardService, downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
 import { NO_AVATAR_ICON_URL, isExtensionImageValid, isSizeAvatarValid, MAX_USER_AVATAR_UPLOAD_SIZE, getNOAvatartUrlImage } from 'src/shared';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
 import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
 import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
@@ -40,7 +39,6 @@ export class MyAccountPage implements OnInit {
     private router: Router,
     public dialog: MatDialog,
     private accountService: AccountService,
-    private followAnalyticsService: FollowAnalyticsService,
     private bsService: BottomSheetService,
     private dashbServ: DashboardService,
     private oemLogging: OemLoggingService,
@@ -60,8 +58,7 @@ export class MyAccountPage implements OnInit {
   }
 
   logOut() {
-    this.followAnalyticsService.registerEventFollow('Deconnexion', 'event', 'clicked');
-    this.oemLogging.registerEvent('account_disconnect_click', [{ dataName: 'msisdn', dataValue: this.dashbServ.getMainPhoneNumber() }]);
+    this.oemLogging.registerEvent('Deconnexion_click', [{ dataName: 'msisdn', dataValue: this.dashbServ.getMainPhoneNumber() }]);
     this.authServ.logout();
     this.dashbServ.cleanAddedScript(['ibou', 'userDimelo']);
     this.navController.navigateRoot(['/']);

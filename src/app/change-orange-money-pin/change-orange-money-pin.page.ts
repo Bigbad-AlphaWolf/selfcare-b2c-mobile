@@ -1,32 +1,33 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ModalController, NavController} from '@ionic/angular';
-import {of} from 'rxjs';
-import {catchError, tap} from 'rxjs/operators';
-import {OPERATION_CHANGE_PIN_OM, OPERATION_CREATE_PIN_OM, OPERATION_RESET_PIN_OM, REGEX_IOS_SYSTEM} from 'src/shared';
-import {ChangePinOm} from '../models/change-pin-om.model';
-import {NewPinpadModalPage} from '../new-pinpad-modal/new-pinpad-modal.page';
-import {OrangeMoneyService} from '../services/orange-money-service/orange-money.service';
-import {UuidService} from '../services/uuid-service/uuid.service';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModalController, NavController } from '@ionic/angular';
+import { of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { OPERATION_CHANGE_PIN_OM, OPERATION_CREATE_PIN_OM, OPERATION_RESET_PIN_OM, REGEX_IOS_SYSTEM } from 'src/shared';
+import { ChangePinOm } from '../models/change-pin-om.model';
+import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { UuidService } from '../services/uuid-service/uuid.service';
 import * as SecureLS from 'secure-ls';
-import {OperationSuccessFailModalPage} from '../operation-success-fail-modal/operation-success-fail-modal.page';
-import {INITIALISE_PIN_OM_MSG, ORANGE_MONEY_DEFAULT_PIN, RESET_PIN_OM_MSG, SUCCESS_CHANGE_PIN_MSG} from '../services/orange-money-service';
-import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
-import {getPageHeader} from '../utils/title.util';
-import {PageHeader} from '../models/page-header.model';
-import {ConfirmMsisdnModel} from '../services/authentication-service/authentication.service';
-import {CreatePinOM} from '../models/create-pin-om.model';
-const ls = new SecureLS({encodingType: 'aes'});
+import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/operation-success-fail-modal.page';
+import { INITIALISE_PIN_OM_MSG, ORANGE_MONEY_DEFAULT_PIN, RESET_PIN_OM_MSG, SUCCESS_CHANGE_PIN_MSG } from '../services/orange-money-service';
+import { getPageHeader } from '../utils/title.util';
+import { PageHeader } from '../models/page-header.model';
+import { ConfirmMsisdnModel } from '../services/authentication-service/authentication.service';
+import { CreatePinOM } from '../models/create-pin-om.model';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from '../utils/utils';
+const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
   selector: 'app-change-orange-money-pin',
   templateUrl: './change-orange-money-pin.page.html',
-  styleUrls: ['./change-orange-money-pin.page.scss']
+  styleUrls: ['./change-orange-money-pin.page.scss'],
 })
 export class ChangeOrangeMoneyPinPage implements OnInit {
   form: FormGroup;
   loading: boolean;
-  omInfos: {apiKey?: string; em: string; loginToken?: string; msisdn?: string; sequence: string; pin?: string};
+  omInfos: { apiKey?: string; em: string; loginToken?: string; msisdn?: string; sequence: string; pin?: string };
   hasError: boolean;
   errorMsg: string;
   birthYear: string;
@@ -42,18 +43,18 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
     private omServ: OrangeMoneyService,
     private uuidServ: UuidService,
     private navCtrl: NavController,
-    private followAnalyticsService: FollowAnalyticsService
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
     this.form = this.fb.group({
       pin: ['', [Validators.required]],
-      confirmPin: ['', [Validators.required]]
+      confirmPin: ['', [Validators.required]],
     });
     this.omInfos = history.state && history.state.omUserInfos ? history.state.omUserInfos : null;
     this.birthYear = history.state && history.state.birthYear ? history.state.birthYear : null;
 
-    this.followAnalyticsService.registerEventFollow('Change_Pin_OM_page', 'event');
+    this.oemLoggingService.registerEvent('Change_Pin_OM_page');
     this.getOrangeMoneyOperationInfos();
   }
 
@@ -92,26 +93,32 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
       conf_version: 'v1.0',
       service_version: 'v1.0',
       type: 'CLIENT',
-      is_primo: false
+      is_primo: false,
     };
     this.omServ
       .changePin(data)
       .pipe(
         tap(() => {
           this.loading = false;
-          this.showModal({purchaseType: this.operationType, textMsg: this.operationType === OPERATION_CHANGE_PIN_OM ? SUCCESS_CHANGE_PIN_MSG : RESET_PIN_OM_MSG});
-          this.followAnalyticsService.registerEventFollow(`${resetPin ? 'Reset' : 'Change'}_Pin_OM_success`, 'event', {
-            msisdn: this.omInfos.msisdn
-          });
+          this.showModal({ purchaseType: this.operationType, textMsg: this.operationType === OPERATION_CHANGE_PIN_OM ? SUCCESS_CHANGE_PIN_MSG : RESET_PIN_OM_MSG });
+          this.oemLoggingService.registerEvent(
+            `${resetPin ? 'Reset' : 'Change'}_Pin_OM_success`,
+            convertObjectToLoggingPayload({
+              msisdn: this.omInfos.msisdn,
+            })
+          );
         }),
         catchError((err: any) => {
           this.loading = false;
           this.hasError = true;
           this.errorMsg = this.DEFAULT_ERROR_CHANGE_PIN_REQUEST;
-          this.followAnalyticsService.registerEventFollow(`${resetPin ? 'Reset' : 'Change'}_Pin_OM_failed`, 'error', {
-            msisdn: this.omInfos.msisdn,
-            error: err && err.error && err.error.message ? err.error.message : err.status
-          });
+          this.oemLoggingService.registerEvent(
+            `${resetPin ? 'Reset' : 'Change'}_Pin_OM_failed`,
+            convertObjectToLoggingPayload({
+              msisdn: this.omInfos.msisdn,
+              error: err && err.error && err.error.message ? err.error.message : err.status,
+            })
+          );
           return of(err);
         })
       )
@@ -120,7 +127,7 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
 
   createPinOM() {
     if (this.isInputsValid()) {
-			this.loading = true;
+      this.loading = true;
       const default_pin = this.omServ.GetPin(this.omInfos.sequence.split(''), ORANGE_MONEY_DEFAULT_PIN);
       const payload: CreatePinOM = {
         em: this.omInfos.em,
@@ -128,30 +135,34 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
         new_pin: this.form.value.pin,
         pin: default_pin,
         hmac: this.authImplicitInfos?.hmac,
-        msisdn: this.authImplicitInfos?.msisdn
+        msisdn: this.authImplicitInfos?.msisdn,
       };
       this.omServ
         .createFirstOmPin(payload, this.authImplicitInfos.api_key)
         .pipe(
-          tap(
-            (res: any) => {
-							this.loading = false;
-							this.showModal({purchaseType: OPERATION_CHANGE_PIN_OM, textMsg: INITIALISE_PIN_OM_MSG});
-							this.followAnalyticsService.registerEventFollow('Create_Pin_OM_success', 'event', {
-								msisdn: this.omInfos.msisdn
-							});
-            }
-          ),
-					catchError(err => {
-						this.loading = false;
-						this.hasError = true;
-						this.errorMsg = this.DEFAULT_ERROR_CHANGE_PIN_REQUEST;
-						this.followAnalyticsService.registerEventFollow('Create_Pin_OM_failed', 'error', {
-							msisdn: this.omInfos.msisdn,
-							error: err && err.error && err.error.message ? err.error.message : err.status
-						});
-						return of(err);
-					})
+          tap((res: any) => {
+            this.loading = false;
+            this.showModal({ purchaseType: OPERATION_CHANGE_PIN_OM, textMsg: INITIALISE_PIN_OM_MSG });
+            this.oemLoggingService.registerEvent(
+              'Create_Pin_OM_success',
+              convertObjectToLoggingPayload({
+                msisdn: this.omInfos.msisdn,
+              })
+            );
+          }),
+          catchError(err => {
+            this.loading = false;
+            this.hasError = true;
+            this.errorMsg = this.DEFAULT_ERROR_CHANGE_PIN_REQUEST;
+            this.oemLoggingService.registerEvent(
+              'Create_Pin_OM_failed',
+              convertObjectToLoggingPayload({
+                msisdn: this.omInfos.msisdn,
+                error: err && err.error && err.error.message ? err.error.message : err.status,
+              })
+            );
+            return of(err);
+          })
         )
         .subscribe();
     }
@@ -164,7 +175,7 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
         case OPERATION_CHANGE_PIN_OM:
           this.changePinOM();
           break;
-				case OPERATION_RESET_PIN_OM:
+        case OPERATION_RESET_PIN_OM:
           this.changePinOM(true);
           break;
         case OPERATION_CREATE_PIN_OM:
@@ -173,10 +184,7 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
           break;
       }
     } else {
-      this.errorMsg =
-        this.operationType === OPERATION_CHANGE_PIN_OM
-          ? this.DEFAULT_ERROR_VALIDATION_FORMS
-          : this.DEFAULT_ERROR_VALIDATION_CREATE_PIN_FORMS;
+      this.errorMsg = this.operationType === OPERATION_CHANGE_PIN_OM ? this.DEFAULT_ERROR_VALIDATION_FORMS : this.DEFAULT_ERROR_VALIDATION_CREATE_PIN_FORMS;
     }
   }
 
@@ -186,9 +194,9 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
       cssClass: 'pin-pad-modal',
       componentProps: {
         operationType: this.operationType,
-        omInfos: {...this.omInfos, birthYear: this.birthYear},
-        payloadCreatePin: this.authImplicitInfos
-      }
+        omInfos: { ...this.omInfos, birthYear: this.birthYear },
+        payloadCreatePin: this.authImplicitInfos,
+      },
     });
     modal.onDidDismiss().then(resp => {
       if (resp && resp.data) {
@@ -207,21 +215,18 @@ export class ChangeOrangeMoneyPinPage implements OnInit {
 
   isInputsValid(): boolean {
     let isValid = true;
-    if (
-      this.form.value.pin !== this.form.value.confirmPin ||
-      (this.form.value.pin === this.form.value.confirmPin && this.form.value.pin === this.omInfos.pin)
-    ) {
+    if (this.form.value.pin !== this.form.value.confirmPin || (this.form.value.pin === this.form.value.confirmPin && this.form.value.pin === this.omInfos.pin)) {
       isValid = false;
     }
     return isValid;
   }
 
-  async showModal(data: {purchaseType: string; textMsg: string}) {
+  async showModal(data: { purchaseType: string; textMsg: string }) {
     const modal = await this.mdCtrl.create({
       component: OperationSuccessFailModalPage,
       cssClass: 'failed-modal',
       componentProps: data,
-      backdropDismiss: false
+      backdropDismiss: false,
     });
     modal.onDidDismiss().then(() => {});
     return await modal.present();

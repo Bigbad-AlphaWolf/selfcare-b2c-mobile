@@ -4,15 +4,15 @@ import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { OTHER_CATEGORIES } from 'src/shared';
 import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish.directive';
-import {
-  CategoryOffreServiceModel,
-  OffreService,
-} from '../models/offre-service.model';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { CategoryOffreServiceModel, OffreService } from '../models/offre-service.model';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 import { OperationService } from '../services/oem-operation/operation.service';
 
 export enum TABS_SERVICES {
-	APPEL = 'APPEL', INTERNET = 'INTERNET', LOISIR = 'LOISIR', VOYAGE = 'VOYAGE'
+  APPEL = 'APPEL',
+  INTERNET = 'INTERNET',
+  LOISIR = 'LOISIR',
+  VOYAGE = 'VOYAGE',
 }
 @Component({
   selector: 'app-new-services',
@@ -39,12 +39,7 @@ export class NewServicesPage implements OnInit {
     services: OffreService[];
   }[] = [];
   isIos: boolean;
-  constructor(
-    private operationService: OperationService,
-    private platform: Platform,
-    private followAnalyticsService: FollowAnalyticsService,
-    private navController: NavController
-  ) {}
+  constructor(private operationService: OperationService, private platform: Platform, private oemLoggingService: OemLoggingService, private navController: NavController) {}
 
   ngOnInit() {
     this.platform.ready().then(() => {
@@ -53,15 +48,7 @@ export class NewServicesPage implements OnInit {
   }
 
   isCategoryToHide(category: CategoryOffreServiceModel) {
-    const HIDDEN_CATEGORIES_CODES = [
-      'HUB_ACHAT',
-      'HUB_TRANSFER',
-      'HUB_BILLS',
-      'HUB_OM',
-			'HUB_FIXE',
-			'HUB_OFFRES_FIXE',
-      OTHER_CATEGORIES,
-    ];
+    const HIDDEN_CATEGORIES_CODES = ['HUB_ACHAT', 'HUB_TRANSFER', 'HUB_BILLS', 'HUB_OM', 'HUB_FIXE', 'HUB_OFFRES_FIXE', OTHER_CATEGORIES];
     return HIDDEN_CATEGORIES_CODES.includes(category.code);
   }
 
@@ -81,39 +68,28 @@ export class NewServicesPage implements OnInit {
     this.operationService
       .getServicesByFormule(null, null, true)
       .pipe(
-        tap((res) => {
+        tap(res => {
           this.servicesByCategoriesArray = [];
           this.services = res;
-          const categoriesArray = res.map(
-            (service) => service?.categorieOffreServices
-          );
+          const categoriesArray = res.map(service => service?.categorieOffreServices);
           let categories = [].concat.apply([], categoriesArray);
-          categories = categories.filter(
-            (category, categoryIndex, array) =>
-              array.findIndex((t) => t.id === category.id) === categoryIndex
-          );
-          this.categories = categories.filter((x) => {
+          categories = categories.filter((category, categoryIndex, array) => array.findIndex(t => t.id === category.id) === categoryIndex);
+          this.categories = categories.filter(x => {
             return !this.isCategoryToHide(x);
           });
           this.currentCategory = this.categories[0];
-          this.services.forEach((service) => {
-            service.categorieOffreServices = service.categorieOffreServices.map(
-              (cat) => cat.id
-            );
+          this.services.forEach(service => {
+            service.categorieOffreServices = service.categorieOffreServices.map(cat => cat.id);
           });
           for (let category of this.categories) {
-            const services = this.services.filter((service) =>
-              service.categorieOffreServices.includes(category.id)
-            );
+            const services = this.services.filter(service => service.categorieOffreServices.includes(category.id));
             this.servicesByCategoriesArray.push({ category, services });
           }
-          this.servicesByCategoriesArray = this.servicesByCategoriesArray.sort(
-            (el1, el2) => el1.category.ordre - el2.category.ordre
-          );
+          this.servicesByCategoriesArray = this.servicesByCategoriesArray.sort((el1, el2) => el1.category.ordre - el2.category.ordre);
           this.loadingServices = false;
           event ? event.target.complete() : '';
         }),
-        catchError((err) => {
+        catchError(err => {
           this.servicesHasError = true;
           this.loadingServices = false;
           event ? event.target.complete() : '';
@@ -128,7 +104,7 @@ export class NewServicesPage implements OnInit {
   }
 
   getCurrentSlide() {
-    this.sliders.getActiveIndex().then((index) => {
+    this.sliders.getActiveIndex().then(index => {
       this.currentSlideIndex = index;
       this.currentCategory = this.categories[index];
       console.log(this.currentCategory);
@@ -136,13 +112,11 @@ export class NewServicesPage implements OnInit {
   }
 
   containPassUsage(services: OffreService[]) {
-    return services.find((service) => service.passUsage);
+    return services.find(service => service.passUsage);
   }
 
   onInputFocus() {
-    const listeItems: OffreService[] = JSON.parse(
-      JSON.stringify(this.services)
-    ).map((x) => {
+    const listeItems: OffreService[] = JSON.parse(JSON.stringify(this.services)).map(x => {
       x.shortDescription = x.titre + ' ' + x.description;
       return x;
     });
@@ -153,9 +127,6 @@ export class NewServicesPage implements OnInit {
         title: 'Recherche service',
       },
     });
-    this.followAnalyticsService.registerEventFollow(
-      'Services_hub_recherche',
-      'event'
-    );
+    this.oemLoggingService.registerEvent('Services_hub_recherche');
   }
 }

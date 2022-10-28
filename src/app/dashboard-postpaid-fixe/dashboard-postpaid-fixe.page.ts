@@ -1,24 +1,24 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as SecureLS from 'secure-ls';
-import {BannierePubModel} from 'src/app/services/dashboard-service';
-import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
-import {Router} from '@angular/router';
-import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
-import {BillsService} from 'src/app/services/bill-service/bills.service';
-import {BanniereService} from 'src/app/services/banniere-service/banniere.service';
-import {arrangeCompteurByOrdre, USER_CONS_CATEGORY_CALL, SubscriptionModel, WelcomeStatusModel, getTrioConsoUser} from 'src/shared';
-import {MatDialog} from '@angular/material/dialog';
-import {AssistanceService} from '../services/assistance.service';
-import {WelcomePopupComponent} from 'src/shared/welcome-popup/welcome-popup.component';
-import {catchError, switchMap, tap} from 'rxjs/operators';
-import {previousMonths} from '../utils/utils';
-import {Observable, of} from 'rxjs';
-import {InvoiceOrange} from '../models/invoice-orange.model';
-import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
-import {CODE_COMPTEUR_VOLUME_NUIT_1, CODE_COMPTEUR_VOLUME_NUIT_2, CODE_COMPTEUR_VOLUME_NUIT_3} from '../dashboard';
+import { BannierePubModel } from 'src/app/services/dashboard-service';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { BillsService } from 'src/app/services/bill-service/bills.service';
+import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
+import { arrangeCompteurByOrdre, USER_CONS_CATEGORY_CALL, SubscriptionModel, WelcomeStatusModel, getTrioConsoUser } from 'src/shared';
+import { MatDialog } from '@angular/material/dialog';
+import { AssistanceService } from '../services/assistance.service';
+import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import { previousMonths } from '../utils/utils';
+import { Observable, of } from 'rxjs';
+import { InvoiceOrange } from '../models/invoice-orange.model';
+import { CODE_COMPTEUR_VOLUME_NUIT_1, CODE_COMPTEUR_VOLUME_NUIT_2, CODE_COMPTEUR_VOLUME_NUIT_3 } from '../dashboard';
 import { OPERATION_TYPE_PAY_BILL } from '../utils/operations.constants';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 
-const ls = new SecureLS({encodingType: 'aes'});
+const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid-fixe',
   templateUrl: './dashboard-postpaid-fixe.page.html',
@@ -51,7 +51,7 @@ export class DashboardPostpaidFixePage implements OnInit {
     private banniereServ: BanniereService,
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
-    private followAnalyticsService: FollowAnalyticsService
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {}
@@ -91,10 +91,7 @@ export class DashboardPostpaidFixePage implements OnInit {
         this.dataLoaded = true;
         if (res.length) {
           res = arrangeCompteurByOrdre(res);
-          const appelConso = res.length
-            ? res.find((x) => x.categorie === USER_CONS_CATEGORY_CALL)
-                .consommations
-            : null;
+          const appelConso = res.length ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL).consommations : null;
           const CMO_INFOS = appelConso.find((x: any) => {
             return x.code === 8;
           });
@@ -162,28 +159,24 @@ export class DashboardPostpaidFixePage implements OnInit {
     this.hasErrorBordereau = false;
     this.isLoading = true;
     const invoiceType = 'LANDLINE';
-    const moisDispo = await this.billsService
-      .moisDisponible(codeClient, invoiceType, this.currentNumber)
-      .catch((_) => {
-        this.isLoading = false;
-        this.hasErrorBordereau = true;
-      });
+    const moisDispo = await this.billsService.moisDisponible(codeClient, invoiceType, this.currentNumber).catch(_ => {
+      this.isLoading = false;
+      this.hasErrorBordereau = true;
+    });
     if (moisDispo) {
       const months = previousMonths(moisDispo);
       const last_month = months[0];
 
-      this.bordereau$ = this.billsService
-        .bordereau(codeClient, invoiceType, this.currentNumber, last_month)
-        .pipe(
-          tap((res: any) => {
-            this.isLoading = false;
-          }),
-          catchError((err: any) => {
-            this.hasErrorBordereau = true;
-            this.isLoading = false;
-            return of(err);
-          })
-        );
+      this.bordereau$ = this.billsService.bordereau(codeClient, invoiceType, this.currentNumber, last_month).pipe(
+        tap((res: any) => {
+          this.isLoading = false;
+        }),
+        catchError((err: any) => {
+          this.hasErrorBordereau = true;
+          this.isLoading = false;
+          return of(err);
+        })
+      );
     } else {
       this.isLoading = false;
       this.hasErrorBordereau = true;
@@ -196,10 +189,6 @@ export class DashboardPostpaidFixePage implements OnInit {
         operationType: OPERATION_TYPE_PAY_BILL,
       },
     });
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_Fixe_Mobile_voir_tout_facture',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('Dashboard_Fixe_Mobile_voir_tout_facture');
   }
 }

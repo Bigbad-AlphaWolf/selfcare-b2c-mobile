@@ -1,15 +1,16 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {FormuleMobileModel, JAMONO_MAX_CODE_FORMULE, JAMONO_NEW_SCOOL_CODE_FORMULE, JAMONO_ALLO_CODE_FORMULE} from 'src/shared';
-import {MatDialogRef, MatDialog} from '@angular/material/dialog';
-import {FormuleService} from 'src/app/services/formule-service/formule.service';
-import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
-import {CancelOperationPopupComponent} from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
-import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { FormuleMobileModel, JAMONO_MAX_CODE_FORMULE, JAMONO_NEW_SCOOL_CODE_FORMULE, JAMONO_ALLO_CODE_FORMULE } from 'src/shared';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { FormuleService } from 'src/app/services/formule-service/formule.service';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-see-details-formule',
   templateUrl: './see-details-formule.component.html',
-  styleUrls: ['./see-details-formule.component.scss']
+  styleUrls: ['./see-details-formule.component.scss'],
 })
 export class SeeDetailsFormuleComponent implements OnInit {
   @Input() formule: FormuleMobileModel;
@@ -22,24 +23,19 @@ export class SeeDetailsFormuleComponent implements OnInit {
   images = [
     {
       codeFormule: JAMONO_MAX_CODE_FORMULE,
-      icon: '/assets/images/background-header-jamono-max.jpg'
+      icon: '/assets/images/background-header-jamono-max.jpg',
     },
     {
       codeFormule: JAMONO_NEW_SCOOL_CODE_FORMULE,
-      icon: '/assets/images/background-header-jamono-new-scool.jpg'
+      icon: '/assets/images/background-header-jamono-new-scool.jpg',
     },
     {
       codeFormule: JAMONO_ALLO_CODE_FORMULE,
-      icon: '/assets/images/background-header-jamono-allo.jpg'
-    }
+      icon: '/assets/images/background-header-jamono-allo.jpg',
+    },
   ];
   userSubscription: any;
-  constructor(
-    private matDialog: MatDialog,
-    private formuleServ: FormuleService,
-    private authService: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService
-  ) {}
+  constructor(private matDialog: MatDialog, private formuleServ: FormuleService, private authService: AuthenticationService, private oemLoggingService: OemLoggingService) {}
 
   ngOnInit() {
     this.authService.getSubscription(this.msisdn).subscribe((subscription: any) => {
@@ -61,7 +57,7 @@ export class SeeDetailsFormuleComponent implements OnInit {
     this.hasError = false;
     if (!this.changeFormuleProcessing) {
       this.cancelDialog = this.matDialog.open(CancelOperationPopupComponent, {
-        data: {canceldialogPageFormule: this.formule.nomFormule}
+        data: { canceldialogPageFormule: this.formule.nomFormule },
       });
 
       this.cancelDialog.afterClosed().subscribe((yesChoice: boolean) => {
@@ -70,11 +66,14 @@ export class SeeDetailsFormuleComponent implements OnInit {
           this.changeFormuleProcessing = true;
           this.formuleServ.changerFormuleJamono(this.msisdn, this.formule).subscribe(
             () => {
-              this.followAnalyticsService.registerEventFollow('change_formule_success', 'event', {
-                msisdn: this.msisdn,
-                previous_code_formule: this.userSubscription.code,
-                next_code_formule: this.formule.code
-              });
+              this.oemLoggingService.registerEvent(
+                'change_formule_success',
+                convertObjectToLoggingPayload({
+                  msisdn: this.msisdn,
+                  previous_code_formule: this.userSubscription.code,
+                  next_code_formule: this.formule.code,
+                })
+              );
               this.authService.deleteSubFromStorage(this.msisdn);
               this.changeFormuleProcessing = false;
               // this.authService.UpdateNotificationInfo();
@@ -83,12 +82,15 @@ export class SeeDetailsFormuleComponent implements OnInit {
             (error: any) => {
               this.changeFormuleProcessing = false;
               this.hasError = true;
-              this.followAnalyticsService.registerEventFollow('change_formule_error', 'error', {
-                msisdn: this.msisdn,
-                current_code_formule: this.userSubscription.code,
-                next_code_formule: this.formule.code,
-                error_status: error.status
-              });
+              this.oemLoggingService.registerEvent(
+                'change_formule_error',
+                convertObjectToLoggingPayload({
+                  msisdn: this.msisdn,
+                  current_code_formule: this.userSubscription.code,
+                  next_code_formule: this.formule.code,
+                  error_status: error.status,
+                })
+              );
             }
           );
         }

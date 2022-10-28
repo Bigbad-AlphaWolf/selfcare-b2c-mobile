@@ -12,22 +12,22 @@ import { LinesComponent } from 'src/app/components/lines/lines.component';
 import { BillCompany } from 'src/app/models/bill-company.model';
 import { Subject } from 'rxjs';
 import {
-  OPERATION_SEE_SOLDE_RAPIDO, OPERATION_SEE_SOLDE_XEWEUL,
+  OPERATION_SEE_SOLDE_RAPIDO,
+  OPERATION_SEE_SOLDE_XEWEUL,
   OPERATION_TYPE_PASS_ALLO,
   OPERATION_TYPE_PASS_ILLIFLEX,
   OPERATION_TYPE_PASS_ILLIMIX,
   OPERATION_TYPE_PASS_INTERNET,
   OPERATION_TYPE_PASS_VOYAGE,
   OPERATION_TYPE_RECHARGE_CREDIT,
-	STEPS_ACCESS_BY_OTP,
-	SubscriptionModel,
+  STEPS_ACCESS_BY_OTP,
+  SubscriptionModel,
 } from 'src/shared';
 import { RapidoSoldeComponent } from 'src/app/components/counter/rapido-solde/rapido-solde.component';
 import { RattachNumberModalComponent } from 'src/app/pages/rattached-phones-number/components/rattach-number-modal/rattach-number-modal.component';
 import { RattachNumberByIdCardComponent } from 'src/app/pages/rattached-phones-number/components/rattach-number-by-id-card/rattach-number-by-id-card.component';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import { RattachNumberByClientCodeComponent } from 'src/app/pages/rattached-phones-number/components/rattach-number-by-client-code/rattach-number-by-client-code.component';
-import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { IdentifiedNumbersListComponent } from 'src/app/pages/rattached-phones-number/components/identified-numbers-list/identified-numbers-list.component';
 import { RattachedNumber } from 'src/app/models/rattached-number.model';
 import { ChooseRattachementTypeModalComponent } from 'src/app/pages/rattached-phones-number/components/choose-rattachement-type-modal/choose-rattachement-type-modal.component';
@@ -35,18 +35,17 @@ import { BannierePubModel } from '../dashboard-service';
 import { BanniereDescriptionPage } from 'src/app/pages/banniere-description/banniere-description.page';
 import { OffreService } from 'src/app/models/offre-service.model';
 import { TransferSetAmountPage } from 'src/app/transfer-set-amount/transfer-set-amount.page';
-import {
-  MatBottomSheet,
-  MatBottomSheetRef,
-} from '@angular/material/bottom-sheet';
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { TRANSFER_OM_INTERNATIONAL_COUNTRIES } from 'src/app/utils/constants';
-import {XeweulSoldeComponent} from '../../components/counter/xeweul-solde/xeweul-solde.component';
+import { XeweulSoldeComponent } from '../../components/counter/xeweul-solde/xeweul-solde.component';
 import { TypePhoneNumberManuallyComponent } from 'src/app/new-registration/components/type-phone-number-manually/type-phone-number-manually.component';
 import { NavigationExtras } from '@angular/router';
 import { RattachByOtpCodeComponent } from 'src/app/pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
 import { InfosLigneFixeComponent } from 'src/shared/infos-ligne-fixe/infos-ligne-fixe.component';
 import { ListeAnnulationTrxComponent } from 'src/app/details-conso/components/liste-annulation-trx/liste-annulation-trx.component';
+import { OemLoggingService } from '../oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -62,7 +61,7 @@ export class BottomSheetService {
     private navCtl: NavController,
     private omService: OrangeMoneyService,
     private dialog: MatDialog,
-    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private socialSharing: SocialSharing
   ) {}
 
@@ -70,55 +69,38 @@ export class BottomSheetService {
     this.bsModalEl.complete();
     this.bsModalEl = new Subject();
     return this.bsModalEl.pipe(
-      map((el) => {
+      map(el => {
         el.onDidDismiss().then((result: any) => {
           console.log(result);
 
           result = result.data;
-          let fromFavorites =
-            result && result.TYPE_BS === 'FAVORIES' && result.ACTION === 'BACK';
+          let fromFavorites = result && result.TYPE_BS === 'FAVORIES' && result.ACTION === 'BACK';
 
-          if (fromFavorites)
-            this.openModal(comp, { operation: result.operation });
+          if (fromFavorites) this.openModal(comp, { operation: result.operation });
 
-          if (
-            result &&
-            result.ACTION === 'FORWARD' &&
-            result.operation !== OPERATION_SEE_SOLDE_RAPIDO &&
-              result.operation !== OPERATION_SEE_SOLDE_XEWEUL
-          ) {
+          if (result && result.ACTION === 'FORWARD' && result.operation !== OPERATION_SEE_SOLDE_RAPIDO && result.operation !== OPERATION_SEE_SOLDE_XEWEUL) {
             this.opXtras.purchaseType = purchaseType;
-            this.opXtras.billData
-              ? (this.opXtras.billData.counter = result.counter)
-              : '';
+            this.opXtras.billData ? (this.opXtras.billData.counter = result.counter) : '';
 
             this.opXtras.merchant = result.merchant;
 
             // for SENELEC & SENEAU payment
             this.opXtras['operationType'] = purchaseType;
-            this.opXtras["ligne"] = result?.ligne;
-            this.opXtras["type"] = result?.type;
+            this.opXtras['ligne'] = result?.ligne;
+            this.opXtras['type'] = result?.type;
             console.log(this.opXtras);
             // END
             this.navCtl.navigateForward([routePath], {
               state: this.opXtras,
             });
           }
-          if (
-            result &&
-            result.operation === OPERATION_SEE_SOLDE_RAPIDO &&
-            result.ACTION === 'FORWARD'
-          ) {
+          if (result && result.operation === OPERATION_SEE_SOLDE_RAPIDO && result.ACTION === 'FORWARD') {
             this.openModalSoldeRapido(RapidoSoldeComponent, {
               ...result,
               opXtras: this.opXtras,
             });
           }
-          if (
-              result &&
-              result.operation === OPERATION_SEE_SOLDE_XEWEUL &&
-              result.ACTION === 'FORWARD'
-          ) {
+          if (result && result.operation === OPERATION_SEE_SOLDE_XEWEUL && result.ACTION === 'FORWARD') {
             this.openModalSoldeRapido(XeweulSoldeComponent, {
               ...result,
               opXtras: this.opXtras,
@@ -183,17 +165,11 @@ export class BottomSheetService {
     return await modal.present();
   }
 
-  public async openNumberSelectionBottomSheet(
-    option: NumberSelectionOption,
-    purchaseType: string,
-    routePath: string,
-    serviceUsage?: OffreService,
-    opXtras?: OperationExtras
-  ) {
+  public async openNumberSelectionBottomSheet(option: NumberSelectionOption, purchaseType: string, routePath: string, serviceUsage?: OffreService, opXtras?: OperationExtras) {
     const modal = await this.modalCtrl.create({
       component: NumberSelectionComponent,
       componentProps: {
-        data: { option, purchaseType, serviceUsage, opXtras }
+        data: { option, purchaseType, serviceUsage, opXtras },
       },
       cssClass: ['select-recipient-modal'],
       mode: 'ios',
@@ -217,8 +193,6 @@ export class BottomSheetService {
     });
     return await modal.present();
   }
-
-
 
   public openMerchantPayment(component) {
     this.omService
@@ -256,10 +230,7 @@ export class BottomSheetService {
   }
 
   async openRattacheNumberModal(phoneNumber?: string) {
-    this.followAnalyticsService.registerEventFollow(
-      'Ouverture_modal_rattachement_numéros',
-      'event'
-    );
+    this.oemLoggingService.registerEvent('Ouverture_modal_rattachement_numéros');
     const modal = await this.modalCtrl.create({
       component: RattachNumberModalComponent,
       componentProps: {
@@ -280,9 +251,9 @@ export class BottomSheetService {
         } else {
           this.openRattacheNumberByIdCardModal(numero);
         }
-      } else if(res?.direction === 'SENT_OTP') {
-				this.openRattacheNumberByOTPModal(res.numeroToRattach);
-			}
+      } else if (res?.direction === 'SENT_OTP') {
+        this.openRattacheNumberByOTPModal(res.numeroToRattach);
+      }
     });
     return await modal.present();
   }
@@ -334,12 +305,7 @@ export class BottomSheetService {
           const numero = res.numeroToRattach;
           this.openSuccessDialog('rattachment-success', numero);
         } else {
-          this.openSuccessDialog(
-            'rattachment-failed',
-            null,
-            res.errorMsg,
-            res.errorStatus
-          );
+          this.openSuccessDialog('rattachment-failed', null, res.errorMsg, res.errorStatus);
         }
       }
     });
@@ -356,21 +322,16 @@ export class BottomSheetService {
     modal.onDidDismiss().then((res: any) => {
       res = res.data;
       if (res?.direction === 'BACK') {
-        this.openRattacheNumberModal()
+        this.openRattacheNumberModal();
       } else {
-				if(res) {
-					if (res?.rattached) {
-						const numero = res.numeroToRattach;
-						this.openSuccessDialog('rattachment-success', numero);
-					} else {
-						this.openSuccessDialog(
-							'rattachment-failed',
-							null,
-							res.errorMsg,
-							res.errorStatus
-						);
-					}
-				}
+        if (res) {
+          if (res?.rattached) {
+            const numero = res.numeroToRattach;
+            this.openSuccessDialog('rattachment-success', numero);
+          } else {
+            this.openSuccessDialog('rattachment-failed', null, res.errorMsg, res.errorStatus);
+          }
+        }
       }
     });
     return await modal.present();
@@ -386,34 +347,24 @@ export class BottomSheetService {
     });
     modal.onDidDismiss().then((res: any) => {
       res = res.data;
-			if(res) {
-				if (res?.direction === 'BACK') {
-					this.openSelectRattachmentType(number);
-				} else {
-					if (res?.rattached) {
-						const numero = res.numeroToRattach;
-						this.openSuccessDialog('rattachment-success', numero);
-					} else {
-						this.openSuccessDialog(
-							'rattachment-failed',
-							null,
-							res.errorMsg,
-							res.errorStatus
-						);
-					}
-				}
-			}
+      if (res) {
+        if (res?.direction === 'BACK') {
+          this.openSelectRattachmentType(number);
+        } else {
+          if (res?.rattached) {
+            const numero = res.numeroToRattach;
+            this.openSuccessDialog('rattachment-success', numero);
+          } else {
+            this.openSuccessDialog('rattachment-failed', null, res.errorMsg, res.errorStatus);
+          }
+        }
+      }
     });
 
     return await modal.present();
   }
 
-  openSuccessDialog(
-    dialogType: string,
-    phoneNumber?: string,
-    errorMsg?: string,
-    errorStatus?: any
-  ) {
+  openSuccessDialog(dialogType: string, phoneNumber?: string, errorMsg?: string, errorStatus?: any) {
     this.dialog.open(ModalSuccessComponent, {
       data: {
         type: dialogType,
@@ -446,36 +397,21 @@ export class BottomSheetService {
     return await modal.present();
   }
 
-  followAttachmentIssues(
-    payload: { login: string; numero: string; typeNumero: string },
-    eventType: 'error' | 'event'
-  ) {
+  followAttachmentIssues(payload: { login: string; numero: string; typeNumero: string }, eventType: 'error' | 'event') {
     if (eventType === 'event') {
       const infosFollow = {
         attached_number: payload.numero,
         login: payload.login,
       };
-      const eventName = `rattachment_${
-        payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'
-      }_success`;
-      this.followAnalyticsService.registerEventFollow(
-        eventName,
-        eventType,
-        infosFollow
-      );
+      const eventName = `rattachment_${payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'}_success`;
+      this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload(infosFollow));
     } else {
       const infosFollow = {
         number_to_attach: payload.numero,
         login: payload.login,
       };
-      const errorName = `rattachment_${
-        payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'
-      }_failed`;
-      this.followAnalyticsService.registerEventFollow(
-        errorName,
-        eventType,
-        infosFollow
-      );
+      const errorName = `rattachment_${payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'}_failed`;
+      this.oemLoggingService.registerEvent(errorName, convertObjectToLoggingPayload(infosFollow));
     }
   }
 
@@ -518,18 +454,11 @@ export class BottomSheetService {
     }
     console.log('follow', followEvent, payload);
 
-    this.followAnalyticsService.registerEventFollow(
-      followEvent,
-      'event',
-      payload
-    );
+    this.oemLoggingService.registerEvent(followEvent, convertObjectToLoggingPayload(payload));
   }
 
   defaulSharingSheet() {
-    this.followAnalyticsService.registerEventFollow(
-      'Partager_app_menu',
-      'event'
-    );
+    this.oemLoggingService.registerEvent('Partager_app_menu');
     const url = 'http://bit.ly/2NHn5aS';
     const postTitle =
       "Comme moi télécharge et connecte toi gratuitement sur l'application " +
@@ -545,40 +474,40 @@ export class BottomSheetService {
       });
   }
 
-	async enterUserPhoneNumber(phone?: string, step?: STEPS_ACCESS_BY_OTP, hmacExpired?: boolean) {
-		const isModalOpened = this.modalCtrl.getTop();
+  async enterUserPhoneNumber(phone?: string, step?: STEPS_ACCESS_BY_OTP, hmacExpired?: boolean) {
+    const isModalOpened = this.modalCtrl.getTop();
     if (isModalOpened) this.modalCtrl.dismiss();
-		const modal = await this.modalCtrl.create({
+    const modal = await this.modalCtrl.create({
       component: TypePhoneNumberManuallyComponent,
       cssClass: 'select-recipient-modal',
-			componentProps: {
-				phoneNumber: phone,
-				step,
-				hmacExpired
-			},
-			presentingElement: await this.modalCtrl.getTop(),
+      componentProps: {
+        phoneNumber: phone,
+        step,
+        hmacExpired,
+      },
+      presentingElement: await this.modalCtrl.getTop(),
       backdropDismiss: true,
     });
-    modal.onDidDismiss().then((response) => {
-			if(response.data?.success) {
-				const navExtras: NavigationExtras = {
-					state: {
-						fromOTPSMS: true
-					}
-				};
-				this.navCtl.navigateRoot(['/new-registration'], navExtras);
-			}
+    modal.onDidDismiss().then(response => {
+      if (response.data?.success) {
+        const navExtras: NavigationExtras = {
+          state: {
+            fromOTPSMS: true,
+          },
+        };
+        this.navCtl.navigateRoot(['/new-registration'], navExtras);
+      }
     });
     return await modal.present();
-	}
+  }
 
-	async openInfosLigneFixe(ligneNumber: string, customerOfferInfos: SubscriptionModel) {
+  async openInfosLigneFixe(ligneNumber: string, customerOfferInfos: SubscriptionModel) {
     const modal = await this.modalCtrl.create({
       component: InfosLigneFixeComponent,
       componentProps: {
         ligneNumber,
-				customerOfferInfos,
-				showClose: true
+        customerOfferInfos,
+        showClose: true,
       },
       cssClass: 'select-recipient-modal',
     });
@@ -586,11 +515,11 @@ export class BottomSheetService {
     return await modal.present();
   }
 
-	async openListeAnnulationTrxForMLite(listAnnulationTrx?: any) {
+  async openListeAnnulationTrxForMLite(listAnnulationTrx?: any) {
     return this.modalCtrl.create({
       component: ListeAnnulationTrxComponent,
       componentProps: {
-        listAnnulationTrx
+        listAnnulationTrx,
       },
       cssClass: 'select-recipient-modal',
     });

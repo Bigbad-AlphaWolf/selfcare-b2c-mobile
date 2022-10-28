@@ -8,7 +8,6 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 const ls = new SecureLS({ encodingType: 'aes' });
 import { FORGOT_PWD_PAGE_URL, HelpModalDefaultContent } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NavController, ModalController } from '@ionic/angular';
 import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 
@@ -25,8 +24,7 @@ export class LoginPage implements OnInit {
   form: FormGroup;
   loading = false;
   errorMsg: string;
-  USER_ERROR_MSG_BLOCKED =
-    'Votre Compte Orange et Moi a été bloqué. Cliquez sur mot de passe oublié et suivez les instructions.';
+  USER_ERROR_MSG_BLOCKED = 'Votre Compte Orange et Moi a été bloqué. Cliquez sur mot de passe oublié et suivez les instructions.';
   navItems: {
     title: string;
     subTitle: string;
@@ -54,7 +52,6 @@ export class LoginPage implements OnInit {
     private authServ: AuthenticationService,
     private dashbServ: DashboardService,
     public dialog: MatDialog,
-    private followAnalyticsService: FollowAnalyticsService,
     private navController: NavController,
     private modalController: ModalController,
     private oemLogging: OemLoggingService
@@ -86,7 +83,7 @@ export class LoginPage implements OnInit {
     const value = this.form.value;
     this.rememberMe = true;
     this.UserLogin(value);
-    this.oemLogging.registerEvent('login_click', null);
+    this.oemLogging.registerEvent('login_click');
   }
 
   UserLogin(user: any) {
@@ -94,9 +91,7 @@ export class LoginPage implements OnInit {
     this.authServ.login(user).subscribe(
       () => {
         ls.remove('light-token');
-        this.oemLogging.registerEvent('login_success', [
-          { dataName: 'msisdn', dataValue: user.username },
-        ]);
+        this.oemLogging.registerEvent('login_success', [{ dataName: 'msisdn', dataValue: user.username }]);
         this.dashbServ.getAccountInfo(user.username).subscribe(
           (resp: any) => {
             this.loading = false;
@@ -109,7 +104,7 @@ export class LoginPage implements OnInit {
           }
         );
       },
-      (err) => {
+      err => {
         this.oemLogging.registerEvent('login_failed', [
           { dataName: 'login', dataValue: user.username },
           { dataName: 'status', dataValue: err.status },
@@ -118,12 +113,7 @@ export class LoginPage implements OnInit {
         this.showErrMessage = true;
         if (err && err.error.status === 400) {
           if (err.error.params !== '0' && err.error.params !== '-1') {
-            this.errorMsg =
-              err.error.title +
-              ' ' +
-              err.error.params +
-              ' tentative' +
-              (err.error.params === '1' ? '' : 's');
+            this.errorMsg = err.error.title + ' ' + err.error.params + ' tentative' + (err.error.params === '1' ? '' : 's');
           } else if (err.error.params === '-1') {
             this.errorMsg = 'Login et mot de passe incorrect';
           } else {
@@ -146,17 +136,11 @@ export class LoginPage implements OnInit {
 
   doAction(action: 'register' | 'help' | 'password') {
     if (action === 'register') {
-      this.followAnalyticsService.registerEventFollow(
-        'Go_register_from_login',
-        'event'
-      );
+      this.oemLogging.registerEvent('Go_register_from_login');
       this.goRegisterPage();
     }
     if (action === 'help') {
-      this.followAnalyticsService.registerEventFollow(
-        'Open_help_modal_from_login',
-        'event'
-      );
+      this.oemLogging.registerEvent('Open_help_modal_from_login');
       this.openHelpModal(HelpModalDefaultContent);
     }
     if (action === 'password') {
@@ -179,11 +163,7 @@ export class LoginPage implements OnInit {
   }
 
   goIntro() {
-    this.followAnalyticsService.registerEventFollow(
-      'Voir_Intro_from_login',
-      'event',
-      'clic'
-    );
+    this.oemLogging.registerEvent('Voir_Intro_from_login');
     this.router.navigate(['/home']);
   }
   goBack() {

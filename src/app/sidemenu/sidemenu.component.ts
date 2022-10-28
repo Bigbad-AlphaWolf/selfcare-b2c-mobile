@@ -7,7 +7,6 @@ import * as SecureLS from 'secure-ls';
 import { NO_AVATAR_ICON_URL, getNOAvatartUrlImage, ASSISTANCE_URL, CONSO, ASSISTANCE, SERVICES, isFixeNumber, JAMONO_NEW_SCOOL_CODE_FORMULE } from 'src/shared';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { ModalController, NavController, Platform } from '@ionic/angular';
 import { OffresServicesPage } from '../pages/offres-services/offres-services.page';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
@@ -17,7 +16,6 @@ import { isPrepaidOrHybrid } from '../dashboard';
 import { OmStatusVisualizationComponent } from 'src/shared/om-status-visualization/om-status-visualization.component';
 import { FACE_ID_PERMISSIONS, OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
-import { FollowAnalyticsEventType } from '../services/follow-analytics/follow-analytics-event-type.enum';
 import { OPERATION_TYPE_PAY_BILL, OPERATION_TYPE_TERANGA_BILL } from '../utils/operations.constants';
 import { BonsPlansSargalService } from '../services/bons-plans-sargal/bons-plans-sargal.service';
 import { tap } from 'rxjs/operators';
@@ -136,16 +134,12 @@ export class SidemenuComponent implements OnInit, OnDestroy {
       ]);
       this.orangeMoneyServ.allowFaceId();
     } else {
-      this.oemLoggingService.registerEvent(
-        'Disable_Face_ID_Toggle',
-        [
-          {
-            dataName: 'msisdn',
-            dataValue: this.msisdn,
-          },
-        ],
-        ANALYTICS_PROVIDER.FIREBASE_ANALYTICS
-      );
+      this.oemLoggingService.registerEvent('Disable_Face_ID_Toggle', [
+        {
+          dataName: 'msisdn',
+          dataValue: this.msisdn,
+        },
+      ]);
       this.orangeMoneyServ.askFaceIdLater();
     }
   }
@@ -155,7 +149,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   openModalRattachNumber() {
-    this.oemLoggingService.registerEvent('sidemenu_add_line', []);
+    this.oemLoggingService.registerEvent('sidemenu_add_line');
     this.bsService.openRattacheNumberModal();
   }
 
@@ -195,20 +189,16 @@ export class SidemenuComponent implements OnInit, OnDestroy {
         ]);
       },
       err => {
-        this.oemLoggingService.registerEvent(
-          'Recuperation_lignes_rattachees_menu_failed',
-          [
-            {
-              dataName: 'msisdn',
-              dataValue: this.msisdn,
-            },
-            {
-              dataName: 'error',
-              dataValue: err.status,
-            },
-          ],
-          ANALYTICS_PROVIDER.FIREBASE_ANALYTICS
-        );
+        this.oemLoggingService.registerEvent('Recuperation_lignes_rattachees_menu_failed', [
+          {
+            dataName: 'msisdn',
+            dataValue: this.msisdn,
+          },
+          {
+            dataName: 'error',
+            dataValue: err.status,
+          },
+        ]);
       }
     );
   }
@@ -252,7 +242,7 @@ export class SidemenuComponent implements OnInit, OnDestroy {
   }
 
   attachLine() {
-    this.oemLoggingService.registerEvent('Attach_msisdn_menu', null);
+    this.oemLoggingService.registerEvent('Attach_msisdn_menu');
     this.router.navigate(['/new-number']);
   }
 

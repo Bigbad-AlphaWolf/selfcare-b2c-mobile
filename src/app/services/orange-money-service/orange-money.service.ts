@@ -25,7 +25,6 @@ import {
   getOMTransactionsInputModel,
   OMTransactionsResponseModel,
 } from '.';
-import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { ErreurTransactionOmModel } from 'src/app/models/erreur-transaction-om.model';
 import { OM_BUY_ILLIFLEX_ENDPOINT, SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT } from '../utils/om.endpoints';
@@ -67,7 +66,6 @@ import {
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
 import { IlliflexService } from '../illiflex-service/illiflex.service';
 import { CancelOmTransactionPayloadModel } from 'src/app/models/cancel-om-transaction-payload.model';
-import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-event-type.enum';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { CreatePinOM } from 'src/app/models/create-pin-om.model';
 import { ValidateChallengeOMOEM } from 'src/app/models/challenge-answers-om-oem.model';
@@ -77,6 +75,7 @@ import { LocalStorageService } from '../localStorage-service/local-storage.servi
 import { DemandeAnnulationTransfertModel } from 'src/app/models/demande-annulation-transfert.model';
 import { PurchaseModel } from 'src/app/models/purchase.model';
 import { OemLoggingService } from '../oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
@@ -139,7 +138,6 @@ export class OrangeMoneyService {
   biometricStatusSubject: Subject<any> = new Subject<any>();
   constructor(
     private http: HttpClient,
-    private followAnalyticsService: FollowAnalyticsService,
     private dashboardService: DashboardService,
     private illiflexService: IlliflexService,
     private faio: FingerprintAIO,
@@ -509,10 +507,10 @@ export class OrangeMoneyService {
         break;
     }
     if (type === 'event') {
-      this.followAnalyticsService.registerEventFollow(eventKey, 'event', value);
+      this.oemLoggingService.registerEvent(eventKey, convertObjectToLoggingPayload(value));
     } else {
       value = Object.assign({}, value, { error_code: res.status_code });
-      this.followAnalyticsService.registerEventFollow(errorKey, 'error', value);
+      this.oemLoggingService.registerEvent(errorKey, convertObjectToLoggingPayload(value));
     }
   }
 
@@ -733,12 +731,10 @@ export class OrangeMoneyService {
       switchMap(msisdn => {
         return this.http.get<CheckEligibilityModel>(`${checkTxnBlockEligibilityEndpoint}/${msisdn}/${transactionId}`).pipe(
           tap(res => {
-            res.eligible
-              ? this.followAnalyticsService.registerEventFollow('check_txn_eligibility_true', FollowAnalyticsEventType.EVENT)
-              : this.followAnalyticsService.registerEventFollow('check_txn_eligibility_false', FollowAnalyticsEventType.EVENT, {});
+            res.eligible ? this.oemLoggingService.registerEvent('check_txn_eligibility_true') : this.oemLoggingService.registerEvent('check_txn_eligibility_false');
           }),
           catchError(err => {
-            this.followAnalyticsService.registerEventFollow('check_txn_eligibility_error', FollowAnalyticsEventType.ERROR, { error: err });
+            this.oemLoggingService.registerEvent('check_txn_eligibility_error', convertObjectToLoggingPayload({ error: err }));
             return throwError(err);
           })
         );
@@ -758,14 +754,17 @@ export class OrangeMoneyService {
         };
         return this.http.post<{ message: string; transactionNumber: string }>(BlockTransferEndpoint, payload).pipe(
           tap(res => {
-            this.followAnalyticsService.registerEventFollow('block_transaction_success', FollowAnalyticsEventType.EVENT, { msisdn, transaction: payload });
+            this.oemLoggingService.registerEvent('block_transaction_success', convertObjectToLoggingPayload({ msisdn, transaction: payload }));
           }),
           catchError(error => {
-            this.followAnalyticsService.registerEventFollow('block_transaction_error', FollowAnalyticsEventType.ERROR, {
-              msisdn,
-              transaction: payload,
-              error,
-            });
+            this.oemLoggingService.registerEvent(
+              'block_transaction_error',
+              convertObjectToLoggingPayload({
+                msisdn,
+                transaction: payload,
+                error,
+              })
+            );
             return throwError(error);
           })
         );

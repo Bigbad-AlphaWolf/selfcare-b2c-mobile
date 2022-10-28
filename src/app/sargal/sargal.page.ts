@@ -1,20 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  GiftSargalCategoryItem,
-  NO_AVATAR_ICON_URL,
-  getLastUpdatedDateTimeText,
-  SargalStatusModel,
-} from 'src/shared';
+import { GiftSargalCategoryItem, NO_AVATAR_ICON_URL, getLastUpdatedDateTimeText, SargalStatusModel } from 'src/shared';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import {
-  DashboardService,
-  downloadAvatarEndpoint,
-} from '../services/dashboard-service/dashboard.service';
+import { DashboardService, downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
 import { SargalService } from '../services/sargal-service/sargal.service';
 import { SargalSubscriptionModel } from '../dashboard';
 import * as SecureLS from 'secure-ls';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NavController } from '@ionic/angular';
 import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 const ls = new SecureLS({ encodingType: 'aes' });
@@ -46,7 +37,6 @@ export class SargalPage implements OnInit {
     private authService: AuthenticationService,
     private dashbordServ: DashboardService,
     private sargalServ: SargalService,
-    private followService: FollowAnalyticsService,
     private navController: NavController,
     private oemLoggingService: OemLoggingService
   ) {}
@@ -64,10 +54,7 @@ export class SargalPage implements OnInit {
     this.sargalServ.getSargalBalance(this.currentNumber).subscribe(
       (res: SargalSubscriptionModel) => {
         this.sargalDataLoaded = true;
-        if (
-          res.status === 'SUBSCRIBED' ||
-          res.status === 'SUBSCRIPTION_ONGOING'
-        ) {
+        if (res.status === 'SUBSCRIBED' || res.status === 'SUBSCRIPTION_ONGOING') {
           this.userSargalPoints = res.totalPoints;
           this.sargalLastUpdate = getLastUpdatedDateTimeText();
 
@@ -121,9 +108,7 @@ export class SargalPage implements OnInit {
         event += 'illimites_click';
         break;
     }
-    this.oemLoggingService.registerEvent(event, [
-      { dataName: 'msisdn', dataValue: this.currentNumber },
-    ]);
+    this.oemLoggingService.registerEvent(event, [{ dataName: 'msisdn', dataValue: this.currentNumber }]);
     this.router.navigate(['/sargal-catalogue', codeCategory?.id]);
   }
 

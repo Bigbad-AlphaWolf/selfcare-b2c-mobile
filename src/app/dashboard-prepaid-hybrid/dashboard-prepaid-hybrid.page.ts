@@ -20,7 +20,6 @@ import {
   getBanniereDescription,
   OPERATION_TYPE_MERCHANT_PAYMENT,
 } from 'src/shared';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import {
   PROFILE_TYPE_PREPAID,
@@ -59,6 +58,7 @@ import { StoriesService } from '../services/stories-service/stories.service';
 import { Story } from '../models/story-oem.model';
 import { of } from 'rxjs';
 import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from '../utils/utils';
 const ls = new SecureLS({ encodingType: 'aes' });
 @AutoUnsubscribe()
 @Component({
@@ -84,10 +84,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   creditRechargement = 0;
   canDoSOS = false;
   showHelbBtn = false;
-  pictures = [
-    { image: '/assets/images/banniere-promo-mob.png' },
-    { image: '/assets/images/banniere-promo-fibre.png' },
-  ];
+  pictures = [{ image: '/assets/images/banniere-promo-mob.png' }, { image: '/assets/images/banniere-promo-fibre.png' }];
   listBanniere: BannierePubModel[] = [];
   PROFILE_TYPE_PREPAID = PROFILE_TYPE_PREPAID;
   currentProfil: string;
@@ -137,7 +134,6 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     private authServ: AuthenticationService,
     private banniereServ: BanniereService,
     private sargalServ: SargalService,
-    private followAnalyticsService: FollowAnalyticsService,
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
     private appliRouting: ApplicationRoutingService,
@@ -163,10 +159,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       .pipe(
         tap((res: any) => {
           this.isLoadingStories = false;
-          this.storiesByCategory =
-            this.storiesService.groupeStoriesByCategory(res);
+          this.storiesByCategory = this.storiesService.groupeStoriesByCategory(res);
         }),
-        catchError((err) => {
+        catchError(err => {
           this.isLoadingStories = false;
           return of(err);
         })
@@ -176,23 +171,19 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
 
   checkMerchantPayment() {
     this.showMerchantPay = false;
-    this.operationService
-      .getServicesByFormule()
-      .subscribe((allServices: OffreService[]) => {
-        const merchantService = allServices.find(
-          (service) => service.code === OPERATION_TYPE_MERCHANT_PAYMENT
-        );
-        if (merchantService) {
-          this.showMerchantPay = merchantService.activated;
-        }
-      });
+    this.operationService.getServicesByFormule().subscribe((allServices: OffreService[]) => {
+      const merchantService = allServices.find(service => service.code === OPERATION_TYPE_MERCHANT_PAYMENT);
+      if (merchantService) {
+        this.showMerchantPay = merchantService.activated;
+      }
+    });
   }
 
   checkOMNumber() {
     this.omServ
       .getOmMsisdn()
       .pipe(
-        map((omNumber) => {
+        map(omNumber => {
           if (omNumber !== 'error') {
             this.dashbordServ.swapOMCard();
           }
@@ -236,11 +227,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.noSargalProfil = false;
     this.sargalServ.getCustomerSargalStatus().subscribe(
       (sargalStatus: SargalStatusModel) => {
-        this.followAnalyticsService.registerEventFollow(
-          'Affichage_profil_sargal_success',
-          'event',
-          this.currentMsisdn
-        );
+        this.oemLogService.registerEvent('Affichage_profil_sargal_success', convertObjectToLoggingPayload(this.currentMsisdn));
         if (!sargalStatus.valid) {
           this.sargalStatusUnavailable = true;
         }
@@ -250,13 +237,12 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         this.ref.detectChanges();
       },
       (err: any) => {
-        this.followAnalyticsService.registerEventFollow(
+        this.oemLogService.registerEvent(
           'Affichage_profil_sargal_error',
-          'error',
-          {
+          convertObjectToLoggingPayload({
             msisdn: this.currentMsisdn,
             error: err.status,
-          }
+          })
         );
         this.isLoading = false;
         if (err.status === 400) {
@@ -273,10 +259,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.authServ.getSubscription(currentNumber).subscribe(
       (res: SubscriptionModel) => {
         this.currentProfil = res.profil;
-        this.isHyBride =
-          this.currentProfil === PROFILE_TYPE_HYBRID ||
-          this.currentProfil === PROFILE_TYPE_HYBRID_1 ||
-          this.currentProfil === PROFILE_TYPE_HYBRID_2;
+        this.isHyBride = this.currentProfil === PROFILE_TYPE_HYBRID || this.currentProfil === PROFILE_TYPE_HYBRID_1 || this.currentProfil === PROFILE_TYPE_HYBRID_2;
         if (this.isHyBride) {
           this.getCustomerSargalStatus();
         }
@@ -299,18 +282,13 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       (res: any) => {
         if (res.length) {
           res = arrangeCompteurByOrdre(res);
-          const appelConso = res.length
-            ? res.find((x) => x.categorie === USER_CONS_CATEGORY_CALL)
-                .consommations
-            : null;
+          const appelConso = res.length ? res.find(x => x.categorie === USER_CONS_CATEGORY_CALL).consommations : null;
           if (appelConso) {
             this.getValidityDates(appelConso);
           }
           this.userConsoSummary = getConsoByCategory(res);
           this.userConsommationsCategories = getTrioConsoUser(res);
-          this.userCallConsoSummary = this.computeUserConsoSummary(
-            this.userConsoSummary
-          );
+          this.userCallConsoSummary = this.computeUserConsoSummary(this.userConsoSummary);
         } else {
           this.error = true;
         }
@@ -332,20 +310,15 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
         this.userSargalData = res;
         this.sargalLastUpdate = getLastUpdatedDateTimeText();
         this.sargalDataLoaded = true;
-        this.followAnalyticsService.registerEventFollow(
-          'Affichage_solde_sargal_success',
-          'event',
-          currentNumber
-        );
+        this.oemLogService.registerEvent('Affichage_solde_sargal_success', convertObjectToLoggingPayload({ msisdn: currentNumber }));
       },
-      (err) => {
-        this.followAnalyticsService.registerEventFollow(
+      err => {
+        this.oemLogService.registerEvent(
           'Affichage_solde_sargal_error',
-          'error',
-          {
+          convertObjectToLoggingPayload({
             msisdn: currentNumber,
             error: err.status,
-          }
+          })
         );
         this.sargalDataLoaded = true;
         if (!this.userSargalData) {
@@ -364,42 +337,21 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   makeSargalAction(origin?: string) {
-    if (
-      this.userSargalData &&
-      (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED ||
-        this.userSargalData.status === SARGAL_UNSUBSCRIPTION_ONGOING) &&
-      this.sargalDataLoaded
-    ) {
-      this.followAnalyticsService.registerEventFollow(
-        'Sargal_registration_card_clic',
-        'event',
-        'clicked'
-      );
+    if (this.userSargalData && (this.userSargalData.status === SARGAL_NOT_SUBSCRIBED || this.userSargalData.status === SARGAL_UNSUBSCRIPTION_ONGOING) && this.sargalDataLoaded) {
+      this.oemLogService.registerEvent('Sargal_registration_card_clic');
       this.router.navigate(['/sargal-registration']);
     } else if (!this.sargalUnavailable && this.sargalDataLoaded) {
       if (origin === 'card') {
-        this.followAnalyticsService.registerEventFollow(
-          'Sargal_dashboard_card_clic',
-          'event',
-          'clicked'
-        );
+        this.oemLogService.registerEvent('Sargal_dashboard_card_clic');
       } else {
-        this.followAnalyticsService.registerEventFollow(
-          'Dashboard_Convertir_Sargal_clic',
-          'event',
-          'clicked'
-        );
+        this.oemLogService.registerEvent('Dashboard_Convertir_Sargal_clic');
       }
       this.goToSargalDashboard();
     }
   }
 
   seeSargalCard() {
-    this.followAnalyticsService.registerEventFollow(
-      'Sargal_profil',
-      'event',
-      'clicked'
-    );
+    this.oemLogService.registerEvent('Sargal_profil');
     this.router.navigate(['/sargal-status-card']);
   }
 
@@ -410,22 +362,18 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   // process validity date of balance & credit to compare them
   processDateDMY(date: string) {
     const tab = date.split('/');
-    const newDate = new Date(
-      Number(tab[2]),
-      Number(tab[1]) - 1,
-      Number(tab[0])
-    );
+    const newDate = new Date(Number(tab[2]), Number(tab[1]) - 1, Number(tab[0]));
     return newDate.getTime();
   }
 
   // extract dates limit of balance & credit
   getValidityDates(appelConso: any[]) {
-    const forfaitBalance = appelConso.find((x) => x.code === 9);
+    const forfaitBalance = appelConso.find(x => x.code === 9);
     if (forfaitBalance) {
       this.balanceValidity = forfaitBalance.dateExpiration.substring(0, 10);
     }
     let longestDate = 0;
-    appelConso.forEach((conso) => {
+    appelConso.forEach(conso => {
       const dateDMY = conso.dateExpiration.substring(0, 10);
       const date = this.processDateDMY(dateDMY);
       if (date > longestDate) {
@@ -452,7 +400,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
     this.soldebonus = 0;
     this.creditRechargement = 0;
     if (callConsos) {
-      callConsos.forEach((x) => {
+      callConsos.forEach(x => {
         // goblal conso = Amout of code 1 + code 6
         if (x.code === 1 || x.code === 6 || x.code === 2) {
           if (x.code === 1) {
@@ -470,8 +418,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       // Check if eligible for SOS
       this.canDoSOS = +this.creditRechargement < 489;
       // Check if eligible for bonus transfer
-      this.canTransferBonus =
-        this.creditRechargement > 20 && this.soldebonus > 1;
+      this.canTransferBonus = this.creditRechargement > 20 && this.soldebonus > 1;
     }
     return {
       globalCredit: formatCurrency(globalCredit),
@@ -482,28 +429,14 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
 
   goToSOSPage() {
     if (this.canDoSOS) {
-      this.followAnalyticsService.registerEventFollow(
-        'Dashboard_sos_clic',
-        'event',
-        'clicked'
-      );
+      this.oemLogService.registerEvent('Dashboard_sos_clic');
       this.router.navigate(['/buy-sos']);
     }
   }
 
   goDetailsCom(number?: number) {
     this.router.navigate(['/new-prepaid-hybrid-dashboard']);
-    number
-      ? this.followAnalyticsService.registerEventFollow(
-          'Voirs_details_dashboard',
-          'event',
-          'clicked'
-        )
-      : this.followAnalyticsService.registerEventFollow(
-          'Voirs_details_card_dashboard',
-          'event',
-          'clicked'
-        );
+    number ? this.oemLogService.registerEvent('Voirs_details_dashboard') : this.oemLogService.registerEvent('Voirs_details_card_dashboard');
   }
 
   onError(input: { el: HTMLElement; display: boolean }[]) {
@@ -551,42 +484,21 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   goToTransfertsPage() {
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_hub_transfert_clic',
-      'event',
-      'clicked'
-    );
+    this.oemLogService.registerEvent('Dashboard_hub_transfert_clic');
     this.appliRouting.goToTransfertHubServicesPage('TRANSFER');
   }
 
   goToBuyPage() {
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_hub_achat_clic',
-      'event',
-      'clicked'
-    );
+    this.oemLogService.registerEvent('Dashboard_hub_achat_clic');
     this.appliRouting.goToTransfertHubServicesPage('BUY');
   }
 
   goMerchantPayment() {
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_paiement_marchand_clic',
-      'event'
-    );
+    this.oemLogService.registerEvent('Dashboard_paiement_marchand_clic');
     this.omServ.omAccountSession().subscribe(async (omSession: any) => {
-      const omSessionValid = omSession
-        ? omSession.msisdn !== 'error' &&
-          omSession.hasApiKey &&
-          !omSession.loginExpired
-        : null;
+      const omSessionValid = omSession ? omSession.msisdn !== 'error' && omSession.hasApiKey && !omSession.loginExpired : null;
       if (omSessionValid) {
-        this.bsService
-          .initBsModal(
-            MerchantPaymentCodeComponent,
-            OPERATION_TYPE_MERCHANT_PAYMENT,
-            PurchaseSetAmountPage.ROUTE_PATH
-          )
-          .subscribe((_) => {});
+        this.bsService.initBsModal(MerchantPaymentCodeComponent, OPERATION_TYPE_MERCHANT_PAYMENT, PurchaseSetAmountPage.ROUTE_PATH).subscribe(_ => {});
         this.bsService.openModal(MerchantPaymentCodeComponent, {
           omMsisdn: omSession.msisdn,
         });
@@ -597,11 +509,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   onPayerFacture() {
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_hub_facture_clic',
-      'event',
-      'clicked'
-    );
+    this.oemLogService.registerEvent('Dashboard_hub_facture_clic');
     this.router.navigate([BillsHubPage.ROUTE_PATH]);
   }
 
@@ -610,7 +518,7 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
     });
-    modal.onDidDismiss().then((resp) => {
+    modal.onDidDismiss().then(resp => {
       if (resp && resp.data && resp.data.success) {
         this.goMerchantPayment();
       }
@@ -619,11 +527,9 @@ export class DashboardPrepaidHybridPage implements OnInit, OnDestroy {
   }
 
   getUserActiveBonPlans() {
-    this.offerPlanServ
-      .getUserTypeOfferPlans()
-      .subscribe((res: OfferPlanActive) => {
-        this.hasPromoPlanActive = res;
-      });
+    this.offerPlanServ.getUserTypeOfferPlans().subscribe((res: OfferPlanActive) => {
+      this.hasPromoPlanActive = res;
+    });
   }
 
   onOffreClicked() {

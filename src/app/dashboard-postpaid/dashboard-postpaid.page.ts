@@ -7,7 +7,6 @@ import { AuthenticationService } from 'src/app/services/authentication-service/a
 import { BillsService } from 'src/app/services/bill-service/bills.service';
 import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
 import { MAIL_URL, months, SubscriptionModel, WelcomeStatusModel, SargalStatusModel, getBanniereTitle, getBanniereDescription, OTHER_CATEGORIES, HUB_ACTIONS } from 'src/shared';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { MatDialog } from '@angular/material/dialog';
 import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
 import { AssistanceService } from '../services/assistance.service';
@@ -31,6 +30,7 @@ import {
 } from '../services/user-cunsommation-service/user-conso-service.index';
 import { OPERATION_TYPE_TERANGA_BILL } from '../utils/operations.constants';
 import { ANALYTICS_PROVIDER, OemLoggingService } from '../services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from '../utils/utils';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-postpaid',
@@ -95,7 +95,6 @@ export class DashboardPostpaidPage implements OnInit {
     private router: Router,
     private authServ: AuthenticationService,
     private billsService: BillsService,
-    private followAnalyticsService: FollowAnalyticsService,
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
     private sargalServ: SargalService,
@@ -124,9 +123,12 @@ export class DashboardPostpaidPage implements OnInit {
             return !categories.includes(OTHER_CATEGORIES) && !categories.includes(HUB_ACTIONS.OFFRES_FIXES) && !categories.includes(HUB_ACTIONS.FIXES);
           });
           res = res.sort((r1, r2) => r1.ordre - r2.ordre);
-          this.followAnalyticsService.registerEventFollow('dashboard_postpaid_get_services_success', 'event', {
-            msisdn: this.userPhoneNumber,
-          });
+          this.oemLoggingService.registerEvent(
+            'dashboard_postpaid_get_services_success',
+            convertObjectToLoggingPayload({
+              msisdn: this.userPhoneNumber,
+            })
+          );
           const moreActionService: OffreService = {
             redirectionType: 'NAVIGATE',
             shortDescription: 'Autres',
@@ -154,10 +156,13 @@ export class DashboardPostpaidPage implements OnInit {
           this.operations = res;
         }),
         catchError((err: any) => {
-          this.followAnalyticsService.registerEventFollow('dashboard_postpaid_get_services_error', 'error', {
-            msisdn: this.userPhoneNumber,
-            error: err.status,
-          });
+          this.oemLoggingService.registerEvent(
+            'dashboard_postpaid_get_services_error',
+            convertObjectToLoggingPayload({
+              msisdn: this.userPhoneNumber,
+              error: err.status,
+            })
+          );
           return of(err);
         })
       )
@@ -224,7 +229,7 @@ export class DashboardPostpaidPage implements OnInit {
   }
 
   makeSargalAction() {
-    this.followAnalyticsService.registerEventFollow('dashboard_postpaid_sargal_status_card_clic', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('dashboard_postpaid_sargal_status_card_clic');
     this.router.navigate(['/sargal-status-card']);
   }
 
@@ -243,9 +248,12 @@ export class DashboardPostpaidPage implements OnInit {
       .getUserCunsomation()
       .pipe(
         tap((userConsommation: NewUserConsoModel[]) => {
-          this.followAnalyticsService.registerEventFollow('dashboard_postpaid_get_conso_success', 'event', {
-            msisdn: this.userPhoneNumber,
-          });
+          this.oemLoggingService.registerEvent(
+            'dashboard_postpaid_get_conso_success',
+            convertObjectToLoggingPayload({
+              msisdn: this.userPhoneNumber,
+            })
+          );
           this.userConsumations = userConsommation;
           const consoActeVoix = this.userConsumations.find(x => !!x.name.toLowerCase().match(CONSO_ACTE_VOIX)),
             consoActeInternet = this.userConsumations.find(x => !!x.name.toLowerCase().match(CONSO_ACTE_INTERNET)),
@@ -259,10 +267,13 @@ export class DashboardPostpaidPage implements OnInit {
         catchError(err => {
           this.dataLoaded = true;
           this.errorConso = true;
-          this.followAnalyticsService.registerEventFollow('dashboard_postpaid_get_conso_error', 'error', {
-            msisdn: this.userPhoneNumber,
-            error: err.status,
-          });
+          this.oemLoggingService.registerEvent(
+            'dashboard_postpaid_get_conso_error',
+            convertObjectToLoggingPayload({
+              msisdn: this.userPhoneNumber,
+              error: err.status,
+            })
+          );
           return throwError(err);
         })
       )
@@ -276,7 +287,7 @@ export class DashboardPostpaidPage implements OnInit {
 
   hidePromoBarner() {
     this.showPromoBarner = false;
-    this.followAnalyticsService.registerEventFollow('Banner_close_dashboard', 'event', 'Mobile');
+    this.oemLoggingService.registerEvent('Banner_close_dashboard');
   }
 
   getBills() {
@@ -309,9 +320,7 @@ export class DashboardPostpaidPage implements OnInit {
 
   goDetailsCom(number?: number) {
     this.router.navigate(['/details-conso']);
-    number
-      ? this.followAnalyticsService.registerEventFollow('Voirs_details_dashboard', 'event', 'mobile')
-      : this.followAnalyticsService.registerEventFollow('Voirs_details_card_dashboard', 'event', 'mobile');
+    number ? this.oemLoggingService.registerEvent('Voirs_details_dashboard') : this.oemLoggingService.registerEvent('Voirs_details_card_dashboard');
   }
 
   showWelcomePopup(data: WelcomeStatusModel) {
@@ -354,12 +363,12 @@ export class DashboardPostpaidPage implements OnInit {
   }
 
   onVoirPlus() {
-    this.followAnalyticsService.registerEventFollow('dashboard_postpaid_voir_plus_clic', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('dashboard_postpaid_voir_plus_clic');
     this.navCtl.navigateForward(['/oem-services']);
   }
 
   goBills() {
-    this.followAnalyticsService.registerEventFollow('dashboard_postpaid_voir_tout_facture', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('dashboard_postpaid_voir_tout_facture');
     this.router.navigate(['/bills'], {
       state: {
         operationType: OPERATION_TYPE_TERANGA_BILL,

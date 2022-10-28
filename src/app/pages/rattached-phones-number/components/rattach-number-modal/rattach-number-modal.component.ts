@@ -5,10 +5,11 @@ import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.co
 import { ModalController } from '@ionic/angular';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { catchError, map, tap } from 'rxjs/operators';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { AccountService } from 'src/app/services/account-service/account.service';
 import { OtpService } from 'src/app/services/otp-service/otp.service';
 import { of, throwError } from 'rxjs';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-rattach-number-modal',
@@ -28,7 +29,7 @@ export class RattachNumberModalComponent implements OnInit {
     private dashbServ: DashboardService,
     private accService: AccountService,
     private otpService: OtpService,
-    private followAnalyticsService: FollowAnalyticsService
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -71,12 +72,7 @@ export class RattachNumberModalComponent implements OnInit {
         () => {
           this.isLoading = false;
           this.hasError = false;
-          this.nextStepRattachement(
-            true,
-            'NONE',
-            this.phoneNumber,
-            payload.typeNumero
-          );
+          this.nextStepRattachement(true, 'NONE', this.phoneNumber, payload.typeNumero);
 
           this.followAttachmentIssues(payload, 'event');
         },
@@ -84,65 +80,63 @@ export class RattachNumberModalComponent implements OnInit {
           this.isLoading = false;
           this.hasError = true;
           this.followAttachmentIssues(payload, 'error');
-          if (
-            err &&
-            (err.error.errorKey === 'userRattached' ||
-              err.error.errorKey === 'userexists')
-          ) {
-            this.msgError = err.error.title
-              ? err.error.title
-              : "Impossible d'effectuer le rattachement de la ligne ";
+          if (err && (err.error.errorKey === 'userRattached' || err.error.errorKey === 'userexists')) {
+            this.msgError = err.error.title ? err.error.title : "Impossible d'effectuer le rattachement de la ligne ";
           } else {
-						let nextStep = 'FORWARD';
-						let otpSent: boolean;
-						if(payload.typeNumero === 'MOBILE') {
-							const isCorporate = await	this.checkIfMsisdnIsCoorporate(payload.numero);
-							console.log('isCorporate', isCorporate);
+            let nextStep = 'FORWARD';
+            let otpSent: boolean;
+            if (payload.typeNumero === 'MOBILE') {
+              const isCorporate = await this.checkIfMsisdnIsCoorporate(payload.numero);
+              console.log('isCorporate', isCorporate);
 
-							if(isCorporate) {
-								//send OTP MSG
-								this.isLoading = true;
-								otpSent = await this.otpService.generateOTPCode(payload.numero).pipe(
-									map(_ => {
-										return true;
-									}), catchError( _ => {
-										this.isLoading = false;
-										return of(false);
-									}), tap(_ => {
-										this.isLoading = false;
-									})
-								).toPromise();
-								nextStep = 'SENT_OTP';
-							}
-						}
-						if( nextStep && !otpSent) {
-							this.hasError = true;
-							this.msgError = 'Ce rattachement ne peut être fait pour le moment. Veuillez réessayer plus tard';
-						}
-						if(nextStep === 'FORWARD' || nextStep === 'SENT_OTP' && otpSent) {
-							this.nextStepRattachement(
-								false,
-								nextStep,
-								this.phoneNumber,
-								payload.typeNumero
-							);
-						}
+              if (isCorporate) {
+                //send OTP MSG
+                this.isLoading = true;
+                otpSent = await this.otpService
+                  .generateOTPCode(payload.numero)
+                  .pipe(
+                    map(_ => {
+                      return true;
+                    }),
+                    catchError(_ => {
+                      this.isLoading = false;
+                      return of(false);
+                    }),
+                    tap(_ => {
+                      this.isLoading = false;
+                    })
+                  )
+                  .toPromise();
+                nextStep = 'SENT_OTP';
+              }
+            }
+            if (nextStep && !otpSent) {
+              this.hasError = true;
+              this.msgError = 'Ce rattachement ne peut être fait pour le moment. Veuillez réessayer plus tard';
+            }
+            if (nextStep === 'FORWARD' || (nextStep === 'SENT_OTP' && otpSent)) {
+              this.nextStepRattachement(false, nextStep, this.phoneNumber, payload.typeNumero);
+            }
           }
         }
       );
   }
 
-	async checkIfMsisdnIsCoorporate(msisdn: string) {
-		this.isLoading = true;
-	 return	this.accService.checkIsCoorporateNumber(msisdn).pipe(
-		 tap(_ => {
-			 this.isLoading = false;
-		 }), catchError( (err) => {
-			this.isLoading = false;
-			return throwError(err);
-		 })
-	 ).toPromise();
-	}
+  async checkIfMsisdnIsCoorporate(msisdn: string) {
+    this.isLoading = true;
+    return this.accService
+      .checkIsCoorporateNumber(msisdn)
+      .pipe(
+        tap(_ => {
+          this.isLoading = false;
+        }),
+        catchError(err => {
+          this.isLoading = false;
+          return throwError(err);
+        })
+      )
+      .toPromise();
+  }
 
   openSuccessDialog(phoneNumber?: string) {
     this.dialog.open(ModalSuccessComponent, {
@@ -152,12 +146,7 @@ export class RattachNumberModalComponent implements OnInit {
     });
   }
 
-nextStepRattachement(
-    status: boolean,
-    direction: string,
-    numeroToRattach?: string,
-    typeRattachment?: string
-  ) {
+  nextStepRattachement(status: boolean, direction: string, numeroToRattach?: string, typeRattachment?: string) {
     this.modalCon.dismiss({
       rattached: status,
       numeroToRattach: numeroToRattach,
@@ -170,36 +159,21 @@ nextStepRattachement(
     this.nextStepRattachement(false, 'ORANGE_NUMBERS');
   }
 
-  followAttachmentIssues(
-    payload: { numero: string; typeNumero: string },
-    eventType: 'error' | 'event'
-  ) {
+  followAttachmentIssues(payload: { numero: string; typeNumero: string }, eventType: 'error' | 'event') {
     if (eventType === 'event') {
       const infosFollow = {
         attached_number: payload.numero,
         login: this.mainNumber,
       };
-      const eventName = `rattachment_${
-        payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'
-      }_success`;
-      this.followAnalyticsService.registerEventFollow(
-        eventName,
-        eventType,
-        infosFollow
-      );
+      const eventName = `rattachment_${payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'}_success`;
+      this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload(infosFollow));
     } else {
       const infosFollow = {
         number_to_attach: payload.numero,
         login: this.mainNumber,
       };
-      const errorName = `rattachment_${
-        payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'
-      }_failed`;
-      this.followAnalyticsService.registerEventFollow(
-        errorName,
-        eventType,
-        infosFollow
-      );
+      const errorName = `rattachment_${payload.typeNumero === 'FIXE' ? 'fixe' : 'mobile'}_failed`;
+      this.oemLoggingService.registerEvent(errorName, convertObjectToLoggingPayload(infosFollow));
     }
   }
 

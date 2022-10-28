@@ -7,7 +7,6 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import * as SecureLS from 'secure-ls';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { takeUntil, catchError, switchMap, take, tap } from 'rxjs/operators';
 import { PRO_MOBILE_ERROR_CODE, FORGOT_PWD_PAGE_URL, REGEX_NUMBER_OM, parsedMsisdn } from 'src/shared';
 import { ModalController, NavController, Platform } from '@ionic/angular';
@@ -69,7 +68,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
   ionViewWillEnter() {}
 
   goIntro() {
-    this.oemLoggingService.registerEvent('Voir_Intro', []);
+    this.oemLoggingService.registerEvent('Voir_Intro');
     this.navController.navigateRoot(FORGOT_PWD_PAGE_URL);
   }
 
