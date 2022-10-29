@@ -1,20 +1,20 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog';
-import {Router} from '@angular/router';
-import {AuthenticationService} from '../services/authentication-service/authentication.service';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import * as SecureLS from 'secure-ls';
-import {DashboardService} from '../services/dashboard-service/dashboard.service';
-const ls = new SecureLS({encodingType: 'aes'});
-import {FORGOT_PWD_PAGE_URL, HelpModalDefaultContent} from 'src/shared';
-import {CommonIssuesComponent} from 'src/shared/common-issues/common-issues.component';
-import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
-import {NavController, ModalController} from '@ionic/angular';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+const ls = new SecureLS({ encodingType: 'aes' });
+import { FORGOT_PWD_PAGE_URL, HelpModalDefaultContent } from 'src/shared';
+import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
+import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { NavController, ModalController } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss']
+  styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
   showErrMessage = false;
@@ -33,41 +33,52 @@ export class LoginPage implements OnInit {
     {
       title: 'Je m’inscris',
       subTitle: 'Pas encore de compte',
-      action: 'register'
+      action: 'register',
     },
     {
       title: 'J’ai besoin d’aide',
       subTitle: "J'ai des difficultés pour me connecter",
-      action: 'help'
+      action: 'help',
     },
     {
       title: 'J’ai oublié mon mot de passe',
       subTitle: 'Je le réinitialise',
-      action: 'password'
-    }
+      action: 'password',
+    },
   ];
   constructor(
     private fb: FormBuilder,
-    private router: Router,
     private authServ: AuthenticationService,
     private dashbServ: DashboardService,
     public dialog: MatDialog,
     private followAnalyticsService: FollowAnalyticsService,
     private navController: NavController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.form = this.fb.group({
       username: [this.subscribedNumber, [Validators.required]],
       password: ['', [Validators.required]],
-      rememberMe: [this.rememberMe]
+      rememberMe: [this.rememberMe],
     });
+  }
+
+  processDirectLoginByDeeplink() {
+    const username = this.route.snapshot.paramMap.get('username') || history?.state?.username;
+    const password = this.route.snapshot.paramMap.get('password') || history?.state?.password;
+    if (username && password) {
+      this.form.patchValue({ username, password });
+      this.UserLogin({ username, password });
+    }
   }
 
   ionViewWillEnter() {
     this.getRegistrationInformation();
     ls.remove('light-token');
+    this.processDirectLoginByDeeplink();
   }
 
   getRegistrationInformation() {
@@ -104,7 +115,7 @@ export class LoginPage implements OnInit {
         );
       },
       err => {
-        this.followAnalyticsService.registerEventFollow('login_failed', 'error', {login: user.username, status: err.status});
+        this.followAnalyticsService.registerEventFollow('login_failed', 'error', { login: user.username, status: err.status });
         this.loading = false;
         this.showErrMessage = true;
         if (err && err.error.status === 400) {
@@ -149,7 +160,7 @@ export class LoginPage implements OnInit {
     const modal = await this.modalController.create({
       component: CommonIssuesComponent,
       cssClass: 'besoin-daide-modal',
-      componentProps: {data: sheetData}
+      componentProps: { data: sheetData },
     });
     return await modal.present();
   }
