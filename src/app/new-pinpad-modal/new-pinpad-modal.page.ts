@@ -79,7 +79,7 @@ import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
 import * as SecureLS from 'secure-ls';
 import { XeweulService } from '../services/xeweul/xeweul.service';
 import { PassAbonnementWidoService } from '../services/pass-abonnement-wido-service /pass-abonnement-wido.service';
-import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
+import { ANALYTICS_PROVIDER, OemLoggingService } from '../services/oem-logging/oem-logging.service';
 import { convertObjectToLoggingPayload } from '../utils/utils';
 const ls = new SecureLS({ encodingType: 'aes' });
 
@@ -434,7 +434,7 @@ export class NewPinpadModalPage implements OnInit {
           };
           this.orangeMoneyService.SaveOrangeMoneyUser(omUser);
           this.gettingPinpad = true;
-          this.oemLoggingService.registerEvent('Activation_OM_dashboard_success', convertObjectToLoggingPayload({ omNumber: this.omPhoneNumber }));
+          this.oemLoggingService.registerEvent('Activation_OM_dashboard_success', convertObjectToLoggingPayload({ omNumber: this.omPhoneNumber }), ANALYTICS_PROVIDER.ALL);
           this.orangeMoneyService.GetPinPad(this.pinpadData).subscribe(
             (response: any) => {
               const omUser1 = this.orangeMoneyService.GetOrangeMoneyUser(this.omPhoneNumber);

@@ -170,6 +170,12 @@ export class DashboardPostpaidFixePage implements OnInit {
       this.bordereau$ = this.billsService.bordereau(codeClient, invoiceType, this.currentNumber, last_month).pipe(
         tap((res: any) => {
           this.isLoading = false;
+          if (res) {
+            this.oemLoggingService.setUserAttribute({
+              keyAttribute: 'statut_last_facture_fixe',
+              valueAttribute: res?.statutFacture === 'paid' ? 'PAYEE' : 'IMPAYEE',
+            });
+          }
         }),
         catchError((err: any) => {
           this.hasErrorBordereau = true;

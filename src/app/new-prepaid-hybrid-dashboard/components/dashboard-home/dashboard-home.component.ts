@@ -186,7 +186,6 @@ export class DashboardHomeComponent implements OnInit {
     private qrScan: QrScannerService,
     private illiflexService: IlliflexService,
     private operationService: OperationService,
-    private storageService: LocalStorageService,
     private bottomSheetService: BottomSheetService
   ) {}
 
@@ -400,6 +399,8 @@ export class DashboardHomeComponent implements OnInit {
     this.sargalService.getCustomerSargalStatus().subscribe(
       (sargalStatus: SargalStatusModel) => {
         this.hasSargalProfile = true;
+        this.loadingSargalStatus = false;
+
         this.oemLogging.registerEvent('Affichage_profil_sargal_success', [
           {
             dataName: 'msisdn',
@@ -409,13 +410,13 @@ export class DashboardHomeComponent implements OnInit {
         if (!sargalStatus.valid) {
           this.sargalStatusUnavailable = true;
           this.oemLogging.removeUserAttribute('sargal_profil');
+        } else {
+          this.sargalStatus = sargalStatus.profilClient;
+          this.oemLogging.setUserAttribute({
+            keyAttribute: 'sargal_profil',
+            valueAttribute: this.sargalStatus,
+          });
         }
-        this.sargalStatus = sargalStatus.profilClient;
-        this.loadingSargalStatus = false;
-        this.oemLogging.setUserAttribute({
-          keyAttribute: 'sargal_profil',
-          valueAttribute: this.sargalStatus,
-        });
       },
       (err: any) => {
         this.oemLogging.registerEvent(

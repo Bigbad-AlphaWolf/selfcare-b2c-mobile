@@ -74,7 +74,7 @@ import { PAYMENT_BILLS_CATEGORY } from 'src/app/models/bill-payment.model';
 import { LocalStorageService } from '../localStorage-service/local-storage.service';
 import { DemandeAnnulationTransfertModel } from 'src/app/models/demande-annulation-transfert.model';
 import { PurchaseModel } from 'src/app/models/purchase.model';
-import { OemLoggingService } from '../oem-logging/oem-logging.service';
+import { ANALYTICS_PROVIDER, OemLoggingService } from '../oem-logging/oem-logging.service';
 import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
@@ -507,7 +507,7 @@ export class OrangeMoneyService {
         break;
     }
     if (type === 'event') {
-      this.oemLoggingService.registerEvent(eventKey, convertObjectToLoggingPayload(value));
+      this.oemLoggingService.registerEvent(eventKey, convertObjectToLoggingPayload(value), ANALYTICS_PROVIDER.ALL);
     } else {
       value = Object.assign({}, value, { error_code: res.status_code });
       this.oemLoggingService.registerEvent(errorKey, convertObjectToLoggingPayload(value));

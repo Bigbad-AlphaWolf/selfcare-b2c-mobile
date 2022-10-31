@@ -210,10 +210,22 @@ export class DashboardPostpaidPage implements OnInit {
     this.noSargalProfil = false;
     this.sargalServ.getCustomerSargalStatus().subscribe(
       (sargalStatus: SargalStatusModel) => {
+        this.oemLoggingService.registerEvent('Affichage_profil_sargal_success', [
+          {
+            dataName: 'msisdn',
+            dataValue: this.userPhoneNumber,
+          },
+        ]);
         if (!sargalStatus.valid) {
           this.sargalStatusUnavailable = true;
+          this.oemLoggingService.removeUserAttribute('sargal_profil');
+        } else {
+          this.sargalStatus = sargalStatus.profilClient;
+          this.oemLoggingService.setUserAttribute({
+            keyAttribute: 'sargal_profil',
+            valueAttribute: this.sargalStatus,
+          });
         }
-        this.sargalStatus = sargalStatus.profilClient;
         this.loadingStatus = true;
         this.hasError = false;
       },
@@ -294,8 +306,14 @@ export class DashboardPostpaidPage implements OnInit {
     this.errorBill = false;
     this.authServ.getSubscription(this.userPhoneNumber).subscribe((client: SubscriptionModel) => {
       this.billsService.getFactureMobile(client.clientCode).subscribe(
-        res => {
+        (res: any[]) => {
           this.bills = res;
+          if (res?.length) {
+            this.oemLoggingService.setUserAttribute({
+              keyAttribute: 'statut_last_facture_postpaid',
+              valueAttribute: this.bills[0]?.statutFacture === 'paid' ? 'PAYEE' : 'IMPAYEE',
+            });
+          }
         },
         () => {
           this.errorBill = true;

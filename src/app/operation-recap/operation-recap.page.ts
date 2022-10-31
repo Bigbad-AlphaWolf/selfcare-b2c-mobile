@@ -61,7 +61,7 @@ import { BoosterModel } from '../models/booster.model';
 import { FaceIdRequestModalComponent } from 'src/shared/face-id-request-modal/face-id-request-modal.component';
 import { catchError, tap } from 'rxjs/operators';
 import { PassAbonnementWidoService } from '../services/pass-abonnement-wido-service /pass-abonnement-wido.service';
-import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
+import { ANALYTICS_PROVIDER, OemLoggingService } from '../services/oem-logging/oem-logging.service';
 import { convertObjectToLoggingPayload } from '../utils/utils';
 
 @Component({
@@ -759,7 +759,7 @@ export class OperationRecapPage implements OnInit {
     if (this.opXtras && this.opXtras.fromPage === OPERATION_TYPE_BONS_PLANS) eventName += '_bons_plans';
     eventName += type === 'event' ? '_Success' : '_Error';
     console.log('followSuccess', logDetails, 'op', purchaseType, eventName);
-    this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload(logDetails));
+    this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload(logDetails), ANALYTICS_PROVIDER.ALL);
   }
 
   checkOMBalanceSuffiency(amount) {
