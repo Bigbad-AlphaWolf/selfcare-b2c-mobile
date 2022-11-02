@@ -93,4 +93,10 @@ export class BatchAnalyticsService {
         .save();
     } catch (error) {}
   }
+
+  optOut() {
+    try {
+      batch.optOutAndWipeData();
+    } catch (error) {}
+  }
 }

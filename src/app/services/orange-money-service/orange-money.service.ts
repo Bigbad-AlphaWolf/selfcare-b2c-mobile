@@ -485,10 +485,12 @@ export class OrangeMoneyService {
         errorKey = 'OM_Paiement_Marchand_Error';
         eventKey = 'OM_Paiement_Marchand_Success';
         value = dataToLog;
+        break;
       case OPERATION_RAPIDO:
         errorKey = 'Recharge_Rapido_Error';
         eventKey = 'Recharge_Rapido_Success';
         value = dataToLog;
+        break;
       case OPERATION_XEWEUL:
         errorKey = 'Recharge_Xeweul_Error';
         eventKey = 'Recharge_Xeweul_Success';
@@ -503,7 +505,10 @@ export class OrangeMoneyService {
         errorKey = 'Irt_Error';
         eventKey = 'Irt_Success';
         value = dataToLog;
+        break;
       default:
+        errorKey = operationType.toLowerCase() + '_error';
+        eventKey = operationType.toLowerCase() + '_Success';
         break;
     }
     if (type === 'event') {
