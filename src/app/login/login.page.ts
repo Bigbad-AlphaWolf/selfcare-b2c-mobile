@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import * as SecureLS from 'secure-ls';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
@@ -48,13 +48,14 @@ export class LoginPage implements OnInit {
   ];
   constructor(
     private fb: FormBuilder,
-    private router: Router,
     private authServ: AuthenticationService,
     private dashbServ: DashboardService,
     public dialog: MatDialog,
     private navController: NavController,
     private modalController: ModalController,
-    private oemLogging: OemLoggingService
+    private oemLogging: OemLoggingService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -65,9 +66,19 @@ export class LoginPage implements OnInit {
     });
   }
 
+  processDirectLoginByDeeplink() {
+    const username = this.route.snapshot.paramMap.get('username') || history?.state?.username;
+    const password = this.route.snapshot.paramMap.get('password') || history?.state?.password;
+    if (username && password) {
+      this.form.patchValue({ username, password });
+      this.UserLogin({ username, password });
+    }
+  }
+
   ionViewWillEnter() {
     this.getRegistrationInformation();
     ls.remove('light-token');
+    this.processDirectLoginByDeeplink();
   }
 
   getRegistrationInformation() {

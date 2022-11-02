@@ -24,7 +24,12 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule),
-    canActivate: [AuthGuard, AuthUpdateGuard],
+    //canActivate: [AuthGuard, AuthUpdateGuard],
+  },
+  {
+    path: 'login/:username/:password',
+    loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule),
+    //canActivate: [AuthGuard, AuthUpdateGuard],
   },
   {
     path: 'dashboard',
