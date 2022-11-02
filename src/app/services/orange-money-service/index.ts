@@ -370,7 +370,7 @@ export const DEFAULT_ERROR_MSG_CHANGE_PIN_VALIDATION = 'Le code ne doit pas comp
 export const SUCCESS_CHANGE_PIN_MSG =
   'Vous venez de changer votre code secret Orange Money. Ne le communiquez à personne, ce code reste confidentiel.';
 export const INITIALISE_PIN_OM_MSG =
-  'Vous venez de crééer votre code secret Orange Money. Ne le communiquez à personne, ce code reste confidentiel.';
+  'Vous venez de créer votre code secret OM. Ne le communiquez à personne, ce code reste confidentiel.';
 export const RESET_PIN_OM_MSG =
   'Vous venez de réinitialiser votre code secret Orange Money. Ne le communiquez à personne, ce code reste confidentiel.';
 export const LIST_DENIED_PIN_OM: string[] = [

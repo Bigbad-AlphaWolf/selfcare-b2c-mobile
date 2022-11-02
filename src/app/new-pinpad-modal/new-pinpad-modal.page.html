@@ -155,6 +155,11 @@
 				</button>
 				<button [id]="'cancel-btn' | generateIdForTA" class="scb-btn scb-btn-white cancel">Annuler</button>
 			</div>
+      <div class="confirm-block" *ngIf="shouldResetPin">
+				<button [id]="'reset-pin-btn'" class="scb-btn scb-btn-orange" (click)="goResetPwd()">
+					Modifier
+				</button>
+      </div>
 		</div>
 		<div
 			class="numbers-table"
