@@ -61,6 +61,7 @@ export class MyAccountPage implements OnInit {
     this.oemLogging.registerEvent('Deconnexion_click', [{ dataName: 'msisdn', dataValue: this.dashbServ.getMainPhoneNumber() }]);
     this.authServ.logout();
     this.dashbServ.cleanAddedScript(['ibou', 'userDimelo']);
+    this.oemLogging.optOutSDKs();
     this.navController.navigateRoot(['/']);
   }
 

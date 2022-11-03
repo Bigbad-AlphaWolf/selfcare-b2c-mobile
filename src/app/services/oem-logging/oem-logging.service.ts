@@ -75,4 +75,8 @@ export class OemLoggingService {
   removeValueToCollectionTag(collectionName: string, value: string) {
     this.batchService.removeValueToCollectionTag(collectionName, value);
   }
+
+  optOutSDKs() {
+    this.batchService.optOut();
+  }
 }

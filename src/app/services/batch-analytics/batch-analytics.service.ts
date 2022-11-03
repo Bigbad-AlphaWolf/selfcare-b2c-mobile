@@ -13,6 +13,7 @@ export class BatchAnalyticsService {
   initBatchConfig(isIOS?: boolean) {
     try {
       batch.setConfig({ androidAPIKey: BATCH_ANDROID_API_KEY, iOSAPIKey: BATCH_IOS_API_KEY });
+      batch.optIn();
       batch.start();
       if (isIOS) {
         batch.push.setiOSShowForegroundNotifications(true);
@@ -97,6 +98,8 @@ export class BatchAnalyticsService {
   optOut() {
     try {
       batch.optOutAndWipeData();
-    } catch (error) {}
+    } catch (error) {
+      console.log('error OptOut', error);
+    }
   }
 }
