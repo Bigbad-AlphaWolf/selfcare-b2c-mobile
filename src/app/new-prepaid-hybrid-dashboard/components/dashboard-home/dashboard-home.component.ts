@@ -532,6 +532,7 @@ export class DashboardHomeComponent implements OnInit {
         break;
       case 'FIXES':
         this.goTAllFixeServices();
+        break;
       case 'SE_DIVERTIR':
         this.goToNewServicesPage(TABS_SERVICES.LOISIR);
         break;
