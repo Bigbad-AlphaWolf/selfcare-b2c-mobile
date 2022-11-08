@@ -9,6 +9,7 @@ import { tap } from 'rxjs/operators';
 import { isPrepaidOrHybrid, SubscriptionModel } from 'src/app/dashboard';
 import * as SecureLS from 'secure-ls';
 import { DimeloCordovaPlugin } from 'DimeloPlugin/ngx';
+import { InfosAbonneModel } from 'src/app/models/infos-abonne.model';
 const ls = new SecureLS({ encodingType: 'aes' });
 const { DIMELO_CHAT_MARKUP } = environment;
 @Component({
@@ -45,32 +46,20 @@ export class IbouIonFabComponent implements OnInit {
   }
 
   openDimeloChat() {
-    const user = ls.get('user');
-    const username = `${user.firstName} ${user.lastName}`;
+    const user: InfosAbonneModel = ls.get('userInfos');
+    const username = `${user?.givenName} ${user?.familyName}`;
     const msisdn = this.dashboardServ.getMainPhoneNumber();
-    console.log('username', username);
-    console.log('msisdn', msisdn);
+    //console.log('username', username);
+    //console.log('msisdn', msisdn);
 
     this.sdkDimelo.openChat(username, msisdn).then(
       res => {
-        console.log('okkk');
+        console.log('chat open');
       },
       err => {
-        console.log('nokk');
+        console.log('chat not open', err);
       }
     );
-    //// @ts-ignore
-    //cordova.exec(
-    //  res => {
-    //    console.log('Dimelo Plugin res', res);
-    //  },
-    //  err => {
-    //    console.log('Dimelo Plugin err', err);
-    //  },
-    //  'DimeloCordovaPlugin',
-    //  'openChat',
-    //  [username, msisdn]
-    //);
   }
 
   hideChatBlock() {
