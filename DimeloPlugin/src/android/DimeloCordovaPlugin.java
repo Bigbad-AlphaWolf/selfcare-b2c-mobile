@@ -51,6 +51,7 @@ public class DimeloCordovaPlugin extends CordovaPlugin {
         // final String username = params.getString(0);
         // final String customerId = params.getString(1);
         this.dimelo.setUserName(username);
+				this.dimelo.setUserIdentifier(customerId);
         JSONObject authInfo = new JSONObject();
         try {
             authInfo.put("CustomerId", customerId);
