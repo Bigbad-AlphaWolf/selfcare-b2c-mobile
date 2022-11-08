@@ -5,6 +5,8 @@ import { environment } from 'src/environments/environment.prod';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import * as SecureLS from 'secure-ls';
+import { DimeloCordovaPlugin } from 'DimeloPlugin/ngx';
+import { InfosAbonneModel } from 'src/app/models/infos-abonne.model';
 import { ANALYTICS_PROVIDER, OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 const { DIMELO_CHAT_MARKUP } = environment;
@@ -16,21 +18,11 @@ const { DIMELO_CHAT_MARKUP } = environment;
 export class IbouIonFabComponent implements OnInit {
   fabOpened = false;
   DIMELO_CHAT_MARKUP = DIMELO_CHAT_MARKUP;
-  currentMsisdn: string;
   @Output() goTabAssistance: EventEmitter<any> = new EventEmitter();
 
-  constructor(
-    private router: Router,
-    private oemLoggingService: OemLoggingService,
-    private socialSharing: SocialSharing,
-    private el: ElementRef,
-    private dashboardServ: DashboardService,
-    private authServ: AuthenticationService
-  ) {}
+  constructor(private oemLoggingService: OemLoggingService, private el: ElementRef, private dashboardServ: DashboardService, private sdkDimelo: DimeloCordovaPlugin) {}
 
-  ngOnInit() {
-    this.currentMsisdn = this.dashboardServ.getCurrentPhoneNumber();
-  }
+  ngOnInit() {}
 
   ionViewWillEnter() {}
 
@@ -41,21 +33,19 @@ export class IbouIonFabComponent implements OnInit {
   }
 
   openDimeloChat() {
-    const user: { birthDate: string; familyName: string; givenName: string; gender: string } = ls.get('userInfos');
-    const username = `${user?.givenName?.toLowerCase()} ${user?.familyName?.toLowerCase()}`;
-    console.log('username dimelo', username);
+    const user: InfosAbonneModel = ls.get('userInfos');
+    const username = `${user?.givenName} ${user?.familyName}`;
     const msisdn = this.dashboardServ.getMainPhoneNumber();
-    // @ts-ignore
-    cordova.exec(
-      res => {
-        console.log('Dimelo Plugin res', res);
+    //console.log('username', username);
+    //console.log('msisdn', msisdn);
+
+    this.sdkDimelo.openChat(username, msisdn).then(
+      () => {
+        console.log('chat open');
       },
       err => {
-        console.log('Dimelo Plugin err', err);
-      },
-      'DimeloCordovaPlugin',
-      'openChat',
-      [username, msisdn]
+        console.log('chat not open', err);
+      }
     );
   }
 

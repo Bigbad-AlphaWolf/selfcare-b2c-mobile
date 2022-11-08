@@ -10,6 +10,7 @@ Dimelo* dimelo;
     NSLog(@"Hello, plugin initialized!");
     dimelo = [Dimelo sharedInstance];
     dimelo.delegate = self;
+		dimelo.enableThreads = YES;
     //Authentify using build-in authentification
     NSString* secret = @"65537b4ddf7eea735bad06e7d4a7e4dffa4935ce97736cdf40cb1e8318b68987";
     [dimelo initWithApiSecret:secret domainName:@"sonatel" delegate:self];
