@@ -1,19 +1,21 @@
-import {Component, ElementRef, EventEmitter, OnInit, Output} from '@angular/core';
-import {Router} from '@angular/router';
-import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
-import {SocialSharing} from '@ionic-native/social-sharing/ngx';
-import {environment} from 'src/environments/environment.prod';
-import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
-import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
-import {tap} from 'rxjs/operators';
-import {isPrepaidOrHybrid, SubscriptionModel} from 'src/app/dashboard';
+import { Component, ElementRef, EventEmitter, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { environment } from 'src/environments/environment.prod';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { tap } from 'rxjs/operators';
+import { isPrepaidOrHybrid, SubscriptionModel } from 'src/app/dashboard';
 import * as SecureLS from 'secure-ls';
-const ls = new SecureLS({encodingType: 'aes'});
-const {DIMELO_CHAT_MARKUP} = environment;
+import { DimeloCordovaPlugin } from 'DimeloPlugin/ngx';
+import { InfosAbonneModel } from 'src/app/models/infos-abonne.model';
+const ls = new SecureLS({ encodingType: 'aes' });
+const { DIMELO_CHAT_MARKUP } = environment;
 @Component({
   selector: 'app-ibou-ion-fab',
   templateUrl: './ibou-ion-fab.component.html',
-  styleUrls: ['./ibou-ion-fab.component.scss']
+  styleUrls: ['./ibou-ion-fab.component.scss'],
 })
 export class IbouIonFabComponent implements OnInit {
   fabOpened = false;
@@ -27,7 +29,8 @@ export class IbouIonFabComponent implements OnInit {
     private socialSharing: SocialSharing,
     private el: ElementRef,
     private dashboardServ: DashboardService,
-    private authServ: AuthenticationService
+    private authServ: AuthenticationService,
+    private sdkDimelo: DimeloCordovaPlugin
   ) {}
 
   ngOnInit() {
@@ -43,16 +46,20 @@ export class IbouIonFabComponent implements OnInit {
   }
 
   openDimeloChat() {
-    const user = ls.get("user");
-    const username = `${user.firstName} ${user.lastName}`;
+    const user: InfosAbonneModel = ls.get('userInfos');
+    const username = `${user?.givenName} ${user?.familyName}`;
     const msisdn = this.dashboardServ.getMainPhoneNumber();
-    // @ts-ignore
-    cordova.exec((res) => {
-      console.log("Dimelo Plugin res", res);
-    }, (err) => {
-      console.log("Dimelo Plugin err", err);
-      
-    }, "DimeloCordovaPlugin", "openChat", [username, msisdn]);
+    //console.log('username', username);
+    //console.log('msisdn', msisdn);
+
+    this.sdkDimelo.openChat(username, msisdn).then(
+      res => {
+        console.log('chat open');
+      },
+      err => {
+        console.log('chat not open', err);
+      }
+    );
   }
 
   hideChatBlock() {
@@ -102,7 +109,7 @@ export class IbouIonFabComponent implements OnInit {
       })
       .catch((err: any) => {
         console.log('Cannot open default sharing sheet' + err);
-        this.followAnalyticsService.registerEventFollow('Ibou_open_native_share_application_failed', 'error', {error: err});
+        this.followAnalyticsService.registerEventFollow('Ibou_open_native_share_application_failed', 'error', { error: err });
       });
     this.followAnalyticsService.registerEventFollow('Ibou_share_application_clic', 'event', 'clicked');
   }
