@@ -1,10 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Coordinates, Geolocation } from '@ionic-native/geolocation/ngx';
 import { IonSlides, NavController, Platform } from '@ionic/angular';
@@ -13,15 +7,10 @@ import { NO_AVATAR_ICON_URL } from 'src/shared';
 import { KioskOMModel } from '../models/kiosk-om.model';
 import { downloadAvatarEndpoint } from '../services/dashboard-service/dashboard.service';
 import { KioskLocatorService } from '../services/kiosk-locator-service/kiosk-locator.service';
-import {
-  GOOGLE_MAPS_STYLES_OBJECT,
-  KIOSK_VIEW,
-  MAP_CARDS_SLIDES_OPTIONS,
-  SEARCH_SIZE,
-} from '../services/kiosk-locator-service/kiosk.utils';
+import { GOOGLE_MAPS_STYLES_OBJECT, KIOSK_VIEW, MAP_CARDS_SLIDES_OPTIONS, SEARCH_SIZE } from '../services/kiosk-locator-service/kiosk.utils';
 // import { createHTMLMapMarker } from './classes/overlay';
 import * as SecureLS from 'secure-ls';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-kiosk-locator',
@@ -58,7 +47,7 @@ export class KioskLocatorPage implements OnInit {
     private platform: Platform,
     private navController: NavController,
     private ref: ChangeDetectorRef,
-    private followAnalyticsService: FollowAnalyticsService
+    private oemLoggingService: OemLoggingService
   ) {}
 
   async ionViewDidEnter() {
@@ -94,12 +83,7 @@ export class KioskLocatorPage implements OnInit {
           }
           this.kiosksArray = this.kiosksArray.concat(kiosks);
           for (let [i, kiosk] of kiosks.entries()) {
-            const marker = this.createHTMLMapMarker(
-              new google.maps.LatLng(kiosk.latitude, kiosk.longitude),
-              this.map,
-              null,
-              i + 1
-            );
+            const marker = this.createHTMLMapMarker(new google.maps.LatLng(kiosk.latitude, kiosk.longitude), this.map, null, i + 1);
             marker.addListener('click', () => {
               console.log('clicked');
               this.sliders.slideTo(i);
@@ -110,7 +94,7 @@ export class KioskLocatorPage implements OnInit {
           this.ref.detectChanges();
           this.page++;
         }),
-        catchError((err) => {
+        catchError(err => {
           throw new Error(err);
         })
       )
@@ -122,7 +106,7 @@ export class KioskLocatorPage implements OnInit {
       this.searchedMarker.setMap(null);
     }
     if (this.currentView === KIOSK_VIEW.VIEW_ITINERAIRE) {
-      this.markers.forEach((marker) => {
+      this.markers.forEach(marker => {
         marker.setMap(this.map);
       });
       this.directionsRenderer.setMap(null);
@@ -137,38 +121,21 @@ export class KioskLocatorPage implements OnInit {
     };
     let script = document.createElement('script');
     script.id = 'googleMaps';
-    script.src =
-      'http://maps.google.com/maps/api/js?key=' +
-      this.apiKey +
-      '&callback=mapInit';
+    script.src = 'http://maps.google.com/maps/api/js?key=' + this.apiKey + '&callback=mapInit';
     document.body.appendChild(script);
-    this.followAnalyticsService.registerEventFollow(
-      'loaded_google_map_success',
-      'event'
-    );
+    this.oemLoggingService.registerEvent('loaded_google_map_success');
   }
 
   async initMap() {
-    const position = await this.geolocation
-      .getCurrentPosition()
-      .catch((err) => {
-        console.log(err);
-        this.followAnalyticsService.registerEventFollow(
-          'kiosk_locator_location_not_allowed',
-          'event'
-        );
-        this.leave();
-        return { coords: null };
-      });
-    this.followAnalyticsService.registerEventFollow(
-      'kiosk_locator_location_allowed',
-      'event'
-    );
+    const position = await this.geolocation.getCurrentPosition().catch(err => {
+      console.log(err);
+      this.oemLoggingService.registerEvent('kiosk_locator_location_not_allowed');
+      this.leave();
+      return { coords: null };
+    });
+    this.oemLoggingService.registerEvent('kiosk_locator_location_allowed');
     this.userPosition = position.coords;
-    const latLng = new google.maps.LatLng(
-      this.userPosition?.latitude,
-      this.userPosition?.longitude
-    );
+    const latLng = new google.maps.LatLng(this.userPosition?.latitude, this.userPosition?.longitude);
     let mapOptions: google.maps.MapOptions = {
       center: latLng,
       zoom: 15.5,
@@ -189,8 +156,7 @@ export class KioskLocatorPage implements OnInit {
 
   addUserMarker(lat, lng) {
     let user = ls.get('user');
-    if (user.imageProfil)
-      this.avatarUrl = downloadAvatarEndpoint + user.imageProfil;
+    if (user.imageProfil) this.avatarUrl = downloadAvatarEndpoint + user.imageProfil;
     const html = `<div class="user-marker"><div class="img-container img-container-blue"><img src="${this.avatarUrl}" alt="av" class="user-img"></div></div>`;
     this.createHTMLMapMarker(new google.maps.LatLng(lat, lng), this.map, html);
   }
@@ -217,10 +183,7 @@ export class KioskLocatorPage implements OnInit {
     this.calculateAndDisplayRoute(kiosk, travelMode);
   }
 
-  calculateAndDisplayRoute(
-    kiosk: KioskOMModel,
-    travelMode: google.maps.TravelMode
-  ) {
+  calculateAndDisplayRoute(kiosk: KioskOMModel, travelMode: google.maps.TravelMode) {
     const destination = `${kiosk.latitude}, ${kiosk.longitude}`;
     const origin = `${this.userPosition.latitude}, ${this.userPosition.longitude}`;
     this.directionsService.route(
@@ -229,7 +192,7 @@ export class KioskLocatorPage implements OnInit {
         destination,
         travelMode,
       },
-      (response) => {
+      response => {
         this.directionsRenderer.setDirections(response);
       }
     );
@@ -249,15 +212,10 @@ export class KioskLocatorPage implements OnInit {
       this.onSelectKiosk(event.kiosk, event.index);
       this.currentView = KIOSK_VIEW.VIEW_ITINERAIRE;
       this.clearAllMarkers();
-      this.searchedMarker = this.createHTMLMapMarker(
-        new google.maps.LatLng(event.kiosk.latitude, event.kiosk.longitude),
-        this.map,
-        null,
-        event.index
-      );
+      this.searchedMarker = this.createHTMLMapMarker(new google.maps.LatLng(event.kiosk.latitude, event.kiosk.longitude), this.map, null, event.index);
     } else {
       this.currentView = KIOSK_VIEW.VIEW_CARDS;
-      this.markers.forEach((marker) => {
+      this.markers.forEach(marker => {
         marker.setMap(this.map);
       });
       this.searchForm.reset();
@@ -267,19 +225,14 @@ export class KioskLocatorPage implements OnInit {
 
   onSlideChanged(ev) {
     this.markers[this.currentSlideIndex].removeClassCurrent();
-    this.sliders.getActiveIndex().then((index) => {
+    this.sliders.getActiveIndex().then(index => {
       const correspondingKiosk = this.kiosksArray.find((kiosk, i) => {
         this.currentSlideIndex = i;
         return i === index;
       });
       this.markers[this.currentSlideIndex].setClassCurrent();
       this.map.setZoom(18);
-      this.map.panTo(
-        new google.maps.LatLng(
-          correspondingKiosk.latitude,
-          correspondingKiosk.longitude
-        )
-      );
+      this.map.panTo(new google.maps.LatLng(correspondingKiosk.latitude, correspondingKiosk.longitude));
     });
   }
 
@@ -293,11 +246,7 @@ export class KioskLocatorPage implements OnInit {
       public html: string;
       public div: HTMLElement;
 
-      constructor(args?: {
-        latlng?: google.maps.LatLng;
-        html?: string;
-        map?: google.maps.Map;
-      }) {
+      constructor(args?: { latlng?: google.maps.LatLng; html?: string; map?: google.maps.Map }) {
         super();
         this.latlng = args.latlng;
         this.html = args.html;
@@ -338,7 +287,7 @@ export class KioskLocatorPage implements OnInit {
         if (this.html) {
           this.div.innerHTML = this.html;
         }
-        google.maps.event.addDomListener(this.div, 'click', (event) => {
+        google.maps.event.addDomListener(this.div, 'click', event => {
           google.maps.event.trigger(this, 'click');
         });
       }
@@ -371,9 +320,7 @@ export class KioskLocatorPage implements OnInit {
     return new HTMLMapMarker({
       latlng: coords,
       map,
-      html: html
-        ? html
-        : `<div class="custom-marker"><div class="circle">${index}</div><div class="arrow-down"></div></div>`,
+      html: html ? html : `<div class="custom-marker"><div class="circle">${index}</div><div class="arrow-down"></div></div>`,
     });
   }
 }

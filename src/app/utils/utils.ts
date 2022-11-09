@@ -1,12 +1,12 @@
-import {MONTHS, NO_TOKEN_URLS, OM_URLS, TRANSFER_OM_INTERNATIONAL_COUNTRIES} from './constants';
-import {MonthOem} from '../models/month.model';
-import {REGEX_FIX_NUMBER, REGEX_NUMBER_OM, SubscriptionModel} from 'src/shared';
-import {isPostpaidFix, isPostpaidMobile, ModelOfSouscription} from '../dashboard';
-import {FormGroup} from '@angular/forms';
-import {DatePipe} from '@angular/common';
+import { MONTHS, NO_TOKEN_URLS, OM_URLS, TRANSFER_OM_INTERNATIONAL_COUNTRIES } from './constants';
+import { MonthOem } from '../models/month.model';
+import { REGEX_FIX_NUMBER, REGEX_NUMBER_OM, SubscriptionModel } from 'src/shared';
+import { isPostpaidFix, isPostpaidMobile, ModelOfSouscription } from '../dashboard';
+import { FormGroup } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 export function removeObjectField(obj: any, f: string) {
-  const {[f]: propValue, ...rest} = obj;
+  const { [f]: propValue, ...rest } = obj;
   return rest;
 }
 
@@ -29,7 +29,7 @@ export function previousMonths(moisDispo: number, n: number = 6) {
       position: p < 10 ? '0' + p : p + '',
       code: MONTHS[m] ? MONTHS[m].toLowerCase() : null,
       name: MONTHS[m],
-      year: date.getFullYear().toString()
+      year: date.getFullYear().toString(),
     });
 
     date.setMonth(m - 1);
@@ -52,10 +52,7 @@ export function checkUrlNotNeedAuthorization(url: string) {
 }
 
 export function isLineNumber(phone: string, souscription: SubscriptionModel) {
-  return (
-    (REGEX_FIX_NUMBER.test(phone) && isPostpaidFix(souscription)) ||
-    (!REGEX_FIX_NUMBER.test(phone) && isPostpaidMobile(souscription))
-  );
+  return (REGEX_FIX_NUMBER.test(phone) && isPostpaidFix(souscription)) || (!REGEX_FIX_NUMBER.test(phone) && isPostpaidMobile(souscription));
 }
 
 export function checkUrlMatch(path: string) {
@@ -68,12 +65,12 @@ export function checkUrlMatch(path: string) {
 }
 
 export function dateValidatorLessThan(startDate: string, endDate: string) {
-  return (group: FormGroup): {[key: string]: any} => {
+  return (group: FormGroup): { [key: string]: any } => {
     const start = new Date(group.controls[startDate].value);
     const end = new Date(group.controls[endDate].value);
     if (start > end) {
       return {
-        dates: 'Date startDate should be less than Date endDate'
+        dates: 'Date startDate should be less than Date endDate',
       };
     }
     return {};
@@ -106,9 +103,21 @@ export function getCountryInfos(phoneNumber: string) {
 }
 
 export function isExternallURL(url: string) {
-	return url.startsWith("https://") || url.startsWith("http://")
+  return url.startsWith('https://') || url.startsWith('http://');
 }
 
 export function replaceWhiteSpaceWithCaracter(textWithSpace: string, caracterReplacement: string): string {
   return textWithSpace.replace(/[^a-zA-Z0-9.]/g, caracterReplacement);
+}
+
+export function convertObjectToLoggingPayload(data: any) {
+  const response: { dataName: string; dataValue: string }[] = [];
+  for (const key in data) {
+    const item = {
+      dataName: key,
+      dataValue: data[key],
+    };
+    response.push(item);
+  }
+  return response;
 }

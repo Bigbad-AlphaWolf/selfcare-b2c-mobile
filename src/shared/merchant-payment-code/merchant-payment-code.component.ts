@@ -11,7 +11,8 @@ import { RecentsService } from 'src/app/services/recents-service/recents.service
 import { FavoriteMerchantComponent } from 'src/app/components/favorite-merchant/favorite-merchant.component';
 import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-merchant-payment-code',
@@ -34,7 +35,7 @@ export class MerchantPaymentCodeComponent implements OnInit {
     private bsService: BottomSheetService,
     private recentsService: RecentsService,
     private modalController: ModalController,
-    private followAnalyticService: FollowAnalyticsService
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -52,12 +53,7 @@ export class MerchantPaymentCodeComponent implements OnInit {
       (response: any) => {
         this.chekingMerchant = false;
 
-        if (
-          response &&
-          response.status_code &&
-          (response.status_code.match('Success') ||
-            response.status_code.match('Erreur-601'))
-        ) {
+        if (response && response.status_code && (response.status_code.match('Success') || response.status_code.match('Erreur-601'))) {
           const payload = {
             purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
             merchant: {
@@ -84,7 +80,7 @@ export class MerchantPaymentCodeComponent implements OnInit {
           this.onCheckingMerchantError(response.status_wording);
         }
       },
-      (err) => {
+      err => {
         const infos = {
           sender: this.omMsisdn,
           receiver: code,
@@ -94,9 +90,7 @@ export class MerchantPaymentCodeComponent implements OnInit {
         this.loginfosFollow('error', infos);
         this.chekingMerchant = false;
         if (err.error.name) return;
-        err && err.msg
-          ? this.onCheckingMerchantError(err.msg)
-          : this.onCheckingMerchantError();
+        err && err.msg ? this.onCheckingMerchantError(err.msg) : this.onCheckingMerchantError();
       }
     );
   }
@@ -117,36 +111,33 @@ export class MerchantPaymentCodeComponent implements OnInit {
       purchaseType: OPERATION_TYPE_MERCHANT_PAYMENT,
       merchant: merchant,
     };
-    this.loginfosFollow('event', {
-      sender: this.omMsisdn,
-      receiver: merchant.merchantCode,
-      operation: OPERATION_TYPE_MERCHANT_PAYMENT,
-    });
+    this.oemLoggingService.registerEvent('merchant_payment_favorite_click', [
+      { dataName: 'codeMarchand', dataValue: merchant.merchantCode },
+      { dataName: 'msisdn', dataValue: this.omMsisdn },
+    ]);
     this.applicationRoutingService.goSetAmountPage(payload);
     this.modalController.dismiss();
   }
 
   getRecentMerchants() {
     this.loadingRecents = true;
-    this.recentMerchants$ = this.recentsService
-      .fetchRecents(OPERATION_TYPE_MERCHANT_PAYMENT, 3)
-      .pipe(
-        map((recents: RecentsOem[]) => {
-          this.loadingRecents = false;
-          let results = [];
-          recents.forEach((el) => {
-            results.push({
-              name: JSON.parse(el.payload).nom_marchand,
-              merchantCode: el.destinataire,
-            });
+    this.recentMerchants$ = this.recentsService.fetchRecents(OPERATION_TYPE_MERCHANT_PAYMENT, 3).pipe(
+      map((recents: RecentsOem[]) => {
+        this.loadingRecents = false;
+        let results = [];
+        recents.forEach(el => {
+          results.push({
+            name: JSON.parse(el.payload)?.nom_marchand,
+            merchantCode: el?.destinataire,
           });
-          return results;
-        }),
-        catchError((err) => {
-          this.loadingRecents = false;
-          return of([]);
-        })
-      );
+        });
+        return results;
+      }),
+      catchError(err => {
+        this.loadingRecents = false;
+        return of([]);
+      })
+    );
   }
 
   numberOnly(event) {
@@ -160,14 +151,12 @@ export class MerchantPaymentCodeComponent implements OnInit {
   loginfosFollow(typeEvent: 'event' | 'error', infos: any) {
     if (typeEvent === 'event') {
       const follow = 'OM_Paiement_Marchand_Select_Recipient_success';
-      console.log('follow', follow, 'infos', infos);
 
-      this.followAnalyticService.registerEventFollow(follow, typeEvent, infos);
+      this.oemLoggingService.registerEvent(follow, convertObjectToLoggingPayload(infos));
     } else {
       const follow = 'OM_Paiement_Marchand_Select_Recipient_error';
-      console.log('followErr', follow, 'infos', infos);
 
-      this.followAnalyticService.registerEventFollow(follow, 'error', infos);
+      this.oemLoggingService.registerEvent(follow, convertObjectToLoggingPayload(infos));
     }
   }
 }

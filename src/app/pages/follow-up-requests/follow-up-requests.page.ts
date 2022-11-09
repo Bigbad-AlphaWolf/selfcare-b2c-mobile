@@ -11,7 +11,8 @@ import { ReclamationType } from 'src/app/models/enums/reclamation.enum';
 import { LinesComponent } from 'src/app/components/lines/lines.component';
 import { OPERATION_SEE_FOLLOW_UP_REQUESTS } from 'src/shared';
 import { getPageHeader } from 'src/app/utils/title.util';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-follow-up-requests',
@@ -22,19 +23,19 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
   phoneFix: string;
   requests$: Observable<RequestOem[]>;
   isInitRequests: boolean;
-  header = getPageHeader(OPERATION_SEE_FOLLOW_UP_REQUESTS) ;
+  header = getPageHeader(OPERATION_SEE_FOLLOW_UP_REQUESTS);
   @ViewChild('numberInput', { static: true }) numberInput: ElementRef;
   isConfirm: boolean;
   noRequest: boolean;
   isNotValid: boolean;
-  listRequestWithStatus: { "current" : RequestOem, "previous" : RequestOem[], "next": RequestOem[] } = { "current": null, "previous": [], "next": []} ;
+  listRequestWithStatus: { current: RequestOem; previous: RequestOem[]; next: RequestOem[] } = { current: null, previous: [], next: [] };
   login = this.dashboardService.getMainPhoneNumber();
   constructor(
     private dashboardService: DashboardService,
     private requestSrvice: RequestOemService,
     private navCtrl: NavController,
     private modalController: ModalController,
-    private followServ: FollowAnalyticsService
+    private oemLoggingService: OemLoggingService
   ) {
     super();
   }
@@ -53,7 +54,7 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
     this.dashboardService
       .fetchFixedNumbers()
       .pipe(
-        tap((numbers) => {
+        tap(numbers => {
           // numbers = ['338239614'];
           if (!numbers.length) {
             this.isInitRequests = false;
@@ -77,7 +78,7 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
       tap((res: RequestOem[]) => {
         this.isInitRequests = false;
         this.listRequestWithStatus.current = res.find((el: RequestOem) => {
-          return el.currentState
+          return el.currentState;
         });
 
         this.listRequestWithStatus.previous = res.filter((elt: RequestOem) => {
@@ -89,55 +90,40 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
         });
 
         const eventName = `success_recup_suivi_demande_fixe_par_numero`;
-        const infosFollow = { login: this.login, numeroFixe: fixnumber }
-        this.followServ.registerEventFollow(
-          eventName,
-          'event',
-          infosFollow
-        );
-
-      }),catchError((err: any) => {
+        const infosFollow = { login: this.login, numeroFixe: fixnumber };
+        this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload(infosFollow));
+      }),
+      catchError((err: any) => {
         this.isInitRequests = false;
         const eventName = `failed_recup_suivi_demande_fixe_par_numero`;
         const infosFollow = { login: this.login, numeroFixe: fixnumber, error: err.error.status };
-        this.followServ.registerEventFollow(
-          eventName,
-          'error',
-          infosFollow
-        );
+        this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload(infosFollow));
         return of(err);
       })
-    )
+    );
   }
 
   onRequestChoosen(req: RequestOem) {
     this.isInitRequests = true;
     this.requestSrvice
       .requestStatus(req.requestId)
-      .pipe(takeUntil(this.ngUnsubscribe),
-      catchError((err: any) => {
-        const eventName = `failed_recup_suivi_demande_fixe_par_numero_suivi`;
-        const infosFollow = { login: this.login, numeroSuivi: req.requestId, error: err.error.status };
-        this.followServ.registerEventFollow(
-          eventName,
-          'error',
-          infosFollow
-        );
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        catchError((err: any) => {
+          const eventName = `failed_recup_suivi_demande_fixe_par_numero_suivi`;
+          const infosFollow = { login: this.login, numeroSuivi: req.requestId, error: err.error.status };
+          this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload(infosFollow));
 
-        return of(err)
-      }))
-      .subscribe((r) => {
+          return of(err);
+        })
+      )
+      .subscribe(r => {
         this.isInitRequests = false;
         const eventName = `success_recup_suivi_demande_fixe_par_numero_suivi`;
         const infosFollow = { login: this.login, numeroSuivi: req.requestId };
-        this.followServ.registerEventFollow(
-          eventName,
-          'event',
-          infosFollow
-        );
+        this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload(infosFollow));
         this.requestSrvice.currentRequestStatusId = req.requestId;
-        if (r.length)
-          this.navCtrl.navigateForward([RequestStatusPage.PATH_ROUTE]);
+        if (r.length) this.navCtrl.navigateForward([RequestStatusPage.PATH_ROUTE]);
       });
   }
 
@@ -154,33 +140,23 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
     this.requestSrvice
       .requestStatus(numberSuivi)
       .pipe(
-        catchError((err) => {
+        catchError(err => {
           this.isConfirm = false;
           const eventName = `failed_recup_suivi_demande_fixe_par_numero_suivi`;
           const infosFollow = { login: this.login, numeroSuivi: numberSuivi, error: err.error.status };
-          this.followServ.registerEventFollow(
-            eventName,
-            'error',
-            infosFollow
-          );
+          this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload(infosFollow));
           throw err;
         }),
         takeUntil(this.ngUnsubscribe)
       )
-      .subscribe((r) => {
-
+      .subscribe(r => {
         const eventName = `success_recup_suivi_demande_fixe_par_numero_suivi`;
         const infosFollow = { login: this.login, numeroSuivi: numberSuivi };
-        this.followServ.registerEventFollow(
-          eventName,
-          'event',
-          infosFollow
-        );
+        this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload(infosFollow));
 
         this.isConfirm = false;
         if (!r.length) this.noRequest = true;
         else {
-
           // this.followServ.registerEventFollow()
           this.requestSrvice.currentRequestStatusId = numberSuivi;
           this.noRequest = false;
@@ -193,14 +169,14 @@ export class FollowUpRequestsPage extends BaseComponent implements OnInit {
       component: LinesComponent,
       componentProps: {
         phone: this.phoneFix,
-        phoneType: 'FIXE'
+        phoneType: 'FIXE',
       },
       cssClass: 'select-recipient-modal',
     });
-    modal.onDidDismiss().then((response) => {
+    modal.onDidDismiss().then(response => {
       if (response && response.data) {
         this.phoneFix = response.data.phone;
-        this.requests$ = this.fetchNumberlistRequest(this.phoneFix)
+        this.requests$ = this.fetchNumberlistRequest(this.phoneFix);
       }
     });
     return await modal.present();

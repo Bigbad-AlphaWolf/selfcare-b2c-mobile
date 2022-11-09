@@ -105,7 +105,7 @@
           *ngFor="let item of sargalCategories; let i=index"
 					[id]="('item-sargal-'+i) | generateIdForTA"
           class="sargal-mobile-offers-top3-item"
-          (click)="goToCategorySargal(item.id)"
+          (click)="goToCategorySargal(item)"
         >
           <div class="item-icon">
             <img

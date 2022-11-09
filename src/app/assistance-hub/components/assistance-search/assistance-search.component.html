@@ -30,8 +30,8 @@
 
         <div class="result-count">Résultats({{filtredBas?.length}})</div>
         <ng-container *ngFor="let besoinAide of filtredBas , let i=index">
-          <app-action-item class="app-action-item" [action]="besoinAide" [search]="true" *ngIf="besoinAide.typeService === 'ACTE' "></app-action-item>
-          <app-faq-item [question]="besoinAide" *ngIf="besoinAide.typeService === 'FAQ' "></app-faq-item>
+          <app-action-item class="app-action-item" [action]="besoinAide" [search]="true" *ngIf="besoinAide.typeService === 'ACTE'" (click)="logAct(besoinAide)"></app-action-item>
+          <app-faq-item [question]="besoinAide" *ngIf="besoinAide.typeService === 'FAQ'" (click)="logAct(besoinAide)"></app-faq-item>
         </ng-container>
       </ng-container>
 

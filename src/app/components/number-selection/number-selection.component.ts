@@ -14,8 +14,8 @@ import {
   NO_RECENTS_MSG,
   OPERATION_TYPE_PASS_INTERNATIONAL,
   OPERATION_TYPE_PASS_LAMBJ,
-	OPERATION_TYPE_SEDDO_CREDIT,
-	OPERATION_TYPE_SEDDO_BONUS,
+  OPERATION_TYPE_SEDDO_CREDIT,
+  OPERATION_TYPE_SEDDO_BONUS,
 } from 'src/shared';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
@@ -32,9 +32,10 @@ import { RecentsService } from 'src/app/services/recents-service/recents.service
 import { RecentsOem } from 'src/app/models/recents-oem.model';
 import { SessionOem } from 'src/app/services/session-oem/session-oem.service';
 import { CODE_FORMULE_FIX_PREPAID } from 'src/app/dashboard';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { PermissionSettingsPopupComponent } from '../permission-settings-popup/permission-settings-popup.component';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 @Component({
   selector: 'oem-number-selection',
@@ -76,7 +77,7 @@ export class NumberSelectionComponent implements OnInit {
     private authService: AuthenticationService,
     private changeDetectorRef: ChangeDetectorRef,
     private recentsService: RecentsService,
-    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private diagnostic: Diagnostic
   ) {}
 
@@ -97,9 +98,9 @@ export class NumberSelectionComponent implements OnInit {
       }),
       share()
     );
-		if(this.data.purchaseType !== OPERATION_TYPE_SEDDO_CREDIT && this.data.purchaseType !== OPERATION_TYPE_SEDDO_BONUS) {
-			this.checkOmAccount();
-		}
+    if (this.data.purchaseType !== OPERATION_TYPE_SEDDO_CREDIT && this.data.purchaseType !== OPERATION_TYPE_SEDDO_BONUS) {
+      this.checkOmAccount();
+    }
     this.checkContactsAuthorizationStatus();
   }
 
@@ -121,18 +122,24 @@ export class NumberSelectionComponent implements OnInit {
         }),
         tap((res: { name: string; msisdn: string }[]) => {
           this.recents = res;
-          this.followAnalyticsService.registerEventFollow('Get_recents_destinataire_OM_success', 'event', {
-            operation: this.data.purchaseType,
-            sender: this.opXtras.senderMsisdn,
-          });
+          this.oemLoggingService.registerEvent(
+            'Get_recents_destinataire_OM_success',
+            convertObjectToLoggingPayload({
+              operation: this.data.purchaseType,
+              sender: this.opXtras.senderMsisdn,
+            })
+          );
         }),
         catchError(err => {
           this.loadingRecents = false;
-          this.followAnalyticsService.registerEventFollow('Get_recents_destinataire_OM_error', 'error', {
-            operation: this.data.purchaseType,
-            sender: this.opXtras.senderMsisdn,
-            error: err.status,
-          });
+          this.oemLoggingService.registerEvent(
+            'Get_recents_destinataire_OM_error',
+            convertObjectToLoggingPayload({
+              operation: this.data.purchaseType,
+              sender: this.opXtras.senderMsisdn,
+              error: err.status,
+            })
+          );
           return of([]);
         }),
         share()
@@ -143,10 +150,7 @@ export class NumberSelectionComponent implements OnInit {
   checkContactsAuthorizationStatus() {
     this.diagnostic.getContactsAuthorizationStatus().then(
       contactStatus => {
-        if (
-          contactStatus === this.diagnostic.permissionStatus.NOT_REQUESTED ||
-          contactStatus === this.diagnostic.permissionStatus.DENIED_ALWAYS
-        ) {
+        if (contactStatus === this.diagnostic.permissionStatus.NOT_REQUESTED || contactStatus === this.diagnostic.permissionStatus.DENIED_ALWAYS) {
           this.showRecentMessage = true;
           this.recentMessage = "Pour afficher vos contacts/bénéficiaires récents, vous devez autoriser l'accés à vos contacts.";
         }
@@ -176,10 +180,13 @@ export class NumberSelectionComponent implements OnInit {
     this.canNotRecieve = false;
     if (phone) {
       this.opXtras.recipientMsisdn = phone;
-      this.followAnalyticsService.registerEventFollow('Select_recents_buy', 'event', {
-        msisdn: this.currentPhone,
-        recent: phone,
-      });
+      this.oemLoggingService.registerEvent(
+        'Select_recents_buy',
+        convertObjectToLoggingPayload({
+          msisdn: this.currentPhone,
+          recent: phone,
+        })
+      );
     }
     if (this.checkIfIsRecipientInvalid()) {
       this.canNotRecieve = true;
@@ -239,8 +246,7 @@ export class NumberSelectionComponent implements OnInit {
           }
         }
         if (
-          ((res.code === CODE_KIRENE_Formule || res.code === CODE_FORMULE_FIX_PREPAID) &&
-            this.data.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX) ||
+          ((res.code === CODE_KIRENE_Formule || res.code === CODE_FORMULE_FIX_PREPAID) && this.data.purchaseType === OPERATION_TYPE_PASS_ILLIFLEX) ||
           (res.code === CODE_FORMULE_FIX_PREPAID && this.data.purchaseType === OPERATION_TYPE_PASS_INTERNATIONAL)
         ) {
           this.eligibilityChecked = true;
@@ -374,9 +380,9 @@ export class NumberSelectionComponent implements OnInit {
     }
 
     if (typeEvent === 'event') {
-      this.followAnalyticsService.registerEventFollow(followEventSucess, 'event', payload);
+      this.oemLoggingService.registerEvent(followEventSucess, convertObjectToLoggingPayload(payload));
     } else {
-      this.followAnalyticsService.registerEventFollow(followEventError, 'error', payload);
+      this.oemLoggingService.registerEvent(followEventError, convertObjectToLoggingPayload(payload));
     }
   }
 }

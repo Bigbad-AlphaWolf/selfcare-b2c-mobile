@@ -1,30 +1,31 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {environment} from 'src/environments/environment';
-import {of, Subject, Subscription} from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { environment } from 'src/environments/environment';
+import { of, Subject, Subscription } from 'rxjs';
 import * as SecureLS from 'secure-ls';
-import {AuthenticationService} from '../authentication-service/authentication.service';
-import {DashboardService, downloadAvatarEndpoint} from '../dashboard-service/dashboard.service';
-import {DeleteNumberPopupComponent} from 'src/app/my-account/delete-number-popup/delete-number-popup.component';
-import {ChangeAvatarPopupComponent} from 'src/app/my-account/change-avatar-popup/change-avatar-popup.component';
-import {InProgressPopupComponent} from 'src/shared/in-progress-popup/in-progress-popup.component';
-import {SuccessFailPopupComponent} from 'src/shared/success-fail-popup/success-fail-popup.component';
-import {generateUUID, OPERATION_CONFIRM_DELETE_RATTACH_NUMBER} from 'src/shared';
-import {FollowAnalyticsService} from '../follow-analytics/follow-analytics.service';
-import {ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT, ACCOUNT_IDENTIFIED_NUMBERS_ENDPOINT, CHECK_NUMBER_IS_CORPORATE_ENDPOINT} from '../utils/account.endpoints';
-import {catchError, map, take, tap} from 'rxjs/operators';
-import {ModalController} from '@ionic/angular';
-import {YesNoModalComponent} from 'src/shared/yes-no-modal/yes-no-modal.component';
-const {FILE_SERVICE, ACCOUNT_MNGT_SERVICE, SERVER_API_URL, UAA_SERVICE} = environment;
+import { AuthenticationService } from '../authentication-service/authentication.service';
+import { DashboardService, downloadAvatarEndpoint } from '../dashboard-service/dashboard.service';
+import { DeleteNumberPopupComponent } from 'src/app/my-account/delete-number-popup/delete-number-popup.component';
+import { ChangeAvatarPopupComponent } from 'src/app/my-account/change-avatar-popup/change-avatar-popup.component';
+import { InProgressPopupComponent } from 'src/shared/in-progress-popup/in-progress-popup.component';
+import { SuccessFailPopupComponent } from 'src/shared/success-fail-popup/success-fail-popup.component';
+import { generateUUID, OPERATION_CONFIRM_DELETE_RATTACH_NUMBER } from 'src/shared';
+import { ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT, ACCOUNT_IDENTIFIED_NUMBERS_ENDPOINT, CHECK_NUMBER_IS_CORPORATE_ENDPOINT } from '../utils/account.endpoints';
+import { catchError, map, take, tap } from 'rxjs/operators';
+import { ModalController } from '@ionic/angular';
+import { YesNoModalComponent } from 'src/shared/yes-no-modal/yes-no-modal.component';
+import { OemLoggingService } from '../oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
+const { FILE_SERVICE, ACCOUNT_MNGT_SERVICE, SERVER_API_URL, UAA_SERVICE } = environment;
 const uploadAvatarEndpoint = `${SERVER_API_URL}/${FILE_SERVICE}/api/upload`;
 const accountManagementEndPoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/account-management/account-b-2-cs`;
 const changePasswordEndpoint = `${SERVER_API_URL}/api/account/b2c/change-password`;
 const deleteLinkedPhoneNumberEndpoint = `${SERVER_API_URL}/${ACCOUNT_MNGT_SERVICE}/api/rattachement-lignes/delete-multiple`;
-const ls = new SecureLS({encodingType: 'aes'});
+const ls = new SecureLS({ encodingType: 'aes' });
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccountService {
   changePasswordSubject: Subject<any> = new Subject<any>();
@@ -40,17 +41,17 @@ export class AccountService {
     private http: HttpClient,
     private dialog: MatDialog,
     private authService: AuthenticationService,
-    private followService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private dashbServ: DashboardService,
     private modal: ModalController
   ) {}
 
-  changePassword(payload: {login: string; newPassword: string}) {
+  changePassword(payload: { login: string; newPassword: string }) {
     return this.http.post(changePasswordEndpoint, payload);
   }
 
   changeUserPassword(login: string, newPassword: string) {
-    const changePasswordPayload = {login, newPassword};
+    const changePasswordPayload = { login, newPassword };
     this.changePassword(changePasswordPayload).subscribe(
       res => {
         this.openSuccessDialog('changePassword');
@@ -78,7 +79,7 @@ export class AccountService {
   openSuccessDialog(type: string) {
     const dialogRef = this.dialog.open(SuccessFailPopupComponent, {
       width: '400px',
-      data: {type}
+      data: { type },
     });
     dialogRef.afterClosed().subscribe(confirmresult => {});
   }
@@ -87,7 +88,7 @@ export class AccountService {
     const login = this.authService.getUserMainPhoneNumber();
     return this.http.post(deleteLinkedPhoneNumberEndpoint, {
       listMsisdn,
-      login
+      login,
     });
   }
 
@@ -96,9 +97,9 @@ export class AccountService {
       component: YesNoModalComponent,
       componentProps: {
         typeModal: OPERATION_CONFIRM_DELETE_RATTACH_NUMBER,
-        numero: phoneNumbersToDelete[0]
+        numero: phoneNumbersToDelete[0],
       },
-      cssClass: 'select-recipient-modal'
+      cssClass: 'select-recipient-modal',
     });
 
     modal.onDidDismiss().then((res: any) => {
@@ -108,10 +109,10 @@ export class AccountService {
           () => {
             this.deleteLinkedPhoneNumberSubject.next();
             this.dashbServ.attachedNumbersChangedSubject.next();
-            this.followService.registerEventFollow('delete_phoneNumber_success', 'event', {phoneNumbersToDelete});
+            this.oemLoggingService.registerEvent('delete_phoneNumber_success', convertObjectToLoggingPayload({ phoneNumbersToDelete }));
           },
           () => {
-            this.followService.registerEventFollow('delete_phoneNumber_error', 'error', {phoneNumbersToDelete});
+            this.oemLoggingService.registerEvent('delete_phoneNumber_error', convertObjectToLoggingPayload({ phoneNumbersToDelete }));
           }
         );
       }
@@ -126,7 +127,7 @@ export class AccountService {
   openPrevizualisationDialog(fileInput: any, imgExtension: string) {
     this.dialogImgRef = this.dialog.open(ChangeAvatarPopupComponent, {
       width: '300px',
-      data: {selectedImg: fileInput}
+      data: { selectedImg: fileInput },
     });
     this.dialogSub = this.dialogImgRef.afterClosed().subscribe(res => {
       if (res) {
@@ -136,7 +137,7 @@ export class AccountService {
         const imageId = generateUUID();
         this.userImgName = imageId + '.' + imgExtension;
         formData.append('file', fileInput, this.userImgName);
-        this.updateAvatarSubject.next({status: false, error: false});
+        this.updateAvatarSubject.next({ status: false, error: false });
         this.uploadUserAvatar(formData);
       }
     });
@@ -144,7 +145,7 @@ export class AccountService {
 
   uploadAvatar(formData: any) {
     return this.http.post(`${uploadAvatarEndpoint}`, formData, {
-      responseType: 'text'
+      responseType: 'text',
     });
   }
 
@@ -154,7 +155,7 @@ export class AccountService {
         this.saveUserImgProfil(this.userImgName);
       },
       () => {
-        this.updateAvatarSubject.next({status: true, error: true});
+        this.updateAvatarSubject.next({ status: true, error: true });
       }
     );
   }
@@ -172,14 +173,14 @@ export class AccountService {
   saveUserImgProfil(userImageProfil) {
     this.saveImgProfil(userImageProfil).subscribe(
       (response: any) => {
-        this.updateAvatarSubject.next({status: true, error: false});
+        this.updateAvatarSubject.next({ status: true, error: false });
         if (response && response.imageProfil) {
           ls.set('user', response);
           this.changeUserAvatarUrl(downloadAvatarEndpoint + response.imageProfil);
         }
       },
       () => {
-        this.updateAvatarSubject.next({status: true, error: true});
+        this.updateAvatarSubject.next({ status: true, error: true });
       }
     );
   }
@@ -197,12 +198,12 @@ export class AccountService {
     this.dialog.open(InProgressPopupComponent, {
       width: '330px',
       maxWidth: '100%',
-      hasBackdrop: true
+      hasBackdrop: true,
     });
   }
 
-  attachNumberByIdCard(data: {identificationId: string; login: string; numero: string}) {
-    const payload = {identificationId: data.identificationId, login: data.login, numero: data.numero, typeNumero: 'MOBILE'};
+  attachNumberByIdCard(data: { identificationId: string; login: string; numero: string }) {
+    const payload = { identificationId: data.identificationId, login: data.login, numero: data.numero, typeNumero: 'MOBILE' };
     return this.http.post(ACCOUNT_RATTACH_NUMBER_BY_ID_CARD_STATUS_ENDPOINT, payload).pipe(
       tap(r => {
         DashboardService.rattachedNumbers = null;
@@ -222,9 +223,9 @@ export class AccountService {
   }
   checkIsCoorporateNumber(msisdn: string) {
     return this.http.get(`${CHECK_NUMBER_IS_CORPORATE_ENDPOINT}/${msisdn}`).pipe(
-			catchError( _ => {
-				return of(false)
-			})
-		);
+      catchError(_ => {
+        return of(false);
+      })
+    );
   }
 }

@@ -11,9 +11,10 @@ import { CustomerOperationStatus } from '../models/enums/om-customer-status.enum
 import { OffreService } from '../models/offre-service.model';
 import { OMCustomerStatusModel } from '../models/om-customer-status.model';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 import { OperationService } from '../services/oem-operation/operation.service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { convertObjectToLoggingPayload } from '../utils/utils';
 
 @Component({
   selector: 'app-new-assistance-hub-v2',
@@ -49,11 +50,11 @@ export class NewAssistanceHubV2Page implements OnInit {
     private operationService: OperationService,
     private router: Router,
     private inAppBrowser: InAppBrowser,
-    private followAnalyticsService: FollowAnalyticsService,
     private dashboardService: DashboardService,
     private orangeMoneyService: OrangeMoneyService,
     private platform: Platform,
-    private navController: NavController
+    private navController: NavController,
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -83,28 +84,17 @@ export class NewAssistanceHubV2Page implements OnInit {
       .toPromise();
   }
 
-  filterOMActesFollowingOMStatus(
-    user: OMCustomerStatusModel,
-    actes: OffreService[]
-  ) {
+  filterOMActesFollowingOMStatus(user: OMCustomerStatusModel, actes: OffreService[]) {
     let response = actes;
     if (user.operation === 'DEPLAFONNEMENT' || user.operation === 'FULL') {
       response = actes.filter((item: OffreService) => {
-        return (
-          item.code !== 'OUVERTURE_OM_ACCOUNT' &&
-          item.code !== 'OUVERTURE_OM_ACCOUNT_NEW'
-        );
+        return item.code !== 'OUVERTURE_OM_ACCOUNT' && item.code !== 'OUVERTURE_OM_ACCOUNT_NEW';
       });
-    } else if (
-      user.operation === 'OUVERTURE_COMPTE' &&
-      user.operationStatus === CustomerOperationStatus.password_creation
-    ) {
+    } else if (user.operation === 'OUVERTURE_COMPTE' && user.operationStatus === CustomerOperationStatus.password_creation) {
       response = actes;
     } else {
       response = actes.filter((item: OffreService) => {
-        return (
-          item.code !== 'DEPLAFONNEMENT' && item.code !== 'DEPLAFONNEMENT_NEW'
-        );
+        return item.code !== 'DEPLAFONNEMENT' && item.code !== 'DEPLAFONNEMENT_NEW';
       });
     }
     return response;
@@ -113,28 +103,23 @@ export class NewAssistanceHubV2Page implements OnInit {
   fetchAllHelpItems(event?) {
     this.loadingHelpItems = true;
     this.operationService.getServicesByFormule(null, true, true).subscribe(
-      async (res) => {
-        if (!REGEX_FIX_NUMBER.test(this.currentUserMsisdn))
-          this.userOMStatus = await this.checkStatus();
+      async res => {
+        if (!REGEX_FIX_NUMBER.test(this.currentUserMsisdn)) this.userOMStatus = await this.checkStatus();
         this.listBesoinAides = res;
         this.loadingHelpItems = false;
-        this.followAnalyticsService.registerEventFollow(
-          'Assistance_hub_affichage_success',
-          'event'
-        );
+        this.oemLoggingService.registerEvent('Assistance_hub_affichage_success');
         this.splitHelpItemsByType();
         event ? event.target.complete() : '';
       },
-      (err) => {
+      err => {
         this.loadingHelpItems = false;
         event ? event.target.complete() : '';
-        this.followAnalyticsService.registerEventFollow(
+        this.oemLoggingService.registerEvent(
           'Assistance_hub_affichage_error',
-          'error',
-          {
+          convertObjectToLoggingPayload({
             msisdn: this.currentUserMsisdn,
             error: err.status,
-          }
+          })
         );
       }
     );
@@ -144,10 +129,7 @@ export class NewAssistanceHubV2Page implements OnInit {
     this.listActes = this.listBesoinAides.filter((item: OffreService) => {
       return item.typeService === BesoinAideType.ACTE;
     });
-    this.listActes = this.filterOMActesFollowingOMStatus(
-      this.userOMStatus,
-      this.listActes
-    );
+    this.listActes = this.filterOMActesFollowingOMStatus(this.userOMStatus, this.listActes);
     this.listFaqs = this.listBesoinAides.filter((item: OffreService) => {
       return item.typeService === BesoinAideType.FAQ;
     });
@@ -157,31 +139,19 @@ export class NewAssistanceHubV2Page implements OnInit {
     this.router.navigate(['/assistance-hub/actions'], {
       state: { listActes: this.listActes },
     });
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_hub_voir_toutes_actions_clic',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('help_all_acts_click', []);
   }
 
   goAllQuestionsHub() {
     this.router.navigate(['/assistance-hub/questions'], {
       state: { listFaqs: this.listFaqs },
     });
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_hub_voir_tous_faq_clic',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('help_see_all_faq_click', []);
   }
 
   goFindToAgenceWebSite() {
     this.inAppBrowser.create(FIND_AGENCE_EXTERNAL_URL, '_self');
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_hub_Trouver_agence_orange_clic',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('Assistance_hub_Trouver_agence_orange_clic');
   }
 
   goFastAction(action) {
@@ -196,11 +166,7 @@ export class NewAssistanceHubV2Page implements OnInit {
   }
 
   async goIbouContactPage() {
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_Hub_Ibou_card_clic',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('Assistance_Hub_Ibou_card_clic');
     this.router.navigate(['/contact-ibou-hub']);
   }
 
@@ -208,9 +174,6 @@ export class NewAssistanceHubV2Page implements OnInit {
     this.navController.navigateForward(['/assistance-hub/search'], {
       state: { listBesoinAides: this.listBesoinAides },
     });
-    this.followAnalyticsService.registerEventFollow(
-      'Assistance_hub_recherche',
-      'event'
-    );
+    this.oemLoggingService.registerEvent('Assistance_hub_recherche');
   }
 }
