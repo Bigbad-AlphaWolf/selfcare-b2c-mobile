@@ -15,6 +15,7 @@ import {
   isPostpaidFix,
 } from 'src/app/dashboard';
 import {JAMONO_ALLO_CODE_FORMULE, SubscriptionModel, JAMONO_PRO_CODE_FORMULE, PRO_MOBILE_ERROR_CODE} from 'src/shared';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
 
 const {
   SERVER_API_URL,
@@ -248,7 +249,7 @@ export class AuthenticationService {
     );
   }
 
-  canRecieveCredit(msisdn: string): Observable<any> {
+  canRecieveCredit(msisdn: string, opXtras?: OperationExtras): Observable<any> {
     // return this.isPostpaid(msisdn).pipe(
     //   map((isPostPaid: any) => {
     //     return !isPostPaid;
@@ -262,7 +263,7 @@ export class AuthenticationService {
         if (
           (profil === PROFILE_TYPE_POSTPAID &&
             codeFormule != KILIMANJARO_FORMULE) ||
-          isPostpaidFix(res)
+          isPostpaidFix(res) || opXtras && opXtras.recipientCodeFormule !== codeFormule
         ) {
           return false;
         }

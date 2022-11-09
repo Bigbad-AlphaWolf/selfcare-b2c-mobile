@@ -34,6 +34,7 @@ import {
   BONUS_INSUFFICIENT_ERROR,
   PAYMENT_MOD_BONUS,
   PAYMENT_MOD_CREDIT,
+	BALANCE_INSUFFICIENT_FOR_TRANSFERT_CREDIT_ERROR,
 } from '../../../src/shared';
 import { FeeModel } from '../services/orange-money-service';
 import { FeesService } from '../services/fees/fees.service';
@@ -50,7 +51,6 @@ import { FaceIdRequestModalComponent } from 'src/shared/face-id-request-modal/fa
 import { OperationService } from '../services/oem-operation/operation.service';
 import { TransfertBonnus } from '../services/dashboard-service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { UserConsoService } from '../services/user-cunsommation-service/user-conso.service';
 import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { PinPadComponent } from 'src/shared/pin-pad/pin-pad.component';
@@ -339,7 +339,7 @@ export class TransferSetAmountPage implements OnInit {
           this.checkingAmount = false;
           const creditBalance = conso.find(c => c.codeCompteur === RECHARGEMENT_COMPTEUR_CODE)?.montantRestantBrut;
           if (creditBalance - MIN_BONUS_REMAINING_AMOUNT < this.purchasePayload.amount) {
-            this.error = CREDIT_FEE_INSUFFICIENT_ERROR;
+            this.error = BALANCE_INSUFFICIENT_FOR_TRANSFERT_CREDIT_ERROR;
             return of(conso);
           }
           const modal = await this.modalController.create({

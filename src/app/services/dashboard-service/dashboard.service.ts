@@ -23,6 +23,7 @@ import {GiftType} from 'src/app/models/enums/gift-type.enum';
 import {BoosterService} from '../booster.service';
 import {ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT} from '../utils/account.endpoints';
 import { UserConsoService } from '../user-cunsommation-service/user-conso.service';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
 const {SERVER_API_URL, CONSO_SERVICE, FILE_SERVICE, ACCOUNT_MNGT_SERVICE, UAA_SERVICE, PURCHASES_SERVICE, BOOSTER_SERVICE} = environment;
 const ls = new SecureLS({encodingType: 'aes'});
 
@@ -304,15 +305,23 @@ export class DashboardService {
     );
   }
 
-  fetchOemNumbers(operationType?: string) {
+  fetchOemNumbers(operationType?: string, opXtras?: OperationExtras) {
     return this.attachedNumbers().pipe(
       map((elements: any) => {
         const mainPhone = this.authService.getUserMainPhoneNumber();
         let numbers = [mainPhone.trim()];
         elements.forEach((element: any) => {
           const msisdn = '' + element.msisdn;
-          if (!msisdn.startsWith('33', 0) || REGEX_PREPAID_FIXE.test(element?.formule) && operationType === OPERATION_TYPE_PASS_INTERNET) {
-            numbers.push(element.msisdn);
+					console.log('element', element);
+
+          if ((!msisdn.startsWith('33', 0) || REGEX_PREPAID_FIXE.test(element?.formule) && operationType === OPERATION_TYPE_PASS_INTERNET ) ) {
+            if(opXtras?.recipientFormule) {
+							if(element.formule === opXtras.recipientFormule) {
+								numbers.push(element.msisdn);
+							}
+						} else {
+							numbers.push(element.msisdn);
+						}
           }
         });
         return numbers;

@@ -21,6 +21,9 @@
   }
   &-main-content {
     height: 100%;
+		.empty-list  {
+			margin-top: 10px;
+		}
     .list-pass-body {
       height: 100%;
       .tab-header {

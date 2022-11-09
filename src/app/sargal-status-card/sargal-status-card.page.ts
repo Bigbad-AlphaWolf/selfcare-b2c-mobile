@@ -6,6 +6,7 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 import * as SecureLS from 'secure-ls';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { SubscriptionModel, PROFILE_TYPE_POSTPAID, PROFILE_TYPE_PREPAID } from '../dashboard';
+import { NavController } from '@ionic/angular';
 const ls = new SecureLS({ encodingType: 'aes' });
 
 @Component({
@@ -27,7 +28,8 @@ export class SargalStatusCardPage implements OnInit {
     private sargalService: SargalService,
     private router: Router,
     private dashboardService: DashboardService,
-    private authServ :AuthenticationService
+    private authServ :AuthenticationService,
+    private navCtrl :NavController
   ) {}
 
   ngOnInit() {
@@ -66,10 +68,6 @@ export class SargalStatusCardPage implements OnInit {
   }
 
   goBack() {
-    if(this.userProfil !== PROFILE_TYPE_PREPAID){
-      this.router.navigate(['/dashboard']);
-    }else{
-      this.router.navigate(['/sargal-dashboard']);
-    }
+    this.navCtrl.pop();
   }
 }

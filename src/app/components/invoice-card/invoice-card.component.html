@@ -12,7 +12,10 @@
 						<div class="date echeance-depasse" *ngIf="invoice?.isDelayed"> Echéance dépassée depuis le {{
 							invoice?.dateEcheance | formatBillDate }}</div>
 					</ng-container>
-					<div class="bill-price scb-text-orange">{{invoice?.montantFacture + ' F CFA'}}</div>
+					<div *ngIf="invoice?.groupage !== '1' else bordereauTotalAmount" class="bill-price scb-text-orange">{{invoice?.montantFacture + ' F CFA'}}</div>
+					<ng-template #bordereauTotalAmount>
+						<div class="bill-price scb-text-orange">{{invoice?.total + ' F CFA'}}</div>
+					</ng-template>
 				</div>
 			</div>
 			<ng-container [ngSwitch]="operation">

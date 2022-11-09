@@ -187,13 +187,13 @@ export class BottomSheetService {
     option: NumberSelectionOption,
     purchaseType: string,
     routePath: string,
-    isLightMod?,
-    serviceUsage?: OffreService
+    serviceUsage?: OffreService,
+    opXtras?: OperationExtras
   ) {
     const modal = await this.modalCtrl.create({
       component: NumberSelectionComponent,
       componentProps: {
-        data: { option, purchaseType, isLightMod, serviceUsage },
+        data: { option, purchaseType, serviceUsage, opXtras }
       },
       cssClass: ['select-recipient-modal'],
       mode: 'ios',
@@ -206,8 +206,8 @@ export class BottomSheetService {
         if (!opInfos || !opInfos.recipientMsisdn) return;
         opInfos = {
           purchaseType: purchaseType,
-          isLightMod,
           serviceUsage,
+          ...opXtras,
           ...opInfos,
         };
         this.navCtl.navigateForward([routePath], {
@@ -217,6 +217,8 @@ export class BottomSheetService {
     });
     return await modal.present();
   }
+
+
 
   public openMerchantPayment(component) {
     this.omService
