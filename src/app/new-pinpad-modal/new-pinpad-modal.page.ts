@@ -1334,6 +1334,10 @@ export class NewPinpadModalPage implements OnInit {
         } else {
           this.pinError = 'Vous avez effectué la même transaction il y a quelques instants.';
         }
+      } else if (err.error.errorCode.match("Erreur-014")) {
+        this.shouldResetPin = true;
+        this.recurrentOperation = true;
+        this.pinError = err.error.message;
       } else if (err.error.errorCode.match('Erreur-019') || err.error.errorCode.match('Erreur-602') || err.error.errorCode.match('Erreur-55')) {
         this.pinError = err.error.message;
         this.recurrentOperation = true;
