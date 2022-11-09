@@ -10,10 +10,15 @@
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <activity android:name="com.dimelo.dimelosdk.main.ChatActivity" android:theme="@style/Theme.AppCompat.NoActionBar"/>
             <activity android:name="com.dimelo.dimelosdk.main.ThreadsListActivity" android:theme="@style/DimeloTheme">
-						<meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.orange.myorange.osn.MainActivity" />
+							<meta-data
+									android:name="android.support.PARENT_ACTIVITY"
+									android:value="com.orange.myorange.osn.MainActivity" />
             </activity>
+						<receiver android:name="com.dimelo.dimelosdk.main.ConnectionChangeReceiver"  android:enabled="false" android:exported="true" >
+							<intent-filter>
+								<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+							</intent-filter>
+        		</receiver>
         </config-file>
         <config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.INTERNET"/>

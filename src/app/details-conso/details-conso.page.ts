@@ -1,36 +1,18 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import {
-  computeConsoHistory,
-  arrangeCompteurByOrdre,
-  DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY,
-  SubscriptionModel,
-  REGEX_POSTPAID_FIXE,
-} from 'src/shared';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { computeConsoHistory, arrangeCompteurByOrdre, DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY, SubscriptionModel, REGEX_POSTPAID_FIXE } from 'src/shared';
 import { PurchaseService } from '../services/purchase-service/purchase.service';
 import { IonSlides } from '@ionic/angular';
-import {
-  isPostpaidFix,
-  ModelOfSouscription,
-  PROFILE_TYPE_POSTPAID,
-} from '../dashboard';
+import { isPostpaidFix, ModelOfSouscription, PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { catchError, tap } from 'rxjs/operators';
 import { CategoryPurchaseHistory } from '../models/category-purchase-history.model';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { PurchaseModel } from '../models/purchase.model';
 import { UserConsoService } from '../services/user-cunsommation-service/user-conso.service';
 import { throwError } from 'rxjs';
-import {
-  NewUserConsoModel,
-  ProcessedConsoModel,
-} from '../services/user-cunsommation-service/user-conso-service.index';
+import { NewUserConsoModel, ProcessedConsoModel } from '../services/user-cunsommation-service/user-conso-service.index';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 
 @AutoUnsubscribe()
 @Component({
@@ -63,8 +45,7 @@ export class DetailsConsoPage implements OnInit {
   listPurchaseForDays: PurchaseModel[] = [];
   listPurchaseForDayByType: PurchaseModel[] = [];
   purchaseDateFilterSelected = 2;
-  purchaseTypeFilterSelected: { label: string; typeAchat: string } =
-    DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
+  purchaseTypeFilterSelected: { label: string; typeAchat: string } = DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
   userPhoneNumber: string;
   listCategoryPurchaseHistory: CategoryPurchaseHistory[] = [];
   @ViewChild('consoTab', { static: true }) slideGroup: IonSlides;
@@ -78,7 +59,7 @@ export class DetailsConsoPage implements OnInit {
   constructor(
     private dashboardservice: DashboardService,
     private authService: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private purchaseServ: PurchaseService,
     private consoService: UserConsoService
   ) {}
@@ -87,36 +68,30 @@ export class DetailsConsoPage implements OnInit {
 
   ionViewWillEnter() {
     this.userPhoneNumber = this.dashboardservice.getCurrentPhoneNumber();
-    this.authService
-      .getSubscription(this.userPhoneNumber)
-      .subscribe((res: SubscriptionModel) => {
-        this.souscription = {
-          profil: res.profil,
-          formule: res.nomOffre,
-          codeFormule: res.code,
-        };
+    this.authService.getSubscription(this.userPhoneNumber).subscribe((res: SubscriptionModel) => {
+      this.souscription = {
+        profil: res.profil,
+        formule: res.nomOffre,
+        codeFormule: res.code,
+      };
 
-        this.followAnalyticsService.registerEventFollow(
-          'Voir_details_dashboard',
-          'event',
-          'Opened'
-        );
-        this.currentProfil = res.profil;
-        if (this.currentProfil === PROFILE_TYPE_POSTPAID) {
-          this.getPostpaidUserHistory(2);
-        } else {
-          this.getPrepaidUserHistory(2);
-        }
-        this.getUserConsoInfos();
-        this.getTransactionsByDay(this.purchaseDateFilterSelected);
-      });
+      this.oemLoggingService.registerEvent('Voir_details_dashboard');
+      this.currentProfil = res.profil;
+      if (this.currentProfil === PROFILE_TYPE_POSTPAID) {
+        this.getPostpaidUserHistory(2);
+      } else {
+        this.getPrepaidUserHistory(2);
+      }
+      this.getUserConsoInfos();
+      this.getTransactionsByDay(this.purchaseDateFilterSelected);
+    });
   }
   isPostpaidFix(souscription) {
     return isPostpaidFix(souscription);
   }
 
   goNext(tabIndex?: number) {
-    this.slideGroup.getActiveIndex().then((index) => {
+    this.slideGroup.getActiveIndex().then(index => {
       this.seeSlide(index);
     });
   }
@@ -126,25 +101,14 @@ export class DetailsConsoPage implements OnInit {
     this.slideSelected = tabIndex;
     if (this.currentProfil !== PROFILE_TYPE_POSTPAID) {
       if (tabIndex === 1) {
-        this.followAnalyticsService.registerEventFollow(
-          'Historique_Appels',
-          'event',
-          'clic'
-        );
+        this.oemLoggingService.registerEvent('Historique_Appels');
       } else if (tabIndex === 2) {
-        this.followAnalyticsService.registerEventFollow(
-          'Historique_Souscriptions',
-          'event',
-          'clic'
-        );
+        this.oemLoggingService.registerEvent('Historique_Souscriptions');
       }
     }
   }
 
-  getTransactionsByDay(
-    day: number,
-    filterType?: { label: string; typeAchat: string }
-  ) {
+  getTransactionsByDay(day: number, filterType?: { label: string; typeAchat: string }) {
     this.purchaseDateFilterSelected = day;
     if (filterType) {
       this.getTransactionByDaysByType(filterType);
@@ -154,20 +118,11 @@ export class DetailsConsoPage implements OnInit {
       this.purchaseServ
         .getCategoriesAndPurchaseHistory(this.userPhoneNumber, 100)
         .pipe(
-          tap(
-            (res: {
-              categories: CategoryPurchaseHistory[];
-              listPurchase: PurchaseModel[];
-            }) => {
-              this.listCategoryPurchaseHistory = res.categories;
-              this.listPurchaseForDays = res.listPurchase;
-              this.listPurchaseForDayByType =
-                this.purchaseServ.filterPurchaseByType(
-                  this.listPurchaseForDays,
-                  DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY
-                );
-            }
-          )
+          tap((res: { categories: CategoryPurchaseHistory[]; listPurchase: PurchaseModel[] }) => {
+            this.listCategoryPurchaseHistory = res.categories;
+            this.listPurchaseForDays = res.listPurchase;
+            this.listPurchaseForDayByType = this.purchaseServ.filterPurchaseByType(this.listPurchaseForDays, DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY);
+          })
         )
         .subscribe(
           (res: any) => {
@@ -183,10 +138,7 @@ export class DetailsConsoPage implements OnInit {
   }
   getTransactionByDaysByType(filter: { label: string; typeAchat: string }) {
     this.purchaseTypeFilterSelected = filter;
-    this.listPurchaseForDayByType = this.purchaseServ.filterPurchaseByType(
-      this.listPurchaseForDays,
-      filter
-    );
+    this.listPurchaseForDayByType = this.purchaseServ.filterPurchaseByType(this.listPurchaseForDays, filter);
   }
 
   getUserConsoInfos() {
@@ -194,11 +146,11 @@ export class DetailsConsoPage implements OnInit {
     this.consoService
       .getUserCunsomation()
       .pipe(
-        tap((res) => {
+        tap(res => {
           this.consoDetails = this.processDetailsConso(res);
           this.detailsLoading = false;
         }),
-        catchError((err) => {
+        catchError(err => {
           this.detailsLoading = false;
           return throwError(err);
         })
@@ -207,17 +159,11 @@ export class DetailsConsoPage implements OnInit {
   }
 
   processDetailsConso(conso: NewUserConsoModel[]) {
-    const categoriesWithDuplicates = conso.map(
-      (consoItem) => consoItem.typeCompteur
-    );
-    const categories = categoriesWithDuplicates.filter(
-      (value, index) => categoriesWithDuplicates.indexOf(value) === index
-    );
+    const categoriesWithDuplicates = conso.map(consoItem => consoItem.typeCompteur);
+    const categories = categoriesWithDuplicates.filter((value, index) => categoriesWithDuplicates.indexOf(value) === index);
     let processedConso: ProcessedConsoModel[] = [];
     for (let category of categories) {
-      const consumations = conso.filter(
-        (consoItem) => consoItem.typeCompteur === category
-      );
+      const consumations = conso.filter(consoItem => consoItem.typeCompteur === category);
       processedConso.push({ category, consumations });
     }
     return processedConso;
@@ -227,7 +173,7 @@ export class DetailsConsoPage implements OnInit {
     this.chargeTypes = [];
     if (this.consoshistorique.length > 0) {
       this.chargeTypes.push('Compteurs');
-      this.consoshistorique.forEach((element) => {
+      this.consoshistorique.forEach(element => {
         this.chargeTypes.push(element.chargeType);
       });
       this.chargeTypes = new Set(this.chargeTypes);
@@ -268,12 +214,8 @@ export class DetailsConsoPage implements OnInit {
     this.dashboardservice.getPostpaidConsoHistory(day).subscribe(
       (historique: any[]) => {
         this.histLoading = false;
-        historique.length === 0
-          ? (this.notdata = true)
-          : (this.notdata = false);
-        this.consoshistorique = historique.filter(
-          (conso) => !(conso.type === 'data' && conso.volume === '0')
-        );
+        historique.length === 0 ? (this.notdata = true) : (this.notdata = false);
+        this.consoshistorique = historique.filter(conso => !(conso.type === 'data' && conso.volume === '0'));
       },
       () => {
         this.histLoading = false;
@@ -289,7 +231,7 @@ export class DetailsConsoPage implements OnInit {
   getConsoByDay(day) {
     if (this.day !== day) {
       this.consoshistorique = [];
-      this.selectedDate = this.dateFilterItems.find((x) => x.value === day);
+      this.selectedDate = this.dateFilterItems.find(x => x.value === day);
       this.day = day;
       if (this.currentProfil === 'POSTPAID') {
         this.getPostpaidUserHistory(parseInt(day, 10));
@@ -303,7 +245,7 @@ export class DetailsConsoPage implements OnInit {
     if (chargeType === 'Compteurs') {
       this.consoshistorique = this.consommations;
     } else {
-      this.consoshistorique = this.consommations.filter((x) => {
+      this.consoshistorique = this.consommations.filter(x => {
         return x.chargeType.trim().includes(chargeType);
       });
     }

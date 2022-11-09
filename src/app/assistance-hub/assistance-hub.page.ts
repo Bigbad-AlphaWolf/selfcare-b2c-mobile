@@ -1,48 +1,49 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {Router} from '@angular/router';
-import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
-import {NavController} from '@ionic/angular';
-import {of} from 'rxjs';
-import {catchError} from 'rxjs/operators';
-import {FIND_AGENCE_EXTERNAL_URL, REGEX_FIX_NUMBER} from 'src/shared';
-import {BesoinAideType} from '../models/enums/besoin-aide-type.enum';
-import {OffreService} from '../models/offre-service.model';
-import {OMCustomerStatusModel} from '../models/om-customer-status.model';
-import {DashboardService} from '../services/dashboard-service/dashboard.service';
-import {FollowAnalyticsService} from '../services/follow-analytics/follow-analytics.service';
-import {OperationService} from '../services/oem-operation/operation.service';
-import {OrangeMoneyService} from '../services/orange-money-service/orange-money.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { NavController } from '@ionic/angular';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { FIND_AGENCE_EXTERNAL_URL, REGEX_FIX_NUMBER } from 'src/shared';
+import { BesoinAideType } from '../models/enums/besoin-aide-type.enum';
+import { OffreService } from '../models/offre-service.model';
+import { OMCustomerStatusModel } from '../models/om-customer-status.model';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
+import { OperationService } from '../services/oem-operation/operation.service';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { convertObjectToLoggingPayload } from '../utils/utils';
 
 @Component({
   selector: 'app-assistance-hub',
   templateUrl: './assistance-hub.page.html',
-  styleUrls: ['./assistance-hub.page.scss']
+  styleUrls: ['./assistance-hub.page.scss'],
 })
 export class AssistanceHubPage implements OnInit {
   slideOpts = {
     speed: 400,
     slidesPerView: 1.14,
     slideShadows: true,
-    loop: true
+    loop: true,
   };
   moreActions = [
     {
       act: 'IBOU_CONTACT',
       description: 'Contacter votre assistant Ibou',
-      image: '/assets/images/04-boutons-01-illustrations-21-ibou-assistance.png'
+      image: '/assets/images/04-boutons-01-illustrations-21-ibou-assistance.png',
     },
     {
       act: 'AGENCE_LOCATOR',
       description: 'Trouver l’agence la plus proche',
-      image: '/assets/images/04-boutons-01-illustrations-22-store-locator.svg'
-    }
+      image: '/assets/images/04-boutons-01-illustrations-22-store-locator.svg',
+    },
   ];
   listBesoinAides: OffreService[] = [];
   listFaqs?: OffreService[] = [];
   listActes?: OffreService[] = [];
   loadingHelpItems: boolean;
   displaySearchIcon: boolean = true;
-  @ViewChild('searchInput', {static: true})
+  @ViewChild('searchInput', { static: true })
   searchRef;
   current_user_msisdn = this.dashboardService.getCurrentPhoneNumber();
   checkingStatus: boolean;
@@ -52,7 +53,7 @@ export class AssistanceHubPage implements OnInit {
     private router: Router,
     private navController: NavController,
     private inAppBrowser: InAppBrowser,
-    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private dashboardService: DashboardService,
     private orangeMoneyService: OrangeMoneyService
   ) {}
@@ -98,15 +99,18 @@ export class AssistanceHubPage implements OnInit {
         if (!REGEX_FIX_NUMBER.test(this.current_user_msisdn)) this.userOMStatus = await this.checkStatus();
         this.listBesoinAides = res;
         this.loadingHelpItems = false;
-        this.followAnalyticsService.registerEventFollow('Assistance_hub_affichage_success', 'event');
+        this.oemLoggingService.registerEvent('Assistance_hub_affichage_success');
         this.splitHelpItemsByType();
       },
       err => {
         this.loadingHelpItems = false;
-        this.followAnalyticsService.registerEventFollow('Assistance_hub_affichage_error', 'error', {
-          msisdn: this.current_user_msisdn,
-          error: err.status
-        });
+        this.oemLoggingService.registerEvent(
+          'Assistance_hub_affichage_error',
+          convertObjectToLoggingPayload({
+            msisdn: this.current_user_msisdn,
+            error: err.status,
+          })
+        );
       }
     );
   }
@@ -123,16 +127,16 @@ export class AssistanceHubPage implements OnInit {
 
   goAllActionsHub() {
     this.router.navigate(['/assistance-hub/actions'], {
-      state: {listActes: this.listActes}
+      state: { listActes: this.listActes },
     });
-    this.followAnalyticsService.registerEventFollow('Assistance_hub_voir_toutes_actions_clic', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('Assistance_hub_voir_toutes_actions_clic');
   }
 
   goAllQuestionsHub() {
     this.router.navigate(['/assistance-hub/questions'], {
-      state: {listFaqs: this.listFaqs}
+      state: { listFaqs: this.listFaqs },
     });
-    this.followAnalyticsService.registerEventFollow('Assistance_hub_voir_tous_faq_clic', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('Assistance_hub_voir_tous_faq_clic');
   }
 
   goBack() {
@@ -141,7 +145,7 @@ export class AssistanceHubPage implements OnInit {
 
   goFindToAgenceWebSite() {
     this.inAppBrowser.create(FIND_AGENCE_EXTERNAL_URL, '_self');
-    this.followAnalyticsService.registerEventFollow('Assistance_hub_Trouver_agence_orange_clic', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('Assistance_hub_Trouver_agence_orange_clic');
   }
 
   goFastAction(action) {
@@ -156,7 +160,7 @@ export class AssistanceHubPage implements OnInit {
   }
 
   async goIbouContactPage() {
-    this.followAnalyticsService.registerEventFollow('Assistance_Hub_Ibou_card_clic', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('Assistance_Hub_Ibou_card_clic');
     this.router.navigate(['/contact-ibou-hub']);
   }
 
@@ -165,9 +169,9 @@ export class AssistanceHubPage implements OnInit {
     this.displaySearchIcon = true;
     if (inputvalue) {
       this.navController.navigateForward(['/assistance-hub/search'], {
-        state: {listBesoinAides: this.listBesoinAides, search: inputvalue}
+        state: { listBesoinAides: this.listBesoinAides, search: inputvalue },
       });
-      this.followAnalyticsService.registerEventFollow('Assistance_hub_recherche', 'event', {keyword: inputvalue});
+      this.oemLoggingService.registerEvent('Assistance_hub_recherche', convertObjectToLoggingPayload({ keyword: inputvalue }));
       this.displaySearchIcon = false;
     }
   }

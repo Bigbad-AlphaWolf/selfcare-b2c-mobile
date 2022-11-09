@@ -1,20 +1,21 @@
-import {Component, OnInit, Input} from '@angular/core';
-import {OperationExtras} from 'src/app/models/operation-extras.model';
-import {RapidoService} from 'src/app/services/rapido/rapido.service';
-import {tap, catchError} from 'rxjs/operators';
-import {NavController, ModalController} from '@ionic/angular';
-import {BillAmountPage} from 'src/app/pages/bill-amount/bill-amount.page';
-import {OPERATION_RAPIDO} from 'src/app/utils/operations.constants';
-import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
-import {OrangeMoneyService} from 'src/app/services/orange-money-service/orange-money.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
+import { RapidoService } from 'src/app/services/rapido/rapido.service';
+import { tap, catchError } from 'rxjs/operators';
+import { NavController, ModalController } from '@ionic/angular';
+import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
+import { OPERATION_RAPIDO } from 'src/app/utils/operations.constants';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-rapido-solde',
   templateUrl: './rapido-solde.component.html',
-  styleUrls: ['./rapido-solde.component.scss']
+  styleUrls: ['./rapido-solde.component.scss'],
 })
 export class RapidoSoldeComponent implements OnInit {
-  @Input() counter: {name: string; counterNumber: string};
+  @Input() counter: { name: string; counterNumber: string };
   @Input() opXtras: OperationExtras;
   infoSolde: string;
   lastSoldeUpdate: string;
@@ -23,7 +24,7 @@ export class RapidoSoldeComponent implements OnInit {
     private rapidServ: RapidoService,
     private navCtl: NavController,
     private modal: ModalController,
-    private followServ: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private omService: OrangeMoneyService
   ) {}
 
@@ -45,17 +46,23 @@ export class RapidoSoldeComponent implements OnInit {
             this.lastSoldeUpdate = data.date_solde;
           }
 
-          this.followServ.registerEventFollow('operation_rapido_get_solde_success', 'event', {
-            msisdn: omMsisdn,
-            counter
-          });
+          this.oemLoggingService.registerEvent(
+            'operation_rapido_get_solde_success',
+            convertObjectToLoggingPayload({
+              msisdn: omMsisdn,
+              counter,
+            })
+          );
         }),
         catchError((err: any) => {
           this.isLoading = false;
-          this.followServ.registerEventFollow('operation_rapido_get_solde_failed', 'event', {
-            msisdn: omMsisdn,
-            counter
-          });
+          this.oemLoggingService.registerEvent(
+            'operation_rapido_get_solde_failed',
+            convertObjectToLoggingPayload({
+              msisdn: omMsisdn,
+              counter,
+            })
+          );
           return err;
         })
       )
@@ -68,7 +75,7 @@ export class RapidoSoldeComponent implements OnInit {
     this.opXtras.billData ? (this.opXtras.billData.counter = this.counter) : '';
     this.modal.dismiss();
     this.navCtl.navigateForward([routePath], {
-      state: this.opXtras
+      state: this.opXtras,
     });
   }
 }

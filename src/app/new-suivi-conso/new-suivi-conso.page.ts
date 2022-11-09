@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { IonSlides, Platform } from '@ionic/angular';
 import { ScrollVanishDirective } from '../directives/scroll-vanish/scroll-vanish.directive';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 import { DemandeAnnulationTransfertModel } from '../models/demande-annulation-transfert.model';
 import { CommunicationHistoricComponent } from './pages/communication-historic/communication-historic.component';
 import { InternetHistoricComponent } from './pages/internet-historic/internet-historic.component';
@@ -8,7 +10,10 @@ import { NewDetailsConsoComponent } from './pages/new-details-conso/new-details-
 import { TransactionsHistoricComponent } from './pages/transactions-historic/transactions-historic.component';
 
 export const enum CONSO_TABS {
-	CONSO = 'CONSO', COMMUNICATIONS = 'COMMUNICATIONS', INTERNET = 'INTERNET', TRANSACTIONS = 'TRANSACTIONS'
+  CONSO = 'CONSO',
+  COMMUNICATIONS = 'COMMUNICATIONS',
+  INTERNET = 'INTERNET',
+  TRANSACTIONS = 'TRANSACTIONS',
 }
 @Component({
   selector: 'app-new-suivi-conso',
@@ -16,12 +21,7 @@ export const enum CONSO_TABS {
   styleUrls: ['./new-suivi-conso.page.scss'],
 })
 export class NewSuiviConsoPage implements OnInit {
-  tabs = [
-    { label: 'Conso' },
-    { label: 'Communications' },
-    { label: 'Internet' },
-    { label: 'Transactions' },
-  ];
+  tabs = [{ label: 'Conso' }, { label: 'Communications' }, { label: 'Internet' }, { label: 'Transactions' }];
   currentSlideIndex = 0;
   slideOpts = {
     speed: 400,
@@ -39,8 +39,8 @@ export class NewSuiviConsoPage implements OnInit {
   transactionHistoricPage: TransactionsHistoricComponent;
   @ViewChild('searchIcon') iconToggleSearch;
   isIos: boolean;
-	listAnnulationTrx: DemandeAnnulationTransfertModel[] = [];
-  constructor(private platform: Platform) {}
+  listAnnulationTrx: DemandeAnnulationTransfertModel[] = [];
+  constructor(private platform: Platform, private oemLoggingService: OemLoggingService, private dashboardService: DashboardService) {}
 
   ngOnInit() {
     this.platform.ready().then(() => {
@@ -73,11 +73,32 @@ export class NewSuiviConsoPage implements OnInit {
 
   setSlidesIndex(index) {
     this.sliders.slideTo(index);
+    let event = '';
+    switch (index) {
+      case 0:
+        event = 'conso_details_click';
+        break;
+      case 1:
+        event = 'conso_communications_click';
+        break;
+      case 2:
+        event = 'conso_internet_click';
+        break;
+      case 3:
+        event = 'conso_transactions_click';
+        break;
+    }
+    this.oemLoggingService.registerEvent(event, [
+      {
+        dataName: 'msisdn',
+        dataValue: this.dashboardService.getCurrentPhoneNumber(),
+      },
+    ]);
     // this.refreshData();
   }
 
   getCurrentSlide() {
-    this.sliders.getActiveIndex().then((index) => {
+    this.sliders.getActiveIndex().then(index => {
       this.currentSlideIndex = index;
       // this.refreshData();
     });

@@ -1,11 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as SecureLS from 'secure-ls';
-import {BannierePubModel} from 'src/app/services/dashboard-service';
-import {PassInternetService} from 'src/app/services/pass-internet-service/pass-internet.service';
-import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
-import {NavigationExtras, Router} from '@angular/router';
-import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
-import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
+import { BannierePubModel } from 'src/app/services/dashboard-service';
+import { PassInternetService } from 'src/app/services/pass-internet-service/pass-internet.service';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { NavigationExtras, Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
 import {
   arrangeCompteurByOrdre,
   getTrioConsoUser,
@@ -18,20 +17,21 @@ import {
   WelcomeStatusModel,
   getBanniereTitle,
   getBanniereDescription,
-	OPERATION_TYPE_PASS_INTERNET
+  OPERATION_TYPE_PASS_INTERNET,
 } from 'src/shared';
-import {getConsoByCategory, CODE_COMPTEUR_VOLUME_NUIT_1, CODE_COMPTEUR_VOLUME_NUIT_2, CODE_COMPTEUR_VOLUME_NUIT_3} from '../dashboard';
-import {MatDialog} from '@angular/material/dialog';
-import {WelcomePopupComponent} from 'src/shared/welcome-popup/welcome-popup.component';
-import {AssistanceService} from '../services/assistance.service';
-import {BanniereService} from '../services/banniere-service/banniere.service';
-import {map} from 'rxjs/operators';
-import {OrangeMoneyService} from '../services/orange-money-service/orange-money.service';
-const ls = new SecureLS({encodingType: 'aes'});
+import { getConsoByCategory, CODE_COMPTEUR_VOLUME_NUIT_1, CODE_COMPTEUR_VOLUME_NUIT_2, CODE_COMPTEUR_VOLUME_NUIT_3 } from '../dashboard';
+import { MatDialog } from '@angular/material/dialog';
+import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
+import { AssistanceService } from '../services/assistance.service';
+import { BanniereService } from '../services/banniere-service/banniere.service';
+import { map } from 'rxjs/operators';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
+const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-home-prepaid',
   templateUrl: './dashboard-home-prepaid.page.html',
-  styleUrls: ['./dashboard-home-prepaid.page.scss']
+  styleUrls: ['./dashboard-home-prepaid.page.scss'],
 })
 export class DashboardHomePrepaidPage implements OnInit {
   userConsoSummary: any = {};
@@ -49,7 +49,7 @@ export class DashboardHomePrepaidPage implements OnInit {
   slideOpts = {
     speed: 400,
     slidesPerView: 1.5,
-    slideShadows: true
+    slideShadows: true,
   };
   pictures = ['/assets/images/banniere-promo-mob.png', '/assets/images/banniere-promo-fibre.png'];
   showPromoBanner = ls.get('banner');
@@ -60,12 +60,12 @@ export class DashboardHomePrepaidPage implements OnInit {
   firstName: string;
   lastName: string;
   isBanniereLoaded: boolean;
-	currentUserCodeFormule: string;
+  currentUserCodeFormule: string;
   constructor(
     private passIntService: PassInternetService,
     private dashbdSrv: DashboardService,
     private router: Router,
-    private followsAnalytics: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private authServ: AuthenticationService,
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
@@ -115,7 +115,7 @@ export class DashboardHomePrepaidPage implements OnInit {
     this.dashbdSrv.getUserConsoInfosByCode().subscribe(
       (res: any) => {
         if (res.length) {
-          this.followsAnalytics.registerEventFollow('dashboard_conso_fixe_prepaid', 'event');
+          this.oemLoggingService.registerEvent('dashboard_conso_fixe_prepaid');
           const orderedConso = arrangeCompteurByOrdre(res);
           const appelConso = orderedConso.length ? orderedConso.find(x => x.categorie === USER_CONS_CATEGORY_CALL).consommations : null;
           const internetConso = orderedConso.length
@@ -147,7 +147,7 @@ export class DashboardHomePrepaidPage implements OnInit {
   getPassInternetFixe() {
     const userPhoneNumber = this.dashbdSrv.getCurrentPhoneNumber();
     this.authServ.getSubscription(userPhoneNumber).subscribe((res: SubscriptionModel) => {
-			this.currentUserCodeFormule = res?.code;
+      this.currentUserCodeFormule = res?.code;
       if (res.code !== '0') {
         this.passIntService.setUserCodeFormule(res.code);
         this.passIntService.queryListPassInternetOfUser(res.code, userPhoneNumber).subscribe(
@@ -187,7 +187,7 @@ export class DashboardHomePrepaidPage implements OnInit {
 
     return {
       globalCredit: formatCurrency(globalCredit),
-      consoData: formatDataVolume(consoData)
+      consoData: formatDataVolume(consoData),
     };
   }
 
@@ -213,16 +213,14 @@ export class DashboardHomePrepaidPage implements OnInit {
   }
 
   hidePromoBarner() {
-    this.followsAnalytics.registerEventFollow('Banner_close_dashboard', 'event', 'Mobile');
+    this.oemLoggingService.registerEvent('Banner_close_dashboard');
     ls.set('banner', false);
     this.showPromoBanner = false;
   }
 
   goDetailsCom(number?: number) {
     this.router.navigate(['/details-conso']);
-    number
-      ? this.followsAnalytics.registerEventFollow('Voirs_details_dashboard', 'event', 'clicked')
-      : this.followsAnalytics.registerEventFollow('Voirs_details_card_dashboard', 'event', 'clicked');
+    number ? this.oemLoggingService.registerEvent('Voirs_details_dashboard') : this.oemLoggingService.registerEvent('Voirs_details_card_dashboard');
   }
 
   //selectPass(id: number) {
@@ -230,23 +228,23 @@ export class DashboardHomePrepaidPage implements OnInit {
   //  this.router.navigate([`/buy-pass-internet/${id}`]);
   //}
 
-	choosePass(pass: any) {
-		this.followsAnalytics.registerEventFollow('Pass_internet_dashboard_fix', 'event', 'clicked');
-		const userPhoneNumber = this.dashbdSrv.getCurrentPhoneNumber();
+  choosePass(pass: any) {
+    this.oemLoggingService.registerEvent('Pass_internet_dashboard_fix');
+    const userPhoneNumber = this.dashbdSrv.getCurrentPhoneNumber();
     let navigationExtras: NavigationExtras = {
       state: {
         pass,
         recipientMsisdn: userPhoneNumber,
         recipientCodeFormule: this.currentUserCodeFormule,
         purchaseType: OPERATION_TYPE_PASS_INTERNET,
-        isLightMod: false
-      }
+        isLightMod: false,
+      },
     };
     this.router.navigate(['/operation-recap'], navigationExtras);
   }
 
-  onError(input: {el: HTMLElement; display: boolean}[]) {
-    input.forEach((item: {el: HTMLElement; display: boolean}) => {
+  onError(input: { el: HTMLElement; display: boolean }[]) {
+    input.forEach((item: { el: HTMLElement; display: boolean }) => {
       item.el.style.display = item.display ? 'block' : 'none';
     });
   }
@@ -254,7 +252,7 @@ export class DashboardHomePrepaidPage implements OnInit {
   showWelcomePopup(data: WelcomeStatusModel) {
     const dialog = this.shareDialog.open(WelcomePopupComponent, {
       data,
-      panelClass: 'gift-popup-class'
+      panelClass: 'gift-popup-class',
     });
     dialog.afterClosed().subscribe(() => {
       this.assistanceService.tutoViewed().subscribe(() => {});

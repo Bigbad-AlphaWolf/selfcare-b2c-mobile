@@ -1,14 +1,8 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import {
-  FormGroup,
-  FormBuilder,
-  Validators,
-  ValidatorFn,
-  AbstractControl,
-} from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { PalierModel } from 'src/app/models/palier.model';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 const BASE_MULTIPLE = 100;
 @Component({
   selector: 'app-illiflex-set-amount-modal',
@@ -28,11 +22,7 @@ export class IlliflexSetAmountModalComponent implements OnInit {
   minAmountIlliflex: number = 500;
   maxAmountIlliflex: number = 15000;
   @ViewChild('amountInput', { static: true }) input: ElementRef;
-  constructor(
-    private fb: FormBuilder,
-    private modalController: ModalController,
-    private followAnalyticsServ: FollowAnalyticsService
-  ) {}
+  constructor(private fb: FormBuilder, private modalController: ModalController, private oemLoggingService: OemLoggingService) {}
 
   ngOnInit() {
     this.initForm();
@@ -44,9 +34,9 @@ export class IlliflexSetAmountModalComponent implements OnInit {
 
   getMinAndMax() {
     if (!this.pricings && !this.pricings.length) return;
-    const maxArray = this.pricings.map((pricing) => pricing.maxPalier);
+    const maxArray = this.pricings.map(pricing => pricing.maxPalier);
     this.maxAmountIlliflex = Math.max(...maxArray);
-    const minArray = this.pricings.map((pricing) => pricing.minPalier);
+    const minArray = this.pricings.map(pricing => pricing.minPalier);
     this.minAmountIlliflex = Math.min(...minArray);
   }
 
@@ -57,12 +47,7 @@ export class IlliflexSetAmountModalComponent implements OnInit {
 
   onAmountChanged(amount) {
     this.amount = +amount;
-    this.isAmountValid =
-      this.amount >= this.minAmountIlliflex &&
-      this.amount <= this.maxAmountIlliflex &&
-      this.amount % BASE_MULTIPLE === 0
-        ? true
-        : false;
+    this.isAmountValid = this.amount >= this.minAmountIlliflex && this.amount <= this.maxAmountIlliflex && this.amount % BASE_MULTIPLE === 0 ? true : false;
     this.aroundInf = Math.trunc(this.amount / BASE_MULTIPLE) * BASE_MULTIPLE;
     this.aroundSup = Math.ceil(this.amount / BASE_MULTIPLE) * BASE_MULTIPLE;
   }
@@ -79,19 +64,13 @@ export class IlliflexSetAmountModalComponent implements OnInit {
   validateAmount(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const amount = +control.value;
-      return amount % BASE_MULTIPLE === 0 &&
-        amount <= this.maxAmountIlliflex &&
-        amount >= this.minAmountIlliflex
-        ? null
-        : { wrong: true };
+      return amount % BASE_MULTIPLE === 0 && amount <= this.maxAmountIlliflex && amount >= this.minAmountIlliflex ? null : { wrong: true };
     };
   }
 
   getValidity(amount) {
     if (!this.pricings.length) return;
-    const currentPalier = this.pricings.find(
-      (palier) => amount >= palier.minPalier && amount <= palier.maxPalier
-    );
+    const currentPalier = this.pricings.find(palier => amount >= palier.minPalier && amount <= palier.maxPalier);
     const validity = currentPalier.validite;
     switch (validity) {
       case 'Jour':
@@ -119,6 +98,6 @@ export class IlliflexSetAmountModalComponent implements OnInit {
 
   addFollowEvent(amount: number, rapideChoice?: boolean) {
     const eventIlliflex_clic = `Illiflex_amount_${amount}_${rapideChoice ? 'clic' : 'typed'}`;
-    this.followAnalyticsServ.registerEventFollow(eventIlliflex_clic, 'event')
+    this.oemLoggingService.registerEvent(eventIlliflex_clic);
   }
 }

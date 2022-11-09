@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   //SERVER_API_URL: 'https://orangeetmoi.orange.sn',
-   SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
+  SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
   //SERVER_API_URL:  'http://selfcareb2c-client-http-dsidacdifdsorangeetmoi-dev.apps.malaaw-rec.orange-sonatel.com',
   // SERVER_API_URL: 'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
   // SERVER_API_URL: 'http://selfcareb2c-client-http-dsiselfcarebc-dev.k8s-test.orange-sonatel.com',
@@ -36,13 +36,14 @@ export const environment = {
   // GET_MSISDN_BY_NETWORK_URL: 'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
   // CONFIRM_MSISDN_BY_NETWORK_URL: 'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
   GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
-  CONFIRM_MSISDN_BY_NETWORK_URL:
-    'http://10.100.99.116:1494/api/v1/confirm-msisdn',
+  CONFIRM_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/confirm-msisdn',
   DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_95fb0f8745090d63e5acebaa',
+  BATCH_ANDROID_API_KEY: 'DEV632869C2005926068774E1B4B72',
+  BATCH_IOS_API_KEY: 'DEV63286A9C8BFA26473297AEF3760',
   CUSTOMER_OFFER_CACHE_DURATION: 30 * 60 * 1000, // 1.800.000 ms = 1.800 s = 30 min subscription cache duration
   FAVORITE_PASS_CACHE_DURATION: 30 * 24 * 60 * 60 * 1000, // 30 Jrs
   DEFAULT_DATA_CACHE_DURATION: 1 * 1 * 30 * 60 * 1000, // 30 mn,
-	GOOGLE_CAPTCHA_SITE_KEY: '6LcWQp8hAAAAADfyy__HZVF-8_glncUT_Sq4o2sv'
+  GOOGLE_CAPTCHA_SITE_KEY: '6LcWQp8hAAAAADfyy__HZVF-8_glncUT_Sq4o2sv',
 };
 
 /*

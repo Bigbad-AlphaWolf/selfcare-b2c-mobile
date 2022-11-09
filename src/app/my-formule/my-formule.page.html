@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons (click)="goBack()" class="ion-padding-start" slot="start">
-      <img src="/assets/images/arrow-left.png" alt="icon" class="arrow-left" />
+    <ion-buttons>
+      <ion-back-button [id]="'goBackBtn'" defaultHref="/" mode="md" class="oem-back-button"> </ion-back-button>
     </ion-buttons>
     <ion-title>
       <span class="title1"> Ma formule </span>
@@ -15,14 +15,8 @@
     </ion-toolbar>
   </ion-header>
   <div class="my-formule-page" *ngIf="!error && dataLoaded">
-    <div
-      class="banniere"
-      [ngStyle]="{'background-image': 'url(' + getBannerByFormule(currentFormule) + ')'}"
-    >
-      <span class="formule scb-text-white"
-        >{{currentFormule?.nomFormule ? currentFormule?.nomFormule :
-        currentFormule?.nomOffre}}</span
-      >
+    <div class="banniere" [ngStyle]="{'background-image': 'url(' + getBannerByFormule(currentFormule) + ')'}">
+      <span class="formule scb-text-white">{{currentFormule?.nomFormule ? currentFormule?.nomFormule : currentFormule?.nomOffre}}</span>
       <span *ngIf="0" class="changer scb-text-orange">Changer</span>
     </div>
     <div class="filters-block">
@@ -34,28 +28,11 @@
         </div>
         <ion-list>
           <ion-item mode="ios" lines="none" class="disabled">
-            <ion-label mode="ios" class="scb-text-full-black"
-              >Sénégal</ion-label
-            >
-            <ion-select
-              class="disabled"
-              mode="ios"
-              interface="popover"
-              noIonSelectArrow
-              [disabled]="true"
-            >
-              <ion-select-option
-                *ngFor="let country of listTarifsInternationaux"
-                [value]="country"
-                >{{country?.name}}</ion-select-option
-              >
+            <ion-label mode="ios" class="scb-text-full-black">Sénégal</ion-label>
+            <ion-select class="disabled" mode="ios" interface="popover" noIonSelectArrow [disabled]="true">
+              <ion-select-option *ngFor="let country of listTarifsInternationaux" [value]="country">{{country?.name}}</ion-select-option>
             </ion-select>
-            <ion-icon
-              ios="md-arrow-dropdown"
-              md="md-arrow-dropdown"
-              slot="end"
-              *ngIf="0"
-            ></ion-icon>
+            <ion-icon ios="md-arrow-dropdown" md="md-arrow-dropdown" slot="end" *ngIf="0"></ion-icon>
           </ion-item>
           <ion-item mode="ios" lines="none">
             <ion-select
@@ -66,20 +43,12 @@
               [value]="currentNumberSubscription?.profil === PREPAID_PROFILE ? listTarifsInternationaux[0]:listTarifsInternationaux[1]"
             >
               <ng-container *ngFor="let country2 of listTarifsInternationaux">
-                <ion-select-option
-                  *ngIf="country2?.zone?.name !== LOCAL_ZONE || currentNumberSubscription?.profil === PREPAID_PROFILE"
-                  [value]="country2"
-                >
-                  {{country2?.zone?.name !== LOCAL_ZONE ? country2?.name :
-                  'Même' + ' pays'}}
+                <ion-select-option *ngIf="country2?.zone?.name !== LOCAL_ZONE || currentNumberSubscription?.profil === PREPAID_PROFILE" [value]="country2">
+                  {{country2?.zone?.name !== LOCAL_ZONE ? country2?.name : 'Même' + ' pays'}}
                 </ion-select-option>
               </ng-container>
             </ion-select>
-            <ion-icon
-              ios="md-arrow-dropdown"
-              md="md-arrow-dropdown"
-              slot="end"
-            ></ion-icon>
+            <ion-icon ios="md-arrow-dropdown" md="md-arrow-dropdown" slot="end"></ion-icon>
           </ion-item>
         </ion-list>
       </div>
@@ -91,13 +60,8 @@
           <span class="title">Appels</span>
         </div>
         <div class="tarif-description">
-          <span class="tarif"
-            >{{selectedCountry?.value?.zone?.tarifFormule?.tarifAppel}} F /
-            Sec</span
-          >
-          <div class="description scb-text-gray">
-            {{selectedCountry?.value?.zone?.tarifFormule?.destination}}
-          </div>
+          <span class="tarif">{{selectedCountry?.value?.zone?.tarifFormule?.tarifAppel}} F / Sec</span>
+          <div class="description scb-text-gray">{{selectedCountry?.value?.zone?.tarifFormule?.destination}}</div>
         </div>
       </div>
       <div class="tarif-item">
@@ -106,12 +70,8 @@
           <span class="title">SMS</span>
         </div>
         <div class="tarif-description">
-          <span class="tarif"
-            >{{selectedCountry?.value?.zone?.tarifFormule?.tarifSms}} F</span
-          >
-          <div class="description scb-text-gray">
-            {{selectedCountry?.value?.zone?.tarifFormule?.destination}}
-          </div>
+          <span class="tarif">{{selectedCountry?.value?.zone?.tarifFormule?.tarifSms}} F</span>
+          <div class="description scb-text-gray">{{selectedCountry?.value?.zone?.tarifFormule?.destination}}</div>
         </div>
       </div>
       <div class="tarif-item">
@@ -120,12 +80,8 @@
           <span class="title">Zone</span>
         </div>
         <div class="tarif-description">
-          <span class="tarif scb-text-orange"
-            >{{selectedCountry?.value?.zone?.name}}</span
-          >
-          <div class="description scb-text-gray">
-            {{selectedCountry?.value?.zone?.description}}
-          </div>
+          <span class="tarif scb-text-orange">{{selectedCountry?.value?.zone?.name}}</span>
+          <div class="description scb-text-gray">{{selectedCountry?.value?.zone?.description}}</div>
         </div>
       </div>
     </div>
@@ -143,9 +99,7 @@
         >
           <span class="offer-name scb-text-white">{{formule?.nomFormule}}</span>
           <span class="tarif-and-infos">
-            <span class="tarif scb-text-white"
-              >{{formule?.prixAppels}} F / Sec</span
-            >
+            <span class="tarif scb-text-white">{{formule?.prixAppels}} F / Sec</span>
             <span class="infos scb-text-orange">En savoir plus</span>
           </span>
         </div>

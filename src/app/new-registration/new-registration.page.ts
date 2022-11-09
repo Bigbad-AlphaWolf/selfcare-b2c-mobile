@@ -2,20 +2,16 @@ import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Subscription, timer, of, throwError } from 'rxjs';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import {
-  AuthenticationService,
-  ConfirmMsisdnModel,
-  RegistrationModel,
-} from '../services/authentication-service/authentication.service';
+import { AuthenticationService, ConfirmMsisdnModel, RegistrationModel } from '../services/authentication-service/authentication.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import * as SecureLS from 'secure-ls';
 const ls = new SecureLS({ encodingType: 'aes' });
 import { SettingsPopupComponent } from 'src/shared/settings-popup/settings-popup.component';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { takeUntil, catchError, switchMap, take, tap } from 'rxjs/operators';
 import { PRO_MOBILE_ERROR_CODE, FORGOT_PWD_PAGE_URL, REGEX_NUMBER_OM, parsedMsisdn } from 'src/shared';
 import { ModalController, NavController, Platform } from '@ionic/angular';
 import { hash53 } from '../dashboard';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 import { captchaSiteKey, MSISDN_RECUPERATION_TIMEOUT } from '../register';
 import { OtpService } from '../services/otp-service/otp.service';
 import { RattachByOtpCodeComponent } from '../pages/rattached-phones-number/components/rattach-by-otp-code/rattach-by-otp-code.component';
@@ -49,7 +45,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
   hideRefresh: boolean;
   isHmacValid: boolean;
   form: FormGroup;
-	public action = 'login';
+  public action = 'login';
   public token?: string;
   public recaptchaScore = 0;
   constructor(
@@ -58,13 +54,13 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
     private authServ: AuthenticationService,
     public dialog: MatDialog,
     private ref: ChangeDetectorRef,
-    private followAnalyticsService: FollowAnalyticsService,
     private modalController: ModalController,
     private navController: NavController,
     private otpService: OtpService,
     public platform: Platform,
     private dashboardService: DashboardService,
-		private reCaptchaV3Service: ReCaptchaV3Service
+    private oemLoggingService: OemLoggingService,
+    private reCaptchaV3Service: ReCaptchaV3Service
   ) {}
 
   ngOnDestroy() {}
@@ -72,7 +68,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
   ionViewWillEnter() {}
 
   goIntro() {
-    this.followAnalyticsService.registerEventFollow('Voir_Intro', 'event', 'clic');
+    this.oemLoggingService.registerEvent('Voir_Intro');
     this.navController.navigateRoot(FORGOT_PWD_PAGE_URL);
   }
 
@@ -85,7 +81,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
   getNumber(event?: MouseEvent) {
     if (event) event.stopPropagation();
     this.phoneNumber = null;
-    this.form.patchValue({msisdn: null})
+    this.form.patchValue({ msisdn: null });
     const startTime = Date.now();
     this.gettingNumber = true;
     this.showErrMessage = false;
@@ -111,11 +107,10 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
                   const endTime = Date.now();
                   const elapsedSeconds = endTime - startTime;
                   const duration = `${elapsedSeconds} ms`;
-                  console.log(duration);
-                  this.followAnalyticsService.registerEventFollow('User_msisdn_recuperation_success', 'event', {
-                    msisdn: this.phoneNumber,
-                    duration,
-                  });
+                  this.oemLoggingService.registerEvent('User_msisdn_recuperation_success', [
+                    { dataName: 'msisdn', dataValue: this.phoneNumber },
+                    { dataName: 'duration', dataValue: duration },
+                  ]);
                 } else {
                   this.displayMsisdnError();
                 }
@@ -137,41 +132,40 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
 
   checkNumber(hmacFromOTP?: string) {
     this.checkingNumber = true;
-		this.showErrMessage = false;
+    this.showErrMessage = false;
     const payload = { msisdn: this.phoneNumber, hmac: this.hmac };
     if (!hmacFromOTP && (!this.phoneNumber || parsedMsisdn(this.phoneNumber) !== parsedMsisdn(this.form.get('msisdn').value))) {
       this.reCaptchaV3Service.execute(
-				captchaSiteKey,
-				this.action,
-				tokenResp => {
-					this.token = tokenResp;
-					// call backend with Captcha  Token
-					this.otpService
-        .generateOTPCaptchaCode(this.form.get('msisdn').value, this.token)
-        .pipe(
-          tap(codeSent => {
-            this.checkingNumber = false;
-            this.openTypeOtpModal(parsedMsisdn(this.form.get('msisdn').value));
-          }),
-					catchError((err) => {
-						this.checkingNumber = false;
-						this.showErrMessage = true;
-						if(err?.error?.title) {
-							this.errorMsg = err?.error?.title;
-						} else {
-							this.errorMsg = "Désolé !!! Impossible d'accéder à votre demande pour le moment. Veuillez réessayer plus tard. Merci";
-						}
-						return throwError(err);
-					})
-        )
-        .subscribe();
-
-				},
-				{
-					useGlobalDomain: false
-				}
-			);
-			return;
+        captchaSiteKey,
+        this.action,
+        tokenResp => {
+          this.token = tokenResp;
+          // call backend with Captcha  Token
+          this.otpService
+            .generateOTPCaptchaCode(this.form.get('msisdn').value, this.token)
+            .pipe(
+              tap(codeSent => {
+                this.checkingNumber = false;
+                this.openTypeOtpModal(parsedMsisdn(this.form.get('msisdn').value));
+              }),
+              catchError(err => {
+                this.checkingNumber = false;
+                this.showErrMessage = true;
+                if (err?.error?.title) {
+                  this.errorMsg = err?.error?.title;
+                } else {
+                  this.errorMsg = "Désolé !!! Impossible d'accéder à votre demande pour le moment. Veuillez réessayer plus tard. Merci";
+                }
+                return throwError(err);
+              })
+            )
+            .subscribe();
+        },
+        {
+          useGlobalDomain: false,
+        }
+      );
+      return;
     }
     if (hmacFromOTP) {
       this.phoneNumber = payload.msisdn = parsedMsisdn(this.form.get('msisdn').value);
@@ -207,7 +201,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
       component: RattachByOtpCodeComponent,
       componentProps: {
         number,
-        action: 'ACCESS_BY_OTP'
+        action: 'ACCESS_BY_OTP',
       },
       cssClass: 'select-recipient-modal',
     });
@@ -236,6 +230,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
         catchError(err => {
           this.checkingNumber = false;
           this.showErrMessage = true;
+          this.oemLoggingService.registerEvent('login_direct_error', [{ dataName: 'msisdn', dataValue: this.phoneNumber }]);
           this.errorMsg = 'Oups!!! Une erreur est survenue, veuillez réessayer plus tard. Merci';
           return throwError(err);
         })
@@ -263,6 +258,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
           this.checkingNumber = false;
           this.showErrMessage = true;
           this.errorMsg = 'Oups!!! Une erreur est survenue, veuillez réessayer plus tard. Merci';
+          this.oemLoggingService.registerEvent('login_direct_error', [{ dataName: 'msisdn', dataValue: this.phoneNumber }]);
           return throwError(err);
         })
       )
@@ -272,6 +268,7 @@ export class NewRegistrationPage implements OnInit, OnDestroy {
   redirectDashboardAfterLightLogin(res) {
     this.checkingNumber = false;
     const username = this.phoneNumber && this.phoneNumber.startsWith('221') ? this.phoneNumber.substring(3) : this.phoneNumber;
+    this.oemLoggingService.registerEvent('login_direct_success', [{ dataName: 'msisdn', dataValue: username }]);
     const authData = { access_token: res.access_token };
     this.dashboardService.setCurrentPhoneNumber(username);
     this.authServ.storeAuthenticationData(authData, { username });

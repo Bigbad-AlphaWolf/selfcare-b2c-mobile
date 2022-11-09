@@ -7,6 +7,7 @@ import { RattachedNumber } from 'src/app/models/rattached-number.model';
 import { BottomSheetService } from 'src/app/services/bottom-sheet/bottom-sheet.service';
 import { NavController } from '@ionic/angular';
 import { AccountService } from 'src/app/services/account-service/account.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'app-rattached-phones-number',
@@ -28,7 +29,8 @@ export class RattachedPhonesNumberPage implements OnInit {
     private dashbServ: DashboardService,
     private bsService: BottomSheetService,
     private navCon: NavController,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -53,16 +55,12 @@ export class RattachedPhonesNumberPage implements OnInit {
       .pipe(
         take(1),
         tap((list: RattachedNumber[]) => {
-          this.listRattachedNumbers.current = list.find(
-            (val: RattachedNumber) => {
-              return val.msisdn === currentNumber;
-            }
-          );
-          this.listRattachedNumbers.others = list.filter(
-            (val: RattachedNumber) => {
-              return val.msisdn !== currentNumber;
-            }
-          );
+          this.listRattachedNumbers.current = list.find((val: RattachedNumber) => {
+            return val.msisdn === currentNumber;
+          });
+          this.listRattachedNumbers.others = list.filter((val: RattachedNumber) => {
+            return val.msisdn !== currentNumber;
+          });
         })
       )
       .subscribe(
@@ -78,6 +76,7 @@ export class RattachedPhonesNumberPage implements OnInit {
   }
 
   openModalRattachNumber(phoneNumber?: string) {
+    this.oemLoggingService.registerEvent('lines_new_click', []);
     this.bsService.openRattacheNumberModal(phoneNumber);
   }
   goBack() {
@@ -86,6 +85,7 @@ export class RattachedPhonesNumberPage implements OnInit {
 
   deleteRattachment() {
     this.editable = !this.editable;
+    this.oemLoggingService.registerEvent('lines_edit_click', []);
   }
 
   performAction(numero: string) {

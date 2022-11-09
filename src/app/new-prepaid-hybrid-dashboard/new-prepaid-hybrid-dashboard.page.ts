@@ -9,6 +9,7 @@ import { NewSuiviConsoPage } from '../new-suivi-conso/new-suivi-conso.page';
 import { OmUniverseComponent } from '../om-universe/om-universe.component';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { DashboardHomeComponent } from './components/dashboard-home/dashboard-home.component';
+import { ANALYTICS_PROVIDER, OemLoggingService } from '../services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'app-new-prepaid-hybrid-dashboard',
@@ -61,27 +62,22 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
   };
   isIos: boolean;
 
-  constructor(
-    private ref: ChangeDetectorRef,
-    private dashboardService: DashboardService,
-    private platform: Platform
-  ) {}
+  constructor(private ref: ChangeDetectorRef, private dashboardService: DashboardService, private platform: Platform, private oemLoggingService: OemLoggingService) {}
 
   ngOnInit() {
     this.platform.ready().then(() => {
       this.isIos = this.platform.is('ios');
     });
-    this.dashboardService.listenToMenuClick().subscribe((menuItem) => {
-      console.log(menuItem);
+    this.dashboardService.listenToMenuClick().subscribe(menuItem => {
       switch (menuItem) {
         case CONSO:
-          this.setSlide(1);
-          break;
-        case HUB_OM_TAB:
-          this.setSlide(2);
+          this.setSlide(1, true);
           break;
         case SERVICES:
-          this.setSlide(3);
+          this.setSlide(2, true);
+          break;
+        case ASSISTANCE:
+          this.setSlide(3, true);
           break;
         case ASSISTANCE:
           this.setSlide(4);
@@ -90,6 +86,7 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
           break;
       }
     });
+    this.oemLoggingService.registerEvent('dashboard_displayed', [{ dataName: 'msisdn', dataValue: this.dashboardService.getCurrentPhoneNumber() }], ANALYTICS_PROVIDER.ALL);
   }
 
   ionViewDidEnter() {
@@ -116,22 +113,22 @@ export class NewPrepaidHybridDashboardPage implements OnInit {
     }
   }
 
-  setSlide(index) {
+  setSlide(index, isFromMenu?: boolean) {
     this.currentSlideIndex = index;
     this.swiper.swiperRef.slideTo(index);
   }
 
-	goTo(event: any) {
-		console.log('event', event);
-		const index = event.slideTo;
-		const tab = event.tab;
-		this.setSlide(index);
-		console.log('tab', tab);
+  goTo(event: any) {
+    console.log('event', event);
+    const index = event.slideTo;
+    const tab = event.tab;
+    this.setSlide(index);
+    console.log('tab', tab);
 
-		if(tab === TABS_SERVICES.LOISIR) {
-			this.newServicesPage.setSlidesIndex(Object.keys(TABS_SERVICES).indexOf(TABS_SERVICES.LOISIR));
-		}
-	}
+    if (tab === TABS_SERVICES.LOISIR) {
+      this.newServicesPage.setSlidesIndex(Object.keys(TABS_SERVICES).indexOf(TABS_SERVICES.LOISIR));
+    }
+  }
 
   onSwipe(event) {
     this.currentSlideIndex = event.activeIndex;

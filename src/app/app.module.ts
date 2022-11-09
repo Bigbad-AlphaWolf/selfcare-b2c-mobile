@@ -39,6 +39,7 @@ import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
 import { FaceIdAlertPopupComponent } from './sidemenu/face-id-alert-popup/face-id-alert-popup.component';
 import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { FirebaseDynamicLinks } from '@awesome-cordova-plugins/firebase-dynamic-links/ngx';
+import { FirebaseAnalytics } from '@ionic-native/firebase-analytics/ngx';
 import { DimeloCordovaPlugin } from 'DimeloPlugin/ngx';
 
 registerLocaleData(localeFr);
@@ -85,6 +86,7 @@ registerLocaleData(localeFr);
     Network,
     Diagnostic,
     BarcodeScanner,
+    FirebaseAnalytics,
     DimeloCordovaPlugin,
   ],
   bootstrap: [AppComponent],

@@ -13,15 +13,12 @@ import {
   TarifZoningByCountryModel,
 } from 'src/shared';
 import { FormuleService } from '../services/formule-service/formule.service';
-import {
-  SubscriptionModel,
-  PROFILE_TYPE_PREPAID,
-} from '../dashboard';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
+import { SubscriptionModel, PROFILE_TYPE_PREPAID } from '../dashboard';
 import { ModalController, Platform } from '@ionic/angular';
 import { ChangeOfferPopupComponent } from './change-offer-popup/change-offer-popup.component';
 import { SimpleOperationSuccessModalComponent } from 'src/shared/simple-operation-success-modal/simple-operation-success-modal.component';
 import { tap } from 'rxjs/operators';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'app-my-formule',
@@ -76,7 +73,7 @@ export class MyFormulePage implements OnInit {
     private formuleService: FormuleService,
     private authServ: AuthenticationService,
     private dashbdServ: DashboardService,
-    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private platform: Platform,
     private modalController: ModalController
   ) {}
@@ -89,7 +86,7 @@ export class MyFormulePage implements OnInit {
 
   async checkChangeFormuleDeeplink() {
     const changeFormule = this.route.snapshot.paramMap.get('codeFormule');
-		const currentRoute = this.router.url.split('/').join("");
+    const currentRoute = this.router.url.split('/').join('');
     if (changeFormule === JAMONO_NEW_SCOOL_CODE || currentRoute === JAMONO_NEW_SCOOL_SWAP_FORMULE_PATH) {
       this.currentNumber = this.dashbdServ.getCurrentPhoneNumber();
       this.authServ
@@ -97,9 +94,7 @@ export class MyFormulePage implements OnInit {
         .pipe(
           tap((sub: SubscriptionUserModel) => {
             if (sub.profil === PROFILE_TYPE_PREPAID) {
-              const formule = this.formulesArray.find(
-                (formule) => formule?.code === JAMONO_NEW_SCOOL_CODE_FORMULE
-              );
+              const formule = this.formulesArray.find(formule => formule?.code === JAMONO_NEW_SCOOL_CODE_FORMULE);
               if (sub.code !== JAMONO_NEW_SCOOL_CODE_FORMULE) {
                 this.openChangeFormuleModal(formule);
               }
@@ -113,21 +108,15 @@ export class MyFormulePage implements OnInit {
   }
 
   queryAllTarifs() {
-    this.formuleService
-      .getAllCountriesWithTarifs()
-      .subscribe((res: TarifZoningByCountryModel[]) => {
-        this.listTarifsInternationaux = res;
-        if (this.listTarifsInternationaux.length) {
-          this.tarifsByCountry = {
-            tarifAppel: this.listTarifsInternationaux[0].zone.tarifFormule
-              ? this.listTarifsInternationaux[0].zone.tarifFormule.tarifAppel
-              : '',
-            tarifSms: this.listTarifsInternationaux[0].zone.tarifFormule
-              ? this.listTarifsInternationaux[0].zone.tarifFormule.tarifSms
-              : '',
-          };
-        }
-      });
+    this.formuleService.getAllCountriesWithTarifs().subscribe((res: TarifZoningByCountryModel[]) => {
+      this.listTarifsInternationaux = res;
+      if (this.listTarifsInternationaux.length) {
+        this.tarifsByCountry = {
+          tarifAppel: this.listTarifsInternationaux[0].zone.tarifFormule ? this.listTarifsInternationaux[0].zone.tarifFormule.tarifAppel : '',
+          tarifSms: this.listTarifsInternationaux[0].zone.tarifFormule ? this.listTarifsInternationaux[0].zone.tarifFormule.tarifSms : '',
+        };
+      }
+    });
   }
 
   ionViewWillEnter() {
@@ -141,11 +130,7 @@ export class MyFormulePage implements OnInit {
     this.authServ.getSubscription(this.currentNumber).subscribe(
       (res: SubscriptionModel) => {
         this.currentNumberSubscription = res;
-        this.followAnalyticsService.registerEventFollow(
-          'MaFormule_sidemenu',
-          'event',
-          'opened'
-        );
+        this.oemLoggingService.registerEvent('MaFormule_sidemenu');
         this.formuleService.getformules(res.profil).subscribe(
           (resp: FormuleMobileModel[]) => {
             this.formulesArray = resp.filter((val: FormuleMobileModel) => {
@@ -166,7 +151,7 @@ export class MyFormulePage implements OnInit {
           }
         );
       },
-      (err) => {
+      err => {
         this.dataLoaded = true;
         this.error = 'erreur lors du chargement';
       }
@@ -179,33 +164,24 @@ export class MyFormulePage implements OnInit {
     this.authServ.getSubscription(this.currentNumber).subscribe(
       (resp: SubscriptionModel) => {
         this.dataLoaded = true;
-        this.currentFormule = this.formulesArray.find(
-          (formule: FormuleMobileModel) => {
-            return formule.code === resp.code;
-          }
-        );
+        this.currentFormule = this.formulesArray.find((formule: FormuleMobileModel) => {
+          return formule.code === resp.code;
+        });
         if (this.currentFormule) {
           if (this.currentFormule.code !== this.getKireneFormule()) {
-            this.otherFormules = this.formulesArray.filter(
-              (formule: FormuleMobileModel) => {
-                return (
-                  formule.code !== this.currentFormule.code &&
-                  formule.code !== this.getKireneFormule()
-                );
-              }
-            );
+            this.otherFormules = this.formulesArray.filter((formule: FormuleMobileModel) => {
+              return formule.code !== this.currentFormule.code && formule.code !== this.getKireneFormule();
+            });
           }
         } else {
-          this.error =
-            "Erreur, Votre formule n'est peut etre pas encore prise en compte ";
+          this.error = "Erreur, Votre formule n'est peut etre pas encore prise en compte ";
           this.currentFormule = resp;
         }
         this.dataLoaded = true;
       },
       (err: any) => {
         this.dataLoaded = true;
-        this.error =
-          "Erreur, Votre formule n'est peut etre pas encore prise en compte ";
+        this.error = "Erreur, Votre formule n'est peut etre pas encore prise en compte ";
       }
     );
   }
@@ -214,7 +190,7 @@ export class MyFormulePage implements OnInit {
     return CODE_KIRENE_Formule;
   }
   getImgByFormule(formule: FormuleMobileModel) {
-    const img = this.images.find((image) => {
+    const img = this.images.find(image => {
       return image.codeFormule === formule.code;
     });
     return img && img.icon ? img.icon : '/assets/images/4-2-g.png';
@@ -223,13 +199,11 @@ export class MyFormulePage implements OnInit {
   getBannerByFormule(formule: FormuleMobileModel) {
     let img;
     if (formule && formule.code) {
-      img = this.images.find((element) => {
+      img = this.images.find(element => {
         return element.codeFormule === formule.code;
       });
     }
-    return img && img.banner
-      ? img.banner
-      : '/assets/images/background-header-jamono-allo.jpg';
+    return img && img.banner ? img.banner : '/assets/images/background-header-jamono-allo.jpg';
   }
 
   seeDetailsFormule(formule: FormuleMobileModel) {
@@ -246,7 +220,7 @@ export class MyFormulePage implements OnInit {
       cssClass: 'modalRecipientSelection',
       componentProps: { formule, banner },
     });
-    modal.onDidDismiss().then((response) => {
+    modal.onDidDismiss().then(response => {
       if (response && response.data && response.data === 'changed') {
         this.openSuccessModal();
       }
@@ -260,7 +234,7 @@ export class MyFormulePage implements OnInit {
       cssClass: 'success-or-fail-modal',
       backdropDismiss: false,
     });
-    modal.onDidDismiss().then((response) => {
+    modal.onDidDismiss().then(response => {
       this.getCurrentAndOthersFormules();
     });
     return await modal.present();

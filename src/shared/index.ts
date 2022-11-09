@@ -4,9 +4,11 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { PalierModel } from 'src/app/models/palier.model';
 import { BoosterModel } from 'src/app/models/booster.model';
+import { OffreService } from 'src/app/models/offre-service.model';
+import { OPERATION_RAPIDO, OPERATION_TRANSFERT_ARGENT, OPERATION_TYPE_PAY_BILL, OPERATION_TYPE_TERANGA_BILL, OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
 import { isPostpaidFix, PROFILE_TYPE_HYBRID, PROFILE_TYPE_HYBRID_1, PROFILE_TYPE_HYBRID_2 } from 'src/app/dashboard';
 import { InvoiceOrange } from 'src/app/models/invoice-orange.model';
-import parsePhoneNumber from 'libphonenumber-js'
+import parsePhoneNumber from 'libphonenumber-js';
 
 const ls = new SecureLS({ encodingType: 'aes' });
 export const REGEX_NUMBER_ALLOWED_COUNTRY_CODE_SHORT: RegExp = /^((\+221|\+225|\+223|\+227|\+245))/;
@@ -17,8 +19,7 @@ export const REGEX_FIX_NUMBER: RegExp = /^((\+221|00221|221) ?)?(33) ?([0-9]{3})
 export const REGEX_PASSWORD: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$/;
 export const REGEX_PASSWORD2: RegExp = /^.{5,19}$/;
 export const REGEX_NAME = /^([^0-9_!¡?÷?¿/+=,.@#$%ˆ&*(){}|~<>;:\]\[-]){1,}$/;
-export const REGEX_EMAIL =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+export const REGEX_EMAIL = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export const REGEX_DIGIT = /\d/;
 export const REGEX_POSTPAID_FIXE = /(Keurgui).*|(Fibre).*|(LFB).*|(HOME).*/i;
 export const REGEX_PREPAID_FIXE = /(BOX).*/i;
@@ -115,7 +116,7 @@ export const FIND_AGENCE_EXTERNAL_URL = 'https://agence.orange.sn/';
 export const CHECK_ELIGIBILITY_EXTERNAL_URL = 'https://www.orange.sn/test-fibre';
 export const VALID_IMG_EXTENSIONS = ['jpg', 'jpeg', 'png'];
 
-export const COUNTER_TYPE_FELLOW = "Numéros illimités";
+export const COUNTER_TYPE_FELLOW = 'Numéros illimités';
 
 export const CREDIT = 'crédit';
 export const BONUS = 'bonus';
@@ -278,20 +279,7 @@ export function userFriendlyTime(seconds: number): string {
   return time;
 }
 
-export const months = [
-  'Janvier',
-  'Février',
-  'Mars',
-  'Avril',
-  'Mai',
-  'Juin',
-  'Juillet',
-  'Août',
-  'Septembre',
-  'Octobre',
-  'Novembre',
-  'Décembre',
-];
+export const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
 
 export interface PassInfoModel {
   id: number;
@@ -312,9 +300,9 @@ export interface PassInfoModel {
   typePassInternet: any;
   price_plan_index: number;
   price_plan_index_om: number;
-	contentId?: number;
-	thumbnailLandscape?: string;
-	thumbnailPortrait?: string;
+  contentId?: number;
+  thumbnailLandscape?: string;
+  thumbnailPortrait?: string;
 }
 
 export interface PromoPassModel {
@@ -427,10 +415,7 @@ export function arrangeCompteurByOrdre(listConso: UserConsommations) {
   });
   return listConso;
 }
-export function getListPassFilteredByLabelAndPaymentMod(
-  selectedLabel: string,
-  listPass: ((PassInfoModel | PromoPassModel) | (PassIllimModel | PromoPassIllimModel))[]
-) {
+export function getListPassFilteredByLabelAndPaymentMod(selectedLabel: string, listPass: ((PassInfoModel | PromoPassModel) | (PassIllimModel | PromoPassIllimModel))[]) {
   let listPassFiltered = [];
   listPassFiltered = listPass.filter((pass: any) => {
     if (!pass?.passPromo) {
@@ -601,9 +586,7 @@ export interface ProfilModel {
 
 export function getLastUpdatedDateTimeText() {
   const date = new Date();
-  const lastDate = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(
-    -2
-  )}/${date.getFullYear()}`;
+  const lastDate = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
   const lastDateTime = `${date.getHours()}h` + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
   return `${lastDate} à ${lastDateTime}`;
 }
@@ -901,8 +884,7 @@ export const HelpModalDefaultContent: {
         },
         {
           title: 'Assurez vous d’être sur le bon APN (Point d’Accès Internet)',
-          subtitle:
-            'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+          subtitle: 'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
         },
       ],
     },
@@ -940,8 +922,7 @@ export const HelpModalDefaultContent: {
       subOptions: [
         {
           title: 'Rendez-vous sur la page d’accueil en mode connecté',
-          subtitle:
-            'Accédez à la page de connexion puis connectez-vous avec le compte ayant rattaché votre numéro en question',
+          subtitle: 'Accédez à la page de connexion puis connectez-vous avec le compte ayant rattaché votre numéro en question',
         },
         {
           title: 'Accédez au menu « Mon compte »',
@@ -970,8 +951,7 @@ export const HelpModalDefaultContent: {
         },
         {
           title: 'Vous serez redirigé vers la page adéquate',
-          subtitle:
-            'Vous serez redirigé vers la page de création de mot de passe si vous n’avez pas de compte dans le cas contraire vers la page de connexion',
+          subtitle: 'Vous serez redirigé vers la page de création de mot de passe si vous n’avez pas de compte dans le cas contraire vers la page de connexion',
         },
       ],
     },
@@ -983,8 +963,7 @@ export const HelpModalDefaultContent: {
       action: '',
       subOptions: [
         {
-          title:
-            'L’accés à Orange et moi est gratuit en étant sur le réseau Orange, assurez vous d’avoir activé les données mobiles sur la sim Orange',
+          title: 'L’accés à Orange et moi est gratuit en étant sur le réseau Orange, assurez vous d’avoir activé les données mobiles sur la sim Orange',
           subtitle: 'Accéder au menu « Réseaux » depuis vos « Paramètres »',
         },
         {
@@ -1001,22 +980,18 @@ export const HelpModalDefaultContent: {
       action: '',
       subOptions: [
         {
-          title:
-            '<span>Accéder aux Paramètres &nbsp <img class="item-icon" src="/assets/images/parameters.png" /></span>',
+          title: '<span>Accéder aux Paramètres &nbsp <img class="item-icon" src="/assets/images/parameters.png" /></span>',
           subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
           icon: 'settings',
         },
         {
-          title:
-            '<span>Sélectionner la partie Sans fil et réseau &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
+          title: '<span>Sélectionner la partie Sans fil et réseau &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
           subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
           icon: 'wifi',
         },
         {
-          title:
-            '<span>Choisissez ensuite Réseau mobile ou Réseau de données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" /></span>',
-          subtitle:
-            'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+          title: '<span>Choisissez ensuite Réseau mobile ou Réseau de données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" /></span>',
+          subtitle: 'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
         },
         {
           title: 'Allez sur Noms des points d’accès (APN)',
@@ -1024,8 +999,7 @@ export const HelpModalDefaultContent: {
         },
         {
           title: 'Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
-          subtitle:
-            'Les paramètres internet Orange sont: \nNom : Orange Internet \nAPN : internet \nLaisser tous les autres options en l’état puis sauvegarder',
+          subtitle: 'Les paramètres internet Orange sont: \nNom : Orange Internet \nAPN : internet \nLaisser tous les autres options en l’état puis sauvegarder',
         },
       ],
     },
@@ -1041,20 +1015,16 @@ export const HelpModalDefaultContent: {
           subtitle: 'Activez vos données mobile sur la Sim Orange',
         },
         {
-          title:
-            'Une fois connecté, cliquez sur le menu de gauche(trois traits), puis cliquez sur l’entrée "Mon compte"',
+          title: 'Une fois connecté, cliquez sur le menu de gauche(trois traits), puis cliquez sur l’entrée "Mon compte"',
           subtitle: 'Cliquez sur le menu en haut à gauche de l’écran puis sur "Mon compte"',
         },
         {
-          title:
-            'Une fois sur "Mon compte", cliquez sur "Rattachez une ligne" et saisissez votre numéro de téléphone fixe',
-          subtitle:
-            'Saisissez votre numéro de téléphone fixe pour pouvoir le lier à votre compte et suivre sa consommation',
+          title: 'Une fois sur "Mon compte", cliquez sur "Rattachez une ligne" et saisissez votre numéro de téléphone fixe',
+          subtitle: 'Saisissez votre numéro de téléphone fixe pour pouvoir le lier à votre compte et suivre sa consommation',
         },
         {
           title: 'Et enfin suivez les instructions',
-          subtitle:
-            'Une fois fait, retournez cliquer sur le menu de gauche puis cliquez sur "Changer de ligne" et choisissez votre numéro fixe',
+          subtitle: 'Une fois fait, retournez cliquer sur le menu de gauche puis cliquez sur "Changer de ligne" et choisissez votre numéro fixe',
         },
       ],
     },
@@ -1066,8 +1036,7 @@ export const HelpModalDefaultContent: {
       action: '',
       subOptions: [
         {
-          title:
-            'Une fois connecté, cliquez sur le bouton Ibou puis cliquez sur "Besoin d’aide" puis "Contacter l’assistance"',
+          title: 'Une fois connecté, cliquez sur le bouton Ibou puis cliquez sur "Besoin d’aide" puis "Contacter l’assistance"',
           subtitle: 'Suivre ces instructions',
         },
         {
@@ -1117,8 +1086,7 @@ export const HelpModalRegisterOMContent: {
         },
         {
           title: 'Assurez vous d’être sur le bon APN (Point d’Accès Internet)',
-          subtitle:
-            'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+          subtitle: 'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
         },
       ],
     },
@@ -1130,22 +1098,18 @@ export const HelpModalRegisterOMContent: {
       action: '',
       subOptions: [
         {
-          title:
-            '<span>Accéder aux Paramètres &nbsp <img class="item-icon" src="/assets/images/parameters.png" /></span>',
+          title: '<span>Accéder aux Paramètres &nbsp <img class="item-icon" src="/assets/images/parameters.png" /></span>',
           subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil',
           icon: 'settings',
         },
         {
-          title:
-            '<span>Sélectionner la partie Sans fil et réseau &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
+          title: '<span>Sélectionner la partie Sans fil et réseau &nbsp<img class="item-icon" src="/assets/images/wifi.png" /></span>',
           subtitle: 'Rendez-vous dans « Paramètres ou Réglages » via le Menu ou votre écran d’accueil ',
           icon: 'wifi',
         },
         {
-          title:
-            '<span>Choisissez ensuite Réseau mobile ou Réseau de données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" /></span>',
-          subtitle:
-            'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+          title: '<span>Choisissez ensuite Réseau mobile ou Réseau de données mobiles &nbsp<img class="item-icon" src="/assets/images/donnes-mobiles.png" /></span>',
+          subtitle: 'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
         },
         {
           title: 'Allez sur Noms des points d’accès (APN)',
@@ -1153,8 +1117,7 @@ export const HelpModalRegisterOMContent: {
         },
         {
           title: 'Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
-          subtitle:
-            'Les paramètres internet Orange sont: \nNom : Orange Internet \nAPN : internet \nLaisser tous les autres options en l’état puis sauvegarder',
+          subtitle: 'Les paramètres internet Orange sont: \nNom : Orange Internet \nAPN : internet \nLaisser tous les autres options en l’état puis sauvegarder',
         },
       ],
     },
@@ -1231,28 +1194,21 @@ export const HelpModalConfigApnContent = {
     },
     {
       title: '3) Choisissez ensuite Réseau mobile ou Réseau de données mobiles',
-      subtitle:
-        'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+      subtitle: 'Accéder au menu « Réseaux mobiles » ( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
       type: '',
       url: '',
       action: 'POPUP',
     },
     {
       title: '4) Allez sur Noms des points d’accès (APN)',
-      subtitle:
-        'Accéder au menu « Réseaux mobiles »' +
-        '( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
+      subtitle: 'Accéder au menu « Réseaux mobiles »' + '( parfois caché dans le menu « Plus » ) afin d’accéder aux « Noms des points d’accès »',
       type: '',
       url: '',
       action: 'POPUP',
     },
     {
       title: '5) Il n’y a plus qu’à renseigner les informations de l’APN d’Orange',
-      subtitle:
-        'Les paramètres internet Orange sont: \n' +
-        'Nom : Orange Internet\n' +
-        ' APN : internet\n' +
-        'Laisser tous les autres options en l’état puis sauvegarder',
+      subtitle: 'Les paramètres internet Orange sont: \n' + 'Nom : Orange Internet\n' + ' APN : internet\n' + 'Laisser tous les autres options en l’état puis sauvegarder',
       type: '',
       url: '',
       action: 'POPUP',
@@ -1283,8 +1239,7 @@ export const DAILY_DALAL_TARIF = '12 FCFA /jour';
 export const LOCAL_ZONE = 'Zone Locale';
 export const LIGHT_DASHBOARD_EVENT = 'GO_DASHBOARD_LIGHT';
 export const REGISTRATION_PASSWORD_STEP = 'PASSWORD';
-export const USER_ERROR_MSG_BLOCKED =
-  'Votre Compte Orange et Moi a été bloqué. Cliquez sur mot de passe oublié et suivez les instructions.';
+export const USER_ERROR_MSG_BLOCKED = 'Votre Compte Orange et Moi a été bloqué. Cliquez sur mot de passe oublié et suivez les instructions.';
 
 export enum IlliflexOption {
   BUDGET = 'BUDGET',
@@ -1337,7 +1292,8 @@ export const OM_UNKOWN_ERROR_CODE = 'Erreur-019';
 export const OM_CAPPING_ERROR = 'Capping-social-error';
 export const TRANSFER_BALANCE_INSUFFICIENT_ERROR = 'Le montant que vous voulez transférer est supérieur à votre solde.';
 export const BALANCE_INSUFFICIENT_ERROR = 'Le montant de votre solde est insuffisant pour effectuer cette opération.';
-export const BALANCE_INSUFFICIENT_FOR_TRANSFERT_CREDIT_ERROR = 'Le montant de votre solde est insuffisant pour effectuer cette opération. Vous devez avoir au moins 490Fcfa de crédit recharge restant aprés votre opération';
+export const BALANCE_INSUFFICIENT_FOR_TRANSFERT_CREDIT_ERROR =
+  'Le montant de votre solde est insuffisant pour effectuer cette opération. Vous devez avoir au moins 490Fcfa de crédit recharge restant aprés votre opération';
 export const CREDIT_FEE_INSUFFICIENT_ERROR = 'Vous devez avoir au moins 20F de crédit recharge pour couvrir les frais.';
 export const BONUS_INSUFFICIENT_ERROR = 'Votre solde bonus est insuffisant pour effectuer ce transfert.';
 export const TRANSFER_OM_BALANCE_NOT_ALLOWED = "Le montant que vous avez saisi n'est pas dans la plage autorisée";
@@ -1409,6 +1365,42 @@ export const IRT_TRANSFER_REASONS = [
   { value: 'Oeuvres et dons', id: 7 },
 ];
 
+export function getServiceEventLoggingName(service: OffreService) {
+  switch (service.code) {
+    case OPERATION_TRANSFERT_ARGENT:
+      return 'transfert_argent';
+    case OPERATION_TYPE_SEDDO_CREDIT:
+      return 'transfert_credit';
+    case OPERATION_TYPE_SEDDO_BONUS:
+      return 'transfert_bonus';
+    case OPERATION_TYPE_RECHARGE_CREDIT:
+      return 'recharge_credit';
+    case OPERATION_TYPE_PASS_INTERNET:
+      return 'pass_internet';
+    case OPERATION_TYPE_PASS_INTERNATIONAL:
+      return 'pass_international';
+    case OPERATION_TYPE_PASS_ILLIMIX:
+      return 'pass_illimix';
+    case OPERATION_TYPE_PASS_VOYAGE:
+      return 'pass_voyage';
+    case OPERATION_TYPE_PASS_ALLO:
+      return 'pass_allo';
+    case OPERATION_TYPE_PASS_ILLIFLEX:
+      return 'pass_illiflex';
+    case OPERATION_TYPE_MERCHANT_PAYMENT:
+      return 'paiement_marchand';
+    case OPERATION_WOYOFAL:
+      return 'woyofal';
+    case OPERATION_RAPIDO:
+      return 'rapido';
+    case OPERATION_TYPE_PAY_BILL:
+      return 'sonatel_fixe';
+    case OPERATION_TYPE_TERANGA_BILL:
+      return 'sonatel_teranga';
+    default:
+      return service.code.toLowerCase();
+  }
+}
 export function formatCountryCallId(callId: string) {
   if (callId.startsWith('+')) {
     return callId.substring(1);
@@ -1428,10 +1420,8 @@ export const MAXIMUM_PAYABLE_BILL_AMOUNT = 150000;
 // Dalal Tones Requirements
 export const MINIMUM_REQUIRED_RECHARGEMENT_SOLDE_TO_ACTIVATE_DALAL = 12;
 
-export const MSG_XEWEUL_CARD_INVALID =
-  'Service non disponble pour cette carte. Ageroute vous invite à la renouveler gratuitement au niveau de ses espaces clients.';
-export const MSG_XEWEUL_CARD_INVALID_AMOUNT_TO_RECHARGE =
-  'Vous ne pouvez recharger un montant inférieur à 500 Fcfa';
+export const MSG_XEWEUL_CARD_INVALID = 'Service non disponble pour cette carte. Ageroute vous invite à la renouveler gratuitement au niveau de ses espaces clients.';
+export const MSG_XEWEUL_CARD_INVALID_AMOUNT_TO_RECHARGE = 'Vous ne pouvez recharger un montant inférieur à 500 Fcfa';
 export const ERROR_CODE_INVALID_XEWEUL_CARD = '3019';
 export const ERROR_CODE_INVALID_AMOUNT_TO_RECHARGE_XEWEUL_CARD = '3020';
 export const LOCAL_STORAGE_KEYS = {
@@ -1455,7 +1445,7 @@ export const PATH_ACCESS_BY_OTP = '/access/';
 export enum OPERATION_TRANSACTION_STATUS {
   SUCCESS = 'success',
   FAILED = 'failed',
-  PROCESSING = 'processing'
+  PROCESSING = 'processing',
 }
 export const RATTACHMENT_ERROR_MAX_COUNT = 3;
 export const DEEPLINK_MOBILE_BILL_BASE_URL = 'payer-teranga';

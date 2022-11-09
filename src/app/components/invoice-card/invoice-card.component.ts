@@ -1,9 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {
-  BILL_STATUS,
-  InvoiceOrange,
-} from 'src/app/models/invoice-orange.model';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { BILL_STATUS, InvoiceOrange } from 'src/app/models/invoice-orange.model';
 import { BillsService } from 'src/app/services/bill-service/bills.service';
 import { NavigationExtras } from '@angular/router';
 import { ModalController, NavController } from '@ionic/angular';
@@ -13,6 +9,7 @@ import { UnpaidBillModalComponent } from '../unpaid-bill-modal/unpaid-bill-modal
 import { OPERATION_TYPE_SENEAU_BILLS, OPERATION_TYPE_SENELEC_BILLS } from 'src/app/utils/operations.constants';
 import { FeeModel } from 'src/app/services/orange-money-service';
 import { FeesService } from 'src/app/services/fees/fees.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'invoice-card',
@@ -37,7 +34,7 @@ export class InvoiceCardComponent implements OnInit {
   OPERATION_TYPE_SENEAU_BILLS = OPERATION_TYPE_SENEAU_BILLS;
   constructor(
     private billsService: BillsService,
-    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private navController: NavController,
     private modalController: ModalController,
     private feeService: FeesService
@@ -46,11 +43,7 @@ export class InvoiceCardComponent implements OnInit {
   ngOnInit() {}
 
   downloadBill(bill: any) {
-    this.followAnalyticsService.registerEventFollow(
-      'click_download_bill',
-      'event',
-      'clicked'
-    );
+    this.oemLoggingService.registerEvent('click_download_bill');
     this.billsService.downloadBill(bill);
   }
 
@@ -63,10 +56,7 @@ export class InvoiceCardComponent implements OnInit {
         return;
       }
       let fee;
-      if (
-        this.operation === OPERATION_TYPE_SENELEC_BILLS ||
-        this.operation === OPERATION_TYPE_SENEAU_BILLS
-      ) {
+      if (this.operation === OPERATION_TYPE_SENELEC_BILLS || this.operation === OPERATION_TYPE_SENEAU_BILLS) {
         fee = this.feeService.extractFees(this.fees, invoice?.montantFacture);
         fee.effective_fees = Math.round(fee.effective_fees);
       }
@@ -75,7 +65,7 @@ export class InvoiceCardComponent implements OnInit {
         invoice,
         numberToRegister: this.numberToRegister,
         counterToFav: this.counterToFav,
-        fee
+        fee,
       };
       const navExtras: NavigationExtras = { state: opXtras };
       this.navController.navigateForward(['/operation-recap'], navExtras);
@@ -83,12 +73,9 @@ export class InvoiceCardComponent implements OnInit {
   }
 
   getLastestUnpaidBill() {
-    const unpaidBillsArray = this.allBills.filter((bill) => {
+    const unpaidBillsArray = this.allBills.filter(bill => {
       return (
-        bill.statutFacture === 'unpaid' &&
-        bill.nfact !== this.invoice.nfact &&
-        new Date(bill.dateEmissionfacture).getTime() <
-          new Date(this.invoice.dateEmissionfacture).getTime()
+        bill.statutFacture === 'unpaid' && bill.nfact !== this.invoice.nfact && new Date(bill.dateEmissionfacture).getTime() < new Date(this.invoice.dateEmissionfacture).getTime()
       );
     });
     return unpaidBillsArray.reverse();
@@ -100,24 +87,21 @@ export class InvoiceCardComponent implements OnInit {
       cssClass: 'select-recipient-modal',
       componentProps: {
         unpaidBills,
-        operation: this.operation
+        operation: this.operation,
       },
     });
-    modal.onDidDismiss().then((response) => {
+    modal.onDidDismiss().then(response => {
       if (response?.data) {
         let fee;
-        const invoice = unpaidBills[0]
-        if (
-          this.operation === OPERATION_TYPE_SENELEC_BILLS ||
-          this.operation === OPERATION_TYPE_SENEAU_BILLS
-        ) {
+        const invoice = unpaidBills[0];
+        if (this.operation === OPERATION_TYPE_SENELEC_BILLS || this.operation === OPERATION_TYPE_SENEAU_BILLS) {
           fee = this.feeService.extractFees(this.fees, invoice?.montantFacture);
           fee.effective_fees = Math.round(fee.effective_fees);
         }
         const opXtras: OperationExtras = {
           purchaseType: this.operation,
           invoice,
-          fee
+          fee,
         };
         const navExtras: NavigationExtras = { state: opXtras };
         this.navController.navigateForward(['/operation-recap'], navExtras);

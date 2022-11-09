@@ -6,9 +6,10 @@ import { CustomerOperationStatus } from 'src/app/models/enums/om-customer-status
 import { OffreService } from 'src/app/models/offre-service.model';
 import { OMCustomerStatusModel } from 'src/app/models/om-customer-status.model';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 import { REGEX_FIX_NUMBER } from '..';
 
 @Component({
@@ -23,10 +24,10 @@ export class ServicesSearchBarComponent implements OnInit {
   @Input() source: 'DASHBOARD' | null = 'DASHBOARD';
   constructor(
     private navController: NavController,
-    private followAnalyticsService: FollowAnalyticsService,
     private operationService: OperationService,
     private dashbServ: DashboardService,
-    private orangeMoneyService: OrangeMoneyService
+    private orangeMoneyService: OrangeMoneyService,
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {}
@@ -40,10 +41,8 @@ export class ServicesSearchBarComponent implements OnInit {
     this.navController.navigateForward(['/assistance-hub/search'], {
       state: { listBesoinAides: this.listBesoinAides, source: this.source },
     });
-    this.followAnalyticsService.registerEventFollow(
-      'Dashboard_hub_recherche',
-      'event'
-    );
+    const eventName = this.source === 'DASHBOARD' ? 'dashboard_search_focus_click' : this.source === 'SERVICES' ? '' : '';
+    this.oemLoggingService.registerEvent(eventName, [{ dataName: 'msisdn', dataValue: this.currentMsisdn }]);
   }
 
   async checkStatus() {
@@ -62,62 +61,41 @@ export class ServicesSearchBarComponent implements OnInit {
       .getServicesByFormule(null, true)
       .pipe(
         switchMap(async (res: OffreService[]) => {
-          const offres: OffreService[] = await this.operationService
-            .getServicesByFormule()
-            .toPromise();
+          const offres: OffreService[] = await this.operationService.getServicesByFormule().toPromise();
           return [...offres, ...res];
         })
       )
       .subscribe(
-        async (res) => {
+        async res => {
           let userOMStatus;
-          if (!REGEX_FIX_NUMBER.test(this.currentMsisdn))
-            userOMStatus = await this.checkStatus();
+          if (!REGEX_FIX_NUMBER.test(this.currentMsisdn)) userOMStatus = await this.checkStatus();
           this.listBesoinAides = res;
-          this.listBesoinAides = this.filterOMActesFollowingOMStatus(
-            userOMStatus,
-            this.listBesoinAides
-          );
-          this.followAnalyticsService.registerEventFollow(
-            'Assistance_hub_affichage_success',
-            'event'
-          );
+          this.listBesoinAides = this.filterOMActesFollowingOMStatus(userOMStatus, this.listBesoinAides);
+          this.oemLoggingService.registerEvent('Assistance_hub_affichage_success');
         },
-        (err) => {
-          this.followAnalyticsService.registerEventFollow(
+        err => {
+          this.oemLoggingService.registerEvent(
             'Assistance_hub_affichage_error',
-            'error',
-            {
+            convertObjectToLoggingPayload({
               msisdn: this.currentMsisdn,
               error: err.status,
-            }
+            })
           );
         }
       );
   }
 
-  filterOMActesFollowingOMStatus(
-    user: OMCustomerStatusModel,
-    actes: OffreService[]
-  ) {
+  filterOMActesFollowingOMStatus(user: OMCustomerStatusModel, actes: OffreService[]) {
     let response = actes;
     if (user.operation === 'DEPLAFONNEMENT' || user.operation === 'FULL') {
       response = actes.filter((item: OffreService) => {
-        return (
-          item.code !== 'OUVERTURE_OM_ACCOUNT' &&
-          item.code !== 'OUVERTURE_OM_ACCOUNT_NEW'
-        );
+        return item.code !== 'OUVERTURE_OM_ACCOUNT' && item.code !== 'OUVERTURE_OM_ACCOUNT_NEW';
       });
-    } else if (
-      user.operation === 'OUVERTURE_COMPTE' &&
-      user.operationStatus === CustomerOperationStatus.password_creation
-    ) {
+    } else if (user.operation === 'OUVERTURE_COMPTE' && user.operationStatus === CustomerOperationStatus.password_creation) {
       response = actes;
     } else {
       response = actes.filter((item: OffreService) => {
-        return (
-          item.code !== 'DEPLAFONNEMENT' && item.code !== 'DEPLAFONNEMENT_NEW'
-        );
+        return item.code !== 'DEPLAFONNEMENT' && item.code !== 'DEPLAFONNEMENT_NEW';
       });
     }
     return response;

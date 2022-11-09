@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularDelegate, ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 
 import { RattachNumberByClientCodeComponent } from './rattach-number-by-client-code.component';
 
@@ -12,40 +11,30 @@ describe('RattachNumberByClientCodeComponent', () => {
   let component: RattachNumberByClientCodeComponent;
   let fixture: ComponentFixture<RattachNumberByClientCodeComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [RattachNumberByClientCodeComponent],
-        imports: [ReactiveFormsModule, FormsModule],
-        providers: [
-          AngularDelegate,
-          {
-            provide: ModalController,
-          },
-          {
-            provide: DashboardService,
-            useValue: {
-              registerNumberByIdClient: () => {
-                return of();
-              },
-              getMainPhoneNumber: () => {
-                return '';
-              },
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [RattachNumberByClientCodeComponent],
+      imports: [ReactiveFormsModule, FormsModule],
+      providers: [
+        AngularDelegate,
+        {
+          provide: ModalController,
+        },
+        {
+          provide: DashboardService,
+          useValue: {
+            registerNumberByIdClient: () => {
+              return of();
+            },
+            getMainPhoneNumber: () => {
+              return '';
             },
           },
-          {
-            provide: FollowAnalyticsService,
-            useValue: {
-              registerEventFollow: () => {
-                return '';
-              },
-            },
-          },
-        ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      }).compileComponents();
-    })
-  );
+        },
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RattachNumberByClientCodeComponent);

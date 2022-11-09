@@ -7,15 +7,13 @@ import { BestOfferIlliflexModel } from 'src/app/models/best-offer-illiflex.model
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
 import { PalierModel } from 'src/app/models/palier.model';
 import { environment } from 'src/environments/environment';
-import {
-  getMaxDataVolumeOrVoiceOfPaliers,
-  getMinDataVolumeOrVoiceOfPaliers,
-} from 'src/shared';
+import { getMaxDataVolumeOrVoiceOfPaliers, getMinDataVolumeOrVoiceOfPaliers } from 'src/shared';
 import { AuthenticationService } from '../authentication-service/authentication.service';
 const { CONSO_SERVICE, SERVER_API_URL, PURCHASES_SERVICE } = environment;
 import { DashboardService } from '../dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import * as SecureLS from 'secure-ls';
+import { OemLoggingService } from '../oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 const paliersEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/pricings`;
 const buyIlliflexEndpoint = `${SERVER_API_URL}/${PURCHASES_SERVICE}/api/buy-pass-illiflex`;
 const bestOfferEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/prepay-balance/best-offer`;
@@ -28,12 +26,7 @@ const ILLIFLEX_CACHE_DURATION_LS_KEY = 'illiflex_cache_date';
 })
 export class IlliflexService {
   currentMsisdn: string;
-  constructor(
-    private http: HttpClient,
-    private authService: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService,
-    private dashboardService: DashboardService
-  ) {
+  constructor(private http: HttpClient, private authService: AuthenticationService, private oemLoggingService: OemLoggingService, private dashboardService: DashboardService) {
     this.currentMsisdn = this.dashboardService.getCurrentPhoneNumber();
   }
 
@@ -46,35 +39,23 @@ export class IlliflexService {
     }
     return this.http.get(`${paliersEndpoint}`).pipe(
       map((res: PalierModel[]) => {
-        res.map((palier) => {
-          palier.maxDataVolume = getMaxDataVolumeOrVoiceOfPaliers(
-            [palier],
-            'data'
-          );
-          palier.minDataVolume = getMinDataVolumeOrVoiceOfPaliers(
-            [palier],
-            'data'
-          );
+        res.map(palier => {
+          palier.maxDataVolume = getMaxDataVolumeOrVoiceOfPaliers([palier], 'data');
+          palier.minDataVolume = getMinDataVolumeOrVoiceOfPaliers([palier], 'data');
           palier.maxVoice = getMaxDataVolumeOrVoiceOfPaliers([palier], 'voice');
           palier.minVoice = getMinDataVolumeOrVoiceOfPaliers([palier], 'voice');
           return palier;
         });
-        res = res.sort(
-          (palier1, palier2) => palier1.maxPalier - palier2.maxPalier
-        );
-        this.followAnalyticsService.registerEventFollow(
-          'illiflex_pricings_success',
-          'event',
-          { msisdn: this.currentMsisdn }
-        );
-        ls.set(ILLIFLEX_SEGMENTS_LS_KEY, res)
+        res = res.sort((palier1, palier2) => palier1.maxPalier - palier2.maxPalier);
+        this.oemLoggingService.registerEvent('illiflex_pricings_success', convertObjectToLoggingPayload({ msisdn: this.currentMsisdn }));
+        ls.set(ILLIFLEX_SEGMENTS_LS_KEY, res);
         ls.set(ILLIFLEX_CACHE_DURATION_LS_KEY, Date.now());
         return res;
       }),
-      retryWhen((errors) => {
+      retryWhen(errors => {
         return errors.pipe(
           delay(1000),
-          mergeMap((error) => {
+          mergeMap(error => {
             if (retries > 0) {
               retries--;
               return of(error);
@@ -86,12 +67,8 @@ export class IlliflexService {
           })
         );
       }),
-      catchError((err) => {
-        this.followAnalyticsService.registerEventFollow(
-          'illiflex_pricings_failed',
-          'error',
-          { msisdn: this.currentMsisdn, error: err }
-        );
+      catchError(err => {
+        this.oemLoggingService.registerEvent('illiflex_pricings_failed', convertObjectToLoggingPayload({ msisdn: this.currentMsisdn, error: err }));
         return throwError(err);
       })
     );
@@ -154,42 +131,24 @@ export class IlliflexService {
     }
   }
 
-  getBestOffer(param: {
-    recipientMsisdn: string;
-    amount: number;
-    validity: string;
-  }): Observable<BestOfferIlliflexModel> {
+  getBestOffer(param: { recipientMsisdn: string; amount: number; validity: string }): Observable<BestOfferIlliflexModel> {
     return this.authService.getSubscriptionForTiers(param.recipientMsisdn).pipe(
       switchMap((sub: SubscriptionModel) => {
         const validity = this.getValidityName(param.validity);
-        return this.http
-          .get(
-            `${bestOfferEndpoint}/${param.recipientMsisdn}?codeFormule=${sub.code}&montant=${param.amount}&validity=${validity}&unit=XOF`
-          )
-          .pipe(
-            map((bestOffer: BestOfferIlliflexModel) => {
-              // process data volume in Mo as it is received in Ko
-              bestOffer.dataBucket.balance.amount =
-                bestOffer.dataBucket.balance.amount / 1024;
-              // process voice in Min as it is received in second
-              bestOffer.voiceBucket.balance.amount =
-                bestOffer.voiceBucket.balance.amount / 60;
-              this.followAnalyticsService.registerEventFollow(
-                'best_offer_success',
-                'event',
-                { offer: bestOffer, msisdn: param.recipientMsisdn }
-              );
-              return bestOffer;
-            }),
-            catchError((err) => {
-              this.followAnalyticsService.registerEventFollow(
-                'best_offer_failed',
-                'error',
-                { msisdn: param.recipientMsisdn, error: err.status }
-              );
-              return throwError(err);
-            })
-          );
+        return this.http.get(`${bestOfferEndpoint}/${param.recipientMsisdn}?codeFormule=${sub.code}&montant=${param.amount}&validity=${validity}&unit=XOF`).pipe(
+          map((bestOffer: BestOfferIlliflexModel) => {
+            // process data volume in Mo as it is received in Ko
+            bestOffer.dataBucket.balance.amount = bestOffer.dataBucket.balance.amount / 1024;
+            // process voice in Min as it is received in second
+            bestOffer.voiceBucket.balance.amount = bestOffer.voiceBucket.balance.amount / 60;
+            this.oemLoggingService.registerEvent('best_offer_success', convertObjectToLoggingPayload({ offer: bestOffer, msisdn: param.recipientMsisdn }));
+            return bestOffer;
+          }),
+          catchError(err => {
+            this.oemLoggingService.registerEvent('best_offer_failed', convertObjectToLoggingPayload({ msisdn: param.recipientMsisdn, error: err.status }));
+            return throwError(err);
+          })
+        );
       })
     );
   }

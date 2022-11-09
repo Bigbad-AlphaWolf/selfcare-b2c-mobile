@@ -1,17 +1,4 @@
-import {
-	ChangeDetectorRef,
-	Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Output,
-  QueryList,
-  SimpleChanges,
-  ViewChild,
-  ViewChildren,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { Story } from 'src/app/models/story-oem.model';
 import { StoriesProgressBarComponent } from '../stories-progress-bar/stories-progress-bar.component';
@@ -23,9 +10,10 @@ import { TYPE_ACTION_ON_BANNER } from 'src/shared';
 import { StoriesService } from 'src/app/services/stories-service/stories.service';
 import { SwiperComponent } from 'swiper/angular';
 import { tap } from 'rxjs/operators';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { Platform} from '@ionic/angular';
+import { Platform } from '@ionic/angular';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 SwiperCore.use([IonicSwiper, Navigation, Pagination, EffectFade, EffectCoverflow, EffectCoverflow, EffectFlip]);
 
@@ -73,8 +61,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
     private navCtrl: NavController,
     private iab: InAppBrowser,
     private storiesServ: StoriesService,
-    private cd: ChangeDetectorRef,
-    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private dashService: DashboardService,
     private platform: Platform
   ) {
@@ -134,8 +121,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
   loadStoryMedia(index: number = this.currentSlideIndex) {
-    const storyComponent: VisualizeStoryComponent =
-      this.storiesView.toArray()[index];
+    const storyComponent: VisualizeStoryComponent = this.storiesView.toArray()[index];
     if (storyComponent) {
       if (storyComponent?.mediaLoaded) {
         this.onImageReady(true);
@@ -145,8 +131,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
   resumeStory(index: number) {
-    const progressBarStory: StoriesProgressBarComponent =
-      this.storiesProgressBarView.toArray()[index];
+    const progressBarStory: StoriesProgressBarComponent = this.storiesProgressBarView.toArray()[index];
     progressBarStory.playStoryProgress();
   }
 
@@ -170,7 +155,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
   retrieveSlideStartingIndex() {
-    return this.storyByCategory?.stories.findIndex((item) => {
+    return this.storyByCategory?.stories.findIndex(item => {
       return item.read === false;
     });
   }
@@ -188,8 +173,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
   seeStory() {
-    const storyComponent: VisualizeStoryComponent =
-      this.storiesView.toArray()[this.currentSlideIndex];
+    const storyComponent: VisualizeStoryComponent = this.storiesView.toArray()[this.currentSlideIndex];
     if (!storyComponent?.story?.read) {
       this.storiesServ
         .seeStory(storyComponent?.story)
@@ -204,16 +188,11 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
   setStoryReadAttribute() {
-    if (
-      this.storyByCategory.stories.length &&
-      this.storyByCategory.stories[this.currentSlideIndex]
-    )
-      this.storyByCategory.stories[this.currentSlideIndex].read = true;
+    if (this.storyByCategory.stories.length && this.storyByCategory.stories[this.currentSlideIndex]) this.storyByCategory.stories[this.currentSlideIndex].read = true;
   }
 
   activeStoryMedia(index: number) {
-    const storyComponent: VisualizeStoryComponent =
-      this.storiesView.toArray()[index];
+    const storyComponent: VisualizeStoryComponent = this.storiesView.toArray()[index];
     if (storyComponent && storyComponent.story && storyComponent.story.audio) {
       storyComponent.playMedia();
     }
@@ -221,8 +200,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
 
   deactiveStoryMedia(index: number = this.currentSlideIndex) {
     if (index < 0) return;
-    const storyComponent: VisualizeStoryComponent =
-      this.storiesView.toArray()[index];
+    const storyComponent: VisualizeStoryComponent = this.storiesView.toArray()[index];
 
     if (storyComponent && storyComponent.story && storyComponent.story.audio) {
       storyComponent.pauseMedia();
@@ -230,27 +208,23 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
   startAnimateProgressBar(index: number) {
-    const progressBarStory: StoriesProgressBarComponent =
-      this.storiesProgressBarView.toArray()[index];
+    const progressBarStory: StoriesProgressBarComponent = this.storiesProgressBarView.toArray()[index];
     progressBarStory?.startProgressBar();
   }
 
   stopAnimateProgressBar(index: number = this.currentSlideIndex) {
     if (index < 0) return;
-    const progressBarStory: StoriesProgressBarComponent =
-      this.storiesProgressBarView.toArray()[index];
+    const progressBarStory: StoriesProgressBarComponent = this.storiesProgressBarView.toArray()[index];
     progressBarStory.resetProgressBar();
   }
 
   emptyProgressBar(index: number = this.currentSlideIndex) {
-    const progressBarStory: StoriesProgressBarComponent =
-      this.storiesProgressBarView.toArray()[index];
+    const progressBarStory: StoriesProgressBarComponent = this.storiesProgressBarView.toArray()[index];
     progressBarStory.emptyProgressBar();
   }
 
   fillProgressBar(index: number) {
-    const progressBarStory: StoriesProgressBarComponent =
-      this.storiesProgressBarView.toArray()[index];
+    const progressBarStory: StoriesProgressBarComponent = this.storiesProgressBarView.toArray()[index];
     progressBarStory.fillProgressBar();
   }
 
@@ -263,8 +237,7 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   }
 
   setProgressBarDuration(duration: number, index: number) {
-    const progressBarStory: StoriesProgressBarComponent =
-      this.storiesProgressBarView.toArray()[index];
+    const progressBarStory: StoriesProgressBarComponent = this.storiesProgressBarView.toArray()[index];
     progressBarStory.setProgressStoryDuration(duration);
   }
 
@@ -293,28 +266,25 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
     }
   }
 
-  onActionBtnClicked(data: {
-    typeAction: string;
-    description: string;
-    url: string;
-    label: string;
-  }) {
-		this.leaveStories.emit('close');
-		switch (data.typeAction) {
-			case TYPE_ACTION_ON_BANNER.DEEPLINK:
+  onActionBtnClicked(data: { typeAction: string; description: string; url: string; label: string }) {
+    this.leaveStories.emit('close');
+    switch (data.typeAction) {
+      case TYPE_ACTION_ON_BANNER.DEEPLINK:
         this.navCtrl.navigateForward([data.url]);
         break;
       case TYPE_ACTION_ON_BANNER.REDIRECTION:
-        const options: InAppBrowserOptions = this.isIos ? {
-          location: 'no',
-          toolbar: 'yes',
-          toolbarcolor: '#CCCCCC',
-          toolbarposition: 'top',
-          toolbartranslucent: 'no',
-          closebuttoncolor: '#000000',
-          closebuttoncaption: 'Fermer',
-          hidespinner: 'yes',
-        } : {};
+        const options: InAppBrowserOptions = this.isIos
+          ? {
+              location: 'no',
+              toolbar: 'yes',
+              toolbarcolor: '#CCCCCC',
+              toolbarposition: 'top',
+              toolbartranslucent: 'no',
+              closebuttoncolor: '#000000',
+              closebuttoncaption: 'Fermer',
+              hidespinner: 'yes',
+            }
+          : {};
         this.iab.create(data.url, '_blank', options);
         break;
       default:
@@ -325,8 +295,11 @@ export class VisualizeStoriesComponent implements OnInit, OnDestroy {
   navigateStory(side: 'next' | 'prev') {
     const msisdn = this.dashService.getCurrentPhoneNumber();
     const evName = side === 'next' ? 'story_next' : 'story_back';
-    this.followAnalyticsService.registerEventFollow(evName, 'event', {
-      msisdn,
-    });
+    this.oemLoggingService.registerEvent(
+      evName,
+      convertObjectToLoggingPayload({
+        msisdn,
+      })
+    );
   }
 }

@@ -5,7 +5,6 @@ import { UrlSerializer } from '@angular/router';
 import { AngularDelegate, ModalController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { RequestOemService } from 'src/app/services/request-oem/request-oem.service';
 import { PhoneNumberDisplayPipe } from 'src/shared/pipes/phone-number-display.pipe';
 
@@ -15,53 +14,43 @@ describe('FollowUpRequestsPage', () => {
   let component: FollowUpRequestsPage;
   let fixture: ComponentFixture<FollowUpRequestsPage>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [FollowUpRequestsPage, PhoneNumberDisplayPipe],
-        providers: [
-          AngularDelegate,
-          {
-            provide: DashboardService,
-            useValue: {
-              fetchFixedNumbers: () => {
-                return of();
-              },
-              getMainPhoneNumber: () => {
-                return '';
-              },
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [FollowUpRequestsPage, PhoneNumberDisplayPipe],
+      providers: [
+        AngularDelegate,
+        {
+          provide: DashboardService,
+          useValue: {
+            fetchFixedNumbers: () => {
+              return of();
+            },
+            getMainPhoneNumber: () => {
+              return '';
             },
           },
-          {
-            provide: RequestOemService,
-            useValue: {
-              fetchRequests: () => {
-                return of();
-              },
+        },
+        {
+          provide: RequestOemService,
+          useValue: {
+            fetchRequests: () => {
+              return of();
             },
           },
-          {
-            provide: Location,
-          },
-          {
-            provide: UrlSerializer,
-          },
-          {
-            provide: FollowAnalyticsService,
-            useValue: {
-              registerEventFollow: () => {
-                return '';
-              },
-            },
-          },
-          {
-            provide: ModalController,
-          },
-        ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      }).compileComponents();
-    })
-  );
+        },
+        {
+          provide: Location,
+        },
+        {
+          provide: UrlSerializer,
+        },
+        {
+          provide: ModalController,
+        },
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FollowUpRequestsPage);

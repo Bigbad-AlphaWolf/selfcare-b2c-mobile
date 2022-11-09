@@ -1,18 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
-import {Uid} from '@ionic-native/uid/ngx';
-import {ModalController} from '@ionic/angular';
-import {of, Subscription, timer} from 'rxjs';
-import {catchError, finalize, switchMap, takeUntil, tap} from 'rxjs/operators';
-import {MsisdnAssistanceModalComponent} from 'src/app/new-registration/components/msisdn-assistance-modal/msisdn-assistance-modal.component';
-import {MSISDN_RECUPERATION_TIMEOUT} from 'src/app/register';
-import {AuthenticationService, ConfirmMsisdnModel} from 'src/app/services/authentication-service/authentication.service';
-import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
+import { Uid } from '@ionic-native/uid/ngx';
+import { ModalController } from '@ionic/angular';
+import { of, Subscription, timer } from 'rxjs';
+import { catchError, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { MsisdnAssistanceModalComponent } from 'src/app/new-registration/components/msisdn-assistance-modal/msisdn-assistance-modal.component';
+import { MSISDN_RECUPERATION_TIMEOUT } from 'src/app/register';
+import { AuthenticationService, ConfirmMsisdnModel } from 'src/app/services/authentication-service/authentication.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-implicite-authentication-modal',
   templateUrl: './implicite-authentication-modal.component.html',
-  styleUrls: ['./implicite-authentication-modal.component.scss']
+  styleUrls: ['./implicite-authentication-modal.component.scss'],
 })
 export class ImpliciteAuthenticationModalComponent implements OnInit {
   gettingNumber: boolean;
@@ -25,7 +26,7 @@ export class ImpliciteAuthenticationModalComponent implements OnInit {
   step: 'INFOS' | 'AUTH_IMPLICIT' = 'INFOS';
   constructor(
     private authServ: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private network: Network,
     private uid: Uid,
     private modalController: ModalController
@@ -46,10 +47,13 @@ export class ImpliciteAuthenticationModalComponent implements OnInit {
     this.newtworkSubscription = this.network.onConnect().subscribe(() => {
       setTimeout(() => {
         connexion = this.network.type;
-        this.followAnalyticsService.registerEventFollow('User_msisdn_recuperation_failed', 'error', {
-          imei: this.uid.IMEI,
-          connexion
-        });
+        this.oemLoggingService.registerEvent(
+          'User_msisdn_recuperation_failed',
+          convertObjectToLoggingPayload({
+            imei: this.uid.IMEI,
+            connexion,
+          })
+        );
       }, 3000);
     });
   }
@@ -58,7 +62,7 @@ export class ImpliciteAuthenticationModalComponent implements OnInit {
     const modal = await this.modalController.create({
       component: MsisdnAssistanceModalComponent,
       cssClass: 'select-recipient-modal',
-      backdropDismiss: false
+      backdropDismiss: false,
     });
     modal.onDidDismiss().then(response => {
       this.getNumber();
@@ -83,7 +87,7 @@ export class ImpliciteAuthenticationModalComponent implements OnInit {
             console.log('http call is not successful');
           }
         }),
-        switchMap((res: {msisdn: string}) => {
+        switchMap((res: { msisdn: string }) => {
           this.selectedNumber = res.msisdn;
           return this.authServ.confirmMsisdnByNetwork(res.msisdn).pipe(
             tap(
@@ -96,10 +100,13 @@ export class ImpliciteAuthenticationModalComponent implements OnInit {
                   const elapsedSeconds = endTime - startTime;
                   const duration = `${elapsedSeconds} ms`;
                   this.userAuthImplicitInfos = response;
-                  this.followAnalyticsService.registerEventFollow('User_msisdn_recuperation_success', 'event', {
-                    msisdn: this.selectedNumber,
-                    duration
-                  });
+                  this.oemLoggingService.registerEvent(
+                    'User_msisdn_recuperation_success',
+                    convertObjectToLoggingPayload({
+                      msisdn: this.selectedNumber,
+                      duration,
+                    })
+                  );
                 } else {
                   this.displayMsisdnError();
                 }
@@ -120,7 +127,7 @@ export class ImpliciteAuthenticationModalComponent implements OnInit {
 
   proceed(infosAuthImplicit: ConfirmMsisdnModel) {
     this.modalController.dismiss({
-      infosAuthImplicit
+      infosAuthImplicit,
     });
   }
 }

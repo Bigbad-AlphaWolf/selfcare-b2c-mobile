@@ -1,7 +1,6 @@
 export const environment = {
   production: true,
-  SERVER_API_URL:
-    'http://selfcareb2c-client-http-dsidacdifdsorangeetmoi-rec.apps.malaaw-rec.orange-sonatel.com',
+  SERVER_API_URL: 'http://selfcareb2c-client-http-dsidacdifdsorangeetmoi-rec.apps.malaaw-rec.orange-sonatel.com',
   // SERVER_API_URL: 'https://espaceclientv2.orangebusiness.sn',
   OM_URL: 'https://appom.orange-sonatel.com',
   SEDDO_SERVICE: 'services/selfcare-b2c-seddo',
@@ -27,11 +26,12 @@ export const environment = {
     trackPageviews: true,
   },
   GET_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/get-msisdn',
-  CONFIRM_MSISDN_BY_NETWORK_URL:
-    'http://10.100.99.116:1494/api/v1/confirm-msisdn',
+  CONFIRM_MSISDN_BY_NETWORK_URL: 'http://10.100.99.116:1494/api/v1/confirm-msisdn',
   DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_b7ba58e0175d1f96e1eca4e3',
+  BATCH_ANDROID_API_KEY: 'DEV632869C2005926068774E1B4B72',
+  BATCH_IOS_API_KEY: 'DEV63286A9C8BFA26473297AEF3760',
   CUSTOMER_OFFER_CACHE_DURATION: 1800000,
   FAVORITE_PASS_CACHE_DURATION: 30 * 24 * 60 * 60 * 1000,
   DEFAULT_DATA_CACHE_DURATION: 1 * 1 * 30 * 60 * 1000, // 30 mn,
-	GOOGLE_CAPTCHA_SITE_KEY: '6LcWQp8hAAAAADfyy__HZVF-8_glncUT_Sq4o2sv'
+  GOOGLE_CAPTCHA_SITE_KEY: '6LcWQp8hAAAAADfyy__HZVF-8_glncUT_Sq4o2sv',
 };
