@@ -25,13 +25,13 @@ export const environment = {
     trackingId: 'UA-92621294-1',
     trackPageviews: true,
   },
-  GET_MSISDN_BY_NETWORK_URL:
-    'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
-  CONFIRM_MSISDN_BY_NETWORK_URL:
-    'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
+  GET_MSISDN_BY_NETWORK_URL: 'https://appom.orange-sonatel.com:1490/api/v1/get-msisdn',
+  CONFIRM_MSISDN_BY_NETWORK_URL: 'https://appom.orange-sonatel.com:1490/api/v1/confirm-msisdn',
   DIMELO_CHAT_MARKUP: 'dimelo_chat_item_markup_b7ba58e0175d1f96e1eca4e3',
+  BATCH_ANDROID_API_KEY: '632869C1F40D8C7208E8632F340155',
+  BATCH_IOS_API_KEY: '63286A9C8BAA05BD36B25B7019EF4B',
   CUSTOMER_OFFER_CACHE_DURATION: 1800000,
   FAVORITE_PASS_CACHE_DURATION: 30 * 24 * 60 * 60 * 1000,
-	DEFAULT_DATA_CACHE_DURATION: 1 * 1 * 30 * 60 * 1000, // 30 mn,
-	GOOGLE_CAPTCHA_SITE_KEY: '6LcWQp8hAAAAADfyy__HZVF-8_glncUT_Sq4o2sv'
+  DEFAULT_DATA_CACHE_DURATION: 1 * 1 * 30 * 60 * 1000, // 30 mn,
+  GOOGLE_CAPTCHA_SITE_KEY: '6LcWQp8hAAAAADfyy__HZVF-8_glncUT_Sq4o2sv',
 };

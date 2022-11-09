@@ -43,6 +43,7 @@ export interface OperationExtras {
   title?: string;
   isLightMod?: boolean;
   recipientCodeFormule?;
+  recipientFormule?;
   serviceUsage?: OffreService;
   fromPage?: string;
 

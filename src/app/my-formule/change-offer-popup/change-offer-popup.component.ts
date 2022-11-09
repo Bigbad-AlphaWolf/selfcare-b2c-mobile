@@ -1,16 +1,17 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {ModalController} from '@ionic/angular';
-import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
-import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
-import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
-import {FormuleService} from 'src/app/services/formule-service/formule.service';
-import {CancelOperationPopupComponent} from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
+import { Component, Input, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ModalController } from '@ionic/angular';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { FormuleService } from 'src/app/services/formule-service/formule.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
+import { CancelOperationPopupComponent } from 'src/shared/cancel-operation-popup/cancel-operation-popup.component';
 
 @Component({
   selector: 'app-change-offer-popup',
   templateUrl: './change-offer-popup.component.html',
-  styleUrls: ['./change-offer-popup.component.scss']
+  styleUrls: ['./change-offer-popup.component.scss'],
 })
 export class ChangeOfferPopupComponent implements OnInit {
   @Input() formule;
@@ -24,7 +25,7 @@ export class ChangeOfferPopupComponent implements OnInit {
     private matDialog: MatDialog,
     private formuleServ: FormuleService,
     private authService: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private dashboardService: DashboardService,
     private modalController: ModalController
   ) {}
@@ -41,7 +42,7 @@ export class ChangeOfferPopupComponent implements OnInit {
       console.log('clik');
 
       this.cancelDialog = this.matDialog.open(CancelOperationPopupComponent, {
-        data: {canceldialogPageFormule: this.formule.nomFormule}
+        data: { canceldialogPageFormule: this.formule.nomFormule },
       });
       this.cancelDialog.afterClosed().subscribe((yesChoice: boolean) => {
         if (yesChoice) {
@@ -49,11 +50,14 @@ export class ChangeOfferPopupComponent implements OnInit {
           this.changeFormuleProcessing = true;
           this.formuleServ.changerFormuleJamono(this.msisdn, this.formule).subscribe(
             () => {
-              this.followAnalyticsService.registerEventFollow('change_formule_success', 'event', {
-                msisdn: this.msisdn,
-                previous_code_formule: this.userSubscription.code,
-                next_code_formule: this.formule.code
-              });
+              this.oemLoggingService.registerEvent(
+                'change_formule_success',
+                convertObjectToLoggingPayload({
+                  msisdn: this.msisdn,
+                  previous_code_formule: this.userSubscription.code,
+                  next_code_formule: this.formule.code,
+                })
+              );
               this.authService.deleteSubFromStorage(this.msisdn);
               this.changeFormuleProcessing = false;
               // this.authService.UpdateNotificationInfo();
@@ -62,12 +66,15 @@ export class ChangeOfferPopupComponent implements OnInit {
             (error: any) => {
               this.changeFormuleProcessing = false;
               this.hasError = true;
-              this.followAnalyticsService.registerEventFollow('change_formule_error', 'error', {
-                msisdn: this.msisdn,
-                current_code_formule: this.userSubscription.code,
-                next_code_formule: this.formule.code,
-                error_status: error.status
-              });
+              this.oemLoggingService.registerEvent(
+                'change_formule_error',
+                convertObjectToLoggingPayload({
+                  msisdn: this.msisdn,
+                  current_code_formule: this.userSubscription.code,
+                  next_code_formule: this.formule.code,
+                  error_status: error.status,
+                })
+              );
             }
           );
         }

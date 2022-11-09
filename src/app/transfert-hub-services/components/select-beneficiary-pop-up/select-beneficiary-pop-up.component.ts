@@ -8,13 +8,12 @@ import {
   parseIntoNationalNumberFormat,
   PAYMENT_MOD_OM,
   FIVE_DAYS_DURATION_IN_MILLISECONDS,
-	OPERATION_BLOCK_TRANSFER,
+  OPERATION_BLOCK_TRANSFER,
 } from 'src/shared';
 import { MatDialog } from '@angular/material/dialog';
 import { Contacts, Contact } from '@ionic-native/contacts';
 import { ModalController } from '@ionic/angular';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.page';
@@ -33,9 +32,12 @@ import { ApplicationRoutingService } from 'src/app/services/application-routing/
 import { SelectCountryModalComponent } from '../select-country-modal/select-country-modal.component';
 import { HistorikTransactionByTypeModalComponent } from 'src/app/components/historik-transaction-by-type-modal/historik-transaction-by-type-modal.component';
 import { BlockTransferSuccessPopupComponent } from 'src/shared/block-transfer-success-popup/block-transfer-success-popup.component';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 enum InputTypeEnum {
-	tel='tel', text='text'
+  tel = 'tel',
+  text = 'text',
 }
 @Component({
   selector: 'app-select-beneficiary-pop-up',
@@ -65,14 +67,14 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   recentMessage: string;
   hideRecentsList: boolean;
   @Input() country;
-	@Input() inputType: InputTypeEnum = InputTypeEnum.tel;
+  @Input() inputType: InputTypeEnum = InputTypeEnum.tel;
   constructor(
     private dialog: MatDialog,
     private contacts: Contacts,
     private modalController: ModalController,
     private modalTrxController: ModalController,
     private omService: OrangeMoneyService,
-    private followAnalytics: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private dashbServ: DashboardService,
     private recentsService: RecentsService,
     private diagnostic: Diagnostic,
@@ -80,10 +82,10 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-		if(!this.isForTransferBlocking) {
-			this.getRecents();
-			this.checkContactsAuthorizationStatus();
-		}
+    if (!this.isForTransferBlocking) {
+      this.getRecents();
+      this.checkContactsAuthorizationStatus();
+    }
   }
 
   ionViewWillEnter() {
@@ -98,11 +100,9 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
         map((recents: RecentsOem[]) => {
           this.loadingRecents = false;
           let results = [];
-          recents.forEach((el) => {
-            const dateDifference =
-              new Date().getTime() - new Date(el.date).getTime();
-            const isLessThan72h =
-              dateDifference < FIVE_DAYS_DURATION_IN_MILLISECONDS;
+          recents.forEach(el => {
+            const dateDifference = new Date().getTime() - new Date(el.date).getTime();
+            const isLessThan72h = dateDifference < FIVE_DAYS_DURATION_IN_MILLISECONDS;
             if (!isLessThan72h && this.isForTransferBlocking) {
               return;
             }
@@ -118,7 +118,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
         tap((res: { name: string; msisdn: string }[]) => {
           this.recents = res;
         }),
-        catchError((err) => {
+        catchError(err => {
           this.loadingRecents = false;
           throw new Error(err);
         })
@@ -128,17 +128,13 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
 
   checkContactsAuthorizationStatus() {
     this.diagnostic.getContactsAuthorizationStatus().then(
-      (contactStatus) => {
-        if (
-          contactStatus === this.diagnostic.permissionStatus.NOT_REQUESTED ||
-          contactStatus === this.diagnostic.permissionStatus.DENIED_ALWAYS
-        ) {
+      contactStatus => {
+        if (contactStatus === this.diagnostic.permissionStatus.NOT_REQUESTED || contactStatus === this.diagnostic.permissionStatus.DENIED_ALWAYS) {
           this.showRecentMessage = true;
-          this.recentMessage =
-            "Pour afficher vos contacts/bénéficiaires récents, vous devez autoriser l'accés à vos contacts.";
+          this.recentMessage = "Pour afficher vos contacts/bénéficiaires récents, vous devez autoriser l'accés à vos contacts.";
         }
       },
-      (err) => {
+      err => {
         console.log(err);
       }
     );
@@ -154,7 +150,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       component: PermissionSettingsPopupComponent,
       cssClass: 'success-or-fail-modal',
     });
-    modal.onDidDismiss().then((response) => {});
+    modal.onDidDismiss().then(response => {});
     return modal.present();
   }
 
@@ -168,13 +164,11 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
         if (contact.phoneNumbers.length > 1) {
           this.openPickRecipientModal(contact);
         } else {
-          const selectedNumber = formatPhoneNumber(
-            contact.phoneNumbers[0].value
-          );
+          const selectedNumber = formatPhoneNumber(contact.phoneNumbers[0].value);
           this.processGetContactInfos(contact, selectedNumber);
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log('err', err);
       });
   }
@@ -183,7 +177,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     const dialogRef = this.dialog.open(SelectNumberPopupComponent, {
       data: { phoneNumbers: contact.phoneNumbers },
     });
-    dialogRef.afterClosed().subscribe((selectedNumber) => {
+    dialogRef.afterClosed().subscribe(selectedNumber => {
       const choosedNumber = formatPhoneNumber(selectedNumber);
       this.processGetContactInfos(contact, choosedNumber);
     });
@@ -191,47 +185,29 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
 
   processGetContactInfos(contact: any, selectedNumber: any) {
     switch (true) {
-      case selectedNumber.startsWith('+221') ||
-        selectedNumber.startsWith('00221'):
+      case selectedNumber.startsWith('+221') || selectedNumber.startsWith('00221'):
         this.country = TRANSFER_OM_INTERNATIONAL_COUNTRIES[0];
-        selectedNumber.startsWith('+221')
-          ? (selectedNumber = selectedNumber.substring(4))
-          : (selectedNumber = selectedNumber.substring(5));
+        selectedNumber.startsWith('+221') ? (selectedNumber = selectedNumber.substring(4)) : (selectedNumber = selectedNumber.substring(5));
         break;
-      case selectedNumber.startsWith('+225') ||
-        selectedNumber.startsWith('00225'):
+      case selectedNumber.startsWith('+225') || selectedNumber.startsWith('00225'):
         this.country = TRANSFER_OM_INTERNATIONAL_COUNTRIES[1];
-        selectedNumber.startsWith('+225')
-          ? (selectedNumber = selectedNumber.substring(4))
-          : (selectedNumber = selectedNumber.substring(5));
+        selectedNumber.startsWith('+225') ? (selectedNumber = selectedNumber.substring(4)) : (selectedNumber = selectedNumber.substring(5));
         break;
-      case selectedNumber.startsWith('+226') ||
-        selectedNumber.startsWith('00226'):
+      case selectedNumber.startsWith('+226') || selectedNumber.startsWith('00226'):
         this.country = TRANSFER_OM_INTERNATIONAL_COUNTRIES[2];
-        selectedNumber.startsWith('+226')
-          ? (selectedNumber = selectedNumber.substring(4))
-          : (selectedNumber = selectedNumber.substring(5));
+        selectedNumber.startsWith('+226') ? (selectedNumber = selectedNumber.substring(4)) : (selectedNumber = selectedNumber.substring(5));
         break;
-      case selectedNumber.startsWith('+223') ||
-        selectedNumber.startsWith('00223'):
+      case selectedNumber.startsWith('+223') || selectedNumber.startsWith('00223'):
         this.country = TRANSFER_OM_INTERNATIONAL_COUNTRIES[3];
-        selectedNumber.startsWith('+223')
-          ? (selectedNumber = selectedNumber.substring(4))
-          : (selectedNumber = selectedNumber.substring(5));
+        selectedNumber.startsWith('+223') ? (selectedNumber = selectedNumber.substring(4)) : (selectedNumber = selectedNumber.substring(5));
         break;
-      case selectedNumber.startsWith('+227') ||
-        selectedNumber.startsWith('00227'):
+      case selectedNumber.startsWith('+227') || selectedNumber.startsWith('00227'):
         this.country = TRANSFER_OM_INTERNATIONAL_COUNTRIES[4];
-        selectedNumber.startsWith('+227')
-          ? (selectedNumber = selectedNumber.substring(4))
-          : (selectedNumber = selectedNumber.substring(5));
+        selectedNumber.startsWith('+227') ? (selectedNumber = selectedNumber.substring(4)) : (selectedNumber = selectedNumber.substring(5));
         break;
-      case selectedNumber.startsWith('+245') ||
-        selectedNumber.startsWith('00245'):
+      case selectedNumber.startsWith('+245') || selectedNumber.startsWith('00245'):
         this.country = TRANSFER_OM_INTERNATIONAL_COUNTRIES[5];
-        selectedNumber.startsWith('+245')
-          ? (selectedNumber = selectedNumber.substring(4))
-          : (selectedNumber = selectedNumber.substring(5));
+        selectedNumber.startsWith('+245') ? (selectedNumber = selectedNumber.substring(4)) : (selectedNumber = selectedNumber.substring(5));
         break;
       default:
         break;
@@ -261,16 +237,10 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
   }
 
   getContactFormattedName(contact: any) {
-    const givenName =
-      contact && contact.name.givenName ? `${contact.name.givenName}` : '';
-    const familyName =
-      contact && contact.name.familyName ? ` ${contact.name.familyName}` : '';
-    const middleName =
-      contact && contact.name.middleName ? ` ${contact.name.middleName}` : '';
-    this.recipientContactInfos =
-      contact.name && contact.name.formatted
-        ? contact.name.formatted
-        : givenName + middleName + familyName;
+    const givenName = contact && contact.name.givenName ? `${contact.name.givenName}` : '';
+    const familyName = contact && contact.name.familyName ? ` ${contact.name.familyName}` : '';
+    const middleName = contact && contact.name.middleName ? ` ${contact.name.middleName}` : '';
+    this.recipientContactInfos = contact.name && contact.name.formatted ? contact.name.formatted : givenName + middleName + familyName;
     this.firstName = givenName + middleName;
     this.lastName = familyName;
   }
@@ -283,22 +253,14 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       return;
     }
 
-    if (
-      this.htmlInput &&
-      this.htmlInput.nativeElement.value &&
-      this.validateNumber(this.htmlInput.nativeElement.value)
-    ) {
-      this.recipientNumber = formatPhoneNumber(
-        this.htmlInput.nativeElement.value
-      );
+    if (this.htmlInput && this.htmlInput.nativeElement.value && this.validateNumber(this.htmlInput.nativeElement.value)) {
+      this.recipientNumber = formatPhoneNumber(this.htmlInput.nativeElement.value);
       const payload = {
         senderMsisdn: '',
         recipientMsisdn: this.recipientNumber,
         recipientFirstname: this.firstName ? this.firstName : '',
         recipientLastname: this.lastName ? this.lastName : '',
-        recipientName: `${this.firstName ? this.firstName + ' ' : ''} ${
-          this.lastName ? this.lastName : ''
-        }`,
+        recipientName: `${this.firstName ? this.firstName + ' ' : ''} ${this.lastName ? this.lastName : ''}`,
       };
       this.checkTransferType(payload);
     } else if (this.otherBeneficiaryNumber && this.recipientContactInfos) {
@@ -321,15 +283,12 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       this.getOmPhoneNumberAndCheckrecipientHasOMAccount(payload);
     } else {
       this.hasErrorGetContact = true;
-      this.errorGetContact =
-        'Veuillez choisir un numéro de destinataire valide pour continuer';
+      this.errorGetContact = 'Veuillez choisir un numéro de destinataire valide pour continuer';
     }
   }
 
   checkTransferType(payload: any) {
-    if (
-      this.country?.callId === TRANSFER_OM_INTERNATIONAL_COUNTRIES[0].callId
-    ) {
+    if (this.country?.callId === TRANSFER_OM_INTERNATIONAL_COUNTRIES[0].callId) {
       this.getOmPhoneNumberAndCheckrecipientHasOMAccount(payload);
     } else {
       const pageData = Object.assign(payload, {
@@ -343,33 +302,29 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
 
   validateReference(trxInfos?, transactionModal?: any) {
     this.isProcessing = true;
-		this.hasErrorGetContact = false;
-    const txnid = trxInfos
-      ? trxInfos.txnid
-      : this.htmlInput.nativeElement.value;
+    this.hasErrorGetContact = false;
+    const txnid = trxInfos ? trxInfos.txnid : this.htmlInput.nativeElement.value;
     this.omService
       .isTxnEligibleToBlock(txnid)
       .pipe(
-        tap(async (res) => {
+        tap(async res => {
           this.isProcessing = false;
-					console.log('res', res);
+          console.log('res', res);
 
           if (!res.eligible) {
             this.hasErrorGetContact = true;
             this.errorGetContact = res.message;
-
-					} else {
+          } else {
             await this.modalController.dismiss();
-            this.openPinPadToBlock(trxInfos,res.transactionDetails);
+            this.openPinPadToBlock(trxInfos, res.transactionDetails);
           }
         }),
-        catchError((err) => {
+        catchError(err => {
           this.isProcessing = false;
           this.hasErrorGetContact = true;
-					console.log('err', err);
+          console.log('err', err);
 
-          this.errorGetContact =
-            'Veuillez saisir une référence valide pour continuer';
+          this.errorGetContact = 'Veuillez saisir une référence valide pour continuer';
           return throwError(err);
         })
       )
@@ -402,13 +357,13 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     return await modal.present();
   }
 
-	async openPinPadToBlock(transactionItem: any, cancelTrxPayload: any) {
+  async openPinPadToBlock(transactionItem: any, cancelTrxPayload: any) {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
       cssClass: 'pin-pad-modal',
       componentProps: {
         transactionToBlock: transactionItem,
-        opXtras: { blockTrxOMPayload: cancelTrxPayload},
+        opXtras: { blockTrxOMPayload: cancelTrxPayload },
         operationType: OPERATION_BLOCK_TRANSFER,
       },
     });
@@ -423,7 +378,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     return await modal.present();
   }
 
-	async openBlockTxnModalSuccess(transactionItem: any, userHasOmStatusFull?: boolean, isMLite?: boolean) {
+  async openBlockTxnModalSuccess(transactionItem: any, userHasOmStatusFull?: boolean, isMLite?: boolean) {
     const modal = await this.modalController.create({
       component: BlockTransferSuccessPopupComponent,
       cssClass: 'success-or-fail-modal',
@@ -431,7 +386,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       componentProps: {
         transactionToBlock: transactionItem,
         isUserOMFull: userHasOmStatusFull,
-				isMLite
+        isMLite,
       },
     });
     return await modal.present();
@@ -444,15 +399,10 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     return b + 'T' + a[1];
   }
 
-  getOmPhoneNumberAndCheckrecipientHasOMAccount(payload: {
-    senderMsisdn: string;
-    recipientMsisdn: string;
-    recipientFirstname: string;
-    recipientLastname: string;
-  }) {
+  getOmPhoneNumberAndCheckrecipientHasOMAccount(payload: { senderMsisdn: string; recipientMsisdn: string; recipientFirstname: string; recipientLastname: string }) {
     this.isProcessing = true;
 
-    this.omService.getOmMsisdn().subscribe((userMsisdn) => {
+    this.omService.getOmMsisdn().subscribe(userMsisdn => {
       this.isProcessing = false;
       if (userMsisdn !== 'error') {
         this.omPhoneNumber = userMsisdn;
@@ -484,25 +434,23 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
           });
           this.modalController.dismiss(pageData);
           this.appRouting.goSetTransferAmountPage(pageData);
-          this.followAnalytics.registerEventFollow(
+          this.oemLoggingService.registerEvent(
             'transfert_om_select_beneficiary_success',
-            'event',
-            {
+            convertObjectToLoggingPayload({
               sender: userOMNumber,
               receiver: payload.recipientMsisdn,
-              has_om: 'true',
-            }
+              has_om: true,
+            })
           );
         } else {
           this.openNoOMAccountModal(payload);
-          this.followAnalytics.registerEventFollow(
+          this.oemLoggingService.registerEvent(
             'transfert_om_select_beneficiary_error',
-            'event',
-            {
+            convertObjectToLoggingPayload({
               sender: userOMNumber,
               receiver: payload.recipientMsisdn,
-              has_om: 'false',
-            }
+              has_om: false,
+            })
           );
           this.errorMsg = 'Recipient has No OM ';
         }
@@ -511,25 +459,23 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
         this.isProcessing = false;
         this.errorMsg = 'Recipient has No OM';
         if (err.status === 400) {
-          this.followAnalytics.registerEventFollow(
+          this.oemLoggingService.registerEvent(
             'transfert_om_select_beneficiary_error',
-            'event',
-            {
+            convertObjectToLoggingPayload({
               sender: this.omPhoneNumber,
               receiver: payload.recipientMsisdn,
               has_om: false,
-            }
+            })
           );
           this.openNoOMAccountModal(payload);
         } else {
-          this.followAnalytics.registerEventFollow(
+          this.oemLoggingService.registerEvent(
             'transfert_om_select_beneficiary_error',
-            'error',
-            {
+            convertObjectToLoggingPayload({
               sender: userOMNumber,
               receiver: payload.recipientMsisdn,
               error: err.status,
-            }
+            })
           );
           this.errorMsg = 'Une erreur est survenue, veuillez reessayer';
         }
@@ -545,7 +491,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
         operationType: null,
       },
     });
-    modal.onDidDismiss().then((response) => {
+    modal.onDidDismiss().then(response => {
       if (response.data && response.data.success && payload) {
         this.getOmPhoneNumberAndCheckrecipientHasOMAccount(payload);
       }
@@ -553,17 +499,12 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     return await modal.present();
   }
 
-  async openNoOMAccountModal(payload: {
-    senderMsisdn: string;
-    recipientMsisdn: string;
-    recipientFirstname: string;
-    recipientLastname: string;
-  }) {
+  async openNoOMAccountModal(payload: { senderMsisdn: string; recipientMsisdn: string; recipientFirstname: string; recipientLastname: string }) {
     const modal = await this.modalController.create({
       component: NoOmAccountModalComponent,
       cssClass: 'customModalNoOMAccountModal',
     });
-    modal.onDidDismiss().then((response) => {
+    modal.onDidDismiss().then(response => {
       if (response && response.data && response.data.continue) {
         const pageData = Object.assign(payload, {
           userHasNoOmAccount: true,
@@ -583,12 +524,10 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
       component: SelectCountryModalComponent,
       cssClass: 'select-recipient-modal',
       componentProps: {
-        country: this.country
-          ? this.country
-          : TRANSFER_OM_INTERNATIONAL_COUNTRIES[0],
+        country: this.country ? this.country : TRANSFER_OM_INTERNATIONAL_COUNTRIES[0],
       },
     });
-    modal.onWillDismiss().then(async (response) => {
+    modal.onWillDismiss().then(async response => {
       const country = response?.data;
       switch (country?.callId) {
         case undefined:
@@ -613,7 +552,7 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     return await modal.present();
   }
 
-	async selectTransaction() {
+  async selectTransaction() {
     const modal = await this.modalTrxController.create({
       component: HistorikTransactionByTypeModalComponent,
       //cssClass: 'select-recipient-modal',
@@ -623,9 +562,9 @@ export class SelectBeneficiaryPopUpComponent implements OnInit {
     });
     modal.onDidDismiss().then((res: any) => {
       if (res && res.data) {
-				this.validateReference(res?.data?.purchaseInfos)
+        this.validateReference(res?.data?.purchaseInfos);
       }
     });
     return await modal.present();
-	}
+  }
 }

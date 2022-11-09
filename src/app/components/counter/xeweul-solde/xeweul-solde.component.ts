@@ -1,21 +1,22 @@
-import {Component, OnInit, Input} from '@angular/core';
-import {OperationExtras} from 'src/app/models/operation-extras.model';
-import {XeweulService} from 'src/app/services/xeweul/xeweul.service';
-import {NavController, ModalController} from '@ionic/angular';
-import {BillAmountPage} from 'src/app/pages/bill-amount/bill-amount.page';
-import {OPERATION_XEWEUL} from 'src/app/utils/operations.constants';
-import {HttpResponse} from '@angular/common/http';
-import {IXeweulBalance} from '../../../models/xeweul/xeweul-balance.model';
-import {OrangeMoneyService} from 'src/app/services/orange-money-service/orange-money.service';
-import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { OperationExtras } from 'src/app/models/operation-extras.model';
+import { XeweulService } from 'src/app/services/xeweul/xeweul.service';
+import { NavController, ModalController } from '@ionic/angular';
+import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
+import { OPERATION_XEWEUL } from 'src/app/utils/operations.constants';
+import { HttpResponse } from '@angular/common/http';
+import { IXeweulBalance } from '../../../models/xeweul/xeweul-balance.model';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-xeweul-solde',
   templateUrl: './xeweul-solde.component.html',
-  styleUrls: ['./xeweul-solde.component.scss']
+  styleUrls: ['./xeweul-solde.component.scss'],
 })
 export class XeweulSoldeComponent implements OnInit {
-  @Input() counter: {name: string; counterNumber: string};
+  @Input() counter: { name: string; counterNumber: string };
   @Input() opXtras: OperationExtras;
   infoSolde: string;
   lastSoldeUpdate: string;
@@ -26,7 +27,7 @@ export class XeweulSoldeComponent implements OnInit {
     private navCtl: NavController,
     private modal: ModalController,
     private omService: OrangeMoneyService,
-    private followServ: FollowAnalyticsService
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -41,10 +42,13 @@ export class XeweulSoldeComponent implements OnInit {
     this.xeweulService.getSolde(counter).subscribe({
       error: () => {
         this.isLoading = false;
-        this.followServ.registerEventFollow('operation_xeweul_get_solde_failed', 'event', {
-          msisdn: omMsisdn,
-          counter
-        });
+        this.oemLoggingService.registerEvent(
+          'operation_xeweul_get_solde_failed',
+          convertObjectToLoggingPayload({
+            msisdn: omMsisdn,
+            counter,
+          })
+        );
       },
 
       next: (res: HttpResponse<IXeweulBalance>) => {
@@ -53,11 +57,14 @@ export class XeweulSoldeComponent implements OnInit {
         this.infoSolde = res.body.amount;
         this.lastSoldeUpdate = res.body.lastUpdatedAt;
 
-        this.followServ.registerEventFollow('operation_xeweul_get_solde_success', 'event', {
-          msisdn: omMsisdn,
-          counter
-        });
-      }
+        this.oemLoggingService.registerEvent(
+          'operation_xeweul_get_solde_success',
+          convertObjectToLoggingPayload({
+            msisdn: omMsisdn,
+            counter,
+          })
+        );
+      },
     });
   }
 
@@ -67,7 +74,7 @@ export class XeweulSoldeComponent implements OnInit {
     this.opXtras.billData ? (this.opXtras.billData.counter = this.counter) : '';
     this.modal.dismiss();
     this.navCtl.navigateForward([routePath], {
-      state: this.opXtras
+      state: this.opXtras,
     });
   }
 }

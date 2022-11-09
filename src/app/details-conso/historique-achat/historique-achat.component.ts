@@ -1,18 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import {
-  DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY,
-  OPERATION_TRANSFER_OM,
-  PAYMENT_MOD_OM,
-  THREE_DAYS_DURATION_IN_MILLISECONDS,
-} from 'src/shared';
+import { DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY, OPERATION_TRANSFER_OM, PAYMENT_MOD_OM, THREE_DAYS_DURATION_IN_MILLISECONDS } from 'src/shared';
 import { CategoryPurchaseHistory } from 'src/app/models/category-purchase-history.model';
 import { PurchaseModel } from 'src/app/models/purchase.model';
 import { ModalSuccessModel } from 'src/app/models/modal-success-infos.model';
 import { ModalController } from '@ionic/angular';
 import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
-import { FollowAnalyticsEventType } from 'src/app/services/follow-analytics/follow-analytics-event-type.enum';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-historique-achat',
@@ -24,18 +19,13 @@ export class HistoriqueAchatComponent implements OnInit {
   listDateFilter = [2, 3, 4, 5, 6, 7];
   @Input() listTypePurchaseFilter: CategoryPurchaseHistory[] = [];
   @Input() dateFilterSelected = 2;
-  typePurchaseFilterSelected: { label: string; typeAchat: string } =
-    DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
+  typePurchaseFilterSelected: { label: string; typeAchat: string } = DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
   @Input() isLoading: boolean;
   @Input() hasError: boolean;
   @Output() getTransactionsByDay = new EventEmitter();
   @Output() getTransactionsByFilter = new EventEmitter();
   @Input() userProfil: string;
-  constructor(
-    public modalController: ModalController,
-    private omService: OrangeMoneyService,
-    private followAnalyticsService: FollowAnalyticsService
-  ) {}
+  constructor(public modalController: ModalController, private omService: OrangeMoneyService, private oemLoggingService: OemLoggingService) {}
 
   ngOnInit() {
     console.log(this.listTransactions);
@@ -44,8 +34,7 @@ export class HistoriqueAchatComponent implements OnInit {
   getTransactionByDay(day: number) {
     this.dateFilterSelected = day;
     this.getTransactionsByDay.emit(day);
-    this.typePurchaseFilterSelected =
-      DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
+    this.typePurchaseFilterSelected = DEFAULT_SELECTED_CATEGORY_PURCHASE_HISTORY;
   }
 
   getTransactionByType(filterType: { label: string; typeAchat: string }) {
@@ -56,17 +45,11 @@ export class HistoriqueAchatComponent implements OnInit {
   async openTransactionModal(transaction) {
     const date = new Date();
     // date difference in ms
-    const dateDifference =
-      new Date(transaction.currentDate).getTime() -
-      new Date(transaction.operationDate).getTime();
+    const dateDifference = new Date(transaction.currentDate).getTime() - new Date(transaction.operationDate).getTime();
     const isLessThan72h = dateDifference < THREE_DAYS_DURATION_IN_MILLISECONDS;
     if (!isLessThan72h || transaction.typeAchat !== 'TRANSFER') return;
     const omMsisdn = await this.omService.getOmMsisdn().toPromise();
-    this.followAnalyticsService.registerEventFollow(
-      'clic_transfer_from_history',
-      FollowAnalyticsEventType.EVENT,
-      { msisdn: omMsisdn, transaction }
-    );
+    this.oemLoggingService.registerEvent('clic_transfer_from_history', convertObjectToLoggingPayload({ msisdn: omMsisdn, transaction }));
     if (!omMsisdn || omMsisdn === 'error') return;
     const params: ModalSuccessModel = {};
     params.paymentMod = PAYMENT_MOD_OM;

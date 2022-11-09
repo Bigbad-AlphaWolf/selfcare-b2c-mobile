@@ -25,7 +25,7 @@
     </div>
     <div class="questions-list">
       <ng-container *ngIf="listQuestions">
-        <app-faq-item [question]="question" *ngFor="let question of listQuestions"></app-faq-item>
+        <app-faq-item [question]="question" *ngFor="let question of listQuestions" (click)="logFaQClick(question)"></app-faq-item>
       </ng-container>
     </div>
   </div>

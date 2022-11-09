@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FORGOT_PWD_PAGE_URL } from 'src/shared';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 const ORANGE_HOME_PAGE_URL = 'http://orange.sn';
 declare var FollowAnalytics: any;
 @Component({
@@ -46,7 +47,7 @@ export class HomePage implements OnInit {
 
   currentIndex;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private oemLogging: OemLoggingService) {
     if (typeof FollowAnalytics !== 'undefined') {
       FollowAnalytics.logEvent('Home', 'success');
     }
@@ -57,10 +58,12 @@ export class HomePage implements OnInit {
   }
 
   goToLoginPage() {
+    this.oemLogging.registerEvent('home_login_click', []);
     this.router.navigate(['/login']);
   }
 
   goToRegistrationPage() {
+    this.oemLogging.registerEvent('home_direct_access_click', []);
     this.router.navigate(['/new-registration']);
   }
 
@@ -69,6 +72,7 @@ export class HomePage implements OnInit {
   }
 
   forgotPwd() {
+    this.oemLogging.registerEvent('home_reset_password_click', []);
     this.router.navigate([FORGOT_PWD_PAGE_URL]);
   }
 }

@@ -3,8 +3,9 @@ import { ModalController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { OtpService } from 'src/app/services/otp-service/otp.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 import { RATTACHMENT_ERROR_MAX_COUNT } from 'src/shared';
 
 @Component({
@@ -25,12 +26,7 @@ export class RattachByOtpCodeComponent implements OnInit {
   isSendingOtp: boolean;
   hasErrorSendingOtp: boolean;
   countError: number = 0;
-  constructor(
-    private modCtl: ModalController,
-    private dashbServ: DashboardService,
-    private otpService: OtpService,
-    private followAnalyticsService: FollowAnalyticsService
-  ) {}
+  constructor(private modCtl: ModalController, private dashbServ: DashboardService, private otpService: OtpService, private oemLoggingService: OemLoggingService) {}
 
   ngOnInit() {
     this.startCountDown();
@@ -75,24 +71,27 @@ export class RattachByOtpCodeComponent implements OnInit {
     this.hasError = false;
     const otpCodePayload = {
       msisdn: this.number,
-      code: this.otpCode
-    }
-    this.otpService.checkOtpCode(otpCodePayload).pipe(
-      tap(res => {
-        const { valid, hmac } = res;
-        if (res.valid) {
-          this.modCtl.dismiss({ valid, hmac });
-        } else {
+      code: this.otpCode,
+    };
+    this.otpService
+      .checkOtpCode(otpCodePayload)
+      .pipe(
+        tap(res => {
+          const { valid, hmac } = res;
+          if (res.valid) {
+            this.modCtl.dismiss({ valid, hmac });
+          } else {
+            this.hasError = true;
+            this.errorMsg = `Le code saisi est erroné ou a expiré`;
+          }
+        }),
+        catchError(err => {
           this.hasError = true;
-          this.errorMsg = `Le code saisi est erroné ou a expiré`;
-        }
-      }),
-      catchError(err => {
-        this.hasError = true;
-        this.errorMsg = `Une erreur est survenue`;
-        return throwError(err);
-      })
-    ).subscribe()
+          this.errorMsg = `Une erreur est survenue`;
+          return throwError(err);
+        })
+      )
+      .subscribe();
   }
 
   goBack() {
@@ -138,14 +137,14 @@ export class RattachByOtpCodeComponent implements OnInit {
         login: this.mainUser,
       };
       const eventName = `rattachment_mobile_pro_success`;
-      this.followAnalyticsService.registerEventFollow(eventName, eventType, infosFollow);
+      this.oemLoggingService.registerEvent(eventName, convertObjectToLoggingPayload(infosFollow));
     } else {
       const infosFollow = {
         number_to_attach: payload.numero,
         login: this.mainUser,
       };
       const errorName = `rattachment_mobile_pro_failed`;
-      this.followAnalyticsService.registerEventFollow(errorName, eventType, infosFollow);
+      this.oemLoggingService.registerEvent(errorName, convertObjectToLoggingPayload(infosFollow));
     }
   }
 

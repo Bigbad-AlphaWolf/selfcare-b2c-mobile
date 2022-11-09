@@ -1,11 +1,9 @@
-
 import { Component, OnInit } from '@angular/core';
 import { OPERATION_TYPE_RECHARGE_CREDIT, PAYMENT_MOD_OM, formatCurrency, SubscriptionModel } from 'src/shared';
 import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { PROFILE_TYPE_POSTPAID } from '../dashboard';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { NewPinpadModalPage } from '../new-pinpad-modal/new-pinpad-modal.page';
 import { ModalController, NavController } from '@ionic/angular';
@@ -13,11 +11,13 @@ import { OperationSuccessFailModalPage } from '../operation-success-fail-modal/o
 import { ModalSuccessModel } from '../models/modal-success-infos.model';
 import { OperationExtras } from '../models/operation-extras.model';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from '../utils/utils';
 
 @Component({
   selector: 'app-buy-credit',
   templateUrl: './buy-credit.page.html',
-  styleUrls: ['./buy-credit.page.scss']
+  styleUrls: ['./buy-credit.page.scss'],
 })
 export class BuyCreditPage implements OnInit {
   OPERATION_TYPE_RECHARGE_CREDIT = OPERATION_TYPE_RECHARGE_CREDIT;
@@ -51,48 +51,39 @@ export class BuyCreditPage implements OnInit {
   constructor(
     private dashbordServ: DashboardService,
     private authService: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private omService: OrangeMoneyService,
     private modalController: ModalController,
     private navControl: NavController,
     private appRout: ApplicationRoutingService
-
   ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ionViewWillEnter() {
     this.currentNumber = this.dashbordServ.getCurrentPhoneNumber();
     this.step = 0;
-    this.authService
-      .getSubscription(this.currentNumber)
-      .subscribe((souscription: SubscriptionModel) => {
-        this.currentProfil = souscription.profil;
-        this.opXtras.code = souscription.code;
-      });
-      this.checkOmAccountSession()
+    this.authService.getSubscription(this.currentNumber).subscribe((souscription: SubscriptionModel) => {
+      this.currentProfil = souscription.profil;
+      this.opXtras.code = souscription.code;
+    });
+    this.checkOmAccountSession();
   }
- checkOmAccountSession() {
+  checkOmAccountSession() {
     this.isProcessing = true;
-    this.omService.omAccountSession().subscribe(
-      (omSession: any) => {
-        this.isProcessing = false;
+    this.omService.omAccountSession().subscribe((omSession: any) => {
+      this.isProcessing = false;
 
-        if (
-          omSession.msisdn === "error" ||
-          !omSession.hasApiKey 
-        ) {
-          this.openPinpad();
-        }
+      if (omSession.msisdn === 'error' || !omSession.hasApiKey) {
+        this.openPinpad();
       }
-    );
+    });
   }
 
   async openPinpad(purchaseType?: string) {
     const modal = await this.modalController.create({
       component: NewPinpadModalPage,
-      cssClass: "pin-pad-modal",
+      cssClass: 'pin-pad-modal',
       componentProps: {
         operationType: purchaseType,
         buyCreditPayload: {
@@ -102,27 +93,24 @@ export class BuyCreditPage implements OnInit {
         opXtras: this.opXtras,
       },
     });
-    modal.onDidDismiss().then((response) => {      
-      if(purchaseType) {
-        if(response && response.data) {
+    modal.onDidDismiss().then(response => {
+      if (purchaseType) {
+        if (response && response.data) {
           this.openSuccessFailModal({
             opXtras: response.data.opXtras,
             success: true,
             msisdnBuyer: this.omService.getOrangeMoneyNumber(),
-            buyForMe:
-              this.destinatorPhoneNumber ===
-              this.omService.getOrangeMoneyNumber(),
+            buyForMe: this.destinatorPhoneNumber === this.omService.getOrangeMoneyNumber(),
           });
         }
-      } else {        
-        if( response && response.data ) {
+      } else {
+        if (response && response.data) {
           this.hideUserSolde = false;
           this.omBalance = response.data.balance;
         } else {
-          this.appRout.goToDashboard()
+          this.appRout.goToDashboard();
         }
       }
-      
     });
     return await modal.present();
   }
@@ -156,26 +144,13 @@ export class BuyCreditPage implements OnInit {
     return formatCurrency(data);
   }
 
-  nextStepOfSelectDest(destinfos: {
-    destinataire: string,
-    code: string
-  }) {
-    this.isForMyOwnNumber =
-      this.dashbordServ.getCurrentPhoneNumber() === destinfos.destinataire;
+  nextStepOfSelectDest(destinfos: { destinataire: string; code: string }) {
+    this.isForMyOwnNumber = this.dashbordServ.getCurrentPhoneNumber() === destinfos.destinataire;
     this.destinatorPhoneNumber = destinfos.destinataire;
     this.isForMyOwnNumber
-      ? this.followAnalyticsService.registerEventFollow(
-          'Recharge_OM_ChoixDestinataire',
-          'event',
-          destinfos.destinataire
-        )
-      : this.followAnalyticsService.registerEventFollow(
-          'Recharge_OM_Destinataire_Moi',
-          'event',
-          destinfos.destinataire
-        );
+      ? this.oemLoggingService.registerEvent('Recharge_OM_ChoixDestinataire', convertObjectToLoggingPayload({ destinataire: destinfos.destinataire }))
+      : this.oemLoggingService.registerEvent('Recharge_OM_Destinataire_Moi', convertObjectToLoggingPayload({ destinataire: destinfos.destinataire }));
     this.goToNextStep();
-
   }
 
   setAmount(amount: number) {
@@ -187,7 +162,7 @@ export class BuyCreditPage implements OnInit {
     this.operation = 'BUY_CREDIT';
     this.creditToBuy = {
       msisdn2: this.destinatorPhoneNumber,
-      amount: this.amount
+      amount: this.amount,
     };
     this.openPinpad(OPERATION_TYPE_RECHARGE_CREDIT);
   }
@@ -217,7 +192,7 @@ export class BuyCreditPage implements OnInit {
     this.balancePinPadHasError = false;
     this.currentOMBalance = 0;
     this.hideUserSolde = true;
-    this.step = 0
+    this.step = 0;
   }
 
   goToDashboardPage() {
@@ -225,19 +200,15 @@ export class BuyCreditPage implements OnInit {
   }
 
   contactGot(contact) {
-    this.recipientFirstName = contact.name.givenName ? contact.name.givenName : '' ;
-    this.recipientLastName = contact.name.familyName
-      ? contact.name.familyName
-      : '';
-    this.recipientFirstName += contact.name.middleName
-      ? ` ${contact.name.middleName}`
-      : '';
+    this.recipientFirstName = contact.name.givenName ? contact.name.givenName : '';
+    this.recipientLastName = contact.name.familyName ? contact.name.familyName : '';
+    this.recipientFirstName += contact.name.middleName ? ` ${contact.name.middleName}` : '';
   }
 
   async openSuccessFailModal(params: ModalSuccessModel) {
     params.paymentMod = this.choosedPaymentMod;
     params.recipientMsisdn = this.destinatorPhoneNumber;
-    params.recipientName = this.recipientFirstName && this.recipientLastName ? this.recipientFirstName + ' ' + this.recipientLastName : null ;
+    params.recipientName = this.recipientFirstName && this.recipientLastName ? this.recipientFirstName + ' ' + this.recipientLastName : null;
     params.purchaseType = OPERATION_TYPE_RECHARGE_CREDIT;
     params.amount = this.amount;
     const modal = await this.modalController.create({

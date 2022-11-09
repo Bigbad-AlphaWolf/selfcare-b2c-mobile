@@ -1,16 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {ModalSuccessComponent} from 'src/shared/modal-success/modal-success.component';
-import {FormGroup, FormBuilder, Validators} from '@angular/forms';
-import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
-import {EmergencyService} from 'src/app/services/emergency-service/emergency.service';
-import {MatDialog} from '@angular/material/dialog';
-import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
-import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
+import { Component, OnInit } from '@angular/core';
+import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { EmergencyService } from 'src/app/services/emergency-service/emergency.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-change-seddo-code',
   templateUrl: './change-seddo-code.component.html',
-  styleUrls: ['./change-seddo-code.component.scss']
+  styleUrls: ['./change-seddo-code.component.scss'],
 })
 export class ChangeSeddoCodeComponent implements OnInit {
   form: FormGroup;
@@ -24,7 +25,7 @@ export class ChangeSeddoCodeComponent implements OnInit {
     private emergencyService: EmergencyService,
     private dialog: MatDialog,
     private authServ: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -33,7 +34,7 @@ export class ChangeSeddoCodeComponent implements OnInit {
       phoneNumber: [this.numbers[0]],
       actualCode: ['', [Validators.required, Validators.pattern(/\d/g), Validators.minLength(4), Validators.maxLength(4)]],
       newCode: ['', [Validators.required, Validators.pattern(/\d/g), Validators.minLength(4), Validators.maxLength(4)]],
-      confirmNewCode: ['', [Validators.required, Validators.pattern(/\d/g), Validators.minLength(4), Validators.maxLength(4)]]
+      confirmNewCode: ['', [Validators.required, Validators.pattern(/\d/g), Validators.minLength(4), Validators.maxLength(4)]],
     });
   }
 
@@ -50,7 +51,7 @@ export class ChangeSeddoCodeComponent implements OnInit {
 
   openSuccessDialog(type: string) {
     this.dialog.open(ModalSuccessComponent, {
-      data: {type}
+      data: { type },
     });
   }
 
@@ -62,20 +63,20 @@ export class ChangeSeddoCodeComponent implements OnInit {
     const msisdn = this.form.value.phoneNumber;
     this.errorMsg = '';
     if (newPin === confirmPin && newPin !== '0000' && newPin !== '1234') {
-      const changePinPayload = {msisdn, pin, newPin};
+      const changePinPayload = { msisdn, pin, newPin };
       this.emergencyService.changePinSeddo(changePinPayload).subscribe(
         (res: any) => {
           this.loading = false;
           if (res.status === '200') {
-            this.followAnalyticsService.registerEventFollow('Change_Seddo_Code_Success', 'event', msisdn);
+            this.oemLoggingService.registerEvent('Change_Seddo_Code_Success', convertObjectToLoggingPayload(msisdn));
             this.openSuccessDialog('seddoCode');
           } else {
             this.errorMsg = res.message;
-            this.followAnalyticsService.registerEventFollow('Change_Seddo_Code_Error', 'error', this.errorMsg);
+            this.oemLoggingService.registerEvent('Change_Seddo_Code_Error', convertObjectToLoggingPayload({ error: this.errorMsg }));
           }
         },
         (err: any) => {
-          this.followAnalyticsService.registerEventFollow('Change_Seddo_Code_Error', 'error', `Error while changing pin ${msisdn}`);
+          this.oemLoggingService.registerEvent('Change_Seddo_Code_Error', convertObjectToLoggingPayload({ error: `Error while changing pin ${msisdn}` }));
           this.loading = false;
           this.errorMsg = 'Erreur';
         }

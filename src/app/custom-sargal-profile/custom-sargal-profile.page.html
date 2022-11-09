@@ -25,8 +25,8 @@
 			</ng-container>
 			<ng-template #filters>
 				<ng-container *ngIf="sargalCard">
-					<div class="sargal-filter-category" [ngClass]="{'active': selectedCategoryFilterIndex === i}"
-						*ngFor="let categoryPartner of bpSargalCategories, let i = index" (click)="selectCategory(i)">
+					<div class="sargal-filter-category" [ngClass]="{'active': selectedCategoryFilter?.id === categoryPartner?.id}"
+						*ngFor="let categoryPartner of bpSargalCategories, let i = index" (click)="selectCategory(categoryPartner)">
 						{{categoryPartner?.nomCategorie}}
 					</div>
 				</ng-container>

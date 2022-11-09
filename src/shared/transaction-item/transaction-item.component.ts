@@ -3,15 +3,10 @@ import { ModalController } from '@ionic/angular';
 import { ModalSuccessModel } from 'src/app/models/modal-success-infos.model';
 import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { FollowAnalyticsEventType } from 'src/app/services/follow-analytics/follow-analytics-event-type.enum';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
-import {
-  LIST_ICON_PURCHASE_HISTORIK_ITEMS,
-  OPERATION_TRANSFER_OM,
-  PAYMENT_MOD_OM,
-  FIVE_DAYS_DURATION_IN_MILLISECONDS
-} from '..';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
+import { LIST_ICON_PURCHASE_HISTORIK_ITEMS, OPERATION_TRANSFER_OM, PAYMENT_MOD_OM, FIVE_DAYS_DURATION_IN_MILLISECONDS } from '..';
 
 @Component({
   selector: 'app-transaction-item',
@@ -20,32 +15,26 @@ import {
 })
 export class TransactionItemComponent implements OnInit {
   @Input() transaction: any;
-	@Input() typeTransaction: string;
-	@Output() onClick = new EventEmitter();
+  @Input() typeTransaction: string;
+  @Output() onClick = new EventEmitter();
   currentMsisdn = this.dashboardService.getCurrentPhoneNumber();
   constructor(
     private omService: OrangeMoneyService,
     private modalController: ModalController,
-    private followAnalyticsService: FollowAnalyticsService,
-    private dashboardService: DashboardService,
+    private oemLoggingService: OemLoggingService,
+    private dashboardService: DashboardService
   ) {}
 
   ngOnInit() {}
 
   async openTransactionModal() {
     // date difference in ms
-		this.onClick.emit(this.transaction);
-    const dateDifference =
-      new Date(this.transaction.currentDate).getTime() -
-      new Date(this.transaction.operationDate).getTime();
+    this.onClick.emit(this.transaction);
+    const dateDifference = new Date(this.transaction.currentDate).getTime() - new Date(this.transaction.operationDate).getTime();
     const isLessThan72h = dateDifference < FIVE_DAYS_DURATION_IN_MILLISECONDS;
     if (!isLessThan72h && this.transaction.typeAchat !== 'TRANSFER' && this.transaction.typeAchat !== 'TRANSFERT_ARGENT' && this.transaction.operationType !== 'DEBIT') return;
     const omMsisdn = await this.omService.getOmMsisdn().toPromise();
-    this.followAnalyticsService.registerEventFollow(
-      'clic_transfer_from_history',
-      FollowAnalyticsEventType.EVENT,
-      { msisdn: omMsisdn, transaction: this.transaction }
-    );
+    this.oemLoggingService.registerEvent('clic_transfer_from_history', convertObjectToLoggingPayload({ msisdn: omMsisdn, transaction: this.transaction }));
     if (!omMsisdn || omMsisdn === 'error') return;
     const params: ModalSuccessModel = {};
     params.paymentMod = PAYMENT_MOD_OM;

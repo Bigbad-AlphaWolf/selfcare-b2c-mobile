@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuController, ModalController } from '@ionic/angular';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
-import { FollowAnalyticsEventType } from 'src/app/services/follow-analytics/follow-analytics-event-type.enum';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 import { FaceIdRequestModalComponent } from 'src/shared/face-id-request-modal/face-id-request-modal.component';
 
 @Component({
@@ -15,7 +15,7 @@ export class FaceIdAlertPopupComponent implements OnInit {
   constructor(
     private omService: OrangeMoneyService,
     private modalController: ModalController,
-    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private dashboardService: DashboardService,
     private menuController: MenuController
   ) {}
@@ -28,11 +28,7 @@ export class FaceIdAlertPopupComponent implements OnInit {
 
   async activate() {
     const msisdn = this.dashboardService.getCurrentPhoneNumber();
-    this.followAnalyticsService.registerEventFollow(
-      'Activate_Face_Id_From_Menu_Alert',
-      FollowAnalyticsEventType.EVENT,
-      { msisdn }
-    );
+    this.oemLoggingService.registerEvent('Activate_Face_Id_From_Menu_Alert', convertObjectToLoggingPayload({ msisdn: msisdn }));
     this.omService.allowFaceId();
     this.menuController.close();
     const modal = await this.modalController.create({

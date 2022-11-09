@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthenticationService } from '../services/authentication-service/authentication.service';
@@ -7,9 +8,8 @@ import { DashboardService } from '../services/dashboard-service/dashboard.servic
 const ls = new SecureLS({ encodingType: 'aes' });
 import { FORGOT_PWD_PAGE_URL, HelpModalDefaultContent } from 'src/shared';
 import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { NavController, ModalController } from '@ionic/angular';
-import { ActivatedRoute, Router } from '@angular/router';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'app-login',
@@ -51,9 +51,9 @@ export class LoginPage implements OnInit {
     private authServ: AuthenticationService,
     private dashbServ: DashboardService,
     public dialog: MatDialog,
-    private followAnalyticsService: FollowAnalyticsService,
     private navController: NavController,
     private modalController: ModalController,
+    private oemLogging: OemLoggingService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -94,6 +94,7 @@ export class LoginPage implements OnInit {
     const value = this.form.value;
     this.rememberMe = true;
     this.UserLogin(value);
+    this.oemLogging.registerEvent('login_click');
   }
 
   UserLogin(user: any) {
@@ -101,7 +102,7 @@ export class LoginPage implements OnInit {
     this.authServ.login(user).subscribe(
       () => {
         ls.remove('light-token');
-        this.followAnalyticsService.registerEventFollow('login_success', 'event', user.username);
+        this.oemLogging.registerEvent('login_success', [{ dataName: 'msisdn', dataValue: user.username }]);
         this.dashbServ.getAccountInfo(user.username).subscribe(
           (resp: any) => {
             this.loading = false;
@@ -115,7 +116,10 @@ export class LoginPage implements OnInit {
         );
       },
       err => {
-        this.followAnalyticsService.registerEventFollow('login_failed', 'error', { login: user.username, status: err.status });
+        this.oemLogging.registerEvent('login_failed', [
+          { dataName: 'login', dataValue: user.username },
+          { dataName: 'status', dataValue: err.status },
+        ]);
         this.loading = false;
         this.showErrMessage = true;
         if (err && err.error.status === 400) {
@@ -143,15 +147,15 @@ export class LoginPage implements OnInit {
 
   doAction(action: 'register' | 'help' | 'password') {
     if (action === 'register') {
-      this.followAnalyticsService.registerEventFollow('Go_register_from_login', 'event');
+      this.oemLogging.registerEvent('Go_register_from_login');
       this.goRegisterPage();
     }
     if (action === 'help') {
-      this.followAnalyticsService.registerEventFollow('Open_help_modal_from_login', 'event');
+      this.oemLogging.registerEvent('Open_help_modal_from_login');
       this.openHelpModal(HelpModalDefaultContent);
     }
     if (action === 'password') {
-      this.followAnalyticsService.registerEventFollow('Forgotten_pwd_from_login', 'event');
+      this.oemLogging.registerEvent('login_reset_password_click', []);
       this.navController.navigateRoot(FORGOT_PWD_PAGE_URL);
     }
   }
@@ -170,7 +174,7 @@ export class LoginPage implements OnInit {
   }
 
   goIntro() {
-    this.followAnalyticsService.registerEventFollow('Voir_Intro_from_login', 'event', 'clic');
+    this.oemLogging.registerEvent('Voir_Intro_from_login');
     this.router.navigate(['/home']);
   }
   goBack() {

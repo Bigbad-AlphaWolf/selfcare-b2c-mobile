@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as SecureLS from 'secure-ls';
-import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
-import {Router} from '@angular/router';
-import {AuthenticationService} from 'src/app/services/authentication-service/authentication.service';
-import {BanniereService} from 'src/app/services/banniere-service/banniere.service';
-import {BannierePubModel} from 'src/app/services/dashboard-service';
-import {SargalService} from 'src/app/services/sargal-service/sargal.service';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
+import { BanniereService } from 'src/app/services/banniere-service/banniere.service';
+import { BannierePubModel } from 'src/app/services/dashboard-service';
+import { SargalService } from 'src/app/services/sargal-service/sargal.service';
 import {
   getLastUpdatedDateTimeText,
   UserConsommations,
@@ -21,34 +21,28 @@ import {
   MIN_BONUS_REMAINING_AMOUNT,
   TRANSFER_BONUS_CREDIT_FEE,
   OPERATION_TYPE_SEDDO_BONUS,
-  OPERATION_TYPE_SEDDO_CREDIT
+  OPERATION_TYPE_SEDDO_CREDIT,
 } from 'src/shared';
-import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
-import {
-  SargalSubscriptionModel,
-  SARGAL_NOT_SUBSCRIBED,
-  getConsoByCategory,
-  SARGAL_UNSUBSCRIPTION_ONGOING,
-  PromoBoosterActive
-} from '../dashboard';
-import {MatDialog} from '@angular/material/dialog';
-import {WelcomePopupComponent} from 'src/shared/welcome-popup/welcome-popup.component';
-import {AssistanceService} from '../services/assistance.service';
-import {OfferPlansService} from '../services/offer-plans-service/offer-plans.service';
-import {OfferPlanActive} from 'src/shared/models/offer-plan-active.model';
-import {OrangeMoneyService} from '../services/orange-money-service/orange-money.service';
-import {catchError, map, tap} from 'rxjs/operators';
-import {SelectBeneficiaryPopUpComponent} from '../transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
-import {ModalController} from '@ionic/angular';
-import {ApplicationRoutingService} from '../services/application-routing/application-routing.service';
-import {BottomSheetService} from '../services/bottom-sheet/bottom-sheet.service';
-import {NumberSelectionOption} from '../models/enums/number-selection-option.enum';
-import {CreditPassAmountPage} from '../pages/credit-pass-amount/credit-pass-amount.page';
-import {TRANSFER_OM_INTERNATIONAL_COUNTRIES} from '../utils/constants';
-import {Story} from '../models/story-oem.model';
-import {of} from 'rxjs';
-import {StoriesService} from '../services/stories-service/stories.service';
-const ls = new SecureLS({encodingType: 'aes'});
+import { SargalSubscriptionModel, SARGAL_NOT_SUBSCRIBED, getConsoByCategory, SARGAL_UNSUBSCRIPTION_ONGOING, PromoBoosterActive } from '../dashboard';
+import { MatDialog } from '@angular/material/dialog';
+import { WelcomePopupComponent } from 'src/shared/welcome-popup/welcome-popup.component';
+import { AssistanceService } from '../services/assistance.service';
+import { OfferPlansService } from '../services/offer-plans-service/offer-plans.service';
+import { OfferPlanActive } from 'src/shared/models/offer-plan-active.model';
+import { OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
+import { catchError, map, tap } from 'rxjs/operators';
+import { SelectBeneficiaryPopUpComponent } from '../transfert-hub-services/components/select-beneficiary-pop-up/select-beneficiary-pop-up.component';
+import { ModalController } from '@ionic/angular';
+import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
+import { BottomSheetService } from '../services/bottom-sheet/bottom-sheet.service';
+import { NumberSelectionOption } from '../models/enums/number-selection-option.enum';
+import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
+import { TRANSFER_OM_INTERNATIONAL_COUNTRIES } from '../utils/constants';
+import { Story } from '../models/story-oem.model';
+import { of } from 'rxjs';
+import { StoriesService } from '../services/stories-service/stories.service';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
+const ls = new SecureLS({ encodingType: 'aes' });
 @Component({
   selector: 'app-dashboard-kirene',
   templateUrl: './dashboard-kirene.page.html',
@@ -112,7 +106,7 @@ export class DashboardKirenePage implements OnInit {
     private authServ: AuthenticationService,
     private banniereServ: BanniereService,
     private sargalServ: SargalService,
-    private followsAnalytics: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private shareDialog: MatDialog,
     private assistanceService: AssistanceService,
     private offerPlanServ: OfferPlansService,
@@ -259,13 +253,10 @@ export class DashboardKirenePage implements OnInit {
 
   makeSargalAction() {
     if (this.userSargalData && this.userSargalData.status === SARGAL_NOT_SUBSCRIBED && this.sargalDataLoaded) {
-      this.followsAnalytics.registerEventFollow('Sargal-registration-page', 'event', 'clicked');
+      this.oemLoggingService.registerEvent('Sargal-registration-page');
       this.router.navigate(['/sargal-registration']);
-    } else if (
-      (this.userSargalData && this.userSargalData.status !== SARGAL_UNSUBSCRIPTION_ONGOING) ||
-      (!this.sargalUnavailable && this.sargalDataLoaded)
-    ) {
-      this.followsAnalytics.registerEventFollow('Sargal-dashboard', 'event', 'clicked');
+    } else if ((this.userSargalData && this.userSargalData.status !== SARGAL_UNSUBSCRIPTION_ONGOING) || (!this.sargalUnavailable && this.sargalDataLoaded)) {
+      this.oemLoggingService.registerEvent('Sargal-dashboard');
       this.goToSargalDashboard();
     }
   }
@@ -292,7 +283,7 @@ export class DashboardKirenePage implements OnInit {
   hidePromoBarner() {
     ls.set('banner', false);
     this.showPromoBarner = false;
-    this.followsAnalytics.registerEventFollow('Banner_close_dashboard', 'event', 'Mobile');
+    this.oemLoggingService.registerEvent('Banner_close_dashboard');
   }
 
   computeUserConsoSummary(consoSummary: UserConsommations) {
@@ -330,7 +321,7 @@ export class DashboardKirenePage implements OnInit {
   }
 
   showSoldeOM() {
-    this.followsAnalytics.registerEventFollow('Click_Voir_solde_OM_dashboard', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('Click_Voir_solde_OM_dashboard');
     this.router.navigate(['activate-om']);
   }
 
@@ -338,7 +329,7 @@ export class DashboardKirenePage implements OnInit {
     this.canDoSOS = this.creditRechargement < 489;
     if (this.canDoSOS) {
       this.router.navigate(['/buy-sos']);
-      this.followsAnalytics.registerEventFollow('Recharge_dashboard', 'event', 'clicked');
+      this.oemLoggingService.registerEvent('Recharge_dashboard');
     }
   }
 
@@ -362,20 +353,20 @@ export class DashboardKirenePage implements OnInit {
   }
 
   goToIllimixPage() {
-    this.followsAnalytics.registerEventFollow('Achat_Mixel_from_dashboard', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('Achat_Mixel_from_dashboard');
     this.openModalPassNumberSelection(OPERATION_TYPE_PASS_ILLIMIX, 'list-pass');
   }
 
   transferCreditOrPass() {
     if (!this.canDoSOS || this.canTransferBonus) {
       this.router.navigate(['/transfer/credit-bonus']);
-      this.followsAnalytics.registerEventFollow('Transfert_dashboard', 'event', 'clicked');
+      this.oemLoggingService.registerEvent('Transfert_dashboard');
     }
   }
 
   goToTransfertOM() {
     this.showBeneficiaryModal();
-    this.followsAnalytics.registerEventFollow('Transfert_OM_dashboard', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('Transfert_OM_dashboard');
   }
 
   async showBeneficiaryModal() {
@@ -391,16 +382,16 @@ export class DashboardKirenePage implements OnInit {
 
   goBuyCredit() {
     this.openModalPassNumberSelection(OPERATION_TYPE_RECHARGE_CREDIT, CreditPassAmountPage.PATH);
-    this.followsAnalytics.registerEventFollow('Recharge_dashboard', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('Recharge_dashboard');
   }
 
   goBuyPassInternet() {
-    this.followsAnalytics.registerEventFollow('Pass_internet_dashboard', 'event', 'clicked');
+    this.oemLoggingService.registerEvent('Pass_internet_dashboard');
     this.openModalPassNumberSelection(OPERATION_TYPE_PASS_INTERNET, 'list-pass');
   }
 
   openModalPassNumberSelection(operation: string, routePath: string) {
-    this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, operation, routePath, false);
+    this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, operation, routePath);
   }
 
   onError(input: { el: HTMLElement; display: boolean }[]) {

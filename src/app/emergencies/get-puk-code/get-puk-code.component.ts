@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
 import { EmergencyService } from 'src/app/services/emergency-service/emergency.service';
 import { AuthenticationService } from 'src/app/services/authentication-service/authentication.service';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { map } from 'rxjs/operators';
 import { REGEX_FIX_NUMBER } from 'src/shared';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-get-puk-code',
@@ -20,7 +21,7 @@ export class GetPukCodeComponent implements OnInit {
     private dashboardService: DashboardService,
     private emergencyService: EmergencyService,
     private authService: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -43,14 +44,12 @@ export class GetPukCodeComponent implements OnInit {
       .getAttachedNumbers()
       .pipe(
         map((nums: { msisdn: string }[]) => {
-          const response = nums.filter(
-            (num) => !REGEX_FIX_NUMBER.test(num?.msisdn)
-          );
+          const response = nums.filter(num => !REGEX_FIX_NUMBER.test(num?.msisdn));
           return response;
         })
       )
       .subscribe((res: any[]) => {
-        res.forEach((phoneNumber) => {
+        res.forEach(phoneNumber => {
           this.numbers.push(phoneNumber.msisdn);
         });
       });
@@ -60,11 +59,7 @@ export class GetPukCodeComponent implements OnInit {
     this.codePUK = '';
     this.emergencyService.getCodePuk(phoneNumber).subscribe((code: any) => {
       this.codePUK = code.puk;
-      this.followAnalyticsService.registerEventFollow(
-        'PUK_Code_Success',
-        'event',
-        phoneNumber
-      );
+      this.oemLoggingService.registerEvent('PUK_Code_Success', convertObjectToLoggingPayload({ msisdn: phoneNumber }));
     });
   }
 }

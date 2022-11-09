@@ -4,11 +4,9 @@ import { ModalController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { CustomerOperationStatus } from 'src/app/models/enums/om-customer-status.enum';
-import {
-  OMCustomerStatusModel,
-  OMStatusOperationEnum,
-} from 'src/app/models/om-customer-status.model';
+import { OMCustomerStatusModel, OMStatusOperationEnum } from 'src/app/models/om-customer-status.model';
 import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
 import { OM_STATUS_TEXTS } from '..';
 
@@ -30,7 +28,8 @@ export class OmStatusVisualizationComponent implements OnInit {
     private orangeMoneyService: OrangeMoneyService,
     private dashboardService: DashboardService,
     private router: Router,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private oemLoggingServ: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -43,7 +42,7 @@ export class OmStatusVisualizationComponent implements OnInit {
     this.orangeMoneyService
       .getOmMsisdn()
       .pipe(
-        switchMap((omMsisdn) => {
+        switchMap(omMsisdn => {
           if (!omMsisdn || omMsisdn === 'error') {
             this.omMsisdn = this.dashboardService.getCurrentPhoneNumber();
           } else {
@@ -55,15 +54,19 @@ export class OmStatusVisualizationComponent implements OnInit {
               this.checkingStatus = false;
               this.getStatusText();
               this.getButtonText();
+              this.oemLoggingServ.setUserAttribute({
+                keyAttribute: 'om_status',
+                valueAttribute: this.status?.operation + '_' + this.status.operationStatus,
+              });
             }),
-            catchError((err) => {
+            catchError(err => {
               this.checkingStatus = false;
               this.hasError = true;
               return throwError(err);
             })
           );
         }),
-        catchError((err) => {
+        catchError(err => {
           this.checkingStatus = false;
           this.hasError = true;
           return throwError(err);
@@ -73,12 +76,7 @@ export class OmStatusVisualizationComponent implements OnInit {
   }
 
   isButtonEnabled() {
-    return (
-      this.status &&
-      (this.status?.operationStatus === CustomerOperationStatus.new ||
-        this.status?.operationStatus ===
-          CustomerOperationStatus.password_creation)
-    );
+    return this.status && (this.status?.operationStatus === CustomerOperationStatus.new || this.status?.operationStatus === CustomerOperationStatus.password_creation);
   }
 
   isButtonShown() {
@@ -124,6 +122,9 @@ export class OmStatusVisualizationComponent implements OnInit {
         break;
       case OMStatusOperationEnum.FULL:
         this.statusText = OM_STATUS_TEXTS.DECAPPED_ACCOUNT;
+        break;
+      default:
+        break;
     }
   }
 

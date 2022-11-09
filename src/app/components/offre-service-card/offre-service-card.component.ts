@@ -1,18 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {
-  ModalController,
-  NavController,
-  ToastController,
-} from '@ionic/angular';
+import { ModalController, NavController, ToastController } from '@ionic/angular';
 import { OffreService } from 'src/app/models/offre-service.model';
 import { FILE_DOWNLOAD_ENDPOINT } from 'src/app/services/utils/file.endpoints';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { OperationService } from 'src/app/services/oem-operation/operation.service';
 import { OfcService } from 'src/app/services/ofc/ofc.service';
 import { ServiceCode } from 'src/app/models/enums/service-code.enum';
@@ -23,12 +13,12 @@ import { NewPinpadModalPage } from 'src/app/new-pinpad-modal/new-pinpad-modal.pa
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from 'src/app/purchase-set-amount/purchase-set-amount.page';
 import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
-import { FollowAnalyticsService } from 'src/app/services/follow-analytics/follow-analytics.service';
 import { OPERATION_TYPE_PASS_USAGE } from 'src/app/utils/operations.constants';
 import { OPERATION_WOYOFAL } from 'src/app/utils/operations.constants';
 import { WoyofalSelectionComponent } from '../counter/woyofal-selection/woyofal-selection.component';
 import { BillAmountPage } from 'src/app/pages/bill-amount/bill-amount.page';
 import { KioskLocatorPopupComponent } from '../kiosk-locator-popup/kiosk-locator-popup.component';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 
 @Component({
   selector: 'oem-offre-service-card',
@@ -55,19 +45,17 @@ export class OffreServiceCardComponent implements OnInit {
     private bsService: BottomSheetService,
     private modalController: ModalController,
     private orangeMoneyService: OrangeMoneyService,
-    private followAnalyticsServ: FollowAnalyticsService
+    private oemLoggingService: OemLoggingService
   ) {}
   imageUrl: string;
 
   ngOnInit() {
-    this.imageUrl =
-      this.service && this.service.icone ? this.service.icone : null;
+    this.imageUrl = this.service && this.service.icone ? this.service.icone : null;
   }
 
   onClick() {
-    const follow =
-      'my_services_card_' + this.service.code.toLowerCase() + '_clic';
-    this.followAnalyticsServ.registerEventFollow(follow, 'event', 'clic');
+    const follow = 'my_services_card_' + this.service.code.toLowerCase() + '_clic';
+    this.oemLoggingService.registerEvent(follow);
 
     if (!this.service.activated) {
       this.showServiceUnavailableToast();
@@ -75,13 +63,7 @@ export class OffreServiceCardComponent implements OnInit {
       return;
     }
     if (this.service.passUsage) {
-      this.bsService.openNumberSelectionBottomSheet(
-        NumberSelectionOption.WITH_MY_PHONES,
-        OPERATION_TYPE_PASS_USAGE,
-        'list-pass-usage',
-        false,
-        this.service
-      );
+      this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, OPERATION_TYPE_PASS_USAGE, 'list-pass-usage', this.service);
       return;
     }
     if (this.service.code + '' === ServiceCode.OFC) {
@@ -102,30 +84,19 @@ export class OffreServiceCardComponent implements OnInit {
         state: { purchaseType: this.service.code },
       });
     if (this.service.code === OPERATION_WOYOFAL) {
-      this.bsService
-        .initBsModal(
-          WoyofalSelectionComponent,
-          OPERATION_WOYOFAL,
-          BillAmountPage.ROUTE_PATH
-        )
-        .subscribe((_) => {});
+      this.bsService.initBsModal(WoyofalSelectionComponent, OPERATION_WOYOFAL, BillAmountPage.ROUTE_PATH).subscribe(_ => {});
       this.bsService.openModal(WoyofalSelectionComponent);
       return;
     }
     if (this.bsService[this.service.redirectionType]) {
-      const params = [
-        NumberSelectionOption.WITH_MY_PHONES,
-        this.service.code,
-        this.service.redirectionPath,
-      ];
+      const params = [NumberSelectionOption.WITH_MY_PHONES, this.service.code, this.service.redirectionPath];
       this.bsService[this.service.redirectionType](...params);
       return;
     }
   }
 
   onErrorImg() {
-    this.imageUrl =
-      'assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg';
+    this.imageUrl = 'assets/images/04-boutons-01-illustrations-01-acheter-credit-ou-pass.svg';
   }
 
   async showServiceUnavailableToast() {
@@ -140,27 +111,15 @@ export class OffreServiceCardComponent implements OnInit {
   }
 
   openMerchantBS() {
-    this.orangeMoneyService
-      .omAccountSession()
-      .subscribe(async (omSession: any) => {
-        const omSessionValid = omSession
-          ? omSession.msisdn !== 'error' &&
-            omSession.hasApiKey &&
-            !omSession.loginExpired
-          : null;
-        if (omSessionValid) {
-          this.bsService
-            .initBsModal(
-              MerchantPaymentCodeComponent,
-              OPERATION_TYPE_MERCHANT_PAYMENT,
-              PurchaseSetAmountPage.ROUTE_PATH
-            )
-            .subscribe((_) => {});
-          this.bsService.openModal(MerchantPaymentCodeComponent);
-        } else {
-          this.openPinpad();
-        }
-      });
+    this.orangeMoneyService.omAccountSession().subscribe(async (omSession: any) => {
+      const omSessionValid = omSession ? omSession.msisdn !== 'error' && omSession.hasApiKey && !omSession.loginExpired : null;
+      if (omSessionValid) {
+        this.bsService.initBsModal(MerchantPaymentCodeComponent, OPERATION_TYPE_MERCHANT_PAYMENT, PurchaseSetAmountPage.ROUTE_PATH).subscribe(_ => {});
+        this.bsService.openModal(MerchantPaymentCodeComponent);
+      } else {
+        this.openPinpad();
+      }
+    });
   }
 
   async openKioskLocatorModal() {

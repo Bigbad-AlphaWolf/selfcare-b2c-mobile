@@ -33,25 +33,26 @@
         <ng-container *ngIf="(passAfric?.length || passWorld?.length) else noPass">
           <div class="list-pass-body">
             <div class="tab-header">
-              <div *ngFor="let filter of filters; let i=index" (click)="changeCategory(i)" class="tab-header-item"
-                [ngClass]="{  'selected' : i === activeIndex} ">
-                <span class="scb-text-light-black"> {{ filter?.label }}</span>
-              </div>
+							<ng-container *ngIf="fullList?.length else emptyList">
+								<div *ngFor="let filter of fullList; let i=index" (click)="changeCategory(i)" class="tab-header-item"
+									[ngClass]="{  'selected' : i === activeIndex} ">
+									<span class="scb-text-light-black"> {{ filter?.label }}</span>
+								</div>
+							</ng-container>
+							<ng-template #emptyList>
+								<div class="empty-list scb-text-orange">
+									Aucun pass n'a été trouvé pour ce numéro
+								</div>
+							</ng-template>
             </div>
             <div class="main-content">
               <ion-slides #sliders (ionSlideDidChange)="slideChanged()" [options]="slideOpts">
-                <ion-slide>
-                  <div class="filtered-list-pass">
-                    <app-item-pass-illimix *ngFor="let pass of passWorld" [passIllimix]="pass"
-                      (selectPass)="choosePass($event)"></app-item-pass-illimix>
-                  </div>
-                </ion-slide>
-                <ion-slide>
-                  <div class="filtered-list-pass">
-                    <app-item-pass-illimix *ngFor="let pass of passAfric" [passIllimix]="pass"
-                      (selectPass)="choosePass($event)"></app-item-pass-illimix>
-                  </div>
-                </ion-slide>
+									<ion-slide *ngFor="let item of fullList">
+										<div class="filtered-list-pass">
+											<app-item-pass-illimix *ngFor="let pass of item?.pass" [passIllimix]="pass"
+												(selectPass)="choosePass($event)"></app-item-pass-illimix>
+										</div>
+									</ion-slide>
               </ion-slides>
             </div>
           </div>

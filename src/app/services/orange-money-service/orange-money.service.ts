@@ -1,13 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as SecureLS from 'secure-ls';
-import {
-  BehaviorSubject,
-  Subject,
-  of,
-  Observable,
-  forkJoin,
-  throwError,
-} from 'rxjs';
+import { BehaviorSubject, Subject, of, Observable, forkJoin, throwError } from 'rxjs';
 import { tap, switchMap, map, catchError } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -32,21 +25,13 @@ import {
   getOMTransactionsInputModel,
   OMTransactionsResponseModel,
 } from '.';
-import { FollowAnalyticsService } from '../follow-analytics/follow-analytics.service';
 import { DashboardService } from '../dashboard-service/dashboard.service';
 import { ErreurTransactionOmModel } from 'src/app/models/erreur-transaction-om.model';
-import {
-  OM_BUY_ILLIFLEX_ENDPOINT,
-  SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT,
-} from '../utils/om.endpoints';
+import { OM_BUY_ILLIFLEX_ENDPOINT, SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT } from '../utils/om.endpoints';
 import { ChangePinOm } from 'src/app/models/change-pin-om.model';
 import { OM_CHANGE_PIN_ENDPOINT } from '../utils/om.endpoints';
 import { OMCustomerStatusModel } from 'src/app/models/om-customer-status.model';
-import {
-  checkOtpResponseModel,
-  OmCheckOtpModel,
-  OmInitOtpModel,
-} from 'src/app/models/om-self-operation-otp.model';
+import { checkOtpResponseModel, OmCheckOtpModel, OmInitOtpModel } from 'src/app/models/om-self-operation-otp.model';
 import {
   checkStorageElementHasExpired,
   ILLIFLEX_BY_OM_IDENTICAL_ERROR_CODE,
@@ -76,12 +61,11 @@ import {
   OPERATION_TYPE_SENEAU_BILLS,
   OPERATION_TYPE_SENELEC_BILLS,
   OPERATION_TYPE_TERANGA_BILL,
-	OPERATION_XEWEUL,
+  OPERATION_XEWEUL,
 } from 'src/app/utils/operations.constants';
 import { IlliflexModel } from 'src/app/models/illiflex-pass.model';
 import { IlliflexService } from '../illiflex-service/illiflex.service';
 import { CancelOmTransactionPayloadModel } from 'src/app/models/cancel-om-transaction-payload.model';
-import { FollowAnalyticsEventType } from '../follow-analytics/follow-analytics-event-type.enum';
 import { OperationExtras } from 'src/app/models/operation-extras.model';
 import { CreatePinOM } from 'src/app/models/create-pin-om.model';
 import { ValidateChallengeOMOEM } from 'src/app/models/challenge-answers-om-oem.model';
@@ -90,6 +74,8 @@ import { PAYMENT_BILLS_CATEGORY } from 'src/app/models/bill-payment.model';
 import { LocalStorageService } from '../localStorage-service/local-storage.service';
 import { DemandeAnnulationTransfertModel } from 'src/app/models/demande-annulation-transfert.model';
 import { PurchaseModel } from 'src/app/models/purchase.model';
+import { ANALYTICS_PROVIDER, OemLoggingService } from '../oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
 
 const VIRTUAL_ACCOUNT_PREFIX = 'om_';
 const { OM_SERVICE, SERVER_API_URL, SERVICES_SERVICE } = environment;
@@ -152,11 +138,11 @@ export class OrangeMoneyService {
   biometricStatusSubject: Subject<any> = new Subject<any>();
   constructor(
     private http: HttpClient,
-    private followAnalyticsService: FollowAnalyticsService,
     private dashboardService: DashboardService,
     private illiflexService: IlliflexService,
     private faio: FingerprintAIO,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private oemLoggingService: OemLoggingService
   ) {}
   pinPadDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b'];
   gotPinPadSubject = new BehaviorSubject<string[]>([]);
@@ -273,10 +259,7 @@ export class OrangeMoneyService {
     const os = isIOS ? 'iOS' : 'Android';
     if (pinPadData) pinPadData.os = os;
     if (changePinInfos?.sequence && changePinInfos?.em) {
-      const sequence = changePinInfos.sequence.replace(
-        new RegExp('-', 'g'),
-        ' '
-      );
+      const sequence = changePinInfos.sequence.replace(new RegExp('-', 'g'), ' ');
       this.gotPinPadSubject.next(sequence.split(''));
       return of({
         content: {
@@ -286,10 +269,7 @@ export class OrangeMoneyService {
     }
     return this.http.post(pinpadEndpoint, pinPadData).pipe(
       tap((res: any) => {
-        const sequence = res.content.data.sequence.replace(
-          new RegExp('-', 'g'),
-          ' '
-        );
+        const sequence = res.content.data.sequence.replace(new RegExp('-', 'g'), ' ');
         this.gotPinPadSubject.next(sequence.split(''));
       })
     );
@@ -311,25 +291,20 @@ export class OrangeMoneyService {
     return this.http.get(`${get_marchand_lite_annulations_endpoint}/${this.dashboardService.getCurrentPhoneNumber()}?page=0&pageSize=100`);
   }
 
-	mapToHistorikAchat(listAnnulationTrx: DemandeAnnulationTransfertModel[]) {
-		return listAnnulationTrx.map((elt) => {
-			const eltMapped: PurchaseModel = {...elt, msisdnReceiver: elt.msisdn, amount: elt?.montant, operationDate: elt.date, name: elt?.titre }
-			return eltMapped;
-		});
-	}
+  mapToHistorikAchat(listAnnulationTrx: DemandeAnnulationTransfertModel[]) {
+    return listAnnulationTrx.map(elt => {
+      const eltMapped: PurchaseModel = { ...elt, msisdnReceiver: elt.msisdn, amount: elt?.montant, operationDate: elt.date, name: elt?.titre };
+      return eltMapped;
+    });
+  }
 
-  validateAnnulationTrxMarchandLite(data: { txnId: string, confirm: number }) {
+  validateAnnulationTrxMarchandLite(data: { txnId: string; confirm: number }) {
     return this.http.post(`${post_confirm_marchand_lite_annulations_endpoint}`, data);
   }
 
   AchatCredit(achatCreditData: OmBuyCreditModel, confirmPayload?) {
-    const queryParams = confirmPayload?.txnId
-      ? `?txnId=${confirmPayload?.txnId}`
-      : '';
-    return this.http.post(
-      `${achatCreditEndpoint}${queryParams}`,
-      achatCreditData
-    );
+    const queryParams = confirmPayload?.txnId ? `?txnId=${confirmPayload?.txnId}` : '';
+    return this.http.post(`${achatCreditEndpoint}${queryParams}`, achatCreditData);
   }
   AchatPassInternet(achatPassData: OmBuyPassModel) {
     return this.http.post(achatPassEndpoint, achatPassData);
@@ -345,13 +320,8 @@ export class OrangeMoneyService {
     const os = isIOS ? 'iOS' : 'Android';
     transferOMData.uuid = uuid;
     transferOMData.os = os;
-    const queryParams = confirmPayload?.txnId
-      ? `?txnId=${confirmPayload?.txnId}`
-      : '';
-    return this.http.post(
-      `${transferOMEndpoint}${queryParams}`,
-      transferOMData
-    );
+    const queryParams = confirmPayload?.txnId ? `?txnId=${confirmPayload?.txnId}` : '';
+    return this.http.post(`${transferOMEndpoint}${queryParams}`, transferOMData);
   }
 
   transferIRT(transferOMData: TransferIRTModel, confirmPayload?) {
@@ -360,9 +330,7 @@ export class OrangeMoneyService {
     const os = isIOS ? 'iOS' : 'Android';
     transferOMData.uuid = uuid;
     transferOMData.os = os;
-    const queryParams = confirmPayload?.txnId
-      ? `?txnId=${confirmPayload?.txnId}`
-      : '';
+    const queryParams = confirmPayload?.txnId ? `?txnId=${confirmPayload?.txnId}` : '';
     return this.http.post(`${IRTEndpoint}${queryParams}`, transferOMData);
   }
 
@@ -377,19 +345,32 @@ export class OrangeMoneyService {
 
   getMerchantByCode(code: number) {
     return this.getOmMsisdn().pipe(
-      switchMap((msisdn) => {
+      switchMap(msisdn => {
         return this.http.get(`${getMerchantEndpoint}/${code}?msisdn=${msisdn}`);
       })
     );
   }
 
   payMerchantOM(merchantPaymentData: MerchantPaymentModel, confirmPayload?) {
-    const queryParams = confirmPayload?.txnId
-      ? `?txnId=${confirmPayload?.txnId}`
-      : '';
-    return this.http.post(
-      `${merchantPaymentEndpoint}${queryParams}`,
-      merchantPaymentData
+    const queryParams = confirmPayload?.txnId ? `?txnId=${confirmPayload?.txnId}` : '';
+    return this.http.post(`${merchantPaymentEndpoint}${queryParams}`, merchantPaymentData).pipe(
+      tap(res => {
+        this.oemLoggingService.registerEvent('merchant_payment_success', [
+          {
+            dataName: 'codeMarchand',
+            dataValue: merchantPaymentData.code_marchand,
+          },
+          { dataName: 'msisdn', dataValue: merchantPaymentData.msisdn },
+          {
+            dataName: 'montant',
+            dataValue: merchantPaymentData.amount.toString(),
+          },
+        ]);
+      }),
+      catchError(err => {
+        this.oemLoggingService.registerEvent('merchant_payment_error', []);
+        return throwError(err);
+      })
     );
   }
 
@@ -411,14 +392,14 @@ export class OrangeMoneyService {
     return pin.join('');
   }
 
-	decryptOmPin(pinPadResponse: any[], encryptedPin) {
-    encryptedPin = encryptedPin.split("");
-		encryptedPin[0] = pinPadResponse[this.pinPadDigits.indexOf(encryptedPin[0])];
-		encryptedPin[1] = pinPadResponse[this.pinPadDigits.indexOf(encryptedPin[1])];
-		encryptedPin[2] = pinPadResponse[this.pinPadDigits.indexOf(encryptedPin[2])];
-		encryptedPin[3] = pinPadResponse[this.pinPadDigits.indexOf(encryptedPin[3])];
-		return encryptedPin.join("");
-	}
+  decryptOmPin(pinPadResponse: any[], encryptedPin) {
+    encryptedPin = encryptedPin.split('');
+    encryptedPin[0] = pinPadResponse[this.pinPadDigits.indexOf(encryptedPin[0])];
+    encryptedPin[1] = pinPadResponse[this.pinPadDigits.indexOf(encryptedPin[1])];
+    encryptedPin[2] = pinPadResponse[this.pinPadDigits.indexOf(encryptedPin[2])];
+    encryptedPin[3] = pinPadResponse[this.pinPadDigits.indexOf(encryptedPin[3])];
+    return encryptedPin.join('');
+  }
 
   GetOrangeMoneyUser(msisdn: string): OmUserInfo {
     const accountId = this.getAccountId(msisdn);
@@ -454,13 +435,7 @@ export class OrangeMoneyService {
   }
   // Log Event and errors with Follow Analytics for Orange Money
   // type can be 'error' or 'event'
-  logWithFollowAnalytics(
-    res: any,
-    type: string,
-    operationType: string,
-    dataToLog: FollowOemlogPurchaseInfos,
-    opXtras: OperationExtras
-  ) {
+  logWithFollowAnalytics(res: any, type: string, operationType: string, dataToLog: FollowOemlogPurchaseInfos, opXtras: OperationExtras) {
     switch (operationType) {
       case undefined:
         value = res.status_code;
@@ -468,12 +443,8 @@ export class OrangeMoneyService {
         errorKey = 'Voir_solde_OM_dashboard_error';
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
-        eventKey = `Achat_credit_${
-          opXtras.fromPage === OPERATION_TYPE_BONS_PLANS ? 'bons_plans' : ''
-        }_success`;
-        errorKey = `Achat_credit_${
-          opXtras.fromPage === OPERATION_TYPE_BONS_PLANS ? 'bons_plans' : ''
-        }_failed`;
+        eventKey = `Achat_credit_${opXtras.fromPage === OPERATION_TYPE_BONS_PLANS ? 'bons_plans' : ''}_success`;
+        errorKey = `Achat_credit_${opXtras.fromPage === OPERATION_TYPE_BONS_PLANS ? 'bons_plans' : ''}_failed`;
         value = dataToLog;
         break;
       case OPERATION_TYPE_PASS_VOYAGE:
@@ -492,16 +463,12 @@ export class OrangeMoneyService {
         } else if (operationType === OPERATION_TYPE_PASS_INTERNET) {
           type_pass = 'internet';
         } else if (operationType === OPERATION_TYPE_PASS_ILLIFLEX) {
-          type_pass = "illiflex";
+          type_pass = 'illiflex';
         } else if (operationType === OPERATION_ABONNEMENT_WIDO) {
-          type_pass = "abonnement_wido";
+          type_pass = 'abonnement_wido';
         }
-        errorKey = `Achat_Pass_${type_pass}_${
-          opXtras.fromPage === OPERATION_TYPE_BONS_PLANS ? 'bons_plans' : ''
-        }_Error`;
-        eventKey = `Achat_Pass_${type_pass}_${
-          opXtras.fromPage === OPERATION_TYPE_BONS_PLANS ? 'bons_plans' : ''
-        }_Success`;
+        errorKey = `Achat_Pass_${type_pass}_${opXtras.fromPage === OPERATION_TYPE_BONS_PLANS ? 'bons_plans' : ''}_Error`;
+        eventKey = `Achat_Pass_${type_pass}_${opXtras.fromPage === OPERATION_TYPE_BONS_PLANS ? 'bons_plans' : ''}_Success`;
         value = dataToLog;
         break;
       case OPERATION_TRANSFER_OM:
@@ -518,10 +485,12 @@ export class OrangeMoneyService {
         errorKey = 'OM_Paiement_Marchand_Error';
         eventKey = 'OM_Paiement_Marchand_Success';
         value = dataToLog;
+        break;
       case OPERATION_RAPIDO:
         errorKey = 'Recharge_Rapido_Error';
         eventKey = 'Recharge_Rapido_Success';
         value = dataToLog;
+        break;
       case OPERATION_XEWEUL:
         errorKey = 'Recharge_Xeweul_Error';
         eventKey = 'Recharge_Xeweul_Success';
@@ -536,24 +505,25 @@ export class OrangeMoneyService {
         errorKey = 'Irt_Error';
         eventKey = 'Irt_Success';
         value = dataToLog;
+        break;
       default:
+        errorKey = operationType.toLowerCase() + '_error';
+        eventKey = operationType.toLowerCase() + '_Success';
         break;
     }
     if (type === 'event') {
-      this.followAnalyticsService.registerEventFollow(eventKey, 'event', value);
+      this.oemLoggingService.registerEvent(eventKey, convertObjectToLoggingPayload(value), ANALYTICS_PROVIDER.ALL);
     } else {
       value = Object.assign({}, value, { error_code: res.status_code });
-      this.followAnalyticsService.registerEventFollow(errorKey, 'error', value);
+      this.oemLoggingService.registerEvent(errorKey, convertObjectToLoggingPayload(value));
     }
   }
 
   checkBalanceSufficiency(amount: number | string) {
     // return of(true).pipe(delay(2000));
     return this.getOmMsisdn().pipe(
-      switchMap((msisdn) => {
-        return this.http.get(
-          `${checkBalanceSufficiencyEndpoint}/${msisdn}?amount=${amount}`
-        );
+      switchMap(msisdn => {
+        return this.http.get(`${checkBalanceSufficiencyEndpoint}/${msisdn}?amount=${amount}`);
       })
     );
   }
@@ -578,29 +548,15 @@ export class OrangeMoneyService {
   }
 
   initSelfOperationOtp(initOtpPayload: OmInitOtpModel) {
-    console.log(
-      'url',
-      selfOperationCheckOtpEndpoint,
-      'payload',
-      initOtpPayload
-    );
+    console.log('url', selfOperationCheckOtpEndpoint, 'payload', initOtpPayload);
 
-    return this.http.post<checkOtpResponseModel>(
-      selfOperationInitOtpEndpoint,
-      initOtpPayload
-    );
+    return this.http.post<checkOtpResponseModel>(selfOperationInitOtpEndpoint, initOtpPayload);
   }
 
-  checkSelfOperationOtp(
-    checkOtpPayload: OmCheckOtpModel,
-    otpCode: string | number
-  ) {
+  checkSelfOperationOtp(checkOtpPayload: OmCheckOtpModel, otpCode: string | number) {
     console.log('checkOTP', checkOtpPayload, otpCode);
 
-    return this.http.post<checkOtpResponseModel>(
-      `${selfOperationCheckOtpEndpoint}?otp=${otpCode}`,
-      checkOtpPayload
-    );
+    return this.http.post<checkOtpResponseModel>(`${selfOperationCheckOtpEndpoint}?otp=${otpCode}`, checkOtpPayload);
   }
 
   getOmMsisdn(): Observable<string> {
@@ -612,7 +568,7 @@ export class OrangeMoneyService {
       const allNumbers = [];
       const mainPhoneNumber = this.dashboardService.getMainPhoneNumber();
       allNumbers.push(mainPhoneNumber);
-      return new Observable((obs) => {
+      return new Observable(obs => {
         this.dashboardService
           .attachedNumbers()
           .pipe(
@@ -622,7 +578,7 @@ export class OrangeMoneyService {
           )
           .subscribe(
             (resp: any) => {
-              resp.forEach((element) => {
+              resp.forEach(element => {
                 const msisdn = '' + element.msisdn;
                 // Avoid fix numbers
                 if (!msisdn.startsWith('33', 0)) {
@@ -631,11 +587,11 @@ export class OrangeMoneyService {
               });
               // request orange money info for every number
               const httpCalls = [];
-              allNumbers.forEach((number) => {
+              allNumbers.forEach(number => {
                 httpCalls.push(this.GetUserAuthInfo(number));
               });
               forkJoin(httpCalls).subscribe(
-                (data) => {
+                data => {
                   let numberOMFound = false;
                   for (const [index, element] of data.entries()) {
                     // if the number is linked with OM, keep it and break out of the for loop
@@ -652,7 +608,7 @@ export class OrangeMoneyService {
                     obs.next('error');
                   }
                 },
-                (err) => {
+                err => {
                   obs.next('error');
                   console.error(err);
                 }
@@ -685,7 +641,7 @@ export class OrangeMoneyService {
 
   omAccountSession() {
     return this.getOmMsisdn().pipe(
-      switchMap((msisdn) => {
+      switchMap(msisdn => {
         if (msisdn === 'error') return of({ msisdn: msisdn });
         return this.GetUserAuthInfo(msisdn).pipe(
           map((infos: any) => {
@@ -697,10 +653,7 @@ export class OrangeMoneyService {
   }
 
   sendRequestErreurTransactionOM(data: ErreurTransactionOmModel) {
-    return this.http.post(
-      `${SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT}`,
-      data
-    );
+    return this.http.post(`${SEND_REQUEST_ERREUR_TRANSACTION_OM_ENDPOINT}`, data);
   }
 
   changePin(data: ChangePinOm) {
@@ -708,9 +661,7 @@ export class OrangeMoneyService {
   }
 
   buyIlliflexByOM(passIlliflex: IlliflexModel) {
-    const validity = this.illiflexService.getValidityName(
-      passIlliflex.validity
-    );
+    const validity = this.illiflexService.getValidityName(passIlliflex.validity);
     const buyIlliflexPayload = {
       buyer: {
         msisdn: passIlliflex.sender,
@@ -752,77 +703,55 @@ export class OrangeMoneyService {
         },
       },
     };
-    return this.http
-      .post(`${OM_BUY_ILLIFLEX_ENDPOINT}`, buyIlliflexPayload)
-      .pipe(
-        map((res) => {
-          const mappedOmResponse = {
-            content: {
-              data: {
-                status_code: '200',
-              },
+    return this.http.post(`${OM_BUY_ILLIFLEX_ENDPOINT}`, buyIlliflexPayload).pipe(
+      map(res => {
+        const mappedOmResponse = {
+          content: {
+            data: {
+              status_code: '200',
             },
-            status_code: 'Success-001',
-          };
-          return mappedOmResponse;
-        }),
-        catchError((err) => {
-          const status = err.error.statusCode;
-          const errorCode =
-            err.error.errorCode === ILLIFLEX_BY_OM_IDENTICAL_ERROR_CODE
-              ? OM_IDENTIC_TRANSACTION_CODE
-              : err.error.errorCode === ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE
-              ? OM_UNKOWN_ERROR_CODE
-              : err.error.errorCode;
-          const message =
-            status === 400 && errorCode !== OM_UNKOWN_ERROR_CODE
-              ? err.error.message
-              : 'Une erreur est survenue';
-          const error = new HttpErrorResponse({
-            error: { errorCode, status, message },
-            status,
-          });
-          return throwError(error);
-        })
-      );
+          },
+          status_code: 'Success-001',
+        };
+        return mappedOmResponse;
+      }),
+      catchError(err => {
+        const status = err.error.statusCode;
+        const errorCode =
+          err.error.errorCode === ILLIFLEX_BY_OM_IDENTICAL_ERROR_CODE
+            ? OM_IDENTIC_TRANSACTION_CODE
+            : err.error.errorCode === ILLIFLEX_BY_OM_UNKOWN_ERROR_CODE
+            ? OM_UNKOWN_ERROR_CODE
+            : err.error.errorCode;
+        const message = status === 400 && errorCode !== OM_UNKOWN_ERROR_CODE ? err.error.message : 'Une erreur est survenue';
+        const error = new HttpErrorResponse({
+          error: { errorCode, status, message },
+          status,
+        });
+        return throwError(error);
+      })
+    );
   }
 
   isTxnEligibleToBlock(transactionId: string) {
     return this.getOmMsisdn().pipe(
-      switchMap((msisdn) => {
-        return this.http
-          .get<CheckEligibilityModel>(
-            `${checkTxnBlockEligibilityEndpoint}/${msisdn}/${transactionId}`
-          )
-          .pipe(
-            tap((res) => {
-              res.eligible
-                ? this.followAnalyticsService.registerEventFollow(
-                    'check_txn_eligibility_true',
-                    FollowAnalyticsEventType.EVENT
-                  )
-                : this.followAnalyticsService.registerEventFollow(
-                    'check_txn_eligibility_false',
-                    FollowAnalyticsEventType.EVENT,
-                    {}
-                  );
-            }),
-            catchError((err) => {
-              this.followAnalyticsService.registerEventFollow(
-                'check_txn_eligibility_error',
-                FollowAnalyticsEventType.ERROR,
-                { error: err }
-              );
-              return throwError(err);
-            })
-          );
+      switchMap(msisdn => {
+        return this.http.get<CheckEligibilityModel>(`${checkTxnBlockEligibilityEndpoint}/${msisdn}/${transactionId}`).pipe(
+          tap(res => {
+            res.eligible ? this.oemLoggingService.registerEvent('check_txn_eligibility_true') : this.oemLoggingService.registerEvent('check_txn_eligibility_false');
+          }),
+          catchError(err => {
+            this.oemLoggingService.registerEvent('check_txn_eligibility_error', convertObjectToLoggingPayload({ error: err }));
+            return throwError(err);
+          })
+        );
       })
     );
   }
 
   blockTransfer(transaction) {
     return this.getOmMsisdn().pipe(
-      switchMap((msisdn) => {
+      switchMap(msisdn => {
         const { amount, txnid, destinataire, fees } = transaction;
         const payload = {
           amount: +amount,
@@ -830,41 +759,27 @@ export class OrangeMoneyService {
           destinataire,
           msisdn,
         };
-        return this.http
-          .post<{ message: string; transactionNumber: string }>(
-            BlockTransferEndpoint,
-            payload
-          )
-          .pipe(
-            tap((res) => {
-              this.followAnalyticsService.registerEventFollow(
-                'block_transaction_success',
-                FollowAnalyticsEventType.EVENT,
-                { msisdn, transaction: payload }
-              );
-            }),
-            catchError((error) => {
-              this.followAnalyticsService.registerEventFollow(
-                'block_transaction_error',
-                FollowAnalyticsEventType.ERROR,
-                {
-                  msisdn,
-                  transaction: payload,
-                  error,
-                }
-              );
-              return throwError(error);
-            })
-          );
+        return this.http.post<{ message: string; transactionNumber: string }>(BlockTransferEndpoint, payload).pipe(
+          tap(res => {
+            this.oemLoggingService.registerEvent('block_transaction_success', convertObjectToLoggingPayload({ msisdn, transaction: payload }));
+          }),
+          catchError(error => {
+            this.oemLoggingService.registerEvent(
+              'block_transaction_error',
+              convertObjectToLoggingPayload({
+                msisdn,
+                transaction: payload,
+                error,
+              })
+            );
+            return throwError(error);
+          })
+        );
       })
     );
   }
 
-  sendInfosCancelationTransfertOM(
-    formInfos: CancelOmTransactionPayloadModel,
-    fileRecto: any,
-    fileVerso: any
-  ) {
+  sendInfosCancelationTransfertOM(formInfos: CancelOmTransactionPayloadModel, fileRecto: any, fileVerso: any) {
     const payload = new FormData();
     const erreurTransactionOmDTO = new Blob([JSON.stringify(formInfos)], {
       type: 'application/json',
@@ -903,9 +818,7 @@ export class OrangeMoneyService {
     return this.http.get(`${GET_BALANCE_URL}?${queryParams}`);
   }
 
-  initCardToWallet(
-    initC2WPayload: InitC2WPayload
-  ): Observable<InitC2WResponseModel> {
+  initCardToWallet(initC2WPayload: InitC2WPayload): Observable<InitC2WResponseModel> {
     //const mock = {
     //  statusCode: 'INITIALIZED',
     //  paymentUrl:
@@ -914,33 +827,19 @@ export class OrangeMoneyService {
     //    'https://api-gateway.sandbox.orabank.ngenius-payments.com/transactions/outlets/c2a32aef-8cbc-4a2e-be9b-f1e74054ff0b/orders/327dbdd2-85df-42c2-949c-50feca63fe92/cancel',
     //};
     //return of(mock);
-    return this.http.post<InitC2WResponseModel>(
-      `${GET_CARD_TO_WALLET_BANK_URL}`,
-      initC2WPayload
-    );
+    return this.http.post<InitC2WResponseModel>(`${GET_CARD_TO_WALLET_BANK_URL}`, initC2WPayload);
   }
 
-  validateOMChallengeForUnlockAndResetOMAccount(
-    omMsisdn: string,
-    type: string,
-    payload: ValidateChallengeOMOEM
-  ) {
-    return this.http.post(
-      `${VALIDATE_CHALLENGE_OM_ACCOUNT}/${omMsisdn}/${
-        type === OPERATION_RESET_PIN_OM ? 'resetpin' : 'unblock'
-      }`,
-      payload
-    );
+  validateOMChallengeForUnlockAndResetOMAccount(omMsisdn: string, type: string, payload: ValidateChallengeOMOEM) {
+    return this.http.post(`${VALIDATE_CHALLENGE_OM_ACCOUNT}/${omMsisdn}/${type === OPERATION_RESET_PIN_OM ? 'resetpin' : 'unblock'}`, payload);
   }
 
   getOMLastTransactions(payload?: getOMTransactionsInputModel) {
     return this.getOmMsisdn().pipe(
       switchMap(msisdn => {
-        return this.http.get<OMTransactionsResponseModel[]>(
-          `${GET_OM_TRANSACTIONS_URL}/${msisdn}?page=${payload.page}&pageSize=${payload.pageSize}`
-        );
+        return this.http.get<OMTransactionsResponseModel[]>(`${GET_OM_TRANSACTIONS_URL}/${msisdn}?page=${payload.page}&pageSize=${payload.pageSize}`);
       })
-    )
+    );
   }
 
   faceIdStatusChanged(): Observable<FACE_ID_PERMISSIONS> {
@@ -967,14 +866,12 @@ export class OrangeMoneyService {
   }
 
   async checkFaceIdStatus() {
-    const biometricAvailability = await this.faio.isAvailable().catch((err) => {
+    const biometricAvailability = await this.faio.isAvailable().catch(err => {
       return of(null).toPromise();
     });
     console.log('check biometric availability', biometricAvailability);
     const status = this.getFaceIdState();
-    return biometricAvailability
-      ? of(status).toPromise()
-      : of(FACE_ID_PERMISSIONS.NEVER);
+    return biometricAvailability ? of(status).toPromise() : of(FACE_ID_PERMISSIONS.NEVER);
   }
 }
 
@@ -984,8 +881,8 @@ export const enum FACE_ID_PERMISSIONS {
   LATER = 'LATER',
 }
 
-export const FACE_ID_STORAGE_KEY = 'FACE_ID_PERMISSION'
-export const FACE_ID_OM_INFOS = 'FACE_ID_INFOS'
+export const FACE_ID_STORAGE_KEY = 'FACE_ID_PERMISSION';
+export const FACE_ID_OM_INFOS = 'FACE_ID_INFOS';
 
 export enum OM_FEES_CALCUL_MODE {
   PERCENT = 'pourcent',

@@ -153,11 +153,6 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'new-number',
-    loadChildren: () => import('./add-new-phone-number-v2/add-new-phone-number-v2.module').then(m => m.AddNewPhoneNumberV2PageModule),
-    canActivate: [AuthGuard],
-  },
-  {
     path: 'dashboard-home-prepaid',
     loadChildren: () => import('./dashboard-home-prepaid/dashboard-home-prepaid.module').then(m => m.DashboardHomePrepaidPageModule),
     canActivate: [AuthGuard],

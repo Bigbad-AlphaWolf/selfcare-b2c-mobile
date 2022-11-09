@@ -1,39 +1,32 @@
-import {Component, NgZone, OnDestroy, OnInit} from '@angular/core';
-import {FormGroup, FormBuilder, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
-import {Uid} from '@ionic-native/uid/ngx';
-import {NavController, ModalController} from '@ionic/angular';
-import {of, Subject, Subscription, timer} from 'rxjs';
-import {tap, catchError, takeUntil, finalize, switchMap, map} from 'rxjs/operators';
+import { Uid } from '@ionic-native/uid/ngx';
+import { NavController, ModalController } from '@ionic/angular';
+import { of, Subject, Subscription, timer } from 'rxjs';
+import { tap, catchError, takeUntil, finalize, switchMap, map } from 'rxjs/operators';
 import { CustomerOperationStatus } from 'src/app/models/enums/om-customer-status.enum';
-import {OMCustomerStatusModel} from 'src/app/models/om-customer-status.model';
-import {OmInitOtpModel, OmCheckOtpModel} from 'src/app/models/om-self-operation-otp.model';
-import {OperationSuccessFailModalPage} from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
-import {MSISDN_RECUPERATION_TIMEOUT} from 'src/app/register';
-import {
-  AuthenticationService,
-  ConfirmMsisdnModel
-} from 'src/app/services/authentication-service/authentication.service';
-import {DashboardService} from 'src/app/services/dashboard-service/dashboard.service';
-import {FollowAnalyticsService} from 'src/app/services/follow-analytics/follow-analytics.service';
-import {ImageService} from 'src/app/services/image-service/image.service';
-import {
-  getAge,
-  ID_CARD_CARACTERS_MIN_LENGTH,
-  SUCCESS_MSG_OM_ACCOUNT_CREATION
-} from 'src/app/services/orange-money-service';
-import {OrangeMoneyService} from 'src/app/services/orange-money-service/orange-money.service';
-import {dateValidatorLessThan, parseDate} from 'src/app/utils/utils';
-import {HelpModalRegisterOMContent, OPERATION_OPEN_OM_ACCOUNT} from 'src/shared';
-import {CommonIssuesComponent} from 'src/shared/common-issues/common-issues.component';
+import { OMCustomerStatusModel } from 'src/app/models/om-customer-status.model';
+import { OmInitOtpModel, OmCheckOtpModel } from 'src/app/models/om-self-operation-otp.model';
+import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
+import { MSISDN_RECUPERATION_TIMEOUT } from 'src/app/register';
+import { AuthenticationService, ConfirmMsisdnModel } from 'src/app/services/authentication-service/authentication.service';
+import { DashboardService } from 'src/app/services/dashboard-service/dashboard.service';
+import { ImageService } from 'src/app/services/image-service/image.service';
+import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
+import { getAge, ID_CARD_CARACTERS_MIN_LENGTH, SUCCESS_MSG_OM_ACCOUNT_CREATION } from 'src/app/services/orange-money-service';
+import { OrangeMoneyService } from 'src/app/services/orange-money-service/orange-money.service';
+import { convertObjectToLoggingPayload, dateValidatorLessThan, parseDate } from 'src/app/utils/utils';
+import { HelpModalRegisterOMContent, OPERATION_OPEN_OM_ACCOUNT } from 'src/shared';
+import { CommonIssuesComponent } from 'src/shared/common-issues/common-issues.component';
 import { ImpliciteAuthenticationModalComponent } from '../../components/implicite-authentication-modal/implicite-authentication-modal.component';
-import {TypeOtpModalComponent} from '../../components/type-otp-modal/type-otp-modal.component';
+import { TypeOtpModalComponent } from '../../components/type-otp-modal/type-otp-modal.component';
 
 @Component({
   selector: 'app-open-om-account',
   templateUrl: './open-om-account.page.html',
-  styleUrls: ['./open-om-account.page.scss']
+  styleUrls: ['./open-om-account.page.scss'],
 })
 export class OpenOmAccountPage implements OnInit, OnDestroy {
   personalInfosForm: FormGroup = this.formBuilder.group(
@@ -45,9 +38,9 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
       nIdentity: [null, [Validators.required]],
       identityType: ['CNI', [Validators.required]],
       delivery_date: [null, [Validators.required]],
-      expiry_date: [null, [Validators.required]]
+      expiry_date: [null, [Validators.required]],
     },
-    {validators: dateValidatorLessThan('delivery_date', 'expiry_date')}
+    { validators: dateValidatorLessThan('delivery_date', 'expiry_date') }
   );
   rectoFilled: boolean;
   rectoImage: any;
@@ -89,9 +82,8 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
     private navController: NavController,
     private modalController: ModalController,
     private dashbServ: DashboardService,
-    private followAnalyticsServ: FollowAnalyticsService,
     private authServ: AuthenticationService,
-    private followAnalyticsService: FollowAnalyticsService,
+    private oemLoggingService: OemLoggingService,
     private network: Network,
     private uid: Uid,
     private ngZone: NgZone,
@@ -102,7 +94,7 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
         this.ngZone.run(() => {
           this.openHelpModal(HelpModalRegisterOMContent);
         });
-      }
+      },
     });
   }
 
@@ -111,7 +103,7 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
     this.shouldResetPin = history.state.shouldResetPin;
   }
 
-	ngOnDestroy() {
+  ngOnDestroy() {
     if (this.newtworkSubscription) {
       this.newtworkSubscription.unsubscribe();
     }
@@ -130,13 +122,13 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
     this.dashbServ
       .getCustomerInformations()
       .pipe(
-        tap((res: {givenName?: string; familyName?: string; birthDate?: string; gender?: 'MALE' | 'FEMALE'}) => {
+        tap((res: { givenName?: string; familyName?: string; birthDate?: string; gender?: 'MALE' | 'FEMALE' }) => {
           this.personalInfosForm.patchValue({
-            civility: res.gender === 'MALE' ? 'MR' : res.gender === 'FEMALE' ? 'MRS' : null
+            civility: res.gender === 'MALE' ? 'MR' : res.gender === 'FEMALE' ? 'MRS' : null,
           });
-          this.personalInfosForm.patchValue({firstname: res.givenName});
-          this.personalInfosForm.patchValue({lastname: res.familyName});
-          this.personalInfosForm.patchValue({birthdate: new Date(res.birthDate).toISOString()});
+          this.personalInfosForm.patchValue({ firstname: res.givenName });
+          this.personalInfosForm.patchValue({ lastname: res.familyName });
+          this.personalInfosForm.patchValue({ birthdate: new Date(res.birthDate).toISOString() });
         })
       )
       .subscribe();
@@ -159,28 +151,37 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
         this.userOmStatus = status;
         this.checkingStatus = false;
         if (this.isEligibleToOpenOMAccount(status)) {
-          this.followAnalyticsServ.registerEventFollow('open_om_acccount_affichage_formulaire', 'event', {
-            userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
-            omMsisdn: this.omMsisdn,
-            typeDemande: status.operation,
-            status: status.operationStatus
-          });
+          this.oemLoggingService.registerEvent(
+            'open_om_acccount_affichage_formulaire',
+            convertObjectToLoggingPayload({
+              userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
+              omMsisdn: this.omMsisdn,
+              typeDemande: status.operation,
+              status: status.operationStatus,
+            })
+          );
         } else if (this.isEligibleToSuiviOpenOMAccount(status)) {
-          this.followAnalyticsServ.registerEventFollow('open_om_acccount_affichage_suivi', 'event', {
-            userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
-            omMsisdn: this.omMsisdn,
-            status: status.operationStatus,
-            typeDemande: status.operation
-          });
+          this.oemLoggingService.registerEvent(
+            'open_om_acccount_affichage_suivi',
+            convertObjectToLoggingPayload({
+              userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
+              omMsisdn: this.omMsisdn,
+              status: status.operationStatus,
+              typeDemande: status.operation,
+            })
+          );
         }
       },
       err => {
         this.checkingStatus = false;
-        this.followAnalyticsServ.registerEventFollow('open_om_acccount_affichage_error', 'error', {
-          userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
-          omMsisdn: this.omMsisdn,
-          error: err
-        });
+        this.oemLoggingService.registerEvent(
+          'open_om_acccount_affichage_error',
+          convertObjectToLoggingPayload({
+            userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
+            omMsisdn: this.omMsisdn,
+            error: err,
+          })
+        );
         this.checkStatusError = true;
       }
     );
@@ -229,26 +230,32 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
         adresse: 'adresse',
         delivery_date: parseDate(this.personalInfosForm.value.delivery_date),
         expiry_date: parseDate(this.personalInfosForm.value.expiry_date),
-        hmac2: this.userOmStatus.hmac
+        hmac2: this.userOmStatus.hmac,
       };
       this.generatingOtp = true;
       this.orangeMoneyService.initSelfOperationOtp(otpPayload).subscribe(
         (res: any) => {
           this.generatingOtp = false;
-          this.followAnalyticsServ.registerEventFollow('open_om_account_init_otp_success', 'event', {
-            userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
-            omMsisdn: this.omMsisdn
-          });
+          this.oemLoggingService.registerEvent(
+            'open_om_account_init_otp_success',
+            convertObjectToLoggingPayload({
+              userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
+              omMsisdn: this.omMsisdn,
+            })
+          );
           this.openTypeOtpModal(otpPayload, res.content.data.hmac);
         },
         err => {
           this.hasErrorsubmit = true;
           this.generatingOtp = false;
-          this.followAnalyticsServ.registerEventFollow('open_om_account_init_otp_failed', 'error', {
-            userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
-            omMsisdn: this.omMsisdn,
-            error: err
-          });
+          this.oemLoggingService.registerEvent(
+            'open_om_account_init_otp_failed',
+            convertObjectToLoggingPayload({
+              userMsisdn: this.dashbServ.getCurrentPhoneNumber(),
+              omMsisdn: this.omMsisdn,
+              error: err,
+            })
+          );
           this.msgSubmitError = 'Une erreur est survenue';
         }
       );
@@ -267,12 +274,12 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
       imageBase64: this.selfieImage,
       msisdn: this.omMsisdn,
       typeDemande: 'INSCRIPTION',
-      hmac
+      hmac,
     };
     const modal = await this.modalController.create({
       component: TypeOtpModalComponent,
       cssClass: 'select-recipient-modal',
-      componentProps: {checkOtpPayload}
+      componentProps: { checkOtpPayload },
     });
     modal.onDidDismiss().then(resp => {
       if (resp && resp.data && resp.data.accept) {
@@ -285,27 +292,26 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
   async openAuthenticationImplicitModal() {
     const modal = await this.modalController.create({
       component: ImpliciteAuthenticationModalComponent,
-      cssClass: 'select-recipient-modal'
+      cssClass: 'select-recipient-modal',
     });
-    modal.onDidDismiss().then((resp) => {
+    modal.onDidDismiss().then(resp => {
       if (resp && resp.data && resp.data) {
-
-				this.userAuthImplicitInfos = resp?.data?.infosAuthImplicit;
-				this.selectedNumber = this.userAuthImplicitInfos?.msisdn;
+        this.userAuthImplicitInfos = resp?.data?.infosAuthImplicit;
+        this.selectedNumber = this.userAuthImplicitInfos?.msisdn;
         this.initPage();
       } else {
-				this.goBack()
-			}
+        this.goBack();
+      }
     });
     return await modal.present();
   }
 
   clearInput() {
-    this.personalInfosForm.patchValue({nIdentity: null});
+    this.personalInfosForm.patchValue({ nIdentity: null });
   }
 
   openSuccessModal() {
-    this.showModal({purchaseType: OPERATION_OPEN_OM_ACCOUNT, textMsg: SUCCESS_MSG_OM_ACCOUNT_CREATION});
+    this.showModal({ purchaseType: OPERATION_OPEN_OM_ACCOUNT, textMsg: SUCCESS_MSG_OM_ACCOUNT_CREATION });
   }
 
   goBack() {
@@ -318,7 +324,7 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
 
   takePicture(step?: 'recto' | 'verso' | 'selfie') {
     this.router.navigate(['om-self-operation/take-picture'], {
-      state: {step, operation: 'OUVERTURE_COMPTE'}
+      state: { step, operation: 'OUVERTURE_COMPTE' },
     });
   }
 
@@ -341,12 +347,12 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
     }
   }
 
-  async showModal(data: {purchaseType: string; textMsg: string}) {
+  async showModal(data: { purchaseType: string; textMsg: string }) {
     const modal = await this.modalController.create({
       component: OperationSuccessFailModalPage,
       cssClass: 'failed-modal',
       componentProps: data,
-      backdropDismiss: false
+      backdropDismiss: false,
     });
     modal.onDidDismiss().then(() => {});
     return await modal.present();
@@ -378,13 +384,9 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
     this.isUserIDInvalid = false;
     if (event.target) {
       const value = event.srcElement.value.toString();
-      if (
-        this.personalInfosForm.value.identityType === 'CNI' &&
-        value.length &&
-        value.length < ID_CARD_CARACTERS_MIN_LENGTH
-      ) {
+      if (this.personalInfosForm.value.identityType === 'CNI' && value.length && value.length < ID_CARD_CARACTERS_MIN_LENGTH) {
         this.isUserIDInvalid = true;
-        this.personalInfosForm.controls['identityType'].setErrors({incorrect: true});
+        this.personalInfosForm.controls['identityType'].setErrors({ incorrect: true });
       } else {
         this.isUserIDInvalid = false;
         this.personalInfosForm.controls['identityType'].setErrors(null);
@@ -408,7 +410,7 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
             console.log('http call is not successful');
           }
         }),
-        switchMap((res: {msisdn: string}) => {
+        switchMap((res: { msisdn: string }) => {
           this.selectedNumber = res.msisdn;
           return this.authServ.confirmMsisdnByNetwork(res.msisdn).pipe(
             tap(
@@ -423,10 +425,13 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
                   const duration = `${elapsedSeconds} ms`;
                   console.log(duration);
                   this.userAuthImplicitInfos = response;
-                  this.followAnalyticsService.registerEventFollow('User_msisdn_recuperation_success', 'event', {
-                    msisdn: this.selectedNumber,
-                    duration
-                  });
+                  this.oemLoggingService.registerEvent(
+                    'User_msisdn_recuperation_success',
+                    convertObjectToLoggingPayload({
+                      msisdn: this.selectedNumber,
+                      duration,
+                    })
+                  );
                 } else {
                   this.displayMsisdnError();
                 }
@@ -453,10 +458,13 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
     this.newtworkSubscription = this.network.onConnect().subscribe(() => {
       setTimeout(() => {
         connexion = this.network.type;
-        this.followAnalyticsService.registerEventFollow('User_msisdn_recuperation_failed', 'error', {
-          imei: this.uid.IMEI,
-          connexion
-        });
+        this.oemLoggingService.registerEvent(
+          'User_msisdn_recuperation_failed',
+          convertObjectToLoggingPayload({
+            imei: this.uid.IMEI,
+            connexion,
+          })
+        );
       }, 3000);
     });
   }
@@ -465,7 +473,7 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
     const modal = await this.modalController.create({
       component: CommonIssuesComponent,
       cssClass: 'besoin-daide-modal',
-      componentProps: {data: sheetData}
+      componentProps: { data: sheetData },
     });
     return await modal.present();
   }

@@ -1,17 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import {
-  LoadingController,
-  ModalController,
-  NavController,
-  Platform,
-} from '@ionic/angular';
+import { LoadingController, ModalController, NavController, Platform } from '@ionic/angular';
 import { OperationExtras } from '../models/operation-extras.model';
-import {
-  FACE_ID_PERMISSIONS,
-  OrangeMoneyService,
-} from '../services/orange-money-service/orange-money.service';
+import { FACE_ID_PERMISSIONS, OrangeMoneyService } from '../services/orange-money-service/orange-money.service';
 import { OM_LABEL_SERVICES } from '../utils/bills.util';
 import {
   OPERATION_TRANSFER_OM,
@@ -34,6 +26,7 @@ import {
   BONUS_INSUFFICIENT_ERROR,
   PAYMENT_MOD_BONUS,
   PAYMENT_MOD_CREDIT,
+  BALANCE_INSUFFICIENT_FOR_TRANSFERT_CREDIT_ERROR,
 } from '../../../src/shared';
 import { FeeModel } from '../services/orange-money-service';
 import { FeesService } from '../services/fees/fees.service';
@@ -50,10 +43,10 @@ import { FaceIdRequestModalComponent } from 'src/shared/face-id-request-modal/fa
 import { OperationService } from '../services/oem-operation/operation.service';
 import { TransfertBonnus } from '../services/dashboard-service';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { AuthenticationService } from '../services/authentication-service/authentication.service';
 import { UserConsoService } from '../services/user-cunsommation-service/user-conso.service';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
 import { PinPadComponent } from 'src/shared/pin-pad/pin-pad.component';
+import { OemLoggingService } from '../services/oem-logging/oem-logging.service';
+import { convertObjectToLoggingPayload } from '../utils/utils';
 
 @Component({
   selector: 'app-transfer-set-amount',
@@ -115,7 +108,7 @@ export class TransferSetAmountPage implements OnInit {
     private platform: Platform,
     private dashboardService: DashboardService,
     private consoService: UserConsoService,
-    private followAnalyticsService: FollowAnalyticsService
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -193,7 +186,7 @@ export class TransferSetAmountPage implements OnInit {
     }
     this.getOMTransferFees(OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE)
       .pipe(
-        switchMap((res) => {
+        switchMap(res => {
           return this.getOMTransferFees(OM_LABEL_SERVICES.TAF);
         })
       )
@@ -277,15 +270,13 @@ export class TransferSetAmountPage implements OnInit {
       this.omService
         .initCardToWallet(payload)
         .pipe(
-          tap((res) => {
+          tap(res => {
             this.checkingAmount = false;
             this.openC2WInAppBrowser(res.paymentUrl);
           }),
-          catchError((err) => {
+          catchError(err => {
             this.checkingAmount = false;
-            this.error = err?.error?.message
-              ? err.error.message
-              : `Une erreur s'est produite. Veuillez réessayer plus tard`;
+            this.error = err?.error?.message ? err.error.message : `Une erreur s'est produite. Veuillez réessayer plus tard`;
             return throwError(err);
           })
         )
@@ -308,26 +299,29 @@ export class TransferSetAmountPage implements OnInit {
           hidespinner: 'yes',
         }
       : {};
-    this.iab.create(url, '_blank', options).on('exit').subscribe(event => {
-      this.openC2WSuccess({
-        msisdnBuyer: this.purchasePayload?.senderMsisdn,
-        amount: this.setAmountForm.value['amount'],
-        recipientMsisdn: this.purchasePayload?.recipientMsisdn,
-        purchaseType: this.purchaseType,
-        buyForMe: this.purchasePayload?.senderMsisdn === this.purchasePayload?.recipientMsisdn,
-        operationStatus: OPERATION_TRANSACTION_STATUS.PROCESSING,
+    this.iab
+      .create(url, '_blank', options)
+      .on('exit')
+      .subscribe(event => {
+        this.openC2WSuccess({
+          msisdnBuyer: this.purchasePayload?.senderMsisdn,
+          amount: this.setAmountForm.value['amount'],
+          recipientMsisdn: this.purchasePayload?.recipientMsisdn,
+          purchaseType: this.purchaseType,
+          buyForMe: this.purchasePayload?.senderMsisdn === this.purchasePayload?.recipientMsisdn,
+          operationStatus: OPERATION_TRANSACTION_STATUS.PROCESSING,
+        });
       });
-    });
   }
 
   async openC2WSuccess(params: ModalSuccessModel) {
     const modal = await this.modalController.create({
       component: TransactionFinalityModalComponent,
-      cssClass: "success-or-fail-modal",
+      cssClass: 'success-or-fail-modal',
       componentProps: params,
       backdropDismiss: false,
     });
-    modal.onDidDismiss().then((res) => {});
+    modal.onDidDismiss().then(res => {});
     return await modal.present();
   }
   async transferCredit() {
@@ -339,7 +333,7 @@ export class TransferSetAmountPage implements OnInit {
           this.checkingAmount = false;
           const creditBalance = conso.find(c => c.codeCompteur === RECHARGEMENT_COMPTEUR_CODE)?.montantRestantBrut;
           if (creditBalance - MIN_BONUS_REMAINING_AMOUNT < this.purchasePayload.amount) {
-            this.error = CREDIT_FEE_INSUFFICIENT_ERROR;
+            this.error = BALANCE_INSUFFICIENT_FOR_TRANSFERT_CREDIT_ERROR;
             return of(conso);
           }
           const modal = await this.modalController.create({
@@ -356,29 +350,32 @@ export class TransferSetAmountPage implements OnInit {
             pin,
             amount: this.purchasePayload?.amount,
           };
-          const transferRequestResponse = await this.dashboardService.transferCredit(transferPayload).pipe(
-            tap((res: any) => {
-              this.checkingAmount = false;
-              if (res.status === '200') {
-                const { pin, ...followDetails } = transferPayload;
-                this.openSuccessFailModal({
-                  paymentMod: PAYMENT_MOD_CREDIT,
-                  success: true,
-                  msisdnBuyer: transferPayload?.msisdn,
-                });
-                this.followAnalyticsService.registerEventFollow('Transfer_Credit_Success', 'event', followDetails);
-              } else {
-                this.error = res.message;
-                const followDetails = {
-                  code_error: res.status,
-                  msisdn: this.dashboardService.getCurrentPhoneNumber(),
-                  msisdn2: this.purchasePayload?.recipientMsisdn,
-                  message: this.error,
-                };
-                this.followAnalyticsService.registerEventFollow('Transfer_Credit_Error', 'error', followDetails);
-              }
-            })
-          ).toPromise();
+          const transferRequestResponse = await this.dashboardService
+            .transferCredit(transferPayload)
+            .pipe(
+              tap((res: any) => {
+                this.checkingAmount = false;
+                if (res.status === '200') {
+                  const { pin, ...followDetails } = transferPayload;
+                  this.openSuccessFailModal({
+                    paymentMod: PAYMENT_MOD_CREDIT,
+                    success: true,
+                    msisdnBuyer: transferPayload?.msisdn,
+                  });
+                  this.oemLoggingService.registerEvent('Transfer_Credit_Success', convertObjectToLoggingPayload(followDetails));
+                } else {
+                  this.error = res.message;
+                  const followDetails = {
+                    code_error: res.status,
+                    msisdn: this.dashboardService.getCurrentPhoneNumber(),
+                    msisdn2: this.purchasePayload?.recipientMsisdn,
+                    message: this.error,
+                  };
+                  this.oemLoggingService.registerEvent('Transfer_Credit_Error', convertObjectToLoggingPayload(followDetails));
+                }
+              })
+            )
+            .toPromise();
           return transferRequestResponse;
         })
       )
@@ -403,10 +400,7 @@ export class TransferSetAmountPage implements OnInit {
             this.checkingAmount = false;
             this.error = CREDIT_FEE_INSUFFICIENT_ERROR;
             return of(conso);
-          } else if (
-            (!bonusBalance && !bonusTteDestBalance) ||
-            bonusBalance + bonusTteDestBalance - MIN_BONUS_REMAINING_AMOUNT < this.purchasePayload.amount
-          ) {
+          } else if ((!bonusBalance && !bonusTteDestBalance) || bonusBalance + bonusTteDestBalance - MIN_BONUS_REMAINING_AMOUNT < this.purchasePayload.amount) {
             this.checkingAmount = false;
             this.error = BONUS_INSUFFICIENT_ERROR;
             return of(conso);
@@ -414,7 +408,7 @@ export class TransferSetAmountPage implements OnInit {
           return this.dashboardService.transferBonus(transfertbonusPayload).pipe(
             tap((res: any) => {
               if (res.code === '0') {
-                this.followAnalyticsService.registerEventFollow('Transfer_Bonus_Success', 'event', transfertbonusPayload);
+                this.oemLoggingService.registerEvent('Transfer_Bonus_Success', convertObjectToLoggingPayload(transfertbonusPayload));
                 this.openSuccessFailModal({
                   paymentMod: PAYMENT_MOD_BONUS,
                   success: true,
@@ -423,7 +417,7 @@ export class TransferSetAmountPage implements OnInit {
               } else {
                 this.error = res.message;
                 const followDetails = { error_code: `${res.code}` };
-                this.followAnalyticsService.registerEventFollow('Transfer_Bonus_Error', 'error', followDetails);
+                this.oemLoggingService.registerEvent('Transfer_Bonus_Error', convertObjectToLoggingPayload(followDetails));
               }
             })
           );
@@ -488,9 +482,7 @@ export class TransferSetAmountPage implements OnInit {
       const amount = +amountInputValue;
       this.sending_fees_Info = this.feeService.extractSendingFeesTransfertOM(this.transferFeesArray[OM_LABEL_SERVICES.TAF], amount);
       this.includeFees = event.detail.checked;
-      this.includeFees
-        ? (this.totalAmount = amount + this.fee + this.sending_fees_Info.effective_fees)
-        : (this.totalAmount = amount + this.sending_fees_Info.effective_fees);
+      this.includeFees ? (this.totalAmount = amount + this.fee + this.sending_fees_Info.effective_fees) : (this.totalAmount = amount + this.sending_fees_Info.effective_fees);
     }
   }
 
@@ -523,18 +515,9 @@ export class TransferSetAmountPage implements OnInit {
       this.totalAmount = +amount + this.sending_fees_Info.effective_fees;
       return;
     }
-    if (
-      this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ||
-      this.purchaseType === OPERATION_TYPE_CARD_TO_WALLET
-    ) {
-      const feeService =
-        this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE
-          ? OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE
-          : OM_LABEL_SERVICES.CARD_TO_WALLET;
-      const fee = this.feeService.extractFees(
-        this.transferFeesArray[feeService],
-        amount
-      );
+    if (this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE || this.purchaseType === OPERATION_TYPE_CARD_TO_WALLET) {
+      const feeService = this.purchaseType === OPERATION_TRANSFER_OM_WITH_CODE ? OM_LABEL_SERVICES.TRANSFERT_AVEC_CODE : OM_LABEL_SERVICES.CARD_TO_WALLET;
+      const fee = this.feeService.extractFees(this.transferFeesArray[feeService], amount);
       if (fee.effective_fees === null) {
         this.error = TRANSFER_OM_BALANCE_NOT_ALLOWED;
         return;
@@ -551,9 +534,7 @@ export class TransferSetAmountPage implements OnInit {
       }
       this.fee = this.sending_fees_Info.cashout_fees;
 
-      this.includeFees
-        ? (this.totalAmount = +amount + this.fee + this.sending_fees_Info.effective_fees)
-        : (this.totalAmount = +amount + this.sending_fees_Info.effective_fees);
+      this.includeFees ? (this.totalAmount = +amount + this.fee + this.sending_fees_Info.effective_fees) : (this.totalAmount = +amount + this.sending_fees_Info.effective_fees);
     }
   }
 

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationRoutingService } from '../services/application-routing/application-routing.service';
 import { ModalController, NavController, ToastController } from '@ionic/angular';
-import { Router } from '@angular/router';
 import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { NumberSelectionOption } from '../models/enums/number-selection-option.enum';
 import {
@@ -17,6 +16,7 @@ import {
   OPERATION_TYPE_SEDDO_CREDIT,
   OPERATION_TYPE_MERCHANT_PAYMENT,
   OPERATION_TYPE_PASS_INTERNATIONAL,
+  getServiceEventLoggingName,
   OPERATION_ABONNEMENT_WIDO,
 } from 'src/shared';
 import { CreditPassAmountPage } from '../pages/credit-pass-amount/credit-pass-amount.page';
@@ -38,8 +38,7 @@ import { OffreService } from '../models/offre-service.model';
 import { OPERATION_TRANSFERT_ARGENT, OPERATION_TYPE_PASS_USAGE } from '../utils/operations.constants';
 import { MerchantPaymentCodeComponent } from 'src/shared/merchant-payment-code/merchant-payment-code.component';
 import { PurchaseSetAmountPage } from '../purchase-set-amount/purchase-set-amount.page';
-import { FollowAnalyticsService } from '../services/follow-analytics/follow-analytics.service';
-import { OperationRecapLogicService } from '../services/operation-recap-logic/operation-recap-logic.service';
+import { ANALYTICS_PROVIDER, OemLoggingService } from '../services/oem-logging/oem-logging.service';
 import { OperationExtras } from '../models/operation-extras.model';
 @Component({
   selector: 'app-transfert-hub-services',
@@ -77,8 +76,7 @@ export class TransfertHubServicesPage implements OnInit {
     private favService: FavorisService,
     private toastController: ToastController,
     private operationService: OperationService,
-    private followAnalyticsService: FollowAnalyticsService,
-    private operationRecapLogigService: OperationRecapLogicService
+    private oemLoggingService: OemLoggingService
   ) {}
 
   ngOnInit() {
@@ -113,16 +111,27 @@ export class TransfertHubServicesPage implements OnInit {
         }
         this.getUserInfos();
         const followEvent = this.purchaseType === 'TRANSFER' ? 'Get_hub_transfert_services_success' : 'Get_hub_achat_services_success';
-        this.followAnalyticsService.registerEventFollow(followEvent, 'event', this.currentPhone);
+        this.oemLoggingService.registerEvent(followEvent, [
+          {
+            dataName: 'msisdn',
+            dataValue: this.currentPhone,
+          },
+        ]);
       },
       err => {
         this.loadingServices = false;
         this.servicesHasError = true;
         const followError = this.purchaseType === 'TRANSFER' ? 'Get_hub_transfert_services_failed' : 'Get_hub_achat_services_failed';
-        this.followAnalyticsService.registerEventFollow(followError, 'error', {
-          msisdn: this.currentPhone,
-          error: err.status,
-        });
+        this.oemLoggingService.registerEvent(followError, [
+          {
+            dataName: 'msisdn',
+            dataValue: this.currentPhone,
+          },
+          {
+            dataName: 'error',
+            dataValue: err.status,
+          },
+        ]);
       }
     );
   }
@@ -143,19 +152,23 @@ export class TransfertHubServicesPage implements OnInit {
       toast.present();
       return;
     }
-    const followEvent = (this.purchaseType === 'TRANSFER' ? 'Hub_transfert_clic_' : 'Hub_Achat_clic_') + opt.code.toLowerCase();
-    this.followAnalyticsService.registerEventFollow(followEvent, 'event', 'clic');
+    //const followEvent = (this.purchaseType === 'TRANSFER' ? 'Hub_transfert_clic_' : 'Hub_Achat_clic_') + getServiceEventLoggingName(opt);
+    const followEvent = getServiceEventLoggingName(opt) + '_clic';
+    this.oemLoggingService.registerEvent(
+      followEvent,
+      [
+        {
+          dataName: 'hub',
+          dataValue: this.purchaseType === 'TRANSFER' ? 'Hub_transfert' : 'Hub_Achat',
+        },
+      ],
+      ANALYTICS_PROVIDER.ALL
+    );
     if (opt.passUsage) {
       if (opt.code === OPERATION_ABONNEMENT_WIDO) {
         this.goToListPassWido(OPERATION_ABONNEMENT_WIDO, 'list-pass-usage', opt);
       } else {
-        this.bsService.openNumberSelectionBottomSheet(
-          NumberSelectionOption.WITH_MY_PHONES,
-          OPERATION_TYPE_PASS_USAGE,
-          'list-pass-usage',
-          false,
-          opt
-        );
+        this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, OPERATION_TYPE_PASS_USAGE, 'list-pass-usage', opt);
         return;
       }
     }
@@ -170,11 +183,7 @@ export class TransfertHubServicesPage implements OnInit {
         this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.NONE, OPERATION_TYPE_SEDDO_BONUS, 'purchase-set-amount');
         break;
       case OPERATION_TYPE_RECHARGE_CREDIT:
-        this.bsService.openNumberSelectionBottomSheet(
-          NumberSelectionOption.WITH_MY_PHONES,
-          OPERATION_TYPE_RECHARGE_CREDIT,
-          CreditPassAmountPage.PATH
-        );
+        this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, OPERATION_TYPE_RECHARGE_CREDIT, CreditPassAmountPage.PATH);
         break;
       case OPERATION_TYPE_PASS_INTERNET:
         this.openModalPassNumberSelection(OPERATION_TYPE_PASS_INTERNET, 'list-pass');
@@ -219,8 +228,8 @@ export class TransfertHubServicesPage implements OnInit {
     });
   }
 
-  openModalPassNumberSelection(operation: string, routePath: string) {
-    this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, operation, routePath);
+  openModalPassNumberSelection(operation: string, routePath: string, opXtras?: OperationExtras) {
+    this.bsService.openNumberSelectionBottomSheet(NumberSelectionOption.WITH_MY_PHONES, operation, routePath, null, opXtras);
   }
 
   checkOmAccount() {
@@ -241,9 +250,7 @@ export class TransfertHubServicesPage implements OnInit {
     this.omService.omAccountSession().subscribe(async (omSession: any) => {
       const omSessionValid = omSession ? omSession.msisdn !== 'error' && omSession.hasApiKey && !omSession.loginExpired : null;
       if (omSessionValid) {
-        this.bsService
-          .initBsModal(MerchantPaymentCodeComponent, OPERATION_TYPE_MERCHANT_PAYMENT, PurchaseSetAmountPage.ROUTE_PATH)
-          .subscribe(_ => {});
+        this.bsService.initBsModal(MerchantPaymentCodeComponent, OPERATION_TYPE_MERCHANT_PAYMENT, PurchaseSetAmountPage.ROUTE_PATH).subscribe(_ => {});
         this.bsService.openModal(MerchantPaymentCodeComponent, {
           omMsisdn: omSession.msisdn,
         });
@@ -325,18 +332,26 @@ export class TransfertHubServicesPage implements OnInit {
   }
 
   choosePass(pass: any, opType: string) {
-    this.followAnalyticsService.registerEventFollow('Select_favorite_pass_click', 'event', {
-      recipient: this.currentPhone,
-      pass: pass,
-    });
+    this.oemLoggingService.registerEvent('Select_favorite_pass_click', [
+      {
+        dataName: 'recipient',
+        dataValue: this.currentPhone,
+      },
+      {
+        dataName: 'pass',
+        dataValue: pass,
+      },
+    ]);
     const opXtras: OperationExtras = {
       pass: { ...pass, isFavoritePass: true },
       recipientCodeFormule: this.userInfos.code,
+      recipientFormule: this.userInfos.nomOffre,
       purchaseType: opType,
       recipientMsisdn: this.currentPhone,
     };
-    this.operationRecapLogigService.initRecapInfos(opXtras);
-    this.operationRecapLogigService.setPaymentMod();
+    this.openModalPassNumberSelection(opType, 'operation-recap', opXtras);
+    //this.operationRecapLogigService.initRecapInfos(opXtras);
+    //this.operationRecapLogigService.setPaymentMod();
   }
 
   getUserInfos() {

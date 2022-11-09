@@ -42,6 +42,7 @@ public class DimeloCordovaPlugin extends CordovaPlugin {
         System.out.println("dimelo plugin initialized");
         Context context = this.cordova.getActivity().getApplicationContext();
         this.dimelo = Dimelo.setup(context);
+				this.dimelo.setThreadsEnabled(true);
         this.dimelo.initWithApiSecret("65537b4ddf7eea735bad06e7d4a7e4dffa4935ce97736cdf40cb1e8318b68987", "sonatel", null);
     }
 
@@ -50,6 +51,7 @@ public class DimeloCordovaPlugin extends CordovaPlugin {
         // final String username = params.getString(0);
         // final String customerId = params.getString(1);
         this.dimelo.setUserName(username);
+				this.dimelo.setUserIdentifier(customerId);
         JSONObject authInfo = new JSONObject();
         try {
             authInfo.put("CustomerId", customerId);

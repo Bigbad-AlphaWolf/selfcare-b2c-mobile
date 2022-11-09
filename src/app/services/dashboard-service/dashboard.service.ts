@@ -1,11 +1,11 @@
-import {Injectable, RendererFactory2, Inject, Renderer2} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Subject, Observable, Subscription, of} from 'rxjs';
-import {tap, map, switchMap, catchError, share, take, retryWhen, delay, mergeMap} from 'rxjs/operators';
+import { Injectable, RendererFactory2, Inject, Renderer2 } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Subject, Observable, Subscription, of, throwError } from 'rxjs';
+import { tap, map, switchMap, catchError, share, take, retryWhen, delay, mergeMap } from 'rxjs/operators';
 import * as SecureLS from 'secure-ls';
-import {environment} from 'src/environments/environment';
-import {AuthenticationService} from '../authentication-service/authentication.service';
-import {BuyPassModel, TransfertBonnus, TransferCreditModel} from '.';
+import { environment } from 'src/environments/environment';
+import { AuthenticationService } from '../authentication-service/authentication.service';
+import { BuyPassModel, TransfertBonnus, TransferCreditModel } from '.';
 import {
   SubscriptionUserModel,
   JAMONO_ALLO_CODE_FORMULE,
@@ -13,18 +13,20 @@ import {
   REGEX_FIX_NUMBER,
   USER_CONS_CATEGORY_CALL,
   ItemUserConso,
-	REGEX_PREPAID_FIXE,
-	OPERATION_TYPE_PASS_INTERNET
+  REGEX_PREPAID_FIXE,
+  OPERATION_TYPE_PASS_INTERNET,
 } from 'src/shared';
-import {DOCUMENT} from '@angular/common';
-import {SessionOem} from '../session-oem/session-oem.service';
-import {BoosterModel, BoosterTrigger} from 'src/app/models/booster.model';
-import {GiftType} from 'src/app/models/enums/gift-type.enum';
-import {BoosterService} from '../booster.service';
-import {ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT} from '../utils/account.endpoints';
+import { DOCUMENT } from '@angular/common';
+import { SessionOem } from '../session-oem/session-oem.service';
+import { BoosterModel, BoosterTrigger } from 'src/app/models/booster.model';
+import { GiftType } from 'src/app/models/enums/gift-type.enum';
+import { BoosterService } from '../booster.service';
+import { ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT } from '../utils/account.endpoints';
 import { UserConsoService } from '../user-cunsommation-service/user-conso.service';
-const {SERVER_API_URL, CONSO_SERVICE, FILE_SERVICE, ACCOUNT_MNGT_SERVICE, UAA_SERVICE, PURCHASES_SERVICE, BOOSTER_SERVICE} = environment;
-const ls = new SecureLS({encodingType: 'aes'});
+import { OperationExtras } from 'src/app/models/operation-extras.model';
+import { OemLoggingService } from '../oem-logging/oem-logging.service';
+const { SERVER_API_URL, CONSO_SERVICE, FILE_SERVICE, ACCOUNT_MNGT_SERVICE, UAA_SERVICE, PURCHASES_SERVICE, BOOSTER_SERVICE } = environment;
+const ls = new SecureLS({ encodingType: 'aes' });
 
 // user consumation endpoints
 const userConsoEndpoint = `${SERVER_API_URL}/${CONSO_SERVICE}/api/suivi-compteur-consommations`;
@@ -80,7 +82,7 @@ const listPassInternetEndpointLight = `${SERVER_API_URL}/${CONSO_SERVICE}/api/li
 const listPassIllimixEndpointLight = `${SERVER_API_URL}/${CONSO_SERVICE}/api/light/pass-illimix-by-formule`;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DashboardService {
   static CURRENT_DASHBOARD: string = '/dashboard';
@@ -102,7 +104,8 @@ export class DashboardService {
     @Inject(DOCUMENT) private _document,
     private http: HttpClient,
     private authService: AuthenticationService,
-    private boosterService: BoosterService
+    private boosterService: BoosterService,
+    private oemLoggingService: OemLoggingService
   ) {
     this.renderer = rendererFactory.createRenderer(null, null);
     authService.currentPhoneNumberSetSubject.subscribe(value => {
@@ -118,7 +121,7 @@ export class DashboardService {
   }
 
   generateOtpForResetPwd(login: any, token: string) {
-    return this.http.post(initOTPReinitializeEndpoint, {login, token});
+    return this.http.post(initOTPReinitializeEndpoint, { login, token });
   }
 
   updateRattachmentListInfo() {
@@ -137,7 +140,7 @@ export class DashboardService {
     this.menuOptionClickedSubject.next(option);
   }
 
-  reinitializePassword(payload: {otp: string; newPassword: string; login: string}) {
+  reinitializePassword(payload: { otp: string; newPassword: string; login: string }) {
     return this.http.post(reinitializeEndpoint, payload);
   }
 
@@ -216,15 +219,33 @@ export class DashboardService {
   }
 
   // attach new mobile phone number
-  registerNumberToAttach(detailsToCheck: {numero: string; typeNumero: 'MOBILE' | 'FIXE'}) {
+  registerNumberToAttach(detailsToCheck: { numero: string; typeNumero: 'MOBILE' | 'FIXE' }) {
     detailsToCheck = Object.assign(detailsToCheck, {
-      login: this.authService.getUserMainPhoneNumber()
+      login: this.authService.getUserMainPhoneNumber(),
     });
     return this.http.post(`${attachMobileNumberEndpoint}/register`, detailsToCheck).pipe(
       tap(() => {
+        this.oemLoggingService.registerEvent('lines_new_success', [
+          {
+            dataName: 'mainMsisdn',
+            dataValue: this.authService.getUserMainPhoneNumber(),
+          },
+          { dataName: 'msisdn', dataValue: detailsToCheck.numero },
+        ]);
         DashboardService.rattachedNumbers = null;
         this.attachedNumbers().pipe(take(1)).subscribe();
         this.attachedNumbersChangedSubject.next();
+      }),
+      catchError(err => {
+        this.oemLoggingService.registerEvent('lines_new_error', [
+          {
+            dataName: 'mainMsisdn',
+            dataValue: this.authService.getUserMainPhoneNumber(),
+          },
+          { dataName: 'msisdn', dataValue: detailsToCheck.numero },
+          { dataName: 'errorStatus', dataValue: err.status },
+        ]);
+        return throwError(err);
       })
     );
   }
@@ -233,9 +254,9 @@ export class DashboardService {
     return this.attachedNumbersChangedSubject.asObservable();
   }
 
-  registerNumberByIdClient(payload: {numero: string; idClient: string; typeNumero: 'MOBILE' | 'FIXE'}) {
+  registerNumberByIdClient(payload: { numero: string; idClient: string; typeNumero: 'MOBILE' | 'FIXE' }) {
     payload = Object.assign(payload, {
-      login: this.authService.getUserMainPhoneNumber()
+      login: this.authService.getUserMainPhoneNumber(),
     });
     return this.http.post(`${attachMobileNumberEndpoint}/fixe-register`, payload).pipe(
       tap(() => {
@@ -247,7 +268,7 @@ export class DashboardService {
   }
 
   // check if fix number is already linked to an account
-  checkFixNumber(payload: {login: string; token: string; msisdn: string}) {
+  checkFixNumber(payload: { login: string; token: string; msisdn: string }) {
     return this.http.post(checkFixNumber, payload);
   }
 
@@ -275,7 +296,7 @@ export class DashboardService {
         mainMsisdnInfos = {
           msisdn: mainMsisdn,
           profil: res.profil,
-          formule: res.nomOffre
+          formule: res.nomOffre,
         };
         return this.getAttachedNumbers().pipe(
           map((res: any[]) => {
@@ -304,15 +325,23 @@ export class DashboardService {
     );
   }
 
-  fetchOemNumbers(operationType?: string) {
+  fetchOemNumbers(operationType?: string, opXtras?: OperationExtras) {
     return this.attachedNumbers().pipe(
       map((elements: any) => {
         const mainPhone = this.authService.getUserMainPhoneNumber();
         let numbers = [mainPhone.trim()];
         elements.forEach((element: any) => {
           const msisdn = '' + element.msisdn;
-          if (!msisdn.startsWith('33', 0) || REGEX_PREPAID_FIXE.test(element?.formule) && operationType === OPERATION_TYPE_PASS_INTERNET) {
-            numbers.push(element.msisdn);
+          console.log('element', element);
+
+          if (!msisdn.startsWith('33', 0) || (REGEX_PREPAID_FIXE.test(element?.formule) && operationType === OPERATION_TYPE_PASS_INTERNET)) {
+            if (opXtras?.recipientFormule) {
+              if (element.formule === opXtras.recipientFormule) {
+                numbers.push(element.msisdn);
+              }
+            } else {
+              numbers.push(element.msisdn);
+            }
           }
         });
         return numbers;
@@ -425,12 +454,10 @@ export class DashboardService {
       map((res: any) => {
         return this.processConso(res);
       }),
-			tap((res) => {
-				const appelConso = res.find((x) => x.categorie === 'APPEL');
-        UserConsoService.lastRechargementCompteurValue = appelConso.consommations.find(
-          (x) => x.code === 1
-        ).montant;
-			}),
+      tap(res => {
+        const appelConso = res.find(x => x.categorie === 'APPEL');
+        UserConsoService.lastRechargementCompteurValue = appelConso.consommations.find(x => x.code === 1).montant;
+      }),
       retryWhen(errors => {
         return errors.pipe(
           delay(1000),
@@ -569,8 +596,8 @@ export class DashboardService {
             type: GiftType.RECHARGE,
             value: {
               amount: res.transactionDetails.transactionValue,
-              unit: 'F CFA'
-            }
+              unit: 'F CFA',
+            },
           };
           return response;
         })
@@ -587,7 +614,7 @@ export class DashboardService {
           .getBoosters({
             trigger: BoosterTrigger.TOUS,
             codeFormuleRecipient: res.code,
-            msisdn: currentPhoneNumber
+            msisdn: currentPhoneNumber,
           })
           .pipe(
             map((res: BoosterModel[]) => {
@@ -599,7 +626,7 @@ export class DashboardService {
                 promoPass,
                 promoRecharge,
                 promoPassIllimix,
-                boosterInscription
+                boosterInscription,
               };
             })
           );
@@ -609,7 +636,7 @@ export class DashboardService {
           promoPass: null,
           promoRecharge: null,
           promoPassIllimix: null,
-          boosterInscription: null
+          boosterInscription: null,
         });
       })
     );
@@ -656,7 +683,7 @@ export class DashboardService {
 
   getFixPostpaidInfos(msisdn = this.getCurrentPhoneNumber()) {
     return this.http.get(`${ACCOUNT_FIX_POSTPAID_INFOS_ENDPOINT}/${msisdn}/status`, {
-      responseType: 'text'
+      responseType: 'text',
     });
   }
 }
