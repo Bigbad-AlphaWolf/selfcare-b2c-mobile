@@ -116,7 +116,7 @@
     "@angular/compiler": "~12.2.10",
     "@angular/compiler-cli": "~12.2.10",
     "@angular/language-service": "~12.2.10",
-    "@batch.com/cordova-plugin": "5.0.1",
+    "@batch.com/cordova-plugin": "^5.0.1",
     "@hmscore/cordova-plugin-hms-analytics": "file:cordova-plugin-hms-analytics",
     "@hmscore/cordova-plugin-hms-push": "file:cordova-plugin-hms-push",
     "@ionic/angular-toolkit": "^4.0.0",
@@ -195,9 +195,9 @@
         "GPS_REQUIRED": "false"
       },
       "@batch.com/cordova-plugin": {
-        "BATCHSDK_ANDROID_VERSION": "1.18.+",
+        "BATCHSDK_ANDROID_VERSION": "1.19.+",
         "BATCHSDK_ANDROID_LOCALBROADCAST_VERSION": "1.0.0",
-        "BATCHSDK_IOS_VERSION": "~> 1.17"
+        "BATCHSDK_IOS_VERSION": "~> 1.19"
       },
       "cordova.plugins.diagnostic": {
         "ANDROIDX_VERSION": "1.0.0",
