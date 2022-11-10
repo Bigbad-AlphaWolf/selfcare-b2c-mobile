@@ -23,6 +23,7 @@ export class RattachNumberModalComponent implements OnInit {
   isInputValid: boolean;
   msgError: string;
   mainNumber = this.dashbServ.getMainPhoneNumber();
+  nextStep: string;
   constructor(
     private dialog: MatDialog,
     private modalCon: ModalController,
@@ -80,43 +81,28 @@ export class RattachNumberModalComponent implements OnInit {
           this.isLoading = false;
           this.hasError = true;
           this.followAttachmentIssues(payload, 'error');
-          if (err && (err.error.errorKey === 'userRattached' || err.error.errorKey === 'userexists')) {
-            this.msgError = err.error.title ? err.error.title : "Impossible d'effectuer le rattachement de la ligne ";
-          } else {
-            let nextStep = 'FORWARD';
-            let otpSent: boolean;
+          if (err && (err.error.errorKey === 'userRattached' || err.error.errorKey === 'userexists' || err?.error?.errorKey === 'notMyNumber')) {
             if (payload.typeNumero === 'MOBILE') {
               const isCorporate = await this.checkIfMsisdnIsCoorporate(payload.numero);
-              console.log('isCorporate', isCorporate);
-
-              if (isCorporate) {
-                //send OTP MSG
-                this.isLoading = true;
-                otpSent = await this.otpService
-                  .generateOTPCode(payload.numero)
-                  .pipe(
-                    map(_ => {
-                      return true;
-                    }),
-                    catchError(_ => {
-                      this.isLoading = false;
-                      return of(false);
-                    }),
-                    tap(_ => {
-                      this.isLoading = false;
-                    })
-                  )
-                  .toPromise();
-                nextStep = 'SENT_OTP';
+              if (err.error.errorKey === 'userRattached' || err.error.errorKey === 'userexists' || err?.error?.errorKey === 'notMyNumber') {
+                this.nextStep = 'FORWARD';
+                if (isCorporate) {
+                  const otpSent = await this.generateOTP(payload?.numero);
+                  if (!otpSent) {
+                    this.hasError = true;
+                    this.msgError = 'Ce rattachement ne peut être fait pour le moment. Veuillez réessayer plus tard';
+                    return;
+                  }
+                }
+                this.nextStepRattachement(false, this.nextStep, this.phoneNumber, payload.typeNumero);
               }
+            } else {
+              this.nextStepRattachement(false, this.nextStep, this.phoneNumber, payload.typeNumero);
+              //this.msgError = err.error.title ? err.error.title : "Impossible d'effectuer le rattachement de la ligne ";
             }
-            if (nextStep && !otpSent) {
-              this.hasError = true;
-              this.msgError = 'Ce rattachement ne peut être fait pour le moment. Veuillez réessayer plus tard';
-            }
-            if (nextStep === 'FORWARD' || (nextStep === 'SENT_OTP' && otpSent)) {
-              this.nextStepRattachement(false, nextStep, this.phoneNumber, payload.typeNumero);
-            }
+          } else {
+            this.hasError = true;
+            this.msgError = 'Ce rattachement ne peut être fait pour le moment. Veuillez réessayer plus tard';
           }
         }
       );
@@ -181,5 +167,30 @@ export class RattachNumberModalComponent implements OnInit {
     this.modalCon.dismiss({
       direction: 'BACK',
     });
+  }
+
+  async generateOTP(numero: string) {
+    this.isLoading = true;
+    return this.otpService
+      .generateOTPCode(numero)
+      .pipe(
+        map(_ => {
+          return true;
+        }),
+        catchError(_ => {
+          this.isLoading = false;
+          return of(false);
+        }),
+        tap(_ => {
+          this.nextStep = 'SENT_OTP';
+          this.isLoading = false;
+        })
+      )
+      .toPromise();
+  }
+
+  async checkIfPresentInOEMNumbers(msisdn: string) {
+    const list = await this.dashbServ.attachedNumbers().toPromise();
+    console.log('list', list);
   }
 }
