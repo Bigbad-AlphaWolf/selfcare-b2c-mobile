@@ -5,7 +5,8 @@ import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Uid } from '@ionic-native/uid/ngx';
 import { NavController, ModalController } from '@ionic/angular';
 import { of, Subject, Subscription, timer } from 'rxjs';
-import { tap, catchError, takeUntil, finalize, switchMap } from 'rxjs/operators';
+import { tap, catchError, takeUntil, finalize, switchMap, map } from 'rxjs/operators';
+import { CustomerOperationStatus } from 'src/app/models/enums/om-customer-status.enum';
 import { OMCustomerStatusModel } from 'src/app/models/om-customer-status.model';
 import { OmInitOtpModel, OmCheckOtpModel } from 'src/app/models/om-self-operation-otp.model';
 import { OperationSuccessFailModalPage } from 'src/app/operation-success-fail-modal/operation-success-fail-modal.page';
@@ -73,6 +74,7 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
   errorGettingNumber: string;
   userAuthImplicitInfos: ConfirmMsisdnModel;
   maxYear = new Date().getFullYear() + 30;
+  shouldResetPin: boolean;
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
@@ -98,6 +100,7 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.openAuthenticationImplicitModal();
+    this.shouldResetPin = history.state.shouldResetPin;
   }
 
   ngOnDestroy() {
@@ -134,7 +137,15 @@ export class OpenOmAccountPage implements OnInit, OnDestroy {
   checkStatus() {
     this.checkingStatus = true;
     this.checkStatusError = false;
-    this.fetchUserOMStatus(this.selectedNumber).subscribe(
+    this.fetchUserOMStatus(this.selectedNumber).pipe(
+      map(omStatus => {
+        if (this.shouldResetPin) {
+          omStatus.operation = "OUVERTURE_COMPTE";
+          omStatus.operationStatus = CustomerOperationStatus.password_creation;
+        }
+        return omStatus;
+      })
+    ).subscribe(
       status => {
         this.omMsisdn = status.omNumber;
         this.userOmStatus = status;

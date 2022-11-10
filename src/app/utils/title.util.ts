@@ -104,7 +104,7 @@ export const titles: PageHeader[] = [
   },
   {
     typeOperation: OPERATION_CREATE_PIN_OM,
-    title: 'Crééer votre code secret Orange Money',
+    title: 'Créer votre code secret OM',
     subTtile: 'Le code secret doit être différent de votre date de naissance et les chiffres consécutifs ne sont pas autorisés'
   },
   {
