@@ -70,7 +70,8 @@ export class AppComponent {
     private httpNative: HTTP,
     private toastController: ToastController,
     private firebaseDynamicLinks: FirebaseDynamicLinks,
-    private bpSargalService: BonsPlansSargalService
+    private bpSargalService: BonsPlansSargalService,
+    private notificationService: NotificationService
   ) {
     this.getVersion();
     this.imageLoaderConfig.enableSpinner(false);
@@ -124,6 +125,7 @@ export class AppComponent {
       this.loadContacts();
       this.getVersion();
       this.batch.initBatchConfig(this.platform.is('ios'));
+      this.listenNotifications();
       if (this.platform && this.platform.backButton) {
         this.platform.backButton.subscribe(() => {
           this.navContr.pop();
@@ -143,6 +145,12 @@ export class AppComponent {
       this.checkDeeplinks();
       this.setUUidValue();
       this.setupFCMNotifications();
+    });
+  }
+
+  listenNotifications() {
+    document.addEventListener("batchPushReceived", (notification) => {
+      this.notificationService.handleNotification(notification)
     });
   }
 
