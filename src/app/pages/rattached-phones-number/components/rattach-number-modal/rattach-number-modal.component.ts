@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { REGEX_FIX_NUMBER, REGEX_NUMBER } from 'src/shared';
+import { OPERATION_CONFIRM_RATTACHMENT, REGEX_FIX_NUMBER, REGEX_NUMBER } from 'src/shared';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalSuccessComponent } from 'src/shared/modal-success/modal-success.component';
 import { ModalController } from '@ionic/angular';
@@ -10,6 +10,7 @@ import { OtpService } from 'src/app/services/otp-service/otp.service';
 import { of, throwError } from 'rxjs';
 import { OemLoggingService } from 'src/app/services/oem-logging/oem-logging.service';
 import { convertObjectToLoggingPayload } from 'src/app/utils/utils';
+import { YesNoModalComponent } from 'src/shared/yes-no-modal/yes-no-modal.component';
 
 interface RattachementModel {
   msisdn: string;
@@ -95,22 +96,15 @@ export class RattachNumberModalComponent implements OnInit {
             this.followAttachmentIssues(payload, 'error');
             if (err && (err.error.errorKey === 'userRattached' || err.error.errorKey === 'userexists' || err?.error?.errorKey === 'notMyNumber')) {
               this.nextStep = 'FORWARD';
-              if (payload.typeNumero === 'MOBILE') {
-                const isCorporate = await this.checkIfMsisdnIsCoorporate(payload.numero);
-                if (err.error.errorKey === 'userRattached' || err.error.errorKey === 'userexists' || err?.error?.errorKey === 'notMyNumber') {
-                  if (isCorporate) {
-                    const otpSent = await this.generateOTP(payload?.numero);
-                    if (!otpSent) {
-                      this.hasError = true;
-                      this.msgError = 'Ce rattachement ne peut être fait pour le moment. Veuillez réessayer plus tard';
-                      return;
-                    }
-                  }
-                  this.nextStepRattachement(false, this.nextStep, this.phoneNumber, payload.typeNumero);
+              if (err.error.errorKey === 'userRattached' || err.error.errorKey === 'userexists') {
+                const confirmModal = await this.openConfirmationModal(payload.numero);
+                confirmModal.present();
+                const { data } = await confirmModal.onDidDismiss();
+                if (!data?.continue) {
+                  return;
                 }
-              } else {
-                this.nextStepRattachement(false, this.nextStep, this.phoneNumber, payload.typeNumero);
               }
+              this.onContinue(payload);
             } else {
               this.hasError = true;
               this.msgError = err.error.title ? err.error.title : "Impossible d'effectuer le rattachement de la ligne en ce moment. Veuillez réessayer plus tard";
@@ -211,5 +205,32 @@ export class RattachNumberModalComponent implements OnInit {
     });
 
     return !!found.length;
+  }
+
+  async openConfirmationModal(msisdn: string) {
+    return await this.modalCon.create({
+      component: YesNoModalComponent,
+      componentProps: {
+        typeModal: OPERATION_CONFIRM_RATTACHMENT,
+        numero: msisdn,
+      },
+      cssClass: 'select-recipient-modal',
+    });
+  }
+
+  async onContinue(payload) {
+    if (payload.typeNumero === 'MOBILE') {
+      const isCorporate = await this.checkIfMsisdnIsCoorporate(payload.numero);
+      if (isCorporate) {
+        const otpSent = await this.generateOTP(payload?.numero);
+        if (!otpSent) {
+          this.hasError = true;
+          this.msgError = 'Ce rattachement ne peut être fait pour le moment. Veuillez réessayer plus tard';
+          return;
+        }
+      }
+      //this.nextStepRattachement(false, this.nextStep, this.phoneNumber, payload.typeNumero);
+    }
+    this.nextStepRattachement(false, this.nextStep, this.phoneNumber, payload.typeNumero);
   }
 }
